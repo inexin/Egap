@@ -41,6 +41,15 @@ Egap.Pdf.PdfDictionary.Remove(Egap.Pdf.PdfName! key) -> bool
 Egap.Pdf.PdfDictionary.Set(Egap.Pdf.PdfName! key, Egap.Pdf.PdfObject! value) -> void
 Egap.Pdf.PdfDictionary.this[Egap.Pdf.PdfName! key].get -> Egap.Pdf.PdfObject?
 Egap.Pdf.PdfDictionary.this[Egap.Pdf.PdfName! key].set -> void
+Egap.Pdf.PdfDocument
+Egap.Pdf.PdfDocument.Catalog.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfDocument.Dispose() -> void
+Egap.Pdf.PdfDocument.IsChanged.get -> bool
+Egap.Pdf.PdfDocument.Objects.get -> Egap.Pdf.PdfObjectTable!
+Egap.Pdf.PdfDocument.Options.get -> Egap.Pdf.PdfReadOptions!
+Egap.Pdf.PdfDocument.Trailer.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfDocument.Version.get -> string!
+Egap.Pdf.PdfDocument.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
 Egap.Pdf.PdfException
 Egap.Pdf.PdfException.Code.get -> Egap.Pdf.PdfWarningCode?
 Egap.Pdf.PdfException.Code.init -> void
@@ -64,6 +73,17 @@ Egap.Pdf.PdfName.Equals(Egap.Pdf.PdfName? other) -> bool
 Egap.Pdf.PdfName.Value.get -> string!
 Egap.Pdf.PdfNull
 Egap.Pdf.PdfObject
+Egap.Pdf.PdfObjectTable
+Egap.Pdf.PdfObjectTable.Add(Egap.Pdf.PdfObject! value) -> Egap.Pdf.PdfReference!
+Egap.Pdf.PdfObjectTable.Contains(Egap.Pdf.PdfReference! reference) -> bool
+Egap.Pdf.PdfObjectTable.Count.get -> int
+Egap.Pdf.PdfObjectTable.Get(int objectNumber) -> Egap.Pdf.PdfObject!
+Egap.Pdf.PdfObjectTable.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfReference!>!
+Egap.Pdf.PdfObjectTable.GetReference(int objectNumber) -> Egap.Pdf.PdfReference?
+Egap.Pdf.PdfObjectTable.IsChanged.get -> bool
+Egap.Pdf.PdfObjectTable.Remove(Egap.Pdf.PdfReference! reference) -> bool
+Egap.Pdf.PdfObjectTable.Set(Egap.Pdf.PdfReference! reference, Egap.Pdf.PdfObject! value) -> void
+Egap.Pdf.PdfObjectTable.this[Egap.Pdf.PdfReference! reference].get -> Egap.Pdf.PdfObject!
 Egap.Pdf.PdfReadOptions
 Egap.Pdf.PdfReadOptions.MaxDecodedStreamBytes.get -> long
 Egap.Pdf.PdfReadOptions.MaxDecodedStreamBytes.init -> void
@@ -134,9 +154,11 @@ Egap.Pdf.PdfWarningCode.MalformedStreamKeyword = 15 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedXref = 20 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingEndobj = 14 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingEndstream = 17 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MissingHeader = 24 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingObject = 23 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingSeparator = 7 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.NumberOutOfRange = 2 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.ShiftedOffsets = 25 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.TooManyWarnings = 8 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnexpectedDelimiter = 6 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnexpectedToken = 9 -> Egap.Pdf.PdfWarningCode
@@ -162,6 +184,10 @@ override Egap.Pdf.PdfWarning.ToString() -> string!
 static Egap.Pdf.PdfBoolean.False.get -> Egap.Pdf.PdfBoolean!
 static Egap.Pdf.PdfBoolean.Get(bool value) -> Egap.Pdf.PdfBoolean!
 static Egap.Pdf.PdfBoolean.True.get -> Egap.Pdf.PdfBoolean!
+static Egap.Pdf.PdfDocument.Open(string! path, Egap.Pdf.PdfReadOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfDocument.Open(System.IO.Stream! stream, Egap.Pdf.PdfReadOptions? options = null, bool leaveOpen = false) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfDocument.Open(System.ReadOnlyMemory<byte> bytes, Egap.Pdf.PdfReadOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfDocument.OpenAsync(System.IO.Stream! stream, Egap.Pdf.PdfReadOptions? options = null, bool leaveOpen = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Pdf.PdfDocument!>!
 static Egap.Pdf.PdfName.FromString(string! value) -> Egap.Pdf.PdfName!
 static Egap.Pdf.PdfName.Get(string! value) -> Egap.Pdf.PdfName!
 static Egap.Pdf.PdfName.Get(System.ReadOnlySpan<byte> bytes) -> Egap.Pdf.PdfName!

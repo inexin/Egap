@@ -329,6 +329,18 @@ public sealed class XrefTests
     }
 
     [Fact]
+    public void CrossReferenceStreamIsAnObjectEvenWhenItsOwnEntryIsWrong()
+    {
+        // The stream lists itself as free; it is still the object at the offset it was read from, as qpdf reads it.
+        FileBuilder file = new FileBuilder().Object(1, "(one)");
+        long at = file.XrefStream(2, "", free: [2]);
+
+        Opened opened = Open(file.StartXref(at).ToArray());
+
+        Assert.IsType<PdfStream>(opened[2]);
+    }
+
+    [Fact]
     public void StreamWithoutTypeButWithWIsReadWithAWarning()
     {
         FileBuilder file = new FileBuilder().Object(1, "(one)");

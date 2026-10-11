@@ -26,9 +26,13 @@ internal sealed class ObjectLoader : IObjectResolver
         Xref = xref;
         this.options = options;
         this.log = log;
+        References = this;
     }
 
     public XrefTable Xref { get; }
+
+    /// <summary>Resolves the references inside loaded objects: the loader itself, or the document's object table.</summary>
+    public IObjectResolver References { get; set; }
 
     public PdfObject Resolve(PdfReference reference)
     {
@@ -87,7 +91,7 @@ internal sealed class ObjectLoader : IObjectResolver
             return PdfNull.Instance;
         }
 
-        ObjectParser parser = new(new Lexer(new SourceReader(source), log), options, this);
+        ObjectParser parser = new(new Lexer(new SourceReader(source), log), options, References);
         IndirectObject found;
         try
         {
@@ -128,7 +132,7 @@ internal sealed class ObjectLoader : IObjectResolver
 
             try
             {
-                objects = ObjectStreamReader.Read(stream, streamNumber, options, log, this);
+                objects = ObjectStreamReader.Read(stream, streamNumber, options, log, References);
             }
             catch (PdfException e) when (e is not PdfLimitException && e.Code is null)
             {
