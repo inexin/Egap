@@ -15,7 +15,7 @@ import os
 import subprocess
 import sys
 
-SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*"}
+SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*", "parser": "tests/fuzz-seeds/parser/*"}
 
 SCRIPT = """
 set -e

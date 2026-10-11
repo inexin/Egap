@@ -7,6 +7,7 @@ crash, and AFL++ also reports hangs.
 | Target | Input | Seeds |
 |---|---|---|
 | `lexer` | Any bytes, tokenized leniently and strictly | `tests/fuzz-seeds/lexer/*` |
+| `parser` | Any bytes: every direct object in turn and every `n g obj` found, leniently and strictly; each indirect object is written back and must parse strictly to the same bytes | `tests/fuzz-seeds/parser/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 

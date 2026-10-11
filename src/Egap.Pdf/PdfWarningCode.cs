@@ -26,4 +26,31 @@ public enum PdfWarningCode
 
     /// <summary>The file had so many warnings that the rest were dropped.</summary>
     TooManyWarnings,
+
+    /// <summary>A token that cannot appear where it was found, such as an unknown keyword or a stray <c>]</c>, was skipped.</summary>
+    UnexpectedToken,
+
+    /// <summary>An array or dictionary was not closed; it was closed where the object ended.</summary>
+    UnterminatedObject,
+
+    /// <summary>A dictionary key was not a name, or a key had no value; the entry was dropped.</summary>
+    MalformedDictionary,
+
+    /// <summary>A dictionary had the same key twice; the last value was kept.</summary>
+    DuplicateKey,
+
+    /// <summary>A reference had an object number below 1 or a generation above 65,535; it was read as null.</summary>
+    InvalidReference,
+
+    /// <summary>An indirect object had no <c>endobj</c>.</summary>
+    MissingEndobj,
+
+    /// <summary>The <c>stream</c> keyword was not followed by a line feed or carriage return and line feed.</summary>
+    MalformedStreamKeyword,
+
+    /// <summary>A stream's <c>/Length</c> was missing or wrong; its data was found by searching for <c>endstream</c>.</summary>
+    WrongStreamLength,
+
+    /// <summary>A stream had no <c>endstream</c>; its data was taken to run to <c>endobj</c> or the end of the file.</summary>
+    MissingEndstream,
 }
