@@ -69,6 +69,17 @@ if (args is ["mutate", string mutateTarget, string seconds, string seeds, string
     return Mutator.Run(Targets.Get(mutateTarget), TimeSpan.FromSeconds(double.Parse(seconds, System.Globalization.CultureInfo.InvariantCulture)), seeds, findings);
 }
 
+if (args is ["list-objects", string listed])
+{
+    // Prints "n g" for every object the cross-reference lists that loads to something other than null, for comparing with qpdf.
+    foreach (string line in Targets.ListObjects(File.ReadAllBytes(listed)))
+    {
+        Console.WriteLine(line);
+    }
+
+    return 0;
+}
+
 if (args is [string target, string file])
 {
     using FileStream input = File.OpenRead(file);

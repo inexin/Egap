@@ -10,6 +10,7 @@ crash, and AFL++ also reports hangs.
 | `parser` | Any bytes: every direct object in turn and every `n g obj` found, leniently and strictly; each indirect object is written back and must parse strictly to the same bytes | `tests/fuzz-seeds/parser/*` |
 | `filters` | A filter pick, predictor parameters and data, decoded leniently and strictly | `tests/fuzz-seeds/filters/*` |
 | `streams` | PDF bytes: every stream object found is decoded leniently; for corpus runs, replay prints what was decoded and every warning | `tests/fuzz-seeds/parser/*` |
+| `xref` | PDF bytes: the cross-reference is read and every listed object loaded, leniently and strictly; reading may fail with `PdfException` until repair by scanning exists | `tests/fuzz-seeds/xref/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 
@@ -40,6 +41,6 @@ dotnet run --project tests/Egap.Pdf.Fuzz -c Release -- replay lexer .cache/afl/l
 EGAP_REPLAY_WATCH="Flate data is damaged" dotnet run --project tests/Egap.Pdf.Fuzz -c Release -- replay streams ../egap-compare/.corpus/pdfjs
 ```
 
-`replay` walks the directory tree; `EGAP_REPLAY_WATCH` lists the files that add to any printed count containing its text.
+`replay` walks the directory tree; `list-objects <file>` prints `n g` for each object that loads, for comparing with qpdf's JSON; `EGAP_REPLAY_WATCH` lists the files that add to any printed count containing its text.
 
 Every crash found becomes a regression test with the input under `tests/fuzz-seeds/` or inline in the test.

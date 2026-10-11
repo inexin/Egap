@@ -59,4 +59,19 @@ public enum PdfWarningCode
 
     /// <summary>A filter's <c>/DecodeParms</c> held values out of range; the filter ran with its defaults or without a predictor.</summary>
     MalformedFilterParameters,
+
+    /// <summary>A cross-reference table or stream was malformed (wrong counts, bad entries, numbering off by one); it was read as far as it made sense.</summary>
+    MalformedXref,
+
+    /// <summary>A <c>/Prev</c> or <c>/XRefStm</c> pointed nowhere useful or back into the chain; older sections were not read.</summary>
+    BrokenXrefChain,
+
+    /// <summary>An object stream's header or offsets were malformed; the objects that could be found were kept.</summary>
+    MalformedObjectStream,
+
+    /// <summary>
+    /// An object was not where the cross-reference said, or had another number or generation, or could not be loaded; the
+    /// reference was read as null.
+    /// </summary>
+    MissingObject,
 }

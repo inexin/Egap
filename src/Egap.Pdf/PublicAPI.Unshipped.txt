@@ -120,6 +120,7 @@ Egap.Pdf.PdfWarning.Offset.get -> long?
 Egap.Pdf.PdfWarning.Offset.init -> void
 Egap.Pdf.PdfWarning.PdfWarning(Egap.Pdf.PdfWarningCode Code, string! Message, long? Offset = null, int? ObjectNumber = null) -> void
 Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.BrokenXrefChain = 21 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.DamagedFilterData = 18 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.DuplicateKey = 12 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.InvalidReference = 13 -> Egap.Pdf.PdfWarningCode
@@ -128,9 +129,12 @@ Egap.Pdf.PdfWarningCode.MalformedFilterParameters = 19 -> Egap.Pdf.PdfWarningCod
 Egap.Pdf.PdfWarningCode.MalformedHexString = 5 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedName = 3 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedNumber = 1 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedObjectStream = 22 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedStreamKeyword = 15 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedXref = 20 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingEndobj = 14 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingEndstream = 17 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MissingObject = 23 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingSeparator = 7 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.NumberOutOfRange = 2 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.TooManyWarnings = 8 -> Egap.Pdf.PdfWarningCode
