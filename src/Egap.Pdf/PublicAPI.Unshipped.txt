@@ -1,4 +1,46 @@
 #nullable enable
+Egap.Pdf.PdfArray
+Egap.Pdf.PdfArray.Add(Egap.Pdf.PdfObject! item) -> void
+Egap.Pdf.PdfArray.Clear() -> void
+Egap.Pdf.PdfArray.Clone() -> Egap.Pdf.PdfArray!
+Egap.Pdf.PdfArray.Contains(Egap.Pdf.PdfObject! item) -> bool
+Egap.Pdf.PdfArray.CopyTo(Egap.Pdf.PdfObject![]! array, int arrayIndex) -> void
+Egap.Pdf.PdfArray.Count.get -> int
+Egap.Pdf.PdfArray.Get(int index) -> Egap.Pdf.PdfObject!
+Egap.Pdf.PdfArray.Get<T>(int index) -> T?
+Egap.Pdf.PdfArray.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfObject!>!
+Egap.Pdf.PdfArray.GetInt(int index) -> long?
+Egap.Pdf.PdfArray.GetNumber(int index) -> double?
+Egap.Pdf.PdfArray.IndexOf(Egap.Pdf.PdfObject! item) -> int
+Egap.Pdf.PdfArray.Insert(int index, Egap.Pdf.PdfObject! item) -> void
+Egap.Pdf.PdfArray.PdfArray() -> void
+Egap.Pdf.PdfArray.PdfArray(System.Collections.Generic.IEnumerable<Egap.Pdf.PdfObject!>! items) -> void
+Egap.Pdf.PdfArray.Remove(Egap.Pdf.PdfObject! item) -> bool
+Egap.Pdf.PdfArray.RemoveAt(int index) -> void
+Egap.Pdf.PdfArray.this[int index].get -> Egap.Pdf.PdfObject!
+Egap.Pdf.PdfArray.this[int index].set -> void
+Egap.Pdf.PdfBoolean
+Egap.Pdf.PdfBoolean.Value.get -> bool
+Egap.Pdf.PdfDictionary
+Egap.Pdf.PdfDictionary.Add(Egap.Pdf.PdfName! key, Egap.Pdf.PdfObject! value) -> void
+Egap.Pdf.PdfDictionary.Clone() -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfDictionary.ContainsKey(Egap.Pdf.PdfName! key) -> bool
+Egap.Pdf.PdfDictionary.Count.get -> int
+Egap.Pdf.PdfDictionary.Entries.get -> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<Egap.Pdf.PdfName!, Egap.Pdf.PdfObject!>>!
+Egap.Pdf.PdfDictionary.Get(Egap.Pdf.PdfName! key) -> Egap.Pdf.PdfObject?
+Egap.Pdf.PdfDictionary.Get<T>(Egap.Pdf.PdfName! key) -> T?
+Egap.Pdf.PdfDictionary.GetBool(Egap.Pdf.PdfName! key) -> bool?
+Egap.Pdf.PdfDictionary.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<Egap.Pdf.PdfName!, Egap.Pdf.PdfObject!>>!
+Egap.Pdf.PdfDictionary.GetInt(Egap.Pdf.PdfName! key) -> long?
+Egap.Pdf.PdfDictionary.GetName(Egap.Pdf.PdfName! key) -> Egap.Pdf.PdfName?
+Egap.Pdf.PdfDictionary.GetNumber(Egap.Pdf.PdfName! key) -> double?
+Egap.Pdf.PdfDictionary.GetText(Egap.Pdf.PdfName! key) -> string?
+Egap.Pdf.PdfDictionary.Keys.get -> System.Collections.Generic.IEnumerable<Egap.Pdf.PdfName!>!
+Egap.Pdf.PdfDictionary.PdfDictionary() -> void
+Egap.Pdf.PdfDictionary.Remove(Egap.Pdf.PdfName! key) -> bool
+Egap.Pdf.PdfDictionary.Set(Egap.Pdf.PdfName! key, Egap.Pdf.PdfObject! value) -> void
+Egap.Pdf.PdfDictionary.this[Egap.Pdf.PdfName! key].get -> Egap.Pdf.PdfObject?
+Egap.Pdf.PdfDictionary.this[Egap.Pdf.PdfName! key].set -> void
 Egap.Pdf.PdfException
 Egap.Pdf.PdfException.Code.get -> Egap.Pdf.PdfWarningCode?
 Egap.Pdf.PdfException.Code.init -> void
@@ -9,9 +51,19 @@ Egap.Pdf.PdfException.Offset.init -> void
 Egap.Pdf.PdfException.PdfException(string! message) -> void
 Egap.Pdf.PdfException.PdfException(string! message, long? offset, int? objectNumber) -> void
 Egap.Pdf.PdfException.PdfException(string! message, System.Exception? innerException) -> void
+Egap.Pdf.PdfInteger
+Egap.Pdf.PdfInteger.Equals(Egap.Pdf.PdfInteger? other) -> bool
+Egap.Pdf.PdfInteger.PdfInteger(long value) -> void
+Egap.Pdf.PdfInteger.Value.get -> long
 Egap.Pdf.PdfLimitException
 Egap.Pdf.PdfLimitException.Limit.get -> string!
 Egap.Pdf.PdfLimitException.PdfLimitException(string! limit, string! message) -> void
+Egap.Pdf.PdfName
+Egap.Pdf.PdfName.Bytes.get -> System.ReadOnlySpan<byte>
+Egap.Pdf.PdfName.Equals(Egap.Pdf.PdfName? other) -> bool
+Egap.Pdf.PdfName.Value.get -> string!
+Egap.Pdf.PdfNull
+Egap.Pdf.PdfObject
 Egap.Pdf.PdfReadOptions
 Egap.Pdf.PdfReadOptions.MaxDecodedStreamBytes.get -> long
 Egap.Pdf.PdfReadOptions.MaxDecodedStreamBytes.init -> void
@@ -28,6 +80,28 @@ Egap.Pdf.PdfReadOptions.Password.init -> void
 Egap.Pdf.PdfReadOptions.PdfReadOptions() -> void
 Egap.Pdf.PdfReadOptions.Strict.get -> bool
 Egap.Pdf.PdfReadOptions.Strict.init -> void
+Egap.Pdf.PdfReal
+Egap.Pdf.PdfReal.Equals(Egap.Pdf.PdfReal? other) -> bool
+Egap.Pdf.PdfReal.PdfReal(double value) -> void
+Egap.Pdf.PdfReal.Value.get -> double
+Egap.Pdf.PdfReference
+Egap.Pdf.PdfReference.Equals(Egap.Pdf.PdfReference? other) -> bool
+Egap.Pdf.PdfReference.Generation.get -> int
+Egap.Pdf.PdfReference.ObjectNumber.get -> int
+Egap.Pdf.PdfReference.PdfReference(int objectNumber, int generation) -> void
+Egap.Pdf.PdfStream
+Egap.Pdf.PdfStream.Clone() -> Egap.Pdf.PdfStream!
+Egap.Pdf.PdfStream.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfStream.EncodedLength.get -> long
+Egap.Pdf.PdfStream.GetEncodedBytes() -> byte[]!
+Egap.Pdf.PdfStream.PdfStream() -> void
+Egap.Pdf.PdfStream.PdfStream(Egap.Pdf.PdfDictionary! dictionary) -> void
+Egap.Pdf.PdfStream.SetEncodedBytes(System.ReadOnlySpan<byte> bytes) -> void
+Egap.Pdf.PdfString
+Egap.Pdf.PdfString.Bytes.get -> System.ReadOnlySpan<byte>
+Egap.Pdf.PdfString.Equals(Egap.Pdf.PdfString? other) -> bool
+Egap.Pdf.PdfString.IsHex.get -> bool
+Egap.Pdf.PdfString.ToText() -> string!
 Egap.Pdf.PdfWarning
 Egap.Pdf.PdfWarning.<Clone>$() -> Egap.Pdf.PdfWarning!
 Egap.Pdf.PdfWarning.Code.get -> Egap.Pdf.PdfWarningCode
@@ -50,9 +124,41 @@ Egap.Pdf.PdfWarningCode.NumberOutOfRange = 2 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.TooManyWarnings = 8 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnexpectedDelimiter = 6 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnterminatedString = 4 -> Egap.Pdf.PdfWarningCode
+override Egap.Pdf.PdfInteger.Equals(object? obj) -> bool
+override Egap.Pdf.PdfInteger.GetHashCode() -> int
+override Egap.Pdf.PdfName.Equals(object? obj) -> bool
+override Egap.Pdf.PdfName.GetHashCode() -> int
+override Egap.Pdf.PdfObject.ToString() -> string!
+override Egap.Pdf.PdfReal.Equals(object? obj) -> bool
+override Egap.Pdf.PdfReal.GetHashCode() -> int
+override Egap.Pdf.PdfReference.Equals(object? obj) -> bool
+override Egap.Pdf.PdfReference.GetHashCode() -> int
+override Egap.Pdf.PdfReference.Resolve() -> Egap.Pdf.PdfObject!
+override Egap.Pdf.PdfReference.ToString() -> string!
+override Egap.Pdf.PdfString.Equals(object? obj) -> bool
+override Egap.Pdf.PdfString.GetHashCode() -> int
 override Egap.Pdf.PdfWarning.Equals(object? obj) -> bool
 override Egap.Pdf.PdfWarning.GetHashCode() -> int
 override Egap.Pdf.PdfWarning.ToString() -> string!
+static Egap.Pdf.PdfBoolean.False.get -> Egap.Pdf.PdfBoolean!
+static Egap.Pdf.PdfBoolean.Get(bool value) -> Egap.Pdf.PdfBoolean!
+static Egap.Pdf.PdfBoolean.True.get -> Egap.Pdf.PdfBoolean!
+static Egap.Pdf.PdfName.FromString(string! value) -> Egap.Pdf.PdfName!
+static Egap.Pdf.PdfName.Get(string! value) -> Egap.Pdf.PdfName!
+static Egap.Pdf.PdfName.Get(System.ReadOnlySpan<byte> bytes) -> Egap.Pdf.PdfName!
+static Egap.Pdf.PdfName.implicit operator Egap.Pdf.PdfName!(string! value) -> Egap.Pdf.PdfName!
+static Egap.Pdf.PdfName.operator !=(Egap.Pdf.PdfName? left, Egap.Pdf.PdfName? right) -> bool
+static Egap.Pdf.PdfName.operator ==(Egap.Pdf.PdfName? left, Egap.Pdf.PdfName? right) -> bool
+static Egap.Pdf.PdfNull.Instance.get -> Egap.Pdf.PdfNull!
+static Egap.Pdf.PdfObject.FromBoolean(bool value) -> Egap.Pdf.PdfObject!
+static Egap.Pdf.PdfObject.FromDouble(double value) -> Egap.Pdf.PdfObject!
+static Egap.Pdf.PdfObject.FromInt64(long value) -> Egap.Pdf.PdfObject!
+static Egap.Pdf.PdfObject.implicit operator Egap.Pdf.PdfObject!(bool value) -> Egap.Pdf.PdfObject!
+static Egap.Pdf.PdfObject.implicit operator Egap.Pdf.PdfObject!(double value) -> Egap.Pdf.PdfObject!
+static Egap.Pdf.PdfObject.implicit operator Egap.Pdf.PdfObject!(long value) -> Egap.Pdf.PdfObject!
 static Egap.Pdf.PdfReadOptions.Default.get -> Egap.Pdf.PdfReadOptions!
+static Egap.Pdf.PdfString.FromBytes(System.ReadOnlySpan<byte> bytes, bool hex = false) -> Egap.Pdf.PdfString!
+static Egap.Pdf.PdfString.FromText(string! text) -> Egap.Pdf.PdfString!
 static Egap.Pdf.PdfWarning.operator !=(Egap.Pdf.PdfWarning? left, Egap.Pdf.PdfWarning? right) -> bool
 static Egap.Pdf.PdfWarning.operator ==(Egap.Pdf.PdfWarning? left, Egap.Pdf.PdfWarning? right) -> bool
+virtual Egap.Pdf.PdfObject.Resolve() -> Egap.Pdf.PdfObject!
