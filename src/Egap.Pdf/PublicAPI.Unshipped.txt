@@ -1,5 +1,7 @@
 #nullable enable
 Egap.Pdf.PdfException
+Egap.Pdf.PdfException.Code.get -> Egap.Pdf.PdfWarningCode?
+Egap.Pdf.PdfException.Code.init -> void
 Egap.Pdf.PdfException.ObjectNumber.get -> int?
 Egap.Pdf.PdfException.ObjectNumber.init -> void
 Egap.Pdf.PdfException.Offset.get -> long?
@@ -26,4 +28,31 @@ Egap.Pdf.PdfReadOptions.Password.init -> void
 Egap.Pdf.PdfReadOptions.PdfReadOptions() -> void
 Egap.Pdf.PdfReadOptions.Strict.get -> bool
 Egap.Pdf.PdfReadOptions.Strict.init -> void
+Egap.Pdf.PdfWarning
+Egap.Pdf.PdfWarning.<Clone>$() -> Egap.Pdf.PdfWarning!
+Egap.Pdf.PdfWarning.Code.get -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarning.Code.init -> void
+Egap.Pdf.PdfWarning.Deconstruct(out Egap.Pdf.PdfWarningCode Code, out string! Message, out long? Offset, out int? ObjectNumber) -> void
+Egap.Pdf.PdfWarning.Equals(Egap.Pdf.PdfWarning? other) -> bool
+Egap.Pdf.PdfWarning.Message.get -> string!
+Egap.Pdf.PdfWarning.Message.init -> void
+Egap.Pdf.PdfWarning.ObjectNumber.get -> int?
+Egap.Pdf.PdfWarning.ObjectNumber.init -> void
+Egap.Pdf.PdfWarning.Offset.get -> long?
+Egap.Pdf.PdfWarning.Offset.init -> void
+Egap.Pdf.PdfWarning.PdfWarning(Egap.Pdf.PdfWarningCode Code, string! Message, long? Offset = null, int? ObjectNumber = null) -> void
+Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedHexString = 5 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedName = 3 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedNumber = 1 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MissingSeparator = 7 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.NumberOutOfRange = 2 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.TooManyWarnings = 8 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.UnexpectedDelimiter = 6 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.UnterminatedString = 4 -> Egap.Pdf.PdfWarningCode
+override Egap.Pdf.PdfWarning.Equals(object? obj) -> bool
+override Egap.Pdf.PdfWarning.GetHashCode() -> int
+override Egap.Pdf.PdfWarning.ToString() -> string!
 static Egap.Pdf.PdfReadOptions.Default.get -> Egap.Pdf.PdfReadOptions!
+static Egap.Pdf.PdfWarning.operator !=(Egap.Pdf.PdfWarning? left, Egap.Pdf.PdfWarning? right) -> bool
+static Egap.Pdf.PdfWarning.operator ==(Egap.Pdf.PdfWarning? left, Egap.Pdf.PdfWarning? right) -> bool

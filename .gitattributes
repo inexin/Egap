@@ -4,3 +4,6 @@
 *.jpg binary
 *.ttf binary
 *.otf binary
+
+# Fuzz seeds are raw bytes: line endings matter.
+tests/fuzz-seeds/** binary
