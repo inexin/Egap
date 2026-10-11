@@ -26,10 +26,17 @@ if (args is ["replay", string replayTarget, string directory])
     foreach (string path in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
     {
         files++;
+        string? watch = Environment.GetEnvironmentVariable("EGAP_REPLAY_WATCH");
+        int watched = watch is null ? 0 : Targets.Counts.Where(c => c.Key.Contains(watch, StringComparison.Ordinal)).Sum(c => c.Value);
         try
         {
             using FileStream input = File.OpenRead(path);
             replay(input);
+            if (watch is not null && Targets.Counts.Where(c => c.Key.Contains(watch, StringComparison.Ordinal)).Sum(c => c.Value) > watched)
+            {
+                // EGAP_REPLAY_WATCH names a count to follow: list the files that added to it.
+                Console.WriteLine($"watch: {path}");
+            }
         }
         catch (Exception e)
         {
@@ -46,6 +53,11 @@ if (args is ["replay", string replayTarget, string directory])
     foreach ((string key, int count) in failures.OrderByDescending(f => f.Value))
     {
         Console.WriteLine($"{count,6}  {key}");
+    }
+
+    foreach ((string key, int count) in Targets.Counts.OrderBy(c => c.Key, StringComparer.Ordinal))
+    {
+        Console.WriteLine($"{count,9}  {key}");
     }
 
     Console.WriteLine($"{files} files, {failures.Values.Sum()} failures.");

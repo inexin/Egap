@@ -1,3 +1,5 @@
+using Egap.Pdf.Filters;
+using Egap.Pdf.IO;
 using Egap.Pdf.Objects;
 
 namespace Egap.Pdf;
@@ -43,6 +45,53 @@ public sealed class PdfStream : PdfObject, IContainer
     /// <summary>Where the data comes from, for the writer and the filters.</summary>
     internal StreamData Data => data;
 
+    /// <summary>The read options, warning log and object number of the file the stream came from, for decoding.</summary>
+    internal (PdfReadOptions Options, WarningLog Log, int? ObjectNumber)? Origin { get; set; }
+
+    /// <summary>The filters named by <c>/Filter</c>, in the order they are decoded.</summary>
+    public IReadOnlyList<PdfName> Filters => FilterChain.Filters(Dictionary);
+
+    /// <summary>
+    /// The first image codec in the filter chain (<c>/DCTDecode</c>, <c>/JPXDecode</c>, <c>/JBIG2Decode</c> or
+    /// <c>/CCITTFaxDecode</c>), whose input is what <see cref="GetDecodedBytes"/> returns; <see langword="null"/> when the
+    /// stream decodes fully.
+    /// </summary>
+    public PdfName? UndecodedFilter => Filters.FirstOrDefault(FilterChain.IsImageFilter);
+
+    /// <summary>
+    /// The data with its filters undone: Flate, LZW, ASCIIHex, ASCII85, RunLength and the PNG and TIFF predictors. Image
+    /// codecs are not decoded: decoding stops before the first one (see <see cref="UndecodedFilter"/>).
+    /// </summary>
+    /// <exception cref="PdfException">The stream uses a filter that is not supported.</exception>
+    /// <exception cref="PdfLimitException">The data decodes to more than the read options allow.</exception>
+    public byte[] GetDecodedBytes()
+    {
+        byte[] encoded = data.Read();
+        (PdfReadOptions options, WarningLog log, int? number) = Origin ?? (PdfReadOptions.Default, new WarningLog(strict: false), null);
+        return FilterChain.Decode(Dictionary, encoded, new DecodeContext(options, log, encoded.Length, number)).Data;
+    }
+
+    /// <summary>
+    /// Replaces the data with <paramref name="decoded"/>, compressed with Flate unless <paramref name="compress"/> is
+    /// <see langword="false"/>. <c>/Filter</c> and <c>/DecodeParms</c> are set to match.
+    /// </summary>
+    public void SetDecodedBytes(ReadOnlySpan<byte> decoded, bool compress = true)
+    {
+        data = new BytesData(compress ? FlateFilter.Encode(decoded) : decoded.ToArray());
+        Dictionary.Remove("DecodeParms");
+        Dictionary.Remove("DL");
+        if (compress)
+        {
+            Dictionary["Filter"] = PdfName.Get("FlateDecode");
+        }
+        else
+        {
+            Dictionary.Remove("Filter");
+        }
+
+        Containment.Changed(this);
+    }
+
     /// <summary>The data as stored in the file, still encoded with the stream's filters.</summary>
     public byte[] GetEncodedBytes()
     {
@@ -62,7 +111,7 @@ public sealed class PdfStream : PdfObject, IContainer
     /// <summary>A copy with a copied dictionary and the same data, belonging nowhere.</summary>
     public PdfStream Clone()
     {
-        return new PdfStream(Dictionary.Clone(), data);
+        return new PdfStream(Dictionary.Clone(), data) { Origin = Origin };
     }
 }
 

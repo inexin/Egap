@@ -53,4 +53,10 @@ public enum PdfWarningCode
 
     /// <summary>A stream had no <c>endstream</c>; its data was taken to run to <c>endobj</c> or the end of the file.</summary>
     MissingEndstream,
+
+    /// <summary>A stream's encoded data was damaged; what decoded before the damage was kept.</summary>
+    DamagedFilterData,
+
+    /// <summary>A filter's <c>/DecodeParms</c> held values out of range; the filter ran with its defaults or without a predictor.</summary>
+    MalformedFilterParameters,
 }
