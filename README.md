@@ -7,8 +7,20 @@ It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imagi
 - **Fully managed C#**: no native binaries, no P/Invoke, no wrapped native libraries.
 - **Safe on untrusted files**: readers are built to be fuzz-tested from the start.
 
-> **Status:** early development (0.1.0 preview). The repository holds the project scaffold; no PDF code yet. Nothing is
-> published to NuGet.
+> **Status:** early development (0.1.0 preview). Egap.Pdf reads PDF files into a lazily loaded object graph with change
+> tracking; repair by scanning, saving and encryption come next. Nothing is published to NuGet.
+
+```csharp
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("in.pdf");
+foreach (PdfWarning warning in pdf.Warnings) Console.WriteLine(warning);
+
+PdfDictionary catalog = pdf.Catalog;
+PdfDictionary? info = pdf.Trailer.Get<PdfDictionary>("Info");
+PdfReference added = pdf.Objects.Add(new PdfDictionary { ["Type"] = PdfName.Get("Example") });
+catalog["Example"] = added;
+```
 
 ## Projects
 

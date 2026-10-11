@@ -9,7 +9,7 @@ namespace Egap.Pdf.Parsing;
 /// the chain are detected, and damage past the newest section is repaired with warnings. A file whose newest section cannot
 /// be read throws <see cref="PdfException"/>, for the caller to repair by scanning.
 /// </summary>
-internal sealed class XrefReader(PdfSource source, PdfReadOptions options, WarningLog log)
+internal sealed class XrefReader(PdfSource source, PdfReadOptions options, WarningLog log, IObjectResolver? references = null)
 {
     /// <summary>Trailer keys that describe one section and are not merged into the file's trailer.</summary>
     private static readonly HashSet<string> SectionKeys = ["Prev", "XRefStm", "Type", "W", "Index", "Length", "Filter", "DecodeParms", "DL", "F", "FFilter", "FDecodeParms"];
@@ -238,7 +238,7 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
             firstSubsection = false;
         }
 
-        ObjectParser parser = new(lexer, options, null);
+        ObjectParser parser = new(lexer, options, references);
         if (parser.ParseObject() is not PdfDictionary trailerDictionary)
         {
             throw new PdfException("The cross-reference table's trailer is not a dictionary.", offset, null);
@@ -249,7 +249,7 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
 
     private XrefSection ReadStream(long offset, Dictionary<int, XrefEntry> entries)
     {
-        ObjectParser parser = new(new Lexer(new SourceReader(source), log), options, null);
+        ObjectParser parser = new(new Lexer(new SourceReader(source), log), options, references);
         IndirectObject found = parser.ParseIndirectObject(offset);
         if (found.Value is not PdfStream stream)
         {
@@ -272,8 +272,6 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
         List<(long Start, long Count)> ranges = Ranges(dictionary, size, offset);
         byte[] data = stream.GetDecodedBytes();
 
-        // The stream is an object too, even when its /Index leaves it out, as qpdf reads it.
-        entries[found.ObjectNumber] = new XrefEntry(XrefEntryKind.InFile, offset, found.Generation);
         int row = widths[0] + widths[1] + widths[2];
         int at = 0;
         foreach ((long start, long count) in ranges)
@@ -283,7 +281,7 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
                 if (at + row > data.Length)
                 {
                     log.Add(PdfWarningCode.MalformedXref, "A cross-reference stream's data ends before its last entry.", offset);
-                    return new XrefSection(offset, IsStream: true, dictionary);
+                    return Self(found, offset, entries, dictionary);
                 }
 
                 long type = widths[0] == 0 ? 1 : Field(data, ref at, widths[0]);
@@ -321,8 +319,19 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
             }
         }
 
+        return Self(found, offset, entries, dictionary);
+    }
+
+    /// <summary>
+    /// The stream is itself an object at the offset it was read from, whatever its own entries say (or leave out), as qpdf
+    /// reads it.
+    /// </summary>
+    private static XrefSection Self(IndirectObject found, long offset, Dictionary<int, XrefEntry> entries, PdfDictionary dictionary)
+    {
+        entries[found.ObjectNumber] = new XrefEntry(XrefEntryKind.InFile, offset, found.Generation);
         return new XrefSection(offset, IsStream: true, dictionary);
     }
+
 
     private static long Field(byte[] data, ref int at, int width)
     {
@@ -378,5 +387,16 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
         }
 
         return ranges;
+    }
+}
+
+/// <summary>A resolver that passes references on to one set later, so objects read before the object table exists still resolve through it.</summary>
+internal sealed class ForwardingResolver : IObjectResolver
+{
+    public IObjectResolver? Target { get; set; }
+
+    public PdfObject Resolve(PdfReference reference)
+    {
+        return Target?.Resolve(reference) ?? PdfNull.Instance;
     }
 }

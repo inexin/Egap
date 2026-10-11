@@ -11,7 +11,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document"];
 
     public static Action<Stream> Get(string name)
     {
@@ -22,6 +22,7 @@ internal static class Targets
             "filters" => Filters,
             "streams" => Streams,
             "xref" => Xref,
+            "document" => Document,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -346,5 +347,65 @@ internal static class Targets
         }
 
         return lines;
+    }
+
+    /// <summary>
+    /// PDF bytes opened as a <see cref="PdfDocument"/>: every object is loaded, the catalog and version read, and an edit made
+    /// so change tracking runs. Opening may throw <see cref="PdfException"/> (no repair by scanning yet); after it opens,
+    /// only a <see cref="PdfLimitException"/> may escape. Then the same strictly, where any <see cref="PdfException"/> is fine.
+    /// </summary>
+    private static void Document(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfReadOptions lenient = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 };
+        foreach (PdfReadOptions options in new[] { lenient, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000, Strict = true } })
+        {
+            PdfDocument pdf;
+            try
+            {
+                pdf = PdfDocument.Open(bytes, options);
+            }
+            catch (PdfException)
+            {
+                continue;
+            }
+
+            using (pdf)
+            {
+                try
+                {
+                    _ = pdf.Version;
+                    foreach (PdfReference reference in pdf.Objects)
+                    {
+                        if (pdf.Objects[reference] is PdfStream stream && stream.EncodedLength < 1 << 20)
+                        {
+                            try
+                            {
+                                stream.GetDecodedBytes();
+                            }
+                            catch (PdfException e) when (e is not PdfLimitException && e.Code is null)
+                            {
+                                // An unsupported filter.
+                            }
+                        }
+                    }
+
+                    PdfReference added = pdf.Objects.Add(new PdfDictionary { ["Fuzz"] = true });
+                    pdf.Catalog["Fuzz"] = added;
+                    if (!pdf.IsChanged || !pdf.Objects.Contains(added))
+                    {
+                        throw new InvalidOperationException("An edit was not tracked.");
+                    }
+
+                    Count(options.Strict ? "strict opened" : "opened");
+                }
+                catch (PdfLimitException)
+                {
+                }
+                catch (PdfException) when (options.Strict)
+                {
+                }
+            }
+        }
     }
 }

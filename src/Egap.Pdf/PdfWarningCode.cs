@@ -74,4 +74,12 @@ public enum PdfWarningCode
     /// reference was read as null.
     /// </summary>
     MissingObject,
+
+    /// <summary>The file has no <c>%PDF-n.n</c> header in its first kilobyte; version 1.7 was assumed.</summary>
+    MissingHeader,
+
+    /// <summary>
+    /// The header was not at the start of the file, and the file's offsets count from the header; they were read that way.
+    /// </summary>
+    ShiftedOffsets,
 }
