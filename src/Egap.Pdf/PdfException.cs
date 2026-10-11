@@ -31,4 +31,10 @@ public class PdfException : Exception
 
     /// <summary>The number of the object being read, when known.</summary>
     public int? ObjectNumber { get; init; }
+
+    /// <summary>
+    /// In strict mode, the kind of repair that the problem would have needed; <see langword="null"/> for problems that no
+    /// repair can fix.
+    /// </summary>
+    public PdfWarningCode? Code { get; init; }
 }
