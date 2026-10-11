@@ -93,10 +93,14 @@ Egap.Pdf.PdfStream
 Egap.Pdf.PdfStream.Clone() -> Egap.Pdf.PdfStream!
 Egap.Pdf.PdfStream.Dictionary.get -> Egap.Pdf.PdfDictionary!
 Egap.Pdf.PdfStream.EncodedLength.get -> long
+Egap.Pdf.PdfStream.Filters.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfName!>!
+Egap.Pdf.PdfStream.GetDecodedBytes() -> byte[]!
 Egap.Pdf.PdfStream.GetEncodedBytes() -> byte[]!
 Egap.Pdf.PdfStream.PdfStream() -> void
 Egap.Pdf.PdfStream.PdfStream(Egap.Pdf.PdfDictionary! dictionary) -> void
+Egap.Pdf.PdfStream.SetDecodedBytes(System.ReadOnlySpan<byte> decoded, bool compress = true) -> void
 Egap.Pdf.PdfStream.SetEncodedBytes(System.ReadOnlySpan<byte> bytes) -> void
+Egap.Pdf.PdfStream.UndecodedFilter.get -> Egap.Pdf.PdfName?
 Egap.Pdf.PdfString
 Egap.Pdf.PdfString.Bytes.get -> System.ReadOnlySpan<byte>
 Egap.Pdf.PdfString.Equals(Egap.Pdf.PdfString? other) -> bool
@@ -116,9 +120,11 @@ Egap.Pdf.PdfWarning.Offset.get -> long?
 Egap.Pdf.PdfWarning.Offset.init -> void
 Egap.Pdf.PdfWarning.PdfWarning(Egap.Pdf.PdfWarningCode Code, string! Message, long? Offset = null, int? ObjectNumber = null) -> void
 Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.DamagedFilterData = 18 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.DuplicateKey = 12 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.InvalidReference = 13 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedDictionary = 11 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedFilterParameters = 19 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedHexString = 5 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedName = 3 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedNumber = 1 -> Egap.Pdf.PdfWarningCode

@@ -1,3 +1,4 @@
+using Egap.Pdf.Filters;
 using Egap.Pdf.IO;
 using Egap.Pdf.Objects;
 using Egap.Pdf.Parsing;
@@ -7,7 +8,10 @@ namespace Egap.Pdf.Fuzz;
 /// <summary>The fuzz targets. Each reads one input; see Program.cs for what counts as a crash.</summary>
 internal static class Targets
 {
-    public static IEnumerable<string> Names => ["lexer", "parser"];
+    /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
+    public static Dictionary<string, int> Counts { get; } = [];
+
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams"];
 
     public static Action<Stream> Get(string name)
     {
@@ -15,6 +19,8 @@ internal static class Targets
         {
             "lexer" => Lexer,
             "parser" => Parser,
+            "filters" => Filters,
+            "streams" => Streams,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -118,6 +124,11 @@ internal static class Targets
                 {
                     RoundTrip(parsed);
                 }
+
+                // Go on after the object, so stream data cannot throw the scan out of step.
+                scan.Position = Math.Max(scan.Position, parser.Lexer.Position);
+                first = second = default;
+                continue;
             }
 
             first = second;
@@ -146,5 +157,113 @@ internal static class Targets
         {
             throw new InvalidOperationException("The object did not survive a round trip.");
         }
+    }
+
+    private static readonly string[] FilterNames = ["FlateDecode", "LZWDecode", "ASCIIHexDecode", "ASCII85Decode", "RunLengthDecode", "DCTDecode"];
+
+    /// <summary>
+    /// Raw filter input: the first byte picks one or two filters, the next four the predictor, colors, bits per component and
+    /// columns; the rest is the data. Decoding leniently may throw only <see cref="PdfLimitException"/>, strictly only
+    /// <see cref="PdfException"/>.
+    /// </summary>
+    private static void Filters(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        if (bytes.Length < 5)
+        {
+            return;
+        }
+
+        PdfArray filters = [PdfName.Get(FilterNames[bytes[0] % FilterNames.Length])];
+        if (bytes[0] >= 128)
+        {
+            filters.Insert(0, PdfName.Get(FilterNames[(bytes[0] >> 3) % FilterNames.Length]));
+        }
+
+        int[] predictors = [1, 2, 10, 11, 12, 13, 14, 15];
+        PdfDictionary parameters = new()
+        {
+            ["Predictor"] = predictors[bytes[1] % predictors.Length],
+            ["Colors"] = 1 + (bytes[2] % 5),
+            ["BitsPerComponent"] = new[] { 1, 2, 4, 8, 16 }[bytes[3] % 5],
+            ["Columns"] = 1 + bytes[4],
+            ["EarlyChange"] = bytes[1] >> 7,
+        };
+        PdfDictionary dictionary = new()
+        {
+            ["Filter"] = filters,
+            ["DecodeParms"] = new PdfArray([parameters.Clone(), parameters]),
+        };
+        byte[] data = bytes[5..];
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 16 << 20 };
+        try
+        {
+            FilterChain.Decode(dictionary, data, new DecodeContext(options, new WarningLog(strict: false), data.Length, 1));
+        }
+        catch (PdfLimitException)
+        {
+        }
+
+        try
+        {
+            FilterChain.Decode(dictionary, data, new DecodeContext(options, new WarningLog(strict: true), data.Length, 1));
+        }
+        catch (PdfException)
+        {
+        }
+    }
+
+    /// <summary>
+    /// PDF bytes: every stream object found by its header is decoded leniently. A stream may fail only with a
+    /// <see cref="PdfLimitException"/>, or a <see cref="PdfException"/> for a filter that is not supported (such as a named
+    /// crypt filter in an encrypted file).
+    /// </summary>
+    private static void Streams(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        using PdfSource source = PdfSource.FromMemory(bytes);
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20 };
+        WarningLog log = new(strict: false);
+        ObjectParser parser = new(new Lexer(new SourceReader(source), log), options, null);
+        Lexer scan = new(new SourceReader(source), new WarningLog(strict: false));
+        Token first = default, second = default;
+        while (scan.Next() is { Kind: not TokenKind.EndOfData } token)
+        {
+            if (token.Kind == TokenKind.Keyword && scan.Bytes.SequenceEqual("obj"u8) && first.Kind == TokenKind.Integer && second.Kind == TokenKind.Integer)
+            {
+                try
+                {
+                    PdfObject value = parser.ParseIndirectObject(first.Start).Value;
+                    scan.Position = Math.Max(scan.Position, parser.Lexer.Position);
+                    first = second = default;
+                    if (value is PdfStream stream)
+                    {
+                        long decoded = stream.GetDecodedBytes().Length;
+                        Count("streams decoded");
+                        Count(stream.UndecodedFilter is PdfName image ? $"left as /{image.Value}" : "fully decoded");
+                        Counts["decoded MB"] = Counts.GetValueOrDefault("decoded MB") + (int)(decoded >> 20);
+                    }
+                }
+                catch (PdfException e) when (e is PdfLimitException || e.Code is null)
+                {
+                    Count($"failed: {System.Text.RegularExpressions.Regex.Replace(e.Message, "[0-9]+", "#")}");
+                }
+
+                continue;
+            }
+
+            first = second;
+            second = token;
+        }
+
+        foreach (PdfWarning warning in log.ToArray())
+        {
+            Count(warning.Code == PdfWarningCode.DamagedFilterData ? $"warning: {System.Text.RegularExpressions.Regex.Replace(warning.Message, "[0-9]+", "#")}" : $"warning: {warning.Code}");
+        }
+    }
+
+    private static void Count(string key)
+    {
+        Counts[key] = Counts.GetValueOrDefault(key) + 1;
     }
 }

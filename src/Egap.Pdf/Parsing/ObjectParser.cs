@@ -237,7 +237,7 @@ internal sealed class ObjectParser
         long? length = StreamLength(dictionary);
         if (length is long declared && declared >= 0 && start + declared <= source.Length && EndstreamFollows(start + declared))
         {
-            return new PdfStream(dictionary, new SourceData(source, start, declared));
+            return new PdfStream(dictionary, new SourceData(source, start, declared)) { Origin = (options, Log, lexer.ObjectNumber) };
         }
 
         // The length is missing, wrong or unreadable: the data runs to the next endstream (or endobj, or the end of the file).
@@ -260,7 +260,7 @@ internal sealed class ObjectParser
         }
 
         long dataEnd = TrimEndOfLine(source, start, end);
-        return new PdfStream(dictionary, new SourceData(source, start, dataEnd - start));
+        return new PdfStream(dictionary, new SourceData(source, start, dataEnd - start)) { Origin = (options, Log, lexer.ObjectNumber) };
     }
 
     /// <summary>The stream's declared length, following a reference; null when there is none or it is not an integer.</summary>
