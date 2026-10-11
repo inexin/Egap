@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Egap.Pdf</RootNamespace>
+    <PackageId>Egap.Pdf</PackageId>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>preview</VersionSuffix>
+    <Description>A fully managed, MIT-licensed PDF library for .NET.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
+  <!-- Build-time analyzer only; ships nothing. The only package reference allowed in src/ (checked in ci.yml). -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Egap.Pdf.Tests" />
+    <InternalsVisibleTo Include="Egap.Pdf.Benchmarks" />
+    <InternalsVisibleTo Include="Egap.Pdf.Fuzz" />
+  </ItemGroup>
+
+</Project>
