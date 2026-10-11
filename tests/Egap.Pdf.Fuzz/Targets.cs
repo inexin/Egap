@@ -11,7 +11,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref"];
 
     public static Action<Stream> Get(string name)
     {
@@ -21,6 +21,7 @@ internal static class Targets
             "parser" => Parser,
             "filters" => Filters,
             "streams" => Streams,
+            "xref" => Xref,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -265,5 +266,85 @@ internal static class Targets
     private static void Count(string key)
     {
         Counts[key] = Counts.GetValueOrDefault(key) + 1;
+    }
+
+    /// <summary>
+    /// PDF bytes: the cross-reference is read and every object it lists is loaded, leniently. Reading may throw
+    /// <see cref="PdfException"/> when the newest section is unreadable (repair by scanning comes later) or a limit is hit;
+    /// loading objects may throw only at a limit. Then the same strictly, where any <see cref="PdfException"/> is fine.
+    /// </summary>
+    private static void Xref(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        using PdfSource source = PdfSource.FromMemory(bytes);
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 };
+        foreach (bool strict in new[] { false, true })
+        {
+            WarningLog log = new(strict);
+            try
+            {
+                XrefTable xref;
+                try
+                {
+                    xref = new XrefReader(source, options, log).Read();
+                }
+                catch (PdfException e) when (!strict && e is not PdfLimitException && e.Code is null)
+                {
+                    Count($"xref unreadable: {System.Text.RegularExpressions.Regex.Replace(e.Message, "[0-9]+", "#")}");
+                    return;
+                }
+
+                ObjectLoader loader = new(source, xref, options, log);
+                foreach ((int number, XrefEntry entry) in xref.Entries.ToArray())
+                {
+                    if (entry.Kind == XrefEntryKind.Free)
+                    {
+                        continue;
+                    }
+
+                    PdfObject value = loader.Load(number, entry.Kind == XrefEntryKind.InFile ? entry.Generation : 0);
+                    if (!strict)
+                    {
+                        Count(value is PdfNull ? "objects null" : "objects loaded");
+                    }
+                }
+
+                if (!strict)
+                {
+                    Count("files read");
+                    foreach (PdfWarning warning in log.ToArray())
+                    {
+                        Count($"warning: {warning.Code}");
+                    }
+                }
+            }
+            catch (PdfLimitException)
+            {
+                Count("limit");
+            }
+            catch (PdfException) when (strict)
+            {
+            }
+        }
+    }
+
+    /// <summary>The objects of a file that load to something other than null, as "n g".</summary>
+    public static IEnumerable<string> ListObjects(byte[] bytes)
+    {
+        using PdfSource source = PdfSource.FromMemory(bytes);
+        WarningLog log = new(strict: false);
+        XrefTable xref = new XrefReader(source, PdfReadOptions.Default, log).Read();
+        ObjectLoader loader = new(source, xref, PdfReadOptions.Default, log);
+        List<string> lines = [];
+        foreach ((int number, XrefEntry entry) in xref.Entries.OrderBy(e => e.Key))
+        {
+            int generation = entry.Kind == XrefEntryKind.InFile ? entry.Generation : 0;
+            if (entry.Kind != XrefEntryKind.Free && loader.Load(number, generation) is not PdfNull)
+            {
+                lines.Add(FormattableString.Invariant($"{number} {generation}"));
+            }
+        }
+
+        return lines;
     }
 }
