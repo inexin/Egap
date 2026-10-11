@@ -116,14 +116,23 @@ Egap.Pdf.PdfWarning.Offset.get -> long?
 Egap.Pdf.PdfWarning.Offset.init -> void
 Egap.Pdf.PdfWarning.PdfWarning(Egap.Pdf.PdfWarningCode Code, string! Message, long? Offset = null, int? ObjectNumber = null) -> void
 Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.DuplicateKey = 12 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.InvalidReference = 13 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedDictionary = 11 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedHexString = 5 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedName = 3 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedNumber = 1 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedStreamKeyword = 15 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MissingEndobj = 14 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MissingEndstream = 17 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingSeparator = 7 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.NumberOutOfRange = 2 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.TooManyWarnings = 8 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnexpectedDelimiter = 6 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.UnexpectedToken = 9 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.UnterminatedObject = 10 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnterminatedString = 4 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.WrongStreamLength = 16 -> Egap.Pdf.PdfWarningCode
 override Egap.Pdf.PdfInteger.Equals(object? obj) -> bool
 override Egap.Pdf.PdfInteger.GetHashCode() -> int
 override Egap.Pdf.PdfName.Equals(object? obj) -> bool

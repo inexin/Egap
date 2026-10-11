@@ -1,0 +1,12 @@
+4 0 obj
+<< /Length 5 >>
+stream
+hello
+endstream
+endobj
+5 0 obj << /Length 99 >> stream
+data
+endstream endobj
+6 0 obj << /Length 7 0 R >> stream
+xyz
+endstream endobj 7 0 obj 3 endobj

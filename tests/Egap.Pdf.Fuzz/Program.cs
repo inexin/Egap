@@ -17,13 +17,13 @@ using SharpFuzz;
 //       mutation fuzzing without AFL++ (any OS): random edits of the seeds for the given seconds; crashes and inputs that take
 //       over 10 seconds are saved to the findings directory. Not coverage-guided, so a complement to AFL++, not a replacement.
 //   dotnet run --project tests/Egap.Pdf.Fuzz -c Release -- replay lexer findings-dir
-//       runs every file in a directory and counts the failures by message, to triage a run's findings
+//       runs every file in a directory tree and counts the failures by message, to triage a run's findings
 if (args is ["replay", string replayTarget, string directory])
 {
     Action<Stream> replay = Targets.Get(replayTarget);
     Dictionary<string, int> failures = [];
     int files = 0;
-    foreach (string path in Directory.GetFiles(directory))
+    foreach (string path in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
     {
         files++;
         try

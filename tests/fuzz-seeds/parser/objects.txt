@@ -1,0 +1,5 @@
+1 0 obj
+<< /Type /Page /Kids [2 0 R 3 0 R] /Count 2 /Scale 1.50 /Name /A#20B /Text (a\(b\)c) /Hex <00FF> /Ok true /No null >>
+endobj
+2 0 obj [1 [2 [3 << /D 4 >>]]] endobj
+3 0 obj 42 endobj
