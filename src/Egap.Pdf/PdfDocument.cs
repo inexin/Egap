@@ -93,9 +93,13 @@ public sealed class PdfDocument : IDisposable
         PdfObjectTable objects = new(loader, log);
         ((IObjectResolver)objects).Saw(references.HighestSeen);
         references.Target = objects;
+
+        // A rebuilt cross-reference opens the objects again, and its trailer alone decides whether the file is encrypted.
+        security = null;
+        EncryptNumber = null;
         if (xref.Trailer["Encrypt"] is PdfObject encryption && encryption.Resolve() is PdfDictionary encrypt)
         {
-            byte[] firstId = xref.Trailer.Get<PdfArray>("ID")?.Get<PdfString>(0)?.Bytes.ToArray() ?? [];
+            byte[] firstId = (xref.Trailer.Get<PdfArray>("ID") is { Count: > 0 } ids ? ids.Get<PdfString>(0)?.Bytes.ToArray() : null) ?? [];
             security = global::Egap.Pdf.Security.StandardSecurityHandler.Open(encrypt, firstId, Options.Password, log);
             loader.EncryptNumber = (encryption as PdfReference)?.ObjectNumber;
             EncryptNumber = loader.EncryptNumber;

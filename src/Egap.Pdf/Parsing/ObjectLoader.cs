@@ -120,7 +120,7 @@ internal sealed class ObjectLoader : IObjectResolver
                 PdfObject value = entry.Kind == XrefEntryKind.InFile ? LoadFromFile(objectNumber, entry) : LoadFromObjectStream(objectNumber, entry);
                 if (entry.Kind == XrefEntryKind.InFile && Decryptor is not null && objectNumber != EncryptNumber)
                 {
-                    Security.ObjectDecryption.Decrypt(value, objectNumber, entry.Generation, Decryptor);
+                    value = Security.ObjectDecryption.Decrypt(value, objectNumber, entry.Generation, Decryptor);
                 }
 
                 cache[objectNumber] = value;

@@ -42,7 +42,7 @@ internal sealed class RewriteWriter
         {
             case PdfEncryptionKind.Keep when document.Security is { } existing:
                 writer.security = existing;
-                writer.encryptDictionary = Inline(document.Trailer.Get<PdfDictionary>("Encrypt")!);
+                writer.encryptDictionary = Kept(Inline(document.Trailer.Get<PdfDictionary>("Encrypt")!), existing);
                 break;
             case PdfEncryptionKind.Aes256:
                 PdfEncryption encryption = options.Encryption;
@@ -333,6 +333,27 @@ internal sealed class RewriteWriter
     /// A copy of the encryption dictionary with every reference in it replaced by what it points to: the dictionary is
     /// written on its own, unencrypted, so nothing it uses may be another (encrypted, renumbered) object.
     /// </summary>
+    /// <summary>
+    /// The kept encryption dictionary with the key length that opening used, so a length that needed repair reads the same
+    /// way again without a warning.
+    /// </summary>
+    private static PdfDictionary Kept(PdfDictionary encrypt, Security.StandardSecurityHandler handler)
+    {
+        if (handler.Revision <= 4)
+        {
+            encrypt["Length"] = handler.KeyLength;
+            foreach ((_, PdfObject value) in encrypt.Get<PdfDictionary>("CF")?.Entries ?? [])
+            {
+                if (value is PdfDictionary { } definition && definition.ContainsKey("Length"))
+                {
+                    definition["Length"] = handler.KeyLength;
+                }
+            }
+        }
+
+        return encrypt;
+    }
+
     private static PdfDictionary Inline(PdfDictionary encrypt)
     {
         PdfDictionary copy = encrypt.Clone();
@@ -420,9 +441,12 @@ internal sealed class RewriteWriter
 
         // The ID keeps its first part and gets a new second part on every save (14.4).
         byte[] second = options.Deterministic ? contentHash : MD5.HashData([.. contentHash, .. Guid.NewGuid().ToByteArray(), .. BitConverter.GetBytes(DateTime.UtcNow.Ticks)]);
-        PdfString first = document.Trailer.Get<PdfArray>("ID") is { Count: 2 } id && id.Get<PdfString>(0) is PdfString existing
-            ? PdfString.FromBytes(existing.Bytes, hex: true)
-            : PdfString.FromBytes(second, hex: true);
+        // Kept encryption of revisions 2 to 4 made its key from the first part as the file was opened, so that part stays.
+        PdfString first = security is { Revision: <= 4 } kept && !newEncryption
+            ? PdfString.FromBytes(kept.FirstId, hex: true)
+            : document.Trailer.Get<PdfArray>("ID") is { Count: 2 } id && id.Get<PdfString>(0) is PdfString existing
+                ? PdfString.FromBytes(existing.Bytes, hex: true)
+                : PdfString.FromBytes(second, hex: true);
         trailer["ID"] = new PdfArray([first, PdfString.FromBytes(second, hex: true)]);
         if (encryptReference is not null)
         {

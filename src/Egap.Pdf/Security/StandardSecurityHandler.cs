@@ -40,6 +40,7 @@ internal sealed class StandardSecurityHandler
     {
         this.key = key;
         this.revision = revision;
+        Revision = revision;
         this.cryptFilters = cryptFilters;
         this.streamMethod = streamMethod;
         this.stringMethod = stringMethod;
@@ -48,6 +49,18 @@ internal sealed class StandardSecurityHandler
         IsOwner = owner;
         this.log = log;
     }
+
+    /// <summary>The revision, <c>/R</c>.</summary>
+    public int Revision { get; }
+
+    /// <summary>
+    /// For revisions 2 to 4, the first part of the file ID that the key was made from; a rewrite that keeps the encryption
+    /// must write it again, or the key changes.
+    /// </summary>
+    public byte[] FirstId { get; private init; } = [];
+
+    /// <summary>For revisions 2 to 4, the key length in bits that was used, after any repair.</summary>
+    public int KeyLength { get; private init; }
 
     /// <summary>The raw <c>/P</c> value.</summary>
     public int Permissions { get; }
@@ -167,7 +180,7 @@ internal sealed class StandardSecurityHandler
             throw new PdfPasswordException(password is null ? "The file is encrypted and needs a password." : "The password is not the file's user or owner password.");
         }
 
-        return new StandardSecurityHandler(fileKey, revision, filters, streams, strings, encryptMetadata, p, owner, log);
+        return new StandardSecurityHandler(fileKey, revision, filters, streams, strings, encryptMetadata, p, owner, log) { FirstId = firstId, KeyLength = length };
     }
 
     private static CryptMethod Method(string? name, Dictionary<string, CryptMethod> filters)

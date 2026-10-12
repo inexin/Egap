@@ -10,12 +10,18 @@ namespace Egap.Pdf.Security;
 /// </summary>
 internal static class ObjectDecryption
 {
-    public static void Decrypt(PdfObject root, int number, int generation, StandardSecurityHandler handler)
+    /// <summary>Decrypts an object in place and returns it; a string, which cannot change in place, comes back decrypted.</summary>
+    public static PdfObject Decrypt(PdfObject root, int number, int generation, StandardSecurityHandler handler)
     {
         // A cross-reference stream is not encrypted at all, its dictionary's strings (such as /ID) included (7.6.2).
         if (root is PdfStream { Dictionary: var header } && header.GetName("Type")?.Value == "XRef")
         {
-            return;
+            return root;
+        }
+
+        if (root is PdfString rootText)
+        {
+            return Decrypted(rootText, number, generation, handler);
         }
 
         Stack<PdfObject> pending = new([root]);
@@ -52,6 +58,8 @@ internal static class ObjectDecryption
                     break;
             }
         }
+
+        return root;
     }
 
     private static void DecryptDictionary(PdfDictionary dictionary, int number, int generation, StandardSecurityHandler handler, Stack<PdfObject> pending)
