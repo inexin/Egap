@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="../files/**/*" LinkBase="files" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Egap.Pdf\Egap.Pdf.csproj" />
   </ItemGroup>
 

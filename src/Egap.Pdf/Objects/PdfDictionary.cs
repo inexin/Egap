@@ -179,6 +179,12 @@ public sealed class PdfDictionary : PdfObject, IContainer, IEnumerable<KeyValueP
         return copy;
     }
 
+    /// <summary>Replaces a scalar value in place while loading (as when decrypting), without change tracking.</summary>
+    internal void ReplaceParsed(PdfName key, PdfObject value)
+    {
+        entries[key] = value;
+    }
+
     /// <summary>Adds an entry while parsing, without change tracking; the last of duplicate keys wins.</summary>
     internal void SetParsed(PdfName key, PdfObject value)
     {

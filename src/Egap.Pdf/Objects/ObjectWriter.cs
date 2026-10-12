@@ -90,19 +90,16 @@ internal static class ObjectWriter
             case PdfDictionary dictionary:
                 WriteDictionary(dictionary, output, null, includeStreamData, depth, remap);
                 break;
+            case PdfStream stream when includeStreamData:
+                ReadOnlySpan<byte> data = stream.Data is BytesData bytes ? bytes.Span : stream.GetEncodedBytes();
+                WriteDictionary(stream.Dictionary, output, data.Length, includeStreamData, depth, remap);
+                output.Write("\nstream\n"u8);
+                output.Write(data);
+                output.Write("\nendstream"u8);
+                break;
             case PdfStream stream:
                 WriteDictionary(stream.Dictionary, output, stream.EncodedLength, includeStreamData, depth, remap);
-                if (includeStreamData)
-                {
-                    output.Write("\nstream\n"u8);
-                    output.Write(stream.Data is BytesData bytes ? bytes.Span : stream.GetEncodedBytes());
-                    output.Write("\nendstream"u8);
-                }
-                else
-                {
-                    output.WriteAscii(string.Create(CultureInfo.InvariantCulture, $" stream ({stream.EncodedLength} bytes)"));
-                }
-
+                output.WriteAscii(string.Create(CultureInfo.InvariantCulture, $" stream ({stream.EncodedLength} bytes)"));
                 break;
             default:
                 throw new ArgumentException($"Unknown object type {value.GetType()}.", nameof(value));

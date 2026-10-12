@@ -76,8 +76,9 @@ internal static class FilterChain
 
     private static byte[] Crypt(PdfDictionary? parameters, byte[] data)
     {
-        // The Identity crypt filter changes nothing. Named crypt filters come with decryption (Build Plan task 14).
-        PdfName name = parameters?.GetName("Name") ?? PdfName.Get("Identity");
-        return name.Value == "Identity" ? data : throw new PdfException($"The stream uses the crypt filter /{name.Value}, which needs decryption.");
+        // An encrypted file's streams are decrypted as they load, each with the crypt filter it names, so by the time the
+        // filters run there is nothing left for /Crypt to do (Identity changes nothing anyway).
+        _ = parameters;
+        return data;
     }
 }

@@ -168,6 +168,12 @@ public sealed class PdfArray : PdfObject, IContainer, IList<PdfObject>
         return copy;
     }
 
+    /// <summary>Replaces a scalar item while loading (as when decrypting), without change tracking.</summary>
+    internal void ReplaceParsed(int index, PdfObject item)
+    {
+        items[index] = item;
+    }
+
     /// <summary>Adds an item while parsing, without change tracking.</summary>
     internal void AddParsed(PdfObject item)
     {
