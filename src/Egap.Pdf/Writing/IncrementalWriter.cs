@@ -102,10 +102,7 @@ internal static class IncrementalWriter
         // The ID keeps its first part and gets a new second part on every save (14.4).
         byte[] content = MD5.HashData(written.WrittenSpan);
         byte[] second = options.Deterministic ? content : MD5.HashData([.. content, .. Guid.NewGuid().ToByteArray(), .. BitConverter.GetBytes(DateTime.UtcNow.Ticks)]);
-        PdfString first = document.Trailer.Get<PdfArray>("ID") is { Count: 2 } id && id.Get<PdfString>(0) is PdfString existing
-            ? PdfString.FromBytes(existing.Bytes, hex: true)
-            : PdfString.FromBytes(second, hex: true);
-        trailer["ID"] = new PdfArray([first, PdfString.FromBytes(second, hex: true)]);
+        trailer["ID"] = RewriteWriter.FileId(document, document.Security, second);
         return trailer;
     }
 }

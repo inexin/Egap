@@ -354,37 +354,54 @@ internal sealed class RewriteWriter
         return encrypt;
     }
 
+    /// <summary>
+    /// The file ID for a save: the first part kept and a new second part (14.4). Kept encryption of revisions 2 to 4 made its
+    /// key from the first part as the file was opened, so that part stays exactly, even when the /ID array was malformed.
+    /// </summary>
+    internal static PdfArray FileId(PdfDocument document, Security.StandardSecurityHandler? keptSecurity, byte[] second)
+    {
+        PdfString first = keptSecurity is { Revision: <= 4 }
+            ? PdfString.FromBytes(keptSecurity.FirstId, hex: true)
+            : document.Trailer.Get<PdfArray>("ID") is { Count: 2 } id && id.Get<PdfString>(0) is PdfString existing
+                ? PdfString.FromBytes(existing.Bytes, hex: true)
+                : PdfString.FromBytes(second, hex: true);
+        return new PdfArray([first, PdfString.FromBytes(second, hex: true)]);
+    }
+
+    /// <summary>How deep the inlined encryption dictionary may nest.</summary>
+    private const int MaxInlineDepth = 16;
+
     private static PdfDictionary Inline(PdfDictionary encrypt)
     {
         PdfDictionary copy = encrypt.Clone();
-        Stack<PdfObject> pending = new([copy]);
+        Stack<(PdfObject Value, int Depth)> pending = new([(copy, 1)]);
         int resolved = 0;
-        while (pending.TryPop(out PdfObject? value))
+        while (pending.TryPop(out (PdfObject Value, int Depth) next))
         {
-            if (value is PdfDictionary dictionary)
+            if (next.Value is PdfDictionary dictionary)
             {
                 foreach ((PdfName key, PdfObject item) in dictionary.Entries.ToArray())
                 {
-                    PdfObject direct = Direct(item, ref resolved);
+                    PdfObject direct = Direct(item, next.Depth, ref resolved);
                     if (!ReferenceEquals(direct, item))
                     {
                         dictionary[key] = direct;
                     }
 
-                    pending.Push(direct);
+                    pending.Push((direct, next.Depth + 1));
                 }
             }
-            else if (value is PdfArray array)
+            else if (next.Value is PdfArray array)
             {
                 for (int i = 0; i < array.Count; i++)
                 {
-                    PdfObject direct = Direct(array[i], ref resolved);
+                    PdfObject direct = Direct(array[i], next.Depth, ref resolved);
                     if (!ReferenceEquals(direct, array[i]))
                     {
                         array[i] = direct;
                     }
 
-                    pending.Push(direct);
+                    pending.Push((direct, next.Depth + 1));
                 }
             }
         }
@@ -392,8 +409,15 @@ internal sealed class RewriteWriter
         return copy;
     }
 
-    private static PdfObject Direct(PdfObject item, ref int resolved)
+    private static PdfObject Direct(PdfObject item, int depth, ref int resolved)
     {
+        // The handler reads nothing deeper than a crypt filter's entries; below that, containers and references are dropped,
+        // so inlining references never nests the dictionary deeper than a reader allows.
+        if (depth > MaxInlineDepth && item is PdfReference or PdfArray or PdfDictionary)
+        {
+            return PdfNull.Instance;
+        }
+
         if (item is not PdfReference)
         {
             return item;
@@ -441,13 +465,7 @@ internal sealed class RewriteWriter
 
         // The ID keeps its first part and gets a new second part on every save (14.4).
         byte[] second = options.Deterministic ? contentHash : MD5.HashData([.. contentHash, .. Guid.NewGuid().ToByteArray(), .. BitConverter.GetBytes(DateTime.UtcNow.Ticks)]);
-        // Kept encryption of revisions 2 to 4 made its key from the first part as the file was opened, so that part stays.
-        PdfString first = security is { Revision: <= 4 } kept && !newEncryption
-            ? PdfString.FromBytes(kept.FirstId, hex: true)
-            : document.Trailer.Get<PdfArray>("ID") is { Count: 2 } id && id.Get<PdfString>(0) is PdfString existing
-                ? PdfString.FromBytes(existing.Bytes, hex: true)
-                : PdfString.FromBytes(second, hex: true);
-        trailer["ID"] = new PdfArray([first, PdfString.FromBytes(second, hex: true)]);
+        trailer["ID"] = FileId(document, newEncryption ? null : security, second);
         if (encryptReference is not null)
         {
             trailer["Encrypt"] = encryptReference;
