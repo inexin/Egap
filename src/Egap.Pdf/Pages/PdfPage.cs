@@ -152,21 +152,30 @@ public sealed class PdfPage : IEquatable<PdfPage>
         return $"Page {(Reference is null ? "(direct)" : Reference.ToString())} {MediaBox}";
     }
 
-    /// <summary>A value from the page, or else from the nearest page tree node above it that has one (7.7.3.4).</summary>
-    private PdfObject? Inherited(PdfName key)
+    /// <summary>
+    /// A value as stored (a reference is not followed) on the page, or else on the nearest page tree node above it that has
+    /// one (7.7.3.4).
+    /// </summary>
+    internal PdfObject? InheritedValue(PdfName key)
     {
         PdfDictionary? node = Dictionary;
         for (int depth = 0; node is not null && depth < MaxInheritanceDepth; depth++)
         {
-            if (node.Get(key) is PdfObject value and not PdfNull)
+            if (node.Get(key) is PdfObject and not PdfNull)
             {
-                return value;
+                return node[key];
             }
 
             node = node.Get<PdfDictionary>(ParentKey);
         }
 
         return null;
+    }
+
+    /// <summary>An inherited value with references followed.</summary>
+    private PdfObject? Inherited(PdfName key)
+    {
+        return InheritedValue(key)?.Resolve();
     }
 
     private PdfRectangle Box(PdfName key)

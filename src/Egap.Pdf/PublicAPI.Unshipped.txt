@@ -21,9 +21,14 @@ Egap.Pdf.PdfPage.TrimBox.set -> void
 Egap.Pdf.PdfPage.UserUnit.get -> double
 Egap.Pdf.PdfPage.UserUnit.set -> void
 Egap.Pdf.PdfPageCollection
+Egap.Pdf.PdfPageCollection.AddBlank(Egap.Pdf.PdfRectangle? mediaBox = null) -> Egap.Pdf.PdfPage!
 Egap.Pdf.PdfPageCollection.Count.get -> int
 Egap.Pdf.PdfPageCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfPage!>!
 Egap.Pdf.PdfPageCollection.IndexOf(Egap.Pdf.PdfPage! page) -> int
+Egap.Pdf.PdfPageCollection.InsertBlank(int index, Egap.Pdf.PdfRectangle? mediaBox = null) -> Egap.Pdf.PdfPage!
+Egap.Pdf.PdfPageCollection.Move(int from, int to) -> void
+Egap.Pdf.PdfPageCollection.Remove(Egap.Pdf.PdfPage! page) -> bool
+Egap.Pdf.PdfPageCollection.RemoveAt(int index) -> void
 Egap.Pdf.PdfPageCollection.this[int index].get -> Egap.Pdf.PdfPage!
 Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfRectangle.Bottom.get -> double

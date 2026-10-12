@@ -16,6 +16,7 @@ crash, and AFL++ also reports hangs.
 | `incremental` | PDF bytes saved incrementally: unchanged must be byte-identical; after an edit the update must keep the original bytes, reopen and hold the same objects | `tests/fuzz-seeds/xref/*`, `tests/fuzz-seeds/document/*` |
 | `trees` | PDF bytes: every dictionary with `/Names`, `/Nums` or `/Kids` read as a name or number tree; a tree read without warnings must find each entry by lookup; after 400 sets and removes drawn from the input it must read back strictly, holding exactly what the edits say, no node over 128 | `tests/fuzz-seeds/trees/*` |
 | `pages` | PDF bytes: the page tree read leniently and strictly; every page's attributes read, each page found again by `IndexOf`, boxes nested inside the media box, rotation one of 0, 90, 180, 270; reading must not count as an edit, so an unchanged incremental save stays byte-identical | `tests/fuzz-seeds/pages/*`, `tests/fuzz-seeds/xref/*` |
+| `pageedits` | PDF bytes: 60 inserts, removes and moves drawn from the input; every page keeps its media box, crop box and rotation; the result written whole reopens strictly without a warning, and saved incrementally keeps the original bytes and reopens with the same pages | `tests/fuzz-seeds/pages/*`, `tests/fuzz-seeds/xref/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 
