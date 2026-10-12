@@ -1,0 +1,15 @@
+Adobe Core14 font metrics
+=========================
+
+The 14 AFM files in this folder are Adobe's font metrics for the 14 PDF standard fonts, unchanged, as published at
+<http://partners.adobe.com/public/developer/font/index.html> (copied from Matplotlib's pdfcorefonts folder, which keeps
+them as Adobe published them). Egap.Pdf embeds them as resources to measure text in the standard fonts. This title and
+this paragraph were added by the Egap authors; Adobe's notice follows unmodified.
+
+This file and the 14 PostScript(R) AFM files it accompanies may be used, copied, 
+and distributed for any purpose and without charge, with or without modification, 
+provided that all copyright notices are retained; that the AFM files are not 
+distributed without this file; that all modifications to this file or any of 
+the AFM files are prominently noted in the modified file(s); and that this 
+paragraph is not modified. Adobe Systems has no responsibility or obligation 
+to support the use of the AFM files.

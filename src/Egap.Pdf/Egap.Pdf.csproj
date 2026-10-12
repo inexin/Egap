@@ -15,6 +15,13 @@
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- Adobe's Core14 AFM files, unchanged, with the notice their licence says must go with them (THIRD-PARTY-NOTICES.md). -->
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts/Standard14/*.afm" LogicalName="Egap.Pdf.Fonts.%(Filename).afm" />
+    <EmbeddedResource Include="Fonts/Standard14/MustRead.txt" LogicalName="Egap.Pdf.Fonts.MustRead.txt" />
+    <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
   <ItemGroup>
     <InternalsVisibleTo Include="Egap.Pdf.Tests" />
     <InternalsVisibleTo Include="Egap.Pdf.Benchmarks" />
