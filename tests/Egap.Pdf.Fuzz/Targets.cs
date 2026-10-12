@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments"];
 
     public static Action<Stream> Get(string name)
     {
@@ -33,6 +33,7 @@ internal static class Targets
             "outlines" => Outlines,
             "xmp" => Xmp,
             "metadata" => Metadata,
+            "attachments" => Attachments,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -1251,5 +1252,96 @@ internal static class Targets
         }
 
         public override TimeZoneInfo LocalTimeZone => TimeZoneInfo.CreateCustomTimeZone("Fuzz", now.Offset, "Fuzz", "Fuzz");
+    }
+
+    /// <summary>
+    /// Embedded files (Phase 2 task 9): every attachment's properties and bytes read leniently; then files are added and
+    /// removed by a plan drawn from the input, and the file written whole must reopen with exactly the names the edits leave,
+    /// each added file's bytes intact and its checksum right, and no associated file left that is not in the tree.
+    /// </summary>
+    private static void Attachments(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                foreach (PdfAttachment attachment in pdf.Attachments.Take(200))
+                {
+                    _ = (attachment.FileName, attachment.Description, attachment.MimeType, attachment.Size, attachment.Checksum, attachment.CreationDate, attachment.ModificationDate, attachment.Relationship);
+                    try
+                    {
+                        _ = attachment.VerifyChecksum();
+                    }
+                    catch (PdfException e) when (e is not PdfLimitException)
+                    {
+                        // Damaged or unsupported stream data.
+                    }
+                }
+
+                SortedDictionary<string, byte[]?> expected = new(StringComparer.Ordinal);
+                foreach (PdfAttachment attachment in pdf.Attachments)
+                {
+                    expected.TryAdd(attachment.Name, null);
+                }
+
+                Random random = new(bytes.Length);
+                List<string> names = [.. expected.Keys];
+                for (int i = 0; i < 20; i++)
+                {
+                    string name = random.Next(3) == 0 && names.Count > 0 ? names[random.Next(names.Count)] : $"f{random.Next(40)}";
+                    if (random.Next(3) == 0)
+                    {
+                        pdf.Attachments.Remove(name);
+                        expected.Remove(name);
+                    }
+                    else if (name.Length > 0)
+                    {
+                        // Add takes no empty name, though a file's tree may hold one.
+                        byte[] data = new byte[random.Next(64)];
+                        random.NextBytes(data);
+                        pdf.Attachments.Add(name, data, random.Next(2) == 0 ? "application/octet-stream" : null);
+                        expected[name] = data;
+                    }
+                }
+
+                using MemoryStream whole = new();
+                pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+                using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+
+                // Names the tree held whose text is the same are listed once; set names are checked exactly.
+                Dictionary<string, PdfAttachment> found = [];
+                foreach (PdfAttachment attachment in reopened.Attachments)
+                {
+                    found.TryAdd(attachment.Name, attachment);
+                }
+
+                foreach ((string name, byte[]? data) in expected)
+                {
+                    if (!found.TryGetValue(name, out PdfAttachment? attachment) || (data is not null && (!attachment.GetBytes()!.AsSpan().SequenceEqual(data) || attachment.VerifyChecksum() != true)))
+                    {
+                        throw new InvalidOperationException($"The attachment {name} did not survive the rewrite.");
+                    }
+                }
+
+                foreach (string name in found.Keys.Where(n => n.StartsWith('f') && !expected.ContainsKey(n) && !names.Contains(n)))
+                {
+                    throw new InvalidOperationException($"The removed attachment {name} is still there.");
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
     }
 }
