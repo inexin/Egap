@@ -36,3 +36,14 @@ internal sealed class OffsetSource(PdfSource inner, long shift) : PdfSource
         base.Dispose(disposing);
     }
 }
+
+/// <summary>A source passed on without its ownership: disposing it leaves the inner source open.</summary>
+internal sealed class UnownedSource(PdfSource inner) : PdfSource
+{
+    public override long Length => inner.Length;
+
+    public override bool TryGetChunk(long position, out ArraySegment<byte> chunk, out long chunkStart)
+    {
+        return inner.TryGetChunk(position, out chunk, out chunkStart);
+    }
+}

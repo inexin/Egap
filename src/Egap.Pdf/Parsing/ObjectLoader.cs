@@ -19,6 +19,7 @@ internal sealed class ObjectLoader : IObjectResolver
     private readonly HashSet<int> loading = [];
     private readonly Lock gate = new();
     private int depth;
+    private ObjectScanner? scanner;
 
     public ObjectLoader(PdfSource source, XrefTable xref, PdfReadOptions options, WarningLog log)
     {
@@ -85,31 +86,75 @@ internal sealed class ObjectLoader : IObjectResolver
 
     private PdfObject LoadFromFile(int objectNumber, XrefEntry entry)
     {
+        string problem;
         if (entry.Offset >= source.Length)
         {
-            Warn($"Object {objectNumber} is listed at {entry.Offset}, past the end of the file; read as null.", objectNumber);
-            return PdfNull.Instance;
+            problem = $"Object {objectNumber} is listed at {entry.Offset}, past the end of the file";
+        }
+        else
+        {
+            IndirectObject? found = TryParseAt(entry.Offset, out string? error);
+            if (found is IndirectObject at && at.ObjectNumber == objectNumber && at.Generation == entry.Generation)
+            {
+                return at.Value;
+            }
+
+            problem = found is IndirectObject other
+                ? $"The object at {entry.Offset} is {other.ObjectNumber} {other.Generation}, not {objectNumber} {entry.Generation}"
+                : $"Object {objectNumber} is not at {entry.Offset} ({error})";
         }
 
+        return Relocate(objectNumber, entry, problem);
+    }
+
+    /// <summary>
+    /// Finds an object that is not at its listed offset: first within a kilobyte of it (offsets that are a few bytes off),
+    /// then by scanning the whole file, as pdf.js and PDFBox do.
+    /// </summary>
+    private PdfObject Relocate(int objectNumber, XrefEntry entry, string problem)
+    {
+        byte[] header = System.Text.Encoding.ASCII.GetBytes(FormattableString.Invariant($"{objectNumber} {entry.Generation} obj"));
+        long from = Math.Max(0, Math.Min(entry.Offset, source.Length) - 1024);
+        long limit = Math.Min(source.Length, entry.Offset + 1024 + header.Length);
+        for (long at = SourceSearch.IndexOf(source, header, from, limit); at >= 0; at = SourceSearch.IndexOf(source, header, at + 1, limit))
+        {
+            if (at > 0 && CharClass.IsDigit(source.ReadBytes(at - 1, 1)[0]))
+            {
+                continue;
+            }
+
+            if (TryParseAt(at, out _) is IndirectObject nearby && nearby.ObjectNumber == objectNumber && nearby.Generation == entry.Generation)
+            {
+                log.Add(PdfWarningCode.ObjectRelocated, $"{problem}; it was found at {at}.", at, objectNumber);
+                return nearby.Value;
+            }
+        }
+
+        scanner ??= ObjectScanner.Scan(source, options);
+        if (scanner.Objects.TryGetValue(objectNumber, out (long Offset, int Generation) scanned) && scanned.Generation == entry.Generation
+            && TryParseAt(scanned.Offset, out _) is IndirectObject found && found.ObjectNumber == objectNumber)
+        {
+            log.Add(PdfWarningCode.ObjectRelocated, $"{problem}; it was found at {scanned.Offset} by scanning the file.", scanned.Offset, objectNumber);
+            return found.Value;
+        }
+
+        Warn($"{problem}; read as null.", objectNumber);
+        return PdfNull.Instance;
+    }
+
+    private IndirectObject? TryParseAt(long offset, out string? error)
+    {
         ObjectParser parser = new(new Lexer(new SourceReader(source), log), options, References);
-        IndirectObject found;
         try
         {
-            found = parser.ParseIndirectObject(entry.Offset);
+            error = null;
+            return parser.ParseIndirectObject(offset);
         }
         catch (PdfException e) when (e is not PdfLimitException && e.Code is null)
         {
-            Warn($"Object {objectNumber} is not at {entry.Offset} ({e.Message}); read as null.", objectNumber);
-            return PdfNull.Instance;
+            error = e.Message;
+            return null;
         }
-
-        if (found.ObjectNumber != objectNumber || found.Generation != entry.Generation)
-        {
-            Warn($"The object at {entry.Offset} is {found.ObjectNumber} {found.Generation}, not {objectNumber} {entry.Generation}; read as null.", objectNumber);
-            return PdfNull.Instance;
-        }
-
-        return found.Value;
     }
 
     private PdfObject LoadFromObjectStream(int objectNumber, XrefEntry entry)

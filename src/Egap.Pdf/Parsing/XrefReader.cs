@@ -131,11 +131,19 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
         if (at < 0)
         {
             at = SourceSearch.LastIndexOf(source, "startxref"u8, source.Length);
+            if (at < 0)
+            {
+                throw new PdfException("The file has no 'startxref'.");
+            }
+
+            log.Add(PdfWarningCode.MalformedXref, $"The last 'startxref' is {source.Length - at} bytes before the end of the file.", at);
         }
 
-        if (at < 0)
+        // Objects after the last startxref mean an update whose end was cut off; its objects would be lost, so the caller
+        // rebuilds instead.
+        if (SourceSearch.IndexOf(source, " obj"u8, at) >= 0)
         {
-            throw new PdfException("The file has no 'startxref'.");
+            throw new PdfException("The file's last 'startxref' is followed by more objects; it looks truncated.", at, null);
         }
 
         Lexer lexer = new(new SourceReader(source, at + "startxref"u8.Length), log);
@@ -270,7 +278,13 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
         int[] widths = Widths(dictionary, offset);
         long size = dictionary.GetInt("Size") ?? -1;
         List<(long Start, long Count)> ranges = Ranges(dictionary, size, offset);
+        int warningsBefore = log.Count;
         byte[] data = stream.GetDecodedBytes();
+        if (log.ToArray().Skip(warningsBefore).Any(w => w.Code == PdfWarningCode.DamagedFilterData))
+        {
+            // Entries from damaged data would point anywhere: treat the section as unreadable, so the file is rebuilt.
+            throw new PdfException("The cross-reference stream's data is damaged.", offset, null);
+        }
 
         int row = widths[0] + widths[1] + widths[2];
         int at = 0;

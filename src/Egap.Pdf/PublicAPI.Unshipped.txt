@@ -158,6 +158,7 @@ Egap.Pdf.PdfWarningCode.MissingHeader = 24 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingObject = 23 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MissingSeparator = 7 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.NumberOutOfRange = 2 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.ObjectRelocated = 27 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.ShiftedOffsets = 25 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.TooManyWarnings = 8 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnexpectedDelimiter = 6 -> Egap.Pdf.PdfWarningCode
@@ -165,6 +166,7 @@ Egap.Pdf.PdfWarningCode.UnexpectedToken = 9 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnterminatedObject = 10 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnterminatedString = 4 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.WrongStreamLength = 16 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.XrefRebuilt = 26 -> Egap.Pdf.PdfWarningCode
 override Egap.Pdf.PdfInteger.Equals(object? obj) -> bool
 override Egap.Pdf.PdfInteger.GetHashCode() -> int
 override Egap.Pdf.PdfName.Equals(object? obj) -> bool

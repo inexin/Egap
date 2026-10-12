@@ -31,27 +31,62 @@ public sealed class PdfDocument : IDisposable
         HeaderVersion = ReadHeaderVersion(out long header);
         ForwardingResolver references = new();
         XrefTable xref;
+        bool rebuilt = false;
         try
         {
             xref = new XrefReader(source, options, log, references).Read();
         }
-        catch (PdfException e) when (header > 0 && e is not PdfLimitException && e.Code is null)
+        catch (PdfException e) when (e is not PdfLimitException && e.Code is null)
         {
-            // Junk before the header, and offsets that count from the header, as Acrobat and qpdf accept.
-            OffsetSource shifted = new(source, header);
-            xref = new XrefReader(shifted, options, log, references).Read();
-            this.source = shifted;
-            log.Add(PdfWarningCode.ShiftedOffsets, $"The header is at byte {header}, and the file's offsets count from there.", header);
+            if (header > 0 && TryShifted(source, header, references) is XrefTable shiftedXref)
+            {
+                xref = shiftedXref;
+                this.source = new OffsetSource(source, header);
+                log.Add(PdfWarningCode.ShiftedOffsets, $"The header is at byte {header}, and the file's offsets count from there.", header);
+            }
+            else
+            {
+                xref = XrefRebuilder.Rebuild(source, options, log, references);
+                rebuilt = true;
+            }
+        }
+
+        if (!rebuilt && log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain))
+        {
+            XrefRebuilder.FillGaps(this.source, xref, options, log);
+        }
+
+        Objects = new PdfObjectTable(new ObjectLoader(this.source, xref, options, log), log);
+        references.Target = Objects;
+        if (xref.Trailer.Get("Root") is not PdfDictionary && !rebuilt)
+        {
+            // The cross-reference read, but names no usable catalog: rebuild it from what the file holds.
+            xref = XrefRebuilder.Rebuild(this.source, options, log, references);
+            rebuilt = true;
+            Objects = new PdfObjectTable(new ObjectLoader(this.source, xref, options, log), log);
+            references.Target = Objects;
         }
 
         Xref = xref;
-        Objects = new PdfObjectTable(new ObjectLoader(this.source, xref, options, log), log);
-        references.Target = Objects;
+        Rebuilt = rebuilt;
         Trailer = xref.Trailer;
         Containment.Bind(Trailer, trailerOwner);
         if (Trailer.Get("Root") is not PdfDictionary)
         {
-            throw new PdfException("The trailer has no /Root dictionary (the document catalog).");
+            throw new PdfException("The file has no document catalog, even after scanning it for objects.");
+        }
+    }
+
+    /// <summary>Reads the cross-reference with offsets counted from the header, or returns null when that fails too.</summary>
+    private XrefTable? TryShifted(PdfSource original, long header, IObjectResolver references)
+    {
+        try
+        {
+            return new XrefReader(new OffsetSource(new UnownedSource(original), header), Options, log, references).Read();
+        }
+        catch (PdfException e) when (e is not PdfLimitException && e.Code is null)
+        {
+            return null;
         }
     }
 
@@ -77,7 +112,7 @@ public sealed class PdfDocument : IDisposable
     public PdfDictionary Catalog => Trailer.Get<PdfDictionary>("Root") ?? throw new PdfException("The trailer has no /Root dictionary.");
 
     /// <summary>The indirect objects.</summary>
-    public PdfObjectTable Objects { get; }
+    public PdfObjectTable Objects { get; private set; }
 
     /// <summary>
     /// Every repair made while reading, in the order found. Objects load lazily, so the list can grow as the document is
@@ -92,6 +127,9 @@ public sealed class PdfDocument : IDisposable
     internal string HeaderVersion { get; }
 
     internal XrefTable Xref { get; }
+
+    /// <summary>Whether the cross-reference was rebuilt by scanning; such a file saves by full rewrite (hub Q8).</summary>
+    internal bool Rebuilt { get; }
 
     /// <summary>Opens a PDF file. The file stays open, shared for reading, until the document is disposed.</summary>
     /// <exception cref="PdfException">The file is not a PDF the reader can open.</exception>
