@@ -24,12 +24,37 @@ Egap.Pdf.PdfPageCollection
 Egap.Pdf.PdfPageCollection.AddBlank(Egap.Pdf.PdfRectangle? mediaBox = null) -> Egap.Pdf.PdfPage!
 Egap.Pdf.PdfPageCollection.Count.get -> int
 Egap.Pdf.PdfPageCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfPage!>!
+Egap.Pdf.PdfPageCollection.GetLabel(int index) -> string!
+Egap.Pdf.PdfPageCollection.GetLabelRanges() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPageLabelRange!>!
 Egap.Pdf.PdfPageCollection.IndexOf(Egap.Pdf.PdfPage! page) -> int
 Egap.Pdf.PdfPageCollection.InsertBlank(int index, Egap.Pdf.PdfRectangle? mediaBox = null) -> Egap.Pdf.PdfPage!
 Egap.Pdf.PdfPageCollection.Move(int from, int to) -> void
 Egap.Pdf.PdfPageCollection.Remove(Egap.Pdf.PdfPage! page) -> bool
 Egap.Pdf.PdfPageCollection.RemoveAt(int index) -> void
+Egap.Pdf.PdfPageCollection.RemoveLabelRange(int startIndex) -> bool
+Egap.Pdf.PdfPageCollection.SetLabelRange(Egap.Pdf.PdfPageLabelRange! range) -> void
 Egap.Pdf.PdfPageCollection.this[int index].get -> Egap.Pdf.PdfPage!
+Egap.Pdf.PdfPageLabelRange
+Egap.Pdf.PdfPageLabelRange.<Clone>$() -> Egap.Pdf.PdfPageLabelRange!
+Egap.Pdf.PdfPageLabelRange.Deconstruct(out int StartIndex, out Egap.Pdf.PdfPageLabelStyle Style, out string? Prefix, out int Start) -> void
+Egap.Pdf.PdfPageLabelRange.Equals(Egap.Pdf.PdfPageLabelRange? other) -> bool
+Egap.Pdf.PdfPageLabelRange.Format(int offset) -> string!
+Egap.Pdf.PdfPageLabelRange.PdfPageLabelRange(int StartIndex, Egap.Pdf.PdfPageLabelStyle Style, string? Prefix = null, int Start = 1) -> void
+Egap.Pdf.PdfPageLabelRange.Prefix.get -> string?
+Egap.Pdf.PdfPageLabelRange.Prefix.init -> void
+Egap.Pdf.PdfPageLabelRange.Start.get -> int
+Egap.Pdf.PdfPageLabelRange.Start.init -> void
+Egap.Pdf.PdfPageLabelRange.StartIndex.get -> int
+Egap.Pdf.PdfPageLabelRange.StartIndex.init -> void
+Egap.Pdf.PdfPageLabelRange.Style.get -> Egap.Pdf.PdfPageLabelStyle
+Egap.Pdf.PdfPageLabelRange.Style.init -> void
+Egap.Pdf.PdfPageLabelStyle
+Egap.Pdf.PdfPageLabelStyle.Arabic = 1 -> Egap.Pdf.PdfPageLabelStyle
+Egap.Pdf.PdfPageLabelStyle.LowerLetters = 5 -> Egap.Pdf.PdfPageLabelStyle
+Egap.Pdf.PdfPageLabelStyle.LowerRoman = 3 -> Egap.Pdf.PdfPageLabelStyle
+Egap.Pdf.PdfPageLabelStyle.None = 0 -> Egap.Pdf.PdfPageLabelStyle
+Egap.Pdf.PdfPageLabelStyle.UpperLetters = 4 -> Egap.Pdf.PdfPageLabelStyle
+Egap.Pdf.PdfPageLabelStyle.UpperRoman = 2 -> Egap.Pdf.PdfPageLabelStyle
 Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfRectangle.Bottom.get -> double
 Egap.Pdf.PdfRectangle.Bottom.init -> void
@@ -54,10 +79,15 @@ Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode
 override Egap.Pdf.PdfPage.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPage.GetHashCode() -> int
 override Egap.Pdf.PdfPage.ToString() -> string!
+override Egap.Pdf.PdfPageLabelRange.Equals(object? obj) -> bool
+override Egap.Pdf.PdfPageLabelRange.GetHashCode() -> int
+override Egap.Pdf.PdfPageLabelRange.ToString() -> string!
 override Egap.Pdf.PdfRectangle.GetHashCode() -> int
 override Egap.Pdf.PdfRectangle.ToString() -> string!
 static Egap.Pdf.PdfPage.operator !=(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
 static Egap.Pdf.PdfPage.operator ==(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
+static Egap.Pdf.PdfPageLabelRange.operator !=(Egap.Pdf.PdfPageLabelRange? left, Egap.Pdf.PdfPageLabelRange? right) -> bool
+static Egap.Pdf.PdfPageLabelRange.operator ==(Egap.Pdf.PdfPageLabelRange? left, Egap.Pdf.PdfPageLabelRange? right) -> bool
 static Egap.Pdf.PdfRectangle.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfRectangle?
 static Egap.Pdf.PdfRectangle.operator !=(Egap.Pdf.PdfRectangle left, Egap.Pdf.PdfRectangle right) -> bool
 static Egap.Pdf.PdfRectangle.operator ==(Egap.Pdf.PdfRectangle left, Egap.Pdf.PdfRectangle right) -> bool

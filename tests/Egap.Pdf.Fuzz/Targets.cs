@@ -750,7 +750,10 @@ internal static class Targets
             }
 
             _ = page.Resources;
+            _ = pages.GetLabel(i);
         }
+
+        _ = pages.GetLabelRanges();
     }
 
     /// <summary>
@@ -805,6 +808,21 @@ internal static class Targets
                     }
                 }
 
+                // Page labels: a few ranges set and removed, then every label must survive the rewrite.
+                for (int i = 0; i < 5; i++)
+                {
+                    int start = random.Next(Math.Max(pdf.Pages.Count, 1));
+                    if (random.Next(3) == 0)
+                    {
+                        pdf.Pages.RemoveLabelRange(start);
+                    }
+                    else
+                    {
+                        pdf.Pages.SetLabelRange(new PdfPageLabelRange(start, (PdfPageLabelStyle)random.Next(6), random.Next(2) == 0 ? null : "p", random.Next(1, 100)));
+                    }
+                }
+
+                List<string> labels = [.. Enumerable.Range(0, pdf.Pages.Count).Select(pdf.Pages.GetLabel)];
                 List<(PdfRectangle Media, PdfRectangle Crop, int Rotate)> actual = [.. pdf.Pages.Select(Look)];
                 for (int i = 0; i < Math.Max(actual.Count, expected.Count); i++)
                 {
@@ -821,6 +839,11 @@ internal static class Targets
                     if (!reopened.Pages.Select(Look).SequenceEqual(expected))
                     {
                         throw new InvalidOperationException("The rewritten file has other pages.");
+                    }
+
+                    if (!Enumerable.Range(0, reopened.Pages.Count).Select(reopened.Pages.GetLabel).SequenceEqual(labels))
+                    {
+                        throw new InvalidOperationException("The rewritten file has other page labels.");
                     }
                 }
 
