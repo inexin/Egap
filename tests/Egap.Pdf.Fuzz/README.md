@@ -22,6 +22,7 @@ crash, and AFL++ also reports hangs.
 | `xmp` | Any bytes parsed as an XMP packet; one that parses has its mapped properties read, set and written back, and must parse again with the values set and every element of other namespaces kept | `tests/fuzz-seeds/xmp/*` |
 | `metadata` | PDF bytes: every metadata property read, then title, author and keywords set and the file saved with a fixed clock; reopened it must give back what was set and the new modification date | `tests/fuzz-seeds/metadata/*`, `tests/fuzz-seeds/xref/*` |
 | `attachments` | PDF bytes: every embedded file's properties, bytes and checksum read; then 20 adds and removes drawn from the input, and the rewritten file must hold exactly those names with each added file's bytes and checksum right | `tests/fuzz-seeds/attachments/*`, `tests/fuzz-seeds/xref/*` |
+| `layers` | PDF bytes: every optional content group read; then 20 shows, hides, locks, renames and removals drawn from the input, each read back at once, and the rewritten file must hold the same layers in the same state | `tests/fuzz-seeds/layers/*`, `tests/fuzz-seeds/xref/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 
