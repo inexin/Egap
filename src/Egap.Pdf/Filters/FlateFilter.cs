@@ -66,7 +66,7 @@ internal static class FlateFilter
         {
             while (true)
             {
-                Span<byte> span = output.GetSpan(16 * 1024);
+                Span<byte> span = output.GetAvailableSpan();
                 if (span.IsEmpty)
                 {
                     // At a limit: fine if the data ends here, otherwise the limit is exceeded.

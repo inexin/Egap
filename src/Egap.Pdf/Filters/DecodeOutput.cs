@@ -63,6 +63,21 @@ internal sealed class DecodeOutput
         return buffer.AsSpan(length, count);
     }
 
+    /// <summary>
+    /// The free space left in the buffer, doubling it first when it is full, so a decoder reading in chunks fills what it has
+    /// before growing. It is empty only at a limit: a decoder with more output then calls <see cref="ThrowLimit"/>.
+    /// </summary>
+    public Span<byte> GetAvailableSpan()
+    {
+        long allowed = Math.Min(maxBytes, maxRatioBytes) - length;
+        if (length == buffer.Length && allowed > 0)
+        {
+            Grow((long)length + 1);
+        }
+
+        return buffer.AsSpan(length, (int)Math.Min(buffer.Length - length, allowed));
+    }
+
     /// <summary>Throws the limit the output has reached, for a decoder that has more to write.</summary>
     public void ThrowLimit()
     {
