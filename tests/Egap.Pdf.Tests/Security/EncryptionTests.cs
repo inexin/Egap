@@ -161,4 +161,58 @@ public sealed class EncryptionTests
         Assert.Equal("not a cross-reference"u8.ToArray(), read.GetDecodedBytes());
         Assert.Equal("plain", read.Dictionary.GetText("Note"));
     }
+
+    /// <summary>A fixture with one piece of text replaced by another of the same length, so every offset still holds.</summary>
+    private static byte[] Patched(string name, string find, string replace)
+    {
+        Assert.Equal(find.Length, replace.Length);
+        string text = Encoding.Latin1.GetString(System.IO.File.ReadAllBytes(File(name)));
+        Assert.Equal(1, text.Split(find).Length - 1);
+        return Encoding.Latin1.GetBytes(text.Replace(find, replace, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void KeptEncryptionWritesTheRepairedKeyLength()
+    {
+        using PdfDocument pdf = PdfDocument.Open(Patched("rc4-128.pdf", "/Length 128", "/Length 161"), new PdfReadOptions { Password = "user" });
+        Assert.Contains(pdf.Warnings, w => w.Code == PdfWarningCode.MalformedEncryption);
+
+        using PdfDocument reopened = PdfDocument.Open(Save(pdf, Rewrite), new PdfReadOptions { Password = "user", Strict = true });
+
+        Assert.Empty(reopened.Warnings);
+        AssertPlainContent(reopened);
+    }
+
+    [Fact]
+    public void KeptEncryptionKeepsTheFirstIdItsKeyWasMadeFrom()
+    {
+        // An /ID with only its first part: a rewrite adds a second part, but must not replace the first.
+        const string Id = "/ID [<00112233445566778899aabbccddeeff><31415926535897932384626433832795>]";
+        using PdfDocument pdf = PdfDocument.Open(Patched("rc4-128.pdf", Id, "/ID [<00112233445566778899aabbccddeeff>" + new string(' ', Id.Length - 40) + "]"), new PdfReadOptions { Password = "user" });
+
+        using PdfDocument reopened = PdfDocument.Open(Save(pdf, Rewrite), new PdfReadOptions { Password = "user", Strict = true });
+
+        Assert.Equal("00112233445566778899AABBCCDDEEFF", Convert.ToHexString(reopened.Trailer.Get<PdfArray>("ID")!.Get<PdfString>(0)!.Bytes));
+        AssertPlainContent(reopened);
+    }
+
+    [Fact]
+    public void AnIndirectStringIsEncryptedAndDecrypted()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        pdf.Catalog["Note"] = pdf.Objects.Add(PdfString.FromText("an indirect string"));
+
+        using PdfDocument saved = PdfDocument.Open(Save(pdf, Rewrite with { Encryption = PdfEncryption.Aes256("u", "o") }), new PdfReadOptions { Password = "u", Strict = true });
+
+        Assert.Equal("an indirect string", saved.Catalog.GetText("Note"));
+    }
+
+    [Fact]
+    public void AnEmptyIdArrayDoesNotStopAnAes256FileOpening()
+    {
+        const string Id = "/ID [<00112233445566778899aabbccddeeff><31415926535897932384626433832795>]";
+        using PdfDocument pdf = PdfDocument.Open(Patched("aes-256.pdf", Id, "/ID [" + new string(' ', Id.Length - 6) + "]"), new PdfReadOptions { Password = "user" });
+
+        AssertPlainContent(pdf);
+    }
 }
