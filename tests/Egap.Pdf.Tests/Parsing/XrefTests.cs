@@ -234,7 +234,7 @@ public sealed class XrefTests
     }
 
     [Fact]
-    public void WrongObjectAtAnOffsetIsNull()
+    public void ObjectsNotAtTheirOffsetAreFoundNearbyOrByScanning()
     {
         FileBuilder file = Basic();
         long xref = file.Position;
@@ -242,9 +242,36 @@ public sealed class XrefTests
 
         Opened opened = Open(file.ToArray());
 
-        Assert.Same(PdfNull.Instance, opened[1]);
-        Assert.Same(PdfNull.Instance, opened[2]);
-        Assert.Equal([PdfWarningCode.MissingObject, PdfWarningCode.MissingObject], opened.Warnings);
+        Assert.Equal("Catalog", Assert.IsType<PdfDictionary>(opened[1]).GetName("Type")!.Value);
+        Assert.Equal("Pages", Assert.IsType<PdfDictionary>(opened[2]).GetName("Type")!.Value);
+        Assert.Equal([PdfWarningCode.ObjectRelocated, PdfWarningCode.ObjectRelocated], opened.Warnings);
+    }
+
+    [Fact]
+    public void ObjectFarFromItsOffsetIsFoundByScanning()
+    {
+        FileBuilder file = new FileBuilder().Object(1, "(one)").Raw(new string('%', 5000) + "\n").Object(2, "(two)");
+        long xref = file.Position;
+        file.Raw($"xref\n0 3\n0000000000 65535 f\r\n{file.Offsets[1]:D10} 00000 n\r\n{file.Offsets[1]:D10} 00000 n\r\ntrailer << /Size 3 >>\n").StartXref(xref);
+
+        Opened opened = Open(file.ToArray());
+
+        Assert.Equal("(two)", Encoding.Latin1.GetString(ObjectWriter.ToBytes(opened[2])));
+        Assert.Contains("by scanning", Assert.Single(opened.Log.ToArray()).Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ObjectThatIsNowhereIsNull()
+    {
+        FileBuilder file = Basic();
+        long xref = file.Position;
+        file.Raw($"xref\n0 1\n0000000000 65535 f\r\n9 1\n{file.Offsets[2]:D10} 00000 n\r\ntrailer << /Size 10 >>\n").StartXref(xref);
+
+        Opened opened = Open(file.ToArray());
+
+        Assert.Same(PdfNull.Instance, opened[9]);
+        Assert.Equal([PdfWarningCode.MissingObject], opened.Warnings);
+        Assert.Throws<PdfException>(() => Open(file.ToArray(), strict: true)[9]);
     }
 
     [Fact]

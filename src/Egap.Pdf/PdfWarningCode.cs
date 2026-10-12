@@ -82,4 +82,10 @@ public enum PdfWarningCode
     /// The header was not at the start of the file, and the file's offsets count from the header; they were read that way.
     /// </summary>
     ShiftedOffsets,
+
+    /// <summary>The cross-reference could not be used, or named no catalog; it was rebuilt by scanning the file for objects.</summary>
+    XrefRebuilt,
+
+    /// <summary>An object was not at the offset the cross-reference gave; it was found nearby or by scanning the file.</summary>
+    ObjectRelocated,
 }

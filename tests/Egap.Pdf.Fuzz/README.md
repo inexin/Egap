@@ -10,8 +10,8 @@ crash, and AFL++ also reports hangs.
 | `parser` | Any bytes: every direct object in turn and every `n g obj` found, leniently and strictly; each indirect object is written back and must parse strictly to the same bytes | `tests/fuzz-seeds/parser/*` |
 | `filters` | A filter pick, predictor parameters and data, decoded leniently and strictly | `tests/fuzz-seeds/filters/*` |
 | `streams` | PDF bytes: every stream object found is decoded leniently; for corpus runs, replay prints what was decoded and every warning | `tests/fuzz-seeds/parser/*` |
-| `xref` | PDF bytes: the cross-reference is read and every listed object loaded, leniently and strictly; reading may fail with `PdfException` until repair by scanning exists | `tests/fuzz-seeds/xref/*` |
-| `document` | PDF bytes opened as a `PdfDocument`: every object loaded, streams decoded, an edit made; leniently and strictly | `tests/fuzz-seeds/xref/*`, `tests/fuzz-seeds/document/*` |
+| `xref` | PDF bytes: the cross-reference is read and every listed object loaded, leniently and strictly; reading may fail with `PdfException` (this target has no repair by scanning; `document` does) | `tests/fuzz-seeds/xref/*` |
+| `document` | PDF bytes opened as a `PdfDocument`, with repair by scanning: every object loaded, streams decoded, an edit made; leniently and strictly | `tests/fuzz-seeds/xref/*`, `tests/fuzz-seeds/document/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 
