@@ -19,6 +19,7 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
         XrefTable table = new();
         HashSet<long> visited = [];
         long? offset = FindStartXref();
+        bool newest = true;
         while (offset is long at)
         {
             if (!visited.Add(at))
@@ -56,14 +57,17 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
                 throw new PdfLimitException(nameof(PdfReadOptions.MaxObjects), $"The cross-reference lists more than {options.MaxObjects} objects.");
             }
 
+            // An update's trailer holds every entry of the one before (7.5.6), so the newest trailer is the file's trailer and
+            // a key it leaves out was removed. Only a missing /Root is taken from an older trailer, as other readers do.
             foreach ((PdfName key, PdfObject value) in section.Trailer.Entries)
             {
-                if (!SectionKeys.Contains(key.Value) && !table.Trailer.ContainsKey(key))
+                if (!SectionKeys.Contains(key.Value) && !table.Trailer.ContainsKey(key) && (newest || key.Value == "Root"))
                 {
                     table.Trailer.SetParsed(key, value is PdfArray or PdfDictionary ? Copy(value) : value);
                 }
             }
 
+            newest = false;
             offset = section.Trailer.Get("Prev") switch
             {
                 PdfInteger { Value: >= 0 } prev => prev.Value,

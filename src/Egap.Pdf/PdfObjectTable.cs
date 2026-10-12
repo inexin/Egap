@@ -229,6 +229,25 @@ public sealed class PdfObjectTable : IEnumerable<PdfReference>, IObjectResolver
         }
     }
 
+    /// <summary>After an update was appended to the document's own file: what was saved is now simply what the file holds.</summary>
+    internal void MarkSaved()
+    {
+        lock (gate)
+        {
+            foreach (IndirectEntry entry in entries.Values.ToArray())
+            {
+                if (entry.State == EntryState.Deleted)
+                {
+                    entries.Remove(entry.Number);
+                }
+                else
+                {
+                    entry.State = EntryState.Unchanged;
+                }
+            }
+        }
+    }
+
     private PdfObject Value(IndirectEntry entry)
     {
         if (entry.State == EntryState.Deleted)

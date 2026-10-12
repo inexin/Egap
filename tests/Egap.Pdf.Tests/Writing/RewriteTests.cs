@@ -267,12 +267,12 @@ public sealed class RewriteTests
     }
 
     [Fact]
-    public void IncrementalAndEncryptedSavesAreNotSupportedYet()
+    public void EncryptedSavesAreNotSupportedYet()
     {
         using PdfDocument pdf = PdfDocument.Open(Sample());
-        Assert.Throws<NotSupportedException>(() => pdf.Save(new MemoryStream()));
 
         pdf.Trailer["Encrypt"] = new PdfDictionary();
         Assert.Throws<NotSupportedException>(() => pdf.Save(new MemoryStream(), Rewrite));
+        Assert.Throws<NotSupportedException>(() => pdf.Save(new MemoryStream()));
     }
 }

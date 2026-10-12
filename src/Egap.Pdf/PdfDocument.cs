@@ -23,6 +23,10 @@ public sealed class PdfDocument : IDisposable
     private readonly WarningLog log;
     private readonly TrailerOwner trailerOwner = new();
 
+    /// <summary>The length of the file an incremental update goes after, and where its newest cross-reference section is.</summary>
+    private long baseLength;
+    private (long Offset, bool IsStream) previousSection;
+
     private PdfDocument(PdfSource source, PdfReadOptions options)
     {
         this.source = source;
@@ -69,6 +73,8 @@ public sealed class PdfDocument : IDisposable
 
         Xref = xref;
         Rebuilt = rebuilt;
+        baseLength = this.source.Length;
+        previousSection = xref.Sections.Count > 0 ? (xref.Sections[0].Offset, xref.Sections[0].IsStream) : (0, false);
         Trailer = xref.Trailer;
         Containment.Bind(Trailer, trailerOwner);
         if (Trailer.Get("Root") is not PdfDictionary)
@@ -194,71 +200,162 @@ public sealed class PdfDocument : IDisposable
     }
 
     /// <summary>
-    /// Saves the document to a file. Saving over the file the document was opened from is allowed: a rewrite goes to a
-    /// temporary file in the same folder that then replaces the original (design Q4).
+    /// Saves the document to a file. An incremental save (the default) copies the original bytes and appends the changes;
+    /// with no changes the file is copied byte for byte. A document that needed repair, or a <see cref="PdfSaveMode.Rewrite"/>,
+    /// is written whole (hub Q8). Saving over the file the document was opened from appends the changes in place, cutting
+    /// the file back if writing fails; a rewrite over it goes through a temporary file (design Q4).
     /// </summary>
-    /// <exception cref="NotSupportedException">The mode is not supported yet: incremental saving comes in a later step, and
-    /// encrypted documents cannot be saved yet.</exception>
+    /// <exception cref="NotSupportedException">The document is encrypted and has changes; saving encrypted documents comes
+    /// in a later step.</exception>
     public void Save(string path, PdfSaveOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
         options ??= PdfSaveOptions.Default;
-        CheckMode(options);
         string full = Path.GetFullPath(path);
-        if (string.Equals(full, FilePath, StringComparison.OrdinalIgnoreCase))
+        bool sameFile = string.Equals(full, FilePath, StringComparison.OrdinalIgnoreCase);
+        if (WritesWhole(options))
         {
-            string temporary = Path.Combine(Path.GetDirectoryName(full)!, $".{Path.GetFileName(full)}.{Guid.NewGuid():N}.tmp");
-            try
+            if (sameFile)
             {
-                using (FileStream output = new(temporary, FileMode.CreateNew, FileAccess.Write))
-                {
-                    Writing.RewriteWriter.Write(this, output, options);
-                }
-
-                // Windows will not replace a file that is open, but it renames and deletes one opened with delete sharing,
-                // as the document's file is: move the original aside, put the new file in place, then delete the original.
-                // The document keeps reading the original's bytes until it is disposed.
-                string aside = temporary + ".old";
-                File.Move(full, aside);
-                try
-                {
-                    File.Move(temporary, full);
-                }
-                catch
-                {
-                    File.Move(aside, full);
-                    throw;
-                }
-
-                File.Delete(aside);
+                ReplaceFile(full, output => Writing.RewriteWriter.Write(this, output, options));
             }
-            finally
+            else
             {
-                File.Delete(temporary);
+                using FileStream file = new(full, FileMode.Create, FileAccess.Write);
+                Writing.RewriteWriter.Write(this, file, options);
             }
 
             return;
         }
 
-        using FileStream file = new(full, FileMode.Create, FileAccess.Write);
-        Save(file, options);
+        (byte[] Bytes, long Xref)? update = Writing.IncrementalWriter.Update(this, baseLength, previousSection, EndsWithNewline(), options);
+        if (sameFile && new FileInfo(full).Length == baseLength)
+        {
+            if (update is { } appended)
+            {
+                AppendInPlace(full, appended.Bytes);
+                baseLength += appended.Bytes.Length;
+                previousSection = (appended.Xref, previousSection.IsStream);
+                (source as BlockCache)?.Reset(baseLength);
+                Objects.MarkSaved();
+                trailerOwner.Reset();
+            }
+
+            return;
+        }
+
+        if (sameFile)
+        {
+            ReplaceFile(full, output => CopyWithUpdate(output, update?.Bytes));
+            return;
+        }
+
+        using FileStream target = new(full, FileMode.Create, FileAccess.Write);
+        CopyWithUpdate(target, update?.Bytes);
     }
 
-    /// <summary>Saves the document to a stream, from its current position.</summary>
-    /// <exception cref="NotSupportedException">The mode is not supported yet.</exception>
+    /// <summary>Saves the document to a stream, from its current position. See <see cref="Save(string, PdfSaveOptions?)"/>.</summary>
+    /// <exception cref="NotSupportedException">The document is encrypted and has changes.</exception>
     public void Save(Stream output, PdfSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(output);
         options ??= PdfSaveOptions.Default;
-        CheckMode(options);
-        Writing.RewriteWriter.Write(this, output, options);
+        if (WritesWhole(options))
+        {
+            Writing.RewriteWriter.Write(this, output, options);
+            return;
+        }
+
+        CopyWithUpdate(output, Writing.IncrementalWriter.Update(this, baseLength, previousSection, EndsWithNewline(), options)?.Bytes);
     }
 
-    private static void CheckMode(PdfSaveOptions options)
+    /// <summary>Whether the trailer changed since the document was opened or last saved in place.</summary>
+    internal bool TrailerChanged => trailerOwner.Changed;
+
+    /// <summary>
+    /// Whether a save writes the whole document: when asked, or when the file needed repair to its structure, which an
+    /// update would leave in place (hub Q8).
+    /// </summary>
+    private bool WritesWhole(PdfSaveOptions options)
     {
-        if (options.Mode != PdfSaveMode.Rewrite)
+        return options.Mode == PdfSaveMode.Rewrite || Rebuilt || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
+            or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets);
+    }
+
+    private bool EndsWithNewline()
+    {
+        return baseLength == 0 || source.ReadBytes(baseLength - 1, 1) is [(byte)'\n' or (byte)'\r'];
+    }
+
+    private void CopyWithUpdate(Stream output, byte[]? update)
+    {
+        byte[] buffer = new byte[64 * 1024];
+        for (long at = 0; at < baseLength;)
         {
-            throw new NotSupportedException("Incremental saving is not supported yet; save with PdfSaveMode.Rewrite.");
+            int read = source.Read(at, buffer.AsSpan(0, (int)Math.Min(buffer.Length, baseLength - at)));
+            if (read == 0)
+            {
+                throw new IOException("The file the document was opened from ended early.");
+            }
+
+            output.Write(buffer, 0, read);
+            at += read;
+        }
+
+        if (update is not null)
+        {
+            output.Write(update);
+        }
+    }
+
+    /// <summary>Appends an update to the document's own file; if writing fails, the file is cut back to its old length.</summary>
+    private void AppendInPlace(string path, byte[] update)
+    {
+        using FileStream file = new(path, FileMode.Open, FileAccess.Write, FileShare.ReadWrite | FileShare.Delete);
+        file.Position = baseLength;
+        try
+        {
+            file.Write(update);
+            file.Flush(flushToDisk: true);
+        }
+        catch
+        {
+            file.SetLength(baseLength);
+            throw;
+        }
+    }
+
+    /// <summary>Writes a new file next to <paramref name="path"/> and puts it in place of the one there, which may be open.</summary>
+    private static void ReplaceFile(string path, Action<Stream> write)
+    {
+        string temporary = Path.Combine(Path.GetDirectoryName(path)!, $".{Path.GetFileName(path)}.{Guid.NewGuid():N}.tmp");
+        try
+        {
+            using (FileStream output = new(temporary, FileMode.CreateNew, FileAccess.Write))
+            {
+                write(output);
+            }
+
+            // Windows will not replace a file that is open, but it renames and deletes one opened with delete sharing,
+            // as the document's file is: move the original aside, put the new file in place, then delete the original.
+            // The document keeps reading the original's bytes until it is disposed.
+            string aside = temporary + ".old";
+            File.Move(path, aside);
+            try
+            {
+                File.Move(temporary, path);
+            }
+            catch
+            {
+                File.Move(aside, path);
+                throw;
+            }
+
+            File.Delete(aside);
+        }
+        finally
+        {
+            File.Delete(temporary);
         }
     }
 
@@ -301,6 +398,11 @@ public sealed class PdfDocument : IDisposable
         public void OnChanged()
         {
             Changed = true;
+        }
+
+        public void Reset()
+        {
+            Changed = false;
         }
     }
 }
