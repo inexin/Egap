@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers"];
 
     public static Action<Stream> Get(string name)
     {
@@ -34,6 +34,7 @@ internal static class Targets
             "xmp" => Xmp,
             "metadata" => Metadata,
             "attachments" => Attachments,
+            "layers" => Layers,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -1341,6 +1342,78 @@ internal static class Targets
             }
             catch (PdfLimitException)
             {
+            }
+        }
+    }
+
+    /// <summary>
+    /// Layers (Phase 2 task 10): every layer read leniently; then layers are shown, hidden, locked, renamed and removed by a
+    /// plan drawn from the input, each change read back at once, and the file written whole must reopen with the same layers
+    /// in the same state.
+    /// </summary>
+    private static void Layers(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                foreach (PdfLayer layer in pdf.Layers.Take(200))
+                {
+                    _ = (layer.Name, layer.Intents, layer.IsVisible, layer.IsLocked);
+                }
+
+                Random random = new(bytes.Length);
+                for (int i = 0; i < 20 && pdf.Layers.Count > 0; i++)
+                {
+                    PdfLayer layer = pdf.Layers[random.Next(pdf.Layers.Count)];
+                    bool value = random.Next(2) == 0;
+                    switch (random.Next(4))
+                    {
+                        case 0:
+                            layer.IsVisible = value;
+                            Check(layer.IsVisible == value, "visibility");
+                            break;
+                        case 1:
+                            layer.IsLocked = value;
+                            Check(layer.IsLocked == value, "lock");
+                            break;
+                        case 2:
+                            layer.Name = $"L{i}";
+                            Check(layer.Name == $"L{i}", "name");
+                            break;
+                        default:
+                            Check(pdf.Layers.Remove(layer) && !pdf.Layers.Contains(layer), "removal");
+                            break;
+                    }
+                }
+
+                List<(string, bool, bool)> state = [.. pdf.Layers.Select(l => (l.Name, l.IsVisible, l.IsLocked))];
+                using MemoryStream whole = new();
+                pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+                using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                Check(reopened.Layers.Select(l => (l.Name, l.IsVisible, l.IsLocked)).SequenceEqual(state), "the rewrite");
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+
+        static void Check(bool ok, string what)
+        {
+            if (!ok)
+            {
+                throw new InvalidOperationException($"A layer's {what} did not hold.");
             }
         }
     }
