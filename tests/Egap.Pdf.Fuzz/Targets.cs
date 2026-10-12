@@ -411,7 +411,7 @@ internal static class Targets
     }
 
     /// <summary>
-    /// PDF bytes opened leniently and saved by full rewrite: the output must open strictly, without a single warning, and
+    /// PDF bytes opened leniently and saved by full rewrite, preserving the input's style and compact: each output must open strictly, without a single warning, and
     /// hold the same objects. Opening may throw <see cref="PdfException"/>; encrypted files are skipped.
     /// </summary>
     private static void Rewrite(Stream input)
@@ -436,24 +436,27 @@ internal static class Targets
                 return;
             }
 
-            using MemoryStream output = new();
-            try
+            foreach (PdfCompression compression in new[] { PdfCompression.Preserve, PdfCompression.Compact })
             {
-                original.Save(output, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
-            }
-            catch (PdfLimitException)
-            {
-                return;
-            }
+                using MemoryStream output = new();
+                try
+                {
+                    original.Save(output, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = compression, Deterministic = true });
+                }
+                catch (PdfLimitException)
+                {
+                    return;
+                }
 
-            using PdfDocument rewritten = PdfDocument.Open(output.ToArray(), options with { Strict = true });
-            if (rewritten.Warnings.Count > 0)
-            {
-                throw new InvalidOperationException($"The rewrite has warnings: {rewritten.Warnings[0]}");
-            }
+                using PdfDocument rewritten = PdfDocument.Open(output.ToArray(), options with { Strict = true });
+                if (rewritten.Warnings.Count > 0)
+                {
+                    throw new InvalidOperationException($"The {compression} rewrite has warnings: {rewritten.Warnings[0]}");
+                }
 
-            GraphCheck.AssertSame(original, rewritten);
-            Count("rewritten");
+                GraphCheck.AssertSame(original, rewritten);
+                Count($"rewritten, {compression}");
+            }
         }
     }
 }

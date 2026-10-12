@@ -21,6 +21,10 @@ Egap.Pdf.PdfArray.this[int index].get -> Egap.Pdf.PdfObject!
 Egap.Pdf.PdfArray.this[int index].set -> void
 Egap.Pdf.PdfBoolean
 Egap.Pdf.PdfBoolean.Value.get -> bool
+Egap.Pdf.PdfCompression
+Egap.Pdf.PdfCompression.Compact = 1 -> Egap.Pdf.PdfCompression
+Egap.Pdf.PdfCompression.None = 2 -> Egap.Pdf.PdfCompression
+Egap.Pdf.PdfCompression.Preserve = 0 -> Egap.Pdf.PdfCompression
 Egap.Pdf.PdfDictionary
 Egap.Pdf.PdfDictionary.Add(Egap.Pdf.PdfName! key, Egap.Pdf.PdfObject! value) -> void
 Egap.Pdf.PdfDictionary.Clone() -> Egap.Pdf.PdfDictionary!
@@ -118,6 +122,8 @@ Egap.Pdf.PdfSaveMode.Incremental = 0 -> Egap.Pdf.PdfSaveMode
 Egap.Pdf.PdfSaveMode.Rewrite = 1 -> Egap.Pdf.PdfSaveMode
 Egap.Pdf.PdfSaveOptions
 Egap.Pdf.PdfSaveOptions.<Clone>$() -> Egap.Pdf.PdfSaveOptions!
+Egap.Pdf.PdfSaveOptions.Compression.get -> Egap.Pdf.PdfCompression
+Egap.Pdf.PdfSaveOptions.Compression.init -> void
 Egap.Pdf.PdfSaveOptions.Deterministic.get -> bool
 Egap.Pdf.PdfSaveOptions.Deterministic.init -> void
 Egap.Pdf.PdfSaveOptions.Equals(Egap.Pdf.PdfSaveOptions? other) -> bool
