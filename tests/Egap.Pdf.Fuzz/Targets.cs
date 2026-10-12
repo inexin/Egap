@@ -11,7 +11,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite"];
 
     public static Action<Stream> Get(string name)
     {
@@ -23,6 +23,7 @@ internal static class Targets
             "streams" => Streams,
             "xref" => Xref,
             "document" => Document,
+            "rewrite" => Rewrite,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -406,6 +407,53 @@ internal static class Targets
                 {
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// PDF bytes opened leniently and saved by full rewrite: the output must open strictly, without a single warning, and
+    /// hold the same objects. Opening may throw <see cref="PdfException"/>; encrypted files are skipped.
+    /// </summary>
+    private static void Rewrite(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 };
+        PdfDocument original;
+        try
+        {
+            original = PdfDocument.Open(bytes, options);
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (original)
+        {
+            if (original.Trailer.ContainsKey("Encrypt"))
+            {
+                Count("encrypted, skipped");
+                return;
+            }
+
+            using MemoryStream output = new();
+            try
+            {
+                original.Save(output, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+            }
+            catch (PdfLimitException)
+            {
+                return;
+            }
+
+            using PdfDocument rewritten = PdfDocument.Open(output.ToArray(), options with { Strict = true });
+            if (rewritten.Warnings.Count > 0)
+            {
+                throw new InvalidOperationException($"The rewrite has warnings: {rewritten.Warnings[0]}");
+            }
+
+            GraphCheck.AssertSame(original, rewritten);
+            Count("rewritten");
         }
     }
 }

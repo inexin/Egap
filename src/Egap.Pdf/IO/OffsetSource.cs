@@ -3,6 +3,8 @@ namespace Egap.Pdf.IO;
 /// <summary>A view of a source that starts <c>shift</c> bytes in, for files whose offsets count from a header that is not at the start.</summary>
 internal sealed class OffsetSource(PdfSource inner, long shift) : PdfSource
 {
+    public PdfSource Inner => inner;
+
     public override long Length => inner.Length - shift;
 
     public override bool TryGetChunk(long position, out ArraySegment<byte> chunk, out long chunkStart)
