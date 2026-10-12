@@ -91,4 +91,10 @@ public enum PdfWarningCode
 
     /// <summary>Encrypted data or the encryption dictionary was malformed; it was read as far as it made sense.</summary>
     MalformedEncryption,
+
+    /// <summary>
+    /// A name tree or number tree was malformed (its nodes loop, its limits or entries are missing, wrong or out of order);
+    /// it was read as far as it made sense, and rebuilt from its entries when edited.
+    /// </summary>
+    MalformedTree,
 }

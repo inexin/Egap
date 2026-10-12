@@ -2,6 +2,7 @@ using Egap.Pdf.Filters;
 using Egap.Pdf.IO;
 using Egap.Pdf.Objects;
 using Egap.Pdf.Parsing;
+using Egap.Pdf.Trees;
 
 namespace Egap.Pdf.Fuzz;
 
@@ -11,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees"];
 
     public static Action<Stream> Get(string name)
     {
@@ -25,6 +26,7 @@ internal static class Targets
             "document" => Document,
             "rewrite" => Rewrite,
             "incremental" => Incremental,
+            "trees" => Trees,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -510,6 +512,155 @@ internal static class Targets
             }
             catch (PdfLimitException)
             {
+            }
+        }
+    }
+
+    /// <summary>
+    /// Name and number trees (Phase 2 task 2). Every dictionary with <c>/Names</c>, <c>/Nums</c> or <c>/Kids</c> among the
+    /// first objects is read as a tree: a tree read without warnings must find each of its entries by lookup. Then keys are
+    /// set and removed by a plan drawn from the input, and the tree must read back strictly, without a warning, holding
+    /// exactly what the edits say, with no node over the split size.
+    /// </summary>
+    private static void Trees(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 };
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, options);
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                int seed = bytes.Length;
+                foreach (PdfReference reference in pdf.Objects.Take(500))
+                {
+                    if (pdf.Objects[reference] is not PdfDictionary root)
+                    {
+                        continue;
+                    }
+
+                    seed = (seed * 31) + reference.ObjectNumber;
+                    if (root["Nums"] is not null)
+                    {
+                        Exercise(pdf, r => new NumberTree(r, pdf.Objects, pdf.Log), r => new NumberTree(r, pdf.Objects, new WarningLog(strict: true)), root, n => n, Comparer<long>.Default, seed);
+                    }
+                    else if (root["Names"] is not null || root["Kids"] is not null)
+                    {
+                        Exercise(
+                            pdf,
+                            r => new NameTree(r, pdf.Objects, pdf.Log),
+                            r => new NameTree(r, pdf.Objects, new WarningLog(strict: true)),
+                            root,
+                            n => PdfString.FromBytes(System.Text.Encoding.ASCII.GetBytes($"k{n}")),
+                            Comparer<PdfString>.Create((a, b) => a.Bytes.SequenceCompareTo(b.Bytes)),
+                            seed);
+                    }
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+    }
+
+    private static void Exercise<TKey>(PdfDocument pdf, Func<PdfDictionary, PdfTree<TKey>> open, Func<PdfDictionary, PdfTree<TKey>> openStrict, PdfDictionary root, Func<long, TKey> key, IComparer<TKey> comparer, int seed)
+        where TKey : notnull
+    {
+        int warnings = pdf.Warnings.Count;
+        PdfTree<TKey> tree = open(root);
+        List<KeyValuePair<TKey, PdfObject>> entries = tree.Entries();
+        if (pdf.Warnings.Count == warnings)
+        {
+            foreach (KeyValuePair<TKey, PdfObject> entry in entries.Take(300))
+            {
+                if (!tree.TryGet(entry.Key, out PdfObject value) || !ReferenceEquals(value, entry.Value))
+                {
+                    throw new InvalidOperationException($"A well-formed tree did not find its key {entry.Key}.");
+                }
+
+                if (!tree.TryGetFloor(entry.Key, out KeyValuePair<TKey, PdfObject> floor) || comparer.Compare(floor.Key, entry.Key) != 0)
+                {
+                    throw new InvalidOperationException($"A well-formed tree did not find the floor of its key {entry.Key}.");
+                }
+            }
+        }
+
+        // What the tree must hold after the edits, values compared by how they write.
+        SortedDictionary<TKey, string> expected = new(comparer);
+        foreach (KeyValuePair<TKey, PdfObject> entry in entries)
+        {
+            expected[entry.Key] = Written(entry.Value);
+        }
+
+        Random random = new(seed);
+        List<TKey> existing = [.. expected.Keys];
+        for (int i = 0; i < 400; i++)
+        {
+            bool remove = random.Next(3) == 0;
+            TKey target = existing.Count > 0 && random.Next(2) == 0 ? existing[random.Next(existing.Count)] : key(random.Next(-50, 2000));
+            if (remove)
+            {
+                if (tree.Remove(target) != expected.Remove(target))
+                {
+                    throw new InvalidOperationException($"Removing {target} did not match what the tree held.");
+                }
+            }
+            else
+            {
+                tree.Set(target, new PdfInteger(i));
+                expected[target] = Written(new PdfInteger(i));
+            }
+        }
+
+        List<KeyValuePair<TKey, PdfObject>> after = openStrict(root).Entries();
+        if (after.Count != expected.Count || !after.Zip(expected).All(p => comparer.Compare(p.First.Key, p.Second.Key) == 0 && Written(p.First.Value) == p.Second.Value))
+        {
+            throw new InvalidOperationException($"After the edits the tree holds {after.Count} entries, not the {expected.Count} expected.");
+        }
+
+        CheckNodeSizes(root);
+    }
+
+    private static string Written(PdfObject value)
+    {
+        return System.Text.Encoding.Latin1.GetString(ObjectWriter.ToBytes(value, includeStreamData: false));
+    }
+
+    private static void CheckNodeSizes(PdfDictionary root)
+    {
+        HashSet<PdfDictionary> seen = new(ReferenceEqualityComparer.Instance);
+        Stack<PdfDictionary> pending = new([root]);
+        while (pending.TryPop(out PdfDictionary? node))
+        {
+            if (!seen.Add(node))
+            {
+                throw new InvalidOperationException("A tree read without warnings has a loop.");
+            }
+
+            if (node.Get<PdfArray>("Kids") is PdfArray kids)
+            {
+                if (kids.Count > PdfTree<long>.MaxNodeSize)
+                {
+                    throw new InvalidOperationException($"A node has {kids.Count} kids.");
+                }
+
+                foreach (PdfObject kid in kids)
+                {
+                    pending.Push((PdfDictionary)kid.Resolve());
+                }
+            }
+            else if ((node.Get<PdfArray>("Names") ?? node.Get<PdfArray>("Nums")) is { Count: > PdfTree<long>.MaxNodeSize * 2 } leaf)
+            {
+                throw new InvalidOperationException($"A leaf has {leaf.Count / 2} entries.");
             }
         }
     }
