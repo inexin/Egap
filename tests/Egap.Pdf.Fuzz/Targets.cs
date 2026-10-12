@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation"];
 
     public static Action<Stream> Get(string name)
     {
@@ -29,6 +29,7 @@ internal static class Targets
             "trees" => Trees,
             "pages" => Pages,
             "pageedits" => PageEdits,
+            "navigation" => Navigation,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -871,5 +872,142 @@ internal static class Targets
     private static (PdfRectangle Media, PdfRectangle Crop, int Rotate) Look(PdfPage page)
     {
         return (page.MediaBox, page.CropBox, page.Rotate);
+    }
+
+    /// <summary>
+    /// Destinations, named destinations and actions (Phase 2 task 6), read leniently: every action among the first objects is
+    /// typed and its properties read, its <c>/Next</c> sequence must end with each action once, every array that reads as a
+    /// destination must write back to an equal one, and every named destination is looked up. Then names are set and
+    /// removed, and the file written whole must reopen with exactly the destinations set.
+    /// </summary>
+    private static void Navigation(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 };
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, options);
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                foreach (PdfReference reference in pdf.Objects.Take(2000))
+                {
+                    switch (pdf.Objects[reference])
+                    {
+                        case PdfDictionary dictionary when dictionary["S"] is not null:
+                            ReadAction(pdf, PdfAction.FromDictionary(dictionary));
+                            break;
+                        case PdfArray array when PdfDestination.FromArray(array) is PdfDestination destination:
+                            if (PdfDestination.FromArray(destination.ToArray()) != destination)
+                            {
+                                throw new InvalidOperationException($"The destination {array} did not write back the same.");
+                            }
+
+                            _ = destination.GetPageIndex(pdf);
+                            break;
+                    }
+                }
+
+                IReadOnlyList<string> names = pdf.NamedDestinations.GetNames();
+                foreach (string name in names.Take(300))
+                {
+                    _ = pdf.NamedDestinations.TryGet(name, out _);
+                }
+
+                if (pdf.Pages.Count == 0)
+                {
+                    return;
+                }
+
+                Dictionary<string, PdfDestination> set = [];
+                Random random = new(bytes.Length);
+                for (int i = 0; i < 20; i++)
+                {
+                    string name = random.Next(3) == 0 && names.Count > 0 ? names[random.Next(names.Count)] : $"n{random.Next(50)}";
+                    if (random.Next(4) == 0)
+                    {
+                        pdf.NamedDestinations.Remove(name);
+                        set.Remove(name);
+                    }
+                    else if (pdf.Pages[random.Next(pdf.Pages.Count)] is { Reference: not null } page)
+                    {
+                        // A page written directly in /Kids has no reference for a destination to name.
+                        PdfDestination destination = PdfDestination.ToPage(page, (PdfDestinationFit)random.Next(8)) with { Top = random.Next(1000) };
+                        pdf.NamedDestinations.Set(name, destination);
+                        set[name] = destination;
+                    }
+                }
+
+                // A page tree repaired while reading (pages found by scanning, say) may list its pages in another order once
+                // written whole, so page indexes are compared only for a sound tree.
+                bool soundTree = !pdf.Warnings.Any(w => w.Code == PdfWarningCode.MalformedPageTree);
+                using MemoryStream whole = new();
+                pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+                using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                foreach ((string name, PdfDestination destination) in set)
+                {
+                    if (!reopened.NamedDestinations.TryGet(name, out PdfDestination found) || found.Fit != destination.Fit || found.PageReference is null
+                        || (soundTree && found.GetPageIndex(reopened) != destination.GetPageIndex(pdf)))
+                    {
+                        throw new InvalidOperationException($"The named destination {name} did not survive the rewrite.");
+                    }
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+    }
+
+    private static void ReadAction(PdfDocument pdf, PdfAction action)
+    {
+        IReadOnlyList<PdfAction> sequence = action.GetSequence();
+        if (sequence.Count == 0 || sequence[0] != action || sequence.Distinct().Count() != sequence.Count)
+        {
+            throw new InvalidOperationException("An action sequence did not start with the action, or repeated one.");
+        }
+
+        _ = action.ToString();
+        switch (action)
+        {
+            case PdfGoToAction goTo:
+                _ = (goTo.Destination, goTo.DestinationName, goTo.ResolveDestination(pdf)?.GetPageIndex(pdf));
+                break;
+            case PdfGoToRemoteAction remote:
+                _ = (remote.FileName, remote.Destination, remote.DestinationName, remote.NewWindow);
+                break;
+            case PdfGoToEmbeddedAction embedded:
+                _ = (embedded.FileName, embedded.Destination, embedded.DestinationName, embedded.Target, embedded.NewWindow);
+                break;
+            case PdfUriAction uri:
+                _ = (uri.Uri, uri.IsMap);
+                break;
+            case PdfNamedAction named:
+                _ = named.Name;
+                break;
+            case PdfLaunchAction launch:
+                _ = (launch.FileName, launch.NewWindow);
+                break;
+            case PdfSubmitFormAction submit:
+                _ = (submit.Url, submit.Fields, submit.Flags);
+                break;
+            case PdfResetFormAction reset:
+                _ = (reset.Fields, reset.Flags);
+                break;
+            case PdfHideAction hide:
+                _ = (hide.Targets, hide.Hide);
+                break;
+            case PdfSetOcgStateAction state:
+                _ = (state.State, state.PreserveRadioButtons);
+                break;
+        }
     }
 }

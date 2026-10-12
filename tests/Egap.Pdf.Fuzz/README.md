@@ -17,6 +17,7 @@ crash, and AFL++ also reports hangs.
 | `trees` | PDF bytes: every dictionary with `/Names`, `/Nums` or `/Kids` read as a name or number tree; a tree read without warnings must find each entry by lookup; after 400 sets and removes drawn from the input it must read back strictly, holding exactly what the edits say, no node over 128 | `tests/fuzz-seeds/trees/*` |
 | `pages` | PDF bytes: the page tree read leniently and strictly; every page's attributes and label read, each page found again by `IndexOf`, boxes nested inside the media box, rotation one of 0, 90, 180, 270; reading must not count as an edit, so an unchanged incremental save stays byte-identical | `tests/fuzz-seeds/pages/*`, `tests/fuzz-seeds/xref/*` |
 | `pageedits` | PDF bytes: 60 inserts, removes and moves and a few page label ranges drawn from the input; every page keeps its media box, crop box and rotation; the result written whole reopens strictly without a warning and with the same labels, and saved incrementally keeps the original bytes and reopens with the same pages | `tests/fuzz-seeds/pages/*`, `tests/fuzz-seeds/xref/*` |
+| `navigation` | PDF bytes: every action typed and read, its `/Next` sequence ending with each action once; every destination array written back equal; named destinations looked up, then set and removed, and the rewritten file must hold exactly those set | `tests/fuzz-seeds/navigation/*`, `tests/fuzz-seeds/xref/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 

@@ -1,0 +1,77 @@
+%PDF-1.7
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R /Names << /Dests 5 0 R >> /Dests << /old [4 0 R /Fit] >> /OpenAction 7 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 100 100] >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 100 100] >>
+endobj
+5 0 obj
+<< /Kids [6 0 R] >>
+endobj
+6 0 obj
+<< /Limits [(a) (c)] /Names [(a) [3 0 R /XYZ 1 2 3] (b) << /D [4 0 R /FitR 1 2 3 4] >> (c) 12 0 R] >>
+endobj
+7 0 obj
+<< /S /GoTo /D (a) /Next [8 0 R 9 0 R] >>
+endobj
+8 0 obj
+<< /S /URI /URI (https://x/) /Next 7 0 R >>
+endobj
+9 0 obj
+<< /S /GoToR /F (o.pdf) /D [0 /FitBH 5] /Next 10 0 R >>
+endobj
+10 0 obj
+<< /S /Launch /F << /UF (l.txt) >> /Next 11 0 R >>
+endobj
+11 0 obj
+<< /S /JavaScript /JS (x) >>
+endobj
+12 0 obj
+[3 0 R /FitBV 9]
+endobj
+13 0 obj
+<< /S /SubmitForm /F << /FS /URL /F (u) >> /Fields [(a)] /Flags 4 >>
+endobj
+14 0 obj
+<< /S /Hide /T [(a)] /H false >>
+endobj
+15 0 obj
+<< /S /SetOCGState /State [/ON 3 0 R] >>
+endobj
+16 0 obj
+<< /S /Named /N /NextPage >>
+endobj
+17 0 obj
+<< /S /GoToE /T << /R /C /N (e) >> /D /old >>
+endobj
+xref
+0 18
+0000000000 65535 f 
+0000000009 00000 n 
+0000000133 00000 n 
+0000000196 00000 n 
+0000000267 00000 n 
+0000000338 00000 n 
+0000000373 00000 n 
+0000000490 00000 n 
+0000000547 00000 n 
+0000000606 00000 n 
+0000000677 00000 n 
+0000000744 00000 n 
+0000000789 00000 n 
+0000000822 00000 n 
+0000000907 00000 n 
+0000000956 00000 n 
+0000001013 00000 n 
+0000001058 00000 n 
+trailer
+<< /Size 18 /Root 1 0 R >>
+startxref
+1120
+%%EOF

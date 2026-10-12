@@ -1,5 +1,74 @@
 #nullable enable
+Egap.Pdf.PdfAction
+Egap.Pdf.PdfAction.ActionType.get -> string!
+Egap.Pdf.PdfAction.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfAction.Equals(Egap.Pdf.PdfAction? other) -> bool
+Egap.Pdf.PdfAction.GetSequence() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfAction!>!
+Egap.Pdf.PdfAction.Next.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfAction!>!
+Egap.Pdf.PdfAction.SetNext(Egap.Pdf.PdfDocument! document, params System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfAction!>! actions) -> void
+Egap.Pdf.PdfDestination
+Egap.Pdf.PdfDestination.<Clone>$() -> Egap.Pdf.PdfDestination!
+Egap.Pdf.PdfDestination.Bottom.get -> double?
+Egap.Pdf.PdfDestination.Bottom.init -> void
+Egap.Pdf.PdfDestination.Equals(Egap.Pdf.PdfDestination? other) -> bool
+Egap.Pdf.PdfDestination.Fit.get -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestination.GetPageIndex(Egap.Pdf.PdfDocument! document) -> int
+Egap.Pdf.PdfDestination.Left.get -> double?
+Egap.Pdf.PdfDestination.Left.init -> void
+Egap.Pdf.PdfDestination.PageIndex.get -> int?
+Egap.Pdf.PdfDestination.PageReference.get -> Egap.Pdf.PdfReference?
+Egap.Pdf.PdfDestination.Right.get -> double?
+Egap.Pdf.PdfDestination.Right.init -> void
+Egap.Pdf.PdfDestination.ToArray() -> Egap.Pdf.PdfArray!
+Egap.Pdf.PdfDestination.Top.get -> double?
+Egap.Pdf.PdfDestination.Top.init -> void
+Egap.Pdf.PdfDestination.Zoom.get -> double?
+Egap.Pdf.PdfDestination.Zoom.init -> void
+Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestinationFit.Fit = 1 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestinationFit.FitB = 5 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestinationFit.FitBH = 6 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestinationFit.FitBV = 7 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestinationFit.FitH = 2 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestinationFit.FitR = 4 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestinationFit.FitV = 3 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDestinationFit.Xyz = 0 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDocument.NamedDestinations.get -> Egap.Pdf.PdfNamedDestinations!
 Egap.Pdf.PdfDocument.Pages.get -> Egap.Pdf.PdfPageCollection!
+Egap.Pdf.PdfGoToAction
+Egap.Pdf.PdfGoToAction.Destination.get -> Egap.Pdf.PdfDestination?
+Egap.Pdf.PdfGoToAction.DestinationName.get -> string?
+Egap.Pdf.PdfGoToAction.PdfGoToAction(Egap.Pdf.PdfDestination! destination) -> void
+Egap.Pdf.PdfGoToAction.PdfGoToAction(string! destinationName) -> void
+Egap.Pdf.PdfGoToAction.ResolveDestination(Egap.Pdf.PdfDocument! document) -> Egap.Pdf.PdfDestination?
+Egap.Pdf.PdfGoToEmbeddedAction
+Egap.Pdf.PdfGoToEmbeddedAction.Destination.get -> Egap.Pdf.PdfDestination?
+Egap.Pdf.PdfGoToEmbeddedAction.DestinationName.get -> string?
+Egap.Pdf.PdfGoToEmbeddedAction.FileName.get -> string?
+Egap.Pdf.PdfGoToEmbeddedAction.NewWindow.get -> bool?
+Egap.Pdf.PdfGoToEmbeddedAction.Target.get -> Egap.Pdf.PdfDictionary?
+Egap.Pdf.PdfGoToRemoteAction
+Egap.Pdf.PdfGoToRemoteAction.Destination.get -> Egap.Pdf.PdfDestination?
+Egap.Pdf.PdfGoToRemoteAction.DestinationName.get -> string?
+Egap.Pdf.PdfGoToRemoteAction.FileName.get -> string?
+Egap.Pdf.PdfGoToRemoteAction.NewWindow.get -> bool?
+Egap.Pdf.PdfGoToRemoteAction.PdfGoToRemoteAction(string! fileName, Egap.Pdf.PdfDestination! destination) -> void
+Egap.Pdf.PdfGoToRemoteAction.PdfGoToRemoteAction(string! fileName, string! destinationName) -> void
+Egap.Pdf.PdfHideAction
+Egap.Pdf.PdfHideAction.Hide.get -> bool
+Egap.Pdf.PdfHideAction.Targets.get -> Egap.Pdf.PdfObject?
+Egap.Pdf.PdfLaunchAction
+Egap.Pdf.PdfLaunchAction.FileName.get -> string?
+Egap.Pdf.PdfLaunchAction.NewWindow.get -> bool?
+Egap.Pdf.PdfLaunchAction.PdfLaunchAction(string! fileName) -> void
+Egap.Pdf.PdfNamedAction
+Egap.Pdf.PdfNamedAction.Name.get -> string?
+Egap.Pdf.PdfNamedAction.PdfNamedAction(string! name) -> void
+Egap.Pdf.PdfNamedDestinations
+Egap.Pdf.PdfNamedDestinations.GetNames() -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfNamedDestinations.Remove(string! name) -> bool
+Egap.Pdf.PdfNamedDestinations.Set(string! name, Egap.Pdf.PdfDestination! destination) -> void
+Egap.Pdf.PdfNamedDestinations.TryGet(string! name, out Egap.Pdf.PdfDestination! destination) -> bool
 Egap.Pdf.PdfPage
 Egap.Pdf.PdfPage.ArtBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.ArtBox.set -> void
@@ -74,8 +143,29 @@ Egap.Pdf.PdfRectangle.ToArray() -> Egap.Pdf.PdfArray!
 Egap.Pdf.PdfRectangle.Top.get -> double
 Egap.Pdf.PdfRectangle.Top.init -> void
 Egap.Pdf.PdfRectangle.Width.get -> double
+Egap.Pdf.PdfResetFormAction
+Egap.Pdf.PdfResetFormAction.Fields.get -> Egap.Pdf.PdfArray?
+Egap.Pdf.PdfResetFormAction.Flags.get -> int
+Egap.Pdf.PdfSetOcgStateAction
+Egap.Pdf.PdfSetOcgStateAction.PreserveRadioButtons.get -> bool
+Egap.Pdf.PdfSetOcgStateAction.State.get -> Egap.Pdf.PdfArray?
+Egap.Pdf.PdfSubmitFormAction
+Egap.Pdf.PdfSubmitFormAction.Fields.get -> Egap.Pdf.PdfArray?
+Egap.Pdf.PdfSubmitFormAction.Flags.get -> int
+Egap.Pdf.PdfSubmitFormAction.Url.get -> string?
+Egap.Pdf.PdfUriAction
+Egap.Pdf.PdfUriAction.IsMap.get -> bool
+Egap.Pdf.PdfUriAction.PdfUriAction(string! uri) -> void
+Egap.Pdf.PdfUriAction.Uri.get -> string?
+Egap.Pdf.PdfUriAction.Uri.set -> void
 Egap.Pdf.PdfWarningCode.MalformedPageTree = 30 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode
+override Egap.Pdf.PdfAction.Equals(object? obj) -> bool
+override Egap.Pdf.PdfAction.GetHashCode() -> int
+override Egap.Pdf.PdfAction.ToString() -> string!
+override Egap.Pdf.PdfDestination.Equals(object? obj) -> bool
+override Egap.Pdf.PdfDestination.GetHashCode() -> int
+override Egap.Pdf.PdfDestination.ToString() -> string!
 override Egap.Pdf.PdfPage.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPage.GetHashCode() -> int
 override Egap.Pdf.PdfPage.ToString() -> string!
@@ -84,6 +174,12 @@ override Egap.Pdf.PdfPageLabelRange.GetHashCode() -> int
 override Egap.Pdf.PdfPageLabelRange.ToString() -> string!
 override Egap.Pdf.PdfRectangle.GetHashCode() -> int
 override Egap.Pdf.PdfRectangle.ToString() -> string!
+static Egap.Pdf.PdfAction.FromDictionary(Egap.Pdf.PdfDictionary! dictionary) -> Egap.Pdf.PdfAction!
+static Egap.Pdf.PdfDestination.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfDestination?
+static Egap.Pdf.PdfDestination.operator !=(Egap.Pdf.PdfDestination? left, Egap.Pdf.PdfDestination? right) -> bool
+static Egap.Pdf.PdfDestination.operator ==(Egap.Pdf.PdfDestination? left, Egap.Pdf.PdfDestination? right) -> bool
+static Egap.Pdf.PdfDestination.ToPage(Egap.Pdf.PdfPage! page, Egap.Pdf.PdfDestinationFit fit = Egap.Pdf.PdfDestinationFit.Fit) -> Egap.Pdf.PdfDestination!
+static Egap.Pdf.PdfDestination.ToPageIndex(int pageIndex, Egap.Pdf.PdfDestinationFit fit = Egap.Pdf.PdfDestinationFit.Fit) -> Egap.Pdf.PdfDestination!
 static Egap.Pdf.PdfPage.operator !=(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
 static Egap.Pdf.PdfPage.operator ==(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
 static Egap.Pdf.PdfPageLabelRange.operator !=(Egap.Pdf.PdfPageLabelRange? left, Egap.Pdf.PdfPageLabelRange? right) -> bool
