@@ -19,6 +19,8 @@ crash, and AFL++ also reports hangs.
 | `pageedits` | PDF bytes: 60 inserts, removes and moves and a few page label ranges drawn from the input; every page keeps its media box, crop box and rotation; the result written whole reopens strictly without a warning and with the same labels, and saved incrementally keeps the original bytes and reopens with the same pages | `tests/fuzz-seeds/pages/*`, `tests/fuzz-seeds/xref/*` |
 | `navigation` | PDF bytes: every action typed and read, its `/Next` sequence ending with each action once; every destination array written back equal; named destinations looked up, then set and removed, and the rewritten file must hold exactly those set | `tests/fuzz-seeds/navigation/*`, `tests/fuzz-seeds/xref/*` |
 | `outlines` | PDF bytes: the outline read leniently and strictly, each item found among its parent's children; then 30 adds, removes, moves and open toggles drawn from the input, and the rewritten outline must need no repair, with every `/Count` right and as many items as the edits leave | `tests/fuzz-seeds/outlines/*`, `tests/fuzz-seeds/xref/*` |
+| `xmp` | Any bytes parsed as an XMP packet; one that parses has its mapped properties read, set and written back, and must parse again with the values set and every element of other namespaces kept | `tests/fuzz-seeds/xmp/*` |
+| `metadata` | PDF bytes: every metadata property read, then title, author and keywords set and the file saved with a fixed clock; reopened it must give back what was set and the new modification date | `tests/fuzz-seeds/metadata/*`, `tests/fuzz-seeds/xref/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 

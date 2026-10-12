@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata"];
 
     public static Action<Stream> Get(string name)
     {
@@ -31,6 +31,8 @@ internal static class Targets
             "pageedits" => PageEdits,
             "navigation" => Navigation,
             "outlines" => Outlines,
+            "xmp" => Xmp,
+            "metadata" => Metadata,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -1145,5 +1147,109 @@ internal static class Targets
         }
 
         return shown;
+    }
+
+    /// <summary>
+    /// XMP packets (Phase 2 task 8): any bytes parsed as a packet must not throw; a packet that parses has every mapped
+    /// property read, then set, and written back; the written packet must parse again with the values set and every element
+    /// of an unknown namespace outside the properties set still there.
+    /// </summary>
+    private static void Xmp(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        if (Egap.Pdf.Metadata.XmpPacket.Parse(bytes) is not Egap.Pdf.Metadata.XmpPacket packet)
+        {
+            return;
+        }
+
+        System.Xml.Linq.XNamespace dc = Egap.Pdf.Metadata.XmpPacket.Dc;
+        System.Xml.Linq.XNamespace pdfNs = Egap.Pdf.Metadata.XmpPacket.Pdf;
+        System.Xml.Linq.XNamespace xmp = Egap.Pdf.Metadata.XmpPacket.Xmp;
+        _ = (packet.GetAlternative(dc + "title"), packet.GetList(dc + "creator"), packet.GetText(pdfNs + "Producer"), packet.GetText(xmp + "CreateDate"));
+        _ = Egap.Pdf.Metadata.PdfDate.ParseXmp(packet.GetText(xmp + "ModifyDate"));
+        int unknown = Unknown(packet.Document);
+
+        packet.SetAlternative(dc + "title", "Fuzz title");
+        packet.SetSequence(dc + "creator", "Fuzz author");
+        packet.SetText(pdfNs + "Producer", null);
+        packet.SetText(xmp + "ModifyDate", "2026-10-12T18:30:00+02:00");
+        byte[] written = packet.ToBytes();
+        Egap.Pdf.Metadata.XmpPacket again = Egap.Pdf.Metadata.XmpPacket.Parse(written)
+            ?? throw new InvalidOperationException("A written XMP packet did not parse.");
+        if (again.GetAlternative(dc + "title") != "Fuzz title" || again.GetList(dc + "creator") != "Fuzz author" || again.GetText(pdfNs + "Producer") is not null
+            || again.GetText(xmp + "ModifyDate") != "2026-10-12T18:30:00+02:00")
+        {
+            throw new InvalidOperationException("A written XMP packet lost a value set.");
+        }
+
+        if (Unknown(again.Document) != unknown)
+        {
+            throw new InvalidOperationException("A written XMP packet lost elements of other namespaces.");
+        }
+    }
+
+    /// <summary>The elements outside the namespaces the metadata API writes, which must survive a rewrite.</summary>
+    private static int Unknown(System.Xml.Linq.XDocument document)
+    {
+        System.Xml.Linq.XNamespace[] known = [Egap.Pdf.Metadata.XmpPacket.Dc, Egap.Pdf.Metadata.XmpPacket.Pdf, Egap.Pdf.Metadata.XmpPacket.Xmp, Egap.Pdf.Metadata.XmpPacket.Rdf];
+
+        // Elements inside the properties that are set are replaced with them, so they do not count.
+        return document.Descendants().Count(e => !known.Contains(e.Name.Namespace) && !e.Ancestors().Any(a => known.Contains(a.Name.Namespace) && a.Name.Namespace != Egap.Pdf.Metadata.XmpPacket.Rdf));
+    }
+
+    /// <summary>
+    /// Document metadata (Phase 2 task 8): every property read leniently, then the title, author and keywords set and the
+    /// document saved with a changed modification date; reopened, it must give back what was set, and an XMP packet that
+    /// parsed before must still parse.
+    /// </summary>
+    private static void Metadata(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                PdfMetadata metadata = pdf.Metadata;
+                _ = (metadata.Title, metadata.Author, metadata.Subject, metadata.Keywords, metadata.Creator, metadata.Producer, metadata.CreationDate, metadata.ModificationDate);
+                // A PDF 2.0 document gets a packet with its first change (Phase 2 Q8).
+                bool hadXmp = metadata.HasXmp || string.CompareOrdinal(pdf.Version, "2.0") >= 0;
+                metadata.Title = "Fuzz title";
+                metadata.Author = "Fuzz author";
+                metadata.Keywords = null;
+                pdf.Clock = new FixedClock(new DateTimeOffset(2026, 10, 12, 18, 30, 0, TimeSpan.FromHours(2)));
+                using MemoryStream saved = new();
+                pdf.Save(saved);
+                using PdfDocument reopened = PdfDocument.Open(saved.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                PdfMetadata after = reopened.Metadata;
+                if (after.Title != "Fuzz title" || after.Author != "Fuzz author" || after.Keywords is not null || after.HasXmp != hadXmp
+                    || (after.Info is not null && after.ModificationDate != new DateTimeOffset(2026, 10, 12, 18, 30, 0, TimeSpan.FromHours(2))))
+                {
+                    throw new InvalidOperationException("Metadata set did not come back after saving.");
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+    }
+
+    private sealed class FixedClock(DateTimeOffset now) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow()
+        {
+            return now.ToUniversalTime();
+        }
+
+        public override TimeZoneInfo LocalTimeZone => TimeZoneInfo.CreateCustomTimeZone("Fuzz", now.Offset, "Fuzz", "Fuzz");
     }
 }

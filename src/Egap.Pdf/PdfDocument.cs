@@ -320,6 +320,7 @@ public sealed class PdfDocument : IDisposable
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
         options ??= PdfSaveOptions.Default;
+        BeforeSave(options);
         string full = Path.GetFullPath(path);
         bool sameFile = string.Equals(full, FilePath, StringComparison.OrdinalIgnoreCase);
         if (WritesWhole(options))
@@ -386,6 +387,7 @@ public sealed class PdfDocument : IDisposable
     private void SaveTo(Stream output, PdfSaveOptions? options)
     {
         options ??= PdfSaveOptions.Default;
+        BeforeSave(options);
         if (WritesWhole(options))
         {
             Writing.RewriteWriter.Write(this, output, options);
@@ -393,6 +395,21 @@ public sealed class PdfDocument : IDisposable
         }
 
         CopyWithUpdate(output, Writing.IncrementalWriter.Update(this, baseLength, previousSection, EndsWithNewline(), options)?.Bytes);
+    }
+
+    /// <summary>The clock a save reads the modification date from; tests set their own.</summary>
+    internal TimeProvider Clock { get; set; } = TimeProvider.System;
+
+    /// <summary>The document's metadata: the Info dictionary and the XMP packet through one API (Phase 2 Q8).</summary>
+    public PdfMetadata Metadata => new(this);
+
+    /// <summary>Sets the modification date before a save with changes, unless the options say not to (Phase 2 Q9).</summary>
+    private void BeforeSave(PdfSaveOptions options)
+    {
+        if (options.UpdateModificationDate && !options.Deterministic && IsChanged)
+        {
+            Metadata.Touch(Clock.GetLocalNow());
+        }
     }
 
     /// <summary>Whether the trailer changed since the document was opened or last saved in place.</summary>

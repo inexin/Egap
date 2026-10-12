@@ -74,4 +74,11 @@ public sealed record PdfSaveOptions
     /// same document always saves to the same bytes. The default is <see langword="false"/>.
     /// </summary>
     public bool Deterministic { get; init; }
+
+    /// <summary>
+    /// Whether a save with changes sets the modification date (<c>/ModDate</c>, and <c>xmp:ModifyDate</c> when there is an
+    /// XMP packet) to the time of saving (Phase 2 Q9). A save without changes, or a <see cref="Deterministic"/> one, never
+    /// does. The default is <see langword="true"/>.
+    /// </summary>
+    public bool UpdateModificationDate { get; init; } = true;
 }

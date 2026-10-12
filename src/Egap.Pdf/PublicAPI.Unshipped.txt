@@ -34,6 +34,7 @@ Egap.Pdf.PdfDestinationFit.FitH = 2 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.FitR = 4 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.FitV = 3 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.Xyz = 0 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDocument.Metadata.get -> Egap.Pdf.PdfMetadata!
 Egap.Pdf.PdfDocument.NamedDestinations.get -> Egap.Pdf.PdfNamedDestinations!
 Egap.Pdf.PdfDocument.Outline.get -> Egap.Pdf.PdfOutline!
 Egap.Pdf.PdfDocument.Pages.get -> Egap.Pdf.PdfPageCollection!
@@ -63,6 +64,28 @@ Egap.Pdf.PdfLaunchAction
 Egap.Pdf.PdfLaunchAction.FileName.get -> string?
 Egap.Pdf.PdfLaunchAction.NewWindow.get -> bool?
 Egap.Pdf.PdfLaunchAction.PdfLaunchAction(string! fileName) -> void
+Egap.Pdf.PdfMetadata
+Egap.Pdf.PdfMetadata.Author.get -> string?
+Egap.Pdf.PdfMetadata.Author.set -> void
+Egap.Pdf.PdfMetadata.CreateXmp() -> void
+Egap.Pdf.PdfMetadata.CreationDate.get -> System.DateTimeOffset?
+Egap.Pdf.PdfMetadata.CreationDate.set -> void
+Egap.Pdf.PdfMetadata.Creator.get -> string?
+Egap.Pdf.PdfMetadata.Creator.set -> void
+Egap.Pdf.PdfMetadata.GetXmp() -> System.Xml.Linq.XDocument?
+Egap.Pdf.PdfMetadata.HasXmp.get -> bool
+Egap.Pdf.PdfMetadata.Info.get -> Egap.Pdf.PdfDictionary?
+Egap.Pdf.PdfMetadata.Keywords.get -> string?
+Egap.Pdf.PdfMetadata.Keywords.set -> void
+Egap.Pdf.PdfMetadata.ModificationDate.get -> System.DateTimeOffset?
+Egap.Pdf.PdfMetadata.ModificationDate.set -> void
+Egap.Pdf.PdfMetadata.Producer.get -> string?
+Egap.Pdf.PdfMetadata.Producer.set -> void
+Egap.Pdf.PdfMetadata.SetXmp(System.Xml.Linq.XDocument! xmp) -> void
+Egap.Pdf.PdfMetadata.Subject.get -> string?
+Egap.Pdf.PdfMetadata.Subject.set -> void
+Egap.Pdf.PdfMetadata.Title.get -> string?
+Egap.Pdf.PdfMetadata.Title.set -> void
 Egap.Pdf.PdfNamedAction
 Egap.Pdf.PdfNamedAction.Name.get -> string?
 Egap.Pdf.PdfNamedAction.PdfNamedAction(string! name) -> void
@@ -186,6 +209,8 @@ Egap.Pdf.PdfRgbColor.PdfRgbColor(double Red, double Green, double Blue) -> void
 Egap.Pdf.PdfRgbColor.Red.get -> double
 Egap.Pdf.PdfRgbColor.Red.init -> void
 Egap.Pdf.PdfRgbColor.ToArray() -> Egap.Pdf.PdfArray!
+Egap.Pdf.PdfSaveOptions.UpdateModificationDate.get -> bool
+Egap.Pdf.PdfSaveOptions.UpdateModificationDate.init -> void
 Egap.Pdf.PdfSetOcgStateAction
 Egap.Pdf.PdfSetOcgStateAction.PreserveRadioButtons.get -> bool
 Egap.Pdf.PdfSetOcgStateAction.State.get -> Egap.Pdf.PdfArray?
