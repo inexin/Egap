@@ -103,4 +103,10 @@ public enum PdfWarningCode
     /// <c>/Count</c>, or no tree at all); it was repaired in memory.
     /// </summary>
     MalformedPageTree,
+
+    /// <summary>
+    /// The outline was malformed (chains of items that loop or reach something that is not an item, or a wrong
+    /// <c>/Parent</c>, <c>/Prev</c> or <c>/Last</c>); it was repaired in memory.
+    /// </summary>
+    MalformedOutline,
 }

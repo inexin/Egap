@@ -1,4 +1,5 @@
 #nullable enable
+abstract Egap.Pdf.PdfOutlineNode.Dictionary.get -> Egap.Pdf.PdfDictionary?
 Egap.Pdf.PdfAction
 Egap.Pdf.PdfAction.ActionType.get -> string!
 Egap.Pdf.PdfAction.Dictionary.get -> Egap.Pdf.PdfDictionary!
@@ -34,6 +35,7 @@ Egap.Pdf.PdfDestinationFit.FitR = 4 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.FitV = 3 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.Xyz = 0 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDocument.NamedDestinations.get -> Egap.Pdf.PdfNamedDestinations!
+Egap.Pdf.PdfDocument.Outline.get -> Egap.Pdf.PdfOutline!
 Egap.Pdf.PdfDocument.Pages.get -> Egap.Pdf.PdfPageCollection!
 Egap.Pdf.PdfGoToAction
 Egap.Pdf.PdfGoToAction.Destination.get -> Egap.Pdf.PdfDestination?
@@ -69,6 +71,32 @@ Egap.Pdf.PdfNamedDestinations.GetNames() -> System.Collections.Generic.IReadOnly
 Egap.Pdf.PdfNamedDestinations.Remove(string! name) -> bool
 Egap.Pdf.PdfNamedDestinations.Set(string! name, Egap.Pdf.PdfDestination! destination) -> void
 Egap.Pdf.PdfNamedDestinations.TryGet(string! name, out Egap.Pdf.PdfDestination! destination) -> bool
+Egap.Pdf.PdfOutline
+Egap.Pdf.PdfOutline.GetAllItems() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfOutlineItem!>!
+Egap.Pdf.PdfOutlineItem
+Egap.Pdf.PdfOutlineItem.Action.get -> Egap.Pdf.PdfAction?
+Egap.Pdf.PdfOutlineItem.Action.set -> void
+Egap.Pdf.PdfOutlineItem.Color.get -> Egap.Pdf.PdfRgbColor
+Egap.Pdf.PdfOutlineItem.Color.set -> void
+Egap.Pdf.PdfOutlineItem.Destination.get -> Egap.Pdf.PdfDestination?
+Egap.Pdf.PdfOutlineItem.Destination.set -> void
+Egap.Pdf.PdfOutlineItem.Equals(Egap.Pdf.PdfOutlineItem? other) -> bool
+Egap.Pdf.PdfOutlineItem.IsBold.get -> bool
+Egap.Pdf.PdfOutlineItem.IsBold.set -> void
+Egap.Pdf.PdfOutlineItem.IsItalic.get -> bool
+Egap.Pdf.PdfOutlineItem.IsItalic.set -> void
+Egap.Pdf.PdfOutlineItem.IsOpen.get -> bool
+Egap.Pdf.PdfOutlineItem.IsOpen.set -> void
+Egap.Pdf.PdfOutlineItem.MoveTo(Egap.Pdf.PdfOutlineNode! parent, int index) -> void
+Egap.Pdf.PdfOutlineItem.Parent.get -> Egap.Pdf.PdfOutlineNode!
+Egap.Pdf.PdfOutlineItem.Reference.get -> Egap.Pdf.PdfReference!
+Egap.Pdf.PdfOutlineItem.Remove() -> void
+Egap.Pdf.PdfOutlineItem.Title.get -> string!
+Egap.Pdf.PdfOutlineItem.Title.set -> void
+Egap.Pdf.PdfOutlineNode
+Egap.Pdf.PdfOutlineNode.Add(string! title, Egap.Pdf.PdfDestination? destination = null) -> Egap.Pdf.PdfOutlineItem!
+Egap.Pdf.PdfOutlineNode.Children.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfOutlineItem!>!
+Egap.Pdf.PdfOutlineNode.Insert(int index, string! title, Egap.Pdf.PdfDestination? destination = null) -> Egap.Pdf.PdfOutlineItem!
 Egap.Pdf.PdfPage
 Egap.Pdf.PdfPage.ArtBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.ArtBox.set -> void
@@ -146,6 +174,18 @@ Egap.Pdf.PdfRectangle.Width.get -> double
 Egap.Pdf.PdfResetFormAction
 Egap.Pdf.PdfResetFormAction.Fields.get -> Egap.Pdf.PdfArray?
 Egap.Pdf.PdfResetFormAction.Flags.get -> int
+Egap.Pdf.PdfRgbColor
+Egap.Pdf.PdfRgbColor.Blue.get -> double
+Egap.Pdf.PdfRgbColor.Blue.init -> void
+Egap.Pdf.PdfRgbColor.Deconstruct(out double Red, out double Green, out double Blue) -> void
+Egap.Pdf.PdfRgbColor.Equals(Egap.Pdf.PdfRgbColor other) -> bool
+Egap.Pdf.PdfRgbColor.Green.get -> double
+Egap.Pdf.PdfRgbColor.Green.init -> void
+Egap.Pdf.PdfRgbColor.PdfRgbColor() -> void
+Egap.Pdf.PdfRgbColor.PdfRgbColor(double Red, double Green, double Blue) -> void
+Egap.Pdf.PdfRgbColor.Red.get -> double
+Egap.Pdf.PdfRgbColor.Red.init -> void
+Egap.Pdf.PdfRgbColor.ToArray() -> Egap.Pdf.PdfArray!
 Egap.Pdf.PdfSetOcgStateAction
 Egap.Pdf.PdfSetOcgStateAction.PreserveRadioButtons.get -> bool
 Egap.Pdf.PdfSetOcgStateAction.State.get -> Egap.Pdf.PdfArray?
@@ -158,6 +198,7 @@ Egap.Pdf.PdfUriAction.IsMap.get -> bool
 Egap.Pdf.PdfUriAction.PdfUriAction(string! uri) -> void
 Egap.Pdf.PdfUriAction.Uri.get -> string?
 Egap.Pdf.PdfUriAction.Uri.set -> void
+Egap.Pdf.PdfWarningCode.MalformedOutline = 31 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedPageTree = 30 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode
 override Egap.Pdf.PdfAction.Equals(object? obj) -> bool
@@ -166,6 +207,11 @@ override Egap.Pdf.PdfAction.ToString() -> string!
 override Egap.Pdf.PdfDestination.Equals(object? obj) -> bool
 override Egap.Pdf.PdfDestination.GetHashCode() -> int
 override Egap.Pdf.PdfDestination.ToString() -> string!
+override Egap.Pdf.PdfOutline.Dictionary.get -> Egap.Pdf.PdfDictionary?
+override Egap.Pdf.PdfOutlineItem.Dictionary.get -> Egap.Pdf.PdfDictionary!
+override Egap.Pdf.PdfOutlineItem.Equals(object? obj) -> bool
+override Egap.Pdf.PdfOutlineItem.GetHashCode() -> int
+override Egap.Pdf.PdfOutlineItem.ToString() -> string!
 override Egap.Pdf.PdfPage.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPage.GetHashCode() -> int
 override Egap.Pdf.PdfPage.ToString() -> string!
@@ -174,6 +220,7 @@ override Egap.Pdf.PdfPageLabelRange.GetHashCode() -> int
 override Egap.Pdf.PdfPageLabelRange.ToString() -> string!
 override Egap.Pdf.PdfRectangle.GetHashCode() -> int
 override Egap.Pdf.PdfRectangle.ToString() -> string!
+override Egap.Pdf.PdfRgbColor.GetHashCode() -> int
 static Egap.Pdf.PdfAction.FromDictionary(Egap.Pdf.PdfDictionary! dictionary) -> Egap.Pdf.PdfAction!
 static Egap.Pdf.PdfDestination.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfDestination?
 static Egap.Pdf.PdfDestination.operator !=(Egap.Pdf.PdfDestination? left, Egap.Pdf.PdfDestination? right) -> bool
@@ -187,5 +234,11 @@ static Egap.Pdf.PdfPageLabelRange.operator ==(Egap.Pdf.PdfPageLabelRange? left, 
 static Egap.Pdf.PdfRectangle.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfRectangle?
 static Egap.Pdf.PdfRectangle.operator !=(Egap.Pdf.PdfRectangle left, Egap.Pdf.PdfRectangle right) -> bool
 static Egap.Pdf.PdfRectangle.operator ==(Egap.Pdf.PdfRectangle left, Egap.Pdf.PdfRectangle right) -> bool
+static Egap.Pdf.PdfRgbColor.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfRgbColor?
+static Egap.Pdf.PdfRgbColor.operator !=(Egap.Pdf.PdfRgbColor left, Egap.Pdf.PdfRgbColor right) -> bool
+static Egap.Pdf.PdfRgbColor.operator ==(Egap.Pdf.PdfRgbColor left, Egap.Pdf.PdfRgbColor right) -> bool
 static readonly Egap.Pdf.PdfPage.DefaultMediaBox -> Egap.Pdf.PdfRectangle
+static readonly Egap.Pdf.PdfRgbColor.Black -> Egap.Pdf.PdfRgbColor
 ~override Egap.Pdf.PdfRectangle.Equals(object obj) -> bool
+~override Egap.Pdf.PdfRgbColor.Equals(object obj) -> bool
+~override Egap.Pdf.PdfRgbColor.ToString() -> string
