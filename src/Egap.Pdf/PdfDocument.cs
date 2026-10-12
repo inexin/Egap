@@ -115,6 +115,9 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     public PdfPageCollection Pages => LazyInitializer.EnsureInitialized(ref pages, () => new PdfPageCollection(this));
 
+    /// <summary>The embedded files of the catalog's /Names /EmbeddedFiles tree, kept in step with /AF.</summary>
+    public PdfAttachmentCollection Attachments => new(this);
+
     /// <summary>The document outline (bookmarks); created in the catalog by the first item added.</summary>
     public PdfOutline Outline => new(this);
 

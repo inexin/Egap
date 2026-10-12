@@ -21,6 +21,7 @@ crash, and AFL++ also reports hangs.
 | `outlines` | PDF bytes: the outline read leniently and strictly, each item found among its parent's children; then 30 adds, removes, moves and open toggles drawn from the input, and the rewritten outline must need no repair, with every `/Count` right and as many items as the edits leave | `tests/fuzz-seeds/outlines/*`, `tests/fuzz-seeds/xref/*` |
 | `xmp` | Any bytes parsed as an XMP packet; one that parses has its mapped properties read, set and written back, and must parse again with the values set and every element of other namespaces kept | `tests/fuzz-seeds/xmp/*` |
 | `metadata` | PDF bytes: every metadata property read, then title, author and keywords set and the file saved with a fixed clock; reopened it must give back what was set and the new modification date | `tests/fuzz-seeds/metadata/*`, `tests/fuzz-seeds/xref/*` |
+| `attachments` | PDF bytes: every embedded file's properties, bytes and checksum read; then 20 adds and removes drawn from the input, and the rewritten file must hold exactly those names with each added file's bytes and checksum right | `tests/fuzz-seeds/attachments/*`, `tests/fuzz-seeds/xref/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 

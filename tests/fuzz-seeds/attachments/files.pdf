@@ -1,0 +1,37 @@
+%PDF-2.0
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R /Names << /EmbeddedFiles << /Names [(notes) 4 0 R (old) 6 0 R] >> >> /AF [4 0 R] >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 10 10] >>
+endobj
+4 0 obj
+<< /Type /Filespec /F (notes.txt) /UF <FEFF006E00F80074> /Desc (Some notes) /EF << /F 5 0 R >> /AFRelationship /Data >>
+endobj
+5 0 obj
+<< /Type /EmbeddedFile /Subtype /text#2Fplain /Params << /Size 6 /CheckSum <B1946AC92492D2347C6235B4D2611184> /ModDate (D:20261012) >> /Length 6 >>
+stream
+hello
+
+endstream
+endobj
+6 0 obj
+<< /Type /Filespec /F (old.txt) >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000139 00000 n 
+0000000196 00000 n 
+0000000265 00000 n 
+0000000400 00000 n 
+0000000587 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+637
+%%EOF

@@ -7,6 +7,30 @@ Egap.Pdf.PdfAction.Equals(Egap.Pdf.PdfAction? other) -> bool
 Egap.Pdf.PdfAction.GetSequence() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfAction!>!
 Egap.Pdf.PdfAction.Next.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfAction!>!
 Egap.Pdf.PdfAction.SetNext(Egap.Pdf.PdfDocument! document, params System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfAction!>! actions) -> void
+Egap.Pdf.PdfAttachment
+Egap.Pdf.PdfAttachment.Checksum.get -> byte[]?
+Egap.Pdf.PdfAttachment.CreationDate.get -> System.DateTimeOffset?
+Egap.Pdf.PdfAttachment.Description.get -> string?
+Egap.Pdf.PdfAttachment.Description.set -> void
+Egap.Pdf.PdfAttachment.Equals(Egap.Pdf.PdfAttachment? other) -> bool
+Egap.Pdf.PdfAttachment.FileName.get -> string!
+Egap.Pdf.PdfAttachment.FileSpecification.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfAttachment.GetBytes() -> byte[]?
+Egap.Pdf.PdfAttachment.MimeType.get -> string?
+Egap.Pdf.PdfAttachment.ModificationDate.get -> System.DateTimeOffset?
+Egap.Pdf.PdfAttachment.Name.get -> string!
+Egap.Pdf.PdfAttachment.Reference.get -> Egap.Pdf.PdfReference?
+Egap.Pdf.PdfAttachment.Relationship.get -> string?
+Egap.Pdf.PdfAttachment.Size.get -> long?
+Egap.Pdf.PdfAttachment.Stream.get -> Egap.Pdf.PdfStream?
+Egap.Pdf.PdfAttachment.VerifyChecksum() -> bool?
+Egap.Pdf.PdfAttachmentCollection
+Egap.Pdf.PdfAttachmentCollection.Add(string! name, System.ReadOnlySpan<byte> bytes, string? mimeType = null, string? description = null, System.DateTimeOffset? modified = null) -> Egap.Pdf.PdfAttachment!
+Egap.Pdf.PdfAttachmentCollection.Count.get -> int
+Egap.Pdf.PdfAttachmentCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfAttachment!>!
+Egap.Pdf.PdfAttachmentCollection.Remove(string! name) -> bool
+Egap.Pdf.PdfAttachmentCollection.this[int index].get -> Egap.Pdf.PdfAttachment!
+Egap.Pdf.PdfAttachmentCollection.TryGet(string! name, out Egap.Pdf.PdfAttachment! attachment) -> bool
 Egap.Pdf.PdfDestination
 Egap.Pdf.PdfDestination.<Clone>$() -> Egap.Pdf.PdfDestination!
 Egap.Pdf.PdfDestination.Bottom.get -> double?
@@ -34,6 +58,7 @@ Egap.Pdf.PdfDestinationFit.FitH = 2 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.FitR = 4 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.FitV = 3 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.Xyz = 0 -> Egap.Pdf.PdfDestinationFit
+Egap.Pdf.PdfDocument.Attachments.get -> Egap.Pdf.PdfAttachmentCollection!
 Egap.Pdf.PdfDocument.Metadata.get -> Egap.Pdf.PdfMetadata!
 Egap.Pdf.PdfDocument.NamedDestinations.get -> Egap.Pdf.PdfNamedDestinations!
 Egap.Pdf.PdfDocument.Outline.get -> Egap.Pdf.PdfOutline!
@@ -229,6 +254,9 @@ Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode
 override Egap.Pdf.PdfAction.Equals(object? obj) -> bool
 override Egap.Pdf.PdfAction.GetHashCode() -> int
 override Egap.Pdf.PdfAction.ToString() -> string!
+override Egap.Pdf.PdfAttachment.Equals(object? obj) -> bool
+override Egap.Pdf.PdfAttachment.GetHashCode() -> int
+override Egap.Pdf.PdfAttachment.ToString() -> string!
 override Egap.Pdf.PdfDestination.Equals(object? obj) -> bool
 override Egap.Pdf.PdfDestination.GetHashCode() -> int
 override Egap.Pdf.PdfDestination.ToString() -> string!
