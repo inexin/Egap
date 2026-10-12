@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages"];
 
     public static Action<Stream> Get(string name)
     {
@@ -27,6 +27,7 @@ internal static class Targets
             "rewrite" => Rewrite,
             "incremental" => Incremental,
             "trees" => Trees,
+            "pages" => Pages,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -662,6 +663,92 @@ internal static class Targets
             {
                 throw new InvalidOperationException($"A leaf has {leaf.Count / 2} entries.");
             }
+        }
+    }
+
+    /// <summary>
+    /// The page tree (Phase 2 task 3), read leniently and strictly (which may throw only <see cref="PdfException"/>): every
+    /// page's attributes are read, each page must be found again at an index that holds it, the boxes must be well formed
+    /// and nested as the spec says, and reading must not count as an edit, so an unchanged save stays byte-identical.
+    /// </summary>
+    private static void Pages(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        foreach (bool strict in new[] { false, true })
+        {
+            PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000, Strict = strict };
+            PdfDocument pdf;
+            try
+            {
+                pdf = PdfDocument.Open(bytes, options);
+            }
+            catch (PdfException)
+            {
+                continue;
+            }
+
+            using (pdf)
+            {
+                try
+                {
+                    ReadPages(pdf);
+                    if (pdf.IsChanged)
+                    {
+                        throw new InvalidOperationException("Reading the pages counted as an edit.");
+                    }
+
+                    if (!strict && !pdf.WritesWhole(PdfSaveOptions.Default))
+                    {
+                        using MemoryStream unchanged = new();
+                        pdf.Save(unchanged);
+                        if (!unchanged.ToArray().AsSpan().SequenceEqual(bytes))
+                        {
+                            throw new InvalidOperationException("Saving after reading the pages changed the file.");
+                        }
+                    }
+                }
+                catch (PdfException) when (strict)
+                {
+                }
+                catch (PdfLimitException)
+                {
+                }
+            }
+        }
+    }
+
+    private static void ReadPages(PdfDocument pdf)
+    {
+        PdfPageCollection pages = pdf.Pages;
+        for (int i = 0; i < pages.Count; i++)
+        {
+            PdfPage page = pages[i];
+            int index = pages.IndexOf(page);
+            if (index < 0 || index > i || pages[index] != page)
+            {
+                throw new InvalidOperationException($"Page {i} was found at {index}.");
+            }
+
+            PdfRectangle media = page.MediaBox;
+            if (media.IsEmpty || !double.IsFinite(media.Width) || !double.IsFinite(media.Height))
+            {
+                throw new InvalidOperationException($"Page {i} has the media box {media}.");
+            }
+
+            foreach (PdfRectangle box in new[] { page.CropBox, page.BleedBox, page.TrimBox, page.ArtBox })
+            {
+                if (box.IsEmpty || box.Intersect(media) != box)
+                {
+                    throw new InvalidOperationException($"Page {i} has a box {box} outside its media box {media}.");
+                }
+            }
+
+            if (page.Rotate is not (0 or 90 or 180 or 270) || !(page.UserUnit > 0))
+            {
+                throw new InvalidOperationException($"Page {i} has rotation {page.Rotate} and user unit {page.UserUnit}.");
+            }
+
+            _ = page.Resources;
         }
     }
 }

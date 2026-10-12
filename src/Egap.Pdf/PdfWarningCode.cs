@@ -97,4 +97,10 @@ public enum PdfWarningCode
     /// it was read as far as it made sense, and rebuilt from its entries when edited.
     /// </summary>
     MalformedTree,
+
+    /// <summary>
+    /// The page tree was malformed (kids that are not dictionaries or loop back, a wrong <c>/Type</c>, <c>/Parent</c> or
+    /// <c>/Count</c>, or no tree at all); it was repaired in memory.
+    /// </summary>
+    MalformedPageTree,
 }
