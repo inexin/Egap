@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits"];
 
     public static Action<Stream> Get(string name)
     {
@@ -28,6 +28,7 @@ internal static class Targets
             "incremental" => Incremental,
             "trees" => Trees,
             "pages" => Pages,
+            "pageedits" => PageEdits,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -750,5 +751,102 @@ internal static class Targets
 
             _ = page.Resources;
         }
+    }
+
+    /// <summary>
+    /// Editing the page tree (Phase 2 task 4): blank pages are inserted and pages removed and moved by a plan drawn from the
+    /// input, and every page must keep the media box, crop box and rotation it had wherever it ends up. The result, written
+    /// whole, must reopen strictly without a warning; saved incrementally, it must keep the original bytes and reopen with
+    /// the same pages.
+    /// </summary>
+    private static void PageEdits(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 };
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, options);
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                List<(PdfRectangle Media, PdfRectangle Crop, int Rotate)> expected = [.. pdf.Pages.Select(Look)];
+                Random random = new(bytes.Length + expected.Count);
+                for (int i = 0; i < 60; i++)
+                {
+                    int count = pdf.Pages.Count;
+                    switch (random.Next(4))
+                    {
+                        case 0 or 1:
+                            int at = random.Next(count + 1);
+                            PdfRectangle size = new(0, 0, random.Next(1, 2000), random.Next(1, 2000));
+                            pdf.Pages.InsertBlank(at, size);
+                            expected.Insert(at, (size, size, 0));
+                            break;
+                        case 2 when count > 0:
+                            int removed = random.Next(count);
+                            pdf.Pages.RemoveAt(removed);
+                            expected.RemoveAt(removed);
+                            break;
+                        case 3 when count > 0:
+                            (int from, int to) = (random.Next(count), random.Next(count));
+                            pdf.Pages.Move(from, to);
+                            (PdfRectangle, PdfRectangle, int) moved = expected[from];
+                            expected.RemoveAt(from);
+                            expected.Insert(to, moved);
+                            break;
+                    }
+                }
+
+                List<(PdfRectangle Media, PdfRectangle Crop, int Rotate)> actual = [.. pdf.Pages.Select(Look)];
+                for (int i = 0; i < Math.Max(actual.Count, expected.Count); i++)
+                {
+                    if (i >= actual.Count || i >= expected.Count || actual[i] != expected[i])
+                    {
+                        throw new InvalidOperationException($"After the edits page {i} is {(i < actual.Count ? actual[i] : "missing")}, not {(i < expected.Count ? expected[i] : "missing")}.");
+                    }
+                }
+
+                using MemoryStream whole = new();
+                pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+                using (PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { Strict = true, MaxObjects = 1_000_000 }))
+                {
+                    if (!reopened.Pages.Select(Look).SequenceEqual(expected))
+                    {
+                        throw new InvalidOperationException("The rewritten file has other pages.");
+                    }
+                }
+
+                bool rewritesWhole = pdf.WritesWhole(PdfSaveOptions.Default);
+                using MemoryStream update = new();
+                pdf.Save(update, new PdfSaveOptions { Deterministic = true });
+                byte[] output = update.ToArray();
+                if (!rewritesWhole && !output.AsSpan(0, bytes.Length).SequenceEqual(bytes))
+                {
+                    throw new InvalidOperationException("The update did not keep the original bytes.");
+                }
+
+                using PdfDocument updated = PdfDocument.Open(output, options);
+                if (!updated.Pages.Select(Look).SequenceEqual(expected))
+                {
+                    throw new InvalidOperationException("The updated file has other pages.");
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+    }
+
+    private static (PdfRectangle Media, PdfRectangle Crop, int Rotate) Look(PdfPage page)
+    {
+        return (page.MediaBox, page.CropBox, page.Rotate);
     }
 }

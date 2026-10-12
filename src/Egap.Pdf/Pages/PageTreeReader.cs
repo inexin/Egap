@@ -28,14 +28,18 @@ internal static class PageTreeReader
     private static readonly PdfName PageType = "Page";
     private static readonly PdfName PagesType = "Pages";
 
-    public static List<PdfPage> Read(PdfDocument document)
+    /// <summary>
+    /// The pages in order, and whether the tree is too broken to edit in place: it loops, lists a node or page twice or
+    /// directly, skips kids, or is missing. Such a tree is rebuilt before its first edit (see <see cref="PageTreeEditor"/>).
+    /// </summary>
+    public static (List<PdfPage> Pages, bool NeedsRebuild) Read(PdfDocument document)
     {
         WarningLog log = document.Log;
         PdfObject? rootValue = document.Catalog["Pages"];
         if (rootValue?.Resolve() is not PdfDictionary root)
         {
             log.Add(PdfWarningCode.MalformedPageTree, "The catalog has no page tree; the pages were found by scanning the objects.");
-            return Scan(document);
+            return (Scan(document), true);
         }
 
         List<PdfPage> pages = [];
@@ -43,12 +47,14 @@ internal static class PageTreeReader
         {
             log.Add(PdfWarningCode.MalformedPageTree, "The catalog's /Pages is a page, not a page tree; it was read as the only page.", objectNumber: (rootValue as PdfReference)?.ObjectNumber);
             pages.Add(AsPage(root, rootValue as PdfReference, log));
-            return pages;
+            return (pages, true);
         }
 
         HashSet<PdfDictionary> ancestors = new(ReferenceEqualityComparer.Instance);
+        HashSet<PdfDictionary> seen = new(ReferenceEqualityComparer.Instance) { root };
+        bool needsRebuild = rootValue is not PdfReference || root[Parent] is not null;
         Stack<Frame> stack = new();
-        Enter(root, rootValue as PdfReference, pages, ancestors, stack);
+        Enter(root, rootValue as PdfReference, pages, ancestors, stack, log);
         int visits = 1;
         while (stack.TryPeek(out Frame? frame))
         {
@@ -66,33 +72,40 @@ internal static class PageTreeReader
             if (item.Resolve() is not PdfDictionary kid)
             {
                 log.Add(PdfWarningCode.MalformedPageTree, $"Kid {index} of a page tree node is {Describe(item)}, not a page or node; it was skipped.", objectNumber: frame.Reference?.ObjectNumber);
+                needsRebuild = true;
                 continue;
             }
 
             if (ancestors.Contains(kid))
             {
                 log.Add(PdfWarningCode.MalformedPageTree, $"Kid {index} of a page tree node loops back to a node above it; it was skipped.", objectNumber: frame.Reference?.ObjectNumber);
+                needsRebuild = true;
                 continue;
             }
 
             if (++visits > MaxVisits)
             {
                 log.Add(PdfWarningCode.MalformedPageTree, $"The page tree lists more than {MaxVisits} nodes; the rest were skipped.");
+                needsRebuild = true;
                 break;
             }
 
-            FixParent(kid, reference, frame, log);
+            // A kid listed twice, or written in place rather than referenced, cannot be edited as one node of a tree.
+            needsRebuild |= reference is null || !seen.Add(kid);
+
+            FixParent(kid, reference, frame, seen, log);
+            needsRebuild |= kid[Parent] is not PdfReference;
             if (kid.Get<PdfArray>(Kids) is null && !IsPagesNode(kid))
             {
                 pages.Add(AsPage(kid, reference, log));
             }
             else
             {
-                Enter(kid, reference, pages, ancestors, stack);
+                Enter(kid, reference, pages, ancestors, stack, log);
             }
         }
 
-        return pages;
+        return (pages, needsRebuild);
     }
 
     /// <summary>A node without /Kids that says it is a /Pages node: an empty node, not a page.</summary>
@@ -101,8 +114,14 @@ internal static class PageTreeReader
         return node.GetName(Type) == PagesType;
     }
 
-    private static void Enter(PdfDictionary node, PdfReference? reference, List<PdfPage> pages, HashSet<PdfDictionary> ancestors, Stack<Frame> stack)
+    private static void Enter(PdfDictionary node, PdfReference? reference, List<PdfPage> pages, HashSet<PdfDictionary> ancestors, Stack<Frame> stack, WarningLog log)
     {
+        if (node[Kids] is PdfObject kids && kids.Resolve() is not PdfArray)
+        {
+            log.Add(PdfWarningCode.MalformedPageTree, $"A page tree node's /Kids is {Describe(kids)}, not an array; it was read as having no kids.", objectNumber: reference?.ObjectNumber);
+            node.SetParsed(Kids, new PdfArray());
+        }
+
         ancestors.Add(node);
         stack.Push(new Frame(node, reference, node.Get<PdfArray>(Kids), pages.Count));
     }
@@ -119,10 +138,10 @@ internal static class PageTreeReader
     }
 
     /// <summary>
-    /// Points a kid's /Parent at the node listing it, when it is missing or names a node that does not list the kid. A kid
-    /// listed by two nodes keeps the /Parent it has.
+    /// Points a kid's /Parent at the node listing it, unless it already names a node of the tree walked so far that lists
+    /// it too (a kid listed twice). A /Parent naming a node outside the tree would send inheritance and edits astray.
     /// </summary>
-    private static void FixParent(PdfDictionary kid, PdfReference? reference, Frame frame, WarningLog log)
+    private static void FixParent(PdfDictionary kid, PdfReference? reference, Frame frame, HashSet<PdfDictionary> seen, WarningLog log)
     {
         PdfDictionary? parent = kid.Get<PdfDictionary>(Parent);
         if (ReferenceEquals(parent, frame.Node) || frame.Reference is null)
@@ -130,7 +149,7 @@ internal static class PageTreeReader
             return;
         }
 
-        if (parent?.Get<PdfArray>(Kids) is PdfArray siblings && reference is not null && siblings.Contains(reference))
+        if (parent is not null && seen.Contains(parent) && parent.Get<PdfArray>(Kids) is PdfArray siblings && reference is not null && siblings.Contains(reference))
         {
             return;
         }
@@ -141,7 +160,8 @@ internal static class PageTreeReader
 
     private static void CheckCount(Frame frame, int found, WarningLog log)
     {
-        if (frame.Kids is null || frame.Node.GetInt(Count) == found)
+        // An empty /Pages node may leave /Count out; one that has it must say 0.
+        if (frame.Node.GetInt(Count) == found || (frame.Kids is null && frame.Node[Count] is null))
         {
             return;
         }
