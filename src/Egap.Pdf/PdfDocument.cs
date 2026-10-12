@@ -115,6 +115,9 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     public PdfPageCollection Pages => LazyInitializer.EnsureInitialized(ref pages, () => new PdfPageCollection(this));
 
+    /// <summary>The named destinations, through the catalog's /Names /Dests tree and its older /Dests dictionary.</summary>
+    public PdfNamedDestinations NamedDestinations => new(this);
+
     /// <summary>The document's warnings, for the views that repair what they read.</summary>
     internal WarningLog Log => log;
 
