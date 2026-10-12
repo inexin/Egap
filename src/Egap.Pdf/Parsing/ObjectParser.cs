@@ -240,8 +240,11 @@ internal sealed class ObjectParser
             return new PdfStream(dictionary, new SourceData(source, start, declared)) { Origin = (options, Log, lexer.ObjectNumber) };
         }
 
-        // The length is missing, wrong or unreadable: the data runs to the next endstream (or endobj, or the end of the file).
-        long end = SourceSearch.IndexOf(source, "endstream"u8, start);
+        // The length is missing, wrong or unreadable: the data runs to the next endstream (or endobj, or the end of the file
+        // section). The search stops at the next %%EOF, so an update appended to the file never becomes part of the data.
+        long sectionEnd = SourceSearch.IndexOf(source, "%%EOF"u8, start);
+        sectionEnd = sectionEnd < 0 ? source.Length : sectionEnd;
+        long end = SourceSearch.IndexOf(source, "endstream"u8, start, sectionEnd);
         if (end >= 0)
         {
             Warn(PdfWarningCode.WrongStreamLength, length is null ? "The stream has no usable /Length; the data was found by searching for 'endstream'." : $"The stream's /Length {length} is wrong; the data was found by searching for 'endstream'.", objectStart);
@@ -249,11 +252,11 @@ internal sealed class ObjectParser
         }
         else
         {
-            end = SourceSearch.IndexOf(source, "endobj"u8, start);
+            end = SourceSearch.IndexOf(source, "endobj"u8, start, sectionEnd);
             Warn(PdfWarningCode.MissingEndstream, "The stream has no 'endstream'.", objectStart);
             if (end < 0)
             {
-                end = source.Length;
+                end = sectionEnd;
             }
 
             reader.Position = end;

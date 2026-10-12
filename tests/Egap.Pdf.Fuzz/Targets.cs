@@ -484,8 +484,7 @@ internal static class Targets
         {
             try
             {
-                bool whole = pdf.Rebuilt || pdf.Warnings.Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
-                    or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets or PdfWarningCode.MissingEndstream);
+                bool whole = pdf.WritesWhole(PdfSaveOptions.Default);
                 using MemoryStream unchanged = new();
                 pdf.Save(unchanged);
                 if (!whole && !unchanged.ToArray().AsSpan().SequenceEqual(bytes))
@@ -498,9 +497,8 @@ internal static class Targets
                 pdf.Save(edited, new PdfSaveOptions { Deterministic = true });
                 byte[] output = edited.ToArray();
 
-                // Warnings appear as objects load, so a structural one found during the save also makes it write whole.
-                whole |= pdf.Warnings.Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
-                    or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets or PdfWarningCode.MissingEndstream);
+                // Warnings appear as objects load, and the edit counts too, so whether the save wrote whole is asked again.
+                whole |= pdf.WritesWhole(PdfSaveOptions.Default);
                 if (!whole && !output.AsSpan(0, bytes.Length).SequenceEqual(bytes))
                 {
                     throw new InvalidOperationException("The update did not keep the original bytes.");

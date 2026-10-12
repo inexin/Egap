@@ -294,4 +294,43 @@ public sealed class IncrementalTests
         using PdfDocument reopened = PdfDocument.Open(saved, Strict);
         Assert.Equal("Page", reopened.Catalog.Get<PdfDictionary>("Pages")!.Get<PdfArray>("Kids")!.Get<PdfDictionary>(0)!.GetName("Type")!.Value);
     }
+
+    [Fact]
+    public void AStreamWithoutEndstreamKeepsItsDataAfterAnUpdate()
+    {
+        // The stream's /Length is wrong and it has neither endstream nor endobj: its data runs to the section's %%EOF, never
+        // into what an update appends.
+        FileBuilder file = new FileBuilder()
+            .Object(1, "<< /Type /Catalog /Pages 2 0 R >>")
+            .Object(2, "<< /Type /Pages /Kids [3 0 R] /Count 1 >>")
+            .Object(3, "<< /Type /Page /Parent 2 0 R /Contents 4 0 R >>")
+            .Unterminated(4, "<< /Length 99 >>\nstream\nBT (Hi) Tj ET\n");
+        byte[] input = file.StartXref(file.XrefTable("/Size 5 /Root 1 0 R")).ToArray();
+        using PdfDocument pdf = PdfDocument.Open(input);
+        pdf.Catalog["Added"] = pdf.Objects.Add(new PdfDictionary { ["Edited"] = true });
+
+        byte[] output = Save(pdf);
+
+        Assert.Equal(input, output[..input.Length]);
+        using PdfDocument reopened = PdfDocument.Open(output);
+        byte[] before = Assert.IsType<PdfStream>(pdf.Objects.Get(4)).GetEncodedBytes();
+        Assert.StartsWith("BT (Hi) Tj ET", Encoding.Latin1.GetString(before), StringComparison.Ordinal);
+        Assert.Equal(before, Assert.IsType<PdfStream>(reopened.Objects.Get(4)).GetEncodedBytes());
+    }
+
+    [Fact]
+    public void AnEditedFileWithoutAFinalEofIsWrittenWhole()
+    {
+        FileBuilder file = new FileBuilder()
+            .Object(1, "<< /Type /Catalog /Pages 2 0 R >>")
+            .Object(2, "<< /Type /Pages /Kids [] /Count 0 >>");
+        byte[] input = file.StartXref(file.XrefTable("/Size 3 /Root 1 0 R")).Raw(new string('x', 2000)).ToArray();
+        using PdfDocument pdf = PdfDocument.Open(input);
+        pdf.Catalog["Added"] = pdf.Objects.Add(new PdfDictionary { ["Edited"] = true });
+
+        using PdfDocument reopened = PdfDocument.Open(Save(pdf), Strict);
+
+        Assert.Single(reopened.Xref.Sections);
+        Assert.True(reopened.Catalog.Get<PdfDictionary>("Added")!.GetBool("Edited"));
+    }
 }

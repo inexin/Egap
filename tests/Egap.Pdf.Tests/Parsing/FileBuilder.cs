@@ -39,6 +39,14 @@ internal sealed class FileBuilder
         return Raw(Invariant($"{number} {generation} obj\n{body}\nendobj\n"));
     }
 
+    /// <summary>An object whose text ends without <c>endobj</c>, as in a damaged file.</summary>
+    public FileBuilder Unterminated(int number, string text)
+    {
+        Offsets[number] = Position;
+        section[number] = (Position, 0);
+        return Raw(Invariant($"{number} 0 obj\n{text}"));
+    }
+
     public FileBuilder Stream(int number, string dictionary, byte[] data, int generation = 0)
     {
         Offsets[number] = Position;

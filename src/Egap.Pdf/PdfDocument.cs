@@ -381,12 +381,14 @@ public sealed class PdfDocument : IDisposable
     /// Whether a save writes the whole document: when asked, or when the file needed repair to its structure, which an
     /// update would leave in place (hub Q8).
     /// </summary>
-    private bool WritesWhole(PdfSaveOptions options)
+    internal bool WritesWhole(PdfSaveOptions options)
     {
         // Dropping or replacing encryption changes every string and stream, so it writes everything too.
         bool encryptionChanges = options.Encryption.Kind == PdfEncryptionKind.Aes256 || (options.Encryption.Kind == PdfEncryptionKind.None && IsEncrypted);
         // A compression other than Preserve changes how every object is stored, so it can only apply to a whole file.
-        return options.Mode == PdfSaveMode.Rewrite || options.Compression != PdfCompression.Preserve || encryptionChanges || IsNew || Rebuilt || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
+        // A file cut short has no %%EOF at its end; a stream without endstream there would run on into appended changes.
+        bool truncated = IsChanged && SourceSearch.LastIndexOf(source, "%%EOF"u8, source.Length, Math.Max(0, source.Length - 1024)) < 0;
+        return options.Mode == PdfSaveMode.Rewrite || options.Compression != PdfCompression.Preserve || encryptionChanges || IsNew || Rebuilt || truncated || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
             or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets
 
             // A stream without endstream runs to the end of the file, so bytes appended after it would become its data.
