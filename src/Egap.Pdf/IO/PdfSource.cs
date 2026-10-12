@@ -69,7 +69,7 @@ internal abstract class PdfSource : IDisposable
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
         SafeFileHandle handle = File.OpenHandle(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, FileOptions.RandomAccess);
-        return new FileSource(handle);
+        return new FileSource(handle, path);
     }
 
     /// <summary>

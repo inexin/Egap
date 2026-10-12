@@ -193,6 +193,78 @@ public sealed class PdfDocument : IDisposable
         }
     }
 
+    /// <summary>
+    /// Saves the document to a file. Saving over the file the document was opened from is allowed: a rewrite goes to a
+    /// temporary file in the same folder that then replaces the original (design Q4).
+    /// </summary>
+    /// <exception cref="NotSupportedException">The mode is not supported yet: incremental saving comes in a later step, and
+    /// encrypted documents cannot be saved yet.</exception>
+    public void Save(string path, PdfSaveOptions? options = null)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        options ??= PdfSaveOptions.Default;
+        CheckMode(options);
+        string full = Path.GetFullPath(path);
+        if (string.Equals(full, FilePath, StringComparison.OrdinalIgnoreCase))
+        {
+            string temporary = Path.Combine(Path.GetDirectoryName(full)!, $".{Path.GetFileName(full)}.{Guid.NewGuid():N}.tmp");
+            try
+            {
+                using (FileStream output = new(temporary, FileMode.CreateNew, FileAccess.Write))
+                {
+                    Writing.RewriteWriter.Write(this, output, options);
+                }
+
+                // Windows will not replace a file that is open, but it renames and deletes one opened with delete sharing,
+                // as the document's file is: move the original aside, put the new file in place, then delete the original.
+                // The document keeps reading the original's bytes until it is disposed.
+                string aside = temporary + ".old";
+                File.Move(full, aside);
+                try
+                {
+                    File.Move(temporary, full);
+                }
+                catch
+                {
+                    File.Move(aside, full);
+                    throw;
+                }
+
+                File.Delete(aside);
+            }
+            finally
+            {
+                File.Delete(temporary);
+            }
+
+            return;
+        }
+
+        using FileStream file = new(full, FileMode.Create, FileAccess.Write);
+        Save(file, options);
+    }
+
+    /// <summary>Saves the document to a stream, from its current position.</summary>
+    /// <exception cref="NotSupportedException">The mode is not supported yet.</exception>
+    public void Save(Stream output, PdfSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(output);
+        options ??= PdfSaveOptions.Default;
+        CheckMode(options);
+        Writing.RewriteWriter.Write(this, output, options);
+    }
+
+    private static void CheckMode(PdfSaveOptions options)
+    {
+        if (options.Mode != PdfSaveMode.Rewrite)
+        {
+            throw new NotSupportedException("Incremental saving is not supported yet; save with PdfSaveMode.Rewrite.");
+        }
+    }
+
+    /// <summary>The full path of the file the document was opened from, or null for a stream or memory.</summary>
+    private string? FilePath => (source is OffsetSource shifted ? shifted.Inner : source) is FileSource file ? file.Path : null;
+
     /// <summary>Closes the file. Objects not yet loaded can no longer be loaded.</summary>
     public void Dispose()
     {

@@ -5,7 +5,7 @@ namespace Egap.Pdf;
 /// The defaults open every ordinary file. Lower the limits when files come from untrusted sources and memory matters more than
 /// opening unusually large files; raise them only for files you trust.
 /// </remarks>
-public sealed class PdfReadOptions
+public sealed record PdfReadOptions
 {
     /// <summary>The default options.</summary>
     public static PdfReadOptions Default { get; } = new();

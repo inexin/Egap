@@ -22,10 +22,19 @@ internal static class ObjectWriter
 
     public static void Write(PdfObject value, ByteWriter output, bool includeStreamData = true)
     {
-        Write(value, output, includeStreamData, 0);
+        Write(value, output, includeStreamData, 0, null);
     }
 
-    private static void Write(PdfObject value, ByteWriter output, bool includeStreamData, int depth)
+    /// <summary>
+    /// Writes an object with every reference passed through <paramref name="remap"/>: the reference to write instead, or
+    /// <see langword="null"/> to write <c>null</c> (for a reference to an object that is not written).
+    /// </summary>
+    public static void Write(PdfObject value, ByteWriter output, Func<PdfReference, PdfReference?> remap)
+    {
+        Write(value, output, includeStreamData: true, 0, remap);
+    }
+
+    private static void Write(PdfObject value, ByteWriter output, bool includeStreamData, int depth, Func<PdfReference, PdfReference?>? remap)
     {
         if (depth > MaxDepth)
         {
@@ -52,7 +61,13 @@ internal static class ObjectWriter
             case PdfString text:
                 WriteString(text, output);
                 break;
-            case PdfReference reference:
+            case PdfReference original:
+                if ((remap is null ? original : remap(original)) is not PdfReference reference)
+                {
+                    output.Write("null"u8);
+                    break;
+                }
+
                 output.WriteInteger(reference.ObjectNumber);
                 output.Write((byte)' ');
                 output.WriteInteger(reference.Generation);
@@ -67,16 +82,16 @@ internal static class ObjectWriter
                         output.Write((byte)' ');
                     }
 
-                    Write(array[i], output, includeStreamData, depth + 1);
+                    Write(array[i], output, includeStreamData, depth + 1, remap);
                 }
 
                 output.Write((byte)']');
                 break;
             case PdfDictionary dictionary:
-                WriteDictionary(dictionary, output, null, includeStreamData, depth);
+                WriteDictionary(dictionary, output, null, includeStreamData, depth, remap);
                 break;
             case PdfStream stream:
-                WriteDictionary(stream.Dictionary, output, stream.EncodedLength, includeStreamData, depth);
+                WriteDictionary(stream.Dictionary, output, stream.EncodedLength, includeStreamData, depth, remap);
                 if (includeStreamData)
                 {
                     output.Write("\nstream\n"u8);
@@ -95,7 +110,7 @@ internal static class ObjectWriter
     }
 
     /// <summary>Writes a dictionary; for a stream's dictionary, <paramref name="length"/> replaces <c>/Length</c>.</summary>
-    private static void WriteDictionary(PdfDictionary dictionary, ByteWriter output, long? length, bool includeStreamData, int depth)
+    private static void WriteDictionary(PdfDictionary dictionary, ByteWriter output, long? length, bool includeStreamData, int depth, Func<PdfReference, PdfReference?>? remap)
     {
         output.Write("<<"u8);
         bool wroteLength = false;
@@ -111,7 +126,7 @@ internal static class ObjectWriter
             }
             else
             {
-                Write(item, output, includeStreamData, depth + 1);
+                Write(item, output, includeStreamData, depth + 1, remap);
             }
         }
 

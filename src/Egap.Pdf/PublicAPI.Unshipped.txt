@@ -47,6 +47,8 @@ Egap.Pdf.PdfDocument.Dispose() -> void
 Egap.Pdf.PdfDocument.IsChanged.get -> bool
 Egap.Pdf.PdfDocument.Objects.get -> Egap.Pdf.PdfObjectTable!
 Egap.Pdf.PdfDocument.Options.get -> Egap.Pdf.PdfReadOptions!
+Egap.Pdf.PdfDocument.Save(string! path, Egap.Pdf.PdfSaveOptions? options = null) -> void
+Egap.Pdf.PdfDocument.Save(System.IO.Stream! output, Egap.Pdf.PdfSaveOptions? options = null) -> void
 Egap.Pdf.PdfDocument.Trailer.get -> Egap.Pdf.PdfDictionary!
 Egap.Pdf.PdfDocument.Version.get -> string!
 Egap.Pdf.PdfDocument.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
@@ -85,6 +87,8 @@ Egap.Pdf.PdfObjectTable.Remove(Egap.Pdf.PdfReference! reference) -> bool
 Egap.Pdf.PdfObjectTable.Set(Egap.Pdf.PdfReference! reference, Egap.Pdf.PdfObject! value) -> void
 Egap.Pdf.PdfObjectTable.this[Egap.Pdf.PdfReference! reference].get -> Egap.Pdf.PdfObject!
 Egap.Pdf.PdfReadOptions
+Egap.Pdf.PdfReadOptions.<Clone>$() -> Egap.Pdf.PdfReadOptions!
+Egap.Pdf.PdfReadOptions.Equals(Egap.Pdf.PdfReadOptions? other) -> bool
 Egap.Pdf.PdfReadOptions.MaxDecodedStreamBytes.get -> long
 Egap.Pdf.PdfReadOptions.MaxDecodedStreamBytes.init -> void
 Egap.Pdf.PdfReadOptions.MaxDecompressionRatio.get -> int
@@ -109,6 +113,21 @@ Egap.Pdf.PdfReference.Equals(Egap.Pdf.PdfReference? other) -> bool
 Egap.Pdf.PdfReference.Generation.get -> int
 Egap.Pdf.PdfReference.ObjectNumber.get -> int
 Egap.Pdf.PdfReference.PdfReference(int objectNumber, int generation) -> void
+Egap.Pdf.PdfSaveMode
+Egap.Pdf.PdfSaveMode.Incremental = 0 -> Egap.Pdf.PdfSaveMode
+Egap.Pdf.PdfSaveMode.Rewrite = 1 -> Egap.Pdf.PdfSaveMode
+Egap.Pdf.PdfSaveOptions
+Egap.Pdf.PdfSaveOptions.<Clone>$() -> Egap.Pdf.PdfSaveOptions!
+Egap.Pdf.PdfSaveOptions.Deterministic.get -> bool
+Egap.Pdf.PdfSaveOptions.Deterministic.init -> void
+Egap.Pdf.PdfSaveOptions.Equals(Egap.Pdf.PdfSaveOptions? other) -> bool
+Egap.Pdf.PdfSaveOptions.KeepObjectNumbers.get -> bool
+Egap.Pdf.PdfSaveOptions.KeepObjectNumbers.init -> void
+Egap.Pdf.PdfSaveOptions.Mode.get -> Egap.Pdf.PdfSaveMode
+Egap.Pdf.PdfSaveOptions.Mode.init -> void
+Egap.Pdf.PdfSaveOptions.PdfSaveOptions() -> void
+Egap.Pdf.PdfSaveOptions.RemoveUnused.get -> bool
+Egap.Pdf.PdfSaveOptions.RemoveUnused.init -> void
 Egap.Pdf.PdfStream
 Egap.Pdf.PdfStream.Clone() -> Egap.Pdf.PdfStream!
 Egap.Pdf.PdfStream.Dictionary.get -> Egap.Pdf.PdfDictionary!
@@ -172,12 +191,18 @@ override Egap.Pdf.PdfInteger.GetHashCode() -> int
 override Egap.Pdf.PdfName.Equals(object? obj) -> bool
 override Egap.Pdf.PdfName.GetHashCode() -> int
 override Egap.Pdf.PdfObject.ToString() -> string!
+override Egap.Pdf.PdfReadOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfReadOptions.GetHashCode() -> int
+override Egap.Pdf.PdfReadOptions.ToString() -> string!
 override Egap.Pdf.PdfReal.Equals(object? obj) -> bool
 override Egap.Pdf.PdfReal.GetHashCode() -> int
 override Egap.Pdf.PdfReference.Equals(object? obj) -> bool
 override Egap.Pdf.PdfReference.GetHashCode() -> int
 override Egap.Pdf.PdfReference.Resolve() -> Egap.Pdf.PdfObject!
 override Egap.Pdf.PdfReference.ToString() -> string!
+override Egap.Pdf.PdfSaveOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfSaveOptions.GetHashCode() -> int
+override Egap.Pdf.PdfSaveOptions.ToString() -> string!
 override Egap.Pdf.PdfString.Equals(object? obj) -> bool
 override Egap.Pdf.PdfString.GetHashCode() -> int
 override Egap.Pdf.PdfWarning.Equals(object? obj) -> bool
@@ -204,6 +229,11 @@ static Egap.Pdf.PdfObject.implicit operator Egap.Pdf.PdfObject!(bool value) -> E
 static Egap.Pdf.PdfObject.implicit operator Egap.Pdf.PdfObject!(double value) -> Egap.Pdf.PdfObject!
 static Egap.Pdf.PdfObject.implicit operator Egap.Pdf.PdfObject!(long value) -> Egap.Pdf.PdfObject!
 static Egap.Pdf.PdfReadOptions.Default.get -> Egap.Pdf.PdfReadOptions!
+static Egap.Pdf.PdfReadOptions.operator !=(Egap.Pdf.PdfReadOptions? left, Egap.Pdf.PdfReadOptions? right) -> bool
+static Egap.Pdf.PdfReadOptions.operator ==(Egap.Pdf.PdfReadOptions? left, Egap.Pdf.PdfReadOptions? right) -> bool
+static Egap.Pdf.PdfSaveOptions.Default.get -> Egap.Pdf.PdfSaveOptions!
+static Egap.Pdf.PdfSaveOptions.operator !=(Egap.Pdf.PdfSaveOptions? left, Egap.Pdf.PdfSaveOptions? right) -> bool
+static Egap.Pdf.PdfSaveOptions.operator ==(Egap.Pdf.PdfSaveOptions? left, Egap.Pdf.PdfSaveOptions? right) -> bool
 static Egap.Pdf.PdfString.FromBytes(System.ReadOnlySpan<byte> bytes, bool hex = false) -> Egap.Pdf.PdfString!
 static Egap.Pdf.PdfString.FromText(string! text) -> Egap.Pdf.PdfString!
 static Egap.Pdf.PdfWarning.operator !=(Egap.Pdf.PdfWarning? left, Egap.Pdf.PdfWarning? right) -> bool
