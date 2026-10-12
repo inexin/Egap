@@ -109,6 +109,9 @@ public sealed class PdfDocument : IDisposable
         return objects;
     }
 
+    /// <summary>The document's warnings, for the views that repair what they read.</summary>
+    internal WarningLog Log => log;
+
     /// <summary>The security handler of an encrypted document, for the writers.</summary>
     internal global::Egap.Pdf.Security.StandardSecurityHandler? Security => security;
 

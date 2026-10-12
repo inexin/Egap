@@ -14,6 +14,7 @@ crash, and AFL++ also reports hangs.
 | `document` | PDF bytes opened as a `PdfDocument`, with repair by scanning: every object loaded, streams decoded, an edit made; leniently and strictly | `tests/fuzz-seeds/xref/*`, `tests/fuzz-seeds/document/*` |
 | `rewrite` | PDF bytes opened leniently and saved by full rewrite three ways (input style, compact, compact with new AES-256 encryption); each output must open strictly with no warnings and hold the same objects | `tests/fuzz-seeds/xref/*`, `tests/fuzz-seeds/document/*` |
 | `incremental` | PDF bytes saved incrementally: unchanged must be byte-identical; after an edit the update must keep the original bytes, reopen and hold the same objects | `tests/fuzz-seeds/xref/*`, `tests/fuzz-seeds/document/*` |
+| `trees` | PDF bytes: every dictionary with `/Names`, `/Nums` or `/Kids` read as a name or number tree; a tree read without warnings must find each entry by lookup; after 400 sets and removes drawn from the input it must read back strictly, holding exactly what the edits say, no node over 128 | `tests/fuzz-seeds/trees/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 

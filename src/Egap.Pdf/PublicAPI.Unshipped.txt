@@ -1,1 +1,2 @@
 #nullable enable
+Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode

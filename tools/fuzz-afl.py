@@ -15,7 +15,7 @@ import os
 import subprocess
 import sys
 
-SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*", "parser": "tests/fuzz-seeds/parser/*", "filters": "tests/fuzz-seeds/filters/*", "streams": "tests/fuzz-seeds/parser/*", "xref": "tests/fuzz-seeds/xref/*", "document": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "rewrite": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "incremental": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*"}
+SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*", "parser": "tests/fuzz-seeds/parser/*", "filters": "tests/fuzz-seeds/filters/*", "streams": "tests/fuzz-seeds/parser/*", "xref": "tests/fuzz-seeds/xref/*", "document": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "rewrite": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "incremental": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "trees": "tests/fuzz-seeds/trees/*"}
 
 SCRIPT = """
 set -e
