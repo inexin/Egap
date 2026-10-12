@@ -148,6 +148,122 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
         }
     }
 
+    /// <summary>
+    /// The label of the page at an index, as a viewer shows it (12.4.2): from the label range the page falls in, or its
+    /// number from 1 when the document has no label for it.
+    /// </summary>
+    public string GetLabel(int index)
+    {
+        lock (gate)
+        {
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual((uint)index, (uint)List.Count, nameof(index));
+            PdfPageLabelRange? range = null;
+            if (LabelTree() is Trees.NumberTree tree && tree.TryGetFloor(index, out KeyValuePair<long, PdfObject> entry))
+            {
+                // An entry that is not a label dictionary is passed over, so the range before it goes on.
+                range = ToRange(entry) ?? tree.Entries().Where(e => e.Key <= index).Select(ToRange).LastOrDefault(r => r is not null);
+            }
+
+            return range is null ? (index + 1).ToString(System.Globalization.CultureInfo.InvariantCulture) : range.Format(index - range.StartIndex);
+        }
+    }
+
+    /// <summary>The page label ranges of the catalog's <c>/PageLabels</c>, in order; empty when there are none.</summary>
+    public IReadOnlyList<PdfPageLabelRange> GetLabelRanges()
+    {
+        lock (gate)
+        {
+            return LabelTree() is Trees.NumberTree tree ? [.. tree.Entries().Select(ToRange).OfType<PdfPageLabelRange>()] : [];
+        }
+    }
+
+    /// <summary>
+    /// Adds a page label range, or replaces the one starting at the same index. Labels belong to page indexes: inserting or
+    /// removing pages does not move them.
+    /// </summary>
+    public void SetLabelRange(PdfPageLabelRange range)
+    {
+        ArgumentNullException.ThrowIfNull(range);
+        ArgumentOutOfRangeException.ThrowIfNegative(range.StartIndex);
+        ArgumentOutOfRangeException.ThrowIfLessThan(range.Start, 1);
+        lock (gate)
+        {
+            PdfDictionary label = [];
+            if (range.Style != PdfPageLabelStyle.None)
+            {
+                label["S"] = PdfName.Get(range.Style switch
+                {
+                    PdfPageLabelStyle.Arabic => "D",
+                    PdfPageLabelStyle.UpperRoman => "R",
+                    PdfPageLabelStyle.LowerRoman => "r",
+                    PdfPageLabelStyle.UpperLetters => "A",
+                    _ => "a",
+                });
+            }
+
+            if (range.Prefix is not null)
+            {
+                label["P"] = PdfString.FromText(range.Prefix);
+            }
+
+            if (range.Start != 1)
+            {
+                label["St"] = new PdfInteger(range.Start);
+            }
+
+            Trees.NumberTree tree = LabelTree() ?? new(Created(), document.Objects, document.Log);
+            tree.Set(range.StartIndex, label);
+        }
+    }
+
+    /// <summary>Removes the page label range that starts at an index.</summary>
+    /// <returns>Whether there was one.</returns>
+    public bool RemoveLabelRange(int startIndex)
+    {
+        lock (gate)
+        {
+            return LabelTree() is Trees.NumberTree tree && tree.Remove(startIndex);
+        }
+    }
+
+    /// <summary>The catalog's /PageLabels number tree, or null when it has none.</summary>
+    private Trees.NumberTree? LabelTree()
+    {
+        return document.Catalog.Get<PdfDictionary>("PageLabels") is PdfDictionary root ? new(root, document.Objects, document.Log) : null;
+    }
+
+    /// <summary>A new, empty /PageLabels in the catalog.</summary>
+    private PdfDictionary Created()
+    {
+        PdfDictionary root = new() { ["Nums"] = new PdfArray() };
+        document.Catalog["PageLabels"] = root;
+        return root;
+    }
+
+    /// <summary>
+    /// A label range from a number tree entry: an unknown style counts as none, a start below 1 as 1, as pdf.js reads them.
+    /// Null when the key is not a page index or the value not a dictionary.
+    /// </summary>
+    private static PdfPageLabelRange? ToRange(KeyValuePair<long, PdfObject> entry)
+    {
+        if (entry.Key is < 0 or > int.MaxValue || entry.Value.Resolve() is not PdfDictionary label)
+        {
+            return null;
+        }
+
+        PdfPageLabelStyle style = label.GetName("S")?.Value switch
+        {
+            "D" => PdfPageLabelStyle.Arabic,
+            "R" => PdfPageLabelStyle.UpperRoman,
+            "r" => PdfPageLabelStyle.LowerRoman,
+            "A" => PdfPageLabelStyle.UpperLetters,
+            "a" => PdfPageLabelStyle.LowerLetters,
+            _ => PdfPageLabelStyle.None,
+        };
+        long start = label.GetInt("St") ?? 1;
+        return new PdfPageLabelRange((int)entry.Key, style, label.GetText("P"), start is >= 1 and <= int.MaxValue ? (int)start : 1);
+    }
+
     /// <inheritdoc/>
     public IEnumerator<PdfPage> GetEnumerator()
     {
