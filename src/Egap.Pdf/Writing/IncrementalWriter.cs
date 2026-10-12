@@ -29,11 +29,6 @@ internal static class IncrementalWriter
             return null;
         }
 
-        if (document.Trailer.ContainsKey("Encrypt"))
-        {
-            throw new NotSupportedException("Saving changes to an encrypted document is not supported yet.");
-        }
-
         ByteWriter output = new();
         if (!endsWithNewline)
         {
@@ -52,12 +47,17 @@ internal static class IncrementalWriter
 
             entries[entry.Number] = new XrefWriterEntry(1, baseLength + output.Length, entry.Generation);
             output.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"{entry.Number} {entry.Generation} obj\n"));
-            ObjectWriter.Write(entry.Value!, output);
+            // An encrypted document's update is encrypted with its key, all but the encryption dictionary (7.6.2).
+            PdfObject value = document.Security is { } security && entry.Number != document.EncryptNumber
+                ? Security.ObjectEncryption.EncryptedCopy(entry.Value!, entry.Number, entry.Generation, security, options.Deterministic)
+                : entry.Value!;
+            ObjectWriter.Write(value, output);
             output.WriteAscii("\nendobj\n");
         }
 
+        // Past every number in use or named by a reference, so the update's own cross-reference stream takes none of them.
         int highest = document.Objects.Entries.Select(e => e.Number).DefaultIfEmpty(0).Max();
-        int size = (int)Math.Max(highest + 1L, Math.Min(document.Trailer.GetInt("Size") ?? 0, int.MaxValue));
+        int size = (int)Math.Max(Math.Max(highest + 1L, document.Objects.PeekNextNumber()), Math.Min(document.Trailer.GetInt("Size") ?? 0, int.MaxValue));
         long xref;
         if (previous.IsStream)
         {

@@ -175,4 +175,12 @@ public sealed class PdfReference : PdfObject, IEquatable<PdfReference>
 internal interface IObjectResolver
 {
     PdfObject Resolve(PdfReference reference);
+
+    /// <summary>
+    /// Told of every reference the parser reads, so new objects never take a number a reference already names, not even a
+    /// reference to an object that does not exist.
+    /// </summary>
+    void Saw(int objectNumber)
+    {
+    }
 }

@@ -341,6 +341,7 @@ internal sealed class ObjectParser
                     return PdfNull.Instance;
                 }
 
+                resolver?.Saw((int)token.Integer);
                 return new PdfReference((int)token.Integer, (int)generation.Integer, resolver);
             }
         }

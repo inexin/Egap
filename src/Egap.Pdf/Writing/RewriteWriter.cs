@@ -21,6 +21,13 @@ internal sealed class RewriteWriter
     private readonly PdfSaveOptions options;
     private readonly Dictionary<(int, int), PdfReference> numbers = [];
     private readonly List<(PdfReference Old, PdfReference New)> order = [];
+    private Security.StandardSecurityHandler? security;
+
+    /// <summary>A direct /Root or /Info made into an object of its own, as the spec requires of /Root (7.5.5).</summary>
+    private readonly Dictionary<string, (PdfReference Reference, PdfDictionary Value)> madeIndirect = [];
+    private PdfDictionary? encryptDictionary;
+    private PdfReference? encryptReference;
+    private bool newEncryption;
 
     private RewriteWriter(PdfDocument document, PdfSaveOptions options)
     {
@@ -30,12 +37,20 @@ internal sealed class RewriteWriter
 
     public static void Write(PdfDocument document, Stream output, PdfSaveOptions options)
     {
-        if (document.Trailer.ContainsKey("Encrypt"))
+        RewriteWriter writer = new(document, options);
+        switch (options.Encryption.Kind)
         {
-            throw new NotSupportedException("Saving an encrypted document is not supported yet.");
+            case PdfEncryptionKind.Keep when document.Security is { } existing:
+                writer.security = existing;
+                writer.encryptDictionary = Inline(document.Trailer.Get<PdfDictionary>("Encrypt")!);
+                break;
+            case PdfEncryptionKind.Aes256:
+                PdfEncryption encryption = options.Encryption;
+                (writer.security, writer.encryptDictionary) = Security.StandardSecurityHandler.CreateAes256(encryption.UserPassword, encryption.OwnerPassword, encryption.Permissions, new IO.WarningLog(strict: false));
+                writer.newEncryption = true;
+                break;
         }
 
-        RewriteWriter writer = new(document, options);
         writer.Collect();
         writer.Emit(output);
     }
@@ -48,6 +63,11 @@ internal sealed class RewriteWriter
         {
             if (!OwnTrailerKeys.Contains(key.Value))
             {
+                if (key.Value is "Root" or "Info" && value is PdfDictionary direct)
+                {
+                    madeIndirect[key.Value] = (null!, direct);
+                }
+
                 Visit(value, pending);
             }
         }
@@ -71,6 +91,13 @@ internal sealed class RewriteWriter
                     }
                 }
             }
+        }
+
+        // The direct dictionaries made into objects take the numbers after every other object's.
+        int next = (order.Count == 0 ? 0 : order.Max(o => o.New.ObjectNumber)) + 1;
+        foreach (string key in madeIndirect.Keys.ToArray())
+        {
+            madeIndirect[key] = (new PdfReference(next++, 0), madeIndirect[key].Value);
         }
     }
 
@@ -129,6 +156,11 @@ internal sealed class RewriteWriter
 
     private PdfReference? Remap(PdfReference reference)
     {
+        if (ReferenceEquals(reference, encryptReference) || madeIndirect.Values.Any(m => ReferenceEquals(m.Reference, reference)))
+        {
+            return reference;
+        }
+
         return numbers.GetValueOrDefault((reference.ObjectNumber, reference.Generation));
     }
 
@@ -154,15 +186,41 @@ internal sealed class RewriteWriter
             version = "1.5";
         }
 
+        // AES-256 is PDF 2.0, or PDF 1.7 with Adobe's extension level 8 declared in the catalog, as qpdf and Acrobat write it.
+        bool declareExtension = newEncryption && string.CompareOrdinal(version, "2.0") < 0;
+        if (declareExtension && string.CompareOrdinal(version, "1.7") < 0)
+        {
+            version = "1.7";
+        }
+
+        int? rootNumber = document.Trailer["Root"] is PdfReference root ? Remap(root)?.ObjectNumber : null;
+
         Put(Encoding.ASCII.GetBytes($"%PDF-{version}\n"));
         Put([(byte)'%', 0xE2, 0xE3, 0xCF, 0xD3, (byte)'\n']);
 
         Dictionary<int, XrefWriterEntry> entries = [];
         List<(PdfReference Number, PdfObject Value)> compressible = [];
         int next = order.Count == 0 ? 1 : order.Max(o => o.New.ObjectNumber) + 1;
+        next += madeIndirect.Count;
+        if (madeIndirect.TryGetValue("Root", out (PdfReference Reference, PdfDictionary Value) madeRoot))
+        {
+            rootNumber = madeRoot.Reference.ObjectNumber;
+        }
+
+        foreach ((PdfReference reference, PdfDictionary made) in madeIndirect.Values)
+        {
+            PdfDictionary value = declareExtension && reference.ObjectNumber == rootNumber ? WithExtension(made) : made;
+            entries[reference.ObjectNumber] = new XrefWriterEntry(1, position, 0);
+            Put(Indirect(reference.ObjectNumber, 0, Encrypted(value, reference.ObjectNumber, 0)));
+        }
+
         foreach ((PdfReference old, PdfReference renumbered) in order)
         {
             PdfObject value = document.Objects[old];
+            if (declareExtension && renumbered.ObjectNumber == rootNumber && value is PdfDictionary catalog)
+            {
+                value = WithExtension(catalog);
+            }
 
             // Streams and objects with a generation above 0 cannot go in an object stream (7.5.7).
             if (objectStreams && value is not PdfStream && renumbered.Generation == 0)
@@ -172,7 +230,15 @@ internal sealed class RewriteWriter
             }
 
             entries[renumbered.ObjectNumber] = new XrefWriterEntry(1, position, renumbered.Generation);
-            Put(Indirect(renumbered.ObjectNumber, renumbered.Generation, value));
+            Put(Indirect(renumbered.ObjectNumber, renumbered.Generation, Encrypted(value, renumbered.ObjectNumber, renumbered.Generation)));
+        }
+
+        // The encryption dictionary is an object of its own, never encrypted.
+        if (encryptDictionary is not null)
+        {
+            encryptReference = new PdfReference(next++, 0);
+            entries[encryptReference.ObjectNumber] = new XrefWriterEntry(1, position, 0);
+            Put(Indirect(encryptReference.ObjectNumber, 0, encryptDictionary));
         }
 
         for (int start = 0; start < compressible.Count; start += ObjectsPerStream)
@@ -192,7 +258,9 @@ internal sealed class RewriteWriter
             PdfStream stream = new(new PdfDictionary { ["Type"] = PdfName.Get("ObjStm"), ["N"] = group.Count, ["First"] = header.Length, ["Filter"] = PdfName.Get("FlateDecode") });
             stream.SetEncodedBytes(Filters.FlateFilter.Encode([.. header.WrittenSpan, .. body.WrittenSpan]));
             entries[streamNumber] = new XrefWriterEntry(1, position, 0);
-            Put(Indirect(streamNumber, 0, stream));
+
+            // Objects in an object stream are not encrypted on their own; the object stream is (7.6.2).
+            Put(Indirect(streamNumber, 0, Encrypted(stream, streamNumber, 0)));
         }
 
         if (xrefStream)
@@ -236,6 +304,93 @@ internal sealed class RewriteWriter
         }
     }
 
+    private PdfObject Encrypted(PdfObject value, int number, int generation)
+    {
+        return security is null ? value : Security.ObjectEncryption.EncryptedCopy(value, number, generation, security, options.Deterministic);
+    }
+
+    /// <summary>
+    /// A copy of the catalog declaring Adobe's extension level 8, which AES-256 needs before PDF 2.0; a higher level already
+    /// declared is kept.
+    /// </summary>
+    private static PdfDictionary WithExtension(PdfDictionary catalog)
+    {
+        if (catalog.Get<PdfDictionary>("Extensions")?.Get<PdfDictionary>("ADBE")?.GetInt("ExtensionLevel") >= 8)
+        {
+            return catalog;
+        }
+
+        PdfDictionary copy = catalog.Clone();
+        PdfDictionary extensions = copy.Get<PdfDictionary>("Extensions")?.Clone() ?? [];
+        extensions["ADBE"] = new PdfDictionary { ["BaseVersion"] = PdfName.Get("1.7"), ["ExtensionLevel"] = 8 };
+        copy["Extensions"] = extensions;
+        return copy;
+    }
+
+    /// <summary>
+    /// A copy of the encryption dictionary with every reference in it replaced by what it points to: the dictionary is
+    /// written on its own, unencrypted, so nothing it uses may be another (encrypted, renumbered) object.
+    /// </summary>
+    private static PdfDictionary Inline(PdfDictionary encrypt)
+    {
+        PdfDictionary copy = encrypt.Clone();
+        Stack<PdfObject> pending = new([copy]);
+        int resolved = 0;
+        while (pending.TryPop(out PdfObject? value))
+        {
+            if (value is PdfDictionary dictionary)
+            {
+                foreach ((PdfName key, PdfObject item) in dictionary.Entries.ToArray())
+                {
+                    PdfObject direct = Direct(item, ref resolved);
+                    if (!ReferenceEquals(direct, item))
+                    {
+                        dictionary[key] = direct;
+                    }
+
+                    pending.Push(direct);
+                }
+            }
+            else if (value is PdfArray array)
+            {
+                for (int i = 0; i < array.Count; i++)
+                {
+                    PdfObject direct = Direct(array[i], ref resolved);
+                    if (!ReferenceEquals(direct, array[i]))
+                    {
+                        array[i] = direct;
+                    }
+
+                    pending.Push(direct);
+                }
+            }
+        }
+
+        return copy;
+    }
+
+    private static PdfObject Direct(PdfObject item, ref int resolved)
+    {
+        if (item is not PdfReference)
+        {
+            return item;
+        }
+
+        // A guard against references that loop: the dictionary is small, so a few hundred are plenty.
+        if (++resolved > 256)
+        {
+            return PdfNull.Instance;
+        }
+
+        return item.Resolve() switch
+        {
+            PdfDictionary dictionary => dictionary.Clone(),
+            PdfArray array => array.Clone(),
+            PdfStream => PdfNull.Instance,
+            PdfObject other => other,
+        };
+    }
+
     private byte[] Indirect(int number, int generation, PdfObject value)
     {
         ByteWriter buffer = new();
@@ -251,7 +406,11 @@ internal sealed class RewriteWriter
         PdfDictionary trailer = new() { ["Size"] = size };
         foreach ((PdfName key, PdfObject value) in document.Trailer.Entries)
         {
-            if (!OwnTrailerKeys.Contains(key.Value))
+            if (madeIndirect.TryGetValue(key.Value, out (PdfReference Reference, PdfDictionary Value) made))
+            {
+                trailer[key] = made.Reference;
+            }
+            else if (!OwnTrailerKeys.Contains(key.Value))
             {
                 trailer[key] = value is PdfArray array ? array.Clone() : value is PdfDictionary dictionary ? dictionary.Clone() : value;
             }
@@ -263,6 +422,11 @@ internal sealed class RewriteWriter
             ? PdfString.FromBytes(existing.Bytes, hex: true)
             : PdfString.FromBytes(second, hex: true);
         trailer["ID"] = new PdfArray([first, PdfString.FromBytes(second, hex: true)]);
+        if (encryptReference is not null)
+        {
+            trailer["Encrypt"] = encryptReference;
+        }
+
         return trailer;
     }
 }

@@ -59,6 +59,15 @@ Egap.Pdf.PdfDocument.Save(System.IO.Stream! output, Egap.Pdf.PdfSaveOptions? opt
 Egap.Pdf.PdfDocument.Trailer.get -> Egap.Pdf.PdfDictionary!
 Egap.Pdf.PdfDocument.Version.get -> string!
 Egap.Pdf.PdfDocument.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfEncryption
+Egap.Pdf.PdfEncryption.Kind.get -> Egap.Pdf.PdfEncryptionKind
+Egap.Pdf.PdfEncryption.OwnerPassword.get -> string!
+Egap.Pdf.PdfEncryption.Permissions.get -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfEncryption.UserPassword.get -> string!
+Egap.Pdf.PdfEncryptionKind
+Egap.Pdf.PdfEncryptionKind.Aes256 = 2 -> Egap.Pdf.PdfEncryptionKind
+Egap.Pdf.PdfEncryptionKind.Keep = 0 -> Egap.Pdf.PdfEncryptionKind
+Egap.Pdf.PdfEncryptionKind.None = 1 -> Egap.Pdf.PdfEncryptionKind
 Egap.Pdf.PdfException
 Egap.Pdf.PdfException.Code.get -> Egap.Pdf.PdfWarningCode?
 Egap.Pdf.PdfException.Code.init -> void
@@ -142,6 +151,8 @@ Egap.Pdf.PdfSaveOptions.Compression.get -> Egap.Pdf.PdfCompression
 Egap.Pdf.PdfSaveOptions.Compression.init -> void
 Egap.Pdf.PdfSaveOptions.Deterministic.get -> bool
 Egap.Pdf.PdfSaveOptions.Deterministic.init -> void
+Egap.Pdf.PdfSaveOptions.Encryption.get -> Egap.Pdf.PdfEncryption!
+Egap.Pdf.PdfSaveOptions.Encryption.init -> void
 Egap.Pdf.PdfSaveOptions.Equals(Egap.Pdf.PdfSaveOptions? other) -> bool
 Egap.Pdf.PdfSaveOptions.KeepObjectNumbers.get -> bool
 Egap.Pdf.PdfSaveOptions.KeepObjectNumbers.init -> void
@@ -238,6 +249,9 @@ static Egap.Pdf.PdfDocument.Open(string! path, Egap.Pdf.PdfReadOptions? options 
 static Egap.Pdf.PdfDocument.Open(System.IO.Stream! stream, Egap.Pdf.PdfReadOptions? options = null, bool leaveOpen = false) -> Egap.Pdf.PdfDocument!
 static Egap.Pdf.PdfDocument.Open(System.ReadOnlyMemory<byte> bytes, Egap.Pdf.PdfReadOptions? options = null) -> Egap.Pdf.PdfDocument!
 static Egap.Pdf.PdfDocument.OpenAsync(System.IO.Stream! stream, Egap.Pdf.PdfReadOptions? options = null, bool leaveOpen = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Pdf.PdfDocument!>!
+static Egap.Pdf.PdfEncryption.Aes256(string! userPassword, string! ownerPassword, Egap.Pdf.PdfPermissions permissions = Egap.Pdf.PdfPermissions.All) -> Egap.Pdf.PdfEncryption!
+static Egap.Pdf.PdfEncryption.Keep.get -> Egap.Pdf.PdfEncryption!
+static Egap.Pdf.PdfEncryption.None.get -> Egap.Pdf.PdfEncryption!
 static Egap.Pdf.PdfName.FromString(string! value) -> Egap.Pdf.PdfName!
 static Egap.Pdf.PdfName.Get(string! value) -> Egap.Pdf.PdfName!
 static Egap.Pdf.PdfName.Get(System.ReadOnlySpan<byte> bytes) -> Egap.Pdf.PdfName!
