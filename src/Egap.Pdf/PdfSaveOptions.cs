@@ -12,6 +12,25 @@ public enum PdfSaveMode
     Rewrite,
 }
 
+/// <summary>Whether a rewrite packs objects into object streams and the cross-reference into a stream (design Q7).</summary>
+public enum PdfCompression
+{
+    /// <summary>
+    /// As the input was: object streams and a cross-reference stream if it had object streams, a cross-reference stream if
+    /// its newest section was one, otherwise a classic table.
+    /// </summary>
+    Preserve,
+
+    /// <summary>
+    /// Objects other than streams packed into Flate-compressed object streams, and a compressed cross-reference stream; the
+    /// version is raised to at least 1.5.
+    /// </summary>
+    Compact,
+
+    /// <summary>Every object written on its own, with a classic cross-reference table.</summary>
+    None,
+}
+
 /// <summary>Options for saving a document.</summary>
 public sealed record PdfSaveOptions
 {
@@ -33,6 +52,9 @@ public sealed record PdfSaveOptions
     /// <see langword="true"/>.
     /// </summary>
     public bool RemoveUnused { get; init; } = true;
+
+    /// <summary>For a rewrite, how the output is compressed. The default is <see cref="PdfCompression.Preserve"/>.</summary>
+    public PdfCompression Compression { get; init; }
 
     /// <summary>
     /// Whether the file ID's second part is derived from the written content instead of being new for every save, so the

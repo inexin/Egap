@@ -132,8 +132,12 @@ internal sealed class RewriteWriter
         return numbers.GetValueOrDefault((reference.ObjectNumber, reference.Generation));
     }
 
+    /// <summary>The most objects put in one object stream.</summary>
+    public const int ObjectsPerStream = 100;
+
     private void Emit(Stream output)
     {
+        (bool objectStreams, bool xrefStream) = Style();
         using IncrementalHash md5 = IncrementalHash.CreateHash(HashAlgorithmName.MD5);
         long position = 0;
         void Put(ReadOnlySpan<byte> bytes)
@@ -143,51 +147,188 @@ internal sealed class RewriteWriter
             position += bytes.Length;
         }
 
-        Put(Encoding.ASCII.GetBytes($"%PDF-{document.Version}\n"));
+        // Object and cross-reference streams need PDF 1.5; the version is raised only when they are written (hub Q11).
+        string version = document.Version;
+        if ((objectStreams || xrefStream) && string.CompareOrdinal(version, "1.5") < 0)
+        {
+            version = "1.5";
+        }
+
+        Put(Encoding.ASCII.GetBytes($"%PDF-{version}\n"));
         Put([(byte)'%', 0xE2, 0xE3, 0xCF, 0xD3, (byte)'\n']);
 
-        Dictionary<int, (long Offset, int Generation)> offsets = [];
+        Dictionary<int, Entry> entries = [];
+        List<(PdfReference Number, PdfObject Value)> compressible = [];
+        int next = order.Count == 0 ? 1 : order.Max(o => o.New.ObjectNumber) + 1;
         foreach ((PdfReference old, PdfReference renumbered) in order)
         {
-            offsets[renumbered.ObjectNumber] = (position, renumbered.Generation);
-            ByteWriter buffer = new();
-            buffer.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"{renumbered.ObjectNumber} {renumbered.Generation} obj\n"));
-            ObjectWriter.Write(document.Objects[old], buffer, Remap);
-            buffer.WriteAscii("\nendobj\n");
-            Put(buffer.WrittenSpan);
+            PdfObject value = document.Objects[old];
+
+            // Streams and objects with a generation above 0 cannot go in an object stream (7.5.7).
+            if (objectStreams && value is not PdfStream && renumbered.Generation == 0)
+            {
+                compressible.Add((renumbered, value));
+                continue;
+            }
+
+            entries[renumbered.ObjectNumber] = new Entry(1, position, renumbered.Generation);
+            Put(Indirect(renumbered.ObjectNumber, renumbered.Generation, value));
         }
 
-        int size = offsets.Count == 0 ? 1 : offsets.Keys.Max() + 1;
-        long xref = position;
+        for (int start = 0; start < compressible.Count; start += ObjectsPerStream)
+        {
+            int streamNumber = next++;
+            List<(PdfReference Number, PdfObject Value)> group = compressible.GetRange(start, Math.Min(ObjectsPerStream, compressible.Count - start));
+            ByteWriter header = new();
+            ByteWriter body = new();
+            for (int index = 0; index < group.Count; index++)
+            {
+                header.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"{group[index].Number.ObjectNumber} {body.Length} "));
+                ObjectWriter.Write(group[index].Value, body, Remap);
+                body.Write((byte)'\n');
+                entries[group[index].Number.ObjectNumber] = new Entry(2, streamNumber, index);
+            }
+
+            PdfStream stream = new(new PdfDictionary { ["Type"] = PdfName.Get("ObjStm"), ["N"] = group.Count, ["First"] = header.Length, ["Filter"] = PdfName.Get("FlateDecode") });
+            stream.SetEncodedBytes(Filters.FlateFilter.Encode([.. header.WrittenSpan, .. body.WrittenSpan]));
+            entries[streamNumber] = new Entry(1, position, 0);
+            Put(Indirect(streamNumber, 0, stream));
+        }
+
+        if (xrefStream)
+        {
+            int number = next++;
+            entries[number] = new Entry(1, position, 0);
+            long xref = position;
+            byte[] contentHash = md5.GetHashAndReset();
+            PdfStream stream = XrefStream(entries, number + 1, Trailer(number + 1, contentHash));
+            output.Write(Indirect(number, 0, stream));
+            output.Write(Encoding.ASCII.GetBytes(string.Create(CultureInfo.InvariantCulture, $"startxref\n{xref}\n%%EOF\n")));
+        }
+        else
+        {
+            int size = entries.Count == 0 ? 1 : entries.Keys.Max() + 1;
+            long xref = position;
+            Put(Table(entries, size));
+            byte[] contentHash = md5.GetHashAndReset();
+            ByteWriter trailer = new();
+            trailer.WriteAscii("trailer\n");
+            ObjectWriter.Write(Trailer(size, contentHash), trailer, Remap);
+            trailer.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"\nstartxref\n{xref}\n%%EOF\n"));
+            output.Write(trailer.WrittenSpan);
+        }
+    }
+
+    /// <summary>Whether to write object streams and a cross-reference stream (design Q7).</summary>
+    private (bool ObjectStreams, bool XrefStream) Style()
+    {
+        switch (options.Compression)
+        {
+            case PdfCompression.Compact:
+                return (true, true);
+            case PdfCompression.None:
+                return (false, false);
+            default:
+                // As the input was: object streams if it had any, a cross-reference stream if its newest section was one.
+                bool hadObjectStreams = document.Xref.Entries.Any(e => e.Value.Kind == Parsing.XrefEntryKind.InObjectStream);
+                bool hadXrefStream = document.Xref.Sections.Count > 0 && document.Xref.Sections[0].IsStream;
+                return (hadObjectStreams, hadObjectStreams || hadXrefStream);
+        }
+    }
+
+    private byte[] Indirect(int number, int generation, PdfObject value)
+    {
+        ByteWriter buffer = new();
+        buffer.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"{number} {generation} obj\n"));
+        ObjectWriter.Write(value, buffer, Remap);
+        buffer.WriteAscii("\nendobj\n");
+        return buffer.ToArray();
+    }
+
+    /// <summary>A cross-reference entry as a stream stores it: type, then offset or object stream, then generation or index.</summary>
+    private readonly record struct Entry(int Type, long Second, int Third);
+
+    /// <summary>Adds free entries for the numbers not used, linked through their second field from object 0 (7.5.4).</summary>
+    private static Dictionary<int, Entry> WithFreeList(Dictionary<int, Entry> entries, int size)
+    {
+        Dictionary<int, Entry> all = new(entries);
+        List<int> free = [.. Enumerable.Range(1, size - 1).Where(n => !entries.ContainsKey(n))];
+        all[0] = new Entry(0, free.Count > 0 ? free[0] : 0, 65535);
+        for (int i = 0; i < free.Count; i++)
+        {
+            all[free[i]] = new Entry(0, i + 1 < free.Count ? free[i + 1] : 0, 1);
+        }
+
+        return all;
+    }
+
+    private static byte[] Table(Dictionary<int, Entry> entries, int size)
+    {
+        Dictionary<int, Entry> all = WithFreeList(entries, size);
         ByteWriter table = new(32 + (size * 20));
         table.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"xref\n0 {size}\n"));
-
-        // Free entries form a list through their offsets, starting at object 0 and ending back at 0 (7.5.4).
-        List<int> free = [.. Enumerable.Range(1, size - 1).Where(n => !offsets.ContainsKey(n))];
-        table.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"{(free.Count > 0 ? free[0] : 0):D10} 65535 f\r\n"));
-        int nextFree = 0;
-        for (int number = 1; number < size; number++)
+        for (int number = 0; number < size; number++)
         {
-            if (offsets.TryGetValue(number, out (long Offset, int Generation) entry))
-            {
-                table.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"{entry.Offset:D10} {entry.Generation:D5} n\r\n"));
-            }
-            else
-            {
-                nextFree++;
-                int next = nextFree < free.Count ? free[nextFree] : 0;
-                table.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"{next:D10} 00001 f\r\n"));
-            }
+            Entry entry = all[number];
+            string type = entry.Type == 0 ? "f" : "n";
+            table.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"{entry.Second:D10} {entry.Third:D5} {type}\r\n"));
         }
 
-        Put(table.WrittenSpan);
-        byte[] contentHash = md5.GetHashAndReset();
+        return table.ToArray();
+    }
 
-        ByteWriter trailer = new();
-        trailer.WriteAscii("trailer\n");
-        ObjectWriter.Write(Trailer(size, contentHash), trailer, Remap);
-        trailer.WriteAscii(string.Create(CultureInfo.InvariantCulture, $"\nstartxref\n{xref}\n%%EOF\n"));
-        output.Write(trailer.WrittenSpan);
+    /// <summary>A cross-reference stream with the smallest field widths, Flate with the PNG Up predictor (7.5.8).</summary>
+    private static PdfStream XrefStream(Dictionary<int, Entry> entries, int size, PdfDictionary dictionary)
+    {
+        Dictionary<int, Entry> all = WithFreeList(entries, size);
+        int second = Width(all.Values.Max(e => e.Second));
+        int third = Width(all.Values.Max(e => e.Third));
+        int row = 1 + second + third;
+        byte[] rows = new byte[size * (row + 1)];
+        byte[] previous = new byte[row];
+        byte[] current = new byte[row];
+        for (int number = 0; number < size; number++)
+        {
+            Entry entry = all[number];
+            current[0] = (byte)entry.Type;
+            for (int i = 0; i < second; i++)
+            {
+                current[1 + i] = (byte)(entry.Second >> (8 * (second - 1 - i)));
+            }
+
+            for (int i = 0; i < third; i++)
+            {
+                current[1 + second + i] = (byte)(entry.Third >> (8 * (third - 1 - i)));
+            }
+
+            int at = number * (row + 1);
+            rows[at] = 2;
+            for (int i = 0; i < row; i++)
+            {
+                rows[at + 1 + i] = (byte)(current[i] - previous[i]);
+            }
+
+            (previous, current) = (current, previous);
+        }
+
+        dictionary.Add("Type", PdfName.Get("XRef"));
+        dictionary.Add("W", new PdfArray([1, second, third]));
+        dictionary.Add("Filter", PdfName.Get("FlateDecode"));
+        dictionary.Add("DecodeParms", new PdfDictionary { ["Predictor"] = 12, ["Columns"] = row });
+        PdfStream stream = new(dictionary);
+        stream.SetEncodedBytes(Filters.FlateFilter.Encode(rows));
+        return stream;
+    }
+
+    private static int Width(long value)
+    {
+        int width = 1;
+        while (width < 8 && value >= 1L << (8 * width))
+        {
+            width++;
+        }
+
+        return width;
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5351", Justification = "The file ID is an identifier, not security; the spec suggests MD5 (14.4).")]
