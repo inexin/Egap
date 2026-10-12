@@ -110,13 +110,16 @@ public sealed class PdfReal : PdfObject, IEquatable<PdfReal>
     }
 }
 
-/// <summary>A reference to an indirect object: its object number and generation (<c>12 0 R</c>).</summary>
+/// <summary>
+/// A reference to an indirect object: its object number and generation (<c>12 0 R</c>). References come from the document,
+/// from <see cref="PdfObjectTable.Add"/> or <see cref="PdfObjectTable.GetReference"/>, so they always resolve through it.
+/// </summary>
 public sealed class PdfReference : PdfObject, IEquatable<PdfReference>
 {
-    /// <summary>A reference to an object.</summary>
+    /// <summary>A reference not tied to a document, for the writers and tests.</summary>
     /// <param name="objectNumber">The object number, which must be positive.</param>
     /// <param name="generation">The generation number, 0 to 65,535.</param>
-    public PdfReference(int objectNumber, int generation)
+    internal PdfReference(int objectNumber, int generation)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(objectNumber);
         ArgumentOutOfRangeException.ThrowIfNegative(generation);

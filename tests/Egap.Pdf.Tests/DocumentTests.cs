@@ -313,4 +313,31 @@ public sealed class DocumentTests
             return read;
         }
     }
+
+    [Fact]
+    public void AFileThatIsNotEncryptedHasEveryPermission()
+    {
+        using PdfDocument pdf = PdfDocument.Open(Sample());
+
+        Assert.False(pdf.IsEncrypted);
+        Assert.True(pdf.IsOwner);
+        Assert.Equal(PdfPermissions.All, pdf.Permissions);
+    }
+
+    [Theory]
+    [InlineData(PdfCompression.Compact, true)]
+    [InlineData(PdfCompression.None, false)]
+    public void ACompressionChangeWritesTheWholeFileEvenInIncrementalMode(PdfCompression compression, bool xrefStream)
+    {
+        byte[] input = Sample();
+        using PdfDocument pdf = PdfDocument.Open(input);
+        using MemoryStream output = new();
+
+        pdf.Save(output, new PdfSaveOptions { Compression = compression });
+
+        Assert.NotEqual(input, output.ToArray()[..Math.Min(input.Length, (int)output.Length)]);
+        using PdfDocument saved = PdfDocument.Open(output.ToArray(), new PdfReadOptions { Strict = true });
+        Assert.Single(saved.Xref.Sections);
+        Assert.Equal(xrefStream, saved.Xref.Sections[0].IsStream);
+    }
 }

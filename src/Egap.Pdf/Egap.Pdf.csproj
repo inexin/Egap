@@ -4,7 +4,6 @@
     <RootNamespace>Egap.Pdf</RootNamespace>
     <PackageId>Egap.Pdf</PackageId>
     <VersionPrefix>0.1.0</VersionPrefix>
-    <VersionSuffix>preview</VersionSuffix>
     <Description>A fully managed, MIT-licensed PDF library for .NET.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTrimmable>true</IsTrimmable>

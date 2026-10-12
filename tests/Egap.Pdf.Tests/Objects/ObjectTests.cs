@@ -362,4 +362,17 @@ public sealed class ObjectTests
 
         Assert.Throws<InvalidOperationException>(() => Write(root));
     }
+
+    [Fact]
+    public void ArrayTypedGettersFollowReferencesAndMatchTheDictionary()
+    {
+        PdfArray array = new([PdfBoolean.True, PdfName.Get("FlateDecode"), PdfString.FromText("Ω"), 3]);
+
+        Assert.True(array.GetBool(0));
+        Assert.Equal("FlateDecode", array.GetName(1)!.Value);
+        Assert.Equal("Ω", array.GetText(2));
+        Assert.Null(array.GetBool(1));
+        Assert.Null(array.GetName(3));
+        Assert.Null(array.GetText(0));
+    }
 }
