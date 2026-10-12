@@ -36,9 +36,10 @@ internal static class ObjectWriter
 
     private static void Write(PdfObject value, ByteWriter output, bool includeStreamData, int depth, Func<PdfReference, PdfReference?>? remap)
     {
-        if (depth > MaxDepth)
+        // The depth limit alone does not keep the stack safe: how deep it can go depends on the thread and the runtime.
+        if (depth > MaxDepth || !System.Runtime.CompilerServices.RuntimeHelpers.TryEnsureSufficientExecutionStack())
         {
-            throw new InvalidOperationException($"Objects nest more than {MaxDepth} deep.");
+            throw new InvalidOperationException($"Objects nest too deep to write (more than {Math.Min(depth, MaxDepth)} levels).");
         }
 
         switch (value)
