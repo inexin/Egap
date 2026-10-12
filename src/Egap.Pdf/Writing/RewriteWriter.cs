@@ -296,6 +296,8 @@ internal sealed class RewriteWriter
                 return (true, true);
             case PdfCompression.None:
                 return (false, false);
+            case PdfCompression.Preserve when document.IsNew:
+                return (true, true);
             default:
                 // As the input was: object streams if it had any, a cross-reference stream if its newest section was one.
                 bool hadObjectStreams = document.Xref.Entries.Any(e => e.Value.Kind == Parsing.XrefEntryKind.InObjectStream);

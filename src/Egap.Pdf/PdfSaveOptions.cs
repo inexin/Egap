@@ -37,7 +37,10 @@ public sealed record PdfSaveOptions
     /// <summary>The default options.</summary>
     public static PdfSaveOptions Default { get; } = new();
 
-    /// <summary>The save mode. The default is <see cref="PdfSaveMode.Incremental"/>.</summary>
+    /// <summary>
+    /// The save mode. The default is <see cref="PdfSaveMode.Incremental"/>; the whole document is written anyway when
+    /// <see cref="Compression"/> or <see cref="Encryption"/> asks for a change, or the file needed repair.
+    /// </summary>
     public PdfSaveMode Mode { get; init; }
 
     /// <summary>
@@ -60,7 +63,10 @@ public sealed record PdfSaveOptions
     /// </summary>
     public PdfEncryption Encryption { get; init; } = PdfEncryption.Keep;
 
-    /// <summary>For a rewrite, how the output is compressed. The default is <see cref="PdfCompression.Preserve"/>.</summary>
+    /// <summary>
+    /// How the output is compressed. The default is <see cref="PdfCompression.Preserve"/>; any other value writes the whole
+    /// document, whatever the <see cref="Mode"/>.
+    /// </summary>
     public PdfCompression Compression { get; init; }
 
     /// <summary>

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 using Egap.Pdf.IO;
@@ -119,8 +120,10 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     public PdfPermissions Permissions => security is null || security.IsOwner ? PdfPermissions.All : (PdfPermissions)security.Permissions & PdfPermissions.All;
 
-    /// <summary>Whether the password given was the owner password, which allows everything.</summary>
-    public bool IsOwner => security?.IsOwner ?? false;
+    /// <summary>
+    /// Whether the document has every permission: it is not encrypted, or it was opened with the owner password.
+    /// </summary>
+    public bool IsOwner => security?.IsOwner ?? true;
 
     /// <summary>Reads the cross-reference with offsets counted from the header, or returns null when that fails too.</summary>
     private XrefTable? TryShifted(PdfSource original, long header, IObjectResolver references)
@@ -176,6 +179,9 @@ public sealed class PdfDocument : IDisposable
     /// <summary>Whether the cross-reference was rebuilt by scanning; such a file saves by full rewrite (hub Q8).</summary>
     internal bool Rebuilt { get; }
 
+    /// <summary>Whether the document was made by <see cref="Create"/>: it saves whole, compact by default (design Q7).</summary>
+    internal bool IsNew { get; private set; }
+
     /// <summary>Opens a PDF file. The file stays open, shared for reading, until the document is disposed.</summary>
     /// <exception cref="PdfException">The file is not a PDF the reader can open.</exception>
     /// <exception cref="PdfLimitException">The file goes past a limit in <paramref name="options"/>.</exception>
@@ -223,6 +229,47 @@ public sealed class PdfDocument : IDisposable
         }
 
         return Open(copy.GetBuffer().AsMemory(0, (int)copy.Length), options);
+    }
+
+    /// <summary>
+    /// Creates an empty PDF 1.7 document (hub Q11): a catalog and a page tree with no pages. It always saves by full rewrite,
+    /// with object streams and a cross-reference stream unless <see cref="PdfSaveOptions.Compression"/> says otherwise.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// using PdfDocument pdf = PdfDocument.Create();
+    /// pdf.Trailer["Info"] = pdf.Objects.Add(new PdfDictionary { ["Title"] = PdfString.FromText("Report") });
+    /// pdf.Save("new.pdf");
+    /// </code>
+    /// </example>
+    public static PdfDocument Create()
+    {
+        PdfDocument document = Open(PdfSource.FromMemory(EmptyFile()), null);
+        document.IsNew = true;
+        return document;
+    }
+
+    /// <summary>The bytes of an empty PDF 1.7 file: object 1 the catalog, object 2 an empty page tree.</summary>
+    private static byte[] EmptyFile()
+    {
+        string[] objects = ["<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [] /Count 0 >>"];
+        StringBuilder file = new("%PDF-1.7\n");
+        List<int> offsets = [];
+        for (int i = 0; i < objects.Length; i++)
+        {
+            offsets.Add(file.Length);
+            file.Append(CultureInfo.InvariantCulture, $"{i + 1} 0 obj\n{objects[i]}\nendobj\n");
+        }
+
+        int xref = file.Length;
+        file.Append(CultureInfo.InvariantCulture, $"xref\n0 {objects.Length + 1}\n0000000000 65535 f\r\n");
+        foreach (int offset in offsets)
+        {
+            file.Append(CultureInfo.InvariantCulture, $"{offset:D10} 00000 n\r\n");
+        }
+
+        file.Append(CultureInfo.InvariantCulture, $"trailer\n<< /Size {objects.Length + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n");
+        return Encoding.ASCII.GetBytes(file.ToString());
     }
 
     private static PdfDocument Open(PdfSource source, PdfReadOptions? options)
@@ -295,6 +342,24 @@ public sealed class PdfDocument : IDisposable
     public void Save(Stream output, PdfSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(output);
+        SaveTo(output, options);
+    }
+
+    /// <summary>
+    /// Saves the document to a stream that is slow to write, such as a network stream: the file is written to memory, then
+    /// copied to <paramref name="output"/> asynchronously. See <see cref="Save(string, PdfSaveOptions?)"/>.
+    /// </summary>
+    public async Task SaveAsync(Stream output, PdfSaveOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(output);
+        using MemoryStream buffer = new();
+        SaveTo(buffer, options);
+        buffer.Position = 0;
+        await buffer.CopyToAsync(output, cancellationToken).ConfigureAwait(false);
+    }
+
+    private void SaveTo(Stream output, PdfSaveOptions? options)
+    {
         options ??= PdfSaveOptions.Default;
         if (WritesWhole(options))
         {
@@ -316,7 +381,8 @@ public sealed class PdfDocument : IDisposable
     {
         // Dropping or replacing encryption changes every string and stream, so it writes everything too.
         bool encryptionChanges = options.Encryption.Kind == PdfEncryptionKind.Aes256 || (options.Encryption.Kind == PdfEncryptionKind.None && IsEncrypted);
-        return options.Mode == PdfSaveMode.Rewrite || encryptionChanges || Rebuilt || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
+        // A compression other than Preserve changes how every object is stored, so it can only apply to a whole file.
+        return options.Mode == PdfSaveMode.Rewrite || options.Compression != PdfCompression.Preserve || encryptionChanges || IsNew || Rebuilt || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
             or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets
 
             // A stream without endstream runs to the end of the file, so bytes appended after it would become its data.

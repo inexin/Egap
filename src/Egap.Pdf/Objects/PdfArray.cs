@@ -83,6 +83,24 @@ public sealed class PdfArray : PdfObject, IContainer, IList<PdfObject>
         return ObjectValues.Int(Get(index));
     }
 
+    /// <summary>A boolean, or <see langword="null"/>.</summary>
+    public bool? GetBool(int index)
+    {
+        return Get<PdfBoolean>(index)?.Value;
+    }
+
+    /// <summary>A name, or <see langword="null"/>.</summary>
+    public PdfName? GetName(int index)
+    {
+        return Get<PdfName>(index);
+    }
+
+    /// <summary>A string decoded as text (see <see cref="PdfString.ToText"/>), or <see langword="null"/>.</summary>
+    public string? GetText(int index)
+    {
+        return Get<PdfString>(index)?.ToText();
+    }
+
     /// <summary>Adds an item at the end.</summary>
     public void Add(PdfObject item)
     {

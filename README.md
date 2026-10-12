@@ -7,7 +7,7 @@ It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imagi
 - **Fully managed C#**: no native binaries, no P/Invoke, no wrapped native libraries.
 - **Safe on untrusted files**: readers are built to be fuzz-tested from the start.
 
-> **Status:** early development (0.1.0 preview). Egap.Pdf reads PDF files, damaged and encrypted ones included (RC4 and
+> **Status:** early development (0.1.0, API not frozen until 1.0). Egap.Pdf reads PDF files, damaged and encrypted ones included (RC4 and
 > AES, revisions 2 to 6), into a lazily loaded object graph with change tracking, and saves them incrementally or by full
 > rewrite, with or without object streams, keeping, dropping or applying AES-256 encryption. Nothing is published to NuGet.
 
@@ -24,6 +24,9 @@ catalog["Example"] = added;
 pdf.Save("out.pdf");                                    // incremental: the original bytes plus the changes
 pdf.Save("small.pdf", new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = PdfCompression.Compact });
 pdf.Save("locked.pdf", new PdfSaveOptions { Encryption = PdfEncryption.Aes256("user", "owner", PdfPermissions.Print) });
+
+using PdfDocument fresh = PdfDocument.Create();         // an empty PDF 1.7 document, saved whole and compact
+await fresh.SaveAsync(networkStream);
 ```
 
 ## Projects
