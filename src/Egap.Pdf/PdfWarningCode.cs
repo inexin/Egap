@@ -88,4 +88,7 @@ public enum PdfWarningCode
 
     /// <summary>An object was not at the offset the cross-reference gave; it was found nearby or by scanning the file.</summary>
     ObjectRelocated,
+
+    /// <summary>Encrypted data or the encryption dictionary was malformed; it was read as far as it made sense.</summary>
+    MalformedEncryption,
 }

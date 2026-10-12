@@ -49,8 +49,11 @@ Egap.Pdf.PdfDocument
 Egap.Pdf.PdfDocument.Catalog.get -> Egap.Pdf.PdfDictionary!
 Egap.Pdf.PdfDocument.Dispose() -> void
 Egap.Pdf.PdfDocument.IsChanged.get -> bool
+Egap.Pdf.PdfDocument.IsEncrypted.get -> bool
+Egap.Pdf.PdfDocument.IsOwner.get -> bool
 Egap.Pdf.PdfDocument.Objects.get -> Egap.Pdf.PdfObjectTable!
 Egap.Pdf.PdfDocument.Options.get -> Egap.Pdf.PdfReadOptions!
+Egap.Pdf.PdfDocument.Permissions.get -> Egap.Pdf.PdfPermissions
 Egap.Pdf.PdfDocument.Save(string! path, Egap.Pdf.PdfSaveOptions? options = null) -> void
 Egap.Pdf.PdfDocument.Save(System.IO.Stream! output, Egap.Pdf.PdfSaveOptions? options = null) -> void
 Egap.Pdf.PdfDocument.Trailer.get -> Egap.Pdf.PdfDictionary!
@@ -90,6 +93,19 @@ Egap.Pdf.PdfObjectTable.IsChanged.get -> bool
 Egap.Pdf.PdfObjectTable.Remove(Egap.Pdf.PdfReference! reference) -> bool
 Egap.Pdf.PdfObjectTable.Set(Egap.Pdf.PdfReference! reference, Egap.Pdf.PdfObject! value) -> void
 Egap.Pdf.PdfObjectTable.this[Egap.Pdf.PdfReference! reference].get -> Egap.Pdf.PdfObject!
+Egap.Pdf.PdfPasswordException
+Egap.Pdf.PdfPasswordException.PdfPasswordException(string! message) -> void
+Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.All = Egap.Pdf.PdfPermissions.Print | Egap.Pdf.PdfPermissions.Modify | Egap.Pdf.PdfPermissions.CopyContent | Egap.Pdf.PdfPermissions.Annotate | Egap.Pdf.PdfPermissions.FillForms | Egap.Pdf.PdfPermissions.ExtractForAccessibility | Egap.Pdf.PdfPermissions.Assemble | Egap.Pdf.PdfPermissions.PrintHighQuality -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.Annotate = 32 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.Assemble = 1024 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.CopyContent = 16 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.ExtractForAccessibility = 512 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.FillForms = 256 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.Modify = 8 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.None = 0 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.Print = 4 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPermissions.PrintHighQuality = 2048 -> Egap.Pdf.PdfPermissions
 Egap.Pdf.PdfReadOptions
 Egap.Pdf.PdfReadOptions.<Clone>$() -> Egap.Pdf.PdfReadOptions!
 Egap.Pdf.PdfReadOptions.Equals(Egap.Pdf.PdfReadOptions? other) -> bool
@@ -170,6 +186,7 @@ Egap.Pdf.PdfWarningCode.DamagedFilterData = 18 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.DuplicateKey = 12 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.InvalidReference = 13 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedDictionary = 11 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedEncryption = 28 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedFilterParameters = 19 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedHexString = 5 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedName = 3 -> Egap.Pdf.PdfWarningCode

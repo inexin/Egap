@@ -45,6 +45,12 @@ public sealed class PdfStream : PdfObject, IContainer
     /// <summary>Where the data comes from, for the writer and the filters.</summary>
     internal StreamData Data => data;
 
+    /// <summary>Replaces where the data comes from while loading (as when decrypting), without change tracking.</summary>
+    internal void ReplaceData(StreamData replacement)
+    {
+        data = replacement;
+    }
+
     /// <summary>The read options, warning log and object number of the file the stream came from, for decoding.</summary>
     internal (PdfReadOptions Options, WarningLog Log, int? ObjectNumber)? Origin { get; set; }
 

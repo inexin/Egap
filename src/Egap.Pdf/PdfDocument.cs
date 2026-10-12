@@ -22,6 +22,7 @@ public sealed class PdfDocument : IDisposable
     private readonly PdfSource source;
     private readonly WarningLog log;
     private readonly TrailerOwner trailerOwner = new();
+    private Security.StandardSecurityHandler? security;
 
     /// <summary>The length of the file an incremental update goes after, and where its newest cross-reference section is.</summary>
     private long baseLength;
@@ -60,15 +61,13 @@ public sealed class PdfDocument : IDisposable
             XrefRebuilder.FillGaps(this.source, xref, options, log);
         }
 
-        Objects = new PdfObjectTable(new ObjectLoader(this.source, xref, options, log), log);
-        references.Target = Objects;
+        Objects = OpenObjects(xref, references);
         if (xref.Trailer.Get("Root") is not PdfDictionary && !rebuilt)
         {
             // The cross-reference read, but names no usable catalog: rebuild it from what the file holds.
             xref = XrefRebuilder.Rebuild(this.source, options, log, references);
             rebuilt = true;
-            Objects = new PdfObjectTable(new ObjectLoader(this.source, xref, options, log), log);
-            references.Target = Objects;
+            Objects = OpenObjects(xref, references);
         }
 
         Xref = xref;
@@ -82,6 +81,38 @@ public sealed class PdfDocument : IDisposable
             throw new PdfException("The file has no document catalog, even after scanning it for objects.");
         }
     }
+
+    /// <summary>
+    /// The object table for a cross-reference. For an encrypted file the encryption dictionary is loaded first, and the
+    /// password checked, so every object after it is decrypted as it loads.
+    /// </summary>
+    private PdfObjectTable OpenObjects(XrefTable xref, ForwardingResolver references)
+    {
+        ObjectLoader loader = new(source, xref, Options, log);
+        PdfObjectTable objects = new(loader, log);
+        references.Target = objects;
+        if (xref.Trailer["Encrypt"] is PdfObject encryption && encryption.Resolve() is PdfDictionary encrypt)
+        {
+            byte[] firstId = xref.Trailer.Get<PdfArray>("ID")?.Get<PdfString>(0)?.Bytes.ToArray() ?? [];
+            security = Security.StandardSecurityHandler.Open(encrypt, firstId, Options.Password, log);
+            loader.EncryptNumber = (encryption as PdfReference)?.ObjectNumber;
+            loader.Decryptor = security;
+        }
+
+        return objects;
+    }
+
+    /// <summary>Whether the file is encrypted. Its strings and streams are decrypted as they load.</summary>
+    public bool IsEncrypted => security is not null;
+
+    /// <summary>
+    /// What the file's owner allows, from <c>/P</c>; <see cref="PdfPermissions.All"/> for a file that is not encrypted or that
+    /// was opened with the owner password. Advisory only: honouring them is the caller's job (design Q5).
+    /// </summary>
+    public PdfPermissions Permissions => security is null || security.IsOwner ? PdfPermissions.All : (PdfPermissions)security.Permissions & PdfPermissions.All;
+
+    /// <summary>Whether the password given was the owner password, which allows everything.</summary>
+    public bool IsOwner => security?.IsOwner ?? false;
 
     /// <summary>Reads the cross-reference with offsets counted from the header, or returns null when that fails too.</summary>
     private XrefTable? TryShifted(PdfSource original, long header, IObjectResolver references)

@@ -35,6 +35,12 @@ internal sealed class ObjectLoader : IObjectResolver
     /// <summary>Resolves the references inside loaded objects: the loader itself, or the document's object table.</summary>
     public IObjectResolver References { get; set; }
 
+    /// <summary>Decrypts objects loaded from the file, once the document knows it is encrypted.</summary>
+    public Security.StandardSecurityHandler? Decryptor { get; set; }
+
+    /// <summary>The encryption dictionary's object number: that object is never encrypted.</summary>
+    public int? EncryptNumber { get; set; }
+
     public PdfObject Resolve(PdfReference reference)
     {
         return Load(reference.ObjectNumber, reference.Generation);
@@ -73,6 +79,11 @@ internal sealed class ObjectLoader : IObjectResolver
             try
             {
                 PdfObject value = entry.Kind == XrefEntryKind.InFile ? LoadFromFile(objectNumber, entry) : LoadFromObjectStream(objectNumber, entry);
+                if (entry.Kind == XrefEntryKind.InFile && Decryptor is not null && objectNumber != EncryptNumber)
+                {
+                    Security.ObjectDecryption.Decrypt(value, objectNumber, entry.Generation, Decryptor);
+                }
+
                 cache[objectNumber] = value;
                 return value;
             }

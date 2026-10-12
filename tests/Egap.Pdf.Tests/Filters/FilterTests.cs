@@ -297,12 +297,13 @@ public sealed class FilterTests
     }
 
     [Fact]
-    public void IdentityCryptPassesAndOtherCryptFiltersNeedDecryption()
+    public void CryptFilterPassesDataThrough()
     {
         Assert.Equal("x"u8.ToArray(), Stream(new PdfDictionary { ["Filter"] = PdfName.Get("Crypt") }, "x"u8.ToArray()).GetDecodedBytes());
         PdfStream named = Stream(new PdfDictionary { ["Filter"] = PdfName.Get("Crypt"), ["DecodeParms"] = new PdfDictionary { ["Name"] = PdfName.Get("StdCF") } }, "x"u8.ToArray());
 
-        Assert.Throws<PdfException>(named.GetDecodedBytes);
+        // Decryption happens as an encrypted file's objects load, so the filter itself changes nothing.
+        Assert.Equal("x"u8.ToArray(), named.GetDecodedBytes());
     }
 
     [Fact]
