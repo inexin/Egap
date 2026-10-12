@@ -104,7 +104,8 @@ public sealed class XrefTests
         Assert.Equal("(new)", Write(opened[6]));
         Assert.Equal("(info)", Write(opened[5]));
         Assert.Equal(2, opened.Xref.Sections.Count);
-        Assert.Equal("5 0 R", opened.Xref.Trailer["Info"]!.ToString());
+        // The newest trailer is the trailer: its update left /Info out, so it is gone (7.5.6).
+        Assert.False(opened.Xref.Trailer.ContainsKey("Info"));
         Assert.Equal(7, opened.Xref.Trailer.GetInt("Size"));
         Assert.False(opened.Xref.Trailer.ContainsKey("Prev"));
     }

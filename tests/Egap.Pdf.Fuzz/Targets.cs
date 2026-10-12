@@ -11,7 +11,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental"];
 
     public static Action<Stream> Get(string name)
     {
@@ -24,6 +24,7 @@ internal static class Targets
             "xref" => Xref,
             "document" => Document,
             "rewrite" => Rewrite,
+            "incremental" => Incremental,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -456,6 +457,63 @@ internal static class Targets
 
                 GraphCheck.AssertSame(original, rewritten);
                 Count($"rewritten, {compression}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// PDF bytes opened leniently and saved incrementally. With no edits the output must be the input byte for byte, unless
+    /// the file needed structural repair (then it is written whole). After an edit the output must start with the input
+    /// (same exception), reopen, and hold the same objects as the edited document.
+    /// </summary>
+    private static void Incremental(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 };
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, options);
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            if (pdf.Trailer.ContainsKey("Encrypt"))
+            {
+                Count("encrypted, skipped");
+                return;
+            }
+
+            try
+            {
+                bool whole = pdf.Rebuilt || pdf.Warnings.Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
+                    or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets);
+                using MemoryStream unchanged = new();
+                pdf.Save(unchanged);
+                if (!whole && !unchanged.ToArray().AsSpan().SequenceEqual(bytes))
+                {
+                    throw new InvalidOperationException("Saving without edits changed the file.");
+                }
+
+                pdf.Catalog["EgapFuzz"] = pdf.Objects.Add(new PdfDictionary { ["Edited"] = true });
+                using MemoryStream edited = new();
+                pdf.Save(edited, new PdfSaveOptions { Deterministic = true });
+                byte[] output = edited.ToArray();
+                if (!whole && !output.AsSpan(0, bytes.Length).SequenceEqual(bytes))
+                {
+                    throw new InvalidOperationException("The update did not keep the original bytes.");
+                }
+
+                using PdfDocument reopened = PdfDocument.Open(output, options);
+                GraphCheck.AssertSame(pdf, reopened);
+                Count(whole ? "written whole" : "updated");
+            }
+            catch (PdfLimitException)
+            {
             }
         }
     }

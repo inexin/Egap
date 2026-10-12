@@ -16,17 +16,29 @@ internal abstract class BlockCache : PdfSource
     private readonly Dictionary<long, LinkedListNode<Block>> blocks = [];
     private readonly LinkedList<Block> recent = new();
     private readonly Lock gate = new();
+    private long length;
 
     protected BlockCache(long length, int blockSize, int capacity)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(blockSize);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity);
-        Length = length;
+        this.length = length;
         this.blockSize = blockSize;
         this.capacity = capacity;
     }
 
-    public override long Length { get; }
+    public override long Length => length;
+
+    /// <summary>Forgets every cached block and takes a new length, after the file grew by an update appended in place.</summary>
+    public void Reset(long newLength)
+    {
+        lock (gate)
+        {
+            blocks.Clear();
+            recent.Clear();
+            length = newLength;
+        }
+    }
 
     /// <summary>The number of blocks read from the underlying file or stream so far, for tests.</summary>
     public int BlockReads { get; private set; }

@@ -64,11 +64,12 @@ internal abstract class PdfSource : IDisposable
         return new MemorySource(bytes);
     }
 
-    /// <summary>Opens a file for reading. The file stays open, shared for reading, until the source is disposed.</summary>
+    /// <summary>Opens a file for reading. The file stays open, shared for reading and writing, until the source is disposed.</summary>
     public static PdfSource FromFile(string path)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
-        SafeFileHandle handle = File.OpenHandle(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, FileOptions.RandomAccess);
+        // Write sharing lets an incremental save append to the open file (design Q4); delete sharing lets a rewrite replace it.
+        SafeFileHandle handle = File.OpenHandle(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, FileOptions.RandomAccess);
         return new FileSource(handle, path);
     }
 
