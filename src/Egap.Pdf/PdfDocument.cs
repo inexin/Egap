@@ -24,6 +24,7 @@ public sealed class PdfDocument : IDisposable
     private readonly WarningLog log;
     private readonly TrailerOwner trailerOwner = new();
     private global::Egap.Pdf.Security.StandardSecurityHandler? security;
+    private PdfPageCollection? pages;
 
     /// <summary>The length of the file an incremental update goes after, and where its newest cross-reference section is.</summary>
     private long baseLength;
@@ -108,6 +109,11 @@ public sealed class PdfDocument : IDisposable
 
         return objects;
     }
+
+    /// <summary>
+    /// The pages in order, numbered from 0. The page tree is walked on first use; only its nodes are loaded.
+    /// </summary>
+    public PdfPageCollection Pages => LazyInitializer.EnsureInitialized(ref pages, () => new PdfPageCollection(this));
 
     /// <summary>The document's warnings, for the views that repair what they read.</summary>
     internal WarningLog Log => log;

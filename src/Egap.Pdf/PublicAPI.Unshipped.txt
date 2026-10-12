@@ -1,2 +1,60 @@
 #nullable enable
+Egap.Pdf.PdfDocument.Pages.get -> Egap.Pdf.PdfPageCollection!
+Egap.Pdf.PdfPage
+Egap.Pdf.PdfPage.ArtBox.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfPage.ArtBox.set -> void
+Egap.Pdf.PdfPage.BleedBox.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfPage.BleedBox.set -> void
+Egap.Pdf.PdfPage.CropBox.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfPage.CropBox.set -> void
+Egap.Pdf.PdfPage.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfPage.Equals(Egap.Pdf.PdfPage? other) -> bool
+Egap.Pdf.PdfPage.MediaBox.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfPage.MediaBox.set -> void
+Egap.Pdf.PdfPage.Reference.get -> Egap.Pdf.PdfReference?
+Egap.Pdf.PdfPage.Resources.get -> Egap.Pdf.PdfDictionary?
+Egap.Pdf.PdfPage.Resources.set -> void
+Egap.Pdf.PdfPage.Rotate.get -> int
+Egap.Pdf.PdfPage.Rotate.set -> void
+Egap.Pdf.PdfPage.TrimBox.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfPage.TrimBox.set -> void
+Egap.Pdf.PdfPage.UserUnit.get -> double
+Egap.Pdf.PdfPage.UserUnit.set -> void
+Egap.Pdf.PdfPageCollection
+Egap.Pdf.PdfPageCollection.Count.get -> int
+Egap.Pdf.PdfPageCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfPage!>!
+Egap.Pdf.PdfPageCollection.IndexOf(Egap.Pdf.PdfPage! page) -> int
+Egap.Pdf.PdfPageCollection.this[int index].get -> Egap.Pdf.PdfPage!
+Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfRectangle.Bottom.get -> double
+Egap.Pdf.PdfRectangle.Bottom.init -> void
+Egap.Pdf.PdfRectangle.Deconstruct(out double Left, out double Bottom, out double Right, out double Top) -> void
+Egap.Pdf.PdfRectangle.Equals(Egap.Pdf.PdfRectangle other) -> bool
+Egap.Pdf.PdfRectangle.Height.get -> double
+Egap.Pdf.PdfRectangle.Intersect(Egap.Pdf.PdfRectangle other) -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfRectangle.IsEmpty.get -> bool
+Egap.Pdf.PdfRectangle.Left.get -> double
+Egap.Pdf.PdfRectangle.Left.init -> void
+Egap.Pdf.PdfRectangle.Normalize() -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfRectangle.PdfRectangle() -> void
+Egap.Pdf.PdfRectangle.PdfRectangle(double Left, double Bottom, double Right, double Top) -> void
+Egap.Pdf.PdfRectangle.Right.get -> double
+Egap.Pdf.PdfRectangle.Right.init -> void
+Egap.Pdf.PdfRectangle.ToArray() -> Egap.Pdf.PdfArray!
+Egap.Pdf.PdfRectangle.Top.get -> double
+Egap.Pdf.PdfRectangle.Top.init -> void
+Egap.Pdf.PdfRectangle.Width.get -> double
+Egap.Pdf.PdfWarningCode.MalformedPageTree = 30 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode
+override Egap.Pdf.PdfPage.Equals(object? obj) -> bool
+override Egap.Pdf.PdfPage.GetHashCode() -> int
+override Egap.Pdf.PdfPage.ToString() -> string!
+override Egap.Pdf.PdfRectangle.GetHashCode() -> int
+override Egap.Pdf.PdfRectangle.ToString() -> string!
+static Egap.Pdf.PdfPage.operator !=(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
+static Egap.Pdf.PdfPage.operator ==(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
+static Egap.Pdf.PdfRectangle.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfRectangle?
+static Egap.Pdf.PdfRectangle.operator !=(Egap.Pdf.PdfRectangle left, Egap.Pdf.PdfRectangle right) -> bool
+static Egap.Pdf.PdfRectangle.operator ==(Egap.Pdf.PdfRectangle left, Egap.Pdf.PdfRectangle right) -> bool
+static readonly Egap.Pdf.PdfPage.DefaultMediaBox -> Egap.Pdf.PdfRectangle
+~override Egap.Pdf.PdfRectangle.Equals(object obj) -> bool
