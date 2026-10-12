@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines"];
 
     public static Action<Stream> Get(string name)
     {
@@ -30,6 +30,7 @@ internal static class Targets
             "pages" => Pages,
             "pageedits" => PageEdits,
             "navigation" => Navigation,
+            "outlines" => Outlines,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -1009,5 +1010,140 @@ internal static class Targets
                 _ = (state.State, state.PreserveRadioButtons);
                 break;
         }
+    }
+
+    /// <summary>
+    /// The outline (Phase 2 task 7): read leniently and strictly (which may throw only <see cref="PdfException"/>), every
+    /// item's properties read and each found among its parent's children. Then items are added, removed, moved, opened and
+    /// closed by a plan drawn from the input, and the outline written whole must reopen without a repair, with every link
+    /// and count right and as many items as the edits leave.
+    /// </summary>
+    private static void Outlines(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        foreach (bool strict in new[] { true, false })
+        {
+            PdfReadOptions options = new() { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000, Strict = strict };
+            PdfDocument pdf;
+            try
+            {
+                pdf = PdfDocument.Open(bytes, options);
+            }
+            catch (PdfException)
+            {
+                continue;
+            }
+
+            using (pdf)
+            {
+                try
+                {
+                    IReadOnlyList<PdfOutlineItem> items = pdf.Outline.GetAllItems();
+                    foreach (PdfOutlineItem item in items.Take(500))
+                    {
+                        // Destination pages are not looked up: reading the page tree repairs it too, and a fuzzed file may use
+                        // the same object as a page and an outline item, which the two repairs would pull both ways.
+                        _ = (item.Title, item.Destination, item.Action, item.Color, item.IsBold, item.IsItalic, item.IsOpen);
+                        if (!item.Parent.Children.Contains(item))
+                        {
+                            throw new InvalidOperationException($"The outline item {item.Reference} is not among its parent's children.");
+                        }
+                    }
+
+                    if (!strict)
+                    {
+                        EditOutline(pdf, items.Count, bytes.Length);
+                    }
+                }
+                catch (PdfException) when (strict)
+                {
+                }
+                catch (PdfLimitException)
+                {
+                }
+            }
+        }
+    }
+
+    private static void EditOutline(PdfDocument pdf, int count, int seed)
+    {
+        Random random = new(seed);
+        for (int i = 0; i < 30; i++)
+        {
+            List<PdfOutlineItem> all = [.. pdf.Outline.GetAllItems()];
+            PdfOutlineNode parent = all.Count == 0 || random.Next(3) == 0 ? pdf.Outline : all[random.Next(all.Count)];
+            switch (random.Next(4))
+            {
+                case 0 or 1:
+                    parent.Insert(random.Next(parent.Children.Count + 1), $"t{i}");
+                    count++;
+                    break;
+                case 2 when parent is PdfOutlineItem item:
+                    count -= 1 + Descendants(item);
+                    item.Remove();
+                    break;
+                case 3 when all.Count > 0:
+                    PdfOutlineItem moved = all[random.Next(all.Count)];
+                    PdfOutlineNode target = all.Count > 1 && random.Next(2) == 0 ? all[random.Next(all.Count)] : pdf.Outline;
+                    bool under = false;
+                    for (PdfOutlineNode at = target; at is PdfOutlineItem ancestor; at = ancestor.Parent)
+                    {
+                        under |= ancestor.Equals(moved);
+                    }
+
+                    if (under)
+                    {
+                        moved.IsOpen = !moved.IsOpen;
+                    }
+                    else
+                    {
+                        int size = target.Children.Count - (target.Children.Contains(moved) ? 1 : 0);
+                        moved.MoveTo(target, random.Next(size + 1));
+                    }
+
+                    break;
+            }
+        }
+
+        using MemoryStream whole = new();
+        pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+        using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+        IReadOnlyList<PdfOutlineItem> items = reopened.Outline.GetAllItems();
+        if (reopened.Warnings.Any(w => w.Code == PdfWarningCode.MalformedOutline) || items.Count != count)
+        {
+            throw new InvalidOperationException($"After the edits the outline has {items.Count} items, not {count}, or needed repair.");
+        }
+
+        if (reopened.Outline.Dictionary is PdfDictionary root && (root.GetInt("Count") ?? 0) != Shown(root))
+        {
+            throw new InvalidOperationException("The outline's /Count is wrong after the edits.");
+        }
+
+        foreach (PdfOutlineItem item in items)
+        {
+            int shown = Shown(item.Dictionary);
+            long? itemCount = item.Dictionary.GetInt("Count");
+            // Many writers give a leaf /Count 0; the spec only needs a /Count where there are children.
+            if (shown == 0 ? itemCount is not (null or 0) : Math.Abs(itemCount ?? 0) != shown)
+            {
+                throw new InvalidOperationException($"The item {item.Title} has /Count {itemCount} with {shown} shown below it.");
+            }
+        }
+    }
+
+    private static int Descendants(PdfOutlineItem item)
+    {
+        return item.Children.Sum(c => 1 + Descendants(c));
+    }
+
+    private static int Shown(PdfDictionary node)
+    {
+        int shown = 0;
+        for (PdfDictionary? child = node.Get<PdfDictionary>("First"); child is not null; child = child.Get<PdfDictionary>("Next"))
+        {
+            shown += 1 + (child.GetInt("Count") > 0 ? Shown(child) : 0);
+        }
+
+        return shown;
     }
 }

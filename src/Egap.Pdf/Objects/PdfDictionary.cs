@@ -185,6 +185,15 @@ public sealed class PdfDictionary : PdfObject, IContainer, IEnumerable<KeyValueP
         entries[key] = value;
     }
 
+    /// <summary>Removes an entry as a repair made while reading, without change tracking.</summary>
+    internal void RemoveParsed(PdfName key)
+    {
+        if (entries.Remove(key, out PdfObject? old))
+        {
+            Containment.Release(old);
+        }
+    }
+
     /// <summary>Adds an entry while parsing, without change tracking; the last of duplicate keys wins.</summary>
     internal void SetParsed(PdfName key, PdfObject value)
     {

@@ -115,6 +115,15 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     public PdfPageCollection Pages => LazyInitializer.EnsureInitialized(ref pages, () => new PdfPageCollection(this));
 
+    /// <summary>The document outline (bookmarks); created in the catalog by the first item added.</summary>
+    public PdfOutline Outline => new(this);
+
+    /// <summary>Whether the outline has had its repair pass (see <see cref="OutlineReader"/>).</summary>
+    internal bool OutlineChecked { get; set; }
+
+    /// <summary>Guards the outline's repair pass.</summary>
+    internal Lock OutlineGate { get; } = new();
+
     /// <summary>The named destinations, through the catalog's /Names /Dests tree and its older /Dests dictionary.</summary>
     public PdfNamedDestinations NamedDestinations => new(this);
 
