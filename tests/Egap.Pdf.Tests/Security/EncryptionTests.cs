@@ -145,4 +145,20 @@ public sealed class EncryptionTests
     {
         Assert.Throws<ArgumentException>(() => PdfEncryption.Aes256("user", ""));
     }
+
+    [Fact]
+    public void AStreamTypedXRefIsLeftUnencryptedAsReadersExpect()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfStream odd = new(new PdfDictionary { ["Type"] = PdfName.Get("XRef"), ["Note"] = PdfString.FromText("plain") });
+        odd.SetDecodedBytes("not a cross-reference"u8);
+        pdf.Catalog["Odd"] = pdf.Objects.Add(odd);
+
+        byte[] bytes = Save(pdf, Rewrite with { Encryption = PdfEncryption.Aes256("u", "o") });
+
+        using PdfDocument saved = PdfDocument.Open(bytes, new PdfReadOptions { Password = "u", Strict = true });
+        PdfStream read = saved.Catalog.Get<PdfStream>("Odd")!;
+        Assert.Equal("not a cross-reference"u8.ToArray(), read.GetDecodedBytes());
+        Assert.Equal("plain", read.Dictionary.GetText("Note"));
+    }
 }

@@ -5,7 +5,8 @@ namespace Egap.Pdf.Security;
 /// <summary>
 /// Makes the encrypted form of an object for writing (7.6.2): a copy whose strings and stream data are encrypted for its
 /// object number and generation. The same things decryption leaves alone are left alone here: signature contents, metadata
-/// streams when metadata is not encrypted, and the encryption dictionary (which the writer never passes in).
+/// streams when metadata is not encrypted, streams typed as cross-reference streams, and the encryption dictionary (which the
+/// writer never passes in).
 /// </summary>
 internal static class ObjectEncryption
 {
@@ -23,6 +24,9 @@ internal static class ObjectEncryption
                 PdfDictionary dictionaryCopy = dictionary.Clone();
                 EncryptStrings(dictionaryCopy, number, generation, handler, deterministic);
                 return dictionaryCopy;
+            case PdfStream { Dictionary: var header } when header.GetName("Type")?.Value == "XRef":
+                // Readers leave any stream typed /XRef unencrypted, strings included, so it is written as it is (7.6.2).
+                return value;
             case PdfStream stream:
                 PdfStream streamCopy = stream.Clone();
                 EncryptStrings(streamCopy.Dictionary, number, generation, handler, deterministic);
