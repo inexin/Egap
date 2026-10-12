@@ -53,6 +53,13 @@ public sealed record PdfSaveOptions
     /// </summary>
     public bool RemoveUnused { get; init; } = true;
 
+    /// <summary>
+    /// Whether the saved file is encrypted: <see cref="PdfEncryption.Keep"/> (the default) keeps the document's encryption,
+    /// if any; <see cref="PdfEncryption.None"/> drops it and <see cref="PdfEncryption.Aes256"/> applies new encryption, both
+    /// writing the whole document.
+    /// </summary>
+    public PdfEncryption Encryption { get; init; } = PdfEncryption.Keep;
+
     /// <summary>For a rewrite, how the output is compressed. The default is <see cref="PdfCompression.Preserve"/>.</summary>
     public PdfCompression Compression { get; init; }
 

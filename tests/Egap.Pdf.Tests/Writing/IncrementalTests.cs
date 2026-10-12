@@ -258,4 +258,40 @@ public sealed class IncrementalTests
             File.Delete(path);
         }
     }
+
+    private static string Fuzzed(string name)
+    {
+        return Path.Combine(AppContext.BaseDirectory, "files", "fuzz", name);
+    }
+
+    [Fact]
+    public void NewObjectsNeverTakeANumberAReferenceNames()
+    {
+        // Found by fuzzing: /Kids holds 7 0 R, past /Size 6, and the update's cross-reference stream once took number 7.
+        byte[] original = File.ReadAllBytes(Fuzzed("incremental-dangling-reference.pdf"));
+        using PdfDocument pdf = PdfDocument.Open(original);
+        PdfReference added = pdf.Objects.Add(new PdfDictionary { ["Edited"] = true });
+        pdf.Catalog["Added"] = added;
+
+        using PdfDocument reopened = PdfDocument.Open(Save(pdf));
+
+        Assert.True(added.ObjectNumber > 7);
+        Assert.Same(PdfNull.Instance, reopened.Catalog.Get<PdfDictionary>("Pages")!.Get<PdfArray>("Kids")!.Get(0));
+        Assert.True(reopened.Catalog.Get<PdfDictionary>("Added")!.GetBool("Edited"));
+    }
+
+    [Fact]
+    public void FileWithAStreamRunningToTheEndIsWrittenWhole()
+    {
+        // Found by fuzzing: the cross-reference stream has no endstream, so an update appended after it became its data.
+        byte[] original = File.ReadAllBytes(Fuzzed("incremental-missing-endstream.pdf"));
+        using PdfDocument pdf = PdfDocument.Open(original);
+        pdf.Catalog["Edited"] = true;
+
+        byte[] saved = Save(pdf);
+
+        Assert.False(saved.AsSpan(0, original.Length).SequenceEqual(original));
+        using PdfDocument reopened = PdfDocument.Open(saved, Strict);
+        Assert.Equal("Page", reopened.Catalog.Get<PdfDictionary>("Pages")!.Get<PdfArray>("Kids")!.Get<PdfDictionary>(0)!.GetName("Type")!.Value);
+    }
 }

@@ -68,6 +68,77 @@ internal sealed class ObjectScanner
         return new ObjectScanner(objects, trailers);
     }
 
+    /// <summary>
+    /// The highest object number that any <c>n g R</c> in the file names, objects and stream data alike, so new objects
+    /// can take numbers no reference already names (a reference to a missing object would otherwise come to point at one).
+    /// Stream data can hold false matches, which only make the number higher.
+    /// </summary>
+    public static int HighestReference(PdfSource source)
+    {
+        int highest = 0;
+        byte[] buffer = new byte[Window + 64];
+        for (long start = 0; start < source.Length; start += Window)
+        {
+            long from = Math.Max(0, start - 64);
+            int count = source.Read(from, buffer.AsSpan(0, (int)Math.Min(buffer.Length, source.Length - from)));
+            Span<byte> span = buffer.AsSpan(0, count);
+            for (int at = (int)(start - from); at < span.Length; at++)
+            {
+                if (span[at] != 'R' || (at + 1 < span.Length && CharClass.IsRegular(span[at + 1])))
+                {
+                    continue;
+                }
+
+                // Back over white space, the generation, white space and the number.
+                int i = at - 1;
+                while (i >= 0 && CharClass.IsWhiteSpace(span[i]))
+                {
+                    i--;
+                }
+
+                int generationEnd = i;
+                while (i >= 0 && CharClass.IsDigit(span[i]))
+                {
+                    i--;
+                }
+
+                if (i == generationEnd || generationEnd - i > 5 || i < 0 || !CharClass.IsWhiteSpace(span[i]))
+                {
+                    continue;
+                }
+
+                while (i >= 0 && CharClass.IsWhiteSpace(span[i]))
+                {
+                    i--;
+                }
+
+                int numberEnd = i;
+                while (i >= 0 && CharClass.IsDigit(span[i]))
+                {
+                    i--;
+                }
+
+                if (i == numberEnd || numberEnd - i > 10)
+                {
+                    continue;
+                }
+
+                long number = 0;
+                for (int d = i + 1; d <= numberEnd; d++)
+                {
+                    number = (number * 10) + (span[d] - '0');
+                }
+
+                if (number <= int.MaxValue - 1)
+                {
+                    highest = Math.Max(highest, (int)number);
+                }
+            }
+        }
+
+        return highest;
+    }
+
     /// <summary>The header ending in the "obj" at <paramref name="at"/>: where it starts, the number and the generation.</summary>
     private static (long Offset, int Number, int Generation)? Header(Span<byte> span, int at)
     {

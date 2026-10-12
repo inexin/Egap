@@ -431,32 +431,32 @@ internal static class Targets
 
         using (original)
         {
-            if (original.Trailer.ContainsKey("Encrypt"))
+            // Encryption is kept in the first two saves, and new AES-256 encryption applied in the third.
+            foreach ((PdfCompression compression, PdfEncryption encryption, string? password) in new[]
             {
-                Count("encrypted, skipped");
-                return;
-            }
-
-            foreach (PdfCompression compression in new[] { PdfCompression.Preserve, PdfCompression.Compact })
+                (PdfCompression.Preserve, PdfEncryption.Keep, options.Password),
+                (PdfCompression.Compact, PdfEncryption.Keep, options.Password),
+                (PdfCompression.Compact, PdfEncryption.Aes256("u", "o"), "u"),
+            })
             {
                 using MemoryStream output = new();
                 try
                 {
-                    original.Save(output, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = compression, Deterministic = true });
+                    original.Save(output, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = compression, Encryption = encryption, Deterministic = true });
                 }
                 catch (PdfLimitException)
                 {
                     return;
                 }
 
-                using PdfDocument rewritten = PdfDocument.Open(output.ToArray(), options with { Strict = true });
+                using PdfDocument rewritten = PdfDocument.Open(output.ToArray(), options with { Strict = true, Password = password });
                 if (rewritten.Warnings.Count > 0)
                 {
                     throw new InvalidOperationException($"The {compression} rewrite has warnings: {rewritten.Warnings[0]}");
                 }
 
                 GraphCheck.AssertSame(original, rewritten);
-                Count($"rewritten, {compression}");
+                Count($"rewritten, {compression}, {encryption.Kind}");
             }
         }
     }
@@ -482,16 +482,10 @@ internal static class Targets
 
         using (pdf)
         {
-            if (pdf.Trailer.ContainsKey("Encrypt"))
-            {
-                Count("encrypted, skipped");
-                return;
-            }
-
             try
             {
                 bool whole = pdf.Rebuilt || pdf.Warnings.Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
-                    or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets);
+                    or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets or PdfWarningCode.MissingEndstream);
                 using MemoryStream unchanged = new();
                 pdf.Save(unchanged);
                 if (!whole && !unchanged.ToArray().AsSpan().SequenceEqual(bytes))
@@ -503,6 +497,10 @@ internal static class Targets
                 using MemoryStream edited = new();
                 pdf.Save(edited, new PdfSaveOptions { Deterministic = true });
                 byte[] output = edited.ToArray();
+
+                // Warnings appear as objects load, so a structural one found during the save also makes it write whole.
+                whole |= pdf.Warnings.Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
+                    or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets or PdfWarningCode.MissingEndstream);
                 if (!whole && !output.AsSpan(0, bytes.Length).SequenceEqual(bytes))
                 {
                     throw new InvalidOperationException("The update did not keep the original bytes.");

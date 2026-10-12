@@ -20,6 +20,7 @@ internal sealed class ObjectLoader : IObjectResolver
     private readonly Lock gate = new();
     private int depth;
     private ObjectScanner? scanner;
+    private int? highestReference;
 
     public ObjectLoader(PdfSource source, XrefTable xref, PdfReadOptions options, WarningLog log)
     {
@@ -40,6 +41,44 @@ internal sealed class ObjectLoader : IObjectResolver
 
     /// <summary>The encryption dictionary's object number: that object is never encrypted.</summary>
     public int? EncryptNumber { get; set; }
+
+    /// <summary>The highest object number any reference in the file names, found by scanning it once.</summary>
+    public int HighestReferenceInFile()
+    {
+        lock (gate)
+        {
+            if (highestReference is null)
+            {
+                // Object streams are compressed, so the references inside them are found in their decoded bytes.
+                int highest = ObjectScanner.HighestReference(source);
+                foreach (long streamNumber in Xref.Entries.Where(e => e.Value.Kind == XrefEntryKind.InObjectStream).Select(e => e.Value.Offset).Distinct())
+                {
+                    if (Xref.TryGet((int)streamNumber, out XrefEntry entry) && entry.Kind == XrefEntryKind.InFile && Load((int)streamNumber, entry.Generation) is PdfStream stream)
+                    {
+                        try
+                        {
+                            highest = Math.Max(highest, ObjectScanner.HighestReference(PdfSource.FromMemory(stream.GetDecodedBytes())));
+                        }
+                        catch (PdfException e) when (e is not PdfLimitException)
+                        {
+                        }
+                    }
+                }
+
+                highestReference = highest;
+            }
+
+            return highestReference.Value;
+        }
+    }
+
+    public void Saw(int objectNumber)
+    {
+        if (!ReferenceEquals(References, this))
+        {
+            References.Saw(objectNumber);
+        }
+    }
 
     public PdfObject Resolve(PdfReference reference)
     {

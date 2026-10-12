@@ -18,6 +18,7 @@ public sealed class PdfObjectTable : IEnumerable<PdfReference>, IObjectResolver
     private readonly WarningLog log;
     private readonly Lock gate = new();
     private int nextNumber;
+    private bool scannedReferences;
 
     internal PdfObjectTable(ObjectLoader? loader, WarningLog log)
     {
@@ -204,6 +205,46 @@ public sealed class PdfObjectTable : IEnumerable<PdfReference>, IObjectResolver
         return Resolve(reference);
     }
 
+    void IObjectResolver.Saw(int objectNumber)
+    {
+        lock (gate)
+        {
+            if (objectNumber >= nextNumber && objectNumber < int.MaxValue)
+            {
+                nextNumber = objectNumber + 1;
+            }
+        }
+    }
+
+    /// <summary>The number the next new object would get, for the writers' own objects (such as a cross-reference stream).</summary>
+    internal int PeekNextNumber()
+    {
+        lock (gate)
+        {
+            SkipReferencedNumbers();
+            return nextNumber;
+        }
+    }
+
+    /// <summary>
+    /// Before the first new number is given out: past every number a reference in the file names, so a reference to an
+    /// object that does not exist never comes to point at a new one.
+    /// </summary>
+    private void SkipReferencedNumbers()
+    {
+        if (scannedReferences || loader is null)
+        {
+            return;
+        }
+
+        scannedReferences = true;
+        int highest = loader.HighestReferenceInFile();
+        if (highest >= nextNumber && highest < int.MaxValue)
+        {
+            nextNumber = highest + 1;
+        }
+    }
+
     internal PdfObject Resolve(PdfReference reference)
     {
         lock (gate)
@@ -283,6 +324,7 @@ public sealed class PdfObjectTable : IEnumerable<PdfReference>, IObjectResolver
     /// <summary>The next number after the highest; when a damaged file used up the top, the lowest unused number.</summary>
     private int NextNumber()
     {
+        SkipReferencedNumbers();
         if (nextNumber < int.MaxValue)
         {
             return nextNumber++;

@@ -22,7 +22,7 @@ public sealed class PdfDocument : IDisposable
     private readonly PdfSource source;
     private readonly WarningLog log;
     private readonly TrailerOwner trailerOwner = new();
-    private Security.StandardSecurityHandler? security;
+    private global::Egap.Pdf.Security.StandardSecurityHandler? security;
 
     /// <summary>The length of the file an incremental update goes after, and where its newest cross-reference section is.</summary>
     private long baseLength;
@@ -90,17 +90,25 @@ public sealed class PdfDocument : IDisposable
     {
         ObjectLoader loader = new(source, xref, Options, log);
         PdfObjectTable objects = new(loader, log);
+        ((IObjectResolver)objects).Saw(references.HighestSeen);
         references.Target = objects;
         if (xref.Trailer["Encrypt"] is PdfObject encryption && encryption.Resolve() is PdfDictionary encrypt)
         {
             byte[] firstId = xref.Trailer.Get<PdfArray>("ID")?.Get<PdfString>(0)?.Bytes.ToArray() ?? [];
-            security = Security.StandardSecurityHandler.Open(encrypt, firstId, Options.Password, log);
+            security = global::Egap.Pdf.Security.StandardSecurityHandler.Open(encrypt, firstId, Options.Password, log);
             loader.EncryptNumber = (encryption as PdfReference)?.ObjectNumber;
+            EncryptNumber = loader.EncryptNumber;
             loader.Decryptor = security;
         }
 
         return objects;
     }
+
+    /// <summary>The security handler of an encrypted document, for the writers.</summary>
+    internal global::Egap.Pdf.Security.StandardSecurityHandler? Security => security;
+
+    /// <summary>The encryption dictionary's object number, when it is an indirect object.</summary>
+    internal int? EncryptNumber { get; private set; }
 
     /// <summary>Whether the file is encrypted. Its strings and streams are decrypted as they load.</summary>
     public bool IsEncrypted => security is not null;
@@ -236,8 +244,6 @@ public sealed class PdfDocument : IDisposable
     /// is written whole (hub Q8). Saving over the file the document was opened from appends the changes in place, cutting
     /// the file back if writing fails; a rewrite over it goes through a temporary file (design Q4).
     /// </summary>
-    /// <exception cref="NotSupportedException">The document is encrypted and has changes; saving encrypted documents comes
-    /// in a later step.</exception>
     public void Save(string path, PdfSaveOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
@@ -286,7 +292,6 @@ public sealed class PdfDocument : IDisposable
     }
 
     /// <summary>Saves the document to a stream, from its current position. See <see cref="Save(string, PdfSaveOptions?)"/>.</summary>
-    /// <exception cref="NotSupportedException">The document is encrypted and has changes.</exception>
     public void Save(Stream output, PdfSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(output);
@@ -309,8 +314,13 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     private bool WritesWhole(PdfSaveOptions options)
     {
-        return options.Mode == PdfSaveMode.Rewrite || Rebuilt || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
-            or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets);
+        // Dropping or replacing encryption changes every string and stream, so it writes everything too.
+        bool encryptionChanges = options.Encryption.Kind == PdfEncryptionKind.Aes256 || (options.Encryption.Kind == PdfEncryptionKind.None && IsEncrypted);
+        return options.Mode == PdfSaveMode.Rewrite || encryptionChanges || Rebuilt || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
+            or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets
+
+            // A stream without endstream runs to the end of the file, so bytes appended after it would become its data.
+            or PdfWarningCode.MissingEndstream);
     }
 
     private bool EndsWithNewline()

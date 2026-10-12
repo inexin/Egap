@@ -413,6 +413,21 @@ internal sealed class ForwardingResolver : IObjectResolver
 {
     public IObjectResolver? Target { get; set; }
 
+    /// <summary>The highest number seen before the target was set, as in the trailer.</summary>
+    public int HighestSeen { get; private set; }
+
+    public void Saw(int objectNumber)
+    {
+        if (Target is null)
+        {
+            HighestSeen = Math.Max(HighestSeen, objectNumber);
+        }
+        else
+        {
+            Target.Saw(objectNumber);
+        }
+    }
+
     public PdfObject Resolve(PdfReference reference)
     {
         return Target?.Resolve(reference) ?? PdfNull.Instance;

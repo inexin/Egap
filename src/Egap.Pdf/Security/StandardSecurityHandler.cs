@@ -202,6 +202,103 @@ internal sealed class StandardSecurityHandler
         }
     }
 
+    /// <summary>
+    /// Encrypts a string of object <paramref name="number"/> generation <paramref name="generation"/>. With
+    /// <paramref name="deterministic"/>, AES initialization vectors come from the content instead of a random source, so the
+    /// same document always encrypts to the same bytes.
+    /// </summary>
+    public byte[] EncryptString(ReadOnlySpan<byte> data, int number, int generation, bool deterministic)
+    {
+        return Encrypt(stringMethod, data, number, generation, deterministic);
+    }
+
+    /// <summary>Encrypts a stream's data, with its own crypt filter when <paramref name="cryptFilter"/> names one.</summary>
+    public byte[] EncryptStream(ReadOnlySpan<byte> data, int number, int generation, string? cryptFilter, bool deterministic)
+    {
+        CryptMethod method = cryptFilter is null ? streamMethod : Method(cryptFilter, cryptFilters);
+        return Encrypt(method, data, number, generation, deterministic);
+    }
+
+    private byte[] Encrypt(CryptMethod method, ReadOnlySpan<byte> data, int number, int generation, bool deterministic)
+    {
+        switch (method)
+        {
+            case CryptMethod.Identity:
+                return data.ToArray();
+            case CryptMethod.Rc4:
+                return Rc4.Apply(ObjectKey(number, generation, aes: false), data);
+            default:
+                byte[] objectKey = method == CryptMethod.Aes256 || revision >= 5 ? key : ObjectKey(number, generation, aes: true);
+                byte[] iv = deterministic
+                    ? SHA256.HashData([.. objectKey, (byte)number, (byte)(number >> 8), (byte)(number >> 16), (byte)(number >> 24), (byte)generation, .. data])[..16]
+                    : RandomNumberGenerator.GetBytes(16);
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = objectKey;
+                    return [.. iv, .. aes.EncryptCbc(data, iv, PaddingMode.PKCS7)];
+                }
+        }
+    }
+
+    /// <summary>
+    /// New AES-256 encryption (revision 6, Algorithms 8 to 10): a random file key, <c>/U</c>, <c>/UE</c>, <c>/O</c>,
+    /// <c>/OE</c> and <c>/Perms</c> from the passwords, and the encryption dictionary that holds them.
+    /// </summary>
+    [SuppressMessage("Security", "CA5358", Justification = "The spec encrypts /UE and /OE with a zero initialization vector and /Perms with ECB (Algorithms 8 to 10).")]
+    public static (StandardSecurityHandler Handler, PdfDictionary Dictionary) CreateAes256(string userPassword, string ownerPassword, PdfPermissions permissions, WarningLog log)
+    {
+        byte[] fileKey = RandomNumberGenerator.GetBytes(32);
+        byte[] user = Utf8Password(userPassword);
+        byte[] owner = Utf8Password(ownerPassword);
+
+        // Algorithm 8: /U is the hash of the user password with a validation salt, then that salt and a key salt.
+        byte[] userSalts = RandomNumberGenerator.GetBytes(16);
+        byte[] u = [.. Hash256(user, userSalts.AsSpan(0, 8), [], 6), .. userSalts];
+        byte[] ue = EncryptKey(Hash256(user, userSalts.AsSpan(8, 8), [], 6), fileKey);
+
+        // Algorithm 9: the same for the owner password, hashed with /U.
+        byte[] ownerSalts = RandomNumberGenerator.GetBytes(16);
+        byte[] o = [.. Hash256(owner, ownerSalts.AsSpan(0, 8), u, 6), .. ownerSalts];
+        byte[] oe = EncryptKey(Hash256(owner, ownerSalts.AsSpan(8, 8), u, 6), fileKey);
+
+        // Algorithm 10: /Perms holds /P, the metadata flag and "adb", encrypted with the file key.
+        int p = unchecked((int)0xFFFFF0C0) | (int)permissions;
+        byte[] perms = [(byte)p, (byte)(p >> 8), (byte)(p >> 16), (byte)(p >> 24), 0xFF, 0xFF, 0xFF, 0xFF, (byte)'T', (byte)'a', (byte)'d', (byte)'b', .. RandomNumberGenerator.GetBytes(4)];
+        using (Aes aes = Aes.Create())
+        {
+            aes.Key = fileKey;
+            perms = aes.EncryptEcb(perms, PaddingMode.None);
+        }
+
+        PdfDictionary dictionary = new()
+        {
+            ["Filter"] = PdfName.Get("Standard"),
+            ["V"] = 5,
+            ["R"] = 6,
+            ["Length"] = 256,
+            ["CF"] = new PdfDictionary { ["StdCF"] = new PdfDictionary { ["CFM"] = PdfName.Get("AESV3"), ["AuthEvent"] = PdfName.Get("DocOpen"), ["Length"] = 32 } },
+            ["StmF"] = PdfName.Get("StdCF"),
+            ["StrF"] = PdfName.Get("StdCF"),
+            ["O"] = PdfString.FromBytes(o, hex: true),
+            ["U"] = PdfString.FromBytes(u, hex: true),
+            ["OE"] = PdfString.FromBytes(oe, hex: true),
+            ["UE"] = PdfString.FromBytes(ue, hex: true),
+            ["Perms"] = PdfString.FromBytes(perms, hex: true),
+            ["P"] = p,
+        };
+        Dictionary<string, CryptMethod> filters = new() { ["StdCF"] = CryptMethod.Aes256 };
+        StandardSecurityHandler handler = new(fileKey, 6, filters, CryptMethod.Aes256, CryptMethod.Aes256, encryptMetadata: true, p, owner: true, log);
+        return (handler, dictionary);
+    }
+
+    [SuppressMessage("Security", "CA5358", Justification = "The spec encrypts /OE and /UE with AES-256 and a zero initialization vector.")]
+    private static byte[] EncryptKey(byte[] intermediate, byte[] fileKey)
+    {
+        using Aes aes = Aes.Create();
+        aes.Key = intermediate;
+        return aes.EncryptCbc(fileKey, new byte[16], PaddingMode.None);
+    }
+
     /// <summary>The key for one object (7.6.3.3, Algorithm 1): the file key, number, generation and, for AES, "sAlT".</summary>
     private byte[] ObjectKey(int number, int generation, bool aes)
     {

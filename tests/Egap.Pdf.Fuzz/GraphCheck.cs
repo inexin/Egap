@@ -22,6 +22,13 @@ internal static class GraphCheck
         while (pending.TryPop(out (PdfObject A, PdfObject B, string Path) item))
         {
             (PdfObject a, PdfObject b, string path) = item;
+
+            // A rewrite makes a direct /Root or /Info an object of its own.
+            if (a is not PdfReference && b is PdfReference indirect)
+            {
+                b = indirect.Resolve();
+            }
+
             if (a is PdfReference ra)
             {
                 PdfObject target = ra.Resolve();
@@ -74,8 +81,9 @@ internal static class GraphCheck
 
     private static void Dictionaries(PdfDictionary a, PdfDictionary b, string path, Stack<(PdfObject, PdfObject, string)> pending, bool skipLength)
     {
-        List<PdfName> keys = [.. a.Keys.Where(k => !(skipLength && k.Value == "Length"))];
-        Check(keys.SequenceEqual(b.Keys.Where(k => !(skipLength && k.Value == "Length"))), path, "keys differ");
+        // New AES-256 encryption declares an extension level in the catalog's /Extensions before PDF 2.0, so that key is not compared.
+        List<PdfName> keys = [.. a.Keys.Where(k => !(skipLength && k.Value == "Length") && k.Value != "Extensions")];
+        Check(keys.SequenceEqual(b.Keys.Where(k => !(skipLength && k.Value == "Length") && k.Value != "Extensions")), path, "keys differ");
         foreach (PdfName key in keys)
         {
             pending.Push((a[key]!, b[key]!, $"{path}/{key.Value}"));

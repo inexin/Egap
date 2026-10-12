@@ -267,12 +267,17 @@ public sealed class RewriteTests
     }
 
     [Fact]
-    public void EncryptedSavesAreNotSupportedYet()
+    public void DirectRootAndInfoBecomeObjects()
     {
-        using PdfDocument pdf = PdfDocument.Open(Sample());
+        // The spec wants /Root indirect (7.5.5); some files put it, and /Info, straight in the trailer.
+        FileBuilder file = new FileBuilder().Object(1, "<< /Type /Pages /Kids [] /Count 0 >>");
+        using PdfDocument original = PdfDocument.Open(file.StartXref(file.XrefTable("/Size 2 /Root << /Type /Catalog /Pages 1 0 R >> /Info << /Title (Direct) >>")).ToArray());
 
-        pdf.Trailer["Encrypt"] = new PdfDictionary();
-        Assert.Throws<NotSupportedException>(() => pdf.Save(new MemoryStream(), Rewrite));
-        Assert.Throws<NotSupportedException>(() => pdf.Save(new MemoryStream()));
+        using PdfDocument rewritten = PdfDocument.Open(Save(original), new PdfReadOptions { Strict = true });
+
+        Assert.IsType<PdfReference>(rewritten.Trailer["Root"]);
+        Assert.IsType<PdfReference>(rewritten.Trailer["Info"]);
+        Assert.Equal("Pages", rewritten.Catalog.Get<PdfDictionary>("Pages")!.GetName("Type")!.Value);
+        Assert.Equal("Direct", rewritten.Trailer.Get<PdfDictionary>("Info")!.GetText("Title"));
     }
 }
