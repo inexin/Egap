@@ -226,6 +226,7 @@ Egap.Pdf.PdfForm.Reset(System.Collections.Generic.IEnumerable<Egap.Pdf.PdfField!
 Egap.Pdf.PdfForm.SignatureFlags.get -> int
 Egap.Pdf.PdfForm.this[int index].get -> Egap.Pdf.PdfField!
 Egap.Pdf.PdfForm.TryGetField(string! fullName, out Egap.Pdf.PdfField! field) -> bool
+Egap.Pdf.PdfForm.Xfa.get -> Egap.Pdf.PdfXfa?
 Egap.Pdf.PdfFreeTextAnnotation
 Egap.Pdf.PdfFreeTextAnnotation.Alignment.get -> Egap.Pdf.PdfTextAlignment
 Egap.Pdf.PdfFreeTextAnnotation.Alignment.set -> void
@@ -610,6 +611,14 @@ Egap.Pdf.PdfWidgetAnnotation.Action.set -> void
 Egap.Pdf.PdfWidgetAnnotation.Field.get -> Egap.Pdf.PdfField?
 Egap.Pdf.PdfWidgetAnnotation.HighlightMode.get -> Egap.Pdf.PdfHighlightMode
 Egap.Pdf.PdfWidgetAnnotation.HighlightMode.set -> void
+Egap.Pdf.PdfXfa
+Egap.Pdf.PdfXfa.ConvertToAcroForm() -> bool
+Egap.Pdf.PdfXfa.GetDatasets() -> string?
+Egap.Pdf.PdfXfa.GetDataValue(string! fieldName) -> string?
+Egap.Pdf.PdfXfa.GetPacket(string! name) -> string?
+Egap.Pdf.PdfXfa.IsDynamic.get -> bool
+Egap.Pdf.PdfXfa.PacketNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfXfa.SetDataValue(string! fieldName, string? value) -> bool
 override Egap.Pdf.PdfAction.Equals(object? obj) -> bool
 override Egap.Pdf.PdfAction.GetHashCode() -> int
 override Egap.Pdf.PdfAction.ToString() -> string!

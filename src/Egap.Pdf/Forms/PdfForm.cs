@@ -57,6 +57,9 @@ public sealed class PdfForm : IReadOnlyList<PdfField>
     /// <summary>Whether the form also has an XFA form (<c>/XFA</c>, 12.7.8).</summary>
     public bool HasXfa => Dictionary?.Get("XFA") is PdfStream or PdfArray;
 
+    /// <summary>The XFA form, or <see langword="null"/> when there is none.</summary>
+    public PdfXfa? Xfa => HasXfa ? new PdfXfa(document) : null;
+
     /// <summary>Every field of the tree, parents before their kids, in <c>/Fields</c> and <c>/Kids</c> order.</summary>
     public IReadOnlyList<PdfField> GetAllFields()
     {
@@ -109,6 +112,7 @@ public sealed class PdfForm : IReadOnlyList<PdfField>
             field.Dictionary["V"] = reset ?? (field is PdfCheckBoxField or PdfRadioButtonField ? PdfName.Get("Off") : null);
             field.Dictionary.Remove("I");
             field.UpdateAppearances();
+            Xfa?.Update(field);
         }
     }
 
