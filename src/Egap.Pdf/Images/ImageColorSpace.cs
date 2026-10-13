@@ -177,7 +177,7 @@ internal abstract class ImageColorSpace
         }
     }
 
-    /// <summary>DeviceCMYK: through the given press profile, one colour at a time; without one, the simple formula.</summary>
+    /// <summary>DeviceCMYK: through the given press profile, one colour at a time; without one, a fit of a coated press profile (<see cref="CmykPress"/>).</summary>
     private sealed class CmykSpace(ColorProfile? profile) : ImageColorSpace
     {
         private readonly ColorTransform? transform = profile is null ? null : ColorTransform.Create(profile, ColorProfile.Srgb);
@@ -201,10 +201,7 @@ internal abstract class ImageColorSpace
                 return;
             }
 
-            double k = 1 - Math.Clamp(c[3], 0, 1);
-            rgb[0] = (1 - Math.Clamp(c[0], 0, 1)) * k;
-            rgb[1] = (1 - Math.Clamp(c[1], 0, 1)) * k;
-            rgb[2] = (1 - Math.Clamp(c[2], 0, 1)) * k;
+            CmykPress.ToRgb(Math.Clamp(c[0], 0, 1), Math.Clamp(c[1], 0, 1), Math.Clamp(c[2], 0, 1), Math.Clamp(c[3], 0, 1), rgb);
         }
     }
 

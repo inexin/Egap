@@ -27,6 +27,13 @@
     <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <!-- Adobe's Glyph List and predefined CMaps (BSD-3-Clause, THIRD-PARTY-NOTICES.md): the CMaps packed by tools/pack-cmaps.py. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts/Data/glyphlist.txt" LogicalName="Egap.Pdf.Fonts.glyphlist.txt" />
+    <EmbeddedResource Include="Fonts/Data/zapfdingbats.txt" LogicalName="Egap.Pdf.Fonts.zapfdingbats.txt" />
+    <EmbeddedResource Include="Fonts/Data/cmaps.bin" LogicalName="Egap.Pdf.Fonts.cmaps.bin" />
+  </ItemGroup>
+
   <ItemGroup>
     <InternalsVisibleTo Include="Egap.Pdf.Tests" />
     <InternalsVisibleTo Include="Egap.Pdf.Benchmarks" />

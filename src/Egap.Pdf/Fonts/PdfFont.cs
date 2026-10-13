@@ -82,6 +82,8 @@ public sealed class PdfFont
     private readonly Lazy<string?[]?> encoding;
     private readonly CMap? toUnicode;
     private readonly bool identityToUnicode;
+    private readonly string? unicodeCodes;
+    private readonly string? ordering;
     private Dictionary<ushort, int>? programUnicode;
     private readonly CMap? codes;
     private readonly Standard14Font? standard;
@@ -121,8 +123,25 @@ public sealed class PdfFont
         if (Type == PdfFontType.Type0)
         {
             PdfObject? encodingEntry = dictionary.Get("Encoding")?.Resolve();
-            codes = encodingEntry is PdfStream embedded ? ReadCMap(embedded) : null;
+            // An embedded CMap, a predefined one by name (Identity needs none), and whatever predefined CMap it uses.
+            codes = encodingEntry switch
+            {
+                PdfStream embedded => ReadCMap(embedded),
+                PdfName { Value: not ("Identity-H" or "Identity-V") } predefined => PredefinedCMaps.Get(predefined.Value),
+                _ => null,
+            };
+            if (codes?.UseCMap is string use && PredefinedCMaps.Get(use) is CMap parent)
+            {
+                codes.Include(parent);
+            }
+
             string? cmapName = (encodingEntry as PdfName)?.Value ?? codes?.Name;
+            unicodeCodes = cmapName is null ? null
+                : cmapName.Contains("-UCS2-", StringComparison.Ordinal) || cmapName.Contains("-UTF16-", StringComparison.Ordinal) ? "UTF16"
+                : cmapName.Contains("-UTF32-", StringComparison.Ordinal) ? "UTF32"
+                : cmapName.Contains("-UTF8-", StringComparison.Ordinal) ? "UTF8"
+                : null;
+            ordering = descendant?.Get<PdfDictionary>("CIDSystemInfo")?.GetText("Ordering");
             IsVertical = codes?.IsVertical == true || cmapName?.EndsWith("-V", StringComparison.Ordinal) == true;
             missingWidth = descendant?.GetNumber("DW") ?? 1000;
             cidWidths = ReadW(descendant?.Get<PdfArray>("W"));
@@ -439,8 +458,13 @@ public sealed class PdfFont
             return text;
         }
 
+        if (IsComposite && CompositeUnicode(code) is string fromCid)
+        {
+            return fromCid;
+        }
+
         string? name = GetGlyphName(code);
-        if (GlyphList.ToUnicode(name) is string named)
+        if (GlyphList.ToUnicode(name, dingbats: (BaseFont ?? string.Empty).Contains("Dingbats", StringComparison.Ordinal)) is string named)
         {
             return named;
         }
@@ -451,6 +475,33 @@ public sealed class PdfFont
         }
 
         return ProgramUnicode(code);
+    }
+
+    /// <summary>
+    /// A composite font's text without a ToUnicode map: codes of a Unicode CMap (Uni...-UCS2, -UTF16, -UTF32, -UTF8) are the
+    /// text itself; otherwise the CID through its character collection's table (Japan1, GB1, CNS1, Korea1, KR).
+    /// </summary>
+    private string? CompositeUnicode(int code)
+    {
+        switch (unicodeCodes)
+        {
+            case "UTF16" when code <= 0xFFFF && code is not (>= 0xD800 and <= 0xDFFF):
+                return ((char)code).ToString();
+            case "UTF16":
+                int high = code >> 16, low = code & 0xFFFF;
+                return char.IsSurrogatePair((char)high, (char)low) ? new string([(char)high, (char)low]) : null;
+            case "UTF32" when code is > 0 and <= 0x10FFFF and (< 0xD800 or > 0xDFFF):
+                return char.ConvertFromUtf32(code);
+            case "UTF8":
+                int length = CodeLength(code);
+                byte[] bytes = [.. Enumerable.Range(0, length).Select(i => (byte)(code >> (8 * (length - 1 - i))))];
+                string text = System.Text.Encoding.UTF8.GetString(bytes);
+                return text.Contains('\uFFFD', StringComparison.Ordinal) ? null : text;
+        }
+
+        return ordering is not null && PredefinedCMaps.CidToUnicode(ordering, ToCid(code, CodeLength(code))) is int cp && cp is > 0 and <= 0x10FFFF
+            ? char.ConvertFromUtf32(cp)
+            : null;
     }
 
     /// <summary>A glyph name that only numbers a code, such as <c>a65</c>, <c>g65</c> or <c>C65</c>: the number, or null.</summary>

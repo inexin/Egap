@@ -18,6 +18,8 @@ internal sealed class CMap
     private readonly List<(int Length, int Low, int High, int Cid)> cidRanges = [];
     private readonly Dictionary<(int Length, int Code), string> unicode = [];
     private readonly List<(int Length, int Low, int High, string Start)> unicodeRanges = [];
+    private CMap? parent;
+    private (int Length, int Low, int High, int Cid)[]? sortedRanges;
 
     /// <summary>The CMap's name, from <c>/CMapName</c>, when it gives one.</summary>
     public string? Name { get; private set; }
@@ -29,10 +31,13 @@ internal sealed class CMap
     public string? UseCMap { get; private set; }
 
     /// <summary>Whether the CMap maps any code to Unicode.</summary>
-    public bool HasUnicode => unicode.Count > 0 || unicodeRanges.Count > 0;
+    public bool HasUnicode => unicode.Count > 0 || unicodeRanges.Count > 0 || parent?.HasUnicode == true;
 
     /// <summary>Whether the CMap maps any code to a CID.</summary>
-    public bool HasCids => cids.Count > 0 || cidRanges.Count > 0;
+    public bool HasCids => cids.Count > 0 || cidRanges.Count > 0 || parent?.HasCids == true;
+
+    /// <summary>The codespaces: this CMap's own, or those of the CMap it uses when it has none.</summary>
+    private List<(byte[] Low, byte[] High)> Codespaces => codespaces.Count > 0 || parent is null ? codespaces : parent.Codespaces;
 
     /// <summary>Reads a CMap from its PostScript-like text; never throws.</summary>
     public static CMap Parse(ReadOnlySpan<byte> data)
@@ -42,26 +47,50 @@ internal sealed class CMap
         return map;
     }
 
-    /// <summary>Takes the codespaces and mappings of the CMap this one uses, under its own.</summary>
+    /// <summary>Puts the CMap this one uses (<c>usecmap</c>) under it: what this one does not map, the parent does.</summary>
     public void Include(CMap parent)
     {
-        if (codespaces.Count == 0)
+        if (!ReferenceEquals(parent, this))
         {
-            codespaces.AddRange(parent.codespaces);
+            this.parent = parent;
+        }
+    }
+
+    /// <summary>Reads a CMap in the packed form of tools/pack-cmaps.py; the name of the CMap it uses comes out apart.</summary>
+    public static CMap FromPacked(byte[] packed, out string? use)
+    {
+        CMap map = new();
+        int at = 1;
+        map.IsVertical = PredefinedCMaps.Varint(packed, ref at) == 1;
+        int nameLength = (int)PredefinedCMaps.Varint(packed, ref at);
+        use = nameLength > 0 ? Encoding.UTF8.GetString(packed, at, nameLength) : null;
+        at += nameLength;
+        int spaces = (int)PredefinedCMaps.Varint(packed, ref at);
+        for (int i = 0; i < spaces; i++)
+        {
+            int n = (int)PredefinedCMaps.Varint(packed, ref at);
+            map.codespaces.Add((packed[at..(at + n)], packed[(at + n)..(at + (2 * n))]));
+            at += 2 * n;
         }
 
-        foreach (KeyValuePair<(int, int), int> entry in parent.cids)
+        int ranges = (int)PredefinedCMaps.Varint(packed, ref at);
+        int previousLength = 0, previousEnd = -1, previousCidEnd = -1;
+        for (int i = 0; i < ranges; i++)
         {
-            cids.TryAdd(entry.Key, entry.Value);
+            int n = (int)PredefinedCMaps.Varint(packed, ref at);
+            if (n != previousLength)
+            {
+                previousEnd = -1;
+            }
+
+            int low = previousEnd + 1 + (int)PredefinedCMaps.Varint(packed, ref at);
+            int high = low + (int)PredefinedCMaps.Varint(packed, ref at);
+            int cid = previousCidEnd + 1 + (int)PredefinedCMaps.Zigzag(PredefinedCMaps.Varint(packed, ref at));
+            map.cidRanges.Add((n, low, high, cid));
+            (previousLength, previousEnd, previousCidEnd) = (n, high, cid + (high - low));
         }
 
-        cidRanges.AddRange(parent.cidRanges);
-        foreach (KeyValuePair<(int, int), string> entry in parent.unicode)
-        {
-            unicode.TryAdd(entry.Key, entry.Value);
-        }
-
-        unicodeRanges.AddRange(parent.unicodeRanges);
+        return map;
     }
 
     /// <summary>
@@ -71,6 +100,7 @@ internal sealed class CMap
     /// </summary>
     public (int Code, int Length) Next(ReadOnlySpan<byte> bytes, int offset)
     {
+        List<(byte[] Low, byte[] High)> codespaces = Codespaces;
         if (codespaces.Count == 0)
         {
             return (bytes[offset], 1);
@@ -105,6 +135,7 @@ internal sealed class CMap
     /// <summary>How many bytes a code takes: the shortest codespace range holding its value, else <paramref name="fallback"/>.</summary>
     public int LengthOf(int code, int fallback)
     {
+        List<(byte[] Low, byte[] High)> codespaces = Codespaces;
         Span<byte> bytes = stackalloc byte[4];
         for (int length = 1; length <= 4; length++)
         {
@@ -138,16 +169,30 @@ internal sealed class CMap
             return cid;
         }
 
-        for (int i = cidRanges.Count - 1; i >= 0; i--)
+        // Ranges sorted by length and start, searched by halves: a predefined Unicode CMap holds thousands.
+        (int Length, int Low, int High, int Cid)[] ranges = sortedRanges ??= [.. cidRanges.OrderBy(r => r.Length).ThenBy(r => r.Low)];
+        int lo = 0, hi = ranges.Length - 1;
+        while (lo <= hi)
         {
-            (int l, int low, int high, int start) = cidRanges[i];
-            if (l == length && code >= low && code <= high)
+            int mid = (lo + hi) >> 1;
+            (int l, int low, int high, int start) = ranges[mid];
+            int order = l != length ? l.CompareTo(length) : code < low ? 1 : code > high ? -1 : 0;
+            if (order == 0)
             {
                 return start + (code - low);
             }
+
+            if (order > 0)
+            {
+                hi = mid - 1;
+            }
+            else
+            {
+                lo = mid + 1;
+            }
         }
 
-        return null;
+        return parent?.ToCid(code, length);
     }
 
     /// <summary>
@@ -156,7 +201,7 @@ internal sealed class CMap
     /// </summary>
     public string? ToUnicode(int code, int length)
     {
-        return Lookup(code, length) ?? Lookup(code, 0);
+        return Lookup(code, length) ?? Lookup(code, 0) ?? parent?.ToUnicode(code, length);
     }
 
     private string? Lookup(int code, int length)

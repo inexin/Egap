@@ -297,7 +297,7 @@ internal static class ImageDecoder
     }
 
     /// <summary>
-    /// A JPEG's components as stored: gray, RGB (YCbCr converted) or CMYK inks, by its frame header's component count; data
+    /// A JPEG's components as stored: gray, RGB (YCbCr converted) or CMYK samples, by its frame header's component count; data
     /// before the start-of-image marker is skipped, as pdf.js does.
     /// </summary>
     private static Raster Jpeg(byte[] data)
@@ -307,9 +307,27 @@ internal static class ImageDecoder
         return FrameComponents(jpeg.Span) switch
         {
             1 => Raster.Load<Gray8>(jpeg, JpegFormat.Info),
-            4 => Raster.Load<Cmyk8>(jpeg, JpegFormat.Info),
+            4 => StoredCmyk(Raster.Load<Cmyk8>(jpeg, JpegFormat.Info)),
             _ => Raster.Load<Rgb8>(jpeg, JpegFormat.Info),
         };
+    }
+
+    /// <summary>
+    /// A four-component JPEG's samples as stored. Egami undoes the inversion Adobe applications write, but a PDF's DCTDecode
+    /// gives the stored samples to the colour space as they are (a writer that inverted them adds a Decode array), as Acrobat,
+    /// PDFium and pdf.js read them; YCCK is still converted to CMYK.
+    /// </summary>
+    private static Raster<Cmyk8> StoredCmyk(Raster<Cmyk8> raster)
+    {
+        for (int y = 0; y < raster.Height; y++)
+        {
+            foreach (ref Cmyk8 p in raster.Row(y))
+            {
+                p = new Cmyk8((byte)(255 - p.C), (byte)(255 - p.M), (byte)(255 - p.Y), (byte)(255 - p.K));
+            }
+        }
+
+        return raster;
     }
 
     /// <summary>The component count in a JPEG's first frame header (SOF0 to SOF15, not DHT, JPG or DAC), or 0.</summary>

@@ -51,7 +51,8 @@ public sealed class ImageDecodeTests
         PdfImage spot = Image(pdf, 1, 1, 8, separation, [255]);
         using (Raster<Rgba8> raster = spot.ToRaster<Rgba8>())
         {
-            Assert.Equal(new Rgba8(128, 255, 255, 255), Pixels(raster)[0]);
+            // Half cyan on coated paper, through the fitted press profile.
+            Assert.Equal(new Rgba8(147, 216, 246, 255), Pixels(raster)[0]);
         }
 
         PdfStream program = new(new PdfDictionary { ["FunctionType"] = new PdfInteger(4), ["Domain"] = Numbers(0, 1, 0, 1), ["Range"] = Numbers(0, 1, 0, 1, 0, 1) });
@@ -118,7 +119,8 @@ public sealed class ImageDecodeTests
 
         using (Raster<Rgba8> raster = cmyk.ToRaster<Rgba8>())
         {
-            Assert.Equal(new Rgba8(255, 0, 0, 255), Pixels(raster)[0]);
+            // Magenta and yellow print a press red, not sRGB's.
+            Assert.Equal(new Rgba8(237, 34, 15, 255), Pixels(raster)[0]);
         }
     }
 
@@ -138,6 +140,28 @@ public sealed class ImageDecodeTests
         using Raster<Rgba8> raster = image.ToRaster<Rgba8>();
         Rgba8 p = raster.GetPixel(8, 4);
         Assert.InRange(Math.Abs(p.R - 200) + Math.Abs(p.G - 40) + Math.Abs(p.B - 60), 0, 12);
+    }
+
+    [Fact]
+    public void GivesACmykJpegsStoredSamplesToTheColourSpace()
+    {
+        // Egami writes no ink as Adobe does, inverted (255); a PDF reader takes that as full ink unless a Decode array inverts it.
+        using PdfDocument pdf = PdfDocument.Create();
+        using Raster<Cmyk8> source = Raster.Create<Cmyk8>(8, 8, new Cmyk8(0, 0, 0, 0));
+        using MemoryStream jpeg = new();
+        source.Save(jpeg, JpegFormat.Info);
+        foreach ((PdfArray? decode, int expected) in new (PdfArray?, int)[] { (null, 0), (Numbers(1, 0, 1, 0, 1, 0, 1, 0), 255) })
+        {
+            PdfStream stream = new(new PdfDictionary { ["Type"] = PdfName.Get("XObject"), ["Subtype"] = PdfName.Get("Image"), ["Width"] = new PdfInteger(8), ["Height"] = new PdfInteger(8), ["BitsPerComponent"] = new PdfInteger(8), ["ColorSpace"] = PdfName.Get("DeviceCMYK"), ["Filter"] = PdfName.Get("DCTDecode") });
+            if (decode is not null)
+            {
+                stream.Dictionary["Decode"] = decode;
+            }
+
+            stream.SetEncodedBytes(jpeg.ToArray());
+            using Raster<Rgba8> raster = new PdfImage(stream, null).ToRaster<Rgba8>();
+            Assert.InRange(raster.GetPixel(4, 4).G, expected - 30, expected + 30);
+        }
     }
 
     [Fact]
