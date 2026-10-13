@@ -19,9 +19,13 @@ Comparisons with other PDF libraries (output, speed, conformance) do not belong 
 
 ## Building and testing
 
-You need the .NET 10 SDK.
+You need the .NET 10 SDK, and Egami packages in a folder feed beside this checkout: Egap.Pdf draws, decodes images and
+reads fonts through [Egami](https://github.com/inexin/Egami), which is not on NuGet yet. With an Egami checkout next to this
+one, `python tools/pack-egami.py` packs it into `../egami-feed` (see `nuget.config`) at the versions in
+`Directory.Packages.props`; add `--update` to move to Egami's current commit.
 
 ```
+python tools/pack-egami.py
 dotnet build
 dotnet test
 ```
@@ -36,7 +40,7 @@ Fuzzing: see [tests/Egap.Pdf.Fuzz/README.md](tests/Egap.Pdf.Fuzz/README.md).
 - Format with `dotnet format Egap.slnx` before committing; the build treats warnings as errors.
 - New public API needs XML docs and an entry in `PublicAPI.Unshipped.txt`. `PublicAPI.Shipped.txt` holds released API:
   changing or removing anything in it is a breaking change and needs a maintainer's agreement first.
-- `src/` takes no package references except build-time analyzers.
+- `src/` takes no package references except build-time analyzers and Egami's own packages.
 - Changes to hot code (parsing, filters, rendering) need benchmark results. They must not be slower or allocate more than
   `main`.
 - New test files must have a clear license.

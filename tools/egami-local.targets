@@ -1,0 +1,10 @@
+<Project>
+  <!--
+    Imported into each Egami project by tools/pack-egami.py (CustomAfterMicrosoftCommonTargets), so every package keeps its
+    own version from its project file with the Egami commit as a prerelease suffix: Egami 1.0.0-local.g74c5d73,
+    Egami.Drawing 0.1.0-local.g74c5d73. Dependencies between the packages take the same suffix.
+  -->
+  <PropertyGroup Condition="'$(EgamiLocalSuffix)' != ''">
+    <PackageVersion>$(Version)-$(EgamiLocalSuffix)</PackageVersion>
+  </PropertyGroup>
+</Project>

@@ -51,8 +51,11 @@ jobs:
         run: dotnet build Egap.slnx -c Release
       - name: No package references in src/
         run: |
-          # Only build-time analyzers are allowed. Anything else would ship as a dependency.
-          allowed='Microsoft.CodeAnalysis.PublicApiAnalyzers'
+          # Only build-time analyzers and Egami (Phase 3 design Q2) are allowed. Anything else would ship as a dependency.
+          allowed=$'Microsoft.CodeAnalysis.PublicApiAnalyzers
+Egami
+Egami.Fonts
+Egami.Drawing'
           status=0
           for proj in $(find src -name '*.csproj'); do
             for pkg in $(dotnet list "$proj" package --include-transitive --format json \
