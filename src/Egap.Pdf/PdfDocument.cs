@@ -217,6 +217,11 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     internal Content.ResourceCache WrittenResources { get; } = new();
 
+    /// <summary>Where <see cref="PdfPage.Flush"/> moves finished streams; made the first time a page is flushed.</summary>
+    internal ScratchFile Scratch => scratch ??= new ScratchFile();
+
+    private ScratchFile? scratch;
+
     /// <summary>The named destinations, through the catalog's /Names /Dests tree and its older /Dests dictionary.</summary>
     public PdfNamedDestinations NamedDestinations => new(this);
 
@@ -618,6 +623,7 @@ public sealed class PdfDocument : IDisposable
     public void Dispose()
     {
         source.Dispose();
+        scratch?.Dispose();
     }
 
     private string ReadHeaderVersion(out long at)
