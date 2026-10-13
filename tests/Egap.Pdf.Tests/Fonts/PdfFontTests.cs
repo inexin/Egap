@@ -106,6 +106,29 @@ public sealed class PdfFontTests
     }
 
     [Fact]
+    public void ReadsVerticalMetrics()
+    {
+        PdfDictionary dictionary = Font("Type0", "Vertical");
+        dictionary["Encoding"] = PdfName.Get("Identity-V");
+        dictionary["DescendantFonts"] = new PdfArray
+        {
+            new PdfDictionary
+            {
+                ["Subtype"] = PdfName.Get("CIDFontType0"),
+                ["DW"] = new PdfInteger(1000),
+                ["DW2"] = new PdfArray { new PdfInteger(900), new PdfInteger(-1100) },
+                ["W2"] = new PdfArray { new PdfInteger(5), new PdfArray { new PdfInteger(-500), new PdfInteger(250), new PdfInteger(800) }, new PdfInteger(7), new PdfInteger(8), new PdfInteger(-700), new PdfInteger(300), new PdfInteger(700) },
+            },
+        };
+        PdfFont font = PdfFont.FromDictionary(dictionary);
+
+        Assert.Equal((-500.0, 250.0, 800.0), font.GetVerticalMetrics(5));
+        Assert.Equal((-700.0, 300.0, 700.0), font.GetVerticalMetrics(8));
+        Assert.Equal((-1100.0, 500.0, 900.0), font.GetVerticalMetrics(9));
+        Assert.Null(PdfFont.FromDictionary(Font("Type1", "Helvetica")).GetVerticalMetrics(65));
+    }
+
+    [Fact]
     public void SplitsCodesAsAnEmbeddedCMapSays()
     {
         PdfDictionary dictionary = Font("Type0", "Mixed");

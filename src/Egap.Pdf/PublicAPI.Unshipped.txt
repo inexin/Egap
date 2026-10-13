@@ -162,6 +162,7 @@ Egap.Pdf.PdfFont.GetCodes(System.ReadOnlySpan<byte> bytes) -> System.Collections
 Egap.Pdf.PdfFont.GetGlyphId(int code) -> ushort?
 Egap.Pdf.PdfFont.GetGlyphName(int code) -> string?
 Egap.Pdf.PdfFont.GetTypeface() -> Egami.Fonts.Typeface?
+Egap.Pdf.PdfFont.GetVerticalMetrics(int code) -> (double Advance, double OriginX, double OriginY)?
 Egap.Pdf.PdfFont.GetWidth(int code) -> double
 Egap.Pdf.PdfFont.IsComposite.get -> bool
 Egap.Pdf.PdfFont.IsEmbedded.get -> bool
