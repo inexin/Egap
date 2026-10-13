@@ -116,8 +116,16 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
     /// <param name="source">The document to copy from; may be this one, which copies pages within it.</param>
     /// <param name="pageIndices">The source pages, in the order to insert them; all of them when null.</param>
     /// <param name="at">Where the first page goes (0 to <see cref="Count"/>); the end when null.</param>
+    /// <param name="options">How form fields whose names clash are handled; renamed by default.</param>
     /// <returns>The new pages, in order.</returns>
-    public IReadOnlyList<PdfPage> Import(PdfDocument source, IEnumerable<int>? pageIndices = null, int? at = null)
+    /// <remarks>
+    /// The pages bring what they need to keep working (Phase 2 Q5, Q6): their annotations; their form fields, the top-level
+    /// ones renamed with a suffix and a warning when the name is taken; the named destinations their links use; the layers
+    /// they use; and their page labels. The first import from a source also brings its attachments, renamed with a suffix
+    /// when the name is taken, and its outline, appended at the top level without the items that lead to pages not
+    /// imported. The structure tree and an XFA form stay behind, with a warning.
+    /// </remarks>
+    public IReadOnlyList<PdfPage> Import(PdfDocument source, IEnumerable<int>? pageIndices = null, int? at = null, PdfImportOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(source);
         List<PdfPage> sourcePages = pageIndices is null ? [.. source.Pages] : [.. pageIndices.Select(i => source.Pages[i])];
@@ -126,6 +134,8 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
             int index = at ?? List.Count;
             ArgumentOutOfRangeException.ThrowIfGreaterThan((uint)index, (uint)List.Count, nameof(at));
             Writing.ObjectCopier copier = document.CopierFor(source);
+            List<(PdfPageLabelStyle, string?, int)>? labelsBefore = Pages.ImportExtras.LabelsOf(document)
+                ?? (source.Pages.GetLabelRanges().Count > 0 ? [.. Enumerable.Range(1, List.Count).Select(n => (PdfPageLabelStyle.Arabic, (string?)null, n))] : null);
             List<PdfPage> added = new(sourcePages.Count);
             foreach (PdfPage page in sourcePages)
             {
@@ -170,6 +180,7 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
                 document.Log.Add(PdfWarningCode.NotImported, "The source has a structure tree, which imported pages do not bring (tagged PDF comes in 5.x).");
             }
 
+            Pages.ImportExtras.Bring(document, copier, sourcePages, added, labelsBefore, options ?? PdfImportOptions.Default);
             return added;
         }
     }

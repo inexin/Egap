@@ -132,6 +132,12 @@ public sealed class PdfAttachmentCollection : IReadOnlyList<PdfAttachment>
         return document.Objects.Add(spec);
     }
 
+    /// <summary>Adds a file specification copied from another document under a name, as an import brings it (Phase 2 Q6).</summary>
+    internal void AddCopy(string name, PdfObject fileSpecification)
+    {
+        (Tree() ?? CreateTree()).Set(PdfString.FromText(name), fileSpecification);
+    }
+
     /// <summary>Removes an attachment from the name tree and the catalog's <c>/AF</c>. Its objects stay until nothing reaches them.</summary>
     /// <returns>Whether there was one.</returns>
     public bool Remove(string name)

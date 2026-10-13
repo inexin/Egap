@@ -25,6 +25,9 @@ internal sealed class ObjectCopier
     /// <summary>The source document.</summary>
     public PdfDocument Source => source;
 
+    /// <summary>Whether the source's attachments and outline were brought along already, which happens once per source.</summary>
+    public bool ExtrasBrought { get; set; }
+
     /// <summary>Makes references to a source page lead to a target page; the first mapping of a page stays.</summary>
     public void MapPage(PdfReference sourcePage, PdfReference targetPage)
     {

@@ -270,6 +270,12 @@ Egap.Pdf.PdfHighlightMode.None = 0 -> Egap.Pdf.PdfHighlightMode
 Egap.Pdf.PdfHighlightMode.Outline = 2 -> Egap.Pdf.PdfHighlightMode
 Egap.Pdf.PdfHighlightMode.Push = 3 -> Egap.Pdf.PdfHighlightMode
 Egap.Pdf.PdfHighlightMode.Toggle = 4 -> Egap.Pdf.PdfHighlightMode
+Egap.Pdf.PdfImportOptions
+Egap.Pdf.PdfImportOptions.<Clone>$() -> Egap.Pdf.PdfImportOptions!
+Egap.Pdf.PdfImportOptions.Equals(Egap.Pdf.PdfImportOptions? other) -> bool
+Egap.Pdf.PdfImportOptions.JoinFields.get -> bool
+Egap.Pdf.PdfImportOptions.JoinFields.init -> void
+Egap.Pdf.PdfImportOptions.PdfImportOptions() -> void
 Egap.Pdf.PdfInkAnnotation
 Egap.Pdf.PdfInkAnnotation.PdfInkAnnotation(System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>!>! strokes) -> void
 Egap.Pdf.PdfInkAnnotation.Strokes.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>!>!
@@ -434,7 +440,7 @@ Egap.Pdf.PdfPageCollection.Count.get -> int
 Egap.Pdf.PdfPageCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfPage!>!
 Egap.Pdf.PdfPageCollection.GetLabel(int index) -> string!
 Egap.Pdf.PdfPageCollection.GetLabelRanges() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPageLabelRange!>!
-Egap.Pdf.PdfPageCollection.Import(Egap.Pdf.PdfDocument! source, System.Collections.Generic.IEnumerable<int>? pageIndices = null, int? at = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPage!>!
+Egap.Pdf.PdfPageCollection.Import(Egap.Pdf.PdfDocument! source, System.Collections.Generic.IEnumerable<int>? pageIndices = null, int? at = null, Egap.Pdf.PdfImportOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPage!>!
 Egap.Pdf.PdfPageCollection.IndexOf(Egap.Pdf.PdfPage! page) -> int
 Egap.Pdf.PdfPageCollection.InsertBlank(int index, Egap.Pdf.PdfRectangle? mediaBox = null) -> Egap.Pdf.PdfPage!
 Egap.Pdf.PdfPageCollection.Move(int from, int to) -> void
@@ -604,6 +610,7 @@ Egap.Pdf.PdfUriAction.PdfUriAction(string! uri) -> void
 Egap.Pdf.PdfUriAction.Uri.get -> string?
 Egap.Pdf.PdfUriAction.Uri.set -> void
 Egap.Pdf.PdfWarningCode.AppearanceNotDrawn = 32 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.FieldRenamed = 34 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedOutline = 31 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedPageTree = 30 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode
@@ -638,6 +645,9 @@ override Egap.Pdf.PdfDestination.ToString() -> string!
 override Egap.Pdf.PdfField.Equals(object? obj) -> bool
 override Egap.Pdf.PdfField.GetHashCode() -> int
 override Egap.Pdf.PdfField.ToString() -> string!
+override Egap.Pdf.PdfImportOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfImportOptions.GetHashCode() -> int
+override Egap.Pdf.PdfImportOptions.ToString() -> string!
 override Egap.Pdf.PdfLayer.Equals(object? obj) -> bool
 override Egap.Pdf.PdfLayer.GetHashCode() -> int
 override Egap.Pdf.PdfLayer.ToString() -> string!
@@ -666,6 +676,9 @@ static Egap.Pdf.PdfDestination.operator ==(Egap.Pdf.PdfDestination? left, Egap.P
 static Egap.Pdf.PdfDestination.ToPage(Egap.Pdf.PdfPage! page, Egap.Pdf.PdfDestinationFit fit = Egap.Pdf.PdfDestinationFit.Fit) -> Egap.Pdf.PdfDestination!
 static Egap.Pdf.PdfDestination.ToPageIndex(int pageIndex, Egap.Pdf.PdfDestinationFit fit = Egap.Pdf.PdfDestinationFit.Fit) -> Egap.Pdf.PdfDestination!
 static Egap.Pdf.PdfDocument.Merge(params System.Collections.Generic.IEnumerable<Egap.Pdf.PdfDocument!>! sources) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfImportOptions.Default.get -> Egap.Pdf.PdfImportOptions!
+static Egap.Pdf.PdfImportOptions.operator !=(Egap.Pdf.PdfImportOptions? left, Egap.Pdf.PdfImportOptions? right) -> bool
+static Egap.Pdf.PdfImportOptions.operator ==(Egap.Pdf.PdfImportOptions? left, Egap.Pdf.PdfImportOptions? right) -> bool
 static Egap.Pdf.PdfPage.operator !=(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
 static Egap.Pdf.PdfPage.operator ==(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
 static Egap.Pdf.PdfPageLabelRange.operator !=(Egap.Pdf.PdfPageLabelRange? left, Egap.Pdf.PdfPageLabelRange? right) -> bool
