@@ -8,11 +8,13 @@ It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imagi
   Egami, which is managed too.
 - **Safe on untrusted files**: readers are built to be fuzz-tested from the start.
 
-> **Status:** 1.0.0, public API frozen; nothing is published to NuGet yet. Egap.Pdf reads PDF files, damaged and encrypted
+> **Status:** 1.1.0, public API frozen; nothing is published to NuGet yet. Egap.Pdf reads PDF files, damaged and encrypted
 > ones included (RC4 and AES, revisions 2 to 6), into a lazily loaded object graph with change tracking, and saves them
 > incrementally or by full rewrite, with or without object streams, keeping, dropping or applying AES-256 encryption. On top
 > of that it edits pages, labels, outlines, destinations, metadata, attachments and layers; reads, adds and draws
-> annotations; reads, fills and flattens forms, XFA data included; and merges and splits documents.
+> annotations; reads, fills and flattens forms, XFA data included; and merges and splits documents. Since 1.1 it also
+> parses, walks and rewrites content streams, draws on pages through an Egami canvas with embedded font subsets, reads
+> fonts, extracts text in reading order, and lists, decodes and replaces images.
 
 ```csharp
 using Egap.Pdf;
@@ -36,6 +38,29 @@ pdf.Save("out.pdf");                                     // incremental: the ori
 using PdfDocument other = PdfDocument.Open("other.pdf");
 using PdfDocument merged = PdfDocument.Merge(pdf, other);  // fields renamed on a clash, outlines appended
 merged.Save("merged.pdf", new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = PdfCompression.Compact });
+```
+
+```csharp
+using Egami;
+using Egami.Drawing;
+using Egami.Pixels;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("in.pdf");
+PdfPage page = pdf.Pages[0];
+Console.WriteLine(page.ExtractText());                   // lines in reading order
+
+foreach (PdfPlacedImage placed in page.GetImages())      // where each image is drawn, and its pixels
+{
+    using Raster<Rgba8> pixels = placed.Image.ToRaster<Rgba8>();
+}
+
+using (PdfCanvas canvas = new(page))                     // Egami's canvas, drawn as PDF content over the page
+{
+    canvas.FillRect(new RectF(72, 72, 200, 20), new SolidPaint(new RgbaF32(1, 0.9f, 0, 0.5f)));
+}
+
+pdf.Save("out.pdf");
 ```
 
 ## Projects

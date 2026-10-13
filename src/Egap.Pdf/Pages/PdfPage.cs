@@ -50,7 +50,8 @@ public sealed class PdfPage : IEquatable<PdfPage>
 
     /// <summary>
     /// The images the page draws, in content order, with where each is drawn (Phase 3 design Q11): image XObjects and
-    /// inline images, those inside form XObjects included. An image drawn twice is listed twice.
+    /// inline images, those inside form XObjects and tiling patterns included. An image drawn twice is listed twice; an image
+    /// in a tiling pattern is listed once where the pattern is used, placed for the pattern's first tile.
     /// </summary>
     public IReadOnlyList<PdfPlacedImage> GetImages()
     {
@@ -353,10 +354,47 @@ public sealed class PdfPage : IEquatable<PdfPage>
         return box is PdfRectangle b && b.Intersect(media) is { IsEmpty: false } clipped ? clipped : media;
     }
 
-    /// <summary>A walker that keeps every image it is shown with its placement.</summary>
-    private sealed class ImageCollector(PdfDocument document) : PdfContentWalker
+    /// <summary>
+    /// A walker that keeps every image it is shown with its placement, those inside the tiling patterns it paints with
+    /// included: each pattern once where it is used, placed for its first tile (review Q8).
+    /// </summary>
+    private sealed class ImageCollector(PdfDocument document, HashSet<PdfStream>? patternChain = null) : PdfContentWalker
     {
+        private readonly HashSet<PdfStream> chain = patternChain ?? new(ReferenceEqualityComparer.Instance);
+        private readonly HashSet<(PdfStream, PdfMatrix)> painted = new(new PatternUseComparer());
+        private readonly Stack<PdfMatrix> spaces = new();
+
         public List<PdfPlacedImage> Images { get; } = [];
+
+        protected override void OnPaintPath(PdfPath path, PdfPathPaint paint)
+        {
+            if ((paint & (PdfPathPaint.Fill | PdfPathPaint.EvenOddFill)) != 0)
+            {
+                Pattern(State.FillColor);
+            }
+
+            if ((paint & PdfPathPaint.Stroke) != 0)
+            {
+                Pattern(State.StrokeColor);
+            }
+        }
+
+        protected override void OnGlyph(PdfGlyph glyph)
+        {
+            Pattern(State.FillColor);
+        }
+
+        protected override bool OnBeginForm(PdfStream form, PdfName name)
+        {
+            // A pattern used in a form is in the form's space (8.7.3.1).
+            spaces.Push(State.Matrix);
+            return true;
+        }
+
+        protected override void OnEndForm(PdfStream form, PdfName name)
+        {
+            spaces.TryPop(out _);
+        }
 
         protected override void OnImage(PdfStream? image, PdfInlineImage? inlineImage, PdfName? name)
         {
@@ -367,6 +405,50 @@ public sealed class PdfPage : IEquatable<PdfPage>
             else if (inlineImage is not null)
             {
                 Images.Add(new PdfPlacedImage(new PdfImage(inlineImage, Resources), State.Matrix, null));
+            }
+        }
+
+        /// <summary>Walks a tiling pattern painted with, once per pattern and space, and keeps its images.</summary>
+        private void Pattern(PdfColor? color)
+        {
+            if (color?.Pattern is not PdfName name
+                || Resources?.Get<PdfDictionary>("Pattern")?.Get(name.Value) is not PdfStream pattern
+                || pattern.Dictionary.GetInt("PatternType") != 1
+                || chain.Contains(pattern))
+            {
+                return;
+            }
+
+            PdfMatrix space = spaces.Count > 0 ? spaces.Peek() : PdfMatrix.Identity;
+            if (!painted.Add((pattern, space)))
+            {
+                return;
+            }
+
+            PdfMatrix matrix = (PdfMatrix.FromArray(pattern.Dictionary.Get<PdfArray>("Matrix")) ?? PdfMatrix.Identity) * space;
+            chain.Add(pattern);
+            try
+            {
+                ImageCollector inner = new(document, chain);
+                inner.Walk(PdfContent.Read(pattern), pattern.Dictionary.Get<PdfDictionary>("Resources"), matrix, document.Options);
+                Images.AddRange(inner.Images);
+            }
+            finally
+            {
+                chain.Remove(pattern);
+            }
+        }
+
+        private sealed class PatternUseComparer : IEqualityComparer<(PdfStream Pattern, PdfMatrix Space)>
+        {
+            public bool Equals((PdfStream Pattern, PdfMatrix Space) x, (PdfStream Pattern, PdfMatrix Space) y)
+            {
+                return ReferenceEquals(x.Pattern, y.Pattern) && x.Space == y.Space;
+            }
+
+            public int GetHashCode((PdfStream Pattern, PdfMatrix Space) obj)
+            {
+                return HashCode.Combine(System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj.Pattern), obj.Space);
             }
         }
     }
