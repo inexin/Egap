@@ -46,6 +46,7 @@ public abstract class PdfMarkupAnnotation : PdfAnnotation
             }
 
             Dictionary["CA"] = value == 1 ? null : new PdfReal(value);
+            Changed();
         }
     }
 

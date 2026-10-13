@@ -29,7 +29,11 @@ public sealed class PdfTextAnnotation : PdfMarkupAnnotation
     public string Icon
     {
         get => Dictionary.GetName("Name")?.Value ?? "Note";
-        set => Dictionary["Name"] = PdfName.Get(value);
+        set
+        {
+            Dictionary["Name"] = PdfName.Get(value);
+            Changed();
+        }
     }
 
     /// <summary>The review state (<c>/State</c>, PDF 1.5), such as <c>Accepted</c> or <c>Completed</c>, on a state reply.</summary>
@@ -148,7 +152,11 @@ public sealed class PdfFreeTextAnnotation : PdfMarkupAnnotation
     public string? DefaultAppearance
     {
         get => Dictionary.GetText("DA");
-        set => Dictionary["DA"] = value is null ? null : PdfString.FromText(value);
+        set
+        {
+            Dictionary["DA"] = value is null ? null : PdfString.FromText(value);
+            Changed();
+        }
     }
 
     /// <summary>How the text is aligned (<c>/Q</c>); left when missing.</summary>
@@ -160,7 +168,11 @@ public sealed class PdfFreeTextAnnotation : PdfMarkupAnnotation
             2 => PdfTextAlignment.Right,
             _ => PdfTextAlignment.Left,
         };
-        set => Dictionary["Q"] = value == PdfTextAlignment.Left ? null : new PdfInteger((int)value);
+        set
+        {
+            Dictionary["Q"] = value == PdfTextAlignment.Left ? null : new PdfInteger((int)value);
+            Changed();
+        }
     }
 
     /// <summary>The default style of the rich text (<c>/DS</c>, a CSS declaration list).</summary>
@@ -204,35 +216,55 @@ public sealed class PdfLineAnnotation : PdfMarkupAnnotation
     public PdfPoint Start
     {
         get => ReadPoints("L") is { Count: 2 } line ? line[0] : default;
-        set => WritePoints("L", [value, End]);
+        set
+        {
+            WritePoints("L", [value, End]);
+            Changed();
+        }
     }
 
     /// <summary>Where the line ends (<c>/L</c>); the origin when missing.</summary>
     public PdfPoint End
     {
         get => ReadPoints("L") is { Count: 2 } line ? line[1] : default;
-        set => WritePoints("L", [Start, value]);
+        set
+        {
+            WritePoints("L", [Start, value]);
+            Changed();
+        }
     }
 
     /// <summary>The ending at the start (the first name of <c>/LE</c>).</summary>
     public PdfLineEnding StartEnding
     {
         get => EndingAt(0);
-        set => Dictionary["LE"] = new PdfArray([PdfName.Get(value.ToString()), PdfName.Get(EndEnding.ToString())]);
+        set
+        {
+            Dictionary["LE"] = new PdfArray([PdfName.Get(value.ToString()), PdfName.Get(EndEnding.ToString())]);
+            Changed();
+        }
     }
 
     /// <summary>The ending at the end (the second name of <c>/LE</c>).</summary>
     public PdfLineEnding EndEnding
     {
         get => EndingAt(1);
-        set => Dictionary["LE"] = new PdfArray([PdfName.Get(StartEnding.ToString()), PdfName.Get(value.ToString())]);
+        set
+        {
+            Dictionary["LE"] = new PdfArray([PdfName.Get(StartEnding.ToString()), PdfName.Get(value.ToString())]);
+            Changed();
+        }
     }
 
     /// <summary>The colour the endings are filled with (<c>/IC</c>); <see langword="null"/> for none.</summary>
     public PdfRgbColor? InteriorColor
     {
         get => ReadColor("IC");
-        set => Dictionary["IC"] = value?.ToArray();
+        set
+        {
+            Dictionary["IC"] = value?.ToArray();
+            Changed();
+        }
     }
 
     /// <summary>Whether <see cref="PdfAnnotation.Contents"/> is shown as a caption on the line (<c>/Cap</c>, PDF 1.6).</summary>
@@ -261,7 +293,11 @@ public sealed class PdfSquareAnnotation : PdfMarkupAnnotation
     public PdfRgbColor? InteriorColor
     {
         get => ReadColor("IC");
-        set => Dictionary["IC"] = value?.ToArray();
+        set
+        {
+            Dictionary["IC"] = value?.ToArray();
+            Changed();
+        }
     }
 }
 
@@ -283,7 +319,11 @@ public sealed class PdfCircleAnnotation : PdfMarkupAnnotation
     public PdfRgbColor? InteriorColor
     {
         get => ReadColor("IC");
-        set => Dictionary["IC"] = value?.ToArray();
+        set
+        {
+            Dictionary["IC"] = value?.ToArray();
+            Changed();
+        }
     }
 }
 
@@ -306,14 +346,22 @@ public sealed class PdfPolygonAnnotation : PdfMarkupAnnotation
     public IReadOnlyList<PdfPoint> Vertices
     {
         get => ReadPoints("Vertices");
-        set => WritePoints("Vertices", value);
+        set
+        {
+            WritePoints("Vertices", value);
+            Changed();
+        }
     }
 
     /// <summary>The fill colour (<c>/IC</c>); <see langword="null"/> for no fill.</summary>
     public PdfRgbColor? InteriorColor
     {
         get => ReadColor("IC");
-        set => Dictionary["IC"] = value?.ToArray();
+        set
+        {
+            Dictionary["IC"] = value?.ToArray();
+            Changed();
+        }
     }
 }
 
@@ -336,28 +384,44 @@ public sealed class PdfPolyLineAnnotation : PdfMarkupAnnotation
     public IReadOnlyList<PdfPoint> Vertices
     {
         get => ReadPoints("Vertices");
-        set => WritePoints("Vertices", value);
+        set
+        {
+            WritePoints("Vertices", value);
+            Changed();
+        }
     }
 
     /// <summary>The ending at the first vertex (the first name of <c>/LE</c>).</summary>
     public PdfLineEnding StartEnding
     {
         get => EndingAt(0);
-        set => Dictionary["LE"] = new PdfArray([PdfName.Get(value.ToString()), PdfName.Get(EndEnding.ToString())]);
+        set
+        {
+            Dictionary["LE"] = new PdfArray([PdfName.Get(value.ToString()), PdfName.Get(EndEnding.ToString())]);
+            Changed();
+        }
     }
 
     /// <summary>The ending at the last vertex (the second name of <c>/LE</c>).</summary>
     public PdfLineEnding EndEnding
     {
         get => EndingAt(1);
-        set => Dictionary["LE"] = new PdfArray([PdfName.Get(StartEnding.ToString()), PdfName.Get(value.ToString())]);
+        set
+        {
+            Dictionary["LE"] = new PdfArray([PdfName.Get(StartEnding.ToString()), PdfName.Get(value.ToString())]);
+            Changed();
+        }
     }
 
     /// <summary>The colour the endings are filled with (<c>/IC</c>); <see langword="null"/> for none.</summary>
     public PdfRgbColor? InteriorColor
     {
         get => ReadColor("IC");
-        set => Dictionary["IC"] = value?.ToArray();
+        set
+        {
+            Dictionary["IC"] = value?.ToArray();
+            Changed();
+        }
     }
 }
 
@@ -385,7 +449,11 @@ public abstract class PdfTextMarkupAnnotation : PdfMarkupAnnotation
     public IReadOnlyList<PdfPoint> QuadPoints
     {
         get => ReadPoints("QuadPoints");
-        set => WritePoints("QuadPoints", Quads(value));
+        set
+        {
+            WritePoints("QuadPoints", Quads(value));
+            Changed();
+        }
     }
 
     /// <summary>The four corners of a rectangle as one quadrilateral, upper left first, as Acrobat orders them.</summary>
@@ -512,7 +580,11 @@ public sealed class PdfStampAnnotation : PdfMarkupAnnotation
     public string Icon
     {
         get => Dictionary.GetName("Name")?.Value ?? "Draft";
-        set => Dictionary["Name"] = PdfName.Get(value);
+        set
+        {
+            Dictionary["Name"] = PdfName.Get(value);
+            Changed();
+        }
     }
 }
 
@@ -541,6 +613,7 @@ public sealed class PdfInkAnnotation : PdfMarkupAnnotation
         {
             ArgumentNullException.ThrowIfNull(value);
             Dictionary["InkList"] = new PdfArray(value.Select(stroke => (PdfObject)PdfPoint.ToArray(stroke)));
+            Changed();
         }
     }
 }

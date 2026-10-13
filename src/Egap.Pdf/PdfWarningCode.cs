@@ -109,4 +109,10 @@ public enum PdfWarningCode
     /// <c>/Parent</c>, <c>/Prev</c> or <c>/Last</c>); it was repaired in memory.
     /// </summary>
     MalformedOutline,
+
+    /// <summary>
+    /// An appearance stream was not drawn, such as for text the standard 14 fonts cannot show; the annotation or field keeps
+    /// the appearance it had.
+    /// </summary>
+    AppearanceNotDrawn,
 }
