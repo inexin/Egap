@@ -10,9 +10,10 @@ Thanks for helping build Egap, a fully managed, MIT-licensed family of document 
    `THIRD-PARTY-NOTICES.md` in the same PR.
 2. **No wrapped native code.** Egap is C# all the way: no P/Invoke, no native binaries, no wrappers around C or C++
    libraries. Using .NET's own APIs (for example `System.IO.Compression.ZLibStream`) is fine.
-3. **Every commit is signed off.** Add `Signed-off-by: Your Name <you@example.com>` to each commit (`git commit -s`). This is
-   the [Developer Certificate of Origin](https://developercertificate.org/): you certify that you wrote the change or have
-   the right to contribute it under the MIT license.
+3. **Every contributed commit is signed off.** Add `Signed-off-by: Your Name <you@example.com>` to each commit in a pull
+   request (`git commit -s`). This is the [Developer Certificate of Origin](https://developercertificate.org/): you certify
+   that you wrote the change or have the right to contribute it under the MIT license. The maintainer's own commits are
+   exempt.
 
 Comparisons with other PDF libraries (output, speed, conformance) do not belong in this repository.
 
