@@ -44,7 +44,10 @@ public sealed class PdfAnnotationCollection : IReadOnlyList<PdfAnnotation>
     /// indirect object with <c>/P</c> pointing at the page, and gets an appearance when Egap draws its subtype
     /// (<see cref="PdfAnnotation.UpdateAppearance"/>).
     /// </summary>
-    /// <returns>The stored annotation, which can read the document (named destinations, its page).</returns>
+    /// <returns>
+    /// The annotation itself, now stored: it reads the document (named destinations, its page) and redraws its appearance
+    /// when a property it shows is set.
+    /// </returns>
     public T Add<T>(T annotation)
         where T : PdfAnnotation
     {
@@ -54,13 +57,14 @@ public sealed class PdfAnnotationCollection : IReadOnlyList<PdfAnnotation>
             throw new ArgumentException("Only a new annotation can be added; this one is already stored in a document.", nameof(annotation));
         }
 
-        T stored = (T)Store(annotation.Dictionary);
-        if (Annotations.AppearanceBuilder.Supports(stored))
+        PdfReference reference = Store(annotation.Dictionary).Reference!;
+        annotation.Attach(reference, Document);
+        if (Annotations.AppearanceBuilder.Supports(annotation))
         {
-            Annotations.AppearanceBuilder.Update(stored, Document);
+            Annotations.AppearanceBuilder.Update(annotation, Document);
         }
 
-        return stored;
+        return annotation;
     }
 
     /// <summary>

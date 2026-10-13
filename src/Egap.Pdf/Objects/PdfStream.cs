@@ -128,6 +128,9 @@ internal abstract class StreamData
 
     public abstract long Length { get; }
 
+    /// <summary>The length as stored, known without reading: <see cref="Length"/>, or for encrypted data the encrypted length.</summary>
+    public virtual long StoredLength => Length;
+
     public abstract byte[] Read();
 }
 

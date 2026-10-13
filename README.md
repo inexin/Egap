@@ -7,9 +7,11 @@ It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imagi
 - **Fully managed C#**: no native binaries, no P/Invoke, no wrapped native libraries.
 - **Safe on untrusted files**: readers are built to be fuzz-tested from the start.
 
-> **Status:** early development (0.1.0, API not frozen until 1.0). Egap.Pdf reads PDF files, damaged and encrypted ones included (RC4 and
-> AES, revisions 2 to 6), into a lazily loaded object graph with change tracking, and saves them incrementally or by full
-> rewrite, with or without object streams, keeping, dropping or applying AES-256 encryption. Nothing is published to NuGet.
+> **Status:** 1.0.0, public API frozen; nothing is published to NuGet yet. Egap.Pdf reads PDF files, damaged and encrypted
+> ones included (RC4 and AES, revisions 2 to 6), into a lazily loaded object graph with change tracking, and saves them
+> incrementally or by full rewrite, with or without object streams, keeping, dropping or applying AES-256 encryption. On top
+> of that it edits pages, labels, outlines, destinations, metadata, attachments and layers; reads, adds and draws
+> annotations; reads, fills and flattens forms, XFA data included; and merges and splits documents.
 
 ```csharp
 using Egap.Pdf;
@@ -17,16 +19,22 @@ using Egap.Pdf;
 using PdfDocument pdf = PdfDocument.Open("in.pdf", new PdfReadOptions { Password = "secret" });
 foreach (PdfWarning warning in pdf.Warnings) Console.WriteLine(warning);
 
-PdfDictionary catalog = pdf.Catalog;
-PdfDictionary? info = pdf.Trailer.Get<PdfDictionary>("Info");
-PdfReference added = pdf.Objects.Add(new PdfDictionary { ["Type"] = PdfName.Get("Example") });
-catalog["Example"] = added;
-pdf.Save("out.pdf");                                    // incremental: the original bytes plus the changes
-pdf.Save("small.pdf", new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = PdfCompression.Compact });
-pdf.Save("locked.pdf", new PdfSaveOptions { Encryption = PdfEncryption.Aes256("user", "owner", PdfPermissions.Print) });
+pdf.Pages.Move(0, pdf.Pages.Count - 1);                  // pages: insert, remove, move, labels
+pdf.Metadata.Title = "Quarterly report";                 // Info and XMP kept in step
+pdf.Outline.Add("Summary", PdfDestination.ToPage(pdf.Pages[0]));
+pdf.Pages[0].Annotations.Add(new PdfHighlightAnnotation(PdfTextMarkupAnnotation.Quad(new PdfRectangle(72, 700, 300, 714))));
 
-using PdfDocument fresh = PdfDocument.Create();         // an empty PDF 1.7 document, saved whole and compact
-await fresh.SaveAsync(networkStream);
+if (pdf.Form.TryGetField("customer.name", out PdfField field) && field is PdfTextField name)
+{
+    name.Value = "Ada Lovelace";                         // the widget is redrawn
+}
+
+pdf.Form.Flatten();                                      // fields drawn into the pages and removed
+pdf.Save("out.pdf");                                     // incremental: the original bytes plus the changes
+
+using PdfDocument other = PdfDocument.Open("other.pdf");
+using PdfDocument merged = PdfDocument.Merge(pdf, other);  // fields renamed on a clash, outlines appended
+merged.Save("merged.pdf", new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = PdfCompression.Compact });
 ```
 
 ## Projects

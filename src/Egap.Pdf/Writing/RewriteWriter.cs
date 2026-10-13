@@ -52,7 +52,7 @@ internal sealed class RewriteWriter
         }
 
         writer.Collect();
-        if (options.Compression == PdfCompression.Compact && !options.KeepObjectNumbers)
+        if (options.Compression == PdfCompression.Compact && options.MergeIdenticalObjects && !options.KeepObjectNumbers)
         {
             writer.MergeIdentical();
         }
@@ -124,7 +124,8 @@ internal sealed class RewriteWriter
         }
 
         bool[] mergeable = new bool[count];
-        byte[]?[] dataHash = new byte[count][];
+        string?[] dataHash = new string[count];
+        Dictionary<long, int> streamsOfLength = [];
         for (int i = 0; i < count; i++)
         {
             PdfObject value = document.Objects[order[i].Old];
@@ -137,20 +138,69 @@ internal sealed class RewriteWriter
             };
             if (mergeable[i] && value is PdfStream data)
             {
-                dataHash[i] = SHA256.HashData(data.GetEncodedBytes());
+                streamsOfLength[data.Data.StoredLength] = streamsOfLength.GetValueOrDefault(data.Data.StoredLength) + 1;
             }
         }
 
-        PdfReference? ByClass(PdfReference reference)
+        for (int i = 0; i < count; i++)
         {
-            return indexOf.TryGetValue((reference.ObjectNumber, reference.Generation), out int i) ? new PdfReference(classOf[i] + 1, 0) : null;
+            if (mergeable[i] && document.Objects[order[i].Old] is PdfStream data && streamsOfLength[data.Data.StoredLength] == 1)
+            {
+                // A stream no other shares its stored length with cannot have a twin; the length is known without reading the
+                // data, which for an encrypted file would mean decrypting it twice.
+                mergeable[i] = false;
+            }
         }
 
+        // A stream's data is read and hashed only when another stream has the same length and dictionary.
+        string DataHash(int i)
+        {
+            return dataHash[i] ??= Convert.ToBase64String(SHA256.HashData(((PdfStream)document.Objects[order[i].Old]).GetEncodedBytes()));
+        }
+
+        // Each object's key is its content with references written as the class of the object they lead to. The first round
+        // keys every object and notes what each refers to; a later round keys again only the objects that refer to one whose
+        // class changed, since no other key can have changed.
+        string?[] keys = new string[count];
+        List<int>?[] refersTo = new List<int>[count];
+        List<int>? noting = null;
+        PdfReference? ByClass(PdfReference reference)
+        {
+            if (!indexOf.TryGetValue((reference.ObjectNumber, reference.Generation), out int target))
+            {
+                return null;
+            }
+
+            noting?.Add(target);
+            return new PdfReference(classOf[target] + 1, 0);
+        }
+
+        string Key(int i)
+        {
+            PdfObject value = document.Objects[order[i].Old];
+            ByteWriter signature = new();
+            noting = refersTo[i] is null ? (refersTo[i] = []) : null;
+
+            // A stream is keyed by its dictionary without /Length, which the writer sets from the data, and its stored length.
+            ObjectWriter.Write(value is PdfStream stream ? WithoutLength(stream.Dictionary) : value, signature, ByClass);
+            noting = null;
+            return (value is PdfStream data ? "S" + data.Data.StoredLength.ToString(CultureInfo.InvariantCulture) : "D") + Convert.ToBase64String(SHA256.HashData(signature.WrittenSpan));
+        }
+
+        HashSet<int>? changedClasses = null;
         for (int round = 0; round < 64; round++)
         {
-            Dictionary<string, int> first = [];
-            bool changed = false;
+            for (int i = 0; i < count; i++)
+            {
+                if (mergeable[i] && (changedClasses is null || refersTo[i]!.Any(target => changedClasses.Contains(target))))
+                {
+                    keys[i] = Key(i);
+                }
+            }
+
+            Dictionary<string, List<int>> first = [];
             int[] next = (int[])classOf.Clone();
+            changedClasses = [];
             for (int i = 0; i < count; i++)
             {
                 if (!mergeable[i])
@@ -158,27 +208,26 @@ internal sealed class RewriteWriter
                     continue;
                 }
 
-                PdfObject value = document.Objects[order[i].Old];
-                ByteWriter signature = new();
-                // A stream's /Length is written from its data, so it takes no part in the comparison.
-                ObjectWriter.Write(value is PdfStream stream ? WithoutLength(stream.Dictionary) : value, signature, ByClass);
-                string key = (value is PdfStream ? "S" : "D") + Convert.ToHexString(SHA256.HashData(signature.WrittenSpan)) + (dataHash[i] is byte[] hash ? Convert.ToHexString(hash) : "");
-                if (first.TryGetValue(key, out int representative))
+                if (!first.TryGetValue(keys[i]!, out List<int>? candidates))
                 {
-                    if (next[i] != classOf[representative])
-                    {
-                        next[i] = classOf[representative];
-                        changed = true;
-                    }
+                    first[keys[i]!] = [i];
+                    continue;
                 }
-                else
+
+                int representative = document.Objects[order[i].Old] is PdfStream ? candidates.FirstOrDefault(c => DataHash(c) == DataHash(i), -1) : candidates[0];
+                if (representative < 0)
                 {
-                    first[key] = i;
+                    candidates.Add(i);
+                }
+                else if (next[i] != next[representative])
+                {
+                    next[i] = next[representative];
+                    changedClasses.Add(i);
                 }
             }
 
             classOf = next;
-            if (!changed)
+            if (changedClasses.Count == 0)
             {
                 break;
             }

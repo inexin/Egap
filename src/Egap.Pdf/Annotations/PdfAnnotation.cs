@@ -10,8 +10,8 @@ namespace Egap.Pdf;
 /// </summary>
 /// <remarks>
 /// A new annotation, made with a subtype's constructor, is stored once it is added to a page with
-/// <see cref="PdfAnnotationCollection.Add{T}(T)"/>, which returns the stored view. Setting a property that an appearance
-/// stream shows does not redraw the appearance.
+/// <see cref="PdfAnnotationCollection.Add{T}(T)"/>, and from then on reads the document and redraws its appearance when a
+/// property the appearance shows is set.
 /// </remarks>
 public class PdfAnnotation : IEquatable<PdfAnnotation>
 {
@@ -42,7 +42,7 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
     /// The reference to the annotation's dictionary, or <see langword="null"/> for one written directly in <c>/Annots</c>
     /// or not yet added to a page.
     /// </summary>
-    public PdfReference? Reference { get; }
+    public PdfReference? Reference { get; private set; }
 
     /// <summary>The subtype, <c>/Subtype</c>, such as <c>Link</c> or <c>Highlight</c>; empty when missing.</summary>
     public string Subtype => Dictionary.GetName(SubtypeKey)?.Value ?? "";
@@ -189,7 +189,7 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
     public PdfPage? Page => Document is not null && Dictionary.Get<PdfDictionary>("P") is PdfDictionary page ? new PdfPage(page, Dictionary["P"] as PdfReference, Document) : null;
 
     /// <summary>The document the annotation was read from, or <see langword="null"/> for a new one.</summary>
-    internal PdfDocument? Document { get; }
+    internal PdfDocument? Document { get; private set; }
 
     /// <summary>
     /// The annotation for a dictionary, typed by its <c>/Subtype</c>. The view has no document, so named destinations and
@@ -262,6 +262,13 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
     public override string ToString()
     {
         return $"{(Subtype.Length == 0 ? "Untyped" : Subtype)} annotation {Rectangle}";
+    }
+
+    /// <summary>Makes a new annotation's view the stored one, once it is added to a page.</summary>
+    internal void Attach(PdfReference reference, PdfDocument document)
+    {
+        Reference = reference;
+        Document = document;
     }
 
     /// <summary>The view for an annotation dictionary, typed by its <c>/Subtype</c>.</summary>
