@@ -140,6 +140,33 @@ public class PdfField : IEquatable<PdfField>
     /// <summary>The document the field belongs to.</summary>
     internal PdfDocument Document { get; }
 
+    /// <summary>
+    /// Brings the widgets' appearances in step with the value (Phase 2 Q12): text fields, combo boxes and list boxes are
+    /// redrawn; check boxes and radio buttons get the appearance state of their value. Setting a value does this already.
+    /// </summary>
+    /// <returns>
+    /// Whether the appearances are in step: false for push buttons, signatures and untyped fields, and for text the standard
+    /// 14 fonts cannot show, which sets the form's <c>/NeedAppearances</c> with a warning instead.
+    /// </returns>
+    public bool UpdateAppearances()
+    {
+        switch (this)
+        {
+            case PdfTextField or PdfComboBoxField or PdfListBoxField:
+                return Forms.FieldAppearance.Update(this);
+            case PdfCheckBoxField or PdfRadioButtonField:
+                string? value = (RawValue as PdfName)?.Value ?? (RawValue as PdfString)?.ToText();
+                foreach (PdfWidgetAnnotation widget in Widgets)
+                {
+                    widget.AppearanceState = value is not null && value != "Off" && OnStates(widget).Contains(value) ? value : "Off";
+                }
+
+                return true;
+            default:
+                return false;
+        }
+    }
+
     /// <summary>Whether both views wrap the same field dictionary.</summary>
     public bool Equals(PdfField? other)
     {

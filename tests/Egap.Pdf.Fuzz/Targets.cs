@@ -1562,8 +1562,9 @@ internal static class Targets
     }
 
     /// <summary>
-    /// Form reading (Phase 2 task 14): every public property of up to 2,000 fields read leniently, with their kids and widgets,
-    /// and every widget on the first 50 pages led back to its field.
+    /// Form reading and filling (Phase 2 tasks 14 and 15): every public property of up to 2,000 fields read leniently, with
+    /// their kids and widgets, and every widget on the first 50 pages led back to its field; then up to 20 terminal fields
+    /// filled, each value read back at once and after the file is written whole and reopened.
     /// </summary>
     private static void Forms(Stream input)
     {
@@ -1613,6 +1614,29 @@ internal static class Targets
                         }
                     }
                 }
+
+                // Filling: each of up to 20 terminal fields takes a value of its type, which must read back at once and after
+                // the file is written whole and reopened.
+                List<(string Name, string? Value)> filled = [];
+                foreach (PdfField field in form.GetTerminalFields().DistinctBy(f => f.FullName).Take(20))
+                {
+                    if (Fill(field) is (string name, var value))
+                    {
+                        filled.Add((name, value));
+                    }
+                }
+
+                if (filled.Count > 0)
+                {
+                    using MemoryStream whole = new();
+                    pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+                    using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                    foreach ((string name, string? value) in filled)
+                    {
+                        // A dictionary reached by two paths through a broken tree can be terminal on one only, so the terminal one counts.
+                        Check(reopened.Form.GetTerminalFields().FirstOrDefault(f => f.FullName == name) is PdfField field && ValueOf(field) == value, $"field {name}'s value after the rewrite");
+                    }
+                }
             }
             catch (PdfLimitException)
             {
@@ -1625,6 +1649,57 @@ internal static class Targets
             {
                 throw new InvalidOperationException($"{what} did not hold.");
             }
+        }
+
+        // A value of the field's type, set and read back; null when the field takes none or its name is not unique.
+        static (string, string?)? Fill(PdfField field)
+        {
+            string name = field.FullName;
+            if (field.Document.Form.GetTerminalFields().FirstOrDefault(f => f.FullName == name) is not PdfField first || !first.Equals(field))
+            {
+                return null;
+            }
+
+            switch (field)
+            {
+                case PdfTextField text:
+                    string value = text.MaxLength is int max ? "Egap filled"[..Math.Min(max, 11)] : "Egap filled";
+                    text.Value = value;
+                    Check(text.Value == value, "a text value");
+                    break;
+                case PdfCheckBoxField box:
+                    box.IsChecked = !box.IsChecked;
+                    break;
+                case PdfRadioButtonField radio when radio.Options.FirstOrDefault(o => o.Length > 0 && o != "Off") is string option:
+                    radio.Value = option;
+                    Check(radio.Value == option, "a radio value");
+                    break;
+                case PdfComboBoxField combo when combo.Options.Count > 0 || combo.IsEditable:
+                    string choice = combo.Options.Count > 0 ? combo.Options[^1].ExportValue : "typed";
+                    combo.Value = choice;
+                    Check(combo.Value == choice, "a combo box value");
+                    break;
+                case PdfListBoxField list when list.Options.Count > 0:
+                    list.Select(list.Options[0].ExportValue);
+                    Check(list.Values.SequenceEqual([list.Options[0].ExportValue]), "a list box selection");
+                    break;
+                default:
+                    return null;
+            }
+
+            return (name, ValueOf(field));
+        }
+
+        static string? ValueOf(PdfField field)
+        {
+            return field switch
+            {
+                PdfTextField text => text.Value,
+                PdfCheckBoxField box => box.IsChecked.ToString(),
+                PdfRadioButtonField radio => radio.Value,
+                PdfChoiceField choice => string.Join("|", choice.Values),
+                _ => null,
+            };
         }
     }
 

@@ -33,8 +33,14 @@ public sealed class PdfForm : IReadOnlyList<PdfField>
 
     /// <summary>
     /// Whether viewers are asked to draw the fields' appearances themselves (<c>/NeedAppearances</c>); false when missing.
+    /// Setting false removes the entry.
     /// </summary>
-    public bool NeedAppearances => Dictionary?.GetBool("NeedAppearances") ?? false;
+    /// <exception cref="InvalidOperationException">Set on a document without a form.</exception>
+    public bool NeedAppearances
+    {
+        get => Dictionary?.GetBool("NeedAppearances") ?? false;
+        set => (Dictionary ?? throw new InvalidOperationException("The document has no form."))["NeedAppearances"] = value ? PdfBoolean.True : null;
+    }
 
     /// <summary>The default appearance for fields that give none (<c>/DA</c>), such as <c>/Helv 0 Tf 0 g</c>.</summary>
     public string? DefaultAppearance => Dictionary?.GetText("DA");
@@ -83,6 +89,29 @@ public sealed class PdfForm : IReadOnlyList<PdfField>
         return field is not null;
     }
 
+    /// <summary>
+    /// Resets fields to their default values, as a reset-form action does (12.7.6.3): each terminal field among
+    /// <paramref name="fields"/> and their descendants, or every field when none are given, gets its <c>/DV</c> as its value,
+    /// or no value when it has none (<c>Off</c> for buttons); list boxes lose their <c>/I</c>; appearances are brought in
+    /// step.
+    /// </summary>
+    public void Reset(IEnumerable<PdfField>? fields = null)
+    {
+        IEnumerable<PdfField> chosen = fields is null ? GetTerminalFields() : fields.SelectMany(Terminals).Distinct();
+        foreach (PdfField field in chosen.ToList())
+        {
+            PdfObject? reset = field.RawDefaultValue switch
+            {
+                PdfArray array => array.Clone(),
+                PdfString or PdfName or PdfInteger or PdfReal or PdfBoolean => field.RawDefaultValue,
+                _ => null,
+            };
+            field.Dictionary["V"] = reset ?? (field is PdfCheckBoxField or PdfRadioButtonField ? PdfName.Get("Off") : null);
+            field.Dictionary.Remove("I");
+            field.UpdateAppearances();
+        }
+    }
+
     /// <inheritdoc/>
     public IEnumerator<PdfField> GetEnumerator()
     {
@@ -112,5 +141,24 @@ public sealed class PdfForm : IReadOnlyList<PdfField>
         }
 
         return roots;
+    }
+
+    /// <summary>A field if it is terminal, else the terminal fields below it.</summary>
+    private static IEnumerable<PdfField> Terminals(PdfField field)
+    {
+        Stack<PdfField> pending = new([field]);
+        while (pending.TryPop(out PdfField? next))
+        {
+            if (next.IsTerminal)
+            {
+                yield return next;
+                continue;
+            }
+
+            foreach (PdfField kid in next.Kids.Reverse())
+            {
+                pending.Push(kid);
+            }
+        }
     }
 }
