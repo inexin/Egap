@@ -1557,8 +1557,13 @@ internal static class Targets
                 {
                     PdfLayer layer = pdf.Layers[random.Next(pdf.Layers.Count)];
                     bool value = random.Next(2) == 0;
-                    switch (random.Next(4))
+                    switch (random.Next(5))
                     {
+                        case 3:
+                            // Removing a layer's content leaves none of it, so doing it again removes nothing.
+                            layer.RemoveContent();
+                            Check(layer.RemoveContent() == 0, "content removal");
+                            break;
                         case 0:
                             layer.IsVisible = value;
                             Check(layer.IsVisible == value, "visibility");

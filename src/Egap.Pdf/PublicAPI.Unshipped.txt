@@ -1,4 +1,24 @@
 #nullable enable
+Egap.Pdf.PdfCanvas
+Egap.Pdf.PdfCanvas.Page.get -> Egap.Pdf.PdfPage!
+Egap.Pdf.PdfCanvas.PageMatrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfCanvas.PdfCanvas(Egap.Pdf.PdfPage! page, Egap.Pdf.PdfCanvasOptions? options = null) -> void
+Egap.Pdf.PdfCanvas.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfCanvasCoordinates
+Egap.Pdf.PdfCanvasCoordinates.Displayed = 0 -> Egap.Pdf.PdfCanvasCoordinates
+Egap.Pdf.PdfCanvasCoordinates.Pdf = 1 -> Egap.Pdf.PdfCanvasCoordinates
+Egap.Pdf.PdfCanvasOptions
+Egap.Pdf.PdfCanvasOptions.<Clone>$() -> Egap.Pdf.PdfCanvasOptions!
+Egap.Pdf.PdfCanvasOptions.Coordinates.get -> Egap.Pdf.PdfCanvasCoordinates
+Egap.Pdf.PdfCanvasOptions.Coordinates.init -> void
+Egap.Pdf.PdfCanvasOptions.Equals(Egap.Pdf.PdfCanvasOptions? other) -> bool
+Egap.Pdf.PdfCanvasOptions.FallbackDpi.get -> float
+Egap.Pdf.PdfCanvasOptions.FallbackDpi.init -> void
+Egap.Pdf.PdfCanvasOptions.PdfCanvasOptions() -> void
+Egap.Pdf.PdfCanvasOptions.Placement.get -> Egap.Pdf.PdfCanvasPlacement
+Egap.Pdf.PdfCanvasOptions.Placement.init -> void
+Egap.Pdf.PdfCanvasOptions.Strict.get -> bool
+Egap.Pdf.PdfCanvasOptions.Strict.init -> void
 Egap.Pdf.PdfCanvasPlacement
 Egap.Pdf.PdfCanvasPlacement.Over = 0 -> Egap.Pdf.PdfCanvasPlacement
 Egap.Pdf.PdfCanvasPlacement.Under = 1 -> Egap.Pdf.PdfCanvasPlacement
@@ -180,6 +200,8 @@ Egap.Pdf.PdfInlineImage
 Egap.Pdf.PdfInlineImage.Data.get -> System.ReadOnlySpan<byte>
 Egap.Pdf.PdfInlineImage.Parameters.get -> Egap.Pdf.PdfDictionary!
 Egap.Pdf.PdfInlineImage.PdfInlineImage(Egap.Pdf.PdfDictionary! parameters, System.ReadOnlySpan<byte> data) -> void
+Egap.Pdf.PdfLayer.RemoveContent() -> int
+Egap.Pdf.PdfLayerCollection.Remove(Egap.Pdf.PdfLayer! layer, bool removeContent) -> bool
 Egap.Pdf.PdfMarkedContent
 Egap.Pdf.PdfMarkedContent.<Clone>$() -> Egap.Pdf.PdfMarkedContent!
 Egap.Pdf.PdfMarkedContent.ActualText.get -> string?
@@ -269,7 +291,11 @@ Egap.Pdf.PdfPathVerb.LineTo = 1 -> Egap.Pdf.PdfPathVerb
 Egap.Pdf.PdfPathVerb.MoveTo = 0 -> Egap.Pdf.PdfPathVerb
 Egap.Pdf.PdfWarningCode.MalformedContent = 36 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedInlineImage = 38 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.RasterFallback = 39 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.WrongOperandCount = 37 -> Egap.Pdf.PdfWarningCode
+override Egap.Pdf.PdfCanvasOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfCanvasOptions.GetHashCode() -> int
+override Egap.Pdf.PdfCanvasOptions.ToString() -> string!
 override Egap.Pdf.PdfClipPath.Equals(object? obj) -> bool
 override Egap.Pdf.PdfClipPath.GetHashCode() -> int
 override Egap.Pdf.PdfClipPath.ToString() -> string!
@@ -284,6 +310,9 @@ override Egap.Pdf.PdfMatrix.GetHashCode() -> int
 override Egap.Pdf.PdfMatrix.ToString() -> string!
 override Egap.Pdf.PdfOperation.ToString() -> string!
 override Egap.Pdf.PdfPathSegment.GetHashCode() -> int
+static Egap.Pdf.PdfCanvasOptions.Default.get -> Egap.Pdf.PdfCanvasOptions!
+static Egap.Pdf.PdfCanvasOptions.operator !=(Egap.Pdf.PdfCanvasOptions? left, Egap.Pdf.PdfCanvasOptions? right) -> bool
+static Egap.Pdf.PdfCanvasOptions.operator ==(Egap.Pdf.PdfCanvasOptions? left, Egap.Pdf.PdfCanvasOptions? right) -> bool
 static Egap.Pdf.PdfClipPath.operator !=(Egap.Pdf.PdfClipPath? left, Egap.Pdf.PdfClipPath? right) -> bool
 static Egap.Pdf.PdfClipPath.operator ==(Egap.Pdf.PdfClipPath? left, Egap.Pdf.PdfClipPath? right) -> bool
 static Egap.Pdf.PdfColor.Black.get -> Egap.Pdf.PdfColor!

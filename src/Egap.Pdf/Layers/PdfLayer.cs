@@ -82,6 +82,23 @@ public sealed class PdfLayer : IEquatable<PdfLayer>
         }
     }
 
+    /// <summary>
+    /// Removes what the layer shows from every page and every form XObject the pages draw: content marked with the layer
+    /// (<c>/OC … BDC</c> to <c>EMC</c>) and XObjects whose <c>/OC</c> names it, membership dictionaries that depend on it
+    /// included (content shown with the layer on and hidden with it off). With the layer then hidden, the pages render as
+    /// they did with it hidden before; content shown only while the layer is off (a membership dictionary with <c>/Not</c>)
+    /// is kept. The layer itself stays; remove it with <see cref="PdfLayerCollection.Remove(PdfLayer, bool)"/>.
+    /// </summary>
+    /// <returns>How many marked sequences and XObject draws were removed.</returns>
+    /// <remarks>
+    /// Hidden content still sets the graphics state, so a sequence whose state changes outlive it keeps them: its painting
+    /// is taken out instead. Only page content streams that change are rewritten (Phase 3 design Q4).
+    /// </remarks>
+    public int RemoveContent()
+    {
+        return Layers.LayerContentRemover.Remove(document, Dictionary);
+    }
+
     /// <summary>Whether both views wrap the same group dictionary.</summary>
     public bool Equals(PdfLayer? other)
     {
