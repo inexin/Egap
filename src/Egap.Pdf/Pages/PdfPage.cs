@@ -33,6 +33,17 @@ public sealed class PdfPage : IEquatable<PdfPage>
     /// <summary>The reference to the page's dictionary, or <see langword="null"/> for a page written directly in its parent's <c>/Kids</c>.</summary>
     public PdfReference? Reference { get; }
 
+    /// <summary>
+    /// The images the page draws, in content order, with where each is drawn (Phase 3 design Q11): image XObjects and
+    /// inline images, those inside form XObjects included. An image drawn twice is listed twice.
+    /// </summary>
+    public IReadOnlyList<PdfPlacedImage> GetImages()
+    {
+        ImageCollector collector = new(Document);
+        collector.Walk(this);
+        return collector.Images;
+    }
+
     /// <summary>The fonts the page's resources name, by resource name (Phase 3 design Q7).</summary>
     public PdfFontCollection Fonts => new(this);
 
@@ -325,5 +336,23 @@ public sealed class PdfPage : IEquatable<PdfPage>
     private static PdfRectangle Clipped(PdfRectangle? box, PdfRectangle media)
     {
         return box is PdfRectangle b && b.Intersect(media) is { IsEmpty: false } clipped ? clipped : media;
+    }
+
+    /// <summary>A walker that keeps every image it is shown with its placement.</summary>
+    private sealed class ImageCollector(PdfDocument document) : PdfContentWalker
+    {
+        public List<PdfPlacedImage> Images { get; } = [];
+
+        protected override void OnImage(PdfStream? image, PdfInlineImage? inlineImage, PdfName? name)
+        {
+            if (image is not null)
+            {
+                Images.Add(new PdfPlacedImage(new PdfImage(image, Resources, document), State.Matrix, name?.Value));
+            }
+            else if (inlineImage is not null)
+            {
+                Images.Add(new PdfPlacedImage(new PdfImage(inlineImage, Resources), State.Matrix, null));
+            }
+        }
     }
 }
