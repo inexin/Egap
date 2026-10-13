@@ -151,4 +151,10 @@ public enum PdfWarningCode
     /// into an image at the fallback resolution and placed instead (Phase 3 design Q14).
     /// </summary>
     RasterFallback,
+
+    /// <summary>
+    /// A font's embedded program could not be read as TrueType, OpenType, CFF or Type 1; the font's metrics and text still
+    /// work, but not its outlines.
+    /// </summary>
+    FontProgramUnreadable,
 }

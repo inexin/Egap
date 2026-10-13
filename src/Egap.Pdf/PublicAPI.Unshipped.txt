@@ -159,7 +159,9 @@ Egap.Pdf.PdfFont.Flags.get -> Egap.Pdf.PdfFontFlags
 Egap.Pdf.PdfFont.FontMatrix.get -> Egap.Pdf.PdfMatrix
 Egap.Pdf.PdfFont.GetCid(int code) -> int?
 Egap.Pdf.PdfFont.GetCodes(System.ReadOnlySpan<byte> bytes) -> System.Collections.Generic.IReadOnlyList<int>!
+Egap.Pdf.PdfFont.GetGlyphId(int code) -> ushort?
 Egap.Pdf.PdfFont.GetGlyphName(int code) -> string?
+Egap.Pdf.PdfFont.GetTypeface() -> Egami.Fonts.Typeface?
 Egap.Pdf.PdfFont.GetWidth(int code) -> double
 Egap.Pdf.PdfFont.IsComposite.get -> bool
 Egap.Pdf.PdfFont.IsEmbedded.get -> bool
@@ -172,6 +174,7 @@ Egap.Pdf.PdfFont.ReadCode(System.ReadOnlySpan<byte> bytes, int offset, out int l
 Egap.Pdf.PdfFont.ToUnicode(int code) -> string?
 Egap.Pdf.PdfFont.ToUnicode(System.ReadOnlySpan<byte> bytes) -> string!
 Egap.Pdf.PdfFont.Type.get -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFont.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
 Egap.Pdf.PdfFontCollection
 Egap.Pdf.PdfFontCollection.ContainsKey(string! key) -> bool
 Egap.Pdf.PdfFontCollection.Count.get -> int
@@ -341,6 +344,7 @@ Egap.Pdf.PdfPathVerb.Close = 3 -> Egap.Pdf.PdfPathVerb
 Egap.Pdf.PdfPathVerb.CurveTo = 2 -> Egap.Pdf.PdfPathVerb
 Egap.Pdf.PdfPathVerb.LineTo = 1 -> Egap.Pdf.PdfPathVerb
 Egap.Pdf.PdfPathVerb.MoveTo = 0 -> Egap.Pdf.PdfPathVerb
+Egap.Pdf.PdfWarningCode.FontProgramUnreadable = 40 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedContent = 36 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedInlineImage = 38 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.RasterFallback = 39 -> Egap.Pdf.PdfWarningCode
