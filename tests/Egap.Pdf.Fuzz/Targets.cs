@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts"];
 
     public static Action<Stream> Get(string name)
     {
@@ -41,6 +41,7 @@ internal static class Targets
             "merge" => Merge,
             "content" => Content,
             "walker" => Walker,
+            "fonts" => Fonts,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -50,6 +51,104 @@ internal static class Targets
         using MemoryStream copy = new();
         input.CopyTo(copy);
         return copy.ToArray();
+    }
+
+    /// <summary>
+    /// A font program or CMap: the first byte picks what the rest is (a Type 1 program, a bare CFF font, a TrueType or
+    /// OpenType font, a ToUnicode CMap, or a composite font's encoding CMap). The font must read without throwing: its
+    /// typeface loaded or a warning given, every code's glyph, outline, width and text asked for.
+    /// </summary>
+    private static void Fonts(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        if (bytes.Length == 0)
+        {
+            return;
+        }
+
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfStream data = new();
+        data.SetDecodedBytes(bytes.AsSpan(1));
+        PdfReference stream = pdf.Objects.Add(data);
+        PdfDictionary font = new() { ["Type"] = PdfName.Get("Font"), ["BaseFont"] = PdfName.Get("Fuzz") };
+        PdfDictionary descriptor = new() { ["Type"] = PdfName.Get("FontDescriptor"), ["FontName"] = PdfName.Get("Fuzz"), ["Flags"] = new PdfInteger(bytes[0] >> 4) };
+        switch (bytes[0] % 5)
+        {
+            case 0:
+                font["Subtype"] = PdfName.Get("Type1");
+                descriptor["FontFile"] = stream;
+                break;
+            case 1:
+                font["Subtype"] = PdfName.Get("Type1");
+                data.Dictionary["Subtype"] = PdfName.Get("Type1C");
+                descriptor["FontFile3"] = stream;
+                break;
+            case 2:
+                font["Subtype"] = PdfName.Get("TrueType");
+                descriptor["FontFile2"] = stream;
+                break;
+            case 3:
+                font["Subtype"] = PdfName.Get("Type1");
+                font["BaseFont"] = PdfName.Get("Helvetica");
+                font["ToUnicode"] = stream;
+                break;
+            default:
+                font["Subtype"] = PdfName.Get("Type0");
+                font["Encoding"] = stream;
+                font["DescendantFonts"] = new PdfArray { new PdfDictionary { ["Subtype"] = PdfName.Get("CIDFontType0"), ["W"] = new PdfArray { new PdfInteger(0), new PdfInteger(65535), new PdfInteger(500) } } };
+                break;
+        }
+
+        if (bytes[0] % 5 is 0 or 1 or 2)
+        {
+            font["FontDescriptor"] = descriptor;
+        }
+
+        PdfFont pdfFont = PdfFont.FromDictionary(font);
+        Egami.Fonts.Typeface? face = pdfFont.GetTypeface();
+        if (face is null && pdfFont.IsEmbedded && pdfFont.Warnings.Count == 0)
+        {
+            throw new InvalidOperationException("An embedded program that did not load gave no warning.");
+        }
+
+        _ = pdfFont.Flags | (PdfFontFlags)(int)pdfFont.Ascent;
+        foreach (int code in pdfFont.GetCodes(bytes.AsSpan(1, Math.Min(bytes.Length - 1, 512))).Concat(Enumerable.Range(0, 256)))
+        {
+            _ = pdfFont.GetWidth(code);
+            _ = pdfFont.ToUnicode(code);
+            _ = pdfFont.GetCid(code);
+            if (pdfFont.GetGlyphId(code) is ushort glyph && face is not null && glyph < face.GlyphCount)
+            {
+                face.GetGlyphOutline(glyph, NullOutline.Instance);
+                _ = face.GetAdvance(glyph);
+            }
+        }
+    }
+
+    /// <summary>An outline sink that keeps nothing.</summary>
+    private sealed class NullOutline : Egami.Fonts.IGlyphOutlineSink
+    {
+        public static readonly NullOutline Instance = new();
+
+        public void MoveTo(float x, float y)
+        {
+        }
+
+        public void LineTo(float x, float y)
+        {
+        }
+
+        public void QuadTo(float cx, float cy, float x, float y)
+        {
+        }
+
+        public void CubicTo(float c1x, float c1y, float c2x, float c2y, float x, float y)
+        {
+        }
+
+        public void Close()
+        {
+        }
     }
 
     /// <summary>

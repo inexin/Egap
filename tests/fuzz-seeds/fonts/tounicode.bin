@@ -1,0 +1,5 @@
+/CIDInit /ProcSet findresource begin 12 dict begin begincmap
+1 begincodespacerange <00> <FF> endcodespacerange
+2 beginbfchar <41> <0058> <42> <00660069> endbfchar
+2 beginbfrange <61> <63> <0430> <70> <71> [<0031> <D83DDE00>] endbfrange
+endcmap end end

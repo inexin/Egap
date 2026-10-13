@@ -1,6 +1,8 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 
+using Egami.Fonts;
+
 using Egap.Pdf.Fonts;
 
 namespace Egap.Pdf;
@@ -74,7 +76,10 @@ public sealed class PdfFont
     private static readonly ConditionalWeakTable<PdfDictionary, PdfFont> Cache = [];
 
     private readonly PdfDictionary? descriptor;
-    private readonly string?[]? encoding;
+    private readonly PdfDictionary? descendant;
+    private readonly List<PdfWarning> warnings = [];
+    private readonly Lazy<FontProgram?> program;
+    private readonly Lazy<string?[]?> encoding;
     private readonly CMap? toUnicode;
     private readonly CMap? codes;
     private readonly Standard14Font? standard;
@@ -96,7 +101,7 @@ public sealed class PdfFont
             _ => PdfFontType.Unknown,
         };
         BaseFont = dictionary.GetName("BaseFont")?.Value;
-        PdfDictionary? descendant = Type == PdfFontType.Type0 && dictionary.Get<PdfArray>("DescendantFonts") is { Count: > 0 } descendants
+        descendant = Type == PdfFontType.Type0 && dictionary.Get<PdfArray>("DescendantFonts") is { Count: > 0 } descendants
             ? descendants.Get<PdfDictionary>(0)
             : null;
         descriptor = (descendant ?? dictionary).Get<PdfDictionary>("FontDescriptor");
@@ -104,6 +109,9 @@ public sealed class PdfFont
             || (descriptor is not null && (descriptor.Get("FontFile") ?? descriptor.Get("FontFile2") ?? descriptor.Get("FontFile3")) is not null);
         standard = IsEmbedded || Type is PdfFontType.Type3 or PdfFontType.Type0 ? null : Standard14Font.Get(BaseFont);
         toUnicode = dictionary.Get("ToUnicode")?.Resolve() is PdfStream map ? ReadCMap(map) : null;
+        program = new(() => FontProgram.Load(descriptor, warnings));
+        PdfObject? encodingValue = dictionary.Get("Encoding")?.Resolve();
+        encoding = new(() => Type == PdfFontType.Type0 ? null : SimpleEncoding(encodingValue));
         if (Type == PdfFontType.Type0)
         {
             PdfObject? encodingEntry = dictionary.Get("Encoding")?.Resolve();
@@ -138,7 +146,6 @@ public sealed class PdfFont
             missingWidth *= scale * 1000;
         }
 
-        encoding = SimpleEncoding(dictionary.Get("Encoding")?.Resolve());
     }
 
     /// <summary>The font dictionary.</summary>
@@ -263,7 +270,117 @@ public sealed class PdfFont
     /// <summary>The glyph name a simple font's encoding gives a code, or null (always for a composite font).</summary>
     public string? GetGlyphName(int code)
     {
-        return encoding is not null && (uint)code < 256 ? encoding[code] : null;
+        return encoding.Value is string?[] names && (uint)code < 256 ? names[code] : null;
+    }
+
+    /// <summary>What went wrong reading the font, such as an embedded program that could not be read.</summary>
+    public IReadOnlyList<PdfWarning> Warnings => warnings;
+
+    /// <summary>
+    /// The embedded font program as an Egami typeface (design Q8): TrueType, OpenType or CFF as stored, Type 1 converted to
+    /// CFF; null when the font embeds none or it cannot be read (a warning says why). Loaded once, when first asked.
+    /// </summary>
+    public Typeface? GetTypeface()
+    {
+        return program.Value?.Typeface;
+    }
+
+    /// <summary>
+    /// The glyph in <see cref="GetTypeface"/> a code shows, or null without a program. Simple fonts go through the glyph name
+    /// (CFF and Type 1) or the cmaps 9.6.5.4 lists (TrueType); composite fonts through the CID and <c>/CIDToGIDMap</c> or the
+    /// CFF charset.
+    /// </summary>
+    public ushort? GetGlyphId(int code)
+    {
+        if (program.Value is not FontProgram font)
+        {
+            return null;
+        }
+
+        if (IsComposite)
+        {
+            int cid = ToCid(code, CodeLength(code));
+            if (font.Cff is { IsCidKeyed: true } cidKeyed)
+            {
+                return cidKeyed.GlyphByCid(cid) ?? 0;
+            }
+
+            if (descendant?.Get("CIDToGIDMap")?.Resolve() is PdfStream map)
+            {
+                byte[] bytes = map.GetDecodedBytes();
+                return 2 * cid + 1 < bytes.Length ? (ushort)((bytes[2 * cid] << 8) | bytes[(2 * cid) + 1]) : (ushort)0;
+            }
+
+            return (ushort)Math.Clamp(cid, 0, ushort.MaxValue);
+        }
+
+        string? name = GetGlyphName(code);
+
+        // An OpenType font with CFF outlines names its glyphs, whatever the subtype says.
+        if (font.Cff is { IsCidKeyed: false } named && name is not null && named.GlyphByName(name) is ushort byName)
+        {
+            return byName;
+        }
+
+        if (Type == PdfFontType.TrueType || (font.Cff is null && (font.Cmaps is not null || font.PostNames is not null)))
+        {
+            return TrueTypeGlyph(font, code, name);
+        }
+
+        if (font.Cff is CffInfo cff)
+        {
+            return (name is not null ? cff.GlyphByName(name) : null)
+                ?? (font.BuiltInEncoding is string?[] own && (uint)code < 256 && own[code] is string ownName ? cff.GlyphByName(ownName) : null)
+                ?? 0;
+        }
+
+        return (ushort)Math.Clamp(code, 0, ushort.MaxValue);
+    }
+
+    /// <summary>A simple TrueType font's glyph for a code (9.6.5.4, with pdf.js's allowances for fonts that break the rules).</summary>
+    private ushort TrueTypeGlyph(FontProgram font, int code, string? name)
+    {
+        TrueTypeCmaps cmaps = font.Cmaps ?? TrueTypeCmaps.Read([]);
+        bool symbolic = (Flags & PdfFontFlags.Symbolic) != 0;
+        bool hasEncoding = Dictionary.Get("Encoding") is not null;
+        if ((!symbolic || hasEncoding) && cmaps.Unicode is { } unicode && GlyphList.ToUnicode(name) is { Length: > 0 } text
+            && unicode.TryGetValue(char.ConvertToUtf32(text, 0), out ushort byName))
+        {
+            return byName;
+        }
+
+        if (name is not null && font.PostNames?.TryGetValue(name, out ushort named) == true)
+        {
+            return named;
+        }
+
+        if (cmaps.Symbol is { } symbol)
+        {
+            foreach (int key in (int[])[code, 0xF000 + code, 0xF100 + code, 0xF200 + code])
+            {
+                if (symbol.TryGetValue(key, out ushort glyph))
+                {
+                    return glyph;
+                }
+            }
+        }
+
+        if (cmaps.MacRoman is { } mac)
+        {
+            int macCode = name is not null ? Array.IndexOf(FontEncodings.ForName("MacRomanEncoding")!, name) : -1;
+            if (mac.TryGetValue(macCode >= 0 ? macCode : code, out ushort glyph))
+            {
+                return glyph;
+            }
+        }
+
+        if (cmaps.Unicode is { } fallback && fallback.TryGetValue(code, out ushort direct))
+        {
+            return direct;
+        }
+
+        // No map reaches it: with no cmap at all, the code is the glyph, as pdf.js reads such fonts.
+        return cmaps.Unicode is null && cmaps.Symbol is null && cmaps.MacRoman is null && (uint)code < (uint)font.Typeface.GlyphCount ? (ushort)code : (ushort)0;
     }
 
     /// <summary>The CID a composite font's CMap maps a code to, or null for a simple font.</summary>
@@ -341,6 +458,7 @@ public sealed class PdfFont
     private string?[]? SimpleEncoding(PdfObject? value)
     {
         string?[]? builtIn = standard is not null ? [.. standard.BuiltInEncoding]
+            : IsEmbedded && Type is PdfFontType.Type1 or PdfFontType.MMType1 && program.Value?.BuiltInEncoding is string?[] own ? own
             : (Flags & PdfFontFlags.Symbolic) != 0 && (Flags & PdfFontFlags.Nonsymbolic) == 0 ? null
             : Type == PdfFontType.Type3 ? null
             : FontEncodings.Standard;

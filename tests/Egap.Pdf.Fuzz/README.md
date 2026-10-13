@@ -29,6 +29,7 @@ crash, and AFL++ also reports hangs.
 | `merge` | PDF bytes: the first 20 pages extracted twice and merged, written whole with identical objects merged; every page must keep its content and media box, and splitting the second copy off must give them again | `tests/fuzz-seeds/merge/*`, `tests/fuzz-seeds/xref/*` |
 | `content` | Any bytes read as a content stream leniently and strictly; the operations written back must read back strictly, without a warning, to the same operations and write the same bytes again | `tests/fuzz-seeds/content/*` |
 | `walker` | PDF bytes: the first 20 pages walked by a `PdfContentWalker` that hooks every event, leniently and strictly; marked content must be balanced after each page | `tests/fuzz-seeds/walker/*`, `tests/fuzz-seeds/xref/*` |
+| `fonts` | A font program or CMap, the first byte picking which: a Type 1 program (converted to CFF), a bare CFF font, a TrueType font, a ToUnicode CMap or a composite font's encoding CMap; the typeface must load or a warning say why, and every code's width, text, CID, glyph and outline must be read without an exception | `tests/fuzz-seeds/fonts/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 
