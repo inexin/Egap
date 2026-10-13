@@ -7,7 +7,8 @@ using Egami.Pixels;
 
 namespace Egap.Pdf.Tests.Pages;
 
-/// <summary>Page flush: Phase 3 task 16.</summary>
+/// <summary>Page flush: Phase 3 task 16. Runs alone, as it measures the process's managed memory.</summary>
+[Collection(nameof(MemoryMeasurement))]
 public sealed class PageFlushTests(ITestOutputHelper output)
 {
     private static readonly Typeface Noto = Typeface.FromFile(System.IO.Path.Combine(AppContext.BaseDirectory, "files", "fonts", "NotoSans-Latin.ttf"));
@@ -42,7 +43,7 @@ public sealed class PageFlushTests(ITestOutputHelper output)
 
     /// <summary>
     /// The design's memory target: 1,000 pages of text with an image each, flushed as they are drawn, generate and save in under
-    /// 100 MB of managed memory. Each image is 200 by 150 noisy pixels, about 80 KB written, so without flush the images alone
+    /// 100 MB of managed memory, sampled as the live heap every 50 ms. Each image is 200 by 150 noisy pixels, about 80 KB written, so without flush the images alone
     /// would hold about 80 MB.
     /// </summary>
     [Fact]
@@ -55,8 +56,9 @@ public sealed class PageFlushTests(ITestOutputHelper output)
         {
             while (!stop.IsCancellationRequested)
             {
-                peak = Math.Max(peak, GC.GetTotalMemory(false));
-                Thread.Sleep(2);
+                // Live memory: a full collection first, so garbage the collector has not got to yet is not counted.
+                peak = Math.Max(peak, GC.GetTotalMemory(true));
+                Thread.Sleep(50);
             }
         });
         GC.Collect();
@@ -122,3 +124,7 @@ public sealed class PageFlushTests(ITestOutputHelper output)
         return raster;
     }
 }
+
+/// <summary>Tests that measure managed memory, run with no other test beside them.</summary>
+[CollectionDefinition(DisableParallelization = true)]
+public sealed class MemoryMeasurement;

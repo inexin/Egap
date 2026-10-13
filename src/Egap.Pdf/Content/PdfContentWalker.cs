@@ -28,7 +28,6 @@ public class PdfContentWalker
     private readonly List<PdfDictionary?> resourceStack = [];
     private readonly HashSet<PdfStream> open = new(ReferenceEqualityComparer.Instance);
     private readonly Dictionary<PdfStream, PdfContent> forms = new(ReferenceEqualityComparer.Instance);
-    private readonly Dictionary<PdfDictionary, FontWidths> fonts = new(ReferenceEqualityComparer.Instance);
     private WarningLog log = new(strict: false);
     private PdfReadOptions options = PdfReadOptions.Default;
     private PdfPath path = new();
@@ -489,7 +488,7 @@ public class PdfContentWalker
 
     private void ShowArray(PdfArray items)
     {
-        FontWidths widths = Widths(State.Font);
+        PdfFont widths = Widths(State.Font);
         foreach (PdfObject item in items)
         {
             switch (item)
@@ -511,17 +510,17 @@ public class PdfContentWalker
     private void Show(ReadOnlySpan<byte> bytes)
     {
         PdfGraphicsState state = State;
-        FontWidths widths = Widths(state.Font);
+        PdfFont widths = Widths(state.Font);
         double scale = state.HorizontalScaling / 100;
         PdfMatrix size = new(state.FontSize * scale, 0, 0, state.FontSize, 0, state.TextRise);
         bool type3 = state.Font?.GetName("Subtype")?.Value == "Type3";
         bool glyphProcedures = type3;
         for (int i = 0; i < bytes.Length;)
         {
-            (int code, int length) = widths.NextCode(bytes, i);
+            int code = widths.ReadCode(bytes, i, out int length);
             i += length;
             bool space = length == 1 && code == 32;
-            double width = widths.Width(code);
+            double width = widths.GetWidth(code);
             PdfGlyph glyph = new(code, length, width, size * TextMatrix * state.Matrix, space);
             OnGlyph(glyph);
             if (glyphProcedures)
@@ -880,21 +879,13 @@ public class PdfContentWalker
         return Resources?.Get<PdfDictionary>(category)?.Get(name)?.Resolve() is PdfObject value and not PdfNull ? value : null;
     }
 
-    private FontWidths Widths(PdfDictionary? font)
+    /// <summary>The font text is shown in; with none selected, a font of one-byte codes and no widths.</summary>
+    private static PdfFont Widths(PdfDictionary? font)
     {
-        if (font is null)
-        {
-            return FontWidths.For(null);
-        }
-
-        if (!fonts.TryGetValue(font, out FontWidths? widths))
-        {
-            widths = FontWidths.For(font);
-            fonts[font] = widths;
-        }
-
-        return widths;
+        return font is null ? NoFont : PdfFont.FromDictionary(font);
     }
+
+    private static readonly PdfFont NoFont = PdfFont.FromDictionary([]);
 
     private void AddWarnings(PdfContent content)
     {

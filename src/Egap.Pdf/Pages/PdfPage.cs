@@ -33,6 +33,9 @@ public sealed class PdfPage : IEquatable<PdfPage>
     /// <summary>The reference to the page's dictionary, or <see langword="null"/> for a page written directly in its parent's <c>/Kids</c>.</summary>
     public PdfReference? Reference { get; }
 
+    /// <summary>The fonts the page's resources name, by resource name (Phase 3 design Q7).</summary>
+    public PdfFontCollection Fonts => new(this);
+
     /// <summary>The page's annotations (12.5), its <c>/Annots</c> array.</summary>
     public PdfAnnotationCollection Annotations => new(this);
 

@@ -32,6 +32,20 @@ internal static class WinAnsiEncoding
         return bytes;
     }
 
+    /// <summary>The character a code stands for, or null for a code that encodes nothing or only the stand-in bullet.</summary>
+    public static char? Decode(byte code)
+    {
+        foreach (KeyValuePair<char, byte> entry in FromChar)
+        {
+            if (entry.Value == code)
+            {
+                return entry.Key;
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>The code for a character, or null.</summary>
     public static byte? Encode(char c)
     {

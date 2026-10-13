@@ -148,6 +148,56 @@ Egap.Pdf.PdfContentWriter.ToArray() -> byte[]!
 Egap.Pdf.PdfContentWriter.Transform(double a, double b, double c, double d, double e, double f) -> Egap.Pdf.PdfContentWriter!
 Egap.Pdf.PdfContentWriter.Transform(Egap.Pdf.PdfMatrix matrix) -> Egap.Pdf.PdfContentWriter!
 Egap.Pdf.PdfContentWriter.WordSpacing(double spacing) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfFont
+Egap.Pdf.PdfFont.Ascent.get -> double
+Egap.Pdf.PdfFont.BaseFont.get -> string?
+Egap.Pdf.PdfFont.BoundingBox.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfFont.CapHeight.get -> double
+Egap.Pdf.PdfFont.Descent.get -> double
+Egap.Pdf.PdfFont.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfFont.Flags.get -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFont.FontMatrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfFont.GetCid(int code) -> int?
+Egap.Pdf.PdfFont.GetCodes(System.ReadOnlySpan<byte> bytes) -> System.Collections.Generic.IReadOnlyList<int>!
+Egap.Pdf.PdfFont.GetGlyphName(int code) -> string?
+Egap.Pdf.PdfFont.GetWidth(int code) -> double
+Egap.Pdf.PdfFont.IsComposite.get -> bool
+Egap.Pdf.PdfFont.IsEmbedded.get -> bool
+Egap.Pdf.PdfFont.IsStandard14.get -> bool
+Egap.Pdf.PdfFont.IsSubset.get -> bool
+Egap.Pdf.PdfFont.IsVertical.get -> bool
+Egap.Pdf.PdfFont.ItalicAngle.get -> double
+Egap.Pdf.PdfFont.Name.get -> string?
+Egap.Pdf.PdfFont.ReadCode(System.ReadOnlySpan<byte> bytes, int offset, out int length) -> int
+Egap.Pdf.PdfFont.ToUnicode(int code) -> string?
+Egap.Pdf.PdfFont.ToUnicode(System.ReadOnlySpan<byte> bytes) -> string!
+Egap.Pdf.PdfFont.Type.get -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontCollection
+Egap.Pdf.PdfFontCollection.ContainsKey(string! key) -> bool
+Egap.Pdf.PdfFontCollection.Count.get -> int
+Egap.Pdf.PdfFontCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string!, Egap.Pdf.PdfFont!>>!
+Egap.Pdf.PdfFontCollection.Keys.get -> System.Collections.Generic.IEnumerable<string!>!
+Egap.Pdf.PdfFontCollection.this[string! key].get -> Egap.Pdf.PdfFont!
+Egap.Pdf.PdfFontCollection.TryGetValue(string! key, out Egap.Pdf.PdfFont! value) -> bool
+Egap.Pdf.PdfFontCollection.Values.get -> System.Collections.Generic.IEnumerable<Egap.Pdf.PdfFont!>!
+Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.AllCap = 65536 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.FixedPitch = 1 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.ForceBold = 262144 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Italic = 64 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.None = 0 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Nonsymbolic = 32 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Script = 8 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Serif = 2 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.SmallCap = 131072 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Symbolic = 4 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.MMType1 = 2 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.TrueType = 3 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.Type0 = 5 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.Type1 = 1 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.Type3 = 4 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.Unknown = 0 -> Egap.Pdf.PdfFontType
 Egap.Pdf.PdfGlyph
 Egap.Pdf.PdfGlyph.Code.get -> int
 Egap.Pdf.PdfGlyph.Code.init -> void
@@ -252,6 +302,7 @@ Egap.Pdf.PdfOperation.PdfOperation(string! operator, params System.Collections.G
 Egap.Pdf.PdfPage.AddContent(System.ReadOnlySpan<byte> content, Egap.Pdf.PdfCanvasPlacement placement = Egap.Pdf.PdfCanvasPlacement.Over) -> void
 Egap.Pdf.PdfPage.AddResource(Egap.Pdf.PdfName! category, Egap.Pdf.PdfObject! value) -> Egap.Pdf.PdfName!
 Egap.Pdf.PdfPage.Flush() -> void
+Egap.Pdf.PdfPage.Fonts.get -> Egap.Pdf.PdfFontCollection!
 Egap.Pdf.PdfPage.GetContent() -> Egap.Pdf.PdfContent!
 Egap.Pdf.PdfPage.SetContent(Egap.Pdf.PdfContent! content) -> void
 Egap.Pdf.PdfPath
@@ -303,6 +354,7 @@ override Egap.Pdf.PdfClipPath.ToString() -> string!
 override Egap.Pdf.PdfColor.Equals(object? obj) -> bool
 override Egap.Pdf.PdfColor.GetHashCode() -> int
 override Egap.Pdf.PdfColor.ToString() -> string!
+override Egap.Pdf.PdfFont.ToString() -> string!
 override Egap.Pdf.PdfGlyph.GetHashCode() -> int
 override Egap.Pdf.PdfMarkedContent.Equals(object? obj) -> bool
 override Egap.Pdf.PdfMarkedContent.GetHashCode() -> int
@@ -321,6 +373,7 @@ static Egap.Pdf.PdfColor.operator !=(Egap.Pdf.PdfColor? left, Egap.Pdf.PdfColor?
 static Egap.Pdf.PdfColor.operator ==(Egap.Pdf.PdfColor? left, Egap.Pdf.PdfColor? right) -> bool
 static Egap.Pdf.PdfContent.Parse(System.ReadOnlySpan<byte> data, Egap.Pdf.PdfReadOptions? options = null) -> Egap.Pdf.PdfContent!
 static Egap.Pdf.PdfContent.Read(Egap.Pdf.PdfStream! stream) -> Egap.Pdf.PdfContent!
+static Egap.Pdf.PdfFont.FromDictionary(Egap.Pdf.PdfDictionary! dictionary) -> Egap.Pdf.PdfFont!
 static Egap.Pdf.PdfGlyph.operator !=(Egap.Pdf.PdfGlyph left, Egap.Pdf.PdfGlyph right) -> bool
 static Egap.Pdf.PdfGlyph.operator ==(Egap.Pdf.PdfGlyph left, Egap.Pdf.PdfGlyph right) -> bool
 static Egap.Pdf.PdfMarkedContent.operator !=(Egap.Pdf.PdfMarkedContent? left, Egap.Pdf.PdfMarkedContent? right) -> bool
