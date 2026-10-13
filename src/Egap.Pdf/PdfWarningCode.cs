@@ -130,4 +130,19 @@ public enum PdfWarningCode
     /// counts.
     /// </summary>
     PageReferencesRemoved,
+
+    /// <summary>
+    /// A content stream held something that is not an operation (stray delimiters, operands with no operator after them, an
+    /// unclosed array, a stream that could not be decoded); it was skipped or closed and reading went on.
+    /// </summary>
+    MalformedContent,
+
+    /// <summary>An operator had more or fewer operands than the spec gives it; the operation was kept as written.</summary>
+    WrongOperandCount,
+
+    /// <summary>
+    /// An inline image's end (<c>EI</c>) could not be found where its length or filters put it; it was found by searching,
+    /// or the image runs to the end of the content.
+    /// </summary>
+    MalformedInlineImage,
 }

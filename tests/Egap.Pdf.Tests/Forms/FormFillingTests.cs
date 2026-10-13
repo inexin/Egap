@@ -134,7 +134,7 @@ public sealed class FormFillingTests
         extras.Select("B");
         Assert.Equal(["B"], extras.Values);
         Assert.Equal([1], extras.SelectedIndices);
-        Assert.Contains("0.6 0.757 0.855 rg", Appearance(extras.Widgets[0]), StringComparison.Ordinal);
+        Assert.Contains(".6 .757 .855 rg", Appearance(extras.Widgets[0]), StringComparison.Ordinal);
         extras.Select("C", "A");
         Assert.Equal(["A", "C"], extras.Values);
         Assert.Equal([0, 2], extras.SelectedIndices);

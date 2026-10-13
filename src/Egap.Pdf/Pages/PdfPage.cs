@@ -135,6 +135,30 @@ public sealed class PdfPage : IEquatable<PdfPage>
         return !(left == right);
     }
 
+    /// <summary>
+    /// Reads the page's content: the operations of its <c>/Contents</c> stream, or of the streams of its <c>/Contents</c>
+    /// array as one sequence (Phase 3 design Q3). Each call reads the content again; repairs are in
+    /// <see cref="PdfContent.Warnings"/>.
+    /// </summary>
+    /// <exception cref="PdfException">The content is damaged and the document was opened in strict mode.</exception>
+    /// <exception cref="PdfLimitException">The content decodes to more than the read options allow, or nests too deep.</exception>
+    public PdfContent GetContent()
+    {
+        return PdfContent.Read(this);
+    }
+
+    /// <summary>
+    /// Makes <paramref name="content"/> the page's content (Phase 3 design Q4). Content read from this page with
+    /// <see cref="GetContent"/> keeps every stream whose operations are unchanged, byte for byte, and writes only new and
+    /// changed operations, compactly, into new streams; unchanged content changes nothing. Other content replaces the page's
+    /// in one new stream. New streams are compressed unless the page's streams were all uncompressed.
+    /// </summary>
+    public void SetContent(PdfContent content)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        PdfContent.WriteBack(this, content);
+    }
+
     /// <summary>Whether both views wrap the same page dictionary.</summary>
     public bool Equals(PdfPage? other)
     {

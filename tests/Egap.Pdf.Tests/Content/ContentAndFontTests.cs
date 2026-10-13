@@ -91,25 +91,25 @@ public sealed class ContentAndFontTests
     [Fact]
     public void WritesOperators()
     {
-        byte[] content = new ContentWriter()
+        byte[] content = new PdfContentWriter()
             .Save()
             .Rgb(1, 0, 0.5).Gray(0.25, stroke: true).LineWidth(1.5).Dash([3, 1], 0.5)
             .Rectangle(0, 0, 100, 20).FillAndStroke()
             .BeginMarkedContent("Tx").BeginText().Font("Helv", 12).MoveText(2, 5.123456)
             .ShowText(Encoding.Latin1.GetBytes("a(b)\\c")).EndText().EndMarkedContent()
-            .Color(new PdfArray([new PdfReal(0.5)])).Color(null)
+            .ArrayColor(new PdfArray([new PdfReal(0.5)])).ArrayColor(null)
             .Restore()
             .ToArray();
 
         Assert.Equal(
-            "q\n1 0 0.5 rg\n0.25 G\n1.5 w\n[3 1] 0.5 d\n0 0 100 20 re\nB\n/Tx BMC\nBT\n/Helv 12 Tf\n2 5.12346 Td\n(a\\(b\\)\\\\c) Tj\nET\nEMC\n0.5 g\nQ\n",
+            "q\n1 0 .5 rg\n.25 G\n1.5 w\n[3 1] .5 d\n0 0 100 20 re\nB\n/Tx BMC\nBT\n/Helv 12 Tf\n2 5.12346 Td\n(a\\(b\\)\\\\c) Tj\nET\nEMC\n.5 g\nQ\n",
             Encoding.ASCII.GetString(content));
     }
 
     [Fact]
     public void DrawsAnEllipseWithFourCurves()
     {
-        string content = Encoding.ASCII.GetString(new ContentWriter().Ellipse(0, 0, 20, 10).Stroke().ToArray());
+        string content = Encoding.ASCII.GetString(new PdfContentWriter().Ellipse(0, 0, 20, 10).Stroke().ToArray());
 
         Assert.StartsWith("20 5 m\n", content, StringComparison.Ordinal);
         Assert.Equal(4, content.Split('\n').Count(l => l.EndsWith(" c", StringComparison.Ordinal)));
@@ -118,18 +118,18 @@ public sealed class ContentAndFontTests
     [Fact]
     public void RefusesUnbalancedContent()
     {
-        Assert.Throws<InvalidOperationException>(() => new ContentWriter().Save().ToArray());
-        Assert.Throws<InvalidOperationException>(() => new ContentWriter().BeginText().ToArray());
-        Assert.Throws<InvalidOperationException>(() => new ContentWriter().Restore());
-        Assert.Throws<InvalidOperationException>(() => new ContentWriter().BeginText().BeginText());
-        Assert.Throws<InvalidOperationException>(() => new ContentWriter().EndMarkedContent());
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ContentWriter().LineWidth(double.NaN));
+        Assert.Throws<InvalidOperationException>(() => new PdfContentWriter().Save().ToArray());
+        Assert.Throws<InvalidOperationException>(() => new PdfContentWriter().BeginText().ToArray());
+        Assert.Throws<InvalidOperationException>(() => new PdfContentWriter().Restore());
+        Assert.Throws<InvalidOperationException>(() => new PdfContentWriter().BeginText().BeginText());
+        Assert.Throws<InvalidOperationException>(() => new PdfContentWriter().EndMarkedContent());
+        Assert.Throws<ArgumentOutOfRangeException>(() => new PdfContentWriter().LineWidth(double.NaN));
     }
 
     [Fact]
     public void WrittenContentParsesBackToItsOperators()
     {
-        byte[] content = new ContentWriter()
+        byte[] content = new PdfContentWriter()
             .Save().Transform(1, 0, 0, 1, 10.5, -3).MoveTo(0, 0).LineTo(10, 10).CurveTo(1, 2, 3, 4, 5, 6).ClosePath().Stroke()
             .BeginText().Font("F 1", 9).TextMatrix(1, 0, 0, 1, 0, 0).ShowText([("Hi"u8.ToArray(), -120), ("!"u8.ToArray(), 0)]).EndText()
             .Draw("Im0").Restore()
@@ -138,7 +138,7 @@ public sealed class ContentAndFontTests
         // Every operand parses as a PDF object, so a viewer reads the same numbers, names and strings.
         string text = Encoding.ASCII.GetString(content);
         Assert.Contains("/F#201 9 Tf", text, StringComparison.Ordinal);
-        Assert.Contains("[(Hi) -120.0 (!)] TJ", text, StringComparison.Ordinal);
+        Assert.Contains("[(Hi) -120 (!)] TJ", text, StringComparison.Ordinal);
         Assert.Contains("1 0 0 1 10.5 -3 cm", text, StringComparison.Ordinal);
         Assert.Contains("/Im0 Do", text, StringComparison.Ordinal);
     }

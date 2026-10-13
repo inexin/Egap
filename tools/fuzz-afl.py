@@ -15,14 +15,14 @@ import os
 import subprocess
 import sys
 
-SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*", "parser": "tests/fuzz-seeds/parser/*", "filters": "tests/fuzz-seeds/filters/*", "streams": "tests/fuzz-seeds/parser/*", "xref": "tests/fuzz-seeds/xref/*", "document": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "rewrite": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "incremental": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "trees": "tests/fuzz-seeds/trees/*", "pages": "tests/fuzz-seeds/pages/* tests/fuzz-seeds/xref/*", "pageedits": "tests/fuzz-seeds/pages/* tests/fuzz-seeds/xref/*", "navigation": "tests/fuzz-seeds/navigation/* tests/fuzz-seeds/xref/*", "outlines": "tests/fuzz-seeds/outlines/* tests/fuzz-seeds/xref/*", "xmp": "tests/fuzz-seeds/xmp/*", "metadata": "tests/fuzz-seeds/metadata/* tests/fuzz-seeds/xref/*", "attachments": "tests/fuzz-seeds/attachments/* tests/fuzz-seeds/xref/*", "layers": "tests/fuzz-seeds/layers/* tests/fuzz-seeds/xref/*", "annotations": "tests/fuzz-seeds/annotations/* tests/fuzz-seeds/xref/*", "forms": "tests/fuzz-seeds/forms/* tests/fuzz-seeds/xref/*", "flatten": "tests/fuzz-seeds/forms/* tests/fuzz-seeds/annotations/*", "merge": "tests/fuzz-seeds/merge/* tests/fuzz-seeds/xref/*"}
+SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*", "parser": "tests/fuzz-seeds/parser/*", "filters": "tests/fuzz-seeds/filters/*", "streams": "tests/fuzz-seeds/parser/*", "xref": "tests/fuzz-seeds/xref/*", "document": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "rewrite": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "incremental": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "trees": "tests/fuzz-seeds/trees/*", "pages": "tests/fuzz-seeds/pages/* tests/fuzz-seeds/xref/*", "pageedits": "tests/fuzz-seeds/pages/* tests/fuzz-seeds/xref/*", "navigation": "tests/fuzz-seeds/navigation/* tests/fuzz-seeds/xref/*", "outlines": "tests/fuzz-seeds/outlines/* tests/fuzz-seeds/xref/*", "xmp": "tests/fuzz-seeds/xmp/*", "metadata": "tests/fuzz-seeds/metadata/* tests/fuzz-seeds/xref/*", "attachments": "tests/fuzz-seeds/attachments/* tests/fuzz-seeds/xref/*", "layers": "tests/fuzz-seeds/layers/* tests/fuzz-seeds/xref/*", "annotations": "tests/fuzz-seeds/annotations/* tests/fuzz-seeds/xref/*", "forms": "tests/fuzz-seeds/forms/* tests/fuzz-seeds/xref/*", "flatten": "tests/fuzz-seeds/forms/* tests/fuzz-seeds/annotations/*", "merge": "tests/fuzz-seeds/merge/* tests/fuzz-seeds/xref/*", "content": "tests/fuzz-seeds/content/*", "walker": "tests/fuzz-seeds/walker/* tests/fuzz-seeds/xref/*"}
 
 SCRIPT = """
 set -e
 mkdir -p /build/tests
 cp -r /src/src /build/
 cp -r /src/tests/Egap.Pdf.Fuzz /build/tests/
-cp /src/Directory.Build.props /src/Directory.Packages.props /src/global.json /build/
+cp /src/Directory.Build.props /src/Directory.Packages.props /src/global.json /src/nuget.config /build/
 cp /src/.editorconfig /build/ 2>/dev/null || true
 find /build -type d \\( -name bin -o -name obj \\) -prune -exec rm -rf {{}} +
 dotnet publish /build/tests/Egap.Pdf.Fuzz -c Release -o /out -p:TreatWarningsAsErrors=false > /tmp/publish.log
@@ -37,6 +37,8 @@ def main():
     targets = sys.argv[2:] or list(SEEDS)
     repo = os.getcwd()
     findings = os.path.join(repo, ".cache", "afl")
+    # Egami's packages come from the folder feed beside the repository (nuget.config), mounted where /build/../egami-feed is.
+    feed = os.path.join(os.path.dirname(repo), "egami-feed")
     os.makedirs(findings, exist_ok=True)
     for spec in targets:
         target, _, count = spec.partition(":")
@@ -47,7 +49,7 @@ def main():
             subprocess.run(["docker", "rm", "-f", name], capture_output=True)
             script = SCRIPT.format(seeds=" ".join("/src/" + pattern for pattern in SEEDS[target].split()), seconds=int(hours * 3600), target=target, role=role)
             # AFL_AUTORESUME carries on from an earlier run's queue in the same findings directory.
-            subprocess.run(["docker", "run", "-d", "--name", name, "-e", "AFL_AUTORESUME=1", "-v", f"{repo}:/src:ro", "-v", f"{findings}:/findings",
+            subprocess.run(["docker", "run", "-d", "--name", name, "-e", "AFL_AUTORESUME=1", "-v", f"{repo}:/src:ro", "-v", f"{findings}:/findings", "-v", f"{feed}:/egami-feed:ro",
                             "egap-fuzz", "bash", "-c", script], check=True)
             print(f"Started {name} for {hours} h.")
 

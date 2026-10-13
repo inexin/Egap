@@ -82,15 +82,15 @@ internal static class FieldAppearance
         PdfArray? border = mk?.Get<PdfArray>("BC");
         double borderWidth = border is { Count: > 0 } ? widget.BorderWidth : 0;
 
-        ContentWriter content = new();
+        PdfContentWriter content = new();
         if (mk?.Get<PdfArray>("BG") is { Count: > 0 } background)
         {
-            content.Save().Color(background).Rectangle(0, 0, width, height).Fill().Restore();
+            content.Save().ArrayColor(background).Rectangle(0, 0, width, height).Fill().Restore();
         }
 
         if (borderWidth > 0)
         {
-            content.Save().Color(border, stroke: true).LineWidth(borderWidth);
+            content.Save().ArrayColor(border, stroke: true).LineWidth(borderWidth);
             if (widget.BorderStyle == PdfBorderStyle.Dashed)
             {
                 content.Dash([.. widget.BorderDash]);
@@ -204,7 +204,7 @@ internal static class FieldAppearance
         return Math.Max(4, fit);
     }
 
-    private static void Line(ContentWriter content, FieldFont font, DefaultAppearance appearance, double size, string text, double left, double baseline, double width, PdfTextAlignment alignment)
+    private static void Line(PdfContentWriter content, FieldFont font, DefaultAppearance appearance, double size, string text, double left, double baseline, double width, PdfTextAlignment alignment)
     {
         byte[] codes = FieldFont.Encode(text)!;
         double measured = font.Measure(codes, size);
@@ -219,7 +219,7 @@ internal static class FieldAppearance
         content.MoveText(x, baseline).ShowText(codes).EndText();
     }
 
-    private static void Multiline(ContentWriter content, FieldFont font, DefaultAppearance appearance, double size, string text, PdfRectangle inner, PdfTextAlignment alignment)
+    private static void Multiline(PdfContentWriter content, FieldFont font, DefaultAppearance appearance, double size, string text, PdfRectangle inner, PdfTextAlignment alignment)
     {
         double leading = size * (font.Ascent - font.Descent) / 1000;
         double y = inner.Top - (font.Ascent / 1000 * size);
@@ -259,7 +259,7 @@ internal static class FieldAppearance
     }
 
     /// <summary>One character centred in each of <paramref name="cells"/> equal cells across the box (12.7.5.3, comb).</summary>
-    private static void Comb(ContentWriter content, FieldFont font, DefaultAppearance appearance, double size, string text, int cells, double width, PdfRectangle inner, double lineHeight)
+    private static void Comb(PdfContentWriter content, FieldFont font, DefaultAppearance appearance, double size, string text, int cells, double width, PdfRectangle inner, double lineHeight)
     {
         double cell = width / Math.Max(1, cells);
         double baseline = inner.Bottom + ((inner.Height - (lineHeight * size)) / 2) - (font.Descent / 1000 * size);
@@ -277,7 +277,7 @@ internal static class FieldAppearance
         content.EndText();
     }
 
-    private static void Color(ContentWriter content, double[]? color)
+    private static void Color(PdfContentWriter content, double[]? color)
     {
         _ = color?.Length switch
         {
