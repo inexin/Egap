@@ -4,7 +4,8 @@ Egap is an open source family of document libraries for .NET, starting with **Eg
 It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imaging library.
 
 - **MIT-licensed**, with no strings for commercial use.
-- **Fully managed C#**: no native binaries, no P/Invoke, no wrapped native libraries.
+- **Fully managed C#**: no native binaries, no P/Invoke, no wrapped native libraries; images, fonts and drawing come from
+  Egami, which is managed too.
 - **Safe on untrusted files**: readers are built to be fuzz-tested from the start.
 
 > **Status:** 1.0.0, public API frozen; nothing is published to NuGet yet. Egap.Pdf reads PDF files, damaged and encrypted
@@ -48,9 +49,13 @@ merged.Save("merged.pdf", new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compr
 
 ## Building
 
-You need the .NET 10 SDK.
+You need the .NET 10 SDK, and Egami packages in a folder feed beside this checkout: Egap.Pdf draws, decodes images and
+reads fonts through [Egami](https://github.com/inexin/Egami), which is not on NuGet yet. With an Egami checkout next to this
+one, `python tools/pack-egami.py` packs it into `../egami-feed` (see `nuget.config`) at the versions in
+`Directory.Packages.props`; add `--update` to move to Egami's current commit.
 
 ```
+python tools/pack-egami.py
 dotnet build
 dotnet test
 ```
