@@ -4,8 +4,8 @@ namespace Egap.Pdf;
 
 /// <summary>
 /// The document's optional content groups (8.11), its layers, from the catalog's <c>/OCProperties /OCGs</c>, each once in
-/// the order listed. Removing a layer takes it out of the configurations only; the content it marks stays on the pages
-/// until content stream editing (Phase 3.1) can remove it.
+/// the order listed. Removing a layer takes it out of the configurations; the content it marks stays on the pages unless
+/// <see cref="Remove(PdfLayer, bool)"/> is asked to remove it too.
 /// </summary>
 public sealed class PdfLayerCollection : IReadOnlyList<PdfLayer>
 {
@@ -30,10 +30,26 @@ public sealed class PdfLayerCollection : IReadOnlyList<PdfLayer>
     /// <returns>Whether it was one of the document's layers.</returns>
     public bool Remove(PdfLayer layer)
     {
+        return Remove(layer, removeContent: false);
+    }
+
+    /// <summary>
+    /// Removes a layer as <see cref="Remove(PdfLayer)"/> does and, when <paramref name="removeContent"/> is set, first what
+    /// it shows from the pages and the form XObjects they draw (<see cref="PdfLayer.RemoveContent"/>), so the pages render as
+    /// they did with the layer hidden.
+    /// </summary>
+    /// <returns>Whether it was one of the document's layers.</returns>
+    public bool Remove(PdfLayer layer, bool removeContent)
+    {
         ArgumentNullException.ThrowIfNull(layer);
         if (!List().Contains(layer) || document.Catalog.Get<PdfDictionary>("OCProperties") is not PdfDictionary properties)
         {
             return false;
+        }
+
+        if (removeContent)
+        {
+            layer.RemoveContent();
         }
 
         layer.RemoveFrom(properties.Get<PdfArray>("OCGs"));
