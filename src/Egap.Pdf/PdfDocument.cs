@@ -132,6 +132,67 @@ public sealed class PdfDocument : IDisposable
         return drawn;
     }
 
+    /// <summary>
+    /// A new document with the pages of each source in turn (Phase 2 task 18), imported as
+    /// <see cref="PdfPageCollection.Import"/> imports them; the sources must stay open until it is written.
+    /// </summary>
+    public static PdfDocument Merge(params IEnumerable<PdfDocument> sources)
+    {
+        ArgumentNullException.ThrowIfNull(sources);
+        PdfDocument merged = Create();
+        try
+        {
+            foreach (PdfDocument source in sources)
+            {
+                merged.Pages.Import(source);
+            }
+
+            return merged;
+        }
+        catch
+        {
+            merged.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// A new document with some of this document's pages, in the order given (Phase 2 task 18), imported as
+    /// <see cref="PdfPageCollection.Import"/> imports them; this document must stay open until it is written.
+    /// </summary>
+    public PdfDocument ExtractPages(IEnumerable<int> pageIndices)
+    {
+        ArgumentNullException.ThrowIfNull(pageIndices);
+        PdfDocument extracted = Create();
+        try
+        {
+            extracted.Pages.Import(this, pageIndices);
+            return extracted;
+        }
+        catch
+        {
+            extracted.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>The copier for a source document, made on first use, so each source has one map (Phase 2 Q4).</summary>
+    internal Writing.ObjectCopier CopierFor(PdfDocument source)
+    {
+        lock (copiers)
+        {
+            if (!copiers.TryGetValue(source, out Writing.ObjectCopier? copier))
+            {
+                copier = new Writing.ObjectCopier(source, this);
+                copiers[source] = copier;
+            }
+
+            return copier;
+        }
+    }
+
+    private readonly Dictionary<PdfDocument, Writing.ObjectCopier> copiers = new(ReferenceEqualityComparer.Instance);
+
     /// <summary>The interactive form, the catalog's /AcroForm.</summary>
     public PdfForm Form => new(this);
 

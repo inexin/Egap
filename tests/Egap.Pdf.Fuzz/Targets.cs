@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge"];
 
     public static Action<Stream> Get(string name)
     {
@@ -38,6 +38,7 @@ internal static class Targets
             "annotations" => Annotations,
             "forms" => Forms,
             "flatten" => Flatten,
+            "merge" => Merge,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -1829,6 +1830,88 @@ internal static class Targets
             }
             catch (PdfLimitException)
             {
+            }
+        }
+    }
+
+    /// <summary>
+    /// Merge (Phase 2 task 18): the input's first 20 pages imported twice into a new document, which is written whole with
+    /// identical objects merged and reopened; every page must come back with the content and media box of the page it was
+    /// copied from, and extracting the second copy must give them again.
+    /// </summary>
+    private static void Merge(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument source;
+        try
+        {
+            source = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (source)
+        {
+            try
+            {
+                int[] chosen = [.. Enumerable.Range(0, Math.Min(20, source.Pages.Count))];
+                List<(string?, PdfRectangle)> expected = [.. chosen.Select(i => Page(source.Pages[i]))];
+                using PdfDocument merged = PdfDocument.Merge(source.ExtractPages(chosen), source.ExtractPages(chosen));
+                using MemoryStream whole = new();
+                merged.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = PdfCompression.Compact, Deterministic = true });
+                using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                Check(reopened.Pages.Count == 2 * chosen.Length, "the merged page count");
+                for (int i = 0; i < reopened.Pages.Count; i++)
+                {
+                    Check(Page(reopened.Pages[i]) == expected[i % chosen.Length], $"merged page {i}");
+                }
+
+                using PdfDocument split = reopened.ExtractPages(Enumerable.Range(chosen.Length, chosen.Length));
+                Check(split.Pages.Select(Page).SequenceEqual(expected), "the pages split off again");
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+
+        // A page's content decoded and joined, or null when it cannot be decoded, and its media box.
+        static (string?, PdfRectangle) Page(PdfPage page)
+        {
+            try
+            {
+                // An object whose value is a reference is followed to the end, as the copier follows it.
+                string content = Follow(page.Dictionary["Contents"]) switch
+                {
+                    PdfStream stream => Convert.ToHexString(stream.GetDecodedBytes()),
+                    PdfArray array => string.Concat(Enumerable.Range(0, array.Count).Select(i => Follow(array[i]) is PdfStream part ? Convert.ToHexString(part.GetDecodedBytes()) : "-")),
+                    _ => "",
+                };
+                return (content, page.MediaBox);
+            }
+            catch (PdfException)
+            {
+                return (null, page.MediaBox);
+            }
+        }
+
+        // An object whose value is a reference is followed to the end, as the copier follows it.
+        static PdfObject? Follow(PdfObject? value)
+        {
+            for (int hop = 0; hop < 8 && value is PdfReference reference; hop++)
+            {
+                value = reference.Resolve();
+            }
+
+            return value;
+        }
+
+        static void Check(bool ok, string what)
+        {
+            if (!ok)
+            {
+                throw new InvalidOperationException($"{what} did not hold.");
             }
         }
     }

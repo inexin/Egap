@@ -106,6 +106,74 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
         }
     }
 
+    /// <summary>
+    /// Imports pages from another document (Phase 2 task 18): each page is copied with everything it reaches, its resources,
+    /// content, annotations and what they use, but not the source's page tree; attributes it inherited there are written
+    /// on the copy. Objects are copied once per source (Q4), so pages that share a font share the copy. References to
+    /// source pages that are not imported become null. Streams are copied as the source holds them and read when this
+    /// document is written, so <paramref name="source"/> must stay open until then.
+    /// </summary>
+    /// <param name="source">The document to copy from; may be this one, which copies pages within it.</param>
+    /// <param name="pageIndices">The source pages, in the order to insert them; all of them when null.</param>
+    /// <param name="at">Where the first page goes (0 to <see cref="Count"/>); the end when null.</param>
+    /// <returns>The new pages, in order.</returns>
+    public IReadOnlyList<PdfPage> Import(PdfDocument source, IEnumerable<int>? pageIndices = null, int? at = null)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        List<PdfPage> sourcePages = pageIndices is null ? [.. source.Pages] : [.. pageIndices.Select(i => source.Pages[i])];
+        lock (gate)
+        {
+            int index = at ?? List.Count;
+            ArgumentOutOfRangeException.ThrowIfGreaterThan((uint)index, (uint)List.Count, nameof(at));
+            Writing.ObjectCopier copier = document.CopierFor(source);
+            List<PdfPage> added = new(sourcePages.Count);
+            foreach (PdfPage page in sourcePages)
+            {
+                PdfPage made = Editor().Insert(index++, []);
+                if (page.Reference is PdfReference reference)
+                {
+                    copier.MapPage(reference, made.Reference!);
+                }
+
+                added.Add(made);
+            }
+
+            for (int i = 0; i < sourcePages.Count; i++)
+            {
+                PdfPage from = sourcePages[i];
+                PdfDictionary into = added[i].Dictionary;
+                foreach ((PdfName key, PdfObject value) in from.Dictionary.Entries)
+                {
+                    // Page tree keys stay behind; a page found by repair may carry /Kids, which would make the copy a node.
+                    if (key.Value is not ("Parent" or "Type" or "Kids" or "Count"))
+                    {
+                        into[key] = copier.Copy(value);
+                    }
+                }
+
+                foreach (PdfName key in new PdfName[] { "Resources", "MediaBox", "CropBox", "Rotate" })
+                {
+                    if (into.Get(key) is null or PdfNull && from.InheritedValue(key) is PdfObject inherited)
+                    {
+                        into[key] = copier.Copy(inherited);
+                    }
+                }
+            }
+
+            if (string.CompareOrdinal(source.Version, document.Version) > 0)
+            {
+                document.Catalog["Version"] = PdfName.Get(source.Version);
+            }
+
+            if (sourcePages.Count > 0 && source.Catalog.Get("StructTreeRoot") is not null && !ReferenceEquals(source, document))
+            {
+                document.Log.Add(PdfWarningCode.NotImported, "The source has a structure tree, which imported pages do not bring (tagged PDF comes in 5.x).");
+            }
+
+            return added;
+        }
+    }
+
     /// <summary>Removes the page at an index from the page tree. Its object stays in the document until nothing reaches it.</summary>
     public void RemoveAt(int index)
     {

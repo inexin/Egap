@@ -52,6 +52,11 @@ internal sealed class RewriteWriter
         }
 
         writer.Collect();
+        if (options.Compression == PdfCompression.Compact && !options.KeepObjectNumbers)
+        {
+            writer.MergeIdentical();
+        }
+
         writer.Emit(output);
     }
 
@@ -99,6 +104,137 @@ internal sealed class RewriteWriter
         {
             madeIndirect[key] = (new PdfReference(next++, 0), madeIndirect[key].Value);
         }
+    }
+
+    /// <summary>
+    /// Writes identical objects once (Phase 2 Q4): streams with the same dictionary and encoded bytes, and dictionaries and
+    /// arrays with the same content, such as a logo and its fonts in 50 merged invoices. Objects are compared with their
+    /// references replaced by the class of the object they lead to, repeated until nothing more merges, so a font whose
+    /// descriptor and font file merge merges too. Page tree nodes, pages, annotations, form fields and the catalog stay
+    /// apart, since sharing them would change what a document is. The objects left are renumbered densely.
+    /// </summary>
+    private void MergeIdentical()
+    {
+        int count = order.Count;
+        int[] classOf = [.. Enumerable.Range(0, count)];
+        Dictionary<(int, int), int> indexOf = [];
+        for (int i = 0; i < count; i++)
+        {
+            indexOf[(order[i].Old.ObjectNumber, order[i].Old.Generation)] = i;
+        }
+
+        bool[] mergeable = new bool[count];
+        byte[]?[] dataHash = new byte[count][];
+        for (int i = 0; i < count; i++)
+        {
+            PdfObject value = document.Objects[order[i].Old];
+            mergeable[i] = order[i].Old.Generation == 0 && value switch
+            {
+                PdfStream stream => !Structural(stream.Dictionary),
+                PdfDictionary dictionary => !Structural(dictionary),
+                PdfArray => true,
+                _ => false,
+            };
+            if (mergeable[i] && value is PdfStream data)
+            {
+                dataHash[i] = SHA256.HashData(data.GetEncodedBytes());
+            }
+        }
+
+        PdfReference? ByClass(PdfReference reference)
+        {
+            return indexOf.TryGetValue((reference.ObjectNumber, reference.Generation), out int i) ? new PdfReference(classOf[i] + 1, 0) : null;
+        }
+
+        for (int round = 0; round < 64; round++)
+        {
+            Dictionary<string, int> first = [];
+            bool changed = false;
+            int[] next = (int[])classOf.Clone();
+            for (int i = 0; i < count; i++)
+            {
+                if (!mergeable[i])
+                {
+                    continue;
+                }
+
+                PdfObject value = document.Objects[order[i].Old];
+                ByteWriter signature = new();
+                // A stream's /Length is written from its data, so it takes no part in the comparison.
+                ObjectWriter.Write(value is PdfStream stream ? WithoutLength(stream.Dictionary) : value, signature, ByClass);
+                string key = (value is PdfStream ? "S" : "D") + Convert.ToHexString(SHA256.HashData(signature.WrittenSpan)) + (dataHash[i] is byte[] hash ? Convert.ToHexString(hash) : "");
+                if (first.TryGetValue(key, out int representative))
+                {
+                    if (next[i] != classOf[representative])
+                    {
+                        next[i] = classOf[representative];
+                        changed = true;
+                    }
+                }
+                else
+                {
+                    first[key] = i;
+                }
+            }
+
+            classOf = next;
+            if (!changed)
+            {
+                break;
+            }
+        }
+
+        // A class can have merged into an earlier one after its members joined it; follow to the class that stayed.
+        for (int i = 0; i < count; i++)
+        {
+            int root = classOf[i];
+            while (classOf[root] != root)
+            {
+                root = classOf[root];
+            }
+
+            classOf[i] = root;
+        }
+
+        // Keep the first object of each class, renumbered densely in order; the others write as their class's object.
+        List<(PdfReference Old, PdfReference New)> kept = [];
+        PdfReference[] newOf = new PdfReference[count];
+        for (int i = 0; i < count; i++)
+        {
+            if (classOf[i] == i)
+            {
+                newOf[i] = new PdfReference(kept.Count + 1, 0);
+                kept.Add((order[i].Old, newOf[i]));
+            }
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            numbers[(order[i].Old.ObjectNumber, order[i].Old.Generation)] = newOf[classOf[i]];
+        }
+
+        order.Clear();
+        order.AddRange(kept);
+    }
+
+    private static PdfDictionary WithoutLength(PdfDictionary dictionary)
+    {
+        if (dictionary.Get("Length") is null)
+        {
+            return dictionary;
+        }
+
+        PdfDictionary copy = dictionary.Clone();
+        copy.Remove("Length");
+        return copy;
+    }
+
+    /// <summary>Whether a dictionary is part of the document's structure, which merging must not share.</summary>
+    private static bool Structural(PdfDictionary dictionary)
+    {
+        return dictionary.GetName("Type")?.Value is "Catalog" or "Pages" or "Page" or "Annot" or "Outlines" or "Sig"
+            || dictionary.Get("Parent") is not null || dictionary.Get("Kids") is not null || dictionary.Get("FT") is not null
+            || dictionary.Get("T") is not null || dictionary.Get("Subtype") is PdfName { Value: "Widget" };
     }
 
     /// <summary>Finds the references in a value, numbering each new one and queuing its object.</summary>
