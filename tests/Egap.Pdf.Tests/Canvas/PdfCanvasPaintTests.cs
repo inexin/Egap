@@ -17,8 +17,8 @@ public sealed class PdfCanvasPaintTests
     {
         (PdfPage page, string text) = Draw(c => c.FillRect(new RectF(10, 10, 80, 20), new LinearGradient(new Vector2(10, 0), new Vector2(90, 0), Stops)));
 
-        Assert.Contains("10 10 80 20 re\nW\nn\nq\n1 0 0 1 0 0 cm\n/Eg0 sh\nQ\n", text, StringComparison.Ordinal);
-        PdfDictionary shading = page.Resources!.Get<PdfDictionary>("Shading")!.Get<PdfDictionary>("Eg0")!;
+        Assert.Contains("10 10 80 20 re\nW\nn\nq\n1 0 0 1 0 0 cm\n/EgS0 sh\nQ\n", text, StringComparison.Ordinal);
+        PdfDictionary shading = page.Resources!.Get<PdfDictionary>("Shading")!.Get<PdfDictionary>("EgS0")!;
         Assert.Equal(2, shading.GetInt("ShadingType"));
         Assert.Equal([10.0, 0, 90, 0], shading.Get<PdfArray>("Coords")!.Select(v => ((PdfReal)v).Value));
         PdfDictionary function = shading.Get<PdfDictionary>("Function")!;
@@ -34,7 +34,7 @@ public sealed class PdfCanvasPaintTests
 
         PdfDictionary shadings = page.Resources!.Get<PdfDictionary>("Shading")!;
         Assert.Equal(4, shadings.Count);
-        Assert.Equal([25.0, 0, 50, 0], shadings.Get<PdfDictionary>("Eg1")!.Get<PdfArray>("Coords")!.Select(v => ((PdfReal)v).Value).Reverse().Chunk(2).SelectMany(p => p.Reverse()));
+        Assert.Equal([25.0, 0, 50, 0], shadings.Get<PdfDictionary>("EgS1")!.Get<PdfArray>("Coords")!.Select(v => ((PdfReal)v).Value).Reverse().Chunk(2).SelectMany(p => p.Reverse()));
         Assert.Equal(4, text.Split(" sh\n").Length - 1);
     }
 
@@ -43,7 +43,7 @@ public sealed class PdfCanvasPaintTests
     {
         (PdfPage page, _) = Draw(c => c.FillCircle(new Vector2(50, 50), 40, new SweepGradient(new Vector2(50, 50), Stops)));
 
-        PdfStream mesh = (PdfStream)page.Resources!.Get<PdfDictionary>("Shading")!["Eg0"]!.Resolve();
+        PdfStream mesh = (PdfStream)page.Resources!.Get<PdfDictionary>("Shading")!["EgS0"]!.Resolve();
         Assert.Equal(6, mesh.Dictionary.GetInt("ShadingType"));
 
         // 24 arcs of 15 degrees: a flag, 12 points of two 32-bit numbers and 4 colours of three 16-bit samples each.
@@ -56,13 +56,13 @@ public sealed class PdfCanvasPaintTests
         GradientStop[] fade = [new(0, new Rgba8(255, 0, 0, 255)), new(1, new Rgba8(255, 0, 0, 0))];
         (PdfPage page, string text) = Draw(c => c.FillRect(new RectF(0, 0, 100, 100), new LinearGradient(new Vector2(0, 0), new Vector2(100, 0), fade)));
 
-        PdfDictionary state = page.Resources!.Get<PdfDictionary>("ExtGState")!.Get<PdfDictionary>("Eg0")!;
+        PdfDictionary state = page.Resources!.Get<PdfDictionary>("ExtGState")!.Get<PdfDictionary>("EgG0")!;
         PdfDictionary mask = state.Get<PdfDictionary>("SMask")!;
         Assert.Equal("Luminosity", mask.GetName("S")!.Value);
         PdfStream group = mask.Get<PdfStream>("G")!;
         Assert.Contains("/Sh0 sh", Encoding.ASCII.GetString(group.GetDecodedBytes()), StringComparison.Ordinal);
         Assert.Equal("DeviceGray", group.Dictionary.Get<PdfDictionary>("Resources")!.Get<PdfDictionary>("Shading")!.Get<PdfDictionary>("Sh0")!.GetName("ColorSpace")!.Value);
-        Assert.StartsWith("q\n1 0 0 -1 0 100 cm\nq\nq\n/Eg0 gs\n", text, StringComparison.Ordinal);
+        Assert.StartsWith("q\n1 0 0 -1 0 100 cm\nq\nq\n/EgG0 gs\n", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public sealed class PdfCanvasPaintTests
     {
         (PdfPage page, _) = Draw(c => c.FillRect(new RectF(0, 0, 100, 10), new LinearGradient(new Vector2(0, 0), new Vector2(100, 0), Stops) { Interpolation = GradientInterpolation.Oklab }));
 
-        PdfStream function = (PdfStream)page.Resources!.Get<PdfDictionary>("Shading")!.Get<PdfDictionary>("Eg0")!["Function"]!.Resolve();
+        PdfStream function = (PdfStream)page.Resources!.Get<PdfDictionary>("Shading")!.Get<PdfDictionary>("EgS0")!["Function"]!.Resolve();
         Assert.Equal(0, function.Dictionary.GetInt("FunctionType"));
         Assert.Equal(256 * 3, function.GetDecodedBytes().Length);
     }
@@ -90,8 +90,8 @@ public sealed class PdfCanvasPaintTests
         using Raster<Rgba8> image = Raster.Create<Rgba8>(4, 4, new Rgba8(0, 0, 255, 255));
         (PdfPage page, string text) = Draw(c => c.FillRect(new RectF(0, 0, 100, 100), new ImagePaint(image, TileMode.Repeat, TileMode.Mirror)));
 
-        Assert.Contains("/Pattern cs\n/Eg0 scn\n0 0 100 100 re\nf\n", text, StringComparison.Ordinal);
-        PdfStream pattern = (PdfStream)page.Resources!.Get<PdfDictionary>("Pattern")!["Eg0"]!.Resolve();
+        Assert.Contains("/Pattern cs\n/EgP0 scn\n0 0 100 100 re\nf\n", text, StringComparison.Ordinal);
+        PdfStream pattern = (PdfStream)page.Resources!.Get<PdfDictionary>("Pattern")!["EgP0"]!.Resolve();
         Assert.Equal((4.0, 8.0), (pattern.Dictionary.GetNumber("XStep"), pattern.Dictionary.GetNumber("YStep")));
         Assert.Equal(2, Encoding.ASCII.GetString(pattern.GetDecodedBytes()).Split("/Im0 Do").Length - 1);
     }

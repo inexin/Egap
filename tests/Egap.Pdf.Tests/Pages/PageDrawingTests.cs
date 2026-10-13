@@ -71,13 +71,13 @@ public sealed class PageDrawingTests
 
         PdfName name = first.AddResource("XObject", image);
 
-        Assert.Equal("Eg0", name.Value);
+        Assert.Equal("EgX0", name.Value);
         Assert.IsType<PdfDictionary>(first.Dictionary["Resources"]);
         Assert.Same(font, first.Resources!.Get<PdfDictionary>("Font")!["F1"]);
         Assert.Null(((PdfDictionary)pdf.Objects[shared]).Get("XObject"));
         Assert.Same(shared, second.Dictionary["Resources"]);
         Assert.Equal(name, first.AddResource("XObject", image));
-        Assert.Equal("Eg1", first.AddResource("XObject", pdf.Objects.Add(new PdfStream())).Value);
+        Assert.Equal("EgX1", first.AddResource("XObject", pdf.Objects.Add(new PdfStream())).Value);
     }
 
     [Fact]
@@ -85,12 +85,12 @@ public sealed class PageDrawingTests
     {
         using PdfDocument pdf = PdfDocument.Create();
         PdfPage page = pdf.Pages.AddBlank();
-        PdfReference categoryReference = pdf.Objects.Add(new PdfDictionary { ["Eg0"] = new PdfInteger(1), ["Eg1"] = new PdfInteger(2) });
+        PdfReference categoryReference = pdf.Objects.Add(new PdfDictionary { ["EgG0"] = new PdfInteger(1), ["EgG1"] = new PdfInteger(2) });
         page.Dictionary["Resources"] = new PdfDictionary { ["ExtGState"] = categoryReference };
 
         PdfName name = page.AddResource("ExtGState", new PdfDictionary { ["CA"] = new PdfReal(0.5) });
 
-        Assert.Equal("Eg2", name.Value);
+        Assert.Equal("EgG2", name.Value);
         Assert.Equal(2, ((PdfDictionary)pdf.Objects[categoryReference]).Count);
         Assert.Equal(3, page.Resources!.Get<PdfDictionary>("ExtGState")!.Count);
     }

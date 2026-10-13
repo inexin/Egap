@@ -127,12 +127,12 @@ public sealed class PdfCanvasTests
             canvas.FillRect(new RectF(0, 0, 10, 10), new SolidPaint(new RgbaF32(0, 0, 1, 1)) { Opacity = 0.5f, BlendMode = BlendMode.Multiply });
         }
 
-        PdfObject state = first.Resources!.Get<PdfDictionary>("ExtGState")!["Eg0"]!;
-        Assert.Equal(state, second.Resources!.Get<PdfDictionary>("ExtGState")!["Eg0"]);
+        PdfObject state = first.Resources!.Get<PdfDictionary>("ExtGState")!["EgG0"]!;
+        Assert.Equal(state, second.Resources!.Get<PdfDictionary>("ExtGState")!["EgG0"]);
         Assert.Single(first.Resources!.Get<PdfDictionary>("ExtGState")!.Keys);
         PdfDictionary gs = (PdfDictionary)state.Resolve();
         Assert.Equal((0.5, 0.5, "Multiply"), (gs.GetNumber("CA"), gs.GetNumber("ca"), gs.GetName("BM")!.Value));
-        Assert.Equal(1, Content(first).Split("/Eg0 gs").Length - 1);
+        Assert.Equal(1, Content(first).Split("/EgG0 gs").Length - 1);
     }
 
     [Fact]
@@ -166,10 +166,10 @@ public sealed class PdfCanvasTests
 
         PdfWarning warning = Assert.Single(canvas.Warnings);
         Assert.Equal(PdfWarningCode.RasterFallback, warning.Code);
-        PdfStream image = (PdfStream)page.Resources!.Get<PdfDictionary>("XObject")!["Eg0"]!.Resolve();
+        PdfStream image = (PdfStream)page.Resources!.Get<PdfDictionary>("XObject")!["EgX0"]!.Resolve();
         Assert.Equal((72, 72), (image.Dictionary.GetInt("Width"), image.Dictionary.GetInt("Height")));
         Assert.NotNull(image.Dictionary.Get("SMask"));
-        Assert.Contains("72 0 0 -72 0 72 cm\n/Eg0 Do\n", Content(page), StringComparison.Ordinal);
+        Assert.Contains("72 0 0 -72 0 72 cm\n/EgX0 Do\n", Content(page), StringComparison.Ordinal);
 
         using PdfCanvas strict = new(page, new PdfCanvasOptions { Strict = true });
         Assert.Throws<NotSupportedException>(() => strict.FillRect(new RectF(0, 0, 1, 1), new SolidPaint(new RgbaF32(1, 0, 0, 1)) { BlendMode = BlendMode.Xor }));
@@ -193,8 +193,8 @@ public sealed class PdfCanvasTests
         Assert.Equal("DeviceRGB", stream.Dictionary.GetName("ColorSpace")!.Value);
         Assert.Equal(3 * 8, stream.GetDecodedBytes().Length);
         string text = Content(page);
-        Assert.Contains("4 0 0 -2 0 2 cm\n/Eg0 Do\n", text, StringComparison.Ordinal);
-        Assert.Contains("10 10 40 10 re\nW\nn\n40 0 0 -20 10 30 cm\n/Eg0 Do\n", text, StringComparison.Ordinal);
+        Assert.Contains("4 0 0 -2 0 2 cm\n/EgX0 Do\n", text, StringComparison.Ordinal);
+        Assert.Contains("10 10 40 10 re\nW\nn\n40 0 0 -20 10 30 cm\n/EgX0 Do\n", text, StringComparison.Ordinal);
     }
 
     private static string Content(PdfPage page)

@@ -49,7 +49,7 @@ public sealed partial class PdfCanvas : Canvas
         [BlendMode.Luminosity] = "Luminosity",
     };
 
-    private readonly PdfContentWriter content = new();
+    private PdfContentWriter content = new();
     private readonly List<PdfWarning> warnings = [];
     private readonly PdfCanvasOptions options;
     private readonly PdfMatrix baseMatrix;
@@ -92,6 +92,11 @@ public sealed partial class PdfCanvas : Canvas
     /// <inheritdoc/>
     protected override void OnSave()
     {
+        if (Forward(c => c.Save()))
+        {
+            return;
+        }
+
         CloseGroup();
         content.Save();
     }
@@ -99,6 +104,11 @@ public sealed partial class PdfCanvas : Canvas
     /// <inheritdoc/>
     protected override void OnRestore()
     {
+        if (Forward(c => c.Restore()))
+        {
+            return;
+        }
+
         CloseGroup();
         content.Restore();
     }
@@ -107,11 +117,17 @@ public sealed partial class PdfCanvas : Canvas
     protected override void OnSetMatrix(Matrix3x2 matrix)
     {
         // Written lazily, with the next drawing call that needs it.
+        Forward(c => c.SetMatrix(matrix));
     }
 
     /// <inheritdoc/>
     protected override void OnClipRect(RectF rect, ClipOp op, bool antialias)
     {
+        if (Forward(c => c.ClipRect(rect, op, antialias)))
+        {
+            return;
+        }
+
         if (op == ClipOp.Intersect && Matrix.M12 == 0 && Matrix.M21 == 0)
         {
             CloseGroup();
@@ -127,6 +143,11 @@ public sealed partial class PdfCanvas : Canvas
     /// <inheritdoc/>
     protected override void OnClipPath(DrawingPath path, ClipOp op, bool antialias)
     {
+        if (Forward(c => c.ClipPath(path, op, antialias)))
+        {
+            return;
+        }
+
         CloseGroup();
         DrawingPath device = path.Transform(Matrix);
         if (op == ClipOp.Difference)
@@ -149,6 +170,11 @@ public sealed partial class PdfCanvas : Canvas
     /// <inheritdoc/>
     protected override void OnDrawRect(RectF rect, Stroke? stroke, Paint paint)
     {
+        if (Forward(c => Draw(c, rect, stroke, paint)))
+        {
+            return;
+        }
+
         if (FillsStroke(paint, stroke))
         {
             OnDrawPath(DrawingPath.Rect(rect), stroke, paint);
@@ -168,6 +194,11 @@ public sealed partial class PdfCanvas : Canvas
     /// <inheritdoc/>
     protected override void OnDrawPath(DrawingPath path, Stroke? stroke, Paint paint)
     {
+        if (Forward(c => Draw(c, path, stroke, paint)))
+        {
+            return;
+        }
+
         if (FillsStroke(paint, stroke))
         {
             // Filled as its outline, cut finely enough for a closer look than the canvas's own scale.
@@ -193,6 +224,11 @@ public sealed partial class PdfCanvas : Canvas
     /// <inheritdoc/>
     protected override void OnDrawImage(Raster image, RectF source, RectF destination, SamplingOptions sampling, Paint? paint)
     {
+        if (Forward(c => c.DrawImage(image, source, destination, sampling, paint)))
+        {
+            return;
+        }
+
         DrawRaster(image, source, destination, sampling, paint);
     }
 
@@ -293,7 +329,7 @@ public sealed partial class PdfCanvas : Canvas
             ["ca"] = new PdfReal(rounded),
             ["BM"] = PdfName.Get(mode),
         }));
-        content.GraphicsState(Page.AddResource("ExtGState", state));
+        content.GraphicsState(AddResource("ExtGState", state));
         g.Alpha = rounded;
         g.Blend = mode;
     }
@@ -399,7 +435,12 @@ public sealed partial class PdfCanvas : Canvas
     /// <summary>The group drawing calls with the current transform go in: the open one when it has the same transform.</summary>
     private GraphicsGroup OpenGroup()
     {
-        Matrix3x2 matrix = Matrix;
+        return OpenGroupWith(Matrix);
+    }
+
+    /// <summary>The group for drawing with a given transform: the open one when it has that transform.</summary>
+    private GraphicsGroup OpenGroupWith(Matrix3x2 matrix)
+    {
         if (group is not null && group.Matrix == matrix)
         {
             return group;
@@ -474,9 +515,11 @@ public sealed partial class PdfCanvas : Canvas
     {
         public Matrix3x2 Matrix { get; } = matrix;
 
-        public (double R, double G, double B)? Fill { get; set; } = (0, 0, 0);
+        // Colours start unknown, so each group sets the first it uses: PDF's initial black is not always what a viewer has
+        // (pdf.js starts a transparency group with the fill colour last set outside it, even one a Q undid).
+        public (double R, double G, double B)? Fill { get; set; }
 
-        public (double R, double G, double B)? Stroke { get; set; } = (0, 0, 0);
+        public (double R, double G, double B)? Stroke { get; set; }
 
         public double Alpha { get; set; } = 1;
 
