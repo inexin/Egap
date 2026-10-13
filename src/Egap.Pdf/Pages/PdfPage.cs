@@ -39,6 +39,78 @@ public sealed class PdfPage : IEquatable<PdfPage>
     /// <summary>The document the page belongs to.</summary>
     internal PdfDocument Document { get; }
 
+    /// <summary>
+    /// Moves the page's finished content out of memory (Phase 3 design, after Phase 2 Q14): its content streams, and the
+    /// images, forms, patterns and shadings its resources and annotation appearances use, go to the document's scratch file,
+    /// and a save copies them from there. For generating many pages: draw a page, dispose its canvas, flush it, and memory
+    /// holds only small dictionaries. Font subsets stay open until the save, as later pages may add glyphs. The page can
+    /// still be read and changed afterwards; its streams are then read back from the scratch file.
+    /// </summary>
+    public void Flush()
+    {
+        HashSet<PdfObject> seen = new(ReferenceEqualityComparer.Instance);
+        Spill(Dictionary["Contents"], seen, 0);
+        Spill(Inherited("Resources"), seen, 0);
+        if (Dictionary["Annots"]?.Resolve() is PdfArray annotations)
+        {
+            foreach (PdfObject annotation in annotations)
+            {
+                if (annotation.Resolve() is PdfDictionary a)
+                {
+                    Spill(a["AP"], seen, 0);
+                }
+            }
+        }
+    }
+
+    /// <summary>Moves every in-memory stream under an object to the scratch file, not following pages or parents.</summary>
+    private void Spill(PdfObject? value, HashSet<PdfObject> seen, int depth)
+    {
+        if (value is null || depth > 64)
+        {
+            return;
+        }
+
+        PdfObject resolved = value.Resolve();
+        if (!seen.Add(resolved))
+        {
+            return;
+        }
+
+        switch (resolved)
+        {
+            case PdfStream stream:
+                if (stream.Data is BytesData bytes && bytes.Length >= MinSpilled)
+                {
+                    IO.ScratchFile scratch = Document.Scratch;
+                    stream.ReplaceData(new IO.ScratchData(scratch, scratch.Append(bytes.Span), (int)bytes.Length));
+                }
+
+                Spill(stream.Dictionary, seen, depth + 1);
+                break;
+            case PdfDictionary dictionary:
+                foreach (KeyValuePair<PdfName, PdfObject> entry in dictionary.Entries)
+                {
+                    if (entry.Key.Value is not ("Parent" or "P" or "Dest" or "A" or "Next" or "Prev" or "First" or "Last"))
+                    {
+                        Spill(entry.Value, seen, depth + 1);
+                    }
+                }
+
+                break;
+            case PdfArray array:
+                foreach (PdfObject item in array)
+                {
+                    Spill(item, seen, depth + 1);
+                }
+
+                break;
+        }
+    }
+
+    /// <summary>Streams smaller than this stay in memory: moving them saves less than it costs.</summary>
+    private const int MinSpilled = 256;
+
     /// <summary>The page's resources, inherited when the page has none; <see langword="null"/> when there are none at all.</summary>
     public PdfDictionary? Resources
     {
