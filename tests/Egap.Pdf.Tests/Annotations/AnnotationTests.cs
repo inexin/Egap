@@ -169,6 +169,9 @@ public sealed class AnnotationTests
         using PdfDocument pdf = PdfDocument.Open(File());
         PdfCaretAnnotation caret = new(new PdfRectangle(0, 0, 5, 5));
         PdfCaretAnnotation added = pdf.Pages[0].Annotations.Add(caret);
+        Assert.Same(caret, added);
+        Assert.NotNull(caret.Reference);
+        Assert.Equal(pdf.Pages[0], caret.Page);
 
         Assert.Throws<ArgumentException>(() => pdf.Pages[0].Annotations.Add(caret));
         Assert.Throws<ArgumentException>(() => pdf.Pages[0].Annotations.Add(added));

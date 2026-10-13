@@ -14,49 +14,67 @@ internal static class PageReferences
         }
 
         // In a damaged file one dictionary can be both a page tree node and something cleaned up here; those are left alone,
-        // since editing them would break the page tree.
-        (HashSet<PdfDictionary> tree, HashSet<PdfArray> arrays) = PageTreeParts(document);
-        tree.Add(dictionary);
+        // since editing them would break the page tree. The tree's parts are gathered only when something is to be cleaned.
+        (HashSet<PdfDictionary> Tree, HashSet<PdfArray> Arrays)? parts = null;
+        (HashSet<PdfDictionary> Tree, HashSet<PdfArray> Arrays) Parts()
+        {
+            if (parts is null)
+            {
+                (HashSet<PdfDictionary> tree, HashSet<PdfArray> arrays) = PageTreeParts(document);
+                tree.Add(dictionary);
+                parts = (tree, arrays);
+            }
+
+            return parts.Value;
+        }
 
         int outline = 0;
-        foreach (PdfOutlineItem item in OutlineShares(document, tree) ? [] : document.Outline.GetAllItems())
+        if (document.Catalog.Get<PdfDictionary>("Outlines")?.Get("First") is not null && !OutlineShares(document, Parts().Tree))
         {
-            if (!tree.Contains(item.Dictionary) && Leads(item.Destination))
+            foreach (PdfOutlineItem item in document.Outline.GetAllItems())
             {
-                item.Dictionary.Remove("Dest");
-                if (item.Action is PdfGoToAction)
+                if (Leads(item.Destination) && !Parts().Tree.Contains(item.Dictionary))
                 {
-                    item.Dictionary.Remove("A");
-                }
+                    item.Dictionary.Remove("Dest");
+                    if (item.Action is PdfGoToAction)
+                    {
+                        item.Dictionary.Remove("A");
+                    }
 
-                outline++;
+                    outline++;
+                }
             }
         }
 
         int links = 0;
         foreach (PdfPage remaining in document.Pages)
         {
-            if (remaining.Dictionary.Get<PdfArray>("Annots") is PdfArray annots && arrays.Contains(annots))
+            if (remaining.Dictionary.Get<PdfArray>("Annots") is not PdfArray annots)
             {
                 continue;
             }
 
-            foreach (PdfLinkAnnotation link in remaining.Annotations.OfType<PdfLinkAnnotation>().ToList())
+            List<PdfLinkAnnotation> leading = [.. remaining.Annotations.OfType<PdfLinkAnnotation>().Where(link => Leads(link.Destination))];
+            if (leading.Count == 0 || Parts().Arrays.Contains(annots))
             {
-                if (!tree.Contains(link.Dictionary) && Leads(link.Destination))
-                {
-                    remaining.Annotations.Remove(link);
-                    links++;
-                }
+                continue;
+            }
+
+            foreach (PdfLinkAnnotation link in leading.Where(link => !Parts().Tree.Contains(link.Dictionary)))
+            {
+                remaining.Annotations.Remove(link);
+                links++;
             }
         }
 
         int names = 0;
-        bool shared = (document.Catalog.Get<PdfDictionary>("Dests") is PdfDictionary old && tree.Contains(old))
-            || TreeShares(document.Catalog.Get<PdfDictionary>("Names")?.Get<PdfDictionary>("Dests"), tree, arrays);
-        foreach (string name in shared ? [] : document.NamedDestinations.GetNames())
+        if (document.Catalog.Get("Dests") is not null || document.Catalog.Get<PdfDictionary>("Names")?.Get("Dests") is not null)
         {
-            if (document.NamedDestinations.TryGet(name, out PdfDestination destination) && Leads(destination))
+            List<string> leading = [.. document.NamedDestinations.GetNames().Where(name => document.NamedDestinations.TryGet(name, out PdfDestination destination) && Leads(destination))];
+            bool shared = leading.Count > 0
+                && ((document.Catalog.Get<PdfDictionary>("Dests") is PdfDictionary old && Parts().Tree.Contains(old))
+                    || TreeShares(document.Catalog.Get<PdfDictionary>("Names")?.Get<PdfDictionary>("Dests"), Parts().Tree, Parts().Arrays));
+            foreach (string name in shared ? [] : leading)
             {
                 document.NamedDestinations.Remove(name);
                 names++;

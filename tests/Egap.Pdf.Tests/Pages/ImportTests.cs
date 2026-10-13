@@ -137,6 +137,10 @@ public sealed class ImportTests
 
         Assert.Equal((2, 2), (Count(plain, "Image"), Count(plain, "Type1")));
         Assert.Equal((1, 1), (Count(compact, "Image"), Count(compact, "Type1")));
+        using MemoryStream unmerged = new();
+        merged.Save(unmerged, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = PdfCompression.Compact, MergeIdenticalObjects = false });
+        using PdfDocument apart = PdfDocument.Open(unmerged.ToArray(), Strict);
+        Assert.Equal((2, 2), (Count(apart, "Image"), Count(apart, "Type1")));
         Assert.Equal(["(A1) Tj", "(A2) Tj", "(A3) Tj", "(B1) Tj", "(B2) Tj", "(B3) Tj"], compact.Pages.Select(Text));
         Assert.Equal(6, compact.Pages.Count(p => p.Annotations.Count == 0 || p.Annotations.All(a => a.Page == p)));
     }

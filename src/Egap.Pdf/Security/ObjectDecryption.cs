@@ -113,6 +113,9 @@ internal sealed class DecryptedData(StreamData encrypted, StandardSecurityHandle
     /// <summary>The decrypted length; AES padding makes it known only after decrypting, so this decrypts once.</summary>
     public override long Length => length ??= Read().Length;
 
+    /// <summary>The encrypted length, which equal plaintexts share, known without decrypting.</summary>
+    public override long StoredLength => encrypted.StoredLength;
+
     public override byte[] Read()
     {
         byte[] plain = handler.DecryptStream(encrypted.Read(), number, generation, cryptFilter);

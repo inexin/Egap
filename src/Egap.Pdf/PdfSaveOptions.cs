@@ -76,6 +76,14 @@ public sealed record PdfSaveOptions
     public bool Deterministic { get; init; }
 
     /// <summary>
+    /// For a rewrite with <see cref="PdfCompression.Compact"/>, whether identical objects are written once (Phase 2 Q4):
+    /// streams with the same dictionary and data, and dictionaries and arrays with the same content, such as the logo and
+    /// fonts of many merged files. The default is <see langword="true"/>; false saves the time and memory of comparing
+    /// them, about a tenth of a compact rewrite of a large file with nothing to merge.
+    /// </summary>
+    public bool MergeIdenticalObjects { get; init; } = true;
+
+    /// <summary>
     /// Whether a save with changes sets the modification date (<c>/ModDate</c>, and <c>xmp:ModifyDate</c> when there is an
     /// XMP packet) to the time of saving (Phase 2 Q9). A save without changes, or a <see cref="Deterministic"/> one, never
     /// does. The default is <see langword="true"/>.
