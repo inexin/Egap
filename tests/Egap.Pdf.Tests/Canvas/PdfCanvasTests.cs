@@ -176,6 +176,34 @@ public sealed class PdfCanvasTests
     }
 
     [Fact]
+    public void CountsRepeatedFallbacksInOneWarning()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = pdf.Pages.AddBlank(new PdfRectangle(0, 0, 72, 72));
+        PdfCanvas canvas = new(page, new PdfCanvasOptions { FallbackDpi = 36 });
+        SolidPaint xor = new(new RgbaF32(1, 0, 0, 1)) { BlendMode = BlendMode.Xor };
+        for (int i = 0; i < 3; i++)
+        {
+            canvas.FillRect(new RectF(i * 10, 0, 5, 5), xor);
+        }
+
+        canvas.FillRect(new RectF(0, 20, 5, 5), new SolidPaint(new RgbaF32(1, 0, 0, 1)) { Blur = new MaskBlur(2) });
+        canvas.Dispose();
+
+        Assert.Equal(
+            ["PDF cannot express the blend mode Xor; it was drawn as an image at 36 dpi. (3 times)", "PDF cannot express a blurred paint; it was drawn as an image at 36 dpi."],
+            canvas.Warnings.Select(w => w.Message));
+    }
+
+    [Fact]
+    public void ThrowsInStrictModeForEveryFallback()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        using PdfCanvas strict = new(pdf.Pages.AddBlank(), new PdfCanvasOptions { Strict = true });
+        Assert.Throws<NotSupportedException>(() => strict.SaveLayer(new LayerOptions { Backdrop = o => o.Blur(2) }));
+    }
+
+    [Fact]
     public void WritesAnImageOnceHoweverOftenItIsDrawn()
     {
         using PdfDocument pdf = PdfDocument.Create();

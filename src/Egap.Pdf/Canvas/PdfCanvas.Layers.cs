@@ -135,14 +135,20 @@ public sealed partial class PdfCanvas
             return;
         }
 
+        PdfDictionary? mask = options.Mask is SoftMask soft ? MaskGroup(soft) : null;
+        BeginForm(options, DeviceClipBounds);
+        frames.Peek().Mask = mask;
+
+        // Warned once the layer is begun, so that in strict mode the throw leaves a layer for the matching restore to end.
         if (options.Backdrop is not null)
         {
             Warn(PdfWarningCode.RasterFallback, "PDF cannot filter what lies behind a layer; the layer was drawn without its backdrop filter.");
         }
 
-        PdfDictionary? mask = options.Mask is SoftMask soft ? MaskGroup(soft) : null;
-        BeginForm(options, DeviceClipBounds);
-        frames.Peek().Mask = mask;
+        if (this.options.Strict && !PdfBlendModes.ContainsKey(options.BlendMode))
+        {
+            Warn(PdfWarningCode.RasterFallback, $"PDF cannot merge a layer with the blend mode {options.BlendMode}; it was merged normally.");
+        }
     }
 
     /// <inheritdoc/>
