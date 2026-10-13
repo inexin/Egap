@@ -499,6 +499,8 @@ public sealed class PdfDocument : IDisposable
     /// <summary>Sets the modification date before a save with changes, unless the options say not to (Phase 2 Q9).</summary>
     private void BeforeSave(PdfSaveOptions options)
     {
+        // Font subsets drawing used are written now, when their glyphs are known.
+        WrittenResources.Finish();
         if (options.UpdateModificationDate && !options.Deterministic && IsChanged)
         {
             Metadata.Touch(Clock.GetLocalNow());
