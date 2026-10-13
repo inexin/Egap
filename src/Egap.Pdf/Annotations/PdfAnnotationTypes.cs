@@ -714,7 +714,7 @@ public sealed class PdfRedactAnnotation : PdfMarkupAnnotation
 }
 
 /// <summary>
-/// A widget annotation (12.5.6.19): how a form field appears on a page. The field it belongs to comes with form reading.
+/// A widget annotation (12.5.6.19): how a form field appears on a page.
 /// </summary>
 public sealed class PdfWidgetAnnotation : PdfAnnotation
 {
@@ -722,6 +722,12 @@ public sealed class PdfWidgetAnnotation : PdfAnnotation
         : base(dictionary, reference, document)
     {
     }
+
+    /// <summary>
+    /// The field the widget shows: the widget itself when the two are merged, else its <c>/Parent</c>, else the field whose
+    /// <c>/Kids</c> list it; <see langword="null"/> when it belongs to no field or was not read from a document.
+    /// </summary>
+    public PdfField? Field => Document is null ? null : PdfField.ForWidget(Dictionary, Reference, Document);
 
     /// <summary>How the widget looks while pressed (<c>/H</c>); inverted when missing.</summary>
     public PdfHighlightMode HighlightMode

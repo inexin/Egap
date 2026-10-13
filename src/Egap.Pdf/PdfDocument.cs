@@ -115,6 +115,9 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     public PdfPageCollection Pages => LazyInitializer.EnsureInitialized(ref pages, () => new PdfPageCollection(this));
 
+    /// <summary>The interactive form, the catalog's /AcroForm.</summary>
+    public PdfForm Form => new(this);
+
     /// <summary>The optional content groups (layers) of the catalog's /OCProperties.</summary>
     public PdfLayerCollection Layers => new(this);
 
