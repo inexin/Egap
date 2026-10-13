@@ -1564,8 +1564,9 @@ internal static class Targets
 
     /// <summary>
     /// Form reading and filling (Phase 2 tasks 14 and 15): every public property of up to 2,000 fields read leniently, with
-    /// their kids and widgets, and every widget on the first 50 pages led back to its field; then up to 20 terminal fields
-    /// filled, each value read back at once and after the file is written whole and reopened.
+    /// their kids and widgets, every widget on the first 50 pages led back to its field, and the XFA data of each field read
+    /// (task 17); then up to 20 terminal fields filled, each value read back at once and after the file is written whole and
+    /// reopened, where a static XFA form is then converted.
     /// </summary>
     private static void Forms(Stream input)
     {
@@ -1627,15 +1628,42 @@ internal static class Targets
                     }
                 }
 
+                if (form.Xfa is PdfXfa xfa)
+                {
+                    try
+                    {
+                        _ = (xfa.IsDynamic, xfa.PacketNames.Count, xfa.GetDatasets(), xfa.GetPacket("template"));
+                    }
+                    catch (PdfException)
+                    {
+                        // A packet in a damaged stream is an error the caller sees, not a bug.
+                    }
+
+                    foreach (PdfField field in form.GetTerminalFields().Take(200))
+                    {
+                        _ = xfa.GetDataValue(field.FullName);
+                    }
+                }
+
                 if (filled.Count > 0)
                 {
                     using MemoryStream whole = new();
                     pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
                     using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                    bool rebuilt = pdf.Warnings.Any(w => w.Code == PdfWarningCode.MalformedPageTree && w.Message.Contains("rebuilt", StringComparison.Ordinal));
                     foreach ((string name, string? value) in filled)
                     {
-                        // A dictionary reached by two paths through a broken tree can be terminal on one only, so the terminal one counts.
-                        Check(reopened.Form.GetTerminalFields().FirstOrDefault(f => f.FullName == name) is PdfField field && ValueOf(field) == value, $"field {name}'s value after the rewrite");
+                        // Writing whole first rebuilds a page tree repaired in memory, which can give a field that is also a
+                        // page a new /Parent; so the document as saved is what the reopened file must match. A dictionary
+                        // reached by two paths through a broken tree can be terminal on one only, so the terminal one counts.
+                        string? saved = pdf.Form.GetTerminalFields().FirstOrDefault(f => f.FullName == name) is PdfField before ? ValueOf(before) : null;
+                        string? read = reopened.Form.GetTerminalFields().FirstOrDefault(f => f.FullName == name) is PdfField after ? ValueOf(after) : null;
+                        Check(saved == read && (saved == value || rebuilt), $"field {name}'s value after the rewrite (filled {value}, saved {saved}, read {read})");
+                    }
+
+                    if (reopened.Form.Xfa is PdfXfa converted && converted.ConvertToAcroForm())
+                    {
+                        Check(!reopened.Form.HasXfa, "an XFA form converted");
                     }
                 }
             }

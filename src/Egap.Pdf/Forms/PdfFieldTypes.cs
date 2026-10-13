@@ -16,16 +16,7 @@ public sealed class PdfTextField : PdfField
     public string? Value
     {
         get => Text(RawValue);
-        set
-        {
-            if (value is not null && MaxLength is int max && value.Length > max)
-            {
-                throw new ArgumentException($"Field {FullName} takes at most {max} characters.", nameof(value));
-            }
-
-            Dictionary["V"] = value is null ? null : PdfString.FromText(value);
-            UpdateAppearances();
-        }
+        set => SetValue(value, updateData: true);
     }
 
     /// <summary>The text a reset restores (<c>/DV</c>, inherited).</summary>
@@ -52,6 +43,22 @@ public sealed class PdfTextField : PdfField
 
     /// <summary>Whether the value is a file path.</summary>
     public bool IsFileSelect => Flags.HasFlag(PdfFieldFlags.FileSelect);
+
+    /// <summary>Sets the value and redraws the widgets; the XFA data follows when asked.</summary>
+    internal void SetValue(string? value, bool updateData)
+    {
+        if (value is not null && MaxLength is int max && value.Length > max)
+        {
+            throw new ArgumentException($"Field {FullName} takes at most {max} characters.", nameof(value));
+        }
+
+        Dictionary["V"] = value is null ? null : PdfString.FromText(value);
+        UpdateAppearances();
+        if (updateData)
+        {
+            Document.Form.Xfa?.Update(this);
+        }
+    }
 
     /// <summary>A text string, or the text of a text stream.</summary>
     internal static string? Text(PdfObject? value)
@@ -86,10 +93,17 @@ public sealed class PdfCheckBoxField : PdfField
     public bool IsChecked
     {
         get => Value is string value && value != "Off";
-        set
+        set => SetChecked(value, updateData: true);
+    }
+
+    /// <summary>Checks or clears the box and sets the widgets' states; the XFA data follows when asked.</summary>
+    internal void SetChecked(bool value, bool updateData)
+    {
+        Dictionary["V"] = PdfName.Get(value ? OnState : "Off");
+        UpdateAppearances();
+        if (updateData)
         {
-            Dictionary["V"] = PdfName.Get(value ? OnState : "Off");
-            UpdateAppearances();
+            Document.Form.Xfa?.Update(this);
         }
     }
 }
@@ -113,15 +127,22 @@ public sealed class PdfRadioButtonField : PdfField
     public string? Value
     {
         get => ((RawValue as PdfName)?.Value ?? (RawValue as PdfString)?.ToText()) is string value && value != "Off" ? value : null;
-        set
-        {
-            if (value is not null && !Options.Contains(value))
-            {
-                throw new ArgumentException($"Radio group {FullName} has no button with state {value}.", nameof(value));
-            }
+        set => SetValue(value, updateData: true);
+    }
 
-            Dictionary["V"] = PdfName.Get(value ?? "Off");
-            UpdateAppearances();
+    /// <summary>Selects a button by its state, or none, and sets the widgets' states; the XFA data follows when asked.</summary>
+    internal void SetValue(string? value, bool updateData)
+    {
+        if (value is not null && !Options.Contains(value))
+        {
+            throw new ArgumentException($"Radio group {FullName} has no button with state {value}.", nameof(value));
+        }
+
+        Dictionary["V"] = PdfName.Get(value ?? "Off");
+        UpdateAppearances();
+        if (updateData)
+        {
+            Document.Form.Xfa?.Update(this);
         }
     }
 
@@ -220,16 +241,23 @@ public sealed class PdfComboBoxField : PdfChoiceField
     public string? Value
     {
         get => Values.Count > 0 ? Values[0] : null;
-        set
-        {
-            if (value is not null && !IsEditable && !Options.Any(o => o.ExportValue == value))
-            {
-                throw new ArgumentException($"Combo box {FullName} has no option {value}.", nameof(value));
-            }
+        set => SetValue(value, updateData: true);
+    }
 
-            Dictionary["V"] = value is null ? null : PdfString.FromText(value);
-            Dictionary.Remove("I");
-            UpdateAppearances();
+    /// <summary>Selects an option or takes typed text, and redraws the widgets; the XFA data follows when asked.</summary>
+    internal void SetValue(string? value, bool updateData)
+    {
+        if (value is not null && !IsEditable && !Options.Any(o => o.ExportValue == value))
+        {
+            throw new ArgumentException($"Combo box {FullName} has no option {value}.", nameof(value));
+        }
+
+        Dictionary["V"] = value is null ? null : PdfString.FromText(value);
+        Dictionary.Remove("I");
+        UpdateAppearances();
+        if (updateData)
+        {
+            Document.Form.Xfa?.Update(this);
         }
     }
 
@@ -286,6 +314,7 @@ public sealed class PdfListBoxField : PdfChoiceField
         };
         Dictionary["I"] = indices.Count == 0 ? null : new PdfArray(indices.Select(i => (PdfObject)new PdfInteger(i)));
         UpdateAppearances();
+        Document.Form.Xfa?.Update(this);
     }
 }
 
