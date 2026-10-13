@@ -186,18 +186,31 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
     }
 
     /// <summary>Removes the page at an index from the page tree. Its object stays in the document until nothing reaches it.</summary>
-    public void RemoveAt(int index)
+    /// <param name="index">The page's index.</param>
+    /// <param name="removeReferences">
+    /// Whether what points at the page is cleaned up (Phase 2 Q7): outline items keep their title but lose their
+    /// destination, links that lead only to the page are deleted, and named destinations to it are removed, each with a
+    /// warning giving the count. False leaves them pointing at a page no longer in the document.
+    /// </param>
+    public void RemoveAt(int index, bool removeReferences = true)
     {
         lock (gate)
         {
             ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual((uint)index, (uint)List.Count, nameof(index));
+            PdfPage removed = List[index];
             Editor().RemoveAt(index);
+            if (removeReferences && removed.Reference is PdfReference reference)
+            {
+                Pages.PageReferences.RemoveTo(document, reference, removed.Dictionary);
+            }
         }
     }
 
     /// <summary>Removes a page from the page tree.</summary>
     /// <returns>Whether it was one of the document's pages.</returns>
-    public bool Remove(PdfPage page)
+    /// <param name="page">The page.</param>
+    /// <param name="removeReferences">Whether what points at the page is cleaned up, as <see cref="RemoveAt"/> does.</param>
+    public bool Remove(PdfPage page, bool removeReferences = true)
     {
         lock (gate)
         {
@@ -207,7 +220,7 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
                 return false;
             }
 
-            RemoveAt(index);
+            RemoveAt(index, removeReferences);
             return true;
         }
     }
@@ -290,7 +303,7 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
                 label["St"] = new PdfInteger(range.Start);
             }
 
-            Trees.NumberTree tree = LabelTree() ?? new(Created(), document.Objects, document.Log);
+            Trees.NumberTree tree = EditableLabelTree() ?? new(Created(), document.Objects, document.Log);
             tree.Set(range.StartIndex, label);
         }
     }
@@ -301,11 +314,41 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
     {
         lock (gate)
         {
-            return LabelTree() is Trees.NumberTree tree && tree.Remove(startIndex);
+            return EditableLabelTree() is Trees.NumberTree tree && tree.Remove(startIndex);
         }
     }
 
     /// <summary>The catalog's /PageLabels number tree, or null when it has none.</summary>
+    /// <summary>
+    /// The label tree, for an edit: when a damaged file has it share objects with the page tree, its entries are first moved
+    /// to a new tree of their own, so editing labels cannot break the pages.
+    /// </summary>
+    private Trees.NumberTree? EditableLabelTree()
+    {
+        if (LabelTree() is not Trees.NumberTree tree)
+        {
+            return null;
+        }
+
+        (HashSet<PdfDictionary> pageTree, HashSet<PdfArray> arrays) = Pages.PageReferences.PageTreeParts(document);
+        if (!Pages.PageReferences.TreeShares(document.Catalog.Get<PdfDictionary>("PageLabels"), pageTree, arrays))
+        {
+            return tree;
+        }
+
+        List<KeyValuePair<long, PdfObject>> entries = tree.Entries();
+        Trees.NumberTree fresh = new(Created(), document.Objects, document.Log);
+        foreach ((long key, PdfObject value) in entries)
+        {
+            if (value.Resolve() is PdfDictionary label)
+            {
+                fresh.Set(key, label.Clone());
+            }
+        }
+
+        return fresh;
+    }
+
     private Trees.NumberTree? LabelTree()
     {
         return document.Catalog.Get<PdfDictionary>("PageLabels") is PdfDictionary root ? new(root, document.Objects, document.Log) : null;
