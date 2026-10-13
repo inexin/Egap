@@ -81,6 +81,8 @@ public sealed class PdfFont
     private readonly Lazy<FontProgram?> program;
     private readonly Lazy<string?[]?> encoding;
     private readonly CMap? toUnicode;
+    private readonly bool identityToUnicode;
+    private Dictionary<ushort, int>? programUnicode;
     private readonly CMap? codes;
     private readonly Standard14Font? standard;
     private readonly double[] widths = [];
@@ -108,7 +110,9 @@ public sealed class PdfFont
         IsEmbedded = Type == PdfFontType.Type3
             || (descriptor is not null && (descriptor.Get("FontFile") ?? descriptor.Get("FontFile2") ?? descriptor.Get("FontFile3")) is not null);
         standard = IsEmbedded || Type is PdfFontType.Type3 or PdfFontType.Type0 ? null : Standard14Font.Get(BaseFont);
-        toUnicode = dictionary.Get("ToUnicode")?.Resolve() is PdfStream map ? ReadCMap(map) : null;
+        PdfObject? toUnicodeEntry = dictionary.Get("ToUnicode")?.Resolve();
+        toUnicode = toUnicodeEntry is PdfStream map ? ReadCMap(map) : null;
+        identityToUnicode = toUnicodeEntry is PdfName { Value: "Identity-H" or "Identity-V" };
         program = new(() => FontProgram.Load(descriptor, warnings));
         PdfObject? encodingValue = dictionary.Get("Encoding")?.Resolve();
         encoding = new(() => Type == PdfFontType.Type0 ? null : SimpleEncoding(encodingValue));
@@ -390,17 +394,77 @@ public sealed class PdfFont
     }
 
     /// <summary>
-    /// The text a code stands for: from the font's ToUnicode map, else from its glyph name through the Adobe Glyph List;
-    /// null when the font does not say.
+    /// The text a code stands for (Phase 3 design Q10): from the font's ToUnicode map, else from its glyph name through the
+    /// Adobe Glyph List (names such as <c>a65</c> or <c>g65</c> giving the code they number, as pdf.js and PDFium read
+    /// them), else from the embedded TrueType program's Unicode cmap or glyph names read backwards, as pdf.js and PDFium do; null when nothing says.
     /// </summary>
     public string? ToUnicode(int code)
     {
-        if (toUnicode?.ToUnicode(code, IsComposite ? CodeLength(code) : 1) is string text)
+        if (identityToUnicode && code is >= 0 and <= 0x10FFFF and (< 0xD800 or > 0xDFFF))
+        {
+            return char.ConvertFromUtf32(code);
+        }
+
+        if (toUnicode?.ToUnicode(code, IsComposite ? CodeLength(code) : 1) is { Length: > 0 } text)
         {
             return text;
         }
 
-        return GlyphList.ToUnicode(GetGlyphName(code));
+        string? name = GetGlyphName(code);
+        if (GlyphList.ToUnicode(name) is string named)
+        {
+            return named;
+        }
+
+        if (NumberedName(name) is int number)
+        {
+            return number < 256 ? (WinAnsiEncoding.Decode((byte)number) ?? (char)number).ToString() : null;
+        }
+
+        return ProgramUnicode(code);
+    }
+
+    /// <summary>A glyph name that only numbers a code, such as <c>a65</c>, <c>g65</c> or <c>C65</c>: the number, or null.</summary>
+    private static int? NumberedName(string? name)
+    {
+        if (name is not { Length: >= 2 and <= 6 })
+        {
+            return null;
+        }
+
+        int letters = char.IsAsciiLetter(name[0]) ? (name.Length > 2 && char.IsAsciiLetter(name[1]) ? 2 : 1) : 0;
+        return letters > 0 && int.TryParse(name.AsSpan(letters), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int value) && value < 0x10000 ? value : null;
+    }
+
+    /// <summary>The text an embedded TrueType program's Unicode cmap gives the code's glyph, read backwards; null otherwise.</summary>
+    private string? ProgramUnicode(int code)
+    {
+        if (GetGlyphId(code) is not ushort glyph || glyph == 0 || program.Value is not FontProgram font)
+        {
+            return null;
+        }
+
+        if (programUnicode is null)
+        {
+            // The Unicode cmap read backwards, else the post table's glyph names through the glyph list.
+            Dictionary<ushort, int> reverse = [];
+            foreach (KeyValuePair<int, ushort> entry in (font.Cmaps?.Unicode ?? []).OrderBy(e => e.Key))
+            {
+                reverse.TryAdd(entry.Value, entry.Key);
+            }
+
+            foreach (KeyValuePair<string, ushort> entry in font.PostNames ?? [])
+            {
+                if (!reverse.ContainsKey(entry.Value) && GlyphList.ToUnicode(entry.Key) is { Length: > 0 } text && !char.IsSurrogate(text[0]))
+                {
+                    reverse[entry.Value] = text[0];
+                }
+            }
+
+            programUnicode = reverse;
+        }
+
+        return programUnicode.TryGetValue(glyph, out int cp) && cp is > 0 and <= 0x10FFFF and (< 0xD800 or > 0xDFFF) ? char.ConvertFromUtf32(cp) : null;
     }
 
     /// <summary>The text a shown string stands for, its codes' texts joined; codes with no text are left out.</summary>

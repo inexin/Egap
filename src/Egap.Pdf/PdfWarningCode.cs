@@ -157,4 +157,10 @@ public enum PdfWarningCode
     /// work, but not its outlines.
     /// </summary>
     FontProgramUnreadable,
+
+    /// <summary>
+    /// Text extraction found glyphs whose fonts say no Unicode text for them (no ToUnicode map, no glyph name the Adobe
+    /// Glyph List knows); they were given private-use characters (Phase 3 design Q10).
+    /// </summary>
+    TextWithoutUnicode,
 }

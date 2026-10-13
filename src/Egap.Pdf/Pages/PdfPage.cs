@@ -34,6 +34,21 @@ public sealed class PdfPage : IEquatable<PdfPage>
     public PdfReference? Reference { get; }
 
     /// <summary>
+    /// The page's text as glyphs, words and lines (Phase 3 design Q10): content order by default, spaces from space glyphs
+    /// and gaps, Unicode from ToUnicode maps, then glyph names, then a private-use character counted in a warning.
+    /// </summary>
+    public PdfTextPage GetText(PdfTextOptions? options = null)
+    {
+        return Text.TextCollector.Read(this, options ?? PdfTextOptions.Default);
+    }
+
+    /// <summary>The page's text: its lines, as <see cref="GetText"/> builds them, joined with newlines.</summary>
+    public string ExtractText(PdfTextOptions? options = null)
+    {
+        return GetText(options).ToString();
+    }
+
+    /// <summary>
     /// The images the page draws, in content order, with where each is drawn (Phase 3 design Q11): image XObjects and
     /// inline images, those inside form XObjects included. An image drawn twice is listed twice.
     /// </summary>
