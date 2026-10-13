@@ -20,10 +20,11 @@ public sealed class PdfPage : IEquatable<PdfPage>
 
     private static readonly PdfName ParentKey = "Parent";
 
-    internal PdfPage(PdfDictionary dictionary, PdfReference? reference)
+    internal PdfPage(PdfDictionary dictionary, PdfReference? reference, PdfDocument document)
     {
         Dictionary = dictionary;
         Reference = reference;
+        Document = document;
     }
 
     /// <summary>The page's dictionary.</summary>
@@ -31,6 +32,12 @@ public sealed class PdfPage : IEquatable<PdfPage>
 
     /// <summary>The reference to the page's dictionary, or <see langword="null"/> for a page written directly in its parent's <c>/Kids</c>.</summary>
     public PdfReference? Reference { get; }
+
+    /// <summary>The page's annotations (12.5), its <c>/Annots</c> array.</summary>
+    public PdfAnnotationCollection Annotations => new(this);
+
+    /// <summary>The document the page belongs to.</summary>
+    internal PdfDocument Document { get; }
 
     /// <summary>The page's resources, inherited when the page has none; <see langword="null"/> when there are none at all.</summary>
     public PdfDictionary? Resources

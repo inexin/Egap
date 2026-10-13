@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations"];
 
     public static Action<Stream> Get(string name)
     {
@@ -35,6 +35,7 @@ internal static class Targets
             "metadata" => Metadata,
             "attachments" => Attachments,
             "layers" => Layers,
+            "annotations" => Annotations,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -1414,6 +1415,136 @@ internal static class Targets
             if (!ok)
             {
                 throw new InvalidOperationException($"A layer's {what} did not hold.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Annotations (Phase 2 task 12): every public property of every annotation on the first 50 pages read leniently; then
+    /// annotations are added, given popups and removed by a plan drawn from the input, each change read back at once, and
+    /// the file written whole must reopen with the same annotations on each page.
+    /// </summary>
+    private static void Annotations(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                List<PdfPage> pages = [.. pdf.Pages.Take(50)];
+                foreach (PdfPage page in pages)
+                {
+                    foreach (PdfAnnotation annotation in page.Annotations.Take(500))
+                    {
+                        ReadProperties(annotation);
+                        _ = (annotation.GetAppearance(), annotation.GetAppearance(PdfAppearanceKind.Down), page.Annotations.GetReplies(annotation).Count);
+                        if (annotation is PdfFileAttachmentAnnotation { Attachment: PdfAttachment attachment })
+                        {
+                            try
+                            {
+                                _ = (attachment.GetBytes(), attachment.VerifyChecksum());
+                            }
+                            catch (PdfException)
+                            {
+                                // A damaged or unsupported embedded file stream is an error the caller sees, not a bug.
+                            }
+                        }
+                    }
+                }
+
+                Random random = new(bytes.Length);
+                for (int i = 0; i < 20 && pages.Count > 0; i++)
+                {
+                    // Pages are looked up afresh, since an edit can rebuild a broken page tree and copy a page listed twice.
+                    PdfAnnotationCollection annotations = pdf.Pages[random.Next(pages.Count)].Annotations;
+                    PdfRectangle box = new(random.Next(100), random.Next(100), 100 + random.Next(100), 100 + random.Next(100));
+                    int before = annotations.Count;
+                    switch (random.Next(5))
+                    {
+                        case 0:
+                            PdfSquareAnnotation square = annotations.Add(new PdfSquareAnnotation(box) { Contents = $"S{i}" });
+                            Check(annotations.Count == before + 1 && annotations[^1].Equals(square) && square.Contents == $"S{i}", "an added square");
+                            break;
+                        case 1:
+                            annotations.Add(new PdfHighlightAnnotation(PdfTextMarkupAnnotation.Quad(box)));
+                            Check(annotations.Count == before + 1 && annotations[^1] is PdfHighlightAnnotation, "an added highlight");
+                            break;
+                        case 2 when annotations.OfType<PdfMarkupAnnotation>().FirstOrDefault(a => a.Reference is not null) is PdfMarkupAnnotation markup:
+                            PdfPopupAnnotation popup = annotations.AddPopup(markup, box);
+                            Check(popup.Equals(markup.Popup) && annotations.Contains(popup), "an added popup");
+                            break;
+                        case 3 when before > 0:
+                            PdfAnnotation removed = annotations[random.Next(before)];
+                            Check(annotations.Remove(removed) && !annotations.Contains(removed) && annotations.Count < before, "a removal");
+                            break;
+                        default:
+                            annotations.Add(new PdfLinkAnnotation(box, new PdfUriAction($"https://example.com/{i}")));
+                            Check(annotations[^1] is PdfLinkAnnotation { Action: PdfUriAction }, "an added link");
+                            break;
+                    }
+                }
+
+                List<List<(string, PdfRectangle)>> state = [.. pdf.Pages.Take(pages.Count).Select(p => p.Annotations.Select(a => (a.Subtype, a.Rectangle)).ToList())];
+                using MemoryStream whole = new();
+                pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+                using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                for (int i = 0; i < pages.Count; i++)
+                {
+                    Check(reopened.Pages[i].Annotations.Select(a => (a.Subtype, a.Rectangle)).SequenceEqual(state[i]), "the rewrite");
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+
+        static void ReadProperties(PdfAnnotation annotation)
+        {
+            foreach (System.Reflection.PropertyInfo property in annotation.GetType().GetProperties())
+            {
+                if (property.GetIndexParameters().Length == 0 && property.GetMethod is { IsPublic: true })
+                {
+                    object? value;
+                    try
+                    {
+                        value = property.GetValue(annotation);
+                    }
+                    catch (System.Reflection.TargetInvocationException e) when (e.InnerException is PdfLimitException)
+                    {
+                        continue;
+                    }
+                    catch (System.Reflection.TargetInvocationException e)
+                    {
+                        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw(e.InnerException!);
+                        throw;
+                    }
+
+                    if (value is System.Collections.IEnumerable items and not string)
+                    {
+                        foreach (object? item in items)
+                        {
+                            _ = item?.ToString();
+                        }
+                    }
+                }
+            }
+        }
+
+        static void Check(bool ok, string what)
+        {
+            if (!ok)
+            {
+                throw new InvalidOperationException($"{what} did not hold.");
             }
         }
     }

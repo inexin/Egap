@@ -69,12 +69,36 @@ public sealed class PdfAttachmentCollection : IReadOnlyList<PdfAttachment>
     /// checksum, MIME type and dates; the file specification gets the name as <c>/F</c> and <c>/UF</c>. In a PDF 2.0 document,
     /// or one that already lists associated files, the file is also added to the catalog's <c>/AF</c>.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5351", Justification = "The spec makes /CheckSum an MD5 digest (7.11.4.2); it checks integrity, not authenticity.")]
     public PdfAttachment Add(string name, ReadOnlySpan<byte> bytes, string? mimeType = null, string? description = null, DateTimeOffset? modified = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
         Remove(name);
 
+        PdfReference reference = CreateFileSpecification(document, name, bytes, mimeType, description, modified);
+        PdfDictionary spec = (PdfDictionary)document.Objects[reference];
+        (Tree() ?? CreateTree()).Set(PdfString.FromText(name), reference);
+        // An associated file says how it relates to the document (14.13.2); without more to go on, Unspecified.
+        if (document.Catalog.Get<PdfArray>("AF") is PdfArray associated)
+        {
+            spec["AFRelationship"] = PdfName.Get("Unspecified");
+            associated.Add(reference);
+        }
+        else if (string.CompareOrdinal(document.Version, "2.0") >= 0)
+        {
+            spec["AFRelationship"] = PdfName.Get("Unspecified");
+            document.Catalog["AF"] = new PdfArray([reference]);
+        }
+
+        return new PdfAttachment(name, (PdfDictionary)document.Objects[reference], reference);
+    }
+
+    /// <summary>
+    /// A new file specification with an embedded file stream (7.11.3, 7.11.4) that records the size, MD5 checksum, MIME type
+    /// and modification date; the name goes in <c>/F</c> and <c>/UF</c>.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5351", Justification = "The spec makes /CheckSum an MD5 digest (7.11.4.2); it checks integrity, not authenticity.")]
+    internal static PdfReference CreateFileSpecification(PdfDocument document, string name, ReadOnlySpan<byte> bytes, string? mimeType, string? description, DateTimeOffset? modified)
+    {
         PdfDictionary parameters = new()
         {
             ["Size"] = new PdfInteger(bytes.Length),
@@ -105,21 +129,7 @@ public sealed class PdfAttachmentCollection : IReadOnlyList<PdfAttachment>
             spec["Desc"] = PdfString.FromText(description);
         }
 
-        PdfReference reference = document.Objects.Add(spec);
-        (Tree() ?? CreateTree()).Set(PdfString.FromText(name), reference);
-        // An associated file says how it relates to the document (14.13.2); without more to go on, Unspecified.
-        if (document.Catalog.Get<PdfArray>("AF") is PdfArray associated)
-        {
-            spec["AFRelationship"] = PdfName.Get("Unspecified");
-            associated.Add(reference);
-        }
-        else if (string.CompareOrdinal(document.Version, "2.0") >= 0)
-        {
-            spec["AFRelationship"] = PdfName.Get("Unspecified");
-            document.Catalog["AF"] = new PdfArray([reference]);
-        }
-
-        return new PdfAttachment(name, (PdfDictionary)document.Objects[reference], reference);
+        return document.Objects.Add(spec);
     }
 
     /// <summary>Removes an attachment from the name tree and the catalog's <c>/AF</c>. Its objects stay until nothing reaches them.</summary>

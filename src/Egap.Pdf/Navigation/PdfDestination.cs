@@ -153,7 +153,7 @@ public sealed record PdfDestination
             return PageIndex is int index && index < document.Pages.Count ? index : -1;
         }
 
-        return PageReference.Resolve() is PdfDictionary page ? document.Pages.IndexOf(new PdfPage(page, PageReference)) : -1;
+        return PageReference.Resolve() is PdfDictionary page ? document.Pages.IndexOf(new PdfPage(page, PageReference, document)) : -1;
     }
 
     private static PdfObject Number(double value)

@@ -291,6 +291,26 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
         }
     }
 
+    /// <summary>
+    /// Rebuilds a tree that was repaired only in memory, such as pages found by scanning, before an edit to a page, so the
+    /// edited page is reachable from the catalog when the file is written.
+    /// </summary>
+    /// <returns>The page as it is in the rebuilt tree: a copy when the rebuild had to make one, as for a direct page.</returns>
+    internal PdfPage EnsureTree(PdfPage page)
+    {
+        lock (gate)
+        {
+            int index = List.IndexOf(page);
+            if (!needsRebuild || index < 0)
+            {
+                return page;
+            }
+
+            Editor();
+            return List[index];
+        }
+    }
+
     /// <summary>The editor for the next edit, rebuilding a broken tree first; the index cache is dropped.</summary>
     private PageTreeEditor Editor()
     {
