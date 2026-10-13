@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Numerics;
 
 using Egami;
@@ -50,7 +51,8 @@ public sealed partial class PdfCanvas : Canvas
     };
 
     private PdfContentWriter content = new();
-    private readonly List<PdfWarning> warnings = [];
+    private readonly List<(PdfWarning Warning, int Count)> warnings = [];
+    private readonly Dictionary<PdfWarning, int> warningIndex = [];
     private readonly PdfCanvasOptions options;
     private readonly PdfMatrix baseMatrix;
     private GraphicsGroup? group;
@@ -86,8 +88,11 @@ public sealed partial class PdfCanvas : Canvas
     /// </summary>
     public PdfMatrix PageMatrix => baseMatrix;
 
-    /// <summary>What was drawn as an image because PDF cannot express it, and anything else worth knowing.</summary>
-    public IReadOnlyList<PdfWarning> Warnings => warnings;
+    /// <summary>
+    /// What was drawn as an image because PDF cannot express it, and anything else worth knowing: each warning once, in the
+    /// order first met, with how many times it happened when more than once.
+    /// </summary>
+    public IReadOnlyList<PdfWarning> Warnings => [.. warnings.Select(w => w.Count == 1 ? w.Warning : w.Warning with { Message = string.Create(CultureInfo.InvariantCulture, $"{w.Warning.Message} ({w.Count} times)") })];
 
     /// <inheritdoc/>
     protected override void OnSave()
@@ -505,9 +510,24 @@ public sealed partial class PdfCanvas : Canvas
         }
     }
 
+    /// <summary>Records a warning, counting repeats; in strict mode, anything drawn other than the call asked throws instead.</summary>
     private void Warn(PdfWarningCode code, string message)
     {
-        warnings.Add(new PdfWarning(code, message));
+        if (code == PdfWarningCode.RasterFallback && options.Strict)
+        {
+            throw new NotSupportedException(message);
+        }
+
+        PdfWarning warning = new(code, message);
+        if (warningIndex.TryGetValue(warning, out int index))
+        {
+            warnings[index] = (warning, warnings[index].Count + 1);
+        }
+        else
+        {
+            warningIndex[warning] = warnings.Count;
+            warnings.Add((warning, 1));
+        }
     }
 
     /// <summary>The graphics state written inside one group, so a state already set is not written again.</summary>
