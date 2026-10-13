@@ -1420,9 +1420,10 @@ internal static class Targets
     }
 
     /// <summary>
-    /// Annotations (Phase 2 task 12): every public property of every annotation on the first 50 pages read leniently; then
-    /// annotations are added, given popups and removed by a plan drawn from the input, each change read back at once, and
-    /// the file written whole must reopen with the same annotations on each page.
+    /// Annotations (Phase 2 tasks 12 and 13): every public property of every annotation on the first 50 pages read leniently,
+    /// and appearances drawn for up to 50 of them; then annotations are added, given popups and removed by a plan drawn from
+    /// the input, each change read back at once, and the file written whole must reopen with the same annotations on each
+    /// page.
     /// </summary>
     private static void Annotations(Stream input)
     {
@@ -1459,6 +1460,16 @@ internal static class Targets
                                 // A damaged or unsupported embedded file stream is an error the caller sees, not a bug.
                             }
                         }
+                    }
+                }
+
+                // Appearances drawn from whatever the annotations hold must be well formed and leave the annotation readable.
+                foreach (PdfAnnotation annotation in pages.SelectMany(p => p.Annotations).Take(50))
+                {
+                    if (annotation.UpdateAppearance())
+                    {
+                        Check(annotation.GetAppearance() is PdfStream, "a drawn appearance");
+                        ReadProperties(annotation);
                     }
                 }
 

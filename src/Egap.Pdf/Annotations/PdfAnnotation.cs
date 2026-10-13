@@ -51,14 +51,25 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
     public PdfRectangle Rectangle
     {
         get => PdfRectangle.FromArray(Dictionary.Get<PdfArray>("Rect"))?.Normalize() ?? default;
-        set => Dictionary["Rect"] = value.Normalize().ToArray();
+        set
+        {
+            Dictionary["Rect"] = value.Normalize().ToArray();
+            Changed();
+        }
     }
 
     /// <summary>The text shown for the annotation, or its description when it shows none (<c>/Contents</c>).</summary>
     public string? Contents
     {
         get => Dictionary.GetText("Contents");
-        set => Dictionary["Contents"] = value is null ? null : PdfString.FromText(value);
+        set
+        {
+            Dictionary["Contents"] = value is null ? null : PdfString.FromText(value);
+            if (this is PdfFreeTextAnnotation)
+            {
+                Changed();
+            }
+        }
     }
 
     /// <summary>The annotation's name, unique on its page (<c>/NM</c>, PDF 1.4).</summary>
@@ -89,7 +100,11 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
     public PdfRgbColor? Color
     {
         get => ReadColor("C");
-        set => Dictionary["C"] = value?.ToArray();
+        set
+        {
+            Dictionary["C"] = value?.ToArray();
+            Changed();
+        }
     }
 
     /// <summary>
@@ -113,6 +128,8 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
             {
                 border[2] = new PdfReal(value);
             }
+
+            Changed();
         }
     }
 
@@ -127,14 +144,18 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
             "U" => PdfBorderStyle.Underline,
             _ => PdfBorderStyle.Solid,
         };
-        set => BorderStyleDictionary()["S"] = PdfName.Get(value switch
+        set
         {
-            PdfBorderStyle.Dashed => "D",
-            PdfBorderStyle.Beveled => "B",
-            PdfBorderStyle.Inset => "I",
-            PdfBorderStyle.Underline => "U",
-            _ => "S",
-        });
+            BorderStyleDictionary()["S"] = PdfName.Get(value switch
+            {
+                PdfBorderStyle.Dashed => "D",
+                PdfBorderStyle.Beveled => "B",
+                PdfBorderStyle.Inset => "I",
+                PdfBorderStyle.Underline => "U",
+                _ => "S",
+            });
+            Changed();
+        }
     }
 
     /// <summary>
@@ -150,6 +171,7 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
         {
             ArgumentNullException.ThrowIfNull(value);
             BorderStyleDictionary()["D"] = new PdfArray(value.Select(l => (PdfObject)new PdfReal(l)));
+            Changed();
         }
     }
 
@@ -198,6 +220,24 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
             PdfDictionary states when AppearanceState is string state => states.Get<PdfStream>(state),
             _ => null,
         };
+    }
+
+    /// <summary>
+    /// Draws the annotation's normal appearance (<c>/AP /N</c>) from its properties, replacing any it had (Phase 2 Q11):
+    /// for square, circle, line, polygon, polyline, ink, highlight, underline, squiggly, strikeout, caret and text note
+    /// annotations with paths, and for free text and stamps with the standard 14 fonts (Q12). Egap also draws it when a new
+    /// annotation is added, and when a property the appearance shows is set on one read from a document.
+    /// </summary>
+    /// <returns>
+    /// Whether an appearance was drawn: false for other subtypes, and for free text the standard 14 fonts cannot show (a
+    /// warning says so), which keep the appearance they had.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">The annotation is new and not yet added to a page.</exception>
+    public bool UpdateAppearance()
+    {
+        return Document is null
+            ? throw new InvalidOperationException("Add the annotation to a page before drawing its appearance.")
+            : Annotations.AppearanceBuilder.Update(this, Document);
     }
 
     /// <summary>Whether both views wrap the same annotation dictionary.</summary>
@@ -257,6 +297,15 @@ public class PdfAnnotation : IEquatable<PdfAnnotation>
     private protected PdfAnnotation? Linked(PdfName key)
     {
         return Dictionary.Get<PdfDictionary>(key) is PdfDictionary linked ? FromDictionary(linked, Dictionary[key] as PdfReference, Document) : null;
+    }
+
+    /// <summary>Redraws the appearance after a property it shows was set, when the annotation is stored and Egap draws its subtype.</summary>
+    private protected void Changed()
+    {
+        if (Document is not null && Annotations.AppearanceBuilder.Supports(this))
+        {
+            Annotations.AppearanceBuilder.Update(this, Document);
+        }
     }
 
     /// <summary>A colour array of 1 (gray), 3 (RGB) or 4 (CMYK) numbers as RGB; null for anything else.</summary>

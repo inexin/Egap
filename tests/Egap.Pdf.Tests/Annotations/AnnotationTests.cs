@@ -131,7 +131,8 @@ public sealed class AnnotationTests
         Assert.Equal(page, square.Page);
         Assert.Equal(PdfAnnotationFlags.Print, square.Flags);
         Assert.Equal(popup, square.Popup);
-        Assert.Equal(new PdfRectangle(-1, -1, 101, 51), line.Rectangle);
+        // The drawn appearance grows the rectangle to hold the stroke and an arrow ending: half the width, the ending size of 4 and 1.
+        Assert.Equal(new PdfRectangle(-5.5, -5.5, 105.5, 55.5), line.Rectangle);
 
         using PdfDocument reopened = PdfDocument.Open(Save(pdf), Strict);
         PdfAnnotationCollection annotations = reopened.Pages[0].Annotations;

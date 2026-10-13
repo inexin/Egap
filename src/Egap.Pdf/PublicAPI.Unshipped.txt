@@ -34,6 +34,7 @@ Egap.Pdf.PdfAnnotation.Rectangle.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfAnnotation.Rectangle.set -> void
 Egap.Pdf.PdfAnnotation.Reference.get -> Egap.Pdf.PdfReference?
 Egap.Pdf.PdfAnnotation.Subtype.get -> string!
+Egap.Pdf.PdfAnnotation.UpdateAppearance() -> bool
 Egap.Pdf.PdfAnnotationCollection
 Egap.Pdf.PdfAnnotationCollection.Add<T>(T! annotation) -> T!
 Egap.Pdf.PdfAnnotationCollection.AddFileAttachment(Egap.Pdf.PdfRectangle rectangle, string! fileName, System.ReadOnlySpan<byte> bytes, string? mimeType = null, string? description = null, System.DateTimeOffset? modified = null) -> Egap.Pdf.PdfFileAttachmentAnnotation!
@@ -484,6 +485,7 @@ Egap.Pdf.PdfUriAction.IsMap.get -> bool
 Egap.Pdf.PdfUriAction.PdfUriAction(string! uri) -> void
 Egap.Pdf.PdfUriAction.Uri.get -> string?
 Egap.Pdf.PdfUriAction.Uri.set -> void
+Egap.Pdf.PdfWarningCode.AppearanceNotDrawn = 32 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedOutline = 31 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedPageTree = 30 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode
