@@ -211,6 +211,12 @@ public sealed class PdfDocument : IDisposable
     /// <summary>Guards the outline's repair pass.</summary>
     internal Lock OutlineGate { get; } = new();
 
+    /// <summary>
+    /// The fonts, images and other objects Egap has written for drawing, by what they were made from, so that 1,000 pages
+    /// drawn with one font or image write it once (Phase 3 design Q6).
+    /// </summary>
+    internal Content.ResourceCache WrittenResources { get; } = new();
+
     /// <summary>The named destinations, through the catalog's /Names /Dests tree and its older /Dests dictionary.</summary>
     public PdfNamedDestinations NamedDestinations => new(this);
 

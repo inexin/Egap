@@ -1,4 +1,7 @@
 #nullable enable
+Egap.Pdf.PdfCanvasPlacement
+Egap.Pdf.PdfCanvasPlacement.Over = 0 -> Egap.Pdf.PdfCanvasPlacement
+Egap.Pdf.PdfCanvasPlacement.Under = 1 -> Egap.Pdf.PdfCanvasPlacement
 Egap.Pdf.PdfClipPath
 Egap.Pdf.PdfClipPath.<Clone>$() -> Egap.Pdf.PdfClipPath!
 Egap.Pdf.PdfClipPath.Deconstruct(out Egap.Pdf.PdfPath! Path, out Egap.Pdf.PdfMatrix Matrix, out bool EvenOdd) -> void
@@ -224,6 +227,8 @@ Egap.Pdf.PdfOperation.IsKnown.get -> bool
 Egap.Pdf.PdfOperation.Operands.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfObject!>!
 Egap.Pdf.PdfOperation.Operator.get -> string!
 Egap.Pdf.PdfOperation.PdfOperation(string! operator, params System.Collections.Generic.IEnumerable<Egap.Pdf.PdfObject!>! operands) -> void
+Egap.Pdf.PdfPage.AddContent(System.ReadOnlySpan<byte> content, Egap.Pdf.PdfCanvasPlacement placement = Egap.Pdf.PdfCanvasPlacement.Over) -> void
+Egap.Pdf.PdfPage.AddResource(Egap.Pdf.PdfName! category, Egap.Pdf.PdfObject! value) -> Egap.Pdf.PdfName!
 Egap.Pdf.PdfPage.GetContent() -> Egap.Pdf.PdfContent!
 Egap.Pdf.PdfPage.SetContent(Egap.Pdf.PdfContent! content) -> void
 Egap.Pdf.PdfPath

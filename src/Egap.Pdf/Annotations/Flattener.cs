@@ -1,5 +1,3 @@
-using System.Globalization;
-
 using Egap.Pdf.Content;
 
 namespace Egap.Pdf.Annotations;
@@ -26,7 +24,6 @@ internal static class Flattener
 
         page = page.Document.Pages.EnsureTree(page);
         PdfContentWriter drawing = new();
-        PdfDictionary? xObjects = null;
         int drawn = 0;
         foreach (PdfAnnotation annotation in annotations)
         {
@@ -41,16 +38,14 @@ internal static class Flattener
                 continue;
             }
 
-            xObjects ??= XObjects(page);
-            PdfName name = FreeName(xObjects);
-            xObjects[name] = reference;
+            PdfName name = Pages.PageDrawing.AddResource(page, "XObject", reference);
             drawing.Save().Transform(matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5]).Draw(name).Restore();
             drawn++;
         }
 
         if (drawn > 0)
         {
-            Wrap(page, drawing.ToArray());
+            Pages.PageDrawing.Add(page, drawing.ToArray(), PdfCanvasPlacement.Over);
         }
 
         HashSet<PdfDictionary> removed = new(annotations.Select(a => a.Dictionary), ReferenceEqualityComparer.Instance);
@@ -145,72 +140,5 @@ internal static class Flattener
         double sx = rectangle.Width / width;
         double sy = rectangle.Height / height;
         return [sx, 0, 0, sy, rectangle.Left - (xs.Min() * sx), rectangle.Bottom - (ys.Min() * sy)];
-    }
-
-    /// <summary>The page's own <c>/Resources /XObject</c>, made when missing; inherited resources are copied onto the page first.</summary>
-    private static PdfDictionary XObjects(PdfPage page)
-    {
-        if (page.Dictionary.Get<PdfDictionary>("Resources") is not PdfDictionary resources)
-        {
-            resources = page.Resources?.Clone() ?? [];
-            page.Dictionary["Resources"] = resources;
-        }
-
-        if (resources.Get<PdfDictionary>("XObject") is not PdfDictionary xObjects)
-        {
-            xObjects = [];
-            resources["XObject"] = xObjects;
-        }
-
-        return xObjects;
-    }
-
-    private static PdfName FreeName(PdfDictionary xObjects)
-    {
-        for (int i = 0; ; i++)
-        {
-            PdfName name = PdfName.Get(string.Create(CultureInfo.InvariantCulture, $"EgapFlat{i}"));
-            if (xObjects.Get(name) is null)
-            {
-                return name;
-            }
-        }
-    }
-
-    /// <summary>Makes the page's content <c>q</c>, its old content, <c>Q</c> and then the drawings.</summary>
-    private static void Wrap(PdfPage page, byte[] drawing)
-    {
-        PdfDocument document = page.Document;
-        PdfStream open = new();
-        open.SetDecodedBytes("q\n"u8);
-        PdfStream close = new();
-        close.SetDecodedBytes([.. "\nQ\n"u8, .. drawing]);
-        PdfArray contents = [document.Objects.Add(open)];
-        switch (page.Dictionary["Contents"])
-        {
-            case PdfReference reference when reference.Resolve() is PdfArray array:
-                AddAll(contents, array);
-                break;
-            case PdfReference reference when reference.Resolve() is PdfStream:
-                contents.Add(reference);
-                break;
-            case PdfArray array:
-                AddAll(contents, array);
-                break;
-        }
-
-        contents.Add(document.Objects.Add(close));
-        page.Dictionary["Contents"] = contents;
-    }
-
-    private static void AddAll(PdfArray contents, PdfArray array)
-    {
-        for (int i = 0; i < array.Count; i++)
-        {
-            if (array[i] is PdfReference reference && reference.Resolve() is PdfStream)
-            {
-                contents.Add(reference);
-            }
-        }
     }
 }

@@ -159,6 +159,34 @@ public sealed class PdfPage : IEquatable<PdfPage>
         PdfContent.WriteBack(this, content);
     }
 
+    /// <summary>
+    /// Draws over or under what the page shows, without touching its content streams (Phase 3 design Q5): over, the old
+    /// content is bracketed by a <c>q</c> stream in front and a <c>Q</c> before the new drawing, so the drawing starts from a
+    /// clean graphics state; under, the drawing comes first in a <c>q</c> and <c>Q</c> of its own. The drawing is in default
+    /// user space (PDF's own coordinates); names it uses must be in the page's resources, see <see cref="AddResource"/>.
+    /// </summary>
+    /// <param name="content">The drawing's content stream bytes, such as <see cref="PdfContentWriter.ToArray"/> gives.</param>
+    /// <param name="placement">Whether the drawing goes over or under the page's content.</param>
+    public void AddContent(ReadOnlySpan<byte> content, PdfCanvasPlacement placement = PdfCanvasPlacement.Over)
+    {
+        Pages.PageDrawing.Add(this, content, placement);
+    }
+
+    /// <summary>
+    /// Adds a resource, such as a font, image or graphics state, to the page and returns the name content uses for it
+    /// (Phase 3 design Q6). Resources that are inherited or that other pages may share are first copied onto the page,
+    /// shallowly, so other pages never change. A reference the category already holds keeps its name; a new resource is named
+    /// <c>Eg</c> and a counter, clear of every name already there.
+    /// </summary>
+    /// <param name="category">The resource category: <c>Font</c>, <c>XObject</c>, <c>ExtGState</c>, <c>ColorSpace</c>, <c>Pattern</c>, <c>Shading</c> or <c>Properties</c>.</param>
+    /// <param name="value">The resource, normally a reference to it.</param>
+    public PdfName AddResource(PdfName category, PdfObject value)
+    {
+        ArgumentNullException.ThrowIfNull(category);
+        ArgumentNullException.ThrowIfNull(value);
+        return Pages.PageDrawing.AddResource(this, category, value);
+    }
+
     /// <summary>Whether both views wrap the same page dictionary.</summary>
     public bool Equals(PdfPage? other)
     {
