@@ -145,4 +145,10 @@ public enum PdfWarningCode
     /// or the image runs to the end of the content.
     /// </summary>
     MalformedInlineImage,
+
+    /// <summary>
+    /// A <see cref="PdfCanvas"/> call that PDF cannot express (a blur, noise, a Porter-Duff blend, a layer filter) was drawn
+    /// into an image at the fallback resolution and placed instead (Phase 3 design Q14).
+    /// </summary>
+    RasterFallback,
 }

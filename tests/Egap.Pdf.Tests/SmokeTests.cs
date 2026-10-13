@@ -13,11 +13,11 @@ public sealed class SmokeTests
     }
 
     [Fact]
-    public void AssemblyReferencesOnlyTheRuntime()
+    public void AssemblyReferencesOnlyTheRuntimeAndEgami()
     {
-        // Egap.Pdf is fully managed and dependency free: it may reference only .NET's own assemblies.
+        // Egap.Pdf is fully managed: it may reference only .NET's own assemblies and Egami's (Phase 3 design Q2).
         AssemblyName[] references = typeof(PdfDocument).Assembly.GetReferencedAssemblies();
 
-        Assert.All(references, static r => Assert.True(r.Name!.StartsWith("System.", StringComparison.Ordinal), r.Name));
+        Assert.All(references, static r => Assert.True(r.Name!.StartsWith("System.", StringComparison.Ordinal) || r.Name is "Egami" or "Egami.Fonts" or "Egami.Drawing", r.Name));
     }
 }
