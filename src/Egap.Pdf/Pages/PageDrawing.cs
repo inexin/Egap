@@ -95,16 +95,37 @@ internal static class PageDrawing
             }
         }
 
-        PdfName name = FreeName(entries);
+        PdfName name = FreeName(entries, category);
         entries[name] = value;
         return name;
     }
 
-    private static PdfName FreeName(PdfDictionary entries)
+    /// <summary>
+    /// The prefix of a new resource's name: <c>Eg</c> and a letter for its category (<c>EgX</c> for XObjects, <c>EgG</c> for
+    /// graphics states and so on), so no two categories share a name, which pdf.js's resource caches mix up.
+    /// </summary>
+    public static string Prefix(PdfName category)
     {
+        return NamePrefix + category.Value switch
+        {
+            "XObject" => "X",
+            "ExtGState" => "G",
+            "Shading" => "S",
+            "Pattern" => "P",
+            "Font" => "F",
+            "ColorSpace" => "C",
+            "Properties" => "M",
+            _ => "",
+        };
+    }
+
+    /// <summary>The first name of the category's prefix and a counter that the entries do not hold.</summary>
+    public static PdfName FreeName(PdfDictionary entries, PdfName category)
+    {
+        string prefix = Prefix(category);
         for (int i = 0; ; i++)
         {
-            PdfName name = PdfName.Get(string.Create(CultureInfo.InvariantCulture, $"{NamePrefix}{i}"));
+            PdfName name = PdfName.Get(string.Create(CultureInfo.InvariantCulture, $"{prefix}{i}"));
             if (entries[name] is null)
             {
                 return name;

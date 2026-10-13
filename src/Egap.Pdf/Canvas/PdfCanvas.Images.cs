@@ -21,6 +21,11 @@ public sealed partial class PdfCanvas
     /// <inheritdoc/>
     protected override void OnDrawEncodedImage(EncodedImage image, RectF source, RectF destination, SamplingOptions sampling, Paint? paint)
     {
+        if (Forward(c => c.DrawImage(image, source, destination, sampling, paint)))
+        {
+            return;
+        }
+
         RasterInfo info = image.Info;
         bool passthrough = info.Format.Name == "JPEG" && info.Layout.BitsPerChannel == 8 && info.Layout.ChannelOrder is PixelChannelOrder.Gray or PixelChannelOrder.Rgb
             && info.Orientation == Egami.Metadata.ImageOrientation.Normal;
@@ -49,7 +54,7 @@ public sealed partial class PdfCanvas
     /// <summary>Places an image XObject so that its <paramref name="source"/> part fills <paramref name="destination"/>.</summary>
     private void PlaceImage(PdfReference xObject, int imageWidth, int imageHeight, RectF source, RectF destination, Paint? paint)
     {
-        PdfName name = Page.AddResource("XObject", xObject);
+        PdfName name = AddResource("XObject", xObject);
         GraphicsGroup g = OpenGroup();
         SetAlpha(g, paint?.Opacity ?? 1, paint?.BlendMode ?? BlendMode.SourceOver);
 
@@ -71,7 +76,7 @@ public sealed partial class PdfCanvas
     private void PlaceDeviceImage(Raster image, RectF device)
     {
         CloseGroup();
-        PdfName name = Page.AddResource("XObject", ImageXObject(image));
+        PdfName name = AddResource("XObject", ImageXObject(image));
         content.Save().Transform(device.Width, 0, 0, -device.Height, device.X, device.Y + device.Height).Draw(name).Restore();
     }
 

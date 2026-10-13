@@ -176,7 +176,8 @@ public sealed class PdfPage : IEquatable<PdfPage>
     /// Adds a resource, such as a font, image or graphics state, to the page and returns the name content uses for it
     /// (Phase 3 design Q6). Resources that are inherited or that other pages may share are first copied onto the page,
     /// shallowly, so other pages never change. A reference the category already holds keeps its name; a new resource is named
-    /// <c>Eg</c> and a counter, clear of every name already there.
+    /// <c>Eg</c>, a letter for its category (<c>EgX</c> for XObjects, <c>EgG</c> for graphics states, <c>EgF</c> for fonts) and a
+    /// counter, clear of every name already there.
     /// </summary>
     /// <param name="category">The resource category: <c>Font</c>, <c>XObject</c>, <c>ExtGState</c>, <c>ColorSpace</c>, <c>Pattern</c>, <c>Shading</c> or <c>Properties</c>.</param>
     /// <param name="value">The resource, normally a reference to it.</param>

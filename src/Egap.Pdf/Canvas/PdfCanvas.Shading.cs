@@ -65,6 +65,14 @@ public sealed partial class PdfCanvas
                 }
 
                 break;
+            case PicturePaint picture when stroke is null:
+                pattern = PicturePattern(picture, Pdf(paint.LocalMatrix * Matrix) * baseMatrix);
+                if (pattern is null)
+                {
+                    return false;
+                }
+
+                break;
             default:
                 return false;
         }
@@ -83,7 +91,7 @@ public sealed partial class PdfCanvas
                 ["BM"] = PdfName.Get(mode),
                 ["SMask"] = new PdfDictionary { ["Type"] = PdfName.Get("Mask"), ["S"] = PdfName.Get("Luminosity"), ["G"] = group },
             });
-            content.GraphicsState(Page.AddResource("ExtGState", state));
+            content.GraphicsState(AddResource("ExtGState", state));
         }
         else
         {
@@ -92,7 +100,7 @@ public sealed partial class PdfCanvas
 
         if (pattern is not null)
         {
-            content.ColorSpace("Pattern").Color([], Page.AddResource("Pattern", pattern));
+            content.ColorSpace("Pattern").Color([], AddResource("Pattern", pattern));
         }
 
         pendingShadings = pieces;
@@ -102,14 +110,14 @@ public sealed partial class PdfCanvas
     /// <summary>Whether a stroke with this paint is filled as its outline instead (gradients and image paints, not hairlines).</summary>
     private static bool FillsStroke(Paint paint, Stroke? stroke)
     {
-        return stroke is { IsHairline: false } && paint is Gradient or ImagePaint;
+        return stroke is { IsHairline: false } && paint is Gradient or ImagePaint or PicturePaint;
     }
 
     /// <summary>Paints the pending shadings inside the path just written, which becomes the clip.</summary>
     private void PaintShadings(FillRule rule)
     {
         content.Clip(rule == FillRule.EvenOdd).EndPath();
-        WriteShadings(content, pendingShadings!, name => Page.AddResource("Shading", name));
+        WriteShadings(content, pendingShadings!, name => AddResource("Shading", name));
         pendingShadings = null;
     }
 
