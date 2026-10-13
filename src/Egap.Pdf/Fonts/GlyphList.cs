@@ -11,14 +11,23 @@ namespace Egap.Pdf.Fonts;
 /// </summary>
 internal static class GlyphList
 {
-    private static readonly Lazy<Dictionary<string, string>> Names = new(Load);
+    private static readonly Lazy<Dictionary<string, string>> Names = new(() => Load("glyphlist.txt", latin: true));
+    private static readonly Lazy<Dictionary<string, string>> Dingbats = new(() => Load("zapfdingbats.txt", latin: false));
 
-    /// <summary>The text a glyph name stands for, or null when it says none (such as <c>.notdef</c> or <c>g123</c>).</summary>
-    public static string? ToUnicode(string? name)
+    /// <summary>
+    /// The text a glyph name stands for, or null when it says none (such as <c>.notdef</c> or <c>g123</c>); with
+    /// <paramref name="dingbats"/>, ZapfDingbats' names (<c>a1</c> to <c>a191</c>) are looked up first.
+    /// </summary>
+    public static string? ToUnicode(string? name, bool dingbats = false)
     {
         if (string.IsNullOrEmpty(name))
         {
             return null;
+        }
+
+        if (dingbats && Dingbats.Value.TryGetValue(name, out string? dingbat))
+        {
+            return dingbat;
         }
 
         int dot = name.IndexOf('.', StringComparison.Ordinal);
@@ -94,16 +103,19 @@ internal static class GlyphList
         return true;
     }
 
-    /// <summary>The bundled Adobe Glyph List when present, over the names of WinAnsi and MacRoman.</summary>
-    private static Dictionary<string, string> Load()
+    /// <summary>A bundled list of the Adobe Glyph List's form (name;XXXX), over the names of WinAnsi and MacRoman for the main one.</summary>
+    private static Dictionary<string, string> Load(string file, bool latin)
     {
         Dictionary<string, string> names = new(StringComparer.Ordinal);
-        foreach ((string name, char c) in FontEncodings.LatinNames())
+        if (latin)
         {
-            names.TryAdd(name, c.ToString());
+            foreach ((string name, char c) in FontEncodings.LatinNames())
+            {
+                names.TryAdd(name, c.ToString());
+            }
         }
 
-        using Stream? stream = typeof(GlyphList).Assembly.GetManifestResourceStream("Egap.Pdf.Fonts.glyphlist.txt");
+        using Stream? stream = typeof(GlyphList).Assembly.GetManifestResourceStream("Egap.Pdf.Fonts." + file);
         if (stream is null)
         {
             return names;

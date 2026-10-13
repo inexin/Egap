@@ -146,6 +146,50 @@ public sealed class PdfFontTests
     }
 
     [Fact]
+    public void ReadsPredefinedCMapsAndTheirCharacterCollections()
+    {
+        // Shift-JIS: one byte for ASCII and half-width katakana, two for kanji.
+        PdfFont sjis = PdfFont.FromDictionary(Composite("90ms-RKSJ-H", "Japan1"));
+        Assert.Equal([0x41, 0x82A0], sjis.GetCodes([0x41, 0x82, 0xA0]));
+        Assert.Equal(["A", "\u3042"], sjis.GetCodes([0x41, 0x82, 0xA0]).Select(sjis.ToUnicode));
+
+        // A Unicode CMap's codes are the text; its CIDs give the same text back through the Japan1 table.
+        PdfFont unicode = PdfFont.FromDictionary(Composite("UniJIS-UTF16-H", "Japan1"));
+        Assert.Equal("\u3042", unicode.ToUnicode(0x3042));
+        PdfDictionary viaCid = Composite("UniJIS-UTF16-H", "Japan1");
+        viaCid["Encoding"] = PdfName.Get("UniJIS-UTF16-V");
+        Assert.True(PdfFont.FromDictionary(viaCid).IsVertical);
+        Assert.NotNull(unicode.GetCid(0x3042));
+    }
+
+    [Fact]
+    public void ReadsTheAdobeGlyphList()
+    {
+        PdfDictionary dictionary = Font("Type1", "Minion");
+        dictionary["Encoding"] = new PdfDictionary { ["Differences"] = new PdfArray { new PdfInteger(65), PdfName.Get("afii10017"), PdfName.Get("Euro"), PdfName.Get("alpha") } };
+        PdfFont font = PdfFont.FromDictionary(dictionary);
+        Assert.Equal(["\u0410", "\u20AC", "\u03B1"], Enumerable.Range(65, 3).Select(font.ToUnicode));
+
+        PdfFont dingbats = PdfFont.FromDictionary(Font("Type1", "ZapfDingbats"));
+        Assert.Equal("\u2701", dingbats.ToUnicode(0x21));
+    }
+
+    private static PdfDictionary Composite(string cmap, string ordering)
+    {
+        PdfDictionary font = Font("Type0", "CJK");
+        font["Encoding"] = PdfName.Get(cmap);
+        font["DescendantFonts"] = new PdfArray
+        {
+            new PdfDictionary
+            {
+                ["Subtype"] = PdfName.Get("CIDFontType0"),
+                ["CIDSystemInfo"] = new PdfDictionary { ["Registry"] = PdfString.FromText("Adobe"), ["Ordering"] = PdfString.FromText(ordering), ["Supplement"] = new PdfInteger(6) },
+            },
+        };
+        return font;
+    }
+
+    [Fact]
     public void ListsAPagesFonts()
     {
         using PdfDocument pdf = PdfDocument.Create();
