@@ -805,8 +805,27 @@ internal static class Targets
                             break;
                         case 2 when count > 0:
                             int removed = random.Next(count);
+                            PdfReference? gone = pdf.Pages[removed].Reference;
                             pdf.Pages.RemoveAt(removed);
                             expected.RemoveAt(removed);
+
+                            // Task 20: no link leads to the removed page.
+                            if (gone is not null && !pdf.Pages.Any(p => gone.Equals(p.Reference)))
+                            {
+                                bool Leads(PdfDestination? d)
+                                {
+                                    return d?.PageReference is PdfReference r && r.Equals(gone);
+                                }
+
+                                // Only links are checked: in a damaged file the outline or the name tree can share dictionaries with
+                                // the page tree, and then they are left alone, as reading or editing them would break the tree.
+                                HashSet<PdfDictionary> pages = new(pdf.Pages.Select(p => p.Dictionary), ReferenceEqualityComparer.Instance);
+                                if (pdf.Pages.Take(50).SelectMany(p => p.Annotations.OfType<PdfLinkAnnotation>().Take(200)).Any(link => !pages.Contains(link.Dictionary) && link.Dictionary.Get("Kids") is null && Leads(link.Destination)))
+                                {
+                                    throw new InvalidOperationException("Something still leads to a removed page.");
+                                }
+                            }
+
                             break;
                         case 3 when count > 0:
                             (int from, int to) = (random.Next(count), random.Next(count));

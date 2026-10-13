@@ -124,4 +124,10 @@ public enum PdfWarningCode
 
     /// <summary>An imported form field was renamed with a suffix, since the document has a field of that name (Phase 2 Q5).</summary>
     FieldRenamed,
+
+    /// <summary>
+    /// A removed page's outline destinations, links or named destinations were cleaned up (Phase 2 Q7); the message gives the
+    /// counts.
+    /// </summary>
+    PageReferencesRemoved,
 }

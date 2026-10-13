@@ -444,8 +444,8 @@ Egap.Pdf.PdfPageCollection.Import(Egap.Pdf.PdfDocument! source, System.Collectio
 Egap.Pdf.PdfPageCollection.IndexOf(Egap.Pdf.PdfPage! page) -> int
 Egap.Pdf.PdfPageCollection.InsertBlank(int index, Egap.Pdf.PdfRectangle? mediaBox = null) -> Egap.Pdf.PdfPage!
 Egap.Pdf.PdfPageCollection.Move(int from, int to) -> void
-Egap.Pdf.PdfPageCollection.Remove(Egap.Pdf.PdfPage! page) -> bool
-Egap.Pdf.PdfPageCollection.RemoveAt(int index) -> void
+Egap.Pdf.PdfPageCollection.Remove(Egap.Pdf.PdfPage! page, bool removeReferences = true) -> bool
+Egap.Pdf.PdfPageCollection.RemoveAt(int index, bool removeReferences = true) -> void
 Egap.Pdf.PdfPageCollection.RemoveLabelRange(int startIndex) -> bool
 Egap.Pdf.PdfPageCollection.SetLabelRange(Egap.Pdf.PdfPageLabelRange! range) -> void
 Egap.Pdf.PdfPageCollection.this[int index].get -> Egap.Pdf.PdfPage!
@@ -615,6 +615,7 @@ Egap.Pdf.PdfWarningCode.MalformedOutline = 31 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedPageTree = 30 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedTree = 29 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.NotImported = 33 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.PageReferencesRemoved = 35 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWidgetAnnotation
 Egap.Pdf.PdfWidgetAnnotation.Action.get -> Egap.Pdf.PdfAction?
 Egap.Pdf.PdfWidgetAnnotation.Action.set -> void

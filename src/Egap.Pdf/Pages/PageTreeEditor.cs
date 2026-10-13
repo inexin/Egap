@@ -90,10 +90,20 @@ internal sealed class PageTreeEditor(PdfDocument document, List<PdfPage> pages)
         document.Log.Add(PdfWarningCode.MalformedPageTree, $"The page tree could not be edited in place, so it was rebuilt over its {pages.Count} pages.");
         HashSet<PdfDictionary> seen = new(ReferenceEqualityComparer.Instance);
         List<PdfReference> references = new(pages.Count);
+
+        // Every page's inherited attributes are read before any is written: in a damaged tree one page can be another's parent.
+        List<List<(PdfName Key, PdfObject Value)>> inherited = [.. pages.Select(p => Inherited(p.Dictionary, document))];
         for (int i = 0; i < pages.Count; i++)
         {
             PdfPage page = pages[i];
-            Materialize(page.Dictionary, document);
+            foreach ((PdfName key, PdfObject value) in inherited[i])
+            {
+                if (page.Dictionary.Get(key) is null or PdfNull)
+                {
+                    page.Dictionary[key] = value;
+                }
+            }
+
             if (page.Reference is null && seen.Add(page.Dictionary))
             {
                 // A direct page moves out of the old tree and becomes an indirect object itself, so views of it stay valid.
@@ -340,21 +350,33 @@ internal sealed class PageTreeEditor(PdfDocument document, List<PdfPage> pages)
     /// </summary>
     private static void Materialize(PdfDictionary page, PdfDocument document)
     {
+        foreach ((PdfName key, PdfObject value) in Inherited(page, document))
+        {
+            page[key] = value;
+        }
+    }
+
+    /// <summary>The attributes a page lacks and would inherit, each copied, or its default when it inherits none.</summary>
+    private static List<(PdfName Key, PdfObject Value)> Inherited(PdfDictionary page, PdfDocument document)
+    {
         PdfPage view = new(page, null, document);
+        List<(PdfName, PdfObject)> values = [];
         foreach (PdfName key in Inheritable)
         {
             // A value that resolves to null, such as a reference to a missing object, counts as absent (7.3.7).
             if (page.Get(key) is null or PdfNull)
             {
-                page[key] = view.InheritedValue(key) is PdfObject value ? Copy(value) : key.Value switch
+                values.Add((key, view.InheritedValue(key) is PdfObject value ? Copy(value) : key.Value switch
                 {
                     "Resources" => new PdfDictionary(),
                     "MediaBox" => view.MediaBox.ToArray(),
                     "CropBox" => view.CropBox.ToArray(),
                     _ => new PdfInteger(0),
-                };
+                }));
             }
         }
+
+        return values;
     }
 
     /// <summary>A value that can go in a second place: references and scalars as they are, containers copied.</summary>
