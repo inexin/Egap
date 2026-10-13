@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images"];
 
     public static Action<Stream> Get(string name)
     {
@@ -42,6 +42,7 @@ internal static class Targets
             "content" => Content,
             "walker" => Walker,
             "fonts" => Fonts,
+            "images" => Images,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -51,6 +52,60 @@ internal static class Targets
         using MemoryStream copy = new();
         input.CopyTo(copy);
         return copy.ToArray();
+    }
+
+    /// <summary>
+    /// PDF bytes: every image on the first 10 pages listed and decoded with masks and without, colour converted and kept;
+    /// decoding may fail only with <see cref="PdfException"/>.
+    /// </summary>
+    private static void Images(Stream input)
+    {
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(ReadAll(input), new PdfReadOptions { MaxDecodedStreamBytes = 16 << 20, MaxObjects = 100_000, MaxNestingDepth = 32 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                foreach (PdfPage page in pdf.Pages.Take(10))
+                {
+                    foreach (PdfPlacedImage placed in page.GetImages().Take(20))
+                    {
+                        if ((long)placed.Image.Width * placed.Image.Height > 4_000_000)
+                        {
+                            continue;
+                        }
+
+                        foreach (PdfImageOptions options in (PdfImageOptions[])[PdfImageOptions.Default, new PdfImageOptions { ApplyMasks = false, ConvertColor = false }])
+                        {
+                            try
+                            {
+                                using Egami.Raster raster = placed.Image.ToRaster(options);
+                                if (raster.Width <= 0 || raster.Height <= 0)
+                                {
+                                    throw new InvalidOperationException("A decoded image has no pixels.");
+                                }
+                            }
+                            catch (PdfException)
+                            {
+                            }
+                        }
+
+                        _ = placed.Image.GetRawBytes();
+                    }
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
     }
 
     /// <summary>
