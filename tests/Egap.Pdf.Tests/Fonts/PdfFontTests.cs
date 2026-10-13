@@ -122,9 +122,9 @@ public sealed class PdfFontTests
         };
         PdfFont font = PdfFont.FromDictionary(dictionary);
 
-        Assert.Equal((-500.0, 250.0, 800.0), font.GetVerticalMetrics(5));
-        Assert.Equal((-700.0, 300.0, 700.0), font.GetVerticalMetrics(8));
-        Assert.Equal((-1100.0, 500.0, 900.0), font.GetVerticalMetrics(9));
+        Assert.Equal(new PdfVerticalMetrics(-500.0, 250.0, 800.0), font.GetVerticalMetrics(5));
+        Assert.Equal(new PdfVerticalMetrics(-700.0, 300.0, 700.0), font.GetVerticalMetrics(8));
+        Assert.Equal(new PdfVerticalMetrics(-1100.0, 500.0, 900.0), font.GetVerticalMetrics(9));
         Assert.Null(PdfFont.FromDictionary(Font("Type1", "Helvetica")).GetVerticalMetrics(65));
     }
 

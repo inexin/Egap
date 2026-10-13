@@ -523,7 +523,7 @@ public class PdfContentWalker
             double width = widths.GetWidth(code);
 
             // A vertical font's glyph is placed with its vertical origin at the current point (9.7.4.3).
-            (double Advance, double OriginX, double OriginY)? vertical = widths.GetVerticalMetrics(code);
+            PdfVerticalMetrics? vertical = widths.GetVerticalMetrics(code);
             PdfMatrix placement = vertical is { } v ? PdfMatrix.Translation(-v.OriginX / 1000, -v.OriginY / 1000) * size * TextMatrix * state.Matrix : size * TextMatrix * state.Matrix;
             PdfGlyph glyph = new(code, length, width, placement, space);
             OnGlyph(glyph);
@@ -607,9 +607,7 @@ public class PdfContentWalker
                 OnImage(xObject, null, name);
                 break;
             case "Form":
-                PdfMatrix matrix = xObject.Dictionary.Get<PdfArray>("Matrix") is PdfArray m && m.Count >= 6 && Enumerable.Range(0, 6).All(k => m.GetNumber(k) is not null)
-                    ? new PdfMatrix(m.GetNumber(0)!.Value, m.GetNumber(1)!.Value, m.GetNumber(2)!.Value, m.GetNumber(3)!.Value, m.GetNumber(4)!.Value, m.GetNumber(5)!.Value)
-                    : PdfMatrix.Identity;
+                PdfMatrix matrix = PdfMatrix.FromArray(xObject.Dictionary.Get<PdfArray>("Matrix")) ?? PdfMatrix.Identity;
                 PdfRectangle? box = PdfRectangle.FromArray(xObject.Dictionary.Get<PdfArray>("BBox"));
                 RunNested(xObject, xObject.Dictionary.Get<PdfDictionary>("Resources") ?? Resources, matrix * State.Matrix, box, isForm: true, name);
                 break;

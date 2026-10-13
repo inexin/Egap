@@ -303,7 +303,7 @@ public sealed class PdfFont
     /// the glyph's horizontal origin to its vertical origin, in thousandths of text space; from <c>/W2</c>, else
     /// <c>/DW2</c> (default 880 and −1000) with the vector's x half the horizontal width. Null for a horizontal font.
     /// </summary>
-    public (double Advance, double OriginX, double OriginY)? GetVerticalMetrics(int code)
+    public PdfVerticalMetrics? GetVerticalMetrics(int code)
     {
         if (!IsVertical)
         {
@@ -313,10 +313,10 @@ public sealed class PdfFont
         int cid = ToCid(code, CodeLength(code));
         if (verticalMetrics is not null && verticalMetrics.TryGetValue(cid, out (double W1, double Vx, double Vy) m))
         {
-            return (m.W1, m.Vx, m.Vy);
+            return new PdfVerticalMetrics(m.W1, m.Vx, m.Vy);
         }
 
-        return (defaultVertical.W1, GetWidth(code) / 2, defaultVertical.Vy);
+        return new PdfVerticalMetrics(defaultVertical.W1, GetWidth(code) / 2, defaultVertical.Vy);
     }
 
     /// <summary>The glyph name a simple font's encoding gives a code, or null (always for a composite font).</summary>

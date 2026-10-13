@@ -118,6 +118,29 @@ Egap.Pdf.PdfBorderStyle.Dashed = 1 -> Egap.Pdf.PdfBorderStyle
 Egap.Pdf.PdfBorderStyle.Inset = 3 -> Egap.Pdf.PdfBorderStyle
 Egap.Pdf.PdfBorderStyle.Solid = 0 -> Egap.Pdf.PdfBorderStyle
 Egap.Pdf.PdfBorderStyle.Underline = 4 -> Egap.Pdf.PdfBorderStyle
+Egap.Pdf.PdfCanvas
+Egap.Pdf.PdfCanvas.Page.get -> Egap.Pdf.PdfPage!
+Egap.Pdf.PdfCanvas.PageMatrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfCanvas.PdfCanvas(Egap.Pdf.PdfPage! page, Egap.Pdf.PdfCanvasOptions? options = null) -> void
+Egap.Pdf.PdfCanvas.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfCanvasCoordinates
+Egap.Pdf.PdfCanvasCoordinates.Displayed = 0 -> Egap.Pdf.PdfCanvasCoordinates
+Egap.Pdf.PdfCanvasCoordinates.Pdf = 1 -> Egap.Pdf.PdfCanvasCoordinates
+Egap.Pdf.PdfCanvasOptions
+Egap.Pdf.PdfCanvasOptions.<Clone>$() -> Egap.Pdf.PdfCanvasOptions!
+Egap.Pdf.PdfCanvasOptions.Coordinates.get -> Egap.Pdf.PdfCanvasCoordinates
+Egap.Pdf.PdfCanvasOptions.Coordinates.init -> void
+Egap.Pdf.PdfCanvasOptions.Equals(Egap.Pdf.PdfCanvasOptions? other) -> bool
+Egap.Pdf.PdfCanvasOptions.FallbackDpi.get -> float
+Egap.Pdf.PdfCanvasOptions.FallbackDpi.init -> void
+Egap.Pdf.PdfCanvasOptions.PdfCanvasOptions() -> void
+Egap.Pdf.PdfCanvasOptions.Placement.get -> Egap.Pdf.PdfCanvasPlacement
+Egap.Pdf.PdfCanvasOptions.Placement.init -> void
+Egap.Pdf.PdfCanvasOptions.Strict.get -> bool
+Egap.Pdf.PdfCanvasOptions.Strict.init -> void
+Egap.Pdf.PdfCanvasPlacement
+Egap.Pdf.PdfCanvasPlacement.Over = 0 -> Egap.Pdf.PdfCanvasPlacement
+Egap.Pdf.PdfCanvasPlacement.Under = 1 -> Egap.Pdf.PdfCanvasPlacement
 Egap.Pdf.PdfCaretAnnotation
 Egap.Pdf.PdfCaretAnnotation.PdfCaretAnnotation(Egap.Pdf.PdfRectangle rectangle) -> void
 Egap.Pdf.PdfCaretAnnotation.ShowsParagraphSymbol.get -> bool
@@ -145,6 +168,29 @@ Egap.Pdf.PdfCircleAnnotation
 Egap.Pdf.PdfCircleAnnotation.InteriorColor.get -> Egap.Pdf.PdfRgbColor?
 Egap.Pdf.PdfCircleAnnotation.InteriorColor.set -> void
 Egap.Pdf.PdfCircleAnnotation.PdfCircleAnnotation(Egap.Pdf.PdfRectangle rectangle) -> void
+Egap.Pdf.PdfClipPath
+Egap.Pdf.PdfClipPath.<Clone>$() -> Egap.Pdf.PdfClipPath!
+Egap.Pdf.PdfClipPath.Deconstruct(out Egap.Pdf.PdfPath! Path, out Egap.Pdf.PdfMatrix Matrix, out bool EvenOdd) -> void
+Egap.Pdf.PdfClipPath.Equals(Egap.Pdf.PdfClipPath? other) -> bool
+Egap.Pdf.PdfClipPath.EvenOdd.get -> bool
+Egap.Pdf.PdfClipPath.EvenOdd.init -> void
+Egap.Pdf.PdfClipPath.Matrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfClipPath.Matrix.init -> void
+Egap.Pdf.PdfClipPath.Path.get -> Egap.Pdf.PdfPath!
+Egap.Pdf.PdfClipPath.Path.init -> void
+Egap.Pdf.PdfClipPath.PdfClipPath(Egap.Pdf.PdfPath! Path, Egap.Pdf.PdfMatrix Matrix, bool EvenOdd) -> void
+Egap.Pdf.PdfColor
+Egap.Pdf.PdfColor.<Clone>$() -> Egap.Pdf.PdfColor!
+Egap.Pdf.PdfColor.Components.get -> System.Collections.Generic.IReadOnlyList<double>!
+Egap.Pdf.PdfColor.Components.init -> void
+Egap.Pdf.PdfColor.Deconstruct(out Egap.Pdf.PdfObject! Space, out System.Collections.Generic.IReadOnlyList<double>! Components, out Egap.Pdf.PdfName? Pattern) -> void
+Egap.Pdf.PdfColor.Equals(Egap.Pdf.PdfColor? other) -> bool
+Egap.Pdf.PdfColor.Family.get -> string!
+Egap.Pdf.PdfColor.Pattern.get -> Egap.Pdf.PdfName?
+Egap.Pdf.PdfColor.Pattern.init -> void
+Egap.Pdf.PdfColor.PdfColor(Egap.Pdf.PdfObject! Space, System.Collections.Generic.IReadOnlyList<double>! Components, Egap.Pdf.PdfName? Pattern = null) -> void
+Egap.Pdf.PdfColor.Space.get -> Egap.Pdf.PdfObject!
+Egap.Pdf.PdfColor.Space.init -> void
 Egap.Pdf.PdfComboBoxField
 Egap.Pdf.PdfComboBoxField.IsEditable.get -> bool
 Egap.Pdf.PdfComboBoxField.Value.get -> string?
@@ -153,6 +199,109 @@ Egap.Pdf.PdfCompression
 Egap.Pdf.PdfCompression.Compact = 1 -> Egap.Pdf.PdfCompression
 Egap.Pdf.PdfCompression.None = 2 -> Egap.Pdf.PdfCompression
 Egap.Pdf.PdfCompression.Preserve = 0 -> Egap.Pdf.PdfCompression
+Egap.Pdf.PdfContent
+Egap.Pdf.PdfContent.Add(Egap.Pdf.PdfOperation! item) -> void
+Egap.Pdf.PdfContent.AddRange(System.Collections.Generic.IEnumerable<Egap.Pdf.PdfOperation!>! items) -> void
+Egap.Pdf.PdfContent.Clear() -> void
+Egap.Pdf.PdfContent.Contains(Egap.Pdf.PdfOperation! item) -> bool
+Egap.Pdf.PdfContent.CopyTo(Egap.Pdf.PdfOperation![]! array, int arrayIndex) -> void
+Egap.Pdf.PdfContent.Count.get -> int
+Egap.Pdf.PdfContent.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfOperation!>!
+Egap.Pdf.PdfContent.IndexOf(Egap.Pdf.PdfOperation! item) -> int
+Egap.Pdf.PdfContent.Insert(int index, Egap.Pdf.PdfOperation! item) -> void
+Egap.Pdf.PdfContent.InsertRange(int index, System.Collections.Generic.IEnumerable<Egap.Pdf.PdfOperation!>! items) -> void
+Egap.Pdf.PdfContent.IsChanged.get -> bool
+Egap.Pdf.PdfContent.PdfContent() -> void
+Egap.Pdf.PdfContent.PdfContent(System.Collections.Generic.IEnumerable<Egap.Pdf.PdfOperation!>! operations) -> void
+Egap.Pdf.PdfContent.Remove(Egap.Pdf.PdfOperation! item) -> bool
+Egap.Pdf.PdfContent.RemoveAll(System.Predicate<Egap.Pdf.PdfOperation!>! match) -> int
+Egap.Pdf.PdfContent.RemoveAt(int index) -> void
+Egap.Pdf.PdfContent.RemoveRange(int index, int count) -> void
+Egap.Pdf.PdfContent.this[int index].get -> Egap.Pdf.PdfOperation!
+Egap.Pdf.PdfContent.this[int index].set -> void
+Egap.Pdf.PdfContent.ToBytes() -> byte[]!
+Egap.Pdf.PdfContent.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfContentWalker
+Egap.Pdf.PdfContentWalker.Depth.get -> int
+Egap.Pdf.PdfContentWalker.MarkedContent.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfMarkedContent!>!
+Egap.Pdf.PdfContentWalker.PdfContentWalker() -> void
+Egap.Pdf.PdfContentWalker.Resources.get -> Egap.Pdf.PdfDictionary?
+Egap.Pdf.PdfContentWalker.State.get -> Egap.Pdf.PdfGraphicsState!
+Egap.Pdf.PdfContentWalker.TextLineMatrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfContentWalker.TextMatrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfContentWalker.Walk(Egap.Pdf.PdfContent! content, Egap.Pdf.PdfDictionary? resources, Egap.Pdf.PdfMatrix matrix, Egap.Pdf.PdfReadOptions? options = null) -> void
+Egap.Pdf.PdfContentWalker.Walk(Egap.Pdf.PdfPage! page) -> void
+Egap.Pdf.PdfContentWalker.Warn(Egap.Pdf.PdfWarningCode code, string! message) -> void
+Egap.Pdf.PdfContentWalker.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfContentWriter
+Egap.Pdf.PdfContentWriter.BeginMarkedContent(Egap.Pdf.PdfName! tag) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.BeginMarkedContent(Egap.Pdf.PdfName! tag, Egap.Pdf.PdfObject! properties) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.BeginText() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.CharacterSpacing(double spacing) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Clip(bool evenOdd = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.CloseAndStroke() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.CloseFillAndStroke(bool evenOdd = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.ClosePath() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Cmyk(double cyan, double magenta, double yellow, double black, bool stroke = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Color(System.ReadOnlySpan<double> components, Egap.Pdf.PdfName? pattern = null, bool stroke = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.ColorSpace(Egap.Pdf.PdfName! space, bool stroke = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Compatibility(bool begin) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.CurveTo(double x1, double y1, double x2, double y2, double x3, double y3) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.CurveToV(double x2, double y2, double x3, double y3) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.CurveToY(double x1, double y1, double x3, double y3) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Dash(System.ReadOnlySpan<double> pattern, double phase = 0) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Draw(Egap.Pdf.PdfName! xObject) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Ellipse(double x, double y, double width, double height) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.EndMarkedContent() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.EndPath() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.EndText() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Fill(bool evenOdd = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.FillAndStroke(bool evenOdd = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Flatness(double flatness) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Font(Egap.Pdf.PdfName! font, double size) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.GlyphWidth(double width, double height = 0) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.GlyphWidthAndBox(double width, double height, double left, double bottom, double right, double top) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.GraphicsState(Egap.Pdf.PdfName! name) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Gray(double gray, bool stroke = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.HorizontalScaling(double percent) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.InlineImage(Egap.Pdf.PdfInlineImage! image) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.InTextObject.get -> bool
+Egap.Pdf.PdfContentWriter.Leading(double leading) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Length.get -> int
+Egap.Pdf.PdfContentWriter.LineCap(int cap) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.LineJoin(int join) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.LineTo(double x, double y) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.LineWidth(double width) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.MarkedPoint(Egap.Pdf.PdfName! tag, Egap.Pdf.PdfObject? properties = null) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.MiterLimit(double limit) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.MoveText(double x, double y) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.MoveTextSetLeading(double x, double y) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.MoveTo(double x, double y) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.NextLine() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.NextLineShowText(double wordSpacing, double characterSpacing, System.ReadOnlySpan<byte> codes) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.NextLineShowText(System.ReadOnlySpan<byte> codes) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Operation(Egap.Pdf.PdfOperation! operation) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Path(Egap.Pdf.PdfPath! path) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.PdfContentWriter() -> void
+Egap.Pdf.PdfContentWriter.Raw(System.ReadOnlySpan<byte> content) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Rectangle(double x, double y, double width, double height) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.RenderingIntent(Egap.Pdf.PdfName! intent) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Restore() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Rgb(double red, double green, double blue, bool stroke = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Save() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.SaveDepth.get -> int
+Egap.Pdf.PdfContentWriter.Shading(Egap.Pdf.PdfName! shading) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.ShowText(System.Collections.Generic.IEnumerable<(byte[]! Codes, double Adjustment)>! runs, bool hex = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.ShowText(System.ReadOnlySpan<byte> codes, bool hex = false) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Stroke() -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.TextMatrix(double a, double b, double c, double d, double e, double f) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.TextMatrix(Egap.Pdf.PdfMatrix matrix) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.TextRenderMode(int mode) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.TextRise(double rise) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.ToArray() -> byte[]!
+Egap.Pdf.PdfContentWriter.Transform(double a, double b, double c, double d, double e, double f) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.Transform(Egap.Pdf.PdfMatrix matrix) -> Egap.Pdf.PdfContentWriter!
+Egap.Pdf.PdfContentWriter.WordSpacing(double spacing) -> Egap.Pdf.PdfContentWriter!
 Egap.Pdf.PdfDestination
 Egap.Pdf.PdfDestination.<Clone>$() -> Egap.Pdf.PdfDestination!
 Egap.Pdf.PdfDestination.Bottom.get -> double?
@@ -292,6 +441,60 @@ Egap.Pdf.PdfFlattenFilter
 Egap.Pdf.PdfFlattenFilter.All = 0 -> Egap.Pdf.PdfFlattenFilter
 Egap.Pdf.PdfFlattenFilter.Print = 1 -> Egap.Pdf.PdfFlattenFilter
 Egap.Pdf.PdfFlattenFilter.Screen = 2 -> Egap.Pdf.PdfFlattenFilter
+Egap.Pdf.PdfFont
+Egap.Pdf.PdfFont.Ascent.get -> double
+Egap.Pdf.PdfFont.BaseFont.get -> string?
+Egap.Pdf.PdfFont.BoundingBox.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfFont.CapHeight.get -> double
+Egap.Pdf.PdfFont.Descent.get -> double
+Egap.Pdf.PdfFont.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfFont.Flags.get -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFont.FontMatrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfFont.GetCid(int code) -> int?
+Egap.Pdf.PdfFont.GetCodes(System.ReadOnlySpan<byte> bytes) -> System.Collections.Generic.IReadOnlyList<int>!
+Egap.Pdf.PdfFont.GetGlyphId(int code) -> ushort?
+Egap.Pdf.PdfFont.GetGlyphName(int code) -> string?
+Egap.Pdf.PdfFont.GetTypeface() -> Egami.Fonts.Typeface?
+Egap.Pdf.PdfFont.GetVerticalMetrics(int code) -> Egap.Pdf.PdfVerticalMetrics?
+Egap.Pdf.PdfFont.GetWidth(int code) -> double
+Egap.Pdf.PdfFont.IsComposite.get -> bool
+Egap.Pdf.PdfFont.IsEmbedded.get -> bool
+Egap.Pdf.PdfFont.IsStandard14.get -> bool
+Egap.Pdf.PdfFont.IsSubset.get -> bool
+Egap.Pdf.PdfFont.IsVertical.get -> bool
+Egap.Pdf.PdfFont.ItalicAngle.get -> double
+Egap.Pdf.PdfFont.Name.get -> string?
+Egap.Pdf.PdfFont.ReadCode(System.ReadOnlySpan<byte> bytes, int offset, out int length) -> int
+Egap.Pdf.PdfFont.ToUnicode(int code) -> string?
+Egap.Pdf.PdfFont.ToUnicode(System.ReadOnlySpan<byte> bytes) -> string!
+Egap.Pdf.PdfFont.Type.get -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFont.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfFontCollection
+Egap.Pdf.PdfFontCollection.ContainsKey(string! key) -> bool
+Egap.Pdf.PdfFontCollection.Count.get -> int
+Egap.Pdf.PdfFontCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string!, Egap.Pdf.PdfFont!>>!
+Egap.Pdf.PdfFontCollection.Keys.get -> System.Collections.Generic.IEnumerable<string!>!
+Egap.Pdf.PdfFontCollection.this[string! key].get -> Egap.Pdf.PdfFont!
+Egap.Pdf.PdfFontCollection.TryGetValue(string! key, out Egap.Pdf.PdfFont! value) -> bool
+Egap.Pdf.PdfFontCollection.Values.get -> System.Collections.Generic.IEnumerable<Egap.Pdf.PdfFont!>!
+Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.AllCap = 65536 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.FixedPitch = 1 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.ForceBold = 262144 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Italic = 64 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.None = 0 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Nonsymbolic = 32 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Script = 8 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Serif = 2 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.SmallCap = 131072 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontFlags.Symbolic = 4 -> Egap.Pdf.PdfFontFlags
+Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.MMType1 = 2 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.TrueType = 3 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.Type0 = 5 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.Type1 = 1 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.Type3 = 4 -> Egap.Pdf.PdfFontType
+Egap.Pdf.PdfFontType.Unknown = 0 -> Egap.Pdf.PdfFontType
 Egap.Pdf.PdfForm
 Egap.Pdf.PdfForm.Alignment.get -> Egap.Pdf.PdfTextAlignment
 Egap.Pdf.PdfForm.Count.get -> int
@@ -323,6 +526,21 @@ Egap.Pdf.PdfFreeTextAnnotation.DefaultAppearance.set -> void
 Egap.Pdf.PdfFreeTextAnnotation.DefaultStyle.get -> string?
 Egap.Pdf.PdfFreeTextAnnotation.DefaultStyle.set -> void
 Egap.Pdf.PdfFreeTextAnnotation.PdfFreeTextAnnotation(Egap.Pdf.PdfRectangle rectangle, string! contents, string! defaultAppearance = "/Helv 12 Tf 0 g") -> void
+Egap.Pdf.PdfGlyph
+Egap.Pdf.PdfGlyph.Code.get -> int
+Egap.Pdf.PdfGlyph.Code.init -> void
+Egap.Pdf.PdfGlyph.CodeLength.get -> int
+Egap.Pdf.PdfGlyph.CodeLength.init -> void
+Egap.Pdf.PdfGlyph.Deconstruct(out int Code, out int CodeLength, out double Width, out Egap.Pdf.PdfMatrix Matrix, out bool IsWordSpace) -> void
+Egap.Pdf.PdfGlyph.Equals(Egap.Pdf.PdfGlyph other) -> bool
+Egap.Pdf.PdfGlyph.IsWordSpace.get -> bool
+Egap.Pdf.PdfGlyph.IsWordSpace.init -> void
+Egap.Pdf.PdfGlyph.Matrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfGlyph.Matrix.init -> void
+Egap.Pdf.PdfGlyph.PdfGlyph() -> void
+Egap.Pdf.PdfGlyph.PdfGlyph(int Code, int CodeLength, double Width, Egap.Pdf.PdfMatrix Matrix, bool IsWordSpace) -> void
+Egap.Pdf.PdfGlyph.Width.get -> double
+Egap.Pdf.PdfGlyph.Width.init -> void
 Egap.Pdf.PdfGoToAction
 Egap.Pdf.PdfGoToAction.Destination.get -> Egap.Pdf.PdfDestination?
 Egap.Pdf.PdfGoToAction.DestinationName.get -> string?
@@ -342,6 +560,39 @@ Egap.Pdf.PdfGoToRemoteAction.FileName.get -> string?
 Egap.Pdf.PdfGoToRemoteAction.NewWindow.get -> bool?
 Egap.Pdf.PdfGoToRemoteAction.PdfGoToRemoteAction(string! fileName, Egap.Pdf.PdfDestination! destination) -> void
 Egap.Pdf.PdfGoToRemoteAction.PdfGoToRemoteAction(string! fileName, string! destinationName) -> void
+Egap.Pdf.PdfGraphicsState
+Egap.Pdf.PdfGraphicsState.AlphaIsShape.get -> bool
+Egap.Pdf.PdfGraphicsState.BlendMode.get -> Egap.Pdf.PdfName!
+Egap.Pdf.PdfGraphicsState.CharacterSpacing.get -> double
+Egap.Pdf.PdfGraphicsState.Clips.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfClipPath!>!
+Egap.Pdf.PdfGraphicsState.DashArray.get -> System.Collections.Generic.IReadOnlyList<double>!
+Egap.Pdf.PdfGraphicsState.DashPhase.get -> double
+Egap.Pdf.PdfGraphicsState.FillAlpha.get -> double
+Egap.Pdf.PdfGraphicsState.FillColor.get -> Egap.Pdf.PdfColor!
+Egap.Pdf.PdfGraphicsState.FillOverprint.get -> bool
+Egap.Pdf.PdfGraphicsState.Flatness.get -> double
+Egap.Pdf.PdfGraphicsState.Font.get -> Egap.Pdf.PdfDictionary?
+Egap.Pdf.PdfGraphicsState.FontName.get -> Egap.Pdf.PdfName?
+Egap.Pdf.PdfGraphicsState.FontSize.get -> double
+Egap.Pdf.PdfGraphicsState.HorizontalScaling.get -> double
+Egap.Pdf.PdfGraphicsState.Leading.get -> double
+Egap.Pdf.PdfGraphicsState.LineCap.get -> int
+Egap.Pdf.PdfGraphicsState.LineJoin.get -> int
+Egap.Pdf.PdfGraphicsState.LineWidth.get -> double
+Egap.Pdf.PdfGraphicsState.Matrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfGraphicsState.MiterLimit.get -> double
+Egap.Pdf.PdfGraphicsState.OverprintMode.get -> int
+Egap.Pdf.PdfGraphicsState.RenderingIntent.get -> Egap.Pdf.PdfName!
+Egap.Pdf.PdfGraphicsState.SoftMask.get -> Egap.Pdf.PdfDictionary?
+Egap.Pdf.PdfGraphicsState.SoftMaskMatrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfGraphicsState.StrokeAdjustment.get -> bool
+Egap.Pdf.PdfGraphicsState.StrokeAlpha.get -> double
+Egap.Pdf.PdfGraphicsState.StrokeColor.get -> Egap.Pdf.PdfColor!
+Egap.Pdf.PdfGraphicsState.StrokeOverprint.get -> bool
+Egap.Pdf.PdfGraphicsState.TextKnockout.get -> bool
+Egap.Pdf.PdfGraphicsState.TextRenderMode.get -> int
+Egap.Pdf.PdfGraphicsState.TextRise.get -> double
+Egap.Pdf.PdfGraphicsState.WordSpacing.get -> double
 Egap.Pdf.PdfHideAction
 Egap.Pdf.PdfHideAction.Hide.get -> bool
 Egap.Pdf.PdfHideAction.Targets.get -> Egap.Pdf.PdfObject?
@@ -353,6 +604,34 @@ Egap.Pdf.PdfHighlightMode.None = 0 -> Egap.Pdf.PdfHighlightMode
 Egap.Pdf.PdfHighlightMode.Outline = 2 -> Egap.Pdf.PdfHighlightMode
 Egap.Pdf.PdfHighlightMode.Push = 3 -> Egap.Pdf.PdfHighlightMode
 Egap.Pdf.PdfHighlightMode.Toggle = 4 -> Egap.Pdf.PdfHighlightMode
+Egap.Pdf.PdfImage
+Egap.Pdf.PdfImage.BitsPerComponent.get -> int
+Egap.Pdf.PdfImage.ColorSpace.get -> Egap.Pdf.PdfObject?
+Egap.Pdf.PdfImage.Filters.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfName!>!
+Egap.Pdf.PdfImage.GetDecodedBytes() -> byte[]!
+Egap.Pdf.PdfImage.GetRawBytes() -> byte[]!
+Egap.Pdf.PdfImage.Height.get -> int
+Egap.Pdf.PdfImage.ImageCodec.get -> Egap.Pdf.PdfName?
+Egap.Pdf.PdfImage.IsInline.get -> bool
+Egap.Pdf.PdfImage.IsStencilMask.get -> bool
+Egap.Pdf.PdfImage.Replace(Egami.Raster! image, Egap.Pdf.PdfImageEncoding? encoding = null) -> void
+Egap.Pdf.PdfImage.ReplaceWithJpeg(System.ReadOnlySpan<byte> jpeg) -> void
+Egap.Pdf.PdfImage.Stream.get -> Egap.Pdf.PdfStream?
+Egap.Pdf.PdfImage.ToRaster(Egap.Pdf.PdfImageOptions? options = null) -> Egami.Raster!
+Egap.Pdf.PdfImage.ToRaster<TPixel>(Egap.Pdf.PdfImageOptions? options = null) -> Egami.Raster<TPixel>!
+Egap.Pdf.PdfImage.Width.get -> int
+Egap.Pdf.PdfImageEncoding
+Egap.Pdf.PdfImageEncoding.Quality.get -> int?
+Egap.Pdf.PdfImageOptions
+Egap.Pdf.PdfImageOptions.<Clone>$() -> Egap.Pdf.PdfImageOptions!
+Egap.Pdf.PdfImageOptions.ApplyMasks.get -> bool
+Egap.Pdf.PdfImageOptions.ApplyMasks.init -> void
+Egap.Pdf.PdfImageOptions.CmykProfile.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfImageOptions.CmykProfile.init -> void
+Egap.Pdf.PdfImageOptions.ConvertColor.get -> bool
+Egap.Pdf.PdfImageOptions.ConvertColor.init -> void
+Egap.Pdf.PdfImageOptions.Equals(Egap.Pdf.PdfImageOptions? other) -> bool
+Egap.Pdf.PdfImageOptions.PdfImageOptions() -> void
 Egap.Pdf.PdfImportOptions
 Egap.Pdf.PdfImportOptions.<Clone>$() -> Egap.Pdf.PdfImportOptions!
 Egap.Pdf.PdfImportOptions.Equals(Egap.Pdf.PdfImportOptions? other) -> bool
@@ -363,6 +642,10 @@ Egap.Pdf.PdfInkAnnotation
 Egap.Pdf.PdfInkAnnotation.PdfInkAnnotation(System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>!>! strokes) -> void
 Egap.Pdf.PdfInkAnnotation.Strokes.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>!>!
 Egap.Pdf.PdfInkAnnotation.Strokes.set -> void
+Egap.Pdf.PdfInlineImage
+Egap.Pdf.PdfInlineImage.Data.get -> System.ReadOnlySpan<byte>
+Egap.Pdf.PdfInlineImage.Parameters.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfInlineImage.PdfInlineImage(Egap.Pdf.PdfDictionary! parameters, System.ReadOnlySpan<byte> data) -> void
 Egap.Pdf.PdfInteger
 Egap.Pdf.PdfInteger.Equals(Egap.Pdf.PdfInteger? other) -> bool
 Egap.Pdf.PdfInteger.PdfInteger(long value) -> void
@@ -382,10 +665,12 @@ Egap.Pdf.PdfLayer.IsVisible.set -> void
 Egap.Pdf.PdfLayer.Name.get -> string!
 Egap.Pdf.PdfLayer.Name.set -> void
 Egap.Pdf.PdfLayer.Reference.get -> Egap.Pdf.PdfReference!
+Egap.Pdf.PdfLayer.RemoveContent() -> int
 Egap.Pdf.PdfLayerCollection
 Egap.Pdf.PdfLayerCollection.Count.get -> int
 Egap.Pdf.PdfLayerCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfLayer!>!
 Egap.Pdf.PdfLayerCollection.Remove(Egap.Pdf.PdfLayer! layer) -> bool
+Egap.Pdf.PdfLayerCollection.Remove(Egap.Pdf.PdfLayer! layer, bool removeContent) -> bool
 Egap.Pdf.PdfLayerCollection.this[int index].get -> Egap.Pdf.PdfLayer!
 Egap.Pdf.PdfLimitException
 Egap.Pdf.PdfLimitException.Limit.get -> string!
@@ -430,6 +715,20 @@ Egap.Pdf.PdfListBoxField
 Egap.Pdf.PdfListBoxField.IsMultiSelect.get -> bool
 Egap.Pdf.PdfListBoxField.Select(params System.Collections.Generic.IReadOnlyList<string!>! values) -> void
 Egap.Pdf.PdfListBoxField.TopIndex.get -> int
+Egap.Pdf.PdfMarkedContent
+Egap.Pdf.PdfMarkedContent.<Clone>$() -> Egap.Pdf.PdfMarkedContent!
+Egap.Pdf.PdfMarkedContent.ActualText.get -> string?
+Egap.Pdf.PdfMarkedContent.Deconstruct(out Egap.Pdf.PdfName! Tag, out Egap.Pdf.PdfDictionary? Properties, out Egap.Pdf.PdfName? PropertiesName) -> void
+Egap.Pdf.PdfMarkedContent.Equals(Egap.Pdf.PdfMarkedContent? other) -> bool
+Egap.Pdf.PdfMarkedContent.Mcid.get -> int?
+Egap.Pdf.PdfMarkedContent.OptionalContent.get -> Egap.Pdf.PdfDictionary?
+Egap.Pdf.PdfMarkedContent.PdfMarkedContent(Egap.Pdf.PdfName! Tag, Egap.Pdf.PdfDictionary? Properties, Egap.Pdf.PdfName? PropertiesName = null) -> void
+Egap.Pdf.PdfMarkedContent.Properties.get -> Egap.Pdf.PdfDictionary?
+Egap.Pdf.PdfMarkedContent.Properties.init -> void
+Egap.Pdf.PdfMarkedContent.PropertiesName.get -> Egap.Pdf.PdfName?
+Egap.Pdf.PdfMarkedContent.PropertiesName.init -> void
+Egap.Pdf.PdfMarkedContent.Tag.get -> Egap.Pdf.PdfName!
+Egap.Pdf.PdfMarkedContent.Tag.init -> void
 Egap.Pdf.PdfMarkupAnnotation
 Egap.Pdf.PdfMarkupAnnotation.Author.get -> string?
 Egap.Pdf.PdfMarkupAnnotation.Author.set -> void
@@ -447,6 +746,30 @@ Egap.Pdf.PdfMarkupAnnotation.ReplyType.set -> void
 Egap.Pdf.PdfMarkupAnnotation.RichContents.get -> string?
 Egap.Pdf.PdfMarkupAnnotation.Subject.get -> string?
 Egap.Pdf.PdfMarkupAnnotation.Subject.set -> void
+Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfMatrix.A.get -> double
+Egap.Pdf.PdfMatrix.A.init -> void
+Egap.Pdf.PdfMatrix.B.get -> double
+Egap.Pdf.PdfMatrix.B.init -> void
+Egap.Pdf.PdfMatrix.C.get -> double
+Egap.Pdf.PdfMatrix.C.init -> void
+Egap.Pdf.PdfMatrix.D.get -> double
+Egap.Pdf.PdfMatrix.D.init -> void
+Egap.Pdf.PdfMatrix.Deconstruct(out double A, out double B, out double C, out double D, out double E, out double F) -> void
+Egap.Pdf.PdfMatrix.Determinant.get -> double
+Egap.Pdf.PdfMatrix.E.get -> double
+Egap.Pdf.PdfMatrix.E.init -> void
+Egap.Pdf.PdfMatrix.Equals(Egap.Pdf.PdfMatrix other) -> bool
+Egap.Pdf.PdfMatrix.F.get -> double
+Egap.Pdf.PdfMatrix.F.init -> void
+Egap.Pdf.PdfMatrix.IsIdentity.get -> bool
+Egap.Pdf.PdfMatrix.Multiply(Egap.Pdf.PdfMatrix second) -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfMatrix.PdfMatrix() -> void
+Egap.Pdf.PdfMatrix.PdfMatrix(double A, double B, double C, double D, double E, double F) -> void
+Egap.Pdf.PdfMatrix.Transform(Egap.Pdf.PdfPoint point) -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfMatrix.Transform(Egap.Pdf.PdfRectangle rectangle) -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfMatrix.TransformVector(Egap.Pdf.PdfPoint vector) -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfMatrix.TryInvert(out Egap.Pdf.PdfMatrix inverse) -> bool
 Egap.Pdf.PdfMetadata
 Egap.Pdf.PdfMetadata.Author.get -> string?
 Egap.Pdf.PdfMetadata.Author.set -> void
@@ -494,6 +817,15 @@ Egap.Pdf.PdfObjectTable.IsChanged.get -> bool
 Egap.Pdf.PdfObjectTable.Remove(Egap.Pdf.PdfReference! reference) -> bool
 Egap.Pdf.PdfObjectTable.Set(Egap.Pdf.PdfReference! reference, Egap.Pdf.PdfObject! value) -> void
 Egap.Pdf.PdfObjectTable.this[Egap.Pdf.PdfReference! reference].get -> Egap.Pdf.PdfObject!
+Egap.Pdf.PdfOperation
+Egap.Pdf.PdfOperation.GetMatrix() -> Egap.Pdf.PdfMatrix?
+Egap.Pdf.PdfOperation.GetName(int index) -> Egap.Pdf.PdfName?
+Egap.Pdf.PdfOperation.GetNumber(int index) -> double?
+Egap.Pdf.PdfOperation.GetString(int index) -> Egap.Pdf.PdfString?
+Egap.Pdf.PdfOperation.IsKnown.get -> bool
+Egap.Pdf.PdfOperation.Operands.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfObject!>!
+Egap.Pdf.PdfOperation.Operator.get -> string!
+Egap.Pdf.PdfOperation.PdfOperation(string! operator, params System.Collections.Generic.IEnumerable<Egap.Pdf.PdfObject!>! operands) -> void
 Egap.Pdf.PdfOutline
 Egap.Pdf.PdfOutline.GetAllItems() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfOutlineItem!>!
 Egap.Pdf.PdfOutlineItem
@@ -521,6 +853,8 @@ Egap.Pdf.PdfOutlineNode.Add(string! title, Egap.Pdf.PdfDestination? destination 
 Egap.Pdf.PdfOutlineNode.Children.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfOutlineItem!>!
 Egap.Pdf.PdfOutlineNode.Insert(int index, string! title, Egap.Pdf.PdfDestination? destination = null) -> Egap.Pdf.PdfOutlineItem!
 Egap.Pdf.PdfPage
+Egap.Pdf.PdfPage.AddContent(System.ReadOnlySpan<byte> content, Egap.Pdf.PdfCanvasPlacement placement = Egap.Pdf.PdfCanvasPlacement.Over) -> void
+Egap.Pdf.PdfPage.AddResource(Egap.Pdf.PdfName! category, Egap.Pdf.PdfObject! value) -> Egap.Pdf.PdfName!
 Egap.Pdf.PdfPage.Annotations.get -> Egap.Pdf.PdfAnnotationCollection!
 Egap.Pdf.PdfPage.ArtBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.ArtBox.set -> void
@@ -530,6 +864,12 @@ Egap.Pdf.PdfPage.CropBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.CropBox.set -> void
 Egap.Pdf.PdfPage.Dictionary.get -> Egap.Pdf.PdfDictionary!
 Egap.Pdf.PdfPage.Equals(Egap.Pdf.PdfPage? other) -> bool
+Egap.Pdf.PdfPage.ExtractText(Egap.Pdf.PdfTextOptions? options = null) -> string!
+Egap.Pdf.PdfPage.Flush() -> void
+Egap.Pdf.PdfPage.Fonts.get -> Egap.Pdf.PdfFontCollection!
+Egap.Pdf.PdfPage.GetContent() -> Egap.Pdf.PdfContent!
+Egap.Pdf.PdfPage.GetImages() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPlacedImage!>!
+Egap.Pdf.PdfPage.GetText(Egap.Pdf.PdfTextOptions? options = null) -> Egap.Pdf.PdfTextPage!
 Egap.Pdf.PdfPage.MediaBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.MediaBox.set -> void
 Egap.Pdf.PdfPage.Reference.get -> Egap.Pdf.PdfReference?
@@ -537,6 +877,7 @@ Egap.Pdf.PdfPage.Resources.get -> Egap.Pdf.PdfDictionary?
 Egap.Pdf.PdfPage.Resources.set -> void
 Egap.Pdf.PdfPage.Rotate.get -> int
 Egap.Pdf.PdfPage.Rotate.set -> void
+Egap.Pdf.PdfPage.SetContent(Egap.Pdf.PdfContent! content) -> void
 Egap.Pdf.PdfPage.TrimBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.TrimBox.set -> void
 Egap.Pdf.PdfPage.UserUnit.get -> double
@@ -579,6 +920,42 @@ Egap.Pdf.PdfPageLabelStyle.UpperLetters = 4 -> Egap.Pdf.PdfPageLabelStyle
 Egap.Pdf.PdfPageLabelStyle.UpperRoman = 2 -> Egap.Pdf.PdfPageLabelStyle
 Egap.Pdf.PdfPasswordException
 Egap.Pdf.PdfPasswordException.PdfPasswordException(string! message) -> void
+Egap.Pdf.PdfPath
+Egap.Pdf.PdfPath.Close() -> Egap.Pdf.PdfPath!
+Egap.Pdf.PdfPath.CurrentPoint.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfPath.CurveTo(double x1, double y1, double x2, double y2, double x3, double y3) -> Egap.Pdf.PdfPath!
+Egap.Pdf.PdfPath.GetBounds(Egap.Pdf.PdfMatrix matrix) -> Egap.Pdf.PdfRectangle?
+Egap.Pdf.PdfPath.IsEmpty.get -> bool
+Egap.Pdf.PdfPath.LineTo(double x, double y) -> Egap.Pdf.PdfPath!
+Egap.Pdf.PdfPath.MoveTo(double x, double y) -> Egap.Pdf.PdfPath!
+Egap.Pdf.PdfPath.PdfPath() -> void
+Egap.Pdf.PdfPath.Rectangle(double x, double y, double width, double height) -> Egap.Pdf.PdfPath!
+Egap.Pdf.PdfPath.Segments.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPathSegment>!
+Egap.Pdf.PdfPathPaint
+Egap.Pdf.PdfPathPaint.Clip = 8 -> Egap.Pdf.PdfPathPaint
+Egap.Pdf.PdfPathPaint.EvenOddClip = 16 -> Egap.Pdf.PdfPathPaint
+Egap.Pdf.PdfPathPaint.EvenOddFill = 4 -> Egap.Pdf.PdfPathPaint
+Egap.Pdf.PdfPathPaint.Fill = 2 -> Egap.Pdf.PdfPathPaint
+Egap.Pdf.PdfPathPaint.None = 0 -> Egap.Pdf.PdfPathPaint
+Egap.Pdf.PdfPathPaint.Stroke = 1 -> Egap.Pdf.PdfPathPaint
+Egap.Pdf.PdfPathSegment
+Egap.Pdf.PdfPathSegment.Control1.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfPathSegment.Control1.init -> void
+Egap.Pdf.PdfPathSegment.Control2.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfPathSegment.Control2.init -> void
+Egap.Pdf.PdfPathSegment.Deconstruct(out Egap.Pdf.PdfPathVerb Verb, out Egap.Pdf.PdfPoint Point, out Egap.Pdf.PdfPoint Control1, out Egap.Pdf.PdfPoint Control2) -> void
+Egap.Pdf.PdfPathSegment.Equals(Egap.Pdf.PdfPathSegment other) -> bool
+Egap.Pdf.PdfPathSegment.PdfPathSegment() -> void
+Egap.Pdf.PdfPathSegment.PdfPathSegment(Egap.Pdf.PdfPathVerb Verb, Egap.Pdf.PdfPoint Point, Egap.Pdf.PdfPoint Control1 = default(Egap.Pdf.PdfPoint), Egap.Pdf.PdfPoint Control2 = default(Egap.Pdf.PdfPoint)) -> void
+Egap.Pdf.PdfPathSegment.Point.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfPathSegment.Point.init -> void
+Egap.Pdf.PdfPathSegment.Verb.get -> Egap.Pdf.PdfPathVerb
+Egap.Pdf.PdfPathSegment.Verb.init -> void
+Egap.Pdf.PdfPathVerb
+Egap.Pdf.PdfPathVerb.Close = 3 -> Egap.Pdf.PdfPathVerb
+Egap.Pdf.PdfPathVerb.CurveTo = 2 -> Egap.Pdf.PdfPathVerb
+Egap.Pdf.PdfPathVerb.LineTo = 1 -> Egap.Pdf.PdfPathVerb
+Egap.Pdf.PdfPathVerb.MoveTo = 0 -> Egap.Pdf.PdfPathVerb
 Egap.Pdf.PdfPermissions
 Egap.Pdf.PdfPermissions.All = Egap.Pdf.PdfPermissions.Print | Egap.Pdf.PdfPermissions.Modify | Egap.Pdf.PdfPermissions.CopyContent | Egap.Pdf.PdfPermissions.Annotate | Egap.Pdf.PdfPermissions.FillForms | Egap.Pdf.PdfPermissions.ExtractForAccessibility | Egap.Pdf.PdfPermissions.Assemble | Egap.Pdf.PdfPermissions.PrintHighQuality -> Egap.Pdf.PdfPermissions
 Egap.Pdf.PdfPermissions.Annotate = 32 -> Egap.Pdf.PdfPermissions
@@ -590,6 +967,17 @@ Egap.Pdf.PdfPermissions.Modify = 8 -> Egap.Pdf.PdfPermissions
 Egap.Pdf.PdfPermissions.None = 0 -> Egap.Pdf.PdfPermissions
 Egap.Pdf.PdfPermissions.Print = 4 -> Egap.Pdf.PdfPermissions
 Egap.Pdf.PdfPermissions.PrintHighQuality = 2048 -> Egap.Pdf.PdfPermissions
+Egap.Pdf.PdfPlacedImage
+Egap.Pdf.PdfPlacedImage.<Clone>$() -> Egap.Pdf.PdfPlacedImage!
+Egap.Pdf.PdfPlacedImage.Deconstruct(out Egap.Pdf.PdfImage! Image, out Egap.Pdf.PdfMatrix Matrix, out string? Name) -> void
+Egap.Pdf.PdfPlacedImage.Equals(Egap.Pdf.PdfPlacedImage? other) -> bool
+Egap.Pdf.PdfPlacedImage.Image.get -> Egap.Pdf.PdfImage!
+Egap.Pdf.PdfPlacedImage.Image.init -> void
+Egap.Pdf.PdfPlacedImage.Matrix.get -> Egap.Pdf.PdfMatrix
+Egap.Pdf.PdfPlacedImage.Matrix.init -> void
+Egap.Pdf.PdfPlacedImage.Name.get -> string?
+Egap.Pdf.PdfPlacedImage.Name.init -> void
+Egap.Pdf.PdfPlacedImage.PdfPlacedImage(Egap.Pdf.PdfImage! Image, Egap.Pdf.PdfMatrix Matrix, string? Name) -> void
 Egap.Pdf.PdfPoint
 Egap.Pdf.PdfPoint.Deconstruct(out double X, out double Y) -> void
 Egap.Pdf.PdfPoint.Equals(Egap.Pdf.PdfPoint other) -> bool
@@ -783,9 +1171,54 @@ Egap.Pdf.PdfTextField.MaxLength.get -> int?
 Egap.Pdf.PdfTextField.RichValue.get -> string?
 Egap.Pdf.PdfTextField.Value.get -> string?
 Egap.Pdf.PdfTextField.Value.set -> void
+Egap.Pdf.PdfTextGlyph
+Egap.Pdf.PdfTextGlyph.<Clone>$() -> Egap.Pdf.PdfTextGlyph!
+Egap.Pdf.PdfTextGlyph.Box.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfTextGlyph.Box.init -> void
+Egap.Pdf.PdfTextGlyph.Code.get -> int
+Egap.Pdf.PdfTextGlyph.Code.init -> void
+Egap.Pdf.PdfTextGlyph.Color.get -> Egap.Pdf.PdfColor!
+Egap.Pdf.PdfTextGlyph.Color.init -> void
+Egap.Pdf.PdfTextGlyph.Deconstruct(out string! Text, out Egap.Pdf.PdfRectangle Box, out Egap.Pdf.PdfFont? Font, out double FontSize, out Egap.Pdf.PdfColor! Color, out int Code) -> void
+Egap.Pdf.PdfTextGlyph.End.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfTextGlyph.End.init -> void
+Egap.Pdf.PdfTextGlyph.Equals(Egap.Pdf.PdfTextGlyph? other) -> bool
+Egap.Pdf.PdfTextGlyph.Font.get -> Egap.Pdf.PdfFont?
+Egap.Pdf.PdfTextGlyph.Font.init -> void
+Egap.Pdf.PdfTextGlyph.FontSize.get -> double
+Egap.Pdf.PdfTextGlyph.FontSize.init -> void
+Egap.Pdf.PdfTextGlyph.IsSpace.get -> bool
+Egap.Pdf.PdfTextGlyph.Origin.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfTextGlyph.Origin.init -> void
+Egap.Pdf.PdfTextGlyph.PdfTextGlyph(string! Text, Egap.Pdf.PdfRectangle Box, Egap.Pdf.PdfFont? Font, double FontSize, Egap.Pdf.PdfColor! Color, int Code) -> void
+Egap.Pdf.PdfTextGlyph.Text.get -> string!
+Egap.Pdf.PdfTextGlyph.Text.init -> void
+Egap.Pdf.PdfTextLine
+Egap.Pdf.PdfTextLine.Box.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfTextLine.Text.get -> string!
+Egap.Pdf.PdfTextLine.Words.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextWord!>!
 Egap.Pdf.PdfTextMarkupAnnotation
 Egap.Pdf.PdfTextMarkupAnnotation.QuadPoints.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>!
 Egap.Pdf.PdfTextMarkupAnnotation.QuadPoints.set -> void
+Egap.Pdf.PdfTextOptions
+Egap.Pdf.PdfTextOptions.<Clone>$() -> Egap.Pdf.PdfTextOptions!
+Egap.Pdf.PdfTextOptions.Equals(Egap.Pdf.PdfTextOptions? other) -> bool
+Egap.Pdf.PdfTextOptions.Order.get -> Egap.Pdf.PdfTextOrder
+Egap.Pdf.PdfTextOptions.Order.init -> void
+Egap.Pdf.PdfTextOptions.PdfTextOptions() -> void
+Egap.Pdf.PdfTextOptions.WordGap.get -> double
+Egap.Pdf.PdfTextOptions.WordGap.init -> void
+Egap.Pdf.PdfTextOrder
+Egap.Pdf.PdfTextOrder.Content = 0 -> Egap.Pdf.PdfTextOrder
+Egap.Pdf.PdfTextOrder.Position = 1 -> Egap.Pdf.PdfTextOrder
+Egap.Pdf.PdfTextPage
+Egap.Pdf.PdfTextPage.Glyphs.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextGlyph!>!
+Egap.Pdf.PdfTextPage.Lines.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextLine!>!
+Egap.Pdf.PdfTextPage.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfTextWord
+Egap.Pdf.PdfTextWord.Box.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfTextWord.Glyphs.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextGlyph!>!
+Egap.Pdf.PdfTextWord.Text.get -> string!
 Egap.Pdf.PdfUnderlineAnnotation
 Egap.Pdf.PdfUnderlineAnnotation.PdfUnderlineAnnotation(System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>! quadPoints) -> void
 Egap.Pdf.PdfUriAction
@@ -793,6 +1226,17 @@ Egap.Pdf.PdfUriAction.IsMap.get -> bool
 Egap.Pdf.PdfUriAction.PdfUriAction(string! uri) -> void
 Egap.Pdf.PdfUriAction.Uri.get -> string?
 Egap.Pdf.PdfUriAction.Uri.set -> void
+Egap.Pdf.PdfVerticalMetrics
+Egap.Pdf.PdfVerticalMetrics.Advance.get -> double
+Egap.Pdf.PdfVerticalMetrics.Advance.init -> void
+Egap.Pdf.PdfVerticalMetrics.Deconstruct(out double Advance, out double OriginX, out double OriginY) -> void
+Egap.Pdf.PdfVerticalMetrics.Equals(Egap.Pdf.PdfVerticalMetrics other) -> bool
+Egap.Pdf.PdfVerticalMetrics.OriginX.get -> double
+Egap.Pdf.PdfVerticalMetrics.OriginX.init -> void
+Egap.Pdf.PdfVerticalMetrics.OriginY.get -> double
+Egap.Pdf.PdfVerticalMetrics.OriginY.init -> void
+Egap.Pdf.PdfVerticalMetrics.PdfVerticalMetrics() -> void
+Egap.Pdf.PdfVerticalMetrics.PdfVerticalMetrics(double Advance, double OriginX, double OriginY) -> void
 Egap.Pdf.PdfWarning
 Egap.Pdf.PdfWarning.<Clone>$() -> Egap.Pdf.PdfWarning!
 Egap.Pdf.PdfWarning.Code.get -> Egap.Pdf.PdfWarningCode
@@ -812,11 +1256,14 @@ Egap.Pdf.PdfWarningCode.BrokenXrefChain = 21 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.DamagedFilterData = 18 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.DuplicateKey = 12 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.FieldRenamed = 34 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.FontProgramUnreadable = 40 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.InvalidReference = 13 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedContent = 36 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedDictionary = 11 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedEncryption = 28 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedFilterParameters = 19 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedHexString = 5 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.MalformedInlineImage = 38 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedName = 3 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedNumber = 1 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.MalformedObjectStream = 22 -> Egap.Pdf.PdfWarningCode
@@ -834,12 +1281,15 @@ Egap.Pdf.PdfWarningCode.NotImported = 33 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.NumberOutOfRange = 2 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.ObjectRelocated = 27 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.PageReferencesRemoved = 35 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.RasterFallback = 39 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.ShiftedOffsets = 25 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.TextWithoutUnicode = 41 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.TooManyWarnings = 8 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnexpectedDelimiter = 6 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnexpectedToken = 9 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnterminatedObject = 10 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.UnterminatedString = 4 -> Egap.Pdf.PdfWarningCode
+Egap.Pdf.PdfWarningCode.WrongOperandCount = 37 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.WrongStreamLength = 16 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWarningCode.XrefRebuilt = 26 -> Egap.Pdf.PdfWarningCode
 Egap.Pdf.PdfWidgetAnnotation
@@ -865,13 +1315,29 @@ override Egap.Pdf.PdfAnnotation.ToString() -> string!
 override Egap.Pdf.PdfAttachment.Equals(object? obj) -> bool
 override Egap.Pdf.PdfAttachment.GetHashCode() -> int
 override Egap.Pdf.PdfAttachment.ToString() -> string!
+override Egap.Pdf.PdfCanvasOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfCanvasOptions.GetHashCode() -> int
+override Egap.Pdf.PdfCanvasOptions.ToString() -> string!
 override Egap.Pdf.PdfChoiceOption.GetHashCode() -> int
+override Egap.Pdf.PdfClipPath.Equals(object? obj) -> bool
+override Egap.Pdf.PdfClipPath.GetHashCode() -> int
+override Egap.Pdf.PdfClipPath.ToString() -> string!
+override Egap.Pdf.PdfColor.Equals(object? obj) -> bool
+override Egap.Pdf.PdfColor.GetHashCode() -> int
+override Egap.Pdf.PdfColor.ToString() -> string!
 override Egap.Pdf.PdfDestination.Equals(object? obj) -> bool
 override Egap.Pdf.PdfDestination.GetHashCode() -> int
 override Egap.Pdf.PdfDestination.ToString() -> string!
 override Egap.Pdf.PdfField.Equals(object? obj) -> bool
 override Egap.Pdf.PdfField.GetHashCode() -> int
 override Egap.Pdf.PdfField.ToString() -> string!
+override Egap.Pdf.PdfFont.ToString() -> string!
+override Egap.Pdf.PdfGlyph.GetHashCode() -> int
+override Egap.Pdf.PdfImage.ToString() -> string!
+override Egap.Pdf.PdfImageEncoding.ToString() -> string!
+override Egap.Pdf.PdfImageOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfImageOptions.GetHashCode() -> int
+override Egap.Pdf.PdfImageOptions.ToString() -> string!
 override Egap.Pdf.PdfImportOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfImportOptions.GetHashCode() -> int
 override Egap.Pdf.PdfImportOptions.ToString() -> string!
@@ -880,9 +1346,15 @@ override Egap.Pdf.PdfInteger.GetHashCode() -> int
 override Egap.Pdf.PdfLayer.Equals(object? obj) -> bool
 override Egap.Pdf.PdfLayer.GetHashCode() -> int
 override Egap.Pdf.PdfLayer.ToString() -> string!
+override Egap.Pdf.PdfMarkedContent.Equals(object? obj) -> bool
+override Egap.Pdf.PdfMarkedContent.GetHashCode() -> int
+override Egap.Pdf.PdfMarkedContent.ToString() -> string!
+override Egap.Pdf.PdfMatrix.GetHashCode() -> int
+override Egap.Pdf.PdfMatrix.ToString() -> string!
 override Egap.Pdf.PdfName.Equals(object? obj) -> bool
 override Egap.Pdf.PdfName.GetHashCode() -> int
 override Egap.Pdf.PdfObject.ToString() -> string!
+override Egap.Pdf.PdfOperation.ToString() -> string!
 override Egap.Pdf.PdfOutline.Dictionary.get -> Egap.Pdf.PdfDictionary?
 override Egap.Pdf.PdfOutlineItem.Dictionary.get -> Egap.Pdf.PdfDictionary!
 override Egap.Pdf.PdfOutlineItem.Equals(object? obj) -> bool
@@ -894,6 +1366,10 @@ override Egap.Pdf.PdfPage.ToString() -> string!
 override Egap.Pdf.PdfPageLabelRange.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPageLabelRange.GetHashCode() -> int
 override Egap.Pdf.PdfPageLabelRange.ToString() -> string!
+override Egap.Pdf.PdfPathSegment.GetHashCode() -> int
+override Egap.Pdf.PdfPlacedImage.Equals(object? obj) -> bool
+override Egap.Pdf.PdfPlacedImage.GetHashCode() -> int
+override Egap.Pdf.PdfPlacedImage.ToString() -> string!
 override Egap.Pdf.PdfPoint.GetHashCode() -> int
 override Egap.Pdf.PdfReadOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfReadOptions.GetHashCode() -> int
@@ -912,6 +1388,16 @@ override Egap.Pdf.PdfSaveOptions.GetHashCode() -> int
 override Egap.Pdf.PdfSaveOptions.ToString() -> string!
 override Egap.Pdf.PdfString.Equals(object? obj) -> bool
 override Egap.Pdf.PdfString.GetHashCode() -> int
+override Egap.Pdf.PdfTextGlyph.Equals(object? obj) -> bool
+override Egap.Pdf.PdfTextGlyph.GetHashCode() -> int
+override Egap.Pdf.PdfTextGlyph.ToString() -> string!
+override Egap.Pdf.PdfTextLine.ToString() -> string!
+override Egap.Pdf.PdfTextOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfTextOptions.GetHashCode() -> int
+override Egap.Pdf.PdfTextOptions.ToString() -> string!
+override Egap.Pdf.PdfTextPage.ToString() -> string!
+override Egap.Pdf.PdfTextWord.ToString() -> string!
+override Egap.Pdf.PdfVerticalMetrics.GetHashCode() -> int
 override Egap.Pdf.PdfWarning.Equals(object? obj) -> bool
 override Egap.Pdf.PdfWarning.GetHashCode() -> int
 override Egap.Pdf.PdfWarning.ToString() -> string!
@@ -920,8 +1406,18 @@ static Egap.Pdf.PdfAnnotation.FromDictionary(Egap.Pdf.PdfDictionary! dictionary)
 static Egap.Pdf.PdfBoolean.False.get -> Egap.Pdf.PdfBoolean!
 static Egap.Pdf.PdfBoolean.Get(bool value) -> Egap.Pdf.PdfBoolean!
 static Egap.Pdf.PdfBoolean.True.get -> Egap.Pdf.PdfBoolean!
+static Egap.Pdf.PdfCanvasOptions.Default.get -> Egap.Pdf.PdfCanvasOptions!
+static Egap.Pdf.PdfCanvasOptions.operator !=(Egap.Pdf.PdfCanvasOptions? left, Egap.Pdf.PdfCanvasOptions? right) -> bool
+static Egap.Pdf.PdfCanvasOptions.operator ==(Egap.Pdf.PdfCanvasOptions? left, Egap.Pdf.PdfCanvasOptions? right) -> bool
 static Egap.Pdf.PdfChoiceOption.operator !=(Egap.Pdf.PdfChoiceOption left, Egap.Pdf.PdfChoiceOption right) -> bool
 static Egap.Pdf.PdfChoiceOption.operator ==(Egap.Pdf.PdfChoiceOption left, Egap.Pdf.PdfChoiceOption right) -> bool
+static Egap.Pdf.PdfClipPath.operator !=(Egap.Pdf.PdfClipPath? left, Egap.Pdf.PdfClipPath? right) -> bool
+static Egap.Pdf.PdfClipPath.operator ==(Egap.Pdf.PdfClipPath? left, Egap.Pdf.PdfClipPath? right) -> bool
+static Egap.Pdf.PdfColor.Black.get -> Egap.Pdf.PdfColor!
+static Egap.Pdf.PdfColor.operator !=(Egap.Pdf.PdfColor? left, Egap.Pdf.PdfColor? right) -> bool
+static Egap.Pdf.PdfColor.operator ==(Egap.Pdf.PdfColor? left, Egap.Pdf.PdfColor? right) -> bool
+static Egap.Pdf.PdfContent.Parse(System.ReadOnlySpan<byte> data, Egap.Pdf.PdfReadOptions? options = null) -> Egap.Pdf.PdfContent!
+static Egap.Pdf.PdfContent.Read(Egap.Pdf.PdfStream! stream) -> Egap.Pdf.PdfContent!
 static Egap.Pdf.PdfDestination.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfDestination?
 static Egap.Pdf.PdfDestination.operator !=(Egap.Pdf.PdfDestination? left, Egap.Pdf.PdfDestination? right) -> bool
 static Egap.Pdf.PdfDestination.operator ==(Egap.Pdf.PdfDestination? left, Egap.Pdf.PdfDestination? right) -> bool
@@ -936,9 +1432,26 @@ static Egap.Pdf.PdfDocument.OpenAsync(System.IO.Stream! stream, Egap.Pdf.PdfRead
 static Egap.Pdf.PdfEncryption.Aes256(string! userPassword, string! ownerPassword, Egap.Pdf.PdfPermissions permissions = Egap.Pdf.PdfPermissions.All) -> Egap.Pdf.PdfEncryption!
 static Egap.Pdf.PdfEncryption.Keep.get -> Egap.Pdf.PdfEncryption!
 static Egap.Pdf.PdfEncryption.None.get -> Egap.Pdf.PdfEncryption!
+static Egap.Pdf.PdfFont.FromDictionary(Egap.Pdf.PdfDictionary! dictionary) -> Egap.Pdf.PdfFont!
+static Egap.Pdf.PdfGlyph.operator !=(Egap.Pdf.PdfGlyph left, Egap.Pdf.PdfGlyph right) -> bool
+static Egap.Pdf.PdfGlyph.operator ==(Egap.Pdf.PdfGlyph left, Egap.Pdf.PdfGlyph right) -> bool
+static Egap.Pdf.PdfImageEncoding.Flate.get -> Egap.Pdf.PdfImageEncoding!
+static Egap.Pdf.PdfImageEncoding.Jpeg(int quality = 85) -> Egap.Pdf.PdfImageEncoding!
+static Egap.Pdf.PdfImageOptions.Default.get -> Egap.Pdf.PdfImageOptions!
+static Egap.Pdf.PdfImageOptions.operator !=(Egap.Pdf.PdfImageOptions? left, Egap.Pdf.PdfImageOptions? right) -> bool
+static Egap.Pdf.PdfImageOptions.operator ==(Egap.Pdf.PdfImageOptions? left, Egap.Pdf.PdfImageOptions? right) -> bool
 static Egap.Pdf.PdfImportOptions.Default.get -> Egap.Pdf.PdfImportOptions!
 static Egap.Pdf.PdfImportOptions.operator !=(Egap.Pdf.PdfImportOptions? left, Egap.Pdf.PdfImportOptions? right) -> bool
 static Egap.Pdf.PdfImportOptions.operator ==(Egap.Pdf.PdfImportOptions? left, Egap.Pdf.PdfImportOptions? right) -> bool
+static Egap.Pdf.PdfMarkedContent.operator !=(Egap.Pdf.PdfMarkedContent? left, Egap.Pdf.PdfMarkedContent? right) -> bool
+static Egap.Pdf.PdfMarkedContent.operator ==(Egap.Pdf.PdfMarkedContent? left, Egap.Pdf.PdfMarkedContent? right) -> bool
+static Egap.Pdf.PdfMatrix.Identity.get -> Egap.Pdf.PdfMatrix
+static Egap.Pdf.PdfMatrix.operator !=(Egap.Pdf.PdfMatrix left, Egap.Pdf.PdfMatrix right) -> bool
+static Egap.Pdf.PdfMatrix.operator *(Egap.Pdf.PdfMatrix first, Egap.Pdf.PdfMatrix second) -> Egap.Pdf.PdfMatrix
+static Egap.Pdf.PdfMatrix.operator ==(Egap.Pdf.PdfMatrix left, Egap.Pdf.PdfMatrix right) -> bool
+static Egap.Pdf.PdfMatrix.Rotation(double degrees) -> Egap.Pdf.PdfMatrix
+static Egap.Pdf.PdfMatrix.Scale(double x, double y) -> Egap.Pdf.PdfMatrix
+static Egap.Pdf.PdfMatrix.Translation(double x, double y) -> Egap.Pdf.PdfMatrix
 static Egap.Pdf.PdfName.FromString(string! value) -> Egap.Pdf.PdfName!
 static Egap.Pdf.PdfName.Get(string! value) -> Egap.Pdf.PdfName!
 static Egap.Pdf.PdfName.Get(System.ReadOnlySpan<byte> bytes) -> Egap.Pdf.PdfName!
@@ -956,6 +1469,10 @@ static Egap.Pdf.PdfPage.operator !=(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? ri
 static Egap.Pdf.PdfPage.operator ==(Egap.Pdf.PdfPage? left, Egap.Pdf.PdfPage? right) -> bool
 static Egap.Pdf.PdfPageLabelRange.operator !=(Egap.Pdf.PdfPageLabelRange? left, Egap.Pdf.PdfPageLabelRange? right) -> bool
 static Egap.Pdf.PdfPageLabelRange.operator ==(Egap.Pdf.PdfPageLabelRange? left, Egap.Pdf.PdfPageLabelRange? right) -> bool
+static Egap.Pdf.PdfPathSegment.operator !=(Egap.Pdf.PdfPathSegment left, Egap.Pdf.PdfPathSegment right) -> bool
+static Egap.Pdf.PdfPathSegment.operator ==(Egap.Pdf.PdfPathSegment left, Egap.Pdf.PdfPathSegment right) -> bool
+static Egap.Pdf.PdfPlacedImage.operator !=(Egap.Pdf.PdfPlacedImage? left, Egap.Pdf.PdfPlacedImage? right) -> bool
+static Egap.Pdf.PdfPlacedImage.operator ==(Egap.Pdf.PdfPlacedImage? left, Egap.Pdf.PdfPlacedImage? right) -> bool
 static Egap.Pdf.PdfPoint.operator !=(Egap.Pdf.PdfPoint left, Egap.Pdf.PdfPoint right) -> bool
 static Egap.Pdf.PdfPoint.operator ==(Egap.Pdf.PdfPoint left, Egap.Pdf.PdfPoint right) -> bool
 static Egap.Pdf.PdfReadOptions.Default.get -> Egap.Pdf.PdfReadOptions!
@@ -972,16 +1489,41 @@ static Egap.Pdf.PdfSaveOptions.operator !=(Egap.Pdf.PdfSaveOptions? left, Egap.P
 static Egap.Pdf.PdfSaveOptions.operator ==(Egap.Pdf.PdfSaveOptions? left, Egap.Pdf.PdfSaveOptions? right) -> bool
 static Egap.Pdf.PdfString.FromBytes(System.ReadOnlySpan<byte> bytes, bool hex = false) -> Egap.Pdf.PdfString!
 static Egap.Pdf.PdfString.FromText(string! text) -> Egap.Pdf.PdfString!
+static Egap.Pdf.PdfTextGlyph.operator !=(Egap.Pdf.PdfTextGlyph? left, Egap.Pdf.PdfTextGlyph? right) -> bool
+static Egap.Pdf.PdfTextGlyph.operator ==(Egap.Pdf.PdfTextGlyph? left, Egap.Pdf.PdfTextGlyph? right) -> bool
 static Egap.Pdf.PdfTextMarkupAnnotation.Quad(Egap.Pdf.PdfRectangle area) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>!
+static Egap.Pdf.PdfTextOptions.Default.get -> Egap.Pdf.PdfTextOptions!
+static Egap.Pdf.PdfTextOptions.operator !=(Egap.Pdf.PdfTextOptions? left, Egap.Pdf.PdfTextOptions? right) -> bool
+static Egap.Pdf.PdfTextOptions.operator ==(Egap.Pdf.PdfTextOptions? left, Egap.Pdf.PdfTextOptions? right) -> bool
+static Egap.Pdf.PdfVerticalMetrics.operator !=(Egap.Pdf.PdfVerticalMetrics left, Egap.Pdf.PdfVerticalMetrics right) -> bool
+static Egap.Pdf.PdfVerticalMetrics.operator ==(Egap.Pdf.PdfVerticalMetrics left, Egap.Pdf.PdfVerticalMetrics right) -> bool
 static Egap.Pdf.PdfWarning.operator !=(Egap.Pdf.PdfWarning? left, Egap.Pdf.PdfWarning? right) -> bool
 static Egap.Pdf.PdfWarning.operator ==(Egap.Pdf.PdfWarning? left, Egap.Pdf.PdfWarning? right) -> bool
 static readonly Egap.Pdf.PdfPage.DefaultMediaBox -> Egap.Pdf.PdfRectangle
 static readonly Egap.Pdf.PdfRgbColor.Black -> Egap.Pdf.PdfRgbColor
+virtual Egap.Pdf.PdfContentWalker.OnBeginForm(Egap.Pdf.PdfStream! form, Egap.Pdf.PdfName! name) -> bool
+virtual Egap.Pdf.PdfContentWalker.OnBeginMarkedContent(Egap.Pdf.PdfMarkedContent! markedContent) -> void
+virtual Egap.Pdf.PdfContentWalker.OnBeginType3Glyph(Egap.Pdf.PdfGlyph glyph, Egap.Pdf.PdfStream! procedure) -> bool
+virtual Egap.Pdf.PdfContentWalker.OnEndForm(Egap.Pdf.PdfStream! form, Egap.Pdf.PdfName! name) -> void
+virtual Egap.Pdf.PdfContentWalker.OnEndMarkedContent(Egap.Pdf.PdfMarkedContent! markedContent) -> void
+virtual Egap.Pdf.PdfContentWalker.OnGlyph(Egap.Pdf.PdfGlyph glyph) -> void
+virtual Egap.Pdf.PdfContentWalker.OnImage(Egap.Pdf.PdfStream? image, Egap.Pdf.PdfInlineImage? inlineImage, Egap.Pdf.PdfName? name) -> void
+virtual Egap.Pdf.PdfContentWalker.OnMarkedPoint(Egap.Pdf.PdfMarkedContent! point) -> void
+virtual Egap.Pdf.PdfContentWalker.OnOperation(Egap.Pdf.PdfOperation! operation) -> void
+virtual Egap.Pdf.PdfContentWalker.OnPaintPath(Egap.Pdf.PdfPath! path, Egap.Pdf.PdfPathPaint paint) -> void
+virtual Egap.Pdf.PdfContentWalker.OnShading(Egap.Pdf.PdfObject? shading, Egap.Pdf.PdfName! name) -> void
 virtual Egap.Pdf.PdfObject.Resolve() -> Egap.Pdf.PdfObject!
 ~override Egap.Pdf.PdfChoiceOption.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfChoiceOption.ToString() -> string
+~override Egap.Pdf.PdfGlyph.Equals(object obj) -> bool
+~override Egap.Pdf.PdfGlyph.ToString() -> string
+~override Egap.Pdf.PdfMatrix.Equals(object obj) -> bool
+~override Egap.Pdf.PdfPathSegment.Equals(object obj) -> bool
+~override Egap.Pdf.PdfPathSegment.ToString() -> string
 ~override Egap.Pdf.PdfPoint.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfPoint.ToString() -> string
 ~override Egap.Pdf.PdfRectangle.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfRgbColor.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfRgbColor.ToString() -> string
+~override Egap.Pdf.PdfVerticalMetrics.Equals(object obj) -> bool
+~override Egap.Pdf.PdfVerticalMetrics.ToString() -> string

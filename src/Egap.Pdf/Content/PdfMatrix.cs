@@ -27,6 +27,14 @@ public readonly record struct PdfMatrix(double A, double B, double C, double D, 
     /// <summary>The determinant, <c>a·d − b·c</c>; zero for a matrix that cannot be inverted.</summary>
     public double Determinant => (A * D) - (B * C);
 
+    /// <summary>A matrix from a six-number array such as a form's or pattern's <c>/Matrix</c>, or null when it is not one.</summary>
+    internal static PdfMatrix? FromArray(PdfArray? array)
+    {
+        return array is { Count: >= 6 } m && Enumerable.Range(0, 6).All(k => m.GetNumber(k) is not null)
+            ? new PdfMatrix(m.GetNumber(0)!.Value, m.GetNumber(1)!.Value, m.GetNumber(2)!.Value, m.GetNumber(3)!.Value, m.GetNumber(4)!.Value, m.GetNumber(5)!.Value)
+            : null;
+    }
+
     /// <summary>A translation.</summary>
     public static PdfMatrix Translation(double x, double y)
     {

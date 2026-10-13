@@ -182,6 +182,32 @@ public sealed class ImageDecodeTests
         Assert.Equal([0, 255], Pixels(raster).Select(p => (int)p.R));
     }
 
+    [Fact]
+    public void ListsImagesInsideTilingPatternsOncePerUse()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = pdf.Pages.AddBlank(new PdfRectangle(0, 0, 200, 200));
+        PdfStream tile = new(new PdfDictionary
+        {
+            ["PatternType"] = new PdfInteger(1),
+            ["PaintType"] = new PdfInteger(1),
+            ["TilingType"] = new PdfInteger(1),
+            ["BBox"] = Numbers(0, 0, 10, 10),
+            ["XStep"] = new PdfInteger(10),
+            ["YStep"] = new PdfInteger(10),
+            ["Matrix"] = Numbers(1, 0, 0, 1, 5, 0),
+            ["Resources"] = new PdfDictionary { ["XObject"] = new PdfDictionary { ["Dot"] = pdf.Objects.Add(Stream(pdf, 1, 1, 8, PdfName.Get("DeviceGray"), [0])) } },
+        });
+        tile.SetDecodedBytes("q 10 0 0 10 0 0 cm /Dot Do Q"u8);
+        page.Resources = new PdfDictionary { ["Pattern"] = new PdfDictionary { ["P1"] = pdf.Objects.Add(tile) } };
+
+        // Two fills with the pattern: one use, one listing.
+        page.SetContent(PdfContent.Parse("/Pattern cs /P1 scn 0 0 100 100 re f 100 100 50 50 re f"u8));
+
+        PdfPlacedImage image = Assert.Single(page.GetImages());
+        Assert.Equal(("Dot", new PdfMatrix(10, 0, 0, 10, 5, 0)), (image.Name, image.Matrix));
+    }
+
     private static PdfImage Image(PdfDocument pdf, int width, int height, int bits, PdfObject space, byte[] data, double[]? decode = null)
     {
         PdfStream stream = Stream(pdf, width, height, bits, space, data);
