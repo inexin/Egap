@@ -121,4 +121,7 @@ public enum PdfWarningCode
     /// 5.x) or its XFA form.
     /// </summary>
     NotImported,
+
+    /// <summary>An imported form field was renamed with a suffix, since the document has a field of that name (Phase 2 Q5).</summary>
+    FieldRenamed,
 }

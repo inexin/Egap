@@ -1835,9 +1835,10 @@ internal static class Targets
     }
 
     /// <summary>
-    /// Merge (Phase 2 task 18): the input's first 20 pages imported twice into a new document, which is written whole with
-    /// identical objects merged and reopened; every page must come back with the content and media box of the page it was
-    /// copied from, and extracting the second copy must give them again.
+    /// Merge (Phase 2 tasks 18 and 19): the input's first 20 pages imported twice into a new document, with their fields,
+    /// destinations, layers, labels, attachments and outline, which is written whole with identical objects merged and
+    /// reopened; every page must come back with the content and media box of the page it was copied from, and extracting
+    /// the second copy must give them again.
     /// </summary>
     private static void Merge(Stream input)
     {
@@ -1859,6 +1860,11 @@ internal static class Targets
                 int[] chosen = [.. Enumerable.Range(0, Math.Min(20, source.Pages.Count))];
                 List<(string?, PdfRectangle)> expected = [.. chosen.Select(i => Page(source.Pages[i]))];
                 using PdfDocument merged = PdfDocument.Merge(source.ExtractPages(chosen), source.ExtractPages(chosen));
+
+                // Task 19: the second copy's top-level fields were renamed, so no two share a name, and the outline reads.
+                List<string> names = [.. merged.Form.Select(f => f.PartialName).Where(n => n.Length > 0)];
+                Check(names.Count == names.Distinct().Count(), "unique top-level field names");
+                _ = (merged.Outline.GetAllItems().Count, merged.NamedDestinations.GetNames().Count, merged.Layers.Count, merged.Attachments.Count);
                 using MemoryStream whole = new();
                 merged.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = PdfCompression.Compact, Deterministic = true });
                 using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
