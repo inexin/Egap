@@ -25,7 +25,7 @@ internal static class Flattener
         }
 
         page = page.Document.Pages.EnsureTree(page);
-        ContentWriter drawing = new();
+        PdfContentWriter drawing = new();
         PdfDictionary? xObjects = null;
         int drawn = 0;
         foreach (PdfAnnotation annotation in annotations)

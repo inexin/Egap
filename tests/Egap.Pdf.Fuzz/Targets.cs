@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker"];
 
     public static Action<Stream> Get(string name)
     {
@@ -39,6 +39,8 @@ internal static class Targets
             "forms" => Forms,
             "flatten" => Flatten,
             "merge" => Merge,
+            "content" => Content,
+            "walker" => Walker,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -48,6 +50,160 @@ internal static class Targets
         using MemoryStream copy = new();
         input.CopyTo(copy);
         return copy.ToArray();
+    }
+
+    /// <summary>
+    /// PDF bytes: the first 20 pages walked with every hook counting what it sees, leniently (must not throw except at a
+    /// limit) and strictly (may throw only <see cref="PdfException"/>). Marked content must be balanced when each page ends.
+    /// </summary>
+    private static void Walker(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        foreach (bool strict in (bool[])[false, true])
+        {
+            PdfDocument pdf;
+            try
+            {
+                pdf = PdfDocument.Open(bytes, new PdfReadOptions { Strict = strict, MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000, MaxNestingDepth = 32 });
+            }
+            catch (PdfException)
+            {
+                continue;
+            }
+
+            using (pdf)
+            {
+                try
+                {
+                    foreach (PdfPage page in pdf.Pages.Take(20))
+                    {
+                        CountingWalker walker = new();
+                        walker.Walk(page);
+                        if (walker.MarkedContent.Count != 0)
+                        {
+                            throw new InvalidOperationException("Marked content is still open after the page.");
+                        }
+                    }
+                }
+                catch (PdfLimitException)
+                {
+                }
+                catch (PdfException) when (strict)
+                {
+                }
+            }
+        }
+    }
+
+    /// <summary>A walker that counts what it sees and measures every path.</summary>
+    private sealed class CountingWalker : PdfContentWalker
+    {
+        public int Events { get; private set; }
+
+        protected override void OnPaintPath(PdfPath path, PdfPathPaint paint)
+        {
+            _ = path.GetBounds(State.Matrix);
+            Events++;
+        }
+
+        protected override void OnGlyph(PdfGlyph glyph)
+        {
+            Events++;
+        }
+
+        protected override void OnImage(PdfStream? image, PdfInlineImage? inlineImage, PdfName? name)
+        {
+            Events++;
+        }
+
+        protected override void OnShading(PdfObject? shading, PdfName name)
+        {
+            Events++;
+        }
+    }
+
+    /// <summary>
+    /// Reads the input as content stream bytes leniently (must not throw except at a limit) and strictly (may throw only
+    /// <see cref="PdfException"/>). The operations written back compactly must read back strictly, without a warning, to the
+    /// same operations, and writing those again must give the same bytes.
+    /// </summary>
+    private static void Content(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfReadOptions options = new() { MaxNestingDepth = 64 };
+        PdfContent content;
+        try
+        {
+            content = PdfContent.Parse(bytes, options);
+        }
+        catch (PdfLimitException)
+        {
+            return;
+        }
+
+        try
+        {
+            PdfContent.Parse(bytes, options with { Strict = true });
+        }
+        catch (PdfException)
+        {
+        }
+
+        // Inline image data that holds "EI", or ends in white space, cannot be told from its end without a length; data of
+        // another length than its parameters give is read by that length once written back; and an operator made of control
+        // or non-ASCII bytes after an image looks like more image data. That is the syntax's ambiguity (8.9.7), not ours, so
+        // such content is not round-tripped.
+        if (content.OfType<PdfInlineImage>().Any(Ambiguous)
+            || (content.Any(o => o is PdfInlineImage) && content.Any(o => o.Operator.Any(c => c is < '!' or > '~'))))
+        {
+            return;
+        }
+
+        // Operations with the wrong number of operands are kept as they are, so they warn again, as does an inline image whose
+        // data is not as long as its parameters say; nothing else may.
+        byte[] written = content.ToBytes();
+        PdfContent again = PdfContent.Parse(written, options);
+        if (!Egap.Pdf.Content.ContentEquality.Same(content, again))
+        {
+            int at = Enumerable.Range(0, Math.Min(content.Count, again.Count)).FirstOrDefault(i => !Egap.Pdf.Content.ContentEquality.Same(content[i], again[i]), Math.Min(content.Count, again.Count));
+            throw new InvalidOperationException($"Content written back reads as different operations, from #{at}: {Describe(content, at)} became {Describe(again, at)}.");
+        }
+
+        if (again.Warnings.Any(w => w.Code is not (PdfWarningCode.WrongOperandCount or PdfWarningCode.MalformedInlineImage) || w.Message.Contains("no EI", StringComparison.Ordinal)))
+        {
+            throw new InvalidOperationException($"Content written back reads with new warnings: {string.Join("; ", again.Warnings.Select(w => w.Message))}");
+        }
+
+        if (!written.AsSpan().SequenceEqual(again.ToBytes()))
+        {
+            throw new InvalidOperationException("Content written twice gives different bytes.");
+        }
+
+        static string Describe(PdfContent content, int index)
+        {
+            return index >= content.Count ? "nothing"
+                : content[index] is PdfInlineImage image ? $"BI {string.Join(' ', image.Parameters.Keys.Select(k => k.Value))} [{Convert.ToHexString(image.Data)}]"
+                : content[index].ToString();
+        }
+
+        static bool Ambiguous(PdfInlineImage image)
+        {
+            ReadOnlySpan<byte> data = image.Data;
+            for (int i = 0; i + 1 < data.Length; i++)
+            {
+                if (data[i] == 'E' && data[i + 1] == 'I')
+                {
+                    return true;
+                }
+            }
+
+            if (Egap.Pdf.Content.ContentParser.ExpectedLength(image.Parameters) is long expected && expected != data.Length)
+            {
+                return true;
+            }
+
+            return data.Length > 0 && data[^1] is (byte)'\r' or (byte)'\n' or (byte)' ';
+        }
     }
 
     /// <summary>Tokenizes the input leniently (must not throw) and strictly (may throw only <see cref="PdfException"/>).</summary>

@@ -41,7 +41,7 @@ internal static class AppearanceBuilder
         GrowRectangle(annotation);
         PdfRectangle box = annotation.Rectangle;
         PdfDictionary resources = [];
-        ContentWriter content = new();
+        PdfContentWriter content = new();
         content.Save();
         if (annotation is PdfMarkupAnnotation { Opacity: < 1 } || annotation is PdfHighlightAnnotation)
         {
@@ -107,7 +107,7 @@ internal static class AppearanceBuilder
     }
 
     /// <summary>Sets the stroke width, dash pattern and colour; false when there is no stroke to draw.</summary>
-    private static bool StrokeStyle(ContentWriter content, PdfAnnotation annotation)
+    private static bool StrokeStyle(PdfContentWriter content, PdfAnnotation annotation)
     {
         double width = Width(annotation);
         if (annotation.Color is not PdfRgbColor color || width <= 0)
@@ -124,7 +124,7 @@ internal static class AppearanceBuilder
         return true;
     }
 
-    private static void Paint(ContentWriter content, bool stroke, bool fill)
+    private static void Paint(PdfContentWriter content, bool stroke, bool fill)
     {
         if (stroke && fill)
         {
@@ -144,7 +144,7 @@ internal static class AppearanceBuilder
         }
     }
 
-    private static bool Shape(ContentWriter content, PdfAnnotation annotation, PdfRgbColor? interior, bool ellipse)
+    private static bool Shape(PdfContentWriter content, PdfAnnotation annotation, PdfRgbColor? interior, bool ellipse)
     {
         PdfRectangle box = annotation.Rectangle;
         bool stroke = StrokeStyle(content, annotation);
@@ -169,7 +169,7 @@ internal static class AppearanceBuilder
         return true;
     }
 
-    private static bool Line(ContentWriter content, PdfAnnotation annotation, IReadOnlyList<PdfPoint> points, PdfLineEnding start, PdfLineEnding end, PdfRgbColor? endingFill, bool close, PdfRgbColor? interior)
+    private static bool Line(PdfContentWriter content, PdfAnnotation annotation, IReadOnlyList<PdfPoint> points, PdfLineEnding start, PdfLineEnding end, PdfRgbColor? endingFill, bool close, PdfRgbColor? interior)
     {
         if (points.Count < 2)
         {
@@ -212,7 +212,7 @@ internal static class AppearanceBuilder
     }
 
     /// <summary>A line ending (12.5.6.7, table 179) at <paramref name="tip"/>, the line coming from <paramref name="from"/>.</summary>
-    private static void Ending(ContentWriter content, PdfLineEnding ending, PdfPoint tip, PdfPoint from, double size, bool fill)
+    private static void Ending(PdfContentWriter content, PdfLineEnding ending, PdfPoint tip, PdfPoint from, double size, bool fill)
     {
         double dx = tip.X - from.X;
         double dy = tip.Y - from.Y;
@@ -286,7 +286,7 @@ internal static class AppearanceBuilder
         }
     }
 
-    private static bool Ink(ContentWriter content, PdfInkAnnotation ink)
+    private static bool Ink(PdfContentWriter content, PdfInkAnnotation ink)
     {
         if (!StrokeStyle(content, ink))
         {
@@ -317,7 +317,7 @@ internal static class AppearanceBuilder
     /// Highlight, underline, squiggly underline or strikeout over each quadrilateral, whose points are upper left, upper
     /// right, lower left, lower right; the colour defaults to yellow for highlights and black otherwise.
     /// </summary>
-    private static bool TextMarkup(ContentWriter content, PdfTextMarkupAnnotation markup)
+    private static bool TextMarkup(PdfContentWriter content, PdfTextMarkupAnnotation markup)
     {
         PdfRgbColor color = markup.Color ?? (markup is PdfHighlightAnnotation ? NoteYellow : PdfRgbColor.Black);
         IReadOnlyList<PdfPoint> points = markup.QuadPoints;
@@ -361,7 +361,7 @@ internal static class AppearanceBuilder
     }
 
     /// <summary>A zigzag along the bottom of a quadrilateral, a wave every quarter of its height.</summary>
-    private static void Squiggle(ContentWriter content, PdfPoint lowerLeft, PdfPoint lowerRight, PdfPoint upperLeft, double height, double width)
+    private static void Squiggle(PdfContentWriter content, PdfPoint lowerLeft, PdfPoint lowerRight, PdfPoint upperLeft, double height, double width)
     {
         double length = Distance(lowerLeft, lowerRight);
         if (length == 0 || height == 0)
@@ -389,7 +389,7 @@ internal static class AppearanceBuilder
     }
 
     /// <summary>A caret: a filled shape like an upturned V with curved sides, as Acrobat draws one.</summary>
-    private static bool Caret(ContentWriter content, PdfCaretAnnotation caret, PdfRectangle box)
+    private static bool Caret(PdfContentWriter content, PdfCaretAnnotation caret, PdfRectangle box)
     {
         PdfRgbColor color = caret.Color ?? PdfRgbColor.Black;
         double middle = box.Left + (box.Width / 2);
@@ -402,7 +402,7 @@ internal static class AppearanceBuilder
     }
 
     /// <summary>A note icon drawn in a 20 by 20 square scaled to the rectangle, filled with the note's colour.</summary>
-    private static bool Note(ContentWriter content, PdfTextAnnotation note, PdfRectangle box)
+    private static bool Note(PdfContentWriter content, PdfTextAnnotation note, PdfRectangle box)
     {
         PdfRgbColor color = note.Color ?? NoteYellow;
         content.Transform(box.Width / 20, 0, 0, box.Height / 20, box.Left, box.Bottom)
@@ -443,7 +443,7 @@ internal static class AppearanceBuilder
         return true;
     }
 
-    private static void Lines(ContentWriter content, double left, double right, double[] heights)
+    private static void Lines(PdfContentWriter content, double left, double right, double[] heights)
     {
         foreach (double y in heights)
         {
@@ -458,7 +458,7 @@ internal static class AppearanceBuilder
     /// colour of <c>/DA</c>, wrapped to the box and aligned by <c>/Q</c>. The font is the standard 14 font <c>/DA</c> names
     /// through the form's default resources, else Helvetica (Q12).
     /// </summary>
-    private static bool FreeText(ContentWriter content, PdfFreeTextAnnotation freeText, PdfRectangle box, PdfDictionary resources, PdfDocument document)
+    private static bool FreeText(PdfContentWriter content, PdfFreeTextAnnotation freeText, PdfRectangle box, PdfDictionary resources, PdfDocument document)
     {
         DefaultAppearance appearance = DefaultAppearance.Parse(freeText.DefaultAppearance);
         PdfDictionary? formFont = appearance.Font is PdfName name ? document.Catalog.Get<PdfDictionary>("AcroForm")?.Get<PdfDictionary>("DR")?.Get<PdfDictionary>("Font")?.Get<PdfDictionary>(name) : null;
@@ -497,7 +497,7 @@ internal static class AppearanceBuilder
     }
 
     /// <summary>A stamp: a rounded border and the stamp's name in capitals, in red, green or blue as Acrobat colours them.</summary>
-    private static bool Stamp(ContentWriter content, PdfStampAnnotation stamp, PdfRectangle box, PdfDictionary resources)
+    private static bool Stamp(PdfContentWriter content, PdfStampAnnotation stamp, PdfRectangle box, PdfDictionary resources)
     {
         string label = string.Concat(stamp.Icon.Select((c, i) => i > 0 && char.IsUpper(c) && !char.IsUpper(stamp.Icon[i - 1]) ? " " + c : c.ToString())).ToUpperInvariant();
         PdfRgbColor color = stamp.Color ?? stamp.Icon switch
@@ -532,7 +532,7 @@ internal static class AppearanceBuilder
     }
 
     /// <summary>Text wrapped to a box, line by line from the top, each line aligned.</summary>
-    internal static void DrawText(ContentWriter content, Standard14Font font, PdfName resource, double size, double[]? color, string text, PdfRectangle box, double padding, PdfTextAlignment alignment, bool top)
+    internal static void DrawText(PdfContentWriter content, Standard14Font font, PdfName resource, double size, double[]? color, string text, PdfRectangle box, double padding, PdfTextAlignment alignment, bool top)
     {
         double width = Math.Max(0, box.Width - (2 * padding));
         double leading = size * Math.Max(1, (font.Ascent - font.Descent) / 1000);
@@ -630,7 +630,7 @@ internal static class AppearanceBuilder
         return dictionary;
     }
 
-    private static void SetColor(ContentWriter content, double[]? color, bool stroke)
+    private static void SetColor(PdfContentWriter content, double[]? color, bool stroke)
     {
         _ = color?.Length switch
         {
