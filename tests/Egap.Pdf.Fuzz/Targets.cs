@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms"];
 
     public static Action<Stream> Get(string name)
     {
@@ -36,6 +36,7 @@ internal static class Targets
             "attachments" => Attachments,
             "layers" => Layers,
             "annotations" => Annotations,
+            "forms" => Forms,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -1556,6 +1557,113 @@ internal static class Targets
             if (!ok)
             {
                 throw new InvalidOperationException($"{what} did not hold.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Form reading (Phase 2 task 14): every public property of up to 2,000 fields read leniently, with their kids and widgets,
+    /// and every widget on the first 50 pages led back to its field.
+    /// </summary>
+    private static void Forms(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                PdfForm form = pdf.Form;
+                _ = (form.Exists, form.NeedAppearances, form.DefaultAppearance, form.Alignment, form.SignatureFlags, form.HasXfa, form.Count);
+                foreach (PdfField field in form.GetAllFields().Take(2000))
+                {
+                    ReadPublicProperties(field);
+                    foreach (PdfWidgetAnnotation widget in field.Widgets.Take(100))
+                    {
+                        if (widget.Field is not PdfField owner)
+                        {
+                            throw new InvalidOperationException("A field's widget does not lead back to a field.");
+                        }
+
+                        _ = owner.FullName;
+                    }
+                }
+
+                if (form.GetAllFields() is { Count: > 0 } all && all[0] is PdfField first)
+                {
+                    Check(form.TryGetField(first.FullName, out PdfField found) && found.FullName == first.FullName, "a field looked up by name");
+                }
+
+                foreach (PdfPage page in pdf.Pages.Take(50))
+                {
+                    foreach (PdfWidgetAnnotation widget in page.Annotations.OfType<PdfWidgetAnnotation>().Take(500))
+                    {
+                        if (widget.Field is PdfField field)
+                        {
+                            ReadPublicProperties(field);
+                        }
+                    }
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+
+        static void Check(bool ok, string what)
+        {
+            if (!ok)
+            {
+                throw new InvalidOperationException($"{what} did not hold.");
+            }
+        }
+    }
+
+    /// <summary>Reads every public property without index parameters, and the items of those that are lists.</summary>
+    private static void ReadPublicProperties(object view)
+    {
+        foreach (System.Reflection.PropertyInfo property in view.GetType().GetProperties())
+        {
+            if (property.GetIndexParameters().Length != 0 || property.GetMethod is not { IsPublic: true })
+            {
+                continue;
+            }
+
+            object? value;
+            try
+            {
+                value = property.GetValue(view);
+            }
+            catch (System.Reflection.TargetInvocationException e) when (e.InnerException is PdfLimitException)
+            {
+                continue;
+            }
+            catch (System.Reflection.TargetInvocationException e) when (e.InnerException is PdfException && property.Name is "Value" or "DefaultValue" or "RichValue")
+            {
+                // A text value in a damaged stream is an error the caller sees, not a bug.
+                continue;
+            }
+            catch (System.Reflection.TargetInvocationException e)
+            {
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw(e.InnerException!);
+                throw;
+            }
+
+            if (value is System.Collections.IEnumerable items and not string)
+            {
+                foreach (object? item in items)
+                {
+                    _ = item?.ToString();
+                }
             }
         }
     }
