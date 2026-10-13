@@ -521,7 +521,11 @@ public class PdfContentWalker
             i += length;
             bool space = length == 1 && code == 32;
             double width = widths.GetWidth(code);
-            PdfGlyph glyph = new(code, length, width, size * TextMatrix * state.Matrix, space);
+
+            // A vertical font's glyph is placed with its vertical origin at the current point (9.7.4.3).
+            (double Advance, double OriginX, double OriginY)? vertical = widths.GetVerticalMetrics(code);
+            PdfMatrix placement = vertical is { } v ? PdfMatrix.Translation(-v.OriginX / 1000, -v.OriginY / 1000) * size * TextMatrix * state.Matrix : size * TextMatrix * state.Matrix;
+            PdfGlyph glyph = new(code, length, width, placement, space);
             OnGlyph(glyph);
             if (glyphProcedures)
             {
@@ -529,8 +533,8 @@ public class PdfContentWalker
             }
 
             double spacing = state.CharacterSpacing + (space ? state.WordSpacing : 0);
-            TextMatrix = (widths.IsVertical
-                ? PdfMatrix.Translation(0, -(width / 1000 * state.FontSize) - spacing)
+            TextMatrix = (vertical is { } vm
+                ? PdfMatrix.Translation(0, (vm.Advance / 1000 * state.FontSize) - spacing)
                 : PdfMatrix.Translation(((width / 1000 * state.FontSize) + spacing) * scale, 0)) * TextMatrix;
         }
     }

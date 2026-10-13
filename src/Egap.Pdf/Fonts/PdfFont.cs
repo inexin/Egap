@@ -89,6 +89,8 @@ public sealed class PdfFont
     private readonly int firstChar;
     private readonly double missingWidth;
     private readonly Dictionary<int, double>? cidWidths;
+    private readonly Dictionary<int, (double W1, double Vx, double Vy)>? verticalMetrics;
+    private readonly (double Vy, double W1) defaultVertical = (880, -1000);
 
     private PdfFont(PdfDictionary dictionary)
     {
@@ -124,6 +126,12 @@ public sealed class PdfFont
             IsVertical = codes?.IsVertical == true || cmapName?.EndsWith("-V", StringComparison.Ordinal) == true;
             missingWidth = descendant?.GetNumber("DW") ?? 1000;
             cidWidths = ReadW(descendant?.Get<PdfArray>("W"));
+            if (IsVertical)
+            {
+                defaultVertical = descendant?.Get<PdfArray>("DW2") is { Count: 2 } dw2 && dw2.GetNumber(0) is double vy && dw2.GetNumber(1) is double w1 ? (vy, w1) : defaultVertical;
+                verticalMetrics = ReadW2(descendant?.Get<PdfArray>("W2"));
+            }
+
             return;
         }
 
@@ -269,6 +277,27 @@ public sealed class PdfFont
         }
 
         return missingWidth;
+    }
+
+    /// <summary>
+    /// A vertical font's metrics for a code (9.7.4.3): the vertical advance (negative, downwards) and the position vector from
+    /// the glyph's horizontal origin to its vertical origin, in thousandths of text space; from <c>/W2</c>, else
+    /// <c>/DW2</c> (default 880 and −1000) with the vector's x half the horizontal width. Null for a horizontal font.
+    /// </summary>
+    public (double Advance, double OriginX, double OriginY)? GetVerticalMetrics(int code)
+    {
+        if (!IsVertical)
+        {
+            return null;
+        }
+
+        int cid = ToCid(code, CodeLength(code));
+        if (verticalMetrics is not null && verticalMetrics.TryGetValue(cid, out (double W1, double Vx, double Vy) m))
+        {
+            return (m.W1, m.Vx, m.Vy);
+        }
+
+        return (defaultVertical.W1, GetWidth(code) / 2, defaultVertical.Vy);
     }
 
     /// <summary>The glyph name a simple font's encoding gives a code, or null (always for a composite font).</summary>
@@ -571,6 +600,51 @@ public sealed class PdfFont
         {
             return CMap.Parse([]);
         }
+    }
+
+    /// <summary>Reads a CIDFont's <c>/W2</c> array: <c>c [w1 vx vy ...]</c> and <c>cFirst cLast w1 vx vy</c> runs (9.7.4.3).</summary>
+    private static Dictionary<int, (double, double, double)>? ReadW2(PdfArray? w)
+    {
+        if (w is null)
+        {
+            return null;
+        }
+
+        Dictionary<int, (double, double, double)> result = [];
+        const int MaxEntries = 1 << 20;
+        int i = 0;
+        while (i < w.Count && result.Count < MaxEntries)
+        {
+            if (w.GetInt(i) is not long first)
+            {
+                break;
+            }
+
+            if (i + 1 < w.Count && w.Get(i + 1).Resolve() is PdfArray list)
+            {
+                for (int k = 0; k + 2 < list.Count && result.Count < MaxEntries; k += 3)
+                {
+                    result[(int)Math.Clamp(first + (k / 3), 0, int.MaxValue)] = (list.GetNumber(k) ?? -1000, list.GetNumber(k + 1) ?? 0, list.GetNumber(k + 2) ?? 880);
+                }
+
+                i += 2;
+            }
+            else if (i + 4 < w.Count && w.GetInt(i + 1) is long last && w.GetNumber(i + 2) is double w1 && w.GetNumber(i + 3) is double vx && w.GetNumber(i + 4) is double vy)
+            {
+                for (long c = Math.Max(first, 0); c <= last && result.Count < MaxEntries; c++)
+                {
+                    result[(int)Math.Min(c, int.MaxValue)] = (w1, vx, vy);
+                }
+
+                i += 5;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return result;
     }
 
     /// <summary>Reads a CIDFont's <c>/W</c> array: <c>c [w1 w2 ...]</c> and <c>cFirst cLast w</c> runs (9.7.4.3).</summary>
