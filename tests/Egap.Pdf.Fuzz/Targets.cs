@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten"];
 
     public static Action<Stream> Get(string name)
     {
@@ -37,6 +37,7 @@ internal static class Targets
             "layers" => Layers,
             "annotations" => Annotations,
             "forms" => Forms,
+            "flatten" => Flatten,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -1739,6 +1740,67 @@ internal static class Targets
                 {
                     _ = item?.ToString();
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Flatten (Phase 2 task 16): the form and the annotations flattened with a filter drawn from the input; the file written
+    /// whole must reopen with the same pages, no form, and content that decodes.
+    /// </summary>
+    private static void Flatten(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                int pages = pdf.Pages.Count;
+                pdf.Form.Flatten();
+                pdf.FlattenAnnotations((PdfFlattenFilter)(bytes.Length % 3), includeLinks: bytes.Length % 2 == 0);
+                if (pdf.Form.Exists)
+                {
+                    throw new InvalidOperationException("The form is still there after flattening.");
+                }
+
+                using MemoryStream whole = new();
+                pdf.Save(whole, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Deterministic = true });
+                using PdfDocument reopened = PdfDocument.Open(whole.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                if (reopened.Pages.Count != pages || reopened.Form.Exists)
+                {
+                    throw new InvalidOperationException("The flattened file lost pages or kept its form.");
+                }
+
+                foreach (PdfPage page in reopened.Pages.Take(50))
+                {
+                    if (page.Dictionary.Get<PdfArray>("Contents") is PdfArray contents)
+                    {
+                        foreach (PdfObject content in contents)
+                        {
+                            try
+                            {
+                                _ = (content.Resolve() as PdfStream)?.GetDecodedBytes();
+                            }
+                            catch (PdfException)
+                            {
+                                // A page's own damaged content stays damaged.
+                            }
+                        }
+                    }
+                }
+            }
+            catch (PdfLimitException)
+            {
             }
         }
     }

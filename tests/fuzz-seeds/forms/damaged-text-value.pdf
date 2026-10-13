@@ -1,0 +1,108 @@
+%PDF-1.7
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R /AcroForm << /Fields [10 0 R 13 0 R 14 0 R 15 0 R 16 0 R 17 0 R 18 0 R 10 0 R] /DA (/Helv 0 Tf 0 g) /Q 1 /NeedAppearances true /SigFlags 3 /DR << /Font << /Helv << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> >> >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 300] /Annots [20 0 R 21 0 R 12 0 R 22 0 R 23 0 R] >>
+endobj
+10 0 obj
+<< /T (order) /Kids [11 0 R 12 0 R] /Ff 1 >>
+endobj
+11 0 obj
+<< /T (customer) /Parent 10 0 R /FT /Tx /V <FEFF004C00E60072> /DV (none) /MaxLen 20 /Ff 4096 /TU (Customer name) /DA (/Helv 9 Tf 0 g) /Kids [20 0 R 21 0 R 11 0 R] >>
+endobj
+12 0 obj
+<< /T (agree) /Parent 10 0 R /FT /Btn /V /Yes /Subtype /Widget /Rect [0 0 10 10] /AS /Yes /AP << /N << /Yes 30 0 R /Off 30 0 R >> >> /F 4 >>
+endobj
+13 0 obj
+<< /T (size) /FT /Btn /Ff 49152 /V /M /Kids [22 0 R 23 0 R] >4 0 obj
+<< /T (colour) /FT /Ch /Ff 393216 /V (Teal) /Opt [(Red) [(G) (Green)] 7 [(B)]] /Q 2 >>
+endobj
+15 0 obj
+<< /T (extras) /FT /Ch /Ff 2097152 /V [(A) (C)] /I [0 2] /TI 1 /Opt [(A) (B) (C)] >>
+endobj
+16 0 obj
+<< /T (sign) /FT /Sig /V << /Type /Sig >> >>
+endobj
+17 0 obj
+<< /T (push) /FT /Btn /Ff 65536 /Subtype /Widget /Rect [0 0 10 10] /MK << /CA (Go) >> >>
+endobj
+18 0 obj
+<< /Kids [19 0 R] >>
+endobj
+19 0 obj
+<< /T (inner) /Parent 18 0 R /FT /Tx /V 31 0 R >>
+endobj
+20 0 obj
+<< /Type /Annot /Subtype /Widget /Parent 11 0 R /Rect [0 0 100 20] /P 3 0 R >>
+endobj
+21 0 obj
+<< /Type /Annot /Subtype /Widget /Parent 11 0 R /Rect [0 30 100 50] >>
+endobj
+22 0 obj
+<< /Type /Annot /Subtype /Widget /Parent 13 0 R /Rect [0 0 10 10] /AS /Off /AP << /N << /S 30 0 R /Off 30 0 R >> >> >>
+endobj
+23 0 obj
+<< /Type /Annot /Subtype /Widget /Parent 13 0 R /Rect [20 0 30 10] /AS /M /AP << /N << /M 30 0 R /Off 30 0 R >> >> >>
+endobj
+30 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 10 10] /Length 3 >>
+stream
+q Q
+endstream
+endobj
+31 0 obj
+<</Filter /FlateDecode2
+0000000000 65535 f 
+0000000009 00000 n 
+0000000283 00000 n 
+0000000340 00000 n 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000000 65535 f /Length 5 >>
+stream
+hello
+endstream
+endobj
+xref
+0 32
+0000000000 65535 f 
+0000000009 00000 n 
+0000000283 00000 n 
+0000000340 00000 n 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000456 00000 n 
+0000000517 00000 n 
+0000000699 00000 n 
+0000000856 00000 n 
+0000000935 00000 n 
+0000001038 00000 n 
+0000001139 00000 n 
+0000001200 00000 n 
+0000001305 00000 n 
+0000001342 00000 n 
+0000001408 00000 n 
+0000001503 00000 n 
+0000001590 00000 n 
+0000001725 00000 n 
+0000000000 635 f 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000000 65535 f 
+0000000000 65535 f 
+0000001859 00000 n 
+0000001960 00000 n 
+trailer
+<< /Size 32 /Root 1 0 R >>
+startxref
+2015
+%%EOF
