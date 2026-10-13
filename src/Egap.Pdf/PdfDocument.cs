@@ -115,6 +115,23 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     public PdfPageCollection Pages => LazyInitializer.EnsureInitialized(ref pages, () => new PdfPageCollection(this));
 
+    /// <summary>
+    /// Flattens the annotations of every page, as <see cref="PdfAnnotationCollection.Flatten"/> does; form fields are flattened
+    /// with <see cref="PdfForm.Flatten"/>.
+    /// </summary>
+    /// <returns>How many annotations were drawn.</returns>
+    public int FlattenAnnotations(PdfFlattenFilter filter = PdfFlattenFilter.All, bool includeLinks = false)
+    {
+        // By index: flattening a page of a tree repaired only in memory rebuilds the tree, which replaces the page list.
+        int drawn = 0;
+        for (int i = 0; i < Pages.Count; i++)
+        {
+            drawn += Pages[i].Annotations.Flatten(filter, includeLinks);
+        }
+
+        return drawn;
+    }
+
     /// <summary>The interactive form, the catalog's /AcroForm.</summary>
     public PdfForm Form => new(this);
 
@@ -418,6 +435,12 @@ public sealed class PdfDocument : IDisposable
         if (options.UpdateModificationDate && !options.Deterministic && IsChanged)
         {
             Metadata.Touch(Clock.GetLocalNow());
+        }
+
+        // A file written whole holds only what the catalog reaches, so pages found by repair need a tree of their own first.
+        if (WritesWhole(options))
+        {
+            Pages.RebuildIfRepaired();
         }
     }
 

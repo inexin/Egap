@@ -41,6 +41,7 @@ Egap.Pdf.PdfAnnotationCollection.AddFileAttachment(Egap.Pdf.PdfRectangle rectang
 Egap.Pdf.PdfAnnotationCollection.AddPopup(Egap.Pdf.PdfMarkupAnnotation! parent, Egap.Pdf.PdfRectangle rectangle, bool open = false) -> Egap.Pdf.PdfPopupAnnotation!
 Egap.Pdf.PdfAnnotationCollection.Contains(Egap.Pdf.PdfAnnotation! annotation) -> bool
 Egap.Pdf.PdfAnnotationCollection.Count.get -> int
+Egap.Pdf.PdfAnnotationCollection.Flatten(Egap.Pdf.PdfFlattenFilter filter = Egap.Pdf.PdfFlattenFilter.All, bool includeLinks = false) -> int
 Egap.Pdf.PdfAnnotationCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfAnnotation!>!
 Egap.Pdf.PdfAnnotationCollection.GetReplies(Egap.Pdf.PdfAnnotation! annotation) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfMarkupAnnotation!>!
 Egap.Pdf.PdfAnnotationCollection.IndexOf(Egap.Pdf.PdfAnnotation! annotation) -> int
@@ -151,6 +152,7 @@ Egap.Pdf.PdfDestinationFit.FitR = 4 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.FitV = 3 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDestinationFit.Xyz = 0 -> Egap.Pdf.PdfDestinationFit
 Egap.Pdf.PdfDocument.Attachments.get -> Egap.Pdf.PdfAttachmentCollection!
+Egap.Pdf.PdfDocument.FlattenAnnotations(Egap.Pdf.PdfFlattenFilter filter = Egap.Pdf.PdfFlattenFilter.All, bool includeLinks = false) -> int
 Egap.Pdf.PdfDocument.Form.get -> Egap.Pdf.PdfForm!
 Egap.Pdf.PdfDocument.Layers.get -> Egap.Pdf.PdfLayerCollection!
 Egap.Pdf.PdfDocument.Metadata.get -> Egap.Pdf.PdfMetadata!
@@ -202,6 +204,10 @@ Egap.Pdf.PdfFileAttachmentAnnotation
 Egap.Pdf.PdfFileAttachmentAnnotation.Attachment.get -> Egap.Pdf.PdfAttachment?
 Egap.Pdf.PdfFileAttachmentAnnotation.Icon.get -> string!
 Egap.Pdf.PdfFileAttachmentAnnotation.Icon.set -> void
+Egap.Pdf.PdfFlattenFilter
+Egap.Pdf.PdfFlattenFilter.All = 0 -> Egap.Pdf.PdfFlattenFilter
+Egap.Pdf.PdfFlattenFilter.Print = 1 -> Egap.Pdf.PdfFlattenFilter
+Egap.Pdf.PdfFlattenFilter.Screen = 2 -> Egap.Pdf.PdfFlattenFilter
 Egap.Pdf.PdfForm
 Egap.Pdf.PdfForm.Alignment.get -> Egap.Pdf.PdfTextAlignment
 Egap.Pdf.PdfForm.Count.get -> int
@@ -209,6 +215,7 @@ Egap.Pdf.PdfForm.DefaultAppearance.get -> string?
 Egap.Pdf.PdfForm.DefaultResources.get -> Egap.Pdf.PdfDictionary?
 Egap.Pdf.PdfForm.Dictionary.get -> Egap.Pdf.PdfDictionary?
 Egap.Pdf.PdfForm.Exists.get -> bool
+Egap.Pdf.PdfForm.Flatten(System.Collections.Generic.IEnumerable<Egap.Pdf.PdfField!>? fields = null) -> int
 Egap.Pdf.PdfForm.GetAllFields() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfField!>!
 Egap.Pdf.PdfForm.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Pdf.PdfField!>!
 Egap.Pdf.PdfForm.GetTerminalFields() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfField!>!

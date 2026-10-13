@@ -311,6 +311,19 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
         }
     }
 
+    /// <summary>Rebuilds a tree that was repaired only in memory, such as pages found by scanning, before a file is written whole.</summary>
+    internal void RebuildIfRepaired()
+    {
+        lock (gate)
+        {
+            _ = List;
+            if (needsRebuild)
+            {
+                Editor();
+            }
+        }
+    }
+
     /// <summary>The editor for the next edit, rebuilding a broken tree first; the index cache is dropped.</summary>
     private PageTreeEditor Editor()
     {

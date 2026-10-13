@@ -161,6 +161,30 @@ public sealed class PdfAnnotationCollection : IReadOnlyList<PdfAnnotation>
         Remove(this[index]);
     }
 
+    /// <summary>
+    /// Flattens the page's annotations (Phase 2 Q13): their appearances are drawn into the page's content and the annotations
+    /// removed, with their popups. Widgets are left to <see cref="PdfForm.Flatten"/>, links are left unless asked for, and
+    /// hidden annotations are left too. A missing appearance is drawn first where Egap draws the subtype
+    /// (<see cref="PdfAnnotation.UpdateAppearance"/>); an annotation still without one is removed without being drawn.
+    /// </summary>
+    /// <param name="filter">Which annotations are flattened, as qpdf's <c>--flatten-annotations</c> chooses: all, those printed, or those shown on screen.</param>
+    /// <param name="includeLinks">Whether links are flattened too; their action is lost.</param>
+    /// <returns>How many annotations were drawn.</returns>
+    public int Flatten(PdfFlattenFilter filter = PdfFlattenFilter.All, bool includeLinks = false)
+    {
+        List<PdfAnnotation> chosen = [.. List().Where(a => a is not PdfWidgetAnnotation and not PdfPopupAnnotation && (includeLinks || a is not PdfLinkAnnotation)
+            && Annotations.Flattener.Shown(a.Flags, filter))];
+        foreach (PdfAnnotation annotation in chosen)
+        {
+            if (annotation.GetAppearance() is null && Annotations.AppearanceBuilder.Supports(annotation))
+            {
+                Annotations.AppearanceBuilder.Update(annotation, Document);
+            }
+        }
+
+        return Annotations.Flattener.Flatten(page, chosen, filter);
+    }
+
     /// <summary>The markup annotations on this page that reply to or are grouped with an annotation (<c>/IRT</c>).</summary>
     public IReadOnlyList<PdfMarkupAnnotation> GetReplies(PdfAnnotation annotation)
     {

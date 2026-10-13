@@ -112,6 +112,67 @@ public sealed class PdfForm : IReadOnlyList<PdfField>
         }
     }
 
+    /// <summary>
+    /// Flattens fields (Phase 2 Q13): their widgets' appearances are drawn into the pages' content and the fields and widgets
+    /// removed; with no fields given, all of them, and the form itself. Missing appearances are drawn first, and all text and
+    /// choice appearances are redrawn when <see cref="NeedAppearances"/> asks viewers to; hidden widgets are removed without
+    /// being drawn.
+    /// </summary>
+    /// <returns>How many widgets were drawn.</returns>
+    public int Flatten(IEnumerable<PdfField>? fields = null)
+    {
+        if (Dictionary is null)
+        {
+            return 0;
+        }
+
+        List<PdfField> chosen = [.. (fields is null ? GetTerminalFields() : fields.SelectMany(Terminals)).Distinct()];
+        bool redraw = NeedAppearances;
+        foreach (PdfField field in chosen)
+        {
+            if (redraw ? field is PdfTextField or PdfChoiceField || field.Widgets.Any(w => w.GetAppearance() is null) : field.Widgets.Any(w => w.GetAppearance() is null))
+            {
+                try
+                {
+                    field.UpdateAppearances();
+                }
+                catch (PdfException e)
+                {
+                    // A value in a damaged stream cannot be drawn; the widget keeps what it had.
+                    document.Log.Add(PdfWarningCode.AppearanceNotDrawn, $"Field {field.FullName}'s appearance was not drawn: {e.Message}");
+                }
+            }
+        }
+
+        // Each widget goes with the page whose /Annots lists it; a widget on no page is only removed.
+        Dictionary<PdfDictionary, PdfWidgetAnnotation> widgets = new(ReferenceEqualityComparer.Instance);
+        foreach (PdfWidgetAnnotation widget in chosen.SelectMany(f => f.Widgets))
+        {
+            widgets.TryAdd(widget.Dictionary, widget);
+        }
+
+        int drawn = 0;
+        for (int i = 0; i < document.Pages.Count; i++)
+        {
+            PdfPage page = document.Pages[i];
+            List<PdfAnnotation> onPage = [.. page.Annotations.Where(a => widgets.ContainsKey(a.Dictionary))];
+            drawn += Annotations.Flattener.Flatten(page, onPage, PdfFlattenFilter.All);
+        }
+
+        if (fields is null)
+        {
+            document.Catalog.Remove("AcroForm");
+            return drawn;
+        }
+
+        foreach (PdfField field in chosen)
+        {
+            Detach(field);
+        }
+
+        return drawn;
+    }
+
     /// <inheritdoc/>
     public IEnumerator<PdfField> GetEnumerator()
     {
@@ -141,6 +202,32 @@ public sealed class PdfForm : IReadOnlyList<PdfField>
         }
 
         return roots;
+    }
+
+    /// <summary>Takes a field out of its parent's <c>/Kids</c>, or <c>/Fields</c>, and then any parent left without kids.</summary>
+    private void Detach(PdfField field)
+    {
+        for (PdfField? node = field; node is not null; node = node.Parent)
+        {
+            PdfArray? siblings = node.Parent is PdfField parent ? parent.Dictionary.Get<PdfArray>("Kids") : Dictionary?.Get<PdfArray>("Fields");
+            if (siblings is null)
+            {
+                return;
+            }
+
+            for (int i = siblings.Count - 1; i >= 0; i--)
+            {
+                if (ReferenceEquals(siblings.Get(i), node.Dictionary))
+                {
+                    siblings.RemoveAt(i);
+                }
+            }
+
+            if (siblings.Count > 0 || node.Parent is null)
+            {
+                return;
+            }
+        }
     }
 
     /// <summary>A field if it is terminal, else the terminal fields below it.</summary>
