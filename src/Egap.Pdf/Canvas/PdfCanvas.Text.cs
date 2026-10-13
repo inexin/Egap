@@ -55,7 +55,7 @@ public sealed partial class PdfCanvas
 
         if (paint.Blur is not null || !PdfBlendModes.ContainsKey(paint.BlendMode))
         {
-            Unsupported(paint, c => c.DrawGlyphRun(run, origin, paint));
+            Unsupported(paint, (c, p) => c.DrawGlyphRun(run, origin, p));
             return;
         }
 
@@ -109,7 +109,7 @@ public sealed partial class PdfCanvas
             content.Restore();
             if (!BeginShaded(paint, null))
             {
-                Unsupported(paint, c => c.DrawGlyphRun(run, origin, paint));
+                Unsupported(paint, (c, p) => c.DrawGlyphRun(run, origin, p));
                 return;
             }
 
@@ -136,7 +136,7 @@ public sealed partial class PdfCanvas
         content.EndText();
         if (shadings is not null)
         {
-            WriteShadings(content, shadings, reference => AddResource("Shading", reference));
+            WriteShadings(content, shadings, (reference, image) => AddResource(image ? "XObject" : "Shading", reference));
         }
 
         content.Restore();

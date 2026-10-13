@@ -167,9 +167,10 @@ public sealed class PdfCanvasTests
         PdfWarning warning = Assert.Single(canvas.Warnings);
         Assert.Equal(PdfWarningCode.RasterFallback, warning.Code);
         PdfStream image = (PdfStream)page.Resources!.Get<PdfDictionary>("XObject")!["EgX0"]!.Resolve();
-        Assert.Equal((72, 72), (image.Dictionary.GetInt("Width"), image.Dictionary.GetInt("Height")));
-        Assert.NotNull(image.Dictionary.Get("SMask"));
-        Assert.Contains("72 0 0 -72 0 72 cm\n/EgX0 Do\n", Content(page), StringComparison.Ordinal);
+        // Only what was drawn is kept: the 20 by 20 square, not the whole page, and opaque, so it needs no soft mask.
+        Assert.Equal((20, 20), (image.Dictionary.GetInt("Width"), image.Dictionary.GetInt("Height")));
+        Assert.Null(image.Dictionary.Get("SMask"));
+        Assert.Contains("20 0 0 -20 10 30 cm\n/EgX0 Do\n", Content(page), StringComparison.Ordinal);
 
         using PdfCanvas strict = new(page, new PdfCanvasOptions { Strict = true });
         Assert.Throws<NotSupportedException>(() => strict.FillRect(new RectF(0, 0, 1, 1), new SolidPaint(new RgbaF32(1, 0, 0, 1)) { BlendMode = BlendMode.Xor }));

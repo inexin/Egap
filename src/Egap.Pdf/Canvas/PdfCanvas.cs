@@ -188,7 +188,7 @@ public sealed partial class PdfCanvas : Canvas
 
         if (!Begin(paint, stroke))
         {
-            Unsupported(paint, c => Draw(c, rect, stroke, paint));
+            Unsupported(paint, (c, p) => Draw(c, rect, stroke, p));
             return;
         }
 
@@ -218,7 +218,7 @@ public sealed partial class PdfCanvas : Canvas
 
         if (!Begin(paint, stroke))
         {
-            Unsupported(paint, c => Draw(c, path, stroke, paint));
+            Unsupported(paint, (c, p) => Draw(c, path, stroke, p));
             return;
         }
 
@@ -473,17 +473,20 @@ public sealed partial class PdfCanvas : Canvas
 
     /// <summary>
     /// Draws a call that PDF cannot express into an image at the fallback resolution and places it (Phase 3 design Q14), or
-    /// throws in strict mode.
+    /// throws in strict mode. The call gets the paint to draw with: a mask blur's sigma is in device pixels, so it is scaled to
+    /// the image's pixels, and the blur in the image is as wide on the page as on a raster at one pixel per unit.
     /// </summary>
-    private void Unsupported(Paint? paint, Action<Canvas> draw)
+    private void Unsupported(Paint paint, Action<Canvas, Paint> draw)
     {
-        string what = paint is null ? "a drawing" : paint.Blur is not null ? "a blurred paint" : PdfBlendModes.ContainsKey(paint.BlendMode) ? paint.GetType().Name : $"the blend mode {paint.BlendMode}";
+        string what = paint.Blur is not null ? "a blurred paint" : PdfBlendModes.ContainsKey(paint.BlendMode) ? paint.GetType().Name : $"the blend mode {paint.BlendMode}";
         if (options.Strict)
         {
             throw new NotSupportedException($"PDF cannot express {what}.");
         }
 
-        Fallback(draw, what);
+        float scale = options.FallbackDpi / 72f;
+        Paint scaled = paint.Blur is MaskBlur blur ? paint with { Blur = new MaskBlur(Math.Min(blur.Sigma * scale, MaskBlur.MaxSigma), blur.Style) } : paint;
+        Fallback(c => draw(c, scaled), what, scale);
     }
 
     private static void Draw(Canvas canvas, RectF rect, Stroke? stroke, Paint paint)

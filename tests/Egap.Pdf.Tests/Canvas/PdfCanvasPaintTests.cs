@@ -96,6 +96,19 @@ public sealed class PdfCanvasPaintTests
         Assert.Equal(2, Encoding.ASCII.GetString(pattern.GetDecodedBytes()).Split("/Im0 Do").Length - 1);
     }
 
+    [Fact]
+    public void ClampsAnImagePaintWithItsEdgesStretched()
+    {
+        using Raster<Rgba8> image = Raster.Create<Rgba8>(4, 2, new Rgba8(0, 0, 255, 255));
+        (PdfPage page, string text) = Draw(c => c.FillRect(new RectF(0, 0, 100, 100), new ImagePaint(image) { LocalMatrix = Matrix3x2.CreateTranslation(40, 40) }));
+
+        // The image, its four edges and its four corners, drawn inside the rectangle; no pattern.
+        Assert.Null(page.Resources!.Get<PdfDictionary>("Pattern"));
+        PdfDictionary images = page.Resources!.Get<PdfDictionary>("XObject")!;
+        Assert.Equal([(1L, 2L), (1, 2), (4, 1), (4, 1), (1, 1), (1, 1), (1, 1), (1, 1), (4, 2)], images.Entries.Select(e => ((PdfStream)e.Value.Resolve()).Dictionary).Select(d => (d.GetInt("Width")!.Value, d.GetInt("Height")!.Value)));
+        Assert.Contains("0 0 100 100 re\nW\nn\n", text, StringComparison.Ordinal);
+    }
+
     private static (PdfPage Page, string Content) Draw(Action<Egami.Drawing.Canvas> draw)
     {
         PdfDocument pdf = PdfDocument.Create();
