@@ -61,11 +61,11 @@ public sealed class FlattenTests
         Assert.Equal(["Square", "Popup", "Link", "Text", "Square"], page.Annotations.Select(a => a.Subtype));
         string content = Content(page);
         Assert.StartsWith("q\n1 0 0 rg 0 0 10 10 re f\nQ\n", content, StringComparison.Ordinal);
-        Assert.Contains("q\n1 0 0 1 10 10 cm\n/EgapFlat0 Do\nQ\n", content, StringComparison.Ordinal);
-        Assert.Contains("q\n1 0 0 1 100 100 cm\n/EgapFlat1 Do\nQ\n", content, StringComparison.Ordinal);
+        Assert.Contains("q\n1 0 0 1 10 10 cm\n/Eg0 Do\nQ\n", content, StringComparison.Ordinal);
+        Assert.Contains("q\n1 0 0 1 100 100 cm\n/Eg1 Do\nQ\n", content, StringComparison.Ordinal);
         PdfDictionary resources = page.Dictionary.Get<PdfDictionary>("Resources")!;
         Assert.NotNull(resources.Get<PdfDictionary>("Font")!.Get("F1"));
-        Assert.Equal(new PdfReference(40, 0), resources.Get<PdfDictionary>("XObject")!["EgapFlat1"]);
+        Assert.Equal(new PdfReference(40, 0), resources.Get<PdfDictionary>("XObject")!["Eg1"]);
         Assert.Null(pdf.Pages[0].Dictionary.Get<PdfDictionary>("Parent")!.Get<PdfDictionary>("Resources")!.Get("XObject"));
 
         using PdfDocument reopened = PdfDocument.Open(Save(pdf), Strict);
@@ -82,7 +82,7 @@ public sealed class FlattenTests
 
         Assert.Equal(["agree", "secret"], pdf.Form.Select(f => f.FullName));
         Assert.DoesNotContain(pdf.Pages[0].Annotations, a => a.Reference == new PdfReference(20, 0));
-        Assert.Contains("(Hello) Tj", Encoding.Latin1.GetString(((PdfStream)pdf.Objects[(PdfReference)pdf.Pages[0].Dictionary.Get<PdfDictionary>("Resources")!.Get<PdfDictionary>("XObject")!["EgapFlat0"]!]).GetDecodedBytes()), StringComparison.Ordinal);
+        Assert.Contains("(Hello) Tj", Encoding.Latin1.GetString(((PdfStream)pdf.Objects[(PdfReference)pdf.Pages[0].Dictionary.Get<PdfDictionary>("Resources")!.Get<PdfDictionary>("XObject")!["Eg0"]!]).GetDecodedBytes()), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -96,9 +96,9 @@ public sealed class FlattenTests
         Assert.Equal(["Widget", "Widget", "Widget", "Link"], page.Annotations.Select(a => a.Subtype));
         string content = Content(page);
         // The square's box [0 0 50 25] is scaled by its matrix to 100 by 50, which is its rectangle's size already.
-        Assert.Contains("q\n1 0 0 1 150 150 cm\n/EgapFlat0 Do\nQ\n", content, StringComparison.Ordinal);
+        Assert.Contains("q\n1 0 0 1 150 150 cm\n/Eg0 Do\nQ\n", content, StringComparison.Ordinal);
         // The square Egap drew has its rectangle as its box, so it is drawn where it is.
-        Assert.Contains("q\n1 0 0 1 0 0 cm\n/EgapFlat2 Do\nQ\n", content, StringComparison.Ordinal);
+        Assert.Contains("q\n1 0 0 1 0 0 cm\n/Eg2 Do\nQ\n", content, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -130,7 +130,7 @@ public sealed class FlattenTests
 
         pdf.Form.Flatten([name]);
 
-        PdfStream drawn = (PdfStream)pdf.Objects[(PdfReference)pdf.Pages[0].Dictionary.Get<PdfDictionary>("Resources")!.Get<PdfDictionary>("XObject")!["EgapFlat0"]!];
+        PdfStream drawn = (PdfStream)pdf.Objects[(PdfReference)pdf.Pages[0].Dictionary.Get<PdfDictionary>("Resources")!.Get<PdfDictionary>("XObject")!["Eg0"]!];
         Assert.Contains("(Changed) Tj", Encoding.Latin1.GetString(drawn.GetDecodedBytes()), StringComparison.Ordinal);
     }
 
