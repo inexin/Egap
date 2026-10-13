@@ -149,6 +149,12 @@ public sealed partial class PdfCanvas : Canvas
     /// <inheritdoc/>
     protected override void OnDrawRect(RectF rect, Stroke? stroke, Paint paint)
     {
+        if (FillsStroke(paint, stroke))
+        {
+            OnDrawPath(DrawingPath.Rect(rect), stroke, paint);
+            return;
+        }
+
         if (!Begin(paint, stroke))
         {
             Unsupported(paint, c => Draw(c, rect, stroke, paint));
@@ -162,6 +168,18 @@ public sealed partial class PdfCanvas : Canvas
     /// <inheritdoc/>
     protected override void OnDrawPath(DrawingPath path, Stroke? stroke, Paint paint)
     {
+        if (FillsStroke(paint, stroke))
+        {
+            // Filled as its outline, cut finely enough for a closer look than the canvas's own scale.
+            float scale = MathF.Max(1, MathF.Sqrt(MathF.Abs(Matrix.GetDeterminant()))) * 4;
+            path = stroke!.ToPath(path, scale);
+            stroke = null;
+            if (path.IsEmpty)
+            {
+                return;
+            }
+        }
+
         if (!Begin(paint, stroke))
         {
             Unsupported(paint, c => Draw(c, path, stroke, paint));
@@ -316,7 +334,11 @@ public sealed partial class PdfCanvas : Canvas
 
     private void Finish(Stroke? stroke, FillRule rule)
     {
-        if (stroke is not null)
+        if (pendingShadings is not null)
+        {
+            PaintShadings(rule);
+        }
+        else if (stroke is not null)
         {
             content.Stroke();
         }
@@ -324,10 +346,21 @@ public sealed partial class PdfCanvas : Canvas
         {
             content.Fill(rule == FillRule.EvenOdd);
         }
+
+        if (restoreAfterDraw)
+        {
+            content.Restore();
+            restoreAfterDraw = false;
+        }
+    }
+
+    private void WritePath(DrawingPath path)
+    {
+        WritePath(content, path);
     }
 
     /// <summary>Writes a path's contours, raising quadratic curves to cubics (exactly: a quadratic is a cubic).</summary>
-    private void WritePath(DrawingPath path)
+    private static void WritePath(PdfContentWriter content, DrawingPath path)
     {
         ReadOnlySpan<Vector2> points = path.Points;
         int p = 0;

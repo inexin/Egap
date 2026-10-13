@@ -146,11 +146,4 @@ public sealed partial class PdfCanvas
         return stream;
     }
 
-    /// <summary>Paints other than a solid colour: shadings and patterns (task 9) until then fall back.</summary>
-    private static bool BeginShaded(Paint paint, Stroke? stroke)
-    {
-        _ = paint;
-        _ = stroke;
-        return false;
-    }
 }
