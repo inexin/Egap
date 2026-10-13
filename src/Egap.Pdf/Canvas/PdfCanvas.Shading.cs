@@ -50,12 +50,20 @@ public sealed partial class PdfCanvas
         switch (paint)
         {
             case Gradient gradient when stroke is null:
-                if (GradientShadings(gradient) is not { } shadings)
+                if (GradientShadings(gradient, paint.Opacity >= 1 && paint.BlendMode == Egami.Operations.BlendMode.SourceOver) is not { } shadings)
                 {
                     return false;
                 }
 
                 (pieces, mask) = shadings;
+                break;
+            case ImagePaint { TileX: TileMode.Clamp or TileMode.Decal, TileY: TileMode.Clamp or TileMode.Decal } image when stroke is null:
+                pieces = ClampedImage(image);
+                if (pieces is null)
+                {
+                    return false;
+                }
+
                 break;
             case ImagePaint image when stroke is null:
                 pattern = ImagePattern(image, Pdf(paint.LocalMatrix * Matrix) * baseMatrix);
@@ -117,12 +125,12 @@ public sealed partial class PdfCanvas
     private void PaintShadings(FillRule rule)
     {
         content.Clip(rule == FillRule.EvenOdd).EndPath();
-        WriteShadings(content, pendingShadings!, name => AddResource("Shading", name));
+        WriteShadings(content, pendingShadings!, (reference, image) => AddResource(image ? "XObject" : "Shading", reference));
         pendingShadings = null;
     }
 
     /// <summary>Writes shadings under the paint's matrix, each in its own clip when it has one.</summary>
-    private static void WriteShadings(PdfContentWriter writer, List<ShadingPiece> pieces, Func<PdfReference, PdfName> name)
+    private static void WriteShadings(PdfContentWriter writer, List<ShadingPiece> pieces, Func<PdfReference, bool, PdfName> name)
     {
         foreach (ShadingPiece piece in pieces)
         {
@@ -133,15 +141,23 @@ public sealed partial class PdfCanvas
                 writer.Clip(clip.FillRule == FillRule.EvenOdd).EndPath();
             }
 
-            writer.Shading(name(piece.Shading)).Restore();
+            if (piece.Image)
+            {
+                writer.Draw(name(piece.Shading, true)).Restore();
+            }
+            else
+            {
+                writer.Shading(name(piece.Shading, false)).Restore();
+            }
         }
     }
 
     /// <summary>
     /// The shadings that draw a gradient over the clip, in the canvas's local coordinates, and the soft mask group for its
-    /// alpha when it has any; <see langword="null"/> when PDF cannot draw it.
+    /// alpha when it has any; <see langword="null"/> when PDF cannot draw it. <paramref name="solid"/> says the shadings are
+    /// painted at full opacity with normal blending, so a repeating gradient's periods may overlap.
     /// </summary>
-    private (List<ShadingPiece> Pieces, PdfReference? Mask)? GradientShadings(Gradient gradient)
+    private (List<ShadingPiece> Pieces, PdfReference? Mask)? GradientShadings(Gradient gradient, bool solid)
     {
         if (!Matrix3x2.Invert(gradient.LocalMatrix * Matrix, out Matrix3x2 toPaint) || !Matrix3x2.Invert(Matrix, out Matrix3x2 toLocal))
         {
@@ -152,7 +168,7 @@ public sealed partial class PdfCanvas
         Ramp ramp = Ramp.For(gradient);
         PdfDocument document = Page.Document;
         PdfMatrix local = Pdf(gradient.LocalMatrix);
-        List<ShadingPiece>? colors = Pieces(document, gradient, ramp, area, local, alpha: false);
+        List<ShadingPiece>? colors = Pieces(document, gradient, ramp, area, local, alpha: false, overlap: solid && !ramp.HasAlpha);
         if (colors is null)
         {
             return null;
@@ -164,7 +180,7 @@ public sealed partial class PdfCanvas
             return (colors, null);
         }
 
-        List<ShadingPiece> gray = Pieces(document, gradient, ramp, area, local, alpha: true)!;
+        List<ShadingPiece> gray = Pieces(document, gradient, ramp, area, local, alpha: true, overlap: true)!;
         RectF bounds = Map(DeviceClipBounds, toLocal);
         PdfStream mask = new(new PdfDictionary
         {
@@ -175,7 +191,7 @@ public sealed partial class PdfCanvas
         });
         PdfDictionary shadings = [];
         PdfContentWriter writer = new();
-        WriteShadings(writer, gray, reference =>
+        WriteShadings(writer, gray, (reference, _) =>
         {
             PdfName name = PdfName.Get("Sh" + shadings.Count.ToString(System.Globalization.CultureInfo.InvariantCulture));
             shadings[name] = reference;
@@ -186,8 +202,13 @@ public sealed partial class PdfCanvas
         return (colors, document.Objects.Add(mask));
     }
 
-    /// <summary>The shadings for a gradient's colours, or with <paramref name="alpha"/> its alpha in gray, each with its clip in paint coordinates.</summary>
-    private static List<ShadingPiece>? Pieces(PdfDocument document, Gradient gradient, Ramp ramp, RectF area, PdfMatrix local, bool alpha)
+    /// <summary>
+    /// The shadings for a gradient's colours, or with <paramref name="alpha"/> its alpha in gray, each with its clip in paint
+    /// coordinates. A repeating gradient has one shading per period; with <paramref name="overlap"/> each period's clip runs on
+    /// past its end and the next period is painted over it, so no antialiased seam between two clips lets the backdrop through
+    /// (PDFium shows those), which needs opaque painting; without it the clips only meet.
+    /// </summary>
+    private static List<ShadingPiece>? Pieces(PdfDocument document, Gradient gradient, Ramp ramp, RectF area, PdfMatrix local, bool alpha, bool overlap)
     {
         string space = alpha ? "DeviceGray" : "DeviceRGB";
         int channels = alpha ? 1 : 3;
@@ -221,19 +242,21 @@ public sealed partial class PdfCanvas
         {
             bool reversed = gradient.Tile == TileMode.Mirror && ((k % 2) + 2) % 2 == 1;
             PdfArray coords;
-            DrawingPath clip;
+            DrawingPath? clip;
             switch (gradient)
             {
                 case LinearGradient l:
                     Vector2 from = l.Start + ((l.End - l.Start) * k), to = l.Start + ((l.End - l.Start) * (k + 1));
                     Vector2 across = Vector2.Normalize(new Vector2(-(l.End - l.Start).Y, (l.End - l.Start).X)) * reach;
-                    clip = DrawingPath.Polygon([from - across, to - across, to + across, from + across]);
+                    Vector2 until = overlap ? l.Start + ((l.End - l.Start) * k1) : to;
+                    clip = overlap && k == k0 ? null : DrawingPath.Polygon([from - across, until - across, until + across, from + across]);
                     (Vector2 a, Vector2 b) = reversed ? (to, from) : (from, to);
                     coords = [Real(a.X), Real(a.Y), Real(b.X), Real(b.Y)];
                     break;
                 case RadialGradient r:
                     float inner = r.Radius * k, outer = r.Radius * (k + 1);
-                    clip = (k == 0 ? DrawingPath.Circle(r.Center, outer) : DrawingPath.Circle(r.Center, outer).Op(DrawingPath.Circle(r.Center, inner), PathOp.Difference));
+                    DrawingPath outside = overlap ? DrawingPath.Circle(r.Center, r.Radius * k1) : DrawingPath.Circle(r.Center, outer);
+                    clip = overlap && k == k0 ? null : k == 0 ? outside : outside.Op(DrawingPath.Circle(r.Center, inner), PathOp.Difference);
                     (float ra, float rb) = reversed ? (outer, inner) : (inner, outer);
                     coords = [Real(r.Center.X), Real(r.Center.Y), Real(ra), Real(r.Center.X), Real(r.Center.Y), Real(rb)];
                     break;
@@ -471,7 +494,23 @@ public sealed partial class PdfCanvas
             stepY = Math.Max(reach * 2, stepY);
         }
 
+        // The pattern's matrix keeps the page's own offset and the rest of the move goes into pattern space, as Skia writes
+        // it: PDFium lays its tiles from the matrix's offset, rounded, and a whole-numbered offset puts them where they belong.
+        PdfMatrix linear = new(toPage.A, toPage.B, toPage.C, toPage.D, 0, 0);
+        Vector2 offset = default;
+        if (linear.TryInvert(out PdfMatrix inverse))
+        {
+            (double ox, double oy) = inverse.Transform(new PdfPoint(toPage.E - baseMatrix.E, toPage.F - baseMatrix.F));
+            offset = new Vector2((float)ox, (float)oy);
+            toPage = new PdfMatrix(toPage.A, toPage.B, toPage.C, toPage.D, baseMatrix.E, baseMatrix.F);
+        }
+
         PdfContentWriter tile = new();
+        if (offset != default)
+        {
+            tile.Transform(1, 0, 0, 1, offset.X, offset.Y);
+        }
+
         for (int i = 0; i < (mirrorX ? 2 : 1); i++)
         {
             for (int j = 0; j < (mirrorY ? 2 : 1); j++)
@@ -487,7 +526,7 @@ public sealed partial class PdfCanvas
             ["PatternType"] = new PdfInteger(1),
             ["PaintType"] = new PdfInteger(1),
             ["TilingType"] = new PdfInteger(1),
-            ["BBox"] = new PdfArray { new PdfInteger(0), new PdfInteger(0), Real(mirrorX ? 2 * w : w), Real(mirrorY ? 2 * h : h) },
+            ["BBox"] = new PdfArray { Real(offset.X), Real(offset.Y), Real(offset.X + (mirrorX ? 2 * w : w)), Real(offset.Y + (mirrorY ? 2 * h : h)) },
             ["XStep"] = Real(stepX),
             ["YStep"] = Real(stepY),
             ["Matrix"] = MatrixArray(toPage),
@@ -495,6 +534,60 @@ public sealed partial class PdfCanvas
         });
         pattern.SetDecodedBytes(tile.ToArray());
         return Page.Document.Objects.Add(pattern);
+    }
+
+    /// <summary>
+    /// An image paint whose axes clamp or stop (decal) as images drawn inside the shape rather than a pattern, as viewers draw
+    /// images more exactly than pattern cells: the image, and for a clamping axis its edge rows or columns stretched out to
+    /// everything the drawing can reach, with the corner pixels stretched over the corners when both axes clamp.
+    /// </summary>
+    private List<ShadingPiece>? ClampedImage(ImagePaint paint)
+    {
+        if (!Matrix3x2.Invert(paint.LocalMatrix * Matrix, out Matrix3x2 toPaint))
+        {
+            return null;
+        }
+
+        Raster image = paint.Image;
+        int w = image.Width, h = image.Height;
+        RectF area = Map(DeviceClipBounds, toPaint);
+        PdfMatrix local = Pdf(paint.LocalMatrix);
+        bool clampX = paint.TileX == TileMode.Clamp, clampY = paint.TileY == TileMode.Clamp;
+        float left = MathF.Min(area.Left, 0) - 1, right = MathF.Max(area.Right, w) + 1;
+        float top = MathF.Min(area.Top, 0) - 1, bottom = MathF.Max(area.Bottom, h) + 1;
+        List<ShadingPiece> pieces = [];
+
+        void Stretch(int x, int y, int width, int height, float toX, float toY, float toWidth, float toHeight)
+        {
+            if (toWidth > 0 && toHeight > 0)
+            {
+                using Raster part = image.Derive(o => o.Crop(x, y, width, height));
+                pieces.Add(new ShadingPiece(WriteImage(part), new PdfMatrix(toWidth, 0, 0, -toHeight, toX, toY + toHeight) * local, null, Image: true));
+            }
+        }
+
+        if (clampX)
+        {
+            Stretch(0, 0, 1, h, left, 0, -left, h);
+            Stretch(w - 1, 0, 1, h, w, 0, right - w, h);
+        }
+
+        if (clampY)
+        {
+            Stretch(0, 0, w, 1, 0, top, w, -top);
+            Stretch(0, h - 1, w, 1, 0, h, w, bottom - h);
+        }
+
+        if (clampX && clampY)
+        {
+            Stretch(0, 0, 1, 1, left, top, -left, -top);
+            Stretch(w - 1, 0, 1, 1, w, top, right - w, -top);
+            Stretch(0, h - 1, 1, 1, left, h, -left, bottom - h);
+            Stretch(w - 1, h - 1, 1, 1, w, h, right - w, bottom - h);
+        }
+
+        pieces.Add(new ShadingPiece(ImageXObject(image), new PdfMatrix(w, 0, 0, -h, 0, h) * local, null, Image: true));
+        return pieces;
     }
 
     private static PdfArray MatrixArray(PdfMatrix m)
@@ -523,8 +616,11 @@ public sealed partial class PdfCanvas
         return new PdfReal(Math.Round(value, 5));
     }
 
-    /// <summary>One shading painted for a gradient: under the paint's matrix, within its clip in paint coordinates when it has one.</summary>
-    private sealed record ShadingPiece(PdfReference Shading, PdfMatrix Matrix, DrawingPath? Clip);
+    /// <summary>
+    /// One shading painted for a gradient, or with <see cref="Image"/> an image XObject drawn for an image paint: under the
+    /// paint's matrix, within its clip in paint coordinates when it has one.
+    /// </summary>
+    private sealed record ShadingPiece(PdfReference Shading, PdfMatrix Matrix, DrawingPath? Clip, bool Image = false);
 
     /// <summary>
     /// A gradient's colours along its parameter as knots joined by straight lines: the stops themselves when the gradient

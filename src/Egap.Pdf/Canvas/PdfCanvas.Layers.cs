@@ -179,7 +179,8 @@ public sealed partial class PdfCanvas
                     picture.Playback(c);
                     c.Restore();
                 },
-                "a layer filter");
+                "a layer filter",
+                1);
             return;
         }
 
@@ -294,7 +295,7 @@ public sealed partial class PdfCanvas
 
         if (paint is not null && (paint.Blur is not null || !PdfBlendModes.ContainsKey(paint.BlendMode)))
         {
-            Unsupported(paint, c => c.DrawPicture(picture, matrix, paint));
+            Unsupported(paint, (c, p) => c.DrawPicture(picture, matrix, p));
             return;
         }
 

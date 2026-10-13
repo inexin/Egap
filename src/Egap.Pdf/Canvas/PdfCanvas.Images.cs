@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Cryptography;
 
 using Egami;
@@ -44,7 +45,7 @@ public sealed partial class PdfCanvas
     {
         if (paint is not null && (paint.Blur is not null || !PdfBlendModes.ContainsKey(paint.BlendMode)))
         {
-            Unsupported(paint, c => c.DrawImage(image, source, destination, sampling, paint));
+            Unsupported(paint, (c, p) => c.DrawImage(image, source, destination, sampling, p));
             return;
         }
 
@@ -81,18 +82,86 @@ public sealed partial class PdfCanvas
     }
 
     /// <summary>
-    /// Draws a call that PDF cannot express into an image at the fallback resolution and places it over the device clip
-    /// bounds (Phase 3 design Q14), with a warning.
+    /// Draws a call that PDF cannot express into an image at <paramref name="scale"/> pixels per unit and places it over the
+    /// device clip bounds (Phase 3 design Q14), with a warning. Only the part of the image the call drew on is kept, so a small
+    /// blurred shape on a large page is a small image.
     /// </summary>
-    private void Fallback(Action<Canvas> draw, string what)
+    private void Fallback(Action<Canvas> draw, string what, float scale)
     {
-        FallbackImage? image = RasterizeFallback(draw, options.FallbackDpi / 72f);
-        Warn(PdfWarningCode.RasterFallback, $"PDF cannot express {what}; it was drawn as an image at {options.FallbackDpi} dpi.");
-        if (image is not null)
+        FallbackImage? image = RasterizeFallback(draw, scale);
+        float dpi = scale * 72;
+        Warn(PdfWarningCode.RasterFallback, string.Create(CultureInfo.InvariantCulture, $"PDF cannot express {what}; it was drawn as an image at {dpi:0.#} dpi."));
+        if (image is null)
         {
-            using Raster<RgbaF32> pixels = image.Image;
-            PlaceDeviceImage(pixels, image.DeviceBounds);
+            return;
         }
+
+        using Raster<RgbaF32> pixels = image.Image;
+        if (Drawn(pixels) is not Rect drawn)
+        {
+            return;
+        }
+
+        // The drawn part widened to whole device units, so the part's edges fall on the page's pixel grid at 72 dpi, as the
+        // whole image's do: viewers resample an image placed between pixels a little differently.
+        RectF bounds = image.DeviceBounds;
+        float unit = bounds.Width / pixels.Width;
+        float left = MathF.Max(bounds.Left, MathF.Floor(bounds.X + (drawn.X * unit)));
+        float top = MathF.Max(bounds.Top, MathF.Floor(bounds.Y + (drawn.Y * unit)));
+        float right = MathF.Min(bounds.Right, MathF.Ceiling(bounds.X + ((drawn.X + drawn.Width) * unit)));
+        float bottom = MathF.Min(bounds.Bottom, MathF.Ceiling(bounds.Y + ((drawn.Y + drawn.Height) * unit)));
+        int x0 = Math.Clamp((int)MathF.Round((left - bounds.X) / unit), 0, pixels.Width);
+        int y0 = Math.Clamp((int)MathF.Round((top - bounds.Y) / unit), 0, pixels.Height);
+        int x1 = Math.Clamp((int)MathF.Round((right - bounds.X) / unit), x0, pixels.Width);
+        int y1 = Math.Clamp((int)MathF.Round((bottom - bounds.Y) / unit), y0, pixels.Height);
+        RectF device = new(left, top, right - left, bottom - top);
+        if (x1 == x0 || y1 == y0)
+        {
+            (x0, y0, x1, y1, device) = (0, 0, pixels.Width, pixels.Height, bounds);
+        }
+
+        // Eight bits a channel: the fallback stands for drawing on an 8-bit page, and 16 would double the bytes.
+        using Raster<Rgba8> part = Raster.Create<Rgba8>(x1 - x0, y1 - y0);
+        for (int y = y0; y < y1; y++)
+        {
+            ReadOnlySpan<RgbaF32> from = pixels.Row(y).Slice(x0, x1 - x0);
+            Span<Rgba8> to = part.Row(y - y0);
+            for (int x = 0; x < from.Length; x++)
+            {
+                to[x] = from[x].ToRgba8();
+            }
+        }
+
+        PlaceDeviceImage(part, device);
+    }
+
+    /// <summary>The smallest rectangle holding every pixel with any alpha, or <see langword="null"/> when nothing was drawn.</summary>
+    private static Rect? Drawn(Raster<RgbaF32> pixels)
+    {
+        int left = pixels.Width, top = -1, right = -1, bottom = -1;
+        for (int y = 0; y < pixels.Height; y++)
+        {
+            ReadOnlySpan<RgbaF32> row = pixels.Row(y);
+            int first = -1, last = -1;
+            for (int x = 0; x < row.Length; x++)
+            {
+                if (row[x].A > 0)
+                {
+                    first = first < 0 ? x : first;
+                    last = x;
+                }
+            }
+
+            if (first >= 0)
+            {
+                top = top < 0 ? y : top;
+                bottom = y;
+                left = Math.Min(left, first);
+                right = Math.Max(right, last);
+            }
+        }
+
+        return top < 0 ? null : new Rect(left, top, right - left + 1, bottom - top + 1);
     }
 
     /// <summary>The raster's image XObject, written the first time it is drawn.</summary>
