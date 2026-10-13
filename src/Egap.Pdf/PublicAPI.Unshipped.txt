@@ -98,6 +98,7 @@ Egap.Pdf.PdfCaretAnnotation.ShowsParagraphSymbol.get -> bool
 Egap.Pdf.PdfCaretAnnotation.ShowsParagraphSymbol.set -> void
 Egap.Pdf.PdfCheckBoxField
 Egap.Pdf.PdfCheckBoxField.IsChecked.get -> bool
+Egap.Pdf.PdfCheckBoxField.IsChecked.set -> void
 Egap.Pdf.PdfCheckBoxField.OnState.get -> string!
 Egap.Pdf.PdfCheckBoxField.Value.get -> string?
 Egap.Pdf.PdfChoiceField
@@ -121,6 +122,7 @@ Egap.Pdf.PdfCircleAnnotation.PdfCircleAnnotation(Egap.Pdf.PdfRectangle rectangle
 Egap.Pdf.PdfComboBoxField
 Egap.Pdf.PdfComboBoxField.IsEditable.get -> bool
 Egap.Pdf.PdfComboBoxField.Value.get -> string?
+Egap.Pdf.PdfComboBoxField.Value.set -> void
 Egap.Pdf.PdfDestination
 Egap.Pdf.PdfDestination.<Clone>$() -> Egap.Pdf.PdfDestination!
 Egap.Pdf.PdfDestination.Bottom.get -> double?
@@ -174,6 +176,7 @@ Egap.Pdf.PdfField.PartialName.get -> string!
 Egap.Pdf.PdfField.RawDefaultValue.get -> Egap.Pdf.PdfObject?
 Egap.Pdf.PdfField.RawValue.get -> Egap.Pdf.PdfObject?
 Egap.Pdf.PdfField.Reference.get -> Egap.Pdf.PdfReference?
+Egap.Pdf.PdfField.UpdateAppearances() -> bool
 Egap.Pdf.PdfField.Widgets.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWidgetAnnotation!>!
 Egap.Pdf.PdfFieldFlags
 Egap.Pdf.PdfFieldFlags.Comb = 16777216 -> Egap.Pdf.PdfFieldFlags
@@ -211,6 +214,8 @@ Egap.Pdf.PdfForm.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.
 Egap.Pdf.PdfForm.GetTerminalFields() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfField!>!
 Egap.Pdf.PdfForm.HasXfa.get -> bool
 Egap.Pdf.PdfForm.NeedAppearances.get -> bool
+Egap.Pdf.PdfForm.NeedAppearances.set -> void
+Egap.Pdf.PdfForm.Reset(System.Collections.Generic.IEnumerable<Egap.Pdf.PdfField!>? fields = null) -> void
 Egap.Pdf.PdfForm.SignatureFlags.get -> int
 Egap.Pdf.PdfForm.this[int index].get -> Egap.Pdf.PdfField!
 Egap.Pdf.PdfForm.TryGetField(string! fullName, out Egap.Pdf.PdfField! field) -> bool
@@ -318,6 +323,7 @@ Egap.Pdf.PdfLinkAnnotation.QuadPoints.get -> System.Collections.Generic.IReadOnl
 Egap.Pdf.PdfLinkAnnotation.QuadPoints.set -> void
 Egap.Pdf.PdfListBoxField
 Egap.Pdf.PdfListBoxField.IsMultiSelect.get -> bool
+Egap.Pdf.PdfListBoxField.Select(params System.Collections.Generic.IReadOnlyList<string!>! values) -> void
 Egap.Pdf.PdfListBoxField.TopIndex.get -> int
 Egap.Pdf.PdfMarkupAnnotation
 Egap.Pdf.PdfMarkupAnnotation.Author.get -> string?
@@ -484,6 +490,7 @@ Egap.Pdf.PdfRadioButtonField.IsNoToggleToOff.get -> bool
 Egap.Pdf.PdfRadioButtonField.IsRadiosInUnison.get -> bool
 Egap.Pdf.PdfRadioButtonField.Options.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Egap.Pdf.PdfRadioButtonField.Value.get -> string?
+Egap.Pdf.PdfRadioButtonField.Value.set -> void
 Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfRectangle.Bottom.get -> double
 Egap.Pdf.PdfRectangle.Bottom.init -> void
@@ -567,6 +574,7 @@ Egap.Pdf.PdfTextAnnotation.State.get -> string?
 Egap.Pdf.PdfTextAnnotation.StateModel.get -> string?
 Egap.Pdf.PdfTextField
 Egap.Pdf.PdfTextField.DefaultValue.get -> string?
+Egap.Pdf.PdfTextField.DefaultValue.set -> void
 Egap.Pdf.PdfTextField.IsComb.get -> bool
 Egap.Pdf.PdfTextField.IsFileSelect.get -> bool
 Egap.Pdf.PdfTextField.IsMultiline.get -> bool
@@ -574,6 +582,7 @@ Egap.Pdf.PdfTextField.IsPassword.get -> bool
 Egap.Pdf.PdfTextField.MaxLength.get -> int?
 Egap.Pdf.PdfTextField.RichValue.get -> string?
 Egap.Pdf.PdfTextField.Value.get -> string?
+Egap.Pdf.PdfTextField.Value.set -> void
 Egap.Pdf.PdfTextMarkupAnnotation
 Egap.Pdf.PdfTextMarkupAnnotation.QuadPoints.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>!
 Egap.Pdf.PdfTextMarkupAnnotation.QuadPoints.set -> void

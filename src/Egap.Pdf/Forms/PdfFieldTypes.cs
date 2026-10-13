@@ -8,11 +8,32 @@ public sealed class PdfTextField : PdfField
     {
     }
 
-    /// <summary>The text (<c>/V</c>, inherited); a text stream is read too. <see langword="null"/> when there is none.</summary>
-    public string? Value => Text(RawValue);
+    /// <summary>
+    /// The text (<c>/V</c>, inherited); a text stream is read too. <see langword="null"/> when there is none. Setting it
+    /// redraws the widgets (<see cref="PdfField.UpdateAppearances"/>).
+    /// </summary>
+    /// <exception cref="ArgumentException">The text is longer than <see cref="MaxLength"/>.</exception>
+    public string? Value
+    {
+        get => Text(RawValue);
+        set
+        {
+            if (value is not null && MaxLength is int max && value.Length > max)
+            {
+                throw new ArgumentException($"Field {FullName} takes at most {max} characters.", nameof(value));
+            }
+
+            Dictionary["V"] = value is null ? null : PdfString.FromText(value);
+            UpdateAppearances();
+        }
+    }
 
     /// <summary>The text a reset restores (<c>/DV</c>, inherited).</summary>
-    public string? DefaultValue => Text(RawDefaultValue);
+    public string? DefaultValue
+    {
+        get => Text(RawDefaultValue);
+        set => Dictionary["DV"] = value is null ? null : PdfString.FromText(value);
+    }
 
     /// <summary>The rich text value (<c>/RV</c>, XHTML), as stored.</summary>
     public string? RichValue => Text(Inherited("RV"));
@@ -58,8 +79,19 @@ public sealed class PdfCheckBoxField : PdfField
     /// <summary>The value (<c>/V</c>, inherited): <c>Off</c>, an on state, or <see langword="null"/> when there is none.</summary>
     public string? Value => (RawValue as PdfName)?.Value ?? (RawValue as PdfString)?.ToText();
 
-    /// <summary>Whether the box is checked: its value is a state other than <c>Off</c>.</summary>
-    public bool IsChecked => Value is string value && value != "Off";
+    /// <summary>
+    /// Whether the box is checked: its value is a state other than <c>Off</c>. Setting it writes <see cref="OnState"/> or
+    /// <c>Off</c> and sets each widget's appearance state to match.
+    /// </summary>
+    public bool IsChecked
+    {
+        get => Value is string value && value != "Off";
+        set
+        {
+            Dictionary["V"] = PdfName.Get(value ? OnState : "Off");
+            UpdateAppearances();
+        }
+    }
 }
 
 /// <summary>A radio button group (12.7.5.2.4): one widget per button, at most one on.</summary>
@@ -73,8 +105,25 @@ public sealed class PdfRadioButtonField : PdfField
     /// <summary>The on state of each button, in widget order: the state name its widget shows when it is the one selected.</summary>
     public IReadOnlyList<string> Options => [.. Widgets.Select(w => OnStates(w).FirstOrDefault() ?? "")];
 
-    /// <summary>The selected button's state (<c>/V</c>, inherited), or <see langword="null"/> when none is selected.</summary>
-    public string? Value => ((RawValue as PdfName)?.Value ?? (RawValue as PdfString)?.ToText()) is string value && value != "Off" ? value : null;
+    /// <summary>
+    /// The selected button's state (<c>/V</c>, inherited), or <see langword="null"/> when none is selected. Setting one of
+    /// <see cref="Options"/> selects that button, and every button with the same state; setting none selects none.
+    /// </summary>
+    /// <exception cref="ArgumentException">The state is not one of <see cref="Options"/>.</exception>
+    public string? Value
+    {
+        get => ((RawValue as PdfName)?.Value ?? (RawValue as PdfString)?.ToText()) is string value && value != "Off" ? value : null;
+        set
+        {
+            if (value is not null && !Options.Contains(value))
+            {
+                throw new ArgumentException($"Radio group {FullName} has no button with state {value}.", nameof(value));
+            }
+
+            Dictionary["V"] = PdfName.Get(value ?? "Off");
+            UpdateAppearances();
+        }
+    }
 
     /// <summary>Whether one button must always be on.</summary>
     public bool IsNoToggleToOff => Flags.HasFlag(PdfFieldFlags.NoToggleToOff);
@@ -163,8 +212,26 @@ public sealed class PdfComboBoxField : PdfChoiceField
     {
     }
 
-    /// <summary>The selected value, or the typed text of an editable combo box; <see langword="null"/> when there is none.</summary>
-    public string? Value => Values.Count > 0 ? Values[0] : null;
+    /// <summary>
+    /// The selected value, or the typed text of an editable combo box; <see langword="null"/> when there is none. Setting it
+    /// selects the option with that export value, or for an editable combo box takes any text, and redraws the widgets.
+    /// </summary>
+    /// <exception cref="ArgumentException">The combo box is not editable and has no option with that value.</exception>
+    public string? Value
+    {
+        get => Values.Count > 0 ? Values[0] : null;
+        set
+        {
+            if (value is not null && !IsEditable && !Options.Any(o => o.ExportValue == value))
+            {
+                throw new ArgumentException($"Combo box {FullName} has no option {value}.", nameof(value));
+            }
+
+            Dictionary["V"] = value is null ? null : PdfString.FromText(value);
+            Dictionary.Remove("I");
+            UpdateAppearances();
+        }
+    }
 
     /// <summary>Whether the user may type a value of their own.</summary>
     public bool IsEditable => Flags.HasFlag(PdfFieldFlags.Edit);
@@ -183,6 +250,43 @@ public sealed class PdfListBoxField : PdfChoiceField
 
     /// <summary>The index of the first option shown (<c>/TI</c>); 0 when missing.</summary>
     public int TopIndex => Dictionary.GetInt("TI") is long top and >= 0 and <= int.MaxValue ? (int)top : 0;
+
+    /// <summary>
+    /// Selects options by export value, none for an empty list: writes <c>/V</c> (one text, or an array for several) and
+    /// <c>/I</c>, the indices of the options selected, then redraws the widgets.
+    /// </summary>
+    /// <exception cref="ArgumentException">A value is not an option, or several are given to a list box that is not multi-select.</exception>
+    public void Select(params IReadOnlyList<string> values)
+    {
+        ArgumentNullException.ThrowIfNull(values);
+        IReadOnlyList<PdfChoiceOption> options = Options;
+        List<int> indices = [];
+        foreach (string value in values.Distinct())
+        {
+            int index = Enumerable.Range(0, options.Count).FirstOrDefault(i => options[i].ExportValue == value, -1);
+            if (index < 0)
+            {
+                throw new ArgumentException($"List box {FullName} has no option {value}.", nameof(values));
+            }
+
+            indices.Add(index);
+        }
+
+        if (indices.Count > 1 && !IsMultiSelect)
+        {
+            throw new ArgumentException($"List box {FullName} takes one selection.", nameof(values));
+        }
+
+        indices.Sort();
+        Dictionary["V"] = indices.Count switch
+        {
+            0 => null,
+            1 => PdfString.FromText(options[indices[0]].ExportValue),
+            _ => new PdfArray(indices.Select(i => (PdfObject)PdfString.FromText(options[i].ExportValue))),
+        };
+        Dictionary["I"] = indices.Count == 0 ? null : new PdfArray(indices.Select(i => (PdfObject)new PdfInteger(i)));
+        UpdateAppearances();
+    }
 }
 
 /// <summary>A signature field (12.7.5.5). Phase 2 reads it only; signing and verifying come in 5.x.</summary>
