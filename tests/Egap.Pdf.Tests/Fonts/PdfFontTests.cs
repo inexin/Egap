@@ -34,7 +34,7 @@ public sealed class PdfFontTests
         PdfFont font = PdfFont.FromDictionary(dictionary);
 
         Assert.Equal((true, "Minion"), (font.IsSubset, font.Name));
-        Assert.Equal(["B", "\u00E9", "ff", null, "\U0001F600"], Enumerable.Range(65, 5).Select(font.ToUnicode));
+        Assert.Equal(["B", "\u00E9", "ff", "*", "\U0001F600"], Enumerable.Range(65, 5).Select(font.ToUnicode));
         Assert.Equal("\u20AC", font.ToUnicode(0x80));
         Assert.Equal("Ba", font.ToUnicode("Aa"u8));
     }
