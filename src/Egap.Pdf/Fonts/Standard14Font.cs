@@ -59,6 +59,7 @@ internal sealed class Standard14Font
     {
         Name = name;
         this.widthsByName = widthsByName;
+        BuiltInEncoding = builtInEncoding;
         IsSymbolic = name is "Symbol" or "ZapfDingbats";
         widthsByCode = new int[256];
         for (int code = 0; code < 256; code++)
@@ -83,6 +84,9 @@ internal sealed class Standard14Font
             .Select(v => double.Parse(v, CultureInfo.InvariantCulture)).ToArray();
         BoundingBox = new PdfRectangle(box[0], box[1], box[2], box[3]);
     }
+
+    /// <summary>The glyph names of the font's own encoding by code, from its metrics: StandardEncoding for the Latin fonts.</summary>
+    public IReadOnlyList<string?> BuiltInEncoding { get; }
 
     /// <summary>The base font name, such as <c>Helvetica</c>.</summary>
     public string Name { get; }
