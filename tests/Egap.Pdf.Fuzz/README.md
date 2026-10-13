@@ -26,6 +26,7 @@ crash, and AFL++ also reports hangs.
 | `annotations` | PDF bytes: every public property of every annotation on the first 50 pages read and up to 50 appearances drawn; then 20 adds, popups and removals drawn from the input, each read back at once, and the rewritten file must hold the same annotations on each page | `tests/fuzz-seeds/annotations/*`, `tests/fuzz-seeds/xref/*` |
 | `forms` | PDF bytes: every public property of up to 2,000 fields with their kids and widgets, every widget led back to its field, a field looked up by its full name, then up to 20 fields filled and read back before and after a rewrite | `tests/fuzz-seeds/forms/*`, `tests/fuzz-seeds/xref/*` |
 | `flatten` | PDF bytes: the form and the annotations flattened with a filter drawn from the input; the rewritten file must keep its pages, lose its form, and have content that decodes | `tests/fuzz-seeds/forms/*`, `tests/fuzz-seeds/annotations/*` |
+| `merge` | PDF bytes: the first 20 pages extracted twice and merged, written whole with identical objects merged; every page must keep its content and media box, and splitting the second copy off must give them again | `tests/fuzz-seeds/merge/*`, `tests/fuzz-seeds/xref/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
 

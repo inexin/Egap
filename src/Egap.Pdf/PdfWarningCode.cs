@@ -115,4 +115,10 @@ public enum PdfWarningCode
     /// the appearance it had.
     /// </summary>
     AppearanceNotDrawn,
+
+    /// <summary>
+    /// Part of a source document was not brought along with imported pages, such as its structure tree (tagged PDF comes in
+    /// 5.x) or its XFA form.
+    /// </summary>
+    NotImported,
 }
