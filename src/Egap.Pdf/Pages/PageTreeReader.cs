@@ -46,7 +46,7 @@ internal static class PageTreeReader
         if (root.Get<PdfArray>(Kids) is null && !IsPagesNode(root))
         {
             log.Add(PdfWarningCode.MalformedPageTree, "The catalog's /Pages is a page, not a page tree; it was read as the only page.", objectNumber: (rootValue as PdfReference)?.ObjectNumber);
-            pages.Add(AsPage(root, rootValue as PdfReference, log));
+            pages.Add(AsPage(root, rootValue as PdfReference, document));
             return (pages, true);
         }
 
@@ -97,7 +97,7 @@ internal static class PageTreeReader
             needsRebuild |= kid[Parent] is not PdfReference;
             if (kid.Get<PdfArray>(Kids) is null && !IsPagesNode(kid))
             {
-                pages.Add(AsPage(kid, reference, log));
+                pages.Add(AsPage(kid, reference, document));
             }
             else
             {
@@ -126,15 +126,16 @@ internal static class PageTreeReader
         stack.Push(new Frame(node, reference, node.Get<PdfArray>(Kids), pages.Count));
     }
 
-    private static PdfPage AsPage(PdfDictionary page, PdfReference? reference, WarningLog log)
+    private static PdfPage AsPage(PdfDictionary page, PdfReference? reference, PdfDocument document)
     {
+        WarningLog log = document.Log;
         if (page.GetName(Type) != PageType)
         {
             log.Add(PdfWarningCode.MalformedPageTree, $"A page has {(page[Type] is null ? "no /Type" : $"/Type {Describe(page[Type]!)}")}; it was read as /Type /Page.", objectNumber: reference?.ObjectNumber);
             page.SetParsed(Type, PageType);
         }
 
-        return new PdfPage(page, reference);
+        return new PdfPage(page, reference, document);
     }
 
     /// <summary>
@@ -178,7 +179,7 @@ internal static class PageTreeReader
         {
             if (document.Objects[reference] is PdfDictionary dictionary && dictionary.GetName(Type) == PageType)
             {
-                pages.Add(new PdfPage(dictionary, reference));
+                pages.Add(new PdfPage(dictionary, reference, document));
             }
         }
 

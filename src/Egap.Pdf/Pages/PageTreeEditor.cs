@@ -34,7 +34,7 @@ internal sealed class PageTreeEditor(PdfDocument document, List<PdfPage> pages)
         PdfReference reference = document.Objects.Add(page);
         Kid(parent).Insert(position, reference);
         AddToCounts(parent, 1);
-        PdfPage view = new((PdfDictionary)document.Objects[reference], reference);
+        PdfPage view = new((PdfDictionary)document.Objects[reference], reference, document);
         pages.Insert(index, view);
         SplitUp(parent);
         return view;
@@ -69,7 +69,7 @@ internal sealed class PageTreeEditor(PdfDocument document, List<PdfPage> pages)
         if (!ReferenceEquals(parent, oldParent))
         {
             // Under another node it could inherit other attributes: it keeps the ones it has now.
-            Materialize(page.Dictionary);
+            Materialize(page.Dictionary, document);
             page.Dictionary[Parent] = parentReference;
         }
 
@@ -82,7 +82,8 @@ internal sealed class PageTreeEditor(PdfDocument document, List<PdfPage> pages)
 
     /// <summary>
     /// Rebuilds a broken tree from its pages: each page gets the attributes it inherited, a page listed twice becomes a copy
-    /// of its own, and the catalog's /Pages gets a balanced tree of new nodes. Views of copied pages are replaced.
+    /// of its own, a direct page becomes an indirect object, and the catalog's /Pages gets a balanced tree of new nodes. Views
+    /// of copied pages are replaced.
     /// </summary>
     public void Rebuild()
     {
@@ -92,12 +93,20 @@ internal sealed class PageTreeEditor(PdfDocument document, List<PdfPage> pages)
         for (int i = 0; i < pages.Count; i++)
         {
             PdfPage page = pages[i];
-            Materialize(page.Dictionary);
-            if (page.Reference is null || !seen.Add(page.Dictionary))
+            Materialize(page.Dictionary, document);
+            if (page.Reference is null && seen.Add(page.Dictionary))
+            {
+                // A direct page moves out of the old tree and becomes an indirect object itself, so views of it stay valid.
+                Detach(page.Dictionary);
+                PdfReference added = document.Objects.Add(page.Dictionary);
+                page = new PdfPage(page.Dictionary, added, document);
+                pages[i] = page;
+            }
+            else if (page.Reference is null || !seen.Add(page.Dictionary))
             {
                 PdfDictionary copy = page.Dictionary.Clone();
                 PdfReference added = document.Objects.Add(copy);
-                page = new PdfPage((PdfDictionary)document.Objects[added], added);
+                page = new PdfPage((PdfDictionary)document.Objects[added], added, document);
                 pages[i] = page;
                 seen.Add(page.Dictionary);
             }
@@ -300,13 +309,38 @@ internal sealed class PageTreeEditor(PdfDocument document, List<PdfPage> pages)
         throw new InvalidOperationException("A page tree node's /Parent does not list it.");
     }
 
+    /// <summary>Takes a direct dictionary out of the array or dictionary that holds it.</summary>
+    private static void Detach(PdfDictionary value)
+    {
+        switch (((Objects.IContainer)value).Parent)
+        {
+            case PdfArray array:
+                for (int i = array.Count - 1; i >= 0; i--)
+                {
+                    if (ReferenceEquals(array[i], value))
+                    {
+                        array.RemoveAt(i);
+                    }
+                }
+
+                break;
+            case PdfDictionary holder:
+                foreach (PdfName key in holder.Keys.Where(k => ReferenceEquals(holder[k], value)).ToList())
+                {
+                    holder.Remove(key);
+                }
+
+                break;
+        }
+    }
+
     /// <summary>
     /// Writes the attributes a page inherits onto the page itself, so it keeps them wherever it goes. An attribute it has
     /// from nowhere gets its default written, so it cannot pick up another node's either.
     /// </summary>
-    private static void Materialize(PdfDictionary page)
+    private static void Materialize(PdfDictionary page, PdfDocument document)
     {
-        PdfPage view = new(page, null);
+        PdfPage view = new(page, null, document);
         foreach (PdfName key in Inheritable)
         {
             // A value that resolves to null, such as a reference to a missing object, counts as absent (7.3.7).
