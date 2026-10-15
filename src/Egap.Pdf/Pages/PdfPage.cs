@@ -10,7 +10,7 @@ namespace Egap.Pdf;
 /// take effect (14.11.2): the crop box is clipped to the media box, and the bleed, trim and art boxes default to the crop box
 /// and are clipped to the media box. A missing or unusable media box is US Letter, as pdf.js and PDFium take it.
 /// </remarks>
-public sealed class PdfPage : IEquatable<PdfPage>
+public sealed partial class PdfPage : IEquatable<PdfPage>
 {
     /// <summary>The media box of a page that has none: US Letter, 612 by 792 points.</summary>
     public static readonly PdfRectangle DefaultMediaBox = new(0, 0, 612, 792);
