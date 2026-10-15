@@ -77,8 +77,9 @@ internal readonly record struct RenderGeometry(int Width, int Height, Matrix3x2 
 
     private static int Pixels(double size, int? fit)
     {
-        // A size a hair over a whole number from rounding stays that number; a fitted side never passes its limit.
-        double rounded = Math.Ceiling(size - 1e-6);
+        // Rounded up exactly as PDFium and pdf.js do, floating-point error included: 792 points at 150 dpi is 1651 pixels
+        // there, as 792 × (150 / 72) comes out a hair over 1650. A fitted side never passes its limit.
+        double rounded = Math.Ceiling(size);
         if (fit is int limit)
         {
             rounded = Math.Min(rounded, limit);
