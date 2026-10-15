@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions"];
 
     public static Action<Stream> Get(string name)
     {
@@ -43,6 +43,7 @@ internal static class Targets
             "walker" => Walker,
             "fonts" => Fonts,
             "images" => Images,
+            "functions" => Functions,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -52,6 +53,130 @@ internal static class Targets
         using MemoryStream copy = new();
         input.CopyTo(copy);
         return copy.ToArray();
+    }
+
+    /// <summary>
+    /// A PDF function (Phase 4 task 7) built from the bytes: the first picks the type, the next few its sizes, and the rest is
+    /// a type 4 program or a type 0 function's samples; types 2 and 3 take their numbers from the bytes. Reading may throw
+    /// only <see cref="InvalidDataException"/>; evaluating and sampling must never throw and must give finite numbers.
+    /// </summary>
+    private static void Functions(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        if (bytes.Length < 6)
+        {
+            return;
+        }
+
+        int inputs = 1 + (bytes[1] % 3), outputs = 1 + (bytes[2] % 4);
+        PdfArray domain = [], range = [];
+        for (int i = 0; i < inputs; i++)
+        {
+            domain.Add(new PdfReal(-(bytes[3] % 4)));
+            domain.Add(new PdfReal(1 + (bytes[4] % 3)));
+        }
+
+        for (int i = 0; i < outputs; i++)
+        {
+            range.Add(new PdfReal(-2));
+            range.Add(new PdfReal(2));
+        }
+
+        byte[] rest = bytes[6..];
+        PdfDictionary dictionary = new() { ["FunctionType"] = new PdfInteger(bytes[0] % 5), ["Domain"] = domain, ["Range"] = range };
+        PdfObject value = dictionary;
+        switch (bytes[0] % 5)
+        {
+            case 0:
+                PdfArray size = [];
+                for (int i = 0; i < inputs; i++)
+                {
+                    size.Add(new PdfInteger(1 + ((bytes[5] >> (2 * i)) & 7)));
+                }
+
+                dictionary["Size"] = size;
+                dictionary["BitsPerSample"] = new PdfInteger(SampleBits[bytes[4] % 8]);
+                value = StreamWith(dictionary, rest);
+                break;
+            case 2:
+                dictionary["C0"] = Numbers(rest, outputs, 0);
+                dictionary["C1"] = Numbers(rest, outputs, outputs);
+                dictionary["N"] = new PdfReal((bytes[5] - 128) / 16.0);
+                break;
+            case 3:
+                PdfDictionary part = new() { ["FunctionType"] = new PdfInteger(2), ["Domain"] = new PdfArray { new PdfInteger(0), new PdfInteger(1) }, ["C0"] = Numbers(rest, outputs, 0), ["C1"] = Numbers(rest, outputs, outputs), ["N"] = new PdfInteger(1 + (bytes[5] % 3)) };
+                int parts = 1 + (bytes[5] % 4);
+                PdfArray functions = [], bounds = [], encode = [];
+                for (int i = 0; i < parts; i++)
+                {
+                    functions.Add(part.Clone());
+                    encode.Add(new PdfReal(rest.Length > i ? rest[i] / 255.0 : 0));
+                    encode.Add(new PdfReal(rest.Length > i + 1 ? rest[i + 1] / 255.0 : 1));
+                    if (i > 0)
+                    {
+                        bounds.Add(new PdfReal(rest.Length > i + 2 ? rest[i + 2] / 128.0 : 0.5));
+                    }
+                }
+
+                dictionary["Functions"] = functions;
+                dictionary["Bounds"] = bounds;
+                dictionary["Encode"] = encode;
+                break;
+            default:
+                value = StreamWith(dictionary, rest);
+                break;
+        }
+
+        Egap.Pdf.Images.PdfFunction function;
+        try
+        {
+            function = Egap.Pdf.Images.PdfFunction.Read(value);
+        }
+        catch (InvalidDataException)
+        {
+            return;
+        }
+
+        double[] arguments = new double[inputs];
+        double[] results = new double[Math.Max(function.Outputs, outputs)];
+        for (int step = 0; step < 16; step++)
+        {
+            for (int i = 0; i < inputs; i++)
+            {
+                arguments[i] = step == 15 ? double.NaN : ((step * 7) + (i * 3)) % 11 / 3.0 - 1;
+            }
+
+            function.Evaluate(arguments, results);
+            if (results.Any(r => !double.IsFinite(r) && !double.IsNaN(r)))
+            {
+                throw new InvalidOperationException("A function gave an infinite output.");
+            }
+        }
+
+        if (function.Inputs == 1 && function.Outputs > 0)
+        {
+            _ = function.Sample(64, function.Outputs);
+        }
+    }
+
+    private static readonly int[] SampleBits = [1, 2, 4, 8, 12, 16, 24, 32];
+
+    private static PdfArray Numbers(byte[] bytes, int count, int offset)
+    {
+        PdfArray array = [];
+        for (int i = 0; i < count; i++)
+        {
+            array.Add(new PdfReal(offset + i < bytes.Length ? (bytes[offset + i] - 128) / 64.0 : 0));
+        }
+
+        return array;
+    }
+
+    private static PdfStream StreamWith(PdfDictionary dictionary, byte[] data)
+    {
+        PdfStream stream = new(dictionary);
+        stream.SetDecodedBytes(data, compress: false);
+        return stream;
     }
 
     /// <summary>

@@ -57,7 +57,7 @@ internal static class ImageDecoder
             return stencil;
         }
 
-        ImageColorSpace space = ownSpace ?? ImageColorSpace.Read(d.Get("ColorSpace"), image.Resources, options.CmykProfile);
+        ImageColorSpace space = ownSpace ?? ImageColorSpace.Read(d.Get("ColorSpace"), image.Resources, options.Colors ?? new ColorContext { Cmyk = options.CmykProfile });
         int n = space.Components;
         if (samples.Components < n)
         {

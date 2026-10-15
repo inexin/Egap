@@ -146,7 +146,7 @@ internal sealed partial class PageRenderer
     private void FillGlyphs(PdfGraphicsState state, Typeface typeface, FontSynthesis synthesis, ushort[] ids, List<PdfGlyph> glyphs)
     {
         PdfMatrix first = glyphs[0].Matrix;
-        if (!first.TryInvert(out PdfMatrix inverse) || ColorPaint(state.FillColor, state.FillAlpha) is not SolidPaint paint)
+        if (!first.TryInvert(out PdfMatrix inverse) || ColorPaint(state.FillColor, state.FillAlpha) is not Paint paint)
         {
             return;
         }
@@ -159,7 +159,7 @@ internal sealed partial class PageRenderer
             positions[i] = new Vector2((float)origin.X, (float)-origin.Y);
         }
 
-        if (!SetUp(state.Clips, 0, PdfMatrix.Scale(1, -1) * first))
+        if (Begin(state, 0, PdfMatrix.Scale(1, -1) * first) is not int restore)
         {
             return;
         }
@@ -167,12 +167,13 @@ internal sealed partial class PageRenderer
         Font font = (synthesis == FontSynthesis.None ? new Font(typeface, 1) : new FontMatch(typeface, synthesis).ToFont(1)) with { Hinting = FontHinting.None };
         GlyphRun run = GlyphRun.Create(font, ids, positions);
         canvas.DrawGlyphRun(run, Vector2.Zero, paint with { Antialias = settings.AntialiasText });
+        End(restore);
     }
 
     /// <summary>Strokes the outlines in the user space the line width is measured in (9.3.6).</summary>
     private void StrokeGlyphs(PdfGraphicsState state, Path?[] outlines, List<PdfGlyph> glyphs)
     {
-        if (!state.Matrix.TryInvert(out PdfMatrix toUser) || ColorPaint(state.StrokeColor, state.StrokeAlpha) is not SolidPaint paint || !SetUp(state.Clips, 0, state.Matrix))
+        if (!state.Matrix.TryInvert(out PdfMatrix toUser) || ColorPaint(state.StrokeColor, state.StrokeAlpha) is not Paint paint || Begin(state, 0, state.Matrix) is not int restore)
         {
             return;
         }
@@ -190,6 +191,8 @@ internal sealed partial class PageRenderer
         {
             canvas.StrokePath(builder.ToPath(), ToStroke(state), paint with { Antialias = settings.AntialiasText });
         }
+
+        End(restore);
     }
 
     /// <summary>A glyph's outline in em units, y up as glyph space is; null for a glyph with none.</summary>

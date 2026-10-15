@@ -7,6 +7,8 @@ using Egami.Pixels;
 
 using Egap.Pdf.Images;
 
+using BlendMode = Egami.Operations.BlendMode;
+
 namespace Egap.Pdf.Rendering;
 
 /// <summary>
@@ -29,12 +31,21 @@ internal sealed partial class PageRenderer
             return;
         }
 
+        // An image in a colourant that marks nothing (None) is not painted (8.6.6.4).
+        if (!source.IsStencilMask && source.ColorSpace is PdfObject space && colors.Space(space, Resources, ColorContext.IntentOf(state.RenderingIntent))?.PaintsNothing == true)
+        {
+            return;
+        }
+
         // How large the unit square is on the device, for the reduction and the sampling.
         float wide = new Vector2(device.M11, device.M12).Length(), high = new Vector2(device.M21, device.M22).Length();
         int reduction = Reduction(source, wide, high);
-        PdfImageOptions options = reduction == 1 ? PdfImageOptions.Default : new PdfImageOptions
+
+        // The image's own /Intent, else the graphics state's (8.6.5.8).
+        PdfImageOptions options = new()
         {
-            MinimumSize = new Size((source.Width + reduction - 1) / reduction, (source.Height + reduction - 1) / reduction),
+            MinimumSize = reduction == 1 ? null : new Size((source.Width + reduction - 1) / reduction, (source.Height + reduction - 1) / reduction),
+            Colors = colors.Context.WithIntent(ColorContext.IntentOf(source.Intent ?? state.RenderingIntent)),
         };
 
         Raster raster;
@@ -50,7 +61,7 @@ internal sealed partial class PageRenderer
             return;
         }
 
-        if (!SetUp(state.Clips, 0, ImageSpace * state.Matrix))
+        if (Begin(state, 0, ImageSpace * state.Matrix) is not int restore)
         {
             return;
         }
@@ -60,15 +71,18 @@ internal sealed partial class PageRenderer
         RectF unit = new(0, 0, 1, 1);
         if (source.IsStencilMask)
         {
-            if (ColorPaint(state.FillColor, state.FillAlpha) is SolidPaint paint)
+            if (ColorPaint(state.FillColor, state.FillAlpha) is Paint paint)
             {
                 canvas.DrawImageMask(raster, unit, paint with { Antialias = settings.AntialiasImages }, sampling);
             }
 
+            End(restore);
             return;
         }
 
-        canvas.DrawImage(raster, unit, sampling, state.FillAlpha < 1 ? new SolidPaint(new RgbaF32(1, 1, 1, 1)) { Opacity = (float)state.FillAlpha } : null);
+        BlendMode blend = BlendModeOf(state.BlendMode);
+        canvas.DrawImage(raster, unit, sampling, state.FillAlpha < 1 || blend != BlendMode.SourceOver ? new SolidPaint(new RgbaF32(1, 1, 1, 1)) { Opacity = (float)state.FillAlpha, BlendMode = blend } : null);
+        End(restore);
     }
 
     /// <summary>

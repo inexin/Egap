@@ -28,6 +28,12 @@ internal abstract class ImageColorSpace
 
     public abstract ColorFamily Family { get; }
 
+    /// <summary>
+    /// Whether colour in this space marks nothing: a Separation space for the colourant None, or a DeviceN space whose
+    /// colourants are all None (8.6.6.4, 8.6.6.5).
+    /// </summary>
+    public virtual bool PaintsNothing => false;
+
     /// <summary>The ICC profile, for an ICCBased space whose profile Egami reads.</summary>
     public virtual ColorProfile? Profile => null;
 
@@ -41,12 +47,12 @@ internal abstract class ImageColorSpace
     public abstract void ToRgb(ReadOnlySpan<double> components, Span<double> rgb);
 
     /// <summary>Reads a colour space from its name or array, looking names up in <paramref name="resources"/>.</summary>
-    public static ImageColorSpace Read(PdfObject? value, PdfDictionary? resources, ColorProfile? cmykProfile)
+    public static ImageColorSpace Read(PdfObject? value, PdfDictionary? resources, ColorContext? context)
     {
-        return Read(value, resources, cmykProfile, 0);
+        return Read(value, resources, context, 0);
     }
 
-    private static ImageColorSpace Read(PdfObject? value, PdfDictionary? resources, ColorProfile? cmykProfile, int depth)
+    private static ImageColorSpace Read(PdfObject? value, PdfDictionary? resources, ColorContext? context, int depth)
     {
         if (depth > MaxDepth)
         {
@@ -56,21 +62,45 @@ internal abstract class ImageColorSpace
         PdfObject? resolved = value?.Resolve();
         if (resolved is PdfName name)
         {
+            // A device space is the resources' DefaultGray, DefaultRGB or DefaultCMYK when there is one (8.6.5.6).
+            string? defaultKey = name.Value switch
+            {
+                "DeviceGray" or "G" => "DefaultGray",
+                "DeviceRGB" or "RGB" => "DefaultRGB",
+                "DeviceCMYK" or "CMYK" => "DefaultCMYK",
+                _ => null,
+            };
+            if (defaultKey is not null && depth == 0 && resources?.Get<PdfDictionary>("ColorSpace")?.Get(defaultKey) is PdfObject replacement)
+            {
+                try
+                {
+                    ImageColorSpace chosen = Read(replacement, null, context, depth + 1);
+                    if (chosen.Components == (defaultKey == "DefaultGray" ? 1 : defaultKey == "DefaultRGB" ? 3 : 4))
+                    {
+                        return chosen;
+                    }
+                }
+                catch (InvalidDataException)
+                {
+                    // An unusable default space leaves the device space as it is.
+                }
+            }
+
             switch (name.Value)
             {
                 case "DeviceGray" or "G" or "CalGray":
-                    return new GraySpace();
+                    return Device(1, context);
                 case "DeviceRGB" or "RGB" or "CalRGB":
-                    return new RgbSpace();
+                    return Device(3, context);
                 case "DeviceCMYK" or "CMYK":
-                    return new CmykSpace(cmykProfile);
+                    return new CmykSpace(context);
                 case "Pattern":
                     throw new InvalidDataException("An image cannot use the Pattern colour space.");
             }
 
             // A named space from the resources (inline images and some producers' XObjects).
             PdfObject? named = resources?.Get<PdfDictionary>("ColorSpace")?.Get(name.Value);
-            return named is not null ? Read(named, resources, cmykProfile, depth + 1) : throw new InvalidDataException($"The colour space {name.Value} is not known.");
+            return named is not null ? Read(named, resources, context, depth + 1) : throw new InvalidDataException($"The colour space {name.Value} is not known.");
         }
 
         if (resolved is not PdfArray { Count: > 0 } array || array.GetName(0)?.Value is not string family)
@@ -81,22 +111,22 @@ internal abstract class ImageColorSpace
         switch (family)
         {
             case "DeviceGray" or "G" or "CalGray":
-                return new GraySpace();
+                return Device(1, context);
             case "DeviceRGB" or "RGB" or "CalRGB":
-                return new RgbSpace();
+                return Device(3, context);
             case "DeviceCMYK" or "CMYK":
-                return new CmykSpace(cmykProfile);
+                return new CmykSpace(context);
             case "Lab":
                 return new LabSpace(array.Count > 1 ? array.Get<PdfDictionary>(1) : null);
             case "ICCBased":
-                return IccSpace(array.Count > 1 ? array.Get(1).Resolve() as PdfStream : null, resources, cmykProfile, depth);
+                return IccSpace(array.Count > 1 ? array.Get(1).Resolve() as PdfStream : null, resources, context, depth);
             case "Indexed" or "I":
                 if (array.Count < 4)
                 {
                     throw new InvalidDataException("An Indexed colour space has too few entries.");
                 }
 
-                ImageColorSpace baseSpace = Read(array.Get(1), resources, cmykProfile, depth + 1);
+                ImageColorSpace baseSpace = Read(array.Get(1), resources, context, depth + 1);
                 int high = (int)Math.Clamp(array.GetInt(2) ?? 0, 0, 255);
                 byte[] lookup = array.Get(3).Resolve() switch
                 {
@@ -111,14 +141,14 @@ internal abstract class ImageColorSpace
                     throw new InvalidDataException("A Separation colour space has too few entries.");
                 }
 
-                return new TintSpace(1, array.GetName(1)?.Value is "None", Read(array.Get(2), resources, cmykProfile, depth + 1), PdfFunction.Read(array.Get(3)));
+                return new TintSpace(1, array.GetName(1)?.Value is "None", Read(array.Get(2), resources, context, depth + 1), PdfFunction.Read(array.Get(3)));
             case "DeviceN":
                 if (array.Count < 4 || array.Get(1).Resolve() is not PdfArray names)
                 {
                     throw new InvalidDataException("A DeviceN colour space has too few entries.");
                 }
 
-                return new TintSpace(names.Count, names.All(n => (n.Resolve() as PdfName)?.Value == "None"), Read(array.Get(2), resources, cmykProfile, depth + 1), PdfFunction.Read(array.Get(3)));
+                return new TintSpace(names.Count, names.All(n => (n.Resolve() as PdfName)?.Value == "None"), Read(array.Get(2), resources, context, depth + 1), PdfFunction.Read(array.Get(3)));
             case "Pattern":
                 throw new InvalidDataException("An image cannot use the Pattern colour space.");
             default:
@@ -127,28 +157,29 @@ internal abstract class ImageColorSpace
     }
 
     /// <summary>An ICCBased space: through its profile when Egami reads it and it has 1, 3 or 4 components, else the alternate.</summary>
-    private static ImageColorSpace IccSpace(PdfStream? stream, PdfDictionary? resources, ColorProfile? cmykProfile, int depth)
+    private static ImageColorSpace IccSpace(PdfStream? stream, PdfDictionary? resources, ColorContext? context, int depth)
     {
         int n = (int)(stream?.Dictionary.GetInt("N") ?? 3);
-        ColorProfile? profile = null;
-        try
-        {
-            profile = stream is not null && n is 1 or 3 or 4 ? ColorProfile.FromIcc(stream.GetDecodedBytes()) : null;
-        }
-        catch (Exception e) when (e is Egami.EgamiException or ArgumentException or InvalidDataException or PdfException)
-        {
-            profile = null;
-        }
+        context ??= new ColorContext();
+        ColorProfile? profile = stream is not null && n is 1 or 3 or 4 ? context.Profile(stream) : null;
 
         ImageColorSpace alternate = stream?.Dictionary.Get("Alternate") is PdfObject alt
-            ? Read(alt, resources, cmykProfile, depth + 1)
+            ? Read(alt, resources, context, depth + 1)
             : n switch
             {
                 1 => new GraySpace(),
-                4 => new CmykSpace(cmykProfile),
+                4 => new CmykSpace(context),
                 _ => new RgbSpace(),
             };
-        return alternate.Components == n ? new IccBasedSpace(alternate, profile) : alternate;
+        return alternate.Components == n ? new IccBasedSpace(alternate, profile, context) : alternate;
+    }
+
+    /// <summary>DeviceGray or DeviceRGB: through the profile the context says it stands for (an output intent's), else as it is.</summary>
+    private static ImageColorSpace Device(int components, ColorContext? context)
+    {
+        ImageColorSpace plain = components == 1 ? new GraySpace() : new RgbSpace();
+        ColorProfile? profile = components == 1 ? context?.Gray : context?.Rgb;
+        return profile is null ? plain : new IccBasedSpace(plain, profile, context!);
     }
 
     private sealed class GraySpace : ImageColorSpace
@@ -178,9 +209,10 @@ internal abstract class ImageColorSpace
     }
 
     /// <summary>DeviceCMYK: through the given press profile, one colour at a time; without one, a fit of a coated press profile (<see cref="CmykPress"/>).</summary>
-    private sealed class CmykSpace(ColorProfile? profile) : ImageColorSpace
+    private sealed class CmykSpace(ColorContext? context) : ImageColorSpace
     {
-        private readonly ColorTransform? transform = profile is null ? null : ColorTransform.Create(profile, ColorProfile.Srgb);
+        private readonly ColorProfile? profile = context?.Cmyk;
+        private readonly ColorTransform? transform = context?.Cmyk is ColorProfile cmyk ? context.Transform(cmyk) : null;
 
         public override int Components => 4;
 
@@ -206,9 +238,9 @@ internal abstract class ImageColorSpace
     }
 
     /// <summary>ICCBased: colour through the profile into sRGB; the alternate says the family and converts when there is no profile.</summary>
-    private sealed class IccBasedSpace(ImageColorSpace alternate, ColorProfile? profile) : ImageColorSpace
+    private sealed class IccBasedSpace(ImageColorSpace alternate, ColorProfile? profile, ColorContext context) : ImageColorSpace
     {
-        private readonly ColorTransform? transform = profile is null ? null : ColorTransform.Create(profile, ColorProfile.Srgb);
+        private readonly ColorTransform? transform = profile is null ? null : context.Transform(profile);
 
         public override int Components => alternate.Components;
 
@@ -343,20 +375,54 @@ internal abstract class ImageColorSpace
     }
 
     /// <summary>Separation and DeviceN: tints through the tint transform into the alternate space; the None colorant paints nothing.</summary>
+    /// <summary>
+    /// Separation and DeviceN: through the tint transform to the alternate space. A one-colourant space is sampled the first
+    /// time it is used into a table of sRGB colours (Phase 4 design Q8), so each pixel or fill costs a lookup.
+    /// </summary>
     private sealed class TintSpace(int components, bool none, ImageColorSpace alternate, PdfFunction transform) : ImageColorSpace
     {
+        private const int TableSize = 1024;
+
+        private FunctionTable? table;
+
         public override int Components => components;
 
         public override ColorFamily Family => ColorFamily.Separation;
 
-        public bool IsNone => none;
+        public override bool PaintsNothing => none;
 
         public override void ToRgb(ReadOnlySpan<double> c, Span<double> rgb)
         {
+            if (components == 1 && c.Length >= 1)
+            {
+                table ??= Table();
+                table.Evaluate(c[0], rgb);
+                return;
+            }
+
+            Convert(c[..Math.Min(c.Length, components)], rgb);
+        }
+
+        private void Convert(ReadOnlySpan<double> c, Span<double> rgb)
+        {
             Span<double> alt = stackalloc double[Math.Max(alternate.Components, Math.Max(transform.Outputs, 1))];
             alt.Clear();
-            transform.Evaluate(c[..Math.Min(c.Length, components)], alt);
+            transform.Evaluate(c, alt);
             alternate.ToRgb(alt[..alternate.Components], rgb);
+        }
+
+        private FunctionTable Table()
+        {
+            (double start, double end) = transform.FirstDomain;
+            double[] values = new double[TableSize * 3];
+            Span<double> input = stackalloc double[1];
+            for (int i = 0; i < TableSize; i++)
+            {
+                input[0] = start + ((end - start) * i / (TableSize - 1));
+                Convert(input, values.AsSpan(i * 3, 3));
+            }
+
+            return new FunctionTable(start, end, 3, values);
         }
     }
 
