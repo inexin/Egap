@@ -808,7 +808,7 @@ public class PdfContentWalker
             Warn(PdfWarningCode.MalformedContent, $"The colour space /{name.Value} is not in the resources.");
         }
 
-        string family = space is PdfName n ? n.Value : (space as PdfArray)?.GetName(0)?.Value ?? "";
+        string family = space is PdfName n ? n.Value : space is PdfArray { Count: > 0 } array ? array.GetName(0)?.Value ?? "" : "";
         double[] components = family switch
         {
             "DeviceGray" or "G" or "CalGray" => [0],
