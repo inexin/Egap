@@ -31,6 +31,45 @@ public sealed class FontProgramTests
     }
 
     [Fact]
+    public void ReadsCharstringsWithoutTheirEndOperator()
+    {
+        // ttf2pt1 (pdf.js issue 14462) ends each charstring with a newline alone, no ND.
+        byte[] box = CharString(0, 600, [100, 0, 21], [300, 0, 5], [0, 700, 5], [-300, 0, 5], [9], [14]);
+        PdfFont font = Type1Font(Program("\n", ("A", box), ("acute", box), ("Aacute", box)));
+
+        Assert.Empty(font.Warnings);
+        Assert.NotEqual((ushort)0, font.GetGlyphId('A'));
+        Assert.NotEqual((ushort)0, font.GetGlyphId(0xC2));
+        Assert.NotEqual((ushort)0, font.GetGlyphId(0xC9));
+    }
+
+    [Theory]
+    [InlineData(" NP\n")]
+    [InlineData(" noaccess put\n")]
+    public void ReadsEverySubroutine(string subrEnd)
+    {
+        // pdf.js issue 3207: subroutines ended by "noaccess put" rather than NP; the box is drawn by the last one.
+        byte[] ret = [11];
+        byte[] box = [.. CharString(0, 0, [100, 0, 21], [300, 0, 5], [0, 700, 5], [-300, 0, 5], [9])[3..], 11];
+        byte[] glyph = CharString(0, 600, [4, 10], [14]);
+        PdfFont font = Type1Font(Program(" ND\n", [ret, ret, ret, ret, box], subrEnd, ("A", glyph)));
+
+        Typeface face = Assert.IsType<Typeface>(font.GetTypeface());
+        Assert.Equal(new GlyphExtents(100, 0, 400, 700), face.GetGlyphExtents(font.GetGlyphId('A')!.Value));
+    }
+
+    [Fact]
+    public void ReadsPlainCharstringsUnderLenIVMinusOne()
+    {
+        // pdf.js issue 7769: lenIV -1 stores the charstrings without their own encryption.
+        byte[] box = CharString(0, 600, [100, 0, 21], [300, 0, 5], [0, 700, 5], [-300, 0, 5], [9], [14]);
+        PdfFont font = Type1Font(Program(" ND ", [], "", encrypt: false, ("A", box)));
+
+        Typeface face = Assert.IsType<Typeface>(font.GetTypeface());
+        Assert.Equal(new GlyphExtents(100, 0, 400, 700), face.GetGlyphExtents(font.GetGlyphId('A')!.Value));
+    }
+
+    [Fact]
     public void ReportsABrokenProgramInsteadOfThrowing()
     {
         PdfDictionary font = new() { ["Type"] = PdfName.Get("Font"), ["Subtype"] = PdfName.Get("TrueType"), ["BaseFont"] = PdfName.Get("Broken") };
@@ -72,15 +111,41 @@ public sealed class FontProgramTests
     /// <summary>A Type 1 program: clear text with a custom encoding, then the eexec part with lenIV 4 and the charstrings.</summary>
     private static byte[] Program(params (string Name, byte[] CharString)[] glyphs)
     {
+        return Program(" ND\n", glyphs);
+    }
+
+    private static byte[] Program(string end, params (string Name, byte[] CharString)[] glyphs)
+    {
+        return Program(end, [], "", glyphs);
+    }
+
+    /// <summary>A Type 1 program with subroutines, each entry ended by <paramref name="subrEnd"/>.</summary>
+    private static byte[] Program(string end, byte[][] subrs, string subrEnd, params (string Name, byte[] CharString)[] glyphs)
+    {
+        return Program(end, subrs, subrEnd, encrypt: true, glyphs);
+    }
+
+    /// <summary>As above; with <paramref name="encrypt"/> false the charstrings are stored plain under lenIV -1.</summary>
+    private static byte[] Program(string end, byte[][] subrs, string subrEnd, bool encrypt, params (string Name, byte[] CharString)[] glyphs)
+    {
         string clear = "%!PS-AdobeFont-1.0: Test\n/FontName /Test def\n/FontMatrix [0.001 0 0 0.001 0 0] readonly def\n/FontBBox {0 0 600 900} readonly def\n"
             + "/Encoding 256 array\n0 1 255 {1 index exch /.notdef put} for\ndup 65 /A put\ndup 194 /acute put\ndup 201 /Aacute put\nreadonly def\ncurrentdict end\ncurrentfile eexec\n";
-        List<byte> priv = [.. Encoding.ASCII.GetBytes("dup /Private 8 dict dup begin\n/lenIV 4 def\n/Subrs 0 array\nND\n2 index /CharStrings " + (glyphs.Length + 1) + " dict dup begin\n")];
+        List<byte> priv = [.. Encoding.ASCII.GetBytes("dup /Private 8 dict dup begin\n/lenIV " + (encrypt ? 4 : -1) + " def\n/Subrs " + subrs.Length + " array\n")];
+        for (int i = 0; i < subrs.Length; i++)
+        {
+            byte[] encrypted = encrypt ? Encrypt([0, 0, 0, 0, .. subrs[i]], 4330) : subrs[i];
+            priv.AddRange(Encoding.ASCII.GetBytes($"dup {i} {encrypted.Length} RD "));
+            priv.AddRange(encrypted);
+            priv.AddRange(Encoding.ASCII.GetBytes(subrEnd));
+        }
+
+        priv.AddRange(Encoding.ASCII.GetBytes("ND\n2 index /CharStrings " + (glyphs.Length + 1) + " dict dup begin\n"));
         foreach ((string name, byte[] cs) in glyphs.Prepend((".notdef", CharString(0, 0, [14]))))
         {
-            byte[] encrypted = Encrypt([0, 0, 0, 0, .. cs], 4330);
+            byte[] encrypted = encrypt ? Encrypt([0, 0, 0, 0, .. cs], 4330) : cs;
             priv.AddRange(Encoding.ASCII.GetBytes($"/{name} {encrypted.Length} RD "));
             priv.AddRange(encrypted);
-            priv.AddRange(" ND\n"u8.ToArray());
+            priv.AddRange(Encoding.ASCII.GetBytes(end));
         }
 
         priv.AddRange("end\nend\nmark currentfile closefile\n"u8.ToArray());

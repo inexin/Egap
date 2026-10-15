@@ -226,8 +226,9 @@ internal sealed class Type1Font
 
                 subrs[index] = Decrypt(encrypted, 4330, lenIV);
                 at = next + 1 + length;
-                Token(data, at, out at);
-                if (Token(data, at, out int after) == "noaccess")
+
+                // NP or |, or the longhand "noaccess put" some fonts spell out, ends the entry.
+                while (Token(data, at, out int after) is "NP" or "|" or "noaccess" or "put")
                 {
                     at = after;
                 }
@@ -264,7 +265,12 @@ internal sealed class Type1Font
 
             charStrings.TryAdd(glyph, Decrypt(data.AsSpan(next + 1, length).ToArray(), 4330, lenIV));
             pos = next + 1 + length;
-            Token(data, pos, out pos);
+
+            // ND or |- ends the entry; some converters (ttf2pt1) leave it out and go straight to the next name.
+            if (Token(data, pos, out int afterEnd) is string end && !end.StartsWith('/'))
+            {
+                pos = afterEnd;
+            }
         }
     }
 
@@ -297,6 +303,12 @@ internal sealed class Type1Font
 
     private static byte[] Decrypt(byte[] data, ushort key, int skip)
     {
+        if (skip < 0)
+        {
+            // lenIV -1: the charstrings are not encrypted at all (Type 1 spec, 7.2).
+            return data;
+        }
+
         const ushort C1 = 52845, C2 = 22719;
         ushort r = key;
         byte[] plain = new byte[data.Length];
@@ -307,7 +319,7 @@ internal sealed class Type1Font
             r = (ushort)(((c + r) * C1) + C2);
         }
 
-        return skip >= 0 && skip <= plain.Length ? plain[skip..] : plain;
+        return skip <= plain.Length ? plain[skip..] : plain;
     }
 
     private static byte[] FromHex(byte[] hex)
