@@ -25,7 +25,8 @@ internal static class Predictor
         }
 
         int rowLength = (int)(((colors * bits * columns) + 7) / 8);
-        int pixelBytes = (int)Math.Max(1, colors * bits / 8);
+        // Bytes per pixel round up (PNG; pdf.js and PDFium too): 3 colours at 4 bits are 2 bytes, not 1.
+        int pixelBytes = (int)Math.Max(1, ((colors * bits) + 7) / 8);
         return predictor == 2 ? Tiff(data, rowLength, (int)colors, (int)bits) : Png(data, rowLength, pixelBytes, context);
     }
 
