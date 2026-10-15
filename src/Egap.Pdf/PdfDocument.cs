@@ -217,10 +217,14 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     internal Content.ResourceCache WrittenResources { get; } = new();
 
+    /// <summary>What renders of this document's pages share: colour spaces, fonts and decoded images (Phase 4 design Q3).</summary>
+    internal Rendering.RenderCache RenderCache => LazyInitializer.EnsureInitialized(ref renderCache);
+
     /// <summary>Where <see cref="PdfPage.Flush"/> moves finished streams; made the first time a page is flushed.</summary>
     internal ScratchFile Scratch => scratch ??= new ScratchFile();
 
     private ScratchFile? scratch;
+    private Rendering.RenderCache? renderCache;
 
     /// <summary>The named destinations, through the catalog's /Names /Dests tree and its older /Dests dictionary.</summary>
     public PdfNamedDestinations NamedDestinations => new(this);
@@ -624,6 +628,7 @@ public sealed class PdfDocument : IDisposable
     {
         source.Dispose();
         scratch?.Dispose();
+        renderCache = null;
     }
 
     private string ReadHeaderVersion(out long at)
