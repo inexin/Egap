@@ -32,6 +32,12 @@ public class PdfContentWalker
     private PdfReadOptions options = PdfReadOptions.Default;
     private PdfPath path = new();
     private int pendingClip;
+
+    /// <summary>Whether a Type 3 glyph declared with <c>d1</c> is running: its colour operators are ignored (9.6.4).</summary>
+    private bool colorless;
+
+    /// <summary>Whether a Type 3 glyph's procedure is running, so <c>d1</c> means something.</summary>
+    private bool inType3Glyph;
     private int markedBase;
 
     /// <summary>The graphics state at the operation being walked.</summary>
@@ -215,8 +221,16 @@ public class PdfContentWalker
     private void Execute(PdfOperation op)
     {
         PdfObject[] a = op.OperandArray;
+        if (colorless && op.Operator is "CS" or "cs" or "SC" or "SCN" or "sc" or "scn" or "G" or "g" or "RG" or "rg" or "K" or "k")
+        {
+            return;
+        }
+
         switch (op.Operator)
         {
+            case "d1" when inType3Glyph:
+                colorless = true;
+                break;
             case "q":
                 saved.Push(State.Clone());
                 break;
@@ -559,7 +573,19 @@ public class PdfContentWalker
             ? new PdfMatrix(fm.GetNumber(0)!.Value, fm.GetNumber(1)!.Value, fm.GetNumber(2)!.Value, fm.GetNumber(3)!.Value, fm.GetNumber(4)!.Value, fm.GetNumber(5)!.Value)
             : new PdfMatrix(0.001, 0, 0, 0.001, 0, 0);
         PdfDictionary? resources = font.Get<PdfDictionary>("Resources") ?? Resources;
-        RunNested(procedure, resources, fontMatrix * glyph.Matrix, null, isForm: false, PdfName.Get("Type3"));
+        bool outerColorless = colorless, outerInGlyph = inType3Glyph;
+        colorless = false;
+        inType3Glyph = true;
+        try
+        {
+            RunNested(procedure, resources, fontMatrix * glyph.Matrix, null, isForm: false, PdfName.Get("Type3"));
+        }
+        finally
+        {
+            colorless = outerColorless;
+            inType3Glyph = outerInGlyph;
+        }
+
         return true;
     }
 
