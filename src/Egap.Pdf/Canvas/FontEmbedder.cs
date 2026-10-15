@@ -170,6 +170,9 @@ internal sealed class EmbeddedFont
         PdfStream toUnicode = new();
         toUnicode.SetDecodedBytes(ToUnicode());
         type0["ToUnicode"] = document.Objects.Add(toUnicode);
+
+        // A render before this write read the font without its new glyphs; the next one reads it again.
+        PdfFont.Forget(type0);
     }
 
     /// <summary>

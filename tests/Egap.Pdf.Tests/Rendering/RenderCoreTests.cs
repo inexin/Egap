@@ -162,9 +162,15 @@ public sealed class RenderCoreTests
         dictionary["BBox"] = new PdfArray { new PdfReal(left), new PdfReal(bottom), new PdfReal(right), new PdfReal(top) };
         PdfStream form = new(dictionary);
         form.SetDecodedBytes(Encoding.ASCII.GetBytes(content), compress: false);
+        return Add(form);
+    }
+
+    /// <summary>Adds an object to <see cref="Scratch"/>, which tests share across threads.</summary>
+    internal static PdfReference Add(PdfObject value)
+    {
         lock (Scratch)
         {
-            return Scratch.Objects.Add(form);
+            return Scratch.Objects.Add(value);
         }
     }
 

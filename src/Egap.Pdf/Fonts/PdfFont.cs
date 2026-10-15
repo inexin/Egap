@@ -244,6 +244,12 @@ public sealed class PdfFont
         return Cache.GetValue(dictionary, d => new PdfFont(d));
     }
 
+    /// <summary>Drops the font read from a dictionary that drawing has just rewritten, so it is read again when next asked.</summary>
+    internal static void Forget(PdfDictionary dictionary)
+    {
+        Cache.Remove(dictionary);
+    }
+
     /// <summary>
     /// Reads the code at <paramref name="offset"/> in a shown string: one byte for a simple font, as the CMap's codespace
     /// says for a composite one (two bytes for Identity).

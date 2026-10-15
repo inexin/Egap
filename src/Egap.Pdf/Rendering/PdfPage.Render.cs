@@ -64,6 +64,8 @@ public sealed partial class PdfPage
 
     private void Draw(Canvas canvas, Matrix3x2 pageToDevice, PdfRenderOptions options, bool background)
     {
+        // Fonts that drawing on this document embedded are written only on save; a render needs their glyphs now.
+        Document.WrittenResources.Finish();
         RenderSettings settings = RenderSettings.From(options);
         int saves = canvas.Save();
         try
