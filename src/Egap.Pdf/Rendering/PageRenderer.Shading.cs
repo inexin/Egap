@@ -72,9 +72,8 @@ internal sealed partial class PageRenderer
 
         PdfMatrix local = space * fromUser;
         Matrix3x2 m = new((float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)local.E, (float)local.F);
-        if (ready.Paint is not Paint paint)
+        if ((ready.Paint ?? ready.MeshPaint()) is not Paint paint)
         {
-            Warn(PdfWarningCode.MalformedContent, "A mesh shading used as a pattern is drawn from task 13 on.");
             return null;
         }
 
@@ -113,16 +112,9 @@ internal sealed partial class PageRenderer
         }
     }
 
-    /// <summary>Mesh shadings (types 4 to 7) arrive in task 13.</summary>
+    /// <summary>A mesh shading drawn with <c>sh</c>: its triangles and patches in the current user space.</summary>
     private void DrawMesh(ShadingPaint shading, double alpha)
     {
-        Warn(PdfWarningCode.MalformedContent, $"Mesh shading type {shading.Dictionary.GetInt("ShadingType")} at alpha {alpha} is not drawn yet.");
-    }
-
-    /// <summary>Tiling patterns arrive in task 14.</summary>
-    private Paint? TilingPaint(PdfObject pattern, PdfColor color, double alpha)
-    {
-        Warn(PdfWarningCode.MalformedContent, $"The tiling pattern {pattern} in {color} at alpha {alpha} is not drawn yet.");
-        return null;
+        shading.Mesh?.Draw(canvas, new SolidPaint(new RgbaF32(1, 1, 1, 1)) { Opacity = (float)alpha, BlendMode = BlendModeOf(State.BlendMode), Antialias = settings.AntialiasPaths });
     }
 }

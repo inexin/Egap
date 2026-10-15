@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings"];
 
     public static Action<Stream> Get(string name)
     {
@@ -44,6 +44,7 @@ internal static class Targets
             "fonts" => Fonts,
             "images" => Images,
             "functions" => Functions,
+            "shadings" => Shadings,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -160,6 +161,72 @@ internal static class Targets
     }
 
     private static readonly int[] SampleBits = [1, 2, 4, 8, 12, 16, 24, 32];
+
+    private static readonly int[] CoordinateBits = [1, 2, 4, 8, 12, 16, 24, 32];
+
+    /// <summary>
+    /// A shading built from the bytes (Phase 4 task 13): the first picks the type (1 to 7) and the colour space, the next few
+    /// the bit counts, a function or not, and extend flags; the rest is a mesh's data or a type 4 function program. It is drawn
+    /// with sh and as a pattern fill onto a 32 by 32 raster, which must never throw: a shading that cannot be read is a warning.
+    /// </summary>
+    private static void Shadings(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        if (bytes.Length < 8)
+        {
+            return;
+        }
+
+        int type = 1 + (bytes[0] % 7);
+        string space = (bytes[0] >> 4 & 3) switch { 0 => "DeviceGray", 1 => "DeviceRGB", 2 => "DeviceCMYK", _ => "Lab" };
+        int components = space switch { "DeviceGray" => 1, "DeviceCMYK" => 4, _ => 3 };
+        bool parametric = (bytes[1] & 1) != 0 || type <= 3;
+        byte[] rest = bytes[8..];
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfDictionary dictionary = new() { ["ShadingType"] = new PdfInteger(type), ["ColorSpace"] = PdfName.Get(space) };
+        PdfStream program = StreamWith(new PdfDictionary
+        {
+            ["FunctionType"] = new PdfInteger(4),
+            ["Domain"] = type == 1 ? new PdfArray { new PdfInteger(0), new PdfInteger(1), new PdfInteger(0), new PdfInteger(1) } : new PdfArray { new PdfInteger(0), new PdfInteger(1) },
+            ["Range"] = new PdfArray([.. Enumerable.Range(0, 2 * components).Select(i => (PdfObject)new PdfInteger(i % 2))]),
+        }, type <= 3 ? rest : "{ dup dup }"u8.ToArray());
+        if (parametric)
+        {
+            dictionary["Function"] = pdf.Objects.Add(program);
+        }
+
+        if (type <= 3)
+        {
+            dictionary["Coords"] = new PdfArray([.. Enumerable.Range(0, 6).Select(i => (PdfObject)new PdfReal((bytes[2 + i] - 64) / 4.0))]);
+            dictionary["Extend"] = new PdfArray { PdfBoolean.Get((bytes[1] & 2) != 0), PdfBoolean.Get((bytes[1] & 4) != 0) };
+            dictionary["Matrix"] = new PdfArray { new PdfReal(bytes[2] / 16.0), new PdfInteger(0), new PdfInteger(0), new PdfReal(bytes[3] / 16.0), new PdfInteger(0), new PdfInteger(0) };
+        }
+        else
+        {
+            dictionary["BitsPerCoordinate"] = new PdfInteger(CoordinateBits[bytes[2] % 8]);
+            dictionary["BitsPerComponent"] = new PdfInteger(SampleBits[bytes[3] % 6]);
+            dictionary["BitsPerFlag"] = new PdfInteger(2 << (bytes[4] % 3));
+            dictionary["VerticesPerRow"] = new PdfInteger(bytes[5] % 6);
+            PdfArray decode = [new PdfInteger(0), new PdfInteger(32), new PdfInteger(0), new PdfInteger(32)];
+            for (int i = 0; i < (parametric ? 1 : components); i++)
+            {
+                decode.Add(new PdfInteger(0));
+                decode.Add(new PdfInteger(1));
+            }
+
+            dictionary["Decode"] = decode;
+        }
+
+        PdfObject shading = type <= 3 ? pdf.Objects.Add(dictionary) : pdf.Objects.Add(StreamWith(dictionary, rest));
+        PdfPage page = pdf.Pages.AddBlank(new PdfRectangle(0, 0, 32, 32));
+        page.Resources = new PdfDictionary
+        {
+            ["Shading"] = new PdfDictionary { ["S"] = shading },
+            ["Pattern"] = new PdfDictionary { ["P"] = new PdfDictionary { ["PatternType"] = new PdfInteger(2), ["Shading"] = shading } },
+        };
+        page.SetContent(PdfContent.Parse("/S sh /Pattern cs /P scn 4 4 24 24 re f"u8));
+        using Egami.Raster<Egami.Pixels.Rgba8> raster = page.Render();
+    }
 
     private static PdfArray Numbers(byte[] bytes, int count, int offset)
     {
