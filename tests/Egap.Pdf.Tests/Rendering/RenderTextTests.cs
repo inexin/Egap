@@ -122,8 +122,9 @@ public sealed class RenderTextTests
     [Fact]
     public void Type3GlyphsRunTheirProceduresInTheFillColour()
     {
+        // A d1 glyph's own colour operators are ignored (pdf.js issue 12705 sets white inside).
         PdfStream square = new(new PdfDictionary());
-        square.SetDecodedBytes(Encoding.ASCII.GetBytes("1000 0 0 0 1000 1000 d1 0 0 1000 1000 re f"), compress: false);
+        square.SetDecodedBytes(Encoding.ASCII.GetBytes("1000 0 0 0 1000 1000 d1 1 1 1 rg 0 0 1000 1000 re f"), compress: false);
         PdfDictionary font = new()
         {
             ["Type"] = PdfName.Get("Font"),
