@@ -87,6 +87,18 @@ public sealed record PdfRenderOptions
         init => field = value >= 0 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "The image cache limit cannot be negative.");
     } = 256L << 20;
 
+    /// <summary>
+    /// Layers shown or hidden whatever the document's configuration says (design Q13), applied last; <see langword="null"/>
+    /// to keep the configuration's choice for every layer.
+    /// </summary>
+    public IReadOnlyDictionary<PdfLayer, bool>? Layers { get; init; }
+
+    /// <summary>
+    /// The optional content configuration to start from, by its <c>/Name</c> in <c>/OCProperties /Configs</c>; <see langword="null"/>
+    /// (the default) for the document's default configuration.
+    /// </summary>
+    public string? LayerConfiguration { get; init; }
+
     /// <summary>What is anti-aliased (design Q11); everything by default.</summary>
     public PdfAntialiasing Antialiasing { get; init; } = PdfAntialiasing.All;
 

@@ -49,6 +49,11 @@ internal sealed partial class PageRenderer
     private bool Shows(PdfAnnotation annotation, PdfAnnotationRendering which)
     {
         PdfAnnotationFlags flags = annotation.Flags;
+        if (settings.Layers?.IsVisible(annotation.Dictionary.Get<PdfDictionary>("OC")) == false)
+        {
+            return false;
+        }
+
         if (flags.HasFlag(PdfAnnotationFlags.Hidden) || annotation.Subtype == "Popup" || (which == PdfAnnotationRendering.NoForms && annotation is PdfWidgetAnnotation))
         {
             return false;

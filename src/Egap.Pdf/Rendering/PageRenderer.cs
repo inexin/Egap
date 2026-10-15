@@ -57,6 +57,8 @@ internal sealed partial class PageRenderer : PdfContentWalker
         groups.Clear();
         patternSpaces.Clear();
         patternSpaces.Push(matrix);
+        hiddenMarks.Clear();
+        hidden = 0;
         clipFloor = 0;
         pendingGlyphs.Clear();
         pendingState = null;

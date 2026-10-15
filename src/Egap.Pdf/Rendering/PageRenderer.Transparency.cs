@@ -29,7 +29,7 @@ internal sealed partial class PageRenderer
     /// </summary>
     private int? Begin(PdfGraphicsState state, int skip, PdfMatrix matrix)
     {
-        if (!SetUp(state.Clips, skip, matrix))
+        if (hidden > 0 || !SetUp(state.Clips, skip, matrix))
         {
             return null;
         }
@@ -53,6 +53,12 @@ internal sealed partial class PageRenderer
 
     protected override bool OnBeginForm(PdfStream form, PdfName name)
     {
+        // A form inside hidden optional content, or hidden itself, is not walked (8.11.3.3).
+        if (hidden > 0 || settings.Layers?.IsVisible(form.Dictionary.Get<PdfDictionary>("OC")) == false)
+        {
+            return false;
+        }
+
         // Patterns used in a form are in the form's space (8.7.3.1).
         if (form.Dictionary.Get<PdfDictionary>("Group") is not PdfDictionary group || group.GetName("S")?.Value != "Transparency")
         {

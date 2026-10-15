@@ -25,6 +25,11 @@ internal sealed partial class PageRenderer
     protected override void OnImage(PdfStream? image, PdfInlineImage? inlineImage, PdfName? name)
     {
         PdfGraphicsState state = State;
+        if (image is not null && settings.Layers?.IsVisible(image.Dictionary.Get<PdfDictionary>("OC")) == false)
+        {
+            return;
+        }
+
         PdfImage source = image is not null ? new PdfImage(image, Resources) : new PdfImage(inlineImage!, Resources);
         if (Device(state.Matrix) is not Matrix3x2 device)
         {
