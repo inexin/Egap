@@ -4,7 +4,7 @@ namespace Egap.Pdf.Fonts;
 
 /// <summary>
 /// The character maps of a TrueType font a simple PDF font reaches its glyphs through (9.6.5.4): the Windows symbol map
-/// (3,0), the Windows Unicode map (3,1) and the Macintosh Roman map (1,0), each read whole from the <c>cmap</c> table as
+/// (3,0), the Windows Unicode map (3,1) or else a Unicode-platform map (0,*), and the Macintosh Roman map (1,0), each read whole from the <c>cmap</c> table as
 /// Egami.Fonts only answers Unicode lookups. Formats 0, 4, 6 and 12 are read; a subtable that does not fit is skipped.
 /// </summary>
 internal sealed class TrueTypeCmaps
@@ -19,7 +19,7 @@ internal sealed class TrueTypeCmaps
     /// <summary>The (3,0) map, codes to glyphs, or null.</summary>
     public Dictionary<int, ushort>? Symbol { get; private set; }
 
-    /// <summary>The (3,1) or (3,10) map, Unicode to glyphs, or null.</summary>
+    /// <summary>The (3,1) or (3,10) map, Unicode to glyphs, or else a (0,*) map; null when the font has neither.</summary>
     public Dictionary<int, ushort>? Unicode { get; private set; }
 
     /// <summary>The (1,0) map, Mac Roman codes to glyphs, or null.</summary>
@@ -34,6 +34,7 @@ internal sealed class TrueTypeCmaps
         }
 
         int count = BinaryPrimitives.ReadUInt16BigEndian(cmap[2..]);
+        Dictionary<int, ushort>? platformUnicode = null;
         for (int i = 0; i < count && 4 + (i * 8) + 8 <= cmap.Length; i++)
         {
             ReadOnlySpan<byte> record = cmap.Slice(4 + (i * 8), 8);
@@ -50,6 +51,7 @@ internal sealed class TrueTypeCmaps
                 (3, 0) when maps.Symbol is null => Subtable(cmap[(int)offset..]),
                 (3, 1 or 10) when maps.Unicode is null || encoding == 10 => Subtable(cmap[(int)offset..]),
                 (1, 0) when maps.MacRoman is null => Subtable(cmap[(int)offset..]),
+                (0, _) when platformUnicode is null => Subtable(cmap[(int)offset..]),
                 _ => null,
             };
             if (map is null)
@@ -65,12 +67,17 @@ internal sealed class TrueTypeCmaps
                 case (3, _):
                     maps.Unicode = map;
                     break;
+                case (0, _):
+                    platformUnicode = map;
+                    break;
                 default:
                     maps.MacRoman = map;
                     break;
             }
         }
 
+        // A Unicode-platform map stands in for (3,1) when the font has none, as pdf.js reads it.
+        maps.Unicode ??= platformUnicode;
         return maps;
     }
 

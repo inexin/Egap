@@ -107,6 +107,27 @@ public sealed class RenderTransparencyTests
         Assert.True(p.R is > 120 and < 160 && p.B > 220, p.ToString());
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void APageWithATransparencyGroupBlendsOverATransparentBackdrop(bool group)
+    {
+        // pdf.js transparency_group: Difference where the page has drawn nothing yet leaves the colour as it is when the page
+        // is a transparency group, as PDFium and pdf.js draw it; without the group the white paper is the backdrop.
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = pdf.Pages.AddBlank(new PdfRectangle(0, 0, 20, 20));
+        page.Dictionary["Resources"] = new PdfDictionary { ["ExtGState"] = new PdfDictionary { ["D"] = new PdfDictionary { ["BM"] = PdfName.Get("Difference") } } };
+        if (group)
+        {
+            page.Dictionary["Group"] = new PdfDictionary { ["S"] = PdfName.Get("Transparency") };
+        }
+
+        page.SetContent(PdfContent.Parse(System.Text.Encoding.ASCII.GetBytes("/D gs 1 0 0 rg 0 0 20 20 re f")));
+        using Raster<Rgba8> raster = page.Render();
+
+        Assert.Equal(group ? new Rgba8(255, 0, 0, 255) : new Rgba8(0, 255, 255, 255), raster.GetPixel(10, 10));
+    }
+
     [Fact]
     public void LuminositySoftMasksShowWhereTheMaskIsLight()
     {

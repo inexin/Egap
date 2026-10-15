@@ -122,6 +122,13 @@ public sealed partial class PdfPage
                 canvas.FillRect(new RectF((float)box.Left, (float)box.Bottom, (float)box.Width, (float)box.Height), new SolidPaint(options.Background) { Antialias = false });
             }
 
+            if (Dictionary.Get<PdfDictionary>("Group")?.GetName("S")?.Value == "Transparency")
+            {
+                // A page with a transparency group is that group (11.4.7): drawn on its own transparent backdrop and put on
+                // the paper afterwards, so blend modes see no white where nothing is drawn yet, as in PDFium and pdf.js.
+                canvas.SaveLayer(new LayerOptions { Isolated = true });
+            }
+
             PageRenderer renderer = new(canvas, device, settings, Document.RenderCache);
             try
             {
