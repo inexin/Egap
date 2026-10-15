@@ -110,6 +110,10 @@ internal abstract class ImageColorSpace
 
         switch (family)
         {
+            case "CalGray" when array.Count > 1 && array.Get<PdfDictionary>(1) is PdfDictionary gray:
+                return new CalSpace(1, gray);
+            case "CalRGB" when array.Count > 1 && array.Get<PdfDictionary>(1) is PdfDictionary rgb:
+                return new CalSpace(3, rgb);
             case "DeviceGray" or "G" or "CalGray":
                 return Device(1, context);
             case "DeviceRGB" or "RGB" or "CalRGB":
@@ -303,8 +307,12 @@ internal abstract class ImageColorSpace
             double l = Math.Clamp(c[0], 0, 100), a = Math.Clamp(c[1], range[0], range[1]), b = Math.Clamp(c[2], range[2], range[3]);
             double m = (l + 16) / 116, ll = m + (a / 500), n = m - (b / 200);
             double x = white[0] * G(ll), y = white[1] * G(m), z = white[2] * G(n);
+            XyzToSrgb(x, y, z, white, rgb);
+        }
 
-            // Bradford from the white point to D65, then XYZ to linear sRGB.
+        /// <summary>XYZ under a white point to sRGB: Bradford to D65, then the sRGB matrix and transfer.</summary>
+        public static void XyzToSrgb(double x, double y, double z, double[] white, Span<double> rgb)
+        {
             (double xa, double ya, double za) = Adapt(x, y, z, white);
             double r = (3.2404542 * xa) - (1.5371385 * ya) - (0.4985314 * za);
             double g = (-0.9692660 * xa) + (1.8760108 * ya) + (0.0415560 * za);
@@ -340,6 +348,66 @@ internal abstract class ImageColorSpace
         {
             v = Math.Clamp(v, 0, 1);
             return v <= 0.0031308 ? 12.92 * v : (1.055 * Math.Pow(v, 1 / 2.4)) - 0.055;
+        }
+    }
+
+    /// <summary>
+    /// CalGray and CalRGB (8.6.5.2, 8.6.5.3): each component raised to its gamma, through the matrix to XYZ under the white
+    /// point, adapted to D65 and encoded as sRGB, as pdf.js converts them (Phase 4 task 19).
+    /// </summary>
+    private sealed class CalSpace : ImageColorSpace
+    {
+        private readonly int components;
+        private readonly double[] white;
+        private readonly double[] gamma;
+        private readonly double[] matrix;
+
+        public CalSpace(int components, PdfDictionary parameters)
+        {
+            this.components = components;
+            double[] w = Numbers(parameters.Get<PdfArray>("WhitePoint"), 3, [0.9505, 1, 1.089]);
+            white = w[1] > 0 && w[0] > 0 && w[2] > 0 ? w : [0.9505, 1, 1.089];
+            gamma = Numbers(parameters.Get("Gamma")?.Resolve() switch { PdfArray g => g, PdfObject g => new PdfArray { g }, _ => null }, components, components == 1 ? [1] : [1, 1, 1]);
+            matrix = components == 3 ? Numbers(parameters.Get<PdfArray>("Matrix"), 9, [1, 0, 0, 0, 1, 0, 0, 0, 1]) : [];
+        }
+
+        public override int Components => components;
+
+        public override ColorFamily Family => components == 1 ? ColorFamily.Gray : ColorFamily.Rgb;
+
+        public override void ToRgb(ReadOnlySpan<double> c, Span<double> rgb)
+        {
+            double x, y, z;
+            if (components == 1)
+            {
+                double a = Math.Pow(Math.Clamp(c[0], 0, 1), gamma[0]);
+                (x, y, z) = (white[0] * a, white[1] * a, white[2] * a);
+            }
+            else
+            {
+                double a = Math.Pow(Math.Clamp(c[0], 0, 1), gamma[0]), b = Math.Pow(Math.Clamp(c[1], 0, 1), gamma[1]), cc = Math.Pow(Math.Clamp(c[2], 0, 1), gamma[2]);
+                x = (matrix[0] * a) + (matrix[3] * b) + (matrix[6] * cc);
+                y = (matrix[1] * a) + (matrix[4] * b) + (matrix[7] * cc);
+                z = (matrix[2] * a) + (matrix[5] * b) + (matrix[8] * cc);
+            }
+
+            LabSpace.XyzToSrgb(x, y, z, white, rgb);
+        }
+
+        private static double[] Numbers(PdfArray? array, int count, double[] fallback)
+        {
+            if (array is null || array.Count < count)
+            {
+                return fallback;
+            }
+
+            double[] values = new double[count];
+            for (int i = 0; i < count; i++)
+            {
+                values[i] = array.GetNumber(i) is double v && double.IsFinite(v) ? v : fallback[i];
+            }
+
+            return values;
         }
     }
 

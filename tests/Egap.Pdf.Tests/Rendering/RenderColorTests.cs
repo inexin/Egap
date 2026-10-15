@@ -77,6 +77,30 @@ public sealed class RenderColorTests
     }
 
     [Fact]
+    public void CalRgbAndCalGrayApplyTheirGammaAndMatrix()
+    {
+        // Gamma 1 with sRGB's own primaries is linear sRGB: 0.5 linear is 188 encoded, where DeviceRGB would give 128.
+        PdfDictionary linear = new()
+        {
+            ["WhitePoint"] = new PdfArray { new PdfReal(0.9505), new PdfInteger(1), new PdfReal(1.089) },
+            ["Matrix"] = new PdfArray { new PdfReal(0.4124), new PdfReal(0.2126), new PdfReal(0.0193), new PdfReal(0.3576), new PdfReal(0.7152), new PdfReal(0.1192), new PdfReal(0.1805), new PdfReal(0.0722), new PdfReal(0.9505) },
+        };
+        PdfDictionary gray = new() { ["WhitePoint"] = new PdfArray { new PdfReal(0.9505), new PdfInteger(1), new PdfReal(1.089) }, ["Gamma"] = new PdfInteger(1) };
+        PdfDictionary resources = new()
+        {
+            ["ColorSpace"] = new PdfDictionary
+            {
+                ["C"] = new PdfArray { PdfName.Get("CalRGB"), linear },
+                ["K"] = new PdfArray { PdfName.Get("CalGray"), gray },
+            },
+        };
+        using Raster<Rgba8> raster = RenderCoreTests.Render("/C cs 0.5 0.5 0.5 sc 0 0 10 20 re f /K cs 0.5 sc 10 0 10 20 re f", resources: resources);
+
+        Assert.InRange(raster.GetPixel(5, 10).R, 183, 192);
+        Assert.InRange(raster.GetPixel(15, 10).G, 183, 192);
+    }
+
+    [Fact]
     public void RenderingIntentsReachTheTransform()
     {
         // ProPhoto's saturated green is far outside sRGB: perceptual and relative colorimetric may map it differently, and

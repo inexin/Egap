@@ -265,8 +265,15 @@ public sealed class PdfImage
     private static PdfDictionary Expand(PdfDictionary parameters)
     {
         PdfDictionary full = [];
+        HashSet<string> abbreviated = [.. parameters.Entries.Select(e => e.Key.Value).Where(InlineKeys.ContainsKey).Select(k => InlineKeys[k])];
         foreach (KeyValuePair<PdfName, PdfObject> entry in parameters.Entries)
         {
+            // Given both ways, the abbreviated key wins, as PDFium and pdf.js read it (8.9.7: inline images use abbreviations).
+            if (!InlineKeys.ContainsKey(entry.Key.Value) && abbreviated.Contains(entry.Key.Value))
+            {
+                continue;
+            }
+
             string key = InlineKeys.GetValueOrDefault(entry.Key.Value, entry.Key.Value);
             PdfObject value = entry.Value;
             if (key == "Filter")
