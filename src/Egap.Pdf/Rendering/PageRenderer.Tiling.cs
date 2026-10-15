@@ -21,7 +21,7 @@ internal sealed partial class PageRenderer
     /// <summary>For the cell of an uncoloured pattern: the colour every fill and stroke takes, whatever the content sets.</summary>
     private RgbaF32? uncolored;
 
-    private PicturePaint? TilingPaint(PdfObject pattern, PdfColor color, double alpha)
+    private PicturePaint? TilingPaint(PdfObject pattern, PdfColor color, double alpha, PdfMatrix drawing)
     {
         if (pattern is not PdfStream stream || stream.Dictionary.GetInt("PatternType") != 1)
         {
@@ -57,7 +57,7 @@ internal sealed partial class PageRenderer
         }
 
         PdfMatrix patternSpace = (PdfMatrix.FromArray(d.Get<PdfArray>("Matrix")) ?? PdfMatrix.Identity) * patternSpaces.Peek();
-        if (!State.Matrix.TryInvert(out PdfMatrix fromUser))
+        if (!drawing.TryInvert(out PdfMatrix fromUser))
         {
             return null;
         }

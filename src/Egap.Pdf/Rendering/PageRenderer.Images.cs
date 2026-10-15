@@ -82,7 +82,7 @@ internal sealed partial class PageRenderer
         RectF unit = new(0, 0, 1, 1);
         if (source.IsStencilMask)
         {
-            if (ColorPaint(state.FillColor, state.FillAlpha) is Paint paint)
+            if (ColorPaint(state.FillColor, state.FillAlpha, ImageSpace * state.Matrix) is Paint paint)
             {
                 canvas.DrawImageMask(raster, unit, paint with { Antialias = settings.AntialiasImages }, sampling);
             }

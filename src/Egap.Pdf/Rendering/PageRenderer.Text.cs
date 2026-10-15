@@ -160,7 +160,7 @@ internal sealed partial class PageRenderer
     private void FillGlyphs(PdfGraphicsState state, Typeface typeface, FontSynthesis synthesis, ushort[] ids, float[] scales, List<PdfGlyph> glyphs)
     {
         PdfMatrix first = glyphs[0].Matrix;
-        if (!first.TryInvert(out PdfMatrix inverse) || ColorPaint(state.FillColor, state.FillAlpha) is not Paint paint)
+        if (!first.TryInvert(out PdfMatrix inverse) || ColorPaint(state.FillColor, state.FillAlpha, PdfMatrix.Scale(1, -1) * first) is not Paint paint)
         {
             return;
         }
