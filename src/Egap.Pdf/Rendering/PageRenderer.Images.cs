@@ -55,6 +55,7 @@ internal sealed partial class PageRenderer
         // The image's own /Intent, else the graphics state's (8.6.5.8).
         PdfImageOptions options = new()
         {
+            KeepFinerMasks = true,
             MinimumSize = reduction == 1 ? null : new Size((source.Width + reduction - 1) / reduction, (source.Height + reduction - 1) / reduction),
             Colors = colors.Context.WithIntent(ColorContext.IntentOf(source.Intent ?? state.RenderingIntent)),
         };
