@@ -49,6 +49,8 @@ Egap.Pdf.PdfRenderOptions.Region.get -> Egami.Drawing.RectF?
 Egap.Pdf.PdfRenderOptions.Region.init -> void
 Egap.Pdf.PdfRenderOptions.Rotation.get -> int
 Egap.Pdf.PdfRenderOptions.Rotation.init -> void
+Egap.Pdf.PdfRenderOptions.UseOutputIntents.get -> bool
+Egap.Pdf.PdfRenderOptions.UseOutputIntents.init -> void
 Egap.Pdf.PdfRenderOptions.UseSystemFonts.get -> bool
 Egap.Pdf.PdfRenderOptions.UseSystemFonts.init -> void
 override Egap.Pdf.PdfRenderOptions.Equals(object? obj) -> bool

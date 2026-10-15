@@ -54,6 +54,27 @@ internal abstract class PdfFunction
         }
     }
 
+    /// <summary>The domain's first input range, the one a one-input function's table spans.</summary>
+    public (double Start, double End) FirstDomain => (Domain[0], Math.Max(Domain[0], Domain[1]));
+
+    /// <summary>
+    /// A one-input function sampled at <paramref name="count"/> even steps over its domain (Phase 4 design Q10), for tint
+    /// transforms and shadings that evaluate it many times; <paramref name="outputs"/> numbers per sample.
+    /// </summary>
+    public FunctionTable Sample(int count, int outputs)
+    {
+        (double start, double end) = FirstDomain;
+        double[] values = new double[count * outputs];
+        Span<double> input = stackalloc double[1];
+        for (int i = 0; i < count; i++)
+        {
+            input[0] = start + ((end - start) * i / (count - 1));
+            Evaluate(input, values.AsSpan(i * outputs, outputs));
+        }
+
+        return new FunctionTable(start, end, outputs, values);
+    }
+
     protected abstract void Run(ReadOnlySpan<double> input, Span<double> output);
 
     protected static double[]? Numbers(PdfArray? array)
@@ -294,13 +315,15 @@ internal abstract class PdfFunction
         }
     }
 
-    /// <summary>Type 4: a PostScript calculator program (7.10.5) run on a stack of numbers and booleans.</summary>
+    /// <summary>
+    /// Type 4: a PostScript calculator program (7.10.5), parsed once into a flat list of instructions with the procedures of
+    /// <c>if</c> and <c>ifelse</c> turned into jumps, then run on a fixed stack of numbers and booleans without allocating.
+    /// </summary>
     private sealed class PostScriptFunction : PdfFunction
     {
         private const int MaxStack = 100;
-        private const int MaxSteps = 100_000;
 
-        private readonly List<object> program;
+        private readonly Instruction[] program;
         private readonly int outputs;
 
         public PostScriptFunction(PdfStream stream)
@@ -315,33 +338,358 @@ internal abstract class PdfFunction
             }
 
             at++;
-            program = Parse(text, ref at, 0);
+            List<Instruction> code = [];
+            Compile(Parse(text, ref at, 0), code);
+            program = [.. code];
         }
 
         public override int Outputs => outputs;
 
+        private enum Op : byte
+        {
+            Push,
+            PushTrue,
+            PushFalse,
+            JumpIfFalse,
+            Jump,
+            Abs,
+            Ceiling,
+            Cos,
+            Cvi,
+            Cvr,
+            Floor,
+            Ln,
+            Log,
+            Neg,
+            Round,
+            Sin,
+            Sqrt,
+            Truncate,
+            Add,
+            Atan,
+            Div,
+            Exp,
+            Idiv,
+            Mod,
+            Mul,
+            Sub,
+            And,
+            Bitshift,
+            Eq,
+            Ge,
+            Gt,
+            Le,
+            Lt,
+            Ne,
+            Or,
+            Xor,
+            Not,
+            Copy,
+            Dup,
+            Exch,
+            Index,
+            Pop,
+            Roll,
+        }
+
         protected override void Run(ReadOnlySpan<double> input, Span<double> output)
         {
-            List<object> stack = [];
-            foreach (double v in input)
+            Span<double> values = stackalloc double[MaxStack];
+            Span<bool> booleans = stackalloc bool[MaxStack];
+            int count = 0;
+            foreach (double v in input[..Math.Min(input.Length, MaxStack)])
             {
-                stack.Add(v);
+                values[count++] = v;
             }
 
-            int steps = 0;
-            try
-            {
-                Execute(program, stack, ref steps);
-            }
-            catch (InvalidDataException)
-            {
-                // A program that fails part way gives what the stack holds, as viewers do.
-            }
-
-            int start = Math.Max(0, stack.Count - outputs);
+            // A program that fails part way gives what the stack holds, as viewers do.
+            Execute(values, booleans, ref count);
+            int start = Math.Max(0, count - outputs);
             for (int i = 0; i < output.Length; i++)
             {
-                output[i] = start + i < stack.Count && stack[start + i] is double d ? d : 0;
+                output[i] = start + i < count ? values[start + i] : 0;
+            }
+        }
+
+        private void Execute(Span<double> v, Span<bool> b, ref int n)
+        {
+            Instruction[] code = program;
+            for (int pc = 0; pc < code.Length; pc++)
+            {
+                Instruction ins = code[pc];
+                if (ins.Op <= Op.Jump)
+                {
+                    if (!Control(ins, v, b, ref n, ref pc))
+                    {
+                        return;
+                    }
+                }
+                else if (ins.Op <= Op.Truncate)
+                {
+                    // One number in, one out.
+                    if (n < 1)
+                    {
+                        return;
+                    }
+
+                    double x = v[n - 1];
+                    b[n - 1] = false;
+                    v[n - 1] = ins.Op switch
+                    {
+                        Op.Abs => Math.Abs(x),
+                        Op.Neg => -x,
+                        Op.Ceiling => Math.Ceiling(x),
+                        Op.Floor => Math.Floor(x),
+                        Op.Round => Math.Floor(x + 0.5),
+                        Op.Truncate or Op.Cvi => Math.Truncate(x),
+                        Op.Sqrt => Math.Sqrt(Math.Max(x, 0)),
+                        Op.Sin => Math.Sin(x * Math.PI / 180),
+                        Op.Cos => Math.Cos(x * Math.PI / 180),
+                        Op.Ln => x > 0 ? Math.Log(x) : 0,
+                        Op.Log => x > 0 ? Math.Log10(x) : 0,
+                        _ => x,
+                    };
+                }
+                else if (ins.Op <= Op.Xor)
+                {
+                    if (n < 2)
+                    {
+                        return;
+                    }
+
+                    n--;
+                    (v[n - 1], b[n - 1]) = Binary(ins.Op, v[n - 1], v[n], b[n - 1] && b[n]);
+                }
+                else if (!Stack(ins.Op, v, b, ref n))
+                {
+                    return;
+                }
+            }
+        }
+
+        private static bool Control(Instruction ins, Span<double> v, Span<bool> b, ref int n, ref int pc)
+        {
+            switch (ins.Op)
+            {
+                case Op.Push or Op.PushTrue or Op.PushFalse:
+                    if (n == MaxStack)
+                    {
+                        return false;
+                    }
+
+                    v[n] = ins.Op == Op.Push ? ins.Value : ins.Op == Op.PushTrue ? 1 : 0;
+                    b[n++] = ins.Op != Op.Push;
+                    return true;
+                case Op.Jump:
+                    pc = (int)ins.Value - 1;
+                    return true;
+                default:
+                    if (n < 1)
+                    {
+                        return false;
+                    }
+
+                    if (v[--n] == 0)
+                    {
+                        pc = (int)ins.Value - 1;
+                    }
+
+                    return true;
+            }
+        }
+
+        private static (double Value, bool IsBool) Binary(Op op, double a, double c, bool logical)
+        {
+            return op switch
+            {
+                Op.Add => (a + c, false),
+                Op.Sub => (a - c, false),
+                Op.Mul => (a * c, false),
+                Op.Div => (c == 0 ? 0 : a / c, false),
+                Op.Idiv => ((long)c == 0 ? 0 : (double)((long)a / (long)c), false),
+                Op.Mod => ((long)c == 0 ? 0 : (double)((long)a % (long)c), false),
+                Op.Atan => (Atan(a, c), false),
+                Op.Exp => (Math.Pow(a, c), false),
+                Op.Bitshift => (c >= 0 ? (long)a << (int)Math.Min(c, 63) : (long)a >> (int)Math.Min(-c, 63), false),
+                Op.And => logical ? (a != 0 && c != 0 ? 1 : 0, true) : ((long)a & (long)c, false),
+                Op.Or => logical ? (a != 0 || c != 0 ? 1 : 0, true) : ((long)a | (long)c, false),
+                Op.Xor => logical ? ((a != 0) ^ (c != 0) ? 1 : 0, true) : ((long)a ^ (long)c, false),
+                Op.Eq => (a == c ? 1 : 0, true),
+                Op.Ne => (a != c ? 1 : 0, true),
+                Op.Gt => (a > c ? 1 : 0, true),
+                Op.Ge => (a >= c ? 1 : 0, true),
+                Op.Lt => (a < c ? 1 : 0, true),
+                _ => (a <= c ? 1 : 0, true),
+            };
+        }
+
+        /// <summary>The stack operators; false when one reaches past the stack, which ends the program.</summary>
+        private static bool Stack(Op op, Span<double> v, Span<bool> b, ref int n)
+        {
+            switch (op)
+            {
+                case Op.Not:
+                    if (n < 1)
+                    {
+                        return false;
+                    }
+
+                    v[n - 1] = b[n - 1] ? (v[n - 1] == 0 ? 1 : 0) : ~(long)v[n - 1];
+                    return true;
+                case Op.Dup:
+                    if (n < 1 || n == MaxStack)
+                    {
+                        return false;
+                    }
+
+                    v[n] = v[n - 1];
+                    b[n] = b[n - 1];
+                    n++;
+                    return true;
+                case Op.Pop:
+                    if (n < 1)
+                    {
+                        return false;
+                    }
+
+                    n--;
+                    return true;
+                case Op.Exch:
+                    if (n < 2)
+                    {
+                        return false;
+                    }
+
+                    (v[n - 1], v[n - 2]) = (v[n - 2], v[n - 1]);
+                    (b[n - 1], b[n - 2]) = (b[n - 2], b[n - 1]);
+                    return true;
+                case Op.Copy:
+                    {
+                        if (n < 1)
+                        {
+                            return false;
+                        }
+
+                        double count = v[--n];
+                        if (!(count >= 0) || count > n || n + (int)count > MaxStack)
+                        {
+                            return false;
+                        }
+
+                        int k = (int)count;
+                        v.Slice(n - k, k).CopyTo(v[n..]);
+                        b.Slice(n - k, k).CopyTo(b[n..]);
+                        n += k;
+                        return true;
+                    }
+
+                case Op.Index:
+                    {
+                        if (n < 1)
+                        {
+                            return false;
+                        }
+
+                        double depth = v[--n];
+                        if (!(depth >= 0) || depth >= n)
+                        {
+                            return false;
+                        }
+
+                        int from = n - 1 - (int)depth;
+                        v[n] = v[from];
+                        b[n] = b[from];
+                        n++;
+                        return true;
+                    }
+
+                default:
+                    {
+                        // roll: n j roll turns the top n items j places up.
+                        if (n < 2)
+                        {
+                            return false;
+                        }
+
+                        double shift = v[--n], count = v[--n];
+                        if (!(count >= 0) || count > n || !double.IsFinite(shift))
+                        {
+                            return false;
+                        }
+
+                        int k = (int)count;
+                        if (k > 0)
+                        {
+                            int j = (int)((((long)shift % k) + k) % k);
+                            Rotate(v.Slice(n - k, k), j);
+                            Rotate(b.Slice(n - k, k), j);
+                        }
+
+                        return true;
+                    }
+            }
+        }
+
+        /// <summary>Moves the last <paramref name="j"/> items to the front, as roll does to the top of the stack.</summary>
+        private static void Rotate<T>(Span<T> items, int j)
+        {
+            items.Reverse();
+            items[..j].Reverse();
+            items[j..].Reverse();
+        }
+
+        /// <summary>Flattens parsed items into instructions: a procedure before <c>if</c> or <c>ifelse</c> becomes a jump around it.</summary>
+        private static void Compile(List<object> items, List<Instruction> code)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                switch (items[i])
+                {
+                    case double number:
+                        code.Add(new Instruction(Op.Push, number));
+                        break;
+                    case List<object> then when i + 1 < items.Count && items[i + 1] is "if":
+                        {
+                            int jump = code.Count;
+                            code.Add(default);
+                            Compile(then, code);
+                            code[jump] = new Instruction(Op.JumpIfFalse, code.Count);
+                            i++;
+                            break;
+                        }
+
+                    case List<object> then when i + 2 < items.Count && items[i + 1] is List<object> otherwise && items[i + 2] is "ifelse":
+                        {
+                            int toElse = code.Count;
+                            code.Add(default);
+                            Compile(then, code);
+                            int toEnd = code.Count;
+                            code.Add(default);
+                            code[toElse] = new Instruction(Op.JumpIfFalse, code.Count);
+                            Compile(otherwise, code);
+                            code[toEnd] = new Instruction(Op.Jump, code.Count);
+                            i += 2;
+                            break;
+                        }
+
+                    case List<object>:
+                        throw new InvalidDataException("A PostScript procedure is not followed by if or ifelse.");
+                    case string word:
+                        code.Add(word switch
+                        {
+                            "true" => new Instruction(Op.PushTrue, 0),
+                            "false" => new Instruction(Op.PushFalse, 0),
+                            _ => word.All(char.IsAsciiLetterLower) && Enum.TryParse(word, ignoreCase: true, out Op op) && op > Op.Jump
+                                ? new Instruction(op, 0)
+                                : throw new InvalidDataException($"A PostScript function uses the unknown operator {word}."),
+                        });
+                        break;
+                }
+
+                if (code.Count > 100_000)
+                {
+                    throw new InvalidDataException("A PostScript function is too long.");
+                }
             }
         }
 
@@ -386,241 +734,13 @@ internal abstract class PdfFunction
             return items;
         }
 
-        private static void Execute(List<object> code, List<object> stack, ref int steps)
-        {
-            for (int i = 0; i < code.Count; i++)
-            {
-                if (++steps > MaxSteps || stack.Count > MaxStack)
-                {
-                    throw new InvalidDataException("A PostScript function runs too long.");
-                }
-
-                object item = code[i];
-                if (item is double number)
-                {
-                    stack.Add(number);
-                    continue;
-                }
-
-                if (item is List<object> block)
-                {
-                    // A procedure is data for the if or ifelse that follows it.
-                    stack.Add(block);
-                    continue;
-                }
-
-                Operator((string)item, stack, ref steps);
-            }
-        }
-
-        private static void Operator(string op, List<object> stack, ref int steps)
-        {
-            switch (op)
-            {
-                case "if":
-                    {
-                        List<object> proc = Pop<List<object>>(stack);
-                        if (PopBool(stack))
-                        {
-                            Execute(proc, stack, ref steps);
-                        }
-
-                        return;
-                    }
-
-                case "ifelse":
-                    {
-                        List<object> otherwise = Pop<List<object>>(stack), then = Pop<List<object>>(stack);
-                        Execute(PopBool(stack) ? then : otherwise, stack, ref steps);
-                        return;
-                    }
-
-                case "true":
-                    stack.Add(true);
-                    return;
-                case "false":
-                    stack.Add(false);
-                    return;
-                case "pop":
-                    Pop<object>(stack);
-                    return;
-                case "exch":
-                    {
-                        object b = Pop<object>(stack), a = Pop<object>(stack);
-                        stack.Add(b);
-                        stack.Add(a);
-                        return;
-                    }
-
-                case "dup":
-                    stack.Add(Peek(stack, 0));
-                    return;
-                case "copy":
-                    {
-                        int n = (int)PopNumber(stack);
-                        if (n < 0 || n > stack.Count)
-                        {
-                            throw new InvalidDataException("copy reaches past the stack.");
-                        }
-
-                        stack.AddRange(stack.GetRange(stack.Count - n, n));
-                        return;
-                    }
-
-                case "index":
-                    {
-                        int n = (int)PopNumber(stack);
-                        stack.Add(Peek(stack, n));
-                        return;
-                    }
-
-                case "roll":
-                    {
-                        int j = (int)PopNumber(stack), n = (int)PopNumber(stack);
-                        if (n < 0 || n > stack.Count)
-                        {
-                            throw new InvalidDataException("roll reaches past the stack.");
-                        }
-
-                        if (n > 0)
-                        {
-                            List<object> part = stack.GetRange(stack.Count - n, n);
-                            stack.RemoveRange(stack.Count - n, n);
-                            j = ((j % n) + n) % n;
-                            stack.AddRange(part.Skip(n - j).Concat(part.Take(n - j)));
-                        }
-
-                        return;
-                    }
-            }
-
-            if (op is "and" or "or" or "xor")
-            {
-                object b = Pop<object>(stack), a = Pop<object>(stack);
-                if (a is bool x && b is bool y)
-                {
-                    stack.Add(op == "and" ? x && y : op == "or" ? x || y : x ^ y);
-                }
-                else
-                {
-                    long p = (long)Number(a), q = (long)Number(b);
-                    stack.Add((double)(op == "and" ? p & q : op == "or" ? p | q : p ^ q));
-                }
-
-                return;
-            }
-
-            if (op == "not")
-            {
-                object a = Pop<object>(stack);
-                stack.Add(a is bool x ? !x : (double)~(long)Number(a));
-                return;
-            }
-
-            if (op is "eq" or "ne")
-            {
-                object b = Pop<object>(stack), a = Pop<object>(stack);
-                bool equal = a is bool x && b is bool y ? x == y : Number(a) == Number(b);
-                stack.Add(op == "eq" ? equal : !equal);
-                return;
-            }
-
-            if (op is "gt" or "ge" or "lt" or "le")
-            {
-                double b = PopNumber(stack), a = PopNumber(stack);
-                stack.Add(op switch { "gt" => a > b, "ge" => a >= b, "lt" => a < b, _ => a <= b });
-                return;
-            }
-
-            if (op is "add" or "sub" or "mul" or "div" or "idiv" or "mod" or "atan" or "exp" or "bitshift")
-            {
-                double b = PopNumber(stack), a = PopNumber(stack);
-                stack.Add(op switch
-                {
-                    "add" => a + b,
-                    "sub" => a - b,
-                    "mul" => a * b,
-                    "div" => b == 0 ? 0 : a / b,
-                    "idiv" => (long)b == 0 ? 0 : (double)((long)a / (long)b),
-                    "mod" => (long)b == 0 ? 0 : (double)((long)a % (long)b),
-                    "atan" => Atan(a, b),
-                    "exp" => Math.Pow(a, b),
-                    _ => b >= 0 ? (double)((long)a << (int)Math.Min(b, 63)) : (double)((long)a >> (int)Math.Min(-b, 63)),
-                });
-                return;
-            }
-
-            double v = PopNumber(stack);
-            stack.Add(op switch
-            {
-                "abs" => Math.Abs(v),
-                "neg" => -v,
-                "ceiling" => Math.Ceiling(v),
-                "floor" => Math.Floor(v),
-                "round" => Math.Floor(v + 0.5),
-                "truncate" => Math.Truncate(v),
-                "sqrt" => Math.Sqrt(Math.Max(v, 0)),
-                "sin" => Math.Sin(v * Math.PI / 180),
-                "cos" => Math.Cos(v * Math.PI / 180),
-                "ln" => v > 0 ? Math.Log(v) : 0,
-                "log" => v > 0 ? Math.Log10(v) : 0,
-                "cvi" => Math.Truncate(v),
-                "cvr" => v,
-                _ => throw new InvalidDataException($"A PostScript function uses the unknown operator {op}."),
-            });
-        }
-
         private static double Atan(double num, double den)
         {
             double angle = Math.Atan2(num, den) * 180 / Math.PI;
             return angle < 0 ? angle + 360 : angle;
         }
 
-        private static T Pop<T>(List<object> stack)
-        {
-            if (stack.Count == 0 || stack[^1] is not T value)
-            {
-                throw new InvalidDataException("A PostScript operator found the wrong operand.");
-            }
-
-            stack.RemoveAt(stack.Count - 1);
-            return value;
-        }
-
-        private static double PopNumber(List<object> stack)
-        {
-            return Number(Pop<object>(stack));
-        }
-
-        private static bool PopBool(List<object> stack)
-        {
-            return Pop<object>(stack) switch
-            {
-                bool b => b,
-                double d => d != 0,
-                _ => false,
-            };
-        }
-
-        private static double Number(object value)
-        {
-            return value switch
-            {
-                double d => d,
-                bool b => b ? 1 : 0,
-                _ => throw new InvalidDataException("A PostScript operator found a procedure where a number belongs."),
-            };
-        }
-
-        private static object Peek(List<object> stack, int depth)
-        {
-            if (depth < 0 || depth >= stack.Count)
-            {
-                throw new InvalidDataException("A PostScript operator reaches past the stack.");
-            }
-
-            return stack[stack.Count - 1 - depth];
-        }
+        private readonly record struct Instruction(Op Op, double Value);
     }
 
     protected static double Interpolate(double x, double xMin, double xMax, double yMin, double yMax)

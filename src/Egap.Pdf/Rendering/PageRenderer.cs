@@ -22,9 +22,13 @@ internal sealed partial class PageRenderer : PdfContentWalker
     private readonly Matrix3x2 pageToDevice;
     private readonly ColorCache colors;
 
-    /// <summary>The clips mirrored on the canvas, outermost first; the canvas has one save for each above <see cref="baseSaveCount"/>.</summary>
+    /// <summary>The clips mirrored on the canvas, outermost first, each with the canvas's save count before its save.</summary>
     private readonly List<PdfClipPath> applied = [];
+    private readonly List<int> clipSaves = [];
     private int baseSaveCount;
+
+    /// <summary>The clips a transparency group was opened inside: its content cannot restore below them.</summary>
+    private int clipFloor;
 
     private readonly RenderCache cache;
 
@@ -34,20 +38,30 @@ internal sealed partial class PageRenderer : PdfContentWalker
         this.pageToDevice = pageToDevice;
         this.settings = settings;
         this.cache = cache;
-        colors = cache.Colors;
+        colors = cache.Colors(settings.OutputIntents);
     }
 
     /// <summary>Draws content with its resources, in default user space mapped to the canvas by the page matrix.</summary>
     public void Render(PdfContent content, PdfDictionary? resources, PdfReadOptions? options)
     {
+        Render(content, resources, PdfMatrix.Identity, options);
+    }
+
+    /// <summary>Draws content starting from <paramref name="matrix"/> in default user space.</summary>
+    public void Render(PdfContent content, PdfDictionary? resources, PdfMatrix matrix, PdfReadOptions? options)
+    {
         baseSaveCount = canvas.Save();
+        readOptions = options;
         applied.Clear();
+        clipSaves.Clear();
+        groups.Clear();
+        clipFloor = 0;
         pendingGlyphs.Clear();
         pendingState = null;
         textClip = null;
         try
         {
-            Walk(content, resources, PdfMatrix.Identity, options);
+            Walk(content, resources, matrix, options);
             FlushText();
         }
         finally
@@ -67,7 +81,7 @@ internal sealed partial class PageRenderer : PdfContentWalker
         // A clip set by W or W* takes effect after the path is painted (8.5.4), so the new clip is left out here.
         bool clipped = (paint & (PdfPathPaint.Clip | PdfPathPaint.EvenOddClip)) != 0;
         PdfGraphicsState state = State;
-        if (!SetUp(state.Clips, clipped ? 1 : 0, state.Matrix))
+        if (Begin(state, clipped ? 1 : 0, state.Matrix) is not int restore)
         {
             return;
         }
@@ -81,6 +95,8 @@ internal sealed partial class PageRenderer : PdfContentWalker
         {
             canvas.StrokePath(ToPath(path, FillRule.NonZero), ToStroke(state), stroke);
         }
+
+        End(restore);
     }
 
     /// <summary>
@@ -96,16 +112,19 @@ internal sealed partial class PageRenderer : PdfContentWalker
             common++;
         }
 
+        // Inside a transparency group the clips it was opened in stay: its layer sits above their saves.
+        common = Math.Max(common, Math.Min(clipFloor, applied.Count));
         if (common < applied.Count)
         {
-            canvas.RestoreToCount(baseSaveCount + common);
+            canvas.RestoreToCount(clipSaves[common]);
             applied.RemoveRange(common, applied.Count - common);
+            clipSaves.RemoveRange(common, clipSaves.Count - common);
         }
 
         for (int i = common; i < wanted; i++)
         {
             PdfClipPath clip = clips[i];
-            canvas.Save();
+            clipSaves.Add(canvas.Save());
             applied.Add(clip);
             if (Device(clip.Matrix) is Matrix3x2 clipMatrix)
             {
@@ -175,13 +194,14 @@ internal sealed partial class PageRenderer : PdfContentWalker
             return null;
         }
 
-        if (colors.ToRgb(color, Resources) is not RgbaF32 rgb)
+        if (colors.ToRgb(color, Resources, ColorContext.IntentOf(State.RenderingIntent)) is not RgbaF32 rgb)
         {
             Warn(PdfWarningCode.MalformedContent, $"The colour {color} could not be read; it was drawn black.");
             rgb = new RgbaF32(0, 0, 0, 1);
         }
 
-        return new SolidPaint(new RgbaF32(rgb.R, rgb.G, rgb.B, (float)alpha)) { Antialias = settings.AntialiasPaths };
+        // A colourant that marks nothing (None) paints nothing at all (8.6.6.4).
+        return rgb.A == 0 ? null : new SolidPaint(new RgbaF32(rgb.R, rgb.G, rgb.B, (float)alpha)) { Antialias = settings.AntialiasPaths, BlendMode = BlendModeOf(State.BlendMode) };
     }
 
     /// <summary>A PDF path as an Egami path, in the same user space.</summary>

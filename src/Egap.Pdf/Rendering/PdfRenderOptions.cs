@@ -71,6 +71,12 @@ public sealed record PdfRenderOptions
     public bool UseSystemFonts { get; init; } = true;
 
     /// <summary>
+    /// Whether a document's output intent decides what its device colours look like (design Q7): a PDF/X file's CMYK through
+    /// its press profile. On by default; off draws device colours as they are, CMYK through Egap's built-in conversion.
+    /// </summary>
+    public bool UseOutputIntents { get; init; } = true;
+
+    /// <summary>
     /// How many bytes of decoded images a document keeps for its renders (design Q14), the least recently drawn dropped
     /// first; 256 MB by default, 0 to keep none.
     /// </summary>

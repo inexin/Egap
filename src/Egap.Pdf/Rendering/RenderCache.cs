@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 
 using Egap.Pdf.Fonts;
+using Egap.Pdf.Images;
 
 namespace Egap.Pdf.Rendering;
 
@@ -8,12 +9,21 @@ namespace Egap.Pdf.Rendering;
 /// What every render of one document's pages shares, held by the document so callers cannot forget to share it (design
 /// Q3): colour spaces now; fonts and decoded images join it in later tasks.
 /// </summary>
-internal sealed class RenderCache
+internal sealed class RenderCache(PdfDocument document)
 {
+    private ColorCache? withIntent;
+    private ColorCache? withoutIntent;
+
     private readonly ConditionalWeakTable<PdfFont, SubstituteFont?> withSystem = [];
     private readonly ConditionalWeakTable<PdfFont, SubstituteFont?> bundledOnly = [];
 
-    public ColorCache Colors { get; } = new();
+    /// <summary>The colour spaces, read with the document's output intent or without it (design Q7).</summary>
+    public ColorCache Colors(bool outputIntent)
+    {
+        return outputIntent
+            ? LazyInitializer.EnsureInitialized(ref withIntent, () => new ColorCache(ColorContext.ForDocument(document, useOutputIntent: true)))
+            : LazyInitializer.EnsureInitialized(ref withoutIntent, () => new ColorCache(new ColorContext()));
+    }
 
     public ImageCache Images { get; } = new();
 

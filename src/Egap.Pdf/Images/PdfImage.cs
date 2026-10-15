@@ -39,6 +39,9 @@ public sealed record PdfImageOptions
     /// size, so a small drawing of a large scan decodes a fraction of its pixels; null decodes at full size.
     /// </summary>
     internal Egami.Size? MinimumSize { get; init; }
+
+    /// <summary>For rendering: the document's colour context, with its output intent, intent and caches (Phase 4 design Q7).</summary>
+    internal ColorContext? Colors { get; init; }
 }
 
 /// <summary>
@@ -110,6 +113,9 @@ public sealed class PdfImage
 
     /// <summary>Whether the image asks to be smoothed when drawn larger than its pixels (<c>/Interpolate</c>).</summary>
     internal bool Interpolate => Parameters.GetBool("Interpolate") == true;
+
+    /// <summary>The rendering intent the image asks for (<c>/Intent</c>), or null.</summary>
+    internal PdfName? Intent => Parameters.GetName("Intent");
 
     /// <summary>The colour space as written: a name or an array; <see langword="null"/> for stencil masks and some JPEG 2000 images.</summary>
     public PdfObject? ColorSpace => Parameters.Get("ColorSpace")?.Resolve();

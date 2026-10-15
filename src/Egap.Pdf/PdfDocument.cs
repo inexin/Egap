@@ -218,7 +218,7 @@ public sealed class PdfDocument : IDisposable
     internal Content.ResourceCache WrittenResources { get; } = new();
 
     /// <summary>What renders of this document's pages share: colour spaces, fonts and decoded images (Phase 4 design Q3).</summary>
-    internal Rendering.RenderCache RenderCache => LazyInitializer.EnsureInitialized(ref renderCache);
+    internal Rendering.RenderCache RenderCache => LazyInitializer.EnsureInitialized(ref renderCache, () => new Rendering.RenderCache(this));
 
     /// <summary>Where <see cref="PdfPage.Flush"/> moves finished streams; made the first time a page is flushed.</summary>
     internal ScratchFile Scratch => scratch ??= new ScratchFile();
