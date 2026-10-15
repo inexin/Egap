@@ -154,6 +154,20 @@ public sealed class RenderTransparencyTests
         Assert.Equal(new Rgba8(255, 0, 0, 255), backdrop.GetPixel(15, 10));
     }
 
+    [Theory]
+    [InlineData("DeviceCMYK", true)]
+    [InlineData("DeviceGray", false)]
+    public void ALuminosityBackdropDefaultsToZeroInTheGroupsSpace(string space, bool shows)
+    {
+        // pdf.js issue 14200: an empty mask group in CMYK with no BC; zero ink is white, so the object shows.
+        PdfDictionary resources = MaskResources("Luminosity", "q Q", backdrop: null);
+        PdfDictionary smask = resources.Get<PdfDictionary>("ExtGState")!.Get<PdfDictionary>("S")!.Get<PdfDictionary>("SMask")!;
+        smask["G"] = RenderCoreTests.Form("q Q", 0, 0, 20, 20, new PdfDictionary { ["Group"] = new PdfDictionary { ["S"] = PdfName.Get("Transparency"), ["CS"] = PdfName.Get(space) } });
+        using Raster<Rgba8> raster = RenderCoreTests.Render("/S gs 1 0 0 rg 0 0 20 20 re f", resources: resources);
+
+        Assert.Equal(shows ? new Rgba8(255, 0, 0, 255) : White, raster.GetPixel(10, 10));
+    }
+
     [Fact]
     public void TransferFunctionsShapeTheMask()
     {
