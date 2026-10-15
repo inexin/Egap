@@ -80,7 +80,7 @@ public sealed partial class PdfPage
                 canvas.FillRect(new RectF((float)box.Left, (float)box.Bottom, (float)box.Width, (float)box.Height), new SolidPaint(options.Background) { Antialias = false });
             }
 
-            PageRenderer renderer = new(canvas, device, settings, Document.RenderCache.Colors);
+            PageRenderer renderer = new(canvas, device, settings, Document.RenderCache);
             renderer.Render(GetContent(), Resources, Document.Options);
         }
         finally

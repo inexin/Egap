@@ -34,6 +34,11 @@
     <EmbeddedResource Include="Fonts/Data/cmaps.bin" LogicalName="Egap.Pdf.Fonts.cmaps.bin" />
   </ItemGroup>
 
+  <!-- Substitutes for fonts that are not embedded (Phase 4 design Q5): Foxit's fonts (BSD-3-Clause) and Noto Sans (OFL 1.1), THIRD-PARTY-NOTICES.md. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts/Substitutes/*.pfb;Fonts/Substitutes/*.ttf;Fonts/Substitutes/Noto-OFL.txt;Fonts/Substitutes/LICENSE_FOXIT" LogicalName="Egap.Pdf.Fonts.Substitutes.%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <ItemGroup>
     <InternalsVisibleTo Include="Egap.Pdf.Tests" />
     <InternalsVisibleTo Include="Egap.Pdf.Benchmarks" />

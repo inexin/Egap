@@ -244,6 +244,48 @@ public sealed class PdfFont
         return Cache.GetValue(dictionary, d => new PdfFont(d));
     }
 
+    /// <summary>The font descriptor: the CIDFont's for a composite font; null when there is none.</summary>
+    internal PdfDictionary? Descriptor => descriptor;
+
+    /// <summary>
+    /// The glyph a substitute program shows for a code (Phase 4 design Q5): a simple font's glyph by its name, through the
+    /// substitute's CFF names or, for TrueType, its Unicode cmap; a symbol font's by the substitute's own encoding; anything
+    /// else by the code's Unicode text. 0 (.notdef) when nothing reaches a glyph.
+    /// </summary>
+    internal ushort GetSubstituteGlyph(FontProgram program, int code)
+    {
+        if (!IsComposite)
+        {
+            string? name = GetGlyphName(code);
+            if (program.Cff is { IsCidKeyed: false } cff)
+            {
+                if (name is not null && cff.GlyphByName(name) is ushort byName)
+                {
+                    return byName;
+                }
+
+                if (program.BuiltInEncoding is string?[] own && (uint)code < 256 && own[code] is string ownName && cff.GlyphByName(ownName) is ushort builtIn)
+                {
+                    return builtIn;
+                }
+            }
+
+            if (name is not null && program.PostNames?.TryGetValue(name, out ushort named) == true)
+            {
+                return named;
+            }
+
+            if (GlyphList.ToUnicode(name) is { Length: > 0 } text && program.Typeface.GetGlyph(char.ConvertToUtf32(text, 0)) is ushort mapped and not 0)
+            {
+                return mapped;
+            }
+        }
+
+        return ToUnicode(code) is { Length: > 0 } unicode && !char.IsSurrogate(unicode, 0) | char.IsSurrogatePair(unicode, 0)
+            ? program.Typeface.GetGlyph(char.ConvertToUtf32(unicode, 0))
+            : (ushort)0;
+    }
+
     /// <summary>Drops the font read from a dictionary that drawing has just rewritten, so it is read again when next asked.</summary>
     internal static void Forget(PdfDictionary dictionary)
     {

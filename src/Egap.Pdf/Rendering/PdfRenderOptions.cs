@@ -64,6 +64,12 @@ public sealed record PdfRenderOptions
     /// <summary>Which annotations are drawn from their appearances.</summary>
     public PdfAnnotationRendering Annotations { get; init; } = PdfAnnotationRendering.All;
 
+    /// <summary>
+    /// Whether fonts that are not embedded may be matched to the machine's own fonts by name (design Q5). The standard 14
+    /// and their aliases always use the fonts bundled with Egap; turn this off for output that is the same on every machine.
+    /// </summary>
+    public bool UseSystemFonts { get; init; } = true;
+
     /// <summary>What is anti-aliased (design Q11); everything by default.</summary>
     public PdfAntialiasing Antialiasing { get; init; } = PdfAntialiasing.All;
 

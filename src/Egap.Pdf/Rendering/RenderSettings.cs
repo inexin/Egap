@@ -11,6 +11,8 @@ internal sealed record RenderSettings
 
     public PdfRenderIntent Intent { get; init; }
 
+    public bool SystemFonts { get; init; } = true;
+
     public static RenderSettings From(PdfRenderOptions options)
     {
         return new RenderSettings
@@ -19,6 +21,7 @@ internal sealed record RenderSettings
             AntialiasText = (options.Antialiasing & PdfAntialiasing.Text) != 0,
             AntialiasImages = (options.Antialiasing & PdfAntialiasing.Images) != 0,
             Intent = options.Intent,
+            SystemFonts = options.UseSystemFonts,
         };
     }
 }

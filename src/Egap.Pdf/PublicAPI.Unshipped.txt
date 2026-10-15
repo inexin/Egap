@@ -47,6 +47,8 @@ Egap.Pdf.PdfRenderOptions.Region.get -> Egami.Drawing.RectF?
 Egap.Pdf.PdfRenderOptions.Region.init -> void
 Egap.Pdf.PdfRenderOptions.Rotation.get -> int
 Egap.Pdf.PdfRenderOptions.Rotation.init -> void
+Egap.Pdf.PdfRenderOptions.UseSystemFonts.get -> bool
+Egap.Pdf.PdfRenderOptions.UseSystemFonts.init -> void
 override Egap.Pdf.PdfRenderOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfRenderOptions.GetHashCode() -> int
 override Egap.Pdf.PdfRenderOptions.ToString() -> string!

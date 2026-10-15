@@ -87,9 +87,37 @@ internal sealed class FontProgram
         return null;
     }
 
+    /// <summary>A font file as it is stored on disk: TrueType or OpenType, CFF, or Type 1 as PFB or PFA.</summary>
+    public static FontProgram FromFile(byte[] data)
+    {
+        if (IsSfnt(data))
+        {
+            return Sfnt(data);
+        }
+
+        if (data is [1, 0, _, _, ..])
+        {
+            CffInfo bare = CffInfo.Read(data);
+            return new FontProgram(Typeface.FromCff(data)) { Cff = bare, BuiltInEncoding = bare.BuiltInEncoding };
+        }
+
+        Type1Font font = Type1Font.Read(data);
+        return new FontProgram(Typeface.FromCff(font.Cff)) { Cff = CffInfo.Read(font.Cff), BuiltInEncoding = font.BuiltInEncoding };
+    }
+
+    /// <summary>A typeface Egami loaded, such as a system font, with its cmaps and glyph names read.</summary>
+    public static FontProgram FromTypeface(Typeface face)
+    {
+        return Sfnt(face);
+    }
+
     private static FontProgram Sfnt(byte[] data)
     {
-        Typeface face = Typeface.FromMemory(data);
+        return Sfnt(Typeface.FromMemory(data));
+    }
+
+    private static FontProgram Sfnt(Typeface face)
+    {
         CffInfo? cff = face.TryGetTable(new FontTag("CFF "), out ReadOnlyMemory<byte> table) ? TryCff(table.Span) : null;
         TrueTypeCmaps? cmaps = face.TryGetTable(new FontTag("cmap"), out ReadOnlyMemory<byte> cmap) ? TrueTypeCmaps.Read(cmap.Span) : null;
         Dictionary<string, ushort>? post = face.TryGetTable(new FontTag("post"), out ReadOnlyMemory<byte> names) ? TrueTypePost.Read(names.Span) : null;
