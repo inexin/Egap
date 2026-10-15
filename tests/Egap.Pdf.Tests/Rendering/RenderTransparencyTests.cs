@@ -55,6 +55,32 @@ public sealed class RenderTransparencyTests
         Assert.Equal(new Rgba8(0, 255, 0, 255), raster.GetPixel(10, 10));
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("/I true")]
+    public void AGroupsBlendModeAppliesToTheGroupAsAWhole(string group)
+    {
+        // Black over white with Difference stays white; a cyan square becomes red (pdf.js transparency_group).
+        PdfDictionary resources = Resources("0 g 0 0 20 20 re f 0 1 1 rg 5 5 10 10 re f", group, alpha: 1);
+        resources.Get<PdfDictionary>("ExtGState")!["D"] = new PdfDictionary { ["BM"] = PdfName.Get("Difference") };
+        using Raster<Rgba8> raster = RenderCoreTests.Render("/D gs /G Do", resources: resources);
+
+        Assert.Equal(White, raster.GetPixel(2, 2));
+        Assert.Equal(new Rgba8(255, 0, 0, 255), raster.GetPixel(10, 10));
+    }
+
+    [Fact]
+    public void ANonIsolatedGroupWithABlendModeLeavesWhatItDoesNotPaint()
+    {
+        // The group paints only its middle; the rest of the page must stay white under Difference, not turn black.
+        PdfDictionary resources = Resources("0 1 1 rg 5 5 10 10 re f", group: "", alpha: 1);
+        resources.Get<PdfDictionary>("ExtGState")!["D"] = new PdfDictionary { ["BM"] = PdfName.Get("Difference") };
+        using Raster<Rgba8> raster = RenderCoreTests.Render("/D gs /G Do", resources: resources);
+
+        Assert.Equal(White, raster.GetPixel(2, 2));
+        Assert.Equal(new Rgba8(255, 0, 0, 255), raster.GetPixel(10, 10));
+    }
+
     [Fact]
     public void LuminositySoftMasksShowWhereTheMaskIsLight()
     {

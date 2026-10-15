@@ -75,12 +75,16 @@ internal sealed partial class PageRenderer
         }
 
         SoftMask? soft = state.SoftMask is PdfDictionary mask ? Mask(mask, state.SoftMaskMatrix) : null;
+        BlendMode blend = BlendModeOf(state.BlendMode);
         int before = canvas.SaveLayer(new LayerOptions
         {
-            Isolated = group.GetBool("I") == true,
+            // A non-isolated group composited with a blend mode other than Normal is drawn isolated: Egami's non-isolated
+            // layer would blend the backdrop it starts from with itself (black under Difference), where PDF removes it
+            // first (11.4.8). pdf.js draws every group isolated. Reported to Egami.
+            Isolated = group.GetBool("I") == true || blend != BlendMode.SourceOver,
             Knockout = group.GetBool("K") == true,
             Opacity = (float)state.FillAlpha,
-            BlendMode = BlendModeOf(state.BlendMode),
+            BlendMode = blend,
             Mask = soft,
         });
         groups.Push(new Group(form, before, clipFloor));

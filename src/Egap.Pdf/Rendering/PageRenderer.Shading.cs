@@ -72,7 +72,7 @@ internal sealed partial class PageRenderer
 
         PdfMatrix local = space * fromUser;
         Matrix3x2 m = new((float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)local.E, (float)local.F);
-        if ((ready.Paint ?? ready.MeshPaint()) is not Paint paint)
+        if ((ready.Paint is Paint gradient ? ready.BoxedPaint(gradient) : ready.MeshPaint()) is not Paint paint)
         {
             return null;
         }
