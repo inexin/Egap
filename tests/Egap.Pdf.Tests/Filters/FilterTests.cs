@@ -222,6 +222,16 @@ public sealed class FilterTests
     }
 
     [Fact]
+    public void PngPredictorRoundsBytesPerPixelUp()
+    {
+        // Three colours at 4 bits are 12 bits a pixel: Sub reaches back two bytes, as PNG says (found in govdocs 000146).
+        byte[] predicted = [1, 0x12, 0x34, 0x01];
+        PdfDictionary parameters = new() { ["Predictor"] = 15, ["Colors"] = 3, ["BitsPerComponent"] = 4, ["Columns"] = 2 };
+
+        Assert.Equal(new byte[] { 0x12, 0x34, 0x13 }, Predictor.Apply(predicted, parameters, Context()));
+    }
+
+    [Fact]
     public void PngPredictorDecodesAShortLastRow()
     {
         byte[] predicted = [2, 1, 2, 3, 2, 1, 1];
