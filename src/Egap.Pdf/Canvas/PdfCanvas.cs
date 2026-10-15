@@ -473,8 +473,8 @@ public sealed partial class PdfCanvas : Canvas
 
     /// <summary>
     /// Draws a call that PDF cannot express into an image at the fallback resolution and places it (Phase 3 design Q14), or
-    /// throws in strict mode. The call gets the paint to draw with: a mask blur's sigma is in device pixels, so it is scaled to
-    /// the image's pixels, and the blur in the image is as wide on the page as on a raster at one pixel per unit.
+    /// throws in strict mode. Egami's fallback raster scales a mask blur with its resolution, so the blur is as wide on the
+    /// page as on a raster at one pixel per unit.
     /// </summary>
     private void Unsupported(Paint paint, Action<Canvas, Paint> draw)
     {
@@ -484,9 +484,7 @@ public sealed partial class PdfCanvas : Canvas
             throw new NotSupportedException($"PDF cannot express {what}.");
         }
 
-        float scale = options.FallbackDpi / 72f;
-        Paint scaled = paint.Blur is MaskBlur blur ? paint with { Blur = new MaskBlur(Math.Min(blur.Sigma * scale, MaskBlur.MaxSigma), blur.Style) } : paint;
-        Fallback(c => draw(c, scaled), what, scale);
+        Fallback(c => draw(c, paint), what, options.FallbackDpi / 72f);
     }
 
     private static void Draw(Canvas canvas, RectF rect, Stroke? stroke, Paint paint)
