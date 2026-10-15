@@ -11,24 +11,24 @@ namespace Egap.Pdf.Tests.Rendering;
 public sealed class FontSubstitutionTests
 {
     [Theory]
-    [InlineData("Helvetica", "NotoSans-Latin.ttf", false)]
-    [InlineData("Helvetica-BoldOblique", "NotoSans-Latin.ttf", true)]
-    [InlineData("ArialMT", "NotoSans-Latin.ttf", false)]
-    [InlineData("Times-Roman", "FoxitSerif.pfb", false)]
-    [InlineData("Times-BoldItalic", "FoxitSerifBoldItalic.pfb", false)]
-    [InlineData("TimesNewRomanPS-BoldMT", "FoxitSerifBold.pfb", false)]
-    [InlineData("Courier", "FoxitFixed.pfb", false)]
-    [InlineData("CourierNew,Italic", "FoxitFixedItalic.pfb", false)]
-    [InlineData("Symbol", "FoxitSymbol.pfb", false)]
-    [InlineData("ZapfDingbats", "FoxitDingbats.pfb", false)]
-    [InlineData("ABCDEF+Garamond", "FoxitSerif.pfb", false)]
-    [InlineData("NoSuchFont", "NotoSans-Latin.ttf", false)]
-    public void StandardNamesAliasesAndWordsPickABundledFont(string name, string expected, bool synthesized)
+    [InlineData("Helvetica", "LiberationSans")]
+    [InlineData("Helvetica-BoldOblique", "LiberationSans-BoldItalic")]
+    [InlineData("ArialMT", "LiberationSans")]
+    [InlineData("Times-Roman", "LiberationSerif")]
+    [InlineData("Times-BoldItalic", "LiberationSerif-BoldItalic")]
+    [InlineData("TimesNewRomanPS-BoldMT", "LiberationSerif-Bold")]
+    [InlineData("Courier", "LiberationMono")]
+    [InlineData("CourierNew,Italic", "LiberationMono-Italic")]
+    [InlineData("Symbol", "FoxitSymbol.pfb")]
+    [InlineData("ZapfDingbats", "FoxitDingbats.pfb")]
+    [InlineData("ABCDEF+Garamond", "LiberationSerif")]
+    [InlineData("NoSuchFont", "LiberationSans")]
+    public void StandardNamesAliasesAndWordsPickABundledFont(string name, string expected)
     {
         SubstituteFont substitute = SubstituteFonts.For(Font(name), systemFonts: false)!;
 
         Assert.Equal(expected, substitute.Source);
-        Assert.Equal(synthesized, substitute.Synthesis != Egami.Fonts.FontSynthesis.None);
+        Assert.Equal(Egami.Fonts.FontSynthesis.None, substitute.Synthesis);
     }
 
     [Fact]
@@ -39,8 +39,8 @@ public sealed class FontSubstitutionTests
         PdfDictionary serif = Font("Mystery").Dictionary.Clone();
         serif["FontDescriptor"] = new PdfDictionary { ["Type"] = PdfName.Get("FontDescriptor"), ["Flags"] = new PdfInteger(2 | 32 | (1 << 18)) };
 
-        Assert.Equal("FoxitFixedItalic.pfb", SubstituteFonts.For(PdfFont.FromDictionary(fixedPitch), false)!.Source);
-        Assert.Equal("FoxitSerifBold.pfb", SubstituteFonts.For(PdfFont.FromDictionary(serif), false)!.Source);
+        Assert.Equal("LiberationMono-Italic", SubstituteFonts.For(PdfFont.FromDictionary(fixedPitch), false)!.Source);
+        Assert.Equal("LiberationSerif-Bold", SubstituteFonts.For(PdfFont.FromDictionary(serif), false)!.Source);
     }
 
     [Fact]
@@ -49,8 +49,8 @@ public sealed class FontSubstitutionTests
         Assert.SkipUnless(Egami.Fonts.FontCollection.System.Match("Verdana", Egami.Fonts.FontStyle.Normal) is { } m && m.Typeface.FamilyName == "Verdana", "Verdana is not installed.");
 
         Assert.Equal("system Verdana", SubstituteFonts.For(Font("Verdana,Bold"), systemFonts: true)!.Source);
-        Assert.Equal("NotoSans-Latin.ttf", SubstituteFonts.For(Font("Verdana,Bold"), systemFonts: false)!.Source);
-        Assert.Equal("NotoSans-Latin.ttf", SubstituteFonts.For(Font("Helvetica"), systemFonts: true)!.Source);
+        Assert.Equal("LiberationSans-Bold", SubstituteFonts.For(Font("Verdana,Bold"), systemFonts: false)!.Source);
+        Assert.Equal("LiberationSans", SubstituteFonts.For(Font("Helvetica"), systemFonts: true)!.Source);
     }
 
     [Fact]
