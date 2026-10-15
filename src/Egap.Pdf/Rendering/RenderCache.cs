@@ -27,6 +27,14 @@ internal sealed class RenderCache(PdfDocument document)
 
     public ImageCache Images { get; } = new();
 
+    private readonly ConditionalWeakTable<PdfObject, ShadingPaint> shadings = [];
+
+    /// <summary>A shading made ready once per document: its function sampled into stops (design Q10).</summary>
+    public ShadingPaint Shading(PdfObject shading, Func<ShadingPaint> read)
+    {
+        return shadings.GetValue(shading, _ => read());
+    }
+
     /// <summary>The substitute for a font with no usable program, chosen once per font and setting (design Q5).</summary>
     public SubstituteFont? Substitute(PdfFont font, bool systemFonts)
     {

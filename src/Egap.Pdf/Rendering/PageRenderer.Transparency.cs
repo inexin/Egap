@@ -53,8 +53,10 @@ internal sealed partial class PageRenderer
 
     protected override bool OnBeginForm(PdfStream form, PdfName name)
     {
+        // Patterns used in a form are in the form's space (8.7.3.1).
         if (form.Dictionary.Get<PdfDictionary>("Group") is not PdfDictionary group || group.GetName("S")?.Value != "Transparency")
         {
+            patternSpaces.Push(State.Matrix);
             return true;
         }
 
@@ -76,6 +78,7 @@ internal sealed partial class PageRenderer
             Mask = soft,
         });
         groups.Push(new Group(form, before, clipFloor));
+        patternSpaces.Push(state.Matrix);
         clipFloor = applied.Count;
         state.FillAlpha = state.StrokeAlpha = 1;
         state.BlendMode = PdfName.Get("Normal");
@@ -85,6 +88,7 @@ internal sealed partial class PageRenderer
 
     protected override void OnEndForm(PdfStream form, PdfName name)
     {
+        patternSpaces.TryPop(out _);
         if (groups.TryPeek(out Group? open) && ReferenceEquals(open.Form, form))
         {
             FlushText();

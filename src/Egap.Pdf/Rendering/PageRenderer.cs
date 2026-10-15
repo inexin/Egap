@@ -55,6 +55,8 @@ internal sealed partial class PageRenderer : PdfContentWalker
         applied.Clear();
         clipSaves.Clear();
         groups.Clear();
+        patternSpaces.Clear();
+        patternSpaces.Push(matrix);
         clipFloor = 0;
         pendingGlyphs.Clear();
         pendingState = null;
@@ -186,12 +188,11 @@ internal sealed partial class PageRenderer : PdfContentWalker
         };
     }
 
-    private SolidPaint? ColorPaint(PdfColor color, double alpha)
+    private Paint? ColorPaint(PdfColor color, double alpha)
     {
         if (color.Family == "Pattern")
         {
-            // Patterns arrive with shadings and tiling (tasks 12 and 14).
-            return null;
+            return PatternPaint(color, alpha);
         }
 
         if (colors.ToRgb(color, Resources, ColorContext.IntentOf(State.RenderingIntent)) is not RgbaF32 rgb)
