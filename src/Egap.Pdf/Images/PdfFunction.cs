@@ -199,9 +199,11 @@ internal abstract class PdfFunction
             Span<double> position = stackalloc double[m];
             for (int i = 0; i < m; i++)
             {
-                double x = input[i];
+                // A caller with fewer inputs than the domain (a shading's one-input use of a two-input function) gives the
+                // missing ones their domain's start; a non-finite encoding lands on the first sample.
+                double x = i < input.Length ? input[i] : Domain[2 * i];
                 double e = Interpolate(x, Domain[2 * i], Domain[(2 * i) + 1], encode[2 * i], encode[(2 * i) + 1]);
-                position[i] = Math.Clamp(e, 0, size[i] - 1);
+                position[i] = double.IsFinite(e) ? Math.Clamp(e, 0, size[i] - 1) : 0;
             }
 
             // Multilinear interpolation over the 2^m corners around the position.
