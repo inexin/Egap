@@ -22,6 +22,18 @@ public sealed class RenderTilingTests
     }
 
     [Fact]
+    public void CellsLargerThanTheirStepReachIntoTheirNeighbours()
+    {
+        // veraPDF 6-2-4-3-t02: a 20 by 20 box stepped by 10, its square drawn past the first step, at (12, 12).
+        PdfDictionary resources = Pattern("1 0 0 rg 12 12 5 5 re f", paintType: 1, step: 10, box: 20);
+        using Raster<Rgba8> raster = RenderCoreTests.Render("/Pattern cs /P scn 0 0 20 20 re f", resources: resources);
+
+        Assert.Equal(new Rgba8(255, 0, 0, 255), raster.GetPixel(4, 15));
+        Assert.Equal(new Rgba8(255, 0, 0, 255), raster.GetPixel(14, 5));
+        Assert.Equal(White, raster.GetPixel(9, 10));
+    }
+
+    [Fact]
     public void UncolouredPatternsPaintInTheGivenColour()
     {
         PdfDictionary resources = Pattern("1 0 0 rg 0 0 5 5 re f", paintType: 2, step: 10);
@@ -55,7 +67,7 @@ public sealed class RenderTilingTests
         Assert.All(RenderCoreTests.Pixels(raster), p => Assert.Equal(White, p));
     }
 
-    private static PdfDictionary Pattern(string content, int paintType, double step)
+    private static PdfDictionary Pattern(string content, int paintType, double step, double? box = null)
     {
         PdfStream cell = new(new PdfDictionary
         {
@@ -63,7 +75,7 @@ public sealed class RenderTilingTests
             ["PatternType"] = new PdfInteger(1),
             ["PaintType"] = new PdfInteger(paintType),
             ["TilingType"] = new PdfInteger(1),
-            ["BBox"] = new PdfArray { new PdfInteger(0), new PdfInteger(0), new PdfReal(step), new PdfReal(step) },
+            ["BBox"] = new PdfArray { new PdfInteger(0), new PdfInteger(0), new PdfReal(box ?? step), new PdfReal(box ?? step) },
             ["XStep"] = new PdfReal(step),
             ["YStep"] = new PdfReal(step),
         });

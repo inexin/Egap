@@ -64,6 +64,11 @@ internal sealed partial class PageRenderer
 
         PdfMatrix local = patternSpace * fromUser;
         RectF tile = new((float)box.Left, (float)box.Bottom, (float)xStep, (float)yStep);
+        if (box.Width > xStep || box.Height > yStep)
+        {
+            cell = Wrap(cell, box, tile);
+        }
+
         return new PicturePaint(cell, TileMode.Repeat, TileMode.Repeat, tile)
         {
             LocalMatrix = new Matrix3x2((float)local.A, (float)local.B, (float)local.C, (float)local.D, (float)local.E, (float)local.F),
@@ -71,6 +76,34 @@ internal sealed partial class PageRenderer
             BlendMode = BlendModeOf(State.BlendMode),
             Antialias = settings.AntialiasPaths,
         };
+    }
+
+    /// <summary>The most copies of a cell <see cref="Wrap"/> draws into one tile, against tiny steps under a large box.</summary>
+    private const int MaxWrappedCopies = 4096;
+
+    /// <summary>
+    /// A cell whose box is larger than its step, folded into one tile: cells overlap their neighbours (8.7.3.1), so each tile
+    /// shows the parts of every cell that reach into it. Past <see cref="MaxWrappedCopies"/> the cell is left as it is.
+    /// </summary>
+    private static Picture Wrap(Picture cell, PdfRectangle box, RectF tile)
+    {
+        int left = (int)Math.Ceiling(-box.Width / tile.Width), up = (int)Math.Ceiling(-box.Height / tile.Height);
+        if ((long)(2 - left) * (2 - up) > MaxWrappedCopies)
+        {
+            return cell;
+        }
+
+        PictureRecorder recorder = new(tile);
+        recorder.ClipRect(tile, antialias: false);
+        for (int i = left; i <= 1; i++)
+        {
+            for (int j = up; j <= 1; j++)
+            {
+                recorder.DrawPicture(cell, Matrix3x2.CreateTranslation(i * tile.Width, j * tile.Height));
+            }
+        }
+
+        return recorder.Finish();
     }
 
     /// <summary>The pattern cell as a picture in pattern space, made once per pattern and colour; null when it cannot be drawn.</summary>
