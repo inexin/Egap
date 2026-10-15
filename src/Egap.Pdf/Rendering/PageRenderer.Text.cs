@@ -96,14 +96,11 @@ internal sealed partial class PageRenderer
         Typeface? typeface = font.GetTypeface();
         FontSynthesis synthesis = FontSynthesis.None;
         ushort[] ids = new ushort[glyphs.Count];
-        float[] scales = new float[glyphs.Count];
-        Array.Fill(scales, 1f);
         if (typeface is not null)
         {
             for (int i = 0; i < ids.Length; i++)
             {
                 ids[i] = font.GetGlyphId(glyphs[i].Code) ?? 0;
-                scales[i] = (float)font.GetGlyphScale(ids[i]);
             }
         }
         else if (cache.Substitute(font, settings.SystemFonts) is SubstituteFont substitute)
@@ -126,7 +123,7 @@ internal sealed partial class PageRenderer
         bool clip = mode >= 4;
         if (fill)
         {
-            FillGlyphs(state, typeface, synthesis, ids, scales, glyphs);
+            FillGlyphs(state, typeface, synthesis, ids, glyphs);
         }
 
         if (stroke || clip)
@@ -134,7 +131,7 @@ internal sealed partial class PageRenderer
             Path?[] outlines = new Path?[ids.Length];
             for (int i = 0; i < ids.Length; i++)
             {
-                outlines[i] = Outline(typeface, ids[i], scales[i]);
+                outlines[i] = Outline(typeface, ids[i]);
             }
 
             if (stroke)
@@ -157,7 +154,7 @@ internal sealed partial class PageRenderer
     }
 
     /// <summary>One glyph run for the glyphs, in the em space of the first glyph, so upright text takes Egami's glyph cache.</summary>
-    private void FillGlyphs(PdfGraphicsState state, Typeface typeface, FontSynthesis synthesis, ushort[] ids, float[] scales, List<PdfGlyph> glyphs)
+    private void FillGlyphs(PdfGraphicsState state, Typeface typeface, FontSynthesis synthesis, ushort[] ids, List<PdfGlyph> glyphs)
     {
         PdfMatrix first = glyphs[0].Matrix;
         if (!first.TryInvert(out PdfMatrix inverse) || ColorPaint(state.FillColor, state.FillAlpha, PdfMatrix.Scale(1, -1) * first) is not Paint paint)
@@ -178,23 +175,9 @@ internal sealed partial class PageRenderer
             return;
         }
 
-        // One run per stretch of glyphs at one scale: almost always the whole string (scales differ only in CID-keyed CFF fonts
-        // whose Font DICTs scale their glyphs).
-        Paint drawn = paint with { Antialias = settings.AntialiasText };
-        for (int start = 0; start < ids.Length;)
-        {
-            int end = start + 1;
-            while (end < ids.Length && scales[end] == scales[start])
-            {
-                end++;
-            }
-
-            Font font = (synthesis == FontSynthesis.None ? new Font(typeface, scales[start]) : new FontMatch(typeface, synthesis).ToFont(scales[start])) with { Hinting = FontHinting.None };
-            GlyphRun run = GlyphRun.Create(font, ids.AsSpan(start, end - start), positions.AsSpan(start, end - start));
-            canvas.DrawGlyphRun(run, Vector2.Zero, drawn);
-            start = end;
-        }
-
+        Font font = (synthesis == FontSynthesis.None ? new Font(typeface, 1) : new FontMatch(typeface, synthesis).ToFont(1)) with { Hinting = FontHinting.None };
+        GlyphRun run = GlyphRun.Create(font, ids, positions);
+        canvas.DrawGlyphRun(run, Vector2.Zero, paint with { Antialias = settings.AntialiasText });
         End(restore);
     }
 
@@ -224,9 +207,9 @@ internal sealed partial class PageRenderer
     }
 
     /// <summary>A glyph's outline in em units, y up as glyph space is; null for a glyph with none.</summary>
-    private static Path? Outline(Typeface typeface, ushort glyph, float scale)
+    private static Path? Outline(Typeface typeface, ushort glyph)
     {
-        OutlineSink sink = new(scale / typeface.UnitsPerEm);
+        OutlineSink sink = new(1f / typeface.UnitsPerEm);
         return typeface.GetGlyphOutline(glyph, sink) && !sink.Builder.IsEmpty ? sink.Builder.ToPath() : null;
     }
 
