@@ -84,6 +84,8 @@ internal readonly record struct RenderGeometry(int Width, int Height, Matrix3x2 
             rounded = Math.Min(rounded, limit);
         }
 
-        return rounded is >= 1 and <= MaxSide ? (int)rounded : rounded < 1 ? 1 : throw new ArgumentException($"A render {size:0} pixels across is too large; render it in tiles through the region.");
+        // A page whose boxes or user unit make it miles wide is a limit the file passes, not a bad argument.
+        return rounded is >= 1 and <= MaxSide ? (int)rounded : rounded < 1 || double.IsNaN(rounded) ? 1
+            : throw new PdfLimitException(nameof(PdfRenderOptions.MaxOutputPixels), $"A render {size:0} pixels across is too large; render it in tiles through the region.");
     }
 }

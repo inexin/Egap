@@ -1,0 +1,3 @@
+# Renders take an optional cancellation token; these tests have no use for xUnit's.
+[*.cs]
+dotnet_diagnostic.xUnit1051.severity = none

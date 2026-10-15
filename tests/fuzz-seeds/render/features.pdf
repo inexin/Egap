@@ -1,0 +1,54 @@
+%PDF-1.7
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R /OCProperties << /OCGs [9 0 R] /D << /OFF [] >> >> >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 100 100] /Contents 4 0 R /Resources << /ExtGState << /GS << /ca 0.5 /BM /Multiply /SMask << /S /Luminosity /G 7 0 R >> >> >> /Pattern << /P 5 0 R >> /Shading << /Sh 6 0 R >> /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> /XObject << /G 7 0 R >> /Properties << /L 9 0 R >> >> >>
+endobj
+4 0 obj
+<<  /Length 160 >>
+stream
+q 0.5 0 0 0.5 0 0 cm /GS gs 1 0 0 rg 0 0 100 100 re f Q /Pattern cs /P scn 20 20 60 60 re f /Sh sh BT /F1 24 Tf 3 Tr 10 50 Td (Hello) Tj ET /OC /L BDC /G Do EMC
+endstream
+endobj
+5 0 obj
+<< /PatternType 1 /PaintType 1 /TilingType 1 /BBox [0 0 10 10] /XStep 10 /YStep 10 /Resources << >> /Length 21 >>
+stream
+0 0 1 rg 0 0 5 5 re f
+endstream
+endobj
+6 0 obj
+<< /ShadingType 2 /ColorSpace /DeviceRGB /Coords [0 0 100 0] /Function << /FunctionType 2 /Domain [0 1] /C0 [1 0 0] /C1 [0 0 1] /N 1 >> /Extend [true true] /BBox [0 0 50 50] >>
+endobj
+7 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 100 100] /Group << /S /Transparency /I true /K true >> /Length 20 >>
+stream
+1 g 0 0 100 100 re f
+endstream
+endobj
+8 0 obj
+<< >>
+endobj
+9 0 obj
+<< /Type /OCG /Name (L) >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000109 00000 n 
+0000000166 00000 n 
+0000000527 00000 n 
+0000000739 00000 n 
+0000000907 00000 n 
+0000001099 00000 n 
+0000001265 00000 n 
+0000001286 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+1328
+%%EOF

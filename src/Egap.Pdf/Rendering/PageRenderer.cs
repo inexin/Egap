@@ -65,8 +65,19 @@ internal sealed partial class PageRenderer : PdfContentWalker
         textClip = null;
         try
         {
-            Walk(content, resources, matrix, options);
-            FlushText();
+            try
+            {
+                Walk(content, resources, matrix, options);
+                FlushText();
+            }
+            catch (OperationLimit)
+            {
+                // The limit's warning is collected below; the rest of the content is left out.
+            }
+            finally
+            {
+                Collected.AddRange(Warnings);
+            }
         }
         finally
         {

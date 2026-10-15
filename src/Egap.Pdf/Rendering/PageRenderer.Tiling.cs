@@ -92,7 +92,16 @@ internal sealed partial class PageRenderer
             PageRenderer inner = new(recorder, Matrix3x2.Identity, settings, cache) { maskDepth = maskDepth + 1, uncolored = uncoloredPattern ? tint : null };
             PdfContent content = PdfContent.Parse(System.Text.Encoding.ASCII.GetBytes(FormattableString.Invariant($"{box.Left} {box.Bottom} {box.Width} {box.Height} re W n")));
             content.AddRange(PdfContent.Read(pattern));
-            inner.Render(content, pattern.Dictionary.Get<PdfDictionary>("Resources") ?? Resources, PdfMatrix.Identity, readOptions);
+            try
+            {
+                inner.Render(content, pattern.Dictionary.Get<PdfDictionary>("Resources") ?? Resources, PdfMatrix.Identity, readOptions);
+            }
+            finally
+            {
+                Collected.AddRange(inner.Collected);
+                operations += inner.operations;
+            }
+
             picture = recorder.Finish();
         }
         catch (Exception e) when (e is PdfException and not PdfLimitException || e is ArgumentException)

@@ -11,9 +11,10 @@ Egap.Pdf.PdfAntialiasing.Paths = 1 -> Egap.Pdf.PdfAntialiasing
 Egap.Pdf.PdfAntialiasing.Text = 2 -> Egap.Pdf.PdfAntialiasing
 Egap.Pdf.PdfPage.DisplayHeight.get -> double
 Egap.Pdf.PdfPage.DisplayWidth.get -> double
-Egap.Pdf.PdfPage.Render(Egap.Pdf.PdfRenderOptions? options = null) -> Egami.Raster<Egami.Pixels.Rgba8>!
-Egap.Pdf.PdfPage.Render<TPixel>(Egap.Pdf.PdfRenderOptions? options = null) -> Egami.Raster<TPixel>!
-Egap.Pdf.PdfPage.RenderTo(Egami.Drawing.Canvas! canvas, Egap.Pdf.PdfRenderOptions? options = null) -> void
+Egap.Pdf.PdfPage.Render(Egap.Pdf.PdfRenderOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egami.Raster<Egami.Pixels.Rgba8>!
+Egap.Pdf.PdfPage.Render<TPixel>(Egap.Pdf.PdfRenderOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egami.Raster<TPixel>!
+Egap.Pdf.PdfPage.RenderTo(Egami.Drawing.Canvas! canvas, Egap.Pdf.PdfRenderOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> void
+Egap.Pdf.PdfPage.ToPicture(Egap.Pdf.PdfRenderOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egami.Drawing.Picture!
 Egap.Pdf.PdfPageBox
 Egap.Pdf.PdfPageBox.ArtBox = 4 -> Egap.Pdf.PdfPageBox
 Egap.Pdf.PdfPageBox.BleedBox = 2 -> Egap.Pdf.PdfPageBox
@@ -48,11 +49,21 @@ Egap.Pdf.PdfRenderOptions.LayerConfiguration.get -> string?
 Egap.Pdf.PdfRenderOptions.LayerConfiguration.init -> void
 Egap.Pdf.PdfRenderOptions.Layers.get -> System.Collections.Generic.IReadOnlyDictionary<Egap.Pdf.PdfLayer!, bool>?
 Egap.Pdf.PdfRenderOptions.Layers.init -> void
+Egap.Pdf.PdfRenderOptions.MaxImagePixels.get -> long
+Egap.Pdf.PdfRenderOptions.MaxImagePixels.init -> void
+Egap.Pdf.PdfRenderOptions.MaxOperations.get -> long
+Egap.Pdf.PdfRenderOptions.MaxOperations.init -> void
+Egap.Pdf.PdfRenderOptions.MaxOutputPixels.get -> long
+Egap.Pdf.PdfRenderOptions.MaxOutputPixels.init -> void
+Egap.Pdf.PdfRenderOptions.OnWarning.get -> System.Action<Egap.Pdf.PdfWarning!>?
+Egap.Pdf.PdfRenderOptions.OnWarning.init -> void
 Egap.Pdf.PdfRenderOptions.PdfRenderOptions() -> void
 Egap.Pdf.PdfRenderOptions.Region.get -> Egami.Drawing.RectF?
 Egap.Pdf.PdfRenderOptions.Region.init -> void
 Egap.Pdf.PdfRenderOptions.Rotation.get -> int
 Egap.Pdf.PdfRenderOptions.Rotation.init -> void
+Egap.Pdf.PdfRenderOptions.Strict.get -> bool
+Egap.Pdf.PdfRenderOptions.Strict.init -> void
 Egap.Pdf.PdfRenderOptions.UseOutputIntents.get -> bool
 Egap.Pdf.PdfRenderOptions.UseOutputIntents.init -> void
 Egap.Pdf.PdfRenderOptions.UseSystemFonts.get -> bool

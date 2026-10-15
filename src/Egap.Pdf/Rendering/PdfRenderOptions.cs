@@ -99,6 +99,47 @@ public sealed record PdfRenderOptions
     /// </summary>
     public string? LayerConfiguration { get; init; }
 
+    /// <summary>
+    /// Whether the first problem in the page throws a <see cref="PdfException"/> (design Q15). By default a render is
+    /// lenient: a bad operator is skipped, a missing resource or broken image draws nothing, a broken font is replaced, and
+    /// each is reported to <see cref="OnWarning"/>.
+    /// </summary>
+    public bool Strict { get; init; }
+
+    /// <summary>Called with each problem a lenient render worked around, after the page is drawn; null to ignore them.</summary>
+    public Action<PdfWarning>? OnWarning { get; init; }
+
+    /// <summary>
+    /// The most pixels <see cref="PdfPage.Render(PdfRenderOptions?, CancellationToken)"/> makes (design Q15): a larger output throws
+    /// <see cref="PdfLimitException"/> before anything is allocated. 256 megapixels by default; render big pages as tiles
+    /// through <see cref="Region"/>.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not positive.</exception>
+    public long MaxOutputPixels
+    {
+        get;
+        init => field = value > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "The limit must be positive.");
+    } = 256_000_000;
+
+    /// <summary>
+    /// The most content operators one render walks, forms, patterns and glyph procedures included; past it the rest of the
+    /// page is left out with a warning (a <see cref="PdfLimitException"/> in strict mode). 10 million by default.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not positive.</exception>
+    public long MaxOperations
+    {
+        get;
+        init => field = value > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "The limit must be positive.");
+    } = 10_000_000;
+
+    /// <summary>The most pixels an image may have to be decoded and drawn; larger ones are skipped with a warning. 256 megapixels by default.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not positive.</exception>
+    public long MaxImagePixels
+    {
+        get;
+        init => field = value > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "The limit must be positive.");
+    } = 256_000_000;
+
     /// <summary>What is anti-aliased (design Q11); everything by default.</summary>
     public PdfAntialiasing Antialiasing { get; init; } = PdfAntialiasing.All;
 

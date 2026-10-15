@@ -23,6 +23,8 @@ internal sealed partial class PageRenderer
 
     protected override void OnOperation(PdfOperation operation)
     {
+        settings.Cancellation.ThrowIfCancellationRequested();
+        CountOperation();
         FlushText();
         if (operation.Operator == "ET" && textClip is not null)
         {

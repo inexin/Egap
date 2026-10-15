@@ -140,6 +140,6 @@ public sealed class RenderApiTests
         Assert.Throws<ArgumentOutOfRangeException>(() => new PdfRenderOptions { Rotation = 45 });
         Assert.Throws<ArgumentOutOfRangeException>(() => PdfRenderOptions.FitTo(0, 10));
         using PdfDocument pdf = PdfDocument.Create();
-        Assert.Throws<ArgumentException>(() => Page(pdf).Render(new PdfRenderOptions { Dpi = 1_000_000 }));
+        Assert.Throws<PdfLimitException>(() => Page(pdf).Render(new PdfRenderOptions { Dpi = 1_000_000 }));
     }
 }

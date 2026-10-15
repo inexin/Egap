@@ -31,6 +31,12 @@ internal sealed partial class PageRenderer
         }
 
         PdfImage source = image is not null ? new PdfImage(image, Resources) : new PdfImage(inlineImage!, Resources);
+        if ((long)source.Width * source.Height > settings.MaxImagePixels)
+        {
+            Warn(PdfWarningCode.MalformedContent, $"The image {(name is null ? "inline" : "/" + name.Value)} has {(long)source.Width * source.Height:N0} pixels, past the limit of {settings.MaxImagePixels:N0}; it was left out.");
+            return;
+        }
+
         if (Device(state.Matrix) is not Matrix3x2 device)
         {
             return;

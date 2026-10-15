@@ -168,7 +168,15 @@ internal sealed partial class PageRenderer
         {
             content.AddRange(PdfContent.Read(group));
             PdfMatrix own = PdfMatrix.FromArray(group.Dictionary.Get<PdfArray>("Matrix")) ?? PdfMatrix.Identity;
-            inner.Render(content, resources, own * matrix, readOptions);
+            try
+            {
+                inner.Render(content, resources, own * matrix, readOptions);
+            }
+            finally
+            {
+                Collected.AddRange(inner.Collected);
+                operations += inner.operations;
+            }
         }
         catch (PdfException e) when (e is not PdfLimitException && readOptions?.Strict != true)
         {
