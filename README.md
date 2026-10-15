@@ -68,6 +68,7 @@ pdf.Save("out.pdf");
 | Project | What it is |
 | --- | --- |
 | `src/Egap.Pdf` | The PDF library (package `Egap.Pdf`). |
+| `src/Egap.Fonts` | Open, metric-compatible substitutes for Helvetica, Arial, Times, Courier, Calibri and Cambria (package `Egap.Fonts`, SIL OFL fonts). |
 | `tests/Egap.Pdf.Tests` | Unit tests (xUnit v3). |
 | `tests/Egap.Pdf.Fuzz` | SharpFuzz harness for AFL++. |
 | `benchmarks/Egap.Pdf.Benchmarks` | BenchmarkDotNet benchmarks. |

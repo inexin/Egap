@@ -9,8 +9,8 @@ internal sealed record SubstituteFont(FontProgram Program, FontSynthesis Synthes
 
 /// <summary>
 /// Substitutes for fonts that are not embedded (Phase 4 design Q5). The standard 14 and their common aliases (Arial,
-/// Times New Roman, Courier New) always get a bundled font, so they look the same on every machine: Foxit's serif, fixed,
-/// symbol and dingbat fonts (BSD-3-Clause, as PDFium and pdf.js ship them) and a sans. Other names are looked up among the
+/// Times New Roman, Courier New) always get a bundled font, so they look the same on every machine: Liberation Sans, Serif
+/// and Mono from Egap.Fonts, and Foxit's Symbol and ZapfDingbats (BSD-3-Clause, as PDFium and pdf.js ship them). Other names are looked up among the
 /// system fonts when allowed, by family then style, and otherwise get the bundled font their name or descriptor flags
 /// suggest (fixed pitch, serif, sans), bold and italic as the name and flags say. Glyphs are always placed by the PDF's
 /// widths, so lines keep their length whatever the substitute's shapes.
@@ -113,29 +113,18 @@ internal static class SubstituteFonts
 
     private static SubstituteFont? Bundle(Family family, bool bold, bool italic)
     {
-        string style = (bold, italic) switch
+        if (family is Family.Symbol or Family.Dingbats)
         {
-            (true, true) => "BoldItalic",
-            (true, false) => "Bold",
-            (false, true) => "Italic",
-            _ => "",
-        };
-        string? file = family switch
-        {
-            Family.Serif => $"FoxitSerif{style}.pfb",
-            Family.Fixed => $"FoxitFixed{style}.pfb",
-            Family.Symbol => "FoxitSymbol.pfb",
-            Family.Dingbats => "FoxitDingbats.pfb",
-            _ => null,
-        };
-        if (file is not null)
-        {
-            return Load(file) is FontProgram program ? new SubstituteFont(program, FontSynthesis.None, file) : null;
+            string file = family == Family.Symbol ? "FoxitSymbol.pfb" : "FoxitDingbats.pfb";
+            return Load(file) is FontProgram foxit ? new SubstituteFont(foxit, FontSynthesis.None, file) : null;
         }
 
-        // The bundled sans has one style; bold and italic are made from it.
-        FontSynthesis synthesis = (bold ? FontSynthesis.Bold : 0) | (italic ? FontSynthesis.Italic : 0);
-        return Load("NotoSans-Latin.ttf") is FontProgram sans ? new SubstituteFont(sans, synthesis, "NotoSans-Latin.ttf") : null;
+        // Liberation, metric-compatible with Helvetica, Times and Courier, from Egap.Fonts.
+        string name = family switch { Family.Serif => "Times", Family.Fixed => "Courier", _ => "Helvetica" };
+        FontStyle style = new(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright);
+        return Egap.Fonts.StandardFonts.Find(name, style) is Typeface typeface && Program(typeface) is FontProgram program
+            ? new SubstituteFont(program, FontSynthesis.None, typeface.PostScriptName)
+            : null;
     }
 
     private static FontProgram? Load(string file)
@@ -154,12 +143,14 @@ internal static class SubstituteFonts
         });
     }
 
-    /// <summary>A system typeface as a font program, so its cmaps and glyph names are read as an embedded one's would be.</summary>
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Typeface, FontProgram> Programs = [];
+
+    /// <summary>A system or Egap.Fonts typeface as a font program, read once, so its cmaps and glyph names are read as an embedded one's would be.</summary>
     private static FontProgram? Program(Typeface typeface)
     {
         try
         {
-            return FontProgram.FromTypeface(typeface);
+            return Programs.GetValue(typeface, FontProgram.FromTypeface);
         }
         catch (Exception e) when (e is Egami.EgamiException or InvalidDataException or ArgumentException)
         {

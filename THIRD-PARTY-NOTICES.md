@@ -91,8 +91,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## Foxit fonts
 
-`src/Egap.Pdf/Fonts/Substitutes/Foxit*.pfb`, embedded in Egap.Pdf.dll as substitutes for the standard 14 fonts when a PDF does
-not embed them, are the Foxit fonts PDFium contributed, unchanged, as pdf.js 6.3.289 ships them in `standard_fonts`. Their
+`src/Egap.Pdf/Fonts/Substitutes/FoxitSymbol.pfb` and `FoxitDingbats.pfb`, embedded in Egap.Pdf.dll as substitutes for the
+standard 14's Symbol and ZapfDingbats when a PDF does not embed them, are Foxit fonts PDFium contributed, unchanged, as pdf.js
+6.3.289 ships them in `standard_fonts`. Their
 licence is in `LICENSE_FOXIT` in the same folder:
 
 ```
@@ -125,8 +126,16 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-## Noto Sans
+## Liberation, Carlito and Caladea fonts
 
-`src/Egap.Pdf/Fonts/Substitutes/NotoSans-Latin.ttf`, embedded in Egap.Pdf.dll as the substitute for Helvetica and other sans
-fonts that are not embedded, is Noto Sans Regular cut to U+0020–U+017E with Egami's subsetter. It is licensed under the SIL
-Open Font License 1.1, whose text is in `Noto-OFL.txt` in the same folder.
+`src/Egap.Fonts/Fonts/*.ttf`, embedded in Egap.Fonts.dll, are unchanged releases of open fonts metric-compatible with the
+fonts documents name most, used in place of fonts a document does not embed:
+
+| Fonts | Release | Licence file |
+| --- | --- | --- |
+| Liberation Sans, Serif and Mono (regular, bold, italic, bold italic) | liberation-fonts-ttf 2.1.5, [liberationfonts/liberation-fonts](https://github.com/liberationfonts/liberation-fonts) | `Liberation-OFL.txt` |
+| Carlito (four styles) | [google/fonts](https://github.com/google/fonts/tree/main/ofl/carlito) | `Carlito-OFL.txt` |
+| Caladea (four styles) | [google/fonts](https://github.com/google/fonts/tree/main/ofl/caladea) | `Caladea-OFL.txt` |
+
+All are licensed under the SIL Open Font License 1.1. The licence files, with each font's copyright and reserved font names,
+are in the same folder, embedded in Egap.Fonts.dll and packed with the package under `licenses/`.

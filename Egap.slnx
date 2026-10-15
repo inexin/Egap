@@ -3,6 +3,7 @@
     <Project Path="benchmarks/Egap.Pdf.Benchmarks/Egap.Pdf.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src/Egap.Fonts/Egap.Fonts.csproj" />
     <Project Path="src/Egap.Pdf/Egap.Pdf.csproj" />
   </Folder>
   <Folder Name="/tests/">
