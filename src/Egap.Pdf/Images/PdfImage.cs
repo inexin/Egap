@@ -40,6 +40,9 @@ public sealed record PdfImageOptions
     /// </summary>
     internal Egami.Size? MinimumSize { get; init; }
 
+    /// <summary>For rendering: an image whose mask is finer than itself is stretched to the mask's size rather than the mask shrunk.</summary>
+    internal bool KeepFinerMasks { get; init; }
+
     /// <summary>For rendering: the document's colour context, with its output intent, intent and caches (Phase 4 design Q7).</summary>
     internal ColorContext? Colors { get; init; }
 }

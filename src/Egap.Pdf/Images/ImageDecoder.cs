@@ -70,6 +70,17 @@ internal static class ImageDecoder
             : space.DefaultDecode(samples.Bits);
         double max = (1 << samples.Bits) - 1;
 
+        // A mask finer than the image (issue4246: a smooth stencil over a coarse gradient) keeps its detail: the colour is
+        // stretched to the mask's size instead of the mask shrunk to the colour's, as PDFium and pdf.js draw it.
+        if (options.ApplyMasks && options.KeepFinerMasks && depth == 0 && ownAlpha is null
+            && (d.Get("SMask")?.Resolve() as PdfStream ?? d.Get("Mask")?.Resolve() as PdfStream) is PdfStream finer
+            && finer.Dictionary.GetInt("Width") is long maskWidth && finer.Dictionary.GetInt("Height") is long maskHeight
+            && (maskWidth > width || maskHeight > height) && maskWidth * maskHeight <= MaxStretchedPixels)
+        {
+            samples = Stretch(samples, (int)Math.Max(maskWidth, width), (int)Math.Max(maskHeight, height));
+            (width, height) = (samples.Width, samples.Height);
+        }
+
         // Alpha: SMask, then /Mask (a stencil stream or colour key ranges), then the JPX image's own.
         byte[]? alpha = null;
         double[]? matte = null;
@@ -550,6 +561,44 @@ internal static class ImageDecoder
     }
 
     /// <summary>Packed samples, rows padded to whole bytes as PDF stores them (8.9.3).</summary>
+    /// <summary>The most pixels an image is stretched to for a finer mask.</summary>
+    private const long MaxStretchedPixels = 1L << 26;
+
+    /// <summary>The samples stretched to a larger size by nearest neighbour, at the same depth.</summary>
+    private static Samples Stretch(Samples samples, int width, int height)
+    {
+        int stride = ((width * samples.Components * samples.Bits) + 7) / 8;
+        byte[] data = new byte[(long)stride * height];
+        for (int y = 0; y < height; y++)
+        {
+            int sy = (int)((long)y * samples.Height / height);
+            long bit = (long)y * stride * 8;
+            for (int x = 0; x < width; x++)
+            {
+                int sx = (int)((long)x * samples.Width / width);
+                for (int c = 0; c < samples.Components; c++, bit += samples.Bits)
+                {
+                    int v = samples.Get(sx, sy, c);
+                    switch (samples.Bits)
+                    {
+                        case 8:
+                            data[bit >> 3] = (byte)v;
+                            break;
+                        case 16:
+                            data[bit >> 3] = (byte)(v >> 8);
+                            data[(bit >> 3) + 1] = (byte)v;
+                            break;
+                        default:
+                            data[bit >> 3] |= (byte)(v << (8 - samples.Bits - (int)(bit & 7)));
+                            break;
+                    }
+                }
+            }
+        }
+
+        return new Samples(width, height, samples.Components, samples.Bits, data) { SourceBits = samples.SourceBits };
+    }
+
     private sealed record Samples(int Width, int Height, int Components, int Bits, byte[] Data)
     {
         /// <summary>The precision the samples had before they were scaled to <see cref="Bits"/>, as a codec's output is.</summary>
