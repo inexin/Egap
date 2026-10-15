@@ -190,6 +190,12 @@ internal sealed partial class PageRenderer : PdfContentWalker
 
     private Paint? ColorPaint(PdfColor color, double alpha)
     {
+        if (uncolored is RgbaF32 tint)
+        {
+            // Inside an uncoloured pattern's cell everything takes the pattern's colour (8.7.3.3).
+            return new SolidPaint(tint with { A = (float)alpha }) { Antialias = settings.AntialiasPaths, BlendMode = BlendModeOf(State.BlendMode) };
+        }
+
         if (color.Family == "Pattern")
         {
             return PatternPaint(color, alpha);

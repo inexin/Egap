@@ -9,7 +9,23 @@ using Egap.Pdf.Images;
 namespace Egap.Pdf.Rendering;
 
 /// <summary>A shading made ready to paint: the paint in shading space, its bounding box there, and its background.</summary>
-internal sealed record ShadingPaint(Paint? Paint, PdfRectangle? BBox, RgbaF32? Background, PdfDictionary Dictionary);
+internal sealed record ShadingPaint(Paint? Paint, PdfRectangle? BBox, RgbaF32? Background, PdfDictionary Dictionary, MeshShading? Mesh = null)
+{
+    private Picture? picture;
+
+    /// <summary>A mesh shading as a paint for patterns: recorded once as a picture and drawn where it covers, nothing elsewhere.</summary>
+    public Paint? MeshPaint()
+    {
+        // A mesh with no area (all its points on a line) draws nothing, and a picture needs bounds with area.
+        if (Mesh is null || Mesh.IsEmpty || !(Mesh.Bounds.Width > 0 && Mesh.Bounds.Height > 0))
+        {
+            return null;
+        }
+
+        Picture recorded = LazyInitializer.EnsureInitialized(ref picture, Mesh.ToPicture);
+        return new PicturePaint(recorded, TileMode.Decal, TileMode.Decal, Mesh.Bounds);
+    }
+}
 
 /// <summary>
 /// Shadings (8.7.4.5, design Q10) as Egami paints in shading space: axial and radial shadings as linear and two-point
@@ -34,12 +50,20 @@ internal static class Shadings
             : throw new InvalidDataException("A shading has no usable colour space.");
         PdfRectangle? box = PdfRectangle.FromArray(dictionary.Get<PdfArray>("BBox"));
         RgbaF32? background = dictionary.Get<PdfArray>("Background") is PdfArray bg ? Convert(space, Numbers(bg)) : null;
-        Paint? paint = dictionary.GetInt("ShadingType") switch
+        int type = (int)(dictionary.GetInt("ShadingType") ?? 0);
+        if (type is >= 4 and <= 7)
+        {
+            return shading is PdfStream mesh
+                ? new ShadingPaint(null, box, background, dictionary, MeshShading.Read(mesh, type, space))
+                : throw new InvalidDataException("A mesh shading is not a stream.");
+        }
+
+        Paint paint = type switch
         {
             1 => Function(dictionary, space),
             2 => Axial(dictionary, space),
             3 => Radial(dictionary, space),
-            _ => null,
+            _ => throw new InvalidDataException($"The shading type {type} is not known."),
         };
         return new ShadingPaint(paint, box, background, dictionary);
     }
