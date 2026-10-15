@@ -15,6 +15,14 @@ internal sealed record RenderSettings
 
     public bool OutputIntents { get; init; } = true;
 
+    public bool Strict { get; init; }
+
+    public long MaxOperations { get; init; } = PdfRenderOptions.Default.MaxOperations;
+
+    public long MaxImagePixels { get; init; } = PdfRenderOptions.Default.MaxImagePixels;
+
+    public CancellationToken Cancellation { get; init; }
+
     /// <summary>Which optional content shows; null when everything does.</summary>
     public OptionalContent? Layers { get; init; }
 
@@ -30,6 +38,9 @@ internal sealed record RenderSettings
             Intent = options.Intent,
             SystemFonts = options.UseSystemFonts,
             OutputIntents = options.UseOutputIntents,
+            Strict = options.Strict,
+            MaxOperations = options.MaxOperations,
+            MaxImagePixels = options.MaxImagePixels,
             ImageCacheLimit = options.ImageCacheLimit,
         };
     }

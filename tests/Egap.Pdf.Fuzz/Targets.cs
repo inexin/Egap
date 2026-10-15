@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings", "render"];
 
     public static Action<Stream> Get(string name)
     {
@@ -45,6 +45,7 @@ internal static class Targets
             "images" => Images,
             "functions" => Functions,
             "shadings" => Shadings,
+            "render" => Render,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -161,6 +162,41 @@ internal static class Targets
     }
 
     private static readonly int[] SampleBits = [1, 2, 4, 8, 12, 16, 24, 32];
+
+    /// <summary>
+    /// PDF bytes (Phase 4 task 17): the first three pages rendered at a small size, leniently with tight limits, then onto a
+    /// picture recorder. A lenient render may throw only <see cref="PdfLimitException"/>.
+    /// </summary>
+    private static void Render(Stream input)
+    {
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(ReadAll(input), new PdfReadOptions { MaxDecodedStreamBytes = 16 << 20, MaxObjects = 100_000, MaxNestingDepth = 32 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            PdfRenderOptions options = new() { Dpi = 18, MaxOutputPixels = 4_000_000, MaxOperations = 200_000, MaxImagePixels = 4_000_000, ImageCacheLimit = 16 << 20 };
+            foreach (PdfPage page in pdf.Pages.Take(3))
+            {
+                try
+                {
+                    using Egami.Raster<Egami.Pixels.Rgba8> raster = page.Render(options);
+                    Egami.Drawing.PictureRecorder recorder = new(new Egami.Drawing.RectF(0, 0, 100, 100));
+                    page.RenderTo(recorder, options with { FitWidth = 100, FitHeight = 100 });
+                    _ = recorder.Finish();
+                }
+                catch (PdfLimitException)
+                {
+                }
+            }
+        }
+    }
 
     private static readonly int[] CoordinateBits = [1, 2, 4, 8, 12, 16, 24, 32];
 
