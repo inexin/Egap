@@ -69,6 +69,18 @@ public sealed class FontProgramTests
         Assert.Equal(new GlyphExtents(100, 0, 400, 700), face.GetGlyphExtents(font.GetGlyphId('A')!.Value));
     }
 
+    [Theory]
+    [InlineData("Test", 600)]
+    [InlineData("Helvetica", 667)]
+    public void AFontWithoutWidthsTakesThemFromItsMetricsOrProgram(string baseFont, double width)
+    {
+        // pdf.js issue 11150: an embedded Symbol with no /Widths; a standard name's metrics win, else the program's advance.
+        byte[] box = CharString(0, 600, [100, 0, 21], [300, 0, 5], [0, 700, 5], [-300, 0, 5], [9], [14]);
+        PdfFont font = Type1Font(Program(("A", box)), baseFont);
+
+        Assert.Equal(width, font.GetWidth('A'));
+    }
+
     [Fact]
     public void ReportsABrokenProgramInsteadOfThrowing()
     {
@@ -100,12 +112,12 @@ public sealed class FontProgramTests
         Assert.Equal(face.GetGlyph('\u20AC'), pdfFont.GetGlyphId(0x80));
     }
 
-    private static PdfFont Type1Font(byte[] program)
+    private static PdfFont Type1Font(byte[] program, string baseFont = "Test")
     {
         PdfStream file = new();
         file.SetDecodedBytes(program);
         PdfDictionary descriptor = new() { ["Type"] = PdfName.Get("FontDescriptor"), ["FontName"] = PdfName.Get("Test"), ["Flags"] = new PdfInteger(32), ["FontFile"] = Objects.Objects.Add(file) };
-        return PdfFont.FromDictionary(new PdfDictionary { ["Type"] = PdfName.Get("Font"), ["Subtype"] = PdfName.Get("Type1"), ["BaseFont"] = PdfName.Get("Test"), ["FontDescriptor"] = descriptor });
+        return PdfFont.FromDictionary(new PdfDictionary { ["Type"] = PdfName.Get("Font"), ["Subtype"] = PdfName.Get("Type1"), ["BaseFont"] = PdfName.Get(baseFont), ["FontDescriptor"] = descriptor });
     }
 
     /// <summary>A Type 1 program: clear text with a custom encoding, then the eexec part with lenIV 4 and the charstrings.</summary>
