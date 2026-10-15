@@ -297,15 +297,6 @@ public sealed class PdfFont
             : (ushort)0;
     }
 
-    /// <summary>
-    /// How much larger the embedded program's glyph is than its units per em say: a CID-keyed CFF font's Font DICT FontMatrix,
-    /// which Egami leaves out; 1 for every other font.
-    /// </summary>
-    internal double GetGlyphScale(ushort glyph)
-    {
-        return program.Value?.Cff is { IsCidKeyed: true } cff ? cff.GlyphScale(glyph) : 1;
-    }
-
     /// <summary>Drops the font read from a dictionary that drawing has just rewritten, so it is read again when next asked.</summary>
     internal static void Forget(PdfDictionary dictionary)
     {
