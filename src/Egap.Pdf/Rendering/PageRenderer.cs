@@ -39,9 +39,13 @@ internal sealed partial class PageRenderer : PdfContentWalker
     {
         baseSaveCount = canvas.Save();
         applied.Clear();
+        pendingGlyphs.Clear();
+        pendingState = null;
+        textClip = null;
         try
         {
             Walk(content, resources, PdfMatrix.Identity, options);
+            FlushText();
         }
         finally
         {
