@@ -14,9 +14,14 @@ internal sealed class CffInfo
     private const int OpEncoding = 16;
     private const int OpCharStrings = 17;
     private const int OpRos = 1230;
+    private const int OpFontMatrix = 1207;
+    private const int OpFdArray = 1236;
+    private const int OpFdSelect = 1237;
 
     private readonly Dictionary<string, ushort> byName = new(StringComparer.Ordinal);
     private readonly Dictionary<int, ushort> byCid = [];
+    private readonly double[]? fdScales;
+    private readonly byte[]? fdOfGlyph;
 
     private CffInfo(byte[] data)
     {
@@ -68,6 +73,11 @@ internal sealed class CffInfo
             }
         }
 
+        if (IsCidKeyed)
+        {
+            (fdScales, fdOfGlyph) = FontDictScales(data, dict, GlyphCount);
+        }
+
         if (!IsCidKeyed)
         {
             int encodingOffset = dict.TryGetValue(OpEncoding, out double[]? en) && en.Length > 0 ? (int)en[0] : 0;
@@ -98,6 +108,16 @@ internal sealed class CffInfo
     public ushort? GlyphByName(string name)
     {
         return byName.TryGetValue(name, out ushort glyph) ? glyph : null;
+    }
+
+    /// <summary>
+    /// How much larger a CID-keyed font's glyph is than its units per em say: its Font DICT's FontMatrix multiplies the Top
+    /// DICT's (5176, 18), which Egami.Fonts leaves out, so a font whose Font DICTs scale their glyphs draws them at the wrong
+    /// size without this factor. 1 for a name-keyed font or a Font DICT without its own FontMatrix.
+    /// </summary>
+    public double GlyphScale(ushort glyph)
+    {
+        return fdScales is null || fdOfGlyph is null || glyph >= fdOfGlyph.Length || fdOfGlyph[glyph] >= fdScales.Length ? 1 : fdScales[fdOfGlyph[glyph]];
     }
 
     /// <summary>The glyph with a CID in a CID-keyed font, or null.</summary>
@@ -210,6 +230,71 @@ internal sealed class CffInfo
     }
 
     /// <summary>Reads a DICT's operators with their operands (two-byte operators as 1200 + the second byte).</summary>
+    /// <summary>
+    /// Each Font DICT's FontMatrix scale against the one Egami.Fonts uses (the Top DICT's, 1/1000 by default), and the Font DICT
+    /// of each glyph from FDSelect; nulls when no Font DICT has a FontMatrix of its own.
+    /// </summary>
+    private static (double[]? Scales, byte[]? FdOfGlyph) FontDictScales(byte[] data, Dictionary<int, double[]> top, int glyphCount)
+    {
+        if (!top.TryGetValue(OpFdArray, out double[]? fdArray) || fdArray.Length == 0 || !top.TryGetValue(OpFdSelect, out double[]? fdSelect) || fdSelect.Length == 0)
+        {
+            return (null, null);
+        }
+
+        double topScale = top.TryGetValue(OpFontMatrix, out double[]? tm) && tm.Length >= 4 && tm[0] > 0 ? tm[0] : 0.001;
+        List<(int Start, int End)> dicts = ReadIndex(data, (int)fdArray[0], out _);
+        double[] scales = new double[dicts.Count];
+        bool any = false;
+        for (int i = 0; i < dicts.Count; i++)
+        {
+            Dictionary<int, double[]> fd = ReadDict(data.AsSpan(dicts[i].Start, dicts[i].End - dicts[i].Start));
+            scales[i] = 1;
+            if (fd.TryGetValue(OpFontMatrix, out double[]? m) && m.Length >= 4 && m[0] > 0 && double.IsFinite(m[0]))
+            {
+                // The glyph's matrix is FD × Top; Egami scales by Top alone.
+                double combined = m[0] * (top.ContainsKey(OpFontMatrix) ? topScale : 1);
+                scales[i] = combined / topScale;
+                any |= Math.Abs(scales[i] - 1) > 1e-6;
+            }
+        }
+
+        if (!any)
+        {
+            return (null, null);
+        }
+
+        byte[] fdOf = new byte[glyphCount];
+        int at = (int)fdSelect[0];
+        Need(data, at, 1);
+        switch (data[at])
+        {
+            case 0:
+                Need(data, at + 1, glyphCount);
+                data.AsSpan(at + 1, glyphCount).CopyTo(fdOf);
+                break;
+            case 3:
+                Need(data, at + 1, 2);
+                int ranges = BinaryPrimitives.ReadUInt16BigEndian(data.AsSpan(at + 1));
+                Need(data, at + 3, (ranges * 3) + 2);
+                for (int r = 0; r < ranges; r++)
+                {
+                    int first = BinaryPrimitives.ReadUInt16BigEndian(data.AsSpan(at + 3 + (r * 3)));
+                    byte fd = data[at + 5 + (r * 3)];
+                    int next = BinaryPrimitives.ReadUInt16BigEndian(data.AsSpan(at + 6 + (r * 3)));
+                    for (int g = first; g < next && g < glyphCount; g++)
+                    {
+                        fdOf[g] = fd;
+                    }
+                }
+
+                break;
+            default:
+                return (null, null);
+        }
+
+        return (scales, fdOf);
+    }
+
     private static Dictionary<int, double[]> ReadDict(ReadOnlySpan<byte> data)
     {
         Dictionary<int, double[]> dict = [];
@@ -238,14 +323,25 @@ internal sealed class CffInfo
             }
             else if (b == 30)
             {
-                // A real number: nibbles until 0xF. Its value is not needed here, only skipped.
-                while (at < data.Length && (data[at] & 0x0F) != 0x0F && (data[at] >> 4) != 0x0F)
+                // A real number (5176, table 5): nibbles of digits, a point, exponents and a minus, until 0xF.
+                StringBuilder text = new();
+                bool done = false;
+                while (at < data.Length && !done)
                 {
-                    at++;
+                    byte pair = data[at++];
+                    foreach (int nibble in (int[])[pair >> 4, pair & 0x0F])
+                    {
+                        if (nibble == 0x0F)
+                        {
+                            done = true;
+                            break;
+                        }
+
+                        text.Append(nibble switch { < 10 => ((char)('0' + nibble)).ToString(), 0xA => ".", 0xB => "E", 0xC => "E-", 0xE => "-", _ => "" });
+                    }
                 }
 
-                at++;
-                operands.Add(0);
+                operands.Add(double.TryParse(text.ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double real) ? real : 0);
             }
             else if (b is >= 32 and <= 246)
             {
