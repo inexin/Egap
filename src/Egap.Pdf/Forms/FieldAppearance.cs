@@ -54,10 +54,34 @@ internal static class FieldAppearance
 
         foreach (PdfWidgetAnnotation widget in field.Widgets)
         {
-            Draw(field, widget, appearance, font, lines);
+            widget.Dictionary["AP"] = new PdfDictionary { ["N"] = field.Document.Objects.Add(Draw(field, widget, appearance, font, lines)) };
+            widget.Dictionary.Remove("AS");
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// One widget's appearance drawn without storing it, for rendering a form whose appearances are missing or that asks for
+    /// new ones (Phase 4 design Q12); null for a field Egap does not draw or text the standard 14 fonts cannot show.
+    /// </summary>
+    public static PdfStream? Build(PdfField field, PdfWidgetAnnotation widget)
+    {
+        string? text = field switch
+        {
+            PdfTextField textField => textField.Value ?? "",
+            PdfComboBoxField combo => combo.Value is string value ? combo.Options.FirstOrDefault(o => o.ExportValue == value) is { DisplayText: string display } && combo.Options.Any(o => o.ExportValue == value) ? display : value : "",
+            PdfListBoxField => "",
+            _ => null,
+        };
+        if (text is null)
+        {
+            return null;
+        }
+
+        DefaultAppearance appearance = DefaultAppearance.Parse(field.DefaultAppearance);
+        List<string> lines = field is PdfListBoxField list ? [.. list.Options.Select(o => o.DisplayText)] : [Shown(field, text)];
+        return FieldFont.Resolve(field.Document, appearance.Font, string.Concat(lines)) is FieldFont font ? Draw(field, widget, appearance, font, lines) : null;
     }
 
     /// <summary>The text as shown: a password as asterisks, a single-line field's line breaks as spaces.</summary>
@@ -71,7 +95,7 @@ internal static class FieldAppearance
         return field is PdfTextField { IsMultiline: true } ? text : text.Replace("\r\n", " ", StringComparison.Ordinal).Replace('\r', ' ').Replace('\n', ' ');
     }
 
-    private static void Draw(PdfField field, PdfWidgetAnnotation widget, DefaultAppearance appearance, FieldFont font, List<string> lines)
+    private static PdfStream Draw(PdfField field, PdfWidgetAnnotation widget, DefaultAppearance appearance, FieldFont font, List<string> lines)
     {
         PdfRectangle rect = widget.Rectangle;
         PdfDictionary? mk = widget.Dictionary.Get<PdfDictionary>("MK");
@@ -166,8 +190,7 @@ internal static class FieldAppearance
         }
 
         stream.SetDecodedBytes(content.ToArray());
-        widget.Dictionary["AP"] = new PdfDictionary { ["N"] = field.Document.Objects.Add(stream) };
-        widget.Dictionary.Remove("AS");
+        return stream;
     }
 
     /// <summary>The indices of a list box's selected options: <c>/I</c>, else the options whose value is selected.</summary>

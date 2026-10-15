@@ -108,7 +108,7 @@ internal static class Flattener
     /// The matrix that maps the appearance's bounding box, transformed by its own <c>/Matrix</c>, onto the rectangle
     /// (12.5.5, algorithm 8.1); null when the box is unusable or degenerate.
     /// </summary>
-    private static double[]? Placement(PdfStream appearance, PdfRectangle rectangle)
+    internal static double[]? Placement(PdfStream appearance, PdfRectangle rectangle)
     {
         if (PdfRectangle.FromArray(appearance.Dictionary.Get<PdfArray>("BBox"))?.Normalize() is not PdfRectangle box)
         {
