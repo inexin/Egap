@@ -66,7 +66,10 @@ public sealed partial class PdfPage
     {
         // Fonts that drawing on this document embedded are written only on save; a render needs their glyphs now.
         Document.WrittenResources.Finish();
-        RenderSettings settings = RenderSettings.From(options);
+        RenderSettings settings = RenderSettings.From(options) with
+        {
+            Layers = Document.Catalog.Get<PdfDictionary>("OCProperties") is null && options.Layers is null ? null : new OptionalContent(Document, options.Intent, options.Layers, options.LayerConfiguration),
+        };
         int saves = canvas.Save();
         try
         {

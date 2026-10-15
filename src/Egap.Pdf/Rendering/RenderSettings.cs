@@ -15,6 +15,9 @@ internal sealed record RenderSettings
 
     public bool OutputIntents { get; init; } = true;
 
+    /// <summary>Which optional content shows; null when everything does.</summary>
+    public OptionalContent? Layers { get; init; }
+
     public long ImageCacheLimit { get; init; } = PdfRenderOptions.Default.ImageCacheLimit;
 
     public static RenderSettings From(PdfRenderOptions options)

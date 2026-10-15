@@ -44,6 +44,10 @@ Egap.Pdf.PdfRenderOptions.ImageCacheLimit.get -> long
 Egap.Pdf.PdfRenderOptions.ImageCacheLimit.init -> void
 Egap.Pdf.PdfRenderOptions.Intent.get -> Egap.Pdf.PdfRenderIntent
 Egap.Pdf.PdfRenderOptions.Intent.init -> void
+Egap.Pdf.PdfRenderOptions.LayerConfiguration.get -> string?
+Egap.Pdf.PdfRenderOptions.LayerConfiguration.init -> void
+Egap.Pdf.PdfRenderOptions.Layers.get -> System.Collections.Generic.IReadOnlyDictionary<Egap.Pdf.PdfLayer!, bool>?
+Egap.Pdf.PdfRenderOptions.Layers.init -> void
 Egap.Pdf.PdfRenderOptions.PdfRenderOptions() -> void
 Egap.Pdf.PdfRenderOptions.Region.get -> Egami.Drawing.RectF?
 Egap.Pdf.PdfRenderOptions.Region.init -> void
