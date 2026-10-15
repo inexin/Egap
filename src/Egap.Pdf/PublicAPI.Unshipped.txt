@@ -40,6 +40,8 @@ Egap.Pdf.PdfRenderOptions.FitHeight.get -> int?
 Egap.Pdf.PdfRenderOptions.FitHeight.init -> void
 Egap.Pdf.PdfRenderOptions.FitWidth.get -> int?
 Egap.Pdf.PdfRenderOptions.FitWidth.init -> void
+Egap.Pdf.PdfRenderOptions.ImageCacheLimit.get -> long
+Egap.Pdf.PdfRenderOptions.ImageCacheLimit.init -> void
 Egap.Pdf.PdfRenderOptions.Intent.get -> Egap.Pdf.PdfRenderIntent
 Egap.Pdf.PdfRenderOptions.Intent.init -> void
 Egap.Pdf.PdfRenderOptions.PdfRenderOptions() -> void

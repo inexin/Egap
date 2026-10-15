@@ -13,6 +13,8 @@ internal sealed record RenderSettings
 
     public bool SystemFonts { get; init; } = true;
 
+    public long ImageCacheLimit { get; init; } = PdfRenderOptions.Default.ImageCacheLimit;
+
     public static RenderSettings From(PdfRenderOptions options)
     {
         return new RenderSettings
@@ -22,6 +24,7 @@ internal sealed record RenderSettings
             AntialiasImages = (options.Antialiasing & PdfAntialiasing.Images) != 0,
             Intent = options.Intent,
             SystemFonts = options.UseSystemFonts,
+            ImageCacheLimit = options.ImageCacheLimit,
         };
     }
 }

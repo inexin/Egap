@@ -37,7 +37,7 @@ internal static class ImageDecoder
     private static Raster DecodeCore(PdfImage image, PdfImageOptions options, int depth)
     {
         PdfDictionary d = image.Parameters;
-        (Samples samples, ImageColorSpace? ownSpace, byte[]? ownAlpha) = ReadSamples(image, d);
+        (Samples samples, ImageColorSpace? ownSpace, byte[]? ownAlpha) = ReadSamples(image, d, options.MinimumSize);
         int width = samples.Width, height = samples.Height;
         if (image.IsStencilMask)
         {
@@ -261,7 +261,7 @@ internal static class ImageDecoder
     }
 
     /// <summary>The image's samples after its filters and codec, and the colour space and alpha a JPX image brings itself.</summary>
-    private static (Samples Samples, ImageColorSpace? Space, byte[]? Alpha) ReadSamples(PdfImage image, PdfDictionary d)
+    private static (Samples Samples, ImageColorSpace? Space, byte[]? Alpha) ReadSamples(PdfImage image, PdfDictionary d, Size? minimum)
     {
         (byte[] data, PdfName? codec) = image.DecodeFilters();
         int width = (int)(d.GetInt("Width") ?? 0), height = (int)(d.GetInt("Height") ?? 0);
@@ -282,7 +282,7 @@ internal static class ImageDecoder
                 int components = image.IsStencilMask ? 1 : ComponentCount(image, d);
                 return (new Samples(width, height, components, bits, data), null, null);
             case "DCTDecode":
-                return (FromRaster(Jpeg(data), invertBilevel: false), null, null);
+                return (FromRaster(Jpeg(data, minimum), invertBilevel: false), null, null);
             case "JBIG2Decode":
                 Jbig2Globals? globals = d.Get<PdfDictionary>("DecodeParms")?.Get("JBIG2Globals")?.Resolve() is PdfStream g ? Jbig2Globals.Parse(g.GetDecodedBytes()) : null;
                 Raster bilevel = Raster.Load(data, Jbig2Format.Info, options: new Jbig2ReaderOptions { Globals = globals });
@@ -290,7 +290,7 @@ internal static class ImageDecoder
             case "CCITTFaxDecode":
                 return (Ccitt(data, d, width, height), null, null);
             case "JPXDecode":
-                return Jpx(data, d);
+                return Jpx(data, d, minimum);
             default:
                 throw new InvalidDataException($"The image filter {codec.Value} is not supported.");
         }
@@ -300,16 +300,21 @@ internal static class ImageDecoder
     /// A JPEG's components as stored: gray, RGB (YCbCr converted) or CMYK samples, by its frame header's component count; data
     /// before the start-of-image marker is skipped, as pdf.js does.
     /// </summary>
-    private static Raster Jpeg(byte[] data)
+    private static Raster Jpeg(byte[] data, Size? minimum = null)
     {
         int start = data.AsSpan().IndexOf((byte[])[0xFF, 0xD8, 0xFF]);
         ReadOnlyMemory<byte> jpeg = start > 0 ? data.AsMemory(start) : data;
         return FrameComponents(jpeg.Span) switch
         {
-            1 => Raster.Load<Gray8>(jpeg, JpegFormat.Info),
-            4 => StoredCmyk(Raster.Load<Cmyk8>(jpeg, JpegFormat.Info)),
-            _ => Raster.Load<Rgb8>(jpeg, JpegFormat.Info),
+            1 => Raster.Load<Gray8>(jpeg, JpegFormat.Info, options: Reduced(minimum)),
+            4 => StoredCmyk(Raster.Load<Cmyk8>(jpeg, JpegFormat.Info, options: Reduced(minimum))),
+            _ => Raster.Load<Rgb8>(jpeg, JpegFormat.Info, options: Reduced(minimum)),
         };
+    }
+
+    private static ReaderOptions? Reduced(Size? minimum)
+    {
+        return minimum is null ? null : new ReaderOptions { MinimumSize = minimum };
     }
 
     /// <summary>
@@ -367,18 +372,18 @@ internal static class ImageDecoder
     }
 
     /// <summary>JPEG 2000: its own colour space and alpha, unless the PDF names a colour space the components fit.</summary>
-    private static (Samples, ImageColorSpace?, byte[]?) Jpx(byte[] data, PdfDictionary d)
+    private static (Samples, ImageColorSpace?, byte[]?) Jpx(byte[] data, PdfDictionary d, Size? minimum)
     {
         // With a colour space of its own the PDF wants the components as stored (an Indexed image's indices, a CMYK image's
         // inks); without one, the decoder's colour.
         int smaskInData = (int)(d.GetInt("SMaskInData") ?? 0);
         if (d.Get("ColorSpace") is not null)
         {
-            Raster stored = Raster.Load(data, Jpeg2000Format.Info, options: new Jpeg2000ReaderOptions { Components = Jpeg2000Components.Raw });
+            Raster stored = Raster.Load(data, Jpeg2000Format.Info, options: new Jpeg2000ReaderOptions { Components = Jpeg2000Components.Raw, MinimumSize = minimum });
             return (FromRaster(stored, invertBilevel: false) with { SourceBits = Math.Min(8, JpxPrecision(data)) }, null, null);
         }
 
-        Raster raster = Raster.Load(data, Jpeg2000Format.Info);
+        Raster raster = Raster.Load(data, Jpeg2000Format.Info, options: new Jpeg2000ReaderOptions { MinimumSize = minimum });
 
         // Otherwise the decoder's own colour, as RGBA, with its alpha when the PDF asks for it (or always, without masks to say).
         using Raster<Rgba8> rgba = raster as Raster<Rgba8> ?? raster.As<Rgba8>();
