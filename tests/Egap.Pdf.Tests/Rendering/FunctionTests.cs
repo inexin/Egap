@@ -28,6 +28,22 @@ public sealed class FunctionTests
     }
 
     [Fact]
+    public void SampledFunctionsGiveMissingInputsTheirDomainsStart()
+    {
+        // Found by the corpus render gate: a shading evaluated a two-input sampled function with one input.
+        PdfStream stream = Stream(new PdfDictionary
+        {
+            ["FunctionType"] = new PdfInteger(0),
+            ["Domain"] = Array(0, 1, 0, 1),
+            ["Range"] = Array(0, 1),
+            ["Size"] = Array(2, 2),
+            ["BitsPerSample"] = new PdfInteger(8),
+        }, [0, 255, 255, 255]);
+
+        Assert.Equal([1], Run(PdfFunction.Read(stream), 1), Close);
+    }
+
+    [Fact]
     public void ExponentialFunctionsRaiseToN()
     {
         PdfFunction function = PdfFunction.Read(new PdfDictionary
