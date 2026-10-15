@@ -78,10 +78,7 @@ internal sealed partial class PageRenderer
         BlendMode blend = BlendModeOf(state.BlendMode);
         int before = canvas.SaveLayer(new LayerOptions
         {
-            // A non-isolated group composited with a blend mode other than Normal is drawn isolated: Egami's non-isolated
-            // layer would blend the backdrop it starts from with itself (black under Difference), where PDF removes it
-            // first (11.4.8). pdf.js draws every group isolated. Reported to Egami.
-            Isolated = group.GetBool("I") == true || blend != BlendMode.SourceOver,
+            Isolated = group.GetBool("I") == true,
             Knockout = group.GetBool("K") == true,
             Opacity = (float)state.FillAlpha,
             BlendMode = blend,
@@ -152,16 +149,20 @@ internal sealed partial class PageRenderer
         }
 
         PdfDictionary? resources = group.Dictionary.Get<PdfDictionary>("Resources") ?? Resources;
-        return new SoftMask(c => DrawMaskGroup(c, group, matrix, resources), kind, backdrop, transfer);
+        // The mask's canvas starts with the layer's transform, which may be offset from this canvas (a mask raster cut to the
+        // clip); the group is drawn through that difference.
+        System.Numerics.Matrix3x2 layer = canvas.Matrix;
+        return new SoftMask(c => DrawMaskGroup(c, layer, group, matrix, resources), kind, backdrop, transfer);
     }
 
     /// <summary>
     /// Draws a soft mask's group on the mask's canvas (11.6.5.2): its content with the initial graphics state, under its own
     /// matrix and the one the mask was set with, clipped to its bounding box.
     /// </summary>
-    private void DrawMaskGroup(Canvas target, PdfStream group, PdfMatrix matrix, PdfDictionary? resources)
+    private void DrawMaskGroup(Canvas target, System.Numerics.Matrix3x2 layer, PdfStream group, PdfMatrix matrix, PdfDictionary? resources)
     {
-        PageRenderer inner = new(target, pageToDevice, settings, cache) { maskDepth = maskDepth + 1 };
+        System.Numerics.Matrix3x2 offset = System.Numerics.Matrix3x2.Invert(layer, out System.Numerics.Matrix3x2 fromLayer) ? fromLayer * target.Matrix : System.Numerics.Matrix3x2.Identity;
+        PageRenderer inner = new(target, pageToDevice * offset, settings, cache) { maskDepth = maskDepth + 1 };
         PdfContent content = [];
         if (PdfRectangle.FromArray(group.Dictionary.Get<PdfArray>("BBox")) is PdfRectangle box)
         {

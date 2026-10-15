@@ -81,6 +81,32 @@ public sealed class RenderTransparencyTests
         Assert.Equal(new Rgba8(255, 0, 0, 255), raster.GetPixel(10, 10));
     }
 
+    [Theory]
+    [InlineData("/B gs q /M gs /P Do Q")]
+    [InlineData("q /M gs /P Do Q")]
+    [InlineData("/B gs q /P Do Q")]
+    public void AMaskedGroupInsideANonIsolatedGroupShows(string content)
+    {
+        // pdf.js nonisolated_blend_smask: a purple group drawn with Multiply and an alpha soft mask inside a non-isolated group.
+        // Every box covers only the bottom half, so the mask's canvas is cut to a clip that does not start at the origin.
+        PdfReference mask = RenderCoreTests.Form("1 g 2 2 16 6 re f", 0, 0, 20, 10, new PdfDictionary { ["Group"] = new PdfDictionary { ["S"] = PdfName.Get("Transparency"), ["I"] = PdfBoolean.True } });
+        PdfReference paint = RenderCoreTests.Form("0.55 0.35 0.95 rg 2 2 16 6 re f", 0, 0, 20, 10, new PdfDictionary { ["Group"] = new PdfDictionary { ["S"] = PdfName.Get("Transparency"), ["I"] = PdfBoolean.True } });
+        PdfDictionary inner = new()
+        {
+            ["ExtGState"] = new PdfDictionary
+            {
+                ["B"] = new PdfDictionary { ["BM"] = PdfName.Get("Multiply") },
+                ["M"] = new PdfDictionary { ["SMask"] = new PdfDictionary { ["S"] = PdfName.Get("Alpha"), ["G"] = mask } },
+            },
+            ["XObject"] = new PdfDictionary { ["P"] = paint },
+        };
+        PdfReference outer = RenderCoreTests.Form(content, 0, 0, 20, 10, new PdfDictionary { ["Group"] = new PdfDictionary { ["S"] = PdfName.Get("Transparency") }, ["Resources"] = inner });
+        using Raster<Rgba8> raster = RenderCoreTests.Render("/O Do", resources: new PdfDictionary { ["XObject"] = new PdfDictionary { ["O"] = outer } });
+
+        Rgba8 p = raster.GetPixel(10, 15);
+        Assert.True(p.R is > 120 and < 160 && p.B > 220, p.ToString());
+    }
+
     [Fact]
     public void LuminositySoftMasksShowWhereTheMaskIsLight()
     {

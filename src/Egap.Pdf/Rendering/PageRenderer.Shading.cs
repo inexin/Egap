@@ -49,7 +49,7 @@ internal sealed partial class PageRenderer
     }
 
     /// <summary>The paint a pattern colour stands for: a shading pattern's gradient now, tiling patterns with task 14.</summary>
-    private Paint? PatternPaint(PdfColor color, double alpha)
+    private Paint? PatternPaint(PdfColor color, double alpha, PdfMatrix drawing)
     {
         if (color.Pattern is not PdfName name || Resources?.Get<PdfDictionary>("Pattern")?.Get(name)?.Resolve() is not PdfObject pattern)
         {
@@ -60,12 +60,12 @@ internal sealed partial class PageRenderer
         PdfDictionary dictionary = pattern as PdfDictionary ?? (pattern as PdfStream)?.Dictionary ?? [];
         if (dictionary.GetInt("PatternType") != 2 || dictionary.Get("Shading")?.Resolve() is not PdfObject shading || Shading(shading) is not ShadingPaint ready)
         {
-            return TilingPaint(pattern, color, alpha);
+            return TilingPaint(pattern, color, alpha, drawing);
         }
 
         // Shading space to the current user space: the pattern matrix into the content's space, then back from the CTM.
         PdfMatrix space = (PdfMatrix.FromArray(dictionary.Get<PdfArray>("Matrix")) ?? PdfMatrix.Identity) * patternSpaces.Peek();
-        if (!State.Matrix.TryInvert(out PdfMatrix fromUser))
+        if (!drawing.TryInvert(out PdfMatrix fromUser))
         {
             return null;
         }

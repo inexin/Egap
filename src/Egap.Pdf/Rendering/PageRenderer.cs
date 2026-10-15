@@ -201,7 +201,11 @@ internal sealed partial class PageRenderer : PdfContentWalker
         };
     }
 
-    private Paint? ColorPaint(PdfColor color, double alpha)
+    /// <summary>
+    /// The paint for a colour at an alpha; a pattern's is mapped for drawing under <paramref name="drawing"/> (the current
+    /// matrix when null), the user space matrix the canvas will have when the paint is used.
+    /// </summary>
+    private Paint? ColorPaint(PdfColor color, double alpha, PdfMatrix? drawing = null)
     {
         if (uncolored is RgbaF32 tint)
         {
@@ -211,7 +215,7 @@ internal sealed partial class PageRenderer : PdfContentWalker
 
         if (color.Family == "Pattern")
         {
-            return PatternPaint(color, alpha);
+            return PatternPaint(color, alpha, drawing ?? State.Matrix);
         }
 
         if (colors.ToRgb(color, Resources, ColorContext.IntentOf(State.RenderingIntent)) is not RgbaF32 rgb)
