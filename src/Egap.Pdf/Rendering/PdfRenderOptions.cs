@@ -70,6 +70,17 @@ public sealed record PdfRenderOptions
     /// </summary>
     public bool UseSystemFonts { get; init; } = true;
 
+    /// <summary>
+    /// How many bytes of decoded images a document keeps for its renders (design Q14), the least recently drawn dropped
+    /// first; 256 MB by default, 0 to keep none.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
+    public long ImageCacheLimit
+    {
+        get;
+        init => field = value >= 0 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "The image cache limit cannot be negative.");
+    } = 256L << 20;
+
     /// <summary>What is anti-aliased (design Q11); everything by default.</summary>
     public PdfAntialiasing Antialiasing { get; init; } = PdfAntialiasing.All;
 

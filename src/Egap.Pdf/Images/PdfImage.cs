@@ -33,6 +33,12 @@ public sealed record PdfImageOptions
     /// default) for the built-in conversion. ICCBased images use their own profiles.
     /// </summary>
     public ColorProfile? CmykProfile { get; init; }
+
+    /// <summary>
+    /// For rendering (Phase 4 design Q14): JPEG and JPEG 2000 images decode at the smallest native reduction at least this
+    /// size, so a small drawing of a large scan decodes a fraction of its pixels; null decodes at full size.
+    /// </summary>
+    internal Egami.Size? MinimumSize { get; init; }
 }
 
 /// <summary>
@@ -101,6 +107,9 @@ public sealed class PdfImage
 
     /// <summary>Whether the image is a stencil mask (<c>/ImageMask true</c>), painting the current colour where it is 0.</summary>
     public bool IsStencilMask => Parameters.GetBool("ImageMask") == true;
+
+    /// <summary>Whether the image asks to be smoothed when drawn larger than its pixels (<c>/Interpolate</c>).</summary>
+    internal bool Interpolate => Parameters.GetBool("Interpolate") == true;
 
     /// <summary>The colour space as written: a name or an array; <see langword="null"/> for stencil masks and some JPEG 2000 images.</summary>
     public PdfObject? ColorSpace => Parameters.Get("ColorSpace")?.Resolve();

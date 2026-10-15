@@ -191,7 +191,7 @@ public sealed class RenderCoreTests
         using (RasterCanvas<Rgba8> canvas = new(raster))
         {
             PageRenderer renderer = new(canvas, new Matrix3x2(1, 0, 0, -1, 0, height), settings ?? new RenderSettings(), new RenderCache());
-            renderer.Render(PdfContent.Parse(Encoding.ASCII.GetBytes(content)), resources, null);
+            renderer.Render(PdfContent.Parse(Encoding.Latin1.GetBytes(content)), resources, null);
         }
 
         return raster;

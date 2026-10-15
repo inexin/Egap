@@ -15,6 +15,8 @@ internal sealed class RenderCache
 
     public ColorCache Colors { get; } = new();
 
+    public ImageCache Images { get; } = new();
+
     /// <summary>The substitute for a font with no usable program, chosen once per font and setting (design Q5).</summary>
     public SubstituteFont? Substitute(PdfFont font, bool systemFonts)
     {
