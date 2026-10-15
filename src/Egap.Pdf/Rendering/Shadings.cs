@@ -13,6 +13,29 @@ internal sealed record ShadingPaint(Paint? Paint, PdfRectangle? BBox, RgbaF32? B
 {
     private Picture? picture;
 
+    private Picture? boxed;
+
+    /// <summary>
+    /// A gradient as a paint for patterns, cut to the shading's /BBox when it has one (8.7.4.5.1): recorded once as a picture
+    /// of the box, drawn where the box is and nothing elsewhere.
+    /// </summary>
+    public Paint BoxedPaint(Paint paint)
+    {
+        if (BBox is not PdfRectangle box || !(box.Width > 0 && box.Height > 0))
+        {
+            return paint;
+        }
+
+        RectF bounds = new((float)box.Left, (float)box.Bottom, (float)box.Width, (float)box.Height);
+        Picture recorded = LazyInitializer.EnsureInitialized(ref boxed, () =>
+        {
+            PictureRecorder recorder = new(bounds);
+            recorder.FillRect(bounds, paint);
+            return recorder.Finish();
+        });
+        return new PicturePaint(recorded, TileMode.Decal, TileMode.Decal, bounds);
+    }
+
     /// <summary>A mesh shading as a paint for patterns: recorded once as a picture and drawn where it covers, nothing elsewhere.</summary>
     public Paint? MeshPaint()
     {
