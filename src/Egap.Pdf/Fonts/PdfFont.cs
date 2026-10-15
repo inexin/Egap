@@ -87,6 +87,15 @@ public sealed class PdfFont
     private Dictionary<ushort, int>? programUnicode;
     private readonly CMap? codes;
     private readonly Standard14Font? standard;
+
+    /// <summary>
+    /// For an embedded simple font with no <c>/Widths</c>, the standard 14 metrics its name matches, as pdf.js reads such fonts;
+    /// null otherwise.
+    /// </summary>
+    private readonly Standard14Font? fallbackMetrics;
+
+    /// <summary>Whether a simple font has no <c>/Widths</c>, so widths come from metrics or the program.</summary>
+    private readonly bool noWidths;
     private readonly double[] widths = [];
     private readonly int firstChar;
     private readonly double missingWidth;
@@ -114,6 +123,8 @@ public sealed class PdfFont
         IsEmbedded = Type == PdfFontType.Type3
             || (descriptor is not null && (descriptor.Get("FontFile") ?? descriptor.Get("FontFile2") ?? descriptor.Get("FontFile3")) is not null);
         standard = IsEmbedded || Type is PdfFontType.Type3 or PdfFontType.Type0 ? null : Standard14Font.Get(BaseFont);
+        noWidths = Type is not (PdfFontType.Type3 or PdfFontType.Type0) && dictionary.Get<PdfArray>("Widths") is null;
+        fallbackMetrics = noWidths && standard is null ? Standard14Font.Get(BaseFont) : null;
         PdfObject? toUnicodeEntry = dictionary.Get("ToUnicode")?.Resolve();
         toUnicode = toUnicodeEntry is PdfStream map ? ReadCMap(map) : null;
         identityToUnicode = toUnicodeEntry is PdfName { Value: "Identity-H" or "Identity-V" };
@@ -347,9 +358,15 @@ public sealed class PdfFont
             return widths[index];
         }
 
-        if (standard is not null && GetGlyphName(code) is string glyph)
+        if ((standard ?? fallbackMetrics) is Standard14Font metrics && GetGlyphName(code) is string glyph && metrics.Width(glyph) is int known)
         {
-            return standard.Width(glyph) ?? missingWidth;
+            return known;
+        }
+
+        if (standard is null && noWidths && GetTypeface() is Typeface face && GetGlyphId(code) is ushort id and not 0)
+        {
+            // No widths at all: the embedded program's own advance (pdf.js does the same).
+            return face.GetAdvance(id) * 1000.0 / face.UnitsPerEm;
         }
 
         return missingWidth;
