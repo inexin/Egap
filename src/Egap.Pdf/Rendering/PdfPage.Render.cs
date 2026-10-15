@@ -82,6 +82,7 @@ public sealed partial class PdfPage
 
             PageRenderer renderer = new(canvas, device, settings, Document.RenderCache);
             renderer.Render(GetContent(), Resources, Document.Options);
+            renderer.RenderAnnotations(this, options.Annotations);
         }
         finally
         {

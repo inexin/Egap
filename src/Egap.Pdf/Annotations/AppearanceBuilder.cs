@@ -33,9 +33,26 @@ internal static class AppearanceBuilder
     /// </summary>
     public static bool Update(PdfAnnotation annotation, PdfDocument document)
     {
-        if (!Supports(annotation))
+        if (Build(annotation, document) is not PdfStream stream)
         {
             return false;
+        }
+
+        PdfReference reference = document.Objects.Add(stream);
+        annotation.Dictionary["AP"] = new PdfDictionary { ["N"] = reference };
+        annotation.Dictionary.Remove("AS");
+        return true;
+    }
+
+    /// <summary>
+    /// Draws the annotation's normal appearance without storing it: the form XObject, direct, or null when the subtype is not
+    /// one Egap draws. Its rectangle may grow to hold line endings and borders, as <see cref="Update"/> stores it.
+    /// </summary>
+    public static PdfStream? Build(PdfAnnotation annotation, PdfDocument document)
+    {
+        if (!Supports(annotation))
+        {
+            return null;
         }
 
         GrowRectangle(annotation);
@@ -78,7 +95,7 @@ internal static class AppearanceBuilder
         };
         if (!drawn)
         {
-            return false;
+            return null;
         }
 
         content.Restore();
@@ -90,10 +107,7 @@ internal static class AppearanceBuilder
             ["Resources"] = resources,
         });
         stream.SetDecodedBytes(content.ToArray());
-        PdfReference reference = document.Objects.Add(stream);
-        annotation.Dictionary["AP"] = new PdfDictionary { ["N"] = reference };
-        annotation.Dictionary.Remove("AS");
-        return true;
+        return stream;
     }
 
     private static double Width(PdfAnnotation annotation)
