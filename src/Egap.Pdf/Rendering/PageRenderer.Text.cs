@@ -3,6 +3,8 @@ using System.Numerics;
 using Egami.Drawing;
 using Egami.Fonts;
 
+using Egap.Pdf.Fonts;
+
 using Path = Egami.Drawing.Path;
 
 namespace Egap.Pdf.Rendering;
@@ -80,16 +82,29 @@ internal sealed partial class PageRenderer
             return;
         }
 
-        if (font.GetTypeface() is not Typeface typeface)
-        {
-            // Fonts that are not embedded get a substitute in task 5.
-            return;
-        }
-
+        Typeface? typeface = font.GetTypeface();
+        FontSynthesis synthesis = FontSynthesis.None;
         ushort[] ids = new ushort[glyphs.Count];
-        for (int i = 0; i < ids.Length; i++)
+        if (typeface is not null)
         {
-            ids[i] = font.GetGlyphId(glyphs[i].Code) ?? 0;
+            for (int i = 0; i < ids.Length; i++)
+            {
+                ids[i] = font.GetGlyphId(glyphs[i].Code) ?? 0;
+            }
+        }
+        else if (cache.Substitute(font, settings.SystemFonts) is SubstituteFont substitute)
+        {
+            // Not embedded, or the program could not be read (design Q5).
+            typeface = substitute.Program.Typeface;
+            synthesis = substitute.Synthesis;
+            for (int i = 0; i < ids.Length; i++)
+            {
+                ids[i] = font.GetSubstituteGlyph(substitute.Program, glyphs[i].Code);
+            }
+        }
+        else
+        {
+            return;
         }
 
         bool fill = mode is 0 or 2 or 4 or 6;
@@ -97,7 +112,7 @@ internal sealed partial class PageRenderer
         bool clip = mode >= 4;
         if (fill)
         {
-            FillGlyphs(state, typeface, ids, glyphs);
+            FillGlyphs(state, typeface, synthesis, ids, glyphs);
         }
 
         if (stroke || clip)
@@ -128,7 +143,7 @@ internal sealed partial class PageRenderer
     }
 
     /// <summary>One glyph run for the glyphs, in the em space of the first glyph, so upright text takes Egami's glyph cache.</summary>
-    private void FillGlyphs(PdfGraphicsState state, Typeface typeface, ushort[] ids, List<PdfGlyph> glyphs)
+    private void FillGlyphs(PdfGraphicsState state, Typeface typeface, FontSynthesis synthesis, ushort[] ids, List<PdfGlyph> glyphs)
     {
         PdfMatrix first = glyphs[0].Matrix;
         if (!first.TryInvert(out PdfMatrix inverse) || ColorPaint(state.FillColor, state.FillAlpha) is not SolidPaint paint)
@@ -149,7 +164,8 @@ internal sealed partial class PageRenderer
             return;
         }
 
-        GlyphRun run = GlyphRun.Create(new Font(typeface, 1) { Hinting = FontHinting.None }, ids, positions);
+        Font font = (synthesis == FontSynthesis.None ? new Font(typeface, 1) : new FontMatch(typeface, synthesis).ToFont(1)) with { Hinting = FontHinting.None };
+        GlyphRun run = GlyphRun.Create(font, ids, positions);
         canvas.DrawGlyphRun(run, Vector2.Zero, paint with { Antialias = settings.AntialiasText });
     }
 

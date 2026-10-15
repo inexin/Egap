@@ -26,12 +26,15 @@ internal sealed partial class PageRenderer : PdfContentWalker
     private readonly List<PdfClipPath> applied = [];
     private int baseSaveCount;
 
-    public PageRenderer(Canvas canvas, Matrix3x2 pageToDevice, RenderSettings settings, ColorCache colors)
+    private readonly RenderCache cache;
+
+    public PageRenderer(Canvas canvas, Matrix3x2 pageToDevice, RenderSettings settings, RenderCache cache)
     {
         this.canvas = canvas;
         this.pageToDevice = pageToDevice;
         this.settings = settings;
-        this.colors = colors;
+        this.cache = cache;
+        colors = cache.Colors;
     }
 
     /// <summary>Draws content with its resources, in default user space mapped to the canvas by the page matrix.</summary>
