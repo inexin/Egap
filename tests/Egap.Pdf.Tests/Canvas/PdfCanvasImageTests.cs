@@ -55,7 +55,7 @@ public sealed class PdfCanvasImageTests
         using Raster<Rgb8> raster = Raster.Create<Rgb8>(16, 8, new Rgb8(200, 100, 50));
         using MemoryStream jpeg = new();
         raster.Save(jpeg, "jpg");
-        EncodedImage image = EncodedImage.FromBytes(jpeg.ToArray());
+        EncodedImage image = EncodedImage.Load(jpeg.ToArray());
 
         PdfStream stream = Single(c =>
         {
@@ -75,7 +75,7 @@ public sealed class PdfCanvasImageTests
         using MemoryStream png = new();
         raster.Save(png, "png");
 
-        PdfStream stream = Single(c => c.DrawImage(EncodedImage.FromBytes(png.ToArray()), new RectF(0, 0, 4, 4)));
+        PdfStream stream = Single(c => c.DrawImage(EncodedImage.Load(png.ToArray()), new RectF(0, 0, 4, 4)));
 
         Assert.Equal("FlateDecode", stream.Dictionary.GetName("Filter")!.Value);
         Assert.NotNull(stream.Dictionary.Get("SMask"));

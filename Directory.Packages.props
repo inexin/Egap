@@ -4,9 +4,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Egami from the local feed (nuget.config, written by tools/pack-egami.py with its update option). -->
-    <PackageVersion Include="Egami" Version="1.0.0-local.g6077e30" />
-    <PackageVersion Include="Egami.Drawing" Version="0.1.0-local.g6077e30" />
-    <PackageVersion Include="Egami.Fonts" Version="0.1.0-local.g6077e30" />
+    <PackageVersion Include="Egami" Version="1.0.0-local.g219976c" />
+    <PackageVersion Include="Egami.Drawing" Version="1.0.0-local.g219976c" />
+    <PackageVersion Include="Egami.Fonts" Version="0.1.0-local.g219976c" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="4.14.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
