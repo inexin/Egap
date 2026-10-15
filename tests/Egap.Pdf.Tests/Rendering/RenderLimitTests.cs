@@ -68,6 +68,18 @@ public sealed class RenderLimitTests
     }
 
     [Fact]
+    public void AnEmptyColourSpaceArrayDrawsInTheDefault()
+    {
+        // Found by the render fuzz target: /CS0 [] in the resources threw from the walker.
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = Page(pdf, "/CS0 cs 0 0 10 10 re f");
+        page.Resources = new PdfDictionary { ["ColorSpace"] = new PdfDictionary { ["CS0"] = new PdfArray() } };
+
+        using Raster<Rgba8> raster = page.Render();
+        Assert.Equal(20, raster.Width);
+    }
+
+    [Fact]
     public void LargeImagesAreLeftOut()
     {
         using PdfDocument pdf = PdfDocument.Create();
