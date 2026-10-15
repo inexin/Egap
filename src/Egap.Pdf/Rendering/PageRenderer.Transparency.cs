@@ -128,6 +128,17 @@ internal sealed partial class PageRenderer
             PdfColor color = new(space, [.. Enumerable.Range(0, bc.Count).Select(i => bc.GetNumber(i) ?? 0)]);
             backdrop = colors.ToRgb(color, group.Dictionary.Get<PdfDictionary>("Resources") ?? Resources, ColorContext.IntentOf(State.RenderingIntent));
         }
+        else if (kind == SoftMaskKind.Luminosity && group.Dictionary.Get<PdfDictionary>("Group")?.Get("CS")?.Resolve() is PdfObject groupSpace)
+        {
+            // BC defaults to zero in every component of the group's space (11.6.5.2): black for gray and RGB but white for
+            // CMYK, as PDFium, pdf.js and MuPDF read it.
+            PdfDictionary? groupResources = group.Dictionary.Get<PdfDictionary>("Resources") ?? Resources;
+            int components = ImageColorSpace.Read(groupSpace, groupResources, null).Components;
+            if (components == 4)
+            {
+                backdrop = colors.ToRgb(new PdfColor(groupSpace, [0, 0, 0, 0]), groupResources, ColorContext.IntentOf(State.RenderingIntent));
+            }
+        }
 
         Func<float, float>? transfer = null;
         if (mask.Get("TR")?.Resolve() is PdfObject tr and not PdfName)
