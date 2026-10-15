@@ -139,6 +139,8 @@ public sealed class RenderTextTests
         PdfDictionary resources = new() { ["Font"] = new PdfDictionary { ["T3"] = font } };
 
         using Raster<Rgba8> raster = RenderCoreTests.Render("BT /T3 4 Tf 0 0 1 rg 2 2 Td (AA) Tj ET", width: 20, height: 20, resources: resources);
+        using Raster<Rgba8> invisible = RenderCoreTests.Render("BT /T3 4 Tf 3 Tr 0 0 1 rg 2 2 Td (AA) Tj ET", width: 20, height: 20, resources: resources);
+        Assert.All(RenderCoreTests.Pixels(invisible), p => Assert.Equal(new Rgba8(255, 255, 255, 255), p));
 
         Assert.Equal(new Rgba8(0, 0, 255, 255), raster.GetPixel(4, 15));
         Assert.Equal(new Rgba8(255, 255, 255, 255), raster.GetPixel(7, 15));

@@ -50,6 +50,15 @@ internal sealed partial class PageRenderer
         pendingGlyphs.Add(glyph);
     }
 
+    /// <summary>
+    /// A Type 3 glyph's procedure is walked only when the render mode paints: invisible text (mode 3) and clip-only text (mode
+    /// 7) draw nothing, as PDFium and pdf.js leave them (issue5421).
+    /// </summary>
+    protected override bool OnBeginType3Glyph(PdfGlyph glyph, PdfStream procedure)
+    {
+        return State.TextRenderMode is not (3 or 7) && hidden == 0;
+    }
+
     /// <summary>Draws the glyphs gathered since the last flush, all shown by one operator in one state.</summary>
     private void FlushText()
     {
