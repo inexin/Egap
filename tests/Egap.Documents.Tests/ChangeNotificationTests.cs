@@ -51,6 +51,9 @@ public class ChangeNotificationTests
         ["Footnote.AddParagraph"] = f => f.Paragraph.AddFootnote("n").AddParagraph("more"),
         ["Comment.AddParagraph"] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")).AddParagraph("x"),
         ["Comment.AddReply"] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")).AddReply("b", "c"),
+        ["Node.Replace"] = f => f.Paragraph.Replace("text", "other"),
+        ["Document.UpdateFields"] = f => f.Paragraph.AddField("TITLE", "x").Start.Document.UpdateFields(),
+        ["Document.FileName"] = f => f.Doc.FileName = "a.docx",
     };
 
     /// <summary>One node of each kind with settable properties, in the fixture's tree, for <see cref="EveryNodePropertyRaisesChanged"/>.</summary>
@@ -104,7 +107,7 @@ public class ChangeNotificationTests
         Assert.NotEmpty(changes);
         Assert.Equal(before + changes.Count, f.Doc.Version);
         Assert.Equal(f.Doc.Version, changes[^1].Version);
-        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph"))
+        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph" or "Document.FileName"))
         {
             Assert.Equal(f.Doc.Version, f.Body.Version);   // the others change another story or none
         }

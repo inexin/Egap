@@ -148,6 +148,32 @@ public abstract class Node : IFormatOwner
     }
 
     /// <summary>
+    /// Replaces every occurrence of <paramref name="find"/> in the paragraphs under this node (or in this paragraph) with
+    /// <paramref name="replacement"/>, also where the text crosses run boundaries; the replacement takes the formatting of
+    /// the first run a match touches.
+    /// </summary>
+    /// <returns>How many occurrences were replaced.</returns>
+    public int Replace(string find, string replacement, FindOptions? options = null)
+    {
+        return FindReplace.Replace(this, find, replacement, options);
+    }
+
+    /// <summary>Replaces every match of <paramref name="regex"/>; <paramref name="replacement"/> may name groups as $1 or ${name}.</summary>
+    /// <returns>How many matches were replaced.</returns>
+    public int Replace(System.Text.RegularExpressions.Regex regex, string replacement, FindOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(replacement);
+        return FindReplace.Replace(this, regex, m => m.Result(replacement), options);
+    }
+
+    /// <summary>Replaces every match of <paramref name="regex"/> with what <paramref name="evaluator"/> returns for it.</summary>
+    /// <returns>How many matches were replaced.</returns>
+    public int Replace(System.Text.RegularExpressions.Regex regex, Func<System.Text.RegularExpressions.Match, string> evaluator, FindOptions? options = null)
+    {
+        return FindReplace.Replace(this, regex, evaluator, options);
+    }
+
+    /// <summary>
     /// Walks this node and everything under it, calling the visitor on the way in and out of each node, without recursion.
     /// </summary>
     /// <returns>False when the visitor stopped the walk with <see cref="VisitorAction.Stop"/>.</returns>

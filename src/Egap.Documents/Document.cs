@@ -23,6 +23,9 @@ public sealed class Document : Node
         Styles = new StyleCollection(this);
         Theme = new Theme(this);
         Lists = new ListCollection(this);
+        Properties = new DocumentProperties(this);
+        Settings = new DocumentSettings(this);
+        Revisions = new TrackedChangeCollection(this);
         if (!blank)
         {
             BuiltInStyles.InitializeNewDocument(Styles);
@@ -44,6 +47,34 @@ public sealed class Document : Node
     /// <summary>The lists and list definitions paragraphs number with.</summary>
     public ListCollection Lists { get; }
 
+    /// <summary>Title, author, dates and custom properties.</summary>
+    public DocumentProperties Properties { get; }
+
+    /// <summary>Document-wide settings: default tab stop, odd and even headers, note numbering, compatibility mode.</summary>
+    public DocumentSettings Settings { get; }
+
+    /// <summary>The tracked changes, to accept or reject (Phase 6 design Q8).</summary>
+    public TrackedChangeCollection Revisions { get; }
+
+    /// <summary>The file the document was loaded from or last saved to, for FILENAME fields; null when not known.</summary>
+    public string? FileName
+    {
+        get => fileName;
+        set => SetProperty(ref fileName, value);
+    }
+
+    /// <summary>
+    /// Recomputes the fields Egap understands (Phase 6 design Q8): DATE, TIME and the other date fields, the document
+    /// property fields, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK, IF on simple comparisons and TOC. Page fields are filled by
+    /// layout; locked fields and others keep their stored result.
+    /// </summary>
+    /// <param name="now">The time DATE and TIME show; the current time when null.</param>
+    /// <returns>How many fields were updated.</returns>
+    public int UpdateFields(DateTimeOffset? now = null)
+    {
+        return FieldUpdater.Update(this, now ?? DateTimeOffset.Now);
+    }
+
     /// <summary>
     /// Counts changes to styles, document defaults and the theme, which change the effective formatting of many paragraphs
     /// at once; each one also counts in <see cref="Version"/>.
@@ -63,6 +94,7 @@ public sealed class Document : Node
     public event EventHandler<DocumentChangedEventArgs>? Changed;
 
     private int nextCommentId;
+    private string? fileName;
 
     internal override int ChildCount => Sections.Count;
 
@@ -103,6 +135,9 @@ public sealed class Document : Node
         copy.Lists.CopyFrom(Lists, context);
         copy.Styles.CopyFrom(Styles, context);
         copy.Theme.CopyFrom(Theme);
+        copy.Properties.CopyFrom(Properties);
+        copy.Settings.CopyFrom(Settings);
+        copy.fileName = fileName;
         if (deep)
         {
             foreach (Section section in Sections)

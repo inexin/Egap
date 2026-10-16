@@ -263,6 +263,8 @@ Egap.Documents.Document
 Egap.Documents.Document.AddSection() -> Egap.Documents.Section!
 Egap.Documents.Document.Changed -> System.EventHandler<Egap.Documents.DocumentChangedEventArgs!>?
 Egap.Documents.Document.Document() -> void
+Egap.Documents.Document.FileName.get -> string?
+Egap.Documents.Document.FileName.set -> void
 Egap.Documents.Document.FormattingVersion.get -> long
 Egap.Documents.Document.GetBookmark(string! name) -> Egap.Documents.Bookmark?
 Egap.Documents.Document.GetBookmarks() -> System.Collections.Generic.IEnumerable<Egap.Documents.Bookmark!>!
@@ -270,10 +272,45 @@ Egap.Documents.Document.GetFields() -> System.Collections.Generic.IEnumerable<Eg
 Egap.Documents.Document.Import(Egap.Documents.Node! node, bool deep = true) -> Egap.Documents.Node!
 Egap.Documents.Document.Import<T>(T! node, bool deep = true) -> T!
 Egap.Documents.Document.Lists.get -> Egap.Documents.ListCollection!
+Egap.Documents.Document.Properties.get -> Egap.Documents.DocumentProperties!
+Egap.Documents.Document.Revisions.get -> Egap.Documents.TrackedChangeCollection!
 Egap.Documents.Document.Sections.get -> Egap.Documents.NodeCollection<Egap.Documents.Section!>!
+Egap.Documents.Document.Settings.get -> Egap.Documents.DocumentSettings!
 Egap.Documents.Document.Styles.get -> Egap.Documents.StyleCollection!
 Egap.Documents.Document.Theme.get -> Egap.Documents.Theme!
+Egap.Documents.Document.UpdateFields(System.DateTimeOffset? now = null) -> int
 Egap.Documents.Document.Version.get -> long
+Egap.Documents.DocumentBuilder
+Egap.Documents.DocumentBuilder.ApplyParagraphFormat() -> void
+Egap.Documents.DocumentBuilder.CurrentNode.get -> Egap.Documents.Inline?
+Egap.Documents.DocumentBuilder.CurrentParagraph.get -> Egap.Documents.Paragraph!
+Egap.Documents.DocumentBuilder.Document.get -> Egap.Documents.Document!
+Egap.Documents.DocumentBuilder.DocumentBuilder(Egap.Documents.Document! document) -> void
+Egap.Documents.DocumentBuilder.EndBookmark(string! name) -> Egap.Documents.BookmarkEnd!
+Egap.Documents.DocumentBuilder.EndRow() -> Egap.Documents.Row!
+Egap.Documents.DocumentBuilder.EndTable() -> Egap.Documents.Table!
+Egap.Documents.DocumentBuilder.Font.get -> Egap.Documents.RunFormat!
+Egap.Documents.DocumentBuilder.InsertBreak(Egap.Documents.BreakKind kind) -> void
+Egap.Documents.DocumentBuilder.InsertCell() -> Egap.Documents.Cell!
+Egap.Documents.DocumentBuilder.InsertField(string! code, string! result = "") -> Egap.Documents.Field!
+Egap.Documents.DocumentBuilder.InsertFootnote(string! text, Egap.Documents.NoteKind kind = Egap.Documents.NoteKind.Footnote) -> Egap.Documents.Footnote!
+Egap.Documents.DocumentBuilder.InsertHyperlink(string! text, string! address, bool isBookmark = false) -> Egap.Documents.Hyperlink!
+Egap.Documents.DocumentBuilder.InsertImage(Egap.Documents.ImageData! image, double width, double height) -> Egap.Documents.Picture!
+Egap.Documents.DocumentBuilder.InsertParagraph() -> Egap.Documents.Paragraph!
+Egap.Documents.DocumentBuilder.InsertSectionBreak(Egap.Documents.SectionStart start = Egap.Documents.SectionStart.NewPage) -> Egap.Documents.Section!
+Egap.Documents.DocumentBuilder.InsertTab() -> Egap.Documents.Tab!
+Egap.Documents.DocumentBuilder.MoveTo(Egap.Documents.Node! target) -> void
+Egap.Documents.DocumentBuilder.MoveToBookmark(string! name) -> bool
+Egap.Documents.DocumentBuilder.MoveToDocumentEnd() -> void
+Egap.Documents.DocumentBuilder.MoveToDocumentStart() -> void
+Egap.Documents.DocumentBuilder.MoveToHeaderFooter(Egap.Documents.HeaderFooterKind kind) -> void
+Egap.Documents.DocumentBuilder.ParagraphFormat.get -> Egap.Documents.ParagraphFormat!
+Egap.Documents.DocumentBuilder.ParagraphStyle.get -> Egap.Documents.ParagraphStyle?
+Egap.Documents.DocumentBuilder.ParagraphStyle.set -> void
+Egap.Documents.DocumentBuilder.StartBookmark(string! name) -> Egap.Documents.BookmarkStart!
+Egap.Documents.DocumentBuilder.StartTable() -> Egap.Documents.Table!
+Egap.Documents.DocumentBuilder.Write(string! text) -> void
+Egap.Documents.DocumentBuilder.Writeln(string! text = "") -> void
 Egap.Documents.DocumentChangedEventArgs
 Egap.Documents.DocumentChangedEventArgs.Index.get -> int
 Egap.Documents.DocumentChangedEventArgs.Kind.get -> Egap.Documents.DocumentChangeKind
@@ -300,6 +337,48 @@ Egap.Documents.DocumentColorKind
 Egap.Documents.DocumentColorKind.Auto = 0 -> Egap.Documents.DocumentColorKind
 Egap.Documents.DocumentColorKind.Rgb = 1 -> Egap.Documents.DocumentColorKind
 Egap.Documents.DocumentColorKind.Theme = 2 -> Egap.Documents.DocumentColorKind
+Egap.Documents.DocumentProperties
+Egap.Documents.DocumentProperties.Author.get -> string?
+Egap.Documents.DocumentProperties.Author.set -> void
+Egap.Documents.DocumentProperties.Category.get -> string?
+Egap.Documents.DocumentProperties.Category.set -> void
+Egap.Documents.DocumentProperties.Comments.get -> string?
+Egap.Documents.DocumentProperties.Comments.set -> void
+Egap.Documents.DocumentProperties.Created.get -> System.DateTimeOffset?
+Egap.Documents.DocumentProperties.Created.set -> void
+Egap.Documents.DocumentProperties.CustomNames.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Egap.Documents.DocumentProperties.Get(string! name) -> string?
+Egap.Documents.DocumentProperties.GetCustom(string! name) -> string?
+Egap.Documents.DocumentProperties.Keywords.get -> string?
+Egap.Documents.DocumentProperties.Keywords.set -> void
+Egap.Documents.DocumentProperties.LastSavedBy.get -> string?
+Egap.Documents.DocumentProperties.LastSavedBy.set -> void
+Egap.Documents.DocumentProperties.Printed.get -> System.DateTimeOffset?
+Egap.Documents.DocumentProperties.Printed.set -> void
+Egap.Documents.DocumentProperties.Saved.get -> System.DateTimeOffset?
+Egap.Documents.DocumentProperties.Saved.set -> void
+Egap.Documents.DocumentProperties.SetCustom(string! name, string? value) -> void
+Egap.Documents.DocumentProperties.Subject.get -> string?
+Egap.Documents.DocumentProperties.Subject.set -> void
+Egap.Documents.DocumentProperties.Title.get -> string?
+Egap.Documents.DocumentProperties.Title.set -> void
+Egap.Documents.DocumentSettings
+Egap.Documents.DocumentSettings.CompatibilityMode.get -> int
+Egap.Documents.DocumentSettings.CompatibilityMode.set -> void
+Egap.Documents.DocumentSettings.DefaultTabStop.get -> double
+Egap.Documents.DocumentSettings.DefaultTabStop.set -> void
+Egap.Documents.DocumentSettings.EndnoteNumberStyle.get -> Egap.Documents.NumberStyle
+Egap.Documents.DocumentSettings.EndnoteNumberStyle.set -> void
+Egap.Documents.DocumentSettings.EndnoteStartAt.get -> int
+Egap.Documents.DocumentSettings.EndnoteStartAt.set -> void
+Egap.Documents.DocumentSettings.EvenAndOddHeaders.get -> bool
+Egap.Documents.DocumentSettings.EvenAndOddHeaders.set -> void
+Egap.Documents.DocumentSettings.FootnoteNumberStyle.get -> Egap.Documents.NumberStyle
+Egap.Documents.DocumentSettings.FootnoteNumberStyle.set -> void
+Egap.Documents.DocumentSettings.FootnoteStartAt.get -> int
+Egap.Documents.DocumentSettings.FootnoteStartAt.set -> void
+Egap.Documents.DocumentSettings.TrackRevisions.get -> bool
+Egap.Documents.DocumentSettings.TrackRevisions.set -> void
 Egap.Documents.DocumentVisitor
 Egap.Documents.DocumentVisitor.DocumentVisitor() -> void
 Egap.Documents.ExtensionData
@@ -358,6 +437,14 @@ Egap.Documents.FieldStart.IsDirty.get -> bool
 Egap.Documents.FieldStart.IsDirty.set -> void
 Egap.Documents.FieldStart.IsLocked.get -> bool
 Egap.Documents.FieldStart.IsLocked.set -> void
+Egap.Documents.FindOptions
+Egap.Documents.FindOptions.FindOptions() -> void
+Egap.Documents.FindOptions.MatchCase.get -> bool
+Egap.Documents.FindOptions.MatchCase.init -> void
+Egap.Documents.FindOptions.SkipDeletedText.get -> bool
+Egap.Documents.FindOptions.SkipDeletedText.init -> void
+Egap.Documents.FindOptions.WholeWord.get -> bool
+Egap.Documents.FindOptions.WholeWord.init -> void
 Egap.Documents.FloatingAlignment
 Egap.Documents.FloatingAlignment.Center = 2 -> Egap.Documents.FloatingAlignment
 Egap.Documents.FloatingAlignment.End = 3 -> Egap.Documents.FloatingAlignment
@@ -410,6 +497,7 @@ Egap.Documents.Footnote.CustomMark.set -> void
 Egap.Documents.Footnote.Footnote(Egap.Documents.Document! document, Egap.Documents.NoteKind kind = Egap.Documents.NoteKind.Footnote) -> void
 Egap.Documents.Footnote.Kind.get -> Egap.Documents.NoteKind
 Egap.Documents.Footnote.Kind.set -> void
+Egap.Documents.Footnote.Mark.get -> string!
 Egap.Documents.Footnote.Story.get -> Egap.Documents.NoteStory!
 Egap.Documents.FormatBase
 Egap.Documents.FormatBase.Apply(Egap.Documents.FormatBase! source) -> void
@@ -614,6 +702,9 @@ Egap.Documents.Node.NextSibling.get -> Egap.Documents.Node?
 Egap.Documents.Node.Parent.get -> Egap.Documents.Node?
 Egap.Documents.Node.PreviousSibling.get -> Egap.Documents.Node?
 Egap.Documents.Node.Remove() -> void
+Egap.Documents.Node.Replace(string! find, string! replacement, Egap.Documents.FindOptions? options = null) -> int
+Egap.Documents.Node.Replace(System.Text.RegularExpressions.Regex! regex, string! replacement, Egap.Documents.FindOptions? options = null) -> int
+Egap.Documents.Node.Replace(System.Text.RegularExpressions.Regex! regex, System.Func<System.Text.RegularExpressions.Match!, string!>! evaluator, Egap.Documents.FindOptions? options = null) -> int
 Egap.Documents.NodeCollection<T>
 Egap.Documents.NodeCollection<T>.Add<TNode>(TNode! node) -> TNode!
 Egap.Documents.NodeCollection<T>.Clear() -> void
@@ -1326,6 +1417,25 @@ Egap.Documents.ThemeFont.MajorLatin = 0 -> Egap.Documents.ThemeFont
 Egap.Documents.ThemeFont.MinorComplexScript = 5 -> Egap.Documents.ThemeFont
 Egap.Documents.ThemeFont.MinorEastAsia = 4 -> Egap.Documents.ThemeFont
 Egap.Documents.ThemeFont.MinorLatin = 3 -> Egap.Documents.ThemeFont
+Egap.Documents.TrackedChange
+Egap.Documents.TrackedChange.Accept() -> void
+Egap.Documents.TrackedChange.Author.get -> string!
+Egap.Documents.TrackedChange.Date.get -> System.DateTimeOffset?
+Egap.Documents.TrackedChange.FormatRevision.get -> Egap.Documents.FormatRevision?
+Egap.Documents.TrackedChange.Node.get -> Egap.Documents.Node!
+Egap.Documents.TrackedChange.Reject() -> void
+Egap.Documents.TrackedChange.Revision.get -> Egap.Documents.Revision?
+Egap.Documents.TrackedChange.Target.get -> Egap.Documents.TrackedChangeTarget
+Egap.Documents.TrackedChangeCollection
+Egap.Documents.TrackedChangeCollection.AcceptAll() -> int
+Egap.Documents.TrackedChangeCollection.Count.get -> int
+Egap.Documents.TrackedChangeCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Documents.TrackedChange!>!
+Egap.Documents.TrackedChangeCollection.RejectAll() -> int
+Egap.Documents.TrackedChangeTarget
+Egap.Documents.TrackedChangeTarget.Format = 3 -> Egap.Documents.TrackedChangeTarget
+Egap.Documents.TrackedChangeTarget.Node = 0 -> Egap.Documents.TrackedChangeTarget
+Egap.Documents.TrackedChangeTarget.ParagraphMark = 1 -> Egap.Documents.TrackedChangeTarget
+Egap.Documents.TrackedChangeTarget.Row = 2 -> Egap.Documents.TrackedChangeTarget
 Egap.Documents.UnderlineStyle
 Egap.Documents.UnderlineStyle.Dash = 7 -> Egap.Documents.UnderlineStyle
 Egap.Documents.UnderlineStyle.DashDotDotHeavy = 14 -> Egap.Documents.UnderlineStyle
