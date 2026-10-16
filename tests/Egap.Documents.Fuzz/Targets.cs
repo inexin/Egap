@@ -20,7 +20,7 @@ internal static class Targets
 
     /// <summary>
     /// Any bytes read as Markdown with GitHub's extensions and with CommonMark only; the model must answer GetText and the
-    /// list labels and resolve every run's formatting.
+    /// list labels and resolve every run's formatting; the writer must write it, and its Markdown must read again.
     /// </summary>
     private static void Markdown(Stream input)
     {
@@ -40,6 +40,10 @@ internal static class Targets
             {
                 _ = run.GetEffectiveFormat();
             }
+
+            // The writer must take anything the reader made, and what it writes must read again.
+            string written = MarkdownFormat.ToMarkdown(document);
+            _ = MarkdownFormat.Parse(written, new MarkdownLoadOptions { Extensions = extensions }).GetText();
         }
     }
 }

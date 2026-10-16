@@ -115,16 +115,32 @@ if (conversion.Succeeded)
 }
 ```
 
+```csharp
+using Egap.Documents;
+
+// Egap.Documents 0.1 preview (Phase 6): the flow document model and Markdown, read and written.
+Document doc = MarkdownFormat.Load("README.md");                 // CommonMark plus GitHub's extensions
+foreach (Paragraph p in doc.Descendants<Paragraph>())
+{
+    Console.WriteLine($"{p.ListLabel?.Text} {p.GetText()}");    // list labels computed as Word numbers them
+}
+
+DocumentBuilder builder = new(doc);                               // edit from code at a cursor
+builder.Writeln("Added at the end.");
+doc.Replace("colour", "color");                                   // also where the text crosses runs
+IReadOnlyList<ConversionWarning> dropped = MarkdownFormat.Save(doc, "out.md");
+```
+
 ## Projects
 
 | Project | What it is |
 | --- | --- |
 | `src/Egap.Pdf` | The PDF library (package `Egap.Pdf`). |
-| `src/Egap.Documents` | Flow documents, in progress (Phase 6): one document model with Markdown, DOCX and HTML readers and writers and a page layout engine (package `Egap.Documents`). |
+| `src/Egap.Documents` | Flow documents, in progress (Phase 6; 0.1 preview has the model and Markdown): one document model with Markdown, DOCX and HTML readers and writers and a page layout engine (package `Egap.Documents`). |
 | `src/Egap.Pdf.Layout` | The bridge between Egap.Documents and Egap.Pdf, in progress: documents saved as PDF, PDF pages analysed back into documents (package `Egap.Pdf.Layout`). |
 | `src/Egap.Fonts` | Open, metric-compatible substitutes for Helvetica, Arial, Times, Courier, Calibri and Cambria (package `Egap.Fonts`, SIL OFL fonts). |
 | `tests/Egap.Pdf.Tests`, `tests/Egap.Documents.Tests`, `tests/Egap.Pdf.Layout.Tests` | Unit tests (xUnit v3). |
-| `tests/Egap.Pdf.Fuzz` | SharpFuzz harness for AFL++. |
+| `tests/Egap.Pdf.Fuzz`, `tests/Egap.Documents.Fuzz` | SharpFuzz harnesses for AFL++. |
 | `benchmarks/Egap.Pdf.Benchmarks` | BenchmarkDotNet benchmarks. |
 
 ## Building
