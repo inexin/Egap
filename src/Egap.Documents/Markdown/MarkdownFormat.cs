@@ -46,10 +46,30 @@ public sealed class MarkdownLoadOptions
     public Func<string, ImageData?>? ImageResolver { get; init; }
 }
 
+/// <summary>How <see cref="MarkdownFormat"/> writes Markdown.</summary>
+public sealed class MarkdownSaveOptions
+{
+    /// <summary>
+    /// Stores a picture that has no address of its own (an image embedded in a DOCX, say) and returns the address to write
+    /// for it, or null to leave it out with a warning.
+    /// </summary>
+    public Func<Picture, string?>? ImageWriter { get; init; }
+
+    /// <summary>Writes pictures with no address and no <see cref="ImageWriter"/> as data: URIs instead of leaving them out.</summary>
+    public bool EmbedImages { get; init; }
+
+    /// <summary>
+    /// Writes YAML front matter with the title and author when the document has them and did not come with front matter of
+    /// its own (front matter that was read is always written back).
+    /// </summary>
+    public bool WriteFrontMatter { get; init; }
+}
+
 /// <summary>
-/// Reads Markdown into a <see cref="Document"/> (Phase 6 design Q17): CommonMark 0.31 with GitHub's tables, task lists,
-/// strikethrough, autolinks and footnotes, and YAML front matter. Headings take the Heading 1 to 6 styles, code the HTML Code
-/// and HTML Preformatted styles, lists Word list definitions built from their nesting.
+/// Reads Markdown into a <see cref="Document"/> and writes documents as GitHub Flavored Markdown (Phase 6 design Q17):
+/// CommonMark 0.31 with GitHub's tables, task lists, strikethrough, autolinks and footnotes, and YAML front matter. Headings take the Heading 1 to 6 styles, code the HTML Code
+/// and HTML Preformatted styles, lists Word list definitions built from their nesting. Writing says in warnings what Markdown
+/// cannot hold.
 /// </summary>
 public static class MarkdownFormat
 {
@@ -77,5 +97,39 @@ public static class MarkdownFormat
         ArgumentNullException.ThrowIfNull(stream);
         using StreamReader reader = new(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
         return Parse(reader.ReadToEnd(), options);
+    }
+
+    /// <summary>The document as GitHub Flavored Markdown, with what was left out in <paramref name="warnings"/>.</summary>
+    public static string ToMarkdown(Document document, out IReadOnlyList<ConversionWarning> warnings, MarkdownSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        return MarkdownWriter.Write(document, options ?? new MarkdownSaveOptions(), out warnings);
+    }
+
+    /// <summary>The document as GitHub Flavored Markdown.</summary>
+    public static string ToMarkdown(Document document, MarkdownSaveOptions? options = null)
+    {
+        return ToMarkdown(document, out _, options);
+    }
+
+    /// <summary>Writes the document as a Markdown file (UTF-8, LF line ends).</summary>
+    /// <returns>What Markdown could not hold.</returns>
+    public static IReadOnlyList<ConversionWarning> Save(Document document, string path, MarkdownSaveOptions? options = null)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        string text = ToMarkdown(document, out IReadOnlyList<ConversionWarning> warnings, options);
+        File.WriteAllText(path, text, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+        return warnings;
+    }
+
+    /// <summary>Writes the document as Markdown to a stream (UTF-8, LF line ends), leaving it open.</summary>
+    /// <returns>What Markdown could not hold.</returns>
+    public static IReadOnlyList<ConversionWarning> Save(Document document, Stream stream, MarkdownSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        string text = ToMarkdown(document, out IReadOnlyList<ConversionWarning> warnings, options);
+        byte[] bytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false).GetBytes(text);
+        stream.Write(bytes);
+        return warnings;
     }
 }

@@ -259,6 +259,28 @@ Egap.Documents.ContentControlProperties.Tag.set -> void
 Egap.Documents.ContentControlProperties.Title.get -> string?
 Egap.Documents.ContentControlProperties.Title.set -> void
 Egap.Documents.ControlChar
+Egap.Documents.ConversionWarning
+Egap.Documents.ConversionWarning.<Clone>$() -> Egap.Documents.ConversionWarning!
+Egap.Documents.ConversionWarning.ConversionWarning(Egap.Documents.ConversionWarningKind Kind, string! Message, int Count) -> void
+Egap.Documents.ConversionWarning.Count.get -> int
+Egap.Documents.ConversionWarning.Count.init -> void
+Egap.Documents.ConversionWarning.Deconstruct(out Egap.Documents.ConversionWarningKind Kind, out string! Message, out int Count) -> void
+Egap.Documents.ConversionWarning.Equals(Egap.Documents.ConversionWarning? other) -> bool
+Egap.Documents.ConversionWarning.Kind.get -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarning.Kind.init -> void
+Egap.Documents.ConversionWarning.Message.get -> string!
+Egap.Documents.ConversionWarning.Message.init -> void
+Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.ChangesAccepted = 7 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.CommentsDropped = 6 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.ContentControlsDropped = 9 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.DrawingDropped = 4 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.FieldsFlattened = 8 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.FormattingDropped = 0 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.MergedCellsSplit = 1 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.PageLayoutDropped = 5 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.PictureDropped = 3 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.TableSimplified = 2 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.Document
 Egap.Documents.Document.AddSection() -> Egap.Documents.Section!
 Egap.Documents.Document.Changed -> System.EventHandler<Egap.Documents.DocumentChangedEventArgs!>?
@@ -703,6 +725,14 @@ Egap.Documents.MarkdownLoadOptions.Extensions.init -> void
 Egap.Documents.MarkdownLoadOptions.ImageResolver.get -> System.Func<string!, Egap.Documents.ImageData?>?
 Egap.Documents.MarkdownLoadOptions.ImageResolver.init -> void
 Egap.Documents.MarkdownLoadOptions.MarkdownLoadOptions() -> void
+Egap.Documents.MarkdownSaveOptions
+Egap.Documents.MarkdownSaveOptions.EmbedImages.get -> bool
+Egap.Documents.MarkdownSaveOptions.EmbedImages.init -> void
+Egap.Documents.MarkdownSaveOptions.ImageWriter.get -> System.Func<Egap.Documents.Picture!, string?>?
+Egap.Documents.MarkdownSaveOptions.ImageWriter.init -> void
+Egap.Documents.MarkdownSaveOptions.MarkdownSaveOptions() -> void
+Egap.Documents.MarkdownSaveOptions.WriteFrontMatter.get -> bool
+Egap.Documents.MarkdownSaveOptions.WriteFrontMatter.init -> void
 Egap.Documents.Node
 Egap.Documents.Node.Accept(Egap.Documents.DocumentVisitor! visitor) -> bool
 Egap.Documents.Node.Ancestors() -> System.Collections.Generic.IEnumerable<Egap.Documents.Node!>!
@@ -1533,6 +1563,9 @@ override Egap.Documents.CommentRangeEnd.Clone(bool deep = true) -> Egap.Document
 override Egap.Documents.CommentRangeStart.Clone(bool deep = true) -> Egap.Documents.CommentRangeStart!
 override Egap.Documents.CommentStory.Clone(bool deep = true) -> Egap.Documents.CommentStory!
 override Egap.Documents.ContentControl.Clone(bool deep = true) -> Egap.Documents.ContentControl!
+override Egap.Documents.ConversionWarning.Equals(object? obj) -> bool
+override Egap.Documents.ConversionWarning.GetHashCode() -> int
+override Egap.Documents.ConversionWarning.ToString() -> string!
 override Egap.Documents.Document.Clone(bool deep = true) -> Egap.Documents.Document!
 override Egap.Documents.DocumentColor.GetHashCode() -> int
 override Egap.Documents.DocumentColor.ToString() -> string!
@@ -1589,6 +1622,8 @@ static Egap.Documents.Bookmark.operator ==(Egap.Documents.Bookmark? left, Egap.D
 static Egap.Documents.Border.None.get -> Egap.Documents.Border!
 static Egap.Documents.Border.operator !=(Egap.Documents.Border? left, Egap.Documents.Border? right) -> bool
 static Egap.Documents.Border.operator ==(Egap.Documents.Border? left, Egap.Documents.Border? right) -> bool
+static Egap.Documents.ConversionWarning.operator !=(Egap.Documents.ConversionWarning? left, Egap.Documents.ConversionWarning? right) -> bool
+static Egap.Documents.ConversionWarning.operator ==(Egap.Documents.ConversionWarning? left, Egap.Documents.ConversionWarning? right) -> bool
 static Egap.Documents.DocumentColor.Auto.get -> Egap.Documents.DocumentColor
 static Egap.Documents.DocumentColor.FromHex(string! hex) -> Egap.Documents.DocumentColor
 static Egap.Documents.DocumentColor.FromRgb(Egami.Pixels.Rgba8 rgb) -> Egap.Documents.DocumentColor
@@ -1610,6 +1645,10 @@ static Egap.Documents.ListLabel.operator ==(Egap.Documents.ListLabel? left, Egap
 static Egap.Documents.MarkdownFormat.Load(string! path, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.MarkdownFormat.Load(System.IO.Stream! stream, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.MarkdownFormat.Parse(string! markdown, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.MarkdownFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.MarkdownSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.MarkdownFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.MarkdownSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.MarkdownFormat.ToMarkdown(Egap.Documents.Document! document, Egap.Documents.MarkdownSaveOptions? options = null) -> string!
+static Egap.Documents.MarkdownFormat.ToMarkdown(Egap.Documents.Document! document, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.MarkdownSaveOptions? options = null) -> string!
 static Egap.Documents.Revision.operator !=(Egap.Documents.Revision? left, Egap.Documents.Revision? right) -> bool
 static Egap.Documents.Revision.operator ==(Egap.Documents.Revision? left, Egap.Documents.Revision? right) -> bool
 static Egap.Documents.Shading.operator !=(Egap.Documents.Shading? left, Egap.Documents.Shading? right) -> bool
