@@ -109,6 +109,16 @@ public sealed class PdfSignature
         return new SignedBytesStream(document, ByteRange);
     }
 
+    /// <summary>
+    /// The CMS SignedData in <see cref="Contents"/> (Phase 5 task 3); for <c>adbe.x509.rsa_sha1</c>, which holds no CMS, use
+    /// <see cref="Signatures.Cms.RsaSha1Signature"/>.
+    /// </summary>
+    /// <exception cref="PdfException">The contents are not a SignedData Egap can read.</exception>
+    internal Signatures.Cms.CmsSignedData DecodeCms()
+    {
+        return Signatures.Cms.CmsSignedData.Decode(Contents);
+    }
+
     /// <inheritdoc/>
     public override string ToString()
     {

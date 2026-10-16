@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings", "render", "signatures"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings", "render", "signatures", "cms"];
 
     public static Action<Stream> Get(string name)
     {
@@ -47,6 +47,7 @@ internal static class Targets
             "shadings" => Shadings,
             "render" => Render,
             "signatures" => Signatures,
+            "cms" => Cms,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -2132,6 +2133,48 @@ internal static class Targets
     /// (task 17); then up to 20 terminal fields filled, each value read back at once and after the file is written whole and
     /// reopened, where a static XFA form is then converted.
     /// </summary>
+    /// <summary>
+    /// The CMS reader (Phase 5 task 3): any bytes decode to a SignedData or throw <see cref="PdfException"/>, and every signer
+    /// attribute reads without throwing; the old adbe.x509.rsa_sha1 reader the same.
+    /// </summary>
+    private static void Cms(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        try
+        {
+            global::Egap.Pdf.Signatures.Cms.CmsSignedData cms = global::Egap.Pdf.Signatures.Cms.CmsSignedData.Decode(bytes);
+            _ = (cms.Version, cms.DigestAlgorithms.Count, cms.ContentType, cms.Content, cms.Crls.Count);
+            foreach (System.Security.Cryptography.X509Certificates.X509Certificate2 certificate in cms.LoadCertificates())
+            {
+                foreach (global::Egap.Pdf.Signatures.Cms.CmsSignerInfo signer in cms.Signers)
+                {
+                    _ = signer.FindCertificate([certificate]);
+                }
+
+                certificate.Dispose();
+            }
+
+            foreach (global::Egap.Pdf.Signatures.Cms.CmsSignerInfo signer in cms.Signers)
+            {
+                _ = (signer.Version, signer.DigestHash, signer.MessageDigest, signer.ContentType, signer.SigningTime, signer.SigningCertificateHashes.Count,
+                    signer.TimestampToken, signer.UsesWeakDigest, global::Egap.Pdf.Signatures.Cms.CmsAlgorithms.SignatureName(signer.SignatureAlgorithm),
+                    global::Egap.Pdf.Signatures.Cms.CmsAlgorithms.SignatureHash(signer.SignatureAlgorithm, System.Security.Cryptography.HashAlgorithmName.SHA256));
+            }
+        }
+        catch (PdfException)
+        {
+            // Not a SignedData Egap reads: the caller sees why.
+        }
+
+        try
+        {
+            _ = global::Egap.Pdf.Signatures.Cms.RsaSha1Signature.Read(bytes);
+        }
+        catch (PdfException)
+        {
+        }
+    }
+
     /// <summary>
     /// Revisions and signatures (Phase 5 task 2): every revision found must end inside the file, later ones after earlier
     /// ones, and open read-only; every signature's properties read, its signed bytes stream reads to its length, and its
