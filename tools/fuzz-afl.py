@@ -15,20 +15,23 @@ import os
 import subprocess
 import sys
 
-SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*", "parser": "tests/fuzz-seeds/parser/*", "filters": "tests/fuzz-seeds/filters/*", "streams": "tests/fuzz-seeds/parser/*", "xref": "tests/fuzz-seeds/xref/*", "document": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "rewrite": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "incremental": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "trees": "tests/fuzz-seeds/trees/*", "pages": "tests/fuzz-seeds/pages/* tests/fuzz-seeds/xref/*", "pageedits": "tests/fuzz-seeds/pages/* tests/fuzz-seeds/xref/*", "navigation": "tests/fuzz-seeds/navigation/* tests/fuzz-seeds/xref/*", "outlines": "tests/fuzz-seeds/outlines/* tests/fuzz-seeds/xref/*", "xmp": "tests/fuzz-seeds/xmp/*", "metadata": "tests/fuzz-seeds/metadata/* tests/fuzz-seeds/xref/*", "attachments": "tests/fuzz-seeds/attachments/* tests/fuzz-seeds/xref/*", "layers": "tests/fuzz-seeds/layers/* tests/fuzz-seeds/xref/*", "annotations": "tests/fuzz-seeds/annotations/* tests/fuzz-seeds/xref/*", "forms": "tests/fuzz-seeds/forms/* tests/fuzz-seeds/xref/*", "flatten": "tests/fuzz-seeds/forms/* tests/fuzz-seeds/annotations/*", "merge": "tests/fuzz-seeds/merge/* tests/fuzz-seeds/xref/*", "content": "tests/fuzz-seeds/content/*", "walker": "tests/fuzz-seeds/walker/* tests/fuzz-seeds/xref/*", "fonts": "tests/fuzz-seeds/fonts/*", "images": "tests/fuzz-seeds/images/* tests/fuzz-seeds/walker/*", "functions": "tests/fuzz-seeds/functions/*", "shadings": "tests/fuzz-seeds/shadings/*", "render": "tests/fuzz-seeds/render/* tests/fuzz-seeds/walker/* tests/fuzz-seeds/images/* tests/fuzz-seeds/layers/*.pdf tests/fuzz-seeds/annotations/annotations.pdf", "signatures": "tests/fuzz-seeds/signatures/*", "cms": "tests/fuzz-seeds/cms/*", "revocation": "tests/fuzz-seeds/revocation/*", "structure": "tests/fuzz-seeds/structure/*", "pdfa": "tests/fuzz-seeds/pdfa/*", "linearize": "tests/fuzz-seeds/structure/* tests/fuzz-seeds/pdfa/*", "hocr": "tests/fuzz-seeds/hocr/*", "alto": "tests/fuzz-seeds/alto/*"}
+SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*", "parser": "tests/fuzz-seeds/parser/*", "filters": "tests/fuzz-seeds/filters/*", "streams": "tests/fuzz-seeds/parser/*", "xref": "tests/fuzz-seeds/xref/*", "document": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "rewrite": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "incremental": "tests/fuzz-seeds/xref/* tests/fuzz-seeds/document/*", "trees": "tests/fuzz-seeds/trees/*", "pages": "tests/fuzz-seeds/pages/* tests/fuzz-seeds/xref/*", "pageedits": "tests/fuzz-seeds/pages/* tests/fuzz-seeds/xref/*", "navigation": "tests/fuzz-seeds/navigation/* tests/fuzz-seeds/xref/*", "outlines": "tests/fuzz-seeds/outlines/* tests/fuzz-seeds/xref/*", "xmp": "tests/fuzz-seeds/xmp/*", "metadata": "tests/fuzz-seeds/metadata/* tests/fuzz-seeds/xref/*", "attachments": "tests/fuzz-seeds/attachments/* tests/fuzz-seeds/xref/*", "layers": "tests/fuzz-seeds/layers/* tests/fuzz-seeds/xref/*", "annotations": "tests/fuzz-seeds/annotations/* tests/fuzz-seeds/xref/*", "forms": "tests/fuzz-seeds/forms/* tests/fuzz-seeds/xref/*", "flatten": "tests/fuzz-seeds/forms/* tests/fuzz-seeds/annotations/*", "merge": "tests/fuzz-seeds/merge/* tests/fuzz-seeds/xref/*", "content": "tests/fuzz-seeds/content/*", "walker": "tests/fuzz-seeds/walker/* tests/fuzz-seeds/xref/*", "fonts": "tests/fuzz-seeds/fonts/*", "images": "tests/fuzz-seeds/images/* tests/fuzz-seeds/walker/*", "functions": "tests/fuzz-seeds/functions/*", "shadings": "tests/fuzz-seeds/shadings/*", "render": "tests/fuzz-seeds/render/* tests/fuzz-seeds/walker/* tests/fuzz-seeds/images/* tests/fuzz-seeds/layers/*.pdf tests/fuzz-seeds/annotations/annotations.pdf", "signatures": "tests/fuzz-seeds/signatures/*", "cms": "tests/fuzz-seeds/cms/*", "revocation": "tests/fuzz-seeds/revocation/*", "structure": "tests/fuzz-seeds/structure/*", "pdfa": "tests/fuzz-seeds/pdfa/*", "linearize": "tests/fuzz-seeds/structure/* tests/fuzz-seeds/pdfa/*", "hocr": "tests/fuzz-seeds/hocr/*", "alto": "tests/fuzz-seeds/alto/*", "markdown": "tests/fuzz-seeds/markdown/*"}
+
+# Targets of Egap.Documents.Fuzz; the others are Egap.Pdf.Fuzz's.
+DOCUMENTS = {"markdown"}
 
 SCRIPT = """
 set -e
 mkdir -p /build/tests
 cp -r /src/src /build/
-cp -r /src/tests/Egap.Pdf.Fuzz /build/tests/
+cp -r /src/tests/{harness} /build/tests/
 cp /src/Directory.Build.props /src/Directory.Packages.props /src/global.json /src/nuget.config /build/
 cp /src/.editorconfig /build/ 2>/dev/null || true
 find /build -type d \\( -name bin -o -name obj \\) -prune -exec rm -rf {{}} +
-dotnet publish /build/tests/Egap.Pdf.Fuzz -c Release -o /out -p:TreatWarningsAsErrors=false > /tmp/publish.log
-sharpfuzz /out/Egap.Pdf.dll
+dotnet publish /build/tests/{harness} -c Release -o /out -p:TreatWarningsAsErrors=false > /tmp/publish.log
+sharpfuzz /out/{library}.dll
 mkdir -p /seeds && cp {seeds} /seeds/
-afl-fuzz -V {seconds} -i /seeds -o /findings/{target} {role} -t 5000 -m none -- /out/Egap.Pdf.Fuzz {target}
+afl-fuzz -V {seconds} -i /seeds -o /findings/{target} {role} -t 5000 -m none -- /out/{harness} {target}
 """
 
 
@@ -47,7 +50,8 @@ def main():
             name = f"egap-afl-{target}" + (f"-{i}" if instances > 1 else "")
             role = "" if instances == 1 else "-M main" if i == 0 else f"-S secondary{i}"
             subprocess.run(["docker", "rm", "-f", name], capture_output=True)
-            script = SCRIPT.format(seeds=" ".join("/src/" + pattern for pattern in SEEDS[target].split()), seconds=int(hours * 3600), target=target, role=role)
+            harness = "Egap.Documents.Fuzz" if target in DOCUMENTS else "Egap.Pdf.Fuzz"
+            script = SCRIPT.format(harness=harness, library=harness[:-5], seeds=" ".join("/src/" + pattern for pattern in SEEDS[target].split()), seconds=int(hours * 3600), target=target, role=role)
             # AFL_AUTORESUME carries on from an earlier run's queue in the same findings directory.
             subprocess.run(["docker", "run", "-d", "--name", name, "-e", "AFL_AUTORESUME=1", "-v", f"{repo}:/src:ro", "-v", f"{findings}:/findings", "-v", f"{feed}:/egami-feed:ro",
                             "egap-fuzz", "bash", "-c", script], check=True)

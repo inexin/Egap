@@ -9,6 +9,7 @@
     <Project Path="src/Egap.Pdf.Layout/Egap.Pdf.Layout.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Egap.Documents.Fuzz/Egap.Documents.Fuzz.csproj" />
     <Project Path="tests/Egap.Documents.Tests/Egap.Documents.Tests.csproj" />
     <Project Path="tests/Egap.Pdf.Fuzz/Egap.Pdf.Fuzz.csproj" />
     <Project Path="tests/Egap.Pdf.Layout.Tests/Egap.Pdf.Layout.Tests.csproj" />

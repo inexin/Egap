@@ -687,6 +687,22 @@ Egap.Documents.ListLevelOverride.StartAt.set -> void
 Egap.Documents.ListStyle
 Egap.Documents.ListStyle.List.get -> Egap.Documents.List?
 Egap.Documents.ListStyle.List.set -> void
+Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownExtensions.Autolinks = 8 -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownExtensions.Footnotes = 16 -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownExtensions.FrontMatter = 32 -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownExtensions.GitHub = Egap.Documents.MarkdownExtensions.Tables | Egap.Documents.MarkdownExtensions.TaskLists | Egap.Documents.MarkdownExtensions.Strikethrough | Egap.Documents.MarkdownExtensions.Autolinks | Egap.Documents.MarkdownExtensions.Footnotes | Egap.Documents.MarkdownExtensions.FrontMatter -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownExtensions.None = 0 -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownExtensions.Strikethrough = 4 -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownExtensions.Tables = 1 -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownExtensions.TaskLists = 2 -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownFormat
+Egap.Documents.MarkdownLoadOptions
+Egap.Documents.MarkdownLoadOptions.Extensions.get -> Egap.Documents.MarkdownExtensions
+Egap.Documents.MarkdownLoadOptions.Extensions.init -> void
+Egap.Documents.MarkdownLoadOptions.ImageResolver.get -> System.Func<string!, Egap.Documents.ImageData?>?
+Egap.Documents.MarkdownLoadOptions.ImageResolver.init -> void
+Egap.Documents.MarkdownLoadOptions.MarkdownLoadOptions() -> void
 Egap.Documents.Node
 Egap.Documents.Node.Accept(Egap.Documents.DocumentVisitor! visitor) -> bool
 Egap.Documents.Node.Ancestors() -> System.Collections.Generic.IEnumerable<Egap.Documents.Node!>!
@@ -897,6 +913,8 @@ Egap.Documents.Picture.Height.set -> void
 Egap.Documents.Picture.Image.get -> Egap.Documents.ImageData!
 Egap.Documents.Picture.Image.set -> void
 Egap.Documents.Picture.Picture(Egap.Documents.Document! document, Egap.Documents.ImageData! image, double width, double height) -> void
+Egap.Documents.Picture.SourceUrl.get -> string?
+Egap.Documents.Picture.SourceUrl.set -> void
 Egap.Documents.Picture.Title.get -> string?
 Egap.Documents.Picture.Title.set -> void
 Egap.Documents.Picture.Width.get -> double
@@ -1589,6 +1607,9 @@ static Egap.Documents.ImageData.operator ==(Egap.Documents.ImageData? left, Egap
 static Egap.Documents.List.None.get -> Egap.Documents.List!
 static Egap.Documents.ListLabel.operator !=(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
 static Egap.Documents.ListLabel.operator ==(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
+static Egap.Documents.MarkdownFormat.Load(string! path, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.MarkdownFormat.Load(System.IO.Stream! stream, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.MarkdownFormat.Parse(string! markdown, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.Revision.operator !=(Egap.Documents.Revision? left, Egap.Documents.Revision? right) -> bool
 static Egap.Documents.Revision.operator ==(Egap.Documents.Revision? left, Egap.Documents.Revision? right) -> bool
 static Egap.Documents.Shading.operator !=(Egap.Documents.Shading? left, Egap.Documents.Shading? right) -> bool

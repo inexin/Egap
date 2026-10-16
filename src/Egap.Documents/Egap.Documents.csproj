@@ -24,8 +24,18 @@
     <ProjectReference Include="../Egap.Fonts/Egap.Fonts.csproj" />
   </ItemGroup>
 
+  <!-- HTML named character references (WHATWG, CC BY 4.0; THIRD-PARTY-NOTICES.md), for the Markdown and HTML readers. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Html/entities.txt" LogicalName="Egap.Documents.Html.entities.txt" />
+    <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <!-- The compare harness runs the CommonMark spec (CC BY-SA, compare repo only) against the parser's own HTML rendering. -->
   <ItemGroup>
     <InternalsVisibleTo Include="Egap.Documents.Tests" />
+    <InternalsVisibleTo Include="Compare" />
+    <InternalsVisibleTo Include="Compare.Tests" />
+    <InternalsVisibleTo Include="Compare.Benchmarks" />
   </ItemGroup>
 
 </Project>
