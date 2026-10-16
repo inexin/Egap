@@ -65,6 +65,8 @@ internal sealed partial class DocxReader
                         ReadTextBox(content, shape);
                     }
 
+                    DocxExtension.Of(shape).Snapshot = ShapeState.Of(shape);
+
                     break;
                 }
 
@@ -137,6 +139,8 @@ internal sealed partial class DocxReader
     private void ReadTextBox(XElement content, Shape shape)
     {
         TextBoxStory story = shape.AddTextBox();
+        DocxExtension.Of(story).Original = content;
+        DocxExtension.Of(story).PartName = currentPart.Name;
         List<Inline> outerMarks = [.. pendingMarks];
         pendingMarks.Clear();
         Paragraph? outerLast = lastParagraph;
@@ -370,6 +374,7 @@ internal sealed partial class DocxReader
             if (fallback is not null && shape.Element(Ns.V + "textbox") is null)
             {
                 Picture picture = Add(inlines, new Picture(document, fallback, width, height), state, element);
+                picture.Floating = VmlPlacement(style, shape);
                 picture.Title = (string?)shape.Attribute(Ns.O + "title") ?? (string?)imageData?.Attribute(Ns.O + "title");
                 picture.Description = (string?)shape.Attribute("alt");
                 DocxExtension.Of(picture).Snapshot = PictureState.Of(picture);
@@ -384,7 +389,9 @@ internal sealed partial class DocxReader
                     "roundrect" => ShapeKind.RoundedRectangle,
                     _ => ShapeKind.Rectangle,
                 }, width, height), state, element);
+                box.Floating = VmlPlacement(style, shape);
                 ReadTextBox(content, box);
+                DocxExtension.Of(box).Snapshot = ShapeState.Of(box);
                 return;
             }
         }
@@ -398,33 +405,109 @@ internal sealed partial class DocxReader
         }, state, element);
     }
 
-    /// <summary>A length in a VML style attribute (width:100pt;height:2in), in points.</summary>
-    private static double? CssLength(string? style, string property)
+    /// <summary>
+    /// Where a VML shape floats, from its style (position:absolute with margins and mso-position settings) and its w10:wrap;
+    /// null for a shape in the line.
+    /// </summary>
+    private static FloatingPlacement? VmlPlacement(string? style, XElement shape)
     {
-        if (style is null)
+        if (style is null || !string.Equals(CssValue(style, "position"), "absolute", StringComparison.OrdinalIgnoreCase))
         {
             return null;
         }
 
+        // An mso-position alignment wins over the margin offset, as in Word.
+        bool alignedH = CssValue(style, "mso-position-horizontal") is { } h && h != "absolute";
+        bool alignedV = CssValue(style, "mso-position-vertical") is { } v && v != "absolute";
+        int z = int.TryParse(CssValue(style, "z-index"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int zIndex) ? zIndex : 0;
+        XElement? wrap = shape.Element(Ns.W10 + "wrap");
+        WrapMode mode = (string?)wrap?.Attribute("type") switch
+        {
+            "square" => WrapMode.Square,
+            "tight" => WrapMode.Tight,
+            "through" => WrapMode.Through,
+            "topAndBottom" => WrapMode.TopAndBottom,
+            _ => z < 0 ? WrapMode.BehindText : WrapMode.InFrontOfText,
+        };
+        return new FloatingPlacement
+        {
+            HorizontalAnchor = CssValue(style, "mso-position-horizontal-relative") switch
+            {
+                "page" => HorizontalAnchor.Page,
+                "margin" => HorizontalAnchor.Margin,
+                "char" => HorizontalAnchor.Character,
+                "left-margin-area" => HorizontalAnchor.LeftMargin,
+                "right-margin-area" => HorizontalAnchor.RightMargin,
+                "inner-margin-area" => HorizontalAnchor.InsideMargin,
+                "outer-margin-area" => HorizontalAnchor.OutsideMargin,
+                _ => HorizontalAnchor.Column,
+            },
+            HorizontalAlignment = CssValue(style, "mso-position-horizontal") switch
+            {
+                "left" => FloatingAlignment.Start,
+                "center" => FloatingAlignment.Center,
+                "right" => FloatingAlignment.End,
+                "inside" => FloatingAlignment.Inside,
+                "outside" => FloatingAlignment.Outside,
+                _ => FloatingAlignment.None,
+            },
+            HorizontalOffset = alignedH ? 0 : (CssLength(style, "margin-left") ?? 0) + (CssLength(style, "left") ?? 0),
+            VerticalAnchor = CssValue(style, "mso-position-vertical-relative") switch
+            {
+                "page" => VerticalAnchor.Page,
+                "margin" => VerticalAnchor.Margin,
+                "line" => VerticalAnchor.Line,
+                "top-margin-area" => VerticalAnchor.TopMargin,
+                "bottom-margin-area" => VerticalAnchor.BottomMargin,
+                "inner-margin-area" => VerticalAnchor.InsideMargin,
+                "outer-margin-area" => VerticalAnchor.OutsideMargin,
+                _ => VerticalAnchor.Paragraph,
+            },
+            VerticalAlignment = CssValue(style, "mso-position-vertical") switch
+            {
+                "top" => FloatingAlignment.Start,
+                "center" => FloatingAlignment.Center,
+                "bottom" => FloatingAlignment.End,
+                "inside" => FloatingAlignment.Inside,
+                "outside" => FloatingAlignment.Outside,
+                _ => FloatingAlignment.None,
+            },
+            VerticalOffset = alignedV ? 0 : (CssLength(style, "margin-top") ?? 0) + (CssLength(style, "top") ?? 0),
+            Wrap = mode,
+            ZOrder = Math.Abs((long)z),
+        };
+    }
+
+    /// <summary>A property's value in a VML style attribute, or null.</summary>
+    private static string? CssValue(string style, string property)
+    {
         foreach (string declaration in style.Split(';'))
         {
             int colon = declaration.IndexOf(':', StringComparison.Ordinal);
-            if (colon < 0 || !declaration[..colon].Trim().Equals(property, StringComparison.OrdinalIgnoreCase))
+            if (colon >= 0 && declaration[..colon].Trim().Equals(property, StringComparison.OrdinalIgnoreCase))
             {
-                continue;
+                return declaration[(colon + 1)..].Trim();
             }
-
-            string value = declaration[(colon + 1)..].Trim();
-            if (value.EndsWith("px", StringComparison.OrdinalIgnoreCase)
-                && double.TryParse(value[..^2], NumberStyles.Float, CultureInfo.InvariantCulture, out double pixels) && double.IsFinite(pixels))
-            {
-                return Math.Min(pixels * 0.75, 1e6);
-            }
-
-            return DocxUnits.Points(value, unit: 1) is double points ? Math.Min(points, 1e6) : null;
         }
 
         return null;
+    }
+
+    /// <summary>A length in a VML style attribute (width:100pt;height:2in), in points.</summary>
+    private static double? CssLength(string? style, string property)
+    {
+        if (style is null || CssValue(style, property) is not { } value)
+        {
+            return null;
+        }
+
+        if (value.EndsWith("px", StringComparison.OrdinalIgnoreCase)
+            && double.TryParse(value[..^2], NumberStyles.Float, CultureInfo.InvariantCulture, out double pixels) && double.IsFinite(pixels))
+        {
+            return Math.Clamp(pixels * 0.75, -1e6, 1e6);
+        }
+
+        return DocxUnits.Points(value, unit: 1) is double points ? Math.Clamp(points, -1e6, 1e6) : null;
     }
 
     private static double Size(XElement? extent, string name)

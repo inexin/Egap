@@ -26,11 +26,14 @@ internal sealed partial class DocxReader
     private readonly Dictionary<string, string> bookmarkNames = new(StringComparer.Ordinal);
     private readonly Dictionary<int, XElement> comments = [];
     private readonly HashSet<int> usedComments = [];
+    private readonly HashSet<string> usedFootnotes = new(StringComparer.Ordinal);
+    private readonly HashSet<string> usedEndnotes = new(StringComparer.Ordinal);
     private readonly Dictionary<string, (string? ParentParaId, bool Done)> commentsExtended = new(StringComparer.Ordinal);
     private readonly Dictionary<string, XElement> footnotes = new(StringComparer.Ordinal);
     private readonly Dictionary<string, XElement> endnotes = new(StringComparer.Ordinal);
     private readonly Dictionary<string, XElement> headerParts = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<Inline> pendingMarks = [];
+    private readonly List<XElement> pendingRaw = [];
     private readonly List<Comment> readComments = [];
     private readonly List<(int NumId, string StyleId)> styleLinkedLists = [];
     private readonly Dictionary<int, List> listRedirects = [];
@@ -43,6 +46,8 @@ internal sealed partial class DocxReader
     private int headerDepth;
     private OpcPart currentPart;
     private XElement? runProperties;
+    private NodeCollection<Inline>? paragraphInlines;
+    private DocxExtension? paragraphExtension;
 
     private DocxReader(OpcPackage package, OpcPart main)
     {
@@ -81,11 +86,25 @@ internal sealed partial class DocxReader
         ReadCommentParts();
 
         XDocument xml = main.LoadXml();
+        NoteIds(xml.Root);
         XElement? body = xml.Root?.Element(Ns.W + "body");
-        DocxExtension.Of(document).Original = xml.Root is { } root ? new XElement(root.Name, root.Attributes()) : null;
+        data.MainRoot = xml.Root is { } root ? new XElement(root.Name, root.Attributes()) : null;
         if (xml.Root?.Element(Ns.W + "background") is { } background)
         {
-            DocxExtension.Of(document).AddUnknownProperty("document", background);
+            data.Background = background;
+        }
+
+        bool afterBody = false;
+        foreach (XElement child in xml.Root?.Elements() ?? [])
+        {
+            if (child == body)
+            {
+                afterBody = true;
+            }
+            else if (afterBody)
+            {
+                data.RootExtras.Add(child);
+            }
         }
 
         ReadBody(body);
@@ -101,10 +120,17 @@ internal sealed partial class DocxReader
             return;
         }
 
+        // The body's own section properties are its last child; a sectPr anywhere else is kept as markup.
+        XElement? finalSectPr = body.Elements().LastOrDefault() is { } lastChild && lastChild.Name == Ns.W + "sectPr" ? lastChild : null;
         foreach (XElement element in body.Elements())
         {
             if (element.Name == Ns.W + "sectPr")
             {
+                if (element != finalSectPr)
+                {
+                    pendingRaw.Add(element);
+                }
+
                 continue;
             }
 
@@ -118,11 +144,24 @@ internal sealed partial class DocxReader
         }
 
         FlushMarksToLast();
-        ApplySection(section, body.Element(Ns.W + "sectPr"));
-        if (section.Body.Blocks.Count == 0 && document.Sections.Count > 1 && body.Element(Ns.W + "sectPr") is null)
+        KeepTrailing(section.Body.Blocks);
+        ApplySection(section, finalSectPr);
+        if (section.Body.Blocks.Count == 0 && document.Sections.Count > 1 && finalSectPr is null)
         {
             // A body whose last paragraph closed its section and that has no final sectPr: no empty section after it.
             section.Remove();
+        }
+    }
+
+    /// <summary>Records the largest w:id of a story part.</summary>
+    private void NoteIds(XElement? root)
+    {
+        foreach (XElement element in root?.Descendants() ?? [])
+        {
+            if ((string?)element.Attribute(Ns.W + "id") is { } value && int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id) && id > data.MaxMarkupId)
+            {
+                data.MaxMarkupId = id;
+            }
         }
     }
 
@@ -139,14 +178,11 @@ internal sealed partial class DocxReader
         PageSetup snapshot = new();
         snapshot.CopyRaw(section.PageSetup);
         extension.Snapshot = snapshot;
-        foreach (XElement reference in sectPr.Elements())
+        // Headers and footers join the section in the order of their kinds, whatever order the file lists them in.
+        foreach (XElement reference in sectPr.Elements().Where(e => e.Name == Ns.W + "headerReference" || e.Name == Ns.W + "footerReference")
+            .OrderBy(e => (e.Name.LocalName == "headerReference" ? 0 : 3) + (e.W("type") switch { "first" => 1, "even" => 2, _ => 0 })))
         {
             bool header = reference.Name == Ns.W + "headerReference";
-            if (!header && reference.Name != Ns.W + "footerReference")
-            {
-                continue;
-            }
-
             HeaderFooterKind kind = (reference.W("type"), header) switch
             {
                 ("first", true) => HeaderFooterKind.HeaderFirst,
@@ -170,6 +206,7 @@ internal sealed partial class DocxReader
             if (!headerParts.TryGetValue(part.Name, out XElement? root))
             {
                 root = part.LoadXml().Root ?? new XElement(Ns.W + "hdr");
+                NoteIds(root);
                 headerParts[part.Name] = root;
             }
 
@@ -196,15 +233,52 @@ internal sealed partial class DocxReader
         {
             ReadBlock(element, blocks);
         }
+
+        KeepTrailing(blocks);
+    }
+
+    /// <summary>Markup left after a container's last block stays with that block.</summary>
+    private void KeepTrailing(NodeCollection<Block> blocks)
+    {
+        if (pendingRaw.Count > 0 && blocks.Count > 0)
+        {
+            DocxExtension extension = DocxExtension.Of(blocks[^1]);
+            (extension.After ??= []).AddRange(pendingRaw);
+            pendingRaw.Clear();
+        }
+    }
+
+    /// <summary>The block just read takes the markup that sat before it.</summary>
+    private T TakeBefore<T>(T block)
+        where T : Block
+    {
+        if (pendingRaw.Count > 0)
+        {
+            DocxExtension.Of(block).Before = [.. pendingRaw];
+            pendingRaw.Clear();
+        }
+
+        return block;
     }
 
     private void ReadBlock(XElement element, NodeCollection<Block> blocks)
     {
         if (MarkupCompatibility.IsAlternateContent(element))
         {
+            int before = blocks.Count;
             foreach (XElement chosen in MarkupCompatibility.Choose(element, Ns.Understood))
             {
                 ReadBlock(chosen, blocks);
+            }
+
+            if (blocks.Count == before + 1)
+            {
+                DocxExtension.Of(blocks[before]).Wrapper = element;
+            }
+            else if (blocks.Count == before)
+            {
+                // Nothing Egap reads: the whole element goes back where it was.
+                pendingRaw.Add(element);
             }
 
             return;
@@ -240,14 +314,18 @@ internal sealed partial class DocxReader
             case "bookmarkStart" or "bookmarkEnd" or "commentRangeStart" or "commentRangeEnd":
                 if (ReadMark(element) is { } mark)
                 {
+                    DocxExtension.Of(mark).Hoisted = true;
                     pendingMarks.Add(mark);
                 }
 
+                pendingRaw.Add(element);
                 break;
             case "proofErr" or "permStart" or "permEnd" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
                 or "customXmlInsRangeStart" or "customXmlInsRangeEnd" or "customXmlDelRangeStart" or "customXmlDelRangeEnd"
-                or "customXmlMoveFromRangeStart" or "customXmlMoveFromRangeEnd" or "customXmlMoveToRangeStart" or "customXmlMoveToRangeEnd"
-                or "sectPr" or "tblGrid" or "tblPr" or "trPr" or "tcPr" or "sdtPr" or "sdtEndPr":
+                or "customXmlMoveFromRangeStart" or "customXmlMoveFromRangeEnd" or "customXmlMoveToRangeStart" or "customXmlMoveToRangeEnd":
+                pendingRaw.Add(element);
+                break;
+            case "sectPr" or "tblGrid" or "tblPr" or "trPr" or "tcPr" or "sdtPr" or "sdtEndPr":
                 break;
             default:
                 AddBlockIsland(element, blocks);
@@ -257,14 +335,14 @@ internal sealed partial class DocxReader
 
     private void AddBlockIsland(XElement element, NodeCollection<Block> blocks)
     {
-        BlockIsland island = blocks.AddTrusted(new BlockIsland(document, DocxExtension.Format, element.ToString(SaveOptions.DisableFormatting)));
+        BlockIsland island = TakeBefore(blocks.AddTrusted(new BlockIsland(document, DocxExtension.Format, element.ToString(SaveOptions.DisableFormatting))));
         DocxExtension.Of(island).Original = element;
         DocxExtension.Of(island).PartName = currentPart.Name;
     }
 
     private void ReadParagraph(XElement element, NodeCollection<Block> blocks)
     {
-        Paragraph paragraph = blocks.AddTrusted(new Paragraph(document));
+        Paragraph paragraph = TakeBefore(blocks.AddTrusted(new Paragraph(document)));
         DocxExtension extension = DocxExtension.Of(paragraph);
         extension.Original = element;
         extension.PartName = currentPart.Name;
@@ -288,7 +366,20 @@ internal sealed partial class DocxReader
             pendingMarks.Clear();
         }
 
-        ReadInlines(element, paragraph.Inlines, new InlineState());
+        NodeCollection<Inline>? outerInlines = paragraphInlines;
+        DocxExtension? outerExtension = paragraphExtension;
+        paragraphInlines = paragraph.Inlines;
+        paragraphExtension = extension;
+        try
+        {
+            ReadInlines(element, paragraph.Inlines, new InlineState());
+        }
+        finally
+        {
+            paragraphInlines = outerInlines;
+            paragraphExtension = outerExtension;
+        }
+
         lastParagraph = paragraph;
 
         // A table inside a paragraph is not valid markup, but Word's predecessors and other tools write it: it follows the paragraph.
@@ -362,7 +453,7 @@ internal sealed partial class DocxReader
 
     private void ReadTable(XElement element, NodeCollection<Block> blocks)
     {
-        Table table = blocks.AddTrusted(new Table(document));
+        Table table = TakeBefore(blocks.AddTrusted(new Table(document)));
         DocxExtension extension = DocxExtension.Of(table);
         extension.Original = element;
         extension.PartName = currentPart.Name;
@@ -471,6 +562,7 @@ internal sealed partial class DocxReader
                 }
 
                 ReadBlocks(element, cell.Blocks);
+                extension.Snapshot = cell.Blocks.ToArray<Node>();
             }
             else if (element.Name == Ns.W + "sdt" || element.Name == Ns.W + "customXml")
             {
@@ -489,7 +581,7 @@ internal sealed partial class DocxReader
 
     private void ReadBlockContentControl(XElement element, NodeCollection<Block> blocks)
     {
-        ContentControl control = blocks.AddTrusted(new ContentControl(document));
+        ContentControl control = TakeBefore(blocks.AddTrusted(new ContentControl(document)));
         DocxExtension extension = DocxExtension.Of(control);
         extension.Original = element;
         extension.PartName = currentPart.Name;
@@ -498,10 +590,17 @@ internal sealed partial class DocxReader
         {
             ReadBlocks(content, control.Blocks);
         }
+
+        extension.Snapshot = ControlState.Of(control.Properties, control.Blocks);
     }
 
     private static void ReadContentControlProperties(XElement sdt, ContentControlProperties properties, DocxExtension extension)
     {
+        if (sdt.Element(Ns.W + "sdtEndPr") is { } endProperties)
+        {
+            extension.AddUnknownProperty("sdtEndPr", endProperties);
+        }
+
         XElement? sdtPr = sdt.Element(Ns.W + "sdtPr");
         if (sdtPr is null)
         {
@@ -662,9 +761,17 @@ internal sealed partial class DocxReader
                 }
 
                 break;
-            case "pPr" or "tbl" or "proofErr" or "permStart" or "permEnd" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
+            case "pPr" or "tbl":
+                break;
+            case "proofErr" or "permStart" or "permEnd" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
                 or "customXmlInsRangeStart" or "customXmlInsRangeEnd" or "customXmlDelRangeStart" or "customXmlDelRangeEnd"
                 or "customXmlMoveFromRangeStart" or "customXmlMoveFromRangeEnd" or "customXmlMoveToRangeStart" or "customXmlMoveToRangeEnd":
+                // Range markup directly in the paragraph is kept with its place, for a paragraph written from the model.
+                if (inlines == paragraphInlines && paragraphExtension is not null)
+                {
+                    (paragraphExtension.Children ??= []).Add((inlines.Count, element));
+                }
+
                 break;
             default:
                 Add(inlines, new Island(document, IslandKind.Other, DocxExtension.Format, element.ToString(SaveOptions.DisableFormatting)), state, element);
@@ -1014,6 +1121,7 @@ internal sealed partial class DocxReader
             return null;
         }
 
+        (endnote ? usedEndnotes : usedFootnotes).Add(id);
         Footnote note = Add(inlines, new Footnote(document, endnote ? NoteKind.Endnote : NoteKind.Footnote), state, reference);
         DocxExtension.Of(note.Story).Original = content;
         noteDepth++;
@@ -1107,6 +1215,18 @@ internal sealed partial class DocxReader
 
     private void FinishComments()
     {
+        foreach ((int id, XElement comment) in comments)
+        {
+            document.ReserveCommentId(id);
+            if (!usedComments.Contains(id))
+            {
+                data.Unreferenced.Add(comment);
+            }
+        }
+
+        data.Unreferenced.AddRange(footnotes.Where(n => !usedFootnotes.Contains(n.Key)).Select(n => n.Value));
+        data.Unreferenced.AddRange(endnotes.Where(n => !usedEndnotes.Contains(n.Key)).Select(n => n.Value));
+
         if (commentsExtended.Count == 0)
         {
             return;

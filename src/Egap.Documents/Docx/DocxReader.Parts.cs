@@ -475,7 +475,7 @@ internal sealed partial class DocxReader
     }
 
     /// <summary>
-    /// Undoes the obfuscation ECMA-376 Part 1 §17.8.1 puts on embedded fonts: the first 32 bytes are XORed with the font
+    /// Undoes the obfuscation ECMA-376 Part 1 section 17.8.1 puts on embedded fonts: the first 32 bytes are XORed with the font
     /// key's 16 bytes, taken from its hex digits in reverse order.
     /// </summary>
     internal static bool Deobfuscate(byte[] bytes, string fontKey)
@@ -517,6 +517,7 @@ internal sealed partial class DocxReader
 
             XDocument xml = part.LoadXml();
             xml.AddAnnotation(part);
+            NoteIds(xml.Root);
             foreach (XElement note in xml.Root?.Elements(Ns.W + name) ?? [])
             {
                 if (note.W("type") is "separator" or "continuationSeparator" or "continuationNotice")
@@ -537,22 +538,26 @@ internal sealed partial class DocxReader
         {
             XDocument xml = part.LoadXml();
             xml.AddAnnotation(part);
+            NoteIds(xml.Root);
             foreach (XElement comment in xml.Root?.Elements(Ns.W + "comment") ?? [])
             {
-                if (DocxUnits.Int(comment.W("id")) is int id)
+                if (DocxUnits.Int(comment.W("id")) is not int id || !comments.TryAdd(id, comment))
                 {
-                    comments.TryAdd(id, comment);
+                    // A second comment with the same id (or none) cannot be named from the text; it is kept as read.
+                    data.Unreferenced.Add(comment);
                 }
             }
         }
 
         if (Related(OpcRelationshipTypes.CommentsExtended)?.LoadXml().Root is { } extended)
         {
-            foreach (XElement comment in extended.Elements(Ns.W15 + "commentEx"))
+            // Word 2013's preview wrote these in another namespace than its release; the root says which.
+            XNamespace w15 = extended.Name.Namespace;
+            foreach (XElement comment in extended.Elements(w15 + "commentEx"))
             {
-                if ((string?)comment.Attribute(Ns.W15 + "paraId") is { } paraId)
+                if ((string?)comment.Attribute(w15 + "paraId") is { } paraId)
                 {
-                    commentsExtended.TryAdd(paraId, ((string?)comment.Attribute(Ns.W15 + "paraIdParent"), (string?)comment.Attribute(Ns.W15 + "done") is "1" or "true"));
+                    commentsExtended.TryAdd(paraId, ((string?)comment.Attribute(w15 + "paraIdParent"), (string?)comment.Attribute(w15 + "done") is "1" or "true"));
                 }
             }
         }

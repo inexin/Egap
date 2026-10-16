@@ -7,6 +7,11 @@ public sealed class DocxLoadOptions
     public DocumentLimits Limits { get; init; } = new();
 }
 
+/// <summary>How <see cref="DocxFormat"/> writes a file.</summary>
+public sealed class DocxSaveOptions
+{
+}
+
 /// <summary>
 /// Word's DOCX format, with its DOTX and DOCM variants (Phase 6 design Q9 and Q10): strict and transitional files read
 /// into the model, with what the model does not name kept as extension data so a DOCX round trip keeps it.
@@ -43,5 +48,26 @@ public static class DocxFormat
 
         OpcPackage package = OpcPackage.Read(source, options.Limits);
         return DocxReader.Read(package);
+    }
+
+    /// <summary>
+    /// Writes <paramref name="document"/> as DOCX to <paramref name="path"/>. A document read from DOCX keeps what the model
+    /// does not name; parts and paragraphs that were not edited are written as they were read.
+    /// </summary>
+    public static void Save(Document document, string path, DocxSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(path);
+        using FileStream stream = File.Create(path);
+        Save(document, stream, options);
+    }
+
+    /// <summary>Writes <paramref name="document"/> as DOCX to <paramref name="stream"/>, which is left open.</summary>
+    public static void Save(Document document, Stream stream, DocxSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(stream);
+        _ = options;
+        DocxWriter.Write(document, stream);
     }
 }

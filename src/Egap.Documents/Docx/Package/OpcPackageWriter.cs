@@ -100,7 +100,7 @@ internal sealed class OpcPackageWriter
     internal static byte[] Serialize(XDocument xml)
     {
         using MemoryStream output = new();
-        XmlWriterSettings settings = new() { Encoding = new UTF8Encoding(false), Indent = false, NewLineHandling = NewLineHandling.None };
+        XmlWriterSettings settings = new() { Encoding = new UTF8Encoding(false), Indent = false, NewLineHandling = NewLineHandling.Entitize };
         using (XmlWriter writer = XmlWriter.Create(output, settings))
         {
             writer.WriteStartDocument(standalone: true);
