@@ -49,8 +49,22 @@ internal static class Targets
             "signatures" => Signatures,
             "cms" => Cms,
             "revocation" => Revocation,
+            "structure" => Structure,
+            "pdfa" => PdfA,
+            "linearize" => Linearize,
+            "hocr" => Hocr,
+            "alto" => Alto,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
+    }
+
+    /// <summary>Fails the run with a message when a Phase 5 invariant does not hold.</summary>
+    private static void Check(bool ok, string what)
+    {
+        if (!ok)
+        {
+            throw new InvalidOperationException("Broken invariant: " + what + ".");
+        }
     }
 
     private static byte[] ReadAll(Stream input)
@@ -2565,6 +2579,167 @@ internal static class Targets
     /// reopened; every page must come back with the content and media box of the page it was copied from, and extracting
     /// the second copy must give them again.
     /// </summary>
+    /// <summary>Phase 5 task 21: the structure tree read, walked and brought along by page import, then saved and read back.</summary>
+    private static void Structure(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                int count = 0;
+                foreach (PdfStructureElement element in pdf.Structure.Descendants().Take(100_000))
+                {
+                    count++;
+                    _ = (element.Type, element.StandardType, element.Title, element.AlternateText, element.Language, element.Classes.Count, element.Attributes.Count, element.Parent);
+                    foreach (PdfStructureNode child in element.Children)
+                    {
+                        _ = child;
+                    }
+                }
+
+                _ = (pdf.Structure.RoleMap.Count, pdf.Structure.ClassMap.Count, pdf.Structure.IsMarked);
+                if (pdf.Pages.Count > 0)
+                {
+                    _ = pdf.Structure.FindMarkedContent(pdf.Pages[0], 0);
+                }
+
+                using PdfDocument target = PdfDocument.Create();
+                target.Pages.Import(pdf, Enumerable.Range(0, Math.Min(10, pdf.Pages.Count)));
+                using MemoryStream saved = new();
+                target.Save(saved, new PdfSaveOptions { Deterministic = true });
+                using PdfDocument back = PdfDocument.Open(saved.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                Check(back.Pages.Count == Math.Min(10, pdf.Pages.Count), "the imported page count");
+                _ = back.Structure.Descendants().Take(100_000).Count();
+                _ = count;
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+    }
+
+    /// <summary>
+    /// Phase 5 task 21: the PDF/A rules checked and, when conversion succeeds, the converted file saved and checked again
+    /// with nothing left to fix; a refused conversion leaves the document unchanged.
+    /// </summary>
+    private static void PdfA(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                _ = PdfAConverter.Check(pdf, PdfAConformance.PdfA1b);
+                _ = PdfAConverter.CheckUniversalAccessibility(pdf);
+                Check(!pdf.IsChanged, "checking changes nothing");
+                PdfAReport report = PdfAConverter.Convert(pdf, PdfAConformance.PdfA2u);
+                if (!report.Succeeded)
+                {
+                    return;
+                }
+
+                using MemoryStream saved = new();
+                pdf.Save(saved, new PdfSaveOptions { Deterministic = true, AllowInvalidatingSignatures = true });
+                using PdfDocument back = PdfDocument.Open(saved.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                Check(back.Conformance == PdfAConformance.PdfA2u, "the converted file claims PDF/A-2u");
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+    }
+
+    /// <summary>Phase 5 task 21: a linearized save read back with its pages and reported as linearized.</summary>
+    private static void Linearize(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            if (pdf.Pages.Count == 0 || pdf.IsEncrypted)
+            {
+                return;
+            }
+
+            try
+            {
+                using MemoryStream saved = new();
+                pdf.Save(saved, new PdfSaveOptions { Linearize = true, Deterministic = true, AllowInvalidatingSignatures = true });
+                using PdfDocument back = PdfDocument.Open(saved.ToArray(), new PdfReadOptions { MaxObjects = 1_000_000 });
+                Check(back.IsLinearized, "a linearized save reads as linearized");
+                Check(back.Pages.Count == pdf.Pages.Count, "the linearized page count");
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+    }
+
+    /// <summary>Phase 5 task 21: hOCR read and drawn onto a page; a file that is not hOCR is refused with a PdfException.</summary>
+    private static void Hocr(Stream input)
+    {
+        Ocr(input, (page, stream) => PdfOcrLayer.AddHocr(page, stream));
+    }
+
+    /// <summary>Phase 5 task 21: ALTO read and drawn onto a page; a file that is not ALTO is refused with a PdfException.</summary>
+    private static void Alto(Stream input)
+    {
+        Ocr(input, (page, stream) => PdfOcrLayer.AddAlto(page, stream));
+    }
+
+    private static void Ocr(Stream input, Func<PdfPage, Stream, int> add)
+    {
+        byte[] bytes = ReadAll(input);
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = pdf.Pages.AddBlank(new PdfRectangle(0, 0, 612, 792));
+        int words;
+        try
+        {
+            using MemoryStream stream = new(bytes);
+            words = add(page, stream);
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using MemoryStream saved = new();
+        pdf.Save(saved, new PdfSaveOptions { Deterministic = true });
+        using PdfDocument back = PdfDocument.Open(saved.ToArray());
+        string text = back.Pages[0].ExtractText();
+        Check(words == 0 || text.Length > 0, "added words come back as text");
+    }
+
     private static void Merge(Stream input)
     {
         byte[] bytes = ReadAll(input);

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v4#">
+  <Description><MeasurementUnit>pixel</MeasurementUnit></Description>
+  <Layout>
+    <Page ID="p1" WIDTH="2480" HEIGHT="3508" PHYSICAL_IMG_NR="1">
+      <PrintSpace>
+        <TextBlock ID="b1">
+          <TextLine ID="l1" HPOS="300" VPOS="400" WIDTH="1200" HEIGHT="80" LANG="nb">
+            <String ID="s1" CONTENT="Årsrapport" HPOS="300" VPOS="400" WIDTH="600" HEIGHT="80"/>
+            <SP WIDTH="40"/>
+            <String ID="s2" CONTENT="2026" HPOS="940" VPOS="400" WIDTH="300" HEIGHT="80"/>
+          </TextLine>
+        </TextBlock>
+      </PrintSpace>
+    </Page>
+  </Layout>
+</alto>
