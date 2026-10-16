@@ -163,4 +163,11 @@ public enum PdfWarningCode
     /// Glyph List knows); they were given private-use characters (Phase 3 design Q10).
     /// </summary>
     TextWithoutUnicode,
+
+    /// <summary>
+    /// A save or a new signature changes the document in a way an existing signature does not allow, or rewrites a signed
+    /// file whole, so that signature no longer verifies (Phase 5 design Q7); in strict mode it throws instead, and
+    /// <see cref="PdfSaveOptions.AllowInvalidatingSignatures"/> or <see cref="PdfSignOptions.AllowInvalidatingSignatures"/> lets it go ahead.
+    /// </summary>
+    SignatureInvalidated,
 }

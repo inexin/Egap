@@ -49,6 +49,9 @@ public sealed record PdfSignOptions
     /// </summary>
     public PdfTimestampClient? Timestamp { get; init; }
 
+    /// <summary>Where the revocation data for B-LT and B-LTA comes from; required from <see cref="PadesLevel.BaselineLT"/>.</summary>
+    public PdfRevocationSource? Revocation { get; init; }
+
     /// <summary>The digest algorithm: SHA-256 (the default), SHA-384 or SHA-512.</summary>
     public HashAlgorithmName DigestAlgorithm { get; init; } = HashAlgorithmName.SHA256;
 
@@ -72,6 +75,23 @@ public sealed record PdfSignOptions
 
     /// <summary>The signing time claimed in <c>/M</c>; now when left out. Only a timestamp proves a time.</summary>
     public DateTimeOffset? SigningTime { get; init; }
+
+    /// <summary>
+    /// Makes the signature a certification signature with these permissions for later changes (DocMDP, ISO 32000-2,
+    /// 12.8.2.2); it must be the document's first signature. Left out, the signature is an approval signature.
+    /// </summary>
+    public PdfCertification? Certification { get; init; }
+
+    /// <summary>
+    /// The fields the signature locks (FieldMDP, 12.8.2.4); left out, the field's own <c>/Lock</c> applies, if it has one.
+    /// </summary>
+    public PdfFieldLock? FieldLock { get; init; }
+
+    /// <summary>
+    /// Whether signing may break an existing signature knowingly, such as signing a document certified to allow no changes;
+    /// left false, that adds a <see cref="PdfWarningCode.SignatureInvalidated"/> warning, or throws in strict mode.
+    /// </summary>
+    public bool AllowInvalidatingSignatures { get; init; }
 
     /// <summary>
     /// The bytes reserved for the CMS in <c>/Contents</c>. Left out, it is sized from the signer's certificates, the key and,

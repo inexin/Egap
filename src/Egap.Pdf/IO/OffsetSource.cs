@@ -73,3 +73,28 @@ internal sealed class PrefixSource(PdfSource inner, long length) : PdfSource
         return true;
     }
 }
+
+/// <summary>A source followed by more bytes in memory: a file with an update not yet written, for checking what the update would do (Phase 5).</summary>
+internal sealed class AppendedSource(PdfSource head, byte[] tail) : PdfSource
+{
+    public override long Length => head.Length + tail.Length;
+
+    public override bool TryGetChunk(long position, out ArraySegment<byte> chunk, out long chunkStart)
+    {
+        if (position < 0 || position >= Length)
+        {
+            chunk = default;
+            chunkStart = 0;
+            return false;
+        }
+
+        if (position < head.Length)
+        {
+            return head.TryGetChunk(position, out chunk, out chunkStart);
+        }
+
+        chunk = new ArraySegment<byte>(tail);
+        chunkStart = head.Length;
+        return true;
+    }
+}

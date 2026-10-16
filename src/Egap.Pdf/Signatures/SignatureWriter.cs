@@ -59,6 +59,13 @@ internal static class SignatureWriter
         prepared.Fill(cms);
         await output.WriteAsync(prepared.Update, cancellationToken).ConfigureAwait(false);
         await output.FlushAsync(cancellationToken).ConfigureAwait(false);
+        if (options.Level >= PadesLevel.BaselineLT)
+        {
+            // B-LT adds the validation data in an update of its own, B-LTA a document timestamp after it.
+            using PdfDocument signed = document.OpenWithUpdate(prepared.Update);
+            PdfTimestampClient? archive = options.Level == PadesLevel.BaselineLTA ? options.Timestamp : null;
+            await LongTermWriter.AddAsync(signed, options.Revocation!, archive, output, copyBase: false, cancellationToken).ConfigureAwait(false);
+        }
     }
 
     public static async Task<PdfPreparedSignature> PrepareDeferredAsync(PdfDocument document, string fieldName, PdfSignOptions options, Stream output, CancellationToken cancellationToken)
@@ -69,6 +76,11 @@ internal static class SignatureWriter
         }
 
         CheckTimestamp(options);
+        if (options.Level >= PadesLevel.BaselineLT)
+        {
+            throw new ArgumentException("A prepared signature goes up to B-T; once it is completed, open the file and call AddValidationDataAsync for B-LT or B-LTA.", nameof(options));
+        }
+
         long start = output.Position;
         Prepared prepared = await PrepareAsync(document, fieldName, options, output, cancellationToken).ConfigureAwait(false);
         await output.WriteAsync(prepared.Update, cancellationToken).ConfigureAwait(false);
@@ -81,7 +93,7 @@ internal static class SignatureWriter
     /// Adds a document timestamp (ISO 32000-2, 12.8.5): an update whose <c>/DocTimeStamp</c> holds an RFC 3161 token over the
     /// whole file before it, as PAdES B-LTA ends with.
     /// </summary>
-    public static async Task TimestampAsync(PdfDocument document, PdfTimestampClient client, string? fieldName, int? reservedSize, Stream output, CancellationToken cancellationToken)
+    public static async Task TimestampAsync(PdfDocument document, PdfTimestampClient client, string? fieldName, int? reservedSize, Stream output, CancellationToken cancellationToken, bool copyBase = true)
     {
         ArgumentNullException.ThrowIfNull(client);
         fieldName ??= FreeName(document, "DocTimeStamp");
@@ -92,7 +104,7 @@ internal static class SignatureWriter
             ["Filter"] = PdfName.Get("Adobe.PPKLite"),
             ["SubFilter"] = PdfName.Get("ETSI.RFC3161"),
         };
-        Prepared prepared = await PrepareCoreAsync(document, fieldName, dictionary, reserved, client.DigestAlgorithm, output, cancellationToken).ConfigureAwait(false);
+        Prepared prepared = await PrepareCoreAsync(document, fieldName, dictionary, reserved, client.DigestAlgorithm, output, cancellationToken, guard: false, copyBase: copyBase).ConfigureAwait(false);
         prepared.Fill(await client.RequestAsync(prepared.Digest, cancellationToken).ConfigureAwait(false));
         await output.WriteAsync(prepared.Update, cancellationToken).ConfigureAwait(false);
         await output.FlushAsync(cancellationToken).ConfigureAwait(false);
@@ -105,6 +117,11 @@ internal static class SignatureWriter
         if (options.Level >= PadesLevel.BaselineT && options.Timestamp is null)
         {
             throw new ArgumentException($"PAdES {options.Level} needs a timestamp authority: set PdfSignOptions.Timestamp.", nameof(options));
+        }
+
+        if (options.Level >= PadesLevel.BaselineLT && options.Revocation is null)
+        {
+            throw new ArgumentException($"PAdES {options.Level} needs revocation data: set PdfSignOptions.Revocation.", nameof(options));
         }
     }
 
@@ -165,21 +182,75 @@ internal static class SignatureWriter
         Set(signature, "Location", options.Location);
         Set(signature, "ContactInfo", options.ContactInfo);
         signature["Prop_Build"] = new PdfDictionary { ["App"] = new PdfDictionary { ["Name"] = PdfName.Get("Egap") } };
+
+        // The field's seed values must be met before anything is written (design Q7).
+        PdfSignatureField? existing = document.Form.TryGetField(fieldName, out PdfField field) ? field as PdfSignatureField : null;
+        SeedValueCheck.Check(existing?.SeedValue, options);
+
+        // A certification (DocMDP) and the field lock (FieldMDP) are signature references (12.8.1); the catalog's /Perms
+        // names the certification.
+        PdfArray references = [];
+        if (options.Certification is { } level)
+        {
+            if (document.Signatures.Count > 0)
+            {
+                throw new ArgumentException("A certification signature must be the document's first signature; this document is signed already.", nameof(options));
+            }
+
+            references.Add(Reference("DocMDP", new PdfDictionary { ["P"] = new PdfInteger((int)level) }));
+        }
+
+        if ((options.FieldLock ?? existing?.Lock) is { } fieldLock)
+        {
+            PdfDictionary parameters = new() { ["Action"] = PdfName.Get(fieldLock.Action.ToString()) };
+            if (fieldLock.Action != PdfFieldLockAction.All)
+            {
+                parameters["Fields"] = new PdfArray([.. fieldLock.Fields.Select(f => (PdfObject)PdfString.FromText(f))]);
+            }
+
+            references.Add(Reference("FieldMDP", parameters));
+        }
+
+        if (references.Count > 0)
+        {
+            signature["Reference"] = references;
+        }
+
         DateTimeOffset time = options.SigningTime ?? document.Clock.GetLocalNow();
         Func<PdfReference>? draw = options.Appearance is { } appearance ? () => appearance.Build(document, name, time, options.Reason, options.Location) : null;
-        return PrepareCoreAsync(document, fieldName, signature, options.ReservedSize ?? EstimateSize(options), options.DigestAlgorithm, output, cancellationToken, options.Appearance, draw);
+        Action<PdfReference>? certify = options.Certification is null ? null : reference =>
+        {
+            PdfDictionary perms = document.Catalog.Get<PdfDictionary>("Perms") is { } existingPerms ? existingPerms : [];
+            perms["DocMDP"] = reference;
+            document.Catalog["Perms"] = perms;
+        };
+        return PrepareCoreAsync(document, fieldName, signature, options.ReservedSize ?? EstimateSize(options), options.DigestAlgorithm, output, cancellationToken, options.Appearance, draw, certify, !options.AllowInvalidatingSignatures);
+    }
+
+    /// <summary>A signature reference dictionary (12.8.1, Table 256) for a transform method and its parameters.</summary>
+    private static PdfDictionary Reference(string method, PdfDictionary parameters)
+    {
+        parameters["Type"] = PdfName.Get("TransformParams");
+        parameters["V"] = PdfName.Get("1.2");
+        return new PdfDictionary
+        {
+            ["Type"] = PdfName.Get("SigRef"),
+            ["TransformMethod"] = PdfName.Get(method),
+            ["TransformParams"] = parameters,
+        };
     }
 
     /// <summary>
     /// Puts the dictionary, with the byte range and contents placeholders added, into the field; builds the update; copies
     /// the original to <paramref name="output"/> while hashing it; patches the byte range and hashes the rest.
     /// </summary>
-    private static async Task<Prepared> PrepareCoreAsync(PdfDocument document, string fieldName, PdfDictionary signature, int reserved, HashAlgorithmName digestAlgorithm, Stream output, CancellationToken cancellationToken, PdfSignatureAppearance? appearance = null, Func<PdfReference>? drawAppearance = null)
+    private static async Task<Prepared> PrepareCoreAsync(PdfDocument document, string fieldName, PdfDictionary signature, int reserved, HashAlgorithmName digestAlgorithm, Stream output, CancellationToken cancellationToken, PdfSignatureAppearance? appearance = null, Func<PdfReference>? drawAppearance = null, Action<PdfReference>? afterAdd = null, bool guard = true, bool copyBase = true)
     {
         ArgumentException.ThrowIfNullOrEmpty(fieldName);
         ArgumentNullException.ThrowIfNull(output);
         document.ThrowIfReadOnly();
-        PdfSaveOptions save = new() { Mode = PdfSaveMode.Incremental };
+        // A signature changes only what signing needs: no modification date, which a certification signature might forbid.
+        PdfSaveOptions save = new() { Mode = PdfSaveMode.Incremental, UpdateModificationDate = false };
         if (document.WritesWhole(save))
         {
             throw new PdfException("The file needed repair, so a signature cannot be added as an update; save it (it is written whole), open the result and sign that.");
@@ -188,8 +259,15 @@ internal static class SignatureWriter
         string marker = Marker();
         signature["ByteRange"] = new PdfArray([.. marker.Split(' ').Select(n => (PdfObject)new PdfInteger(long.Parse(n, CultureInfo.InvariantCulture)))]);
         signature["Contents"] = PdfString.FromBytes(new byte[reserved], hex: true);
-        SignatureFields.Attach(document, fieldName, document.Objects.Add(signature), appearance, drawAppearance);
+        PdfReference added = document.Objects.Add(signature);
+        SignatureFields.Attach(document, fieldName, added, appearance, drawAppearance);
+        afterAdd?.Invoke(added);
         (byte[] update, long baseLength) = document.BuildUpdate(save) ?? throw new InvalidOperationException("Adding a signature changed nothing.");
+        if (guard)
+        {
+            // Signing a document whose certification forbids it breaks that certification (design Q7).
+            SignatureGuard.Check(document, rewrite: false, update);
+        }
 
         // The byte range placeholder and the contents follow each other in the signature dictionary as written.
         int rangeAt = IndexOf(update, Encoding.ASCII.GetBytes("[" + marker + "]"), 0);
@@ -212,7 +290,7 @@ internal static class SignatureWriter
         Encoding.ASCII.GetBytes(range.PadRight(width)).CopyTo(update, rangeAt);
 
         using IncrementalHash hash = IncrementalHash.CreateHash(digestAlgorithm);
-        await document.CopyBaseAsync(output, hash, cancellationToken).ConfigureAwait(false);
+        await document.CopyBaseAsync(copyBase ? output : null, hash, cancellationToken).ConfigureAwait(false);
         hash.AppendData(update, 0, contentsAt);
         hash.AppendData(update, (int)(contentsEnd - baseLength), (int)(total - contentsEnd));
         byte[] digest = hash.GetHashAndReset();

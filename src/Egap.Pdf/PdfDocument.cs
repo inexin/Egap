@@ -267,6 +267,24 @@ public sealed class PdfDocument : IDisposable
     }
 
     /// <summary>
+    /// Adds long-term validation data into <paramref name="output"/> (Phase 5 design Q4): for every signature and timestamp,
+    /// its chain's certificates and an OCSP response or CRL for each, from <paramref name="revocation"/>, in the Document
+    /// Security Store, as an incremental update; with <paramref name="archiveTimestamp"/>, a document timestamp over it all
+    /// (PAdES B-LTA). Signatures made at B-T become B-LT, or B-LTA. Afterwards this document is read-only, as after
+    /// <see cref="SignAsync"/>.
+    /// </summary>
+    /// <param name="revocation">Where the OCSP responses and CRLs come from.</param>
+    /// <param name="output">Where the file goes, from its current position.</param>
+    /// <param name="archiveTimestamp">A timestamp authority for the document timestamp, or <see langword="null"/> for none.</param>
+    /// <param name="cancellationToken">Cancels the requests.</param>
+    public async Task AddValidationDataAsync(PdfRevocationSource revocation, Stream output, PdfTimestampClient? archiveTimestamp = null, CancellationToken cancellationToken = default)
+    {
+        ThrowIfReadOnly();
+        await global::Egap.Pdf.Signatures.LongTermWriter.AddAsync(this, revocation, archiveTimestamp, output, copyBase: true, cancellationToken).ConfigureAwait(false);
+        MarkSignedElsewhere();
+    }
+
+    /// <summary>
     /// Whether the document cannot be saved: an earlier revision opened with <see cref="PdfRevision.Open"/>, or a document
     /// already signed into another stream, whose saved state is that stream (open it to go on).
     /// </summary>
@@ -285,6 +303,17 @@ public sealed class PdfDocument : IDisposable
     /// <summary>The length of the file the document was opened from.</summary>
     internal long FileLength => source.Length;
 
+    /// <summary>
+    /// The document with <paramref name="update"/> appended to its file: read-only for checking what a save would do, or
+    /// writable for adding another update after it (long-term validation data, then an archive timestamp).
+    /// </summary>
+    internal PdfDocument OpenWithUpdate(byte[] update, bool writable = false)
+    {
+        PdfDocument after = Open(new AppendedSource(new PrefixSource(source, baseLength), update), Options with { Strict = false });
+        after.IsReadOnly = !writable;
+        return after;
+    }
+
     /// <summary>Reads bytes of the file the document was opened from, as it was opened.</summary>
     internal byte[] ReadFileBytes(long position, int count)
     {
@@ -297,6 +326,43 @@ public sealed class PdfDocument : IDisposable
         {
             throw new InvalidOperationException(readOnlyReason);
         }
+    }
+
+    /// <summary>
+    /// Applies the redaction annotations of every page (Phase 5 design Q9): the text, line art and images each one covers are
+    /// removed for real, not hidden, and the annotations are deleted. Afterwards every save rewrites the file whole with unused
+    /// objects dropped, so nothing redacted survives in an earlier revision; that also breaks any signature.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// page.Annotations.Add(new PdfRedactAnnotation(area) { OverlayText = "REDACTED" });
+    /// pdf.ApplyRedactions(new PdfRedactionOptions { Images = PdfRedactImages.Pixels, Paths = PdfRedactPaths.Covered });
+    /// pdf.Save("clean.pdf");
+    /// </code>
+    /// </example>
+    public PdfRedactionResult ApplyRedactions(PdfRedactionOptions? options = null)
+    {
+        ThrowIfReadOnly();
+        return global::Egap.Pdf.Redaction.Redactor.Apply(this, options ?? PdfRedactionOptions.Default);
+    }
+
+    /// <summary>
+    /// Removes what the document hides beyond its pages (Phase 5 design Q10): metadata, scripts and actions, attachments,
+    /// hidden layers, comments, form data, thumbnails and private application data, each a switch in the options and all on
+    /// by default. Afterwards every save rewrites the file whole with unused objects dropped, so earlier revisions go too.
+    /// </summary>
+    public PdfSanitizeResult Sanitize(PdfSanitizeOptions? options = null)
+    {
+        ThrowIfReadOnly();
+        return global::Egap.Pdf.Redaction.DocumentSanitizer.Apply(this, options ?? PdfSanitizeOptions.Default);
+    }
+
+    /// <summary>Whether redactions were applied, so every save rewrites the file whole and drops unused objects.</summary>
+    internal bool Redacted { get; private set; }
+
+    internal void MarkRedacted()
+    {
+        Redacted = true;
     }
 
     /// <summary>Makes the document read-only after it was signed into another stream: its changes now live there.</summary>
@@ -316,8 +382,11 @@ public sealed class PdfDocument : IDisposable
         return Writing.IncrementalWriter.Update(this, baseLength, previousSection, EndsWithNewline(), options) is { } update ? (update.Bytes, baseLength) : null;
     }
 
-    /// <summary>Copies the original file, up to where an update goes, to <paramref name="output"/>, adding it to <paramref name="hash"/> as it goes.</summary>
-    internal async Task CopyBaseAsync(Stream output, System.Security.Cryptography.IncrementalHash hash, CancellationToken cancellationToken)
+    /// <summary>
+    /// Copies the original file, up to where an update goes, to <paramref name="output"/> (or nowhere, when it is there already),
+    /// adding it to <paramref name="hash"/> as it goes.
+    /// </summary>
+    internal async Task CopyBaseAsync(Stream? output, System.Security.Cryptography.IncrementalHash hash, CancellationToken cancellationToken)
     {
         byte[] buffer = new byte[256 * 1024];
         for (long at = 0; at < baseLength;)
@@ -329,7 +398,10 @@ public sealed class PdfDocument : IDisposable
             }
 
             hash.AppendData(buffer, 0, read);
-            await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
+            if (output is not null)
+            {
+                await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
+            }
             at += read;
         }
     }
@@ -447,7 +519,7 @@ public sealed class PdfDocument : IDisposable
     /// <summary>Whether the cross-reference was rebuilt by scanning; such a file saves by full rewrite (hub Q8).</summary>
     internal bool Rebuilt { get; }
 
-    /// <summary>Whether the document was made by <see cref="Create"/>: it saves whole, compact by default (design Q7).</summary>
+    /// <summary>Whether the document was made by <see cref="Create(PdfCreateOptions)"/>: it saves whole, compact by default (design Q7).</summary>
     internal bool IsNew { get; private set; }
 
     /// <summary>Opens a PDF file. The file stays open, shared for reading, until the document is disposed.</summary>
@@ -512,16 +584,50 @@ public sealed class PdfDocument : IDisposable
     /// </example>
     public static PdfDocument Create()
     {
-        PdfDocument document = Open(PdfSource.FromMemory(EmptyFile()), null);
+        return Create(PdfCreateOptions.Default);
+    }
+
+    /// <summary>
+    /// Creates an empty document with options (Phase 5 design Q11): with a PDF/A conformance, the document is the part's PDF
+    /// version (1.4, 1.7 or 2.0), carries an sRGB output intent and the XMP identification, and every save applies the part's
+    /// writer rules (see <see cref="PdfCreateOptions.Conformance"/>).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// using PdfDocument pdf = PdfDocument.Create(new PdfCreateOptions { Conformance = PdfAConformance.PdfA2b });
+    /// pdf.Metadata.Title = "Annual report";
+    /// pdf.Save("archive.pdf");
+    /// </code>
+    /// </example>
+    public static PdfDocument Create(PdfCreateOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        string version = options.Conformance == PdfAConformance.None ? "1.7" : PdfA.PdfAWriter.Version(options.Conformance);
+        PdfDocument document = Open(PdfSource.FromMemory(EmptyFile(version)), null);
         document.IsNew = true;
+        if (options.Conformance != PdfAConformance.None)
+        {
+            document.CreatedConformance = options.Conformance;
+            PdfA.PdfAWriter.Identify(document, options.Conformance);
+        }
+
         return document;
     }
 
-    /// <summary>The bytes of an empty PDF 1.7 file: object 1 the catalog, object 2 an empty page tree.</summary>
-    private static byte[] EmptyFile()
+    /// <summary>The conformance the document was created with, whose writer rules each save applies; None otherwise.</summary>
+    internal PdfAConformance CreatedConformance { get; private set; }
+
+    /// <summary>
+    /// The PDF/A conformance the document claims in its XMP metadata (<c>pdfaid:part</c> and <c>pdfaid:conformance</c>), or
+    /// <see cref="PdfAConformance.None"/> when it claims none Egap writes. A claim is not a check of the rules.
+    /// </summary>
+    public PdfAConformance Conformance => PdfA.PdfAWriter.Read(this);
+
+    /// <summary>The bytes of an empty file: object 1 the catalog, object 2 an empty page tree.</summary>
+    private static byte[] EmptyFile(string version)
     {
         string[] objects = ["<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [] /Count 0 >>"];
-        StringBuilder file = new("%PDF-1.7\n");
+        StringBuilder file = new($"%PDF-{version}\n");
         List<int> offsets = [];
         for (int i = 0; i < objects.Length; i++)
         {
@@ -563,12 +669,13 @@ public sealed class PdfDocument : IDisposable
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
         ThrowIfReadOnly();
-        options ??= PdfSaveOptions.Default;
+        options = Forced(options ?? PdfSaveOptions.Default);
         BeforeSave(options);
         string full = Path.GetFullPath(path);
         bool sameFile = string.Equals(full, FilePath, StringComparison.OrdinalIgnoreCase);
         if (WritesWhole(options))
         {
+            GuardSignatures(options, rewrite: true, null);
             if (sameFile)
             {
                 ReplaceFile(full, output => Writing.RewriteWriter.Write(this, output, options));
@@ -583,6 +690,7 @@ public sealed class PdfDocument : IDisposable
         }
 
         (byte[] Bytes, long Xref)? update = Writing.IncrementalWriter.Update(this, baseLength, previousSection, EndsWithNewline(), options);
+        GuardSignatures(options, rewrite: false, update?.Bytes);
         if (sameFile && new FileInfo(full).Length == baseLength)
         {
             if (update is { } appended)
@@ -631,15 +739,34 @@ public sealed class PdfDocument : IDisposable
     private void SaveTo(Stream output, PdfSaveOptions? options)
     {
         ThrowIfReadOnly();
-        options ??= PdfSaveOptions.Default;
+        options = Forced(options ?? PdfSaveOptions.Default);
         BeforeSave(options);
         if (WritesWhole(options))
         {
+            GuardSignatures(options, rewrite: true, null);
             Writing.RewriteWriter.Write(this, output, options);
             return;
         }
 
-        CopyWithUpdate(output, Writing.IncrementalWriter.Update(this, baseLength, previousSection, EndsWithNewline(), options)?.Bytes);
+        byte[]? update = Writing.IncrementalWriter.Update(this, baseLength, previousSection, EndsWithNewline(), options)?.Bytes;
+        GuardSignatures(options, rewrite: false, update);
+        CopyWithUpdate(output, update);
+    }
+
+    /// <summary>The save options with what redaction forces: a rewrite that drops unused objects (Phase 5 design Q9).</summary>
+    private PdfSaveOptions Forced(PdfSaveOptions options)
+    {
+        options = Redacted ? options with { Mode = PdfSaveMode.Rewrite, RemoveUnused = true } : options;
+        return CreatedConformance == PdfAConformance.None ? options : PdfA.PdfAWriter.Options(CreatedConformance, options);
+    }
+
+    /// <summary>Warns, or throws in strict mode, before a save breaks a signature, unless the options allow it (Phase 5 design Q7).</summary>
+    private void GuardSignatures(PdfSaveOptions options, bool rewrite, byte[]? update)
+    {
+        if (!options.AllowInvalidatingSignatures && !IsNew)
+        {
+            global::Egap.Pdf.Signatures.SignatureGuard.Check(this, rewrite, update);
+        }
     }
 
     /// <summary>The clock a save reads the modification date from; tests set their own.</summary>
@@ -653,6 +780,11 @@ public sealed class PdfDocument : IDisposable
     {
         // Font subsets drawing used are written now, when their glyphs are known.
         WrittenResources.Finish();
+        if (CreatedConformance != PdfAConformance.None)
+        {
+            PdfA.PdfAWriter.Apply(this, CreatedConformance);
+        }
+
         if (options.UpdateModificationDate && !options.Deterministic && IsChanged)
         {
             Metadata.Touch(Clock.GetLocalNow());

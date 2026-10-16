@@ -15,6 +15,7 @@ internal sealed class XmpPacket
     public static readonly XNamespace Dc = "http://purl.org/dc/elements/1.1/";
     public static readonly XNamespace Xmp = "http://ns.adobe.com/xap/1.0/";
     public static readonly XNamespace Pdf = "http://ns.adobe.com/pdf/1.3/";
+    public static readonly XNamespace PdfAId = "http://www.aiim.org/pdfa/ns/id/";
     private static readonly XNamespace XmpMeta = "adobe:ns:meta/";
     private static readonly XNamespace Xml = XNamespace.Xml;
 
@@ -205,7 +206,7 @@ internal sealed class XmpPacket
         XElement target = Descriptions().FirstOrDefault() ?? NewDescription();
         if (target.GetPrefixOfNamespace(name.Namespace) is null)
         {
-            string prefix = name.Namespace == Dc ? "dc" : name.Namespace == Xmp ? "xmp" : name.Namespace == Pdf ? "pdf" : "ns" + target.Attributes().Count();
+            string prefix = name.Namespace == Dc ? "dc" : name.Namespace == Xmp ? "xmp" : name.Namespace == Pdf ? "pdf" : name.Namespace == PdfAId ? "pdfaid" : "ns" + target.Attributes().Count();
             target.SetAttributeValue(XNamespace.Xmlns + prefix, name.Namespace.NamespaceName);
         }
 
