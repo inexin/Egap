@@ -121,7 +121,7 @@ internal sealed partial class PdfARules
         {
             Issue("6.1.2", $"the file is PDF {version}; it is written as PDF {target}", () => document.Catalog.Remove("Version"));
         }
-        else if (document.Catalog.GetName("Version") is PdfName declared && declared.Value != version)
+        else if (document.Catalog.GetName("Version") is PdfName declared && declared.Value != target)
         {
             Issue("6.1.2", "the catalog declares another version; the declaration is removed", () => document.Catalog.Remove("Version"));
         }
@@ -632,7 +632,18 @@ internal sealed partial class PdfARules
     /// <summary>Every font embedded: the standard 14, system fonts and, when allowed, substitutes; others are unmet.</summary>
     private void Fonts(List<PdfDictionary> resources, Dictionary<PdfDictionary, HashSet<int>> used)
     {
-        foreach (PdfDictionary font in ResourceWalker.Fonts(resources))
+        // A program several fonts share takes one set of advances, so it is only rewritten for a font that has it alone.
+        List<PdfDictionary> fonts = ResourceWalker.Fonts(resources);
+        Dictionary<PdfStream, int> programUsers = new(ReferenceEqualityComparer.Instance);
+        foreach (PdfDictionary font in fonts)
+        {
+            if (EmbeddedWidths.Program(font) is PdfStream program)
+            {
+                programUsers[program] = programUsers.GetValueOrDefault(program) + 1;
+            }
+        }
+
+        foreach (PdfDictionary font in fonts)
         {
             string subtype = font.GetName("Subtype")?.Value ?? "";
             string name = font.GetName("BaseFont")?.Value ?? "(unnamed)";
@@ -699,9 +710,17 @@ internal sealed partial class PdfARules
             {
                 Issue("6.2.11.5", $"the font {name} gives one glyph different widths, which its program cannot agree with");
             }
+            else if (mismatches.Count > 0 && EmbeddedWidths.Program(font) is PdfStream shared && programUsers.GetValueOrDefault(shared) > 1)
+            {
+                Issue("6.2.11.5", $"the font {name}'s program disagrees with its widths for {mismatches.Count} glyphs, and other fonts share the program");
+            }
+            else if (mismatches.Count > 0 && EmbeddedWidths.CanFix(font) && !EmbeddedWidths.Achievable(font, mismatches))
+            {
+                Issue("6.2.11.5", $"the font {name}'s program disagrees with its widths for {mismatches.Count} glyphs, and its units per em are too coarse to hold them");
+            }
             else if (mismatches.Count > 0 && !EmbeddedWidths.CanFix(font))
             {
-                Issue("6.2.11.5", $"the font {name}'s program disagrees with its widths for {mismatches.Count} glyphs, and Egap rewrites only TrueType programs");
+                Issue("6.2.11.5", $"the font {name}'s program disagrees with its widths for {mismatches.Count} glyphs, and Egap rewrites only well-formed TrueType programs");
             }
             else if (mismatches.Count > 0)
             {
@@ -916,10 +935,16 @@ internal sealed partial class PdfARules
         static bool Interpolates(PdfContent content) => content.OfType<PdfInlineImage>().Any(i => i.Parameters.GetBool("I") == true || i.Parameters.GetBool("Interpolate") == true);
         static void TurnOff(PdfContent content)
         {
-            foreach (PdfInlineImage image in content.OfType<PdfInlineImage>())
+            // Each image is replaced, not edited in place, so the content is written from its operations again.
+            for (int i = 0; i < content.Count; i++)
             {
-                image.Parameters.Remove("I");
-                image.Parameters.Remove("Interpolate");
+                if (content[i] is PdfInlineImage image && (image.Parameters.GetBool("I") == true || image.Parameters.GetBool("Interpolate") == true))
+                {
+                    PdfDictionary parameters = image.Parameters.Clone();
+                    parameters.Remove("I");
+                    parameters.Remove("Interpolate");
+                    content[i] = new PdfInlineImage(parameters, image.Data);
+                }
             }
         }
 

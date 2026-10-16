@@ -178,7 +178,7 @@ public sealed class PdfMetadata
             string? value = info.GetText(key);
 
             // Text compares without surrounding white space, which the packet's reader trims, and without characters XML cannot hold.
-            static bool Equal(string? a, string? b) => string.Equals((XmpPacket.Clean(a) ?? "").Trim(), (b ?? "").Trim(), StringComparison.Ordinal);
+            static bool Equal(string? a, string? b) => string.Equals(Normal(XmpPacket.Clean(a)), Normal(b), StringComparison.Ordinal);
             bool same = packet is not null && kind switch
             {
                 'a' => Equal(value, packet.GetAlternative(property)),
@@ -193,6 +193,12 @@ public sealed class PdfMetadata
         }
 
         return keys;
+    }
+
+    /// <summary>Text as an XML reader gives it back: line ends as line feeds, no white space around it.</summary>
+    private static string Normal(string? text)
+    {
+        return (text ?? "").Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n').Trim();
     }
 
     /// <summary>Sets the XMP packet's paired properties from the Info entries; an Info date that does not parse is removed.</summary>
