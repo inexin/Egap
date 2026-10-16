@@ -193,6 +193,54 @@ public sealed class PdfDocument : IDisposable
 
     private readonly Dictionary<PdfDocument, Writing.ObjectCopier> copiers = new(ReferenceEqualityComparer.Instance);
 
+    /// <summary>
+    /// The file's revisions, oldest first (Phase 5 design, 5.1): the original file and each incremental update after it. A
+    /// file whose cross-reference had to be rebuilt has one. Found on first use by reading each <c>startxref</c>.
+    /// </summary>
+    public IReadOnlyList<PdfRevision> Revisions => LazyInitializer.EnsureInitialized(ref revisions, FindRevisions);
+
+    private IReadOnlyList<PdfRevision>? revisions;
+
+    private PdfRevision[] FindRevisions()
+    {
+        List<global::Egap.Pdf.Signatures.RevisionScanner.Found> found = global::Egap.Pdf.Signatures.RevisionScanner.Scan(source, Xref, Rebuilt);
+        return [.. found.Select((f, i) => new PdfRevision(this, i, f.XrefOffset, f.EofEnd, f.Length, i == found.Count - 1))];
+    }
+
+    /// <summary>
+    /// The signed signature fields and document timestamps of the form, in the order they were signed (Phase 5 design, 5.1).
+    /// Reading them checks nothing; <see cref="PdfSignature.ByteRangeIssues"/> says what is wrong with each byte range.
+    /// </summary>
+    public IReadOnlyList<PdfSignature> Signatures => PdfSignature.Find(this);
+
+    /// <summary>Whether the document is an earlier revision opened with <see cref="PdfRevision.Open"/>, which cannot be saved.</summary>
+    public bool IsReadOnly { get; private set; }
+
+    /// <summary>A read-only document over the first <paramref name="length"/> bytes of this one's file.</summary>
+    internal PdfDocument OpenRevision(long length, PdfReadOptions options)
+    {
+        PdfDocument revision = Open(new PrefixSource(source, length), options);
+        revision.IsReadOnly = true;
+        return revision;
+    }
+
+    /// <summary>The length of the file the document was opened from.</summary>
+    internal long FileLength => source.Length;
+
+    /// <summary>Reads bytes of the file the document was opened from, as it was opened.</summary>
+    internal byte[] ReadFileBytes(long position, int count)
+    {
+        return source.ReadBytes(position, count);
+    }
+
+    private void ThrowIfReadOnly()
+    {
+        if (IsReadOnly)
+        {
+            throw new InvalidOperationException("An earlier revision opened with PdfRevision.Open is read-only and cannot be saved.");
+        }
+    }
+
     /// <summary>The interactive form, the catalog's /AcroForm.</summary>
     public PdfForm Form => new(this);
 
@@ -421,6 +469,7 @@ public sealed class PdfDocument : IDisposable
     public void Save(string path, PdfSaveOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
+        ThrowIfReadOnly();
         options ??= PdfSaveOptions.Default;
         BeforeSave(options);
         string full = Path.GetFullPath(path);
@@ -488,6 +537,7 @@ public sealed class PdfDocument : IDisposable
 
     private void SaveTo(Stream output, PdfSaveOptions? options)
     {
+        ThrowIfReadOnly();
         options ??= PdfSaveOptions.Default;
         BeforeSave(options);
         if (WritesWhole(options))

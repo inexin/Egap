@@ -318,7 +318,7 @@ public sealed class PdfListBoxField : PdfChoiceField
     }
 }
 
-/// <summary>A signature field (12.7.5.5). Phase 2 reads it only; signing and verifying come in 5.x.</summary>
+/// <summary>A signature field (12.7.5.5). <see cref="PdfDocument.Signatures"/> reads the signatures in signed fields (Phase 5).</summary>
 public sealed class PdfSignatureField : PdfField
 {
     internal PdfSignatureField(PdfDictionary dictionary, PdfReference? reference, PdfField? parent, PdfDocument document, HashSet<PdfDictionary> path)
@@ -331,6 +331,12 @@ public sealed class PdfSignatureField : PdfField
 
     /// <summary>Whether the field holds a signature.</summary>
     public bool IsSigned => Signature is not null;
+
+    /// <summary>The fields signing this one will lock (<c>/Lock</c>, 12.7.5.5); <see langword="null"/> when none.</summary>
+    public PdfFieldLock? Lock => PdfFieldLock.Read(Dictionary.Get<PdfDictionary>("Lock"));
+
+    /// <summary>The constraints on how the field may be signed (<c>/SV</c>, 12.7.5.5); <see langword="null"/> when none.</summary>
+    public PdfSeedValue? SeedValue => Dictionary.Get<PdfDictionary>("SV") is { } seed ? new PdfSeedValue(seed) : null;
 }
 
 /// <summary>An option of a choice field: the value exported when it is selected, and the text shown.</summary>

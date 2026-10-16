@@ -49,3 +49,27 @@ internal sealed class UnownedSource(PdfSource inner) : PdfSource
         return inner.TryGetChunk(position, out chunk, out chunkStart);
     }
 }
+
+/// <summary>The first <c>length</c> bytes of a source, for opening an earlier revision of a file (Phase 5); never owns the inner source.</summary>
+internal sealed class PrefixSource(PdfSource inner, long length) : PdfSource
+{
+    public override long Length { get; } = Math.Min(length, inner.Length);
+
+    public override bool TryGetChunk(long position, out ArraySegment<byte> chunk, out long chunkStart)
+    {
+        if (position < 0 || position >= Length || !inner.TryGetChunk(position, out chunk, out chunkStart))
+        {
+            chunk = default;
+            chunkStart = 0;
+            return false;
+        }
+
+        // Cut off any part of the chunk past the end of the view.
+        if (chunkStart + chunk.Count > Length)
+        {
+            chunk = chunk.Slice(0, (int)(Length - chunkStart));
+        }
+
+        return true;
+    }
+}

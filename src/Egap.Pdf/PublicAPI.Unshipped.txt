@@ -1,1 +1,126 @@
 #nullable enable
+Egap.Pdf.PdfByteRange
+Egap.Pdf.PdfByteRange.Deconstruct(out long Start, out long Length) -> void
+Egap.Pdf.PdfByteRange.End.get -> long
+Egap.Pdf.PdfByteRange.Equals(Egap.Pdf.PdfByteRange other) -> bool
+Egap.Pdf.PdfByteRange.Length.get -> long
+Egap.Pdf.PdfByteRange.Length.init -> void
+Egap.Pdf.PdfByteRange.PdfByteRange() -> void
+Egap.Pdf.PdfByteRange.PdfByteRange(long Start, long Length) -> void
+Egap.Pdf.PdfByteRange.Start.get -> long
+Egap.Pdf.PdfByteRange.Start.init -> void
+Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfByteRangeIssues.ContentsNotExcluded = 16 -> Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfByteRangeIssues.Malformed = 1 -> Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfByteRangeIssues.None = 0 -> Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfByteRangeIssues.NotAtRevisionEnd = 32 -> Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfByteRangeIssues.NotFromStart = 2 -> Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfByteRangeIssues.OutsideFile = 8 -> Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfByteRangeIssues.Overlapping = 4 -> Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfCertificateSeed
+Egap.Pdf.PdfCertificateSeed.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfCertificateSeed.Flags.get -> Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertificateSeed.Issuers.get -> System.Collections.Generic.IReadOnlyList<byte[]!>!
+Egap.Pdf.PdfCertificateSeed.KeyUsage.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfCertificateSeed.Policies.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfCertificateSeed.Subjects.get -> System.Collections.Generic.IReadOnlyList<byte[]!>!
+Egap.Pdf.PdfCertificateSeed.Url.get -> string?
+Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertificateSeedFlags.Issuer = 2 -> Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertificateSeedFlags.KeyUsage = 32 -> Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertificateSeedFlags.None = 0 -> Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertificateSeedFlags.Policy = 4 -> Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertificateSeedFlags.Subject = 1 -> Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertificateSeedFlags.SubjectDN = 8 -> Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertificateSeedFlags.Url = 64 -> Egap.Pdf.PdfCertificateSeedFlags
+Egap.Pdf.PdfCertification
+Egap.Pdf.PdfCertification.AnnotationsFormFillingAndSigning = 3 -> Egap.Pdf.PdfCertification
+Egap.Pdf.PdfCertification.FormFillingAndSigning = 2 -> Egap.Pdf.PdfCertification
+Egap.Pdf.PdfCertification.NoChanges = 1 -> Egap.Pdf.PdfCertification
+Egap.Pdf.PdfDocument.IsReadOnly.get -> bool
+Egap.Pdf.PdfDocument.Revisions.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfRevision!>!
+Egap.Pdf.PdfDocument.Signatures.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfSignature!>!
+Egap.Pdf.PdfFieldLock
+Egap.Pdf.PdfFieldLock.<Clone>$() -> Egap.Pdf.PdfFieldLock!
+Egap.Pdf.PdfFieldLock.Action.get -> Egap.Pdf.PdfFieldLockAction
+Egap.Pdf.PdfFieldLock.Action.init -> void
+Egap.Pdf.PdfFieldLock.Certification.get -> Egap.Pdf.PdfCertification?
+Egap.Pdf.PdfFieldLock.Certification.init -> void
+Egap.Pdf.PdfFieldLock.Covers(string! fullName) -> bool
+Egap.Pdf.PdfFieldLock.Deconstruct(out Egap.Pdf.PdfFieldLockAction Action, out System.Collections.Generic.IReadOnlyList<string!>! Fields, out Egap.Pdf.PdfCertification? Certification) -> void
+Egap.Pdf.PdfFieldLock.Equals(Egap.Pdf.PdfFieldLock? other) -> bool
+Egap.Pdf.PdfFieldLock.Fields.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfFieldLock.Fields.init -> void
+Egap.Pdf.PdfFieldLock.PdfFieldLock(Egap.Pdf.PdfFieldLockAction Action, System.Collections.Generic.IReadOnlyList<string!>! Fields, Egap.Pdf.PdfCertification? Certification = null) -> void
+Egap.Pdf.PdfFieldLockAction
+Egap.Pdf.PdfFieldLockAction.All = 0 -> Egap.Pdf.PdfFieldLockAction
+Egap.Pdf.PdfFieldLockAction.Exclude = 2 -> Egap.Pdf.PdfFieldLockAction
+Egap.Pdf.PdfFieldLockAction.Include = 1 -> Egap.Pdf.PdfFieldLockAction
+Egap.Pdf.PdfRevision
+Egap.Pdf.PdfRevision.Index.get -> int
+Egap.Pdf.PdfRevision.IsLatest.get -> bool
+Egap.Pdf.PdfRevision.Length.get -> long
+Egap.Pdf.PdfRevision.Open(Egap.Pdf.PdfReadOptions? options = null) -> Egap.Pdf.PdfDocument!
+Egap.Pdf.PdfRevision.XrefOffset.get -> long
+Egap.Pdf.PdfSeedValue
+Egap.Pdf.PdfSeedValue.AddRevocationInfo.get -> bool
+Egap.Pdf.PdfSeedValue.Certificate.get -> Egap.Pdf.PdfCertificateSeed?
+Egap.Pdf.PdfSeedValue.Certification.get -> Egap.Pdf.PdfCertification?
+Egap.Pdf.PdfSeedValue.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfSeedValue.DigestMethods.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfSeedValue.Filter.get -> string?
+Egap.Pdf.PdfSeedValue.Flags.get -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValue.LegalAttestations.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfSeedValue.Reasons.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfSeedValue.SubFilters.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfSeedValue.TimestampRequired.get -> bool
+Egap.Pdf.PdfSeedValue.TimestampUrl.get -> string?
+Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.AddRevocationInfo = 32 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.AppearanceFilter = 256 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.DigestMethod = 64 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.Filter = 1 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.LegalAttestation = 16 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.LockDocument = 128 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.None = 0 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.Reasons = 8 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.SubFilter = 2 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSeedValueFlags.Version = 4 -> Egap.Pdf.PdfSeedValueFlags
+Egap.Pdf.PdfSignature
+Egap.Pdf.PdfSignature.ByteRange.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfByteRange>!
+Egap.Pdf.PdfSignature.ByteRangeIssues.get -> Egap.Pdf.PdfByteRangeIssues
+Egap.Pdf.PdfSignature.Certification.get -> Egap.Pdf.PdfCertification?
+Egap.Pdf.PdfSignature.ContactInfo.get -> string?
+Egap.Pdf.PdfSignature.Contents.get -> System.ReadOnlyMemory<byte>
+Egap.Pdf.PdfSignature.CoversWholeFile.get -> bool
+Egap.Pdf.PdfSignature.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfSignature.Field.get -> Egap.Pdf.PdfSignatureField!
+Egap.Pdf.PdfSignature.FieldLock.get -> Egap.Pdf.PdfFieldLock?
+Egap.Pdf.PdfSignature.Filter.get -> string?
+Egap.Pdf.PdfSignature.Kind.get -> Egap.Pdf.PdfSignatureKind
+Egap.Pdf.PdfSignature.Location.get -> string?
+Egap.Pdf.PdfSignature.Name.get -> string!
+Egap.Pdf.PdfSignature.OpenSignedBytes() -> System.IO.Stream!
+Egap.Pdf.PdfSignature.Reason.get -> string?
+Egap.Pdf.PdfSignature.Revision.get -> Egap.Pdf.PdfRevision?
+Egap.Pdf.PdfSignature.SignerName.get -> string?
+Egap.Pdf.PdfSignature.SigningTime.get -> System.DateTimeOffset?
+Egap.Pdf.PdfSignature.SubFilter.get -> string?
+Egap.Pdf.PdfSignatureField.Lock.get -> Egap.Pdf.PdfFieldLock?
+Egap.Pdf.PdfSignatureField.SeedValue.get -> Egap.Pdf.PdfSeedValue?
+Egap.Pdf.PdfSignatureKind
+Egap.Pdf.PdfSignatureKind.Approval = 0 -> Egap.Pdf.PdfSignatureKind
+Egap.Pdf.PdfSignatureKind.Certification = 1 -> Egap.Pdf.PdfSignatureKind
+Egap.Pdf.PdfSignatureKind.DocumentTimestamp = 2 -> Egap.Pdf.PdfSignatureKind
+override Egap.Pdf.PdfByteRange.GetHashCode() -> int
+override Egap.Pdf.PdfFieldLock.Equals(object? obj) -> bool
+override Egap.Pdf.PdfFieldLock.GetHashCode() -> int
+override Egap.Pdf.PdfFieldLock.ToString() -> string!
+override Egap.Pdf.PdfRevision.ToString() -> string!
+override Egap.Pdf.PdfSignature.ToString() -> string!
+static Egap.Pdf.PdfByteRange.operator !=(Egap.Pdf.PdfByteRange left, Egap.Pdf.PdfByteRange right) -> bool
+static Egap.Pdf.PdfByteRange.operator ==(Egap.Pdf.PdfByteRange left, Egap.Pdf.PdfByteRange right) -> bool
+static Egap.Pdf.PdfFieldLock.operator !=(Egap.Pdf.PdfFieldLock? left, Egap.Pdf.PdfFieldLock? right) -> bool
+static Egap.Pdf.PdfFieldLock.operator ==(Egap.Pdf.PdfFieldLock? left, Egap.Pdf.PdfFieldLock? right) -> bool
+~override Egap.Pdf.PdfByteRange.Equals(object obj) -> bool
+~override Egap.Pdf.PdfByteRange.ToString() -> string

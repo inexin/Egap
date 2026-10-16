@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings", "render"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings", "render", "signatures"];
 
     public static Action<Stream> Get(string name)
     {
@@ -46,6 +46,7 @@ internal static class Targets
             "functions" => Functions,
             "shadings" => Shadings,
             "render" => Render,
+            "signatures" => Signatures,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -2131,6 +2132,95 @@ internal static class Targets
     /// (task 17); then up to 20 terminal fields filled, each value read back at once and after the file is written whole and
     /// reopened, where a static XFA form is then converted.
     /// </summary>
+    /// <summary>
+    /// Revisions and signatures (Phase 5 task 2): every revision found must end inside the file, later ones after earlier
+    /// ones, and open read-only; every signature's properties read, its signed bytes stream reads to its length, and its
+    /// revision is one of the document's.
+    /// </summary>
+    private static void Signatures(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, new PdfReadOptions { MaxDecodedStreamBytes = 64 << 20, MaxObjects = 1_000_000 });
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                IReadOnlyList<PdfRevision> revisions = pdf.Revisions;
+                Check(revisions.Count > 0, "a document has at least one revision");
+                for (int i = 0; i < revisions.Count; i++)
+                {
+                    Check(revisions[i].Index == i && revisions[i].Length <= bytes.Length && (i == 0 || revisions[i].Length > revisions[i - 1].Length), "revisions in order inside the file");
+                    Check(revisions[i].IsLatest == (i == revisions.Count - 1), "only the last revision is the latest");
+                }
+
+                foreach (PdfRevision revision in revisions.Take(5))
+                {
+                    try
+                    {
+                        using PdfDocument earlier = revision.Open();
+                        Check(earlier.IsReadOnly, "an earlier revision opens read-only");
+                        _ = (earlier.Pages.Count, earlier.Signatures.Count);
+                    }
+                    catch (PdfException)
+                    {
+                        // An update may well be the only part of a file that makes it readable.
+                    }
+                }
+
+                foreach (PdfSignature signature in pdf.Signatures.Take(50))
+                {
+                    ReadPublicProperties(signature);
+                    _ = (signature.Field.Lock, signature.Field.SeedValue);
+                    Check(signature.Revision is null || revisions.Contains(signature.Revision), "a signature's revision is the document's");
+                    Check(signature.ByteRange.Count > 0 || signature.ByteRangeIssues.HasFlag(PdfByteRangeIssues.Malformed), "an empty byte range is malformed");
+                    Stream signed;
+                    try
+                    {
+                        signed = signature.OpenSignedBytes();
+                    }
+                    catch (InvalidOperationException) when (signature.ByteRangeIssues != PdfByteRangeIssues.None)
+                    {
+                        // A byte range that cannot be read says so.
+                        continue;
+                    }
+
+                    using (signed)
+                    {
+                        byte[] buffer = new byte[64 << 10];
+                        long read = 0;
+                        for (int n; (n = signed.Read(buffer)) > 0;)
+                        {
+                            read += n;
+                        }
+
+                        Check(read == signed.Length, "the signed bytes stream reads to its length");
+                    }
+                }
+            }
+            catch (PdfException e) when (e is not PdfLimitException)
+            {
+                // A damaged form or field is an error the caller sees.
+            }
+        }
+
+        static void Check(bool ok, string what)
+        {
+            if (!ok)
+            {
+                throw new InvalidOperationException($"Signature reading: {what} did not hold.");
+            }
+        }
+    }
+
     private static void Forms(Stream input)
     {
         byte[] bytes = ReadAll(input);
