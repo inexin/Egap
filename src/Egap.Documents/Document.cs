@@ -62,6 +62,8 @@ public sealed class Document : Node
     /// </summary>
     public event EventHandler<DocumentChangedEventArgs>? Changed;
 
+    private int nextCommentId;
+
     internal override int ChildCount => Sections.Count;
 
     /// <summary>Adds a new, empty section at the end.</summary>
@@ -105,8 +107,10 @@ public sealed class Document : Node
         {
             foreach (Section section in Sections)
             {
-                copy.Sections.AddTrusted((Section)section.CloneInto(context, deep: true));
+                copy.Sections.AddTrusted((Section)section.CloneInto(context, deep: true, finish: false));
             }
+
+            context.Finish();
         }
 
         return copy;
@@ -151,6 +155,65 @@ public sealed class Document : Node
     private protected override VisitorAction VisitEnd(DocumentVisitor visitor)
     {
         return visitor.VisitDocumentEnd(this);
+    }
+
+    /// <summary>The next unused comment id.</summary>
+    internal int NextCommentId()
+    {
+        return nextCommentId++;
+    }
+
+    /// <summary>Makes sure new comment ids come after <paramref name="id"/>, for readers and whole-document copies.</summary>
+    internal void ReserveCommentId(int id)
+    {
+        nextCommentId = Math.Max(nextCommentId, id + 1);
+    }
+
+    /// <summary>The comment with <paramref name="id"/>, or null.</summary>
+    internal Comment? FindComment(int id)
+    {
+        foreach (Comment comment in Descendants<Comment>())
+        {
+            if (comment.Id == id)
+            {
+                return comment;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>Every bookmark, in document order, each start paired with the next end of the same name in its story.</summary>
+    public IEnumerable<Bookmark> GetBookmarks()
+    {
+        Dictionary<(Story?, string), BookmarkEnd> ends = [];
+        List<BookmarkStart> starts = [];
+        foreach (Node node in Descendants())
+        {
+            switch (node)
+            {
+                case BookmarkStart start:
+                    starts.Add(start);
+                    break;
+                case BookmarkEnd end:
+                    ends.TryAdd((end.OwnerStory, end.Name), end);
+                    break;
+            }
+        }
+
+        return starts.Select(s => new Bookmark(s, ends.GetValueOrDefault((s.OwnerStory, s.Name))));
+    }
+
+    /// <summary>The bookmark named <paramref name="name"/> (Word compares bookmark names without case), or null.</summary>
+    public Bookmark? GetBookmark(string name)
+    {
+        return GetBookmarks().FirstOrDefault(b => string.Equals(b.Name, name, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>Every field in document order, nested ones after the field holding them; fields with no end are left out.</summary>
+    public IEnumerable<Field> GetFields()
+    {
+        return Descendants<FieldStart>().Select(s => s.GetField()).OfType<Field>();
     }
 
     /// <summary>

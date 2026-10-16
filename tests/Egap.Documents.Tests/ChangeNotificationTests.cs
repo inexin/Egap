@@ -41,6 +41,41 @@ public class ChangeNotificationTests
             f.Paragraph.SetList(f.Doc.Lists.AddNumbered());
             f.Paragraph.RemoveList();
         },
+        ["Paragraph.AddField"] = f => f.Paragraph.AddField(FieldKind.Page),
+        ["Paragraph.AddHyperlink"] = f => f.Paragraph.AddHyperlink("a", "https://example.com"),
+        ["Paragraph.AddFootnote"] = f => f.Paragraph.AddFootnote("n"),
+        ["Paragraph.AddPicture"] = f => f.Paragraph.AddPicture(new ImageData(new byte[] { 1 }, "image/png"), 1, 1),
+        ["CompositeInline.AddRun"] = f => f.Paragraph.AddHyperlink("a", "b").AddRun("more"),
+        ["ContentControl.AddParagraph"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).AddParagraph("x"),
+        ["Shape.AddTextBox"] = f => f.Paragraph.Inlines.Add(new Shape(f.Doc, ShapeKind.Rectangle, 1, 1)).AddTextBox(),
+        ["Footnote.AddParagraph"] = f => f.Paragraph.AddFootnote("n").AddParagraph("more"),
+        ["Comment.AddParagraph"] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")).AddParagraph("x"),
+        ["Comment.AddReply"] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")).AddReply("b", "c"),
+    };
+
+    /// <summary>One node of each kind with settable properties, in the fixture's tree, for <see cref="EveryNodePropertyRaisesChanged"/>.</summary>
+    private static readonly Dictionary<Type, Func<Fixture, Node>> NodesWithProperties = new()
+    {
+        [typeof(Run)] = f => f.Run,
+        [typeof(Break)] = f => f.Break,
+        [typeof(Paragraph)] = f => f.Paragraph,
+        [typeof(Table)] = f => f.Table,
+        [typeof(Row)] = f => f.Table.Rows[0],
+        [typeof(Tab)] = f => f.Paragraph.AddTab(),
+        [typeof(Hyperlink)] = f => f.Paragraph.AddHyperlink("a", "b"),
+        [typeof(InlineContentControl)] = f => f.Paragraph.Inlines.Add(new InlineContentControl(f.Doc)),
+        [typeof(Picture)] = f => f.Paragraph.AddPicture(new ImageData(new byte[] { 1 }, "image/png"), 1, 1),
+        [typeof(Shape)] = f => f.Paragraph.Inlines.Add(new Shape(f.Doc, ShapeKind.Rectangle, 1, 1)),
+        [typeof(FieldStart)] = f => f.Paragraph.AddField(FieldKind.Page).Start,
+        [typeof(FieldSeparator)] = f => f.Paragraph.AddField(FieldKind.Page).Separator!,
+        [typeof(FieldEnd)] = f => f.Paragraph.AddField(FieldKind.Page).End,
+        [typeof(BookmarkStart)] = f => f.Paragraph.Inlines.Add(new BookmarkStart(f.Doc, "b")),
+        [typeof(BookmarkEnd)] = f => f.Paragraph.Inlines.Add(new BookmarkEnd(f.Doc, "b")),
+        [typeof(CommentRangeStart)] = f => f.Paragraph.Inlines.Add(new CommentRangeStart(f.Doc, 0)),
+        [typeof(CommentRangeEnd)] = f => f.Paragraph.Inlines.Add(new CommentRangeEnd(f.Doc, 0)),
+        [typeof(Footnote)] = f => f.Paragraph.AddFootnote("n"),
+        [typeof(Comment)] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")),
+        [typeof(Island)] = f => f.Paragraph.Inlines.Add(new Island(f.Doc, IslandKind.Math, "docx", "<x/>")),
     };
 
     /// <summary>Public members that only read, or make detached copies, and so raise nothing.</summary>
@@ -50,7 +85,7 @@ public class ChangeNotificationTests
         "Document.Import", "Document.Clone", "NodeCollection`1.IndexOf", "NodeCollection`1.Contains", "NodeCollection`1.GetEnumerator",
         "Run.ToString", "Section.Clone", "Body.Clone", "HeaderFooter.Clone", "Paragraph.Clone", "Table.Clone", "Row.Clone",
         "Cell.Clone", "Run.Clone", "Tab.Clone", "Break.Clone", "Run.GetEffectiveFormat", "Paragraph.GetEffectiveFormat",
-        "Table.GetEffectiveFormat", "Row.GetEffectiveFormat", "Cell.GetEffectiveFormat",
+        "Table.GetEffectiveFormat", "Row.GetEffectiveFormat", "Cell.GetEffectiveFormat", "Inline.Revision",
     ];
 
     public static TheoryData<string> MutatorNames => [.. Mutators.Keys];
@@ -69,9 +104,9 @@ public class ChangeNotificationTests
         Assert.NotEmpty(changes);
         Assert.Equal(before + changes.Count, f.Doc.Version);
         Assert.Equal(f.Doc.Version, changes[^1].Version);
-        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd"))
+        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph"))
         {
-            Assert.Equal(f.Doc.Version, f.Body.Version);   // the other two change no body
+            Assert.Equal(f.Doc.Version, f.Body.Version);   // the others change another story or none
         }
     }
 
@@ -82,6 +117,13 @@ public class ChangeNotificationTests
         List<string> missing = [];
         foreach (Type type in assembly.GetExportedTypes().Where(t => typeof(Node).IsAssignableFrom(t) || t.Name.StartsWith("NodeCollection", StringComparison.Ordinal) || t == typeof(HeaderFooterCollection)))
         {
+            // Property setters are covered per node kind by EveryNodePropertyRaisesChanged.
+            if (type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Any(p => IsPlainSetter(p))
+                && !type.IsAbstract && !NodesWithProperties.ContainsKey(type) && typeof(Node).IsAssignableFrom(type) && !Mutators.Keys.Any(k => k.StartsWith(type.Name + ".", StringComparison.Ordinal)))
+            {
+                missing.Add(type.Name + " (no entry in NodesWithProperties)");
+            }
+
             foreach (MethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
                 if (method.IsSpecialName && !method.Name.StartsWith("set_", StringComparison.Ordinal))
@@ -90,14 +132,17 @@ public class ChangeNotificationTests
                 }
 
                 string name = $"{type.Name}.{(method.Name.StartsWith("set_", StringComparison.Ordinal) ? method.Name[4..] : method.Name)}";
-                if (!Mutators.ContainsKey(name) && !NotMutators.Contains(name))
+                bool reads = method.Name is "Clone" or "Replies" || (method.Name.StartsWith("Get", StringComparison.Ordinal) && method.Name != "GetOrAdd");
+                bool coveredSetter = method.Name.StartsWith("set_", StringComparison.Ordinal) && NodesWithProperties.ContainsKey(type);
+                bool initOnly = method.ReturnParameter.GetRequiredCustomModifiers().Any(m => m.Name == "IsExternalInit");
+                if (!Mutators.ContainsKey(name) && !NotMutators.Contains(name) && !reads && !coveredSetter && !initOnly)
                 {
                     missing.Add(name);
                 }
             }
         }
 
-        Assert.Empty(missing.Distinct());
+        Assert.True(missing.Count == 0, string.Join(", ", missing.Distinct()));
     }
 
     /// <summary>Every format a node owns reports every property change, with the property's name.</summary>
@@ -152,6 +197,52 @@ public class ChangeNotificationTests
         Assert.All(changes, c => Assert.Equal(DocumentChangeKind.FormattingChanged, c.Kind));
         Assert.Equal(["Styles.S.RunFormat.Size", "Styles.S.Name", "Styles.DefaultRunFormat.Bold", "Theme.MinorLatinFont", "Theme.Colors.Accent2"], changes.Select(c => c.Property));
         Assert.Equal(formatting + 5, f.Doc.FormattingVersion);
+    }
+
+    /// <summary>Every settable property of every node kind reports its change, under its own name.</summary>
+    [Fact]
+    public void EveryNodePropertyRaisesChanged()
+    {
+        List<string> silent = [];
+        foreach ((Type type, Func<Fixture, Node> make) in NodesWithProperties)
+        {
+            foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(IsPlainSetter))
+            {
+                Fixture f = new();
+                Node node = make(f);
+                object value = property.Name switch
+                {
+                    "Style" => property.PropertyType == typeof(ParagraphStyle) ? f.Doc.Styles.AddBuiltIn(BuiltInStyle.Quote)
+                        : property.PropertyType == typeof(CharacterStyle) ? f.Doc.Styles.AddBuiltIn(BuiltInStyle.Strong)
+                        : f.Doc.Styles.AddBuiltIn(BuiltInStyle.TableGrid),
+                    "Revision" or "MarkRevision" => new Revision(RevisionKind.Deletion, "a"),
+                    "FormatRevision" => new FormatRevision("a", null, node is Run ? new RunFormat() : new ParagraphFormat()),
+                    "Grid" => new double[] { 10 },
+                    "Image" => new ImageData(new byte[] { 2 }, "image/gif"),
+                    "Floating" => new FloatingPlacement { Wrap = WrapMode.Through },
+                    "Crop" => (0.1, 0.0, 0.0, 0.0),
+                    "Outline" => new Border(BorderStyle.Dashed),
+                    "Fill" => DocumentColor.FromHex("#010203"),
+                    "Kind" when node is Shape => ShapeKind.Ellipse,
+                    "Kind" when node is Footnote => NoteKind.Endnote,
+                    "Kind" when node is Break => BreakKind.Column,
+                    "ParentId" => 7,
+                    "CommentId" => 5,
+                    "Date" => DateTimeOffset.UnixEpoch,
+                    _ when property.PropertyType == typeof(bool) => !(bool)property.GetValue(node)!,
+                    _ => property.PropertyType == typeof(string) ? property.Name + "!" : SampleValue(property.PropertyType),
+                };
+                List<DocumentChangedEventArgs> changes = [];
+                f.Doc.Changed += (_, e) => changes.Add(e);
+                property.SetValue(node, value);
+                if (!changes.Any(c => c.Node == node && c.Property == property.Name || (c.Kind == DocumentChangeKind.TextChanged && c.Node == node)))
+                {
+                    silent.Add($"{type.Name}.{property.Name}");
+                }
+            }
+        }
+
+        Assert.True(silent.Count == 0, string.Join(", ", silent));
     }
 
     [Fact]
@@ -257,6 +348,7 @@ public class ChangeNotificationTests
         return t switch
         {
             _ when t == typeof(bool) => true,
+            _ when t == typeof(long) => 4L,
             _ when t == typeof(double) => 3.0,
             _ when t == typeof(int) => 2,
             _ when t == typeof(string) => "sample",
@@ -269,5 +361,11 @@ public class ChangeNotificationTests
             _ when t == typeof(IReadOnlyList<TextColumn>) => new[] { new TextColumn(200, 10) },
             _ => throw new NotSupportedException(t.Name),
         };
+    }
+
+    private static bool IsPlainSetter(PropertyInfo property)
+    {
+        return property.SetMethod is { IsPublic: true } setter
+            && !setter.ReturnParameter.GetRequiredCustomModifiers().Any(m => m.Name == "IsExternalInit");
     }
 }

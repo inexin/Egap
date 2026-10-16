@@ -6,14 +6,31 @@ namespace Egap.Documents;
 /// </summary>
 public abstract class Inline : Node
 {
+    private Revision? revision;
+
     private protected Inline(Document document)
         : base(document)
     {
         ArgumentNullException.ThrowIfNull(document);
     }
 
-    /// <summary>The paragraph this inline is in, or null.</summary>
-    public Paragraph? Paragraph => Parent as Paragraph;
+    /// <summary>The paragraph this inline is in, directly or through a hyperlink or content control, or null.</summary>
+    public Paragraph? Paragraph => GetAncestor<Paragraph>();
+
+    /// <summary>A tracked insertion, deletion or move of this inline, or null.</summary>
+    public Revision? Revision
+    {
+        get => revision;
+        set => SetProperty(ref revision, value);
+    }
+
+    /// <summary>Copies the settings every inline has, for clones.</summary>
+    private protected T CopyInline<T>(T copy)
+        where T : Inline
+    {
+        copy.revision = revision;
+        return copy;
+    }
 }
 
 /// <summary>A run of text with one formatting (Build Plan task 3).</summary>
@@ -21,6 +38,7 @@ public sealed class Run : Inline
 {
     private string text;
     private CharacterStyle? style;
+    private FormatRevision? formatRevision;
 
     /// <summary>A run of <paramref name="document"/> holding <paramref name="text"/>, not yet in a paragraph.</summary>
     public Run(Document document, string text = "")
@@ -33,6 +51,21 @@ public sealed class Run : Inline
 
     /// <summary>The run's direct formatting, over its style's.</summary>
     public RunFormat Format { get; }
+
+    /// <summary>A tracked change of the run's formatting, with the formatting it had before, or null.</summary>
+    public FormatRevision? FormatRevision
+    {
+        get => formatRevision;
+        set
+        {
+            if (value is not null && value.OldFormat is not RunFormat)
+            {
+                throw new ArgumentException("A run's format revision holds a RunFormat.", nameof(value));
+            }
+
+            SetProperty(ref formatRevision, value);
+        }
+    }
 
     /// <summary>The run's character style, or null for the document's default character style.</summary>
     public CharacterStyle? Style
@@ -84,7 +117,7 @@ public sealed class Run : Inline
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        Run copy = new(context.Target, text) { style = context.Map(style) };
+        Run copy = CopyInline(new Run(context.Target, text) { style = context.Map(style), formatRevision = formatRevision });
         copy.Format.CopyRaw(Format);
         return copy;
     }
@@ -112,7 +145,7 @@ public sealed class Tab : Inline
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        return new Tab(context.Target);
+        return CopyInline(new Tab(context.Target));
     }
 }
 
@@ -178,6 +211,6 @@ public sealed class Break : Inline
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        return new Break(context.Target, kind);
+        return CopyInline(new Break(context.Target, kind));
     }
 }
