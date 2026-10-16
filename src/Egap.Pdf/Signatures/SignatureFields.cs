@@ -52,7 +52,9 @@ internal static class SignatureFields
                 ["T"] = PdfString.FromText(fieldName),
                 ["Type"] = PdfName.Get("Annot"),
                 ["Subtype"] = PdfName.Get("Widget"),
-                ["Rect"] = new PdfArray { new PdfReal(rectangle.Left), new PdfReal(rectangle.Bottom), new PdfReal(rectangle.Right), new PdfReal(rectangle.Top) },
+                ["Rect"] = appearance is null
+                    ? new PdfArray { new PdfInteger(0), new PdfInteger(0), new PdfInteger(0), new PdfInteger(0) }
+                    : new PdfArray { new PdfReal(rectangle.Left), new PdfReal(rectangle.Bottom), new PdfReal(rectangle.Right), new PdfReal(rectangle.Top) },
 
                 // Print and Locked (12.5.3): an invisible signature still prints nothing, and no one moves it.
                 ["F"] = new PdfInteger(132),
