@@ -2,6 +2,8 @@ using System.Buffers.Binary;
 using System.Globalization;
 using System.Text;
 
+using Egami.Fonts;
+
 namespace Egap.Pdf.Fonts;
 
 /// <summary>
@@ -369,10 +371,9 @@ internal sealed class Type1Font
         List<ushort> charset = [];
         foreach (string name in GlyphNames.Skip(1))
         {
-            int sid = CffStrings.SidOf(name);
-            if (sid < 0)
+            if (!CffStandardStrings.TryGetSid(name, out int sid))
             {
-                sid = CffStrings.StandardCount + custom.Count;
+                sid = CffStandardStrings.Count + custom.Count;
                 custom.Add(name);
             }
 

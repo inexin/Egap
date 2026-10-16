@@ -268,22 +268,15 @@ public sealed class PdfFont
         if (!IsComposite)
         {
             string? name = GetGlyphName(code);
-            if (program.Cff is { IsCidKeyed: false } cff)
+            if (name is not null && program.GlyphByName(name) is ushort byName)
             {
-                if (name is not null && cff.GlyphByName(name) is ushort byName)
-                {
-                    return byName;
-                }
-
-                if (program.BuiltInEncoding is string?[] own && (uint)code < 256 && own[code] is string ownName && cff.GlyphByName(ownName) is ushort builtIn)
-                {
-                    return builtIn;
-                }
+                return byName;
             }
 
-            if (name is not null && program.PostNames?.TryGetValue(name, out ushort named) == true)
+            if (program is { IsCff: true, IsCidKeyed: false } && program.BuiltInEncoding is string?[] own && (uint)code < 256 && own[code] is string ownName
+                && program.GlyphByName(ownName) is ushort builtIn)
             {
-                return named;
+                return builtIn;
             }
 
             if (GlyphList.ToUnicode(name) is { Length: > 0 } text && program.Typeface.GetGlyph(char.ConvertToUtf32(text, 0)) is ushort mapped and not 0)
@@ -417,9 +410,9 @@ public sealed class PdfFont
         if (IsComposite)
         {
             int cid = ToCid(code, CodeLength(code));
-            if (font.Cff is { IsCidKeyed: true } cidKeyed)
+            if (font.IsCidKeyed)
             {
-                return cidKeyed.GlyphByCid(cid) ?? 0;
+                return font.GlyphByCid(cid) ?? 0;
             }
 
             if (descendant?.Get("CIDToGIDMap")?.Resolve() is PdfStream map)
@@ -434,70 +427,62 @@ public sealed class PdfFont
         string? name = GetGlyphName(code);
 
         // An OpenType font with CFF outlines names its glyphs, whatever the subtype says.
-        if (font.Cff is { IsCidKeyed: false } named && name is not null && named.GlyphByName(name) is ushort byName)
+        if (font is { IsCff: true, IsCidKeyed: false } && name is not null && font.GlyphByName(name) is ushort byName)
         {
             return byName;
         }
 
-        if (Type == PdfFontType.TrueType || (font.Cff is null && (font.Cmaps is not null || font.PostNames is not null)))
+        if (Type == PdfFontType.TrueType || !font.IsCff)
         {
             return TrueTypeGlyph(font, code, name);
         }
 
-        if (font.Cff is CffInfo cff)
-        {
-            return (name is not null ? cff.GlyphByName(name) : null)
-                ?? (font.BuiltInEncoding is string?[] own && (uint)code < 256 && own[code] is string ownName ? cff.GlyphByName(ownName) : null)
-                ?? 0;
-        }
-
-        return (ushort)Math.Clamp(code, 0, ushort.MaxValue);
+        return (name is not null ? font.GlyphByName(name) : null)
+            ?? (font.BuiltInEncoding is string?[] own && (uint)code < 256 && own[code] is string ownName ? font.GlyphByName(ownName) : null)
+            ?? 0;
     }
 
     /// <summary>A simple TrueType font's glyph for a code (9.6.5.4, with pdf.js's allowances for fonts that break the rules).</summary>
     private ushort TrueTypeGlyph(FontProgram font, int code, string? name)
     {
-        TrueTypeCmaps cmaps = font.Cmaps ?? TrueTypeCmaps.Read([]);
+        TrueTypeCmaps? cmaps = font.Cmaps;
         bool symbolic = (Flags & PdfFontFlags.Symbolic) != 0;
         bool hasEncoding = Dictionary.Get("Encoding") is not null;
-        if ((!symbolic || hasEncoding) && cmaps.Unicode is { } unicode && GlyphList.ToUnicode(name) is { Length: > 0 } text
-            && unicode.TryGetValue(char.ConvertToUtf32(text, 0), out ushort byName))
+        if ((!symbolic || hasEncoding) && GlyphList.ToUnicode(name) is { Length: > 0 } text
+            && TrueTypeCmaps.TryGet(cmaps?.Unicode, char.ConvertToUtf32(text, 0), out ushort byName))
         {
             return byName;
         }
 
-        if (name is not null && font.PostNames?.TryGetValue(name, out ushort named) == true)
+        if (name is not null && font.GlyphByName(name) is ushort named)
         {
             return named;
         }
 
-        if (cmaps.Symbol is { } symbol)
+        foreach (int key in (int[])[code, 0xF000 + code, 0xF100 + code, 0xF200 + code])
         {
-            foreach (int key in (int[])[code, 0xF000 + code, 0xF100 + code, 0xF200 + code])
-            {
-                if (symbol.TryGetValue(key, out ushort glyph))
-                {
-                    return glyph;
-                }
-            }
-        }
-
-        if (cmaps.MacRoman is { } mac)
-        {
-            int macCode = name is not null ? Array.IndexOf(FontEncodings.ForName("MacRomanEncoding")!, name) : -1;
-            if (mac.TryGetValue(macCode >= 0 ? macCode : code, out ushort glyph))
+            if (TrueTypeCmaps.TryGet(cmaps?.Symbol, key, out ushort glyph))
             {
                 return glyph;
             }
         }
 
-        if (cmaps.Unicode is { } fallback && fallback.TryGetValue(code, out ushort direct))
+        if (cmaps?.MacRoman is { } mac)
+        {
+            int macCode = name is not null ? Array.IndexOf(FontEncodings.ForName("MacRomanEncoding")!, name) : -1;
+            if (TrueTypeCmaps.TryGet(mac, macCode >= 0 ? macCode : code, out ushort glyph))
+            {
+                return glyph;
+            }
+        }
+
+        if (TrueTypeCmaps.TryGet(cmaps?.Unicode, code, out ushort direct))
         {
             return direct;
         }
 
         // No map reaches it: with no cmap at all, the code is the glyph, as pdf.js reads such fonts.
-        return cmaps.Unicode is null && cmaps.Symbol is null && cmaps.MacRoman is null && (uint)code < (uint)font.Typeface.GlyphCount ? (ushort)code : (ushort)0;
+        return (cmaps?.IsEmpty ?? true) && (uint)code < (uint)font.Typeface.GlyphCount ? (ushort)code : (ushort)0;
     }
 
     /// <summary>The CID a composite font's CMap maps a code to, or null for a simple font.</summary>
@@ -591,18 +576,19 @@ public sealed class PdfFont
 
         if (programUnicode is null)
         {
-            // The Unicode cmap read backwards, else the post table's glyph names through the glyph list.
+            // The Unicode cmap read backwards, else a TrueType font's post names through the glyph list.
             Dictionary<ushort, int> reverse = [];
-            foreach (KeyValuePair<int, ushort> entry in (font.Cmaps?.Unicode ?? []).OrderBy(e => e.Key))
+            foreach ((int code2, ushort glyph2) in (font.Cmaps?.Unicode?.GetMappings() ?? []).OrderBy(e => e.Code))
             {
-                reverse.TryAdd(entry.Value, entry.Key);
+                reverse.TryAdd(glyph2, code2);
             }
 
-            foreach (KeyValuePair<string, ushort> entry in font.PostNames ?? [])
+            for (int g = 1; !font.IsCff && g < font.Typeface.GlyphCount; g++)
             {
-                if (!reverse.ContainsKey(entry.Value) && GlyphList.ToUnicode(entry.Key) is { Length: > 0 } text && !char.IsSurrogate(text[0]))
+                if (!reverse.ContainsKey((ushort)g) && font.Typeface.GetGlyphName((ushort)g) is string glyphName
+                    && GlyphList.ToUnicode(glyphName) is { Length: > 0 } text && !char.IsSurrogate(text[0]))
                 {
-                    reverse[entry.Value] = text[0];
+                    reverse[(ushort)g] = text[0];
                 }
             }
 
