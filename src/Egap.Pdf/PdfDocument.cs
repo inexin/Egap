@@ -607,15 +607,24 @@ public sealed class PdfDocument : IDisposable
         document.IsNew = true;
         if (options.Conformance != PdfAConformance.None)
         {
-            document.CreatedConformance = options.Conformance;
+            document.WriterConformance = options.Conformance;
             PdfA.PdfAWriter.Identify(document, options.Conformance);
+        }
+
+        if (options.UniversalAccessibility)
+        {
+            document.WriterAccessibility = true;
+            document.Metadata.SetPdfUAId(1);
         }
 
         return document;
     }
 
-    /// <summary>The conformance the document was created with, whose writer rules each save applies; None otherwise.</summary>
-    internal PdfAConformance CreatedConformance { get; private set; }
+    /// <summary>The conformance the document was created with or converted to, whose rules each save applies; None otherwise.</summary>
+    internal PdfAConformance WriterConformance { get; set; }
+
+    /// <summary>Whether the document was created claiming PDF/UA-1, whose basics each save checks.</summary>
+    internal bool WriterAccessibility { get; private set; }
 
     /// <summary>
     /// The PDF/A conformance the document claims in its XMP metadata (<c>pdfaid:part</c> and <c>pdfaid:conformance</c>), or
@@ -757,7 +766,7 @@ public sealed class PdfDocument : IDisposable
     private PdfSaveOptions Forced(PdfSaveOptions options)
     {
         options = Redacted ? options with { Mode = PdfSaveMode.Rewrite, RemoveUnused = true } : options;
-        return CreatedConformance == PdfAConformance.None ? options : PdfA.PdfAWriter.Options(CreatedConformance, options);
+        return WriterConformance == PdfAConformance.None ? options : PdfA.PdfAWriter.Options(this, WriterConformance, options);
     }
 
     /// <summary>Warns, or throws in strict mode, before a save breaks a signature, unless the options allow it (Phase 5 design Q7).</summary>
@@ -772,6 +781,27 @@ public sealed class PdfDocument : IDisposable
     /// <summary>The clock a save reads the modification date from; tests set their own.</summary>
     internal TimeProvider Clock { get; set; } = TimeProvider.System;
 
+    /// <summary>
+    /// Whether the file as opened is linearized (Annex F, Phase 5 design Q15): its first object is a linearization
+    /// dictionary whose <c>/L</c> is the file's length. A file saved incrementally since keeps the dictionary but is no
+    /// longer linearized, which the length tells.
+    /// </summary>
+    public bool IsLinearized
+    {
+        get
+        {
+            byte[] start = source.ReadBytes(0, (int)Math.Min(1024, source.Length));
+            System.Text.RegularExpressions.Match first = System.Text.RegularExpressions.Regex.Match(Encoding.Latin1.GetString(start), @"(\d+)\s+(\d+)\s+obj");
+            return first.Success && int.TryParse(first.Groups[1].Value, CultureInfo.InvariantCulture, out int number)
+                && Objects.Get(number) is PdfDictionary linearization && linearization.ContainsKey("Linearized") && linearization.GetInt("L") == source.Length;
+        }
+    }
+
+    /// <summary>The document's logical structure: the structure tree, role map and class map (Phase 5 design Q14).</summary>
+    public PdfStructureTree Structure => structure ??= new PdfStructureTree(this);
+
+    private PdfStructureTree? structure;
+
     /// <summary>The document's metadata: the Info dictionary and the XMP packet through one API (Phase 2 Q8).</summary>
     public PdfMetadata Metadata => new(this);
 
@@ -780,9 +810,15 @@ public sealed class PdfDocument : IDisposable
     {
         // Font subsets drawing used are written now, when their glyphs are known.
         WrittenResources.Finish();
-        if (CreatedConformance != PdfAConformance.None)
+        structure?.WriteParentTree();
+        if (WriterConformance != PdfAConformance.None)
         {
-            PdfA.PdfAWriter.Apply(this, CreatedConformance);
+            PdfA.PdfAWriter.Apply(this, WriterConformance);
+        }
+
+        if (WriterAccessibility)
+        {
+            PdfA.PdfAWriter.ApplyAccessibility(this);
         }
 
         if (options.UpdateModificationDate && !options.Deterministic && IsChanged)
@@ -811,7 +847,7 @@ public sealed class PdfDocument : IDisposable
         // A compression other than Preserve changes how every object is stored, so it can only apply to a whole file.
         // A file cut short has no %%EOF at its end; a stream without endstream there would run on into appended changes.
         bool truncated = IsChanged && SourceSearch.LastIndexOf(source, "%%EOF"u8, source.Length, Math.Max(0, source.Length - 1024)) < 0;
-        return options.Mode == PdfSaveMode.Rewrite || options.Compression != PdfCompression.Preserve || encryptionChanges || IsNew || Rebuilt || truncated || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
+        return options.Mode == PdfSaveMode.Rewrite || options.Linearize || options.Compression != PdfCompression.Preserve || encryptionChanges || IsNew || Rebuilt || truncated || log.ToArray().Any(w => w.Code is PdfWarningCode.MalformedXref or PdfWarningCode.BrokenXrefChain
             or PdfWarningCode.XrefRebuilt or PdfWarningCode.ObjectRelocated or PdfWarningCode.ShiftedOffsets
 
             // A stream without endstream runs to the end of the file, so bytes appended after it would become its data.

@@ -201,7 +201,34 @@ public sealed class PdfACreateTests
         PdfDictionary font = saved.Pages[0].Resources!.Get<PdfDictionary>("Font")!.Get<PdfDictionary>("F1")!;
         PdfStream file = font.Get<PdfDictionary>("FontDescriptor")!.Get<PdfStream>("FontFile3")!;
         Assert.Equal("Type1C", file.Dictionary.GetName("Subtype")?.Value);
-        Assert.Contains("α", saved.Pages[0].ExtractText(), StringComparison.Ordinal);
+        Assert.Contains("\u03b1", saved.Pages[0].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(PdfAConformance.PdfA1b)]
+    [InlineData(PdfAConformance.PdfA2u)]
+    [InlineData(PdfAConformance.PdfA3b)]
+    [InlineData(PdfAConformance.PdfA4)]
+    public void CreatedFilesPassThePreCheck(PdfAConformance conformance)
+    {
+        using PdfDocument pdf = Made(conformance);
+        using PdfDocument saved = PdfDocument.Open(Save(pdf));
+        PdfAReport report = PdfAConverter.Check(saved, conformance);
+        Assert.True(report.Succeeded, report.ToString());
+        Assert.Empty(report.Issues);
+    }
+
+    [Fact]
+    public void ThePreCheckOfAPlainFileSaysWhatConversionWouldFix()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        pdf.Pages.AddBlank(new PdfRectangle(0, 0, 100, 100));
+        using PdfDocument saved = PdfDocument.Open(Save(pdf));
+        PdfAReport report = PdfAConverter.Check(saved, PdfAConformance.PdfA2b);
+        Assert.False(report.Succeeded);
+        Assert.Contains(report.Issues, i => i.Clause == "6.2.3" && i.Fixable && !i.Fixed);
+        Assert.Contains(report.Issues, i => i.Clause == "6.6.4" && i.Fixable);
+        Assert.False(saved.IsChanged);
     }
 
     private static IEnumerable<PdfObject> ResourceFonts(PdfStream form)

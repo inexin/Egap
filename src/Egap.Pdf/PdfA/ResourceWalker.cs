@@ -9,7 +9,7 @@ internal static class ResourceWalker
 {
     private const int MaxDictionaries = 100_000;
 
-    /// <summary>The resource dictionaries, and the form XObjects (with their groups) found on the way.</summary>
+    /// <summary>The resource dictionaries, and the content streams found on the way: forms, appearances, soft mask groups and tiling patterns.</summary>
     public static (List<PdfDictionary> Resources, List<PdfStream> Forms) Walk(PdfDocument document)
     {
         HashSet<PdfObject> seen = new(ReferenceEqualityComparer.Instance);
@@ -47,8 +47,9 @@ internal static class ResourceWalker
 
             foreach (PdfObject value in Values(dictionary.Get<PdfDictionary>("Pattern")))
             {
-                if (value is PdfStream pattern)
+                if (value is PdfStream pattern && seen.Add(pattern))
                 {
+                    forms.Add(pattern);
                     pending.Push(pattern.Dictionary.Get<PdfDictionary>("Resources"));
                 }
             }

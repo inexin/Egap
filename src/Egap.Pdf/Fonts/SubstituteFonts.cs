@@ -59,6 +59,29 @@ internal static class SubstituteFonts
         return Bundle(chosen, bold, italic);
     }
 
+    /// <summary>
+    /// The installed font a font names, by family then style, without the bundled stand-ins the standard 14 names get:
+    /// what PDF/A conversion embeds as the same font (Phase 5 design Q12). Null when none is installed or styles must be
+    /// synthesized.
+    /// </summary>
+    public static SubstituteFont? SystemFont(PdfFont font)
+    {
+        string name = Clean(font.Name ?? font.BaseFont ?? "");
+        string lower = name.ToLowerInvariant();
+        bool bold = lower.Contains("bold", StringComparison.Ordinal) || lower.Contains("black", StringComparison.Ordinal) || lower.Contains("heavy", StringComparison.Ordinal)
+            || (font.Flags & PdfFontFlags.ForceBold) != 0 || Weight(font) >= 600;
+        bool italic = lower.Contains("italic", StringComparison.Ordinal) || lower.Contains("oblique", StringComparison.Ordinal) || (font.Flags & PdfFontFlags.Italic) != 0 || font.ItalicAngle != 0;
+        if (FamilyName(name) is not { Length: > 0 } family)
+        {
+            return null;
+        }
+
+        FontStyle style = new(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright);
+        return FontCollection.System.Match(family, style) is FontMatch { Synthesis: FontSynthesis.None } match && Matches(match.Typeface, family) && Program(match.Typeface) is FontProgram system
+            ? new SubstituteFont(system, FontSynthesis.None, "system " + family)
+            : null;
+    }
+
     /// <summary>The standard 14 family a name is, with the aliases viewers treat the same; null for other names.</summary>
     private static Family? StandardFamily(string lower)
     {

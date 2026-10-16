@@ -26,6 +26,12 @@ public enum PdfAConformance
 
     /// <summary>PDF/A-4f: PDF/A-4 that may carry attachments of any kind.</summary>
     PdfA4f,
+
+    /// <summary>PDF/A-2a: PDF/A-2u that is also tagged, its logical structure in a structure tree of standard types.</summary>
+    PdfA2a,
+
+    /// <summary>PDF/A-3a: PDF/A-3u that is also tagged.</summary>
+    PdfA3a,
 }
 
 /// <summary>Options for <see cref="PdfDocument.Create(PdfCreateOptions)"/>.</summary>
@@ -42,4 +48,12 @@ public sealed record PdfCreateOptions
     /// <see cref="PdfException"/> naming it. The default is <see cref="PdfAConformance.None"/>.
     /// </summary>
     public PdfAConformance Conformance { get; init; }
+
+    /// <summary>
+    /// Whether the new document claims PDF/UA-1 (ISO 14289-1, Phase 5 design Q14): its XMP identifies it, viewers show its
+    /// title, and each save checks the basics, throwing a <see cref="PdfException"/> for one it cannot meet: a title and a
+    /// language, every piece of content tagged or marked as an artifact (<see cref="PdfCanvas.BeginTag"/>), figures with
+    /// alternate text, annotations tagged, fonts embedded. The default is false.
+    /// </summary>
+    public bool UniversalAccessibility { get; init; }
 }

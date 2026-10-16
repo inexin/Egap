@@ -96,4 +96,12 @@ public sealed record PdfSaveOptions
     /// does. The default is <see langword="true"/>.
     /// </summary>
     public bool UpdateModificationDate { get; init; } = true;
+
+    /// <summary>
+    /// Whether the file is written linearized for fast web view (ISO 32000-1 Annex F, Phase 5 design Q15): a full rewrite with
+    /// the first page's objects first and hint tables a viewer reads to show pages before the whole file arrives, checked
+    /// against qpdf. Objects are written on their own with classic cross-reference tables whatever
+    /// <see cref="Compression"/> says, and linearization is not combined with encryption. The default is false.
+    /// </summary>
+    public bool Linearize { get; init; }
 }
