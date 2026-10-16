@@ -27,10 +27,24 @@ Egap.Documents.Cell.Row.get -> Egap.Documents.Row?
 Egap.Documents.ControlChar
 Egap.Documents.Document
 Egap.Documents.Document.AddSection() -> Egap.Documents.Section!
+Egap.Documents.Document.Changed -> System.EventHandler<Egap.Documents.DocumentChangedEventArgs!>?
 Egap.Documents.Document.Document() -> void
 Egap.Documents.Document.Import(Egap.Documents.Node! node, bool deep = true) -> Egap.Documents.Node!
 Egap.Documents.Document.Import<T>(T! node, bool deep = true) -> T!
 Egap.Documents.Document.Sections.get -> Egap.Documents.NodeCollection<Egap.Documents.Section!>!
+Egap.Documents.Document.Version.get -> long
+Egap.Documents.DocumentChangedEventArgs
+Egap.Documents.DocumentChangedEventArgs.Index.get -> int
+Egap.Documents.DocumentChangedEventArgs.Kind.get -> Egap.Documents.DocumentChangeKind
+Egap.Documents.DocumentChangedEventArgs.Node.get -> Egap.Documents.Node!
+Egap.Documents.DocumentChangedEventArgs.Parent.get -> Egap.Documents.Node?
+Egap.Documents.DocumentChangedEventArgs.Property.get -> string?
+Egap.Documents.DocumentChangedEventArgs.Version.get -> long
+Egap.Documents.DocumentChangeKind
+Egap.Documents.DocumentChangeKind.NodeInserted = 0 -> Egap.Documents.DocumentChangeKind
+Egap.Documents.DocumentChangeKind.NodeRemoved = 1 -> Egap.Documents.DocumentChangeKind
+Egap.Documents.DocumentChangeKind.PropertyChanged = 3 -> Egap.Documents.DocumentChangeKind
+Egap.Documents.DocumentChangeKind.TextChanged = 2 -> Egap.Documents.DocumentChangeKind
 Egap.Documents.DocumentVisitor
 Egap.Documents.DocumentVisitor.DocumentVisitor() -> void
 Egap.Documents.HeaderFooter
@@ -80,6 +94,7 @@ Egap.Documents.Paragraph.AddTab() -> Egap.Documents.Tab!
 Egap.Documents.Paragraph.Inlines.get -> Egap.Documents.NodeCollection<Egap.Documents.Inline!>!
 Egap.Documents.Paragraph.Paragraph(Egap.Documents.Document! document) -> void
 Egap.Documents.Paragraph.Runs.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Run!>!
+Egap.Documents.Paragraph.Version.get -> long
 Egap.Documents.Row
 Egap.Documents.Row.AddCell() -> Egap.Documents.Cell!
 Egap.Documents.Row.Cells.get -> Egap.Documents.NodeCollection<Egap.Documents.Cell!>!
@@ -94,6 +109,7 @@ Egap.Documents.Section.Body.get -> Egap.Documents.Body!
 Egap.Documents.Section.HeadersFooters.get -> Egap.Documents.HeaderFooterCollection!
 Egap.Documents.Section.Section(Egap.Documents.Document! document) -> void
 Egap.Documents.Story
+Egap.Documents.Story.Version.get -> long
 Egap.Documents.Tab
 Egap.Documents.Tab.Tab(Egap.Documents.Document! document) -> void
 Egap.Documents.Table

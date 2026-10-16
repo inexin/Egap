@@ -40,6 +40,12 @@ public abstract class Node
     /// <summary>The collection this node is in, or null for a node in a fixed slot (a section's body) or not in the tree.</summary>
     internal INodeCollection? Collection { get; private set; }
 
+    /// <summary>
+    /// The story this node is in (itself for a story), or null outside any story, kept up to date on attach and detach so
+    /// a change finds the story to stamp without walking up through nested tables.
+    /// </summary>
+    internal Story? OwnerStory { get; private set; }
+
     /// <summary>This node's index in <see cref="Collection"/>, kept up to date by the collection.</summary>
     internal int IndexInParent { get; set; }
 
@@ -225,6 +231,7 @@ public abstract class Node
         Parent = parent;
         Collection = collection;
         IndexInParent = index;
+        SetOwnerStory(parent as Story ?? parent.OwnerStory);
     }
 
     /// <summary>Marks this node as out of the tree.</summary>
@@ -233,6 +240,39 @@ public abstract class Node
         Parent = null;
         Collection = null;
         IndexInParent = 0;
+        SetOwnerStory(null);
+    }
+
+    /// <summary>Makes a story its own <see cref="OwnerStory"/>.</summary>
+    private protected void InitOwnerStory()
+    {
+        OwnerStory = (Story)this;
+    }
+
+    /// <summary>Sets <see cref="OwnerStory"/> on this node and every node under it that is not a story itself.</summary>
+    private void SetOwnerStory(Story? story)
+    {
+        if (this is Story || OwnerStory == story)
+        {
+            return;
+        }
+
+        OwnerStory = story;
+        Stack<Node> pending = new();
+        pending.Push(this);
+        while (pending.Count > 0)
+        {
+            Node node = pending.Pop();
+            for (int i = 0; i < node.ChildCount; i++)
+            {
+                Node child = node.GetChild(i);
+                if (child is not Story)
+                {
+                    child.OwnerStory = story;
+                    pending.Push(child);
+                }
+            }
+        }
     }
 
     /// <summary>
