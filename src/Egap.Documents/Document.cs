@@ -53,6 +53,9 @@ public sealed class Document : Node
     /// <summary>Document-wide settings: default tab stop, odd and even headers, note numbering, compatibility mode.</summary>
     public DocumentSettings Settings { get; }
 
+    /// <summary>Fonts the file carries for its text, read from a DOCX's font table and written back with it.</summary>
+    public IList<EmbeddedFont> EmbeddedFonts { get; } = new List<EmbeddedFont>();
+
     /// <summary>The tracked changes, to accept or reject (Phase 6 design Q8).</summary>
     public TrackedChangeCollection Revisions { get; }
 
@@ -138,6 +141,11 @@ public sealed class Document : Node
         copy.Properties.CopyFrom(Properties);
         copy.Settings.CopyFrom(Settings);
         copy.fileName = fileName;
+        copy.CopyExtensionsFrom(this);
+        foreach (EmbeddedFont font in EmbeddedFonts)
+        {
+            copy.EmbeddedFonts.Add(font);
+        }
         if (deep)
         {
             foreach (Section section in Sections)
@@ -164,7 +172,14 @@ public sealed class Document : Node
     internal void NotifyChanged(Node node, DocumentChangeKind kind, Node? where, int index = -1, string? property = null)
     {
         long version = ++Version;
-        if ((where as Paragraph ?? where?.Parent as Paragraph) is { } paragraph)
+        // The paragraph a change is in, through hyperlinks and content controls but not out of a story (a text box or note).
+        Node? at = where;
+        while (at is not null and not Paragraph and not Story)
+        {
+            at = at.Parent;
+        }
+
+        if (at is Paragraph paragraph)
         {
             paragraph.Version = version;
         }

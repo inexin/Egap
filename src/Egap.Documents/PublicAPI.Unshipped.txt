@@ -285,6 +285,7 @@ Egap.Documents.Document
 Egap.Documents.Document.AddSection() -> Egap.Documents.Section!
 Egap.Documents.Document.Changed -> System.EventHandler<Egap.Documents.DocumentChangedEventArgs!>?
 Egap.Documents.Document.Document() -> void
+Egap.Documents.Document.EmbeddedFonts.get -> System.Collections.Generic.IList<Egap.Documents.EmbeddedFont!>!
 Egap.Documents.Document.FileName.get -> string?
 Egap.Documents.Document.FileName.set -> void
 Egap.Documents.Document.FormattingVersion.get -> long
@@ -420,6 +421,24 @@ Egap.Documents.DocumentSettings.TrackRevisions.get -> bool
 Egap.Documents.DocumentSettings.TrackRevisions.set -> void
 Egap.Documents.DocumentVisitor
 Egap.Documents.DocumentVisitor.DocumentVisitor() -> void
+Egap.Documents.Docx.DocxFormat
+Egap.Documents.Docx.DocxLoadOptions
+Egap.Documents.Docx.DocxLoadOptions.DocxLoadOptions() -> void
+Egap.Documents.Docx.DocxLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
+Egap.Documents.Docx.DocxLoadOptions.Limits.init -> void
+Egap.Documents.EmbeddedFont
+Egap.Documents.EmbeddedFont.<Clone>$() -> Egap.Documents.EmbeddedFont!
+Egap.Documents.EmbeddedFont.Bold.get -> bool
+Egap.Documents.EmbeddedFont.Bold.init -> void
+Egap.Documents.EmbeddedFont.Data.get -> System.ReadOnlyMemory<byte>
+Egap.Documents.EmbeddedFont.Data.init -> void
+Egap.Documents.EmbeddedFont.Deconstruct(out string! Family, out bool Bold, out bool Italic, out System.ReadOnlyMemory<byte> Data) -> void
+Egap.Documents.EmbeddedFont.EmbeddedFont(string! Family, bool Bold, bool Italic, System.ReadOnlyMemory<byte> Data) -> void
+Egap.Documents.EmbeddedFont.Equals(Egap.Documents.EmbeddedFont? other) -> bool
+Egap.Documents.EmbeddedFont.Family.get -> string!
+Egap.Documents.EmbeddedFont.Family.init -> void
+Egap.Documents.EmbeddedFont.Italic.get -> bool
+Egap.Documents.EmbeddedFont.Italic.init -> void
 Egap.Documents.ExtensionData
 Egap.Documents.ExtensionData.Clear() -> void
 Egap.Documents.ExtensionData.Formats.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
@@ -1586,6 +1605,9 @@ override Egap.Documents.ConversionWarning.ToString() -> string!
 override Egap.Documents.Document.Clone(bool deep = true) -> Egap.Documents.Document!
 override Egap.Documents.DocumentColor.GetHashCode() -> int
 override Egap.Documents.DocumentColor.ToString() -> string!
+override Egap.Documents.EmbeddedFont.Equals(object? obj) -> bool
+override Egap.Documents.EmbeddedFont.GetHashCode() -> int
+override Egap.Documents.EmbeddedFont.ToString() -> string!
 override Egap.Documents.FieldEnd.Clone(bool deep = true) -> Egap.Documents.FieldEnd!
 override Egap.Documents.FieldSeparator.Clone(bool deep = true) -> Egap.Documents.FieldSeparator!
 override Egap.Documents.FieldStart.Clone(bool deep = true) -> Egap.Documents.FieldStart!
@@ -1647,6 +1669,10 @@ static Egap.Documents.DocumentColor.FromRgb(Egami.Pixels.Rgba8 rgb) -> Egap.Docu
 static Egap.Documents.DocumentColor.FromTheme(Egap.Documents.ThemeColor theme, double tint = 0, double shade = 0, Egami.Pixels.Rgba8 stored = default(Egami.Pixels.Rgba8)) -> Egap.Documents.DocumentColor
 static Egap.Documents.DocumentColor.operator !=(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
 static Egap.Documents.DocumentColor.operator ==(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
+static Egap.Documents.Docx.DocxFormat.Load(string! path, Egap.Documents.Docx.DocxLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.Docx.DocxFormat.Load(System.IO.Stream! stream, Egap.Documents.Docx.DocxLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EmbeddedFont.operator !=(Egap.Documents.EmbeddedFont? left, Egap.Documents.EmbeddedFont? right) -> bool
+static Egap.Documents.EmbeddedFont.operator ==(Egap.Documents.EmbeddedFont? left, Egap.Documents.EmbeddedFont? right) -> bool
 static Egap.Documents.Field.KindOf(string! code) -> Egap.Documents.FieldKind
 static Egap.Documents.FloatingPlacement.operator !=(Egap.Documents.FloatingPlacement? left, Egap.Documents.FloatingPlacement? right) -> bool
 static Egap.Documents.FloatingPlacement.operator ==(Egap.Documents.FloatingPlacement? left, Egap.Documents.FloatingPlacement? right) -> bool

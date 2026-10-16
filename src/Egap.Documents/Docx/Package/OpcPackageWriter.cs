@@ -34,7 +34,9 @@ internal sealed class OpcPackageWriter
     /// <summary>Adds a part; its name must be unique.</summary>
     public void AddPart(string name, string contentType, byte[] data)
     {
-        parts.Add((OpcPackage.NormalizeName(name), contentType, data));
+        string normalized = OpcPackage.NormalizeName(name);
+        parts.RemoveAll(p => string.Equals(p.Name, normalized, StringComparison.OrdinalIgnoreCase));
+        parts.Add((normalized, contentType, data));
     }
 
     /// <summary>Adds an XML part, written as UTF-8 with a standalone declaration as Word does.</summary>

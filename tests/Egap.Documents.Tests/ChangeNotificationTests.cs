@@ -114,6 +114,27 @@ public class ChangeNotificationTests
     }
 
     [Fact]
+    public void ChangesInsideInlineContainersStampTheirParagraph()
+    {
+        Document document = new();
+        Paragraph paragraph = document.AddSection().Body.AddParagraph();
+        Hyperlink link = paragraph.AddHyperlink("x", "https://example.com/");
+        InlineContentControl control = link.Inlines.Add(new InlineContentControl(document));
+        Run run = control.AddRun("y");
+        Shape shape = paragraph.Inlines.Add(new Shape(document, ShapeKind.Rectangle, 10, 10));
+        Paragraph boxed = shape.AddTextBox().AddParagraph("z");
+        long before = paragraph.Version;
+
+        run.Format.Bold = true;
+
+        Assert.Equal(document.Version, paragraph.Version);
+        boxed.Runs.Single().Text = "w";
+        Assert.NotEqual(document.Version, paragraph.Version);
+        Assert.Equal(document.Version, boxed.Version);
+        Assert.True(paragraph.Version > before);
+    }
+
+    [Fact]
     public void EveryPublicMutatorIsCovered()
     {
         Assembly assembly = typeof(Document).Assembly;
