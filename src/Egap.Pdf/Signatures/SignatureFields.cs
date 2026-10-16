@@ -7,9 +7,13 @@ namespace Egap.Pdf.Signatures;
 /// </summary>
 internal static class SignatureFields
 {
-    /// <summary>Puts the signature dictionary into the field <paramref name="fieldName"/>, made when missing, and returns its dictionary.</summary>
+    /// <summary>
+    /// Puts the signature dictionary into the field <paramref name="fieldName"/>, made when missing, and returns its
+    /// dictionary. With an appearance, a new field's widget goes on the appearance's page and rectangle, and any field's
+    /// widget gets the appearance as its normal appearance (an existing field keeps its own place).
+    /// </summary>
     /// <exception cref="ArgumentException">A field of that name exists but is not a signature field, or is signed already.</exception>
-    public static PdfDictionary Attach(PdfDocument document, string fieldName, PdfReference signature)
+    public static PdfDictionary Attach(PdfDocument document, string fieldName, PdfReference signature, PdfSignatureAppearance? appearance = null, Func<PdfReference>? drawAppearance = null)
     {
         PdfDictionary form = Form(document);
         PdfDictionary field;
@@ -34,19 +38,21 @@ internal static class SignatureFields
                 throw new ArgumentException("A new signature field's name cannot contain a period, which separates the names of nested fields.", nameof(fieldName));
             }
 
-            if (document.Pages.Count == 0)
+            int pageIndex = appearance?.PageIndex ?? 0;
+            if (pageIndex >= document.Pages.Count)
             {
-                throw new InvalidOperationException("A document without pages cannot hold a signature field.");
+                throw new ArgumentException(document.Pages.Count == 0 ? "A document without pages cannot hold a signature field." : $"The document has no page {pageIndex}.", nameof(appearance));
             }
 
-            PdfPage page = document.Pages[0];
+            PdfPage page = document.Pages[pageIndex];
+            PdfRectangle rectangle = appearance?.PageRectangle(page) ?? new PdfRectangle(0, 0, 0, 0);
             field = new PdfDictionary
             {
                 ["FT"] = PdfName.Get("Sig"),
                 ["T"] = PdfString.FromText(fieldName),
                 ["Type"] = PdfName.Get("Annot"),
                 ["Subtype"] = PdfName.Get("Widget"),
-                ["Rect"] = new PdfArray { new PdfInteger(0), new PdfInteger(0), new PdfInteger(0), new PdfInteger(0) },
+                ["Rect"] = new PdfArray { new PdfReal(rectangle.Left), new PdfReal(rectangle.Bottom), new PdfReal(rectangle.Right), new PdfReal(rectangle.Top) },
 
                 // Print and Locked (12.5.3): an invisible signature still prints nothing, and no one moves it.
                 ["F"] = new PdfInteger(132),
@@ -75,6 +81,11 @@ internal static class SignatureFields
             {
                 form["Fields"] = new PdfArray { reference };
             }
+        }
+
+        if (drawAppearance is not null)
+        {
+            field["AP"] = new PdfDictionary { ["N"] = drawAppearance() };
         }
 
         field["V"] = signature;

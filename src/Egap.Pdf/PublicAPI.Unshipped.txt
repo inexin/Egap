@@ -120,6 +120,9 @@ Egap.Pdf.PdfSignature.Revision.get -> Egap.Pdf.PdfRevision?
 Egap.Pdf.PdfSignature.SignerName.get -> string?
 Egap.Pdf.PdfSignature.SigningTime.get -> System.DateTimeOffset?
 Egap.Pdf.PdfSignature.SubFilter.get -> string?
+Egap.Pdf.PdfSignatureAppearance
+Egap.Pdf.PdfSignatureAppearance.PageIndex.get -> int
+Egap.Pdf.PdfSignatureAppearance.Rectangle.get -> Egami.Drawing.RectF
 Egap.Pdf.PdfSignatureField.Lock.get -> Egap.Pdf.PdfFieldLock?
 Egap.Pdf.PdfSignatureField.SeedValue.get -> Egap.Pdf.PdfSeedValue?
 Egap.Pdf.PdfSignatureFormat
@@ -134,6 +137,8 @@ Egap.Pdf.PdfSigner.Certificate.get -> System.Security.Cryptography.X509Certifica
 Egap.Pdf.PdfSigner.Chain.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
 Egap.Pdf.PdfSignOptions
 Egap.Pdf.PdfSignOptions.<Clone>$() -> Egap.Pdf.PdfSignOptions!
+Egap.Pdf.PdfSignOptions.Appearance.get -> Egap.Pdf.PdfSignatureAppearance?
+Egap.Pdf.PdfSignOptions.Appearance.init -> void
 Egap.Pdf.PdfSignOptions.ContactInfo.get -> string?
 Egap.Pdf.PdfSignOptions.ContactInfo.init -> void
 Egap.Pdf.PdfSignOptions.DigestAlgorithm.get -> System.Security.Cryptography.HashAlgorithmName
@@ -181,6 +186,8 @@ static Egap.Pdf.PdfByteRange.operator ==(Egap.Pdf.PdfByteRange left, Egap.Pdf.Pd
 static Egap.Pdf.PdfFieldLock.operator !=(Egap.Pdf.PdfFieldLock? left, Egap.Pdf.PdfFieldLock? right) -> bool
 static Egap.Pdf.PdfFieldLock.operator ==(Egap.Pdf.PdfFieldLock? left, Egap.Pdf.PdfFieldLock? right) -> bool
 static Egap.Pdf.PdfPreparedSignature.CompleteAsync(System.IO.Stream! file, System.ReadOnlyMemory<byte> cms, Egap.Pdf.PdfTimestampClient? timestamp = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Egap.Pdf.PdfSignatureAppearance.Default(int page, Egami.Drawing.RectF rectangle, Egami.Raster? image = null) -> Egap.Pdf.PdfSignatureAppearance!
+static Egap.Pdf.PdfSignatureAppearance.Draw(int page, Egami.Drawing.RectF rectangle, System.Action<Egap.Pdf.PdfCanvas!>! draw) -> Egap.Pdf.PdfSignatureAppearance!
 static Egap.Pdf.PdfSigner.FromCertificate(System.Security.Cryptography.X509Certificates.X509Certificate2! certificate, System.Collections.Generic.IEnumerable<System.Security.Cryptography.X509Certificates.X509Certificate2!>? chain = null) -> Egap.Pdf.PdfSigner!
 static Egap.Pdf.PdfSigner.FromKey(System.Security.Cryptography.AsymmetricAlgorithm! key, System.Security.Cryptography.X509Certificates.X509Certificate2! certificate, System.Collections.Generic.IEnumerable<System.Security.Cryptography.X509Certificates.X509Certificate2!>? chain = null) -> Egap.Pdf.PdfSigner!
 static Egap.Pdf.PdfSignOptions.operator !=(Egap.Pdf.PdfSignOptions? left, Egap.Pdf.PdfSignOptions? right) -> bool
