@@ -422,12 +422,19 @@ Egap.Documents.DocumentSettings.TrackRevisions.set -> void
 Egap.Documents.DocumentVisitor
 Egap.Documents.DocumentVisitor.DocumentVisitor() -> void
 Egap.Documents.Docx.DocxFormat
+Egap.Documents.Docx.DocxKind
+Egap.Documents.Docx.DocxKind.Document = 0 -> Egap.Documents.Docx.DocxKind
+Egap.Documents.Docx.DocxKind.MacroEnabledDocument = 2 -> Egap.Documents.Docx.DocxKind
+Egap.Documents.Docx.DocxKind.MacroEnabledTemplate = 3 -> Egap.Documents.Docx.DocxKind
+Egap.Documents.Docx.DocxKind.Template = 1 -> Egap.Documents.Docx.DocxKind
 Egap.Documents.Docx.DocxLoadOptions
 Egap.Documents.Docx.DocxLoadOptions.DocxLoadOptions() -> void
 Egap.Documents.Docx.DocxLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
 Egap.Documents.Docx.DocxLoadOptions.Limits.init -> void
 Egap.Documents.Docx.DocxSaveOptions
 Egap.Documents.Docx.DocxSaveOptions.DocxSaveOptions() -> void
+Egap.Documents.Docx.DocxSaveOptions.Kind.get -> Egap.Documents.Docx.DocxKind?
+Egap.Documents.Docx.DocxSaveOptions.Kind.init -> void
 Egap.Documents.EmbeddedFont
 Egap.Documents.EmbeddedFont.<Clone>$() -> Egap.Documents.EmbeddedFont!
 Egap.Documents.EmbeddedFont.Bold.get -> bool
@@ -1671,6 +1678,7 @@ static Egap.Documents.DocumentColor.FromRgb(Egami.Pixels.Rgba8 rgb) -> Egap.Docu
 static Egap.Documents.DocumentColor.FromTheme(Egap.Documents.ThemeColor theme, double tint = 0, double shade = 0, Egami.Pixels.Rgba8 stored = default(Egami.Pixels.Rgba8)) -> Egap.Documents.DocumentColor
 static Egap.Documents.DocumentColor.operator !=(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
 static Egap.Documents.DocumentColor.operator ==(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
+static Egap.Documents.Docx.DocxFormat.KindOf(Egap.Documents.Document! document) -> Egap.Documents.Docx.DocxKind?
 static Egap.Documents.Docx.DocxFormat.Load(string! path, Egap.Documents.Docx.DocxLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.Docx.DocxFormat.Load(System.IO.Stream! stream, Egap.Documents.Docx.DocxLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.Docx.DocxFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.Docx.DocxSaveOptions? options = null) -> void

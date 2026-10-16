@@ -45,6 +45,29 @@ internal sealed class OpcPackageWriter
         AddPart(name, contentType, Serialize(xml));
     }
 
+    /// <summary>Removes a part and its own relationships.</summary>
+    public void RemovePart(string name)
+    {
+        string normalized = OpcPackage.NormalizeName(name);
+        parts.RemoveAll(p => string.Equals(p.Name, normalized, StringComparison.OrdinalIgnoreCase));
+        relationships.Remove(normalized);
+    }
+
+    /// <summary>The relationships added from <paramref name="sourceName"/>.</summary>
+    public IReadOnlyList<OpcRelationship> RelationshipsOf(string sourceName)
+    {
+        return relationships.TryGetValue(sourceName, out List<OpcRelationship>? list) ? list : [];
+    }
+
+    /// <summary>Removes the relationships from <paramref name="sourceName"/> that <paramref name="match"/> picks.</summary>
+    public void RemoveRelationships(string sourceName, Predicate<OpcRelationship> match)
+    {
+        if (relationships.TryGetValue(sourceName, out List<OpcRelationship>? list))
+        {
+            list.RemoveAll(match);
+        }
+    }
+
     /// <summary>Whether a part of this name was added.</summary>
     public bool HasPart(string name)
     {

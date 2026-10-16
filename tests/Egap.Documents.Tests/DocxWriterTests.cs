@@ -148,6 +148,48 @@ public class DocxWriterTests
         Assert.Same(comments[0], comments[1].ParentComment);
     }
 
+    [Fact]
+    public void MacrosAreKeptOrDroppedByKind()
+    {
+        const string ns = "xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"";
+        OpcPackageWriter writer = new();
+        writer.AddXmlPart("/word/document.xml", "application/vnd.ms-word.document.macroEnabled.main+xml", XDocument.Parse("<w:document " + ns + "><w:body><w:p/></w:body></w:document>"));
+        writer.AddPart("/word/vbaProject.bin", "application/vnd.ms-office.vbaProject", [1, 2, 3]);
+        writer.AddXmlPart("/word/vbaData.xml", "application/vnd.ms-word.vbaData+xml", XDocument.Parse("<wne:vbaSuppData xmlns:wne=\"http://schemas.microsoft.com/office/word/2006/wordml\"/>"));
+        writer.AddRelationship("/", "rId1", OpcRelationshipTypes.OfficeDocument, "word/document.xml");
+        writer.AddRelationship("/word/document.xml", "rId1", OpcRelationshipTypes.VbaProject, "vbaProject.bin");
+        writer.AddRelationship("/word/vbaProject.bin", "rId1", "http://schemas.microsoft.com/office/2006/relationships/wordVbaData", "vbaData.xml");
+        using MemoryStream stream = new();
+        writer.Save(stream);
+        Document document = DocxFormat.Load(new MemoryStream(stream.ToArray()));
+
+        Assert.Equal(DocxKind.MacroEnabledDocument, DocxFormat.KindOf(document));
+        Assert.Null(DocxFormat.KindOf(new Document()));
+        byte[] kept = Save(document);
+        using (ZipArchive zip = new(new MemoryStream(kept)))
+        {
+            Assert.NotNull(zip.GetEntry("word/vbaProject.bin"));
+            Assert.NotNull(zip.GetEntry("word/vbaData.xml"));
+        }
+
+        using MemoryStream asDocx = new();
+        DocxFormat.Save(document, asDocx, new DocxSaveOptions { Kind = DocxKind.Document });
+        using (ZipArchive zip = new(new MemoryStream(asDocx.ToArray())))
+        {
+            Assert.Null(zip.GetEntry("word/vbaProject.bin"));
+            Assert.Null(zip.GetEntry("word/vbaData.xml"));
+            if (zip.GetEntry("word/_rels/document.xml.rels") is { } rels)
+            {
+                Assert.DoesNotContain("vbaProject", System.Text.Encoding.UTF8.GetString(ReadEntry(rels)), StringComparison.Ordinal);
+            }
+        }
+
+        Assert.Equal(DocxKind.Document, DocxFormat.KindOf(DocxFormat.Load(new MemoryStream(asDocx.ToArray()))));
+        using MemoryStream asTemplate = new();
+        DocxFormat.Save(new Document(), asTemplate, new DocxSaveOptions { Kind = DocxKind.Template });
+        Assert.Equal(DocxKind.Template, DocxFormat.KindOf(DocxFormat.Load(new MemoryStream(asTemplate.ToArray()))));
+    }
+
     private static Document RoundTrip(Document document)
     {
         return DocxFormat.Load(new MemoryStream(Save(document)));
