@@ -79,7 +79,7 @@ internal static class Targets
     /// <summary>
     /// Any bytes as a DOCX: a ZIP package read whole, or anything else as the main part's XML in a package with styles and
     /// numbering, so mutations reach the reader's mapping. The model must then answer GetText, effective formats, list
-    /// labels, note marks and fields.
+    /// labels, note marks and fields, and write it back both ways (as read and from the model) to a file that reads again.
     /// </summary>
     private static void DocxFile(Stream input)
     {
@@ -133,6 +133,15 @@ internal static class Targets
         }
 
         _ = document.Clone();
+
+        // The writer must write what the reader read, as read and from the model, and both must read again.
+        foreach (bool regenerate in (ReadOnlySpan<bool>)[false, true])
+        {
+            using MemoryStream written = new();
+            Egap.Documents.Docx.DocxWriter.Write(document, written, regenerate);
+            written.Position = 0;
+            _ = Egap.Documents.Docx.DocxFormat.Load(written).GetText();
+        }
     }
 
     private static MemoryStream Wrap(byte[] documentXml)

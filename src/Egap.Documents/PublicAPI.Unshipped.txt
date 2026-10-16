@@ -426,6 +426,8 @@ Egap.Documents.Docx.DocxLoadOptions
 Egap.Documents.Docx.DocxLoadOptions.DocxLoadOptions() -> void
 Egap.Documents.Docx.DocxLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
 Egap.Documents.Docx.DocxLoadOptions.Limits.init -> void
+Egap.Documents.Docx.DocxSaveOptions
+Egap.Documents.Docx.DocxSaveOptions.DocxSaveOptions() -> void
 Egap.Documents.EmbeddedFont
 Egap.Documents.EmbeddedFont.<Clone>$() -> Egap.Documents.EmbeddedFont!
 Egap.Documents.EmbeddedFont.Bold.get -> bool
@@ -1671,6 +1673,8 @@ static Egap.Documents.DocumentColor.operator !=(Egap.Documents.DocumentColor lef
 static Egap.Documents.DocumentColor.operator ==(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
 static Egap.Documents.Docx.DocxFormat.Load(string! path, Egap.Documents.Docx.DocxLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.Docx.DocxFormat.Load(System.IO.Stream! stream, Egap.Documents.Docx.DocxLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.Docx.DocxFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.Docx.DocxSaveOptions? options = null) -> void
+static Egap.Documents.Docx.DocxFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.Docx.DocxSaveOptions? options = null) -> void
 static Egap.Documents.EmbeddedFont.operator !=(Egap.Documents.EmbeddedFont? left, Egap.Documents.EmbeddedFont? right) -> bool
 static Egap.Documents.EmbeddedFont.operator ==(Egap.Documents.EmbeddedFont? left, Egap.Documents.EmbeddedFont? right) -> bool
 static Egap.Documents.Field.KindOf(string! code) -> Egap.Documents.FieldKind

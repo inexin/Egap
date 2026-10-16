@@ -181,7 +181,7 @@ internal static class DocxProperties
                     format.RightIndent = DocxUnits.Points(e.W("end") ?? e.W("right"));
                     if (DocxUnits.Points(e.W("hanging")) is double hanging)
                     {
-                        format.FirstLineIndent = -hanging;
+                        format.FirstLineIndent = hanging == 0 ? 0 : -hanging;
                     }
                     else if (DocxUnits.Points(e.W("firstLine")) is double first)
                     {
@@ -415,7 +415,7 @@ internal static class DocxProperties
                             case "right" or "end": format.BorderRight = border; break;
                             case "tl2br": format.BorderDiagonalDown = border; break;
                             case "tr2bl": format.BorderDiagonalUp = border; break;
-                            default: unknown?.Invoke(side); break;
+                            default: unknown?.Invoke(new XElement(e.Name, side)); break;
                         }
                     }
 

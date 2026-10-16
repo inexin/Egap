@@ -71,7 +71,8 @@ internal static class DocxUnits
             }
         }
 
-        return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) && double.IsFinite(number) ? number * unit : null;
+        // Dividing by the whole number of units per point keeps 1701 twips at 85.05 exactly, where multiplying by 0.05 does not.
+        return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) && double.IsFinite(number) ? number / Math.Round(1 / unit) : null;
     }
 
     /// <summary>An integer attribute, or null.</summary>
@@ -130,11 +131,23 @@ internal sealed class DocxExtension
     /// <summary>The part a header, footer or the document's main story came from, for the writer to reuse its name.</summary>
     public string? PartName { get; set; }
 
+    /// <summary>For a block read from an mc:AlternateContent: that element, written back while the block is unchanged.</summary>
+    public XElement? Wrapper { get; set; }
+
     /// <summary>The reading this came from, so a node imported from another document is written from the model.</summary>
     public DocxPackageData? Source { get; set; }
 
     /// <summary>For an inline read from inside a w:r (a tab, a field character, a drawing): that run's properties.</summary>
     public XElement? RunProperties { get; set; }
+
+    /// <summary>Markup that sat between this block and the one before it (bookmarks, permission and move ranges).</summary>
+    public List<XElement>? Before { get; set; }
+
+    /// <summary>Markup that sat after this block at the end of its container.</summary>
+    public List<XElement>? After { get; set; }
+
+    /// <summary>For a mark the reader moved into a paragraph from between blocks: the writer puts it back from <see cref="Before"/>.</summary>
+    public bool Hoisted { get; set; }
 
     /// <summary>For an island: whether its markup sat inside a w:r.</summary>
     public bool InRun { get; set; }
@@ -189,6 +202,15 @@ internal sealed class DocxPackageData
 
     public required string MainContentType { get; init; }
 
+    /// <summary>The main part's root element as read, without children: its namespace declarations and attributes.</summary>
+    public XElement? MainRoot { get; set; }
+
+    /// <summary>The document's background (w:background), kept as read.</summary>
+    public XElement? Background { get; set; }
+
+    /// <summary>Other children of the main part's root after the body (a second body in a damaged file), kept as read.</summary>
+    public List<XElement> RootExtras { get; } = [];
+
     /// <summary>The document's <see cref="Document.FormattingVersion"/> when loading ended.</summary>
     public long FormattingVersion { get; set; } = -1;
 
@@ -197,6 +219,12 @@ internal sealed class DocxPackageData
 
     /// <summary>The note stories Word keeps outside the text (separators and continuation notices), by part.</summary>
     public List<XElement> SpecialNotes { get; } = [];
+
+    /// <summary>The largest w:id in the story parts, so ids the writer gives new revisions do not repeat kept ones.</summary>
+    public int MaxMarkupId { get; set; }
+
+    /// <summary>Notes and comments no reference in the text points at, kept for the writer to put back.</summary>
+    public List<XElement> Unreferenced { get; } = [];
 
     /// <summary>Parts the reader mapped into the model, which the writer writes from the model.</summary>
     public HashSet<string> MappedParts { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -219,5 +247,29 @@ internal sealed record PictureState(ImageData Image, double Width, double Height
     public bool Matches(Picture picture)
     {
         return ReferenceEquals(Image, picture.Image) && this == Of(picture) with { Image = Image };
+    }
+}
+
+/// <summary>What a shape showed when it was read, so the writer can tell whether only its text changed.</summary>
+internal sealed record ShapeState(ShapeKind Kind, double Width, double Height, DocumentColor? Fill, Border? Outline, FloatingPlacement? Floating, double Rotation, string? Title, string? Description)
+{
+    public static ShapeState Of(Shape shape)
+    {
+        return new ShapeState(shape.Kind, shape.Width, shape.Height, shape.Fill, shape.Outline, shape.Floating, shape.Rotation, shape.Title, shape.Description);
+    }
+}
+
+/// <summary>What a content control held when it was read: its properties and its child nodes.</summary>
+internal sealed record ControlState(ContentControlKind Kind, string? Tag, string? Title, bool LockContents, bool LockControl, bool ShowingPlaceholder, bool? IsChecked, Node[] Children)
+{
+    public static ControlState Of(ContentControlProperties properties, IEnumerable<Node> children)
+    {
+        return new ControlState(properties.Kind, properties.Tag, properties.Title, properties.LockContents, properties.LockControl, properties.ShowingPlaceholder, properties.IsChecked, [.. children]);
+    }
+
+    public bool Matches(ContentControlProperties properties, IEnumerable<Node> children)
+    {
+        ControlState now = Of(properties, children);
+        return now with { Children = Children } == this && Children.SequenceEqual(now.Children);
     }
 }
