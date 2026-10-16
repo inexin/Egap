@@ -9,6 +9,27 @@ namespace Egap.Pdf.PdfA;
 /// </summary>
 internal static class SfntMetrics
 {
+    /// <summary>Whether the file's metrics tables can be rewritten: hhea, hmtx and maxp present and hmtx as long as they say.</summary>
+    public static bool CanSetAdvances(byte[] sfnt)
+    {
+        try
+        {
+            Dictionary<string, byte[]> tables = Read(sfnt, out _);
+            if (!tables.TryGetValue("hhea", out byte[]? hhea) || !tables.TryGetValue("hmtx", out byte[]? hmtx) || !tables.TryGetValue("maxp", out byte[]? maxp) || hhea.Length < 36 || maxp.Length < 6)
+            {
+                return false;
+            }
+
+            int glyphs = BinaryPrimitives.ReadUInt16BigEndian(maxp.AsSpan(4));
+            int metrics = BinaryPrimitives.ReadUInt16BigEndian(hhea.AsSpan(34));
+            return metrics > 0 && metrics <= glyphs && hmtx.Length >= (metrics * 4) + ((glyphs - metrics) * 2);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return false;
+        }
+    }
+
     /// <summary>The file with the advances of <paramref name="advances"/> (glyph to thousandths of the em); the rest unchanged.</summary>
     public static byte[] SetAdvances(byte[] sfnt, IReadOnlyDictionary<ushort, double> advances, int unitsPerEm)
     {

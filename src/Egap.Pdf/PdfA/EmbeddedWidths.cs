@@ -63,10 +63,38 @@ internal static class EmbeddedWidths
         return codes.Count(code => parsed.GetGlyphId(code) is not ushort glyph || glyph == 0 || glyph >= face.GlyphCount);
     }
 
+    /// <summary>
+    /// Whether every width can be met in the program's units: an advance is a whole number of font units, so a program with
+    /// few units to the em (some have 256) cannot hold a width to within the thousandth of an em PDF/A allows.
+    /// </summary>
+    public static bool Achievable(PdfDictionary font, Dictionary<ushort, double> advances)
+    {
+        if (PdfFont.FromDictionary(font).GetTypeface() is not Typeface face)
+        {
+            return false;
+        }
+
+        int units = face.UnitsPerEm;
+        return advances.Values.All(w => Math.Abs((Math.Round(w * units / 1000) * 1000 / units) - w) <= 1);
+    }
+
+    /// <summary>The font's TrueType program stream, when <see cref="Fix"/> could rewrite it.</summary>
+    public static PdfStream? Program(PdfDictionary font)
+    {
+        return TrueTypeFile(font);
+    }
+
     /// <summary>Whether <see cref="Fix"/> can write advances into the font's program: a TrueType program, simple or Identity CID-keyed.</summary>
     public static bool CanFix(PdfDictionary font)
     {
-        return TrueTypeFile(font) is not null;
+        try
+        {
+            return TrueTypeFile(font) is PdfStream file && SfntMetrics.CanSetAdvances(file.GetDecodedBytes());
+        }
+        catch (PdfException e) when (e is not PdfLimitException)
+        {
+            return false;
+        }
     }
 
     /// <summary>Writes the advances into the embedded program.</summary>
