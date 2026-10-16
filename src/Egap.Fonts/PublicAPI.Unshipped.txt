@@ -1,4 +1,1 @@
 #nullable enable
-Egap.Fonts.StandardFonts
-static Egap.Fonts.StandardFonts.Collection.get -> Egami.Fonts.FontCollection!
-static Egap.Fonts.StandardFonts.Find(string! familyName, Egami.Fonts.FontStyle style) -> Egami.Fonts.Typeface?
