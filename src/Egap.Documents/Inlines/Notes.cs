@@ -68,6 +68,9 @@ public sealed class Footnote : Inline
     /// <summary>The note's text.</summary>
     public NoteStory Story { get; }
 
+    /// <summary>The mark shown at the reference and before the note: its custom mark, or its number in document order.</summary>
+    public string Mark => NoteNumbering.Mark(this);
+
     internal override int ChildCount => 1;
 
     /// <summary>Adds a paragraph to the note's text.</summary>

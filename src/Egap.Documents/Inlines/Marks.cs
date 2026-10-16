@@ -211,8 +211,30 @@ internal static class TextRange
         System.Text.StringBuilder text = new();
         bool inside = false;
         Paragraph? lastParagraph = null;
+
+        // Field codes are not text: inside a field, only its result counts, as Word's REF shows it.
+        Stack<bool> inCode = new();
         foreach (Node node in story.Descendants())
         {
+            switch (node)
+            {
+                case FieldStart:
+                    inCode.Push(true);
+                    continue;
+                case FieldSeparator when inCode.Count > 0:
+                    inCode.Pop();
+                    inCode.Push(false);
+                    continue;
+                case FieldEnd when inCode.Count > 0:
+                    inCode.Pop();
+                    continue;
+            }
+
+            if (inCode.Count > 0 && inCode.Peek() && node is Inline)
+            {
+                continue;
+            }
+
             if (node == start)
             {
                 inside = true;
