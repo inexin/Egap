@@ -20,6 +20,11 @@
     <PackageReference Include="Egami.Drawing" />
   </ItemGroup>
 
+  <!-- Signatures (Phase 5 design Q2): .NET's own CMS, signer and timestamp APIs, Microsoft's MIT package, allowed in ci.yml too. -->
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Pkcs" />
+  </ItemGroup>
+
   <!-- Adobe's Core14 AFM files, unchanged, with the notice their licence says must go with them (THIRD-PARTY-NOTICES.md). -->
   <ItemGroup>
     <EmbeddedResource Include="Fonts/Standard14/*.afm" LogicalName="Egap.Pdf.Fonts.%(Filename).afm" />

@@ -7,6 +7,12 @@
     <PackageVersion Include="Egami" Version="1.0.0-local.g739419e" />
     <PackageVersion Include="Egami.Drawing" Version="1.0.1-local.g739419e" />
     <PackageVersion Include="Egami.Fonts" Version="0.2.0-local.g739419e" />
+    <!--
+      Phase 5 signatures (design Q2): CMS, CmsSigner and RFC 3161 from Microsoft's own package (MIT, dotnet/runtime), which
+      .NET 10's base framework does not include (checked in task 1: the Microsoft.NETCore.App 10.0 reference pack has
+      System.Formats.Asn1 and System.Security.Cryptography but not .Pkcs).
+    -->
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="4.14.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
