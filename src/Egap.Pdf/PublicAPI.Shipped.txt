@@ -59,6 +59,16 @@ Egap.Pdf.PdfAnnotationFlags.NoZoom = 8 -> Egap.Pdf.PdfAnnotationFlags
 Egap.Pdf.PdfAnnotationFlags.Print = 4 -> Egap.Pdf.PdfAnnotationFlags
 Egap.Pdf.PdfAnnotationFlags.ReadOnly = 64 -> Egap.Pdf.PdfAnnotationFlags
 Egap.Pdf.PdfAnnotationFlags.ToggleNoView = 256 -> Egap.Pdf.PdfAnnotationFlags
+Egap.Pdf.PdfAnnotationRendering
+Egap.Pdf.PdfAnnotationRendering.All = 0 -> Egap.Pdf.PdfAnnotationRendering
+Egap.Pdf.PdfAnnotationRendering.NoForms = 1 -> Egap.Pdf.PdfAnnotationRendering
+Egap.Pdf.PdfAnnotationRendering.None = 2 -> Egap.Pdf.PdfAnnotationRendering
+Egap.Pdf.PdfAntialiasing
+Egap.Pdf.PdfAntialiasing.All = Egap.Pdf.PdfAntialiasing.Paths | Egap.Pdf.PdfAntialiasing.Text | Egap.Pdf.PdfAntialiasing.Images -> Egap.Pdf.PdfAntialiasing
+Egap.Pdf.PdfAntialiasing.Images = 4 -> Egap.Pdf.PdfAntialiasing
+Egap.Pdf.PdfAntialiasing.None = 0 -> Egap.Pdf.PdfAntialiasing
+Egap.Pdf.PdfAntialiasing.Paths = 1 -> Egap.Pdf.PdfAntialiasing
+Egap.Pdf.PdfAntialiasing.Text = 2 -> Egap.Pdf.PdfAntialiasing
 Egap.Pdf.PdfAppearanceKind
 Egap.Pdf.PdfAppearanceKind.Down = 2 -> Egap.Pdf.PdfAppearanceKind
 Egap.Pdf.PdfAppearanceKind.Normal = 0 -> Egap.Pdf.PdfAppearanceKind
@@ -863,6 +873,8 @@ Egap.Pdf.PdfPage.BleedBox.set -> void
 Egap.Pdf.PdfPage.CropBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.CropBox.set -> void
 Egap.Pdf.PdfPage.Dictionary.get -> Egap.Pdf.PdfDictionary!
+Egap.Pdf.PdfPage.DisplayHeight.get -> double
+Egap.Pdf.PdfPage.DisplayWidth.get -> double
 Egap.Pdf.PdfPage.Equals(Egap.Pdf.PdfPage? other) -> bool
 Egap.Pdf.PdfPage.ExtractText(Egap.Pdf.PdfTextOptions? options = null) -> string!
 Egap.Pdf.PdfPage.Flush() -> void
@@ -873,15 +885,25 @@ Egap.Pdf.PdfPage.GetText(Egap.Pdf.PdfTextOptions? options = null) -> Egap.Pdf.Pd
 Egap.Pdf.PdfPage.MediaBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.MediaBox.set -> void
 Egap.Pdf.PdfPage.Reference.get -> Egap.Pdf.PdfReference?
+Egap.Pdf.PdfPage.Render(Egap.Pdf.PdfRenderOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egami.Raster<Egami.Pixels.Rgba8>!
+Egap.Pdf.PdfPage.Render<TPixel>(Egap.Pdf.PdfRenderOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egami.Raster<TPixel>!
+Egap.Pdf.PdfPage.RenderTo(Egami.Drawing.Canvas! canvas, Egap.Pdf.PdfRenderOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> void
 Egap.Pdf.PdfPage.Resources.get -> Egap.Pdf.PdfDictionary?
 Egap.Pdf.PdfPage.Resources.set -> void
 Egap.Pdf.PdfPage.Rotate.get -> int
 Egap.Pdf.PdfPage.Rotate.set -> void
 Egap.Pdf.PdfPage.SetContent(Egap.Pdf.PdfContent! content) -> void
+Egap.Pdf.PdfPage.ToPicture(Egap.Pdf.PdfRenderOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egami.Drawing.Picture!
 Egap.Pdf.PdfPage.TrimBox.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPage.TrimBox.set -> void
 Egap.Pdf.PdfPage.UserUnit.get -> double
 Egap.Pdf.PdfPage.UserUnit.set -> void
+Egap.Pdf.PdfPageBox
+Egap.Pdf.PdfPageBox.ArtBox = 4 -> Egap.Pdf.PdfPageBox
+Egap.Pdf.PdfPageBox.BleedBox = 2 -> Egap.Pdf.PdfPageBox
+Egap.Pdf.PdfPageBox.CropBox = 0 -> Egap.Pdf.PdfPageBox
+Egap.Pdf.PdfPageBox.MediaBox = 1 -> Egap.Pdf.PdfPageBox
+Egap.Pdf.PdfPageBox.TrimBox = 3 -> Egap.Pdf.PdfPageBox
 Egap.Pdf.PdfPageCollection
 Egap.Pdf.PdfPageCollection.AddBlank(Egap.Pdf.PdfRectangle? mediaBox = null) -> Egap.Pdf.PdfPage!
 Egap.Pdf.PdfPageCollection.Count.get -> int
@@ -1068,6 +1090,53 @@ Egap.Pdf.PdfReference
 Egap.Pdf.PdfReference.Equals(Egap.Pdf.PdfReference? other) -> bool
 Egap.Pdf.PdfReference.Generation.get -> int
 Egap.Pdf.PdfReference.ObjectNumber.get -> int
+Egap.Pdf.PdfRenderIntent
+Egap.Pdf.PdfRenderIntent.Display = 0 -> Egap.Pdf.PdfRenderIntent
+Egap.Pdf.PdfRenderIntent.Print = 1 -> Egap.Pdf.PdfRenderIntent
+Egap.Pdf.PdfRenderOptions
+Egap.Pdf.PdfRenderOptions.<Clone>$() -> Egap.Pdf.PdfRenderOptions!
+Egap.Pdf.PdfRenderOptions.Annotations.get -> Egap.Pdf.PdfAnnotationRendering
+Egap.Pdf.PdfRenderOptions.Annotations.init -> void
+Egap.Pdf.PdfRenderOptions.Antialiasing.get -> Egap.Pdf.PdfAntialiasing
+Egap.Pdf.PdfRenderOptions.Antialiasing.init -> void
+Egap.Pdf.PdfRenderOptions.Background.get -> Egami.Pixels.RgbaF32
+Egap.Pdf.PdfRenderOptions.Background.init -> void
+Egap.Pdf.PdfRenderOptions.Box.get -> Egap.Pdf.PdfPageBox
+Egap.Pdf.PdfRenderOptions.Box.init -> void
+Egap.Pdf.PdfRenderOptions.Dpi.get -> double
+Egap.Pdf.PdfRenderOptions.Dpi.init -> void
+Egap.Pdf.PdfRenderOptions.Equals(Egap.Pdf.PdfRenderOptions? other) -> bool
+Egap.Pdf.PdfRenderOptions.FitHeight.get -> int?
+Egap.Pdf.PdfRenderOptions.FitHeight.init -> void
+Egap.Pdf.PdfRenderOptions.FitWidth.get -> int?
+Egap.Pdf.PdfRenderOptions.FitWidth.init -> void
+Egap.Pdf.PdfRenderOptions.ImageCacheLimit.get -> long
+Egap.Pdf.PdfRenderOptions.ImageCacheLimit.init -> void
+Egap.Pdf.PdfRenderOptions.Intent.get -> Egap.Pdf.PdfRenderIntent
+Egap.Pdf.PdfRenderOptions.Intent.init -> void
+Egap.Pdf.PdfRenderOptions.LayerConfiguration.get -> string?
+Egap.Pdf.PdfRenderOptions.LayerConfiguration.init -> void
+Egap.Pdf.PdfRenderOptions.Layers.get -> System.Collections.Generic.IReadOnlyDictionary<Egap.Pdf.PdfLayer!, bool>?
+Egap.Pdf.PdfRenderOptions.Layers.init -> void
+Egap.Pdf.PdfRenderOptions.MaxImagePixels.get -> long
+Egap.Pdf.PdfRenderOptions.MaxImagePixels.init -> void
+Egap.Pdf.PdfRenderOptions.MaxOperations.get -> long
+Egap.Pdf.PdfRenderOptions.MaxOperations.init -> void
+Egap.Pdf.PdfRenderOptions.MaxOutputPixels.get -> long
+Egap.Pdf.PdfRenderOptions.MaxOutputPixels.init -> void
+Egap.Pdf.PdfRenderOptions.OnWarning.get -> System.Action<Egap.Pdf.PdfWarning!>?
+Egap.Pdf.PdfRenderOptions.OnWarning.init -> void
+Egap.Pdf.PdfRenderOptions.PdfRenderOptions() -> void
+Egap.Pdf.PdfRenderOptions.Region.get -> Egami.Drawing.RectF?
+Egap.Pdf.PdfRenderOptions.Region.init -> void
+Egap.Pdf.PdfRenderOptions.Rotation.get -> int
+Egap.Pdf.PdfRenderOptions.Rotation.init -> void
+Egap.Pdf.PdfRenderOptions.Strict.get -> bool
+Egap.Pdf.PdfRenderOptions.Strict.init -> void
+Egap.Pdf.PdfRenderOptions.UseOutputIntents.get -> bool
+Egap.Pdf.PdfRenderOptions.UseOutputIntents.init -> void
+Egap.Pdf.PdfRenderOptions.UseSystemFonts.get -> bool
+Egap.Pdf.PdfRenderOptions.UseSystemFonts.init -> void
 Egap.Pdf.PdfReplyType
 Egap.Pdf.PdfReplyType.Group = 1 -> Egap.Pdf.PdfReplyType
 Egap.Pdf.PdfReplyType.Reply = 0 -> Egap.Pdf.PdfReplyType
@@ -1382,6 +1451,9 @@ override Egap.Pdf.PdfReference.Equals(object? obj) -> bool
 override Egap.Pdf.PdfReference.GetHashCode() -> int
 override Egap.Pdf.PdfReference.Resolve() -> Egap.Pdf.PdfObject!
 override Egap.Pdf.PdfReference.ToString() -> string!
+override Egap.Pdf.PdfRenderOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfRenderOptions.GetHashCode() -> int
+override Egap.Pdf.PdfRenderOptions.ToString() -> string!
 override Egap.Pdf.PdfRgbColor.GetHashCode() -> int
 override Egap.Pdf.PdfSaveOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfSaveOptions.GetHashCode() -> int
@@ -1481,6 +1553,10 @@ static Egap.Pdf.PdfReadOptions.operator ==(Egap.Pdf.PdfReadOptions? left, Egap.P
 static Egap.Pdf.PdfRectangle.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfRectangle?
 static Egap.Pdf.PdfRectangle.operator !=(Egap.Pdf.PdfRectangle left, Egap.Pdf.PdfRectangle right) -> bool
 static Egap.Pdf.PdfRectangle.operator ==(Egap.Pdf.PdfRectangle left, Egap.Pdf.PdfRectangle right) -> bool
+static Egap.Pdf.PdfRenderOptions.Default.get -> Egap.Pdf.PdfRenderOptions!
+static Egap.Pdf.PdfRenderOptions.FitTo(int width, int height) -> Egap.Pdf.PdfRenderOptions!
+static Egap.Pdf.PdfRenderOptions.operator !=(Egap.Pdf.PdfRenderOptions? left, Egap.Pdf.PdfRenderOptions? right) -> bool
+static Egap.Pdf.PdfRenderOptions.operator ==(Egap.Pdf.PdfRenderOptions? left, Egap.Pdf.PdfRenderOptions? right) -> bool
 static Egap.Pdf.PdfRgbColor.FromArray(Egap.Pdf.PdfArray? array) -> Egap.Pdf.PdfRgbColor?
 static Egap.Pdf.PdfRgbColor.operator !=(Egap.Pdf.PdfRgbColor left, Egap.Pdf.PdfRgbColor right) -> bool
 static Egap.Pdf.PdfRgbColor.operator ==(Egap.Pdf.PdfRgbColor left, Egap.Pdf.PdfRgbColor right) -> bool

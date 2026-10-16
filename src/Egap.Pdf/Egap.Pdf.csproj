@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Egap.Pdf</RootNamespace>
     <PackageId>Egap.Pdf</PackageId>
-    <VersionPrefix>1.1.0</VersionPrefix>
+    <VersionPrefix>1.2.0</VersionPrefix>
     <Description>A fully managed, MIT-licensed PDF library for .NET.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTrimmable>true</IsTrimmable>
