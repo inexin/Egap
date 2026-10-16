@@ -184,6 +184,7 @@ public sealed class Picture : Inline
     private string? title;
     private string? description;
     private FloatingPlacement? floating;
+    private string? sourceUrl;
     private (double Left, double Top, double Right, double Bottom) crop;
 
     /// <summary>A picture of <paramref name="image"/> shown at <paramref name="width"/> by <paramref name="height"/> points, not yet in a paragraph.</summary>
@@ -237,6 +238,16 @@ public sealed class Picture : Inline
         set => SetProperty(ref floating, value);
     }
 
+    /// <summary>
+    /// The address of a linked image (one the file names by URL instead of holding), or null; Egap keeps it and never fetches
+    /// it. A linked picture may have empty <see cref="Image"/> bytes and a size of 0, meaning its own size.
+    /// </summary>
+    public string? SourceUrl
+    {
+        get => sourceUrl;
+        set => SetProperty(ref sourceUrl, value);
+    }
+
     /// <summary>How much of the image is cut off on each side, as fractions of its size (negative adds space).</summary>
     public (double Left, double Top, double Right, double Bottom) Crop
     {
@@ -262,7 +273,7 @@ public sealed class Picture : Inline
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        return CopyInline(new Picture(context.Target, image, width, height) { title = title, description = description, floating = floating, crop = crop });
+        return CopyInline(new Picture(context.Target, image, width, height) { title = title, description = description, floating = floating, crop = crop, sourceUrl = sourceUrl });
     }
 }
 

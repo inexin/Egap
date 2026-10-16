@@ -139,3 +139,12 @@ fonts documents name most, used in place of fonts a document does not embed:
 
 All are licensed under the SIL Open Font License 1.1. The licence files, with each font's copyright and reserved font names,
 are in the same folder, embedded in Egap.Fonts.dll and packed with the package under `licenses/`.
+
+## HTML named character references
+
+`src/Egap.Documents/Html/entities.txt`, embedded in Egap.Documents.dll, lists the named character references of the
+[WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/named-characters.html), taken from
+<https://html.spec.whatwg.org/entities.json> with each name's code points written in hex. The HTML Standard is
+Copyright © WHATWG (Apple, Google, Mozilla, Microsoft) and licensed under the
+[Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). Egap's Markdown and
+HTML readers use the list to decode character references.
