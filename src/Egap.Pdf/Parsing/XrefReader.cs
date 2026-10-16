@@ -111,7 +111,7 @@ internal sealed class XrefReader(PdfSource source, PdfReadOptions options, Warni
         Dictionary<int, XrefEntry> streamEntries = [];
         try
         {
-            table.Sections.Add(ReadStream(offset, streamEntries));
+            table.Sections.Add(ReadStream(offset, streamEntries) with { IsHybrid = true });
         }
         catch (PdfException e) when (e is not PdfLimitException && e.Code is null)
         {

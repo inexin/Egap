@@ -25,7 +25,9 @@ internal readonly record struct XrefEntry(XrefEntryKind Kind, long Offset, int G
 /// <param name="Offset">Where the section starts.</param>
 /// <param name="IsStream">Whether it is a cross-reference stream.</param>
 /// <param name="Trailer">The trailer dictionary (for a stream, the stream's dictionary).</param>
-internal sealed record XrefSection(long Offset, bool IsStream, PdfDictionary Trailer);
+/// <param name="IsHybrid">Whether it is a hybrid file's <c>/XRefStm</c> stream, part of the table section before it rather
+/// than a section of its own in the <c>/Prev</c> chain.</param>
+internal sealed record XrefSection(long Offset, bool IsStream, PdfDictionary Trailer, bool IsHybrid = false);
 
 /// <summary>
 /// The merged cross-reference of a file: for each object number, the newest entry, and the trailer with the newest value
