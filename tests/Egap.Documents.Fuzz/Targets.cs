@@ -1,14 +1,16 @@
 namespace Egap.Documents.Fuzz;
 
 /// <summary>
-/// The fuzz targets for Egap.Documents' readers. A reader must never throw on any input (Markdown has no invalid input);
-/// anything thrown is a crash, and AFL++ reports hangs.
+/// The fuzz targets for Egap.Documents' readers. Markdown has no invalid input, so its reader must never throw; the DOCX
+/// readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). Anything else
+/// is a crash, and AFL++ reports hangs.
 /// </summary>
 internal static class Targets
 {
     private static readonly Dictionary<string, Action<Stream>> All = new(StringComparer.Ordinal)
     {
         ["markdown"] = Markdown,
+        ["package"] = Package,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -44,6 +46,32 @@ internal static class Targets
             // The writer must take anything the reader made, and what it writes must read again.
             string written = MarkdownFormat.ToMarkdown(document);
             _ = MarkdownFormat.Parse(written, new MarkdownLoadOptions { Extensions = extensions }).GetText();
+        }
+    }
+
+    /// <summary>Any bytes read as an OPC package: every part's relationships resolved and every XML part loaded.</summary>
+    private static void Package(Stream input)
+    {
+        try
+        {
+            Docx.OpcPackage package = Docx.OpcPackage.Read(input, new DocumentLimits { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 });
+            foreach (Docx.OpcPart part in package.Parts)
+            {
+                _ = part.Relationships;
+                if (part.ContentType.EndsWith("xml", StringComparison.Ordinal))
+                {
+                    try
+                    {
+                        _ = part.LoadXml();
+                    }
+                    catch (DocumentException)
+                    {
+                    }
+                }
+            }
+        }
+        catch (DocumentException)
+        {
         }
     }
 }

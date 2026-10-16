@@ -359,6 +359,23 @@ Egap.Documents.DocumentColorKind
 Egap.Documents.DocumentColorKind.Auto = 0 -> Egap.Documents.DocumentColorKind
 Egap.Documents.DocumentColorKind.Rgb = 1 -> Egap.Documents.DocumentColorKind
 Egap.Documents.DocumentColorKind.Theme = 2 -> Egap.Documents.DocumentColorKind
+Egap.Documents.DocumentException
+Egap.Documents.DocumentException.DocumentException(string! message) -> void
+Egap.Documents.DocumentException.DocumentException(string! message, System.Exception! innerException) -> void
+Egap.Documents.DocumentLimitException
+Egap.Documents.DocumentLimitException.DocumentLimitException(string! message) -> void
+Egap.Documents.DocumentLimits
+Egap.Documents.DocumentLimits.DocumentLimits() -> void
+Egap.Documents.DocumentLimits.MaxCompressionRatio.get -> double
+Egap.Documents.DocumentLimits.MaxCompressionRatio.init -> void
+Egap.Documents.DocumentLimits.MaxDepth.get -> int
+Egap.Documents.DocumentLimits.MaxDepth.init -> void
+Egap.Documents.DocumentLimits.MaxEntries.get -> int
+Egap.Documents.DocumentLimits.MaxEntries.init -> void
+Egap.Documents.DocumentLimits.MaxPartSize.get -> long
+Egap.Documents.DocumentLimits.MaxPartSize.init -> void
+Egap.Documents.DocumentLimits.MaxTotalSize.get -> long
+Egap.Documents.DocumentLimits.MaxTotalSize.init -> void
 Egap.Documents.DocumentProperties
 Egap.Documents.DocumentProperties.Author.get -> string?
 Egap.Documents.DocumentProperties.Author.set -> void
