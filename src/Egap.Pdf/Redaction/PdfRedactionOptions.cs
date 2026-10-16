@@ -39,6 +39,12 @@ public sealed record PdfRedactionOptions
     public PdfRedactPaths Paths { get; init; } = PdfRedactPaths.Covered;
 
     /// <summary>
+    /// The share of a glyph's box (0 to 1) that must lie inside an area for the glyph to be removed. The default, 0.1, ignores
+    /// hairline touches, such as a large title's descent reaching over the line below; 0 removes every glyph the area touches.
+    /// </summary>
+    public double GlyphOverlap { get; init; } = 0.1;
+
+    /// <summary>
     /// When set, each redacted page is also rendered at this resolution and its content replaced by that one image, which
     /// loses all its text: for the most cautious users (design Q9). Left out, pages keep their text and vectors.
     /// </summary>

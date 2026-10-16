@@ -8,7 +8,7 @@ It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imagi
   Egami, which is managed too.
 - **Safe on untrusted files**: readers are built to be fuzz-tested from the start.
 
-> **Status:** 1.2.0, public API frozen; nothing is published to NuGet yet. Egap.Pdf reads PDF files, damaged and encrypted
+> **Status:** 1.3.0, public API frozen; nothing is published to NuGet yet. Egap.Pdf reads PDF files, damaged and encrypted
 > ones included (RC4 and AES, revisions 2 to 6), into a lazily loaded object graph with change tracking, and saves them
 > incrementally or by full rewrite, with or without object streams, keeping, dropping or applying AES-256 encryption. On top
 > of that it edits pages, labels, outlines, destinations, metadata, attachments and layers; reads, adds and draws
@@ -16,7 +16,10 @@ It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imagi
 > parses, walks and rewrites content streams, draws on pages through an Egami canvas with embedded font subsets, reads
 > fonts, extracts text in reading order, and lists, decodes and replaces images. Since 1.2 it renders pages to rasters, onto
 > any Egami canvas (SVG and PDF included) or to a display list, with transparency, shadings, patterns, layers, annotations
-> and open substitutes (Egap.Fonts) for fonts that are not embedded.
+> and open substitutes (Egap.Fonts) for fonts that are not embedded. Since 1.3 it signs (PAdES B-B to B-LTA, deferred and
+> certification signatures), timestamps and verifies signatures; truly redacts and sanitises; creates, converts and checks
+> PDF/A files with basic PDF/UA; keeps and builds structure trees with tagging while drawing; saves linearized files; and adds
+> invisible OCR text from hOCR or ALTO.
 
 ```csharp
 using Egap.Pdf;
@@ -77,6 +80,39 @@ using (Raster<Rgba8> image = pdf.Pages[0].Render(new PdfRenderOptions { Dpi = 15
 }
 
 using Raster<Rgba8> thumbnail = pdf.Pages[0].Render(PdfRenderOptions.FitTo(256, 256));   // decodes large images reduced
+```
+
+```csharp
+using System.Security.Cryptography.X509Certificates;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("in.pdf");
+using X509Certificate2 certificate = X509CertificateLoader.LoadPkcs12FromFile("me.pfx", password);
+await using (FileStream signed = File.Create("signed.pdf"))
+{
+    await pdf.SignAsync("Signature1", new PdfSignOptions             // PAdES, incremental, written to a new stream
+    {
+        Signer = PdfSigner.FromCertificate(certificate),
+        Level = PadesLevel.BaselineT,
+        Timestamp = new PdfTimestampClient(tsaUrl, http),             // the caller's HttpClient; Egap opens no connection itself
+    }, signed);
+}
+
+using PdfDocument check = PdfDocument.Open("signed.pdf");
+foreach (PdfSignature signature in check.Signatures)
+{
+    PdfSignatureReport report = signature.Verify(new PdfVerifyOptions { TrustAnchors = [root] });
+    Console.WriteLine($"{signature.Name}: {report.Integrity} {report.Chain} {report.Timestamp} {report.ChangesSince}");
+}
+
+using PdfDocument archive = PdfDocument.Open("report.pdf");
+archive.Pages[0].Annotations.Add(new PdfRedactAnnotation(new PdfRectangle(72, 700, 300, 714)));
+archive.ApplyRedactions();                                        // covered text, paths and pixels removed for real
+PdfAReport conversion = PdfAConverter.Convert(archive, PdfAConformance.PdfA2u);
+if (conversion.Succeeded)
+{
+    archive.Save("archive.pdf", new PdfSaveOptions { Linearize = true });
+}
 ```
 
 ## Projects
