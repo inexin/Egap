@@ -3,6 +3,9 @@ namespace Egap.Documents;
 /// <summary>Something that holds a format and must hear of its changes: a node or a style.</summary>
 internal interface IFormatOwner
 {
+    /// <summary>The document the owner belongs to.</summary>
+    Document Document { get; }
+
     void FormatChanged(FormatBase format, string property);
 }
 
@@ -98,6 +101,13 @@ public abstract class FormatBase
         Owner?.FormatChanged(this, PropertyName(id));
     }
 
+    /// <summary>Sets property <paramref name="id"/> without notifying, for clones being built.</summary>
+    internal void SetRawSilently(int id, object? value)
+    {
+        values ??= new object?[PropertyCount];
+        values[id] = value;
+    }
+
     /// <summary>Copies every value from <paramref name="source"/> (the same kind), set or not, without notifying: for clones.</summary>
     internal void CopyRaw(FormatBase source)
     {
@@ -125,6 +135,16 @@ public abstract class FormatBase
         if (value is { } v && !Enum.IsDefined(v))
         {
             throw new ArgumentOutOfRangeException(nameof(value), v, $"Not a {typeof(T).Name}.");
+        }
+
+        SetRaw(id, value);
+    }
+
+    private protected void SetList(int id, List? value)
+    {
+        if (value is not null && value != List.None && Owner is { } owner && (value.Document != owner.Document || !owner.Document.Lists.Contains(value)))
+        {
+            throw new ArgumentException($"List {value.Id} is not in this format's document.", nameof(value));
         }
 
         SetRaw(id, value);

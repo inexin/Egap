@@ -35,6 +35,12 @@ public class ChangeNotificationTests
         ["Run.Style"] = f => f.Run.Style = (CharacterStyle)f.Doc.Styles.AddBuiltIn(BuiltInStyle.Strong),
         ["Table.Style"] = f => f.Table.Style = (TableStyle)f.Doc.Styles.AddBuiltIn(BuiltInStyle.TableGrid),
         ["Table.Grid"] = f => f.Table.Grid = [100],
+        ["Paragraph.SetList"] = f => f.Paragraph.SetList(f.Doc.Lists.AddNumbered()),
+        ["Paragraph.RemoveList"] = f =>
+        {
+            f.Paragraph.SetList(f.Doc.Lists.AddNumbered());
+            f.Paragraph.RemoveList();
+        },
     };
 
     /// <summary>Public members that only read, or make detached copies, and so raise nothing.</summary>
@@ -115,7 +121,7 @@ public class ChangeNotificationTests
                 List<DocumentChangedEventArgs> changes = [];
                 EventHandler<DocumentChangedEventArgs> handler = (_, e) => changes.Add(e);
                 f.Doc.Changed += handler;
-                property.SetValue(format, property.PropertyType == typeof(string) ? property.Name : SampleValue(property.PropertyType));
+                property.SetValue(format, property.PropertyType == typeof(string) ? property.Name : property.PropertyType == typeof(List) ? f.Doc.Lists.AddNumbered() : SampleValue(property.PropertyType));
                 f.Doc.Changed -= handler;
                 if (!changes.Any(c => c.Node == node && c.Property == prefix + property.Name))
                 {

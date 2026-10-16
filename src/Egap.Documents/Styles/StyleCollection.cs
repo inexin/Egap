@@ -9,6 +9,8 @@ namespace Egap.Documents;
 /// </summary>
 public sealed class StyleCollection : IReadOnlyCollection<Style>, IFormatOwner
 {
+    Document IFormatOwner.Document => document;
+
     private readonly Document document;
     private readonly Dictionary<string, Style> byId = new(StringComparer.Ordinal);
     private readonly List<Style> order = [];
@@ -83,6 +85,12 @@ public sealed class StyleCollection : IReadOnlyCollection<Style>, IFormatOwner
     public TableStyle AddTableStyle(string id, string? name = null)
     {
         return Add(new TableStyle(document, CheckNewId(id), name ?? id));
+    }
+
+    /// <summary>Adds a list style.</summary>
+    public ListStyle AddListStyle(string id, string? name = null)
+    {
+        return Add(new ListStyle(document, CheckNewId(id), name ?? id));
     }
 
     /// <summary>The built-in style <paramref name="style"/>, added with Word's definition when the document does not have it.</summary>
@@ -168,12 +176,12 @@ public sealed class StyleCollection : IReadOnlyCollection<Style>, IFormatOwner
     }
 
     /// <summary>Copies every style, the defaults and the document defaults from <paramref name="source"/> into this empty collection.</summary>
-    internal void CopyFrom(StyleCollection source)
+    internal void CopyFrom(StyleCollection source, CloneContext context)
     {
         Dictionary<Style, Style> map = [];
         foreach (Style style in source.order)
         {
-            Style copy = style.CopyTo(document, style.Id);
+            Style copy = style.CopyTo(context, style.Id);
             map[style] = copy;
             byId.Add(copy.Id, copy);
             order.Add(copy);
@@ -191,22 +199,24 @@ public sealed class StyleCollection : IReadOnlyCollection<Style>, IFormatOwner
 
         DefaultRunFormat.CopyRaw(source.DefaultRunFormat);
         DefaultParagraphFormat.CopyRaw(source.DefaultParagraphFormat);
+        context.FixLists(DefaultParagraphFormat);
     }
 
     /// <summary>
     /// The style in this document that stands for <paramref name="style"/> of another one: the style with the same id when
     /// there is one (as Word's "use destination styles"), otherwise a copy, with the styles it links to brought along too.
     /// </summary>
-    internal Style Import(Style style, Dictionary<Style, Style> imported)
+    internal Style Import(Style style, CloneContext context)
     {
         if (style.Document == document)
         {
             return style;
         }
 
-        if (imported.TryGetValue(style, out Style? done))
+        Dictionary<object, object> imported = context.Imported;
+        if (imported.TryGetValue(style, out object? done))
         {
-            return done;
+            return (Style)done;
         }
 
         if (byId.TryGetValue(style.Id, out Style? existing) && existing.Type == style.Type)
@@ -215,10 +225,10 @@ public sealed class StyleCollection : IReadOnlyCollection<Style>, IFormatOwner
             return existing;
         }
 
-        Style copy = style.CopyTo(document, UniqueId(style.Id));
+        Style copy = style.CopyTo(context, UniqueId(style.Id));
         imported[style] = copy;
         Add(copy);
-        style.CopyLinks(copy, s => Import(s, imported));
+        style.CopyLinks(copy, s => Import(s, context));
         return copy;
     }
 

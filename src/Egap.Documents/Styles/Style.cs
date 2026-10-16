@@ -139,8 +139,8 @@ public abstract class Style : IFormatOwner
         Notify(format.GetType().Name + "." + property);
     }
 
-    /// <summary>A copy of this style, without its links to other styles, for <paramref name="target"/>.</summary>
-    internal abstract Style CopyTo(Document target, string id);
+    /// <summary>A copy of this style, without its links to other styles, for the context's document.</summary>
+    internal abstract Style CopyTo(CloneContext context, string id);
 
     /// <summary>Copies links to other styles through <paramref name="map"/>, once every style has a copy.</summary>
     internal virtual void CopyLinks(Style copy, Func<Style, Style> map)
@@ -241,12 +241,13 @@ public sealed class ParagraphStyle : Style
         }
     }
 
-    internal override Style CopyTo(Document target, string id)
+    internal override Style CopyTo(CloneContext context, string id)
     {
-        ParagraphStyle copy = new(target, id, Name);
+        ParagraphStyle copy = new(context.Target, id, Name);
         CopyCommon(copy);
         copy.ParagraphFormat.CopyRaw(ParagraphFormat);
         copy.RunFormat.CopyRaw(RunFormat);
+        context.FixLists(copy.ParagraphFormat);
         return copy;
     }
 
@@ -291,9 +292,9 @@ public sealed class CharacterStyle : Style
         }
     }
 
-    internal override Style CopyTo(Document target, string id)
+    internal override Style CopyTo(CloneContext context, string id)
     {
-        CharacterStyle copy = new(target, id, Name);
+        CharacterStyle copy = new(context.Target, id, Name);
         CopyCommon(copy);
         copy.RunFormat.CopyRaw(RunFormat);
         return copy;
@@ -434,9 +435,9 @@ public sealed class TableStyle : Style
     /// <summary>The formatting for one region of the table.</summary>
     public TableStyleConditional this[TableStyleRegion region] => Enum.IsDefined(region) ? conditionals[(int)region] : throw new ArgumentOutOfRangeException(nameof(region));
 
-    internal override Style CopyTo(Document target, string id)
+    internal override Style CopyTo(CloneContext context, string id)
     {
-        TableStyle copy = new(target, id, Name);
+        TableStyle copy = new(context.Target, id, Name);
         CopyCommon(copy);
         copy.TableFormat.CopyRaw(TableFormat);
         copy.RowFormat.CopyRaw(RowFormat);
@@ -448,6 +449,44 @@ public sealed class TableStyle : Style
             copy.conditionals[i].CopyRaw(conditionals[i]);
         }
 
+        context.FixLists(copy.ParagraphFormat);
+        return copy;
+    }
+}
+
+/// <summary>A list style (Word's numbering style): names the list its paragraphs and list definitions follow.</summary>
+public sealed class ListStyle : Style
+{
+    private List? list;
+
+    internal ListStyle(Document document, string id, string name)
+        : base(document, id, name)
+    {
+    }
+
+    /// <inheritdoc/>
+    public override StyleType Type => StyleType.List;
+
+    /// <summary>The list the style names, or null.</summary>
+    public List? List
+    {
+        get => list;
+        set
+        {
+            if (value is not null && (value.Document != Document || !Document.Lists.Contains(value)))
+            {
+                throw new ArgumentException("The list is not in this style's document.", nameof(value));
+            }
+
+            Set(ref list, value, nameof(List));
+        }
+    }
+
+    internal override Style CopyTo(CloneContext context, string id)
+    {
+        ListStyle copy = new(context.Target, id, Name);
+        CopyCommon(copy);
+        copy.list = context.Map(list);
         return copy;
     }
 }

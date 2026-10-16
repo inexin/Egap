@@ -22,6 +22,7 @@ public sealed class Document : Node
         Sections = new ChildCollection<Section>(this);
         Styles = new StyleCollection(this);
         Theme = new Theme(this);
+        Lists = new ListCollection(this);
         if (!blank)
         {
             BuiltInStyles.InitializeNewDocument(Styles);
@@ -39,6 +40,9 @@ public sealed class Document : Node
 
     /// <summary>The theme colours and fonts that styles and runs may name.</summary>
     public Theme Theme { get; }
+
+    /// <summary>The lists and list definitions paragraphs number with.</summary>
+    public ListCollection Lists { get; }
 
     /// <summary>
     /// Counts changes to styles, document defaults and the theme, which change the effective formatting of many paragraphs
@@ -93,11 +97,12 @@ public sealed class Document : Node
     public override Document Clone(bool deep = true)
     {
         Document copy = new(blank: true);
-        copy.Styles.CopyFrom(Styles);
+        CloneContext context = new(copy, wholeDocument: true);
+        copy.Lists.CopyFrom(Lists, context);
+        copy.Styles.CopyFrom(Styles, context);
         copy.Theme.CopyFrom(Theme);
         if (deep)
         {
-            CloneContext context = new(copy);
             foreach (Section section in Sections)
             {
                 copy.Sections.AddTrusted((Section)section.CloneInto(context, deep: true));
