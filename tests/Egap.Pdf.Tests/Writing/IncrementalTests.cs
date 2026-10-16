@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 using Egap.Pdf.Tests.Parsing;
@@ -278,6 +279,41 @@ public sealed class IncrementalTests
         Assert.True(added.ObjectNumber > 7);
         Assert.Same(PdfNull.Instance, reopened.Catalog.Get<PdfDictionary>("Pages")!.Get<PdfArray>("Kids")!.Get(0));
         Assert.True(reopened.Catalog.Get<PdfDictionary>("Added")!.GetBool("Edited"));
+    }
+
+    [Fact]
+    public void ALargeStreamsDataIsNotTakenForReferences()
+    {
+        // The catalog names 40 0 R, which does not exist; a 300 KB stream's data happens to hold "900000 0 R".
+        string data = string.Concat(Enumerable.Repeat("900000 0 R ", 300_000 / 11));
+        List<string> objects =
+        [
+            "<< /Type /Catalog /Pages 2 0 R /Dangling 40 0 R >>",
+            "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+            "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 100 100] >>",
+            $"<< /Length {data.Length} >>\nstream\n{data}\nendstream",
+        ];
+        StringBuilder file = new("%PDF-1.7\n");
+        List<int> offsets = [];
+        for (int i = 0; i < objects.Count; i++)
+        {
+            offsets.Add(file.Length);
+            file.Append(CultureInfo.InvariantCulture, $"{i + 1} 0 obj\n{objects[i]}\nendobj\n");
+        }
+
+        int xref = file.Length;
+        file.Append(CultureInfo.InvariantCulture, $"xref\n0 {objects.Count + 1}\n0000000000 65535 f \n");
+        foreach (int offset in offsets)
+        {
+            file.Append(CultureInfo.InvariantCulture, $"{offset:D10} 00000 n \n");
+        }
+
+        file.Append(CultureInfo.InvariantCulture, $"trailer\n<< /Size {objects.Count + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n");
+        using PdfDocument pdf = PdfDocument.Open(Encoding.ASCII.GetBytes(file.ToString()));
+
+        PdfReference added = pdf.Objects.Add(new PdfDictionary());
+
+        Assert.InRange(added.ObjectNumber, 41, 1000);
     }
 
     [Fact]

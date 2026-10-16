@@ -24,14 +24,16 @@ internal static class RevisionScanner
             return [new Found(chain.Count > 0 ? chain[0].Offset : 0, end, EndOfLine(source, end))];
         }
 
-        Dictionary<long, List<long>> named = StartXrefs(source);
+        // Each revision's startxref normally follows its section closely, so it is looked for from there; only a section no later
+        // startxref names makes the whole file be searched, once.
+        Dictionary<long, List<long>>? named = null;
         List<Found> found = [];
         Found? current = null;
         foreach (XrefSection section in chain)
         {
             // The first startxref after the section that names it ends the revision; an update repeats no offset, so one is enough.
-            long eofEnd = -1;
-            if (named.TryGetValue(section.Offset, out List<long>? ends))
+            long eofEnd = NamingStartXref(source, section.Offset);
+            if (eofEnd < 0 && (named ??= StartXrefs(source)).TryGetValue(section.Offset, out List<long>? ends))
             {
                 foreach (long end in ends)
                 {
@@ -59,6 +61,27 @@ internal static class RevisionScanner
         // Oldest first, and a later revision always ends after an earlier one.
         found.Sort((a, b) => a.Length.CompareTo(b.Length));
         return [.. found.DistinctBy(f => f.Length)];
+    }
+
+    /// <summary>
+    /// The end of the <c>%%EOF</c> after the first <c>startxref</c> past <paramref name="offset"/> that names it (the end of the
+    /// file when none follows), or -1 when none does.
+    /// </summary>
+    private static long NamingStartXref(PdfSource source, long offset)
+    {
+        WarningLog log = new(false);
+        for (long at = SourceSearch.IndexOf(source, "startxref"u8, offset); at >= 0; at = SourceSearch.IndexOf(source, "startxref"u8, at + 9))
+        {
+            Lexer lexer = new(new SourceReader(source, at + 9), log);
+            Token token = lexer.Next();
+            if (token.Kind == TokenKind.Integer && token.Integer == offset)
+            {
+                long eof = SourceSearch.IndexOf(source, "%%EOF"u8, lexer.Position);
+                return eof < 0 ? source.Length : eof + 5;
+            }
+        }
+
+        return -1;
     }
 
     /// <summary>

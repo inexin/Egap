@@ -71,20 +71,42 @@ internal sealed class ObjectScanner
     /// <summary>
     /// The highest object number that any <c>n g R</c> in the file names, objects and stream data alike, so new objects
     /// can take numbers no reference already names (a reference to a missing object would otherwise come to point at one).
-    /// Stream data can hold false matches, which only make the number higher.
+    /// Stream data can hold false matches, which only make the number higher; <paramref name="skip"/> names data ranges, in
+    /// file order, that hold no references and are passed over.
     /// </summary>
-    public static int HighestReference(PdfSource source)
+    public static int HighestReference(PdfSource source, IReadOnlyList<(long Start, long End)>? skip = null)
     {
         int highest = 0;
         byte[] buffer = new byte[Window + 64];
-        for (long start = 0; start < source.Length; start += Window)
+        long begin = 0;
+        foreach ((long skipStart, long skipEnd) in (skip ?? []).Append((source.Length, source.Length)))
+        {
+            highest = Math.Max(highest, HighestReference(source, buffer, begin, Math.Max(begin, skipStart)));
+            begin = Math.Max(begin, skipEnd);
+        }
+
+        return highest;
+    }
+
+    private static int HighestReference(PdfSource source, byte[] buffer, long begin, long end)
+    {
+        int highest = 0;
+        for (long start = begin; start < end; start += Window)
         {
             long from = Math.Max(0, start - 64);
-            int count = source.Read(from, buffer.AsSpan(0, (int)Math.Min(buffer.Length, source.Length - from)));
+            int count = source.Read(from, buffer.AsSpan(0, (int)Math.Min(buffer.Length, end - from)));
             Span<byte> span = buffer.AsSpan(0, count);
-            for (int at = (int)(start - from); at < span.Length; at++)
+            // A vectorized search jumps from one R to the next, so long stream data costs little more than reading it.
+            for (int at = (int)(start - from) - 1; ;)
             {
-                if (span[at] != 'R' || (at + 1 < span.Length && CharClass.IsRegular(span[at + 1])))
+                int next = span[(at + 1)..].IndexOf((byte)'R');
+                if (next < 0)
+                {
+                    break;
+                }
+
+                at += next + 1;
+                if (at + 1 < span.Length && CharClass.IsRegular(span[at + 1]))
                 {
                     continue;
                 }
