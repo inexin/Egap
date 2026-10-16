@@ -6,6 +6,7 @@ reports hangs.
 
 | Target | Input | Seeds |
 |---|---|---|
-| `markdown` | Any bytes read as Markdown, with GitHub's extensions and CommonMark only; text, list labels and every run's and paragraph's formatting read back | `tests/fuzz-seeds/markdown/*` |
+| `markdown` | Any bytes read as Markdown, with GitHub's extensions and CommonMark only; text, list labels and every run's and paragraph's formatting read back; written as Markdown and read again | `tests/fuzz-seeds/markdown/*` |
+| `package` | Any bytes read as an OPC package (ZIP, content types, relationships); every part's relationships resolved and every XML part loaded; may throw only `DocumentException` | `tests/fuzz-seeds/package/*` |
 
 Daytime runs are 10 minutes per target: `python tools/fuzz-afl.py 0.17 markdown`.
