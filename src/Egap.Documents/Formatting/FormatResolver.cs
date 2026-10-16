@@ -126,6 +126,15 @@ internal static class FormatResolver
         }
 
         levels.AddRange(Chain(StyleOf(paragraph)).Select(s => s.ParagraphFormat));
+
+        // The list level's indents go between the styles and direct formatting (Word's order), once the list is known.
+        List? list = paragraph.Format.List ?? levels.Select(l => l.List).LastOrDefault(l => l is not null);
+        if (list is not null && list != List.None && paragraph.Document.Lists.Contains(list))
+        {
+            int level = paragraph.Format.ListLevel ?? levels.Select(l => l.ListLevel).LastOrDefault(l => l is not null) ?? 0;
+            levels.Add(list.GetLevel(level).ParagraphFormat);
+        }
+
         levels.Add(paragraph.Format);
         object?[] values = new object?[ParagraphFormat.Count];
         List<TabStop> tabs = [];

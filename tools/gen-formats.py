@@ -78,6 +78,8 @@ PARA = [
     ("SuppressAutoHyphens", "bool", "bool", "Not hyphenated automatically.", ""),
     ("SnapToGrid", "bool", "bool", "Lines follow the document grid.", ""),
     ("MirrorIndents", "bool", "bool", "Left and right indents swap on even pages.", ""),
+    ("List", "List", "list", "The list the paragraph is in; List.None takes it out of a list its style gives.", ""),
+    ("ListLevel", "int", "listlevel", "The paragraph's level in its list, 0 to 8.", ""),
 ]
 
 TABLE = [
@@ -178,7 +180,7 @@ FORMATS = [
 def prop_code(i, name, typ, kind, doc):
     nullable = f"{typ}?"
     lines = [f"    /// <summary>{doc}</summary>", f"    public {nullable} {name}", "    {"]
-    if kind in ("ref", "tabs", "columns"):
+    if kind in ("ref", "tabs", "columns", "list"):
         lines.append(f"        get => GetRef<{typ}>({i});")
     else:
         lines.append(f"        get => Get<{typ}>({i});")
@@ -190,6 +192,10 @@ def prop_code(i, name, typ, kind, doc):
         setter = f"SetLength({i}, value, allowNegative: true);"
     elif kind == "outline":
         setter = f"SetRaw({i}, value is null or (>= 0 and <= 9) ? value : throw new ArgumentOutOfRangeException(nameof(value)));"
+    elif kind == "list":
+        setter = f"SetList({i}, value);"
+    elif kind == "listlevel":
+        setter = f"SetRaw({i}, value is null or (>= 0 and <= 8) ? value : throw new ArgumentOutOfRangeException(nameof(value)));"
     elif kind == "posint":
         setter = f"SetRaw({i}, value is null or > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value)));"
     elif kind == "tabs":

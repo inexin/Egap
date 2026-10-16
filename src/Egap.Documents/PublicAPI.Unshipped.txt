@@ -167,6 +167,7 @@ Egap.Documents.Document.Document() -> void
 Egap.Documents.Document.FormattingVersion.get -> long
 Egap.Documents.Document.Import(Egap.Documents.Node! node, bool deep = true) -> Egap.Documents.Node!
 Egap.Documents.Document.Import<T>(T! node, bool deep = true) -> T!
+Egap.Documents.Document.Lists.get -> Egap.Documents.ListCollection!
 Egap.Documents.Document.Sections.get -> Egap.Documents.NodeCollection<Egap.Documents.Section!>!
 Egap.Documents.Document.Styles.get -> Egap.Documents.StyleCollection!
 Egap.Documents.Document.Theme.get -> Egap.Documents.Theme!
@@ -241,6 +242,84 @@ Egap.Documents.LineSpacingRule
 Egap.Documents.LineSpacingRule.AtLeast = 1 -> Egap.Documents.LineSpacingRule
 Egap.Documents.LineSpacingRule.Exactly = 2 -> Egap.Documents.LineSpacingRule
 Egap.Documents.LineSpacingRule.Multiple = 0 -> Egap.Documents.LineSpacingRule
+Egap.Documents.List
+Egap.Documents.List.Definition.get -> Egap.Documents.ListDefinition!
+Egap.Documents.List.Document.get -> Egap.Documents.Document?
+Egap.Documents.List.GetLevel(int index) -> Egap.Documents.ListLevel!
+Egap.Documents.List.Id.get -> int
+Egap.Documents.List.Overrides.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ListLevelOverride!>!
+Egap.Documents.ListCollection
+Egap.Documents.ListCollection.Add(Egap.Documents.ListDefinition! definition) -> Egap.Documents.List!
+Egap.Documents.ListCollection.AddBulleted() -> Egap.Documents.List!
+Egap.Documents.ListCollection.AddDefinition() -> Egap.Documents.ListDefinition!
+Egap.Documents.ListCollection.AddNumbered() -> Egap.Documents.List!
+Egap.Documents.ListCollection.Contains(Egap.Documents.List! list) -> bool
+Egap.Documents.ListCollection.Contains(Egap.Documents.ListDefinition! definition) -> bool
+Egap.Documents.ListCollection.Count.get -> int
+Egap.Documents.ListCollection.Definitions.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ListDefinition!>!
+Egap.Documents.ListCollection.GetDefinition(int id) -> Egap.Documents.ListDefinition?
+Egap.Documents.ListCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Documents.List!>!
+Egap.Documents.ListCollection.this[int id].get -> Egap.Documents.List?
+Egap.Documents.ListDefinition
+Egap.Documents.ListDefinition.Document.get -> Egap.Documents.Document!
+Egap.Documents.ListDefinition.Id.get -> int
+Egap.Documents.ListDefinition.Kind.get -> Egap.Documents.ListKind
+Egap.Documents.ListDefinition.Kind.set -> void
+Egap.Documents.ListDefinition.Levels.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ListLevel!>!
+Egap.Documents.ListDefinition.Name.get -> string?
+Egap.Documents.ListDefinition.Name.set -> void
+Egap.Documents.ListKind
+Egap.Documents.ListKind.HybridMultilevel = 2 -> Egap.Documents.ListKind
+Egap.Documents.ListKind.Multilevel = 1 -> Egap.Documents.ListKind
+Egap.Documents.ListKind.SingleLevel = 0 -> Egap.Documents.ListKind
+Egap.Documents.ListLabel
+Egap.Documents.ListLabel.<Clone>$() -> Egap.Documents.ListLabel!
+Egap.Documents.ListLabel.Deconstruct(out string! Text, out Egap.Documents.List! List, out int Level, out Egap.Documents.ListLevel! Format) -> void
+Egap.Documents.ListLabel.Equals(Egap.Documents.ListLabel? other) -> bool
+Egap.Documents.ListLabel.Format.get -> Egap.Documents.ListLevel!
+Egap.Documents.ListLabel.Format.init -> void
+Egap.Documents.ListLabel.Level.get -> int
+Egap.Documents.ListLabel.Level.init -> void
+Egap.Documents.ListLabel.List.get -> Egap.Documents.List!
+Egap.Documents.ListLabel.List.init -> void
+Egap.Documents.ListLabel.ListLabel(string! Text, Egap.Documents.List! List, int Level, Egap.Documents.ListLevel! Format) -> void
+Egap.Documents.ListLabel.Text.get -> string!
+Egap.Documents.ListLabel.Text.init -> void
+Egap.Documents.ListLabelSuffix
+Egap.Documents.ListLabelSuffix.Nothing = 2 -> Egap.Documents.ListLabelSuffix
+Egap.Documents.ListLabelSuffix.Space = 1 -> Egap.Documents.ListLabelSuffix
+Egap.Documents.ListLabelSuffix.Tab = 0 -> Egap.Documents.ListLabelSuffix
+Egap.Documents.ListLevel
+Egap.Documents.ListLevel.Alignment.get -> Egap.Documents.ParagraphAlignment
+Egap.Documents.ListLevel.Alignment.set -> void
+Egap.Documents.ListLevel.Index.get -> int
+Egap.Documents.ListLevel.IsLegal.get -> bool
+Egap.Documents.ListLevel.IsLegal.set -> void
+Egap.Documents.ListLevel.LevelText.get -> string!
+Egap.Documents.ListLevel.LevelText.set -> void
+Egap.Documents.ListLevel.LinkedStyle.get -> Egap.Documents.ParagraphStyle?
+Egap.Documents.ListLevel.LinkedStyle.set -> void
+Egap.Documents.ListLevel.NumberStyle.get -> Egap.Documents.NumberStyle
+Egap.Documents.ListLevel.NumberStyle.set -> void
+Egap.Documents.ListLevel.Owner.get -> Egap.Documents.ListDefinition!
+Egap.Documents.ListLevel.ParagraphFormat.get -> Egap.Documents.ParagraphFormat!
+Egap.Documents.ListLevel.RestartAfterLevel.get -> int?
+Egap.Documents.ListLevel.RestartAfterLevel.set -> void
+Egap.Documents.ListLevel.RunFormat.get -> Egap.Documents.RunFormat!
+Egap.Documents.ListLevel.StartAt.get -> int
+Egap.Documents.ListLevel.StartAt.set -> void
+Egap.Documents.ListLevel.Suffix.get -> Egap.Documents.ListLabelSuffix
+Egap.Documents.ListLevel.Suffix.set -> void
+Egap.Documents.ListLevelOverride
+Egap.Documents.ListLevelOverride.CreateLevel() -> Egap.Documents.ListLevel!
+Egap.Documents.ListLevelOverride.Index.get -> int
+Egap.Documents.ListLevelOverride.Level.get -> Egap.Documents.ListLevel?
+Egap.Documents.ListLevelOverride.RemoveLevel() -> void
+Egap.Documents.ListLevelOverride.StartAt.get -> int?
+Egap.Documents.ListLevelOverride.StartAt.set -> void
+Egap.Documents.ListStyle
+Egap.Documents.ListStyle.List.get -> Egap.Documents.List?
+Egap.Documents.ListStyle.List.set -> void
 Egap.Documents.Node
 Egap.Documents.Node.Accept(Egap.Documents.DocumentVisitor! visitor) -> bool
 Egap.Documents.Node.Ancestors() -> System.Collections.Generic.IEnumerable<Egap.Documents.Node!>!
@@ -334,9 +413,12 @@ Egap.Documents.Paragraph.AddTab() -> Egap.Documents.Tab!
 Egap.Documents.Paragraph.Format.get -> Egap.Documents.ParagraphFormat!
 Egap.Documents.Paragraph.GetEffectiveFormat() -> Egap.Documents.ResolvedParagraphFormat!
 Egap.Documents.Paragraph.Inlines.get -> Egap.Documents.NodeCollection<Egap.Documents.Inline!>!
+Egap.Documents.Paragraph.ListLabel.get -> Egap.Documents.ListLabel?
 Egap.Documents.Paragraph.MarkFormat.get -> Egap.Documents.RunFormat!
 Egap.Documents.Paragraph.Paragraph(Egap.Documents.Document! document) -> void
+Egap.Documents.Paragraph.RemoveList() -> void
 Egap.Documents.Paragraph.Runs.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Run!>!
+Egap.Documents.Paragraph.SetList(Egap.Documents.List! list, int level = 0) -> void
 Egap.Documents.Paragraph.Style.get -> Egap.Documents.ParagraphStyle?
 Egap.Documents.Paragraph.Style.set -> void
 Egap.Documents.Paragraph.Version.get -> long
@@ -377,6 +459,10 @@ Egap.Documents.ParagraphFormat.LineSpacing.get -> double?
 Egap.Documents.ParagraphFormat.LineSpacing.set -> void
 Egap.Documents.ParagraphFormat.LineSpacingRule.get -> Egap.Documents.LineSpacingRule?
 Egap.Documents.ParagraphFormat.LineSpacingRule.set -> void
+Egap.Documents.ParagraphFormat.List.get -> Egap.Documents.List?
+Egap.Documents.ParagraphFormat.List.set -> void
+Egap.Documents.ParagraphFormat.ListLevel.get -> int?
+Egap.Documents.ParagraphFormat.ListLevel.set -> void
 Egap.Documents.ParagraphFormat.MirrorIndents.get -> bool?
 Egap.Documents.ParagraphFormat.MirrorIndents.set -> void
 Egap.Documents.ParagraphFormat.OutlineLevel.get -> int?
@@ -429,6 +515,8 @@ Egap.Documents.ResolvedParagraphFormat.KeepWithNext.get -> bool
 Egap.Documents.ResolvedParagraphFormat.LeftIndent.get -> double
 Egap.Documents.ResolvedParagraphFormat.LineSpacing.get -> double
 Egap.Documents.ResolvedParagraphFormat.LineSpacingRule.get -> Egap.Documents.LineSpacingRule
+Egap.Documents.ResolvedParagraphFormat.List.get -> Egap.Documents.List?
+Egap.Documents.ResolvedParagraphFormat.ListLevel.get -> int
 Egap.Documents.ResolvedParagraphFormat.MirrorIndents.get -> bool
 Egap.Documents.ResolvedParagraphFormat.OutlineLevel.get -> int
 Egap.Documents.ResolvedParagraphFormat.PageBreakBefore.get -> bool
@@ -667,6 +755,7 @@ Egap.Documents.Style.Priority.set -> void
 Egap.Documents.StyleCollection
 Egap.Documents.StyleCollection.AddBuiltIn(Egap.Documents.BuiltInStyle style) -> Egap.Documents.Style!
 Egap.Documents.StyleCollection.AddCharacterStyle(string! id, string? name = null) -> Egap.Documents.CharacterStyle!
+Egap.Documents.StyleCollection.AddListStyle(string! id, string? name = null) -> Egap.Documents.ListStyle!
 Egap.Documents.StyleCollection.AddParagraphStyle(string! id, string? name = null) -> Egap.Documents.ParagraphStyle!
 Egap.Documents.StyleCollection.AddTableStyle(string! id, string? name = null) -> Egap.Documents.TableStyle!
 Egap.Documents.StyleCollection.Contains(Egap.Documents.Style! style) -> bool
@@ -924,6 +1013,10 @@ override Egap.Documents.Document.Clone(bool deep = true) -> Egap.Documents.Docum
 override Egap.Documents.DocumentColor.GetHashCode() -> int
 override Egap.Documents.DocumentColor.ToString() -> string!
 override Egap.Documents.HeaderFooter.Clone(bool deep = true) -> Egap.Documents.HeaderFooter!
+override Egap.Documents.ListLabel.Equals(object? obj) -> bool
+override Egap.Documents.ListLabel.GetHashCode() -> int
+override Egap.Documents.ListLabel.ToString() -> string!
+override Egap.Documents.ListStyle.Type.get -> Egap.Documents.StyleType
 override Egap.Documents.Paragraph.Clone(bool deep = true) -> Egap.Documents.Paragraph!
 override Egap.Documents.ParagraphStyle.Type.get -> Egap.Documents.StyleType
 override Egap.Documents.Row.Clone(bool deep = true) -> Egap.Documents.Row!
@@ -953,6 +1046,9 @@ static Egap.Documents.DocumentColor.FromRgb(Egami.Pixels.Rgba8 rgb) -> Egap.Docu
 static Egap.Documents.DocumentColor.FromTheme(Egap.Documents.ThemeColor theme, double tint = 0, double shade = 0, Egami.Pixels.Rgba8 stored = default(Egami.Pixels.Rgba8)) -> Egap.Documents.DocumentColor
 static Egap.Documents.DocumentColor.operator !=(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
 static Egap.Documents.DocumentColor.operator ==(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
+static Egap.Documents.List.None.get -> Egap.Documents.List!
+static Egap.Documents.ListLabel.operator !=(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
+static Egap.Documents.ListLabel.operator ==(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
 static Egap.Documents.Shading.operator !=(Egap.Documents.Shading? left, Egap.Documents.Shading? right) -> bool
 static Egap.Documents.Shading.operator ==(Egap.Documents.Shading? left, Egap.Documents.Shading? right) -> bool
 static Egap.Documents.Shading.Solid(Egap.Documents.DocumentColor color) -> Egap.Documents.Shading!

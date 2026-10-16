@@ -46,6 +46,31 @@ public sealed class Paragraph : Block
         return FormatResolver.Resolve(this);
     }
 
+    /// <summary>Puts the paragraph in <paramref name="list"/> at <paramref name="level"/> (direct formatting).</summary>
+    public void SetList(List list, int level = 0)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        Format.List = list;
+        Format.ListLevel = level;
+    }
+
+    /// <summary>
+    /// Takes the paragraph out of any list: clears the direct list settings and, when the paragraph's style puts it in a list,
+    /// sets <see cref="List.None"/> to override it.
+    /// </summary>
+    public void RemoveList()
+    {
+        Format.List = null;
+        Format.ListLevel = null;
+        if (GetEffectiveFormat().List is not null)
+        {
+            Format.List = List.None;
+        }
+    }
+
+    /// <summary>The paragraph's computed list label, such as "3.2.a.", or null when it is not in a list.</summary>
+    public ListLabel? ListLabel => Numbering.GetLabel(this);
+
     /// <summary>The resolver's cache for this paragraph.</summary>
     internal FormatResolver.ParagraphCache? FormatCache { get; set; }
 
@@ -121,6 +146,7 @@ public sealed class Paragraph : Block
         Paragraph copy = new(context.Target) { style = context.Map(style) };
         copy.Format.CopyRaw(Format);
         copy.MarkFormat.CopyRaw(MarkFormat);
+        context.FixLists(copy.Format);
         return copy;
     }
 

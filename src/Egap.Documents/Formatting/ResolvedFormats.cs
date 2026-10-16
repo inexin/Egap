@@ -266,6 +266,12 @@ public sealed class ResolvedParagraphFormat
     /// <summary>Indents swap on even pages.</summary>
     public bool MirrorIndents => Flag(ParagraphFormat.MirrorIndentsId);
 
+    /// <summary>The list the paragraph is in, or null (also when a level says <see cref="Documents.List.None"/>).</summary>
+    public List? List => values[ParagraphFormat.ListId] is List list && list != Documents.List.None && list.Document is { } d && d.Lists.Contains(list) ? list : null;
+
+    /// <summary>The paragraph's level in its list, 0 to 8.</summary>
+    public int ListLevel => Value(ParagraphFormat.ListLevelId, 0);
+
     /// <summary>The effective values as a stand-alone <see cref="ParagraphFormat"/>.</summary>
     public ParagraphFormat ToParagraphFormat()
     {

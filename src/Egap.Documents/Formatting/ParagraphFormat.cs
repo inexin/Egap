@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>Paragraph formatting: alignment, indents, spacing, keep rules, tabs, borders and shading (Word's paragraph properties). Every property is nullable: null means not set here.</summary>
 public sealed partial class ParagraphFormat : FormatBase
 {
-    internal const int Count = 29;
+    internal const int Count = 31;
 
     internal const int AlignmentId = 0;
     internal const int LeftIndentId = 1;
@@ -35,6 +35,8 @@ public sealed partial class ParagraphFormat : FormatBase
     internal const int SuppressAutoHyphensId = 26;
     internal const int SnapToGridId = 27;
     internal const int MirrorIndentsId = 28;
+    internal const int ListId = 29;
+    internal const int ListLevelId = 30;
 
     internal override int PropertyCount => Count;
 
@@ -241,6 +243,20 @@ public sealed partial class ParagraphFormat : FormatBase
         set => SetRaw(28, value);
     }
 
+    /// <summary>The list the paragraph is in; List.None takes it out of a list its style gives.</summary>
+    public List? List
+    {
+        get => GetRef<List>(29);
+        set => SetList(29, value);
+    }
+
+    /// <summary>The paragraph's level in its list, 0 to 8.</summary>
+    public int? ListLevel
+    {
+        get => Get<int>(30);
+        set => SetRaw(30, value is null or (>= 0 and <= 8) ? value : throw new ArgumentOutOfRangeException(nameof(value)));
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -274,6 +290,8 @@ public sealed partial class ParagraphFormat : FormatBase
             26 => nameof(SuppressAutoHyphens),
             27 => nameof(SnapToGrid),
             28 => nameof(MirrorIndents),
+            29 => nameof(List),
+            30 => nameof(ListLevel),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }
