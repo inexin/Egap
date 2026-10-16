@@ -355,6 +355,12 @@ public sealed partial class PdfCanvas
             return;
         }
 
+        // A form's content (an appearance) cannot hold annotations of its own.
+        if (formTarget)
+        {
+            return;
+        }
+
         // The area as the page sees it: the smallest upright rectangle around its corners in default user space.
         PdfMatrix toPage = Pdf(Matrix) * baseMatrix;
         PdfRectangle rectangle = toPage.Transform(new PdfRectangle(area.Left, area.Top, area.Right, area.Bottom));

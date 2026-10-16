@@ -58,6 +58,9 @@ public sealed partial class PdfCanvas : Canvas
     private GraphicsGroup? group;
     private bool written;
 
+    /// <summary>Whether the canvas draws a form XObject's content (an appearance stream) rather than a page's.</summary>
+    private bool formTarget;
+
     /// <summary>Starts drawing on a page.</summary>
     /// <param name="page">The page; its existing content is kept.</param>
     /// <param name="options">How to draw; <see cref="PdfCanvasOptions.Default"/> when <see langword="null"/>.</param>
@@ -81,6 +84,35 @@ public sealed partial class PdfCanvas : Canvas
 
     /// <summary>The page the canvas draws on.</summary>
     public PdfPage Page { get; }
+
+    /// <summary>
+    /// A canvas that draws the content of a form XObject <paramref name="width"/> by <paramref name="height"/> points, such as
+    /// a signature's appearance (Phase 5 task 6): y down from the top left, as on a page. It draws on a page that is in no
+    /// page tree; once disposed, <see cref="FormContent"/> and <see cref="FormResources"/> are the form's stream and resources.
+    /// </summary>
+    internal static PdfCanvas ForForm(PdfDocument document, float width, float height)
+    {
+        PdfDictionary dictionary = new()
+        {
+            ["Type"] = PdfName.Get("Page"),
+            ["MediaBox"] = new PdfArray { new PdfInteger(0), new PdfInteger(0), new PdfReal(width), new PdfReal(height) },
+            ["Resources"] = new PdfDictionary(),
+        };
+        PdfPage scratch = new(dictionary, null, document);
+        return new PdfCanvas(scratch, PdfCanvasOptions.Default, Layout(scratch, PdfCanvasOptions.Default)) { formTarget = true };
+    }
+
+    /// <summary>The matrix from a default canvas's space (points, y down from the displayed page's top left) to the page's user space.</summary>
+    internal static PdfMatrix LayoutMatrix(PdfPage page)
+    {
+        return Layout(page, PdfCanvasOptions.Default).Base;
+    }
+
+    /// <summary>For a form canvas, the content written when it was disposed.</summary>
+    internal byte[]? FormContent { get; private set; }
+
+    /// <summary>For a form canvas, the resources the content uses.</summary>
+    internal PdfDictionary FormResources => Page.Dictionary.Get<PdfDictionary>("Resources") ?? [];
 
     /// <summary>
     /// The transformation from the canvas's device space to the page's default user space: the flip and turn that make the
@@ -245,7 +277,14 @@ public sealed partial class PdfCanvas : Canvas
             written = true;
             CloseGroup();
             content.Restore();
-            Page.AddContent(content.ToArray(), options.Placement);
+            if (formTarget)
+            {
+                FormContent = content.ToArray();
+            }
+            else
+            {
+                Page.AddContent(content.ToArray(), options.Placement);
+            }
         }
 
         base.Dispose(disposing);

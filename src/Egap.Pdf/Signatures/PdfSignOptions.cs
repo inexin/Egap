@@ -55,6 +55,9 @@ public sealed record PdfSignOptions
     /// <summary>For an RSA key, whether to sign with RSA-PSS instead of PKCS #1 v1.5. The default is <see langword="false"/>.</summary>
     public bool UseRsaPss { get; init; }
 
+    /// <summary>Where and how the signature shows; invisible when left out (design Q6).</summary>
+    public PdfSignatureAppearance? Appearance { get; init; }
+
     /// <summary>The signer's name for the dictionary's <c>/Name</c>; the certificate's subject name when left out.</summary>
     public string? SignerName { get; init; }
 

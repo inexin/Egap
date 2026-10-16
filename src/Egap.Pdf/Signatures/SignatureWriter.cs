@@ -165,14 +165,16 @@ internal static class SignatureWriter
         Set(signature, "Location", options.Location);
         Set(signature, "ContactInfo", options.ContactInfo);
         signature["Prop_Build"] = new PdfDictionary { ["App"] = new PdfDictionary { ["Name"] = PdfName.Get("Egap") } };
-        return PrepareCoreAsync(document, fieldName, signature, options.ReservedSize ?? EstimateSize(options), options.DigestAlgorithm, output, cancellationToken);
+        DateTimeOffset time = options.SigningTime ?? document.Clock.GetLocalNow();
+        Func<PdfReference>? draw = options.Appearance is { } appearance ? () => appearance.Build(document, name, time, options.Reason, options.Location) : null;
+        return PrepareCoreAsync(document, fieldName, signature, options.ReservedSize ?? EstimateSize(options), options.DigestAlgorithm, output, cancellationToken, options.Appearance, draw);
     }
 
     /// <summary>
     /// Puts the dictionary, with the byte range and contents placeholders added, into the field; builds the update; copies
     /// the original to <paramref name="output"/> while hashing it; patches the byte range and hashes the rest.
     /// </summary>
-    private static async Task<Prepared> PrepareCoreAsync(PdfDocument document, string fieldName, PdfDictionary signature, int reserved, HashAlgorithmName digestAlgorithm, Stream output, CancellationToken cancellationToken)
+    private static async Task<Prepared> PrepareCoreAsync(PdfDocument document, string fieldName, PdfDictionary signature, int reserved, HashAlgorithmName digestAlgorithm, Stream output, CancellationToken cancellationToken, PdfSignatureAppearance? appearance = null, Func<PdfReference>? drawAppearance = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(fieldName);
         ArgumentNullException.ThrowIfNull(output);
@@ -186,7 +188,7 @@ internal static class SignatureWriter
         string marker = Marker();
         signature["ByteRange"] = new PdfArray([.. marker.Split(' ').Select(n => (PdfObject)new PdfInteger(long.Parse(n, CultureInfo.InvariantCulture)))]);
         signature["Contents"] = PdfString.FromBytes(new byte[reserved], hex: true);
-        SignatureFields.Attach(document, fieldName, document.Objects.Add(signature));
+        SignatureFields.Attach(document, fieldName, document.Objects.Add(signature), appearance, drawAppearance);
         (byte[] update, long baseLength) = document.BuildUpdate(save) ?? throw new InvalidOperationException("Adding a signature changed nothing.");
 
         // The byte range placeholder and the contents follow each other in the signature dictionary as written.
