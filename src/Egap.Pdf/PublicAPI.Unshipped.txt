@@ -120,6 +120,7 @@ Egap.Pdf.PdfSignature.Revision.get -> Egap.Pdf.PdfRevision?
 Egap.Pdf.PdfSignature.SignerName.get -> string?
 Egap.Pdf.PdfSignature.SigningTime.get -> System.DateTimeOffset?
 Egap.Pdf.PdfSignature.SubFilter.get -> string?
+Egap.Pdf.PdfSignature.Verify(Egap.Pdf.PdfVerifyOptions? options = null) -> Egap.Pdf.PdfSignatureReport!
 Egap.Pdf.PdfSignatureAppearance
 Egap.Pdf.PdfSignatureAppearance.PageIndex.get -> int
 Egap.Pdf.PdfSignatureAppearance.Rectangle.get -> Egami.Drawing.RectF
@@ -132,6 +133,22 @@ Egap.Pdf.PdfSignatureKind
 Egap.Pdf.PdfSignatureKind.Approval = 0 -> Egap.Pdf.PdfSignatureKind
 Egap.Pdf.PdfSignatureKind.Certification = 1 -> Egap.Pdf.PdfSignatureKind
 Egap.Pdf.PdfSignatureKind.DocumentTimestamp = 2 -> Egap.Pdf.PdfSignatureKind
+Egap.Pdf.PdfSignatureReport
+Egap.Pdf.PdfSignatureReport.Chain.get -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfSignatureReport.ChainCertificates.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
+Egap.Pdf.PdfSignatureReport.ChangesSince.get -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfSignatureReport.DigestAlgorithm.get -> string?
+Egap.Pdf.PdfSignatureReport.Integrity.get -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfSignatureReport.IsValid.get -> bool
+Egap.Pdf.PdfSignatureReport.Problems.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfSignatureReport.Revocation.get -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfSignatureReport.Signature.get -> Egap.Pdf.PdfSignature!
+Egap.Pdf.PdfSignatureReport.SignatureAlgorithm.get -> string?
+Egap.Pdf.PdfSignatureReport.SignerCertificate.get -> System.Security.Cryptography.X509Certificates.X509Certificate2?
+Egap.Pdf.PdfSignatureReport.Timestamp.get -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfSignatureReport.TimestampCertificate.get -> System.Security.Cryptography.X509Certificates.X509Certificate2?
+Egap.Pdf.PdfSignatureReport.TimestampTime.get -> System.DateTimeOffset?
+Egap.Pdf.PdfSignatureReport.Warnings.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Egap.Pdf.PdfSigner
 Egap.Pdf.PdfSigner.Certificate.get -> System.Security.Cryptography.X509Certificates.X509Certificate2!
 Egap.Pdf.PdfSigner.Chain.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
@@ -172,15 +189,36 @@ Egap.Pdf.PdfTimestampClient.PdfTimestampClient(System.Uri! url, System.Net.Http.
 Egap.Pdf.PdfTimestampClient.Policy.get -> string?
 Egap.Pdf.PdfTimestampClient.Policy.init -> void
 Egap.Pdf.PdfTimestampClient.Url.get -> System.Uri!
+Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfVerdict.Indeterminate = 2 -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfVerdict.Invalid = 1 -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfVerdict.NotApplicable = 3 -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfVerdict.Valid = 0 -> Egap.Pdf.PdfVerdict
+Egap.Pdf.PdfVerifyOptions
+Egap.Pdf.PdfVerifyOptions.<Clone>$() -> Egap.Pdf.PdfVerifyOptions!
+Egap.Pdf.PdfVerifyOptions.Equals(Egap.Pdf.PdfVerifyOptions? other) -> bool
+Egap.Pdf.PdfVerifyOptions.ExtraCertificates.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
+Egap.Pdf.PdfVerifyOptions.ExtraCertificates.init -> void
+Egap.Pdf.PdfVerifyOptions.PdfVerifyOptions() -> void
+Egap.Pdf.PdfVerifyOptions.TrustAnchors.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
+Egap.Pdf.PdfVerifyOptions.TrustAnchors.init -> void
+Egap.Pdf.PdfVerifyOptions.UseSystemTrust.get -> bool
+Egap.Pdf.PdfVerifyOptions.UseSystemTrust.init -> void
+Egap.Pdf.PdfVerifyOptions.VerificationTime.get -> System.DateTimeOffset?
+Egap.Pdf.PdfVerifyOptions.VerificationTime.init -> void
 override Egap.Pdf.PdfByteRange.GetHashCode() -> int
 override Egap.Pdf.PdfFieldLock.Equals(object? obj) -> bool
 override Egap.Pdf.PdfFieldLock.GetHashCode() -> int
 override Egap.Pdf.PdfFieldLock.ToString() -> string!
 override Egap.Pdf.PdfRevision.ToString() -> string!
 override Egap.Pdf.PdfSignature.ToString() -> string!
+override Egap.Pdf.PdfSignatureReport.ToString() -> string!
 override Egap.Pdf.PdfSignOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfSignOptions.GetHashCode() -> int
 override Egap.Pdf.PdfSignOptions.ToString() -> string!
+override Egap.Pdf.PdfVerifyOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfVerifyOptions.GetHashCode() -> int
+override Egap.Pdf.PdfVerifyOptions.ToString() -> string!
 static Egap.Pdf.PdfByteRange.operator !=(Egap.Pdf.PdfByteRange left, Egap.Pdf.PdfByteRange right) -> bool
 static Egap.Pdf.PdfByteRange.operator ==(Egap.Pdf.PdfByteRange left, Egap.Pdf.PdfByteRange right) -> bool
 static Egap.Pdf.PdfFieldLock.operator !=(Egap.Pdf.PdfFieldLock? left, Egap.Pdf.PdfFieldLock? right) -> bool
@@ -192,5 +230,8 @@ static Egap.Pdf.PdfSigner.FromCertificate(System.Security.Cryptography.X509Certi
 static Egap.Pdf.PdfSigner.FromKey(System.Security.Cryptography.AsymmetricAlgorithm! key, System.Security.Cryptography.X509Certificates.X509Certificate2! certificate, System.Collections.Generic.IEnumerable<System.Security.Cryptography.X509Certificates.X509Certificate2!>? chain = null) -> Egap.Pdf.PdfSigner!
 static Egap.Pdf.PdfSignOptions.operator !=(Egap.Pdf.PdfSignOptions? left, Egap.Pdf.PdfSignOptions? right) -> bool
 static Egap.Pdf.PdfSignOptions.operator ==(Egap.Pdf.PdfSignOptions? left, Egap.Pdf.PdfSignOptions? right) -> bool
+static Egap.Pdf.PdfVerifyOptions.Default.get -> Egap.Pdf.PdfVerifyOptions!
+static Egap.Pdf.PdfVerifyOptions.operator !=(Egap.Pdf.PdfVerifyOptions? left, Egap.Pdf.PdfVerifyOptions? right) -> bool
+static Egap.Pdf.PdfVerifyOptions.operator ==(Egap.Pdf.PdfVerifyOptions? left, Egap.Pdf.PdfVerifyOptions? right) -> bool
 ~override Egap.Pdf.PdfByteRange.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfByteRange.ToString() -> string

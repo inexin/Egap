@@ -155,6 +155,16 @@ public sealed class SignatureReadingTests
     }
 
     [Fact]
+    public void AGapOfTheDigitsAloneIsTheContentsToo()
+    {
+        // Some signers sign the angle brackets and leave out only the hex digits, as pdf.js's signed_verified.pdf does.
+        using PdfDocument pdf = PdfDocument.Open(SignedFiles.Signed(byteRange: r => Format(r[0], r[1] + 1, r[2] - 1, r[3] + 1)));
+        PdfSignature signature = Assert.Single(pdf.Signatures);
+        Assert.Equal(PdfByteRangeIssues.None, signature.ByteRangeIssues);
+        Assert.True(signature.CoversWholeFile);
+    }
+
+    [Fact]
     public void AGapHoldingOtherBytesIsNotTheContents()
     {
         // The gap is a hex string of the right size, but a decoy before the real /Contents: the signature's own contents are
