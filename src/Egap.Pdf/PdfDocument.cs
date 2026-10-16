@@ -213,8 +213,52 @@ public sealed class PdfDocument : IDisposable
     /// </summary>
     public IReadOnlyList<PdfSignature> Signatures => PdfSignature.Find(this);
 
-    /// <summary>Whether the document is an earlier revision opened with <see cref="PdfRevision.Open"/>, which cannot be saved.</summary>
+    /// <summary>
+    /// Signs the document into <paramref name="output"/> (Phase 5 design, 5.1): an incremental update that puts a signature
+    /// into the signature field <paramref name="fieldName"/>, made as an invisible field on the first page when the form has
+    /// none of that name. The original file is copied to the output first, unchanged, so a failed signature never touches
+    /// the input. Afterwards this document is read-only: the signed file is the output, which can be opened to go on.
+    /// </summary>
+    /// <param name="fieldName">The signature field's fully qualified name.</param>
+    /// <param name="options">The signer, level, format and dictionary entries.</param>
+    /// <param name="output">Where the signed file goes, from its current position.</param>
+    /// <param name="cancellationToken">Cancels the signing.</param>
+    /// <exception cref="ArgumentException">The options have no signer, or the field is not an unsigned signature field.</exception>
+    /// <exception cref="PdfException">The file needed repair, or the signature does not fit the reserved space.</exception>
+    /// <example>
+    /// <code>
+    /// using PdfDocument pdf = PdfDocument.Open("contract.pdf");
+    /// using FileStream output = File.Create("contract-signed.pdf");
+    /// await pdf.SignAsync("Signature1", new PdfSignOptions { Signer = PdfSigner.FromCertificate(certificate), Reason = "Approved" }, output);
+    /// </code>
+    /// </example>
+    public Task SignAsync(string fieldName, PdfSignOptions options, Stream output, CancellationToken cancellationToken = default)
+    {
+        return global::Egap.Pdf.Signatures.SignatureWriter.SignAsync(this, fieldName, options, output, cancellationToken);
+    }
+
+    /// <summary>
+    /// Prepares a signature made elsewhere (Phase 5 design Q3): writes the signed file to <paramref name="output"/> with the
+    /// space for the CMS reserved and returns the digest the CMS must sign, which
+    /// <see cref="PdfPreparedSignature.CompleteAsync(ReadOnlyMemory{byte}, CancellationToken)"/> writes in. The output must be
+    /// seekable. Afterwards this document is read-only, as after <see cref="SignAsync"/>.
+    /// </summary>
+    /// <param name="fieldName">The signature field's fully qualified name.</param>
+    /// <param name="options">The level, format and dictionary entries; a signer, if given, sizes the reserved space.</param>
+    /// <param name="output">Where the prepared file goes, from its current position; seekable.</param>
+    /// <param name="cancellationToken">Cancels the preparation.</param>
+    public Task<PdfPreparedSignature> PrepareSignatureAsync(string fieldName, PdfSignOptions options, Stream output, CancellationToken cancellationToken = default)
+    {
+        return global::Egap.Pdf.Signatures.SignatureWriter.PrepareDeferredAsync(this, fieldName, options, output, cancellationToken);
+    }
+
+    /// <summary>
+    /// Whether the document cannot be saved: an earlier revision opened with <see cref="PdfRevision.Open"/>, or a document
+    /// already signed into another stream, whose saved state is that stream (open it to go on).
+    /// </summary>
     public bool IsReadOnly { get; private set; }
+
+    private string readOnlyReason = "An earlier revision opened with PdfRevision.Open is read-only and cannot be saved.";
 
     /// <summary>A read-only document over the first <paramref name="length"/> bytes of this one's file.</summary>
     internal PdfDocument OpenRevision(long length, PdfReadOptions options)
@@ -233,11 +277,46 @@ public sealed class PdfDocument : IDisposable
         return source.ReadBytes(position, count);
     }
 
-    private void ThrowIfReadOnly()
+    internal void ThrowIfReadOnly()
     {
         if (IsReadOnly)
         {
-            throw new InvalidOperationException("An earlier revision opened with PdfRevision.Open is read-only and cannot be saved.");
+            throw new InvalidOperationException(readOnlyReason);
+        }
+    }
+
+    /// <summary>Makes the document read-only after it was signed into another stream: its changes now live there.</summary>
+    internal void MarkSignedElsewhere()
+    {
+        IsReadOnly = true;
+        readOnlyReason = "The document was signed into another stream; open that stream to read or change the signed file.";
+    }
+
+    /// <summary>
+    /// The incremental update a save with <paramref name="options"/> would append, after the steps a save takes first, and
+    /// the length of the file it goes after; null when nothing changed. For signing (Phase 5), which writes the update itself.
+    /// </summary>
+    internal (byte[] Bytes, long BaseLength)? BuildUpdate(PdfSaveOptions options)
+    {
+        BeforeSave(options);
+        return Writing.IncrementalWriter.Update(this, baseLength, previousSection, EndsWithNewline(), options) is { } update ? (update.Bytes, baseLength) : null;
+    }
+
+    /// <summary>Copies the original file, up to where an update goes, to <paramref name="output"/>, adding it to <paramref name="hash"/> as it goes.</summary>
+    internal async Task CopyBaseAsync(Stream output, System.Security.Cryptography.IncrementalHash hash, CancellationToken cancellationToken)
+    {
+        byte[] buffer = new byte[256 * 1024];
+        for (long at = 0; at < baseLength;)
+        {
+            int read = source.Read(at, buffer.AsSpan(0, (int)Math.Min(buffer.Length, baseLength - at)));
+            if (read == 0)
+            {
+                throw new IOException("The file the document was opened from ended early.");
+            }
+
+            hash.AppendData(buffer, 0, read);
+            await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
+            at += read;
         }
     }
 
