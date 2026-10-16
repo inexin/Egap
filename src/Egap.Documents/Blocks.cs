@@ -20,6 +20,12 @@ public sealed class Paragraph : Block
         Inlines = new ChildCollection<Inline>(this);
     }
 
+    /// <summary>
+    /// The <see cref="Document.Version"/> of the last change inside this paragraph (its content or settings), or 0 when it has
+    /// not changed since it was made. Layout reuses a paragraph whose version it has seen (Build Plan task 21b).
+    /// </summary>
+    public long Version { get; internal set; }
+
     /// <summary>The paragraph's content in order.</summary>
     public NodeCollection<Inline> Inlines { get; }
 

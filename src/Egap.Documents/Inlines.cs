@@ -36,7 +36,11 @@ public sealed class Run : Inline
         set
         {
             ArgumentNullException.ThrowIfNull(value);
-            text = value;
+            if (value != text)
+            {
+                text = value;
+                Document.NotifyChanged(this, DocumentChangeKind.TextChanged, this);
+            }
         }
     }
 
@@ -111,7 +115,12 @@ public sealed class Break : Inline
     public Break(Document document, BreakKind kind = BreakKind.Line)
         : base(document)
     {
-        Kind = kind;
+        if (!Enum.IsDefined(kind))
+        {
+            throw new ArgumentOutOfRangeException(nameof(kind));
+        }
+
+        this.kind = kind;
     }
 
     /// <summary>What the break ends.</summary>
@@ -125,7 +134,11 @@ public sealed class Break : Inline
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
 
-            kind = value;
+            if (value != kind)
+            {
+                kind = value;
+                Document.NotifyChanged(this, DocumentChangeKind.PropertyChanged, this, property: nameof(Kind));
+            }
         }
     }
 

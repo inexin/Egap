@@ -16,6 +16,18 @@ public sealed class Document : Node
     /// <summary>The sections in order.</summary>
     public NodeCollection<Section> Sections { get; }
 
+    /// <summary>
+    /// Counts the changes made to this document: every change, through any public member, adds one and stamps the paragraph
+    /// and story it touched with the new value (<see cref="Paragraph.Version"/>, <see cref="Story.Version"/>).
+    /// </summary>
+    public long Version { get; private set; }
+
+    /// <summary>
+    /// Raised after every change to the document or any of its nodes, in or out of the tree, on the thread that made it. All
+    /// changes go through one path, so nothing changes without it.
+    /// </summary>
+    public event EventHandler<DocumentChangedEventArgs>? Changed;
+
     internal override int ChildCount => Sections.Count;
 
     /// <summary>Adds a new, empty section at the end.</summary>
@@ -66,6 +78,27 @@ public sealed class Document : Node
     internal override Node GetChild(int index)
     {
         return Sections[index];
+    }
+
+    /// <summary>
+    /// The one path every change takes: counts it, stamps the nearest paragraph and story, and raises <see cref="Changed"/>.
+    /// <paramref name="where"/> is the node the change is inside (the parent for an insertion or removal, the node itself
+    /// otherwise).
+    /// </summary>
+    internal void NotifyChanged(Node node, DocumentChangeKind kind, Node? where, int index = -1, string? property = null)
+    {
+        long version = ++Version;
+        if ((where as Paragraph ?? where?.Parent as Paragraph) is { } paragraph)
+        {
+            paragraph.Version = version;
+        }
+
+        if (where?.OwnerStory is { } story)
+        {
+            story.Version = version;
+        }
+
+        Changed?.Invoke(this, new DocumentChangedEventArgs(node, kind, kind is DocumentChangeKind.NodeInserted or DocumentChangeKind.NodeRemoved ? where : node.Parent, index, property, version));
     }
 
     private protected override VisitorAction VisitStart(DocumentVisitor visitor)

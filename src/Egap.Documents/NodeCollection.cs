@@ -57,6 +57,7 @@ public class NodeCollection<T> : IReadOnlyList<T>, INodeCollection
         items.Insert(index, node);
         node.Attach(Owner, this, index);
         Renumber(index + 1);
+        Owner.Document.NotifyChanged(node, DocumentChangeKind.NodeInserted, Owner, index);
     }
 
     /// <summary>
@@ -69,6 +70,7 @@ public class NodeCollection<T> : IReadOnlyList<T>, INodeCollection
         Validate(node);
         items.Add(node);
         node.Attach(Owner, this, items.Count - 1);
+        Owner.Document.NotifyChanged(node, DocumentChangeKind.NodeInserted, Owner, items.Count - 1);
         return node;
     }
 
@@ -79,6 +81,7 @@ public class NodeCollection<T> : IReadOnlyList<T>, INodeCollection
         items.RemoveAt(index);
         node.Detach();
         Renumber(index);
+        Owner.Document.NotifyChanged(node, DocumentChangeKind.NodeRemoved, Owner, index);
     }
 
     /// <summary>Takes <paramref name="node"/> out of the collection and the tree.</summary>
@@ -97,12 +100,11 @@ public class NodeCollection<T> : IReadOnlyList<T>, INodeCollection
     /// <summary>Takes every node out of the collection and the tree.</summary>
     public void Clear()
     {
-        foreach (T node in items)
+        // From the end, so each notification's index is where the node was at that moment, as with RemoveAt.
+        while (items.Count > 0)
         {
-            node.Detach();
+            RemoveAt(items.Count - 1);
         }
-
-        items.Clear();
     }
 
     /// <summary>The index of <paramref name="node"/> in this collection, or -1.</summary>

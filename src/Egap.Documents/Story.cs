@@ -74,7 +74,14 @@ public abstract class Story : BlockContainer
     private protected Story(Document document)
         : base(document)
     {
+        InitOwnerStory();
     }
+
+    /// <summary>
+    /// The <see cref="Document.Version"/> of the last change anywhere inside this story, nested tables included, or 0 when it
+    /// has not changed since it was made.
+    /// </summary>
+    public long Version { get; internal set; }
 
     private protected override VisitorAction VisitStart(DocumentVisitor visitor)
     {
