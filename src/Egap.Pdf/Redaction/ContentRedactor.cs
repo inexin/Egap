@@ -391,7 +391,7 @@ internal sealed class ContentRedactor(PdfDocument document, IReadOnlyList<PdfRec
                 advance = state.FontSize == 0 ? glyph.Width : glyph.Width + (spacing / state.FontSize * 1000);
             }
 
-            bool covered = areas.Any(a => Overlaps(a, box)) || (hidden is not null && MarkedContent.Count > 0 && hidden(MarkedContent));
+            bool covered = areas.Any(a => Covers(a, box, options.GlyphOverlap)) || (hidden is not null && MarkedContent.Count > 0 && hidden(MarkedContent));
             Glyphs.Add(new GlyphHit(index, glyph, covered, advance));
         }
 
@@ -516,6 +516,24 @@ internal sealed class ContentRedactor(PdfDocument document, IReadOnlyList<PdfRec
     internal static bool Overlaps(PdfRectangle a, PdfRectangle b)
     {
         return a.Left < b.Right && b.Left < a.Right && a.Bottom < b.Top && b.Bottom < a.Top;
+    }
+
+    /// <summary>Whether at least <paramref name="share"/> of the box lies inside the area; 0 means any overlap at all.</summary>
+    internal static bool Covers(PdfRectangle area, PdfRectangle box, double share)
+    {
+        if (!Overlaps(area, box))
+        {
+            return false;
+        }
+
+        double size = (box.Right - box.Left) * (box.Top - box.Bottom);
+        if (share <= 0 || size <= 0)
+        {
+            return true;
+        }
+
+        double inside = (Math.Min(area.Right, box.Right) - Math.Max(area.Left, box.Left)) * (Math.Min(area.Top, box.Top) - Math.Max(area.Bottom, box.Bottom));
+        return inside >= share * size;
     }
 
     internal static bool Contains(PdfRectangle outer, PdfRectangle inner)

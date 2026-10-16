@@ -340,9 +340,15 @@ public sealed class PdfDocument : IDisposable
     /// pdf.Save("clean.pdf");
     /// </code>
     /// </example>
+    /// <exception cref="ArgumentOutOfRangeException"><see cref="PdfRedactionOptions.GlyphOverlap"/> is outside 0 to 1.</exception>
     public PdfRedactionResult ApplyRedactions(PdfRedactionOptions? options = null)
     {
         ThrowIfReadOnly();
+        if (options is { GlyphOverlap: not (>= 0 and <= 1) })
+        {
+            throw new ArgumentOutOfRangeException(nameof(options), options.GlyphOverlap, "GlyphOverlap must be between 0 and 1.");
+        }
+
         return global::Egap.Pdf.Redaction.Redactor.Apply(this, options ?? PdfRedactionOptions.Default);
     }
 

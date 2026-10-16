@@ -49,6 +49,26 @@ public sealed class RedactionTextTests
         Assert.False(StreamsContain(saved, "12345"));
     }
 
+    [Theory]
+    [InlineData(0.1, 0)]
+    [InlineData(0.0, 20)]
+    public void GlyphsTheAreaBarelyTouchesStayByDefault(double overlap, int removed)
+    {
+        // Without a descriptor a glyph box runs from 0.2 below the baseline to 0.8 above it, here 697.6 to 709.6; the area
+        // overlaps its top 0.5 (about 4%), as a large title's descent does the line below.
+        using PdfDocument pdf = Page("BT /F1 12 Tf 72 700 Td (Line below the title) Tj ET");
+        pdf.Pages[0].Annotations.Add(new PdfRedactAnnotation(new PdfRectangle(60, 709.1, 400, 750)));
+
+        Assert.Equal(removed, pdf.ApplyRedactions(new PdfRedactionOptions { GlyphOverlap = overlap }).Glyphs);
+    }
+
+    [Fact]
+    public void GlyphOverlapOutsideZeroToOneThrows()
+    {
+        using PdfDocument pdf = Page("BT /F1 12 Tf 72 700 Td (Text) Tj ET");
+        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.ApplyRedactions(new PdfRedactionOptions { GlyphOverlap = 1.5 }));
+    }
+
     [Fact]
     public void TwoByteTextFromTheCanvasIsRedacted()
     {
