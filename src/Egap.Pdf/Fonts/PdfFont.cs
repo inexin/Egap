@@ -491,6 +491,12 @@ public sealed class PdfFont
         return IsComposite ? ToCid(code, CodeLength(code)) : null;
     }
 
+    /// <summary>Whether the font's ToUnicode map itself gives a code's text (PDF/A level u asks for the map, Phase 5).</summary>
+    internal bool HasToUnicode(int code)
+    {
+        return identityToUnicode || toUnicode?.ToUnicode(code, IsComposite ? CodeLength(code) : 1) is { Length: > 0 };
+    }
+
     /// <summary>
     /// The text a code stands for (Phase 3 design Q10): from the font's ToUnicode map, else from its glyph name through the
     /// Adobe Glyph List (names such as <c>a65</c> or <c>g65</c> giving the code they number, as pdf.js and PDFium read

@@ -145,6 +145,136 @@ public sealed class PdfMetadata
         }
     }
 
+    /// <summary>The Info entries PDF/A pairs with XMP properties (ISO 19005-2 6.6.3), and how each property is written.</summary>
+    private static readonly (string Key, XName Property, char Kind)[] InfoPairs =
+    [
+        ("Title", XmpPacket.Dc + "title", 'a'),
+        ("Author", XmpPacket.Dc + "creator", 's'),
+        ("Subject", XmpPacket.Dc + "description", 'a'),
+        ("Keywords", XmpPacket.Pdf + "Keywords", 't'),
+        ("Creator", XmpPacket.Xmp + "CreatorTool", 't'),
+        ("Producer", XmpPacket.Pdf + "Producer", 't'),
+        ("CreationDate", XmpPacket.Xmp + "CreateDate", 'd'),
+        ("ModDate", XmpPacket.Xmp + "ModifyDate", 'd'),
+    ];
+
+    /// <summary>The Info entries whose value the XMP packet lacks or holds differently, as PDF/A-1 to 3 forbid.</summary>
+    internal List<string> InfoXmpMismatches()
+    {
+        List<string> keys = [];
+        if (Info is not PdfDictionary info)
+        {
+            return keys;
+        }
+
+        XmpPacket? packet = Xmp();
+        foreach ((string key, XName property, char kind) in InfoPairs)
+        {
+            if (info.Get(key) is null)
+            {
+                continue;
+            }
+
+            string? value = info.GetText(key);
+
+            // Text compares without surrounding white space, which the packet's reader trims, and without characters XML cannot hold.
+            static bool Equal(string? a, string? b) => string.Equals((XmpPacket.Clean(a) ?? "").Trim(), (b ?? "").Trim(), StringComparison.Ordinal);
+            bool same = packet is not null && kind switch
+            {
+                'a' => Equal(value, packet.GetAlternative(property)),
+                's' => Equal(value, packet.GetList(property)),
+                'd' => PdfDate.ParsePdf(value) is DateTimeOffset date && PdfDate.ParseXmp(packet.GetText(property)) is DateTimeOffset other && date == other,
+                _ => Equal(value, packet.GetText(property)),
+            };
+            if (!same)
+            {
+                keys.Add(key);
+            }
+        }
+
+        return keys;
+    }
+
+    /// <summary>Sets the XMP packet's paired properties from the Info entries; an Info date that does not parse is removed.</summary>
+    internal void SyncXmpFromInfo()
+    {
+        if (Info is not PdfDictionary info)
+        {
+            return;
+        }
+
+        CreateXmp();
+        XmpPacket packet = Xmp()!;
+        foreach ((string key, XName property, char kind) in InfoPairs)
+        {
+            if (info.Get(key) is null)
+            {
+                continue;
+            }
+
+            string? value = info.GetText(key);
+            if (XmpPacket.Clean(value) is string clean && clean != value)
+            {
+                // XMP cannot hold the control characters, so the Info value loses them too and the two stay equal.
+                info[key] = PdfString.FromText(clean);
+                value = clean;
+            }
+
+            switch (kind)
+            {
+                case 'a':
+                    packet.SetAlternative(property, value);
+                    break;
+                case 's':
+                    packet.SetSequence(property, value);
+                    break;
+                case 'd' when PdfDate.ParsePdf(value) is DateTimeOffset date:
+                    packet.SetText(property, PdfDate.FormatXmp(date));
+                    break;
+                case 'd':
+                    info.Remove(key);
+                    break;
+                default:
+                    packet.SetText(property, value);
+                    break;
+            }
+        }
+
+        Write(packet);
+    }
+
+    /// <summary>What in the XMP packet breaks PDF/A's XMP rules (<see cref="XmpPdfA"/>); empty without a packet.</summary>
+    internal List<string> XmpPdfAProblems()
+    {
+        return Xmp() is XmpPacket packet ? XmpPdfA.Problems(packet) : [];
+    }
+
+    /// <summary>Puts the XMP packet right for PDF/A and writes it.</summary>
+    internal void FixXmpForPdfA()
+    {
+        if (Xmp() is XmpPacket packet)
+        {
+            XmpPdfA.Fix(packet);
+            Write(packet);
+        }
+    }
+
+    /// <summary>The PDF/UA part the XMP packet claims (<c>pdfuaid:part</c>), or null.</summary>
+    internal string? GetPdfUAId()
+    {
+        return Xmp()?.GetText(XmpPacket.PdfUAId + "part")?.Trim();
+    }
+
+    /// <summary>Writes the PDF/UA identification, with the extension schema PDF/A needs to accept it.</summary>
+    internal void SetPdfUAId(int part)
+    {
+        CreateXmp();
+        XmpPacket packet = Xmp()!;
+        packet.SetText(XmpPacket.PdfUAId + "part", part.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        packet.DeclareExtension(XmpPacket.PdfUAId, "pdfuaid", "PDF/UA Universal Accessibility Schema", "part", "Integer", "Indicates, which part of ISO 14289 standard is followed");
+        Write(packet);
+    }
+
     /// <summary>The PDF/A identification in the XMP packet (ISO 19005-2 6.6.4): part, conformance letter and revision; nulls without one.</summary>
     internal (string? Part, string? Conformance, string? Revision) GetPdfAId()
     {

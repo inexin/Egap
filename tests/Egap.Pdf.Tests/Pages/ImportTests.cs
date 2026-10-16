@@ -61,7 +61,7 @@ public sealed class ImportTests
         Assert.Equal((90, 90), (added[0].Rotate, added[1].Rotate));
         Assert.Same(added[0].Resources!.Get<PdfDictionary>("Font")!["F1"], added[0].Resources!.Get<PdfDictionary>("Font")!["F1"]);
         Assert.Equal(added[0].Resources!.Get<PdfDictionary>("Font")!["F1"], added[1].Resources!.Get<PdfDictionary>("Font")!["F1"]);
-        Assert.Contains(target.Warnings, w => w.Code == PdfWarningCode.NotImported);
+        Assert.DoesNotContain(target.Warnings, w => w.Code == PdfWarningCode.NotImported);
 
         using PdfDocument reopened = PdfDocument.Open(Save(target), Strict);
         Assert.Equal(["(A3) Tj", "(A1) Tj"], reopened.Pages.Take(2).Select(Text));

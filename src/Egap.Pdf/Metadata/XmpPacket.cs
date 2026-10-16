@@ -16,6 +16,10 @@ internal sealed class XmpPacket
     public static readonly XNamespace Xmp = "http://ns.adobe.com/xap/1.0/";
     public static readonly XNamespace Pdf = "http://ns.adobe.com/pdf/1.3/";
     public static readonly XNamespace PdfAId = "http://www.aiim.org/pdfa/ns/id/";
+    public static readonly XNamespace PdfUAId = "http://www.aiim.org/pdfua/ns/id/";
+    public static readonly XNamespace Extension = "http://www.aiim.org/pdfa/ns/extension/";
+    public static readonly XNamespace Schema = "http://www.aiim.org/pdfa/ns/schema#";
+    public static readonly XNamespace Property = "http://www.aiim.org/pdfa/ns/property#";
     private static readonly XNamespace XmpMeta = "adobe:ns:meta/";
     private static readonly XNamespace Xml = XNamespace.Xml;
 
@@ -174,18 +178,86 @@ internal sealed class XmpPacket
     /// <summary>Sets a simple property, or removes it when <paramref name="value"/> is null.</summary>
     public void SetText(XName name, string? value)
     {
+        value = Clean(value);
         Set(name, value is null ? null : new XElement(name, value));
+    }
+
+    /// <summary>The text without the characters XML cannot hold (controls such as NUL), which Info strings may carry.</summary>
+    [return: System.Diagnostics.CodeAnalysis.NotNullIfNotNull(nameof(value))]
+    public static string? Clean(string? value)
+    {
+        if (value is null || value.All(XmlConvert.IsXmlChar))
+        {
+            return value;
+        }
+
+        StringBuilder clean = new(value.Length);
+        for (int i = 0; i < value.Length; i++)
+        {
+            if (XmlConvert.IsXmlChar(value[i]))
+            {
+                clean.Append(value[i]);
+            }
+            else if (i + 1 < value.Length && XmlConvert.IsXmlSurrogatePair(value[i + 1], value[i]))
+            {
+                clean.Append(value, i, 2);
+                i++;
+            }
+        }
+
+        return clean.ToString();
+    }
+
+    /// <summary>
+    /// Declares a property in a PDF/A extension schema (ISO 19005-1 6.7.8), so PDF/A accepts it beside the predefined
+    /// schemas; nothing changes when the schema already declares it.
+    /// </summary>
+    public void DeclareExtension(XNamespace ns, string prefix, string schemaName, string property, string valueType, string description)
+    {
+        XElement target = Descriptions().FirstOrDefault() ?? NewDescription();
+        foreach ((string p, XNamespace n) in (ReadOnlySpan<(string, XNamespace)>)[("pdfaExtension", Extension), ("pdfaSchema", Schema), ("pdfaProperty", Property)])
+        {
+            if (target.GetPrefixOfNamespace(n) is null)
+            {
+                target.SetAttributeValue(XNamespace.Xmlns + p, n.NamespaceName);
+            }
+        }
+
+        XElement schemas = Document.Descendants(Extension + "schemas").FirstOrDefault() ?? Add(target, new XElement(Extension + "schemas", new XElement(Rdf + "Bag")));
+        XElement bag = schemas.Element(Rdf + "Bag") ?? Add(schemas, new XElement(Rdf + "Bag"));
+        if (bag.Descendants(Schema + "namespaceURI").Any(u => u.Value.Trim() == ns.NamespaceName))
+        {
+            return;
+        }
+
+        bag.Add(new XElement(Rdf + "li", new XAttribute(Rdf + "parseType", "Resource"),
+            new XElement(Schema + "schema", schemaName),
+            new XElement(Schema + "namespaceURI", ns.NamespaceName),
+            new XElement(Schema + "prefix", prefix),
+            new XElement(Schema + "property", new XElement(Rdf + "Seq", new XElement(Rdf + "li", new XAttribute(Rdf + "parseType", "Resource"),
+                new XElement(Property + "name", property),
+                new XElement(Property + "valueType", valueType),
+                new XElement(Property + "category", "internal"),
+                new XElement(Property + "description", description))))));
+
+        static XElement Add(XElement parent, XElement child)
+        {
+            parent.Add(child);
+            return child;
+        }
     }
 
     /// <summary>Sets a language alternative with one <c>x-default</c> item, or removes it.</summary>
     public void SetAlternative(XName name, string? value)
     {
+        value = Clean(value);
         Set(name, value is null ? null : new XElement(name, new XElement(Rdf + "Alt", new XElement(Rdf + "li", new XAttribute(Xml + "lang", "x-default"), value))));
     }
 
     /// <summary>Sets an ordered array with one item, or removes it.</summary>
     public void SetSequence(XName name, string? value)
     {
+        value = Clean(value);
         Set(name, value is null ? null : new XElement(name, new XElement(Rdf + "Seq", new XElement(Rdf + "li", value))));
     }
 
@@ -206,7 +278,7 @@ internal sealed class XmpPacket
         XElement target = Descriptions().FirstOrDefault() ?? NewDescription();
         if (target.GetPrefixOfNamespace(name.Namespace) is null)
         {
-            string prefix = name.Namespace == Dc ? "dc" : name.Namespace == Xmp ? "xmp" : name.Namespace == Pdf ? "pdf" : name.Namespace == PdfAId ? "pdfaid" : "ns" + target.Attributes().Count();
+            string prefix = name.Namespace == Dc ? "dc" : name.Namespace == Xmp ? "xmp" : name.Namespace == Pdf ? "pdf" : name.Namespace == PdfAId ? "pdfaid" : name.Namespace == PdfUAId ? "pdfuaid" : name.Namespace == Extension ? "pdfaExtension" : "ns" + target.Attributes().Count();
             target.SetAttributeValue(XNamespace.Xmlns + prefix, name.Namespace.NamespaceName);
         }
 

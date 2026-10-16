@@ -175,9 +175,10 @@ public sealed class PdfPageCollection : IReadOnlyList<PdfPage>
                 document.Catalog["Version"] = PdfName.Get(source.Version);
             }
 
-            if (sourcePages.Count > 0 && source.Catalog.Get("StructTreeRoot") is not null && !ReferenceEquals(source, document))
+            // The structure of the copied pages comes along (Phase 5 design Q14), which Phase 2 dropped with a warning.
+            if (!ReferenceEquals(source, document))
             {
-                document.Log.Add(PdfWarningCode.NotImported, "The source has a structure tree, which imported pages do not bring (tagged PDF comes in 5.x).");
+                document.Structure.Import(copier, sourcePages);
             }
 
             Pages.ImportExtras.Bring(document, copier, sourcePages, added, labelsBefore, options ?? PdfImportOptions.Default);
