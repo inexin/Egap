@@ -117,6 +117,30 @@ public abstract class FormatBase
     /// <summary>The name of property <paramref name="id"/>, for change notifications.</summary>
     internal abstract string PropertyName(int id);
 
+    /// <summary>Whether <paramref name="other"/> sets the same properties to equal values (lists compared item by item).</summary>
+    internal bool RawEquals(FormatBase other)
+    {
+        if (other.GetType() != GetType())
+        {
+            return false;
+        }
+
+        for (int id = 0; id < PropertyCount; id++)
+        {
+            object? a = GetRaw(id);
+            object? b = other.GetRaw(id);
+            bool same = a is System.Collections.IEnumerable listA and not string && b is System.Collections.IEnumerable listB and not string
+                ? listA.Cast<object?>().SequenceEqual(listB.Cast<object?>())
+                : Equals(a, b);
+            if (!same)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private protected T? Get<T>(int id)
         where T : struct
     {

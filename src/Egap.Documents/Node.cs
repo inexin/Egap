@@ -36,6 +36,12 @@ public abstract class Node : IFormatOwner
     /// <summary>Whether a format kept anything on this node.</summary>
     public bool HasExtensions => extensions is { IsEmpty: false };
 
+    /// <summary>Copies another node's extension data, for whole-document copies.</summary>
+    internal void CopyExtensionsFrom(Node source)
+    {
+        extensions = source.extensions?.Copy();
+    }
+
     /// <summary>The nodes this one holds, in document order; empty for an inline.</summary>
     public IEnumerable<Node> ChildNodes
     {
