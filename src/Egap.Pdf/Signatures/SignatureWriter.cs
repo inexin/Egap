@@ -53,6 +53,7 @@ internal static class SignatureWriter
     public static async Task SignAsync(PdfDocument document, string fieldName, PdfSignOptions options, Stream output, CancellationToken cancellationToken)
     {
         PdfSigner signer = options.Signer ?? throw new ArgumentException("PdfSignOptions.Signer is required to sign; to sign elsewhere, use PrepareSignatureAsync.", nameof(options));
+        CheckTimestamp(options);
         Prepared prepared = await PrepareAsync(document, fieldName, options, output, cancellationToken).ConfigureAwait(false);
         byte[] cms = await BuildCmsAsync(prepared.Digest, signer, options, cancellationToken).ConfigureAwait(false);
         prepared.Fill(cms);
@@ -67,53 +68,95 @@ internal static class SignatureWriter
             throw new ArgumentException("A prepared signature is completed in place, so the output stream must be seekable.", nameof(output));
         }
 
+        CheckTimestamp(options);
         long start = output.Position;
         Prepared prepared = await PrepareAsync(document, fieldName, options, output, cancellationToken).ConfigureAwait(false);
         await output.WriteAsync(prepared.Update, cancellationToken).ConfigureAwait(false);
         await output.FlushAsync(cancellationToken).ConfigureAwait(false);
-        return new PdfPreparedSignature(output, start, prepared.BaseLength + prepared.ContentsAt, prepared.ReservedSize, prepared.Digest, options.DigestAlgorithm);
+        PdfTimestampClient? timestamp = options.Level >= PadesLevel.BaselineT ? options.Timestamp : null;
+        return new PdfPreparedSignature(output, start, prepared.BaseLength + prepared.ContentsAt, prepared.ReservedSize, prepared.Digest, options.DigestAlgorithm, timestamp);
     }
 
-    /// <summary>The CMS for a digest: PAdES signed attributes, signed by the signer's key, with the chain.</summary>
-    internal static Task<byte[]> BuildCmsAsync(byte[] digest, PdfSigner signer, PdfSignOptions options, CancellationToken cancellationToken)
+    /// <summary>
+    /// Adds a document timestamp (ISO 32000-2, 12.8.5): an update whose <c>/DocTimeStamp</c> holds an RFC 3161 token over the
+    /// whole file before it, as PAdES B-LTA ends with.
+    /// </summary>
+    public static async Task TimestampAsync(PdfDocument document, PdfTimestampClient client, string? fieldName, int? reservedSize, Stream output, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(client);
+        fieldName ??= FreeName(document, "DocTimeStamp");
+        int reserved = reservedSize ?? TimestampRoom;
+        PdfDictionary dictionary = new()
+        {
+            ["Type"] = PdfName.Get("DocTimeStamp"),
+            ["Filter"] = PdfName.Get("Adobe.PPKLite"),
+            ["SubFilter"] = PdfName.Get("ETSI.RFC3161"),
+        };
+        Prepared prepared = await PrepareCoreAsync(document, fieldName, dictionary, reserved, client.DigestAlgorithm, output, cancellationToken).ConfigureAwait(false);
+        prepared.Fill(await client.RequestAsync(prepared.Digest, cancellationToken).ConfigureAwait(false));
+        await output.WriteAsync(prepared.Update, cancellationToken).ConfigureAwait(false);
+        await output.FlushAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>B-T and up need a timestamp authority.</summary>
+    private static void CheckTimestamp(PdfSignOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        if (options.Level >= PadesLevel.BaselineT && options.Timestamp is null)
+        {
+            throw new ArgumentException($"PAdES {options.Level} needs a timestamp authority: set PdfSignOptions.Timestamp.", nameof(options));
+        }
+    }
+
+    /// <summary>A field name not yet in the form: the stem with the first free number after it.</summary>
+    internal static string FreeName(PdfDocument document, string stem)
+    {
+        HashSet<string> taken = [.. document.Form.GetAllFields().Select(f => f.FullName)];
+        for (int i = 1; ; i++)
+        {
+            string name = string.Create(CultureInfo.InvariantCulture, $"{stem}{i}");
+            if (!taken.Contains(name))
+            {
+                return name;
+            }
+        }
+    }
+
+    /// <summary>The CMS for a digest: PAdES signed attributes, signed by the signer's key, with the chain, and from B-T a timestamp on the signature.</summary>
+    internal static async Task<byte[]> BuildCmsAsync(byte[] digest, PdfSigner signer, PdfSignOptions options, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         DateTimeOffset? signingTime = options.Format == PdfSignatureFormat.Pkcs7 ? options.SigningTime ?? DateTimeOffset.UtcNow : null;
         byte[] attributes = CmsBuilder.SignedAttributes(options.DigestAlgorithm, digest, signer.Certificate, signingTime);
         (byte[] signature, CmsAlgorithm algorithm) = signer.Sign(options.DigestAlgorithm, options.UseRsaPss, attributes);
-        return Task.FromResult(CmsBuilder.SignedData(options.DigestAlgorithm, attributes, algorithm, signature, signer.Certificate, signer.Chain));
+        List<CmsAttribute> unsigned = [];
+        if (options.Level >= PadesLevel.BaselineT && options.Timestamp is { } client)
+        {
+            // The signature timestamp covers the signature value (RFC 3161, appendix A).
+            byte[] token = await client.RequestAsync(client.Hash(signature), cancellationToken).ConfigureAwait(false);
+            unsigned.Add(new CmsAttribute(CmsOids.SignatureTimestampToken, [token]));
+        }
+
+        return CmsBuilder.SignedData(options.DigestAlgorithm, attributes, algorithm, signature, signer.Certificate, signer.Chain, unsigned);
     }
 
     /// <summary>
     /// Adds the field and signature dictionary, builds the update, copies the original file to <paramref name="output"/> while
     /// hashing it, patches the byte range and hashes the rest. The update is returned for the caller to fill and write.
     /// </summary>
-    private static async Task<Prepared> PrepareAsync(PdfDocument document, string fieldName, PdfSignOptions options, Stream output, CancellationToken cancellationToken)
+    private static Task<Prepared> PrepareAsync(PdfDocument document, string fieldName, PdfSignOptions options, Stream output, CancellationToken cancellationToken)
     {
-        ArgumentException.ThrowIfNullOrEmpty(fieldName);
         ArgumentNullException.ThrowIfNull(options);
-        ArgumentNullException.ThrowIfNull(output);
-        document.ThrowIfReadOnly();
         if (options.DigestAlgorithm != HashAlgorithmName.SHA256 && options.DigestAlgorithm != HashAlgorithmName.SHA384 && options.DigestAlgorithm != HashAlgorithmName.SHA512)
         {
             throw new ArgumentException("The digest algorithm must be SHA-256, SHA-384 or SHA-512.", nameof(options));
         }
 
-        PdfSaveOptions save = new() { Mode = PdfSaveMode.Incremental };
-        if (document.WritesWhole(save))
-        {
-            throw new PdfException("The file needed repair, so a signature cannot be added as an update; save it (it is written whole), open the result and sign that.");
-        }
-
-        int reserved = options.ReservedSize ?? EstimateSize(options);
-        string marker = Marker();
         PdfDictionary signature = new()
         {
             ["Type"] = PdfName.Get("Sig"),
             ["Filter"] = PdfName.Get("Adobe.PPKLite"),
             ["SubFilter"] = PdfName.Get(options.Format == PdfSignatureFormat.Pades ? "ETSI.CAdES.detached" : "adbe.pkcs7.detached"),
-            ["ByteRange"] = new PdfArray([.. marker.Split(' ').Select(n => (PdfObject)new PdfInteger(long.Parse(n, CultureInfo.InvariantCulture)))]),
-            ["Contents"] = PdfString.FromBytes(new byte[reserved], hex: true),
             ["M"] = PdfString.FromText(Metadata.PdfDate.FormatPdf(options.SigningTime ?? document.Clock.GetLocalNow())),
         };
         string? name = options.SignerName ?? options.Signer?.Certificate.GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType.SimpleName, false);
@@ -122,7 +165,27 @@ internal static class SignatureWriter
         Set(signature, "Location", options.Location);
         Set(signature, "ContactInfo", options.ContactInfo);
         signature["Prop_Build"] = new PdfDictionary { ["App"] = new PdfDictionary { ["Name"] = PdfName.Get("Egap") } };
+        return PrepareCoreAsync(document, fieldName, signature, options.ReservedSize ?? EstimateSize(options), options.DigestAlgorithm, output, cancellationToken);
+    }
 
+    /// <summary>
+    /// Puts the dictionary, with the byte range and contents placeholders added, into the field; builds the update; copies
+    /// the original to <paramref name="output"/> while hashing it; patches the byte range and hashes the rest.
+    /// </summary>
+    private static async Task<Prepared> PrepareCoreAsync(PdfDocument document, string fieldName, PdfDictionary signature, int reserved, HashAlgorithmName digestAlgorithm, Stream output, CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(fieldName);
+        ArgumentNullException.ThrowIfNull(output);
+        document.ThrowIfReadOnly();
+        PdfSaveOptions save = new() { Mode = PdfSaveMode.Incremental };
+        if (document.WritesWhole(save))
+        {
+            throw new PdfException("The file needed repair, so a signature cannot be added as an update; save it (it is written whole), open the result and sign that.");
+        }
+
+        string marker = Marker();
+        signature["ByteRange"] = new PdfArray([.. marker.Split(' ').Select(n => (PdfObject)new PdfInteger(long.Parse(n, CultureInfo.InvariantCulture)))]);
+        signature["Contents"] = PdfString.FromBytes(new byte[reserved], hex: true);
         SignatureFields.Attach(document, fieldName, document.Objects.Add(signature));
         (byte[] update, long baseLength) = document.BuildUpdate(save) ?? throw new InvalidOperationException("Adding a signature changed nothing.");
 
@@ -146,7 +209,7 @@ internal static class SignatureWriter
 
         Encoding.ASCII.GetBytes(range.PadRight(width)).CopyTo(update, rangeAt);
 
-        using IncrementalHash hash = IncrementalHash.CreateHash(options.DigestAlgorithm);
+        using IncrementalHash hash = IncrementalHash.CreateHash(digestAlgorithm);
         await document.CopyBaseAsync(output, hash, cancellationToken).ConfigureAwait(false);
         hash.AppendData(update, 0, contentsAt);
         hash.AppendData(update, (int)(contentsEnd - baseLength), (int)(total - contentsEnd));

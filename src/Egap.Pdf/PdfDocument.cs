@@ -253,6 +253,20 @@ public sealed class PdfDocument : IDisposable
     }
 
     /// <summary>
+    /// Adds a document timestamp into <paramref name="output"/> (ISO 32000-2, 12.8.5): an incremental update with an RFC 3161
+    /// token over the whole file, which proves when it existed and, over long-term validation data, is how PAdES B-LTA ends.
+    /// Afterwards this document is read-only, as after <see cref="SignAsync"/>.
+    /// </summary>
+    /// <param name="timestamp">The timestamp authority.</param>
+    /// <param name="output">Where the timestamped file goes, from its current position.</param>
+    /// <param name="fieldName">The timestamp's field name; <c>DocTimeStamp1</c>, or the next number free, when left out.</param>
+    /// <param name="cancellationToken">Cancels the request.</param>
+    public Task TimestampAsync(PdfTimestampClient timestamp, Stream output, string? fieldName = null, CancellationToken cancellationToken = default)
+    {
+        return global::Egap.Pdf.Signatures.SignatureWriter.TimestampAsync(this, timestamp, fieldName, null, output, cancellationToken);
+    }
+
+    /// <summary>
     /// Whether the document cannot be saved: an earlier revision opened with <see cref="PdfRevision.Open"/>, or a document
     /// already signed into another stream, whose saved state is that stream (open it to go on).
     /// </summary>

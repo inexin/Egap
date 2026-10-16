@@ -212,11 +212,11 @@ public sealed class SigningTests
 
             using (MemoryStream file = new(later.ToArray()))
             {
-                await PdfPreparedSignature.CompleteAsync(file, RemoteCms(digest, certificate, key), TestContext.Current.CancellationToken);
+                await PdfPreparedSignature.CompleteAsync(file, RemoteCms(digest, certificate, key), cancellationToken: TestContext.Current.CancellationToken);
                 using PdfDocument signed = PdfDocument.Open(file.ToArray());
                 AssertVerifies(Assert.Single(signed.Signatures), certificate);
                 file.Position = 0;
-                await Assert.ThrowsAsync<PdfException>(() => PdfPreparedSignature.CompleteAsync(file, new byte[10], TestContext.Current.CancellationToken));
+                await Assert.ThrowsAsync<PdfException>(() => PdfPreparedSignature.CompleteAsync(file, new byte[10], cancellationToken: TestContext.Current.CancellationToken));
             }
         }
     }

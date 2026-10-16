@@ -43,6 +43,12 @@ public sealed record PdfSignOptions
     /// <summary>The encoding. The default is <see cref="PdfSignatureFormat.Pades"/>.</summary>
     public PdfSignatureFormat Format { get; init; } = PdfSignatureFormat.Pades;
 
+    /// <summary>
+    /// The timestamp authority for the signature timestamp; required from <see cref="PadesLevel.BaselineT"/>, and for B-LTA's
+    /// document timestamp.
+    /// </summary>
+    public PdfTimestampClient? Timestamp { get; init; }
+
     /// <summary>The digest algorithm: SHA-256 (the default), SHA-384 or SHA-512.</summary>
     public HashAlgorithmName DigestAlgorithm { get; init; } = HashAlgorithmName.SHA256;
 
