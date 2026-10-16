@@ -110,6 +110,22 @@ public sealed class PdfSignature
     }
 
     /// <summary>
+    /// Verifies the signature (Phase 5 design Q8) and reports each verdict apart: integrity, the certificate chain to
+    /// <see cref="PdfVerifyOptions.TrustAnchors"/>, the timestamp, revocation, and the changes made since signing. Nothing is
+    /// fetched from the network.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// PdfSignatureReport report = signature.Verify(new PdfVerifyOptions { TrustAnchors = [root] });
+    /// Console.WriteLine($"{report.Integrity} {report.Chain} {report.Timestamp}");
+    /// </code>
+    /// </example>
+    public PdfSignatureReport Verify(PdfVerifyOptions? options = null)
+    {
+        return Signatures.SignatureVerifier.Verify(this, options ?? PdfVerifyOptions.Default);
+    }
+
+    /// <summary>
     /// The CMS SignedData in <see cref="Contents"/> (Phase 5 task 3); for <c>adbe.x509.rsa_sha1</c>, which holds no CMS, use
     /// <see cref="Signatures.Cms.RsaSha1Signature"/>.
     /// </summary>
@@ -222,27 +238,33 @@ public sealed class PdfSignature
         return issues;
     }
 
-    /// <summary>Whether the bytes from <paramref name="start"/> to <paramref name="end"/> are a hex string holding exactly <paramref name="contents"/>.</summary>
+    /// <summary>
+    /// Whether the bytes from <paramref name="start"/> to <paramref name="end"/> are the hex string holding exactly
+    /// <paramref name="contents"/>: with its angle brackets, as most signers leave them out, or only its digits, with the
+    /// brackets just outside, as some do (pdf.js's signed_verified.pdf, which pyHanko accepts too).
+    /// </summary>
     private static bool GapIsContents(PdfDocument document, long start, long end, ReadOnlySpan<byte> contents)
     {
-        // Two hex digits per byte and the angle brackets; anything else in the gap (spaces, another object) is not left out by
-        // accident only.
-        long length = end - start;
-        if (length != (2L * contents.Length) + 2 || end > document.FileLength)
+        // Two hex digits per byte, and the brackets inside or just outside; anything else in the gap (spaces, another
+        // object) is not left out by accident only.
+        long digits = 2L * contents.Length;
+        bool inside = end - start == digits + 2, outside = end - start == digits;
+        if ((!inside && !outside) || start < 1 || end + 1 > document.FileLength)
         {
             return false;
         }
 
-        byte[] gap = document.ReadFileBytes(start, (int)length);
-        if (gap[0] != '<' || gap[^1] != '>')
+        byte[] gap = document.ReadFileBytes(start - 1, (int)(end - start) + 2);
+        int first = inside ? 1 : 0;
+        if (gap[first] != '<' || gap[^(first + 1)] != '>')
         {
             return false;
         }
 
         for (int i = 0; i < contents.Length; i++)
         {
-            int high = HexValue(gap[1 + (2 * i)]);
-            int low = HexValue(gap[2 + (2 * i)]);
+            int high = HexValue(gap[first + 1 + (2 * i)]);
+            int low = HexValue(gap[first + 2 + (2 * i)]);
             if (high < 0 || low < 0 || ((high << 4) | low) != contents[i])
             {
                 return false;

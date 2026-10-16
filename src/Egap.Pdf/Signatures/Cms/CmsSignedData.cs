@@ -308,7 +308,7 @@ internal sealed class CmsSignerInfo
     private static ReadOnlyMemory<byte>? Single(IReadOnlyList<CmsAttribute> attributes, string oid)
     {
         CmsAttribute[] found = [.. attributes.Where(a => a.Oid == oid)];
-        return found is [{ Values: [var value] }] ? value : null;
+        return found is [{ Values: [var value] }] ? value : (ReadOnlyMemory<byte>?)null;
     }
 
     private static T? TryRead<T>(ReadOnlyMemory<byte> value, Func<AsnReader, T> read)

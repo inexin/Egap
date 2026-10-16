@@ -47,6 +47,7 @@ public sealed class CmsTests
             Assert.Equal(CmsOids.Data, signer.ContentType);
             Assert.Equal(CmsAlgorithms.Hash(hash, content), signer.MessageDigest);
             Assert.Null(signer.SigningTime);
+            Assert.Null(signer.TimestampToken);
             Assert.False(signer.UsesWeakDigest);
             (HashAlgorithmName certHash, byte[] certDigest) = Assert.Single(signer.SigningCertificateHashes);
             Assert.Equal(hash, certHash);
