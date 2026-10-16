@@ -50,7 +50,7 @@ internal sealed class ObjectLoader : IObjectResolver
             if (highestReference is null)
             {
                 // Object streams are compressed, so the references inside them are found in their decoded bytes.
-                int highest = ObjectScanner.HighestReference(source);
+                int highest = ObjectScanner.HighestReference(source, LargeStreamData());
                 foreach (long streamNumber in Xref.Entries.Where(e => e.Value.Kind == XrefEntryKind.InObjectStream).Select(e => e.Value.Offset).Distinct())
                 {
                     if (Xref.TryGet((int)streamNumber, out XrefEntry entry) && entry.Kind == XrefEntryKind.InFile && Load((int)streamNumber, entry.Generation) is PdfStream stream)
@@ -70,6 +70,44 @@ internal sealed class ObjectLoader : IObjectResolver
 
             return highestReference.Value;
         }
+    }
+
+    /// <summary>
+    /// Where the data of the file's large streams lies, in file order: an object much longer than its neighbours is loaded, and
+    /// a stream's data, which holds no references, need not be searched for them. A file with a 100 MB attachment is then not
+    /// read through when the first object is added.
+    /// </summary>
+    private List<(long Start, long End)> LargeStreamData()
+    {
+        const long Large = 256 * 1024;
+        long[] offsets = [.. Xref.Entries.Select(e => e.Value).Where(e => e.Kind == XrefEntryKind.InFile && e.Offset >= 0 && e.Offset < source.Length).Select(e => e.Offset).Distinct().Order()];
+        List<(long Start, long End)> ranges = [];
+        for (int i = 0; i < offsets.Length; i++)
+        {
+            long next = i + 1 < offsets.Length ? offsets[i + 1] : source.Length;
+            if (next - offsets[i] < Large)
+            {
+                continue;
+            }
+
+            foreach ((int number, XrefEntry entry) in Xref.Entries.Where(e => e.Value.Kind == XrefEntryKind.InFile && e.Value.Offset == offsets[i]))
+            {
+                try
+                {
+                    if (Load(number, entry.Generation) is PdfStream { Data: SourceData data } && ReferenceEquals(data.Source, source) && data.Offset >= offsets[i] && data.Offset + data.Length <= next)
+                    {
+                        ranges.Add((data.Offset, data.Offset + data.Length));
+                    }
+                }
+                catch (PdfException e) when (e is not PdfLimitException)
+                {
+                }
+
+                break;
+            }
+        }
+
+        return ranges;
     }
 
     public void Saw(int objectNumber)
