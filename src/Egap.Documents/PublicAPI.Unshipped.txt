@@ -1,1 +1,136 @@
 #nullable enable
+const Egap.Documents.ControlChar.ColumnBreak = '\u000e' -> char
+const Egap.Documents.ControlChar.LineBreak = '\v' -> char
+const Egap.Documents.ControlChar.PageBreak = '\f' -> char
+const Egap.Documents.ControlChar.ParagraphBreak = '\r' -> char
+const Egap.Documents.ControlChar.Tab = '\t' -> char
+Egap.Documents.Block
+Egap.Documents.BlockContainer
+Egap.Documents.BlockContainer.AddParagraph(string? text = null) -> Egap.Documents.Paragraph!
+Egap.Documents.BlockContainer.AddTable(int rows, int columns) -> Egap.Documents.Table!
+Egap.Documents.BlockContainer.Blocks.get -> Egap.Documents.NodeCollection<Egap.Documents.Block!>!
+Egap.Documents.BlockContainer.Paragraphs.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Paragraph!>!
+Egap.Documents.BlockContainer.Tables.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Table!>!
+Egap.Documents.Body
+Egap.Documents.Body.Section.get -> Egap.Documents.Section?
+Egap.Documents.Break
+Egap.Documents.Break.Break(Egap.Documents.Document! document, Egap.Documents.BreakKind kind = Egap.Documents.BreakKind.Line) -> void
+Egap.Documents.Break.Kind.get -> Egap.Documents.BreakKind
+Egap.Documents.Break.Kind.set -> void
+Egap.Documents.BreakKind
+Egap.Documents.BreakKind.Column = 2 -> Egap.Documents.BreakKind
+Egap.Documents.BreakKind.Line = 0 -> Egap.Documents.BreakKind
+Egap.Documents.BreakKind.Page = 1 -> Egap.Documents.BreakKind
+Egap.Documents.Cell
+Egap.Documents.Cell.Cell(Egap.Documents.Document! document) -> void
+Egap.Documents.Cell.Row.get -> Egap.Documents.Row?
+Egap.Documents.ControlChar
+Egap.Documents.Document
+Egap.Documents.Document.AddSection() -> Egap.Documents.Section!
+Egap.Documents.Document.Document() -> void
+Egap.Documents.Document.Import(Egap.Documents.Node! node, bool deep = true) -> Egap.Documents.Node!
+Egap.Documents.Document.Import<T>(T! node, bool deep = true) -> T!
+Egap.Documents.Document.Sections.get -> Egap.Documents.NodeCollection<Egap.Documents.Section!>!
+Egap.Documents.DocumentVisitor
+Egap.Documents.DocumentVisitor.DocumentVisitor() -> void
+Egap.Documents.HeaderFooter
+Egap.Documents.HeaderFooter.HeaderFooter(Egap.Documents.Document! document, Egap.Documents.HeaderFooterKind kind) -> void
+Egap.Documents.HeaderFooter.IsHeader.get -> bool
+Egap.Documents.HeaderFooter.Kind.get -> Egap.Documents.HeaderFooterKind
+Egap.Documents.HeaderFooterCollection
+Egap.Documents.HeaderFooterCollection.GetOrAdd(Egap.Documents.HeaderFooterKind kind) -> Egap.Documents.HeaderFooter!
+Egap.Documents.HeaderFooterCollection.this[Egap.Documents.HeaderFooterKind kind].get -> Egap.Documents.HeaderFooter?
+Egap.Documents.HeaderFooterKind
+Egap.Documents.HeaderFooterKind.FooterEven = 5 -> Egap.Documents.HeaderFooterKind
+Egap.Documents.HeaderFooterKind.FooterFirst = 4 -> Egap.Documents.HeaderFooterKind
+Egap.Documents.HeaderFooterKind.FooterPrimary = 3 -> Egap.Documents.HeaderFooterKind
+Egap.Documents.HeaderFooterKind.HeaderEven = 2 -> Egap.Documents.HeaderFooterKind
+Egap.Documents.HeaderFooterKind.HeaderFirst = 1 -> Egap.Documents.HeaderFooterKind
+Egap.Documents.HeaderFooterKind.HeaderPrimary = 0 -> Egap.Documents.HeaderFooterKind
+Egap.Documents.Inline
+Egap.Documents.Inline.Paragraph.get -> Egap.Documents.Paragraph?
+Egap.Documents.Node
+Egap.Documents.Node.Accept(Egap.Documents.DocumentVisitor! visitor) -> bool
+Egap.Documents.Node.Ancestors() -> System.Collections.Generic.IEnumerable<Egap.Documents.Node!>!
+Egap.Documents.Node.ChildNodes.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Node!>!
+Egap.Documents.Node.Descendants() -> System.Collections.Generic.IEnumerable<Egap.Documents.Node!>!
+Egap.Documents.Node.Descendants<T>() -> System.Collections.Generic.IEnumerable<T!>!
+Egap.Documents.Node.Document.get -> Egap.Documents.Document!
+Egap.Documents.Node.GetAncestor<T>() -> T?
+Egap.Documents.Node.GetText() -> string!
+Egap.Documents.Node.NextSibling.get -> Egap.Documents.Node?
+Egap.Documents.Node.Parent.get -> Egap.Documents.Node?
+Egap.Documents.Node.PreviousSibling.get -> Egap.Documents.Node?
+Egap.Documents.Node.Remove() -> void
+Egap.Documents.NodeCollection<T>
+Egap.Documents.NodeCollection<T>.Add<TNode>(TNode! node) -> TNode!
+Egap.Documents.NodeCollection<T>.Clear() -> void
+Egap.Documents.NodeCollection<T>.Contains(T! node) -> bool
+Egap.Documents.NodeCollection<T>.Count.get -> int
+Egap.Documents.NodeCollection<T>.GetEnumerator() -> System.Collections.Generic.List<T!>.Enumerator
+Egap.Documents.NodeCollection<T>.IndexOf(T! node) -> int
+Egap.Documents.NodeCollection<T>.Insert(int index, T! node) -> void
+Egap.Documents.NodeCollection<T>.Remove(T! node) -> bool
+Egap.Documents.NodeCollection<T>.RemoveAt(int index) -> void
+Egap.Documents.NodeCollection<T>.this[int index].get -> T!
+Egap.Documents.Paragraph
+Egap.Documents.Paragraph.AddBreak(Egap.Documents.BreakKind kind = Egap.Documents.BreakKind.Line) -> Egap.Documents.Break!
+Egap.Documents.Paragraph.AddRun(string! text) -> Egap.Documents.Run!
+Egap.Documents.Paragraph.AddTab() -> Egap.Documents.Tab!
+Egap.Documents.Paragraph.Inlines.get -> Egap.Documents.NodeCollection<Egap.Documents.Inline!>!
+Egap.Documents.Paragraph.Paragraph(Egap.Documents.Document! document) -> void
+Egap.Documents.Paragraph.Runs.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Run!>!
+Egap.Documents.Row
+Egap.Documents.Row.AddCell() -> Egap.Documents.Cell!
+Egap.Documents.Row.Cells.get -> Egap.Documents.NodeCollection<Egap.Documents.Cell!>!
+Egap.Documents.Row.Row(Egap.Documents.Document! document) -> void
+Egap.Documents.Row.Table.get -> Egap.Documents.Table?
+Egap.Documents.Run
+Egap.Documents.Run.Run(Egap.Documents.Document! document, string! text = "") -> void
+Egap.Documents.Run.Text.get -> string!
+Egap.Documents.Run.Text.set -> void
+Egap.Documents.Section
+Egap.Documents.Section.Body.get -> Egap.Documents.Body!
+Egap.Documents.Section.HeadersFooters.get -> Egap.Documents.HeaderFooterCollection!
+Egap.Documents.Section.Section(Egap.Documents.Document! document) -> void
+Egap.Documents.Story
+Egap.Documents.Tab
+Egap.Documents.Tab.Tab(Egap.Documents.Document! document) -> void
+Egap.Documents.Table
+Egap.Documents.Table.AddRow(int cells = 0) -> Egap.Documents.Row!
+Egap.Documents.Table.Rows.get -> Egap.Documents.NodeCollection<Egap.Documents.Row!>!
+Egap.Documents.Table.Table(Egap.Documents.Document! document) -> void
+Egap.Documents.VisitorAction
+Egap.Documents.VisitorAction.Continue = 0 -> Egap.Documents.VisitorAction
+Egap.Documents.VisitorAction.SkipChildren = 1 -> Egap.Documents.VisitorAction
+Egap.Documents.VisitorAction.Stop = 2 -> Egap.Documents.VisitorAction
+override Egap.Documents.Body.Clone(bool deep = true) -> Egap.Documents.Body!
+override Egap.Documents.Break.Clone(bool deep = true) -> Egap.Documents.Break!
+override Egap.Documents.Cell.Clone(bool deep = true) -> Egap.Documents.Cell!
+override Egap.Documents.Document.Clone(bool deep = true) -> Egap.Documents.Document!
+override Egap.Documents.HeaderFooter.Clone(bool deep = true) -> Egap.Documents.HeaderFooter!
+override Egap.Documents.Paragraph.Clone(bool deep = true) -> Egap.Documents.Paragraph!
+override Egap.Documents.Row.Clone(bool deep = true) -> Egap.Documents.Row!
+override Egap.Documents.Run.Clone(bool deep = true) -> Egap.Documents.Run!
+override Egap.Documents.Run.ToString() -> string!
+override Egap.Documents.Section.Clone(bool deep = true) -> Egap.Documents.Section!
+override Egap.Documents.Tab.Clone(bool deep = true) -> Egap.Documents.Tab!
+override Egap.Documents.Table.Clone(bool deep = true) -> Egap.Documents.Table!
+virtual Egap.Documents.DocumentVisitor.VisitBreak(Egap.Documents.Break! breakNode) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitCellEnd(Egap.Documents.Cell! cell) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitCellStart(Egap.Documents.Cell! cell) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitDocumentEnd(Egap.Documents.Document! document) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitDocumentStart(Egap.Documents.Document! document) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitParagraphEnd(Egap.Documents.Paragraph! paragraph) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitParagraphStart(Egap.Documents.Paragraph! paragraph) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitRowEnd(Egap.Documents.Row! row) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitRowStart(Egap.Documents.Row! row) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitRun(Egap.Documents.Run! run) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitSectionEnd(Egap.Documents.Section! section) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitSectionStart(Egap.Documents.Section! section) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitStoryEnd(Egap.Documents.Story! story) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitStoryStart(Egap.Documents.Story! story) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitTab(Egap.Documents.Tab! tab) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitTableEnd(Egap.Documents.Table! table) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitTableStart(Egap.Documents.Table! table) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.Node.Clone(bool deep = true) -> Egap.Documents.Node!
