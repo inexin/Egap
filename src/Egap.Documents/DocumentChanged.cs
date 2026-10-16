@@ -14,6 +14,12 @@ public enum DocumentChangeKind
 
     /// <summary>A setting of the node changed, named by <see cref="DocumentChangedEventArgs.Property"/>.</summary>
     PropertyChanged,
+
+    /// <summary>
+    /// A style, the document defaults or the theme changed (<see cref="DocumentChangedEventArgs.Node"/> is the document and
+    /// <see cref="DocumentChangedEventArgs.Property"/> says what), so any paragraph's effective formatting may have changed.
+    /// </summary>
+    FormattingChanged,
 }
 
 /// <summary>

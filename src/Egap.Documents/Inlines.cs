@@ -20,6 +20,7 @@ public abstract class Inline : Node
 public sealed class Run : Inline
 {
     private string text;
+    private CharacterStyle? style;
 
     /// <summary>A run of <paramref name="document"/> holding <paramref name="text"/>, not yet in a paragraph.</summary>
     public Run(Document document, string text = "")
@@ -27,6 +28,26 @@ public sealed class Run : Inline
     {
         ArgumentNullException.ThrowIfNull(text);
         this.text = text;
+        Format = Own(new RunFormat());
+    }
+
+    /// <summary>The run's direct formatting, over its style's.</summary>
+    public RunFormat Format { get; }
+
+    /// <summary>The run's character style, or null for the document's default character style.</summary>
+    public CharacterStyle? Style
+    {
+        get => style;
+        set => SetStyle(ref style, value);
+    }
+
+    /// <summary>
+    /// The formatting the run is drawn with: document defaults, then the table style, paragraph style, character style and
+    /// direct formatting, in that order (Phase 6 design Q5), with theme fonts and colours named.
+    /// </summary>
+    public ResolvedRunFormat GetEffectiveFormat()
+    {
+        return FormatResolver.Resolve(this);
     }
 
     /// <summary>The text; tabs and breaks are their own inlines, though a run may hold any character a file gave it.</summary>
@@ -63,7 +84,9 @@ public sealed class Run : Inline
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        return new Run(context.Target, text);
+        Run copy = new(context.Target, text) { style = context.Map(style) };
+        copy.Format.CopyRaw(Format);
+        return copy;
     }
 }
 

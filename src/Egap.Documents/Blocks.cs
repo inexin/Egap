@@ -13,12 +13,41 @@ public abstract class Block : Node
 /// <summary>A paragraph: a list of inlines (runs of text, tabs, breaks and the rest) ended by a paragraph mark.</summary>
 public sealed class Paragraph : Block
 {
+    private ParagraphStyle? style;
+
     /// <summary>An empty paragraph of <paramref name="document"/>, not yet in the tree.</summary>
     public Paragraph(Document document)
         : base(document)
     {
         Inlines = new ChildCollection<Inline>(this);
+        Format = Own(new ParagraphFormat());
+        MarkFormat = Own(new RunFormat());
     }
+
+    /// <summary>The paragraph's direct formatting, over its style's.</summary>
+    public ParagraphFormat Format { get; }
+
+    /// <summary>The formatting of the paragraph mark, which Word uses for an empty paragraph's height and the mark itself.</summary>
+    public RunFormat MarkFormat { get; }
+
+    /// <summary>The paragraph style, or null for the document's default paragraph style.</summary>
+    public ParagraphStyle? Style
+    {
+        get => style;
+        set => SetStyle(ref style, value);
+    }
+
+    /// <summary>
+    /// The formatting the paragraph is laid out with: document defaults, then the table style, paragraph style and direct
+    /// formatting (Phase 6 design Q5). Cached until the paragraph, its styles or its table change.
+    /// </summary>
+    public ResolvedParagraphFormat GetEffectiveFormat()
+    {
+        return FormatResolver.Resolve(this);
+    }
+
+    /// <summary>The resolver's cache for this paragraph.</summary>
+    internal FormatResolver.ParagraphCache? FormatCache { get; set; }
 
     /// <summary>
     /// The <see cref="Document.Version"/> of the last change inside this paragraph (its content or settings), or 0 when it has
@@ -38,6 +67,15 @@ public sealed class Paragraph : Block
     public Run AddRun(string text)
     {
         return Inlines.AddTrusted(new Run(Document, text));
+    }
+
+    /// <summary>Adds a run of <paramref name="text"/> at the end with a copy of <paramref name="format"/> as its direct formatting.</summary>
+    public Run AddRun(string text, RunFormat format)
+    {
+        ArgumentNullException.ThrowIfNull(format);
+        Run run = new(Document, text);
+        run.Format.CopyRaw(format);
+        return Inlines.AddTrusted(run);
     }
 
     /// <summary>Adds a tab at the end.</summary>
@@ -73,9 +111,17 @@ public sealed class Paragraph : Block
         return visitor.VisitParagraphEnd(this);
     }
 
+    private protected override string FormatPropertyPrefix(FormatBase format)
+    {
+        return format == MarkFormat ? "MarkFormat." : "Format.";
+    }
+
     private protected override Node CloneShallow(CloneContext context)
     {
-        return new Paragraph(context.Target);
+        Paragraph copy = new(context.Target) { style = context.Map(style) };
+        copy.Format.CopyRaw(Format);
+        copy.MarkFormat.CopyRaw(MarkFormat);
+        return copy;
     }
 
     private protected override void CloneChildren(Node copy, CloneContext context, Stack<(Node Source, Node Copy)> pending)
@@ -94,12 +140,54 @@ public sealed class Paragraph : Block
 /// </summary>
 public sealed class Table : Block
 {
+    private TableStyle? style;
+    private double[]? grid;
+
     /// <summary>An empty table of <paramref name="document"/>, not yet in the tree.</summary>
     public Table(Document document)
         : base(document)
     {
         Rows = new ChildCollection<Row>(this);
+        Format = Own(new TableFormat());
     }
+
+    /// <summary>The table's direct formatting, over its style's.</summary>
+    public TableFormat Format { get; }
+
+    /// <summary>The table style, or null for the document's default table style.</summary>
+    public TableStyle? Style
+    {
+        get => style;
+        set => SetStyle(ref style, value);
+    }
+
+    /// <summary>
+    /// The widths of the table's grid columns in points (Word's tblGrid), which cells span with <see cref="CellFormat.GridSpan"/>;
+    /// null when not given, and the layout finds them from the cells.
+    /// </summary>
+    public IReadOnlyList<double>? Grid
+    {
+        get => grid;
+        set
+        {
+            if (value is not null && value.Any(w => !double.IsFinite(w) || w < 0))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "Grid widths must be finite and not negative.");
+            }
+
+            grid = value is null ? null : [.. value];
+            Document.NotifyChanged(this, DocumentChangeKind.PropertyChanged, this, property: nameof(Grid));
+        }
+    }
+
+    /// <summary>The table's effective formatting: the default table style, its own style chain, then direct formatting.</summary>
+    public TableFormat GetEffectiveFormat()
+    {
+        return FormatResolver.Resolve(this);
+    }
+
+    /// <summary>The <see cref="Document.Version"/> of the last change to this table's structure or formats, for format caches.</summary>
+    internal long Stamp { get; set; }
 
     /// <summary>The rows in order.</summary>
     public NodeCollection<Row> Rows { get; }
@@ -142,7 +230,9 @@ public sealed class Table : Block
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        return new Table(context.Target);
+        Table copy = new(context.Target) { style = context.Map(style), grid = grid };
+        copy.Format.CopyRaw(Format);
+        return copy;
     }
 
     private protected override void CloneChildren(Node copy, CloneContext context, Stack<(Node Source, Node Copy)> pending)
@@ -164,6 +254,16 @@ public sealed class Row : Node
     {
         ArgumentNullException.ThrowIfNull(document);
         Cells = new ChildCollection<Cell>(this);
+        Format = Own(new RowFormat());
+    }
+
+    /// <summary>The row's direct formatting.</summary>
+    public RowFormat Format { get; }
+
+    /// <summary>The row's effective formatting: its table's style (with the regions that apply to it), then direct formatting.</summary>
+    public RowFormat GetEffectiveFormat()
+    {
+        return FormatResolver.Resolve(this);
     }
 
     /// <summary>The cells in order.</summary>
@@ -205,7 +305,9 @@ public sealed class Row : Node
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        return new Row(context.Target);
+        Row copy = new(context.Target);
+        copy.Format.CopyRaw(Format);
+        return copy;
     }
 
     private protected override void CloneChildren(Node copy, CloneContext context, Stack<(Node Source, Node Copy)> pending)
@@ -228,6 +330,19 @@ public sealed class Cell : BlockContainer
     public Cell(Document document)
         : base(document)
     {
+        Format = Own(new CellFormat());
+    }
+
+    /// <summary>The cell's direct formatting.</summary>
+    public CellFormat Format { get; }
+
+    /// <summary>
+    /// The cell's effective formatting: its table's style with the regions that apply to the cell (first row, bands, corners
+    /// and the rest), then direct formatting.
+    /// </summary>
+    public CellFormat GetEffectiveFormat()
+    {
+        return FormatResolver.Resolve(this);
     }
 
     /// <summary>The row this cell is in, or null.</summary>
@@ -251,6 +366,8 @@ public sealed class Cell : BlockContainer
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        return new Cell(context.Target);
+        Cell copy = new(context.Target);
+        copy.Format.CopyRaw(Format);
+        return copy;
     }
 }

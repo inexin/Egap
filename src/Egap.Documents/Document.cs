@@ -6,15 +6,45 @@ namespace Egap.Documents;
 /// </summary>
 public sealed class Document : Node
 {
-    /// <summary>An empty document, with no sections.</summary>
+    /// <summary>
+    /// A new document with no sections, Word's Office theme and Word 2013+'s defaults: Normal, Default Paragraph Font and
+    /// Normal Table styles, an 11 pt body font from the theme, 8 pt after paragraphs and 1.08 line spacing.
+    /// </summary>
     public Document()
+        : this(blank: false)
+    {
+    }
+
+    /// <summary>A document with no styles and no defaults when <paramref name="blank"/>, for readers that fill in their own.</summary>
+    internal Document(bool blank)
         : base(null)
     {
         Sections = new ChildCollection<Section>(this);
+        Styles = new StyleCollection(this);
+        Theme = new Theme(this);
+        if (!blank)
+        {
+            BuiltInStyles.InitializeNewDocument(Styles);
+        }
+
+        Version = 0;
+        FormattingVersion = 0;
     }
 
     /// <summary>The sections in order.</summary>
     public NodeCollection<Section> Sections { get; }
+
+    /// <summary>The document's styles and the defaults they build on.</summary>
+    public StyleCollection Styles { get; }
+
+    /// <summary>The theme colours and fonts that styles and runs may name.</summary>
+    public Theme Theme { get; }
+
+    /// <summary>
+    /// Counts changes to styles, document defaults and the theme, which change the effective formatting of many paragraphs
+    /// at once; each one also counts in <see cref="Version"/>.
+    /// </summary>
+    public long FormattingVersion { get; private set; }
 
     /// <summary>
     /// Counts the changes made to this document: every change, through any public member, adds one and stamps the paragraph
@@ -62,7 +92,9 @@ public sealed class Document : Node
     /// <summary>A copy of the whole document (or, shallow, an empty document).</summary>
     public override Document Clone(bool deep = true)
     {
-        Document copy = new();
+        Document copy = new(blank: true);
+        copy.Styles.CopyFrom(Styles);
+        copy.Theme.CopyFrom(Theme);
         if (deep)
         {
             CloneContext context = new(copy);
@@ -93,6 +125,11 @@ public sealed class Document : Node
             paragraph.Version = version;
         }
 
+        if (where switch { Table t => t, Row r => r.Table, Cell c => c.Row?.Table, _ => null } is { } table)
+        {
+            table.Stamp = version;
+        }
+
         if (where?.OwnerStory is { } story)
         {
             story.Version = version;
@@ -109,6 +146,17 @@ public sealed class Document : Node
     private protected override VisitorAction VisitEnd(DocumentVisitor visitor)
     {
         return visitor.VisitDocumentEnd(this);
+    }
+
+    /// <summary>
+    /// The path for changes to styles, document defaults and the theme: counts them in both versions and raises
+    /// <see cref="Changed"/> with the document as the node and <paramref name="property"/> saying what changed.
+    /// </summary>
+    internal void NotifyFormattingChanged(string property)
+    {
+        FormattingVersion++;
+        long version = ++Version;
+        Changed?.Invoke(this, new DocumentChangedEventArgs(this, DocumentChangeKind.FormattingChanged, null, -1, property, version));
     }
 
     private protected override Node CloneShallow(CloneContext context)

@@ -1,4 +1,5 @@
 #nullable enable
+abstract Egap.Documents.Style.Type.get -> Egap.Documents.StyleType
 const Egap.Documents.ControlChar.ColumnBreak = '\u000e' -> char
 const Egap.Documents.ControlChar.LineBreak = '\v' -> char
 const Egap.Documents.ControlChar.PageBreak = '\f' -> char
@@ -13,6 +14,51 @@ Egap.Documents.BlockContainer.Paragraphs.get -> System.Collections.Generic.IEnum
 Egap.Documents.BlockContainer.Tables.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Table!>!
 Egap.Documents.Body
 Egap.Documents.Body.Section.get -> Egap.Documents.Section?
+Egap.Documents.Border
+Egap.Documents.Border.<Clone>$() -> Egap.Documents.Border!
+Egap.Documents.Border.Border(Egap.Documents.BorderStyle Style, double Width = 0.5, Egap.Documents.DocumentColor Color = default(Egap.Documents.DocumentColor), double Space = 0, bool Shadow = false, bool Frame = false) -> void
+Egap.Documents.Border.Color.get -> Egap.Documents.DocumentColor
+Egap.Documents.Border.Color.init -> void
+Egap.Documents.Border.Deconstruct(out Egap.Documents.BorderStyle Style, out double Width, out Egap.Documents.DocumentColor Color, out double Space, out bool Shadow, out bool Frame) -> void
+Egap.Documents.Border.Equals(Egap.Documents.Border? other) -> bool
+Egap.Documents.Border.Frame.get -> bool
+Egap.Documents.Border.Frame.init -> void
+Egap.Documents.Border.IsVisible.get -> bool
+Egap.Documents.Border.Shadow.get -> bool
+Egap.Documents.Border.Shadow.init -> void
+Egap.Documents.Border.Space.get -> double
+Egap.Documents.Border.Space.init -> void
+Egap.Documents.Border.Style.get -> Egap.Documents.BorderStyle
+Egap.Documents.Border.Style.init -> void
+Egap.Documents.Border.Width.get -> double
+Egap.Documents.Border.Width.init -> void
+Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.DashDotStroked = 21 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Dashed = 5 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.DashSmallGap = 20 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.DotDash = 6 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.DotDotDash = 7 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Dotted = 4 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Double = 3 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.DoubleWave = 19 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Inset = 25 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.None = 0 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Outset = 24 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Single = 1 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Thick = 2 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThickThinLargeGap = 16 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThickThinMediumGap = 13 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThickThinSmallGap = 10 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThinThickLargeGap = 15 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThinThickMediumGap = 12 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThinThickSmallGap = 9 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThinThickThinLargeGap = 17 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThinThickThinMediumGap = 14 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThinThickThinSmallGap = 11 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThreeDEmboss = 22 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.ThreeDEngrave = 23 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Triple = 8 -> Egap.Documents.BorderStyle
+Egap.Documents.BorderStyle.Wave = 18 -> Egap.Documents.BorderStyle
 Egap.Documents.Break
 Egap.Documents.Break.Break(Egap.Documents.Document! document, Egap.Documents.BreakKind kind = Egap.Documents.BreakKind.Line) -> void
 Egap.Documents.Break.Kind.get -> Egap.Documents.BreakKind
@@ -21,17 +67,109 @@ Egap.Documents.BreakKind
 Egap.Documents.BreakKind.Column = 2 -> Egap.Documents.BreakKind
 Egap.Documents.BreakKind.Line = 0 -> Egap.Documents.BreakKind
 Egap.Documents.BreakKind.Page = 1 -> Egap.Documents.BreakKind
+Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Caption = 16 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.CommentReference = 25 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.CommentText = 24 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.DefaultParagraphFont = 1 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Emphasis = 29 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.EndnoteReference = 23 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.EndnoteText = 22 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.FollowedHyperlink = 27 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Footer = 19 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.FootnoteReference = 21 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.FootnoteText = 20 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Header = 18 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading1 = 3 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading2 = 4 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading3 = 5 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading4 = 6 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading5 = 7 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading6 = 8 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading7 = 9 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading8 = 10 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Heading9 = 11 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.HtmlCode = 30 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.HtmlPreformatted = 31 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Hyperlink = 26 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.ListParagraph = 15 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Normal = 0 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.NoSpacing = 17 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Quote = 14 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Strong = 28 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Subtitle = 13 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.TableGrid = 32 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.TableNormal = 2 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Title = 12 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc1 = 33 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc2 = 34 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc3 = 35 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc4 = 36 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc5 = 37 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc6 = 38 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc7 = 39 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc8 = 40 -> Egap.Documents.BuiltInStyle
+Egap.Documents.BuiltInStyle.Toc9 = 41 -> Egap.Documents.BuiltInStyle
 Egap.Documents.Cell
 Egap.Documents.Cell.Cell(Egap.Documents.Document! document) -> void
+Egap.Documents.Cell.Format.get -> Egap.Documents.CellFormat!
+Egap.Documents.Cell.GetEffectiveFormat() -> Egap.Documents.CellFormat!
 Egap.Documents.Cell.Row.get -> Egap.Documents.Row?
+Egap.Documents.CellFormat
+Egap.Documents.CellFormat.BorderBottom.get -> Egap.Documents.Border?
+Egap.Documents.CellFormat.BorderBottom.set -> void
+Egap.Documents.CellFormat.BorderDiagonalDown.get -> Egap.Documents.Border?
+Egap.Documents.CellFormat.BorderDiagonalDown.set -> void
+Egap.Documents.CellFormat.BorderDiagonalUp.get -> Egap.Documents.Border?
+Egap.Documents.CellFormat.BorderDiagonalUp.set -> void
+Egap.Documents.CellFormat.BorderLeft.get -> Egap.Documents.Border?
+Egap.Documents.CellFormat.BorderLeft.set -> void
+Egap.Documents.CellFormat.BorderRight.get -> Egap.Documents.Border?
+Egap.Documents.CellFormat.BorderRight.set -> void
+Egap.Documents.CellFormat.BorderTop.get -> Egap.Documents.Border?
+Egap.Documents.CellFormat.BorderTop.set -> void
+Egap.Documents.CellFormat.CellFormat() -> void
+Egap.Documents.CellFormat.FitText.get -> bool?
+Egap.Documents.CellFormat.FitText.set -> void
+Egap.Documents.CellFormat.GridSpan.get -> int?
+Egap.Documents.CellFormat.GridSpan.set -> void
+Egap.Documents.CellFormat.HideMark.get -> bool?
+Egap.Documents.CellFormat.HideMark.set -> void
+Egap.Documents.CellFormat.MarginBottom.get -> double?
+Egap.Documents.CellFormat.MarginBottom.set -> void
+Egap.Documents.CellFormat.MarginLeft.get -> double?
+Egap.Documents.CellFormat.MarginLeft.set -> void
+Egap.Documents.CellFormat.MarginRight.get -> double?
+Egap.Documents.CellFormat.MarginRight.set -> void
+Egap.Documents.CellFormat.MarginTop.get -> double?
+Egap.Documents.CellFormat.MarginTop.set -> void
+Egap.Documents.CellFormat.NoWrap.get -> bool?
+Egap.Documents.CellFormat.NoWrap.set -> void
+Egap.Documents.CellFormat.Shading.get -> Egap.Documents.Shading?
+Egap.Documents.CellFormat.Shading.set -> void
+Egap.Documents.CellFormat.TextDirection.get -> Egap.Documents.TextDirection?
+Egap.Documents.CellFormat.TextDirection.set -> void
+Egap.Documents.CellFormat.VerticalAlignment.get -> Egap.Documents.VerticalAlignment?
+Egap.Documents.CellFormat.VerticalAlignment.set -> void
+Egap.Documents.CellFormat.VerticalMerge.get -> Egap.Documents.VerticalMerge?
+Egap.Documents.CellFormat.VerticalMerge.set -> void
+Egap.Documents.CellFormat.Width.get -> Egap.Documents.TableWidth?
+Egap.Documents.CellFormat.Width.set -> void
+Egap.Documents.CharacterStyle
+Egap.Documents.CharacterStyle.Linked.get -> Egap.Documents.ParagraphStyle?
+Egap.Documents.CharacterStyle.Linked.set -> void
+Egap.Documents.CharacterStyle.RunFormat.get -> Egap.Documents.RunFormat!
 Egap.Documents.ControlChar
 Egap.Documents.Document
 Egap.Documents.Document.AddSection() -> Egap.Documents.Section!
 Egap.Documents.Document.Changed -> System.EventHandler<Egap.Documents.DocumentChangedEventArgs!>?
 Egap.Documents.Document.Document() -> void
+Egap.Documents.Document.FormattingVersion.get -> long
 Egap.Documents.Document.Import(Egap.Documents.Node! node, bool deep = true) -> Egap.Documents.Node!
 Egap.Documents.Document.Import<T>(T! node, bool deep = true) -> T!
 Egap.Documents.Document.Sections.get -> Egap.Documents.NodeCollection<Egap.Documents.Section!>!
+Egap.Documents.Document.Styles.get -> Egap.Documents.StyleCollection!
+Egap.Documents.Document.Theme.get -> Egap.Documents.Theme!
 Egap.Documents.Document.Version.get -> long
 Egap.Documents.DocumentChangedEventArgs
 Egap.Documents.DocumentChangedEventArgs.Index.get -> int
@@ -41,12 +179,30 @@ Egap.Documents.DocumentChangedEventArgs.Parent.get -> Egap.Documents.Node?
 Egap.Documents.DocumentChangedEventArgs.Property.get -> string?
 Egap.Documents.DocumentChangedEventArgs.Version.get -> long
 Egap.Documents.DocumentChangeKind
+Egap.Documents.DocumentChangeKind.FormattingChanged = 4 -> Egap.Documents.DocumentChangeKind
 Egap.Documents.DocumentChangeKind.NodeInserted = 0 -> Egap.Documents.DocumentChangeKind
 Egap.Documents.DocumentChangeKind.NodeRemoved = 1 -> Egap.Documents.DocumentChangeKind
 Egap.Documents.DocumentChangeKind.PropertyChanged = 3 -> Egap.Documents.DocumentChangeKind
 Egap.Documents.DocumentChangeKind.TextChanged = 2 -> Egap.Documents.DocumentChangeKind
+Egap.Documents.DocumentColor
+Egap.Documents.DocumentColor.DocumentColor() -> void
+Egap.Documents.DocumentColor.Equals(Egap.Documents.DocumentColor other) -> bool
+Egap.Documents.DocumentColor.Kind.get -> Egap.Documents.DocumentColorKind
+Egap.Documents.DocumentColor.Resolve(Egap.Documents.Theme? theme, Egami.Pixels.Rgba8 auto) -> Egami.Pixels.Rgba8
+Egap.Documents.DocumentColor.Rgb.get -> Egami.Pixels.Rgba8
+Egap.Documents.DocumentColor.Shade.get -> double
+Egap.Documents.DocumentColor.Theme.get -> Egap.Documents.ThemeColor
+Egap.Documents.DocumentColor.Tint.get -> double
+Egap.Documents.DocumentColorKind
+Egap.Documents.DocumentColorKind.Auto = 0 -> Egap.Documents.DocumentColorKind
+Egap.Documents.DocumentColorKind.Rgb = 1 -> Egap.Documents.DocumentColorKind
+Egap.Documents.DocumentColorKind.Theme = 2 -> Egap.Documents.DocumentColorKind
 Egap.Documents.DocumentVisitor
 Egap.Documents.DocumentVisitor.DocumentVisitor() -> void
+Egap.Documents.FormatBase
+Egap.Documents.FormatBase.Apply(Egap.Documents.FormatBase! source) -> void
+Egap.Documents.FormatBase.ClearFormatting() -> void
+Egap.Documents.FormatBase.IsEmpty.get -> bool
 Egap.Documents.HeaderFooter
 Egap.Documents.HeaderFooter.HeaderFooter(Egap.Documents.Document! document, Egap.Documents.HeaderFooterKind kind) -> void
 Egap.Documents.HeaderFooter.IsHeader.get -> bool
@@ -61,8 +217,30 @@ Egap.Documents.HeaderFooterKind.FooterPrimary = 3 -> Egap.Documents.HeaderFooter
 Egap.Documents.HeaderFooterKind.HeaderEven = 2 -> Egap.Documents.HeaderFooterKind
 Egap.Documents.HeaderFooterKind.HeaderFirst = 1 -> Egap.Documents.HeaderFooterKind
 Egap.Documents.HeaderFooterKind.HeaderPrimary = 0 -> Egap.Documents.HeaderFooterKind
+Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.Black = 1 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.Blue = 2 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.Cyan = 3 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.DarkBlue = 9 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.DarkCyan = 10 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.DarkGray = 15 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.DarkGreen = 11 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.DarkMagenta = 12 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.DarkRed = 13 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.DarkYellow = 14 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.Green = 4 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.LightGray = 16 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.Magenta = 5 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.None = 0 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.Red = 6 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.White = 8 -> Egap.Documents.HighlightColor
+Egap.Documents.HighlightColor.Yellow = 7 -> Egap.Documents.HighlightColor
 Egap.Documents.Inline
 Egap.Documents.Inline.Paragraph.get -> Egap.Documents.Paragraph?
+Egap.Documents.LineSpacingRule
+Egap.Documents.LineSpacingRule.AtLeast = 1 -> Egap.Documents.LineSpacingRule
+Egap.Documents.LineSpacingRule.Exactly = 2 -> Egap.Documents.LineSpacingRule
+Egap.Documents.LineSpacingRule.Multiple = 0 -> Egap.Documents.LineSpacingRule
 Egap.Documents.Node
 Egap.Documents.Node.Accept(Egap.Documents.DocumentVisitor! visitor) -> bool
 Egap.Documents.Node.Ancestors() -> System.Collections.Generic.IEnumerable<Egap.Documents.Node!>!
@@ -87,51 +265,706 @@ Egap.Documents.NodeCollection<T>.Insert(int index, T! node) -> void
 Egap.Documents.NodeCollection<T>.Remove(T! node) -> bool
 Egap.Documents.NodeCollection<T>.RemoveAt(int index) -> void
 Egap.Documents.NodeCollection<T>.this[int index].get -> T!
+Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.Bullet = 9 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.CardinalText = 6 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.Decimal = 0 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.DecimalZero = 8 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.LowerLetter = 4 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.LowerRoman = 2 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.None = 10 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.Ordinal = 5 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.OrdinalText = 7 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.UpperLetter = 3 -> Egap.Documents.NumberStyle
+Egap.Documents.NumberStyle.UpperRoman = 1 -> Egap.Documents.NumberStyle
+Egap.Documents.PageOrientation
+Egap.Documents.PageOrientation.Landscape = 1 -> Egap.Documents.PageOrientation
+Egap.Documents.PageOrientation.Portrait = 0 -> Egap.Documents.PageOrientation
+Egap.Documents.PageSetup
+Egap.Documents.PageSetup.Bidi.get -> bool?
+Egap.Documents.PageSetup.Bidi.set -> void
+Egap.Documents.PageSetup.ColumnCount.get -> int?
+Egap.Documents.PageSetup.ColumnCount.set -> void
+Egap.Documents.PageSetup.Columns.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.TextColumn!>?
+Egap.Documents.PageSetup.Columns.set -> void
+Egap.Documents.PageSetup.ColumnSeparator.get -> bool?
+Egap.Documents.PageSetup.ColumnSeparator.set -> void
+Egap.Documents.PageSetup.ColumnSpacing.get -> double?
+Egap.Documents.PageSetup.ColumnSpacing.set -> void
+Egap.Documents.PageSetup.DifferentFirstPage.get -> bool?
+Egap.Documents.PageSetup.DifferentFirstPage.set -> void
+Egap.Documents.PageSetup.EqualColumnWidths.get -> bool?
+Egap.Documents.PageSetup.EqualColumnWidths.set -> void
+Egap.Documents.PageSetup.FooterDistance.get -> double?
+Egap.Documents.PageSetup.FooterDistance.set -> void
+Egap.Documents.PageSetup.Gutter.get -> double?
+Egap.Documents.PageSetup.Gutter.set -> void
+Egap.Documents.PageSetup.HeaderDistance.get -> double?
+Egap.Documents.PageSetup.HeaderDistance.set -> void
+Egap.Documents.PageSetup.MarginBottom.get -> double?
+Egap.Documents.PageSetup.MarginBottom.set -> void
+Egap.Documents.PageSetup.MarginLeft.get -> double?
+Egap.Documents.PageSetup.MarginLeft.set -> void
+Egap.Documents.PageSetup.MarginRight.get -> double?
+Egap.Documents.PageSetup.MarginRight.set -> void
+Egap.Documents.PageSetup.MarginTop.get -> double?
+Egap.Documents.PageSetup.MarginTop.set -> void
+Egap.Documents.PageSetup.Orientation.get -> Egap.Documents.PageOrientation?
+Egap.Documents.PageSetup.Orientation.set -> void
+Egap.Documents.PageSetup.PageHeight.get -> double?
+Egap.Documents.PageSetup.PageHeight.set -> void
+Egap.Documents.PageSetup.PageNumberStart.get -> int?
+Egap.Documents.PageSetup.PageNumberStart.set -> void
+Egap.Documents.PageSetup.PageNumberStyle.get -> Egap.Documents.NumberStyle?
+Egap.Documents.PageSetup.PageNumberStyle.set -> void
+Egap.Documents.PageSetup.PageSetup() -> void
+Egap.Documents.PageSetup.PageWidth.get -> double?
+Egap.Documents.PageSetup.PageWidth.set -> void
+Egap.Documents.PageSetup.SectionStart.get -> Egap.Documents.SectionStart?
+Egap.Documents.PageSetup.SectionStart.set -> void
+Egap.Documents.PageSetup.TextDirection.get -> Egap.Documents.TextDirection?
+Egap.Documents.PageSetup.TextDirection.set -> void
+Egap.Documents.PageSetup.VerticalAlignment.get -> Egap.Documents.VerticalAlignment?
+Egap.Documents.PageSetup.VerticalAlignment.set -> void
 Egap.Documents.Paragraph
 Egap.Documents.Paragraph.AddBreak(Egap.Documents.BreakKind kind = Egap.Documents.BreakKind.Line) -> Egap.Documents.Break!
 Egap.Documents.Paragraph.AddRun(string! text) -> Egap.Documents.Run!
+Egap.Documents.Paragraph.AddRun(string! text, Egap.Documents.RunFormat! format) -> Egap.Documents.Run!
 Egap.Documents.Paragraph.AddTab() -> Egap.Documents.Tab!
+Egap.Documents.Paragraph.Format.get -> Egap.Documents.ParagraphFormat!
+Egap.Documents.Paragraph.GetEffectiveFormat() -> Egap.Documents.ResolvedParagraphFormat!
 Egap.Documents.Paragraph.Inlines.get -> Egap.Documents.NodeCollection<Egap.Documents.Inline!>!
+Egap.Documents.Paragraph.MarkFormat.get -> Egap.Documents.RunFormat!
 Egap.Documents.Paragraph.Paragraph(Egap.Documents.Document! document) -> void
 Egap.Documents.Paragraph.Runs.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Run!>!
+Egap.Documents.Paragraph.Style.get -> Egap.Documents.ParagraphStyle?
+Egap.Documents.Paragraph.Style.set -> void
 Egap.Documents.Paragraph.Version.get -> long
+Egap.Documents.ParagraphAlignment
+Egap.Documents.ParagraphAlignment.Center = 1 -> Egap.Documents.ParagraphAlignment
+Egap.Documents.ParagraphAlignment.Distribute = 4 -> Egap.Documents.ParagraphAlignment
+Egap.Documents.ParagraphAlignment.Justify = 3 -> Egap.Documents.ParagraphAlignment
+Egap.Documents.ParagraphAlignment.Left = 0 -> Egap.Documents.ParagraphAlignment
+Egap.Documents.ParagraphAlignment.Right = 2 -> Egap.Documents.ParagraphAlignment
+Egap.Documents.ParagraphFormat
+Egap.Documents.ParagraphFormat.Alignment.get -> Egap.Documents.ParagraphAlignment?
+Egap.Documents.ParagraphFormat.Alignment.set -> void
+Egap.Documents.ParagraphFormat.Bidi.get -> bool?
+Egap.Documents.ParagraphFormat.Bidi.set -> void
+Egap.Documents.ParagraphFormat.BorderBar.get -> Egap.Documents.Border?
+Egap.Documents.ParagraphFormat.BorderBar.set -> void
+Egap.Documents.ParagraphFormat.BorderBetween.get -> Egap.Documents.Border?
+Egap.Documents.ParagraphFormat.BorderBetween.set -> void
+Egap.Documents.ParagraphFormat.BorderBottom.get -> Egap.Documents.Border?
+Egap.Documents.ParagraphFormat.BorderBottom.set -> void
+Egap.Documents.ParagraphFormat.BorderLeft.get -> Egap.Documents.Border?
+Egap.Documents.ParagraphFormat.BorderLeft.set -> void
+Egap.Documents.ParagraphFormat.BorderRight.get -> Egap.Documents.Border?
+Egap.Documents.ParagraphFormat.BorderRight.set -> void
+Egap.Documents.ParagraphFormat.BorderTop.get -> Egap.Documents.Border?
+Egap.Documents.ParagraphFormat.BorderTop.set -> void
+Egap.Documents.ParagraphFormat.ContextualSpacing.get -> bool?
+Egap.Documents.ParagraphFormat.ContextualSpacing.set -> void
+Egap.Documents.ParagraphFormat.FirstLineIndent.get -> double?
+Egap.Documents.ParagraphFormat.FirstLineIndent.set -> void
+Egap.Documents.ParagraphFormat.KeepTogether.get -> bool?
+Egap.Documents.ParagraphFormat.KeepTogether.set -> void
+Egap.Documents.ParagraphFormat.KeepWithNext.get -> bool?
+Egap.Documents.ParagraphFormat.KeepWithNext.set -> void
+Egap.Documents.ParagraphFormat.LeftIndent.get -> double?
+Egap.Documents.ParagraphFormat.LeftIndent.set -> void
+Egap.Documents.ParagraphFormat.LineSpacing.get -> double?
+Egap.Documents.ParagraphFormat.LineSpacing.set -> void
+Egap.Documents.ParagraphFormat.LineSpacingRule.get -> Egap.Documents.LineSpacingRule?
+Egap.Documents.ParagraphFormat.LineSpacingRule.set -> void
+Egap.Documents.ParagraphFormat.MirrorIndents.get -> bool?
+Egap.Documents.ParagraphFormat.MirrorIndents.set -> void
+Egap.Documents.ParagraphFormat.OutlineLevel.get -> int?
+Egap.Documents.ParagraphFormat.OutlineLevel.set -> void
+Egap.Documents.ParagraphFormat.PageBreakBefore.get -> bool?
+Egap.Documents.ParagraphFormat.PageBreakBefore.set -> void
+Egap.Documents.ParagraphFormat.ParagraphFormat() -> void
+Egap.Documents.ParagraphFormat.RightIndent.get -> double?
+Egap.Documents.ParagraphFormat.RightIndent.set -> void
+Egap.Documents.ParagraphFormat.Shading.get -> Egap.Documents.Shading?
+Egap.Documents.ParagraphFormat.Shading.set -> void
+Egap.Documents.ParagraphFormat.SnapToGrid.get -> bool?
+Egap.Documents.ParagraphFormat.SnapToGrid.set -> void
+Egap.Documents.ParagraphFormat.SpaceAfter.get -> double?
+Egap.Documents.ParagraphFormat.SpaceAfter.set -> void
+Egap.Documents.ParagraphFormat.SpaceAfterAuto.get -> bool?
+Egap.Documents.ParagraphFormat.SpaceAfterAuto.set -> void
+Egap.Documents.ParagraphFormat.SpaceBefore.get -> double?
+Egap.Documents.ParagraphFormat.SpaceBefore.set -> void
+Egap.Documents.ParagraphFormat.SpaceBeforeAuto.get -> bool?
+Egap.Documents.ParagraphFormat.SpaceBeforeAuto.set -> void
+Egap.Documents.ParagraphFormat.SuppressAutoHyphens.get -> bool?
+Egap.Documents.ParagraphFormat.SuppressAutoHyphens.set -> void
+Egap.Documents.ParagraphFormat.SuppressLineNumbers.get -> bool?
+Egap.Documents.ParagraphFormat.SuppressLineNumbers.set -> void
+Egap.Documents.ParagraphFormat.TabStops.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.TabStop!>?
+Egap.Documents.ParagraphFormat.TabStops.set -> void
+Egap.Documents.ParagraphFormat.WidowControl.get -> bool?
+Egap.Documents.ParagraphFormat.WidowControl.set -> void
+Egap.Documents.ParagraphStyle
+Egap.Documents.ParagraphStyle.Linked.get -> Egap.Documents.CharacterStyle?
+Egap.Documents.ParagraphStyle.Linked.set -> void
+Egap.Documents.ParagraphStyle.Next.get -> Egap.Documents.ParagraphStyle?
+Egap.Documents.ParagraphStyle.Next.set -> void
+Egap.Documents.ParagraphStyle.ParagraphFormat.get -> Egap.Documents.ParagraphFormat!
+Egap.Documents.ParagraphStyle.RunFormat.get -> Egap.Documents.RunFormat!
+Egap.Documents.ResolvedParagraphFormat
+Egap.Documents.ResolvedParagraphFormat.Alignment.get -> Egap.Documents.ParagraphAlignment
+Egap.Documents.ResolvedParagraphFormat.Bidi.get -> bool
+Egap.Documents.ResolvedParagraphFormat.BorderBar.get -> Egap.Documents.Border?
+Egap.Documents.ResolvedParagraphFormat.BorderBetween.get -> Egap.Documents.Border?
+Egap.Documents.ResolvedParagraphFormat.BorderBottom.get -> Egap.Documents.Border?
+Egap.Documents.ResolvedParagraphFormat.BorderLeft.get -> Egap.Documents.Border?
+Egap.Documents.ResolvedParagraphFormat.BorderRight.get -> Egap.Documents.Border?
+Egap.Documents.ResolvedParagraphFormat.BorderTop.get -> Egap.Documents.Border?
+Egap.Documents.ResolvedParagraphFormat.ContextualSpacing.get -> bool
+Egap.Documents.ResolvedParagraphFormat.FirstLineIndent.get -> double
+Egap.Documents.ResolvedParagraphFormat.KeepTogether.get -> bool
+Egap.Documents.ResolvedParagraphFormat.KeepWithNext.get -> bool
+Egap.Documents.ResolvedParagraphFormat.LeftIndent.get -> double
+Egap.Documents.ResolvedParagraphFormat.LineSpacing.get -> double
+Egap.Documents.ResolvedParagraphFormat.LineSpacingRule.get -> Egap.Documents.LineSpacingRule
+Egap.Documents.ResolvedParagraphFormat.MirrorIndents.get -> bool
+Egap.Documents.ResolvedParagraphFormat.OutlineLevel.get -> int
+Egap.Documents.ResolvedParagraphFormat.PageBreakBefore.get -> bool
+Egap.Documents.ResolvedParagraphFormat.RightIndent.get -> double
+Egap.Documents.ResolvedParagraphFormat.Shading.get -> Egap.Documents.Shading?
+Egap.Documents.ResolvedParagraphFormat.SnapToGrid.get -> bool
+Egap.Documents.ResolvedParagraphFormat.SpaceAfter.get -> double
+Egap.Documents.ResolvedParagraphFormat.SpaceAfterAuto.get -> bool
+Egap.Documents.ResolvedParagraphFormat.SpaceBefore.get -> double
+Egap.Documents.ResolvedParagraphFormat.SpaceBeforeAuto.get -> bool
+Egap.Documents.ResolvedParagraphFormat.SuppressAutoHyphens.get -> bool
+Egap.Documents.ResolvedParagraphFormat.SuppressLineNumbers.get -> bool
+Egap.Documents.ResolvedParagraphFormat.TabStops.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.TabStop!>!
+Egap.Documents.ResolvedParagraphFormat.ToParagraphFormat() -> Egap.Documents.ParagraphFormat!
+Egap.Documents.ResolvedParagraphFormat.WidowControl.get -> bool
+Egap.Documents.ResolvedRunFormat
+Egap.Documents.ResolvedRunFormat.AllCaps.get -> bool
+Egap.Documents.ResolvedRunFormat.Bold.get -> bool
+Egap.Documents.ResolvedRunFormat.BoldComplexScript.get -> bool
+Egap.Documents.ResolvedRunFormat.Border.get -> Egap.Documents.Border?
+Egap.Documents.ResolvedRunFormat.Color.get -> Egap.Documents.DocumentColor
+Egap.Documents.ResolvedRunFormat.ComplexScript.get -> bool
+Egap.Documents.ResolvedRunFormat.DoubleStrikethrough.get -> bool
+Egap.Documents.ResolvedRunFormat.Emboss.get -> bool
+Egap.Documents.ResolvedRunFormat.FontAscii.get -> string!
+Egap.Documents.ResolvedRunFormat.FontComplexScript.get -> string!
+Egap.Documents.ResolvedRunFormat.FontEastAsia.get -> string!
+Egap.Documents.ResolvedRunFormat.FontHighAnsi.get -> string!
+Egap.Documents.ResolvedRunFormat.Hidden.get -> bool
+Egap.Documents.ResolvedRunFormat.Highlight.get -> Egap.Documents.HighlightColor
+Egap.Documents.ResolvedRunFormat.Imprint.get -> bool
+Egap.Documents.ResolvedRunFormat.Italic.get -> bool
+Egap.Documents.ResolvedRunFormat.ItalicComplexScript.get -> bool
+Egap.Documents.ResolvedRunFormat.Kerning.get -> double
+Egap.Documents.ResolvedRunFormat.Language.get -> string?
+Egap.Documents.ResolvedRunFormat.LanguageBidi.get -> string?
+Egap.Documents.ResolvedRunFormat.LanguageEastAsia.get -> string?
+Egap.Documents.ResolvedRunFormat.NoProof.get -> bool
+Egap.Documents.ResolvedRunFormat.Outline.get -> bool
+Egap.Documents.ResolvedRunFormat.Position.get -> double
+Egap.Documents.ResolvedRunFormat.RightToLeft.get -> bool
+Egap.Documents.ResolvedRunFormat.Scale.get -> double
+Egap.Documents.ResolvedRunFormat.Shading.get -> Egap.Documents.Shading?
+Egap.Documents.ResolvedRunFormat.Shadow.get -> bool
+Egap.Documents.ResolvedRunFormat.Size.get -> double
+Egap.Documents.ResolvedRunFormat.SizeComplexScript.get -> double
+Egap.Documents.ResolvedRunFormat.SmallCaps.get -> bool
+Egap.Documents.ResolvedRunFormat.Spacing.get -> double
+Egap.Documents.ResolvedRunFormat.SpecialHidden.get -> bool
+Egap.Documents.ResolvedRunFormat.Strikethrough.get -> bool
+Egap.Documents.ResolvedRunFormat.TextColor.get -> Egami.Pixels.Rgba8
+Egap.Documents.ResolvedRunFormat.ToRunFormat() -> Egap.Documents.RunFormat!
+Egap.Documents.ResolvedRunFormat.Underline.get -> Egap.Documents.UnderlineStyle
+Egap.Documents.ResolvedRunFormat.UnderlineColor.get -> Egap.Documents.DocumentColor
+Egap.Documents.ResolvedRunFormat.VerticalPosition.get -> Egap.Documents.VerticalTextPosition
 Egap.Documents.Row
 Egap.Documents.Row.AddCell() -> Egap.Documents.Cell!
 Egap.Documents.Row.Cells.get -> Egap.Documents.NodeCollection<Egap.Documents.Cell!>!
+Egap.Documents.Row.Format.get -> Egap.Documents.RowFormat!
+Egap.Documents.Row.GetEffectiveFormat() -> Egap.Documents.RowFormat!
 Egap.Documents.Row.Row(Egap.Documents.Document! document) -> void
 Egap.Documents.Row.Table.get -> Egap.Documents.Table?
+Egap.Documents.RowFormat
+Egap.Documents.RowFormat.Alignment.get -> Egap.Documents.TableAlignment?
+Egap.Documents.RowFormat.Alignment.set -> void
+Egap.Documents.RowFormat.CantSplit.get -> bool?
+Egap.Documents.RowFormat.CantSplit.set -> void
+Egap.Documents.RowFormat.CellSpacing.get -> double?
+Egap.Documents.RowFormat.CellSpacing.set -> void
+Egap.Documents.RowFormat.Height.get -> double?
+Egap.Documents.RowFormat.Height.set -> void
+Egap.Documents.RowFormat.HeightRule.get -> Egap.Documents.RowHeightRule?
+Egap.Documents.RowFormat.HeightRule.set -> void
+Egap.Documents.RowFormat.Hidden.get -> bool?
+Egap.Documents.RowFormat.Hidden.set -> void
+Egap.Documents.RowFormat.IsHeader.get -> bool?
+Egap.Documents.RowFormat.IsHeader.set -> void
+Egap.Documents.RowFormat.RowFormat() -> void
+Egap.Documents.RowHeightRule
+Egap.Documents.RowHeightRule.AtLeast = 1 -> Egap.Documents.RowHeightRule
+Egap.Documents.RowHeightRule.Auto = 0 -> Egap.Documents.RowHeightRule
+Egap.Documents.RowHeightRule.Exactly = 2 -> Egap.Documents.RowHeightRule
 Egap.Documents.Run
+Egap.Documents.Run.Format.get -> Egap.Documents.RunFormat!
+Egap.Documents.Run.GetEffectiveFormat() -> Egap.Documents.ResolvedRunFormat!
 Egap.Documents.Run.Run(Egap.Documents.Document! document, string! text = "") -> void
+Egap.Documents.Run.Style.get -> Egap.Documents.CharacterStyle?
+Egap.Documents.Run.Style.set -> void
 Egap.Documents.Run.Text.get -> string!
 Egap.Documents.Run.Text.set -> void
+Egap.Documents.RunFormat
+Egap.Documents.RunFormat.AllCaps.get -> bool?
+Egap.Documents.RunFormat.AllCaps.set -> void
+Egap.Documents.RunFormat.Bold.get -> bool?
+Egap.Documents.RunFormat.Bold.set -> void
+Egap.Documents.RunFormat.BoldComplexScript.get -> bool?
+Egap.Documents.RunFormat.BoldComplexScript.set -> void
+Egap.Documents.RunFormat.Border.get -> Egap.Documents.Border?
+Egap.Documents.RunFormat.Border.set -> void
+Egap.Documents.RunFormat.Color.get -> Egap.Documents.DocumentColor?
+Egap.Documents.RunFormat.Color.set -> void
+Egap.Documents.RunFormat.ComplexScript.get -> bool?
+Egap.Documents.RunFormat.ComplexScript.set -> void
+Egap.Documents.RunFormat.DoubleStrikethrough.get -> bool?
+Egap.Documents.RunFormat.DoubleStrikethrough.set -> void
+Egap.Documents.RunFormat.Emboss.get -> bool?
+Egap.Documents.RunFormat.Emboss.set -> void
+Egap.Documents.RunFormat.FontAscii.get -> string?
+Egap.Documents.RunFormat.FontAscii.set -> void
+Egap.Documents.RunFormat.FontComplexScript.get -> string?
+Egap.Documents.RunFormat.FontComplexScript.set -> void
+Egap.Documents.RunFormat.FontEastAsia.get -> string?
+Egap.Documents.RunFormat.FontEastAsia.set -> void
+Egap.Documents.RunFormat.FontHighAnsi.get -> string?
+Egap.Documents.RunFormat.FontHighAnsi.set -> void
+Egap.Documents.RunFormat.FontName.get -> string?
+Egap.Documents.RunFormat.FontName.set -> void
+Egap.Documents.RunFormat.Hidden.get -> bool?
+Egap.Documents.RunFormat.Hidden.set -> void
+Egap.Documents.RunFormat.Highlight.get -> Egap.Documents.HighlightColor?
+Egap.Documents.RunFormat.Highlight.set -> void
+Egap.Documents.RunFormat.Imprint.get -> bool?
+Egap.Documents.RunFormat.Imprint.set -> void
+Egap.Documents.RunFormat.Italic.get -> bool?
+Egap.Documents.RunFormat.Italic.set -> void
+Egap.Documents.RunFormat.ItalicComplexScript.get -> bool?
+Egap.Documents.RunFormat.ItalicComplexScript.set -> void
+Egap.Documents.RunFormat.Kerning.get -> double?
+Egap.Documents.RunFormat.Kerning.set -> void
+Egap.Documents.RunFormat.Language.get -> string?
+Egap.Documents.RunFormat.Language.set -> void
+Egap.Documents.RunFormat.LanguageBidi.get -> string?
+Egap.Documents.RunFormat.LanguageBidi.set -> void
+Egap.Documents.RunFormat.LanguageEastAsia.get -> string?
+Egap.Documents.RunFormat.LanguageEastAsia.set -> void
+Egap.Documents.RunFormat.NoProof.get -> bool?
+Egap.Documents.RunFormat.NoProof.set -> void
+Egap.Documents.RunFormat.Outline.get -> bool?
+Egap.Documents.RunFormat.Outline.set -> void
+Egap.Documents.RunFormat.Position.get -> double?
+Egap.Documents.RunFormat.Position.set -> void
+Egap.Documents.RunFormat.RightToLeft.get -> bool?
+Egap.Documents.RunFormat.RightToLeft.set -> void
+Egap.Documents.RunFormat.RunFormat() -> void
+Egap.Documents.RunFormat.Scale.get -> double?
+Egap.Documents.RunFormat.Scale.set -> void
+Egap.Documents.RunFormat.Shading.get -> Egap.Documents.Shading?
+Egap.Documents.RunFormat.Shading.set -> void
+Egap.Documents.RunFormat.Shadow.get -> bool?
+Egap.Documents.RunFormat.Shadow.set -> void
+Egap.Documents.RunFormat.Size.get -> double?
+Egap.Documents.RunFormat.Size.set -> void
+Egap.Documents.RunFormat.SizeComplexScript.get -> double?
+Egap.Documents.RunFormat.SizeComplexScript.set -> void
+Egap.Documents.RunFormat.SmallCaps.get -> bool?
+Egap.Documents.RunFormat.SmallCaps.set -> void
+Egap.Documents.RunFormat.Spacing.get -> double?
+Egap.Documents.RunFormat.Spacing.set -> void
+Egap.Documents.RunFormat.SpecialHidden.get -> bool?
+Egap.Documents.RunFormat.SpecialHidden.set -> void
+Egap.Documents.RunFormat.Strikethrough.get -> bool?
+Egap.Documents.RunFormat.Strikethrough.set -> void
+Egap.Documents.RunFormat.ThemeFontAscii.get -> Egap.Documents.ThemeFont?
+Egap.Documents.RunFormat.ThemeFontAscii.set -> void
+Egap.Documents.RunFormat.ThemeFontComplexScript.get -> Egap.Documents.ThemeFont?
+Egap.Documents.RunFormat.ThemeFontComplexScript.set -> void
+Egap.Documents.RunFormat.ThemeFontEastAsia.get -> Egap.Documents.ThemeFont?
+Egap.Documents.RunFormat.ThemeFontEastAsia.set -> void
+Egap.Documents.RunFormat.ThemeFontHighAnsi.get -> Egap.Documents.ThemeFont?
+Egap.Documents.RunFormat.ThemeFontHighAnsi.set -> void
+Egap.Documents.RunFormat.Underline.get -> Egap.Documents.UnderlineStyle?
+Egap.Documents.RunFormat.Underline.set -> void
+Egap.Documents.RunFormat.UnderlineColor.get -> Egap.Documents.DocumentColor?
+Egap.Documents.RunFormat.UnderlineColor.set -> void
+Egap.Documents.RunFormat.VerticalPosition.get -> Egap.Documents.VerticalTextPosition?
+Egap.Documents.RunFormat.VerticalPosition.set -> void
 Egap.Documents.Section
 Egap.Documents.Section.Body.get -> Egap.Documents.Body!
 Egap.Documents.Section.HeadersFooters.get -> Egap.Documents.HeaderFooterCollection!
+Egap.Documents.Section.PageSetup.get -> Egap.Documents.PageSetup!
 Egap.Documents.Section.Section(Egap.Documents.Document! document) -> void
+Egap.Documents.SectionStart
+Egap.Documents.SectionStart.Continuous = 1 -> Egap.Documents.SectionStart
+Egap.Documents.SectionStart.EvenPage = 3 -> Egap.Documents.SectionStart
+Egap.Documents.SectionStart.NewColumn = 4 -> Egap.Documents.SectionStart
+Egap.Documents.SectionStart.NewPage = 0 -> Egap.Documents.SectionStart
+Egap.Documents.SectionStart.OddPage = 2 -> Egap.Documents.SectionStart
+Egap.Documents.Shading
+Egap.Documents.Shading.<Clone>$() -> Egap.Documents.Shading!
+Egap.Documents.Shading.Deconstruct(out Egap.Documents.ShadingPattern Pattern, out Egap.Documents.DocumentColor Fill, out Egap.Documents.DocumentColor PatternColor, out double Percent) -> void
+Egap.Documents.Shading.Equals(Egap.Documents.Shading? other) -> bool
+Egap.Documents.Shading.Fill.get -> Egap.Documents.DocumentColor
+Egap.Documents.Shading.Fill.init -> void
+Egap.Documents.Shading.Pattern.get -> Egap.Documents.ShadingPattern
+Egap.Documents.Shading.Pattern.init -> void
+Egap.Documents.Shading.PatternColor.get -> Egap.Documents.DocumentColor
+Egap.Documents.Shading.PatternColor.init -> void
+Egap.Documents.Shading.Percent.get -> double
+Egap.Documents.Shading.Percent.init -> void
+Egap.Documents.Shading.Shading(Egap.Documents.ShadingPattern Pattern, Egap.Documents.DocumentColor Fill = default(Egap.Documents.DocumentColor), Egap.Documents.DocumentColor PatternColor = default(Egap.Documents.DocumentColor), double Percent = 0) -> void
+Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.Clear = 0 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.DiagonalCross = 8 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.DiagonalStripe = 6 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.HorizontalCross = 7 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.HorizontalStripe = 3 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.Nil = 2 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.Percent = 15 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.ReverseDiagonalStripe = 5 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.Solid = 1 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.ThinDiagonalCross = 14 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.ThinDiagonalStripe = 12 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.ThinHorizontalCross = 13 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.ThinHorizontalStripe = 9 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.ThinReverseDiagonalStripe = 11 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.ThinVerticalStripe = 10 -> Egap.Documents.ShadingPattern
+Egap.Documents.ShadingPattern.VerticalStripe = 4 -> Egap.Documents.ShadingPattern
 Egap.Documents.Story
 Egap.Documents.Story.Version.get -> long
+Egap.Documents.Style
+Egap.Documents.Style.BasedOn.get -> Egap.Documents.Style?
+Egap.Documents.Style.BasedOn.set -> void
+Egap.Documents.Style.BasedOnChain() -> System.Collections.Generic.IEnumerable<Egap.Documents.Style!>!
+Egap.Documents.Style.Document.get -> Egap.Documents.Document!
+Egap.Documents.Style.Hidden.get -> bool
+Egap.Documents.Style.Hidden.set -> void
+Egap.Documents.Style.Id.get -> string!
+Egap.Documents.Style.IsDefault.get -> bool
+Egap.Documents.Style.IsInDocument.get -> bool
+Egap.Documents.Style.IsPrimary.get -> bool
+Egap.Documents.Style.IsPrimary.set -> void
+Egap.Documents.Style.Name.get -> string!
+Egap.Documents.Style.Name.set -> void
+Egap.Documents.Style.Priority.get -> int?
+Egap.Documents.Style.Priority.set -> void
+Egap.Documents.StyleCollection
+Egap.Documents.StyleCollection.AddBuiltIn(Egap.Documents.BuiltInStyle style) -> Egap.Documents.Style!
+Egap.Documents.StyleCollection.AddCharacterStyle(string! id, string? name = null) -> Egap.Documents.CharacterStyle!
+Egap.Documents.StyleCollection.AddParagraphStyle(string! id, string? name = null) -> Egap.Documents.ParagraphStyle!
+Egap.Documents.StyleCollection.AddTableStyle(string! id, string? name = null) -> Egap.Documents.TableStyle!
+Egap.Documents.StyleCollection.Contains(Egap.Documents.Style! style) -> bool
+Egap.Documents.StyleCollection.Count.get -> int
+Egap.Documents.StyleCollection.DefaultCharacterStyle.get -> Egap.Documents.CharacterStyle?
+Egap.Documents.StyleCollection.DefaultParagraphFormat.get -> Egap.Documents.ParagraphFormat!
+Egap.Documents.StyleCollection.DefaultParagraphStyle.get -> Egap.Documents.ParagraphStyle?
+Egap.Documents.StyleCollection.DefaultRunFormat.get -> Egap.Documents.RunFormat!
+Egap.Documents.StyleCollection.DefaultTableStyle.get -> Egap.Documents.TableStyle?
+Egap.Documents.StyleCollection.GetByName(string! name) -> Egap.Documents.Style?
+Egap.Documents.StyleCollection.GetDefault(Egap.Documents.StyleType type) -> Egap.Documents.Style?
+Egap.Documents.StyleCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Documents.Style!>!
+Egap.Documents.StyleCollection.Remove(Egap.Documents.Style! style) -> bool
+Egap.Documents.StyleCollection.SetDefault(Egap.Documents.Style! style) -> void
+Egap.Documents.StyleCollection.this[string! id].get -> Egap.Documents.Style?
+Egap.Documents.StyleType
+Egap.Documents.StyleType.Character = 1 -> Egap.Documents.StyleType
+Egap.Documents.StyleType.List = 3 -> Egap.Documents.StyleType
+Egap.Documents.StyleType.Paragraph = 0 -> Egap.Documents.StyleType
+Egap.Documents.StyleType.Table = 2 -> Egap.Documents.StyleType
 Egap.Documents.Tab
 Egap.Documents.Tab.Tab(Egap.Documents.Document! document) -> void
+Egap.Documents.TabAlignment
+Egap.Documents.TabAlignment.Bar = 4 -> Egap.Documents.TabAlignment
+Egap.Documents.TabAlignment.Center = 1 -> Egap.Documents.TabAlignment
+Egap.Documents.TabAlignment.Clear = 5 -> Egap.Documents.TabAlignment
+Egap.Documents.TabAlignment.Decimal = 3 -> Egap.Documents.TabAlignment
+Egap.Documents.TabAlignment.Left = 0 -> Egap.Documents.TabAlignment
+Egap.Documents.TabAlignment.Right = 2 -> Egap.Documents.TabAlignment
 Egap.Documents.Table
 Egap.Documents.Table.AddRow(int cells = 0) -> Egap.Documents.Row!
+Egap.Documents.Table.Format.get -> Egap.Documents.TableFormat!
+Egap.Documents.Table.GetEffectiveFormat() -> Egap.Documents.TableFormat!
+Egap.Documents.Table.Grid.get -> System.Collections.Generic.IReadOnlyList<double>?
+Egap.Documents.Table.Grid.set -> void
 Egap.Documents.Table.Rows.get -> Egap.Documents.NodeCollection<Egap.Documents.Row!>!
+Egap.Documents.Table.Style.get -> Egap.Documents.TableStyle?
+Egap.Documents.Table.Style.set -> void
 Egap.Documents.Table.Table(Egap.Documents.Document! document) -> void
+Egap.Documents.TabLeader
+Egap.Documents.TabLeader.Dot = 1 -> Egap.Documents.TabLeader
+Egap.Documents.TabLeader.Heavy = 4 -> Egap.Documents.TabLeader
+Egap.Documents.TabLeader.Hyphen = 2 -> Egap.Documents.TabLeader
+Egap.Documents.TabLeader.MiddleDot = 5 -> Egap.Documents.TabLeader
+Egap.Documents.TabLeader.None = 0 -> Egap.Documents.TabLeader
+Egap.Documents.TabLeader.Underscore = 3 -> Egap.Documents.TabLeader
+Egap.Documents.TableAlignment
+Egap.Documents.TableAlignment.Center = 1 -> Egap.Documents.TableAlignment
+Egap.Documents.TableAlignment.Left = 0 -> Egap.Documents.TableAlignment
+Egap.Documents.TableAlignment.Right = 2 -> Egap.Documents.TableAlignment
+Egap.Documents.TableFormat
+Egap.Documents.TableFormat.Alignment.get -> Egap.Documents.TableAlignment?
+Egap.Documents.TableFormat.Alignment.set -> void
+Egap.Documents.TableFormat.Bidi.get -> bool?
+Egap.Documents.TableFormat.Bidi.set -> void
+Egap.Documents.TableFormat.BorderBottom.get -> Egap.Documents.Border?
+Egap.Documents.TableFormat.BorderBottom.set -> void
+Egap.Documents.TableFormat.BorderInsideHorizontal.get -> Egap.Documents.Border?
+Egap.Documents.TableFormat.BorderInsideHorizontal.set -> void
+Egap.Documents.TableFormat.BorderInsideVertical.get -> Egap.Documents.Border?
+Egap.Documents.TableFormat.BorderInsideVertical.set -> void
+Egap.Documents.TableFormat.BorderLeft.get -> Egap.Documents.Border?
+Egap.Documents.TableFormat.BorderLeft.set -> void
+Egap.Documents.TableFormat.BorderRight.get -> Egap.Documents.Border?
+Egap.Documents.TableFormat.BorderRight.set -> void
+Egap.Documents.TableFormat.BorderTop.get -> Egap.Documents.Border?
+Egap.Documents.TableFormat.BorderTop.set -> void
+Egap.Documents.TableFormat.CellMarginBottom.get -> double?
+Egap.Documents.TableFormat.CellMarginBottom.set -> void
+Egap.Documents.TableFormat.CellMarginLeft.get -> double?
+Egap.Documents.TableFormat.CellMarginLeft.set -> void
+Egap.Documents.TableFormat.CellMarginRight.get -> double?
+Egap.Documents.TableFormat.CellMarginRight.set -> void
+Egap.Documents.TableFormat.CellMarginTop.get -> double?
+Egap.Documents.TableFormat.CellMarginTop.set -> void
+Egap.Documents.TableFormat.CellSpacing.get -> double?
+Egap.Documents.TableFormat.CellSpacing.set -> void
+Egap.Documents.TableFormat.ColumnBandSize.get -> int?
+Egap.Documents.TableFormat.ColumnBandSize.set -> void
+Egap.Documents.TableFormat.Indent.get -> double?
+Egap.Documents.TableFormat.Indent.set -> void
+Egap.Documents.TableFormat.Layout.get -> Egap.Documents.TableLayoutKind?
+Egap.Documents.TableFormat.Layout.set -> void
+Egap.Documents.TableFormat.LookFirstColumn.get -> bool?
+Egap.Documents.TableFormat.LookFirstColumn.set -> void
+Egap.Documents.TableFormat.LookFirstRow.get -> bool?
+Egap.Documents.TableFormat.LookFirstRow.set -> void
+Egap.Documents.TableFormat.LookLastColumn.get -> bool?
+Egap.Documents.TableFormat.LookLastColumn.set -> void
+Egap.Documents.TableFormat.LookLastRow.get -> bool?
+Egap.Documents.TableFormat.LookLastRow.set -> void
+Egap.Documents.TableFormat.LookNoColumnBands.get -> bool?
+Egap.Documents.TableFormat.LookNoColumnBands.set -> void
+Egap.Documents.TableFormat.LookNoRowBands.get -> bool?
+Egap.Documents.TableFormat.LookNoRowBands.set -> void
+Egap.Documents.TableFormat.RowBandSize.get -> int?
+Egap.Documents.TableFormat.RowBandSize.set -> void
+Egap.Documents.TableFormat.Shading.get -> Egap.Documents.Shading?
+Egap.Documents.TableFormat.Shading.set -> void
+Egap.Documents.TableFormat.TableFormat() -> void
+Egap.Documents.TableFormat.Width.get -> Egap.Documents.TableWidth?
+Egap.Documents.TableFormat.Width.set -> void
+Egap.Documents.TableLayoutKind
+Egap.Documents.TableLayoutKind.Autofit = 0 -> Egap.Documents.TableLayoutKind
+Egap.Documents.TableLayoutKind.Fixed = 1 -> Egap.Documents.TableLayoutKind
+Egap.Documents.TableStyle
+Egap.Documents.TableStyle.CellFormat.get -> Egap.Documents.CellFormat!
+Egap.Documents.TableStyle.ParagraphFormat.get -> Egap.Documents.ParagraphFormat!
+Egap.Documents.TableStyle.RowFormat.get -> Egap.Documents.RowFormat!
+Egap.Documents.TableStyle.RunFormat.get -> Egap.Documents.RunFormat!
+Egap.Documents.TableStyle.TableFormat.get -> Egap.Documents.TableFormat!
+Egap.Documents.TableStyle.this[Egap.Documents.TableStyleRegion region].get -> Egap.Documents.TableStyleConditional!
+Egap.Documents.TableStyleConditional
+Egap.Documents.TableStyleConditional.CellFormat.get -> Egap.Documents.CellFormat!
+Egap.Documents.TableStyleConditional.IsEmpty.get -> bool
+Egap.Documents.TableStyleConditional.ParagraphFormat.get -> Egap.Documents.ParagraphFormat!
+Egap.Documents.TableStyleConditional.RowFormat.get -> Egap.Documents.RowFormat!
+Egap.Documents.TableStyleConditional.RunFormat.get -> Egap.Documents.RunFormat!
+Egap.Documents.TableStyleConditional.TableFormat.get -> Egap.Documents.TableFormat!
+Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.BottomLeftCell = 11 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.BottomRightCell = 10 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.EvenColumnBand = 7 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.EvenRowBand = 5 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.FirstColumn = 2 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.FirstRow = 0 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.LastColumn = 3 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.LastRow = 1 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.OddColumnBand = 6 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.OddRowBand = 4 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.TopLeftCell = 9 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableStyleRegion.TopRightCell = 8 -> Egap.Documents.TableStyleRegion
+Egap.Documents.TableWidth
+Egap.Documents.TableWidth.Deconstruct(out Egap.Documents.WidthUnit Unit, out double Value) -> void
+Egap.Documents.TableWidth.Equals(Egap.Documents.TableWidth other) -> bool
+Egap.Documents.TableWidth.TableWidth() -> void
+Egap.Documents.TableWidth.TableWidth(Egap.Documents.WidthUnit Unit, double Value) -> void
+Egap.Documents.TableWidth.Unit.get -> Egap.Documents.WidthUnit
+Egap.Documents.TableWidth.Unit.init -> void
+Egap.Documents.TableWidth.Value.get -> double
+Egap.Documents.TableWidth.Value.init -> void
+Egap.Documents.TabStop
+Egap.Documents.TabStop.<Clone>$() -> Egap.Documents.TabStop!
+Egap.Documents.TabStop.Alignment.get -> Egap.Documents.TabAlignment
+Egap.Documents.TabStop.Alignment.init -> void
+Egap.Documents.TabStop.Deconstruct(out double Position, out Egap.Documents.TabAlignment Alignment, out Egap.Documents.TabLeader Leader) -> void
+Egap.Documents.TabStop.Equals(Egap.Documents.TabStop? other) -> bool
+Egap.Documents.TabStop.Leader.get -> Egap.Documents.TabLeader
+Egap.Documents.TabStop.Leader.init -> void
+Egap.Documents.TabStop.Position.get -> double
+Egap.Documents.TabStop.Position.init -> void
+Egap.Documents.TabStop.TabStop(double Position, Egap.Documents.TabAlignment Alignment = Egap.Documents.TabAlignment.Left, Egap.Documents.TabLeader Leader = Egap.Documents.TabLeader.None) -> void
+Egap.Documents.TextColumn
+Egap.Documents.TextColumn.<Clone>$() -> Egap.Documents.TextColumn!
+Egap.Documents.TextColumn.Deconstruct(out double Width, out double SpaceAfter) -> void
+Egap.Documents.TextColumn.Equals(Egap.Documents.TextColumn? other) -> bool
+Egap.Documents.TextColumn.SpaceAfter.get -> double
+Egap.Documents.TextColumn.SpaceAfter.init -> void
+Egap.Documents.TextColumn.TextColumn(double Width, double SpaceAfter = 0) -> void
+Egap.Documents.TextColumn.Width.get -> double
+Egap.Documents.TextColumn.Width.init -> void
+Egap.Documents.TextDirection
+Egap.Documents.TextDirection.BottomToTop = 2 -> Egap.Documents.TextDirection
+Egap.Documents.TextDirection.Horizontal = 0 -> Egap.Documents.TextDirection
+Egap.Documents.TextDirection.TopToBottom = 1 -> Egap.Documents.TextDirection
+Egap.Documents.Theme
+Egap.Documents.Theme.Colors.get -> Egap.Documents.ThemeColors!
+Egap.Documents.Theme.Document.get -> Egap.Documents.Document!
+Egap.Documents.Theme.GetFont(Egap.Documents.ThemeFont font) -> string?
+Egap.Documents.Theme.MajorComplexScriptFont.get -> string!
+Egap.Documents.Theme.MajorComplexScriptFont.set -> void
+Egap.Documents.Theme.MajorEastAsiaFont.get -> string!
+Egap.Documents.Theme.MajorEastAsiaFont.set -> void
+Egap.Documents.Theme.MajorLatinFont.get -> string!
+Egap.Documents.Theme.MajorLatinFont.set -> void
+Egap.Documents.Theme.MinorComplexScriptFont.get -> string!
+Egap.Documents.Theme.MinorComplexScriptFont.set -> void
+Egap.Documents.Theme.MinorEastAsiaFont.get -> string!
+Egap.Documents.Theme.MinorEastAsiaFont.set -> void
+Egap.Documents.Theme.MinorLatinFont.get -> string!
+Egap.Documents.Theme.MinorLatinFont.set -> void
+Egap.Documents.Theme.Name.get -> string!
+Egap.Documents.Theme.Name.set -> void
+Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Accent1 = 4 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Accent2 = 5 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Accent3 = 6 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Accent4 = 7 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Accent5 = 8 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Accent6 = 9 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Dark1 = 0 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Dark2 = 2 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.FollowedHyperlink = 11 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Hyperlink = 10 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Light1 = 1 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColor.Light2 = 3 -> Egap.Documents.ThemeColor
+Egap.Documents.ThemeColors
+Egap.Documents.ThemeColors.this[Egap.Documents.ThemeColor color].get -> Egami.Pixels.Rgba8
+Egap.Documents.ThemeColors.this[Egap.Documents.ThemeColor color].set -> void
+Egap.Documents.ThemeFont
+Egap.Documents.ThemeFont.MajorComplexScript = 2 -> Egap.Documents.ThemeFont
+Egap.Documents.ThemeFont.MajorEastAsia = 1 -> Egap.Documents.ThemeFont
+Egap.Documents.ThemeFont.MajorLatin = 0 -> Egap.Documents.ThemeFont
+Egap.Documents.ThemeFont.MinorComplexScript = 5 -> Egap.Documents.ThemeFont
+Egap.Documents.ThemeFont.MinorEastAsia = 4 -> Egap.Documents.ThemeFont
+Egap.Documents.ThemeFont.MinorLatin = 3 -> Egap.Documents.ThemeFont
+Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.Dash = 7 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.DashDotDotHeavy = 14 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.DashDotHeavy = 12 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.DashedHeavy = 8 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.DashLong = 9 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.DashLongHeavy = 10 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.DotDash = 11 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.DotDotDash = 13 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.Dotted = 5 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.DottedHeavy = 6 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.Double = 3 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.None = 0 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.Single = 1 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.Thick = 4 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.Wave = 15 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.WavyDouble = 17 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.WavyHeavy = 16 -> Egap.Documents.UnderlineStyle
+Egap.Documents.UnderlineStyle.Words = 2 -> Egap.Documents.UnderlineStyle
+Egap.Documents.VerticalAlignment
+Egap.Documents.VerticalAlignment.Bottom = 2 -> Egap.Documents.VerticalAlignment
+Egap.Documents.VerticalAlignment.Center = 1 -> Egap.Documents.VerticalAlignment
+Egap.Documents.VerticalAlignment.Justify = 3 -> Egap.Documents.VerticalAlignment
+Egap.Documents.VerticalAlignment.Top = 0 -> Egap.Documents.VerticalAlignment
+Egap.Documents.VerticalMerge
+Egap.Documents.VerticalMerge.Continue = 2 -> Egap.Documents.VerticalMerge
+Egap.Documents.VerticalMerge.None = 0 -> Egap.Documents.VerticalMerge
+Egap.Documents.VerticalMerge.Restart = 1 -> Egap.Documents.VerticalMerge
+Egap.Documents.VerticalTextPosition
+Egap.Documents.VerticalTextPosition.Baseline = 0 -> Egap.Documents.VerticalTextPosition
+Egap.Documents.VerticalTextPosition.Subscript = 2 -> Egap.Documents.VerticalTextPosition
+Egap.Documents.VerticalTextPosition.Superscript = 1 -> Egap.Documents.VerticalTextPosition
 Egap.Documents.VisitorAction
 Egap.Documents.VisitorAction.Continue = 0 -> Egap.Documents.VisitorAction
 Egap.Documents.VisitorAction.SkipChildren = 1 -> Egap.Documents.VisitorAction
 Egap.Documents.VisitorAction.Stop = 2 -> Egap.Documents.VisitorAction
+Egap.Documents.WidthUnit
+Egap.Documents.WidthUnit.Auto = 0 -> Egap.Documents.WidthUnit
+Egap.Documents.WidthUnit.Percent = 2 -> Egap.Documents.WidthUnit
+Egap.Documents.WidthUnit.Points = 1 -> Egap.Documents.WidthUnit
 override Egap.Documents.Body.Clone(bool deep = true) -> Egap.Documents.Body!
+override Egap.Documents.Border.Equals(object? obj) -> bool
+override Egap.Documents.Border.GetHashCode() -> int
+override Egap.Documents.Border.ToString() -> string!
 override Egap.Documents.Break.Clone(bool deep = true) -> Egap.Documents.Break!
 override Egap.Documents.Cell.Clone(bool deep = true) -> Egap.Documents.Cell!
+override Egap.Documents.CharacterStyle.Type.get -> Egap.Documents.StyleType
 override Egap.Documents.Document.Clone(bool deep = true) -> Egap.Documents.Document!
+override Egap.Documents.DocumentColor.GetHashCode() -> int
+override Egap.Documents.DocumentColor.ToString() -> string!
 override Egap.Documents.HeaderFooter.Clone(bool deep = true) -> Egap.Documents.HeaderFooter!
 override Egap.Documents.Paragraph.Clone(bool deep = true) -> Egap.Documents.Paragraph!
+override Egap.Documents.ParagraphStyle.Type.get -> Egap.Documents.StyleType
 override Egap.Documents.Row.Clone(bool deep = true) -> Egap.Documents.Row!
 override Egap.Documents.Run.Clone(bool deep = true) -> Egap.Documents.Run!
 override Egap.Documents.Run.ToString() -> string!
 override Egap.Documents.Section.Clone(bool deep = true) -> Egap.Documents.Section!
+override Egap.Documents.Shading.Equals(object? obj) -> bool
+override Egap.Documents.Shading.GetHashCode() -> int
+override Egap.Documents.Shading.ToString() -> string!
+override Egap.Documents.Style.ToString() -> string!
 override Egap.Documents.Tab.Clone(bool deep = true) -> Egap.Documents.Tab!
 override Egap.Documents.Table.Clone(bool deep = true) -> Egap.Documents.Table!
+override Egap.Documents.TableStyle.Type.get -> Egap.Documents.StyleType
+override Egap.Documents.TableWidth.GetHashCode() -> int
+override Egap.Documents.TabStop.Equals(object? obj) -> bool
+override Egap.Documents.TabStop.GetHashCode() -> int
+override Egap.Documents.TabStop.ToString() -> string!
+override Egap.Documents.TextColumn.Equals(object? obj) -> bool
+override Egap.Documents.TextColumn.GetHashCode() -> int
+override Egap.Documents.TextColumn.ToString() -> string!
+static Egap.Documents.Border.None.get -> Egap.Documents.Border!
+static Egap.Documents.Border.operator !=(Egap.Documents.Border? left, Egap.Documents.Border? right) -> bool
+static Egap.Documents.Border.operator ==(Egap.Documents.Border? left, Egap.Documents.Border? right) -> bool
+static Egap.Documents.DocumentColor.Auto.get -> Egap.Documents.DocumentColor
+static Egap.Documents.DocumentColor.FromHex(string! hex) -> Egap.Documents.DocumentColor
+static Egap.Documents.DocumentColor.FromRgb(Egami.Pixels.Rgba8 rgb) -> Egap.Documents.DocumentColor
+static Egap.Documents.DocumentColor.FromTheme(Egap.Documents.ThemeColor theme, double tint = 0, double shade = 0, Egami.Pixels.Rgba8 stored = default(Egami.Pixels.Rgba8)) -> Egap.Documents.DocumentColor
+static Egap.Documents.DocumentColor.operator !=(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
+static Egap.Documents.DocumentColor.operator ==(Egap.Documents.DocumentColor left, Egap.Documents.DocumentColor right) -> bool
+static Egap.Documents.Shading.operator !=(Egap.Documents.Shading? left, Egap.Documents.Shading? right) -> bool
+static Egap.Documents.Shading.operator ==(Egap.Documents.Shading? left, Egap.Documents.Shading? right) -> bool
+static Egap.Documents.Shading.Solid(Egap.Documents.DocumentColor color) -> Egap.Documents.Shading!
+static Egap.Documents.TableWidth.Auto.get -> Egap.Documents.TableWidth
+static Egap.Documents.TableWidth.operator !=(Egap.Documents.TableWidth left, Egap.Documents.TableWidth right) -> bool
+static Egap.Documents.TableWidth.operator ==(Egap.Documents.TableWidth left, Egap.Documents.TableWidth right) -> bool
+static Egap.Documents.TableWidth.Percent(double percent) -> Egap.Documents.TableWidth
+static Egap.Documents.TableWidth.Points(double points) -> Egap.Documents.TableWidth
+static Egap.Documents.TabStop.operator !=(Egap.Documents.TabStop? left, Egap.Documents.TabStop? right) -> bool
+static Egap.Documents.TabStop.operator ==(Egap.Documents.TabStop? left, Egap.Documents.TabStop? right) -> bool
+static Egap.Documents.TextColumn.operator !=(Egap.Documents.TextColumn? left, Egap.Documents.TextColumn? right) -> bool
+static Egap.Documents.TextColumn.operator ==(Egap.Documents.TextColumn? left, Egap.Documents.TextColumn? right) -> bool
 virtual Egap.Documents.DocumentVisitor.VisitBreak(Egap.Documents.Break! breakNode) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitCellEnd(Egap.Documents.Cell! cell) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitCellStart(Egap.Documents.Cell! cell) -> Egap.Documents.VisitorAction
@@ -150,3 +983,6 @@ virtual Egap.Documents.DocumentVisitor.VisitTab(Egap.Documents.Tab! tab) -> Egap
 virtual Egap.Documents.DocumentVisitor.VisitTableEnd(Egap.Documents.Table! table) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitTableStart(Egap.Documents.Table! table) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.Node.Clone(bool deep = true) -> Egap.Documents.Node!
+~override Egap.Documents.DocumentColor.Equals(object obj) -> bool
+~override Egap.Documents.TableWidth.Equals(object obj) -> bool
+~override Egap.Documents.TableWidth.ToString() -> string

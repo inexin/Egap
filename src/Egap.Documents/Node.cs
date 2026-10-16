@@ -6,7 +6,7 @@ namespace Egap.Documents;
 /// place in that document's tree; a node made for one document goes into another through <see cref="Document.Import"/>.
 /// </summary>
 /// <remarks>One document is changed by one thread at a time; reading from several threads is safe while nobody changes it.</remarks>
-public abstract class Node
+public abstract class Node : IFormatOwner
 {
     private protected Node(Document? document)
     {
@@ -223,6 +223,41 @@ public abstract class Node
         T copy = (T)child.CloneShallow(context);
         pending.Push((child, copy));
         return copy;
+    }
+
+    void IFormatOwner.FormatChanged(FormatBase format, string property)
+    {
+        Document.NotifyChanged(this, DocumentChangeKind.PropertyChanged, this, property: FormatPropertyPrefix(format) + property);
+    }
+
+    /// <summary>A format owned by this node, reporting its changes through the node.</summary>
+    private protected T Own<T>(T format)
+        where T : FormatBase
+    {
+        format.Owner = this;
+        return format;
+    }
+
+    /// <summary>The prefix of a format property's name in change notifications, such as "Format." or "MarkFormat.".</summary>
+    private protected virtual string FormatPropertyPrefix(FormatBase format)
+    {
+        return "Format.";
+    }
+
+    /// <summary>Sets a style reference, checking the style is in this document and reporting the change.</summary>
+    private protected void SetStyle<T>(ref T? field, T? value)
+        where T : Style
+    {
+        if (value is not null && (value.Document != Document || !value.IsInDocument))
+        {
+            throw new ArgumentException($"Style {value.Id} is not in this node's document.", nameof(value));
+        }
+
+        if (field != value)
+        {
+            field = value;
+            Document.NotifyChanged(this, DocumentChangeKind.PropertyChanged, this, property: "Style");
+        }
     }
 
     /// <summary>Sets where this node sits. Only collections and fixed slots call it.</summary>

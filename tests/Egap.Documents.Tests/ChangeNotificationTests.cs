@@ -31,6 +31,10 @@ public class ChangeNotificationTests
         ["Table.AddRow"] = f => f.Table.AddRow(1),
         ["Row.AddCell"] = f => f.Table.Rows[0].AddCell(),
         ["HeaderFooterCollection.GetOrAdd"] = f => f.Doc.Sections[0].HeadersFooters.GetOrAdd(HeaderFooterKind.FooterEven),
+        ["Paragraph.Style"] = f => f.Paragraph.Style = (ParagraphStyle)f.Doc.Styles.AddBuiltIn(BuiltInStyle.Quote),
+        ["Run.Style"] = f => f.Run.Style = (CharacterStyle)f.Doc.Styles.AddBuiltIn(BuiltInStyle.Strong),
+        ["Table.Style"] = f => f.Table.Style = (TableStyle)f.Doc.Styles.AddBuiltIn(BuiltInStyle.TableGrid),
+        ["Table.Grid"] = f => f.Table.Grid = [100],
     };
 
     /// <summary>Public members that only read, or make detached copies, and so raise nothing.</summary>
@@ -39,7 +43,8 @@ public class ChangeNotificationTests
         "Node.Clone", "Node.Accept", "Node.GetText", "Node.Ancestors", "Node.Descendants", "Node.GetAncestor",
         "Document.Import", "Document.Clone", "NodeCollection`1.IndexOf", "NodeCollection`1.Contains", "NodeCollection`1.GetEnumerator",
         "Run.ToString", "Section.Clone", "Body.Clone", "HeaderFooter.Clone", "Paragraph.Clone", "Table.Clone", "Row.Clone",
-        "Cell.Clone", "Run.Clone", "Tab.Clone", "Break.Clone",
+        "Cell.Clone", "Run.Clone", "Tab.Clone", "Break.Clone", "Run.GetEffectiveFormat", "Paragraph.GetEffectiveFormat",
+        "Table.GetEffectiveFormat", "Row.GetEffectiveFormat", "Cell.GetEffectiveFormat",
     ];
 
     public static TheoryData<string> MutatorNames => [.. Mutators.Keys];
@@ -87,6 +92,60 @@ public class ChangeNotificationTests
         }
 
         Assert.Empty(missing.Distinct());
+    }
+
+    /// <summary>Every format a node owns reports every property change, with the property's name.</summary>
+    [Fact]
+    public void EveryFormatPropertyOfANodeRaisesChanged()
+    {
+        Fixture f = new();
+        Section section = f.Doc.Sections[0];
+        (Node Node, FormatBase Format, string Prefix)[] owned =
+        [
+            (f.Run, f.Run.Format, "Format."), (f.Paragraph, f.Paragraph.Format, "Format."), (f.Paragraph, f.Paragraph.MarkFormat, "MarkFormat."),
+            (f.Table, f.Table.Format, "Format."), (f.Table.Rows[0], f.Table.Rows[0].Format, "Format."),
+            (f.Table.Rows[0].Cells[0], f.Table.Rows[0].Cells[0].Format, "Format."), (section, section.PageSetup, "PageSetup."),
+        ];
+        List<string> silent = [];
+        foreach ((Node node, FormatBase format, string prefix) in owned)
+        {
+            // FontName is a shorthand that sets the four font slots, each reported under its own name.
+            foreach (PropertyInfo property in format.GetType().GetProperties().Where(p => p.CanWrite && p.Name != nameof(RunFormat.FontName)))
+            {
+                List<DocumentChangedEventArgs> changes = [];
+                EventHandler<DocumentChangedEventArgs> handler = (_, e) => changes.Add(e);
+                f.Doc.Changed += handler;
+                property.SetValue(format, property.PropertyType == typeof(string) ? property.Name : SampleValue(property.PropertyType));
+                f.Doc.Changed -= handler;
+                if (!changes.Any(c => c.Node == node && c.Property == prefix + property.Name))
+                {
+                    silent.Add($"{format.GetType().Name}.{property.Name}");
+                }
+            }
+        }
+
+        Assert.True(silent.Count == 0, string.Join(", ", silent));
+    }
+
+    [Fact]
+    public void StyleDefaultAndThemeChangesRaiseFormattingChanged()
+    {
+        Fixture f = new();
+        ParagraphStyle style = f.Doc.Styles.AddParagraphStyle("S");
+        List<DocumentChangedEventArgs> changes = [];
+        f.Doc.Changed += (_, e) => changes.Add(e);
+        long formatting = f.Doc.FormattingVersion;
+
+        style.RunFormat.Size = 12;
+        style.Name = "Renamed";
+        f.Doc.Styles.DefaultRunFormat.Bold = true;
+        f.Doc.Theme.MinorLatinFont = "Aptos";
+        f.Doc.Theme.Colors[ThemeColor.Accent2] = new Egami.Pixels.Rgba8(1, 2, 3, 255);
+
+        Assert.Equal(5, changes.Count);
+        Assert.All(changes, c => Assert.Equal(DocumentChangeKind.FormattingChanged, c.Kind));
+        Assert.Equal(["Styles.S.RunFormat.Size", "Styles.S.Name", "Styles.DefaultRunFormat.Bold", "Theme.MinorLatinFont", "Theme.Colors.Accent2"], changes.Select(c => c.Property));
+        Assert.Equal(formatting + 5, f.Doc.FormattingVersion);
     }
 
     [Fact]
@@ -184,5 +243,25 @@ public class ChangeNotificationTests
         public Break Break { get; }
 
         public Table Table { get; }
+    }
+
+    private static object SampleValue(Type type)
+    {
+        Type t = Nullable.GetUnderlyingType(type) ?? type;
+        return t switch
+        {
+            _ when t == typeof(bool) => true,
+            _ when t == typeof(double) => 3.0,
+            _ when t == typeof(int) => 2,
+            _ when t == typeof(string) => "sample",
+            _ when t.IsEnum => Enum.GetValues(t).GetValue(1)!,
+            _ when t == typeof(DocumentColor) => DocumentColor.FromHex("#123456"),
+            _ when t == typeof(TableWidth) => TableWidth.Points(100),
+            _ when t == typeof(Border) => new Border(BorderStyle.Single),
+            _ when t == typeof(Shading) => Shading.Solid(DocumentColor.FromHex("#EEEEEE")),
+            _ when t == typeof(IReadOnlyList<TabStop>) => new[] { new TabStop(36) },
+            _ when t == typeof(IReadOnlyList<TextColumn>) => new[] { new TextColumn(200, 10) },
+            _ => throw new NotSupportedException(t.Name),
+        };
     }
 }
