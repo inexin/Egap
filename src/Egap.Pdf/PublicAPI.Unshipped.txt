@@ -42,9 +42,16 @@ Egap.Pdf.PdfCertification
 Egap.Pdf.PdfCertification.AnnotationsFormFillingAndSigning = 3 -> Egap.Pdf.PdfCertification
 Egap.Pdf.PdfCertification.FormFillingAndSigning = 2 -> Egap.Pdf.PdfCertification
 Egap.Pdf.PdfCertification.NoChanges = 1 -> Egap.Pdf.PdfCertification
+Egap.Pdf.PdfChangeVerdict
+Egap.Pdf.PdfChangeVerdict.Allowed = 0 -> Egap.Pdf.PdfChangeVerdict
+Egap.Pdf.PdfChangeVerdict.Disallowed = 2 -> Egap.Pdf.PdfChangeVerdict
+Egap.Pdf.PdfChangeVerdict.Suspicious = 1 -> Egap.Pdf.PdfChangeVerdict
+Egap.Pdf.PdfDocument.AddValidationDataAsync(Egap.Pdf.PdfRevocationSource! revocation, System.IO.Stream! output, Egap.Pdf.PdfTimestampClient? archiveTimestamp = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Egap.Pdf.PdfDocument.ApplyRedactions(Egap.Pdf.PdfRedactionOptions? options = null) -> Egap.Pdf.PdfRedactionResult!
 Egap.Pdf.PdfDocument.IsReadOnly.get -> bool
 Egap.Pdf.PdfDocument.PrepareSignatureAsync(string! fieldName, Egap.Pdf.PdfSignOptions! options, System.IO.Stream! output, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Pdf.PdfPreparedSignature!>!
 Egap.Pdf.PdfDocument.Revisions.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfRevision!>!
+Egap.Pdf.PdfDocument.Sanitize(Egap.Pdf.PdfSanitizeOptions? options = null) -> Egap.Pdf.PdfSanitizeResult!
 Egap.Pdf.PdfDocument.SignAsync(string! fieldName, Egap.Pdf.PdfSignOptions! options, System.IO.Stream! output, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 Egap.Pdf.PdfDocument.Signatures.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfSignature!>!
 Egap.Pdf.PdfDocument.TimestampAsync(Egap.Pdf.PdfTimestampClient! timestamp, System.IO.Stream! output, string? fieldName = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
@@ -70,12 +77,91 @@ Egap.Pdf.PdfPreparedSignature.ContentsOffset.get -> long
 Egap.Pdf.PdfPreparedSignature.Digest.get -> System.ReadOnlyMemory<byte>
 Egap.Pdf.PdfPreparedSignature.DigestAlgorithm.get -> System.Security.Cryptography.HashAlgorithmName
 Egap.Pdf.PdfPreparedSignature.ReservedSize.get -> int
+Egap.Pdf.PdfRedactImages
+Egap.Pdf.PdfRedactImages.None = 2 -> Egap.Pdf.PdfRedactImages
+Egap.Pdf.PdfRedactImages.Pixels = 0 -> Egap.Pdf.PdfRedactImages
+Egap.Pdf.PdfRedactImages.Remove = 1 -> Egap.Pdf.PdfRedactImages
+Egap.Pdf.PdfRedactionOptions
+Egap.Pdf.PdfRedactionOptions.<Clone>$() -> Egap.Pdf.PdfRedactionOptions!
+Egap.Pdf.PdfRedactionOptions.Equals(Egap.Pdf.PdfRedactionOptions? other) -> bool
+Egap.Pdf.PdfRedactionOptions.Images.get -> Egap.Pdf.PdfRedactImages
+Egap.Pdf.PdfRedactionOptions.Images.init -> void
+Egap.Pdf.PdfRedactionOptions.Paths.get -> Egap.Pdf.PdfRedactPaths
+Egap.Pdf.PdfRedactionOptions.Paths.init -> void
+Egap.Pdf.PdfRedactionOptions.PdfRedactionOptions() -> void
+Egap.Pdf.PdfRedactionOptions.RasterizeDpi.get -> double?
+Egap.Pdf.PdfRedactionOptions.RasterizeDpi.init -> void
+Egap.Pdf.PdfRedactionResult
+Egap.Pdf.PdfRedactionResult.<Clone>$() -> Egap.Pdf.PdfRedactionResult!
+Egap.Pdf.PdfRedactionResult.Annotations.get -> int
+Egap.Pdf.PdfRedactionResult.Annotations.init -> void
+Egap.Pdf.PdfRedactionResult.Deconstruct(out int Annotations, out int Glyphs, out int Paths, out int Images, out int Forms, out int RemovedAnnotations) -> void
+Egap.Pdf.PdfRedactionResult.Equals(Egap.Pdf.PdfRedactionResult? other) -> bool
+Egap.Pdf.PdfRedactionResult.Forms.get -> int
+Egap.Pdf.PdfRedactionResult.Forms.init -> void
+Egap.Pdf.PdfRedactionResult.Glyphs.get -> int
+Egap.Pdf.PdfRedactionResult.Glyphs.init -> void
+Egap.Pdf.PdfRedactionResult.Images.get -> int
+Egap.Pdf.PdfRedactionResult.Images.init -> void
+Egap.Pdf.PdfRedactionResult.Paths.get -> int
+Egap.Pdf.PdfRedactionResult.Paths.init -> void
+Egap.Pdf.PdfRedactionResult.PdfRedactionResult(int Annotations, int Glyphs, int Paths, int Images, int Forms, int RemovedAnnotations) -> void
+Egap.Pdf.PdfRedactionResult.RemovedAnnotations.get -> int
+Egap.Pdf.PdfRedactionResult.RemovedAnnotations.init -> void
+Egap.Pdf.PdfRedactPaths
+Egap.Pdf.PdfRedactPaths.Covered = 0 -> Egap.Pdf.PdfRedactPaths
+Egap.Pdf.PdfRedactPaths.None = 2 -> Egap.Pdf.PdfRedactPaths
+Egap.Pdf.PdfRedactPaths.Touched = 1 -> Egap.Pdf.PdfRedactPaths
 Egap.Pdf.PdfRevision
 Egap.Pdf.PdfRevision.Index.get -> int
 Egap.Pdf.PdfRevision.IsLatest.get -> bool
 Egap.Pdf.PdfRevision.Length.get -> long
 Egap.Pdf.PdfRevision.Open(Egap.Pdf.PdfReadOptions? options = null) -> Egap.Pdf.PdfDocument!
 Egap.Pdf.PdfRevision.XrefOffset.get -> long
+Egap.Pdf.PdfRevocationSource
+Egap.Pdf.PdfSanitizeOptions
+Egap.Pdf.PdfSanitizeOptions.<Clone>$() -> Egap.Pdf.PdfSanitizeOptions!
+Egap.Pdf.PdfSanitizeOptions.Attachments.get -> bool
+Egap.Pdf.PdfSanitizeOptions.Attachments.init -> void
+Egap.Pdf.PdfSanitizeOptions.Comments.get -> bool
+Egap.Pdf.PdfSanitizeOptions.Comments.init -> void
+Egap.Pdf.PdfSanitizeOptions.Equals(Egap.Pdf.PdfSanitizeOptions? other) -> bool
+Egap.Pdf.PdfSanitizeOptions.FormData.get -> bool
+Egap.Pdf.PdfSanitizeOptions.FormData.init -> void
+Egap.Pdf.PdfSanitizeOptions.HiddenLayers.get -> bool
+Egap.Pdf.PdfSanitizeOptions.HiddenLayers.init -> void
+Egap.Pdf.PdfSanitizeOptions.JavaScript.get -> bool
+Egap.Pdf.PdfSanitizeOptions.JavaScript.init -> void
+Egap.Pdf.PdfSanitizeOptions.Metadata.get -> bool
+Egap.Pdf.PdfSanitizeOptions.Metadata.init -> void
+Egap.Pdf.PdfSanitizeOptions.PdfSanitizeOptions() -> void
+Egap.Pdf.PdfSanitizeOptions.PrivateData.get -> bool
+Egap.Pdf.PdfSanitizeOptions.PrivateData.init -> void
+Egap.Pdf.PdfSanitizeOptions.Thumbnails.get -> bool
+Egap.Pdf.PdfSanitizeOptions.Thumbnails.init -> void
+Egap.Pdf.PdfSanitizeResult
+Egap.Pdf.PdfSanitizeResult.<Clone>$() -> Egap.Pdf.PdfSanitizeResult!
+Egap.Pdf.PdfSanitizeResult.Actions.get -> int
+Egap.Pdf.PdfSanitizeResult.Actions.init -> void
+Egap.Pdf.PdfSanitizeResult.Attachments.get -> int
+Egap.Pdf.PdfSanitizeResult.Attachments.init -> void
+Egap.Pdf.PdfSanitizeResult.Comments.get -> int
+Egap.Pdf.PdfSanitizeResult.Comments.init -> void
+Egap.Pdf.PdfSanitizeResult.Deconstruct(out int Metadata, out int Actions, out int Attachments, out int Layers, out int Comments, out int Fields, out int Thumbnails, out int PrivateData) -> void
+Egap.Pdf.PdfSanitizeResult.Equals(Egap.Pdf.PdfSanitizeResult? other) -> bool
+Egap.Pdf.PdfSanitizeResult.Fields.get -> int
+Egap.Pdf.PdfSanitizeResult.Fields.init -> void
+Egap.Pdf.PdfSanitizeResult.Layers.get -> int
+Egap.Pdf.PdfSanitizeResult.Layers.init -> void
+Egap.Pdf.PdfSanitizeResult.Metadata.get -> int
+Egap.Pdf.PdfSanitizeResult.Metadata.init -> void
+Egap.Pdf.PdfSanitizeResult.PdfSanitizeResult(int Metadata, int Actions, int Attachments, int Layers, int Comments, int Fields, int Thumbnails, int PrivateData) -> void
+Egap.Pdf.PdfSanitizeResult.PrivateData.get -> int
+Egap.Pdf.PdfSanitizeResult.PrivateData.init -> void
+Egap.Pdf.PdfSanitizeResult.Thumbnails.get -> int
+Egap.Pdf.PdfSanitizeResult.Thumbnails.init -> void
+Egap.Pdf.PdfSaveOptions.AllowInvalidatingSignatures.get -> bool
+Egap.Pdf.PdfSaveOptions.AllowInvalidatingSignatures.init -> void
 Egap.Pdf.PdfSeedValue
 Egap.Pdf.PdfSeedValue.AddRevocationInfo.get -> bool
 Egap.Pdf.PdfSeedValue.Certificate.get -> Egap.Pdf.PdfCertificateSeed?
@@ -124,6 +210,19 @@ Egap.Pdf.PdfSignature.Verify(Egap.Pdf.PdfVerifyOptions? options = null) -> Egap.
 Egap.Pdf.PdfSignatureAppearance
 Egap.Pdf.PdfSignatureAppearance.PageIndex.get -> int
 Egap.Pdf.PdfSignatureAppearance.Rectangle.get -> Egami.Drawing.RectF
+Egap.Pdf.PdfSignatureChange
+Egap.Pdf.PdfSignatureChange.<Clone>$() -> Egap.Pdf.PdfSignatureChange!
+Egap.Pdf.PdfSignatureChange.Deconstruct(out int Revision, out int ObjectNumber, out Egap.Pdf.PdfChangeVerdict Verdict, out string! Description) -> void
+Egap.Pdf.PdfSignatureChange.Description.get -> string!
+Egap.Pdf.PdfSignatureChange.Description.init -> void
+Egap.Pdf.PdfSignatureChange.Equals(Egap.Pdf.PdfSignatureChange? other) -> bool
+Egap.Pdf.PdfSignatureChange.ObjectNumber.get -> int
+Egap.Pdf.PdfSignatureChange.ObjectNumber.init -> void
+Egap.Pdf.PdfSignatureChange.PdfSignatureChange(int Revision, int ObjectNumber, Egap.Pdf.PdfChangeVerdict Verdict, string! Description) -> void
+Egap.Pdf.PdfSignatureChange.Revision.get -> int
+Egap.Pdf.PdfSignatureChange.Revision.init -> void
+Egap.Pdf.PdfSignatureChange.Verdict.get -> Egap.Pdf.PdfChangeVerdict
+Egap.Pdf.PdfSignatureChange.Verdict.init -> void
 Egap.Pdf.PdfSignatureField.Lock.get -> Egap.Pdf.PdfFieldLock?
 Egap.Pdf.PdfSignatureField.SeedValue.get -> Egap.Pdf.PdfSeedValue?
 Egap.Pdf.PdfSignatureFormat
@@ -136,6 +235,7 @@ Egap.Pdf.PdfSignatureKind.DocumentTimestamp = 2 -> Egap.Pdf.PdfSignatureKind
 Egap.Pdf.PdfSignatureReport
 Egap.Pdf.PdfSignatureReport.Chain.get -> Egap.Pdf.PdfVerdict
 Egap.Pdf.PdfSignatureReport.ChainCertificates.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
+Egap.Pdf.PdfSignatureReport.Changes.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfSignatureChange!>!
 Egap.Pdf.PdfSignatureReport.ChangesSince.get -> Egap.Pdf.PdfVerdict
 Egap.Pdf.PdfSignatureReport.DigestAlgorithm.get -> string?
 Egap.Pdf.PdfSignatureReport.Integrity.get -> Egap.Pdf.PdfVerdict
@@ -154,13 +254,19 @@ Egap.Pdf.PdfSigner.Certificate.get -> System.Security.Cryptography.X509Certifica
 Egap.Pdf.PdfSigner.Chain.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
 Egap.Pdf.PdfSignOptions
 Egap.Pdf.PdfSignOptions.<Clone>$() -> Egap.Pdf.PdfSignOptions!
+Egap.Pdf.PdfSignOptions.AllowInvalidatingSignatures.get -> bool
+Egap.Pdf.PdfSignOptions.AllowInvalidatingSignatures.init -> void
 Egap.Pdf.PdfSignOptions.Appearance.get -> Egap.Pdf.PdfSignatureAppearance?
 Egap.Pdf.PdfSignOptions.Appearance.init -> void
+Egap.Pdf.PdfSignOptions.Certification.get -> Egap.Pdf.PdfCertification?
+Egap.Pdf.PdfSignOptions.Certification.init -> void
 Egap.Pdf.PdfSignOptions.ContactInfo.get -> string?
 Egap.Pdf.PdfSignOptions.ContactInfo.init -> void
 Egap.Pdf.PdfSignOptions.DigestAlgorithm.get -> System.Security.Cryptography.HashAlgorithmName
 Egap.Pdf.PdfSignOptions.DigestAlgorithm.init -> void
 Egap.Pdf.PdfSignOptions.Equals(Egap.Pdf.PdfSignOptions? other) -> bool
+Egap.Pdf.PdfSignOptions.FieldLock.get -> Egap.Pdf.PdfFieldLock?
+Egap.Pdf.PdfSignOptions.FieldLock.init -> void
 Egap.Pdf.PdfSignOptions.Format.get -> Egap.Pdf.PdfSignatureFormat
 Egap.Pdf.PdfSignOptions.Format.init -> void
 Egap.Pdf.PdfSignOptions.Level.get -> Egap.Pdf.PadesLevel
@@ -172,6 +278,8 @@ Egap.Pdf.PdfSignOptions.Reason.get -> string?
 Egap.Pdf.PdfSignOptions.Reason.init -> void
 Egap.Pdf.PdfSignOptions.ReservedSize.get -> int?
 Egap.Pdf.PdfSignOptions.ReservedSize.init -> void
+Egap.Pdf.PdfSignOptions.Revocation.get -> Egap.Pdf.PdfRevocationSource?
+Egap.Pdf.PdfSignOptions.Revocation.init -> void
 Egap.Pdf.PdfSignOptions.Signer.get -> Egap.Pdf.PdfSigner?
 Egap.Pdf.PdfSignOptions.Signer.init -> void
 Egap.Pdf.PdfSignOptions.SignerName.get -> string?
@@ -200,18 +308,36 @@ Egap.Pdf.PdfVerifyOptions.Equals(Egap.Pdf.PdfVerifyOptions? other) -> bool
 Egap.Pdf.PdfVerifyOptions.ExtraCertificates.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
 Egap.Pdf.PdfVerifyOptions.ExtraCertificates.init -> void
 Egap.Pdf.PdfVerifyOptions.PdfVerifyOptions() -> void
+Egap.Pdf.PdfVerifyOptions.Revocation.get -> Egap.Pdf.PdfRevocationSource?
+Egap.Pdf.PdfVerifyOptions.Revocation.init -> void
 Egap.Pdf.PdfVerifyOptions.TrustAnchors.get -> System.Collections.Generic.IReadOnlyList<System.Security.Cryptography.X509Certificates.X509Certificate2!>!
 Egap.Pdf.PdfVerifyOptions.TrustAnchors.init -> void
 Egap.Pdf.PdfVerifyOptions.UseSystemTrust.get -> bool
 Egap.Pdf.PdfVerifyOptions.UseSystemTrust.init -> void
 Egap.Pdf.PdfVerifyOptions.VerificationTime.get -> System.DateTimeOffset?
 Egap.Pdf.PdfVerifyOptions.VerificationTime.init -> void
+Egap.Pdf.PdfWarningCode.SignatureInvalidated = 42 -> Egap.Pdf.PdfWarningCode
 override Egap.Pdf.PdfByteRange.GetHashCode() -> int
 override Egap.Pdf.PdfFieldLock.Equals(object? obj) -> bool
 override Egap.Pdf.PdfFieldLock.GetHashCode() -> int
 override Egap.Pdf.PdfFieldLock.ToString() -> string!
+override Egap.Pdf.PdfRedactionOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfRedactionOptions.GetHashCode() -> int
+override Egap.Pdf.PdfRedactionOptions.ToString() -> string!
+override Egap.Pdf.PdfRedactionResult.Equals(object? obj) -> bool
+override Egap.Pdf.PdfRedactionResult.GetHashCode() -> int
+override Egap.Pdf.PdfRedactionResult.ToString() -> string!
 override Egap.Pdf.PdfRevision.ToString() -> string!
+override Egap.Pdf.PdfSanitizeOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfSanitizeOptions.GetHashCode() -> int
+override Egap.Pdf.PdfSanitizeOptions.ToString() -> string!
+override Egap.Pdf.PdfSanitizeResult.Equals(object? obj) -> bool
+override Egap.Pdf.PdfSanitizeResult.GetHashCode() -> int
+override Egap.Pdf.PdfSanitizeResult.ToString() -> string!
 override Egap.Pdf.PdfSignature.ToString() -> string!
+override Egap.Pdf.PdfSignatureChange.Equals(object? obj) -> bool
+override Egap.Pdf.PdfSignatureChange.GetHashCode() -> int
+override Egap.Pdf.PdfSignatureChange.ToString() -> string!
 override Egap.Pdf.PdfSignatureReport.ToString() -> string!
 override Egap.Pdf.PdfSignOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfSignOptions.GetHashCode() -> int
@@ -224,8 +350,22 @@ static Egap.Pdf.PdfByteRange.operator ==(Egap.Pdf.PdfByteRange left, Egap.Pdf.Pd
 static Egap.Pdf.PdfFieldLock.operator !=(Egap.Pdf.PdfFieldLock? left, Egap.Pdf.PdfFieldLock? right) -> bool
 static Egap.Pdf.PdfFieldLock.operator ==(Egap.Pdf.PdfFieldLock? left, Egap.Pdf.PdfFieldLock? right) -> bool
 static Egap.Pdf.PdfPreparedSignature.CompleteAsync(System.IO.Stream! file, System.ReadOnlyMemory<byte> cms, Egap.Pdf.PdfTimestampClient? timestamp = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Egap.Pdf.PdfRedactionOptions.Default.get -> Egap.Pdf.PdfRedactionOptions!
+static Egap.Pdf.PdfRedactionOptions.operator !=(Egap.Pdf.PdfRedactionOptions? left, Egap.Pdf.PdfRedactionOptions? right) -> bool
+static Egap.Pdf.PdfRedactionOptions.operator ==(Egap.Pdf.PdfRedactionOptions? left, Egap.Pdf.PdfRedactionOptions? right) -> bool
+static Egap.Pdf.PdfRedactionResult.operator !=(Egap.Pdf.PdfRedactionResult? left, Egap.Pdf.PdfRedactionResult? right) -> bool
+static Egap.Pdf.PdfRedactionResult.operator ==(Egap.Pdf.PdfRedactionResult? left, Egap.Pdf.PdfRedactionResult? right) -> bool
+static Egap.Pdf.PdfRevocationSource.Offline(System.Collections.Generic.IEnumerable<System.ReadOnlyMemory<byte>>? ocspResponses = null, System.Collections.Generic.IEnumerable<System.ReadOnlyMemory<byte>>? crls = null) -> Egap.Pdf.PdfRevocationSource!
+static Egap.Pdf.PdfRevocationSource.Online(System.Net.Http.HttpClient! http) -> Egap.Pdf.PdfRevocationSource!
+static Egap.Pdf.PdfSanitizeOptions.Default.get -> Egap.Pdf.PdfSanitizeOptions!
+static Egap.Pdf.PdfSanitizeOptions.operator !=(Egap.Pdf.PdfSanitizeOptions? left, Egap.Pdf.PdfSanitizeOptions? right) -> bool
+static Egap.Pdf.PdfSanitizeOptions.operator ==(Egap.Pdf.PdfSanitizeOptions? left, Egap.Pdf.PdfSanitizeOptions? right) -> bool
+static Egap.Pdf.PdfSanitizeResult.operator !=(Egap.Pdf.PdfSanitizeResult? left, Egap.Pdf.PdfSanitizeResult? right) -> bool
+static Egap.Pdf.PdfSanitizeResult.operator ==(Egap.Pdf.PdfSanitizeResult? left, Egap.Pdf.PdfSanitizeResult? right) -> bool
 static Egap.Pdf.PdfSignatureAppearance.Default(int page, Egami.Drawing.RectF rectangle, Egami.Raster? image = null) -> Egap.Pdf.PdfSignatureAppearance!
 static Egap.Pdf.PdfSignatureAppearance.Draw(int page, Egami.Drawing.RectF rectangle, System.Action<Egap.Pdf.PdfCanvas!>! draw) -> Egap.Pdf.PdfSignatureAppearance!
+static Egap.Pdf.PdfSignatureChange.operator !=(Egap.Pdf.PdfSignatureChange? left, Egap.Pdf.PdfSignatureChange? right) -> bool
+static Egap.Pdf.PdfSignatureChange.operator ==(Egap.Pdf.PdfSignatureChange? left, Egap.Pdf.PdfSignatureChange? right) -> bool
 static Egap.Pdf.PdfSigner.FromCertificate(System.Security.Cryptography.X509Certificates.X509Certificate2! certificate, System.Collections.Generic.IEnumerable<System.Security.Cryptography.X509Certificates.X509Certificate2!>? chain = null) -> Egap.Pdf.PdfSigner!
 static Egap.Pdf.PdfSigner.FromKey(System.Security.Cryptography.AsymmetricAlgorithm! key, System.Security.Cryptography.X509Certificates.X509Certificate2! certificate, System.Collections.Generic.IEnumerable<System.Security.Cryptography.X509Certificates.X509Certificate2!>? chain = null) -> Egap.Pdf.PdfSigner!
 static Egap.Pdf.PdfSignOptions.operator !=(Egap.Pdf.PdfSignOptions? left, Egap.Pdf.PdfSignOptions? right) -> bool
@@ -235,3 +375,26 @@ static Egap.Pdf.PdfVerifyOptions.operator !=(Egap.Pdf.PdfVerifyOptions? left, Eg
 static Egap.Pdf.PdfVerifyOptions.operator ==(Egap.Pdf.PdfVerifyOptions? left, Egap.Pdf.PdfVerifyOptions? right) -> bool
 ~override Egap.Pdf.PdfByteRange.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfByteRange.ToString() -> string
+Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfAConformance.None = 0 -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfAConformance.PdfA1b = 1 -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfAConformance.PdfA2b = 2 -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfAConformance.PdfA2u = 3 -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfAConformance.PdfA3b = 4 -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfAConformance.PdfA3u = 5 -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfAConformance.PdfA4 = 6 -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfAConformance.PdfA4f = 7 -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfCreateOptions
+Egap.Pdf.PdfCreateOptions.<Clone>$() -> Egap.Pdf.PdfCreateOptions!
+Egap.Pdf.PdfCreateOptions.Equals(Egap.Pdf.PdfCreateOptions? other) -> bool
+Egap.Pdf.PdfCreateOptions.PdfCreateOptions() -> void
+Egap.Pdf.PdfCreateOptions.Conformance.get -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfCreateOptions.Conformance.init -> void
+override Egap.Pdf.PdfCreateOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfCreateOptions.GetHashCode() -> int
+override Egap.Pdf.PdfCreateOptions.ToString() -> string!
+static Egap.Pdf.PdfCreateOptions.operator !=(Egap.Pdf.PdfCreateOptions? left, Egap.Pdf.PdfCreateOptions? right) -> bool
+static Egap.Pdf.PdfCreateOptions.operator ==(Egap.Pdf.PdfCreateOptions? left, Egap.Pdf.PdfCreateOptions? right) -> bool
+static Egap.Pdf.PdfCreateOptions.Default.get -> Egap.Pdf.PdfCreateOptions!
+static Egap.Pdf.PdfDocument.Create(Egap.Pdf.PdfCreateOptions! options) -> Egap.Pdf.PdfDocument!
+Egap.Pdf.PdfDocument.Conformance.get -> Egap.Pdf.PdfAConformance

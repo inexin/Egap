@@ -12,7 +12,7 @@ internal static class Targets
     /// <summary>Counts kept by the streams target, which replay prints, to see what a corpus run did.</summary>
     public static Dictionary<string, int> Counts { get; } = [];
 
-    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings", "render", "signatures", "cms"];
+    public static IEnumerable<string> Names => ["lexer", "parser", "filters", "streams", "xref", "document", "rewrite", "incremental", "trees", "pages", "pageedits", "navigation", "outlines", "xmp", "metadata", "attachments", "layers", "annotations", "forms", "flatten", "merge", "content", "walker", "fonts", "images", "functions", "shadings", "render", "signatures", "cms", "revocation"];
 
     public static Action<Stream> Get(string name)
     {
@@ -48,6 +48,7 @@ internal static class Targets
             "render" => Render,
             "signatures" => Signatures,
             "cms" => Cms,
+            "revocation" => Revocation,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -2133,6 +2134,32 @@ internal static class Targets
     /// (task 17); then up to 20 terminal fields filled, each value read back at once and after the file is written whole and
     /// reopened, where a static XFA form is then converted.
     /// </summary>
+    /// <summary>The certificates the revocation target judges responses for: made once, an issuer and the certificate it issued.</summary>
+    private static readonly Lazy<(System.Security.Cryptography.X509Certificates.X509Certificate2 Certificate, System.Security.Cryptography.X509Certificates.X509Certificate2 Issuer)> RevocationCertificates = new(() =>
+    {
+        using System.Security.Cryptography.ECDsa issuerKey = System.Security.Cryptography.ECDsa.Create(System.Security.Cryptography.ECCurve.NamedCurves.nistP256);
+        using System.Security.Cryptography.ECDsa key = System.Security.Cryptography.ECDsa.Create(System.Security.Cryptography.ECCurve.NamedCurves.nistP256);
+        System.Security.Cryptography.X509Certificates.CertificateRequest root = new("CN=Fuzz Root", issuerKey, System.Security.Cryptography.HashAlgorithmName.SHA256);
+        root.CertificateExtensions.Add(new System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension(true, false, 0, true));
+        System.Security.Cryptography.X509Certificates.X509Certificate2 issuer = root.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddYears(1));
+        System.Security.Cryptography.X509Certificates.CertificateRequest leaf = new("CN=Fuzz Leaf", key, System.Security.Cryptography.HashAlgorithmName.SHA256);
+        System.Security.Cryptography.X509Certificates.X509Certificate2 certificate = leaf.Create(issuer, DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddMonths(6), [1, 2, 3]);
+        return (certificate, issuer);
+    });
+
+    /// <summary>
+    /// The OCSP and CRL readers (Phase 5 task 10): any bytes either answer for the certificate or are refused with
+    /// <see langword="null"/>; neither reader throws.
+    /// </summary>
+    private static void Revocation(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        (System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, System.Security.Cryptography.X509Certificates.X509Certificate2 issuer) = RevocationCertificates.Value;
+        _ = global::Egap.Pdf.Signatures.Cms.Ocsp.Read(bytes, certificate, issuer, out _);
+        _ = global::Egap.Pdf.Signatures.Cms.Ocsp.Certificates(bytes);
+        _ = global::Egap.Pdf.Signatures.Cms.Crl.Read(bytes, certificate, issuer);
+    }
+
     /// <summary>
     /// The CMS reader (Phase 5 task 3): any bytes decode to a SignedData or throw <see cref="PdfException"/>, and every signer
     /// attribute reads without throwing; the old adbe.x509.rsa_sha1 reader the same.
@@ -2221,6 +2248,9 @@ internal static class Targets
 
                 foreach (PdfSignature signature in pdf.Signatures.Take(50))
                 {
+                    // Verifying reads the CMS, the DSS and every later revision; it reports, it never throws.
+                    PdfSignatureReport report = signature.Verify();
+                    _ = (report.IsValid, report.Changes.Count, report.Problems.Count);
                     ReadPublicProperties(signature);
                     _ = (signature.Field.Lock, signature.Field.SeedValue);
                     Check(signature.Revision is null || revisions.Contains(signature.Revision), "a signature's revision is the document's");

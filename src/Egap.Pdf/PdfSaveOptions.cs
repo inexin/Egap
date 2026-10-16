@@ -44,6 +44,13 @@ public sealed record PdfSaveOptions
     public PdfSaveMode Mode { get; init; }
 
     /// <summary>
+    /// Whether a save may break signatures knowingly (Phase 5 design Q7). Left false, a save that would invalidate a
+    /// signature (a change its permissions forbid, or a rewrite of a signed file) adds a
+    /// <see cref="PdfWarningCode.SignatureInvalidated"/> warning first, or throws in strict mode.
+    /// </summary>
+    public bool AllowInvalidatingSignatures { get; init; }
+
+    /// <summary>
     /// For a rewrite, whether objects keep their numbers and generations instead of being renumbered densely in the order
     /// they are reached from the trailer. Useful for comparing with the original while debugging. The default is
     /// <see langword="false"/>.

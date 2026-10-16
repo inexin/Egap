@@ -40,6 +40,9 @@ public sealed class PdfSignature
     /// <summary>The signature field.</summary>
     public PdfSignatureField Field { get; }
 
+    /// <summary>The document the signature is in.</summary>
+    internal PdfDocument Document => document;
+
     /// <summary>The field's fully qualified name.</summary>
     public string Name => Field.FullName;
 

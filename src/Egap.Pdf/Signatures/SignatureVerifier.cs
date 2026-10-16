@@ -21,6 +21,10 @@ internal static class SignatureVerifier
         ArgumentNullException.ThrowIfNull(options);
         PdfSignatureReport report = new(signature);
         DateTimeOffset time = options.VerificationTime ?? DateTimeOffset.UtcNow;
+
+        // The file's own validation data: its DSS certificates help build chains, its responses answer for revocation.
+        RevocationCheck.Store dss = RevocationCheck.ReadDss(signature.Document);
+        options = options with { ExtraCertificates = [.. options.ExtraCertificates, .. dss.Certificates] };
         bool readable = signature.ByteRange.Count > 0 && (signature.ByteRangeIssues & (PdfByteRangeIssues.OutsideFile | PdfByteRangeIssues.Overlapping)) == 0;
         if (signature.ByteRangeIssues != PdfByteRangeIssues.None)
         {
@@ -50,13 +54,13 @@ internal static class SignatureVerifier
             switch (signature.SubFilter)
             {
                 case "ETSI.RFC3161":
-                    VerifyDocumentTimestamp(signature, options, time, report, RangeHash);
+                    VerifyDocumentTimestamp(signature, options, time, report, RangeHash, dss);
                     break;
                 case "adbe.x509.rsa_sha1":
-                    VerifyRsaSha1(signature, options, time, report, RangeHash);
+                    VerifyRsaSha1(signature, options, time, report, RangeHash, dss);
                     break;
                 default:
-                    VerifyCms(signature, options, time, report, RangeHash);
+                    VerifyCms(signature, options, time, report, RangeHash, dss);
                     break;
             }
         }
@@ -72,19 +76,31 @@ internal static class SignatureVerifier
             report.Integrity = PdfVerdict.Invalid;
         }
 
-        report.Revocation = PdfVerdict.Indeterminate;
-        report.Problem("Revocation was not checked.");
-        report.ChangesSince = signature.CoversWholeFile ? PdfVerdict.NotApplicable : PdfVerdict.Indeterminate;
-        if (!signature.CoversWholeFile)
+        if (signature.Revision is null)
         {
-            report.Problem("Revisions were added after the signature; they were not compared with it.");
+            report.ChangesSince = PdfVerdict.Indeterminate;
+            report.Problem("The signature covers no whole revision, so what came after it cannot be told apart.");
+        }
+        else if (signature.Revision.IsLatest)
+        {
+            report.ChangesSince = PdfVerdict.NotApplicable;
+        }
+        else
+        {
+            List<PdfSignatureChange> changes = ChangeAnalyzer.Analyze(signature.Document, signature, out _);
+            report.Changes = changes;
+            report.ChangesSince = ChangeAnalyzer.Verdict(changes);
+            foreach (PdfSignatureChange change in changes.Where(c => c.Verdict != PdfChangeVerdict.Allowed))
+            {
+                report.Problem($"Revision {change.Revision}: {change.Description} ({change.Verdict})");
+            }
         }
 
         return report;
     }
 
     /// <summary>ETSI.CAdES.detached, adbe.pkcs7.detached and adbe.pkcs7.sha1: a CMS SignedData with one signer.</summary>
-    private static void VerifyCms(PdfSignature signature, PdfVerifyOptions options, DateTimeOffset time, PdfSignatureReport report, Func<HashAlgorithmName, byte[]?> rangeHash)
+    private static void VerifyCms(PdfSignature signature, PdfVerifyOptions options, DateTimeOffset time, PdfSignatureReport report, Func<HashAlgorithmName, byte[]?> rangeHash, RevocationCheck.Store dss)
     {
         CmsSignedData cms = signature.DecodeCms();
         if (cms.Signers is not [CmsSignerInfo signer])
@@ -153,6 +169,16 @@ internal static class SignatureVerifier
         {
             CheckKeyUsage(certificate, report);
         }
+
+        report.Revocation = Revocation(report, certificate, certificates, cms, signer, dss, options, time);
+    }
+
+    /// <summary>The revocation verdict for the chain verified, or the chain the certificates at hand make, at the time a valid timestamp proves.</summary>
+    private static PdfVerdict Revocation(PdfSignatureReport report, X509Certificate2 certificate, IEnumerable<X509Certificate2> certificates, CmsSignedData? cms, CmsSignerInfo? signer, RevocationCheck.Store dss, PdfVerifyOptions options, DateTimeOffset time)
+    {
+        IReadOnlyList<X509Certificate2> chain = report.ChainCertificates.Count > 0 ? report.ChainCertificates : LongTermWriter.OrderedChain(certificate, [.. certificates, .. options.ExtraCertificates]);
+        DateTimeOffset proven = report.Timestamp == PdfVerdict.Valid && report.TimestampTime is { } stamped ? stamped : time;
+        return RevocationCheck.Check(chain, cms, signer, dss, options, proven, report);
     }
 
     /// <summary>The signer's own checks: the message digest and content type when there are signed attributes, the signature, and the PAdES certificate binding.</summary>
@@ -210,7 +236,7 @@ internal static class SignatureVerifier
     }
 
     /// <summary>The old raw RSA signature over the byte range's SHA-1 digest, with the certificates in /Cert.</summary>
-    private static void VerifyRsaSha1(PdfSignature signature, PdfVerifyOptions options, DateTimeOffset time, PdfSignatureReport report, Func<HashAlgorithmName, byte[]?> rangeHash)
+    private static void VerifyRsaSha1(PdfSignature signature, PdfVerifyOptions options, DateTimeOffset time, PdfSignatureReport report, Func<HashAlgorithmName, byte[]?> rangeHash, RevocationCheck.Store dss)
     {
         report.Warning("adbe.x509.rsa_sha1 is deprecated (ISO 32000-2) and rests on SHA-1.");
         report.DigestAlgorithm = "SHA1";
@@ -241,10 +267,11 @@ internal static class SignatureVerifier
         }
 
         report.Chain = CheckChain(certificate, certificates, options, time, null, report, "signer's");
+        report.Revocation = Revocation(report, certificate, certificates, null, null, dss, options, time);
     }
 
     /// <summary>A document timestamp: an RFC 3161 token whose imprint is the digest of the byte range.</summary>
-    private static void VerifyDocumentTimestamp(PdfSignature signature, PdfVerifyOptions options, DateTimeOffset time, PdfSignatureReport report, Func<HashAlgorithmName, byte[]?> rangeHash)
+    private static void VerifyDocumentTimestamp(PdfSignature signature, PdfVerifyOptions options, DateTimeOffset time, PdfSignatureReport report, Func<HashAlgorithmName, byte[]?> rangeHash, RevocationCheck.Store dss)
     {
         if (!Rfc3161TimestampToken.TryDecode(signature.Contents, out Rfc3161TimestampToken? token, out _))
         {
@@ -275,7 +302,18 @@ internal static class SignatureVerifier
         }
 
         X509Certificate2Collection candidates = [.. options.ExtraCertificates];
-        if (!token.VerifySignatureForHash(digest, hash, out X509Certificate2? authority, candidates))
+        X509Certificate2? authority = null;
+        bool verified;
+        try
+        {
+            verified = token.VerifySignatureForHash(digest, hash, out authority, candidates);
+        }
+        catch (CryptographicException)
+        {
+            verified = false;
+        }
+
+        if (!verified)
         {
             report.Integrity = authority is null && token.TokenInfo.GetMessageHash().Span.SequenceEqual(digest) ? PdfVerdict.Indeterminate : PdfVerdict.Invalid;
             report.Problem(report.Integrity == PdfVerdict.Invalid ? "The document timestamp does not cover the signed bytes, or its signature does not verify." : "The timestamp authority's certificate is not in the token.");
@@ -288,6 +326,7 @@ internal static class SignatureVerifier
         report.SignatureAlgorithm = "RFC 3161";
         List<X509Certificate2> embedded = [.. token.AsSignedCms().Certificates];
         report.Chain = CheckChain(authority!, embedded, options, time, TimeStampingUsage, report, "timestamp authority's");
+        report.Revocation = Revocation(report, authority!, embedded, null, null, dss, options, time);
     }
 
     /// <summary>A signature timestamp: valid, over the signature value, from an authority that chains to a trust anchor.</summary>
@@ -300,7 +339,18 @@ internal static class SignatureVerifier
         }
 
         X509Certificate2Collection candidates = [.. extra, .. options.ExtraCertificates];
-        if (!token.VerifySignatureForData(signatureValue, out X509Certificate2? authority, candidates))
+        X509Certificate2? authority = null;
+        bool verified;
+        try
+        {
+            verified = token.VerifySignatureForData(signatureValue, out authority, candidates);
+        }
+        catch (CryptographicException)
+        {
+            verified = false;
+        }
+
+        if (!verified)
         {
             report.Problem("The signature timestamp does not cover the signature value, or its own signature does not verify.");
             return PdfVerdict.Invalid;
@@ -403,7 +453,17 @@ internal static class SignatureVerifier
             chain.ChainPolicy.ApplicationPolicy.Add(new Oid(usage));
         }
 
-        bool built = chain.Build(certificate);
+        bool built;
+        try
+        {
+            built = chain.Build(certificate);
+        }
+        catch (CryptographicException)
+        {
+            // OpenSSL refuses a certificate whose key it cannot read; the chain is broken, not undecided.
+            return (false, X509ChainStatusFlags.InvalidExtension, []);
+        }
+
         X509ChainStatusFlags flags = X509ChainStatusFlags.NoError;
         foreach (X509ChainStatus status in chain.ChainStatus)
         {
@@ -417,8 +477,20 @@ internal static class SignatureVerifier
     /// <summary>A signer's key usage, when given, must allow digital signatures or non-repudiation.</summary>
     private static void CheckKeyUsage(X509Certificate2 certificate, PdfSignatureReport report)
     {
-        if (certificate.Extensions.OfType<X509KeyUsageExtension>().FirstOrDefault() is { } usage
-            && (usage.KeyUsages & (X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.NonRepudiation)) == 0)
+        X509KeyUsageExtension? usage;
+        try
+        {
+            usage = certificate.Extensions.OfType<X509KeyUsageExtension>().FirstOrDefault();
+            _ = usage?.KeyUsages;
+        }
+        catch (CryptographicException)
+        {
+            report.Problem("The signer's certificate has a key usage extension that cannot be read.");
+            report.Chain = PdfVerdict.Invalid;
+            return;
+        }
+
+        if (usage is not null && (usage.KeyUsages & (X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.NonRepudiation)) == 0)
         {
             report.Problem("The signer's certificate does not allow digital signatures.");
             report.Chain = PdfVerdict.Invalid;

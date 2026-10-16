@@ -123,7 +123,8 @@ public sealed class VerificationTests
             PdfSignatureReport report = Assert.Single(pdf.Signatures).Verify(new PdfVerifyOptions { TrustAnchors = [certificate] });
             Assert.Equal(PdfVerdict.Valid, report.Integrity);
             Assert.Equal(PdfVerdict.Valid, report.Chain);
-            Assert.Equal("Sig: integrity Valid, chain Valid, timestamp NotApplicable, revocation Indeterminate, changes NotApplicable", report.ToString());
+            Assert.Equal("Sig: integrity Valid, chain Valid, timestamp NotApplicable, revocation Valid, changes NotApplicable", report.ToString());
+            Assert.True(report.IsValid);
         }
     }
 
@@ -166,12 +167,13 @@ public sealed class VerificationTests
     }
 
     [Fact]
-    public void AnEarlierSignatureAwaitsTheChangeAnalysis()
+    public void AnEarlierSignatureHasItsLaterRevisionsJudged()
     {
         using PdfDocument pdf = PdfDocument.Open(SignedFiles.PathOf("pyhanko-two-signatures.pdf"));
         PdfSignatureReport first = pdf.Signatures[0].Verify(Trusting);
         Assert.Equal(PdfVerdict.Valid, first.Integrity);
-        Assert.Equal(PdfVerdict.Indeterminate, first.ChangesSince);
+        Assert.Equal(PdfVerdict.Valid, first.ChangesSince);
+        Assert.NotEmpty(first.Changes);
         Assert.Equal(PdfVerdict.NotApplicable, pdf.Signatures[1].Verify(Trusting).ChangesSince);
     }
 
@@ -226,6 +228,18 @@ public sealed class VerificationTests
             PdfSignatureReport report = Assert.Single(pdf.Signatures).Verify(new PdfVerifyOptions { TrustAnchors = [certificate] });
             Assert.Equal(PdfVerdict.Valid, report.Integrity);
             Assert.Contains(report.Warnings, w => w.Contains("adbe.pkcs7.sha1", StringComparison.Ordinal));
+        }
+    }
+
+    [Fact]
+    public void ACertificateWithAnUnreadableKeyIsReportedNotThrown()
+    {
+        // Found by the signatures fuzz target (2026-10-16): on Linux, OpenSSL's chain building throws for this certificate.
+        using PdfDocument pdf = PdfDocument.Open(Path.Combine(AppContext.BaseDirectory, "files", "fuzz", "signature-unreadable-key.pdf"));
+        foreach (PdfSignature signature in pdf.Signatures)
+        {
+            PdfSignatureReport report = signature.Verify(Trusting);
+            Assert.False(report.IsValid);
         }
     }
 

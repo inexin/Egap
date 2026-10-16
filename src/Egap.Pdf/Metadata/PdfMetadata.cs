@@ -145,6 +145,24 @@ public sealed class PdfMetadata
         }
     }
 
+    /// <summary>The PDF/A identification in the XMP packet (ISO 19005-2 6.6.4): part, conformance letter and revision; nulls without one.</summary>
+    internal (string? Part, string? Conformance, string? Revision) GetPdfAId()
+    {
+        XmpPacket? packet = Xmp();
+        return (packet?.GetText(XmpPacket.PdfAId + "part"), packet?.GetText(XmpPacket.PdfAId + "conformance"), packet?.GetText(XmpPacket.PdfAId + "rev"));
+    }
+
+    /// <summary>Writes the PDF/A identification, creating the XMP packet from the Info values when there is none.</summary>
+    internal void SetPdfAId(int part, string? conformance, string? revision)
+    {
+        CreateXmp();
+        XmpPacket packet = Xmp()!;
+        packet.SetText(XmpPacket.PdfAId + "part", part.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        packet.SetText(XmpPacket.PdfAId + "conformance", conformance);
+        packet.SetText(XmpPacket.PdfAId + "rev", revision);
+        Write(packet);
+    }
+
     private string? InfoText(PdfName key)
     {
         return Info?.GetText(key);

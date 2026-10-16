@@ -37,6 +37,13 @@ public sealed record PdfVerifyOptions
     public IReadOnlyList<X509Certificate2> ExtraCertificates { get; init; } = [];
 
     /// <summary>
+    /// Where revocation data the file does not hold comes from: <see cref="PdfRevocationSource.Online"/> fetches it (the only
+    /// way verification uses the network), <see cref="PdfRevocationSource.Offline"/> takes responses the caller has. Left
+    /// out, only the file's own data (its DSS and its CMS) is used.
+    /// </summary>
+    public PdfRevocationSource? Revocation { get; init; }
+
+    /// <summary>
     /// The time to check certificates at; now when left out. A chain that has expired since, but was valid when a trusted
     /// timestamp proves the signature existed, comes out indeterminate, as long-term validation decides it.
     /// </summary>
@@ -98,6 +105,9 @@ public sealed class PdfSignatureReport
 
     /// <summary>The timestamp authority's certificate, when there is a timestamp.</summary>
     public X509Certificate2? TimestampCertificate { get; internal set; }
+
+    /// <summary>Every change made in the revisions after the signature, each judged against its permissions.</summary>
+    public IReadOnlyList<PdfSignatureChange> Changes { get; internal set; } = [];
 
     /// <summary>Why a verdict is not valid, one line each.</summary>
     public IReadOnlyList<string> Problems => problems;

@@ -140,6 +140,19 @@ internal sealed class EmbeddedFont
             ["StemV"] = new PdfInteger(80),
             [cff ? "FontFile3" : "FontFile2"] = document.Objects.Add(file),
         };
+        if (PdfA.PdfAWriter.Part(document.CreatedConformance) == 1)
+        {
+            // PDF/A-1 asks a subset to list its CIDs (ISO 19005-1 6.3.5): one bit each, the high bit first.
+            byte[] bits = new byte[(used.Max() / 8) + 1];
+            foreach (ushort glyph in used)
+            {
+                bits[glyph / 8] |= (byte)(0x80 >> (glyph % 8));
+            }
+
+            PdfStream set = new();
+            set.SetDecodedBytes(bits);
+            descriptor["CIDSet"] = document.Objects.Add(set);
+        }
         PdfDictionary cidFont = new()
         {
             ["Type"] = PdfName.Get("Font"),

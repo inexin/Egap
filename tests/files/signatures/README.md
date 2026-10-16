@@ -1,10 +1,10 @@
 # Signed test files
 
-`base.pdf` is a one-page file written by hand (egap-compare's `SignedReferences.BaseFile`). Every other PDF here is
-`base.pdf` signed by pyHanko 0.37 (MIT) in egap-compare's Phase 5 harness (`docker/pyhanko/sign.py`), with keys from its test
-PKI (`docker/pki`), made on 2026-10-16. The certificates are test certificates for these files only: `root.crt` is the PKI's
-root (valid to 2046), `inter.crt` the intermediate that issued every signer, `tsa.crt` the timestamp authority's certificate.
-The signer certificates are valid to 2031-10-15.
+`base.pdf` is a one-page file written by hand (egap-compare's `SignedReferences.BaseFile`); `base-form.pdf` is the same with
+a text field `Name`. Every other PDF here is one of them signed by pyHanko 0.37 (MIT) in egap-compare's Phase 5 harness
+(`docker/pyhanko/sign.py`), with keys from its test PKI (`docker/pki`), made on 2026-10-16. The certificates are test
+certificates for these files only: `root.crt` is the PKI's root (valid to 2046), `inter.crt` the intermediate that issued
+every signer, `tsa.crt` the timestamp authority's certificate. The signer certificates are valid to 2031-10-15.
 
 | File | Signature | sign.py options |
 | --- | --- | --- |
@@ -20,3 +20,7 @@ The signer certificates are valid to 2031-10-15.
 | `pyhanko-revoked.pdf` | PAdES B-B by a revoked signer | `--pfx signer-revoked.pfx` |
 | `pyhanko-doc-timestamp.pdf` | A document timestamp only | `--doc-timestamp --tsa .../tsa --field DocTimeStamp1` |
 | `pyhanko-two-signatures.pdf` | `pyhanko-certify-2.pdf` signed again by the EC signer | `--pfx signer-ec.pfx --field Signature2` |
+| `pyhanko-form-certify-1.pdf` | `base-form.pdf` certified, no changes allowed | `--pfx signer-rsa.pfx --certify 1` |
+| `pyhanko-form-certify-2.pdf` | `base-form.pdf` certified, form filling and signing | `--pfx signer-rsa.pfx --certify 2` |
+| `pyhanko-form-certify-3.pdf` | `base-form.pdf` certified, also annotations | `--pfx signer-rsa.pfx --certify 3` |
+| `pyhanko-form-approval.pdf` | `base-form.pdf` with an approval signature | `--pfx signer-rsa.pfx` |
