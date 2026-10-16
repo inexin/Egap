@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Egap.Documents</RootNamespace>
     <PackageId>Egap.Documents</PackageId>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>0.2.0</VersionPrefix>
     <Description>Flow documents for .NET: one editable document model with Markdown, DOCX and HTML readers and writers and a page layout engine that draws onto any Egami canvas.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTrimmable>true</IsTrimmable>

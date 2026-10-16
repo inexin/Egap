@@ -7,9 +7,30 @@ public sealed class DocxLoadOptions
     public DocumentLimits Limits { get; init; } = new();
 }
 
+/// <summary>Which of Word's file kinds a DOCX package is (Phase 6 design Q10).</summary>
+public enum DocxKind
+{
+    /// <summary>A document (.docx).</summary>
+    Document,
+
+    /// <summary>A template (.dotx).</summary>
+    Template,
+
+    /// <summary>A document that may hold macros (.docm); Egap keeps them and never runs them.</summary>
+    MacroEnabledDocument,
+
+    /// <summary>A template that may hold macros (.dotm).</summary>
+    MacroEnabledTemplate,
+}
+
 /// <summary>How <see cref="DocxFormat"/> writes a file.</summary>
 public sealed class DocxSaveOptions
 {
+    /// <summary>
+    /// The kind to write; null keeps the kind the document was read as (a new document is a .docx), or, saving to a path,
+    /// takes it from the file's extension. A kind that holds no macros drops the macros a .docm or .dotm had.
+    /// </summary>
+    public DocxKind? Kind { get; init; }
 }
 
 /// <summary>
@@ -58,8 +79,23 @@ public static class DocxFormat
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(path);
+        DocxKind? kind = options?.Kind ?? Path.GetExtension(path).ToUpperInvariant() switch
+        {
+            ".DOTX" => DocxKind.Template,
+            ".DOCM" => DocxKind.MacroEnabledDocument,
+            ".DOTM" => DocxKind.MacroEnabledTemplate,
+            ".DOCX" => DocxKind.Document,
+            _ => null,
+        };
         using FileStream stream = File.Create(path);
-        Save(document, stream, options);
+        Save(document, stream, new DocxSaveOptions { Kind = kind });
+    }
+
+    /// <summary>The kind <paramref name="document"/> was read as, or null for a document not read from DOCX.</summary>
+    public static DocxKind? KindOf(Document document)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        return DocxPackageData.Of(document)?.MainContentType is { } type ? DocxWriter.KindOf(type) : null;
     }
 
     /// <summary>Writes <paramref name="document"/> as DOCX to <paramref name="stream"/>, which is left open.</summary>
@@ -67,7 +103,6 @@ public static class DocxFormat
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(stream);
-        _ = options;
-        DocxWriter.Write(document, stream);
+        DocxWriter.Write(document, stream, kind: options?.Kind);
     }
 }

@@ -18,6 +18,7 @@ internal sealed partial class DocxWriter
     private readonly OpcPackageWriter package = new();
     private readonly string mainName;
     private readonly bool regenerate;
+    private string mainContentType = MainContentType;
     private readonly Dictionary<Footnote, int> noteIds = [];
     private readonly Dictionary<string, int> bookmarkIds = new(StringComparer.Ordinal);
     private readonly HashSet<int> usedBookmarkIds = [];
@@ -44,9 +45,11 @@ internal sealed partial class DocxWriter
     /// <param name="document">The document.</param>
     /// <param name="stream">Where the package goes.</param>
     /// <param name="regenerate">For tests: write every story, table and paragraph from the model, as if all were edited.</param>
-    public static void Write(Document document, Stream stream, bool regenerate = false)
+    /// <param name="kind">The kind to write, or null to keep the kind read.</param>
+    public static void Write(Document document, Stream stream, bool regenerate = false, DocxKind? kind = null)
     {
         DocxWriter writer = new(document, regenerate);
+        writer.mainContentType = kind is { } k ? ContentTypeOf(k) : writer.data?.MainContentType ?? MainContentType;
         writer.WriteAll();
         writer.package.Save(stream);
     }
@@ -231,8 +234,62 @@ internal sealed partial class DocxWriter
         }
 
         DeclarePrefixes(root);
-        package.AddXmlPart(mainName, data?.MainContentType ?? MainContentType, new XDocument(new XDeclaration("1.0", "UTF-8", "yes"), root));
+        package.AddXmlPart(mainName, mainContentType, new XDocument(new XDeclaration("1.0", "UTF-8", "yes"), root));
+        if (KindOf(mainContentType) is DocxKind.Document or DocxKind.Template)
+        {
+            DropMacros();
+        }
         writtenParts.Add(mainName);
+    }
+
+    /// <summary>The content type of the main part for a kind.</summary>
+    internal static string ContentTypeOf(DocxKind kind)
+    {
+        return kind switch
+        {
+            DocxKind.Template => "application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml",
+            DocxKind.MacroEnabledDocument => "application/vnd.ms-word.document.macroEnabled.main+xml",
+            DocxKind.MacroEnabledTemplate => "application/vnd.ms-word.template.macroEnabledTemplate.main+xml",
+            _ => MainContentType,
+        };
+    }
+
+    /// <summary>The kind a main part's content type names.</summary>
+    internal static DocxKind KindOf(string contentType)
+    {
+        return contentType.ToUpperInvariant() switch
+        {
+            "APPLICATION/VND.OPENXMLFORMATS-OFFICEDOCUMENT.WORDPROCESSINGML.TEMPLATE.MAIN+XML" => DocxKind.Template,
+            "APPLICATION/VND.MS-WORD.DOCUMENT.MACROENABLED.MAIN+XML" => DocxKind.MacroEnabledDocument,
+            "APPLICATION/VND.MS-WORD.TEMPLATE.MACROENABLEDTEMPLATE.MAIN+XML" => DocxKind.MacroEnabledTemplate,
+            _ => DocxKind.Document,
+        };
+    }
+
+    /// <summary>
+    /// A kind without macros keeps none: the VBA project, its data and its signature go, with the
+    /// relationships that name them.
+    /// </summary>
+    private void DropMacros()
+    {
+        HashSet<string> macroTypes = new(StringComparer.Ordinal)
+        {
+            OpcRelationshipTypes.VbaProject,
+            "http://schemas.microsoft.com/office/2006/relationships/wordVbaData",
+            "http://schemas.microsoft.com/office/2006/relationships/vbaProjectSignature",
+        };
+        foreach (OpcRelationship relationship in package.RelationshipsOf(mainName).Where(r => !r.External && macroTypes.Contains(r.Type)).ToList())
+        {
+            string part = OpcPackage.ResolveTarget(mainName, relationship.Target);
+            foreach (OpcRelationship inner in package.RelationshipsOf(part).Where(r => !r.External).ToList())
+            {
+                package.RemovePart(OpcPackage.ResolveTarget(part, inner.Target));
+            }
+
+            package.RemovePart(part);
+        }
+
+        package.RemoveRelationships(mainName, r => macroTypes.Contains(r.Type));
     }
 
     private static void SetSectionBreak(XElement paragraph, XElement sectPr)
