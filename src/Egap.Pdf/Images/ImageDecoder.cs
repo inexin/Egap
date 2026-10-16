@@ -2,10 +2,10 @@ using System.Buffers.Binary;
 
 using Egami;
 using Egami.Formats;
+using Egami.Formats.Ccitt;
 using Egami.Formats.Jbig2;
 using Egami.Formats.Jpeg;
 using Egami.Formats.Jpeg2000;
-using Egami.Formats.Tiff;
 using Egami.Pixels;
 
 namespace Egap.Pdf.Images;
@@ -293,11 +293,11 @@ internal static class ImageDecoder
                 int components = image.IsStencilMask ? 1 : ComponentCount(image, d);
                 return (new Samples(width, height, components, bits, data), null, null);
             case "DCTDecode":
-                return (FromRaster(Jpeg(data, minimum), invertBilevel: false), null, null);
+                return (FromRaster(Jpeg(data, minimum)), null, null);
             case "JBIG2Decode":
                 Jbig2Globals? globals = d.Get<PdfDictionary>("DecodeParms")?.Get("JBIG2Globals")?.Resolve() is PdfStream g ? Jbig2Globals.Parse(g.GetDecodedBytes()) : null;
                 Raster bilevel = Raster.Load(data, Jbig2Format.Info, options: new Jbig2ReaderOptions { Globals = globals });
-                return (FromRaster(bilevel, invertBilevel: false, bilevelBits: true), null, null);
+                return (FromRaster(bilevel, bilevelBits: true), null, null);
             case "CCITTFaxDecode":
                 return (Ccitt(data, d, width, height), null, null);
             case "JPXDecode":
@@ -391,7 +391,7 @@ internal static class ImageDecoder
         if (d.Get("ColorSpace") is not null)
         {
             Raster stored = Raster.Load(data, Jpeg2000Format.Info, options: new Jpeg2000ReaderOptions { Components = Jpeg2000Components.Raw, MinimumSize = minimum });
-            return (FromRaster(stored, invertBilevel: false) with { SourceBits = Math.Min(8, JpxPrecision(data)) }, null, null);
+            return (FromRaster(stored) with { SourceBits = Math.Min(8, JpxPrecision(data)) }, null, null);
         }
 
         Raster raster = Raster.Load(data, Jpeg2000Format.Info, options: new Jpeg2000ReaderOptions { MinimumSize = minimum });
@@ -430,60 +430,54 @@ internal static class ImageDecoder
         return siz >= 0 && siz + 40 < data.Length ? (data[siz + 40] & 0x7F) + 1 : 8;
     }
 
-    /// <summary>CCITT fax data wrapped in a one-strip TIFF for Egami's TIFF reader, the result as PDF samples (1 = white).</summary>
+    /// <summary>CCITT fax data decoded by Egami with the filter's parameters, as PDF samples (1 = white unless BlackIs1).</summary>
     private static Samples Ccitt(byte[] data, PdfDictionary d, int width, int height)
     {
         PdfDictionary parms = d.Get<PdfDictionary>("DecodeParms") ?? [];
-        int k = (int)(parms.GetInt("K") ?? 0);
         int columns = (int)(parms.GetInt("Columns") ?? 1728);
         int rows = (int)(parms.GetInt("Rows") ?? height);
-        bool blackIs1 = parms.GetBool("BlackIs1") == true;
-        bool aligned = parms.GetBool("EncodedByteAlign") == true;
-        rows = rows > 0 ? rows : height;
-        byte[] tiff = TiffWrapper(data, columns, rows, k, aligned);
-        Raster raster = Raster.Load(tiff, TiffFormat.Info);
-        Samples samples = FromRaster(raster, invertBilevel: blackIs1, bilevelBits: true);
-        return samples.Width == width ? samples : samples with { Width = Math.Min(width, samples.Width) };
+        CcittFaxParameters parameters = new()
+        {
+            K = (int)(parms.GetInt("K") ?? 0),
+            EndOfLine = parms.GetBool("EndOfLine") == true,
+            EncodedByteAlign = parms.GetBool("EncodedByteAlign") == true,
+            Columns = columns,
+
+            // The image's height when the parameters give no rows, so rows the data does not reach come out white.
+            Rows = rows > 0 ? rows : height,
+            EndOfBlock = parms.GetBool("EndOfBlock") != false,
+            BlackIs1 = parms.GetBool("BlackIs1") == true,
+            DamagedRowsBeforeError = (int)(parms.GetInt("DamagedRowsBeforeError") ?? 0),
+        };
+        byte[] packed = CcittFax.Decode(data, parameters, out int decoded);
+        Samples samples = new(columns, decoded, 1, 1, packed);
+        return columns == width ? samples : Crop(samples, Math.Min(width, columns));
     }
 
-    private static byte[] TiffWrapper(byte[] data, int columns, int rows, int k, bool aligned)
+    /// <summary>The first <paramref name="width"/> columns of one-bit samples, repacked.</summary>
+    private static Samples Crop(Samples samples, int width)
     {
-        // Little-endian TIFF: header, one IFD with 9 entries, then the strip.
-        const int Entries = 9;
-        int ifd = 8, stripAt = ifd + 2 + (Entries * 12) + 4;
-        byte[] tiff = new byte[stripAt + data.Length];
-        "II"u8.CopyTo(tiff);
-        BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(2), 42);
-        BinaryPrimitives.WriteUInt32LittleEndian(tiff.AsSpan(4), (uint)ifd);
-        BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(ifd), Entries);
-        int at = ifd + 2;
-        void Entry(ushort tag, ushort type, uint value)
+        int stride = (width + 7) / 8;
+        byte[] data = new byte[stride * samples.Height];
+        for (int y = 0; y < samples.Height; y++)
         {
-            BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(at), tag);
-            BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(at + 2), type);
-            BinaryPrimitives.WriteUInt32LittleEndian(tiff.AsSpan(at + 4), 1);
-            BinaryPrimitives.WriteUInt32LittleEndian(tiff.AsSpan(at + 8), value);
-            at += 12;
+            for (int x = 0; x < width; x++)
+            {
+                if (samples.Get(x, y, 0) != 0)
+                {
+                    data[(y * stride) + (x >> 3)] |= (byte)(0x80 >> (x & 7));
+                }
+            }
         }
 
-        Entry(256, 4, (uint)columns);
-        Entry(257, 4, (uint)rows);
-        Entry(258, 3, 1);
-        Entry(259, 3, k < 0 ? 4u : 3u);
-        Entry(262, 3, 0); // WhiteIsZero: the CCITT 1 bits are black.
-        Entry(273, 4, (uint)stripAt);
-        Entry(278, 4, (uint)rows);
-        Entry(279, 4, (uint)data.Length);
-        Entry((ushort)(k < 0 ? 293 : 292), 4, k < 0 ? 0u : (k > 0 ? 1u : 0u) | (aligned ? 4u : 0u));
-        data.CopyTo(tiff, stripAt);
-        return tiff;
+        return new Samples(width, samples.Height, 1, 1, data);
     }
 
     /// <summary>
     /// A decoded raster as samples. Gray, RGB and CMYK keep their components; bilevel codec output becomes one bit a pixel
-    /// with 1 for white, as the PDF filters give it (inverted for <c>/BlackIs1</c>).
+    /// with 1 for white, as the PDF filters give it.
     /// </summary>
-    private static Samples FromRaster(Raster raster, bool invertBilevel, bool bilevelBits = false)
+    private static Samples FromRaster(Raster raster, bool bilevelBits = false)
     {
         using (raster)
         {
@@ -498,7 +492,7 @@ internal static class ImageDecoder
                     Span<Gray8> row = gray.Row(y);
                     for (int x = 0; x < width; x++)
                     {
-                        if ((row[x].L >= 128) ^ invertBilevel)
+                        if (row[x].L >= 128)
                         {
                             bits[(y * stride) + (x >> 3)] |= (byte)(0x80 >> (x & 7));
                         }
