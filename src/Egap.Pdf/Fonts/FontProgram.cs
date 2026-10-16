@@ -6,29 +6,43 @@ namespace Egap.Pdf.Fonts;
 /// <summary>
 /// A font's embedded program (9.9) loaded as an Egami <see cref="Typeface"/>, as hub Q5 decided: TrueType from
 /// <c>/FontFile2</c>, OpenType and bare CFF from <c>/FontFile3</c>, Type 1 from <c>/FontFile</c> through a conversion to CFF
-/// (design Q8). With it come what PDF needs to reach a glyph and Egami does not say: a CFF font's glyph names, CIDs and
-/// built-in encoding, a Type 1 font's built-in encoding, and a TrueType font's symbol and Mac Roman cmaps.
+/// (design Q8). Glyph names, CIDs, cmap subtables and a CFF font's own encoding come from the typeface (Egami.Fonts 0.2); what
+/// stays here is which of them a PDF font uses, and a Type 1 program's built-in encoding.
 /// </summary>
 internal sealed class FontProgram
 {
-    private FontProgram(Typeface typeface)
+    private FontProgram(Typeface typeface, bool cff)
     {
         Typeface = typeface;
+        IsCff = cff;
+        Cmaps = cff && !typeface.HasCharacterMap ? null : new TrueTypeCmaps(typeface);
     }
 
     public Typeface Typeface { get; }
 
-    /// <summary>The CFF glyph names, CIDs and encoding, for CFF and converted Type 1 programs and OpenType with a CFF table.</summary>
-    public CffInfo? Cff { get; private init; }
+    /// <summary>Whether the glyphs are CFF: a bare CFF or converted Type 1 program, or OpenType with a CFF table.</summary>
+    public bool IsCff { get; }
 
-    /// <summary>The cmaps a simple TrueType font uses, for sfnt programs with a <c>cmap</c> table.</summary>
-    public TrueTypeCmaps? Cmaps { get; private init; }
+    /// <summary>Whether the program is a CID-keyed CFF font, whose glyphs are found by CID rather than by name.</summary>
+    public bool IsCidKeyed => Typeface.CidSystemInfo is not null;
 
-    /// <summary>A TrueType font's glyph names from its <c>post</c> table, or null.</summary>
-    public Dictionary<string, ushort>? PostNames { get; private init; }
+    /// <summary>The cmap subtables a simple TrueType font uses; null for a CFF program without a cmap table.</summary>
+    public TrueTypeCmaps? Cmaps { get; }
 
-    /// <summary>The font's own encoding: a Type 1 program's, or a name-keyed CFF font's.</summary>
+    /// <summary>The font's own encoding as glyph names by code: a Type 1 program's, or a name-keyed CFF font's.</summary>
     public string?[]? BuiltInEncoding { get; private init; }
+
+    /// <summary>The glyph with a name, from a CFF charset or a TrueType <c>post</c> table; null when none has it.</summary>
+    public ushort? GlyphByName(string name)
+    {
+        return Typeface.TryGetGlyphByName(name, out ushort glyph) ? glyph : null;
+    }
+
+    /// <summary>The glyph with a CID in a CID-keyed CFF font, or null.</summary>
+    public ushort? GlyphByCid(int cid)
+    {
+        return Typeface.TryGetGlyphByCid(cid, out ushort glyph) ? glyph : null;
+    }
 
     /// <summary>
     /// Loads the program a font descriptor embeds; null when it embeds none. A program that cannot be read gives a warning
@@ -51,32 +65,13 @@ internal sealed class FontProgram
             if (descriptor.Get("FontFile3")?.Resolve() is PdfStream file3)
             {
                 byte[] data = file3.GetDecodedBytes();
-                if (file3.Dictionary.GetName("Subtype")?.Value == "OpenType" || IsSfnt(data))
-                {
-                    return Sfnt(data);
-                }
-
-                CffInfo cff = CffInfo.Read(data);
-                return new FontProgram(Typeface.FromCff(data)) { Cff = cff, BuiltInEncoding = cff.BuiltInEncoding };
+                return file3.Dictionary.GetName("Subtype")?.Value == "OpenType" || IsSfnt(data) ? Sfnt(data) : Cff(data);
             }
 
             if (descriptor.Get("FontFile")?.Resolve() is PdfStream type1)
             {
-                byte[] data = type1.GetDecodedBytes();
-                if (IsSfnt(data))
-                {
-                    return Sfnt(data);
-                }
-
-                if (data is [1, 0, _, _, ..])
-                {
-                    // Bare CFF filed as Type 1, as some producers do; pdf.js reads it by its header too.
-                    CffInfo bare = CffInfo.Read(data);
-                    return new FontProgram(Typeface.FromCff(data)) { Cff = bare, BuiltInEncoding = bare.BuiltInEncoding };
-                }
-
-                Type1Font font = Type1Font.Read(data);
-                return new FontProgram(Typeface.FromCff(font.Cff)) { Cff = CffInfo.Read(font.Cff), BuiltInEncoding = font.BuiltInEncoding };
+                // Bare CFF filed as Type 1, as some producers do, is read by its header as pdf.js does.
+                return FromFile(type1.GetDecodedBytes());
             }
         }
         catch (Exception e) when (e is EgamiException or InvalidDataException or PdfException or IOException or ArgumentException)
@@ -97,18 +92,23 @@ internal sealed class FontProgram
 
         if (data is [1, 0, _, _, ..])
         {
-            CffInfo bare = CffInfo.Read(data);
-            return new FontProgram(Typeface.FromCff(data)) { Cff = bare, BuiltInEncoding = bare.BuiltInEncoding };
+            return Cff(data);
         }
 
         Type1Font font = Type1Font.Read(data);
-        return new FontProgram(Typeface.FromCff(font.Cff)) { Cff = CffInfo.Read(font.Cff), BuiltInEncoding = font.BuiltInEncoding };
+        return new FontProgram(Typeface.FromCff(font.Cff), cff: true) { BuiltInEncoding = font.BuiltInEncoding };
     }
 
-    /// <summary>A typeface Egami loaded, such as a system font, with its cmaps and glyph names read.</summary>
+    /// <summary>A typeface Egami loaded, such as a system font.</summary>
     public static FontProgram FromTypeface(Typeface face)
     {
         return Sfnt(face);
+    }
+
+    private static FontProgram Cff(byte[] data)
+    {
+        Typeface face = Typeface.FromCff(data);
+        return new FontProgram(face, cff: true) { BuiltInEncoding = OwnEncoding(face) };
     }
 
     private static FontProgram Sfnt(byte[] data)
@@ -118,21 +118,38 @@ internal sealed class FontProgram
 
     private static FontProgram Sfnt(Typeface face)
     {
-        CffInfo? cff = face.TryGetTable(new FontTag("CFF "), out ReadOnlyMemory<byte> table) ? TryCff(table.Span) : null;
-        TrueTypeCmaps? cmaps = face.TryGetTable(new FontTag("cmap"), out ReadOnlyMemory<byte> cmap) ? TrueTypeCmaps.Read(cmap.Span) : null;
-        Dictionary<string, ushort>? post = face.TryGetTable(new FontTag("post"), out ReadOnlyMemory<byte> names) ? TrueTypePost.Read(names.Span) : null;
-        return new FontProgram(face) { Cff = cff, Cmaps = cmaps, PostNames = post, BuiltInEncoding = cff?.BuiltInEncoding };
+        bool cff = face.TryGetTable(new FontTag("CFF "), out _);
+        return new FontProgram(face, cff) { BuiltInEncoding = cff ? OwnEncoding(face) : null };
     }
 
-    private static CffInfo? TryCff(ReadOnlySpan<byte> data)
+    /// <summary>
+    /// A name-keyed CFF font's own encoding as names by code: the Standard or Expert Encoding by name, so codes keep their
+    /// names whether or not the font has those glyphs, else each code's glyph named from the charset; null for other fonts.
+    /// </summary>
+    private static string?[]? OwnEncoding(Typeface face)
     {
-        try
-        {
-            return CffInfo.Read(data);
-        }
-        catch (InvalidDataException)
+        if (face.BuiltInEncoding is not CharacterMap map)
         {
             return null;
+        }
+
+        switch (map.EncodingId)
+        {
+            case 0:
+                return FontEncodings.Standard;
+            case 1:
+                return [.. CffStandardStrings.ExpertEncoding.Select(n => n.Length == 0 || n == ".notdef" ? null : n)];
+            default:
+                string?[] names = new string?[256];
+                foreach ((int code, ushort glyph) in map.GetMappings())
+                {
+                    if ((uint)code < 256 && glyph != 0)
+                    {
+                        names[code] = face.GetGlyphName(glyph);
+                    }
+                }
+
+                return names;
         }
     }
 
