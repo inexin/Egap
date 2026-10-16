@@ -8,6 +8,8 @@ namespace Egap.Documents;
 /// <remarks>One document is changed by one thread at a time; reading from several threads is safe while nobody changes it.</remarks>
 public abstract class Node : IFormatOwner
 {
+    private ExtensionData? extensions;
+
     private protected Node(Document? document)
     {
         Document = document ?? this as Document ?? throw new ArgumentNullException(nameof(document));
@@ -24,6 +26,15 @@ public abstract class Node : IFormatOwner
 
     /// <summary>The node before this one in the same collection, or null when this is the first or is not in a collection.</summary>
     public Node? PreviousSibling => Collection is { } list && IndexInParent > 0 ? list.GetNode(IndexInParent - 1) : null;
+
+    /// <summary>
+    /// What format readers kept on this node that the model does not name (Phase 6 design Q7), for their writers to put
+    /// back. Made on first use.
+    /// </summary>
+    public ExtensionData Extensions => extensions ??= new ExtensionData();
+
+    /// <summary>Whether a format kept anything on this node.</summary>
+    public bool HasExtensions => extensions is { IsEmpty: false };
 
     /// <summary>The nodes this one holds, in document order; empty for an inline.</summary>
     public IEnumerable<Node> ChildNodes
@@ -199,9 +210,10 @@ public abstract class Node : IFormatOwner
     }
 
     /// <summary>A copy of this node in <paramref name="context"/>'s document, deep or shallow, without recursion.</summary>
-    internal Node CloneInto(CloneContext context, bool deep)
+    internal Node CloneInto(CloneContext context, bool deep, bool finish = true)
     {
         Node copy = CloneShallow(context);
+        copy.extensions = extensions?.Copy();
         if (deep)
         {
             Stack<(Node Source, Node Copy)> pending = new();
@@ -213,6 +225,11 @@ public abstract class Node : IFormatOwner
             }
         }
 
+        if (finish)
+        {
+            context.Finish();
+        }
+
         return copy;
     }
 
@@ -221,6 +238,7 @@ public abstract class Node : IFormatOwner
         where T : Node
     {
         T copy = (T)child.CloneShallow(context);
+        copy.extensions = child.extensions?.Copy();
         pending.Push((child, copy));
         return copy;
     }
@@ -242,6 +260,16 @@ public abstract class Node : IFormatOwner
     private protected virtual string FormatPropertyPrefix(FormatBase format)
     {
         return "Format.";
+    }
+
+    /// <summary>Sets a property and reports the change when the value is new.</summary>
+    private protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string property = "")
+    {
+        if (!EqualityComparer<T>.Default.Equals(field, value))
+        {
+            field = value;
+            Document.NotifyChanged(this, DocumentChangeKind.PropertyChanged, this, property: property);
+        }
     }
 
     /// <summary>Sets a style reference, checking the style is in this document and reporting the change.</summary>
@@ -361,6 +389,54 @@ public abstract class Node : IFormatOwner
                 BreakKind.Column => ControlChar.ColumnBreak,
                 _ => ControlChar.LineBreak,
             });
+            return VisitorAction.Continue;
+        }
+
+        public override VisitorAction VisitFieldStart(FieldStart fieldStart)
+        {
+            Text.Append(ControlChar.FieldStart);
+            return VisitorAction.Continue;
+        }
+
+        public override VisitorAction VisitFieldSeparator(FieldSeparator separator)
+        {
+            Text.Append(ControlChar.FieldSeparator);
+            return VisitorAction.Continue;
+        }
+
+        public override VisitorAction VisitFieldEnd(FieldEnd fieldEnd)
+        {
+            Text.Append(ControlChar.FieldEnd);
+            return VisitorAction.Continue;
+        }
+
+        public override VisitorAction VisitFootnoteStart(Footnote note)
+        {
+            Text.Append(ControlChar.FootnoteReference);
+            return note == root ? VisitorAction.Continue : VisitorAction.SkipChildren;
+        }
+
+        public override VisitorAction VisitCommentStart(Comment comment)
+        {
+            Text.Append(ControlChar.CommentReference);
+            return comment == root ? VisitorAction.Continue : VisitorAction.SkipChildren;
+        }
+
+        public override VisitorAction VisitShapeStart(Shape shape)
+        {
+            Text.Append(ControlChar.Drawing);
+            return shape == root ? VisitorAction.Continue : VisitorAction.SkipChildren;
+        }
+
+        public override VisitorAction VisitPicture(Picture picture)
+        {
+            Text.Append(ControlChar.Drawing);
+            return VisitorAction.Continue;
+        }
+
+        public override VisitorAction VisitIsland(Island island)
+        {
+            Text.Append(island.Text.Length > 0 ? island.Text : ControlChar.Drawing.ToString());
             return VisitorAction.Continue;
         }
 

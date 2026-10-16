@@ -154,6 +154,15 @@ public class NodeCollection<T> : IReadOnlyList<T>, INodeCollection
     }
 }
 
-/// <summary>A <see cref="NodeCollection{T}"/> a node makes for itself.</summary>
-internal sealed class ChildCollection<T>(Node owner) : NodeCollection<T>(owner)
-    where T : Node;
+/// <summary>A <see cref="NodeCollection{T}"/> a node makes for itself, with an optional rule beyond the item type.</summary>
+internal sealed class ChildCollection<T>(Node owner, Func<Node, T, string?>? rule = null) : NodeCollection<T>(owner)
+    where T : Node
+{
+    private protected override void Validate(T node)
+    {
+        if (rule?.Invoke(Owner, node) is { } problem)
+        {
+            throw new ArgumentException(problem, nameof(node));
+        }
+    }
+}

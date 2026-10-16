@@ -14,12 +14,14 @@ public abstract class Block : Node
 public sealed class Paragraph : Block
 {
     private ParagraphStyle? style;
+    private Revision? markRevision;
+    private FormatRevision? formatRevision;
 
     /// <summary>An empty paragraph of <paramref name="document"/>, not yet in the tree.</summary>
     public Paragraph(Document document)
         : base(document)
     {
-        Inlines = new ChildCollection<Inline>(this);
+        Inlines = new ChildCollection<Inline>(this, InlineRules.Check);
         Format = Own(new ParagraphFormat());
         MarkFormat = Own(new RunFormat());
     }
@@ -29,6 +31,31 @@ public sealed class Paragraph : Block
 
     /// <summary>The formatting of the paragraph mark, which Word uses for an empty paragraph's height and the mark itself.</summary>
     public RunFormat MarkFormat { get; }
+
+    /// <summary>
+    /// A tracked insertion or deletion of the paragraph mark: a deleted mark joins the paragraph to the next one when the
+    /// change is accepted.
+    /// </summary>
+    public Revision? MarkRevision
+    {
+        get => markRevision;
+        set => SetProperty(ref markRevision, value);
+    }
+
+    /// <summary>A tracked change of the paragraph's formatting, with the formatting it had before, or null.</summary>
+    public FormatRevision? FormatRevision
+    {
+        get => formatRevision;
+        set
+        {
+            if (value is not null && value.OldFormat is not ParagraphFormat)
+            {
+                throw new ArgumentException("A paragraph's format revision holds a ParagraphFormat.", nameof(value));
+            }
+
+            SetProperty(ref formatRevision, value);
+        }
+    }
 
     /// <summary>The paragraph style, or null for the document's default paragraph style.</summary>
     public ParagraphStyle? Style
@@ -103,6 +130,80 @@ public sealed class Paragraph : Block
         return Inlines.AddTrusted(run);
     }
 
+    /// <summary>
+    /// Adds a field at the end: start, a run with <paramref name="code"/>, separator, a run with <paramref name="result"/> and
+    /// end. The result is what shows until the field is updated.
+    /// </summary>
+    public Field AddField(string code, string result = "")
+    {
+        ArgumentNullException.ThrowIfNull(code);
+        ArgumentNullException.ThrowIfNull(result);
+        FieldStart start = Inlines.AddTrusted(new FieldStart(Document));
+        Inlines.AddTrusted(new Run(Document, code.StartsWith(' ') ? code : " " + code + " "));
+        Inlines.AddTrusted(new FieldSeparator(Document));
+        if (result.Length > 0)
+        {
+            Inlines.AddTrusted(new Run(Document, result));
+        }
+
+        Inlines.AddTrusted(new FieldEnd(Document));
+        return start.GetField()!;
+    }
+
+    /// <summary>Adds a field of <paramref name="kind"/> with no switches, such as PAGE, at the end, marked to be updated.</summary>
+    public Field AddField(FieldKind kind)
+    {
+        if (kind == FieldKind.Unknown || !Enum.IsDefined(kind))
+        {
+            throw new ArgumentOutOfRangeException(nameof(kind));
+        }
+
+        Field field = AddField(kind switch
+        {
+            FieldKind.NumPages => "NUMPAGES",
+            FieldKind.SectionPages => "SECTIONPAGES",
+            FieldKind.PageRef => "PAGEREF",
+            FieldKind.NoteRef => "NOTEREF",
+            FieldKind.StyleRef => "STYLEREF",
+            FieldKind.CreateDate => "CREATEDATE",
+            FieldKind.SaveDate => "SAVEDATE",
+            FieldKind.PrintDate => "PRINTDATE",
+            FieldKind.LastSavedBy => "LASTSAVEDBY",
+            FieldKind.FileName => "FILENAME",
+            FieldKind.DocProperty => "DOCPROPERTY",
+            FieldKind.MergeField => "MERGEFIELD",
+            FieldKind.FormField => "FORMTEXT",
+            FieldKind.Include => "INCLUDETEXT",
+            FieldKind.Equation => "EQ",
+            _ => kind.ToString().ToUpperInvariant(),
+        });
+        field.Start.IsDirty = true;
+        return field;
+    }
+
+    /// <summary>Adds a hyperlink to <paramref name="address"/> showing <paramref name="text"/> at the end.</summary>
+    public Hyperlink AddHyperlink(string text, string address)
+    {
+        Hyperlink link = new(Document) { Address = address };
+        link.AddRun(text);
+        return Inlines.AddTrusted(link);
+    }
+
+    /// <summary>Adds a footnote (or endnote) holding <paramref name="text"/> at the end.</summary>
+    public Footnote AddFootnote(string text, NoteKind kind = NoteKind.Footnote)
+    {
+        Footnote note = new(Document, kind);
+        note.AddParagraph(text);
+        Inlines.Add(note);
+        return note;
+    }
+
+    /// <summary>Adds a picture of <paramref name="image"/> at <paramref name="width"/> by <paramref name="height"/> points at the end.</summary>
+    public Picture AddPicture(ImageData image, double width, double height)
+    {
+        return Inlines.AddTrusted(new Picture(Document, image, width, height));
+    }
+
     /// <summary>Adds a tab at the end.</summary>
     public Tab AddTab()
     {
@@ -143,7 +244,7 @@ public sealed class Paragraph : Block
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        Paragraph copy = new(context.Target) { style = context.Map(style) };
+        Paragraph copy = new(context.Target) { style = context.Map(style), markRevision = markRevision, formatRevision = formatRevision };
         copy.Format.CopyRaw(Format);
         copy.MarkFormat.CopyRaw(MarkFormat);
         context.FixLists(copy.Format);
@@ -274,6 +375,8 @@ public sealed class Table : Block
 /// <summary>A table row: its cells in order.</summary>
 public sealed class Row : Node
 {
+    private Revision? revision;
+
     /// <summary>An empty row of <paramref name="document"/>, not yet in a table.</summary>
     public Row(Document document)
         : base(document)
@@ -281,6 +384,13 @@ public sealed class Row : Node
         ArgumentNullException.ThrowIfNull(document);
         Cells = new ChildCollection<Cell>(this);
         Format = Own(new RowFormat());
+    }
+
+    /// <summary>A tracked insertion or deletion of the whole row, or null.</summary>
+    public Revision? Revision
+    {
+        get => revision;
+        set => SetProperty(ref revision, value);
     }
 
     /// <summary>The row's direct formatting.</summary>
@@ -331,7 +441,7 @@ public sealed class Row : Node
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        Row copy = new(context.Target);
+        Row copy = new(context.Target) { revision = revision };
         copy.Format.CopyRaw(Format);
         return copy;
     }
