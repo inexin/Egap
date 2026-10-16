@@ -3,11 +3,15 @@
     <Project Path="benchmarks/Egap.Pdf.Benchmarks/Egap.Pdf.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src/Egap.Documents/Egap.Documents.csproj" />
     <Project Path="src/Egap.Fonts/Egap.Fonts.csproj" />
     <Project Path="src/Egap.Pdf/Egap.Pdf.csproj" />
+    <Project Path="src/Egap.Pdf.Layout/Egap.Pdf.Layout.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Egap.Documents.Tests/Egap.Documents.Tests.csproj" />
     <Project Path="tests/Egap.Pdf.Fuzz/Egap.Pdf.Fuzz.csproj" />
+    <Project Path="tests/Egap.Pdf.Layout.Tests/Egap.Pdf.Layout.Tests.csproj" />
     <Project Path="tests/Egap.Pdf.Tests/Egap.Pdf.Tests.csproj" />
   </Folder>
 </Solution>
