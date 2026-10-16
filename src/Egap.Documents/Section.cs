@@ -14,7 +14,11 @@ public sealed class Section : Node
         Body = new Body(document);
         Body.Attach(this, null, 0);
         HeadersFooters = new HeaderFooterCollection(this);
+        PageSetup = Own(new PageSetup());
     }
+
+    /// <summary>The section's paper, margins, columns and page numbering; unset values are Word's (US Letter, 1 inch margins).</summary>
+    public PageSetup PageSetup { get; }
 
     /// <summary>The main text of the section. Always there; it cannot be removed or replaced.</summary>
     public Body Body { get; }
@@ -45,9 +49,16 @@ public sealed class Section : Node
         return visitor.VisitSectionEnd(this);
     }
 
+    private protected override string FormatPropertyPrefix(FormatBase format)
+    {
+        return "PageSetup.";
+    }
+
     private protected override Node CloneShallow(CloneContext context)
     {
-        return new Section(context.Target);
+        Section copy = new(context.Target);
+        copy.PageSetup.CopyRaw(PageSetup);
+        return copy;
     }
 
     private protected override void CloneChildren(Node copy, CloneContext context, Stack<(Node Source, Node Copy)> pending)
