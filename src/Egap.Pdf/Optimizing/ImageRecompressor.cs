@@ -64,15 +64,39 @@ internal static class ImageRecompressor
 
         (int width, int height) = TargetSize(surveyed, settings);
         bool resample = width < image.Width || height < image.Height;
-        bool jpeg = settings.Lossy && surveyed.Kind == SurveyedImageKind.Photo;
+        if (codec == "DCTDecode" && !resample)
+        {
+            return JpegOptimizer.Optimize(surveyed, settings, () => Encode(document, surveyed, settings, space, width, height, jpeg: true));
+        }
 
-        // Without resampling, only lossy re-encoding of a Flate or uncompressed photo is left to try here.
-        if (!resample && (!jpeg || codec is not null))
+        // A JPEG stays a JPEG when it is downsampled; otherwise only lossy re-encoding of a Flate or uncompressed photo is left.
+        bool jpeg = settings.Lossy && (surveyed.Kind == SurveyedImageKind.Photo || codec == "DCTDecode");
+        if (!settings.Lossy || (!resample && (!jpeg || codec is not null)))
         {
             return null;
         }
 
-        if (resample && !settings.Lossy)
+        return Encode(document, surveyed, settings, space, width, height, jpeg);
+    }
+
+    /// <summary>
+    /// Decodes the stored samples, resamples them to the size given when it is smaller, and writes them as JPEG or Flate in
+    /// place when the result is small enough. A JPEG is written at no higher a quality than it had.
+    /// </summary>
+    private static ImageChange? Encode(PdfDocument document, SurveyedImage surveyed, ImageSettings settings, ImageColorSpace space, int width, int height, bool jpeg)
+    {
+        PdfImage image = surveyed.Image;
+        PdfStream stream = image.Stream!;
+        bool resample = width < image.Width || height < image.Height;
+        int quality = settings.JpegQuality;
+        try
+        {
+            if (image.ImageCodec?.Value == "DCTDecode" && JpegOptimizer.Quality(image.DecodeFilters().Data) is int had)
+            {
+                quality = Math.Min(quality, had);
+            }
+        }
+        catch (PdfException)
         {
             return null;
         }
@@ -104,7 +128,7 @@ internal static class ImageRecompressor
         using Raster raster = ToRaster(stored);
         using Raster? resized = resample ? raster.Derive(ops => ops.Resize(width, height, ResampleFilter.Bicubic)) : null;
         Raster sized = resized ?? raster;
-        PdfStream encoded = jpeg ? Jpeg(sized, settings.JpegQuality) : Flate(sized);
+        PdfStream encoded = jpeg ? Jpeg(sized, quality) : Flate(sized);
         PdfStream? mask = null;
         if (oldMask is not null && resample)
         {
