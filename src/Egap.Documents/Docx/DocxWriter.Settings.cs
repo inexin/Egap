@@ -66,6 +66,18 @@ internal sealed partial class DocxWriter
             changed = true;
         }
 
+        if (read is null ? settings.MirrorMargins : read.MirrorMargins != settings.MirrorMargins)
+        {
+            SetFlag(root, "mirrorMargins", settings.MirrorMargins);
+            changed = true;
+        }
+
+        if (read is null ? settings.GutterAtTop : read.GutterAtTop != settings.GutterAtTop)
+        {
+            SetFlag(root, "gutterAtTop", settings.GutterAtTop);
+            changed = true;
+        }
+
         if (read is null || read.FootnoteNumberStyle != settings.FootnoteNumberStyle || read.FootnoteStartAt != settings.FootnoteStartAt)
         {
             changed |= SetNoteProperties(root, "footnotePr", settings.FootnoteNumberStyle, settings.FootnoteStartAt, NumberStyle.Decimal);
@@ -122,6 +134,8 @@ internal sealed partial class DocxWriter
 
         settings.EvenAndOddHeaders = root.Element(Ns.W + "evenAndOddHeaders") is { } evenOdd && DocxUnits.OnOff(evenOdd);
         settings.TrackRevisions = root.Element(Ns.W + "trackRevisions") is { } track && DocxUnits.OnOff(track);
+        settings.MirrorMargins = root.Element(Ns.W + "mirrorMargins") is { } mirror && DocxUnits.OnOff(mirror);
+        settings.GutterAtTop = root.Element(Ns.W + "gutterAtTop") is { } gutterAtTop && DocxUnits.OnOff(gutterAtTop);
         if (root.Element(Ns.W + "footnotePr") is { } footnotePr)
         {
             if (footnotePr.Element(Ns.W + "numFmt").Val() is { } format)

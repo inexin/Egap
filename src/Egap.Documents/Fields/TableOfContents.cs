@@ -204,6 +204,6 @@ internal static class TableOfContents
     {
         PageSetup? page = document.Sections.Count > 0 ? document.Sections[0].PageSetup : null;
         double width = page?.PageWidth ?? 612;
-        return Math.Max(72, width - (page?.MarginLeft ?? 72) - (page?.MarginRight ?? 72) - (page?.Gutter ?? 0));
+        return Math.Max(72, width - (page?.MarginLeft ?? 72) - (page?.MarginRight ?? 72) - (document.Settings.GutterAtTop ? 0 : page?.Gutter ?? 0));
     }
 }

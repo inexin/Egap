@@ -41,6 +41,25 @@ public class ListTests
     }
 
     [Fact]
+    public void AStyleGivingTheListKeepsItsOwnIndents()
+    {
+        // Word: a style that puts paragraphs in a list keeps its own indents over the list level's (task 29, corpus finding).
+        Document doc = new();
+        List list = doc.Lists.AddNumbered();
+        ParagraphStyle style = doc.Styles.AddParagraphStyle("Numbered");
+        style.ParagraphFormat.List = list;
+        style.ParagraphFormat.LeftIndent = 56.7;
+        style.ParagraphFormat.FirstLineIndent = -28.35;
+        ParagraphStyle derived = doc.Styles.AddParagraphStyle("Derived");
+        derived.BasedOn = style;
+        Paragraph p = doc.AddSection().Body.AddParagraph("x");
+        p.Style = derived;
+
+        Assert.Equal(56.7, p.GetEffectiveFormat().LeftIndent);
+        Assert.Equal(-28.35, p.GetEffectiveFormat().FirstLineIndent);
+    }
+
+    [Fact]
     public void StyleCanPutParagraphsInAListAndNoneTakesThemOut()
     {
         Document doc = new();

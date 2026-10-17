@@ -1963,3 +1963,7 @@ virtual Egap.Documents.Node.Clone(bool deep = true) -> Egap.Documents.Node!
 ~override Egap.Documents.Layout.PageRect.ToString() -> string
 ~override Egap.Documents.TableWidth.Equals(object obj) -> bool
 ~override Egap.Documents.TableWidth.ToString() -> string
+Egap.Documents.DocumentSettings.GutterAtTop.get -> bool
+Egap.Documents.DocumentSettings.GutterAtTop.set -> void
+Egap.Documents.DocumentSettings.MirrorMargins.get -> bool
+Egap.Documents.DocumentSettings.MirrorMargins.set -> void

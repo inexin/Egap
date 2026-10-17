@@ -127,7 +127,7 @@ internal sealed partial class Paginator
         {
             case SectionStart.Continuous when previous is not null && SameSize(previous, next):
                 // The new section's columns start below the text so far on the same page.
-                page.StartColumns(Geometry.Of(next, page.Geometry.BodyTop, page.Geometry.BodyBottom), y);
+                page.StartColumns(Geometry.Of(next, page.Number, page.Geometry.BodyTop, page.Geometry.BodyBottom), y);
                 column = 0;
                 break;
             case SectionStart.NewColumn when page.Columns.Count > column + 1:
