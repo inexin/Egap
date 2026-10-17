@@ -1,5 +1,12 @@
 #nullable enable
+Egap.Pdf.PdfCanvas.DrawForm(Egap.Pdf.PdfFormXObject! form, Egami.Drawing.RectF destination, Egami.Drawing.Paint? paint = null) -> void
 Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null) -> Egap.Pdf.PdfOptimizeReport!
+Egap.Pdf.PdfFormXObject
+Egap.Pdf.PdfFormXObject.Height.get -> double
+Egap.Pdf.PdfFormXObject.Reference.get -> Egap.Pdf.PdfReference!
+Egap.Pdf.PdfFormXObject.Stream.get -> Egap.Pdf.PdfStream!
+Egap.Pdf.PdfFormXObject.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfFormXObject.Width.get -> double
 Egap.Pdf.PdfOptimizedImage
 Egap.Pdf.PdfOptimizedImage.<Clone>$() -> Egap.Pdf.PdfOptimizedImage!
 Egap.Pdf.PdfOptimizedImage.Deconstruct(out int Page, out int OldWidth, out int OldHeight, out int NewWidth, out int NewHeight, out long OldBytes, out long NewBytes, out double? OldResolution, out double? NewResolution, out string! Encoding) -> void
@@ -78,6 +85,7 @@ Egap.Pdf.PdfOptimizeSavings.StreamsMerged.get -> int
 Egap.Pdf.PdfOptimizeSavings.StreamsMerged.init -> void
 Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.get -> int
 Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.init -> void
+Egap.Pdf.PdfPage.ToFormXObject(Egap.Pdf.PdfDocument! target) -> Egap.Pdf.PdfFormXObject!
 override Egap.Pdf.PdfOptimizedImage.Equals(object? obj) -> bool
 override Egap.Pdf.PdfOptimizedImage.GetHashCode() -> int
 override Egap.Pdf.PdfOptimizedImage.ToString() -> string!
