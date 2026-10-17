@@ -3,7 +3,7 @@ namespace Egap.Pdf.Layout;
 /// <summary>
 /// A block found on a page: its role, its lines in reading order, its place in the page's reading order, and for headings and
 /// list items their level (and a list item's marker). Every analysis stage reads and refines these; the public
-/// <c>PageLayout</c> is made from them.
+/// <c>PdfPageLayout</c> is made from them.
 /// </summary>
 internal sealed class BlockDraft(LayoutRole role, List<PageLine> lines)
 {

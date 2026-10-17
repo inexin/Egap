@@ -7,9 +7,9 @@ namespace Egap.Pdf.Layout;
 /// bounds and place in the page's reading order. Bounds are in points on the displayed page: y down from the top left of the
 /// crop box, the page's rotation applied, as <see cref="PdfCanvas"/> draws by default.
 /// </summary>
-public sealed class PageLayout
+public sealed class PdfPageLayout
 {
-    internal PageLayout(int pageIndex, float width, float height, IReadOnlyList<LayoutElement> elements, bool fromTags, IReadOnlyList<PdfWarning> warnings)
+    internal PdfPageLayout(int pageIndex, float width, float height, IReadOnlyList<LayoutElement> elements, bool fromTags, IReadOnlyList<PdfWarning> warnings)
     {
         PageIndex = pageIndex;
         Width = width;

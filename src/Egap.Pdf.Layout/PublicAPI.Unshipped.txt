@@ -131,16 +131,16 @@ Egap.Pdf.Layout.LayoutWord.FontSize.get -> float
 Egap.Pdf.Layout.LayoutWord.IsBold.get -> bool
 Egap.Pdf.Layout.LayoutWord.IsItalic.get -> bool
 Egap.Pdf.Layout.LayoutWord.Text.get -> string!
-Egap.Pdf.Layout.PageLayout
-Egap.Pdf.Layout.PageLayout.Blocks.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutBlock!>!
-Egap.Pdf.Layout.PageLayout.Elements.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutElement!>!
-Egap.Pdf.Layout.PageLayout.Figures.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutFigure!>!
-Egap.Pdf.Layout.PageLayout.FromTags.get -> bool
-Egap.Pdf.Layout.PageLayout.Height.get -> float
-Egap.Pdf.Layout.PageLayout.PageIndex.get -> int
-Egap.Pdf.Layout.PageLayout.Tables.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.DetectedTable!>!
-Egap.Pdf.Layout.PageLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
-Egap.Pdf.Layout.PageLayout.Width.get -> float
+Egap.Pdf.Layout.PdfPageLayout
+Egap.Pdf.Layout.PdfPageLayout.Blocks.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutBlock!>!
+Egap.Pdf.Layout.PdfPageLayout.Elements.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutElement!>!
+Egap.Pdf.Layout.PdfPageLayout.Figures.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutFigure!>!
+Egap.Pdf.Layout.PdfPageLayout.FromTags.get -> bool
+Egap.Pdf.Layout.PdfPageLayout.Height.get -> float
+Egap.Pdf.Layout.PdfPageLayout.PageIndex.get -> int
+Egap.Pdf.Layout.PdfPageLayout.Tables.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.DetectedTable!>!
+Egap.Pdf.Layout.PdfPageLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.Layout.PdfPageLayout.Width.get -> float
 Egap.Pdf.Layout.PdfLayoutAnalyzer
 Egap.Pdf.Layout.PdfLayoutOptions
 Egap.Pdf.Layout.PdfLayoutOptions.<Clone>$() -> Egap.Pdf.Layout.PdfLayoutOptions!
@@ -184,7 +184,7 @@ override Egap.Pdf.Layout.LayoutThresholds.Equals(object? obj) -> bool
 override Egap.Pdf.Layout.LayoutThresholds.GetHashCode() -> int
 override Egap.Pdf.Layout.LayoutThresholds.ToString() -> string!
 override Egap.Pdf.Layout.LayoutWord.ToString() -> string!
-override Egap.Pdf.Layout.PageLayout.ToString() -> string!
+override Egap.Pdf.Layout.PdfPageLayout.ToString() -> string!
 override Egap.Pdf.Layout.PdfLayoutOptions.Equals(object? obj) -> bool
 override Egap.Pdf.Layout.PdfLayoutOptions.GetHashCode() -> int
 override Egap.Pdf.Layout.PdfLayoutOptions.ToString() -> string!
@@ -194,8 +194,8 @@ static Egap.Pdf.Layout.LayoutRegionHint.operator ==(Egap.Pdf.Layout.LayoutRegion
 static Egap.Pdf.Layout.LayoutThresholds.Default.get -> Egap.Pdf.Layout.LayoutThresholds!
 static Egap.Pdf.Layout.LayoutThresholds.operator !=(Egap.Pdf.Layout.LayoutThresholds? left, Egap.Pdf.Layout.LayoutThresholds? right) -> bool
 static Egap.Pdf.Layout.LayoutThresholds.operator ==(Egap.Pdf.Layout.LayoutThresholds? left, Egap.Pdf.Layout.LayoutThresholds? right) -> bool
-static Egap.Pdf.Layout.PdfLayoutAnalyzer.Analyze(Egap.Pdf.PdfDocument! document, Egap.Pdf.Layout.PdfLayoutOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.PageLayout!>!
-static Egap.Pdf.Layout.PdfLayoutAnalyzer.Analyze(Egap.Pdf.PdfDocument! document, int pageIndex, Egap.Pdf.Layout.PdfLayoutOptions? options = null) -> Egap.Pdf.Layout.PageLayout!
+static Egap.Pdf.Layout.PdfLayoutAnalyzer.Analyze(Egap.Pdf.PdfDocument! document, Egap.Pdf.Layout.PdfLayoutOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.PdfPageLayout!>!
+static Egap.Pdf.Layout.PdfLayoutAnalyzer.Analyze(Egap.Pdf.PdfDocument! document, int pageIndex, Egap.Pdf.Layout.PdfLayoutOptions? options = null) -> Egap.Pdf.Layout.PdfPageLayout!
 static Egap.Pdf.Layout.PdfLayoutOptions.Default.get -> Egap.Pdf.Layout.PdfLayoutOptions!
 static Egap.Pdf.Layout.PdfLayoutOptions.operator !=(Egap.Pdf.Layout.PdfLayoutOptions? left, Egap.Pdf.Layout.PdfLayoutOptions? right) -> bool
 static Egap.Pdf.Layout.PdfLayoutOptions.operator ==(Egap.Pdf.Layout.PdfLayoutOptions? left, Egap.Pdf.Layout.PdfLayoutOptions? right) -> bool

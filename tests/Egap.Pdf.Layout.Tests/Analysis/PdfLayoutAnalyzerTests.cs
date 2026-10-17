@@ -22,11 +22,11 @@ public sealed class PdfLayoutAnalyzerTests
         SyntheticDocument doc = tagged ? SyntheticScenes.Tagged[scene]() : SyntheticScenes.All[scene]();
         using PdfDocument pdf = PdfDocument.Open(doc.Save());
 
-        IReadOnlyList<PageLayout> pages = PdfLayoutAnalyzer.Analyze(pdf, cancellationToken: TestContext.Current.CancellationToken);
+        IReadOnlyList<PdfPageLayout> pages = PdfLayoutAnalyzer.Analyze(pdf, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(doc.PageCount, pages.Count);
         List<string> wrong = [];
-        foreach (PageLayout page in pages)
+        foreach (PdfPageLayout page in pages)
         {
             Assert.Equal(tagged, page.FromTags);
             List<TruthTable> tables = [.. doc.Tables.Where(t => t.Page == page.PageIndex)];
@@ -76,8 +76,8 @@ public sealed class PdfLayoutAnalyzerTests
         using PdfDocument columns = PdfDocument.Open(SyntheticScenes.TwoColumns().Save());
         using PdfDocument table = PdfDocument.Open(SyntheticScenes.TableAcrossPages().Save());
 
-        IReadOnlyList<PageLayout> text = PdfLayoutAnalyzer.Analyze(columns, cancellationToken: TestContext.Current.CancellationToken);
-        IReadOnlyList<PageLayout> tables = PdfLayoutAnalyzer.Analyze(table, cancellationToken: TestContext.Current.CancellationToken);
+        IReadOnlyList<PdfPageLayout> text = PdfLayoutAnalyzer.Analyze(columns, cancellationToken: TestContext.Current.CancellationToken);
+        IReadOnlyList<PdfPageLayout> tables = PdfLayoutAnalyzer.Analyze(table, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(text[1].Blocks[0].ContinuesPrevious);
         Assert.All(tables.Skip(1), p => Assert.True(p.Tables[0].ContinuesPrevious && p.Tables[0].RepeatsHeader));
@@ -87,10 +87,10 @@ public sealed class PdfLayoutAnalyzerTests
     public void ARegionDetectorNamesItsRegions()
     {
         using PdfDocument pdf = PdfDocument.Open(SyntheticScenes.OneColumn().Save());
-        PageLayout plain = PdfLayoutAnalyzer.Analyze(pdf, 0);
+        PdfPageLayout plain = PdfLayoutAnalyzer.Analyze(pdf, 0);
         LayoutBlock target = plain.Blocks.First(b => b.Role == LayoutRole.Text);
 
-        PageLayout page = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { RegionDetector = new Fixed(new LayoutRegionHint(LayoutRole.Quote, target.Bounds, 0.42)) });
+        PdfPageLayout page = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { RegionDetector = new Fixed(new LayoutRegionHint(LayoutRole.Quote, target.Bounds, 0.42)) });
 
         LayoutBlock named = page.Blocks.Single(b => b.Text == target.Text);
         Assert.Equal((LayoutRole.Quote, 0.42), (named.Role, named.Confidence));
@@ -104,9 +104,9 @@ public sealed class PdfLayoutAnalyzerTests
         TruthTable borderless = doc.Tables[2];
         RectF area = new((float)borderless.Box.Left - 2, (float)borderless.Box.Top - 2, (float)borderless.Box.Right - (float)borderless.Box.Left + 4, (float)borderless.Box.Bottom - (float)borderless.Box.Top + 4);
 
-        PageLayout none = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { Tables = TableDetection.None });
-        PageLayout ruled = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { Tables = TableDetection.Ruled });
-        PageLayout named = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { Tables = TableDetection.None, TableAreas = new Dictionary<int, IReadOnlyList<RectF>> { [0] = [area] } });
+        PdfPageLayout none = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { Tables = TableDetection.None });
+        PdfPageLayout ruled = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { Tables = TableDetection.Ruled });
+        PdfPageLayout named = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { Tables = TableDetection.None, TableAreas = new Dictionary<int, IReadOnlyList<RectF>> { [0] = [area] } });
 
         Assert.Empty(none.Tables);
         Assert.True(Assert.Single(ruled.Tables).IsRuled);
@@ -118,7 +118,7 @@ public sealed class PdfLayoutAnalyzerTests
     {
         using PdfDocument pdf = PdfDocument.Open(SyntheticScenes.OneColumn().Save());
 
-        PageLayout page = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { ReadingOrderDetector = new Reverse() });
+        PdfPageLayout page = PdfLayoutAnalyzer.Analyze(pdf, 0, new PdfLayoutOptions { ReadingOrderDetector = new Reverse() });
 
         Assert.True(page.Blocks[0].Bounds.Y > page.Blocks[^1].Bounds.Y);
     }
