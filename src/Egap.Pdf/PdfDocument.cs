@@ -381,7 +381,9 @@ public sealed class PdfDocument : IDisposable
         ThrowIfReadOnly();
         options ??= PdfOptimizeOptions.Lossless;
         options.Check(nameof(options));
-        return Optimizing.Optimizer.Run(this, options);
+        PdfOptimizeReport report = Optimizing.Optimizer.Run(this, options);
+        ResetRenderCache();
+        return report;
     }
 
     /// <summary>
@@ -413,6 +415,19 @@ public sealed class PdfDocument : IDisposable
     {
         ThrowIfReadOnly();
         return Stamping.Stamper.Remove(this);
+    }
+
+    /// <summary>
+    /// Converts every colour the document paints to gray (Phase 7 design 7.5): colour operators, shadings, images and
+    /// annotation colours become DeviceGray, the luma of their sRGB colour, and text and vectors stay as they are.
+    /// </summary>
+    /// <returns>What could not be converted, as warnings; empty when everything was.</returns>
+    public IReadOnlyList<PdfWarning> ConvertToGray()
+    {
+        ThrowIfReadOnly();
+        IReadOnlyList<PdfWarning> warnings = Cleanup.GrayConverter.Run(this);
+        ResetRenderCache();
+        return warnings;
     }
 
     /// <summary>The name of the file the document was opened from, or null.</summary>
@@ -507,6 +522,12 @@ public sealed class PdfDocument : IDisposable
 
     /// <summary>What renders of this document's pages share: colour spaces, fonts and decoded images (Phase 4 design Q3).</summary>
     internal Rendering.RenderCache RenderCache => LazyInitializer.EnsureInitialized(ref renderCache, () => new Rendering.RenderCache(this));
+
+    /// <summary>Forgets what renders shared, after a pass that rewrote images, shadings or colour spaces in place.</summary>
+    internal void ResetRenderCache()
+    {
+        renderCache = null;
+    }
 
     /// <summary>Where <see cref="PdfPage.Flush"/> moves finished streams; made the first time a page is flushed.</summary>
     internal ScratchFile Scratch => scratch ??= new ScratchFile();
