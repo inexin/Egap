@@ -27,6 +27,14 @@ internal sealed partial class HtmlReader
         return CssStyleSheet.Parse(reader.ReadToEnd());
     });
 
+    // The rendering section's quirks mode rules (HTML Standard 15.3.3, 15.3.8, 15.4.2).
+    private static readonly Lazy<CssStyleSheet> QuirksSheet = new(() => CssStyleSheet.Parse(
+        "@namespace \"http://www.w3.org/1999/xhtml\";" +
+        "form { margin-bottom: 1em; }" +
+        "li { list-style-position: inside; }" +
+        "table { font-weight: initial; font-style: initial; font-variant: initial; font-size: initial; line-height: initial; white-space: initial; text-align: initial; }" +
+        "img[align=left i] { margin-right: 3px; } img[align=right i] { margin-left: 3px; }"));
+
     private readonly Document document = new();
     private readonly HtmlLoadOptions options;
     private readonly CssCascade cascade;
@@ -44,6 +52,11 @@ internal sealed partial class HtmlReader
     public static Document Read(HtmlDocument dom, HtmlLoadOptions options, out IReadOnlyList<ConversionWarning> warnings)
     {
         List<(CssStyleSheet Sheet, CssOrigin Origin)> sheets = [(UserAgentSheet.Value, CssOrigin.UserAgent)];
+        if (dom.QuirksMode == HtmlQuirksMode.Quirks)
+        {
+            sheets.Add((QuirksSheet.Value, CssOrigin.UserAgent));
+        }
+
         foreach (string user in options.UserStyleSheets)
         {
             sheets.Add((CssStyleSheet.Parse(user), CssOrigin.User));
@@ -168,7 +181,7 @@ internal sealed partial class HtmlReader
         IReadOnlyList<CssDeclaration>? inline = element.GetAttribute("style", null) is { } css ? CssDeclaration.ParseList(css) : null;
         CssCascadedStyle cascaded = cascade.Cascade(element, PresentationHints(element), inline);
         CssComputedStyle computed = cascade.Compute(cascaded, parent?.Computed);
-        style = new HtmlStyle(computed, parent, rootSize);
+        style = new HtmlStyle(computed, parent, rootSize, cascaded);
         if (parent is null)
         {
             rootSize = style.FontSize;

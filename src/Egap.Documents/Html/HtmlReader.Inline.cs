@@ -136,6 +136,12 @@ internal sealed partial class HtmlReader
         }
 
         format.Size = Math.Round(style.FontSize * 2) / 2;
+
+        // Browsers kern text (font-kerning: auto); Word's runs kern only from the size w:kern gives.
+        if (style.Keyword("font-kerning") != "none")
+        {
+            format.Kerning = 1;
+        }
         format.Bold = style.Bold;
         format.Italic = style.Italic;
         if (style.Color("color") is { } color)
