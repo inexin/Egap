@@ -167,6 +167,17 @@ public sealed partial class PdfPage
     }
 
     /// <summary>
+    /// Draws every glyph the page shows as its outline (Phase 7 design 7.5), filled, stroked or clipped as the text was, with
+    /// its colours, so the page looks the same and holds no text: what printers ask for when fonts must go. Forms the page
+    /// draws and its annotations' appearances are converted too; Type 3 glyphs become their drawings.
+    /// </summary>
+    /// <returns>How many glyphs were drawn as outlines.</returns>
+    public int ConvertTextToOutlines()
+    {
+        return Cleanup.TextOutliner.Run(this);
+    }
+
+    /// <summary>
     /// The matrix from page space to the page as shown (crop box at the origin, the rotation applied, the user unit as points),
     /// and the shown width and height.
     /// </summary>

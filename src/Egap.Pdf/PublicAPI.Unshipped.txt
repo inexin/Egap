@@ -205,6 +205,7 @@ Egap.Pdf.PdfOptimizeSavings.StreamsMerged.get -> int
 Egap.Pdf.PdfOptimizeSavings.StreamsMerged.init -> void
 Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.get -> int
 Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.init -> void
+Egap.Pdf.PdfPage.ConvertTextToOutlines() -> int
 Egap.Pdf.PdfPage.ToFormXObject(Egap.Pdf.PdfDocument! target) -> Egap.Pdf.PdfFormXObject!
 Egap.Pdf.PdfPageMatch
 Egap.Pdf.PdfPageMatch.<Clone>$() -> Egap.Pdf.PdfPageMatch!
