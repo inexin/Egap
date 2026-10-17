@@ -3,6 +3,7 @@ using System.Text;
 
 using Egami.Fonts;
 using Egami.Fonts.Layout;
+using Egami.Fonts.Shaping;
 using Egami.Pixels;
 
 using EgamiParagraph = Egami.Fonts.Layout.Paragraph;
@@ -367,8 +368,15 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             },
             LetterSpacing = format.Spacing == 0 ? null : (float)format.Spacing,
             BaselineShift = shift == 0 ? null : shift,
+
+            // Word kerns only text at or above the run's kerning size (w:kern), and sets no standard ligatures by default.
+            Features = format.Kerning > 0 && size >= format.Kerning ? NoLigatures : NoKerningNoLigatures,
         };
     }
+
+    private static readonly FontFeature[] NoLigatures = [FontFeature.Parse("liga=0"), FontFeature.Parse("clig=0")];
+
+    private static readonly FontFeature[] NoKerningNoLigatures = [FontFeature.Parse("kern=0"), .. NoLigatures];
 
     /// <summary>The style of a paragraph's mark: its style's run formatting with the mark's own over it.</summary>
     public TextStyle MarkStyle(Paragraph paragraph)

@@ -95,7 +95,9 @@ internal sealed partial class Paginator
         {
             Section next = document.Sections[s];
             StartSection(next, first: s == 0);
-            FlowBlocks(next.Body.Blocks);
+            SectionBreak breakAfter = s + 1 == document.Sections.Count ? SectionBreak.None
+                : document.Sections[s + 1].PageSetup.SectionStart == SectionStart.Continuous ? SectionBreak.Continuous : SectionBreak.NewPage;
+            FlowBlocks(next.Body.Blocks, breakAfter);
         }
 
         FlowEndnotes();
@@ -185,13 +187,26 @@ internal sealed partial class Paginator
 
     private ColumnGeometry Column => page!.Columns[column];
 
-    private void FlowBlocks(NodeCollection<Block> blocks)
+    /// <summary>The break that ends a section's blocks.</summary>
+    private enum SectionBreak
+    {
+        None,
+        Continuous,
+        NewPage,
+    }
+
+    private void FlowBlocks(NodeCollection<Block> blocks, SectionBreak breakAfter = SectionBreak.None)
     {
         for (int i = 0; i < blocks.Count; i++)
         {
             Block next = i + 1 < blocks.Count ? blocks[i + 1] : null!;
             switch (blocks[i])
             {
+                // An empty paragraph that only carries a section break takes no line in Word before a continuous break, and
+                // never starts a page of its own before a new-page one.
+                case Paragraph paragraph when breakAfter != SectionBreak.None && i == blocks.Count - 1 && i > 0 && paragraph.Inlines.Count == 0
+                    && (breakAfter == SectionBreak.Continuous || !NextFits(paragraph, y + ContentOf(paragraph).Format.SpaceBefore)):
+                    break;
                 case Paragraph paragraph:
                     FlowParagraph(paragraph, i + 1 < blocks.Count ? blocks[i + 1] as Paragraph : null, i > 0 ? blocks[i - 1] as Paragraph : null);
                     break;
@@ -268,10 +283,46 @@ internal sealed partial class Paginator
         return lines;
     }
 
+    /// <summary>
+    /// A line's ascent and descent as Word measures them: each font's hhea ascender with its line gap above, and its
+    /// descender, at its size and unrounded (Word's single line of Aptos, Calibri, Arial and Times New Roman, checked
+    /// against its PDF export). Egami's line metrics round to whole units as browsers do, which over a page adds up to lines
+    /// Word does not have. Lines with an inline object keep Egami's ascent where it is taller.
+    /// </summary>
+    internal static (double Ascent, double Descent) WordMetrics(TextLine line)
+    {
+        double ascent = 0;
+        double descent = 0;
+        bool placeholder = false;
+        foreach (LayoutRun run in line.Runs)
+        {
+            if (run.Kind == LayoutRunKind.Placeholder)
+            {
+                placeholder = true;
+            }
+            else if (run.Glyphs is { Count: > 0 } glyphs)
+            {
+                Egami.Fonts.Typeface face = glyphs.Font.EffectiveTypeface;
+                double scale = glyphs.Font.Size / face.UnitsPerEm;
+                Egami.Fonts.VerticalMetrics hhea = face.HheaMetrics;
+                Egami.Fonts.VerticalMetrics metrics = hhea.Ascent - hhea.Descent > 0 ? hhea : face.WinMetrics;
+                ascent = Math.Max(ascent, (metrics.Ascent + Math.Max(0, metrics.LineGap)) * scale);
+                descent = Math.Max(descent, -metrics.Descent * scale);
+            }
+        }
+
+        if (ascent <= 0)
+        {
+            return (line.Ascent, line.Height - line.Ascent);
+        }
+
+        return (placeholder ? Math.Max(ascent, line.Ascent) : ascent, placeholder ? Math.Max(descent, line.Height - line.Ascent) : descent);
+    }
+
     private static (double Height, double Ascent) LineHeight(TextLine line, ResolvedParagraphFormat format)
     {
-        double natural = line.Height;
-        double ascent = line.Ascent;
+        (double ascent, double descent) = WordMetrics(line);
+        double natural = ascent + descent;
         switch (format.LineSpacingRule)
         {
             case LineSpacingRule.Exactly:
@@ -370,7 +421,11 @@ internal sealed partial class Paginator
 
             if (fit == 0)
             {
-                if (AtColumnTop)
+                // A line that holds only a page or column break stays here, at the foot, as in Word: else the break
+                // would come after a page left empty.
+                TextLine first = lines[placed].Line;
+                bool onlyBreak = placed + 1 < lines.Count && first.Length == 1 && content.Breaks.Any(b => b.Index == first.End);
+                if (AtColumnTop || onlyBreak)
                 {
                     // Nothing fits even in an empty column: the line goes here anyway, so layout always moves on.
                     fit = 1;

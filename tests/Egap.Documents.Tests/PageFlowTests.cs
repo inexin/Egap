@@ -148,4 +148,58 @@ public class PageFlowTests
         Assert.True(layout.Pages.Count >= 2);
         Assert.Equal(80, layout.FindBoxes(table).Sum(b => b.Box.Children.Count));
     }
+    [Fact]
+    public void LinesUseWordsUnroundedFontMetrics()
+    {
+        // The default theme font's twin Carlito, like Calibri: (1536 + 452 + 512) / 2048 of 11 points a line, as Word sets
+        // Calibri, where Egami's metrics rounded to whole points would give 13.
+        Document document = new();
+        document.Styles.DefaultRunFormat.Size = 11;
+        Paragraph paragraph = document.AddSection().Body.AddParagraph(string.Join(' ', Enumerable.Repeat("wrapping words", 30)));
+        paragraph.Format.LineSpacingRule = LineSpacingRule.Multiple;
+        paragraph.Format.LineSpacing = 1;
+
+        LineBox[] lines = [.. document.Layout(Isolated).Pages[0].BodyLines];
+
+        Assert.Equal(2500.0 / 2048 * 11, lines[1].Bounds.Y - lines[0].Bounds.Y, 3);
+    }
+
+    [Fact]
+    public void SectionBreakParagraphsTakeNoRoomOfTheirOwn()
+    {
+        Document document = new();
+        Section first = document.AddSection();
+        first.Body.AddParagraph("before");
+        first.Body.AddParagraph();
+        Section second = document.AddSection();
+        second.PageSetup.SectionStart = SectionStart.Continuous;
+        second.Body.AddParagraph("after");
+
+        LineBox[] lines = [.. document.Layout(Isolated).Pages[0].BodyLines];
+
+        // The empty paragraph that carries the continuous break has no line.
+        Assert.Equal(["before", "after"], lines.Select(l => l.Text).ToArray());
+    }
+
+    [Fact]
+    public void ALineHoldingOnlyAPageBreakStaysAtTheFoot()
+    {
+        Document document = new();
+        Body body = document.AddSection().Body;
+        int count = 0;
+        while (document.Layout(Isolated).Pages.Count == 1)
+        {
+            body.AddParagraph("filler " + count++);
+        }
+
+        body.Paragraphs.Last().Remove();
+        Paragraph broken = body.AddParagraph();
+        broken.AddBreak(BreakKind.Page);
+        broken.AddRun("next page");
+
+        DocumentLayout layout = document.Layout(Isolated);
+
+        Assert.Equal(2, layout.Pages.Count);
+        Assert.Equal("next page", layout.Pages[1].BodyLines.First().Text);
+    }
 }

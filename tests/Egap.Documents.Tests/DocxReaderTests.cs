@@ -337,6 +337,19 @@ public class DocxReaderTests
         return document.Sections[0].Body;
     }
 
+    [Fact]
+    public void PositionedVmlShapesFloat()
+    {
+        Document document = Load("""
+            <w:p><w:r><w:pict><v:shape style="position:absolute;margin-left:0;margin-top:0;width:471.3pt;height:188.5pt;rotation:315;mso-position-horizontal:center;mso-position-horizontal-relative:margin;mso-position-vertical:center;mso-position-vertical-relative:margin" fillcolor="silver"><v:textpath string="DRAFT"/></v:shape></w:pict></w:r></w:p>
+            <w:p><w:r><w:pict><v:shape style="width:20pt;height:10pt"><v:textpath string="inline"/></v:shape></w:pict></w:r></w:p>
+            """);
+
+        Island[] islands = [.. Body(document).Descendants<Island>()];
+        Assert.NotNull(islands[0].Floating);
+        Assert.Null(islands[1].Floating);
+    }
+
     private static Document Load(
         string body,
         (string Name, string ContentType, string Xml, string RelationshipType, string Id)[]? parts = null,
