@@ -353,6 +353,11 @@ public abstract class Node : IFormatOwner
         }
 
         OwnerStory = story;
+        if (ChildCount == 0)
+        {
+            return;
+        }
+
         Stack<Node> pending = new();
         pending.Push(this);
         while (pending.Count > 0)

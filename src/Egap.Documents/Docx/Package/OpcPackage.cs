@@ -215,6 +215,27 @@ internal sealed class OpcPackage
     private static byte[] ReadEntry(ZipArchiveEntry entry, DocumentLimits limits)
     {
         using Stream input = entry.Open();
+        if (entry.Length is > 0 and <= int.MaxValue && entry.Length <= limits.MaxPartSize)
+        {
+            // The size the ZIP directory gives, read straight into its array; a stream that runs short or long is read again
+            // the careful way.
+            byte[] exact = new byte[entry.Length];
+            int filled = input.ReadAtLeast(exact, exact.Length, throwOnEndOfStream: false);
+            if (filled == exact.Length && input.ReadByte() < 0)
+            {
+                return exact;
+            }
+
+            input.Dispose();
+            return ReadEntryChecked(entry, limits);
+        }
+
+        return ReadEntryChecked(entry, limits);
+    }
+
+    private static byte[] ReadEntryChecked(ZipArchiveEntry entry, DocumentLimits limits)
+    {
+        using Stream input = entry.Open();
         using MemoryStream output = new(capacity: (int)Math.Min(entry.Length, 64L * 1024 * 1024));
         byte[] buffer = new byte[81920];
         long total = 0;

@@ -30,7 +30,6 @@ internal sealed partial class BlockParser
     private MdBlock tip;
     private MdBlock oldTip;
     private MdBlock lastMatchedContainer;
-    private readonly Dictionary<MdBlock, int> startLines = [];
 
     private BlockParser(MarkdownExtensions extensions)
     {
@@ -174,7 +173,7 @@ internal sealed partial class BlockParser
 
         bool lastLineBlank = blank && !(container is MdBlockQuote
             || (container is MdCodeBlock { Fenced: true })
-            || (container is MdListItem && container.Children.Count == 0 && startLines.GetValueOrDefault(container) == lineNumber));
+            || (container is MdListItem && container.Children.Count == 0 && container.StartLine == lineNumber));
         for (MdBlock? c = container; c is not null; c = c.Parent as MdBlock)
         {
             c.LastLineBlank = lastLineBlank;
@@ -624,7 +623,7 @@ internal sealed partial class BlockParser
         }
 
         tip.Append(block);
-        startLines[block] = lineNumber;
+        block.StartLine = lineNumber;
         tip = block;
         return block;
     }
