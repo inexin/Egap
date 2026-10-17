@@ -358,7 +358,7 @@ public sealed partial class PdfPage : IEquatable<PdfPage>
     /// A walker that keeps every image it is shown with its placement, those inside the tiling patterns it paints with
     /// included: each pattern once where it is used, placed for its first tile (review Q8).
     /// </summary>
-    private sealed class ImageCollector(PdfDocument document, HashSet<PdfStream>? patternChain = null) : PdfContentWalker
+    internal sealed class ImageCollector(PdfDocument document, HashSet<PdfStream>? patternChain = null) : PdfContentWalker
     {
         private readonly HashSet<PdfStream> chain = patternChain ?? new(ReferenceEqualityComparer.Instance);
         private readonly HashSet<(PdfStream, PdfMatrix)> painted = new(new PatternUseComparer());
