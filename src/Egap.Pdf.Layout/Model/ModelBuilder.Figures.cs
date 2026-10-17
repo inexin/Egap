@@ -21,7 +21,7 @@ internal sealed partial class ModelBuilder
     /// </summary>
     private void WriteFigure(Body body, FigureDraft figure, PlacedItem placed)
     {
-        if (figure.Box.Width < 1 || figure.Box.Height < 1)
+        if (!Placeable(figure.Box) || figure.Box.Width < 1 || figure.Box.Height < 1)
         {
             return;
         }
@@ -65,6 +65,7 @@ internal sealed partial class ModelBuilder
         paragraph.Inlines.Add(picture);
         body.Blocks.Add(paragraph);
         TakeFloats(paragraph);
+        written.Add((placed.Page.Content.Index, figure.Box, paragraph));
         last = null;
         lastTable = null;
     }

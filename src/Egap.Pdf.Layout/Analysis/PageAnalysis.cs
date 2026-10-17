@@ -14,7 +14,7 @@ internal static class PageAnalysis
     /// <summary>Analyses page <paramref name="index"/> up to its paragraphs; roles are given later, over the whole document.</summary>
     public static PageDraft Analyze(PdfDocument document, int index, TagIndex? tags, IReadOnlyList<OutlineEntry> outline, PdfLayoutOptions options)
     {
-        PageContent content = PageReader.Read(document, index, outline);
+        PageContent content = PageReader.Read(document, index, outline, options.TrackOperations);
         PdfPage page = document.Pages[index];
         LayoutThresholds thresholds = options.Thresholds;
 

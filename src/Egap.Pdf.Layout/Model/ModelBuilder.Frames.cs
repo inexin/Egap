@@ -50,6 +50,11 @@ internal sealed partial class ModelBuilder
     /// <summary>Writes a block as a positioned text frame on its page, anchored at the next paragraph of the flow.</summary>
     private void WriteFrame(BlockDraft block, WrapMode wrap)
     {
+        if (!Placeable(block.Box))
+        {
+            return;
+        }
+
         StyleEntry entry = styles.For(block);
         Shape frame = Frame(block.Box, wrap);
         Paragraph paragraph = Framed(entry);
@@ -140,7 +145,7 @@ internal sealed partial class ModelBuilder
             }
 
             List<PageBox> covered = [.. page.Tables.Select(t => t.Box), .. page.Figures.Select(f => f.Box)];
-            foreach (PageLine line in page.Content.Lines.OrderBy(l => l.Box.Top).ThenBy(l => l.Box.Left))
+            foreach (PageLine line in page.Content.Lines.Where(l => Placeable(l.Box)).OrderBy(l => l.Box.Top).ThenBy(l => l.Box.Left))
             {
                 double x = (line.Box.Left + line.Box.Right) / 2, y = (line.Box.Top + line.Box.Bottom) / 2;
                 if (covered.Any(b => b.Contains(x, y)))
@@ -156,7 +161,7 @@ internal sealed partial class ModelBuilder
                 anchor.Inlines.Add(frame);
             }
 
-            foreach (TableDraft table in page.Tables.Where(t => !page.Figures.Any(f => f.Box.Contains(t.Box.CenterX, t.Box.CenterY))))
+            foreach (TableDraft table in page.Tables.Where(t => Placeable(t.Box) && !page.Figures.Any(f => f.Box.Contains(t.Box.CenterX, t.Box.CenterY))))
             {
                 Shape frame = Frame(table.Box, WrapMode.InFrontOfText);
                 lastTable = null;
@@ -165,7 +170,7 @@ internal sealed partial class ModelBuilder
                 anchor.Inlines.Add(frame);
             }
 
-            foreach (FigureDraft figure in page.Figures.Where(f => f.Box.Width >= 1 && f.Box.Height >= 1))
+            foreach (FigureDraft figure in page.Figures.Where(f => Placeable(f.Box) && f.Box.Width >= 1 && f.Box.Height >= 1))
             {
                 Picture picture = new(document, Image(figure, page), Math.Round(figure.Box.Width, 2), Math.Round(figure.Box.Height, 2))
                 {
@@ -186,7 +191,28 @@ internal sealed partial class ModelBuilder
                 anchor.Inlines.Insert(0, picture);
             }
 
+            if (Scan(page) is PageImage scan)
+            {
+                PdfPage pdfPage = pdf.Pages[page.Content.Index];
+                PageBox box = scan.Bounds.Intersect(page.Content.Bounds);
+                options.OnWarning?.Invoke(new PdfToDocumentWarning(PdfToDocumentWarningKind.ScannedPage, page.Content.Index,
+                    $"Page {page.Content.Index + 1} is a scanned picture with no text; it is kept as a picture."));
+                ImageData image = Stored(PdfLayoutAnalyzer.Match(scan, PdfLayoutAnalyzer.Placed(pdfPage), page.Content)) ?? Rendered(pdfPage, box);
+                anchor.Inlines.Insert(0, new Picture(document, image, Math.Round(box.Width, 2), Math.Round(box.Height, 2))
+                {
+                    Floating = new FloatingPlacement
+                    {
+                        HorizontalAnchor = HorizontalAnchor.Page,
+                        HorizontalOffset = Math.Round(box.Left, 2),
+                        VerticalAnchor = VerticalAnchor.Page,
+                        VerticalOffset = Math.Round(box.Top, 2),
+                        Wrap = WrapMode.BehindText,
+                    },
+                });
+            }
+
             section.Body.Blocks.Add(anchor);
+            written.Add((page.Content.Index, page.Content.Bounds, anchor));
             previous = page;
         }
     }
@@ -196,5 +222,12 @@ internal sealed partial class ModelBuilder
         double w = Math.Min(a.Right, b.Right) - Math.Max(a.Left, b.Left);
         double h = Math.Min(a.Bottom, b.Bottom) - Math.Max(a.Top, b.Top);
         return w > 0 && h > 0 ? w * h : 0;
+    }
+
+    /// <summary>Whether a box can hold a frame: finite, with some size, on or near the page.</summary>
+    private static bool Placeable(PageBox box)
+    {
+        return double.IsFinite(box.Left) && double.IsFinite(box.Top) && double.IsFinite(box.Right) && double.IsFinite(box.Bottom)
+            && box.Width > 0 && box.Height > 0 && box.Width < 20000 && box.Height < 20000;
     }
 }

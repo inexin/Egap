@@ -52,11 +52,11 @@ internal sealed partial class ModelBuilder
                 : run.Zip(furniture).Where(p => p.Second.Count > 0).Min(p => p.First.Content.Height - p.Second.Max(b => b.Box.Bottom));
             if (header)
             {
-                section.PageSetup.HeaderDistance = Math.Round(distance * 2) / 2;
+                section.PageSetup.HeaderDistance = Math.Max(0, Math.Round(distance * 2) / 2);
             }
             else
             {
-                section.PageSetup.FooterDistance = Math.Round(distance * 2) / 2;
+                section.PageSetup.FooterDistance = Math.Max(0, Math.Round(distance * 2) / 2);
             }
 
             // Even and odd pages alternate when each repeats its own text.

@@ -59,6 +59,9 @@ public sealed record PdfToDocumentOptions
         init => field = value is >= 0 and <= 1 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "Confidence runs from 0 to 1.");
     } = 0.5;
 
+    /// <summary>Called for what the conversion could not carry over as text, such as a scanned page kept as a picture; null to ignore.</summary>
+    public Action<PdfToDocumentWarning>? OnWarning { get; init; }
+
     /// <summary>
     /// Whether the TrueType and OpenType fonts the PDF embeds are copied into the document (design Q6). False by default:
     /// most are subsets, holding only the glyphs the PDF uses, so text typed later may not show in them.
@@ -77,4 +80,17 @@ public enum ReconstructionMode
 
     /// <summary>Every line in a positioned text frame where it was on its page, as Acrobat's "Retain Page Layout": it looks like the PDF but edits poorly.</summary>
     Exact = 1,
+}
+
+/// <summary>What <see cref="PdfToDocument"/> could not carry over as it was, on which page.</summary>
+/// <param name="Kind">What happened.</param>
+/// <param name="PageIndex">The page, from 0.</param>
+/// <param name="Message">A sentence for a person.</param>
+public sealed record PdfToDocumentWarning(PdfToDocumentWarningKind Kind, int PageIndex, string Message);
+
+/// <summary>The kinds of <see cref="PdfToDocumentWarning"/>.</summary>
+public enum PdfToDocumentWarningKind
+{
+    /// <summary>A page with no text but a picture of a page (a scan): it is kept as a picture, its text not recognised.</summary>
+    ScannedPage = 0,
 }

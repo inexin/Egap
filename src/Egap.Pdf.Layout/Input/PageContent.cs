@@ -24,9 +24,9 @@ internal sealed class PageWord(IReadOnlyList<PageGlyph> glyphs)
 {
     public IReadOnlyList<PageGlyph> Glyphs { get; } = glyphs;
 
-    public string Text { get; } = string.Concat(glyphs.Select(g => g.Text));
+    public string Text { get; } = Join(glyphs);
 
-    public PageBox Box { get; } = PageBox.Around(glyphs.Select(g => g.Box));
+    public PageBox Box { get; } = Around(glyphs);
 
     /// <summary>The size of most of the word's glyphs.</summary>
     public double Size => Glyphs[Glyphs.Count / 2].Size;
@@ -36,6 +36,33 @@ internal sealed class PageWord(IReadOnlyList<PageGlyph> glyphs)
     public override string ToString()
     {
         return Text;
+    }
+
+    private static string Join(IReadOnlyList<PageGlyph> glyphs)
+    {
+        if (glyphs.Count == 1)
+        {
+            return glyphs[0].Text;
+        }
+
+        System.Text.StringBuilder text = new(glyphs.Count);
+        for (int i = 0; i < glyphs.Count; i++)
+        {
+            text.Append(glyphs[i].Text);
+        }
+
+        return text.ToString();
+    }
+
+    private static PageBox Around(IReadOnlyList<PageGlyph> glyphs)
+    {
+        PageBox all = PageBox.Empty;
+        for (int i = 0; i < glyphs.Count; i++)
+        {
+            all = all.Union(glyphs[i].Box);
+        }
+
+        return all;
     }
 }
 
@@ -47,9 +74,11 @@ internal sealed class PageLine(IReadOnlyList<PageWord> words)
 
     public IReadOnlyList<PageWord> Words { get; } = words;
 
-    public string Text { get; } = string.Join(' ', words.Select(w => w.Text));
+    private string? text;
 
-    public PageBox Box { get; } = PageBox.Around(words.Select(w => w.Box));
+    public string Text => text ??= Join(Words);
+
+    public PageBox Box { get; } = Around(words);
 
     /// <summary>The first glyph's direction of writing: (1, 0) for ordinary horizontal text.</summary>
     public (double Dx, double Dy) Direction => (Words[0].Glyphs[0].Dx, Words[0].Glyphs[0].Dy);
@@ -61,12 +90,58 @@ internal sealed class PageLine(IReadOnlyList<PageWord> words)
     /// Where the line sits down the page: the baseline most of its glyphs share for horizontal text, so a taller glyph (a
     /// symbol from another font, a superscript) does not move it; the centre of the box otherwise.
     /// </summary>
-    public double Baseline => baseline ??= IsHorizontal
-        ? Words.SelectMany(w => w.Glyphs).GroupBy(g => Math.Round(g.Origin.Y, 1)).MaxBy(g => g.Count())!.Key
-        : Box.CenterY;
+    public double Baseline => baseline ??= IsHorizontal ? Most(g => Math.Round(g.Origin.Y, 1)) : Box.CenterY;
 
     /// <summary>The most common glyph size on the line.</summary>
-    public double Size => size ??= Words.SelectMany(w => w.Glyphs).GroupBy(g => Math.Round(g.Size, 1)).MaxBy(g => g.Count())!.Key;
+    public double Size => size ??= Most(g => Math.Round(g.Size, 1));
+
+    private static string Join(IReadOnlyList<PageWord> words)
+    {
+        if (words.Count == 1)
+        {
+            return words[0].Text;
+        }
+
+        System.Text.StringBuilder text = new();
+        for (int i = 0; i < words.Count; i++)
+        {
+            if (i > 0)
+            {
+                text.Append(' ');
+            }
+
+            text.Append(words[i].Text);
+        }
+
+        return text.ToString();
+    }
+
+    private static PageBox Around(IReadOnlyList<PageWord> words)
+    {
+        PageBox all = PageBox.Empty;
+        for (int i = 0; i < words.Count; i++)
+        {
+            all = all.Union(words[i].Box);
+        }
+
+        return all;
+    }
+
+    /// <summary>The value most of the line's glyphs have; the first seen wins a tie, as grouping in order would give.</summary>
+    private double Most(Func<PageGlyph, double> key)
+    {
+        Dictionary<double, int> counts = [];
+        foreach (PageWord word in Words)
+        {
+            foreach (PageGlyph glyph in word.Glyphs)
+            {
+                double value = key(glyph);
+                counts[value] = counts.GetValueOrDefault(value) + 1;
+            }
+        }
+
+        return counts.MaxBy(c => c.Value).Key;
+    }
 
     public override string ToString()
     {
@@ -141,6 +216,9 @@ internal sealed class PageContent
     public required IReadOnlyList<OutlineEntry> Outline { get; init; }
 
     public required IReadOnlyList<PdfWarning> Warnings { get; init; }
+
+    /// <summary>For each glyph, path and image, the index of the page's own content operation that draws it (a form's <c>Do</c> for what the form draws).</summary>
+    public IReadOnlyDictionary<object, int> Operations { get; init; } = new Dictionary<object, int>();
 
     public IEnumerable<PageWord> Words => Lines.SelectMany(l => l.Words);
 

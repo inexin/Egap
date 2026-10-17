@@ -79,6 +79,20 @@ internal readonly record struct GlyphStyle(string Family, double Size, bool Bold
 internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> noteAt, Action<Paragraph, BlockDraft> writeNote)
 {
     private List<Decoration> decorations = [];
+    private List<PageAnnotation> links = [];
+
+    /// <summary>A stretch of text in one style, inside one link or none.</summary>
+    private sealed class Piece(string text, GlyphStyle style, PageAnnotation? link)
+    {
+        public StringBuilder Text { get; } = new(text);
+
+        public GlyphStyle Style { get; } = style;
+
+        public PageAnnotation? Link { get; } = link;
+    }
+
+    /// <summary>Called for every hyperlink written, with the link annotation it comes from.</summary>
+    public Action<Hyperlink, PageAnnotation>? OnLink { get; set; }
 
     /// <summary>Words to write as a field instead of text, with the field's code: a page number as PAGE in a header.</summary>
     public Func<PageWord, string?>? Fields { get; set; }
@@ -98,6 +112,21 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
                 decorations.Add(new Decoration(b.Left, b.Right, (b.Top + b.Bottom) / 2));
             }
         }
+
+        links = [.. content.Annotations.Where(a => a.Subtype == "Link" && (a.Uri is not null || a.TargetPage is not null))];
+    }
+
+    private PageAnnotation? LinkAt(PageGlyph glyph)
+    {
+        foreach (PageAnnotation link in links)
+        {
+            if (link.Box.Contains(glyph.Box.CenterX, glyph.Box.CenterY))
+            {
+                return link;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>The style most of the glyphs of some lines are set in, weighted by characters.</summary>
@@ -131,7 +160,7 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
     /// </summary>
     public void Write(Paragraph paragraph, IReadOnlyList<PageLine> lines, GlyphStyle based, int skip = 0, bool breaks = false)
     {
-        List<(StringBuilder Text, GlyphStyle Style)> runs = [];
+        List<Piece> runs = [];
         bool joining = paragraph.Inlines.Count > 0;
         double left = lines.Count == 0 ? 0 : lines.Min(l => l.Box.Left);
         for (int i = 0; i < lines.Count; i++)
@@ -169,7 +198,8 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
                 }
                 else
                 {
-                    Append(runs, " ", Space(runs, word, line));
+                    PageAnnotation? within = runs.Count > 0 && runs[^1].Link is PageAnnotation open && word.Glyphs.Count(g => LinkAt(g) == open) * 2 > word.Glyphs.Count ? open : null;
+                    Append(runs, " ", Space(runs, word, line), within);
                 }
 
                 if (Fields?.Invoke(word) is string code)
@@ -191,6 +221,8 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
                     continue;
                 }
 
+                // A link takes whole words: those with most of their glyphs under it.
+                PageAnnotation? link = word.Glyphs.Select(LinkAt).GroupBy(l => l).MaxBy(g => g.Count())?.Key;
                 foreach (PageGlyph glyph in word.Glyphs)
                 {
                     if (noteAt(glyph) is BlockDraft note)
@@ -200,7 +232,7 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
                         continue;
                     }
 
-                    Append(runs, glyph.Text, Style(glyph, line));
+                    Append(runs, glyph.Text, Style(glyph, line), link);
                 }
             }
         }
@@ -209,7 +241,7 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
     }
 
     /// <summary>Joins a paragraph that carries on another: a space, or nothing when the other ends in a broken word.</summary>
-    private static void Separate(Paragraph paragraph, List<(StringBuilder Text, GlyphStyle Style)> runs, PageWord next)
+    private static void Separate(Paragraph paragraph, List<Piece> runs, PageWord next)
     {
         if (paragraph.Inlines.Count > 0 && paragraph.Inlines[^1] is Run last && last.Text.Length > 1 && last.Text[^1] is '-' or '\u00AD'
             && char.IsLetter(last.Text[^2]) && char.IsLower(next.Text[0]))
@@ -224,12 +256,12 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
         }
         else
         {
-            runs.Add((new StringBuilder(" "), Plain(next.Glyphs[0], new PageLine([next]))));
+            runs.Add(new Piece(" ", Plain(next.Glyphs[0], new PageLine([next])), null));
         }
     }
 
     /// <summary>The style of the space before a word: the previous text's, underlined only when both sides are, never raised.</summary>
-    private static GlyphStyle Space(List<(StringBuilder Text, GlyphStyle Style)> runs, PageWord next, PageLine line)
+    private static GlyphStyle Space(List<Piece> runs, PageWord next, PageLine line)
     {
         if (runs.Count == 0)
         {
@@ -275,7 +307,7 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
             : glyph.Origin.Y > line.Baseline + (size * 0.1) ? VerticalTextPosition.Subscript : VerticalTextPosition.Baseline;
     }
 
-    private static void Append(List<(StringBuilder Text, GlyphStyle Style)> runs, string text, GlyphStyle style)
+    private static void Append(List<Piece> runs, string text, GlyphStyle style, PageAnnotation? link = null)
     {
         // Control characters and lone surrogates a font maps glyphs to have no place in a document's text.
         if (text.Any(c => (char.IsControl(c) && c != '	') || char.IsSurrogate(c) || c is '￾' or '￿'))
@@ -290,30 +322,52 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
             return;
         }
 
-        if (runs.Count > 0 && runs[^1].Style == style)
+        if (runs.Count > 0 && runs[^1].Style == style && runs[^1].Link == link)
         {
             runs[^1].Text.Append(text);
         }
         else
         {
-            runs.Add((new StringBuilder(text), style));
+            runs.Add(new Piece(text, style, link));
         }
     }
 
-    private void Flush(Paragraph paragraph, List<(StringBuilder Text, GlyphStyle Style)> runs, GlyphStyle based)
+    private void Flush(Paragraph paragraph, List<Piece> runs, GlyphStyle based)
     {
-        foreach ((StringBuilder text, GlyphStyle style) in runs)
+        foreach (Piece piece in runs)
         {
-            if (text.Length == 0)
+            if (piece.Text.Length == 0)
             {
                 continue;
             }
 
-            Run run = new(document, text.ToString());
-            style.ApplyDifferences(run.Format, based);
-            paragraph.Inlines.Add(run);
+            Run run = new(document, piece.Text.ToString());
+            piece.Style.ApplyDifferences(run.Format, based);
+            if (piece.Link is not PageAnnotation link)
+            {
+                paragraph.Inlines.Add(run);
+                continue;
+            }
+
+            // Text under one link annotation is one hyperlink, even across style changes.
+            if (paragraph.Inlines.Count == 0 || paragraph.Inlines[^1] is not Hyperlink open || !ReferenceEquals(openLink, link))
+            {
+                open = new Hyperlink(document);
+                if (link.Uri is string uri)
+                {
+                    open.Address = ModelBuilder.Clean(uri);
+                }
+
+                paragraph.Inlines.Add(open);
+                openLink = link;
+                OnLink?.Invoke(open, link);
+            }
+
+            open.Inlines.Add(run);
         }
 
         runs.Clear();
     }
+
+    private PageAnnotation? openLink;
 }
