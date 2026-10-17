@@ -402,6 +402,9 @@ internal sealed partial class DocxReader
             Height = height,
             Fallback = fallback,
             Text = string.Concat(element.Descendants(Ns.W + "t").Select(t => t.Value)),
+
+            // A positioned shape (a watermark's WordArt, a drawing) floats, so it takes no room in its line.
+            Floating = shape is null ? null : VmlPlacement(style, shape),
         }, state, element);
     }
 

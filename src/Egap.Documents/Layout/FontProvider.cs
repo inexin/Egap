@@ -20,6 +20,34 @@ internal sealed class FontProvider
     private readonly ConcurrentDictionary<FontSubstitution, byte> substitutions = new();
     private readonly Lazy<FontFallback> fallback;
 
+    /// <summary>
+    /// The fonts Office downloads on demand (Aptos, the default theme font since 2023, among them), which Word uses but Windows
+    /// does not list as installed: %LOCALAPPDATA%\Microsoft\FontCache\4\CloudFonts. Null where there are none.
+    /// </summary>
+    private static readonly Lazy<FontCollection?> OfficeCloudFonts = new(() =>
+    {
+        string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "FontCache", "4", "CloudFonts");
+        if (!OperatingSystem.IsWindows() || !Directory.Exists(folder))
+        {
+            return null;
+        }
+
+        FontCollection cloud = new();
+        foreach (string file in Directory.EnumerateFiles(folder, "*.ttf", SearchOption.AllDirectories))
+        {
+            try
+            {
+                cloud.AddFile(file);
+            }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException or Egami.EgamiException)
+            {
+                // A file still downloading or damaged is left out.
+            }
+        }
+
+        return cloud.Count > 0 ? cloud : null;
+    });
+
     public FontProvider(Document document, FontSettings? settings = null)
     {
         ArgumentNullException.ThrowIfNull(document);
@@ -49,6 +77,10 @@ internal sealed class FontProvider
         if (this.settings.UseSystemFonts)
         {
             chain.Add(FontCollection.System);
+            if (OfficeCloudFonts.Value is { } cloud)
+            {
+                chain.Add(cloud);
+            }
         }
 
         fallback = new Lazy<FontFallback>(() =>
