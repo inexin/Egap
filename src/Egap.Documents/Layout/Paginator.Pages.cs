@@ -111,7 +111,13 @@ internal sealed class PageBuilder
 
     public double ColumnTop(int column) => bands[^1].Top;
 
-    public double ColumnBottom(int column) => Geometry.BodyBottom;
+    public double ColumnBottom(int column) => Geometry.BodyBottom - NotesHeight;
+
+    /// <summary>The footnotes whose references are on this page, in order.</summary>
+    public List<Footnote> Notes { get; } = [];
+
+    /// <summary>The height the footnotes and their separator take at the foot of the body.</summary>
+    public double NotesHeight { get; set; }
 
     public List<LayoutBox> ColumnContents(int column) => bands[^1].Contents[column];
 
@@ -135,6 +141,23 @@ internal sealed class PageBuilder
             }
         }
 
+        if (Notes.Count > 0)
+        {
+            // Footnotes stack up from the separator at the foot of the body.
+            double width = Geometry.BodyRight - Geometry.BodyLeft;
+            double top = Geometry.BodyBottom - NotesHeight;
+            double at = top + 12;
+            List<LayoutBox> notes = [];
+            foreach (Footnote note in Notes)
+            {
+                (List<LayoutBox> blocks, double height) = paginator.LayNote(note, Geometry.BodyLeft, at, width);
+                notes.AddRange(blocks);
+                at += height;
+            }
+
+            boxes.Add(new AreaBox(PageArea.Notes, null, new LayoutRect(Geometry.BodyLeft, top, width, NotesHeight), notes));
+        }
+
         if (Footer is not null)
         {
             boxes.Add(Footer);
@@ -142,7 +165,6 @@ internal sealed class PageBuilder
 
         boxes.AddRange(Floats.Select(f => f.Box));
 
-        _ = paginator;
         return new PageLayout(index, Numbering.Format(Number, Section.PageSetup.PageNumberStyle ?? NumberStyle.Decimal), Section, Geometry.PageWidth, Geometry.PageHeight, boxes);
     }
 }

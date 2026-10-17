@@ -72,6 +72,8 @@ internal sealed partial class Paginator
             FlowBlocks(next.Body.Blocks);
         }
 
+        FlowEndnotes();
+
         if (page is null)
         {
             // A document with no sections still has a page.
@@ -184,6 +186,11 @@ internal sealed partial class Paginator
     /// <summary>The content for a paragraph, cached by its version unless it shows page fields.</summary>
     private ParagraphContent ContentOf(Paragraph paragraph, Func<Field, string?>? pageField = null)
     {
+        if (notePrefix is { } note && note.Story.Blocks.Count > 0 && note.Story.Blocks[0] == paragraph)
+        {
+            return bridge.Build(paragraph, pageField ?? PageFieldText, note);
+        }
+
         if (pageField is null && contents.TryGetValue(paragraph, out (long Version, ParagraphContent Content) cached) && cached.Version == paragraph.Version
             && cached.Content.PageFields.Count == 0)
         {
@@ -381,9 +388,13 @@ internal sealed partial class Paginator
         double bottom = ColumnBottom;
         double at = top;
         int count = 0;
+        double notes = 0;
         for (int i = start; i < lines.Count; i++)
         {
-            if (at + lines[i].Height > bottom + 0.01)
+            // A line with footnote references fits only with its notes at the foot of the page.
+            notes += NotesRoom(content, lines[i].Line.Start, lines[i].Line.End);
+            double separator = notes > 0 && page!.Notes.Count == 0 ? SeparatorHeight : 0;
+            if (at + lines[i].Height > bottom - notes - separator + 0.01)
             {
                 break;
             }
@@ -392,7 +403,6 @@ internal sealed partial class Paginator
             count++;
         }
 
-        _ = content;
         return count;
     }
 
@@ -451,6 +461,7 @@ internal sealed partial class Paginator
             PlacedLine line = lines[i];
             double x = geometry.X + line.Indent;
             boxes.Add(new LineBox(content.Source, new LayoutRect(x, at, line.Available, line.Height), at + line.Ascent, line.Line, content));
+            TakeNotes(content, line.Line.Start, line.Line.End);
             at += line.Height;
         }
 
