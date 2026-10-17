@@ -23,6 +23,9 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Egap.Pdf.Layout.Tests" />
+    <InternalsVisibleTo Include="Compare" />
+    <InternalsVisibleTo Include="Compare.Tests" />
+    <InternalsVisibleTo Include="Compare.Benchmarks" />
   </ItemGroup>
 
 </Project>
