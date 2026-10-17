@@ -7,10 +7,10 @@ namespace Egap.Pdf.Layout;
 /// the step between them is no more than the page's usual line pitch allows. Spacing is measured on each page, so dense
 /// and airy pages group alike.
 /// </summary>
-internal static class BlockBuilder
+internal static partial class BlockBuilder
 {
     /// <summary>Characters used as bullets: round, square, triangular and dash bullets, check marks and Symbol and Wingdings bullets.</summary>
-    internal const string Bullets = "\u2022\u25E6\u25AA\u25AB\u25CF\u25CB\u25A0\u25A1\u25BA\u25B8\u2023\u2043\u2013\u2014\u00B7\u2713\u2714\u27A2\uF0B7\uF0A7\uF076\uF0D8*-o";
+    internal const string Bullets = "\u2022\u25E6\u25AA\u25AB\u25CF\u25CB\u25A0\u25A1\u25BA\u25B8\u2023\u2043\u2013\u2014\u00B7\u2713\u2714\u27A2\uF0B7\uF0A7\uF076\uF0D8*-o\u3009\u00BB\u203A\u2192\u27A4\u25B6\u25C6\u25C7\u2666";
 
     /// <summary>A line piece with the place its first glyph has in the content stream.</summary>
     internal sealed record Piece(PageLine Line, int Content);
@@ -146,10 +146,17 @@ internal static class BlockBuilder
     /// </summary>
     internal static bool IsMarker(PageWord word)
     {
-        return IsMarker(word.Text) || (word.Text.Length == 1 && word.Font is PdfFont font
-            && (font.Flags.HasFlag(PdfFontFlags.Symbolic) && !font.Flags.HasFlag(PdfFontFlags.Nonsymbolic)
-                || FontTraits.Family(font).Contains("ding", StringComparison.OrdinalIgnoreCase)
-                || FontTraits.Family(font).StartsWith("Symbol", StringComparison.OrdinalIgnoreCase)));
+        if (IsMarker(word.Text))
+        {
+            return true;
+        }
+
+        // Embedded subsets are often flagged symbolic whatever they draw, so the flag counts only for a glyph with no letter
+        // or digit for text (a private-use code); the font's name counts for any.
+        string family = FontTraits.Family(word.Font);
+        return word.Text.Length == 1 && word.Font is PdfFont font
+            && (family.Contains("ding", StringComparison.OrdinalIgnoreCase) || family.StartsWith("Symbol", StringComparison.OrdinalIgnoreCase)
+                || (font.Flags.HasFlag(PdfFontFlags.Symbolic) && char.GetUnicodeCategory(word.Text[0]) == System.Globalization.UnicodeCategory.PrivateUse));
     }
 
     /// <summary>
@@ -158,22 +165,32 @@ internal static class BlockBuilder
     /// </summary>
     internal static bool IsMarker(string word)
     {
-        if (word.Length == 1)
-        {
-            return Bullets.Contains(word[0], StringComparison.Ordinal);
-        }
-
-        string core = word.TrimStart('(').TrimEnd('.', ')', ':');
-        bool numbered = core.Length > 0 && core.All(c => char.IsAsciiDigit(c) || c == '.') && char.IsAsciiDigit(core[0]);
-        if (core.Length == 0 || core.Length > 8 || (word.Length == core.Length && !(numbered && core.Contains('.', StringComparison.Ordinal))))
+        if (word.Length == 0)
         {
             return false;
         }
 
-        bool lettered = core.Length == 1 && char.IsAsciiLetter(core[0]);
-        bool roman = core.Length <= 5 && core.All(c => "ivxlcIVXLC".Contains(c, StringComparison.Ordinal));
-        return numbered || lettered || roman;
+        if (word.All(c => Bullets.Contains(c, StringComparison.Ordinal)) && word.Length <= 2)
+        {
+            return true;
+        }
+
+        // A number, letter or roman numeral, or several joined by dots ("2.3.1", "II.4.6"), with a bracket or a closing dot,
+        // bracket or colon, or a dot inside: "1.", "a)", "(iv)", "[12]", "2.3.1".
+        bool marked = word[0] is '(' or '[' || word[^1] is '.' or ')' or ']' or ':' || word.Contains('.', StringComparison.Ordinal);
+
+        // A colon ends only a number ("1:"); "CCL:" is an abbreviation, not a roman numeral.
+        bool colon = word[^1] == ':' && (word.Length < 2 || !char.IsAsciiDigit(word[^2]));
+        // Letters alone joined by dots are an abbreviation ("U.S.", "e.g."), not an outline number.
+        bool abbreviation = word.Count(c => c == '.') >= 2 && word.Where(char.IsLetterOrDigit).All(char.IsLetter) && !Numbering().Match(word).Value.All(c => "ivxIVX.".Contains(c, StringComparison.Ordinal));
+        return marked && !colon && !abbreviation && word.Length <= 10 && Numbering().IsMatch(word) && !Year().IsMatch(word);
     }
+
+    [System.Text.RegularExpressions.GeneratedRegex(@"^[(\[]?(?:\d{1,3}|[A-Za-z]|[ivxlcIVXLC]{1,5})(?:[.\-](?:\d{1,3}|[A-Za-z]|[ivxIVX]{1,4}))*[.)\]:]?$", System.Text.RegularExpressions.RegexOptions.CultureInvariant)]
+    private static partial System.Text.RegularExpressions.Regex Numbering();
+
+    [System.Text.RegularExpressions.GeneratedRegex(@"^\d{4}\.?$", System.Text.RegularExpressions.RegexOptions.CultureInvariant)]
+    private static partial System.Text.RegularExpressions.Regex Year();
 
     /// <summary>Thin horizontal strokes and filled bars: table rules and separators that keep the text above and below apart.</summary>
     internal static List<PageBox> Rules(IReadOnlyList<PagePath> paths)
