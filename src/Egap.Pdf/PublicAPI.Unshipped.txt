@@ -51,8 +51,18 @@ Egap.Pdf.NUpOrder.DownThenLeftToRight = 2 -> Egap.Pdf.NUpOrder
 Egap.Pdf.NUpOrder.DownThenRightToLeft = 3 -> Egap.Pdf.NUpOrder
 Egap.Pdf.NUpOrder.LeftToRightThenDown = 0 -> Egap.Pdf.NUpOrder
 Egap.Pdf.NUpOrder.RightToLeftThenDown = 1 -> Egap.Pdf.NUpOrder
+Egap.Pdf.PdfBatesSequence
+Egap.Pdf.PdfBatesSequence.Digits.get -> int
+Egap.Pdf.PdfBatesSequence.Format(long number) -> string!
+Egap.Pdf.PdfBatesSequence.Next.get -> long
+Egap.Pdf.PdfBatesSequence.PdfBatesSequence(string! prefix = "", int digits = 6, long start = 1, string! suffix = "", int step = 1) -> void
+Egap.Pdf.PdfBatesSequence.Prefix.get -> string!
+Egap.Pdf.PdfBatesSequence.Step.get -> int
+Egap.Pdf.PdfBatesSequence.Suffix.get -> string!
 Egap.Pdf.PdfCanvas.DrawForm(Egap.Pdf.PdfFormXObject! form, Egami.Drawing.RectF destination, Egami.Drawing.Paint? paint = null) -> void
 Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null) -> Egap.Pdf.PdfOptimizeReport!
+Egap.Pdf.PdfDocument.RemoveStamps() -> int
+Egap.Pdf.PdfDocument.Stamp(Egap.Pdf.PdfStamp! stamp) -> Egap.Pdf.PdfStampResult!
 Egap.Pdf.PdfFormXObject
 Egap.Pdf.PdfFormXObject.Height.get -> double
 Egap.Pdf.PdfFormXObject.Reference.get -> Egap.Pdf.PdfReference!
@@ -150,6 +160,52 @@ Egap.Pdf.PdfPageSize.ToRectangle() -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfPageSize.Turned.get -> Egap.Pdf.PdfPageSize
 Egap.Pdf.PdfPageSize.Width.get -> double
 Egap.Pdf.PdfPageSize.Width.init -> void
+Egap.Pdf.PdfStamp
+Egap.Pdf.PdfStamp.<Clone>$() -> Egap.Pdf.PdfStamp!
+Egap.Pdf.PdfStamp.Anchor.get -> Egap.Pdf.StampAnchor
+Egap.Pdf.PdfStamp.Anchor.init -> void
+Egap.Pdf.PdfStamp.Color.get -> Egami.Pixels.Rgba8
+Egap.Pdf.PdfStamp.Color.init -> void
+Egap.Pdf.PdfStamp.Culture.get -> System.Globalization.CultureInfo?
+Egap.Pdf.PdfStamp.Culture.init -> void
+Egap.Pdf.PdfStamp.Equals(Egap.Pdf.PdfStamp? other) -> bool
+Egap.Pdf.PdfStamp.Font.get -> Egami.Fonts.Typeface?
+Egap.Pdf.PdfStamp.Font.init -> void
+Egap.Pdf.PdfStamp.FontSize.get -> double
+Egap.Pdf.PdfStamp.FontSize.init -> void
+Egap.Pdf.PdfStamp.Layer.get -> string?
+Egap.Pdf.PdfStamp.Layer.init -> void
+Egap.Pdf.PdfStamp.Offset.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfStamp.Offset.init -> void
+Egap.Pdf.PdfStamp.Opacity.get -> double
+Egap.Pdf.PdfStamp.Opacity.init -> void
+Egap.Pdf.PdfStamp.Pages.get -> System.Collections.Generic.IReadOnlyList<int>?
+Egap.Pdf.PdfStamp.Pages.init -> void
+Egap.Pdf.PdfStamp.Rotation.get -> double
+Egap.Pdf.PdfStamp.Rotation.init -> void
+Egap.Pdf.PdfStamp.Scale.get -> double
+Egap.Pdf.PdfStamp.Scale.init -> void
+Egap.Pdf.PdfStamp.Subtype.get -> Egap.Pdf.PdfStampSubtype?
+Egap.Pdf.PdfStamp.Subtype.init -> void
+Egap.Pdf.PdfStamp.Template.get -> string?
+Egap.Pdf.PdfStamp.Template.init -> void
+Egap.Pdf.PdfStamp.Under.get -> bool
+Egap.Pdf.PdfStamp.Under.init -> void
+Egap.Pdf.PdfStampResult
+Egap.Pdf.PdfStampResult.<Clone>$() -> Egap.Pdf.PdfStampResult!
+Egap.Pdf.PdfStampResult.Deconstruct(out int Pages, out string? FirstBates, out string? LastBates) -> void
+Egap.Pdf.PdfStampResult.Equals(Egap.Pdf.PdfStampResult? other) -> bool
+Egap.Pdf.PdfStampResult.FirstBates.get -> string?
+Egap.Pdf.PdfStampResult.FirstBates.init -> void
+Egap.Pdf.PdfStampResult.LastBates.get -> string?
+Egap.Pdf.PdfStampResult.LastBates.init -> void
+Egap.Pdf.PdfStampResult.Pages.get -> int
+Egap.Pdf.PdfStampResult.Pages.init -> void
+Egap.Pdf.PdfStampResult.PdfStampResult(int Pages, string? FirstBates, string? LastBates) -> void
+Egap.Pdf.PdfStampSubtype
+Egap.Pdf.PdfStampSubtype.Footer = 1 -> Egap.Pdf.PdfStampSubtype
+Egap.Pdf.PdfStampSubtype.Header = 0 -> Egap.Pdf.PdfStampSubtype
+Egap.Pdf.PdfStampSubtype.Watermark = 2 -> Egap.Pdf.PdfStampSubtype
 Egap.Pdf.PosterOptions
 Egap.Pdf.PosterOptions.<Clone>$() -> Egap.Pdf.PosterOptions!
 Egap.Pdf.PosterOptions.CutMarks.get -> bool
@@ -164,6 +220,16 @@ Egap.Pdf.PosterOptions.Scale.get -> double
 Egap.Pdf.PosterOptions.Scale.init -> void
 Egap.Pdf.PosterOptions.Tile.get -> Egap.Pdf.PdfPageSize
 Egap.Pdf.PosterOptions.Tile.init -> void
+Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.BottomCenter = 7 -> Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.BottomLeft = 6 -> Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.BottomRight = 8 -> Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.Center = 4 -> Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.MiddleLeft = 3 -> Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.MiddleRight = 5 -> Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.TopCenter = 1 -> Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.TopLeft = 0 -> Egap.Pdf.StampAnchor
+Egap.Pdf.StampAnchor.TopRight = 2 -> Egap.Pdf.StampAnchor
 override Egap.Pdf.BookletOptions.Equals(object? obj) -> bool
 override Egap.Pdf.BookletOptions.GetHashCode() -> int
 override Egap.Pdf.BookletOptions.ToString() -> string!
@@ -184,6 +250,12 @@ override Egap.Pdf.PdfOptimizeSavings.Equals(object? obj) -> bool
 override Egap.Pdf.PdfOptimizeSavings.GetHashCode() -> int
 override Egap.Pdf.PdfOptimizeSavings.ToString() -> string!
 override Egap.Pdf.PdfPageSize.GetHashCode() -> int
+override Egap.Pdf.PdfStamp.Equals(object? obj) -> bool
+override Egap.Pdf.PdfStamp.GetHashCode() -> int
+override Egap.Pdf.PdfStamp.ToString() -> string!
+override Egap.Pdf.PdfStampResult.Equals(object? obj) -> bool
+override Egap.Pdf.PdfStampResult.GetHashCode() -> int
+override Egap.Pdf.PdfStampResult.ToString() -> string!
 override Egap.Pdf.PosterOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PosterOptions.GetHashCode() -> int
 override Egap.Pdf.PosterOptions.ToString() -> string!
@@ -216,6 +288,15 @@ static Egap.Pdf.PdfPageSize.Letter.get -> Egap.Pdf.PdfPageSize
 static Egap.Pdf.PdfPageSize.operator !=(Egap.Pdf.PdfPageSize left, Egap.Pdf.PdfPageSize right) -> bool
 static Egap.Pdf.PdfPageSize.operator ==(Egap.Pdf.PdfPageSize left, Egap.Pdf.PdfPageSize right) -> bool
 static Egap.Pdf.PdfPageSize.Tabloid.get -> Egap.Pdf.PdfPageSize
+static Egap.Pdf.PdfStamp.Bates(Egap.Pdf.PdfBatesSequence! sequence) -> Egap.Pdf.PdfStamp!
+static Egap.Pdf.PdfStamp.Image(Egami.Raster! image, double width, double height) -> Egap.Pdf.PdfStamp!
+static Egap.Pdf.PdfStamp.operator !=(Egap.Pdf.PdfStamp? left, Egap.Pdf.PdfStamp? right) -> bool
+static Egap.Pdf.PdfStamp.operator ==(Egap.Pdf.PdfStamp? left, Egap.Pdf.PdfStamp? right) -> bool
+static Egap.Pdf.PdfStamp.Page(Egap.Pdf.PdfPage! page) -> Egap.Pdf.PdfStamp!
+static Egap.Pdf.PdfStamp.Text(string! template) -> Egap.Pdf.PdfStamp!
+static Egap.Pdf.PdfStamp.Watermark(string! text) -> Egap.Pdf.PdfStamp!
+static Egap.Pdf.PdfStampResult.operator !=(Egap.Pdf.PdfStampResult? left, Egap.Pdf.PdfStampResult? right) -> bool
+static Egap.Pdf.PdfStampResult.operator ==(Egap.Pdf.PdfStampResult? left, Egap.Pdf.PdfStampResult? right) -> bool
 static Egap.Pdf.PosterOptions.operator !=(Egap.Pdf.PosterOptions? left, Egap.Pdf.PosterOptions? right) -> bool
 static Egap.Pdf.PosterOptions.operator ==(Egap.Pdf.PosterOptions? left, Egap.Pdf.PosterOptions? right) -> bool
 ~override Egap.Pdf.PdfPageSize.Equals(object obj) -> bool

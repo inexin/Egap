@@ -384,6 +384,40 @@ public sealed class PdfDocument : IDisposable
         return Optimizing.Optimizer.Run(this, options);
     }
 
+    /// <summary>
+    /// Stamps the document's pages (Phase 7 design 7.3): text from a template, a Bates number, an image or another page,
+    /// drawn over or under each page's content as removable page furniture (see <see cref="PdfStamp"/>).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// pdf.Stamp(PdfStamp.Text("Page {page} of {pages}") with { Anchor = StampAnchor.BottomCenter, Offset = new(0, 24) });
+    /// pdf.Stamp(PdfStamp.Watermark("DRAFT") with { Layer = "Watermark" });
+    /// </code>
+    /// </example>
+    /// <exception cref="ArgumentNullException"><paramref name="stamp"/> is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
+    /// <exception cref="InvalidOperationException">The document is PDF/A and the stamp would break it: text without an embedded font, or transparency in PDF/A-1.</exception>
+    public PdfStampResult Stamp(PdfStamp stamp)
+    {
+        ArgumentNullException.ThrowIfNull(stamp);
+        ThrowIfReadOnly();
+        stamp.Check(nameof(stamp));
+        return Stamping.Stamper.Apply(this, stamp);
+    }
+
+    /// <summary>
+    /// Removes every stamp <see cref="Stamp"/> added, and nothing else: other page furniture, even marked as artifacts, stays.
+    /// </summary>
+    /// <returns>How many stamp drawings were removed.</returns>
+    public int RemoveStamps()
+    {
+        ThrowIfReadOnly();
+        return Stamping.Stamper.Remove(this);
+    }
+
+    /// <summary>The name of the file the document was opened from, or null.</summary>
+    internal string? FileName => FilePath is string path ? Path.GetFileName(path) : null;
+
     /// <summary>Whether the document was optimized, so every save is a compact rewrite (Phase 7 design 7.1).</summary>
     internal bool Optimized { get; private set; }
 
