@@ -67,6 +67,15 @@ public sealed class Document : Node
     }
 
     /// <summary>
+    /// Lays the document out into pages (Phase 6 design Q11 and Q13): an immutable snapshot linked to this document's nodes;
+    /// an edit needs a new layout. Paragraphs that did not change since the last layout are reused.
+    /// </summary>
+    public Layout.DocumentLayout Layout(Layout.LayoutOptions? options = null)
+    {
+        return new Layout.Paginator(this, options).Run();
+    }
+
+    /// <summary>
     /// Recomputes the fields Egap understands (Phase 6 design Q8): DATE, TIME and the other date fields, the document
     /// property fields, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK, IF on simple comparisons and TOC. Page fields are filled by
     /// layout; locked fields and others keep their stored result.
@@ -171,6 +180,18 @@ public sealed class Document : Node
     /// </summary>
     internal void NotifyChanged(Node node, DocumentChangeKind kind, Node? where, int index = -1, string? property = null)
     {
+        // A node not in the tree (built but not inserted yet, or taken out) changes nothing the document shows.
+        Node? at0 = where ?? node;
+        while (at0 is not null && at0 != this)
+        {
+            at0 = at0.Parent;
+        }
+
+        if (at0 is null)
+        {
+            return;
+        }
+
         long version = ++Version;
         // The paragraph a change is in, through hyperlinks and content controls but not out of a story (a text box or note).
         Node? at = where;

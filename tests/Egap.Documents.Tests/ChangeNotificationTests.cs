@@ -85,7 +85,7 @@ public class ChangeNotificationTests
     private static readonly HashSet<string> NotMutators =
     [
         "Node.Clone", "Node.Accept", "Node.GetText", "Node.Ancestors", "Node.Descendants", "Node.GetAncestor",
-        "Document.Import", "Document.Clone", "NodeCollection`1.IndexOf", "NodeCollection`1.Contains", "NodeCollection`1.GetEnumerator",
+        "Document.Import", "Document.Clone", "Document.Layout", "NodeCollection`1.IndexOf", "NodeCollection`1.Contains", "NodeCollection`1.GetEnumerator",
         "Run.ToString", "Section.Clone", "Body.Clone", "HeaderFooter.Clone", "Paragraph.Clone", "Table.Clone", "Row.Clone",
         "Cell.Clone", "Run.Clone", "Tab.Clone", "Break.Clone", "Run.GetEffectiveFormat", "Paragraph.GetEffectiveFormat",
         "Table.GetEffectiveFormat", "Row.GetEffectiveFormat", "Cell.GetEffectiveFormat", "Inline.Revision",
