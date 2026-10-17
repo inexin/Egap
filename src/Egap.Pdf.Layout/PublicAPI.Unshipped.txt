@@ -315,3 +315,27 @@ static Egap.Pdf.Layout.TableCsv.ToCsv(Egap.Pdf.Layout.DetectedTable! table, Egap
 static Egap.Pdf.Layout.TableCsvOptions.Default.get -> Egap.Pdf.Layout.TableCsvOptions!
 static Egap.Pdf.Layout.TableCsvOptions.operator !=(Egap.Pdf.Layout.TableCsvOptions? left, Egap.Pdf.Layout.TableCsvOptions? right) -> bool
 static Egap.Pdf.Layout.TableCsvOptions.operator ==(Egap.Pdf.Layout.TableCsvOptions? left, Egap.Pdf.Layout.TableCsvOptions? right) -> bool
+Egap.Pdf.Layout.DoclingJson
+Egap.Pdf.Layout.DoclingJsonOptions
+Egap.Pdf.Layout.DoclingJsonOptions.<Clone>$() -> Egap.Pdf.Layout.DoclingJsonOptions!
+Egap.Pdf.Layout.DoclingJsonOptions.DoclingJsonOptions() -> void
+Egap.Pdf.Layout.DoclingJsonOptions.Equals(Egap.Pdf.Layout.DoclingJsonOptions? other) -> bool
+Egap.Pdf.Layout.DoclingJsonOptions.FileName.get -> string?
+Egap.Pdf.Layout.DoclingJsonOptions.FileName.init -> void
+Egap.Pdf.Layout.DoclingJsonOptions.Indented.get -> bool
+Egap.Pdf.Layout.DoclingJsonOptions.Indented.init -> void
+Egap.Pdf.Layout.DoclingJsonOptions.Name.get -> string!
+Egap.Pdf.Layout.DoclingJsonOptions.Name.init -> void
+Egap.Pdf.Layout.DoclingJsonOptions.Source.get -> System.ReadOnlyMemory<byte>?
+Egap.Pdf.Layout.DoclingJsonOptions.Source.init -> void
+const Egap.Pdf.Layout.DoclingJson.SchemaVersion = "1.10.0" -> string!
+override Egap.Pdf.Layout.DoclingJsonOptions.Equals(object? obj) -> bool
+override Egap.Pdf.Layout.DoclingJsonOptions.GetHashCode() -> int
+override Egap.Pdf.Layout.DoclingJsonOptions.ToString() -> string!
+static Egap.Pdf.Layout.DoclingJson.Read(System.IO.Stream! json) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.PdfPageLayout!>!
+static Egap.Pdf.Layout.DoclingJson.Read(string! json) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.PdfPageLayout!>!
+static Egap.Pdf.Layout.DoclingJson.Write(System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.PdfPageLayout!>! pages, Egap.Pdf.Layout.DoclingJsonOptions? options = null) -> string!
+static Egap.Pdf.Layout.DoclingJson.Write(System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.PdfPageLayout!>! pages, System.IO.Stream! output, Egap.Pdf.Layout.DoclingJsonOptions? options = null) -> void
+static Egap.Pdf.Layout.DoclingJsonOptions.Default.get -> Egap.Pdf.Layout.DoclingJsonOptions!
+static Egap.Pdf.Layout.DoclingJsonOptions.operator !=(Egap.Pdf.Layout.DoclingJsonOptions? left, Egap.Pdf.Layout.DoclingJsonOptions? right) -> bool
+static Egap.Pdf.Layout.DoclingJsonOptions.operator ==(Egap.Pdf.Layout.DoclingJsonOptions? left, Egap.Pdf.Layout.DoclingJsonOptions? right) -> bool

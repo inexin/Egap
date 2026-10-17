@@ -276,9 +276,9 @@ public sealed class TableCell
 /// <summary>A figure: images and drawings with any text inside them.</summary>
 public sealed class LayoutFigure : LayoutElement
 {
-    private readonly PdfPage page;
+    private readonly PdfPage? page;
 
-    internal LayoutFigure(RectF bounds, int order, double confidence, PdfPage page, IReadOnlyList<LayoutImage> images, IReadOnlyList<LayoutLine> labels,
+    internal LayoutFigure(RectF bounds, int order, double confidence, PdfPage? page, IReadOnlyList<LayoutImage> images, IReadOnlyList<LayoutLine> labels,
         string? altText, bool decorative, bool inline, bool wrapped)
         : base(bounds, order, confidence)
     {
@@ -313,8 +313,14 @@ public sealed class LayoutFigure : LayoutElement
     /// The figure's region of the page as an Egami Picture, drawn by Egap's renderer: drawings stay vectors, images stay
     /// images. A writer makes a PNG or an SVG of it.
     /// </summary>
+    /// <exception cref="InvalidOperationException">The figure was read from JSON (<see cref="DoclingJson.Read(string)"/>) and has no page to draw.</exception>
     public Picture ToPicture()
     {
+        if (page is null)
+        {
+            throw new InvalidOperationException("This figure was read from JSON and has no PDF page to draw.");
+        }
+
         return page.ToPicture(new PdfRenderOptions { Region = Bounds, Annotations = PdfAnnotationRendering.None });
     }
 
