@@ -16,7 +16,7 @@ public sealed class PdfPageLayout
         Height = height;
         Elements = elements;
         Blocks = [.. elements.OfType<LayoutBlock>()];
-        Tables = [.. elements.OfType<DetectedTable>()];
+        Tables = [.. elements.OfType<LayoutTable>()];
         Figures = [.. elements.OfType<LayoutFigure>()];
         FromTags = fromTags;
         Warnings = warnings;
@@ -38,7 +38,7 @@ public sealed class PdfPageLayout
     public IReadOnlyList<LayoutBlock> Blocks { get; }
 
     /// <summary>The tables in reading order.</summary>
-    public IReadOnlyList<DetectedTable> Tables { get; }
+    public IReadOnlyList<LayoutTable> Tables { get; }
 
     /// <summary>The figures in reading order.</summary>
     public IReadOnlyList<LayoutFigure> Figures { get; }
@@ -189,9 +189,9 @@ public sealed class LayoutWord
 }
 
 /// <summary>A table: its cells on a grid of <see cref="RowCount"/> by <see cref="ColumnCount"/>.</summary>
-public sealed class DetectedTable : LayoutElement
+public sealed class LayoutTable : LayoutElement
 {
-    internal DetectedTable(RectF bounds, int order, double confidence, int rows, int columns, bool ruled, bool continues, bool repeatsHeader, IReadOnlyList<TableCell> cells)
+    internal LayoutTable(RectF bounds, int order, double confidence, int rows, int columns, bool ruled, bool continues, bool repeatsHeader, IReadOnlyList<LayoutTableCell> cells)
         : base(bounds, order, confidence)
     {
         RowCount = rows;
@@ -218,7 +218,7 @@ public sealed class DetectedTable : LayoutElement
     public bool RepeatsHeader { get; }
 
     /// <summary>The cells, row by row, each at its top-left grid position; a spanned position has no cell of its own.</summary>
-    public IReadOnlyList<TableCell> Cells { get; }
+    public IReadOnlyList<LayoutTableCell> Cells { get; }
 
     /// <inheritdoc/>
     public override string ToString()
@@ -228,9 +228,9 @@ public sealed class DetectedTable : LayoutElement
 }
 
 /// <summary>A table cell.</summary>
-public sealed class TableCell
+public sealed class LayoutTableCell
 {
-    internal TableCell(int row, int column, int rowSpan, int columnSpan, bool header, string text, RectF bounds, IReadOnlyList<LayoutLine> lines)
+    internal LayoutTableCell(int row, int column, int rowSpan, int columnSpan, bool header, string text, RectF bounds, IReadOnlyList<LayoutLine> lines)
     {
         Row = row;
         Column = column;

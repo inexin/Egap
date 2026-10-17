@@ -264,7 +264,7 @@ internal sealed class DoclingWriter(IReadOnlyList<PdfPageLayout> pages, DoclingJ
                     case LayoutBlock block:
                         body.Add(Text(page, block, "#/body", "body"));
                         break;
-                    case DetectedTable table:
+                    case LayoutTable table:
                         body.Add(Table(page, table));
                         break;
                     case LayoutFigure figure:
@@ -329,7 +329,7 @@ internal sealed class DoclingWriter(IReadOnlyList<PdfPageLayout> pages, DoclingJ
         return self;
     }
 
-    private string Table(PdfPageLayout page, DetectedTable table)
+    private string Table(PdfPageLayout page, LayoutTable table)
     {
         string self = "#/tables/" + tables.Count.ToString(CultureInfo.InvariantCulture);
         tables.Add((json, _) =>
@@ -353,7 +353,7 @@ internal sealed class DoclingWriter(IReadOnlyList<PdfPageLayout> pages, DoclingJ
                 headerRows++;
             }
 
-            foreach (TableCell cell in table.Cells)
+            foreach (LayoutTableCell cell in table.Cells)
             {
                 json.WriteStartObject();
                 json.WriteStartObject("bbox");
@@ -665,7 +665,7 @@ internal static class DoclingReader
         {
             JsonElement data = item.GetProperty("data");
             int rows = data.TryGetProperty("num_rows", out JsonElement r) ? r.GetInt32() : 0, columns = data.TryGetProperty("num_cols", out JsonElement cs) ? cs.GetInt32() : 0;
-            List<TableCell> cells = [];
+            List<LayoutTableCell> cells = [];
             foreach (JsonElement cell in data.GetProperty("table_cells").EnumerateArray())
             {
                 RectF box = cell.TryGetProperty("bbox", out JsonElement bb) && bb.ValueKind == JsonValueKind.Object ? Box(bb, height) : default;
@@ -674,10 +674,10 @@ internal static class DoclingReader
                 int rowSpan = Math.Max(1, cell.GetProperty("end_row_offset_idx").GetInt32() - row);
                 int columnSpan = Math.Max(1, cell.GetProperty("end_col_offset_idx").GetInt32() - column);
                 bool header = cell.TryGetProperty("column_header", out JsonElement h) && h.ValueKind == JsonValueKind.True;
-                cells.Add(new TableCell(row, column, rowSpan, columnSpan, header, text, box, text.Length == 0 ? [] : [Line(text, box)]));
+                cells.Add(new LayoutTableCell(row, column, rowSpan, columnSpan, header, text, box, text.Length == 0 ? [] : [Line(text, box)]));
             }
 
-            return (page, new DetectedTable(bounds, 0, confidence, rows, columns, egapRole == "ruled_table", continues, false, [.. cells.OrderBy(x => x.Row).ThenBy(x => x.Column)]));
+            return (page, new LayoutTable(bounds, 0, confidence, rows, columns, egapRole == "ruled_table", continues, false, [.. cells.OrderBy(x => x.Row).ThenBy(x => x.Column)]));
         }
 
         if (pointer.StartsWith("#/pictures/", StringComparison.Ordinal))
@@ -762,7 +762,7 @@ internal static class DoclingReader
         return element switch
         {
             LayoutBlock b => new LayoutBlock(b.Bounds, order, b.Confidence, b.Role, b.Text, b.Level, b.ListMarker, b.ContinuesPrevious, b.Lines),
-            DetectedTable t => new DetectedTable(t.Bounds, order, t.Confidence, t.RowCount, t.ColumnCount, t.IsRuled, t.ContinuesPrevious, t.RepeatsHeader, t.Cells),
+            LayoutTable t => new LayoutTable(t.Bounds, order, t.Confidence, t.RowCount, t.ColumnCount, t.IsRuled, t.ContinuesPrevious, t.RepeatsHeader, t.Cells),
             LayoutFigure f => new LayoutFigure(f.Bounds, order, f.Confidence, null, f.Images, f.Labels, f.AltText, f.IsDecorative, f.IsInline, f.IsWrapped) { Embedded = f.Embedded },
             _ => element,
         };

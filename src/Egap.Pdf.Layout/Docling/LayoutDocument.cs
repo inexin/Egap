@@ -62,7 +62,7 @@ internal static class LayoutDocument
                         paragraph.AddRun(text);
                         last = paragraph;
                         break;
-                    case DetectedTable table:
+                    case LayoutTable table:
                         Table(section.Body, table);
                         list = null;
                         last = null;
@@ -119,11 +119,11 @@ internal static class LayoutDocument
         }
     }
 
-    private static void Table(Body body, DetectedTable source)
+    private static void Table(Body body, LayoutTable source)
     {
         Table table = body.AddTable(0, 0);
-        Dictionary<(int, int), TableCell> covering = [];
-        foreach (TableCell cell in source.Cells)
+        Dictionary<(int, int), LayoutTableCell> covering = [];
+        foreach (LayoutTableCell cell in source.Cells)
         {
             for (int r = cell.Row; r < cell.Row + cell.RowSpan; r++)
             {
@@ -139,7 +139,7 @@ internal static class LayoutDocument
             Row row = table.AddRow();
             for (int c = 0; c < source.ColumnCount;)
             {
-                TableCell? cell = covering.GetValueOrDefault((r, c));
+                LayoutTableCell? cell = covering.GetValueOrDefault((r, c));
                 if (cell is not null && cell.Column != c)
                 {
                     c++;

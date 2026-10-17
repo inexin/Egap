@@ -76,7 +76,7 @@ internal sealed partial class ModelBuilder
         framed.AddRange(Furniture().Select(b => (b, Body(plans, b))));
         framed.AddRange(linked.Select(b => (b, Body(plans, b))));
         styles = new StyleSheet(document, framed);
-        if (options.Mode == ReconstructionMode.Exact)
+        if (options.Mode == PdfToDocumentMode.Exact)
         {
             BuildExact(cancellationToken);
             Annotations();

@@ -36,13 +36,13 @@ static Egap.Pdf.Layout.PdfExport.ToPdf(this Egap.Documents.Layout.DocumentLayout
 static Egap.Pdf.Layout.PdfExportOptions.Default.get -> Egap.Pdf.Layout.PdfExportOptions!
 static Egap.Pdf.Layout.PdfExportOptions.operator !=(Egap.Pdf.Layout.PdfExportOptions? left, Egap.Pdf.Layout.PdfExportOptions? right) -> bool
 static Egap.Pdf.Layout.PdfExportOptions.operator ==(Egap.Pdf.Layout.PdfExportOptions? left, Egap.Pdf.Layout.PdfExportOptions? right) -> bool
-Egap.Pdf.Layout.DetectedTable
-Egap.Pdf.Layout.DetectedTable.Cells.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.TableCell!>!
-Egap.Pdf.Layout.DetectedTable.ColumnCount.get -> int
-Egap.Pdf.Layout.DetectedTable.ContinuesPrevious.get -> bool
-Egap.Pdf.Layout.DetectedTable.IsRuled.get -> bool
-Egap.Pdf.Layout.DetectedTable.RepeatsHeader.get -> bool
-Egap.Pdf.Layout.DetectedTable.RowCount.get -> int
+Egap.Pdf.Layout.LayoutTable
+Egap.Pdf.Layout.LayoutTable.Cells.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutTableCell!>!
+Egap.Pdf.Layout.LayoutTable.ColumnCount.get -> int
+Egap.Pdf.Layout.LayoutTable.ContinuesPrevious.get -> bool
+Egap.Pdf.Layout.LayoutTable.IsRuled.get -> bool
+Egap.Pdf.Layout.LayoutTable.RepeatsHeader.get -> bool
+Egap.Pdf.Layout.LayoutTable.RowCount.get -> int
 Egap.Pdf.Layout.ILayoutRegionDetector
 Egap.Pdf.Layout.ILayoutRegionDetector.Detect(Egap.Pdf.PdfPage! page) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutRegionHint!>!
 Egap.Pdf.Layout.IReadingOrderDetector
@@ -138,7 +138,7 @@ Egap.Pdf.Layout.PdfPageLayout.Figures.get -> System.Collections.Generic.IReadOnl
 Egap.Pdf.Layout.PdfPageLayout.FromTags.get -> bool
 Egap.Pdf.Layout.PdfPageLayout.Height.get -> float
 Egap.Pdf.Layout.PdfPageLayout.PageIndex.get -> int
-Egap.Pdf.Layout.PdfPageLayout.Tables.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.DetectedTable!>!
+Egap.Pdf.Layout.PdfPageLayout.Tables.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutTable!>!
 Egap.Pdf.Layout.PdfPageLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
 Egap.Pdf.Layout.PdfPageLayout.Width.get -> float
 Egap.Pdf.Layout.PdfLayoutAnalyzer
@@ -160,20 +160,20 @@ Egap.Pdf.Layout.PdfLayoutOptions.Thresholds.get -> Egap.Pdf.Layout.LayoutThresho
 Egap.Pdf.Layout.PdfLayoutOptions.Thresholds.init -> void
 Egap.Pdf.Layout.PdfLayoutOptions.UseTags.get -> bool
 Egap.Pdf.Layout.PdfLayoutOptions.UseTags.init -> void
-Egap.Pdf.Layout.TableCell
-Egap.Pdf.Layout.TableCell.Bounds.get -> Egami.Drawing.RectF
-Egap.Pdf.Layout.TableCell.Column.get -> int
-Egap.Pdf.Layout.TableCell.ColumnSpan.get -> int
-Egap.Pdf.Layout.TableCell.IsHeader.get -> bool
-Egap.Pdf.Layout.TableCell.Lines.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutLine!>!
-Egap.Pdf.Layout.TableCell.Row.get -> int
-Egap.Pdf.Layout.TableCell.RowSpan.get -> int
-Egap.Pdf.Layout.TableCell.Text.get -> string!
+Egap.Pdf.Layout.LayoutTableCell
+Egap.Pdf.Layout.LayoutTableCell.Bounds.get -> Egami.Drawing.RectF
+Egap.Pdf.Layout.LayoutTableCell.Column.get -> int
+Egap.Pdf.Layout.LayoutTableCell.ColumnSpan.get -> int
+Egap.Pdf.Layout.LayoutTableCell.IsHeader.get -> bool
+Egap.Pdf.Layout.LayoutTableCell.Lines.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutLine!>!
+Egap.Pdf.Layout.LayoutTableCell.Row.get -> int
+Egap.Pdf.Layout.LayoutTableCell.RowSpan.get -> int
+Egap.Pdf.Layout.LayoutTableCell.Text.get -> string!
 Egap.Pdf.Layout.TableDetection
 Egap.Pdf.Layout.TableDetection.None = 0 -> Egap.Pdf.Layout.TableDetection
 Egap.Pdf.Layout.TableDetection.Ruled = 1 -> Egap.Pdf.Layout.TableDetection
 Egap.Pdf.Layout.TableDetection.RuledAndAligned = 2 -> Egap.Pdf.Layout.TableDetection
-override Egap.Pdf.Layout.DetectedTable.ToString() -> string!
+override Egap.Pdf.Layout.LayoutTable.ToString() -> string!
 override Egap.Pdf.Layout.LayoutBlock.ToString() -> string!
 override Egap.Pdf.Layout.LayoutFigure.ToString() -> string!
 override Egap.Pdf.Layout.LayoutLine.ToString() -> string!
@@ -188,7 +188,7 @@ override Egap.Pdf.Layout.PdfPageLayout.ToString() -> string!
 override Egap.Pdf.Layout.PdfLayoutOptions.Equals(object? obj) -> bool
 override Egap.Pdf.Layout.PdfLayoutOptions.GetHashCode() -> int
 override Egap.Pdf.Layout.PdfLayoutOptions.ToString() -> string!
-override Egap.Pdf.Layout.TableCell.ToString() -> string!
+override Egap.Pdf.Layout.LayoutTableCell.ToString() -> string!
 static Egap.Pdf.Layout.LayoutRegionHint.operator !=(Egap.Pdf.Layout.LayoutRegionHint? left, Egap.Pdf.Layout.LayoutRegionHint? right) -> bool
 static Egap.Pdf.Layout.LayoutRegionHint.operator ==(Egap.Pdf.Layout.LayoutRegionHint? left, Egap.Pdf.Layout.LayoutRegionHint? right) -> bool
 static Egap.Pdf.Layout.LayoutThresholds.Default.get -> Egap.Pdf.Layout.LayoutThresholds!
@@ -219,11 +219,11 @@ static Egap.Pdf.Layout.PdfToDocumentOptions.operator !=(Egap.Pdf.Layout.PdfToDoc
 static Egap.Pdf.Layout.PdfToDocumentOptions.operator ==(Egap.Pdf.Layout.PdfToDocumentOptions? left, Egap.Pdf.Layout.PdfToDocumentOptions? right) -> bool
 Egap.Pdf.Layout.PdfToDocumentOptions.ConfidenceThreshold.get -> double
 Egap.Pdf.Layout.PdfToDocumentOptions.ConfidenceThreshold.init -> void
-Egap.Pdf.Layout.PdfToDocumentOptions.Mode.get -> Egap.Pdf.Layout.ReconstructionMode
+Egap.Pdf.Layout.PdfToDocumentOptions.Mode.get -> Egap.Pdf.Layout.PdfToDocumentMode
 Egap.Pdf.Layout.PdfToDocumentOptions.Mode.init -> void
-Egap.Pdf.Layout.ReconstructionMode
-Egap.Pdf.Layout.ReconstructionMode.Exact = 1 -> Egap.Pdf.Layout.ReconstructionMode
-Egap.Pdf.Layout.ReconstructionMode.Flow = 0 -> Egap.Pdf.Layout.ReconstructionMode
+Egap.Pdf.Layout.PdfToDocumentMode
+Egap.Pdf.Layout.PdfToDocumentMode.Exact = 1 -> Egap.Pdf.Layout.PdfToDocumentMode
+Egap.Pdf.Layout.PdfToDocumentMode.Flow = 0 -> Egap.Pdf.Layout.PdfToDocumentMode
 Egap.Pdf.Layout.PdfToDocumentOptions.OnWarning.get -> System.Action<Egap.Pdf.Layout.PdfToDocumentWarning!>?
 Egap.Pdf.Layout.PdfToDocumentOptions.OnWarning.init -> void
 Egap.Pdf.Layout.PdfToDocumentWarning
@@ -278,19 +278,19 @@ static Egap.Pdf.Layout.PdfAutoTagFigure.operator ==(Egap.Pdf.Layout.PdfAutoTagFi
 static Egap.Pdf.Layout.PdfAutoTagReport.operator !=(Egap.Pdf.Layout.PdfAutoTagReport? left, Egap.Pdf.Layout.PdfAutoTagReport? right) -> bool
 static Egap.Pdf.Layout.PdfAutoTagReport.operator ==(Egap.Pdf.Layout.PdfAutoTagReport? left, Egap.Pdf.Layout.PdfAutoTagReport? right) -> bool
 static Egap.Pdf.Layout.PdfAutoTagger.Tag(Egap.Pdf.PdfDocument! document, Egap.Pdf.Layout.PdfLayoutOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.Layout.PdfAutoTagReport!
-Egap.Pdf.Layout.PdfTableCsv
-Egap.Pdf.Layout.PdfTableCsv.<Clone>$() -> Egap.Pdf.Layout.PdfTableCsv!
-Egap.Pdf.Layout.PdfTableCsv.Deconstruct(out int Index, out int PageIndex, out int HeaderRows, out string! Text) -> void
-Egap.Pdf.Layout.PdfTableCsv.Equals(Egap.Pdf.Layout.PdfTableCsv? other) -> bool
-Egap.Pdf.Layout.PdfTableCsv.HeaderRows.get -> int
-Egap.Pdf.Layout.PdfTableCsv.HeaderRows.init -> void
-Egap.Pdf.Layout.PdfTableCsv.Index.get -> int
-Egap.Pdf.Layout.PdfTableCsv.Index.init -> void
-Egap.Pdf.Layout.PdfTableCsv.PageIndex.get -> int
-Egap.Pdf.Layout.PdfTableCsv.PageIndex.init -> void
-Egap.Pdf.Layout.PdfTableCsv.PdfTableCsv(int Index, int PageIndex, int HeaderRows, string! Text) -> void
-Egap.Pdf.Layout.PdfTableCsv.Text.get -> string!
-Egap.Pdf.Layout.PdfTableCsv.Text.init -> void
+Egap.Pdf.Layout.TableCsvFile
+Egap.Pdf.Layout.TableCsvFile.<Clone>$() -> Egap.Pdf.Layout.TableCsvFile!
+Egap.Pdf.Layout.TableCsvFile.Deconstruct(out int Index, out int PageIndex, out int HeaderRows, out string! Text) -> void
+Egap.Pdf.Layout.TableCsvFile.Equals(Egap.Pdf.Layout.TableCsvFile? other) -> bool
+Egap.Pdf.Layout.TableCsvFile.HeaderRows.get -> int
+Egap.Pdf.Layout.TableCsvFile.HeaderRows.init -> void
+Egap.Pdf.Layout.TableCsvFile.Index.get -> int
+Egap.Pdf.Layout.TableCsvFile.Index.init -> void
+Egap.Pdf.Layout.TableCsvFile.PageIndex.get -> int
+Egap.Pdf.Layout.TableCsvFile.PageIndex.init -> void
+Egap.Pdf.Layout.TableCsvFile.TableCsvFile(int Index, int PageIndex, int HeaderRows, string! Text) -> void
+Egap.Pdf.Layout.TableCsvFile.Text.get -> string!
+Egap.Pdf.Layout.TableCsvFile.Text.init -> void
 Egap.Pdf.Layout.TableCsv
 Egap.Pdf.Layout.TableCsvOptions
 Egap.Pdf.Layout.TableCsvOptions.<Clone>$() -> Egap.Pdf.Layout.TableCsvOptions!
@@ -302,16 +302,16 @@ Egap.Pdf.Layout.TableCsvOptions.RepeatMergedCells.init -> void
 Egap.Pdf.Layout.TableCsvOptions.Separator.get -> char
 Egap.Pdf.Layout.TableCsvOptions.Separator.init -> void
 Egap.Pdf.Layout.TableCsvOptions.TableCsvOptions() -> void
-override Egap.Pdf.Layout.PdfTableCsv.Equals(object? obj) -> bool
-override Egap.Pdf.Layout.PdfTableCsv.GetHashCode() -> int
-override Egap.Pdf.Layout.PdfTableCsv.ToString() -> string!
+override Egap.Pdf.Layout.TableCsvFile.Equals(object? obj) -> bool
+override Egap.Pdf.Layout.TableCsvFile.GetHashCode() -> int
+override Egap.Pdf.Layout.TableCsvFile.ToString() -> string!
 override Egap.Pdf.Layout.TableCsvOptions.Equals(object? obj) -> bool
 override Egap.Pdf.Layout.TableCsvOptions.GetHashCode() -> int
 override Egap.Pdf.Layout.TableCsvOptions.ToString() -> string!
-static Egap.Pdf.Layout.PdfTableCsv.operator !=(Egap.Pdf.Layout.PdfTableCsv? left, Egap.Pdf.Layout.PdfTableCsv? right) -> bool
-static Egap.Pdf.Layout.PdfTableCsv.operator ==(Egap.Pdf.Layout.PdfTableCsv? left, Egap.Pdf.Layout.PdfTableCsv? right) -> bool
-static Egap.Pdf.Layout.TableCsv.Export(System.Collections.Generic.IEnumerable<Egap.Pdf.Layout.PdfPageLayout!>! pages, Egap.Pdf.Layout.TableCsvOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.PdfTableCsv!>!
-static Egap.Pdf.Layout.TableCsv.ToCsv(Egap.Pdf.Layout.DetectedTable! table, Egap.Pdf.Layout.TableCsvOptions? options = null) -> string!
+static Egap.Pdf.Layout.TableCsvFile.operator !=(Egap.Pdf.Layout.TableCsvFile? left, Egap.Pdf.Layout.TableCsvFile? right) -> bool
+static Egap.Pdf.Layout.TableCsvFile.operator ==(Egap.Pdf.Layout.TableCsvFile? left, Egap.Pdf.Layout.TableCsvFile? right) -> bool
+static Egap.Pdf.Layout.TableCsv.Export(System.Collections.Generic.IEnumerable<Egap.Pdf.Layout.PdfPageLayout!>! pages, Egap.Pdf.Layout.TableCsvOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.TableCsvFile!>!
+static Egap.Pdf.Layout.TableCsv.ToCsv(Egap.Pdf.Layout.LayoutTable! table, Egap.Pdf.Layout.TableCsvOptions? options = null) -> string!
 static Egap.Pdf.Layout.TableCsvOptions.Default.get -> Egap.Pdf.Layout.TableCsvOptions!
 static Egap.Pdf.Layout.TableCsvOptions.operator !=(Egap.Pdf.Layout.TableCsvOptions? left, Egap.Pdf.Layout.TableCsvOptions? right) -> bool
 static Egap.Pdf.Layout.TableCsvOptions.operator ==(Egap.Pdf.Layout.TableCsvOptions? left, Egap.Pdf.Layout.TableCsvOptions? right) -> bool
