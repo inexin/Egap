@@ -675,7 +675,23 @@ Egap.Documents.IslandKind.SmartArt = 3 -> Egap.Documents.IslandKind
 Egap.Documents.IslandKind.Vml = 7 -> Egap.Documents.IslandKind
 Egap.Documents.Layout.AreaBox
 Egap.Documents.Layout.AreaBox.Area.get -> Egap.Documents.Layout.PageArea
+Egap.Documents.Layout.CellBorders
+Egap.Documents.Layout.CellBorders.<Clone>$() -> Egap.Documents.Layout.CellBorders!
+Egap.Documents.Layout.CellBorders.Bottom.get -> Egap.Documents.Border?
+Egap.Documents.Layout.CellBorders.Bottom.init -> void
+Egap.Documents.Layout.CellBorders.CellBorders(Egap.Documents.Border? Top, Egap.Documents.Border? Left, Egap.Documents.Border? Bottom, Egap.Documents.Border? Right) -> void
+Egap.Documents.Layout.CellBorders.Deconstruct(out Egap.Documents.Border? Top, out Egap.Documents.Border? Left, out Egap.Documents.Border? Bottom, out Egap.Documents.Border? Right) -> void
+Egap.Documents.Layout.CellBorders.Equals(Egap.Documents.Layout.CellBorders? other) -> bool
+Egap.Documents.Layout.CellBorders.Left.get -> Egap.Documents.Border?
+Egap.Documents.Layout.CellBorders.Left.init -> void
+Egap.Documents.Layout.CellBorders.Right.get -> Egap.Documents.Border?
+Egap.Documents.Layout.CellBorders.Right.init -> void
+Egap.Documents.Layout.CellBorders.Top.get -> Egap.Documents.Border?
+Egap.Documents.Layout.CellBorders.Top.init -> void
 Egap.Documents.Layout.CellBox
+Egap.Documents.Layout.CellBox.Borders.get -> Egap.Documents.Layout.CellBorders!
+Egap.Documents.Layout.CellBox.Cell.get -> Egap.Documents.Cell!
+Egap.Documents.Layout.CellBox.Fill.get -> Egami.Pixels.Rgba8?
 Egap.Documents.Layout.DocumentLayout
 Egap.Documents.Layout.DocumentLayout.Document.get -> Egap.Documents.Document!
 Egap.Documents.Layout.DocumentLayout.FindBoxes(Egap.Documents.Node! node) -> System.Collections.Generic.IReadOnlyList<(Egap.Documents.Layout.PageLayout! Page, Egap.Documents.Layout.LayoutBox! Box)>!
@@ -1723,6 +1739,9 @@ override Egap.Documents.ImageData.GetHashCode() -> int
 override Egap.Documents.ImageData.ToString() -> string!
 override Egap.Documents.InlineContentControl.Clone(bool deep = true) -> Egap.Documents.InlineContentControl!
 override Egap.Documents.Island.Clone(bool deep = true) -> Egap.Documents.Island!
+override Egap.Documents.Layout.CellBorders.Equals(object? obj) -> bool
+override Egap.Documents.Layout.CellBorders.GetHashCode() -> int
+override Egap.Documents.Layout.CellBorders.ToString() -> string!
 override Egap.Documents.Layout.FontSubstitution.Equals(object? obj) -> bool
 override Egap.Documents.Layout.FontSubstitution.GetHashCode() -> int
 override Egap.Documents.Layout.FontSubstitution.ToString() -> string!
@@ -1787,6 +1806,8 @@ static Egap.Documents.ImageData.FromBytes(byte[]! bytes) -> Egap.Documents.Image
 static Egap.Documents.ImageData.GuessContentType(System.ReadOnlySpan<byte> bytes) -> string!
 static Egap.Documents.ImageData.operator !=(Egap.Documents.ImageData? left, Egap.Documents.ImageData? right) -> bool
 static Egap.Documents.ImageData.operator ==(Egap.Documents.ImageData? left, Egap.Documents.ImageData? right) -> bool
+static Egap.Documents.Layout.CellBorders.operator !=(Egap.Documents.Layout.CellBorders? left, Egap.Documents.Layout.CellBorders? right) -> bool
+static Egap.Documents.Layout.CellBorders.operator ==(Egap.Documents.Layout.CellBorders? left, Egap.Documents.Layout.CellBorders? right) -> bool
 static Egap.Documents.Layout.FontSettings.Default.get -> Egap.Documents.Layout.FontSettings!
 static Egap.Documents.Layout.FontSubstitution.operator !=(Egap.Documents.Layout.FontSubstitution? left, Egap.Documents.Layout.FontSubstitution? right) -> bool
 static Egap.Documents.Layout.FontSubstitution.operator ==(Egap.Documents.Layout.FontSubstitution? left, Egap.Documents.Layout.FontSubstitution? right) -> bool

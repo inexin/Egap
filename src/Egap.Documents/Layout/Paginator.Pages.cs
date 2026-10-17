@@ -239,7 +239,7 @@ internal sealed partial class Paginator
 
                 case Table table:
                     {
-                        TableBox box = LayTable(table, x, at, width, double.PositiveInfinity, 0, out _);
+                        TableBox box = LayTable(table, x, at, width);
                         boxes.Add(box);
                         at = box.Bounds.Bottom;
                         break;
@@ -248,36 +248,5 @@ internal sealed partial class Paginator
         }
 
         return (boxes, at - top);
-    }
-
-    private void FlowTable(Table table)
-    {
-        int row = 0;
-        while (row < table.Rows.Count)
-        {
-            ColumnGeometry geometry = Column;
-            TableBox box = LayTable(table, geometry.X, y, geometry.Width, ColumnBottom, row, out int next);
-            if (next == row && !AtColumnTop)
-            {
-                // Not even one row fits here: the table goes on in the next column.
-                NextColumn();
-                continue;
-            }
-
-            if (next == row)
-            {
-                // A row taller than an empty column is placed anyway, so layout moves on.
-                box = LayTable(table, geometry.X, y, geometry.Width, double.PositiveInfinity, row, out _, maxRows: 1);
-                next = row + 1;
-            }
-
-            page!.Add(column, box);
-            y = box.Bounds.Bottom;
-            row = next;
-            if (row < table.Rows.Count)
-            {
-                NextColumn();
-            }
-        }
     }
 }

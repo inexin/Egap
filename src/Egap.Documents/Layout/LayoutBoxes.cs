@@ -173,11 +173,22 @@ public sealed class RowBox : LayoutBox
     public bool IsRepeatedHeader { get; }
 }
 
-/// <summary>A table cell, with its blocks.</summary>
+/// <summary>A table cell, with its blocks, borders and shading.</summary>
 public sealed class CellBox : LayoutBox
 {
-    internal CellBox(Cell cell, LayoutRect bounds, IReadOnlyList<LayoutBox> blocks)
+    internal CellBox(Cell cell, LayoutRect bounds, IReadOnlyList<LayoutBox> blocks, CellBorders borders, Egami.Pixels.Rgba8? fill)
         : base(cell, bounds, blocks)
     {
+        Borders = borders;
+        Fill = fill;
     }
+
+    /// <summary>The cell.</summary>
+    public Cell Cell => (Cell)Node!;
+
+    /// <summary>The cell's borders: its own where it has them, else the table's inside or outside borders.</summary>
+    public CellBorders Borders { get; }
+
+    /// <summary>The cell's background colour, or null for none.</summary>
+    public Egami.Pixels.Rgba8? Fill { get; }
 }
