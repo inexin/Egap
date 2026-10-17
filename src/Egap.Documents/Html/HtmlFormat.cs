@@ -22,6 +22,12 @@ public sealed class HtmlLoadOptions
 
     /// <summary>Style sheets applied as the user's, after the user agent's and before the page's own.</summary>
     public IReadOnlyList<string> UserStyleSheets { get; init; } = [];
+
+    /// <summary>
+    /// The limits kept on untrusted pages: the largest page (<see cref="DocumentLimits.MaxPartSize"/>) and how deep elements
+    /// are read as structure (<see cref="DocumentLimits.MaxDepth"/>; deeper content is kept as plain text).
+    /// </summary>
+    public DocumentLimits Limits { get; init; } = new();
 }
 
 /// <summary>How the model is written as HTML (Phase 6 design Q16).</summary>
@@ -57,8 +63,14 @@ public static class HtmlFormat
     public static Document Parse(string html, out IReadOnlyList<ConversionWarning> warnings, HtmlLoadOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(html);
+        options ??= new HtmlLoadOptions();
+        if ((long)html.Length * 2 > options.Limits.MaxPartSize)
+        {
+            throw new DocumentLimitException($"The page is larger than the limit of {options.Limits.MaxPartSize} bytes.");
+        }
+
         HtmlDocument dom = HtmlTreeBuilder.Parse(html);
-        return HtmlReader.Read(dom, options ?? new HtmlLoadOptions(), out warnings);
+        return HtmlReader.Read(dom, options, out warnings);
     }
 
     /// <summary>Reads an HTML file; its encoding is sniffed unless the options name one.</summary>
@@ -111,6 +123,11 @@ public static class HtmlFormat
     public static Document Load(ReadOnlySpan<byte> html, out IReadOnlyList<ConversionWarning> warnings, HtmlLoadOptions? options = null)
     {
         options ??= new HtmlLoadOptions();
+        if (html.Length > options.Limits.MaxPartSize)
+        {
+            throw new DocumentLimitException($"The page is larger than the limit of {options.Limits.MaxPartSize} bytes.");
+        }
+
         HtmlDocument dom = HtmlTreeBuilder.Parse(html, out _, options.Encoding);
         return HtmlReader.Read(dom, options, out warnings);
     }

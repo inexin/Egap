@@ -13,6 +13,7 @@ internal static class Targets
         ["package"] = Package,
         ["docx"] = DocxFile,
         ["html"] = Html,
+        ["layout"] = LayoutTarget,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -93,6 +94,40 @@ internal static class Targets
                 {
                     Visit(content);
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Any bytes laid out and drawn: as DOCX when they are a package, else as HTML, then each page rendered small. The layout
+    /// may throw nothing at all, whatever the reader made (Build Plan task 28).
+    /// </summary>
+    private static void LayoutTarget(Stream input)
+    {
+        using MemoryStream bytes = new();
+        input.CopyTo(bytes);
+        byte[] data = bytes.ToArray();
+        Document document;
+        try
+        {
+            bool package = data.Length > 2 && data[0] == (byte)'P' && data[1] == (byte)'K';
+            bool wordXml = !package && data.AsSpan().IndexOf("w:document"u8) >= 0;
+            document = package || wordXml
+                ? Egap.Documents.Docx.DocxFormat.Load(package ? new MemoryStream(data) : Wrap(data), new Egap.Documents.Docx.DocxLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 } })
+                : HtmlFormat.Load(data, out _);
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+
+        Egap.Documents.Layout.DocumentLayout layout = document.Layout(new Egap.Documents.Layout.LayoutOptions { Fonts = new Egap.Documents.Layout.FontSettings { UseSystemFonts = false } });
+        foreach (Egap.Documents.Layout.PageLayout page in layout.Pages.Take(3))
+        {
+            _ = page.Render(6);
+            if (page.BodyLines.FirstOrDefault() is { } line)
+            {
+                _ = layout.HitTest(page, line.Bounds.X + 5, line.Bounds.Y + 1);
             }
         }
     }
