@@ -116,6 +116,23 @@ internal static class PageAnalysis
             }
         }
 
+        // Tables the tags give as plain paragraphs (Word drops a table's structure at times): ruled grids and partly ruled
+        // tables among the tagged text, kept only where they take whole paragraphs, two or more.
+        if (draft.FromTags && options.Tables != TableDetection.None && options.TableDetector is null)
+        {
+            foreach ((TableDraft table, List<BlockDraft> taken) in Untagged(draft, content, thresholds))
+            {
+                foreach (BlockDraft block in taken)
+                {
+                    draft.Blocks.Remove(block);
+                }
+
+                List<PageGlyph> glyphs = [.. Glyphs(table)];
+                draft.Tables.Add(table);
+                found.Add((table, glyphs.Min(g => place.GetValueOrDefault(g, int.MaxValue / 2))));
+            }
+        }
+
         // Figures among the images and drawings no earlier stage placed, with the text inside them.
         foreach (FigureDraft figure in FigureFinder.Find(content, pool, draft.Tables, draft.Figures))
         {
@@ -201,6 +218,52 @@ internal static class PageAnalysis
         draft.Renumber();
         List<BlockDraft> ordered = [.. draft.Blocks.Where(b => !b.Artifact).OrderBy(b => b.Order)];
         Layout.Paragraphs.JoinAcrossColumns(ordered, ordered);
+    }
+
+    /// <summary>
+    /// Ruled and partly ruled tables among a tagged page's text paragraphs, each with the paragraphs it takes: only tables
+    /// whose paragraphs each sit whole in one cell, two or more, with at least half the rows holding two cells or more, so
+    /// prose in a frame, a list between rules or text that runs past a rule never becomes a table.
+    /// </summary>
+    internal static List<(TableDraft Table, List<BlockDraft> Taken)> Untagged(PageDraft draft, PageContent content, LayoutThresholds thresholds)
+    {
+        List<BlockDraft> text = [.. draft.Blocks.Where(b => b.Tag is not null && b.Role == LayoutRole.Text)];
+        List<PageGlyph> glyphs = [.. text.SelectMany(b => b.Lines).SelectMany(l => l.Words).SelectMany(w => w.Glyphs)];
+        List<(TableDraft, List<BlockDraft>)> tables = [];
+        if (glyphs.Count == 0)
+        {
+            return tables;
+        }
+
+        (List<TableDraft> ruled, List<TableHint> hints) = RuledTables.Find(content.Paths, glyphs, content.Images);
+        foreach (TableDraft table in ruled.Concat(BorderlessTables.Find(glyphs, hints, [], thresholds, search: false)))
+        {
+            HashSet<PageGlyph> inside = new(Glyphs(table), ReferenceEqualityComparer.Instance);
+            List<BlockDraft> taken = [.. text.Where(b => b.Lines.SelectMany(l => l.Words).SelectMany(w => w.Glyphs).Any(inside.Contains))];
+            // A table tagged as paragraphs has one paragraph per cell, and most of its rows hold two cells or more; framed
+            // prose and lists between rules do not.
+            List<CellDraft> filled = [.. table.Cells.Where(c => c.Lines.Count > 0)];
+            Dictionary<PageGlyph, CellDraft> cellOf = new(ReferenceEqualityComparer.Instance);
+            foreach (CellDraft cell in filled)
+            {
+                foreach (PageGlyph glyph in cell.Lines.SelectMany(l => l.Words).SelectMany(w => w.Glyphs))
+                {
+                    cellOf[glyph] = cell;
+                }
+            }
+
+            List<IGrouping<int, CellDraft>> rows = [.. filled.GroupBy(c => c.Row)];
+            bool perCell = taken.All(b => b.Lines.SelectMany(l => l.Words).SelectMany(w => w.Glyphs).Where(g => !g.IsSpace)
+                .Select(g => cellOf.GetValueOrDefault(g)).Distinct().Count() == 1);
+            if (perCell && rows.Count >= 2 && rows.Count(r => r.Count() >= 2) * 2 >= rows.Count
+                && taken.Count >= 2 && taken.All(b => b.Lines.SelectMany(l => l.Words).SelectMany(w => w.Glyphs).Where(g => !g.IsSpace).All(inside.Contains)))
+            {
+                text.RemoveAll(taken.Contains);
+                tables.Add((table, taken));
+            }
+        }
+
+        return tables;
     }
 
     private static IEnumerable<PageGlyph> Glyphs(TableDraft table)

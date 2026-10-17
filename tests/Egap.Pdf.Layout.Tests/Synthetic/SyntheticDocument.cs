@@ -76,6 +76,9 @@ internal sealed class SyntheticDocument
     /// <summary>Whether merged cells' tags carry RowSpan and ColSpan attributes; Word writes none, so false is Word's way.</summary>
     public bool SpanAttributes { get; init; } = true;
 
+    /// <summary>Whether tables are tagged as a P per cell instead of Table, TR and TD, as Word sometimes does.</summary>
+    public bool TablesAsParagraphs { get; init; }
+
     public int PageCount => drawings.Count;
 
     /// <summary>Whether the document gets a structure tree.</summary>
@@ -238,7 +241,7 @@ internal sealed class SyntheticDocument
         int partFirst = 0;
         bool continues = false;
         List<int> partRows = [];
-        TagSpec? table = Child(root, "Table");
+        TagSpec? table = TablesAsParagraphs ? root : Child(root, "Table");
         listItems.Clear();
         void ClosePart()
         {
@@ -378,7 +381,7 @@ internal sealed class SyntheticDocument
 
             // A header row drawn again on a later page is an artifact; the table element has it once.
             bool again = repeated && r < headerRows;
-            TagSpec? row = again ? null : Child(table, "TR");
+            TagSpec? row = again ? null : TablesAsParagraphs ? table : Child(table, "TR");
             for (int c = 0; c < widths.Length; c++)
             {
                 if (merges.Any(m => r >= m.Row && r < m.Row + m.RowSpan && c >= m.Column && c < m.Column + m.ColumnSpan && (r, c) != (m.Row, m.Column)))
@@ -391,7 +394,7 @@ internal sealed class SyntheticDocument
                 string text = rows[r][c];
                 double cellTop = top + (i * rowHeight), cellBottom = cellTop + (rowSpan * rowHeight);
                 double cellLeft = xs[c], cellRight = xs[c + colSpan];
-                TagSpec? cell = again ? null : Child(row, header ? "TH" : "TD");
+                TagSpec? cell = again ? null : Child(row, TablesAsParagraphs ? "P" : header ? "TH" : "TD");
                 if (cell is not null && (rowSpan > 1 || colSpan > 1))
                 {
                     cell.RowSpan = rowSpan;

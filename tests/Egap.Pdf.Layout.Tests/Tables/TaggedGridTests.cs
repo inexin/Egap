@@ -54,6 +54,25 @@ public sealed class TaggedGridTests
     }
 
     [Fact]
+    public void ARuledTableTaggedAsParagraphsIsStillATable()
+    {
+        SyntheticDocument doc = new(tagged: true) { TablesAsParagraphs = true };
+        doc.Paragraph("The results by region follow.");
+        doc.Table(
+        [
+            ["Region", "2024", "2025"],
+            ["North", "120", "135"],
+            ["South", "98", "104"],
+        ], [120, 80, 80], TruthRules.All);
+        using PdfDocument pdf = PdfDocument.Open(doc.Save());
+
+        LayoutTable table = Assert.Single(PdfLayoutAnalyzer.Analyze(pdf, 0).Tables);
+
+        Assert.Equal((3, 3), (table.RowCount, table.ColumnCount));
+        Assert.Contains(table.Cells, c => (c.Row, c.Column, c.Text) == (2, 2, "104"));
+    }
+
+    [Fact]
     public void AnEmptyRuledTableComesBackOnItsGrid()
     {
         SyntheticDocument doc = new(tagged: true) { SpanAttributes = false };
