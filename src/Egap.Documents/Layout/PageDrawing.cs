@@ -128,6 +128,29 @@ internal static class PageDrawing
         DrawBorders(canvas, framed, top, format.BorderLeft, bottom, format.BorderRight, theme);
     }
 
+    /// <summary>
+    /// The run with only its own text: a laid-out run carries its whole paragraph's text, and a canvas that writes text
+    /// (PDF's ToUnicode and ActualText) would give each line the paragraph's text.
+    /// </summary>
+    private static GlyphRun OwnText(GlyphRun glyphs, LayoutRun run)
+    {
+        if (glyphs.Text is not { } text || glyphs.Clusters.Length != glyphs.Count || !glyphs.Transforms.IsEmpty
+            || (run.Start <= 0 && run.Start + run.Length >= text.Length))
+        {
+            return glyphs;
+        }
+
+        int start = Math.Clamp(run.Start, 0, text.Length);
+        int length = Math.Clamp(run.Length, 0, text.Length - start);
+        int[] clusters = new int[glyphs.Count];
+        for (int i = 0; i < clusters.Length; i++)
+        {
+            clusters[i] = Math.Clamp(glyphs.Clusters[i] - start, 0, length);
+        }
+
+        return GlyphRun.Create(glyphs.Font, glyphs.Glyphs, glyphs.Positions, text.Substring(start, length), clusters);
+    }
+
     private static void DrawLine(LineBox line, Canvas canvas)
     {
         TextLine text = line.Line;
@@ -152,7 +175,7 @@ internal static class PageDrawing
             }
 
             TextStyle style = paragraph.GetStyle(run.StyleIndex);
-            canvas.DrawGlyphRun(glyphs, origin, style.Color ?? Black);
+            canvas.DrawGlyphRun(OwnText(glyphs, run), origin, style.Color ?? Black);
             if (style.Decoration is { } decoration && run.Advance > 0)
             {
                 DrawDecoration(canvas, decoration, style, origin.X + run.X, run.Advance, (float)line.Baseline - (style.BaselineShift ?? 0));
