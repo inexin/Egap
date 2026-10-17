@@ -23,7 +23,7 @@ public sealed class FuzzFindingTests
     {
         using PdfDocument pdf = PdfDocument.Open(Path.Combine(AppContext.BaseDirectory, "files", "fuzz", "layout-huge-path.pdf"));
 
-        foreach (ReconstructionMode mode in (ReconstructionMode[])[ReconstructionMode.Flow, ReconstructionMode.Exact])
+        foreach (PdfToDocumentMode mode in (PdfToDocumentMode[])[PdfToDocumentMode.Flow, PdfToDocumentMode.Exact])
         {
             DocxFormat.Save(PdfToDocument.Convert(pdf, new PdfToDocumentOptions { Mode = mode }, TestContext.Current.CancellationToken), Stream.Null);
         }

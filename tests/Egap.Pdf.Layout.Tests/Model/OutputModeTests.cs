@@ -24,7 +24,7 @@ public sealed partial class OutputModeTests
         SyntheticDocument doc = SyntheticScenes.All[scene]();
         using PdfDocument pdf = PdfDocument.Open(doc.Save());
 
-        Document model = PdfToDocument.Convert(pdf, new PdfToDocumentOptions { Mode = ReconstructionMode.Exact }, TestContext.Current.CancellationToken);
+        Document model = PdfToDocument.Convert(pdf, new PdfToDocumentOptions { Mode = PdfToDocumentMode.Exact }, TestContext.Current.CancellationToken);
 
         // One anchor paragraph a page, the later ones starting a page each.
         List<Paragraph> anchors = [.. model.Sections.SelectMany(s => s.Body.Paragraphs)];
@@ -51,7 +51,7 @@ public sealed partial class OutputModeTests
     {
         using PdfDocument pdf = PdfDocument.Open(SyntheticScenes.Tables().Save());
 
-        Document model = PdfToDocument.Convert(pdf, new PdfToDocumentOptions { Mode = ReconstructionMode.Exact }, TestContext.Current.CancellationToken);
+        Document model = PdfToDocument.Convert(pdf, new PdfToDocumentOptions { Mode = PdfToDocumentMode.Exact }, TestContext.Current.CancellationToken);
 
         Assert.Equal(3, model.Descendants<Table>().Count());
         Assert.All(model.Descendants<Table>(), t => Assert.IsType<TextBoxStory>(t.Parent));

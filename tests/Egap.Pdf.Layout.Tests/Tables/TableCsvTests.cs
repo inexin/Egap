@@ -9,7 +9,7 @@ public sealed class TableCsvTests
     public void ATableIsCsvWithMergedCellsOnceOrRepeated()
     {
         using PdfDocument pdf = PdfDocument.Open(SyntheticScenes.Tables().Save());
-        DetectedTable table = PdfLayoutAnalyzer.Analyze(pdf, 0).Tables[0];
+        LayoutTable table = PdfLayoutAnalyzer.Analyze(pdf, 0).Tables[0];
 
         string once = TableCsv.ToCsv(table);
         string repeated = TableCsv.ToCsv(table, new TableCsvOptions { RepeatMergedCells = true });
@@ -25,7 +25,7 @@ public sealed class TableCsvTests
     public void FieldsAreQuotedAsRfc4180Says()
     {
         using PdfDocument pdf = PdfDocument.Open(SyntheticScenes.Tables().Save());
-        DetectedTable table = PdfLayoutAnalyzer.Analyze(pdf, 0).Tables[1];
+        LayoutTable table = PdfLayoutAnalyzer.Analyze(pdf, 0).Tables[1];
 
         string semicolons = TableCsv.ToCsv(table, new TableCsvOptions { Separator = ';' });
         string commas = TableCsv.ToCsv(table);
@@ -40,11 +40,11 @@ public sealed class TableCsvTests
     {
         using PdfDocument pdf = PdfDocument.Open(SyntheticScenes.TableAcrossPages().Save());
 
-        IReadOnlyList<PdfTableCsv> tables = TableCsv.Export(PdfLayoutAnalyzer.Analyze(pdf, cancellationToken: TestContext.Current.CancellationToken));
-        IReadOnlyList<PdfTableCsv> bodies = TableCsv.Export(PdfLayoutAnalyzer.Analyze(pdf, cancellationToken: TestContext.Current.CancellationToken),
+        IReadOnlyList<TableCsvFile> tables = TableCsv.Export(PdfLayoutAnalyzer.Analyze(pdf, cancellationToken: TestContext.Current.CancellationToken));
+        IReadOnlyList<TableCsvFile> bodies = TableCsv.Export(PdfLayoutAnalyzer.Analyze(pdf, cancellationToken: TestContext.Current.CancellationToken),
             new TableCsvOptions { IncludeHeaderRows = false });
 
-        PdfTableCsv table = Assert.Single(tables);
+        TableCsvFile table = Assert.Single(tables);
         Assert.Equal((0, 1), (table.PageIndex, table.HeaderRows));
         string[] lines = table.Text.TrimEnd().Split("\r\n");
         Assert.Equal(61, lines.Length);
@@ -57,12 +57,12 @@ public sealed class TableCsvTests
     [Fact]
     public void QuotesSeparatorsAndLineBreaksAreQuoted()
     {
-        DetectedTable table = new(default, 0, 1, 1, 4, false, false, false,
+        LayoutTable table = new(default, 0, 1, 1, 4, false, false, false,
         [
-            new TableCell(0, 0, 1, 1, false, "a", default, []),
-            new TableCell(0, 1, 1, 1, false, "b,c", default, []),
-            new TableCell(0, 2, 1, 1, false, "say \"hi\"", default, []),
-            new TableCell(0, 3, 1, 1, false, "two\nlines", default, []),
+            new LayoutTableCell(0, 0, 1, 1, false, "a", default, []),
+            new LayoutTableCell(0, 1, 1, 1, false, "b,c", default, []),
+            new LayoutTableCell(0, 2, 1, 1, false, "say \"hi\"", default, []),
+            new LayoutTableCell(0, 3, 1, 1, false, "two\nlines", default, []),
         ]);
 
         Assert.Equal("a,\"b,c\",\"say \"\"hi\"\"\",\"two\nlines\"\r\n", TableCsv.ToCsv(table));

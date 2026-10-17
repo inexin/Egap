@@ -137,8 +137,8 @@ public static class PdfLayoutAnalyzer
                     elements.Add(new LayoutBlock(PageAnalysis.Rect(b.Box), order, b.Confidence, b.Role, b.Text, b.Level, b.Marker, b.Continues, [.. b.Lines.Select(Line)]));
                     break;
                 case TableDraft t:
-                    elements.Add(new DetectedTable(PageAnalysis.Rect(t.Box), order, t.Confidence, t.Rows, t.Columns, t.IsRuled, t.Continues, t.RepeatsHeader,
-                        [.. t.Cells.Select(c => new TableCell(c.Row, c.Column, c.RowSpan, c.ColumnSpan, c.Header, Paragraphs.Text(c.Lines), PageAnalysis.Rect(c.Box), [.. c.Lines.Select(Line)]))]));
+                    elements.Add(new LayoutTable(PageAnalysis.Rect(t.Box), order, t.Confidence, t.Rows, t.Columns, t.IsRuled, t.Continues, t.RepeatsHeader,
+                        [.. t.Cells.Select(c => new LayoutTableCell(c.Row, c.Column, c.RowSpan, c.ColumnSpan, c.Header, Paragraphs.Text(c.Lines), PageAnalysis.Rect(c.Box), [.. c.Lines.Select(Line)]))]));
                     break;
                 case FigureDraft f:
                     placed ??= f.Images.Count > 0 ? Placed(page) : null;

@@ -489,7 +489,7 @@ internal static class Targets
                     Count(page.FromTags ? "layout pages from tags" : "layout pages from geometry");
                 }
 
-                foreach (Egap.Pdf.Layout.ReconstructionMode mode in (Egap.Pdf.Layout.ReconstructionMode[])[Egap.Pdf.Layout.ReconstructionMode.Flow, Egap.Pdf.Layout.ReconstructionMode.Exact])
+                foreach (Egap.Pdf.Layout.PdfToDocumentMode mode in (Egap.Pdf.Layout.PdfToDocumentMode[])[Egap.Pdf.Layout.PdfToDocumentMode.Flow, Egap.Pdf.Layout.PdfToDocumentMode.Exact])
                 {
                     Egap.Documents.Document document = Egap.Pdf.Layout.PdfToDocument.Convert(pdf, new Egap.Pdf.Layout.PdfToDocumentOptions { Mode = mode, FigureResolution = 24 });
                     Egap.Documents.DocxFormat.Save(document, Stream.Null);

@@ -2,11 +2,12 @@ namespace Egap.Pdf.Layout;
 
 /// <summary>
 /// Every threshold the geometric stages use (design Q1: every threshold an option). Distances are in multiples of the text
-/// size unless they say otherwise, so they hold for any font size.
+/// size unless they say otherwise, so they hold for any font size. The defaults are tuned against the comparison data sets
+/// and may change in a minor version; the properties themselves stay.
 /// </summary>
 public sealed record LayoutThresholds
 {
-    /// <summary>The thresholds Egap uses unless told otherwise.</summary>
+    /// <summary>The thresholds Egap uses unless told otherwise; their values may change in a minor version as the analysis is tuned.</summary>
     public static LayoutThresholds Default { get; } = new();
 
     /// <summary>A gap inside a line wider than this many times the page's usual word gap, and than <see cref="GutterSize"/>, cuts the line (a column gutter or a table's column gap).</summary>

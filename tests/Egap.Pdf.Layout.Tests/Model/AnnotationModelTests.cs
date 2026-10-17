@@ -88,9 +88,9 @@ public sealed class AnnotationModelTests
     }
 
     [Theory]
-    [InlineData(ReconstructionMode.Flow)]
-    [InlineData(ReconstructionMode.Exact)]
-    public void AScannedPageIsAPictureWithAWarning(ReconstructionMode mode)
+    [InlineData(PdfToDocumentMode.Flow)]
+    [InlineData(PdfToDocumentMode.Exact)]
+    public void AScannedPageIsAPictureWithAWarning(PdfToDocumentMode mode)
     {
         using PdfDocument pdf = PdfDocument.Open(Make(canvas =>
         {

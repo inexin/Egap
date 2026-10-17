@@ -31,7 +31,7 @@ public sealed class PdfLayoutAnalyzerTests
             Assert.Equal(tagged, page.FromTags);
             List<TruthTable> tables = [.. doc.Tables.Where(t => t.Page == page.PageIndex)];
             Assert.Equal(tables.Count, page.Tables.Count);
-            foreach ((TruthTable truth, DetectedTable table) in tables.Zip(page.Tables))
+            foreach ((TruthTable truth, LayoutTable table) in tables.Zip(page.Tables))
             {
                 // A tagged header row drawn again is an artifact, so the tags' table leaves it out.
                 bool dropped = tagged && truth.RepeatsHeader;

@@ -10,7 +10,7 @@ namespace Egap.Pdf.Layout;
 /// <example>
 /// <code>
 /// using PdfDocument pdf = PdfDocument.Open("report.pdf");
-/// foreach (PdfTableCsv table in TableCsv.Export(PdfLayoutAnalyzer.Analyze(pdf)))
+/// foreach (TableCsvFile table in TableCsv.Export(PdfLayoutAnalyzer.Analyze(pdf)))
 /// {
 ///     File.WriteAllText($"table-{table.Index + 1}.csv", table.Text);
 /// }
@@ -19,7 +19,7 @@ namespace Egap.Pdf.Layout;
 public static class TableCsv
 {
     /// <summary>One table as CSV.</summary>
-    public static string ToCsv(DetectedTable table, TableCsvOptions? options = null)
+    public static string ToCsv(LayoutTable table, TableCsvOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(table);
         options ??= TableCsvOptions.Default;
@@ -28,14 +28,14 @@ public static class TableCsv
     }
 
     /// <summary>Every table of the pages as CSV, in reading order; a table carried on from the page before joins the one it carries on.</summary>
-    public static IReadOnlyList<PdfTableCsv> Export(IEnumerable<PdfPageLayout> pages, TableCsvOptions? options = null)
+    public static IReadOnlyList<TableCsvFile> Export(IEnumerable<PdfPageLayout> pages, TableCsvOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(pages);
         options ??= TableCsvOptions.Default;
         List<(int Page, int Headers, int Columns, List<string?[]> Rows)> tables = [];
         foreach (PdfPageLayout page in pages)
         {
-            foreach (DetectedTable table in page.Tables)
+            foreach (LayoutTable table in page.Tables)
             {
                 List<string?[]> rows = Grid(table, options);
                 if (table.ContinuesPrevious && tables.Count > 0 && tables[^1].Columns == table.ColumnCount)
@@ -50,14 +50,14 @@ public static class TableCsv
             }
         }
 
-        return [.. tables.Select((t, i) => new PdfTableCsv(i, t.Page, t.Headers, Write(t.Rows, t.Headers, options)))];
+        return [.. tables.Select((t, i) => new TableCsvFile(i, t.Page, t.Headers, Write(t.Rows, t.Headers, options)))];
     }
 
     /// <summary>The table's grid, a row of cell texts per row; a position a merged cell covers holds its text or null by the options.</summary>
-    private static List<string?[]> Grid(DetectedTable table, TableCsvOptions options)
+    private static List<string?[]> Grid(LayoutTable table, TableCsvOptions options)
     {
         List<string?[]> rows = [.. Enumerable.Range(0, table.RowCount).Select(_ => new string?[table.ColumnCount])];
-        foreach (TableCell cell in table.Cells)
+        foreach (LayoutTableCell cell in table.Cells)
         {
             for (int r = cell.Row; r < Math.Min(cell.Row + cell.RowSpan, table.RowCount); r++)
             {
@@ -76,7 +76,7 @@ public static class TableCsv
     }
 
     /// <summary>The leading rows whose cells are all header cells.</summary>
-    private static int Headers(DetectedTable table)
+    private static int Headers(LayoutTable table)
     {
         int rows = 0;
         while (rows < table.RowCount && table.Cells.Where(c => c.Row == rows).ToList() is { Count: > 0 } cells && cells.All(c => c.IsHeader))
@@ -130,7 +130,7 @@ public sealed record TableCsvOptions
     /// <summary>Whether a merged cell's text is repeated at every position it covers (better for a spreadsheet's filters) rather than written once with the rest left empty.</summary>
     public bool RepeatMergedCells { get; init; }
 
-    /// <summary>Whether the header rows are written; the count of them is in <see cref="PdfTableCsv.HeaderRows"/> either way.</summary>
+    /// <summary>Whether the header rows are written; the count of them is in <see cref="TableCsvFile.HeaderRows"/> either way.</summary>
     public bool IncludeHeaderRows { get; init; } = true;
 
     /// <summary>The field separator: a comma by default, a semicolon or a tab for software that wants one.</summary>
@@ -147,4 +147,4 @@ public sealed record TableCsvOptions
 /// <param name="PageIndex">The page it starts on, from 0.</param>
 /// <param name="HeaderRows">How many of its first rows are header rows (written or not, by <see cref="TableCsvOptions.IncludeHeaderRows"/>).</param>
 /// <param name="Text">The CSV: CRLF line ends, fields quoted where RFC 4180 needs it.</param>
-public sealed record PdfTableCsv(int Index, int PageIndex, int HeaderRows, string Text);
+public sealed record TableCsvFile(int Index, int PageIndex, int HeaderRows, string Text);

@@ -46,10 +46,10 @@ public sealed record PdfToDocumentOptions
     } = 200;
 
     /// <summary>How pages become the document: reflowing text by default, or every line placed where it was (design Q8).</summary>
-    public ReconstructionMode Mode { get; init; } = ReconstructionMode.Flow;
+    public PdfToDocumentMode Mode { get; init; } = PdfToDocumentMode.Flow;
 
     /// <summary>
-    /// In <see cref="ReconstructionMode.Flow"/>, blocks the analysis is less sure of than this (0 to 1) are kept where they
+    /// In <see cref="PdfToDocumentMode.Flow"/>, blocks the analysis is less sure of than this (0 to 1) are kept where they
     /// were as positioned text frames rather than reflowed. 0.5 by default; 0 reflows everything the analysis found.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">The value is not between 0 and 1.</exception>
@@ -70,7 +70,7 @@ public sealed record PdfToDocumentOptions
 }
 
 /// <summary>How <see cref="PdfToDocument"/> turns pages into a document (design Q8).</summary>
-public enum ReconstructionMode
+public enum PdfToDocumentMode
 {
     /// <summary>
     /// Reflowing paragraphs in sections, for editing. What cannot flow (text over a figure, a block the analysis is unsure
