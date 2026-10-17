@@ -90,6 +90,6 @@ public class ParagraphBridgeTests
         ParagraphContent content = Bridge(document).Build(paragraph);
 
         Assert.Equal(30, content.MaxFontSize);
-        Assert.Equal("", content.Text.Text);
+        Assert.Equal("\u200B", content.Text.Text);
     }
 }

@@ -294,6 +294,7 @@ Egap.Documents.Document.GetBookmarks() -> System.Collections.Generic.IEnumerable
 Egap.Documents.Document.GetFields() -> System.Collections.Generic.IEnumerable<Egap.Documents.Field!>!
 Egap.Documents.Document.Import(Egap.Documents.Node! node, bool deep = true) -> Egap.Documents.Node!
 Egap.Documents.Document.Import<T>(T! node, bool deep = true) -> T!
+Egap.Documents.Document.Layout(Egap.Documents.Layout.LayoutOptions? options = null) -> Egap.Documents.Layout.DocumentLayout!
 Egap.Documents.Document.Lists.get -> Egap.Documents.ListCollection!
 Egap.Documents.Document.Properties.get -> Egap.Documents.DocumentProperties!
 Egap.Documents.Document.Revisions.get -> Egap.Documents.TrackedChangeCollection!
@@ -672,6 +673,15 @@ Egap.Documents.IslandKind.Other = 0 -> Egap.Documents.IslandKind
 Egap.Documents.IslandKind.ShapeGroup = 6 -> Egap.Documents.IslandKind
 Egap.Documents.IslandKind.SmartArt = 3 -> Egap.Documents.IslandKind
 Egap.Documents.IslandKind.Vml = 7 -> Egap.Documents.IslandKind
+Egap.Documents.Layout.AreaBox
+Egap.Documents.Layout.AreaBox.Area.get -> Egap.Documents.Layout.PageArea
+Egap.Documents.Layout.CellBox
+Egap.Documents.Layout.DocumentLayout
+Egap.Documents.Layout.DocumentLayout.Document.get -> Egap.Documents.Document!
+Egap.Documents.Layout.DocumentLayout.FindBoxes(Egap.Documents.Node! node) -> System.Collections.Generic.IReadOnlyList<(Egap.Documents.Layout.PageLayout! Page, Egap.Documents.Layout.LayoutBox! Box)>!
+Egap.Documents.Layout.DocumentLayout.FontSubstitutions.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.FontSubstitution!>!
+Egap.Documents.Layout.DocumentLayout.PageOf(Egap.Documents.Node! node) -> Egap.Documents.Layout.PageLayout?
+Egap.Documents.Layout.DocumentLayout.Pages.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.PageLayout!>!
 Egap.Documents.Layout.FontSettings
 Egap.Documents.Layout.FontSettings.Collections.get -> System.Collections.Generic.IList<Egami.Fonts.FontCollection!>!
 Egap.Documents.Layout.FontSettings.FontSettings() -> void
@@ -699,6 +709,58 @@ Egap.Documents.Layout.FontSubstitutionReason
 Egap.Documents.Layout.FontSubstitutionReason.GlyphFallback = 2 -> Egap.Documents.Layout.FontSubstitutionReason
 Egap.Documents.Layout.FontSubstitutionReason.Missing = 0 -> Egap.Documents.Layout.FontSubstitutionReason
 Egap.Documents.Layout.FontSubstitutionReason.Synthesized = 1 -> Egap.Documents.Layout.FontSubstitutionReason
+Egap.Documents.Layout.LayoutBox
+Egap.Documents.Layout.LayoutBox.Bounds.get -> Egap.Documents.Layout.LayoutRect
+Egap.Documents.Layout.LayoutBox.Children.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutBox!>!
+Egap.Documents.Layout.LayoutBox.Descendants() -> System.Collections.Generic.IEnumerable<Egap.Documents.Layout.LayoutBox!>!
+Egap.Documents.Layout.LayoutBox.Node.get -> Egap.Documents.Node?
+Egap.Documents.Layout.LayoutOptions
+Egap.Documents.Layout.LayoutOptions.Fonts.get -> Egap.Documents.Layout.FontSettings?
+Egap.Documents.Layout.LayoutOptions.Fonts.init -> void
+Egap.Documents.Layout.LayoutOptions.LayoutOptions() -> void
+Egap.Documents.Layout.LayoutRect
+Egap.Documents.Layout.LayoutRect.Bottom.get -> double
+Egap.Documents.Layout.LayoutRect.Contains(double x, double y) -> bool
+Egap.Documents.Layout.LayoutRect.Deconstruct(out double X, out double Y, out double Width, out double Height) -> void
+Egap.Documents.Layout.LayoutRect.Equals(Egap.Documents.Layout.LayoutRect other) -> bool
+Egap.Documents.Layout.LayoutRect.Height.get -> double
+Egap.Documents.Layout.LayoutRect.Height.init -> void
+Egap.Documents.Layout.LayoutRect.LayoutRect() -> void
+Egap.Documents.Layout.LayoutRect.LayoutRect(double X, double Y, double Width, double Height) -> void
+Egap.Documents.Layout.LayoutRect.Right.get -> double
+Egap.Documents.Layout.LayoutRect.Width.get -> double
+Egap.Documents.Layout.LayoutRect.Width.init -> void
+Egap.Documents.Layout.LayoutRect.X.get -> double
+Egap.Documents.Layout.LayoutRect.X.init -> void
+Egap.Documents.Layout.LayoutRect.Y.get -> double
+Egap.Documents.Layout.LayoutRect.Y.init -> void
+Egap.Documents.Layout.LineBox
+Egap.Documents.Layout.LineBox.Baseline.get -> double
+Egap.Documents.Layout.LineBox.Line.get -> Egami.Fonts.Layout.TextLine!
+Egap.Documents.Layout.LineBox.Text.get -> string!
+Egap.Documents.Layout.ObjectBox
+Egap.Documents.Layout.ObjectBox.IsFloating.get -> bool
+Egap.Documents.Layout.PageArea
+Egap.Documents.Layout.PageArea.Body = 0 -> Egap.Documents.Layout.PageArea
+Egap.Documents.Layout.PageArea.Footer = 2 -> Egap.Documents.Layout.PageArea
+Egap.Documents.Layout.PageArea.Header = 1 -> Egap.Documents.Layout.PageArea
+Egap.Documents.Layout.PageArea.Notes = 3 -> Egap.Documents.Layout.PageArea
+Egap.Documents.Layout.PageLayout
+Egap.Documents.Layout.PageLayout.BodyLines.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Layout.LineBox!>!
+Egap.Documents.Layout.PageLayout.Boxes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutBox!>!
+Egap.Documents.Layout.PageLayout.Height.get -> double
+Egap.Documents.Layout.PageLayout.Index.get -> int
+Egap.Documents.Layout.PageLayout.Number.get -> string!
+Egap.Documents.Layout.PageLayout.Section.get -> Egap.Documents.Section!
+Egap.Documents.Layout.PageLayout.Width.get -> double
+Egap.Documents.Layout.ParagraphBox
+Egap.Documents.Layout.ParagraphBox.Continues.get -> bool
+Egap.Documents.Layout.ParagraphBox.IsContinuation.get -> bool
+Egap.Documents.Layout.ParagraphBox.Lines.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LineBox!>!
+Egap.Documents.Layout.ParagraphBox.Paragraph.get -> Egap.Documents.Paragraph!
+Egap.Documents.Layout.RowBox
+Egap.Documents.Layout.RowBox.IsRepeatedHeader.get -> bool
+Egap.Documents.Layout.TableBox
 Egap.Documents.LineSpacingRule
 Egap.Documents.LineSpacingRule.AtLeast = 1 -> Egap.Documents.LineSpacingRule
 Egap.Documents.LineSpacingRule.Exactly = 2 -> Egap.Documents.LineSpacingRule
@@ -1664,6 +1726,7 @@ override Egap.Documents.Island.Clone(bool deep = true) -> Egap.Documents.Island!
 override Egap.Documents.Layout.FontSubstitution.Equals(object? obj) -> bool
 override Egap.Documents.Layout.FontSubstitution.GetHashCode() -> int
 override Egap.Documents.Layout.FontSubstitution.ToString() -> string!
+override Egap.Documents.Layout.LayoutRect.GetHashCode() -> int
 override Egap.Documents.ListLabel.Equals(object? obj) -> bool
 override Egap.Documents.ListLabel.GetHashCode() -> int
 override Egap.Documents.ListLabel.ToString() -> string!
@@ -1727,6 +1790,8 @@ static Egap.Documents.ImageData.operator ==(Egap.Documents.ImageData? left, Egap
 static Egap.Documents.Layout.FontSettings.Default.get -> Egap.Documents.Layout.FontSettings!
 static Egap.Documents.Layout.FontSubstitution.operator !=(Egap.Documents.Layout.FontSubstitution? left, Egap.Documents.Layout.FontSubstitution? right) -> bool
 static Egap.Documents.Layout.FontSubstitution.operator ==(Egap.Documents.Layout.FontSubstitution? left, Egap.Documents.Layout.FontSubstitution? right) -> bool
+static Egap.Documents.Layout.LayoutRect.operator !=(Egap.Documents.Layout.LayoutRect left, Egap.Documents.Layout.LayoutRect right) -> bool
+static Egap.Documents.Layout.LayoutRect.operator ==(Egap.Documents.Layout.LayoutRect left, Egap.Documents.Layout.LayoutRect right) -> bool
 static Egap.Documents.List.None.get -> Egap.Documents.List!
 static Egap.Documents.ListLabel.operator !=(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
 static Egap.Documents.ListLabel.operator ==(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
@@ -1792,5 +1857,7 @@ virtual Egap.Documents.DocumentVisitor.VisitTableEnd(Egap.Documents.Table! table
 virtual Egap.Documents.DocumentVisitor.VisitTableStart(Egap.Documents.Table! table) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.Node.Clone(bool deep = true) -> Egap.Documents.Node!
 ~override Egap.Documents.DocumentColor.Equals(object obj) -> bool
+~override Egap.Documents.Layout.LayoutRect.Equals(object obj) -> bool
+~override Egap.Documents.Layout.LayoutRect.ToString() -> string
 ~override Egap.Documents.TableWidth.Equals(object obj) -> bool
 ~override Egap.Documents.TableWidth.ToString() -> string

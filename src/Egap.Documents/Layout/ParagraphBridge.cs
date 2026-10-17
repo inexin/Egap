@@ -66,7 +66,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
 {
     private readonly Dictionary<string, IReadOnlyList<FontFamily>> families = new(StringComparer.OrdinalIgnoreCase);
 
-    public ParagraphContent Build(Paragraph paragraph)
+    /// <param name="paragraph">The paragraph.</param>
+    /// <param name="pageField">The text of a page field (PAGE, NUMPAGES, SECTIONPAGES) on the page being laid out, or null to show its stored result.</param>
+    public ParagraphContent Build(Paragraph paragraph, Func<Field, string?>? pageField = null)
     {
         ResolvedParagraphFormat format = paragraph.GetEffectiveFormat();
         RichTextBuilder text = new();
@@ -77,6 +79,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         List<(Field, int, int)> pageFields = [];
         double maxSize = 0;
         Stack<(FieldStart Start, bool InCode, int ResultStart)> fields = new();
+        int replacing = 0;
         TextStyle? last = null;
 
         int labelLength = 0;
@@ -107,12 +110,15 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             maxSize = MarkSize(paragraph);
             if (text.Length == 0)
             {
+                // An empty paragraph still has a line, as tall as its mark's font: a zero-width space gives Egami one.
                 last = MarkStyle(paragraph);
+                text.Push(last).Append("\u200B").Pop();
             }
         }
 
         RichText rich = text.ToRichText();
-        EgamiParagraphStyle paragraphStyle = ParagraphStyleOf(format, last);
+        // Text outside every span (a placeholder's character) takes the default style, which must name fonts.
+        EgamiParagraphStyle paragraphStyle = ParagraphStyleOf(format, MarkStyle(paragraph));
         return new ParagraphContent
         {
             Source = paragraph,
@@ -131,7 +137,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         {
             foreach (Inline inline in inlines)
             {
-                bool inCode = fields.Count > 0 && fields.Peek().InCode;
+                bool inCode = (fields.Count > 0 && fields.Peek().InCode) || replacing > 0;
                 if (inline.Revision?.Removes == true && inline is not (FieldStart or FieldSeparator or FieldEnd))
                 {
                     // Layout shows the document with its changes accepted.
@@ -148,12 +154,25 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                         {
                             (FieldStart start, _, _) = fields.Pop();
                             fields.Push((start, false, text.Length));
+                            if (replacing == 0 && pageField is not null && start.GetField() is { Kind: FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages } field
+                                && pageField(field) is { } value)
+                            {
+                                // The layout's own number stands in for the stored result, in the result's first run's style.
+                                ResolvedRunFormat? resultFormat = field.ResultNodes.OfType<Run>().FirstOrDefault()?.GetEffectiveFormat();
+                                AddText(value, start, resultFormat is null ? last ?? MarkStyle(paragraph) : Style(paragraph, resultFormat));
+                                replacing = fields.Count;
+                            }
                         }
 
                         break;
                     case FieldEnd:
                         if (fields.Count > 0)
                         {
+                            if (replacing == fields.Count)
+                            {
+                                replacing = 0;
+                            }
+
                             (FieldStart start, bool code, int resultStart) = fields.Pop();
                             if (!code && start.GetField() is { Kind: FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages } field)
                             {
@@ -380,6 +399,11 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                 {
                     result.Add(family);
                 }
+            }
+
+            if (result.Count == 0 && fonts.ResolveFamily("Liberation Sans", style) is { } fallback)
+            {
+                result.Add(fallback);
             }
 
             list = result;
