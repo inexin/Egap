@@ -430,6 +430,42 @@ public sealed class PdfDocument : IDisposable
         return warnings;
     }
 
+    /// <summary>
+    /// Removes blank pages (Phase 7 design Q15): pages that paint nothing, and pages that render, without annotations, with
+    /// almost no pixel darker than white (see <see cref="BlankPageOptions"/>).
+    /// </summary>
+    /// <returns>How many pages were removed.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
+    public int RemoveBlankPages(BlankPageOptions? options = null)
+    {
+        ThrowIfReadOnly();
+        options ??= BlankPageOptions.Default;
+        if (options.MaxInkFraction is not (>= 0 and <= 1) || options.WhiteLevel is not (> 0 and <= 1) || !(options.Dpi is > 0 and <= 600))
+        {
+            throw new ArgumentOutOfRangeException(nameof(options), "MaxInkFraction must be 0 to 1, WhiteLevel above 0 and at most 1, and Dpi above 0 and at most 600.");
+        }
+
+        return Cleanup.PageCleanup.RemoveBlank(this, options);
+    }
+
+    /// <summary>
+    /// Straightens scanned pages (Phase 7 design Q14): pages that are one image covering most of the page have its skew found
+    /// and corrected with Egami's Deskew, keeping its size and its kind of encoding.
+    /// </summary>
+    /// <returns>How many pages were straightened.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">An angle is outside 0 to 45 degrees.</exception>
+    public int DeskewScannedPages(DeskewOptions? options = null)
+    {
+        ThrowIfReadOnly();
+        options ??= DeskewOptions.Default;
+        if (options.MaxAngle is not (> 0 and <= 45) || options.MinAngle is not (>= 0 and <= 45))
+        {
+            throw new ArgumentOutOfRangeException(nameof(options), "MaxAngle must be above 0 and at most 45, MinAngle 0 to 45.");
+        }
+
+        return Cleanup.PageCleanup.Deskew(this, options);
+    }
+
     /// <summary>The name of the file the document was opened from, or null.</summary>
     internal string? FileName => FilePath is string path ? Path.GetFileName(path) : null;
 

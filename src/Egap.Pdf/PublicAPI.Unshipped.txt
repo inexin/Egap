@@ -1,4 +1,14 @@
 #nullable enable
+Egap.Pdf.BlankPageOptions
+Egap.Pdf.BlankPageOptions.<Clone>$() -> Egap.Pdf.BlankPageOptions!
+Egap.Pdf.BlankPageOptions.BlankPageOptions() -> void
+Egap.Pdf.BlankPageOptions.Dpi.get -> double
+Egap.Pdf.BlankPageOptions.Dpi.init -> void
+Egap.Pdf.BlankPageOptions.Equals(Egap.Pdf.BlankPageOptions? other) -> bool
+Egap.Pdf.BlankPageOptions.MaxInkFraction.get -> double
+Egap.Pdf.BlankPageOptions.MaxInkFraction.init -> void
+Egap.Pdf.BlankPageOptions.WhiteLevel.get -> double
+Egap.Pdf.BlankPageOptions.WhiteLevel.init -> void
 Egap.Pdf.BookletBinding
 Egap.Pdf.BookletBinding.Left = 0 -> Egap.Pdf.BookletBinding
 Egap.Pdf.BookletBinding.Right = 1 -> Egap.Pdf.BookletBinding
@@ -14,6 +24,14 @@ Egap.Pdf.BookletOptions.Sheet.get -> Egap.Pdf.PdfPageSize
 Egap.Pdf.BookletOptions.Sheet.init -> void
 Egap.Pdf.BookletOptions.SheetsPerSignature.get -> int
 Egap.Pdf.BookletOptions.SheetsPerSignature.init -> void
+Egap.Pdf.DeskewOptions
+Egap.Pdf.DeskewOptions.<Clone>$() -> Egap.Pdf.DeskewOptions!
+Egap.Pdf.DeskewOptions.DeskewOptions() -> void
+Egap.Pdf.DeskewOptions.Equals(Egap.Pdf.DeskewOptions? other) -> bool
+Egap.Pdf.DeskewOptions.MaxAngle.get -> double
+Egap.Pdf.DeskewOptions.MaxAngle.init -> void
+Egap.Pdf.DeskewOptions.MinAngle.get -> double
+Egap.Pdf.DeskewOptions.MinAngle.init -> void
 Egap.Pdf.GridOptions
 Egap.Pdf.GridOptions.<Clone>$() -> Egap.Pdf.GridOptions!
 Egap.Pdf.GridOptions.Border.get -> bool
@@ -97,7 +115,9 @@ Egap.Pdf.PdfComparison.VisualChanges.get -> System.Collections.Generic.IReadOnly
 Egap.Pdf.PdfComparison.WriteMarkup(string! path) -> void
 Egap.Pdf.PdfComparison.WriteMarkup(System.IO.Stream! output) -> void
 Egap.Pdf.PdfDocument.ConvertToGray() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfDocument.DeskewScannedPages(Egap.Pdf.DeskewOptions? options = null) -> int
 Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null) -> Egap.Pdf.PdfOptimizeReport!
+Egap.Pdf.PdfDocument.RemoveBlankPages(Egap.Pdf.BlankPageOptions? options = null) -> int
 Egap.Pdf.PdfDocument.RemoveStamps() -> int
 Egap.Pdf.PdfDocument.Stamp(Egap.Pdf.PdfStamp! stamp) -> Egap.Pdf.PdfStampResult!
 Egap.Pdf.PdfFormXObject
@@ -304,9 +324,15 @@ Egap.Pdf.StampAnchor.MiddleRight = 5 -> Egap.Pdf.StampAnchor
 Egap.Pdf.StampAnchor.TopCenter = 1 -> Egap.Pdf.StampAnchor
 Egap.Pdf.StampAnchor.TopLeft = 0 -> Egap.Pdf.StampAnchor
 Egap.Pdf.StampAnchor.TopRight = 2 -> Egap.Pdf.StampAnchor
+override Egap.Pdf.BlankPageOptions.Equals(object? obj) -> bool
+override Egap.Pdf.BlankPageOptions.GetHashCode() -> int
+override Egap.Pdf.BlankPageOptions.ToString() -> string!
 override Egap.Pdf.BookletOptions.Equals(object? obj) -> bool
 override Egap.Pdf.BookletOptions.GetHashCode() -> int
 override Egap.Pdf.BookletOptions.ToString() -> string!
+override Egap.Pdf.DeskewOptions.Equals(object? obj) -> bool
+override Egap.Pdf.DeskewOptions.GetHashCode() -> int
+override Egap.Pdf.DeskewOptions.ToString() -> string!
 override Egap.Pdf.GridOptions.Equals(object? obj) -> bool
 override Egap.Pdf.GridOptions.GetHashCode() -> int
 override Egap.Pdf.GridOptions.ToString() -> string!
@@ -346,8 +372,14 @@ override Egap.Pdf.PdfTextChange.ToString() -> string!
 override Egap.Pdf.PosterOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PosterOptions.GetHashCode() -> int
 override Egap.Pdf.PosterOptions.ToString() -> string!
+static Egap.Pdf.BlankPageOptions.Default.get -> Egap.Pdf.BlankPageOptions!
+static Egap.Pdf.BlankPageOptions.operator !=(Egap.Pdf.BlankPageOptions? left, Egap.Pdf.BlankPageOptions? right) -> bool
+static Egap.Pdf.BlankPageOptions.operator ==(Egap.Pdf.BlankPageOptions? left, Egap.Pdf.BlankPageOptions? right) -> bool
 static Egap.Pdf.BookletOptions.operator !=(Egap.Pdf.BookletOptions? left, Egap.Pdf.BookletOptions? right) -> bool
 static Egap.Pdf.BookletOptions.operator ==(Egap.Pdf.BookletOptions? left, Egap.Pdf.BookletOptions? right) -> bool
+static Egap.Pdf.DeskewOptions.Default.get -> Egap.Pdf.DeskewOptions!
+static Egap.Pdf.DeskewOptions.operator !=(Egap.Pdf.DeskewOptions? left, Egap.Pdf.DeskewOptions? right) -> bool
+static Egap.Pdf.DeskewOptions.operator ==(Egap.Pdf.DeskewOptions? left, Egap.Pdf.DeskewOptions? right) -> bool
 static Egap.Pdf.GridOptions.operator !=(Egap.Pdf.GridOptions? left, Egap.Pdf.GridOptions? right) -> bool
 static Egap.Pdf.GridOptions.operator ==(Egap.Pdf.GridOptions? left, Egap.Pdf.GridOptions? right) -> bool
 static Egap.Pdf.NUpOptions.operator !=(Egap.Pdf.NUpOptions? left, Egap.Pdf.NUpOptions? right) -> bool
