@@ -42,8 +42,14 @@ internal static class FlateFilter
     /// <summary>Compresses with zlib (Flate) at the optimal level.</summary>
     public static byte[] Encode(ReadOnlySpan<byte> data)
     {
+        return Encode(data, CompressionLevel.Optimal);
+    }
+
+    /// <summary>Compresses with zlib (Flate) at a level; <see cref="CompressionLevel.SmallestSize"/> is zlib's level 9.</summary>
+    public static byte[] Encode(ReadOnlySpan<byte> data, CompressionLevel level)
+    {
         using MemoryStream result = new();
-        using (ZLibStream zlib = new(result, CompressionLevel.Optimal, leaveOpen: true))
+        using (ZLibStream zlib = new(result, level, leaveOpen: true))
         {
             zlib.Write(data);
         }
