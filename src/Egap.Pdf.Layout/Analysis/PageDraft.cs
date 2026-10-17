@@ -74,6 +74,12 @@ internal sealed class TableDraft(List<CellDraft> cells, int rows, int columns)
     /// <summary>Whether ruling lines drew the grid (task 7) rather than text alignment (task 8) or tags.</summary>
     public bool IsRuled { get; set; }
 
+    /// <summary>Whether the table carries on a table from the page before (task 8).</summary>
+    public bool Continues { get; set; }
+
+    /// <summary>Whether, carrying on, its first row repeats the earlier part's header.</summary>
+    public bool RepeatsHeader { get; set; }
+
     public int Order { get; set; }
 
     public double Confidence { get; set; } = 1;

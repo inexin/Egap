@@ -30,18 +30,24 @@ internal static class RuledTables
 
         // Horizontal rules no grid used, stacked over the same span with text between them: a partly ruled table's rules.
         HashSet<Rule> used = [.. tables.SelectMany(t => rules.Where(r => Inside(r, t.Box)))];
+        double wordGap = BlockBuilder.WordGap(PageReader.Lines(glyphs));
         foreach (IGrouping<(int, int), Rule> stack in rules.Where(r => r.Horizontal && !used.Contains(r) && r.To - r.From > 40)
             .GroupBy(r => ((int)Math.Round(r.From / 4), (int)Math.Round(r.To / 4))))
         {
-            List<Rule> rows = [.. stack.OrderBy(r => r.At)];
-            if (rows.Count >= 2)
+            // A stack splits where the text between two rules is not a table's: a caption, or body text set right across.
+            List<Rule> rows = [];
+            foreach (Rule rule in stack.OrderBy(r => r.At))
             {
-                PageBox box = new(rows.Min(r => r.From), rows[0].At, rows.Max(r => r.To), rows[^1].At);
-                if (glyphs.Any(g => !g.IsSpace && box.Contains(g.Box.CenterX, g.Box.CenterY)))
+                if (rows.Count > 0 && Between(rows[^1], rule, glyphs, wordGap))
                 {
-                    hints.Add(new TableHint(box, [.. rows.Select(r => r.At)]));
+                    Hint(rows, glyphs, hints);
+                    rows = [];
                 }
+
+                rows.Add(rule);
             }
+
+            Hint(rows, glyphs, hints);
         }
 
         return (tables, hints);
@@ -61,6 +67,36 @@ internal static class RuledTables
         }
 
         return grids;
+    }
+
+    /// <summary>Adds the hint a stack of two rules or more with text between them makes.</summary>
+    private static void Hint(List<Rule> rows, IReadOnlyList<PageGlyph> glyphs, List<TableHint> hints)
+    {
+        if (rows.Count >= 2)
+        {
+            PageBox box = new(rows.Min(r => r.From), rows[0].At, rows.Max(r => r.To), rows[^1].At);
+            if (glyphs.Any(g => !g.IsSpace && box.Contains(g.Box.CenterX, g.Box.CenterY)))
+            {
+                hints.Add(new TableHint(box, [.. rows.Select(r => r.At)]));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Whether the text between two stacked rules ends one table and starts another: it holds a caption ("Table 2"), or three
+    /// lines or more of body text that run right across the rules' span without a gap.
+    /// </summary>
+    private static bool Between(Rule upper, Rule lower, IReadOnlyList<PageGlyph> glyphs, double wordGap)
+    {
+        PageBox gap = new(Math.Max(upper.From, lower.From), upper.At, Math.Min(upper.To, lower.To), lower.At);
+        List<PageLine> lines = PageReader.Lines(glyphs.Where(g => gap.Contains(g.Box.CenterX, g.Box.CenterY)));
+        if (lines.Any(l => l.Text.TrimStart().StartsWith("Table", StringComparison.OrdinalIgnoreCase) && l.Text.Length > 6 && char.IsDigit(l.Text.TrimStart()[6..].TrimStart().FirstOrDefault())))
+        {
+            return true;
+        }
+
+        int prose = lines.Count(l => l.Box.Width > gap.Width * 0.8 && BlockBuilder.Cut(l, wordGap, LayoutThresholds.Default).Count() == 1);
+        return prose >= 3;
     }
 
     /// <summary>
