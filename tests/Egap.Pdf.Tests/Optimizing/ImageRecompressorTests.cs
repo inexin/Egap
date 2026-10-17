@@ -150,6 +150,98 @@ public sealed class ImageRecompressorTests
         Assert.Equal(original, stream.GetEncodedBytes());
     }
 
+    [Fact]
+    public void WritesBilevelScansAsGroupFourInEveryPreset()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        byte[] scan = Scan(1700, 2200, out _);
+        PdfStream eight = Image(1700, 2200, 1, scan);
+        Draw(pdf, eight, 612);
+
+        ImageChange change = Assert.IsType<ImageChange>(ImageRecompressor.Optimize(pdf, Survey(pdf), new ImageSettings { Lossy = false }));
+
+        Assert.Equal(("CCITT G4", 1700, 2200), (change.Encoding, change.NewWidth, change.NewHeight));
+        Assert.Equal("CCITTFaxDecode", eight.Dictionary.GetName("Filter")!.Value);
+        Assert.Equal(1, eight.Dictionary.GetInt("BitsPerComponent"));
+        Assert.True(change.NewBytes < change.OldBytes * 0.95, $"{change.NewBytes} of {change.OldBytes} bytes");
+        using Egami.Raster<Gray8> shown = new PdfImage(eight, null).ToRaster<Gray8>();
+        for (int i = 0; i < scan.Length; i += 13)
+        {
+            Assert.Equal(scan[i], shown.GetPixel(i % 1700, i / 1700).L);
+        }
+    }
+
+    [Fact]
+    public void GroupFourKeepsAStencilMaskAndItsDecode()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        Scan(800, 600, out byte[] packed);
+        PdfStream mask = new(new PdfDictionary
+        {
+            ["Type"] = PdfName.Get("XObject"),
+            ["Subtype"] = PdfName.Get("Image"),
+            ["Width"] = new PdfInteger(800),
+            ["Height"] = new PdfInteger(600),
+            ["ImageMask"] = PdfBoolean.Get(true),
+            ["Decode"] = new PdfArray { new PdfInteger(1), new PdfInteger(0) },
+        });
+        mask.SetDecodedBytes(packed, compress: false);
+        Draw(pdf, mask, 300);
+        using Egami.Raster<Rgba8> before = new PdfImage(mask, null).ToRaster<Rgba8>();
+
+        Assert.Equal("CCITT G4", ImageRecompressor.Optimize(pdf, Survey(pdf), Ebook)!.Encoding);
+
+        Assert.True(mask.Dictionary.GetBool("ImageMask"));
+        Assert.NotNull(mask.Dictionary.Get<PdfArray>("Decode"));
+        using Egami.Raster<Rgba8> after = new PdfImage(mask, null).ToRaster<Rgba8>();
+        for (int y = 0; y < 600; y += 7)
+        {
+            for (int x = 0; x < 800; x += 5)
+            {
+                Assert.Equal(before.GetPixel(x, y), after.GetPixel(x, y));
+            }
+        }
+    }
+
+    [Fact]
+    public void BlackAndWhiteRgbBecomesOneBitGray()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        byte[] gray = Scan(600, 400, out _);
+        PdfStream rgb = Image(600, 400, 3, [.. gray.SelectMany(v => new[] { v, v, v })]);
+        Draw(pdf, rgb, 300);
+
+        Assert.Equal("CCITT G4", ImageRecompressor.Optimize(pdf, Survey(pdf), Ebook)!.Encoding);
+        Assert.Equal("DeviceGray", rgb.Dictionary.GetName("ColorSpace")!.Value);
+        using Egami.Raster<Gray8> shown = new PdfImage(rgb, null).ToRaster<Gray8>();
+        Assert.Equal(gray[(200 * 600) + 300], shown.GetPixel(300, 200).L);
+    }
+
+    [Fact]
+    public void AnIndexedOneBitImageKeepsItsPalette()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        Scan(600, 400, out byte[] packed);
+        PdfStream indexed = new(new PdfDictionary
+        {
+            ["Type"] = PdfName.Get("XObject"),
+            ["Subtype"] = PdfName.Get("Image"),
+            ["Width"] = new PdfInteger(600),
+            ["Height"] = new PdfInteger(400),
+            ["BitsPerComponent"] = new PdfInteger(1),
+            ["ColorSpace"] = new PdfArray { PdfName.Get("Indexed"), PdfName.Get("DeviceRGB"), new PdfInteger(1), PdfString.FromBytes([200, 0, 0, 255, 255, 255], hex: true) },
+        });
+        indexed.SetDecodedBytes(packed, compress: false);
+        Draw(pdf, indexed, 300);
+        using Egami.Raster<Rgba8> before = new PdfImage(indexed, null).ToRaster<Rgba8>();
+
+        Assert.Equal("CCITT G4", ImageRecompressor.Optimize(pdf, Survey(pdf), Ebook)!.Encoding);
+        Assert.IsType<PdfArray>(indexed.Dictionary.Get("ColorSpace"));
+        using Egami.Raster<Rgba8> after = new PdfImage(indexed, null).ToRaster<Rgba8>();
+        Assert.Equal(before.GetPixel(123, 45), after.GetPixel(123, 45));
+        Assert.Equal(before.GetPixel(321, 210), after.GetPixel(321, 210));
+    }
+
     private static SurveyedImage Survey(PdfDocument pdf) => Assert.Single(ImageSurvey.Run(pdf));
 
     private static PdfReference Draw(PdfDocument pdf, PdfStream image, int points)
@@ -194,6 +286,73 @@ public sealed class ImageRecompressorTests
         }
 
         return bytes;
+    }
+
+    /// <summary>Text-like black strokes on white as 8-bit samples, and the same rows packed one bit a pixel (1 white).</summary>
+    private static byte[] Scan(int width, int height, out byte[] packed)
+    {
+        byte[] samples = new byte[width * height];
+        Array.Fill(samples, (byte)255);
+        // Lines of letter-sized boxes and rings with word gaps, as a page of text looks to a fax coder.
+        Random random = new(width);
+        for (int line = 30; line + 40 < height; line += 48)
+        {
+            int x = 40;
+            while (x < width - 60)
+            {
+                int letters = random.Next(2, 9);
+                for (int l = 0; l < letters && x < width - 40; l++)
+                {
+                    int w = random.Next(10, 20), h = random.Next(0, 2) == 0 ? 22 : 30, top = line + 30 - h;
+                    bool ring = random.Next(0, 2) == 0;
+                    for (int y = top; y < line + 30; y++)
+                    {
+                        for (int dx = 0; dx < w; dx++)
+                        {
+                            bool edge = dx < 3 || dx >= w - 3 || y < top + 3 || y >= line + 27;
+                            if (!ring || edge)
+                            {
+                                samples[(y * width) + x + dx] = 0;
+                            }
+                        }
+                    }
+
+                    x += w + random.Next(3, 6);
+                }
+
+                x += random.Next(14, 24);
+            }
+        }
+
+        // Ragged edges, as a scanner leaves them: edge pixels flip at random.
+        byte[] clean = (byte[])samples.Clone();
+        for (int y = 1; y < height - 1; y++)
+        {
+            for (int x = 1; x < width - 1; x++)
+            {
+                int i = (y * width) + x;
+                bool edge = clean[i] != clean[i - 1] || clean[i] != clean[i + 1] || clean[i] != clean[i - width] || clean[i] != clean[i + width];
+                if (edge && random.Next(3) == 0)
+                {
+                    samples[i] = (byte)(255 - clean[i]);
+                }
+            }
+        }
+
+        int rowBytes = (width + 7) / 8;
+        packed = new byte[rowBytes * height];
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (samples[(y * width) + x] != 0)
+                {
+                    packed[(y * rowBytes) + (x >> 3)] |= (byte)(0x80 >> (x & 7));
+                }
+            }
+        }
+
+        return samples;
     }
 
     private static byte[] Bars(int width, int height)
