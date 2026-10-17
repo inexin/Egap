@@ -1,1 +1,100 @@
 #nullable enable
+Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null) -> Egap.Pdf.PdfOptimizeReport!
+Egap.Pdf.PdfOptimizedImage
+Egap.Pdf.PdfOptimizedImage.<Clone>$() -> Egap.Pdf.PdfOptimizedImage!
+Egap.Pdf.PdfOptimizedImage.Deconstruct(out int Page, out int OldWidth, out int OldHeight, out int NewWidth, out int NewHeight, out long OldBytes, out long NewBytes, out double? OldResolution, out double? NewResolution, out string! Encoding) -> void
+Egap.Pdf.PdfOptimizedImage.Encoding.get -> string!
+Egap.Pdf.PdfOptimizedImage.Encoding.init -> void
+Egap.Pdf.PdfOptimizedImage.Equals(Egap.Pdf.PdfOptimizedImage? other) -> bool
+Egap.Pdf.PdfOptimizedImage.NewBytes.get -> long
+Egap.Pdf.PdfOptimizedImage.NewBytes.init -> void
+Egap.Pdf.PdfOptimizedImage.NewHeight.get -> int
+Egap.Pdf.PdfOptimizedImage.NewHeight.init -> void
+Egap.Pdf.PdfOptimizedImage.NewResolution.get -> double?
+Egap.Pdf.PdfOptimizedImage.NewResolution.init -> void
+Egap.Pdf.PdfOptimizedImage.NewWidth.get -> int
+Egap.Pdf.PdfOptimizedImage.NewWidth.init -> void
+Egap.Pdf.PdfOptimizedImage.OldBytes.get -> long
+Egap.Pdf.PdfOptimizedImage.OldBytes.init -> void
+Egap.Pdf.PdfOptimizedImage.OldHeight.get -> int
+Egap.Pdf.PdfOptimizedImage.OldHeight.init -> void
+Egap.Pdf.PdfOptimizedImage.OldResolution.get -> double?
+Egap.Pdf.PdfOptimizedImage.OldResolution.init -> void
+Egap.Pdf.PdfOptimizedImage.OldWidth.get -> int
+Egap.Pdf.PdfOptimizedImage.OldWidth.init -> void
+Egap.Pdf.PdfOptimizedImage.Page.get -> int
+Egap.Pdf.PdfOptimizedImage.Page.init -> void
+Egap.Pdf.PdfOptimizedImage.PdfOptimizedImage(int Page, int OldWidth, int OldHeight, int NewWidth, int NewHeight, long OldBytes, long NewBytes, double? OldResolution, double? NewResolution, string! Encoding) -> void
+Egap.Pdf.PdfOptimizeOptions
+Egap.Pdf.PdfOptimizeOptions.<Clone>$() -> Egap.Pdf.PdfOptimizeOptions!
+Egap.Pdf.PdfOptimizeOptions.AllowInvalidatingSignatures.get -> bool
+Egap.Pdf.PdfOptimizeOptions.AllowInvalidatingSignatures.init -> void
+Egap.Pdf.PdfOptimizeOptions.DownsampleThreshold.get -> double
+Egap.Pdf.PdfOptimizeOptions.DownsampleThreshold.init -> void
+Egap.Pdf.PdfOptimizeOptions.Equals(Egap.Pdf.PdfOptimizeOptions? other) -> bool
+Egap.Pdf.PdfOptimizeOptions.ImageResolution.get -> double?
+Egap.Pdf.PdfOptimizeOptions.ImageResolution.init -> void
+Egap.Pdf.PdfOptimizeOptions.JpegQuality.get -> int
+Egap.Pdf.PdfOptimizeOptions.JpegQuality.init -> void
+Egap.Pdf.PdfOptimizeOptions.LossyImages.get -> bool
+Egap.Pdf.PdfOptimizeOptions.LossyImages.init -> void
+Egap.Pdf.PdfOptimizeOptions.MergeDuplicates.get -> bool
+Egap.Pdf.PdfOptimizeOptions.MergeDuplicates.init -> void
+Egap.Pdf.PdfOptimizeOptions.OptimizeImages.get -> bool
+Egap.Pdf.PdfOptimizeOptions.OptimizeImages.init -> void
+Egap.Pdf.PdfOptimizeOptions.PdfOptimizeOptions() -> void
+Egap.Pdf.PdfOptimizeOptions.RemoveEmptyContent.get -> bool
+Egap.Pdf.PdfOptimizeOptions.RemoveEmptyContent.init -> void
+Egap.Pdf.PdfOptimizeOptions.RemovePrivateData.get -> bool
+Egap.Pdf.PdfOptimizeOptions.RemovePrivateData.init -> void
+Egap.Pdf.PdfOptimizeOptions.RemoveThumbnails.get -> bool
+Egap.Pdf.PdfOptimizeOptions.RemoveThumbnails.init -> void
+Egap.Pdf.PdfOptimizeOptions.SubsetFonts.get -> bool
+Egap.Pdf.PdfOptimizeOptions.SubsetFonts.init -> void
+Egap.Pdf.PdfOptimizeReport
+Egap.Pdf.PdfOptimizeReport.BytesAfter.get -> long
+Egap.Pdf.PdfOptimizeReport.BytesBefore.get -> long
+Egap.Pdf.PdfOptimizeReport.Images.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfOptimizedImage!>!
+Egap.Pdf.PdfOptimizeReport.Savings.get -> Egap.Pdf.PdfOptimizeSavings!
+Egap.Pdf.PdfOptimizeReport.Skipped.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfOptimizeSavings
+Egap.Pdf.PdfOptimizeSavings.<Clone>$() -> Egap.Pdf.PdfOptimizeSavings!
+Egap.Pdf.PdfOptimizeSavings.Deconstruct(out long ImageBytes, out int StreamsMerged, out long MergedBytes, out int FontsSubset, out long FontBytes, out int ThumbnailsRemoved, out int PrivateDataRemoved, out int EmptyContentRemoved) -> void
+Egap.Pdf.PdfOptimizeSavings.EmptyContentRemoved.get -> int
+Egap.Pdf.PdfOptimizeSavings.EmptyContentRemoved.init -> void
+Egap.Pdf.PdfOptimizeSavings.Equals(Egap.Pdf.PdfOptimizeSavings? other) -> bool
+Egap.Pdf.PdfOptimizeSavings.FontBytes.get -> long
+Egap.Pdf.PdfOptimizeSavings.FontBytes.init -> void
+Egap.Pdf.PdfOptimizeSavings.FontsSubset.get -> int
+Egap.Pdf.PdfOptimizeSavings.FontsSubset.init -> void
+Egap.Pdf.PdfOptimizeSavings.ImageBytes.get -> long
+Egap.Pdf.PdfOptimizeSavings.ImageBytes.init -> void
+Egap.Pdf.PdfOptimizeSavings.MergedBytes.get -> long
+Egap.Pdf.PdfOptimizeSavings.MergedBytes.init -> void
+Egap.Pdf.PdfOptimizeSavings.PdfOptimizeSavings(long ImageBytes, int StreamsMerged, long MergedBytes, int FontsSubset, long FontBytes, int ThumbnailsRemoved, int PrivateDataRemoved, int EmptyContentRemoved) -> void
+Egap.Pdf.PdfOptimizeSavings.PrivateDataRemoved.get -> int
+Egap.Pdf.PdfOptimizeSavings.PrivateDataRemoved.init -> void
+Egap.Pdf.PdfOptimizeSavings.StreamsMerged.get -> int
+Egap.Pdf.PdfOptimizeSavings.StreamsMerged.init -> void
+Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.get -> int
+Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.init -> void
+override Egap.Pdf.PdfOptimizedImage.Equals(object? obj) -> bool
+override Egap.Pdf.PdfOptimizedImage.GetHashCode() -> int
+override Egap.Pdf.PdfOptimizedImage.ToString() -> string!
+override Egap.Pdf.PdfOptimizeOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfOptimizeOptions.GetHashCode() -> int
+override Egap.Pdf.PdfOptimizeOptions.ToString() -> string!
+override Egap.Pdf.PdfOptimizeReport.ToString() -> string!
+override Egap.Pdf.PdfOptimizeSavings.Equals(object? obj) -> bool
+override Egap.Pdf.PdfOptimizeSavings.GetHashCode() -> int
+override Egap.Pdf.PdfOptimizeSavings.ToString() -> string!
+static Egap.Pdf.PdfOptimizedImage.operator !=(Egap.Pdf.PdfOptimizedImage? left, Egap.Pdf.PdfOptimizedImage? right) -> bool
+static Egap.Pdf.PdfOptimizedImage.operator ==(Egap.Pdf.PdfOptimizedImage? left, Egap.Pdf.PdfOptimizedImage? right) -> bool
+static Egap.Pdf.PdfOptimizeOptions.Ebook.get -> Egap.Pdf.PdfOptimizeOptions!
+static Egap.Pdf.PdfOptimizeOptions.Lossless.get -> Egap.Pdf.PdfOptimizeOptions!
+static Egap.Pdf.PdfOptimizeOptions.operator !=(Egap.Pdf.PdfOptimizeOptions? left, Egap.Pdf.PdfOptimizeOptions? right) -> bool
+static Egap.Pdf.PdfOptimizeOptions.operator ==(Egap.Pdf.PdfOptimizeOptions? left, Egap.Pdf.PdfOptimizeOptions? right) -> bool
+static Egap.Pdf.PdfOptimizeOptions.Print.get -> Egap.Pdf.PdfOptimizeOptions!
+static Egap.Pdf.PdfOptimizeOptions.Screen.get -> Egap.Pdf.PdfOptimizeOptions!
+static Egap.Pdf.PdfOptimizeSavings.operator !=(Egap.Pdf.PdfOptimizeSavings? left, Egap.Pdf.PdfOptimizeSavings? right) -> bool
+static Egap.Pdf.PdfOptimizeSavings.operator ==(Egap.Pdf.PdfOptimizeSavings? left, Egap.Pdf.PdfOptimizeSavings? right) -> bool

@@ -363,6 +363,41 @@ public sealed class PdfDocument : IDisposable
         return global::Egap.Pdf.Redaction.DocumentSanitizer.Apply(this, options ?? PdfSanitizeOptions.Default);
     }
 
+    /// <summary>
+    /// Makes the document smaller (Phase 7 design 7.1): images downsampled and re-encoded as the options allow, duplicate
+    /// streams written once, fonts subset, thumbnails, private data and empty content removed. Afterwards every save is a
+    /// compact rewrite with unused objects left out, as the report's <see cref="PdfOptimizeReport.BytesAfter"/> measured.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// using PdfDocument pdf = PdfDocument.Open("scan.pdf");
+    /// PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook);
+    /// pdf.Save("scan-small.pdf");
+    /// </code>
+    /// </example>
+    /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
+    public PdfOptimizeReport Optimize(PdfOptimizeOptions? options = null)
+    {
+        ThrowIfReadOnly();
+        options ??= PdfOptimizeOptions.Lossless;
+        options.Check(nameof(options));
+        return Optimizing.Optimizer.Run(this, options);
+    }
+
+    /// <summary>Whether the document was optimized, so every save is a compact rewrite (Phase 7 design 7.1).</summary>
+    internal bool Optimized { get; private set; }
+
+    internal void MarkOptimized()
+    {
+        Optimized = true;
+    }
+
+    /// <summary>Whether an optimize was allowed to break the signatures, so its saves are too.</summary>
+    internal bool SignaturesMayBreak { get; set; }
+
+    /// <summary>The length of the file as opened; 0 for a document made in memory.</summary>
+    internal long SourceLength => IsNew ? 0 : baseLength;
+
     /// <summary>Whether redactions were applied, so every save rewrites the file whole and drops unused objects.</summary>
     internal bool Redacted { get; private set; }
 
@@ -772,6 +807,7 @@ public sealed class PdfDocument : IDisposable
     private PdfSaveOptions Forced(PdfSaveOptions options)
     {
         options = Redacted ? options with { Mode = PdfSaveMode.Rewrite, RemoveUnused = true } : options;
+        options = Optimized ? Optimizing.Optimizer.Forced(this, options) : options;
         return WriterConformance == PdfAConformance.None ? options : PdfA.PdfAWriter.Options(this, WriterConformance, options);
     }
 

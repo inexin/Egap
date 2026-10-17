@@ -21,9 +21,18 @@ namespace Egap.Pdf.Optimizing;
 internal static class FontSubsetter
 {
     /// <summary>Subsets what can be subset; how many programs were cut and the bytes they no longer hold.</summary>
-    public static (int Fonts, long Bytes) Run(PdfDocument document)
+    /// <param name="document">The document.</param>
+    /// <param name="keepCharSets">
+    /// True for PDF/A-1, whose subset fonts must list their glyphs in a CIDSet or CharSet: then nothing is cut.
+    /// </param>
+    public static (int Fonts, long Bytes) Run(PdfDocument document, bool keepCharSets = false)
     {
         ArgumentNullException.ThrowIfNull(document);
+        if (keepCharSets)
+        {
+            return (0, 0);
+        }
+
         Dictionary<PdfDictionary, HashSet<int>> codes = new(ReferenceEqualityComparer.Instance);
         HashSet<PdfDictionary> excluded = new(ReferenceEqualityComparer.Instance);
         Collect(document, codes, excluded);
@@ -285,6 +294,10 @@ internal static class FontSubsetter
         {
             descriptor["FontName"] = PdfName.Get(tag + "+" + fontName);
         }
+
+        // A glyph list would now name glyphs the program no longer has; both are optional outside PDF/A-1.
+        descriptor?.Remove("CIDSet");
+        descriptor?.Remove("CharSet");
     }
 
     /// <summary>
