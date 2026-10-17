@@ -55,7 +55,8 @@ public class ParagraphBridgeTests
         Assert.Equal("1.\tPage 7 end", content.Text.Text);
         Assert.Equal(3, content.LabelLength);
         Assert.Single(content.PageFields);
-        Assert.Equal(18, content.Text.Style.TabStops!.Single().Position);
+        // The hanging indent's stop, then Word's default stops every half inch after it.
+        Assert.Equal([18f, 36f, 72f], content.Text.Style.TabStops!.Take(3).Select(t => t.Position).ToArray());
     }
 
     [Fact]
