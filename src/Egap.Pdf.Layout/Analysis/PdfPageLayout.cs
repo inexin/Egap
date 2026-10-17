@@ -294,6 +294,9 @@ public sealed class LayoutFigure : LayoutElement
     /// <summary>The images in the figure, with their original bytes kept.</summary>
     public IReadOnlyList<LayoutImage> Images { get; }
 
+    /// <summary>For a figure read from JSON, the image the JSON carried as a data URI, with its size in pixels.</summary>
+    internal (Egap.Documents.ImageData Image, int Width, int Height)? Embedded { get; init; }
+
     /// <summary>The text inside or just beside the figure: axis labels, callouts, a legend.</summary>
     public IReadOnlyList<LayoutLine> Labels { get; }
 
@@ -328,6 +331,39 @@ public sealed class LayoutFigure : LayoutElement
     public override string ToString()
     {
         return $"Figure {Order}: {Images.Count} images{(AltText is null ? "" : ", " + AltText)}";
+    }
+
+    /// <summary>
+    /// The figure as an image file and its size in pixels: a lone upright image's stored JPEG as it is, or the page drawn over
+    /// the figure at <paramref name="dpi"/> as a PNG. Null for a figure read from JSON, which has no page.
+    /// </summary>
+    internal (Egap.Documents.ImageData Image, int Width, int Height)? Image(double dpi)
+    {
+        if (Embedded is not null)
+        {
+            return Embedded;
+        }
+
+        if (page is null || Bounds.Width < 1 || Bounds.Height < 1 || !float.IsFinite(Bounds.Width) || !float.IsFinite(Bounds.Height))
+        {
+            return null;
+        }
+
+        if (Images is [LayoutImage { Image: PdfImage stored } only] && Labels.Count == 0 && only.Bounds.Width >= Bounds.Width - 1 && only.Bounds.Height >= Bounds.Height - 1
+            && only.Corners is [var a, var b, _, var d] && Math.Abs(a.Y - b.Y) < 0.5 && Math.Abs(a.X - d.X) < 0.5 && a.X < b.X && a.Y < d.Y
+            && ModelBuilder.Stored(stored) is Egap.Documents.ImageData kept)
+        {
+            return (kept, stored.Width, stored.Height);
+        }
+
+        double scale = dpi / 72;
+        using Egami.Raster<Egami.Pixels.Rgba8> raster = page.Render(new PdfRenderOptions
+        {
+            Dpi = dpi,
+            Region = new RectF((float)(Bounds.X * scale), (float)(Bounds.Y * scale), (float)(Bounds.Width * scale), (float)(Bounds.Height * scale)),
+            Annotations = PdfAnnotationRendering.None,
+        });
+        return (ModelBuilder.Png(raster), raster.Width, raster.Height);
     }
 }
 

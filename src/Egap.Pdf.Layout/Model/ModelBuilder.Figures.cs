@@ -103,7 +103,7 @@ internal sealed partial class ModelBuilder
     }
 
     /// <summary>A stored image as it is: a JPEG's bytes, other images' pixels as a PNG; null for one that will not decode or carries a mask.</summary>
-    private static ImageData? Stored(PdfImage? image)
+    internal static ImageData? Stored(PdfImage? image)
     {
         if (image is null)
         {
@@ -131,7 +131,7 @@ internal sealed partial class ModelBuilder
         }
     }
 
-    private static ImageData Png(Raster raster)
+    internal static ImageData Png(Raster raster)
     {
         using MemoryStream png = new();
         raster.Save(png, PngFormat.Info);

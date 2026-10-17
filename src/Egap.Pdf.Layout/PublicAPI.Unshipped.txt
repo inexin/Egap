@@ -339,3 +339,37 @@ static Egap.Pdf.Layout.DoclingJson.Write(System.Collections.Generic.IReadOnlyLis
 static Egap.Pdf.Layout.DoclingJsonOptions.Default.get -> Egap.Pdf.Layout.DoclingJsonOptions!
 static Egap.Pdf.Layout.DoclingJsonOptions.operator !=(Egap.Pdf.Layout.DoclingJsonOptions? left, Egap.Pdf.Layout.DoclingJsonOptions? right) -> bool
 static Egap.Pdf.Layout.DoclingJsonOptions.operator ==(Egap.Pdf.Layout.DoclingJsonOptions? left, Egap.Pdf.Layout.DoclingJsonOptions? right) -> bool
+Egap.Pdf.Layout.DoclingImage
+Egap.Pdf.Layout.DoclingImage.<Clone>$() -> Egap.Pdf.Layout.DoclingImage!
+Egap.Pdf.Layout.DoclingImage.Bytes.get -> System.ReadOnlyMemory<byte>
+Egap.Pdf.Layout.DoclingImage.Bytes.init -> void
+Egap.Pdf.Layout.DoclingImage.ContentType.get -> string!
+Egap.Pdf.Layout.DoclingImage.ContentType.init -> void
+Egap.Pdf.Layout.DoclingImage.Deconstruct(out System.ReadOnlyMemory<byte> Bytes, out string! ContentType, out string! SuggestedName, out Egap.Pdf.Layout.LayoutFigure! Figure) -> void
+Egap.Pdf.Layout.DoclingImage.DoclingImage(System.ReadOnlyMemory<byte> Bytes, string! ContentType, string! SuggestedName, Egap.Pdf.Layout.LayoutFigure! Figure) -> void
+Egap.Pdf.Layout.DoclingImage.Equals(Egap.Pdf.Layout.DoclingImage? other) -> bool
+Egap.Pdf.Layout.DoclingImage.Figure.get -> Egap.Pdf.Layout.LayoutFigure!
+Egap.Pdf.Layout.DoclingImage.Figure.init -> void
+Egap.Pdf.Layout.DoclingImage.SuggestedName.get -> string!
+Egap.Pdf.Layout.DoclingImage.SuggestedName.init -> void
+Egap.Pdf.Layout.DoclingImageMode
+Egap.Pdf.Layout.DoclingImageMode.DataUris = 0 -> Egap.Pdf.Layout.DoclingImageMode
+Egap.Pdf.Layout.DoclingImageMode.Files = 1 -> Egap.Pdf.Layout.DoclingImageMode
+Egap.Pdf.Layout.DoclingImageMode.Omit = 2 -> Egap.Pdf.Layout.DoclingImageMode
+Egap.Pdf.Layout.DoclingJsonOptions.FigureResolution.get -> double
+Egap.Pdf.Layout.DoclingJsonOptions.FigureResolution.init -> void
+Egap.Pdf.Layout.DoclingJsonOptions.ImageResolver.get -> System.Func<Egap.Pdf.Layout.DoclingImage!, string?>?
+Egap.Pdf.Layout.DoclingJsonOptions.ImageResolver.init -> void
+Egap.Pdf.Layout.DoclingJsonOptions.Images.get -> Egap.Pdf.Layout.DoclingImageMode
+Egap.Pdf.Layout.DoclingJsonOptions.Images.init -> void
+Egap.Pdf.Layout.DoclingJsonOptions.ImagesFolder.get -> string?
+Egap.Pdf.Layout.DoclingJsonOptions.ImagesFolder.init -> void
+Egap.Pdf.Layout.DoclingJsonOptions.MinImageSize.get -> double
+Egap.Pdf.Layout.DoclingJsonOptions.MinImageSize.init -> void
+override Egap.Pdf.Layout.DoclingImage.Equals(object? obj) -> bool
+override Egap.Pdf.Layout.DoclingImage.GetHashCode() -> int
+override Egap.Pdf.Layout.DoclingImage.ToString() -> string!
+static Egap.Pdf.Layout.DoclingImage.operator !=(Egap.Pdf.Layout.DoclingImage? left, Egap.Pdf.Layout.DoclingImage? right) -> bool
+static Egap.Pdf.Layout.DoclingImage.operator ==(Egap.Pdf.Layout.DoclingImage? left, Egap.Pdf.Layout.DoclingImage? right) -> bool
+static Egap.Pdf.Layout.DoclingJson.Write(System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.PdfPageLayout!>! pages, string! path, Egap.Pdf.Layout.DoclingJsonOptions? options = null) -> void
+static Egap.Pdf.Layout.DoclingJson.ToDocument(string! json) -> Egap.Documents.Document!
