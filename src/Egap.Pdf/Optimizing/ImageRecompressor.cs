@@ -317,7 +317,7 @@ internal static class ImageRecompressor
     private static PdfStream Jpeg(Raster raster, int quality)
     {
         using MemoryStream jpeg = new();
-        raster.Save(jpeg, JpegFormat.Info, new JpegWriterOptions { Quality = quality });
+        raster.Save(jpeg, JpegFormat.Info, new JpegWriterOptions { Quality = quality, OptimizeHuffman = true });
         PdfStream stream = ImageEncoder.JpegStream(jpeg.ToArray());
         stream.Dictionary.Remove("ColorSpace");
         stream.Dictionary.Remove("Type");

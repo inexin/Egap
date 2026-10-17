@@ -113,6 +113,12 @@ if (conversion.Succeeded)
 {
     archive.Save("archive.pdf", new PdfSaveOptions { Linearize = true });
 }
+
+// Phase 7 PDF tools: compress (lossless by default; Print, Ebook and Screen presets downsample and use JPEG).
+using PdfDocument scan = PdfDocument.Open("scan.pdf");
+PdfOptimizeReport smaller = scan.Optimize(PdfOptimizeOptions.Ebook with { JpegQuality = 70 });
+Console.WriteLine($"{smaller.BytesBefore} -> {smaller.BytesAfter} bytes, {smaller.Images.Count} images changed");
+scan.Save("scan-small.pdf");                                      // every save after Optimize is a compact rewrite
 ```
 
 ```csharp
