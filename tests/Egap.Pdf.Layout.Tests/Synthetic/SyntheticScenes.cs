@@ -20,16 +20,31 @@ internal static class SyntheticScenes
     /// <summary>Every scene by name.</summary>
     public static IReadOnlyDictionary<string, Func<SyntheticDocument>> All { get; } = new Dictionary<string, Func<SyntheticDocument>>
     {
-        ["one-column"] = OneColumn,
-        ["two-columns"] = TwoColumns,
-        ["pull-quote"] = PullQuote,
-        ["lists"] = Lists,
-        ["tables"] = Tables,
-        ["table-across-pages"] = TableAcrossPages,
-        ["footnotes"] = Footnotes,
-        ["headers-and-footers"] = HeadersAndFooters,
-        ["hyphenation"] = Hyphenation,
-        ["quote-code-caption"] = QuoteCodeCaption,
+        ["one-column"] = () => OneColumn(),
+        ["two-columns"] = () => TwoColumns(),
+        ["pull-quote"] = () => PullQuote(),
+        ["lists"] = () => Lists(),
+        ["tables"] = () => Tables(),
+        ["table-across-pages"] = () => TableAcrossPages(),
+        ["footnotes"] = () => Footnotes(),
+        ["headers-and-footers"] = () => HeadersAndFooters(),
+        ["hyphenation"] = () => Hyphenation(),
+        ["quote-code-caption"] = () => QuoteCodeCaption(),
+    };
+
+    /// <summary>Every scene by name, with a structure tree as Word writes one.</summary>
+    public static IReadOnlyDictionary<string, Func<SyntheticDocument>> Tagged { get; } = new Dictionary<string, Func<SyntheticDocument>>
+    {
+        ["one-column"] = () => OneColumn(tagged: true),
+        ["two-columns"] = () => TwoColumns(tagged: true),
+        ["pull-quote"] = () => PullQuote(tagged: true),
+        ["lists"] = () => Lists(tagged: true),
+        ["tables"] = () => Tables(tagged: true),
+        ["table-across-pages"] = () => TableAcrossPages(tagged: true),
+        ["footnotes"] = () => Footnotes(tagged: true),
+        ["headers-and-footers"] = () => HeadersAndFooters(tagged: true),
+        ["hyphenation"] = () => Hyphenation(tagged: true),
+        ["quote-code-caption"] = () => QuoteCodeCaption(tagged: true),
     };
 
     /// <summary>
@@ -63,9 +78,9 @@ internal static class SyntheticScenes
         return string.Join(' ', words);
     }
 
-    public static SyntheticDocument OneColumn()
+    public static SyntheticDocument OneColumn(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Title("A Report on Page Layout");
         doc.Heading("Introduction");
         for (int i = 0; i < 3; i++)
@@ -78,9 +93,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument TwoColumns()
+    public static SyntheticDocument TwoColumns(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Title("Two Columns");
         doc.Columns(2);
         doc.Heading("Background");
@@ -92,9 +107,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument PullQuote()
+    public static SyntheticDocument PullQuote(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Heading("Columns Around a Quote");
         doc.Columns(2);
         doc.PullQuote("Layout is what the reader sees before reading a word.", 330);
@@ -106,9 +121,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument Lists()
+    public static SyntheticDocument Lists(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Heading("Lists");
         doc.Paragraph(Words(300, 40));
         doc.ListItem(1, "\u2022", Words(301, 30));
@@ -128,9 +143,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument Tables()
+    public static SyntheticDocument Tables(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Heading("Ruled, with merged cells");
         doc.Table(
         [
@@ -164,9 +179,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument TableAcrossPages()
+    public static SyntheticDocument TableAcrossPages(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Heading("A Long Table");
         doc.Paragraph(Words(500, 160));
         string[][] rows = [["#", "Sample", "Value", "Unit"], .. Enumerable.Range(1, 60).Select(i => (string[])[$"{i}", $"Sample {i}", $"{i * 3.5:0.0}", "mg"])];
@@ -175,9 +190,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument Footnotes()
+    public static SyntheticDocument Footnotes(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Heading("Notes at the Foot");
         doc.Paragraph(Words(600, 70), footnote: ("1", Words(601, 18)));
         doc.Paragraph(Words(602, 60));
@@ -185,9 +200,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument HeadersAndFooters()
+    public static SyntheticDocument HeadersAndFooters(bool tagged = false)
     {
-        SyntheticDocument doc = new(header: "Annual Report 2025", pageNumbers: true);
+        SyntheticDocument doc = new(header: "Annual Report 2025", pageNumbers: true, tagged: tagged);
         doc.Title("Running Headers");
         for (int i = 0; i < 16; i++)
         {
@@ -197,9 +212,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument Hyphenation()
+    public static SyntheticDocument Hyphenation(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Heading("Hyphenated Line Ends");
         doc.Columns(3);
         for (int i = 0; i < 6; i++)
@@ -210,9 +225,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument QuoteCodeCaption()
+    public static SyntheticDocument QuoteCodeCaption(bool tagged = false)
     {
-        SyntheticDocument doc = new();
+        SyntheticDocument doc = new(tagged: tagged);
         doc.Heading("Quotes and Code");
         doc.Paragraph(Words(900, 50));
         doc.Quote(Words(901, 45));

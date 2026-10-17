@@ -129,7 +129,7 @@ internal sealed class PageReader : PdfContentWalker
         double size = Math.Sqrt(Math.Abs((m.A * m.D) - (m.B * m.C)));
         (double dx, double dy) = Unit(m.A, m.B);
         double space = font is not null && !font.IsComposite && font.GetWidth(32) is > 0 and var w ? w : 250;
-        (int mcid, bool artifact) = Marked();
+        (int mcid, string? artifact) = Marked();
         PageGlyph item = new(text, box, origin, end, dx, dy, font, size, State.FillColor, State.TextRenderMode, mcid, artifact, space / 1000 * size);
         if (spans.Count > 0 && spans.Peek() is List<PageGlyph> span)
         {
@@ -211,7 +211,7 @@ internal sealed class PageReader : PdfContentWalker
         }
 
         double scale = Math.Sqrt(Math.Abs((m.A * m.D) - (m.B * m.C)));
-        (int mcid, bool artifact) = Marked();
+        (int mcid, string? artifact) = Marked();
         paths.Add(new(segments, box, stroked, filled, State.LineWidth * scale, State.StrokeColor, State.FillColor, mcid, artifact));
     }
 
@@ -221,7 +221,7 @@ internal sealed class PageReader : PdfContentWalker
 
         // Image space has (0, 0) at the stored image's bottom left and (0, 1) at its top left.
         PdfPoint[] corners = [m.Transform(new PdfPoint(0, 1)), m.Transform(new PdfPoint(1, 1)), m.Transform(new PdfPoint(1, 0)), m.Transform(new PdfPoint(0, 0))];
-        (int mcid, bool artifact) = Marked();
+        (int mcid, string? artifact) = Marked();
         images.Add(new(corners, PageBox.Around(corners), image, inlineImage, name?.Value, m, mcid, artifact));
     }
 
@@ -236,19 +236,25 @@ internal sealed class PageReader : PdfContentWalker
             }
         }
 
-        (int mcid, bool artifact) = Marked();
+        (int mcid, string? artifact) = Marked();
         shadings.Add(new(clip, mcid, artifact));
     }
 
-    /// <summary>The innermost MCID around the current content (-1 for none) and whether any enclosing tag is an artifact.</summary>
-    private (int Mcid, bool Artifact) Marked()
+    /// <summary>
+    /// The innermost MCID around the current content (-1 for none) and, inside an artifact, its <c>/Subtype</c> or <c>/Type</c>
+    /// (empty when it gives neither); null outside artifacts.
+    /// </summary>
+    private (int Mcid, string? Artifact) Marked()
     {
         int mcid = -1;
-        bool artifact = false;
+        string? artifact = null;
         foreach (PdfMarkedContent marked in MarkedContent)
         {
             mcid = marked.Mcid ?? mcid;
-            artifact |= marked.Tag.Value == "Artifact";
+            if (marked.Tag.Value == "Artifact")
+            {
+                artifact = marked.Properties?.GetName("Subtype")?.Value ?? marked.Properties?.GetName("Type")?.Value ?? artifact ?? "";
+            }
         }
 
         return (mcid, artifact);
@@ -294,7 +300,7 @@ internal sealed class PageReader : PdfContentWalker
     }
 
     /// <summary>Lines in content order: a new line where the baseline moves, the direction turns or the text runs back (Phase 3 Q10).</summary>
-    private static List<PageLine> Lines(List<PageGlyph> glyphs)
+    internal static List<PageLine> Lines(IEnumerable<PageGlyph> glyphs)
     {
         List<PageLine> lines = [];
         List<PageGlyph> line = [];

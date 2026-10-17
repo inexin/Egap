@@ -19,6 +19,9 @@ namespace Egap.Pdf.Layout.Tests.Synthetic;
 /// <remarks>
 /// Blocks that stand outside the reading order (page headers, footers and numbers, footnotes) get order -1. A paragraph
 /// broken across a column or page is recorded as one block per part, the later parts with <see cref="TruthBlock.Continues"/>.
+/// A tagged document also gets a structure tree as Word writes one (design Q2): Document, then P, H1 to H3, L with LI, Lbl
+/// and LBody, Table with TR, TH and TD (spans as attributes), Caption, BlockQuote, Code and Note, the title as Title
+/// role-mapped to H1; running headers, page numbers, rules and repeated header rows are artifacts.
 /// </remarks>
 internal sealed class SyntheticDocument
 {
@@ -32,12 +35,15 @@ internal sealed class SyntheticDocument
     private static readonly Stroke Rule = new(0.5f);
     private static readonly Font FootnoteFont = FontOf(Serif, 8);
 
-    private readonly List<List<Action<Canvas>>> drawings = [];
+    private readonly List<List<(Action<Canvas> Draw, TagSpec? Tag)>> drawings = [];
     private readonly List<TruthBlock> blocks = [];
     private readonly List<TruthTable> tables = [];
     private readonly List<(int Page, double Top, double Bottom)> exclusions = [];
     private readonly List<(string Marker, List<string> Lines)> notes = [];
     private readonly double margin;
+    private readonly TagSpec? root;
+    private readonly List<TagSpec> listItems = [];
+    private TagSpec? tag;
     private int order;
     private int columns = 1;
     private int column;
@@ -46,8 +52,9 @@ internal sealed class SyntheticDocument
     private double flowBottom;
 
     /// <summary>Starts a document whose pages are <paramref name="width"/> by <paramref name="height"/> points (A4 by default).</summary>
-    public SyntheticDocument(double width = 595, double height = 842, double margin = 56, string? header = null, bool pageNumbers = false)
+    public SyntheticDocument(double width = 595, double height = 842, double margin = 56, string? header = null, bool pageNumbers = false, bool tagged = false)
     {
+        root = tagged ? new TagSpec("Document", null) : null;
         Width = width;
         Height = height;
         this.margin = margin;
@@ -67,6 +74,9 @@ internal sealed class SyntheticDocument
     public bool PageNumbers { get; }
 
     public int PageCount => drawings.Count;
+
+    /// <summary>Whether the document gets a structure tree.</summary>
+    public bool Tagged => root is not null;
 
     /// <summary>Every block so far, the notes of the page being written included.</summary>
     public IReadOnlyList<TruthBlock> Blocks => [.. blocks, .. NoteBlocks(draw: false)];
@@ -196,10 +206,13 @@ internal sealed class SyntheticDocument
         List<string> wrapped = Wrap(text, font, width, width, hyphenate: false).Select(l => l.Text).ToList();
         double left = (Width - width) / 2, lineHeight = font.Size * LineFactor;
         List<TruthLine> lines = [];
+        tag = Child(root, "BlockQuote");
         for (int i = 0; i < wrapped.Count; i++)
         {
             lines.Add(DrawLine(wrapped[i], font, left, top + (i * lineHeight)));
         }
+
+        tag = null;
 
         exclusions.Add((Page, top - 8, top + (wrapped.Count * lineHeight) + 8));
         blocks.Add(new(Page, TruthRole.Quote, string.Join(' ', wrapped), lines, order++, FontName: Sans, FontSize: font.Size, Bold: true));
@@ -222,9 +235,11 @@ internal sealed class SyntheticDocument
         int partFirst = 0;
         bool continues = false;
         List<int> partRows = [];
+        TagSpec? table = Child(root, "Table");
+        listItems.Clear();
         void ClosePart()
         {
-            tables.Add(BuildPart(rows, widths, merges, headerRows, partRows, rules, left, partTop, rowHeight, continues, continues && repeatHeader, regular, bold));
+            tables.Add(BuildPart(rows, widths, merges, headerRows, partRows, rules, left, partTop, rowHeight, continues, continues && repeatHeader, regular, bold, table));
             partRows = [];
         }
 
@@ -265,19 +280,58 @@ internal sealed class SyntheticDocument
     {
         FinishPage();
         using PdfDocument pdf = PdfDocument.Create();
-        foreach (List<Action<Canvas>> page in drawings)
+        Dictionary<TagSpec, PdfStructureElement> elements = [];
+        if (root is not null)
+        {
+            pdf.Structure.IsMarked = true;
+            pdf.Structure.SetRole("Title", PdfStructureType.H1);
+            Build(root, pdf.Structure.Add(PdfStructureType.Document), elements);
+        }
+
+        foreach (List<(Action<Canvas> Draw, TagSpec? Tag)> page in drawings)
         {
             PdfPage pdfPage = pdf.Pages.AddBlank(new PdfRectangle(0, 0, Width, Height));
             using PdfCanvas canvas = new(pdfPage);
-            foreach (Action<Canvas> draw in page)
+            foreach ((Action<Canvas> draw, TagSpec? spec) in page)
             {
+                if (spec is null)
+                {
+                    draw(canvas);
+                    continue;
+                }
+
+                if (spec == TagSpec.Artifact)
+                {
+                    canvas.BeginArtifact();
+                }
+                else
+                {
+                    canvas.BeginTag(elements[spec]);
+                }
+
                 draw(canvas);
+                canvas.EndTag();
             }
         }
 
         using MemoryStream saved = new();
         pdf.Save(saved);
         return saved.ToArray();
+    }
+
+    /// <summary>Creates the elements of a structure, children in the order they were made.</summary>
+    private static void Build(TagSpec spec, PdfStructureElement element, Dictionary<TagSpec, PdfStructureElement> elements)
+    {
+        elements[spec] = element;
+        if (spec.RowSpan > 1 || spec.ColumnSpan > 1)
+        {
+            element.AddAttributes("Table", new PdfDictionary { ["RowSpan"] = new PdfInteger(spec.RowSpan), ["ColSpan"] = new PdfInteger(spec.ColumnSpan) });
+        }
+
+        foreach (TagSpec child in spec.Children)
+        {
+            Build(child, element.Add(PdfStructureType.FromString(child.Type)), elements);
+        }
     }
 
     /// <summary>The text of the blocks in reading order, the parts of a broken paragraph joined, as the analysis should give it back.</summary>
@@ -305,7 +359,7 @@ internal sealed class SyntheticDocument
     }
 
     private TruthTable BuildPart(string[][] rows, double[] widths, (int Row, int Column, int RowSpan, int ColumnSpan)[] merges, int headerRows, List<int> partRows,
-        TruthRules rules, double left, double top, double rowHeight, bool continues, bool repeated, Font regular, Font bold)
+        TruthRules rules, double left, double top, double rowHeight, bool continues, bool repeated, Font regular, Font bold, TagSpec? table)
     {
         List<TruthCell> cells = [];
         double[] xs = new double[widths.Length + 1];
@@ -318,6 +372,10 @@ internal sealed class SyntheticDocument
         for (int i = 0; i < partRows.Count; i++)
         {
             int r = partRows[i];
+
+            // A header row drawn again on a later page is an artifact; the table element has it once.
+            bool again = repeated && r < headerRows;
+            TagSpec? row = again ? null : Child(table, "TR");
             for (int c = 0; c < widths.Length; c++)
             {
                 if (merges.Any(m => r >= m.Row && r < m.Row + m.RowSpan && c >= m.Column && c < m.Column + m.ColumnSpan && (r, c) != (m.Row, m.Column)))
@@ -330,6 +388,14 @@ internal sealed class SyntheticDocument
                 string text = rows[r][c];
                 double cellTop = top + (i * rowHeight), cellBottom = cellTop + (rowSpan * rowHeight);
                 double cellLeft = xs[c], cellRight = xs[c + colSpan];
+                TagSpec? cell = again ? null : Child(row, header ? "TH" : "TD");
+                if (cell is not null && (rowSpan > 1 || colSpan > 1))
+                {
+                    cell.RowSpan = rowSpan;
+                    cell.ColumnSpan = colSpan;
+                }
+
+                tag = again ? TagSpec.Artifact : cell;
                 if (text.Length > 0)
                 {
                     Font font = header ? bold : regular;
@@ -337,6 +403,7 @@ internal sealed class SyntheticDocument
                     DrawAt(text, font, cellLeft + 4, baseline);
                 }
 
+                tag = Tagged ? TagSpec.Artifact : null;
                 if (rules == TruthRules.All)
                 {
                     Draw(c2 => c2.DrawLine(P(cellLeft, cellTop), P(cellRight, cellTop), Rule, Ink));
@@ -350,6 +417,7 @@ internal sealed class SyntheticDocument
         }
 
         double partBottom = top + (partRows.Count * rowHeight);
+        tag = Tagged ? TagSpec.Artifact : null;
         if (rules == TruthRules.Partial)
         {
             int headerCount = partRows.Count(r => r < headerRows);
@@ -364,6 +432,7 @@ internal sealed class SyntheticDocument
             Draw(c => c.DrawLine(P(left, partBottom), P(right, partBottom), Rule, Ink));
         }
 
+        tag = null;
         return new(Page, new(left, top, xs[^1], partBottom), partRows.Count, widths.Length, cells, rules, order++, continues, repeated);
     }
 
@@ -380,8 +449,10 @@ internal sealed class SyntheticDocument
     /// <summary>Draws the current page's notes under a short rule at the page foot, the first note on top.</summary>
     private void FinishPage()
     {
+        TagSpec? outer = tag;
         blocks.AddRange(NoteBlocks(draw: true));
         notes.Clear();
+        tag = outer;
     }
 
     /// <summary>The current page's notes as blocks where they will be drawn, drawing them when <paramref name="draw"/> is set.</summary>
@@ -399,6 +470,7 @@ internal sealed class SyntheticDocument
         if (draw)
         {
             double ruleY = top - 5;
+            tag = Tagged ? TagSpec.Artifact : null;
             Draw(c => c.DrawLine(P(margin, ruleY), P(margin + 72, ruleY), Rule, Ink));
         }
 
@@ -406,6 +478,7 @@ internal sealed class SyntheticDocument
         {
             if (draw)
             {
+                tag = Child(root, "Note");
                 DrawAt(marker, FontOf(Serif, 5.5), margin, top + (font.Size * 0.9) - 3);
             }
 
@@ -420,6 +493,8 @@ internal sealed class SyntheticDocument
             top += 2;
         }
 
+        tag = null;
+
         return found;
     }
 
@@ -427,7 +502,10 @@ internal sealed class SyntheticDocument
     {
         double advance = Measure(text, font);
         double left = centered ? (Width - advance) / 2 : margin;
+        TagSpec? outer = tag;
+        tag = Tagged ? TagSpec.Artifact : null;
         TruthLine line = DrawAt(text, font, left, baseline);
+        tag = outer;
         blocks.Add(new(Page, role, text, [line], -1, FontName: font.Typeface.FamilyName, FontSize: font.Size));
     }
 
@@ -443,6 +521,11 @@ internal sealed class SyntheticDocument
         {
             y += before;
         }
+
+        TagSpec? element = BlockTag(role, level);
+        TagSpec? label = role == TruthRole.ListItem ? Child(element, "Lbl") : null;
+        TagSpec? body = role == TruthRole.ListItem ? Child(element, "LBody") : element;
+        tag = body;
 
         List<(string Text, bool Split)> wrapped = role == TruthRole.Code
             ? [.. text.Split('\n').Select(l => (l, false))]
@@ -467,8 +550,10 @@ internal sealed class SyntheticDocument
             SkipExclusions(lineHeight);
             if (y + lineHeight > flowBottom)
             {
+                // A block that starts at the top of the next column does not continue anything.
+                bool any = lines.Count > 0;
                 ClosePart();
-                continues = true;
+                continues |= any;
                 NextColumn();
                 SkipExclusions(lineHeight);
             }
@@ -477,7 +562,9 @@ internal sealed class SyntheticDocument
             double x = centered ? Left + ((ColumnWidth - Measure(wrapped[i].Text, font)) / 2) : Left + indent;
             if (i == 0 && marker is not null && role == TruthRole.ListItem)
             {
+                tag = label;
                 DrawLine(marker, font, Left + markerAt, y);
+                tag = body;
             }
 
             TruthLine line = DrawLine(wrapped[i].Text, font, x, y);
@@ -492,7 +579,71 @@ internal sealed class SyntheticDocument
         }
 
         ClosePart();
+        tag = null;
         y += after;
+    }
+
+    /// <summary>The structure element for a block of <paramref name="role"/>, null when the document is not tagged.</summary>
+    private TagSpec? BlockTag(TruthRole role, int level)
+    {
+        if (root is null)
+        {
+            return null;
+        }
+
+        if (role != TruthRole.ListItem)
+        {
+            listItems.Clear();
+            return Child(root, role switch
+            {
+                TruthRole.Title => "Title",
+                TruthRole.Heading => $"H{level}",
+                TruthRole.Quote => "BlockQuote",
+                TruthRole.Code => "Code",
+                TruthRole.Caption => "Caption",
+                _ => "P",
+            });
+        }
+
+        // A list at level n sits in the last item of level n - 1, as Word nests them.
+        while (listItems.Count > level)
+        {
+            listItems.RemoveAt(listItems.Count - 1);
+        }
+
+        TagSpec list;
+        if (listItems.Count == level)
+        {
+            list = listItems[^1].Parent!;
+        }
+        else
+        {
+            list = Child(level == 1 ? root : listItems[^1], "L")!;
+        }
+
+        TagSpec item = Child(list, "LI")!;
+        if (listItems.Count == level)
+        {
+            listItems[^1] = item;
+        }
+        else
+        {
+            listItems.Add(item);
+        }
+
+        return item;
+    }
+
+    private static TagSpec? Child(TagSpec? parent, string type)
+    {
+        if (parent is null)
+        {
+            return null;
+        }
+
+        TagSpec child = new(type, parent);
+        parent.Children.Add(child);
+        return child;
     }
 
     /// <summary>
@@ -640,11 +791,28 @@ internal sealed class SyntheticDocument
 
     private void Draw(Action<Canvas> draw)
     {
-        drawings[Page].Add(draw);
+        drawings[Page].Add((draw, tag));
     }
 
     private static Vector2 P(double x, double y)
     {
         return new((float)x, (float)y);
+    }
+
+    /// <summary>A structure element to be: its type, parent, children in order and table cell spans.</summary>
+    private sealed class TagSpec(string type, TagSpec? parent)
+    {
+        /// <summary>Content drawn as an artifact.</summary>
+        public static TagSpec Artifact { get; } = new("Artifact", null);
+
+        public string Type { get; } = type;
+
+        public TagSpec? Parent { get; } = parent;
+
+        public List<TagSpec> Children { get; } = [];
+
+        public int RowSpan { get; set; } = 1;
+
+        public int ColumnSpan { get; set; } = 1;
     }
 }
