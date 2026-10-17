@@ -395,7 +395,7 @@ internal sealed class SyntheticDocument
                     cell.ColumnSpan = colSpan;
                 }
 
-                tag = again ? TagSpec.Artifact : cell;
+                tag = again && Tagged ? TagSpec.Artifact : cell;
                 if (text.Length > 0)
                 {
                     Font font = header ? bold : regular;

@@ -97,6 +97,9 @@ internal static class TagReader
             List<PageLine> lines = PageReader.Lines(glyphs);
             switch (kind)
             {
+                case Kind.Block when lines.Count == 0:
+                    // An element with nothing but spaces on this page has no block.
+                    break;
                 case Kind.Block:
                     draft.Blocks.Add(new BlockDraft(role, lines)
                     {

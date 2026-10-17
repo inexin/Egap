@@ -23,7 +23,7 @@ internal static partial class Roles
     /// <summary>Gives roles to the untagged paragraphs of <paramref name="pages"/>, in place; returns the footnote links found.</summary>
     public static List<NoteLink> Assign(IReadOnlyList<PageDraft> pages, IReadOnlyList<OutlineEntry> outline)
     {
-        List<(PageDraft Page, BlockDraft Block)> all = [.. pages.SelectMany(p => p.Blocks.Where(b => b.Tag is null).Select(b => (p, b)))];
+        List<(PageDraft Page, BlockDraft Block)> all = [.. pages.SelectMany(p => p.Blocks.Where(b => b.Tag is null && !b.Fixed).Select(b => (p, b)))];
         if (all.Count == 0)
         {
             return [];

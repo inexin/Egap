@@ -30,6 +30,12 @@ internal sealed class BlockDraft(LayoutRole role, List<PageLine> lines)
     /// <summary>Whether the block carries on the paragraph before it, across a column or page break (task 5).</summary>
     public bool Continues { get; set; }
 
+    /// <summary>Whether the role is settled (a region detector named it), so role detection leaves it.</summary>
+    public bool Fixed { get; set; }
+
+    /// <summary>Whether the block is made of artifact glyphs: page furniture, dropped unless it is a header, footer or page number.</summary>
+    public bool Artifact { get; set; }
+
     /// <summary>The block's text: its lines joined, words broken at a line end with a hyphen joined again.</summary>
     public string Text => Paragraphs.Text(Lines);
 
