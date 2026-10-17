@@ -76,6 +76,26 @@ internal sealed class FontProvider
         return cache.GetOrAdd((name, style), key => Find(key.Family, key.Style));
     }
 
+    /// <summary>The font family the chain gives for <paramref name="family"/>, for Egami's text styles; null for an empty name.</summary>
+    public FontFamily? ResolveFamily(string? family, FontStyle style)
+    {
+        if (string.IsNullOrWhiteSpace(family))
+        {
+            return null;
+        }
+
+        string used = Resolve(family, style).Typeface.FamilyName;
+        foreach (FontCollection collection in chain)
+        {
+            if (collection.TryGetFamily(used, out FontFamily found))
+            {
+                return found;
+            }
+        }
+
+        return StandardFonts.Collection.TryGetFamily(used, out FontFamily standard) ? standard : null;
+    }
+
     /// <summary>Records that characters of <paramref name="requested"/> came from <paramref name="used"/>.</summary>
     public void NoteGlyphFallback(string requested, FontStyle style, string used)
     {

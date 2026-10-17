@@ -55,6 +55,12 @@ internal static class FormatResolver
         return resolved;
     }
 
+    /// <summary>A run's effective formatting as if it stood in <paramref name="paragraph"/>, for runs not in the tree (a paragraph mark, a list label).</summary>
+    public static ResolvedRunFormat ResolveRunIn(Run run, Paragraph paragraph)
+    {
+        return ResolveRun(run, paragraph);
+    }
+
     public static TableFormat Resolve(Table table)
     {
         TableFormat result = new();
