@@ -8,11 +8,16 @@ namespace Egap.Documents.Markdown;
 /// </summary>
 internal abstract class MdNode
 {
+    private List<MdNode>? children;
+
     public MdNode? Parent { get; set; }
 
-    public List<MdNode> Children { get; } = [];
+    /// <summary>The children, made on first use: most inlines have none.</summary>
+    public List<MdNode> Children => children ??= [];
 
-    public MdNode? LastChild => Children.Count > 0 ? Children[^1] : null;
+    public bool HasChildren => children is { Count: > 0 };
+
+    public MdNode? LastChild => children is { Count: > 0 } ? children[^1] : null;
 
     public void Append(MdNode child)
     {
@@ -146,24 +151,27 @@ internal abstract class MdNode
     /// <summary>Turns the linked lists under this node into <see cref="Children"/>, without recursion.</summary>
     internal void Materialize()
     {
-        Stack<MdNode> pending = new();
-        pending.Push(this);
-        while (pending.Count > 0)
+        Stack<MdNode>? pending = null;
+        for (MdNode? node = this; node is not null; node = pending is { Count: > 0 } ? pending.Pop() : null)
         {
-            MdNode node = pending.Pop();
             if (node.LinkFirst is null)
             {
                 continue;
             }
 
-            node.Children.Clear();
+            List<MdNode> list = node.Children;
+            list.Clear();
             for (MdNode? n = node.LinkFirst; n is not null;)
             {
                 MdNode? next = n.LinkNext;
                 n.LinkPrevious = null;
                 n.LinkNext = null;
-                node.Children.Add(n);
-                pending.Push(n);
+                list.Add(n);
+                if (n.LinkFirst is not null)
+                {
+                    (pending ??= new Stack<MdNode>()).Push(n);
+                }
+
                 n = next;
             }
 
@@ -178,10 +186,15 @@ internal abstract class MdBlock : MdNode
 {
     public bool Open { get; set; } = true;
 
+    private StringBuilder? content;
+
     public bool LastLineBlank { get; set; }
 
-    /// <summary>Raw lines for paragraphs, headings, code and HTML blocks.</summary>
-    public StringBuilder Content { get; } = new();
+    /// <summary>The line the block started on (list items that start empty need it).</summary>
+    public int StartLine { get; set; }
+
+    /// <summary>Raw lines for paragraphs, headings, code and HTML blocks, made on first use.</summary>
+    public StringBuilder Content => content ??= new();
 
     public virtual bool AcceptsLines => false;
 

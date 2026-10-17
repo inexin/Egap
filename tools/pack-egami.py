@@ -1,6 +1,6 @@
 """Packs Egami, Egami.Fonts, Egami.Drawing, Egami.Metafiles and Egami.Css from an Egami commit into a local NuGet folder feed (Phase 3 design Q2).
 
-Usage: python tools/pack-egami.py [--egami ../Egami] [--commit HEAD] [--feed ../egami-feed] [--update]
+Usage: python tools/pack-egami.py [--egami ../Egami] [--commit HEAD] [--feed ../egami-feed] [--update] [--projects Egami.Svg ...]
 
 The commit is exported with git archive, so uncommitted changes in the Egami checkout never reach a package. Each package
 keeps its project's version with the commit as a prerelease suffix (1.0.0-local.g74c5d73), so a build always names the exact
@@ -27,6 +27,7 @@ def main():
     parser.add_argument("--commit", default="HEAD")
     parser.add_argument("--feed", default=str(ROOT.parent / "egami-feed"))
     parser.add_argument("--update", action="store_true")
+    parser.add_argument("--projects", nargs="+", default=PROJECTS, help="other Egami projects, such as Egami.Svg for egap-compare")
     args = parser.parse_args()
 
     egami = pathlib.Path(args.egami)
@@ -41,7 +42,7 @@ def main():
     with tempfile.TemporaryDirectory() as temp:
         with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
             tar.extractall(temp, filter="data")
-        for project in PROJECTS:
+        for project in args.projects:
             csproj = pathlib.Path(temp, "src", project, f"{project}.csproj")
             match = re.search(r"<Version>([^<]+)</Version>", csproj.read_text(encoding="utf-8"))
             versions[project] = f"{match.group(1) if match else '1.0.0'}-{suffix}"

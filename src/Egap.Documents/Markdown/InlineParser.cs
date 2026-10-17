@@ -1026,7 +1026,7 @@ internal sealed partial class InlineParser
             for (int i = 0; i < node.Children.Count; i++)
             {
                 MdNode child = node.Children[i];
-                if (child.Children.Count == 0)
+                if (!child.HasChildren)
                 {
                     continue;
                 }
@@ -1052,55 +1052,61 @@ internal sealed partial class InlineParser
         }
     }
 
-    /// <summary>Joins neighbouring text nodes and drops empty ones, in one pass per node list, without recursion.</summary>
+    /// <summary>
+    /// Joins neighbouring text nodes and drops empty ones, in one pass per node list, without recursion; a list with nothing
+    /// to join is left as it is.
+    /// </summary>
     private static void MergeText(MdNode root)
     {
-        Stack<MdNode> pending = new();
-        pending.Push(root);
-        while (pending.Count > 0)
+        Stack<MdNode>? pending = null;
+        StringBuilder? joined = null;
+        for (MdNode? node = root; node is not null; node = pending is { Count: > 0 } ? pending.Pop() : null)
         {
-            MdNode node = pending.Pop();
-            List<MdNode> merged = new(node.Children.Count);
-            StringBuilder joined = new();
-            MdText? run = null;
-            foreach (MdNode child in node.Children)
+            List<MdNode> children = node.Children;
+            int write = 0;
+            for (int read = 0; read < children.Count; read++)
             {
+                MdNode child = children[read];
                 if (child is MdText text)
                 {
-                    if (run is null)
+                    int last = read;
+                    while (last + 1 < children.Count && children[last + 1] is MdText)
                     {
-                        run = text;
-                        joined.Clear().Append(text.Literal);
-                        merged.Add(text);
+                        last++;
                     }
-                    else
+
+                    if (last > read)
                     {
-                        joined.Append(text.Literal);
+                        joined ??= new StringBuilder();
+                        joined.Clear();
+                        for (int i = read; i <= last; i++)
+                        {
+                            joined.Append(((MdText)children[i]).Literal);
+                        }
+
+                        text.Literal = joined.ToString();
+                        read = last;
+                    }
+
+                    if (text.Literal.Length > 0)
+                    {
+                        children[write++] = text;
                     }
 
                     continue;
                 }
 
-                if (run is not null)
+                children[write++] = child;
+                if (child is not MdBlock && child.HasChildren)
                 {
-                    run.Literal = joined.ToString();
-                    run = null;
-                }
-
-                merged.Add(child);
-                if (child is not MdBlock)
-                {
-                    pending.Push(child);
+                    (pending ??= new Stack<MdNode>()).Push(child);
                 }
             }
 
-            if (run is not null)
+            if (write < children.Count)
             {
-                run.Literal = joined.ToString();
+                children.RemoveRange(write, children.Count - write);
             }
-
-            node.Children.Clear();
-            node.Children.AddRange(merged.Where(c => c is not MdText { Literal.Length: 0 }));
         }
     }
 
