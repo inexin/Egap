@@ -93,7 +93,14 @@ internal static class HtmlEncoding
             return ("UTF-16LE", 2);
         }
 
-        return (Prescan(bytes[..Math.Min(bytes.Length, 1024)]) ?? "windows-1252", 0);
+        // With nothing declared, bytes that are valid UTF-8 and use it are read as UTF-8, as browsers' detectors decide
+        // (the frequency analysis 13.2.3.2 allows); anything else falls back to windows-1252.
+        return (Prescan(bytes[..Math.Min(bytes.Length, 1024)]) ?? (LooksLikeUtf8(bytes) ? "UTF-8" : "windows-1252"), 0);
+    }
+
+    private static bool LooksLikeUtf8(ReadOnlySpan<byte> bytes)
+    {
+        return bytes.IndexOfAnyInRange((byte)0x80, (byte)0xFF) >= 0 && System.Text.Unicode.Utf8.IsValid(bytes);
     }
 
     /// <summary>The bytes decoded: the sniffed encoding unless <paramref name="encodingName"/> names one.</summary>

@@ -1,0 +1,91 @@
+/* Egap's HTML user agent style sheet: the rendering defaults of the HTML Standard (section 15, "Rendering"), for what a
+   flow document can show. Lengths are CSS pixels as in the standard; the reader turns them into points. */
+
+@namespace "http://www.w3.org/1999/xhtml";
+
+[hidden], area, base, basefont, datalist, head, link, meta, noembed, noframes, param, rp, script, style, template, title,
+dialog:not([open]), input[type=hidden i] { display: none; }
+
+html, body { display: block; }
+body { margin: 8px; }
+
+address, blockquote, center, dialog, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext,
+pre, search, xmp, details, summary, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, dir, dd, dl, dt, menu,
+ol, ul, fieldset, optgroup, frameset, frame { display: block; }
+
+li { display: list-item; }
+table { display: table; }
+caption { display: table-caption; }
+colgroup { display: table-column-group; }
+col { display: table-column; }
+thead { display: table-header-group; }
+tbody { display: table-row-group; }
+tfoot { display: table-footer-group; }
+tr { display: table-row; }
+td, th { display: table-cell; }
+ruby { display: ruby; }
+rt { display: ruby-text; }
+
+blockquote, figure, listing, p, plaintext, pre, xmp { margin-top: 1em; margin-bottom: 1em; }
+blockquote, figure { margin-left: 40px; margin-right: 40px; }
+address { font-style: italic; }
+listing, plaintext, pre, xmp { font-family: monospace; white-space: pre; }
+dialog:not([open]) { display: none; }
+
+center { text-align: center; }
+
+h1 { margin-top: 0.67em; margin-bottom: 0.67em; font-size: 2em; }
+h2 { margin-top: 0.83em; margin-bottom: 0.83em; font-size: 1.5em; }
+h3 { margin-top: 1em; margin-bottom: 1em; font-size: 1.17em; }
+h4 { margin-top: 1.33em; margin-bottom: 1.33em; font-size: 1em; }
+h5 { margin-top: 1.67em; margin-bottom: 1.67em; font-size: 0.83em; }
+h6 { margin-top: 2.33em; margin-bottom: 2.33em; font-size: 0.67em; }
+h1, h2, h3, h4, h5, h6 { font-weight: bold; }
+
+dir, dd, dl, dt, menu, ol, ul { display: block; }
+dir, dl, menu, ol, ul { margin-top: 1em; margin-bottom: 1em; }
+:is(dir, dl, menu, ol, ul) :is(dir, dl, menu, ol, ul) { margin-top: 0; margin-bottom: 0; }
+dd { margin-left: 40px; }
+dir, menu, ol, ul { padding-left: 40px; }
+ol, ul, menu { counter-reset: list-item; }
+ol { list-style-type: decimal; }
+dir, menu, ul { list-style-type: disc; }
+:is(dir, menu, ol, ul) :is(dir, menu, ul) { list-style-type: circle; }
+:is(dir, menu, ol, ul) :is(dir, menu, ol, ul) :is(dir, menu, ul) { list-style-type: square; }
+
+table { box-sizing: border-box; border-spacing: 2px; border-collapse: separate; text-indent: initial; }
+td, th { padding: 1px; }
+th { font-weight: bold; text-align: center; }
+caption { text-align: center; }
+thead, tbody, tfoot, table > tr { vertical-align: middle; }
+tr, td, th { vertical-align: inherit; }
+
+hr { color: gray; border-style: inset; border-width: 1px; margin-top: 0.5em; margin-bottom: 0.5em; margin-left: auto; margin-right: auto; overflow: hidden; }
+
+fieldset { margin-left: 2px; margin-right: 2px; border: groove 2px ThreeDFace; padding: 0.35em 0.75em 0.625em; }
+legend { padding-left: 2px; padding-right: 2px; }
+
+cite, dfn, em, i, var { font-style: italic; }
+b, strong { font-weight: bolder; }
+code, kbd, samp, tt { font-family: monospace; }
+big { font-size: larger; }
+small { font-size: smaller; }
+sub { vertical-align: sub; font-size: smaller; }
+sup { vertical-align: super; font-size: smaller; }
+sub, sup { line-height: normal; }
+ruby { text-indent: 0; }
+rt { font-size: 50%; }
+u, ins { text-decoration: underline; }
+del, s, strike { text-decoration: line-through; }
+mark { background: yellow; color: black; }
+abbr[title], acronym[title] { text-decoration: dotted underline; }
+:link, :visited { color: #0000EE; text-decoration: underline; }
+a[href] { color: #0000EE; text-decoration: underline; }
+q::before { content: open-quote; }
+q::after { content: close-quote; }
+nobr { white-space: nowrap; }
+
+img, video, canvas, svg, object, embed, iframe { display: inline; }
+textarea { white-space: pre-wrap; font-family: monospace; }
+input, select, button, textarea { display: inline-block; }
+

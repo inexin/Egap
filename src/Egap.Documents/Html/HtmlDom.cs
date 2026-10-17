@@ -63,6 +63,15 @@ internal abstract class HtmlNode
         children.Clear();
     }
 
+    /// <summary>The parent, its parent and so on up to the root.</summary>
+    public IEnumerable<HtmlNode> Ancestors()
+    {
+        for (HtmlNode? node = Parent; node is not null; node = node.Parent)
+        {
+            yield return node;
+        }
+    }
+
     /// <summary>The nodes below this one in document order.</summary>
     public IEnumerable<HtmlNode> Descendants()
     {

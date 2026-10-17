@@ -1,6 +1,6 @@
 namespace Egap.Documents;
 
-/// <summary>What a writer had to leave out or change because its format cannot hold it.</summary>
+/// <summary>What a reader or writer had to leave out or change because a format cannot hold it.</summary>
 public enum ConversionWarningKind
 {
     /// <summary>Character or paragraph formatting the format has no way to say, such as colours, fonts and sizes.</summary>
@@ -32,6 +32,12 @@ public enum ConversionWarningKind
 
     /// <summary>Content controls, written as their content.</summary>
     ContentControlsDropped,
+
+    /// <summary>Layout the model can only approximate, such as flexbox, grid and absolutely positioned boxes read from HTML.</summary>
+    LayoutApproximated,
+
+    /// <summary>Pictures or style sheets a reader could not load, as no resolver gave them.</summary>
+    ResourceNotLoaded,
 }
 
 /// <summary>One kind of thing a writer left out, with how many times it happened.</summary>

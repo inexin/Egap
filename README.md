@@ -140,6 +140,10 @@ DocxFormat.Save(MarkdownFormat.Load("README.md"), "readme.docx");  // Markdown t
 DocumentLayout pages = report.Layout();                           // pages, lines and boxes linked to the model
 pages.Pages[0].Render(dpi: 150).Save("page1.png");                // any Egami canvas: raster, SVG, PDF
 report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
+
+// HTML read as browsers parse it, styled through the CSS cascade; nothing is fetched without a resolver.
+Document page = HtmlFormat.Load("invoice.html", new HtmlLoadOptions { BaseUri = new Uri("https://example.com/"), ResourceResolver = Fetch });
+page.SaveAsPdf("invoice.pdf");
 ```
 
 ## Projects

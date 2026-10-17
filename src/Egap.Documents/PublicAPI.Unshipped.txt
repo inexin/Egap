@@ -277,9 +277,11 @@ Egap.Documents.ConversionWarningKind.ContentControlsDropped = 9 -> Egap.Document
 Egap.Documents.ConversionWarningKind.DrawingDropped = 4 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.FieldsFlattened = 8 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.FormattingDropped = 0 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.LayoutApproximated = 10 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.MergedCellsSplit = 1 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.PageLayoutDropped = 5 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.PictureDropped = 3 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.ResourceNotLoaded = 11 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.TableSimplified = 2 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.Document
 Egap.Documents.Document.AddSection() -> Egap.Documents.Section!
@@ -623,6 +625,19 @@ Egap.Documents.HorizontalAnchor.Margin = 2 -> Egap.Documents.HorizontalAnchor
 Egap.Documents.HorizontalAnchor.OutsideMargin = 7 -> Egap.Documents.HorizontalAnchor
 Egap.Documents.HorizontalAnchor.Page = 1 -> Egap.Documents.HorizontalAnchor
 Egap.Documents.HorizontalAnchor.RightMargin = 5 -> Egap.Documents.HorizontalAnchor
+Egap.Documents.HtmlFormat
+Egap.Documents.HtmlLoadOptions
+Egap.Documents.HtmlLoadOptions.BaseUri.get -> System.Uri?
+Egap.Documents.HtmlLoadOptions.BaseUri.init -> void
+Egap.Documents.HtmlLoadOptions.Encoding.get -> string?
+Egap.Documents.HtmlLoadOptions.Encoding.init -> void
+Egap.Documents.HtmlLoadOptions.HtmlLoadOptions() -> void
+Egap.Documents.HtmlLoadOptions.Media.get -> string!
+Egap.Documents.HtmlLoadOptions.Media.init -> void
+Egap.Documents.HtmlLoadOptions.ResourceResolver.get -> System.Func<System.Uri!, byte[]?>?
+Egap.Documents.HtmlLoadOptions.ResourceResolver.init -> void
+Egap.Documents.HtmlLoadOptions.UserStyleSheets.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Documents.HtmlLoadOptions.UserStyleSheets.init -> void
 Egap.Documents.Hyperlink
 Egap.Documents.Hyperlink.Address.get -> string?
 Egap.Documents.Hyperlink.Address.set -> void
@@ -1837,6 +1852,11 @@ static Egap.Documents.FloatingPlacement.operator !=(Egap.Documents.FloatingPlace
 static Egap.Documents.FloatingPlacement.operator ==(Egap.Documents.FloatingPlacement? left, Egap.Documents.FloatingPlacement? right) -> bool
 static Egap.Documents.FormatRevision.operator !=(Egap.Documents.FormatRevision? left, Egap.Documents.FormatRevision? right) -> bool
 static Egap.Documents.FormatRevision.operator ==(Egap.Documents.FormatRevision? left, Egap.Documents.FormatRevision? right) -> bool
+static Egap.Documents.HtmlFormat.Load(string! path, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.HtmlFormat.Load(System.IO.Stream! stream, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.HtmlFormat.Load(System.ReadOnlySpan<byte> html, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.HtmlFormat.Parse(string! html, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.HtmlFormat.Parse(string! html, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.ImageData.FromBytes(byte[]! bytes) -> Egap.Documents.ImageData!
 static Egap.Documents.ImageData.GuessContentType(System.ReadOnlySpan<byte> bytes) -> string!
 static Egap.Documents.ImageData.operator !=(Egap.Documents.ImageData? left, Egap.Documents.ImageData? right) -> bool
