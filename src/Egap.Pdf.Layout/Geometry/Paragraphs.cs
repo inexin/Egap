@@ -56,6 +56,13 @@ internal static class Paragraphs
                 continue;
             }
 
+            // Tags say which paragraph text belongs to: one element on both sides of a break carries on, two do not.
+            if (before.Tag is not null && next.Tag is not null)
+            {
+                next.Continues |= ReferenceEquals(before.Tag, next.Tag);
+                continue;
+            }
+
             double size = before.Lines[^1].Size;
             if (Math.Abs(next.Lines[0].Size - size) > size * 0.1)
             {
@@ -107,6 +114,14 @@ internal static class Paragraphs
         if (last[^1] is '-' or '\u00AD')
         {
             return true;
+        }
+
+        // A line breaks where the next word does not fit: when the next paragraph's first word would have fitted on the last
+        // line, the paragraph ended there. A lone line shows no edge to measure against.
+        double size = before.Lines[^1].Size;
+        if (before.Lines.Count > 1 && before.Lines[^1].Box.Width + (size * 0.35) + next.Lines[0].Words[0].Box.Width < before.Box.Width - 1)
+        {
+            return false;
         }
 
         if (Indented(next))
