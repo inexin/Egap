@@ -80,4 +80,16 @@ public class HostileInputTests
 
         Assert.Contains("quote", document.GetText(), StringComparison.Ordinal);
     }
+
+    [Theory]
+    [InlineData("[li <http://x.y> www.z.com][r]\n\n[r]: /u")]
+    [InlineData("[a www.b.com c](/u)")]
+    public void LinksInsideLinksKeepTheirText(string markdown)
+    {
+        // Fuzz finding (task 28): an extended autolink inside a link's text made a hyperlink inside a hyperlink.
+        Document document = MarkdownFormat.Parse(markdown);
+
+        Assert.DoesNotContain(document.Descendants().OfType<Hyperlink>(), h => h.Descendants().OfType<Hyperlink>().Any());
+        Assert.Contains("www", document.GetText(), StringComparison.Ordinal);
+    }
 }
