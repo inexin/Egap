@@ -19,28 +19,30 @@ internal static class PageDrawing
 {
     private static readonly Rgba8 Black = new(0, 0, 0, 255);
 
-    public static void Draw(PageLayout page, Canvas canvas)
+    public static void Draw(PageLayout page, Canvas canvas, LayoutDrawObserver? observer)
     {
         IEnumerable<ObjectBox> floats = page.Boxes.OfType<ObjectBox>();
         foreach (ObjectBox box in floats.Where(f => Wrap(f) == WrapMode.BehindText))
         {
-            DrawBox(box, canvas);
+            DrawBox(box, canvas, observer);
         }
 
         foreach (LayoutBox box in page.Boxes.Where(b => b is not ObjectBox))
         {
-            DrawBox(box, canvas);
+            DrawBox(box, canvas, observer);
         }
 
         foreach (ObjectBox box in floats.Where(f => Wrap(f) != WrapMode.BehindText))
         {
-            DrawBox(box, canvas);
+            DrawBox(box, canvas, observer);
         }
 
         // The note separator: a third of the body's width, as Word draws it.
         if (page.Boxes.OfType<AreaBox>().FirstOrDefault(a => a.Area == PageArea.Notes) is { } notes)
         {
+            observer?.BeginDecoration();
             canvas.DrawLine(new Vector2((float)notes.Bounds.X, (float)notes.Bounds.Y + 6), new Vector2((float)(notes.Bounds.X + (notes.Bounds.Width / 3)), (float)notes.Bounds.Y + 6), new Stroke(0.5f), Black);
+            observer?.EndDecoration();
         }
     }
 
@@ -55,40 +57,53 @@ internal static class PageDrawing
         };
     }
 
-    private static void DrawBox(LayoutBox box, Canvas canvas)
+    private static void DrawBox(LayoutBox box, Canvas canvas, LayoutDrawObserver? observer)
+    {
+        observer?.BeginBox(box);
+        DrawBoxContent(box, canvas, observer);
+        observer?.EndBox(box);
+    }
+
+    private static void DrawBoxContent(LayoutBox box, Canvas canvas, LayoutDrawObserver? observer)
     {
         switch (box)
         {
             case CellBox cell:
                 if (cell.Fill is { } fill)
                 {
+                    observer?.BeginDecoration();
                     canvas.FillRect(Rect(cell.Bounds), fill);
+                    observer?.EndDecoration();
                 }
 
-                DrawChildren(cell, canvas);
+                DrawChildren(cell, canvas, observer);
+                observer?.BeginDecoration();
                 DrawBorders(canvas, cell.Bounds, cell.Borders.Top, cell.Borders.Left, cell.Borders.Bottom, cell.Borders.Right);
+                observer?.EndDecoration();
                 return;
             case ParagraphBox paragraph:
+                observer?.BeginDecoration();
                 DrawParagraphDecorations(paragraph, canvas);
-                DrawChildren(paragraph, canvas);
+                observer?.EndDecoration();
+                DrawChildren(paragraph, canvas, observer);
                 return;
             case LineBox line:
                 DrawLine(line, canvas);
                 return;
             case ObjectBox item:
-                DrawObject(item, canvas);
+                DrawObject(item, canvas, observer);
                 return;
             default:
-                DrawChildren(box, canvas);
+                DrawChildren(box, canvas, observer);
                 return;
         }
     }
 
-    private static void DrawChildren(LayoutBox box, Canvas canvas)
+    private static void DrawChildren(LayoutBox box, Canvas canvas, LayoutDrawObserver? observer)
     {
         foreach (LayoutBox child in box.Children)
         {
-            DrawBox(child, canvas);
+            DrawBox(child, canvas, observer);
         }
     }
 
@@ -170,9 +185,17 @@ internal static class PageDrawing
         }
     }
 
-    private static void DrawObject(ObjectBox box, Canvas canvas)
+    private static void DrawObject(ObjectBox box, Canvas canvas, LayoutDrawObserver? observer)
     {
         RectF rect = Rect(box.Bounds);
+
+        // A text box's frame is decoration around its text; a picture or a shape without text is the content itself.
+        bool frame = box.Children.Count > 0;
+        if (frame)
+        {
+            observer?.BeginDecoration();
+        }
+
         switch (box.Node)
         {
             case Picture picture when picture.Image.Bytes.Length > 0:
@@ -204,7 +227,12 @@ internal static class PageDrawing
                 }
         }
 
-        DrawChildren(box, canvas);
+        if (frame)
+        {
+            observer?.EndDecoration();
+        }
+
+        DrawChildren(box, canvas, observer);
     }
 
     /// <summary>Draws an image the file stores, decoding it with Egami's codecs; one Egami cannot decode is left out.</summary>

@@ -135,6 +135,11 @@ Document report = DocxFormat.Load("report.docx");                // what the mod
 report.Sections[0].Body.AddParagraph("Appended.");
 DocxFormat.Save(report, "report-edited.docx");                    // unedited parts are written as they were read
 DocxFormat.Save(MarkdownFormat.Load("README.md"), "readme.docx");  // Markdown to Word
+
+// Layout and PDF export (Egap.Pdf.Layout, in progress): Word to PDF with links, outline and tags.
+DocumentLayout pages = report.Layout();                           // pages, lines and boxes linked to the model
+pages.Pages[0].Render(dpi: 150).Save("page1.png");                // any Egami canvas: raster, SVG, PDF
+report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
 ```
 
 ## Projects

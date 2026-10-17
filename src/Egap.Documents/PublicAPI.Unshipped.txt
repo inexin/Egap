@@ -701,6 +701,7 @@ Egap.Documents.Layout.DocumentLayout.FindBoxes(Egap.Documents.Node! node) -> Sys
 Egap.Documents.Layout.DocumentLayout.FontSubstitutions.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.FontSubstitution!>!
 Egap.Documents.Layout.DocumentLayout.GetCaret(Egap.Documents.Layout.DocumentPosition position) -> Egap.Documents.Layout.PageRect?
 Egap.Documents.Layout.DocumentLayout.GetSelectionRects(Egap.Documents.Layout.DocumentPosition start, Egap.Documents.Layout.DocumentPosition end) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.PageRect>!
+Egap.Documents.Layout.DocumentLayout.GetTextRects(Egap.Documents.Inline! node) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.PageRect>!
 Egap.Documents.Layout.DocumentLayout.HitTest(Egap.Documents.Layout.PageLayout! page, double x, double y) -> Egap.Documents.Layout.DocumentPosition?
 Egap.Documents.Layout.DocumentLayout.Locate(Egap.Documents.Layout.DocumentPosition position) -> (Egap.Documents.Inline! Node, int Offset)?
 Egap.Documents.Layout.DocumentLayout.PageOf(Egap.Documents.Node! node) -> Egap.Documents.Layout.PageLayout?
@@ -748,6 +749,8 @@ Egap.Documents.Layout.LayoutBox.Bounds.get -> Egap.Documents.Layout.LayoutRect
 Egap.Documents.Layout.LayoutBox.Children.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutBox!>!
 Egap.Documents.Layout.LayoutBox.Descendants() -> System.Collections.Generic.IEnumerable<Egap.Documents.Layout.LayoutBox!>!
 Egap.Documents.Layout.LayoutBox.Node.get -> Egap.Documents.Node?
+Egap.Documents.Layout.LayoutDrawObserver
+Egap.Documents.Layout.LayoutDrawObserver.LayoutDrawObserver() -> void
 Egap.Documents.Layout.LayoutOptions
 Egap.Documents.Layout.LayoutOptions.Fonts.get -> Egap.Documents.Layout.FontSettings?
 Egap.Documents.Layout.LayoutOptions.Fonts.init -> void
@@ -783,6 +786,7 @@ Egap.Documents.Layout.PageLayout
 Egap.Documents.Layout.PageLayout.BodyLines.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Layout.LineBox!>!
 Egap.Documents.Layout.PageLayout.Boxes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutBox!>!
 Egap.Documents.Layout.PageLayout.Draw(Egami.Drawing.Canvas! canvas) -> void
+Egap.Documents.Layout.PageLayout.Draw(Egami.Drawing.Canvas! canvas, Egap.Documents.Layout.LayoutDrawObserver? observer) -> void
 Egap.Documents.Layout.PageLayout.Height.get -> double
 Egap.Documents.Layout.PageLayout.Index.get -> int
 Egap.Documents.Layout.PageLayout.Number.get -> string!
@@ -1911,6 +1915,10 @@ virtual Egap.Documents.DocumentVisitor.VisitStoryStart(Egap.Documents.Story! sto
 virtual Egap.Documents.DocumentVisitor.VisitTab(Egap.Documents.Tab! tab) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitTableEnd(Egap.Documents.Table! table) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitTableStart(Egap.Documents.Table! table) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.Layout.LayoutDrawObserver.BeginBox(Egap.Documents.Layout.LayoutBox! box) -> void
+virtual Egap.Documents.Layout.LayoutDrawObserver.BeginDecoration() -> void
+virtual Egap.Documents.Layout.LayoutDrawObserver.EndBox(Egap.Documents.Layout.LayoutBox! box) -> void
+virtual Egap.Documents.Layout.LayoutDrawObserver.EndDecoration() -> void
 virtual Egap.Documents.Node.Clone(bool deep = true) -> Egap.Documents.Node!
 ~override Egap.Documents.DocumentColor.Equals(object obj) -> bool
 ~override Egap.Documents.Layout.DocumentPosition.Equals(object obj) -> bool

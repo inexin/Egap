@@ -85,6 +85,16 @@ public sealed class DocumentLayout
         return LayoutInteraction.Selection(this, start, end);
     }
 
+    /// <summary>
+    /// The rectangles an inline's text covers, line by line across pages: a hyperlink's areas, a comment's anchor. Empty for
+    /// an inline with no laid-out text.
+    /// </summary>
+    public IReadOnlyList<PageRect> GetTextRects(Inline node)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+        return LayoutInteraction.TextRects(this, node);
+    }
+
     /// <summary>The model inline and the offset in its text a position falls in, or null at a paragraph's end or in its list label.</summary>
     public (Inline Node, int Offset)? Locate(DocumentPosition position)
     {
@@ -136,8 +146,17 @@ public sealed class PageLayout
     /// </summary>
     public void Draw(Egami.Drawing.Canvas canvas)
     {
+        Draw(canvas, null);
+    }
+
+    /// <summary>
+    /// Draws the page as <see cref="Draw(Egami.Drawing.Canvas)"/> does, telling <paramref name="observer"/> where each box's
+    /// drawing starts and ends and which drawing is decoration, so a canvas can group what it writes (PDF tags, for one).
+    /// </summary>
+    public void Draw(Egami.Drawing.Canvas canvas, LayoutDrawObserver? observer)
+    {
         ArgumentNullException.ThrowIfNull(canvas);
-        PageDrawing.Draw(this, canvas);
+        PageDrawing.Draw(this, canvas, observer);
     }
 
     /// <summary>The page drawn on white at <paramref name="dpi"/> dots per inch.</summary>
