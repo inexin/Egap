@@ -35,9 +35,16 @@ internal sealed class TextOutliner
     {
         TextOutliner outliner = new(page.Document);
         PdfDictionary resources = page.Resources ?? [];
-        if (outliner.Rewrite(page.GetContent(), resources, 0) is PdfContent content)
+        try
         {
-            page.SetContent(content);
+            if (outliner.Rewrite(page.GetContent(), resources, 0) is PdfContent content)
+            {
+                page.SetContent(content);
+            }
+        }
+        catch (PdfException e) when (e is not PdfLimitException && !page.Document.Options.Strict)
+        {
+            // Content that cannot be read keeps its text: there is nothing to draw it from.
         }
 
         outliner.Forms(page.Resources);
@@ -97,7 +104,17 @@ internal sealed class TextOutliner
         }
 
         PdfDictionary resources = form.Dictionary.Get<PdfDictionary>("Resources") ?? [];
-        if (Rewrite(PdfContent.Read(form), resources, mode) is PdfContent content)
+        PdfContent? content;
+        try
+        {
+            content = Rewrite(PdfContent.Read(form), resources, mode);
+        }
+        catch (PdfException e) when (e is not PdfLimitException && !document.Options.Strict)
+        {
+            content = null;
+        }
+
+        if (content is not null)
         {
             form.Dictionary.Remove("DecodeParms");
             form.Dictionary["Filter"] = PdfName.Get("FlateDecode");

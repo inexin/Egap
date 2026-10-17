@@ -35,6 +35,18 @@ public sealed class GrayTests
     }
 
     [Fact]
+    public void ColourOperatorsShortOfOperandsDoNotThrow()
+    {
+        // pdf.js issue21570: an rg with one number. The missing components are 0.
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = pdf.Pages.AddBlank();
+        page.SetContent(PdfContent.Parse("0.5 rg 0 0 10 10 re f /DeviceRGB cs 1 sc 0 0 5 5 re f"u8));
+
+        Assert.Empty(pdf.ConvertToGray());
+        Assert.DoesNotContain(page.GetContent(), op => op.Operator is "rg" or "RG");
+    }
+
+    [Fact]
     public void AnIndexedImageKeepsItsSamplesUnderAGrayPalette()
     {
         using PdfDocument pdf = PdfDocument.Create();
