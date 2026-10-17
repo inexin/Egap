@@ -46,6 +46,29 @@ public sealed class MarkdownLoadOptions
     public Func<string, ImageData?>? ImageResolver { get; init; }
 }
 
+/// <summary>What the Markdown writer does with pictures that have no address of their own.</summary>
+public enum MarkdownImageMode
+{
+    /// <summary>Each image goes to <see cref="MarkdownSaveOptions.ImageResolver"/>, or, saving to a file, to a folder beside it.</summary>
+    Files,
+
+    /// <summary>Each image is written in the Markdown as a data: URI (which GitHub and many viewers do not show).</summary>
+    DataUris,
+
+    /// <summary>An HTML comment marks where each image was, for text-only output.</summary>
+    Placeholders,
+
+    /// <summary>Images are left out, with a warning.</summary>
+    Omit,
+}
+
+/// <summary>An image the Markdown writer hands to <see cref="MarkdownSaveOptions.ImageResolver"/>.</summary>
+/// <param name="Bytes">The image in a browser-ready format: JPEG, PNG, GIF, WebP or SVG.</param>
+/// <param name="ContentType">Its media type.</param>
+/// <param name="SuggestedName">A file name in reading order, such as image-001.png.</param>
+/// <param name="Picture">The picture it came from.</param>
+public sealed record MarkdownImage(ReadOnlyMemory<byte> Bytes, string ContentType, string SuggestedName, Picture Picture);
+
 /// <summary>How <see cref="MarkdownFormat"/> writes Markdown.</summary>
 public sealed class MarkdownSaveOptions
 {
@@ -55,8 +78,41 @@ public sealed class MarkdownSaveOptions
     /// </summary>
     public Func<Picture, string?>? ImageWriter { get; init; }
 
-    /// <summary>Writes pictures with no address and no <see cref="ImageWriter"/> as data: URIs instead of leaving them out.</summary>
+    /// <summary>Writes pictures with no address and no <see cref="ImageWriter"/> as data: URIs; the same as <see cref="Images"/> set to <see cref="MarkdownImageMode.DataUris"/>.</summary>
     public bool EmbedImages { get; init; }
+
+    /// <summary>
+    /// What happens to pictures without an address of their own (Phase 6 design Q20): by default they go to
+    /// <see cref="ImageResolver"/>, or, saving to a file, to a folder beside it.
+    /// </summary>
+    public MarkdownImageMode Images { get; init; } = MarkdownImageMode.Files;
+
+    /// <summary>
+    /// Stores each image (browser-ready bytes, media type and a suggested name in reading order) and returns the address to
+    /// write, or null to leave it out with a warning; each distinct image is asked for once.
+    /// </summary>
+    public Func<MarkdownImage, string?>? ImageResolver { get; init; }
+
+    /// <summary>The folder, beside the Markdown file, that images are written to when saving to a file; "&lt;name&gt;.images" when null.</summary>
+    public string? ImagesFolder { get; init; }
+
+    /// <summary>Dots per inch for vector figures (Word's EMF and WMF pictures) written as PNG.</summary>
+    public double FigureResolution { get; init; } = 150;
+
+    /// <summary>Writes vector figures as SVG instead of PNG.</summary>
+    public bool VectorFiguresAsSvg { get; init; }
+
+    /// <summary>Pictures narrower or shorter than this, in points, are left out as decoration (0 keeps them all).</summary>
+    public double MinImageSize { get; init; } = 6;
+
+    /// <summary>Keeps pictures behind the text (page backgrounds and watermarks), which are left out by default.</summary>
+    public bool KeepBackgroundImages { get; init; }
+
+    /// <summary>
+    /// Writes a picture with the caption beside it as an HTML figure (an img and a figcaption) instead of an image and an
+    /// italic paragraph.
+    /// </summary>
+    public bool CaptionsAsFigures { get; init; }
 
     /// <summary>
     /// Writes YAML front matter with the title and author when the document has them and did not come with front matter of
@@ -124,7 +180,7 @@ public static class MarkdownFormat
     public static string ToMarkdown(Document document, out IReadOnlyList<ConversionWarning> warnings, MarkdownSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(document);
-        return MarkdownWriter.Write(document, options ?? new MarkdownSaveOptions(), out warnings);
+        return MarkdownWriter.Write(document, options ?? new MarkdownSaveOptions(), null, out warnings);
     }
 
     /// <summary>The document as GitHub Flavored Markdown.</summary>
@@ -138,7 +194,8 @@ public static class MarkdownFormat
     public static IReadOnlyList<ConversionWarning> Save(Document document, string path, MarkdownSaveOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
-        string text = ToMarkdown(document, out IReadOnlyList<ConversionWarning> warnings, options);
+        ArgumentNullException.ThrowIfNull(document);
+        string text = MarkdownWriter.Write(document, options ?? new MarkdownSaveOptions(), path, out IReadOnlyList<ConversionWarning> warnings);
         File.WriteAllText(path, text, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
         return warnings;
     }

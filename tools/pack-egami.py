@@ -1,4 +1,4 @@
-"""Packs Egami, Egami.Fonts, Egami.Drawing, Egami.Metafiles and Egami.Css from an Egami commit into a local NuGet folder feed (Phase 3 design Q2).
+"""Packs Egami, Egami.Fonts, Egami.Drawing, Egami.Metafiles, Egami.Css and Egami.Svg from an Egami commit into a local NuGet folder feed (Phase 3 design Q2).
 
 Usage: python tools/pack-egami.py [--egami ../Egami] [--commit HEAD] [--feed ../egami-feed] [--update] [--projects Egami.Svg ...]
 
@@ -17,7 +17,7 @@ import sys
 import tarfile
 import tempfile
 
-PROJECTS = ["Egami", "Egami.Fonts", "Egami.Drawing", "Egami.Metafiles", "Egami.Css"]
+PROJECTS = ["Egami", "Egami.Fonts", "Egami.Drawing", "Egami.Metafiles", "Egami.Css", "Egami.Svg"]
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
