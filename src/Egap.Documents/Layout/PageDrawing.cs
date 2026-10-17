@@ -119,7 +119,13 @@ internal static class PageDrawing
             canvas.FillRect(Rect(area), shading.Fill.Resolve(theme, default));
         }
 
-        DrawBorders(canvas, area, box.IsContinuation ? null : format.BorderTop, format.BorderLeft, box.Continues ? null : format.BorderBottom, format.BorderRight, theme);
+        // The top and bottom borders sit their space away from the text (the page flow leaves that room).
+        Border? top = box.IsContinuation ? null : format.BorderTop;
+        Border? bottom = box.Continues ? null : format.BorderBottom;
+        double above = top is { IsVisible: true } ? top.Space + (top.Width / 2) : 0;
+        double below = bottom is { IsVisible: true } ? bottom.Space + (bottom.Width / 2) : 0;
+        LayoutRect framed = new(area.X, area.Y - above, area.Width, area.Height + above + below);
+        DrawBorders(canvas, framed, top, format.BorderLeft, bottom, format.BorderRight, theme);
     }
 
     private static void DrawLine(LineBox line, Canvas canvas)

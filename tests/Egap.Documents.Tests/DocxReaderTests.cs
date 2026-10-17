@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using Egami.Pixels;
 
 using Egap.Documents.Docx;
+using Egap.Documents.Layout;
 
 namespace Egap.Documents.Tests;
 
@@ -348,6 +349,22 @@ public class DocxReaderTests
         Island[] islands = [.. Body(document).Descendants<Island>()];
         Assert.NotNull(islands[0].Floating);
         Assert.Null(islands[1].Floating);
+    }
+
+    [Fact]
+    public void MissingFontsFollowTheFontTablesHints()
+    {
+        const string Fonts = "<w:fonts " + Namespaces + "><w:font w:name=\"CG Times\"><w:family w:val=\"roman\"/></w:font>"
+            + "<w:font w:name=\"ArialMT\"><w:altName w:val=\"Arial\"/></w:font></w:fonts>";
+        Document document = Load(
+            "<w:p><w:r><w:rPr><w:rFonts w:ascii=\"CG Times\" w:hAnsi=\"CG Times\"/></w:rPr><w:t>serif</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii=\"ArialMT\" w:hAnsi=\"ArialMT\"/></w:rPr><w:t>sans</w:t></w:r></w:p>",
+            [("word/fontTable.xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml", Fonts, "fontTable", "rIdF")]);
+
+        DocumentLayout layout = document.Layout(new LayoutOptions { Fonts = new FontSettings { UseSystemFonts = false } });
+
+        // With system fonts off, Times New Roman and Arial come as their metric twins.
+        Assert.Contains(layout.FontSubstitutions, s => s.Requested == "CG Times" && s.Used == "Liberation Serif");
+        Assert.Contains(layout.FontSubstitutions, s => s.Requested == "ArialMT" && s.Used == "Liberation Sans");
     }
 
     private static Document Load(

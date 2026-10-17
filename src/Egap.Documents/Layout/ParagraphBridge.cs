@@ -374,6 +374,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         };
     }
 
+    /// <summary>How far default tab stops are laid out: past the widest page Word allows (22 inches).</summary>
+    private const double DefaultStopsReach = 1584;
+
     private static readonly FontFeature[] NoLigatures = [FontFeature.Parse("liga=0"), FontFeature.Parse("clig=0")];
 
     private static readonly FontFeature[] NoKerningNoLigatures = [FontFeature.Parse("kern=0"), .. NoLigatures];
@@ -461,6 +464,16 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         }
 
         tabs.Sort((a, b) => a.Position.CompareTo(b.Position));
+
+        // Word's default stops every DefaultTabStop points after the last explicit one. Egami's TabSize counts spaces of the
+        // default font (CSS tab-size), so the stops are given explicitly, as far as any page reaches.
+        double interval = document.Settings.DefaultTabStop > 0 ? document.Settings.DefaultTabStop : 36;
+        double after = tabs.Count > 0 ? tabs[^1].Position : 0;
+        for (double stop = (Math.Floor(after / interval) + 1) * interval; stop <= DefaultStopsReach; stop += interval)
+        {
+            tabs.Add(new EgamiTab((float)stop));
+        }
+
         return new EgamiParagraphStyle
         {
             DefaultStyle = defaultStyle ?? new TextStyle(),

@@ -18,6 +18,7 @@ internal sealed class FontProvider
     private readonly List<FontCollection> chain = [];
     private readonly ConcurrentDictionary<(string Family, FontStyle Style), FontMatch> cache = new();
     private readonly ConcurrentDictionary<FontSubstitution, byte> substitutions = new();
+    private readonly Document document;
     private readonly Lazy<FontFallback> fallback;
 
     /// <summary>
@@ -51,6 +52,7 @@ internal sealed class FontProvider
     public FontProvider(Document document, FontSettings? settings = null)
     {
         ArgumentNullException.ThrowIfNull(document);
+        this.document = document;
         this.settings = settings ?? FontSettings.Default;
         if (document.EmbeddedFonts.Count > 0)
         {
@@ -158,6 +160,37 @@ internal sealed class FontProvider
             {
                 Note(family, style, standard.FamilyName, FontSubstitutionReason.Missing);
                 return StandardFonts.Collection.Match(standard.FamilyName, style) ?? new FontMatch(standard, FontSynthesis.None);
+            }
+
+            // Word's own substitution from the font table: the alternative name, then a face of the font's kind.
+            if (document.FontHints.TryGetValue(family, out (string? AltName, string? Kind) hint))
+            {
+                string? kind = hint.Kind switch
+                {
+                    "roman" => "Times New Roman",
+                    "swiss" => "Arial",
+                    "modern" => "Courier New",
+                    _ => null,
+                };
+                foreach (string? candidate in (ReadOnlySpan<string?>)[hint.AltName, kind])
+                {
+                    if (string.IsNullOrWhiteSpace(candidate) || string.Equals(candidate, family, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    if (Search(candidate, style) is { } alternate)
+                    {
+                        Note(family, style, alternate.Typeface.FamilyName, FontSubstitutionReason.Missing);
+                        return alternate;
+                    }
+
+                    if (settings.UseStandardSubstitutes && StandardFonts.Find(candidate, style) is { } twin)
+                    {
+                        Note(family, style, twin.FamilyName, FontSubstitutionReason.Missing);
+                        return StandardFonts.Collection.Match(twin.FamilyName, style) ?? new FontMatch(twin, FontSynthesis.None);
+                    }
+                }
             }
         }
 
