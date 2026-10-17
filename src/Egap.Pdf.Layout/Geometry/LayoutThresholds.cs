@@ -12,7 +12,7 @@ internal sealed record LayoutThresholds
     public double GutterWordGaps { get; init; } = 3;
 
     /// <summary>The least gap, in text sizes, that cuts a line.</summary>
-    public double GutterSize { get; init; } = 1.0;
+    public double GutterSize { get; init; } = 1.5;
 
     /// <summary>Two lines join one block when the step from one baseline to the next is at most this many times the page's usual line pitch for their size.</summary>
     public double LinePitch { get; init; } = 1.3;
