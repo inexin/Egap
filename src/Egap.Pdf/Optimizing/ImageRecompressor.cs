@@ -14,13 +14,14 @@ namespace Egap.Pdf.Optimizing;
 /// The optimizer's image pass (Phase 7 design 7.1, Q3 and Q4, Build Plan task 3): an image drawn above 1.5 times the target
 /// resolution at its largest placement is downsampled with Egami's bicubic (Catmull-Rom) filter in its stored, encoded
 /// components, with its soft mask resampled the same way; then it is written as JPEG when it is a photo and as Flate (level 9,
-/// PNG predictors) otherwise. The result is kept only when it is at least 5% smaller than the image and soft mask it replaces.
+/// PNG predictors) otherwise; bilevel images go to <see cref="BilevelEncoder"/> as CCITT G4. The result is kept only when it is
+/// at least 5% smaller than the image and soft mask it replaces.
 /// </summary>
 /// <remarks>
 /// The image keeps its object, colour space, <c>/Decode</c> array and every other entry, so pages, forms and annotations that
 /// draw it are untouched: only the samples, size, filters and soft mask change. Images whose samples cannot be resampled as
 /// they are stored are left alone: inline images, Indexed, Lab, Separation and DeviceN images, colour-key masked images,
-/// stencil masks and bilevel images (which only change encoding, task 4), and JPEG 2000 images that carry their own colour
+/// and JPEG 2000 images that carry their own colour
 /// space. Existing JPEGs are re-encoded here only when downsampled; the rest is task 5.
 /// </remarks>
 internal static class ImageRecompressor
@@ -28,8 +29,13 @@ internal static class ImageRecompressor
     /// <summary>Optimizes one surveyed image; the change made, or null when it was left as it was.</summary>
     public static ImageChange? Optimize(PdfDocument document, SurveyedImage surveyed, ImageSettings settings)
     {
+        if (BilevelEncoder.Applies(surveyed))
+        {
+            return BilevelEncoder.Optimize(surveyed, settings.MinSaving);
+        }
+
         PdfImage image = surveyed.Image;
-        if (image.Stream is not PdfStream stream || image.IsStencilMask || surveyed.Kind is SurveyedImageKind.Bilevel or SurveyedImageKind.Unknown
+        if (image.Stream is not PdfStream stream || image.IsStencilMask || surveyed.Kind == SurveyedImageKind.Unknown
             || surveyed.ColorKeyMask is not null || image.Width <= 0 || image.Height <= 0)
         {
             return null;
