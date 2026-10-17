@@ -150,7 +150,7 @@ public sealed class SyntheticSceneTests
     }
 
     /// <summary>
-    /// Writes every scene's PDF and truth (as JSON) into the folder EGAP_SYNTHETIC_OUT names, for the comparison repository's
+    /// Writes every scene's PDF and truth (as JSON), untagged and tagged ("-tagged"), into the folder EGAP_SYNTHETIC_OUT names, for the comparison repository's
     /// reference tools; skipped otherwise.
     /// </summary>
     [Fact]
@@ -159,7 +159,7 @@ public sealed class SyntheticSceneTests
         string? folder = Environment.GetEnvironmentVariable("EGAP_SYNTHETIC_OUT");
         Assert.SkipWhen(string.IsNullOrEmpty(folder), "Set EGAP_SYNTHETIC_OUT to a folder to write the synthetic pages there.");
         Directory.CreateDirectory(folder!);
-        foreach ((string name, Func<SyntheticDocument> make) in SyntheticScenes.All)
+        foreach ((string name, Func<SyntheticDocument> make) in SyntheticScenes.All.Concat(SyntheticScenes.Tagged.Select(s => KeyValuePair.Create(s.Key + "-tagged", s.Value))))
         {
             SyntheticDocument doc = make();
             File.WriteAllBytes(Path.Combine(folder!, name + ".pdf"), doc.Save());

@@ -3,11 +3,15 @@ namespace Egap.Pdf.Layout;
 /// <summary>
 /// One glyph as layout analysis sees it: its Unicode text and box on the displayed page, where its advance starts and ends,
 /// the direction of writing as a unit vector, its font, size and fill colour, its text render mode, and the marked content
-/// it sits in (its MCID for the structure tree, and whether it is an artifact).
+/// it sits in: its MCID for the structure tree (-1 for none), and for an artifact its <c>/Subtype</c> or <c>/Type</c>
+/// (Header, Footer, Watermark, Pagination, Layout...; empty when it says neither), null when it is not one.
 /// </summary>
 internal sealed record PageGlyph(string Text, PageBox Box, PdfPoint Origin, PdfPoint End, double Dx, double Dy, PdfFont? Font, double Size,
-    PdfColor Color, int RenderMode, int Mcid, bool IsArtifact, double SpaceWidth)
+    PdfColor Color, int RenderMode, int Mcid, string? Artifact, double SpaceWidth)
 {
+    /// <summary>Whether the glyph is marked as an artifact (page furniture, not content).</summary>
+    public bool IsArtifact => Artifact is not null;
+
     /// <summary>A space glyph: it separates words and is not part of one.</summary>
     public bool IsSpace => Text.Length > 0 && Text.All(char.IsWhiteSpace);
 
@@ -64,17 +68,23 @@ internal sealed class PageLine(IReadOnlyList<PageWord> words)
 /// (with the line width in page points) and filled, its colours and the marked content it sits in.
 /// </summary>
 internal sealed record PagePath(IReadOnlyList<PdfPathSegment> Segments, PageBox Bounds, bool Stroked, bool Filled, double LineWidth,
-    PdfColor StrokeColor, PdfColor FillColor, int Mcid, bool IsArtifact);
+    PdfColor StrokeColor, PdfColor FillColor, int Mcid, string? Artifact)
+{
+    public bool IsArtifact => Artifact is not null;
+}
 
 /// <summary>
 /// An image placed on the page: the corners of its unit square on the displayed page (top left, top right, bottom right,
 /// bottom left of the image as stored), their bounds, the XObject stream or inline image it comes from, and its marked content.
 /// </summary>
 internal sealed record PageImage(IReadOnlyList<PdfPoint> Corners, PageBox Bounds, PdfStream? Stream, PdfInlineImage? Inline, string? Name,
-    PdfMatrix Matrix, int Mcid, bool IsArtifact);
+    PdfMatrix Matrix, int Mcid, string? Artifact)
+{
+    public bool IsArtifact => Artifact is not null;
+}
 
 /// <summary>A shading painted with <c>sh</c> over the clip; its bounds are the clip's.</summary>
-internal sealed record PageShading(PageBox Bounds, int Mcid, bool IsArtifact);
+internal sealed record PageShading(PageBox Bounds, int Mcid, string? Artifact);
 
 /// <summary>
 /// A visible annotation on the page: its box, subtype and text (<c>/Contents</c>), author for markup annotations, and for
