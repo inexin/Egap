@@ -436,6 +436,7 @@ internal sealed partial class Paginator
                             }
 
                             lineBoxes.Add(new LineBox(paragraph, new LayoutRect(x + line.Indent, lineTop, line.Available, line.Height), lineTop + line.Ascent, line.Line, content));
+                            TakeNotes(content, line.Line.Start, line.Line.End);
                             lineTop += line.Height;
                         }
 

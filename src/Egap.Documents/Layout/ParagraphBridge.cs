@@ -68,7 +68,8 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
 
     /// <param name="paragraph">The paragraph.</param>
     /// <param name="pageField">The text of a page field (PAGE, NUMPAGES, SECTIONPAGES) on the page being laid out, or null to show its stored result.</param>
-    public ParagraphContent Build(Paragraph paragraph, Func<Field, string?>? pageField = null)
+    /// <param name="noteMark">A note's mark to put in front, for the first paragraph of a footnote or endnote.</param>
+    public ParagraphContent Build(Paragraph paragraph, Func<Field, string?>? pageField = null, Footnote? noteMark = null)
     {
         ResolvedParagraphFormat format = paragraph.GetEffectiveFormat();
         RichTextBuilder text = new();
@@ -100,6 +101,14 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             text.Pop();
             labelLength = text.Length;
             _ = length;
+        }
+
+        if (noteMark is not null)
+        {
+            // The note's own text starts with its mark, as Word's footnoteRef shows it.
+            TextStyle markStyle = MarkStyle(paragraph);
+            float markSize = markStyle.Size ?? 10;
+            AddText(noteMark.Mark, noteMark, markStyle with { Size = markSize * 0.65f, BaselineShift = -markSize * 0.35f });
         }
 
         Walk(paragraph.Inlines);
