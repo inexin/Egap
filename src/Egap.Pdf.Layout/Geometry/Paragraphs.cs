@@ -178,6 +178,13 @@ internal static class Paragraphs
         return FontTraits.Family(last.Glyphs[^1].Font) == FontTraits.Family(first.Glyphs[0].Font);
     }
 
+    /// <summary>The style most of a line's glyphs are set in: family, size to the half point, bold.</summary>
+    private static (string Family, double Size, bool Bold) LineStyle(PageLine line)
+    {
+        return line.Words.SelectMany(w => w.Glyphs).GroupBy(g => (FontTraits.Family(g.Font), Math.Round(g.Size * 2) / 2, FontTraits.IsBold(g)))
+            .MaxBy(g => g.Count())!.Key;
+    }
+
     /// <summary>The indices of the lines that start a paragraph in a block (always 0).</summary>
     private static List<int> Starts(List<PageLine> lines)
     {
@@ -221,7 +228,9 @@ internal static class Paragraphs
 
                 // A line ends its paragraph when the next line's first word would have fitted after it.
                 bool shortBefore = right - before.Box.Right > line.Words[0].Box.Width + size;
-                split = firstLineIndent || newEdge || hanging || marker || (shortBefore && !underItem);
+                bool styled = i == start + 1 && i == 1 && LineStyle(before) != LineStyle(line) && (i + 1 == lines.Count || LineStyle(lines[i + 1]) == LineStyle(line))
+                    && !before.Text.TrimEnd().EndsWith('-');
+                split = firstLineIndent || newEdge || hanging || marker || styled || (shortBefore && !underItem);
             }
 
             if (split)
