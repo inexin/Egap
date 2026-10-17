@@ -267,13 +267,18 @@ internal static class Targets
     private static void Impose(Stream input)
     {
         using PdfDocument? pdf = OpenForTools(input);
-        if (pdf is null || pdf.Pages.Count > 50)
+        if (pdf is null)
         {
             return;
         }
 
         Tool(() =>
         {
+            if (pdf.Pages.Count > 50)
+            {
+                return;
+            }
+
             foreach (Func<PdfDocument> layout in new Func<PdfDocument>[]
             {
                 () => PdfImpose.NUp(pdf),
@@ -293,13 +298,18 @@ internal static class Targets
     private static void Stamp(Stream input)
     {
         using PdfDocument? pdf = OpenForTools(input);
-        if (pdf is null || pdf.Pages.Count > 200 || pdf.Conformance != PdfAConformance.None)
+        if (pdf is null)
         {
             return;
         }
 
         Tool(() =>
         {
+            if (pdf.Pages.Count > 200 || pdf.Conformance != PdfAConformance.None)
+            {
+                return;
+            }
+
             pdf.Stamp(PdfStamp.Text("{page} of {pages} {label} {title}"));
             pdf.Stamp(PdfStamp.Bates(new PdfBatesSequence("F-")));
             pdf.Stamp(PdfStamp.Watermark("DRAFT") with { Layer = "Watermark" });
@@ -315,13 +325,18 @@ internal static class Targets
         byte[] bytes = ReadAll(input);
         using PdfDocument? a = OpenForTools(new MemoryStream(bytes));
         using PdfDocument? b = OpenForTools(new MemoryStream(bytes));
-        if (a is null || b is null || a.Pages.Count > 20)
+        if (a is null || b is null)
         {
             return;
         }
 
         Tool(() =>
         {
+            if (a.Pages.Count > 20)
+            {
+                return;
+            }
+
             if (b.Conformance == PdfAConformance.None)
             {
                 b.Stamp(PdfStamp.Text("changed"));
@@ -337,13 +352,18 @@ internal static class Targets
     private static void Cleanup(Stream input)
     {
         using PdfDocument? pdf = OpenForTools(input);
-        if (pdf is null || pdf.Pages.Count > 50)
+        if (pdf is null)
         {
             return;
         }
 
         Tool(() =>
         {
+            if (pdf.Pages.Count > 50)
+            {
+                return;
+            }
+
             pdf.ConvertToGray();
             pdf.RemoveBlankPages(new BlankPageOptions { Dpi = 18 });
             pdf.DeskewScannedPages();
