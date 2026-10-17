@@ -143,9 +143,9 @@ internal static class SyntheticScenes
         return doc;
     }
 
-    public static SyntheticDocument Tables(bool tagged = false)
+    public static SyntheticDocument Tables(bool tagged = false, bool spanAttributes = true)
     {
-        SyntheticDocument doc = new(tagged: tagged);
+        SyntheticDocument doc = new(tagged: tagged) { SpanAttributes = spanAttributes };
         doc.Heading("Ruled, with merged cells");
         doc.Table(
         [

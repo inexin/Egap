@@ -26,6 +26,10 @@ internal static class PageAnalysis
             draft = fromTags;
             pool = [.. draft.Unplaced];
             draft.Unplaced.Clear();
+            if (options.Tables != TableDetection.None)
+            {
+                TaggedGrids.Place(draft, content);
+            }
         }
         else
         {
