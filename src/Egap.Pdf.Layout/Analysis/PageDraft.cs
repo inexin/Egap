@@ -100,6 +100,9 @@ internal sealed class FigureDraft(PageBox box)
 
     public string? AltText { get; set; }
 
+    /// <summary>Whether all of the figure is marked as artifacts: decoration, with no alternate text needed.</summary>
+    public bool Decorative { get; set; }
+
     public int Order { get; set; }
 
     public TagNode? Tag { get; set; }
