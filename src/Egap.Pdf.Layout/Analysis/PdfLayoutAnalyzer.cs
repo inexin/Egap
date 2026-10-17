@@ -169,7 +169,7 @@ public static class PdfLayoutAnalyzer
             FontTraits.IsItalic(glyph.Font), glyph.Color);
     }
 
-    private static IReadOnlyList<PdfPlacedImage>? Placed(PdfPage page)
+    internal static IReadOnlyList<PdfPlacedImage>? Placed(PdfPage page)
     {
         try
         {
@@ -182,7 +182,7 @@ public static class PdfLayoutAnalyzer
     }
 
     /// <summary>The stored image a placed image is: the one drawn with the same matrix.</summary>
-    private static PdfImage? Match(PageImage image, IReadOnlyList<PdfPlacedImage>? placed, PageContent content)
+    internal static PdfImage? Match(PageImage image, IReadOnlyList<PdfPlacedImage>? placed, PageContent content)
     {
         foreach (PdfPlacedImage candidate in placed ?? [])
         {
