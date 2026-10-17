@@ -6,6 +6,8 @@ using Egami.Fonts.Layout;
 using Egami.Fonts.Shaping;
 using Egami.Pixels;
 
+using Egap.Fonts;
+
 using EgamiParagraph = Egami.Fonts.Layout.Paragraph;
 using EgamiParagraphStyle = Egami.Fonts.Layout.ParagraphStyle;
 using EgamiTab = Egami.Fonts.Layout.TabStop;
@@ -132,7 +134,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         return new ParagraphContent
         {
             Source = paragraph,
-            Text = EgamiParagraph.Create(rich, paragraphStyle),
+            Text = CreateShaped(rich, paragraphStyle),
             Format = format,
             LabelLength = labelLength,
             Spans = spans,
@@ -380,6 +382,29 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
     private static readonly FontFeature[] NoLigatures = [FontFeature.Parse("liga=0"), FontFeature.Parse("clig=0")];
 
     private static readonly FontFeature[] NoKerningNoLigatures = [FontFeature.Parse("kern=0"), .. NoLigatures];
+
+    /// <summary>
+    /// Egami's paragraph, shaped. Egami's shaping buffer is reused per thread and keeps the length limit its last text set
+    /// (256 times its length, at least 65536) while it loads the next, so a run longer than that throws its internal
+    /// LayoutLimitException. Shaping a text 1/200 of the length first raises the limit, and the second attempt goes through
+    /// (an Egami follow-up: the limit should be reset before loading).
+    /// </summary>
+    private static EgamiParagraph CreateShaped(RichText rich, EgamiParagraphStyle style)
+    {
+        try
+        {
+            return EgamiParagraph.Create(rich, style);
+        }
+        catch (Exception e) when (e.GetType().Name == "LayoutLimitException")
+        {
+            if (StandardFonts.Collection.Match("Liberation Sans", default) is { } match)
+            {
+                _ = TextShaper.Shape(new string('x', (rich.Text.Length / 200) + 1), new Font(match.Typeface, 10));
+            }
+
+            return EgamiParagraph.Create(rich, style);
+        }
+    }
 
     /// <summary>The style of a paragraph's mark: its style's run formatting with the mark's own over it.</summary>
     public TextStyle MarkStyle(Paragraph paragraph)

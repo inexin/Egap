@@ -61,6 +61,15 @@ internal static class Targets
         input.CopyTo(bytes);
         Egap.Documents.Html.HtmlDocument document = Egap.Documents.Html.HtmlTreeBuilder.Parse(bytes.ToArray(), out _);
         Visit(document);
+
+        // The reader maps every page onto the model through the cascade, and the model answers its formatting.
+        Document model = HtmlFormat.Load(bytes.ToArray(), out _);
+        _ = model.GetText();
+        foreach (Paragraph paragraph in model.Descendants<Paragraph>())
+        {
+            _ = paragraph.ListLabel;
+            _ = paragraph.GetEffectiveFormat();
+        }
         string text = System.Text.Encoding.UTF8.GetString(bytes.ToArray());
         foreach (string context in (string[])["body", "td", "template", "select", "svg"])
         {

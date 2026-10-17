@@ -29,6 +29,7 @@
   <!-- HTML named character references (WHATWG, CC BY 4.0; THIRD-PARTY-NOTICES.md), for the Markdown and HTML readers. -->
   <ItemGroup>
     <EmbeddedResource Include="Html/entities.txt" LogicalName="Egap.Documents.Html.entities.txt" />
+    <EmbeddedResource Include="Html/html.css" LogicalName="Egap.Documents.Html.html.css" />
     <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
