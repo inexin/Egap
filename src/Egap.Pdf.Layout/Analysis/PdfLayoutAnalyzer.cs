@@ -11,7 +11,7 @@ namespace Egap.Pdf.Layout;
 /// <example>
 /// <code>
 /// using PdfDocument pdf = PdfDocument.Open("report.pdf");
-/// foreach (PageLayout page in PdfLayoutAnalyzer.Analyze(pdf))
+/// foreach (PdfPageLayout page in PdfLayoutAnalyzer.Analyze(pdf))
 /// {
 ///     foreach (LayoutBlock block in page.Blocks)
 ///     {
@@ -29,7 +29,7 @@ public static class PdfLayoutAnalyzer
     /// <param name="document">The document.</param>
     /// <param name="options">How to analyse; <see cref="PdfLayoutOptions.Default"/> when null.</param>
     /// <param name="cancellationToken">Stops between pages.</param>
-    public static IReadOnlyList<PageLayout> Analyze(PdfDocument document, PdfLayoutOptions? options = null, CancellationToken cancellationToken = default)
+    public static IReadOnlyList<PdfPageLayout> Analyze(PdfDocument document, PdfLayoutOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(document);
         return Analyze(document, Enumerable.Range(0, document.Pages.Count), options, cancellationToken);
@@ -43,7 +43,7 @@ public static class PdfLayoutAnalyzer
     /// <param name="pageIndex">The page's index, from 0.</param>
     /// <param name="options">How to analyse; <see cref="PdfLayoutOptions.Default"/> when null.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="pageIndex"/> is not a page of the document.</exception>
-    public static PageLayout Analyze(PdfDocument document, int pageIndex, PdfLayoutOptions? options = null)
+    public static PdfPageLayout Analyze(PdfDocument document, int pageIndex, PdfLayoutOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentOutOfRangeException.ThrowIfNegative(pageIndex);
@@ -51,9 +51,16 @@ public static class PdfLayoutAnalyzer
         return Analyze(document, [pageIndex], options, default)[0];
     }
 
-    private static List<PageLayout> Analyze(PdfDocument document, IEnumerable<int> indices, PdfLayoutOptions? options, CancellationToken cancellationToken)
+    private static List<PdfPageLayout> Analyze(PdfDocument document, IEnumerable<int> indices, PdfLayoutOptions? options, CancellationToken cancellationToken)
     {
-        options ??= PdfLayoutOptions.Default;
+        (List<PageDraft> drafts, _) = Drafts(document, indices, options ?? PdfLayoutOptions.Default, cancellationToken);
+        return [.. drafts.Select(d => Publish(document.Pages[d.Content.Index], d))];
+    }
+
+    /// <summary>Every stage up to the public result: the pages' drafts with their roles, and the footnotes linked to their markers.</summary>
+    internal static (List<PageDraft> Drafts, List<Roles.NoteLink> Notes) Drafts(PdfDocument document, IEnumerable<int> indices, PdfLayoutOptions options,
+        CancellationToken cancellationToken)
+    {
         List<OutlineEntry> outline = PageReader.ReadOutline(document);
         TagIndex? tags = options.UseTags ? TagIndex.Read(document) : null;
         List<PageDraft> drafts = [];
@@ -63,8 +70,7 @@ public static class PdfLayoutAnalyzer
             drafts.Add(PageAnalysis.Analyze(document, index, tags, outline, options));
         }
 
-        Finish(drafts, outline);
-        return [.. drafts.Select(d => Publish(document.Pages[d.Content.Index], d))];
+        return (drafts, Finish(drafts, outline));
     }
 
     /// <summary>
@@ -103,7 +109,7 @@ public static class PdfLayoutAnalyzer
     }
 
     /// <summary>The public layout of a page: headers first, then the body in reading order, then notes, footers and page numbers.</summary>
-    internal static PageLayout Publish(PdfPage page, PageDraft draft)
+    internal static PdfPageLayout Publish(PdfPage page, PageDraft draft)
     {
         List<object> items =
         [
@@ -137,7 +143,7 @@ public static class PdfLayoutAnalyzer
             }
         }
 
-        return new PageLayout(draft.Content.Index, (float)draft.Content.Width, (float)draft.Content.Height, elements, draft.FromTags, draft.Content.Warnings);
+        return new PdfPageLayout(draft.Content.Index, (float)draft.Content.Width, (float)draft.Content.Height, elements, draft.FromTags, draft.Content.Warnings);
     }
 
     private static int OrderOf(object item)
