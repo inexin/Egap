@@ -11,7 +11,7 @@ namespace Egap.Pdf.Layout;
 
 internal sealed partial class ModelBuilder
 {
-    private readonly List<Picture> floats = [];
+    private readonly List<Inline> floats = [];
 
     /// <summary>
     /// Writes a figure as a picture (design Q7): a lone image drawn upright keeps its stored bytes when they are a JPEG and its

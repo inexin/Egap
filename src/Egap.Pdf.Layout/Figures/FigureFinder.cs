@@ -48,7 +48,12 @@ internal static class FigureFinder
                 continue;
             }
 
-            parts.Add((path.Bounds, null, path));
+            // Only what lands on the page counts: a path drawn far past its edge is cut to it.
+            PageBox onPage = path.Bounds.Intersect(content.Bounds);
+            if (!onPage.IsEmpty)
+            {
+                parts.Add((onPage, null, path));
+            }
         }
 
         // Parts that touch or come within a few points of each other are one drawing.
@@ -77,7 +82,9 @@ internal static class FigureFinder
             // background; anything else drawn needs some size.
             bool rulesOnly = members.All(m => m.Path is PagePath p && (Furniture(p, lines, content) || Thin(p.Bounds)));
             bool shadedBox = members.Count == 1 && members[0].Path is { Filled: true } lone && !lone.Segments.Any(x => x.Verb == PdfPathVerb.CurveTo);
-            if (!hasImage && (rulesOnly || shadedBox || box.Width < Least || box.Height < Least))
+            // Drawings around most of a table are its shading and frame.
+            bool aroundTable = tables.Any(t => t.Box.Intersect(box) is { IsEmpty: false } common && common.Area >= t.Box.Area * 0.5 && common.Area >= box.Area * 0.5);
+            if (!hasImage && (rulesOnly || shadedBox || aroundTable || box.Width < Least || box.Height < Least))
             {
                 continue;
             }

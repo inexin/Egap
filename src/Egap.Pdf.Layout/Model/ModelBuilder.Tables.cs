@@ -10,7 +10,7 @@ internal sealed partial class ModelBuilder
     /// as paragraphs split where the lines leave a gap. A table that carries on one from the page before adds its rows to it,
     /// less the header it repeats.
     /// </summary>
-    private void WriteTable(Body body, TableDraft draft, Frame frame)
+    private void WriteTable(BlockContainer body, TableDraft draft, Frame frame)
     {
         List<double> edges = Edges(draft);
         int headers = 0;
