@@ -453,6 +453,9 @@ internal sealed partial class DocxReader
                 continue;
             }
 
+            // What Word substitutes a missing font from: its alternative name, then its kind (roman, swiss, modern).
+            document.FontHints[family] = (font.Element(Ns.W + "altName")?.W("val"), font.Element(Ns.W + "family")?.W("val"));
+
             foreach ((string name, bool bold, bool italic) in (ReadOnlySpan<(string, bool, bool)>)[("embedRegular", false, false), ("embedBold", true, false), ("embedItalic", false, true), ("embedBoldItalic", true, true)])
             {
                 if (font.Element(Ns.W + name) is not { } embed

@@ -370,6 +370,18 @@ internal sealed partial class Paginator
             after = 0;
         }
 
+        // A top or bottom border sits its space away from the text and takes its width: the paragraph is that much taller,
+        // unless the neighbour has the same borders and Word draws the two as one box.
+        if (format.BorderTop is { IsVisible: true } borderTop && !SameBorders(format, previous))
+        {
+            before += borderTop.Space + borderTop.Width;
+        }
+
+        if (format.BorderBottom is { IsVisible: true } borderBottom && !SameBorders(format, next))
+        {
+            after += borderBottom.Space + borderBottom.Width;
+        }
+
         // Floats anchored here are placed first; text then flows around every float on the page that wraps.
         if (content.Floats.Count > 0)
         {
@@ -462,6 +474,33 @@ internal sealed partial class Paginator
         }
 
         y += after;
+
+        // A break that ends the paragraph's text breaks after it; the paragraph mark after it takes no line.
+        int end = lines.Count > 0 ? lines[^1].Line.End : -1;
+        if (end >= content.Text.Text.Length && content.Breaks.Any(b => b.Index == end))
+        {
+            if (content.Breaks.First(b => b.Index == end).Kind == BreakKind.Column)
+            {
+                NextColumn();
+            }
+            else
+            {
+                NewPage();
+            }
+        }
+    }
+
+    private static bool SameBorders(ResolvedParagraphFormat format, Paragraph? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        ResolvedParagraphFormat them = other.GetEffectiveFormat();
+        return Equals(format.BorderTop, them.BorderTop) && Equals(format.BorderBottom, them.BorderBottom)
+            && Equals(format.BorderLeft, them.BorderLeft) && Equals(format.BorderRight, them.BorderRight)
+            && format.LeftIndent == them.LeftIndent && format.RightIndent == them.RightIndent;
     }
 
     /// <summary>The number of lines from <paramref name="start"/> that fit below <paramref name="top"/>.</summary>

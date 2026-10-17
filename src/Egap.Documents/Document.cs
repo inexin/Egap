@@ -53,6 +53,9 @@ public sealed class Document : Node
     /// <summary>Document-wide settings: default tab stop, odd and even headers, note numbering, compatibility mode.</summary>
     public DocumentSettings Settings { get; }
 
+    /// <summary>The font table's hints by font name: the alternative name and the kind Word substitutes a missing font by.</summary>
+    internal Dictionary<string, (string? AltName, string? Kind)> FontHints { get; } = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>Fonts the file carries for its text, read from a DOCX's font table and written back with it.</summary>
     public IList<EmbeddedFont> EmbeddedFonts { get; } = new List<EmbeddedFont>();
 
@@ -149,6 +152,11 @@ public sealed class Document : Node
         copy.Theme.CopyFrom(Theme);
         copy.Properties.CopyFrom(Properties);
         copy.Settings.CopyFrom(Settings);
+        foreach ((string name, (string? AltName, string? Kind) hint) in FontHints)
+        {
+            copy.FontHints[name] = hint;
+        }
+
         copy.fileName = fileName;
         copy.CopyExtensionsFrom(this);
         foreach (EmbeddedFont font in EmbeddedFonts)

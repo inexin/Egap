@@ -68,6 +68,15 @@ internal sealed partial class Paginator
         double[] grid = GridWidths(table, format, available);
         double width = grid.Sum();
         double left = x + (format.Indent ?? 0);
+
+        // Before Word 2013's layout (compatibility mode 15), a left-aligned table's indent is measured to its first cell's
+        // text, so the table's edge sits the cell's left margin further left.
+        if (document.Settings.CompatibilityMode < 15 && format.Alignment is null or TableAlignment.Left
+            && table.Rows.Count > 0 && table.Rows[0].Cells.Count > 0 && table.Rows[0].Cells[0] is { } firstCell)
+        {
+            left -= firstCell.GetEffectiveFormat().MarginLeft ?? format.CellMarginLeft ?? 5.4;
+        }
+
         if (format.Alignment == TableAlignment.Center)
         {
             left = x + ((available - width) / 2);

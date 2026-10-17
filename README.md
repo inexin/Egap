@@ -136,7 +136,7 @@ report.Sections[0].Body.AddParagraph("Appended.");
 DocxFormat.Save(report, "report-edited.docx");                    // unedited parts are written as they were read
 DocxFormat.Save(MarkdownFormat.Load("README.md"), "readme.docx");  // Markdown to Word
 
-// Layout and PDF export (Egap.Pdf.Layout, in progress): Word to PDF with links, outline and tags.
+// Egap.Documents 0.3 and Egap.Pdf.Layout 0.1 previews: page layout, drawing and PDF export with links, outline and tags.
 DocumentLayout pages = report.Layout();                           // pages, lines and boxes linked to the model
 pages.Pages[0].Render(dpi: 150).Save("page1.png");                // any Egami canvas: raster, SVG, PDF
 report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
@@ -147,8 +147,8 @@ report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true, Conformance
 | Project | What it is |
 | --- | --- |
 | `src/Egap.Pdf` | The PDF library (package `Egap.Pdf`). |
-| `src/Egap.Documents` | Flow documents, in progress (Phase 6; 0.2 preview has the model, Markdown and DOCX): one document model with Markdown, DOCX and HTML readers and writers and a page layout engine (package `Egap.Documents`). |
-| `src/Egap.Pdf.Layout` | The bridge between Egap.Documents and Egap.Pdf, in progress: documents saved as PDF, PDF pages analysed back into documents (package `Egap.Pdf.Layout`). |
+| `src/Egap.Documents` | Flow documents, in progress (Phase 6; 0.3 preview has the model, Markdown, DOCX and page layout): one document model with Markdown, DOCX and HTML readers and writers and a page layout engine (package `Egap.Documents`). |
+| `src/Egap.Pdf.Layout` | The bridge between Egap.Documents and Egap.Pdf, in progress (0.1 preview saves documents as PDF): documents saved as PDF, PDF pages analysed back into documents (package `Egap.Pdf.Layout`). |
 | `src/Egap.Fonts` | Open, metric-compatible substitutes for Helvetica, Arial, Times, Courier, Calibri and Cambria (package `Egap.Fonts`, SIL OFL fonts). |
 | `tests/Egap.Pdf.Tests`, `tests/Egap.Documents.Tests`, `tests/Egap.Pdf.Layout.Tests` | Unit tests (xUnit v3). |
 | `tests/Egap.Pdf.Fuzz`, `tests/Egap.Documents.Fuzz` | SharpFuzz harnesses for AFL++. |
