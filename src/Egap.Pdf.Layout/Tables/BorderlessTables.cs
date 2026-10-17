@@ -26,7 +26,8 @@ internal static class BorderlessTables
         HashSet<PageGlyph> used = new(ReferenceEqualityComparer.Instance);
 
         // The page's word gap, from all its text: inside a table most gaps are column gaps.
-        double wordGap = BlockBuilder.WordGap(PageReader.Lines(glyphs));
+        List<PageLine> lines = PageReader.Lines(glyphs);
+        double wordGap = BlockBuilder.WordGap(lines);
 
         // Areas the caller names, and areas a partly ruled table's rules bound, are tables whatever they score: they need only
         // two columns (and the rules' area two rows).
@@ -53,8 +54,13 @@ internal static class BorderlessTables
             }
         }
 
-        foreach (List<PageLine> run in search ? Runs([.. glyphs.Where(g => !used.Contains(g))], wordGap, thresholds) : [])
+        foreach (List<PageLine> run in search ? Runs(used.Count == 0 ? lines : PageReader.Lines(glyphs.Where(g => !used.Contains(g))), wordGap, thresholds) : [])
         {
+            if (Prose(run, wordGap, thresholds))
+            {
+                continue;
+            }
+
             if (Build([.. run.SelectMany(l => l.Words).SelectMany(w => w.Glyphs)], wordGap, thresholds, minimumRows: 3) is TableDraft table && Scores(table))
             {
                 table.Confidence = 0.6;
@@ -71,9 +77,9 @@ internal static class BorderlessTables
     /// Runs of lines that could be a table: consecutive lines, each cut into two pieces or more, about a line pitch apart and
     /// overlapping side to side, extended up by the lines just above that line up with the run's gutters (its header).
     /// </summary>
-    private static List<List<PageLine>> Runs(List<PageGlyph> glyphs, double wordGap, LayoutThresholds thresholds)
+    private static List<List<PageLine>> Runs(List<PageLine> found, double wordGap, LayoutThresholds thresholds)
     {
-        List<PageLine> lines = [.. PageReader.Lines(glyphs).Where(l => l.IsHorizontal).OrderBy(l => l.Baseline).ThenBy(l => l.Box.Left)];
+        List<PageLine> lines = [.. found.Where(l => l.IsHorizontal).OrderBy(l => l.Baseline).ThenBy(l => l.Box.Left)];
 
         // Lines on one baseline (two columns of a table written apart) are one row.
         List<PageLine> rows = [];
@@ -234,6 +240,27 @@ internal static class BorderlessTables
     /// and its cells are short (twenty characters or fewer on average, where a line of prose in a column runs longer) or
     /// mostly numbers.
     /// </summary>
+    /// <summary>
+    /// Whether a run is plainly prose in columns, its pieces long and mostly words, so no table built from it could score
+    /// (<see cref="Scores"/> needs short cells or numbers): checked before building, which costs far more.
+    /// </summary>
+    private static bool Prose(List<PageLine> run, double wordGap, LayoutThresholds thresholds)
+    {
+        int pieces = 0, characters = 0, numeric = 0;
+        foreach (PageLine row in run)
+        {
+            foreach (PageLine piece in BlockBuilder.Cut(row, wordGap, thresholds))
+            {
+                string text = piece.Text;
+                pieces++;
+                characters += text.Length;
+                numeric += text.Count(char.IsDigit) * 2 >= text.Count(char.IsLetterOrDigit) ? 1 : 0;
+            }
+        }
+
+        return pieces > 0 && characters > pieces * 40 && numeric * 3 < pieces;
+    }
+
     private static bool Scores(TableDraft table)
     {
         int full = table.Cells.GroupBy(c => c.Row).Count(r => r.Count() >= 2);

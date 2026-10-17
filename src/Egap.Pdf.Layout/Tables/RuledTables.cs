@@ -30,7 +30,7 @@ internal static class RuledTables
 
         // Horizontal rules no grid used, stacked over the same span with text between them: a partly ruled table's rules.
         HashSet<Rule> used = [.. tables.SelectMany(t => rules.Where(r => Inside(r, t.Box)))];
-        double wordGap = BlockBuilder.WordGap(PageReader.Lines(glyphs));
+        double? wordGap = null;
         foreach (IGrouping<(int, int), Rule> stack in rules.Where(r => r.Horizontal && !used.Contains(r) && r.To - r.From > 40)
             .GroupBy(r => ((int)Math.Round(r.From / 4), (int)Math.Round(r.To / 4))))
         {
@@ -38,7 +38,7 @@ internal static class RuledTables
             List<Rule> rows = [];
             foreach (Rule rule in stack.OrderBy(r => r.At))
             {
-                if (rows.Count > 0 && Between(rows[^1], rule, glyphs, wordGap))
+                if (rows.Count > 0 && Between(rows[^1], rule, glyphs, wordGap ??= BlockBuilder.WordGap(PageReader.Lines(glyphs))))
                 {
                     Hint(rows, glyphs, hints);
                     rows = [];

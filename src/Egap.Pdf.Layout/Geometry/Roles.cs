@@ -29,6 +29,19 @@ internal static partial class Roles
             return [];
         }
 
+        Style.Cache = new(ReferenceEqualityComparer.Instance);
+        try
+        {
+            return Assign(pages, outline, all);
+        }
+        finally
+        {
+            Style.Cache = null;
+        }
+    }
+
+    private static List<NoteLink> Assign(IReadOnlyList<PageDraft> pages, IReadOnlyList<OutlineEntry> outline, List<(PageDraft Page, BlockDraft Block)> all)
+    {
         Style body = BodyStyle(all.Select(a => a.Block));
         Furniture(pages, all);
         List<NoteLink> links = Footnotes(pages, body);
@@ -88,10 +101,48 @@ internal static partial class Roles
             return new(Math.Round(glyph.Size * 2) / 2, FontTraits.Family(glyph.Font), FontTraits.IsBold(glyph));
         }
 
+        /// <summary>Each block's style while roles are given: lines do not change then, and every rule asks.</summary>
+        [ThreadStatic]
+        internal static Dictionary<BlockDraft, Style>? Cache;
+
         /// <summary>The style most of a block's glyphs have.</summary>
         public static Style Of(BlockDraft block)
         {
-            return block.Lines.SelectMany(l => l.Words).SelectMany(w => w.Glyphs).Where(g => !g.IsSpace).GroupBy(Of).MaxBy(g => g.Count())?.Key ?? new(10, "", false);
+            if (Cache is null)
+            {
+                return Compute(block);
+            }
+
+            if (!Cache.TryGetValue(block, out Style style))
+            {
+                Cache[block] = style = Compute(block);
+            }
+
+            return style;
+        }
+
+        private static Style Compute(BlockDraft block)
+        {
+            Dictionary<Style, int> counts = [];
+            foreach (PageLine line in block.Lines)
+            {
+                foreach (PageWord word in line.Words)
+                {
+                    foreach (PageGlyph glyph in word.Glyphs)
+                    {
+                        if (glyph.IsSpace)
+                        {
+                            continue;
+                        }
+
+                        Style style = Of(glyph);
+                        counts[style] = counts.GetValueOrDefault(style) + 1;
+                    }
+                }
+            }
+
+            // The first style seen wins a tie, as grouping in order would give.
+            return counts.Count == 0 ? new(10, "", false) : counts.MaxBy(c => c.Value).Key;
         }
     }
 
