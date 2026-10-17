@@ -11,19 +11,39 @@ internal sealed record Geometry(double PageWidth, double PageHeight, double Body
 
     public static double HeightOf(Section section) => section.PageSetup.PageHeight ?? 792;
 
-    public static Geometry Of(Section section, double? top = null, double? bottom = null)
+    /// <summary>A page's geometry; <paramref name="number"/> decides which side the margins go on when they are mirrored.</summary>
+    public static Geometry Of(Section section, int number, double? top = null, double? bottom = null)
     {
         PageSetup setup = section.PageSetup;
+        DocumentSettings settings = section.Document.Settings;
         double width = WidthOf(section);
         double height = HeightOf(section);
-        double left = (setup.MarginLeft ?? 72) + (setup.Gutter ?? 0);
-        double right = width - (setup.MarginRight ?? 72);
+        double gutter = setup.Gutter ?? 0;
+        double marginLeft = setup.MarginLeft ?? 72;
+        double marginRight = setup.MarginRight ?? 72;
+        double gutterTop = 0;
+        if (settings.GutterAtTop)
+        {
+            gutterTop = gutter;
+        }
+        else
+        {
+            marginLeft += gutter;
+        }
+
+        if (settings.MirrorMargins && number % 2 == 0)
+        {
+            (marginLeft, marginRight) = (marginRight, marginLeft);
+        }
+
+        double left = marginLeft;
+        double right = width - marginRight;
         if (right - left < 18)
         {
             right = left + 18;
         }
 
-        double bodyTop = top ?? Math.Abs(setup.MarginTop ?? 72);
+        double bodyTop = top ?? Math.Abs(setup.MarginTop ?? 72) + gutterTop;
         double bodyBottom = bottom ?? height - Math.Abs(setup.MarginBottom ?? 72);
         if (bodyBottom - bodyTop < 18)
         {
@@ -70,7 +90,7 @@ internal sealed class PageBuilder
         Section = section;
         Number = number;
         FirstOfSection = firstOfSection;
-        Geometry = Geometry.Of(section);
+        Geometry = Geometry.Of(section, number);
         StartColumns(Geometry, Geometry.BodyTop);
     }
 

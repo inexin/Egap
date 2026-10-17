@@ -133,12 +133,14 @@ internal static class FormatResolver
 
         levels.AddRange(Chain(StyleOf(paragraph)).Select(s => s.ParagraphFormat));
 
-        // The list level's indents go between the styles and direct formatting (Word's order), once the list is known.
+        // The list level's indents go between the styles and direct formatting (Word's order), once the list is known. A list
+        // a style gives goes just below that style: its own indents (and its descendants') win over the level's, as in Word.
         List? list = paragraph.Format.List ?? levels.Select(l => l.List).LastOrDefault(l => l is not null);
         if (list is not null && list != List.None && paragraph.Document.Lists.Contains(list))
         {
             int level = paragraph.Format.ListLevel ?? levels.Select(l => l.ListLevel).LastOrDefault(l => l is not null) ?? 0;
-            levels.Add(list.GetLevel(level).ParagraphFormat);
+            int at = paragraph.Format.List is null ? levels.FindLastIndex(l => l.List is not null) : levels.Count;
+            levels.Insert(at < 0 ? levels.Count : at, list.GetLevel(level).ParagraphFormat);
         }
 
         levels.Add(paragraph.Format);

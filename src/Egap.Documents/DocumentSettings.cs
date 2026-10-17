@@ -16,6 +16,8 @@ public sealed class DocumentSettings
     private int endnoteStartAt = 1;
     private bool trackRevisions;
     private int compatibilityMode = 15;
+    private bool mirrorMargins;
+    private bool gutterAtTop;
 
     internal DocumentSettings(Document document)
     {
@@ -78,6 +80,23 @@ public sealed class DocumentSettings
         set => Set(ref compatibilityMode, value is >= 0 and <= 100 ? value : throw new ArgumentOutOfRangeException(nameof(value)));
     }
 
+    /// <summary>
+    /// Facing pages: on even pages the left and right margins (and the gutter) change places, so the gutter is always on the
+    /// inside.
+    /// </summary>
+    public bool MirrorMargins
+    {
+        get => mirrorMargins;
+        set => Set(ref mirrorMargins, value);
+    }
+
+    /// <summary>The sections' gutter (<see cref="PageSetup.Gutter"/>) is added to the top margin instead of the left.</summary>
+    public bool GutterAtTop
+    {
+        get => gutterAtTop;
+        set => Set(ref gutterAtTop, value);
+    }
+
     internal void CopyFrom(DocumentSettings source)
     {
         defaultTabStop = source.defaultTabStop;
@@ -88,6 +107,8 @@ public sealed class DocumentSettings
         endnoteStartAt = source.endnoteStartAt;
         trackRevisions = source.trackRevisions;
         compatibilityMode = source.compatibilityMode;
+        mirrorMargins = source.mirrorMargins;
+        gutterAtTop = source.gutterAtTop;
     }
 
     private void Set<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string property = "")

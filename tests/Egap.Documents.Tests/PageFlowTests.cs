@@ -39,6 +39,29 @@ public class PageFlowTests
     }
 
     [Fact]
+    public void GutterAtTopAndMirroredMargins()
+    {
+        Document document = Lines(120);
+        PageSetup setup = document.Sections[0].PageSetup;
+        setup.MarginLeft = 50;
+        setup.MarginRight = 100;
+        setup.Gutter = 30;
+        document.Settings.MirrorMargins = true;
+
+        DocumentLayout layout = document.Layout(Isolated);
+
+        // The gutter is on the inside: left on odd pages, right on even ones.
+        Assert.Equal(80, layout.Pages[0].BodyLines.First().Bounds.X, 0.01);
+        Assert.Equal(100, layout.Pages[1].BodyLines.First().Bounds.X, 0.01);
+
+        document.Settings.GutterAtTop = true;
+        layout = document.Layout(Isolated);
+
+        Assert.Equal(50, layout.Pages[0].BodyLines.First().Bounds.X, 0.01);
+        Assert.True(layout.Pages[0].BodyLines.First().Bounds.Y >= 102 - 0.01);
+    }
+
+    [Fact]
     public void PageBreaksSectionsAndOrientation()
     {
         Document document = new();
