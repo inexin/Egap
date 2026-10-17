@@ -46,6 +46,11 @@ internal static class Targets
             "functions" => Functions,
             "shadings" => Shadings,
             "render" => Render,
+            "optimize" => Optimize,
+            "impose" => Impose,
+            "stamp" => Stamp,
+            "compare" => Compare,
+            "cleanup" => Cleanup,
             "signatures" => Signatures,
             "cms" => Cms,
             "revocation" => Revocation,
@@ -214,6 +219,142 @@ internal static class Targets
                 }
             }
         }
+    }
+
+    /// <summary>Opens a fuzzed file with tight limits for the Phase 7 tools, or null when it does not open.</summary>
+    private static PdfDocument? OpenForTools(Stream input)
+    {
+        try
+        {
+            return PdfDocument.Open(ReadAll(input), new PdfReadOptions { MaxDecodedStreamBytes = 16 << 20, MaxObjects = 100_000, MaxNestingDepth = 32 });
+        }
+        catch (PdfException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Runs a Phase 7 tool on a hostile file: only limit and damage exceptions may come out.</summary>
+    private static void Tool(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (PdfLimitException)
+        {
+        }
+    }
+
+    /// <summary>The optimizer at Ebook on a hostile file (Phase 7 task 20), then a save.</summary>
+    private static void Optimize(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            pdf.Optimize(PdfOptimizeOptions.Ebook with { AllowInvalidatingSignatures = true });
+            using MemoryStream saved = new();
+            pdf.Save(saved);
+        });
+    }
+
+    /// <summary>N-up, a booklet, a poster and fit to size of a hostile file's first pages, each saved.</summary>
+    private static void Impose(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null || pdf.Pages.Count > 50)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            foreach (Func<PdfDocument> layout in new Func<PdfDocument>[]
+            {
+                () => PdfImpose.NUp(pdf),
+                () => PdfImpose.Booklet(pdf),
+                () => PdfImpose.Grid(pdf),
+                () => PdfImpose.FitToSize(pdf, PdfPageSize.A5),
+            })
+            {
+                using PdfDocument made = layout();
+                using MemoryStream saved = new();
+                made.Save(saved);
+            }
+        });
+    }
+
+    /// <summary>Page numbers, a Bates number and a watermark layer on a hostile file, removed again.</summary>
+    private static void Stamp(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null || pdf.Pages.Count > 200 || pdf.Conformance != PdfAConformance.None)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            pdf.Stamp(PdfStamp.Text("{page} of {pages} {label} {title}"));
+            pdf.Stamp(PdfStamp.Bates(new PdfBatesSequence("F-")));
+            pdf.Stamp(PdfStamp.Watermark("DRAFT") with { Layer = "Watermark" });
+            pdf.RemoveStamps();
+            using MemoryStream saved = new();
+            pdf.Save(saved, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+        });
+    }
+
+    /// <summary>Compare of a hostile file with a stamped copy of itself, visual pass at a low resolution, and its markup.</summary>
+    private static void Compare(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        using PdfDocument? a = OpenForTools(new MemoryStream(bytes));
+        using PdfDocument? b = OpenForTools(new MemoryStream(bytes));
+        if (a is null || b is null || a.Pages.Count > 20)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            if (b.Conformance == PdfAConformance.None)
+            {
+                b.Stamp(PdfStamp.Text("changed"));
+            }
+
+            using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { Dpi = 18 });
+            using MemoryStream markup = new();
+            result.WriteMarkup(markup);
+        });
+    }
+
+    /// <summary>Grayscale, blank page removal, deskew and text to outlines on a hostile file, then a save.</summary>
+    private static void Cleanup(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null || pdf.Pages.Count > 50)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            pdf.ConvertToGray();
+            pdf.RemoveBlankPages(new BlankPageOptions { Dpi = 18 });
+            pdf.DeskewScannedPages();
+            foreach (PdfPage page in pdf.Pages.Take(2))
+            {
+                page.ConvertTextToOutlines();
+            }
+
+            using MemoryStream saved = new();
+            pdf.Save(saved, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+        });
     }
 
     private static readonly int[] CoordinateBits = [1, 2, 4, 8, 12, 16, 24, 32];

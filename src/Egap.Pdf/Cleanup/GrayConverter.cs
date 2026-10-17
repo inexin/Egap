@@ -40,8 +40,12 @@ internal sealed class GrayConverter
     /// <summary>The gray a colour shows: the luma of its sRGB value, 0 to 1.</summary>
     internal static double Luma(ImageColorSpace space, ReadOnlySpan<double> components)
     {
+        // An operator with too few operands is short of components: the missing ones are 0.
+        Span<double> padded = stackalloc double[Math.Max(space.Components, components.Length)];
+        padded.Clear();
+        components.CopyTo(padded);
         Span<double> rgb = stackalloc double[3];
-        space.ToRgb(components, rgb);
+        space.ToRgb(padded, rgb);
         return Math.Clamp((0.299 * rgb[0]) + (0.587 * rgb[1]) + (0.114 * rgb[2]), 0, 1);
     }
 

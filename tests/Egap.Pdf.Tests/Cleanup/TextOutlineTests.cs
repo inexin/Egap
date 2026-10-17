@@ -45,6 +45,20 @@ public sealed class TextOutlineTests
         Assert.Equal("0 g 10 10 100 100 re f", System.Text.Encoding.ASCII.GetString(page.GetContent().ToBytes()).ReplaceLineEndings(" ").Trim());
     }
 
+    [Fact]
+    public void AFormThatCannotBeReadKeepsItsText()
+    {
+        // Found by fuzzing (Phase 7 task 20): a form with an unknown filter.
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfStream form = new(new PdfDictionary { ["Type"] = PdfName.Get("XObject"), ["Subtype"] = PdfName.Get("Form"), ["BBox"] = new PdfArray { new PdfInteger(0), new PdfInteger(0), new PdfInteger(10), new PdfInteger(10) }, ["Filter"] = PdfName.Get("FlateDe") });
+        form.SetEncodedBytes([1, 2, 3]);
+        PdfPage page = pdf.Pages.AddBlank();
+        page.Resources = new PdfDictionary { ["XObject"] = new PdfDictionary { ["Fm"] = pdf.Objects.Add(form) } };
+        page.SetContent(PdfContent.Parse("/Fm Do"u8));
+
+        Assert.Equal(0, page.ConvertTextToOutlines());
+    }
+
     /// <summary>
     /// Helvetica (a substitute) filled, stroked and both, red text in an embedded TrueType font inside a form, a Type 3 glyph,
     /// and text used as a clip for a blue fill.
