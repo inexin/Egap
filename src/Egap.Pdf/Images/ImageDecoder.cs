@@ -272,6 +272,50 @@ internal static class ImageDecoder
     }
 
     /// <summary>The image's samples after its filters and codec, and the colour space and alpha a JPX image brings itself.</summary>
+    /// <summary>
+    /// The image's samples as stored, for the optimizer (Phase 7 task 3): after its filters and codec, before its
+    /// <c>/Decode</c> array and colour space, scaled to 8 bits and interleaved (so not for Indexed images, whose indices must
+    /// not be scaled). Null when the codec brings a colour space of
+    /// its own (a JPEG 2000 image without <c>/ColorSpace</c>), whose samples the PDF's colour space does not describe.
+    /// </summary>
+    internal static StoredSamples? ReadStored(PdfImage image)
+    {
+        try
+        {
+            (Samples samples, ImageColorSpace? ownSpace, _) = ReadSamples(image, image.Parameters, null);
+            if (ownSpace is not null)
+            {
+                return null;
+            }
+
+            int width = samples.Width, height = samples.Height, n = samples.Components;
+            byte[] data = new byte[width * height * n];
+            int max = (1 << samples.Bits) - 1;
+            for (int y = 0, i = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    for (int c = 0; c < n; c++, i++)
+                    {
+                        int v = samples.Get(x, y, c);
+                        data[i] = samples.Bits switch
+                        {
+                            8 => (byte)v,
+                            16 => (byte)(v >> 8),
+                            _ => (byte)(((v * 255) + (max / 2)) / max),
+                        };
+                    }
+                }
+            }
+
+            return new StoredSamples(width, height, n, data, samples.SourceBits);
+        }
+        catch (Exception e) when (e is InvalidDataException or EgamiException or ArgumentException or OverflowException or IndexOutOfRangeException)
+        {
+            throw new PdfException($"The image could not be decoded: {e.Message}", e);
+        }
+    }
+
     private static (Samples Samples, ImageColorSpace? Space, byte[]? Alpha) ReadSamples(PdfImage image, PdfDictionary d, Size? minimum)
     {
         (byte[] data, PdfName? codec) = image.DecodeFilters();
@@ -592,6 +636,9 @@ internal static class ImageDecoder
 
         return new Samples(width, height, samples.Components, samples.Bits, data) { SourceBits = samples.SourceBits };
     }
+
+    /// <summary>An image's stored samples at 8 bits, interleaved (<see cref="ReadStored"/>).</summary>
+    internal sealed record StoredSamples(int Width, int Height, int Components, byte[] Data, int SourceBits);
 
     private sealed record Samples(int Width, int Height, int Components, int Bits, byte[] Data)
     {
