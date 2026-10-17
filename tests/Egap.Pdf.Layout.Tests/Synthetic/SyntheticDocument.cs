@@ -73,6 +73,9 @@ internal sealed class SyntheticDocument
     /// <summary>Whether "Page N" is drawn at the foot of every page.</summary>
     public bool PageNumbers { get; }
 
+    /// <summary>Whether merged cells' tags carry RowSpan and ColSpan attributes; Word writes none, so false is Word's way.</summary>
+    public bool SpanAttributes { get; init; } = true;
+
     public int PageCount => drawings.Count;
 
     /// <summary>Whether the document gets a structure tree.</summary>
@@ -285,7 +288,7 @@ internal sealed class SyntheticDocument
         {
             pdf.Structure.IsMarked = true;
             pdf.Structure.SetRole("Title", PdfStructureType.H1);
-            Build(root, pdf.Structure.Add(PdfStructureType.Document), elements);
+            Build(root, pdf.Structure.Add(PdfStructureType.Document), elements, SpanAttributes);
         }
 
         foreach (List<(Action<Canvas> Draw, TagSpec? Tag)> page in drawings)
@@ -320,17 +323,17 @@ internal sealed class SyntheticDocument
     }
 
     /// <summary>Creates the elements of a structure, children in the order they were made.</summary>
-    private static void Build(TagSpec spec, PdfStructureElement element, Dictionary<TagSpec, PdfStructureElement> elements)
+    private static void Build(TagSpec spec, PdfStructureElement element, Dictionary<TagSpec, PdfStructureElement> elements, bool spans)
     {
         elements[spec] = element;
-        if (spec.RowSpan > 1 || spec.ColumnSpan > 1)
+        if (spans && (spec.RowSpan > 1 || spec.ColumnSpan > 1))
         {
             element.AddAttributes("Table", new PdfDictionary { ["RowSpan"] = new PdfInteger(spec.RowSpan), ["ColSpan"] = new PdfInteger(spec.ColumnSpan) });
         }
 
         foreach (TagSpec child in spec.Children)
         {
-            Build(child, element.Add(PdfStructureType.FromString(child.Type)), elements);
+            Build(child, element.Add(PdfStructureType.FromString(child.Type)), elements, spans);
         }
     }
 
