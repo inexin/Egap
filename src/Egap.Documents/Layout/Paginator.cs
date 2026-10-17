@@ -25,6 +25,7 @@ internal sealed partial class Paginator
     private double y;
     private Section? section;
     private int pageNumber;
+    private int measuring;
 
     public Paginator(Document document, LayoutOptions? options)
     {
@@ -131,8 +132,8 @@ internal sealed partial class Paginator
         int indexInSection = pages.Count(p => p.Section == current);
         page = new PageBuilder(current, pageNumber, indexInSection == 0);
         pages.Add(page);
-        LayHeadersAndFooters(page);
         column = 0;
+        LayHeadersAndFooters(page);
         y = page.ColumnTop(0);
     }
 
@@ -282,6 +283,18 @@ internal sealed partial class Paginator
         if (format.ContextualSpacing && next?.Style == paragraph.Style && next is not null)
         {
             after = 0;
+        }
+
+        // Floats anchored here are placed first; text then flows around every float on the page that wraps.
+        if (content.Floats.Count > 0)
+        {
+            PlaceFloats(content, y + before);
+        }
+
+        if (WrappingFloats().Count > 0)
+        {
+            FlowAroundFloats(content, before, after);
+            return;
         }
 
         List<PlacedLine> lines = Lines(content, Column.Width);
@@ -442,7 +455,7 @@ internal sealed partial class Paginator
         }
 
         double height = at - top;
-        page!.Add(column, new ParagraphBox(content.Source, new LayoutRect(geometry.X, top, geometry.Width, height), boxes, continued, continues));
+        page!.Add(column, new ParagraphBox(content.Source, new LayoutRect(geometry.X, top, geometry.Width, height), boxes, continued, continues, InlineObjectBoxes(content, boxes)));
         return height;
     }
 

@@ -84,6 +84,9 @@ internal sealed class PageBuilder
 
     public AreaBox? Header { get; set; }
 
+    /// <summary>The floating objects placed on this page.</summary>
+    public List<PlacedFloat> Floats { get; } = [];
+
     public AreaBox? Footer { get; set; }
 
     /// <summary>The columns of the band being filled (a continuous section break starts a new band on the same page).</summary>
@@ -136,6 +139,8 @@ internal sealed class PageBuilder
         {
             boxes.Add(Footer);
         }
+
+        boxes.AddRange(Floats.Select(f => f.Box));
 
         _ = paginator;
         return new PageLayout(index, Numbering.Format(Number, Section.PageSetup.PageNumberStyle ?? NumberStyle.Decimal), Section, Geometry.PageWidth, Geometry.PageHeight, boxes);
@@ -195,7 +200,9 @@ internal sealed partial class Paginator
         if (StoryFor(current, header: false, first, even) is { } footer)
         {
             double distance = setup.FooterDistance ?? 36;
+            measuring++;
             (List<LayoutBox> measure, double height) = LayStory(footer, geometry.BodyLeft, 0, width);
+            measuring--;
             double from = geometry.PageHeight - distance - height;
             (List<LayoutBox> blocks, _) = LayStory(footer, geometry.BodyLeft, from, width);
             target.Footer = new AreaBox(PageArea.Footer, footer, new LayoutRect(geometry.BodyLeft, from, width, height), blocks);
@@ -223,6 +230,12 @@ internal sealed partial class Paginator
                         ParagraphContent content = ContentOf(paragraph, PageFieldText);
                         ResolvedParagraphFormat format = content.Format;
                         at += format.SpaceBefore;
+                        if (content.Floats.Count > 0 && page is not null)
+                        {
+                            // A header's logo or a cell's floating picture is placed on the page like the body's.
+                            PlaceFloats(content, at);
+                        }
+
                         List<PlacedLine> lines = Lines(content, width);
                         List<LineBox> lineBoxes = [];
                         double lineTop = at;
@@ -232,7 +245,7 @@ internal sealed partial class Paginator
                             lineTop += line.Height;
                         }
 
-                        boxes.Add(new ParagraphBox(paragraph, new LayoutRect(x, at, width, lineTop - at), lineBoxes, false, false));
+                        boxes.Add(new ParagraphBox(paragraph, new LayoutRect(x, at, width, lineTop - at), lineBoxes, false, false, InlineObjectBoxes(content, lineBoxes)));
                         at = lineTop + format.SpaceAfter;
                         break;
                     }
