@@ -217,3 +217,10 @@ static Egap.Pdf.Layout.PdfToDocument.Convert(Egap.Pdf.PdfDocument! document, Ega
 static Egap.Pdf.Layout.PdfToDocumentOptions.Default.get -> Egap.Pdf.Layout.PdfToDocumentOptions!
 static Egap.Pdf.Layout.PdfToDocumentOptions.operator !=(Egap.Pdf.Layout.PdfToDocumentOptions? left, Egap.Pdf.Layout.PdfToDocumentOptions? right) -> bool
 static Egap.Pdf.Layout.PdfToDocumentOptions.operator ==(Egap.Pdf.Layout.PdfToDocumentOptions? left, Egap.Pdf.Layout.PdfToDocumentOptions? right) -> bool
+Egap.Pdf.Layout.PdfToDocumentOptions.ConfidenceThreshold.get -> double
+Egap.Pdf.Layout.PdfToDocumentOptions.ConfidenceThreshold.init -> void
+Egap.Pdf.Layout.PdfToDocumentOptions.Mode.get -> Egap.Pdf.Layout.ReconstructionMode
+Egap.Pdf.Layout.PdfToDocumentOptions.Mode.init -> void
+Egap.Pdf.Layout.ReconstructionMode
+Egap.Pdf.Layout.ReconstructionMode.Exact = 1 -> Egap.Pdf.Layout.ReconstructionMode
+Egap.Pdf.Layout.ReconstructionMode.Flow = 0 -> Egap.Pdf.Layout.ReconstructionMode

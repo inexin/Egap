@@ -45,9 +45,36 @@ public sealed record PdfToDocumentOptions
         init => field = value is >= 10 and <= 1200 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "Figures are drawn at 10 to 1200 dpi.");
     } = 200;
 
+    /// <summary>How pages become the document: reflowing text by default, or every line placed where it was (design Q8).</summary>
+    public ReconstructionMode Mode { get; init; } = ReconstructionMode.Flow;
+
+    /// <summary>
+    /// In <see cref="ReconstructionMode.Flow"/>, blocks the analysis is less sure of than this (0 to 1) are kept where they
+    /// were as positioned text frames rather than reflowed. 0.5 by default; 0 reflows everything the analysis found.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not between 0 and 1.</exception>
+    public double ConfidenceThreshold
+    {
+        get;
+        init => field = value is >= 0 and <= 1 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "Confidence runs from 0 to 1.");
+    } = 0.5;
+
     /// <summary>
     /// Whether the TrueType and OpenType fonts the PDF embeds are copied into the document (design Q6). False by default:
     /// most are subsets, holding only the glyphs the PDF uses, so text typed later may not show in them.
     /// </summary>
     public bool EmbedFonts { get; init; }
+}
+
+/// <summary>How <see cref="PdfToDocument"/> turns pages into a document (design Q8).</summary>
+public enum ReconstructionMode
+{
+    /// <summary>
+    /// Reflowing paragraphs in sections, for editing. What cannot flow (text over a figure, a block the analysis is unsure
+    /// of, a page of scattered labels) is kept where it was in a positioned text frame, so no text is lost.
+    /// </summary>
+    Flow = 0,
+
+    /// <summary>Every line in a positioned text frame where it was on its page, as Acrobat's "Retain Page Layout": it looks like the PDF but edits poorly.</summary>
+    Exact = 1,
 }

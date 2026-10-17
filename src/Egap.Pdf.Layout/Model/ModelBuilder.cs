@@ -64,7 +64,14 @@ internal sealed partial class ModelBuilder
         framed.AddRange(Furniture().Select(b => (b, Body(plans, b))));
         framed.AddRange(linked.Select(b => (b, Body(plans, b))));
         styles = new StyleSheet(document, framed);
+        if (options.Mode == ReconstructionMode.Exact)
+        {
+            BuildExact(cancellationToken);
+            return Finish();
+        }
+
         Spacing(plans);
+        FindScattered();
 
         Section? previous = null;
         foreach (SectionPlan plan in plans)
@@ -88,6 +95,9 @@ internal sealed partial class ModelBuilder
 
                 switch (placed.Item)
                 {
+                    case BlockDraft block when Positioned(block, placed.Page, out WrapMode wrap):
+                        WriteFrame(block, wrap);
+                        break;
                     case BlockDraft block:
                         Write(section.Body, block, placed.Frame);
                         break;
@@ -100,9 +110,22 @@ internal sealed partial class ModelBuilder
                 }
             }
 
+            // Frames and floating figures still waiting for a paragraph get one of their own.
+            if (floats.Count > 0)
+            {
+                Paragraph anchor = new(document) { Style = styles.Normal.Style };
+                section.Body.Blocks.Add(anchor);
+                TakeFloats(anchor);
+            }
+
             previous = section;
         }
 
+        return Finish();
+    }
+
+    private Document Finish()
+    {
         foreach (Section section in document.Sections)
         {
             if (section.Body.Blocks.Count == 0 || section.Body.Blocks[^1] is not Paragraph)
