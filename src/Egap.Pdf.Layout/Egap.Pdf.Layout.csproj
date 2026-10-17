@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Egap.Pdf.Layout</RootNamespace>
     <PackageId>Egap.Pdf.Layout</PackageId>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>1.0.0</VersionPrefix>
     <Description>The bridge between Egap.Documents and Egap.Pdf: flow documents saved as PDF with links, outline and tags, and PDF pages analysed back into flow documents.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTrimmable>true</IsTrimmable>
