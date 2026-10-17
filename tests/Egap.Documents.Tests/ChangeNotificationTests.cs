@@ -84,7 +84,7 @@ public class ChangeNotificationTests
     /// <summary>Public members that only read, or make detached copies, and so raise nothing.</summary>
     private static readonly HashSet<string> NotMutators =
     [
-        "Node.Clone", "Node.Accept", "Node.GetText", "Node.Ancestors", "Node.Descendants", "Node.GetAncestor",
+        "Node.Clone", "Node.Accept", "Node.GetText", "Node.Find", "Document.Save", "Node.Ancestors", "Node.Descendants", "Node.GetAncestor",
         "Document.Import", "Document.Clone", "Document.Layout", "NodeCollection`1.IndexOf", "NodeCollection`1.Contains", "NodeCollection`1.GetEnumerator",
         "Run.ToString", "Section.Clone", "Body.Clone", "HeaderFooter.Clone", "Paragraph.Clone", "Table.Clone", "Row.Clone",
         "Cell.Clone", "Run.Clone", "Tab.Clone", "Break.Clone", "Run.GetEffectiveFormat", "Paragraph.GetEffectiveFormat",

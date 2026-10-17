@@ -76,17 +76,31 @@ public static class HtmlFormat
     /// <summary>Reads an HTML file; its encoding is sniffed unless the options name one.</summary>
     public static Document Load(string path, HtmlLoadOptions? options = null)
     {
+        return Load(path, out _, options);
+    }
+
+    /// <summary>Reads an HTML file, reporting what could only be approximated or was left out.</summary>
+    public static Document Load(string path, out IReadOnlyList<ConversionWarning> warnings, HtmlLoadOptions? options = null)
+    {
         ArgumentNullException.ThrowIfNull(path);
-        return Load(File.ReadAllBytes(path), out _, options);
+        Document document = Load(File.ReadAllBytes(path), out warnings, options);
+        document.FileName = path;
+        return document;
     }
 
     /// <summary>Reads HTML from a stream; its encoding is sniffed unless the options name one.</summary>
     public static Document Load(Stream stream, HtmlLoadOptions? options = null)
     {
+        return Load(stream, out _, options);
+    }
+
+    /// <summary>Reads HTML from a stream, reporting what could only be approximated or was left out.</summary>
+    public static Document Load(Stream stream, out IReadOnlyList<ConversionWarning> warnings, HtmlLoadOptions? options = null)
+    {
         ArgumentNullException.ThrowIfNull(stream);
         using MemoryStream bytes = new();
         stream.CopyTo(bytes);
-        return Load(bytes.ToArray(), out _, options);
+        return Load(bytes.ToArray(), out warnings, options);
     }
 
     /// <summary>Writes the document as an HTML5 page with one style sheet, reporting what HTML could not hold.</summary>

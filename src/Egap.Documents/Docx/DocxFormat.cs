@@ -1,4 +1,6 @@
-namespace Egap.Documents.Docx;
+using Egap.Documents.Docx;
+
+namespace Egap.Documents;
 
 /// <summary>How <see cref="DocxFormat"/> reads a file.</summary>
 public sealed class DocxLoadOptions
@@ -44,9 +46,17 @@ public static class DocxFormat
     /// <exception cref="DocumentLimitException">The file is past one of <see cref="DocxLoadOptions.Limits"/>.</exception>
     public static Document Load(string path, DocxLoadOptions? options = null)
     {
+        return Load(path, out _, options);
+    }
+
+    /// <summary>Reads the DOCX, DOTX or DOCM file at <paramref name="path"/>, reporting what could not be read as it was.</summary>
+    /// <exception cref="DocumentException">The file is not a Word document Egap can read.</exception>
+    /// <exception cref="DocumentLimitException">The file is past one of <see cref="DocxLoadOptions.Limits"/>.</exception>
+    public static Document Load(string path, out IReadOnlyList<ConversionWarning> warnings, DocxLoadOptions? options = null)
+    {
         ArgumentNullException.ThrowIfNull(path);
         using FileStream stream = File.OpenRead(path);
-        Document document = Load(stream, options);
+        Document document = Load(stream, out warnings, options);
         document.FileName = path;
         return document;
     }
@@ -55,6 +65,14 @@ public static class DocxFormat
     /// <exception cref="DocumentException">The stream is not a Word document Egap can read.</exception>
     /// <exception cref="DocumentLimitException">The file is past one of <see cref="DocxLoadOptions.Limits"/>.</exception>
     public static Document Load(Stream stream, DocxLoadOptions? options = null)
+    {
+        return Load(stream, out _, options);
+    }
+
+    /// <summary>Reads a DOCX, DOTX or DOCM file from <paramref name="stream"/>, reporting what could not be read as it was.</summary>
+    /// <exception cref="DocumentException">The stream is not a Word document Egap can read.</exception>
+    /// <exception cref="DocumentLimitException">The file is past one of <see cref="DocxLoadOptions.Limits"/>.</exception>
+    public static Document Load(Stream stream, out IReadOnlyList<ConversionWarning> warnings, DocxLoadOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
         options ??= new DocxLoadOptions();
@@ -68,6 +86,9 @@ public static class DocxFormat
         }
 
         OpcPackage package = OpcPackage.Read(source, options.Limits);
+
+        // What the model does not name is kept as extension data, not lost, so reading has nothing to report yet.
+        warnings = [];
         return DocxReader.Read(package);
     }
 
@@ -75,7 +96,8 @@ public static class DocxFormat
     /// Writes <paramref name="document"/> as DOCX to <paramref name="path"/>. A document read from DOCX keeps what the model
     /// does not name; parts and paragraphs that were not edited are written as they were read.
     /// </summary>
-    public static void Save(Document document, string path, DocxSaveOptions? options = null)
+    /// <returns>What DOCX could not hold (nothing yet: the model is Word's).</returns>
+    public static IReadOnlyList<ConversionWarning> Save(Document document, string path, DocxSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(path);
@@ -88,7 +110,7 @@ public static class DocxFormat
             _ => null,
         };
         using FileStream stream = File.Create(path);
-        Save(document, stream, new DocxSaveOptions { Kind = kind });
+        return Save(document, stream, new DocxSaveOptions { Kind = kind });
     }
 
     /// <summary>The kind <paramref name="document"/> was read as, or null for a document not read from DOCX.</summary>
@@ -99,10 +121,12 @@ public static class DocxFormat
     }
 
     /// <summary>Writes <paramref name="document"/> as DOCX to <paramref name="stream"/>, which is left open.</summary>
-    public static void Save(Document document, Stream stream, DocxSaveOptions? options = null)
+    /// <returns>What DOCX could not hold (nothing yet: the model is Word's).</returns>
+    public static IReadOnlyList<ConversionWarning> Save(Document document, Stream stream, DocxSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(stream);
         DocxWriter.Write(document, stream, kind: options?.Kind);
+        return [];
     }
 }

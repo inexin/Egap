@@ -10,25 +10,26 @@ namespace Egap.Documents.Layout;
 public sealed class FontSettings
 {
     /// <summary>Fonts the caller supplies, searched after the document's own and before the system's.</summary>
-    public IList<FontCollection> Collections { get; } = new List<FontCollection>();
+    public IReadOnlyList<FontCollection> Collections { get; init; } = [];
 
     /// <summary>Whether the system's installed fonts are searched; off for output that is the same on every machine.</summary>
-    public bool UseSystemFonts { get; set; } = true;
+    public bool UseSystemFonts { get; init; } = true;
 
     /// <summary>Whether the metric-compatible substitutes in Egap.Fonts (Carlito, Caladea, Liberation) stand in for missing fonts.</summary>
-    public bool UseStandardSubstitutes { get; set; } = true;
+    public bool UseStandardSubstitutes { get; init; } = true;
 
     /// <summary>
     /// Family names to try in place of others, searched through the same chain: a document asking for a key gets the value
-    /// when the key itself is not found (Word's and LibreOffice's replacement tables work the same way).
+    /// when the key itself is not found (Word's and LibreOffice's replacement tables work the same way). Keys match
+    /// ignoring case.
     /// </summary>
-    public IDictionary<string, string> Substitutions { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public IReadOnlyDictionary<string, string> Substitutions { get; init; } = new Dictionary<string, string>();
 
     /// <summary>The family used when nothing else matches; Liberation Sans from Egap.Fonts when null.</summary>
-    public string? LastResortFamily { get; set; }
+    public string? LastResortFamily { get; init; }
 
     /// <summary>The settings a layout uses when none are given: system fonts and the standard substitutes on.</summary>
-    public static FontSettings Default => new();
+    public static FontSettings Default { get; } = new();
 }
 
 /// <summary>Why a font the document asked for was not used as asked.</summary>

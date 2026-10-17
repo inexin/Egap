@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Egap.Documents;
 
-/// <summary>How <see cref="Node.Replace(string, string, FindOptions?)"/> matches.</summary>
+/// <summary>How <see cref="Node.Find(string, FindOptions?)"/> and <see cref="Node.Replace(string, string, FindOptions?)"/> match.</summary>
 public sealed class FindOptions
 {
     /// <summary>Upper and lower case must match.</summary>
@@ -17,6 +17,16 @@ public sealed class FindOptions
 }
 
 /// <summary>
+/// A match <see cref="Node.Find(string, FindOptions?)"/> found: where it is in its paragraph's text as Find sees it (runs
+/// joined, a tab as \t, a line break as \v, deleted text left out unless the options keep it) and the text it matched.
+/// </summary>
+/// <param name="Paragraph">The paragraph the match is in; matches never span paragraphs.</param>
+/// <param name="Start">Where the match starts in the paragraph's text as Find sees it.</param>
+/// <param name="Length">How many characters it covers.</param>
+/// <param name="Value">The text it matched.</param>
+public sealed record TextMatch(Paragraph Paragraph, int Start, int Length, string Value);
+
+/// <summary>
 /// Find and Replace over text that crosses run boundaries (Phase 6 design Q3): each paragraph's text is matched as one
 /// string, with tabs and line breaks as their control characters; a replacement takes the formatting of the first run the
 /// match touches, as Aspose.Words and GemBox.Document do. Matches never span paragraphs.
@@ -25,19 +35,45 @@ internal static class FindReplace
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
 
-    public static int Replace(Node scope, string find, string replacement, FindOptions? options)
+    /// <summary>The regular expression that finds <paramref name="find"/> as the options say.</summary>
+    public static Regex RegexFor(string find, FindOptions options)
     {
         ArgumentException.ThrowIfNullOrEmpty(find);
-        ArgumentNullException.ThrowIfNull(replacement);
-        options ??= new FindOptions();
         string pattern = Regex.Escape(find);
         if (options.WholeWord)
         {
             pattern = @"\b" + pattern + @"\b";
         }
 
-        Regex regex = new(pattern, (options.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase) | RegexOptions.CultureInvariant, Timeout);
-        return Replace(scope, regex, _ => replacement, options);
+        return new Regex(pattern, (options.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase) | RegexOptions.CultureInvariant, Timeout);
+    }
+
+    public static int Replace(Node scope, string find, string replacement, FindOptions? options)
+    {
+        ArgumentNullException.ThrowIfNull(replacement);
+        options ??= new FindOptions();
+        return Replace(scope, RegexFor(find, options), _ => replacement, options);
+    }
+
+    /// <summary>Every match in the paragraphs under <paramref name="scope"/>, in document order.</summary>
+    public static IReadOnlyList<TextMatch> Find(Node scope, Regex regex, FindOptions? options)
+    {
+        ArgumentNullException.ThrowIfNull(regex);
+        options ??= new FindOptions();
+        List<TextMatch> found = [];
+        foreach (Paragraph paragraph in scope is Paragraph p ? [p] : scope.Descendants<Paragraph>())
+        {
+            (string text, _) = TextOf(paragraph, options);
+            foreach (Match match in regex.Matches(text))
+            {
+                if (match.Length > 0)
+                {
+                    found.Add(new TextMatch(paragraph, match.Index, match.Length, match.Value));
+                }
+            }
+        }
+
+        return found;
     }
 
     public static int Replace(Node scope, Regex regex, Func<Match, string> replacement, FindOptions? options)

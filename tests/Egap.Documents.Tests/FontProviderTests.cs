@@ -49,9 +49,12 @@ public class FontProviderTests
     {
         FontCollection mine = new();
         mine.AddFile(Path.Combine(AppContext.BaseDirectory, "files", "fonts", "SourceSans3-Latin.otf"));
-        FontSettings settings = Isolated();
-        settings.Collections.Add(mine);
-        settings.Substitutions["Corporate Sans"] = "Source Sans 3";
+        FontSettings settings = new()
+        {
+            UseSystemFonts = false,
+            Collections = [mine],
+            Substitutions = new Dictionary<string, string> { ["corporate sans"] = "Source Sans 3" },
+        };
         FontProvider provider = new(new Document(), settings);
 
         Assert.StartsWith("Source Sans", provider.Resolve("Corporate Sans", Regular).Typeface.FamilyName, StringComparison.Ordinal);
