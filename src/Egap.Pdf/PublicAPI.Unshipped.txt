@@ -96,6 +96,7 @@ Egap.Pdf.PdfComparison.TextChanges.get -> System.Collections.Generic.IReadOnlyLi
 Egap.Pdf.PdfComparison.VisualChanges.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfVisualChange!>!
 Egap.Pdf.PdfComparison.WriteMarkup(string! path) -> void
 Egap.Pdf.PdfComparison.WriteMarkup(System.IO.Stream! output) -> void
+Egap.Pdf.PdfDocument.ConvertToGray() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
 Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null) -> Egap.Pdf.PdfOptimizeReport!
 Egap.Pdf.PdfDocument.RemoveStamps() -> int
 Egap.Pdf.PdfDocument.Stamp(Egap.Pdf.PdfStamp! stamp) -> Egap.Pdf.PdfStampResult!
