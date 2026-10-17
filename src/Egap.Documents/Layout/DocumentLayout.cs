@@ -61,6 +61,36 @@ public sealed class DocumentLayout
         return index.TryGetValue(node, out List<(PageLayout, LayoutBox)>? found) ? found : [];
     }
 
+    /// <summary>The text position nearest the point (in points from the page's top left), or null on a page without text.</summary>
+    public DocumentPosition? HitTest(PageLayout page, double x, double y)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        if (!Pages.Contains(page))
+        {
+            throw new ArgumentException("The page is not one of this layout's.", nameof(page));
+        }
+
+        return LayoutInteraction.HitTest(page, x, y);
+    }
+
+    /// <summary>Where the caret for <paramref name="position"/> is drawn: its page and a rectangle a point wide, the line's height.</summary>
+    public PageRect? GetCaret(DocumentPosition position)
+    {
+        return LayoutInteraction.Caret(this, position);
+    }
+
+    /// <summary>The rectangles that show the text from <paramref name="start"/> to <paramref name="end"/> selected, line by line across columns and pages.</summary>
+    public IReadOnlyList<PageRect> GetSelectionRects(DocumentPosition start, DocumentPosition end)
+    {
+        return LayoutInteraction.Selection(this, start, end);
+    }
+
+    /// <summary>The model inline and the offset in its text a position falls in, or null at a paragraph's end or in its list label.</summary>
+    public (Inline Node, int Offset)? Locate(DocumentPosition position)
+    {
+        return LayoutInteraction.Locate(this, position);
+    }
+
     /// <summary>The page <paramref name="node"/> starts on, or null when it is not laid out.</summary>
     public PageLayout? PageOf(Node node)
     {
