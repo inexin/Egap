@@ -91,6 +91,13 @@ public static class PdfLayoutAnalyzer
             BlockDraft? before = drafts[i - 1].Blocks.Where(Body).MaxBy(b => b.Order);
             BlockDraft? next = drafts[i].Blocks.Where(Body).MinBy(b => b.Order);
             // The last body paragraph of one page and the first of the next, with no table or figure after or before them.
+            // One structure element on both pages is one paragraph broken by the page.
+            if (before?.Tag is not null && ReferenceEquals(before.Tag, next?.Tag))
+            {
+                next!.Continues = true;
+                continue;
+            }
+
             if (before is { Role: LayoutRole.Text } && next is { Role: LayoutRole.Text, Tag: null }
                 && drafts[i - 1].Tables.All(t => t.Order < before.Order) && drafts[i - 1].Figures.All(f => f.Order < before.Order)
                 && drafts[i].Tables.All(t => t.Order > next.Order) && drafts[i].Figures.All(f => f.Order > next.Order)

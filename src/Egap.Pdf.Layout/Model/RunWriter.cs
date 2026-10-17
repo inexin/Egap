@@ -76,7 +76,7 @@ internal readonly record struct GlyphStyle(string Family, double Size, bool Bold
 /// words broken at a line end with a hyphen are joined, raised and lowered glyphs become superscript and subscript, drawn
 /// lines under or through text become underline and strikethrough, and a footnote's marker becomes the footnote.
 /// </summary>
-internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> noteAt, Action<Paragraph, BlockDraft> writeNote)
+internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> noteAt, Action<Paragraph, BlockDraft> writeNote, Func<PageGlyph, bool>? swallowed = null)
 {
     private List<Decoration> decorations = [];
     private List<PageAnnotation> links = [];
@@ -229,6 +229,12 @@ internal sealed class RunWriter(Document document, Func<PageGlyph, BlockDraft?> 
                     {
                         Flush(paragraph, runs, based);
                         writeNote(paragraph, note);
+                        continue;
+                    }
+
+                    // The rest of a marker of several glyphs ("12") went with its first.
+                    if (swallowed?.Invoke(glyph) == true)
+                    {
                         continue;
                     }
 

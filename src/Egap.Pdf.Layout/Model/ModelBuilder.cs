@@ -16,6 +16,7 @@ internal sealed partial class ModelBuilder
     private readonly List<PageDraft> pages;
     private readonly Dictionary<PageGlyph, BlockDraft> notes = new(ReferenceEqualityComparer.Instance);
     private readonly HashSet<BlockDraft> linked = new(ReferenceEqualityComparer.Instance);
+    private readonly HashSet<PageGlyph> markerRest = new(ReferenceEqualityComparer.Instance);
     private readonly Dictionary<BlockDraft, PageDraft> pageOf = new(ReferenceEqualityComparer.Instance);
     private readonly RunWriter writer;
     private readonly ListBuilder lists;
@@ -33,6 +34,10 @@ internal sealed partial class ModelBuilder
         {
             notes[link.Marker] = link.Note;
             linked.Add(link.Note);
+            foreach (PageGlyph rest in link.Rest ?? [])
+            {
+                markerRest.Add(rest);
+            }
         }
 
         foreach (PageDraft page in pages)
@@ -43,7 +48,7 @@ internal sealed partial class ModelBuilder
             }
         }
 
-        writer = new RunWriter(document, g => notes.GetValueOrDefault(g), WriteNote);
+        writer = new RunWriter(document, g => notes.GetValueOrDefault(g), WriteNote, markerRest.Contains);
         lists = new ListBuilder(document);
         writer.OnLink = (link, annotation) =>
         {
