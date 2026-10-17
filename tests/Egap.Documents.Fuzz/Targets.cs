@@ -2,8 +2,8 @@ namespace Egap.Documents.Fuzz;
 
 /// <summary>
 /// The fuzz targets for Egap.Documents' readers. Markdown has no invalid input, so its reader must never throw; the DOCX
-/// readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). Anything else
-/// is a crash, and AFL++ reports hangs.
+/// readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). HTML has no
+/// invalid input either. Anything else is a crash, and AFL++ reports hangs.
 /// </summary>
 internal static class Targets
 {
@@ -12,6 +12,7 @@ internal static class Targets
         ["markdown"] = Markdown,
         ["package"] = Package,
         ["docx"] = DocxFile,
+        ["html"] = Html,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -47,6 +48,43 @@ internal static class Targets
             // The writer must take anything the reader made, and what it writes must read again.
             string written = MarkdownFormat.ToMarkdown(document);
             _ = MarkdownFormat.Parse(written, new MarkdownLoadOptions { Extensions = extensions }).GetText();
+        }
+    }
+
+    /// <summary>
+    /// Any bytes parsed as an HTML document (encoding sniffed) and as fragments in a few contexts; every element must answer
+    /// Egami.Css's element members, as selector matching asks them.
+    /// </summary>
+    private static void Html(Stream input)
+    {
+        using MemoryStream bytes = new();
+        input.CopyTo(bytes);
+        Egap.Documents.Html.HtmlDocument document = Egap.Documents.Html.HtmlTreeBuilder.Parse(bytes.ToArray(), out _);
+        Visit(document);
+        string text = System.Text.Encoding.UTF8.GetString(bytes.ToArray());
+        foreach (string context in (string[])["body", "td", "template", "select", "svg"])
+        {
+            Visit(Egap.Documents.Html.HtmlTreeBuilder.ParseFragment(text, context, context == "svg" ? Egap.Documents.Html.HtmlElement.SvgNamespace : Egap.Documents.Html.HtmlElement.HtmlNamespace));
+        }
+
+        static void Visit(Egap.Documents.Html.HtmlNode root)
+        {
+            foreach (Egap.Documents.Html.HtmlElement element in root.Descendants().OfType<Egap.Documents.Html.HtmlElement>())
+            {
+                Egami.Css.ICssElement css = element;
+                _ = css.Parent;
+                _ = css.PreviousSibling;
+                _ = css.NextSibling;
+                _ = css.FirstChild;
+                _ = css.IsEmpty;
+                _ = css.Id;
+                _ = css.HasClass("a");
+                _ = css.Attributes.Count();
+                if (element.Content is { } content)
+                {
+                    Visit(content);
+                }
+            }
         }
     }
 
