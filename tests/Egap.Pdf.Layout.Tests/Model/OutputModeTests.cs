@@ -84,7 +84,7 @@ public sealed partial class OutputModeTests
         {
             for (int i = 0; i < 20; i++)
             {
-                canvas.DrawText($"Node {i}", new Vector2(60 + (i % 4 * 130), 80 + (i / 4 * 150)), SyntheticDocument.Body, Ink);
+                canvas.DrawText($"Node {i}", new Vector2(40 + (i * 97 % 460), 80 + (i * 37)), SyntheticDocument.Body, Ink);
             }
         }
 
