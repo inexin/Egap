@@ -90,6 +90,12 @@ internal sealed class TagIndex
         return mcid >= 0 && byPage.TryGetValue(page.Dictionary, out Dictionary<int, TagNode>? ids) && ids.TryGetValue(mcid, out TagNode? node) ? node : null;
     }
 
+    /// <summary>The elements that own marked content on <paramref name="page"/>, glyphs or not (an empty paragraph has some).</summary>
+    public IEnumerable<TagNode> OnPage(PdfPage page)
+    {
+        return byPage.TryGetValue(page.Dictionary, out Dictionary<int, TagNode>? ids) ? ids.Values : [];
+    }
+
     /// <summary>Whether any marked content on <paramref name="page"/> belongs to the tree.</summary>
     public bool HasPage(PdfPage page)
     {

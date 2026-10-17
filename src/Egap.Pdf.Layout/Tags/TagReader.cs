@@ -74,7 +74,8 @@ internal static class TagReader
         }
 
         double coverage = total == 0 ? 1 : covered / (double)total;
-        if (total == 0)
+        // A page with no text still reads from its tags when they put an empty table on it.
+        if (total == 0 && !index.OnPage(page).Any(n => n.Ancestors().Any(a => a.Type is "TD" or "TH")))
         {
             return new(null, "the page has no text", coverage);
         }
@@ -117,11 +118,13 @@ internal static class TagReader
             }
         }
 
-        // Tables from their rows and cells, so empty cells and spans keep their places.
-        foreach (TagNode table in owned.Keys.Where(o => targets.Values.Any(t => t.Owner == o && t.Kind == Kind.Cell))
-            .Select(TableOf).OfType<TagNode>().Distinct())
+        // Tables from their rows and cells, so empty cells and spans keep their places: every table with marked content on
+        // the page, text or not, and in it every row with marked content here (an empty cell still marks its paragraph).
+        HashSet<TagNode> here = [.. index.OnPage(page)];
+        foreach (TagNode table in here.Select(n => n.Ancestors().FirstOrDefault(a => a.Type is "TD" or "TH")).OfType<TagNode>()
+            .Select(TableOf).OfType<TagNode>().Distinct().OrderBy(t => t.Order))
         {
-            if (!tables.ContainsKey(table) && BuildTable(table, owned) is TableDraft built)
+            if (!tables.ContainsKey(table) && BuildTable(table, owned, here) is TableDraft built)
             {
                 tables[table] = built;
                 draft.Tables.Add(built);
@@ -252,9 +255,9 @@ internal static class TagReader
 
     /// <summary>
     /// A table from its rows (TR, also inside THead, TBody and TFoot) and cells (TH, TD) with the spans their Table attributes
-    /// give, keeping only the rows that have content on this page; rows count from 0 on each page.
+    /// give, keeping only the rows that have marked content on this page; rows count from 0 on each page.
     /// </summary>
-    private static TableDraft? BuildTable(TagNode table, Dictionary<TagNode, List<PageGlyph>> owned)
+    private static TableDraft? BuildTable(TagNode table, Dictionary<TagNode, List<PageGlyph>> owned, HashSet<TagNode> here)
     {
         List<TagNode> rows = [.. table.DescendantsAndSelf().Where(n => n.Type == "TR" && TableOf(n) == table)];
         List<CellDraft> cells = [];
@@ -263,7 +266,7 @@ internal static class TagReader
         foreach (TagNode tr in rows)
         {
             List<TagNode> rowCells = [.. tr.Children.Where(c => c.Type is "TD" or "TH")];
-            if (!rowCells.Any(c => c.DescendantsAndSelf().Any(n => owned.ContainsKey(n))))
+            if (!rowCells.Any(c => c.DescendantsAndSelf().Any(n => owned.ContainsKey(n) || here.Contains(n))))
             {
                 continue;
             }

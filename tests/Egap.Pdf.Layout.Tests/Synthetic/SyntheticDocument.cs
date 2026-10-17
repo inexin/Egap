@@ -405,6 +405,11 @@ internal sealed class SyntheticDocument
                     double baseline = cellTop + ((rowHeight - (font.Size * LineFactor)) / 2) + (font.Size * 0.95);
                     DrawAt(text, font, cellLeft + 4, baseline);
                 }
+                else if (cell is not null)
+                {
+                    // Word marks an empty cell's paragraph with empty marked content.
+                    Draw(_ => { });
+                }
 
                 tag = Tagged ? TagSpec.Artifact : null;
                 if (rules == TruthRules.All)

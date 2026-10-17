@@ -12,10 +12,14 @@ internal static class TaggedGrids
     /// <summary>The share of a tagged table's text that must lie inside a ruled grid for the grid to be its own.</summary>
     private const double Inside = 0.9;
 
-    /// <summary>Replaces each tagged table of <paramref name="draft"/> by one placed on its grid, where one is found.</summary>
+    /// <summary>
+    /// Replaces each tagged table of <paramref name="draft"/> by one placed on its grid, where one is found. A tagged table
+    /// with no text takes the next empty ruled grid down the page with as many rows; without one it stays as tagged.
+    /// </summary>
     public static void Place(PageDraft draft, PageContent content)
     {
         List<RuledTables.Rule>? rules = null;
+        List<TableDraft>? empty = null;
         for (int i = 0; i < draft.Tables.Count; i++)
         {
             TableDraft table = draft.Tables[i];
@@ -25,6 +29,24 @@ internal static class TaggedGrids
             }
 
             rules ??= RuledTables.Merge(RuledTables.Rules(content.Paths));
+            if (!Glyphs(table).Any(g => !g.IsSpace))
+            {
+                empty ??= EmptyGrids(rules, content);
+                TableDraft? grid = empty.FirstOrDefault(g => g.Rows == table.Rows);
+                if (grid is null)
+                {
+                    continue;
+                }
+
+                empty.Remove(grid);
+                grid.Order = table.Order;
+                grid.Tag = table.Tag;
+                grid.Confidence = table.Confidence;
+                grid.IsRuled = true;
+                draft.Tables[i] = grid;
+                continue;
+            }
+
             if ((OnRules(table, rules) ?? OnText(table)) is TableDraft placed)
             {
                 placed.Order = table.Order;
@@ -276,6 +298,15 @@ internal static class TaggedGrids
         }
 
         return new TableDraft(cells, table.Rows, columns) { Box = table.Box, IsRuled = table.IsRuled };
+    }
+
+    /// <summary>The page's ruled grids with no text inside, top to bottom.</summary>
+    private static List<TableDraft> EmptyGrids(List<RuledTables.Rule> rules, PageContent content)
+    {
+        List<PageGlyph> ink = [.. content.Glyphs.Where(g => !g.IsSpace)];
+        return [.. RuledTables.Candidates(rules, [], empty: true)
+            .Where(g => !ink.Any(x => g.Box.Contains(x.Box.CenterX, x.Box.CenterY)))
+            .OrderBy(g => g.Box.Top)];
     }
 
     private static IEnumerable<PageGlyph> Glyphs(TableDraft table)
