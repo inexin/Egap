@@ -333,6 +333,25 @@ public class DocxReaderTests
         Assert.Throws<DocumentException>(() => DocxFormat.Load(stream));
     }
 
+    [Fact]
+    public void SettingsGiveGutterMirrorAndWord2007Mode()
+    {
+        const string Settings = "settings";
+        const string SettingsType = "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml";
+        static string Part(string inner) => "<w:settings xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\">" + inner + "</w:settings>";
+
+        // Settings without a compatibility mode are Word 2007's (mode 12); without settings, the current mode.
+        Document word2007 = Load("<w:p/>", [("word/settings.xml", SettingsType, Part("<w:mirrorMargins/><w:gutterAtTop/>"), Settings, "rIdS")]);
+        Document current = Load("<w:p/>", [("word/settings.xml", SettingsType, Part("<w:compat><w:compatSetting w:name=\"compatibilityMode\" w:uri=\"http://schemas.microsoft.com/office/word\" w:val=\"15\"/></w:compat>"), Settings, "rIdS")]);
+
+        Assert.Equal(12, word2007.Settings.CompatibilityMode);
+        Assert.True(word2007.Settings.MirrorMargins);
+        Assert.True(word2007.Settings.GutterAtTop);
+        Assert.Equal(15, current.Settings.CompatibilityMode);
+        Assert.False(current.Settings.MirrorMargins);
+        Assert.Equal(15, Load("<w:p/>").Settings.CompatibilityMode);
+    }
+
     private static Body Body(Document document)
     {
         return document.Sections[0].Body;

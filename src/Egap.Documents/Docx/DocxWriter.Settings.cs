@@ -162,6 +162,8 @@ internal sealed partial class DocxWriter
             }
         }
 
+        // Settings without a compatibility mode are Word 2007's, which Word lays out in its mode 12.
+        settings.CompatibilityMode = 12;
         foreach (XElement setting in root.Element(Ns.W + "compat")?.Elements(Ns.W + "compatSetting") ?? [])
         {
             if (setting.W("name") == "compatibilityMode" && DocxUnits.Int(setting.W("val")) is int mode && mode is >= 0 and <= 100)
