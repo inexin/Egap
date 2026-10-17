@@ -52,6 +52,9 @@
     <InternalsVisibleTo Include="Egap.Pdf.Tests" />
     <InternalsVisibleTo Include="Egap.Pdf.Benchmarks" />
     <InternalsVisibleTo Include="Egap.Pdf.Fuzz" />
+    <!-- The private comparison harness checks Phase 7's internal passes (image survey) on the corpus. -->
+    <InternalsVisibleTo Include="Compare" />
+    <InternalsVisibleTo Include="Compare.Tests" />
   </ItemGroup>
 
 </Project>

@@ -102,6 +102,9 @@ public sealed class PdfImage
     /// <summary>Whether the image is inline in a content stream (<c>BI</c> ... <c>EI</c>).</summary>
     public bool IsInline => inline is not null;
 
+    /// <summary>The inline image operation, or <see langword="null"/> for an image XObject.</summary>
+    internal PdfInlineImage? Inline => inline;
+
     /// <summary>The width in samples.</summary>
     public int Width => (int)(Parameters.GetInt("Width") ?? 0);
 
