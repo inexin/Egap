@@ -36,3 +36,36 @@ static Egap.Pdf.Layout.PdfExport.ToPdf(this Egap.Documents.Layout.DocumentLayout
 static Egap.Pdf.Layout.PdfExportOptions.Default.get -> Egap.Pdf.Layout.PdfExportOptions!
 static Egap.Pdf.Layout.PdfExportOptions.operator !=(Egap.Pdf.Layout.PdfExportOptions? left, Egap.Pdf.Layout.PdfExportOptions? right) -> bool
 static Egap.Pdf.Layout.PdfExportOptions.operator ==(Egap.Pdf.Layout.PdfExportOptions? left, Egap.Pdf.Layout.PdfExportOptions? right) -> bool
+Egap.Pdf.Layout.ILayoutRegionDetector
+Egap.Pdf.Layout.ILayoutRegionDetector.Detect(Egap.Pdf.PdfPage! page) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutRegionHint!>!
+Egap.Pdf.Layout.LayoutRegionHint
+Egap.Pdf.Layout.LayoutRegionHint.<Clone>$() -> Egap.Pdf.Layout.LayoutRegionHint!
+Egap.Pdf.Layout.LayoutRegionHint.Bounds.get -> Egami.Drawing.RectF
+Egap.Pdf.Layout.LayoutRegionHint.Bounds.init -> void
+Egap.Pdf.Layout.LayoutRegionHint.Confidence.get -> double
+Egap.Pdf.Layout.LayoutRegionHint.Confidence.init -> void
+Egap.Pdf.Layout.LayoutRegionHint.Deconstruct(out Egap.Pdf.Layout.LayoutRole Role, out Egami.Drawing.RectF Bounds, out double Confidence) -> void
+Egap.Pdf.Layout.LayoutRegionHint.Equals(Egap.Pdf.Layout.LayoutRegionHint? other) -> bool
+Egap.Pdf.Layout.LayoutRegionHint.LayoutRegionHint(Egap.Pdf.Layout.LayoutRole Role, Egami.Drawing.RectF Bounds, double Confidence = 1) -> void
+Egap.Pdf.Layout.LayoutRegionHint.Role.get -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRegionHint.Role.init -> void
+Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Caption = 4 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Code = 10 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Figure = 13 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Footnote = 5 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Formula = 11 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Heading = 2 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.ListItem = 3 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.PageFooter = 7 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.PageHeader = 6 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.PageNumber = 8 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Quote = 9 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Table = 12 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Text = 0 -> Egap.Pdf.Layout.LayoutRole
+Egap.Pdf.Layout.LayoutRole.Title = 1 -> Egap.Pdf.Layout.LayoutRole
+override Egap.Pdf.Layout.LayoutRegionHint.Equals(object? obj) -> bool
+override Egap.Pdf.Layout.LayoutRegionHint.GetHashCode() -> int
+override Egap.Pdf.Layout.LayoutRegionHint.ToString() -> string!
+static Egap.Pdf.Layout.LayoutRegionHint.operator !=(Egap.Pdf.Layout.LayoutRegionHint? left, Egap.Pdf.Layout.LayoutRegionHint? right) -> bool
+static Egap.Pdf.Layout.LayoutRegionHint.operator ==(Egap.Pdf.Layout.LayoutRegionHint? left, Egap.Pdf.Layout.LayoutRegionHint? right) -> bool
