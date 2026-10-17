@@ -42,6 +42,8 @@ internal sealed class PageWord(IReadOnlyList<PageGlyph> glyphs)
 /// <summary>A line: words on one baseline in one direction, as Phase 3's text extraction builds them (content order).</summary>
 internal sealed class PageLine(IReadOnlyList<PageWord> words)
 {
+    private double? size;
+
     public IReadOnlyList<PageWord> Words { get; } = words;
 
     public string Text { get; } = string.Join(' ', words.Select(w => w.Text));
@@ -55,7 +57,7 @@ internal sealed class PageLine(IReadOnlyList<PageWord> words)
     public bool IsHorizontal => Direction.Dx > 0.9998;
 
     /// <summary>The most common glyph size on the line.</summary>
-    public double Size => Words.SelectMany(w => w.Glyphs).GroupBy(g => Math.Round(g.Size, 1)).MaxBy(g => g.Count())!.Key;
+    public double Size => size ??= Words.SelectMany(w => w.Glyphs).GroupBy(g => Math.Round(g.Size, 1)).MaxBy(g => g.Count())!.Key;
 
     public override string ToString()
     {

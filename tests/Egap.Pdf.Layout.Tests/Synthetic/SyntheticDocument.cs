@@ -547,7 +547,13 @@ internal sealed class SyntheticDocument
 
         for (int i = 0; i < wrapped.Count; i++)
         {
-            SkipExclusions(lineHeight);
+            // Text that jumps over a pull quote goes on as a new part, as it does at a column break.
+            if (SkipExclusions(lineHeight) && lines.Count > 0)
+            {
+                ClosePart();
+                continues = true;
+            }
+
             if (y + lineHeight > flowBottom)
             {
                 // A block that starts at the top of the next column does not continue anything.
@@ -677,15 +683,20 @@ internal sealed class SyntheticDocument
         return text.ToString();
     }
 
-    private void SkipExclusions(double lineHeight)
+    /// <summary>Moves below any pull quote the next line would touch; whether it moved.</summary>
+    private bool SkipExclusions(double lineHeight)
     {
+        bool moved = false;
         foreach ((int page, double top, double bottom) in exclusions)
         {
             if (page == Page && y < bottom && y + lineHeight > top)
             {
                 y = bottom;
+                moved = true;
             }
         }
+
+        return moved;
     }
 
     private void NextColumn()
