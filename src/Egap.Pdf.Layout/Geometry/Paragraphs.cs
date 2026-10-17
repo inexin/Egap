@@ -166,7 +166,7 @@ internal static class Paragraphs
     }
 
     /// <summary>Whether a line ends in a word broken with a hyphen that the next line finishes.</summary>
-    private static bool Hyphenated(PageLine line, PageLine next)
+    internal static bool Hyphenated(PageLine line, PageLine next)
     {
         PageWord last = line.Words[^1], first = next.Words[0];
         string word = last.Text;

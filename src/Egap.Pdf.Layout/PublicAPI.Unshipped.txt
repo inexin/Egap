@@ -199,3 +199,21 @@ static Egap.Pdf.Layout.PdfLayoutAnalyzer.Analyze(Egap.Pdf.PdfDocument! document,
 static Egap.Pdf.Layout.PdfLayoutOptions.Default.get -> Egap.Pdf.Layout.PdfLayoutOptions!
 static Egap.Pdf.Layout.PdfLayoutOptions.operator !=(Egap.Pdf.Layout.PdfLayoutOptions? left, Egap.Pdf.Layout.PdfLayoutOptions? right) -> bool
 static Egap.Pdf.Layout.PdfLayoutOptions.operator ==(Egap.Pdf.Layout.PdfLayoutOptions? left, Egap.Pdf.Layout.PdfLayoutOptions? right) -> bool
+Egap.Pdf.Layout.PdfToDocument
+Egap.Pdf.Layout.PdfToDocumentOptions
+Egap.Pdf.Layout.PdfToDocumentOptions.<Clone>$() -> Egap.Pdf.Layout.PdfToDocumentOptions!
+Egap.Pdf.Layout.PdfToDocumentOptions.EmbedFonts.get -> bool
+Egap.Pdf.Layout.PdfToDocumentOptions.EmbedFonts.init -> void
+Egap.Pdf.Layout.PdfToDocumentOptions.Equals(Egap.Pdf.Layout.PdfToDocumentOptions? other) -> bool
+Egap.Pdf.Layout.PdfToDocumentOptions.FigureResolution.get -> double
+Egap.Pdf.Layout.PdfToDocumentOptions.FigureResolution.init -> void
+Egap.Pdf.Layout.PdfToDocumentOptions.Layout.get -> Egap.Pdf.Layout.PdfLayoutOptions!
+Egap.Pdf.Layout.PdfToDocumentOptions.Layout.init -> void
+Egap.Pdf.Layout.PdfToDocumentOptions.PdfToDocumentOptions() -> void
+override Egap.Pdf.Layout.PdfToDocumentOptions.Equals(object? obj) -> bool
+override Egap.Pdf.Layout.PdfToDocumentOptions.GetHashCode() -> int
+override Egap.Pdf.Layout.PdfToDocumentOptions.ToString() -> string!
+static Egap.Pdf.Layout.PdfToDocument.Convert(Egap.Pdf.PdfDocument! document, Egap.Pdf.Layout.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Documents.Document!
+static Egap.Pdf.Layout.PdfToDocumentOptions.Default.get -> Egap.Pdf.Layout.PdfToDocumentOptions!
+static Egap.Pdf.Layout.PdfToDocumentOptions.operator !=(Egap.Pdf.Layout.PdfToDocumentOptions? left, Egap.Pdf.Layout.PdfToDocumentOptions? right) -> bool
+static Egap.Pdf.Layout.PdfToDocumentOptions.operator ==(Egap.Pdf.Layout.PdfToDocumentOptions? left, Egap.Pdf.Layout.PdfToDocumentOptions? right) -> bool
