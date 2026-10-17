@@ -672,6 +672,33 @@ Egap.Documents.IslandKind.Other = 0 -> Egap.Documents.IslandKind
 Egap.Documents.IslandKind.ShapeGroup = 6 -> Egap.Documents.IslandKind
 Egap.Documents.IslandKind.SmartArt = 3 -> Egap.Documents.IslandKind
 Egap.Documents.IslandKind.Vml = 7 -> Egap.Documents.IslandKind
+Egap.Documents.Layout.FontSettings
+Egap.Documents.Layout.FontSettings.Collections.get -> System.Collections.Generic.IList<Egami.Fonts.FontCollection!>!
+Egap.Documents.Layout.FontSettings.FontSettings() -> void
+Egap.Documents.Layout.FontSettings.LastResortFamily.get -> string?
+Egap.Documents.Layout.FontSettings.LastResortFamily.set -> void
+Egap.Documents.Layout.FontSettings.Substitutions.get -> System.Collections.Generic.IDictionary<string!, string!>!
+Egap.Documents.Layout.FontSettings.UseStandardSubstitutes.get -> bool
+Egap.Documents.Layout.FontSettings.UseStandardSubstitutes.set -> void
+Egap.Documents.Layout.FontSettings.UseSystemFonts.get -> bool
+Egap.Documents.Layout.FontSettings.UseSystemFonts.set -> void
+Egap.Documents.Layout.FontSubstitution
+Egap.Documents.Layout.FontSubstitution.<Clone>$() -> Egap.Documents.Layout.FontSubstitution!
+Egap.Documents.Layout.FontSubstitution.Deconstruct(out string! Requested, out Egami.Fonts.FontStyle Style, out string! Used, out Egap.Documents.Layout.FontSubstitutionReason Reason) -> void
+Egap.Documents.Layout.FontSubstitution.Equals(Egap.Documents.Layout.FontSubstitution? other) -> bool
+Egap.Documents.Layout.FontSubstitution.FontSubstitution(string! Requested, Egami.Fonts.FontStyle Style, string! Used, Egap.Documents.Layout.FontSubstitutionReason Reason) -> void
+Egap.Documents.Layout.FontSubstitution.Reason.get -> Egap.Documents.Layout.FontSubstitutionReason
+Egap.Documents.Layout.FontSubstitution.Reason.init -> void
+Egap.Documents.Layout.FontSubstitution.Requested.get -> string!
+Egap.Documents.Layout.FontSubstitution.Requested.init -> void
+Egap.Documents.Layout.FontSubstitution.Style.get -> Egami.Fonts.FontStyle
+Egap.Documents.Layout.FontSubstitution.Style.init -> void
+Egap.Documents.Layout.FontSubstitution.Used.get -> string!
+Egap.Documents.Layout.FontSubstitution.Used.init -> void
+Egap.Documents.Layout.FontSubstitutionReason
+Egap.Documents.Layout.FontSubstitutionReason.GlyphFallback = 2 -> Egap.Documents.Layout.FontSubstitutionReason
+Egap.Documents.Layout.FontSubstitutionReason.Missing = 0 -> Egap.Documents.Layout.FontSubstitutionReason
+Egap.Documents.Layout.FontSubstitutionReason.Synthesized = 1 -> Egap.Documents.Layout.FontSubstitutionReason
 Egap.Documents.LineSpacingRule
 Egap.Documents.LineSpacingRule.AtLeast = 1 -> Egap.Documents.LineSpacingRule
 Egap.Documents.LineSpacingRule.Exactly = 2 -> Egap.Documents.LineSpacingRule
@@ -1634,6 +1661,9 @@ override Egap.Documents.ImageData.GetHashCode() -> int
 override Egap.Documents.ImageData.ToString() -> string!
 override Egap.Documents.InlineContentControl.Clone(bool deep = true) -> Egap.Documents.InlineContentControl!
 override Egap.Documents.Island.Clone(bool deep = true) -> Egap.Documents.Island!
+override Egap.Documents.Layout.FontSubstitution.Equals(object? obj) -> bool
+override Egap.Documents.Layout.FontSubstitution.GetHashCode() -> int
+override Egap.Documents.Layout.FontSubstitution.ToString() -> string!
 override Egap.Documents.ListLabel.Equals(object? obj) -> bool
 override Egap.Documents.ListLabel.GetHashCode() -> int
 override Egap.Documents.ListLabel.ToString() -> string!
@@ -1694,6 +1724,9 @@ static Egap.Documents.ImageData.FromBytes(byte[]! bytes) -> Egap.Documents.Image
 static Egap.Documents.ImageData.GuessContentType(System.ReadOnlySpan<byte> bytes) -> string!
 static Egap.Documents.ImageData.operator !=(Egap.Documents.ImageData? left, Egap.Documents.ImageData? right) -> bool
 static Egap.Documents.ImageData.operator ==(Egap.Documents.ImageData? left, Egap.Documents.ImageData? right) -> bool
+static Egap.Documents.Layout.FontSettings.Default.get -> Egap.Documents.Layout.FontSettings!
+static Egap.Documents.Layout.FontSubstitution.operator !=(Egap.Documents.Layout.FontSubstitution? left, Egap.Documents.Layout.FontSubstitution? right) -> bool
+static Egap.Documents.Layout.FontSubstitution.operator ==(Egap.Documents.Layout.FontSubstitution? left, Egap.Documents.Layout.FontSubstitution? right) -> bool
 static Egap.Documents.List.None.get -> Egap.Documents.List!
 static Egap.Documents.ListLabel.operator !=(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
 static Egap.Documents.ListLabel.operator ==(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
