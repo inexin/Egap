@@ -14,7 +14,24 @@ internal sealed partial class Paginator
     private readonly Document document;
     private readonly FontProvider fonts;
     private readonly ParagraphBridge bridge;
-    private readonly Dictionary<Paragraph, (long Version, ParagraphContent Content)> contents = [];
+    private readonly Dictionary<Paragraph, CachedContent> contents;
+
+    /// <summary>What a layout keeps for the next layout of the same document with the same font settings (design Q13).</summary>
+    private sealed class LayoutCache(FontSettings? settings, FontProvider fonts, ParagraphBridge bridge)
+    {
+        public FontSettings? Settings { get; } = settings;
+
+        public FontProvider Fonts { get; } = fonts;
+
+        public ParagraphBridge Bridge { get; } = bridge;
+
+        public Dictionary<Paragraph, CachedContent> Contents { get; } = [];
+    }
+
+    /// <summary>A paragraph's laid-out content with what it depended on: its version, the formatting's, its list label.</summary>
+    private readonly record struct CachedContent(long Version, long FormattingVersion, string? Label, ParagraphContent Content);
+
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Document, LayoutCache> Caches = [];
     private readonly List<PageBuilder> pages = [];
     private int totalPages;
     private Dictionary<Section, int> sectionPages = [];
@@ -30,8 +47,17 @@ internal sealed partial class Paginator
     public Paginator(Document document, LayoutOptions? options)
     {
         this.document = document;
-        fonts = new FontProvider(document, options?.Fonts);
-        bridge = new ParagraphBridge(fonts, document);
+        // A second layout with the same font settings reuses the fonts and every paragraph that did not change.
+        if (!Caches.TryGetValue(document, out LayoutCache? cache) || !ReferenceEquals(cache.Settings, options?.Fonts))
+        {
+            FontProvider provider = new(document, options?.Fonts);
+            cache = new LayoutCache(options?.Fonts, provider, new ParagraphBridge(provider, document));
+            Caches.AddOrUpdate(document, cache);
+        }
+
+        fonts = cache.Fonts;
+        bridge = cache.Bridge;
+        contents = cache.Contents;
     }
 
     public DocumentLayout Run()
@@ -191,14 +217,15 @@ internal sealed partial class Paginator
             return bridge.Build(paragraph, pageField ?? PageFieldText, note);
         }
 
-        if (pageField is null && contents.TryGetValue(paragraph, out (long Version, ParagraphContent Content) cached) && cached.Version == paragraph.Version
-            && cached.Content.PageFields.Count == 0)
+        string? label = paragraph.ListLabel?.Text;
+        if (contents.TryGetValue(paragraph, out CachedContent cached) && cached.Version == paragraph.Version && cached.FormattingVersion == document.FormattingVersion
+            && cached.Label == label && cached.Content.PageFields.Count == 0)
         {
             return cached.Content;
         }
 
         ParagraphContent content = bridge.Build(paragraph, pageField ?? PageFieldText);
-        contents[paragraph] = (paragraph.Version, content);
+        contents[paragraph] = new CachedContent(paragraph.Version, document.FormattingVersion, label, content);
         return content;
     }
 

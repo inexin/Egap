@@ -100,6 +100,28 @@ public sealed class PageLayout
     /// <summary>The page's areas: header, body columns, notes and footer, then floating objects.</summary>
     public IReadOnlyList<LayoutBox> Boxes { get; }
 
+    /// <summary>
+    /// Draws the page onto <paramref name="canvas"/> with its top left corner at the canvas's origin, one canvas unit to the
+    /// point: any Egami canvas, such as a raster, an SVG or, through Egap.Pdf.Layout, a PDF page.
+    /// </summary>
+    public void Draw(Egami.Drawing.Canvas canvas)
+    {
+        ArgumentNullException.ThrowIfNull(canvas);
+        PageDrawing.Draw(this, canvas);
+    }
+
+    /// <summary>The page drawn on white at <paramref name="dpi"/> dots per inch.</summary>
+    public Egami.Raster<Egami.Pixels.Rgba8> Render(double dpi = 96)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(dpi);
+        double scale = dpi / 72;
+        Egami.Raster<Egami.Pixels.Rgba8> raster = Egami.Raster.Create(Math.Max(1, (int)Math.Ceiling(Width * scale)), Math.Max(1, (int)Math.Ceiling(Height * scale)), new Egami.Pixels.Rgba8(255, 255, 255, 255));
+        using Egami.Drawing.RasterCanvas<Egami.Pixels.Rgba8> canvas = new(raster);
+        canvas.Scale((float)scale, (float)scale);
+        Draw(canvas);
+        return raster;
+    }
+
     /// <summary>The body text's lines on this page, in reading order.</summary>
     public IEnumerable<LineBox> BodyLines => Boxes.OfType<AreaBox>().Where(a => a.Area == PageArea.Body).SelectMany(a => a.Descendants()).OfType<LineBox>();
 }

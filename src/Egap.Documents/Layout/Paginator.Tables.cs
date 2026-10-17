@@ -548,7 +548,8 @@ internal sealed partial class Paginator
             return widths;
         }
 
-        return AutoFit(table, columns, preferred ?? available, preferred is not null || format.Layout == TableLayoutKind.Fixed);
+        // A table without a grid spans the text width as Word's own new tables do; its columns share it by their content.
+        return AutoFit(table, columns, preferred ?? available, fill: true);
     }
 
     /// <summary>
