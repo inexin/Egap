@@ -35,6 +35,9 @@ internal sealed class MarkdownReader
     private readonly Document document;
     private readonly MarkdownLoadOptions options;
     private int notesInProgress;
+
+    /// <summary>How many hyperlinks the inlines being added sit in: a link (an autolink, say) inside a link keeps only its text.</summary>
+    private int linksInProgress;
     private int nextFrameId = 1;
 
     private MarkdownReader(Document document, MarkdownLoadOptions options)
@@ -371,6 +374,9 @@ internal sealed class MarkdownReader
                 case MdStrikethrough:
                     AddInlines(target, node, With(format, f => f.Strikethrough = true), style);
                     break;
+                case MdLink link when linksInProgress > 0:
+                    AddInlines(target, link, format, style);
+                    break;
                 case MdLink link:
                     {
                         Hyperlink hyperlink = new(document);
@@ -385,7 +391,9 @@ internal sealed class MarkdownReader
 
                         hyperlink.Tooltip = link.Title;
                         target.Add(hyperlink);
+                        linksInProgress++;
                         AddInlines(hyperlink.Inlines, link, format, (CharacterStyle)document.Styles.AddBuiltIn(BuiltInStyle.Hyperlink));
+                        linksInProgress--;
                         break;
                     }
 
