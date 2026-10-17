@@ -151,7 +151,7 @@ page.SaveAsPdf("invoice.pdf");
 | Project | What it is |
 | --- | --- |
 | `src/Egap.Pdf` | The PDF library (package `Egap.Pdf`). |
-| `src/Egap.Documents` | Flow documents, in progress (Phase 6; 0.3 preview has the model, Markdown, DOCX and page layout): one document model with Markdown, DOCX and HTML readers and writers and a page layout engine (package `Egap.Documents`). |
+| `src/Egap.Documents` | Flow documents, in progress (Phase 6; 0.4 preview has the model, Markdown, DOCX, HTML and page layout): one document model with Markdown, DOCX and HTML readers and writers and a page layout engine (package `Egap.Documents`). |
 | `src/Egap.Pdf.Layout` | The bridge between Egap.Documents and Egap.Pdf, in progress (0.1 preview saves documents as PDF): documents saved as PDF, PDF pages analysed back into documents (package `Egap.Pdf.Layout`). |
 | `src/Egap.Fonts` | Open, metric-compatible substitutes for Helvetica, Arial, Times, Courier, Calibri and Cambria (package `Egap.Fonts`, SIL OFL fonts). |
 | `tests/Egap.Pdf.Tests`, `tests/Egap.Documents.Tests`, `tests/Egap.Pdf.Layout.Tests` | Unit tests (xUnit v3). |

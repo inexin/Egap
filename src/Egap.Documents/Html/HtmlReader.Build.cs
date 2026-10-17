@@ -75,16 +75,20 @@ internal sealed partial class HtmlReader
         public HashSet<int> Configured { get; } = outer?.Configured ?? [];
     }
 
+    private bool quirks;
+
     private void Build(HtmlDocument dom)
     {
         Section section = document.AddSection();
-        ApplyPage(section);
         if (dom.DocumentElement is not { } html)
         {
+            ApplyPage(section, null);
             return;
         }
 
+        quirks = dom.QuirksMode == HtmlQuirksMode.Quirks;
         HtmlStyle rootStyle = StyleOf(html, null);
+        ApplyPage(section, FirstPageName(html, rootStyle));
         double width = (section.PageSetup.PageWidth ?? 612) - (section.PageSetup.MarginLeft ?? 72) - (section.PageSetup.MarginRight ?? 72);
         Flow flow = new(section.Body, width);
         Frame frame = new(html, rootStyle, null);
@@ -93,10 +97,65 @@ internal sealed partial class HtmlReader
         FinishFlow(flow);
     }
 
-    /// <summary>The @page rules for a first page: size and margins.</summary>
-    private void ApplyPage(Section section)
+    /// <summary>
+    /// The page name the first content asks for (the CSS page property, as Word's HTML puts on its "Section1" division), so
+    /// the @page rules for that name apply, as Chromium applies them.
+    /// </summary>
+    private string? FirstPageName(HtmlElement element, HtmlStyle style)
     {
-        CssPageStyle page = cascade.CascadePage(new CssPage(null, IsFirst: true, IsLeft: false));
+        // Page names are case-sensitive, so the value is read as written.
+        if (style.Text("page")?.Trim() is { Length: > 0 } name && !name.Equals("auto", StringComparison.OrdinalIgnoreCase))
+        {
+            return name;
+        }
+
+        foreach (HtmlNode child in element.Children)
+        {
+            if (child is HtmlText text && !string.IsNullOrWhiteSpace(text.Data))
+            {
+                // Content before any named box: the first page is unnamed.
+                return null;
+            }
+
+            if (child is not HtmlElement childElement || childElement.NamespaceUri != HtmlElement.HtmlNamespace || childElement.IsHtml("head"))
+            {
+                continue;
+            }
+
+            HtmlStyle childStyle = StyleOf(childElement, style);
+            if (childStyle.Keyword("display") == "none")
+            {
+                continue;
+            }
+
+            if (FirstPageName(childElement, childStyle) is { } found)
+            {
+                return found;
+            }
+
+            if (childElement.Descendants().Any(d => d is HtmlText t && !string.IsNullOrWhiteSpace(t.Data)) || childElement.IsHtml("img"))
+            {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>The @page rules for a first page (of the given name): size and margins.</summary>
+    private void ApplyPage(Section section, string? name)
+    {
+        // A browser's print defaults where the page sets nothing: Letter with 0.4 inch margins (Chromium's print to PDF).
+        section.PageSetup.PageWidth = 612;
+        section.PageSetup.PageHeight = 792;
+        section.PageSetup.MarginTop = 28.8;
+        section.PageSetup.MarginBottom = 28.8;
+        section.PageSetup.MarginLeft = 28.8;
+        section.PageSetup.MarginRight = 28.8;
+        section.PageSetup.HeaderDistance = 0;
+        section.PageSetup.FooterDistance = 0;
+
+        CssPageStyle page = cascade.CascadePage(new CssPage(name, IsFirst: true, IsLeft: false));
         if (page.Page.TryGetDeclaration("size", out CssDeclaration? size) && CssPageSize.TryParse(size!.Value, out CssPageSize pageSize) && !pageSize.IsAuto)
         {
             (double width, double height) = pageSize.Name?.ToLowerInvariant() switch
@@ -257,6 +316,21 @@ internal sealed partial class HtmlReader
         double width = flow.Width;
         double marginTop = style.Length("margin-top", width) ?? 0;
         double marginBottom = style.Length("margin-bottom", width) ?? 0;
+
+        // The margin collapsing quirk (HTML Standard 15.3.10): in quirks mode, a body's or cell's first child loses its default
+        // top margin, and its last child its default bottom margin.
+        if (quirks && element.Parent is HtmlElement container && container.LocalName is "body" or "td" or "th")
+        {
+            if (style.FromUserAgent("margin-top") && !Substantial(element, -1))
+            {
+                marginTop = 0;
+            }
+
+            if (style.FromUserAgent("margin-bottom") && !Substantial(element, 1))
+            {
+                marginBottom = 0;
+            }
+        }
         double marginLeft = style.Length("margin-left", width) ?? 0;
         double marginRight = style.Length("margin-right", width) ?? 0;
         double paddingTop = style.Length("padding-top", width) ?? 0;
@@ -270,8 +344,8 @@ internal sealed partial class HtmlReader
 
         Frame frame = new(element, style, parent)
         {
-            Left = parent.Left + Math.Max(0, marginLeft) + paddingLeft + (borderLeft?.Width ?? 0),
-            Right = parent.Right + Math.Max(0, marginRight) + paddingRight + (borderRight?.Width ?? 0),
+            Left = parent.Left + marginLeft + paddingLeft + (borderLeft?.Width ?? 0),
+            Right = parent.Right + marginRight + paddingRight + (borderRight?.Width ?? 0),
             KeepTogether = parent.KeepTogether || style.Keyword("break-inside") is "avoid" or "avoid-page" || style.Keyword("page-break-inside") == "avoid",
             Background = style.Color("background-color") is { } background ? Shading.Solid(background) : parent.Background,
             Lists = parent.Lists,
@@ -357,6 +431,24 @@ internal sealed partial class HtmlReader
         {
             flow.PendingPageBreak = true;
         }
+    }
+
+    /// <summary>Whether the element has a substantial sibling before (-1) or after (1) it: an element or text with more than white space.</summary>
+    private static bool Substantial(HtmlElement element, int direction)
+    {
+        IReadOnlyList<HtmlNode> siblings = element.Parent!.Children;
+        for (int i = element.Index + direction; i >= 0 && i < siblings.Count; i += direction)
+        {
+            switch (siblings[i])
+            {
+                case HtmlElement:
+                    return true;
+                case HtmlText text when !string.IsNullOrWhiteSpace(text.Data):
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private static double Collapse(double pending, double margin)
@@ -586,7 +678,7 @@ internal sealed partial class HtmlReader
     }
 
     /// <summary>Ends the open paragraph: collapsible white space at its end is dropped.</summary>
-    private static void Close(Flow flow)
+    private void Close(Flow flow)
     {
         if (flow.Current is not { } paragraph)
         {
@@ -594,11 +686,57 @@ internal sealed partial class HtmlReader
         }
 
         TrimEnd(paragraph.Inlines);
+        BrowserNormalLineHeight(paragraph);
         flow.Current = null;
         flow.Target = null;
         flow.TargetLink = null;
         flow.AtLineStart = true;
     }
+
+    /// <summary>
+    /// line-height: normal as browsers make it: the font's ascent, descent and line gap each rounded to whole CSS pixels
+    /// (Blink's font metrics), so lines are a little shorter than the unrounded single spacing Word uses. Set exactly where
+    /// every run is text, so nothing taller is cut.
+    /// </summary>
+    private void BrowserNormalLineHeight(Paragraph paragraph)
+    {
+        if (paragraph.Format is not { LineSpacingRule: LineSpacingRule.Multiple, LineSpacing: 1 })
+        {
+            return;
+        }
+
+        double pixels = 0;
+        foreach (Inline inline in paragraph.Descendants<Inline>())
+        {
+            switch (inline)
+            {
+                case Run run:
+                    if (run.Format.Size is not { } size || run.Format.FontAscii is not { } family)
+                    {
+                        return;
+                    }
+
+                    metricsFonts ??= new Layout.FontProvider(document, new Layout.FontSettings { UseSystemFonts = false });
+                    Egami.Fonts.Typeface face = metricsFonts.Resolve(family, default).Typeface;
+                    Egami.Fonts.VerticalMetrics hhea = face.HheaMetrics;
+                    double em = size / HtmlStyle.PointsPerPixel / face.UnitsPerEm;
+                    pixels = Math.Max(pixels, Math.Round(hhea.Ascent * em) + Math.Round(-hhea.Descent * em) + Math.Round(Math.Max(0, hhea.LineGap) * em));
+                    break;
+                case Hyperlink or BookmarkStart or Break:
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        if (pixels > 0)
+        {
+            paragraph.Format.LineSpacingRule = LineSpacingRule.Exactly;
+            paragraph.Format.LineSpacing = pixels * HtmlStyle.PointsPerPixel;
+        }
+    }
+
+    private Layout.FontProvider? metricsFonts;
 
     private static void TrimEnd(NodeCollection<Inline> inlines)
     {
@@ -621,6 +759,10 @@ internal sealed partial class HtmlReader
                     return;
                 case BookmarkStart:
                     continue;
+                case Break { Kind: BreakKind.Line } trailing when i > 0:
+                    // A line break that ends a block opens no further line in a browser (a pre's last newline, a final br).
+                    trailing.Remove();
+                    return;
                 default:
                     return;
             }

@@ -16,15 +16,25 @@ internal sealed class HtmlStyle
     /// <summary>The medium font size: 16 CSS pixels.</summary>
     public const double MediumSize = 12;
 
-    public HtmlStyle(CssComputedStyle computed, HtmlStyle? parent, double rootSize)
+    public HtmlStyle(CssComputedStyle computed, HtmlStyle? parent, double rootSize, CssCascadedStyle? cascaded = null)
     {
         Computed = computed;
+        Cascaded = cascaded;
         Parent = parent;
         FontSize = ResolveFontSize(computed, parent?.FontSize ?? MediumSize, rootSize);
         RootSize = parent is null ? FontSize : rootSize;
     }
 
     public CssComputedStyle Computed { get; }
+
+    /// <summary>The cascaded style, for where a value came from (the quirks look for the user agent's own margins).</summary>
+    public CssCascadedStyle? Cascaded { get; }
+
+    /// <summary>Whether a property's value is the user agent style sheet's (or the initial value).</summary>
+    public bool FromUserAgent(string property)
+    {
+        return Cascaded is null || !Cascaded.TryGetDeclaration(property, out _, out CssOrigin origin) || origin == CssOrigin.UserAgent;
+    }
 
     public HtmlStyle? Parent { get; }
 
