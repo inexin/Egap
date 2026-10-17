@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Egap.Pdf\Egap.Pdf.csproj" />
+    <!-- Egap 3.6 task 17: the layout target analyses pages, builds documents and tags files. -->
+    <ProjectReference Include="..\..\src\Egap.Pdf.Layout\Egap.Pdf.Layout.csproj" />
   </ItemGroup>
 
   <ItemGroup>

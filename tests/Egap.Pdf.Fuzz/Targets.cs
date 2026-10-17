@@ -54,6 +54,7 @@ internal static class Targets
             "linearize" => Linearize,
             "hocr" => Hocr,
             "alto" => Alto,
+            "layout" => Layout,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
@@ -455,6 +456,66 @@ internal static class Targets
     /// PDF bytes: the first 20 pages walked with every hook counting what it sees, leniently (must not throw except at a
     /// limit) and strictly (may throw only <see cref="PdfException"/>). Marked content must be balanced when each page ends.
     /// </summary>
+    /// <summary>
+    /// Egap 3.6 task 17: the first 5 pages analysed by layout analysis, built into a document in Flow and Exact mode and saved
+    /// as DOCX, then the file auto-tagged and rewritten; the tagged file must reopen and draw as many glyphs as before.
+    /// </summary>
+    private static void Layout(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        PdfReadOptions options = new() { MaxDecodedStreamBytes = 16 << 20, MaxObjects = 100_000, MaxNestingDepth = 32 };
+        PdfDocument pdf;
+        try
+        {
+            pdf = PdfDocument.Open(bytes, options);
+        }
+        catch (PdfException)
+        {
+            return;
+        }
+
+        using (pdf)
+        {
+            try
+            {
+                while (pdf.Pages.Count > 5)
+                {
+                    pdf.Pages.RemoveAt(pdf.Pages.Count - 1);
+                }
+
+                foreach (Egap.Pdf.Layout.PdfPageLayout page in Egap.Pdf.Layout.PdfLayoutAnalyzer.Analyze(pdf))
+                {
+                    Count("layout pages");
+                    Count(page.FromTags ? "layout pages from tags" : "layout pages from geometry");
+                }
+
+                foreach (Egap.Pdf.Layout.ReconstructionMode mode in (Egap.Pdf.Layout.ReconstructionMode[])[Egap.Pdf.Layout.ReconstructionMode.Flow, Egap.Pdf.Layout.ReconstructionMode.Exact])
+                {
+                    Egap.Documents.Document document = Egap.Pdf.Layout.PdfToDocument.Convert(pdf, new Egap.Pdf.Layout.PdfToDocumentOptions { Mode = mode, FigureResolution = 24 });
+                    Egap.Documents.Docx.DocxFormat.Save(document, Stream.Null);
+                }
+
+                List<int> glyphs = [.. Enumerable.Range(0, pdf.Pages.Count).Select(i => Egap.Pdf.Layout.PageReader.Read(pdf, i).Glyphs.Count)];
+                if (Egap.Pdf.Layout.PdfAutoTagger.Tag(pdf).Tagged)
+                {
+                    using MemoryStream saved = new();
+                    pdf.Save(saved, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite });
+                    using PdfDocument tagged = PdfDocument.Open(saved.ToArray(), options);
+                    List<int> after = [.. Enumerable.Range(0, tagged.Pages.Count).Select(i => Egap.Pdf.Layout.PageReader.Read(tagged, i).Glyphs.Count)];
+                    if (!after.SequenceEqual(glyphs))
+                    {
+                        throw new InvalidOperationException($"Tagging changed the glyphs drawn: {string.Join(",", glyphs)} became {string.Join(",", after)}.");
+                    }
+
+                    Count("layout files tagged");
+                }
+            }
+            catch (PdfLimitException)
+            {
+            }
+        }
+    }
+
     private static void Walker(Stream input)
     {
         byte[] bytes = ReadAll(input);

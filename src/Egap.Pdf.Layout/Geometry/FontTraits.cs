@@ -6,12 +6,28 @@ namespace Egap.Pdf.Layout;
 /// </summary>
 internal static class FontTraits
 {
+    /// <summary>What each font says, worked out once: fonts are shared by every glyph set in them.</summary>
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<PdfFont, Traits> Cache = [];
+
+    private sealed record Traits(string Family, bool Bold, bool Italic, bool Monospace);
+
+    private static Traits Of(PdfFont font)
+    {
+        return Cache.GetValue(font, f => new Traits(NameFamily(f), Says(f, BoldWords) || f.Flags.HasFlag(PdfFontFlags.ForceBold),
+            Says(f, ItalicWords) || f.Flags.HasFlag(PdfFontFlags.Italic) || Math.Abs(f.ItalicAngle) > 1, Says(f, MonoWords) || f.Flags.HasFlag(PdfFontFlags.FixedPitch)));
+    }
+
     private static readonly string[] BoldWords = ["bold", "black", "heavy", "semibold", "demibold", "demi", "extrabold", "ultrabold"];
     private static readonly string[] ItalicWords = ["italic", "oblique", "slanted", "inclined"];
     private static readonly string[] MonoWords = ["mono", "courier", "consola", "code", "typewriter", "fixed"];
 
     /// <summary>The family: the name without its six-letter subset prefix and its style part ("ABCDEF+Arial-BoldMT" gives "Arial").</summary>
     public static string Family(PdfFont? font)
+    {
+        return font is null ? "" : Of(font).Family;
+    }
+
+    private static string NameFamily(PdfFont? font)
     {
         string name = font?.BaseFont ?? font?.Name ?? "";
         if (name.Length > 7 && name[6] == '+' && name[..6].All(char.IsAsciiLetterUpper))
@@ -38,17 +54,17 @@ internal static class FontTraits
 
     public static bool IsBold(PdfFont? font)
     {
-        return font is not null && (Says(font, BoldWords) || font.Flags.HasFlag(PdfFontFlags.ForceBold));
+        return font is not null && Of(font).Bold;
     }
 
     public static bool IsItalic(PdfFont? font)
     {
-        return font is not null && (Says(font, ItalicWords) || font.Flags.HasFlag(PdfFontFlags.Italic) || Math.Abs(font.ItalicAngle) > 1);
+        return font is not null && Of(font).Italic;
     }
 
     public static bool IsMonospace(PdfFont? font)
     {
-        return font is not null && (Says(font, MonoWords) || font.Flags.HasFlag(PdfFontFlags.FixedPitch));
+        return font is not null && Of(font).Monospace;
     }
 
     /// <summary>Whether a glyph is drawn bold: its font is, or it is filled and stroked (render mode 2), as synthetic bold is.</summary>

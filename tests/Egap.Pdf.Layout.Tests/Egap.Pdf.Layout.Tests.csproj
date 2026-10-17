@@ -20,4 +20,8 @@
     <ProjectReference Include="..\..\src\Egap.Pdf.Layout\Egap.Pdf.Layout.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../files/fuzz/layout-*" LinkBase="files/fuzz" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

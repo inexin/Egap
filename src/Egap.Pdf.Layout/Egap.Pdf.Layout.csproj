@@ -26,6 +26,7 @@
     <InternalsVisibleTo Include="Compare" />
     <InternalsVisibleTo Include="Compare.Tests" />
     <InternalsVisibleTo Include="Compare.Benchmarks" />
+    <InternalsVisibleTo Include="Egap.Pdf.Fuzz" />
   </ItemGroup>
 
 </Project>
