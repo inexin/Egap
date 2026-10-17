@@ -27,7 +27,7 @@ internal sealed partial class ModelBuilder
         return block.Confidence < options.ConfidenceThreshold || scattered.Contains(page);
     }
 
-    /// <summary>Pages of scattered labels: many blocks, nearly all one short line.</summary>
+    /// <summary>Pages of scattered labels: many blocks, nearly all one short line, starting at many different lefts.</summary>
     private void FindScattered()
     {
         foreach (PageDraft page in pages)
@@ -40,7 +40,9 @@ internal sealed partial class ModelBuilder
 
             double width = page.Content.Width;
             List<double> widths = [.. body.Select(b => b.Box.Width).Order()];
-            if (body.Count(b => b.Lines.Count == 1) >= body.Count * 0.75 && widths[widths.Count / 2] < width * 0.2)
+            // Labels sit anywhere; short lines stacked in columns (a list, an index) start at a few lefts and flow.
+            int lefts = body.Select(b => (int)Math.Round(b.Box.Left / 4)).Distinct().Count();
+            if (body.Count(b => b.Lines.Count == 1) >= body.Count * 0.75 && widths[widths.Count / 2] < width * 0.2 && lefts >= body.Count * 0.4)
             {
                 scattered.Add(page);
             }
