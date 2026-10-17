@@ -8,10 +8,23 @@ internal sealed partial class ModelBuilder
     /// Writes a detected table (design Q5): its grid from where the columns start, cells spanning columns and rows, leading
     /// header rows repeated on each page, single rules for a ruled table and none for a borderless one, and each cell's text
     /// as paragraphs split where the lines leave a gap. A table that carries on one from the page before adds its rows to it,
-    /// less the header it repeats.
+    /// less the header it repeats; a part of a tagged table goes on its first part's grid, and a row the page broke in two,
+    /// one TR in the tags, is one row again.
     /// </summary>
     private void WriteTable(BlockContainer body, TableDraft draft, Frame frame)
     {
+        // A later part of a tagged table, on the first part's columns.
+        Table? earlier = null;
+        if (draft.Continues && draft.Tag is not null && tagged.TryGetValue(draft.Tag, out var first) && OnGrid(draft, first.Edges) is TableDraft mapped)
+        {
+            earlier = first.Table;
+            draft = mapped;
+        }
+        else if (draft.Continues && lastTable is not null && lastTable.Grid?.Count == draft.Columns)
+        {
+            earlier = lastTable;
+        }
+
         List<double> edges = Edges(draft);
         int headers = 0;
         while (headers < draft.Rows && draft.Cells.Where(c => c.Row == headers).All(c => c.Header) && draft.Cells.Any(c => c.Row == headers))
@@ -21,14 +34,23 @@ internal sealed partial class ModelBuilder
 
         Table table;
         int from = 0;
-        if (draft.Continues && lastTable is not null && lastTable.Grid?.Count == draft.Columns)
+        if (earlier is not null)
         {
-            table = lastTable;
+            table = earlier;
 
             // The rows that repeat the first part's header, word for word, are left out.
             while (draft.RepeatsHeader && from < draft.Rows && from < table.Rows.Count
                 && Squash(string.Concat(draft.Cells.Where(c => c.Row == from).OrderBy(c => c.Column).Select(c => Paragraphs.Text(c.Lines)))) == Squash(table.Rows[from].GetText()))
             {
+                from++;
+            }
+
+            // The rest of a row the page broke: the same TR as the earlier part's last row, or a piece of a row (Word's way).
+            if (draft.Tag is not null && table.Rows.Count > 0 && from < draft.Rows
+                && ((draft.RowTags?.ElementAtOrDefault(from) is TagNode split && tagged.TryGetValue(draft.Tag, out var before) && before.LastRow == split)
+                    || draft.Pieces?.Contains(from) == true))
+            {
+                JoinRow(table.Rows[^1], draft.Cells.Where(c => c.Row == from));
                 from++;
             }
         }
@@ -114,6 +136,86 @@ internal sealed partial class ModelBuilder
 
         lastTable = table;
         last = null;
+        if (draft.Tag is not null)
+        {
+            List<double> grid = earlier is not null && tagged.TryGetValue(draft.Tag, out var known) ? known.Edges : edges;
+            tagged[draft.Tag] = (table, grid, draft.RowTags?.LastOrDefault());
+        }
+    }
+
+    /// <summary>
+    /// A part of a tagged table on its first part's columns: each of its column edges matched to the nearest first-part edge
+    /// within a cell's padding, cells renumbered and their spans widened to match. Null when an edge has no match.
+    /// </summary>
+    private static TableDraft? OnGrid(TableDraft part, List<double> grid)
+    {
+        List<double> edges = Edges(part);
+        int[] map = new int[edges.Count];
+        for (int k = 0; k < edges.Count; k++)
+        {
+            int nearest = grid.Select((x, i) => (Distance: Math.Abs(x - edges[k]), Index: i)).MinBy(p => p.Distance).Index;
+            if (Math.Abs(grid[nearest] - edges[k]) > 8 || (k > 0 && nearest <= map[k - 1]))
+            {
+                return part.Columns == grid.Count - 1 ? part : null;
+            }
+
+            map[k] = nearest;
+        }
+
+        List<CellDraft> cells = [.. part.Cells.Select(c => new CellDraft(c.Row, map[c.Column], c.RowSpan,
+            map[Math.Min(c.Column + c.ColumnSpan, edges.Count - 1)] - map[c.Column], c.Header, c.Lines) { Box = c.Box })];
+        return new TableDraft(cells, part.Rows, grid.Count - 1)
+        {
+            Box = part.Box,
+            IsRuled = part.IsRuled,
+            Continues = part.Continues,
+            RepeatsHeader = part.RepeatsHeader,
+            Order = part.Order,
+            Confidence = part.Confidence,
+            Tag = part.Tag,
+            RowTags = part.RowTags,
+            Pieces = part.Pieces,
+        };
+    }
+
+    /// <summary>Adds a broken row's second part to its first: each cell's paragraphs to the cell at the same grid column.</summary>
+    private void JoinRow(Row row, IEnumerable<CellDraft> rest)
+    {
+        foreach (CellDraft part in rest.Where(c => c.Lines.Count > 0))
+        {
+            int at = 0;
+            Cell? target = null;
+            foreach (Cell cell in row.Cells)
+            {
+                int span = cell.Format.GridSpan ?? 1;
+                if (part.Column >= at && part.Column < at + span)
+                {
+                    target = cell;
+                    break;
+                }
+
+                at += span;
+            }
+
+            if (target is null)
+            {
+                continue;
+            }
+
+            // A cell holding only the empty paragraph a cell must have takes the text in its place.
+            if (target.Blocks.Count == 1 && target.Blocks[0] is Paragraph only && only.GetText().Length == 0)
+            {
+                target.Blocks.Clear();
+            }
+
+            Cell scratch = new(document);
+            WriteCell(scratch, part, [.. part.Lines.OrderBy(l => l.Box.Top).ThenBy(l => l.Box.Left)]);
+            foreach (Block block in scratch.Blocks.ToList())
+            {
+                scratch.Blocks.Remove(block);
+                target.Blocks.Add(block);
+            }
+        }
     }
 
     /// <summary>A cell's lines as paragraphs, a new one where the gap between lines is wider than a line.</summary>

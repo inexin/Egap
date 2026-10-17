@@ -57,6 +57,7 @@ internal sealed class TagIndex
     private const int MaxDepth = 256;
 
     private readonly Dictionary<PdfDictionary, Dictionary<int, TagNode>> byPage = new(ReferenceEqualityComparer.Instance);
+    private readonly HashSet<TagNode> marking = [];
 
     private TagIndex()
     {
@@ -96,6 +97,12 @@ internal sealed class TagIndex
         return byPage.TryGetValue(page.Dictionary, out Dictionary<int, TagNode>? ids) ? ids.Values : [];
     }
 
+    /// <summary>Whether <paramref name="node"/> or an element inside it owns marked content on any page.</summary>
+    public bool HasContent(TagNode node)
+    {
+        return node.DescendantsAndSelf().Any(marking.Contains);
+    }
+
     /// <summary>Whether any marked content on <paramref name="page"/> belongs to the tree.</summary>
     public bool HasPage(PdfPage page)
     {
@@ -129,6 +136,7 @@ internal sealed class TagIndex
                     }
 
                     ids.TryAdd(marked.Mcid, node);
+                    marking.Add(node);
                     break;
             }
         }

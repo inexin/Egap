@@ -91,6 +91,12 @@ internal sealed class TableDraft(List<CellDraft> cells, int rows, int columns)
     public double Confidence { get; set; } = 1;
 
     public TagNode? Tag { get; set; }
+
+    /// <summary>For a table from tags, the TR element of each row, so a row broken by a page joins its other part.</summary>
+    public List<TagNode?>? RowTags { get; set; }
+
+    /// <summary>For a table from tags, the rows that are a piece of a row a page broke: some cell has no content at all.</summary>
+    public HashSet<int>? Pieces { get; set; }
 }
 
 /// <summary>A figure found on a page: its images, paths and any text inside it, and its alternate text when tags give one.</summary>

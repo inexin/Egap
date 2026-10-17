@@ -124,7 +124,7 @@ internal static class TagReader
         foreach (TagNode table in here.Select(n => n.Ancestors().FirstOrDefault(a => a.Type is "TD" or "TH")).OfType<TagNode>()
             .Select(TableOf).OfType<TagNode>().Distinct().OrderBy(t => t.Order))
         {
-            if (!tables.ContainsKey(table) && BuildTable(table, owned, here) is TableDraft built)
+            if (!tables.ContainsKey(table) && BuildTable(table, owned, here, index) is TableDraft built)
             {
                 tables[table] = built;
                 draft.Tables.Add(built);
@@ -171,7 +171,9 @@ internal static class TagReader
             return (Kind.Figure, figure, LayoutRole.Figure, 0);
         }
 
-        if (chain.FirstOrDefault(n => n.Type is "TD" or "TH") is TagNode cell)
+        // A note's text tagged inside a cell (Word nests a note at its reference) is the note, not the cell's text.
+        int note = chain.FindIndex(n => n.Type is "Note" or "FENote");
+        if (chain.FirstOrDefault(n => n.Type is "TD" or "TH") is TagNode cell && (note < 0 || note > chain.IndexOf(cell)))
         {
             return (Kind.Cell, cell, LayoutRole.Table, 0);
         }
@@ -257,10 +259,12 @@ internal static class TagReader
     /// A table from its rows (TR, also inside THead, TBody and TFoot) and cells (TH, TD) with the spans their Table attributes
     /// give, keeping only the rows that have marked content on this page; rows count from 0 on each page.
     /// </summary>
-    private static TableDraft? BuildTable(TagNode table, Dictionary<TagNode, List<PageGlyph>> owned, HashSet<TagNode> here)
+    private static TableDraft? BuildTable(TagNode table, Dictionary<TagNode, List<PageGlyph>> owned, HashSet<TagNode> here, TagIndex index)
     {
         List<TagNode> rows = [.. table.DescendantsAndSelf().Where(n => n.Type == "TR" && TableOf(n) == table)];
         List<CellDraft> cells = [];
+        List<TagNode?> rowTags = [];
+        HashSet<int> pieces = [];
         HashSet<(int, int)> taken = [];
         int row = 0, columns = 0;
         foreach (TagNode tr in rows)
@@ -294,11 +298,19 @@ internal static class TagReader
                 columns = Math.Max(columns, column);
             }
 
+            // Word writes a row the page breaks as two TRs; a cell with no marked content anywhere, not even an empty
+            // paragraph, is a piece of such a row.
+            if (rowCells.Any(c => !index.HasContent(c)))
+            {
+                pieces.Add(row);
+            }
+
+            rowTags.Add(tr);
             row++;
         }
 
         int rowCount = taken.Count == 0 ? 0 : Math.Max(row, taken.Max(t => t.Item1) + 1);
-        return cells.Count == 0 ? null : new TableDraft(cells, rowCount, columns) { Order = table.Order, Tag = table };
+        return cells.Count == 0 ? null : new TableDraft(cells, rowCount, columns) { Order = table.Order, Tag = table, RowTags = rowTags, Pieces = pieces };
     }
 
     private static (int RowSpan, int ColSpan) Spans(PdfStructureElement element)

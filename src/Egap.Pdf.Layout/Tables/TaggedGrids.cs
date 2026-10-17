@@ -41,6 +41,8 @@ internal static class TaggedGrids
                 empty.Remove(grid);
                 grid.Order = table.Order;
                 grid.Tag = table.Tag;
+                grid.RowTags = table.RowTags;
+                grid.Pieces = table.Pieces;
                 grid.Confidence = table.Confidence;
                 grid.IsRuled = true;
                 draft.Tables[i] = grid;
@@ -51,6 +53,8 @@ internal static class TaggedGrids
             {
                 placed.Order = table.Order;
                 placed.Tag = table.Tag;
+                placed.RowTags = placed.Rows == table.Rows ? table.RowTags : null;
+                placed.Pieces = placed.Rows == table.Rows ? table.Pieces : null;
                 placed.Confidence = table.Confidence;
                 draft.Tables[i] = placed;
             }

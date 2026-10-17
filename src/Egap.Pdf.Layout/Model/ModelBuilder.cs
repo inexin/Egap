@@ -23,6 +23,9 @@ internal sealed partial class ModelBuilder
     private StyleSheet styles = null!;
     private Paragraph? last;
     private Table? lastTable;
+
+    /// <summary>Each table written from tags: its Table element's first part, that part's column edges and its last row's TR.</summary>
+    private readonly Dictionary<TagNode, (Table Table, List<double> Edges, TagNode? LastRow)> tagged = new(ReferenceEqualityComparer.Instance);
     private int noteCount;
 
     private ModelBuilder(PdfDocument pdf, List<PageDraft> pages, List<Roles.NoteLink> links, PdfToDocumentOptions options)
