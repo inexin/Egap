@@ -43,6 +43,7 @@ internal sealed class PageWord(IReadOnlyList<PageGlyph> glyphs)
 internal sealed class PageLine(IReadOnlyList<PageWord> words)
 {
     private double? size;
+    private double? baseline;
 
     public IReadOnlyList<PageWord> Words { get; } = words;
 
@@ -55,6 +56,14 @@ internal sealed class PageLine(IReadOnlyList<PageWord> words)
 
     /// <summary>Whether the line runs left to right along the page (within a degree or so).</summary>
     public bool IsHorizontal => Direction.Dx > 0.9998;
+
+    /// <summary>
+    /// Where the line sits down the page: the baseline most of its glyphs share for horizontal text, so a taller glyph (a
+    /// symbol from another font, a superscript) does not move it; the centre of the box otherwise.
+    /// </summary>
+    public double Baseline => baseline ??= IsHorizontal
+        ? Words.SelectMany(w => w.Glyphs).GroupBy(g => Math.Round(g.Origin.Y, 1)).MaxBy(g => g.Count())!.Key
+        : Box.CenterY;
 
     /// <summary>The most common glyph size on the line.</summary>
     public double Size => size ??= Words.SelectMany(w => w.Glyphs).GroupBy(g => Math.Round(g.Size, 1)).MaxBy(g => g.Count())!.Key;

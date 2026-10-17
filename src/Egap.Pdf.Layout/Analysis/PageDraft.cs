@@ -27,7 +27,11 @@ internal sealed class BlockDraft(LayoutRole role, List<PageLine> lines)
     /// <summary>The structure element the block comes from, when tags gave it.</summary>
     public TagNode? Tag { get; set; }
 
-    public string Text => string.Join(' ', Lines.Select(l => l.Text));
+    /// <summary>Whether the block carries on the paragraph before it, across a column or page break (task 5).</summary>
+    public bool Continues { get; set; }
+
+    /// <summary>The block's text: its lines joined, words broken at a line end with a hyphen joined again.</summary>
+    public string Text => Paragraphs.Text(Lines);
 
     public override string ToString()
     {

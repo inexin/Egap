@@ -48,7 +48,7 @@ internal static class BlockBuilder
                     break;
                 }
 
-                double step = lower.Box.CenterY - upper.Box.CenterY;
+                double step = lower.Baseline - upper.Baseline;
                 if (step < upper.Size * 0.5 || !Compatible(upper, lower, thresholds))
                 {
                     continue;
@@ -129,7 +129,7 @@ internal static class BlockBuilder
         for (int i = 1; i < line.Words.Count; i++)
         {
             // A list marker keeps its hanging indent's gap without being cut off its item.
-            bool marker = i == 1 && IsMarker(line.Words[0].Text);
+            bool marker = i == 1 && IsMarker(line.Words[0]);
             if (!marker && line.Words[i].Box.Left - line.Words[i - 1].Box.Right > gutter)
             {
                 yield return new PageLine([.. line.Words.Skip(start).Take(i - start)]);
@@ -138,6 +138,18 @@ internal static class BlockBuilder
         }
 
         yield return start == 0 ? line : new PageLine([.. line.Words.Skip(start)]);
+    }
+
+    /// <summary>
+    /// Whether a word on the page looks like a list marker: as <see cref="IsMarker(string)"/> says, or a single character in a
+    /// symbol font (Wingdings, Symbol, ZapfDingbats), where any letter may draw a bullet.
+    /// </summary>
+    internal static bool IsMarker(PageWord word)
+    {
+        return IsMarker(word.Text) || (word.Text.Length == 1 && word.Font is PdfFont font
+            && (font.Flags.HasFlag(PdfFontFlags.Symbolic) && !font.Flags.HasFlag(PdfFontFlags.Nonsymbolic)
+                || FontTraits.Family(font).Contains("ding", StringComparison.OrdinalIgnoreCase)
+                || FontTraits.Family(font).StartsWith("Symbol", StringComparison.OrdinalIgnoreCase)));
     }
 
     /// <summary>
@@ -192,7 +204,7 @@ internal static class BlockBuilder
                     break;
                 }
 
-                double step = lower.Box.CenterY - upper.Box.CenterY;
+                double step = lower.Baseline - upper.Baseline;
                 if (step >= upper.Size * 0.5 && Compatible(upper, lower, thresholds))
                 {
                     best = Math.Min(best, step);
