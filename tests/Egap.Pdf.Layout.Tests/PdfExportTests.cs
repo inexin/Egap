@@ -23,6 +23,21 @@ public class PdfExportTests
     }
 
     [Fact]
+    public void EachLineCarriesOnlyItsOwnText()
+    {
+        // Found by 3.6's round trip: every line of a paragraph was marked with the whole paragraph's text.
+        Document document = new();
+        string text = string.Join(" ", Enumerable.Range(0, 40).Select(i => "word" + i));
+        document.AddSection().Body.AddParagraph(text);
+
+        using PdfDocument pdf = Reopen(document);
+        string extracted = string.Join(" ", pdf.Pages[0].GetText().Lines.Select(l => l.Text));
+
+        Assert.True(pdf.Pages[0].GetText().Lines.Count > 1);
+        Assert.Equal(text, string.Join(" ", extracted.Split(' ', StringSplitOptions.RemoveEmptyEntries)));
+    }
+
+    [Fact]
     public void PagesTextAndMetadata()
     {
         Document document = new();
