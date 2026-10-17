@@ -88,7 +88,7 @@ internal sealed partial class PageRenderer : PdfContentWalker
     protected override void OnPaintPath(PdfPath path, PdfPathPaint paint)
     {
         PdfPathPaint draw = paint & (PdfPathPaint.Fill | PdfPathPaint.EvenOddFill | PdfPathPaint.Stroke);
-        if (draw == 0 || path.IsEmpty)
+        if (draw == 0 || path.IsEmpty || !Finite(path))
         {
             return;
         }
@@ -144,7 +144,10 @@ internal sealed partial class PageRenderer : PdfContentWalker
             if (Device(clip.Matrix) is Matrix3x2 clipMatrix)
             {
                 canvas.SetMatrix(clipMatrix);
-                canvas.ClipPath(ToPath(clip.Path, clip.EvenOdd ? FillRule.EvenOdd : FillRule.NonZero), ClipOp.Intersect, settings.AntialiasPaths);
+                if (Finite(clip.Path))
+                {
+                    canvas.ClipPath(ToPath(clip.Path, clip.EvenOdd ? FillRule.EvenOdd : FillRule.NonZero), ClipOp.Intersect, settings.AntialiasPaths);
+                }
             }
             else
             {
@@ -226,6 +229,22 @@ internal sealed partial class PageRenderer : PdfContentWalker
 
         // A colourant that marks nothing (None) paints nothing at all (8.6.6.4).
         return rgb.A == 0 ? null : new SolidPaint(new RgbaF32(rgb.R, rgb.G, rgb.B, (float)alpha)) { Antialias = settings.AntialiasPaths, BlendMode = BlendModeOf(State.BlendMode) };
+    }
+
+    /// <summary>Whether every point of a path is a finite number in single precision, as Egami's paths need: a coordinate too large for a float is drawn as nothing.</summary>
+    internal static bool Finite(PdfPath path)
+    {
+        foreach (PdfPathSegment segment in path.Segments)
+        {
+            if (!float.IsFinite((float)segment.Point.X) || !float.IsFinite((float)segment.Point.Y)
+                || (segment.Verb == PdfPathVerb.CurveTo && (!float.IsFinite((float)segment.Control1.X) || !float.IsFinite((float)segment.Control1.Y)
+                    || !float.IsFinite((float)segment.Control2.X) || !float.IsFinite((float)segment.Control2.Y))))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>A PDF path as an Egami path, in the same user space.</summary>

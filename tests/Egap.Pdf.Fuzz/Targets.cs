@@ -492,7 +492,7 @@ internal static class Targets
                 foreach (Egap.Pdf.Layout.ReconstructionMode mode in (Egap.Pdf.Layout.ReconstructionMode[])[Egap.Pdf.Layout.ReconstructionMode.Flow, Egap.Pdf.Layout.ReconstructionMode.Exact])
                 {
                     Egap.Documents.Document document = Egap.Pdf.Layout.PdfToDocument.Convert(pdf, new Egap.Pdf.Layout.PdfToDocumentOptions { Mode = mode, FigureResolution = 24 });
-                    Egap.Documents.Docx.DocxFormat.Save(document, Stream.Null);
+                    Egap.Documents.DocxFormat.Save(document, Stream.Null);
                 }
 
                 List<int> glyphs = [.. Enumerable.Range(0, pdf.Pages.Count).Select(i => Egap.Pdf.Layout.PageReader.Read(pdf, i).Glyphs.Count)];
