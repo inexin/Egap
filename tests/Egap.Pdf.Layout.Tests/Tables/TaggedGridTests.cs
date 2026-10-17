@@ -73,6 +73,25 @@ public sealed class TaggedGridTests
     }
 
     [Fact]
+    public void APartlyRuledTableTaggedAsParagraphsTakesAParagraphPerCell()
+    {
+        SyntheticDocument doc = new(tagged: true) { TablesAsParagraphs = true };
+        doc.Paragraph("The test statistics follow.");
+        doc.Table(
+        [
+            ["Test", "Chi-Square", "DF", "Pr > ChiSq"],
+            ["Log-Rank", "1.5209", "1", "0.2175"],
+            ["Wilcoxon", "0.7660", "1", "0.3815"],
+        ], [90, 70, 30, 70], TruthRules.Partial);
+        using PdfDocument pdf = PdfDocument.Open(doc.Save());
+
+        LayoutTable table = Assert.Single(PdfLayoutAnalyzer.Analyze(pdf, 0).Tables);
+
+        Assert.Equal((3, 4), (table.RowCount, table.ColumnCount));
+        Assert.Contains(table.Cells, c => (c.Row, c.Column, c.Text) == (2, 3, "0.3815"));
+    }
+
+    [Fact]
     public void AnEmptyRuledTableComesBackOnItsGrid()
     {
         SyntheticDocument doc = new(tagged: true) { SpanAttributes = false };

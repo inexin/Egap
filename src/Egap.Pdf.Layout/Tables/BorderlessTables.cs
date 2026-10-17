@@ -12,6 +12,9 @@ namespace Egap.Pdf.Layout;
 /// </summary>
 internal static class BorderlessTables
 {
+    /// <summary>The widest a column gap may need to be, in ems, inside an area known to be a table.</summary>
+    private const double BoundedGutter = 0.9;
+
     /// <summary>A line piece with its row (line index) in the region.</summary>
     private sealed record Piece(PageLine Line, int Row);
 
@@ -30,10 +33,12 @@ internal static class BorderlessTables
         double wordGap = BlockBuilder.WordGap(lines);
 
         // Areas the caller names, and areas a partly ruled table's rules bound, are tables whatever they score: they need only
-        // two columns (and the rules' area two rows).
+        // two columns (and the rules' area two rows). Inside them a column gap can be as narrow as a word processor's cell
+        // padding, under an em, so they cut lines at narrower gaps than the page's gutters.
+        LayoutThresholds bounded = thresholds with { GutterSize = Math.Min(thresholds.GutterSize, BoundedGutter) };
         foreach (PageBox area in areas)
         {
-            if (Build(Inside(glyphs, area, used), wordGap, thresholds, minimumRows: 1) is TableDraft table)
+            if (Build(Inside(glyphs, area, used), wordGap, bounded, minimumRows: 1) is TableDraft table)
             {
                 table.Box = area;
                 Claim(table, used);
@@ -44,7 +49,7 @@ internal static class BorderlessTables
         foreach (TableHint hint in hints)
         {
             PageBox area = hint.Box with { Top = hint.Box.Top - 1, Bottom = hint.Box.Bottom + 1 };
-            if (Build(Inside(glyphs, area, used), wordGap, thresholds, minimumRows: 2) is TableDraft table)
+            if (Build(Inside(glyphs, area, used), wordGap, bounded, minimumRows: 2) is TableDraft table)
             {
                 table.Box = area;
                 table.Confidence = 0.8;
@@ -149,7 +154,10 @@ internal static class BorderlessTables
         }
 
         List<List<PageLine>> pieces = [.. rows.Select(r => r.SelectMany(l => BlockBuilder.Cut(l, wordGap, thresholds)).OrderBy(p => p.Box.Left).ToList())];
-        List<(double Left, double Right)> columns = Columns(pieces.SelectMany(p => p).Select(p => p.Box), lines.Max(l => l.Size));
+        // Gutters come from the rows cut in two pieces or more: a title or a wrapped header word on a line of its own, set
+        // across the columns, would close them.
+        List<List<PageLine>> cut = [.. pieces.Where(p => p.Count >= 2)];
+        List<(double Left, double Right)> columns = Columns((cut.Count >= minimumRows ? cut : pieces).SelectMany(p => p).Select(p => p.Box), lines.Max(l => l.Size));
         if (columns.Count < 2 || rows.Count < minimumRows)
         {
             return null;
