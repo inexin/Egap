@@ -60,6 +60,42 @@ Egap.Pdf.PdfBatesSequence.Prefix.get -> string!
 Egap.Pdf.PdfBatesSequence.Step.get -> int
 Egap.Pdf.PdfBatesSequence.Suffix.get -> string!
 Egap.Pdf.PdfCanvas.DrawForm(Egap.Pdf.PdfFormXObject! form, Egami.Drawing.RectF destination, Egami.Drawing.Paint? paint = null) -> void
+Egap.Pdf.PdfCompare
+Egap.Pdf.PdfComparedWord
+Egap.Pdf.PdfComparedWord.<Clone>$() -> Egap.Pdf.PdfComparedWord!
+Egap.Pdf.PdfComparedWord.Box.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfComparedWord.Box.init -> void
+Egap.Pdf.PdfComparedWord.Deconstruct(out int Page, out string! Text, out Egap.Pdf.PdfRectangle Box) -> void
+Egap.Pdf.PdfComparedWord.Equals(Egap.Pdf.PdfComparedWord? other) -> bool
+Egap.Pdf.PdfComparedWord.Page.get -> int
+Egap.Pdf.PdfComparedWord.Page.init -> void
+Egap.Pdf.PdfComparedWord.PdfComparedWord(int Page, string! Text, Egap.Pdf.PdfRectangle Box) -> void
+Egap.Pdf.PdfComparedWord.Text.get -> string!
+Egap.Pdf.PdfComparedWord.Text.init -> void
+Egap.Pdf.PdfCompareOptions
+Egap.Pdf.PdfCompareOptions.<Clone>$() -> Egap.Pdf.PdfCompareOptions!
+Egap.Pdf.PdfCompareOptions.DifferenceImages.get -> bool
+Egap.Pdf.PdfCompareOptions.DifferenceImages.init -> void
+Egap.Pdf.PdfCompareOptions.Dpi.get -> double
+Egap.Pdf.PdfCompareOptions.Dpi.init -> void
+Egap.Pdf.PdfCompareOptions.Equals(Egap.Pdf.PdfCompareOptions? other) -> bool
+Egap.Pdf.PdfCompareOptions.MinChangedPixels.get -> int
+Egap.Pdf.PdfCompareOptions.MinChangedPixels.init -> void
+Egap.Pdf.PdfCompareOptions.PdfCompareOptions() -> void
+Egap.Pdf.PdfCompareOptions.Text.get -> bool
+Egap.Pdf.PdfCompareOptions.Text.init -> void
+Egap.Pdf.PdfCompareOptions.Tolerance.get -> int
+Egap.Pdf.PdfCompareOptions.Tolerance.init -> void
+Egap.Pdf.PdfCompareOptions.Visual.get -> bool
+Egap.Pdf.PdfCompareOptions.Visual.init -> void
+Egap.Pdf.PdfComparison
+Egap.Pdf.PdfComparison.Dispose() -> void
+Egap.Pdf.PdfComparison.HasChanges.get -> bool
+Egap.Pdf.PdfComparison.Pages.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPageMatch!>!
+Egap.Pdf.PdfComparison.TextChanges.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextChange!>!
+Egap.Pdf.PdfComparison.VisualChanges.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfVisualChange!>!
+Egap.Pdf.PdfComparison.WriteMarkup(string! path) -> void
+Egap.Pdf.PdfComparison.WriteMarkup(System.IO.Stream! output) -> void
 Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null) -> Egap.Pdf.PdfOptimizeReport!
 Egap.Pdf.PdfDocument.RemoveStamps() -> int
 Egap.Pdf.PdfDocument.Stamp(Egap.Pdf.PdfStamp! stamp) -> Egap.Pdf.PdfStampResult!
@@ -149,6 +185,15 @@ Egap.Pdf.PdfOptimizeSavings.StreamsMerged.init -> void
 Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.get -> int
 Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.init -> void
 Egap.Pdf.PdfPage.ToFormXObject(Egap.Pdf.PdfDocument! target) -> Egap.Pdf.PdfFormXObject!
+Egap.Pdf.PdfPageMatch
+Egap.Pdf.PdfPageMatch.<Clone>$() -> Egap.Pdf.PdfPageMatch!
+Egap.Pdf.PdfPageMatch.Deconstruct(out int? OldPage, out int? NewPage) -> void
+Egap.Pdf.PdfPageMatch.Equals(Egap.Pdf.PdfPageMatch? other) -> bool
+Egap.Pdf.PdfPageMatch.NewPage.get -> int?
+Egap.Pdf.PdfPageMatch.NewPage.init -> void
+Egap.Pdf.PdfPageMatch.OldPage.get -> int?
+Egap.Pdf.PdfPageMatch.OldPage.init -> void
+Egap.Pdf.PdfPageMatch.PdfPageMatch(int? OldPage, int? NewPage) -> void
 Egap.Pdf.PdfPageSize
 Egap.Pdf.PdfPageSize.Deconstruct(out double Width, out double Height) -> void
 Egap.Pdf.PdfPageSize.Equals(Egap.Pdf.PdfPageSize other) -> bool
@@ -206,6 +251,34 @@ Egap.Pdf.PdfStampSubtype
 Egap.Pdf.PdfStampSubtype.Footer = 1 -> Egap.Pdf.PdfStampSubtype
 Egap.Pdf.PdfStampSubtype.Header = 0 -> Egap.Pdf.PdfStampSubtype
 Egap.Pdf.PdfStampSubtype.Watermark = 2 -> Egap.Pdf.PdfStampSubtype
+Egap.Pdf.PdfTextChange
+Egap.Pdf.PdfTextChange.<Clone>$() -> Egap.Pdf.PdfTextChange!
+Egap.Pdf.PdfTextChange.Anchor.get -> Egap.Pdf.PdfComparedWord?
+Egap.Pdf.PdfTextChange.Anchor.init -> void
+Egap.Pdf.PdfTextChange.Deconstruct(out Egap.Pdf.PdfTextChangeKind Kind, out System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfComparedWord!>! OldWords, out System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfComparedWord!>! NewWords, out Egap.Pdf.PdfComparedWord? Anchor) -> void
+Egap.Pdf.PdfTextChange.Equals(Egap.Pdf.PdfTextChange? other) -> bool
+Egap.Pdf.PdfTextChange.Kind.get -> Egap.Pdf.PdfTextChangeKind
+Egap.Pdf.PdfTextChange.Kind.init -> void
+Egap.Pdf.PdfTextChange.NewPage.get -> int?
+Egap.Pdf.PdfTextChange.NewText.get -> string!
+Egap.Pdf.PdfTextChange.NewWords.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfComparedWord!>!
+Egap.Pdf.PdfTextChange.NewWords.init -> void
+Egap.Pdf.PdfTextChange.OldPage.get -> int?
+Egap.Pdf.PdfTextChange.OldText.get -> string!
+Egap.Pdf.PdfTextChange.OldWords.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfComparedWord!>!
+Egap.Pdf.PdfTextChange.OldWords.init -> void
+Egap.Pdf.PdfTextChange.PdfTextChange(Egap.Pdf.PdfTextChangeKind Kind, System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfComparedWord!>! OldWords, System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfComparedWord!>! NewWords, Egap.Pdf.PdfComparedWord? Anchor) -> void
+Egap.Pdf.PdfTextChangeKind
+Egap.Pdf.PdfTextChangeKind.Deleted = 1 -> Egap.Pdf.PdfTextChangeKind
+Egap.Pdf.PdfTextChangeKind.Inserted = 0 -> Egap.Pdf.PdfTextChangeKind
+Egap.Pdf.PdfTextChangeKind.Moved = 3 -> Egap.Pdf.PdfTextChangeKind
+Egap.Pdf.PdfTextChangeKind.Replaced = 2 -> Egap.Pdf.PdfTextChangeKind
+Egap.Pdf.PdfVisualChange
+Egap.Pdf.PdfVisualChange.Boxes.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfRectangle>!
+Egap.Pdf.PdfVisualChange.Difference.get -> Egami.Raster<Egami.Pixels.Rgba8>?
+Egap.Pdf.PdfVisualChange.Dispose() -> void
+Egap.Pdf.PdfVisualChange.NewPage.get -> int
+Egap.Pdf.PdfVisualChange.OldPage.get -> int
 Egap.Pdf.PosterOptions
 Egap.Pdf.PosterOptions.<Clone>$() -> Egap.Pdf.PosterOptions!
 Egap.Pdf.PosterOptions.CutMarks.get -> bool
@@ -239,6 +312,13 @@ override Egap.Pdf.GridOptions.ToString() -> string!
 override Egap.Pdf.NUpOptions.Equals(object? obj) -> bool
 override Egap.Pdf.NUpOptions.GetHashCode() -> int
 override Egap.Pdf.NUpOptions.ToString() -> string!
+override Egap.Pdf.PdfComparedWord.Equals(object? obj) -> bool
+override Egap.Pdf.PdfComparedWord.GetHashCode() -> int
+override Egap.Pdf.PdfComparedWord.ToString() -> string!
+override Egap.Pdf.PdfCompareOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfCompareOptions.GetHashCode() -> int
+override Egap.Pdf.PdfCompareOptions.ToString() -> string!
+override Egap.Pdf.PdfComparison.ToString() -> string!
 override Egap.Pdf.PdfOptimizedImage.Equals(object? obj) -> bool
 override Egap.Pdf.PdfOptimizedImage.GetHashCode() -> int
 override Egap.Pdf.PdfOptimizedImage.ToString() -> string!
@@ -249,6 +329,9 @@ override Egap.Pdf.PdfOptimizeReport.ToString() -> string!
 override Egap.Pdf.PdfOptimizeSavings.Equals(object? obj) -> bool
 override Egap.Pdf.PdfOptimizeSavings.GetHashCode() -> int
 override Egap.Pdf.PdfOptimizeSavings.ToString() -> string!
+override Egap.Pdf.PdfPageMatch.Equals(object? obj) -> bool
+override Egap.Pdf.PdfPageMatch.GetHashCode() -> int
+override Egap.Pdf.PdfPageMatch.ToString() -> string!
 override Egap.Pdf.PdfPageSize.GetHashCode() -> int
 override Egap.Pdf.PdfStamp.Equals(object? obj) -> bool
 override Egap.Pdf.PdfStamp.GetHashCode() -> int
@@ -256,6 +339,9 @@ override Egap.Pdf.PdfStamp.ToString() -> string!
 override Egap.Pdf.PdfStampResult.Equals(object? obj) -> bool
 override Egap.Pdf.PdfStampResult.GetHashCode() -> int
 override Egap.Pdf.PdfStampResult.ToString() -> string!
+override Egap.Pdf.PdfTextChange.Equals(object? obj) -> bool
+override Egap.Pdf.PdfTextChange.GetHashCode() -> int
+override Egap.Pdf.PdfTextChange.ToString() -> string!
 override Egap.Pdf.PosterOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PosterOptions.GetHashCode() -> int
 override Egap.Pdf.PosterOptions.ToString() -> string!
@@ -265,6 +351,12 @@ static Egap.Pdf.GridOptions.operator !=(Egap.Pdf.GridOptions? left, Egap.Pdf.Gri
 static Egap.Pdf.GridOptions.operator ==(Egap.Pdf.GridOptions? left, Egap.Pdf.GridOptions? right) -> bool
 static Egap.Pdf.NUpOptions.operator !=(Egap.Pdf.NUpOptions? left, Egap.Pdf.NUpOptions? right) -> bool
 static Egap.Pdf.NUpOptions.operator ==(Egap.Pdf.NUpOptions? left, Egap.Pdf.NUpOptions? right) -> bool
+static Egap.Pdf.PdfCompare.Run(Egap.Pdf.PdfDocument! oldDocument, Egap.Pdf.PdfDocument! newDocument, Egap.Pdf.PdfCompareOptions? options = null) -> Egap.Pdf.PdfComparison!
+static Egap.Pdf.PdfComparedWord.operator !=(Egap.Pdf.PdfComparedWord? left, Egap.Pdf.PdfComparedWord? right) -> bool
+static Egap.Pdf.PdfComparedWord.operator ==(Egap.Pdf.PdfComparedWord? left, Egap.Pdf.PdfComparedWord? right) -> bool
+static Egap.Pdf.PdfCompareOptions.Default.get -> Egap.Pdf.PdfCompareOptions!
+static Egap.Pdf.PdfCompareOptions.operator !=(Egap.Pdf.PdfCompareOptions? left, Egap.Pdf.PdfCompareOptions? right) -> bool
+static Egap.Pdf.PdfCompareOptions.operator ==(Egap.Pdf.PdfCompareOptions? left, Egap.Pdf.PdfCompareOptions? right) -> bool
 static Egap.Pdf.PdfImpose.Booklet(Egap.Pdf.PdfDocument! source, Egap.Pdf.BookletOptions? options = null) -> Egap.Pdf.PdfDocument!
 static Egap.Pdf.PdfImpose.FitToSize(Egap.Pdf.PdfDocument! source, Egap.Pdf.PdfPageSize size) -> Egap.Pdf.PdfDocument!
 static Egap.Pdf.PdfImpose.Grid(Egap.Pdf.PdfDocument! source, Egap.Pdf.GridOptions? options = null) -> Egap.Pdf.PdfDocument!
@@ -280,6 +372,8 @@ static Egap.Pdf.PdfOptimizeOptions.Print.get -> Egap.Pdf.PdfOptimizeOptions!
 static Egap.Pdf.PdfOptimizeOptions.Screen.get -> Egap.Pdf.PdfOptimizeOptions!
 static Egap.Pdf.PdfOptimizeSavings.operator !=(Egap.Pdf.PdfOptimizeSavings? left, Egap.Pdf.PdfOptimizeSavings? right) -> bool
 static Egap.Pdf.PdfOptimizeSavings.operator ==(Egap.Pdf.PdfOptimizeSavings? left, Egap.Pdf.PdfOptimizeSavings? right) -> bool
+static Egap.Pdf.PdfPageMatch.operator !=(Egap.Pdf.PdfPageMatch? left, Egap.Pdf.PdfPageMatch? right) -> bool
+static Egap.Pdf.PdfPageMatch.operator ==(Egap.Pdf.PdfPageMatch? left, Egap.Pdf.PdfPageMatch? right) -> bool
 static Egap.Pdf.PdfPageSize.A3.get -> Egap.Pdf.PdfPageSize
 static Egap.Pdf.PdfPageSize.A4.get -> Egap.Pdf.PdfPageSize
 static Egap.Pdf.PdfPageSize.A5.get -> Egap.Pdf.PdfPageSize
@@ -297,6 +391,8 @@ static Egap.Pdf.PdfStamp.Text(string! template) -> Egap.Pdf.PdfStamp!
 static Egap.Pdf.PdfStamp.Watermark(string! text) -> Egap.Pdf.PdfStamp!
 static Egap.Pdf.PdfStampResult.operator !=(Egap.Pdf.PdfStampResult? left, Egap.Pdf.PdfStampResult? right) -> bool
 static Egap.Pdf.PdfStampResult.operator ==(Egap.Pdf.PdfStampResult? left, Egap.Pdf.PdfStampResult? right) -> bool
+static Egap.Pdf.PdfTextChange.operator !=(Egap.Pdf.PdfTextChange? left, Egap.Pdf.PdfTextChange? right) -> bool
+static Egap.Pdf.PdfTextChange.operator ==(Egap.Pdf.PdfTextChange? left, Egap.Pdf.PdfTextChange? right) -> bool
 static Egap.Pdf.PosterOptions.operator !=(Egap.Pdf.PosterOptions? left, Egap.Pdf.PosterOptions? right) -> bool
 static Egap.Pdf.PosterOptions.operator ==(Egap.Pdf.PosterOptions? left, Egap.Pdf.PosterOptions? right) -> bool
 ~override Egap.Pdf.PdfPageSize.Equals(object obj) -> bool
