@@ -39,4 +39,19 @@ public sealed class TaggedGridTests
         Assert.Contains(table.Cells, c => (c.Row, c.Column, c.ColumnSpan, c.Text) == (0, 0, 3, "Opening hours"));
         Assert.Equal(9, table.Cells.Count(c => c.Row > 0 && c.ColumnSpan == 1));
     }
+
+    [Fact]
+    public void AnEmptyRuledTableComesBackOnItsGrid()
+    {
+        SyntheticDocument doc = new(tagged: true) { SpanAttributes = false };
+        doc.Paragraph("Fill in the form below.");
+        doc.Table([["", "", ""], ["", "", ""]], [100, 100, 100], TruthRules.All, headerRows: 0);
+        using PdfDocument pdf = PdfDocument.Open(doc.Save());
+
+        LayoutTable table = Assert.Single(PdfLayoutAnalyzer.Analyze(pdf, 0).Tables);
+
+        Assert.True(table.IsRuled);
+        Assert.Equal((2, 3), (table.RowCount, table.ColumnCount));
+        Assert.All(table.Cells, c => Assert.Equal("", c.Text));
+    }
 }

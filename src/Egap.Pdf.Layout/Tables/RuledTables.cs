@@ -90,13 +90,13 @@ internal static class RuledTables
     }
 
     /// <summary>Every grid the rules draw, before the checks that tell tables from charts and frames.</summary>
-    internal static List<TableDraft> Candidates(List<Rule> rules, IReadOnlyList<PageGlyph> glyphs)
+    internal static List<TableDraft> Candidates(List<Rule> rules, IReadOnlyList<PageGlyph> glyphs, bool empty = false)
     {
         List<TableDraft> grids = [];
         foreach (List<Rule> group in Stacked(Groups(rules)))
         {
             List<Rule> horizontal = [.. group.Where(r => r.Horizontal)], vertical = [.. group.Where(r => !r.Horizontal)];
-            if (horizontal.Count >= 2 && vertical.Count >= 2 && Grid(horizontal, vertical, glyphs) is TableDraft table)
+            if (horizontal.Count >= 2 && vertical.Count >= 2 && Grid(horizontal, vertical, glyphs, empty) is TableDraft table)
             {
                 grids.Add(table);
             }
@@ -306,7 +306,7 @@ internal static class RuledTables
     /// The table a group of rules draws: rows and columns between its distinct heights and offsets, cells joined across
     /// missing rules, and the text inside each cell. Null for a single cell, or when no cell holds text.
     /// </summary>
-    private static TableDraft? Grid(List<Rule> horizontal, List<Rule> vertical, IReadOnlyList<PageGlyph> glyphs)
+    private static TableDraft? Grid(List<Rule> horizontal, List<Rule> vertical, IReadOnlyList<PageGlyph> glyphs, bool empty = false)
     {
         List<double> ys = Distinct(horizontal.Select(r => r.At)), xs = Distinct(vertical.Select(r => r.At));
         int rows = ys.Count - 1, columns = xs.Count - 1;
@@ -351,7 +351,7 @@ internal static class RuledTables
         }
 
         // A grid whose squares all merged is a framed box; a grid with no text is a drawing.
-        if (cells.Count < 2 || cells.All(c => c.Lines.Count == 0))
+        if (cells.Count < 2 || (!empty && cells.All(c => c.Lines.Count == 0)))
         {
             return null;
         }
