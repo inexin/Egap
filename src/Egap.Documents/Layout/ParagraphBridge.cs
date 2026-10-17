@@ -87,7 +87,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         if (paragraph.ListLabel is { } label && label.Text.Length + 1 is int length)
         {
             TextStyle labelStyle = LabelStyle(paragraph, label);
-            text.Push(labelStyle).Append(label.Text);
+            text.Push(labelStyle).Append(SymbolFonts.Map(label.Text, label.Format.RunFormat.FontAscii ?? ""));
             switch (label.Format.Suffix)
             {
                 case ListLabelSuffix.Tab:
@@ -246,7 +246,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
 
             TextStyle style = Style(paragraph, runFormat);
             maxSize = Math.Max(maxSize, runFormat.Size);
-            string value = run.Text;
+            string value = SymbolFonts.Map(run.Text, runFormat.FontAscii);
             if (runFormat.AllCaps)
             {
                 AddText(value.ToUpperInvariant(), run, style);
@@ -297,7 +297,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
 
             spans.Add(new InlineSpan(text.Length, 1, node, 0));
             objects.Add(node);
-            text.AddPlaceholder(new Placeholder((float)width, (float)height, PlaceholderAlignment.Baseline));
+            text.AddPlaceholder(new Placeholder((float)width, (float)height, PlaceholderAlignment.AboveBaseline));
         }
     }
 

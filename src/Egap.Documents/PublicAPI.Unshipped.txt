@@ -764,9 +764,11 @@ Egap.Documents.Layout.PageArea.Notes = 3 -> Egap.Documents.Layout.PageArea
 Egap.Documents.Layout.PageLayout
 Egap.Documents.Layout.PageLayout.BodyLines.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Layout.LineBox!>!
 Egap.Documents.Layout.PageLayout.Boxes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutBox!>!
+Egap.Documents.Layout.PageLayout.Draw(Egami.Drawing.Canvas! canvas) -> void
 Egap.Documents.Layout.PageLayout.Height.get -> double
 Egap.Documents.Layout.PageLayout.Index.get -> int
 Egap.Documents.Layout.PageLayout.Number.get -> string!
+Egap.Documents.Layout.PageLayout.Render(double dpi = 96) -> Egami.Raster<Egami.Pixels.Rgba8>!
 Egap.Documents.Layout.PageLayout.Section.get -> Egap.Documents.Section!
 Egap.Documents.Layout.PageLayout.Width.get -> double
 Egap.Documents.Layout.ParagraphBox
