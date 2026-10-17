@@ -216,9 +216,10 @@ internal static class TaggedGrids
     /// <summary>
     /// The table with spans from its text when some rows have fewer cells than others: columns from the rows that have them
     /// all, each cell of a shorter row spanning the columns its text crosses, its empty cells filling the columns between.
+    /// With <paramref name="everyCell"/> off (empty cells missing, not tagged), a short row's gaps stay empty cells instead.
     /// Null when every row is full or the cells do not fit the columns.
     /// </summary>
-    internal static TableDraft? OnText(TableDraft table)
+    internal static TableDraft? OnText(TableDraft table, bool everyCell = true)
     {
         List<List<CellDraft>> rows = [.. table.Cells.GroupBy(c => c.Row).OrderBy(g => g.Key).Select(g => g.OrderBy(c => c.Column).ToList())];
         int columns = rows.Count == 0 ? 0 : rows.Max(r => r.Count);
@@ -280,8 +281,8 @@ internal static class TaggedGrids
             int next = 0;
             for (int i = 0; i < row.Count; i++)
             {
-                // A row's first cell starts at the first column.
-                int wanted = i == 0 ? 0 : starts[i] >= 0 ? Math.Max(starts[i], next) : next;
+                // With every cell tagged, a row's first cell starts at the first column; without, cells stand where their text is.
+                int wanted = i == 0 && everyCell ? 0 : starts[i] >= 0 ? Math.Max(starts[i], next) : next;
 
                 // Leave room for the cells still to come.
                 wanted = Math.Min(wanted, columns - (row.Count - i));
@@ -296,7 +297,13 @@ internal static class TaggedGrids
 
             for (int i = 0; i < row.Count; i++)
             {
+                // Every cell tagged: a cell runs to the next one. Empty cells untagged: a cell spans only the columns its text crosses.
                 int end = i + 1 < row.Count ? at[i + 1] : columns;
+                if (!everyCell && starts[i] >= 0)
+                {
+                    end = Math.Min(end, Math.Max(at[i] + 1, ends[i] + 1));
+                }
+
                 cells.Add(new CellDraft(row[i].Row, at[i], 1, end - at[i], row[i].Header, row[i].Lines) { Box = row[i].Box });
             }
         }

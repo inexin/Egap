@@ -236,7 +236,7 @@ internal static class PageAnalysis
         }
 
         (List<TableDraft> ruled, List<TableHint> hints) = RuledTables.Find(content.Paths, glyphs, content.Images);
-        foreach (TableDraft table in ruled.Concat(BorderlessTables.Find(glyphs, hints, [], thresholds, search: false)))
+        foreach (TableDraft table in ruled.Concat(hints.Select(h => FromParagraphs(h.Box, text)).OfType<TableDraft>()))
         {
             HashSet<PageGlyph> inside = new(Glyphs(table), ReferenceEqualityComparer.Instance);
             List<BlockDraft> taken = [.. text.Where(b => b.Lines.SelectMany(l => l.Words).SelectMany(w => w.Glyphs).Any(inside.Contains))];
@@ -264,6 +264,38 @@ internal static class PageAnalysis
         }
 
         return tables;
+    }
+
+    /// <summary>
+    /// The table that tagged paragraphs between a partly ruled table's rules make, each paragraph a cell: rows where the
+    /// paragraphs stand level, columns from the rows with the most cells, a shorter row's cells spanning by their text.
+    /// </summary>
+    private static TableDraft? FromParagraphs(PageBox area, List<BlockDraft> text)
+    {
+        List<BlockDraft> inside = [.. text.Where(b => area.Contains(b.Box.CenterX, b.Box.CenterY, 1)).OrderBy(b => b.Box.Top).ThenBy(b => b.Box.Left)];
+        if (inside.Count < 4)
+        {
+            return null;
+        }
+
+        // A paragraph starting above the bottom of the row's first paragraph stands in that row.
+        List<List<BlockDraft>> rows = [];
+        foreach (BlockDraft block in inside)
+        {
+            if (rows.Count > 0 && block.Box.Top < rows[^1].Min(b => b.Box.Bottom) - 1)
+            {
+                rows[^1].Add(block);
+            }
+            else
+            {
+                rows.Add([block]);
+            }
+        }
+
+        int columns = rows.Max(r => r.Count);
+        List<CellDraft> cells = [.. rows.SelectMany((row, r) => row.OrderBy(b => b.Box.Left).Select((b, c) => new CellDraft(r, c, 1, 1, false, b.Lines) { Box = b.Box }))];
+        TableDraft table = new(cells, rows.Count, columns) { Box = area, Confidence = 0.8 };
+        return TaggedGrids.OnText(table, everyCell: false) is TableDraft spanned ? new TableDraft(spanned.Cells, spanned.Rows, spanned.Columns) { Box = area, Confidence = 0.8 } : table;
     }
 
     private static IEnumerable<PageGlyph> Glyphs(TableDraft table)
