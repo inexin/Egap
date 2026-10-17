@@ -15,6 +15,9 @@ namespace Egap.Documents.Layout;
 internal sealed class FontProvider
 {
     private readonly FontSettings settings;
+
+    /// <summary>The settings' substitutions, keys ignoring case.</summary>
+    private readonly Dictionary<string, string> replacements = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<FontCollection> chain = [];
     private readonly ConcurrentDictionary<(string Family, FontStyle Style), FontMatch> cache = new();
     private readonly ConcurrentDictionary<FontSubstitution, byte> substitutions = new();
@@ -54,6 +57,11 @@ internal sealed class FontProvider
         ArgumentNullException.ThrowIfNull(document);
         this.document = document;
         this.settings = settings ?? FontSettings.Default;
+        foreach (KeyValuePair<string, string> substitution in this.settings.Substitutions)
+        {
+            replacements.TryAdd(substitution.Key, substitution.Value);
+        }
+
         if (document.EmbeddedFonts.Count > 0)
         {
             FontCollection embedded = new();
@@ -150,7 +158,7 @@ internal sealed class FontProvider
                 return direct;
             }
 
-            if (settings.Substitutions.TryGetValue(family, out string? alternative) && Search(alternative, style) is { } substituted)
+            if (replacements.TryGetValue(family, out string? alternative) && Search(alternative, style) is { } substituted)
             {
                 Note(family, style, substituted.Typeface.FamilyName, FontSubstitutionReason.Missing);
                 return substituted;

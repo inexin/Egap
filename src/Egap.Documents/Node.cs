@@ -164,6 +164,22 @@ public abstract class Node : IFormatOwner
         return FindReplace.Replace(this, find, replacement, options);
     }
 
+    /// <summary>
+    /// Finds every occurrence of <paramref name="find"/> under this node, also where the text crosses run boundaries, in
+    /// document order.
+    /// </summary>
+    public IReadOnlyList<TextMatch> Find(string find, FindOptions? options = null)
+    {
+        options ??= new FindOptions();
+        return FindReplace.Find(this, FindReplace.RegexFor(find, options), options);
+    }
+
+    /// <summary>Finds every match of <paramref name="regex"/> under this node, in document order.</summary>
+    public IReadOnlyList<TextMatch> Find(System.Text.RegularExpressions.Regex regex, FindOptions? options = null)
+    {
+        return FindReplace.Find(this, regex, options);
+    }
+
     /// <summary>Replaces every match of <paramref name="regex"/>; <paramref name="replacement"/> may name groups as $1 or ${name}.</summary>
     /// <returns>How many matches were replaced.</returns>
     public int Replace(System.Text.RegularExpressions.Regex regex, string replacement, FindOptions? options = null)

@@ -113,7 +113,7 @@ internal static class Targets
             bool package = data.Length > 2 && data[0] == (byte)'P' && data[1] == (byte)'K';
             bool wordXml = !package && data.AsSpan().IndexOf("w:document"u8) >= 0;
             document = package || wordXml
-                ? Egap.Documents.Docx.DocxFormat.Load(package ? new MemoryStream(data) : Wrap(data), new Egap.Documents.Docx.DocxLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 } })
+                ? Egap.Documents.DocxFormat.Load(package ? new MemoryStream(data) : Wrap(data), new Egap.Documents.DocxLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 } })
                 : HtmlFormat.Load(data, out _);
         }
         catch (DocumentException)
@@ -177,7 +177,7 @@ internal static class Targets
         Document document;
         try
         {
-            document = Egap.Documents.Docx.DocxFormat.Load(package, new Egap.Documents.Docx.DocxLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 } });
+            document = Egap.Documents.DocxFormat.Load(package, new Egap.Documents.DocxLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 } });
         }
         catch (DocumentException)
         {
@@ -222,7 +222,7 @@ internal static class Targets
             using MemoryStream written = new();
             Egap.Documents.Docx.DocxWriter.Write(document, written, regenerate);
             written.Position = 0;
-            _ = Egap.Documents.Docx.DocxFormat.Load(written).GetText();
+            _ = Egap.Documents.DocxFormat.Load(written).GetText();
         }
     }
 

@@ -76,17 +76,32 @@ public static class MarkdownFormat
     /// <summary>Reads Markdown text.</summary>
     public static Document Parse(string markdown, MarkdownLoadOptions? options = null)
     {
+        return Parse(markdown, out _, options);
+    }
+
+    /// <summary>Reads Markdown text, reporting what could not be read as written.</summary>
+    public static Document Parse(string markdown, out IReadOnlyList<ConversionWarning> warnings, MarkdownLoadOptions? options = null)
+    {
         ArgumentNullException.ThrowIfNull(markdown);
         options ??= new MarkdownLoadOptions();
         MdDocument syntax = BlockParser.Parse(markdown, options.Extensions);
+
+        // Every CommonMark and GitHub construct maps onto the model, so reading has nothing to report yet.
+        warnings = [];
         return MarkdownReader.Build(syntax, options);
     }
 
     /// <summary>Reads a Markdown file (UTF-8, or the encoding its byte order mark names).</summary>
     public static Document Load(string path, MarkdownLoadOptions? options = null)
     {
+        return Load(path, out _, options);
+    }
+
+    /// <summary>Reads a Markdown file (UTF-8, or the encoding its byte order mark names), reporting what could not be read as written.</summary>
+    public static Document Load(string path, out IReadOnlyList<ConversionWarning> warnings, MarkdownLoadOptions? options = null)
+    {
         ArgumentException.ThrowIfNullOrEmpty(path);
-        Document document = Parse(File.ReadAllText(path, Encoding.UTF8), options);
+        Document document = Parse(File.ReadAllText(path, Encoding.UTF8), out warnings, options);
         document.FileName = path;
         return document;
     }
@@ -94,9 +109,15 @@ public static class MarkdownFormat
     /// <summary>Reads Markdown from a stream (UTF-8, or the encoding its byte order mark names), leaving the stream open.</summary>
     public static Document Load(Stream stream, MarkdownLoadOptions? options = null)
     {
+        return Load(stream, out _, options);
+    }
+
+    /// <summary>Reads Markdown from a stream, leaving it open, reporting what could not be read as written.</summary>
+    public static Document Load(Stream stream, out IReadOnlyList<ConversionWarning> warnings, MarkdownLoadOptions? options = null)
+    {
         ArgumentNullException.ThrowIfNull(stream);
         using StreamReader reader = new(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
-        return Parse(reader.ReadToEnd(), options);
+        return Parse(reader.ReadToEnd(), out warnings, options);
     }
 
     /// <summary>The document as GitHub Flavored Markdown, with what was left out in <paramref name="warnings"/>.</summary>

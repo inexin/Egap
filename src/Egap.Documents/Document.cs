@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// A flow document: a list of sections, each with its page setup, body and headers and footers, holding paragraphs, tables
 /// and the rest of the model (Phase 6 design Q3). The root of the tree; every other node belongs to exactly one document.
 /// </summary>
-public sealed class Document : Node
+public sealed partial class Document : Node
 {
     /// <summary>
     /// A new document with no sections, Word's Office theme and Word 2013+'s defaults: Normal, Default Paragraph Font and

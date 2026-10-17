@@ -118,8 +118,8 @@ if (conversion.Succeeded)
 ```csharp
 using Egap.Documents;
 
-// Egap.Documents 0.1 preview (Phase 6): the flow document model and Markdown, read and written.
-Document doc = MarkdownFormat.Load("README.md");                 // CommonMark plus GitHub's extensions
+// Egap.Documents 1.0 (Phase 6): one document model for DOCX, HTML and Markdown, with page layout.
+Document doc = Document.Load("report.docx");                      // DOCX, DOTX, DOCM, HTML or Markdown, told apart by content
 foreach (Paragraph p in doc.Descendants<Paragraph>())
 {
     Console.WriteLine($"{p.ListLabel?.Text} {p.GetText()}");    // list labels computed as Word numbers them
@@ -128,18 +128,18 @@ foreach (Paragraph p in doc.Descendants<Paragraph>())
 DocumentBuilder builder = new(doc);                               // edit from code at a cursor
 builder.Writeln("Added at the end.");
 doc.Replace("colour", "color");                                   // also where the text crosses runs
-IReadOnlyList<ConversionWarning> dropped = MarkdownFormat.Save(doc, "out.md");
+IReadOnlyList<TextMatch> found = doc.Find("color");               // paragraph, offset and text of each match
+doc.Save("report-edited.docx");                                   // what the model does not name is kept
+IReadOnlyList<ConversionWarning> dropped = doc.Save("report.md"); // the format from the extension, with what it could not hold
 
-// Egap.Documents 0.2 preview: DOCX, DOTX and DOCM (strict and transitional) read and written.
-Document report = DocxFormat.Load("report.docx");                // what the model does not name is kept
-report.Sections[0].Body.AddParagraph("Appended.");
-DocxFormat.Save(report, "report-edited.docx");                    // unedited parts are written as they were read
-DocxFormat.Save(MarkdownFormat.Load("README.md"), "readme.docx");  // Markdown to Word
+// Each format's class takes its own options.
+Document readme = MarkdownFormat.Load("README.md", new MarkdownLoadOptions { Extensions = MarkdownExtensions.GitHub });
+DocxFormat.Save(readme, "readme.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
 
-// Egap.Documents 0.3 and Egap.Pdf.Layout 0.1 previews: page layout, drawing and PDF export with links, outline and tags.
-DocumentLayout pages = report.Layout();                           // pages, lines and boxes linked to the model
+// Page layout and, through Egap.Pdf.Layout, PDF with links, outline and tags.
+DocumentLayout pages = doc.Layout();                              // pages, lines and boxes linked to the model
 pages.Pages[0].Render(dpi: 150).Save("page1.png");                // any Egami canvas: raster, SVG, PDF
-report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
+doc.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
 
 // HTML read as browsers parse it, styled through the CSS cascade; nothing is fetched without a resolver.
 Document page = HtmlFormat.Load("invoice.html", new HtmlLoadOptions { BaseUri = new Uri("https://example.com/"), ResourceResolver = Fetch });
@@ -151,7 +151,7 @@ page.SaveAsPdf("invoice.pdf");
 | Project | What it is |
 | --- | --- |
 | `src/Egap.Pdf` | The PDF library (package `Egap.Pdf`). |
-| `src/Egap.Documents` | Flow documents, in progress (Phase 6; 0.4 preview has the model, Markdown, DOCX, HTML and page layout): one document model with Markdown, DOCX and HTML readers and writers and a page layout engine (package `Egap.Documents`). |
+| `src/Egap.Documents` | Flow documents (Phase 6, 1.0): one document model with DOCX, HTML and Markdown readers and writers, a page layout engine and hit testing (package `Egap.Documents`). |
 | `src/Egap.Pdf.Layout` | The bridge between Egap.Documents and Egap.Pdf, in progress (0.1 preview saves documents as PDF): documents saved as PDF, PDF pages analysed back into documents (package `Egap.Pdf.Layout`). |
 | `src/Egap.Fonts` | Open, metric-compatible substitutes for Helvetica, Arial, Times, Courier, Calibri and Cambria (package `Egap.Fonts`, SIL OFL fonts). |
 | `tests/Egap.Pdf.Tests`, `tests/Egap.Documents.Tests`, `tests/Egap.Pdf.Layout.Tests` | Unit tests (xUnit v3). |
