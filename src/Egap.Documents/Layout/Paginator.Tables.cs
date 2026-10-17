@@ -162,7 +162,9 @@ internal sealed partial class Paginator
                     continue;
                 }
 
+                measuring++;
                 (_, double content) = LayStory(cell.Cell, 0, 0, Math.Max(1, cell.Width - cell.Margins.Left - cell.Margins.Right));
+                measuring--;
                 cell.ContentHeight = content + cell.Margins.Top + cell.Margins.Bottom;
                 if (cell.RowSpan == 1)
                 {
@@ -316,7 +318,9 @@ internal sealed partial class Paginator
         for (int i = 0; i < row.Cells.Count; i++)
         {
             CellPlan cell = row.Cells[i];
+            measuring++;
             (_, double content, _) = LayCell(cell, 0, 0, limit, resume[i]);
+            measuring--;
             height = Math.Max(height, content + cell.Margins.Top + cell.Margins.Bottom);
         }
 
@@ -410,6 +414,11 @@ internal sealed partial class Paginator
                         ResolvedParagraphFormat format = content.Format;
                         int firstLine = b == start.Block ? start.Line : 0;
                         double before = firstLine == 0 ? format.SpaceBefore : 0;
+                        if (firstLine == 0 && content.Floats.Count > 0)
+                        {
+                            PlaceFloats(content, at + before);
+                        }
+
                         List<PlacedLine> lines = Lines(content, width);
                         List<LineBox> lineBoxes = [];
                         double lineTop = at + before;
@@ -420,7 +429,7 @@ internal sealed partial class Paginator
                             {
                                 if (lineBoxes.Count > 0)
                                 {
-                                    boxes.Add(new ParagraphBox(paragraph, new LayoutRect(x, at, width, lineTop - at), lineBoxes, firstLine > 0, true));
+                                    boxes.Add(new ParagraphBox(paragraph, new LayoutRect(x, at, width, lineTop - at), lineBoxes, firstLine > 0, true, InlineObjectBoxes(content, lineBoxes)));
                                 }
 
                                 return (boxes, lineTop - top, (b, l));
@@ -430,7 +439,7 @@ internal sealed partial class Paginator
                             lineTop += line.Height;
                         }
 
-                        boxes.Add(new ParagraphBox(paragraph, new LayoutRect(x, at, width, lineTop - at), lineBoxes, firstLine > 0, false));
+                        boxes.Add(new ParagraphBox(paragraph, new LayoutRect(x, at, width, lineTop - at), lineBoxes, firstLine > 0, false, InlineObjectBoxes(content, lineBoxes)));
                         at = lineTop + format.SpaceAfter;
                         break;
                     }
@@ -466,7 +475,7 @@ internal sealed partial class Paginator
                                     lineTop += line.Height;
                                 }
 
-                                boxes.Add(new ParagraphBox(p, new LayoutRect(x, at, width, lineTop - at), lineBoxes, false, false));
+                                boxes.Add(new ParagraphBox(p, new LayoutRect(x, at, width, lineTop - at), lineBoxes, false, false, InlineObjectBoxes(content, lineBoxes)));
                                 at = lineTop + content.Format.SpaceAfter;
                             }
                         }

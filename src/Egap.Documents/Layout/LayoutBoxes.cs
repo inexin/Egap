@@ -93,8 +93,8 @@ public sealed class AreaBox : LayoutBox
 /// <summary>A paragraph, or the part of one on this page or column, holding its lines.</summary>
 public sealed class ParagraphBox : LayoutBox
 {
-    internal ParagraphBox(Paragraph paragraph, LayoutRect bounds, IReadOnlyList<LineBox> lines, bool continued, bool continues)
-        : base(paragraph, bounds, lines)
+    internal ParagraphBox(Paragraph paragraph, LayoutRect bounds, IReadOnlyList<LineBox> lines, bool continued, bool continues, IReadOnlyList<LayoutBox>? objects = null)
+        : base(paragraph, bounds, objects is { Count: > 0 } ? [.. lines, .. objects] : lines)
     {
         Lines = lines;
         IsContinuation = continued;
