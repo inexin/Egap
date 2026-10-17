@@ -24,6 +24,22 @@ public sealed class HtmlLoadOptions
     public IReadOnlyList<string> UserStyleSheets { get; init; } = [];
 }
 
+/// <summary>How the model is written as HTML (Phase 6 design Q16).</summary>
+public sealed class HtmlSaveOptions
+{
+    /// <summary>
+    /// Stores a picture and returns the URL the page uses for it (a file beside the page, say); null leaves it to
+    /// <see cref="EmbedImages"/>.
+    /// </summary>
+    public Func<Picture, string?>? ImageWriter { get; init; }
+
+    /// <summary>Whether pictures no writer stored are embedded as data URLs; on by default.</summary>
+    public bool EmbedImages { get; init; } = true;
+
+    /// <summary>Whether the page size, margins and simple headers and footers are written as @page rules; on by default.</summary>
+    public bool WritePageSetup { get; init; } = true;
+}
+
 /// <summary>
 /// HTML read into the model (Phase 6 Build Plan tasks 24 and 25): parsed as browsers parse it, styled through Egami.Css's
 /// cascade with HTML's default style sheet, and the computed styles mapped onto paragraphs, runs, lists and tables. Flexbox
@@ -59,6 +75,36 @@ public static class HtmlFormat
         using MemoryStream bytes = new();
         stream.CopyTo(bytes);
         return Load(bytes.ToArray(), out _, options);
+    }
+
+    /// <summary>Writes the document as an HTML5 page with one style sheet, reporting what HTML could not hold.</summary>
+    public static string ToHtml(Document document, out IReadOnlyList<ConversionWarning> warnings, HtmlSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        return HtmlWriter.Write(document, options ?? new HtmlSaveOptions(), out warnings);
+    }
+
+    /// <summary>Writes the document as an HTML5 page.</summary>
+    public static string ToHtml(Document document, HtmlSaveOptions? options = null)
+    {
+        return ToHtml(document, out _, options);
+    }
+
+    /// <summary>Saves the document as an HTML file (UTF-8), returning what HTML could not hold.</summary>
+    public static IReadOnlyList<ConversionWarning> Save(Document document, string path, HtmlSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        File.WriteAllText(path, ToHtml(document, out IReadOnlyList<ConversionWarning> warnings, options), new System.Text.UTF8Encoding(false));
+        return warnings;
+    }
+
+    /// <summary>Writes the document as HTML (UTF-8) to a stream, returning what HTML could not hold.</summary>
+    public static IReadOnlyList<ConversionWarning> Save(Document document, Stream stream, HtmlSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        byte[] bytes = new System.Text.UTF8Encoding(false).GetBytes(ToHtml(document, out IReadOnlyList<ConversionWarning> warnings, options));
+        stream.Write(bytes);
+        return warnings;
     }
 
     /// <summary>Reads HTML bytes, reporting what could only be approximated or was left out.</summary>
