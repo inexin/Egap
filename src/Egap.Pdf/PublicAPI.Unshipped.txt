@@ -1,4 +1,56 @@
 #nullable enable
+Egap.Pdf.BookletBinding
+Egap.Pdf.BookletBinding.Left = 0 -> Egap.Pdf.BookletBinding
+Egap.Pdf.BookletBinding.Right = 1 -> Egap.Pdf.BookletBinding
+Egap.Pdf.BookletOptions
+Egap.Pdf.BookletOptions.<Clone>$() -> Egap.Pdf.BookletOptions!
+Egap.Pdf.BookletOptions.Binding.get -> Egap.Pdf.BookletBinding
+Egap.Pdf.BookletOptions.Binding.init -> void
+Egap.Pdf.BookletOptions.BookletOptions() -> void
+Egap.Pdf.BookletOptions.Equals(Egap.Pdf.BookletOptions? other) -> bool
+Egap.Pdf.BookletOptions.Margin.get -> double
+Egap.Pdf.BookletOptions.Margin.init -> void
+Egap.Pdf.BookletOptions.Sheet.get -> Egap.Pdf.PdfPageSize
+Egap.Pdf.BookletOptions.Sheet.init -> void
+Egap.Pdf.BookletOptions.SheetsPerSignature.get -> int
+Egap.Pdf.BookletOptions.SheetsPerSignature.init -> void
+Egap.Pdf.GridOptions
+Egap.Pdf.GridOptions.<Clone>$() -> Egap.Pdf.GridOptions!
+Egap.Pdf.GridOptions.Border.get -> bool
+Egap.Pdf.GridOptions.Border.init -> void
+Egap.Pdf.GridOptions.Columns.get -> int
+Egap.Pdf.GridOptions.Columns.init -> void
+Egap.Pdf.GridOptions.Equals(Egap.Pdf.GridOptions? other) -> bool
+Egap.Pdf.GridOptions.GridOptions() -> void
+Egap.Pdf.GridOptions.Gutter.get -> double
+Egap.Pdf.GridOptions.Gutter.init -> void
+Egap.Pdf.GridOptions.Margin.get -> double
+Egap.Pdf.GridOptions.Margin.init -> void
+Egap.Pdf.NUpOptions
+Egap.Pdf.NUpOptions.<Clone>$() -> Egap.Pdf.NUpOptions!
+Egap.Pdf.NUpOptions.AutoRotate.get -> bool
+Egap.Pdf.NUpOptions.AutoRotate.init -> void
+Egap.Pdf.NUpOptions.Border.get -> bool
+Egap.Pdf.NUpOptions.Border.init -> void
+Egap.Pdf.NUpOptions.Columns.get -> int
+Egap.Pdf.NUpOptions.Columns.init -> void
+Egap.Pdf.NUpOptions.Equals(Egap.Pdf.NUpOptions? other) -> bool
+Egap.Pdf.NUpOptions.Gutter.get -> double
+Egap.Pdf.NUpOptions.Gutter.init -> void
+Egap.Pdf.NUpOptions.Margin.get -> double
+Egap.Pdf.NUpOptions.Margin.init -> void
+Egap.Pdf.NUpOptions.NUpOptions() -> void
+Egap.Pdf.NUpOptions.Order.get -> Egap.Pdf.NUpOrder
+Egap.Pdf.NUpOptions.Order.init -> void
+Egap.Pdf.NUpOptions.Rows.get -> int
+Egap.Pdf.NUpOptions.Rows.init -> void
+Egap.Pdf.NUpOptions.Sheet.get -> Egap.Pdf.PdfPageSize
+Egap.Pdf.NUpOptions.Sheet.init -> void
+Egap.Pdf.NUpOrder
+Egap.Pdf.NUpOrder.DownThenLeftToRight = 2 -> Egap.Pdf.NUpOrder
+Egap.Pdf.NUpOrder.DownThenRightToLeft = 3 -> Egap.Pdf.NUpOrder
+Egap.Pdf.NUpOrder.LeftToRightThenDown = 0 -> Egap.Pdf.NUpOrder
+Egap.Pdf.NUpOrder.RightToLeftThenDown = 1 -> Egap.Pdf.NUpOrder
 Egap.Pdf.PdfCanvas.DrawForm(Egap.Pdf.PdfFormXObject! form, Egami.Drawing.RectF destination, Egami.Drawing.Paint? paint = null) -> void
 Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null) -> Egap.Pdf.PdfOptimizeReport!
 Egap.Pdf.PdfFormXObject
@@ -7,6 +59,7 @@ Egap.Pdf.PdfFormXObject.Reference.get -> Egap.Pdf.PdfReference!
 Egap.Pdf.PdfFormXObject.Stream.get -> Egap.Pdf.PdfStream!
 Egap.Pdf.PdfFormXObject.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
 Egap.Pdf.PdfFormXObject.Width.get -> double
+Egap.Pdf.PdfImpose
 Egap.Pdf.PdfOptimizedImage
 Egap.Pdf.PdfOptimizedImage.<Clone>$() -> Egap.Pdf.PdfOptimizedImage!
 Egap.Pdf.PdfOptimizedImage.Deconstruct(out int Page, out int OldWidth, out int OldHeight, out int NewWidth, out int NewHeight, out long OldBytes, out long NewBytes, out double? OldResolution, out double? NewResolution, out string! Encoding) -> void
@@ -86,6 +139,40 @@ Egap.Pdf.PdfOptimizeSavings.StreamsMerged.init -> void
 Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.get -> int
 Egap.Pdf.PdfOptimizeSavings.ThumbnailsRemoved.init -> void
 Egap.Pdf.PdfPage.ToFormXObject(Egap.Pdf.PdfDocument! target) -> Egap.Pdf.PdfFormXObject!
+Egap.Pdf.PdfPageSize
+Egap.Pdf.PdfPageSize.Deconstruct(out double Width, out double Height) -> void
+Egap.Pdf.PdfPageSize.Equals(Egap.Pdf.PdfPageSize other) -> bool
+Egap.Pdf.PdfPageSize.Height.get -> double
+Egap.Pdf.PdfPageSize.Height.init -> void
+Egap.Pdf.PdfPageSize.PdfPageSize() -> void
+Egap.Pdf.PdfPageSize.PdfPageSize(double Width, double Height) -> void
+Egap.Pdf.PdfPageSize.ToRectangle() -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfPageSize.Turned.get -> Egap.Pdf.PdfPageSize
+Egap.Pdf.PdfPageSize.Width.get -> double
+Egap.Pdf.PdfPageSize.Width.init -> void
+Egap.Pdf.PosterOptions
+Egap.Pdf.PosterOptions.<Clone>$() -> Egap.Pdf.PosterOptions!
+Egap.Pdf.PosterOptions.CutMarks.get -> bool
+Egap.Pdf.PosterOptions.CutMarks.init -> void
+Egap.Pdf.PosterOptions.Equals(Egap.Pdf.PosterOptions? other) -> bool
+Egap.Pdf.PosterOptions.Labels.get -> bool
+Egap.Pdf.PosterOptions.Labels.init -> void
+Egap.Pdf.PosterOptions.Overlap.get -> double
+Egap.Pdf.PosterOptions.Overlap.init -> void
+Egap.Pdf.PosterOptions.PosterOptions() -> void
+Egap.Pdf.PosterOptions.Scale.get -> double
+Egap.Pdf.PosterOptions.Scale.init -> void
+Egap.Pdf.PosterOptions.Tile.get -> Egap.Pdf.PdfPageSize
+Egap.Pdf.PosterOptions.Tile.init -> void
+override Egap.Pdf.BookletOptions.Equals(object? obj) -> bool
+override Egap.Pdf.BookletOptions.GetHashCode() -> int
+override Egap.Pdf.BookletOptions.ToString() -> string!
+override Egap.Pdf.GridOptions.Equals(object? obj) -> bool
+override Egap.Pdf.GridOptions.GetHashCode() -> int
+override Egap.Pdf.GridOptions.ToString() -> string!
+override Egap.Pdf.NUpOptions.Equals(object? obj) -> bool
+override Egap.Pdf.NUpOptions.GetHashCode() -> int
+override Egap.Pdf.NUpOptions.ToString() -> string!
 override Egap.Pdf.PdfOptimizedImage.Equals(object? obj) -> bool
 override Egap.Pdf.PdfOptimizedImage.GetHashCode() -> int
 override Egap.Pdf.PdfOptimizedImage.ToString() -> string!
@@ -96,6 +183,21 @@ override Egap.Pdf.PdfOptimizeReport.ToString() -> string!
 override Egap.Pdf.PdfOptimizeSavings.Equals(object? obj) -> bool
 override Egap.Pdf.PdfOptimizeSavings.GetHashCode() -> int
 override Egap.Pdf.PdfOptimizeSavings.ToString() -> string!
+override Egap.Pdf.PdfPageSize.GetHashCode() -> int
+override Egap.Pdf.PosterOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PosterOptions.GetHashCode() -> int
+override Egap.Pdf.PosterOptions.ToString() -> string!
+static Egap.Pdf.BookletOptions.operator !=(Egap.Pdf.BookletOptions? left, Egap.Pdf.BookletOptions? right) -> bool
+static Egap.Pdf.BookletOptions.operator ==(Egap.Pdf.BookletOptions? left, Egap.Pdf.BookletOptions? right) -> bool
+static Egap.Pdf.GridOptions.operator !=(Egap.Pdf.GridOptions? left, Egap.Pdf.GridOptions? right) -> bool
+static Egap.Pdf.GridOptions.operator ==(Egap.Pdf.GridOptions? left, Egap.Pdf.GridOptions? right) -> bool
+static Egap.Pdf.NUpOptions.operator !=(Egap.Pdf.NUpOptions? left, Egap.Pdf.NUpOptions? right) -> bool
+static Egap.Pdf.NUpOptions.operator ==(Egap.Pdf.NUpOptions? left, Egap.Pdf.NUpOptions? right) -> bool
+static Egap.Pdf.PdfImpose.Booklet(Egap.Pdf.PdfDocument! source, Egap.Pdf.BookletOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfImpose.FitToSize(Egap.Pdf.PdfDocument! source, Egap.Pdf.PdfPageSize size) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfImpose.Grid(Egap.Pdf.PdfDocument! source, Egap.Pdf.GridOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfImpose.NUp(Egap.Pdf.PdfDocument! source, Egap.Pdf.NUpOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfImpose.Poster(Egap.Pdf.PdfDocument! source, Egap.Pdf.PosterOptions? options = null) -> Egap.Pdf.PdfDocument!
 static Egap.Pdf.PdfOptimizedImage.operator !=(Egap.Pdf.PdfOptimizedImage? left, Egap.Pdf.PdfOptimizedImage? right) -> bool
 static Egap.Pdf.PdfOptimizedImage.operator ==(Egap.Pdf.PdfOptimizedImage? left, Egap.Pdf.PdfOptimizedImage? right) -> bool
 static Egap.Pdf.PdfOptimizeOptions.Ebook.get -> Egap.Pdf.PdfOptimizeOptions!
@@ -106,3 +208,15 @@ static Egap.Pdf.PdfOptimizeOptions.Print.get -> Egap.Pdf.PdfOptimizeOptions!
 static Egap.Pdf.PdfOptimizeOptions.Screen.get -> Egap.Pdf.PdfOptimizeOptions!
 static Egap.Pdf.PdfOptimizeSavings.operator !=(Egap.Pdf.PdfOptimizeSavings? left, Egap.Pdf.PdfOptimizeSavings? right) -> bool
 static Egap.Pdf.PdfOptimizeSavings.operator ==(Egap.Pdf.PdfOptimizeSavings? left, Egap.Pdf.PdfOptimizeSavings? right) -> bool
+static Egap.Pdf.PdfPageSize.A3.get -> Egap.Pdf.PdfPageSize
+static Egap.Pdf.PdfPageSize.A4.get -> Egap.Pdf.PdfPageSize
+static Egap.Pdf.PdfPageSize.A5.get -> Egap.Pdf.PdfPageSize
+static Egap.Pdf.PdfPageSize.Legal.get -> Egap.Pdf.PdfPageSize
+static Egap.Pdf.PdfPageSize.Letter.get -> Egap.Pdf.PdfPageSize
+static Egap.Pdf.PdfPageSize.operator !=(Egap.Pdf.PdfPageSize left, Egap.Pdf.PdfPageSize right) -> bool
+static Egap.Pdf.PdfPageSize.operator ==(Egap.Pdf.PdfPageSize left, Egap.Pdf.PdfPageSize right) -> bool
+static Egap.Pdf.PdfPageSize.Tabloid.get -> Egap.Pdf.PdfPageSize
+static Egap.Pdf.PosterOptions.operator !=(Egap.Pdf.PosterOptions? left, Egap.Pdf.PosterOptions? right) -> bool
+static Egap.Pdf.PosterOptions.operator ==(Egap.Pdf.PosterOptions? left, Egap.Pdf.PosterOptions? right) -> bool
+~override Egap.Pdf.PdfPageSize.Equals(object obj) -> bool
+~override Egap.Pdf.PdfPageSize.ToString() -> string
