@@ -45,6 +45,13 @@ internal sealed partial class ModelBuilder
 
         writer = new RunWriter(document, g => notes.GetValueOrDefault(g), WriteNote);
         lists = new ListBuilder(document);
+        writer.OnLink = (link, annotation) =>
+        {
+            if (annotation.Uri is null && annotation.TargetPage is int target)
+            {
+                internalLinks.Add((link, target, annotation.TargetTop));
+            }
+        };
     }
 
     public static Document Build(PdfDocument pdf, List<PageDraft> pages, List<Roles.NoteLink> links, PdfToDocumentOptions options, CancellationToken cancellationToken)
@@ -67,6 +74,7 @@ internal sealed partial class ModelBuilder
         if (options.Mode == ReconstructionMode.Exact)
         {
             BuildExact(cancellationToken);
+            Annotations();
             return Finish();
         }
 
@@ -107,6 +115,9 @@ internal sealed partial class ModelBuilder
                     case FigureDraft figure:
                         WriteFigure(section.Body, figure, placed);
                         break;
+                    case ScannedPage scan:
+                        WriteScan(section.Body, scan, placed);
+                        break;
                 }
             }
 
@@ -121,6 +132,7 @@ internal sealed partial class ModelBuilder
             previous = section;
         }
 
+        Annotations();
         return Finish();
     }
 
@@ -145,6 +157,11 @@ internal sealed partial class ModelBuilder
     /// <summary>A page's body in order: blocks, tables and figures by reading order, then the notes no marker in the text points to.</summary>
     private IReadOnlyList<object> Items(PageDraft page)
     {
+        if (Scan(page) is PageImage scan)
+        {
+            return [new ScannedPage(scan)];
+        }
+
         List<object> body = [.. page.Blocks.Where(b => !Furniture(b) && b.Role != LayoutRole.Footnote).Cast<object>().Concat(page.Tables).Concat(page.Figures)
             .OrderBy(Order)];
         body.AddRange(page.Blocks.Where(b => b.Role == LayoutRole.Footnote && !linked.Contains(b)).OrderBy(b => b.Box.Top));
@@ -250,6 +267,7 @@ internal sealed partial class ModelBuilder
         writer.Write(paragraph, block.Lines, entry.Font, skip, block.Role == LayoutRole.Code);
         body.Blocks.Add(paragraph);
         TakeFloats(paragraph);
+        written.Add((pageOf.TryGetValue(block, out PageDraft? page) ? page.Content.Index : 0, block.Box, paragraph));
         last = paragraph;
         lastTable = null;
     }

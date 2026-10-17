@@ -22,6 +22,8 @@ internal sealed class PageReader : PdfContentWalker
     private readonly List<PageShading> shadings = [];
     private readonly Stack<List<PageGlyph>?> spans = new();
     private readonly Stack<string> actualTexts = new();
+    private Dictionary<object, int>? operations;
+    private int operation = -1;
     private int unmapped;
 
     private PageReader(PdfMatrix toDisplayed, PageBox bounds)
@@ -31,11 +33,12 @@ internal sealed class PageReader : PdfContentWalker
     }
 
     /// <summary>Reads page <paramref name="index"/> of <paramref name="document"/>; <paramref name="outline"/> from <see cref="ReadOutline"/>.</summary>
-    public static PageContent Read(PdfDocument document, int index, IReadOnlyList<OutlineEntry>? outline = null)
+    public static PageContent Read(PdfDocument document, int index, IReadOnlyList<OutlineEntry>? outline = null, bool operations = false)
     {
         PdfPage page = document.Pages[index];
         (PdfMatrix toDisplayed, double width, double height, int turns) = Displayed(page);
         PageReader reader = new(toDisplayed, new PageBox(0, 0, width, height));
+        reader.operations = operations ? new(ReferenceEqualityComparer.Instance) : null;
         reader.Walk(page);
         List<PdfWarning> warnings = [.. reader.Warnings];
         if (reader.unmapped > 0)
@@ -59,7 +62,17 @@ internal sealed class PageReader : PdfContentWalker
             Annotations = Annotations(document, page, toDisplayed),
             Outline = [.. (outline ?? []).Where(e => e.Page == index)],
             Warnings = warnings,
+            Operations = reader.operations ?? (IReadOnlyDictionary<object, int>)new Dictionary<object, int>(),
         };
+    }
+
+    protected override void OnOperation(PdfOperation operation)
+    {
+        // The page's own operations are counted; those of the forms and patterns it draws belong to the operation drawing them.
+        if (Depth == 0)
+        {
+            this.operation++;
+        }
     }
 
     /// <summary>
@@ -131,7 +144,9 @@ internal sealed class PageReader : PdfContentWalker
         double space = font is not null && !font.IsComposite && font.GetWidth(32) is > 0 and var w ? w : 250;
         (int mcid, string? artifact) = Marked();
         PageGlyph item = new(text, box, origin, end, dx, dy, font, size, State.FillColor, State.TextRenderMode, mcid, artifact, space / 1000 * size);
-        if (spans.Count > 0 && spans.Peek() is List<PageGlyph> span)
+        operations?.Add(item, operation);
+        // A glyph inside an /ActualText span belongs to it, however deep other marked content nests within the span.
+        if (spans.Count > 0 && spans.FirstOrDefault(s => s is not null) is List<PageGlyph> span)
         {
             span.Add(item);
         }
@@ -175,7 +190,9 @@ internal sealed class PageReader : PdfContentWalker
         PageBox box = PageBox.Around(span.Select(g => g.Box));
         if (Visible(box))
         {
-            glyphs.Add(span[0] with { Text = text, Box = box, End = span[^1].End });
+            PageGlyph whole = span[0] with { Text = text, Box = box, End = span[^1].End };
+            operations?.TryAdd(whole, operations.GetValueOrDefault(span[0], operation));
+            glyphs.Add(whole);
         }
     }
 
@@ -212,7 +229,9 @@ internal sealed class PageReader : PdfContentWalker
 
         double scale = Math.Sqrt(Math.Abs((m.A * m.D) - (m.B * m.C)));
         (int mcid, string? artifact) = Marked();
-        paths.Add(new(segments, box, stroked, filled, State.LineWidth * scale, State.StrokeColor, State.FillColor, mcid, artifact));
+        PagePath item = new(segments, box, stroked, filled, State.LineWidth * scale, State.StrokeColor, State.FillColor, mcid, artifact);
+        operations?.Add(item, operation);
+        paths.Add(item);
     }
 
     protected override void OnImage(PdfStream? image, PdfInlineImage? inlineImage, PdfName? name)
@@ -222,7 +241,9 @@ internal sealed class PageReader : PdfContentWalker
         // Image space has (0, 0) at the stored image's bottom left and (0, 1) at its top left.
         PdfPoint[] corners = [m.Transform(new PdfPoint(0, 1)), m.Transform(new PdfPoint(1, 1)), m.Transform(new PdfPoint(1, 0)), m.Transform(new PdfPoint(0, 0))];
         (int mcid, string? artifact) = Marked();
-        images.Add(new(corners, PageBox.Around(corners), image, inlineImage, name?.Value, m, mcid, artifact));
+        PageImage item = new(corners, PageBox.Around(corners), image, inlineImage, name?.Value, m, mcid, artifact);
+        operations?.Add(item, operation);
+        images.Add(item);
     }
 
     protected override void OnShading(PdfObject? shading, PdfName name)

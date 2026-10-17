@@ -28,6 +28,9 @@ public sealed record PdfLayoutOptions
 
     /// <summary>The thresholds of the geometric stages.</summary>
     public LayoutThresholds Thresholds { get; init; } = LayoutThresholds.Default;
+
+    /// <summary>Whether the page reader notes which content operation draws each glyph, path and image (for auto-tagging).</summary>
+    internal bool TrackOperations { get; init; }
 }
 
 /// <summary>Which tables layout analysis looks for (design Q5).</summary>
