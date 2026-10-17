@@ -20,13 +20,17 @@ internal static class FigureFinder
 
     /// <summary>
     /// The figures of a page whose tables are already found (<paramref name="tables"/>): their images and paths, and the
-    /// glyphs inside them; <paramref name="glyphs"/> are the content glyphs not yet placed.
+    /// glyphs inside them; <paramref name="glyphs"/> are the content glyphs not yet placed, and <paramref name="found"/> the
+    /// figures earlier stages found.
     /// </summary>
-    public static List<FigureDraft> Find(PageContent content, IReadOnlyList<PageGlyph> glyphs, IReadOnlyList<TableDraft> tables)
+    public static List<FigureDraft> Find(PageContent content, IReadOnlyList<PageGlyph> glyphs, IReadOnlyList<TableDraft> tables, IReadOnlyList<FigureDraft>? found = null)
     {
+        // Images and drawings an earlier stage placed (tags, a region detector) are not looked at again.
+        HashSet<PageImage> usedImages = new((found ?? []).SelectMany(f => f.Images), ReferenceEqualityComparer.Instance);
+        HashSet<PagePath> usedPaths = new((found ?? []).SelectMany(f => f.Paths), ReferenceEqualityComparer.Instance);
         List<PageLine> lines = PageReader.Lines(glyphs);
         List<(PageBox Box, PageImage? Image, PagePath? Path)> parts = [];
-        foreach (PageImage image in content.Images)
+        foreach (PageImage image in content.Images.Where(i => !usedImages.Contains(i)))
         {
             if (image.Bounds.Width >= 4 && image.Bounds.Height >= 4 && !Background(image.Bounds, content, lines))
             {
@@ -35,10 +39,10 @@ internal static class FigureFinder
         }
 
         List<PageBox> rules = BlockBuilder.Rules(content.Paths);
-        foreach (PagePath path in content.Paths)
+        foreach (PagePath path in content.Paths.Where(p => !usedPaths.Contains(p)))
         {
             // Paths in tables are the tables'; backgrounds and page frames of half the page or more join nothing.
-            if (tables.Any(t => t.Box.Contains(path.Bounds.CenterX, path.Bounds.CenterY, 2)) || Background(path.Bounds, content, lines)
+            if (tables.Any(t => !Grow(t.Box, 6).Intersect(path.Bounds).IsEmpty && Grow(t.Box, 6).Contains(path.Bounds.CenterX, path.Bounds.CenterY)) || Background(path.Bounds, content, lines)
                 || path.Bounds.Area >= content.Bounds.Area * 0.5)
             {
                 continue;
@@ -69,9 +73,9 @@ internal static class FigureFinder
             PageBox box = PageBox.Around(members.Select(m => m.Box));
             bool hasImage = members.Any(m => m.Image is not null);
 
-            // Rules on their own (underlines, separators, borders) are left to text and tables; a lone shaded box is a
+            // Rules on their own (underlines, separators, borders, the grid of a table) are left to text and tables; a lone shaded box is a
             // background; anything else drawn needs some size.
-            bool rulesOnly = members.All(m => m.Path is PagePath p && Furniture(p, lines, content));
+            bool rulesOnly = members.All(m => m.Path is PagePath p && (Furniture(p, lines, content) || Thin(p.Bounds)));
             bool shadedBox = members.Count == 1 && members[0].Path is { Filled: true } lone && !lone.Segments.Any(x => x.Verb == PdfPathVerb.CurveTo);
             if (!hasImage && (rulesOnly || shadedBox || box.Width < Least || box.Height < Least))
             {
@@ -88,10 +92,11 @@ internal static class FigureFinder
         // Lines inside a figure are its labels, and so are short ones, or runs of short words, just outside it (axis labels, a
         // legend); the figure's box
         // grows to take them in.
+        HashSet<PageLine> taken = new(ReferenceEqualityComparer.Instance);
         foreach (FigureDraft figure in figures)
         {
             PageBox inner = Grow(figure.Box, 2);
-            foreach (PageLine line in lines)
+            foreach (PageLine line in lines.Where(l => !taken.Contains(l)))
             {
                 bool inside = inner.Contains(line.Box.CenterX, line.Box.CenterY) && line.Box.Width <= figure.Box.Width * 0.9 + 1;
                 bool labels = line.Words.Count <= 4 || line.Words.Average(w => w.Text.Length) <= 6;
@@ -100,6 +105,7 @@ internal static class FigureFinder
                 if (inside || beside)
                 {
                     figure.Lines.Add(line);
+                    taken.Add(line);
                 }
             }
 
@@ -181,6 +187,12 @@ internal static class FigureFinder
 
         int inside = lines.Count(l => box.Contains(l.Box.CenterX, l.Box.CenterY));
         return inside >= 3 && lines.Where(l => box.Contains(l.Box.CenterX, l.Box.CenterY)).Average(l => l.Box.Width) > box.Width * 0.5;
+    }
+
+    /// <summary>Whether a box is a thin horizontal or vertical line: a rule of a table, a frame or a separator.</summary>
+    private static bool Thin(PageBox box)
+    {
+        return (box.Height < 2.5 && box.Width > box.Height) || (box.Width < 2.5 && box.Height > box.Width);
     }
 
     private static PageBox Grow(PageBox box, double by)

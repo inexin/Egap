@@ -15,8 +15,12 @@ internal static class BorderlessTables
     /// <summary>A line piece with its row (line index) in the region.</summary>
     private sealed record Piece(PageLine Line, int Row);
 
-    /// <summary>Tables found among <paramref name="glyphs"/>, bounded by <paramref name="hints"/> and <paramref name="areas"/> where given.</summary>
-    public static List<TableDraft> Find(IReadOnlyList<PageGlyph> glyphs, IReadOnlyList<TableHint> hints, IReadOnlyList<PageBox> areas, LayoutThresholds thresholds)
+    /// <summary>
+    /// Tables found among <paramref name="glyphs"/>, bounded by <paramref name="hints"/> and <paramref name="areas"/> where
+    /// given; with <paramref name="search"/> off, only the areas and hints are tables.
+    /// </summary>
+    public static List<TableDraft> Find(IReadOnlyList<PageGlyph> glyphs, IReadOnlyList<TableHint> hints, IReadOnlyList<PageBox> areas, LayoutThresholds thresholds,
+        bool search = true)
     {
         List<TableDraft> tables = [];
         HashSet<PageGlyph> used = new(ReferenceEqualityComparer.Instance);
@@ -49,7 +53,7 @@ internal static class BorderlessTables
             }
         }
 
-        foreach (List<PageLine> run in Runs([.. glyphs.Where(g => !used.Contains(g))], wordGap, thresholds))
+        foreach (List<PageLine> run in search ? Runs([.. glyphs.Where(g => !used.Contains(g))], wordGap, thresholds) : [])
         {
             if (Build([.. run.SelectMany(l => l.Words).SelectMany(w => w.Glyphs)], wordGap, thresholds, minimumRows: 3) is TableDraft table && Scores(table))
             {
@@ -155,7 +159,8 @@ internal static class BorderlessTables
                 int first = columns.FindIndex(c => c.Right >= piece.Box.Left - 1), last = columns.FindLastIndex(c => c.Left <= piece.Box.Right + 1);
                 if (first < 0 || last < first)
                 {
-                    continue;
+                    // A piece between columns goes to the nearest one, so no text is lost.
+                    first = last = columns.Select((c, i) => (Distance: Math.Min(Math.Abs(c.Left - piece.Box.CenterX), Math.Abs(c.Right - piece.Box.CenterX)), i)).MinBy(c => c.Distance).i;
                 }
 
                 if (cells.Count > 0 && cells[^1].Last >= first)

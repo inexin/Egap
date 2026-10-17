@@ -25,7 +25,7 @@ internal static class RuledTables
     public static (List<TableDraft> Tables, List<TableHint> Hints) Find(IReadOnlyList<PagePath> paths, IReadOnlyList<PageGlyph> glyphs, IReadOnlyList<PageImage>? images = null)
     {
         List<Rule> rules = Merge(Rules(paths));
-        List<TableDraft> tables = [.. Candidates(rules, glyphs).Where(t => Rejection(t, paths, glyphs, images) is null)];
+        List<TableDraft> tables = Nested([.. Candidates(rules, glyphs).Where(t => Rejection(t, paths, glyphs, images) is null)]);
         List<TableHint> hints = [];
 
         // Horizontal rules no grid used, stacked over the same span with text between them: a partly ruled table's rules.
@@ -51,6 +51,42 @@ internal static class RuledTables
         }
 
         return (tables, hints);
+    }
+
+    /// <summary>
+    /// Grids inside grids (a table in a frame, a small table in a big one's cell): each glyph belongs to the smallest grid
+    /// around it, and a bigger grid left with fewer than two cells of text is dropped.
+    /// </summary>
+    private static List<TableDraft> Nested(List<TableDraft> tables)
+    {
+        HashSet<PageGlyph> claimed = new(ReferenceEqualityComparer.Instance);
+        List<TableDraft> kept = [];
+        foreach (TableDraft table in tables.OrderBy(t => t.Box.Area))
+        {
+            if (claimed.Count > 0 && table.Cells.SelectMany(c => c.Lines).SelectMany(l => l.Words).SelectMany(w => w.Glyphs).Any(claimed.Contains))
+            {
+                for (int i = 0; i < table.Cells.Count; i++)
+                {
+                    CellDraft cell = table.Cells[i];
+                    List<PageGlyph> own = [.. cell.Lines.SelectMany(l => l.Words).SelectMany(w => w.Glyphs).Where(g => !claimed.Contains(g))];
+                    table.Cells[i] = new CellDraft(cell.Row, cell.Column, cell.RowSpan, cell.ColumnSpan, cell.Header, PageReader.Lines(own)) { Box = cell.Box };
+                }
+
+                if (table.Cells.Count(c => c.Lines.Count > 0) < 2)
+                {
+                    continue;
+                }
+            }
+
+            foreach (PageGlyph glyph in table.Cells.SelectMany(c => c.Lines).SelectMany(l => l.Words).SelectMany(w => w.Glyphs))
+            {
+                claimed.Add(glyph);
+            }
+
+            kept.Add(table);
+        }
+
+        return [.. kept.OrderBy(t => t.Box.Top)];
     }
 
     /// <summary>Every grid the rules draw, before the checks that tell tables from charts and frames.</summary>
@@ -303,13 +339,15 @@ internal static class RuledTables
         // The first row is a header when its text is bold and the rest of the table's is not.
         bool header = rows > 1 && inside.Where(g => !g.IsSpace && g.Box.CenterY < ys[1]).ToList() is { Count: > 0 } first && first.All(FontTraits.IsBold)
             && inside.Any(g => !g.IsSpace && g.Box.CenterY > ys[1] && !FontTraits.IsBold(g));
+        // Each glyph goes to the merged cell of the grid square its centre is in, so no glyph lands in two cells even where a
+        // missing rule leaves a cell that is not a rectangle.
+        ILookup<int, PageGlyph> byCell = inside.ToLookup(g => Find(parent, (Index(ys, g.Box.CenterY) * columns) + Index(xs, g.Box.CenterX)));
         List<CellDraft> cells = [];
         foreach (IGrouping<int, int> merged in Enumerable.Range(0, rows * columns).GroupBy(i => Find(parent, i)))
         {
             int top = merged.Min(i => i / columns), bottom = merged.Max(i => i / columns), left = merged.Min(i => i % columns), right = merged.Max(i => i % columns);
             PageBox area = new(xs[left], ys[top], xs[right + 1], ys[bottom + 1]);
-            List<PageGlyph> own = [.. inside.Where(g => area.Contains(g.Box.CenterX, g.Box.CenterY))];
-            cells.Add(new CellDraft(top, left, bottom - top + 1, right - left + 1, header && top == 0, PageReader.Lines(own)) { Box = area });
+            cells.Add(new CellDraft(top, left, bottom - top + 1, right - left + 1, header && top == 0, PageReader.Lines(byCell[merged.Key])) { Box = area });
         }
 
         // A grid whose squares all merged is a framed box; a grid with no text is a drawing.
@@ -379,6 +417,14 @@ internal static class RuledTables
 
         // A picture inside makes the grid a figure's frame or panels.
         return images?.Any(i => i.Bounds.Overlap(box) > box.Area * 0.1) == true ? "picture" : null;
+    }
+
+    /// <summary>The grid row or column a coordinate falls in, given the sorted rule positions (clamped to the grid).</summary>
+    private static int Index(List<double> edges, double at)
+    {
+        int i = edges.BinarySearch(at);
+        i = i < 0 ? ~i - 1 : i;
+        return Math.Clamp(i, 0, edges.Count - 2);
     }
 
     /// <summary>Whether rules at <paramref name="at"/> cover most of the span from <paramref name="from"/> to <paramref name="to"/>.</summary>
