@@ -43,7 +43,7 @@ public sealed partial class Document
 
     /// <summary>
     /// Saves the document in the format its file extension names: .docx, .dotx, .docm and .dotm as Word's, .html and .htm
-    /// as HTML, .md and .markdown as Markdown. PDF is <c>SaveAsPdf</c> in Egap.Pdf.Layout.
+    /// as HTML, .md and .markdown as Markdown, .txt as plain text. PDF is <c>SaveAsPdf</c> in Egap.Pdf.Layout.
     /// </summary>
     /// <returns>What the format could not hold.</returns>
     /// <exception cref="ArgumentException">The extension names no format Egap.Documents writes.</exception>
@@ -55,6 +55,7 @@ public sealed partial class Document
             ".DOCX" or ".DOTX" or ".DOCM" or ".DOTM" => DocxFormat.Save(this, path),
             ".HTML" or ".HTM" or ".XHTML" => HtmlFormat.Save(this, path),
             ".MD" or ".MARKDOWN" or ".MDOWN" or ".MKD" => MarkdownFormat.Save(this, path),
+            ".TXT" or ".TEXT" => TextFormat.Save(this, path),
             ".PDF" => throw new ArgumentException("PDF is written by SaveAsPdf in Egap.Pdf.Layout.", nameof(path)),
             string other => throw new ArgumentException($"No format writes the extension \"{other}\".", nameof(path)),
         };

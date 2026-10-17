@@ -33,8 +33,20 @@ Egap.Documents.MarkdownSaveOptions.MinImageSize.get -> double
 Egap.Documents.MarkdownSaveOptions.MinImageSize.init -> void
 Egap.Documents.MarkdownSaveOptions.VectorFiguresAsSvg.get -> bool
 Egap.Documents.MarkdownSaveOptions.VectorFiguresAsSvg.init -> void
+Egap.Documents.TextFormat
+Egap.Documents.TextSaveOptions
+Egap.Documents.TextSaveOptions.IncludeHeadersAndFooters.get -> bool
+Egap.Documents.TextSaveOptions.IncludeHeadersAndFooters.init -> void
+Egap.Documents.TextSaveOptions.IncludeNotes.get -> bool
+Egap.Documents.TextSaveOptions.IncludeNotes.init -> void
+Egap.Documents.TextSaveOptions.NewLine.get -> string!
+Egap.Documents.TextSaveOptions.NewLine.init -> void
+Egap.Documents.TextSaveOptions.TextSaveOptions() -> void
 override Egap.Documents.MarkdownImage.Equals(object? obj) -> bool
 override Egap.Documents.MarkdownImage.GetHashCode() -> int
 override Egap.Documents.MarkdownImage.ToString() -> string!
 static Egap.Documents.MarkdownImage.operator !=(Egap.Documents.MarkdownImage? left, Egap.Documents.MarkdownImage? right) -> bool
 static Egap.Documents.MarkdownImage.operator ==(Egap.Documents.MarkdownImage? left, Egap.Documents.MarkdownImage? right) -> bool
+static Egap.Documents.TextFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.TextSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.TextFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.TextSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.TextFormat.ToText(Egap.Documents.Document! document, Egap.Documents.TextSaveOptions? options = null) -> string!
