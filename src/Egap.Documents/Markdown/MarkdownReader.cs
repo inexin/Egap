@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 
 namespace Egap.Documents.Markdown;
 
@@ -36,6 +37,10 @@ internal sealed class MarkdownReader
     private readonly MarkdownLoadOptions options;
     private int notesInProgress;
 
+    private Run? openRun;
+
+    private readonly StringBuilder openText = new();
+
     /// <summary>How many hyperlinks the inlines being added sit in: a link (an autolink, say) inside a link keeps only its text.</summary>
     private int linksInProgress;
     private int nextFrameId = 1;
@@ -57,6 +62,7 @@ internal sealed class MarkdownReader
 
         Section section = document.AddSection();
         reader.AddBlocks(syntax, new Context(section.Body, 0, null, 0, null, []));
+        reader.FlushRun();
         return document;
     }
 
@@ -344,7 +350,9 @@ internal sealed class MarkdownReader
 
     private void AddInlines(Paragraph paragraph, MdNode parent, RunFormat? format = null)
     {
+        FlushRun();
         AddInlines(paragraph.Inlines, parent, format ?? new RunFormat(), null);
+        FlushRun();
     }
 
     private void AddInlines(NodeCollection<Inline> target, MdNode parent, RunFormat format, CharacterStyle? style)
@@ -354,7 +362,7 @@ internal sealed class MarkdownReader
             switch (node)
             {
                 case MdText text:
-                    AppendRun(target, text.Literal, format, style);
+                    AppendRun(target, text.Span, format, style);
                     break;
                 case MdSoftBreak:
                     AppendRun(target, " ", format, style);
@@ -440,17 +448,45 @@ internal sealed class MarkdownReader
     }
 
     /// <summary>Adds text as a run, joining it to the last run when that one has the same formatting and style.</summary>
-    private void AppendRun(NodeCollection<Inline> target, string text, RunFormat format, CharacterStyle? style)
+    /// <summary>
+    /// Adds text to the last run when it has the same style and formatting, else to a new run. The last run's text is
+    /// gathered in <see cref="openText"/> and set once (<see cref="FlushRun"/>), not joined piece by piece.
+    /// </summary>
+    private void AppendRun(NodeCollection<Inline> target, ReadOnlySpan<char> text, RunFormat format, CharacterStyle? style)
     {
         if (target.Count > 0 && target[^1] is Run last && last.Style == style && SameFormat(last.Format, format))
         {
-            last.Text += text;
+            if (last != openRun)
+            {
+                FlushRun();
+                openRun = last;
+                openText.Clear().Append(last.Text);
+            }
+
+            openText.Append(text);
             return;
         }
 
-        Run run = new(document, text) { Style = style };
+        FlushRun();
+        Run run = new(document, text.ToString()) { Style = style };
         run.Format.Apply(format);
         target.Add(run);
+        openRun = run;
+        openText.Clear().Append(text);
+    }
+
+    /// <summary>Sets the text gathered for the last run.</summary>
+    private void FlushRun()
+    {
+        if (openRun is not null)
+        {
+            if (openText.Length != openRun.Text.Length)
+            {
+                openRun.Text = openText.ToString();
+            }
+
+            openRun = null;
+        }
     }
 
     private static bool SameFormat(RunFormat a, RunFormat b)

@@ -15,7 +15,10 @@ internal sealed partial class BlockParser
 
     private readonly MdDocument document = new();
     private readonly MarkdownExtensions extensions;
-    private string line = "";
+    // The line being read is source[lineStart..lineEnd], read in place; offsets below count from lineStart.
+    private string source = "";
+    private int lineStart;
+    private int lineEnd;
     private int lineNumber;
     private int offset;
     private int column;
@@ -63,7 +66,8 @@ internal sealed partial class BlockParser
                 break;
             }
 
-            parser.IncorporateLine(text[start..end]);
+            parser.source = text;
+            parser.IncorporateLine(start, end);
             start = end + (end + 1 < text.Length && text[end] == '\r' && text[end + 1] == '\n' ? 2 : 1);
         }
 
@@ -95,7 +99,102 @@ internal sealed partial class BlockParser
         return text[match.Length..];
     }
 
-    private void IncorporateLine(string ln)
+    private int LineLength => lineEnd - lineStart;
+
+    /// <summary>The line from its next non-space character on, read in place.</summary>
+    private ReadOnlySpan<char> Rest => source.AsSpan(lineStart + nextNonspace, LineLength - nextNonspace);
+
+    /// <summary>The length of a code fence opening <paramref name="text"/>, or 0 (a backtick fence has no backtick after it).</summary>
+    private static int OpeningFence(ReadOnlySpan<char> text)
+    {
+        if (text.IsEmpty || text[0] is not ('`' or '~'))
+        {
+            return 0;
+        }
+
+        char fence = text[0];
+        int length = 1;
+        while (length < text.Length && text[length] == fence)
+        {
+            length++;
+        }
+
+        return length < 3 || (fence == '`' && text[length..].Contains('`')) ? 0 : length;
+    }
+
+    /// <summary>Whether <paramref name="text"/> closes <paramref name="fence"/>: as many fence characters or more, then only spaces.</summary>
+    private static bool ClosesFence(ReadOnlySpan<char> text, MdCodeBlock fence)
+    {
+        int length = 0;
+        while (length < text.Length && text[length] == fence.FenceChar)
+        {
+            length++;
+        }
+
+        return length >= 3 && length >= fence.FenceLength && text[length..].IndexOfAnyExcept(' ', '\t') < 0;
+    }
+
+    /// <summary>A setext underline's heading level (1 for =, 2 for -), or 0.</summary>
+    private static int SetextLevel(ReadOnlySpan<char> text)
+    {
+        if (text.IsEmpty || text[0] is not ('=' or '-'))
+        {
+            return 0;
+        }
+
+        int length = 1;
+        while (length < text.Length && text[length] == text[0])
+        {
+            length++;
+        }
+
+        return text[length..].IndexOfAnyExcept(' ', '\t') >= 0 ? 0 : text[0] == '=' ? 1 : 2;
+    }
+
+    /// <summary>HTML block start condition 6: a block-level tag name, opening or closing.</summary>
+    private static bool StartsBlockTag(ReadOnlySpan<char> text)
+    {
+        int i = 1;
+        if (i < text.Length && text[i] == '/')
+        {
+            i++;
+        }
+
+        int nameStart = i;
+        if (i >= text.Length || !char.IsAsciiLetter(text[i]))
+        {
+            return false;
+        }
+
+        while (i < text.Length && (char.IsAsciiLetterOrDigit(text[i]) || text[i] == '-'))
+        {
+            i++;
+        }
+
+        if (i < text.Length && !char.IsWhiteSpace(text[i]) && text[i] != '>' && !(text[i] == '/' && i + 1 < text.Length && text[i + 1] == '>'))
+        {
+            return false;
+        }
+
+        ReadOnlySpan<char> name = text[nameStart..i];
+        foreach (string tag in BlockTagNames)
+        {
+            if (name.Equals(tag, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>The line from <paramref name="at"/> on, as a string (for the rarer starts that match it whole).</summary>
+    private string LineFrom(int at)
+    {
+        return source.Substring(lineStart + at, lineEnd - lineStart - at);
+    }
+
+    private void IncorporateLine(int start, int end)
     {
         MdBlock container = document;
         oldTip = tip;
@@ -104,7 +203,8 @@ internal sealed partial class BlockParser
         blank = false;
         partiallyConsumedTab = false;
         lineNumber++;
-        line = ln;
+        lineStart = start;
+        lineEnd = end;
 
         // 1. Go through the open blocks; each one the line continues stays matched.
         while (container.LastChild is MdBlock { Open: true } last)
@@ -132,7 +232,7 @@ internal sealed partial class BlockParser
         while (!matchedLeaf)
         {
             FindNextNonspace();
-            if (!indented && !MaybeSpecial(line, nextNonspace))
+            if (!indented && !MaybeSpecial(Peek(nextNonspace)))
             {
                 AdvanceNextNonspace();
                 break;
@@ -182,12 +282,12 @@ internal sealed partial class BlockParser
         if (container.AcceptsLines)
         {
             AddLine();
-            if (container is MdHtmlBlock html && html.HtmlType is >= 1 and <= 5 && HtmlBlockEnds(html.HtmlType, line[offset..]))
+            if (container is MdHtmlBlock html && html.HtmlType is >= 1 and <= 5 && HtmlBlockEnds(html.HtmlType, LineFrom(offset)))
             {
                 Finalize(container);
             }
         }
-        else if (offset < line.Length && !blank)
+        else if (offset < LineLength && !blank)
         {
             AddChild(new MdParagraph());
             AdvanceNextNonspace();
@@ -195,16 +295,10 @@ internal sealed partial class BlockParser
         }
     }
 
-    /// <summary>Whether the line could start a block at <paramref name="at"/> without being indented.</summary>
-    private static bool MaybeSpecial(string text, int at)
+    /// <summary>Whether the line could start a block without being indented: whether its first non-space character <paramref name="c"/> can start one.</summary>
+    private static bool MaybeSpecial(char c)
     {
-        if (at >= text.Length)
-        {
-            return false;
-        }
-
-        char c = text[at];
-        return c is '#' or '`' or '~' or '*' or '+' or '_' or '=' or '<' or '>' or '-' or '|' or ':' or '[' || char.IsAsciiDigit(c);
+        return c != '\0' && c is '#' or '`' or '~' or '*' or '+' or '_' or '=' or '<' or '>' or '-' or '|' or ':' or '[' || char.IsAsciiDigit(c);
     }
 
     /// <summary>0 when the line continues the block, 1 when it does not, 2 when it ends it (a closing fence).</summary>
@@ -262,9 +356,7 @@ internal sealed partial class BlockParser
 
                 return 1;
             case MdCodeBlock { Fenced: true } fence:
-                Match closing = ClosingFenceRegex().Match(line, nextNonspace);
-                if (indent <= 3 && Peek(nextNonspace) == fence.FenceChar && closing.Success && closing.Index == nextNonspace
-                    && closing.Groups[1].Length >= fence.FenceLength && closing.Groups[1].Value[0] == fence.FenceChar)
+                if (indent <= 3 && Peek(nextNonspace) == fence.FenceChar && ClosesFence(Rest, fence))
                 {
                     Finalize(fence);
                     return 2;
@@ -303,7 +395,7 @@ internal sealed partial class BlockParser
     /// <summary>Tries each block start in the spec's order: 0 none, 1 a container started, 2 a leaf started.</summary>
     private int TryStarts(MdBlock container)
     {
-        string rest = line[nextNonspace..];
+        ReadOnlySpan<char> rest = Rest;
         char c = Peek(nextNonspace);
 
         // Containers deeper than the limit (thousands of '>' in hostile input) start no more containers: their markers stay text.
@@ -326,26 +418,27 @@ internal sealed partial class BlockParser
 
         // ATX heading.
         Match match;
-        if (!indented && c == '#' && (match = AtxRegex().Match(rest)).Success)
+        if (!indented && c == '#' && (match = AtxRegex().Match(LineFrom(nextNonspace))).Success)
         {
             AdvanceNextNonspace();
             AdvanceOffset(match.Length, false);
             CloseUnmatchedBlocks();
             MdHeading heading = AddChild(new MdHeading { Level = match.Groups[1].Length });
-            string text = line[offset..];
+            string text = LineFrom(offset);
             text = AtxClosingRegex().Replace(AtxClosingOnlyRegex().Replace(text, ""), "");
             heading.Content.Append(text.Trim(' ', '\t'));
-            AdvanceOffset(line.Length - offset, false);
+            AdvanceOffset(LineLength - offset, false);
             return 2;
         }
 
         // Fenced code.
-        if (!indented && c is '`' or '~' && (match = OpeningFenceRegex().Match(rest)).Success)
+        int fenceLength;
+        if (!indented && c is '`' or '~' && (fenceLength = OpeningFence(rest)) > 0)
         {
             CloseUnmatchedBlocks();
-            AddChild(new MdCodeBlock { Fenced = true, FenceChar = c, FenceLength = match.Length, FenceOffset = indent });
+            AddChild(new MdCodeBlock { Fenced = true, FenceChar = c, FenceLength = fenceLength, FenceOffset = indent });
             AdvanceNextNonspace();
-            AdvanceOffset(match.Length, false);
+            AdvanceOffset(fenceLength, false);
             return 2;
         }
 
@@ -370,19 +463,20 @@ internal sealed partial class BlockParser
         }
 
         // Setext heading.
-        if (!indented && container is MdParagraph para && (match = SetextRegex().Match(rest)).Success)
+        int setextLevel;
+        if (!indented && container is MdParagraph para && (setextLevel = SetextLevel(rest)) > 0)
         {
             CloseUnmatchedBlocks();
             ParseReferences(para);
             string content = para.Content.ToString();
             if (content.Trim().Length > 0)
             {
-                MdHeading heading = new() { Level = match.Groups[1].Value[0] == '=' ? 1 : 2, Setext = true, Open = true };
+                MdHeading heading = new() { Level = setextLevel, Setext = true, Open = true };
                 heading.Content.Append(content.TrimEnd('\n'));
                 ((MdBlock)para.Parent!).InsertAfter(para, heading);
                 para.Remove();
                 tip = heading;
-                AdvanceOffset(line.Length - offset, false);
+                AdvanceOffset(LineLength - offset, false);
                 return 2;
             }
 
@@ -390,16 +484,16 @@ internal sealed partial class BlockParser
         }
 
         // Thematic break.
-        if (!indented && ThematicBreakRegex().IsMatch(rest))
+        if (!indented && c is '*' or '_' or '-' && ThematicBreakRegex().IsMatch(rest))
         {
             CloseUnmatchedBlocks();
             AddChild(new MdThematicBreak());
-            AdvanceOffset(line.Length - offset, false);
+            AdvanceOffset(LineLength - offset, false);
             return 2;
         }
 
         // GitHub footnote definition.
-        if (extensions.HasFlag(MarkdownExtensions.Footnotes) && !indented && c == '[' && !deep && (match = FootnoteDefinitionRegex().Match(rest)).Success)
+        if (extensions.HasFlag(MarkdownExtensions.Footnotes) && !indented && c == '[' && !deep && (match = FootnoteDefinitionRegex().Match(LineFrom(nextNonspace))).Success)
         {
             CloseUnmatchedBlocks();
             string label = InlineParser.NormalizeLabel(match.Groups[1].Value);
@@ -451,7 +545,7 @@ internal sealed partial class BlockParser
         return depth;
     }
 
-    private bool TryTable(MdParagraph paragraph, string rest)
+    private bool TryTable(MdParagraph paragraph, ReadOnlySpan<char> rest)
     {
         if (!rest.Contains('|') || !DelimiterRowRegex().IsMatch(rest))
         {
@@ -462,7 +556,7 @@ internal sealed partial class BlockParser
         int lastBreak = content.LastIndexOf('\n');
         string header = content[(lastBreak + 1)..];
         List<string> headerCells = SplitCells(header);
-        List<string> delimiters = SplitCells(rest);
+        List<string> delimiters = SplitCells(rest.ToString());
         if (headerCells.Count != delimiters.Count || headerCells.Count == 0)
         {
             return false;
@@ -499,7 +593,7 @@ internal sealed partial class BlockParser
         }
 
         tip = table;
-        AdvanceOffset(line.Length - offset, false);
+        AdvanceOffset(LineLength - offset, false);
         lineConsumed = true;
         return true;
     }
@@ -545,21 +639,21 @@ internal sealed partial class BlockParser
             return null;
         }
 
-        string rest = line[nextNonspace..];
+        ReadOnlySpan<char> rest = Rest;
         MdListItem item = new() { MarkerOffset = indent };
         int markerLength;
-        Match match;
-        if ((match = BulletRegex().Match(rest)).Success)
+        int digits = rest.IndexOfAnyExceptInRange('0', '9');
+        if (rest.Length > 0 && rest[0] is '*' or '+' or '-')
         {
-            item.BulletChar = match.Value[0];
+            item.BulletChar = rest[0];
             markerLength = 1;
         }
-        else if ((match = OrderedRegex().Match(rest)).Success && (container is not MdParagraph || match.Groups[1].Value == "1"))
+        else if (digits is >= 1 and <= 9 && rest[digits] is '.' or ')' && (container is not MdParagraph || rest[..digits] is "1"))
         {
             item.Ordered = true;
-            item.Start = int.Parse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
-            item.Delimiter = match.Groups[2].Value[0];
-            markerLength = match.Length;
+            item.Start = int.Parse(rest[..digits], System.Globalization.CultureInfo.InvariantCulture);
+            item.Delimiter = rest[digits];
+            markerLength = digits + 1;
         }
         else
         {
@@ -573,7 +667,7 @@ internal sealed partial class BlockParser
         }
 
         // A list item that would be empty cannot interrupt a paragraph.
-        if (container is MdParagraph && line[(nextNonspace + markerLength)..].Trim(' ', '\t').Length == 0)
+        if (container is MdParagraph && source.AsSpan(Math.Min(lineStart + nextNonspace + markerLength, lineEnd), Math.Max(0, LineLength - nextNonspace - markerLength)).IndexOfAnyExcept(' ', '\t') < 0)
         {
             return null;
         }
@@ -656,11 +750,11 @@ internal sealed partial class BlockParser
 
         if (tip is MdTable table)
         {
-            AddTableRow(table, line[offset..]);
+            AddTableRow(table, LineFrom(offset));
             return;
         }
 
-        tip.Content.Append(line, offset, line.Length - offset).Append('\n');
+        tip.Content.Append(source, lineStart + offset, LineLength - offset).Append('\n');
     }
 
     private static void AddTableRow(MdTable table, string text)
@@ -684,8 +778,12 @@ internal sealed partial class BlockParser
         switch (block)
         {
             case MdParagraph paragraph:
-                ParseReferences(paragraph);
-                if (paragraph.Content.ToString().Trim(' ', '\t', '\n').Length == 0)
+                if (paragraph.Content.Length > 0 && paragraph.Content[0] == '[')
+                {
+                    ParseReferences(paragraph);
+                }
+
+                if (IsBlank(paragraph.Content))
                 {
                     paragraph.Remove();
                 }
@@ -730,6 +828,20 @@ internal sealed partial class BlockParser
         }
 
         tip = above ?? document;
+    }
+
+    /// <summary>Whether the text is only spaces, tabs and line ends, read in place.</summary>
+    private static bool IsBlank(StringBuilder text)
+    {
+        foreach (ReadOnlyMemory<char> chunk in text.GetChunks())
+        {
+            if (chunk.Span.IndexOfAnyExcept(" \t\n") >= 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static bool IsTight(MdList list)
@@ -795,7 +907,7 @@ internal sealed partial class BlockParser
 
     private char Peek(int at)
     {
-        return at < line.Length ? line[at] : '\0';
+        return at < LineLength ? source[lineStart + at] : '\0';
     }
 
     private void FindNextNonspace()
@@ -837,9 +949,9 @@ internal sealed partial class BlockParser
 
     private void AdvanceOffset(int count, bool columns)
     {
-        while (count > 0 && offset < line.Length)
+        while (count > 0 && offset < LineLength)
         {
-            char c = line[offset];
+            char c = source[lineStart + offset];
             if (c == '\t')
             {
                 int charsToTab = 4 - (column % 4);
@@ -878,7 +990,7 @@ internal sealed partial class BlockParser
         "tr", "track", "ul",
     ];
 
-    private static bool HtmlBlockStarts(int type, string rest)
+    private static bool HtmlBlockStarts(int type, ReadOnlySpan<char> rest)
     {
         switch (type)
         {
@@ -893,8 +1005,7 @@ internal sealed partial class BlockParser
             case 5:
                 return rest.StartsWith("<![CDATA[", StringComparison.Ordinal);
             case 6:
-                Match m = HtmlStart6Regex().Match(rest);
-                return m.Success && BlockTagNames.Contains(m.Groups[1].Value.ToLowerInvariant());
+                return StartsBlockTag(rest);
             default:
                 return HtmlStart7Regex().IsMatch(rest);
         }
@@ -925,23 +1036,8 @@ internal sealed partial class BlockParser
     [GeneratedRegex(@"[ \t]+#+[ \t]*$")]
     private static partial Regex AtxClosingRegex();
 
-    [GeneratedRegex(@"^(?:`{3,}(?!.*`)|~{3,})")]
-    private static partial Regex OpeningFenceRegex();
-
-    [GeneratedRegex(@"\G(`{3,}|~{3,})(?=[ \t]*$)")]
-    private static partial Regex ClosingFenceRegex();
-
-    [GeneratedRegex(@"^(=+|-+)[ \t]*$")]
-    private static partial Regex SetextRegex();
-
     [GeneratedRegex(@"^(?:\*[ \t]*){3,}$|^(?:_[ \t]*){3,}$|^(?:-[ \t]*){3,}$")]
     private static partial Regex ThematicBreakRegex();
-
-    [GeneratedRegex(@"^[*+-]")]
-    private static partial Regex BulletRegex();
-
-    [GeneratedRegex(@"^(\d{1,9})([.)])")]
-    private static partial Regex OrderedRegex();
 
     [GeneratedRegex(@"^\[\^([^\]\s]+)\]:")]
     private static partial Regex FootnoteDefinitionRegex();
@@ -963,9 +1059,6 @@ internal sealed partial class BlockParser
 
     [GeneratedRegex(@"</(?:script|pre|textarea|style)>", RegexOptions.IgnoreCase)]
     private static partial Regex HtmlEnd1Regex();
-
-    [GeneratedRegex(@"^</?([a-zA-Z][a-zA-Z0-9-]*)(?:\s|/?>|$)")]
-    private static partial Regex HtmlStart6Regex();
 
     [GeneratedRegex(@"^(?:<[A-Za-z][A-Za-z0-9-]*(?:\s+[a-zA-Z_:][a-zA-Z0-9_.:-]*(?:\s*=\s*(?:[^""'=<>`\x00-\x20]+|'[^']*'|""[^""]*""))?)*\s*/?>|</[A-Za-z][A-Za-z0-9-]*\s*>)\s*$")]
     private static partial Regex HtmlStart7Regex();

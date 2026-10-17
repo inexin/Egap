@@ -16,6 +16,8 @@ internal sealed partial class InlineParser
     /// <summary>How deep inlines may nest; deeper ones are flattened.</summary>
     internal const int MaxDepth = 64;
 
+    private static readonly char[] SpaceTabNewline = [' ', '\t', '\n'];
+
     /// <summary>For each backtick run length, a position from which no closing run of that length exists (cmark's cache).</summary>
     private readonly Dictionary<int, int> noCloserAfter = [];
 
@@ -118,7 +120,7 @@ internal sealed partial class InlineParser
     private void Parse(MdBlock leaf)
     {
         block = leaf;
-        subject = leaf.Content.ToString().Trim(' ', '\t', '\n');
+        subject = leaf.Content.ToString().Trim(SpaceTabNewline);
         pos = 0;
         delimiters = null;
         brackets = null;
@@ -127,7 +129,7 @@ internal sealed partial class InlineParser
             if (!ParseInline())
             {
                 pos++;
-                AppendText(subject[(pos - 1)..pos]);
+                AppendText(pos - 1, pos);
             }
         }
 
@@ -159,18 +161,18 @@ internal sealed partial class InlineParser
                 return HandleDelimiter(c);
             case '[':
                 pos++;
-                AddBracket(AppendText("["), pos - 1, image: false);
+                AddBracket(AppendText(pos - 1, pos), pos - 1, image: false);
                 return true;
             case '!':
                 pos++;
                 if (Peek() == '[')
                 {
                     pos++;
-                    AddBracket(AppendText("!["), pos - 1, image: true);
+                    AddBracket(AppendText(pos - 2, pos), pos - 1, image: true);
                 }
                 else
                 {
-                    AppendText("!");
+                    AppendText(pos - 1, pos);
                 }
 
                 return true;
@@ -202,6 +204,14 @@ internal sealed partial class InlineParser
         return node;
     }
 
+    /// <summary>Appends subject[start..end] as text, without copying it.</summary>
+    private MdText AppendText(int start, int end)
+    {
+        MdText node = new(subject, start, end - start);
+        block.LinkAppend(node);
+        return node;
+    }
+
     private bool ParseString()
     {
         int start = pos;
@@ -215,7 +225,7 @@ internal sealed partial class InlineParser
             return false;
         }
 
-        AppendText(subject[start..pos]);
+        AppendText(start, pos);
         return true;
     }
 
@@ -227,11 +237,12 @@ internal sealed partial class InlineParser
     private bool ParseNewline()
     {
         pos++;
-        if (block.LinkLast is MdText last && last.Literal.EndsWith(' '))
+        if (block.LinkLast is MdText last && last.Span.EndsWith(' '))
         {
-            bool hard = last.Literal.EndsWith("  ", StringComparison.Ordinal);
-            last.Literal = last.Literal.TrimEnd(' ');
-            if (last.Literal.Length == 0)
+            ReadOnlySpan<char> span = last.Span;
+            bool hard = span.EndsWith("  ", StringComparison.Ordinal);
+            last.TrimEnd(span.Length - span.TrimEnd(' ').Length);
+            if (last.Length == 0)
             {
                 last.LinkUnlink();
             }
@@ -265,7 +276,7 @@ internal sealed partial class InlineParser
         }
         else if (pos < subject.Length && IsAsciiPunctuation(subject[pos]))
         {
-            AppendText(subject[pos].ToString());
+            AppendText(pos, pos + 1);
             pos++;
         }
         else
@@ -289,7 +300,7 @@ internal sealed partial class InlineParser
         int search = pos;
         if (noCloserAfter.TryGetValue(length, out int none) && none <= pos)
         {
-            AppendText(subject[start..after]);
+            AppendText(start, after);
             return true;
         }
 
@@ -324,7 +335,7 @@ internal sealed partial class InlineParser
         }
 
         noCloserAfter[length] = after;
-        AppendText(subject[start..after]);
+        AppendText(start, after);
         return true;
     }
 
@@ -419,7 +430,7 @@ internal sealed partial class InlineParser
         int count = pos - start;
         if (c == '~' && count > 2)
         {
-            AppendText(subject[start..pos]);
+            AppendText(start, pos);
             return true;
         }
 
@@ -443,7 +454,7 @@ internal sealed partial class InlineParser
             canClose = rightFlanking;
         }
 
-        MdText node = AppendText(subject[start..pos]);
+        MdText node = AppendText(start, pos);
         if (canOpen || canClose)
         {
             Delimiter delimiter = new(c, count, node, canOpen, canClose) { Previous = delimiters };
@@ -518,8 +529,8 @@ internal sealed partial class InlineParser
                 MdText closerNode = closer.Node;
                 opener.Count -= use;
                 closer.Count -= use;
-                openerNode.Literal = openerNode.Literal[..^use];
-                closerNode.Literal = closerNode.Literal[..^use];
+                openerNode.TrimEnd(use);
+                closerNode.TrimEnd(use);
                 MdNode wrapper = cc == '~' ? new MdStrikethrough() : use == 1 ? new MdEmphasis() : new MdStrong();
                 MdNode.LinkMoveRange(openerNode, closerNode, wrapper);
                 openerNode.LinkInsertAfter(wrapper);
@@ -581,13 +592,13 @@ internal sealed partial class InlineParser
         Bracket? opener = brackets;
         if (opener is null)
         {
-            AppendText("]");
+            AppendText(pos - 1, pos);
             return true;
         }
 
         if (!opener.Active)
         {
-            AppendText("]");
+            AppendText(pos - 1, pos);
             brackets = opener.Previous;
             return true;
         }
@@ -673,7 +684,7 @@ internal sealed partial class InlineParser
         {
             brackets = opener.Previous;
             pos = startPos + 1;
-            AppendText("]");
+            AppendText(startPos, pos);
             return true;
         }
 
@@ -931,6 +942,12 @@ internal sealed partial class InlineParser
                 continue;
             }
 
+            // Every autolink has a dot, a colon or an at sign: text without any is left as it is.
+            if (text.Span.IndexOfAny('.', ':', '@') < 0)
+            {
+                continue;
+            }
+
             Match m = ExtendedAutolinkRegex().Match(text.Literal);
             while (m.Success)
             {
@@ -1077,18 +1094,29 @@ internal sealed partial class InlineParser
 
                     if (last > read)
                     {
-                        joined ??= new StringBuilder();
-                        joined.Clear();
-                        for (int i = read; i <= last; i++)
+                        // Neighbours that carry on in the same string join without a copy; others are copied together.
+                        int next = read + 1;
+                        while (next <= last && text.TryExtend((MdText)children[next]))
                         {
-                            joined.Append(((MdText)children[i]).Literal);
+                            next++;
                         }
 
-                        text.Literal = joined.ToString();
+                        if (next <= last)
+                        {
+                            joined ??= new StringBuilder();
+                            joined.Clear().Append(text.Span);
+                            for (int i = next; i <= last; i++)
+                            {
+                                joined.Append(((MdText)children[i]).Span);
+                            }
+
+                            text.Literal = joined.ToString();
+                        }
+
                         read = last;
                     }
 
-                    if (text.Literal.Length > 0)
+                    if (text.Length > 0)
                     {
                         children[write++] = text;
                     }

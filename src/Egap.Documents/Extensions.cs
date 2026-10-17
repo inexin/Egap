@@ -8,36 +8,65 @@ namespace Egap.Documents;
 /// </summary>
 public sealed class ExtensionData
 {
-    private readonly Dictionary<string, object> byFormat = new(StringComparer.Ordinal);
+    // Nearly every node with data has one format's, so the first is kept in fields and a dictionary is made only for more.
+    private string? firstFormat;
+    private object? firstData;
+    private Dictionary<string, object>? more;
 
     internal ExtensionData()
     {
     }
 
     /// <summary>The formats that have kept something here.</summary>
-    public IReadOnlyCollection<string> Formats => byFormat.Keys;
+    public IReadOnlyCollection<string> Formats
+    {
+        get
+        {
+            List<string> formats = [];
+            if (firstFormat is not null)
+            {
+                formats.Add(firstFormat);
+            }
+
+            if (more is not null)
+            {
+                formats.AddRange(more.Keys);
+            }
+
+            return formats;
+        }
+    }
 
     /// <summary>Whether nothing is kept.</summary>
-    public bool IsEmpty => byFormat.Count == 0;
+    public bool IsEmpty => firstFormat is null && more is not { Count: > 0 };
 
     /// <summary>Drops what <paramref name="format"/> kept, so its writer writes only what the model says.</summary>
     /// <returns>False when the format had kept nothing.</returns>
     public bool Remove(string format)
     {
-        return byFormat.Remove(format);
+        if (firstFormat == format)
+        {
+            firstFormat = null;
+            firstData = null;
+            return true;
+        }
+
+        return more is not null && more.Remove(format);
     }
 
     /// <summary>Drops everything kept.</summary>
     public void Clear()
     {
-        byFormat.Clear();
+        firstFormat = null;
+        firstData = null;
+        more = null;
     }
 
     /// <summary>The data <paramref name="format"/> kept, of the type its reader uses, or null.</summary>
     internal T? Get<T>(string format)
         where T : class
     {
-        return byFormat.GetValueOrDefault(format) as T;
+        return firstFormat == format ? firstData as T : more?.GetValueOrDefault(format) as T;
     }
 
     /// <summary>Keeps <paramref name="data"/> for <paramref name="format"/>; it must not change once kept, as copies share it.</summary>
@@ -45,23 +74,28 @@ public sealed class ExtensionData
     {
         if (data is null)
         {
-            byFormat.Remove(format);
+            Remove(format);
+        }
+        else if (firstFormat is null || firstFormat == format)
+        {
+            more?.Remove(format);
+            firstFormat = format;
+            firstData = data;
         }
         else
         {
-            byFormat[format] = data;
+            (more ??= new Dictionary<string, object>(StringComparer.Ordinal))[format] = data;
         }
     }
 
     internal ExtensionData Copy()
     {
-        ExtensionData copy = new();
-        foreach (KeyValuePair<string, object> entry in byFormat)
+        return new ExtensionData
         {
-            copy.byFormat[entry.Key] = entry.Value;
-        }
-
-        return copy;
+            firstFormat = firstFormat,
+            firstData = firstData,
+            more = more is null ? null : new Dictionary<string, object>(more, StringComparer.Ordinal),
+        };
     }
 }
 

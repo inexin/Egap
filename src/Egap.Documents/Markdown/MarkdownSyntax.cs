@@ -348,9 +348,64 @@ internal sealed class MdTableCell : MdBlock
     public MdAlign Align { get; set; }
 }
 
-internal sealed class MdText(string literal) : MdNode
+/// <summary>Text: a range of a string (the paragraph's text, mostly), made into its own string only when asked for.</summary>
+internal sealed class MdText : MdNode
 {
-    public string Literal { get; set; } = literal;
+    private string? literal;
+
+    public MdText(string literal)
+    {
+        this.literal = literal;
+        Source = literal;
+        Length = literal.Length;
+    }
+
+    public MdText(string source, int start, int length)
+    {
+        Source = source;
+        Start = start;
+        Length = length;
+    }
+
+    public string Source { get; private set; }
+
+    public int Start { get; private set; }
+
+    public int Length { get; private set; }
+
+    public ReadOnlySpan<char> Span => Source.AsSpan(Start, Length);
+
+    public string Literal
+    {
+        get => literal ??= Source.Substring(Start, Length);
+        set
+        {
+            literal = value;
+            Source = value;
+            Start = 0;
+            Length = value.Length;
+        }
+    }
+
+    /// <summary>Drops the last <paramref name="count"/> characters.</summary>
+    public void TrimEnd(int count)
+    {
+        Length -= count;
+        literal = null;
+    }
+
+    /// <summary>Takes in <paramref name="next"/> when it carries on in the same string, without copying.</summary>
+    public bool TryExtend(MdText next)
+    {
+        if (!ReferenceEquals(Source, next.Source) || Start + Length != next.Start)
+        {
+            return false;
+        }
+
+        Length += next.Length;
+        literal = null;
+        return true;
+    }
 }
 
 internal sealed class MdSoftBreak : MdNode;
