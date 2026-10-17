@@ -285,6 +285,21 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                 return;
             }
 
+            // Egami shapes a run past 65536 characters only with a fresh shaping buffer (its limit is the last text's), so
+            // very long text goes in pieces that differ by a letter spacing no eye sees, which keeps them separate runs.
+            const int Piece = 30_000;
+            if (value.Length > Piece)
+            {
+                for (int start = 0, index = 0; start < value.Length; start += Piece, index++)
+                {
+                    int length = Math.Min(Piece, value.Length - start);
+                    TextStyle pieceStyle = index % 2 == 0 ? style : style with { LetterSpacing = (style.LetterSpacing ?? 0) + 0.0001f };
+                    AddText(value.Substring(start, length), node, pieceStyle, nodeOffset + start);
+                }
+
+                return;
+            }
+
             spans.Add(new InlineSpan(text.Length, value.Length, node, nodeOffset));
             text.Push(style).Append(value).Pop();
             last = style;

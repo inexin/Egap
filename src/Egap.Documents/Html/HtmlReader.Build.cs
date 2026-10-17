@@ -88,7 +88,7 @@ internal sealed partial class HtmlReader
 
         quirks = dom.QuirksMode == HtmlQuirksMode.Quirks;
         HtmlStyle rootStyle = StyleOf(html, null);
-        ApplyPage(section, FirstPageName(html, rootStyle));
+        ApplyPage(section, FirstPageName(html, rootStyle, 0));
         double width = (section.PageSetup.PageWidth ?? 612) - (section.PageSetup.MarginLeft ?? 72) - (section.PageSetup.MarginRight ?? 72);
         Flow flow = new(section.Body, width);
         Frame frame = new(html, rootStyle, null);
@@ -101,8 +101,13 @@ internal sealed partial class HtmlReader
     /// The page name the first content asks for (the CSS page property, as Word's HTML puts on its "Section1" division), so
     /// the @page rules for that name apply, as Chromium applies them.
     /// </summary>
-    private string? FirstPageName(HtmlElement element, HtmlStyle style)
+    private string? FirstPageName(HtmlElement element, HtmlStyle style, int level)
     {
+        if (level >= options.Limits.MaxDepth)
+        {
+            return null;
+        }
+
         // Page names are case-sensitive, so the value is read as written.
         if (style.Text("page")?.Trim() is { Length: > 0 } name && !name.Equals("auto", StringComparison.OrdinalIgnoreCase))
         {
@@ -128,7 +133,7 @@ internal sealed partial class HtmlReader
                 continue;
             }
 
-            if (FirstPageName(childElement, childStyle) is { } found)
+            if (FirstPageName(childElement, childStyle, level + 1) is { } found)
             {
                 return found;
             }
@@ -207,7 +212,31 @@ internal sealed partial class HtmlReader
         }
     }
 
+    /// <summary>How deep the walk is in elements, against <see cref="DocumentLimits.MaxDepth"/>.</summary>
+    private int depth;
+
     private void Children(HtmlNode parent, HtmlStyle parentStyle, Flow flow, Frame frame)
+    {
+        if (depth >= options.Limits.MaxDepth)
+        {
+            // Hostile nesting: what lies deeper is kept as its text, without walking it as structure.
+            Warn(ConversionWarningKind.LayoutApproximated, "Elements nested deeper than the limit, read as plain text");
+            AddText(string.Concat(parent.Descendants().OfType<HtmlText>().Select(t => t.Data)), parentStyle, flow, frame);
+            return;
+        }
+
+        depth++;
+        try
+        {
+            ChildrenWithin(parent, parentStyle, flow, frame);
+        }
+        finally
+        {
+            depth--;
+        }
+    }
+
+    private void ChildrenWithin(HtmlNode parent, HtmlStyle parentStyle, Flow flow, Frame frame)
     {
         foreach (HtmlNode child in parent.Children)
         {

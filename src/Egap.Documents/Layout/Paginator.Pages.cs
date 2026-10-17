@@ -272,6 +272,13 @@ internal sealed partial class Paginator
                         break;
                     }
 
+                case Table table when measuring > 0:
+                    {
+                        // Measuring needs only the height: the plan, without placing every nested cell again.
+                        at += Plan(table, x, width).Rows.Sum(r => r.Height);
+                        break;
+                    }
+
                 case Table table:
                     {
                         TableBox box = LayTable(table, x, at, width);

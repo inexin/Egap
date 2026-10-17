@@ -632,6 +632,8 @@ Egap.Documents.HtmlLoadOptions.BaseUri.init -> void
 Egap.Documents.HtmlLoadOptions.Encoding.get -> string?
 Egap.Documents.HtmlLoadOptions.Encoding.init -> void
 Egap.Documents.HtmlLoadOptions.HtmlLoadOptions() -> void
+Egap.Documents.HtmlLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
+Egap.Documents.HtmlLoadOptions.Limits.init -> void
 Egap.Documents.HtmlLoadOptions.Media.get -> string!
 Egap.Documents.HtmlLoadOptions.Media.init -> void
 Egap.Documents.HtmlLoadOptions.ResourceResolver.get -> System.Func<System.Uri!, byte[]?>?

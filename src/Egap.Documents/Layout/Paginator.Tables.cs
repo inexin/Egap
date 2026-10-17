@@ -62,7 +62,25 @@ internal sealed partial class Paginator
         public double ContentHeight { get; set; }
     }
 
+    /// <summary>
+    /// Plans made in this pass, by table, position and width: a nested table is planned when its cell is measured and again
+    /// when it is placed, which, nested deep, doubles the work at every level.
+    /// </summary>
+    private readonly Dictionary<(Table Table, double X, double Available), TablePlan> plans = [];
+
     private TablePlan Plan(Table table, double x, double available)
+    {
+        if (plans.TryGetValue((table, x, available), out TablePlan? planned))
+        {
+            return planned;
+        }
+
+        TablePlan plan = MakePlan(table, x, available);
+        plans[(table, x, available)] = plan;
+        return plan;
+    }
+
+    private TablePlan MakePlan(Table table, double x, double available)
     {
         TableFormat format = table.GetEffectiveFormat();
         double[] grid = GridWidths(table, format, available);

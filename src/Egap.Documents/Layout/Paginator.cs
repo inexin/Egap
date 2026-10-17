@@ -87,6 +87,7 @@ internal sealed partial class Paginator
 
     private void Flow()
     {
+        plans.Clear();
         pages.Clear();
         page = null;
         section = null;

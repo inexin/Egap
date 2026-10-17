@@ -205,12 +205,12 @@ internal sealed partial class HtmlTreeBuilder
             {
                 foreach (HtmlNode child in chosen.Children)
                 {
-                    shown.Append(Clone(child));
+                    shown.Append(Clone(child, 0));
                 }
             }
         }
 
-        static HtmlNode Clone(HtmlNode node)
+        static HtmlNode Clone(HtmlNode node, int depth)
         {
             HtmlNode copy = node switch
             {
@@ -220,9 +220,13 @@ internal sealed partial class HtmlTreeBuilder
                 HtmlProcessingInstruction instruction => new HtmlProcessingInstruction(instruction.Target, instruction.Data),
                 _ => new HtmlFragment(),
             };
-            foreach (HtmlNode child in node.Children)
+            // An option's content is copied only so deep, against hostile nesting.
+            if (depth < 256)
             {
-                copy.Append(Clone(child));
+                foreach (HtmlNode child in node.Children)
+                {
+                    copy.Append(Clone(child, depth + 1));
+                }
             }
 
             return copy;
@@ -361,9 +365,15 @@ internal sealed partial class HtmlTreeBuilder
         Table,
     }
 
+    /// <summary>
+    /// How far up the stack a scope check looks: hostile pages nest thousands deep, and an unbounded look makes every start tag
+    /// cost the depth (browsers bound their trees too); an element further up counts as out of scope.
+    /// </summary>
+    private const int MaxScopeSearch = 1024;
+
     private bool InScope(Func<HtmlElement, bool> target, Scope scope)
     {
-        for (int i = open.Count - 1; i >= 0; i--)
+        for (int i = open.Count - 1; i >= 0 && i >= open.Count - MaxScopeSearch; i--)
         {
             HtmlElement node = open[i];
             if (target(node))
