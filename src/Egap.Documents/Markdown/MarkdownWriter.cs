@@ -25,11 +25,28 @@ internal sealed class MarkdownWriter
     {
         this.document = document;
         this.options = options;
+        images = new MarkdownImages(options, null, null);
     }
 
-    public static string Write(Document document, MarkdownSaveOptions options, out IReadOnlyList<ConversionWarning> warnings)
+    /// <summary>Where pictures without an address go; replaced by one with a folder when writing to a file.</summary>
+    private MarkdownImages images;
+
+    /// <summary>The address for a picture: its own, the caller's image writer's, else as the image options say; null when left out.</summary>
+    private string? PictureUrl(Picture picture)
+    {
+        return picture.SourceUrl ?? options.ImageWriter?.Invoke(picture) ?? images.UrlFor(picture, warnings.Add);
+    }
+
+    /// <summary>The document as Markdown; with <paramref name="path"/>, images go to a folder beside that file.</summary>
+    public static string Write(Document document, MarkdownSaveOptions options, string? path, out IReadOnlyList<ConversionWarning> warnings)
     {
         MarkdownWriter writer = new(document, options);
+        if (path is not null)
+        {
+            string folderName = options.ImagesFolder ?? Path.GetFileNameWithoutExtension(path) + ".images";
+            writer.images = new MarkdownImages(options, Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, folderName), folderName.Replace('\\', '/'));
+        }
+
         writer.WriteDocument();
         warnings = writer.warnings.ToList();
         return writer.output.ToString();
@@ -155,6 +172,24 @@ internal sealed class MarkdownWriter
                 case Paragraph paragraph when paragraph.ListLabel is not null:
                     collected.Add(new OutBlock(FramesOf(paragraph, state), "item", InlineLines(paragraph, task: true)));
                     break;
+                case Paragraph paragraph when options.CaptionsAsFigures && Figure(list, i) is { } figure:
+                    collected.Add(new OutBlock(FramesOf(paragraph, state), "html", figure.Lines));
+                    i = figure.Last;
+                    break;
+                case Paragraph paragraph when IsCaption(paragraph):
+                    {
+                        // A caption is an italic paragraph, above or below its picture as it sits in the document.
+                        List<string> text = ParagraphLines(paragraph);
+                        if (text.Count > 0 && text[0].Length > 0 && text[^1].Length > 0 && !char.IsWhiteSpace(text[0][0]) && !char.IsWhiteSpace(text[^1][^1]))
+                        {
+                            text[0] = "_" + text[0];
+                            text[^1] += "_";
+                        }
+
+                        collected.Add(new OutBlock(FramesOf(paragraph, state), "p", text));
+                        break;
+                    }
+
                 case Paragraph paragraph:
                     {
                         List<string> text = ParagraphLines(paragraph);
@@ -188,6 +223,57 @@ internal sealed class MarkdownWriter
                     break;
             }
         }
+    }
+
+    /// <summary>Whether the paragraph is a caption: Word's Caption style, which layout analysis gives captions too.</summary>
+    private static bool IsCaption(Paragraph paragraph)
+    {
+        return paragraph.Style is { } style && (style.Id == "Caption" || string.Equals(style.Name, "caption", StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>The picture a paragraph holds alone, or null.</summary>
+    private static Picture? SolePicture(Paragraph paragraph)
+    {
+        Picture? picture = null;
+        foreach (Inline inline in paragraph.Inlines)
+        {
+            switch (inline)
+            {
+                case Picture p when picture is null:
+                    picture = p;
+                    break;
+                case Run { Text.Length: 0 } or BookmarkStart or BookmarkEnd:
+                    break;
+                default:
+                    return null;
+            }
+        }
+
+        return picture;
+    }
+
+    /// <summary>
+    /// A picture and the caption just above or below it as an HTML figure, with the index of the last block it takes; null
+    /// when the paragraph at <paramref name="i"/> starts no such pair or the picture is left out.
+    /// </summary>
+    private (List<string> Lines, int Last)? Figure(List<Block> list, int i)
+    {
+        if (list[i] is not Paragraph first || i + 1 >= list.Count || list[i + 1] is not Paragraph second)
+        {
+            return null;
+        }
+
+        (Picture? picture, Paragraph? caption) = IsCaption(first) ? (SolePicture(second), first) : IsCaption(second) ? (SolePicture(first), second) : (null, null);
+        if (picture is null || caption is null || (picture.SourceUrl is null && images.Skips(picture)) || PictureUrl(picture) is not { } url)
+        {
+            return null;
+        }
+
+        static string Encode(string text) => System.Net.WebUtility.HtmlEncode(text);
+        string img = $"<img src=\"{Encode(url)}\" alt=\"{Encode(picture.Description ?? "")}\">";
+        string figcaption = $"<figcaption>{Encode(caption.GetText().Trim())}</figcaption>";
+        List<string> lines = ["<figure>", .. caption == first ? (string[])[figcaption, img] : [img, figcaption], "</figure>"];
+        return (lines, i + 1);
     }
 
     private static IReadOnlyList<MarkdownFrame> FramesOf(Block block, FrameState state)
@@ -703,15 +789,21 @@ internal sealed class MarkdownWriter
                 break;
             case Picture picture:
                 {
-                    string? url = picture.SourceUrl ?? options.ImageWriter?.Invoke(picture);
-                    if (url is null && options.EmbedImages && picture.Image.Bytes.Length > 0)
+                    if (picture.SourceUrl is null && images.Skips(picture))
                     {
-                        url = $"data:{picture.Image.ContentType};base64,{Convert.ToBase64String(picture.Image.Bytes.Span)}";
+                        break;
                     }
 
+                    if (picture.SourceUrl is null && options.ImageWriter is null && !options.EmbedImages && options.Images == MarkdownImageMode.Placeholders)
+                    {
+                        state.Close(text);
+                        text.Append("<!-- image -->");
+                        break;
+                    }
+
+                    string? url = PictureUrl(picture);
                     if (url is null)
                     {
-                        warnings.Add(ConversionWarningKind.PictureDropped, "pictures without an address (give MarkdownSaveOptions.ImageWriter)");
                         break;
                     }
 
