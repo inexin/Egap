@@ -83,4 +83,55 @@ public class LayoutDrawingTests
             return ((LineBox)layout.FindBoxes(paragraph).Single(b => b.Box is LineBox).Box).Content;
         }
     }
+    [Fact]
+    public void ObserverSeesEveryBoxAndTheDecorationsOutsideLines()
+    {
+        Document document = new();
+        Body body = document.AddSection().Body;
+        body.AddParagraph("text");
+        Table table = body.AddTable(1, 2);
+        table.Rows[0].Cells[0].Format.Shading = new Shading(ShadingPattern.Clear, DocumentColor.FromHex("FF0000"));
+        table.Rows[0].Cells[0].Paragraphs.First().AddRun("cell");
+        DocumentLayout layout = document.Layout(new LayoutOptions { Fonts = new FontSettings { UseSystemFonts = false } });
+        Recorder recorder = new();
+
+        layout.Pages[0].Draw(new Egami.Drawing.RasterCanvas<Rgba8>(Egami.Raster.Create(10, 10, new Rgba8(255, 255, 255, 255))), recorder);
+
+        Assert.Equal(0, recorder.Depth);
+        Assert.Equal(layout.Pages[0].Boxes.SelectMany(b => b.Descendants()).Count(), recorder.Boxes.Count);
+        Assert.True(recorder.Decorations > 0);
+        Assert.False(recorder.DecorationInLine);
+    }
+
+    private sealed class Recorder : LayoutDrawObserver
+    {
+        private int lines;
+
+        public List<LayoutBox> Boxes { get; } = [];
+
+        public int Depth { get; private set; }
+
+        public int Decorations { get; private set; }
+
+        public bool DecorationInLine { get; private set; }
+
+        public override void BeginBox(LayoutBox box)
+        {
+            Boxes.Add(box);
+            Depth++;
+            lines += box is LineBox ? 1 : 0;
+        }
+
+        public override void EndBox(LayoutBox box)
+        {
+            Depth--;
+            lines -= box is LineBox ? 1 : 0;
+        }
+
+        public override void BeginDecoration()
+        {
+            Decorations++;
+            DecorationInLine |= lines > 0;
+        }
+    }
 }

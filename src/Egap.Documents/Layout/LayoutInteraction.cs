@@ -128,6 +128,58 @@ internal static class LayoutInteraction
         return rects;
     }
 
+    /// <summary>The rectangles covering an inline's text (the runs inside it for a container), line by line.</summary>
+    public static List<PageRect> TextRects(DocumentLayout layout, Inline node)
+    {
+        if (node.Ancestors().OfType<Paragraph>().FirstOrDefault() is not { } paragraph)
+        {
+            return [];
+        }
+
+        int start = int.MaxValue;
+        int end = -1;
+        foreach ((_, LineBox line) in Lines(layout, paragraph))
+        {
+            foreach (InlineSpan span in line.Content.Spans)
+            {
+                if (span.Node == node || span.Node.Ancestors().Contains(node))
+                {
+                    start = Math.Min(start, span.Start);
+                    end = Math.Max(end, span.Start + span.Length);
+                }
+            }
+
+            break;
+        }
+
+        List<PageRect> rects = [];
+        if (end < 0)
+        {
+            return rects;
+        }
+
+        foreach ((PageLayout page, LineBox line) in Lines(layout, paragraph))
+        {
+            int a = Math.Max(line.Line.Start, start);
+            int b = Math.Min(line.Line.End, end);
+            if (a >= b)
+            {
+                continue;
+            }
+
+            double x1 = CaretX(line.Line, a);
+            double x2 = b == line.Line.End ? Math.Max(CaretX(line.Line, b), LastGlyphEnd(line.Line)) : CaretX(line.Line, b);
+            rects.Add(new PageRect(page, new LayoutRect(line.Bounds.X + Math.Min(x1, x2), line.Bounds.Y, Math.Abs(x2 - x1), line.Bounds.Height)));
+        }
+
+        return rects;
+    }
+
+    private static double LastGlyphEnd(TextLine line)
+    {
+        return line.Runs.Count == 0 ? line.Left : line.Runs.Max(r => r.X + r.Advance);
+    }
+
     /// <summary>The inline and the offset in its text a position falls in, or null at a paragraph's end or in text no inline gave (a label).</summary>
     public static (Inline Node, int Offset)? Locate(DocumentLayout layout, DocumentPosition position)
     {

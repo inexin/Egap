@@ -1,1 +1,38 @@
 #nullable enable
+Egap.Pdf.Layout.OutlineFrom
+Egap.Pdf.Layout.OutlineFrom.Bookmarks = 2 -> Egap.Pdf.Layout.OutlineFrom
+Egap.Pdf.Layout.OutlineFrom.Headings = 1 -> Egap.Pdf.Layout.OutlineFrom
+Egap.Pdf.Layout.OutlineFrom.None = 0 -> Egap.Pdf.Layout.OutlineFrom
+Egap.Pdf.Layout.PdfExport
+Egap.Pdf.Layout.PdfExportOptions
+Egap.Pdf.Layout.PdfExportOptions.<Clone>$() -> Egap.Pdf.Layout.PdfExportOptions!
+Egap.Pdf.Layout.PdfExportOptions.Conformance.get -> Egap.Pdf.PdfAConformance
+Egap.Pdf.Layout.PdfExportOptions.Conformance.init -> void
+Egap.Pdf.Layout.PdfExportOptions.Equals(Egap.Pdf.Layout.PdfExportOptions? other) -> bool
+Egap.Pdf.Layout.PdfExportOptions.Language.get -> string?
+Egap.Pdf.Layout.PdfExportOptions.Language.init -> void
+Egap.Pdf.Layout.PdfExportOptions.Layout.get -> Egap.Documents.Layout.LayoutOptions?
+Egap.Pdf.Layout.PdfExportOptions.Layout.init -> void
+Egap.Pdf.Layout.PdfExportOptions.Links.get -> bool
+Egap.Pdf.Layout.PdfExportOptions.Links.init -> void
+Egap.Pdf.Layout.PdfExportOptions.NamedDestinations.get -> bool
+Egap.Pdf.Layout.PdfExportOptions.NamedDestinations.init -> void
+Egap.Pdf.Layout.PdfExportOptions.Outline.get -> Egap.Pdf.Layout.OutlineFrom
+Egap.Pdf.Layout.PdfExportOptions.Outline.init -> void
+Egap.Pdf.Layout.PdfExportOptions.PdfExportOptions() -> void
+Egap.Pdf.Layout.PdfExportOptions.Save.get -> Egap.Pdf.PdfSaveOptions?
+Egap.Pdf.Layout.PdfExportOptions.Save.init -> void
+Egap.Pdf.Layout.PdfExportOptions.Tagged.get -> bool
+Egap.Pdf.Layout.PdfExportOptions.Tagged.init -> void
+Egap.Pdf.Layout.PdfExportOptions.UniversalAccessibility.get -> bool
+Egap.Pdf.Layout.PdfExportOptions.UniversalAccessibility.init -> void
+override Egap.Pdf.Layout.PdfExportOptions.Equals(object? obj) -> bool
+override Egap.Pdf.Layout.PdfExportOptions.GetHashCode() -> int
+override Egap.Pdf.Layout.PdfExportOptions.ToString() -> string!
+static Egap.Pdf.Layout.PdfExport.SaveAsPdf(this Egap.Documents.Document! document, string! path, Egap.Pdf.Layout.PdfExportOptions? options = null) -> void
+static Egap.Pdf.Layout.PdfExport.SaveAsPdf(this Egap.Documents.Document! document, System.IO.Stream! output, Egap.Pdf.Layout.PdfExportOptions? options = null) -> void
+static Egap.Pdf.Layout.PdfExport.ToPdf(this Egap.Documents.Document! document, Egap.Pdf.Layout.PdfExportOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.Layout.PdfExport.ToPdf(this Egap.Documents.Layout.DocumentLayout! layout, Egap.Pdf.Layout.PdfExportOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.Layout.PdfExportOptions.Default.get -> Egap.Pdf.Layout.PdfExportOptions!
+static Egap.Pdf.Layout.PdfExportOptions.operator !=(Egap.Pdf.Layout.PdfExportOptions? left, Egap.Pdf.Layout.PdfExportOptions? right) -> bool
+static Egap.Pdf.Layout.PdfExportOptions.operator ==(Egap.Pdf.Layout.PdfExportOptions? left, Egap.Pdf.Layout.PdfExportOptions? right) -> bool
