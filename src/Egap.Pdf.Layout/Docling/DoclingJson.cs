@@ -33,12 +33,35 @@ public static class DoclingJson
         return Encoding.UTF8.GetString(output.ToArray());
     }
 
+    /// <summary>
+    /// Writes the pages' layout to a file, pictures with <see cref="DoclingImageMode.Files"/> into a folder beside it
+    /// (<c>&lt;name&gt;.images</c> unless <see cref="DoclingJsonOptions.ImagesFolder"/> says).
+    /// </summary>
+    public static void Write(IReadOnlyList<PdfPageLayout> pages, string path, DoclingJsonOptions? options = null)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        options ??= DoclingJsonOptions.Default;
+        if (options.Images == DoclingImageMode.Files && options.ImagesFolder is null)
+        {
+            options = options with { ImagesFolder = System.IO.Path.ChangeExtension(System.IO.Path.GetFullPath(path), ".images") };
+        }
+
+        using FileStream output = File.Create(path);
+        Write(pages, output, options);
+    }
+
     /// <summary>Writes the pages' layout to <paramref name="output"/> as UTF-8 DoclingDocument JSON.</summary>
+    /// <exception cref="InvalidOperationException">Pictures go to files but no <see cref="DoclingJsonOptions.ImagesFolder"/> is given.</exception>
     public static void Write(IReadOnlyList<PdfPageLayout> pages, Stream output, DoclingJsonOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(pages);
         ArgumentNullException.ThrowIfNull(output);
         options ??= DoclingJsonOptions.Default;
+        if (options.Images == DoclingImageMode.Files && options.ImagesFolder is null && options.ImageResolver is null)
+        {
+            throw new InvalidOperationException("Pictures written as files need an ImagesFolder (or write to a path, or give an ImageResolver).");
+        }
+
         DoclingWriter writer = new(pages, options);
         using Utf8JsonWriter json = new(output, new JsonWriterOptions { Indented = options.Indented });
         writer.Write(json);
@@ -55,6 +78,16 @@ public static class DoclingJson
         ArgumentNullException.ThrowIfNull(json);
         using JsonDocument document = JsonDocument.Parse(json);
         return DoclingReader.Read(document.RootElement);
+    }
+
+    /// <summary>
+    /// Reads DoclingDocument JSON into a flow document: texts as paragraphs in the styles of their roles, list items in lists,
+    /// tables with their cells and spans, pictures with the images the JSON carries, page headers and footers in each
+    /// section's header and footer, a section per page size.
+    /// </summary>
+    public static Egap.Documents.Document ToDocument(string json)
+    {
+        return LayoutDocument.Build(Read(json));
     }
 
     /// <summary>Reads DoclingDocument JSON from a UTF-8 stream; see <see cref="Read(string)"/>.</summary>
@@ -83,7 +116,50 @@ public sealed record DoclingJsonOptions
 
     /// <summary>Whether the JSON is indented for reading.</summary>
     public bool Indented { get; init; }
+
+    /// <summary>How pictures carry their image (Phase 6 Q20): as data URIs by default, as files, or not at all.</summary>
+    public DoclingImageMode Images { get; init; } = DoclingImageMode.DataUris;
+
+    /// <summary>The folder pictures are written to with <see cref="DoclingImageMode.Files"/>; their URIs name it by its last part.</summary>
+    public string? ImagesFolder { get; init; }
+
+    /// <summary>
+    /// Called for each picture's image unless <see cref="Images"/> is <see cref="DoclingImageMode.Omit"/>: the caller stores it
+    /// and returns the URI to write, or null to leave the picture without one.
+    /// </summary>
+    public Func<DoclingImage, string?>? ImageResolver { get; init; }
+
+    /// <summary>The resolution, in pixels per inch, at which figures drawn from the page become images. 200 by default.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not between 10 and 1200.</exception>
+    public double FigureResolution
+    {
+        get;
+        init => field = value is >= 10 and <= 1200 ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "Figures are drawn at 10 to 1200 dpi.");
+    } = 200;
+
+    /// <summary>Figures smaller than this on both sides, in points, get no image (bullets, rules, specks). 6 by default.</summary>
+    public double MinImageSize { get; init; } = 6;
 }
+
+/// <summary>How <see cref="DoclingJson"/> writes pictures' images.</summary>
+public enum DoclingImageMode
+{
+    /// <summary>Each image inside the JSON as a data URI, so the file stands alone.</summary>
+    DataUris = 0,
+
+    /// <summary>Each image a file in <see cref="DoclingJsonOptions.ImagesFolder"/>, named in reading order, the same image written once.</summary>
+    Files = 1,
+
+    /// <summary>Pictures keep their place and box but no image.</summary>
+    Omit = 2,
+}
+
+/// <summary>A picture's image for <see cref="DoclingJsonOptions.ImageResolver"/>.</summary>
+/// <param name="Bytes">The image file: a JPEG as the PDF stores it, or a PNG of the figure drawn from the page.</param>
+/// <param name="ContentType">Its media type.</param>
+/// <param name="SuggestedName">A file name in reading order, such as <c>image-003.png</c>.</param>
+/// <param name="Figure">The figure it shows.</param>
+public sealed record DoclingImage(ReadOnlyMemory<byte> Bytes, string ContentType, string SuggestedName, LayoutFigure Figure);
 
 /// <summary>Writes the JSON: items collected per array first, so every pointer is known before anything is written.</summary>
 internal sealed class DoclingWriter(IReadOnlyList<PdfPageLayout> pages, DoclingJsonOptions options)
@@ -326,9 +402,61 @@ internal sealed class DoclingWriter(IReadOnlyList<PdfPageLayout> pages, DoclingJ
             Refs(json, [], "captions");
             Refs(json, [], "references");
             Refs(json, [], "footnotes");
+            if (Image(figure) is (string uri, string type, int width, int height))
+            {
+                json.WriteStartObject("image");
+                json.WriteString("mimetype", type);
+                json.WriteNumber("dpi", (int)Math.Round(options.FigureResolution));
+                json.WriteStartObject("size");
+                json.WriteNumber("width", width);
+                json.WriteNumber("height", height);
+                json.WriteEndObject();
+                json.WriteString("uri", uri);
+                json.WriteEndObject();
+            }
+
             json.WriteEndObject();
         });
         return self;
+    }
+
+    private readonly Dictionary<string, string> written = [];
+
+    /// <summary>A picture's image under the options: its URI, media type and size in pixels; null when it gets none.</summary>
+    private (string Uri, string Type, int Width, int Height)? Image(LayoutFigure figure)
+    {
+        if (options.Images == DoclingImageMode.Omit || (figure.Bounds.Width < options.MinImageSize && figure.Bounds.Height < options.MinImageSize)
+            || figure.Image(options.FigureResolution) is not (Egap.Documents.ImageData image, int width, int height))
+        {
+            return null;
+        }
+
+        string extension = image.ContentType == "image/jpeg" ? ".jpg" : ".png";
+        string hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(image.Bytes.Span));
+        string name = written.TryGetValue(hash, out string? known) ? known : "image-" + (written.Count + 1).ToString("000", CultureInfo.InvariantCulture) + extension;
+        string? uri;
+        if (options.ImageResolver is { } resolver)
+        {
+            uri = resolver(new DoclingImage(image.Bytes, image.ContentType, name, figure));
+        }
+        else if (options.Images == DoclingImageMode.Files)
+        {
+            string folder = options.ImagesFolder!;
+            if (!written.ContainsKey(hash))
+            {
+                Directory.CreateDirectory(folder);
+                File.WriteAllBytes(System.IO.Path.Combine(folder, name), image.Bytes.ToArray());
+            }
+
+            uri = System.IO.Path.GetFileName(System.IO.Path.TrimEndingDirectorySeparator(folder)) + "/" + name;
+        }
+        else
+        {
+            uri = "data:" + image.ContentType + ";base64," + Convert.ToBase64String(image.Bytes.Span);
+        }
+
+        written.TryAdd(hash, name);
+        return uri is null ? null : (uri, image.ContentType, width, height);
     }
 
     /// <summary>Egap's own facts in <c>meta</c>, which Docling's schema leaves open: the role it found, its confidence, whether the item carries on the one before.</summary>
@@ -556,7 +684,7 @@ internal static class DoclingReader
         {
             string? alt = Text(meta, "egap__alt_text");
             bool decorative = Text(item, "content_layer") == "background";
-            return (page, new LayoutFigure(bounds, 0, confidence, null, [], [], alt, decorative, false, false));
+            return (page, new LayoutFigure(bounds, 0, confidence, null, [], [], alt, decorative, false, false) { Embedded = Embedded(item) });
         }
 
         if (!pointer.StartsWith("#/texts/", StringComparison.Ordinal) || Text(item, "text") is not string content)
@@ -590,6 +718,28 @@ internal static class DoclingReader
         return (page, new LayoutBlock(bounds, 0, confidence, role, content, level, marker, continues, content.Length == 0 ? [] : [Line(content, bounds)]));
     }
 
+    /// <summary>A picture's image when the JSON carries it as a base64 data URI; files and other URIs are left to the caller.</summary>
+    private static (Egap.Documents.ImageData, int, int)? Embedded(JsonElement item)
+    {
+        if (!item.TryGetProperty("image", out JsonElement image) || image.ValueKind != JsonValueKind.Object || Text(image, "uri") is not string uri
+            || !uri.StartsWith("data:", StringComparison.Ordinal) || uri.IndexOf(";base64,", StringComparison.Ordinal) is not (> 5 and int comma))
+        {
+            return null;
+        }
+
+        try
+        {
+            byte[] bytes = Convert.FromBase64String(uri[(comma + 8)..]);
+            int width = image.TryGetProperty("size", out JsonElement size) ? (int)Number(size, "width") : 0;
+            int height = image.TryGetProperty("size", out JsonElement size2) ? (int)Number(size2, "height") : 0;
+            return (new Egap.Documents.ImageData(bytes, uri[5..comma]), width, height);
+        }
+        catch (FormatException)
+        {
+            return null;
+        }
+    }
+
     /// <summary>A line of text over a box, its words spread across it by their share of the characters.</summary>
     private static LayoutLine Line(string text, RectF box)
     {
@@ -613,7 +763,7 @@ internal static class DoclingReader
         {
             LayoutBlock b => new LayoutBlock(b.Bounds, order, b.Confidence, b.Role, b.Text, b.Level, b.ListMarker, b.ContinuesPrevious, b.Lines),
             DetectedTable t => new DetectedTable(t.Bounds, order, t.Confidence, t.RowCount, t.ColumnCount, t.IsRuled, t.ContinuesPrevious, t.RepeatsHeader, t.Cells),
-            LayoutFigure f => new LayoutFigure(f.Bounds, order, f.Confidence, null, f.Images, f.Labels, f.AltText, f.IsDecorative, f.IsInline, f.IsWrapped),
+            LayoutFigure f => new LayoutFigure(f.Bounds, order, f.Confidence, null, f.Images, f.Labels, f.AltText, f.IsDecorative, f.IsInline, f.IsWrapped) { Embedded = f.Embedded },
             _ => element,
         };
     }
