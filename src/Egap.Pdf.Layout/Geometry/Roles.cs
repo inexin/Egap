@@ -18,21 +18,18 @@ internal static partial class Roles
     private const double Margin = 0.12;
 
     /// <summary>A note between a block's lines and a footnote: the raised marker glyph in the text and the note it points to.</summary>
-    internal sealed record NoteLink(PageGlyph Marker, BlockDraft Note);
+    internal sealed record NoteLink(PageGlyph Marker, BlockDraft Note, IReadOnlyList<PageGlyph>? Rest = null);
 
     /// <summary>Gives roles to the untagged paragraphs of <paramref name="pages"/>, in place; returns the footnote links found.</summary>
     public static List<NoteLink> Assign(IReadOnlyList<PageDraft> pages, IReadOnlyList<OutlineEntry> outline)
     {
         List<(PageDraft Page, BlockDraft Block)> all = [.. pages.SelectMany(p => p.Blocks.Where(b => b.Tag is null && !b.Fixed).Select(b => (p, b)))];
-        if (all.Count == 0)
-        {
-            return [];
-        }
-
         Style.Cache = new(ReferenceEqualityComparer.Instance);
         try
         {
-            return Assign(pages, outline, all);
+            List<NoteLink> links = all.Count == 0 ? [] : Assign(pages, outline, all);
+            LinkNotes(pages, links);
+            return links;
         }
         finally
         {
@@ -230,6 +227,69 @@ internal static partial class Roles
         }
 
         return links;
+    }
+
+    /// <summary>
+    /// Notes a page's tags (or a region detector) call notes but no marker links yet: each note's first word is its marker,
+    /// linked to the first raised glyph in the page's other text that repeats it.
+    /// </summary>
+    private static void LinkNotes(IReadOnlyList<PageDraft> pages, List<NoteLink> links)
+    {
+        HashSet<BlockDraft> linked = new(links.Select(l => l.Note), ReferenceEqualityComparer.Instance);
+        HashSet<PageGlyph> used = new(links.Select(l => l.Marker), ReferenceEqualityComparer.Instance);
+        foreach (PageDraft page in pages)
+        {
+            List<BlockDraft> notes = [.. page.Blocks.Where(b => b.Role == LayoutRole.Footnote && !linked.Contains(b) && b.Lines.Count > 0 && b.Lines[0].Words.Count > 0)];
+            if (notes.Count == 0)
+            {
+                continue;
+            }
+
+            // Raised glyphs side by side in a word make one marker ("12").
+            List<List<PageGlyph>> raised = [];
+            foreach (PageLine line in page.Blocks.Where(b => b.Role is not (LayoutRole.Footnote or LayoutRole.PageHeader or LayoutRole.PageFooter or LayoutRole.PageNumber))
+                .OrderBy(b => b.Order).SelectMany(b => b.Lines))
+            {
+                HashSet<PageGlyph> up = new(Raised(line), ReferenceEqualityComparer.Instance);
+                foreach (PageWord word in line.Words)
+                {
+                    List<PageGlyph>? run = null;
+                    foreach (PageGlyph glyph in word.Glyphs)
+                    {
+                        if (!up.Contains(glyph))
+                        {
+                            run = null;
+                            continue;
+                        }
+
+                        if (run is null)
+                        {
+                            raised.Add(run = []);
+                        }
+
+                        run.Add(glyph);
+                    }
+                }
+            }
+
+            foreach (BlockDraft note in notes)
+            {
+                string first = note.Lines[0].Words[0].Text.TrimStart('(', '[');
+                string marker = new([.. first.TakeWhile(c => char.IsLetterOrDigit(c) || "*†‡§¶".Contains(c, StringComparison.Ordinal))]);
+                if (marker.Length is 0 or > 3)
+                {
+                    continue;
+                }
+
+                List<PageGlyph>? reference = raised.FirstOrDefault(r => string.Concat(r.Select(g => g.Text)) == marker && !used.Contains(r[0]));
+                if (reference is not null)
+                {
+                    note.Marker = marker;
+                    used.Add(reference[0]);
+                    links.Add(new NoteLink(reference[0], note, reference.Count > 1 ? reference[1..] : null));
+                }
+            }
+        }
     }
 
     /// <summary>A line's raised glyphs: smaller than the line's text and set above its baseline, as note markers are.</summary>
