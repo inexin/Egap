@@ -7,12 +7,30 @@ namespace Egap.Pdf.Layout;
 /// </summary>
 internal static class TableJoins
 {
-    /// <summary>Marks each table that carries on the last table of the page before it, in place.</summary>
+    /// <summary>
+    /// Marks each table that carries on the last table of the page before it, in place. A tagged table carries on any
+    /// table of the page before from the same Table element, wherever it stands, since the tags say so.
+    /// </summary>
     public static void AcrossPages(IReadOnlyList<PageDraft> pages)
     {
         for (int i = 1; i < pages.Count; i++)
         {
+            foreach (TableDraft part in pages[i].Tables.Where(t => t.Tag is not null))
+            {
+                if (pages[i - 1].Tables.FirstOrDefault(t => t.Tag == part.Tag) is TableDraft earlier)
+                {
+                    part.Continues = true;
+                    List<string> heading = Row(earlier, earlier.Cells.Any(c => c.Header) ? earlier.Cells.Where(c => c.Header).Min(c => c.Row) : 0);
+                    part.RepeatsHeader = heading.Count > 0 && Row(part, 0).SequenceEqual(heading);
+                }
+            }
+
             TableDraft? before = Last(pages[i - 1]), next = First(pages[i]);
+            if (next?.Continues == true)
+            {
+                continue;
+            }
+
             if (before is null || next is null || before.Columns != next.Columns || !SameColumns(before, next))
             {
                 continue;

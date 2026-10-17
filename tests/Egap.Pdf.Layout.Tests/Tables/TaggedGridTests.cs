@@ -41,6 +41,19 @@ public sealed class TaggedGridTests
     }
 
     [Fact]
+    public void ATaggedTableAcrossPagesIsOneTable()
+    {
+        SyntheticDocument doc = SyntheticScenes.TableAcrossPages(tagged: true);
+        using PdfDocument pdf = PdfDocument.Open(doc.Save());
+
+        Egap.Documents.Document back = PdfToDocument.Convert(pdf, cancellationToken: TestContext.Current.CancellationToken);
+
+        Egap.Documents.Table table = Assert.Single(back.Descendants<Egap.Documents.Table>());
+        Assert.Equal(61, table.Rows.Count);
+        Assert.Equal("60", table.Rows[^1].Cells[0].GetText().Trim());
+    }
+
+    [Fact]
     public void AnEmptyRuledTableComesBackOnItsGrid()
     {
         SyntheticDocument doc = new(tagged: true) { SpanAttributes = false };
