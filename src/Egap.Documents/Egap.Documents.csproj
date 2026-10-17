@@ -22,6 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Egami.Drawing" />
     <PackageReference Include="Egami.Metafiles" />
+    <PackageReference Include="Egami.Css" />
     <ProjectReference Include="../Egap.Fonts/Egap.Fonts.csproj" />
   </ItemGroup>
 
