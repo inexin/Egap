@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="../files/fonts/*" LinkBase="files/fonts" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Egap.Documents\Egap.Documents.csproj" />
   </ItemGroup>
 
