@@ -49,6 +49,7 @@ internal static class TaggedGrids
                 continue;
             }
 
+            PlaceNested(table, rules);
             if ((OnRules(table, rules) ?? OnText(table)) is TableDraft placed)
             {
                 placed.Order = table.Order;
@@ -79,18 +80,11 @@ internal static class TaggedGrids
             return null;
         }
 
-        TableDraft? grid = null;
-        int best = 0;
-        foreach (TableDraft candidate in RuledTables.Candidates(rules, glyphs))
-        {
-            int inside = ink.Count(g => candidate.Box.Contains(g.Box.CenterX, g.Box.CenterY));
-            if (inside > best)
-            {
-                (best, grid) = (inside, candidate);
-            }
-        }
-
-        if (grid is null || best < ink.Count * Inside)
+        // The smallest grid that holds the text: a table's own, not the grid of a table it is nested in.
+        TableDraft? grid = RuledTables.Candidates(rules, glyphs)
+            .Where(c => ink.Count(g => c.Box.Contains(g.Box.CenterX, g.Box.CenterY)) >= ink.Count * Inside)
+            .MinBy(c => c.Box.Area);
+        if (grid is null)
         {
             return null;
         }
@@ -206,7 +200,7 @@ internal static class TaggedGrids
                     rowSpan++;
                 }
 
-                cells.Add(new CellDraft(r, column, rowSpan, span, tagged.Header, tagged.Lines) { Box = box });
+                cells.Add(new CellDraft(r, column, rowSpan, span, tagged.Header, tagged.Lines) { Box = box, Tables = tagged.Tables });
             }
         }
 
@@ -259,7 +253,7 @@ internal static class TaggedGrids
         {
             if (row.Count == columns)
             {
-                cells.AddRange(row.Select((x, c) => new CellDraft(x.Row, c, 1, 1, x.Header, x.Lines) { Box = x.Box }));
+                cells.AddRange(row.Select((x, c) => new CellDraft(x.Row, c, 1, 1, x.Header, x.Lines) { Box = x.Box, Tables = x.Tables }));
                 continue;
             }
 
@@ -304,11 +298,31 @@ internal static class TaggedGrids
                     end = Math.Min(end, Math.Max(at[i] + 1, ends[i] + 1));
                 }
 
-                cells.Add(new CellDraft(row[i].Row, at[i], 1, end - at[i], row[i].Header, row[i].Lines) { Box = row[i].Box });
+                cells.Add(new CellDraft(row[i].Row, at[i], 1, end - at[i], row[i].Header, row[i].Lines) { Box = row[i].Box, Tables = row[i].Tables });
             }
         }
 
         return new TableDraft(cells, table.Rows, columns) { Box = table.Box, IsRuled = table.IsRuled };
+    }
+
+    /// <summary>Places the tables nested in <paramref name="table"/>'s cells on their own grids, depth first.</summary>
+    private static void PlaceNested(TableDraft table, List<RuledTables.Rule> rules)
+    {
+        foreach (CellDraft cell in table.Cells)
+        {
+            for (int i = 0; i < cell.Tables.Count; i++)
+            {
+                TableDraft inner = cell.Tables[i];
+                PlaceNested(inner, rules);
+                if ((OnRules(inner, rules) ?? OnText(inner)) is TableDraft placed)
+                {
+                    placed.Order = inner.Order;
+                    placed.Tag = inner.Tag;
+                    placed.Confidence = inner.Confidence;
+                    cell.Tables[i] = placed;
+                }
+            }
+        }
     }
 
     /// <summary>The page's ruled grids with no text inside, top to bottom.</summary>

@@ -230,8 +230,10 @@ public sealed class LayoutTable : LayoutElement
 /// <summary>A table cell.</summary>
 public sealed class LayoutTableCell
 {
-    internal LayoutTableCell(int row, int column, int rowSpan, int columnSpan, bool header, string text, RectF bounds, IReadOnlyList<LayoutLine> lines)
+    internal LayoutTableCell(int row, int column, int rowSpan, int columnSpan, bool header, string text, RectF bounds, IReadOnlyList<LayoutLine> lines,
+        IReadOnlyList<LayoutTable>? tables = null)
     {
+        Tables = tables ?? [];
         Row = row;
         Column = column;
         RowSpan = rowSpan;
@@ -265,6 +267,9 @@ public sealed class LayoutTableCell
 
     /// <summary>The cell's lines, top to bottom.</summary>
     public IReadOnlyList<LayoutLine> Lines { get; }
+
+    /// <summary>Tables nested in the cell, top to bottom; empty for most cells. Their text is not in <see cref="Lines"/>.</summary>
+    public IReadOnlyList<LayoutTable> Tables { get; }
 
     /// <inheritdoc/>
     public override string ToString()

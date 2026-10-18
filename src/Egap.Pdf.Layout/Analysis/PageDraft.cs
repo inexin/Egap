@@ -64,6 +64,9 @@ internal sealed class CellDraft(int row, int column, int rowSpan, int columnSpan
     public PageBox Box { get; set; } = PageBox.Around(lines.Select(l => l.Box));
 
     public string Text => string.Join(' ', Lines.Select(l => l.Text));
+
+    /// <summary>Tables inside the cell (a table nested in a cell, as tags give it).</summary>
+    public List<TableDraft> Tables { get; init; } = [];
 }
 
 /// <summary>A table found on a page: its cells on a grid of <see cref="Rows"/> by <see cref="Columns"/>.</summary>

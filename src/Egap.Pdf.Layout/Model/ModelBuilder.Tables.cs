@@ -163,7 +163,7 @@ internal sealed partial class ModelBuilder
         }
 
         List<CellDraft> cells = [.. part.Cells.Select(c => new CellDraft(c.Row, map[c.Column], c.RowSpan,
-            map[Math.Min(c.Column + c.ColumnSpan, edges.Count - 1)] - map[c.Column], c.Header, c.Lines) { Box = c.Box })];
+            map[Math.Min(c.Column + c.ColumnSpan, edges.Count - 1)] - map[c.Column], c.Header, c.Lines) { Box = c.Box, Tables = c.Tables })];
         return new TableDraft(cells, part.Rows, grid.Count - 1)
         {
             Box = part.Box,
@@ -232,15 +232,23 @@ internal sealed partial class ModelBuilder
             paragraphs[^1].Add(line);
         }
 
-        if (paragraphs.Count == 0)
+        if (paragraphs.Count == 0 && source.Tables.Count == 0)
         {
             cell.Blocks.Add(new Paragraph(document) { Style = styles.Normal.Style });
             return;
         }
 
+        // Tables nested in the cell go between its paragraphs where they stand; a cell ends with a paragraph, as Word's do.
+        List<TableDraft> nested = [.. source.Tables.OrderBy(t => t.Box.Top)];
         Frame frame = new(source.Box.Left, source.Box.Right);
         foreach (List<PageLine> part in paragraphs)
         {
+            while (nested.Count > 0 && nested[0].Box.Top < part[0].Box.Top)
+            {
+                WriteNested(cell, nested[0], frame);
+                nested.RemoveAt(0);
+            }
+
             Paragraph paragraph = new(document) { Style = styles.Normal.Style };
             paragraph.Format.SpaceBefore = 0;
             paragraph.Format.SpaceAfter = 0;
@@ -259,6 +267,30 @@ internal sealed partial class ModelBuilder
             writer.Write(paragraph, part, styles.Normal.Font);
             cell.Blocks.Add(paragraph);
         }
+
+        foreach (TableDraft table in nested)
+        {
+            WriteNested(cell, table, frame);
+        }
+
+        if (cell.Blocks.Count == 0 || cell.Blocks[^1] is Table)
+        {
+            cell.Blocks.Add(new Paragraph(document) { Style = styles.Normal.Style });
+        }
+    }
+
+    /// <summary>Writes a table nested in a cell, leaving the outer table's place in the page's flow as it was.</summary>
+    private void WriteNested(Cell cell, TableDraft table, Frame frame)
+    {
+        // A cell or table with no text on the page has no place; it measures from the left edge.
+        if (!double.IsFinite(frame.Left) || !double.IsFinite(frame.Right))
+        {
+            frame = double.IsFinite(table.Box.Left) && double.IsFinite(table.Box.Right) ? new Frame(table.Box.Left, table.Box.Right) : new Frame(0, 0);
+        }
+
+        (Table? outer, Paragraph? before) = (lastTable, last);
+        WriteTable(cell, table, frame);
+        (lastTable, last) = (outer, before);
     }
 
     /// <summary>The x of each grid line: where cells starting in each column start, the table's right after the last.</summary>
