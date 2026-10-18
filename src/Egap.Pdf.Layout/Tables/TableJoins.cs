@@ -26,7 +26,9 @@ internal static class TableJoins
             }
 
             TableDraft? before = Last(pages[i - 1]), next = First(pages[i]);
-            if (next?.Continues == true)
+
+            // Two tables the tags tell apart stay apart, however alike their columns.
+            if (next?.Continues == true || (before?.Tag is not null && next?.Tag is not null))
             {
                 continue;
             }

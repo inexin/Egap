@@ -247,8 +247,12 @@ internal static partial class Roles
 
             // Raised glyphs side by side in a word make one marker ("12").
             List<List<PageGlyph>> raised = [];
-            foreach (PageLine line in page.Blocks.Where(b => b.Role is not (LayoutRole.Footnote or LayoutRole.PageHeader or LayoutRole.PageFooter or LayoutRole.PageNumber))
-                .OrderBy(b => b.Order).SelectMany(b => b.Lines))
+            // In reading order, table cells included: a note's marker can stand in a cell.
+            IEnumerable<(int Order, IEnumerable<PageLine> Lines)> items = page.Blocks
+                .Where(b => b.Role is not (LayoutRole.Footnote or LayoutRole.PageHeader or LayoutRole.PageFooter or LayoutRole.PageNumber))
+                .Select(b => (b.Order, (IEnumerable<PageLine>)b.Lines))
+                .Concat(page.Tables.Select(t => (t.Order, t.Cells.OrderBy(c => c.Row).ThenBy(c => c.Column).SelectMany(c => c.Lines))));
+            foreach (PageLine line in items.OrderBy(i => i.Order).SelectMany(i => i.Lines))
             {
                 HashSet<PageGlyph> up = new(Raised(line), ReferenceEqualityComparer.Instance);
                 foreach (PageWord word in line.Words)
