@@ -14,10 +14,6 @@
         {
           "src": "../src/Egap.Pdf.Conversion",
           "files": [ "Egap.Pdf.Conversion.csproj" ]
-        },
-        {
-          "src": "../src/Egap.Fonts",
-          "files": [ "Egap.Fonts.csproj" ]
         }
       ],
       "dest": "api",

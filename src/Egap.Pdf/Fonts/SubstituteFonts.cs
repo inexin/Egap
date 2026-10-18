@@ -8,12 +8,12 @@ namespace Egap.Pdf.Fonts;
 internal sealed record SubstituteFont(FontProgram Program, FontSynthesis Synthesis, string Source);
 
 /// <summary>
-/// Substitutes for fonts that are not embedded (Phase 4 design Q5). The standard 14 and their common aliases (Arial,
-/// Times New Roman, Courier New) always get a bundled font, so they look the same on every machine: Liberation Sans, Serif
-/// and Mono from Egap.Fonts, and Foxit's Symbol and ZapfDingbats (BSD-3-Clause, as PDFium and pdf.js ship them). Other names are looked up among the
-/// system fonts when allowed, by family then style, and otherwise get the bundled font their name or descriptor flags
-/// suggest (fixed pitch, serif, sans), bold and italic as the name and flags say. Glyphs are always placed by the PDF's
-/// widths, so lines keep their length whatever the substitute's shapes.
+/// Substitutes for fonts that are not embedded (Phase 4 design Q5). The standard 14 and their common aliases (Arial, Times
+/// New Roman, Courier New) always get a bundled font, so they look the same on every machine: Liberation Sans, Serif and
+/// Mono from Egami.Fonts.Substitutes, and Foxit's Symbol and ZapfDingbats (BSD-3-Clause, as PDFium and pdf.js ship them).
+/// Other names are looked up among the system fonts when allowed, by family then style, and otherwise get the bundled font
+/// their name or descriptor flags suggest (fixed pitch, serif, sans), bold and italic as the name and flags say. Glyphs are
+/// always placed by the PDF's widths, so lines keep their length whatever the substitute's shapes.
 /// </summary>
 internal static class SubstituteFonts
 {
@@ -142,10 +142,10 @@ internal static class SubstituteFonts
             return Load(file) is FontProgram foxit ? new SubstituteFont(foxit, FontSynthesis.None, file) : null;
         }
 
-        // Liberation, metric-compatible with Helvetica, Times and Courier, from Egap.Fonts.
+        // Liberation, metric-compatible with Helvetica, Times and Courier, from Egami.Fonts.Substitutes.
         string name = family switch { Family.Serif => "Times", Family.Fixed => "Courier", _ => "Helvetica" };
         FontStyle style = new(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright);
-        return Egap.Fonts.StandardFonts.Find(name, style) is Typeface typeface && Program(typeface) is FontProgram program
+        return global::Egami.Fonts.Substitutes.SubstituteFonts.Find(name, style) is Typeface typeface && Program(typeface) is FontProgram program
             ? new SubstituteFont(program, FontSynthesis.None, typeface.PostScriptName)
             : null;
     }
@@ -168,7 +168,7 @@ internal static class SubstituteFonts
 
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Typeface, FontProgram> Programs = [];
 
-    /// <summary>A system or Egap.Fonts typeface as a font program, read once, so its cmaps and glyph names are read as an embedded one's would be.</summary>
+    /// <summary>A system or bundled substitute typeface as a font program, read once, so its cmaps and glyph names are read as an embedded one's would be.</summary>
     private static FontProgram? Program(Typeface typeface)
     {
         try

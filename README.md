@@ -31,12 +31,11 @@ pdf.Save("out.pdf");                                             // incremental:
 
 | Package | Version | What it does |
 | --- | --- | --- |
-| Egap.Pdf | 1.4.0 | Reads, edits, renders, signs, redacts and saves PDF; PDF/A, tagged PDF, optimize, imposition, stamps, compare |
-| Egap.Documents | 1.1.0 | One document model for DOCX, HTML and Markdown, with page layout onto any Egami canvas |
+| Egap.Pdf | 1.4.1 | Reads, edits, renders, signs, redacts and saves PDF; PDF/A, tagged PDF, optimize, imposition, stamps, compare |
+| Egap.Documents | 1.1.1 | One document model for DOCX, HTML and Markdown, with page layout onto any Egami canvas |
 | Egap.Pdf.Conversion | 1.1.0 | Documents to tagged PDF, and PDF pages analysed and converted back into documents |
-| Egap.Fonts | 1.0.0 | Open, metric-compatible substitutes for Helvetica, Arial, Times, Courier, Calibri and Cambria |
 
-None of them is on NuGet yet.
+All three are on [NuGet](https://www.nuget.org/packages?q=Egap).
 
 ## Documentation
 
@@ -65,5 +64,6 @@ reporting; see [SECURITY.md](SECURITY.md).
 
 ## License
 
-[MIT](LICENSE). Egap.Fonts bundles fonts under the SIL Open Font License 1.1; see
+[MIT](LICENSE). The substitute fonts come from
+[Egami.Fonts.Substitutes](https://www.nuget.org/packages/Egami.Fonts.Substitutes) under the SIL Open Font License 1.1; see
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

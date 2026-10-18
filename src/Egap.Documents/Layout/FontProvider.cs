@@ -2,8 +2,7 @@ using System.Collections.Concurrent;
 
 using Egami.Fonts;
 using Egami.Fonts.Shaping;
-
-using Egap.Fonts;
+using Egami.Fonts.Substitutes;
 
 namespace Egap.Documents.Layout;
 
@@ -98,7 +97,7 @@ internal sealed class FontProvider
             List<FontFamily> families = [.. chain.SelectMany(c => c.Families)];
             if (this.settings.UseStandardSubstitutes)
             {
-                families.AddRange(StandardFonts.Collection.Families);
+                families.AddRange(SubstituteFonts.Collection.Families);
             }
 
             return new FontFallback(families, this.settings.UseSystemFonts ? SystemFontFallback.Instance : null);
@@ -135,7 +134,7 @@ internal sealed class FontProvider
             }
         }
 
-        return StandardFonts.Collection.TryGetFamily(used, out FontFamily standard) ? standard : null;
+        return SubstituteFonts.Collection.TryGetFamily(used, out FontFamily standard) ? standard : null;
     }
 
     /// <summary>Records that characters of <paramref name="requested"/> came from <paramref name="used"/>.</summary>
@@ -164,10 +163,10 @@ internal sealed class FontProvider
                 return substituted;
             }
 
-            if (settings.UseStandardSubstitutes && StandardFonts.Find(family, style) is { } standard)
+            if (settings.UseStandardSubstitutes && SubstituteFonts.Find(family, style) is { } standard)
             {
                 Note(family, style, standard.FamilyName, FontSubstitutionReason.Missing);
-                return StandardFonts.Collection.Match(standard.FamilyName, style) ?? new FontMatch(standard, FontSynthesis.None);
+                return SubstituteFonts.Collection.Match(standard.FamilyName, style) ?? new FontMatch(standard, FontSynthesis.None);
             }
 
             // Word's own substitution from the font table: the alternative name, then a face of the font's kind.
@@ -193,10 +192,10 @@ internal sealed class FontProvider
                         return alternate;
                     }
 
-                    if (settings.UseStandardSubstitutes && StandardFonts.Find(candidate, style) is { } twin)
+                    if (settings.UseStandardSubstitutes && SubstituteFonts.Find(candidate, style) is { } twin)
                     {
                         Note(family, style, twin.FamilyName, FontSubstitutionReason.Missing);
-                        return StandardFonts.Collection.Match(twin.FamilyName, style) ?? new FontMatch(twin, FontSynthesis.None);
+                        return SubstituteFonts.Collection.Match(twin.FamilyName, style) ?? new FontMatch(twin, FontSynthesis.None);
                     }
                 }
             }
@@ -231,9 +230,9 @@ internal sealed class FontProvider
             return chosen;
         }
 
-        // Liberation Sans ships with Egap.Fonts, so there is always a face, whatever the settings and the machine.
-        return StandardFonts.Collection.Match("Liberation Sans", style)
-            ?? new FontMatch(StandardFonts.Find("Arial", style)!, FontSynthesis.None);
+        // Liberation Sans ships with Egami.Fonts.Substitutes, so there is always a face, whatever the settings and the machine.
+        return SubstituteFonts.Collection.Match("Liberation Sans", style)
+            ?? new FontMatch(SubstituteFonts.Find("Arial", style)!, FontSynthesis.None);
     }
 
     private void Note(string requested, FontStyle style, string used, FontSubstitutionReason reason)

@@ -3,7 +3,16 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Pdf 1.4.0 (unreleased, first release on NuGet)
+## Egap.Pdf 1.4.1 and Egap.Documents 1.1.1 (unreleased)
+
+- The bundled substitute fonts (Liberation Sans, Serif and Mono, Carlito, Caladea) now come from Egami's
+  [Egami.Fonts.Substitutes](https://www.nuget.org/packages/Egami.Fonts.Substitutes) 1.0.0 instead of Egap.Fonts. The fonts are
+  the same files, so output does not change.
+- Egap.Fonts is deprecated and gets no new versions. If you used `Egap.Fonts.StandardFonts`, reference Egami.Fonts.Substitutes
+  and use `Egami.Fonts.Substitutes.SubstituteFonts`, which has the same members. Code that reached Egap.Fonts only through
+  Egap.Pdf or Egap.Documents needs the same change, since they no longer bring it in.
+
+## Egap.Pdf 1.4.0 (2026-10-18)
 
 ### PDF tools
 - Optimize: presets Lossless (default), Print, Ebook and Screen; image downsampling and re-encoding (JPEG, Flate, CCITT G4),
@@ -48,7 +57,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Reading, damaged and encrypted files included (RC4 and AES, revisions 2 to 6), into a lazily loaded object graph with
   change tracking; incremental and full saves, object streams, AES-256 encryption.
 
-## Egap.Documents 1.1.0 (unreleased, first release on NuGet)
+## Egap.Documents 1.1.0 (2026-10-18)
 
 - Images in Markdown output through a resolver or a folder beside the file; EMF and WMF pictures as PNG or SVG.
 - Page drawing and PDF export: a picture used on many pages, such as a logo in a header, is embedded once; SVG pictures
@@ -57,7 +66,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   lists, tables, fields, comments and tracked changes; find, replace and a document builder; page layout with floats,
   columns, headers, footers and footnotes, drawn on any Egami canvas.
 
-## Egap.Pdf.Conversion 1.1.0 (unreleased, first release on NuGet)
+## Egap.Pdf.Conversion 1.1.0 (2026-10-18)
 
 - Renamed from Egap.Pdf.Layout, with its namespaces (`Egap.Pdf.Layout` is now `Egap.Pdf.Conversion`). Breaking, before the
   first release.
@@ -67,7 +76,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   blocks, reading order, headings, lists, tables and figures and converted back into documents; auto-tagging; DoclingDocument
   JSON and table CSV output.
 
-## Egap.Fonts 1.0.0 (unreleased, first release on NuGet)
+## Egap.Fonts 1.0.0 (2026-10-18)
 
 - Liberation Sans, Serif and Mono, Carlito and Caladea (SIL OFL 1.1) as metric-compatible substitutes for Helvetica,
   Arial, Times, Times New Roman, Courier, Courier New, Calibri and Cambria, found by name or alias.

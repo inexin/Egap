@@ -3,9 +3,8 @@ using System.Numerics;
 using Egami.Drawing;
 using Egami.Fonts;
 using Egami.Fonts.Shaping;
+using Egami.Fonts.Substitutes;
 using Egami.Pixels;
-
-using Egap.Fonts;
 
 namespace Egap.Pdf.Conversion.Tests.Synthetic;
 
@@ -14,7 +13,8 @@ namespace Egap.Pdf.Conversion.Tests.Synthetic;
 /// Plan task 1): every block with its role, lines, boxes and reading order, and every table with its cells, so each analysis
 /// stage can be checked against exact ground truth. Text flows down columns and onto new pages like a word processor's:
 /// greedy line breaks, first-line indents, hanging list indents, optional hyphenation, page headers and numbers, footnotes
-/// at the page foot and tables that repeat their header rows on the next page. Fonts are Egap.Fonts' Liberation faces.
+/// at the page foot and tables that repeat their header rows on the next page. Fonts are Egami.Fonts.Substitutes' Liberation
+/// faces.
 /// </summary>
 /// <remarks>
 /// Blocks that stand outside the reading order (page headers, footers and numbers, footnotes) get order -1. A paragraph
@@ -100,7 +100,7 @@ internal sealed class SyntheticDocument
 
     public static Font FontOf(string family, double size, bool bold = false, bool italic = false)
     {
-        Typeface face = StandardFonts.Find(family, new FontStyle(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright))!;
+        Typeface face = SubstituteFonts.Find(family, new FontStyle(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright))!;
         return new Font(face, (float)size);
     }
 

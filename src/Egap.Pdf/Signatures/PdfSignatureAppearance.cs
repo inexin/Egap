@@ -132,7 +132,7 @@ public sealed class PdfSignatureAppearance
             left += side + margin;
         }
 
-        Typeface face = global::Egap.Fonts.StandardFonts.Find("Helvetica", FontStyle.Normal)!;
+        Typeface face = global::Egami.Fonts.Substitutes.SubstituteFonts.Find("Helvetica", FontStyle.Normal)!;
         float textWidth = width - left - margin;
         if (textWidth <= 0)
         {

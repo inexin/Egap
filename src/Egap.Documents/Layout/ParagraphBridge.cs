@@ -4,9 +4,8 @@ using System.Text;
 using Egami.Fonts;
 using Egami.Fonts.Layout;
 using Egami.Fonts.Shaping;
+using Egami.Fonts.Substitutes;
 using Egami.Pixels;
-
-using Egap.Fonts;
 
 using EgamiParagraph = Egami.Fonts.Layout.Paragraph;
 using EgamiParagraphStyle = Egami.Fonts.Layout.ParagraphStyle;
@@ -412,7 +411,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         }
         catch (Exception e) when (e.GetType().Name == "LayoutLimitException")
         {
-            if (StandardFonts.Collection.Match("Liberation Sans", default) is { } match)
+            if (SubstituteFonts.Collection.Match("Liberation Sans", default) is { } match)
             {
                 _ = TextShaper.Shape(new string('x', (rich.Text.Length / 200) + 1), new Font(match.Typeface, 10));
             }
