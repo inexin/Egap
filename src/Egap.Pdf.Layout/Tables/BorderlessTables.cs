@@ -46,7 +46,8 @@ internal static class BorderlessTables
             }
         }
 
-        foreach (TableHint hint in hints)
+        // The smallest areas first: a band of rules round the whole page holds the tables inside it, not the other way round.
+        foreach (TableHint hint in hints.OrderBy(h => h.Box.Area))
         {
             PageBox area = hint.Box with { Top = hint.Box.Top - 1, Bottom = hint.Box.Bottom + 1 };
             if (Build(Inside(glyphs, area, used), wordGap, bounded, minimumRows: 2) is TableDraft table)

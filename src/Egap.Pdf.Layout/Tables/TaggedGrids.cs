@@ -269,6 +269,13 @@ internal static class TaggedGrids
                 }
             }
 
+            // A row of one cell whose text crosses a column edge is a title across the table.
+            if (row.Count == 1 && starts[0] >= 0 && ends[0] > starts[0])
+            {
+                cells.Add(new CellDraft(row[0].Row, 0, 1, columns, row[0].Header, row[0].Lines) { Box = row[0].Box, Tables = row[0].Tables });
+                continue;
+            }
+
             // A short row's cells in order: each cell with text from its own column (or right after the cell before),
             // each empty cell the column after the cell before; a cell's span runs to the column before the next cell.
             int[] at = new int[row.Count];

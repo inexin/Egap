@@ -236,7 +236,7 @@ internal static class PageAnalysis
         }
 
         (List<TableDraft> ruled, List<TableHint> hints) = RuledTables.Find(content.Paths, glyphs, content.Images);
-        foreach (TableDraft table in ruled.Concat(hints.Select(h => FromParagraphs(h.Box, text)).OfType<TableDraft>()))
+        foreach (TableDraft table in ruled.Concat(hints.OrderBy(h => h.Box.Area).Select(h => FromParagraphs(h.Box, text)).OfType<TableDraft>()))
         {
             HashSet<PageGlyph> inside = new(Glyphs(table), ReferenceEqualityComparer.Instance);
             List<BlockDraft> taken = [.. text.Where(b => b.Lines.SelectMany(l => l.Words).SelectMany(w => w.Glyphs).Any(inside.Contains))];

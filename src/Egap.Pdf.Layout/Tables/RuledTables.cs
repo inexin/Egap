@@ -15,6 +15,12 @@ internal sealed record TableHint(PageBox Box, IReadOnlyList<double> Rules);
 /// </summary>
 internal static class RuledTables
 {
+    /// <summary>
+    /// The widest word gap, in ems, the check between rules assumes: a page of tables (columns of figures) has a median gap
+    /// of several ems, which would make every table row read as one piece of prose.
+    /// </summary>
+    private const double MaxWordGap = 0.5;
+
     /// <summary>How close, in points, two rules must be to meet or to be one line.</summary>
     private const double Tolerance = 1.5;
 
@@ -38,7 +44,7 @@ internal static class RuledTables
             List<Rule> rows = [];
             foreach (Rule rule in stack.OrderBy(r => r.At))
             {
-                if (rows.Count > 0 && Between(rows[^1], rule, glyphs, wordGap ??= BlockBuilder.WordGap(PageReader.Lines(glyphs))))
+                if (rows.Count > 0 && Between(rows[^1], rule, glyphs, wordGap ??= Math.Min(BlockBuilder.WordGap(PageReader.Lines(glyphs)), MaxWordGap)))
                 {
                     Hint(rows, glyphs, hints);
                     rows = [];
