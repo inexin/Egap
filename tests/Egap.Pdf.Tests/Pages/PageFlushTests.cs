@@ -83,7 +83,7 @@ public sealed class PageFlushTests(ITestOutputHelper output)
                 if (now > peak)
                 {
                     peak = now;
-                    peakInfo = $"phase {at}, compacted {compacted / 1e6:F1} MB, heap {info.HeapSizeBytes / 1e6:F1}, frag {info.FragmentationBytes / 1e6:F1}, gc#{info.Index} gen{info.Generation} compacted={info.Compacted} concurrent={info.Concurrent}, {gens}";
+                    peakInfo = $"phase {at}, compacted {compacted / 1e6:F1} MB, heap {info.HeapSizeBytes / 1e6:F1}, frag {info.FragmentedBytes / 1e6:F1}, gc#{info.Index} gen{info.Generation} compacted={info.Compacted} concurrent={info.Concurrent}, {gens}";
                 }
 
                 Thread.Sleep(50);
