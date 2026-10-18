@@ -33,6 +33,11 @@ internal static class FontSubsetter
             return (0, 0);
         }
 
+        if (!HasCandidates(document))
+        {
+            return (0, 0);
+        }
+
         Dictionary<PdfDictionary, HashSet<int>> codes = new(ReferenceEqualityComparer.Instance);
         HashSet<PdfDictionary> excluded = new(ReferenceEqualityComparer.Instance);
         Collect(document, codes, excluded);
@@ -87,6 +92,24 @@ internal static class FontSubsetter
         }
 
         return (fonts, bytes);
+    }
+
+    /// <summary>
+    /// Whether any font object holds a program that could be cut: embedded, not a subset already, and in a format written
+    /// back. Without one the walk over every page that finds the codes shown is not needed.
+    /// </summary>
+    private static bool HasCandidates(PdfDocument document)
+    {
+        foreach (PdfReference reference in document.Objects)
+        {
+            if (document.Objects[reference] is PdfDictionary font && Program(font) is not null
+                && PdfFont.FromDictionary(font) is { IsSubset: false, IsEmbedded: true })
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>The embedded program of a font and the subset format it is written back in; null for none or Type 1.</summary>

@@ -24,22 +24,31 @@ internal static class JpegOptimizer
             return null;
         }
 
-        byte[] jpeg;
-        try
+        byte[]? optimized;
+        if (settings.Prepared is { } prepared && prepared.TryGetValue(stream, out byte[]? ready))
         {
-            jpeg = image.DecodeFilters().Data;
+            optimized = ready;
         }
-        catch (PdfException)
+        else
         {
-            return null;
+            byte[] jpeg;
+            try
+            {
+                jpeg = image.DecodeFilters().Data;
+            }
+            catch (PdfException)
+            {
+                return null;
+            }
+
+            if (settings.Lossy && Quality(jpeg) is int quality && quality >= settings.JpegQuality + ClearlyAbove && reencode() is ImageChange change)
+            {
+                return change;
+            }
+
+            optimized = Huffman(jpeg);
         }
 
-        if (settings.Lossy && Quality(jpeg) is int quality && quality >= settings.JpegQuality + ClearlyAbove && reencode() is ImageChange change)
-        {
-            return change;
-        }
-
-        byte[]? optimized = Huffman(jpeg);
         long before = stream.EncodedLength;
         if (optimized is null || optimized.Length >= before)
         {
@@ -52,6 +61,50 @@ internal static class JpegOptimizer
         stream.Dictionary["Filter"] = PdfName.Get("DCTDecode");
         stream.SetEncodedBytes(optimized);
         return result;
+    }
+
+    /// <summary>
+    /// Under lossless settings, where the Huffman pass is all a JPEG kept at its size can get, runs that pass for every such
+    /// JPEG at once, on as many cores as there are, ahead of <see cref="Optimize"/>: by stream, the result or null. The passes
+    /// share nothing; reading the streams stays on this thread.
+    /// </summary>
+    public static Dictionary<PdfStream, byte[]?> Prepare(IReadOnlyList<SurveyedImage> images, ImageSettings settings)
+    {
+        Dictionary<PdfStream, byte[]?> prepared = new(ReferenceEqualityComparer.Instance);
+        if (settings.Lossy)
+        {
+            return prepared;
+        }
+
+        List<(PdfStream Stream, byte[] Jpeg)> work = [];
+        HashSet<PdfStream> seen = new(ReferenceEqualityComparer.Instance);
+        foreach (SurveyedImage surveyed in images)
+        {
+            PdfImage image = surveyed.Image;
+            (int width, int height) = ImageRecompressor.TargetSize(surveyed, settings);
+            if (image.Stream is not PdfStream stream || image.ImageCodec?.Value != "DCTDecode" || width < image.Width || height < image.Height
+                || !seen.Add(stream))
+            {
+                continue;
+            }
+
+            try
+            {
+                work.Add((stream, image.DecodeFilters().Data));
+            }
+            catch (PdfException)
+            {
+            }
+        }
+
+        byte[]?[] results = new byte[work.Count][];
+        Parallel.For(0, work.Count, i => results[i] = Huffman(work[i].Jpeg));
+        for (int i = 0; i < work.Count; i++)
+        {
+            prepared[work[i].Stream] = results[i];
+        }
+
+        return prepared;
     }
 
     /// <summary>The JPEG with optimal Huffman tables and its coefficients as they were; null when Egami cannot transform it.</summary>

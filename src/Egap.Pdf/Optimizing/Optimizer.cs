@@ -35,7 +35,9 @@ internal static class Optimizer
         if (options.OptimizeImages)
         {
             ImageSettings settings = Images(options);
-            foreach (SurveyedImage image in ImageSurvey.Run(document))
+            IReadOnlyList<SurveyedImage> surveyed = ImageSurvey.Run(document, lossy: settings.Lossy);
+            settings = settings with { Prepared = JpegOptimizer.Prepare(surveyed, settings) };
+            foreach (SurveyedImage image in surveyed)
             {
                 if (ImageRecompressor.Optimize(document, image, settings) is ImageChange change)
                 {
