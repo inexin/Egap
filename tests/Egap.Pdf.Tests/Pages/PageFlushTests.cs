@@ -46,8 +46,12 @@ public sealed class PageFlushTests(ITestOutputHelper output)
     /// 100 MB of managed memory, sampled as the live heap every 50 ms. Each image is 200 by 150 noisy pixels, about 80 KB written, so without flush the images alone
     /// would hold about 80 MB.
     /// </summary>
-    [Fact]
-    public void GeneratesAThousandPagesUnderTheMemoryTarget()
+    [Theory]
+    [InlineData("full")]
+    [InlineData("text")]
+    [InlineData("image")]
+    [InlineData("raster")]
+    public void GeneratesAThousandPagesUnderTheMemoryTarget(string variant)
     {
         string file = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"egap-flush-{Guid.NewGuid():N}.pdf");
         long peak = 0;
@@ -105,8 +109,12 @@ public sealed class PageFlushTests(ITestOutputHelper output)
                     using (Raster<Rgba8> image = Photo(200, 150, i))
                     using (PdfCanvas canvas = new(page))
                     {
-                        canvas.DrawImage(image, new RectF(72, 72, 300, 225));
-                        for (int line = 0; line < 30; line++)
+                        if (variant is "full" or "image")
+                        {
+                            canvas.DrawImage(image, new RectF(72, 72, 300, 225));
+                        }
+
+                        for (int line = 0; line < (variant is "full" or "text" ? 30 : 0); line++)
                         {
                             canvas.DrawText($"Page {i + 1}, line {line + 1}: the quick brown fox jumps over the lazy dog.", new Vector2(72, 340 + (line * 15)), font, ink);
                         }
@@ -126,9 +134,9 @@ public sealed class PageFlushTests(ITestOutputHelper output)
             sampler.Join();
             long size = new FileInfo(file).Length;
             output.WriteLine($"File {size:N0} bytes; managed memory after drawing {afterDrawing / 1e6:F1} MB, peak {(peak - start) / 1e6:F1} MB.");
-            Assert.True(size > 60_000_000, $"The images should not compress away: {size:N0} bytes.");
+            Assert.True(variant != "full" || size > 60_000_000, $"The images should not compress away: {size:N0} bytes.");
             string config = string.Join(", ", GC.GetConfigurationVariables().Select(kv => $"{kv.Key}={kv.Value}"));
-            Assert.Fail($"PROBE {System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier} cpus {Environment.ProcessorCount} server {System.Runtime.GCSettings.IsServerGC} latency {System.Runtime.GCSettings.LatencyMode}; start {start / 1e6:F1} MB; peak {(peak - start) / 1e6:F1} MB ({peakInfo}); draw peak {(drawPeak - start) / 1e6:F1}, save peak {(savePeak - start) / 1e6:F1}, compacted peak {(compactPeak - start) / 1e6:F1}; after drawing {afterDrawing / 1e6:F1}; samples {samples}; GC config: {config}");
+            Assert.Fail($"PROBE {variant} {System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier} cpus {Environment.ProcessorCount} server {System.Runtime.GCSettings.IsServerGC} latency {System.Runtime.GCSettings.LatencyMode}; start {start / 1e6:F1} MB; peak {(peak - start) / 1e6:F1} MB ({peakInfo}); draw peak {(drawPeak - start) / 1e6:F1}, save peak {(savePeak - start) / 1e6:F1}, compacted peak {(compactPeak - start) / 1e6:F1}; after drawing {afterDrawing / 1e6:F1}; samples {samples}; GC config: {config}");
             using PdfDocument reopened = PdfDocument.Open(file);
             Assert.Equal(1000, reopened.Pages.Count);
         }
