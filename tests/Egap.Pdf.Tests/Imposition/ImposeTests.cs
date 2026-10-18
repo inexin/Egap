@@ -114,6 +114,13 @@ public sealed class ImposeTests
     }
 
     [Fact]
+    public void APageSizePrintsItsWidthAndHeight()
+    {
+        Assert.Equal("PdfPageSize { Width = 595.28, Height = 841.89 }", PdfPageSize.A4.ToString());
+        Assert.Equal(PdfPageSize.A4.Turned, new PdfPageSize(841.89, 595.28));
+    }
+
+    [Fact]
     public void TheSourceIsUnchangedAndTheResultSaves()
     {
         using PdfDocument source = Numbered(3, 300, 300);

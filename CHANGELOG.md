@@ -19,6 +19,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   file's pages, instead of turning them into pages. A rewrite of such a file no longer breaks its outline.
 - On macOS, verifying a signature whose certificate has an unreadable public key reports the signature invalid instead of
   throwing.
+- `PdfPageSize.ToString()` no longer overflows the stack.
 
 ## Egap.Pdf 1.3.0 (2026-10-16, not published)
 
