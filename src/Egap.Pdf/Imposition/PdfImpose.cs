@@ -32,6 +32,13 @@ public readonly record struct PdfPageSize(double Width, double Height)
 
     /// <summary>The size as a rectangle from the origin.</summary>
     public PdfRectangle ToRectangle() => new(0, 0, Width, Height);
+
+    // The record's own printing would print Turned, whose own Turned prints again, without end.
+    private bool PrintMembers(System.Text.StringBuilder builder)
+    {
+        builder.Append(CultureInfo.InvariantCulture, $"Width = {Width}, Height = {Height}");
+        return true;
+    }
 }
 
 /// <summary>The order pages fill the cells of an N-up sheet.</summary>
