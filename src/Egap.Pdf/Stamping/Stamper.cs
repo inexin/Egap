@@ -27,16 +27,30 @@ internal static partial class Stamper
 
     public static PdfStampResult Apply(PdfDocument document, PdfStamp stamp)
     {
-        if (document.Conformance != PdfAConformance.None)
+        int part = PdfA.PdfAWriter.ClaimedPart(document);
+
+        // A PDF/A file whose output intent is CMYK or gray may not paint DeviceRGB: text takes the intent's device space.
+        string? intent = part > 0 ? PdfA.ColorScan.IntentSpace(document) : null;
+        if (intent is "RGB")
+        {
+            intent = null;
+        }
+
+        if (part > 0)
         {
             if (stamp.Kind == PdfStampKind.Text && stamp.Font is null)
             {
                 throw new InvalidOperationException("A PDF/A document needs embedded fonts: give the stamp a Font.");
             }
 
-            if (document.Conformance == PdfAConformance.PdfA1b && stamp.Opacity < 1)
+            if (part == 1 && stamp.Opacity < 1)
             {
                 throw new InvalidOperationException("PDF/A-1 does not allow transparency: give the stamp an opacity of 1.");
+            }
+
+            if (stamp.Kind == PdfStampKind.Image && intent is not null)
+            {
+                throw new InvalidOperationException($"The PDF/A document's output intent is {intent}, which an RGB image stamp would break.");
             }
         }
 
@@ -81,7 +95,7 @@ internal static partial class Stamper
             {
                 PdfFormXObject form = stamp.Kind switch
                 {
-                    PdfStampKind.Text => TextForm(document, stamp, Fill(stamp.Template!, index, count, document, title, file, now, bates, culture)),
+                    PdfStampKind.Text => TextForm(document, stamp, intent, Fill(stamp.Template!, index, count, document, title, file, now, bates, culture)),
                     PdfStampKind.Image => shared ??= ImageForm(document, stamp),
                     _ => shared ??= stamp.SourcePage!.ToFormXObject(document),
                 };
@@ -199,14 +213,14 @@ internal static partial class Stamper
     }
 
     /// <summary>Text in a caller's typeface, drawn by the canvas so the face is embedded as a subset.</summary>
-    private static PdfFormXObject TextForm(PdfDocument document, PdfStamp stamp, string text)
+    private static PdfFormXObject TextForm(PdfDocument document, PdfStamp stamp, string? intent, string text)
     {
         Typeface face = stamp.Font!;
         Font font = new(face, (float)stamp.FontSize);
         float scale = (float)stamp.FontSize / face.UnitsPerEm;
         float ascent = face.Extents.Ascent * scale, descent = -face.Extents.Descent * scale;
         float width = Math.Max(1, font.MeasureText(text).Advance), height = Math.Max(1, ascent + descent);
-        return Form(document, width, height, canvas => canvas.DrawText(text, new Vector2(0, ascent), font, new SolidPaint(new RgbaF32(stamp.Color.R / 255f, stamp.Color.G / 255f, stamp.Color.B / 255f, 1))));
+        return Form(document, width, height, canvas => canvas.DrawText(text, new Vector2(0, ascent), font, new SolidPaint(new RgbaF32(stamp.Color.R / 255f, stamp.Color.G / 255f, stamp.Color.B / 255f, 1))), intent);
     }
 
     private static PdfFormXObject ImageForm(PdfDocument document, PdfStamp stamp)
@@ -215,7 +229,7 @@ internal static partial class Stamper
         return Form(document, width, height, canvas => canvas.DrawImage(stamp.ImageRaster!, new RectF(0, 0, width, height)));
     }
 
-    private static PdfFormXObject Form(PdfDocument document, float width, float height, Action<PdfCanvas> draw)
+    private static PdfFormXObject Form(PdfDocument document, float width, float height, Action<PdfCanvas> draw, string? intent = null)
     {
         PdfCanvas canvas = PdfCanvas.ForForm(document, width, height);
         using (canvas)
@@ -230,8 +244,36 @@ internal static partial class Stamper
             ["BBox"] = new PdfArray { new PdfInteger(0), new PdfInteger(0), new PdfReal(width), new PdfReal(height) },
             ["Resources"] = canvas.FormResources.Clone(),
         });
-        form.SetDecodedBytes(canvas.FormContent ?? []);
+        form.SetDecodedBytes(intent is null ? canvas.FormContent ?? [] : Recolour(canvas.FormContent ?? [], intent));
         return new PdfFormXObject(form, document.Objects.Add(form), width, height, []);
+    }
+
+    /// <summary>The content with each RGB colour (<c>rg</c>, <c>RG</c>) in the output intent's space: luma for GRAY, a plain conversion for CMYK.</summary>
+    private static byte[] Recolour(byte[] content, string intent)
+    {
+        PdfContent operations = PdfContent.Parse(content);
+        for (int i = 0; i < operations.Count; i++)
+        {
+            PdfOperation op = operations[i];
+            if (op.Operator is not ("rg" or "RG") || op.GetNumber(0) is not double r || op.GetNumber(1) is not double g || op.GetNumber(2) is not double b)
+            {
+                continue;
+            }
+
+            bool stroke = op.Operator == "RG";
+            if (intent == "GRAY")
+            {
+                operations[i] = new PdfOperation(stroke ? "G" : "g", new PdfReal((0.299 * r) + (0.587 * g) + (0.114 * b)));
+            }
+            else
+            {
+                double k = 1 - Math.Max(r, Math.Max(g, b)), w = 1 - k;
+                operations[i] = new PdfOperation(stroke ? "K" : "k", new PdfReal(w > 0 ? (w - r) / w : 0), new PdfReal(w > 0 ? (w - g) / w : 0),
+                    new PdfReal(w > 0 ? (w - b) / w : 0), new PdfReal(k));
+            }
+        }
+
+        return operations.ToBytes();
     }
 
     /// <summary>The optional content group of that name, made and listed (shown, in the viewer's layer list) when there is none.</summary>

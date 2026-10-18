@@ -90,16 +90,18 @@ public sealed class OptimizeTests
         }
     }
 
-    [Fact]
-    public void PdfAOneIsWrittenWithoutObjectStreamsAndKeepsItsFonts()
+    [Theory]
+    [InlineData("B")]
+    [InlineData("A")]
+    public void PdfAOneIsWrittenWithoutObjectStreamsAndKeepsItsFonts(string level)
     {
+        // PDF/A-1a is found by the gate (Phase 7 task 21): its part rules apply though Conformance does not name it.
         using PdfDocument pdf = PdfDocument.Open(Sample(withExtras: true));
-        pdf.Metadata.SetXmp(System.Xml.Linq.XDocument.Parse("""
+        pdf.Metadata.SetXmp(System.Xml.Linq.XDocument.Parse($"""
             <x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" pdfaid:part="1" pdfaid:conformance="B"/>
+            <rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" pdfaid:part="1" pdfaid:conformance="{level}"/>
             </rdf:RDF></x:xmpmeta>
             """));
-        Assert.Equal(PdfAConformance.PdfA1b, pdf.Conformance);
 
         PdfOptimizeReport report = pdf.Optimize();
 

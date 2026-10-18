@@ -29,7 +29,7 @@ internal static class Optimizer
             return new PdfOptimizeReport(before, before, [], new PdfOptimizeSavings(0, 0, 0, 0, 0, 0, 0, 0), skipped);
         }
 
-        PdfAConformance conformance = document.Conformance;
+        bool pdfa1 = PdfA.PdfAWriter.ClaimedPart(document) == 1;
         List<PdfOptimizedImage> images = [];
         long imageBytes = 0;
         if (options.OptimizeImages)
@@ -47,13 +47,13 @@ internal static class Optimizer
         }
 
         (int merged, long mergedBytes) = options.MergeDuplicates ? DuplicateStreams.Run(document) : (0, 0);
-        if (options.MergeDuplicates && conformance == PdfAConformance.PdfA1b)
+        if (options.MergeDuplicates && pdfa1)
         {
             skipped.Add("duplicates: PDF/A-1 is written without object streams, and only a compact rewrite writes duplicates once");
         }
 
         (int fonts, long fontBytes) = (0, 0);
-        if (options.SubsetFonts && conformance == PdfAConformance.PdfA1b)
+        if (options.SubsetFonts && pdfa1)
         {
             skipped.Add("fonts: PDF/A-1 subset fonts must list their glyphs in a CIDSet or CharSet, which is not written");
         }
@@ -92,7 +92,7 @@ internal static class Optimizer
     /// <summary>The save options an optimized document forces: a compact rewrite, unused objects dropped, the dates kept.</summary>
     internal static PdfSaveOptions Forced(PdfDocument document, PdfSaveOptions options)
     {
-        bool pdfa1 = document.Conformance == PdfAConformance.PdfA1b;
+        bool pdfa1 = PdfA.PdfAWriter.ClaimedPart(document) == 1;
         return options with
         {
             Mode = PdfSaveMode.Rewrite,
