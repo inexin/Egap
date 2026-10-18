@@ -1,9 +1,14 @@
 name: CI
 
+# Pull requests run the Linux x64 build and tests and the checks. Pushes to main, the nightly run and manual runs add the other
+# platforms.
 on:
   pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,20 +22,31 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
+  build-test-linux:
+    name: Build and test (linux-x64)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - run: dotnet build Egap.slnx -c Release
+      - run: dotnet test Egap.slnx -c Release --no-build
+
   build-test:
     name: Build and test (${{ matrix.name }})
+    if: github.event_name != 'pull_request'
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { name: linux-x64, os: ubuntu-latest }
           - { name: linux-arm64, os: ubuntu-24.04-arm }
           - { name: windows-x64, os: windows-latest }
           - { name: macos-arm64, os: macos-latest }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
       - run: dotnet build Egap.slnx -c Release
@@ -40,8 +56,8 @@ jobs:
     name: Format, API and dependency checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
       - name: Format
@@ -53,19 +69,13 @@ jobs:
         run: |
           # Only build-time analyzers, Egami's packages (Phase 3 design Q2) and .NET's own CMS package (Phase 5 design Q2) are allowed.
           # Anything else would ship as a dependency.
-          allowed=$'Microsoft.CodeAnalysis.PublicApiAnalyzers
-Egami
-Egami.Fonts
-Egami.Drawing
-Egami.Metafiles
-Egami.Css
-Egami.Svg
-System.Security.Cryptography.Pkcs'
+          allowed='Microsoft.CodeAnalysis.PublicApiAnalyzers Egami Egami.Fonts Egami.Drawing Egami.Metafiles Egami.Css Egami.Svg
+            System.Security.Cryptography.Pkcs'
           status=0
           for proj in $(find src -name '*.csproj'); do
             for pkg in $(dotnet list "$proj" package --include-transitive --format json \
                          | jq -r '.projects[].frameworks[]? | (.topLevelPackages // []) + (.transitivePackages // []) | .[] | select(.autoReferenced != "true") | .id'); do
-              if ! grep -qxF "$pkg" <<< "$allowed"; then
+              if ! tr -s ' \n' '\n' <<< "$allowed" | grep -qxF "$pkg"; then
                 echo "::error file=$proj::Package reference '$pkg' is not allowed in src/"
                 status=1
               fi
