@@ -1,0 +1,24 @@
+- name: Getting started
+  href: getting-started.md
+- name: Packages
+  href: packages.md
+- name: Guides
+  items:
+    - name: Editing PDF files
+      href: guides/editing.md
+    - name: Text, images and drawing
+      href: guides/text-images-drawing.md
+    - name: Rendering pages
+      href: guides/rendering.md
+    - name: Signatures
+      href: guides/signatures.md
+    - name: Redaction and PDF/A
+      href: guides/redaction-and-pdfa.md
+    - name: PDF tools
+      href: guides/pdf-tools.md
+    - name: Flow documents
+      href: guides/flow-documents.md
+    - name: PDF export and conversion
+      href: guides/pdf-export-and-conversion.md
+    - name: Fonts
+      href: guides/fonts.md

@@ -40,8 +40,8 @@ None of them is on NuGet yet.
 
 ## Documentation
 
-Each package has a short README with an example; longer [examples](docs/examples.md) cover signing, redaction, PDF/A,
-rendering and the PDF tools. Every public type and member has XML docs. What each version adds is in the
+The [documentation site](https://inexin.github.io/Egap/) has guides for each area and the API reference; its sources are
+in [docs](docs/articles). Each package also has a short README with an example. What each version adds is in the
 [changelog](CHANGELOG.md).
 
 ## Building

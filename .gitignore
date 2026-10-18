@@ -487,3 +487,7 @@ $RECYCLE.BIN/
 # DocFX output
 docs/_site/
 docs/api/
+
+# DocFX output
+docs/_site/
+docs/api/
