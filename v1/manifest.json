@@ -1073,7 +1073,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.Layout.FontSettings",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.FontSettings.yml\" sourcestartlinenumber=\"1\">Where the layout engine finds fonts (Phase 6 design Q12): the document's embedded fonts first, then the caller's\ncollections, then the system's, then metric-compatible substitutes from Egap.Fonts, then a last resort. Every font the\ndocument names and the chain could not give as asked is reported as a <xref href=\"Egap.Documents.Layout.FontSubstitution\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.FontSettings.yml\" sourcestartlinenumber=\"1\">Where the layout engine finds fonts (Phase 6 design Q12): the document's embedded fonts first, then the caller's\ncollections, then the system's, then metric-compatible substitutes from Egami.Fonts.Substitutes, then a last resort.\nEvery font the document names and the chain could not give as asked is reported as a <xref href=\"Egap.Documents.Layout.FontSubstitution\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2431,34 +2431,6 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents",
-      "Summary": null
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Fonts.StandardFonts.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Fonts.StandardFonts.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Fonts.StandardFonts",
-      "Summary": "<p sourcefile=\"api/Egap.Fonts.StandardFonts.yml\" sourcestartlinenumber=\"1\">Open fonts that stand in for the fonts documents name most without embedding them, each metric-compatible with the\nfont it replaces, so text keeps its line breaks: Liberation Sans for Helvetica and Arial, Liberation Serif for Times and\nTimes New Roman, Liberation Mono for Courier and Courier New, Carlito for Calibri and Caladea for Cambria, each in\nregular, bold, italic and bold italic. All are under the SIL Open Font License 1.1 and ship inside this assembly; a face\nis loaded the first time it is asked for.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Fonts.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Fonts.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Fonts",
       "Summary": null
     },
     {

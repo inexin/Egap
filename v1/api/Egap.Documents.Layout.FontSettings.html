@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FontSettings | Egap ">
       
-      <meta name="description" content="Where the layout engine finds fonts (Phase 6 design Q12): the document&#39;s embedded fonts first, then the caller&#39;s collections, then the system&#39;s, then metric-compatible substitutes from Egap.Fonts, then a last resort. Every font the document names and the chain could not give as asked is reported as a .">
+      <meta name="description" content="Where the layout engine finds fonts (Phase 6 design Q12): the document&#39;s embedded fonts first, then the caller&#39;s collections, then the system&#39;s, then metric-compatible substitutes from Egami.Fonts.Substitutes, then a last resort. Every font the document names and the chain could not give as asked is reported as a .">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -98,8 +98,8 @@ Class FontSettings  <a class="header-action link-secondary" title="View source" 
   </div>
 
   <div class="markdown summary"><p>Where the layout engine finds fonts (Phase 6 design Q12): the document's embedded fonts first, then the caller's
-collections, then the system's, then metric-compatible substitutes from Egap.Fonts, then a last resort. Every font the
-document names and the chain could not give as asked is reported as a <a class="xref" href="Egap.Documents.Layout.FontSubstitution.html">FontSubstitution</a>.</p>
+collections, then the system's, then metric-compatible substitutes from Egami.Fonts.Substitutes, then a last resort.
+Every font the document names and the chain could not give as asked is reported as a <a class="xref" href="Egap.Documents.Layout.FontSubstitution.html">FontSubstitution</a>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -188,7 +188,7 @@ document names and the chain could not give as asked is reported as a <a class="
 
   <h3 id="Egap_Documents_Layout_FontSettings_Default" data-uid="Egap.Documents.Layout.FontSettings.Default">
   Default
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/FontSettings.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/FontSettings.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The settings a layout uses when none are given: system fonts and the standard substitutes on.</p>
@@ -220,10 +220,10 @@ document names and the chain could not give as asked is reported as a <a class="
 
   <h3 id="Egap_Documents_Layout_FontSettings_LastResortFamily" data-uid="Egap.Documents.Layout.FontSettings.LastResortFamily">
   LastResortFamily
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/FontSettings.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/FontSettings.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The family used when nothing else matches; Liberation Sans from Egap.Fonts when null.</p>
+  <div class="markdown level1 summary"><p>The family used when nothing else matches; Liberation Sans from Egami.Fonts.Substitutes when null.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -252,7 +252,7 @@ document names and the chain could not give as asked is reported as a <a class="
 
   <h3 id="Egap_Documents_Layout_FontSettings_Substitutions" data-uid="Egap.Documents.Layout.FontSettings.Substitutions">
   Substitutions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/FontSettings.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/FontSettings.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Family names to try in place of others, searched through the same chain: a document asking for a key gets the value
@@ -286,10 +286,11 @@ ignoring case.</p>
 
   <h3 id="Egap_Documents_Layout_FontSettings_UseStandardSubstitutes" data-uid="Egap.Documents.Layout.FontSettings.UseStandardSubstitutes">
   UseStandardSubstitutes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/FontSettings.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/FontSettings.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Whether the metric-compatible substitutes in Egap.Fonts (Carlito, Caladea, Liberation) stand in for missing fonts.</p>
+  <div class="markdown level1 summary"><p>Whether the metric-compatible substitutes in Egami.Fonts.Substitutes (Carlito, Caladea, Liberation) stand in for missing
+fonts.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

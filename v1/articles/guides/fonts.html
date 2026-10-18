@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="fonts">Fonts</h1>
 
-<p>Egap.Fonts bundles open fonts with the same glyph widths as the fonts documents name most. Text set in a substitute keeps
+<p>Egap.Pdf and Egap.Documents use open fonts with the same glyph widths as the fonts documents name most. Text set in a substitute keeps
 the original's line breaks.</p>
 <table>
 <thead>
@@ -121,10 +121,10 @@ the original's line breaks.</p>
 </table>
 <p>Egap.Pdf and Egap.Documents use them on their own when a font is missing. You can also use them with Egami.Fonts directly:</p>
 <pre><code class="lang-csharp">using Egami.Fonts;
-using Egap.Fonts;
+using Egami.Fonts.Substitutes;
 
-Typeface? arial = StandardFonts.Find(&quot;Arial&quot;, FontStyle.Normal);   // Liberation Sans
-FontCollection all = StandardFonts.Collection;                    // every bundled face
+Typeface? arial = SubstituteFonts.Find(&quot;Arial&quot;, FontStyle.Normal);   // Liberation Sans
+FontCollection all = SubstituteFonts.Collection;                    // every bundled face
 </code></pre>
 <p>The fonts are under the SIL Open Font License 1.1, and their licences ship in the package.</p>
 

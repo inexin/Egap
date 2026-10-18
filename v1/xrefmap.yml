@@ -16034,47 +16034,6 @@ references:
   commentId: F:Egap.Documents.WrapSide.Right
   fullName: Egap.Documents.WrapSide.Right
   nameWithType: WrapSide.Right
-- uid: Egap.Fonts
-  name: Egap.Fonts
-  href: api/Egap.Fonts.html
-  commentId: N:Egap.Fonts
-  fullName: Egap.Fonts
-  nameWithType: Egap.Fonts
-- uid: Egap.Fonts.StandardFonts
-  name: StandardFonts
-  href: api/Egap.Fonts.StandardFonts.html
-  commentId: T:Egap.Fonts.StandardFonts
-  fullName: Egap.Fonts.StandardFonts
-  nameWithType: StandardFonts
-- uid: Egap.Fonts.StandardFonts.Collection
-  name: Collection
-  href: api/Egap.Fonts.StandardFonts.html#Egap_Fonts_StandardFonts_Collection
-  commentId: P:Egap.Fonts.StandardFonts.Collection
-  fullName: Egap.Fonts.StandardFonts.Collection
-  nameWithType: StandardFonts.Collection
-- uid: Egap.Fonts.StandardFonts.Collection*
-  name: Collection
-  href: api/Egap.Fonts.StandardFonts.html#Egap_Fonts_StandardFonts_Collection_
-  commentId: Overload:Egap.Fonts.StandardFonts.Collection
-  isSpec: "True"
-  fullName: Egap.Fonts.StandardFonts.Collection
-  nameWithType: StandardFonts.Collection
-- uid: Egap.Fonts.StandardFonts.Find(System.String,Egami.Fonts.FontStyle)
-  name: Find(string, FontStyle)
-  href: api/Egap.Fonts.StandardFonts.html#Egap_Fonts_StandardFonts_Find_System_String_Egami_Fonts_FontStyle_
-  commentId: M:Egap.Fonts.StandardFonts.Find(System.String,Egami.Fonts.FontStyle)
-  name.vb: Find(String, FontStyle)
-  fullName: Egap.Fonts.StandardFonts.Find(string, Egami.Fonts.FontStyle)
-  fullName.vb: Egap.Fonts.StandardFonts.Find(String, Egami.Fonts.FontStyle)
-  nameWithType: StandardFonts.Find(string, FontStyle)
-  nameWithType.vb: StandardFonts.Find(String, FontStyle)
-- uid: Egap.Fonts.StandardFonts.Find*
-  name: Find
-  href: api/Egap.Fonts.StandardFonts.html#Egap_Fonts_StandardFonts_Find_
-  commentId: Overload:Egap.Fonts.StandardFonts.Find
-  isSpec: "True"
-  fullName: Egap.Fonts.StandardFonts.Find
-  nameWithType: StandardFonts.Find
 - uid: Egap.Pdf
   name: Egap.Pdf
   href: api/Egap.Pdf.html
