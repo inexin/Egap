@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 
 using Egami;
 using Egami.Pixels;
@@ -147,6 +148,44 @@ public sealed class StampTests
         archive.Pages.AddBlank();
         Assert.Throws<InvalidOperationException>(() => archive.Stamp(PdfStamp.Text("{page}")));
         Assert.Equal(1, archive.Stamp(PdfStamp.Text("{page}") with { Font = noto }).Pages);
+    }
+
+    [Fact]
+    public void APdfAOneFileWithAGrayIntentGetsGrayTextAndACidSet()
+    {
+        // Found by the veraPDF gate (Phase 7 task 21) on PDF/A-1a files with a gray output intent.
+        using PdfDocument pdf = Pages(1, 0);
+        pdf.Metadata.SetXmp(System.Xml.Linq.XDocument.Parse("""
+            <x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" pdfaid:part="1" pdfaid:conformance="A"/>
+            </rdf:RDF></x:xmpmeta>
+            """));
+        byte[] profile = new byte[128];
+        "GRAY"u8.CopyTo(profile.AsSpan(16));
+        PdfStream icc = new(new PdfDictionary { ["N"] = new PdfInteger(1) });
+        icc.SetDecodedBytes(profile);
+        pdf.Catalog["OutputIntents"] = new PdfArray
+        {
+            new PdfDictionary { ["Type"] = PdfName.Get("OutputIntent"), ["S"] = PdfName.Get("GTS_PDFA1"), ["DestOutputProfile"] = pdf.Objects.Add(icc) },
+        };
+        Egami.Fonts.Typeface noto = Egami.Fonts.Typeface.FromFile(Path.Combine(Fonts, "NotoSans-Latin.ttf"));
+        using Raster<Rgba8> logo = Raster.Create<Rgba8>(2, 2, new Rgba8(0, 128, 0, 255));
+
+        Assert.Throws<InvalidOperationException>(() => pdf.Stamp(PdfStamp.Text("{page}") with { Font = noto, Opacity = 0.5 }));
+        Assert.Throws<InvalidOperationException>(() => pdf.Stamp(PdfStamp.Image(logo, 10, 10)));
+        pdf.Stamp(PdfStamp.Text("{page}") with { Font = noto, Color = new Rgba8(255, 0, 0, 255) });
+
+        using MemoryStream saved = new();
+        pdf.Save(saved);
+        using PdfDocument reopened = PdfDocument.Open(saved.ToArray());
+        PdfDictionary forms = reopened.Pages[0].Resources!.Get<PdfDictionary>("XObject")!;
+        PdfStream form = forms.Select(e => e.Value.Resolve()).OfType<PdfStream>().Single();
+        string content = Encoding.Latin1.GetString(form.GetDecodedBytes());
+        Assert.DoesNotContain(" rg", content, StringComparison.Ordinal);
+        Assert.Contains(" g", content, StringComparison.Ordinal);
+        PdfDictionary font = form.Dictionary.Get<PdfDictionary>("Resources")!.Get<PdfDictionary>("Font")!.Select(e => e.Value.Resolve()).OfType<PdfDictionary>().Single();
+        PdfDictionary descriptor = font.Get<PdfArray>("DescendantFonts")!.Get<PdfDictionary>(0)!.Get<PdfDictionary>("FontDescriptor")!;
+        Assert.NotNull(descriptor.Get<PdfStream>("CIDSet"));
     }
 
     [Fact]
