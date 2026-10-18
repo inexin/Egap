@@ -29,8 +29,14 @@ internal static partial class Stamper
     {
         int part = PdfA.PdfAWriter.ClaimedPart(document);
 
-        // A PDF/A file whose output intent is CMYK or gray may not paint DeviceRGB: text takes the intent's device space.
-        string? intent = part > 0 ? PdfA.ColorScan.IntentSpace(document) : null;
+        // A PDF/A file whose output intent is CMYK or gray may not paint DeviceRGB: text takes the intent's device space. One
+        // without an output intent may paint no device colour at all, so it gets the sRGB intent a new PDF/A file gets.
+        if (part > 0 && !(document.Catalog.Get<PdfArray>("OutputIntents") ?? []).Any(i => i.Resolve() is PdfDictionary d && d.GetName("S")?.Value == "GTS_PDFA1"))
+        {
+            PdfA.PdfAWriter.AddOutputIntent(document);
+        }
+
+        string? intent = part > 0 ? PdfA.ColorScan.IntentSpace(document) ?? "GRAY" : null;
         if (intent is "RGB")
         {
             intent = null;
@@ -50,7 +56,7 @@ internal static partial class Stamper
 
             if (stamp.Kind == PdfStampKind.Image && intent is not null)
             {
-                throw new InvalidOperationException($"The PDF/A document's output intent is {intent}, which an RGB image stamp would break.");
+                throw new InvalidOperationException("The PDF/A document has no RGB output intent, which an RGB image stamp needs.");
             }
         }
 

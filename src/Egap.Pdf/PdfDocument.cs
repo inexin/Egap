@@ -398,7 +398,7 @@ public sealed class PdfDocument : IDisposable
     /// </example>
     /// <exception cref="ArgumentNullException"><paramref name="stamp"/> is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
-    /// <exception cref="InvalidOperationException">The document is PDF/A and the stamp would break it: text without an embedded font, transparency in PDF/A-1, or an image when the output intent is CMYK or gray. Text colours take the output intent's device space.</exception>
+    /// <exception cref="InvalidOperationException">The document is PDF/A and the stamp would break it: text without an embedded font, transparency in PDF/A-1, or an image without an RGB output intent. Text colours take the output intent's device space; a PDF/A file without an output intent gets an sRGB one.</exception>
     public PdfStampResult Stamp(PdfStamp stamp)
     {
         ArgumentNullException.ThrowIfNull(stamp);

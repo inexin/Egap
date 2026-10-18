@@ -186,6 +186,16 @@ public sealed class StampTests
         PdfDictionary font = form.Dictionary.Get<PdfDictionary>("Resources")!.Get<PdfDictionary>("Font")!.Select(e => e.Value.Resolve()).OfType<PdfDictionary>().Single();
         PdfDictionary descriptor = font.Get<PdfArray>("DescendantFonts")!.Get<PdfDictionary>(0)!.Get<PdfDictionary>("FontDescriptor")!;
         Assert.NotNull(descriptor.Get<PdfStream>("CIDSet"));
+
+        // Without an output intent no device colour is allowed: the file gets the sRGB intent a new PDF/A file gets.
+        using PdfDocument bare = Pages(1, 0);
+        bare.Metadata.SetXmp(System.Xml.Linq.XDocument.Parse("""
+            <x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/" pdfaid:part="1" pdfaid:conformance="A"/>
+            </rdf:RDF></x:xmpmeta>
+            """));
+        bare.Stamp(PdfStamp.Text("{page}") with { Font = noto });
+        Assert.Single(bare.Catalog.Get<PdfArray>("OutputIntents")!);
     }
 
     [Fact]
