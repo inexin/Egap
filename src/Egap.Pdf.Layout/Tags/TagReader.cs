@@ -121,13 +121,24 @@ internal static class TagReader
         // Tables from their rows and cells, so empty cells and spans keep their places: every table with marked content on
         // the page, text or not, and in it every row with marked content here (an empty cell still marks its paragraph).
         HashSet<TagNode> here = [.. index.OnPage(page)];
+        Dictionary<TagNode, CellDraft> cellOf = [];
         foreach (TagNode table in here.Select(n => n.Ancestors().FirstOrDefault(a => a.Type is "TD" or "TH")).OfType<TagNode>()
             .Select(TableOf).OfType<TagNode>().Distinct().OrderBy(t => t.Order))
         {
-            if (!tables.ContainsKey(table) && BuildTable(table, owned, here, index) is TableDraft built)
+            if (!tables.ContainsKey(table) && BuildTable(table, owned, here, index, cellOf) is TableDraft built)
             {
                 tables[table] = built;
                 draft.Tables.Add(built);
+            }
+        }
+
+        // A table tagged inside another's cell goes in that cell.
+        foreach ((TagNode node, TableDraft inner) in tables.ToList())
+        {
+            if (node.Parent?.Ancestors().FirstOrDefault(n => n.Type is "TD" or "TH") is TagNode td && cellOf.TryGetValue(td, out CellDraft? outer))
+            {
+                outer.Tables.Add(inner);
+                draft.Tables.Remove(inner);
             }
         }
 
@@ -259,7 +270,8 @@ internal static class TagReader
     /// A table from its rows (TR, also inside THead, TBody and TFoot) and cells (TH, TD) with the spans their Table attributes
     /// give, keeping only the rows that have marked content on this page; rows count from 0 on each page.
     /// </summary>
-    private static TableDraft? BuildTable(TagNode table, Dictionary<TagNode, List<PageGlyph>> owned, HashSet<TagNode> here, TagIndex index)
+    private static TableDraft? BuildTable(TagNode table, Dictionary<TagNode, List<PageGlyph>> owned, HashSet<TagNode> here, TagIndex index,
+        Dictionary<TagNode, CellDraft> cellOf)
     {
         List<TagNode> rows = [.. table.DescendantsAndSelf().Where(n => n.Type == "TR" && TableOf(n) == table)];
         List<CellDraft> cells = [];
@@ -285,7 +297,9 @@ internal static class TagReader
 
                 (int rowSpan, int colSpan) = Spans(cell.Element);
                 List<PageGlyph> glyphs = owned.TryGetValue(cell, out List<PageGlyph>? g) ? g : [];
-                cells.Add(new CellDraft(row, column, rowSpan, colSpan, cell.Type == "TH", PageReader.Lines(glyphs)));
+                CellDraft draft = new(row, column, rowSpan, colSpan, cell.Type == "TH", PageReader.Lines(glyphs));
+                cellOf[cell] = draft;
+                cells.Add(draft);
                 for (int r = row; r < row + rowSpan; r++)
                 {
                     for (int c = column; c < column + colSpan; c++)

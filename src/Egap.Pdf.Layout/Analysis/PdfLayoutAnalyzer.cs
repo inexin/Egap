@@ -126,6 +126,14 @@ public static class PdfLayoutAnalyzer
             .. draft.Blocks.Where(b => b.Role is LayoutRole.PageFooter or LayoutRole.PageNumber).OrderBy(b => b.Box.Top),
         ];
 
+        // A table and the tables nested in its cells.
+        static LayoutTable Table(TableDraft t, int order)
+        {
+            return new LayoutTable(PageAnalysis.Rect(t.Box), order, t.Confidence, t.Rows, t.Columns, t.IsRuled, t.Continues, t.RepeatsHeader,
+                [.. t.Cells.Select(c => new LayoutTableCell(c.Row, c.Column, c.RowSpan, c.ColumnSpan, c.Header, Paragraphs.Text(c.Lines), PageAnalysis.Rect(c.Box),
+                    [.. c.Lines.Select(Line)], [.. c.Tables.OrderBy(n => n.Box.Top).Select(n => Table(n, 0))]))]);
+        }
+
         IReadOnlyList<PdfPlacedImage>? placed = null;
         List<LayoutElement> elements = [];
         foreach (object item in items)
@@ -137,8 +145,7 @@ public static class PdfLayoutAnalyzer
                     elements.Add(new LayoutBlock(PageAnalysis.Rect(b.Box), order, b.Confidence, b.Role, b.Text, b.Level, b.Marker, b.Continues, [.. b.Lines.Select(Line)]));
                     break;
                 case TableDraft t:
-                    elements.Add(new LayoutTable(PageAnalysis.Rect(t.Box), order, t.Confidence, t.Rows, t.Columns, t.IsRuled, t.Continues, t.RepeatsHeader,
-                        [.. t.Cells.Select(c => new LayoutTableCell(c.Row, c.Column, c.RowSpan, c.ColumnSpan, c.Header, Paragraphs.Text(c.Lines), PageAnalysis.Rect(c.Box), [.. c.Lines.Select(Line)]))]));
+                    elements.Add(Table(t, order));
                     break;
                 case FigureDraft f:
                     placed ??= f.Images.Count > 0 ? Placed(page) : null;
