@@ -19,16 +19,17 @@ Comparisons with other PDF libraries (output, speed, conformance) do not belong 
 
 ## Building and testing
 
-You need the .NET 10 SDK, and Egami packages in a folder feed beside this checkout: Egap.Pdf draws, decodes images and
-reads fonts through [Egami](https://github.com/inexin/Egami), which is not on NuGet yet. With an Egami checkout next to this
-one, `python tools/pack-egami.py` packs it into `../egami-feed` (see `nuget.config`) at the versions in
-`Directory.Packages.props`; add `--update` to move to Egami's current commit.
+You need the .NET 10 SDK. Egap draws, decodes images and reads fonts through [Egami](https://github.com/inexin/Egami),
+whose packages come from nuget.org.
 
 ```
-python tools/pack-egami.py
 dotnet build
 dotnet test
 ```
+
+To try an unreleased Egami commit, `python tools/pack-egami.py --update` packs an Egami checkout next to this one into
+`../egami-feed` and points `Directory.Packages.props` at it; then build with
+`dotnet build -p:RestoreAdditionalProjectSources=../egami-feed`.
 
 Benchmarks: `dotnet run -c Release --project benchmarks/Egap.Pdf.Benchmarks -- --filter "*"`.
 

@@ -127,8 +127,7 @@ internal sealed class MarkdownImages(MarkdownSaveOptions options, string? folder
     /// <summary>A Word figure played back as PNG at <see cref="MarkdownSaveOptions.FigureResolution"/>, or as SVG.</summary>
     private Prepared Metafile(byte[] bytes, Picture picture)
     {
-        using MemoryStream input = new(bytes, writable: false);
-        Egami.Metafiles.Metafile metafile = Egami.Metafiles.Metafile.Load(input);
+        Egami.Metafiles.Metafile metafile = Egami.Metafiles.Metafile.Load(bytes);
         float width = (float)(picture.Width > 0 ? picture.Width : Math.Max(1, metafile.Size.X));
         float height = (float)(picture.Height > 0 ? picture.Height : Math.Max(1, metafile.Size.Y));
         if (options.VectorFiguresAsSvg)
