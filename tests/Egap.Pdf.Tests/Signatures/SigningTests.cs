@@ -129,7 +129,7 @@ public sealed class SigningTests
             using X509Certificate2 publicOnly = X509CertificateLoader.LoadCertificate(certificate.RawData);
             Assert.Throws<ArgumentException>(() => PdfSigner.FromCertificate(publicOnly));
 #pragma warning disable CA5384 // A DSA key is what the test needs refused.
-            using DSA dsa = DSA.Create(2048);
+            using DSA dsa = DSA.Create(1024);                       // the largest size every OS creates (macOS stops at 1024)
 #pragma warning restore CA5384
             Assert.Throws<ArgumentException>(() => PdfSigner.FromKey(dsa, certificate));
         }
