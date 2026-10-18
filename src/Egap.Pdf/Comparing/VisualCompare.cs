@@ -13,12 +13,35 @@ internal static class VisualCompare
 {
     private const int Cell = 8;
 
-    public static List<PdfVisualChange> Run(PdfDocument oldDocument, PdfDocument newDocument, IReadOnlyList<PdfPageMatch> pages, PdfCompareOptions options)
+    public static List<PdfVisualChange> Run(PdfDocument oldDocument, PdfDocument newDocument, IReadOnlyList<PdfPageMatch> pages, PdfCompareOptions options,
+        CancellationToken cancellationToken = default)
     {
         List<PdfVisualChange> changes = [];
+        try
+        {
+            Collect(oldDocument, newDocument, pages, options, changes, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            // The differences found so far hold rasters: nobody else will dispose them.
+            foreach (PdfVisualChange change in changes)
+            {
+                change.Dispose();
+            }
+
+            throw;
+        }
+
+        return changes;
+    }
+
+    private static void Collect(PdfDocument oldDocument, PdfDocument newDocument, IReadOnlyList<PdfPageMatch> pages, PdfCompareOptions options,
+        List<PdfVisualChange> changes, CancellationToken cancellationToken)
+    {
         PdfRenderOptions render = new() { Dpi = options.Dpi };
         foreach (PdfPageMatch match in pages)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (match is not { OldPage: int o, NewPage: int n })
             {
                 continue;
@@ -28,14 +51,20 @@ internal static class VisualCompare
             Raster<Rgba8>? a = null, b = null;
             try
             {
-                a = oldDocument.Pages[o - 1].Render(render);
-                b = newPage.Render(render);
+                a = oldDocument.Pages[o - 1].Render(render, cancellationToken);
+                b = newPage.Render(render, cancellationToken);
             }
             catch (PdfException e) when (e is not PdfLimitException)
             {
                 a?.Dispose();
                 b?.Dispose();
                 continue;
+            }
+            catch
+            {
+                a?.Dispose();
+                b?.Dispose();
+                throw;
             }
 
             using (a)
@@ -49,7 +78,6 @@ internal static class VisualCompare
             }
         }
 
-        return changes;
     }
 
     /// <summary>The changed areas of two renders of a page, and on request the difference raster.</summary>

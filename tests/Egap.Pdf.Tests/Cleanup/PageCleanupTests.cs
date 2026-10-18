@@ -7,6 +7,23 @@ namespace Egap.Pdf.Tests.Cleanup;
 public sealed class PageCleanupTests
 {
     [Fact]
+    public void ACancelledCallStopsBeforeChangingPages()
+    {
+        using PdfDocument pdf = PdfDocument.Create();
+        pdf.Pages.AddBlank();
+        pdf.Pages.AddBlank();
+        using CancellationTokenSource cancelled = new();
+        cancelled.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => pdf.RemoveBlankPages(cancellationToken: cancelled.Token));
+        Assert.Equal(2, pdf.Pages.Count);
+        Assert.Throws<OperationCanceledException>(() => pdf.DeskewScannedPages(cancellationToken: cancelled.Token));
+        Assert.Throws<OperationCanceledException>(() => pdf.ConvertToGray(cancelled.Token));
+        Assert.Throws<OperationCanceledException>(() => pdf.Optimize(cancellationToken: cancelled.Token));
+        Assert.Throws<OperationCanceledException>(() => PdfCompare.Run(pdf, pdf, cancellationToken: cancelled.Token));
+    }
+
+    [Fact]
     public void RemovesPagesThatShowNothing()
     {
         using PdfDocument pdf = PdfDocument.Create();
@@ -26,11 +43,11 @@ public sealed class PageCleanupTests
             page.SetContent(PdfContent.Parse(System.Text.Encoding.ASCII.GetBytes(content)));
         }
 
-        Assert.Equal(3, pdf.RemoveBlankPages());
+        Assert.Equal([2, 3, 4], pdf.RemoveBlankPages(cancellationToken: TestContext.Current.CancellationToken));
 
         Assert.Equal(2, pdf.Pages.Count);
         Assert.Contains("Text", pdf.Pages[0].ExtractText(), StringComparison.Ordinal);
-        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.RemoveBlankPages(new BlankPageOptions { WhiteLevel = 0 }));
+        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.RemoveBlankPages(new BlankPageOptions { WhiteLevel = 0 }, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -40,8 +57,8 @@ public sealed class PageCleanupTests
         PdfPage page = pdf.Pages.AddBlank();
         page.SetContent(PdfContent.Parse("0.85 g 0 0 612 792 re f"u8));
 
-        Assert.Equal(0, pdf.RemoveBlankPages());
-        Assert.Equal(1, pdf.RemoveBlankPages(new BlankPageOptions { WhiteLevel = 0.8 }));
+        Assert.Empty(pdf.RemoveBlankPages(cancellationToken: TestContext.Current.CancellationToken));
+        Assert.Single(pdf.RemoveBlankPages(new BlankPageOptions { WhiteLevel = 0.8 }, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Theory]
@@ -62,14 +79,14 @@ public sealed class PageCleanupTests
             Egap.Pdf.Optimizing.ImageSurvey.Run(pdf).ToList().ForEach(i => Egap.Pdf.Optimizing.BilevelEncoder.Optimize(i, 0));
         }
 
-        Assert.Equal(1, pdf.DeskewScannedPages());
+        Assert.Equal([1], pdf.DeskewScannedPages(cancellationToken: TestContext.Current.CancellationToken));
 
         PdfImage image = Assert.Single(page.GetImages()).Image;
         Assert.Equal((850, 1100), (image.Width, image.Height));
         Assert.Equal(bilevel ? "CCITTFaxDecode" : "FlateDecode", image.ImageCodec?.Value ?? image.Filters[0].Value);
         using Raster<Rgba8> straight = image.ToRaster<Rgba8>();
         Assert.InRange(straight.DetectSkew(), -0.3, 0.3);
-        Assert.Equal(0, pdf.DeskewScannedPages());
+        Assert.Empty(pdf.DeskewScannedPages(cancellationToken: TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -84,7 +101,7 @@ public sealed class PageCleanupTests
             canvas.FillRect(new Egami.Drawing.RectF(10, 10, 20, 20), new Egami.Drawing.SolidPaint(new RgbaF32(1, 0, 0, 1)));
         }
 
-        Assert.Equal(0, pdf.DeskewScannedPages());
+        Assert.Empty(pdf.DeskewScannedPages(cancellationToken: TestContext.Current.CancellationToken));
     }
 
     /// <summary>Lines of black bars like text, turned by <paramref name="degrees"/>, on white.</summary>

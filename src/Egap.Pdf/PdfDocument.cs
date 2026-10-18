@@ -375,14 +375,25 @@ public sealed class PdfDocument : IDisposable
     /// pdf.Save("scan-small.pdf");
     /// </code>
     /// </example>
+    /// <param name="options">What to change; null for <see cref="PdfOptimizeOptions.Lossless"/>.</param>
+    /// <param name="cancellationToken">Stops the work between steps; what was changed by then stays changed and valid.</param>
     /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
-    public PdfOptimizeReport Optimize(PdfOptimizeOptions? options = null)
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public PdfOptimizeReport Optimize(PdfOptimizeOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowIfReadOnly();
         options ??= PdfOptimizeOptions.Lossless;
         options.Check(nameof(options));
-        PdfOptimizeReport report = Optimizing.Optimizer.Run(this, options);
-        ResetRenderCache();
+        PdfOptimizeReport report;
+        try
+        {
+            report = Optimizing.Optimizer.Run(this, options, cancellationToken);
+        }
+        finally
+        {
+            ResetRenderCache();
+        }
+
         return report;
     }
 
@@ -422,21 +433,31 @@ public sealed class PdfDocument : IDisposable
     /// annotation colours become DeviceGray, the luma of their sRGB colour, and text and vectors stay as they are.
     /// </summary>
     /// <returns>What could not be converted, as warnings; empty when everything was.</returns>
-    public IReadOnlyList<PdfWarning> ConvertToGray()
+    /// <param name="cancellationToken">Stops the work between steps; what was changed by then stays changed and valid.</param>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public IReadOnlyList<PdfWarning> ConvertToGray(CancellationToken cancellationToken = default)
     {
         ThrowIfReadOnly();
-        IReadOnlyList<PdfWarning> warnings = Cleanup.GrayConverter.Run(this);
-        ResetRenderCache();
-        return warnings;
+        try
+        {
+            return Cleanup.GrayConverter.Run(this, cancellationToken);
+        }
+        finally
+        {
+            ResetRenderCache();
+        }
     }
 
     /// <summary>
     /// Removes blank pages (Phase 7 design Q15): pages that paint nothing, and pages that render, without annotations, with
     /// almost no pixel darker than white (see <see cref="BlankPageOptions"/>).
     /// </summary>
-    /// <returns>How many pages were removed.</returns>
+    /// <param name="options">What counts as blank; null for <see cref="BlankPageOptions.Default"/>.</param>
+    /// <param name="cancellationToken">Stops the work; no page is removed until every page has been judged.</param>
+    /// <returns>The 1-based numbers the removed pages had.</returns>
     /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
-    public int RemoveBlankPages(BlankPageOptions? options = null)
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public IReadOnlyList<int> RemoveBlankPages(BlankPageOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowIfReadOnly();
         options ??= BlankPageOptions.Default;
@@ -445,16 +466,19 @@ public sealed class PdfDocument : IDisposable
             throw new ArgumentOutOfRangeException(nameof(options), "MaxInkFraction must be 0 to 1, WhiteLevel above 0 and at most 1, and Dpi above 0 and at most 600.");
         }
 
-        return Cleanup.PageCleanup.RemoveBlank(this, options);
+        return Cleanup.PageCleanup.RemoveBlank(this, options, cancellationToken);
     }
 
     /// <summary>
     /// Straightens scanned pages (Phase 7 design Q14): pages that are one image covering most of the page have its skew found
     /// and corrected with Egami's Deskew, keeping its size and its kind of encoding.
     /// </summary>
-    /// <returns>How many pages were straightened.</returns>
+    /// <param name="options">The angles to correct; null for <see cref="DeskewOptions.Default"/>.</param>
+    /// <param name="cancellationToken">Stops the work between steps; what was changed by then stays changed and valid.</param>
+    /// <returns>The 1-based numbers of the pages straightened.</returns>
     /// <exception cref="ArgumentOutOfRangeException">An angle is outside 0 to 45 degrees.</exception>
-    public int DeskewScannedPages(DeskewOptions? options = null)
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public IReadOnlyList<int> DeskewScannedPages(DeskewOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowIfReadOnly();
         options ??= DeskewOptions.Default;
@@ -463,7 +487,7 @@ public sealed class PdfDocument : IDisposable
             throw new ArgumentOutOfRangeException(nameof(options), "MaxAngle must be above 0 and at most 45, MinAngle 0 to 45.");
         }
 
-        return Cleanup.PageCleanup.Deskew(this, options);
+        return Cleanup.PageCleanup.Deskew(this, options, cancellationToken);
     }
 
     /// <summary>The name of the file the document was opened from, or null.</summary>

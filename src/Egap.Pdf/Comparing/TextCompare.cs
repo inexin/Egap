@@ -12,11 +12,12 @@ internal static class TextCompare
     internal const int MinMovedWords = 3;
 
     /// <summary>Every word of every page, in content order; a page that cannot be read gives none.</summary>
-    public static List<PdfComparedWord> Words(PdfDocument document)
+    public static List<PdfComparedWord> Words(PdfDocument document, CancellationToken cancellationToken = default)
     {
         List<PdfComparedWord> words = [];
         for (int i = 0; i < document.Pages.Count; i++)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 foreach (PdfTextLine line in document.Pages[i].GetText().Lines)

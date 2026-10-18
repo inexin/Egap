@@ -26,11 +26,12 @@ internal sealed class GrayConverter
     }
 
     /// <summary>Converts the whole document; what could not be converted, as warnings.</summary>
-    public static IReadOnlyList<PdfWarning> Run(PdfDocument document)
+    public static IReadOnlyList<PdfWarning> Run(PdfDocument document, CancellationToken cancellationToken = default)
     {
         GrayConverter converter = new(document);
         foreach (PdfPage page in document.Pages)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             converter.Page(page);
         }
 
