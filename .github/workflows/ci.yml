@@ -69,7 +69,7 @@ jobs:
         run: |
           # Only build-time analyzers, Egami's packages (Phase 3 design Q2) and .NET's own CMS package (Phase 5 design Q2) are allowed.
           # Anything else would ship as a dependency.
-          allowed='Microsoft.CodeAnalysis.PublicApiAnalyzers Egami Egami.Fonts Egami.Drawing Egami.Metafiles Egami.Css Egami.Svg
+          allowed='Microsoft.CodeAnalysis.PublicApiAnalyzers Egami Egami.Fonts Egami.Fonts.Substitutes Egami.Drawing Egami.Metafiles Egami.Css Egami.Svg
             System.Security.Cryptography.Pkcs'
           status=0
           for proj in $(find src -name '*.csproj'); do
