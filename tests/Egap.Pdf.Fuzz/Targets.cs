@@ -54,7 +54,7 @@ internal static class Targets
             "linearize" => Linearize,
             "hocr" => Hocr,
             "alto" => Alto,
-            "layout" => Layout,
+            "pdflayout" => Layout,
             _ => throw new ArgumentException($"Unknown fuzz target '{name}'.", nameof(name)),
         };
     }
