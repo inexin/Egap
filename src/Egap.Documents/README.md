@@ -10,6 +10,7 @@ engine that draws onto any [Egami](https://www.nuget.org/packages/Egami) canvas.
 
 ```csharp
 using Egap.Documents;
+using Egap.Documents.Layout;
 
 Document doc = Document.Load("report.docx");                     // DOCX, HTML or Markdown, told apart by content
 DocumentBuilder builder = new(doc);
