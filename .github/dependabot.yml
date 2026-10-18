@@ -1,0 +1,19 @@
+# Weekly update pull requests for the GitHub Actions the workflows use and the NuGet packages in Directory.Packages.props
+# (Egami, .NET's CMS package, and test, benchmark and build-time packages). Each ecosystem's updates come in one grouped
+# pull request.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      nuget:
+        patterns: ['*']

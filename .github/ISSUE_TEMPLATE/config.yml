@@ -1,0 +1,7 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/inexin/Egap/security/advisories/new
+    about: >-
+      Egap reads untrusted files, so a crash, hang or runaway memory use on bad input is a security bug. Report it privately
+      here, not in a public issue, and attach the file there. See SECURITY.md.
