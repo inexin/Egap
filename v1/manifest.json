@@ -1129,7 +1129,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.Layout.LayoutDrawObserver",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.LayoutDrawObserver.yml\" sourcestartlinenumber=\"1\">Told what <xref href=\"Egap.Documents.Layout.PageLayout.Draw(Egami.Drawing.Canvas%2cEgap.Documents.Layout.LayoutDrawObserver)\" data-throw-if-not-resolved=\"false\"></xref> is drawing, so the target canvas can\ngroup its output: Egap.Pdf.Layout marks each line and picture with its structure element and the rest as artifacts\n(Phase 6 Build Plan task 22). Every Begin is matched by its End, and calls nest as the boxes do.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.LayoutDrawObserver.yml\" sourcestartlinenumber=\"1\">Told what <xref href=\"Egap.Documents.Layout.PageLayout.Draw(Egami.Drawing.Canvas%2cEgap.Documents.Layout.LayoutDrawObserver)\" data-throw-if-not-resolved=\"false\"></xref> is drawing, so the target canvas can\ngroup its output: Egap.Pdf.Conversion marks each line and picture with its structure element and the rest as artifacts\n(Phase 6 Build Plan task 22). Every Begin is matched by its End, and calls nest as the boxes do.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2505,6 +2505,524 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.DoclingImage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.DoclingImage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.DoclingImage",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.DoclingImage.yml\" sourcestartlinenumber=\"1\">A picture's image for <xref href=\"Egap.Pdf.Conversion.DoclingJsonOptions.ImageResolver\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.DoclingImageMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.DoclingImageMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.DoclingImageMode",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.DoclingImageMode.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Conversion.DoclingJson\" data-throw-if-not-resolved=\"false\"></xref> writes pictures' images.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.DoclingJson.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.DoclingJson.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.DoclingJson",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.DoclingJson.yml\" sourcestartlinenumber=\"1\">Layout as DoclingDocument JSON (design Q14, Build Plan task 18), the format Docling writes, schema version\n<xref href=\"Egap.Pdf.Conversion.DoclingJson.SchemaVersion\" data-throw-if-not-resolved=\"false\"></xref>: texts, tables, pictures and list groups in flat arrays, linked into reading order from the\nbody by JSON pointers; roles as Docling's labels; bounds as provenance with the page number and a box from the page's\nbottom left, as PDF measures; page headers and footers in the furniture layer; and Egap's role and confidence in each\nitem's <code>meta</code>. A DoclingDocument from Docling reads back into page layouts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.DoclingJsonOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.DoclingJsonOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.DoclingJsonOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.DoclingJsonOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Conversion.DoclingJson\" data-throw-if-not-resolved=\"false\"></xref> writes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.ILayoutRegionDetector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.ILayoutRegionDetector.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.ILayoutRegionDetector",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.ILayoutRegionDetector.yml\" sourcestartlinenumber=\"1\">Supplies regions and roles for a page from outside Egap's own rules, such as a layout model the caller already runs\n(design Q1): Egap ships no model, and this is the place one plugs in. A region the detector names takes precedence over\nwhat the rules would find there; the rules still group the text inside it into lines and paragraphs.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.IReadingOrderDetector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.IReadingOrderDetector.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.IReadingOrderDetector",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.IReadingOrderDetector.yml\" sourcestartlinenumber=\"1\">Orders a page's blocks, tables and figures, in place of Egap's XY cut.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.ITableDetector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.ITableDetector.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.ITableDetector",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.ITableDetector.yml\" sourcestartlinenumber=\"1\">Finds where a page's tables are, in place of Egap's own detection; Egap then finds the cells inside each area.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutBlock.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutBlock.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutBlock",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutBlock.yml\" sourcestartlinenumber=\"1\">A text block: a paragraph, heading, list item, caption, note, header or footer, with its lines.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutElement.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutElement.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutElement",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutElement.yml\" sourcestartlinenumber=\"1\">A block, table or figure on a page: where it is, where it comes in reading order and how sure the analysis is.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutFigure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutFigure.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutFigure",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutFigure.yml\" sourcestartlinenumber=\"1\">A figure: images and drawings with any text inside them.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutImage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutImage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutImage",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutImage.yml\" sourcestartlinenumber=\"1\">An image where the page draws it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutLine.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutLine.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutLine",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutLine.yml\" sourcestartlinenumber=\"1\">A line of text with its words.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutRegionHint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutRegionHint.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutRegionHint",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutRegionHint.yml\" sourcestartlinenumber=\"1\">A region an <xref href=\"Egap.Pdf.Conversion.ILayoutRegionDetector\" data-throw-if-not-resolved=\"false\"></xref> found: what it is, where it is and how sure the detector is.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutRole.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutRole.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutRole",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutRole.yml\" sourcestartlinenumber=\"1\">What a region of a page is (design Q4), the roles layout analysis finds and a region detector can name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutTable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutTable.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutTable",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutTable.yml\" sourcestartlinenumber=\"1\">A table: its cells on a grid of <xref href=\"Egap.Pdf.Conversion.LayoutTable.RowCount\" data-throw-if-not-resolved=\"false\"></xref> by <xref href=\"Egap.Pdf.Conversion.LayoutTable.ColumnCount\" data-throw-if-not-resolved=\"false\"></xref>. A table from a tagged PDF keeps the\ntags' cells and their order, with spans taken from the page's rules or text where the tags give none (as Word's do not).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutTableCell.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutTableCell.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutTableCell",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutTableCell.yml\" sourcestartlinenumber=\"1\">A table cell.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutThresholds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutThresholds.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutThresholds",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutThresholds.yml\" sourcestartlinenumber=\"1\">Every threshold the geometric stages use (design Q1: every threshold an option). Distances are in multiples of the text\nsize unless they say otherwise, so they hold for any font size. The defaults are tuned against the comparison data sets\nand may change in a minor version; the properties themselves stay.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.LayoutWord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.LayoutWord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.LayoutWord",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.LayoutWord.yml\" sourcestartlinenumber=\"1\">A word with the font it is mostly set in.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.OutlineFrom.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.OutlineFrom.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.OutlineFrom",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.OutlineFrom.yml\" sourcestartlinenumber=\"1\">What a PDF's outline (its bookmarks pane) is built from.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfAutoTagFigure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfAutoTagFigure.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfAutoTagFigure",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfAutoTagFigure.yml\" sourcestartlinenumber=\"1\">A figure tagged without alternate text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfAutoTagReport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfAutoTagReport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfAutoTagReport",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfAutoTagReport.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Pdf.Conversion.PdfAutoTagger.Tag(Egap.Pdf.PdfDocument%2cEgap.Pdf.Conversion.PdfLayoutOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> did.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfAutoTagger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfAutoTagger.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfAutoTagger",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfAutoTagger.yml\" sourcestartlinenumber=\"1\">Tags an untagged PDF from its layout (design Q11, Build Plan task 14): a structure tree through Phase 5's model, with\nheadings, paragraphs, lists, tables, figures, captions, quotes, code and notes in reading order, page headers and footers\nand decoration marked as artifacts, and the page content wrapped in marked content that points at its element. Figures\nget no alternate text: the report lists them, and writing it stays with the caller.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfExport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfExport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfExport",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfExport.yml\" sourcestartlinenumber=\"1\">Flow documents saved as PDF (Phase 6 design Q2, Build Plan task 22): each laid-out page drawn on a\n<xref href=\"Egap.Pdf.PdfCanvas\" data-throw-if-not-resolved=\"false\"></xref>, with link annotations for hyperlinks, an outline, named destinations for bookmarks, the\ndocument's properties as metadata, and on request tags and PDF/A.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfExportOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfExportOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfExportOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfExportOptions.yml\" sourcestartlinenumber=\"1\">How a flow document is saved as PDF (Phase 6 design Q2, Build Plan task 22).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfLayoutAnalyzer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfLayoutAnalyzer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfLayoutAnalyzer",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfLayoutAnalyzer.yml\" sourcestartlinenumber=\"1\">Layout analysis of PDF pages (design Q10, Build Plan task 10): blocks with roles, tables and figures in reading order,\nwithout building a document model. Tagged pages whose tags pass a sanity check are read from their tags (design Q2);\nothers by geometric rules (design Q1, Q3 to Q7), every threshold an option and the main stages replaceable through\n<xref href=\"Egap.Pdf.Conversion.PdfLayoutOptions\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfLayoutOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfLayoutOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfLayoutOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfLayoutOptions.yml\" sourcestartlinenumber=\"1\">How layout analysis runs (design Q2, Q5, Q10): whether tags are trusted, which tables are looked for, the stages a caller replaces, and every threshold.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfPageLayout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfPageLayout.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfPageLayout",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfPageLayout.yml\" sourcestartlinenumber=\"1\">What layout analysis found on one page (design Q10): text blocks with their roles, tables and figures, each with its\nbounds and place in the page's reading order. Bounds are in points on the displayed page: y down from the top left of the\ncrop box, the page's rotation applied, as <xref href=\"Egap.Pdf.PdfCanvas\" data-throw-if-not-resolved=\"false\"></xref> draws by default.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfToDocument.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfToDocument.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfToDocument",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfToDocument.yml\" sourcestartlinenumber=\"1\">PDF to the flow document model (design Q6 to Q8, Q10): layout analysis, then the pages joined into sections with styles,\nlists, tables, pictures, headers and footers and footnotes, ready to save as Word, HTML or Markdown through Egap.Documents.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfToDocumentMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfToDocumentMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfToDocumentMode",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfToDocumentMode.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Conversion.PdfToDocument\" data-throw-if-not-resolved=\"false\"></xref> turns pages into a document (design Q8).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfToDocumentOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfToDocumentOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfToDocumentOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfToDocumentOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Conversion.PdfToDocument\" data-throw-if-not-resolved=\"false\"></xref> analyses a PDF and builds the document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfToDocumentWarning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfToDocumentWarning.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfToDocumentWarning",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfToDocumentWarning.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Pdf.Conversion.PdfToDocument\" data-throw-if-not-resolved=\"false\"></xref> could not carry over as it was, on which page.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfToDocumentWarningKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfToDocumentWarningKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfToDocumentWarningKind",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfToDocumentWarningKind.yml\" sourcestartlinenumber=\"1\">The kinds of <xref href=\"Egap.Pdf.Conversion.PdfToDocumentWarning\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.TableCsv.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.TableCsv.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.TableCsv",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.TableCsv.yml\" sourcestartlinenumber=\"1\">Detected tables as CSV (RFC 4180; Build Plan task 19): one CSV per table, a table that runs on across pages written\nonce with its repeated header left out, merged cells repeated across their span or left empty, and the number of header\nrows given with each so a reader can treat them as headers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.TableCsvFile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.TableCsvFile.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.TableCsvFile",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.TableCsvFile.yml\" sourcestartlinenumber=\"1\">A table written as CSV.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.TableCsvOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.TableCsvOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.TableCsvOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.TableCsvOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Conversion.TableCsv\" data-throw-if-not-resolved=\"false\"></xref> writes tables.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.TableDetection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.TableDetection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.TableDetection",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.TableDetection.yml\" sourcestartlinenumber=\"1\">Which tables layout analysis looks for (design Q5).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.DeskewOptions.yml",
       "output": {
         ".html": {
@@ -2530,524 +3048,6 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.GridOptions",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.GridOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.PdfImpose.Grid(Egap.Pdf.PdfDocument%2cEgap.Pdf.GridOptions)\" data-throw-if-not-resolved=\"false\"></xref> puts every page on one sheet.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.DoclingImage.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.DoclingImage.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.DoclingImage",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.DoclingImage.yml\" sourcestartlinenumber=\"1\">A picture's image for <xref href=\"Egap.Pdf.Layout.DoclingJsonOptions.ImageResolver\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.DoclingImageMode.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.DoclingImageMode.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.DoclingImageMode",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.DoclingImageMode.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Layout.DoclingJson\" data-throw-if-not-resolved=\"false\"></xref> writes pictures' images.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.DoclingJson.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.DoclingJson.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.DoclingJson",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.DoclingJson.yml\" sourcestartlinenumber=\"1\">Layout as DoclingDocument JSON (design Q14, Build Plan task 18), the format Docling writes, schema version\n<xref href=\"Egap.Pdf.Layout.DoclingJson.SchemaVersion\" data-throw-if-not-resolved=\"false\"></xref>: texts, tables, pictures and list groups in flat arrays, linked into reading order from the\nbody by JSON pointers; roles as Docling's labels; bounds as provenance with the page number and a box from the page's\nbottom left, as PDF measures; page headers and footers in the furniture layer; and Egap's role and confidence in each\nitem's <code>meta</code>. A DoclingDocument from Docling reads back into page layouts.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.DoclingJsonOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.DoclingJsonOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.DoclingJsonOptions",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.DoclingJsonOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Layout.DoclingJson\" data-throw-if-not-resolved=\"false\"></xref> writes.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.ILayoutRegionDetector.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.ILayoutRegionDetector.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.ILayoutRegionDetector",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.ILayoutRegionDetector.yml\" sourcestartlinenumber=\"1\">Supplies regions and roles for a page from outside Egap's own rules, such as a layout model the caller already runs\n(design Q1): Egap ships no model, and this is the place one plugs in. A region the detector names takes precedence over\nwhat the rules would find there; the rules still group the text inside it into lines and paragraphs.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.IReadingOrderDetector.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.IReadingOrderDetector.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.IReadingOrderDetector",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.IReadingOrderDetector.yml\" sourcestartlinenumber=\"1\">Orders a page's blocks, tables and figures, in place of Egap's XY cut.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.ITableDetector.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.ITableDetector.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.ITableDetector",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.ITableDetector.yml\" sourcestartlinenumber=\"1\">Finds where a page's tables are, in place of Egap's own detection; Egap then finds the cells inside each area.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutBlock.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutBlock.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutBlock",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutBlock.yml\" sourcestartlinenumber=\"1\">A text block: a paragraph, heading, list item, caption, note, header or footer, with its lines.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutElement.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutElement.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutElement",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutElement.yml\" sourcestartlinenumber=\"1\">A block, table or figure on a page: where it is, where it comes in reading order and how sure the analysis is.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutFigure.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutFigure.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutFigure",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutFigure.yml\" sourcestartlinenumber=\"1\">A figure: images and drawings with any text inside them.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutImage.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutImage.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutImage",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutImage.yml\" sourcestartlinenumber=\"1\">An image where the page draws it.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutLine.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutLine.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutLine",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutLine.yml\" sourcestartlinenumber=\"1\">A line of text with its words.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutRegionHint.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutRegionHint.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutRegionHint",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutRegionHint.yml\" sourcestartlinenumber=\"1\">A region an <xref href=\"Egap.Pdf.Layout.ILayoutRegionDetector\" data-throw-if-not-resolved=\"false\"></xref> found: what it is, where it is and how sure the detector is.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutRole.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutRole.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutRole",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutRole.yml\" sourcestartlinenumber=\"1\">What a region of a page is (design Q4), the roles layout analysis finds and a region detector can name.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutTable.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutTable.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutTable",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutTable.yml\" sourcestartlinenumber=\"1\">A table: its cells on a grid of <xref href=\"Egap.Pdf.Layout.LayoutTable.RowCount\" data-throw-if-not-resolved=\"false\"></xref> by <xref href=\"Egap.Pdf.Layout.LayoutTable.ColumnCount\" data-throw-if-not-resolved=\"false\"></xref>. A table from a tagged PDF keeps the\ntags' cells and their order, with spans taken from the page's rules or text where the tags give none (as Word's do not).</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutTableCell.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutTableCell.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutTableCell",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutTableCell.yml\" sourcestartlinenumber=\"1\">A table cell.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutThresholds.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutThresholds.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutThresholds",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutThresholds.yml\" sourcestartlinenumber=\"1\">Every threshold the geometric stages use (design Q1: every threshold an option). Distances are in multiples of the text\nsize unless they say otherwise, so they hold for any font size. The defaults are tuned against the comparison data sets\nand may change in a minor version; the properties themselves stay.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.LayoutWord.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.LayoutWord.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.LayoutWord",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.LayoutWord.yml\" sourcestartlinenumber=\"1\">A word with the font it is mostly set in.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.OutlineFrom.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.OutlineFrom.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.OutlineFrom",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.OutlineFrom.yml\" sourcestartlinenumber=\"1\">What a PDF's outline (its bookmarks pane) is built from.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfAutoTagFigure.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfAutoTagFigure.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfAutoTagFigure",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfAutoTagFigure.yml\" sourcestartlinenumber=\"1\">A figure tagged without alternate text.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfAutoTagReport.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfAutoTagReport.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfAutoTagReport",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfAutoTagReport.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Pdf.Layout.PdfAutoTagger.Tag(Egap.Pdf.PdfDocument%2cEgap.Pdf.Layout.PdfLayoutOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> did.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfAutoTagger.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfAutoTagger.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfAutoTagger",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfAutoTagger.yml\" sourcestartlinenumber=\"1\">Tags an untagged PDF from its layout (design Q11, Build Plan task 14): a structure tree through Phase 5's model, with\nheadings, paragraphs, lists, tables, figures, captions, quotes, code and notes in reading order, page headers and footers\nand decoration marked as artifacts, and the page content wrapped in marked content that points at its element. Figures\nget no alternate text: the report lists them, and writing it stays with the caller.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfExport.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfExport.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfExport",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfExport.yml\" sourcestartlinenumber=\"1\">Flow documents saved as PDF (Phase 6 design Q2, Build Plan task 22): each laid-out page drawn on a\n<xref href=\"Egap.Pdf.PdfCanvas\" data-throw-if-not-resolved=\"false\"></xref>, with link annotations for hyperlinks, an outline, named destinations for bookmarks, the\ndocument's properties as metadata, and on request tags and PDF/A.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfExportOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfExportOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfExportOptions",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfExportOptions.yml\" sourcestartlinenumber=\"1\">How a flow document is saved as PDF (Phase 6 design Q2, Build Plan task 22).</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfLayoutAnalyzer.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfLayoutAnalyzer.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfLayoutAnalyzer",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfLayoutAnalyzer.yml\" sourcestartlinenumber=\"1\">Layout analysis of PDF pages (design Q10, Build Plan task 10): blocks with roles, tables and figures in reading order,\nwithout building a document model. Tagged pages whose tags pass a sanity check are read from their tags (design Q2);\nothers by geometric rules (design Q1, Q3 to Q7), every threshold an option and the main stages replaceable through\n<xref href=\"Egap.Pdf.Layout.PdfLayoutOptions\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfLayoutOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfLayoutOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfLayoutOptions",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfLayoutOptions.yml\" sourcestartlinenumber=\"1\">How layout analysis runs (design Q2, Q5, Q10): whether tags are trusted, which tables are looked for, the stages a caller replaces, and every threshold.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfPageLayout.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfPageLayout.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfPageLayout",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfPageLayout.yml\" sourcestartlinenumber=\"1\">What layout analysis found on one page (design Q10): text blocks with their roles, tables and figures, each with its\nbounds and place in the page's reading order. Bounds are in points on the displayed page: y down from the top left of the\ncrop box, the page's rotation applied, as <xref href=\"Egap.Pdf.PdfCanvas\" data-throw-if-not-resolved=\"false\"></xref> draws by default.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfToDocument.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfToDocument.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfToDocument",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfToDocument.yml\" sourcestartlinenumber=\"1\">PDF to the flow document model (design Q6 to Q8, Q10): layout analysis, then the pages joined into sections with styles,\nlists, tables, pictures, headers and footers and footnotes, ready to save as Word, HTML or Markdown through Egap.Documents.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfToDocumentMode.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfToDocumentMode.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfToDocumentMode",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfToDocumentMode.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Layout.PdfToDocument\" data-throw-if-not-resolved=\"false\"></xref> turns pages into a document (design Q8).</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfToDocumentOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfToDocumentOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfToDocumentOptions",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfToDocumentOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Layout.PdfToDocument\" data-throw-if-not-resolved=\"false\"></xref> analyses a PDF and builds the document.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfToDocumentWarning.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfToDocumentWarning.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfToDocumentWarning",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfToDocumentWarning.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Pdf.Layout.PdfToDocument\" data-throw-if-not-resolved=\"false\"></xref> could not carry over as it was, on which page.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.PdfToDocumentWarningKind.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.PdfToDocumentWarningKind.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.PdfToDocumentWarningKind",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.PdfToDocumentWarningKind.yml\" sourcestartlinenumber=\"1\">The kinds of <xref href=\"Egap.Pdf.Layout.PdfToDocumentWarning\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.TableCsv.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.TableCsv.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.TableCsv",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.TableCsv.yml\" sourcestartlinenumber=\"1\">Detected tables as CSV (RFC 4180; Build Plan task 19): one CSV per table, a table that runs on across pages written\nonce with its repeated header left out, merged cells repeated across their span or left empty, and the number of header\nrows given with each so a reader can treat them as headers.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.TableCsvFile.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.TableCsvFile.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.TableCsvFile",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.TableCsvFile.yml\" sourcestartlinenumber=\"1\">A table written as CSV.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.TableCsvOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.TableCsvOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.TableCsvOptions",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.TableCsvOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Layout.TableCsv\" data-throw-if-not-resolved=\"false\"></xref> writes tables.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.TableDetection.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.TableDetection.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout.TableDetection",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.Layout.TableDetection.yml\" sourcestartlinenumber=\"1\">Which tables layout analysis looks for (design Q5).</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Pdf.Layout.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Pdf.Layout.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Pdf.Layout",
-      "Summary": null
     },
     {
       "type": "ManagedReference",

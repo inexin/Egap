@@ -87,12 +87,12 @@
         <article data-uid="">
 <h1 id="pdf-export-and-conversion">PDF export and conversion</h1>
 
-<p>Egap.Pdf.Layout connects Egap.Documents and Egap.Pdf in both directions.</p>
+<p>Egap.Pdf.Conversion connects Egap.Documents and Egap.Pdf in both directions.</p>
 <h2 id="documents-to-pdf">Documents to PDF</h2>
 <p>A document saves as PDF with its links, outline and, when asked, tags for accessibility. PDF/A works the same way.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Pdf;
-using Egap.Pdf.Layout;
+using Egap.Pdf.Conversion;
 
 Document doc = Document.Load(&quot;report.docx&quot;);
 doc.SaveAsPdf(&quot;report.pdf&quot;, new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
@@ -105,7 +105,7 @@ page.SaveAsPdf(&quot;invoice.pdf&quot;);
 can save as DOCX, HTML or Markdown. Tagged PDFs, such as Word's, keep their tables' merged and nested cells.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Pdf;
-using Egap.Pdf.Layout;
+using Egap.Pdf.Conversion;
 
 using PdfDocument pdf = PdfDocument.Open(&quot;paper.pdf&quot;);
 Document flow = PdfToDocument.Convert(pdf);

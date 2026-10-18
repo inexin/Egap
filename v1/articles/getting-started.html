@@ -90,7 +90,7 @@
 <p>Egap needs .NET 10. Add the package for what you need:</p>
 <pre><code class="lang-sh">dotnet add package Egap.Pdf            # PDF files
 dotnet add package Egap.Documents      # DOCX, HTML and Markdown
-dotnet add package Egap.Pdf.Layout     # documents to PDF, and PDF back to documents
+dotnet add package Egap.Pdf.Conversion     # documents to PDF, and PDF back to documents
 </code></pre>
 <p>Egami, the imaging library Egap draws with, comes along as a dependency. See <a href="packages.html">Packages</a> for what each one holds.</p>
 <h2 id="open-edit-and-save-a-pdf">Open, edit and save a PDF</h2>
@@ -116,7 +116,7 @@ image.Save(&quot;page.png&quot;);
 </code></pre>
 <h2 id="turn-a-word-file-into-pdf">Turn a Word file into PDF</h2>
 <pre><code class="lang-csharp">using Egap.Documents;
-using Egap.Pdf.Layout;
+using Egap.Pdf.Conversion;
 
 Document report = Document.Load(&quot;report.docx&quot;);
 report.SaveAsPdf(&quot;report.pdf&quot;, new PdfExportOptions { Tagged = true });
