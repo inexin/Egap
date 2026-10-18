@@ -414,6 +414,9 @@ internal sealed record ImageSettings
 
     /// <summary>A result must be at least this much smaller than what it replaces, or the original is kept.</summary>
     public double MinSaving { get; init; } = 0.05;
+
+    /// <summary>Huffman passes already run by <see cref="JpegOptimizer.Prepare"/>, by stream; null for none.</summary>
+    public IReadOnlyDictionary<PdfStream, byte[]?>? Prepared { get; init; }
 }
 
 /// <summary>One image the pass changed, for the optimize report.</summary>

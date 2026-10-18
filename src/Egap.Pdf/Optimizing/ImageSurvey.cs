@@ -25,7 +25,12 @@ internal static class ImageSurvey
     internal const double FlatEqualShare = 0.6;
 
     /// <summary>Surveys every page of the document.</summary>
-    public static IReadOnlyList<SurveyedImage> Run(PdfDocument document)
+    /// <param name="document">The document.</param>
+    /// <param name="lossy">
+    /// False when only lossless changes follow: then the only kind that matters is bilevel, and images that cannot be bilevel
+    /// (by their parameters, or a first sample that is neither black nor white) are not decoded.
+    /// </param>
+    public static IReadOnlyList<SurveyedImage> Run(PdfDocument document, bool lossy = true)
     {
         ArgumentNullException.ThrowIfNull(document);
         Dictionary<object, SurveyedImage> images = new(ReferenceEqualityComparer.Instance);
@@ -34,17 +39,25 @@ internal static class ImageSurvey
         {
             PdfPage page = document.Pages[index];
             double unit = page.UserUnit;
-            try
+            if (!lossy)
             {
-                foreach (PdfPlacedImage placed in page.GetImages())
-                {
-                    Add(images, order, placed.Image, placed.Matrix, unit, index, appearance: false);
-                }
-            }
-            catch (PdfException e) when (e is not PdfLimitException)
-            {
-                // The page's content cannot be read: whatever its resources name may be drawn at any size.
+                // Lossless changes keep every image's size, so where it is drawn does not matter: the resources tell what is.
                 Unplaced(images, order, page.Resources, index, depth: 0, seen: new(ReferenceEqualityComparer.Instance));
+            }
+            else
+            {
+                try
+                {
+                    foreach (PdfPlacedImage placed in page.GetImages())
+                    {
+                        Add(images, order, placed.Image, placed.Matrix, unit, index, appearance: false);
+                    }
+                }
+                catch (PdfException e) when (e is not PdfLimitException)
+                {
+                    // The page's content cannot be read: whatever its resources name may be drawn at any size.
+                    Unplaced(images, order, page.Resources, index, depth: 0, seen: new(ReferenceEqualityComparer.Instance));
+                }
             }
 
             foreach (PdfAnnotation annotation in page.Annotations)
@@ -55,7 +68,12 @@ internal static class ImageSurvey
 
         foreach (SurveyedImage image in order)
         {
-            image.Kind = Classify(image.Image);
+            image.Kind = lossy ? Classify(image.Image) : Bilevel(image.Image) switch
+            {
+                true => SurveyedImageKind.Bilevel,
+                false => SurveyedImageKind.Photo,
+                null => Classify(image.Image),
+            };
         }
 
         return order;
@@ -139,6 +157,127 @@ internal static class ImageSurvey
             : SurveyedImageKind.Photo;
     }
 
+    /// <summary>
+    /// Whether an image is bilevel, for lossless changes; null when only decoding can tell. 1-bit images, CCITT and JBIG2 are
+    /// left to <see cref="Classify(PdfImage)"/>, and JPEG and JPEG 2000 never count: lossless changes keep them as they are. 8-bit gray, RGB (device, calibrated or ICC)
+    /// and indexed samples stored
+    /// plain or with Flate are read only up to the first that is not black or white.
+    /// </summary>
+    private static bool? Bilevel(PdfImage image)
+    {
+        if (image.IsStencilMask || image.BitsPerComponent == 1 || image.ImageCodec?.Value is "CCITTFaxDecode" or "JBIG2Decode")
+        {
+            return null;
+        }
+
+        if (image.ImageCodec is not null || image.BitsPerComponent != 8 || image.Width <= 0 || image.Height <= 0)
+        {
+            return false;
+        }
+
+        // Which stored byte values show black or white: all of them for gray and RGB, the palette's black and white for Indexed.
+        bool[]? allowed = image.ColorSpace switch
+        {
+            PdfArray { Count: 4 } indexed when indexed.GetName(0)?.Value is "Indexed" or "I" => Palette(indexed),
+            PdfObject space when GrayOrRgb(space) > 0 => null,
+            _ => [],
+        };
+        if (allowed is { Length: 0 } || image.Parameters.Get("Decode") is not null || image.Stream is not PdfStream stream
+            || stream.Dictionary.Get("DecodeParms")?.Resolve() is PdfDictionary or PdfArray)
+        {
+            return allowed is not { Length: 0 } || image.ColorSpace is not PdfName { Value: "DeviceCMYK" or "CMYK" } ? null : false;
+        }
+
+        IReadOnlyList<PdfName> filters = stream.Filters;
+        if (filters.Count > 1 || filters.Count == 1 && filters[0].Value is not ("FlateDecode" or "Fl"))
+        {
+            return null;
+        }
+
+        try
+        {
+            using Stream encoded = new MemoryStream(stream.GetEncodedBytes(), writable: false);
+            using Stream samples = filters.Count == 0 ? encoded : new System.IO.Compression.ZLibStream(encoded, System.IO.Compression.CompressionMode.Decompress);
+            Span<byte> buffer = stackalloc byte[4096];
+            long count = 0;
+            int read;
+            while ((read = samples.Read(buffer)) > 0)
+            {
+                count += read;
+                foreach (byte b in buffer[..read])
+                {
+                    if (allowed is null ? b is not (0 or 255) : !allowed[b])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            int components = allowed is null ? GrayOrRgb(image.ColorSpace) : 1;
+            return count >= (long)image.Width * image.Height * components ? true : null;
+        }
+        catch (InvalidDataException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>The components of a gray or RGB space, device, calibrated or ICC; 0 for any other.</summary>
+    private static int GrayOrRgb(PdfObject? space) => space switch
+    {
+        PdfName { Value: "DeviceGray" or "G" } => 1,
+        PdfName { Value: "DeviceRGB" or "RGB" } => 3,
+        PdfArray { Count: 2 } cal when cal.GetName(0)?.Value == "CalGray" => 1,
+        PdfArray { Count: 2 } cal when cal.GetName(0)?.Value == "CalRGB" => 3,
+        PdfArray { Count: 2 } icc when icc.GetName(0)?.Value == "ICCBased" => icc.Get<PdfStream>(1)?.Dictionary.GetInt("N") switch
+        {
+            1 => 1,
+            3 => 3,
+            _ => 0,
+        },
+        _ => 0,
+    };
+
+    /// <summary>
+    /// For each of the 256 indices, whether an Indexed palette over a gray or RGB space shows it black or white; an empty
+    /// array when the palette cannot be read this way, which leaves the judgement to decoding.
+    /// </summary>
+    private static bool[] Palette(PdfArray indexed)
+    {
+        int components = GrayOrRgb(indexed.Get(1)?.Resolve());
+        byte[]? table = indexed.Get(3)?.Resolve() switch
+        {
+            PdfString text => text.Bytes.ToArray(),
+            PdfStream lookup => TryDecode(lookup),
+            _ => null,
+        };
+        if (components == 0 || table is null)
+        {
+            return [];
+        }
+
+        bool[] allowed = new bool[256];
+        for (int index = 0; index < 256 && (index + 1) * components <= table.Length; index++)
+        {
+            ReadOnlySpan<byte> entry = table.AsSpan(index * components, components);
+            allowed[index] = !entry.ContainsAnyExcept((byte)0) || !entry.ContainsAnyExcept((byte)255);
+        }
+
+        return allowed;
+    }
+
+    private static byte[]? TryDecode(PdfStream stream)
+    {
+        try
+        {
+            return stream.GetDecodedBytes();
+        }
+        catch (PdfException e) when (e is not PdfLimitException)
+        {
+            return null;
+        }
+    }
+
     private static int Components(PdfImage image)
     {
         PdfObject? space = image.ColorSpace;
@@ -166,7 +305,29 @@ internal static class ImageSurvey
 
     private static void Unplaced(Dictionary<object, SurveyedImage> images, List<SurveyedImage> order, PdfDictionary? resources, int page, int depth, HashSet<PdfObject> seen)
     {
-        if (resources?.Get<PdfDictionary>("XObject") is not PdfDictionary xobjects || depth > 16 || !seen.Add(resources))
+        if (resources is null || depth > 16 || !seen.Add(resources))
+        {
+            return;
+        }
+
+        // Tiling patterns and soft mask groups draw with resources of their own.
+        foreach (KeyValuePair<PdfName, PdfObject> entry in resources.Get<PdfDictionary>("Pattern")?.Entries ?? [])
+        {
+            if (entry.Value.Resolve() is PdfStream pattern)
+            {
+                Unplaced(images, order, pattern.Dictionary.Get<PdfDictionary>("Resources"), page, depth + 1, seen);
+            }
+        }
+
+        foreach (KeyValuePair<PdfName, PdfObject> entry in resources.Get<PdfDictionary>("ExtGState")?.Entries ?? [])
+        {
+            if (entry.Value.Resolve() is PdfDictionary state && state.Get<PdfDictionary>("SMask")?.Get<PdfStream>("G") is PdfStream group)
+            {
+                Unplaced(images, order, group.Dictionary.Get<PdfDictionary>("Resources"), page, depth + 1, seen);
+            }
+        }
+
+        if (resources.Get<PdfDictionary>("XObject") is not PdfDictionary xobjects)
         {
             return;
         }

@@ -143,7 +143,7 @@ public sealed class PdfOptimizeReport
 /// <param name="NewHeight">The height in samples after.</param>
 /// <param name="OldBytes">The stored bytes of the image and its soft mask before.</param>
 /// <param name="NewBytes">The stored bytes after.</param>
-/// <param name="OldResolution">The effective resolution before, in samples per inch; null when its placement is not known.</param>
+/// <param name="OldResolution">The effective resolution before, in samples per inch; null when its placement is not known, and always under lossless options, which do not look at placements.</param>
 /// <param name="NewResolution">The effective resolution after.</param>
 /// <param name="Encoding">How it is stored now: <c>JPEG</c>, <c>Flate</c>, <c>CCITT G4</c> or <c>JPEG (Huffman optimized)</c>.</param>
 public sealed record PdfOptimizedImage(int Page, int OldWidth, int OldHeight, int NewWidth, int NewHeight, long OldBytes, long NewBytes,
