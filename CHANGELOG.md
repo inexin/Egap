@@ -44,6 +44,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 ## Egap.Documents 1.1.0 (unreleased, first release on NuGet)
 
 - Images in Markdown output through a resolver or a folder beside the file; EMF and WMF pictures as PNG or SVG.
+- Page drawing and PDF export: a picture used on many pages, such as a logo in a header, is embedded once; SVG pictures
+  are drawn as vectors.
 - Builds on 1.0.0 (2026-10-17, not published): one document model for DOCX, DOTX, DOCM, HTML and Markdown, with styles,
   lists, tables, fields, comments and tracked changes; find, replace and a document builder; page layout with floats,
   columns, headers, footers and footnotes, drawn on any Egami canvas.
