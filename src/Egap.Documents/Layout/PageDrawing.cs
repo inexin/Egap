@@ -1,10 +1,13 @@
+using System.Collections.Concurrent;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 using Egami;
 using Egami.Drawing;
 using Egami.Fonts;
 using Egami.Fonts.Layout;
 using Egami.Pixels;
+using Egami.Svg;
 
 using EgamiBorderStyle = Egap.Documents.BorderStyle;
 
@@ -18,6 +21,11 @@ namespace Egap.Documents.Layout;
 internal static class PageDrawing
 {
     private static readonly Rgba8 Black = new(0, 0, 0, 255);
+
+    // Each document's images, decoded once: a PDF canvas writes one image object per EncodedImage instance, so a logo in a
+    // running header is embedded once, not once per page. ImageData compares by its bytes' memory, so pictures that share
+    // a file (a DOCX media part used twice) share the entry too.
+    private static readonly ConditionalWeakTable<Document, ConcurrentDictionary<ImageData, EncodedImage>> Images = [];
 
     public static void Draw(PageLayout page, Canvas canvas, LayoutDrawObserver? observer)
     {
@@ -228,10 +236,10 @@ internal static class PageDrawing
         switch (box.Node)
         {
             case Picture picture when picture.Image.Bytes.Length > 0:
-                DrawImage(canvas, picture.Image, rect);
+                DrawImage(canvas, picture.Document, picture.Image, rect);
                 break;
-            case Island { Fallback: { } fallback }:
-                DrawImage(canvas, fallback, rect);
+            case Island { Fallback: { } fallback } island:
+                DrawImage(canvas, island.Document, fallback, rect);
                 break;
             case Shape shape:
                 {
@@ -265,7 +273,7 @@ internal static class PageDrawing
     }
 
     /// <summary>Draws an image the file stores, decoding it with Egami's codecs; one Egami cannot decode is left out.</summary>
-    private static void DrawImage(Canvas canvas, ImageData image, RectF rect)
+    private static void DrawImage(Canvas canvas, Document document, ImageData image, RectF rect)
     {
         try
         {
@@ -276,9 +284,17 @@ internal static class PageDrawing
                 return;
             }
 
-            canvas.DrawImage(EncodedImage.Load(image.Bytes), rect);
+            if (image.ContentType == "image/svg+xml")
+            {
+                // SVG stays vector: drawn through Egami.Svg onto whatever canvas this is, fitted by its preserveAspectRatio.
+                using MemoryStream stream = new(image.Bytes.ToArray(), writable: false);
+                SvgDocument.Load(stream).Draw(canvas, rect);
+                return;
+            }
+
+            canvas.DrawImage(Images.GetOrCreateValue(document).GetOrAdd(image, i => EncodedImage.Load(i.Bytes)), rect);
         }
-        catch (Exception e) when (e is NotSupportedException or InvalidDataException or ArgumentException or EgamiException)
+        catch (Exception e) when (e is NotSupportedException or InvalidDataException or ArgumentException or EgamiException or SvgException)
         {
             // A format Egami has no decoder for (or a damaged image): the box stays empty.
         }

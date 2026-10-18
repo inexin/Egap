@@ -201,4 +201,46 @@ public class PdfExportTests
         PdfAReport a = PdfAConverter.Check(accessible, PdfAConformance.PdfA2a);
         Assert.True(a.Succeeded, string.Join("\n", a.Unmet.Select(i => i.Clause + " " + i.Description)));
     }
+    [Fact]
+    public void APictureOnEveryPageIsEmbeddedOnce()
+    {
+        // A logo in the header used to be written once per page.
+        Document document = new();
+        Section section = document.AddSection();
+        section.HeadersFooters.GetOrAdd(HeaderFooterKind.HeaderPrimary).AddParagraph().AddPicture(new ImageData(Png(), "image/png"), 40, 30);
+        for (int i = 0; i < 3; i++)
+        {
+            section.Body.AddParagraph("Page " + i).Format.PageBreakBefore = i > 0;
+        }
+
+        using PdfDocument pdf = Reopen(document);
+
+        Assert.Equal(3, pdf.Pages.Count);
+        PdfStream?[] images = pdf.Pages.Select(p => Assert.Single(p.GetImages()).Image.Stream).ToArray();
+        Assert.All(images, image => Assert.Same(images[0], image));
+    }
+
+    [Fact]
+    public void SvgPicturesAreDrawnAsVectors()
+    {
+        const string Svg = "<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><rect width='10' height='10' fill='#ff0000'/></svg>";
+        Document document = new();
+        document.AddSection().Body.AddParagraph().AddPicture(ImageData.FromBytes(System.Text.Encoding.UTF8.GetBytes(Svg)), 40, 40);
+
+        using PdfDocument pdf = Reopen(document);
+
+        Assert.Empty(pdf.Pages[0].GetImages());
+        using Egami.Raster<Egami.Pixels.Rgba8> page = pdf.Pages[0].Render(new PdfRenderOptions(), TestContext.Current.CancellationToken);
+        int red = 0;
+        for (int y = 0; y < page.Height; y++)
+        {
+            for (int x = 0; x < page.Width; x++)
+            {
+                Egami.Pixels.Rgba8 p = page.GetPixel(x, y);
+                red += p.R > 200 && p.G < 100 ? 1 : 0;
+            }
+        }
+
+        Assert.True(red > 1000, $"{red} red pixels");
+    }
 }
