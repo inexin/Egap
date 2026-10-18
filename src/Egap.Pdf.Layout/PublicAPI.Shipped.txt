@@ -115,6 +115,7 @@ Egap.Pdf.Layout.LayoutTableCell.Lines.get -> System.Collections.Generic.IReadOnl
 Egap.Pdf.Layout.LayoutTableCell.Row.get -> int
 Egap.Pdf.Layout.LayoutTableCell.RowSpan.get -> int
 Egap.Pdf.Layout.LayoutTableCell.Text.get -> string!
+Egap.Pdf.Layout.LayoutTableCell.Tables.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Layout.LayoutTable!>!
 Egap.Pdf.Layout.LayoutThresholds
 Egap.Pdf.Layout.LayoutThresholds.<Clone>$() -> Egap.Pdf.Layout.LayoutThresholds!
 Egap.Pdf.Layout.LayoutThresholds.BandGap.get -> double

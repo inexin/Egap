@@ -152,7 +152,7 @@ page.SaveAsPdf("invoice.pdf");
 | --- | --- |
 | `src/Egap.Pdf` | The PDF library (package `Egap.Pdf`). |
 | `src/Egap.Documents` | Flow documents (Phase 6, 1.0): one document model with DOCX, HTML and Markdown readers and writers, a page layout engine and hit testing (package `Egap.Documents`). |
-| `src/Egap.Pdf.Layout` | The bridge between Egap.Documents and Egap.Pdf (1.0): documents saved as PDF; PDF pages analysed into blocks, roles, tables and figures, converted back into documents, auto-tagged, and written as DoclingDocument JSON or table CSV (package `Egap.Pdf.Layout`). |
+| `src/Egap.Pdf.Layout` | The bridge between Egap.Documents and Egap.Pdf (1.1): documents saved as PDF; PDF pages analysed into blocks, roles, tables and figures, converted back into documents, auto-tagged, and written as DoclingDocument JSON or table CSV. Since 1.1 tables from tagged PDFs such as Word's come back with merged cells, empty cells and tables, rows and parts joined across pages, and tables nested in cells (package `Egap.Pdf.Layout`). |
 | `src/Egap.Fonts` | Open, metric-compatible substitutes for Helvetica, Arial, Times, Courier, Calibri and Cambria (package `Egap.Fonts`, SIL OFL fonts). |
 | `tests/Egap.Pdf.Tests`, `tests/Egap.Documents.Tests`, `tests/Egap.Pdf.Layout.Tests` | Unit tests (xUnit v3). |
 | `tests/Egap.Pdf.Fuzz`, `tests/Egap.Documents.Fuzz` | SharpFuzz harnesses for AFL++. |
