@@ -12,8 +12,8 @@
           "files": [ "Egap.Documents.csproj" ]
         },
         {
-          "src": "../src/Egap.Pdf.Layout",
-          "files": [ "Egap.Pdf.Layout.csproj" ]
+          "src": "../src/Egap.Pdf.Conversion",
+          "files": [ "Egap.Pdf.Conversion.csproj" ]
         },
         {
           "src": "../src/Egap.Fonts",

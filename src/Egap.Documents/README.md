@@ -23,5 +23,5 @@ DocumentLayout pages = doc.Layout();
 pages.Pages[0].Render(dpi: 150).Save("page1.png");
 ```
 
-For PDF output and PDF to document conversion, add [Egap.Pdf.Layout](https://www.nuget.org/packages/Egap.Pdf.Layout).
+For PDF output and PDF to document conversion, add [Egap.Pdf.Conversion](https://www.nuget.org/packages/Egap.Pdf.Conversion).
 Source and changelog: [github.com/inexin/Egap](https://github.com/inexin/Egap).

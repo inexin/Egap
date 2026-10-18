@@ -48,7 +48,7 @@ def main() -> int:
             "    <ImplicitUsings>enable</ImplicitUsings>\n"
             "  </PropertyGroup>\n"
             "  <ItemGroup>\n"
-            f'    <ProjectReference Include="{ROOT / "src" / "Egap.Pdf.Layout" / "Egap.Pdf.Layout.csproj"}" />\n'
+            f'    <ProjectReference Include="{ROOT / "src" / "Egap.Pdf.Conversion" / "Egap.Pdf.Conversion.csproj"}" />\n'
             "  </ItemGroup>\n"
             "</Project>\n", encoding="utf-8")
         result = subprocess.run(["dotnet", "build", str(work / "Snippets.csproj"), "-nologo", "-v", "q"],

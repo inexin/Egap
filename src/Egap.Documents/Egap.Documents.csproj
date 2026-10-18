@@ -17,7 +17,7 @@
 
   <!--
     Pages are laid out with Egami's fonts and drawn on Egami's canvas (Phase 6 design Q11, Q13); Egap.Fonts is the last stop of
-    the font chain (Q12). Never Egap.Pdf (hub decision 2026-10-11): PDF export lives in Egap.Pdf.Layout (Q2).
+    the font chain (Q12). Never Egap.Pdf (hub decision 2026-10-11): PDF export lives in Egap.Pdf.Conversion (Q2).
   -->
   <ItemGroup>
     <PackageReference Include="Egami.Drawing" />
