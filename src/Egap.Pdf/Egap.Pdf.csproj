@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Egap.Pdf</RootNamespace>
     <PackageId>Egap.Pdf</PackageId>
-    <VersionPrefix>1.4.0</VersionPrefix>
+    <VersionPrefix>1.4.1</VersionPrefix>
     <Description>A fully managed, MIT-licensed PDF library for .NET.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTrimmable>true</IsTrimmable>
@@ -41,10 +41,11 @@
 
   <!--
     Substitutes for fonts that are not embedded (Phase 4 design Q5): Liberation for the standard 14's Helvetica, Times and
-    Courier from Egap.Fonts, shared with the other Egap libraries; Foxit's Symbol and ZapfDingbats (BSD-3-Clause) here.
+    Courier from Egami.Fonts.Substitutes, shared with the other Egap libraries; Foxit's Symbol and ZapfDingbats
+    (BSD-3-Clause) here.
   -->
   <ItemGroup>
-    <ProjectReference Include="../Egap.Fonts/Egap.Fonts.csproj" />
+    <PackageReference Include="Egami.Fonts.Substitutes" />
     <EmbeddedResource Include="Fonts/Substitutes/*.pfb;Fonts/Substitutes/LICENSE_FOXIT" LogicalName="Egap.Pdf.Fonts.Substitutes.%(Filename)%(Extension)" />
   </ItemGroup>
 

@@ -7,6 +7,7 @@
     <PackageVersion Include="Egami" Version="1.0.0" />
     <PackageVersion Include="Egami.Drawing" Version="1.0.0" />
     <PackageVersion Include="Egami.Fonts" Version="1.0.0" />
+    <PackageVersion Include="Egami.Fonts.Substitutes" Version="1.0.0" />
     <PackageVersion Include="Egami.Metafiles" Version="1.0.0" />
     <PackageVersion Include="Egami.Css" Version="1.0.0" />
     <PackageVersion Include="Egami.Svg" Version="1.0.0" />

@@ -10,7 +10,6 @@ body:
         - Egap.Pdf
         - Egap.Documents
         - Egap.Pdf.Conversion
-        - Egap.Fonts
         - A new package
     validations:
       required: true

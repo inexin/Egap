@@ -76,7 +76,7 @@ public sealed class RedactionTextTests
         PdfPage page = pdf.Pages.AddBlank(new PdfRectangle(0, 0, 400, 200));
         using (PdfCanvas canvas = new(page))
         {
-            Egami.Fonts.Typeface face = Egap.Fonts.StandardFonts.Find("Helvetica", Egami.Fonts.FontStyle.Normal)!;
+            Egami.Fonts.Typeface face = Egami.Fonts.Substitutes.SubstituteFonts.Find("Helvetica", Egami.Fonts.FontStyle.Normal)!;
             canvas.DrawText("Account 987654 closed", new Vector2(20, 100), new Egami.Fonts.Font(face, 14), new SolidPaint(new RgbaF32(0, 0, 0, 1)));
         }
 

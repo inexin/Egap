@@ -16,12 +16,12 @@ public class PackageRulesTests
     }
 
     [Fact]
-    public void DocumentsReferencesOnlyEgamiEgapFontsAndTheFramework()
+    public void DocumentsReferencesOnlyEgamiAndTheFramework()
     {
         string[] others = [.. Documents.GetReferencedAssemblies()
             .Select(name => name.Name!)
             .Where(name => !name.StartsWith("System", StringComparison.Ordinal) && name != "netstandard"
-                && !name.StartsWith("Egami", StringComparison.Ordinal) && name != "Egap.Fonts")];
+                && !name.StartsWith("Egami", StringComparison.Ordinal))];
 
         Assert.Empty(others);
     }

@@ -15,6 +15,6 @@ public class PackageRulesTests
         Assert.NotNull(Assembly.Load("Egap.Documents"));
         Assert.NotNull(Assembly.Load("Egap.Pdf"));
         Assert.DoesNotContain(referenced, name => name.StartsWith("Egap.", StringComparison.Ordinal)
-            && name is not ("Egap.Documents" or "Egap.Pdf" or "Egap.Fonts"));
+            && name is not ("Egap.Documents" or "Egap.Pdf"));
     }
 }

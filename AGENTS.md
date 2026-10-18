@@ -1,7 +1,7 @@
 # Instructions for AI coding agents
 
-Egap is a fully managed, MIT-licensed family of document libraries for .NET 10: Egap.Pdf, Egap.Documents, Egap.Pdf.Conversion
-and Egap.Fonts. It draws, decodes images and reads fonts through [Egami](https://github.com/inexin/Egami). Read
+Egap is a fully managed, MIT-licensed family of document libraries for .NET 10: Egap.Pdf, Egap.Documents and
+Egap.Pdf.Conversion. It draws, decodes images and reads fonts through [Egami](https://github.com/inexin/Egami). Read
 [CONTRIBUTING.md](CONTRIBUTING.md) first; this file adds what an agent needs on top of it.
 
 ## Hard rules

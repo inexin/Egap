@@ -15,7 +15,6 @@ body:
         - Egap.Pdf
         - Egap.Documents
         - Egap.Pdf.Conversion
-        - Egap.Fonts
     validations:
       required: true
   - type: input

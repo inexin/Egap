@@ -27,7 +27,7 @@ internal static class GlyphlessFont
 
     private static PdfReference Build(PdfDocument document)
     {
-        Typeface face = Egap.Fonts.StandardFonts.Find("Helvetica", FontStyle.Normal) ?? throw new PdfException("The bundled fonts are missing.");
+        Typeface face = global::Egami.Fonts.Substitutes.SubstituteFonts.Find("Helvetica", FontStyle.Normal) ?? throw new PdfException("The bundled fonts are missing.");
         ushort space = face.GetGlyph(' ');
         FontSubset subset = FontSubsetter.Subset(face, [0, space], new SubsetOptions { Format = SubsetFormat.TrueType, KeepCmap = false });
         byte[] program = PdfA.SfntMetrics.SetAdvances(subset.Data.ToArray(), new Dictionary<ushort, double> { [0] = 500, [1] = 500 }, face.UnitsPerEm);

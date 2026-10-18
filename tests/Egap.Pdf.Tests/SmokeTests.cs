@@ -15,10 +15,10 @@ public sealed class SmokeTests
     [Fact]
     public void AssemblyReferencesOnlyTheRuntimeAndEgami()
     {
-        // Egap.Pdf is fully managed: it may reference only .NET's own assemblies, Egami's (Phase 3 design Q2) and Egap.Fonts,
-        // the shared substitute fonts (Phase 4 design Q5).
+        // Egap.Pdf is fully managed: it may reference only .NET's own assemblies, Egami's (Phase 3 design Q2), including
+        // Egami.Fonts.Substitutes, the shared substitute fonts (Phase 4 design Q5).
         AssemblyName[] references = typeof(PdfDocument).Assembly.GetReferencedAssemblies();
 
-        Assert.All(references, static r => Assert.True(r.Name!.StartsWith("System.", StringComparison.Ordinal) || r.Name is "Egami" or "Egami.Fonts" or "Egami.Drawing" or "Egap.Fonts", r.Name));
+        Assert.All(references, static r => Assert.True(r.Name!.StartsWith("System.", StringComparison.Ordinal) || r.Name is "Egami" or "Egami.Fonts" or "Egami.Drawing" or "Egami.Fonts.Substitutes", r.Name));
     }
 }

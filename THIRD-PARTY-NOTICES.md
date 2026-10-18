@@ -126,20 +126,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-## Liberation, Carlito and Caladea fonts
-
-`src/Egap.Fonts/Fonts/*.ttf`, embedded in Egap.Fonts.dll, are unchanged releases of open fonts metric-compatible with the
-fonts documents name most, used in place of fonts a document does not embed:
-
-| Fonts | Release | Licence file |
-| --- | --- | --- |
-| Liberation Sans, Serif and Mono (regular, bold, italic, bold italic) | liberation-fonts-ttf 2.1.5, [liberationfonts/liberation-fonts](https://github.com/liberationfonts/liberation-fonts) | `Liberation-OFL.txt` |
-| Carlito (four styles) | [google/fonts](https://github.com/google/fonts/tree/main/ofl/carlito) | `Carlito-OFL.txt` |
-| Caladea (four styles) | [google/fonts](https://github.com/google/fonts/tree/main/ofl/caladea) | `Caladea-OFL.txt` |
-
-All are licensed under the SIL Open Font License 1.1. The licence files, with each font's copyright and reserved font names,
-are in the same folder, embedded in Egap.Fonts.dll and packed with the package under `licenses/`.
-
 ## HTML named character references
 
 `src/Egap.Documents/Html/entities.txt`, embedded in Egap.Documents.dll, lists the named character references of the

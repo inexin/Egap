@@ -30,7 +30,7 @@ internal static partial class Overlay
         }
 
         using PdfCanvas canvas = new(page);
-        Typeface face = global::Egap.Fonts.StandardFonts.Find("Helvetica", FontStyle.Normal)!;
+        Typeface face = global::Egami.Fonts.Substitutes.SubstituteFonts.Find("Helvetica", FontStyle.Normal)!;
         foreach (PdfRedactAnnotation redaction in shown)
         {
             foreach (PdfRectangle area in Redactor.Areas(redaction))

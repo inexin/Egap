@@ -1,6 +1,6 @@
 # Fonts
 
-Egap.Fonts bundles open fonts with the same glyph widths as the fonts documents name most. Text set in a substitute keeps
+Egap.Pdf and Egap.Documents use open fonts with the same glyph widths as the fonts documents name most. Text set in a substitute keeps
 the original's line breaks.
 
 | Font in the document | Substitute |
@@ -15,10 +15,10 @@ Egap.Pdf and Egap.Documents use them on their own when a font is missing. You ca
 
 ```csharp
 using Egami.Fonts;
-using Egap.Fonts;
+using Egami.Fonts.Substitutes;
 
-Typeface? arial = StandardFonts.Find("Arial", FontStyle.Normal);   // Liberation Sans
-FontCollection all = StandardFonts.Collection;                    // every bundled face
+Typeface? arial = SubstituteFonts.Find("Arial", FontStyle.Normal);   // Liberation Sans
+FontCollection all = SubstituteFonts.Collection;                    // every bundled face
 ```
 
 The fonts are under the SIL Open Font License 1.1, and their licences ship in the package.

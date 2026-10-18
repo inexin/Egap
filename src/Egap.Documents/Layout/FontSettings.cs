@@ -4,8 +4,8 @@ namespace Egap.Documents.Layout;
 
 /// <summary>
 /// Where the layout engine finds fonts (Phase 6 design Q12): the document's embedded fonts first, then the caller's
-/// collections, then the system's, then metric-compatible substitutes from Egap.Fonts, then a last resort. Every font the
-/// document names and the chain could not give as asked is reported as a <see cref="FontSubstitution"/>.
+/// collections, then the system's, then metric-compatible substitutes from Egami.Fonts.Substitutes, then a last resort.
+/// Every font the document names and the chain could not give as asked is reported as a <see cref="FontSubstitution"/>.
 /// </summary>
 public sealed class FontSettings
 {
@@ -15,7 +15,10 @@ public sealed class FontSettings
     /// <summary>Whether the system's installed fonts are searched; off for output that is the same on every machine.</summary>
     public bool UseSystemFonts { get; init; } = true;
 
-    /// <summary>Whether the metric-compatible substitutes in Egap.Fonts (Carlito, Caladea, Liberation) stand in for missing fonts.</summary>
+    /// <summary>
+    /// Whether the metric-compatible substitutes in Egami.Fonts.Substitutes (Carlito, Caladea, Liberation) stand in for missing
+    /// fonts.
+    /// </summary>
     public bool UseStandardSubstitutes { get; init; } = true;
 
     /// <summary>
@@ -25,7 +28,7 @@ public sealed class FontSettings
     /// </summary>
     public IReadOnlyDictionary<string, string> Substitutions { get; init; } = new Dictionary<string, string>();
 
-    /// <summary>The family used when nothing else matches; Liberation Sans from Egap.Fonts when null.</summary>
+    /// <summary>The family used when nothing else matches; Liberation Sans from Egami.Fonts.Substitutes when null.</summary>
     public string? LastResortFamily { get; init; }
 
     /// <summary>The settings a layout uses when none are given: system fonts and the standard substitutes on.</summary>

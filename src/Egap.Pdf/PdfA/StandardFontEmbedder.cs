@@ -11,11 +11,11 @@ namespace Egap.Pdf.PdfA;
 
 /// <summary>
 /// Embeds simple fonts that PDF/A forbids leaving out (ISO 19005-2 6.2.11.4; Phase 5 design Q12). The standard 14:
-/// Helvetica, Times and Courier as Liberation subsets (metric-compatible, from Egap.Fonts) written as TrueType fonts with
-/// WinAnsi encoding, Symbol and ZapfDingbats as Foxit's compact (CFF) Type 1 programs (BSD-3-Clause, bundled since Phase 4).
-/// Other fonts: the same font installed on this machine, or with substitution allowed the bundled font the name suggests,
-/// with the PDF's widths written into the subset's metrics so text keeps its place and the program agrees with the widths.
-/// The font dictionary is changed in place, so everything using it sees the embedded font.
+/// Helvetica, Times and Courier as Liberation subsets (metric-compatible, from Egami.Fonts.Substitutes) written as TrueType
+/// fonts with WinAnsi encoding, Symbol and ZapfDingbats as Foxit's compact (CFF) Type 1 programs (BSD-3-Clause, bundled
+/// since Phase 4). Other fonts: the same font installed on this machine, or with substitution allowed the bundled font the
+/// name suggests, with the PDF's widths written into the subset's metrics so text keeps its place and the program agrees
+/// with the widths. The font dictionary is changed in place, so everything using it sees the embedded font.
 /// </summary>
 internal static class StandardFontEmbedder
 {
@@ -198,7 +198,7 @@ internal static class StandardFontEmbedder
                 }
             }
 
-            return rest.Length == 0 ? Egap.Fonts.StandardFonts.Find(alias, new FontStyle(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright)) : null;
+            return rest.Length == 0 ? global::Egami.Fonts.Substitutes.SubstituteFonts.Find(alias, new FontStyle(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright)) : null;
         }
 
         return null;
@@ -209,7 +209,7 @@ internal static class StandardFontEmbedder
         string name = standard.Name;
         bool bold = name.Contains("Bold", StringComparison.Ordinal);
         bool italic = name.Contains("Oblique", StringComparison.Ordinal) || name.Contains("Italic", StringComparison.Ordinal);
-        return Egap.Fonts.StandardFonts.Find(name, new FontStyle(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright));
+        return global::Egami.Fonts.Substitutes.SubstituteFonts.Find(name, new FontStyle(bold ? 700 : 400, 5, italic ? FontSlant.Italic : FontSlant.Upright));
     }
 
     /// <summary>Whether a font dictionary carries a font program, its descendant's for a composite font.</summary>
