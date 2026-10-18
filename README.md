@@ -8,7 +8,7 @@ It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imagi
   Egami, which is managed too.
 - **Safe on untrusted files**: readers are built to be fuzz-tested from the start.
 
-> **Status:** 1.3.0, public API frozen; nothing is published to NuGet yet. Egap.Pdf reads PDF files, damaged and encrypted
+> **Status:** 1.4.0, public API frozen; nothing is published to NuGet yet. Egap.Pdf reads PDF files, damaged and encrypted
 > ones included (RC4 and AES, revisions 2 to 6), into a lazily loaded object graph with change tracking, and saves them
 > incrementally or by full rewrite, with or without object streams, keeping, dropping or applying AES-256 encryption. On top
 > of that it edits pages, labels, outlines, destinations, metadata, attachments and layers; reads, adds and draws
@@ -19,7 +19,10 @@ It is a sister project to [Egami](https://github.com/inexin/Egami), the 2D imagi
 > and open substitutes (Egap.Fonts) for fonts that are not embedded. Since 1.3 it signs (PAdES B-B to B-LTA, deferred and
 > certification signatures), timestamps and verifies signatures; truly redacts and sanitises; creates, converts and checks
 > PDF/A files with basic PDF/UA; keeps and builds structure trees with tagging while drawing; saves linearized files; and adds
-> invisible OCR text from hOCR or ALTO.
+> invisible OCR text from hOCR or ALTO. Since 1.4 it compresses files with presets and a report per image; draws pages
+> as forms and imposes them N-up, in grids, booklets and posters; stamps page numbers, Bates numbers, watermarks, images
+> and pages as removable page furniture; compares two documents word by word and pixel by pixel, with an annotated copy;
+> and converts to gray, removes blank pages, straightens scans and turns text into outlines.
 
 ```csharp
 using Egap.Pdf;
@@ -114,11 +117,24 @@ if (conversion.Succeeded)
     archive.Save("archive.pdf", new PdfSaveOptions { Linearize = true });
 }
 
-// Phase 7 PDF tools: compress (lossless by default; Print, Ebook and Screen presets downsample and use JPEG).
+// PDF tools: compress (lossless by default; Print, Ebook and Screen presets downsample and use JPEG).
 using PdfDocument scan = PdfDocument.Open("scan.pdf");
+IReadOnlyList<int> blank = scan.RemoveBlankPages();               // the page numbers removed
+scan.DeskewScannedPages();
 PdfOptimizeReport smaller = scan.Optimize(PdfOptimizeOptions.Ebook with { JpegQuality = 70 });
 Console.WriteLine($"{smaller.BytesBefore} -> {smaller.BytesAfter} bytes, {smaller.Images.Count} images changed");
 scan.Save("scan-small.pdf");                                      // every save after Optimize is a compact rewrite
+
+using PdfDocument contract = PdfDocument.Open("contract.pdf");
+contract.Stamp(PdfStamp.Text("Page {page} of {pages}") with { Anchor = StampAnchor.BottomCenter, Offset = new(0, 24) });
+contract.Stamp(PdfStamp.Bates(new PdfBatesSequence("ACME-", digits: 6)) with { Anchor = StampAnchor.BottomRight });
+using PdfDocument handout = PdfImpose.NUp(contract, new NUpOptions { Columns = 2, Rows = 2 });
+handout.Save("handout.pdf");
+
+using PdfDocument before = PdfDocument.Open("contract-v1.pdf"), after = PdfDocument.Open("contract-v2.pdf");
+using PdfComparison changes = PdfCompare.Run(before, after);
+foreach (PdfTextChange change in changes.TextChanges) Console.WriteLine($"{change.Kind}: {change.OldText} -> {change.NewText}");
+changes.WriteMarkup("contract-changes.pdf");                      // the new document with each change marked
 ```
 
 ```csharp
