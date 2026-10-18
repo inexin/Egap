@@ -10,6 +10,9 @@ which is managed too: no native binaries, no P/Invoke.
 - Signatures (PAdES B-B to B-LTA) and verification, true redaction, PDF/A, tagged PDF, linearization, an OCR text layer.
 - Tools: optimize, N-up and booklets, stamps and Bates numbers, compare, blank page removal and deskew.
 
+PDF to DOCX, HTML or Markdown, and documents to tagged PDF, are in
+[Egap.Pdf.Conversion](https://www.nuget.org/packages/Egap.Pdf.Conversion).
+
 ```csharp
 using Egap.Pdf;
 

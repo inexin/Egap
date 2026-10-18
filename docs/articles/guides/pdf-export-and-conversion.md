@@ -1,6 +1,6 @@
 # PDF export and conversion
 
-Egap.Pdf.Layout connects Egap.Documents and Egap.Pdf in both directions.
+Egap.Pdf.Conversion connects Egap.Documents and Egap.Pdf in both directions.
 
 ## Documents to PDF
 
@@ -9,7 +9,7 @@ A document saves as PDF with its links, outline and, when asked, tags for access
 ```csharp
 using Egap.Documents;
 using Egap.Pdf;
-using Egap.Pdf.Layout;
+using Egap.Pdf.Conversion;
 
 Document doc = Document.Load("report.docx");
 doc.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
@@ -26,7 +26,7 @@ can save as DOCX, HTML or Markdown. Tagged PDFs, such as Word's, keep their tabl
 ```csharp
 using Egap.Documents;
 using Egap.Pdf;
-using Egap.Pdf.Layout;
+using Egap.Pdf.Conversion;
 
 using PdfDocument pdf = PdfDocument.Open("paper.pdf");
 Document flow = PdfToDocument.Convert(pdf);

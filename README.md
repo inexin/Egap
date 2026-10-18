@@ -33,7 +33,7 @@ pdf.Save("out.pdf");                                             // incremental:
 | --- | --- | --- |
 | Egap.Pdf | 1.4.0 | Reads, edits, renders, signs, redacts and saves PDF; PDF/A, tagged PDF, optimize, imposition, stamps, compare |
 | Egap.Documents | 1.1.0 | One document model for DOCX, HTML and Markdown, with page layout onto any Egami canvas |
-| Egap.Pdf.Layout | 1.1.0 | Documents to tagged PDF, and PDF pages analysed and converted back into documents |
+| Egap.Pdf.Conversion | 1.1.0 | Documents to tagged PDF, and PDF pages analysed and converted back into documents |
 | Egap.Fonts | 1.0.0 | Open, metric-compatible substitutes for Helvetica, Arial, Times, Courier, Calibri and Cambria |
 
 None of them is on NuGet yet.
