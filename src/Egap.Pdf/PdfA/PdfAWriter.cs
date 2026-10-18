@@ -55,6 +55,23 @@ internal static class PdfAWriter
         };
     }
 
+    /// <summary>
+    /// The PDF/A part a document is written as or claims in its XMP, whatever its level, so tools that edit an opened file
+    /// keep the part's rules even for levels <see cref="Read"/> does not name, such as PDF/A-1a; 0 for none.
+    /// </summary>
+    public static int ClaimedPart(PdfDocument document)
+    {
+        int written = Part(document.WriterConformance);
+        return written > 0 ? written : document.Metadata.GetPdfAId().Part?.Trim() switch
+        {
+            "1" => 1,
+            "2" => 2,
+            "3" => 3,
+            "4" => 4,
+            _ => 0,
+        };
+    }
+
     /// <summary>Gives a new document the output intent and XMP identification of a conformance.</summary>
     public static void Identify(PdfDocument document, PdfAConformance conformance)
     {

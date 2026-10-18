@@ -363,6 +363,150 @@ public sealed class PdfDocument : IDisposable
         return global::Egap.Pdf.Redaction.DocumentSanitizer.Apply(this, options ?? PdfSanitizeOptions.Default);
     }
 
+    /// <summary>
+    /// Makes the document smaller (Phase 7 design 7.1): images downsampled and re-encoded as the options allow, duplicate
+    /// streams written once, fonts subset, thumbnails, private data and empty content removed. Afterwards every save is a
+    /// compact rewrite with unused objects left out, as the report's <see cref="PdfOptimizeReport.BytesAfter"/> measured.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// using PdfDocument pdf = PdfDocument.Open("scan.pdf");
+    /// PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook);
+    /// pdf.Save("scan-small.pdf");
+    /// </code>
+    /// </example>
+    /// <param name="options">What to change; null for <see cref="PdfOptimizeOptions.Lossless"/>.</param>
+    /// <param name="cancellationToken">Stops the work between steps; what was changed by then stays changed and valid.</param>
+    /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public PdfOptimizeReport Optimize(PdfOptimizeOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        ThrowIfReadOnly();
+        options ??= PdfOptimizeOptions.Lossless;
+        options.Check(nameof(options));
+        PdfOptimizeReport report;
+        try
+        {
+            report = Optimizing.Optimizer.Run(this, options, cancellationToken);
+        }
+        finally
+        {
+            ResetRenderCache();
+        }
+
+        return report;
+    }
+
+    /// <summary>
+    /// Stamps the document's pages (Phase 7 design 7.3): text from a template, a Bates number, an image or another page,
+    /// drawn over or under each page's content as removable page furniture (see <see cref="PdfStamp"/>).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// pdf.Stamp(PdfStamp.Text("Page {page} of {pages}") with { Anchor = StampAnchor.BottomCenter, Offset = new(0, 24) });
+    /// pdf.Stamp(PdfStamp.Watermark("DRAFT") with { Layer = "Watermark" });
+    /// </code>
+    /// </example>
+    /// <exception cref="ArgumentNullException"><paramref name="stamp"/> is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
+    /// <exception cref="InvalidOperationException">The document is PDF/A and the stamp would break it: text without an embedded font, transparency in PDF/A-1, or an image without an RGB output intent. Text colours take the output intent's device space; a PDF/A file without an output intent gets an sRGB one.</exception>
+    public PdfStampResult Stamp(PdfStamp stamp)
+    {
+        ArgumentNullException.ThrowIfNull(stamp);
+        ThrowIfReadOnly();
+        stamp.Check(nameof(stamp));
+        return Stamping.Stamper.Apply(this, stamp);
+    }
+
+    /// <summary>
+    /// Removes every stamp <see cref="Stamp"/> added, and nothing else: other page furniture, even marked as artifacts, stays.
+    /// </summary>
+    /// <returns>How many stamp drawings were removed.</returns>
+    public int RemoveStamps()
+    {
+        ThrowIfReadOnly();
+        return Stamping.Stamper.Remove(this);
+    }
+
+    /// <summary>
+    /// Converts every colour the document paints to gray (Phase 7 design 7.5): colour operators, shadings, images and
+    /// annotation colours become DeviceGray, the luma of their sRGB colour, and text and vectors stay as they are.
+    /// </summary>
+    /// <returns>What could not be converted, as warnings; empty when everything was.</returns>
+    /// <param name="cancellationToken">Stops the work between steps; what was changed by then stays changed and valid.</param>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public IReadOnlyList<PdfWarning> ConvertToGray(CancellationToken cancellationToken = default)
+    {
+        ThrowIfReadOnly();
+        try
+        {
+            return Cleanup.GrayConverter.Run(this, cancellationToken);
+        }
+        finally
+        {
+            ResetRenderCache();
+        }
+    }
+
+    /// <summary>
+    /// Removes blank pages (Phase 7 design Q15): pages that paint nothing, and pages that render, without annotations, with
+    /// almost no pixel darker than white (see <see cref="BlankPageOptions"/>).
+    /// </summary>
+    /// <param name="options">What counts as blank; null for <see cref="BlankPageOptions.Default"/>.</param>
+    /// <param name="cancellationToken">Stops the work; no page is removed until every page has been judged.</param>
+    /// <returns>The 1-based numbers the removed pages had.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public IReadOnlyList<int> RemoveBlankPages(BlankPageOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        ThrowIfReadOnly();
+        options ??= BlankPageOptions.Default;
+        if (options.MaxInkFraction is not (>= 0 and <= 1) || options.WhiteLevel is not (> 0 and <= 1) || !(options.Dpi is > 0 and <= 600))
+        {
+            throw new ArgumentOutOfRangeException(nameof(options), "MaxInkFraction must be 0 to 1, WhiteLevel above 0 and at most 1, and Dpi above 0 and at most 600.");
+        }
+
+        return Cleanup.PageCleanup.RemoveBlank(this, options, cancellationToken);
+    }
+
+    /// <summary>
+    /// Straightens scanned pages (Phase 7 design Q14): pages that are one image covering most of the page have its skew found
+    /// and corrected with Egami's Deskew, keeping its size and its kind of encoding.
+    /// </summary>
+    /// <param name="options">The angles to correct; null for <see cref="DeskewOptions.Default"/>.</param>
+    /// <param name="cancellationToken">Stops the work between steps; what was changed by then stays changed and valid.</param>
+    /// <returns>The 1-based numbers of the pages straightened.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">An angle is outside 0 to 45 degrees.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public IReadOnlyList<int> DeskewScannedPages(DeskewOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        ThrowIfReadOnly();
+        options ??= DeskewOptions.Default;
+        if (options.MaxAngle is not (> 0 and <= 45) || options.MinAngle is not (>= 0 and <= 45))
+        {
+            throw new ArgumentOutOfRangeException(nameof(options), "MaxAngle must be above 0 and at most 45, MinAngle 0 to 45.");
+        }
+
+        return Cleanup.PageCleanup.Deskew(this, options, cancellationToken);
+    }
+
+    /// <summary>The name of the file the document was opened from, or null.</summary>
+    internal string? FileName => FilePath is string path ? Path.GetFileName(path) : null;
+
+    /// <summary>Whether the document was optimized, so every save is a compact rewrite (Phase 7 design 7.1).</summary>
+    internal bool Optimized { get; private set; }
+
+    internal void MarkOptimized()
+    {
+        Optimized = true;
+    }
+
+    /// <summary>Whether an optimize was allowed to break the signatures, so its saves are too.</summary>
+    internal bool SignaturesMayBreak { get; set; }
+
+    /// <summary>The length of the file as opened; 0 for a document made in memory.</summary>
+    internal long SourceLength => IsNew ? 0 : baseLength;
+
     /// <summary>Whether redactions were applied, so every save rewrites the file whole and drops unused objects.</summary>
     internal bool Redacted { get; private set; }
 
@@ -438,6 +582,12 @@ public sealed class PdfDocument : IDisposable
 
     /// <summary>What renders of this document's pages share: colour spaces, fonts and decoded images (Phase 4 design Q3).</summary>
     internal Rendering.RenderCache RenderCache => LazyInitializer.EnsureInitialized(ref renderCache, () => new Rendering.RenderCache(this));
+
+    /// <summary>Forgets what renders shared, after a pass that rewrote images, shadings or colour spaces in place.</summary>
+    internal void ResetRenderCache()
+    {
+        renderCache = null;
+    }
 
     /// <summary>Where <see cref="PdfPage.Flush"/> moves finished streams; made the first time a page is flushed.</summary>
     internal ScratchFile Scratch => scratch ??= new ScratchFile();
@@ -772,6 +922,7 @@ public sealed class PdfDocument : IDisposable
     private PdfSaveOptions Forced(PdfSaveOptions options)
     {
         options = Redacted ? options with { Mode = PdfSaveMode.Rewrite, RemoveUnused = true } : options;
+        options = Optimized ? Optimizing.Optimizer.Forced(this, options) : options;
         return WriterConformance == PdfAConformance.None ? options : PdfA.PdfAWriter.Options(this, WriterConformance, options);
     }
 

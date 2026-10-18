@@ -207,13 +207,13 @@ internal sealed partial class PageRenderer
     }
 
     /// <summary>A glyph's outline in em units, y up as glyph space is; null for a glyph with none.</summary>
-    private static Path? Outline(Typeface typeface, ushort glyph)
+    internal static Path? Outline(Typeface typeface, ushort glyph)
     {
         OutlineSink sink = new(1f / typeface.UnitsPerEm);
         return typeface.GetGlyphOutline(glyph, sink) && !sink.Builder.IsEmpty ? sink.Builder.ToPath() : null;
     }
 
-    private static void Append(PdfPath target, Path path, Matrix3x2 matrix)
+    internal static void Append(PdfPath target, Path path, Matrix3x2 matrix)
     {
         Path placed = path.Transform(matrix);
         ReadOnlySpan<PathVerb> verbs = placed.Verbs;
@@ -252,7 +252,7 @@ internal sealed partial class PageRenderer
         }
     }
 
-    private static Matrix3x2 ToMatrix(PdfMatrix m)
+    internal static Matrix3x2 ToMatrix(PdfMatrix m)
     {
         return new Matrix3x2((float)m.A, (float)m.B, (float)m.C, (float)m.D, (float)m.E, (float)m.F);
     }

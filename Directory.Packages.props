@@ -4,12 +4,12 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Egami from the local feed (nuget.config, written by tools/pack-egami.py with its update option). -->
-    <PackageVersion Include="Egami" Version="1.0.0-local.g0d2e620" />
-    <PackageVersion Include="Egami.Drawing" Version="1.0.1-local.g0d2e620" />
-    <PackageVersion Include="Egami.Fonts" Version="0.2.0-local.g0d2e620" />
-    <PackageVersion Include="Egami.Metafiles" Version="0.1.0-local.g0d2e620" />
-    <PackageVersion Include="Egami.Css" Version="0.2.0-local.g0d2e620" />
-    <PackageVersion Include="Egami.Svg" Version="0.1.0-local.g0d2e620" />
+    <PackageVersion Include="Egami" Version="1.0.0-local.ge814275" />
+    <PackageVersion Include="Egami.Drawing" Version="1.1.0-local.ge814275" />
+    <PackageVersion Include="Egami.Fonts" Version="0.2.0-local.ge814275" />
+    <PackageVersion Include="Egami.Metafiles" Version="0.1.0-local.ge814275" />
+    <PackageVersion Include="Egami.Css" Version="0.2.0-local.ge814275" />
+    <PackageVersion Include="Egami.Svg" Version="0.1.0-local.ge814275" />
     <!--
       Phase 5 signatures (design Q2): CMS, CmsSigner and RFC 3161 from Microsoft's own package (MIT, dotnet/runtime), which
       .NET 10's base framework does not include (checked in task 1: the Microsoft.NETCore.App 10.0 reference pack has

@@ -18,6 +18,12 @@ internal sealed partial class PageRenderer
 {
     private static readonly ConditionalWeakTable<PdfStream, Dictionary<RgbaF32, Picture?>> Cells = [];
 
+    /// <summary>Forgets a tiling pattern's recorded cells, after its content was rewritten in place.</summary>
+    internal static void ForgetPattern(PdfStream pattern)
+    {
+        Cells.Remove(pattern);
+    }
+
     /// <summary>For the cell of an uncoloured pattern: the colour every fill and stroke takes, whatever the content sets.</summary>
     private RgbaF32? uncolored;
 
