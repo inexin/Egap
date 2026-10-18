@@ -51,13 +51,41 @@ public sealed class PageFlushTests(ITestOutputHelper output)
     {
         string file = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"egap-flush-{Guid.NewGuid():N}.pdf");
         long peak = 0;
+        string phase = "start";
+        string peakInfo = "";
+        long drawPeak = 0;
+        long savePeak = 0;
+        long compactPeak = 0;
+        int samples = 0;
         using CancellationTokenSource stop = new();
         Thread sampler = new(() =>
         {
             while (!stop.IsCancellationRequested)
             {
                 // Live memory: a full collection first, so garbage the collector has not got to yet is not counted.
-                peak = Math.Max(peak, GC.GetTotalMemory(true));
+                string at = Volatile.Read(ref phase);
+                long now = GC.GetTotalMemory(true);
+                GCMemoryInfo info = GC.GetGCMemoryInfo(GCKind.Any);
+                string gens = string.Join(" ", info.GenerationInfo.ToArray().Select((g, i) => $"g{i}={g.SizeAfterBytes / 1e6:F1}/{g.FragmentationAfterBytes / 1e6:F1}"));
+                GC.Collect(2, GCCollectionMode.Forced, blocking: true, compacting: true);
+                long compacted = GC.GetTotalMemory(false);
+                samples++;
+                compactPeak = Math.Max(compactPeak, compacted);
+                if (at == "save")
+                {
+                    savePeak = Math.Max(savePeak, now);
+                }
+                else
+                {
+                    drawPeak = Math.Max(drawPeak, now);
+                }
+
+                if (now > peak)
+                {
+                    peak = now;
+                    peakInfo = $"phase {at}, compacted {compacted / 1e6:F1} MB, heap {info.HeapSizeBytes / 1e6:F1}, frag {info.FragmentationBytes / 1e6:F1}, gc#{info.Index} gen{info.Generation} compacted={info.Compacted} concurrent={info.Concurrent}, {gens}";
+                }
+
                 Thread.Sleep(50);
             }
         });
@@ -85,10 +113,13 @@ public sealed class PageFlushTests(ITestOutputHelper output)
                     }
 
                     page.Flush();
+                    Volatile.Write(ref phase, $"page {i}");
                 }
 
                 afterDrawing = GC.GetTotalMemory(true) - start;
+                Volatile.Write(ref phase, "save");
                 pdf.Save(file);
+                Volatile.Write(ref phase, "after save");
             }
 
             stop.Cancel();
@@ -96,7 +127,8 @@ public sealed class PageFlushTests(ITestOutputHelper output)
             long size = new FileInfo(file).Length;
             output.WriteLine($"File {size:N0} bytes; managed memory after drawing {afterDrawing / 1e6:F1} MB, peak {(peak - start) / 1e6:F1} MB.");
             Assert.True(size > 60_000_000, $"The images should not compress away: {size:N0} bytes.");
-            Assert.True(peak - start < 100_000_000, $"Peak managed memory {(peak - start) / 1e6:F1} MB.");
+            string config = string.Join(", ", GC.GetConfigurationVariables().Select(kv => $"{kv.Key}={kv.Value}"));
+            Assert.Fail($"PROBE {System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier} cpus {Environment.ProcessorCount} server {System.Runtime.GCSettings.IsServerGC} latency {System.Runtime.GCSettings.LatencyMode}; start {start / 1e6:F1} MB; peak {(peak - start) / 1e6:F1} MB ({peakInfo}); draw peak {(drawPeak - start) / 1e6:F1}, save peak {(savePeak - start) / 1e6:F1}, compacted peak {(compactPeak - start) / 1e6:F1}; after drawing {afterDrawing / 1e6:F1}; samples {samples}; GC config: {config}");
             using PdfDocument reopened = PdfDocument.Open(file);
             Assert.Equal(1000, reopened.Pages.Count);
         }
