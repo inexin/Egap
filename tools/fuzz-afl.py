@@ -44,8 +44,6 @@ def main():
     targets = sys.argv[2:] or list(SEEDS)
     repo = os.getcwd()
     findings = os.path.join(repo, ".cache", "afl")
-    # Egami's packages come from the folder feed beside the repository (nuget.config), mounted where /build/../egami-feed is.
-    feed = os.path.join(os.path.dirname(repo), "egami-feed")
     os.makedirs(findings, exist_ok=True)
     for spec in targets:
         target, _, count = spec.partition(":")
@@ -58,7 +56,7 @@ def main():
             instrument = "\n".join(f"sharpfuzz /out/{library}.dll" for library in LIBRARIES.get(target, [harness[:-5]]))
             script = SCRIPT.format(harness=harness, instrument=instrument, seeds=" ".join("/src/" + pattern for pattern in SEEDS[target].split()), seconds=int(hours * 3600), target=target, role=role)
             # AFL_AUTORESUME carries on from an earlier run's queue in the same findings directory.
-            subprocess.run(["docker", "run", "-d", "--name", name, "-e", "AFL_AUTORESUME=1", "-v", f"{repo}:/src:ro", "-v", f"{findings}:/findings", "-v", f"{feed}:/egami-feed:ro",
+            subprocess.run(["docker", "run", "-d", "--name", name, "-e", "AFL_AUTORESUME=1", "-v", f"{repo}:/src:ro", "-v", f"{findings}:/findings",
                             "egap-fuzz", "bash", "-c", script], check=True)
             print(f"Started {name} for {hours} h.")
 

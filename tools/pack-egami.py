@@ -4,8 +4,9 @@ Usage: python tools/pack-egami.py [--egami ../Egami] [--commit HEAD] [--feed ../
 
 The commit is exported with git archive, so uncommitted changes in the Egami checkout never reach a package. Each package
 keeps its project's version with the commit as a prerelease suffix (1.0.0-local.g74c5d73), so a build always names the exact
-Egami it was made against. --update writes the versions into Directory.Packages.props. When Egami is on nuget.org, the feed
-in nuget.config is swapped for nuget.org and the versions for released ones; nothing else changes.
+Egami it was made against. --update writes the versions into Directory.Packages.props. Egap normally builds against Egami
+from nuget.org; this is for trying an unreleased Egami commit. Restore with the feed added:
+dotnet build -p:RestoreAdditionalProjectSources=../egami-feed
 """
 
 import argparse

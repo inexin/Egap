@@ -272,8 +272,7 @@ internal static class PageDrawing
             if (image.ContentType is "image/x-emf" or "image/x-wmf" or "image/emf" or "image/wmf")
             {
                 // Word's EMF and WMF pictures play back through Egami.Metafiles (Phase 6 design Q18).
-                using MemoryStream stream = new(image.Bytes.ToArray(), writable: false);
-                Egami.Metafiles.Metafile.Load(stream).Draw(canvas, rect);
+                Egami.Metafiles.Metafile.Load(image.Bytes).Draw(canvas, rect);
                 return;
             }
 
