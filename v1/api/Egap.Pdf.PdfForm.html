@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfForm | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfForm | Egap ">
+      
+      <meta name="description" content="The interactive form (12.7): a thin view over the catalog&#39;s /AcroForm dictionary, whose /Fields are the roots of the field tree. A document without one has no fields. Fields are read leniently: loops, entries that are not dictionaries and trees deeper than 64 levels are skipped, as pdf.js and qpdf skip them.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfForm.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfForm%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfForm">
+
+
+
+  <h1 id="Egap_Pdf_PdfForm" data-uid="Egap.Pdf.PdfForm" class="text-break">
+Class PdfForm  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>The interactive form (12.7): a thin view over the catalog's <code>/AcroForm</code> dictionary, whose <code>/Fields</code> are the roots
+of the field tree. A document without one has no fields. Fields are read leniently: loops, entries that are not
+dictionaries and trees deeper than 64 levels are skipped, as pdf.js and qpdf skip them.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class PdfForm : IReadOnlyList&lt;PdfField&gt;, IReadOnlyCollection&lt;PdfField&gt;, IEnumerable&lt;PdfField&gt;, IEnumerable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PdfForm</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfForm_Alignment_" data-uid="Egap.Pdf.PdfForm.Alignment*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_Alignment" data-uid="Egap.Pdf.PdfForm.Alignment">
+  Alignment
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default alignment for fields that give none (<code>/Q</code>); left when missing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfTextAlignment Alignment { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfTextAlignment.html">PdfTextAlignment</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_Count_" data-uid="Egap.Pdf.PdfForm.Count*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_Count" data-uid="Egap.Pdf.PdfForm.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of top-level fields.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_DefaultAppearance_" data-uid="Egap.Pdf.PdfForm.DefaultAppearance*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_DefaultAppearance" data-uid="Egap.Pdf.PdfForm.DefaultAppearance">
+  DefaultAppearance
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default appearance for fields that give none (<code>/DA</code>), such as <code>/Helv 0 Tf 0 g</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? DefaultAppearance { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_DefaultResources_" data-uid="Egap.Pdf.PdfForm.DefaultResources*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_DefaultResources" data-uid="Egap.Pdf.PdfForm.DefaultResources">
+  DefaultResources
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The resources fields' appearances draw with (<code>/DR</code>), such as their fonts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfDictionary? DefaultResources { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfDictionary.html">PdfDictionary</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_Dictionary_" data-uid="Egap.Pdf.PdfForm.Dictionary*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_Dictionary" data-uid="Egap.Pdf.PdfForm.Dictionary">
+  Dictionary
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The <code>/AcroForm</code> dictionary, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the document has no form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfDictionary? Dictionary { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfDictionary.html">PdfDictionary</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_Exists_" data-uid="Egap.Pdf.PdfForm.Exists*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_Exists" data-uid="Egap.Pdf.PdfForm.Exists">
+  Exists
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the document has a form, an <code>/AcroForm</code> dictionary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Exists { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_HasXfa_" data-uid="Egap.Pdf.PdfForm.HasXfa*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_HasXfa" data-uid="Egap.Pdf.PdfForm.HasXfa">
+  HasXfa
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the form also has an XFA form (<code>/XFA</code>, 12.7.8).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasXfa { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_Item_" data-uid="Egap.Pdf.PdfForm.Item*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_Item_System_Int32_" data-uid="Egap.Pdf.PdfForm.Item(System.Int32)">
+  this[int]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The top-level field at an index, in <code>/Fields</code> order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfField this[int index] { get; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_NeedAppearances_" data-uid="Egap.Pdf.PdfForm.NeedAppearances*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_NeedAppearances" data-uid="Egap.Pdf.PdfForm.NeedAppearances">
+  NeedAppearances
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether viewers are asked to draw the fields' appearances themselves (<code>/NeedAppearances</code>); false when missing.
+Setting false removes the entry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool NeedAppearances { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Set on a document without a form.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfForm_SignatureFlags_" data-uid="Egap.Pdf.PdfForm.SignatureFlags*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_SignatureFlags" data-uid="Egap.Pdf.PdfForm.SignatureFlags">
+  SignatureFlags
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The signature flags (<code>/SigFlags</code>): 1 when the document has signatures, 2 when it may only be appended to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int SignatureFlags { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_Xfa_" data-uid="Egap.Pdf.PdfForm.Xfa*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_Xfa" data-uid="Egap.Pdf.PdfForm.Xfa">
+  Xfa
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The XFA form, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when there is none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfXfa? Xfa { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfXfa.html">PdfXfa</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Pdf_PdfForm_Flatten_" data-uid="Egap.Pdf.PdfForm.Flatten*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_Flatten_System_Collections_Generic_IEnumerable_Egap_Pdf_PdfField__" data-uid="Egap.Pdf.PdfForm.Flatten(System.Collections.Generic.IEnumerable{Egap.Pdf.PdfField})">
+  Flatten(IEnumerable&lt;PdfField&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Flattens fields (Phase 2 Q13): their widgets' appearances are drawn into the pages' content and the fields and widgets
+removed; with no fields given, all of them, and the form itself. Missing appearances are drawn first, and all text and
+choice appearances are redrawn when <a class="xref" href="Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_NeedAppearances">NeedAppearances</a> asks viewers to; hidden widgets are removed without
+being drawn.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Flatten(IEnumerable&lt;PdfField&gt;? fields = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fields</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>How many widgets were drawn.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_GetAllFields_" data-uid="Egap.Pdf.PdfForm.GetAllFields*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_GetAllFields" data-uid="Egap.Pdf.PdfForm.GetAllFields">
+  GetAllFields()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Every field of the tree, parents before their kids, in <code>/Fields</code> and <code>/Kids</code> order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfField&gt; GetAllFields()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_GetEnumerator_" data-uid="Egap.Pdf.PdfForm.GetEnumerator*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_GetEnumerator" data-uid="Egap.Pdf.PdfForm.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;PdfField&gt; GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a>&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_GetTerminalFields_" data-uid="Egap.Pdf.PdfForm.GetTerminalFields*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_GetTerminalFields" data-uid="Egap.Pdf.PdfForm.GetTerminalFields">
+  GetTerminalFields()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The terminal fields, those that hold values and have widgets, in tree order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfField&gt; GetTerminalFields()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_Reset_" data-uid="Egap.Pdf.PdfForm.Reset*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_Reset_System_Collections_Generic_IEnumerable_Egap_Pdf_PdfField__" data-uid="Egap.Pdf.PdfForm.Reset(System.Collections.Generic.IEnumerable{Egap.Pdf.PdfField})">
+  Reset(IEnumerable&lt;PdfField&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets fields to their default values, as a reset-form action does (12.7.6.3): each terminal field among
+<code class="paramref">fields</code> and their descendants, or every field when none are given, gets its <code>/DV</code> as its value,
+or no value when it has none (<code>Off</code> for buttons); list boxes lose their <code>/I</code>; appearances are brought in
+step.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Reset(IEnumerable&lt;PdfField&gt;? fields = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fields</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfForm_TryGetField_" data-uid="Egap.Pdf.PdfForm.TryGetField*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_TryGetField_System_String_Egap_Pdf_PdfField__" data-uid="Egap.Pdf.PdfForm.TryGetField(System.String,Egap.Pdf.PdfField@)">
+  TryGetField(string, out PdfField)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The field with a fully qualified name, such as <code>order.customer.name</code>; false when there is none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetField(string fullName, out PdfField field)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fullName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>field</code> <a class="xref" href="Egap.Pdf.PdfField.html">PdfField</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L10" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

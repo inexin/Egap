@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Flow documents | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Flow documents | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/flow-documents.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="flow-documents">Flow documents</h1>
+
+<p>Egap.Documents holds one editable document model for DOCX, HTML and Markdown: sections, paragraphs, runs, tables, lists,
+pictures, headers and footers, notes, fields, comments and tracked changes, with Word's style model.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document doc = Document.Load(&quot;report.docx&quot;);                      // DOCX, DOTX, DOCM, HTML or Markdown, told apart by content
+foreach (Paragraph p in doc.Descendants&lt;Paragraph&gt;())
+{
+    Console.WriteLine($&quot;{p.ListLabel?.Text} {p.GetText()}&quot;);    // list labels computed as Word numbers them
+}
+
+DocumentBuilder builder = new(doc);                               // edit from code at a cursor
+builder.Writeln(&quot;Added at the end.&quot;);
+doc.Replace(&quot;colour&quot;, &quot;color&quot;);                                   // also where the text crosses runs
+IReadOnlyList&lt;TextMatch&gt; found = doc.Find(&quot;color&quot;);               // paragraph, offset and text of each match
+doc.Save(&quot;report-edited.docx&quot;);                                   // what the model does not name is kept
+IReadOnlyList&lt;ConversionWarning&gt; dropped = doc.Save(&quot;report.md&quot;); // the format from the extension, with what it could not hold
+</code></pre>
+<p>DOCX to DOCX is lossless: what the model does not name travels along in each node's extension data. Saving to a format that
+cannot hold something, such as Markdown, returns a warning for each thing left out.</p>
+<h2 id="format-options">Format options</h2>
+<p>Each format has its own class with its own options.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document readme = MarkdownFormat.Load(&quot;README.md&quot;, new MarkdownLoadOptions { Extensions = MarkdownExtensions.GitHub });
+DocxFormat.Save(readme, &quot;readme.dotx&quot;, new DocxSaveOptions { Kind = DocxKind.Template });
+</code></pre>
+<p>HTML is parsed as browsers parse it and styled through the CSS cascade. Nothing outside the file is fetched unless you pass
+a resolver:</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document page = HtmlFormat.Load(&quot;invoice.html&quot;, new HtmlLoadOptions
+{
+    BaseUri = new Uri(&quot;https://example.com/&quot;),
+    ResourceResolver = uri =&gt; File.Exists(uri.LocalPath) ? File.ReadAllBytes(uri.LocalPath) : null,
+});
+</code></pre>
+<h2 id="page-layout">Page layout</h2>
+<p><code>Layout</code> breaks the document into pages, with floats, columns, headers and footers, and footnotes. Each page draws onto any
+Egami canvas.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Layout;
+
+Document doc = Document.Load(&quot;report.docx&quot;);
+DocumentLayout pages = doc.Layout();                              // pages, lines and boxes linked to the model
+pages.Pages[0].Render(dpi: 150).Save(&quot;page1.png&quot;);
+</code></pre>
+<p>For PDF output, see <a href="pdf-export-and-conversion.html">PDF export and conversion</a>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/flow-documents.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

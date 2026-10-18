@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace Egap.Documents.Layout | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace Egap.Documents.Layout | Egap ">
+      
+      
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Layout">
+
+  <h1 id="Egap_Documents_Layout" data-uid="Egap.Documents.Layout" class="text-break">Namespace Egap.Documents.Layout</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.AreaBox.html">AreaBox</a></dt>
+      <dd><p>A page area (body column, header, footer or notes) holding block boxes.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.CellBorders.html">CellBorders</a></dt>
+      <dd><p>A cell's four borders as the layout resolved them; null where there is none.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.CellBox.html">CellBox</a></dt>
+      <dd><p>A table cell, with its blocks, borders and shading.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.DocumentLayout.html">DocumentLayout</a></dt>
+      <dd><p>A document laid out into pages (Phase 6 design Q11 and Q13): an immutable snapshot, each page a tree of boxes linked to
+the model nodes they show. An edit to the document needs a new layout.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.FontSettings.html">FontSettings</a></dt>
+      <dd><p>Where the layout engine finds fonts (Phase 6 design Q12): the document's embedded fonts first, then the caller's
+collections, then the system's, then metric-compatible substitutes from Egap.Fonts, then a last resort. Every font the
+document names and the chain could not give as asked is reported as a <a class="xref" href="Egap.Documents.Layout.FontSubstitution.html">FontSubstitution</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.FontSubstitution.html">FontSubstitution</a></dt>
+      <dd><p>One font the layout could not use as the document asked, and what it used instead.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.LayoutBox.html">LayoutBox</a></dt>
+      <dd><p>One box of a laid-out page (Phase 6 design Q13): its place on the page, the model node it shows, and the boxes inside it.
+Boxes are immutable; a new layout makes new boxes.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.LayoutDrawObserver.html">LayoutDrawObserver</a></dt>
+      <dd><p>Told what <a class="xref" href="Egap.Documents.Layout.PageLayout.html#Egap_Documents_Layout_PageLayout_Draw_Egami_Drawing_Canvas_Egap_Documents_Layout_LayoutDrawObserver_">Draw(Canvas, LayoutDrawObserver?)</a> is drawing, so the target canvas can
+group its output: Egap.Pdf.Layout marks each line and picture with its structure element and the rest as artifacts
+(Phase 6 Build Plan task 22). Every Begin is matched by its End, and calls nest as the boxes do.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.LayoutOptions.html">LayoutOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Layout_Egap_Documents_Layout_LayoutOptions_">Layout(LayoutOptions?)</a> lays a document out.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.LineBox.html">LineBox</a></dt>
+      <dd><p>One line of a paragraph: Egami's laid-out line placed on the page.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.ObjectBox.html">ObjectBox</a></dt>
+      <dd><p>A picture, shape or island in a line or floating on the page.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.PageLayout.html">PageLayout</a></dt>
+      <dd><p>One laid-out page: its size, its number as printed, and its areas.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.ParagraphBox.html">ParagraphBox</a></dt>
+      <dd><p>A paragraph, or the part of one on this page or column, holding its lines.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.RowBox.html">RowBox</a></dt>
+      <dd><p>A table row on this page or column.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.TableBox.html">TableBox</a></dt>
+      <dd><p>A table, or the rows of one on this page or column.</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.DocumentPosition.html">DocumentPosition</a></dt>
+      <dd><p>A place in the laid-out text (Phase 6 design Q13, Build Plan task 21b): a paragraph and an index into its text as the
+layout shows it (field results in place of their codes, without the list label), with the side of a line break.
+<a class="xref" href="Egap.Documents.Layout.DocumentLayout.html#Egap_Documents_Layout_DocumentLayout_Locate_Egap_Documents_Layout_DocumentPosition_">Locate(DocumentPosition)</a> gives the model inline and offset it falls in.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.LayoutRect.html">LayoutRect</a></dt>
+      <dd><p>A rectangle on a page in points, from the page's top left corner.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.PageRect.html">PageRect</a></dt>
+      <dd><p>A caret or selection rectangle on a page.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.CaretAffinity.html">CaretAffinity</a></dt>
+      <dd><p>Which side of a line break a position belongs to where one index is both the end of a line and the start of the next.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.FontSubstitutionReason.html">FontSubstitutionReason</a></dt>
+      <dd><p>Why a font the document asked for was not used as asked.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.PageArea.html">PageArea</a></dt>
+      <dd><p>What part of a page a box belongs to.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

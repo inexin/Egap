@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Document | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Document | Egap ">
+      
+      <meta name="description" content="A flow document: a list of sections, each with its page setup, body and headers and footers, holding paragraphs, tables and the rest of the model (Phase 6 design Q3). The root of the tree; every other node belongs to exactly one document.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Document.md&amp;value=---%0Auid%3A%20Egap.Documents.Document%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Document">
+
+
+
+  <h1 id="Egap_Documents_Document" data-uid="Egap.Documents.Document" class="text-break">
+Class Document  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L4"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A flow document: a list of sections, each with its page setup, body and headers and footers, holding paragraphs, tables
+and the rest of the model (Phase 6 design Q3). The root of the tree; every other node belongs to exactly one document.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Document : Node</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Egap.Documents.Node.html">Node</a></div>
+      <div><span class="xref">Document</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Document">Node.Document</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Parent">Node.Parent</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_NextSibling">Node.NextSibling</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_PreviousSibling">Node.PreviousSibling</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Extensions">Node.Extensions</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_HasExtensions">Node.HasExtensions</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_ChildNodes">Node.ChildNodes</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Remove">Node.Remove()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Ancestors">Node.Ancestors()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_GetAncestor__1">Node.GetAncestor&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Descendants">Node.Descendants()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Descendants__1">Node.Descendants&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_GetText">Node.GetText()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_String_System_String_Egap_Documents_FindOptions_">Node.Replace(string, string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Find_System_String_Egap_Documents_FindOptions_">Node.Find(string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Find_System_Text_RegularExpressions_Regex_Egap_Documents_FindOptions_">Node.Find(Regex, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_Text_RegularExpressions_Regex_System_String_Egap_Documents_FindOptions_">Node.Replace(Regex, string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_Text_RegularExpressions_Regex_System_Func_System_Text_RegularExpressions_Match_System_String__Egap_Documents_FindOptions_">Node.Replace(Regex, Func&lt;Match, string&gt;, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Accept_Egap_Documents_DocumentVisitor_">Node.Accept(DocumentVisitor)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Egap_Documents_Document__ctor_" data-uid="Egap.Documents.Document.#ctor*"></a>
+
+  <h3 id="Egap_Documents_Document__ctor" data-uid="Egap.Documents.Document.#ctor">
+  Document()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A new document with no sections, Word's Office theme and Word 2013+'s defaults: Normal, Default Paragraph Font and
+Normal Table styles, an 11 pt body font from the theme, 8 pt after paragraphs and 1.08 line spacing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Document()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_Document_EmbeddedFonts_" data-uid="Egap.Documents.Document.EmbeddedFonts*"></a>
+
+  <h3 id="Egap_Documents_Document_EmbeddedFonts" data-uid="Egap.Documents.Document.EmbeddedFonts">
+  EmbeddedFonts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fonts the file carries for its text, read from a DOCX's font table and written back with it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IList&lt;EmbeddedFont&gt; EmbeddedFonts { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList</a>&lt;<a class="xref" href="Egap.Documents.EmbeddedFont.html">EmbeddedFont</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_FileName_" data-uid="Egap.Documents.Document.FileName*"></a>
+
+  <h3 id="Egap_Documents_Document_FileName" data-uid="Egap.Documents.Document.FileName">
+  FileName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The file the document was loaded from or last saved to, for FILENAME fields; null when not known.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? FileName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_FormattingVersion_" data-uid="Egap.Documents.Document.FormattingVersion*"></a>
+
+  <h3 id="Egap_Documents_Document_FormattingVersion" data-uid="Egap.Documents.Document.FormattingVersion">
+  FormattingVersion
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts changes to styles, document defaults and the theme, which change the effective formatting of many paragraphs
+at once; each one also counts in <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Version">Version</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long FormattingVersion { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Lists_" data-uid="Egap.Documents.Document.Lists*"></a>
+
+  <h3 id="Egap_Documents_Document_Lists" data-uid="Egap.Documents.Document.Lists">
+  Lists
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The lists and list definitions paragraphs number with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ListCollection Lists { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.ListCollection.html">ListCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Properties_" data-uid="Egap.Documents.Document.Properties*"></a>
+
+  <h3 id="Egap_Documents_Document_Properties" data-uid="Egap.Documents.Document.Properties">
+  Properties
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Title, author, dates and custom properties.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentProperties Properties { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentProperties.html">DocumentProperties</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Revisions_" data-uid="Egap.Documents.Document.Revisions*"></a>
+
+  <h3 id="Egap_Documents_Document_Revisions" data-uid="Egap.Documents.Document.Revisions">
+  Revisions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The tracked changes, to accept or reject (Phase 6 design Q8).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrackedChangeCollection Revisions { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.TrackedChangeCollection.html">TrackedChangeCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Sections_" data-uid="Egap.Documents.Document.Sections*"></a>
+
+  <h3 id="Egap_Documents_Document_Sections" data-uid="Egap.Documents.Document.Sections">
+  Sections
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The sections in order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NodeCollection&lt;Section&gt; Sections { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.NodeCollection-1.html">NodeCollection</a>&lt;<a class="xref" href="Egap.Documents.Section.html">Section</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Settings_" data-uid="Egap.Documents.Document.Settings*"></a>
+
+  <h3 id="Egap_Documents_Document_Settings" data-uid="Egap.Documents.Document.Settings">
+  Settings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Document-wide settings: default tab stop, odd and even headers, note numbering, compatibility mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentSettings Settings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentSettings.html">DocumentSettings</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Styles_" data-uid="Egap.Documents.Document.Styles*"></a>
+
+  <h3 id="Egap_Documents_Document_Styles" data-uid="Egap.Documents.Document.Styles">
+  Styles
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The document's styles and the defaults they build on.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StyleCollection Styles { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.StyleCollection.html">StyleCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Theme_" data-uid="Egap.Documents.Document.Theme*"></a>
+
+  <h3 id="Egap_Documents_Document_Theme" data-uid="Egap.Documents.Document.Theme">
+  Theme
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The theme colours and fonts that styles and runs may name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Theme Theme { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Theme.html">Theme</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Version_" data-uid="Egap.Documents.Document.Version*"></a>
+
+  <h3 id="Egap_Documents_Document_Version" data-uid="Egap.Documents.Document.Version">
+  Version
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Counts the changes made to this document: every change, through any public member, adds one and stamps the paragraph
+and story it touched with the new value (<a class="xref" href="Egap.Documents.Paragraph.html#Egap_Documents_Paragraph_Version">Version</a>, <a class="xref" href="Egap.Documents.Story.html#Egap_Documents_Story_Version">Version</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long Version { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_Document_AddSection_" data-uid="Egap.Documents.Document.AddSection*"></a>
+
+  <h3 id="Egap_Documents_Document_AddSection" data-uid="Egap.Documents.Document.AddSection">
+  AddSection()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a new, empty section at the end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Section AddSection()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Section.html">Section</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Clone_" data-uid="Egap.Documents.Document.Clone*"></a>
+
+  <h3 id="Egap_Documents_Document_Clone_System_Boolean_" data-uid="Egap.Documents.Document.Clone(System.Boolean)">
+  Clone(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy of the whole document (or, shallow, an empty document).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Document Clone(bool deep = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>deep</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_GetBookmark_" data-uid="Egap.Documents.Document.GetBookmark*"></a>
+
+  <h3 id="Egap_Documents_Document_GetBookmark_System_String_" data-uid="Egap.Documents.Document.GetBookmark(System.String)">
+  GetBookmark(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L287"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The bookmark named <code class="paramref">name</code> (Word compares bookmark names without case), or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Bookmark? GetBookmark(string name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Bookmark.html">Bookmark</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_GetBookmarks_" data-uid="Egap.Documents.Document.GetBookmarks*"></a>
+
+  <h3 id="Egap_Documents_Document_GetBookmarks" data-uid="Egap.Documents.Document.GetBookmarks">
+  GetBookmarks()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L266"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Every bookmark, in document order, each start paired with the next end of the same name in its story.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;Bookmark&gt; GetBookmarks()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Documents.Bookmark.html">Bookmark</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_GetFields_" data-uid="Egap.Documents.Document.GetFields*"></a>
+
+  <h3 id="Egap_Documents_Document_GetFields" data-uid="Egap.Documents.Document.GetFields">
+  GetFields()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L293"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Every field in document order, nested ones after the field holding them; fields with no end are left out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;Field&gt; GetFields()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Documents.Field.html">Field</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Import_" data-uid="Egap.Documents.Document.Import*"></a>
+
+  <h3 id="Egap_Documents_Document_Import_Egap_Documents_Node_System_Boolean_" data-uid="Egap.Documents.Document.Import(Egap.Documents.Node,System.Boolean)">
+  Import(Node, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy of <code class="paramref">node</code> (from any document) that belongs to this one, not yet in the tree. A deep import
+includes everything the node holds. The styles and lists the copy uses come along with it from Build Plan tasks 3 and 4.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Node Import(Node node, bool deep = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>node</code> <a class="xref" href="Egap.Documents.Node.html">Node</a></dt>
+    <dd></dd>
+    <dt><code>deep</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Node.html">Node</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">node</code> is a document; use <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Clone_System_Boolean_">Clone(bool)</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Import_" data-uid="Egap.Documents.Document.Import*"></a>
+
+  <h3 id="Egap_Documents_Document_Import__1___0_System_Boolean_" data-uid="Egap.Documents.Document.Import``1(``0,System.Boolean)">
+  Import&lt;T&gt;(T, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Imports <code class="paramref">node</code> as <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Import_Egap_Documents_Node_System_Boolean_">Import(Node, bool)</a> does, typed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Import&lt;T&gt;(T node, bool deep = true) where T : Node</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>node</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>deep</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Layout_" data-uid="Egap.Documents.Document.Layout*"></a>
+
+  <h3 id="Egap_Documents_Document_Layout_Egap_Documents_Layout_LayoutOptions_" data-uid="Egap.Documents.Document.Layout(Egap.Documents.Layout.LayoutOptions)">
+  Layout(LayoutOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lays the document out into pages (Phase 6 design Q11 and Q13): an immutable snapshot linked to this document's nodes;
+an edit needs a new layout. Paragraphs that did not change since the last layout are reused.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentLayout Layout(LayoutOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.Layout.LayoutOptions.html">LayoutOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Layout.DocumentLayout.html">DocumentLayout</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
+
+  <h3 id="Egap_Documents_Document_Load_System_IO_Stream_" data-uid="Egap.Documents.Document.Load(System.IO.Stream)">
+  Load(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a DOCX, DOTX, DOCM, HTML or Markdown file from a stream, which is left open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document Load(Stream stream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The stream is not a file Egap can read.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
+
+  <h3 id="Egap_Documents_Document_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___" data-uid="Egap.Documents.Document.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)">
+  Load(Stream, out IReadOnlyList&lt;ConversionWarning&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a DOCX, DOTX, DOCM, HTML or Markdown file from a stream, which is left open, reporting what could not be read as it was.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document Load(Stream stream, out IReadOnlyList&lt;ConversionWarning&gt; warnings)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>warnings</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The stream is not a file Egap can read.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
+
+  <h3 id="Egap_Documents_Document_Load_System_String_" data-uid="Egap.Documents.Document.Load(System.String)">
+  Load(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a DOCX, DOTX, DOCM, HTML or Markdown file, telling them apart by their bytes (a ZIP package is Word's) and,
+for text, by the file's extension, else by whether it starts with markup.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document Load(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file is not one Egap can read.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
+
+  <h3 id="Egap_Documents_Document_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___" data-uid="Egap.Documents.Document.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)">
+  Load(string, out IReadOnlyList&lt;ConversionWarning&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a DOCX, DOTX, DOCM, HTML or Markdown file, reporting what could not be read as it was.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document Load(string path, out IReadOnlyList&lt;ConversionWarning&gt; warnings)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>warnings</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file is not one Egap can read.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Save_" data-uid="Egap.Documents.Document.Save*"></a>
+
+  <h3 id="Egap_Documents_Document_Save_System_String_" data-uid="Egap.Documents.Document.Save(System.String)">
+  Save(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Saves the document in the format its file extension names: .docx, .dotx, .docm and .dotm as Word's, .html and .htm
+as HTML, .md and .markdown as Markdown, .txt as plain text. PDF is <code>SaveAsPdf</code> in Egap.Pdf.Layout.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ConversionWarning&gt; Save(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd><p>What the format could not hold.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The extension names no format Egap.Documents writes.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_UpdateFields_" data-uid="Egap.Documents.Document.UpdateFields*"></a>
+
+  <h3 id="Egap_Documents_Document_UpdateFields_System_Nullable_System_DateTimeOffset__" data-uid="Egap.Documents.Document.UpdateFields(System.Nullable{System.DateTimeOffset})">
+  UpdateFields(DateTimeOffset?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Recomputes the fields Egap understands (Phase 6 design Q8): DATE, TIME and the other date fields, the document
+property fields, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK, IF on simple comparisons and TOC. Page fields are filled by
+layout; locked fields and others keep their stored result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int UpdateFields(DateTimeOffset? now = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>now</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The time DATE and TIME show; the current time when null.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>How many fields were updated.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <h3 id="Egap_Documents_Document_Changed" data-uid="Egap.Documents.Document.Changed">
+  Changed
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Raised after every change to the document or any of its nodes, in or out of the tree, on the thread that made it. All
+changes go through one path, so nothing changes without it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;DocumentChangedEventArgs&gt;? Changed</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="Egap.Documents.DocumentChangedEventArgs.html">DocumentChangedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L4" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

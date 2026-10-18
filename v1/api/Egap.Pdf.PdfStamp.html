@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfStamp | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfStamp | Egap ">
+      
+      <meta name="description" content="A stamp: text, an image or another page drawn on every page (or the pages chosen) as removable page furniture (Phase 7 design 7.3, Q10 and Q11). Make one with , , ,  or , then set its placement with with.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfStamp.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfStamp%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfStamp">
+
+
+
+  <h1 id="Egap_Pdf_PdfStamp" data-uid="Egap.Pdf.PdfStamp" class="text-break">
+Class PdfStamp  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A stamp: text, an image or another page drawn on every page (or the pages chosen) as removable page furniture (Phase 7
+design 7.3, Q10 and Q11). Make one with <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Text_System_String_">Text(string)</a>, <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Watermark_System_String_">Watermark(string)</a>, <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Bates_Egap_Pdf_PdfBatesSequence_">Bates(PdfBatesSequence)</a>,
+<a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Image_Egami_Raster_System_Double_System_Double_">Image(Raster, double, double)</a> or <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Page_Egap_Pdf_PdfPage_">Page(PdfPage)</a>, then set its placement with <code>with</code>.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record PdfStamp : IEquatable&lt;PdfStamp&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PdfStamp</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Egap.Pdf.PdfStamp.html">PdfStamp</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Egap_Pdf_PdfStamp_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Text is a template whose fields are filled per page: <code>{page}</code>, <code>{pages}</code>, <code>{label}</code> (the page label),
+<code>{date}</code> or <code>{date:format}</code>, <code>{title}</code>, <code>{file}</code> and, for a Bates stamp, <code>{bates}</code>. Numbers and
+dates use <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Culture">Culture</a>, the invariant culture unless given. Text is drawn in Helvetica, a standard font that is
+not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Font">Font</a> names a typeface, which is embedded as a subset; a PDF/A document needs one.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfStamp_Anchor_" data-uid="Egap.Pdf.PdfStamp.Anchor*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Anchor" data-uid="Egap.Pdf.PdfStamp.Anchor">
+  Anchor
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the anchor the stamp's box is aligned to on the shown page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StampAnchor Anchor { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.StampAnchor.html">StampAnchor</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Color_" data-uid="Egap.Pdf.PdfStamp.Color*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Color" data-uid="Egap.Pdf.PdfStamp.Color">
+  Color
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the text colour. Defaults to black.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Rgba8 Color { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Rgba8</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Culture_" data-uid="Egap.Pdf.PdfStamp.Culture*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Culture" data-uid="Egap.Pdf.PdfStamp.Culture">
+  Culture
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the culture numbers and dates in the template are written in; null for the invariant culture.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CultureInfo? Culture { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo">CultureInfo</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Font_" data-uid="Egap.Pdf.PdfStamp.Font*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Font" data-uid="Egap.Pdf.PdfStamp.Font">
+  Font
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the typeface text is drawn in, embedded as a subset; null for Helvetica, not embedded.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Typeface? Font { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Typeface</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_FontSize_" data-uid="Egap.Pdf.PdfStamp.FontSize*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_FontSize" data-uid="Egap.Pdf.PdfStamp.FontSize">
+  FontSize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the text size in points. Defaults to 10.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double FontSize { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Layer_" data-uid="Egap.Pdf.PdfStamp.Layer*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Layer" data-uid="Egap.Pdf.PdfStamp.Layer">
+  Layer
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the name of a layer (optional content group) the stamp goes on, so viewers can hide it; null for none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Layer { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Offset_" data-uid="Egap.Pdf.PdfStamp.Offset*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Offset" data-uid="Egap.Pdf.PdfStamp.Offset">
+  Offset
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets how far the stamp is moved from its anchor, in points: x to the right, y up.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfPoint Offset { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfPoint.html">PdfPoint</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Opacity_" data-uid="Egap.Pdf.PdfStamp.Opacity*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Opacity" data-uid="Egap.Pdf.PdfStamp.Opacity">
+  Opacity
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the opacity, 0 to 1. Defaults to 1.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double Opacity { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Pages_" data-uid="Egap.Pdf.PdfStamp.Pages*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Pages" data-uid="Egap.Pdf.PdfStamp.Pages">
+  Pages
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the 1-based page numbers to stamp; null (the default) for every page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;int&gt;? Pages { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Rotation_" data-uid="Egap.Pdf.PdfStamp.Rotation*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Rotation" data-uid="Egap.Pdf.PdfStamp.Rotation">
+  Rotation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the turn about the stamp's centre, in degrees counterclockwise.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double Rotation { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Scale_" data-uid="Egap.Pdf.PdfStamp.Scale*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Scale" data-uid="Egap.Pdf.PdfStamp.Scale">
+  Scale
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the size an image or page stamp is drawn at, as a multiple of its own. Defaults to 1.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double Scale { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Subtype_" data-uid="Egap.Pdf.PdfStamp.Subtype*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Subtype" data-uid="Egap.Pdf.PdfStamp.Subtype">
+  Subtype
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the kind of page furniture it is marked as; null (the default) to take it from the anchor: a header at the top,
+a footer at the bottom, a watermark in the middle row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfStampSubtype? Subtype { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfStampSubtype.html">PdfStampSubtype</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Template_" data-uid="Egap.Pdf.PdfStamp.Template*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Template" data-uid="Egap.Pdf.PdfStamp.Template">
+  Template
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the template, for a text, watermark or Bates stamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Template { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Under_" data-uid="Egap.Pdf.PdfStamp.Under*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Under" data-uid="Egap.Pdf.PdfStamp.Under">
+  Under
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether the stamp goes under the page's content instead of over it. Defaults to false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Under { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Pdf_PdfStamp_Bates_" data-uid="Egap.Pdf.PdfStamp.Bates*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Bates_Egap_Pdf_PdfBatesSequence_" data-uid="Egap.Pdf.PdfStamp.Bates(Egap.Pdf.PdfBatesSequence)">
+  Bates(PdfBatesSequence)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A Bates number from a sequence that continues across documents, at the bottom right: each page stamped takes the next
+number. Change <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Template">Template</a> to put text around it (<code>{bates}</code> is the number).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfStamp Bates(PdfBatesSequence sequence)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sequence</code> <a class="xref" href="Egap.Pdf.PdfBatesSequence.html">PdfBatesSequence</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfStamp.html">PdfStamp</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">sequence</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Image_" data-uid="Egap.Pdf.PdfStamp.Image*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Image_Egami_Raster_System_Double_System_Double_" data-uid="Egap.Pdf.PdfStamp.Image(Egami.Raster,System.Double,System.Double)">
+  Image(Raster, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An image stamp, <code class="paramref">width</code> by <code class="paramref">height</code> points before <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Scale">Scale</a>, at the top right.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfStamp Image(Raster image, double width, double height)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>image</code> <span class="xref">Raster</span></dt>
+    <dd></dd>
+    <dt><code>width</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>height</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfStamp.html">PdfStamp</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">image</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>A size is not positive.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Page_" data-uid="Egap.Pdf.PdfStamp.Page*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Page_Egap_Pdf_PdfPage_" data-uid="Egap.Pdf.PdfStamp.Page(Egap.Pdf.PdfPage)">
+  Page(PdfPage)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A page stamp: another page drawn as it is shown, such as a letterhead, under each page by default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfStamp Page(PdfPage page)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>page</code> <a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfStamp.html">PdfStamp</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">page</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Text_" data-uid="Egap.Pdf.PdfStamp.Text*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Text_System_String_" data-uid="Egap.Pdf.PdfStamp.Text(System.String)">
+  Text(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A text stamp from a template, such as <code>&quot;Page {page} of {pages}&quot;</code>, at the bottom centre.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfStamp Text(string template)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>template</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfStamp.html">PdfStamp</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">template</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfStamp_Watermark_" data-uid="Egap.Pdf.PdfStamp.Watermark*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_Watermark_System_String_" data-uid="Egap.Pdf.PdfStamp.Watermark(System.String)">
+  Watermark(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A watermark: large grey text across the middle of each page, turned 45 degrees and three-tenths opaque, marked as a
+watermark artifact.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfStamp Watermark(string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfStamp.html">PdfStamp</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">text</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L64" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

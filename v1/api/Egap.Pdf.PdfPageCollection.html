@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfPageCollection | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfPageCollection | Egap ">
+      
+      <meta name="description" content="A document&#39;s pages in order, numbered from 0 (Phase 2 Q2). The list is built on first use by walking the page tree from the catalog; only the tree&#39;s nodes are loaded, not the pages&#39; content. A broken tree is repaired in memory with  warnings, as pdf.js and PDFium read it.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfPageCollection.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfPageCollection%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfPageCollection">
+
+
+
+  <h1 id="Egap_Pdf_PdfPageCollection" data-uid="Egap.Pdf.PdfPageCollection" class="text-break">
+Class PdfPageCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A document's pages in order, numbered from 0 (Phase 2 Q2). The list is built on first use by walking the page tree from
+the catalog; only the tree's nodes are loaded, not the pages' content. A broken tree is repaired in memory with
+<a class="xref" href="Egap.Pdf.PdfWarningCode.html#Egap_Pdf_PdfWarningCode_MalformedPageTree">MalformedPageTree</a> warnings, as pdf.js and PDFium read it.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class PdfPageCollection : IReadOnlyList&lt;PdfPage&gt;, IReadOnlyCollection&lt;PdfPage&gt;, IEnumerable&lt;PdfPage&gt;, IEnumerable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PdfPageCollection</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Egap_Pdf_PdfPageCollection_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Edits through this collection change the page tree in place (Phase 2 Q3): only the page, the node that lists it and the
+<code>/Count</code> of the nodes above are written, so an incremental save stays small; a node is split once it passes 128
+kids. A tree too broken to edit in place (loops, pages or nodes listed twice, no tree at all) is rebuilt before the
+first edit, with a warning. A page tree changed by hand through its dictionaries is not seen again by this collection.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfPageCollection_Count_" data-uid="Egap.Pdf.PdfPageCollection.Count*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_Count" data-uid="Egap.Pdf.PdfPageCollection.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of pages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_Item_" data-uid="Egap.Pdf.PdfPageCollection.Item*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_Item_System_Int32_" data-uid="Egap.Pdf.PdfPageCollection.Item(System.Int32)">
+  this[int]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The page at an index, from 0.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfPage this[int index] { get; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Pdf_PdfPageCollection_AddBlank_" data-uid="Egap.Pdf.PdfPageCollection.AddBlank*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_AddBlank_System_Nullable_Egap_Pdf_PdfRectangle__" data-uid="Egap.Pdf.PdfPageCollection.AddBlank(System.Nullable{Egap.Pdf.PdfRectangle})">
+  AddBlank(PdfRectangle?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a blank page at the end: no content, empty resources, no rotation. Its media box is <code class="paramref">mediaBox</code>,
+or else the last page's, or US Letter in a document without pages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfPage AddBlank(PdfRectangle? mediaBox = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mediaBox</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_GetEnumerator_" data-uid="Egap.Pdf.PdfPageCollection.GetEnumerator*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_GetEnumerator" data-uid="Egap.Pdf.PdfPageCollection.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L391"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;PdfPage&gt; GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a>&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_GetLabel_" data-uid="Egap.Pdf.PdfPageCollection.GetLabel*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_GetLabel_System_Int32_" data-uid="Egap.Pdf.PdfPageCollection.GetLabel(System.Int32)">
+  GetLabel(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The label of the page at an index, as a viewer shows it (12.4.2): from the label range the page falls in, or its
+number from 1 when the document has no label for it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string GetLabel(int index)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_GetLabelRanges_" data-uid="Egap.Pdf.PdfPageCollection.GetLabelRanges*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_GetLabelRanges" data-uid="Egap.Pdf.PdfPageCollection.GetLabelRanges">
+  GetLabelRanges()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L265"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The page label ranges of the catalog's <code>/PageLabels</code>, in order; empty when there are none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfPageLabelRange&gt; GetLabelRanges()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfPageLabelRange.html">PdfPageLabelRange</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_Import_" data-uid="Egap.Pdf.PdfPageCollection.Import*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_Import_Egap_Pdf_PdfDocument_System_Collections_Generic_IEnumerable_System_Int32__System_Nullable_System_Int32__Egap_Pdf_PdfImportOptions_" data-uid="Egap.Pdf.PdfPageCollection.Import(Egap.Pdf.PdfDocument,System.Collections.Generic.IEnumerable{System.Int32},System.Nullable{System.Int32},Egap.Pdf.PdfImportOptions)">
+  Import(PdfDocument, IEnumerable&lt;int&gt;?, int?, PdfImportOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Imports pages from another document (Phase 2 task 18): each page is copied with everything it reaches, its resources,
+content, annotations and what they use, but not the source's page tree; attributes it inherited there are written
+on the copy. Objects are copied once per source (Q4), so pages that share a font share the copy. References to
+source pages that are not imported become null. Streams are copied as the source holds them and read when this
+document is written, so <code class="paramref">source</code> must stay open until then.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfPage&gt; Import(PdfDocument source, IEnumerable&lt;int&gt;? pageIndices = null, int? at = null, PdfImportOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="Egap.Pdf.PdfDocument.html">PdfDocument</a></dt>
+    <dd><p>The document to copy from; may be this one, which copies pages within it.</p>
+</dd>
+    <dt><code>pageIndices</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</dt>
+    <dd><p>The source pages, in the order to insert them; all of them when null.</p>
+</dd>
+    <dt><code>at</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd><p>Where the first page goes (0 to <a class="xref" href="Egap.Pdf.PdfPageCollection.html#Egap_Pdf_PdfPageCollection_Count">Count</a>); the end when null.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfImportOptions.html">PdfImportOptions</a></dt>
+    <dd><p>How form fields whose names clash are handled; renamed by default.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a>&gt;</dt>
+    <dd><p>The new pages, in order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfPageCollection_Import_Egap_Pdf_PdfDocument_System_Collections_Generic_IEnumerable_System_Int32__System_Nullable_System_Int32__Egap_Pdf_PdfImportOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The pages bring what they need to keep working (Phase 2 Q5, Q6): their annotations; their form fields, the top-level
+ones renamed with a suffix and a warning when the name is taken; the named destinations their links use; the layers
+they use; and their page labels. The first import from a source also brings its attachments, renamed with a suffix
+when the name is taken, and its outline, appended at the top level without the items that lead to pages not
+imported. The structure tree and an XFA form stay behind, with a warning.</p>
+</div>
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_IndexOf_" data-uid="Egap.Pdf.PdfPageCollection.IndexOf*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_IndexOf_Egap_Pdf_PdfPage_" data-uid="Egap.Pdf.PdfPageCollection.IndexOf(Egap.Pdf.PdfPage)">
+  IndexOf(PdfPage)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The index of a page in the document, or -1 when it is not one of its pages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int IndexOf(PdfPage page)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>page</code> <a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_InsertBlank_" data-uid="Egap.Pdf.PdfPageCollection.InsertBlank*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_InsertBlank_System_Int32_System_Nullable_Egap_Pdf_PdfRectangle__" data-uid="Egap.Pdf.PdfPageCollection.InsertBlank(System.Int32,System.Nullable{Egap.Pdf.PdfRectangle})">
+  InsertBlank(int, PdfRectangle?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inserts a blank page at an index (0 to <a class="xref" href="Egap.Pdf.PdfPageCollection.html#Egap_Pdf_PdfPageCollection_Count">Count</a>): no content, empty resources, no rotation. Its media box is
+<code class="paramref">mediaBox</code>, or else the media box of the page before it (the first page when inserting at 0), or US
+Letter in a document without pages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfPage InsertBlank(int index, PdfRectangle? mediaBox = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>mediaBox</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_Move_" data-uid="Egap.Pdf.PdfPageCollection.Move*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_Move_System_Int32_System_Int32_" data-uid="Egap.Pdf.PdfPageCollection.Move(System.Int32,System.Int32)">
+  Move(int, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L233"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Moves the page at <code class="paramref">from</code> so it ends up at index <code class="paramref">to</code>. A page that moves under another
+node of the tree first gets the attributes it inherited written on itself, so it looks the same.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Move(int from, int to)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>from</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>to</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_Remove_" data-uid="Egap.Pdf.PdfPageCollection.Remove*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_Remove_Egap_Pdf_PdfPage_System_Boolean_" data-uid="Egap.Pdf.PdfPageCollection.Remove(Egap.Pdf.PdfPage,System.Boolean)">
+  Remove(PdfPage, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes a page from the page tree.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Remove(PdfPage page, bool removeReferences = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>page</code> <a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd><p>The page.</p>
+</dd>
+    <dt><code>removeReferences</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether what points at the page is cleaned up, as <a class="xref" href="Egap.Pdf.PdfPageCollection.html#Egap_Pdf_PdfPageCollection_RemoveAt_System_Int32_System_Boolean_">RemoveAt(int, bool)</a> does.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether it was one of the document's pages.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_RemoveAt_" data-uid="Egap.Pdf.PdfPageCollection.RemoveAt*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_RemoveAt_System_Int32_System_Boolean_" data-uid="Egap.Pdf.PdfPageCollection.RemoveAt(System.Int32,System.Boolean)">
+  RemoveAt(int, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes the page at an index from the page tree. Its object stays in the document until nothing reaches it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RemoveAt(int index, bool removeReferences = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The page's index.</p>
+</dd>
+    <dt><code>removeReferences</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether what points at the page is cleaned up (Phase 2 Q7): outline items keep their title but lose their
+destination, links that lead only to the page are deleted, and named destinations to it are removed, each with a
+warning giving the count. False leaves them pointing at a page no longer in the document.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_RemoveLabelRange_" data-uid="Egap.Pdf.PdfPageCollection.RemoveLabelRange*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_RemoveLabelRange_System_Int32_" data-uid="Egap.Pdf.PdfPageCollection.RemoveLabelRange(System.Int32)">
+  RemoveLabelRange(int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L314"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes the page label range that starts at an index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveLabelRange(int startIndex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>startIndex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether there was one.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfPageCollection_SetLabelRange_" data-uid="Egap.Pdf.PdfPageCollection.SetLabelRange*"></a>
+
+  <h3 id="Egap_Pdf_PdfPageCollection_SetLabelRange_Egap_Pdf_PdfPageLabelRange_" data-uid="Egap.Pdf.PdfPageCollection.SetLabelRange(Egap.Pdf.PdfPageLabelRange)">
+  SetLabelRange(PdfPageLabelRange)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L277"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a page label range, or replaces the one starting at the same index. Labels belong to page indexes: inserting or
+removing pages does not move them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetLabelRange(PdfPageLabelRange range)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>range</code> <a class="xref" href="Egap.Pdf.PdfPageLabelRange.html">PdfPageLabelRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/PdfPageCollection.cs/#L16" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

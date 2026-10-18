@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DocumentLayout | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DocumentLayout | Egap ">
+      
+      <meta name="description" content="A document laid out into pages (Phase 6 design Q11 and Q13): an immutable snapshot, each page a tree of boxes linked to the model nodes they show. An edit to the document needs a new layout.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Layout_DocumentLayout.md&amp;value=---%0Auid%3A%20Egap.Documents.Layout.DocumentLayout%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Layout.DocumentLayout">
+
+
+
+  <h1 id="Egap_Documents_Layout_DocumentLayout" data-uid="Egap.Documents.Layout.DocumentLayout" class="text-break">
+Class DocumentLayout  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a>.<a class="xref" href="Egap.Documents.Layout.html">Layout</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A document laid out into pages (Phase 6 design Q11 and Q13): an immutable snapshot, each page a tree of boxes linked to
+the model nodes they show. An edit to the document needs a new layout.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class DocumentLayout</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">DocumentLayout</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_Document_" data-uid="Egap.Documents.Layout.DocumentLayout.Document*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_Document" data-uid="Egap.Documents.Layout.DocumentLayout.Document">
+  Document
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The document laid out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Document Document { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_FontSubstitutions_" data-uid="Egap.Documents.Layout.DocumentLayout.FontSubstitutions*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_FontSubstitutions" data-uid="Egap.Documents.Layout.DocumentLayout.FontSubstitutions">
+  FontSubstitutions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The fonts used in place of the ones the document asked for, each once.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;FontSubstitution&gt; FontSubstitutions { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.Layout.FontSubstitution.html">FontSubstitution</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_Pages_" data-uid="Egap.Documents.Layout.DocumentLayout.Pages*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_Pages" data-uid="Egap.Documents.Layout.DocumentLayout.Pages">
+  Pages
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The pages in order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PageLayout&gt; Pages { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.Layout.PageLayout.html">PageLayout</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_FindBoxes_" data-uid="Egap.Documents.Layout.DocumentLayout.FindBoxes*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_FindBoxes_Egap_Documents_Node_" data-uid="Egap.Documents.Layout.DocumentLayout.FindBoxes(Egap.Documents.Node)">
+  FindBoxes(Node)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The boxes that show <code class="paramref">node</code>, with their pages, in page order; empty when it is not laid out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;(PageLayout Page, LayoutBox Box)&gt; FindBoxes(Node node)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>node</code> <a class="xref" href="Egap.Documents.Node.html">Node</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;(<a class="xref" href="Egap.Documents.Layout.PageLayout.html">PageLayout</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-egap.documents.layout.pagelayout,egap.documents.layout.layoutbox-.page">Page</a>, <a class="xref" href="Egap.Documents.Layout.LayoutBox.html">LayoutBox</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-egap.documents.layout.pagelayout,egap.documents.layout.layoutbox-.box">Box</a>)&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_GetCaret_" data-uid="Egap.Documents.Layout.DocumentLayout.GetCaret*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_GetCaret_Egap_Documents_Layout_DocumentPosition_" data-uid="Egap.Documents.Layout.DocumentLayout.GetCaret(Egap.Documents.Layout.DocumentPosition)">
+  GetCaret(DocumentPosition)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Where the caret for <code class="paramref">position</code> is drawn: its page and a rectangle a point wide, the line's height.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PageRect? GetCaret(DocumentPosition position)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>position</code> <a class="xref" href="Egap.Documents.Layout.DocumentPosition.html">DocumentPosition</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Layout.PageRect.html">PageRect</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_GetSelectionRects_" data-uid="Egap.Documents.Layout.DocumentLayout.GetSelectionRects*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_GetSelectionRects_Egap_Documents_Layout_DocumentPosition_Egap_Documents_Layout_DocumentPosition_" data-uid="Egap.Documents.Layout.DocumentLayout.GetSelectionRects(Egap.Documents.Layout.DocumentPosition,Egap.Documents.Layout.DocumentPosition)">
+  GetSelectionRects(DocumentPosition, DocumentPosition)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The rectangles that show the text from <code class="paramref">start</code> to <code class="paramref">end</code> selected, line by line across columns and pages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PageRect&gt; GetSelectionRects(DocumentPosition start, DocumentPosition end)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="Egap.Documents.Layout.DocumentPosition.html">DocumentPosition</a></dt>
+    <dd></dd>
+    <dt><code>end</code> <a class="xref" href="Egap.Documents.Layout.DocumentPosition.html">DocumentPosition</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.Layout.PageRect.html">PageRect</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_GetTextRects_" data-uid="Egap.Documents.Layout.DocumentLayout.GetTextRects*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_GetTextRects_Egap_Documents_Inline_" data-uid="Egap.Documents.Layout.DocumentLayout.GetTextRects(Egap.Documents.Inline)">
+  GetTextRects(Inline)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The rectangles an inline's text covers, line by line across pages: a hyperlink's areas, a comment's anchor. Empty for
+an inline with no laid-out text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PageRect&gt; GetTextRects(Inline node)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>node</code> <a class="xref" href="Egap.Documents.Inline.html">Inline</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.Layout.PageRect.html">PageRect</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_HitTest_" data-uid="Egap.Documents.Layout.DocumentLayout.HitTest*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_HitTest_Egap_Documents_Layout_PageLayout_System_Double_System_Double_" data-uid="Egap.Documents.Layout.DocumentLayout.HitTest(Egap.Documents.Layout.PageLayout,System.Double,System.Double)">
+  HitTest(PageLayout, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The text position nearest the point (in points from the page's top left), or null on a page without text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentPosition? HitTest(PageLayout page, double x, double y)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>page</code> <a class="xref" href="Egap.Documents.Layout.PageLayout.html">PageLayout</a></dt>
+    <dd></dd>
+    <dt><code>x</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>y</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Layout.DocumentPosition.html">DocumentPosition</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_Locate_" data-uid="Egap.Documents.Layout.DocumentLayout.Locate*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_Locate_Egap_Documents_Layout_DocumentPosition_" data-uid="Egap.Documents.Layout.DocumentLayout.Locate(Egap.Documents.Layout.DocumentPosition)">
+  Locate(DocumentPosition)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The model inline and the offset in its text a position falls in, or null at a paragraph's end or in its list label.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public (Inline Node, int Offset)? Locate(DocumentPosition position)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>position</code> <a class="xref" href="Egap.Documents.Layout.DocumentPosition.html">DocumentPosition</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>(<a class="xref" href="Egap.Documents.Inline.html">Inline</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-egap.documents.inline,system.int32-.node">Node</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-egap.documents.inline,system.int32-.offset">Offset</a>)?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_DocumentLayout_PageOf_" data-uid="Egap.Documents.Layout.DocumentLayout.PageOf*"></a>
+
+  <h3 id="Egap_Documents_Layout_DocumentLayout_PageOf_Egap_Documents_Node_" data-uid="Egap.Documents.Layout.DocumentLayout.PageOf(Egap.Documents.Node)">
+  PageOf(Node)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The page <code class="paramref">node</code> starts on, or null when it is not laid out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PageLayout? PageOf(Node node)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>node</code> <a class="xref" href="Egap.Documents.Node.html">Node</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Layout.PageLayout.html">PageLayout</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L14" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

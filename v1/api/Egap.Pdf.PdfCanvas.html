@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfCanvas | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfCanvas | Egap ">
+      
+      <meta name="description" content="An Egami canvas that draws onto a PDF page: the same drawing code that fills a raster writes PDF operators here (Phase 3, hub Q10). Paths, strokes, clips, opacity and blend modes become vector content; what PDF cannot express is drawn into an image at  and placed instead, with a warning.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfCanvas.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfCanvas%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfCanvas">
+
+
+
+  <h1 id="Egap_Pdf_PdfCanvas" data-uid="Egap.Pdf.PdfCanvas" class="text-break">
+Class PdfCanvas  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Text.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>An Egami canvas that draws onto a PDF page: the same drawing code that fills a raster writes PDF operators here (Phase 3,
+hub Q10). Paths, strokes, clips, opacity and blend modes become vector content; what PDF cannot express is drawn into an
+image at <a class="xref" href="Egap.Pdf.PdfCanvasOptions.html#Egap_Pdf_PdfCanvasOptions_FallbackDpi">FallbackDpi</a> and placed instead, with a warning.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class PdfCanvas : Canvas, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Canvas</span></div>
+      <div><span class="xref">PdfCanvas</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <span class="xref">Canvas.DrawImageNinePatch(Raster, Rect, RectF, SamplingOptions, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawImageLattice(Raster, Lattice, RectF, SamplingOptions, Paint)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">Canvas.DrawAtlas(Raster, ReadOnlySpan&lt;SpriteTransform&gt;, ReadOnlySpan&lt;RectF&gt;, ReadOnlySpan&lt;RgbaF32&gt;, BlendMode, SamplingOptions, RectF?, Paint)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">Canvas.DrawMesh(Mesh, Paint, BlendMode, ReadOnlySpan&lt;GradientStop&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">Canvas.DrawPatch(Patch, Paint, BlendMode, ReadOnlySpan&lt;GradientStop&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.matrix3x2">Canvas.DrawPicture(Picture, Matrix3x2?, Paint, bool)</a>
+    </div>
+    <div>
+      <span class="xref">Canvas.Save()</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.Restore()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">Canvas.RestoreToCount(int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.Translate(float, float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.Scale(float, float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.Scale(float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.Rotate(float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.Rotate(float, Vector2)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.Skew(float, float)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.matrix3x2">Canvas.Concat(Matrix3x2)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.matrix3x2">Canvas.SetMatrix(Matrix3x2)</a>
+    </div>
+    <div>
+      <span class="xref">Canvas.ResetMatrix()</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Canvas.ClipRect(RectF, ClipOp, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Canvas.ClipRoundRect(RoundRect, ClipOp, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">Canvas.ClipPath(Path, ClipOp, bool)</a>
+    </div>
+    <div>
+      <span class="xref">Canvas.QuickReject(RectF)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.QuickReject(Path)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.FillRect(RectF, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.StrokeRect(RectF, Stroke, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.FillRoundRect(RoundRect, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.StrokeRoundRect(RoundRect, Stroke, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.FillOval(RectF, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.StrokeOval(RectF, Stroke, Paint)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector2">Canvas.FillCircle(Vector2, float, Paint)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector2">Canvas.StrokeCircle(Vector2, float, Stroke, Paint)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.FillArc(RectF, float, float, Paint)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.StrokeArc(RectF, float, float, Stroke, Paint)</a>
+    </div>
+    <div>
+      <span class="xref">Canvas.FillRing(RoundRect, RoundRect, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.FillPath(Path, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.StrokePath(Path, Stroke, Paint)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector2">Canvas.DrawLine(Vector2, Vector2, Stroke, Paint)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">Canvas.DrawPoints(PointMode, ReadOnlySpan&lt;Vector2&gt;, Stroke, Paint)</a>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawPaint(Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.Clear(RgbaF32)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.Clear(Rgba8)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector2">Canvas.DrawImage(Raster, Vector2, SamplingOptions, Paint)</a>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawImage(Raster, RectF, SamplingOptions, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawImage(Raster, RectF, RectF, SamplingOptions, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.Dispose()</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawImage(EncodedImage, RectF, RectF, SamplingOptions, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawImage(EncodedImage, RectF, SamplingOptions, Paint)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawImageMask(Raster, RectF, Paint, SamplingOptions)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawAnnotation(RectF, Annotation)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.BeginMarkedContent(MarkedContent)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.EndMarkedContent()</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.SaveLayer(LayerOptions)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">Canvas.SaveLayer(float)</a>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawShadow(Path, ShadowOptions)</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Canvas.DrawText(string, Vector2, Font, Paint, ShapingOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector2">Canvas.DrawShapedText(ShapedText, Vector2, Paint)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Canvas.DrawTextOnPath(string, Path, Font, Paint, TextOnPathOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector2">Canvas.DrawGlyphRun(GlyphRun, Vector2, Paint)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector2">Canvas.DrawTextLayout(TextLayout, Vector2, RectF?, PlaceholderPainter)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">Canvas.DrawText(string, RectF, ParagraphStyle, VerticalAlign)</a>
+    </div>
+    <div>
+      <span class="xref">Canvas.DrawText(RichText, RectF, ParagraphStyle, VerticalAlign)</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.Width</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.Height</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.Matrix</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.SaveCount</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.DeviceClipBounds</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.LocalClipBounds</span>
+    </div>
+    <div>
+      <span class="xref">Canvas.MarkedContentDepth</span>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Egap_Pdf_PdfCanvas_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+By default the canvas is in points, y down, from the top left of the page's crop box with the page's <code>/Rotate</code> applied,
+so it draws what a viewer shows; <a class="xref" href="Egap.Pdf.PdfCanvasCoordinates.html#Egap_Pdf_PdfCanvasCoordinates_Pdf">Pdf</a> draws in PDF's own space instead. The drawing goes
+over or under the page's existing content without touching it (Phase 3 design Q5), and is written when the canvas is
+disposed.
+</p>
+<p>
+PDF can only multiply the current transformation matrix, so a canvas transform is written lazily: drawing calls that share
+a transform are written together inside <code>q</code>, the transform's <code>cm</code> and <code>Q</code>. Clips are written in device
+space at the level of their <span class="xref">Egami.Drawing.Canvas.Save()</span>, so <span class="xref">Egami.Drawing.Canvas.Restore()</span> undoes them as PDF's <code>Q</code> does.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Egap_Pdf_PdfCanvas__ctor_" data-uid="Egap.Pdf.PdfCanvas.#ctor*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas__ctor_Egap_Pdf_PdfPage_Egap_Pdf_PdfCanvasOptions_" data-uid="Egap.Pdf.PdfCanvas.#ctor(Egap.Pdf.PdfPage,Egap.Pdf.PdfCanvasOptions)">
+  PdfCanvas(PdfPage, PdfCanvasOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts drawing on a page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfCanvas(PdfPage page, PdfCanvasOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>page</code> <a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd><p>The page; its existing content is kept.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfCanvasOptions.html">PdfCanvasOptions</a></dt>
+    <dd><p>How to draw; <a class="xref" href="Egap.Pdf.PdfCanvasOptions.html#Egap_Pdf_PdfCanvasOptions_Default">Default</a> when <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfCanvas_Page_" data-uid="Egap.Pdf.PdfCanvas.Page*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_Page" data-uid="Egap.Pdf.PdfCanvas.Page">
+  Page
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The page the canvas draws on.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfPage Page { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_PageMatrix_" data-uid="Egap.Pdf.PdfCanvas.PageMatrix*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_PageMatrix" data-uid="Egap.Pdf.PdfCanvas.PageMatrix">
+  PageMatrix
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The transformation from the canvas's device space to the page's default user space: the flip and turn that make the
+canvas match the displayed page, or the identity for <a class="xref" href="Egap.Pdf.PdfCanvasCoordinates.html#Egap_Pdf_PdfCanvasCoordinates_Pdf">Pdf</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfMatrix PageMatrix { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfMatrix.html">PdfMatrix</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_Warnings_" data-uid="Egap.Pdf.PdfCanvas.Warnings*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_Warnings" data-uid="Egap.Pdf.PdfCanvas.Warnings">
+  Warnings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>What was drawn as an image because PDF cannot express it, and anything else worth knowing: each warning once, in the
+order first met, with how many times it happened when more than once.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfWarning&gt; Warnings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfWarning.html">PdfWarning</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Pdf_PdfCanvas_BeginArtifact_" data-uid="Egap.Pdf.PdfCanvas.BeginArtifact*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_BeginArtifact" data-uid="Egap.Pdf.PdfCanvas.BeginArtifact">
+  BeginArtifact()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Tagging.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts content that is not part of the document's logical content, such as a page number, a running header or a
+decorative rule (14.8.2.2): assistive technology skips it. Ends with <a class="xref" href="Egap.Pdf.PdfCanvas.html#Egap_Pdf_PdfCanvas_EndTag">EndTag()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void BeginArtifact()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_BeginTag_" data-uid="Egap.Pdf.PdfCanvas.BeginTag*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_BeginTag_Egap_Pdf_PdfStructureElement_" data-uid="Egap.Pdf.PdfCanvas.BeginTag(Egap.Pdf.PdfStructureElement)">
+  BeginTag(PdfStructureElement)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Tagging.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts content that belongs to a structure element: the drawing until <a class="xref" href="Egap.Pdf.PdfCanvas.html#Egap_Pdf_PdfCanvas_EndTag">EndTag()</a> is marked with the
+element's type and the page's next marked-content id, and the element records that content, so the structure tree
+and the parent tree lead to it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void BeginTag(PdfStructureElement element)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>element</code> <a class="xref" href="Egap.Pdf.PdfStructureElement.html">PdfStructureElement</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfCanvas_BeginTag_Egap_Pdf_PdfStructureElement__examples">Examples</h4>
+  <pre><code class="lang-csharp">PdfStructureElement heading = pdf.Structure.Add(PdfStructureType.Document).Add(PdfStructureType.H1);
+canvas.BeginTag(heading);
+canvas.DrawText("Annual report", new Vector2(72, 72), titleFont, black);
+canvas.EndTag();</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The canvas draws a form XObject, whose content cannot be tagged here.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_Dispose_" data-uid="Egap.Pdf.PdfCanvas.Dispose*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_Dispose_System_Boolean_" data-uid="Egap.Pdf.PdfCanvas.Dispose(System.Boolean)">
+  Dispose(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the backend's resources; called once by <span class="xref">Egami.Drawing.Canvas.Dispose()</span> after every state is restored.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Always <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>: the canvas has no finalizer.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_DrawForm_" data-uid="Egap.Pdf.PdfCanvas.DrawForm*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_DrawForm_Egap_Pdf_PdfFormXObject_Egami_Drawing_RectF_Egami_Drawing_Paint_" data-uid="Egap.Pdf.PdfCanvas.DrawForm(Egap.Pdf.PdfFormXObject,Egami.Drawing.RectF,Egami.Drawing.Paint)">
+  DrawForm(PdfFormXObject, RectF, Paint?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Forms.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draws a form XObject, such as a page made with <a class="xref" href="Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_ToFormXObject_Egap_Pdf_PdfDocument_">ToFormXObject(PdfDocument)</a>, stretched to fill
+<code class="paramref">destination</code> in the canvas's space; the form is written once however often it is drawn.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DrawForm(PdfFormXObject form, RectF destination, Paint? paint = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>form</code> <a class="xref" href="Egap.Pdf.PdfFormXObject.html">PdfFormXObject</a></dt>
+    <dd><p>The form; it must belong to the canvas's document.</p>
+</dd>
+    <dt><code>destination</code> <span class="xref">RectF</span></dt>
+    <dd><p>Where it goes, its top left first as for images.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>Opacity and blend mode; null for none.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">form</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_EndTag_" data-uid="Egap.Pdf.PdfCanvas.EndTag*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_EndTag" data-uid="Egap.Pdf.PdfCanvas.EndTag">
+  EndTag()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Tagging.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Ends the content <a class="xref" href="Egap.Pdf.PdfCanvas.html#Egap_Pdf_PdfCanvas_BeginTag_Egap_Pdf_PdfStructureElement_">BeginTag(PdfStructureElement)</a> or <a class="xref" href="Egap.Pdf.PdfCanvas.html#Egap_Pdf_PdfCanvas_BeginArtifact">BeginArtifact()</a> started.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void EndTag()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnBeginMarkedContent_" data-uid="Egap.Pdf.PdfCanvas.OnBeginMarkedContent*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnBeginMarkedContent_Egami_Drawing_MarkedContent_" data-uid="Egap.Pdf.PdfCanvas.OnBeginMarkedContent(Egami.Drawing.MarkedContent)">
+  OnBeginMarkedContent(MarkedContent)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Text.cs/#L297"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Begins a marked-content sequence. By default nothing happens.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnBeginMarkedContent(MarkedContent content)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>content</code> <span class="xref">MarkedContent</span></dt>
+    <dd><p>The tag and its properties.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnClipPath_" data-uid="Egap.Pdf.PdfCanvas.OnClipPath*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnClipPath_Egami_Drawing_Path_Egami_Drawing_ClipOp_System_Boolean_" data-uid="Egap.Pdf.PdfCanvas.OnClipPath(Egami.Drawing.Path,Egami.Drawing.ClipOp,System.Boolean)">
+  OnClipPath(Path, ClipOp, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clips by a path's fill.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnClipPath(Path path, ClipOp op, bool antialias)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">Path</span></dt>
+    <dd><p>The path in local coordinates.</p>
+</dd>
+    <dt><code>op</code> <span class="xref">ClipOp</span></dt>
+    <dd><p>Whether to keep the inside or the outside.</p>
+</dd>
+    <dt><code>antialias</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the edges are antialiased.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnClipRect_" data-uid="Egap.Pdf.PdfCanvas.OnClipRect*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnClipRect_Egami_Drawing_RectF_Egami_Drawing_ClipOp_System_Boolean_" data-uid="Egap.Pdf.PdfCanvas.OnClipRect(Egami.Drawing.RectF,Egami.Drawing.ClipOp,System.Boolean)">
+  OnClipRect(RectF, ClipOp, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clips by a rectangle. By default it goes to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">OnClipPath(Path, ClipOp, bool)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnClipRect(RectF rect, ClipOp op, bool antialias)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rect</code> <span class="xref">RectF</span></dt>
+    <dd><p>The rectangle in local coordinates, under <span class="xref">Egami.Drawing.Canvas.Matrix</span>.</p>
+</dd>
+    <dt><code>op</code> <span class="xref">ClipOp</span></dt>
+    <dd><p>Whether to keep the inside or the outside.</p>
+</dd>
+    <dt><code>antialias</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the edges are antialiased.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawAnnotation_" data-uid="Egap.Pdf.PdfCanvas.OnDrawAnnotation*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawAnnotation_Egami_Drawing_RectF_Egami_Drawing_Annotation_" data-uid="Egap.Pdf.PdfCanvas.OnDrawAnnotation(Egami.Drawing.RectF,Egami.Drawing.Annotation)">
+  OnDrawAnnotation(RectF, Annotation)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Text.cs/#L351"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks an area with a link or a destination. By default nothing happens: pixels show no annotations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawAnnotation(RectF area, Annotation annotation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>area</code> <span class="xref">RectF</span></dt>
+    <dd><p>The area, in local coordinates under <span class="xref">Egami.Drawing.Canvas.Matrix</span>.</p>
+</dd>
+    <dt><code>annotation</code> <span class="xref">Annotation</span></dt>
+    <dd><p>The link or destination.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawEncodedImage_" data-uid="Egap.Pdf.PdfCanvas.OnDrawEncodedImage*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawEncodedImage_Egami_Drawing_EncodedImage_Egami_Drawing_RectF_Egami_Drawing_RectF_Egami_Operations_SamplingOptions_Egami_Drawing_Paint_" data-uid="Egap.Pdf.PdfCanvas.OnDrawEncodedImage(Egami.Drawing.EncodedImage,Egami.Drawing.RectF,Egami.Drawing.RectF,Egami.Operations.SamplingOptions,Egami.Drawing.Paint)">
+  OnDrawEncodedImage(EncodedImage, RectF, RectF, SamplingOptions, Paint?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Images.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draws part of an encoded image into a local rectangle; the source lies inside the image. A PDF backend can embed a JPEG's
+bytes as they are. By default the image is decoded once and drawn with <span class="xref">Egami.Drawing.Canvas.OnDrawImage(Egami.Raster, Egami.Drawing.RectF, Egami.Drawing.RectF, Egami.Operations.SamplingOptions, Egami.Drawing.Paint)</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawEncodedImage(EncodedImage image, RectF source, RectF destination, SamplingOptions sampling, Paint? paint)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>image</code> <span class="xref">EncodedImage</span></dt>
+    <dd><p>The image.</p>
+</dd>
+    <dt><code>source</code> <span class="xref">RectF</span></dt>
+    <dd><p>The part to draw, inside the image.</p>
+</dd>
+    <dt><code>destination</code> <span class="xref">RectF</span></dt>
+    <dd><p>Where it goes, in local coordinates.</p>
+</dd>
+    <dt><code>sampling</code> <span class="xref">SamplingOptions</span></dt>
+    <dd><p>How it is sampled.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>The blend mode, opacity and antialiasing, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for source-over.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfCanvas_OnDrawEncodedImage_Egami_Drawing_EncodedImage_Egami_Drawing_RectF_Egami_Drawing_RectF_Egami_Operations_SamplingOptions_Egami_Drawing_Paint__examples">Examples</h4>
+  <pre><code class="lang-csharp"></code></pre>
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawGlyphRun_" data-uid="Egap.Pdf.PdfCanvas.OnDrawGlyphRun*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawGlyphRun_Egami_Fonts_GlyphRun_System_Numerics_Vector2_Egami_Drawing_Paint_" data-uid="Egap.Pdf.PdfCanvas.OnDrawGlyphRun(Egami.Fonts.GlyphRun,System.Numerics.Vector2,Egami.Drawing.Paint)">
+  OnDrawGlyphRun(GlyphRun, Vector2, Paint)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Text.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draws a glyph run. The default turns the glyphs into one path, with the font's synthetic bold and italic, and calls
+<span class="xref">Egami.Drawing.Canvas.OnDrawPath(Egami.Drawing.Path, Egami.Drawing.Stroke, Egami.Drawing.Paint)</span>, aliased for <span class="xref">Egami.Fonts.FontEdging.Alias</span>, so every backend draws text; a
+backend with text of its own, such as a PDF page writing text operators, overrides it and can use
+<span class="xref">Egami.Fonts.GlyphRun.Text</span> and <span class="xref">Egami.Fonts.GlyphRun.Clusters</span> to keep the text searchable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawGlyphRun(GlyphRun run, Vector2 origin, Paint paint)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>run</code> <span class="xref">GlyphRun</span></dt>
+    <dd><p>The glyphs, never empty.</p>
+</dd>
+    <dt><code>origin</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.vector2">Vector2</a></dt>
+    <dd><p>Where the run's origin goes, in local coordinates.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>The paint.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawImage_" data-uid="Egap.Pdf.PdfCanvas.OnDrawImage*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawImage_Egami_Raster_Egami_Drawing_RectF_Egami_Drawing_RectF_Egami_Operations_SamplingOptions_Egami_Drawing_Paint_" data-uid="Egap.Pdf.PdfCanvas.OnDrawImage(Egami.Raster,Egami.Drawing.RectF,Egami.Drawing.RectF,Egami.Operations.SamplingOptions,Egami.Drawing.Paint)">
+  OnDrawImage(Raster, RectF, RectF, SamplingOptions, Paint?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L262"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draws part of an image into a local rectangle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawImage(Raster image, RectF source, RectF destination, SamplingOptions sampling, Paint? paint)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>image</code> <span class="xref">Raster</span></dt>
+    <dd><p>The image.</p>
+</dd>
+    <dt><code>source</code> <span class="xref">RectF</span></dt>
+    <dd><p>The part to draw, inside the image.</p>
+</dd>
+    <dt><code>destination</code> <span class="xref">RectF</span></dt>
+    <dd><p>Where it goes, in local coordinates.</p>
+</dd>
+    <dt><code>sampling</code> <span class="xref">SamplingOptions</span></dt>
+    <dd><p>How it is sampled.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>The blend mode, opacity and antialiasing, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for source-over.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfCanvas_OnDrawImage_Egami_Raster_Egami_Drawing_RectF_Egami_Drawing_RectF_Egami_Operations_SamplingOptions_Egami_Drawing_Paint__examples">Examples</h4>
+  <pre><code class="lang-csharp"></code></pre>
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawMesh_" data-uid="Egap.Pdf.PdfCanvas.OnDrawMesh*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawMesh_Egami_Drawing_Mesh_Egami_Drawing_Paint_Egami_Operations_BlendMode_System_ReadOnlySpan_Egami_Drawing_GradientStop__" data-uid="Egap.Pdf.PdfCanvas.OnDrawMesh(Egami.Drawing.Mesh,Egami.Drawing.Paint,Egami.Operations.BlendMode,System.ReadOnlySpan{Egami.Drawing.GradientStop})">
+  OnDrawMesh(Mesh, Paint, BlendMode, ReadOnlySpan&lt;GradientStop&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Layers.cs/#L395"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draws a mesh with at least one triangle; a mesh with values comes with stops. A PDF backend can write it as a free-form or
+lattice-form shading (types 4 and 5). By default it is drawn through <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">RasterizeFallback(Action&lt;Canvas&gt;, float)</a> at one raster pixel per
+device unit, over the mesh's bounds, and placed with <span class="xref">Egami.Drawing.Canvas.OnDrawImage(Egami.Raster, Egami.Drawing.RectF, Egami.Drawing.RectF, Egami.Operations.SamplingOptions, Egami.Drawing.Paint)</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawMesh(Mesh mesh, Paint paint, BlendMode colorBlend, ReadOnlySpan&lt;GradientStop&gt; valueStops)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mesh</code> <span class="xref">Mesh</span></dt>
+    <dd><p>The mesh, in local coordinates.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>The paint.</p>
+</dd>
+    <dt><code>colorBlend</code> <span class="xref">BlendMode</span></dt>
+    <dd><p>How the vertex colors combine with the paint.</p>
+</dd>
+    <dt><code>valueStops</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<span class="xref">GradientStop</span>&gt;</dt>
+    <dd><p>The stops vertex values map through, or empty.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawPatch_" data-uid="Egap.Pdf.PdfCanvas.OnDrawPatch*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawPatch_Egami_Drawing_Patch_Egami_Drawing_Paint_Egami_Operations_BlendMode_System_ReadOnlySpan_Egami_Drawing_GradientStop__" data-uid="Egap.Pdf.PdfCanvas.OnDrawPatch(Egami.Drawing.Patch,Egami.Drawing.Paint,Egami.Operations.BlendMode,System.ReadOnlySpan{Egami.Drawing.GradientStop})">
+  OnDrawPatch(Patch, Paint, BlendMode, ReadOnlySpan&lt;GradientStop&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Layers.cs/#L431"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draws a patch. A PDF backend can write it as a Coons or tensor-product shading (types 6 and 7). By default it is cut into
+triangles under the current transform and drawn with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">OnDrawMesh(Mesh, Paint, BlendMode, ReadOnlySpan&lt;GradientStop&gt;)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawPatch(Patch patch, Paint paint, BlendMode colorBlend, ReadOnlySpan&lt;GradientStop&gt; valueStops)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>patch</code> <span class="xref">Patch</span></dt>
+    <dd><p>The patch, in local coordinates.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>The paint.</p>
+</dd>
+    <dt><code>colorBlend</code> <span class="xref">BlendMode</span></dt>
+    <dd><p>How the corner colors combine with the paint.</p>
+</dd>
+    <dt><code>valueStops</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<span class="xref">GradientStop</span>&gt;</dt>
+    <dd><p>The stops corner values map through, or empty.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawPath_" data-uid="Egap.Pdf.PdfCanvas.OnDrawPath*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawPath_Egami_Drawing_Path_Egami_Drawing_Stroke_Egami_Drawing_Paint_" data-uid="Egap.Pdf.PdfCanvas.OnDrawPath(Egami.Drawing.Path,Egami.Drawing.Stroke,Egami.Drawing.Paint)">
+  OnDrawPath(Path, Stroke?, Paint)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L232"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fills a path by its fill rule, or strokes it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawPath(Path path, Stroke? stroke, Paint paint)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">Path</span></dt>
+    <dd><p>The path in local coordinates.</p>
+</dd>
+    <dt><code>stroke</code> <span class="xref">Stroke</span></dt>
+    <dd><p>The pen, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to fill.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>The paint.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfCanvas_OnDrawPath_Egami_Drawing_Path_Egami_Drawing_Stroke_Egami_Drawing_Paint__examples">Examples</h4>
+  <pre><code class="lang-csharp"></code></pre>
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawPicture_" data-uid="Egap.Pdf.PdfCanvas.OnDrawPicture*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawPicture_Egami_Drawing_Picture_System_Numerics_Matrix3x2_Egami_Drawing_Paint_System_Boolean_" data-uid="Egap.Pdf.PdfCanvas.OnDrawPicture(Egami.Drawing.Picture,System.Numerics.Matrix3x2,Egami.Drawing.Paint,System.Boolean)">
+  OnDrawPicture(Picture, Matrix3x2, Paint?, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Layers.cs/#L283"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draws a recorded picture. A PDF backend can write it once as a form XObject and reference it each time. By default it saves
+the state, adds the matrix, starts a layer when the paint asks for one, replays the picture through the public calls (or
+draws its cached image) and restores.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawPicture(Picture picture, Matrix3x2 matrix, Paint? paint, bool cacheAsImage)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>picture</code> <span class="xref">Picture</span></dt>
+    <dd><p>The picture, with at least one call.</p>
+</dd>
+    <dt><code>matrix</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.matrix3x2">Matrix3x2</a></dt>
+    <dd><p>The transform added before the canvas's.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>The opacity and blend mode of the whole picture, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><code>cacheAsImage</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether to draw the picture's cached image instead of its calls.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnDrawRect_" data-uid="Egap.Pdf.PdfCanvas.OnDrawRect*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnDrawRect_Egami_Drawing_RectF_Egami_Drawing_Stroke_Egami_Drawing_Paint_" data-uid="Egap.Pdf.PdfCanvas.OnDrawRect(Egami.Drawing.RectF,Egami.Drawing.Stroke,Egami.Drawing.Paint)">
+  OnDrawRect(RectF, Stroke?, Paint)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fills or strokes a rectangle. By default it goes to <span class="xref">Egami.Drawing.Canvas.OnDrawPath(Egami.Drawing.Path, Egami.Drawing.Stroke, Egami.Drawing.Paint)</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnDrawRect(RectF rect, Stroke? stroke, Paint paint)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rect</code> <span class="xref">RectF</span></dt>
+    <dd><p>The rectangle.</p>
+</dd>
+    <dt><code>stroke</code> <span class="xref">Stroke</span></dt>
+    <dd><p>The pen, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to fill.</p>
+</dd>
+    <dt><code>paint</code> <span class="xref">Paint</span></dt>
+    <dd><p>The paint.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnEndMarkedContent_" data-uid="Egap.Pdf.PdfCanvas.OnEndMarkedContent*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnEndMarkedContent" data-uid="Egap.Pdf.PdfCanvas.OnEndMarkedContent">
+  OnEndMarkedContent()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Text.cs/#L335"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Ends the marked-content sequence begun last. By default nothing happens.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnEndMarkedContent()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnRestore_" data-uid="Egap.Pdf.PdfCanvas.OnRestore*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnRestore" data-uid="Egap.Pdf.PdfCanvas.OnRestore">
+  OnRestore()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called by <span class="xref">Egami.Drawing.Canvas.Restore()</span> after the state is popped; <span class="xref">Egami.Drawing.Canvas.Matrix</span> and <span class="xref">Egami.Drawing.Canvas.DeviceClipBounds</span> are already the restored ones.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnRestore()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnRestoreLayer_" data-uid="Egap.Pdf.PdfCanvas.OnRestoreLayer*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnRestoreLayer" data-uid="Egap.Pdf.PdfCanvas.OnRestoreLayer">
+  OnRestoreLayer()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Layers.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called by <span class="xref">Egami.Drawing.Canvas.Restore()</span> for a state saved by <span class="xref">Egami.Drawing.Canvas.SaveLayer(Egami.Drawing.LayerOptions)</span>, after it is popped, so
+<span class="xref">Egami.Drawing.Canvas.Matrix</span> and <span class="xref">Egami.Drawing.Canvas.DeviceClipBounds</span> are those the layer was started with: the raster backend merges the
+layer through that clip. By default it calls <span class="xref">Egami.Drawing.Canvas.OnRestore()</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnRestoreLayer()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnSave_" data-uid="Egap.Pdf.PdfCanvas.OnSave*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnSave" data-uid="Egap.Pdf.PdfCanvas.OnSave">
+  OnSave()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called by <span class="xref">Egami.Drawing.Canvas.Save()</span> after the state is pushed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnSave()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnSaveLayer_" data-uid="Egap.Pdf.PdfCanvas.OnSaveLayer*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnSaveLayer_Egami_Drawing_LayerOptions_" data-uid="Egap.Pdf.PdfCanvas.OnSaveLayer(Egami.Drawing.LayerOptions)">
+  OnSaveLayer(LayerOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Layers.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called by <span class="xref">Egami.Drawing.Canvas.SaveLayer(Egami.Drawing.LayerOptions)</span> after the state is pushed; <span class="xref">Egami.Drawing.Canvas.DeviceClipBounds</span> is already limited
+by the options' bounds. The raster backend allocates the layer; a PDF backend would begin a transparency group. By default it
+calls <span class="xref">Egami.Drawing.Canvas.OnSave()</span>, so a backend without layers draws their contents directly.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnSaveLayer(LayerOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <span class="xref">LayerOptions</span></dt>
+    <dd><p>How the layer is merged.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfCanvas_OnSaveLayer_Egami_Drawing_LayerOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp"></code></pre>
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfCanvas_OnSetMatrix_" data-uid="Egap.Pdf.PdfCanvas.OnSetMatrix*"></a>
+
+  <h3 id="Egap_Pdf_PdfCanvas_OnSetMatrix_System_Numerics_Matrix3x2_" data-uid="Egap.Pdf.PdfCanvas.OnSetMatrix(System.Numerics.Matrix3x2)">
+  OnSetMatrix(Matrix3x2)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called whenever the transform changes, with the new transform (also <span class="xref">Egami.Drawing.Canvas.Matrix</span>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnSetMatrix(Matrix3x2 matrix)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>matrix</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.matrix3x2">Matrix3x2</a></dt>
+    <dd><p>The transform from local to device coordinates.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Canvas/PdfCanvas.Text.cs/#L20" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

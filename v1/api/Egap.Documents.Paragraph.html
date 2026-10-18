@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Paragraph | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Paragraph | Egap ">
+      
+      <meta name="description" content="A paragraph: a list of inlines (runs of text, tabs, breaks and the rest) ended by a paragraph mark.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Paragraph.md&amp;value=---%0Auid%3A%20Egap.Documents.Paragraph%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Paragraph">
+
+
+
+  <h1 id="Egap_Documents_Paragraph" data-uid="Egap.Documents.Paragraph" class="text-break">
+Class Paragraph  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A paragraph: a list of inlines (runs of text, tabs, breaks and the rest) ended by a paragraph mark.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Paragraph : Block</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Egap.Documents.Node.html">Node</a></div>
+      <div><a class="xref" href="Egap.Documents.Block.html">Block</a></div>
+      <div><span class="xref">Paragraph</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Document">Node.Document</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Parent">Node.Parent</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_NextSibling">Node.NextSibling</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_PreviousSibling">Node.PreviousSibling</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Extensions">Node.Extensions</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_HasExtensions">Node.HasExtensions</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_ChildNodes">Node.ChildNodes</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Remove">Node.Remove()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Ancestors">Node.Ancestors()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_GetAncestor__1">Node.GetAncestor&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Descendants">Node.Descendants()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Descendants__1">Node.Descendants&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_GetText">Node.GetText()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_String_System_String_Egap_Documents_FindOptions_">Node.Replace(string, string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Find_System_String_Egap_Documents_FindOptions_">Node.Find(string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Find_System_Text_RegularExpressions_Regex_Egap_Documents_FindOptions_">Node.Find(Regex, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_Text_RegularExpressions_Regex_System_String_Egap_Documents_FindOptions_">Node.Replace(Regex, string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_Text_RegularExpressions_Regex_System_Func_System_Text_RegularExpressions_Match_System_String__Egap_Documents_FindOptions_">Node.Replace(Regex, Func&lt;Match, string&gt;, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Accept_Egap_Documents_DocumentVisitor_">Node.Accept(DocumentVisitor)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Egap_Documents_Paragraph__ctor_" data-uid="Egap.Documents.Paragraph.#ctor*"></a>
+
+  <h3 id="Egap_Documents_Paragraph__ctor_Egap_Documents_Document_" data-uid="Egap.Documents.Paragraph.#ctor(Egap.Documents.Document)">
+  Paragraph(Document)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An empty paragraph of <code class="paramref">document</code>, not yet in the tree.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Paragraph(Document document)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_Paragraph_Format_" data-uid="Egap.Documents.Paragraph.Format*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_Format" data-uid="Egap.Documents.Paragraph.Format">
+  Format
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The paragraph's direct formatting, over its style's.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ParagraphFormat Format { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.ParagraphFormat.html">ParagraphFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_FormatRevision_" data-uid="Egap.Documents.Paragraph.FormatRevision*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_FormatRevision" data-uid="Egap.Documents.Paragraph.FormatRevision">
+  FormatRevision
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A tracked change of the paragraph's formatting, with the formatting it had before, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FormatRevision? FormatRevision { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.FormatRevision.html">FormatRevision</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_Inlines_" data-uid="Egap.Documents.Paragraph.Inlines*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_Inlines" data-uid="Egap.Documents.Paragraph.Inlines">
+  Inlines
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The paragraph's content in order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NodeCollection&lt;Inline&gt; Inlines { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.NodeCollection-1.html">NodeCollection</a>&lt;<a class="xref" href="Egap.Documents.Inline.html">Inline</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_ListLabel_" data-uid="Egap.Documents.Paragraph.ListLabel*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_ListLabel" data-uid="Egap.Documents.Paragraph.ListLabel">
+  ListLabel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The paragraph's computed list label, such as &quot;3.2.a.&quot;, or null when it is not in a list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ListLabel? ListLabel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.ListLabel.html">ListLabel</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_MarkFormat_" data-uid="Egap.Documents.Paragraph.MarkFormat*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_MarkFormat" data-uid="Egap.Documents.Paragraph.MarkFormat">
+  MarkFormat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The formatting of the paragraph mark, which Word uses for an empty paragraph's height and the mark itself.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RunFormat MarkFormat { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.RunFormat.html">RunFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_MarkRevision_" data-uid="Egap.Documents.Paragraph.MarkRevision*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_MarkRevision" data-uid="Egap.Documents.Paragraph.MarkRevision">
+  MarkRevision
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A tracked insertion or deletion of the paragraph mark: a deleted mark joins the paragraph to the next one when the
+change is accepted.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Revision? MarkRevision { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Revision.html">Revision</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_Runs_" data-uid="Egap.Documents.Paragraph.Runs*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_Runs" data-uid="Egap.Documents.Paragraph.Runs">
+  Runs
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The runs of text in the paragraph, leaving out tabs, breaks and other inlines.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;Run&gt; Runs { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Documents.Run.html">Run</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_Style_" data-uid="Egap.Documents.Paragraph.Style*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_Style" data-uid="Egap.Documents.Paragraph.Style">
+  Style
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The paragraph style, or null for the document's default paragraph style.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ParagraphStyle? Style { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.ParagraphStyle.html">ParagraphStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_Version_" data-uid="Egap.Documents.Paragraph.Version*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_Version" data-uid="Egap.Documents.Paragraph.Version">
+  Version
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Version">Version</a> of the last change inside this paragraph (its content or settings), or 0 when it has
+not changed since it was made. Layout reuses a paragraph whose version it has seen (Build Plan task 21b).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long Version { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_Paragraph_AddBreak_" data-uid="Egap.Documents.Paragraph.AddBreak*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddBreak_Egap_Documents_BreakKind_" data-uid="Egap.Documents.Paragraph.AddBreak(Egap.Documents.BreakKind)">
+  AddBreak(BreakKind)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a break of <code class="paramref">kind</code> at the end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Break AddBreak(BreakKind kind = BreakKind.Line)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>kind</code> <a class="xref" href="Egap.Documents.BreakKind.html">BreakKind</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Break.html">Break</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_AddField_" data-uid="Egap.Documents.Paragraph.AddField*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddField_Egap_Documents_FieldKind_" data-uid="Egap.Documents.Paragraph.AddField(Egap.Documents.FieldKind)">
+  AddField(FieldKind)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a field of <code class="paramref">kind</code> with no switches, such as PAGE, at the end, marked to be updated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Field AddField(FieldKind kind)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>kind</code> <a class="xref" href="Egap.Documents.FieldKind.html">FieldKind</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Field.html">Field</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_AddField_" data-uid="Egap.Documents.Paragraph.AddField*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddField_System_String_System_String_" data-uid="Egap.Documents.Paragraph.AddField(System.String,System.String)">
+  AddField(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a field at the end: start, a run with <code class="paramref">code</code>, separator, a run with <code class="paramref">result</code> and
+end. The result is what shows until the field is updated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Field AddField(string code, string result = &quot;&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>code</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>result</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Field.html">Field</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_AddFootnote_" data-uid="Egap.Documents.Paragraph.AddFootnote*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddFootnote_System_String_Egap_Documents_NoteKind_" data-uid="Egap.Documents.Paragraph.AddFootnote(System.String,Egap.Documents.NoteKind)">
+  AddFootnote(string, NoteKind)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L193"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a footnote (or endnote) holding <code class="paramref">text</code> at the end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Footnote AddFootnote(string text, NoteKind kind = NoteKind.Footnote)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="Egap.Documents.NoteKind.html">NoteKind</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Footnote.html">Footnote</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_AddHyperlink_" data-uid="Egap.Documents.Paragraph.AddHyperlink*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddHyperlink_System_String_System_String_" data-uid="Egap.Documents.Paragraph.AddHyperlink(System.String,System.String)">
+  AddHyperlink(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a hyperlink to <code class="paramref">address</code> showing <code class="paramref">text</code> at the end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Hyperlink AddHyperlink(string text, string address)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>address</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Hyperlink.html">Hyperlink</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_AddPicture_" data-uid="Egap.Documents.Paragraph.AddPicture*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddPicture_Egap_Documents_ImageData_System_Double_System_Double_" data-uid="Egap.Documents.Paragraph.AddPicture(Egap.Documents.ImageData,System.Double,System.Double)">
+  AddPicture(ImageData, double, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a picture of <code class="paramref">image</code> at <code class="paramref">width</code> by <code class="paramref">height</code> points at the end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Picture AddPicture(ImageData image, double width, double height)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>image</code> <a class="xref" href="Egap.Documents.ImageData.html">ImageData</a></dt>
+    <dd></dd>
+    <dt><code>width</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+    <dt><code>height</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Picture.html">Picture</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_AddRun_" data-uid="Egap.Documents.Paragraph.AddRun*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddRun_System_String_" data-uid="Egap.Documents.Paragraph.AddRun(System.String)">
+  AddRun(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a run of <code class="paramref">text</code> at the end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Run AddRun(string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Run.html">Run</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_AddRun_" data-uid="Egap.Documents.Paragraph.AddRun*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddRun_System_String_Egap_Documents_RunFormat_" data-uid="Egap.Documents.Paragraph.AddRun(System.String,Egap.Documents.RunFormat)">
+  AddRun(string, RunFormat)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a run of <code class="paramref">text</code> at the end with a copy of <code class="paramref">format</code> as its direct formatting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Run AddRun(string text, RunFormat format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>format</code> <a class="xref" href="Egap.Documents.RunFormat.html">RunFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Run.html">Run</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_AddTab_" data-uid="Egap.Documents.Paragraph.AddTab*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_AddTab" data-uid="Egap.Documents.Paragraph.AddTab">
+  AddTab()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a tab at the end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Tab AddTab()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Tab.html">Tab</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_Clone_" data-uid="Egap.Documents.Paragraph.Clone*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_Clone_System_Boolean_" data-uid="Egap.Documents.Paragraph.Clone(System.Boolean)">
+  Clone(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy of this node in the same document, not yet in the tree. A deep copy includes everything the node holds; a shallow
+one only the node itself, such as a paragraph without its runs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Paragraph Clone(bool deep = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>deep</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Paragraph.html">Paragraph</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_GetEffectiveFormat_" data-uid="Egap.Documents.Paragraph.GetEffectiveFormat*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_GetEffectiveFormat" data-uid="Egap.Documents.Paragraph.GetEffectiveFormat">
+  GetEffectiveFormat()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The formatting the paragraph is laid out with: document defaults, then the table style, paragraph style and direct
+formatting (Phase 6 design Q5). Cached until the paragraph, its styles or its table change.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ResolvedParagraphFormat GetEffectiveFormat()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.ResolvedParagraphFormat.html">ResolvedParagraphFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_RemoveList_" data-uid="Egap.Documents.Paragraph.RemoveList*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_RemoveList" data-uid="Egap.Documents.Paragraph.RemoveList">
+  RemoveList()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Takes the paragraph out of any list: clears the direct list settings and, when the paragraph's style puts it in a list,
+sets <a class="xref" href="Egap.Documents.List.html#Egap_Documents_List_None">None</a> to override it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RemoveList()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Paragraph_SetList_" data-uid="Egap.Documents.Paragraph.SetList*"></a>
+
+  <h3 id="Egap_Documents_Paragraph_SetList_Egap_Documents_List_System_Int32_" data-uid="Egap.Documents.Paragraph.SetList(Egap.Documents.List,System.Int32)">
+  SetList(List, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Puts the paragraph in <code class="paramref">list</code> at <code class="paramref">level</code> (direct formatting).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetList(List list, int level = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>list</code> <a class="xref" href="Egap.Documents.List.html">List</a></dt>
+    <dd></dd>
+    <dt><code>level</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Blocks.cs/#L14" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

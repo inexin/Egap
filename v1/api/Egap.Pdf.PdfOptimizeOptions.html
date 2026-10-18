@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfOptimizeOptions | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfOptimizeOptions | Egap ">
+      
+      <meta name="description" content="What  does (Phase 7 design Q2 to Q7). A preset fills in the switches; each can be changed with with. , the default, never changes a pixel: it merges duplicates, subsets fonts, removes what nobody sees, codes bilevel images as CCITT G4, optimizes JPEG Huffman tables and writes object streams. ,  and  also downsample images above 1.5 times their resolution and write photos as JPEG at their quality.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfOptimizeOptions.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfOptimizeOptions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfOptimizeOptions">
+
+
+
+  <h1 id="Egap_Pdf_PdfOptimizeOptions" data-uid="Egap.Pdf.PdfOptimizeOptions" class="text-break">
+Class PdfOptimizeOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>What <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_Optimize_Egap_Pdf_PdfOptimizeOptions_System_Threading_CancellationToken_">Optimize(PdfOptimizeOptions?, CancellationToken)</a> does (Phase 7 design Q2 to Q7). A preset fills in the switches; each can be changed
+with <code>with</code>. <a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html#Egap_Pdf_PdfOptimizeOptions_Lossless">Lossless</a>, the default, never changes a pixel: it merges duplicates, subsets fonts, removes
+what nobody sees, codes bilevel images as CCITT G4, optimizes JPEG Huffman tables and writes object streams.
+<a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html#Egap_Pdf_PdfOptimizeOptions_Print">Print</a>, <a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html#Egap_Pdf_PdfOptimizeOptions_Ebook">Ebook</a> and <a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html#Egap_Pdf_PdfOptimizeOptions_Screen">Screen</a> also downsample images above 1.5 times their resolution
+and write photos as JPEG at their quality.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record PdfOptimizeOptions : IEquatable&lt;PdfOptimizeOptions&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PdfOptimizeOptions</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html">PdfOptimizeOptions</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Egap_Pdf_PdfOptimizeOptions_examples">Examples</h2>
+  <pre><code class="lang-csharp">PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook with { JpegQuality = 70 });
+pdf.Save("small.pdf");</code></pre>
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_AllowInvalidatingSignatures_" data-uid="Egap.Pdf.PdfOptimizeOptions.AllowInvalidatingSignatures*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_AllowInvalidatingSignatures" data-uid="Egap.Pdf.PdfOptimizeOptions.AllowInvalidatingSignatures">
+  AllowInvalidatingSignatures
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether a signed document is optimized, which breaks its signatures: optimizing ends in a full rewrite. False
+(the default) leaves a signed document as it is and says so in the report.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowInvalidatingSignatures { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_DownsampleThreshold_" data-uid="Egap.Pdf.PdfOptimizeOptions.DownsampleThreshold*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_DownsampleThreshold" data-uid="Egap.Pdf.PdfOptimizeOptions.DownsampleThreshold">
+  DownsampleThreshold
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets how many times <a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html#Egap_Pdf_PdfOptimizeOptions_ImageResolution">ImageResolution</a> an image must exceed before it is downsampled. Defaults to 1.5.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double DownsampleThreshold { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_Ebook_" data-uid="Egap.Pdf.PdfOptimizeOptions.Ebook*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_Ebook" data-uid="Egap.Pdf.PdfOptimizeOptions.Ebook">
+  Ebook
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>For reading on screens and tablets: images to 150 dpi, photos as JPEG at quality 75.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfOptimizeOptions Ebook { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html">PdfOptimizeOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_ImageResolution_" data-uid="Egap.Pdf.PdfOptimizeOptions.ImageResolution*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_ImageResolution" data-uid="Egap.Pdf.PdfOptimizeOptions.ImageResolution">
+  ImageResolution
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the resolution, in samples per inch at an image's largest placement, that images are downsampled to when lossy;
+null keeps their size. Bilevel images are never downsampled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double? ImageResolution { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_JpegQuality_" data-uid="Egap.Pdf.PdfOptimizeOptions.JpegQuality*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_JpegQuality" data-uid="Egap.Pdf.PdfOptimizeOptions.JpegQuality">
+  JpegQuality
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the JPEG quality, 1 to 100, photos are written at. An existing JPEG is re-encoded only when it is downsampled or
+estimated at least 10 points above this. Defaults to 75.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int JpegQuality { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_Lossless_" data-uid="Egap.Pdf.PdfOptimizeOptions.Lossless*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_Lossless" data-uid="Egap.Pdf.PdfOptimizeOptions.Lossless">
+  Lossless
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Nothing lossy: the default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfOptimizeOptions Lossless { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html">PdfOptimizeOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_LossyImages_" data-uid="Egap.Pdf.PdfOptimizeOptions.LossyImages*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_LossyImages" data-uid="Egap.Pdf.PdfOptimizeOptions.LossyImages">
+  LossyImages
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether images may lose quality: downsampled, and photos written as JPEG. False keeps every pixel. Defaults to
+false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool LossyImages { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_MergeDuplicates_" data-uid="Egap.Pdf.PdfOptimizeOptions.MergeDuplicates*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_MergeDuplicates" data-uid="Egap.Pdf.PdfOptimizeOptions.MergeDuplicates">
+  MergeDuplicates
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether streams that hold the same data are written once. Defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool MergeDuplicates { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_OptimizeImages_" data-uid="Egap.Pdf.PdfOptimizeOptions.OptimizeImages*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_OptimizeImages" data-uid="Egap.Pdf.PdfOptimizeOptions.OptimizeImages">
+  OptimizeImages
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether images are re-encoded at all: G4 for bilevel images, JPEG Huffman optimisation, and the lossy changes
+<a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html#Egap_Pdf_PdfOptimizeOptions_LossyImages">LossyImages</a> allows. Defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool OptimizeImages { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_Print_" data-uid="Egap.Pdf.PdfOptimizeOptions.Print*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_Print" data-uid="Egap.Pdf.PdfOptimizeOptions.Print">
+  Print
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>For print: images to 300 dpi, photos as JPEG at quality 85.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfOptimizeOptions Print { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html">PdfOptimizeOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_RemoveEmptyContent_" data-uid="Egap.Pdf.PdfOptimizeOptions.RemoveEmptyContent*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_RemoveEmptyContent" data-uid="Egap.Pdf.PdfOptimizeOptions.RemoveEmptyContent">
+  RemoveEmptyContent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether content streams that draw nothing are removed. Defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveEmptyContent { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_RemovePrivateData_" data-uid="Egap.Pdf.PdfOptimizeOptions.RemovePrivateData*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_RemovePrivateData" data-uid="Egap.Pdf.PdfOptimizeOptions.RemovePrivateData">
+  RemovePrivateData
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether private application data (<code>/PieceInfo</code>) is removed. Defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemovePrivateData { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_RemoveThumbnails_" data-uid="Egap.Pdf.PdfOptimizeOptions.RemoveThumbnails*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_RemoveThumbnails" data-uid="Egap.Pdf.PdfOptimizeOptions.RemoveThumbnails">
+  RemoveThumbnails
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether page thumbnails (<code>/Thumb</code>) are removed. Defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveThumbnails { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_Screen_" data-uid="Egap.Pdf.PdfOptimizeOptions.Screen*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_Screen" data-uid="Egap.Pdf.PdfOptimizeOptions.Screen">
+  Screen
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The smallest: images to 96 dpi, photos as JPEG at quality 60. (96 rather than 72 dpi, at which the text of scanned
+pages becomes hard to read.)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfOptimizeOptions Screen { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfOptimizeOptions.html">PdfOptimizeOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfOptimizeOptions_SubsetFonts_" data-uid="Egap.Pdf.PdfOptimizeOptions.SubsetFonts*"></a>
+
+  <h3 id="Egap_Pdf_PdfOptimizeOptions_SubsetFonts" data-uid="Egap.Pdf.PdfOptimizeOptions.SubsetFonts">
+  SubsetFonts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether embedded TrueType and CFF fonts are cut to the glyphs used, fonts already tagged as subsets too, when that
+saves 10% or more. Fonts a form may type with are kept whole. Defaults to true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SubsetFonts { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Optimizing/PdfOptimizeOptions.cs/#L16" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

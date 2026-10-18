@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfImage | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfImage | Egap ">
+      
+      <meta name="description" content="An image a page draws (8.9): an image XObject or an inline image (Phase 3 design Q11). It gives the image&#39;s stored bytes and filters, so a JPEG can be saved as it is, and decodes to an Egami raster with its colour space, decode array and masks applied.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfImage.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfImage%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfImage">
+
+
+
+  <h1 id="Egap_Pdf_PdfImage" data-uid="Egap.Pdf.PdfImage" class="text-break">
+Class PdfImage  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>An image a page draws (8.9): an image XObject or an inline image (Phase 3 design Q11). It gives the image's stored
+bytes and filters, so a JPEG can be saved as it is, and decodes to an Egami raster with its colour space, decode array
+and masks applied.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class PdfImage</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PdfImage</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfImage_BitsPerComponent_" data-uid="Egap.Pdf.PdfImage.BitsPerComponent*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_BitsPerComponent" data-uid="Egap.Pdf.PdfImage.BitsPerComponent">
+  BitsPerComponent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Bits per colour component: 1, 2, 4, 8 or 16; 0 when the codec says (JPEG 2000).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int BitsPerComponent { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_ColorSpace_" data-uid="Egap.Pdf.PdfImage.ColorSpace*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_ColorSpace" data-uid="Egap.Pdf.PdfImage.ColorSpace">
+  ColorSpace
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The colour space as written: a name or an array; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for stencil masks and some JPEG 2000 images.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfObject? ColorSpace { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_Filters_" data-uid="Egap.Pdf.PdfImage.Filters*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_Filters" data-uid="Egap.Pdf.PdfImage.Filters">
+  Filters
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The filters, in the order they are decoded, inline abbreviations written out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfName&gt; Filters { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_Height_" data-uid="Egap.Pdf.PdfImage.Height*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_Height" data-uid="Egap.Pdf.PdfImage.Height">
+  Height
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The height in samples.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Height { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_ImageCodec_" data-uid="Egap.Pdf.PdfImage.ImageCodec*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_ImageCodec" data-uid="Egap.Pdf.PdfImage.ImageCodec">
+  ImageCodec
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The image codec its data is stored in (<code>DCTDecode</code> for JPEG, <code>JPXDecode</code>, <code>JBIG2Decode</code>,
+<code>CCITTFaxDecode</code>), or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for plain samples.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfName? ImageCodec { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_IsInline_" data-uid="Egap.Pdf.PdfImage.IsInline*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_IsInline" data-uid="Egap.Pdf.PdfImage.IsInline">
+  IsInline
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the image is inline in a content stream (<code>BI</code> ... <code>EI</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsInline { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_IsStencilMask_" data-uid="Egap.Pdf.PdfImage.IsStencilMask*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_IsStencilMask" data-uid="Egap.Pdf.PdfImage.IsStencilMask">
+  IsStencilMask
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the image is a stencil mask (<code>/ImageMask true</code>), painting the current colour where it is 0.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsStencilMask { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_Stream_" data-uid="Egap.Pdf.PdfImage.Stream*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_Stream" data-uid="Egap.Pdf.PdfImage.Stream">
+  Stream
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The image XObject's stream, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for an inline image.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfStream? Stream { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfStream.html">PdfStream</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_Width_" data-uid="Egap.Pdf.PdfImage.Width*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_Width" data-uid="Egap.Pdf.PdfImage.Width">
+  Width
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The width in samples.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Width { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Pdf_PdfImage_GetDecodedBytes_" data-uid="Egap.Pdf.PdfImage.GetDecodedBytes*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_GetDecodedBytes" data-uid="Egap.Pdf.PdfImage.GetDecodedBytes">
+  GetDecodedBytes()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L158"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The data with its filters undone up to the image codec, as <a class="xref" href="Egap.Pdf.PdfStream.html#Egap_Pdf_PdfStream_GetDecodedBytes">GetDecodedBytes()</a> gives them: a
+JPEG file for DCTDecode after, say, ASCII85, else the samples.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] GetDecodedBytes()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfException.html">PdfException</a></dt>
+    <dd><p>A filter is not supported or its data is damaged.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfImage_GetRawBytes_" data-uid="Egap.Pdf.PdfImage.GetRawBytes*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_GetRawBytes" data-uid="Egap.Pdf.PdfImage.GetRawBytes">
+  GetRawBytes()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The bytes as stored, still encoded with every filter: a DCTDecode image's are a JPEG file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] GetRawBytes()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfImage_Replace_" data-uid="Egap.Pdf.PdfImage.Replace*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_Replace_Egami_Raster_Egap_Pdf_PdfImageEncoding_" data-uid="Egap.Pdf.PdfImage.Replace(Egami.Raster,Egap.Pdf.PdfImageEncoding)">
+  Replace(Raster, PdfImageEncoding?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L200"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces the image with a raster, in place (Phase 3 design, image replacement): the XObject keeps its object number,
+so every page that draws it shows the new image, and an incremental save writes only the new stream (and its soft mask).
+The raster's alpha becomes a soft mask; its RGB or gray ICC profile is kept. Width, height, colour space, filters
+and masks are rewritten; other entries (such as <code>/Interpolate</code> or optional content) stay.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Replace(Raster image, PdfImageEncoding? encoding = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>image</code> <span class="xref">Raster</span></dt>
+    <dd><p>The new image.</p>
+</dd>
+    <dt><code>encoding</code> <a class="xref" href="Egap.Pdf.PdfImageEncoding.html">PdfImageEncoding</a></dt>
+    <dd><p>Flate (lossless, the default) or JPEG at a quality.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">image</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The image is inline, or was not reached through a document's pages.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfImage_ReplaceWithJpeg_" data-uid="Egap.Pdf.PdfImage.ReplaceWithJpeg*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_ReplaceWithJpeg_System_ReadOnlySpan_System_Byte__" data-uid="Egap.Pdf.PdfImage.ReplaceWithJpeg(System.ReadOnlySpan{System.Byte})">
+  ReplaceWithJpeg(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces the image with JPEG bytes, stored as they are with <code>/DCTDecode</code>: gray, RGB or CMYK as the JPEG's frame
+says (CMYK from Adobe software inverted, as its marker says). See <a class="xref" href="Egap.Pdf.PdfImage.html#Egap_Pdf_PdfImage_Replace_Egami_Raster_Egap_Pdf_PdfImageEncoding_">Replace(Raster, PdfImageEncoding?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ReplaceWithJpeg(ReadOnlySpan&lt;byte&gt; jpeg)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jpeg</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>A baseline or progressive JPEG file.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The bytes are not a JPEG Egami can read.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The image is inline, or was not reached through a document's pages.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfImage_ToRaster_" data-uid="Egap.Pdf.PdfImage.ToRaster*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_ToRaster_Egap_Pdf_PdfImageOptions_" data-uid="Egap.Pdf.PdfImage.ToRaster(Egap.Pdf.PdfImageOptions)">
+  ToRaster(PdfImageOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes the image to a raster: sRGB as <span class="xref">Egami.Pixels.Rgba8</span> (<span class="xref">Egami.Pixels.Rgba16</span> for 16-bit images) with the mask
+as alpha by default; see <a class="xref" href="Egap.Pdf.PdfImageOptions.html">PdfImageOptions</a> for keeping colour or leaving masks off. The caller owns it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Raster ToRaster(PdfImageOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfImageOptions.html">PdfImageOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Raster</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfException.html">PdfException</a></dt>
+    <dd><p>The image cannot be decoded: an unsupported filter, colour space or damaged data.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfImage_ToRaster_" data-uid="Egap.Pdf.PdfImage.ToRaster*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_ToRaster__1_Egap_Pdf_PdfImageOptions_" data-uid="Egap.Pdf.PdfImage.ToRaster``1(Egap.Pdf.PdfImageOptions)">
+  ToRaster&lt;TPixel&gt;(PdfImageOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L175"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Decodes the image and converts it to <code class="typeparamref">TPixel</code>. The caller owns the raster.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Raster&lt;TPixel&gt; ToRaster&lt;TPixel&gt;(PdfImageOptions? options = null) where TPixel : unmanaged, IPixelType&lt;TPixel&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfImageOptions.html">PdfImageOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Raster</span>&lt;TPixel&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TPixel</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfException.html">PdfException</a></dt>
+    <dd><p>The image cannot be decoded.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfImage_ToString_" data-uid="Egap.Pdf.PdfImage.ToString*"></a>
+
+  <h3 id="Egap_Pdf_PdfImage_ToString" data-uid="Egap.Pdf.PdfImage.ToString">
+  ToString()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a string that represents the current object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>A string that represents the current object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Images/PdfImage.cs/#L55" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

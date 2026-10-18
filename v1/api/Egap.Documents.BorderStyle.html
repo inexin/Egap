@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Enum BorderStyle | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Enum BorderStyle | Egap ">
+      
+      <meta name="description" content="A line style for borders, as Word&#39;s border types without the art borders (kept by the DOCX reader as extension data).">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_BorderStyle.md&amp;value=---%0Auid%3A%20Egap.Documents.BorderStyle%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.BorderStyle">
+
+
+
+
+  <h1 id="Egap_Documents_BorderStyle" data-uid="Egap.Documents.BorderStyle" class="text-break">
+Enum BorderStyle  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/Values.cs/#L205"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A line style for borders, as Word's border types without the art borders (kept by the DOCX reader as extension data).</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[SuppressMessage(&quot;Naming&quot;, &quot;CA1720:Identifier contains type name&quot;, Justification = &quot;Word&#39;s own names for these values.&quot;)]
+public enum BorderStyle</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h2 id="fields">Fields
+</h2>
+  <dl class="parameters">
+    <dt id="Egap_Documents_BorderStyle_DashDotStroked"><code>DashDotStroked = 21</code></dt>
+  
+  <dd><p>Dash, dot, stroked.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_DashSmallGap"><code>DashSmallGap = 20</code></dt>
+  
+  <dd><p>Short dashes with small gaps.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Dashed"><code>Dashed = 5</code></dt>
+  
+  <dd><p>Dashes.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_DotDash"><code>DotDash = 6</code></dt>
+  
+  <dd><p>Dash, dot.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_DotDotDash"><code>DotDotDash = 7</code></dt>
+  
+  <dd><p>Dash, dot, dot.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Dotted"><code>Dotted = 4</code></dt>
+  
+  <dd><p>Dots.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Double"><code>Double = 3</code></dt>
+  
+  <dd><p>Two lines.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_DoubleWave"><code>DoubleWave = 19</code></dt>
+  
+  <dd><p>Two wavy lines.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Inset"><code>Inset = 25</code></dt>
+  
+  <dd><p>Inset.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_None"><code>None = 0</code></dt>
+  
+  <dd><p>No border.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Outset"><code>Outset = 24</code></dt>
+  
+  <dd><p>Outset.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Single"><code>Single = 1</code></dt>
+  
+  <dd><p>A single line.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Thick"><code>Thick = 2</code></dt>
+  
+  <dd><p>A thick single line.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThickThinLargeGap"><code>ThickThinLargeGap = 16</code></dt>
+  
+  <dd><p>Thick, thin, with a large gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThickThinMediumGap"><code>ThickThinMediumGap = 13</code></dt>
+  
+  <dd><p>Thick, thin, with a medium gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThickThinSmallGap"><code>ThickThinSmallGap = 10</code></dt>
+  
+  <dd><p>Thick, thin, with a small gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThinThickLargeGap"><code>ThinThickLargeGap = 15</code></dt>
+  
+  <dd><p>Thin, thick, with a large gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThinThickMediumGap"><code>ThinThickMediumGap = 12</code></dt>
+  
+  <dd><p>Thin, thick, with a medium gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThinThickSmallGap"><code>ThinThickSmallGap = 9</code></dt>
+  
+  <dd><p>Thin, thick, with a small gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThinThickThinLargeGap"><code>ThinThickThinLargeGap = 17</code></dt>
+  
+  <dd><p>Thin, thick, thin, with a large gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThinThickThinMediumGap"><code>ThinThickThinMediumGap = 14</code></dt>
+  
+  <dd><p>Thin, thick, thin, with a medium gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThinThickThinSmallGap"><code>ThinThickThinSmallGap = 11</code></dt>
+  
+  <dd><p>Thin, thick, thin, with a small gap.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThreeDEmboss"><code>ThreeDEmboss = 22</code></dt>
+  
+  <dd><p>Embossed (3D).</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_ThreeDEngrave"><code>ThreeDEngrave = 23</code></dt>
+  
+  <dd><p>Engraved (3D).</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Triple"><code>Triple = 8</code></dt>
+  
+  <dd><p>Three lines.</p>
+</dd>
+    <dt id="Egap_Documents_BorderStyle_Wave"><code>Wave = 18</code></dt>
+  
+  <dd><p>A wavy line.</p>
+</dd>
+  </dl>
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/Values.cs/#L205" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

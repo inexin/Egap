@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfContentWalker | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfContentWalker | Egap ">
+      
+      <meta name="description" content="Walks content with its resources and tracks the graphics state (8.4) through it: the transformation matrix, q and Q, the text state and matrices, colours and colour spaces, clips, graphics state dictionaries and marked content. It descends into form XObjects and Type 3 glyph procedures. Derive from it and override the On methods to see paths, glyphs, images, shadings and marked content with the state they are drawn in (Phase 3 design Q3).">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfContentWalker.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfContentWalker%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfContentWalker">
+
+
+
+  <h1 id="Egap_Pdf_PdfContentWalker" data-uid="Egap.Pdf.PdfContentWalker" class="text-break">
+Class PdfContentWalker  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Walks content with its resources and tracks the graphics state (8.4) through it: the transformation matrix, <code>q</code> and
+<code>Q</code>, the text state and matrices, colours and colour spaces, clips, graphics state dictionaries and marked content.
+It descends into form XObjects and Type 3 glyph procedures. Derive from it and override the <code>On</code> methods to see paths,
+glyphs, images, shadings and marked content with the state they are drawn in (Phase 3 design Q3).</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class PdfContentWalker</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PdfContentWalker</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Egap_Pdf_PdfContentWalker_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The walk is as lenient as reading: an unknown operator is passed to <a class="xref" href="Egap.Pdf.PdfContentWalker.html#Egap_Pdf_PdfContentWalker_OnOperation_Egap_Pdf_PdfOperation_">OnOperation(PdfOperation)</a> and otherwise ignored, an
+operator with missing or wrong operands is skipped, a <code>Q</code> without a <code>q</code> is ignored, and a resource that is not
+there is reported in <a class="xref" href="Egap.Pdf.PdfContentWalker.html#Egap_Pdf_PdfContentWalker_Warnings">Warnings</a>. Form XObjects nest at most <a class="xref" href="Egap.Pdf.PdfReadOptions.html#Egap_Pdf_PdfReadOptions_MaxNestingDepth">MaxNestingDepth</a> deep,
+and a form that draws itself is not entered again.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfContentWalker_Depth_" data-uid="Egap.Pdf.PdfContentWalker.Depth*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_Depth" data-uid="Egap.Pdf.PdfContentWalker.Depth">
+  Depth
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How deep in form XObjects and Type 3 glyphs the walk is: 0 for the content it started with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Depth { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_MarkedContent_" data-uid="Egap.Pdf.PdfContentWalker.MarkedContent*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_MarkedContent" data-uid="Egap.Pdf.PdfContentWalker.MarkedContent">
+  MarkedContent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The marked content open at the operation being walked, outermost first, across form XObjects.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfMarkedContent&gt; MarkedContent { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfMarkedContent.html">PdfMarkedContent</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_Resources_" data-uid="Egap.Pdf.PdfContentWalker.Resources*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_Resources" data-uid="Egap.Pdf.PdfContentWalker.Resources">
+  Resources
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The resources of the content being walked: the page's, a form's or a Type 3 font's.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfDictionary? Resources { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfDictionary.html">PdfDictionary</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_State_" data-uid="Egap.Pdf.PdfContentWalker.State*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_State" data-uid="Egap.Pdf.PdfContentWalker.State">
+  State
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The graphics state at the operation being walked.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfGraphicsState State { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfGraphicsState.html">PdfGraphicsState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_TextLineMatrix_" data-uid="Egap.Pdf.PdfContentWalker.TextLineMatrix*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_TextLineMatrix" data-uid="Egap.Pdf.PdfContentWalker.TextLineMatrix">
+  TextLineMatrix
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The text line matrix: the start of the current line.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfMatrix TextLineMatrix { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfMatrix.html">PdfMatrix</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_TextMatrix_" data-uid="Egap.Pdf.PdfContentWalker.TextMatrix*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_TextMatrix" data-uid="Egap.Pdf.PdfContentWalker.TextMatrix">
+  TextMatrix
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The text matrix (<code>Tm</code>): where the next glyph goes, in text space.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfMatrix TextMatrix { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfMatrix.html">PdfMatrix</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_Warnings_" data-uid="Egap.Pdf.PdfContentWalker.Warnings*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_Warnings" data-uid="Egap.Pdf.PdfContentWalker.Warnings">
+  Warnings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>What the walk repaired or skipped, including the warnings of every content stream read.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfWarning&gt; Warnings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfWarning.html">PdfWarning</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnBeginForm_" data-uid="Egap.Pdf.PdfContentWalker.OnBeginForm*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnBeginForm_Egap_Pdf_PdfStream_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfContentWalker.OnBeginForm(Egap.Pdf.PdfStream,Egap.Pdf.PdfName)">
+  OnBeginForm(PdfStream, PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called before a form XObject is entered; return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to skip it. The form's matrix is already in
+<a class="xref" href="Egap.Pdf.PdfContentWalker.html#Egap_Pdf_PdfContentWalker_State">State</a> and its bounding box is a clip.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool OnBeginForm(PdfStream form, PdfName name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>form</code> <a class="xref" href="Egap.Pdf.PdfStream.html">PdfStream</a></dt>
+    <dd></dd>
+    <dt><code>name</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnBeginMarkedContent_" data-uid="Egap.Pdf.PdfContentWalker.OnBeginMarkedContent*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnBeginMarkedContent_Egap_Pdf_PdfMarkedContent_" data-uid="Egap.Pdf.PdfContentWalker.OnBeginMarkedContent(Egap.Pdf.PdfMarkedContent)">
+  OnBeginMarkedContent(PdfMarkedContent)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when marked content begins (<code>BMC</code>, <code>BDC</code>); it is already last in <a class="xref" href="Egap.Pdf.PdfContentWalker.html#Egap_Pdf_PdfContentWalker_MarkedContent">MarkedContent</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnBeginMarkedContent(PdfMarkedContent markedContent)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>markedContent</code> <a class="xref" href="Egap.Pdf.PdfMarkedContent.html">PdfMarkedContent</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnBeginType3Glyph_" data-uid="Egap.Pdf.PdfContentWalker.OnBeginType3Glyph*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnBeginType3Glyph_Egap_Pdf_PdfGlyph_Egap_Pdf_PdfStream_" data-uid="Egap.Pdf.PdfContentWalker.OnBeginType3Glyph(Egap.Pdf.PdfGlyph,Egap.Pdf.PdfStream)">
+  OnBeginType3Glyph(PdfGlyph, PdfStream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called before a Type 3 glyph's procedure is walked; return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to skip it, which also skips glyph
+procedures for the rest of this glyph's string. By default glyph procedures are walked.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool OnBeginType3Glyph(PdfGlyph glyph, PdfStream procedure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>glyph</code> <a class="xref" href="Egap.Pdf.PdfGlyph.html">PdfGlyph</a></dt>
+    <dd></dd>
+    <dt><code>procedure</code> <a class="xref" href="Egap.Pdf.PdfStream.html">PdfStream</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnEndForm_" data-uid="Egap.Pdf.PdfContentWalker.OnEndForm*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnEndForm_Egap_Pdf_PdfStream_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfContentWalker.OnEndForm(Egap.Pdf.PdfStream,Egap.Pdf.PdfName)">
+  OnEndForm(PdfStream, PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called after a form XObject's content, before the state it was drawn in is restored.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnEndForm(PdfStream form, PdfName name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>form</code> <a class="xref" href="Egap.Pdf.PdfStream.html">PdfStream</a></dt>
+    <dd></dd>
+    <dt><code>name</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnEndMarkedContent_" data-uid="Egap.Pdf.PdfContentWalker.OnEndMarkedContent*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnEndMarkedContent_Egap_Pdf_PdfMarkedContent_" data-uid="Egap.Pdf.PdfContentWalker.OnEndMarkedContent(Egap.Pdf.PdfMarkedContent)">
+  OnEndMarkedContent(PdfMarkedContent)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L173"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when marked content ends (<code>EMC</code>), while it is still last in <a class="xref" href="Egap.Pdf.PdfContentWalker.html#Egap_Pdf_PdfContentWalker_MarkedContent">MarkedContent</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnEndMarkedContent(PdfMarkedContent markedContent)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>markedContent</code> <a class="xref" href="Egap.Pdf.PdfMarkedContent.html">PdfMarkedContent</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnGlyph_" data-uid="Egap.Pdf.PdfContentWalker.OnGlyph*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnGlyph_Egap_Pdf_PdfGlyph_" data-uid="Egap.Pdf.PdfContentWalker.OnGlyph(Egap.Pdf.PdfGlyph)">
+  OnGlyph(PdfGlyph)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called for each glyph a text operator shows, before the text matrix moves past it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnGlyph(PdfGlyph glyph)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>glyph</code> <a class="xref" href="Egap.Pdf.PdfGlyph.html">PdfGlyph</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnImage_" data-uid="Egap.Pdf.PdfContentWalker.OnImage*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnImage_Egap_Pdf_PdfStream_Egap_Pdf_PdfInlineImage_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfContentWalker.OnImage(Egap.Pdf.PdfStream,Egap.Pdf.PdfInlineImage,Egap.Pdf.PdfName)">
+  OnImage(PdfStream?, PdfInlineImage?, PdfName?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called for an image XObject drawn with <code>Do</code> or an inline image. The image fills the unit square of user space,
+so <a class="xref" href="Egap.Pdf.PdfGraphicsState.html#Egap_Pdf_PdfGraphicsState_Matrix">Matrix</a> places it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnImage(PdfStream? image, PdfInlineImage? inlineImage, PdfName? name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>image</code> <a class="xref" href="Egap.Pdf.PdfStream.html">PdfStream</a></dt>
+    <dd><p>The image XObject's stream, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for an inline image.</p>
+</dd>
+    <dt><code>inlineImage</code> <a class="xref" href="Egap.Pdf.PdfInlineImage.html">PdfInlineImage</a></dt>
+    <dd><p>The inline image, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for an XObject.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd><p>The XObject's name in the resources, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for an inline image.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnMarkedPoint_" data-uid="Egap.Pdf.PdfContentWalker.OnMarkedPoint*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnMarkedPoint_Egap_Pdf_PdfMarkedContent_" data-uid="Egap.Pdf.PdfContentWalker.OnMarkedPoint(Egap.Pdf.PdfMarkedContent)">
+  OnMarkedPoint(PdfMarkedContent)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called for a marked-content point (<code>MP</code>, <code>DP</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnMarkedPoint(PdfMarkedContent point)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>point</code> <a class="xref" href="Egap.Pdf.PdfMarkedContent.html">PdfMarkedContent</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnOperation_" data-uid="Egap.Pdf.PdfContentWalker.OnOperation*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnOperation_Egap_Pdf_PdfOperation_" data-uid="Egap.Pdf.PdfContentWalker.OnOperation(Egap.Pdf.PdfOperation)">
+  OnOperation(PdfOperation)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called for every operation before the walker acts on it, unknown operators included.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnOperation(PdfOperation operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <a class="xref" href="Egap.Pdf.PdfOperation.html">PdfOperation</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnPaintPath_" data-uid="Egap.Pdf.PdfContentWalker.OnPaintPath*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnPaintPath_Egap_Pdf_PdfPath_Egap_Pdf_PdfPathPaint_" data-uid="Egap.Pdf.PdfContentWalker.OnPaintPath(Egap.Pdf.PdfPath,Egap.Pdf.PdfPathPaint)">
+  OnPaintPath(PdfPath, PdfPathPaint)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called when a path is painted or ended (<code>S</code>, <code>f</code>, <code>B</code>, <code>n</code> and the rest). A clip that
+<code>W</code> or <code>W*</code> set is already in <a class="xref" href="Egap.Pdf.PdfContentWalker.html#Egap_Pdf_PdfContentWalker_State">State</a> when this is called.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnPaintPath(PdfPath path, PdfPathPaint paint)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="Egap.Pdf.PdfPath.html">PdfPath</a></dt>
+    <dd><p>The path, in the user space of <a class="xref" href="Egap.Pdf.PdfGraphicsState.html#Egap_Pdf_PdfGraphicsState_Matrix">Matrix</a>.</p>
+</dd>
+    <dt><code>paint</code> <a class="xref" href="Egap.Pdf.PdfPathPaint.html">PdfPathPaint</a></dt>
+    <dd><p>How it is painted.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_OnShading_" data-uid="Egap.Pdf.PdfContentWalker.OnShading*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_OnShading_Egap_Pdf_PdfObject_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfContentWalker.OnShading(Egap.Pdf.PdfObject,Egap.Pdf.PdfName)">
+  OnShading(PdfObject?, PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Called for <code>sh</code>: a shading painted over the clip.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnShading(PdfObject? shading, PdfName name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shading</code> <a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a></dt>
+    <dd><p>The shading dictionary or stream, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the name is not in the resources.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd><p>The shading's name in the resources.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_Walk_" data-uid="Egap.Pdf.PdfContentWalker.Walk*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_Walk_Egap_Pdf_PdfContent_Egap_Pdf_PdfDictionary_Egap_Pdf_PdfMatrix_Egap_Pdf_PdfReadOptions_" data-uid="Egap.Pdf.PdfContentWalker.Walk(Egap.Pdf.PdfContent,Egap.Pdf.PdfDictionary,Egap.Pdf.PdfMatrix,Egap.Pdf.PdfReadOptions)">
+  Walk(PdfContent, PdfDictionary?, PdfMatrix, PdfReadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Walks content with the given resources, starting from <code class="paramref">matrix</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Walk(PdfContent content, PdfDictionary? resources, PdfMatrix matrix, PdfReadOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>content</code> <a class="xref" href="Egap.Pdf.PdfContent.html">PdfContent</a></dt>
+    <dd><p>The operations to walk.</p>
+</dd>
+    <dt><code>resources</code> <a class="xref" href="Egap.Pdf.PdfDictionary.html">PdfDictionary</a></dt>
+    <dd><p>The resources the content's names refer to; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for none.</p>
+</dd>
+    <dt><code>matrix</code> <a class="xref" href="Egap.Pdf.PdfMatrix.html">PdfMatrix</a></dt>
+    <dd><p>The initial transformation matrix.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfReadOptions.html">PdfReadOptions</a></dt>
+    <dd><p>The limits and strictness for forms read on the way; <a class="xref" href="Egap.Pdf.PdfReadOptions.html#Egap_Pdf_PdfReadOptions_Default">Default</a> when <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_Walk_" data-uid="Egap.Pdf.PdfContentWalker.Walk*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_Walk_Egap_Pdf_PdfPage_" data-uid="Egap.Pdf.PdfContentWalker.Walk(Egap.Pdf.PdfPage)">
+  Walk(PdfPage)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Walks a page's content in default user space (the identity matrix, y up, unrotated), with the page's resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Walk(PdfPage page)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>page</code> <a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfException.html">PdfException</a></dt>
+    <dd><p>The content is damaged and the document was opened in strict mode.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Pdf.PdfLimitException.html">PdfLimitException</a></dt>
+    <dd><p>Content decodes to more than the read options allow.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfContentWalker_Warn_" data-uid="Egap.Pdf.PdfContentWalker.Warn*"></a>
+
+  <h3 id="Egap_Pdf_PdfContentWalker_Warn_Egap_Pdf_PdfWarningCode_System_String_" data-uid="Egap.Pdf.PdfContentWalker.Warn(Egap.Pdf.PdfWarningCode,System.String)">
+  Warn(PdfWarningCode, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records a warning, as the walk's own repairs are recorded; throws in strict mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void Warn(PdfWarningCode code, string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>code</code> <a class="xref" href="Egap.Pdf.PdfWarningCode.html">PdfWarningCode</a></dt>
+    <dd></dd>
+    <dt><code>message</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Content/PdfContentWalker.cs/#L19" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

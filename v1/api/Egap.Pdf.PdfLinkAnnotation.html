@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfLinkAnnotation | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfLinkAnnotation | Egap ">
+      
+      <meta name="description" content="A link annotation (12.5.6.5): an area of the page that goes to a destination or runs an action.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfLinkAnnotation.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfLinkAnnotation%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfLinkAnnotation">
+
+
+
+  <h1 id="Egap_Pdf_PdfLinkAnnotation" data-uid="Egap.Pdf.PdfLinkAnnotation" class="text-break">
+Class PdfLinkAnnotation  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Annotations/PdfAnnotationTypes.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A link annotation (12.5.6.5): an area of the page that goes to a destination or runs an action.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class PdfLinkAnnotation : PdfAnnotation, IEquatable&lt;PdfAnnotation&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Egap.Pdf.PdfAnnotation.html">PdfAnnotation</a></div>
+      <div><span class="xref">PdfLinkAnnotation</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Egap.Pdf.PdfAnnotation.html">PdfAnnotation</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Dictionary">PdfAnnotation.Dictionary</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Reference">PdfAnnotation.Reference</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Subtype">PdfAnnotation.Subtype</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Rectangle">PdfAnnotation.Rectangle</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Contents">PdfAnnotation.Contents</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Name">PdfAnnotation.Name</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_ModificationDate">PdfAnnotation.ModificationDate</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Flags">PdfAnnotation.Flags</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Color">PdfAnnotation.Color</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_BorderWidth">PdfAnnotation.BorderWidth</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_BorderStyle">PdfAnnotation.BorderStyle</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_BorderDash">PdfAnnotation.BorderDash</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_AppearanceState">PdfAnnotation.AppearanceState</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Page">PdfAnnotation.Page</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_FromDictionary_Egap_Pdf_PdfDictionary_">PdfAnnotation.FromDictionary(PdfDictionary)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_GetAppearance_Egap_Pdf_PdfAppearanceKind_">PdfAnnotation.GetAppearance(PdfAppearanceKind)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_UpdateAppearance">PdfAnnotation.UpdateAppearance()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Equals_Egap_Pdf_PdfAnnotation_">PdfAnnotation.Equals(PdfAnnotation)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_Equals_System_Object_">PdfAnnotation.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_GetHashCode">PdfAnnotation.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfAnnotation.html#Egap_Pdf_PdfAnnotation_ToString">PdfAnnotation.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Egap_Pdf_PdfLinkAnnotation__ctor_" data-uid="Egap.Pdf.PdfLinkAnnotation.#ctor*"></a>
+
+  <h3 id="Egap_Pdf_PdfLinkAnnotation__ctor_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfAction_" data-uid="Egap.Pdf.PdfLinkAnnotation.#ctor(Egap.Pdf.PdfRectangle,Egap.Pdf.PdfAction)">
+  PdfLinkAnnotation(PdfRectangle, PdfAction)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Annotations/PdfAnnotationTypes.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A new link over a rectangle that runs an action, such as a <a class="xref" href="Egap.Pdf.PdfUriAction.html">PdfUriAction</a>, with no border.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfLinkAnnotation(PdfRectangle rectangle, PdfAction action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rectangle</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a></dt>
+    <dd></dd>
+    <dt><code>action</code> <a class="xref" href="Egap.Pdf.PdfAction.html">PdfAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfLinkAnnotation__ctor_" data-uid="Egap.Pdf.PdfLinkAnnotation.#ctor*"></a>
+
+  <h3 id="Egap_Pdf_PdfLinkAnnotation__ctor_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfDestination_" data-uid="Egap.Pdf.PdfLinkAnnotation.#ctor(Egap.Pdf.PdfRectangle,Egap.Pdf.PdfDestination)">
+  PdfLinkAnnotation(PdfRectangle, PdfDestination)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Annotations/PdfAnnotationTypes.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A new link over a rectangle to a destination in this document, with no border.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfLinkAnnotation(PdfRectangle rectangle, PdfDestination destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rectangle</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a></dt>
+    <dd></dd>
+    <dt><code>destination</code> <a class="xref" href="Egap.Pdf.PdfDestination.html">PdfDestination</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfLinkAnnotation_Action_" data-uid="Egap.Pdf.PdfLinkAnnotation.Action*"></a>
+
+  <h3 id="Egap_Pdf_PdfLinkAnnotation_Action" data-uid="Egap.Pdf.PdfLinkAnnotation.Action">
+  Action
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Annotations/PdfAnnotationTypes.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The action the link runs (<code>/A</code>), or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>. Setting one replaces any destination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfAction? Action { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfAction.html">PdfAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfLinkAnnotation_Destination_" data-uid="Egap.Pdf.PdfLinkAnnotation.Destination*"></a>
+
+  <h3 id="Egap_Pdf_PdfLinkAnnotation_Destination" data-uid="Egap.Pdf.PdfLinkAnnotation.Destination">
+  Destination
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Annotations/PdfAnnotationTypes.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Where the link goes: its <code>/Dest</code>, or the destination of its go-to action, named destinations looked up. Setting
+one replaces any action.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfDestination? Destination { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfDestination.html">PdfDestination</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfLinkAnnotation_HighlightMode_" data-uid="Egap.Pdf.PdfLinkAnnotation.HighlightMode*"></a>
+
+  <h3 id="Egap_Pdf_PdfLinkAnnotation_HighlightMode" data-uid="Egap.Pdf.PdfLinkAnnotation.HighlightMode">
+  HighlightMode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Annotations/PdfAnnotationTypes.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How the link looks while pressed (<code>/H</code>); inverted when missing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfHighlightMode HighlightMode { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfHighlightMode.html">PdfHighlightMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfLinkAnnotation_QuadPoints_" data-uid="Egap.Pdf.PdfLinkAnnotation.QuadPoints*"></a>
+
+  <h3 id="Egap_Pdf_PdfLinkAnnotation_QuadPoints" data-uid="Egap.Pdf.PdfLinkAnnotation.QuadPoints">
+  QuadPoints
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Annotations/PdfAnnotationTypes.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The quadrilaterals that make up the link (<code>/QuadPoints</code>, PDF 1.6), four points each, for a link that spans
+lines; empty when the link is just its rectangle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfPoint&gt; QuadPoints { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfPoint.html">PdfPoint</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Annotations/PdfAnnotationTypes.cs/#L47" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

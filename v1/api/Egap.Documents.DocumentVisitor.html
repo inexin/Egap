@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DocumentVisitor | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DocumentVisitor | Egap ">
+      
+      <meta name="description" content="Walks a document tree through : a start and an end method for each node that holds others, one method for each inline. Override the ones you need; the rest continue. The walk does not recurse, so deeply nested tables cannot overflow the stack.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_DocumentVisitor.md&amp;value=---%0Auid%3A%20Egap.Documents.DocumentVisitor%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.DocumentVisitor">
+
+
+
+  <h1 id="Egap_Documents_DocumentVisitor" data-uid="Egap.Documents.DocumentVisitor" class="text-break">
+Class DocumentVisitor  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Walks a document tree through <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Accept_Egap_Documents_DocumentVisitor_">Accept(DocumentVisitor)</a>: a start and an end method for each node that holds others, one
+method for each inline. Override the ones you need; the rest continue. The walk does not recurse, so deeply nested tables
+cannot overflow the stack.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class DocumentVisitor</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">DocumentVisitor</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitBlockIsland_" data-uid="Egap.Documents.DocumentVisitor.VisitBlockIsland*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitBlockIsland_Egap_Documents_BlockIsland_" data-uid="Egap.Documents.DocumentVisitor.VisitBlockIsland(Egap.Documents.BlockIsland)">
+  VisitBlockIsland(BlockIsland)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L252"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A kept block island.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitBlockIsland(BlockIsland island)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>island</code> <a class="xref" href="Egap.Documents.BlockIsland.html">BlockIsland</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitBookmarkEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitBookmarkEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitBookmarkEnd_Egap_Documents_BookmarkEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitBookmarkEnd(Egap.Documents.BookmarkEnd)">
+  VisitBookmarkEnd(BookmarkEnd)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A bookmark's end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitBookmarkEnd(BookmarkEnd bookmarkEnd)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bookmarkEnd</code> <a class="xref" href="Egap.Documents.BookmarkEnd.html">BookmarkEnd</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitBookmarkStart_" data-uid="Egap.Documents.DocumentVisitor.VisitBookmarkStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitBookmarkStart_Egap_Documents_BookmarkStart_" data-uid="Egap.Documents.DocumentVisitor.VisitBookmarkStart(Egap.Documents.BookmarkStart)">
+  VisitBookmarkStart(BookmarkStart)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A bookmark's start.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitBookmarkStart(BookmarkStart bookmarkStart)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bookmarkStart</code> <a class="xref" href="Egap.Documents.BookmarkStart.html">BookmarkStart</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitBreak_" data-uid="Egap.Documents.DocumentVisitor.VisitBreak*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitBreak_Egap_Documents_Break_" data-uid="Egap.Documents.DocumentVisitor.VisitBreak(Egap.Documents.Break)">
+  VisitBreak(Break)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L120"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A line, page or column break.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitBreak(Break breakNode)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>breakNode</code> <a class="xref" href="Egap.Documents.Break.html">Break</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitCellEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitCellEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitCellEnd_Egap_Documents_Cell_" data-uid="Egap.Documents.DocumentVisitor.VisitCellEnd(Egap.Documents.Cell)">
+  VisitCellEnd(Cell)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a table cell.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitCellEnd(Cell cell)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cell</code> <a class="xref" href="Egap.Documents.Cell.html">Cell</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitCellStart_" data-uid="Egap.Documents.DocumentVisitor.VisitCellStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitCellStart_Egap_Documents_Cell_" data-uid="Egap.Documents.DocumentVisitor.VisitCellStart(Egap.Documents.Cell)">
+  VisitCellStart(Cell)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a table cell.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitCellStart(Cell cell)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cell</code> <a class="xref" href="Egap.Documents.Cell.html">Cell</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitCommentEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitCommentEnd_Egap_Documents_Comment_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentEnd(Egap.Documents.Comment)">
+  VisitCommentEnd(Comment)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a comment.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitCommentEnd(Comment comment)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comment</code> <a class="xref" href="Egap.Documents.Comment.html">Comment</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitCommentRangeEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentRangeEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitCommentRangeEnd_Egap_Documents_CommentRangeEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentRangeEnd(Egap.Documents.CommentRangeEnd)">
+  VisitCommentRangeEnd(CommentRangeEnd)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The end of a comment's range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitCommentRangeEnd(CommentRangeEnd rangeEnd)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rangeEnd</code> <a class="xref" href="Egap.Documents.CommentRangeEnd.html">CommentRangeEnd</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitCommentRangeStart_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentRangeStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitCommentRangeStart_Egap_Documents_CommentRangeStart_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentRangeStart(Egap.Documents.CommentRangeStart)">
+  VisitCommentRangeStart(CommentRangeStart)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The start of a comment's range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitCommentRangeStart(CommentRangeStart rangeStart)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rangeStart</code> <a class="xref" href="Egap.Documents.CommentRangeStart.html">CommentRangeStart</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitCommentStart_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitCommentStart_Egap_Documents_Comment_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentStart(Egap.Documents.Comment)">
+  VisitCommentStart(Comment)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a comment; its story follows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitCommentStart(Comment comment)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comment</code> <a class="xref" href="Egap.Documents.Comment.html">Comment</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitContentControlEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitContentControlEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitContentControlEnd_Egap_Documents_ContentControl_" data-uid="Egap.Documents.DocumentVisitor.VisitContentControlEnd(Egap.Documents.ContentControl)">
+  VisitContentControlEnd(ContentControl)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a block content control.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitContentControlEnd(ContentControl control)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>control</code> <a class="xref" href="Egap.Documents.ContentControl.html">ContentControl</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitContentControlStart_" data-uid="Egap.Documents.DocumentVisitor.VisitContentControlStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitContentControlStart_Egap_Documents_ContentControl_" data-uid="Egap.Documents.DocumentVisitor.VisitContentControlStart(Egap.Documents.ContentControl)">
+  VisitContentControlStart(ContentControl)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L192"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a block content control.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitContentControlStart(ContentControl control)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>control</code> <a class="xref" href="Egap.Documents.ContentControl.html">ContentControl</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitDocumentEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitDocumentEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitDocumentEnd_Egap_Documents_Document_" data-uid="Egap.Documents.DocumentVisitor.VisitDocumentEnd(Egap.Documents.Document)">
+  VisitDocumentEnd(Document)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving the document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitDocumentEnd(Document document)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitDocumentStart_" data-uid="Egap.Documents.DocumentVisitor.VisitDocumentStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitDocumentStart_Egap_Documents_Document_" data-uid="Egap.Documents.DocumentVisitor.VisitDocumentStart(Egap.Documents.Document)">
+  VisitDocumentStart(Document)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering the document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitDocumentStart(Document document)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitFieldEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitFieldEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitFieldEnd_Egap_Documents_FieldEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitFieldEnd(Egap.Documents.FieldEnd)">
+  VisitFieldEnd(FieldEnd)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A field's end.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitFieldEnd(FieldEnd fieldEnd)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fieldEnd</code> <a class="xref" href="Egap.Documents.FieldEnd.html">FieldEnd</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitFieldSeparator_" data-uid="Egap.Documents.DocumentVisitor.VisitFieldSeparator*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitFieldSeparator_Egap_Documents_FieldSeparator_" data-uid="Egap.Documents.DocumentVisitor.VisitFieldSeparator(Egap.Documents.FieldSeparator)">
+  VisitFieldSeparator(FieldSeparator)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A field's separator.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitFieldSeparator(FieldSeparator separator)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>separator</code> <a class="xref" href="Egap.Documents.FieldSeparator.html">FieldSeparator</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitFieldStart_" data-uid="Egap.Documents.DocumentVisitor.VisitFieldStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitFieldStart_Egap_Documents_FieldStart_" data-uid="Egap.Documents.DocumentVisitor.VisitFieldStart(Egap.Documents.FieldStart)">
+  VisitFieldStart(FieldStart)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A field's start.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitFieldStart(FieldStart fieldStart)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fieldStart</code> <a class="xref" href="Egap.Documents.FieldStart.html">FieldStart</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitFootnoteEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitFootnoteEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitFootnoteEnd_Egap_Documents_Footnote_" data-uid="Egap.Documents.DocumentVisitor.VisitFootnoteEnd(Egap.Documents.Footnote)">
+  VisitFootnoteEnd(Footnote)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a footnote or endnote.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitFootnoteEnd(Footnote note)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>note</code> <a class="xref" href="Egap.Documents.Footnote.html">Footnote</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitFootnoteStart_" data-uid="Egap.Documents.DocumentVisitor.VisitFootnoteStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitFootnoteStart_Egap_Documents_Footnote_" data-uid="Egap.Documents.DocumentVisitor.VisitFootnoteStart(Egap.Documents.Footnote)">
+  VisitFootnoteStart(Footnote)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a footnote or endnote; its story follows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitFootnoteStart(Footnote note)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>note</code> <a class="xref" href="Egap.Documents.Footnote.html">Footnote</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitHyperlinkEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitHyperlinkEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitHyperlinkEnd_Egap_Documents_Hyperlink_" data-uid="Egap.Documents.DocumentVisitor.VisitHyperlinkEnd(Egap.Documents.Hyperlink)">
+  VisitHyperlinkEnd(Hyperlink)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a hyperlink.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitHyperlinkEnd(Hyperlink hyperlink)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hyperlink</code> <a class="xref" href="Egap.Documents.Hyperlink.html">Hyperlink</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitHyperlinkStart_" data-uid="Egap.Documents.DocumentVisitor.VisitHyperlinkStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitHyperlinkStart_Egap_Documents_Hyperlink_" data-uid="Egap.Documents.DocumentVisitor.VisitHyperlinkStart(Egap.Documents.Hyperlink)">
+  VisitHyperlinkStart(Hyperlink)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a hyperlink.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitHyperlinkStart(Hyperlink hyperlink)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hyperlink</code> <a class="xref" href="Egap.Documents.Hyperlink.html">Hyperlink</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitInlineContentControlEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitInlineContentControlEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitInlineContentControlEnd_Egap_Documents_InlineContentControl_" data-uid="Egap.Documents.DocumentVisitor.VisitInlineContentControlEnd(Egap.Documents.InlineContentControl)">
+  VisitInlineContentControlEnd(InlineContentControl)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L186"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving an inline content control.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitInlineContentControlEnd(InlineContentControl control)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>control</code> <a class="xref" href="Egap.Documents.InlineContentControl.html">InlineContentControl</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitInlineContentControlStart_" data-uid="Egap.Documents.DocumentVisitor.VisitInlineContentControlStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitInlineContentControlStart_Egap_Documents_InlineContentControl_" data-uid="Egap.Documents.DocumentVisitor.VisitInlineContentControlStart(Egap.Documents.InlineContentControl)">
+  VisitInlineContentControlStart(InlineContentControl)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering an inline content control.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitInlineContentControlStart(InlineContentControl control)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>control</code> <a class="xref" href="Egap.Documents.InlineContentControl.html">InlineContentControl</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitIsland_" data-uid="Egap.Documents.DocumentVisitor.VisitIsland*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitIsland_Egap_Documents_Island_" data-uid="Egap.Documents.DocumentVisitor.VisitIsland(Egap.Documents.Island)">
+  VisitIsland(Island)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L246"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A kept island.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitIsland(Island island)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>island</code> <a class="xref" href="Egap.Documents.Island.html">Island</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitParagraphEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitParagraphEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitParagraphEnd_Egap_Documents_Paragraph_" data-uid="Egap.Documents.DocumentVisitor.VisitParagraphEnd(Egap.Documents.Paragraph)">
+  VisitParagraphEnd(Paragraph)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a paragraph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitParagraphEnd(Paragraph paragraph)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>paragraph</code> <a class="xref" href="Egap.Documents.Paragraph.html">Paragraph</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitParagraphStart_" data-uid="Egap.Documents.DocumentVisitor.VisitParagraphStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitParagraphStart_Egap_Documents_Paragraph_" data-uid="Egap.Documents.DocumentVisitor.VisitParagraphStart(Egap.Documents.Paragraph)">
+  VisitParagraphStart(Paragraph)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a paragraph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitParagraphStart(Paragraph paragraph)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>paragraph</code> <a class="xref" href="Egap.Documents.Paragraph.html">Paragraph</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitPicture_" data-uid="Egap.Documents.DocumentVisitor.VisitPicture*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitPicture_Egap_Documents_Picture_" data-uid="Egap.Documents.DocumentVisitor.VisitPicture(Egap.Documents.Picture)">
+  VisitPicture(Picture)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A picture.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitPicture(Picture picture)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>picture</code> <a class="xref" href="Egap.Documents.Picture.html">Picture</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitRowEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitRowEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitRowEnd_Egap_Documents_Row_" data-uid="Egap.Documents.DocumentVisitor.VisitRowEnd(Egap.Documents.Row)">
+  VisitRowEnd(Row)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a table row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitRowEnd(Row row)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <a class="xref" href="Egap.Documents.Row.html">Row</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitRowStart_" data-uid="Egap.Documents.DocumentVisitor.VisitRowStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitRowStart_Egap_Documents_Row_" data-uid="Egap.Documents.DocumentVisitor.VisitRowStart(Egap.Documents.Row)">
+  VisitRowStart(Row)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a table row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitRowStart(Row row)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <a class="xref" href="Egap.Documents.Row.html">Row</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitRun_" data-uid="Egap.Documents.DocumentVisitor.VisitRun*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitRun_Egap_Documents_Run_" data-uid="Egap.Documents.DocumentVisitor.VisitRun(Egap.Documents.Run)">
+  VisitRun(Run)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A run of text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitRun(Run run)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>run</code> <a class="xref" href="Egap.Documents.Run.html">Run</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitSectionEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitSectionEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitSectionEnd_Egap_Documents_Section_" data-uid="Egap.Documents.DocumentVisitor.VisitSectionEnd(Egap.Documents.Section)">
+  VisitSectionEnd(Section)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a section.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitSectionEnd(Section section)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>section</code> <a class="xref" href="Egap.Documents.Section.html">Section</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitSectionStart_" data-uid="Egap.Documents.DocumentVisitor.VisitSectionStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitSectionStart_Egap_Documents_Section_" data-uid="Egap.Documents.DocumentVisitor.VisitSectionStart(Egap.Documents.Section)">
+  VisitSectionStart(Section)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a section; its body comes first, then its headers and footers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitSectionStart(Section section)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>section</code> <a class="xref" href="Egap.Documents.Section.html">Section</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitShapeEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitShapeEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitShapeEnd_Egap_Documents_Shape_" data-uid="Egap.Documents.DocumentVisitor.VisitShapeEnd(Egap.Documents.Shape)">
+  VisitShapeEnd(Shape)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L240"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a shape.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitShapeEnd(Shape shape)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shape</code> <a class="xref" href="Egap.Documents.Shape.html">Shape</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitShapeStart_" data-uid="Egap.Documents.DocumentVisitor.VisitShapeStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitShapeStart_Egap_Documents_Shape_" data-uid="Egap.Documents.DocumentVisitor.VisitShapeStart(Egap.Documents.Shape)">
+  VisitShapeStart(Shape)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a shape; its text box story follows, if any.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitShapeStart(Shape shape)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shape</code> <a class="xref" href="Egap.Documents.Shape.html">Shape</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitStoryEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitStoryEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitStoryEnd_Egap_Documents_Story_" data-uid="Egap.Documents.DocumentVisitor.VisitStoryEnd(Egap.Documents.Story)">
+  VisitStoryEnd(Story)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a story.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitStoryEnd(Story story)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>story</code> <a class="xref" href="Egap.Documents.Story.html">Story</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitStoryStart_" data-uid="Egap.Documents.DocumentVisitor.VisitStoryStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitStoryStart_Egap_Documents_Story_" data-uid="Egap.Documents.DocumentVisitor.VisitStoryStart(Egap.Documents.Story)">
+  VisitStoryStart(Story)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a story: a section's body, a header or footer, or the text of a note, comment or text box.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitStoryStart(Story story)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>story</code> <a class="xref" href="Egap.Documents.Story.html">Story</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitTab_" data-uid="Egap.Documents.DocumentVisitor.VisitTab*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitTab_Egap_Documents_Tab_" data-uid="Egap.Documents.DocumentVisitor.VisitTab(Egap.Documents.Tab)">
+  VisitTab(Tab)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A tab.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitTab(Tab tab)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>tab</code> <a class="xref" href="Egap.Documents.Tab.html">Tab</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitTableEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitTableEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitTableEnd_Egap_Documents_Table_" data-uid="Egap.Documents.DocumentVisitor.VisitTableEnd(Egap.Documents.Table)">
+  VisitTableEnd(Table)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Leaving a table.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitTableEnd(Table table)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>table</code> <a class="xref" href="Egap.Documents.Table.html">Table</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitTableStart_" data-uid="Egap.Documents.DocumentVisitor.VisitTableStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitTableStart_Egap_Documents_Table_" data-uid="Egap.Documents.DocumentVisitor.VisitTableStart(Egap.Documents.Table)">
+  VisitTableStart(Table)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Entering a table.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitTableStart(Table table)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>table</code> <a class="xref" href="Egap.Documents.Table.html">Table</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L21" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
