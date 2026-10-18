@@ -14,6 +14,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Compare: a word-level text diff with page alignment, a visual diff of rendered pages, and a marked-up copy.
 - Clean-up: grayscale conversion, blank page removal, deskew of scanned pages, text to outlines.
 
+### Fixes
+- Page tree repair skips objects that are plainly not pages, such as outline items or annotations listed among a damaged
+  file's pages, instead of turning them into pages. A rewrite of such a file no longer breaks its outline.
+
 ## Egap.Pdf 1.3.0 (2026-10-16, not published)
 
 - Signatures: PAdES B-B to B-LTA, deferred and certification signatures, timestamps, and verification with a report.

@@ -7,7 +7,8 @@ namespace Egap.Pdf;
 /// <list type="bullet">
 /// <item>a node with <c>/Kids</c> is an intermediate node and any other is a page, whatever its <c>/Type</c> says (qpdf);
 /// a page without <c>/Type /Page</c> gets one;</item>
-/// <item>a kid that is not a dictionary, or that loops back to a node above it, is skipped;</item>
+/// <item>a kid that is not a dictionary, that loops back to a node above it, or that is plainly some other object (another
+/// <c>/Type</c>, or no page entries but an outline item's or annotation's), is skipped and left untouched;</item>
 /// <item>a page or node listed twice is listed twice, as PDFium and qpdf count it;</item>
 /// <item>a missing or wrong <c>/Parent</c> is set to the node that lists the kid, so inherited attributes are found;</item>
 /// <item>a wrong <c>/Count</c> is set to the number of pages found below the node;</item>
@@ -27,6 +28,9 @@ internal static class PageTreeReader
     private static readonly PdfName Count = "Count";
     private static readonly PdfName PageType = "Page";
     private static readonly PdfName PagesType = "Pages";
+    private static readonly PdfName Contents = "Contents";
+    private static readonly PdfName[] PageEntries = ["MediaBox", "CropBox", "Resources", "Rotate"];
+    private static readonly PdfName[] OtherEntries = ["Title", "First", "Last", "Next", "Prev", "Dest", "Subtype", "Rect"];
 
     /// <summary>
     /// The pages in order, and whether the tree is too broken to edit in place: it loops, lists a node or page twice or
@@ -83,6 +87,13 @@ internal static class PageTreeReader
                 continue;
             }
 
+            if (kid.Get<PdfArray>(Kids) is null && IsOtherObject(kid))
+            {
+                log.Add(PdfWarningCode.MalformedPageTree, $"Kid {index} of a page tree node is not a page or node; it was skipped.", objectNumber: reference?.ObjectNumber ?? frame.Reference?.ObjectNumber);
+                needsRebuild = true;
+                continue;
+            }
+
             if (++visits > MaxVisits)
             {
                 log.Add(PdfWarningCode.MalformedPageTree, $"The page tree lists more than {MaxVisits} nodes; the rest were skipped.");
@@ -112,6 +123,21 @@ internal static class PageTreeReader
     private static bool IsPagesNode(PdfDictionary node)
     {
         return node.GetName(Type) == PagesType;
+    }
+
+    /// <summary>
+    /// A kid without /Kids that is plainly not a page: it has none of a page's own entries, and its /Type names something
+    /// else or it has another object's entries (an outline item's /Title or chain, an annotation's /Subtype). Taking it for
+    /// a page would write /Type and /Parent into that object and break it. A page with a wrong /Type but its own entries stays a page.
+    /// </summary>
+    private static bool IsOtherObject(PdfDictionary kid)
+    {
+        if (PageEntries.Any(kid.ContainsKey) || kid[Contents]?.Resolve() is PdfStream or PdfArray)
+        {
+            return false;
+        }
+
+        return (kid[Type]?.Resolve() is PdfName type && type != PageType && type != PagesType) || OtherEntries.Any(kid.ContainsKey);
     }
 
     private static void Enter(PdfDictionary node, PdfReference? reference, List<PdfPage> pages, HashSet<PdfDictionary> ancestors, Stack<Frame> stack, WarningLog log)
