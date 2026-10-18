@@ -25,6 +25,8 @@ dotnet build Egap.slnx
 dotnet test Egap.slnx
 dotnet format Egap.slnx --verify-no-changes      # must pass before anything lands
 python tools/update-public-api.py                 # adds new public API to PublicAPI.Unshipped.txt
+python tools/check-doc-snippets.py                # every C# block in docs/ builds
+docfx docs/docfx.json                             # the docs site, into docs/_site (dotnet tool install -g docfx)
 ```
 
 - Warnings are errors, and the public API baseline (`PublicAPI.Shipped.txt`, `PublicAPI.Unshipped.txt` in each package) is
@@ -41,9 +43,10 @@ python tools/update-public-api.py                 # adds new public API to Publi
 ## Documentation
 
 Every user-visible change updates, in the same commit, the XML docs, the package's `README.md` in `src/<package>/` where its
-summary changes, `docs/examples.md` where an example helps, and `CHANGELOG.md` under the package's next version
-(`## Egap.Pdf 1.5.0 (unreleased)`; add that heading if it is not there yet). Write docs in plain, short sentences that say
-what the user gets. Describe behavior, not the planning history (no phase or task numbers in docs).
+summary changes, the guide in `docs/articles/guides/` for the area (new guides go into `docs/articles/toc.yml`), and
+`CHANGELOG.md` under the package's next version (`## Egap.Pdf 1.5.0 (unreleased)`; add that heading if it is not there yet).
+Write docs in plain, short sentences that say what the user gets. Describe behavior, not the planning history (no phase or
+task numbers in docs).
 
 ## Code style
 
