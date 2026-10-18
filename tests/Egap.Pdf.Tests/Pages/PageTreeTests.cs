@@ -244,6 +244,34 @@ public sealed class PageTreeTests
     }
 
     [Fact]
+    public void AnOutlineItemListedAsAKidIsSkippedAndLeftUntouched()
+    {
+        // A damaged file lists outline item 11 and an annotation among the pages; a page with a wrong /Type stays a page.
+        byte[] bytes = File(
+            (1, "<< /Type /Catalog /Pages 2 0 R /Outlines 10 0 R >>"),
+            (2, "<< /Type /Pages /Kids [3 0 R 11 0 R 12 0 R 4 0 R] /Count 4 /MediaBox [0 0 200 200] >>"),
+            (3, "<< /Type /Page /Parent 2 0 R >>"),
+            (4, "<< /Type /Paeg /Parent 2 0 R /Resources << >> >>"),
+            (10, "<< /Type /Outlines /First 11 0 R /Last 11 0 R /Count 1 >>"),
+            (11, "<< /Title (a) /Parent 10 0 R /Dest [3 0 R /Fit] >>"),
+            (12, "<< /Type /Annot /Subtype /Text /Rect [0 0 1 1] /Contents (note) >>"));
+        using PdfDocument pdf = PdfDocument.Open(bytes);
+
+        Assert.Equal([3, 4], pdf.Pages.Select(p => p.Reference!.ObjectNumber));
+        PdfDictionary item = (PdfDictionary)pdf.Objects.Get(11);
+        Assert.Equal(10, ((PdfReference)item["Parent"]!).ObjectNumber);
+        Assert.Null(item["Type"]);
+        Assert.Null(((PdfDictionary)pdf.Objects.Get(12))["Parent"]);
+
+        using MemoryStream output = new();
+        pdf.Save(output, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite });
+        using PdfDocument reopened = PdfDocument.Open(output.ToArray());
+        Assert.Equal(2, reopened.Pages.Count);
+        Assert.Equal(["a"], reopened.Outline.Children.Select(i => i.Title));
+        Assert.DoesNotContain(reopened.Warnings, w => w.Code == PdfWarningCode.MalformedOutline);
+    }
+
+    [Fact]
     public void AnEmptyPagesNodeWithoutKidsIsNotAPage()
     {
         using PdfDocument pdf = PdfDocument.Open(File(
