@@ -161,8 +161,9 @@ internal static class CmsAlgorithms
                     return false;
             }
         }
-        catch (CryptographicException)
+        catch (Exception e) when (e is CryptographicException or ArgumentException)
         {
+            // macOS throws ArgumentException for a public key it cannot load, where other systems throw CryptographicException.
             return false;
         }
     }
@@ -204,8 +205,9 @@ internal static class CmsAlgorithms
                     return false;
             }
         }
-        catch (CryptographicException)
+        catch (Exception e) when (e is CryptographicException or ArgumentException)
         {
+            // macOS throws ArgumentException for a public key it cannot load, where other systems throw CryptographicException.
             return false;
         }
     }
