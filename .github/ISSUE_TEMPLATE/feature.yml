@@ -9,7 +9,7 @@ body:
       options:
         - Egap.Pdf
         - Egap.Documents
-        - Egap.Pdf.Layout
+        - Egap.Pdf.Conversion
         - Egap.Fonts
         - A new package
     validations:

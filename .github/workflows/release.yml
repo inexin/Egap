@@ -1,7 +1,7 @@
 name: Release
 
 # A tag v<version>, the version of src/Egap.Pdf, publishes the four packages: Egap.Pdf, Egap.Fonts, Egap.Documents and
-# Egap.Pdf.Layout, each at the version in its own project file; a package whose version is already on nuget.org is skipped.
+# Egap.Pdf.Conversion, each at the version in its own project file; a package whose version is already on nuget.org is skipped.
 # The push uses nuget.org trusted publishing: NuGet/login trades the job's OIDC token for a short-lived API key, so the
 # repository keeps no NuGet key. The trusted publishing policy on nuget.org names this repository, this workflow file and the
 # nuget environment, and the nuget environment requires Lars's approval before the job starts. The secret NUGET_USER is the
@@ -42,7 +42,7 @@ jobs:
         run: dotnet test Egap.slnx -c Release
       - name: Pack
         run: |
-          for package in Egap.Pdf Egap.Fonts Egap.Documents Egap.Pdf.Layout; do
+          for package in Egap.Pdf Egap.Fonts Egap.Documents Egap.Pdf.Conversion; do
             dotnet pack "src/$package" -c Release --no-build -o artifacts/nuget
           done
       - uses: actions/upload-artifact@v7

@@ -6,13 +6,13 @@
     <Project Path="src/Egap.Documents/Egap.Documents.csproj" />
     <Project Path="src/Egap.Fonts/Egap.Fonts.csproj" />
     <Project Path="src/Egap.Pdf/Egap.Pdf.csproj" />
-    <Project Path="src/Egap.Pdf.Layout/Egap.Pdf.Layout.csproj" />
+    <Project Path="src/Egap.Pdf.Conversion/Egap.Pdf.Conversion.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Egap.Documents.Fuzz/Egap.Documents.Fuzz.csproj" />
     <Project Path="tests/Egap.Documents.Tests/Egap.Documents.Tests.csproj" />
     <Project Path="tests/Egap.Pdf.Fuzz/Egap.Pdf.Fuzz.csproj" />
-    <Project Path="tests/Egap.Pdf.Layout.Tests/Egap.Pdf.Layout.Tests.csproj" />
+    <Project Path="tests/Egap.Pdf.Conversion.Tests/Egap.Pdf.Conversion.Tests.csproj" />
     <Project Path="tests/Egap.Pdf.Tests/Egap.Pdf.Tests.csproj" />
   </Folder>
 </Solution>

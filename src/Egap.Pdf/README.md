@@ -24,4 +24,7 @@ using Egami.Raster<Egami.Pixels.Rgba8> image = pdf.Pages[0].Render(new PdfRender
 image.Save("page.png");
 ```
 
+To convert DOCX, HTML or Markdown to PDF, or PDF back to them, add
+[Egap.Pdf.Conversion](https://www.nuget.org/packages/Egap.Pdf.Conversion).
+
 Source, more examples and the changelog: [github.com/inexin/Egap](https://github.com/inexin/Egap).

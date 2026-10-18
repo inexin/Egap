@@ -5,7 +5,7 @@ Egap needs .NET 10. Add the package for what you need:
 ```sh
 dotnet add package Egap.Pdf            # PDF files
 dotnet add package Egap.Documents      # DOCX, HTML and Markdown
-dotnet add package Egap.Pdf.Layout     # documents to PDF, and PDF back to documents
+dotnet add package Egap.Pdf.Conversion     # documents to PDF, and PDF back to documents
 ```
 
 Egami, the imaging library Egap draws with, comes along as a dependency. See [Packages](packages.md) for what each one holds.
@@ -42,7 +42,7 @@ image.Save("page.png");
 
 ```csharp
 using Egap.Documents;
-using Egap.Pdf.Layout;
+using Egap.Pdf.Conversion;
 
 Document report = Document.Load("report.docx");
 report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true });

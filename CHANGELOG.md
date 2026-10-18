@@ -57,8 +57,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   lists, tables, fields, comments and tracked changes; find, replace and a document builder; page layout with floats,
   columns, headers, footers and footnotes, drawn on any Egami canvas.
 
-## Egap.Pdf.Layout 1.1.0 (unreleased, first release on NuGet)
+## Egap.Pdf.Conversion 1.1.0 (unreleased, first release on NuGet)
 
+- Renamed from Egap.Pdf.Layout, namespace included: DOCX, HTML and Markdown to PDF, and PDF back to them.
 - Tables from tagged PDFs such as Word's come back with merged and empty cells, tables split across pages joined, and
   tables nested in cells.
 - Builds on 1.0.0 (2026-10-17, not published): documents saved as PDF with links, outline and tags; PDF pages analysed into
