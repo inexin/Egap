@@ -53,14 +53,19 @@ namespace Egap.Pdf.Cleanup
         /// <summary>A page with more characters of text than this is never blank, however little of it shows.</summary>
         private const int MaxBlankText = 40;
 
-        public static int RemoveBlank(PdfDocument document, BlankPageOptions options)
+        /// <summary>Removes the blank pages; their 1-based numbers as they were. Nothing is removed until every page is judged.</summary>
+        public static List<int> RemoveBlank(PdfDocument document, BlankPageOptions options, CancellationToken cancellationToken)
         {
             List<PdfPage> blank = [];
-            foreach (PdfPage page in document.Pages)
+            List<int> numbers = [];
+            for (int index = 0; index < document.Pages.Count; index++)
             {
-                if (IsBlank(page, options))
+                cancellationToken.ThrowIfCancellationRequested();
+                PdfPage page = document.Pages[index];
+                if (IsBlank(page, options, cancellationToken))
                 {
                     blank.Add(page);
+                    numbers.Add(index + 1);
                 }
             }
 
@@ -69,10 +74,10 @@ namespace Egap.Pdf.Cleanup
                 document.Pages.Remove(page);
             }
 
-            return blank.Count;
+            return numbers;
         }
 
-        internal static bool IsBlank(PdfPage page, BlankPageOptions options)
+        internal static bool IsBlank(PdfPage page, BlankPageOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -87,7 +92,7 @@ namespace Egap.Pdf.Cleanup
                     return false;
                 }
 
-                using Raster<Gray8> shown = page.Render<Gray8>(new PdfRenderOptions { Dpi = options.Dpi, Annotations = PdfAnnotationRendering.None });
+                using Raster<Gray8> shown = page.Render<Gray8>(new PdfRenderOptions { Dpi = options.Dpi, Annotations = PdfAnnotationRendering.None }, cancellationToken);
                 int limit = (int)Math.Round(options.WhiteLevel * 255), dark = 0;
                 for (int y = 0; y < shown.Height; y++)
                 {
@@ -105,14 +110,17 @@ namespace Egap.Pdf.Cleanup
             }
         }
 
-        public static int Deskew(PdfDocument document, DeskewOptions options)
+        /// <summary>Straightens the scanned pages; the 1-based numbers of those it turned.</summary>
+        public static List<int> Deskew(PdfDocument document, DeskewOptions options, CancellationToken cancellationToken)
         {
-            int straightened = 0;
-            foreach (PdfPage page in document.Pages)
+            List<int> straightened = [];
+            for (int index = 0; index < document.Pages.Count; index++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                PdfPage page = document.Pages[index];
                 if (ScanImage(page) is PdfImage scan && Straighten(document, page, scan, options))
                 {
-                    straightened++;
+                    straightened.Add(index + 1);
                 }
             }
 

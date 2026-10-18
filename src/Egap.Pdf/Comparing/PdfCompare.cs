@@ -198,9 +198,14 @@ public sealed class PdfComparison : IDisposable
 public static class PdfCompare
 {
     /// <summary>Compares <paramref name="oldDocument"/> with <paramref name="newDocument"/>.</summary>
+    /// <param name="oldDocument">The document as it was.</param>
+    /// <param name="newDocument">The document as it is now.</param>
+    /// <param name="options">What to compare; null for <see cref="PdfCompareOptions.Default"/>.</param>
+    /// <param name="cancellationToken">Stops the comparison between pages.</param>
     /// <exception cref="ArgumentNullException">A document is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">An option is outside what it can mean.</exception>
-    public static PdfComparison Run(PdfDocument oldDocument, PdfDocument newDocument, PdfCompareOptions? options = null)
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
+    public static PdfComparison Run(PdfDocument oldDocument, PdfDocument newDocument, PdfCompareOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(oldDocument);
         ArgumentNullException.ThrowIfNull(newDocument);
@@ -210,11 +215,11 @@ public static class PdfCompare
             throw new ArgumentOutOfRangeException(nameof(options), "Dpi must be above 0 and at most 600, Tolerance 0 to 255 and MinChangedPixels at least 1.");
         }
 
-        List<PdfComparedWord> oldWords = TextCompare.Words(oldDocument), newWords = TextCompare.Words(newDocument);
+        List<PdfComparedWord> oldWords = TextCompare.Words(oldDocument, cancellationToken), newWords = TextCompare.Words(newDocument, cancellationToken);
         List<(int Old, int New)> equal = [];
         List<PdfTextChange> text = TextCompare.Changes(oldWords, newWords, equal);
         IReadOnlyList<PdfPageMatch> pages = TextCompare.Match(oldDocument.Pages.Count, newDocument.Pages.Count, equal, oldWords, newWords);
-        List<PdfVisualChange> visual = options.Visual ? VisualCompare.Run(oldDocument, newDocument, pages, options) : [];
+        List<PdfVisualChange> visual = options.Visual ? VisualCompare.Run(oldDocument, newDocument, pages, options, cancellationToken) : [];
         return new PdfComparison(newDocument, options.Text ? text : [], pages, visual);
     }
 }

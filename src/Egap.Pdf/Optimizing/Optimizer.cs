@@ -19,7 +19,7 @@ internal static class Optimizer
         JpegQuality = options.JpegQuality,
     };
 
-    public static PdfOptimizeReport Run(PdfDocument document, PdfOptimizeOptions options)
+    public static PdfOptimizeReport Run(PdfDocument document, PdfOptimizeOptions options, CancellationToken cancellationToken = default)
     {
         long before = document.SourceLength;
         List<string> skipped = [];
@@ -39,6 +39,7 @@ internal static class Optimizer
             settings = settings with { Prepared = JpegOptimizer.Prepare(surveyed, settings) };
             foreach (SurveyedImage image in surveyed)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (ImageRecompressor.Optimize(document, image, settings) is ImageChange change)
                 {
                     images.Add(new PdfOptimizedImage(image.Pages.Count > 0 ? image.Pages[0] + 1 : 0, change.OldWidth, change.OldHeight, change.NewWidth,
@@ -48,6 +49,7 @@ internal static class Optimizer
             }
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
         (int merged, long mergedBytes) = options.MergeDuplicates ? DuplicateStreams.Run(document) : (0, 0);
         if (options.MergeDuplicates && pdfa1)
         {
@@ -61,6 +63,7 @@ internal static class Optimizer
         }
         else if (options.SubsetFonts)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             (fonts, fontBytes) = FontSubsetter.Run(document);
         }
 
@@ -84,6 +87,7 @@ internal static class Optimizer
         int empty = options.RemoveEmptyContent ? RemoveEmptyContent(document) : 0;
         document.MarkOptimized();
 
+        cancellationToken.ThrowIfCancellationRequested();
         using CountingStream counter = new();
         document.Save(counter, new PdfSaveOptions { AllowInvalidatingSignatures = options.AllowInvalidatingSignatures });
         document.SignaturesMayBreak = options.AllowInvalidatingSignatures;

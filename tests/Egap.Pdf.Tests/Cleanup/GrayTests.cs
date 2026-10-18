@@ -12,7 +12,7 @@ public sealed class GrayTests
         using PdfDocument pdf = Colourful();
         using Raster<Rgba8> before = pdf.Pages[0].Render(new PdfRenderOptions { Dpi = 36 }, TestContext.Current.CancellationToken);
 
-        IReadOnlyList<PdfWarning> warnings = pdf.ConvertToGray();
+        IReadOnlyList<PdfWarning> warnings = pdf.ConvertToGray(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Empty(warnings);
         using Raster<Rgba8> after = pdf.Pages[0].Render(new PdfRenderOptions { Dpi = 36 }, TestContext.Current.CancellationToken);
@@ -42,7 +42,7 @@ public sealed class GrayTests
         PdfPage page = pdf.Pages.AddBlank();
         page.SetContent(PdfContent.Parse("0.5 rg 0 0 10 10 re f /DeviceRGB cs 1 sc 0 0 5 5 re f"u8));
 
-        Assert.Empty(pdf.ConvertToGray());
+        Assert.Empty(pdf.ConvertToGray(cancellationToken: TestContext.Current.CancellationToken));
         Assert.DoesNotContain(page.GetContent(), op => op.Operator is "rg" or "RG");
     }
 
@@ -64,7 +64,7 @@ public sealed class GrayTests
         page.Resources = new PdfDictionary { ["XObject"] = new PdfDictionary { ["Im"] = pdf.Objects.Add(image) } };
         page.SetContent(PdfContent.Parse("q 100 0 0 50 0 0 cm /Im Do Q"u8));
 
-        pdf.ConvertToGray();
+        pdf.ConvertToGray(cancellationToken: TestContext.Current.CancellationToken);
 
         PdfArray space = Assert.IsType<PdfArray>(image.Dictionary.Get("ColorSpace"));
         Assert.Equal("DeviceGray", space.GetName(1)!.Value);

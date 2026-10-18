@@ -12,7 +12,7 @@ public sealed class OptimizeTests
         using PdfDocument pdf = PdfDocument.Open(original);
         string? modified = pdf.Metadata.ModificationDate?.ToString("O");
 
-        PdfOptimizeReport report = pdf.Optimize();
+        PdfOptimizeReport report = pdf.Optimize(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(original.Length, report.BytesBefore);
         Assert.True(report.BytesAfter < report.BytesBefore, report.ToString());
@@ -39,12 +39,12 @@ public sealed class OptimizeTests
     public void OptimizingTwiceChangesNothingMore()
     {
         using PdfDocument first = PdfDocument.Open(Sample(withExtras: true));
-        first.Optimize(PdfOptimizeOptions.Ebook);
+        first.Optimize(PdfOptimizeOptions.Ebook, cancellationToken: TestContext.Current.CancellationToken);
         using MemoryStream once = new();
         first.Save(once);
 
         using PdfDocument second = PdfDocument.Open(once.ToArray());
-        PdfOptimizeReport again = second.Optimize(PdfOptimizeOptions.Ebook);
+        PdfOptimizeReport again = second.Optimize(PdfOptimizeOptions.Ebook, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Empty(again.Images);
         Assert.Equal(0, again.Savings.FontsSubset);
@@ -56,7 +56,7 @@ public sealed class OptimizeTests
     {
         using PdfDocument pdf = PdfDocument.Open(Sample(withExtras: false));
 
-        PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook);
+        PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook, cancellationToken: TestContext.Current.CancellationToken);
 
         PdfOptimizedImage image = Assert.Single(report.Images);
         Assert.Equal((1, 600, 300, "JPEG"), (image.Page, image.OldWidth, image.NewWidth, image.Encoding));
@@ -71,7 +71,7 @@ public sealed class OptimizeTests
         byte[] signed = Signed();
         using (PdfDocument pdf = PdfDocument.Open(signed))
         {
-            PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook);
+            PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook, cancellationToken: TestContext.Current.CancellationToken);
             Assert.Contains(report.Skipped, s => s.Contains("signed", StringComparison.Ordinal));
             Assert.Equal(report.BytesBefore, report.BytesAfter);
             using MemoryStream unchanged = new();
@@ -82,7 +82,7 @@ public sealed class OptimizeTests
         // Strict reading makes a save that breaks a signature unasked throw.
         using (PdfDocument pdf = PdfDocument.Open(signed, new PdfReadOptions { Strict = true }))
         {
-            PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook with { AllowInvalidatingSignatures = true });
+            PdfOptimizeReport report = pdf.Optimize(PdfOptimizeOptions.Ebook with { AllowInvalidatingSignatures = true }, cancellationToken: TestContext.Current.CancellationToken);
             Assert.Empty(report.Skipped);
             using MemoryStream rewritten = new();
             pdf.Save(rewritten);
@@ -103,7 +103,7 @@ public sealed class OptimizeTests
             </rdf:RDF></x:xmpmeta>
             """));
 
-        PdfOptimizeReport report = pdf.Optimize();
+        PdfOptimizeReport report = pdf.Optimize(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Contains(report.Skipped, s => s.StartsWith("fonts", StringComparison.Ordinal));
         using MemoryStream saved = new();
@@ -117,9 +117,9 @@ public sealed class OptimizeTests
     public void RefusesOptionsOutsideTheirRange()
     {
         using PdfDocument pdf = PdfDocument.Create();
-        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.Optimize(PdfOptimizeOptions.Ebook with { JpegQuality = 0 }));
-        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.Optimize(PdfOptimizeOptions.Ebook with { ImageResolution = -1 }));
-        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.Optimize(PdfOptimizeOptions.Ebook with { DownsampleThreshold = 0.5 }));
+        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.Optimize(PdfOptimizeOptions.Ebook with { JpegQuality = 0 }, cancellationToken: TestContext.Current.CancellationToken));
+        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.Optimize(PdfOptimizeOptions.Ebook with { ImageResolution = -1 }, cancellationToken: TestContext.Current.CancellationToken));
+        Assert.Throws<ArgumentOutOfRangeException>(() => pdf.Optimize(PdfOptimizeOptions.Ebook with { DownsampleThreshold = 0.5 }, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     /// <summary>

@@ -15,7 +15,7 @@ public sealed class CompareTests
     public void IdenticalDocumentsHaveNoChanges()
     {
         using PdfDocument a = Document([Text]), b = Document([Text]);
-        using PdfComparison result = PdfCompare.Run(a, b);
+        using PdfComparison result = PdfCompare.Run(a, b, cancellationToken: TestContext.Current.CancellationToken);
         Assert.False(result.HasChanges, result.ToString());
         Assert.Equal([new PdfPageMatch(1, 1)], result.Pages);
     }
@@ -26,7 +26,7 @@ public sealed class CompareTests
         using PdfDocument a = Document([Text]);
         using PdfDocument b = Document([[Text[0].Replace("Monday", "Tuesday", StringComparison.Ordinal), Text[1].Replace("much ", "", StringComparison.Ordinal), Text[2].Replace("late ", "very late ", StringComparison.Ordinal), Text[3]]]);
 
-        using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { Visual = false });
+        using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { Visual = false }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal([PdfTextChangeKind.Replaced, PdfTextChangeKind.Deleted, PdfTextChangeKind.Inserted], result.TextChanges.Select(c => c.Kind));
         Assert.Equal(("Monday", "Tuesday"), (result.TextChanges[0].OldText, result.TextChanges[0].NewText));
@@ -42,7 +42,7 @@ public sealed class CompareTests
         using PdfDocument a = Document([[Text[0], Text[1]], [Text[2], Text[3]]]);
         using PdfDocument b = Document([[Text[0]], [Text[1], Text[2], Text[3]]]);
 
-        using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { Visual = false });
+        using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { Visual = false }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Empty(result.TextChanges);
         Assert.Equal([new PdfPageMatch(1, 1), new PdfPageMatch(2, 2)], result.Pages);
@@ -54,7 +54,7 @@ public sealed class CompareTests
         using PdfDocument a = Document([Text]);
         using PdfDocument b = Document([[Text[1], Text[2], Text[3], Text[0]]]);
 
-        using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { Visual = false });
+        using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { Visual = false }, cancellationToken: TestContext.Current.CancellationToken);
 
         PdfTextChange move = Assert.Single(result.TextChanges);
         Assert.Equal(PdfTextChangeKind.Moved, move.Kind);
@@ -70,9 +70,9 @@ public sealed class CompareTests
         using PdfDocument removed = Document([[Text[0]], [Text[2]]]);
         using PdfDocument rewritten = Document([[Text[0]], extra, [Text[2]]]);
 
-        using PdfComparison plus = PdfCompare.Run(a, added, new PdfCompareOptions { Visual = false });
-        using PdfComparison minus = PdfCompare.Run(a, removed, new PdfCompareOptions { Visual = false });
-        using PdfComparison other = PdfCompare.Run(a, rewritten, new PdfCompareOptions { Visual = false });
+        using PdfComparison plus = PdfCompare.Run(a, added, new PdfCompareOptions { Visual = false }, cancellationToken: TestContext.Current.CancellationToken);
+        using PdfComparison minus = PdfCompare.Run(a, removed, new PdfCompareOptions { Visual = false }, cancellationToken: TestContext.Current.CancellationToken);
+        using PdfComparison other = PdfCompare.Run(a, rewritten, new PdfCompareOptions { Visual = false }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal([new PdfPageMatch(1, 1), new PdfPageMatch(null, 2), new PdfPageMatch(2, 3), new PdfPageMatch(3, 4)], plus.Pages);
         Assert.Equal([new PdfPageMatch(1, 1), new PdfPageMatch(2, null), new PdfPageMatch(3, 2)], minus.Pages);
@@ -87,7 +87,7 @@ public sealed class CompareTests
     {
         using PdfDocument a = Document([Text]), b = Document([Text], box: true);
 
-        using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { DifferenceImages = true });
+        using PdfComparison result = PdfCompare.Run(a, b, new PdfCompareOptions { DifferenceImages = true }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Empty(result.TextChanges);
         PdfVisualChange change = Assert.Single(result.VisualChanges);
@@ -103,7 +103,7 @@ public sealed class CompareTests
     {
         using PdfDocument a = Document([Text]);
         using PdfDocument b = Document([[Text[0].Replace("Monday", "Tuesday", StringComparison.Ordinal), Text[1].Replace("much ", "", StringComparison.Ordinal), Text[2], Text[3]]], box: true);
-        using PdfComparison result = PdfCompare.Run(a, b);
+        using PdfComparison result = PdfCompare.Run(a, b, cancellationToken: TestContext.Current.CancellationToken);
         using MemoryStream marked = new();
 
         result.WriteMarkup(marked);
@@ -121,8 +121,8 @@ public sealed class CompareTests
     public void RefusesBadOptions()
     {
         using PdfDocument a = Document([Text]);
-        Assert.Throws<ArgumentOutOfRangeException>(() => PdfCompare.Run(a, a, new PdfCompareOptions { Dpi = 0 }));
-        Assert.Throws<ArgumentOutOfRangeException>(() => PdfCompare.Run(a, a, new PdfCompareOptions { Tolerance = 300 }));
+        Assert.Throws<ArgumentOutOfRangeException>(() => PdfCompare.Run(a, a, new PdfCompareOptions { Dpi = 0 }, cancellationToken: TestContext.Current.CancellationToken));
+        Assert.Throws<ArgumentOutOfRangeException>(() => PdfCompare.Run(a, a, new PdfCompareOptions { Tolerance = 300 }, cancellationToken: TestContext.Current.CancellationToken));
     }
 
     /// <summary>Pages of Helvetica lines, each page's lines given; with <paramref name="box"/>, a grey square on page 1.</summary>

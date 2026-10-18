@@ -114,10 +114,10 @@ Egap.Pdf.PdfComparison.TextChanges.get -> System.Collections.Generic.IReadOnlyLi
 Egap.Pdf.PdfComparison.VisualChanges.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfVisualChange!>!
 Egap.Pdf.PdfComparison.WriteMarkup(string! path) -> void
 Egap.Pdf.PdfComparison.WriteMarkup(System.IO.Stream! output) -> void
-Egap.Pdf.PdfDocument.ConvertToGray() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
-Egap.Pdf.PdfDocument.DeskewScannedPages(Egap.Pdf.DeskewOptions? options = null) -> int
-Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null) -> Egap.Pdf.PdfOptimizeReport!
-Egap.Pdf.PdfDocument.RemoveBlankPages(Egap.Pdf.BlankPageOptions? options = null) -> int
+Egap.Pdf.PdfDocument.ConvertToGray(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfDocument.DeskewScannedPages(Egap.Pdf.DeskewOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<int>!
+Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfOptimizeReport!
+Egap.Pdf.PdfDocument.RemoveBlankPages(Egap.Pdf.BlankPageOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<int>!
 Egap.Pdf.PdfDocument.RemoveStamps() -> int
 Egap.Pdf.PdfDocument.Stamp(Egap.Pdf.PdfStamp! stamp) -> Egap.Pdf.PdfStampResult!
 Egap.Pdf.PdfFormXObject
@@ -385,7 +385,7 @@ static Egap.Pdf.GridOptions.operator !=(Egap.Pdf.GridOptions? left, Egap.Pdf.Gri
 static Egap.Pdf.GridOptions.operator ==(Egap.Pdf.GridOptions? left, Egap.Pdf.GridOptions? right) -> bool
 static Egap.Pdf.NUpOptions.operator !=(Egap.Pdf.NUpOptions? left, Egap.Pdf.NUpOptions? right) -> bool
 static Egap.Pdf.NUpOptions.operator ==(Egap.Pdf.NUpOptions? left, Egap.Pdf.NUpOptions? right) -> bool
-static Egap.Pdf.PdfCompare.Run(Egap.Pdf.PdfDocument! oldDocument, Egap.Pdf.PdfDocument! newDocument, Egap.Pdf.PdfCompareOptions? options = null) -> Egap.Pdf.PdfComparison!
+static Egap.Pdf.PdfCompare.Run(Egap.Pdf.PdfDocument! oldDocument, Egap.Pdf.PdfDocument! newDocument, Egap.Pdf.PdfCompareOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfComparison!
 static Egap.Pdf.PdfComparedWord.operator !=(Egap.Pdf.PdfComparedWord? left, Egap.Pdf.PdfComparedWord? right) -> bool
 static Egap.Pdf.PdfComparedWord.operator ==(Egap.Pdf.PdfComparedWord? left, Egap.Pdf.PdfComparedWord? right) -> bool
 static Egap.Pdf.PdfCompareOptions.Default.get -> Egap.Pdf.PdfCompareOptions!
