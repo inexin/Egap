@@ -188,7 +188,10 @@ public sealed class LayoutWord
     }
 }
 
-/// <summary>A table: its cells on a grid of <see cref="RowCount"/> by <see cref="ColumnCount"/>.</summary>
+/// <summary>
+/// A table: its cells on a grid of <see cref="RowCount"/> by <see cref="ColumnCount"/>. A table from a tagged PDF keeps the
+/// tags' cells and their order, with spans taken from the page's rules or text where the tags give none (as Word's do not).
+/// </summary>
 public sealed class LayoutTable : LayoutElement
 {
     internal LayoutTable(RectF bounds, int order, double confidence, int rows, int columns, bool ruled, bool continues, bool repeatsHeader, IReadOnlyList<LayoutTableCell> cells)
@@ -208,7 +211,7 @@ public sealed class LayoutTable : LayoutElement
     /// <summary>The number of columns.</summary>
     public int ColumnCount { get; }
 
-    /// <summary>Whether ruling lines draw the grid (rather than text alignment or tags).</summary>
+    /// <summary>Whether ruling lines draw the grid, a tagged table's included when it sits on them (rather than text alignment alone).</summary>
     public bool IsRuled { get; }
 
     /// <summary>Whether the table carries on a table from the page before.</summary>
