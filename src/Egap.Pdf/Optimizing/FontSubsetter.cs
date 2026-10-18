@@ -9,9 +9,10 @@ using Egap.Pdf.Annotations;
 namespace Egap.Pdf.Optimizing;
 
 /// <summary>
-/// Font subsetting (Phase 7 design Q6, Build Plan task 7): fully embedded TrueType and CFF programs are cut to the glyphs the
-/// document shows, through Egami's subsetter, keeping glyph IDs so content streams, encodings and CIDToGIDMaps stay as they
-/// are. Identical programs were merged before (task 6), so a program shared by several fonts is cut once to what all of
+/// Font subsetting (Phase 7 design Q6, Build Plan task 7, review R1): embedded TrueType and CFF programs are cut to the glyphs
+/// the document shows, programs already tagged as subsets too, since producers often embed far more than they show; a cut is
+/// kept only when it saves 10% or more. Egami's subsetter does the cut, keeping glyph IDs so content streams, encodings and
+/// CIDToGIDMaps stay as they are. Identical programs were merged before (task 6), so a program shared by several fonts is cut once to what all of
 /// them use. A font is left whole when it may still type new text or show glyphs the walk cannot see: fonts in the form's
 /// default resources or a widget's appearance, fonts in tiling patterns and soft masks, and every font of content that
 /// cannot be read. Fonts are never unembedded. Each result is checked: every code shown must reach a glyph with the same
@@ -20,6 +21,9 @@ namespace Egap.Pdf.Optimizing;
 /// </summary>
 internal static class FontSubsetter
 {
+    /// <summary>A cut program is kept only at this share of the original's size or less.</summary>
+    internal const double MinShare = 0.9;
+
     /// <summary>Subsets what can be subset; how many programs were cut and the bytes they no longer hold.</summary>
     /// <param name="document">The document.</param>
     /// <param name="keepCharSets">
@@ -78,7 +82,7 @@ internal static class FontSubsetter
         long bytes = 0;
         foreach ((PdfStream program, List<(PdfDictionary Font, HashSet<int> Codes)> list) in users)
         {
-            if (blocked.Contains(program) || list.Any(u => PdfFont.FromDictionary(u.Font) is { IsSubset: true } or { IsEmbedded: false }))
+            if (blocked.Contains(program) || list.Any(u => PdfFont.FromDictionary(u.Font) is { IsEmbedded: false }))
             {
                 continue;
             }
@@ -103,7 +107,7 @@ internal static class FontSubsetter
         foreach (PdfReference reference in document.Objects)
         {
             if (document.Objects[reference] is PdfDictionary font && Program(font) is not null
-                && PdfFont.FromDictionary(font) is { IsSubset: false, IsEmbedded: true })
+                && PdfFont.FromDictionary(font) is { IsEmbedded: true })
             {
                 return true;
             }
@@ -191,7 +195,8 @@ internal static class FontSubsetter
                 continue;
             }
 
-            if (subset.Data.Length >= original.Length)
+            // A cut must save something worth a rewrite: a program cut before, by Egap or its producer, often cannot.
+            if (subset.Data.Length > original.Length * MinShare)
             {
                 continue;
             }
@@ -301,19 +306,22 @@ internal static class FontSubsetter
     }
 
     /// <summary>Puts the subset tag before the font's name, its descendant's and its descriptor's.</summary>
+    /// <summary>Whether a font name already starts with a subset tag: six capital letters and a plus sign (9.6.4).</summary>
+    private static bool Tagged(string name) => name.Length > 7 && name[6] == '+' && name.AsSpan(0, 6).ContainsAnyExceptInRange('A', 'Z') is false;
+
     private static void Rename(PdfDictionary font, string tag)
     {
         PdfDictionary? descendant = font.Get<PdfArray>("DescendantFonts")?.Get(0)?.Resolve() as PdfDictionary;
         foreach (PdfDictionary dictionary in new[] { font, descendant }.OfType<PdfDictionary>())
         {
-            if (dictionary.GetName("BaseFont")?.Value is string name)
+            if (dictionary.GetName("BaseFont")?.Value is string name && !Tagged(name))
             {
                 dictionary["BaseFont"] = PdfName.Get(tag + "+" + name);
             }
         }
 
         PdfDictionary? descriptor = (descendant ?? font).Get<PdfDictionary>("FontDescriptor");
-        if (descriptor?.GetName("FontName")?.Value is string fontName && fontName.IndexOf('+', StringComparison.Ordinal) != 6)
+        if (descriptor?.GetName("FontName")?.Value is string fontName && !Tagged(fontName))
         {
             descriptor["FontName"] = PdfName.Get(tag + "+" + fontName);
         }

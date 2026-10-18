@@ -61,8 +61,8 @@ public sealed record PdfOptimizeOptions
     public bool MergeDuplicates { get; init; } = true;
 
     /// <summary>
-    /// Gets whether fully embedded TrueType and CFF fonts are cut to the glyphs used. Fonts a form may type with are kept
-    /// whole. Defaults to true.
+    /// Gets whether embedded TrueType and CFF fonts are cut to the glyphs used, fonts already tagged as subsets too, when that
+    /// saves 10% or more. Fonts a form may type with are kept whole. Defaults to true.
     /// </summary>
     public bool SubsetFonts { get; init; } = true;
 

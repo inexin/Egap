@@ -48,7 +48,7 @@ public sealed class FontSubsetterTests
     }
 
     [Fact]
-    public void LeavesFormFontsAndSubsetsWhole()
+    public void LeavesFormFontsWholeAndCutsTaggedSubsetsAgain()
     {
         using PdfDocument pdf = PdfDocument.Create();
         byte[] ttf = File.ReadAllBytes(Path.Combine(Fonts, "NotoSans-Latin.ttf"));
@@ -60,8 +60,11 @@ public sealed class FontSubsetterTests
         subset["BaseFont"] = PdfName.Get("ABCDEF+NotoSans");
         TextPage(pdf, subset, "(already cut) Tj");
 
-        Assert.Equal(0, FontSubsetter.Run(pdf).Fonts);
+        // Review R1: a font tagged as a subset that still holds the whole program is cut, and keeps its tag.
+        Assert.Equal(1, FontSubsetter.Run(pdf).Fonts);
         Assert.Equal(ttf.Length, FontFile(form).GetDecodedBytes().Length);
+        Assert.True(FontFile(subset).GetDecodedBytes().Length < ttf.Length / 2);
+        Assert.Equal("ABCDEF+NotoSans", subset.GetName("BaseFont")!.Value);
     }
 
     [Fact]
