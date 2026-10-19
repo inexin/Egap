@@ -117,7 +117,16 @@ internal sealed partial class DocxReader
             link = relationship.Target;
         }
 
-        return new Picture(document, image, width, height) { SourceUrl = link };
+        // An SVG picture as Word writes it: the SVG in an extension, the blip itself its raster stand-in.
+        ImageData? fallback = null;
+        if (blip?.Element(Ns.A + "extLst")?.Elements(Ns.A + "ext").Select(e => e.Element(Ns.Asvg + "svgBlip")).FirstOrDefault(e => e is not null) is { } svgBlip
+            && (string?)svgBlip.Attribute(Ns.R + "embed") is { } svgEmbed && ImageOf(svgEmbed) is { } svg && image.Bytes.Length > 0)
+        {
+            fallback = image;
+            image = svg;
+        }
+
+        return new Picture(document, image, width, height) { SourceUrl = link, Fallback = fallback };
     }
 
     private ImageData? ImageOf(string relationshipId)

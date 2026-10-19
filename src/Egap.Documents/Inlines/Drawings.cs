@@ -186,6 +186,7 @@ public sealed class Picture : Inline
     private FloatingPlacement? floating;
     private string? sourceUrl;
     private (double Left, double Top, double Right, double Bottom) crop;
+    private ImageData? fallback;
 
     /// <summary>A picture of <paramref name="image"/> shown at <paramref name="width"/> by <paramref name="height"/> points, not yet in a paragraph.</summary>
     public Picture(Document document, ImageData image, double width, double height)
@@ -255,6 +256,16 @@ public sealed class Picture : Inline
         set => SetProperty(ref crop, value);
     }
 
+    /// <summary>
+    /// A raster stand-in for <see cref="Image"/> where it cannot be shown, or null: Word keeps a PNG beside an SVG picture for
+    /// readers without SVG, and DOCX writes this one there.
+    /// </summary>
+    public ImageData? Fallback
+    {
+        get => fallback;
+        set => SetProperty(ref fallback, value);
+    }
+
     /// <inheritdoc/>
     public override Picture Clone(bool deep = true)
     {
@@ -273,7 +284,7 @@ public sealed class Picture : Inline
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        return CopyInline(new Picture(context.Target, image, width, height) { title = title, description = description, floating = floating, crop = crop, sourceUrl = sourceUrl });
+        return CopyInline(new Picture(context.Target, image, width, height) { title = title, description = description, floating = floating, crop = crop, sourceUrl = sourceUrl, fallback = fallback });
     }
 }
 

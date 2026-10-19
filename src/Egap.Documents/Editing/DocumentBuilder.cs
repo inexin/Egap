@@ -5,7 +5,7 @@ namespace Egap.Documents;
 /// tables, pictures, fields, hyperlinks and bookmarks. The cursor sits in a paragraph, before an inline or at its end;
 /// <see cref="Font"/> and <see cref="ParagraphFormat"/> give what is written its direct formatting.
 /// </summary>
-public sealed class DocumentBuilder
+public sealed partial class DocumentBuilder
 {
     private readonly Stack<TableState> tables = new();
     private readonly Stack<(ContentControl Group, Paragraph Paragraph, Inline? Before)> groups = new();

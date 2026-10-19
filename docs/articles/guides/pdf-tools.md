@@ -38,6 +38,20 @@ using PdfDocument handout = PdfImpose.NUp(contract, new NUpOptions { Columns = 2
 handout.Save("handout.pdf");
 ```
 
+`PdfStamp.Barcode` stamps any symbol Egami.Barcodes makes (QR, Data Matrix, PDF417, Aztec, Code 128, Code 39, ITF, EAN and
+UPC) as vector paths, so it scans at any zoom and in print. The draw options choose the quiet zone, bar width reduction and
+the font of the digits under a linear symbol.
+
+```csharp
+using Egami.Barcodes;
+using Egap.Pdf;
+
+using PdfDocument invoice = PdfDocument.Open("invoice.pdf");
+invoice.Stamp(PdfStamp.Barcode(Barcode.Qr("https://pay.example.com/2026-118"), 72, 72) with { Pages = [1], Anchor = StampAnchor.TopRight });
+invoice.Stamp(PdfStamp.Barcode(Barcode.Code128("ORDER-118"), 160, 40) with { Anchor = StampAnchor.BottomLeft });
+invoice.Save("invoice-coded.pdf");
+```
+
 ## Page ranges and units
 
 `PdfPageRange.Parse` reads pages written as text: numbers from 1, `z` for the last page, `r2` for the second from the end,

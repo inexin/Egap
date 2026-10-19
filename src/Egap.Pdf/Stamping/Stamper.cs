@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 
+using Egami.Barcodes;
 using Egami.Drawing;
 using Egami.Fonts;
 using Egami.Pixels;
@@ -114,6 +115,7 @@ internal static partial class Stamper
                 {
                     PdfStampKind.Text => TextForm(document, stamp, intent, Fill(stamp.Template!, index, count, document, title, file, now, bates, culture)),
                     PdfStampKind.Image => shared ??= ImageForm(document, stamp),
+                    PdfStampKind.Barcode => shared ??= BarcodeForm(document, stamp, intent),
                     _ => shared ??= stamp.SourcePage!.ToFormXObject(document),
                 };
                 double scale = stamp.Kind == PdfStampKind.Text ? 1 : stamp.Scale;
@@ -237,6 +239,15 @@ internal static partial class Stamper
     {
         float width = (float)stamp.ImageWidth, height = (float)stamp.ImageHeight;
         return Form(document, width, height, canvas => canvas.DrawImage(stamp.ImageRaster!, new RectF(0, 0, width, height)));
+    }
+
+    /// <summary>A barcode as vector paths in a form of the stamp's size, in the stamp's colour.</summary>
+    private static PdfFormXObject BarcodeForm(PdfDocument document, PdfStamp stamp, string? intent)
+    {
+        float width = (float)stamp.ImageWidth, height = (float)stamp.ImageHeight;
+        Rgba8 c = stamp.Color;
+        SolidPaint paint = new(new RgbaF32(c.R / 255f, c.G / 255f, c.B / 255f, 1));
+        return Form(document, width, height, canvas => canvas.DrawBarcode(stamp.BarcodeSymbol!, new RectF(0, 0, width, height), paint, stamp.BarcodeOptions), intent);
     }
 
     private static PdfFormXObject Form(PdfDocument document, float width, float height, Action<PdfCanvas> draw, string? intent = null)
