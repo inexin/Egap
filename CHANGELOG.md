@@ -16,6 +16,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `{file}`, each with an optional format. Stamps take them, `{pages}` still works, and `{{` writes a brace.
   `PdfPlaceholders.Fill` fills them in any text.
 
+### Find text
+- `FindText` on a document or a page finds a phrase or a regular expression, with case and whole-word options and a page
+  range. Each match gives its page, text, glyphs and a quadrilateral per line; phrases are found across line breaks within
+  a paragraph.
+
 ### Images and page files
 - `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
   GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.

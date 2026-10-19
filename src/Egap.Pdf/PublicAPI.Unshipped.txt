@@ -9,7 +9,21 @@ Egap.Pdf.Length.Millimetres.get -> double
 Egap.Pdf.Length.Points.get -> double
 Egap.Pdf.Length.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
 Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange! range) -> Egap.Pdf.PdfDocument!
+Egap.Pdf.PdfDocument.FindText(string! text, Egap.Pdf.PdfFindOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
+Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex! pattern, Egap.Pdf.PdfFindOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
 Egap.Pdf.PdfDocument.RenderPagesToFiles(string! path, Egap.Pdf.PdfRenderOptions? options = null, Egap.Pdf.PdfPageRange? pages = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfFindOptions
+Egap.Pdf.PdfFindOptions.<Clone>$() -> Egap.Pdf.PdfFindOptions!
+Egap.Pdf.PdfFindOptions.Equals(Egap.Pdf.PdfFindOptions? other) -> bool
+Egap.Pdf.PdfFindOptions.MatchCase.get -> bool
+Egap.Pdf.PdfFindOptions.MatchCase.init -> void
+Egap.Pdf.PdfFindOptions.Pages.get -> Egap.Pdf.PdfPageRange?
+Egap.Pdf.PdfFindOptions.Pages.init -> void
+Egap.Pdf.PdfFindOptions.PdfFindOptions() -> void
+Egap.Pdf.PdfFindOptions.Text.get -> Egap.Pdf.PdfTextOptions?
+Egap.Pdf.PdfFindOptions.Text.init -> void
+Egap.Pdf.PdfFindOptions.WholeWord.get -> bool
+Egap.Pdf.PdfFindOptions.WholeWord.init -> void
 Egap.Pdf.PdfImagePageOptions
 Egap.Pdf.PdfImagePageOptions.<Clone>$() -> Egap.Pdf.PdfImagePageOptions!
 Egap.Pdf.PdfImagePageOptions.AutoRotate.get -> bool
@@ -22,6 +36,8 @@ Egap.Pdf.PdfImagePageOptions.Margin.init -> void
 Egap.Pdf.PdfImagePageOptions.PageSize.get -> Egap.Pdf.PdfPageSize?
 Egap.Pdf.PdfImagePageOptions.PageSize.init -> void
 Egap.Pdf.PdfImagePageOptions.PdfImagePageOptions() -> void
+Egap.Pdf.PdfPage.FindText(string! text, Egap.Pdf.PdfFindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
+Egap.Pdf.PdfPage.FindText(System.Text.RegularExpressions.Regex! pattern, Egap.Pdf.PdfFindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
 Egap.Pdf.PdfPageRange
 Egap.Pdf.PdfPageRange.Resolve(int pageCount) -> System.Collections.Generic.IReadOnlyList<int>!
 Egap.Pdf.PdfPageRange.Text.get -> string!
@@ -44,10 +60,34 @@ Egap.Pdf.PdfPlaceholderValues.Title.get -> string?
 Egap.Pdf.PdfPlaceholderValues.Title.init -> void
 Egap.Pdf.PdfPlaceholderValues.TotalPages.get -> int
 Egap.Pdf.PdfPlaceholderValues.TotalPages.init -> void
+Egap.Pdf.PdfQuad
+Egap.Pdf.PdfQuad.Bounds.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfQuad.Deconstruct(out Egap.Pdf.PdfPoint UpperLeft, out Egap.Pdf.PdfPoint UpperRight, out Egap.Pdf.PdfPoint LowerLeft, out Egap.Pdf.PdfPoint LowerRight) -> void
+Egap.Pdf.PdfQuad.Equals(Egap.Pdf.PdfQuad other) -> bool
+Egap.Pdf.PdfQuad.LowerLeft.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfQuad.LowerLeft.init -> void
+Egap.Pdf.PdfQuad.LowerRight.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfQuad.LowerRight.init -> void
+Egap.Pdf.PdfQuad.PdfQuad() -> void
+Egap.Pdf.PdfQuad.PdfQuad(Egap.Pdf.PdfPoint UpperLeft, Egap.Pdf.PdfPoint UpperRight, Egap.Pdf.PdfPoint LowerLeft, Egap.Pdf.PdfPoint LowerRight) -> void
+Egap.Pdf.PdfQuad.ToPoints() -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPoint>!
+Egap.Pdf.PdfQuad.UpperLeft.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfQuad.UpperLeft.init -> void
+Egap.Pdf.PdfQuad.UpperRight.get -> Egap.Pdf.PdfPoint
+Egap.Pdf.PdfQuad.UpperRight.init -> void
 Egap.Pdf.PdfStamp.PageRange.get -> Egap.Pdf.PdfPageRange?
 Egap.Pdf.PdfStamp.PageRange.init -> void
+Egap.Pdf.PdfTextMatch
+Egap.Pdf.PdfTextMatch.Box.get -> Egap.Pdf.PdfRectangle
+Egap.Pdf.PdfTextMatch.Glyphs.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextGlyph!>!
+Egap.Pdf.PdfTextMatch.PageIndex.get -> int
+Egap.Pdf.PdfTextMatch.Quads.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfQuad>!
+Egap.Pdf.PdfTextMatch.Text.get -> string!
 override Egap.Pdf.Length.GetHashCode() -> int
 override Egap.Pdf.Length.ToString() -> string!
+override Egap.Pdf.PdfFindOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfFindOptions.GetHashCode() -> int
+override Egap.Pdf.PdfFindOptions.ToString() -> string!
 override Egap.Pdf.PdfImagePageOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfImagePageOptions.GetHashCode() -> int
 override Egap.Pdf.PdfImagePageOptions.ToString() -> string!
@@ -55,6 +95,8 @@ override Egap.Pdf.PdfPageRange.ToString() -> string!
 override Egap.Pdf.PdfPlaceholderValues.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPlaceholderValues.GetHashCode() -> int
 override Egap.Pdf.PdfPlaceholderValues.ToString() -> string!
+override Egap.Pdf.PdfQuad.GetHashCode() -> int
+override Egap.Pdf.PdfTextMatch.ToString() -> string!
 static Egap.Pdf.Length.Cm(double centimetres) -> Egap.Pdf.Length
 static Egap.Pdf.Length.implicit operator double(Egap.Pdf.Length length) -> double
 static Egap.Pdf.Length.implicit operator Egap.Pdf.Length(double points) -> Egap.Pdf.Length
@@ -78,6 +120,9 @@ static Egap.Pdf.Length.TryParse(string? text, out Egap.Pdf.Length length) -> boo
 static Egap.Pdf.Length.Zero.get -> Egap.Pdf.Length
 static Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable<string!>! paths, Egap.Pdf.PdfImagePageOptions? options = null) -> Egap.Pdf.PdfDocument!
 static Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable<System.ReadOnlyMemory<byte>>! images, Egap.Pdf.PdfImagePageOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfFindOptions.Default.get -> Egap.Pdf.PdfFindOptions!
+static Egap.Pdf.PdfFindOptions.operator !=(Egap.Pdf.PdfFindOptions? left, Egap.Pdf.PdfFindOptions? right) -> bool
+static Egap.Pdf.PdfFindOptions.operator ==(Egap.Pdf.PdfFindOptions? left, Egap.Pdf.PdfFindOptions? right) -> bool
 static Egap.Pdf.PdfImagePageOptions.Default.get -> Egap.Pdf.PdfImagePageOptions!
 static Egap.Pdf.PdfImagePageOptions.operator !=(Egap.Pdf.PdfImagePageOptions? left, Egap.Pdf.PdfImagePageOptions? right) -> bool
 static Egap.Pdf.PdfImagePageOptions.operator ==(Egap.Pdf.PdfImagePageOptions? left, Egap.Pdf.PdfImagePageOptions? right) -> bool
@@ -88,4 +133,9 @@ static Egap.Pdf.PdfPlaceholders.Fill(string! template, Egap.Pdf.PdfPlaceholderVa
 static Egap.Pdf.PdfPlaceholders.Names.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static Egap.Pdf.PdfPlaceholderValues.operator !=(Egap.Pdf.PdfPlaceholderValues? left, Egap.Pdf.PdfPlaceholderValues? right) -> bool
 static Egap.Pdf.PdfPlaceholderValues.operator ==(Egap.Pdf.PdfPlaceholderValues? left, Egap.Pdf.PdfPlaceholderValues? right) -> bool
+static Egap.Pdf.PdfQuad.FromRectangle(Egap.Pdf.PdfRectangle rectangle) -> Egap.Pdf.PdfQuad
+static Egap.Pdf.PdfQuad.operator !=(Egap.Pdf.PdfQuad left, Egap.Pdf.PdfQuad right) -> bool
+static Egap.Pdf.PdfQuad.operator ==(Egap.Pdf.PdfQuad left, Egap.Pdf.PdfQuad right) -> bool
 ~override Egap.Pdf.Length.Equals(object obj) -> bool
+~override Egap.Pdf.PdfQuad.Equals(object obj) -> bool
+~override Egap.Pdf.PdfQuad.ToString() -> string
