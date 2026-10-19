@@ -62,6 +62,18 @@ internal static partial class Stamper
 
         int count = document.Pages.Count;
         HashSet<int>? chosen = stamp.Pages is null ? null : [.. stamp.Pages];
+        if (stamp.PageRange is not null)
+        {
+            HashSet<int> ranged = [.. stamp.PageRange.Resolve(count).Select(i => i + 1)];
+            if (chosen is null)
+            {
+                chosen = ranged;
+            }
+            else
+            {
+                chosen.IntersectWith(ranged);
+            }
+        }
         CultureInfo culture = stamp.Culture ?? CultureInfo.InvariantCulture;
         PdfReference? helvetica = null, state = null, layer = null;
         PdfFormXObject? shared = null;

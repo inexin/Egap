@@ -3,6 +3,14 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Pdf 1.5.0 (unreleased)
+
+### Page ranges and units
+- `PdfPageRange.Parse` reads page choices such as `"1,3,5-10,z"`, with `r` counting from the end, `:odd` and `:even`, and
+  `x` to leave pages out. `ExtractPages` and `PdfStamp.PageRange` take one; `Resolve` turns one into page indices.
+- `Length` holds a size in points made from millimetres, centimetres, inches or points (`Length.Mm(20)`, `Length.Parse("2cm")`).
+  It converts to and from points without a cast, so it works wherever a size in points is asked for.
+
 ## Egap.Pdf 1.4.1 and Egap.Documents 1.1.1 (unreleased)
 
 - The bundled substitute fonts (Liberation Sans, Serif and Mono, Carlito, Caladea) now come from Egami's

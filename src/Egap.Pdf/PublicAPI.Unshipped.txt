@@ -1,1 +1,44 @@
 #nullable enable
+Egap.Pdf.Length
+Egap.Pdf.Length.Centimetres.get -> double
+Egap.Pdf.Length.CompareTo(Egap.Pdf.Length other) -> int
+Egap.Pdf.Length.Equals(Egap.Pdf.Length other) -> bool
+Egap.Pdf.Length.Inches.get -> double
+Egap.Pdf.Length.Length() -> void
+Egap.Pdf.Length.Millimetres.get -> double
+Egap.Pdf.Length.Points.get -> double
+Egap.Pdf.Length.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
+Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange! range) -> Egap.Pdf.PdfDocument!
+Egap.Pdf.PdfPageRange
+Egap.Pdf.PdfPageRange.Resolve(int pageCount) -> System.Collections.Generic.IReadOnlyList<int>!
+Egap.Pdf.PdfPageRange.Text.get -> string!
+Egap.Pdf.PdfStamp.PageRange.get -> Egap.Pdf.PdfPageRange?
+Egap.Pdf.PdfStamp.PageRange.init -> void
+override Egap.Pdf.Length.GetHashCode() -> int
+override Egap.Pdf.Length.ToString() -> string!
+override Egap.Pdf.PdfPageRange.ToString() -> string!
+static Egap.Pdf.Length.Cm(double centimetres) -> Egap.Pdf.Length
+static Egap.Pdf.Length.implicit operator double(Egap.Pdf.Length length) -> double
+static Egap.Pdf.Length.implicit operator Egap.Pdf.Length(double points) -> Egap.Pdf.Length
+static Egap.Pdf.Length.In(double inches) -> Egap.Pdf.Length
+static Egap.Pdf.Length.Mm(double millimetres) -> Egap.Pdf.Length
+static Egap.Pdf.Length.operator !=(Egap.Pdf.Length left, Egap.Pdf.Length right) -> bool
+static Egap.Pdf.Length.operator *(double factor, Egap.Pdf.Length length) -> Egap.Pdf.Length
+static Egap.Pdf.Length.operator *(Egap.Pdf.Length length, double factor) -> Egap.Pdf.Length
+static Egap.Pdf.Length.operator +(Egap.Pdf.Length left, Egap.Pdf.Length right) -> Egap.Pdf.Length
+static Egap.Pdf.Length.operator -(Egap.Pdf.Length left, Egap.Pdf.Length right) -> Egap.Pdf.Length
+static Egap.Pdf.Length.operator -(Egap.Pdf.Length length) -> Egap.Pdf.Length
+static Egap.Pdf.Length.operator /(Egap.Pdf.Length length, double divisor) -> Egap.Pdf.Length
+static Egap.Pdf.Length.operator <(Egap.Pdf.Length left, Egap.Pdf.Length right) -> bool
+static Egap.Pdf.Length.operator <=(Egap.Pdf.Length left, Egap.Pdf.Length right) -> bool
+static Egap.Pdf.Length.operator ==(Egap.Pdf.Length left, Egap.Pdf.Length right) -> bool
+static Egap.Pdf.Length.operator >(Egap.Pdf.Length left, Egap.Pdf.Length right) -> bool
+static Egap.Pdf.Length.operator >=(Egap.Pdf.Length left, Egap.Pdf.Length right) -> bool
+static Egap.Pdf.Length.Parse(string! text) -> Egap.Pdf.Length
+static Egap.Pdf.Length.Pt(double points) -> Egap.Pdf.Length
+static Egap.Pdf.Length.TryParse(string? text, out Egap.Pdf.Length length) -> bool
+static Egap.Pdf.Length.Zero.get -> Egap.Pdf.Length
+static Egap.Pdf.PdfPageRange.All.get -> Egap.Pdf.PdfPageRange!
+static Egap.Pdf.PdfPageRange.Parse(string! text) -> Egap.Pdf.PdfPageRange!
+static Egap.Pdf.PdfPageRange.TryParse(string? text, out Egap.Pdf.PdfPageRange? range) -> bool
+~override Egap.Pdf.Length.Equals(object obj) -> bool

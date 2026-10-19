@@ -34,6 +34,23 @@ using PdfDocument handout = PdfImpose.NUp(contract, new NUpOptions { Columns = 2
 handout.Save("handout.pdf");
 ```
 
+## Page ranges and units
+
+`PdfPageRange.Parse` reads pages written as text: numbers from 1, `z` for the last page, `r2` for the second from the end,
+ranges such as `5-10` (or `10-5`, backwards), `:odd` or `:even` after a part, and `x` before a part to leave its pages out.
+`Length` holds a size made from points, millimetres, centimetres or inches. It turns into points by itself, so it goes
+wherever a size in points is asked for.
+
+```csharp
+using Egap.Pdf;
+
+using PdfDocument report = PdfDocument.Open("report.pdf");
+using PdfDocument summary = report.ExtractPages(PdfPageRange.Parse("1-3,z"));
+report.Stamp(PdfStamp.Text("Draft") with { PageRange = PdfPageRange.Parse("2-z"), Offset = new(0, Length.Mm(10)) });
+using PdfDocument handout = PdfImpose.NUp(report, new NUpOptions { Margin = Length.Mm(10), Gutter = Length.Mm(4) });
+IReadOnlyList<int> evenPages = PdfPageRange.Parse("1-z:even").Resolve(report.Pages.Count);   // 0-based indices
+```
+
 ## Compare
 
 `PdfCompare` finds what changed between two versions, word by word with pages aligned, and also compares the rendered pages

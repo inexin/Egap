@@ -134,7 +134,7 @@ public sealed class PdfDocument : IDisposable
 
     /// <summary>
     /// A new document with the pages of each source in turn (Phase 2 task 18), imported as
-    /// <see cref="PdfPageCollection.Import"/> imports them; the sources must stay open until it is written.
+    /// <see cref="PdfPageCollection.Import(PdfDocument, IEnumerable{int}?, int?, PdfImportOptions?)"/> imports them; the sources must stay open until it is written.
     /// </summary>
     public static PdfDocument Merge(params IEnumerable<PdfDocument> sources)
     {
@@ -158,7 +158,7 @@ public sealed class PdfDocument : IDisposable
 
     /// <summary>
     /// A new document with some of this document's pages, in the order given (Phase 2 task 18), imported as
-    /// <see cref="PdfPageCollection.Import"/> imports them; this document must stay open until it is written.
+    /// <see cref="PdfPageCollection.Import(PdfDocument, IEnumerable{int}?, int?, PdfImportOptions?)"/> imports them; this document must stay open until it is written.
     /// </summary>
     public PdfDocument ExtractPages(IEnumerable<int> pageIndices)
     {
@@ -174,6 +174,18 @@ public sealed class PdfDocument : IDisposable
             extracted.Dispose();
             throw;
         }
+    }
+
+    /// <summary>
+    /// A new document with the pages a range chooses, such as <c>PdfPageRange.Parse("1-3,z")</c>, in the range's order;
+    /// otherwise as <see cref="ExtractPages(IEnumerable{int})"/>.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The range names a page this document does not have.</exception>
+    public PdfDocument ExtractPages(PdfPageRange range)
+    {
+        ArgumentNullException.ThrowIfNull(range);
+        return ExtractPages(range.Resolve(Pages.Count));
     }
 
     /// <summary>The copier for a source document, made on first use, so each source has one map (Phase 2 Q4).</summary>

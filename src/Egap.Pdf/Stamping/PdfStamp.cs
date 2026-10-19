@@ -110,6 +110,12 @@ public sealed record PdfStamp
     /// <summary>Gets the 1-based page numbers to stamp; null (the default) for every page.</summary>
     public IReadOnlyList<int>? Pages { get; init; }
 
+    /// <summary>
+    /// Gets the pages to stamp as a range such as <c>PdfPageRange.Parse("2-z")</c>; null (the default) for every page. When
+    /// both this and <see cref="Pages"/> are set, a page is stamped only when both choose it.
+    /// </summary>
+    public PdfPageRange? PageRange { get; init; }
+
     /// <summary>Gets the size an image or page stamp is drawn at, as a multiple of its own. Defaults to 1.</summary>
     public double Scale { get; init; } = 1;
 
