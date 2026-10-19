@@ -12,6 +12,7 @@ using EgamiParagraphStyle = Egami.Fonts.Layout.ParagraphStyle;
 using EgamiTab = Egami.Fonts.Layout.TabStop;
 using EgamiTabAlignment = Egami.Fonts.Layout.TabAlignment;
 using EgamiTextDirection = Egami.Fonts.Unicode.TextDirection;
+using EgamiWordBreak = Egami.Fonts.Layout.WordBreak;
 
 namespace Egap.Documents.Layout;
 
@@ -345,6 +346,11 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             };
         }
 
+        if (format.Overline)
+        {
+            lines |= TextDecorationLines.Overline;
+        }
+
         if (format.Strikethrough || format.DoubleStrikethrough)
         {
             lines |= TextDecorationLines.LineThrough;
@@ -383,10 +389,12 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                 Color = format.UnderlineColor.Kind == DocumentColorKind.Auto ? null : format.UnderlineColor.Resolve(theme, format.TextColor),
             },
             LetterSpacing = format.Spacing == 0 ? null : (float)format.Spacing,
+            WordSpacing = format.WordSpacing == 0 ? null : (float)format.WordSpacing,
             BaselineShift = shift == 0 ? null : shift,
 
-            // Word kerns only text at or above the run's kerning size (w:kern), and sets no standard ligatures by default.
-            Features = format.Kerning > 0 && size >= format.Kerning ? NoLigatures : NoKerningNoLigatures,
+            // Word kerns only text at or above the run's kerning size (w:kern), and sets no standard ligatures by default;
+            // the run's own features come after, so they win.
+            Features = WithOwn(format.Kerning > 0 && size >= format.Kerning ? NoLigatures : NoKerningNoLigatures, format.Features),
         };
     }
 
@@ -394,6 +402,24 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
     private const double DefaultStopsReach = 1584;
 
     private static readonly FontFeature[] NoLigatures = [FontFeature.Parse("liga=0"), FontFeature.Parse("clig=0")];
+
+    /// <summary>The default features with the run's own added after them.</summary>
+    private static FontFeature[] WithOwn(FontFeature[] defaults, FontFeatures own)
+    {
+        if (own.Count == 0)
+        {
+            return defaults;
+        }
+
+        FontFeature[] all = new FontFeature[defaults.Length + own.Count];
+        defaults.CopyTo(all, 0);
+        for (int i = 0; i < own.Count; i++)
+        {
+            all[defaults.Length + i] = FontFeature.Parse(own[i].Tag.TrimEnd() + "=" + own[i].Value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        return all;
+    }
 
     private static readonly FontFeature[] NoKerningNoLigatures = [FontFeature.Parse("kern=0"), .. NoLigatures];
 
@@ -529,6 +555,13 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             TabStops = tabs,
             Hyphen = null,
             Fallback = fonts.Fallback,
+            LineBreaking = format.WordBreak switch
+            {
+                WordBreak.BreakAll => new LineBreakOptions(EgamiWordBreak.BreakAll, OverflowWrap.Normal, LineBreakStrictness.Auto, null),
+                WordBreak.KeepAll => new LineBreakOptions(EgamiWordBreak.KeepAll, OverflowWrap.Normal, LineBreakStrictness.Auto, null),
+                WordBreak.Anywhere => new LineBreakOptions(EgamiWordBreak.Normal, OverflowWrap.Anywhere, LineBreakStrictness.Auto, null),
+                _ => default,
+            },
         };
     }
 

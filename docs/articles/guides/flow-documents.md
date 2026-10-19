@@ -50,6 +50,26 @@ Document page = HtmlFormat.Load("invoice.html", new HtmlLoadOptions
 Form controls in HTML (text inputs, check boxes, radio buttons, selects and text areas) are read as content controls that
 hold their values, as Word's are, so they keep their place in the text and a PDF export can turn them into form fields.
 
+## Text options
+
+Besides fonts, sizes and colours, runs take word spacing, an overline and any OpenType feature, such as ligatures,
+tabular or old-style figures and stylistic sets. Paragraphs choose where lines may break inside words. HTML's
+`word-spacing`, `text-decoration: overline`, `font-feature-settings`, `font-variant-ligatures`, `font-variant-numeric`,
+`word-break` and `overflow-wrap` read into the same settings. DOCX keeps the features Word has (ligatures, number forms
+and spacing, stylistic sets, contextual alternates); Word has no word spacing or overline.
+
+```csharp
+using Egap.Documents;
+
+Document doc = new();
+DocumentBuilder builder = new(doc);
+builder.Font.WordSpacing = 2;
+builder.Font.Overline = true;
+builder.Font.Features = FontFeatures.Parse("liga=0, tnum");
+builder.ParagraphFormat.WordBreak = WordBreak.Anywhere;
+builder.Writeln("Invoice 2026-118: https://example.com/a/very/long/address/that/must/break");
+```
+
 ## Page layout
 
 `Layout` breaks the document into pages, with floats, columns, headers and footers, and footnotes. Each page draws onto any

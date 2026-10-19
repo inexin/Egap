@@ -20,6 +20,12 @@ internal static class DocxProperties
 
         foreach (XElement e in rPr.Elements())
         {
+            if (DocxFeatures.IsFeature(e))
+            {
+                DocxFeatures.Read(e, format);
+                continue;
+            }
+
             if (e.Name.Namespace != Ns.W)
             {
                 unknown?.Invoke(e);

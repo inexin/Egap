@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>Character formatting: font, size, colour, bold and the rest (Word's run properties). Every property is nullable: null means not set here.</summary>
 public sealed partial class RunFormat : FormatBase
 {
-    internal const int Count = 41;
+    internal const int Count = 44;
 
     /// <summary>The toggle properties, whose values from styles combine as Word's do (ECMA-376 17.7.3).</summary>
     internal static readonly int[] Toggles = [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -50,6 +50,9 @@ public sealed partial class RunFormat : FormatBase
     internal const int ComplexScriptId = 38;
     internal const int NoProofId = 39;
     internal const int SpecialHiddenId = 40;
+    internal const int WordSpacingId = 41;
+    internal const int OverlineId = 42;
+    internal const int FeaturesId = 43;
 
     internal override int PropertyCount => Count;
 
@@ -340,6 +343,27 @@ public sealed partial class RunFormat : FormatBase
         set => SetRaw(40, value);
     }
 
+    /// <summary>Extra space added to each space between words, in points; negative tightens. Word has no such setting.</summary>
+    public double? WordSpacing
+    {
+        get => Get<double>(41);
+        set => SetLength(41, value, allowNegative: true);
+    }
+
+    /// <summary>A line over the text. Word has no such setting.</summary>
+    public bool? Overline
+    {
+        get => Get<bool>(42);
+        set => SetRaw(42, value);
+    }
+
+    /// <summary>OpenType features turned on or off, such as ligatures and tabular figures, on top of the defaults.</summary>
+    public FontFeatures? Features
+    {
+        get => GetRef<FontFeatures>(43);
+        set => SetRaw(43, value);
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -385,6 +409,9 @@ public sealed partial class RunFormat : FormatBase
             38 => nameof(ComplexScript),
             39 => nameof(NoProof),
             40 => nameof(SpecialHidden),
+            41 => nameof(WordSpacing),
+            42 => nameof(Overline),
+            43 => nameof(Features),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }

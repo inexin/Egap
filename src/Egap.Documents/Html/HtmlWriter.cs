@@ -800,6 +800,11 @@ internal sealed class HtmlWriter
             lines.Add("line-through");
         }
 
+        if (format.Overline == true)
+        {
+            lines.Add("overline");
+        }
+
         if (lines.Count > 0)
         {
             string value = string.Join(' ', lines.Where(l => l.Length > 0));
@@ -856,6 +861,16 @@ internal sealed class HtmlWriter
             css.Add(("letter-spacing", Points(spacing)));
         }
 
+        if (format.WordSpacing is { } wordSpacing && wordSpacing != 0)
+        {
+            css.Add(("word-spacing", Points(wordSpacing)));
+        }
+
+        if (format.Features is { Count: > 0 } features)
+        {
+            css.Add(("font-feature-settings", string.Join(", ", features.Select(f => $"'{f.Tag.TrimEnd()}' {f.Value.ToString(Invariant)}"))));
+        }
+
         if (format.Hidden == true)
         {
             css.Add(("display", "none"));
@@ -906,6 +921,19 @@ internal sealed class HtmlWriter
         if (format.LineSpacing is { } spacing && format.LineSpacingRule is { } rule)
         {
             css.Add(("line-height", rule == LineSpacingRule.Multiple ? (spacing * 1.15).ToString("0.###", Invariant) : Points(spacing)));
+        }
+
+        switch (format.WordBreak)
+        {
+            case WordBreak.BreakAll:
+                css.Add(("word-break", "break-all"));
+                break;
+            case WordBreak.KeepAll:
+                css.Add(("word-break", "keep-all"));
+                break;
+            case WordBreak.Anywhere:
+                css.Add(("overflow-wrap", "anywhere"));
+                break;
         }
 
         AddBorders(css, format.BorderTop, format.BorderRight, format.BorderBottom, format.BorderLeft);

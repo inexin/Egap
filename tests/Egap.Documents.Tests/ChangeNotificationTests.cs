@@ -383,6 +383,7 @@ public class ChangeNotificationTests
             _ when t == typeof(Shading) => Shading.Solid(DocumentColor.FromHex("#EEEEEE")),
             _ when t == typeof(IReadOnlyList<TabStop>) => new[] { new TabStop(36) },
             _ when t == typeof(IReadOnlyList<TextColumn>) => new[] { new TextColumn(200, 10) },
+            _ when t == typeof(FontFeatures) => FontFeatures.Parse("tnum"),
             _ => throw new NotSupportedException(t.Name),
         };
     }

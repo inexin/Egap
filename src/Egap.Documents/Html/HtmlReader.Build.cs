@@ -615,6 +615,18 @@ internal sealed partial class HtmlReader
         }
 
         LineHeight(style, format);
+        WordBreak? wordBreak = style.Keyword("word-break") switch
+        {
+            "break-all" => WordBreak.BreakAll,
+            "keep-all" => WordBreak.KeepAll,
+            "break-word" => WordBreak.Anywhere,
+            _ => (style.Keyword("overflow-wrap") ?? style.Keyword("word-wrap")) is "anywhere" or "break-word" ? WordBreak.Anywhere : null,
+        };
+        if (wordBreak is not null)
+        {
+            format.WordBreak = wordBreak;
+        }
+
         if (flow.PendingPageBreak)
         {
             format.PageBreakBefore = true;

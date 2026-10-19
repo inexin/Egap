@@ -3,6 +3,15 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Documents 1.3.0 (unreleased)
+
+### Text options
+- `RunFormat.WordSpacing`, `Overline` and `Features` (any OpenType feature on or off, `FontFeatures.Parse("liga=0, tnum")`),
+  and `ParagraphFormat.WordBreak` (normal, break all, keep all, anywhere), laid out and drawn.
+- HTML reads and writes them as `word-spacing`, `text-decoration: overline`, `font-feature-settings`,
+  `font-variant-ligatures`, `font-variant-numeric`, `word-break` and `overflow-wrap`; DOCX keeps ligatures, number forms
+  and spacing, stylistic sets and contextual alternates.
+
 ## Egap.Pdf 1.5.0 (unreleased)
 
 ### Page ranges and units

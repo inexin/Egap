@@ -220,6 +220,12 @@ internal static class PageDrawing
         {
             Line(baseline - (size * 0.28f));
         }
+
+        // An overline at the em box's top, as browsers draw it, clear of capitals and most accents.
+        if (decoration.Lines.HasFlag(TextDecorationLines.Overline))
+        {
+            Line(baseline - (size * 0.86f));
+        }
     }
 
     private static void DrawObject(ObjectBox box, Canvas canvas, LayoutDrawObserver? observer)

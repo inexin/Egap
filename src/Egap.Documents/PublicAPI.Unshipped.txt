@@ -1,1 +1,31 @@
 #nullable enable
+Egap.Documents.FontFeatures
+Egap.Documents.FontFeatures.Count.get -> int
+Egap.Documents.FontFeatures.Equals(Egap.Documents.FontFeatures? other) -> bool
+Egap.Documents.FontFeatures.GetEnumerator() -> System.Collections.Generic.IEnumerator<(string! Tag, int Value)>!
+Egap.Documents.FontFeatures.this[int index].get -> (string! Tag, int Value)
+Egap.Documents.FontFeatures.ValueOf(string! tag) -> int?
+Egap.Documents.FontFeatures.With(Egap.Documents.FontFeatures! other) -> Egap.Documents.FontFeatures!
+Egap.Documents.ParagraphFormat.WordBreak.get -> Egap.Documents.WordBreak?
+Egap.Documents.ParagraphFormat.WordBreak.set -> void
+Egap.Documents.ResolvedParagraphFormat.WordBreak.get -> Egap.Documents.WordBreak
+Egap.Documents.ResolvedRunFormat.Features.get -> Egap.Documents.FontFeatures!
+Egap.Documents.ResolvedRunFormat.Overline.get -> bool
+Egap.Documents.ResolvedRunFormat.WordSpacing.get -> double
+Egap.Documents.RunFormat.Features.get -> Egap.Documents.FontFeatures?
+Egap.Documents.RunFormat.Features.set -> void
+Egap.Documents.RunFormat.Overline.get -> bool?
+Egap.Documents.RunFormat.Overline.set -> void
+Egap.Documents.RunFormat.WordSpacing.get -> double?
+Egap.Documents.RunFormat.WordSpacing.set -> void
+Egap.Documents.WordBreak
+Egap.Documents.WordBreak.Anywhere = 3 -> Egap.Documents.WordBreak
+Egap.Documents.WordBreak.BreakAll = 1 -> Egap.Documents.WordBreak
+Egap.Documents.WordBreak.KeepAll = 2 -> Egap.Documents.WordBreak
+Egap.Documents.WordBreak.Normal = 0 -> Egap.Documents.WordBreak
+override Egap.Documents.FontFeatures.Equals(object? obj) -> bool
+override Egap.Documents.FontFeatures.GetHashCode() -> int
+override Egap.Documents.FontFeatures.ToString() -> string!
+static Egap.Documents.FontFeatures.None.get -> Egap.Documents.FontFeatures!
+static Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable<(string! Tag, int Value)>! features) -> Egap.Documents.FontFeatures!
+static Egap.Documents.FontFeatures.Parse(string! text) -> Egap.Documents.FontFeatures!

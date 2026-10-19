@@ -46,6 +46,9 @@ RUN = [
     ("ComplexScript", "bool", "bool", "Treat the text as complex script whatever its characters.", ""),
     ("NoProof", "bool", "bool", "Leave out of spelling and grammar checks.", ""),
     ("SpecialHidden", "bool", "bool", "Word's specVanish: hidden even when hidden text is shown (used by style separators).", ""),
+    ("WordSpacing", "double", "slen", "Extra space added to each space between words, in points; negative tightens. Word has no such setting.", ""),
+    ("Overline", "bool", "bool", "A line over the text. Word has no such setting.", ""),
+    ("Features", "FontFeatures", "ref", "OpenType features turned on or off, such as ligatures and tabular figures, on top of the defaults.", ""),
 ]
 
 PARA = [
@@ -80,6 +83,7 @@ PARA = [
     ("MirrorIndents", "bool", "bool", "Left and right indents swap on even pages.", ""),
     ("List", "List", "list", "The list the paragraph is in; List.None takes it out of a list its style gives.", ""),
     ("ListLevel", "int", "listlevel", "The paragraph's level in its list, 0 to 8.", ""),
+    ("WordBreak", "WordBreak", "enum", "Where lines may break inside words.", ""),
 ]
 
 TABLE = [

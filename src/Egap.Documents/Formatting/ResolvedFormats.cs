@@ -132,6 +132,15 @@ public sealed class ResolvedRunFormat
     /// <summary>Hidden even when hidden text is shown.</summary>
     public bool SpecialHidden => Flag(RunFormat.SpecialHiddenId);
 
+    /// <summary>Extra space added to each space between words, in points.</summary>
+    public double WordSpacing => Value(RunFormat.WordSpacingId, 0.0);
+
+    /// <summary>A line over the text.</summary>
+    public bool Overline => Flag(RunFormat.OverlineId);
+
+    /// <summary>OpenType features turned on or off on top of the defaults; empty for none.</summary>
+    public FontFeatures Features => values[RunFormat.FeaturesId] as FontFeatures ?? FontFeatures.None;
+
     /// <summary>The effective values as a stand-alone <see cref="RunFormat"/>, every property the chain set filled in.</summary>
     public RunFormat ToRunFormat()
     {
@@ -271,6 +280,9 @@ public sealed class ResolvedParagraphFormat
 
     /// <summary>The paragraph's level in its list, 0 to 8.</summary>
     public int ListLevel => Value(ParagraphFormat.ListLevelId, 0);
+
+    /// <summary>Where lines may break inside words.</summary>
+    public WordBreak WordBreak => Value(ParagraphFormat.WordBreakId, WordBreak.Normal);
 
     /// <summary>The effective values as a stand-alone <see cref="ParagraphFormat"/>.</summary>
     public ParagraphFormat ToParagraphFormat()
