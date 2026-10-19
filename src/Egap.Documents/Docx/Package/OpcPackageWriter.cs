@@ -122,6 +122,52 @@ internal sealed class OpcPackageWriter
 
     internal static byte[] Serialize(XDocument xml)
     {
+        try
+        {
+            return SerializeAsIs(xml);
+        }
+        catch (ArgumentException)
+        {
+            // A name or text from the model holds characters XML cannot (control characters, lone surrogates): they are
+            // left out, rather than the part.
+            foreach (XElement element in xml.Descendants())
+            {
+                foreach (XAttribute attribute in element.Attributes())
+                {
+                    attribute.Value = XmlSafe(attribute.Value);
+                }
+
+                foreach (XText text in element.Nodes().OfType<XText>())
+                {
+                    text.Value = XmlSafe(text.Value);
+                }
+            }
+
+            return SerializeAsIs(xml);
+        }
+    }
+
+    /// <summary>Text with the characters XML 1.0 cannot hold left out; surrogate pairs are kept.</summary>
+    private static string XmlSafe(string text)
+    {
+        StringBuilder clean = new(text.Length);
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (char.IsHighSurrogate(text[i]) && i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+            {
+                clean.Append(text, i++, 2);
+            }
+            else if (XmlConvert.IsXmlChar(text[i]))
+            {
+                clean.Append(text[i]);
+            }
+        }
+
+        return clean.Length == text.Length ? text : clean.ToString();
+    }
+
+    private static byte[] SerializeAsIs(XDocument xml)
+    {
         using MemoryStream output = new();
         XmlWriterSettings settings = new() { Encoding = new UTF8Encoding(false), Indent = false, NewLineHandling = NewLineHandling.Entitize };
         using (XmlWriter writer = XmlWriter.Create(output, settings))

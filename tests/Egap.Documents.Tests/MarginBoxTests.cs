@@ -153,6 +153,26 @@ public sealed class MarginBoxTests
         Assert.Null(section.PageSetup.DifferentFirstPage);
     }
 
+    [Fact]
+    public void FuzzFindingsSaveAndLayOut()
+    {
+        // Control characters in an HTML id (a bookmark name) and title are left out of the DOCX instead of failing the save.
+        Document html = HtmlFormat.Parse("<title>T</title><p id='xy'>Text</p>");
+        using MemoryStream saved = new();
+        DocxFormat.Save(html, saved);
+        saved.Position = 0;
+        Assert.Equal("Text", DocxFormat.Load(saved).Sections[0].Body.GetText().Trim());
+
+        // Margins wider than the page with margin boxes, and a page far larger than PDF allows.
+        Document document = Page(out Section section);
+        section.PageSetup.MarginLeft = section.PageSetup.MarginRight = 300;
+        section.MarginBoxes.GetOrAdd(MarginBoxPosition.TopCenter).AddParagraph("Box");
+        DocxFormat.Save(document, Stream.Null);
+        section.PageSetup.PageHeight = 1e12;
+        PageLayout page = Assert.Single(document.Layout(Isolated).Pages);
+        Assert.Equal(14400, page.Height);
+    }
+
     private static Document Page(out Section section)
     {
         Document document = new();

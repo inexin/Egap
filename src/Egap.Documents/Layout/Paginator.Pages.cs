@@ -7,9 +7,12 @@ internal readonly record struct ColumnGeometry(double X, double Width);
 internal sealed record Geometry(double PageWidth, double PageHeight, double BodyLeft, double BodyTop, double BodyRight, double BodyBottom, IReadOnlyList<ColumnGeometry> Columns)
 {
     // Word's defaults: US Letter, 1 inch margins, header and footer half an inch from the edge.
-    public static double WidthOf(Section section) => section.PageSetup.PageWidth ?? 612;
+    // A page is at most 14 400 points on a side, as PDF allows; a larger size read from a file is held to that.
+    public static double WidthOf(Section section) => Math.Clamp(section.PageSetup.PageWidth ?? 612, 1, MaxPageSide);
 
-    public static double HeightOf(Section section) => section.PageSetup.PageHeight ?? 792;
+    public static double HeightOf(Section section) => Math.Clamp(section.PageSetup.PageHeight ?? 792, 1, MaxPageSide);
+
+    private const double MaxPageSide = 14400;
 
     /// <summary>A page's geometry; <paramref name="number"/> decides which side the margins go on when they are mirrored.</summary>
     public static Geometry Of(Section section, int number, double? top = null, double? bottom = null)

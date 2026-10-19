@@ -422,7 +422,7 @@ internal sealed partial class DocxWriter
             }
 
             HeaderFooter story = own is null ? new HeaderFooter(document, kind) : Copy(own, kind);
-            double width = (setup.PageWidth ?? 612) - (setup.MarginLeft ?? 72) - (setup.MarginRight ?? 72) - (setup.Gutter ?? 0);
+            double width = Math.Max(0, (setup.PageWidth ?? 612) - (setup.MarginLeft ?? 72) - (setup.MarginRight ?? 72) - (setup.Gutter ?? 0));
             Table table = new(document) { Grid = [width / 3, width / 3, width / 3] };
             table.Format.Layout = TableLayoutKind.Fixed;
             table.Format.CellMarginLeft = table.Format.CellMarginRight = 0;

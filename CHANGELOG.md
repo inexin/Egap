@@ -54,6 +54,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 ### Fixes
 - HTML: a space after an inline element at the start of a paragraph (`<b>ACME</b> Ltd`) was lost.
 - HTML: the `<title>` and the author meta element are read into the document properties, as the writer writes them.
+- DOCX: a name or text holding characters XML cannot (such as a control character in an HTML id) no longer fails the
+  save; those characters are left out.
+- Layout: a page larger than 14 400 points on a side (PDF's limit) is laid out at that size instead of running out of
+  memory.
 
 ### Strict layout and portable fonts
 - `LayoutOptions.Strict` throws a `LayoutException` naming the node, the page and the `LayoutProblem` (text or content
