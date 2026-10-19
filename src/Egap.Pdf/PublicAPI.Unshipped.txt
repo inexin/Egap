@@ -9,6 +9,19 @@ Egap.Pdf.Length.Millimetres.get -> double
 Egap.Pdf.Length.Points.get -> double
 Egap.Pdf.Length.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
 Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange! range) -> Egap.Pdf.PdfDocument!
+Egap.Pdf.PdfDocument.RenderPagesToFiles(string! path, Egap.Pdf.PdfRenderOptions? options = null, Egap.Pdf.PdfPageRange? pages = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfImagePageOptions
+Egap.Pdf.PdfImagePageOptions.<Clone>$() -> Egap.Pdf.PdfImagePageOptions!
+Egap.Pdf.PdfImagePageOptions.AutoRotate.get -> bool
+Egap.Pdf.PdfImagePageOptions.AutoRotate.init -> void
+Egap.Pdf.PdfImagePageOptions.Dpi.get -> double
+Egap.Pdf.PdfImagePageOptions.Dpi.init -> void
+Egap.Pdf.PdfImagePageOptions.Equals(Egap.Pdf.PdfImagePageOptions? other) -> bool
+Egap.Pdf.PdfImagePageOptions.Margin.get -> Egap.Pdf.Length
+Egap.Pdf.PdfImagePageOptions.Margin.init -> void
+Egap.Pdf.PdfImagePageOptions.PageSize.get -> Egap.Pdf.PdfPageSize?
+Egap.Pdf.PdfImagePageOptions.PageSize.init -> void
+Egap.Pdf.PdfImagePageOptions.PdfImagePageOptions() -> void
 Egap.Pdf.PdfPageRange
 Egap.Pdf.PdfPageRange.Resolve(int pageCount) -> System.Collections.Generic.IReadOnlyList<int>!
 Egap.Pdf.PdfPageRange.Text.get -> string!
@@ -16,6 +29,9 @@ Egap.Pdf.PdfStamp.PageRange.get -> Egap.Pdf.PdfPageRange?
 Egap.Pdf.PdfStamp.PageRange.init -> void
 override Egap.Pdf.Length.GetHashCode() -> int
 override Egap.Pdf.Length.ToString() -> string!
+override Egap.Pdf.PdfImagePageOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfImagePageOptions.GetHashCode() -> int
+override Egap.Pdf.PdfImagePageOptions.ToString() -> string!
 override Egap.Pdf.PdfPageRange.ToString() -> string!
 static Egap.Pdf.Length.Cm(double centimetres) -> Egap.Pdf.Length
 static Egap.Pdf.Length.implicit operator double(Egap.Pdf.Length length) -> double
@@ -38,6 +54,11 @@ static Egap.Pdf.Length.Parse(string! text) -> Egap.Pdf.Length
 static Egap.Pdf.Length.Pt(double points) -> Egap.Pdf.Length
 static Egap.Pdf.Length.TryParse(string? text, out Egap.Pdf.Length length) -> bool
 static Egap.Pdf.Length.Zero.get -> Egap.Pdf.Length
+static Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable<string!>! paths, Egap.Pdf.PdfImagePageOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable<System.ReadOnlyMemory<byte>>! images, Egap.Pdf.PdfImagePageOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfImagePageOptions.Default.get -> Egap.Pdf.PdfImagePageOptions!
+static Egap.Pdf.PdfImagePageOptions.operator !=(Egap.Pdf.PdfImagePageOptions? left, Egap.Pdf.PdfImagePageOptions? right) -> bool
+static Egap.Pdf.PdfImagePageOptions.operator ==(Egap.Pdf.PdfImagePageOptions? left, Egap.Pdf.PdfImagePageOptions? right) -> bool
 static Egap.Pdf.PdfPageRange.All.get -> Egap.Pdf.PdfPageRange!
 static Egap.Pdf.PdfPageRange.Parse(string! text) -> Egap.Pdf.PdfPageRange!
 static Egap.Pdf.PdfPageRange.TryParse(string? text, out Egap.Pdf.PdfPageRange? range) -> bool

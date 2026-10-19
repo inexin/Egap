@@ -18,7 +18,7 @@ namespace Egap.Pdf;
 /// PdfDictionary? info = pdf.Trailer.Get&lt;PdfDictionary&gt;("Info");
 /// </code>
 /// </example>
-public sealed class PdfDocument : IDisposable
+public sealed partial class PdfDocument : IDisposable
 {
     private readonly PdfSource source;
     private readonly WarningLog log;

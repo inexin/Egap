@@ -11,6 +11,19 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `Length` holds a size in points made from millimetres, centimetres, inches or points (`Length.Mm(20)`, `Length.Parse("2cm")`).
   It converts to and from points without a cast, so it works wherever a size in points is asked for.
 
+### Images and page files
+- `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
+  GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.
+- `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
+  `"page-{page:00}.png"`.
+
+## Egap.Pdf.Conversion 1.2.0 (unreleased)
+
+### One-line conversions
+- `PdfConvert` converts HTML, Markdown, DOCX and image files to PDF in one call, with the page size, margins, PDF/A level and
+  tagging as options. HTML and Markdown read their images from their own folder only.
+- `PdfStamp.Html` makes a stamp of laid-out HTML, such as a seal or a letterhead.
+
 ## Egap.Pdf 1.4.1 and Egap.Documents 1.1.1 (unreleased)
 
 - The bundled substitute fonts (Liberation Sans, Serif and Mono, Carlito, Caladea) now come from Egami's
@@ -21,6 +34,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   Egap.Pdf or Egap.Documents needs the same change, since they no longer bring it in.
 
 ### Fixes
+- Markdown images that an image resolver supplies take their own size, at 96 pixels an inch, instead of none, so they show
+  when the document is laid out.
 - Page tree repair never takes the catalog for a page, and finds pages by scanning only where it would also accept them
   as kids of a tree. A file whose catalog named itself as the page tree no longer breaks a linearized save, and pages of a
   damaged file no longer go missing after an extract, merge and rewrite.

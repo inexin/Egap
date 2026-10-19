@@ -330,7 +330,7 @@ internal sealed partial class HtmlReader
     }
 
     /// <summary>A picture's size in points at 96 pixels an inch, from its header; 100 by 100 when Egami cannot tell.</summary>
-    private static (double Width, double Height) IntrinsicSize(byte[] bytes)
+    internal static (double Width, double Height) IntrinsicSize(ReadOnlyMemory<byte> bytes)
     {
         try
         {
