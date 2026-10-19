@@ -31,6 +31,8 @@ Egap.Pdf.Conversion.PdfConvertOptions.PageSize.init -> void
 Egap.Pdf.Conversion.PdfConvertOptions.PdfConvertOptions() -> void
 Egap.Pdf.Conversion.PdfConvertOptions.Tagged.get -> bool
 Egap.Pdf.Conversion.PdfConvertOptions.Tagged.init -> void
+Egap.Pdf.Conversion.PdfExportOptions.FormFields.get -> bool
+Egap.Pdf.Conversion.PdfExportOptions.FormFields.init -> void
 override Egap.Pdf.Conversion.PageMargins.GetHashCode() -> int
 override Egap.Pdf.Conversion.PdfConvertOptions.Equals(object? obj) -> bool
 override Egap.Pdf.Conversion.PdfConvertOptions.GetHashCode() -> int

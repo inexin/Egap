@@ -1,4 +1,8 @@
 #nullable enable
+Egap.Documents.ContentControlProperties.Items.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Egap.Documents.ContentControlProperties.Items.set -> void
+Egap.Documents.ContentControlProperties.RadioGroup.get -> string?
+Egap.Documents.ContentControlProperties.RadioGroup.set -> void
 Egap.Documents.MarkdownImage
 Egap.Documents.MarkdownImage.<Clone>$() -> Egap.Documents.MarkdownImage!
 Egap.Documents.MarkdownImage.Bytes.get -> System.ReadOnlyMemory<byte>

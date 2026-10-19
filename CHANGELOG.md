@@ -39,13 +39,29 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   schema in the XMP. `PdfInvoice.Read` reads Factur-X and ZUGFeRD 1.0 to 2.3 invoices back.
 - `Attachments.Add` takes a `PdfAttachmentRelationship` and lists the file among the document's associated files.
 
+### Fixes
+- Redaction, PDF/A conversion and text search on a document that was drawn on since it was last saved first write the font
+  subsets the drawing used, so glyph positions and fonts are right.
+
 ### Images and page files
 - `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
   GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.
 - `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
   `"page-{page:00}.png"`.
 
+## Egap.Documents 1.2.0 (unreleased)
+
+### Form controls
+- HTML inputs, check boxes, radio buttons, selects and text areas are read as inline content controls holding their values,
+  instead of being dropped.
+- `ContentControlProperties.Items` holds a drop-down list's or combo box's items, read from and written to DOCX;
+  `RadioGroup` ties check boxes into a set of options.
+
 ## Egap.Pdf.Conversion 1.2.0 (unreleased)
+
+### Form fields
+- `PdfExportOptions.FormFields` turns HTML form controls and DOCX content controls (plain text, date, drop-down list, combo
+  box, check box) into PDF form fields at their laid-out place, named by the control's name or tag, with its value.
 
 ### One-line conversions
 - `PdfConvert` converts HTML, Markdown, DOCX and image files to PDF in one call, with the page size, margins, PDF/A level and

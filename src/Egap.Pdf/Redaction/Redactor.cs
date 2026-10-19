@@ -10,6 +10,8 @@ internal static class Redactor
     /// <summary>Applies the redaction annotations <paramref name="which"/> chooses, all of them when it is null.</summary>
     public static PdfRedactionResult Apply(PdfDocument document, PdfRedactionOptions options, Func<PdfRedactAnnotation, bool>? which = null)
     {
+        // Text drawn since the last save needs its font subsets written, so its glyphs' widths are known.
+        document.WrittenResources.Finish();
         RedactionCounters counters = new();
         int applied = 0;
         for (int i = 0; i < document.Pages.Count; i++)
@@ -68,6 +70,7 @@ internal static class Redactor
             return;
         }
 
+        document.WrittenResources.Finish();
         PdfDictionary resources = Pages.PageDrawing.OwnResources(page);
         ContentRedactor redactor = new(document, areas, [.. areas.Select(_ => (PdfRgbColor?)null)], options, new RedactionCounters());
         if (redactor.Redact(page.GetContent(), resources, PdfMatrix.Identity, 0) is PdfContent redacted)

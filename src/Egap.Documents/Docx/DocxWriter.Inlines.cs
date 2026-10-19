@@ -288,6 +288,12 @@ internal sealed partial class DocxWriter
         target.Add(element);
     }
 
+    /// <summary>A drop-down list's or combo box's items as <c>w:listItem</c> elements, each its own display text and value.</summary>
+    private static IEnumerable<XElement> ListItems(ContentControlProperties properties)
+    {
+        return (properties.Items ?? []).Select(i => new XElement(Ns.W + "listItem", new XAttribute(Ns.W + "displayText", i), new XAttribute(Ns.W + "value", i)));
+    }
+
     private static XElement SdtProperties(ContentControlProperties properties, DocxExtension? kept, XElement? original)
     {
         List<XElement> children = [];
@@ -329,10 +335,10 @@ internal sealed partial class DocxWriter
                     children.Add(new XElement(Ns.W + "date"));
                     break;
                 case ContentControlKind.DropDownList:
-                    children.Add(new XElement(Ns.W + "dropDownList"));
+                    children.Add(new XElement(Ns.W + "dropDownList", ListItems(properties)));
                     break;
                 case ContentControlKind.ComboBox:
-                    children.Add(new XElement(Ns.W + "comboBox"));
+                    children.Add(new XElement(Ns.W + "comboBox", ListItems(properties)));
                     break;
                 case ContentControlKind.Picture:
                     children.Add(new XElement(Ns.W + "picture"));

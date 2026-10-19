@@ -633,10 +633,12 @@ internal sealed partial class DocxReader
                     break;
                 case "dropDownList" when e.Name.Namespace == Ns.W:
                     properties.Kind = ContentControlKind.DropDownList;
+                    properties.Items = ListItems(e);
                     extension.AddUnknownProperty("sdtPr", e);
                     break;
                 case "comboBox" when e.Name.Namespace == Ns.W:
                     properties.Kind = ContentControlKind.ComboBox;
+                    properties.Items = ListItems(e);
                     extension.AddUnknownProperty("sdtPr", e);
                     break;
                 case "picture" when e.Name.Namespace == Ns.W:
@@ -674,6 +676,12 @@ internal sealed partial class DocxReader
                     break;
             }
         }
+    }
+
+    /// <summary>A drop-down list's or combo box's items: each <c>w:listItem</c>'s display text, else its value.</summary>
+    private static List<string> ListItems(XElement list)
+    {
+        return [.. list.Elements(Ns.W + "listItem").Select(i => (string?)i.Attribute(Ns.W + "displayText") ?? (string?)i.Attribute(Ns.W + "value") ?? string.Empty)];
     }
 
     /// <summary>What applies to the inlines read inside a wrapper: a tracked change, and whether a hyperlink holds them.</summary>

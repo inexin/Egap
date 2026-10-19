@@ -18,6 +18,17 @@ Document page = HtmlFormat.Load("invoice.html");
 page.SaveAsPdf("invoice.pdf");
 ```
 
+With `FormFields`, HTML form controls and Word content controls become PDF form fields where they were laid out, each
+named by its HTML name or Word tag and starting with its value.
+
+```csharp
+using Egap.Documents;
+using Egap.Pdf.Conversion;
+
+Document form = HtmlFormat.Load("application.html");
+form.SaveAsPdf("application.pdf", new PdfExportOptions { FormFields = true });
+```
+
 ## One-line conversions
 
 `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
