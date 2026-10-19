@@ -1,6 +1,7 @@
 using System.Globalization;
 
 using Egami;
+using Egami.Barcodes;
 using Egami.Fonts;
 using Egami.Pixels;
 
@@ -124,6 +125,10 @@ public sealed record PdfStamp
 
     internal Raster? ImageRaster { get; private init; }
 
+    internal Barcode? BarcodeSymbol { get; private init; }
+
+    internal BarcodeDrawOptions? BarcodeOptions { get; private init; }
+
     internal double ImageWidth { get; private init; }
 
     internal double ImageHeight { get; private init; }
@@ -185,6 +190,35 @@ public sealed record PdfStamp
         return new PdfStamp(PdfStampKind.Image) { ImageRaster = image, ImageWidth = width, ImageHeight = height, Anchor = StampAnchor.TopRight };
     }
 
+    /// <summary>
+    /// A barcode stamp, <paramref name="width"/> by <paramref name="height"/> points before <see cref="Scale"/>, at the bottom
+    /// right: the symbol drawn as vectors in <see cref="Color"/>, fitted into the box with its quiet zone, so it scans at any
+    /// zoom. The draw options choose the quiet zone, bar width reduction and the font of the text under a linear symbol.
+    /// </summary>
+    /// <param name="barcode">The symbol, made with Egami.Barcodes (<c>Barcode.Qr</c>, <c>Barcode.Code128</c> and the others).</param>
+    /// <param name="width">The width in points.</param>
+    /// <param name="height">The height in points.</param>
+    /// <param name="options">How the symbol is drawn; null for the defaults (quiet zone, no text).</param>
+    /// <exception cref="ArgumentNullException"><paramref name="barcode"/> is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A size is not positive.</exception>
+    public static PdfStamp Barcode(Barcode barcode, double width, double height, BarcodeDrawOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(barcode);
+        if (!(width > 0 && height > 0 && double.IsFinite(width) && double.IsFinite(height)))
+        {
+            throw new ArgumentOutOfRangeException(nameof(width), "The size must be positive.");
+        }
+
+        return new PdfStamp(PdfStampKind.Barcode)
+        {
+            BarcodeSymbol = barcode,
+            BarcodeOptions = options,
+            ImageWidth = width,
+            ImageHeight = height,
+            Anchor = StampAnchor.BottomRight,
+        };
+    }
+
     /// <summary>A page stamp: another page drawn as it is shown, such as a letterhead, under each page by default.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="page"/> is null.</exception>
     public static PdfStamp Page(PdfPage page)
@@ -214,6 +248,7 @@ internal enum PdfStampKind
     Text,
     Image,
     Page,
+    Barcode,
 }
 
 /// <summary>

@@ -18,6 +18,7 @@
   <!-- Egami's codecs, fonts and canvas (Phase 3 design Q2): the only shipped dependencies allowed in src/ (checked in ci.yml). -->
   <ItemGroup>
     <PackageReference Include="Egami.Drawing" />
+    <PackageReference Include="Egami.Barcodes" />
   </ItemGroup>
 
   <!-- Signatures (Phase 5 design Q2): .NET's own CMS, signer and timestamp APIs, Microsoft's MIT package, allowed in ci.yml too. -->

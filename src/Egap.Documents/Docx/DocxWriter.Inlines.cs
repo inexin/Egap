@@ -435,7 +435,16 @@ internal sealed partial class DocxWriter
         long cy = (long)Math.Round(picture.Height * 12700);
         int id = nextDrawingId++;
         XElement blip = new(Ns.A + "blip");
-        if (picture.Image.Bytes.Length > 0)
+        if (picture.Image.Bytes.Length > 0 && picture.Image.ContentType == "image/svg+xml" && picture.Fallback is { Bytes.Length: > 0 } fallback)
+        {
+            // Word's form of an SVG picture: the raster stand-in as the blip, the SVG in an extension beside it.
+            blip.SetAttributeValue(Ns.R + "embed", MediaRelationship(fallback));
+            blip.Add(new XElement(Ns.A + "extLst", new XElement(
+                Ns.A + "ext",
+                new XAttribute("uri", "{96DAC541-7B7A-43D3-8B79-37D633B846F1}"),
+                new XElement(Ns.Asvg + "svgBlip", new XAttribute(XNamespace.Xmlns + "asvg", Ns.Asvg.NamespaceName), new XAttribute(Ns.R + "embed", MediaRelationship(picture.Image))))));
+        }
+        else if (picture.Image.Bytes.Length > 0)
         {
             blip.SetAttributeValue(Ns.R + "embed", MediaRelationship(picture.Image));
         }

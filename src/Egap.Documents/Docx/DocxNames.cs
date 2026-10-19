@@ -11,6 +11,7 @@ internal static class Ns
     public static readonly XNamespace Wp = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing";
     public static readonly XNamespace A = "http://schemas.openxmlformats.org/drawingml/2006/main";
     public static readonly XNamespace Pic = "http://schemas.openxmlformats.org/drawingml/2006/picture";
+    public static readonly XNamespace Asvg = "http://schemas.microsoft.com/office/drawing/2016/SVG/main";
     public static readonly XNamespace M = "http://schemas.openxmlformats.org/officeDocument/2006/math";
     public static readonly XNamespace V = "urn:schemas-microsoft-com:vml";
     public static readonly XNamespace O = "urn:schemas-microsoft-com:office:office";

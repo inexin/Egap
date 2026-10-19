@@ -22,6 +22,7 @@
   -->
   <ItemGroup>
     <PackageReference Include="Egami.Drawing" />
+    <PackageReference Include="Egami.Barcodes" />
     <PackageReference Include="Egami.Metafiles" />
     <PackageReference Include="Egami.Svg" />
     <PackageReference Include="Egami.Css" />

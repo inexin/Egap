@@ -5,6 +5,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Pdf 1.5.0 (unreleased)
 
+### Barcodes
+- `PdfStamp.Barcode` stamps any symbol of Egami.Barcodes (QR, Data Matrix, PDF417, Aztec, Code 128, Code 39, ITF, EAN and
+  UPC) as vector paths in the stamp's colour. Egap.Pdf now depends on Egami.Barcodes.
+
 ### Page ranges and units
 - `PdfPageRange.Parse` reads page choices such as `"1,3,5-10,z"`, with `r` counting from the end, `:odd` and `:even`, and
   `x` to leave pages out. `ExtractPages` and `PdfStamp.PageRange` take one; `Resolve` turns one into page indices.
@@ -57,6 +61,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `"page-{page:00}.png"`.
 
 ## Egap.Documents 1.2.0 (unreleased)
+
+### Barcodes
+- `DocumentBuilder.InsertBarcode` writes a barcode as an SVG picture, drawn as vectors by layout and PDF export, with a PNG
+  stand-in for Word.
+- `Picture.Fallback` holds a raster stand-in for an SVG picture; DOCX reads and writes Word's SVG pictures (the SVG in an
+  extension beside its PNG) with it.
 
 ### Form controls
 - HTML inputs, check boxes, radio buttons, selects and text areas are read as inline content controls holding their values,

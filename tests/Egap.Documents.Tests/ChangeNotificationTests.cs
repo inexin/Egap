@@ -388,6 +388,7 @@ public class ChangeNotificationTests
             _ when t == typeof(IReadOnlyList<TabStop>) => new[] { new TabStop(36) },
             _ when t == typeof(IReadOnlyList<TextColumn>) => new[] { new TextColumn(200, 10) },
             _ when t == typeof(FontFeatures) => FontFeatures.Parse("tnum"),
+            _ when t == typeof(ImageData) => new ImageData(new byte[] { 1 }, "image/png"),
             _ => throw new NotSupportedException(t.Name),
         };
     }
