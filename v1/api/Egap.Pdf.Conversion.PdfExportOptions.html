@@ -160,7 +160,7 @@ Class PdfExportOptions  <a class="header-action link-secondary" title="View sour
 
   <h3 id="Egap_Pdf_Conversion_PdfExportOptions_Conformance" data-uid="Egap.Pdf.Conversion.PdfExportOptions.Conformance">
   Conformance
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The PDF/A part and level the file is written to, with Phase 5's writer rules; none by default.</p>
@@ -220,11 +220,46 @@ Class PdfExportOptions  <a class="header-action link-secondary" title="View sour
 
 
 
+  <a id="Egap_Pdf_Conversion_PdfExportOptions_FormFields_" data-uid="Egap.Pdf.Conversion.PdfExportOptions.FormFields*"></a>
+
+  <h3 id="Egap_Pdf_Conversion_PdfExportOptions_FormFields" data-uid="Egap.Pdf.Conversion.PdfExportOptions.FormFields">
+  FormFields
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether form controls become PDF form fields at their laid-out place: HTML inputs, check boxes, radio buttons,
+selects and text areas, and DOCX plain text, date, drop-down list, combo box and check box content controls. Each
+field is named by the control's tag (an HTML name) and starts with its value; the control's own text is taken out of
+the page. Off by default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool FormFields { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Pdf_Conversion_PdfExportOptions_Language_" data-uid="Egap.Pdf.Conversion.PdfExportOptions.Language*"></a>
 
   <h3 id="Egap_Pdf_Conversion_PdfExportOptions_Language" data-uid="Egap.Pdf.Conversion.PdfExportOptions.Language">
   Language
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The document's language (a BCP 47 tag such as &quot;en-US&quot;); the default text language of its styles when <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
@@ -384,7 +419,7 @@ Class PdfExportOptions  <a class="header-action link-secondary" title="View sour
 
   <h3 id="Egap_Pdf_Conversion_PdfExportOptions_Save" data-uid="Egap.Pdf.Conversion.PdfExportOptions.Save">
   Save
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L61"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the PDF is saved by <a class="xref" href="Egap.Pdf.Conversion.PdfExport.html#Egap_Pdf_Conversion_PdfExport_SaveAsPdf_Egap_Documents_Document_System_String_Egap_Pdf_Conversion_PdfExportOptions_">SaveAsPdf(Document, string, PdfExportOptions?)</a>.</p>
@@ -450,7 +485,7 @@ alternative text, notes, links), with headers, footers and borders as artifacts.
 
   <h3 id="Egap_Pdf_Conversion_PdfExportOptions_UniversalAccessibility" data-uid="Egap.Pdf.Conversion.PdfExportOptions.UniversalAccessibility">
   UniversalAccessibility
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf.Conversion/PdfExportOptions.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the file claims PDF/UA-1 (and is tagged); off by default.</p>

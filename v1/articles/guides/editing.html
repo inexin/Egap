@@ -106,6 +106,19 @@ if (pdf.Form.TryGetField(&quot;customer.name&quot;, out PdfField field) &amp;&am
 pdf.Form.Flatten();                                      // fields drawn into the pages and removed
 pdf.Save(&quot;out.pdf&quot;);                                     // incremental: the original bytes plus the changes
 </code></pre>
+<h2 id="new-form-fields">New form fields</h2>
+<p><code>PdfForm</code> adds text fields, check boxes, radio groups, combo and list boxes, push buttons and empty signature fields, each
+with a widget and an appearance drawn for it. A name with dots, such as <code>customer.name</code>, puts the field under a parent.</p>
+<pre><code class="lang-csharp">using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;blank.pdf&quot;);
+pdf.Form.AddTextField(&quot;customer.name&quot;, 0, new PdfRectangle(72, 700, 300, 720), new PdfTextFieldOptions { MaxLength = 60, Required = true });
+pdf.Form.AddCheckBox(&quot;terms&quot;, 0, new PdfRectangle(72, 660, 86, 674));
+pdf.Form.AddRadioGroup(&quot;size&quot;, [(0, new PdfRectangle(72, 620, 86, 634), &quot;S&quot;), (0, new PdfRectangle(100, 620, 114, 634), &quot;M&quot;)], selected: &quot;S&quot;);
+pdf.Form.AddComboBox(&quot;country&quot;, 0, new PdfRectangle(72, 580, 220, 596), [&quot;Norway&quot;, &quot;Sweden&quot;]);
+pdf.Form.AddSignatureField(&quot;approval&quot;, 0, new PdfRectangle(72, 480, 272, 540));
+pdf.Save(&quot;form.pdf&quot;);
+</code></pre>
 <h2 id="damaged-and-encrypted-files">Damaged and encrypted files</h2>
 <p>Egap repairs what it can while reading: broken cross-reference tables, wrong lengths, bad page trees. Each repair adds a
 <code>PdfWarning</code>. With <code>PdfReadOptions.Strict</code> set, the first problem throws a <code>PdfException</code> instead. Encrypted files open with

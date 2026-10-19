@@ -154,7 +154,7 @@ Class ContentControlProperties  <a class="header-action link-secondary" title="V
 
   <h3 id="Egap_Documents_ContentControlProperties_IsChecked" data-uid="Egap.Documents.ContentControlProperties.IsChecked">
   IsChecked
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L210"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>For a check box, whether it is checked; otherwise null.</p>
@@ -182,11 +182,43 @@ Class ContentControlProperties  <a class="header-action link-secondary" title="V
 
 
 
+  <a id="Egap_Documents_ContentControlProperties_Items_" data-uid="Egap.Documents.ContentControlProperties.Items*"></a>
+
+  <h3 id="Egap_Documents_ContentControlProperties_Items" data-uid="Egap.Documents.ContentControlProperties.Items">
+  Items
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L217"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>For a drop-down list or combo box, the items to choose from, in order; otherwise null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt;? Items { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_ContentControlProperties_Kind_" data-uid="Egap.Documents.ContentControlProperties.Kind*"></a>
 
   <h3 id="Egap_Documents_ContentControlProperties_Kind" data-uid="Egap.Documents.ContentControlProperties.Kind">
   Kind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L168"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The kind of control.</p>
@@ -218,7 +250,7 @@ Class ContentControlProperties  <a class="header-action link-secondary" title="V
 
   <h3 id="Egap_Documents_ContentControlProperties_LockContents" data-uid="Egap.Documents.ContentControlProperties.LockContents">
   LockContents
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L187"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L189"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The content cannot be edited.</p>
@@ -250,7 +282,7 @@ Class ContentControlProperties  <a class="header-action link-secondary" title="V
 
   <h3 id="Egap_Documents_ContentControlProperties_LockControl" data-uid="Egap.Documents.ContentControlProperties.LockControl">
   LockControl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L194"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L196"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The control cannot be deleted.</p>
@@ -278,11 +310,45 @@ Class ContentControlProperties  <a class="header-action link-secondary" title="V
 
 
 
+  <a id="Egap_Documents_ContentControlProperties_RadioGroup_" data-uid="Egap.Documents.ContentControlProperties.RadioGroup*"></a>
+
+  <h3 id="Egap_Documents_ContentControlProperties_RadioGroup" data-uid="Egap.Documents.ContentControlProperties.RadioGroup">
+  RadioGroup
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>For a check box that is one of a set of options (an HTML radio button), the set's name: check boxes with the same
+group are exclusive, and each one's <a class="xref" href="Egap.Documents.ContentControlProperties.html#Egap_Documents_ContentControlProperties_Tag">Tag</a> is the value it stands for. Null for an ordinary check box.
+Word has no such control, so DOCX keeps them as check boxes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? RadioGroup { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_ContentControlProperties_ShowingPlaceholder_" data-uid="Egap.Documents.ContentControlProperties.ShowingPlaceholder*"></a>
 
   <h3 id="Egap_Documents_ContentControlProperties_ShowingPlaceholder" data-uid="Egap.Documents.ContentControlProperties.ShowingPlaceholder">
   ShowingPlaceholder
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L203"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The content shown is the placeholder text.</p>
@@ -314,7 +380,7 @@ Class ContentControlProperties  <a class="header-action link-secondary" title="V
 
   <h3 id="Egap_Documents_ContentControlProperties_Tag" data-uid="Egap.Documents.ContentControlProperties.Tag">
   Tag
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L173"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L175"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The tag code uses to find the control, or null.</p>
@@ -346,7 +412,7 @@ Class ContentControlProperties  <a class="header-action link-secondary" title="V
 
   <h3 id="Egap_Documents_ContentControlProperties_Title" data-uid="Egap.Documents.ContentControlProperties.Title">
   Title
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L182"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The title people see, or null.</p>

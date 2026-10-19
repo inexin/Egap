@@ -100,6 +100,40 @@ doc.SaveAsPdf(&quot;report.pdf&quot;, new PdfExportOptions { Tagged = true, Conf
 Document page = HtmlFormat.Load(&quot;invoice.html&quot;);
 page.SaveAsPdf(&quot;invoice.pdf&quot;);
 </code></pre>
+<p>With <code>FormFields</code>, HTML form controls and Word content controls become PDF form fields where they were laid out, each
+named by its HTML name or Word tag and starting with its value.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Pdf.Conversion;
+
+Document form = HtmlFormat.Load(&quot;application.html&quot;);
+form.SaveAsPdf(&quot;application.pdf&quot;, new PdfExportOptions { FormFields = true });
+</code></pre>
+<h2 id="one-line-conversions">One-line conversions</h2>
+<p><code>PdfConvert</code> turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
+input's own. Converting a file reads its images from the file's own folder; HTML or Markdown given as text reads them only
+from <code>BaseDirectory</code>, and never from the network.</p>
+<pre><code class="lang-csharp">using Egap.Pdf;
+using Egap.Pdf.Conversion;
+
+PdfConvert.FromFile(&quot;report.docx&quot;, &quot;report.pdf&quot;);
+PdfConvert.FromHtml(&quot;&lt;h1&gt;Invoice&lt;/h1&gt;&lt;p&gt;Total: 120 EUR&lt;/p&gt;&quot;, &quot;invoice.pdf&quot;, new PdfConvertOptions
+{
+    PageSize = PdfPageSize.A4,
+    Margins = PageMargins.All(Length.Mm(20)),
+    Conformance = PdfAConformance.PdfA3b,
+});
+using PdfDocument scans = PdfConvert.FromImages([&quot;scan-1.jpg&quot;, &quot;scan-2.png&quot;], new PdfConvertOptions { PageSize = PdfPageSize.A4 });
+scans.RenderPagesToFiles(&quot;thumbs/page-{page:00}.png&quot;, new PdfRenderOptions { Dpi = 72 });
+</code></pre>
+<p><code>PdfStamp.Html</code> lays out a piece of HTML as a stamp, such as a seal or a letterhead, and draws it on every page.</p>
+<pre><code class="lang-csharp">using Egap.Pdf;
+using Egap.Pdf.Conversion;
+
+using PdfDocument invoice = PdfDocument.Open(&quot;invoice.pdf&quot;);
+invoice.Stamp(PdfStamp.Html(&quot;&lt;div style='border:3px solid green;color:green;font:bold 28pt sans-serif'&gt;PAID&lt;/div&gt;&quot;, Length.Mm(50))
+    with { Anchor = StampAnchor.TopRight, Offset = new(-40, -40), Rotation = 15 });
+invoice.Save(&quot;invoice-paid.pdf&quot;);
+</code></pre>
 <h2 id="pdf-to-documents">PDF to documents</h2>
 <p><code>PdfToDocument</code> analyses the pages into blocks, reading order, headings, lists, tables and figures, and builds a document you
 can save as DOCX, HTML or Markdown. Tagged PDFs, such as Word's, keep their tables' merged and nested cells.</p>

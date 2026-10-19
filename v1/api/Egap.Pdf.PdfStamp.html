@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Pdf_PdfStamp" data-uid="Egap.Pdf.PdfStamp" class="text-break">
-Class PdfStamp  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L64"><i class="bi bi-code-slash"></i></a>
+Class PdfStamp  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -153,9 +153,10 @@ design 7.3, Q10 and Q11). Make one with <a class="xref" href="Egap.Pdf.PdfStamp.
 
 
   <h2 id="Egap_Pdf_PdfStamp_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>Text is a template whose fields are filled per page: <code>{page}</code>, <code>{pages}</code>, <code>{label}</code> (the page label),
-<code>{date}</code> or <code>{date:format}</code>, <code>{title}</code>, <code>{file}</code> and, for a Bates stamp, <code>{bates}</code>. Numbers and
-dates use <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Culture">Culture</a>, the invariant culture unless given. Text is drawn in Helvetica, a standard font that is
+  <div class="markdown level0 remarks"><p>Text is a template whose placeholders are filled per page, as <a class="xref" href="Egap.Pdf.PdfPlaceholders.html">PdfPlaceholders</a> lists them:
+<code>{page}</code>, <code>{total-pages}</code> (or <code>{pages}</code>), <code>{label}</code> (the page label), <code>{date}</code>, <code>{time}</code>,
+<code>{title}</code>, <code>{file}</code> and, for a Bates stamp, <code>{bates}</code>. Numbers, dates and times take a format after a colon
+(<code>{date:yyyy-MM-dd}</code>) and use <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Culture">Culture</a>, the invariant culture unless given. Text is drawn in Helvetica, a standard font that is
 not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Font">Font</a> names a typeface, which is embedded as a subset; a PDF/A document needs one.</p>
 </div>
 
@@ -168,7 +169,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Anchor" data-uid="Egap.Pdf.PdfStamp.Anchor">
   Anchor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the anchor the stamp's box is aligned to on the shown page.</p>
@@ -200,7 +201,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Color" data-uid="Egap.Pdf.PdfStamp.Color">
   Color
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the text colour. Defaults to black.</p>
@@ -232,7 +233,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Culture" data-uid="Egap.Pdf.PdfStamp.Culture">
   Culture
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the culture numbers and dates in the template are written in; null for the invariant culture.</p>
@@ -264,7 +265,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Font" data-uid="Egap.Pdf.PdfStamp.Font">
   Font
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the typeface text is drawn in, embedded as a subset; null for Helvetica, not embedded.</p>
@@ -296,7 +297,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_FontSize" data-uid="Egap.Pdf.PdfStamp.FontSize">
   FontSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the text size in points. Defaults to 10.</p>
@@ -328,7 +329,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Layer" data-uid="Egap.Pdf.PdfStamp.Layer">
   Layer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the name of a layer (optional content group) the stamp goes on, so viewers can hide it; null for none.</p>
@@ -360,7 +361,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Offset" data-uid="Egap.Pdf.PdfStamp.Offset">
   Offset
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets how far the stamp is moved from its anchor, in points: x to the right, y up.</p>
@@ -392,7 +393,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Opacity" data-uid="Egap.Pdf.PdfStamp.Opacity">
   Opacity
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the opacity, 0 to 1. Defaults to 1.</p>
@@ -420,11 +421,44 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
 
 
+  <a id="Egap_Pdf_PdfStamp_PageRange_" data-uid="Egap.Pdf.PdfStamp.PageRange*"></a>
+
+  <h3 id="Egap_Pdf_PdfStamp_PageRange" data-uid="Egap.Pdf.PdfStamp.PageRange">
+  PageRange
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the pages to stamp as a range such as <code>PdfPageRange.Parse(&quot;2-z&quot;)</code>; null (the default) for every page. When
+both this and <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Pages">Pages</a> are set, a page is stamped only when both choose it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfPageRange? PageRange { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfPageRange.html">PdfPageRange</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Pdf_PdfStamp_Pages_" data-uid="Egap.Pdf.PdfStamp.Pages*"></a>
 
   <h3 id="Egap_Pdf_PdfStamp_Pages" data-uid="Egap.Pdf.PdfStamp.Pages">
   Pages
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L112"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the 1-based page numbers to stamp; null (the default) for every page.</p>
@@ -456,7 +490,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Rotation" data-uid="Egap.Pdf.PdfStamp.Rotation">
   Rotation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the turn about the stamp's centre, in degrees counterclockwise.</p>
@@ -488,7 +522,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Scale" data-uid="Egap.Pdf.PdfStamp.Scale">
   Scale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L121"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the size an image or page stamp is drawn at, as a multiple of its own. Defaults to 1.</p>
@@ -520,7 +554,7 @@ not embedded, unless <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfSt
 
   <h3 id="Egap_Pdf_PdfStamp_Subtype" data-uid="Egap.Pdf.PdfStamp.Subtype">
   Subtype
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L106"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the kind of page furniture it is marked as; null (the default) to take it from the anchor: a header at the top,
@@ -553,7 +587,7 @@ a footer at the bottom, a watermark in the middle row.</p>
 
   <h3 id="Egap_Pdf_PdfStamp_Template" data-uid="Egap.Pdf.PdfStamp.Template">
   Template
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the template, for a text, watermark or Bates stamp.</p>
@@ -585,7 +619,7 @@ a footer at the bottom, a watermark in the middle row.</p>
 
   <h3 id="Egap_Pdf_PdfStamp_Under" data-uid="Egap.Pdf.PdfStamp.Under">
   Under
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets whether the stamp goes under the page's content instead of over it. Defaults to false.</p>
@@ -621,7 +655,7 @@ a footer at the bottom, a watermark in the middle row.</p>
 
   <h3 id="Egap_Pdf_PdfStamp_Bates_Egap_Pdf_PdfBatesSequence_" data-uid="Egap.Pdf.PdfStamp.Bates(Egap.Pdf.PdfBatesSequence)">
   Bates(PdfBatesSequence)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L168"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A Bates number from a sequence that continues across documents, at the bottom right: each page stamped takes the next
@@ -665,7 +699,7 @@ number. Change <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Te
 
   <h3 id="Egap_Pdf_PdfStamp_Image_Egami_Raster_System_Double_System_Double_" data-uid="Egap.Pdf.PdfStamp.Image(Egami.Raster,System.Double,System.Double)">
   Image(Raster, double, double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L177"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>An image stamp, <code class="paramref">width</code> by <code class="paramref">height</code> points before <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Scale">Scale</a>, at the top right.</p>
@@ -715,7 +749,7 @@ number. Change <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Te
 
   <h3 id="Egap_Pdf_PdfStamp_Page_Egap_Pdf_PdfPage_" data-uid="Egap.Pdf.PdfStamp.Page(Egap.Pdf.PdfPage)">
   Page(PdfPage)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L190"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A page stamp: another page drawn as it is shown, such as a letterhead, under each page by default.</p>
@@ -758,10 +792,10 @@ number. Change <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Te
 
   <h3 id="Egap_Pdf_PdfStamp_Text_System_String_" data-uid="Egap.Pdf.PdfStamp.Text(System.String)">
   Text(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>A text stamp from a template, such as <code>&quot;Page {page} of {pages}&quot;</code>, at the bottom centre.</p>
+  <div class="markdown level1 summary"><p>A text stamp from a template, such as <code>&quot;Page {page} of {total-pages}&quot;</code>, at the bottom centre.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -801,7 +835,7 @@ number. Change <a class="xref" href="Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Te
 
   <h3 id="Egap_Pdf_PdfStamp_Watermark_System_String_" data-uid="Egap.Pdf.PdfStamp.Watermark(System.String)">
   Watermark(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L148"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A watermark: large grey text across the middle of each page, turned 45 degrees and three-tenths opaque, marked as a
@@ -845,7 +879,7 @@ watermark artifact.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L64" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Stamping/PdfStamp.cs/#L65" class="edit-link">Edit this page</a>
         </div>
 
 

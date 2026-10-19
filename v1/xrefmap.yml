@@ -1993,6 +1993,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ContentControlProperties.IsChecked
   nameWithType: ContentControlProperties.IsChecked
+- uid: Egap.Documents.ContentControlProperties.Items
+  name: Items
+  href: api/Egap.Documents.ContentControlProperties.html#Egap_Documents_ContentControlProperties_Items
+  commentId: P:Egap.Documents.ContentControlProperties.Items
+  fullName: Egap.Documents.ContentControlProperties.Items
+  nameWithType: ContentControlProperties.Items
+- uid: Egap.Documents.ContentControlProperties.Items*
+  name: Items
+  href: api/Egap.Documents.ContentControlProperties.html#Egap_Documents_ContentControlProperties_Items_
+  commentId: Overload:Egap.Documents.ContentControlProperties.Items
+  isSpec: "True"
+  fullName: Egap.Documents.ContentControlProperties.Items
+  nameWithType: ContentControlProperties.Items
 - uid: Egap.Documents.ContentControlProperties.Kind
   name: Kind
   href: api/Egap.Documents.ContentControlProperties.html#Egap_Documents_ContentControlProperties_Kind
@@ -2032,6 +2045,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ContentControlProperties.LockControl
   nameWithType: ContentControlProperties.LockControl
+- uid: Egap.Documents.ContentControlProperties.RadioGroup
+  name: RadioGroup
+  href: api/Egap.Documents.ContentControlProperties.html#Egap_Documents_ContentControlProperties_RadioGroup
+  commentId: P:Egap.Documents.ContentControlProperties.RadioGroup
+  fullName: Egap.Documents.ContentControlProperties.RadioGroup
+  nameWithType: ContentControlProperties.RadioGroup
+- uid: Egap.Documents.ContentControlProperties.RadioGroup*
+  name: RadioGroup
+  href: api/Egap.Documents.ContentControlProperties.html#Egap_Documents_ContentControlProperties_RadioGroup_
+  commentId: Overload:Egap.Documents.ContentControlProperties.RadioGroup
+  isSpec: "True"
+  fullName: Egap.Documents.ContentControlProperties.RadioGroup
+  nameWithType: ContentControlProperties.RadioGroup
 - uid: Egap.Documents.ContentControlProperties.ShowingPlaceholder
   name: ShowingPlaceholder
   href: api/Egap.Documents.ContentControlProperties.html#Egap_Documents_ContentControlProperties_ShowingPlaceholder
@@ -16501,6 +16527,12 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.Conversion.DoclingJsonOptions.Source
   nameWithType: DoclingJsonOptions.Source
+- uid: Egap.Pdf.Conversion.HtmlStamp
+  name: HtmlStamp
+  href: api/Egap.Pdf.Conversion.HtmlStamp.html
+  commentId: T:Egap.Pdf.Conversion.HtmlStamp
+  fullName: Egap.Pdf.Conversion.HtmlStamp
+  nameWithType: HtmlStamp
 - uid: Egap.Pdf.Conversion.ILayoutRegionDetector
   name: ILayoutRegionDetector
   href: api/Egap.Pdf.Conversion.ILayoutRegionDetector.html
@@ -17573,6 +17605,109 @@ references:
   commentId: F:Egap.Pdf.Conversion.OutlineFrom.None
   fullName: Egap.Pdf.Conversion.OutlineFrom.None
   nameWithType: OutlineFrom.None
+- uid: Egap.Pdf.Conversion.PageMargins
+  name: PageMargins
+  href: api/Egap.Pdf.Conversion.PageMargins.html
+  commentId: T:Egap.Pdf.Conversion.PageMargins
+  fullName: Egap.Pdf.Conversion.PageMargins
+  nameWithType: PageMargins
+- uid: Egap.Pdf.Conversion.PageMargins.#ctor(Egap.Pdf.Length,Egap.Pdf.Length,Egap.Pdf.Length,Egap.Pdf.Length)
+  name: PageMargins(Length, Length, Length, Length)
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins__ctor_Egap_Pdf_Length_Egap_Pdf_Length_Egap_Pdf_Length_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Conversion.PageMargins.#ctor(Egap.Pdf.Length,Egap.Pdf.Length,Egap.Pdf.Length,Egap.Pdf.Length)
+  name.vb: New(Length, Length, Length, Length)
+  fullName: Egap.Pdf.Conversion.PageMargins.PageMargins(Egap.Pdf.Length, Egap.Pdf.Length, Egap.Pdf.Length, Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Conversion.PageMargins.New(Egap.Pdf.Length, Egap.Pdf.Length, Egap.Pdf.Length, Egap.Pdf.Length)
+  nameWithType: PageMargins.PageMargins(Length, Length, Length, Length)
+  nameWithType.vb: PageMargins.New(Length, Length, Length, Length)
+- uid: Egap.Pdf.Conversion.PageMargins.#ctor*
+  name: PageMargins
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins__ctor_
+  commentId: Overload:Egap.Pdf.Conversion.PageMargins.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Pdf.Conversion.PageMargins.PageMargins
+  fullName.vb: Egap.Pdf.Conversion.PageMargins.New
+  nameWithType: PageMargins.PageMargins
+  nameWithType.vb: PageMargins.New
+- uid: Egap.Pdf.Conversion.PageMargins.All(Egap.Pdf.Length)
+  name: All(Length)
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_All_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Conversion.PageMargins.All(Egap.Pdf.Length)
+  fullName: Egap.Pdf.Conversion.PageMargins.All(Egap.Pdf.Length)
+  nameWithType: PageMargins.All(Length)
+- uid: Egap.Pdf.Conversion.PageMargins.All*
+  name: All
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_All_
+  commentId: Overload:Egap.Pdf.Conversion.PageMargins.All
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageMargins.All
+  nameWithType: PageMargins.All
+- uid: Egap.Pdf.Conversion.PageMargins.Bottom
+  name: Bottom
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Bottom
+  commentId: P:Egap.Pdf.Conversion.PageMargins.Bottom
+  fullName: Egap.Pdf.Conversion.PageMargins.Bottom
+  nameWithType: PageMargins.Bottom
+- uid: Egap.Pdf.Conversion.PageMargins.Bottom*
+  name: Bottom
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Bottom_
+  commentId: Overload:Egap.Pdf.Conversion.PageMargins.Bottom
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageMargins.Bottom
+  nameWithType: PageMargins.Bottom
+- uid: Egap.Pdf.Conversion.PageMargins.Left
+  name: Left
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Left
+  commentId: P:Egap.Pdf.Conversion.PageMargins.Left
+  fullName: Egap.Pdf.Conversion.PageMargins.Left
+  nameWithType: PageMargins.Left
+- uid: Egap.Pdf.Conversion.PageMargins.Left*
+  name: Left
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Left_
+  commentId: Overload:Egap.Pdf.Conversion.PageMargins.Left
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageMargins.Left
+  nameWithType: PageMargins.Left
+- uid: Egap.Pdf.Conversion.PageMargins.Right
+  name: Right
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Right
+  commentId: P:Egap.Pdf.Conversion.PageMargins.Right
+  fullName: Egap.Pdf.Conversion.PageMargins.Right
+  nameWithType: PageMargins.Right
+- uid: Egap.Pdf.Conversion.PageMargins.Right*
+  name: Right
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Right_
+  commentId: Overload:Egap.Pdf.Conversion.PageMargins.Right
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageMargins.Right
+  nameWithType: PageMargins.Right
+- uid: Egap.Pdf.Conversion.PageMargins.Symmetric(Egap.Pdf.Length,Egap.Pdf.Length)
+  name: Symmetric(Length, Length)
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Symmetric_Egap_Pdf_Length_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Conversion.PageMargins.Symmetric(Egap.Pdf.Length,Egap.Pdf.Length)
+  fullName: Egap.Pdf.Conversion.PageMargins.Symmetric(Egap.Pdf.Length, Egap.Pdf.Length)
+  nameWithType: PageMargins.Symmetric(Length, Length)
+- uid: Egap.Pdf.Conversion.PageMargins.Symmetric*
+  name: Symmetric
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Symmetric_
+  commentId: Overload:Egap.Pdf.Conversion.PageMargins.Symmetric
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageMargins.Symmetric
+  nameWithType: PageMargins.Symmetric
+- uid: Egap.Pdf.Conversion.PageMargins.Top
+  name: Top
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Top
+  commentId: P:Egap.Pdf.Conversion.PageMargins.Top
+  fullName: Egap.Pdf.Conversion.PageMargins.Top
+  nameWithType: PageMargins.Top
+- uid: Egap.Pdf.Conversion.PageMargins.Top*
+  name: Top
+  href: api/Egap.Pdf.Conversion.PageMargins.html#Egap_Pdf_Conversion_PageMargins_Top_
+  commentId: Overload:Egap.Pdf.Conversion.PageMargins.Top
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageMargins.Top
+  nameWithType: PageMargins.Top
 - uid: Egap.Pdf.Conversion.PdfAutoTagFigure
   name: PdfAutoTagFigure
   href: api/Egap.Pdf.Conversion.PdfAutoTagFigure.html
@@ -17723,6 +17858,200 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.Conversion.PdfAutoTagger.Tag
   nameWithType: PdfAutoTagger.Tag
+- uid: Egap.Pdf.Conversion.PdfConvert
+  name: PdfConvert
+  href: api/Egap.Pdf.Conversion.PdfConvert.html
+  commentId: T:Egap.Pdf.Conversion.PdfConvert
+  fullName: Egap.Pdf.Conversion.PdfConvert
+  nameWithType: PdfConvert
+- uid: Egap.Pdf.Conversion.PdfConvert.FromFile(System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name: FromFile(string, PdfConvertOptions?)
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromFile_System_String_Egap_Pdf_Conversion_PdfConvertOptions_
+  commentId: M:Egap.Pdf.Conversion.PdfConvert.FromFile(System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name.vb: FromFile(String, PdfConvertOptions)
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromFile(string, Egap.Pdf.Conversion.PdfConvertOptions?)
+  fullName.vb: Egap.Pdf.Conversion.PdfConvert.FromFile(String, Egap.Pdf.Conversion.PdfConvertOptions)
+  nameWithType: PdfConvert.FromFile(string, PdfConvertOptions?)
+  nameWithType.vb: PdfConvert.FromFile(String, PdfConvertOptions)
+- uid: Egap.Pdf.Conversion.PdfConvert.FromFile(System.String,System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name: FromFile(string, string, PdfConvertOptions?)
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromFile_System_String_System_String_Egap_Pdf_Conversion_PdfConvertOptions_
+  commentId: M:Egap.Pdf.Conversion.PdfConvert.FromFile(System.String,System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name.vb: FromFile(String, String, PdfConvertOptions)
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromFile(string, string, Egap.Pdf.Conversion.PdfConvertOptions?)
+  fullName.vb: Egap.Pdf.Conversion.PdfConvert.FromFile(String, String, Egap.Pdf.Conversion.PdfConvertOptions)
+  nameWithType: PdfConvert.FromFile(string, string, PdfConvertOptions?)
+  nameWithType.vb: PdfConvert.FromFile(String, String, PdfConvertOptions)
+- uid: Egap.Pdf.Conversion.PdfConvert.FromFile*
+  name: FromFile
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromFile_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvert.FromFile
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromFile
+  nameWithType: PdfConvert.FromFile
+- uid: Egap.Pdf.Conversion.PdfConvert.FromHtml(System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name: FromHtml(string, PdfConvertOptions?)
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromHtml_System_String_Egap_Pdf_Conversion_PdfConvertOptions_
+  commentId: M:Egap.Pdf.Conversion.PdfConvert.FromHtml(System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name.vb: FromHtml(String, PdfConvertOptions)
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromHtml(string, Egap.Pdf.Conversion.PdfConvertOptions?)
+  fullName.vb: Egap.Pdf.Conversion.PdfConvert.FromHtml(String, Egap.Pdf.Conversion.PdfConvertOptions)
+  nameWithType: PdfConvert.FromHtml(string, PdfConvertOptions?)
+  nameWithType.vb: PdfConvert.FromHtml(String, PdfConvertOptions)
+- uid: Egap.Pdf.Conversion.PdfConvert.FromHtml(System.String,System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name: FromHtml(string, string, PdfConvertOptions?)
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromHtml_System_String_System_String_Egap_Pdf_Conversion_PdfConvertOptions_
+  commentId: M:Egap.Pdf.Conversion.PdfConvert.FromHtml(System.String,System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name.vb: FromHtml(String, String, PdfConvertOptions)
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromHtml(string, string, Egap.Pdf.Conversion.PdfConvertOptions?)
+  fullName.vb: Egap.Pdf.Conversion.PdfConvert.FromHtml(String, String, Egap.Pdf.Conversion.PdfConvertOptions)
+  nameWithType: PdfConvert.FromHtml(string, string, PdfConvertOptions?)
+  nameWithType.vb: PdfConvert.FromHtml(String, String, PdfConvertOptions)
+- uid: Egap.Pdf.Conversion.PdfConvert.FromHtml*
+  name: FromHtml
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromHtml_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvert.FromHtml
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromHtml
+  nameWithType: PdfConvert.FromHtml
+- uid: Egap.Pdf.Conversion.PdfConvert.FromImages(System.Collections.Generic.IEnumerable{System.String},Egap.Pdf.Conversion.PdfConvertOptions)
+  name: FromImages(IEnumerable<string>, PdfConvertOptions?)
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromImages_System_Collections_Generic_IEnumerable_System_String__Egap_Pdf_Conversion_PdfConvertOptions_
+  commentId: M:Egap.Pdf.Conversion.PdfConvert.FromImages(System.Collections.Generic.IEnumerable{System.String},Egap.Pdf.Conversion.PdfConvertOptions)
+  name.vb: FromImages(IEnumerable(Of String), PdfConvertOptions)
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromImages(System.Collections.Generic.IEnumerable<string>, Egap.Pdf.Conversion.PdfConvertOptions?)
+  fullName.vb: Egap.Pdf.Conversion.PdfConvert.FromImages(System.Collections.Generic.IEnumerable(Of String), Egap.Pdf.Conversion.PdfConvertOptions)
+  nameWithType: PdfConvert.FromImages(IEnumerable<string>, PdfConvertOptions?)
+  nameWithType.vb: PdfConvert.FromImages(IEnumerable(Of String), PdfConvertOptions)
+- uid: Egap.Pdf.Conversion.PdfConvert.FromImages*
+  name: FromImages
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromImages_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvert.FromImages
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromImages
+  nameWithType: PdfConvert.FromImages
+- uid: Egap.Pdf.Conversion.PdfConvert.FromMarkdown(System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name: FromMarkdown(string, PdfConvertOptions?)
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromMarkdown_System_String_Egap_Pdf_Conversion_PdfConvertOptions_
+  commentId: M:Egap.Pdf.Conversion.PdfConvert.FromMarkdown(System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name.vb: FromMarkdown(String, PdfConvertOptions)
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromMarkdown(string, Egap.Pdf.Conversion.PdfConvertOptions?)
+  fullName.vb: Egap.Pdf.Conversion.PdfConvert.FromMarkdown(String, Egap.Pdf.Conversion.PdfConvertOptions)
+  nameWithType: PdfConvert.FromMarkdown(string, PdfConvertOptions?)
+  nameWithType.vb: PdfConvert.FromMarkdown(String, PdfConvertOptions)
+- uid: Egap.Pdf.Conversion.PdfConvert.FromMarkdown(System.String,System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name: FromMarkdown(string, string, PdfConvertOptions?)
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromMarkdown_System_String_System_String_Egap_Pdf_Conversion_PdfConvertOptions_
+  commentId: M:Egap.Pdf.Conversion.PdfConvert.FromMarkdown(System.String,System.String,Egap.Pdf.Conversion.PdfConvertOptions)
+  name.vb: FromMarkdown(String, String, PdfConvertOptions)
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromMarkdown(string, string, Egap.Pdf.Conversion.PdfConvertOptions?)
+  fullName.vb: Egap.Pdf.Conversion.PdfConvert.FromMarkdown(String, String, Egap.Pdf.Conversion.PdfConvertOptions)
+  nameWithType: PdfConvert.FromMarkdown(string, string, PdfConvertOptions?)
+  nameWithType.vb: PdfConvert.FromMarkdown(String, String, PdfConvertOptions)
+- uid: Egap.Pdf.Conversion.PdfConvert.FromMarkdown*
+  name: FromMarkdown
+  href: api/Egap.Pdf.Conversion.PdfConvert.html#Egap_Pdf_Conversion_PdfConvert_FromMarkdown_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvert.FromMarkdown
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvert.FromMarkdown
+  nameWithType: PdfConvert.FromMarkdown
+- uid: Egap.Pdf.Conversion.PdfConvertOptions
+  name: PdfConvertOptions
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html
+  commentId: T:Egap.Pdf.Conversion.PdfConvertOptions
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions
+  nameWithType: PdfConvertOptions
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.BaseDirectory
+  name: BaseDirectory
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_BaseDirectory
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.BaseDirectory
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.BaseDirectory
+  nameWithType: PdfConvertOptions.BaseDirectory
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.BaseDirectory*
+  name: BaseDirectory
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_BaseDirectory_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.BaseDirectory
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.BaseDirectory
+  nameWithType: PdfConvertOptions.BaseDirectory
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Conformance
+  name: Conformance
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Conformance
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.Conformance
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Conformance
+  nameWithType: PdfConvertOptions.Conformance
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Conformance*
+  name: Conformance
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Conformance_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.Conformance
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Conformance
+  nameWithType: PdfConvertOptions.Conformance
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Default
+  name: Default
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Default
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.Default
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Default
+  nameWithType: PdfConvertOptions.Default
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Default*
+  name: Default
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Default_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.Default
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Default
+  nameWithType: PdfConvertOptions.Default
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Export
+  name: Export
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Export
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.Export
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Export
+  nameWithType: PdfConvertOptions.Export
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Export*
+  name: Export
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Export_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.Export
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Export
+  nameWithType: PdfConvertOptions.Export
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Margins
+  name: Margins
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Margins
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.Margins
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Margins
+  nameWithType: PdfConvertOptions.Margins
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Margins*
+  name: Margins
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Margins_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.Margins
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Margins
+  nameWithType: PdfConvertOptions.Margins
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.PageSize
+  name: PageSize
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_PageSize
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.PageSize
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.PageSize
+  nameWithType: PdfConvertOptions.PageSize
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.PageSize*
+  name: PageSize
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_PageSize_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.PageSize
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.PageSize
+  nameWithType: PdfConvertOptions.PageSize
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Tagged
+  name: Tagged
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Tagged
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.Tagged
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Tagged
+  nameWithType: PdfConvertOptions.Tagged
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Tagged*
+  name: Tagged
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Tagged_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.Tagged
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Tagged
+  nameWithType: PdfConvertOptions.Tagged
 - uid: Egap.Pdf.Conversion.PdfExport
   name: PdfExport
   href: api/Egap.Pdf.Conversion.PdfExport.html
@@ -17811,6 +18140,19 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.Conversion.PdfExportOptions.Default
   nameWithType: PdfExportOptions.Default
+- uid: Egap.Pdf.Conversion.PdfExportOptions.FormFields
+  name: FormFields
+  href: api/Egap.Pdf.Conversion.PdfExportOptions.html#Egap_Pdf_Conversion_PdfExportOptions_FormFields
+  commentId: P:Egap.Pdf.Conversion.PdfExportOptions.FormFields
+  fullName: Egap.Pdf.Conversion.PdfExportOptions.FormFields
+  nameWithType: PdfExportOptions.FormFields
+- uid: Egap.Pdf.Conversion.PdfExportOptions.FormFields*
+  name: FormFields
+  href: api/Egap.Pdf.Conversion.PdfExportOptions.html#Egap_Pdf_Conversion_PdfExportOptions_FormFields_
+  commentId: Overload:Egap.Pdf.Conversion.PdfExportOptions.FormFields
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfExportOptions.FormFields
+  nameWithType: PdfExportOptions.FormFields
 - uid: Egap.Pdf.Conversion.PdfExportOptions.Language
   name: Language
   href: api/Egap.Pdf.Conversion.PdfExportOptions.html#Egap_Pdf_Conversion_PdfExportOptions_Language
@@ -18705,6 +19047,416 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.GridOptions.Margin
   nameWithType: GridOptions.Margin
+- uid: Egap.Pdf.Length
+  name: Length
+  href: api/Egap.Pdf.Length.html
+  commentId: T:Egap.Pdf.Length
+  fullName: Egap.Pdf.Length
+  nameWithType: Length
+- uid: Egap.Pdf.Length.Centimetres
+  name: Centimetres
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Centimetres
+  commentId: P:Egap.Pdf.Length.Centimetres
+  fullName: Egap.Pdf.Length.Centimetres
+  nameWithType: Length.Centimetres
+- uid: Egap.Pdf.Length.Centimetres*
+  name: Centimetres
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Centimetres_
+  commentId: Overload:Egap.Pdf.Length.Centimetres
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Centimetres
+  nameWithType: Length.Centimetres
+- uid: Egap.Pdf.Length.Cm(System.Double)
+  name: Cm(double)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Cm_System_Double_
+  commentId: M:Egap.Pdf.Length.Cm(System.Double)
+  name.vb: Cm(Double)
+  fullName: Egap.Pdf.Length.Cm(double)
+  fullName.vb: Egap.Pdf.Length.Cm(Double)
+  nameWithType: Length.Cm(double)
+  nameWithType.vb: Length.Cm(Double)
+- uid: Egap.Pdf.Length.Cm*
+  name: Cm
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Cm_
+  commentId: Overload:Egap.Pdf.Length.Cm
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Cm
+  nameWithType: Length.Cm
+- uid: Egap.Pdf.Length.CompareTo(Egap.Pdf.Length)
+  name: CompareTo(Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_CompareTo_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.CompareTo(Egap.Pdf.Length)
+  fullName: Egap.Pdf.Length.CompareTo(Egap.Pdf.Length)
+  nameWithType: Length.CompareTo(Length)
+- uid: Egap.Pdf.Length.CompareTo*
+  name: CompareTo
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_CompareTo_
+  commentId: Overload:Egap.Pdf.Length.CompareTo
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.CompareTo
+  nameWithType: Length.CompareTo
+- uid: Egap.Pdf.Length.In(System.Double)
+  name: In(double)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_In_System_Double_
+  commentId: M:Egap.Pdf.Length.In(System.Double)
+  name.vb: In(Double)
+  fullName: Egap.Pdf.Length.In(double)
+  fullName.vb: Egap.Pdf.Length.In(Double)
+  nameWithType: Length.In(double)
+  nameWithType.vb: Length.In(Double)
+- uid: Egap.Pdf.Length.In*
+  name: In
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_In_
+  commentId: Overload:Egap.Pdf.Length.In
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.In
+  nameWithType: Length.In
+- uid: Egap.Pdf.Length.Inches
+  name: Inches
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Inches
+  commentId: P:Egap.Pdf.Length.Inches
+  fullName: Egap.Pdf.Length.Inches
+  nameWithType: Length.Inches
+- uid: Egap.Pdf.Length.Inches*
+  name: Inches
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Inches_
+  commentId: Overload:Egap.Pdf.Length.Inches
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Inches
+  nameWithType: Length.Inches
+- uid: Egap.Pdf.Length.Millimetres
+  name: Millimetres
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Millimetres
+  commentId: P:Egap.Pdf.Length.Millimetres
+  fullName: Egap.Pdf.Length.Millimetres
+  nameWithType: Length.Millimetres
+- uid: Egap.Pdf.Length.Millimetres*
+  name: Millimetres
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Millimetres_
+  commentId: Overload:Egap.Pdf.Length.Millimetres
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Millimetres
+  nameWithType: Length.Millimetres
+- uid: Egap.Pdf.Length.Mm(System.Double)
+  name: Mm(double)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Mm_System_Double_
+  commentId: M:Egap.Pdf.Length.Mm(System.Double)
+  name.vb: Mm(Double)
+  fullName: Egap.Pdf.Length.Mm(double)
+  fullName.vb: Egap.Pdf.Length.Mm(Double)
+  nameWithType: Length.Mm(double)
+  nameWithType.vb: Length.Mm(Double)
+- uid: Egap.Pdf.Length.Mm*
+  name: Mm
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Mm_
+  commentId: Overload:Egap.Pdf.Length.Mm
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Mm
+  nameWithType: Length.Mm
+- uid: Egap.Pdf.Length.Parse(System.String)
+  name: Parse(string)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Parse_System_String_
+  commentId: M:Egap.Pdf.Length.Parse(System.String)
+  name.vb: Parse(String)
+  fullName: Egap.Pdf.Length.Parse(string)
+  fullName.vb: Egap.Pdf.Length.Parse(String)
+  nameWithType: Length.Parse(string)
+  nameWithType.vb: Length.Parse(String)
+- uid: Egap.Pdf.Length.Parse*
+  name: Parse
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Parse_
+  commentId: Overload:Egap.Pdf.Length.Parse
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Parse
+  nameWithType: Length.Parse
+- uid: Egap.Pdf.Length.Points
+  name: Points
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Points
+  commentId: P:Egap.Pdf.Length.Points
+  fullName: Egap.Pdf.Length.Points
+  nameWithType: Length.Points
+- uid: Egap.Pdf.Length.Points*
+  name: Points
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Points_
+  commentId: Overload:Egap.Pdf.Length.Points
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Points
+  nameWithType: Length.Points
+- uid: Egap.Pdf.Length.Pt(System.Double)
+  name: Pt(double)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Pt_System_Double_
+  commentId: M:Egap.Pdf.Length.Pt(System.Double)
+  name.vb: Pt(Double)
+  fullName: Egap.Pdf.Length.Pt(double)
+  fullName.vb: Egap.Pdf.Length.Pt(Double)
+  nameWithType: Length.Pt(double)
+  nameWithType.vb: Length.Pt(Double)
+- uid: Egap.Pdf.Length.Pt*
+  name: Pt
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Pt_
+  commentId: Overload:Egap.Pdf.Length.Pt
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Pt
+  nameWithType: Length.Pt
+- uid: Egap.Pdf.Length.ToString
+  name: ToString()
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_ToString
+  commentId: M:Egap.Pdf.Length.ToString
+  fullName: Egap.Pdf.Length.ToString()
+  nameWithType: Length.ToString()
+- uid: Egap.Pdf.Length.ToString(System.String,System.IFormatProvider)
+  name: ToString(string?, IFormatProvider?)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_ToString_System_String_System_IFormatProvider_
+  commentId: M:Egap.Pdf.Length.ToString(System.String,System.IFormatProvider)
+  name.vb: ToString(String, IFormatProvider)
+  fullName: Egap.Pdf.Length.ToString(string?, System.IFormatProvider?)
+  fullName.vb: Egap.Pdf.Length.ToString(String, System.IFormatProvider)
+  nameWithType: Length.ToString(string?, IFormatProvider?)
+  nameWithType.vb: Length.ToString(String, IFormatProvider)
+- uid: Egap.Pdf.Length.ToString*
+  name: ToString
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_ToString_
+  commentId: Overload:Egap.Pdf.Length.ToString
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.ToString
+  nameWithType: Length.ToString
+- uid: Egap.Pdf.Length.TryParse(System.String,Egap.Pdf.Length@)
+  name: TryParse(string?, out Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_TryParse_System_String_Egap_Pdf_Length__
+  commentId: M:Egap.Pdf.Length.TryParse(System.String,Egap.Pdf.Length@)
+  name.vb: TryParse(String, Length)
+  fullName: Egap.Pdf.Length.TryParse(string?, out Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.TryParse(String, Egap.Pdf.Length)
+  nameWithType: Length.TryParse(string?, out Length)
+  nameWithType.vb: Length.TryParse(String, Length)
+- uid: Egap.Pdf.Length.TryParse*
+  name: TryParse
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_TryParse_
+  commentId: Overload:Egap.Pdf.Length.TryParse
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.TryParse
+  nameWithType: Length.TryParse
+- uid: Egap.Pdf.Length.Zero
+  name: Zero
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Zero
+  commentId: P:Egap.Pdf.Length.Zero
+  fullName: Egap.Pdf.Length.Zero
+  nameWithType: Length.Zero
+- uid: Egap.Pdf.Length.Zero*
+  name: Zero
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_Zero_
+  commentId: Overload:Egap.Pdf.Length.Zero
+  isSpec: "True"
+  fullName: Egap.Pdf.Length.Zero
+  nameWithType: Length.Zero
+- uid: Egap.Pdf.Length.op_Addition(Egap.Pdf.Length,Egap.Pdf.Length)
+  name: operator +(Length, Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Addition_Egap_Pdf_Length_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.op_Addition(Egap.Pdf.Length,Egap.Pdf.Length)
+  name.vb: +(Length, Length)
+  fullName: Egap.Pdf.Length.operator +(Egap.Pdf.Length, Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.+(Egap.Pdf.Length, Egap.Pdf.Length)
+  nameWithType: Length.operator +(Length, Length)
+  nameWithType.vb: Length.+(Length, Length)
+- uid: Egap.Pdf.Length.op_Addition*
+  name: operator +
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Addition_
+  commentId: Overload:Egap.Pdf.Length.op_Addition
+  isSpec: "True"
+  name.vb: +
+  fullName: Egap.Pdf.Length.operator +
+  fullName.vb: Egap.Pdf.Length.+
+  nameWithType: Length.operator +
+  nameWithType.vb: Length.+
+- uid: Egap.Pdf.Length.op_Division(Egap.Pdf.Length,System.Double)
+  name: operator /(Length, double)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Division_Egap_Pdf_Length_System_Double_
+  commentId: M:Egap.Pdf.Length.op_Division(Egap.Pdf.Length,System.Double)
+  name.vb: /(Length, Double)
+  fullName: Egap.Pdf.Length.operator /(Egap.Pdf.Length, double)
+  fullName.vb: Egap.Pdf.Length./(Egap.Pdf.Length, Double)
+  nameWithType: Length.operator /(Length, double)
+  nameWithType.vb: Length./(Length, Double)
+- uid: Egap.Pdf.Length.op_Division*
+  name: operator /
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Division_
+  commentId: Overload:Egap.Pdf.Length.op_Division
+  isSpec: "True"
+  name.vb: /
+  fullName: Egap.Pdf.Length.operator /
+  fullName.vb: Egap.Pdf.Length./
+  nameWithType: Length.operator /
+  nameWithType.vb: Length./
+- uid: Egap.Pdf.Length.op_GreaterThan(Egap.Pdf.Length,Egap.Pdf.Length)
+  name: operator >(Length, Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_GreaterThan_Egap_Pdf_Length_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.op_GreaterThan(Egap.Pdf.Length,Egap.Pdf.Length)
+  name.vb: '>(Length, Length)'
+  fullName: Egap.Pdf.Length.operator >(Egap.Pdf.Length, Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.>(Egap.Pdf.Length, Egap.Pdf.Length)
+  nameWithType: Length.operator >(Length, Length)
+  nameWithType.vb: Length.>(Length, Length)
+- uid: Egap.Pdf.Length.op_GreaterThan*
+  name: operator >
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_GreaterThan_
+  commentId: Overload:Egap.Pdf.Length.op_GreaterThan
+  isSpec: "True"
+  name.vb: '>'
+  fullName: Egap.Pdf.Length.operator >
+  fullName.vb: Egap.Pdf.Length.>
+  nameWithType: Length.operator >
+  nameWithType.vb: Length.>
+- uid: Egap.Pdf.Length.op_GreaterThanOrEqual(Egap.Pdf.Length,Egap.Pdf.Length)
+  name: operator >=(Length, Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_GreaterThanOrEqual_Egap_Pdf_Length_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.op_GreaterThanOrEqual(Egap.Pdf.Length,Egap.Pdf.Length)
+  name.vb: '>=(Length, Length)'
+  fullName: Egap.Pdf.Length.operator >=(Egap.Pdf.Length, Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.>=(Egap.Pdf.Length, Egap.Pdf.Length)
+  nameWithType: Length.operator >=(Length, Length)
+  nameWithType.vb: Length.>=(Length, Length)
+- uid: Egap.Pdf.Length.op_GreaterThanOrEqual*
+  name: operator >=
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_GreaterThanOrEqual_
+  commentId: Overload:Egap.Pdf.Length.op_GreaterThanOrEqual
+  isSpec: "True"
+  name.vb: '>='
+  fullName: Egap.Pdf.Length.operator >=
+  fullName.vb: Egap.Pdf.Length.>=
+  nameWithType: Length.operator >=
+  nameWithType.vb: Length.>=
+- uid: Egap.Pdf.Length.op_Implicit(Egap.Pdf.Length)~System.Double
+  name: implicit operator double(Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Implicit_Egap_Pdf_Length__System_Double
+  commentId: M:Egap.Pdf.Length.op_Implicit(Egap.Pdf.Length)~System.Double
+  name.vb: CType(Length)
+  fullName: Egap.Pdf.Length.implicit operator double(Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.CType(Egap.Pdf.Length)
+  nameWithType: Length.implicit operator double(Length)
+  nameWithType.vb: Length.CType(Length)
+- uid: Egap.Pdf.Length.op_Implicit(System.Double)~Egap.Pdf.Length
+  name: implicit operator Length(double)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Implicit_System_Double__Egap_Pdf_Length
+  commentId: M:Egap.Pdf.Length.op_Implicit(System.Double)~Egap.Pdf.Length
+  name.vb: CType(Double)
+  fullName: Egap.Pdf.Length.implicit operator Egap.Pdf.Length(double)
+  fullName.vb: Egap.Pdf.Length.CType(Double)
+  nameWithType: Length.implicit operator Length(double)
+  nameWithType.vb: Length.CType(Double)
+- uid: Egap.Pdf.Length.op_Implicit*
+  name: implicit operator
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Implicit_
+  commentId: Overload:Egap.Pdf.Length.op_Implicit
+  isSpec: "True"
+  name.vb: CType
+  fullName: Egap.Pdf.Length.implicit operator
+  fullName.vb: Egap.Pdf.Length.CType
+  nameWithType: Length.implicit operator
+  nameWithType.vb: Length.CType
+- uid: Egap.Pdf.Length.op_LessThan(Egap.Pdf.Length,Egap.Pdf.Length)
+  name: operator <(Length, Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_LessThan_Egap_Pdf_Length_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.op_LessThan(Egap.Pdf.Length,Egap.Pdf.Length)
+  name.vb: <(Length, Length)
+  fullName: Egap.Pdf.Length.operator <(Egap.Pdf.Length, Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.<(Egap.Pdf.Length, Egap.Pdf.Length)
+  nameWithType: Length.operator <(Length, Length)
+  nameWithType.vb: Length.<(Length, Length)
+- uid: Egap.Pdf.Length.op_LessThan*
+  name: operator <
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_LessThan_
+  commentId: Overload:Egap.Pdf.Length.op_LessThan
+  isSpec: "True"
+  name.vb: <
+  fullName: Egap.Pdf.Length.operator <
+  fullName.vb: Egap.Pdf.Length.<
+  nameWithType: Length.operator <
+  nameWithType.vb: Length.<
+- uid: Egap.Pdf.Length.op_LessThanOrEqual(Egap.Pdf.Length,Egap.Pdf.Length)
+  name: operator <=(Length, Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_LessThanOrEqual_Egap_Pdf_Length_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.op_LessThanOrEqual(Egap.Pdf.Length,Egap.Pdf.Length)
+  name.vb: <=(Length, Length)
+  fullName: Egap.Pdf.Length.operator <=(Egap.Pdf.Length, Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.<=(Egap.Pdf.Length, Egap.Pdf.Length)
+  nameWithType: Length.operator <=(Length, Length)
+  nameWithType.vb: Length.<=(Length, Length)
+- uid: Egap.Pdf.Length.op_LessThanOrEqual*
+  name: operator <=
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_LessThanOrEqual_
+  commentId: Overload:Egap.Pdf.Length.op_LessThanOrEqual
+  isSpec: "True"
+  name.vb: <=
+  fullName: Egap.Pdf.Length.operator <=
+  fullName.vb: Egap.Pdf.Length.<=
+  nameWithType: Length.operator <=
+  nameWithType.vb: Length.<=
+- uid: Egap.Pdf.Length.op_Multiply(Egap.Pdf.Length,System.Double)
+  name: operator *(Length, double)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Multiply_Egap_Pdf_Length_System_Double_
+  commentId: M:Egap.Pdf.Length.op_Multiply(Egap.Pdf.Length,System.Double)
+  name.vb: '*(Length, Double)'
+  fullName: Egap.Pdf.Length.operator *(Egap.Pdf.Length, double)
+  fullName.vb: Egap.Pdf.Length.*(Egap.Pdf.Length, Double)
+  nameWithType: Length.operator *(Length, double)
+  nameWithType.vb: Length.*(Length, Double)
+- uid: Egap.Pdf.Length.op_Multiply(System.Double,Egap.Pdf.Length)
+  name: operator *(double, Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Multiply_System_Double_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.op_Multiply(System.Double,Egap.Pdf.Length)
+  name.vb: '*(Double, Length)'
+  fullName: Egap.Pdf.Length.operator *(double, Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.*(Double, Egap.Pdf.Length)
+  nameWithType: Length.operator *(double, Length)
+  nameWithType.vb: Length.*(Double, Length)
+- uid: Egap.Pdf.Length.op_Multiply*
+  name: operator *
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Multiply_
+  commentId: Overload:Egap.Pdf.Length.op_Multiply
+  isSpec: "True"
+  name.vb: '*'
+  fullName: Egap.Pdf.Length.operator *
+  fullName.vb: Egap.Pdf.Length.*
+  nameWithType: Length.operator *
+  nameWithType.vb: Length.*
+- uid: Egap.Pdf.Length.op_Subtraction(Egap.Pdf.Length,Egap.Pdf.Length)
+  name: operator -(Length, Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Subtraction_Egap_Pdf_Length_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.op_Subtraction(Egap.Pdf.Length,Egap.Pdf.Length)
+  name.vb: -(Length, Length)
+  fullName: Egap.Pdf.Length.operator -(Egap.Pdf.Length, Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.-(Egap.Pdf.Length, Egap.Pdf.Length)
+  nameWithType: Length.operator -(Length, Length)
+  nameWithType.vb: Length.-(Length, Length)
+- uid: Egap.Pdf.Length.op_Subtraction*
+  name: operator -
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_Subtraction_
+  commentId: Overload:Egap.Pdf.Length.op_Subtraction
+  isSpec: "True"
+  name.vb: '-'
+  fullName: Egap.Pdf.Length.operator -
+  fullName.vb: Egap.Pdf.Length.-
+  nameWithType: Length.operator -
+  nameWithType.vb: Length.-
+- uid: Egap.Pdf.Length.op_UnaryNegation(Egap.Pdf.Length)
+  name: operator -(Length)
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_UnaryNegation_Egap_Pdf_Length_
+  commentId: M:Egap.Pdf.Length.op_UnaryNegation(Egap.Pdf.Length)
+  name.vb: -(Length)
+  fullName: Egap.Pdf.Length.operator -(Egap.Pdf.Length)
+  fullName.vb: Egap.Pdf.Length.-(Egap.Pdf.Length)
+  nameWithType: Length.operator -(Length)
+  nameWithType.vb: Length.-(Length)
+- uid: Egap.Pdf.Length.op_UnaryNegation*
+  name: operator -
+  href: api/Egap.Pdf.Length.html#Egap_Pdf_Length_op_UnaryNegation_
+  commentId: Overload:Egap.Pdf.Length.op_UnaryNegation
+  isSpec: "True"
+  name.vb: '-'
+  fullName: Egap.Pdf.Length.operator -
+  fullName.vb: Egap.Pdf.Length.-
+  nameWithType: Length.operator -
+  nameWithType.vb: Length.-
 - uid: Egap.Pdf.NUpOptions
   name: NUpOptions
   href: api/Egap.Pdf.NUpOptions.html
@@ -20557,6 +21309,15 @@ references:
   commentId: T:Egap.Pdf.PdfAttachmentCollection
   fullName: Egap.Pdf.PdfAttachmentCollection
   nameWithType: PdfAttachmentCollection
+- uid: Egap.Pdf.PdfAttachmentCollection.Add(System.String,System.ReadOnlySpan{System.Byte},Egap.Pdf.PdfAttachmentRelationship,System.String,System.String,System.Nullable{System.DateTimeOffset})
+  name: Add(string, ReadOnlySpan<byte>, PdfAttachmentRelationship, string?, string?, DateTimeOffset?)
+  href: api/Egap.Pdf.PdfAttachmentCollection.html#Egap_Pdf_PdfAttachmentCollection_Add_System_String_System_ReadOnlySpan_System_Byte__Egap_Pdf_PdfAttachmentRelationship_System_String_System_String_System_Nullable_System_DateTimeOffset__
+  commentId: M:Egap.Pdf.PdfAttachmentCollection.Add(System.String,System.ReadOnlySpan{System.Byte},Egap.Pdf.PdfAttachmentRelationship,System.String,System.String,System.Nullable{System.DateTimeOffset})
+  name.vb: Add(String, ReadOnlySpan(Of Byte), PdfAttachmentRelationship, String, String, DateTimeOffset?)
+  fullName: Egap.Pdf.PdfAttachmentCollection.Add(string, System.ReadOnlySpan<byte>, Egap.Pdf.PdfAttachmentRelationship, string?, string?, System.DateTimeOffset?)
+  fullName.vb: Egap.Pdf.PdfAttachmentCollection.Add(String, System.ReadOnlySpan(Of Byte), Egap.Pdf.PdfAttachmentRelationship, String, String, System.DateTimeOffset?)
+  nameWithType: PdfAttachmentCollection.Add(string, ReadOnlySpan<byte>, PdfAttachmentRelationship, string?, string?, DateTimeOffset?)
+  nameWithType.vb: PdfAttachmentCollection.Add(String, ReadOnlySpan(Of Byte), PdfAttachmentRelationship, String, String, DateTimeOffset?)
 - uid: Egap.Pdf.PdfAttachmentCollection.Add(System.String,System.ReadOnlySpan{System.Byte},System.String,System.String,System.Nullable{System.DateTimeOffset})
   name: Add(string, ReadOnlySpan<byte>, string?, string?, DateTimeOffset?)
   href: api/Egap.Pdf.PdfAttachmentCollection.html#Egap_Pdf_PdfAttachmentCollection_Add_System_String_System_ReadOnlySpan_System_Byte__System_String_System_String_System_Nullable_System_DateTimeOffset__
@@ -20650,6 +21411,60 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfAttachmentCollection.TryGet
   nameWithType: PdfAttachmentCollection.TryGet
+- uid: Egap.Pdf.PdfAttachmentRelationship
+  name: PdfAttachmentRelationship
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html
+  commentId: T:Egap.Pdf.PdfAttachmentRelationship
+  fullName: Egap.Pdf.PdfAttachmentRelationship
+  nameWithType: PdfAttachmentRelationship
+- uid: Egap.Pdf.PdfAttachmentRelationship.Alternative
+  name: Alternative
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html#Egap_Pdf_PdfAttachmentRelationship_Alternative
+  commentId: F:Egap.Pdf.PdfAttachmentRelationship.Alternative
+  fullName: Egap.Pdf.PdfAttachmentRelationship.Alternative
+  nameWithType: PdfAttachmentRelationship.Alternative
+- uid: Egap.Pdf.PdfAttachmentRelationship.Data
+  name: Data
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html#Egap_Pdf_PdfAttachmentRelationship_Data
+  commentId: F:Egap.Pdf.PdfAttachmentRelationship.Data
+  fullName: Egap.Pdf.PdfAttachmentRelationship.Data
+  nameWithType: PdfAttachmentRelationship.Data
+- uid: Egap.Pdf.PdfAttachmentRelationship.EncryptedPayload
+  name: EncryptedPayload
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html#Egap_Pdf_PdfAttachmentRelationship_EncryptedPayload
+  commentId: F:Egap.Pdf.PdfAttachmentRelationship.EncryptedPayload
+  fullName: Egap.Pdf.PdfAttachmentRelationship.EncryptedPayload
+  nameWithType: PdfAttachmentRelationship.EncryptedPayload
+- uid: Egap.Pdf.PdfAttachmentRelationship.FormData
+  name: FormData
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html#Egap_Pdf_PdfAttachmentRelationship_FormData
+  commentId: F:Egap.Pdf.PdfAttachmentRelationship.FormData
+  fullName: Egap.Pdf.PdfAttachmentRelationship.FormData
+  nameWithType: PdfAttachmentRelationship.FormData
+- uid: Egap.Pdf.PdfAttachmentRelationship.Schema
+  name: Schema
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html#Egap_Pdf_PdfAttachmentRelationship_Schema
+  commentId: F:Egap.Pdf.PdfAttachmentRelationship.Schema
+  fullName: Egap.Pdf.PdfAttachmentRelationship.Schema
+  nameWithType: PdfAttachmentRelationship.Schema
+- uid: Egap.Pdf.PdfAttachmentRelationship.Source
+  name: Source
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html#Egap_Pdf_PdfAttachmentRelationship_Source
+  commentId: F:Egap.Pdf.PdfAttachmentRelationship.Source
+  fullName: Egap.Pdf.PdfAttachmentRelationship.Source
+  nameWithType: PdfAttachmentRelationship.Source
+- uid: Egap.Pdf.PdfAttachmentRelationship.Supplement
+  name: Supplement
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html#Egap_Pdf_PdfAttachmentRelationship_Supplement
+  commentId: F:Egap.Pdf.PdfAttachmentRelationship.Supplement
+  fullName: Egap.Pdf.PdfAttachmentRelationship.Supplement
+  nameWithType: PdfAttachmentRelationship.Supplement
+- uid: Egap.Pdf.PdfAttachmentRelationship.Unspecified
+  name: Unspecified
+  href: api/Egap.Pdf.PdfAttachmentRelationship.html#Egap_Pdf_PdfAttachmentRelationship_Unspecified
+  commentId: F:Egap.Pdf.PdfAttachmentRelationship.Unspecified
+  fullName: Egap.Pdf.PdfAttachmentRelationship.Unspecified
+  nameWithType: PdfAttachmentRelationship.Unspecified
 - uid: Egap.Pdf.PdfBatesSequence
   name: PdfBatesSequence
   href: api/Egap.Pdf.PdfBatesSequence.html
@@ -20853,6 +21668,38 @@ references:
   commentId: F:Egap.Pdf.PdfBorderStyle.Underline
   fullName: Egap.Pdf.PdfBorderStyle.Underline
   nameWithType: PdfBorderStyle.Underline
+- uid: Egap.Pdf.PdfButtonOptions
+  name: PdfButtonOptions
+  href: api/Egap.Pdf.PdfButtonOptions.html
+  commentId: T:Egap.Pdf.PdfButtonOptions
+  fullName: Egap.Pdf.PdfButtonOptions
+  nameWithType: PdfButtonOptions
+- uid: Egap.Pdf.PdfButtonOptions.Checked
+  name: Checked
+  href: api/Egap.Pdf.PdfButtonOptions.html#Egap_Pdf_PdfButtonOptions_Checked
+  commentId: P:Egap.Pdf.PdfButtonOptions.Checked
+  fullName: Egap.Pdf.PdfButtonOptions.Checked
+  nameWithType: PdfButtonOptions.Checked
+- uid: Egap.Pdf.PdfButtonOptions.Checked*
+  name: Checked
+  href: api/Egap.Pdf.PdfButtonOptions.html#Egap_Pdf_PdfButtonOptions_Checked_
+  commentId: Overload:Egap.Pdf.PdfButtonOptions.Checked
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfButtonOptions.Checked
+  nameWithType: PdfButtonOptions.Checked
+- uid: Egap.Pdf.PdfButtonOptions.OnState
+  name: OnState
+  href: api/Egap.Pdf.PdfButtonOptions.html#Egap_Pdf_PdfButtonOptions_OnState
+  commentId: P:Egap.Pdf.PdfButtonOptions.OnState
+  fullName: Egap.Pdf.PdfButtonOptions.OnState
+  nameWithType: PdfButtonOptions.OnState
+- uid: Egap.Pdf.PdfButtonOptions.OnState*
+  name: OnState
+  href: api/Egap.Pdf.PdfButtonOptions.html#Egap_Pdf_PdfButtonOptions_OnState_
+  commentId: Overload:Egap.Pdf.PdfButtonOptions.OnState
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfButtonOptions.OnState
+  nameWithType: PdfButtonOptions.OnState
 - uid: Egap.Pdf.PdfByteRange
   name: PdfByteRange
   href: api/Egap.Pdf.PdfByteRange.html
@@ -21802,6 +22649,38 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfChoiceField.Values
   nameWithType: PdfChoiceField.Values
+- uid: Egap.Pdf.PdfChoiceFieldOptions
+  name: PdfChoiceFieldOptions
+  href: api/Egap.Pdf.PdfChoiceFieldOptions.html
+  commentId: T:Egap.Pdf.PdfChoiceFieldOptions
+  fullName: Egap.Pdf.PdfChoiceFieldOptions
+  nameWithType: PdfChoiceFieldOptions
+- uid: Egap.Pdf.PdfChoiceFieldOptions.Sort
+  name: Sort
+  href: api/Egap.Pdf.PdfChoiceFieldOptions.html#Egap_Pdf_PdfChoiceFieldOptions_Sort
+  commentId: P:Egap.Pdf.PdfChoiceFieldOptions.Sort
+  fullName: Egap.Pdf.PdfChoiceFieldOptions.Sort
+  nameWithType: PdfChoiceFieldOptions.Sort
+- uid: Egap.Pdf.PdfChoiceFieldOptions.Sort*
+  name: Sort
+  href: api/Egap.Pdf.PdfChoiceFieldOptions.html#Egap_Pdf_PdfChoiceFieldOptions_Sort_
+  commentId: Overload:Egap.Pdf.PdfChoiceFieldOptions.Sort
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfChoiceFieldOptions.Sort
+  nameWithType: PdfChoiceFieldOptions.Sort
+- uid: Egap.Pdf.PdfChoiceFieldOptions.Value
+  name: Value
+  href: api/Egap.Pdf.PdfChoiceFieldOptions.html#Egap_Pdf_PdfChoiceFieldOptions_Value
+  commentId: P:Egap.Pdf.PdfChoiceFieldOptions.Value
+  fullName: Egap.Pdf.PdfChoiceFieldOptions.Value
+  nameWithType: PdfChoiceFieldOptions.Value
+- uid: Egap.Pdf.PdfChoiceFieldOptions.Value*
+  name: Value
+  href: api/Egap.Pdf.PdfChoiceFieldOptions.html#Egap_Pdf_PdfChoiceFieldOptions_Value_
+  commentId: Overload:Egap.Pdf.PdfChoiceFieldOptions.Value
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfChoiceFieldOptions.Value
+  nameWithType: PdfChoiceFieldOptions.Value
 - uid: Egap.Pdf.PdfChoiceOption
   name: PdfChoiceOption
   href: api/Egap.Pdf.PdfChoiceOption.html
@@ -24645,6 +25524,12 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfDocument.Dispose
   nameWithType: PdfDocument.Dispose
+- uid: Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange)
+  name: ExtractPages(PdfPageRange)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ExtractPages_Egap_Pdf_PdfPageRange_
+  commentId: M:Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange)
+  fullName: Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange)
+  nameWithType: PdfDocument.ExtractPages(PdfPageRange)
 - uid: Egap.Pdf.PdfDocument.ExtractPages(System.Collections.Generic.IEnumerable{System.Int32})
   name: ExtractPages(IEnumerable<int>)
   href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ExtractPages_System_Collections_Generic_IEnumerable_System_Int32__
@@ -24661,6 +25546,31 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfDocument.ExtractPages
   nameWithType: PdfDocument.ExtractPages
+- uid: Egap.Pdf.PdfDocument.FindText(System.String,Egap.Pdf.PdfFindOptions,System.Threading.CancellationToken)
+  name: FindText(string, PdfFindOptions?, CancellationToken)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FindText_System_String_Egap_Pdf_PdfFindOptions_System_Threading_CancellationToken_
+  commentId: M:Egap.Pdf.PdfDocument.FindText(System.String,Egap.Pdf.PdfFindOptions,System.Threading.CancellationToken)
+  name.vb: FindText(String, PdfFindOptions, CancellationToken)
+  fullName: Egap.Pdf.PdfDocument.FindText(string, Egap.Pdf.PdfFindOptions?, System.Threading.CancellationToken)
+  fullName.vb: Egap.Pdf.PdfDocument.FindText(String, Egap.Pdf.PdfFindOptions, System.Threading.CancellationToken)
+  nameWithType: PdfDocument.FindText(string, PdfFindOptions?, CancellationToken)
+  nameWithType.vb: PdfDocument.FindText(String, PdfFindOptions, CancellationToken)
+- uid: Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions,System.Threading.CancellationToken)
+  name: FindText(Regex, PdfFindOptions?, CancellationToken)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FindText_System_Text_RegularExpressions_Regex_Egap_Pdf_PdfFindOptions_System_Threading_CancellationToken_
+  commentId: M:Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions,System.Threading.CancellationToken)
+  name.vb: FindText(Regex, PdfFindOptions, CancellationToken)
+  fullName: Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex, Egap.Pdf.PdfFindOptions?, System.Threading.CancellationToken)
+  fullName.vb: Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex, Egap.Pdf.PdfFindOptions, System.Threading.CancellationToken)
+  nameWithType: PdfDocument.FindText(Regex, PdfFindOptions?, CancellationToken)
+  nameWithType.vb: PdfDocument.FindText(Regex, PdfFindOptions, CancellationToken)
+- uid: Egap.Pdf.PdfDocument.FindText*
+  name: FindText
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FindText_
+  commentId: Overload:Egap.Pdf.PdfDocument.FindText
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfDocument.FindText
+  nameWithType: PdfDocument.FindText
 - uid: Egap.Pdf.PdfDocument.FlattenAnnotations(Egap.Pdf.PdfFlattenFilter,System.Boolean)
   name: FlattenAnnotations(PdfFlattenFilter, bool)
   href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FlattenAnnotations_Egap_Pdf_PdfFlattenFilter_System_Boolean_
@@ -24690,6 +25600,31 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfDocument.Form
   nameWithType: PdfDocument.Form
+- uid: Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable{System.ReadOnlyMemory{System.Byte}},Egap.Pdf.PdfImagePageOptions)
+  name: FromImages(IEnumerable<ReadOnlyMemory<byte>>, PdfImagePageOptions?)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FromImages_System_Collections_Generic_IEnumerable_System_ReadOnlyMemory_System_Byte___Egap_Pdf_PdfImagePageOptions_
+  commentId: M:Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable{System.ReadOnlyMemory{System.Byte}},Egap.Pdf.PdfImagePageOptions)
+  name.vb: FromImages(IEnumerable(Of ReadOnlyMemory(Of Byte)), PdfImagePageOptions)
+  fullName: Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable<System.ReadOnlyMemory<byte>>, Egap.Pdf.PdfImagePageOptions?)
+  fullName.vb: Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable(Of System.ReadOnlyMemory(Of Byte)), Egap.Pdf.PdfImagePageOptions)
+  nameWithType: PdfDocument.FromImages(IEnumerable<ReadOnlyMemory<byte>>, PdfImagePageOptions?)
+  nameWithType.vb: PdfDocument.FromImages(IEnumerable(Of ReadOnlyMemory(Of Byte)), PdfImagePageOptions)
+- uid: Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable{System.String},Egap.Pdf.PdfImagePageOptions)
+  name: FromImages(IEnumerable<string>, PdfImagePageOptions?)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FromImages_System_Collections_Generic_IEnumerable_System_String__Egap_Pdf_PdfImagePageOptions_
+  commentId: M:Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable{System.String},Egap.Pdf.PdfImagePageOptions)
+  name.vb: FromImages(IEnumerable(Of String), PdfImagePageOptions)
+  fullName: Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable<string>, Egap.Pdf.PdfImagePageOptions?)
+  fullName.vb: Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable(Of String), Egap.Pdf.PdfImagePageOptions)
+  nameWithType: PdfDocument.FromImages(IEnumerable<string>, PdfImagePageOptions?)
+  nameWithType.vb: PdfDocument.FromImages(IEnumerable(Of String), PdfImagePageOptions)
+- uid: Egap.Pdf.PdfDocument.FromImages*
+  name: FromImages
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FromImages_
+  commentId: Overload:Egap.Pdf.PdfDocument.FromImages
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfDocument.FromImages
+  nameWithType: PdfDocument.FromImages
 - uid: Egap.Pdf.PdfDocument.IsChanged
   name: IsChanged
   href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_IsChanged
@@ -24768,6 +25703,31 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfDocument.Layers
   nameWithType: PdfDocument.Layers
+- uid: Egap.Pdf.PdfDocument.MarkRedactions(System.String,Egap.Pdf.PdfFindOptions)
+  name: MarkRedactions(string, PdfFindOptions?)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_MarkRedactions_System_String_Egap_Pdf_PdfFindOptions_
+  commentId: M:Egap.Pdf.PdfDocument.MarkRedactions(System.String,Egap.Pdf.PdfFindOptions)
+  name.vb: MarkRedactions(String, PdfFindOptions)
+  fullName: Egap.Pdf.PdfDocument.MarkRedactions(string, Egap.Pdf.PdfFindOptions?)
+  fullName.vb: Egap.Pdf.PdfDocument.MarkRedactions(String, Egap.Pdf.PdfFindOptions)
+  nameWithType: PdfDocument.MarkRedactions(string, PdfFindOptions?)
+  nameWithType.vb: PdfDocument.MarkRedactions(String, PdfFindOptions)
+- uid: Egap.Pdf.PdfDocument.MarkRedactions(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions)
+  name: MarkRedactions(Regex, PdfFindOptions?)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_MarkRedactions_System_Text_RegularExpressions_Regex_Egap_Pdf_PdfFindOptions_
+  commentId: M:Egap.Pdf.PdfDocument.MarkRedactions(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions)
+  name.vb: MarkRedactions(Regex, PdfFindOptions)
+  fullName: Egap.Pdf.PdfDocument.MarkRedactions(System.Text.RegularExpressions.Regex, Egap.Pdf.PdfFindOptions?)
+  fullName.vb: Egap.Pdf.PdfDocument.MarkRedactions(System.Text.RegularExpressions.Regex, Egap.Pdf.PdfFindOptions)
+  nameWithType: PdfDocument.MarkRedactions(Regex, PdfFindOptions?)
+  nameWithType.vb: PdfDocument.MarkRedactions(Regex, PdfFindOptions)
+- uid: Egap.Pdf.PdfDocument.MarkRedactions*
+  name: MarkRedactions
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_MarkRedactions_
+  commentId: Overload:Egap.Pdf.PdfDocument.MarkRedactions
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfDocument.MarkRedactions
+  nameWithType: PdfDocument.MarkRedactions
 - uid: Egap.Pdf.PdfDocument.Merge(System.Collections.Generic.IEnumerable{Egap.Pdf.PdfDocument})
   name: Merge(params IEnumerable<PdfDocument>)
   href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_Merge_System_Collections_Generic_IEnumerable_Egap_Pdf_PdfDocument__
@@ -24957,6 +25917,31 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfDocument.PrepareSignatureAsync
   nameWithType: PdfDocument.PrepareSignatureAsync
+- uid: Egap.Pdf.PdfDocument.RedactText(System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfRedactionOptions)
+  name: RedactText(string, PdfFindOptions?, PdfRedactionOptions?)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_RedactText_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfRedactionOptions_
+  commentId: M:Egap.Pdf.PdfDocument.RedactText(System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfRedactionOptions)
+  name.vb: RedactText(String, PdfFindOptions, PdfRedactionOptions)
+  fullName: Egap.Pdf.PdfDocument.RedactText(string, Egap.Pdf.PdfFindOptions?, Egap.Pdf.PdfRedactionOptions?)
+  fullName.vb: Egap.Pdf.PdfDocument.RedactText(String, Egap.Pdf.PdfFindOptions, Egap.Pdf.PdfRedactionOptions)
+  nameWithType: PdfDocument.RedactText(string, PdfFindOptions?, PdfRedactionOptions?)
+  nameWithType.vb: PdfDocument.RedactText(String, PdfFindOptions, PdfRedactionOptions)
+- uid: Egap.Pdf.PdfDocument.RedactText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfRedactionOptions)
+  name: RedactText(Regex, PdfFindOptions?, PdfRedactionOptions?)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_RedactText_System_Text_RegularExpressions_Regex_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfRedactionOptions_
+  commentId: M:Egap.Pdf.PdfDocument.RedactText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfRedactionOptions)
+  name.vb: RedactText(Regex, PdfFindOptions, PdfRedactionOptions)
+  fullName: Egap.Pdf.PdfDocument.RedactText(System.Text.RegularExpressions.Regex, Egap.Pdf.PdfFindOptions?, Egap.Pdf.PdfRedactionOptions?)
+  fullName.vb: Egap.Pdf.PdfDocument.RedactText(System.Text.RegularExpressions.Regex, Egap.Pdf.PdfFindOptions, Egap.Pdf.PdfRedactionOptions)
+  nameWithType: PdfDocument.RedactText(Regex, PdfFindOptions?, PdfRedactionOptions?)
+  nameWithType.vb: PdfDocument.RedactText(Regex, PdfFindOptions, PdfRedactionOptions)
+- uid: Egap.Pdf.PdfDocument.RedactText*
+  name: RedactText
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_RedactText_
+  commentId: Overload:Egap.Pdf.PdfDocument.RedactText
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfDocument.RedactText
+  nameWithType: PdfDocument.RedactText
 - uid: Egap.Pdf.PdfDocument.RemoveBlankPages(Egap.Pdf.BlankPageOptions,System.Threading.CancellationToken)
   name: RemoveBlankPages(BlankPageOptions?, CancellationToken)
   href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_RemoveBlankPages_Egap_Pdf_BlankPageOptions_System_Threading_CancellationToken_
@@ -24986,6 +25971,47 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfDocument.RemoveStamps
   nameWithType: PdfDocument.RemoveStamps
+- uid: Egap.Pdf.PdfDocument.RenderPagesToFiles(System.String,Egap.Pdf.PdfRenderOptions,Egap.Pdf.PdfPageRange,System.Threading.CancellationToken)
+  name: RenderPagesToFiles(string, PdfRenderOptions?, PdfPageRange?, CancellationToken)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_RenderPagesToFiles_System_String_Egap_Pdf_PdfRenderOptions_Egap_Pdf_PdfPageRange_System_Threading_CancellationToken_
+  commentId: M:Egap.Pdf.PdfDocument.RenderPagesToFiles(System.String,Egap.Pdf.PdfRenderOptions,Egap.Pdf.PdfPageRange,System.Threading.CancellationToken)
+  name.vb: RenderPagesToFiles(String, PdfRenderOptions, PdfPageRange, CancellationToken)
+  fullName: Egap.Pdf.PdfDocument.RenderPagesToFiles(string, Egap.Pdf.PdfRenderOptions?, Egap.Pdf.PdfPageRange?, System.Threading.CancellationToken)
+  fullName.vb: Egap.Pdf.PdfDocument.RenderPagesToFiles(String, Egap.Pdf.PdfRenderOptions, Egap.Pdf.PdfPageRange, System.Threading.CancellationToken)
+  nameWithType: PdfDocument.RenderPagesToFiles(string, PdfRenderOptions?, PdfPageRange?, CancellationToken)
+  nameWithType.vb: PdfDocument.RenderPagesToFiles(String, PdfRenderOptions, PdfPageRange, CancellationToken)
+- uid: Egap.Pdf.PdfDocument.RenderPagesToFiles*
+  name: RenderPagesToFiles
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_RenderPagesToFiles_
+  commentId: Overload:Egap.Pdf.PdfDocument.RenderPagesToFiles
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfDocument.RenderPagesToFiles
+  nameWithType: PdfDocument.RenderPagesToFiles
+- uid: Egap.Pdf.PdfDocument.ReplaceText(System.String,System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfReplaceOptions)
+  name: ReplaceText(string, string, PdfFindOptions?, PdfReplaceOptions?)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ReplaceText_System_String_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfReplaceOptions_
+  commentId: M:Egap.Pdf.PdfDocument.ReplaceText(System.String,System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfReplaceOptions)
+  name.vb: ReplaceText(String, String, PdfFindOptions, PdfReplaceOptions)
+  fullName: Egap.Pdf.PdfDocument.ReplaceText(string, string, Egap.Pdf.PdfFindOptions?, Egap.Pdf.PdfReplaceOptions?)
+  fullName.vb: Egap.Pdf.PdfDocument.ReplaceText(String, String, Egap.Pdf.PdfFindOptions, Egap.Pdf.PdfReplaceOptions)
+  nameWithType: PdfDocument.ReplaceText(string, string, PdfFindOptions?, PdfReplaceOptions?)
+  nameWithType.vb: PdfDocument.ReplaceText(String, String, PdfFindOptions, PdfReplaceOptions)
+- uid: Egap.Pdf.PdfDocument.ReplaceText(System.Text.RegularExpressions.Regex,System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfReplaceOptions)
+  name: ReplaceText(Regex, string, PdfFindOptions?, PdfReplaceOptions?)
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ReplaceText_System_Text_RegularExpressions_Regex_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfReplaceOptions_
+  commentId: M:Egap.Pdf.PdfDocument.ReplaceText(System.Text.RegularExpressions.Regex,System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfReplaceOptions)
+  name.vb: ReplaceText(Regex, String, PdfFindOptions, PdfReplaceOptions)
+  fullName: Egap.Pdf.PdfDocument.ReplaceText(System.Text.RegularExpressions.Regex, string, Egap.Pdf.PdfFindOptions?, Egap.Pdf.PdfReplaceOptions?)
+  fullName.vb: Egap.Pdf.PdfDocument.ReplaceText(System.Text.RegularExpressions.Regex, String, Egap.Pdf.PdfFindOptions, Egap.Pdf.PdfReplaceOptions)
+  nameWithType: PdfDocument.ReplaceText(Regex, string, PdfFindOptions?, PdfReplaceOptions?)
+  nameWithType.vb: PdfDocument.ReplaceText(Regex, String, PdfFindOptions, PdfReplaceOptions)
+- uid: Egap.Pdf.PdfDocument.ReplaceText*
+  name: ReplaceText
+  href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ReplaceText_
+  commentId: Overload:Egap.Pdf.PdfDocument.ReplaceText
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfDocument.ReplaceText
+  nameWithType: PdfDocument.ReplaceText
 - uid: Egap.Pdf.PdfDocument.Revisions
   name: Revisions
   href: api/Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_Revisions
@@ -25900,6 +26926,116 @@ references:
   commentId: F:Egap.Pdf.PdfFieldLockAction.Include
   fullName: Egap.Pdf.PdfFieldLockAction.Include
   nameWithType: PdfFieldLockAction.Include
+- uid: Egap.Pdf.PdfFieldOptions
+  name: PdfFieldOptions
+  href: api/Egap.Pdf.PdfFieldOptions.html
+  commentId: T:Egap.Pdf.PdfFieldOptions
+  fullName: Egap.Pdf.PdfFieldOptions
+  nameWithType: PdfFieldOptions
+- uid: Egap.Pdf.PdfFieldOptions.BackgroundColor
+  name: BackgroundColor
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_BackgroundColor
+  commentId: P:Egap.Pdf.PdfFieldOptions.BackgroundColor
+  fullName: Egap.Pdf.PdfFieldOptions.BackgroundColor
+  nameWithType: PdfFieldOptions.BackgroundColor
+- uid: Egap.Pdf.PdfFieldOptions.BackgroundColor*
+  name: BackgroundColor
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_BackgroundColor_
+  commentId: Overload:Egap.Pdf.PdfFieldOptions.BackgroundColor
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFieldOptions.BackgroundColor
+  nameWithType: PdfFieldOptions.BackgroundColor
+- uid: Egap.Pdf.PdfFieldOptions.BorderColor
+  name: BorderColor
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_BorderColor
+  commentId: P:Egap.Pdf.PdfFieldOptions.BorderColor
+  fullName: Egap.Pdf.PdfFieldOptions.BorderColor
+  nameWithType: PdfFieldOptions.BorderColor
+- uid: Egap.Pdf.PdfFieldOptions.BorderColor*
+  name: BorderColor
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_BorderColor_
+  commentId: Overload:Egap.Pdf.PdfFieldOptions.BorderColor
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFieldOptions.BorderColor
+  nameWithType: PdfFieldOptions.BorderColor
+- uid: Egap.Pdf.PdfFieldOptions.BorderWidth
+  name: BorderWidth
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_BorderWidth
+  commentId: P:Egap.Pdf.PdfFieldOptions.BorderWidth
+  fullName: Egap.Pdf.PdfFieldOptions.BorderWidth
+  nameWithType: PdfFieldOptions.BorderWidth
+- uid: Egap.Pdf.PdfFieldOptions.BorderWidth*
+  name: BorderWidth
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_BorderWidth_
+  commentId: Overload:Egap.Pdf.PdfFieldOptions.BorderWidth
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFieldOptions.BorderWidth
+  nameWithType: PdfFieldOptions.BorderWidth
+- uid: Egap.Pdf.PdfFieldOptions.FontSize
+  name: FontSize
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_FontSize
+  commentId: P:Egap.Pdf.PdfFieldOptions.FontSize
+  fullName: Egap.Pdf.PdfFieldOptions.FontSize
+  nameWithType: PdfFieldOptions.FontSize
+- uid: Egap.Pdf.PdfFieldOptions.FontSize*
+  name: FontSize
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_FontSize_
+  commentId: Overload:Egap.Pdf.PdfFieldOptions.FontSize
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFieldOptions.FontSize
+  nameWithType: PdfFieldOptions.FontSize
+- uid: Egap.Pdf.PdfFieldOptions.ReadOnly
+  name: ReadOnly
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_ReadOnly
+  commentId: P:Egap.Pdf.PdfFieldOptions.ReadOnly
+  fullName: Egap.Pdf.PdfFieldOptions.ReadOnly
+  nameWithType: PdfFieldOptions.ReadOnly
+- uid: Egap.Pdf.PdfFieldOptions.ReadOnly*
+  name: ReadOnly
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_ReadOnly_
+  commentId: Overload:Egap.Pdf.PdfFieldOptions.ReadOnly
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFieldOptions.ReadOnly
+  nameWithType: PdfFieldOptions.ReadOnly
+- uid: Egap.Pdf.PdfFieldOptions.Required
+  name: Required
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_Required
+  commentId: P:Egap.Pdf.PdfFieldOptions.Required
+  fullName: Egap.Pdf.PdfFieldOptions.Required
+  nameWithType: PdfFieldOptions.Required
+- uid: Egap.Pdf.PdfFieldOptions.Required*
+  name: Required
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_Required_
+  commentId: Overload:Egap.Pdf.PdfFieldOptions.Required
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFieldOptions.Required
+  nameWithType: PdfFieldOptions.Required
+- uid: Egap.Pdf.PdfFieldOptions.TextColor
+  name: TextColor
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_TextColor
+  commentId: P:Egap.Pdf.PdfFieldOptions.TextColor
+  fullName: Egap.Pdf.PdfFieldOptions.TextColor
+  nameWithType: PdfFieldOptions.TextColor
+- uid: Egap.Pdf.PdfFieldOptions.TextColor*
+  name: TextColor
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_TextColor_
+  commentId: Overload:Egap.Pdf.PdfFieldOptions.TextColor
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFieldOptions.TextColor
+  nameWithType: PdfFieldOptions.TextColor
+- uid: Egap.Pdf.PdfFieldOptions.Tooltip
+  name: Tooltip
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_Tooltip
+  commentId: P:Egap.Pdf.PdfFieldOptions.Tooltip
+  fullName: Egap.Pdf.PdfFieldOptions.Tooltip
+  nameWithType: PdfFieldOptions.Tooltip
+- uid: Egap.Pdf.PdfFieldOptions.Tooltip*
+  name: Tooltip
+  href: api/Egap.Pdf.PdfFieldOptions.html#Egap_Pdf_PdfFieldOptions_Tooltip_
+  commentId: Overload:Egap.Pdf.PdfFieldOptions.Tooltip
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFieldOptions.Tooltip
+  nameWithType: PdfFieldOptions.Tooltip
 - uid: Egap.Pdf.PdfFileAttachmentAnnotation
   name: PdfFileAttachmentAnnotation
   href: api/Egap.Pdf.PdfFileAttachmentAnnotation.html
@@ -25932,6 +27068,77 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfFileAttachmentAnnotation.Icon
   nameWithType: PdfFileAttachmentAnnotation.Icon
+- uid: Egap.Pdf.PdfFindOptions
+  name: PdfFindOptions
+  href: api/Egap.Pdf.PdfFindOptions.html
+  commentId: T:Egap.Pdf.PdfFindOptions
+  fullName: Egap.Pdf.PdfFindOptions
+  nameWithType: PdfFindOptions
+- uid: Egap.Pdf.PdfFindOptions.Default
+  name: Default
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_Default
+  commentId: P:Egap.Pdf.PdfFindOptions.Default
+  fullName: Egap.Pdf.PdfFindOptions.Default
+  nameWithType: PdfFindOptions.Default
+- uid: Egap.Pdf.PdfFindOptions.Default*
+  name: Default
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_Default_
+  commentId: Overload:Egap.Pdf.PdfFindOptions.Default
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFindOptions.Default
+  nameWithType: PdfFindOptions.Default
+- uid: Egap.Pdf.PdfFindOptions.MatchCase
+  name: MatchCase
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_MatchCase
+  commentId: P:Egap.Pdf.PdfFindOptions.MatchCase
+  fullName: Egap.Pdf.PdfFindOptions.MatchCase
+  nameWithType: PdfFindOptions.MatchCase
+- uid: Egap.Pdf.PdfFindOptions.MatchCase*
+  name: MatchCase
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_MatchCase_
+  commentId: Overload:Egap.Pdf.PdfFindOptions.MatchCase
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFindOptions.MatchCase
+  nameWithType: PdfFindOptions.MatchCase
+- uid: Egap.Pdf.PdfFindOptions.Pages
+  name: Pages
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_Pages
+  commentId: P:Egap.Pdf.PdfFindOptions.Pages
+  fullName: Egap.Pdf.PdfFindOptions.Pages
+  nameWithType: PdfFindOptions.Pages
+- uid: Egap.Pdf.PdfFindOptions.Pages*
+  name: Pages
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_Pages_
+  commentId: Overload:Egap.Pdf.PdfFindOptions.Pages
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFindOptions.Pages
+  nameWithType: PdfFindOptions.Pages
+- uid: Egap.Pdf.PdfFindOptions.Text
+  name: Text
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_Text
+  commentId: P:Egap.Pdf.PdfFindOptions.Text
+  fullName: Egap.Pdf.PdfFindOptions.Text
+  nameWithType: PdfFindOptions.Text
+- uid: Egap.Pdf.PdfFindOptions.Text*
+  name: Text
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_Text_
+  commentId: Overload:Egap.Pdf.PdfFindOptions.Text
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFindOptions.Text
+  nameWithType: PdfFindOptions.Text
+- uid: Egap.Pdf.PdfFindOptions.WholeWord
+  name: WholeWord
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_WholeWord
+  commentId: P:Egap.Pdf.PdfFindOptions.WholeWord
+  fullName: Egap.Pdf.PdfFindOptions.WholeWord
+  nameWithType: PdfFindOptions.WholeWord
+- uid: Egap.Pdf.PdfFindOptions.WholeWord*
+  name: WholeWord
+  href: api/Egap.Pdf.PdfFindOptions.html#Egap_Pdf_PdfFindOptions_WholeWord_
+  commentId: Overload:Egap.Pdf.PdfFindOptions.WholeWord
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfFindOptions.WholeWord
+  nameWithType: PdfFindOptions.WholeWord
 - uid: Egap.Pdf.PdfFlattenFilter
   name: PdfFlattenFilter
   href: api/Egap.Pdf.PdfFlattenFilter.html
@@ -26582,6 +27789,118 @@ references:
   commentId: T:Egap.Pdf.PdfForm
   fullName: Egap.Pdf.PdfForm
   nameWithType: PdfForm
+- uid: Egap.Pdf.PdfForm.AddCheckBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfButtonOptions)
+  name: AddCheckBox(string, int, PdfRectangle, PdfButtonOptions?)
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddCheckBox_System_String_System_Int32_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfButtonOptions_
+  commentId: M:Egap.Pdf.PdfForm.AddCheckBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfButtonOptions)
+  name.vb: AddCheckBox(String, Integer, PdfRectangle, PdfButtonOptions)
+  fullName: Egap.Pdf.PdfForm.AddCheckBox(string, int, Egap.Pdf.PdfRectangle, Egap.Pdf.PdfButtonOptions?)
+  fullName.vb: Egap.Pdf.PdfForm.AddCheckBox(String, Integer, Egap.Pdf.PdfRectangle, Egap.Pdf.PdfButtonOptions)
+  nameWithType: PdfForm.AddCheckBox(string, int, PdfRectangle, PdfButtonOptions?)
+  nameWithType.vb: PdfForm.AddCheckBox(String, Integer, PdfRectangle, PdfButtonOptions)
+- uid: Egap.Pdf.PdfForm.AddCheckBox*
+  name: AddCheckBox
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddCheckBox_
+  commentId: Overload:Egap.Pdf.PdfForm.AddCheckBox
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfForm.AddCheckBox
+  nameWithType: PdfForm.AddCheckBox
+- uid: Egap.Pdf.PdfForm.AddComboBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.Collections.Generic.IReadOnlyList{System.String},System.Boolean,Egap.Pdf.PdfChoiceFieldOptions)
+  name: AddComboBox(string, int, PdfRectangle, IReadOnlyList<string>, bool, PdfChoiceFieldOptions?)
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddComboBox_System_String_System_Int32_Egap_Pdf_PdfRectangle_System_Collections_Generic_IReadOnlyList_System_String__System_Boolean_Egap_Pdf_PdfChoiceFieldOptions_
+  commentId: M:Egap.Pdf.PdfForm.AddComboBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.Collections.Generic.IReadOnlyList{System.String},System.Boolean,Egap.Pdf.PdfChoiceFieldOptions)
+  name.vb: AddComboBox(String, Integer, PdfRectangle, IReadOnlyList(Of String), Boolean, PdfChoiceFieldOptions)
+  fullName: Egap.Pdf.PdfForm.AddComboBox(string, int, Egap.Pdf.PdfRectangle, System.Collections.Generic.IReadOnlyList<string>, bool, Egap.Pdf.PdfChoiceFieldOptions?)
+  fullName.vb: Egap.Pdf.PdfForm.AddComboBox(String, Integer, Egap.Pdf.PdfRectangle, System.Collections.Generic.IReadOnlyList(Of String), Boolean, Egap.Pdf.PdfChoiceFieldOptions)
+  nameWithType: PdfForm.AddComboBox(string, int, PdfRectangle, IReadOnlyList<string>, bool, PdfChoiceFieldOptions?)
+  nameWithType.vb: PdfForm.AddComboBox(String, Integer, PdfRectangle, IReadOnlyList(Of String), Boolean, PdfChoiceFieldOptions)
+- uid: Egap.Pdf.PdfForm.AddComboBox*
+  name: AddComboBox
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddComboBox_
+  commentId: Overload:Egap.Pdf.PdfForm.AddComboBox
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfForm.AddComboBox
+  nameWithType: PdfForm.AddComboBox
+- uid: Egap.Pdf.PdfForm.AddListBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.Collections.Generic.IReadOnlyList{System.String},System.Boolean,Egap.Pdf.PdfChoiceFieldOptions)
+  name: AddListBox(string, int, PdfRectangle, IReadOnlyList<string>, bool, PdfChoiceFieldOptions?)
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddListBox_System_String_System_Int32_Egap_Pdf_PdfRectangle_System_Collections_Generic_IReadOnlyList_System_String__System_Boolean_Egap_Pdf_PdfChoiceFieldOptions_
+  commentId: M:Egap.Pdf.PdfForm.AddListBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.Collections.Generic.IReadOnlyList{System.String},System.Boolean,Egap.Pdf.PdfChoiceFieldOptions)
+  name.vb: AddListBox(String, Integer, PdfRectangle, IReadOnlyList(Of String), Boolean, PdfChoiceFieldOptions)
+  fullName: Egap.Pdf.PdfForm.AddListBox(string, int, Egap.Pdf.PdfRectangle, System.Collections.Generic.IReadOnlyList<string>, bool, Egap.Pdf.PdfChoiceFieldOptions?)
+  fullName.vb: Egap.Pdf.PdfForm.AddListBox(String, Integer, Egap.Pdf.PdfRectangle, System.Collections.Generic.IReadOnlyList(Of String), Boolean, Egap.Pdf.PdfChoiceFieldOptions)
+  nameWithType: PdfForm.AddListBox(string, int, PdfRectangle, IReadOnlyList<string>, bool, PdfChoiceFieldOptions?)
+  nameWithType.vb: PdfForm.AddListBox(String, Integer, PdfRectangle, IReadOnlyList(Of String), Boolean, PdfChoiceFieldOptions)
+- uid: Egap.Pdf.PdfForm.AddListBox*
+  name: AddListBox
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddListBox_
+  commentId: Overload:Egap.Pdf.PdfForm.AddListBox
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfForm.AddListBox
+  nameWithType: PdfForm.AddListBox
+- uid: Egap.Pdf.PdfForm.AddPushButton(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.String,Egap.Pdf.PdfAction,Egap.Pdf.PdfFieldOptions)
+  name: AddPushButton(string, int, PdfRectangle, string, PdfAction?, PdfFieldOptions?)
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddPushButton_System_String_System_Int32_Egap_Pdf_PdfRectangle_System_String_Egap_Pdf_PdfAction_Egap_Pdf_PdfFieldOptions_
+  commentId: M:Egap.Pdf.PdfForm.AddPushButton(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.String,Egap.Pdf.PdfAction,Egap.Pdf.PdfFieldOptions)
+  name.vb: AddPushButton(String, Integer, PdfRectangle, String, PdfAction, PdfFieldOptions)
+  fullName: Egap.Pdf.PdfForm.AddPushButton(string, int, Egap.Pdf.PdfRectangle, string, Egap.Pdf.PdfAction?, Egap.Pdf.PdfFieldOptions?)
+  fullName.vb: Egap.Pdf.PdfForm.AddPushButton(String, Integer, Egap.Pdf.PdfRectangle, String, Egap.Pdf.PdfAction, Egap.Pdf.PdfFieldOptions)
+  nameWithType: PdfForm.AddPushButton(string, int, PdfRectangle, string, PdfAction?, PdfFieldOptions?)
+  nameWithType.vb: PdfForm.AddPushButton(String, Integer, PdfRectangle, String, PdfAction, PdfFieldOptions)
+- uid: Egap.Pdf.PdfForm.AddPushButton*
+  name: AddPushButton
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddPushButton_
+  commentId: Overload:Egap.Pdf.PdfForm.AddPushButton
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfForm.AddPushButton
+  nameWithType: PdfForm.AddPushButton
+- uid: Egap.Pdf.PdfForm.AddRadioGroup(System.String,System.Collections.Generic.IReadOnlyList{System.ValueTuple{System.Int32,Egap.Pdf.PdfRectangle,System.String}},System.String,Egap.Pdf.PdfFieldOptions)
+  name: AddRadioGroup(string, IReadOnlyList<(int Page, PdfRectangle Rectangle, string Value)>, string?, PdfFieldOptions?)
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddRadioGroup_System_String_System_Collections_Generic_IReadOnlyList_System_ValueTuple_System_Int32_Egap_Pdf_PdfRectangle_System_String___System_String_Egap_Pdf_PdfFieldOptions_
+  commentId: M:Egap.Pdf.PdfForm.AddRadioGroup(System.String,System.Collections.Generic.IReadOnlyList{System.ValueTuple{System.Int32,Egap.Pdf.PdfRectangle,System.String}},System.String,Egap.Pdf.PdfFieldOptions)
+  name.vb: AddRadioGroup(String, IReadOnlyList(Of (Page As Integer, Rectangle As PdfRectangle, Value As String)), String, PdfFieldOptions)
+  fullName: Egap.Pdf.PdfForm.AddRadioGroup(string, System.Collections.Generic.IReadOnlyList<(int Page, Egap.Pdf.PdfRectangle Rectangle, string Value)>, string?, Egap.Pdf.PdfFieldOptions?)
+  fullName.vb: Egap.Pdf.PdfForm.AddRadioGroup(String, System.Collections.Generic.IReadOnlyList(Of (Page As Integer, Rectangle As Egap.Pdf.PdfRectangle, Value As String)), String, Egap.Pdf.PdfFieldOptions)
+  nameWithType: PdfForm.AddRadioGroup(string, IReadOnlyList<(int Page, PdfRectangle Rectangle, string Value)>, string?, PdfFieldOptions?)
+  nameWithType.vb: PdfForm.AddRadioGroup(String, IReadOnlyList(Of (Page As Integer, Rectangle As PdfRectangle, Value As String)), String, PdfFieldOptions)
+- uid: Egap.Pdf.PdfForm.AddRadioGroup*
+  name: AddRadioGroup
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddRadioGroup_
+  commentId: Overload:Egap.Pdf.PdfForm.AddRadioGroup
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfForm.AddRadioGroup
+  nameWithType: PdfForm.AddRadioGroup
+- uid: Egap.Pdf.PdfForm.AddSignatureField(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfFieldOptions)
+  name: AddSignatureField(string, int, PdfRectangle, PdfFieldOptions?)
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddSignatureField_System_String_System_Int32_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfFieldOptions_
+  commentId: M:Egap.Pdf.PdfForm.AddSignatureField(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfFieldOptions)
+  name.vb: AddSignatureField(String, Integer, PdfRectangle, PdfFieldOptions)
+  fullName: Egap.Pdf.PdfForm.AddSignatureField(string, int, Egap.Pdf.PdfRectangle, Egap.Pdf.PdfFieldOptions?)
+  fullName.vb: Egap.Pdf.PdfForm.AddSignatureField(String, Integer, Egap.Pdf.PdfRectangle, Egap.Pdf.PdfFieldOptions)
+  nameWithType: PdfForm.AddSignatureField(string, int, PdfRectangle, PdfFieldOptions?)
+  nameWithType.vb: PdfForm.AddSignatureField(String, Integer, PdfRectangle, PdfFieldOptions)
+- uid: Egap.Pdf.PdfForm.AddSignatureField*
+  name: AddSignatureField
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddSignatureField_
+  commentId: Overload:Egap.Pdf.PdfForm.AddSignatureField
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfForm.AddSignatureField
+  nameWithType: PdfForm.AddSignatureField
+- uid: Egap.Pdf.PdfForm.AddTextField(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfTextFieldOptions)
+  name: AddTextField(string, int, PdfRectangle, PdfTextFieldOptions?)
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddTextField_System_String_System_Int32_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfTextFieldOptions_
+  commentId: M:Egap.Pdf.PdfForm.AddTextField(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfTextFieldOptions)
+  name.vb: AddTextField(String, Integer, PdfRectangle, PdfTextFieldOptions)
+  fullName: Egap.Pdf.PdfForm.AddTextField(string, int, Egap.Pdf.PdfRectangle, Egap.Pdf.PdfTextFieldOptions?)
+  fullName.vb: Egap.Pdf.PdfForm.AddTextField(String, Integer, Egap.Pdf.PdfRectangle, Egap.Pdf.PdfTextFieldOptions)
+  nameWithType: PdfForm.AddTextField(string, int, PdfRectangle, PdfTextFieldOptions?)
+  nameWithType.vb: PdfForm.AddTextField(String, Integer, PdfRectangle, PdfTextFieldOptions)
+- uid: Egap.Pdf.PdfForm.AddTextField*
+  name: AddTextField
+  href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddTextField_
+  commentId: Overload:Egap.Pdf.PdfForm.AddTextField
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfForm.AddTextField
+  nameWithType: PdfForm.AddTextField
 - uid: Egap.Pdf.PdfForm.Alignment
   name: Alignment
   href: api/Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_Alignment
@@ -28152,6 +29471,77 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfImageOptions.Default
   nameWithType: PdfImageOptions.Default
+- uid: Egap.Pdf.PdfImagePageOptions
+  name: PdfImagePageOptions
+  href: api/Egap.Pdf.PdfImagePageOptions.html
+  commentId: T:Egap.Pdf.PdfImagePageOptions
+  fullName: Egap.Pdf.PdfImagePageOptions
+  nameWithType: PdfImagePageOptions
+- uid: Egap.Pdf.PdfImagePageOptions.AutoRotate
+  name: AutoRotate
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_AutoRotate
+  commentId: P:Egap.Pdf.PdfImagePageOptions.AutoRotate
+  fullName: Egap.Pdf.PdfImagePageOptions.AutoRotate
+  nameWithType: PdfImagePageOptions.AutoRotate
+- uid: Egap.Pdf.PdfImagePageOptions.AutoRotate*
+  name: AutoRotate
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_AutoRotate_
+  commentId: Overload:Egap.Pdf.PdfImagePageOptions.AutoRotate
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfImagePageOptions.AutoRotate
+  nameWithType: PdfImagePageOptions.AutoRotate
+- uid: Egap.Pdf.PdfImagePageOptions.Default
+  name: Default
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_Default
+  commentId: P:Egap.Pdf.PdfImagePageOptions.Default
+  fullName: Egap.Pdf.PdfImagePageOptions.Default
+  nameWithType: PdfImagePageOptions.Default
+- uid: Egap.Pdf.PdfImagePageOptions.Default*
+  name: Default
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_Default_
+  commentId: Overload:Egap.Pdf.PdfImagePageOptions.Default
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfImagePageOptions.Default
+  nameWithType: PdfImagePageOptions.Default
+- uid: Egap.Pdf.PdfImagePageOptions.Dpi
+  name: Dpi
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_Dpi
+  commentId: P:Egap.Pdf.PdfImagePageOptions.Dpi
+  fullName: Egap.Pdf.PdfImagePageOptions.Dpi
+  nameWithType: PdfImagePageOptions.Dpi
+- uid: Egap.Pdf.PdfImagePageOptions.Dpi*
+  name: Dpi
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_Dpi_
+  commentId: Overload:Egap.Pdf.PdfImagePageOptions.Dpi
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfImagePageOptions.Dpi
+  nameWithType: PdfImagePageOptions.Dpi
+- uid: Egap.Pdf.PdfImagePageOptions.Margin
+  name: Margin
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_Margin
+  commentId: P:Egap.Pdf.PdfImagePageOptions.Margin
+  fullName: Egap.Pdf.PdfImagePageOptions.Margin
+  nameWithType: PdfImagePageOptions.Margin
+- uid: Egap.Pdf.PdfImagePageOptions.Margin*
+  name: Margin
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_Margin_
+  commentId: Overload:Egap.Pdf.PdfImagePageOptions.Margin
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfImagePageOptions.Margin
+  nameWithType: PdfImagePageOptions.Margin
+- uid: Egap.Pdf.PdfImagePageOptions.PageSize
+  name: PageSize
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_PageSize
+  commentId: P:Egap.Pdf.PdfImagePageOptions.PageSize
+  fullName: Egap.Pdf.PdfImagePageOptions.PageSize
+  nameWithType: PdfImagePageOptions.PageSize
+- uid: Egap.Pdf.PdfImagePageOptions.PageSize*
+  name: PageSize
+  href: api/Egap.Pdf.PdfImagePageOptions.html#Egap_Pdf_PdfImagePageOptions_PageSize_
+  commentId: Overload:Egap.Pdf.PdfImagePageOptions.PageSize
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfImagePageOptions.PageSize
+  nameWithType: PdfImagePageOptions.PageSize
 - uid: Egap.Pdf.PdfImportOptions
   name: PdfImportOptions
   href: api/Egap.Pdf.PdfImportOptions.html
@@ -28432,6 +29822,249 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfInteger.Value
   nameWithType: PdfInteger.Value
+- uid: Egap.Pdf.PdfInvoice
+  name: PdfInvoice
+  href: api/Egap.Pdf.PdfInvoice.html
+  commentId: T:Egap.Pdf.PdfInvoice
+  fullName: Egap.Pdf.PdfInvoice
+  nameWithType: PdfInvoice
+- uid: Egap.Pdf.PdfInvoice.#ctor(System.Byte[],System.String,Egap.Pdf.PdfInvoiceStandard,System.Nullable{Egap.Pdf.PdfInvoiceProfile})
+  name: PdfInvoice(byte[], string, PdfInvoiceStandard, PdfInvoiceProfile?)
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice__ctor_System_Byte___System_String_Egap_Pdf_PdfInvoiceStandard_System_Nullable_Egap_Pdf_PdfInvoiceProfile__
+  commentId: M:Egap.Pdf.PdfInvoice.#ctor(System.Byte[],System.String,Egap.Pdf.PdfInvoiceStandard,System.Nullable{Egap.Pdf.PdfInvoiceProfile})
+  name.vb: New(Byte(), String, PdfInvoiceStandard, PdfInvoiceProfile?)
+  fullName: Egap.Pdf.PdfInvoice.PdfInvoice(byte[], string, Egap.Pdf.PdfInvoiceStandard, Egap.Pdf.PdfInvoiceProfile?)
+  fullName.vb: Egap.Pdf.PdfInvoice.New(Byte(), String, Egap.Pdf.PdfInvoiceStandard, Egap.Pdf.PdfInvoiceProfile?)
+  nameWithType: PdfInvoice.PdfInvoice(byte[], string, PdfInvoiceStandard, PdfInvoiceProfile?)
+  nameWithType.vb: PdfInvoice.New(Byte(), String, PdfInvoiceStandard, PdfInvoiceProfile?)
+- uid: Egap.Pdf.PdfInvoice.#ctor*
+  name: PdfInvoice
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice__ctor_
+  commentId: Overload:Egap.Pdf.PdfInvoice.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Pdf.PdfInvoice.PdfInvoice
+  fullName.vb: Egap.Pdf.PdfInvoice.New
+  nameWithType: PdfInvoice.PdfInvoice
+  nameWithType.vb: PdfInvoice.New
+- uid: Egap.Pdf.PdfInvoice.Embed(Egap.Pdf.PdfDocument,System.ReadOnlySpan{System.Byte},Egap.Pdf.PdfInvoiceOptions)
+  name: Embed(PdfDocument, ReadOnlySpan<byte>, PdfInvoiceOptions?)
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Embed_Egap_Pdf_PdfDocument_System_ReadOnlySpan_System_Byte__Egap_Pdf_PdfInvoiceOptions_
+  commentId: M:Egap.Pdf.PdfInvoice.Embed(Egap.Pdf.PdfDocument,System.ReadOnlySpan{System.Byte},Egap.Pdf.PdfInvoiceOptions)
+  name.vb: Embed(PdfDocument, ReadOnlySpan(Of Byte), PdfInvoiceOptions)
+  fullName: Egap.Pdf.PdfInvoice.Embed(Egap.Pdf.PdfDocument, System.ReadOnlySpan<byte>, Egap.Pdf.PdfInvoiceOptions?)
+  fullName.vb: Egap.Pdf.PdfInvoice.Embed(Egap.Pdf.PdfDocument, System.ReadOnlySpan(Of Byte), Egap.Pdf.PdfInvoiceOptions)
+  nameWithType: PdfInvoice.Embed(PdfDocument, ReadOnlySpan<byte>, PdfInvoiceOptions?)
+  nameWithType.vb: PdfInvoice.Embed(PdfDocument, ReadOnlySpan(Of Byte), PdfInvoiceOptions)
+- uid: Egap.Pdf.PdfInvoice.Embed*
+  name: Embed
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Embed_
+  commentId: Overload:Egap.Pdf.PdfInvoice.Embed
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoice.Embed
+  nameWithType: PdfInvoice.Embed
+- uid: Egap.Pdf.PdfInvoice.FileName
+  name: FileName
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_FileName
+  commentId: P:Egap.Pdf.PdfInvoice.FileName
+  fullName: Egap.Pdf.PdfInvoice.FileName
+  nameWithType: PdfInvoice.FileName
+- uid: Egap.Pdf.PdfInvoice.FileName*
+  name: FileName
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_FileName_
+  commentId: Overload:Egap.Pdf.PdfInvoice.FileName
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoice.FileName
+  nameWithType: PdfInvoice.FileName
+- uid: Egap.Pdf.PdfInvoice.Profile
+  name: Profile
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Profile
+  commentId: P:Egap.Pdf.PdfInvoice.Profile
+  fullName: Egap.Pdf.PdfInvoice.Profile
+  nameWithType: PdfInvoice.Profile
+- uid: Egap.Pdf.PdfInvoice.Profile*
+  name: Profile
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Profile_
+  commentId: Overload:Egap.Pdf.PdfInvoice.Profile
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoice.Profile
+  nameWithType: PdfInvoice.Profile
+- uid: Egap.Pdf.PdfInvoice.Read(Egap.Pdf.PdfDocument)
+  name: Read(PdfDocument)
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Read_Egap_Pdf_PdfDocument_
+  commentId: M:Egap.Pdf.PdfInvoice.Read(Egap.Pdf.PdfDocument)
+  fullName: Egap.Pdf.PdfInvoice.Read(Egap.Pdf.PdfDocument)
+  nameWithType: PdfInvoice.Read(PdfDocument)
+- uid: Egap.Pdf.PdfInvoice.Read*
+  name: Read
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Read_
+  commentId: Overload:Egap.Pdf.PdfInvoice.Read
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoice.Read
+  nameWithType: PdfInvoice.Read
+- uid: Egap.Pdf.PdfInvoice.Standard
+  name: Standard
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Standard
+  commentId: P:Egap.Pdf.PdfInvoice.Standard
+  fullName: Egap.Pdf.PdfInvoice.Standard
+  nameWithType: PdfInvoice.Standard
+- uid: Egap.Pdf.PdfInvoice.Standard*
+  name: Standard
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Standard_
+  commentId: Overload:Egap.Pdf.PdfInvoice.Standard
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoice.Standard
+  nameWithType: PdfInvoice.Standard
+- uid: Egap.Pdf.PdfInvoice.Xml
+  name: Xml
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Xml
+  commentId: P:Egap.Pdf.PdfInvoice.Xml
+  fullName: Egap.Pdf.PdfInvoice.Xml
+  nameWithType: PdfInvoice.Xml
+- uid: Egap.Pdf.PdfInvoice.Xml*
+  name: Xml
+  href: api/Egap.Pdf.PdfInvoice.html#Egap_Pdf_PdfInvoice_Xml_
+  commentId: Overload:Egap.Pdf.PdfInvoice.Xml
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoice.Xml
+  nameWithType: PdfInvoice.Xml
+- uid: Egap.Pdf.PdfInvoiceOptions
+  name: PdfInvoiceOptions
+  href: api/Egap.Pdf.PdfInvoiceOptions.html
+  commentId: T:Egap.Pdf.PdfInvoiceOptions
+  fullName: Egap.Pdf.PdfInvoiceOptions
+  nameWithType: PdfInvoiceOptions
+- uid: Egap.Pdf.PdfInvoiceOptions.Conformance
+  name: Conformance
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Conformance
+  commentId: P:Egap.Pdf.PdfInvoiceOptions.Conformance
+  fullName: Egap.Pdf.PdfInvoiceOptions.Conformance
+  nameWithType: PdfInvoiceOptions.Conformance
+- uid: Egap.Pdf.PdfInvoiceOptions.Conformance*
+  name: Conformance
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Conformance_
+  commentId: Overload:Egap.Pdf.PdfInvoiceOptions.Conformance
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoiceOptions.Conformance
+  nameWithType: PdfInvoiceOptions.Conformance
+- uid: Egap.Pdf.PdfInvoiceOptions.Default
+  name: Default
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Default
+  commentId: P:Egap.Pdf.PdfInvoiceOptions.Default
+  fullName: Egap.Pdf.PdfInvoiceOptions.Default
+  nameWithType: PdfInvoiceOptions.Default
+- uid: Egap.Pdf.PdfInvoiceOptions.Default*
+  name: Default
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Default_
+  commentId: Overload:Egap.Pdf.PdfInvoiceOptions.Default
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoiceOptions.Default
+  nameWithType: PdfInvoiceOptions.Default
+- uid: Egap.Pdf.PdfInvoiceOptions.Profile
+  name: Profile
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Profile
+  commentId: P:Egap.Pdf.PdfInvoiceOptions.Profile
+  fullName: Egap.Pdf.PdfInvoiceOptions.Profile
+  nameWithType: PdfInvoiceOptions.Profile
+- uid: Egap.Pdf.PdfInvoiceOptions.Profile*
+  name: Profile
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Profile_
+  commentId: Overload:Egap.Pdf.PdfInvoiceOptions.Profile
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoiceOptions.Profile
+  nameWithType: PdfInvoiceOptions.Profile
+- uid: Egap.Pdf.PdfInvoiceOptions.Relationship
+  name: Relationship
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Relationship
+  commentId: P:Egap.Pdf.PdfInvoiceOptions.Relationship
+  fullName: Egap.Pdf.PdfInvoiceOptions.Relationship
+  nameWithType: PdfInvoiceOptions.Relationship
+- uid: Egap.Pdf.PdfInvoiceOptions.Relationship*
+  name: Relationship
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Relationship_
+  commentId: Overload:Egap.Pdf.PdfInvoiceOptions.Relationship
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoiceOptions.Relationship
+  nameWithType: PdfInvoiceOptions.Relationship
+- uid: Egap.Pdf.PdfInvoiceOptions.Standard
+  name: Standard
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Standard
+  commentId: P:Egap.Pdf.PdfInvoiceOptions.Standard
+  fullName: Egap.Pdf.PdfInvoiceOptions.Standard
+  nameWithType: PdfInvoiceOptions.Standard
+- uid: Egap.Pdf.PdfInvoiceOptions.Standard*
+  name: Standard
+  href: api/Egap.Pdf.PdfInvoiceOptions.html#Egap_Pdf_PdfInvoiceOptions_Standard_
+  commentId: Overload:Egap.Pdf.PdfInvoiceOptions.Standard
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfInvoiceOptions.Standard
+  nameWithType: PdfInvoiceOptions.Standard
+- uid: Egap.Pdf.PdfInvoiceProfile
+  name: PdfInvoiceProfile
+  href: api/Egap.Pdf.PdfInvoiceProfile.html
+  commentId: T:Egap.Pdf.PdfInvoiceProfile
+  fullName: Egap.Pdf.PdfInvoiceProfile
+  nameWithType: PdfInvoiceProfile
+- uid: Egap.Pdf.PdfInvoiceProfile.Basic
+  name: Basic
+  href: api/Egap.Pdf.PdfInvoiceProfile.html#Egap_Pdf_PdfInvoiceProfile_Basic
+  commentId: F:Egap.Pdf.PdfInvoiceProfile.Basic
+  fullName: Egap.Pdf.PdfInvoiceProfile.Basic
+  nameWithType: PdfInvoiceProfile.Basic
+- uid: Egap.Pdf.PdfInvoiceProfile.BasicWL
+  name: BasicWL
+  href: api/Egap.Pdf.PdfInvoiceProfile.html#Egap_Pdf_PdfInvoiceProfile_BasicWL
+  commentId: F:Egap.Pdf.PdfInvoiceProfile.BasicWL
+  fullName: Egap.Pdf.PdfInvoiceProfile.BasicWL
+  nameWithType: PdfInvoiceProfile.BasicWL
+- uid: Egap.Pdf.PdfInvoiceProfile.EN16931
+  name: EN16931
+  href: api/Egap.Pdf.PdfInvoiceProfile.html#Egap_Pdf_PdfInvoiceProfile_EN16931
+  commentId: F:Egap.Pdf.PdfInvoiceProfile.EN16931
+  fullName: Egap.Pdf.PdfInvoiceProfile.EN16931
+  nameWithType: PdfInvoiceProfile.EN16931
+- uid: Egap.Pdf.PdfInvoiceProfile.Extended
+  name: Extended
+  href: api/Egap.Pdf.PdfInvoiceProfile.html#Egap_Pdf_PdfInvoiceProfile_Extended
+  commentId: F:Egap.Pdf.PdfInvoiceProfile.Extended
+  fullName: Egap.Pdf.PdfInvoiceProfile.Extended
+  nameWithType: PdfInvoiceProfile.Extended
+- uid: Egap.Pdf.PdfInvoiceProfile.Minimum
+  name: Minimum
+  href: api/Egap.Pdf.PdfInvoiceProfile.html#Egap_Pdf_PdfInvoiceProfile_Minimum
+  commentId: F:Egap.Pdf.PdfInvoiceProfile.Minimum
+  fullName: Egap.Pdf.PdfInvoiceProfile.Minimum
+  nameWithType: PdfInvoiceProfile.Minimum
+- uid: Egap.Pdf.PdfInvoiceProfile.XRechnung
+  name: XRechnung
+  href: api/Egap.Pdf.PdfInvoiceProfile.html#Egap_Pdf_PdfInvoiceProfile_XRechnung
+  commentId: F:Egap.Pdf.PdfInvoiceProfile.XRechnung
+  fullName: Egap.Pdf.PdfInvoiceProfile.XRechnung
+  nameWithType: PdfInvoiceProfile.XRechnung
+- uid: Egap.Pdf.PdfInvoiceStandard
+  name: PdfInvoiceStandard
+  href: api/Egap.Pdf.PdfInvoiceStandard.html
+  commentId: T:Egap.Pdf.PdfInvoiceStandard
+  fullName: Egap.Pdf.PdfInvoiceStandard
+  nameWithType: PdfInvoiceStandard
+- uid: Egap.Pdf.PdfInvoiceStandard.FacturX
+  name: FacturX
+  href: api/Egap.Pdf.PdfInvoiceStandard.html#Egap_Pdf_PdfInvoiceStandard_FacturX
+  commentId: F:Egap.Pdf.PdfInvoiceStandard.FacturX
+  fullName: Egap.Pdf.PdfInvoiceStandard.FacturX
+  nameWithType: PdfInvoiceStandard.FacturX
+- uid: Egap.Pdf.PdfInvoiceStandard.Zugferd10
+  name: Zugferd10
+  href: api/Egap.Pdf.PdfInvoiceStandard.html#Egap_Pdf_PdfInvoiceStandard_Zugferd10
+  commentId: F:Egap.Pdf.PdfInvoiceStandard.Zugferd10
+  fullName: Egap.Pdf.PdfInvoiceStandard.Zugferd10
+  nameWithType: PdfInvoiceStandard.Zugferd10
+- uid: Egap.Pdf.PdfInvoiceStandard.Zugferd20
+  name: Zugferd20
+  href: api/Egap.Pdf.PdfInvoiceStandard.html#Egap_Pdf_PdfInvoiceStandard_Zugferd20
+  commentId: F:Egap.Pdf.PdfInvoiceStandard.Zugferd20
+  fullName: Egap.Pdf.PdfInvoiceStandard.Zugferd20
+  nameWithType: PdfInvoiceStandard.Zugferd20
 - uid: Egap.Pdf.PdfLaunchAction
   name: PdfLaunchAction
   href: api/Egap.Pdf.PdfLaunchAction.html
@@ -31744,6 +33377,31 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfPage.ExtractText
   nameWithType: PdfPage.ExtractText
+- uid: Egap.Pdf.PdfPage.FindText(System.String,Egap.Pdf.PdfFindOptions)
+  name: FindText(string, PdfFindOptions?)
+  href: api/Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_FindText_System_String_Egap_Pdf_PdfFindOptions_
+  commentId: M:Egap.Pdf.PdfPage.FindText(System.String,Egap.Pdf.PdfFindOptions)
+  name.vb: FindText(String, PdfFindOptions)
+  fullName: Egap.Pdf.PdfPage.FindText(string, Egap.Pdf.PdfFindOptions?)
+  fullName.vb: Egap.Pdf.PdfPage.FindText(String, Egap.Pdf.PdfFindOptions)
+  nameWithType: PdfPage.FindText(string, PdfFindOptions?)
+  nameWithType.vb: PdfPage.FindText(String, PdfFindOptions)
+- uid: Egap.Pdf.PdfPage.FindText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions)
+  name: FindText(Regex, PdfFindOptions?)
+  href: api/Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_FindText_System_Text_RegularExpressions_Regex_Egap_Pdf_PdfFindOptions_
+  commentId: M:Egap.Pdf.PdfPage.FindText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions)
+  name.vb: FindText(Regex, PdfFindOptions)
+  fullName: Egap.Pdf.PdfPage.FindText(System.Text.RegularExpressions.Regex, Egap.Pdf.PdfFindOptions?)
+  fullName.vb: Egap.Pdf.PdfPage.FindText(System.Text.RegularExpressions.Regex, Egap.Pdf.PdfFindOptions)
+  nameWithType: PdfPage.FindText(Regex, PdfFindOptions?)
+  nameWithType.vb: PdfPage.FindText(Regex, PdfFindOptions)
+- uid: Egap.Pdf.PdfPage.FindText*
+  name: FindText
+  href: api/Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_FindText_
+  commentId: Overload:Egap.Pdf.PdfPage.FindText
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPage.FindText
+  nameWithType: PdfPage.FindText
 - uid: Egap.Pdf.PdfPage.Flush
   name: Flush()
   href: api/Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_Flush
@@ -32474,6 +34132,99 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfPageMatch.OldPage
   nameWithType: PdfPageMatch.OldPage
+- uid: Egap.Pdf.PdfPageRange
+  name: PdfPageRange
+  href: api/Egap.Pdf.PdfPageRange.html
+  commentId: T:Egap.Pdf.PdfPageRange
+  fullName: Egap.Pdf.PdfPageRange
+  nameWithType: PdfPageRange
+- uid: Egap.Pdf.PdfPageRange.All
+  name: All
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_All
+  commentId: P:Egap.Pdf.PdfPageRange.All
+  fullName: Egap.Pdf.PdfPageRange.All
+  nameWithType: PdfPageRange.All
+- uid: Egap.Pdf.PdfPageRange.All*
+  name: All
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_All_
+  commentId: Overload:Egap.Pdf.PdfPageRange.All
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPageRange.All
+  nameWithType: PdfPageRange.All
+- uid: Egap.Pdf.PdfPageRange.Parse(System.String)
+  name: Parse(string)
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_Parse_System_String_
+  commentId: M:Egap.Pdf.PdfPageRange.Parse(System.String)
+  name.vb: Parse(String)
+  fullName: Egap.Pdf.PdfPageRange.Parse(string)
+  fullName.vb: Egap.Pdf.PdfPageRange.Parse(String)
+  nameWithType: PdfPageRange.Parse(string)
+  nameWithType.vb: PdfPageRange.Parse(String)
+- uid: Egap.Pdf.PdfPageRange.Parse*
+  name: Parse
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_Parse_
+  commentId: Overload:Egap.Pdf.PdfPageRange.Parse
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPageRange.Parse
+  nameWithType: PdfPageRange.Parse
+- uid: Egap.Pdf.PdfPageRange.Resolve(System.Int32)
+  name: Resolve(int)
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_Resolve_System_Int32_
+  commentId: M:Egap.Pdf.PdfPageRange.Resolve(System.Int32)
+  name.vb: Resolve(Integer)
+  fullName: Egap.Pdf.PdfPageRange.Resolve(int)
+  fullName.vb: Egap.Pdf.PdfPageRange.Resolve(Integer)
+  nameWithType: PdfPageRange.Resolve(int)
+  nameWithType.vb: PdfPageRange.Resolve(Integer)
+- uid: Egap.Pdf.PdfPageRange.Resolve*
+  name: Resolve
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_Resolve_
+  commentId: Overload:Egap.Pdf.PdfPageRange.Resolve
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPageRange.Resolve
+  nameWithType: PdfPageRange.Resolve
+- uid: Egap.Pdf.PdfPageRange.Text
+  name: Text
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_Text
+  commentId: P:Egap.Pdf.PdfPageRange.Text
+  fullName: Egap.Pdf.PdfPageRange.Text
+  nameWithType: PdfPageRange.Text
+- uid: Egap.Pdf.PdfPageRange.Text*
+  name: Text
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_Text_
+  commentId: Overload:Egap.Pdf.PdfPageRange.Text
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPageRange.Text
+  nameWithType: PdfPageRange.Text
+- uid: Egap.Pdf.PdfPageRange.ToString
+  name: ToString()
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_ToString
+  commentId: M:Egap.Pdf.PdfPageRange.ToString
+  fullName: Egap.Pdf.PdfPageRange.ToString()
+  nameWithType: PdfPageRange.ToString()
+- uid: Egap.Pdf.PdfPageRange.ToString*
+  name: ToString
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_ToString_
+  commentId: Overload:Egap.Pdf.PdfPageRange.ToString
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPageRange.ToString
+  nameWithType: PdfPageRange.ToString
+- uid: Egap.Pdf.PdfPageRange.TryParse(System.String,Egap.Pdf.PdfPageRange@)
+  name: TryParse(string?, out PdfPageRange?)
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_TryParse_System_String_Egap_Pdf_PdfPageRange__
+  commentId: M:Egap.Pdf.PdfPageRange.TryParse(System.String,Egap.Pdf.PdfPageRange@)
+  name.vb: TryParse(String, PdfPageRange)
+  fullName: Egap.Pdf.PdfPageRange.TryParse(string?, out Egap.Pdf.PdfPageRange?)
+  fullName.vb: Egap.Pdf.PdfPageRange.TryParse(String, Egap.Pdf.PdfPageRange)
+  nameWithType: PdfPageRange.TryParse(string?, out PdfPageRange?)
+  nameWithType.vb: PdfPageRange.TryParse(String, PdfPageRange)
+- uid: Egap.Pdf.PdfPageRange.TryParse*
+  name: TryParse
+  href: api/Egap.Pdf.PdfPageRange.html#Egap_Pdf_PdfPageRange_TryParse_
+  commentId: Overload:Egap.Pdf.PdfPageRange.TryParse
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPageRange.TryParse
+  nameWithType: PdfPageRange.TryParse
 - uid: Egap.Pdf.PdfPageSize
   name: PdfPageSize
   href: api/Egap.Pdf.PdfPageSize.html
@@ -33068,6 +34819,138 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfPlacedImage.Name
   nameWithType: PdfPlacedImage.Name
+- uid: Egap.Pdf.PdfPlaceholderValues
+  name: PdfPlaceholderValues
+  href: api/Egap.Pdf.PdfPlaceholderValues.html
+  commentId: T:Egap.Pdf.PdfPlaceholderValues
+  fullName: Egap.Pdf.PdfPlaceholderValues
+  nameWithType: PdfPlaceholderValues
+- uid: Egap.Pdf.PdfPlaceholderValues.Culture
+  name: Culture
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Culture
+  commentId: P:Egap.Pdf.PdfPlaceholderValues.Culture
+  fullName: Egap.Pdf.PdfPlaceholderValues.Culture
+  nameWithType: PdfPlaceholderValues.Culture
+- uid: Egap.Pdf.PdfPlaceholderValues.Culture*
+  name: Culture
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Culture_
+  commentId: Overload:Egap.Pdf.PdfPlaceholderValues.Culture
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholderValues.Culture
+  nameWithType: PdfPlaceholderValues.Culture
+- uid: Egap.Pdf.PdfPlaceholderValues.File
+  name: File
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_File
+  commentId: P:Egap.Pdf.PdfPlaceholderValues.File
+  fullName: Egap.Pdf.PdfPlaceholderValues.File
+  nameWithType: PdfPlaceholderValues.File
+- uid: Egap.Pdf.PdfPlaceholderValues.File*
+  name: File
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_File_
+  commentId: Overload:Egap.Pdf.PdfPlaceholderValues.File
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholderValues.File
+  nameWithType: PdfPlaceholderValues.File
+- uid: Egap.Pdf.PdfPlaceholderValues.Label
+  name: Label
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Label
+  commentId: P:Egap.Pdf.PdfPlaceholderValues.Label
+  fullName: Egap.Pdf.PdfPlaceholderValues.Label
+  nameWithType: PdfPlaceholderValues.Label
+- uid: Egap.Pdf.PdfPlaceholderValues.Label*
+  name: Label
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Label_
+  commentId: Overload:Egap.Pdf.PdfPlaceholderValues.Label
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholderValues.Label
+  nameWithType: PdfPlaceholderValues.Label
+- uid: Egap.Pdf.PdfPlaceholderValues.Now
+  name: Now
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Now
+  commentId: P:Egap.Pdf.PdfPlaceholderValues.Now
+  fullName: Egap.Pdf.PdfPlaceholderValues.Now
+  nameWithType: PdfPlaceholderValues.Now
+- uid: Egap.Pdf.PdfPlaceholderValues.Now*
+  name: Now
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Now_
+  commentId: Overload:Egap.Pdf.PdfPlaceholderValues.Now
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholderValues.Now
+  nameWithType: PdfPlaceholderValues.Now
+- uid: Egap.Pdf.PdfPlaceholderValues.Page
+  name: Page
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Page
+  commentId: P:Egap.Pdf.PdfPlaceholderValues.Page
+  fullName: Egap.Pdf.PdfPlaceholderValues.Page
+  nameWithType: PdfPlaceholderValues.Page
+- uid: Egap.Pdf.PdfPlaceholderValues.Page*
+  name: Page
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Page_
+  commentId: Overload:Egap.Pdf.PdfPlaceholderValues.Page
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholderValues.Page
+  nameWithType: PdfPlaceholderValues.Page
+- uid: Egap.Pdf.PdfPlaceholderValues.Title
+  name: Title
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Title
+  commentId: P:Egap.Pdf.PdfPlaceholderValues.Title
+  fullName: Egap.Pdf.PdfPlaceholderValues.Title
+  nameWithType: PdfPlaceholderValues.Title
+- uid: Egap.Pdf.PdfPlaceholderValues.Title*
+  name: Title
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_Title_
+  commentId: Overload:Egap.Pdf.PdfPlaceholderValues.Title
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholderValues.Title
+  nameWithType: PdfPlaceholderValues.Title
+- uid: Egap.Pdf.PdfPlaceholderValues.TotalPages
+  name: TotalPages
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_TotalPages
+  commentId: P:Egap.Pdf.PdfPlaceholderValues.TotalPages
+  fullName: Egap.Pdf.PdfPlaceholderValues.TotalPages
+  nameWithType: PdfPlaceholderValues.TotalPages
+- uid: Egap.Pdf.PdfPlaceholderValues.TotalPages*
+  name: TotalPages
+  href: api/Egap.Pdf.PdfPlaceholderValues.html#Egap_Pdf_PdfPlaceholderValues_TotalPages_
+  commentId: Overload:Egap.Pdf.PdfPlaceholderValues.TotalPages
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholderValues.TotalPages
+  nameWithType: PdfPlaceholderValues.TotalPages
+- uid: Egap.Pdf.PdfPlaceholders
+  name: PdfPlaceholders
+  href: api/Egap.Pdf.PdfPlaceholders.html
+  commentId: T:Egap.Pdf.PdfPlaceholders
+  fullName: Egap.Pdf.PdfPlaceholders
+  nameWithType: PdfPlaceholders
+- uid: Egap.Pdf.PdfPlaceholders.Fill(System.String,Egap.Pdf.PdfPlaceholderValues)
+  name: Fill(string, PdfPlaceholderValues)
+  href: api/Egap.Pdf.PdfPlaceholders.html#Egap_Pdf_PdfPlaceholders_Fill_System_String_Egap_Pdf_PdfPlaceholderValues_
+  commentId: M:Egap.Pdf.PdfPlaceholders.Fill(System.String,Egap.Pdf.PdfPlaceholderValues)
+  name.vb: Fill(String, PdfPlaceholderValues)
+  fullName: Egap.Pdf.PdfPlaceholders.Fill(string, Egap.Pdf.PdfPlaceholderValues)
+  fullName.vb: Egap.Pdf.PdfPlaceholders.Fill(String, Egap.Pdf.PdfPlaceholderValues)
+  nameWithType: PdfPlaceholders.Fill(string, PdfPlaceholderValues)
+  nameWithType.vb: PdfPlaceholders.Fill(String, PdfPlaceholderValues)
+- uid: Egap.Pdf.PdfPlaceholders.Fill*
+  name: Fill
+  href: api/Egap.Pdf.PdfPlaceholders.html#Egap_Pdf_PdfPlaceholders_Fill_
+  commentId: Overload:Egap.Pdf.PdfPlaceholders.Fill
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholders.Fill
+  nameWithType: PdfPlaceholders.Fill
+- uid: Egap.Pdf.PdfPlaceholders.Names
+  name: Names
+  href: api/Egap.Pdf.PdfPlaceholders.html#Egap_Pdf_PdfPlaceholders_Names
+  commentId: P:Egap.Pdf.PdfPlaceholders.Names
+  fullName: Egap.Pdf.PdfPlaceholders.Names
+  nameWithType: PdfPlaceholders.Names
+- uid: Egap.Pdf.PdfPlaceholders.Names*
+  name: Names
+  href: api/Egap.Pdf.PdfPlaceholders.html#Egap_Pdf_PdfPlaceholders_Names_
+  commentId: Overload:Egap.Pdf.PdfPlaceholders.Names
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfPlaceholders.Names
+  nameWithType: PdfPlaceholders.Names
 - uid: Egap.Pdf.PdfPoint
   name: PdfPoint
   href: api/Egap.Pdf.PdfPoint.html
@@ -33381,6 +35264,122 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfPushButtonField.Caption
   nameWithType: PdfPushButtonField.Caption
+- uid: Egap.Pdf.PdfQuad
+  name: PdfQuad
+  href: api/Egap.Pdf.PdfQuad.html
+  commentId: T:Egap.Pdf.PdfQuad
+  fullName: Egap.Pdf.PdfQuad
+  nameWithType: PdfQuad
+- uid: Egap.Pdf.PdfQuad.#ctor(Egap.Pdf.PdfPoint,Egap.Pdf.PdfPoint,Egap.Pdf.PdfPoint,Egap.Pdf.PdfPoint)
+  name: PdfQuad(PdfPoint, PdfPoint, PdfPoint, PdfPoint)
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad__ctor_Egap_Pdf_PdfPoint_Egap_Pdf_PdfPoint_Egap_Pdf_PdfPoint_Egap_Pdf_PdfPoint_
+  commentId: M:Egap.Pdf.PdfQuad.#ctor(Egap.Pdf.PdfPoint,Egap.Pdf.PdfPoint,Egap.Pdf.PdfPoint,Egap.Pdf.PdfPoint)
+  name.vb: New(PdfPoint, PdfPoint, PdfPoint, PdfPoint)
+  fullName: Egap.Pdf.PdfQuad.PdfQuad(Egap.Pdf.PdfPoint, Egap.Pdf.PdfPoint, Egap.Pdf.PdfPoint, Egap.Pdf.PdfPoint)
+  fullName.vb: Egap.Pdf.PdfQuad.New(Egap.Pdf.PdfPoint, Egap.Pdf.PdfPoint, Egap.Pdf.PdfPoint, Egap.Pdf.PdfPoint)
+  nameWithType: PdfQuad.PdfQuad(PdfPoint, PdfPoint, PdfPoint, PdfPoint)
+  nameWithType.vb: PdfQuad.New(PdfPoint, PdfPoint, PdfPoint, PdfPoint)
+- uid: Egap.Pdf.PdfQuad.#ctor*
+  name: PdfQuad
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad__ctor_
+  commentId: Overload:Egap.Pdf.PdfQuad.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Pdf.PdfQuad.PdfQuad
+  fullName.vb: Egap.Pdf.PdfQuad.New
+  nameWithType: PdfQuad.PdfQuad
+  nameWithType.vb: PdfQuad.New
+- uid: Egap.Pdf.PdfQuad.Bounds
+  name: Bounds
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_Bounds
+  commentId: P:Egap.Pdf.PdfQuad.Bounds
+  fullName: Egap.Pdf.PdfQuad.Bounds
+  nameWithType: PdfQuad.Bounds
+- uid: Egap.Pdf.PdfQuad.Bounds*
+  name: Bounds
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_Bounds_
+  commentId: Overload:Egap.Pdf.PdfQuad.Bounds
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfQuad.Bounds
+  nameWithType: PdfQuad.Bounds
+- uid: Egap.Pdf.PdfQuad.FromRectangle(Egap.Pdf.PdfRectangle)
+  name: FromRectangle(PdfRectangle)
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_FromRectangle_Egap_Pdf_PdfRectangle_
+  commentId: M:Egap.Pdf.PdfQuad.FromRectangle(Egap.Pdf.PdfRectangle)
+  fullName: Egap.Pdf.PdfQuad.FromRectangle(Egap.Pdf.PdfRectangle)
+  nameWithType: PdfQuad.FromRectangle(PdfRectangle)
+- uid: Egap.Pdf.PdfQuad.FromRectangle*
+  name: FromRectangle
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_FromRectangle_
+  commentId: Overload:Egap.Pdf.PdfQuad.FromRectangle
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfQuad.FromRectangle
+  nameWithType: PdfQuad.FromRectangle
+- uid: Egap.Pdf.PdfQuad.LowerLeft
+  name: LowerLeft
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_LowerLeft
+  commentId: P:Egap.Pdf.PdfQuad.LowerLeft
+  fullName: Egap.Pdf.PdfQuad.LowerLeft
+  nameWithType: PdfQuad.LowerLeft
+- uid: Egap.Pdf.PdfQuad.LowerLeft*
+  name: LowerLeft
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_LowerLeft_
+  commentId: Overload:Egap.Pdf.PdfQuad.LowerLeft
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfQuad.LowerLeft
+  nameWithType: PdfQuad.LowerLeft
+- uid: Egap.Pdf.PdfQuad.LowerRight
+  name: LowerRight
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_LowerRight
+  commentId: P:Egap.Pdf.PdfQuad.LowerRight
+  fullName: Egap.Pdf.PdfQuad.LowerRight
+  nameWithType: PdfQuad.LowerRight
+- uid: Egap.Pdf.PdfQuad.LowerRight*
+  name: LowerRight
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_LowerRight_
+  commentId: Overload:Egap.Pdf.PdfQuad.LowerRight
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfQuad.LowerRight
+  nameWithType: PdfQuad.LowerRight
+- uid: Egap.Pdf.PdfQuad.ToPoints
+  name: ToPoints()
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_ToPoints
+  commentId: M:Egap.Pdf.PdfQuad.ToPoints
+  fullName: Egap.Pdf.PdfQuad.ToPoints()
+  nameWithType: PdfQuad.ToPoints()
+- uid: Egap.Pdf.PdfQuad.ToPoints*
+  name: ToPoints
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_ToPoints_
+  commentId: Overload:Egap.Pdf.PdfQuad.ToPoints
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfQuad.ToPoints
+  nameWithType: PdfQuad.ToPoints
+- uid: Egap.Pdf.PdfQuad.UpperLeft
+  name: UpperLeft
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_UpperLeft
+  commentId: P:Egap.Pdf.PdfQuad.UpperLeft
+  fullName: Egap.Pdf.PdfQuad.UpperLeft
+  nameWithType: PdfQuad.UpperLeft
+- uid: Egap.Pdf.PdfQuad.UpperLeft*
+  name: UpperLeft
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_UpperLeft_
+  commentId: Overload:Egap.Pdf.PdfQuad.UpperLeft
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfQuad.UpperLeft
+  nameWithType: PdfQuad.UpperLeft
+- uid: Egap.Pdf.PdfQuad.UpperRight
+  name: UpperRight
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_UpperRight
+  commentId: P:Egap.Pdf.PdfQuad.UpperRight
+  fullName: Egap.Pdf.PdfQuad.UpperRight
+  nameWithType: PdfQuad.UpperRight
+- uid: Egap.Pdf.PdfQuad.UpperRight*
+  name: UpperRight
+  href: api/Egap.Pdf.PdfQuad.html#Egap_Pdf_PdfQuad_UpperRight_
+  commentId: Overload:Egap.Pdf.PdfQuad.UpperRight
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfQuad.UpperRight
+  nameWithType: PdfQuad.UpperRight
 - uid: Egap.Pdf.PdfRadioButtonField
   name: PdfRadioButtonField
   href: api/Egap.Pdf.PdfRadioButtonField.html
@@ -34504,6 +36503,102 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfRenderOptions.UseSystemFonts
   nameWithType: PdfRenderOptions.UseSystemFonts
+- uid: Egap.Pdf.PdfReplaceOptions
+  name: PdfReplaceOptions
+  href: api/Egap.Pdf.PdfReplaceOptions.html
+  commentId: T:Egap.Pdf.PdfReplaceOptions
+  fullName: Egap.Pdf.PdfReplaceOptions
+  nameWithType: PdfReplaceOptions
+- uid: Egap.Pdf.PdfReplaceOptions.Default
+  name: Default
+  href: api/Egap.Pdf.PdfReplaceOptions.html#Egap_Pdf_PdfReplaceOptions_Default
+  commentId: P:Egap.Pdf.PdfReplaceOptions.Default
+  fullName: Egap.Pdf.PdfReplaceOptions.Default
+  nameWithType: PdfReplaceOptions.Default
+- uid: Egap.Pdf.PdfReplaceOptions.Default*
+  name: Default
+  href: api/Egap.Pdf.PdfReplaceOptions.html#Egap_Pdf_PdfReplaceOptions_Default_
+  commentId: Overload:Egap.Pdf.PdfReplaceOptions.Default
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfReplaceOptions.Default
+  nameWithType: PdfReplaceOptions.Default
+- uid: Egap.Pdf.PdfReplaceOptions.FallbackFont
+  name: FallbackFont
+  href: api/Egap.Pdf.PdfReplaceOptions.html#Egap_Pdf_PdfReplaceOptions_FallbackFont
+  commentId: P:Egap.Pdf.PdfReplaceOptions.FallbackFont
+  fullName: Egap.Pdf.PdfReplaceOptions.FallbackFont
+  nameWithType: PdfReplaceOptions.FallbackFont
+- uid: Egap.Pdf.PdfReplaceOptions.FallbackFont*
+  name: FallbackFont
+  href: api/Egap.Pdf.PdfReplaceOptions.html#Egap_Pdf_PdfReplaceOptions_FallbackFont_
+  commentId: Overload:Egap.Pdf.PdfReplaceOptions.FallbackFont
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfReplaceOptions.FallbackFont
+  nameWithType: PdfReplaceOptions.FallbackFont
+- uid: Egap.Pdf.PdfReplaceResult
+  name: PdfReplaceResult
+  href: api/Egap.Pdf.PdfReplaceResult.html
+  commentId: T:Egap.Pdf.PdfReplaceResult
+  fullName: Egap.Pdf.PdfReplaceResult
+  nameWithType: PdfReplaceResult
+- uid: Egap.Pdf.PdfReplaceResult.#ctor(System.Collections.Generic.IReadOnlyList{Egap.Pdf.PdfTextMatch},System.Collections.Generic.IReadOnlyList{Egap.Pdf.PdfTextMatch},System.Collections.Generic.IReadOnlyList{Egap.Pdf.PdfWarning})
+  name: PdfReplaceResult(IReadOnlyList<PdfTextMatch>, IReadOnlyList<PdfTextMatch>, IReadOnlyList<PdfWarning>)
+  href: api/Egap.Pdf.PdfReplaceResult.html#Egap_Pdf_PdfReplaceResult__ctor_System_Collections_Generic_IReadOnlyList_Egap_Pdf_PdfTextMatch__System_Collections_Generic_IReadOnlyList_Egap_Pdf_PdfTextMatch__System_Collections_Generic_IReadOnlyList_Egap_Pdf_PdfWarning__
+  commentId: M:Egap.Pdf.PdfReplaceResult.#ctor(System.Collections.Generic.IReadOnlyList{Egap.Pdf.PdfTextMatch},System.Collections.Generic.IReadOnlyList{Egap.Pdf.PdfTextMatch},System.Collections.Generic.IReadOnlyList{Egap.Pdf.PdfWarning})
+  name.vb: New(IReadOnlyList(Of PdfTextMatch), IReadOnlyList(Of PdfTextMatch), IReadOnlyList(Of PdfWarning))
+  fullName: Egap.Pdf.PdfReplaceResult.PdfReplaceResult(System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch>, System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch>, System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning>)
+  fullName.vb: Egap.Pdf.PdfReplaceResult.New(System.Collections.Generic.IReadOnlyList(Of Egap.Pdf.PdfTextMatch), System.Collections.Generic.IReadOnlyList(Of Egap.Pdf.PdfTextMatch), System.Collections.Generic.IReadOnlyList(Of Egap.Pdf.PdfWarning))
+  nameWithType: PdfReplaceResult.PdfReplaceResult(IReadOnlyList<PdfTextMatch>, IReadOnlyList<PdfTextMatch>, IReadOnlyList<PdfWarning>)
+  nameWithType.vb: PdfReplaceResult.New(IReadOnlyList(Of PdfTextMatch), IReadOnlyList(Of PdfTextMatch), IReadOnlyList(Of PdfWarning))
+- uid: Egap.Pdf.PdfReplaceResult.#ctor*
+  name: PdfReplaceResult
+  href: api/Egap.Pdf.PdfReplaceResult.html#Egap_Pdf_PdfReplaceResult__ctor_
+  commentId: Overload:Egap.Pdf.PdfReplaceResult.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Pdf.PdfReplaceResult.PdfReplaceResult
+  fullName.vb: Egap.Pdf.PdfReplaceResult.New
+  nameWithType: PdfReplaceResult.PdfReplaceResult
+  nameWithType.vb: PdfReplaceResult.New
+- uid: Egap.Pdf.PdfReplaceResult.Replaced
+  name: Replaced
+  href: api/Egap.Pdf.PdfReplaceResult.html#Egap_Pdf_PdfReplaceResult_Replaced
+  commentId: P:Egap.Pdf.PdfReplaceResult.Replaced
+  fullName: Egap.Pdf.PdfReplaceResult.Replaced
+  nameWithType: PdfReplaceResult.Replaced
+- uid: Egap.Pdf.PdfReplaceResult.Replaced*
+  name: Replaced
+  href: api/Egap.Pdf.PdfReplaceResult.html#Egap_Pdf_PdfReplaceResult_Replaced_
+  commentId: Overload:Egap.Pdf.PdfReplaceResult.Replaced
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfReplaceResult.Replaced
+  nameWithType: PdfReplaceResult.Replaced
+- uid: Egap.Pdf.PdfReplaceResult.Skipped
+  name: Skipped
+  href: api/Egap.Pdf.PdfReplaceResult.html#Egap_Pdf_PdfReplaceResult_Skipped
+  commentId: P:Egap.Pdf.PdfReplaceResult.Skipped
+  fullName: Egap.Pdf.PdfReplaceResult.Skipped
+  nameWithType: PdfReplaceResult.Skipped
+- uid: Egap.Pdf.PdfReplaceResult.Skipped*
+  name: Skipped
+  href: api/Egap.Pdf.PdfReplaceResult.html#Egap_Pdf_PdfReplaceResult_Skipped_
+  commentId: Overload:Egap.Pdf.PdfReplaceResult.Skipped
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfReplaceResult.Skipped
+  nameWithType: PdfReplaceResult.Skipped
+- uid: Egap.Pdf.PdfReplaceResult.Warnings
+  name: Warnings
+  href: api/Egap.Pdf.PdfReplaceResult.html#Egap_Pdf_PdfReplaceResult_Warnings
+  commentId: P:Egap.Pdf.PdfReplaceResult.Warnings
+  fullName: Egap.Pdf.PdfReplaceResult.Warnings
+  nameWithType: PdfReplaceResult.Warnings
+- uid: Egap.Pdf.PdfReplaceResult.Warnings*
+  name: Warnings
+  href: api/Egap.Pdf.PdfReplaceResult.html#Egap_Pdf_PdfReplaceResult_Warnings_
+  commentId: Overload:Egap.Pdf.PdfReplaceResult.Warnings
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfReplaceResult.Warnings
+  nameWithType: PdfReplaceResult.Warnings
 - uid: Egap.Pdf.PdfReplyType
   name: PdfReplyType
   href: api/Egap.Pdf.PdfReplyType.html
@@ -36710,6 +38805,19 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfStamp.Page
   nameWithType: PdfStamp.Page
+- uid: Egap.Pdf.PdfStamp.PageRange
+  name: PageRange
+  href: api/Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_PageRange
+  commentId: P:Egap.Pdf.PdfStamp.PageRange
+  fullName: Egap.Pdf.PdfStamp.PageRange
+  nameWithType: PdfStamp.PageRange
+- uid: Egap.Pdf.PdfStamp.PageRange*
+  name: PageRange
+  href: api/Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_PageRange_
+  commentId: Overload:Egap.Pdf.PdfStamp.PageRange
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfStamp.PageRange
+  nameWithType: PdfStamp.PageRange
 - uid: Egap.Pdf.PdfStamp.Pages
   name: Pages
   href: api/Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Pages
@@ -38778,6 +40886,90 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfTextField.Value
   nameWithType: PdfTextField.Value
+- uid: Egap.Pdf.PdfTextFieldOptions
+  name: PdfTextFieldOptions
+  href: api/Egap.Pdf.PdfTextFieldOptions.html
+  commentId: T:Egap.Pdf.PdfTextFieldOptions
+  fullName: Egap.Pdf.PdfTextFieldOptions
+  nameWithType: PdfTextFieldOptions
+- uid: Egap.Pdf.PdfTextFieldOptions.Alignment
+  name: Alignment
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Alignment
+  commentId: P:Egap.Pdf.PdfTextFieldOptions.Alignment
+  fullName: Egap.Pdf.PdfTextFieldOptions.Alignment
+  nameWithType: PdfTextFieldOptions.Alignment
+- uid: Egap.Pdf.PdfTextFieldOptions.Alignment*
+  name: Alignment
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Alignment_
+  commentId: Overload:Egap.Pdf.PdfTextFieldOptions.Alignment
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextFieldOptions.Alignment
+  nameWithType: PdfTextFieldOptions.Alignment
+- uid: Egap.Pdf.PdfTextFieldOptions.Comb
+  name: Comb
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Comb
+  commentId: P:Egap.Pdf.PdfTextFieldOptions.Comb
+  fullName: Egap.Pdf.PdfTextFieldOptions.Comb
+  nameWithType: PdfTextFieldOptions.Comb
+- uid: Egap.Pdf.PdfTextFieldOptions.Comb*
+  name: Comb
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Comb_
+  commentId: Overload:Egap.Pdf.PdfTextFieldOptions.Comb
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextFieldOptions.Comb
+  nameWithType: PdfTextFieldOptions.Comb
+- uid: Egap.Pdf.PdfTextFieldOptions.MaxLength
+  name: MaxLength
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_MaxLength
+  commentId: P:Egap.Pdf.PdfTextFieldOptions.MaxLength
+  fullName: Egap.Pdf.PdfTextFieldOptions.MaxLength
+  nameWithType: PdfTextFieldOptions.MaxLength
+- uid: Egap.Pdf.PdfTextFieldOptions.MaxLength*
+  name: MaxLength
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_MaxLength_
+  commentId: Overload:Egap.Pdf.PdfTextFieldOptions.MaxLength
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextFieldOptions.MaxLength
+  nameWithType: PdfTextFieldOptions.MaxLength
+- uid: Egap.Pdf.PdfTextFieldOptions.Multiline
+  name: Multiline
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Multiline
+  commentId: P:Egap.Pdf.PdfTextFieldOptions.Multiline
+  fullName: Egap.Pdf.PdfTextFieldOptions.Multiline
+  nameWithType: PdfTextFieldOptions.Multiline
+- uid: Egap.Pdf.PdfTextFieldOptions.Multiline*
+  name: Multiline
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Multiline_
+  commentId: Overload:Egap.Pdf.PdfTextFieldOptions.Multiline
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextFieldOptions.Multiline
+  nameWithType: PdfTextFieldOptions.Multiline
+- uid: Egap.Pdf.PdfTextFieldOptions.Password
+  name: Password
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Password
+  commentId: P:Egap.Pdf.PdfTextFieldOptions.Password
+  fullName: Egap.Pdf.PdfTextFieldOptions.Password
+  nameWithType: PdfTextFieldOptions.Password
+- uid: Egap.Pdf.PdfTextFieldOptions.Password*
+  name: Password
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Password_
+  commentId: Overload:Egap.Pdf.PdfTextFieldOptions.Password
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextFieldOptions.Password
+  nameWithType: PdfTextFieldOptions.Password
+- uid: Egap.Pdf.PdfTextFieldOptions.Value
+  name: Value
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Value
+  commentId: P:Egap.Pdf.PdfTextFieldOptions.Value
+  fullName: Egap.Pdf.PdfTextFieldOptions.Value
+  nameWithType: PdfTextFieldOptions.Value
+- uid: Egap.Pdf.PdfTextFieldOptions.Value*
+  name: Value
+  href: api/Egap.Pdf.PdfTextFieldOptions.html#Egap_Pdf_PdfTextFieldOptions_Value_
+  commentId: Overload:Egap.Pdf.PdfTextFieldOptions.Value
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextFieldOptions.Value
+  nameWithType: PdfTextFieldOptions.Value
 - uid: Egap.Pdf.PdfTextGlyph
   name: PdfTextGlyph
   href: api/Egap.Pdf.PdfTextGlyph.html
@@ -39010,6 +41202,90 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfTextMarkupAnnotation.QuadPoints
   nameWithType: PdfTextMarkupAnnotation.QuadPoints
+- uid: Egap.Pdf.PdfTextMatch
+  name: PdfTextMatch
+  href: api/Egap.Pdf.PdfTextMatch.html
+  commentId: T:Egap.Pdf.PdfTextMatch
+  fullName: Egap.Pdf.PdfTextMatch
+  nameWithType: PdfTextMatch
+- uid: Egap.Pdf.PdfTextMatch.Box
+  name: Box
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_Box
+  commentId: P:Egap.Pdf.PdfTextMatch.Box
+  fullName: Egap.Pdf.PdfTextMatch.Box
+  nameWithType: PdfTextMatch.Box
+- uid: Egap.Pdf.PdfTextMatch.Box*
+  name: Box
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_Box_
+  commentId: Overload:Egap.Pdf.PdfTextMatch.Box
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextMatch.Box
+  nameWithType: PdfTextMatch.Box
+- uid: Egap.Pdf.PdfTextMatch.Glyphs
+  name: Glyphs
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_Glyphs
+  commentId: P:Egap.Pdf.PdfTextMatch.Glyphs
+  fullName: Egap.Pdf.PdfTextMatch.Glyphs
+  nameWithType: PdfTextMatch.Glyphs
+- uid: Egap.Pdf.PdfTextMatch.Glyphs*
+  name: Glyphs
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_Glyphs_
+  commentId: Overload:Egap.Pdf.PdfTextMatch.Glyphs
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextMatch.Glyphs
+  nameWithType: PdfTextMatch.Glyphs
+- uid: Egap.Pdf.PdfTextMatch.PageIndex
+  name: PageIndex
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_PageIndex
+  commentId: P:Egap.Pdf.PdfTextMatch.PageIndex
+  fullName: Egap.Pdf.PdfTextMatch.PageIndex
+  nameWithType: PdfTextMatch.PageIndex
+- uid: Egap.Pdf.PdfTextMatch.PageIndex*
+  name: PageIndex
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_PageIndex_
+  commentId: Overload:Egap.Pdf.PdfTextMatch.PageIndex
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextMatch.PageIndex
+  nameWithType: PdfTextMatch.PageIndex
+- uid: Egap.Pdf.PdfTextMatch.Quads
+  name: Quads
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_Quads
+  commentId: P:Egap.Pdf.PdfTextMatch.Quads
+  fullName: Egap.Pdf.PdfTextMatch.Quads
+  nameWithType: PdfTextMatch.Quads
+- uid: Egap.Pdf.PdfTextMatch.Quads*
+  name: Quads
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_Quads_
+  commentId: Overload:Egap.Pdf.PdfTextMatch.Quads
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextMatch.Quads
+  nameWithType: PdfTextMatch.Quads
+- uid: Egap.Pdf.PdfTextMatch.Text
+  name: Text
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_Text
+  commentId: P:Egap.Pdf.PdfTextMatch.Text
+  fullName: Egap.Pdf.PdfTextMatch.Text
+  nameWithType: PdfTextMatch.Text
+- uid: Egap.Pdf.PdfTextMatch.Text*
+  name: Text
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_Text_
+  commentId: Overload:Egap.Pdf.PdfTextMatch.Text
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextMatch.Text
+  nameWithType: PdfTextMatch.Text
+- uid: Egap.Pdf.PdfTextMatch.ToString
+  name: ToString()
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_ToString
+  commentId: M:Egap.Pdf.PdfTextMatch.ToString
+  fullName: Egap.Pdf.PdfTextMatch.ToString()
+  nameWithType: PdfTextMatch.ToString()
+- uid: Egap.Pdf.PdfTextMatch.ToString*
+  name: ToString
+  href: api/Egap.Pdf.PdfTextMatch.html#Egap_Pdf_PdfTextMatch_ToString_
+  commentId: Overload:Egap.Pdf.PdfTextMatch.ToString
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfTextMatch.ToString
+  nameWithType: PdfTextMatch.ToString
 - uid: Egap.Pdf.PdfTextOptions
   name: PdfTextOptions
   href: api/Egap.Pdf.PdfTextOptions.html
@@ -39872,6 +42148,12 @@ references:
   commentId: F:Egap.Pdf.PdfWarningCode.SignatureInvalidated
   fullName: Egap.Pdf.PdfWarningCode.SignatureInvalidated
   nameWithType: PdfWarningCode.SignatureInvalidated
+- uid: Egap.Pdf.PdfWarningCode.TextNotReplaced
+  name: TextNotReplaced
+  href: api/Egap.Pdf.PdfWarningCode.html#Egap_Pdf_PdfWarningCode_TextNotReplaced
+  commentId: F:Egap.Pdf.PdfWarningCode.TextNotReplaced
+  fullName: Egap.Pdf.PdfWarningCode.TextNotReplaced
+  nameWithType: PdfWarningCode.TextNotReplaced
 - uid: Egap.Pdf.PdfWarningCode.TextWithoutUnicode
   name: TextWithoutUnicode
   href: api/Egap.Pdf.PdfWarningCode.html#Egap_Pdf_PdfWarningCode_TextWithoutUnicode

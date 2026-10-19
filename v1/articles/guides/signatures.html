@@ -122,6 +122,63 @@ foreach (PdfSignature signature in check.Signatures)
 </code></pre>
 <p>The report gives a verdict for integrity, the certificate chain, revocation and the timestamp, and lists every change made
 after signing, each one rated allowed, suspicious or disallowed. Trust anchors always come from you.</p>
+<h2 id="smart-cards-and-hsms-pkcs11">Smart cards and HSMs (PKCS#11)</h2>
+<p>A key on a smart card, a USB token or an HSM is reached through its PKCS#11 library. Egap does not load native libraries,
+so the PKCS#11 calls come from a library you choose, such as <a href="https://github.com/Pkcs11Interop/Pkcs11Interop">Pkcs11Interop</a>
+(Apache-2.0). Wrap the token's signing call in an <code>RSA</code> (or <code>ECDsa</code>) whose <code>SignHash</code> asks the token, and pass it to
+<code>PdfSigner.FromKey</code> with the certificate read from the token. The private key never leaves the device.</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using Egap.Pdf;
+
+// signOnToken stands for the PKCS#11 call: with Pkcs11Interop, session.Sign(new Mechanism(CKM.CKM_RSA_PKCS), key, digestInfo).
+Func&lt;byte[], byte[]&gt; signOnToken = digestInfo =&gt; throw new NotImplementedException(&quot;call the token here&quot;);
+X509Certificate2 certificate = X509CertificateLoader.LoadCertificate(File.ReadAllBytes(&quot;token-certificate.cer&quot;));
+
+using PdfDocument pdf = PdfDocument.Open(&quot;contract.pdf&quot;);
+using RSA tokenKey = new TokenRsa(certificate, signOnToken);
+await using FileStream output = File.Create(&quot;contract-signed.pdf&quot;);
+await pdf.SignAsync(&quot;Signature1&quot;, new PdfSignOptions { Signer = PdfSigner.FromKey(tokenKey, certificate) }, output);
+
+/// &lt;summary&gt;An RSA key whose private operation runs on a PKCS#11 token; it signs SHA-256 digests with PKCS#1 v1.5 padding.&lt;/summary&gt;
+sealed class TokenRsa : RSA
+{
+    // The DER prefix of a SHA-256 DigestInfo (RFC 8017 9.2), which CKM_RSA_PKCS expects in front of the digest.
+    private static readonly byte[] Sha256Prefix = [0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05, 0x00, 0x04, 0x20];
+    private readonly X509Certificate2 certificate;
+    private readonly Func&lt;byte[], byte[]&gt; signOnToken;
+
+    public TokenRsa(X509Certificate2 certificate, Func&lt;byte[], byte[]&gt; signOnToken)
+    {
+        this.certificate = certificate;
+        this.signOnToken = signOnToken;
+        using RSA publicKey = certificate.GetRSAPublicKey()!;
+        KeySizeValue = publicKey.KeySize;               // the size of the signatures it makes
+        LegalKeySizesValue = [new KeySizes(KeySizeValue, KeySizeValue, 0)];
+    }
+
+    public override byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
+    {
+        if (hashAlgorithm != HashAlgorithmName.SHA256 || padding != RSASignaturePadding.Pkcs1)
+        {
+            throw new CryptographicException(&quot;The token signs SHA-256 with PKCS#1 v1.5 padding.&quot;);
+        }
+
+        return signOnToken([.. Sha256Prefix, .. hash]);
+    }
+
+    public override RSAParameters ExportParameters(bool includePrivateParameters)
+    {
+        using RSA publicKey = certificate.GetRSAPublicKey()!;
+        return includePrivateParameters ? throw new CryptographicException(&quot;The private key stays on the token.&quot;) : publicKey.ExportParameters(false);
+    }
+
+    public override void ImportParameters(RSAParameters parameters) =&gt; throw new NotSupportedException();
+}
+</code></pre>
+<p>Egap signs with SHA-256 and PKCS#1 v1.5 padding by default, so this is all a token has to do. For a token reached
+over a network, or a signing service with its own API, deferred signing (<code>PrepareSignatureAsync</code>) hands out the bytes to
+sign and takes the signature back later.</p>
 
 </article>
 

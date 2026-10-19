@@ -2533,6 +2533,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.HtmlStamp.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.HtmlStamp.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.HtmlStamp",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.HtmlStamp.yml\" sourcestartlinenumber=\"1\">Stamps made from HTML, laid out by Egap.Documents.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.Conversion.ILayoutRegionDetector.yml",
       "output": {
         ".html": {
@@ -2743,6 +2757,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PageMargins.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PageMargins.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PageMargins",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PageMargins.yml\" sourcestartlinenumber=\"1\">The space between the page edges and the content, on each side.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.Conversion.PdfAutoTagFigure.yml",
       "output": {
         ".html": {
@@ -2782,6 +2810,34 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.Conversion.PdfAutoTagger",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfAutoTagger.yml\" sourcestartlinenumber=\"1\">Tags an untagged PDF from its layout (design Q11, Build Plan task 14): a structure tree through Phase 5's model, with\nheadings, paragraphs, lists, tables, figures, captions, quotes, code and notes in reading order, page headers and footers\nand decoration marked as artifacts, and the page content wrapped in marked content that points at its element. Figures\nget no alternate text: the report lists them, and writing it stays with the caller.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfConvert.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfConvert.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfConvert",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfConvert.yml\" sourcestartlinenumber=\"1\">One-line conversions to PDF: HTML, Markdown, DOCX and images in, a PDF file or an open <xref href=\"Egap.Pdf.PdfDocument\" data-throw-if-not-resolved=\"false\"></xref> out.\nEach reads the input with Egap.Documents, lays it out and exports it as <xref href=\"Egap.Pdf.Conversion.PdfExport\" data-throw-if-not-resolved=\"false\"></xref> does.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PdfConvertOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PdfConvertOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PdfConvertOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PdfConvertOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Conversion.PdfConvert\" data-throw-if-not-resolved=\"false\"></xref> turns HTML, Markdown, DOCX and images into PDF.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3020,6 +3076,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.GridOptions",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.GridOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.PdfImpose.Grid(Egap.Pdf.PdfDocument%2cEgap.Pdf.GridOptions)\" data-throw-if-not-resolved=\"false\"></xref> puts every page on one sheet.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Length.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Length.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Length",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Length.yml\" sourcestartlinenumber=\"1\">A length on the page, held in points (1/72 inch) and made from points, millimetres, centimetres or inches, so sizes in\ndifferent units cannot be mixed up. It converts to and from a <xref href=\"System.Double\" data-throw-if-not-resolved=\"false\"></xref> in points without a cast, so it can be\npassed wherever a size in points is asked for, and a plain number still works wherever a <xref href=\"Egap.Pdf.Length\" data-throw-if-not-resolved=\"false\"></xref> is.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3275,6 +3345,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfAttachmentRelationship.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfAttachmentRelationship.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfAttachmentRelationship",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfAttachmentRelationship.yml\" sourcestartlinenumber=\"1\">How an attached file relates to the document (<code>/AFRelationship</code>, ISO 32000-2 14.13.2).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfBatesSequence.yml",
       "output": {
         ".html": {
@@ -3314,6 +3398,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfBorderStyle",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfBorderStyle.yml\" sourcestartlinenumber=\"1\">A border style (12.5.4, table 168).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfButtonOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfButtonOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfButtonOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfButtonOptions.yml\" sourcestartlinenumber=\"1\">How a new check box or radio group works.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3496,6 +3594,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfChoiceField",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfChoiceField.yml\" sourcestartlinenumber=\"1\">A choice field (12.7.5.4): a combo box or list box of options.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfChoiceFieldOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfChoiceFieldOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfChoiceFieldOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfChoiceFieldOptions.yml\" sourcestartlinenumber=\"1\">How a new combo box or list box works.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3747,7 +3859,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfDocument",
-      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfDocument.yml\" sourcestartlinenumber=\"1\">A PDF document: its trailer, catalog and indirect objects. Opening reads only the cross-reference; objects load the\nfirst time they are used, and the file stays open until the document is disposed.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfDocument.yml\" sourcestartlinenumber=\"1\">Pages made from images, and pages written as image files.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3849,6 +3961,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfFieldOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfFieldOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfFieldOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfFieldOptions.yml\" sourcestartlinenumber=\"1\">What every new form field can have: a tooltip, flags, and how its widget looks.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfFileAttachmentAnnotation.yml",
       "output": {
         ".html": {
@@ -3860,6 +3986,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfFileAttachmentAnnotation",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfFileAttachmentAnnotation.yml\" sourcestartlinenumber=\"1\">A file attachment annotation (12.5.6.15): a file embedded at a point on the page, shown as an icon.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfFindOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfFindOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfFindOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfFindOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.PdfDocument.FindText(System.String%2cEgap.Pdf.PdfFindOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> and the methods like it search.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -4129,6 +4269,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfImagePageOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfImagePageOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfImagePageOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfImagePageOptions.yml\" sourcestartlinenumber=\"1\">How images become pages in <xref href=\"Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable%7bSystem.String%7d%2cEgap.Pdf.PdfImagePageOptions)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfImportOptions.yml",
       "output": {
         ".html": {
@@ -4196,6 +4350,62 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfInteger",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfInteger.yml\" sourcestartlinenumber=\"1\">A PDF integer, held as 64 bits.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfInvoice.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfInvoice.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfInvoice",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfInvoice.yml\" sourcestartlinenumber=\"1\">A Factur-X or ZUGFeRD e-invoice in a PDF: the invoice's XML (UN/CEFACT Cross Industry Invoice) attached to a PDF/A-3\ndocument, with the Factur-X schema in the document's XMP saying the file name, the profile and the version. The XML is\nthe invoicing system's to write; Egap embeds it and reads it back.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfInvoiceOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfInvoiceOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfInvoiceOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfInvoiceOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.PdfInvoice.Embed(Egap.Pdf.PdfDocument%2cSystem.ReadOnlySpan%7bSystem.Byte%7d%2cEgap.Pdf.PdfInvoiceOptions)\" data-throw-if-not-resolved=\"false\"></xref> embeds an invoice.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfInvoiceProfile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfInvoiceProfile.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfInvoiceProfile",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfInvoiceProfile.yml\" sourcestartlinenumber=\"1\">The Factur-X and ZUGFeRD profile, how much of the invoice the XML holds.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfInvoiceStandard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfInvoiceStandard.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfInvoiceStandard",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfInvoiceStandard.yml\" sourcestartlinenumber=\"1\">The e-invoice standard an embedded invoice follows.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -4717,6 +4927,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfPageRange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfPageRange.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfPageRange",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPageRange.yml\" sourcestartlinenumber=\"1\">A choice of pages written as text, such as <code>&quot;1,3,5-10,z&quot;</code>, that is turned into page numbers once the page count is\nknown. Pass it to <xref href=\"Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange)\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Egap.Pdf.PdfStamp.PageRange\" data-throw-if-not-resolved=\"false\"></xref> and the\npage renderers, or turn it into page indices with <xref href=\"Egap.Pdf.PdfPageRange.Resolve(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref> for\n<xref href=\"Egap.Pdf.PdfPageCollection.Import(Egap.Pdf.PdfDocument%2cSystem.Collections.Generic.IEnumerable%7bSystem.Int32%7d%2cSystem.Nullable%7bSystem.Int32%7d%2cEgap.Pdf.PdfImportOptions)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfPageSize.yml",
       "output": {
         ".html": {
@@ -4829,6 +5053,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfPlaceholderValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfPlaceholderValues.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfPlaceholderValues",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPlaceholderValues.yml\" sourcestartlinenumber=\"1\">The values one page's placeholders are filled with, for <xref href=\"Egap.Pdf.PdfPlaceholders.Fill(System.String%2cEgap.Pdf.PdfPlaceholderValues)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfPlaceholders.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfPlaceholders.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfPlaceholders",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPlaceholders.yml\" sourcestartlinenumber=\"1\">The placeholders page furniture is written with, the same everywhere Egap fills text per page (stamps, and headers and\nfooters on export): <code>{page}</code>, <code>{total-pages}</code> (also <code>{pages}</code>), <code>{label}</code> (the page label),\n<code>{date}</code>, <code>{time}</code>, <code>{title}</code> and <code>{file}</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfPoint.yml",
       "output": {
         ".html": {
@@ -4910,6 +5162,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfPushButtonField",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPushButtonField.yml\" sourcestartlinenumber=\"1\">A push button (12.7.5.2.2): runs an action and has no value.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfQuad.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfQuad.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfQuad",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfQuad.yml\" sourcestartlinenumber=\"1\">A quadrilateral on the page, such as the area of a matched run of text on one line, in default user space.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5078,6 +5344,34 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfRenderOptions",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfRenderOptions.yml\" sourcestartlinenumber=\"1\">How a page is rendered (Phase 4 design Q3 and Q4): the resolution or a size to fit, which box shows, extra rotation, a\nregion of the output for tiles, the intent, the background, annotations and anti-aliasing. The defaults draw the crop\nbox at 72 dpi (one pixel per point) on white with annotations, as a viewer shows the page.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfReplaceOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfReplaceOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfReplaceOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfReplaceOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.PdfDocument.ReplaceText(System.String%2cSystem.String%2cEgap.Pdf.PdfFindOptions%2cEgap.Pdf.PdfReplaceOptions)\" data-throw-if-not-resolved=\"false\"></xref> writes the new text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfReplaceResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfReplaceResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfReplaceResult",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfReplaceResult.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Pdf.PdfDocument.ReplaceText(System.String%2cSystem.String%2cEgap.Pdf.PdfFindOptions%2cEgap.Pdf.PdfReplaceOptions)\" data-throw-if-not-resolved=\"false\"></xref> did.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5641,6 +5935,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfTextFieldOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfTextFieldOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfTextFieldOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfTextFieldOptions.yml\" sourcestartlinenumber=\"1\">How a new text field works.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfTextGlyph.yml",
       "output": {
         ".html": {
@@ -5680,6 +5988,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfTextMarkupAnnotation",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfTextMarkupAnnotation.yml\" sourcestartlinenumber=\"1\">A text markup annotation (12.5.6.10): highlight, underline, squiggly underline or strikeout over text, given as\nquadrilaterals.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfTextMatch.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfTextMatch.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfTextMatch",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfTextMatch.yml\" sourcestartlinenumber=\"1\">A run of text found on a page.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5942,6 +6264,16 @@
         },
         ".json": {
           "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/cookbook.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/cookbook.html"
         }
       },
       "version": ""

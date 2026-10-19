@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Pdf_PdfForm" data-uid="Egap.Pdf.PdfForm" class="text-break">
-Class PdfForm  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L10"><i class="bi bi-code-slash"></i></a>
+Class PdfForm  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -529,6 +529,393 @@ Setting false removes the entry.</p>
 </h2>
 
 
+  <a id="Egap_Pdf_PdfForm_AddCheckBox_" data-uid="Egap.Pdf.PdfForm.AddCheckBox*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_AddCheckBox_System_String_System_Int32_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfButtonOptions_" data-uid="Egap.Pdf.PdfForm.AddCheckBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfButtonOptions)">
+  AddCheckBox(string, int, PdfRectangle, PdfButtonOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A check box on a page, drawn with a check mark when checked; otherwise as <a class="xref" href="Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_AddTextField_System_String_System_Int32_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfTextFieldOptions_">AddTextField(string, int, PdfRectangle, PdfTextFieldOptions?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfCheckBoxField AddCheckBox(string name, int page, PdfRectangle rectangle, PdfButtonOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>page</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>rectangle</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfButtonOptions.html">PdfButtonOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfCheckBoxField.html">PdfCheckBoxField</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The name is empty or taken.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The page does not exist.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfForm_AddComboBox_" data-uid="Egap.Pdf.PdfForm.AddComboBox*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_AddComboBox_System_String_System_Int32_Egap_Pdf_PdfRectangle_System_Collections_Generic_IReadOnlyList_System_String__System_Boolean_Egap_Pdf_PdfChoiceFieldOptions_" data-uid="Egap.Pdf.PdfForm.AddComboBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.Collections.Generic.IReadOnlyList{System.String},System.Boolean,Egap.Pdf.PdfChoiceFieldOptions)">
+  AddComboBox(string, int, PdfRectangle, IReadOnlyList&lt;string&gt;, bool, PdfChoiceFieldOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A combo box: a drop-down list of <code class="paramref">items</code>, which the user may also type into when <code class="paramref">editable</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfComboBoxField AddComboBox(string name, int page, PdfRectangle rectangle, IReadOnlyList&lt;string&gt; items, bool editable = false, PdfChoiceFieldOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>page</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>rectangle</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a></dt>
+    <dd></dd>
+    <dt><code>items</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>editable</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfChoiceFieldOptions.html">PdfChoiceFieldOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfComboBoxField.html">PdfComboBoxField</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The name is empty or taken.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The page does not exist.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfForm_AddListBox_" data-uid="Egap.Pdf.PdfForm.AddListBox*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_AddListBox_System_String_System_Int32_Egap_Pdf_PdfRectangle_System_Collections_Generic_IReadOnlyList_System_String__System_Boolean_Egap_Pdf_PdfChoiceFieldOptions_" data-uid="Egap.Pdf.PdfForm.AddListBox(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.Collections.Generic.IReadOnlyList{System.String},System.Boolean,Egap.Pdf.PdfChoiceFieldOptions)">
+  AddListBox(string, int, PdfRectangle, IReadOnlyList&lt;string&gt;, bool, PdfChoiceFieldOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A list box showing <code class="paramref">items</code>, of which the user picks one, or several when <code class="paramref">multiSelect</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfListBoxField AddListBox(string name, int page, PdfRectangle rectangle, IReadOnlyList&lt;string&gt; items, bool multiSelect = false, PdfChoiceFieldOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>page</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>rectangle</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a></dt>
+    <dd></dd>
+    <dt><code>items</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>multiSelect</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfChoiceFieldOptions.html">PdfChoiceFieldOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfListBoxField.html">PdfListBoxField</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The name is empty or taken.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The page does not exist.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfForm_AddPushButton_" data-uid="Egap.Pdf.PdfForm.AddPushButton*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_AddPushButton_System_String_System_Int32_Egap_Pdf_PdfRectangle_System_String_Egap_Pdf_PdfAction_Egap_Pdf_PdfFieldOptions_" data-uid="Egap.Pdf.PdfForm.AddPushButton(System.String,System.Int32,Egap.Pdf.PdfRectangle,System.String,Egap.Pdf.PdfAction,Egap.Pdf.PdfFieldOptions)">
+  AddPushButton(string, int, PdfRectangle, string, PdfAction?, PdfFieldOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L218"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A push button with a caption, which runs <code class="paramref">action</code> when pressed, such as a reset or a link.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfPushButtonField AddPushButton(string name, int page, PdfRectangle rectangle, string caption, PdfAction? action = null, PdfFieldOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>page</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>rectangle</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a></dt>
+    <dd></dd>
+    <dt><code>caption</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>action</code> <a class="xref" href="Egap.Pdf.PdfAction.html">PdfAction</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfFieldOptions.html">PdfFieldOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfPushButtonField.html">PdfPushButtonField</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The name is empty or taken.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The page does not exist.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfForm_AddRadioGroup_" data-uid="Egap.Pdf.PdfForm.AddRadioGroup*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_AddRadioGroup_System_String_System_Collections_Generic_IReadOnlyList_System_ValueTuple_System_Int32_Egap_Pdf_PdfRectangle_System_String___System_String_Egap_Pdf_PdfFieldOptions_" data-uid="Egap.Pdf.PdfForm.AddRadioGroup(System.String,System.Collections.Generic.IReadOnlyList{System.ValueTuple{System.Int32,Egap.Pdf.PdfRectangle,System.String}},System.String,Egap.Pdf.PdfFieldOptions)">
+  AddRadioGroup(string, IReadOnlyList&lt;(int Page, PdfRectangle Rectangle, string Value)&gt;, string?, PdfFieldOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L157"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A radio group: one field with a button for each of <code class="paramref">buttons</code>, each exporting its value; choosing one
+clears the others. <code class="paramref">selected</code> is the value chosen at the start, or null for none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfRadioButtonField AddRadioGroup(string name, IReadOnlyList&lt;(int Page, PdfRectangle Rectangle, string Value)&gt; buttons, string? selected = null, PdfFieldOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>buttons</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.int32,egap.pdf.pdfrectangle,system.string-.page">Page</a>, <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.int32,egap.pdf.pdfrectangle,system.string-.rectangle">Rectangle</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.int32,egap.pdf.pdfrectangle,system.string-.value">Value</a>)&gt;</dt>
+    <dd></dd>
+    <dt><code>selected</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfFieldOptions.html">PdfFieldOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfRadioButtonField.html">PdfRadioButtonField</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The name is empty or taken, there are no buttons, or two share a value.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>A page does not exist.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfForm_AddSignatureField_" data-uid="Egap.Pdf.PdfForm.AddSignatureField*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_AddSignatureField_System_String_System_Int32_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfFieldOptions_" data-uid="Egap.Pdf.PdfForm.AddSignatureField(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfFieldOptions)">
+  AddSignatureField(string, int, PdfRectangle, PdfFieldOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L243"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An empty signature field, for a signer to sign later in a viewer or with <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_SignAsync_System_String_Egap_Pdf_PdfSignOptions_System_IO_Stream_System_Threading_CancellationToken_">SignAsync(string, PdfSignOptions, Stream, CancellationToken)</a>; the
+rectangle is where the signature's appearance will go.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfSignatureField AddSignatureField(string name, int page, PdfRectangle rectangle, PdfFieldOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>page</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>rectangle</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfFieldOptions.html">PdfFieldOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfSignatureField.html">PdfSignatureField</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The name is empty or taken.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The page does not exist.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfForm_AddTextField_" data-uid="Egap.Pdf.PdfForm.AddTextField*"></a>
+
+  <h3 id="Egap_Pdf_PdfForm_AddTextField_System_String_System_Int32_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfTextFieldOptions_" data-uid="Egap.Pdf.PdfForm.AddTextField(System.String,System.Int32,Egap.Pdf.PdfRectangle,Egap.Pdf.PdfTextFieldOptions)">
+  AddTextField(string, int, PdfRectangle, PdfTextFieldOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a text field on a page. The name may have dots, such as <code>customer.name</code>, which makes it the kid
+<code>name</code> of a field <code>customer</code>, made when it is missing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfTextField AddTextField(string name, int page, PdfRectangle rectangle, PdfTextFieldOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The fully qualified name.</p>
+</dd>
+    <dt><code>page</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>The 0-based index of the page.</p>
+</dd>
+    <dt><code>rectangle</code> <a class="xref" href="Egap.Pdf.PdfRectangle.html">PdfRectangle</a></dt>
+    <dd><p>The widget's rectangle, in the page's default user space.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfTextFieldOptions.html">PdfTextFieldOptions</a></dt>
+    <dd><p>How it works and looks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfTextField.html">PdfTextField</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfForm_AddTextField_System_String_System_Int32_Egap_Pdf_PdfRectangle_Egap_Pdf_PdfTextFieldOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">PdfTextField name = pdf.Form.AddTextField("customer.name", 0, new PdfRectangle(72, 700, 300, 720),
+    new PdfTextFieldOptions { MaxLength = 60, Required = true });</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The name is empty or taken, or a size in the options is not positive.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The page does not exist.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Pdf_PdfForm_Flatten_" data-uid="Egap.Pdf.PdfForm.Flatten*"></a>
 
   <h3 id="Egap_Pdf_PdfForm_Flatten_System_Collections_Generic_IEnumerable_Egap_Pdf_PdfField__" data-uid="Egap.Pdf.PdfForm.Flatten(System.Collections.Generic.IEnumerable{Egap.Pdf.PdfField})">
@@ -745,7 +1132,7 @@ step.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfForm.cs/#L10" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Forms/PdfFormFields.cs/#L81" class="edit-link">Edit this page</a>
         </div>
 
 

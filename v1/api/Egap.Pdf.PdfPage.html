@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Pdf_PdfPage" data-uid="Egap.Pdf.PdfPage" class="text-break">
-Class PdfPage  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfPage.Render.cs/#L11"><i class="bi bi-code-slash"></i></a>
+Class PdfPage  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextSearch.cs/#L126"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -877,6 +877,98 @@ draws and its annotations' appearances are converted too; Type 3 glyphs become t
 
 
 
+  <a id="Egap_Pdf_PdfPage_FindText_" data-uid="Egap.Pdf.PdfPage.FindText*"></a>
+
+  <h3 id="Egap_Pdf_PdfPage_FindText_System_String_Egap_Pdf_PdfFindOptions_" data-uid="Egap.Pdf.PdfPage.FindText(System.String,Egap.Pdf.PdfFindOptions)">
+  FindText(string, PdfFindOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextSearch.cs/#L134"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds every place a phrase is shown on the page. The page's lines (as <a class="xref" href="Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_GetText_Egap_Pdf_PdfTextOptions_">GetText(PdfTextOptions?)</a> builds them) are searched
+with words joined by single spaces, and lines that follow each other in a block of text are joined too, so a phrase
+is found where it wraps onto the next line; any run of white space in the phrase matches any run on the page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfTextMatch&gt; FindText(string text, PdfFindOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfTextMatch.html">PdfTextMatch</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">text</code> is null or empty.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfPage_FindText_" data-uid="Egap.Pdf.PdfPage.FindText*"></a>
+
+  <h3 id="Egap_Pdf_PdfPage_FindText_System_Text_RegularExpressions_Regex_Egap_Pdf_PdfFindOptions_" data-uid="Egap.Pdf.PdfPage.FindText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions)">
+  FindText(Regex, PdfFindOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextSearch.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds every match of a regular expression on the page, searched as <a class="xref" href="Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_FindText_System_String_Egap_Pdf_PdfFindOptions_">FindText(string, PdfFindOptions?)</a> searches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfTextMatch&gt; FindText(Regex pattern, PdfFindOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pattern</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.regularexpressions.regex">Regex</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfTextMatch.html">PdfTextMatch</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">pattern</code> is null.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Pdf_PdfPage_Flush_" data-uid="Egap.Pdf.PdfPage.Flush*"></a>
 
   <h3 id="Egap_Pdf_PdfPage_Flush" data-uid="Egap.Pdf.PdfPage.Flush">
@@ -1481,7 +1573,7 @@ default gives the page at 144 dpi.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfPage.Render.cs/#L11" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextSearch.cs/#L126" class="edit-link">Edit this page</a>
         </div>
 
 

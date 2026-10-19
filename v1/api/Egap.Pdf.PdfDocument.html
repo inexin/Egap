@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PdfDocument | Egap ">
       
-      <meta name="description" content="A PDF document: its trailer, catalog and indirect objects. Opening reads only the cross-reference; objects load the first time they are used, and the file stays open until the document is disposed.">
+      <meta name="description" content="Pages made from images, and pages written as image files.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Pdf_PdfDocument" data-uid="Egap.Pdf.PdfDocument" class="text-break">
-Class PdfDocument  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L21"><i class="bi bi-code-slash"></i></a>
+Class PdfDocument  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextSearch.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,8 +97,7 @@ Class PdfDocument  <a class="header-action link-secondary" title="View source" h
   <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>A PDF document: its trailer, catalog and indirect objects. Opening reads only the cross-reference; objects load the
-first time they are used, and the file stays open until the document is disposed.</p>
+  <div class="markdown summary"><p>Pages made from images, and pages written as image files.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -166,7 +165,7 @@ PdfDictionary? info = pdf.Trailer.Get&lt;PdfDictionary&gt;("Info");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_Attachments" data-uid="Egap.Pdf.PdfDocument.Attachments">
   Attachments
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L566"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L578"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The embedded files of the catalog's /Names /EmbeddedFiles tree, kept in step with /AF.</p>
@@ -198,7 +197,7 @@ PdfDictionary? info = pdf.Trailer.Get&lt;PdfDictionary&gt;("Info");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_Catalog" data-uid="Egap.Pdf.PdfDocument.Catalog">
   Catalog
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L656"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L668"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The document catalog, the trailer's <code>/Root</code>.</p>
@@ -230,7 +229,7 @@ PdfDictionary? info = pdf.Trailer.Get&lt;PdfDictionary&gt;("Info");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_Conformance" data-uid="Egap.Pdf.PdfDocument.Conformance">
   Conformance
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L789"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L801"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The PDF/A conformance the document claims in its XMP metadata (<code>pdfaid:part</code> and <code>pdfaid:conformance</code>), or
@@ -263,7 +262,7 @@ PdfDictionary? info = pdf.Trailer.Get&lt;PdfDictionary&gt;("Info");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_Form" data-uid="Egap.Pdf.PdfDocument.Form">
   Form
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L560"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L572"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The interactive form, the catalog's /AcroForm.</p>
@@ -295,7 +294,7 @@ PdfDictionary? info = pdf.Trailer.Get&lt;PdfDictionary&gt;("Info");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_IsChanged" data-uid="Egap.Pdf.PdfDocument.IsChanged">
   IsChanged
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L668"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L680"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether any object or the trailer changed since the document was opened.</p>
@@ -327,7 +326,7 @@ PdfDictionary? info = pdf.Trailer.Get&lt;PdfDictionary&gt;("Info");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_IsEncrypted" data-uid="Egap.Pdf.PdfDocument.IsEncrypted">
   IsEncrypted
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L611"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L623"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the file is encrypted. Its strings and streams are decrypted as they load.</p>
@@ -359,7 +358,7 @@ PdfDictionary? info = pdf.Trailer.Get&lt;PdfDictionary&gt;("Info");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_IsLinearized" data-uid="Egap.Pdf.PdfDocument.IsLinearized">
   IsLinearized
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L946"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L958"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the file as opened is linearized (Annex F, Phase 5 design Q15): its first object is a linearization
@@ -393,7 +392,7 @@ longer linearized, which the length tells.</p>
 
   <h3 id="Egap_Pdf_PdfDocument_IsOwner" data-uid="Egap.Pdf.PdfDocument.IsOwner">
   IsOwner
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L622"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L634"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the document has every permission: it is not encrypted, or it was opened with the owner password.</p>
@@ -425,7 +424,7 @@ longer linearized, which the length tells.</p>
 
   <h3 id="Egap_Pdf_PdfDocument_IsReadOnly" data-uid="Egap.Pdf.PdfDocument.IsReadOnly">
   IsReadOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L291"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L303"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the document cannot be saved: an earlier revision opened with <a class="xref" href="Egap.Pdf.PdfRevision.html#Egap_Pdf_PdfRevision_Open_Egap_Pdf_PdfReadOptions_">Open(PdfReadOptions?)</a>, or a document
@@ -458,7 +457,7 @@ already signed into another stream, whose saved state is that stream (open it to
 
   <h3 id="Egap_Pdf_PdfDocument_Layers" data-uid="Egap.Pdf.PdfDocument.Layers">
   Layers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L563"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L575"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The optional content groups (layers) of the catalog's /OCProperties.</p>
@@ -490,7 +489,7 @@ already signed into another stream, whose saved state is that stream (open it to
 
   <h3 id="Egap_Pdf_PdfDocument_Metadata" data-uid="Egap.Pdf.PdfDocument.Metadata">
   Metadata
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L963"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L975"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The document's metadata: the Info dictionary and the XMP packet through one API (Phase 2 Q8).</p>
@@ -522,7 +521,7 @@ already signed into another stream, whose saved state is that stream (open it to
 
   <h3 id="Egap_Pdf_PdfDocument_NamedDestinations" data-uid="Egap.Pdf.PdfDocument.NamedDestinations">
   NamedDestinations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L599"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L611"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The named destinations, through the catalog's /Names /Dests tree and its older /Dests dictionary.</p>
@@ -554,7 +553,7 @@ already signed into another stream, whose saved state is that stream (open it to
 
   <h3 id="Egap_Pdf_PdfDocument_Objects" data-uid="Egap.Pdf.PdfDocument.Objects">
   Objects
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L659"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L671"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The indirect objects.</p>
@@ -586,7 +585,7 @@ already signed into another stream, whose saved state is that stream (open it to
 
   <h3 id="Egap_Pdf_PdfDocument_Options" data-uid="Egap.Pdf.PdfDocument.Options">
   Options
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L638"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L650"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The options the document was opened with.</p>
@@ -618,7 +617,7 @@ already signed into another stream, whose saved state is that stream (open it to
 
   <h3 id="Egap_Pdf_PdfDocument_Outline" data-uid="Egap.Pdf.PdfDocument.Outline">
   Outline
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L569"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L581"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The document outline (bookmarks); created in the catalog by the first item added.</p>
@@ -682,7 +681,7 @@ already signed into another stream, whose saved state is that stream (open it to
 
   <h3 id="Egap_Pdf_PdfDocument_Permissions" data-uid="Egap.Pdf.PdfDocument.Permissions">
   Permissions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L617"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L629"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>What the file's owner allows, from <code>/P</code>; <a class="xref" href="Egap.Pdf.PdfPermissions.html#Egap_Pdf_PdfPermissions_All">All</a> for a file that is not encrypted or that
@@ -715,7 +714,7 @@ was opened with the owner password. Advisory only: honouring them is the caller'
 
   <h3 id="Egap_Pdf_PdfDocument_Revisions" data-uid="Egap.Pdf.PdfDocument.Revisions">
   Revisions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L200"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L212"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The file's revisions, oldest first (Phase 5 design, 5.1): the original file and each incremental update after it. A
@@ -748,7 +747,7 @@ file whose cross-reference had to be rebuilt has one. Found on first use by read
 
   <h3 id="Egap_Pdf_PdfDocument_Signatures" data-uid="Egap.Pdf.PdfDocument.Signatures">
   Signatures
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L226"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The signed signature fields and document timestamps of the form, in the order they were signed (Phase 5 design, 5.1).
@@ -781,7 +780,7 @@ Reading them checks nothing; <a class="xref" href="Egap.Pdf.PdfSignature.html#Eg
 
   <h3 id="Egap_Pdf_PdfDocument_Structure" data-uid="Egap.Pdf.PdfDocument.Structure">
   Structure
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L958"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L970"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The document's logical structure: the structure tree, role map and class map (Phase 5 design Q14).</p>
@@ -813,7 +812,7 @@ Reading them checks nothing; <a class="xref" href="Egap.Pdf.PdfSignature.html#Eg
 
   <h3 id="Egap_Pdf_PdfDocument_Trailer" data-uid="Egap.Pdf.PdfDocument.Trailer">
   Trailer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L653"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L665"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The trailer dictionary, merged over all of the file's sections: the newest value of each key.</p>
@@ -845,7 +844,7 @@ Reading them checks nothing; <a class="xref" href="Egap.Pdf.PdfSignature.html#Eg
 
   <h3 id="Egap_Pdf_PdfDocument_Version" data-uid="Egap.Pdf.PdfDocument.Version">
   Version
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L643"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L655"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The PDF version: the header's, or the catalog's <code>/Version</code> when that is higher (7.2.2), such as <code>1.7</code>.</p>
@@ -877,7 +876,7 @@ Reading them checks nothing; <a class="xref" href="Egap.Pdf.PdfSignature.html#Eg
 
   <h3 id="Egap_Pdf_PdfDocument_Warnings" data-uid="Egap.Pdf.PdfDocument.Warnings">
   Warnings
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L665"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L677"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Every repair made while reading, in the order found. Objects load lazily, so the list can grow as the document is
@@ -914,7 +913,7 @@ used.</p>
 
   <h3 id="Egap_Pdf_PdfDocument_AddValidationDataAsync_Egap_Pdf_PdfRevocationSource_System_IO_Stream_Egap_Pdf_PdfTimestampClient_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.AddValidationDataAsync(Egap.Pdf.PdfRevocationSource,System.IO.Stream,Egap.Pdf.PdfTimestampClient,System.Threading.CancellationToken)">
   AddValidationDataAsync(PdfRevocationSource, Stream, PdfTimestampClient?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L280"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L292"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds long-term validation data into <code class="paramref">output</code> (Phase 5 design Q4): for every signature and timestamp,
@@ -965,7 +964,7 @@ Security Store, as an incremental update; with <code class="paramref">archiveTim
 
   <h3 id="Egap_Pdf_PdfDocument_ApplyRedactions_Egap_Pdf_PdfRedactionOptions_" data-uid="Egap.Pdf.PdfDocument.ApplyRedactions(Egap.Pdf.PdfRedactionOptions)">
   ApplyRedactions(PdfRedactionOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L344"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L356"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Applies the redaction annotations of every page (Phase 5 design Q9): the text, line art and images each one covers are
@@ -1015,7 +1014,7 @@ pdf.Save("clean.pdf");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_ConvertToGray_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.ConvertToGray(System.Threading.CancellationToken)">
   ConvertToGray(CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L438"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L450"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Converts every colour the document paints to gray (Phase 7 design 7.5): colour operators, shadings, images and
@@ -1061,7 +1060,7 @@ annotation colours become DeviceGray, the luma of their sRGB colour, and text an
 
   <h3 id="Egap_Pdf_PdfDocument_Create" data-uid="Egap.Pdf.PdfDocument.Create">
   Create()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L741"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L753"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates an empty PDF 1.7 document (hub Q11): a catalog and a page tree with no pages. It always saves by full rewrite,
@@ -1099,7 +1098,7 @@ pdf.Save("new.pdf");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_Create_Egap_Pdf_PdfCreateOptions_" data-uid="Egap.Pdf.PdfDocument.Create(Egap.Pdf.PdfCreateOptions)">
   Create(PdfCreateOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L758"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L770"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates an empty document with options (Phase 5 design Q11): with a PDF/A conformance, the document is the part's PDF
@@ -1143,7 +1142,7 @@ pdf.Save("archive.pdf");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_DeskewScannedPages_Egap_Pdf_DeskewOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.DeskewScannedPages(Egap.Pdf.DeskewOptions,System.Threading.CancellationToken)">
   DeskewScannedPages(DeskewOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L481"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L493"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Straightens scanned pages (Phase 7 design Q14): pages that are one image covering most of the page have its skew found
@@ -1195,7 +1194,7 @@ and corrected with Egami's Deskew, keeping its size and its kind of encoding.</p
 
   <h3 id="Egap_Pdf_PdfDocument_Dispose" data-uid="Egap.Pdf.PdfDocument.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L1095"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L1107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Closes the file. Objects not yet loaded can no longer be loaded.</p>
@@ -1215,6 +1214,53 @@ and corrected with Egami's Deskew, keeping its size and its kind of encoding.</p
 
 
 
+
+
+
+  <a id="Egap_Pdf_PdfDocument_ExtractPages_" data-uid="Egap.Pdf.PdfDocument.ExtractPages*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_ExtractPages_Egap_Pdf_PdfPageRange_" data-uid="Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange)">
+  ExtractPages(PdfPageRange)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A new document with the pages a range chooses, such as <code>PdfPageRange.Parse(&quot;1-3,z&quot;)</code>, in the range's order;
+otherwise as <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ExtractPages_System_Collections_Generic_IEnumerable_System_Int32__">ExtractPages(IEnumerable&lt;int&gt;)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfDocument ExtractPages(PdfPageRange range)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>range</code> <a class="xref" href="Egap.Pdf.PdfPageRange.html">PdfPageRange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfDocument.html">PdfDocument</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">range</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The range names a page this document does not have.</p>
+</dd>
+  </dl>
 
 
 
@@ -1256,6 +1302,108 @@ and corrected with Egami's Deskew, keeping its size and its kind of encoding.</p
 
 
 
+  <a id="Egap_Pdf_PdfDocument_FindText_" data-uid="Egap.Pdf.PdfDocument.FindText*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_FindText_System_String_Egap_Pdf_PdfFindOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.FindText(System.String,Egap.Pdf.PdfFindOptions,System.Threading.CancellationToken)">
+  FindText(string, PdfFindOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextSearch.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds every place a phrase is shown, page by page, as <a class="xref" href="Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_FindText_System_String_Egap_Pdf_PdfFindOptions_">FindText(string, PdfFindOptions?)</a> finds
+it on each.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfTextMatch&gt; FindText(string text, PdfFindOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfTextMatch.html">PdfTextMatch</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfDocument_FindText_System_String_Egap_Pdf_PdfFindOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">using PdfDocument pdf = PdfDocument.Open("contract.pdf");
+foreach (PdfTextMatch match in pdf.FindText("Confidential", new PdfFindOptions { MatchCase = false }))
+{
+    Console.WriteLine($"{match.PageIndex + 1}: {match.Box}");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">text</code> is null or empty.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfDocument_FindText_" data-uid="Egap.Pdf.PdfDocument.FindText*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_FindText_System_Text_RegularExpressions_Regex_Egap_Pdf_PdfFindOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions,System.Threading.CancellationToken)">
+  FindText(Regex, PdfFindOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextSearch.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds every match of a regular expression, page by page; its own options decide case and the like.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfTextMatch&gt; FindText(Regex pattern, PdfFindOptions? options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pattern</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.regularexpressions.regex">Regex</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfTextMatch.html">PdfTextMatch</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">pattern</code> is null.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Pdf_PdfDocument_FlattenAnnotations_" data-uid="Egap.Pdf.PdfDocument.FlattenAnnotations*"></a>
 
   <h3 id="Egap_Pdf_PdfDocument_FlattenAnnotations_Egap_Pdf_PdfFlattenFilter_System_Boolean_" data-uid="Egap.Pdf.PdfDocument.FlattenAnnotations(Egap.Pdf.PdfFlattenFilter,System.Boolean)">
@@ -1294,6 +1442,200 @@ with <a class="xref" href="Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_Flatten_System
 
 
 
+
+
+
+  <a id="Egap_Pdf_PdfDocument_FromImages_" data-uid="Egap.Pdf.PdfDocument.FromImages*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_FromImages_System_Collections_Generic_IEnumerable_System_ReadOnlyMemory_System_Byte___Egap_Pdf_PdfImagePageOptions_" data-uid="Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable{System.ReadOnlyMemory{System.Byte}},Egap.Pdf.PdfImagePageOptions)">
+  FromImages(IEnumerable&lt;ReadOnlyMemory&lt;byte&gt;&gt;, PdfImagePageOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/ImagePages.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A new document with a page for each encoded image, as <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FromImages_System_Collections_Generic_IEnumerable_System_String__Egap_Pdf_PdfImagePageOptions_">FromImages(IEnumerable&lt;string&gt;, PdfImagePageOptions?)</a> makes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfDocument FromImages(IEnumerable&lt;ReadOnlyMemory&lt;byte&gt;&gt; images, PdfImagePageOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>images</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfImagePageOptions.html">PdfImagePageOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfDocument.html">PdfDocument</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">images</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>There is no image, or a size in the options is not positive.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfDocument_FromImages_" data-uid="Egap.Pdf.PdfDocument.FromImages*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_FromImages_System_Collections_Generic_IEnumerable_System_String__Egap_Pdf_PdfImagePageOptions_" data-uid="Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable{System.String},Egap.Pdf.PdfImagePageOptions)">
+  FromImages(IEnumerable&lt;string&gt;, PdfImagePageOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/ImagePages.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A new document with a page for each image file: JPEG files are embedded as they are stored, other formats Egami reads
+(PNG, TIFF, WebP, GIF and more) are decoded and embedded losslessly, and each frame of a multi-page TIFF or GIF gets its
+own page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfDocument FromImages(IEnumerable&lt;string&gt; paths, PdfImagePageOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>paths</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfImagePageOptions.html">PdfImagePageOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfDocument.html">PdfDocument</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfDocument_FromImages_System_Collections_Generic_IEnumerable_System_String__Egap_Pdf_PdfImagePageOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">using PdfDocument scans = PdfDocument.FromImages(Directory.GetFiles("scans", "*.jpg").Order(),
+    new PdfImagePageOptions { PageSize = PdfPageSize.A4, Margin = Length.Mm(10) });
+scans.Save("scans.pdf");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">paths</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>There is no image, or a size in the options is not positive.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfDocument_MarkRedactions_" data-uid="Egap.Pdf.PdfDocument.MarkRedactions*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_MarkRedactions_System_String_Egap_Pdf_PdfFindOptions_" data-uid="Egap.Pdf.PdfDocument.MarkRedactions(System.String,Egap.Pdf.PdfFindOptions)">
+  MarkRedactions(string, PdfFindOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextEditing.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a phrase and adds a redaction annotation over each match, without applying them, so the marks can be checked in
+a viewer first; <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ApplyRedactions_Egap_Pdf_PdfRedactionOptions_">ApplyRedactions(PdfRedactionOptions?)</a> applies them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfRedactAnnotation&gt; MarkRedactions(string text, PdfFindOptions? find = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>find</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfRedactAnnotation.html">PdfRedactAnnotation</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">text</code> is null or empty.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfDocument_MarkRedactions_" data-uid="Egap.Pdf.PdfDocument.MarkRedactions*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_MarkRedactions_System_Text_RegularExpressions_Regex_Egap_Pdf_PdfFindOptions_" data-uid="Egap.Pdf.PdfDocument.MarkRedactions(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions)">
+  MarkRedactions(Regex, PdfFindOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextEditing.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a redaction annotation over each match of a regular expression, without applying them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PdfRedactAnnotation&gt; MarkRedactions(Regex pattern, PdfFindOptions? find = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pattern</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.regularexpressions.regex">Regex</a></dt>
+    <dd></dd>
+    <dt><code>find</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Pdf.PdfRedactAnnotation.html">PdfRedactAnnotation</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">pattern</code> is null.</p>
+</dd>
+  </dl>
 
 
 
@@ -1339,7 +1681,7 @@ with <a class="xref" href="Egap.Pdf.PdfForm.html#Egap_Pdf_PdfForm_Flatten_System
 
   <h3 id="Egap_Pdf_PdfDocument_Open_System_IO_Stream_Egap_Pdf_PdfReadOptions_System_Boolean_" data-uid="Egap.Pdf.PdfDocument.Open(System.IO.Stream,Egap.Pdf.PdfReadOptions,System.Boolean)">
   Open(Stream, PdfReadOptions?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L696"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L708"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Opens a PDF from a stream. A seekable stream is read in place and must stay unchanged while the document is used; a
@@ -1384,7 +1726,7 @@ non-seekable one is copied to memory first.</p>
 
   <h3 id="Egap_Pdf_PdfDocument_Open_System_ReadOnlyMemory_System_Byte__Egap_Pdf_PdfReadOptions_" data-uid="Egap.Pdf.PdfDocument.Open(System.ReadOnlyMemory{System.Byte},Egap.Pdf.PdfReadOptions)">
   Open(ReadOnlyMemory&lt;byte&gt;, PdfReadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L702"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L714"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Opens a PDF held in memory. The bytes must stay unchanged while the document is used.</p>
@@ -1423,7 +1765,7 @@ non-seekable one is copied to memory first.</p>
 
   <h3 id="Egap_Pdf_PdfDocument_Open_System_String_Egap_Pdf_PdfReadOptions_" data-uid="Egap.Pdf.PdfDocument.Open(System.String,Egap.Pdf.PdfReadOptions)">
   Open(string, PdfReadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L684"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L696"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Opens a PDF file. The file stays open, shared for reading, until the document is disposed.</p>
@@ -1471,7 +1813,7 @@ non-seekable one is copied to memory first.</p>
 
   <h3 id="Egap_Pdf_PdfDocument_OpenAsync_System_IO_Stream_Egap_Pdf_PdfReadOptions_System_Boolean_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.OpenAsync(System.IO.Stream,Egap.Pdf.PdfReadOptions,System.Boolean,System.Threading.CancellationToken)">
   OpenAsync(Stream, PdfReadOptions?, bool, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L711"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L723"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Opens a PDF from a stream that is slow to read, such as a network stream: it is copied to memory asynchronously, then
@@ -1515,7 +1857,7 @@ opened from there. The stream is disposed afterwards unless <code class="paramre
 
   <h3 id="Egap_Pdf_PdfDocument_Optimize_Egap_Pdf_PdfOptimizeOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.Optimize(Egap.Pdf.PdfOptimizeOptions,System.Threading.CancellationToken)">
   Optimize(PdfOptimizeOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L382"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L394"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Makes the document smaller (Phase 7 design 7.1): images downsampled and re-encoded as the options allow, duplicate
@@ -1572,7 +1914,7 @@ pdf.Save("scan-small.pdf");</code></pre>
 
   <h3 id="Egap_Pdf_PdfDocument_PrepareSignatureAsync_System_String_Egap_Pdf_PdfSignOptions_System_IO_Stream_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.PrepareSignatureAsync(System.String,Egap.Pdf.PdfSignOptions,System.IO.Stream,System.Threading.CancellationToken)">
   PrepareSignatureAsync(string, PdfSignOptions, Stream, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L250"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L262"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Prepares a signature made elsewhere (Phase 5 design Q3): writes the signed file to <code class="paramref">output</code> with the
@@ -1618,11 +1960,113 @@ seekable. Afterwards this document is read-only, as after <a class="xref" href="
 
 
 
+  <a id="Egap_Pdf_PdfDocument_RedactText_" data-uid="Egap.Pdf.PdfDocument.RedactText*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_RedactText_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfRedactionOptions_" data-uid="Egap.Pdf.PdfDocument.RedactText(System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfRedactionOptions)">
+  RedactText(string, PdfFindOptions?, PdfRedactionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextEditing.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a phrase as <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_FindText_System_String_Egap_Pdf_PdfFindOptions_System_Threading_CancellationToken_">FindText(string, PdfFindOptions?, CancellationToken)</a> does, marks each match for
+redaction and applies it for real: the matched glyphs are removed from the content, with what else the options say
+(images under the area, line art, annotations). Redaction marks already in the document stay as they are. The
+document must then be saved whole, so nothing redacted survives.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfRedactionResult RedactText(string text, PdfFindOptions? find = null, PdfRedactionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>find</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfRedactionOptions.html">PdfRedactionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfRedactionResult.html">PdfRedactionResult</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfDocument_RedactText_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfRedactionOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">using PdfDocument pdf = PdfDocument.Open("contract.pdf");
+PdfRedactionResult result = pdf.RedactText("Confidential", new PdfFindOptions { MatchCase = false });
+pdf.Save("contract-redacted.pdf");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">text</code> is null or empty.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfDocument_RedactText_" data-uid="Egap.Pdf.PdfDocument.RedactText*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_RedactText_System_Text_RegularExpressions_Regex_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfRedactionOptions_" data-uid="Egap.Pdf.PdfDocument.RedactText(System.Text.RegularExpressions.Regex,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfRedactionOptions)">
+  RedactText(Regex, PdfFindOptions?, PdfRedactionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextEditing.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Redacts every match of a regular expression, as <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_RedactText_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfRedactionOptions_">RedactText(string, PdfFindOptions?, PdfRedactionOptions?)</a> does.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfRedactionResult RedactText(Regex pattern, PdfFindOptions? find = null, PdfRedactionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pattern</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.regularexpressions.regex">Regex</a></dt>
+    <dd></dd>
+    <dt><code>find</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfRedactionOptions.html">PdfRedactionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfRedactionResult.html">PdfRedactionResult</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">pattern</code> is null.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Pdf_PdfDocument_RemoveBlankPages_" data-uid="Egap.Pdf.PdfDocument.RemoveBlankPages*"></a>
 
   <h3 id="Egap_Pdf_PdfDocument_RemoveBlankPages_Egap_Pdf_BlankPageOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.RemoveBlankPages(Egap.Pdf.BlankPageOptions,System.Threading.CancellationToken)">
   RemoveBlankPages(BlankPageOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L460"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L472"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes blank pages (Phase 7 design Q15): pages that paint nothing, and pages that render, without annotations, with
@@ -1674,7 +2118,7 @@ almost no pixel darker than white (see <a class="xref" href="Egap.Pdf.BlankPageO
 
   <h3 id="Egap_Pdf_PdfDocument_RemoveStamps" data-uid="Egap.Pdf.PdfDocument.RemoveStamps">
   RemoveStamps()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L425"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L437"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes every stamp <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_Stamp_Egap_Pdf_PdfStamp_">Stamp(PdfStamp)</a> added, and nothing else: other page furniture, even marked as artifacts, stays.</p>
@@ -1703,11 +2147,183 @@ almost no pixel darker than white (see <a class="xref" href="Egap.Pdf.BlankPageO
 
 
 
+  <a id="Egap_Pdf_PdfDocument_RenderPagesToFiles_" data-uid="Egap.Pdf.PdfDocument.RenderPagesToFiles*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_RenderPagesToFiles_System_String_Egap_Pdf_PdfRenderOptions_Egap_Pdf_PdfPageRange_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.RenderPagesToFiles(System.String,Egap.Pdf.PdfRenderOptions,Egap.Pdf.PdfPageRange,System.Threading.CancellationToken)">
+  RenderPagesToFiles(string, PdfRenderOptions?, PdfPageRange?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Pages/ImagePages.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renders pages to image files, one per page, in the format the file extension names (<code>.png</code>, <code>.jpg</code>,
+<code>.webp</code>, <code>.tif</code> and the others Egami writes). <code class="paramref">path</code> holds <code>{page}</code> where the page
+number goes, optionally with a format such as <code>{page:000}</code>; without it, <code>-{page}</code> is added before the
+extension.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; RenderPagesToFiles(string path, PdfRenderOptions? options = null, PdfPageRange? pages = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file path pattern, such as <code>&quot;out/page-{page}.png&quot;</code>.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfRenderOptions.html">PdfRenderOptions</a></dt>
+    <dd><p>How to render; 150 dots per inch by default.</p>
+</dd>
+    <dt><code>pages</code> <a class="xref" href="Egap.Pdf.PdfPageRange.html">PdfPageRange</a></dt>
+    <dd><p>The pages to render; all of them when null.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Stops the work between and inside pages.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The paths written, in page order.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfDocument_RenderPagesToFiles_System_String_Egap_Pdf_PdfRenderOptions_Egap_Pdf_PdfPageRange_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">using PdfDocument pdf = PdfDocument.Open("report.pdf");
+IReadOnlyList&lt;string&gt; files = pdf.RenderPagesToFiles("thumbs/page-{page:00}.png", new PdfRenderOptions { Dpi = 72 });</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">path</code> is empty.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfDocument_ReplaceText_" data-uid="Egap.Pdf.PdfDocument.ReplaceText*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_ReplaceText_System_String_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfReplaceOptions_" data-uid="Egap.Pdf.PdfDocument.ReplaceText(System.String,System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfReplaceOptions)">
+  ReplaceText(string, string, PdfFindOptions?, PdfReplaceOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextEditing.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces a phrase with other text wherever it is shown. Each match's glyphs are removed from the content for real,
+and the new text is written where the match began, in the same font, size, colour and rendering mode (invisible OCR
+text stays invisible), when that font has a glyph for every character of it. Otherwise the match is written in
+<a class="xref" href="Egap.Pdf.PdfReplaceOptions.html#Egap_Pdf_PdfReplaceOptions_FallbackFont">FallbackFont</a>, or left as it was with a warning. Text after the match does not move.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfReplaceResult ReplaceText(string text, string replacement, PdfFindOptions? find = null, PdfReplaceOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>replacement</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>find</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfReplaceOptions.html">PdfReplaceOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfReplaceResult.html">PdfReplaceResult</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfDocument_ReplaceText_System_String_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfReplaceOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">using PdfDocument pdf = PdfDocument.Open("price-list.pdf");
+PdfReplaceResult result = pdf.ReplaceText("2025", "2026");
+Console.WriteLine($"{result.Replaced.Count} replaced, {result.Skipped.Count} left");
+pdf.Save("price-list-2026.pdf");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">text</code> is null or empty.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">replacement</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfDocument_ReplaceText_" data-uid="Egap.Pdf.PdfDocument.ReplaceText*"></a>
+
+  <h3 id="Egap_Pdf_PdfDocument_ReplaceText_System_Text_RegularExpressions_Regex_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfReplaceOptions_" data-uid="Egap.Pdf.PdfDocument.ReplaceText(System.Text.RegularExpressions.Regex,System.String,Egap.Pdf.PdfFindOptions,Egap.Pdf.PdfReplaceOptions)">
+  ReplaceText(Regex, string, PdfFindOptions?, PdfReplaceOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextEditing.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces every match of a regular expression, as <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ReplaceText_System_String_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfReplaceOptions_">ReplaceText(string, string, PdfFindOptions?, PdfReplaceOptions?)</a>
+does; the replacement may name groups (<code><span class="math">\(1&lt;/code&gt;, &lt;code&gt;\)</span>{year}</code>) as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.regularexpressions.regex.replace#system-text-regularexpressions-regex-replace(system-string-system-string)">Replace(string, string)</a> takes them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfReplaceResult ReplaceText(Regex pattern, string replacement, PdfFindOptions? find = null, PdfReplaceOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pattern</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.regularexpressions.regex">Regex</a></dt>
+    <dd></dd>
+    <dt><code>replacement</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>find</code> <a class="xref" href="Egap.Pdf.PdfFindOptions.html">PdfFindOptions</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfReplaceOptions.html">PdfReplaceOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfReplaceResult.html">PdfReplaceResult</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>An argument is null.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Pdf_PdfDocument_Sanitize_" data-uid="Egap.Pdf.PdfDocument.Sanitize*"></a>
 
   <h3 id="Egap_Pdf_PdfDocument_Sanitize_Egap_Pdf_PdfSanitizeOptions_" data-uid="Egap.Pdf.PdfDocument.Sanitize(Egap.Pdf.PdfSanitizeOptions)">
   Sanitize(PdfSanitizeOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L360"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L372"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes what the document hides beyond its pages (Phase 5 design Q10): metadata, scripts and actions, attachments,
@@ -1746,7 +2362,7 @@ by default. Afterwards every save rewrites the file whole with unused objects dr
 
   <h3 id="Egap_Pdf_PdfDocument_Save_System_IO_Stream_Egap_Pdf_PdfSaveOptions_" data-uid="Egap.Pdf.PdfDocument.Save(System.IO.Stream,Egap.Pdf.PdfSaveOptions)">
   Save(Stream, PdfSaveOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L885"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L897"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the document to a stream, from its current position. See <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_Save_System_String_Egap_Pdf_PdfSaveOptions_">Save(string, PdfSaveOptions?)</a>.</p>
@@ -1780,7 +2396,7 @@ by default. Afterwards every save rewrites the file whole with unused objects dr
 
   <h3 id="Egap_Pdf_PdfDocument_Save_System_String_Egap_Pdf_PdfSaveOptions_" data-uid="Egap.Pdf.PdfDocument.Save(System.String,Egap.Pdf.PdfSaveOptions)">
   Save(string, PdfSaveOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L833"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L845"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the document to a file. An incremental save (the default) copies the original bytes and appends the changes;
@@ -1817,7 +2433,7 @@ the file back if writing fails; a rewrite over it goes through a temporary file 
 
   <h3 id="Egap_Pdf_PdfDocument_SaveAsync_System_IO_Stream_Egap_Pdf_PdfSaveOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.SaveAsync(System.IO.Stream,Egap.Pdf.PdfSaveOptions,System.Threading.CancellationToken)">
   SaveAsync(Stream, PdfSaveOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L895"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L907"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the document to a stream that is slow to write, such as a network stream: the file is written to memory, then
@@ -1859,7 +2475,7 @@ copied to <code class="paramref">output</code> asynchronously. See <a class="xre
 
   <h3 id="Egap_Pdf_PdfDocument_SignAsync_System_String_Egap_Pdf_PdfSignOptions_System_IO_Stream_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.SignAsync(System.String,Egap.Pdf.PdfSignOptions,System.IO.Stream,System.Threading.CancellationToken)">
   SignAsync(string, PdfSignOptions, Stream, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L247"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Signs the document into <code class="paramref">output</code> (Phase 5 design, 5.1): an incremental update that puts a signature
@@ -1923,7 +2539,7 @@ await pdf.SignAsync("Signature1", new PdfSignOptions { Signer = PdfSigner.FromCe
 
   <h3 id="Egap_Pdf_PdfDocument_Stamp_Egap_Pdf_PdfStamp_" data-uid="Egap.Pdf.PdfDocument.Stamp(Egap.Pdf.PdfStamp)">
   Stamp(PdfStamp)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L413"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L425"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Stamps the document's pages (Phase 7 design 7.3): text from a template, a Bates number, an image or another page,
@@ -1977,7 +2593,7 @@ pdf.Stamp(PdfStamp.Watermark("DRAFT") with { Layer = "Watermark" });</code></pre
 
   <h3 id="Egap_Pdf_PdfDocument_TimestampAsync_Egap_Pdf_PdfTimestampClient_System_IO_Stream_System_String_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfDocument.TimestampAsync(Egap.Pdf.PdfTimestampClient,System.IO.Stream,System.String,System.Threading.CancellationToken)">
   TimestampAsync(PdfTimestampClient, Stream, string?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L264"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L276"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a document timestamp into <code class="paramref">output</code> (ISO 32000-2, 12.8.5): an incremental update with an RFC 3161
@@ -2026,7 +2642,7 @@ Afterwards this document is read-only, as after <a class="xref" href="Egap.Pdf.P
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfDocument.cs/#L21" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Text/PdfTextSearch.cs/#L87" class="edit-link">Edit this page</a>
         </div>
 
 

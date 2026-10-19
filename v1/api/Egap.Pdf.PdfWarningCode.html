@@ -262,6 +262,12 @@ into an image at the fallback resolution and placed instead (Phase 3 design Q14)
 file whole, so that signature no longer verifies (Phase 5 design Q7); in strict mode it throws instead, and
 <a class="xref" href="Egap.Pdf.PdfSaveOptions.html#Egap_Pdf_PdfSaveOptions_AllowInvalidatingSignatures">AllowInvalidatingSignatures</a> or <a class="xref" href="Egap.Pdf.PdfSignOptions.html#Egap_Pdf_PdfSignOptions_AllowInvalidatingSignatures">AllowInvalidatingSignatures</a> lets it go ahead.</p>
 </dd>
+    <dt id="Egap_Pdf_PdfWarningCode_TextNotReplaced"><code>TextNotReplaced = 43</code></dt>
+  
+  <dd><p>A match of <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ReplaceText_System_String_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfReplaceOptions_">ReplaceText(string, string, PdfFindOptions?, PdfReplaceOptions?)</a> was left as it
+was: its font lacks a glyph the new text needs, or its text cannot be written in that font, and no fallback font was
+given; or the match is a marked-content span's replacement text (<code>/ActualText</code>), not glyphs.</p>
+</dd>
     <dt id="Egap_Pdf_PdfWarningCode_TextWithoutUnicode"><code>TextWithoutUnicode = 41</code></dt>
   
   <dd><p>Text extraction found glyphs whose fonts say no Unicode text for them (no ToUnicode map, no glyph name the Adobe

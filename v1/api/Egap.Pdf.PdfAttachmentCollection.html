@@ -235,6 +235,58 @@ removing edit the tree in place (Phase 2 Q3) and keep the catalog's <code>/AF</c
 
   <a id="Egap_Pdf_PdfAttachmentCollection_Add_" data-uid="Egap.Pdf.PdfAttachmentCollection.Add*"></a>
 
+  <h3 id="Egap_Pdf_PdfAttachmentCollection_Add_System_String_System_ReadOnlySpan_System_Byte__Egap_Pdf_PdfAttachmentRelationship_System_String_System_String_System_Nullable_System_DateTimeOffset__" data-uid="Egap.Pdf.PdfAttachmentCollection.Add(System.String,System.ReadOnlySpan{System.Byte},Egap.Pdf.PdfAttachmentRelationship,System.String,System.String,System.Nullable{System.DateTimeOffset})">
+  Add(string, ReadOnlySpan&lt;byte&gt;, PdfAttachmentRelationship, string?, string?, DateTimeOffset?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfAttachmentCollection.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Embeds a file under a name with its relationship to the document, replacing any attachment of that name, and lists it
+among the document's associated files (the catalog's <code>/AF</code>), as PDF/A-3 and e-invoices ask. Otherwise as
+<a class="xref" href="Egap.Pdf.PdfAttachmentCollection.html#Egap_Pdf_PdfAttachmentCollection_Add_System_String_System_ReadOnlySpan_System_Byte__System_String_System_String_System_Nullable_System_DateTimeOffset__">Add(string, ReadOnlySpan&lt;byte&gt;, string?, string?, DateTimeOffset?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfAttachment Add(string name, ReadOnlySpan&lt;byte&gt; bytes, PdfAttachmentRelationship relationship, string? mimeType = null, string? description = null, DateTimeOffset? modified = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>bytes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>relationship</code> <a class="xref" href="Egap.Pdf.PdfAttachmentRelationship.html">PdfAttachmentRelationship</a></dt>
+    <dd></dd>
+    <dt><code>mimeType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>description</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>modified</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfAttachment.html">PdfAttachment</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfAttachmentCollection_Add_System_String_System_ReadOnlySpan_System_Byte__Egap_Pdf_PdfAttachmentRelationship_System_String_System_String_System_Nullable_System_DateTimeOffset___examples">Examples</h4>
+  <pre><code class="lang-csharp">pdf.Attachments.Add("data.csv", File.ReadAllBytes("data.csv"), PdfAttachmentRelationship.Data, "text/csv", modified: DateTimeOffset.Now);</code></pre>
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfAttachmentCollection_Add_" data-uid="Egap.Pdf.PdfAttachmentCollection.Add*"></a>
+
   <h3 id="Egap_Pdf_PdfAttachmentCollection_Add_System_String_System_ReadOnlySpan_System_Byte__System_String_System_String_System_Nullable_System_DateTimeOffset__" data-uid="Egap.Pdf.PdfAttachmentCollection.Add(System.String,System.ReadOnlySpan{System.Byte},System.String,System.String,System.Nullable{System.DateTimeOffset})">
   Add(string, ReadOnlySpan&lt;byte&gt;, string?, string?, DateTimeOffset?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfAttachmentCollection.cs/#L72"><i class="bi bi-code-slash"></i></a>
@@ -284,7 +336,7 @@ or one that already lists associated files, the file is also added to the catalo
 
   <h3 id="Egap_Pdf_PdfAttachmentCollection_GetEnumerator" data-uid="Egap.Pdf.PdfAttachmentCollection.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfAttachmentCollection.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfAttachmentCollection.cs/#L199"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
@@ -317,7 +369,7 @@ or one that already lists associated files, the file is also added to the catalo
 
   <h3 id="Egap_Pdf_PdfAttachmentCollection_Remove_System_String_" data-uid="Egap.Pdf.PdfAttachmentCollection.Remove(System.String)">
   Remove(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfAttachmentCollection.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfAttachmentCollection.cs/#L174"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes an attachment from the name tree and the catalog's <code>/AF</code>. Its objects stay until nothing reaches them.</p>
