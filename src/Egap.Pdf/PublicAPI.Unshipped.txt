@@ -25,6 +25,25 @@ Egap.Pdf.PdfImagePageOptions.PdfImagePageOptions() -> void
 Egap.Pdf.PdfPageRange
 Egap.Pdf.PdfPageRange.Resolve(int pageCount) -> System.Collections.Generic.IReadOnlyList<int>!
 Egap.Pdf.PdfPageRange.Text.get -> string!
+Egap.Pdf.PdfPlaceholders
+Egap.Pdf.PdfPlaceholderValues
+Egap.Pdf.PdfPlaceholderValues.<Clone>$() -> Egap.Pdf.PdfPlaceholderValues!
+Egap.Pdf.PdfPlaceholderValues.Culture.get -> System.Globalization.CultureInfo?
+Egap.Pdf.PdfPlaceholderValues.Culture.init -> void
+Egap.Pdf.PdfPlaceholderValues.Equals(Egap.Pdf.PdfPlaceholderValues? other) -> bool
+Egap.Pdf.PdfPlaceholderValues.File.get -> string?
+Egap.Pdf.PdfPlaceholderValues.File.init -> void
+Egap.Pdf.PdfPlaceholderValues.Label.get -> string?
+Egap.Pdf.PdfPlaceholderValues.Label.init -> void
+Egap.Pdf.PdfPlaceholderValues.Now.get -> System.DateTimeOffset
+Egap.Pdf.PdfPlaceholderValues.Now.init -> void
+Egap.Pdf.PdfPlaceholderValues.Page.get -> int
+Egap.Pdf.PdfPlaceholderValues.Page.init -> void
+Egap.Pdf.PdfPlaceholderValues.PdfPlaceholderValues() -> void
+Egap.Pdf.PdfPlaceholderValues.Title.get -> string?
+Egap.Pdf.PdfPlaceholderValues.Title.init -> void
+Egap.Pdf.PdfPlaceholderValues.TotalPages.get -> int
+Egap.Pdf.PdfPlaceholderValues.TotalPages.init -> void
 Egap.Pdf.PdfStamp.PageRange.get -> Egap.Pdf.PdfPageRange?
 Egap.Pdf.PdfStamp.PageRange.init -> void
 override Egap.Pdf.Length.GetHashCode() -> int
@@ -33,6 +52,9 @@ override Egap.Pdf.PdfImagePageOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfImagePageOptions.GetHashCode() -> int
 override Egap.Pdf.PdfImagePageOptions.ToString() -> string!
 override Egap.Pdf.PdfPageRange.ToString() -> string!
+override Egap.Pdf.PdfPlaceholderValues.Equals(object? obj) -> bool
+override Egap.Pdf.PdfPlaceholderValues.GetHashCode() -> int
+override Egap.Pdf.PdfPlaceholderValues.ToString() -> string!
 static Egap.Pdf.Length.Cm(double centimetres) -> Egap.Pdf.Length
 static Egap.Pdf.Length.implicit operator double(Egap.Pdf.Length length) -> double
 static Egap.Pdf.Length.implicit operator Egap.Pdf.Length(double points) -> Egap.Pdf.Length
@@ -62,4 +84,8 @@ static Egap.Pdf.PdfImagePageOptions.operator ==(Egap.Pdf.PdfImagePageOptions? le
 static Egap.Pdf.PdfPageRange.All.get -> Egap.Pdf.PdfPageRange!
 static Egap.Pdf.PdfPageRange.Parse(string! text) -> Egap.Pdf.PdfPageRange!
 static Egap.Pdf.PdfPageRange.TryParse(string? text, out Egap.Pdf.PdfPageRange? range) -> bool
+static Egap.Pdf.PdfPlaceholders.Fill(string! template, Egap.Pdf.PdfPlaceholderValues! values) -> string!
+static Egap.Pdf.PdfPlaceholders.Names.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static Egap.Pdf.PdfPlaceholderValues.operator !=(Egap.Pdf.PdfPlaceholderValues? left, Egap.Pdf.PdfPlaceholderValues? right) -> bool
+static Egap.Pdf.PdfPlaceholderValues.operator ==(Egap.Pdf.PdfPlaceholderValues? left, Egap.Pdf.PdfPlaceholderValues? right) -> bool
 ~override Egap.Pdf.Length.Equals(object obj) -> bool

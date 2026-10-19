@@ -11,6 +11,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `Length` holds a size in points made from millimetres, centimetres, inches or points (`Length.Mm(20)`, `Length.Parse("2cm")`).
   It converts to and from points without a cast, so it works wherever a size in points is asked for.
 
+### Placeholders
+- One set of placeholder names for page furniture: `{page}`, `{total-pages}`, `{label}`, `{date}`, `{time}`, `{title}` and
+  `{file}`, each with an optional format. Stamps take them, `{pages}` still works, and `{{` writes a brace.
+  `PdfPlaceholders.Fill` fills them in any text.
+
 ### Images and page files
 - `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
   GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.

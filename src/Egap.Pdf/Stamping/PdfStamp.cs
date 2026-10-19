@@ -56,9 +56,10 @@ public enum PdfStampSubtype
 /// <see cref="Image(Raster, double, double)"/> or <see cref="Page"/>, then set its placement with <c>with</c>.
 /// </summary>
 /// <remarks>
-/// Text is a template whose fields are filled per page: <c>{page}</c>, <c>{pages}</c>, <c>{label}</c> (the page label),
-/// <c>{date}</c> or <c>{date:format}</c>, <c>{title}</c>, <c>{file}</c> and, for a Bates stamp, <c>{bates}</c>. Numbers and
-/// dates use <see cref="Culture"/>, the invariant culture unless given. Text is drawn in Helvetica, a standard font that is
+/// Text is a template whose placeholders are filled per page, as <see cref="PdfPlaceholders"/> lists them:
+/// <c>{page}</c>, <c>{total-pages}</c> (or <c>{pages}</c>), <c>{label}</c> (the page label), <c>{date}</c>, <c>{time}</c>,
+/// <c>{title}</c>, <c>{file}</c> and, for a Bates stamp, <c>{bates}</c>. Numbers, dates and times take a format after a colon
+/// (<c>{date:yyyy-MM-dd}</c>) and use <see cref="Culture"/>, the invariant culture unless given. Text is drawn in Helvetica, a standard font that is
 /// not embedded, unless <see cref="Font"/> names a typeface, which is embedded as a subset; a PDF/A document needs one.
 /// </remarks>
 public sealed record PdfStamp
@@ -131,7 +132,7 @@ public sealed record PdfStamp
 
     internal PdfBatesSequence? Sequence { get; private init; }
 
-    /// <summary>A text stamp from a template, such as <c>"Page {page} of {pages}"</c>, at the bottom centre.</summary>
+    /// <summary>A text stamp from a template, such as <c>"Page {page} of {total-pages}"</c>, at the bottom centre.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="template"/> is null.</exception>
     public static PdfStamp Text(string template)
     {

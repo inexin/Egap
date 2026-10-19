@@ -24,11 +24,15 @@ Stamps are page numbers, headers and footers, Bates numbers, watermarks, text, i
 pagination artifacts, so a viewer or a later pass can tell them from the content. `PdfImpose` places pages onto sheets:
 N-up, booklets, posters, grids and fit to a page size.
 
+Text stamps fill placeholders per page: `{page}`, `{total-pages}` (or `{pages}`), `{label}`, `{date}`, `{time}`, `{title}`
+and `{file}`, with an optional format such as `{page:000}` or `{date:yyyy-MM-dd}`. `PdfPlaceholders.Fill` fills the same
+names in your own text.
+
 ```csharp
 using Egap.Pdf;
 
 using PdfDocument contract = PdfDocument.Open("contract.pdf");
-contract.Stamp(PdfStamp.Text("Page {page} of {pages}") with { Anchor = StampAnchor.BottomCenter, Offset = new(0, 24) });
+contract.Stamp(PdfStamp.Text("Page {page} of {total-pages}") with { Anchor = StampAnchor.BottomCenter, Offset = new(0, 24) });
 contract.Stamp(PdfStamp.Bates(new PdfBatesSequence("ACME-", digits: 6)) with { Anchor = StampAnchor.BottomRight });
 using PdfDocument handout = PdfImpose.NUp(contract, new NUpOptions { Columns = 2, Rows = 2 });
 handout.Save("handout.pdf");
