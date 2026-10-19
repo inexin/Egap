@@ -12,6 +12,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   and use `Egami.Fonts.Substitutes.SubstituteFonts`, which has the same members. Code that reached Egap.Fonts only through
   Egap.Pdf or Egap.Documents needs the same change, since they no longer bring it in.
 
+### Fixes
+- Page tree repair never takes the catalog for a page, and finds pages by scanning only where it would also accept them
+  as kids of a tree. A file whose catalog named itself as the page tree no longer breaks a linearized save, and pages of a
+  damaged file no longer go missing after an extract, merge and rewrite.
+- Outline repair cuts a chain of items where it reaches the catalog, a page or a page tree node, instead of writing outline
+  links into it.
+
 ## Egap.Pdf 1.4.0 (2026-10-18)
 
 ### PDF tools

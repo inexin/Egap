@@ -205,7 +205,17 @@ internal static class Targets
         using (pdf)
         {
             PdfRenderOptions options = new() { Dpi = 18, MaxOutputPixels = 4_000_000, MaxOperations = 200_000, MaxImagePixels = 4_000_000, ImageCacheLimit = 16 << 20 };
-            foreach (PdfPage page in pdf.Pages.Take(3))
+            List<PdfPage> pages;
+            try
+            {
+                pages = [.. pdf.Pages.Take(3)];
+            }
+            catch (PdfLimitException)
+            {
+                return;
+            }
+
+            foreach (PdfPage page in pages)
             {
                 try
                 {
