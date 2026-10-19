@@ -18,6 +18,20 @@ Egap.Pdf.PdfAttachmentRelationship.Schema = 7 -> Egap.Pdf.PdfAttachmentRelations
 Egap.Pdf.PdfAttachmentRelationship.Source = 1 -> Egap.Pdf.PdfAttachmentRelationship
 Egap.Pdf.PdfAttachmentRelationship.Supplement = 4 -> Egap.Pdf.PdfAttachmentRelationship
 Egap.Pdf.PdfAttachmentRelationship.Unspecified = 0 -> Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfButtonOptions
+Egap.Pdf.PdfButtonOptions.Checked.get -> bool
+Egap.Pdf.PdfButtonOptions.Checked.init -> void
+Egap.Pdf.PdfButtonOptions.Equals(Egap.Pdf.PdfButtonOptions? other) -> bool
+Egap.Pdf.PdfButtonOptions.OnState.get -> string!
+Egap.Pdf.PdfButtonOptions.OnState.init -> void
+Egap.Pdf.PdfButtonOptions.PdfButtonOptions() -> void
+Egap.Pdf.PdfChoiceFieldOptions
+Egap.Pdf.PdfChoiceFieldOptions.Equals(Egap.Pdf.PdfChoiceFieldOptions? other) -> bool
+Egap.Pdf.PdfChoiceFieldOptions.PdfChoiceFieldOptions() -> void
+Egap.Pdf.PdfChoiceFieldOptions.Sort.get -> bool
+Egap.Pdf.PdfChoiceFieldOptions.Sort.init -> void
+Egap.Pdf.PdfChoiceFieldOptions.Value.get -> string?
+Egap.Pdf.PdfChoiceFieldOptions.Value.init -> void
 Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange! range) -> Egap.Pdf.PdfDocument!
 Egap.Pdf.PdfDocument.FindText(string! text, Egap.Pdf.PdfFindOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
 Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex! pattern, Egap.Pdf.PdfFindOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
@@ -28,6 +42,25 @@ Egap.Pdf.PdfDocument.RedactText(System.Text.RegularExpressions.Regex! pattern, E
 Egap.Pdf.PdfDocument.RenderPagesToFiles(string! path, Egap.Pdf.PdfRenderOptions? options = null, Egap.Pdf.PdfPageRange? pages = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<string!>!
 Egap.Pdf.PdfDocument.ReplaceText(string! text, string! replacement, Egap.Pdf.PdfFindOptions? find = null, Egap.Pdf.PdfReplaceOptions? options = null) -> Egap.Pdf.PdfReplaceResult!
 Egap.Pdf.PdfDocument.ReplaceText(System.Text.RegularExpressions.Regex! pattern, string! replacement, Egap.Pdf.PdfFindOptions? find = null, Egap.Pdf.PdfReplaceOptions? options = null) -> Egap.Pdf.PdfReplaceResult!
+Egap.Pdf.PdfFieldOptions
+Egap.Pdf.PdfFieldOptions.BackgroundColor.get -> Egami.Pixels.Rgba8?
+Egap.Pdf.PdfFieldOptions.BackgroundColor.init -> void
+Egap.Pdf.PdfFieldOptions.BorderColor.get -> Egami.Pixels.Rgba8?
+Egap.Pdf.PdfFieldOptions.BorderColor.init -> void
+Egap.Pdf.PdfFieldOptions.BorderWidth.get -> double
+Egap.Pdf.PdfFieldOptions.BorderWidth.init -> void
+Egap.Pdf.PdfFieldOptions.FontSize.get -> double
+Egap.Pdf.PdfFieldOptions.FontSize.init -> void
+Egap.Pdf.PdfFieldOptions.PdfFieldOptions() -> void
+Egap.Pdf.PdfFieldOptions.PdfFieldOptions(Egap.Pdf.PdfFieldOptions! original) -> void
+Egap.Pdf.PdfFieldOptions.ReadOnly.get -> bool
+Egap.Pdf.PdfFieldOptions.ReadOnly.init -> void
+Egap.Pdf.PdfFieldOptions.Required.get -> bool
+Egap.Pdf.PdfFieldOptions.Required.init -> void
+Egap.Pdf.PdfFieldOptions.TextColor.get -> Egami.Pixels.Rgba8
+Egap.Pdf.PdfFieldOptions.TextColor.init -> void
+Egap.Pdf.PdfFieldOptions.Tooltip.get -> string?
+Egap.Pdf.PdfFieldOptions.Tooltip.init -> void
 Egap.Pdf.PdfFindOptions
 Egap.Pdf.PdfFindOptions.<Clone>$() -> Egap.Pdf.PdfFindOptions!
 Egap.Pdf.PdfFindOptions.Equals(Egap.Pdf.PdfFindOptions? other) -> bool
@@ -40,6 +73,13 @@ Egap.Pdf.PdfFindOptions.Text.get -> Egap.Pdf.PdfTextOptions?
 Egap.Pdf.PdfFindOptions.Text.init -> void
 Egap.Pdf.PdfFindOptions.WholeWord.get -> bool
 Egap.Pdf.PdfFindOptions.WholeWord.init -> void
+Egap.Pdf.PdfForm.AddCheckBox(string! name, int page, Egap.Pdf.PdfRectangle rectangle, Egap.Pdf.PdfButtonOptions? options = null) -> Egap.Pdf.PdfCheckBoxField!
+Egap.Pdf.PdfForm.AddComboBox(string! name, int page, Egap.Pdf.PdfRectangle rectangle, System.Collections.Generic.IReadOnlyList<string!>! items, bool editable = false, Egap.Pdf.PdfChoiceFieldOptions? options = null) -> Egap.Pdf.PdfComboBoxField!
+Egap.Pdf.PdfForm.AddListBox(string! name, int page, Egap.Pdf.PdfRectangle rectangle, System.Collections.Generic.IReadOnlyList<string!>! items, bool multiSelect = false, Egap.Pdf.PdfChoiceFieldOptions? options = null) -> Egap.Pdf.PdfListBoxField!
+Egap.Pdf.PdfForm.AddPushButton(string! name, int page, Egap.Pdf.PdfRectangle rectangle, string! caption, Egap.Pdf.PdfAction? action = null, Egap.Pdf.PdfFieldOptions? options = null) -> Egap.Pdf.PdfPushButtonField!
+Egap.Pdf.PdfForm.AddRadioGroup(string! name, System.Collections.Generic.IReadOnlyList<(int Page, Egap.Pdf.PdfRectangle Rectangle, string! Value)>! buttons, string? selected = null, Egap.Pdf.PdfFieldOptions? options = null) -> Egap.Pdf.PdfRadioButtonField!
+Egap.Pdf.PdfForm.AddSignatureField(string! name, int page, Egap.Pdf.PdfRectangle rectangle, Egap.Pdf.PdfFieldOptions? options = null) -> Egap.Pdf.PdfSignatureField!
+Egap.Pdf.PdfForm.AddTextField(string! name, int page, Egap.Pdf.PdfRectangle rectangle, Egap.Pdf.PdfTextFieldOptions? options = null) -> Egap.Pdf.PdfTextField!
 Egap.Pdf.PdfImagePageOptions
 Egap.Pdf.PdfImagePageOptions.<Clone>$() -> Egap.Pdf.PdfImagePageOptions!
 Egap.Pdf.PdfImagePageOptions.AutoRotate.get -> bool
@@ -146,6 +186,21 @@ Egap.Pdf.PdfReplaceResult.Warnings.get -> System.Collections.Generic.IReadOnlyLi
 Egap.Pdf.PdfReplaceResult.Warnings.init -> void
 Egap.Pdf.PdfStamp.PageRange.get -> Egap.Pdf.PdfPageRange?
 Egap.Pdf.PdfStamp.PageRange.init -> void
+Egap.Pdf.PdfTextFieldOptions
+Egap.Pdf.PdfTextFieldOptions.Alignment.get -> Egap.Pdf.PdfTextAlignment
+Egap.Pdf.PdfTextFieldOptions.Alignment.init -> void
+Egap.Pdf.PdfTextFieldOptions.Comb.get -> bool
+Egap.Pdf.PdfTextFieldOptions.Comb.init -> void
+Egap.Pdf.PdfTextFieldOptions.Equals(Egap.Pdf.PdfTextFieldOptions? other) -> bool
+Egap.Pdf.PdfTextFieldOptions.MaxLength.get -> int?
+Egap.Pdf.PdfTextFieldOptions.MaxLength.init -> void
+Egap.Pdf.PdfTextFieldOptions.Multiline.get -> bool
+Egap.Pdf.PdfTextFieldOptions.Multiline.init -> void
+Egap.Pdf.PdfTextFieldOptions.Password.get -> bool
+Egap.Pdf.PdfTextFieldOptions.Password.init -> void
+Egap.Pdf.PdfTextFieldOptions.PdfTextFieldOptions() -> void
+Egap.Pdf.PdfTextFieldOptions.Value.get -> string?
+Egap.Pdf.PdfTextFieldOptions.Value.init -> void
 Egap.Pdf.PdfTextMatch
 Egap.Pdf.PdfTextMatch.Box.get -> Egap.Pdf.PdfRectangle
 Egap.Pdf.PdfTextMatch.Glyphs.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextGlyph!>!
@@ -155,6 +210,17 @@ Egap.Pdf.PdfTextMatch.Text.get -> string!
 Egap.Pdf.PdfWarningCode.TextNotReplaced = 43 -> Egap.Pdf.PdfWarningCode
 override Egap.Pdf.Length.GetHashCode() -> int
 override Egap.Pdf.Length.ToString() -> string!
+override Egap.Pdf.PdfButtonOptions.<Clone>$() -> Egap.Pdf.PdfButtonOptions!
+override Egap.Pdf.PdfButtonOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfButtonOptions.GetHashCode() -> int
+override Egap.Pdf.PdfButtonOptions.ToString() -> string!
+override Egap.Pdf.PdfChoiceFieldOptions.<Clone>$() -> Egap.Pdf.PdfChoiceFieldOptions!
+override Egap.Pdf.PdfChoiceFieldOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfChoiceFieldOptions.GetHashCode() -> int
+override Egap.Pdf.PdfChoiceFieldOptions.ToString() -> string!
+override Egap.Pdf.PdfFieldOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfFieldOptions.GetHashCode() -> int
+override Egap.Pdf.PdfFieldOptions.ToString() -> string!
 override Egap.Pdf.PdfFindOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfFindOptions.GetHashCode() -> int
 override Egap.Pdf.PdfFindOptions.ToString() -> string!
@@ -178,7 +244,14 @@ override Egap.Pdf.PdfReplaceOptions.ToString() -> string!
 override Egap.Pdf.PdfReplaceResult.Equals(object? obj) -> bool
 override Egap.Pdf.PdfReplaceResult.GetHashCode() -> int
 override Egap.Pdf.PdfReplaceResult.ToString() -> string!
+override Egap.Pdf.PdfTextFieldOptions.<Clone>$() -> Egap.Pdf.PdfTextFieldOptions!
+override Egap.Pdf.PdfTextFieldOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfTextFieldOptions.GetHashCode() -> int
+override Egap.Pdf.PdfTextFieldOptions.ToString() -> string!
 override Egap.Pdf.PdfTextMatch.ToString() -> string!
+override sealed Egap.Pdf.PdfButtonOptions.Equals(Egap.Pdf.PdfFieldOptions? other) -> bool
+override sealed Egap.Pdf.PdfChoiceFieldOptions.Equals(Egap.Pdf.PdfFieldOptions? other) -> bool
+override sealed Egap.Pdf.PdfTextFieldOptions.Equals(Egap.Pdf.PdfFieldOptions? other) -> bool
 static Egap.Pdf.Length.Cm(double centimetres) -> Egap.Pdf.Length
 static Egap.Pdf.Length.implicit operator double(Egap.Pdf.Length length) -> double
 static Egap.Pdf.Length.implicit operator Egap.Pdf.Length(double points) -> Egap.Pdf.Length
@@ -200,8 +273,14 @@ static Egap.Pdf.Length.Parse(string! text) -> Egap.Pdf.Length
 static Egap.Pdf.Length.Pt(double points) -> Egap.Pdf.Length
 static Egap.Pdf.Length.TryParse(string? text, out Egap.Pdf.Length length) -> bool
 static Egap.Pdf.Length.Zero.get -> Egap.Pdf.Length
+static Egap.Pdf.PdfButtonOptions.operator !=(Egap.Pdf.PdfButtonOptions? left, Egap.Pdf.PdfButtonOptions? right) -> bool
+static Egap.Pdf.PdfButtonOptions.operator ==(Egap.Pdf.PdfButtonOptions? left, Egap.Pdf.PdfButtonOptions? right) -> bool
+static Egap.Pdf.PdfChoiceFieldOptions.operator !=(Egap.Pdf.PdfChoiceFieldOptions? left, Egap.Pdf.PdfChoiceFieldOptions? right) -> bool
+static Egap.Pdf.PdfChoiceFieldOptions.operator ==(Egap.Pdf.PdfChoiceFieldOptions? left, Egap.Pdf.PdfChoiceFieldOptions? right) -> bool
 static Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable<string!>! paths, Egap.Pdf.PdfImagePageOptions? options = null) -> Egap.Pdf.PdfDocument!
 static Egap.Pdf.PdfDocument.FromImages(System.Collections.Generic.IEnumerable<System.ReadOnlyMemory<byte>>! images, Egap.Pdf.PdfImagePageOptions? options = null) -> Egap.Pdf.PdfDocument!
+static Egap.Pdf.PdfFieldOptions.operator !=(Egap.Pdf.PdfFieldOptions? left, Egap.Pdf.PdfFieldOptions? right) -> bool
+static Egap.Pdf.PdfFieldOptions.operator ==(Egap.Pdf.PdfFieldOptions? left, Egap.Pdf.PdfFieldOptions? right) -> bool
 static Egap.Pdf.PdfFindOptions.Default.get -> Egap.Pdf.PdfFindOptions!
 static Egap.Pdf.PdfFindOptions.operator !=(Egap.Pdf.PdfFindOptions? left, Egap.Pdf.PdfFindOptions? right) -> bool
 static Egap.Pdf.PdfFindOptions.operator ==(Egap.Pdf.PdfFindOptions? left, Egap.Pdf.PdfFindOptions? right) -> bool
@@ -230,6 +309,12 @@ static Egap.Pdf.PdfReplaceOptions.operator !=(Egap.Pdf.PdfReplaceOptions? left, 
 static Egap.Pdf.PdfReplaceOptions.operator ==(Egap.Pdf.PdfReplaceOptions? left, Egap.Pdf.PdfReplaceOptions? right) -> bool
 static Egap.Pdf.PdfReplaceResult.operator !=(Egap.Pdf.PdfReplaceResult? left, Egap.Pdf.PdfReplaceResult? right) -> bool
 static Egap.Pdf.PdfReplaceResult.operator ==(Egap.Pdf.PdfReplaceResult? left, Egap.Pdf.PdfReplaceResult? right) -> bool
+static Egap.Pdf.PdfTextFieldOptions.operator !=(Egap.Pdf.PdfTextFieldOptions? left, Egap.Pdf.PdfTextFieldOptions? right) -> bool
+static Egap.Pdf.PdfTextFieldOptions.operator ==(Egap.Pdf.PdfTextFieldOptions? left, Egap.Pdf.PdfTextFieldOptions? right) -> bool
+virtual Egap.Pdf.PdfFieldOptions.<Clone>$() -> Egap.Pdf.PdfFieldOptions!
+virtual Egap.Pdf.PdfFieldOptions.EqualityContract.get -> System.Type!
+virtual Egap.Pdf.PdfFieldOptions.Equals(Egap.Pdf.PdfFieldOptions? other) -> bool
+virtual Egap.Pdf.PdfFieldOptions.PrintMembers(System.Text.StringBuilder! builder) -> bool
 ~override Egap.Pdf.Length.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfQuad.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfQuad.ToString() -> string

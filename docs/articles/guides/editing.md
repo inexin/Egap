@@ -22,6 +22,23 @@ pdf.Form.Flatten();                                      // fields drawn into th
 pdf.Save("out.pdf");                                     // incremental: the original bytes plus the changes
 ```
 
+## New form fields
+
+`PdfForm` adds text fields, check boxes, radio groups, combo and list boxes, push buttons and empty signature fields, each
+with a widget and an appearance drawn for it. A name with dots, such as `customer.name`, puts the field under a parent.
+
+```csharp
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("blank.pdf");
+pdf.Form.AddTextField("customer.name", 0, new PdfRectangle(72, 700, 300, 720), new PdfTextFieldOptions { MaxLength = 60, Required = true });
+pdf.Form.AddCheckBox("terms", 0, new PdfRectangle(72, 660, 86, 674));
+pdf.Form.AddRadioGroup("size", [(0, new PdfRectangle(72, 620, 86, 634), "S"), (0, new PdfRectangle(100, 620, 114, 634), "M")], selected: "S");
+pdf.Form.AddComboBox("country", 0, new PdfRectangle(72, 580, 220, 596), ["Norway", "Sweden"]);
+pdf.Form.AddSignatureField("approval", 0, new PdfRectangle(72, 480, 272, 540));
+pdf.Save("form.pdf");
+```
+
 ## Damaged and encrypted files
 
 Egap repairs what it can while reading: broken cross-reference tables, wrong lengths, bad page trees. Each repair adds a

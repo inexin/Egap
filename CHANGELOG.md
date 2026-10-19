@@ -28,6 +28,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   rendering mode. A match whose font lacks a glyph for the new text is left as it was with a `TextNotReplaced` warning, or
   written in a fallback font when one is given.
 
+### Form fields in code
+- `PdfForm` adds text fields, check boxes, radio groups, combo boxes, list boxes, push buttons and signature fields, with
+  options for value, length, flags, tooltip, colours and border, and appearances drawn for each. Dotted names make parent
+  fields.
+
 ### E-invoices
 - `PdfInvoice.Embed` makes a Factur-X (ZUGFeRD 2.1 and later) e-invoice: the XML attached as `factur-x.xml` or
   `xrechnung.xml` with the relationship its profile asks for, the document converted to PDF/A-3, and the Factur-X extension

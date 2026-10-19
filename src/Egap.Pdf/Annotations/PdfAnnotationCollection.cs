@@ -240,6 +240,12 @@ public sealed class PdfAnnotationCollection : IReadOnlyList<PdfAnnotation>
     }
 
     /// <summary>Stores an annotation dictionary as an indirect object, points it at the page and appends it to <c>/Annots</c>.</summary>
+    /// <summary>Stores a widget dictionary (often merged with its field) on this page and returns its reference.</summary>
+    internal PdfReference AddWidget(PdfDictionary widget)
+    {
+        return Store(widget).Reference!;
+    }
+
     private PdfAnnotation Store(PdfDictionary dictionary)
     {
         page = Document.Pages.EnsureTree(page);
