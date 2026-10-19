@@ -1,0 +1,7 @@
+<!DOCTYPE html><title>Boxes</title><style>
+@page { size: A5; margin: 20mm; @top-left { content: "Left"; } @top-center { content: element(hdr); }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 8pt; text-align: left; }
+  @left-middle { content: "Side\A two"; white-space: pre; } @top-right-corner { content: "C"; } }
+@page :first { @top-left { content: none; } }
+.hdr { position: running(hdr); font-weight: bold; }
+</style><div class="hdr">Running <i>header</i></div><nav data-toc></nav><h1>One</h1><p>Text</p><h2 style="break-before: page">Two</h2><p>More</p>

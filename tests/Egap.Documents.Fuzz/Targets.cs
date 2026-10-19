@@ -14,6 +14,8 @@ internal static class Targets
         ["docx"] = DocxFile,
         ["html"] = Html,
         ["layout"] = LayoutTarget,
+        ["pagemedia"] = PageMedia,
+        ["mailmerge"] = MailMergeTarget,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -130,6 +132,73 @@ internal static class Targets
                 _ = layout.HitTest(page, line.Bounds.X + 5, line.Bounds.Y + 1);
             }
         }
+    }
+
+    /// <summary>
+    /// Any bytes read as HTML with its @page margin boxes, running elements and table of contents placeholder, laid out
+    /// (two passes for the page numbers), and written back as HTML, which must read again, and as DOCX.
+    /// </summary>
+    private static void PageMedia(Stream input)
+    {
+        using MemoryStream bytes = new();
+        input.CopyTo(bytes);
+        Document document = HtmlFormat.Load(bytes.ToArray(), out _);
+        foreach (Field toc in document.GetFields().Where(f => f.Kind == FieldKind.Toc).Take(4).ToList())
+        {
+            _ = toc.Update();
+        }
+
+        Egap.Documents.Layout.DocumentLayout layout = document.Layout(new Egap.Documents.Layout.LayoutOptions { Fonts = new Egap.Documents.Layout.FontSettings { UseSystemFonts = false } });
+        foreach (Egap.Documents.Layout.PageLayout page in layout.Pages.Take(2))
+        {
+            _ = page.Render(6);
+        }
+
+        _ = HtmlFormat.Parse(HtmlFormat.ToHtml(document, out _)).GetText();
+        DocxFormat.Save(document, Stream.Null);
+    }
+
+    /// <summary>
+    /// Any bytes read as a DOCX template (or a bare document.xml) and merged with records that have nested regions: in
+    /// place, one per record and all together; the merged document must lay out and save.
+    /// </summary>
+    private static void MailMergeTarget(Stream input)
+    {
+        using MemoryStream bytes = new();
+        input.CopyTo(bytes);
+        byte[] data = bytes.ToArray();
+        Document template;
+        try
+        {
+            bool package = data.Length > 2 && data[0] == (byte)'P' && data[1] == (byte)'K';
+            template = DocxFormat.Load(package ? new MemoryStream(data) : Wrap(data), new DocxLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 } });
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+
+        static IMergeData Record(int n) => MergeData.From(new Dictionary<string, object?>
+        {
+            ["Name"] = "Name " + n,
+            ["Amount"] = 1234.5 * n,
+            ["Date"] = new DateOnly(2026, 10, n + 1),
+            ["Empty"] = null,
+            ["Lines"] = Enumerable.Range(0, 3).Select(i => (IMergeData)MergeData.From(new Dictionary<string, object?>
+            {
+                ["Item"] = "Item " + i,
+                ["Qty"] = i,
+                ["Tags"] = new List<Dictionary<string, object?>> { new() { ["Tag"] = "a" }, new() { ["Tag"] = "b" } },
+            })).ToList(),
+        });
+
+        Document all = template.MailMergeAll([Record(1), Record(2)], new MailMergeOptions { RemoveEmptyParagraphs = true });
+        _ = template.MailMerge([Record(3)]).Single().GetText();
+        _ = template.FillMergeFields(Record(4));
+        _ = template.GetText();
+        Egap.Documents.Layout.DocumentLayout layout = all.Layout(new Egap.Documents.Layout.LayoutOptions { Fonts = new Egap.Documents.Layout.FontSettings { UseSystemFonts = false } });
+        _ = layout.Pages[0].Render(6);
+        DocxFormat.Save(all, Stream.Null);
     }
 
     /// <summary>Any bytes read as an OPC package: every part's relationships resolved and every XML part loaded.</summary>
