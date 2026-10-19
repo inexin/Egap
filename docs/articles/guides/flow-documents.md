@@ -127,6 +127,19 @@ builder.InsertField("NUMPAGES");
 builder.MoveToMarginBox(MarginBoxPosition.TopLeft, firstPage: true);   // an empty box: no title on the cover
 ```
 
+`InsertTableOfContents` writes a TOC field and builds its entries from the headings, each linked to its heading. Layout
+fills in the page numbers, as it does for every PAGEREF field. HTML's `<nav data-toc>` is read as such a field.
+
+```csharp
+using Egap.Documents;
+
+Document handbook = Document.Load("handbook.docx");
+DocumentBuilder builder = new(handbook);
+builder.MoveToDocumentStart();
+builder.InsertTableOfContents();
+builder.InsertParagraph();
+```
+
 With `Strict`, layout throws a `LayoutException` naming the node and the page instead of degrading: a word too long for
 its column, a table or picture past the page, a character no font has, or a font with no stand-in. `FontSettings.Portable`
 uses only the document's embedded fonts and the bundled substitutes, never the system's, so a document prints the same

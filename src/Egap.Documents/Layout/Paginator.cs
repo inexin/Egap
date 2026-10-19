@@ -34,6 +34,9 @@ internal sealed partial class Paginator
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Document, LayoutCache> Caches = [];
     private readonly List<PageBuilder> pages = [];
     private int totalPages;
+
+    /// <summary>The printed page number of each bookmark PAGEREF fields name, from the last pass.</summary>
+    private Dictionary<string, string> pageRefs = new(StringComparer.OrdinalIgnoreCase);
     private Dictionary<Section, int> sectionPages = [];
 
     // The page and column being filled.
@@ -67,18 +70,48 @@ internal sealed partial class Paginator
 
     public DocumentLayout Run()
     {
-        // NUMPAGES and SECTIONPAGES need the page count: a second pass sets them once it is known.
+        // NUMPAGES and SECTIONPAGES need the page count, and PAGEREF the pages bookmarks are on: more passes set them once
+        // they are known, until they settle (the numbers can move text, a table of contents most of all).
         Flow();
-        if (UsesPageCounts())
+        bool usesCounts = false, usesRefs = false;
+        foreach (Field field in document.GetFields())
         {
-            Dictionary<Section, int> counts = pages.GroupBy(p => p.Section).ToDictionary(g => g.Key, g => g.Count());
-            int total = pages.Count;
-            if (total != totalPages || !counts.SequenceEqual(sectionPages))
+            FieldKind kind = field.Kind;
+            usesCounts |= kind is FieldKind.NumPages or FieldKind.SectionPages;
+            usesRefs |= kind == FieldKind.PageRef;
+        }
+
+        for (int pass = 0; pass < 3 && (usesCounts || usesRefs); pass++)
+        {
+            bool changed = false;
+            if (usesCounts)
             {
-                totalPages = total;
-                sectionPages = counts;
-                Flow();
+                Dictionary<Section, int> counts = pages.GroupBy(p => p.Section).ToDictionary(g => g.Key, g => g.Count());
+                int total = pages.Count;
+                if (total != totalPages || !counts.SequenceEqual(sectionPages))
+                {
+                    totalPages = total;
+                    sectionPages = counts;
+                    changed = true;
+                }
             }
+
+            if (usesRefs)
+            {
+                Dictionary<string, string> found = BookmarkPages();
+                if (found.Count != pageRefs.Count || found.Any(f => !pageRefs.TryGetValue(f.Key, out string? before) || before != f.Value))
+                {
+                    pageRefs = found;
+                    changed = true;
+                }
+            }
+
+            if (!changed)
+            {
+                break;
+            }
+
+            Flow();
         }
 
         Balance();
@@ -143,9 +176,21 @@ internal sealed partial class Paginator
         }
     }
 
-    private bool UsesPageCounts()
+    /// <summary>The page number, as printed, of each bookmark a PAGEREF field names, from the pages laid out so far.</summary>
+    private Dictionary<string, string> BookmarkPages()
     {
-        return document.GetFields().Any(f => f.Kind is FieldKind.NumPages or FieldKind.SectionPages);
+        DocumentLayout probe = new(document, [.. pages.Select((p, i) => p.Build(i, this))], fonts.Substitutions);
+        Dictionary<string, string> found = new(StringComparer.OrdinalIgnoreCase);
+        foreach (Field field in document.GetFields().Where(f => f.Kind == FieldKind.PageRef))
+        {
+            if (FieldCode.Parse(field.Code).Arguments is [string name, ..] && !found.ContainsKey(name)
+                && document.GetBookmark(name)?.Start.Paragraph is { } paragraph && probe.PageOf(paragraph) is { } page)
+            {
+                found[name] = page.Number;
+            }
+        }
+
+        return found;
     }
 
     private void Flow()
@@ -439,6 +484,13 @@ internal sealed partial class Paginator
     /// <summary>A page field's text on the page being filled.</summary>
     private string? PageFieldText(Field field)
     {
+        if (field.Kind == FieldKind.PageRef)
+        {
+            // Before the pages are known, the stored result shows; a missing bookmark shows Word's error.
+            return pageRefs.Count == 0 ? null
+                : FieldCode.Parse(field.Code).Arguments is [string name, ..] && pageRefs.TryGetValue(name, out string? printed) ? printed : "Error! Bookmark not defined.";
+        }
+
         NumberStyle style = section?.PageSetup.PageNumberStyle ?? NumberStyle.Decimal;
         int? number = field.Kind switch
         {

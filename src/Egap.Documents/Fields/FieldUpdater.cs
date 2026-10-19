@@ -25,6 +25,29 @@ internal sealed class FieldUpdater
         return new FieldUpdater(document, now).Run();
     }
 
+    /// <summary>Recomputes one field, as <see cref="Update(Document, DateTimeOffset)"/> would.</summary>
+    public static bool UpdateOne(Field field, DateTimeOffset now)
+    {
+        if (field.Start.IsLocked || field.Start.Parent is null)
+        {
+            return false;
+        }
+
+        FieldUpdater updater = new(field.Start.Document, now);
+        if (field.Kind == FieldKind.Seq)
+        {
+            updater.NumberSequences([.. field.Start.Document.GetFields()]);
+        }
+
+        if (!updater.Update(field))
+        {
+            return false;
+        }
+
+        field.Start.IsDirty = false;
+        return true;
+    }
+
     private int Run()
     {
         List<Field> fields = [.. document.GetFields()];

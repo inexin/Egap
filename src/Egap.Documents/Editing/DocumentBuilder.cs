@@ -186,6 +186,19 @@ public sealed class DocumentBuilder
         return start.GetField()!;
     }
 
+    /// <summary>
+    /// Writes a table of contents field and builds its entries from the document's headings: one line per heading, linked
+    /// to it, with its page number filled in by layout.
+    /// </summary>
+    /// <param name="switches">The TOC field's switches; the default takes heading levels 1 to 3 with links, as Word's own does.</param>
+    public Field InsertTableOfContents(string switches = "\\o \"1-3\" \\h \\z \\u")
+    {
+        ArgumentNullException.ThrowIfNull(switches);
+        Field field = InsertField("TOC " + switches);
+        field.Update();
+        return field.Start.GetField() ?? field;
+    }
+
     /// <summary>Writes a hyperlink to <paramref name="address"/> showing <paramref name="text"/> in the Hyperlink style.</summary>
     public Hyperlink InsertHyperlink(string text, string address, bool isBookmark = false)
     {

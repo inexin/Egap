@@ -52,6 +52,12 @@ public sealed record PdfConvertOptions
     /// </summary>
     public PageBand? Footer { get; init; }
 
+    /// <summary>
+    /// Gets whether the PDF gets a table of contents built from the headings, at HTML's <c>&lt;nav data-toc&gt;</c>, a
+    /// Markdown <c>[TOC]</c> paragraph or the start; <see cref="TableOfContentsMode.None"/> (the default) for none.
+    /// </summary>
+    public TableOfContentsMode TableOfContents { get; init; }
+
     /// <summary>Gets the PDF/A level to write; <see cref="PdfAConformance.None"/> (the default) for none.</summary>
     public PdfAConformance Conformance { get; init; }
 
@@ -191,6 +197,7 @@ public static partial class PdfConvert
     /// <summary>Lays a document out on the options' page size and margins and exports it.</summary>
     internal static PdfDocument ToPdf(Document document, PdfConvertOptions options, Bands bands = default)
     {
+        TableOfContentsPlacement.Apply(document, options.TableOfContents);
         if (options.Header is not null || options.Footer is not null)
         {
             PageBandContext context = new(document, bands.File, bands.Load, bands.Source is null ? null : StyleSheets(bands.Source));

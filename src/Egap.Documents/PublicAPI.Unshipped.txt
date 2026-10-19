@@ -2,8 +2,10 @@
 Egap.Documents.ContentControl.Paging.get -> Egap.Documents.GroupPaging?
 Egap.Documents.ContentControl.Paging.set -> void
 Egap.Documents.DocumentBuilder.EndGroup() -> Egap.Documents.ContentControl!
+Egap.Documents.DocumentBuilder.InsertTableOfContents(string! switches = "\\o \"1-3\" \\h \\z \\u") -> Egap.Documents.Field!
 Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> void
 Egap.Documents.DocumentBuilder.StartGroup() -> Egap.Documents.ContentControl!
+Egap.Documents.Field.Update(System.DateTimeOffset? now = null) -> bool
 Egap.Documents.FontFeatures
 Egap.Documents.FontFeatures.Count.get -> int
 Egap.Documents.FontFeatures.Equals(Egap.Documents.FontFeatures? other) -> bool

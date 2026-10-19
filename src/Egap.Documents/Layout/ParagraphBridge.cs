@@ -70,7 +70,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
     private readonly Dictionary<string, IReadOnlyList<FontFamily>> families = new(StringComparer.OrdinalIgnoreCase);
 
     /// <param name="paragraph">The paragraph.</param>
-    /// <param name="pageField">The text of a page field (PAGE, NUMPAGES, SECTIONPAGES) on the page being laid out, or null to show its stored result.</param>
+    /// <param name="pageField">The text of a page field (PAGE, NUMPAGES, SECTIONPAGES, PAGEREF) on the page being laid out, or null to show its stored result.</param>
     /// <param name="noteMark">A note's mark to put in front, for the first paragraph of a footnote or endnote.</param>
     public ParagraphContent Build(Paragraph paragraph, Func<Field, string?>? pageField = null, Footnote? noteMark = null)
     {
@@ -166,7 +166,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                         {
                             (FieldStart start, _, _) = fields.Pop();
                             fields.Push((start, false, text.Length));
-                            if (replacing == 0 && pageField is not null && start.GetField() is { Kind: FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages } field
+                            if (replacing == 0 && pageField is not null && start.GetField() is { Kind: FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages or FieldKind.PageRef } field
                                 && pageField(field) is { } value)
                             {
                                 // The layout's own number stands in for the stored result, in the result's first run's style.
@@ -186,7 +186,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                             }
 
                             (FieldStart start, bool code, int resultStart) = fields.Pop();
-                            if (!code && start.GetField() is { Kind: FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages } field)
+                            if (!code && start.GetField() is { Kind: FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages or FieldKind.PageRef } field)
                             {
                                 pageFields.Add((field, resultStart, text.Length - resultStart));
                             }

@@ -34,6 +34,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - PAGE, NUMPAGES and SECTIONPAGES fields in headers, footers and margin boxes follow their `\#` number format and `\*`
   formats such as roman numerals.
 
+### Tables of contents
+- `DocumentBuilder.InsertTableOfContents` writes a TOC field and builds it; `Field.Update` recomputes one field.
+- PAGEREF fields show the page their bookmark is on, filled by layout, so a table of contents gets its page numbers.
+- HTML `<nav data-toc>` is read as a table of contents field.
+
 ### Fixes
 - HTML: a space after an inline element at the start of a paragraph (`<b>ACME</b> Ltd`) was lost.
 - HTML: the `<title>` and the author meta element are read into the document properties, as the writer writes them.
@@ -51,6 +56,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   middle and right (`PageBand.Text`), or HTML styled with the page's own style sheets (`PageBand.Html`), with the
   placeholders `{page}`, `{total-pages}`, `{label}`, `{date}`, `{time}`, `{title}` and `{file}`.
 - Margin boxes are tagged as artifacts in tagged PDF, as headers and footers are.
+- `PdfConvertOptions.TableOfContents` builds a table of contents from the headings, with or without page numbers, at
+  HTML's `<nav data-toc>`, a Markdown `[TOC]` paragraph or the start; its entries link to the headings.
 
 ## Egap.Pdf 1.5.0 (unreleased)
 

@@ -14,6 +14,12 @@ Egap.Pdf.Conversion.PdfConvertOptions.Footer.get -> Egap.Pdf.Conversion.PageBand
 Egap.Pdf.Conversion.PdfConvertOptions.Footer.init -> void
 Egap.Pdf.Conversion.PdfConvertOptions.Header.get -> Egap.Pdf.Conversion.PageBand?
 Egap.Pdf.Conversion.PdfConvertOptions.Header.init -> void
+Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents.get -> Egap.Pdf.Conversion.TableOfContentsMode
+Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents.init -> void
+Egap.Pdf.Conversion.TableOfContentsMode
+Egap.Pdf.Conversion.TableOfContentsMode.None = 0 -> Egap.Pdf.Conversion.TableOfContentsMode
+Egap.Pdf.Conversion.TableOfContentsMode.WithoutPageNumbers = 2 -> Egap.Pdf.Conversion.TableOfContentsMode
+Egap.Pdf.Conversion.TableOfContentsMode.WithPageNumbers = 1 -> Egap.Pdf.Conversion.TableOfContentsMode
 override Egap.Pdf.Conversion.PageBand.Equals(object? obj) -> bool
 override Egap.Pdf.Conversion.PageBand.GetHashCode() -> int
 override Egap.Pdf.Conversion.PageBand.ToString() -> string!

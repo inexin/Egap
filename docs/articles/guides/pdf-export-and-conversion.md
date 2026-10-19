@@ -66,6 +66,15 @@ PdfConvert.FromHtml("<title>Invoice 2026-118</title><style>.hdr { text-align: ri
 });
 ```
 
+`TableOfContents` builds a table of contents from the headings, each entry linked to its heading, with or without page
+numbers. It goes where HTML has `<nav data-toc>` or Markdown a `[TOC]` paragraph, else at the start.
+
+```csharp
+using Egap.Pdf.Conversion;
+
+PdfConvert.FromFile("handbook.md", "handbook.pdf", new PdfConvertOptions { TableOfContents = TableOfContentsMode.WithPageNumbers });
+```
+
 `PdfStamp.Html` lays out a piece of HTML as a stamp, such as a seal or a letterhead, and draws it on every page.
 
 ```csharp

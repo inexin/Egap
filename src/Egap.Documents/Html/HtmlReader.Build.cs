@@ -313,6 +313,19 @@ internal sealed partial class HtmlReader
             return;
         }
 
+        if (element.GetAttribute("data-toc", null) is not null)
+        {
+            // A placeholder for a table of contents (nav data-toc): a TOC field in a paragraph of its own, built on update.
+            Close(flow);
+            NodeCollection<Inline> inlines = Target(flow, frame);
+            inlines.Add(new FieldStart(document) { IsDirty = true });
+            inlines.Add(new Run(document, " TOC \\o \"1-3\" \\h \\z \\u "));
+            inlines.Add(new FieldSeparator(document));
+            inlines.Add(new FieldEnd(document));
+            Close(flow);
+            return;
+        }
+
         if (element.GetAttribute("id", null) is { Length: > 0 } id)
         {
             flow.PendingBookmarks.Add(id);
