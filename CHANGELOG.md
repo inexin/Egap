@@ -56,7 +56,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
   `"page-{page:00}.png"`.
 
-## Egap.Documents 1.2.0 (2026-10-19)
+## Egap.Documents 1.2.0 (unreleased)
 
 ### Form controls
 - HTML inputs, check boxes, radio buttons, selects and text areas are read as inline content controls holding their values,
@@ -124,7 +124,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `FontSettings.Portable` uses only embedded fonts and the bundled substitutes, so layout and, with a deterministic save,
   the PDF bytes are the same on every machine.
 
-## Egap.Pdf.Conversion 1.2.0 (2026-10-19)
+## Egap.Pdf.Conversion 1.2.0 (unreleased)
 
 ### Form fields
 - `PdfExportOptions.FormFields` turns HTML form controls and DOCX content controls (plain text, date, drop-down list, combo
