@@ -12,6 +12,7 @@ namespace Egap.Pdf;
 /// <item>a page or node listed twice is listed twice, as PDFium and qpdf count it;</item>
 /// <item>a missing or wrong <c>/Parent</c> is set to the node that lists the kid, so inherited attributes are found;</item>
 /// <item>a wrong <c>/Count</c> is set to the number of pages found below the node;</item>
+/// <item>the catalog is never a page, whatever its <c>/Type</c> or <c>/Pages</c> say;</item>
 /// <item>with no usable page tree at all, the pages are found by scanning the objects for <c>/Type /Page</c>, as pdf.js does.</item>
 /// </list>
 /// Repairs change the dictionaries without marking them changed, like any repair made while reading: an incremental save
@@ -40,7 +41,7 @@ internal static class PageTreeReader
     {
         WarningLog log = document.Log;
         PdfObject? rootValue = document.Catalog["Pages"];
-        if (rootValue?.Resolve() is not PdfDictionary root)
+        if (rootValue?.Resolve() is not PdfDictionary root || ReferenceEquals(root, document.Catalog) || (root.Get<PdfArray>(Kids) is null && IsOtherObject(root)))
         {
             log.Add(PdfWarningCode.MalformedPageTree, "The catalog has no page tree; the pages were found by scanning the objects.");
             return (Scan(document), true);
@@ -87,7 +88,7 @@ internal static class PageTreeReader
                 continue;
             }
 
-            if (kid.Get<PdfArray>(Kids) is null && IsOtherObject(kid))
+            if (ReferenceEquals(kid, document.Catalog) || (kid.Get<PdfArray>(Kids) is null && IsOtherObject(kid)))
             {
                 log.Add(PdfWarningCode.MalformedPageTree, $"Kid {index} of a page tree node is not a page or node; it was skipped.", objectNumber: reference?.ObjectNumber ?? frame.Reference?.ObjectNumber);
                 needsRebuild = true;
@@ -203,7 +204,7 @@ internal static class PageTreeReader
         List<PdfPage> pages = [];
         foreach (PdfReference reference in document.Objects)
         {
-            if (document.Objects[reference] is PdfDictionary dictionary && dictionary.GetName(Type) == PageType)
+            if (document.Objects[reference] is PdfDictionary dictionary && dictionary.GetName(Type) == PageType && !ReferenceEquals(dictionary, document.Catalog) && !IsOtherObject(dictionary))
             {
                 pages.Add(new PdfPage(dictionary, reference, document));
             }

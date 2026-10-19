@@ -195,6 +195,29 @@ public sealed partial class OutlineTests
     }
 
     [Fact]
+    public void AChainIsCutWhereItReachesThePageTree()
+    {
+        // Found by fuzzing: item 11's /Next named the page tree root, which was then read as an item and given outline
+        // links, while its /Count stayed the page count.
+        using PdfDocument pdf = PdfDocument.Open(File(
+            "/Outlines 10 0 R",
+            (10, "<< /Type /Outlines /First 11 0 R /Last 11 0 R /Count 1 >>"),
+            (11, "<< /Title (One) /Parent 10 0 R /Next 2 0 R >>")));
+
+        Assert.Equal(["One"], pdf.Outline.GetAllItems().Select(i => i.Title));
+        Assert.Contains(pdf.Warnings, w => w.Code == PdfWarningCode.MalformedOutline);
+        Assert.Null(((PdfDictionary)pdf.Objects.Get(2))["Parent"]);
+
+        pdf.Outline.Insert(1, "Two");
+        using MemoryStream output = new();
+        pdf.Save(output, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite });
+        using PdfDocument reopened = PdfDocument.Open(output.ToArray());
+        Assert.Equal(["One", "Two"], reopened.Outline.GetAllItems().Select(i => i.Title));
+        Assert.Equal(2, reopened.Pages.Count);
+        Assert.DoesNotContain(reopened.Warnings, w => w.Code == PdfWarningCode.MalformedOutline);
+    }
+
+    [Fact]
     public void StrictModeThrowsOnABrokenOutline()
     {
         using PdfDocument pdf = PdfDocument.Open(

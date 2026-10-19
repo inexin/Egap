@@ -3,7 +3,7 @@ namespace Egap.Pdf;
 /// <summary>
 /// Repairs a broken outline in memory, once per document, before its first use (12.3.3), as pdf.js and qpdf read it: each
 /// chain of children is followed through <c>/First</c> and <c>/Next</c> and cut where it loops, reaches an item already in
-/// the outline, or reaches something that is not a dictionary; each item's <c>/Parent</c> and <c>/Prev</c>, and each node's
+/// the outline, or reaches something that is not a dictionary or is the catalog, a page or a page tree node; each item's <c>/Parent</c> and <c>/Prev</c>, and each node's
 /// <c>/Last</c>, are set to what the chain says, and each <c>/Count</c> to the number of items shown, keeping an item closed
 /// when its count is negative (a leaf's <c>/Count 0</c> is left alone).
 /// Repairs change the dictionaries without marking them changed, like any repair made while reading.
@@ -16,6 +16,8 @@ internal static class OutlineReader
     private static readonly PdfName Prev = "Prev";
     private static readonly PdfName Parent = "Parent";
     private static readonly PdfName CountKey = "Count";
+    private static readonly PdfName Kids = "Kids";
+    private static readonly PdfName Type = "Type";
 
     public static void Check(PdfDocument document)
     {
@@ -62,6 +64,7 @@ internal static class OutlineReader
                 string? problem = link is not PdfReference ? "is not a reference to an item"
                     : link.Resolve() is not PdfDictionary ? "is not a dictionary"
                     : seen.Contains((PdfDictionary)link.Resolve()) ? "loops back to an item already in the outline"
+                    : IsOtherObject(document, (PdfDictionary)link.Resolve()) ? "is the catalog, a page or a page tree node"
                     : null;
                 if (problem is not null)
                 {
@@ -122,6 +125,15 @@ internal static class OutlineReader
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// An object that is plainly not an outline item: the catalog, a page or a page tree node. Taking it for an item would
+    /// write outline links and counts into it and break the page tree.
+    /// </summary>
+    private static bool IsOtherObject(PdfDocument document, PdfDictionary item)
+    {
+        return ReferenceEquals(item, document.Catalog) || item.ContainsKey(Kids) || item.GetName(Type)?.Value is "Catalog" or "Pages" or "Page";
     }
 
     /// <summary>Sets or removes a link as a repair, with a warning.</summary>

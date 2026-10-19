@@ -231,6 +231,55 @@ public sealed class PageTreeTests
     }
 
     [Fact]
+    public void ACatalogThatIsItsOwnPageTreeHasNoPages()
+    {
+        // Found by fuzzing: the catalog was read as its own only page and lost /Type /Catalog, which broke a linearized save.
+        using PdfDocument pdf = PdfDocument.Open(File((1, "<< /Type /Catalog /Pages 1 0 R /MediaBox [0 0 10 10] >>")));
+
+        Assert.Empty(pdf.Pages);
+        Assert.Equal("Catalog", pdf.Catalog.GetName("Type")?.Value);
+        Assert.Contains(pdf.Warnings, w => w.Code == PdfWarningCode.MalformedPageTree);
+    }
+
+    [Fact]
+    public void TheCatalogIsNeverAPageFoundByScanning()
+    {
+        using PdfDocument pdf = PdfDocument.Open(File(
+            (1, "<< /Type /Page /MediaBox [0 0 10 10] >>"),
+            (2, "<< /Type /Page /MediaBox [0 0 20 20] >>")));
+
+        Assert.Equal([2], pdf.Pages.Select(p => p.Reference!.ObjectNumber));
+    }
+
+    [Fact]
+    public void PagesFoundAnyWayReadBackAfterARewrite()
+    {
+        // Found by fuzzing: an outline item in place of the page tree, or among the scanned pages, was read as a page, but
+        // as a kid of the rewritten tree it was skipped, so a merged file lost its pages.
+        foreach (byte[] bytes in new[]
+        {
+            File(
+                (1, "<< /Type /Catalog /Pages 2 0 R >>"),
+                (2, "<< /Rect [0 0 10 10] /P 4 0 R /Dest [4 0 R /Fit] >>"),
+                (4, "<< /Type /Page /MediaBox [0 0 10 10] >>")),
+            File(
+                (1, "<< /Type /Catalog >>"),
+                (2, "<< /Type /Page /Rect [0 0 10 10] /Dest [4 0 R /Fit] >>"),
+                (4, "<< /Type /Page /MediaBox [0 0 10 10] >>")),
+        })
+        {
+            using PdfDocument pdf = PdfDocument.Open(bytes);
+            Assert.Equal([4], pdf.Pages.Select(p => p.Reference!.ObjectNumber));
+
+            using MemoryStream output = new();
+            pdf.Save(output, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite });
+            using PdfDocument reopened = PdfDocument.Open(output.ToArray());
+            Assert.Single(reopened.Pages);
+            Assert.DoesNotContain(reopened.Warnings, w => w.Code == PdfWarningCode.MalformedPageTree);
+        }
+    }
+
+    [Fact]
     public void WithoutAPageTreeThePagesAreFoundByScanning()
     {
         using PdfDocument pdf = PdfDocument.Open(File(
