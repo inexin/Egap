@@ -147,6 +147,17 @@ internal sealed partial class HtmlReader
                     break;
             }
         }
+
+        // The box's own text is laid out as a browser lays out a line of it: no paragraph spacing, normal line height.
+        foreach (Paragraph paragraph in box.Paragraphs)
+        {
+            if (paragraph.Format.SpaceAfter is null && paragraph.Format.SpaceBefore is null)
+            {
+                paragraph.Format.SpaceBefore = 0;
+                paragraph.Format.SpaceAfter = 0;
+                BrowserNormalLineHeight(paragraph);
+            }
+        }
     }
 
     /// <summary>Reads a running element into a margin box as the body would read it, after what the box holds so far.</summary>
@@ -158,6 +169,7 @@ internal sealed partial class HtmlReader
             empty.Remove();
         }
 
+        int before = box.Blocks.Count;
         placingRunning = element;
         try
         {
@@ -169,6 +181,15 @@ internal sealed partial class HtmlReader
         finally
         {
             placingRunning = null;
+        }
+
+        // An element that sets no alignment of its own takes its box's, as WeasyPrint lays running elements out.
+        if (StyleOf(element, parentStyle).FromUserAgent("text-align"))
+        {
+            foreach (Paragraph paragraph in box.Blocks.Skip(before).SelectMany(b => b is Paragraph p ? [p] : b.Descendants<Paragraph>()))
+            {
+                paragraph.Format.Alignment = MarginBox.DefaultAlignment(box.Position);
+            }
         }
 
         if (box.Blocks.Count == 0)

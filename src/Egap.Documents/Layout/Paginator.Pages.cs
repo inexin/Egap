@@ -274,8 +274,8 @@ internal sealed partial class Paginator
 
     /// <summary>
     /// Lays out the section's margin boxes in the page margins, as CSS Paged Media places them: corners in the margin
-    /// squares, the boxes of an edge side by side between them (in thirds, halves when the middle one is missing, or the
-    /// whole edge for a box alone), each centred across the margin's depth, or at the top, middle or bottom of a side.
+    /// squares, the boxes of an edge side by side between them, sized by their content, each centred across the margin's
+    /// depth, or at the top, middle or bottom of a side.
     /// </summary>
     private void LayMarginBoxes(PageBuilder target, bool first)
     {
@@ -292,6 +292,7 @@ internal sealed partial class Paginator
         double bottom = g.PageHeight - g.BodyBottom;
         double across = g.BodyRight - g.BodyLeft;
         double down = g.BodyBottom - g.BodyTop;
+        Dictionary<MarginBoxPosition, (double, double, double)> sizes = [];
         foreach (MarginBoxPosition position in Enum.GetValues<MarginBoxPosition>())
         {
             if (all.For(position, first) is not { Blocks.Count: > 0 } box)
@@ -306,12 +307,12 @@ internal sealed partial class Paginator
                 MarginBoxPosition.BottomRightCorner => (g.BodyRight, g.BodyBottom, right, bottom),
                 MarginBoxPosition.BottomLeftCorner => (0, g.BodyBottom, left, bottom),
                 MarginBoxPosition.TopLeft or MarginBoxPosition.TopCenter or MarginBoxPosition.TopRight
-                    => At(Along(position - MarginBoxPosition.TopLeft, Present(MarginBoxPosition.TopLeft, MarginBoxPosition.TopCenter, MarginBoxPosition.TopRight), left, across), 0, top),
+                    => At(Along(position - MarginBoxPosition.TopLeft, Sizes(MarginBoxPosition.TopLeft, MarginBoxPosition.TopCenter, MarginBoxPosition.TopRight, true), left, across), 0, top),
                 MarginBoxPosition.BottomLeft or MarginBoxPosition.BottomCenter or MarginBoxPosition.BottomRight
-                    => At(Along(MarginBoxPosition.BottomLeft - position, Present(MarginBoxPosition.BottomLeft, MarginBoxPosition.BottomCenter, MarginBoxPosition.BottomRight), left, across), g.BodyBottom, bottom),
+                    => At(Along(MarginBoxPosition.BottomLeft - position, Sizes(MarginBoxPosition.BottomLeft, MarginBoxPosition.BottomCenter, MarginBoxPosition.BottomRight, true), left, across), g.BodyBottom, bottom),
                 MarginBoxPosition.LeftTop or MarginBoxPosition.LeftMiddle or MarginBoxPosition.LeftBottom
-                    => Down(Along(MarginBoxPosition.LeftTop - position, Present(MarginBoxPosition.LeftTop, MarginBoxPosition.LeftMiddle, MarginBoxPosition.LeftBottom), top, down), 0, left),
-                _ => Down(Along(position - MarginBoxPosition.RightTop, Present(MarginBoxPosition.RightTop, MarginBoxPosition.RightMiddle, MarginBoxPosition.RightBottom), top, down), g.BodyRight, right),
+                    => Down(Along(MarginBoxPosition.LeftTop - position, Sizes(MarginBoxPosition.LeftTop, MarginBoxPosition.LeftMiddle, MarginBoxPosition.LeftBottom, false), top, down), 0, left),
+                _ => Down(Along(position - MarginBoxPosition.RightTop, Sizes(MarginBoxPosition.RightTop, MarginBoxPosition.RightMiddle, MarginBoxPosition.RightBottom, false), top, down), g.BodyRight, right),
             };
             if (w <= 0 || h <= 0)
             {
@@ -331,30 +332,86 @@ internal sealed partial class Paginator
             target.MarginBoxes.Add(new AreaBox(PageArea.MarginBox, box, new LayoutRect(x, y, w, h), blocks));
         }
 
-        // Which of an edge's three boxes have content, in order from its start.
-        (bool, bool, bool) Present(MarginBoxPosition start, MarginBoxPosition middle, MarginBoxPosition end)
-            => (all.For(start, first) is { Blocks.Count: > 0 }, all.For(middle, first) is { Blocks.Count: > 0 }, all.For(end, first) is { Blocks.Count: > 0 });
-
-        // A box's start and length along its edge: thirds with a middle box, halves without one, the whole edge for a box alone.
-        static (double, double) Along(int index, (bool Start, bool Middle, bool End) present, double start, double length)
+        // How much room each of an edge's three boxes asks for, in order from its start: the widest line along the top
+        // and bottom (max-content), the height down the sides; 0 for a box with no content. Measured once per edge.
+        (double, double, double) Sizes(MarginBoxPosition start, MarginBoxPosition middle, MarginBoxPosition end, bool across)
         {
-            int count = (present.Start ? 1 : 0) + (present.Middle ? 1 : 0) + (present.End ? 1 : 0);
-            if (count <= 1)
+            if (!sizes.TryGetValue(start, out (double, double, double) found))
             {
-                return (start, length);
+                double depth = start == MarginBoxPosition.RightTop ? right : left;
+                found = (Measure(all.For(start, first), across, depth), Measure(all.For(middle, first), across, depth), Measure(all.For(end, first), across, depth));
+                sizes[start] = found;
             }
 
-            if (present.Middle)
+            return found;
+        }
+
+        double Measure(MarginBox? box, bool across, double depth)
+        {
+            if (box is not { Blocks.Count: > 0 })
             {
-                return (start + (index * length / 3), length / 3);
+                return 0;
             }
 
-            return (start + (index == 0 ? 0 : length / 2), length / 2);
+            measuring++;
+            try
+            {
+                return Math.Max(1, across ? MaxContentWidth(box) : LayStory(box, 0, 0, Math.Max(1, depth)).Height);
+            }
+            finally
+            {
+                measuring--;
+            }
+        }
+
+        // A box's start and length along its edge, as CSS Paged Media 3 section 5.3.2 resolves boxes of auto size: the
+        // middle box centred and sized against twice the larger side box, the side boxes sharing the rest; without a middle
+        // box, the two side boxes share the edge in proportion to what they ask for.
+        static (double, double) Along(int index, (double Start, double Middle, double End) asked, double start, double length)
+        {
+            if (asked.Middle > 0)
+            {
+                double sides = 2 * Math.Max(asked.Start, asked.End);
+                double middle = sides > 0 ? length * asked.Middle / (asked.Middle + sides) : length;
+                double side = (length - middle) / 2;
+                return index switch
+                {
+                    0 => (start, side),
+                    1 => (start + side, middle),
+                    _ => (start + length - side, side),
+                };
+            }
+
+            double total = asked.Start + asked.End;
+            double first = total > 0 ? length * asked.Start / total : length / 2;
+            return index == 0 ? (start, first) : (start + first, length - first);
         }
 
         static (double, double, double, double) At((double Start, double Length) along, double y, double depth) => (along.Start, y, along.Length, depth);
 
         static (double, double, double, double) Down((double Start, double Length) along, double x, double width) => (x, along.Start, width, along.Length);
+    }
+
+    /// <summary>The width of a margin box's widest line laid out with no wrapping (CSS's max-content width).</summary>
+    private double MaxContentWidth(MarginBox box)
+    {
+        double widest = 0;
+        foreach (Block block in Flatten(box.Blocks))
+        {
+            if (block is not Paragraph paragraph)
+            {
+                return double.MaxValue / 4;
+            }
+
+            ParagraphContent content = ContentOf(paragraph, PageFieldText);
+            double indents = content.Format.LeftIndent + content.Format.RightIndent;
+            foreach (Egami.Fonts.Layout.TextLine line in content.Text.Layout(1e6f).Lines)
+            {
+                widest = Math.Max(widest, line.Width + indents);
+            }
+        }
+
+        return widest;
     }
 
     /// <summary>Lays a header, footer or other story's blocks out in one column without page breaks.</summary>
