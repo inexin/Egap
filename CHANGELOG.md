@@ -28,6 +28,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   rendering mode. A match whose font lacks a glyph for the new text is left as it was with a `TextNotReplaced` warning, or
   written in a fallback font when one is given.
 
+### E-invoices
+- `PdfInvoice.Embed` makes a Factur-X (ZUGFeRD 2.1 and later) e-invoice: the XML attached as `factur-x.xml` or
+  `xrechnung.xml` with the relationship its profile asks for, the document converted to PDF/A-3, and the Factur-X extension
+  schema in the XMP. `PdfInvoice.Read` reads Factur-X and ZUGFeRD 1.0 to 2.3 invoices back.
+- `Attachments.Add` takes a `PdfAttachmentRelationship` and lists the file among the document's associated files.
+
 ### Images and page files
 - `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
   GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.

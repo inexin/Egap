@@ -93,6 +93,37 @@ public sealed class PdfAttachmentCollection : IReadOnlyList<PdfAttachment>
     }
 
     /// <summary>
+    /// Embeds a file under a name with its relationship to the document, replacing any attachment of that name, and lists it
+    /// among the document's associated files (the catalog's <c>/AF</c>), as PDF/A-3 and e-invoices ask. Otherwise as
+    /// <see cref="Add(string, ReadOnlySpan{byte}, string?, string?, DateTimeOffset?)"/>.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// pdf.Attachments.Add("data.csv", File.ReadAllBytes("data.csv"), PdfAttachmentRelationship.Data, "text/csv", modified: DateTimeOffset.Now);
+    /// </code>
+    /// </example>
+    public PdfAttachment Add(string name, ReadOnlySpan<byte> bytes, PdfAttachmentRelationship relationship, string? mimeType = null, string? description = null, DateTimeOffset? modified = null)
+    {
+        if (!Enum.IsDefined(relationship))
+        {
+            throw new ArgumentOutOfRangeException(nameof(relationship), relationship, "Not a relationship.");
+        }
+
+        PdfAttachment attachment = Add(name, bytes, mimeType, description, modified);
+        PdfReference reference = attachment.Reference!;
+        PdfDictionary spec = (PdfDictionary)document.Objects[reference];
+        spec["AFRelationship"] = PdfName.Get(relationship.ToString());
+        PdfArray associated = document.Catalog.Get<PdfArray>("AF") ?? [];
+        if (!associated.Any(a => a is PdfReference r && r.ObjectNumber == reference.ObjectNumber))
+        {
+            associated.Add(reference);
+        }
+
+        document.Catalog["AF"] = associated;
+        return attachment;
+    }
+
+    /// <summary>
     /// A new file specification with an embedded file stream (7.11.3, 7.11.4) that records the size, MD5 checksum, MIME type
     /// and modification date; the name goes in <c>/F</c> and <c>/UF</c>.
     /// </summary>

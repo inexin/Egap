@@ -130,6 +130,7 @@ internal static class TextReplacer
         List<PdfTextMatch> replaced = [], skipped = [];
         List<PdfWarning> warnings = [];
         Dictionary<PdfFont, Dictionary<string, byte[]>?> encoders = new(ReferenceEqualityComparer.Instance);
+        document.WrittenResources.Finish();
         foreach (int index in (find.Pages ?? PdfPageRange.All).Resolve(document.Pages.Count))
         {
             PdfPage page = document.Pages[index];

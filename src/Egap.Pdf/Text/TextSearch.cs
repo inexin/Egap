@@ -37,6 +37,8 @@ internal static class TextSearch
     /// <summary>Every match on one page.</summary>
     public static List<PdfTextMatch> Find(PdfPage page, int pageIndex, Regex pattern, PdfFindOptions options)
     {
+        // Text drawn since the last save needs its font subsets written to be read back.
+        page.Document.WrittenResources.Finish();
         PdfTextPage text = page.GetText(options.Text);
         List<PdfTextMatch> matches = [];
         foreach (Block block in Blocks(text.Lines))

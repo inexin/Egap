@@ -8,6 +8,16 @@ Egap.Pdf.Length.Length() -> void
 Egap.Pdf.Length.Millimetres.get -> double
 Egap.Pdf.Length.Points.get -> double
 Egap.Pdf.Length.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
+Egap.Pdf.PdfAttachmentCollection.Add(string! name, System.ReadOnlySpan<byte> bytes, Egap.Pdf.PdfAttachmentRelationship relationship, string? mimeType = null, string? description = null, System.DateTimeOffset? modified = null) -> Egap.Pdf.PdfAttachment!
+Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfAttachmentRelationship.Alternative = 3 -> Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfAttachmentRelationship.Data = 2 -> Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfAttachmentRelationship.EncryptedPayload = 5 -> Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfAttachmentRelationship.FormData = 6 -> Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfAttachmentRelationship.Schema = 7 -> Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfAttachmentRelationship.Source = 1 -> Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfAttachmentRelationship.Supplement = 4 -> Egap.Pdf.PdfAttachmentRelationship
+Egap.Pdf.PdfAttachmentRelationship.Unspecified = 0 -> Egap.Pdf.PdfAttachmentRelationship
 Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange! range) -> Egap.Pdf.PdfDocument!
 Egap.Pdf.PdfDocument.FindText(string! text, Egap.Pdf.PdfFindOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
 Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex! pattern, Egap.Pdf.PdfFindOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
@@ -42,6 +52,42 @@ Egap.Pdf.PdfImagePageOptions.Margin.init -> void
 Egap.Pdf.PdfImagePageOptions.PageSize.get -> Egap.Pdf.PdfPageSize?
 Egap.Pdf.PdfImagePageOptions.PageSize.init -> void
 Egap.Pdf.PdfImagePageOptions.PdfImagePageOptions() -> void
+Egap.Pdf.PdfInvoice
+Egap.Pdf.PdfInvoice.<Clone>$() -> Egap.Pdf.PdfInvoice!
+Egap.Pdf.PdfInvoice.Deconstruct(out byte[]! Xml, out string! FileName, out Egap.Pdf.PdfInvoiceStandard Standard, out Egap.Pdf.PdfInvoiceProfile? Profile) -> void
+Egap.Pdf.PdfInvoice.Equals(Egap.Pdf.PdfInvoice? other) -> bool
+Egap.Pdf.PdfInvoice.FileName.get -> string!
+Egap.Pdf.PdfInvoice.FileName.init -> void
+Egap.Pdf.PdfInvoice.PdfInvoice(byte[]! Xml, string! FileName, Egap.Pdf.PdfInvoiceStandard Standard, Egap.Pdf.PdfInvoiceProfile? Profile) -> void
+Egap.Pdf.PdfInvoice.Profile.get -> Egap.Pdf.PdfInvoiceProfile?
+Egap.Pdf.PdfInvoice.Profile.init -> void
+Egap.Pdf.PdfInvoice.Standard.get -> Egap.Pdf.PdfInvoiceStandard
+Egap.Pdf.PdfInvoice.Standard.init -> void
+Egap.Pdf.PdfInvoice.Xml.get -> byte[]!
+Egap.Pdf.PdfInvoice.Xml.init -> void
+Egap.Pdf.PdfInvoiceOptions
+Egap.Pdf.PdfInvoiceOptions.<Clone>$() -> Egap.Pdf.PdfInvoiceOptions!
+Egap.Pdf.PdfInvoiceOptions.Conformance.get -> Egap.Pdf.PdfAConformance
+Egap.Pdf.PdfInvoiceOptions.Conformance.init -> void
+Egap.Pdf.PdfInvoiceOptions.Equals(Egap.Pdf.PdfInvoiceOptions? other) -> bool
+Egap.Pdf.PdfInvoiceOptions.PdfInvoiceOptions() -> void
+Egap.Pdf.PdfInvoiceOptions.Profile.get -> Egap.Pdf.PdfInvoiceProfile?
+Egap.Pdf.PdfInvoiceOptions.Profile.init -> void
+Egap.Pdf.PdfInvoiceOptions.Relationship.get -> Egap.Pdf.PdfAttachmentRelationship?
+Egap.Pdf.PdfInvoiceOptions.Relationship.init -> void
+Egap.Pdf.PdfInvoiceOptions.Standard.get -> Egap.Pdf.PdfInvoiceStandard
+Egap.Pdf.PdfInvoiceOptions.Standard.init -> void
+Egap.Pdf.PdfInvoiceProfile
+Egap.Pdf.PdfInvoiceProfile.Basic = 2 -> Egap.Pdf.PdfInvoiceProfile
+Egap.Pdf.PdfInvoiceProfile.BasicWL = 1 -> Egap.Pdf.PdfInvoiceProfile
+Egap.Pdf.PdfInvoiceProfile.EN16931 = 3 -> Egap.Pdf.PdfInvoiceProfile
+Egap.Pdf.PdfInvoiceProfile.Extended = 4 -> Egap.Pdf.PdfInvoiceProfile
+Egap.Pdf.PdfInvoiceProfile.Minimum = 0 -> Egap.Pdf.PdfInvoiceProfile
+Egap.Pdf.PdfInvoiceProfile.XRechnung = 5 -> Egap.Pdf.PdfInvoiceProfile
+Egap.Pdf.PdfInvoiceStandard
+Egap.Pdf.PdfInvoiceStandard.FacturX = 0 -> Egap.Pdf.PdfInvoiceStandard
+Egap.Pdf.PdfInvoiceStandard.Zugferd10 = 2 -> Egap.Pdf.PdfInvoiceStandard
+Egap.Pdf.PdfInvoiceStandard.Zugferd20 = 1 -> Egap.Pdf.PdfInvoiceStandard
 Egap.Pdf.PdfPage.FindText(string! text, Egap.Pdf.PdfFindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
 Egap.Pdf.PdfPage.FindText(System.Text.RegularExpressions.Regex! pattern, Egap.Pdf.PdfFindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
 Egap.Pdf.PdfPageRange
@@ -115,6 +161,12 @@ override Egap.Pdf.PdfFindOptions.ToString() -> string!
 override Egap.Pdf.PdfImagePageOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfImagePageOptions.GetHashCode() -> int
 override Egap.Pdf.PdfImagePageOptions.ToString() -> string!
+override Egap.Pdf.PdfInvoice.Equals(object? obj) -> bool
+override Egap.Pdf.PdfInvoice.GetHashCode() -> int
+override Egap.Pdf.PdfInvoice.ToString() -> string!
+override Egap.Pdf.PdfInvoiceOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfInvoiceOptions.GetHashCode() -> int
+override Egap.Pdf.PdfInvoiceOptions.ToString() -> string!
 override Egap.Pdf.PdfPageRange.ToString() -> string!
 override Egap.Pdf.PdfPlaceholderValues.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPlaceholderValues.GetHashCode() -> int
@@ -156,6 +208,13 @@ static Egap.Pdf.PdfFindOptions.operator ==(Egap.Pdf.PdfFindOptions? left, Egap.P
 static Egap.Pdf.PdfImagePageOptions.Default.get -> Egap.Pdf.PdfImagePageOptions!
 static Egap.Pdf.PdfImagePageOptions.operator !=(Egap.Pdf.PdfImagePageOptions? left, Egap.Pdf.PdfImagePageOptions? right) -> bool
 static Egap.Pdf.PdfImagePageOptions.operator ==(Egap.Pdf.PdfImagePageOptions? left, Egap.Pdf.PdfImagePageOptions? right) -> bool
+static Egap.Pdf.PdfInvoice.Embed(Egap.Pdf.PdfDocument! document, System.ReadOnlySpan<byte> xml, Egap.Pdf.PdfInvoiceOptions? options = null) -> Egap.Pdf.PdfAReport!
+static Egap.Pdf.PdfInvoice.operator !=(Egap.Pdf.PdfInvoice? left, Egap.Pdf.PdfInvoice? right) -> bool
+static Egap.Pdf.PdfInvoice.operator ==(Egap.Pdf.PdfInvoice? left, Egap.Pdf.PdfInvoice? right) -> bool
+static Egap.Pdf.PdfInvoice.Read(Egap.Pdf.PdfDocument! document) -> Egap.Pdf.PdfInvoice?
+static Egap.Pdf.PdfInvoiceOptions.Default.get -> Egap.Pdf.PdfInvoiceOptions!
+static Egap.Pdf.PdfInvoiceOptions.operator !=(Egap.Pdf.PdfInvoiceOptions? left, Egap.Pdf.PdfInvoiceOptions? right) -> bool
+static Egap.Pdf.PdfInvoiceOptions.operator ==(Egap.Pdf.PdfInvoiceOptions? left, Egap.Pdf.PdfInvoiceOptions? right) -> bool
 static Egap.Pdf.PdfPageRange.All.get -> Egap.Pdf.PdfPageRange!
 static Egap.Pdf.PdfPageRange.Parse(string! text) -> Egap.Pdf.PdfPageRange!
 static Egap.Pdf.PdfPageRange.TryParse(string? text, out Egap.Pdf.PdfPageRange? range) -> bool
