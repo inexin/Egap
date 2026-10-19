@@ -39,6 +39,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   schema in the XMP. `PdfInvoice.Read` reads Factur-X and ZUGFeRD 1.0 to 2.3 invoices back.
 - `Attachments.Add` takes a `PdfAttachmentRelationship` and lists the file among the document's associated files.
 
+### Docs
+- A cookbook of short recipes (merge, page numbers, signing, redacting a phrase, an HTML invoice as Factur-X PDF/A-3), and a
+  PKCS#11 sample in the signatures guide for keys on smart cards and HSMs.
+
 ### Fixes
 - Redaction, PDF/A conversion and text search on a document that was drawn on since it was last saved first write the font
   subsets the drawing used, so glyph positions and fonts are right.

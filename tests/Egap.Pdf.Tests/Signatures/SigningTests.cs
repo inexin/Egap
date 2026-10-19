@@ -76,6 +76,19 @@ public sealed class SigningTests
     }
 
     [Fact]
+    public async Task ATokenKeyAsTheGuideWrapsItSigns()
+    {
+        (X509Certificate2 certificate, AsymmetricAlgorithm key) = CmsTests.SelfSigned("rsa", "CN=Token");
+        using (certificate)
+        using (key)
+        using (TokenRsa token = new(certificate, digestInfo => TokenRsa.Token((RSA)key, digestInfo)))
+        {
+            using PdfDocument pdf = PdfDocument.Open(await Sign(SignedFiles.Base, "Sig", new PdfSignOptions { Signer = PdfSigner.FromKey(token, certificate) }));
+            AssertVerifies(Assert.Single(pdf.Signatures), certificate);
+        }
+    }
+
+    [Fact]
     public async Task ASecondSignatureKeepsTheFirst()
     {
         (X509Certificate2 first, AsymmetricAlgorithm firstKey) = CmsTests.SelfSigned("rsa", "CN=First");
@@ -320,6 +333,51 @@ public sealed class SigningTests
         byte[] attributes = CmsBuilder.SignedAttributes(HashAlgorithmName.SHA256, digest, certificate);
         (byte[] signature, CmsAlgorithm algorithm) = CmsAlgorithms.Sign(key, HashAlgorithmName.SHA256, false, attributes);
         return CmsBuilder.SignedData(HashAlgorithmName.SHA256, attributes, algorithm, signature, certificate, []);
+    }
+
+    /// <summary>
+    /// The PKCS#11 sample in the signatures guide: an RSA whose SignHash hands a DigestInfo to a token. The token is played
+    /// by a real key, which takes the digest back out of the DigestInfo and signs it with PKCS#1 v1.5 padding, as
+    /// <c>CKM_RSA_PKCS</c> would sign the DigestInfo.
+    /// </summary>
+    private sealed class TokenRsa : RSA
+    {
+        private static readonly byte[] Sha256Prefix = [0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05, 0x00, 0x04, 0x20];
+        private readonly X509Certificate2 certificate;
+        private readonly Func<byte[], byte[]> signOnToken;
+
+        public TokenRsa(X509Certificate2 certificate, Func<byte[], byte[]> signOnToken)
+        {
+            this.certificate = certificate;
+            this.signOnToken = signOnToken;
+            using RSA publicKey = certificate.GetRSAPublicKey()!;
+            KeySizeValue = publicKey.KeySize;
+            LegalKeySizesValue = [new KeySizes(KeySizeValue, KeySizeValue, 0)];
+        }
+
+        public static byte[] Token(RSA key, byte[] digestInfo)
+        {
+            Assert.Equal(Sha256Prefix, digestInfo[..Sha256Prefix.Length]);
+            return key.SignHash(digestInfo[Sha256Prefix.Length..], HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        }
+
+        public override byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
+        {
+            if (hashAlgorithm != HashAlgorithmName.SHA256 || padding != RSASignaturePadding.Pkcs1)
+            {
+                throw new CryptographicException("The token signs SHA-256 with PKCS#1 v1.5 padding.");
+            }
+
+            return signOnToken([.. Sha256Prefix, .. hash]);
+        }
+
+        public override RSAParameters ExportParameters(bool includePrivateParameters)
+        {
+            using RSA publicKey = certificate.GetRSAPublicKey()!;
+            return includePrivateParameters ? throw new CryptographicException("The private key stays on the token.") : publicKey.ExportParameters(false);
+        }
+
+        public override void ImportParameters(RSAParameters parameters) => throw new NotSupportedException();
     }
 
     /// <summary>An ECDsa that forwards to another and counts the signatures asked of it, as an HSM key would be called.</summary>

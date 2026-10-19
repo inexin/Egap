@@ -2,7 +2,8 @@
 
 Usage: python tools/check-doc-snippets.py
 
-Each ```csharp block becomes the body of its own method; its using directives move to the top of the file. The blocks are
+Each ```csharp block becomes the body of its own method; its using directives move to the top of the file, and the types it
+declares at the start of a line (with what follows them) move beside the methods. The blocks are
 compiled, not run, so they may name files that do not exist. Prints the errors and exits with 1 when a block does not build.
 """
 
@@ -14,27 +15,36 @@ import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 USING = re.compile(r"using [A-Za-z][A-Za-z0-9.]*;")
+# A type declared at the start of a line, with the doc comment just above it, ends the block's statements: the type and
+# everything after it go beside the methods, as a file's own types follow its top-level statements.
+TYPE = re.compile(r"(?:(?:public|internal|sealed|static|abstract|partial|file)\s+)*(?:class|record|struct|interface|enum)\s")
 
 
 def main() -> int:
     usings: set[str] = set()
     methods: list[str] = []
+    types: list[str] = []
     for page in sorted((ROOT / "docs").rglob("*.md")):
         if "_site" in page.parts:
             continue
         for index, block in enumerate(re.findall(r"```csharp\n(.*?)```", page.read_text(encoding="utf-8"), re.S)):
             body = []
-            for line in block.splitlines():
+            lines = block.splitlines()
+            first_type = next((i for i, line in enumerate(lines) if TYPE.match(line)), len(lines))
+            while first_type > 0 and first_type < len(lines) and lines[first_type - 1].startswith("///"):
+                first_type -= 1
+            for line in lines[:first_type]:
                 if USING.fullmatch(line.strip()):
                     usings.add(line.strip())
                 else:
                     body.append("        " + line)
+            types.extend(lines[first_type:])
             name = re.sub(r"\W", "_", str(page.relative_to(ROOT))) + f"_{index}"
             methods.append(f"    // {page.relative_to(ROOT)}, block {index + 1}\n    static async Task {name}()\n    {{\n"
                            "        await Task.Yield();\n" + "\n".join(body) + "\n    }\n")
 
     source = "\n".join(sorted(usings)) + "\n\n#pragma warning disable CS0168, CS0219, CS1998\ninternal static class Snippets\n{\n"
-    source += "\n".join(methods) + "}\n"
+    source += "\n".join(methods) + "}\n\n" + "\n".join(types) + "\n"
     with tempfile.TemporaryDirectory() as folder:
         work = pathlib.Path(folder)
         (work / "Snippets.cs").write_text(source, encoding="utf-8")
