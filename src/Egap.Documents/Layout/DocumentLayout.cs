@@ -5,6 +5,14 @@ public sealed class LayoutOptions
 {
     /// <summary>Where fonts come from; <see cref="FontSettings.Default"/> when null.</summary>
     public FontSettings? Fonts { get; init; }
+
+    /// <summary>
+    /// Whether layout fails loudly instead of degrading: a <see cref="LayoutException"/> naming the node is thrown when text
+    /// runs past its column or an object, table row or paragraph past its page area, when a character has no glyph in any
+    /// font, or when a font the document names has no stand-in but the last resort. Off by default, so converting someone
+    /// else's file never fails on its content.
+    /// </summary>
+    public bool Strict { get; init; }
 }
 
 /// <summary>

@@ -33,6 +33,12 @@ public sealed class FontSettings
 
     /// <summary>The settings a layout uses when none are given: system fonts and the standard substitutes on.</summary>
     public static FontSettings Default { get; } = new();
+
+    /// <summary>
+    /// Settings that lay a document out the same on every machine: only the document's embedded fonts and the substitutes
+    /// in Egami.Fonts.Substitutes, never the system's, so a server with no fonts installed prints what a laptop does.
+    /// </summary>
+    public static FontSettings Portable { get; } = new() { UseSystemFonts = false };
 }
 
 /// <summary>Why a font the document asked for was not used as asked.</summary>

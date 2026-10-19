@@ -84,4 +84,25 @@ DocumentLayout pages = doc.Layout();                              // pages, line
 pages.Pages[0].Render(dpi: 150).Save("page1.png");
 ```
 
+With `Strict`, layout throws a `LayoutException` naming the node and the page instead of degrading: a word too long for
+its column, a table or picture past the page, a character no font has, or a font with no stand-in. `FontSettings.Portable`
+uses only the document's embedded fonts and the bundled substitutes, never the system's, so a document prints the same
+on every machine; with a deterministic save the PDF bytes are the same too. Both suit documents your own code builds;
+for converting other people's files, leave them off and read the warnings.
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Layout;
+
+Document report = Document.Load("report.docx");
+try
+{
+    DocumentLayout pages = report.Layout(new LayoutOptions { Strict = true, Fonts = FontSettings.Portable });
+}
+catch (LayoutException e)
+{
+    Console.WriteLine($"{e.Problem} on page {e.PageIndex + 1}: {e.Message}");
+}
+```
+
 For PDF output, see [PDF export and conversion](pdf-export-and-conversion.md).

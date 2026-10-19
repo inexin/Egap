@@ -6,6 +6,17 @@ Egap.Documents.FontFeatures.GetEnumerator() -> System.Collections.Generic.IEnume
 Egap.Documents.FontFeatures.this[int index].get -> (string! Tag, int Value)
 Egap.Documents.FontFeatures.ValueOf(string! tag) -> int?
 Egap.Documents.FontFeatures.With(Egap.Documents.FontFeatures! other) -> Egap.Documents.FontFeatures!
+Egap.Documents.Layout.LayoutException
+Egap.Documents.Layout.LayoutException.Node.get -> Egap.Documents.Node?
+Egap.Documents.Layout.LayoutException.PageIndex.get -> int?
+Egap.Documents.Layout.LayoutException.Problem.get -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutOptions.Strict.get -> bool
+Egap.Documents.Layout.LayoutOptions.Strict.init -> void
+Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutProblem.ContentOverflow = 1 -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutProblem.MissingFont = 3 -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutProblem.MissingGlyph = 2 -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutProblem.TextOverflow = 0 -> Egap.Documents.Layout.LayoutProblem
 Egap.Documents.ParagraphFormat.WordBreak.get -> Egap.Documents.WordBreak?
 Egap.Documents.ParagraphFormat.WordBreak.set -> void
 Egap.Documents.ResolvedParagraphFormat.WordBreak.get -> Egap.Documents.WordBreak
@@ -29,3 +40,4 @@ override Egap.Documents.FontFeatures.ToString() -> string!
 static Egap.Documents.FontFeatures.None.get -> Egap.Documents.FontFeatures!
 static Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable<(string! Tag, int Value)>! features) -> Egap.Documents.FontFeatures!
 static Egap.Documents.FontFeatures.Parse(string! text) -> Egap.Documents.FontFeatures!
+static Egap.Documents.Layout.FontSettings.Portable.get -> Egap.Documents.Layout.FontSettings!

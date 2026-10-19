@@ -20,6 +20,7 @@ internal sealed class FontProvider
     private readonly List<FontCollection> chain = [];
     private readonly ConcurrentDictionary<(string Family, FontStyle Style), FontMatch> cache = new();
     private readonly ConcurrentDictionary<FontSubstitution, byte> substitutions = new();
+    private readonly ConcurrentDictionary<string, byte> lastResort = new(StringComparer.OrdinalIgnoreCase);
     private readonly Document document;
     private readonly Lazy<FontFallback> fallback;
 
@@ -106,6 +107,9 @@ internal sealed class FontProvider
 
     /// <summary>The fonts used in place of the ones asked so far, each once, in the order first met.</summary>
     public IReadOnlyList<FontSubstitution> Substitutions => [.. substitutions.Keys];
+
+    /// <summary>The families nothing in the chain could stand in for, so the last resort was used.</summary>
+    public IReadOnlyCollection<string> LastResortFamilies => [.. lastResort.Keys];
 
     /// <summary>The fallback for characters the chosen font has no glyph for, searched by script.</summary>
     public FontFallback Fallback => fallback.Value;
@@ -205,6 +209,7 @@ internal sealed class FontProvider
         if (family.Length > 0)
         {
             Note(family, style, last.Typeface.FamilyName, FontSubstitutionReason.Missing);
+            lastResort.TryAdd(family, 0);
         }
 
         return last;

@@ -12,6 +12,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `font-variant-ligatures`, `font-variant-numeric`, `word-break` and `overflow-wrap`; DOCX keeps ligatures, number forms
   and spacing, stylistic sets and contextual alternates.
 
+### Strict layout and portable fonts
+- `LayoutOptions.Strict` throws a `LayoutException` naming the node, the page and the `LayoutProblem` (text or content
+  running past its area, a missing glyph, a font with no stand-in) instead of degrading.
+- `FontSettings.Portable` uses only embedded fonts and the bundled substitutes, so layout and, with a deterministic save,
+  the PDF bytes are the same on every machine.
+
 ## Egap.Pdf 1.5.0 (unreleased)
 
 ### Page ranges and units

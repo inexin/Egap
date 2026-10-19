@@ -43,6 +43,7 @@ internal sealed partial class Paginator
     private Section? section;
     private int pageNumber;
     private int measuring;
+    private readonly bool strict;
 
     public Paginator(Document document, LayoutOptions? options)
     {
@@ -57,6 +58,7 @@ internal sealed partial class Paginator
 
         fonts = cache.Fonts;
         bridge = cache.Bridge;
+        strict = options?.Strict ?? false;
         contents = cache.Contents;
     }
 
@@ -77,7 +79,13 @@ internal sealed partial class Paginator
         }
 
         List<PageLayout> built = [.. pages.Select((p, i) => p.Build(i, this))];
-        return new DocumentLayout(document, built, fonts.Substitutions);
+        DocumentLayout layout = new(document, built, fonts.Substitutions);
+        if (strict)
+        {
+            StrictLayout.Check(layout, fonts);
+        }
+
+        return layout;
     }
 
     private bool UsesPageCounts()
