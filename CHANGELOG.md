@@ -3,7 +3,7 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Pdf 1.5.0 (unreleased)
+## Egap.Pdf 1.5.0 (2026-10-19)
 
 ### Page ranges and units
 - `PdfPageRange.Parse` reads page choices such as `"1,3,5-10,z"`, with `r` counting from the end, `:odd` and `:even`, and
@@ -56,7 +56,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
   `"page-{page:00}.png"`.
 
-## Egap.Documents 1.2.0 (unreleased)
+## Egap.Documents 1.2.0 (2026-10-19)
 
 ### Form controls
 - HTML inputs, check boxes, radio buttons, selects and text areas are read as inline content controls holding their values,
@@ -124,7 +124,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `FontSettings.Portable` uses only embedded fonts and the bundled substitutes, so layout and, with a deterministic save,
   the PDF bytes are the same on every machine.
 
-## Egap.Pdf.Conversion 1.2.0 (unreleased)
+## Egap.Pdf.Conversion 1.2.0 (2026-10-19)
 
 ### Form fields
 - `PdfExportOptions.FormFields` turns HTML form controls and DOCX content controls (plain text, date, drop-down list, combo
