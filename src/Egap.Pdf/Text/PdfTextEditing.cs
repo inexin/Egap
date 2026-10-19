@@ -134,7 +134,7 @@ internal static class TextReplacer
         foreach (int index in (find.Pages ?? PdfPageRange.All).Resolve(document.Pages.Count))
         {
             PdfPage page = document.Pages[index];
-            PdfTextPage text = page.GetText(find.Text);
+            PdfTextPage text = TextCollector.ReadWithDetails(page, find.Text ?? PdfTextOptions.Default, out Dictionary<PdfTextGlyph, GlyphDetails> details);
             List<(PdfTextMatch Match, string NewText)> found = [];
             foreach (TextSearch.Block block in TextSearch.Blocks(text.Lines))
             {
@@ -151,13 +151,19 @@ internal static class TextReplacer
             foreach ((PdfTextMatch match, string newText) in found)
             {
                 PdfTextGlyph first = match.Glyphs[0];
-                if (Encode(first, newText, encoders) is { } codes)
+                if (!details.TryGetValue(first, out GlyphDetails detail))
                 {
-                    planned.Add((match, p => WriteInFont(p, first, codes)));
+                    // A glyph made of a whole /ActualText span has no one matrix to write at.
+                    skipped.Add(match);
+                    warnings.Add(new PdfWarning(PdfWarningCode.TextNotReplaced, $"\"{match.Text}\" on page {index + 1} was left as it was: it is marked-content replacement text, not glyphs."));
+                }
+                else if (Encode(first, detail, newText, encoders) is { } codes)
+                {
+                    planned.Add((match, p => WriteInFont(p, first, detail, codes)));
                 }
                 else if (options.FallbackFont is { } fallback)
                 {
-                    planned.Add((match, p => WriteInFallback(p, first, newText, fallback)));
+                    planned.Add((match, p => WriteInFallback(p, first, detail, newText, fallback)));
                 }
                 else
                 {
@@ -201,9 +207,9 @@ internal static class TextReplacer
     }
 
     /// <summary>The new text as codes of the glyph's own font, when it can show every character; null when it cannot.</summary>
-    private static byte[]? Encode(PdfTextGlyph glyph, string text, Dictionary<PdfFont, Dictionary<string, byte[]>?> encoders)
+    private static byte[]? Encode(PdfTextGlyph glyph, GlyphDetails detail, string text, Dictionary<PdfFont, Dictionary<string, byte[]>?> encoders)
     {
-        if (glyph.Font is not { } font || glyph.FontResource is null || font.Type == PdfFontType.Type3)
+        if (glyph.Font is not { } font || detail.FontResource is null || font.Type == PdfFontType.Type3)
         {
             return null;
         }
@@ -280,21 +286,22 @@ internal static class TextReplacer
         return map;
     }
 
-    private static void WriteInFont(PdfPage page, PdfTextGlyph glyph, byte[] codes)
+    private static void WriteInFont(PdfPage page, PdfTextGlyph glyph, GlyphDetails detail, byte[] codes)
     {
-        PdfName font = page.AddResource("Font", glyph.FontResource!);
+        // A font written directly in the resources is copied: a PDF object lives in one container.
+        PdfName font = page.AddResource("Font", detail.FontResource is PdfDictionary direct ? direct.Clone() : detail.FontResource!);
         PdfContentWriter content = new();
         content.Save();
         FillColor(page, content, glyph.Color);
-        PdfMatrix m = glyph.Matrix;
-        content.BeginText().Font(font, 1).TextRenderMode(glyph.RenderMode).TextMatrix(m.A, m.B, m.C, m.D, m.E, m.F).ShowText(codes, hex: true).EndText();
+        PdfMatrix m = detail.Matrix;
+        content.BeginText().Font(font, 1).TextRenderMode(detail.RenderMode).TextMatrix(m.A, m.B, m.C, m.D, m.E, m.F).ShowText(codes, hex: true).EndText();
         content.Restore();
         page.AddContent(content.ToArray());
     }
 
-    private static void WriteInFallback(PdfPage page, PdfTextGlyph glyph, string text, Typeface face)
+    private static void WriteInFallback(PdfPage page, PdfTextGlyph glyph, GlyphDetails detail, string text, Typeface face)
     {
-        PdfMatrix m = glyph.Matrix;
+        PdfMatrix m = detail.Matrix;
         using PdfCanvas canvas = new(page, new PdfCanvasOptions { Coordinates = PdfCanvasCoordinates.Pdf });
 
         // Glyph space is y down on the canvas and y up in PDF text space: flip, then the match's own text matrix.

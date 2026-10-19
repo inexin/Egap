@@ -49,6 +49,9 @@ internal static class Targets
             "optimize" => Optimize,
             "impose" => Impose,
             "stamp" => Stamp,
+            "findtext" => FindText,
+            "newfields" => NewFields,
+            "invoice" => Invoice,
             "compare" => Compare,
             "cleanup" => Cleanup,
             "signatures" => Signatures,
@@ -326,6 +329,131 @@ internal static class Targets
             pdf.RemoveStamps();
             using MemoryStream saved = new();
             pdf.Save(saved, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+        });
+    }
+
+    /// <summary>
+    /// Find, redact and replace on a hostile file: a regular expression and words of its own text are found on the first 20
+    /// pages, and every match must lie on a page and hold glyphs; then the first word is redacted and the second replaced,
+    /// and the file written whole must open again with its pages.
+    /// </summary>
+    private static void FindText(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            if (pdf.Pages.Count is 0 or > 200)
+            {
+                return;
+            }
+
+            PdfFindOptions find = new() { Pages = PdfPageRange.Parse($"1-{Math.Min(pdf.Pages.Count, 20)}"), MatchCase = false };
+            List<string> words = [.. pdf.Pages[0].GetText().Lines.SelectMany(l => l.Words).Select(w => w.Text).Where(w => w.Trim().Length > 0).Take(3)];
+            IEnumerable<PdfTextMatch> matches = pdf.FindText(new System.Text.RegularExpressions.Regex(@"\d+|\p{L}{3,}"), find).Take(500);
+            if (words.Count > 0)
+            {
+                matches = matches.Concat(pdf.FindText(words[0], find));
+            }
+
+            foreach (PdfTextMatch match in matches)
+            {
+                Check(match.PageIndex >= 0 && match.PageIndex < pdf.Pages.Count, "a match is on a page of the document");
+                Check(match.Glyphs.Count > 0 && match.Quads.Count > 0, "a match holds glyphs and quadrilaterals");
+            }
+
+            if (words.Count >= 2)
+            {
+                pdf.FindText(words[0] + " " + words[1], find);
+                pdf.RedactText(words[0], find);
+                pdf.ReplaceText(words[1], "x" + words[1], find);
+            }
+
+            using MemoryStream saved = new();
+            pdf.Save(saved, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+            using PdfDocument back = PdfDocument.Open(saved.ToArray());
+            Check(back.Pages.Count == pdf.Pages.Count, "redacting and replacing keeps the pages");
+        });
+    }
+
+    /// <summary>
+    /// New form fields on a hostile file: one of each kind added to the first page, named and sized from the input; written
+    /// whole, the file must open again with every new field found by its name.
+    /// </summary>
+    private static void NewFields(Stream input)
+    {
+        byte[] bytes = ReadAll(input);
+        using PdfDocument? pdf = OpenForTools(new MemoryStream(bytes));
+        if (pdf is null)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            if (pdf.Pages.Count is 0 or > 200 || pdf.Form.HasXfa)
+            {
+                return;
+            }
+
+            string prefix = "egap" + (bytes.Length % 97).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            double size = 8 + (bytes.Length % 40);
+            PdfRectangle Box(int i) => new(10 + (i * size), 10, 10 + (i * size) + size, 10 + size);
+            List<string> names = [];
+            void Add(string name, Action<string> add)
+            {
+                try
+                {
+                    add(name);
+                    names.Add(name);
+                }
+                catch (ArgumentException)
+                {
+                    // The hostile form may hold the name already, or a field with a value where a parent would go.
+                }
+            }
+
+            Add(prefix + ".text", n => pdf.Form.AddTextField(n, 0, Box(0), new PdfTextFieldOptions { Value = "value", MaxLength = 20 }));
+            Add(prefix + "check", n => pdf.Form.AddCheckBox(n, 0, Box(1), new PdfButtonOptions { Checked = true }));
+            Add(prefix + "radio", n => pdf.Form.AddRadioGroup(n, [(0, Box(2), "a"), (0, Box(3), "b")], "b"));
+            Add(prefix + "combo", n => pdf.Form.AddComboBox(n, 0, Box(4), ["one", "two"], editable: true));
+            Add(prefix + "list", n => pdf.Form.AddListBox(n, 0, Box(5), ["one", "two"], multiSelect: true));
+            Add(prefix + "button", n => pdf.Form.AddPushButton(n, 0, Box(6), "Go"));
+            Add(prefix + "sign", n => pdf.Form.AddSignatureField(n, 0, Box(7)));
+            using MemoryStream saved = new();
+            pdf.Save(saved, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+            using PdfDocument back = PdfDocument.Open(saved.ToArray());
+            foreach (string name in names)
+            {
+                Check(back.Form.TryGetField(name, out PdfField field) && field.IsTerminal, $"the new field {name} is found again");
+            }
+        });
+    }
+
+    /// <summary>An e-invoice read from a hostile file, and its attachments' relationships; reading must not throw.</summary>
+    private static void Invoice(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            if (PdfInvoice.Read(pdf) is PdfInvoice invoice)
+            {
+                Check(invoice.FileName.Length > 0, "an invoice has its file name");
+            }
+
+            foreach (PdfAttachment attachment in pdf.Attachments.Take(100))
+            {
+                _ = attachment.Relationship;
+            }
         });
     }
 

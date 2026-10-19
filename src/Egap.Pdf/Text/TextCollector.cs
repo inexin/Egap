@@ -17,10 +17,25 @@ internal sealed class TextCollector : PdfContentWalker
     private int unmapped;
     private (PdfName? Name, PdfDictionary? Resources, PdfObject? Value) fontResource;
 
+    /// <summary>What replacing text needs of each glyph beyond what extraction gives; kept only when asked for.</summary>
+    private Dictionary<PdfTextGlyph, GlyphDetails>? details;
+
     /// <summary>Walks a page and builds its text.</summary>
     public static PdfTextPage Read(PdfPage page, PdfTextOptions options)
     {
-        TextCollector collector = new();
+        return Read(page, options, null);
+    }
+
+    /// <summary>Walks a page and builds its text, with each glyph's matrix, rendering mode and font resource on the side.</summary>
+    public static PdfTextPage ReadWithDetails(PdfPage page, PdfTextOptions options, out Dictionary<PdfTextGlyph, GlyphDetails> details)
+    {
+        details = new(ReferenceEqualityComparer.Instance);
+        return Read(page, options, details);
+    }
+
+    private static PdfTextPage Read(PdfPage page, PdfTextOptions options, Dictionary<PdfTextGlyph, GlyphDetails>? details)
+    {
+        TextCollector collector = new() { details = details };
         collector.Walk(page);
         List<PdfWarning> warnings = [];
         if (collector.unmapped > 0)
@@ -68,7 +83,8 @@ internal sealed class TextCollector : PdfContentWalker
         double size = Math.Sqrt(Math.Abs((m.A * m.D) - (m.B * m.C)));
         (double dx, double dy) = Unit(m.A, m.B);
         double space = font is not null && !font.IsComposite && font.GetWidth(32) is > 0 and var w ? w : 250;
-        Item item = new(new PdfTextGlyph(text, box, font, size, State.FillColor, glyph.Code) { Origin = origin, End = end, Matrix = m, RenderMode = State.TextRenderMode, FontResource = FontResource() }, dx, dy, size, space / 1000 * size);
+        Item item = new(new PdfTextGlyph(text, box, font, size, State.FillColor, glyph.Code) { Origin = origin, End = end }, dx, dy, size, space / 1000 * size);
+        details?.Add(item.Glyph, new GlyphDetails(m, State.TextRenderMode, FontResource()));
         if (spans.Count > 0 && spans.Peek() is List<Item> span)
         {
             span.Add(item);
@@ -310,3 +326,6 @@ internal sealed class TextCollector : PdfContentWalker
     /// <summary>A glyph with what layout needs: its direction of writing, size and space width in user space.</summary>
     private sealed record Item(PdfTextGlyph Glyph, double Dx, double Dy, double Size, double SpaceWidth);
 }
+
+/// <summary>A glyph's text rendering matrix (text space, font size included, to default user space), its rendering mode (<c>Tr</c>) and its font as the resources hold it.</summary>
+internal readonly record struct GlyphDetails(PdfMatrix Matrix, int RenderMode, PdfObject? FontResource);

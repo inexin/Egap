@@ -119,6 +119,72 @@ public sealed class RedactTextTests
         Assert.DoesNotContain("abc", text, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ACoveredImageThatCannotBeDecodedGoesWhole()
+    {
+        // Found by fuzzing: an image under the phrase with an unknown filter made redaction throw.
+        using PdfDocument pdf = Helvetica("q 30 0 0 10 72 698 cm /Im1 Do Q BT /F1 12 Tf 72 700 Td (secret) Tj ET");
+        PdfStream image = new(new PdfDictionary
+        {
+            ["Type"] = PdfName.Get("XObject"),
+            ["Subtype"] = PdfName.Get("Image"),
+            ["Width"] = new PdfInteger(2),
+            ["Height"] = new PdfInteger(2),
+            ["ColorSpace"] = PdfName.Get("DeviceRGB"),
+            ["BitsPerComponent"] = new PdfInteger(8),
+            ["Filter"] = PdfName.Get("NoSuchDecode"),
+        });
+        image.SetEncodedBytes([1, 2, 3]);
+        pdf.Pages[0].Resources!["XObject"] = new PdfDictionary { ["Im1"] = pdf.Objects.Add(image) };
+
+        PdfRedactionResult result = pdf.RedactText("secret");
+
+        Assert.Equal(1, result.Images);
+        using PdfDocument saved = Reopen(pdf);
+        Assert.Empty(saved.Pages[0].GetImages());
+        Assert.DoesNotContain("secret", saved.Pages[0].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ReplacesTextInAFontWrittenDirectlyInTheResources()
+    {
+        // Found by fuzzing: a font dictionary held directly, not by reference, could not be put in the resources again.
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = pdf.Pages.AddBlank();
+        page.Resources = new PdfDictionary
+        {
+            ["Font"] = new PdfDictionary { ["F1"] = new PdfDictionary { ["Type"] = PdfName.Get("Font"), ["Subtype"] = PdfName.Get("Type1"), ["BaseFont"] = PdfName.Get("Helvetica"), ["Encoding"] = PdfName.Get("WinAnsiEncoding") } },
+        };
+        page.SetContent(PdfContent.Parse(Encoding.ASCII.GetBytes("BT /F1 12 Tf 72 700 Td (year 2025) Tj ET")));
+        using PdfDocument saved = Reopen(pdf);
+
+        Assert.Single(saved.ReplaceText("2025", "2026").Replaced);
+        Assert.Contains("2026", Reopen(saved).Pages[0].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ACoveredImageTooLargeToDecodeGoesWithoutBeingRead()
+    {
+        // Found by fuzzing: a 2 by 734 million pixel image under the phrase took half a minute to redact.
+        using PdfDocument pdf = Helvetica("q 30 0 0 10 72 698 cm /Im1 Do Q BT /F1 12 Tf 72 700 Td (secret) Tj ET");
+        PdfStream image = new(new PdfDictionary
+        {
+            ["Type"] = PdfName.Get("XObject"),
+            ["Subtype"] = PdfName.Get("Image"),
+            ["Width"] = new PdfInteger(2),
+            ["Height"] = new PdfInteger(734_294_471),
+            ["ColorSpace"] = PdfName.Get("DeviceGray"),
+            ["BitsPerComponent"] = new PdfInteger(8),
+        });
+        image.SetEncodedBytes([1, 2, 3]);
+        pdf.Pages[0].Resources!["XObject"] = new PdfDictionary { ["Im1"] = pdf.Objects.Add(image) };
+
+        PdfRedactionResult result = pdf.RedactText("secret");
+
+        Assert.Equal(1, result.Images);
+        Assert.Empty(Reopen(pdf).Pages[0].GetImages());
+    }
+
     private static PdfDocument Helvetica(string content)
     {
         using PdfDocument pdf = PdfDocument.Create();

@@ -194,7 +194,7 @@ public sealed record PdfInvoice(byte[] Xml, string FileName, PdfInvoiceStandard 
         XmpPacket? packet = document.Metadata.ReadXmp();
         foreach ((XNamespace ns, PdfInvoiceStandard standard) in (ReadOnlySpan<(XNamespace, PdfInvoiceStandard)>)[(FacturXSchema, PdfInvoiceStandard.FacturX), (Zugferd20Schema, PdfInvoiceStandard.Zugferd20), (Zugferd10Schema, PdfInvoiceStandard.Zugferd10)])
         {
-            if (packet?.GetText(ns + "DocumentFileName") is { Length: > 0 } name && document.Attachments.TryGet(name, out PdfAttachment attachment) && attachment.GetBytes() is byte[] bytes)
+            if (packet?.GetText(ns + "DocumentFileName") is { Length: > 0 } name && document.Attachments.TryGet(name, out PdfAttachment attachment) && BytesOf(attachment) is byte[] bytes)
             {
                 PdfInvoiceProfile? profile = LevelOf(packet.GetText(ns + "ConformanceLevel")) ?? (Parse(bytes) is { } xml ? ProfileOf(xml) : null);
                 return new PdfInvoice(bytes, name, standard, profile);
@@ -203,7 +203,7 @@ public sealed record PdfInvoice(byte[] Xml, string FileName, PdfInvoiceStandard 
 
         foreach ((string name, PdfInvoiceStandard standard) in (ReadOnlySpan<(string, PdfInvoiceStandard)>)[("factur-x.xml", PdfInvoiceStandard.FacturX), ("xrechnung.xml", PdfInvoiceStandard.FacturX), ("zugferd-invoice.xml", PdfInvoiceStandard.Zugferd20), ("ZUGFeRD-invoice.xml", PdfInvoiceStandard.Zugferd10)])
         {
-            if (document.Attachments.TryGet(name, out PdfAttachment attachment) && attachment.GetBytes() is byte[] bytes)
+            if (document.Attachments.TryGet(name, out PdfAttachment attachment) && BytesOf(attachment) is byte[] bytes)
             {
                 return new PdfInvoice(bytes, name, standard, Parse(bytes) is { } xml ? ProfileOf(xml) : null);
             }
@@ -255,6 +255,19 @@ public sealed record PdfInvoice(byte[] Xml, string FileName, PdfInvoiceStandard 
             _ when lower.StartsWith("urn:cen.eu:en16931:2017", StringComparison.Ordinal) || lower.EndsWith(":comfort", StringComparison.Ordinal) => PdfInvoiceProfile.EN16931,
             _ => null,
         };
+    }
+
+    /// <summary>An attachment's bytes; null when it has none or they cannot be decoded.</summary>
+    private static byte[]? BytesOf(PdfAttachment attachment)
+    {
+        try
+        {
+            return attachment.GetBytes();
+        }
+        catch (PdfException e) when (e is not PdfLimitException)
+        {
+            return null;
+        }
     }
 
     private static XDocument? Parse(byte[] bytes)

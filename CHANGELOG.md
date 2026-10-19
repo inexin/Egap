@@ -46,6 +46,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 ### Fixes
 - Redaction, PDF/A conversion and text search on a document that was drawn on since it was last saved first write the font
   subsets the drawing used, so glyph positions and fonts are right.
+- Redaction removes a covered image whole when it cannot be decoded or is too large to decode, instead of throwing or
+  taking minutes.
+- `PdfInvoice.Read` skips an attachment whose stream cannot be decoded.
 
 ### Images and page files
 - `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or

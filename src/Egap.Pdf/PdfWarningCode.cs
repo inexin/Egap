@@ -174,7 +174,7 @@ public enum PdfWarningCode
     /// <summary>
     /// A match of <see cref="PdfDocument.ReplaceText(string, string, PdfFindOptions?, PdfReplaceOptions?)"/> was left as it
     /// was: its font lacks a glyph the new text needs, or its text cannot be written in that font, and no fallback font was
-    /// given.
+    /// given; or the match is a marked-content span's replacement text (<c>/ActualText</c>), not glyphs.
     /// </summary>
     TextNotReplaced,
 }
