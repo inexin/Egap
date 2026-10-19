@@ -75,7 +75,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   tagging as options. HTML and Markdown read their images from their own folder only.
 - `PdfStamp.Html` makes a stamp of laid-out HTML, such as a seal or a letterhead.
 
-## Egap.Pdf 1.4.1 and Egap.Documents 1.1.1 (unreleased)
+## Egap.Pdf 1.4.1 and Egap.Documents 1.1.1 (2026-10-18)
 
 - The bundled substitute fonts (Liberation Sans, Serif and Mono, Carlito, Caladea) now come from Egami's
   [Egami.Fonts.Substitutes](https://www.nuget.org/packages/Egami.Fonts.Substitutes) 1.0.0 instead of Egap.Fonts. The fonts are
