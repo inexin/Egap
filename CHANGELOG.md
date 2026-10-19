@@ -17,6 +17,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   left (`EnsureSpace`), never splits it (`ShowEntire`) or cuts it where its page ends (`StopPaging`).
   `DocumentBuilder.StartGroup` and `EndGroup` make groups; HTML `break-inside: avoid` on a box of several blocks makes one.
 - Content controls inside headers, footers, table cells and text boxes are now laid out; before, their blocks were left out.
+- `GroupPaging.ScaleToFit` draws a group smaller (a `ScaledBox`) when that makes it fit where it starts.
+- `ParagraphFormat.MaxLines` clamps a paragraph with an ellipsis (HTML `-webkit-line-clamp`); `RowFormat.IsFooter` repeats a
+  table's last rows at the bottom of each page it continues from; `PageSetup.BalanceColumns` evens out the columns of a
+  section's last page.
 
 ### Strict layout and portable fonts
 - `LayoutOptions.Strict` throws a `LayoutException` naming the node, the page and the `LayoutProblem` (text or content

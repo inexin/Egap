@@ -284,6 +284,9 @@ public sealed class ResolvedParagraphFormat
     /// <summary>Where lines may break inside words.</summary>
     public WordBreak WordBreak => Value(ParagraphFormat.WordBreakId, WordBreak.Normal);
 
+    /// <summary>The most lines shown, 0 for no limit.</summary>
+    public int MaxLines => Value(ParagraphFormat.MaxLinesId, 0);
+
     /// <summary>The effective values as a stand-alone <see cref="ParagraphFormat"/>.</summary>
     public ParagraphFormat ToParagraphFormat()
     {

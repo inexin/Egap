@@ -85,8 +85,11 @@ pages.Pages[0].Render(dpi: 150).Save("page1.png");
 ```
 
 A group of blocks (a block content control) can say how it is placed across pages: kept together on one page, started
-on a new page when less than some height is left, never split, or cut where the page ends. HTML's `break-inside: avoid`
-on a box of several blocks makes such a group. Word keeps the blocks, not these settings.
+on a new page when less than some height is left, never split, cut where the page ends, or drawn smaller to fit the room
+left. HTML's `break-inside: avoid` on a box of several blocks makes such a group. A paragraph can be clamped to a number
+of lines, ending in an ellipsis (HTML's `-webkit-line-clamp`); table rows marked as footer rows repeat at the bottom of
+each page the table continues from; and a section can balance its last page's columns. Word keeps the content, not
+these settings.
 
 ```csharp
 using Egap.Documents;

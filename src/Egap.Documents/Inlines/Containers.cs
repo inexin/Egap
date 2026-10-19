@@ -311,6 +311,9 @@ public sealed record GroupPaging
 
     /// <summary>Gets whether the group shows only what fits on the page it starts on; the blocks that would go on later pages are left out.</summary>
     public bool StopPaging { get; init; }
+
+    /// <summary>Gets whether the group is drawn smaller, down to a fifth of its size, when that makes it fit where it starts.</summary>
+    public bool ScaleToFit { get; init; }
 }
 
 /// <summary>A content control around blocks: paragraphs, tables and other controls.</summary>

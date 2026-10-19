@@ -555,6 +555,8 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             TabStops = tabs,
             Hyphen = null,
             Fallback = fonts.Fallback,
+            MaxLines = format.MaxLines > 0 ? format.MaxLines : null,
+            Ellipsis = format.MaxLines > 0 ? "\u2026" : null,
             LineBreaking = format.WordBreak switch
             {
                 WordBreak.BreakAll => new LineBreakOptions(EgamiWordBreak.BreakAll, OverflowWrap.Normal, LineBreakStrictness.Auto, null),

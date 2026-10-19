@@ -63,7 +63,7 @@ internal static class StrictLayout
         {
             foreach (AreaBox area in page.Boxes.OfType<AreaBox>())
             {
-                foreach (LayoutBox box in area.Descendants())
+                foreach (LayoutBox box in Boxes(area))
                 {
                     switch (box)
                     {
@@ -83,6 +83,29 @@ internal static class StrictLayout
                             break;
                     }
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// The boxes in an area, depth first; a scaled group's own boxes are laid out wider than the page and drawn smaller, so
+    /// only their lines are checked, against their own widths.
+    /// </summary>
+    private static IEnumerable<LayoutBox> Boxes(LayoutBox area)
+    {
+        Stack<(LayoutBox Box, bool Scaled)> stack = new();
+        stack.Push((area, false));
+        while (stack.TryPop(out (LayoutBox Box, bool Scaled) item))
+        {
+            if (!item.Scaled || item.Box is LineBox)
+            {
+                yield return item.Box;
+            }
+
+            bool scaled = item.Scaled || item.Box is ScaledBox;
+            for (int i = item.Box.Children.Count - 1; i >= 0; i--)
+            {
+                stack.Push((item.Box.Children[i], scaled));
             }
         }
     }

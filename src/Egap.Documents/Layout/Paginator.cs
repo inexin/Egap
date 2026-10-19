@@ -45,6 +45,9 @@ internal sealed partial class Paginator
     private int measuring;
     private readonly bool strict;
 
+    /// <summary>The heights the columns of a section's page are held to, by section and page within it, to balance them.</summary>
+    private readonly Dictionary<(Section Section, int Page), double> balance = [];
+
     public Paginator(Document document, LayoutOptions? options)
     {
         this.document = document;
@@ -78,6 +81,7 @@ internal sealed partial class Paginator
             }
         }
 
+        Balance();
         List<PageLayout> built = [.. pages.Select((p, i) => p.Build(i, this))];
         DocumentLayout layout = new(document, built, fonts.Substitutions);
         if (strict)
@@ -86,6 +90,57 @@ internal sealed partial class Paginator
         }
 
         return layout;
+    }
+
+    /// <summary>
+    /// Balances the columns of each section that asks for it (<see cref="PageSetup.BalanceColumns"/>): its last page's
+    /// columns are held to the least height that still takes all its text, found by laying the document out again. Only a
+    /// section that ends its page is balanced.
+    /// </summary>
+    private void Balance()
+    {
+        for (int s = 0; s < document.Sections.Count; s++)
+        {
+            Section balanced = document.Sections[s];
+            if (balanced.PageSetup.BalanceColumns != true || !pages.Any(p => p.Section == balanced))
+            {
+                continue;
+            }
+
+            bool continuousNext = s + 1 < document.Sections.Count && document.Sections[s + 1].PageSetup.SectionStart == SectionStart.Continuous;
+            PageBuilder last = pages.Last(p => p.Section == balanced);
+            if (continuousNext || last.Columns.Count < 2)
+            {
+                continue;
+            }
+
+            int index = pages.Count(p => p.Section == balanced) - 1;
+            int count = pages.Count;
+            double full = last.ColumnBottom(0) - last.ColumnTop(0);
+            double low = last.BandHeights().Sum() / last.Columns.Count, high = full;
+            if (low >= high - 1)
+            {
+                continue;
+            }
+
+            for (int i = 0; i < 8 && high - low > 1; i++)
+            {
+                double middle = (low + high) / 2;
+                balance[(balanced, index)] = middle;
+                Flow();
+                if (pages.Count == count)
+                {
+                    high = middle;
+                }
+                else
+                {
+                    low = middle;
+                }
+            }
+
+            balance[(balanced, index)] = high;
+            Flow();
+        }
     }
 
     private bool UsesPageCounts()
@@ -173,6 +228,11 @@ internal sealed partial class Paginator
         pages.Add(page);
         column = 0;
         LayHeadersAndFooters(page);
+        if (balance.TryGetValue((current, indexInSection), out double height))
+        {
+            page.LimitBand(height);
+        }
+
         y = page.ColumnTop(0);
     }
 
@@ -268,6 +328,11 @@ internal sealed partial class Paginator
             }
         }
 
+        if (paging.ScaleToFit && ScaleGroup(group))
+        {
+            return;
+        }
+
         if (paging.StopPaging)
         {
             double left = ColumnBottom - y;
@@ -289,6 +354,43 @@ internal sealed partial class Paginator
         }
 
         FlowBlocks(group.Blocks);
+    }
+
+    /// <summary>
+    /// Lays a group out scaled down to the room left in the column, the scale found by halving: false when it fits as it is,
+    /// or would need less than a fifth of its size.
+    /// </summary>
+    private bool ScaleGroup(ContentControl group)
+    {
+        double width = Column.Width, room = ColumnBottom - y;
+        if (MeasureBlocks(group.Blocks, width) <= room + 0.01)
+        {
+            return false;
+        }
+
+        double low = 0.2, high = 1;
+        if (MeasureBlocks(group.Blocks, width / low) * low > room + 0.01)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < 10; i++)
+        {
+            double middle = (low + high) / 2;
+            if (MeasureBlocks(group.Blocks, width / middle) * middle <= room + 0.01)
+            {
+                low = middle;
+            }
+            else
+            {
+                high = middle;
+            }
+        }
+
+        (List<LayoutBox> boxes, double height) = LayBlocks(group.Blocks, Column.X, y, width / low);
+        page!.Add(column, new ScaledBox(group, new LayoutRect(Column.X, y, width, height * low), low, boxes));
+        y += height * low;
+        return true;
     }
 
     /// <summary>Flows some blocks of a container, as <see cref="FlowBlocks"/> flows all of them.</summary>
@@ -354,8 +456,21 @@ internal sealed partial class Paginator
         double first = format.FirstLineIndent;
         double left = format.LeftIndent;
         double right = format.RightIndent;
-        LineFlow flow = content.Text.CreateFlow();
         List<PlacedLine> lines = [];
+        if (format.MaxLines > 0)
+        {
+            // A clamped paragraph is laid out whole at one width, which cuts it after its last line with an ellipsis.
+            double width1 = Math.Max(1, width - left - right);
+            foreach (TextLine clamped in content.Text.Layout((float)width1).Lines)
+            {
+                (double h, double a) = LineHeight(clamped, format);
+                lines.Add(new PlacedLine(clamped, left, h, a, width1));
+            }
+
+            return lines;
+        }
+
+        LineFlow flow = content.Text.CreateFlow();
         while (true)
         {
             double indent = lines.Count == 0 ? left + first : left;

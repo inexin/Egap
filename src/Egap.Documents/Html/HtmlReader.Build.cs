@@ -649,6 +649,11 @@ internal sealed partial class HtmlReader
             format.WordBreak = wordBreak;
         }
 
+        if ((style.Text("-webkit-line-clamp") ?? style.Text("line-clamp")) is { } clamp && int.TryParse(clamp.Trim(), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int maxLines) && maxLines > 0)
+        {
+            format.MaxLines = maxLines;
+        }
+
         if (flow.PendingPageBreak)
         {
             format.PageBreakBefore = true;

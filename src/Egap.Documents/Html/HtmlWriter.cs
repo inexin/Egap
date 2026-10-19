@@ -923,6 +923,14 @@ internal sealed class HtmlWriter
             css.Add(("line-height", rule == LineSpacingRule.Multiple ? (spacing * 1.15).ToString("0.###", Invariant) : Points(spacing)));
         }
 
+        if (format.MaxLines is int maxLines and > 0)
+        {
+            css.Add(("display", "-webkit-box"));
+            css.Add(("-webkit-box-orient", "vertical"));
+            css.Add(("-webkit-line-clamp", maxLines.ToString(Invariant)));
+            css.Add(("overflow", "hidden"));
+        }
+
         switch (format.WordBreak)
         {
             case WordBreak.BreakAll:

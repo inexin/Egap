@@ -18,6 +18,8 @@ Egap.Documents.GroupPaging.Equals(Egap.Documents.GroupPaging? other) -> bool
 Egap.Documents.GroupPaging.GroupPaging() -> void
 Egap.Documents.GroupPaging.KeepTogether.get -> bool
 Egap.Documents.GroupPaging.KeepTogether.init -> void
+Egap.Documents.GroupPaging.ScaleToFit.get -> bool
+Egap.Documents.GroupPaging.ScaleToFit.init -> void
 Egap.Documents.GroupPaging.ShowEntire.get -> bool
 Egap.Documents.GroupPaging.ShowEntire.init -> void
 Egap.Documents.GroupPaging.StopPaging.get -> bool
@@ -33,12 +35,21 @@ Egap.Documents.Layout.LayoutProblem.ContentOverflow = 1 -> Egap.Documents.Layout
 Egap.Documents.Layout.LayoutProblem.MissingFont = 3 -> Egap.Documents.Layout.LayoutProblem
 Egap.Documents.Layout.LayoutProblem.MissingGlyph = 2 -> Egap.Documents.Layout.LayoutProblem
 Egap.Documents.Layout.LayoutProblem.TextOverflow = 0 -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.ScaledBox
+Egap.Documents.Layout.ScaledBox.Scale.get -> double
+Egap.Documents.PageSetup.BalanceColumns.get -> bool?
+Egap.Documents.PageSetup.BalanceColumns.set -> void
+Egap.Documents.ParagraphFormat.MaxLines.get -> int?
+Egap.Documents.ParagraphFormat.MaxLines.set -> void
 Egap.Documents.ParagraphFormat.WordBreak.get -> Egap.Documents.WordBreak?
 Egap.Documents.ParagraphFormat.WordBreak.set -> void
+Egap.Documents.ResolvedParagraphFormat.MaxLines.get -> int
 Egap.Documents.ResolvedParagraphFormat.WordBreak.get -> Egap.Documents.WordBreak
 Egap.Documents.ResolvedRunFormat.Features.get -> Egap.Documents.FontFeatures!
 Egap.Documents.ResolvedRunFormat.Overline.get -> bool
 Egap.Documents.ResolvedRunFormat.WordSpacing.get -> double
+Egap.Documents.RowFormat.IsFooter.get -> bool?
+Egap.Documents.RowFormat.IsFooter.set -> void
 Egap.Documents.RunFormat.Features.get -> Egap.Documents.FontFeatures?
 Egap.Documents.RunFormat.Features.set -> void
 Egap.Documents.RunFormat.Overline.get -> bool?

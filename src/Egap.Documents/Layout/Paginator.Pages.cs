@@ -84,6 +84,7 @@ internal sealed record Geometry(double PageWidth, double PageHeight, double Body
 internal sealed class PageBuilder
 {
     private readonly List<(IReadOnlyList<ColumnGeometry> Columns, double Top, List<List<LayoutBox>> Contents)> bands = [];
+    private double bandLimit = double.PositiveInfinity;
 
     public PageBuilder(Section section, int number, bool firstOfSection)
     {
@@ -117,7 +118,14 @@ internal sealed class PageBuilder
     {
         Geometry = Geometry with { Columns = geometry.Columns };
         bands.Add((geometry.Columns, top, [.. geometry.Columns.Select(_ => new List<LayoutBox>())]));
+        bandLimit = double.PositiveInfinity;
     }
+
+    /// <summary>Makes the columns of the band being filled no taller than <paramref name="height"/>, to balance them.</summary>
+    public void LimitBand(double height) => bandLimit = bands[^1].Top + height;
+
+    /// <summary>How far down the band being filled its columns' contents reach, column by column.</summary>
+    public IEnumerable<double> BandHeights() => bands[^1].Contents.Select(c => c.Count == 0 ? 0 : c.Max(b => b.Bounds.Bottom) - bands[^1].Top);
 
     /// <summary>Moves the body down and up around the header and footer laid out on this page.</summary>
     public void SetBodyLimits(double top, double bottom)
@@ -131,7 +139,7 @@ internal sealed class PageBuilder
 
     public double ColumnTop(int column) => bands[^1].Top;
 
-    public double ColumnBottom(int column) => Geometry.BodyBottom - NotesHeight;
+    public double ColumnBottom(int column) => Math.Min(Geometry.BodyBottom - NotesHeight, bandLimit);
 
     /// <summary>The footnotes whose references are on this page, in order.</summary>
     public List<Footnote> Notes { get; } = [];

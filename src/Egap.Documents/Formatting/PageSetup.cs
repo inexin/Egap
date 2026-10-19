@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>A section's page setup: paper size, orientation, margins, columns, page numbering and where it starts. Every property is nullable: null means not set here.</summary>
 public sealed partial class PageSetup : FormatBase
 {
-    internal const int Count = 22;
+    internal const int Count = 23;
 
     internal const int PageWidthId = 0;
     internal const int PageHeightId = 1;
@@ -28,6 +28,7 @@ public sealed partial class PageSetup : FormatBase
     internal const int ColumnSeparatorId = 19;
     internal const int TextDirectionId = 20;
     internal const int BidiId = 21;
+    internal const int BalanceColumnsId = 22;
 
     internal override int PropertyCount => Count;
 
@@ -185,6 +186,13 @@ public sealed partial class PageSetup : FormatBase
         set => SetRaw(21, value);
     }
 
+    /// <summary>Whether the columns of the section's last page are made the same height, as CSS column-fill: balance.</summary>
+    public bool? BalanceColumns
+    {
+        get => Get<bool>(22);
+        set => SetRaw(22, value);
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -211,6 +219,7 @@ public sealed partial class PageSetup : FormatBase
             19 => nameof(ColumnSeparator),
             20 => nameof(TextDirection),
             21 => nameof(Bidi),
+            22 => nameof(BalanceColumns),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }

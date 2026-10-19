@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>Paragraph formatting: alignment, indents, spacing, keep rules, tabs, borders and shading (Word's paragraph properties). Every property is nullable: null means not set here.</summary>
 public sealed partial class ParagraphFormat : FormatBase
 {
-    internal const int Count = 32;
+    internal const int Count = 33;
 
     internal const int AlignmentId = 0;
     internal const int LeftIndentId = 1;
@@ -38,6 +38,7 @@ public sealed partial class ParagraphFormat : FormatBase
     internal const int ListId = 29;
     internal const int ListLevelId = 30;
     internal const int WordBreakId = 31;
+    internal const int MaxLinesId = 32;
 
     internal override int PropertyCount => Count;
 
@@ -265,6 +266,13 @@ public sealed partial class ParagraphFormat : FormatBase
         set => SetEnum(31, value);
     }
 
+    /// <summary>The most lines shown; the last ends in an ellipsis where text is cut. Word has no such setting.</summary>
+    public int? MaxLines
+    {
+        get => Get<int>(32);
+        set => SetRaw(32, value is null or > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value)));
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -301,6 +309,7 @@ public sealed partial class ParagraphFormat : FormatBase
             29 => nameof(List),
             30 => nameof(ListLevel),
             31 => nameof(WordBreak),
+            32 => nameof(MaxLines),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }

@@ -101,6 +101,14 @@ internal static class PageDrawing
             case ObjectBox item:
                 DrawObject(item, canvas, observer);
                 return;
+            case ScaledBox scaled:
+                canvas.Save();
+                canvas.Translate((float)scaled.Bounds.X, (float)scaled.Bounds.Y);
+                canvas.Scale((float)scaled.Scale);
+                canvas.Translate((float)-scaled.Bounds.X, (float)-scaled.Bounds.Y);
+                DrawChildren(scaled, canvas, observer);
+                canvas.Restore();
+                return;
             default:
                 DrawChildren(box, canvas, observer);
                 return;
