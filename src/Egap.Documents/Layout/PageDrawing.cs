@@ -101,6 +101,14 @@ internal static class PageDrawing
             case ObjectBox item:
                 DrawObject(item, canvas, observer);
                 return;
+            case ScaledBox scaled:
+                canvas.Save();
+                canvas.Translate((float)scaled.Bounds.X, (float)scaled.Bounds.Y);
+                canvas.Scale((float)scaled.Scale);
+                canvas.Translate((float)-scaled.Bounds.X, (float)-scaled.Bounds.Y);
+                DrawChildren(scaled, canvas, observer);
+                canvas.Restore();
+                return;
             default:
                 DrawChildren(box, canvas, observer);
                 return;
@@ -219,6 +227,12 @@ internal static class PageDrawing
         if (decoration.Lines.HasFlag(TextDecorationLines.LineThrough))
         {
             Line(baseline - (size * 0.28f));
+        }
+
+        // An overline at the em box's top, as browsers draw it, clear of capitals and most accents.
+        if (decoration.Lines.HasFlag(TextDecorationLines.Overline))
+        {
+            Line(baseline - (size * 0.86f));
         }
     }
 

@@ -239,6 +239,17 @@ public sealed class Field
     /// <summary>The kind, from the code's first word.</summary>
     public FieldKind Kind => KindOf(Code);
 
+    /// <summary>
+    /// Recomputes this field's result, as <see cref="Document.UpdateFields"/> does for every field: a table of contents is
+    /// rebuilt from the headings, for example. Page fields are filled by layout instead.
+    /// </summary>
+    /// <param name="now">The time DATE and TIME show; the current time when null.</param>
+    /// <returns>False when the field is locked, no longer in the document, or of a kind Egap does not compute.</returns>
+    public bool Update(DateTimeOffset? now = null)
+    {
+        return FieldUpdater.UpdateOne(this, now ?? DateTimeOffset.Now);
+    }
+
     /// <summary>The result's text, paragraph breaks as <see cref="ControlChar.ParagraphBreak"/>.</summary>
     public string Result
     {

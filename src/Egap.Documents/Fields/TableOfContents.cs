@@ -81,6 +81,12 @@ internal static class TableOfContents
 
             if (i > 0 || fieldAlone)
             {
+                if (i == 0)
+                {
+                    // The field's own paragraph becomes the first entry, formatted as the others are.
+                    current.Format.ClearFormatting();
+                }
+
                 current.Style = (ParagraphStyle)document.Styles.AddBuiltIn(BuiltInStyle.Toc1 + Math.Clamp(level - 1, 0, 8));
                 current.Format.TabStops = [new TabStop(tabPosition, TabAlignment.Right, TabLeader.Dot)];
             }

@@ -47,12 +47,15 @@ public class ChangeNotificationTests
         ["Paragraph.AddPicture"] = f => f.Paragraph.AddPicture(new ImageData(new byte[] { 1 }, "image/png"), 1, 1),
         ["CompositeInline.AddRun"] = f => f.Paragraph.AddHyperlink("a", "b").AddRun("more"),
         ["ContentControl.AddParagraph"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).AddParagraph("x"),
+        ["ContentControl.Paging"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).Paging = new GroupPaging { KeepTogether = true },
         ["Shape.AddTextBox"] = f => f.Paragraph.Inlines.Add(new Shape(f.Doc, ShapeKind.Rectangle, 1, 1)).AddTextBox(),
         ["Footnote.AddParagraph"] = f => f.Paragraph.AddFootnote("n").AddParagraph("more"),
         ["Comment.AddParagraph"] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")).AddParagraph("x"),
         ["Comment.AddReply"] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")).AddReply("b", "c"),
         ["Node.Replace"] = f => f.Paragraph.Replace("text", "other"),
         ["Document.UpdateFields"] = f => f.Paragraph.AddField("TITLE", "x").Start.Document.UpdateFields(),
+        ["Document.FillMergeFields"] = f => f.Paragraph.AddField("MERGEFIELD Name", "x").Start.Document.FillMergeFields(MergeData.From(new Dictionary<string, object?> { ["Name"] = "Kari" })),
+        ["MarginBoxCollection.GetOrAdd"] = f => f.Doc.Sections[0].MarginBoxes.GetOrAdd(MarginBoxPosition.TopLeft),
         ["Document.FileName"] = f => f.Doc.FileName = "a.docx",
     };
 
@@ -89,6 +92,7 @@ public class ChangeNotificationTests
         "Run.ToString", "Section.Clone", "Body.Clone", "HeaderFooter.Clone", "Paragraph.Clone", "Table.Clone", "Row.Clone",
         "Cell.Clone", "Run.Clone", "Tab.Clone", "Break.Clone", "Run.GetEffectiveFormat", "Paragraph.GetEffectiveFormat",
         "Table.GetEffectiveFormat", "Row.GetEffectiveFormat", "Cell.GetEffectiveFormat", "Inline.Revision",
+        "Document.MailMerge", "Document.MailMergeAll", "MarginBox.Clone",
     ];
 
     public static TheoryData<string> MutatorNames => [.. Mutators.Keys];
@@ -107,7 +111,7 @@ public class ChangeNotificationTests
         Assert.NotEmpty(changes);
         Assert.Equal(before + changes.Count, f.Doc.Version);
         Assert.Equal(f.Doc.Version, changes[^1].Version);
-        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph" or "Document.FileName"))
+        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "MarginBoxCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph" or "Document.FileName"))
         {
             Assert.Equal(f.Doc.Version, f.Body.Version);   // the others change another story or none
         }
@@ -139,7 +143,7 @@ public class ChangeNotificationTests
     {
         Assembly assembly = typeof(Document).Assembly;
         List<string> missing = [];
-        foreach (Type type in assembly.GetExportedTypes().Where(t => typeof(Node).IsAssignableFrom(t) || t.Name.StartsWith("NodeCollection", StringComparison.Ordinal) || t == typeof(HeaderFooterCollection)))
+        foreach (Type type in assembly.GetExportedTypes().Where(t => typeof(Node).IsAssignableFrom(t) || t.Name.StartsWith("NodeCollection", StringComparison.Ordinal) || t == typeof(HeaderFooterCollection) || t == typeof(MarginBoxCollection)))
         {
             // Property setters are covered per node kind by EveryNodePropertyRaisesChanged.
             if (type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Any(p => IsPlainSetter(p))
@@ -383,6 +387,7 @@ public class ChangeNotificationTests
             _ when t == typeof(Shading) => Shading.Solid(DocumentColor.FromHex("#EEEEEE")),
             _ when t == typeof(IReadOnlyList<TabStop>) => new[] { new TabStop(36) },
             _ when t == typeof(IReadOnlyList<TextColumn>) => new[] { new TextColumn(200, 10) },
+            _ when t == typeof(FontFeatures) => FontFeatures.Parse("tnum"),
             _ => throw new NotSupportedException(t.Name),
         };
     }

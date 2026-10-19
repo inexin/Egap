@@ -34,6 +34,9 @@ internal sealed partial class Paginator
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Document, LayoutCache> Caches = [];
     private readonly List<PageBuilder> pages = [];
     private int totalPages;
+
+    /// <summary>The printed page number of each bookmark PAGEREF fields name, from the last pass.</summary>
+    private Dictionary<string, string> pageRefs = new(StringComparer.OrdinalIgnoreCase);
     private Dictionary<Section, int> sectionPages = [];
 
     // The page and column being filled.
@@ -43,6 +46,10 @@ internal sealed partial class Paginator
     private Section? section;
     private int pageNumber;
     private int measuring;
+    private readonly bool strict;
+
+    /// <summary>The heights the columns of a section's page are held to, by section and page within it, to balance them.</summary>
+    private readonly Dictionary<(Section Section, int Page), double> balance = [];
 
     public Paginator(Document document, LayoutOptions? options)
     {
@@ -57,32 +64,133 @@ internal sealed partial class Paginator
 
         fonts = cache.Fonts;
         bridge = cache.Bridge;
+        strict = options?.Strict ?? false;
         contents = cache.Contents;
     }
 
     public DocumentLayout Run()
     {
-        // NUMPAGES and SECTIONPAGES need the page count: a second pass sets them once it is known.
+        // NUMPAGES and SECTIONPAGES need the page count, and PAGEREF the pages bookmarks are on: more passes set them once
+        // they are known, until they settle (the numbers can move text, a table of contents most of all).
         Flow();
-        if (UsesPageCounts())
+        bool usesCounts = false, usesRefs = false;
+        foreach (Field field in document.GetFields())
         {
-            Dictionary<Section, int> counts = pages.GroupBy(p => p.Section).ToDictionary(g => g.Key, g => g.Count());
-            int total = pages.Count;
-            if (total != totalPages || !counts.SequenceEqual(sectionPages))
+            FieldKind kind = field.Kind;
+            usesCounts |= kind is FieldKind.NumPages or FieldKind.SectionPages;
+            usesRefs |= kind == FieldKind.PageRef;
+        }
+
+        for (int pass = 0; pass < 3 && (usesCounts || usesRefs); pass++)
+        {
+            bool changed = false;
+            if (usesCounts)
             {
-                totalPages = total;
-                sectionPages = counts;
+                Dictionary<Section, int> counts = pages.GroupBy(p => p.Section).ToDictionary(g => g.Key, g => g.Count());
+                int total = pages.Count;
+                if (total != totalPages || !counts.SequenceEqual(sectionPages))
+                {
+                    totalPages = total;
+                    sectionPages = counts;
+                    changed = true;
+                }
+            }
+
+            if (usesRefs)
+            {
+                Dictionary<string, string> found = BookmarkPages();
+                if (found.Count != pageRefs.Count || found.Any(f => !pageRefs.TryGetValue(f.Key, out string? before) || before != f.Value))
+                {
+                    pageRefs = found;
+                    changed = true;
+                }
+            }
+
+            if (!changed)
+            {
+                break;
+            }
+
+            Flow();
+        }
+
+        Balance();
+        List<PageLayout> built = [.. pages.Select((p, i) => p.Build(i, this))];
+        DocumentLayout layout = new(document, built, fonts.Substitutions);
+        if (strict)
+        {
+            StrictLayout.Check(layout, fonts);
+        }
+
+        return layout;
+    }
+
+    /// <summary>
+    /// Balances the columns of each section that asks for it (<see cref="PageSetup.BalanceColumns"/>): its last page's
+    /// columns are held to the least height that still takes all its text, found by laying the document out again. Only a
+    /// section that ends its page is balanced.
+    /// </summary>
+    private void Balance()
+    {
+        for (int s = 0; s < document.Sections.Count; s++)
+        {
+            Section balanced = document.Sections[s];
+            if (balanced.PageSetup.BalanceColumns != true || !pages.Any(p => p.Section == balanced))
+            {
+                continue;
+            }
+
+            bool continuousNext = s + 1 < document.Sections.Count && document.Sections[s + 1].PageSetup.SectionStart == SectionStart.Continuous;
+            PageBuilder last = pages.Last(p => p.Section == balanced);
+            if (continuousNext || last.Columns.Count < 2)
+            {
+                continue;
+            }
+
+            int index = pages.Count(p => p.Section == balanced) - 1;
+            int count = pages.Count;
+            double full = last.ColumnBottom(0) - last.ColumnTop(0);
+            double low = last.BandHeights().Sum() / last.Columns.Count, high = full;
+            if (low >= high - 1)
+            {
+                continue;
+            }
+
+            for (int i = 0; i < 8 && high - low > 1; i++)
+            {
+                double middle = (low + high) / 2;
+                balance[(balanced, index)] = middle;
                 Flow();
+                if (pages.Count == count)
+                {
+                    high = middle;
+                }
+                else
+                {
+                    low = middle;
+                }
+            }
+
+            balance[(balanced, index)] = high;
+            Flow();
+        }
+    }
+
+    /// <summary>The page number, as printed, of each bookmark a PAGEREF field names, from the pages laid out so far.</summary>
+    private Dictionary<string, string> BookmarkPages()
+    {
+        DocumentLayout probe = new(document, [.. pages.Select((p, i) => p.Build(i, this))], fonts.Substitutions);
+        Dictionary<string, string> found = new(StringComparer.OrdinalIgnoreCase);
+        foreach (Field field in document.GetFields().Where(f => f.Kind == FieldKind.PageRef))
+        {
+            if (FieldCode.Parse(field.Code).Arguments is [string name, ..] && !found.ContainsKey(name)
+                && document.GetBookmark(name)?.Start.Paragraph is { } paragraph && probe.PageOf(paragraph) is { } page)
+            {
+                found[name] = page.Number;
             }
         }
 
-        List<PageLayout> built = [.. pages.Select((p, i) => p.Build(i, this))];
-        return new DocumentLayout(document, built, fonts.Substitutions);
-    }
-
-    private bool UsesPageCounts()
-    {
-        return document.GetFields().Any(f => f.Kind is FieldKind.NumPages or FieldKind.SectionPages);
+        return found;
     }
 
     private void Flow()
@@ -165,6 +273,11 @@ internal sealed partial class Paginator
         pages.Add(page);
         column = 0;
         LayHeadersAndFooters(page);
+        if (balance.TryGetValue((current, indexInSection), out double height))
+        {
+            page.LimitBand(height);
+        }
+
         y = page.ColumnTop(0);
     }
 
@@ -214,6 +327,9 @@ internal sealed partial class Paginator
                 case Table table:
                     FlowTable(table);
                     break;
+                case ContentControl { Paging: { } paging } control:
+                    FlowGroup(control, paging);
+                    break;
                 case ContentControl control:
                     FlowBlocks(control.Blocks);
                     break;
@@ -222,6 +338,126 @@ internal sealed partial class Paginator
             }
 
             _ = next;
+        }
+    }
+
+    /// <summary>
+    /// A group with paging options: it moves to the next column or page when it lacks the room it asks for (<see cref="GroupPaging.EnsureSpace"/>)
+    /// or when it is kept together and does not fit where it is but would at the top of a column; with
+    /// <see cref="GroupPaging.StopPaging"/>, only the blocks that fit where it starts are laid out.
+    /// </summary>
+    private void FlowGroup(ContentControl group, GroupPaging paging)
+    {
+        double room = ColumnBottom - y;
+        if (paging.EnsureSpace is double need && room < need && !AtColumnTop)
+        {
+            NextColumn();
+            room = ColumnBottom - y;
+        }
+
+        if (paging.KeepTogether || paging.ShowEntire)
+        {
+            double height = MeasureBlocks(group.Blocks, Column.Width);
+            double full = ColumnBottom - page!.ColumnTop(column);
+            // Kept together, a group taller than an empty column flows on from here; shown entire, it starts a column anyway.
+            if (height > room + 0.01 && !AtColumnTop && (height <= full + 0.01 || paging.ShowEntire))
+            {
+                NextColumn();
+            }
+
+            if (paging.ShowEntire && strict && height > ColumnBottom - y + 0.5)
+            {
+                throw new LayoutException(LayoutProblem.ContentOverflow,
+                    $"A group to be shown entire is {(height - (ColumnBottom - y)).ToString("0.#", CultureInfo.InvariantCulture)} pt taller than an empty page's body; make it smaller or let it break.",
+                    group, pages.Count - 1);
+            }
+        }
+
+        if (paging.ScaleToFit && ScaleGroup(group))
+        {
+            return;
+        }
+
+        if (paging.StopPaging)
+        {
+            double left = ColumnBottom - y;
+            List<Block> fitting = [];
+            foreach (Block block in group.Blocks)
+            {
+                double height = MeasureBlocks([block], Column.Width);
+                if (height > left + 0.01)
+                {
+                    break;
+                }
+
+                left -= height;
+                fitting.Add(block);
+            }
+
+            FlowList(fitting);
+            return;
+        }
+
+        FlowBlocks(group.Blocks);
+    }
+
+    /// <summary>
+    /// Lays a group out scaled down to the room left in the column, the scale found by halving: false when it fits as it is,
+    /// or would need less than a fifth of its size.
+    /// </summary>
+    private bool ScaleGroup(ContentControl group)
+    {
+        double width = Column.Width, room = ColumnBottom - y;
+        if (MeasureBlocks(group.Blocks, width) <= room + 0.01)
+        {
+            return false;
+        }
+
+        double low = 0.2, high = 1;
+        if (MeasureBlocks(group.Blocks, width / low) * low > room + 0.01)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < 10; i++)
+        {
+            double middle = (low + high) / 2;
+            if (MeasureBlocks(group.Blocks, width / middle) * middle <= room + 0.01)
+            {
+                low = middle;
+            }
+            else
+            {
+                high = middle;
+            }
+        }
+
+        (List<LayoutBox> boxes, double height) = LayBlocks(group.Blocks, Column.X, y, width / low);
+        page!.Add(column, new ScaledBox(group, new LayoutRect(Column.X, y, width, height * low), low, boxes));
+        y += height * low;
+        return true;
+    }
+
+    /// <summary>Flows some blocks of a container, as <see cref="FlowBlocks"/> flows all of them.</summary>
+    private void FlowList(List<Block> blocks)
+    {
+        for (int i = 0; i < blocks.Count; i++)
+        {
+            switch (blocks[i])
+            {
+                case Paragraph paragraph:
+                    FlowParagraph(paragraph, i + 1 < blocks.Count ? blocks[i + 1] as Paragraph : null, i > 0 ? blocks[i - 1] as Paragraph : null);
+                    break;
+                case Table table:
+                    FlowTable(table);
+                    break;
+                case ContentControl { Paging: { } paging } control:
+                    FlowGroup(control, paging);
+                    break;
+                case ContentControl control:
+                    FlowBlocks(control.Blocks);
+                    break;
+            }
         }
     }
 
@@ -248,14 +484,37 @@ internal sealed partial class Paginator
     /// <summary>A page field's text on the page being filled.</summary>
     private string? PageFieldText(Field field)
     {
-        NumberStyle style = section?.PageSetup.PageNumberStyle ?? NumberStyle.Decimal;
-        return field.Kind switch
+        if (field.Kind == FieldKind.PageRef)
         {
-            FieldKind.Page => Numbering.Format(pageNumber, style),
-            FieldKind.NumPages => (totalPages == 0 ? 1 : totalPages).ToString(CultureInfo.InvariantCulture),
-            FieldKind.SectionPages => (section is not null && sectionPages.TryGetValue(section, out int count) ? count : 1).ToString(CultureInfo.InvariantCulture),
+            // Before the pages are known, the stored result shows; a missing bookmark shows Word's error.
+            return pageRefs.Count == 0 ? null
+                : FieldCode.Parse(field.Code).Arguments is [string name, ..] && pageRefs.TryGetValue(name, out string? printed) ? printed : "Error! Bookmark not defined.";
+        }
+
+        NumberStyle style = section?.PageSetup.PageNumberStyle ?? NumberStyle.Decimal;
+        int? number = field.Kind switch
+        {
+            FieldKind.Page => pageNumber,
+            FieldKind.NumPages => totalPages == 0 ? 1 : totalPages,
+            FieldKind.SectionPages => section is not null && sectionPages.TryGetValue(section, out int count) ? count : 1,
             _ => null,
         };
+        if (number is not { } value)
+        {
+            return null;
+        }
+
+        string code = field.Code;
+        if (!code.Contains('\\', StringComparison.Ordinal))
+        {
+            return field.Kind == FieldKind.Page ? Numbering.Format(value, style) : value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        // The field's own switches: a \# number picture, and \* formats such as roman numerals.
+        FieldCode parsed = FieldCode.Parse(code);
+        string text = parsed.Switch("\\#") is { Length: > 0 } picture ? FieldCode.FormatNumber(value, picture)
+            : field.Kind == FieldKind.Page ? Numbering.Format(value, style) : value.ToString(CultureInfo.InvariantCulture);
+        return parsed.ApplyGeneralFormat(text);
     }
 
     /// <summary>A paragraph's lines at a column width, with their heights and baselines under its line spacing rule.</summary>
@@ -265,8 +524,21 @@ internal sealed partial class Paginator
         double first = format.FirstLineIndent;
         double left = format.LeftIndent;
         double right = format.RightIndent;
-        LineFlow flow = content.Text.CreateFlow();
         List<PlacedLine> lines = [];
+        if (format.MaxLines > 0)
+        {
+            // A clamped paragraph is laid out whole at one width, which cuts it after its last line with an ellipsis.
+            double width1 = Math.Max(1, width - left - right);
+            foreach (TextLine clamped in content.Text.Layout((float)width1).Lines)
+            {
+                (double h, double a) = LineHeight(clamped, format);
+                lines.Add(new PlacedLine(clamped, left, h, a, width1));
+            }
+
+            return lines;
+        }
+
+        LineFlow flow = content.Text.CreateFlow();
         while (true)
         {
             double indent = lines.Count == 0 ? left + first : left;

@@ -8,6 +8,7 @@ namespace Egap.Documents;
 public sealed class DocumentBuilder
 {
     private readonly Stack<TableState> tables = new();
+    private readonly Stack<(ContentControl Group, Paragraph Paragraph, Inline? Before)> groups = new();
     private Paragraph paragraph;
     private Inline? before;
 
@@ -185,6 +186,19 @@ public sealed class DocumentBuilder
         return start.GetField()!;
     }
 
+    /// <summary>
+    /// Writes a table of contents field and builds its entries from the document's headings: one line per heading, linked
+    /// to it, with its page number filled in by layout.
+    /// </summary>
+    /// <param name="switches">The TOC field's switches; the default takes heading levels 1 to 3 with links, as Word's own does.</param>
+    public Field InsertTableOfContents(string switches = "\\o \"1-3\" \\h \\z \\u")
+    {
+        ArgumentNullException.ThrowIfNull(switches);
+        Field field = InsertField("TOC " + switches);
+        field.Update();
+        return field.Start.GetField() ?? field;
+    }
+
     /// <summary>Writes a hyperlink to <paramref name="address"/> showing <paramref name="text"/> in the Hyperlink style.</summary>
     public Hyperlink InsertHyperlink(string text, string address, bool isBookmark = false)
     {
@@ -282,6 +296,57 @@ public sealed class DocumentBuilder
         return state.Table;
     }
 
+    /// <summary>
+    /// Starts a group of blocks before the cursor's paragraph and moves the cursor into it: what is written until
+    /// <see cref="EndGroup"/> goes inside, and the group's <see cref="ContentControl.Paging"/> says how it is placed across
+    /// pages (kept together, given room, shown entire). Groups nest.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// ContentControl totals = builder.StartGroup();
+    /// totals.Paging = new GroupPaging { KeepTogether = true };
+    /// builder.Writeln("Subtotal: 1 200");
+    /// builder.Write("Total: 1 500");
+    /// builder.EndGroup();
+    /// </code>
+    /// </example>
+    public ContentControl StartGroup()
+    {
+        ContentControl group = new(Document);
+        group.Properties.Kind = ContentControlKind.Group;
+        switch (paragraph.Parent)
+        {
+            case BlockContainer container:
+                container.Blocks.Insert(paragraph.IndexInParent, group);
+                break;
+            case ContentControl control:
+                control.Blocks.Insert(paragraph.IndexInParent, group);
+                break;
+            default:
+                throw new InvalidOperationException("Groups go where blocks go.");
+        }
+
+        groups.Push((group, paragraph, before));
+        paragraph = group.AddParagraph();
+        paragraph.Format.Apply(ParagraphFormat);
+        before = null;
+        return group;
+    }
+
+    /// <summary>Ends the innermost group and moves the cursor back to the paragraph after it.</summary>
+    /// <exception cref="InvalidOperationException">No group is open.</exception>
+    public ContentControl EndGroup()
+    {
+        if (!groups.TryPop(out (ContentControl Group, Paragraph Paragraph, Inline? Before) state))
+        {
+            throw new InvalidOperationException("No group is open; call StartGroup first.");
+        }
+
+        paragraph = state.Paragraph;
+        before = state.Before;
+        return state.Group;
+    }
+
     /// <summary>Moves the cursor to the end of the document's last body paragraph, adding a section or paragraph when missing.</summary>
     public void MoveToDocumentEnd()
     {
@@ -328,6 +393,29 @@ public sealed class DocumentBuilder
         Section section = paragraph.GetAncestor<Section>() ?? (Document.Sections.Count > 0 ? Document.Sections[0] : Document.AddSection());
         HeaderFooter story = section.HeadersFooters.GetOrAdd(kind);
         paragraph = story.Paragraphs.LastOrDefault() ?? story.AddParagraph();
+        before = null;
+    }
+
+    /// <summary>
+    /// Moves the cursor to the end of the current section's margin box at <paramref name="position"/>, adding it when missing.
+    /// </summary>
+    /// <param name="position">Where the box sits.</param>
+    /// <param name="firstPage">Whether the box is only for the section's first page.</param>
+    public void MoveToMarginBox(MarginBoxPosition position, bool firstPage = false)
+    {
+        Section section = paragraph.GetAncestor<Section>() ?? (Document.Sections.Count > 0 ? Document.Sections[0] : Document.AddSection());
+        MarginBox box = section.MarginBoxes.GetOrAdd(position, firstPage);
+        if (box.Paragraphs.LastOrDefault() is { } last)
+        {
+            paragraph = last;
+        }
+        else
+        {
+            // A new box starts with the alignment CSS gives its position.
+            paragraph = box.AddParagraph();
+            paragraph.Format.Alignment = MarginBox.DefaultAlignment(position);
+        }
+
         before = null;
     }
 

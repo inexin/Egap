@@ -177,6 +177,8 @@ internal static class DocxPropertyWriter
         }
 
         OnOff(c, "specVanish", f.SpecialHidden);
+
+        DocxFeatures.Write(f.Features, c);
     }
 
     public static XElement? Paragraph(ParagraphFormat f, ParagraphStyle? style, IEnumerable<XElement>? kept, params XElement?[] extra)

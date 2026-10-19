@@ -22,6 +22,7 @@ internal sealed partial class DocxWriter
     private readonly Dictionary<Footnote, int> noteIds = [];
     private readonly Dictionary<string, int> bookmarkIds = new(StringComparer.Ordinal);
     private readonly HashSet<int> usedBookmarkIds = [];
+    private readonly WarningCollector warnings = new();
     private readonly HashSet<string> writtenParts = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<ImageData, string> media = [];
     private readonly Dictionary<string, string> rebased = new(StringComparer.OrdinalIgnoreCase);
@@ -46,12 +47,14 @@ internal sealed partial class DocxWriter
     /// <param name="stream">Where the package goes.</param>
     /// <param name="regenerate">For tests: write every story, table and paragraph from the model, as if all were edited.</param>
     /// <param name="kind">The kind to write, or null to keep the kind read.</param>
-    public static void Write(Document document, Stream stream, bool regenerate = false, DocxKind? kind = null)
+    /// <returns>What DOCX could not hold.</returns>
+    public static IReadOnlyList<ConversionWarning> Write(Document document, Stream stream, bool regenerate = false, DocxKind? kind = null)
     {
         DocxWriter writer = new(document, regenerate);
         writer.mainContentType = kind is { } k ? ContentTypeOf(k) : writer.data?.MainContentType ?? MainContentType;
         writer.WriteAll();
         writer.package.Save(stream);
+        return writer.warnings.ToList();
     }
 
     private void WriteAll()
@@ -327,7 +330,8 @@ internal sealed partial class DocxWriter
         List<XElement> references = [];
         bool storiesUnchanged = true;
         bool last = section == document.Sections[^1];
-        foreach (HeaderFooter story in section.HeadersFooters)
+        PageSetup setup = section.PageSetup;
+        foreach (HeaderFooter story in StoriesOf(section, ref setup))
         {
             (XElement reference, bool reused) = WriteHeaderFooter(story);
             references.Add(reference);
@@ -346,13 +350,112 @@ internal sealed partial class DocxWriter
             return new XElement(Ns.W + "sectPr", new XAttribute("omit", "1"));
         }
 
-        XElement written = DocxPropertyWriter.Section(section.PageSetup, kept?.UnknownProperties?.GetValueOrDefault("sectPr"), references);
+        XElement written = DocxPropertyWriter.Section(setup, kept?.UnknownProperties?.GetValueOrDefault("sectPr"), references);
         if (kept?.Original is { } read)
         {
             written.Add(read.Attributes().Select(a => new XAttribute(a)));
         }
 
         return written;
+    }
+
+    /// <summary>
+    /// The headers and footers to write for a section. Word has no margin boxes, so those along the top and the bottom are
+    /// added to the header or footer as a borderless table of three cells (left, middle and right); a first-page box makes
+    /// the section's first page different. Corner and side boxes are left out.
+    /// </summary>
+    private List<HeaderFooter> StoriesOf(Section section, ref PageSetup setup)
+    {
+        MarginBoxCollection boxes = section.MarginBoxes;
+        if (!boxes.Any(b => b.Blocks.Count > 0 || b.FirstPage))
+        {
+            return [.. section.HeadersFooters];
+        }
+
+        if (boxes.Any(b => b is { IsTop: false, IsBottom: false } || b.Position is MarginBoxPosition.TopLeftCorner or MarginBoxPosition.TopRightCorner
+            or MarginBoxPosition.BottomLeftCorner or MarginBoxPosition.BottomRightCorner))
+        {
+            warnings.Add(ConversionWarningKind.PageLayoutDropped, "margin boxes in the corners and at the sides of the page");
+        }
+
+        bool firstBoxes = boxes.Any(b => b.FirstPage);
+        bool firstBefore = setup.DifferentFirstPage == true;
+        if (firstBoxes && !firstBefore)
+        {
+            PageSetup copy = new();
+            copy.CopyRaw(setup);
+            copy.DifferentFirstPage = true;
+            setup = copy;
+        }
+
+        List<HeaderFooter> stories = [];
+        foreach ((HeaderFooterKind kind, MarginBoxPosition start) in (ReadOnlySpan<(HeaderFooterKind, MarginBoxPosition)>)
+            [
+                (HeaderFooterKind.HeaderPrimary, MarginBoxPosition.TopLeft), (HeaderFooterKind.HeaderFirst, MarginBoxPosition.TopLeft), (HeaderFooterKind.HeaderEven, MarginBoxPosition.TopLeft),
+                (HeaderFooterKind.FooterPrimary, MarginBoxPosition.BottomLeft), (HeaderFooterKind.FooterFirst, MarginBoxPosition.BottomLeft), (HeaderFooterKind.FooterEven, MarginBoxPosition.BottomLeft),
+            ])
+        {
+            bool first = kind is HeaderFooterKind.HeaderFirst or HeaderFooterKind.FooterFirst;
+            HeaderFooter? own = section.HeadersFooters[kind];
+            if (first && own is null && !firstBefore && firstBoxes)
+            {
+                // The first page showed the primary header or footer until now; it keeps it.
+                own = section.HeadersFooters[kind == HeaderFooterKind.HeaderFirst ? HeaderFooterKind.HeaderPrimary : HeaderFooterKind.FooterPrimary];
+            }
+
+            bool wanted = section.HeadersFooters[kind] is not null || kind is HeaderFooterKind.HeaderPrimary or HeaderFooterKind.FooterPrimary || (first && firstBoxes);
+            MarginBox?[] parts = start == MarginBoxPosition.TopLeft
+                ? [boxes.For(MarginBoxPosition.TopLeft, first), boxes.For(MarginBoxPosition.TopCenter, first), boxes.For(MarginBoxPosition.TopRight, first)]
+                : [boxes.For(MarginBoxPosition.BottomLeft, first), boxes.For(MarginBoxPosition.BottomCenter, first), boxes.For(MarginBoxPosition.BottomRight, first)];
+            if (!wanted || parts.All(p => p is not { Blocks.Count: > 0 }))
+            {
+                if (section.HeadersFooters[kind] is { } unchanged)
+                {
+                    stories.Add(unchanged);
+                }
+                else if (wanted && own is not null)
+                {
+                    stories.Add(Copy(own, kind));
+                }
+
+                continue;
+            }
+
+            HeaderFooter story = own is null ? new HeaderFooter(document, kind) : Copy(own, kind);
+            double width = Math.Max(0, (setup.PageWidth ?? 612) - (setup.MarginLeft ?? 72) - (setup.MarginRight ?? 72) - (setup.Gutter ?? 0));
+            Table table = new(document) { Grid = [width / 3, width / 3, width / 3] };
+            table.Format.Layout = TableLayoutKind.Fixed;
+            table.Format.CellMarginLeft = table.Format.CellMarginRight = 0;
+            Row row = table.AddRow(3);
+            for (int i = 0; i < 3; i++)
+            {
+                Cell cell = row.Cells[i];
+                if (parts[i] is { Blocks.Count: > 0 } part)
+                {
+                    cell.Blocks[0].Remove();
+                    foreach (Block block in part.Blocks)
+                    {
+                        cell.Blocks.Add((Block)block.Clone());
+                    }
+                }
+            }
+
+            story.Blocks.Add(table);
+            stories.Add(story);
+        }
+
+        return stories;
+
+        HeaderFooter Copy(HeaderFooter source, HeaderFooterKind kind)
+        {
+            HeaderFooter copy = new(document, kind);
+            foreach (Block block in source.Blocks)
+            {
+                copy.Blocks.Add((Block)block.Clone());
+            }
+
+            return copy;
+        }
     }
 
     /// <summary>Writes a header or footer part (or keeps the one read) and returns the reference to it.</summary>

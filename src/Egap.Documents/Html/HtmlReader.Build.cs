@@ -87,14 +87,45 @@ internal sealed partial class HtmlReader
         }
 
         quirks = dom.QuirksMode == HtmlQuirksMode.Quirks;
+        ReadProperties(html);
         HtmlStyle rootStyle = StyleOf(html, null);
-        ApplyPage(section, FirstPageName(html, rootStyle, 0));
+        string? pageName = FirstPageName(html, rootStyle, 0);
+        ApplyPage(section, pageName);
         double width = (section.PageSetup.PageWidth ?? 612) - (section.PageSetup.MarginLeft ?? 72) - (section.PageSetup.MarginRight ?? 72);
         Flow flow = new(section.Body, width);
         Frame frame = new(html, rootStyle, null);
+        rootFrame = frame;
         Children(html, rootStyle, flow, frame);
         Close(flow);
         FinishFlow(flow);
+
+        // After the body, so the running elements the margin boxes show are known.
+        ReadMarginBoxes(section, pageName, rootStyle);
+    }
+
+    /// <summary>The title and author in the head, as the writer puts them there.</summary>
+    private void ReadProperties(HtmlElement html)
+    {
+        foreach (HtmlElement element in html.Descendants().OfType<HtmlElement>())
+        {
+            if (element.IsHtml("title") && document.Properties.Title is null)
+            {
+                string title = string.Join(' ', string.Concat(element.Descendants().OfType<HtmlText>().Select(t => t.Data)).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+                if (title.Length > 0)
+                {
+                    document.Properties.Title = title;
+                }
+            }
+            else if (element.IsHtml("meta") && document.Properties.Author is null && string.Equals(element.GetAttribute("name", null), "author", StringComparison.OrdinalIgnoreCase)
+                && element.GetAttribute("content", null) is { Length: > 0 } author)
+            {
+                document.Properties.Author = author;
+            }
+            else if (element.IsHtml("body"))
+            {
+                break;
+            }
+        }
     }
 
     /// <summary>
@@ -271,6 +302,30 @@ internal sealed partial class HtmlReader
             return;
         }
 
+        if (element != placingRunning && RunningName(style) is { } running)
+        {
+            // A running element leaves the flow; the margin boxes that name it show it.
+            if (!runningElements.TryAdd(running, (element, parentStyle)))
+            {
+                Warn(ConversionWarningKind.PageLayoutDropped, "Running elements after the first of a name, which show on every page");
+            }
+
+            return;
+        }
+
+        if (element.GetAttribute("data-toc", null) is not null)
+        {
+            // A placeholder for a table of contents (nav data-toc): a TOC field in a paragraph of its own, built on update.
+            Close(flow);
+            NodeCollection<Inline> inlines = Target(flow, frame);
+            inlines.Add(new FieldStart(document) { IsDirty = true });
+            inlines.Add(new Run(document, " TOC \\o \"1-3\" \\h \\z \\u "));
+            inlines.Add(new FieldSeparator(document));
+            inlines.Add(new FieldEnd(document));
+            Close(flow);
+            return;
+        }
+
         if (element.GetAttribute("id", null) is { Length: > 0 } id)
         {
             flow.PendingBookmarks.Add(id);
@@ -325,6 +380,21 @@ internal sealed partial class HtmlReader
         }
 
         InlineElement(element, style, flow, frame);
+    }
+
+    /// <summary>Moves the blocks from <paramref name="first"/> on into a group kept on one page.</summary>
+    private void Group(NodeCollection<Block> blocks, int first)
+    {
+        ContentControl group = new(document) { Paging = new GroupPaging { KeepTogether = true } };
+        group.Properties.Kind = ContentControlKind.Group;
+        List<Block> moved = [.. blocks.Skip(first)];
+        foreach (Block block in moved)
+        {
+            blocks.Remove(block);
+            group.Blocks.Add(block);
+        }
+
+        blocks.Add(group);
     }
 
     private static bool IsBlockDisplay(string display)
@@ -414,8 +484,15 @@ internal sealed partial class HtmlReader
         }
 
         flow.PendingSpace = Collapse(flow.PendingSpace, marginTop) + (borderTop is null ? paddingTop : 0);
+        int firstBlock = flow.Container.Blocks.Count;
         Children(element, style, flow, frame);
         Close(flow);
+
+        // break-inside: avoid on a box of several blocks keeps them on one page, as a group.
+        if (frame.KeepTogether && !parent.KeepTogether && flow.Container.Blocks.Count - firstBlock > 1)
+        {
+            Group(flow.Container.Blocks, firstBlock);
+        }
         flow.PendingSpace = (borderBottom is null ? paddingBottom : 0) + Math.Max(0, marginBottom) + Math.Min(0, marginBottom);
 
         // The box's borders on its paragraphs: top on the first, bottom on the last, the sides on all.
@@ -615,6 +692,23 @@ internal sealed partial class HtmlReader
         }
 
         LineHeight(style, format);
+        WordBreak? wordBreak = style.Keyword("word-break") switch
+        {
+            "break-all" => WordBreak.BreakAll,
+            "keep-all" => WordBreak.KeepAll,
+            "break-word" => WordBreak.Anywhere,
+            _ => (style.Keyword("overflow-wrap") ?? style.Keyword("word-wrap")) is "anywhere" or "break-word" ? WordBreak.Anywhere : null,
+        };
+        if (wordBreak is not null)
+        {
+            format.WordBreak = wordBreak;
+        }
+
+        if ((style.Text("-webkit-line-clamp") ?? style.Text("line-clamp")) is { } clamp && int.TryParse(clamp.Trim(), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int maxLines) && maxLines > 0)
+        {
+            format.MaxLines = maxLines;
+        }
+
         if (flow.PendingPageBreak)
         {
             format.PageBreakBefore = true;

@@ -60,6 +60,11 @@ internal static class Numbering
             {
                 Number(story, new Counters(), labels);
             }
+
+            foreach (MarginBox box in section.MarginBoxes)
+            {
+                Number(box, new Counters(), labels);
+            }
         }
 
         return labels;

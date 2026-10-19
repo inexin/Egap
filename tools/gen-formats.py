@@ -46,6 +46,9 @@ RUN = [
     ("ComplexScript", "bool", "bool", "Treat the text as complex script whatever its characters.", ""),
     ("NoProof", "bool", "bool", "Leave out of spelling and grammar checks.", ""),
     ("SpecialHidden", "bool", "bool", "Word's specVanish: hidden even when hidden text is shown (used by style separators).", ""),
+    ("WordSpacing", "double", "slen", "Extra space added to each space between words, in points; negative tightens. Word has no such setting.", ""),
+    ("Overline", "bool", "bool", "A line over the text. Word has no such setting.", ""),
+    ("Features", "FontFeatures", "ref", "OpenType features turned on or off, such as ligatures and tabular figures, on top of the defaults.", ""),
 ]
 
 PARA = [
@@ -80,6 +83,8 @@ PARA = [
     ("MirrorIndents", "bool", "bool", "Left and right indents swap on even pages.", ""),
     ("List", "List", "list", "The list the paragraph is in; List.None takes it out of a list its style gives.", ""),
     ("ListLevel", "int", "listlevel", "The paragraph's level in its list, 0 to 8.", ""),
+    ("WordBreak", "WordBreak", "enum", "Where lines may break inside words.", ""),
+    ("MaxLines", "int", "posint", "The most lines shown; the last ends in an ellipsis where text is cut. Word has no such setting.", ""),
 ]
 
 TABLE = [
@@ -114,6 +119,7 @@ ROW = [
     ("Height", "double", "len", "The height in points, read as HeightRule says.", ""),
     ("HeightRule", "RowHeightRule", "enum", "How Height is read.", ""),
     ("IsHeader", "bool", "bool", "Repeated at the top of each page the table continues on.", ""),
+    ("IsFooter", "bool", "bool", "Among the table's last rows, repeated at the bottom of each page the table continues from. Word has no such setting.", ""),
     ("CantSplit", "bool", "bool", "Kept on one page.", ""),
     ("Alignment", "TableAlignment", "enum", "Where the row sits, overriding the table's alignment.", ""),
     ("CellSpacing", "double", "len", "Space between the row's cells in points.", ""),
@@ -165,6 +171,7 @@ PAGE = [
     ("ColumnSeparator", "bool", "bool", "A line between columns.", ""),
     ("TextDirection", "TextDirection", "enum", "Which way text runs.", ""),
     ("Bidi", "bool", "bool", "A right-to-left section: columns from the right.", ""),
+    ("BalanceColumns", "bool", "bool", "Whether the columns of the section's last page are made the same height, as CSS column-fill: balance.", ""),
 ]
 
 FORMATS = [

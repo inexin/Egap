@@ -36,6 +36,9 @@ public enum PageArea
 
     /// <summary>The footnotes at the foot of the page, or endnotes.</summary>
     Notes,
+
+    /// <summary>A margin box, in the page margins.</summary>
+    MarginBox,
 }
 
 /// <summary>
@@ -77,7 +80,23 @@ public abstract class LayoutBox
     }
 }
 
-/// <summary>A page area (body column, header, footer or notes) holding block boxes.</summary>
+/// <summary>
+/// A group of blocks drawn smaller so it fits where it is (<see cref="GroupPaging.ScaleToFit"/>): its children are laid out
+/// <see cref="Scale"/> times wider than the box, from its top left corner, and drawn scaled down about that corner.
+/// </summary>
+public sealed class ScaledBox : LayoutBox
+{
+    internal ScaledBox(ContentControl group, LayoutRect bounds, double scale, IReadOnlyList<LayoutBox> children)
+        : base(group, bounds, children)
+    {
+        Scale = scale;
+    }
+
+    /// <summary>The scale the children are drawn at, below 1.</summary>
+    public double Scale { get; }
+}
+
+/// <summary>A page area (body column, header, footer, notes or margin box) holding block boxes.</summary>
 public sealed class AreaBox : LayoutBox
 {
     internal AreaBox(PageArea area, Story? story, LayoutRect bounds, IReadOnlyList<LayoutBox> children)

@@ -21,6 +21,9 @@ internal sealed partial class Paginator
         public required List<RowPlan> Rows { get; init; }
 
         public required int HeaderRows { get; init; }
+
+        /// <summary>How many of the last rows repeat at the bottom of each part the table continues from.</summary>
+        public int FooterRows { get; init; }
     }
 
     private sealed class RowPlan
@@ -226,7 +229,13 @@ internal sealed partial class Paginator
             headerRows++;
         }
 
-        return new TablePlan { Table = table, Left = left, Width = width, Rows = rows, HeaderRows = headerRows };
+        int footerRows = 0;
+        while (footerRows < rows.Count - headerRows && rows[rows.Count - 1 - footerRows].Format.IsFooter == true)
+        {
+            footerRows++;
+        }
+
+        return new TablePlan { Table = table, Left = left, Width = width, Rows = rows, HeaderRows = headerRows, FooterRows = footerRows };
     }
 
     private static double RowHeight(RowFormat format, double content)
@@ -262,10 +271,15 @@ internal sealed partial class Paginator
                 }
             }
 
+            // Footer rows repeat at the bottom of each part the table continues from, so the rows above them leave room.
+            int footerStart = plan.Rows.Count - plan.FooterRows;
+            double footers = plan.Rows.Skip(footerStart).Sum(f => f.Height);
+            double fullBottom = bottom;
             int placedHere = 0;
             while (r < plan.Rows.Count)
             {
                 RowPlan row = plan.Rows[r];
+                bottom = r < footerStart && plan.FooterRows > 0 ? fullBottom - footers : fullBottom;
                 double needed = resume is null ? row.Height : PartHeight(plan, row, resume, double.PositiveInfinity);
                 if (at + needed <= bottom + 0.01)
                 {
@@ -304,6 +318,15 @@ internal sealed partial class Paginator
                 }
 
                 break;
+            }
+
+            if (placedHere > 0 && r < footerStart && plan.FooterRows > 0)
+            {
+                for (int f = footerStart; f < plan.Rows.Count; f++)
+                {
+                    rows.Add(PlaceRow(plan, plan.Rows[f], at, plan.Rows[f].Height, null, out _, repeated: true));
+                    at += plan.Rows[f].Height;
+                }
             }
 
             if (rows.Count > 0 && placedHere > 0)

@@ -291,9 +291,36 @@ public sealed class InlineContentControl : CompositeInline
     }
 }
 
+/// <summary>
+/// How a group of blocks (a block content control) is placed across pages. Word keeps the blocks but not these settings,
+/// which only Egap's layout follows.
+/// </summary>
+public sealed record GroupPaging
+{
+    /// <summary>Gets whether the group is kept on one page: it starts on the next page when it does not fit on this one but would on an empty one.</summary>
+    public bool KeepTogether { get; init; }
+
+    /// <summary>Gets the height in points that must be left on the page for the group to start there; null for none.</summary>
+    public double? EnsureSpace { get; init; }
+
+    /// <summary>
+    /// Gets whether the group is never split: it starts on the next page when it does not fit, and a strict layout fails when
+    /// it would not fit even on an empty page.
+    /// </summary>
+    public bool ShowEntire { get; init; }
+
+    /// <summary>Gets whether the group shows only what fits on the page it starts on; the blocks that would go on later pages are left out.</summary>
+    public bool StopPaging { get; init; }
+
+    /// <summary>Gets whether the group is drawn smaller, down to a fifth of its size, when that makes it fit where it starts.</summary>
+    public bool ScaleToFit { get; init; }
+}
+
 /// <summary>A content control around blocks: paragraphs, tables and other controls.</summary>
 public sealed class ContentControl : Block
 {
+    private GroupPaging? paging;
+
     /// <summary>An empty content control of <paramref name="document"/>, not yet in the tree.</summary>
     public ContentControl(Document document)
         : base(document)
@@ -307,6 +334,25 @@ public sealed class ContentControl : Block
 
     /// <summary>The control's settings.</summary>
     public ContentControlProperties Properties { get; }
+
+    /// <summary>How the group is placed across pages; null to flow its blocks as if the control were not there.</summary>
+    public GroupPaging? Paging
+    {
+        get => paging;
+        set
+        {
+            if (value?.EnsureSpace is double space && !(space >= 0 && double.IsFinite(space)))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), space, "EnsureSpace must be zero or more points.");
+            }
+
+            if (!Equals(paging, value))
+            {
+                paging = value;
+                Document.NotifyChanged(this, DocumentChangeKind.PropertyChanged, this, property: nameof(Paging));
+            }
+        }
+    }
 
     internal override int ChildCount => Blocks.Count;
 
@@ -345,7 +391,7 @@ public sealed class ContentControl : Block
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        ContentControl copy = new(context.Target);
+        ContentControl copy = new(context.Target) { paging = paging };
         copy.Properties.CopyFrom(Properties);
         return copy;
     }

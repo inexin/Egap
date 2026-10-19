@@ -84,6 +84,7 @@ internal sealed class HtmlWriter
             css.Append(Invariant, $" margin: {Points(setup.MarginTop ?? 72)} {Points(setup.MarginRight ?? 72)} {Points(setup.MarginBottom ?? 72)} {Points(setup.MarginLeft ?? 72)};");
             HeaderFooterBoxes(document.Sections[0], css);
             css.Append(" }\n");
+            FirstPageBoxes(document.Sections[0], css);
         }
 
         // The style classes carry everything; the browser's own heading and paragraph defaults are reset.
@@ -147,25 +148,19 @@ internal sealed class HtmlWriter
 
     private void HeaderFooterBoxes(Section section, StringBuilder css)
     {
-        foreach ((HeaderFooterKind kind, string box) in (ReadOnlySpan<(HeaderFooterKind, string)>)[(HeaderFooterKind.HeaderPrimary, "top-center"), (HeaderFooterKind.FooterPrimary, "bottom-center")])
+        Dictionary<FieldStart, FieldKind> kinds = document.GetFields().ToDictionary(f => f.Start, f => f.Kind);
+        foreach ((HeaderFooterKind kind, MarginBoxPosition position) in (ReadOnlySpan<(HeaderFooterKind, MarginBoxPosition)>)[(HeaderFooterKind.HeaderPrimary, MarginBoxPosition.TopCenter), (HeaderFooterKind.FooterPrimary, MarginBoxPosition.BottomCenter)])
         {
-            if (section.HeadersFooters[kind] is not { } story)
+            if (section.HeadersFooters[kind] is not { } story || section.MarginBoxes[position] is not null)
             {
                 continue;
             }
 
             // A header or footer of text and page numbers becomes a margin box; anything more is left out.
-            StringBuilder content = new();
-            Dictionary<FieldStart, FieldKind> kinds = document.GetFields().ToDictionary(f => f.Start, f => f.Kind);
-            foreach (Paragraph paragraph in story.Paragraphs)
-            {
-                FieldWalk(paragraph.Inlines, content, kinds);
-            }
-
-            string text = content.ToString().Trim();
+            string text = ContentOf(story, kinds);
             if (text.Length > 0)
             {
-                css.Append(' ').Append('@').Append(box).Append(" { content: ").Append(text).Append("; }");
+                css.Append(' ').Append('@').Append(BoxName(position)).Append(" { content: ").Append(text).Append("; }");
             }
 
             if (story.Descendants<Picture>().Any() || story.Descendants<Table>().Any())
@@ -173,7 +168,102 @@ internal sealed class HtmlWriter
                 warnings.Add(ConversionWarningKind.PageLayoutDropped, "pictures and tables in headers and footers");
             }
         }
+
+        foreach (MarginBox box in section.MarginBoxes.Where(b => !b.FirstPage))
+        {
+            MarginBoxRule(box, kinds, css);
+        }
     }
+
+    /// <summary>The first page's own margin boxes, as an @page :first rule.</summary>
+    private void FirstPageBoxes(Section section, StringBuilder css)
+    {
+        if (!section.MarginBoxes.Any(b => b.FirstPage))
+        {
+            return;
+        }
+
+        Dictionary<FieldStart, FieldKind> kinds = document.GetFields().ToDictionary(f => f.Start, f => f.Kind);
+        css.Append("@page :first {");
+        foreach (MarginBox box in section.MarginBoxes.Where(b => b.FirstPage))
+        {
+            MarginBoxRule(box, kinds, css);
+        }
+
+        css.Append(" }\n");
+    }
+
+    private void MarginBoxRule(MarginBox box, Dictionary<FieldStart, FieldKind> kinds, StringBuilder css)
+    {
+        string text = ContentOf(box, kinds);
+        css.Append(" @").Append(BoxName(box.Position)).Append(" { content: ").Append(text.Length > 0 ? text : box.Blocks.Count > 0 ? "\"\"" : "none").Append(';');
+        if (box.Paragraphs.FirstOrDefault() is { } paragraph && paragraph.Format.Alignment is { } alignment && alignment != MarginBox.DefaultAlignment(box.Position))
+        {
+            css.Append(" text-align: ").Append(alignment switch
+            {
+                ParagraphAlignment.Center => "center",
+                ParagraphAlignment.Right => "right",
+                ParagraphAlignment.Justify => "justify",
+                _ => "left",
+            }).Append(';');
+        }
+
+        if (box.Paragraphs.Skip(1).Any())
+        {
+            // The paragraphs are joined by line feeds, which break lines only where white space is kept.
+            css.Append(" white-space: pre;");
+        }
+
+        if (box.Paragraphs.SelectMany(p => p.Inlines).OfType<Run>().FirstOrDefault() is { } run)
+        {
+            css.Append(Declarations(RunCss(run.Format, null)));
+        }
+
+        css.Append(" }");
+        if (box.Descendants<Picture>().Any() || box.Descendants<Table>().Any())
+        {
+            warnings.Add(ConversionWarningKind.PageLayoutDropped, "pictures and tables in margin boxes");
+        }
+    }
+
+    /// <summary>A story's text and page numbers as a CSS content value, paragraphs joined by line breaks.</summary>
+    private static string ContentOf(Story story, Dictionary<FieldStart, FieldKind> kinds)
+    {
+        StringBuilder content = new();
+        bool firstParagraph = true;
+        foreach (Paragraph paragraph in story.Paragraphs)
+        {
+            if (!firstParagraph)
+            {
+                content.Append(" \"\\A\"");
+            }
+
+            firstParagraph = false;
+            FieldWalk(paragraph.Inlines, content, kinds);
+        }
+
+        return content.ToString().Trim();
+    }
+
+    private static string BoxName(MarginBoxPosition position) => position switch
+    {
+        MarginBoxPosition.TopLeftCorner => "top-left-corner",
+        MarginBoxPosition.TopLeft => "top-left",
+        MarginBoxPosition.TopCenter => "top-center",
+        MarginBoxPosition.TopRight => "top-right",
+        MarginBoxPosition.TopRightCorner => "top-right-corner",
+        MarginBoxPosition.RightTop => "right-top",
+        MarginBoxPosition.RightMiddle => "right-middle",
+        MarginBoxPosition.RightBottom => "right-bottom",
+        MarginBoxPosition.BottomRightCorner => "bottom-right-corner",
+        MarginBoxPosition.BottomRight => "bottom-right",
+        MarginBoxPosition.BottomCenter => "bottom-center",
+        MarginBoxPosition.BottomLeft => "bottom-left",
+        MarginBoxPosition.BottomLeftCorner => "bottom-left-corner",
+        MarginBoxPosition.LeftBottom => "left-bottom",
+        MarginBoxPosition.LeftMiddle => "left-middle",
+        _ => "left-top",
+    };
 
     /// <summary>A header's inlines as a CSS content value: strings, with PAGE and NUMPAGES fields as counters.</summary>
     private static void FieldWalk(NodeCollection<Inline> inlines, StringBuilder content, Dictionary<FieldStart, FieldKind> kinds)
@@ -800,6 +890,11 @@ internal sealed class HtmlWriter
             lines.Add("line-through");
         }
 
+        if (format.Overline == true)
+        {
+            lines.Add("overline");
+        }
+
         if (lines.Count > 0)
         {
             string value = string.Join(' ', lines.Where(l => l.Length > 0));
@@ -856,6 +951,16 @@ internal sealed class HtmlWriter
             css.Add(("letter-spacing", Points(spacing)));
         }
 
+        if (format.WordSpacing is { } wordSpacing && wordSpacing != 0)
+        {
+            css.Add(("word-spacing", Points(wordSpacing)));
+        }
+
+        if (format.Features is { Count: > 0 } features)
+        {
+            css.Add(("font-feature-settings", string.Join(", ", features.Select(f => $"'{f.Tag.TrimEnd()}' {f.Value.ToString(Invariant)}"))));
+        }
+
         if (format.Hidden == true)
         {
             css.Add(("display", "none"));
@@ -906,6 +1011,27 @@ internal sealed class HtmlWriter
         if (format.LineSpacing is { } spacing && format.LineSpacingRule is { } rule)
         {
             css.Add(("line-height", rule == LineSpacingRule.Multiple ? (spacing * 1.15).ToString("0.###", Invariant) : Points(spacing)));
+        }
+
+        if (format.MaxLines is int maxLines and > 0)
+        {
+            css.Add(("display", "-webkit-box"));
+            css.Add(("-webkit-box-orient", "vertical"));
+            css.Add(("-webkit-line-clamp", maxLines.ToString(Invariant)));
+            css.Add(("overflow", "hidden"));
+        }
+
+        switch (format.WordBreak)
+        {
+            case WordBreak.BreakAll:
+                css.Add(("word-break", "break-all"));
+                break;
+            case WordBreak.KeepAll:
+                css.Add(("word-break", "keep-all"));
+                break;
+            case WordBreak.Anywhere:
+                css.Add(("overflow-wrap", "anywhere"));
+                break;
         }
 
         AddBorders(css, format.BorderTop, format.BorderRight, format.BorderBottom, format.BorderLeft);

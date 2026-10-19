@@ -96,7 +96,7 @@ public static class DocxFormat
     /// Writes <paramref name="document"/> as DOCX to <paramref name="path"/>. A document read from DOCX keeps what the model
     /// does not name; parts and paragraphs that were not edited are written as they were read.
     /// </summary>
-    /// <returns>What DOCX could not hold (nothing yet: the model is Word's).</returns>
+    /// <returns>What DOCX could not hold: margin boxes in the corners and at the sides of the page.</returns>
     public static IReadOnlyList<ConversionWarning> Save(Document document, string path, DocxSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(document);
@@ -121,12 +121,11 @@ public static class DocxFormat
     }
 
     /// <summary>Writes <paramref name="document"/> as DOCX to <paramref name="stream"/>, which is left open.</summary>
-    /// <returns>What DOCX could not hold (nothing yet: the model is Word's).</returns>
+    /// <returns>What DOCX could not hold: margin boxes in the corners and at the sides of the page.</returns>
     public static IReadOnlyList<ConversionWarning> Save(Document document, Stream stream, DocxSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(stream);
-        DocxWriter.Write(document, stream, kind: options?.Kind);
-        return [];
+        return DocxWriter.Write(document, stream, kind: options?.Kind);
     }
 }

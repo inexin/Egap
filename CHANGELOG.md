@@ -3,6 +3,78 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Documents 1.3.0 (unreleased)
+
+### Text options
+- `RunFormat.WordSpacing`, `Overline` and `Features` (any OpenType feature on or off, `FontFeatures.Parse("liga=0, tnum")`),
+  and `ParagraphFormat.WordBreak` (normal, break all, keep all, anywhere), laid out and drawn.
+- HTML reads and writes them as `word-spacing`, `text-decoration: overline`, `font-feature-settings`,
+  `font-variant-ligatures`, `font-variant-numeric`, `word-break` and `overflow-wrap`; DOCX keeps ligatures, number forms
+  and spacing, stylistic sets and contextual alternates.
+
+### Paging groups
+- `ContentControl.Paging` (`GroupPaging`) keeps a group of blocks together, starts it on a new page when too little room is
+  left (`EnsureSpace`), never splits it (`ShowEntire`) or cuts it where its page ends (`StopPaging`).
+  `DocumentBuilder.StartGroup` and `EndGroup` make groups; HTML `break-inside: avoid` on a box of several blocks makes one.
+- Content controls inside headers, footers, table cells and text boxes are now laid out; before, their blocks were left out.
+- `GroupPaging.ScaleToFit` draws a group smaller (a `ScaledBox`) when that makes it fit where it starts.
+- `ParagraphFormat.MaxLines` clamps a paragraph with an ellipsis (HTML `-webkit-line-clamp`); `RowFormat.IsFooter` repeats a
+  table's last rows at the bottom of each page it continues from; `PageSetup.BalanceColumns` evens out the columns of a
+  section's last page.
+
+### Margin boxes
+- `Section.MarginBoxes` holds content for the sixteen page margin boxes of CSS (`MarginBoxPosition`: the corners and
+  three boxes along each edge), for every page or only the first, with PAGE and NUMPAGES fields for page numbers.
+  `DocumentBuilder.MoveToMarginBox` writes into one. Layout draws them in the margins beside the headers and footers.
+- HTML reads and writes `@page` margin boxes (`@bottom-center { content: "Page " counter(page) " of " counter(pages) }`),
+  `@page :first` included. DOCX writes the top and bottom boxes as a three-part table in the header or footer, and
+  `DocxFormat.Save` now returns a warning for the corner and side boxes it leaves out.
+- HTML running elements: an element with `position: running(name)` leaves the body and shows in the margin boxes whose
+  content is `element(name)`.
+- PAGE, NUMPAGES and SECTIONPAGES fields in headers, footers and margin boxes follow their `\#` number format and `\*`
+  formats such as roman numerals.
+
+### Tables of contents
+- `DocumentBuilder.InsertTableOfContents` writes a TOC field and builds it; `Field.Update` recomputes one field.
+- PAGEREF fields show the page their bookmark is on, filled by layout, so a table of contents gets its page numbers.
+- HTML `<nav data-toc>` is read as a table of contents field.
+
+### Mail merge
+- `Document.FillMergeFields` fills MERGEFIELD fields from an `IMergeData` record with their `\#`, `\@`, `\*`, `` and
+  `` switches, then works out IF fields; fields without a value are removed with a `MergeFieldsRemoved` warning.
+  `MailMergeOptions` sets the culture and can remove paragraphs left empty.
+- `MergeData` makes records from dictionaries, rows with column names and objects (trimming-safe), with dotted names for
+  nested records.
+- Repeated regions, between `TableStart:Name` and `TableEnd:Name` merge fields (rows of one table, or blocks of one story)
+  or in a table row of `Name.Field` fields, nested and reading what a record lacks from the record around it; a region
+  with no records is removed with a warning.
+- `Document.MailMerge` makes one document per record, lazily; `MailMergeAll` makes one document of all records, separated
+  by `MailMergeOptions.Separator`, with warnings through `OnWarning`.
+
+### Fixes
+- HTML: a space after an inline element at the start of a paragraph (`<b>ACME</b> Ltd`) was lost.
+- HTML: the `<title>` and the author meta element are read into the document properties, as the writer writes them.
+- DOCX: a name or text holding characters XML cannot (such as a control character in an HTML id) no longer fails the
+  save; those characters are left out.
+- Layout: a page larger than 14 400 points on a side (PDF's limit) is laid out at that size instead of running out of
+  memory.
+
+### Strict layout and portable fonts
+- `LayoutOptions.Strict` throws a `LayoutException` naming the node, the page and the `LayoutProblem` (text or content
+  running past its area, a missing glyph, a font with no stand-in) instead of degrading.
+- `FontSettings.Portable` uses only embedded fonts and the bundled substitutes, so layout and, with a deterministic save,
+  the PDF bytes are the same on every machine.
+
+## Egap.Pdf.Conversion 1.3.0 (unreleased)
+
+### Headers and footers
+- `PdfConvertOptions.Header` and `Footer` put a `PageBand` on every page in place of the input's own: text at the left,
+  middle and right (`PageBand.Text`), or HTML styled with the page's own style sheets (`PageBand.Html`), with the
+  placeholders `{page}`, `{total-pages}`, `{label}`, `{date}`, `{time}`, `{title}` and `{file}`.
+- Margin boxes are tagged as artifacts in tagged PDF, as headers and footers are.
+- `PdfConvertOptions.TableOfContents` builds a table of contents from the headings, with or without page numbers, at
+  HTML's `<nav data-toc>`, a Markdown `[TOC]` paragraph or the start; its entries link to the headings.
+
 ## Egap.Pdf 1.5.0 (unreleased)
 
 ### Page ranges and units

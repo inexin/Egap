@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 using Egami.Css;
@@ -185,7 +186,84 @@ internal sealed partial class HtmlReader
             text.Clear();
             Run run = new(document, value);
             run.Format.CopyRaw(RunFormatOf(style));
+
+            // Starting a paragraph marks the flow at a line start; the text just written decides that instead.
+            bool atLineStart = flow.AtLineStart;
             Target(flow, frame, currentLink).Add(run);
+            flow.AtLineStart = atLineStart;
+        }
+    }
+
+    /// <summary>
+    /// The OpenType features CSS asks for: <c>font-variant-ligatures</c> and <c>font-variant-numeric</c> first, then
+    /// <c>font-feature-settings</c> (<c>"liga" 0, "tnum"</c>), which wins.
+    /// </summary>
+    private static FontFeatures? FeaturesOf(HtmlStyle style)
+    {
+        List<(string, int)> features = [];
+        foreach (string ligatures in style.Keywords("font-variant-ligatures"))
+        {
+            switch (ligatures)
+            {
+                case "none":
+                    features.AddRange([("liga", 0), ("clig", 0), ("dlig", 0), ("hlig", 0), ("calt", 0)]);
+                    break;
+                case "no-common-ligatures":
+                    features.AddRange([("liga", 0), ("clig", 0)]);
+                    break;
+                case "common-ligatures":
+                    features.AddRange([("liga", 1), ("clig", 1)]);
+                    break;
+                case "discretionary-ligatures":
+                    features.Add(("dlig", 1));
+                    break;
+                case "historical-ligatures":
+                    features.Add(("hlig", 1));
+                    break;
+            }
+        }
+
+        foreach (string numeric in style.Keywords("font-variant-numeric"))
+        {
+            switch (numeric)
+            {
+                case "lining-nums": features.Add(("lnum", 1)); break;
+                case "oldstyle-nums": features.Add(("onum", 1)); break;
+                case "proportional-nums": features.Add(("pnum", 1)); break;
+                case "tabular-nums": features.Add(("tnum", 1)); break;
+                case "slashed-zero": features.Add(("zero", 1)); break;
+                case "diagonal-fractions": features.Add(("frac", 1)); break;
+                case "ordinal": features.Add(("ordn", 1)); break;
+            }
+        }
+
+        if (style.Text("font-feature-settings") is { } settings && settings.Trim() != "normal")
+        {
+            foreach (string item in settings.Split(','))
+            {
+                string[] parts = item.Trim().Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 0 || parts[0].Trim('"', '\'').Length != 4)
+                {
+                    continue;
+                }
+
+                int value = parts.Length < 2 ? 1 : parts[1] switch
+                {
+                    "on" => 1,
+                    "off" => 0,
+                    _ => int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int n) && n >= 0 ? n : 1,
+                };
+                features.Add((parts[0].Trim('"', '\''), value));
+            }
+        }
+
+        try
+        {
+            return features.Count == 0 ? null : FontFeatures.Of(features);
+        }
+        catch (FormatException)
+        {
+            return null;
         }
     }
 
@@ -259,6 +337,21 @@ internal sealed partial class HtmlReader
         if (lines.Contains("line-through"))
         {
             format.Strikethrough = true;
+        }
+
+        if (lines.Contains("overline"))
+        {
+            format.Overline = true;
+        }
+
+        if (style.Keyword("word-spacing") != "normal" && style.Length("word-spacing") is { } wordSpacing && wordSpacing != 0)
+        {
+            format.WordSpacing = wordSpacing;
+        }
+
+        if (FeaturesOf(style) is { Count: > 0 } features)
+        {
+            format.Features = features;
         }
 
         switch (style.Keyword("vertical-align"))
