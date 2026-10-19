@@ -3,7 +3,7 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Pdf 1.5.0 (unreleased)
+## Egap.Pdf 1.5.0 (2026-10-19)
 
 ### Barcodes
 - `PdfStamp.Barcode` stamps any symbol of Egami.Barcodes (QR, Data Matrix, PDF417, Aztec, Code 128, Code 39, ITF, EAN and
