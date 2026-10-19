@@ -70,6 +70,27 @@ builder.ParagraphFormat.WordBreak = WordBreak.Anywhere;
 builder.Writeln("Invoice 2026-118: https://example.com/a/very/long/address/that/must/break");
 ```
 
+## Mail merge
+
+`FillMergeFields` fills a template's MERGEFIELD fields from one record. Each field becomes plain text in its own
+formatting, written with its number (`\#`), date (`\@`) and text (`\*`) formats and the text it puts before and after a
+value (``, ``); IF fields that test the values are worked out. `MergeData` makes records from dictionaries, rows
+with column names and objects, without reflection that trimming would break. Implement `IMergeData` to read records
+from anywhere else. Fields the record has no value for are removed, each with a warning.
+
+```csharp
+using Egap.Documents;
+
+Document letter = Document.Load("letter.docx");
+IReadOnlyList<ConversionWarning> missing = letter.FillMergeFields(MergeData.From(new Dictionary<string, object?>
+{
+    ["Name"] = "Kari Nordmann",
+    ["Amount"] = 1234.5m,
+    ["Due"] = new DateOnly(2026, 11, 1),
+}));
+letter.Save("letter-kari.docx");
+```
+
 ## Page layout
 
 `Layout` breaks the document into pages, with floats, columns, headers and footers, and footnotes. Each page draws onto any

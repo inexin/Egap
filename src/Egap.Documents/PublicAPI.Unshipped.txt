@@ -1,6 +1,8 @@
 #nullable enable
 Egap.Documents.ContentControl.Paging.get -> Egap.Documents.GroupPaging?
 Egap.Documents.ContentControl.Paging.set -> void
+Egap.Documents.ConversionWarningKind.MergeFieldsRemoved = 12 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.Document.FillMergeFields(Egap.Documents.IMergeData! record, Egap.Documents.MailMergeOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 Egap.Documents.DocumentBuilder.EndGroup() -> Egap.Documents.ContentControl!
 Egap.Documents.DocumentBuilder.InsertTableOfContents(string! switches = "\\o \"1-3\" \\h \\z \\u") -> Egap.Documents.Field!
 Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> void
@@ -27,6 +29,9 @@ Egap.Documents.GroupPaging.ShowEntire.get -> bool
 Egap.Documents.GroupPaging.ShowEntire.init -> void
 Egap.Documents.GroupPaging.StopPaging.get -> bool
 Egap.Documents.GroupPaging.StopPaging.init -> void
+Egap.Documents.IMergeData
+Egap.Documents.IMergeData.GetRegion(string! name) -> System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>?
+Egap.Documents.IMergeData.TryGetValue(string! name, out object? value) -> bool
 Egap.Documents.Layout.LayoutException
 Egap.Documents.Layout.LayoutException.Node.get -> Egap.Documents.Node?
 Egap.Documents.Layout.LayoutException.PageIndex.get -> int?
@@ -41,6 +46,14 @@ Egap.Documents.Layout.LayoutProblem.TextOverflow = 0 -> Egap.Documents.Layout.La
 Egap.Documents.Layout.PageArea.MarginBox = 4 -> Egap.Documents.Layout.PageArea
 Egap.Documents.Layout.ScaledBox
 Egap.Documents.Layout.ScaledBox.Scale.get -> double
+Egap.Documents.MailMergeOptions
+Egap.Documents.MailMergeOptions.<Clone>$() -> Egap.Documents.MailMergeOptions!
+Egap.Documents.MailMergeOptions.Culture.get -> System.Globalization.CultureInfo?
+Egap.Documents.MailMergeOptions.Culture.init -> void
+Egap.Documents.MailMergeOptions.Equals(Egap.Documents.MailMergeOptions? other) -> bool
+Egap.Documents.MailMergeOptions.MailMergeOptions() -> void
+Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs.get -> bool
+Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs.init -> void
 Egap.Documents.MarginBox
 Egap.Documents.MarginBox.FirstPage.get -> bool
 Egap.Documents.MarginBox.MarginBox(Egap.Documents.Document! document, Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> void
@@ -66,6 +79,7 @@ Egap.Documents.MarginBoxPosition.TopLeft = 1 -> Egap.Documents.MarginBoxPosition
 Egap.Documents.MarginBoxPosition.TopLeftCorner = 0 -> Egap.Documents.MarginBoxPosition
 Egap.Documents.MarginBoxPosition.TopRight = 3 -> Egap.Documents.MarginBoxPosition
 Egap.Documents.MarginBoxPosition.TopRightCorner = 4 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MergeData
 Egap.Documents.PageSetup.BalanceColumns.get -> bool?
 Egap.Documents.PageSetup.BalanceColumns.set -> void
 Egap.Documents.ParagraphFormat.MaxLines.get -> int?
@@ -97,6 +111,9 @@ override Egap.Documents.FontFeatures.ToString() -> string!
 override Egap.Documents.GroupPaging.Equals(object? obj) -> bool
 override Egap.Documents.GroupPaging.GetHashCode() -> int
 override Egap.Documents.GroupPaging.ToString() -> string!
+override Egap.Documents.MailMergeOptions.Equals(object? obj) -> bool
+override Egap.Documents.MailMergeOptions.GetHashCode() -> int
+override Egap.Documents.MailMergeOptions.ToString() -> string!
 override Egap.Documents.MarginBox.Clone(bool deep = true) -> Egap.Documents.MarginBox!
 static Egap.Documents.FontFeatures.None.get -> Egap.Documents.FontFeatures!
 static Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable<(string! Tag, int Value)>! features) -> Egap.Documents.FontFeatures!
@@ -104,3 +121,10 @@ static Egap.Documents.FontFeatures.Parse(string! text) -> Egap.Documents.FontFea
 static Egap.Documents.GroupPaging.operator !=(Egap.Documents.GroupPaging? left, Egap.Documents.GroupPaging? right) -> bool
 static Egap.Documents.GroupPaging.operator ==(Egap.Documents.GroupPaging? left, Egap.Documents.GroupPaging? right) -> bool
 static Egap.Documents.Layout.FontSettings.Portable.get -> Egap.Documents.Layout.FontSettings!
+static Egap.Documents.MailMergeOptions.operator !=(Egap.Documents.MailMergeOptions? left, Egap.Documents.MailMergeOptions? right) -> bool
+static Egap.Documents.MailMergeOptions.operator ==(Egap.Documents.MailMergeOptions? left, Egap.Documents.MailMergeOptions? right) -> bool
+static Egap.Documents.MergeData.From(System.Collections.Generic.IEnumerable<System.Collections.Generic.IReadOnlyDictionary<string!, object?>!>! records) -> System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>!
+static Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyDictionary<string!, object?>! values) -> Egap.Documents.IMergeData!
+static Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyList<string!>! columns, System.Collections.Generic.IEnumerable<System.Collections.Generic.IReadOnlyList<object?>!>! rows) -> System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>!
+static Egap.Documents.MergeData.FromObject<T>(T value) -> Egap.Documents.IMergeData!
+static Egap.Documents.MergeData.FromObjects<T>(System.Collections.Generic.IEnumerable<T>! values) -> System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>!

@@ -39,6 +39,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - PAGEREF fields show the page their bookmark is on, filled by layout, so a table of contents gets its page numbers.
 - HTML `<nav data-toc>` is read as a table of contents field.
 
+### Mail merge
+- `Document.FillMergeFields` fills MERGEFIELD fields from an `IMergeData` record with their `\#`, `\@`, `\*`, `` and
+  `` switches, then works out IF fields; fields without a value are removed with a `MergeFieldsRemoved` warning.
+  `MailMergeOptions` sets the culture and can remove paragraphs left empty.
+- `MergeData` makes records from dictionaries, rows with column names and objects (trimming-safe), with dotted names for
+  nested records.
+
 ### Fixes
 - HTML: a space after an inline element at the start of a paragraph (`<b>ACME</b> Ltd`) was lost.
 - HTML: the `<title>` and the author meta element are read into the document properties, as the writer writes them.

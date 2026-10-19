@@ -38,6 +38,9 @@ public enum ConversionWarningKind
 
     /// <summary>Pictures or style sheets a reader could not load, as no resolver gave them.</summary>
     ResourceNotLoaded,
+
+    /// <summary>Merge fields and regions a mail merge removed, as the data had no value or records for them.</summary>
+    MergeFieldsRemoved,
 }
 
 /// <summary>One kind of thing a writer left out, with how many times it happened.</summary>
