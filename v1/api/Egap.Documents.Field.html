@@ -283,7 +283,7 @@ and the separator (or the end); the result is between the separator and the end.
 
   <h3 id="Egap_Documents_Field_Result" data-uid="Egap.Documents.Field.Result">
   Result
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Fields.cs/#L243"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Fields.cs/#L254"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The result's text, paragraph breaks as <a class="xref" href="Egap.Documents.ControlChar.html#Egap_Documents_ControlChar_ParagraphBreak">ParagraphBreak</a>.</p>
@@ -415,7 +415,7 @@ and the separator (or the end); the result is between the separator and the end.
 
   <h3 id="Egap_Documents_Field_KindOf_System_String_" data-uid="Egap.Documents.Field.KindOf(System.String)">
   KindOf(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Fields.cs/#L272"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Fields.cs/#L283"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The kind a field code names, by its first word (case-insensitive).</p>
@@ -436,6 +436,46 @@ and the separator (or the end); the result is between the separator and the end.
   <dl class="parameters">
     <dt><a class="xref" href="Egap.Documents.FieldKind.html">FieldKind</a></dt>
     <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Field_Update_" data-uid="Egap.Documents.Field.Update*"></a>
+
+  <h3 id="Egap_Documents_Field_Update_System_Nullable_System_DateTimeOffset__" data-uid="Egap.Documents.Field.Update(System.Nullable{System.DateTimeOffset})">
+  Update(DateTimeOffset?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Fields.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Recomputes this field's result, as <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_UpdateFields_System_Nullable_System_DateTimeOffset__">UpdateFields(DateTimeOffset?)</a> does for every field: a table of contents is
+rebuilt from the headings, for example. Page fields are filled by layout instead.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Update(DateTimeOffset? now = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>now</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>?</dt>
+    <dd><p>The time DATE and TIME show; the current time when null.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>False when the field is locked, no longer in the document, or of a kind Egap does not compute.</p>
+</dd>
   </dl>
 
 

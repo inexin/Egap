@@ -96,7 +96,7 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.Layout.AreaBox.html">AreaBox</a></dt>
-      <dd><p>A page area (body column, header, footer or notes) holding block boxes.</p>
+      <dd><p>A page area (body column, header, footer, notes or margin box) holding block boxes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -141,6 +141,12 @@ group its output: Egap.Pdf.Conversion marks each line and picture with its struc
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.LayoutException.html">LayoutException</a></dt>
+      <dd><p>Thrown by a strict layout (<a class="xref" href="Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_Strict">Strict</a>) when content cannot be laid out as written; names the node
+and the page, so the code or template that made it can be fixed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.Layout.LayoutOptions.html">LayoutOptions</a></dt>
       <dd><p>How <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Layout_Egap_Documents_Layout_LayoutOptions_">Layout(LayoutOptions?)</a> lays a document out.</p>
 </dd>
@@ -168,6 +174,12 @@ group its output: Egap.Pdf.Conversion marks each line and picture with its struc
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.Layout.RowBox.html">RowBox</a></dt>
       <dd><p>A table row on this page or column.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.ScaledBox.html">ScaledBox</a></dt>
+      <dd><p>A group of blocks drawn smaller so it fits where it is (<a class="xref" href="Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_ScaleToFit">ScaleToFit</a>): its children are laid out
+<a class="xref" href="Egap.Documents.Layout.ScaledBox.html#Egap_Documents_Layout_ScaledBox_Scale">Scale</a> times wider than the box, from its top left corner, and drawn scaled down about that corner.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -206,6 +218,11 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.Layout.FontSubstitutionReason.html">FontSubstitutionReason</a></dt>
       <dd><p>Why a font the document asked for was not used as asked.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Layout.LayoutProblem.html">LayoutProblem</a></dt>
+      <dd><p>Why a strict layout failed.</p>
 </dd>
     </dl>
     <dl class="jumplist">

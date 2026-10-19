@@ -741,6 +741,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.FontFeatures.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.FontFeatures.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.FontFeatures",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.FontFeatures.yml\" sourcestartlinenumber=\"1\">OpenType features turned on or off for some text, such as <code>liga=0</code> for no standard ligatures or <code>tnum</code> for\ntabular figures. A feature's value is 1 for on, 0 for off, or a number for features that choose among alternates. The set\nis compared by value, so two runs with the same features share formatting.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Footnote.yml",
       "output": {
         ".html": {
@@ -780,6 +794,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.FormatRevision",
       "Summary": "<p sourcefile=\"api/Egap.Documents.FormatRevision.yml\" sourcestartlinenumber=\"1\">A tracked formatting change: who changed the formatting, when, and what it was before.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.GroupPaging.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.GroupPaging.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.GroupPaging",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.GroupPaging.yml\" sourcestartlinenumber=\"1\">How a group of blocks (a block content control) is placed across pages. Word keeps the blocks but not these settings,\nwhich only Egap's layout follows.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -909,6 +937,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.IMergeData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.IMergeData.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.IMergeData",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.IMergeData.yml\" sourcestartlinenumber=\"1\">One record of data for a mail merge: the value of each merge field, and the records of each repeated region. Implement\nit to stream records from any source; <xref href=\"Egap.Documents.MergeData\" data-throw-if-not-resolved=\"false\"></xref> makes one from dictionaries, rows or objects.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.ImageData.yml",
       "output": {
         ".html": {
@@ -989,7 +1031,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.Layout.AreaBox",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.AreaBox.yml\" sourcestartlinenumber=\"1\">A page area (body column, header, footer or notes) holding block boxes.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.AreaBox.yml\" sourcestartlinenumber=\"1\">A page area (body column, header, footer, notes or margin box) holding block boxes.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1133,6 +1175,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Layout.LayoutException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Layout.LayoutException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Layout.LayoutException",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.LayoutException.yml\" sourcestartlinenumber=\"1\">Thrown by a strict layout (<xref href=\"Egap.Documents.Layout.LayoutOptions.Strict\" data-throw-if-not-resolved=\"false\"></xref>) when content cannot be laid out as written; names the node\nand the page, so the code or template that made it can be fixed.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Layout.LayoutOptions.yml",
       "output": {
         ".html": {
@@ -1144,6 +1200,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.Layout.LayoutOptions",
       "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.LayoutOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Documents.Document.Layout(Egap.Documents.Layout.LayoutOptions)\" data-throw-if-not-resolved=\"false\"></xref> lays a document out.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Layout.LayoutProblem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Layout.LayoutProblem.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Layout.LayoutProblem",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.LayoutProblem.yml\" sourcestartlinenumber=\"1\">Why a strict layout failed.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1256,6 +1326,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.Layout.RowBox",
       "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.RowBox.yml\" sourcestartlinenumber=\"1\">A table row on this page or column.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Layout.ScaledBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Layout.ScaledBox.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Layout.ScaledBox",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.ScaledBox.yml\" sourcestartlinenumber=\"1\">A group of blocks drawn smaller so it fits where it is (<xref href=\"Egap.Documents.GroupPaging.ScaleToFit\" data-throw-if-not-resolved=\"false\"></xref>): its children are laid out\n<xref href=\"Egap.Documents.Layout.ScaledBox.Scale\" data-throw-if-not-resolved=\"false\"></xref> times wider than the box, from its top left corner, and drawn scaled down about that corner.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1427,6 +1511,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.MailMergeOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.MailMergeOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.MailMergeOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.MailMergeOptions.yml\" sourcestartlinenumber=\"1\">How a mail merge fills a template.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.MarginBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.MarginBox.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.MarginBox",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.MarginBox.yml\" sourcestartlinenumber=\"1\">Content in one of the page margins, drawn on every page of its section (or only on the first): text such as a title\nor &quot;Page 3 of 9&quot; with PAGE and NUMPAGES fields, as CSS's <xref href=\"page\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@page\" sourcefile=\"api/Egap.Documents.MarginBox.yml\" sourcestartlinenumber=\"2\"></xref> margin boxes hold. Headers and footers still apply;\nmargin boxes sit beside them and do not move the body.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.MarginBoxCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.MarginBoxCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.MarginBoxCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.MarginBoxCollection.yml\" sourcestartlinenumber=\"1\">A section's margin boxes: at most one for each position, and one more for each on the first page.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.MarginBoxPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.MarginBoxPosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.MarginBoxPosition",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.MarginBoxPosition.yml\" sourcestartlinenumber=\"1\">Where a <xref href=\"Egap.Documents.MarginBox\" data-throw-if-not-resolved=\"false\"></xref> sits in the page margins: the sixteen boxes of CSS Paged Media, three along each edge\nand one in each corner.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.MarkdownExtensions.yml",
       "output": {
         ".html": {
@@ -1508,6 +1648,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.MarkdownSaveOptions",
       "Summary": "<p sourcefile=\"api/Egap.Documents.MarkdownSaveOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Documents.MarkdownFormat\" data-throw-if-not-resolved=\"false\"></xref> writes Markdown.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.MergeData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.MergeData.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.MergeData",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.MergeData.yml\" sourcestartlinenumber=\"1\">Merge data from dictionaries, rows of values with column names, and objects.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2393,6 +2547,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.WordBreak.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.WordBreak.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.WordBreak",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.WordBreak.yml\" sourcestartlinenumber=\"1\">Where lines may break inside words.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.WrapMode.yml",
       "output": {
         ".html": {
@@ -2757,6 +2925,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.PageBand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.PageBand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.PageBand",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.PageBand.yml\" sourcestartlinenumber=\"1\">A header or footer that <xref href=\"Egap.Pdf.Conversion.PdfConvert\" data-throw-if-not-resolved=\"false\"></xref> puts on every page (<xref href=\"Egap.Pdf.Conversion.PdfConvertOptions.Header\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Egap.Pdf.Conversion.PdfConvertOptions.Footer\" data-throw-if-not-resolved=\"false\"></xref>), in the top or\nbottom margin: plain text in up to three places (<xref href=\"Egap.Pdf.Conversion.PageBand.Text(System.String%2cSystem.String%2cSystem.String)\" data-throw-if-not-resolved=\"false\"></xref>), or HTML styled with the page's own CSS\n(<xref href=\"Egap.Pdf.Conversion.PageBand.Html(System.String)\" data-throw-if-not-resolved=\"false\"></xref>). Both take the <xref href=\"Egap.Pdf.PdfPlaceholders\" data-throw-if-not-resolved=\"false\"></xref>: <code>{page}</code>, <code>{total-pages}</code>,\n<code>{label}</code>, <code>{date}</code>, <code>{time}</code>, <code>{title}</code> and <code>{file}</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.Conversion.PageMargins.yml",
       "output": {
         ".html": {
@@ -3034,6 +3216,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.Conversion.TableDetection",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.TableDetection.yml\" sourcestartlinenumber=\"1\">Which tables layout analysis looks for (design Q5).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Conversion.TableOfContentsMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Conversion.TableOfContentsMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Conversion.TableOfContentsMode",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Conversion.TableOfContentsMode.yml\" sourcestartlinenumber=\"1\">Whether <xref href=\"Egap.Pdf.Conversion.PdfConvert\" data-throw-if-not-resolved=\"false\"></xref> gives the PDF a table of contents built from the headings.</p>\n"
     },
     {
       "type": "ManagedReference",

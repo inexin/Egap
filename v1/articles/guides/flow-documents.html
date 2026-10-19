@@ -125,6 +125,55 @@ Document page = HtmlFormat.Load(&quot;invoice.html&quot;, new HtmlLoadOptions
 </code></pre>
 <p>Form controls in HTML (text inputs, check boxes, radio buttons, selects and text areas) are read as content controls that
 hold their values, as Word's are, so they keep their place in the text and a PDF export can turn them into form fields.</p>
+<h2 id="text-options">Text options</h2>
+<p>Besides fonts, sizes and colours, runs take word spacing, an overline and any OpenType feature, such as ligatures,
+tabular or old-style figures and stylistic sets. Paragraphs choose where lines may break inside words. HTML's
+<code>word-spacing</code>, <code>text-decoration: overline</code>, <code>font-feature-settings</code>, <code>font-variant-ligatures</code>, <code>font-variant-numeric</code>,
+<code>word-break</code> and <code>overflow-wrap</code> read into the same settings. DOCX keeps the features Word has (ligatures, number forms
+and spacing, stylistic sets, contextual alternates); Word has no word spacing or overline.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document doc = new();
+DocumentBuilder builder = new(doc);
+builder.Font.WordSpacing = 2;
+builder.Font.Overline = true;
+builder.Font.Features = FontFeatures.Parse(&quot;liga=0, tnum&quot;);
+builder.ParagraphFormat.WordBreak = WordBreak.Anywhere;
+builder.Writeln(&quot;Invoice 2026-118: https://example.com/a/very/long/address/that/must/break&quot;);
+</code></pre>
+<h2 id="mail-merge">Mail merge</h2>
+<p><code>FillMergeFields</code> fills a template's MERGEFIELD fields from one record. Each field becomes plain text in its own
+formatting, written with its number (<code>\#</code>), date (<code>\@</code>) and text (<code>\*</code>) formats and the text it puts before and after a
+value (<code></code>, <code></code>); IF fields that test the values are worked out. <code>MergeData</code> makes records from dictionaries, rows
+with column names and objects, without reflection that trimming would break. Implement <code>IMergeData</code> to read records
+from anywhere else. Fields the record has no value for are removed, each with a warning.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document letter = Document.Load(&quot;letter.docx&quot;);
+IReadOnlyList&lt;ConversionWarning&gt; missing = letter.FillMergeFields(MergeData.From(new Dictionary&lt;string, object?&gt;
+{
+    [&quot;Name&quot;] = &quot;Kari Nordmann&quot;,
+    [&quot;Amount&quot;] = 1234.5m,
+    [&quot;Due&quot;] = new DateOnly(2026, 11, 1),
+}));
+letter.Save(&quot;letter-kari.docx&quot;);
+</code></pre>
+<p>A region repeats once per record of a sequence in the data: the rows or paragraphs from a <code>TableStart:Lines</code> merge field to
+a <code>TableEnd:Lines</code> one, or a table row whose fields are all named <code>Lines.Something</code>. Regions nest, and a field a line does
+not have is read from the record around it. <code>MailMerge</code> makes one document per record, as the sequence is read, and
+<code>MailMergeAll</code> one document of them all, each record starting on a new page (or as <code>Separator</code> says).</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document template = Document.Load(&quot;invoice-template.docx&quot;);
+IEnumerable&lt;IMergeData&gt; customers = MergeData.From([&quot;Name&quot;, &quot;City&quot;], [[&quot;Ola&quot;, &quot;Oslo&quot;], [&quot;Kari&quot;, &quot;Bergen&quot;]]);
+int number = 1;
+foreach (Document invoice in template.MailMerge(customers))
+{
+    invoice.Save($&quot;invoice-{number++}.docx&quot;);
+}
+
+Document statements = template.MailMergeAll(customers, new MailMergeOptions { OnWarning = w =&gt; Console.WriteLine(w) });
+</code></pre>
 <h2 id="page-layout">Page layout</h2>
 <p><code>Layout</code> breaks the document into pages, with floats, columns, headers and footers, and footnotes. Each page draws onto any
 Egami canvas.</p>
@@ -134,6 +183,71 @@ using Egap.Documents.Layout;
 Document doc = Document.Load(&quot;report.docx&quot;);
 DocumentLayout pages = doc.Layout();                              // pages, lines and boxes linked to the model
 pages.Pages[0].Render(dpi: 150).Save(&quot;page1.png&quot;);
+</code></pre>
+<p>A group of blocks (a block content control) can say how it is placed across pages: kept together on one page, started
+on a new page when less than some height is left, never split, cut where the page ends, or drawn smaller to fit the room
+left. HTML's <code>break-inside: avoid</code> on a box of several blocks makes such a group. A paragraph can be clamped to a number
+of lines, ending in an ellipsis (HTML's <code>-webkit-line-clamp</code>); table rows marked as footer rows repeat at the bottom of
+each page the table continues from; and a section can balance its last page's columns. Word keeps the content, not
+these settings.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document invoice = new();
+DocumentBuilder builder = new(invoice);
+builder.Writeln(&quot;Lines of the invoice...&quot;);
+ContentControl totals = builder.StartGroup();
+totals.Paging = new GroupPaging { KeepTogether = true, EnsureSpace = 120 };
+builder.Writeln(&quot;Subtotal: 1 200 NOK&quot;);
+builder.Write(&quot;Total: 1 500 NOK&quot;);
+builder.EndGroup();
+</code></pre>
+<p>Margin boxes put text in the page margins, as CSS's <code>@page</code> margin boxes do: a box in each corner and three along each
+edge, on every page of the section or only the first. They hold PAGE and NUMPAGES fields for page numbers and sit beside
+the headers and footers without moving the body. HTML's <code>@top-left</code>, <code>@bottom-center</code> and the other margin box rules read
+into them, <code>counter(page)</code> and <code>counter(pages)</code> included, and write back the same way. An element with
+<code>position: running(name)</code> leaves the body and shows in the boxes whose content is <code>element(name)</code>. DOCX has no margin boxes, so the
+top and bottom ones are saved as a three-part table in the header or footer; the corner and side boxes are left out with
+a warning.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document report = Document.Load(&quot;report.docx&quot;);
+DocumentBuilder builder = new(report);
+builder.MoveToMarginBox(MarginBoxPosition.TopLeft);
+builder.Write(&quot;Quarterly report&quot;);
+builder.MoveToMarginBox(MarginBoxPosition.BottomRight);
+builder.Write(&quot;Page &quot;);
+builder.InsertField(&quot;PAGE&quot;);
+builder.Write(&quot; of &quot;);
+builder.InsertField(&quot;NUMPAGES&quot;);
+builder.MoveToMarginBox(MarginBoxPosition.TopLeft, firstPage: true);   // an empty box: no title on the cover
+</code></pre>
+<p><code>InsertTableOfContents</code> writes a TOC field and builds its entries from the headings, each linked to its heading. Layout
+fills in the page numbers, as it does for every PAGEREF field. HTML's <code>&lt;nav data-toc&gt;</code> is read as such a field.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document handbook = Document.Load(&quot;handbook.docx&quot;);
+DocumentBuilder builder = new(handbook);
+builder.MoveToDocumentStart();
+builder.InsertTableOfContents();
+builder.InsertParagraph();
+</code></pre>
+<p>With <code>Strict</code>, layout throws a <code>LayoutException</code> naming the node and the page instead of degrading: a word too long for
+its column, a table or picture past the page, a character no font has, or a font with no stand-in. <code>FontSettings.Portable</code>
+uses only the document's embedded fonts and the bundled substitutes, never the system's, so a document prints the same
+on every machine; with a deterministic save the PDF bytes are the same too. Both suit documents your own code builds;
+for converting other people's files, leave them off and read the warnings.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Layout;
+
+Document report = Document.Load(&quot;report.docx&quot;);
+try
+{
+    DocumentLayout pages = report.Layout(new LayoutOptions { Strict = true, Fonts = FontSettings.Portable });
+}
+catch (LayoutException e)
+{
+    Console.WriteLine($&quot;{e.Problem} on page {e.PageIndex + 1}: {e.Message}&quot;);
+}
 </code></pre>
 <p>For PDF output, see <a href="pdf-export-and-conversion.html">PDF export and conversion</a>.</p>
 

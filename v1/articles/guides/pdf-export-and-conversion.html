@@ -125,6 +125,25 @@ PdfConvert.FromHtml(&quot;&lt;h1&gt;Invoice&lt;/h1&gt;&lt;p&gt;Total: 120 EUR&lt
 using PdfDocument scans = PdfConvert.FromImages([&quot;scan-1.jpg&quot;, &quot;scan-2.png&quot;], new PdfConvertOptions { PageSize = PdfPageSize.A4 });
 scans.RenderPagesToFiles(&quot;thumbs/page-{page:00}.png&quot;, new PdfRenderOptions { Dpi = 72 });
 </code></pre>
+<p><code>Header</code> and <code>Footer</code> put the same band on every page, in the top or bottom margin, in place of the input's own headers
+and footers. A text band has up to three parts (left, middle and right); an HTML band is styled with the page's own style
+sheets. Both take the placeholders <code>{page}</code>, <code>{total-pages}</code>, <code>{label}</code>, <code>{date}</code>, <code>{time}</code>, <code>{title}</code> and <code>{file}</code>, and
+a number format after a colon, as in <code>{page:000}</code>. HTML pages can set the same thing themselves with <code>@page</code> margin boxes
+and running elements (<code>position: running(header)</code> with <code>content: element(header)</code>).</p>
+<pre><code class="lang-csharp">using Egap.Pdf.Conversion;
+
+PdfConvert.FromHtml(&quot;&lt;title&gt;Invoice 2026-118&lt;/title&gt;&lt;style&gt;.hdr { text-align: right }&lt;/style&gt;&lt;p&gt;Total: 120 EUR&lt;/p&gt;&quot;, &quot;invoice.pdf&quot;, new PdfConvertOptions
+{
+    Header = PageBand.Html(&quot;&lt;div class='hdr'&gt;&lt;b&gt;ACME&lt;/b&gt; {date}&lt;/div&gt;&quot;),
+    Footer = PageBand.Text(left: &quot;{title}&quot;, center: &quot;Page {page} of {total-pages}&quot;) with { FontSize = 8 },
+});
+</code></pre>
+<p><code>TableOfContents</code> builds a table of contents from the headings, each entry linked to its heading, with or without page
+numbers. It goes where HTML has <code>&lt;nav data-toc&gt;</code> or Markdown a <code>[TOC]</code> paragraph, else at the start.</p>
+<pre><code class="lang-csharp">using Egap.Pdf.Conversion;
+
+PdfConvert.FromFile(&quot;handbook.md&quot;, &quot;handbook.pdf&quot;, new PdfConvertOptions { TableOfContents = TableOfContentsMode.WithPageNumbers });
+</code></pre>
 <p><code>PdfStamp.Html</code> lays out a piece of HTML as a stamp, such as a seal or a letterhead, and draws it on every page.</p>
 <pre><code class="lang-csharp">using Egap.Pdf;
 using Egap.Pdf.Conversion;

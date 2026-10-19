@@ -164,7 +164,7 @@ Class RowFormat  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Documents_RowFormat_Alignment" data-uid="Egap.Documents.RowFormat.Alignment">
   Alignment
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Where the row sits, overriding the table's alignment.</p>
@@ -196,7 +196,7 @@ Class RowFormat  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Documents_RowFormat_CantSplit" data-uid="Egap.Documents.RowFormat.CantSplit">
   CantSplit
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Kept on one page.</p>
@@ -228,7 +228,7 @@ Class RowFormat  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Documents_RowFormat_CellSpacing" data-uid="Egap.Documents.RowFormat.CellSpacing">
   CellSpacing
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Space between the row's cells in points.</p>
@@ -260,7 +260,7 @@ Class RowFormat  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Documents_RowFormat_Height" data-uid="Egap.Documents.RowFormat.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The height in points, read as HeightRule says.</p>
@@ -292,7 +292,7 @@ Class RowFormat  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Documents_RowFormat_HeightRule" data-uid="Egap.Documents.RowFormat.HeightRule">
   HeightRule
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How Height is read.</p>
@@ -324,7 +324,7 @@ Class RowFormat  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Documents_RowFormat_Hidden" data-uid="Egap.Documents.RowFormat.Hidden">
   Hidden
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Hidden row.</p>
@@ -352,11 +352,43 @@ Class RowFormat  <a class="header-action link-secondary" title="View source" hre
 
 
 
+  <a id="Egap_Documents_RowFormat_IsFooter_" data-uid="Egap.Documents.RowFormat.IsFooter*"></a>
+
+  <h3 id="Egap_Documents_RowFormat_IsFooter" data-uid="Egap.Documents.RowFormat.IsFooter">
+  IsFooter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Among the table's last rows, repeated at the bottom of each page the table continues from. Word has no such setting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? IsFooter { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_RowFormat_IsHeader_" data-uid="Egap.Documents.RowFormat.IsHeader*"></a>
 
   <h3 id="Egap_Documents_RowFormat_IsHeader" data-uid="Egap.Documents.RowFormat.IsHeader">
   IsHeader
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/RowFormat.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Repeated at the top of each page the table continues on.</p>

@@ -1877,6 +1877,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ContentControl.Clone
   nameWithType: ContentControl.Clone
+- uid: Egap.Documents.ContentControl.Paging
+  name: Paging
+  href: api/Egap.Documents.ContentControl.html#Egap_Documents_ContentControl_Paging
+  commentId: P:Egap.Documents.ContentControl.Paging
+  fullName: Egap.Documents.ContentControl.Paging
+  nameWithType: ContentControl.Paging
+- uid: Egap.Documents.ContentControl.Paging*
+  name: Paging
+  href: api/Egap.Documents.ContentControl.html#Egap_Documents_ContentControl_Paging_
+  commentId: Overload:Egap.Documents.ContentControl.Paging
+  isSpec: "True"
+  fullName: Egap.Documents.ContentControl.Paging
+  nameWithType: ContentControl.Paging
 - uid: Egap.Documents.ContentControl.Properties
   name: Properties
   href: api/Egap.Documents.ContentControl.html#Egap_Documents_ContentControl_Properties
@@ -2294,6 +2307,12 @@ references:
   commentId: F:Egap.Documents.ConversionWarningKind.LayoutApproximated
   fullName: Egap.Documents.ConversionWarningKind.LayoutApproximated
   nameWithType: ConversionWarningKind.LayoutApproximated
+- uid: Egap.Documents.ConversionWarningKind.MergeFieldsRemoved
+  name: MergeFieldsRemoved
+  href: api/Egap.Documents.ConversionWarningKind.html#Egap_Documents_ConversionWarningKind_MergeFieldsRemoved
+  commentId: F:Egap.Documents.ConversionWarningKind.MergeFieldsRemoved
+  fullName: Egap.Documents.ConversionWarningKind.MergeFieldsRemoved
+  nameWithType: ConversionWarningKind.MergeFieldsRemoved
 - uid: Egap.Documents.ConversionWarningKind.MergedCellsSplit
   name: MergedCellsSplit
   href: api/Egap.Documents.ConversionWarningKind.html#Egap_Documents_ConversionWarningKind_MergedCellsSplit
@@ -2410,6 +2429,22 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Document.FileName
   nameWithType: Document.FileName
+- uid: Egap.Documents.Document.FillMergeFields(Egap.Documents.IMergeData,Egap.Documents.MailMergeOptions)
+  name: FillMergeFields(IMergeData, MailMergeOptions?)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_FillMergeFields_Egap_Documents_IMergeData_Egap_Documents_MailMergeOptions_
+  commentId: M:Egap.Documents.Document.FillMergeFields(Egap.Documents.IMergeData,Egap.Documents.MailMergeOptions)
+  name.vb: FillMergeFields(IMergeData, MailMergeOptions)
+  fullName: Egap.Documents.Document.FillMergeFields(Egap.Documents.IMergeData, Egap.Documents.MailMergeOptions?)
+  fullName.vb: Egap.Documents.Document.FillMergeFields(Egap.Documents.IMergeData, Egap.Documents.MailMergeOptions)
+  nameWithType: Document.FillMergeFields(IMergeData, MailMergeOptions?)
+  nameWithType.vb: Document.FillMergeFields(IMergeData, MailMergeOptions)
+- uid: Egap.Documents.Document.FillMergeFields*
+  name: FillMergeFields
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_FillMergeFields_
+  commentId: Overload:Egap.Documents.Document.FillMergeFields
+  isSpec: "True"
+  fullName: Egap.Documents.Document.FillMergeFields
+  nameWithType: Document.FillMergeFields
 - uid: Egap.Documents.Document.FormattingVersion
   name: FormattingVersion
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_FormattingVersion
@@ -2559,6 +2594,38 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Document.Load
   nameWithType: Document.Load
+- uid: Egap.Documents.Document.MailMerge(System.Collections.Generic.IEnumerable{Egap.Documents.IMergeData},Egap.Documents.MailMergeOptions)
+  name: MailMerge(IEnumerable<IMergeData>, MailMergeOptions?)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_MailMerge_System_Collections_Generic_IEnumerable_Egap_Documents_IMergeData__Egap_Documents_MailMergeOptions_
+  commentId: M:Egap.Documents.Document.MailMerge(System.Collections.Generic.IEnumerable{Egap.Documents.IMergeData},Egap.Documents.MailMergeOptions)
+  name.vb: MailMerge(IEnumerable(Of IMergeData), MailMergeOptions)
+  fullName: Egap.Documents.Document.MailMerge(System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData>, Egap.Documents.MailMergeOptions?)
+  fullName.vb: Egap.Documents.Document.MailMerge(System.Collections.Generic.IEnumerable(Of Egap.Documents.IMergeData), Egap.Documents.MailMergeOptions)
+  nameWithType: Document.MailMerge(IEnumerable<IMergeData>, MailMergeOptions?)
+  nameWithType.vb: Document.MailMerge(IEnumerable(Of IMergeData), MailMergeOptions)
+- uid: Egap.Documents.Document.MailMerge*
+  name: MailMerge
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_MailMerge_
+  commentId: Overload:Egap.Documents.Document.MailMerge
+  isSpec: "True"
+  fullName: Egap.Documents.Document.MailMerge
+  nameWithType: Document.MailMerge
+- uid: Egap.Documents.Document.MailMergeAll(System.Collections.Generic.IEnumerable{Egap.Documents.IMergeData},Egap.Documents.MailMergeOptions)
+  name: MailMergeAll(IEnumerable<IMergeData>, MailMergeOptions?)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_MailMergeAll_System_Collections_Generic_IEnumerable_Egap_Documents_IMergeData__Egap_Documents_MailMergeOptions_
+  commentId: M:Egap.Documents.Document.MailMergeAll(System.Collections.Generic.IEnumerable{Egap.Documents.IMergeData},Egap.Documents.MailMergeOptions)
+  name.vb: MailMergeAll(IEnumerable(Of IMergeData), MailMergeOptions)
+  fullName: Egap.Documents.Document.MailMergeAll(System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData>, Egap.Documents.MailMergeOptions?)
+  fullName.vb: Egap.Documents.Document.MailMergeAll(System.Collections.Generic.IEnumerable(Of Egap.Documents.IMergeData), Egap.Documents.MailMergeOptions)
+  nameWithType: Document.MailMergeAll(IEnumerable<IMergeData>, MailMergeOptions?)
+  nameWithType.vb: Document.MailMergeAll(IEnumerable(Of IMergeData), MailMergeOptions)
+- uid: Egap.Documents.Document.MailMergeAll*
+  name: MailMergeAll
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_MailMergeAll_
+  commentId: Overload:Egap.Documents.Document.MailMergeAll
+  isSpec: "True"
+  fullName: Egap.Documents.Document.MailMergeAll
+  nameWithType: Document.MailMergeAll
 - uid: Egap.Documents.Document.Properties
   name: Properties
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_Properties
@@ -2772,6 +2839,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentBuilder.EndBookmark
   nameWithType: DocumentBuilder.EndBookmark
+- uid: Egap.Documents.DocumentBuilder.EndGroup
+  name: EndGroup()
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_EndGroup
+  commentId: M:Egap.Documents.DocumentBuilder.EndGroup
+  fullName: Egap.Documents.DocumentBuilder.EndGroup()
+  nameWithType: DocumentBuilder.EndGroup()
+- uid: Egap.Documents.DocumentBuilder.EndGroup*
+  name: EndGroup
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_EndGroup_
+  commentId: Overload:Egap.Documents.DocumentBuilder.EndGroup
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentBuilder.EndGroup
+  nameWithType: DocumentBuilder.EndGroup
 - uid: Egap.Documents.DocumentBuilder.EndRow
   name: EndRow()
   href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_EndRow
@@ -2940,6 +3020,22 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentBuilder.InsertTab
   nameWithType: DocumentBuilder.InsertTab
+- uid: Egap.Documents.DocumentBuilder.InsertTableOfContents(System.String)
+  name: InsertTableOfContents(string)
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_InsertTableOfContents_System_String_
+  commentId: M:Egap.Documents.DocumentBuilder.InsertTableOfContents(System.String)
+  name.vb: InsertTableOfContents(String)
+  fullName: Egap.Documents.DocumentBuilder.InsertTableOfContents(string)
+  fullName.vb: Egap.Documents.DocumentBuilder.InsertTableOfContents(String)
+  nameWithType: DocumentBuilder.InsertTableOfContents(string)
+  nameWithType.vb: DocumentBuilder.InsertTableOfContents(String)
+- uid: Egap.Documents.DocumentBuilder.InsertTableOfContents*
+  name: InsertTableOfContents
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_InsertTableOfContents_
+  commentId: Overload:Egap.Documents.DocumentBuilder.InsertTableOfContents
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentBuilder.InsertTableOfContents
+  nameWithType: DocumentBuilder.InsertTableOfContents
 - uid: Egap.Documents.DocumentBuilder.MoveTo(Egap.Documents.Node)
   name: MoveTo(Node)
   href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_MoveTo_Egap_Documents_Node_
@@ -3008,6 +3104,22 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentBuilder.MoveToHeaderFooter
   nameWithType: DocumentBuilder.MoveToHeaderFooter
+- uid: Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition,System.Boolean)
+  name: MoveToMarginBox(MarginBoxPosition, bool)
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_MoveToMarginBox_Egap_Documents_MarginBoxPosition_System_Boolean_
+  commentId: M:Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition,System.Boolean)
+  name.vb: MoveToMarginBox(MarginBoxPosition, Boolean)
+  fullName: Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition, bool)
+  fullName.vb: Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition, Boolean)
+  nameWithType: DocumentBuilder.MoveToMarginBox(MarginBoxPosition, bool)
+  nameWithType.vb: DocumentBuilder.MoveToMarginBox(MarginBoxPosition, Boolean)
+- uid: Egap.Documents.DocumentBuilder.MoveToMarginBox*
+  name: MoveToMarginBox
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_MoveToMarginBox_
+  commentId: Overload:Egap.Documents.DocumentBuilder.MoveToMarginBox
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentBuilder.MoveToMarginBox
+  nameWithType: DocumentBuilder.MoveToMarginBox
 - uid: Egap.Documents.DocumentBuilder.ParagraphFormat
   name: ParagraphFormat
   href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_ParagraphFormat
@@ -3050,6 +3162,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentBuilder.StartBookmark
   nameWithType: DocumentBuilder.StartBookmark
+- uid: Egap.Documents.DocumentBuilder.StartGroup
+  name: StartGroup()
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_StartGroup
+  commentId: M:Egap.Documents.DocumentBuilder.StartGroup
+  fullName: Egap.Documents.DocumentBuilder.StartGroup()
+  nameWithType: DocumentBuilder.StartGroup()
+- uid: Egap.Documents.DocumentBuilder.StartGroup*
+  name: StartGroup
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_StartGroup_
+  commentId: Overload:Egap.Documents.DocumentBuilder.StartGroup
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentBuilder.StartGroup
+  nameWithType: DocumentBuilder.StartGroup
 - uid: Egap.Documents.DocumentBuilder.StartTable
   name: StartTable()
   href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_StartTable
@@ -4792,6 +4917,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Field.Start
   nameWithType: Field.Start
+- uid: Egap.Documents.Field.Update(System.Nullable{System.DateTimeOffset})
+  name: Update(DateTimeOffset?)
+  href: api/Egap.Documents.Field.html#Egap_Documents_Field_Update_System_Nullable_System_DateTimeOffset__
+  commentId: M:Egap.Documents.Field.Update(System.Nullable{System.DateTimeOffset})
+  fullName: Egap.Documents.Field.Update(System.DateTimeOffset?)
+  nameWithType: Field.Update(DateTimeOffset?)
+- uid: Egap.Documents.Field.Update*
+  name: Update
+  href: api/Egap.Documents.Field.html#Egap_Documents_Field_Update_
+  commentId: Overload:Egap.Documents.Field.Update
+  isSpec: "True"
+  fullName: Egap.Documents.Field.Update
+  nameWithType: Field.Update
 - uid: Egap.Documents.FieldEnd
   name: FieldEnd
   href: api/Egap.Documents.FieldEnd.html
@@ -5454,6 +5592,182 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.FloatingPlacement.ZOrder
   nameWithType: FloatingPlacement.ZOrder
+- uid: Egap.Documents.FontFeatures
+  name: FontFeatures
+  href: api/Egap.Documents.FontFeatures.html
+  commentId: T:Egap.Documents.FontFeatures
+  fullName: Egap.Documents.FontFeatures
+  nameWithType: FontFeatures
+- uid: Egap.Documents.FontFeatures.Count
+  name: Count
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Count
+  commentId: P:Egap.Documents.FontFeatures.Count
+  fullName: Egap.Documents.FontFeatures.Count
+  nameWithType: FontFeatures.Count
+- uid: Egap.Documents.FontFeatures.Count*
+  name: Count
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Count_
+  commentId: Overload:Egap.Documents.FontFeatures.Count
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.Count
+  nameWithType: FontFeatures.Count
+- uid: Egap.Documents.FontFeatures.Equals(Egap.Documents.FontFeatures)
+  name: Equals(FontFeatures?)
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Equals_Egap_Documents_FontFeatures_
+  commentId: M:Egap.Documents.FontFeatures.Equals(Egap.Documents.FontFeatures)
+  name.vb: Equals(FontFeatures)
+  fullName: Egap.Documents.FontFeatures.Equals(Egap.Documents.FontFeatures?)
+  fullName.vb: Egap.Documents.FontFeatures.Equals(Egap.Documents.FontFeatures)
+  nameWithType: FontFeatures.Equals(FontFeatures?)
+  nameWithType.vb: FontFeatures.Equals(FontFeatures)
+- uid: Egap.Documents.FontFeatures.Equals(System.Object)
+  name: Equals(object?)
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Equals_System_Object_
+  commentId: M:Egap.Documents.FontFeatures.Equals(System.Object)
+  name.vb: Equals(Object)
+  fullName: Egap.Documents.FontFeatures.Equals(object?)
+  fullName.vb: Egap.Documents.FontFeatures.Equals(Object)
+  nameWithType: FontFeatures.Equals(object?)
+  nameWithType.vb: FontFeatures.Equals(Object)
+- uid: Egap.Documents.FontFeatures.Equals*
+  name: Equals
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Equals_
+  commentId: Overload:Egap.Documents.FontFeatures.Equals
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.Equals
+  nameWithType: FontFeatures.Equals
+- uid: Egap.Documents.FontFeatures.GetEnumerator
+  name: GetEnumerator()
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_GetEnumerator
+  commentId: M:Egap.Documents.FontFeatures.GetEnumerator
+  fullName: Egap.Documents.FontFeatures.GetEnumerator()
+  nameWithType: FontFeatures.GetEnumerator()
+- uid: Egap.Documents.FontFeatures.GetEnumerator*
+  name: GetEnumerator
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_GetEnumerator_
+  commentId: Overload:Egap.Documents.FontFeatures.GetEnumerator
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.GetEnumerator
+  nameWithType: FontFeatures.GetEnumerator
+- uid: Egap.Documents.FontFeatures.GetHashCode
+  name: GetHashCode()
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_GetHashCode
+  commentId: M:Egap.Documents.FontFeatures.GetHashCode
+  fullName: Egap.Documents.FontFeatures.GetHashCode()
+  nameWithType: FontFeatures.GetHashCode()
+- uid: Egap.Documents.FontFeatures.GetHashCode*
+  name: GetHashCode
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_GetHashCode_
+  commentId: Overload:Egap.Documents.FontFeatures.GetHashCode
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.GetHashCode
+  nameWithType: FontFeatures.GetHashCode
+- uid: Egap.Documents.FontFeatures.Item(System.Int32)
+  name: this[int]
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Item_System_Int32_
+  commentId: P:Egap.Documents.FontFeatures.Item(System.Int32)
+  name.vb: this[](Integer)
+  fullName: Egap.Documents.FontFeatures.this[int]
+  fullName.vb: Egap.Documents.FontFeatures.this[](Integer)
+  nameWithType: FontFeatures.this[int]
+  nameWithType.vb: FontFeatures.this[](Integer)
+- uid: Egap.Documents.FontFeatures.Item*
+  name: this
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Item_
+  commentId: Overload:Egap.Documents.FontFeatures.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: Egap.Documents.FontFeatures.this
+  fullName.vb: Egap.Documents.FontFeatures.this[]
+  nameWithType: FontFeatures.this
+  nameWithType.vb: FontFeatures.this[]
+- uid: Egap.Documents.FontFeatures.None
+  name: None
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_None
+  commentId: P:Egap.Documents.FontFeatures.None
+  fullName: Egap.Documents.FontFeatures.None
+  nameWithType: FontFeatures.None
+- uid: Egap.Documents.FontFeatures.None*
+  name: None
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_None_
+  commentId: Overload:Egap.Documents.FontFeatures.None
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.None
+  nameWithType: FontFeatures.None
+- uid: Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.Int32}})
+  name: Of(IEnumerable<(string Tag, int Value)>)
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Of_System_Collections_Generic_IEnumerable_System_ValueTuple_System_String_System_Int32___
+  commentId: M:Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.Int32}})
+  name.vb: Of(IEnumerable(Of (Tag As String, Value As Integer)))
+  fullName: Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable<(string Tag, int Value)>)
+  fullName.vb: Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable(Of (Tag As String, Value As Integer)))
+  nameWithType: FontFeatures.Of(IEnumerable<(string Tag, int Value)>)
+  nameWithType.vb: FontFeatures.Of(IEnumerable(Of (Tag As String, Value As Integer)))
+- uid: Egap.Documents.FontFeatures.Of*
+  name: Of
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Of_
+  commentId: Overload:Egap.Documents.FontFeatures.Of
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.Of
+  nameWithType: FontFeatures.Of
+- uid: Egap.Documents.FontFeatures.Parse(System.String)
+  name: Parse(string)
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Parse_System_String_
+  commentId: M:Egap.Documents.FontFeatures.Parse(System.String)
+  name.vb: Parse(String)
+  fullName: Egap.Documents.FontFeatures.Parse(string)
+  fullName.vb: Egap.Documents.FontFeatures.Parse(String)
+  nameWithType: FontFeatures.Parse(string)
+  nameWithType.vb: FontFeatures.Parse(String)
+- uid: Egap.Documents.FontFeatures.Parse*
+  name: Parse
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_Parse_
+  commentId: Overload:Egap.Documents.FontFeatures.Parse
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.Parse
+  nameWithType: FontFeatures.Parse
+- uid: Egap.Documents.FontFeatures.ToString
+  name: ToString()
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_ToString
+  commentId: M:Egap.Documents.FontFeatures.ToString
+  fullName: Egap.Documents.FontFeatures.ToString()
+  nameWithType: FontFeatures.ToString()
+- uid: Egap.Documents.FontFeatures.ToString*
+  name: ToString
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_ToString_
+  commentId: Overload:Egap.Documents.FontFeatures.ToString
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.ToString
+  nameWithType: FontFeatures.ToString
+- uid: Egap.Documents.FontFeatures.ValueOf(System.String)
+  name: ValueOf(string)
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_ValueOf_System_String_
+  commentId: M:Egap.Documents.FontFeatures.ValueOf(System.String)
+  name.vb: ValueOf(String)
+  fullName: Egap.Documents.FontFeatures.ValueOf(string)
+  fullName.vb: Egap.Documents.FontFeatures.ValueOf(String)
+  nameWithType: FontFeatures.ValueOf(string)
+  nameWithType.vb: FontFeatures.ValueOf(String)
+- uid: Egap.Documents.FontFeatures.ValueOf*
+  name: ValueOf
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_ValueOf_
+  commentId: Overload:Egap.Documents.FontFeatures.ValueOf
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.ValueOf
+  nameWithType: FontFeatures.ValueOf
+- uid: Egap.Documents.FontFeatures.With(Egap.Documents.FontFeatures)
+  name: With(FontFeatures)
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_With_Egap_Documents_FontFeatures_
+  commentId: M:Egap.Documents.FontFeatures.With(Egap.Documents.FontFeatures)
+  fullName: Egap.Documents.FontFeatures.With(Egap.Documents.FontFeatures)
+  nameWithType: FontFeatures.With(FontFeatures)
+- uid: Egap.Documents.FontFeatures.With*
+  name: With
+  href: api/Egap.Documents.FontFeatures.html#Egap_Documents_FontFeatures_With_
+  commentId: Overload:Egap.Documents.FontFeatures.With
+  isSpec: "True"
+  fullName: Egap.Documents.FontFeatures.With
+  nameWithType: FontFeatures.With
 - uid: Egap.Documents.Footnote
   name: Footnote
   href: api/Egap.Documents.Footnote.html
@@ -5672,6 +5986,77 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.FormatRevision.OldFormat
   nameWithType: FormatRevision.OldFormat
+- uid: Egap.Documents.GroupPaging
+  name: GroupPaging
+  href: api/Egap.Documents.GroupPaging.html
+  commentId: T:Egap.Documents.GroupPaging
+  fullName: Egap.Documents.GroupPaging
+  nameWithType: GroupPaging
+- uid: Egap.Documents.GroupPaging.EnsureSpace
+  name: EnsureSpace
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_EnsureSpace
+  commentId: P:Egap.Documents.GroupPaging.EnsureSpace
+  fullName: Egap.Documents.GroupPaging.EnsureSpace
+  nameWithType: GroupPaging.EnsureSpace
+- uid: Egap.Documents.GroupPaging.EnsureSpace*
+  name: EnsureSpace
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_EnsureSpace_
+  commentId: Overload:Egap.Documents.GroupPaging.EnsureSpace
+  isSpec: "True"
+  fullName: Egap.Documents.GroupPaging.EnsureSpace
+  nameWithType: GroupPaging.EnsureSpace
+- uid: Egap.Documents.GroupPaging.KeepTogether
+  name: KeepTogether
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_KeepTogether
+  commentId: P:Egap.Documents.GroupPaging.KeepTogether
+  fullName: Egap.Documents.GroupPaging.KeepTogether
+  nameWithType: GroupPaging.KeepTogether
+- uid: Egap.Documents.GroupPaging.KeepTogether*
+  name: KeepTogether
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_KeepTogether_
+  commentId: Overload:Egap.Documents.GroupPaging.KeepTogether
+  isSpec: "True"
+  fullName: Egap.Documents.GroupPaging.KeepTogether
+  nameWithType: GroupPaging.KeepTogether
+- uid: Egap.Documents.GroupPaging.ScaleToFit
+  name: ScaleToFit
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_ScaleToFit
+  commentId: P:Egap.Documents.GroupPaging.ScaleToFit
+  fullName: Egap.Documents.GroupPaging.ScaleToFit
+  nameWithType: GroupPaging.ScaleToFit
+- uid: Egap.Documents.GroupPaging.ScaleToFit*
+  name: ScaleToFit
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_ScaleToFit_
+  commentId: Overload:Egap.Documents.GroupPaging.ScaleToFit
+  isSpec: "True"
+  fullName: Egap.Documents.GroupPaging.ScaleToFit
+  nameWithType: GroupPaging.ScaleToFit
+- uid: Egap.Documents.GroupPaging.ShowEntire
+  name: ShowEntire
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_ShowEntire
+  commentId: P:Egap.Documents.GroupPaging.ShowEntire
+  fullName: Egap.Documents.GroupPaging.ShowEntire
+  nameWithType: GroupPaging.ShowEntire
+- uid: Egap.Documents.GroupPaging.ShowEntire*
+  name: ShowEntire
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_ShowEntire_
+  commentId: Overload:Egap.Documents.GroupPaging.ShowEntire
+  isSpec: "True"
+  fullName: Egap.Documents.GroupPaging.ShowEntire
+  nameWithType: GroupPaging.ShowEntire
+- uid: Egap.Documents.GroupPaging.StopPaging
+  name: StopPaging
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_StopPaging
+  commentId: P:Egap.Documents.GroupPaging.StopPaging
+  fullName: Egap.Documents.GroupPaging.StopPaging
+  nameWithType: GroupPaging.StopPaging
+- uid: Egap.Documents.GroupPaging.StopPaging*
+  name: StopPaging
+  href: api/Egap.Documents.GroupPaging.html#Egap_Documents_GroupPaging_StopPaging_
+  commentId: Overload:Egap.Documents.GroupPaging.StopPaging
+  isSpec: "True"
+  fullName: Egap.Documents.GroupPaging.StopPaging
+  nameWithType: GroupPaging.StopPaging
 - uid: Egap.Documents.HeaderFooter
   name: HeaderFooter
   href: api/Egap.Documents.HeaderFooter.html
@@ -6336,6 +6721,44 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Hyperlink.Tooltip
   nameWithType: Hyperlink.Tooltip
+- uid: Egap.Documents.IMergeData
+  name: IMergeData
+  href: api/Egap.Documents.IMergeData.html
+  commentId: T:Egap.Documents.IMergeData
+  fullName: Egap.Documents.IMergeData
+  nameWithType: IMergeData
+- uid: Egap.Documents.IMergeData.GetRegion(System.String)
+  name: GetRegion(string)
+  href: api/Egap.Documents.IMergeData.html#Egap_Documents_IMergeData_GetRegion_System_String_
+  commentId: M:Egap.Documents.IMergeData.GetRegion(System.String)
+  name.vb: GetRegion(String)
+  fullName: Egap.Documents.IMergeData.GetRegion(string)
+  fullName.vb: Egap.Documents.IMergeData.GetRegion(String)
+  nameWithType: IMergeData.GetRegion(string)
+  nameWithType.vb: IMergeData.GetRegion(String)
+- uid: Egap.Documents.IMergeData.GetRegion*
+  name: GetRegion
+  href: api/Egap.Documents.IMergeData.html#Egap_Documents_IMergeData_GetRegion_
+  commentId: Overload:Egap.Documents.IMergeData.GetRegion
+  isSpec: "True"
+  fullName: Egap.Documents.IMergeData.GetRegion
+  nameWithType: IMergeData.GetRegion
+- uid: Egap.Documents.IMergeData.TryGetValue(System.String,System.Object@)
+  name: TryGetValue(string, out object?)
+  href: api/Egap.Documents.IMergeData.html#Egap_Documents_IMergeData_TryGetValue_System_String_System_Object__
+  commentId: M:Egap.Documents.IMergeData.TryGetValue(System.String,System.Object@)
+  name.vb: TryGetValue(String, Object)
+  fullName: Egap.Documents.IMergeData.TryGetValue(string, out object?)
+  fullName.vb: Egap.Documents.IMergeData.TryGetValue(String, Object)
+  nameWithType: IMergeData.TryGetValue(string, out object?)
+  nameWithType.vb: IMergeData.TryGetValue(String, Object)
+- uid: Egap.Documents.IMergeData.TryGetValue*
+  name: TryGetValue
+  href: api/Egap.Documents.IMergeData.html#Egap_Documents_IMergeData_TryGetValue_
+  commentId: Overload:Egap.Documents.IMergeData.TryGetValue
+  isSpec: "True"
+  fullName: Egap.Documents.IMergeData.TryGetValue
+  nameWithType: IMergeData.TryGetValue
 - uid: Egap.Documents.ImageData
   name: ImageData
   href: api/Egap.Documents.ImageData.html
@@ -7117,6 +7540,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.FontSettings.LastResortFamily
   nameWithType: FontSettings.LastResortFamily
+- uid: Egap.Documents.Layout.FontSettings.Portable
+  name: Portable
+  href: api/Egap.Documents.Layout.FontSettings.html#Egap_Documents_Layout_FontSettings_Portable
+  commentId: P:Egap.Documents.Layout.FontSettings.Portable
+  fullName: Egap.Documents.Layout.FontSettings.Portable
+  nameWithType: FontSettings.Portable
+- uid: Egap.Documents.Layout.FontSettings.Portable*
+  name: Portable
+  href: api/Egap.Documents.Layout.FontSettings.html#Egap_Documents_Layout_FontSettings_Portable_
+  commentId: Overload:Egap.Documents.Layout.FontSettings.Portable
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.FontSettings.Portable
+  nameWithType: FontSettings.Portable
 - uid: Egap.Documents.Layout.FontSettings.Substitutions
   name: Substitutions
   href: api/Egap.Documents.Layout.FontSettings.html#Egap_Documents_Layout_FontSettings_Substitutions
@@ -7373,6 +7809,51 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.LayoutDrawObserver.EndDecoration
   nameWithType: LayoutDrawObserver.EndDecoration
+- uid: Egap.Documents.Layout.LayoutException
+  name: LayoutException
+  href: api/Egap.Documents.Layout.LayoutException.html
+  commentId: T:Egap.Documents.Layout.LayoutException
+  fullName: Egap.Documents.Layout.LayoutException
+  nameWithType: LayoutException
+- uid: Egap.Documents.Layout.LayoutException.Node
+  name: Node
+  href: api/Egap.Documents.Layout.LayoutException.html#Egap_Documents_Layout_LayoutException_Node
+  commentId: P:Egap.Documents.Layout.LayoutException.Node
+  fullName: Egap.Documents.Layout.LayoutException.Node
+  nameWithType: LayoutException.Node
+- uid: Egap.Documents.Layout.LayoutException.Node*
+  name: Node
+  href: api/Egap.Documents.Layout.LayoutException.html#Egap_Documents_Layout_LayoutException_Node_
+  commentId: Overload:Egap.Documents.Layout.LayoutException.Node
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutException.Node
+  nameWithType: LayoutException.Node
+- uid: Egap.Documents.Layout.LayoutException.PageIndex
+  name: PageIndex
+  href: api/Egap.Documents.Layout.LayoutException.html#Egap_Documents_Layout_LayoutException_PageIndex
+  commentId: P:Egap.Documents.Layout.LayoutException.PageIndex
+  fullName: Egap.Documents.Layout.LayoutException.PageIndex
+  nameWithType: LayoutException.PageIndex
+- uid: Egap.Documents.Layout.LayoutException.PageIndex*
+  name: PageIndex
+  href: api/Egap.Documents.Layout.LayoutException.html#Egap_Documents_Layout_LayoutException_PageIndex_
+  commentId: Overload:Egap.Documents.Layout.LayoutException.PageIndex
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutException.PageIndex
+  nameWithType: LayoutException.PageIndex
+- uid: Egap.Documents.Layout.LayoutException.Problem
+  name: Problem
+  href: api/Egap.Documents.Layout.LayoutException.html#Egap_Documents_Layout_LayoutException_Problem
+  commentId: P:Egap.Documents.Layout.LayoutException.Problem
+  fullName: Egap.Documents.Layout.LayoutException.Problem
+  nameWithType: LayoutException.Problem
+- uid: Egap.Documents.Layout.LayoutException.Problem*
+  name: Problem
+  href: api/Egap.Documents.Layout.LayoutException.html#Egap_Documents_Layout_LayoutException_Problem_
+  commentId: Overload:Egap.Documents.Layout.LayoutException.Problem
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutException.Problem
+  nameWithType: LayoutException.Problem
 - uid: Egap.Documents.Layout.LayoutOptions
   name: LayoutOptions
   href: api/Egap.Documents.Layout.LayoutOptions.html
@@ -7392,6 +7873,49 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.LayoutOptions.Fonts
   nameWithType: LayoutOptions.Fonts
+- uid: Egap.Documents.Layout.LayoutOptions.Strict
+  name: Strict
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_Strict
+  commentId: P:Egap.Documents.Layout.LayoutOptions.Strict
+  fullName: Egap.Documents.Layout.LayoutOptions.Strict
+  nameWithType: LayoutOptions.Strict
+- uid: Egap.Documents.Layout.LayoutOptions.Strict*
+  name: Strict
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_Strict_
+  commentId: Overload:Egap.Documents.Layout.LayoutOptions.Strict
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutOptions.Strict
+  nameWithType: LayoutOptions.Strict
+- uid: Egap.Documents.Layout.LayoutProblem
+  name: LayoutProblem
+  href: api/Egap.Documents.Layout.LayoutProblem.html
+  commentId: T:Egap.Documents.Layout.LayoutProblem
+  fullName: Egap.Documents.Layout.LayoutProblem
+  nameWithType: LayoutProblem
+- uid: Egap.Documents.Layout.LayoutProblem.ContentOverflow
+  name: ContentOverflow
+  href: api/Egap.Documents.Layout.LayoutProblem.html#Egap_Documents_Layout_LayoutProblem_ContentOverflow
+  commentId: F:Egap.Documents.Layout.LayoutProblem.ContentOverflow
+  fullName: Egap.Documents.Layout.LayoutProblem.ContentOverflow
+  nameWithType: LayoutProblem.ContentOverflow
+- uid: Egap.Documents.Layout.LayoutProblem.MissingFont
+  name: MissingFont
+  href: api/Egap.Documents.Layout.LayoutProblem.html#Egap_Documents_Layout_LayoutProblem_MissingFont
+  commentId: F:Egap.Documents.Layout.LayoutProblem.MissingFont
+  fullName: Egap.Documents.Layout.LayoutProblem.MissingFont
+  nameWithType: LayoutProblem.MissingFont
+- uid: Egap.Documents.Layout.LayoutProblem.MissingGlyph
+  name: MissingGlyph
+  href: api/Egap.Documents.Layout.LayoutProblem.html#Egap_Documents_Layout_LayoutProblem_MissingGlyph
+  commentId: F:Egap.Documents.Layout.LayoutProblem.MissingGlyph
+  fullName: Egap.Documents.Layout.LayoutProblem.MissingGlyph
+  nameWithType: LayoutProblem.MissingGlyph
+- uid: Egap.Documents.Layout.LayoutProblem.TextOverflow
+  name: TextOverflow
+  href: api/Egap.Documents.Layout.LayoutProblem.html#Egap_Documents_Layout_LayoutProblem_TextOverflow
+  commentId: F:Egap.Documents.Layout.LayoutProblem.TextOverflow
+  fullName: Egap.Documents.Layout.LayoutProblem.TextOverflow
+  nameWithType: LayoutProblem.TextOverflow
 - uid: Egap.Documents.Layout.LayoutRect
   name: LayoutRect
   href: api/Egap.Documents.Layout.LayoutRect.html
@@ -7599,6 +8123,12 @@ references:
   commentId: F:Egap.Documents.Layout.PageArea.Header
   fullName: Egap.Documents.Layout.PageArea.Header
   nameWithType: PageArea.Header
+- uid: Egap.Documents.Layout.PageArea.MarginBox
+  name: MarginBox
+  href: api/Egap.Documents.Layout.PageArea.html#Egap_Documents_Layout_PageArea_MarginBox
+  commentId: F:Egap.Documents.Layout.PageArea.MarginBox
+  fullName: Egap.Documents.Layout.PageArea.MarginBox
+  nameWithType: PageArea.MarginBox
 - uid: Egap.Documents.Layout.PageArea.Notes
   name: Notes
   href: api/Egap.Documents.Layout.PageArea.html#Egap_Documents_Layout_PageArea_Notes
@@ -7868,6 +8398,25 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.RowBox.IsRepeatedHeader
   nameWithType: RowBox.IsRepeatedHeader
+- uid: Egap.Documents.Layout.ScaledBox
+  name: ScaledBox
+  href: api/Egap.Documents.Layout.ScaledBox.html
+  commentId: T:Egap.Documents.Layout.ScaledBox
+  fullName: Egap.Documents.Layout.ScaledBox
+  nameWithType: ScaledBox
+- uid: Egap.Documents.Layout.ScaledBox.Scale
+  name: Scale
+  href: api/Egap.Documents.Layout.ScaledBox.html#Egap_Documents_Layout_ScaledBox_Scale
+  commentId: P:Egap.Documents.Layout.ScaledBox.Scale
+  fullName: Egap.Documents.Layout.ScaledBox.Scale
+  nameWithType: ScaledBox.Scale
+- uid: Egap.Documents.Layout.ScaledBox.Scale*
+  name: Scale
+  href: api/Egap.Documents.Layout.ScaledBox.html#Egap_Documents_Layout_ScaledBox_Scale_
+  commentId: Overload:Egap.Documents.Layout.ScaledBox.Scale
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.ScaledBox.Scale
+  nameWithType: ScaledBox.Scale
 - uid: Egap.Documents.Layout.TableBox
   name: TableBox
   href: api/Egap.Documents.Layout.TableBox.html
@@ -8597,6 +9146,287 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ListStyle.Type
   nameWithType: ListStyle.Type
+- uid: Egap.Documents.MailMergeOptions
+  name: MailMergeOptions
+  href: api/Egap.Documents.MailMergeOptions.html
+  commentId: T:Egap.Documents.MailMergeOptions
+  fullName: Egap.Documents.MailMergeOptions
+  nameWithType: MailMergeOptions
+- uid: Egap.Documents.MailMergeOptions.Culture
+  name: Culture
+  href: api/Egap.Documents.MailMergeOptions.html#Egap_Documents_MailMergeOptions_Culture
+  commentId: P:Egap.Documents.MailMergeOptions.Culture
+  fullName: Egap.Documents.MailMergeOptions.Culture
+  nameWithType: MailMergeOptions.Culture
+- uid: Egap.Documents.MailMergeOptions.Culture*
+  name: Culture
+  href: api/Egap.Documents.MailMergeOptions.html#Egap_Documents_MailMergeOptions_Culture_
+  commentId: Overload:Egap.Documents.MailMergeOptions.Culture
+  isSpec: "True"
+  fullName: Egap.Documents.MailMergeOptions.Culture
+  nameWithType: MailMergeOptions.Culture
+- uid: Egap.Documents.MailMergeOptions.OnWarning
+  name: OnWarning
+  href: api/Egap.Documents.MailMergeOptions.html#Egap_Documents_MailMergeOptions_OnWarning
+  commentId: P:Egap.Documents.MailMergeOptions.OnWarning
+  fullName: Egap.Documents.MailMergeOptions.OnWarning
+  nameWithType: MailMergeOptions.OnWarning
+- uid: Egap.Documents.MailMergeOptions.OnWarning*
+  name: OnWarning
+  href: api/Egap.Documents.MailMergeOptions.html#Egap_Documents_MailMergeOptions_OnWarning_
+  commentId: Overload:Egap.Documents.MailMergeOptions.OnWarning
+  isSpec: "True"
+  fullName: Egap.Documents.MailMergeOptions.OnWarning
+  nameWithType: MailMergeOptions.OnWarning
+- uid: Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs
+  name: RemoveEmptyParagraphs
+  href: api/Egap.Documents.MailMergeOptions.html#Egap_Documents_MailMergeOptions_RemoveEmptyParagraphs
+  commentId: P:Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs
+  fullName: Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs
+  nameWithType: MailMergeOptions.RemoveEmptyParagraphs
+- uid: Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs*
+  name: RemoveEmptyParagraphs
+  href: api/Egap.Documents.MailMergeOptions.html#Egap_Documents_MailMergeOptions_RemoveEmptyParagraphs_
+  commentId: Overload:Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs
+  isSpec: "True"
+  fullName: Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs
+  nameWithType: MailMergeOptions.RemoveEmptyParagraphs
+- uid: Egap.Documents.MailMergeOptions.Separator
+  name: Separator
+  href: api/Egap.Documents.MailMergeOptions.html#Egap_Documents_MailMergeOptions_Separator
+  commentId: P:Egap.Documents.MailMergeOptions.Separator
+  fullName: Egap.Documents.MailMergeOptions.Separator
+  nameWithType: MailMergeOptions.Separator
+- uid: Egap.Documents.MailMergeOptions.Separator*
+  name: Separator
+  href: api/Egap.Documents.MailMergeOptions.html#Egap_Documents_MailMergeOptions_Separator_
+  commentId: Overload:Egap.Documents.MailMergeOptions.Separator
+  isSpec: "True"
+  fullName: Egap.Documents.MailMergeOptions.Separator
+  nameWithType: MailMergeOptions.Separator
+- uid: Egap.Documents.MarginBox
+  name: MarginBox
+  href: api/Egap.Documents.MarginBox.html
+  commentId: T:Egap.Documents.MarginBox
+  fullName: Egap.Documents.MarginBox
+  nameWithType: MarginBox
+- uid: Egap.Documents.MarginBox.#ctor(Egap.Documents.Document,Egap.Documents.MarginBoxPosition,System.Boolean)
+  name: MarginBox(Document, MarginBoxPosition, bool)
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox__ctor_Egap_Documents_Document_Egap_Documents_MarginBoxPosition_System_Boolean_
+  commentId: M:Egap.Documents.MarginBox.#ctor(Egap.Documents.Document,Egap.Documents.MarginBoxPosition,System.Boolean)
+  name.vb: New(Document, MarginBoxPosition, Boolean)
+  fullName: Egap.Documents.MarginBox.MarginBox(Egap.Documents.Document, Egap.Documents.MarginBoxPosition, bool)
+  fullName.vb: Egap.Documents.MarginBox.New(Egap.Documents.Document, Egap.Documents.MarginBoxPosition, Boolean)
+  nameWithType: MarginBox.MarginBox(Document, MarginBoxPosition, bool)
+  nameWithType.vb: MarginBox.New(Document, MarginBoxPosition, Boolean)
+- uid: Egap.Documents.MarginBox.#ctor*
+  name: MarginBox
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox__ctor_
+  commentId: Overload:Egap.Documents.MarginBox.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Documents.MarginBox.MarginBox
+  fullName.vb: Egap.Documents.MarginBox.New
+  nameWithType: MarginBox.MarginBox
+  nameWithType.vb: MarginBox.New
+- uid: Egap.Documents.MarginBox.Clone(System.Boolean)
+  name: Clone(bool)
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox_Clone_System_Boolean_
+  commentId: M:Egap.Documents.MarginBox.Clone(System.Boolean)
+  name.vb: Clone(Boolean)
+  fullName: Egap.Documents.MarginBox.Clone(bool)
+  fullName.vb: Egap.Documents.MarginBox.Clone(Boolean)
+  nameWithType: MarginBox.Clone(bool)
+  nameWithType.vb: MarginBox.Clone(Boolean)
+- uid: Egap.Documents.MarginBox.Clone*
+  name: Clone
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox_Clone_
+  commentId: Overload:Egap.Documents.MarginBox.Clone
+  isSpec: "True"
+  fullName: Egap.Documents.MarginBox.Clone
+  nameWithType: MarginBox.Clone
+- uid: Egap.Documents.MarginBox.FirstPage
+  name: FirstPage
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox_FirstPage
+  commentId: P:Egap.Documents.MarginBox.FirstPage
+  fullName: Egap.Documents.MarginBox.FirstPage
+  nameWithType: MarginBox.FirstPage
+- uid: Egap.Documents.MarginBox.FirstPage*
+  name: FirstPage
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox_FirstPage_
+  commentId: Overload:Egap.Documents.MarginBox.FirstPage
+  isSpec: "True"
+  fullName: Egap.Documents.MarginBox.FirstPage
+  nameWithType: MarginBox.FirstPage
+- uid: Egap.Documents.MarginBox.Position
+  name: Position
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox_Position
+  commentId: P:Egap.Documents.MarginBox.Position
+  fullName: Egap.Documents.MarginBox.Position
+  nameWithType: MarginBox.Position
+- uid: Egap.Documents.MarginBox.Position*
+  name: Position
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox_Position_
+  commentId: Overload:Egap.Documents.MarginBox.Position
+  isSpec: "True"
+  fullName: Egap.Documents.MarginBox.Position
+  nameWithType: MarginBox.Position
+- uid: Egap.Documents.MarginBox.Section
+  name: Section
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox_Section
+  commentId: P:Egap.Documents.MarginBox.Section
+  fullName: Egap.Documents.MarginBox.Section
+  nameWithType: MarginBox.Section
+- uid: Egap.Documents.MarginBox.Section*
+  name: Section
+  href: api/Egap.Documents.MarginBox.html#Egap_Documents_MarginBox_Section_
+  commentId: Overload:Egap.Documents.MarginBox.Section
+  isSpec: "True"
+  fullName: Egap.Documents.MarginBox.Section
+  nameWithType: MarginBox.Section
+- uid: Egap.Documents.MarginBoxCollection
+  name: MarginBoxCollection
+  href: api/Egap.Documents.MarginBoxCollection.html
+  commentId: T:Egap.Documents.MarginBoxCollection
+  fullName: Egap.Documents.MarginBoxCollection
+  nameWithType: MarginBoxCollection
+- uid: Egap.Documents.MarginBoxCollection.GetOrAdd(Egap.Documents.MarginBoxPosition,System.Boolean)
+  name: GetOrAdd(MarginBoxPosition, bool)
+  href: api/Egap.Documents.MarginBoxCollection.html#Egap_Documents_MarginBoxCollection_GetOrAdd_Egap_Documents_MarginBoxPosition_System_Boolean_
+  commentId: M:Egap.Documents.MarginBoxCollection.GetOrAdd(Egap.Documents.MarginBoxPosition,System.Boolean)
+  name.vb: GetOrAdd(MarginBoxPosition, Boolean)
+  fullName: Egap.Documents.MarginBoxCollection.GetOrAdd(Egap.Documents.MarginBoxPosition, bool)
+  fullName.vb: Egap.Documents.MarginBoxCollection.GetOrAdd(Egap.Documents.MarginBoxPosition, Boolean)
+  nameWithType: MarginBoxCollection.GetOrAdd(MarginBoxPosition, bool)
+  nameWithType.vb: MarginBoxCollection.GetOrAdd(MarginBoxPosition, Boolean)
+- uid: Egap.Documents.MarginBoxCollection.GetOrAdd*
+  name: GetOrAdd
+  href: api/Egap.Documents.MarginBoxCollection.html#Egap_Documents_MarginBoxCollection_GetOrAdd_
+  commentId: Overload:Egap.Documents.MarginBoxCollection.GetOrAdd
+  isSpec: "True"
+  fullName: Egap.Documents.MarginBoxCollection.GetOrAdd
+  nameWithType: MarginBoxCollection.GetOrAdd
+- uid: Egap.Documents.MarginBoxCollection.Item(Egap.Documents.MarginBoxPosition,System.Boolean)
+  name: this[MarginBoxPosition, bool]
+  href: api/Egap.Documents.MarginBoxCollection.html#Egap_Documents_MarginBoxCollection_Item_Egap_Documents_MarginBoxPosition_System_Boolean_
+  commentId: P:Egap.Documents.MarginBoxCollection.Item(Egap.Documents.MarginBoxPosition,System.Boolean)
+  name.vb: this[](MarginBoxPosition, Boolean)
+  fullName: Egap.Documents.MarginBoxCollection.this[Egap.Documents.MarginBoxPosition, bool]
+  fullName.vb: Egap.Documents.MarginBoxCollection.this[](Egap.Documents.MarginBoxPosition, Boolean)
+  nameWithType: MarginBoxCollection.this[MarginBoxPosition, bool]
+  nameWithType.vb: MarginBoxCollection.this[](MarginBoxPosition, Boolean)
+- uid: Egap.Documents.MarginBoxCollection.Item*
+  name: this
+  href: api/Egap.Documents.MarginBoxCollection.html#Egap_Documents_MarginBoxCollection_Item_
+  commentId: Overload:Egap.Documents.MarginBoxCollection.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: Egap.Documents.MarginBoxCollection.this
+  fullName.vb: Egap.Documents.MarginBoxCollection.this[]
+  nameWithType: MarginBoxCollection.this
+  nameWithType.vb: MarginBoxCollection.this[]
+- uid: Egap.Documents.MarginBoxPosition
+  name: MarginBoxPosition
+  href: api/Egap.Documents.MarginBoxPosition.html
+  commentId: T:Egap.Documents.MarginBoxPosition
+  fullName: Egap.Documents.MarginBoxPosition
+  nameWithType: MarginBoxPosition
+- uid: Egap.Documents.MarginBoxPosition.BottomCenter
+  name: BottomCenter
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_BottomCenter
+  commentId: F:Egap.Documents.MarginBoxPosition.BottomCenter
+  fullName: Egap.Documents.MarginBoxPosition.BottomCenter
+  nameWithType: MarginBoxPosition.BottomCenter
+- uid: Egap.Documents.MarginBoxPosition.BottomLeft
+  name: BottomLeft
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_BottomLeft
+  commentId: F:Egap.Documents.MarginBoxPosition.BottomLeft
+  fullName: Egap.Documents.MarginBoxPosition.BottomLeft
+  nameWithType: MarginBoxPosition.BottomLeft
+- uid: Egap.Documents.MarginBoxPosition.BottomLeftCorner
+  name: BottomLeftCorner
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_BottomLeftCorner
+  commentId: F:Egap.Documents.MarginBoxPosition.BottomLeftCorner
+  fullName: Egap.Documents.MarginBoxPosition.BottomLeftCorner
+  nameWithType: MarginBoxPosition.BottomLeftCorner
+- uid: Egap.Documents.MarginBoxPosition.BottomRight
+  name: BottomRight
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_BottomRight
+  commentId: F:Egap.Documents.MarginBoxPosition.BottomRight
+  fullName: Egap.Documents.MarginBoxPosition.BottomRight
+  nameWithType: MarginBoxPosition.BottomRight
+- uid: Egap.Documents.MarginBoxPosition.BottomRightCorner
+  name: BottomRightCorner
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_BottomRightCorner
+  commentId: F:Egap.Documents.MarginBoxPosition.BottomRightCorner
+  fullName: Egap.Documents.MarginBoxPosition.BottomRightCorner
+  nameWithType: MarginBoxPosition.BottomRightCorner
+- uid: Egap.Documents.MarginBoxPosition.LeftBottom
+  name: LeftBottom
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_LeftBottom
+  commentId: F:Egap.Documents.MarginBoxPosition.LeftBottom
+  fullName: Egap.Documents.MarginBoxPosition.LeftBottom
+  nameWithType: MarginBoxPosition.LeftBottom
+- uid: Egap.Documents.MarginBoxPosition.LeftMiddle
+  name: LeftMiddle
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_LeftMiddle
+  commentId: F:Egap.Documents.MarginBoxPosition.LeftMiddle
+  fullName: Egap.Documents.MarginBoxPosition.LeftMiddle
+  nameWithType: MarginBoxPosition.LeftMiddle
+- uid: Egap.Documents.MarginBoxPosition.LeftTop
+  name: LeftTop
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_LeftTop
+  commentId: F:Egap.Documents.MarginBoxPosition.LeftTop
+  fullName: Egap.Documents.MarginBoxPosition.LeftTop
+  nameWithType: MarginBoxPosition.LeftTop
+- uid: Egap.Documents.MarginBoxPosition.RightBottom
+  name: RightBottom
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_RightBottom
+  commentId: F:Egap.Documents.MarginBoxPosition.RightBottom
+  fullName: Egap.Documents.MarginBoxPosition.RightBottom
+  nameWithType: MarginBoxPosition.RightBottom
+- uid: Egap.Documents.MarginBoxPosition.RightMiddle
+  name: RightMiddle
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_RightMiddle
+  commentId: F:Egap.Documents.MarginBoxPosition.RightMiddle
+  fullName: Egap.Documents.MarginBoxPosition.RightMiddle
+  nameWithType: MarginBoxPosition.RightMiddle
+- uid: Egap.Documents.MarginBoxPosition.RightTop
+  name: RightTop
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_RightTop
+  commentId: F:Egap.Documents.MarginBoxPosition.RightTop
+  fullName: Egap.Documents.MarginBoxPosition.RightTop
+  nameWithType: MarginBoxPosition.RightTop
+- uid: Egap.Documents.MarginBoxPosition.TopCenter
+  name: TopCenter
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_TopCenter
+  commentId: F:Egap.Documents.MarginBoxPosition.TopCenter
+  fullName: Egap.Documents.MarginBoxPosition.TopCenter
+  nameWithType: MarginBoxPosition.TopCenter
+- uid: Egap.Documents.MarginBoxPosition.TopLeft
+  name: TopLeft
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_TopLeft
+  commentId: F:Egap.Documents.MarginBoxPosition.TopLeft
+  fullName: Egap.Documents.MarginBoxPosition.TopLeft
+  nameWithType: MarginBoxPosition.TopLeft
+- uid: Egap.Documents.MarginBoxPosition.TopLeftCorner
+  name: TopLeftCorner
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_TopLeftCorner
+  commentId: F:Egap.Documents.MarginBoxPosition.TopLeftCorner
+  fullName: Egap.Documents.MarginBoxPosition.TopLeftCorner
+  nameWithType: MarginBoxPosition.TopLeftCorner
+- uid: Egap.Documents.MarginBoxPosition.TopRight
+  name: TopRight
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_TopRight
+  commentId: F:Egap.Documents.MarginBoxPosition.TopRight
+  fullName: Egap.Documents.MarginBoxPosition.TopRight
+  nameWithType: MarginBoxPosition.TopRight
+- uid: Egap.Documents.MarginBoxPosition.TopRightCorner
+  name: TopRightCorner
+  href: api/Egap.Documents.MarginBoxPosition.html#Egap_Documents_MarginBoxPosition_TopRightCorner
+  commentId: F:Egap.Documents.MarginBoxPosition.TopRightCorner
+  fullName: Egap.Documents.MarginBoxPosition.TopRightCorner
+  nameWithType: MarginBoxPosition.TopRightCorner
 - uid: Egap.Documents.MarkdownExtensions
   name: MarkdownExtensions
   href: api/Egap.Documents.MarkdownExtensions.html
@@ -9063,6 +9893,78 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.MarkdownSaveOptions.WriteFrontMatter
   nameWithType: MarkdownSaveOptions.WriteFrontMatter
+- uid: Egap.Documents.MergeData
+  name: MergeData
+  href: api/Egap.Documents.MergeData.html
+  commentId: T:Egap.Documents.MergeData
+  fullName: Egap.Documents.MergeData
+  nameWithType: MergeData
+- uid: Egap.Documents.MergeData.From(System.Collections.Generic.IEnumerable{System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object}})
+  name: From(IEnumerable<IReadOnlyDictionary<string, object?>>)
+  href: api/Egap.Documents.MergeData.html#Egap_Documents_MergeData_From_System_Collections_Generic_IEnumerable_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Object___
+  commentId: M:Egap.Documents.MergeData.From(System.Collections.Generic.IEnumerable{System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object}})
+  name.vb: From(IEnumerable(Of IReadOnlyDictionary(Of String, Object)))
+  fullName: Egap.Documents.MergeData.From(System.Collections.Generic.IEnumerable<System.Collections.Generic.IReadOnlyDictionary<string, object?>>)
+  fullName.vb: Egap.Documents.MergeData.From(System.Collections.Generic.IEnumerable(Of System.Collections.Generic.IReadOnlyDictionary(Of String, Object)))
+  nameWithType: MergeData.From(IEnumerable<IReadOnlyDictionary<string, object?>>)
+  nameWithType.vb: MergeData.From(IEnumerable(Of IReadOnlyDictionary(Of String, Object)))
+- uid: Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object})
+  name: From(IReadOnlyDictionary<string, object?>)
+  href: api/Egap.Documents.MergeData.html#Egap_Documents_MergeData_From_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Object__
+  commentId: M:Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object})
+  name.vb: From(IReadOnlyDictionary(Of String, Object))
+  fullName: Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyDictionary<string, object?>)
+  fullName.vb: Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyDictionary(Of String, Object))
+  nameWithType: MergeData.From(IReadOnlyDictionary<string, object?>)
+  nameWithType.vb: MergeData.From(IReadOnlyDictionary(Of String, Object))
+- uid: Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IEnumerable{System.Collections.Generic.IReadOnlyList{System.Object}})
+  name: From(IReadOnlyList<string>, IEnumerable<IReadOnlyList<object?>>)
+  href: api/Egap.Documents.MergeData.html#Egap_Documents_MergeData_From_System_Collections_Generic_IReadOnlyList_System_String__System_Collections_Generic_IEnumerable_System_Collections_Generic_IReadOnlyList_System_Object___
+  commentId: M:Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IEnumerable{System.Collections.Generic.IReadOnlyList{System.Object}})
+  name.vb: From(IReadOnlyList(Of String), IEnumerable(Of IReadOnlyList(Of Object)))
+  fullName: Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyList<string>, System.Collections.Generic.IEnumerable<System.Collections.Generic.IReadOnlyList<object?>>)
+  fullName.vb: Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyList(Of String), System.Collections.Generic.IEnumerable(Of System.Collections.Generic.IReadOnlyList(Of Object)))
+  nameWithType: MergeData.From(IReadOnlyList<string>, IEnumerable<IReadOnlyList<object?>>)
+  nameWithType.vb: MergeData.From(IReadOnlyList(Of String), IEnumerable(Of IReadOnlyList(Of Object)))
+- uid: Egap.Documents.MergeData.From*
+  name: From
+  href: api/Egap.Documents.MergeData.html#Egap_Documents_MergeData_From_
+  commentId: Overload:Egap.Documents.MergeData.From
+  isSpec: "True"
+  fullName: Egap.Documents.MergeData.From
+  nameWithType: MergeData.From
+- uid: Egap.Documents.MergeData.FromObject*
+  name: FromObject
+  href: api/Egap.Documents.MergeData.html#Egap_Documents_MergeData_FromObject_
+  commentId: Overload:Egap.Documents.MergeData.FromObject
+  isSpec: "True"
+  fullName: Egap.Documents.MergeData.FromObject
+  nameWithType: MergeData.FromObject
+- uid: Egap.Documents.MergeData.FromObject``1(``0)
+  name: FromObject<T>(T)
+  href: api/Egap.Documents.MergeData.html#Egap_Documents_MergeData_FromObject__1___0_
+  commentId: M:Egap.Documents.MergeData.FromObject``1(``0)
+  name.vb: FromObject(Of T)(T)
+  fullName: Egap.Documents.MergeData.FromObject<T>(T)
+  fullName.vb: Egap.Documents.MergeData.FromObject(Of T)(T)
+  nameWithType: MergeData.FromObject<T>(T)
+  nameWithType.vb: MergeData.FromObject(Of T)(T)
+- uid: Egap.Documents.MergeData.FromObjects*
+  name: FromObjects
+  href: api/Egap.Documents.MergeData.html#Egap_Documents_MergeData_FromObjects_
+  commentId: Overload:Egap.Documents.MergeData.FromObjects
+  isSpec: "True"
+  fullName: Egap.Documents.MergeData.FromObjects
+  nameWithType: MergeData.FromObjects
+- uid: Egap.Documents.MergeData.FromObjects``1(System.Collections.Generic.IEnumerable{``0})
+  name: FromObjects<T>(IEnumerable<T>)
+  href: api/Egap.Documents.MergeData.html#Egap_Documents_MergeData_FromObjects__1_System_Collections_Generic_IEnumerable___0__
+  commentId: M:Egap.Documents.MergeData.FromObjects``1(System.Collections.Generic.IEnumerable{``0})
+  name.vb: FromObjects(Of T)(IEnumerable(Of T))
+  fullName: Egap.Documents.MergeData.FromObjects<T>(System.Collections.Generic.IEnumerable<T>)
+  fullName.vb: Egap.Documents.MergeData.FromObjects(Of T)(System.Collections.Generic.IEnumerable(Of T))
+  nameWithType: MergeData.FromObjects<T>(IEnumerable<T>)
+  nameWithType.vb: MergeData.FromObjects(Of T)(IEnumerable(Of T))
 - uid: Egap.Documents.Node
   name: Node
   href: api/Egap.Documents.Node.html
@@ -9658,6 +10560,19 @@ references:
   commentId: T:Egap.Documents.PageSetup
   fullName: Egap.Documents.PageSetup
   nameWithType: PageSetup
+- uid: Egap.Documents.PageSetup.BalanceColumns
+  name: BalanceColumns
+  href: api/Egap.Documents.PageSetup.html#Egap_Documents_PageSetup_BalanceColumns
+  commentId: P:Egap.Documents.PageSetup.BalanceColumns
+  fullName: Egap.Documents.PageSetup.BalanceColumns
+  nameWithType: PageSetup.BalanceColumns
+- uid: Egap.Documents.PageSetup.BalanceColumns*
+  name: BalanceColumns
+  href: api/Egap.Documents.PageSetup.html#Egap_Documents_PageSetup_BalanceColumns_
+  commentId: Overload:Egap.Documents.PageSetup.BalanceColumns
+  isSpec: "True"
+  fullName: Egap.Documents.PageSetup.BalanceColumns
+  nameWithType: PageSetup.BalanceColumns
 - uid: Egap.Documents.PageSetup.Bidi
   name: Bidi
   href: api/Egap.Documents.PageSetup.html#Egap_Documents_PageSetup_Bidi
@@ -10528,6 +11443,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ParagraphFormat.ListLevel
   nameWithType: ParagraphFormat.ListLevel
+- uid: Egap.Documents.ParagraphFormat.MaxLines
+  name: MaxLines
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_MaxLines
+  commentId: P:Egap.Documents.ParagraphFormat.MaxLines
+  fullName: Egap.Documents.ParagraphFormat.MaxLines
+  nameWithType: ParagraphFormat.MaxLines
+- uid: Egap.Documents.ParagraphFormat.MaxLines*
+  name: MaxLines
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_MaxLines_
+  commentId: Overload:Egap.Documents.ParagraphFormat.MaxLines
+  isSpec: "True"
+  fullName: Egap.Documents.ParagraphFormat.MaxLines
+  nameWithType: ParagraphFormat.MaxLines
 - uid: Egap.Documents.ParagraphFormat.MirrorIndents
   name: MirrorIndents
   href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_MirrorIndents
@@ -10710,6 +11638,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ParagraphFormat.WidowControl
   nameWithType: ParagraphFormat.WidowControl
+- uid: Egap.Documents.ParagraphFormat.WordBreak
+  name: WordBreak
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_WordBreak
+  commentId: P:Egap.Documents.ParagraphFormat.WordBreak
+  fullName: Egap.Documents.ParagraphFormat.WordBreak
+  nameWithType: ParagraphFormat.WordBreak
+- uid: Egap.Documents.ParagraphFormat.WordBreak*
+  name: WordBreak
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_WordBreak_
+  commentId: Overload:Egap.Documents.ParagraphFormat.WordBreak
+  isSpec: "True"
+  fullName: Egap.Documents.ParagraphFormat.WordBreak
+  nameWithType: ParagraphFormat.WordBreak
 - uid: Egap.Documents.ParagraphStyle
   name: ParagraphStyle
   href: api/Egap.Documents.ParagraphStyle.html
@@ -11153,6 +12094,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedParagraphFormat.ListLevel
   nameWithType: ResolvedParagraphFormat.ListLevel
+- uid: Egap.Documents.ResolvedParagraphFormat.MaxLines
+  name: MaxLines
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_MaxLines
+  commentId: P:Egap.Documents.ResolvedParagraphFormat.MaxLines
+  fullName: Egap.Documents.ResolvedParagraphFormat.MaxLines
+  nameWithType: ResolvedParagraphFormat.MaxLines
+- uid: Egap.Documents.ResolvedParagraphFormat.MaxLines*
+  name: MaxLines
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_MaxLines_
+  commentId: Overload:Egap.Documents.ResolvedParagraphFormat.MaxLines
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedParagraphFormat.MaxLines
+  nameWithType: ResolvedParagraphFormat.MaxLines
 - uid: Egap.Documents.ResolvedParagraphFormat.MirrorIndents
   name: MirrorIndents
   href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_MirrorIndents
@@ -11348,6 +12302,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedParagraphFormat.WidowControl
   nameWithType: ResolvedParagraphFormat.WidowControl
+- uid: Egap.Documents.ResolvedParagraphFormat.WordBreak
+  name: WordBreak
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_WordBreak
+  commentId: P:Egap.Documents.ResolvedParagraphFormat.WordBreak
+  fullName: Egap.Documents.ResolvedParagraphFormat.WordBreak
+  nameWithType: ResolvedParagraphFormat.WordBreak
+- uid: Egap.Documents.ResolvedParagraphFormat.WordBreak*
+  name: WordBreak
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_WordBreak_
+  commentId: Overload:Egap.Documents.ResolvedParagraphFormat.WordBreak
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedParagraphFormat.WordBreak
+  nameWithType: ResolvedParagraphFormat.WordBreak
 - uid: Egap.Documents.ResolvedRunFormat
   name: ResolvedRunFormat
   href: api/Egap.Documents.ResolvedRunFormat.html
@@ -11458,6 +12425,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedRunFormat.Emboss
   nameWithType: ResolvedRunFormat.Emboss
+- uid: Egap.Documents.ResolvedRunFormat.Features
+  name: Features
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_Features
+  commentId: P:Egap.Documents.ResolvedRunFormat.Features
+  fullName: Egap.Documents.ResolvedRunFormat.Features
+  nameWithType: ResolvedRunFormat.Features
+- uid: Egap.Documents.ResolvedRunFormat.Features*
+  name: Features
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_Features_
+  commentId: Overload:Egap.Documents.ResolvedRunFormat.Features
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedRunFormat.Features
+  nameWithType: ResolvedRunFormat.Features
 - uid: Egap.Documents.ResolvedRunFormat.FontAscii
   name: FontAscii
   href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_FontAscii
@@ -11653,6 +12633,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedRunFormat.Outline
   nameWithType: ResolvedRunFormat.Outline
+- uid: Egap.Documents.ResolvedRunFormat.Overline
+  name: Overline
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_Overline
+  commentId: P:Egap.Documents.ResolvedRunFormat.Overline
+  fullName: Egap.Documents.ResolvedRunFormat.Overline
+  nameWithType: ResolvedRunFormat.Overline
+- uid: Egap.Documents.ResolvedRunFormat.Overline*
+  name: Overline
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_Overline_
+  commentId: Overload:Egap.Documents.ResolvedRunFormat.Overline
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedRunFormat.Overline
+  nameWithType: ResolvedRunFormat.Overline
 - uid: Egap.Documents.ResolvedRunFormat.Position
   name: Position
   href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_Position
@@ -11861,6 +12854,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedRunFormat.VerticalPosition
   nameWithType: ResolvedRunFormat.VerticalPosition
+- uid: Egap.Documents.ResolvedRunFormat.WordSpacing
+  name: WordSpacing
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_WordSpacing
+  commentId: P:Egap.Documents.ResolvedRunFormat.WordSpacing
+  fullName: Egap.Documents.ResolvedRunFormat.WordSpacing
+  nameWithType: ResolvedRunFormat.WordSpacing
+- uid: Egap.Documents.ResolvedRunFormat.WordSpacing*
+  name: WordSpacing
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_WordSpacing_
+  commentId: Overload:Egap.Documents.ResolvedRunFormat.WordSpacing
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedRunFormat.WordSpacing
+  nameWithType: ResolvedRunFormat.WordSpacing
 - uid: Egap.Documents.Revision
   name: Revision
   href: api/Egap.Documents.Revision.html
@@ -12171,6 +13177,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RowFormat.Hidden
   nameWithType: RowFormat.Hidden
+- uid: Egap.Documents.RowFormat.IsFooter
+  name: IsFooter
+  href: api/Egap.Documents.RowFormat.html#Egap_Documents_RowFormat_IsFooter
+  commentId: P:Egap.Documents.RowFormat.IsFooter
+  fullName: Egap.Documents.RowFormat.IsFooter
+  nameWithType: RowFormat.IsFooter
+- uid: Egap.Documents.RowFormat.IsFooter*
+  name: IsFooter
+  href: api/Egap.Documents.RowFormat.html#Egap_Documents_RowFormat_IsFooter_
+  commentId: Overload:Egap.Documents.RowFormat.IsFooter
+  isSpec: "True"
+  fullName: Egap.Documents.RowFormat.IsFooter
+  nameWithType: RowFormat.IsFooter
 - uid: Egap.Documents.RowFormat.IsHeader
   name: IsHeader
   href: api/Egap.Documents.RowFormat.html#Egap_Documents_RowFormat_IsHeader
@@ -12437,6 +13456,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RunFormat.Emboss
   nameWithType: RunFormat.Emboss
+- uid: Egap.Documents.RunFormat.Features
+  name: Features
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Features
+  commentId: P:Egap.Documents.RunFormat.Features
+  fullName: Egap.Documents.RunFormat.Features
+  nameWithType: RunFormat.Features
+- uid: Egap.Documents.RunFormat.Features*
+  name: Features
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Features_
+  commentId: Overload:Egap.Documents.RunFormat.Features
+  isSpec: "True"
+  fullName: Egap.Documents.RunFormat.Features
+  nameWithType: RunFormat.Features
 - uid: Egap.Documents.RunFormat.FontAscii
   name: FontAscii
   href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_FontAscii
@@ -12645,6 +13677,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RunFormat.Outline
   nameWithType: RunFormat.Outline
+- uid: Egap.Documents.RunFormat.Overline
+  name: Overline
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Overline
+  commentId: P:Egap.Documents.RunFormat.Overline
+  fullName: Egap.Documents.RunFormat.Overline
+  nameWithType: RunFormat.Overline
+- uid: Egap.Documents.RunFormat.Overline*
+  name: Overline
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Overline_
+  commentId: Overload:Egap.Documents.RunFormat.Overline
+  isSpec: "True"
+  fullName: Egap.Documents.RunFormat.Overline
+  nameWithType: RunFormat.Overline
 - uid: Egap.Documents.RunFormat.Position
   name: Position
   href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Position
@@ -12879,6 +13924,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RunFormat.VerticalPosition
   nameWithType: RunFormat.VerticalPosition
+- uid: Egap.Documents.RunFormat.WordSpacing
+  name: WordSpacing
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_WordSpacing
+  commentId: P:Egap.Documents.RunFormat.WordSpacing
+  fullName: Egap.Documents.RunFormat.WordSpacing
+  nameWithType: RunFormat.WordSpacing
+- uid: Egap.Documents.RunFormat.WordSpacing*
+  name: WordSpacing
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_WordSpacing_
+  commentId: Overload:Egap.Documents.RunFormat.WordSpacing
+  isSpec: "True"
+  fullName: Egap.Documents.RunFormat.WordSpacing
+  nameWithType: RunFormat.WordSpacing
 - uid: Egap.Documents.Section
   name: Section
   href: api/Egap.Documents.Section.html
@@ -12946,6 +14004,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Section.HeadersFooters
   nameWithType: Section.HeadersFooters
+- uid: Egap.Documents.Section.MarginBoxes
+  name: MarginBoxes
+  href: api/Egap.Documents.Section.html#Egap_Documents_Section_MarginBoxes
+  commentId: P:Egap.Documents.Section.MarginBoxes
+  fullName: Egap.Documents.Section.MarginBoxes
+  nameWithType: Section.MarginBoxes
+- uid: Egap.Documents.Section.MarginBoxes*
+  name: MarginBoxes
+  href: api/Egap.Documents.Section.html#Egap_Documents_Section_MarginBoxes_
+  commentId: Overload:Egap.Documents.Section.MarginBoxes
+  isSpec: "True"
+  fullName: Egap.Documents.Section.MarginBoxes
+  nameWithType: Section.MarginBoxes
 - uid: Egap.Documents.Section.PageSetup
   name: PageSetup
   href: api/Egap.Documents.Section.html#Egap_Documents_Section_PageSetup
@@ -15988,6 +17059,36 @@ references:
   commentId: F:Egap.Documents.WidthUnit.Points
   fullName: Egap.Documents.WidthUnit.Points
   nameWithType: WidthUnit.Points
+- uid: Egap.Documents.WordBreak
+  name: WordBreak
+  href: api/Egap.Documents.WordBreak.html
+  commentId: T:Egap.Documents.WordBreak
+  fullName: Egap.Documents.WordBreak
+  nameWithType: WordBreak
+- uid: Egap.Documents.WordBreak.Anywhere
+  name: Anywhere
+  href: api/Egap.Documents.WordBreak.html#Egap_Documents_WordBreak_Anywhere
+  commentId: F:Egap.Documents.WordBreak.Anywhere
+  fullName: Egap.Documents.WordBreak.Anywhere
+  nameWithType: WordBreak.Anywhere
+- uid: Egap.Documents.WordBreak.BreakAll
+  name: BreakAll
+  href: api/Egap.Documents.WordBreak.html#Egap_Documents_WordBreak_BreakAll
+  commentId: F:Egap.Documents.WordBreak.BreakAll
+  fullName: Egap.Documents.WordBreak.BreakAll
+  nameWithType: WordBreak.BreakAll
+- uid: Egap.Documents.WordBreak.KeepAll
+  name: KeepAll
+  href: api/Egap.Documents.WordBreak.html#Egap_Documents_WordBreak_KeepAll
+  commentId: F:Egap.Documents.WordBreak.KeepAll
+  fullName: Egap.Documents.WordBreak.KeepAll
+  nameWithType: WordBreak.KeepAll
+- uid: Egap.Documents.WordBreak.Normal
+  name: Normal
+  href: api/Egap.Documents.WordBreak.html#Egap_Documents_WordBreak_Normal
+  commentId: F:Egap.Documents.WordBreak.Normal
+  fullName: Egap.Documents.WordBreak.Normal
+  nameWithType: WordBreak.Normal
 - uid: Egap.Documents.WrapMode
   name: WrapMode
   href: api/Egap.Documents.WrapMode.html
@@ -17605,6 +18706,122 @@ references:
   commentId: F:Egap.Pdf.Conversion.OutlineFrom.None
   fullName: Egap.Pdf.Conversion.OutlineFrom.None
   nameWithType: OutlineFrom.None
+- uid: Egap.Pdf.Conversion.PageBand
+  name: PageBand
+  href: api/Egap.Pdf.Conversion.PageBand.html
+  commentId: T:Egap.Pdf.Conversion.PageBand
+  fullName: Egap.Pdf.Conversion.PageBand
+  nameWithType: PageBand
+- uid: Egap.Pdf.Conversion.PageBand.Center
+  name: Center
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Center
+  commentId: P:Egap.Pdf.Conversion.PageBand.Center
+  fullName: Egap.Pdf.Conversion.PageBand.Center
+  nameWithType: PageBand.Center
+- uid: Egap.Pdf.Conversion.PageBand.Center*
+  name: Center
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Center_
+  commentId: Overload:Egap.Pdf.Conversion.PageBand.Center
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageBand.Center
+  nameWithType: PageBand.Center
+- uid: Egap.Pdf.Conversion.PageBand.FontFamily
+  name: FontFamily
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_FontFamily
+  commentId: P:Egap.Pdf.Conversion.PageBand.FontFamily
+  fullName: Egap.Pdf.Conversion.PageBand.FontFamily
+  nameWithType: PageBand.FontFamily
+- uid: Egap.Pdf.Conversion.PageBand.FontFamily*
+  name: FontFamily
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_FontFamily_
+  commentId: Overload:Egap.Pdf.Conversion.PageBand.FontFamily
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageBand.FontFamily
+  nameWithType: PageBand.FontFamily
+- uid: Egap.Pdf.Conversion.PageBand.FontSize
+  name: FontSize
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_FontSize
+  commentId: P:Egap.Pdf.Conversion.PageBand.FontSize
+  fullName: Egap.Pdf.Conversion.PageBand.FontSize
+  nameWithType: PageBand.FontSize
+- uid: Egap.Pdf.Conversion.PageBand.FontSize*
+  name: FontSize
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_FontSize_
+  commentId: Overload:Egap.Pdf.Conversion.PageBand.FontSize
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageBand.FontSize
+  nameWithType: PageBand.FontSize
+- uid: Egap.Pdf.Conversion.PageBand.Html(System.String)
+  name: Html(string)
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Html_System_String_
+  commentId: M:Egap.Pdf.Conversion.PageBand.Html(System.String)
+  name.vb: Html(String)
+  fullName: Egap.Pdf.Conversion.PageBand.Html(string)
+  fullName.vb: Egap.Pdf.Conversion.PageBand.Html(String)
+  nameWithType: PageBand.Html(string)
+  nameWithType.vb: PageBand.Html(String)
+- uid: Egap.Pdf.Conversion.PageBand.Html*
+  name: Html
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Html_
+  commentId: Overload:Egap.Pdf.Conversion.PageBand.Html
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageBand.Html
+  nameWithType: PageBand.Html
+- uid: Egap.Pdf.Conversion.PageBand.HtmlContent
+  name: HtmlContent
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_HtmlContent
+  commentId: P:Egap.Pdf.Conversion.PageBand.HtmlContent
+  fullName: Egap.Pdf.Conversion.PageBand.HtmlContent
+  nameWithType: PageBand.HtmlContent
+- uid: Egap.Pdf.Conversion.PageBand.HtmlContent*
+  name: HtmlContent
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_HtmlContent_
+  commentId: Overload:Egap.Pdf.Conversion.PageBand.HtmlContent
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageBand.HtmlContent
+  nameWithType: PageBand.HtmlContent
+- uid: Egap.Pdf.Conversion.PageBand.Left
+  name: Left
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Left
+  commentId: P:Egap.Pdf.Conversion.PageBand.Left
+  fullName: Egap.Pdf.Conversion.PageBand.Left
+  nameWithType: PageBand.Left
+- uid: Egap.Pdf.Conversion.PageBand.Left*
+  name: Left
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Left_
+  commentId: Overload:Egap.Pdf.Conversion.PageBand.Left
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageBand.Left
+  nameWithType: PageBand.Left
+- uid: Egap.Pdf.Conversion.PageBand.Right
+  name: Right
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Right
+  commentId: P:Egap.Pdf.Conversion.PageBand.Right
+  fullName: Egap.Pdf.Conversion.PageBand.Right
+  nameWithType: PageBand.Right
+- uid: Egap.Pdf.Conversion.PageBand.Right*
+  name: Right
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Right_
+  commentId: Overload:Egap.Pdf.Conversion.PageBand.Right
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageBand.Right
+  nameWithType: PageBand.Right
+- uid: Egap.Pdf.Conversion.PageBand.Text(System.String,System.String,System.String)
+  name: Text(string?, string?, string?)
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Text_System_String_System_String_System_String_
+  commentId: M:Egap.Pdf.Conversion.PageBand.Text(System.String,System.String,System.String)
+  name.vb: Text(String, String, String)
+  fullName: Egap.Pdf.Conversion.PageBand.Text(string?, string?, string?)
+  fullName.vb: Egap.Pdf.Conversion.PageBand.Text(String, String, String)
+  nameWithType: PageBand.Text(string?, string?, string?)
+  nameWithType.vb: PageBand.Text(String, String, String)
+- uid: Egap.Pdf.Conversion.PageBand.Text*
+  name: Text
+  href: api/Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Text_
+  commentId: Overload:Egap.Pdf.Conversion.PageBand.Text
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PageBand.Text
+  nameWithType: PageBand.Text
 - uid: Egap.Pdf.Conversion.PageMargins
   name: PageMargins
   href: api/Egap.Pdf.Conversion.PageMargins.html
@@ -18013,6 +19230,32 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.Conversion.PdfConvertOptions.Export
   nameWithType: PdfConvertOptions.Export
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Footer
+  name: Footer
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Footer
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.Footer
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Footer
+  nameWithType: PdfConvertOptions.Footer
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Footer*
+  name: Footer
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Footer_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.Footer
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Footer
+  nameWithType: PdfConvertOptions.Footer
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Header
+  name: Header
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Header
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.Header
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Header
+  nameWithType: PdfConvertOptions.Header
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.Header*
+  name: Header
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Header_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.Header
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.Header
+  nameWithType: PdfConvertOptions.Header
 - uid: Egap.Pdf.Conversion.PdfConvertOptions.Margins
   name: Margins
   href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Margins
@@ -18039,6 +19282,19 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.Conversion.PdfConvertOptions.PageSize
   nameWithType: PdfConvertOptions.PageSize
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents
+  name: TableOfContents
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_TableOfContents
+  commentId: P:Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents
+  nameWithType: PdfConvertOptions.TableOfContents
+- uid: Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents*
+  name: TableOfContents
+  href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_TableOfContents_
+  commentId: Overload:Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents
+  isSpec: "True"
+  fullName: Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents
+  nameWithType: PdfConvertOptions.TableOfContents
 - uid: Egap.Pdf.Conversion.PdfConvertOptions.Tagged
   name: Tagged
   href: api/Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Tagged
@@ -18944,6 +20200,30 @@ references:
   commentId: F:Egap.Pdf.Conversion.TableDetection.RuledAndAligned
   fullName: Egap.Pdf.Conversion.TableDetection.RuledAndAligned
   nameWithType: TableDetection.RuledAndAligned
+- uid: Egap.Pdf.Conversion.TableOfContentsMode
+  name: TableOfContentsMode
+  href: api/Egap.Pdf.Conversion.TableOfContentsMode.html
+  commentId: T:Egap.Pdf.Conversion.TableOfContentsMode
+  fullName: Egap.Pdf.Conversion.TableOfContentsMode
+  nameWithType: TableOfContentsMode
+- uid: Egap.Pdf.Conversion.TableOfContentsMode.None
+  name: None
+  href: api/Egap.Pdf.Conversion.TableOfContentsMode.html#Egap_Pdf_Conversion_TableOfContentsMode_None
+  commentId: F:Egap.Pdf.Conversion.TableOfContentsMode.None
+  fullName: Egap.Pdf.Conversion.TableOfContentsMode.None
+  nameWithType: TableOfContentsMode.None
+- uid: Egap.Pdf.Conversion.TableOfContentsMode.WithPageNumbers
+  name: WithPageNumbers
+  href: api/Egap.Pdf.Conversion.TableOfContentsMode.html#Egap_Pdf_Conversion_TableOfContentsMode_WithPageNumbers
+  commentId: F:Egap.Pdf.Conversion.TableOfContentsMode.WithPageNumbers
+  fullName: Egap.Pdf.Conversion.TableOfContentsMode.WithPageNumbers
+  nameWithType: TableOfContentsMode.WithPageNumbers
+- uid: Egap.Pdf.Conversion.TableOfContentsMode.WithoutPageNumbers
+  name: WithoutPageNumbers
+  href: api/Egap.Pdf.Conversion.TableOfContentsMode.html#Egap_Pdf_Conversion_TableOfContentsMode_WithoutPageNumbers
+  commentId: F:Egap.Pdf.Conversion.TableOfContentsMode.WithoutPageNumbers
+  fullName: Egap.Pdf.Conversion.TableOfContentsMode.WithoutPageNumbers
+  nameWithType: TableOfContentsMode.WithoutPageNumbers
 - uid: Egap.Pdf.DeskewOptions
   name: DeskewOptions
   href: api/Egap.Pdf.DeskewOptions.html

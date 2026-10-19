@@ -172,6 +172,15 @@ and may change in a minor version; the properties themselves stay.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.Conversion.PageBand.html">PageBand</a></dt>
+      <dd><p>A header or footer that <a class="xref" href="Egap.Pdf.Conversion.PdfConvert.html">PdfConvert</a> puts on every page (<a class="xref" href="Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Header">Header</a> and
+<a class="xref" href="Egap.Pdf.Conversion.PdfConvertOptions.html#Egap_Pdf_Conversion_PdfConvertOptions_Footer">Footer</a>), in the top or
+bottom margin: plain text in up to three places (<a class="xref" href="Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Text_System_String_System_String_System_String_">Text(string?, string?, string?)</a>), or HTML styled with the page's own CSS
+(<a class="xref" href="Egap.Pdf.Conversion.PageBand.html#Egap_Pdf_Conversion_PageBand_Html_System_String_">Html(string)</a>). Both take the <a class="xref" href="Egap.Pdf.PdfPlaceholders.html">PdfPlaceholders</a>: <code>{page}</code>, <code>{total-pages}</code>,
+<code>{label}</code>, <code>{date}</code>, <code>{time}</code>, <code>{title}</code> and <code>{file}</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.Conversion.PdfAutoTagFigure.html">PdfAutoTagFigure</a></dt>
       <dd><p>A figure tagged without alternate text.</p>
 </dd>
@@ -324,6 +333,11 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.Conversion.TableDetection.html">TableDetection</a></dt>
       <dd><p>Which tables layout analysis looks for (design Q5).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.Conversion.TableOfContentsMode.html">TableOfContentsMode</a></dt>
+      <dd><p>Whether <a class="xref" href="Egap.Pdf.Conversion.PdfConvert.html">PdfConvert</a> gives the PDF a table of contents built from the headings.</p>
 </dd>
     </dl>
 

@@ -322,6 +322,13 @@ one to move the object.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.FontFeatures.html">FontFeatures</a></dt>
+      <dd><p>OpenType features turned on or off for some text, such as <code>liga=0</code> for no standard ligatures or <code>tnum</code> for
+tabular figures. A feature's value is 1 for on, 0 for off, or a number for features that choose among alternates. The set
+is compared by value, so two runs with the same features share formatting.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.Footnote.html">Footnote</a></dt>
       <dd><p>A footnote or endnote: the reference mark in the text, which holds the note's own text as a story (Phase 6 design Q8).
 The mark is numbered automatically unless it has a <a class="xref" href="Egap.Documents.Footnote.html#Egap_Documents_Footnote_CustomMark">CustomMark</a>.</p>
@@ -337,6 +344,12 @@ reports each change to its document; a format made with <code>new</code> stands 
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.FormatRevision.html">FormatRevision</a></dt>
       <dd><p>A tracked formatting change: who changed the formatting, when, and what it was before.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.GroupPaging.html">GroupPaging</a></dt>
+      <dd><p>How a group of blocks (a block content control) is placed across pages. Word keeps the blocks but not these settings,
+which only Egap's layout follows.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -434,6 +447,23 @@ formatting, and the indents its paragraphs get (Phase 6 design Q6, Word's lvl).<
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.MailMergeOptions.html">MailMergeOptions</a></dt>
+      <dd><p>How a mail merge fills a template.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.MarginBox.html">MarginBox</a></dt>
+      <dd><p>Content in one of the page margins, drawn on every page of its section (or only on the first): text such as a title
+or &quot;Page 3 of 9&quot; with PAGE and NUMPAGES fields, as CSS's @page margin boxes hold. Headers and footers still apply;
+margin boxes sit beside them and do not move the body.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.MarginBoxCollection.html">MarginBoxCollection</a></dt>
+      <dd><p>A section's margin boxes: at most one for each position, and one more for each on the first page.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.MarkdownFormat.html">MarkdownFormat</a></dt>
       <dd><p>Reads Markdown into a <a class="xref" href="Egap.Documents.Document.html">Document</a> and writes documents as GitHub Flavored Markdown (Phase 6 design Q17):
 CommonMark 0.31 with GitHub's tables, task lists, strikethrough, autolinks and footnotes, and YAML front matter. Headings take the Heading 1 to 6 styles, code the HTML Code
@@ -454,6 +484,11 @@ cannot hold.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.MarkdownSaveOptions.html">MarkdownSaveOptions</a></dt>
       <dd><p>How <a class="xref" href="Egap.Documents.MarkdownFormat.html">MarkdownFormat</a> writes Markdown.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.MergeData.html">MergeData</a></dt>
+      <dd><p>Merge data from dictionaries, rows of values with column names, and objects.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -670,6 +705,15 @@ Structs
       <dd><p>A table or cell width: automatic, in points or in per cent.</p>
 </dd>
     </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.IMergeData.html">IMergeData</a></dt>
+      <dd><p>One record of data for a mail merge: the value of each merge field, and the records of each repeated region. Implement
+it to stream records from any source; <a class="xref" href="Egap.Documents.MergeData.html">MergeData</a> makes one from dictionaries, rows or objects.</p>
+</dd>
+    </dl>
     <h3 id="enums">
 Enums
 </h3>
@@ -757,6 +801,12 @@ stored result (Phase 6 design Q8).</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.ListLabelSuffix.html">ListLabelSuffix</a></dt>
       <dd><p>What follows a list label before the paragraph's text.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.MarginBoxPosition.html">MarginBoxPosition</a></dt>
+      <dd><p>Where a <a class="xref" href="Egap.Documents.MarginBox.html">MarginBox</a> sits in the page margins: the sixteen boxes of CSS Paged Media, three along each edge
+and one in each corner.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -897,6 +947,11 @@ stored result (Phase 6 design Q8).</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.WidthUnit.html">WidthUnit</a></dt>
       <dd><p>How a table, cell or row width or height is given.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.WordBreak.html">WordBreak</a></dt>
+      <dd><p>Where lines may break inside words.</p>
 </dd>
     </dl>
     <dl class="jumplist">
