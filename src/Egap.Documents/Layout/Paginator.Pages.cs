@@ -110,6 +110,9 @@ internal sealed class PageBuilder
 
     public AreaBox? Footer { get; set; }
 
+    /// <summary>The margin boxes, laid out in the page margins.</summary>
+    public List<AreaBox> MarginBoxes { get; } = [];
+
     /// <summary>The columns of the band being filled (a continuous section break starts a new band on the same page).</summary>
     public IReadOnlyList<ColumnGeometry> Columns => bands[^1].Columns;
 
@@ -191,6 +194,8 @@ internal sealed class PageBuilder
             boxes.Add(Footer);
         }
 
+        boxes.AddRange(MarginBoxes);
+
         boxes.AddRange(Floats.Select(f => f.Box));
 
         return new PageLayout(index, Numbering.Format(Number, Section.PageSetup.PageNumberStyle ?? NumberStyle.Decimal), Section, Geometry.PageWidth, Geometry.PageHeight, boxes);
@@ -264,6 +269,85 @@ internal sealed partial class Paginator
         }
 
         target.SetBodyLimits(top, Math.Max(top + 18, bottom));
+        LayMarginBoxes(target, first: target.FirstOfSection);
+    }
+
+    /// <summary>
+    /// Lays out the section's margin boxes in the page margins, as CSS Paged Media places them: corners in the margin
+    /// squares, the boxes of an edge side by side between them (in thirds, or halves when the middle one is missing), each
+    /// centred across the margin's depth, or at the top, middle or bottom of a side.
+    /// </summary>
+    private void LayMarginBoxes(PageBuilder target, bool first)
+    {
+        MarginBoxCollection all = target.Section.MarginBoxes;
+        if (all.Count == 0)
+        {
+            return;
+        }
+
+        Geometry g = target.Geometry;
+        double left = g.BodyLeft;
+        double right = g.PageWidth - g.BodyRight;
+        double top = g.BodyTop;
+        double bottom = g.PageHeight - g.BodyBottom;
+        double across = g.BodyRight - g.BodyLeft;
+        double down = g.BodyBottom - g.BodyTop;
+        foreach (MarginBoxPosition position in Enum.GetValues<MarginBoxPosition>())
+        {
+            if (all.For(position, first) is not { Blocks.Count: > 0 } box)
+            {
+                continue;
+            }
+
+            bool hasTopMiddle = all.For(MarginBoxPosition.TopCenter, first) is { Blocks.Count: > 0 };
+            bool hasBottomMiddle = all.For(MarginBoxPosition.BottomCenter, first) is { Blocks.Count: > 0 };
+            bool hasLeftMiddle = all.For(MarginBoxPosition.LeftMiddle, first) is { Blocks.Count: > 0 };
+            bool hasRightMiddle = all.For(MarginBoxPosition.RightMiddle, first) is { Blocks.Count: > 0 };
+            (double x, double y, double w, double h) = position switch
+            {
+                MarginBoxPosition.TopLeftCorner => (0, 0, left, top),
+                MarginBoxPosition.TopRightCorner => (g.BodyRight, 0, right, top),
+                MarginBoxPosition.BottomRightCorner => (g.BodyRight, g.BodyBottom, right, bottom),
+                MarginBoxPosition.BottomLeftCorner => (0, g.BodyBottom, left, bottom),
+                MarginBoxPosition.TopLeft or MarginBoxPosition.TopCenter or MarginBoxPosition.TopRight => Along(position - MarginBoxPosition.TopLeft, hasTopMiddle, left, across, 0, top),
+                MarginBoxPosition.BottomLeft or MarginBoxPosition.BottomCenter or MarginBoxPosition.BottomRight => Along(MarginBoxPosition.BottomLeft - position, hasBottomMiddle, left, across, g.BodyBottom, bottom),
+                MarginBoxPosition.LeftTop or MarginBoxPosition.LeftMiddle or MarginBoxPosition.LeftBottom => Side(MarginBoxPosition.LeftTop - position, hasLeftMiddle, 0, left),
+                _ => Side(position - MarginBoxPosition.RightTop, hasRightMiddle, g.BodyRight, right),
+            };
+            if (w <= 0 || h <= 0)
+            {
+                continue;
+            }
+
+            measuring++;
+            double height = LayStory(box, x, 0, w).Height;
+            measuring--;
+            double offset = position switch
+            {
+                MarginBoxPosition.LeftTop or MarginBoxPosition.RightTop => 0,
+                MarginBoxPosition.LeftBottom or MarginBoxPosition.RightBottom => h - height,
+                _ => (h - height) / 2,
+            };
+            (List<LayoutBox> blocks, _) = LayStory(box, x, y + offset, w);
+            target.MarginBoxes.Add(new AreaBox(PageArea.MarginBox, box, new LayoutRect(x, y, w, h), blocks));
+        }
+
+        // An edge's boxes in order from its start: thirds, or halves when the middle box is missing.
+        static (double, double, double, double) Along(int index, bool middle, double start, double length, double y, double depth)
+        {
+            if (middle)
+            {
+                return (start + (index * length / 3), y, length / 3, depth);
+            }
+
+            return (start + (index == 0 ? 0 : length / 2), y, length / 2, depth);
+        }
+
+        (double, double, double, double) Side(int index, bool middle, double x, double width)
+        {
+            (double from, _, double length, _) = Along(index, middle, top, down, 0, 0);
+            return (x, from, width, length);
+        }
     }
 
     /// <summary>Lays a header, footer or other story's blocks out in one column without page breaks.</summary>

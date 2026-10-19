@@ -22,6 +22,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   table's last rows at the bottom of each page it continues from; `PageSetup.BalanceColumns` evens out the columns of a
   section's last page.
 
+### Margin boxes
+- `Section.MarginBoxes` holds content for the sixteen page margin boxes of CSS (`MarginBoxPosition`: the corners and
+  three boxes along each edge), for every page or only the first, with PAGE and NUMPAGES fields for page numbers.
+  `DocumentBuilder.MoveToMarginBox` writes into one. Layout draws them in the margins beside the headers and footers.
+- HTML reads and writes `@page` margin boxes (`@bottom-center { content: "Page " counter(page) " of " counter(pages) }`),
+  `@page :first` included. DOCX writes the top and bottom boxes as a three-part table in the header or footer, and
+  `DocxFormat.Save` now returns a warning for the corner and side boxes it leaves out.
+
 ### Strict layout and portable fonts
 - `LayoutOptions.Strict` throws a `LayoutException` naming the node, the page and the `LayoutProblem` (text or content
   running past its area, a missing glyph, a font with no stand-in) instead of degrading.

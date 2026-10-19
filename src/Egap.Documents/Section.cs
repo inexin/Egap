@@ -14,6 +14,7 @@ public sealed class Section : Node
         Body = new Body(document);
         Body.Attach(this, null, 0);
         HeadersFooters = new HeaderFooterCollection(this);
+        MarginBoxes = new MarginBoxCollection(this);
         PageSetup = Own(new PageSetup());
     }
 
@@ -26,7 +27,10 @@ public sealed class Section : Node
     /// <summary>The section's headers and footers, at most one of each <see cref="HeaderFooterKind"/>.</summary>
     public HeaderFooterCollection HeadersFooters { get; }
 
-    internal override int ChildCount => 1 + HeadersFooters.Count;
+    /// <summary>The section's margin boxes: content placed in the page margins, as CSS's @page margin boxes.</summary>
+    public MarginBoxCollection MarginBoxes { get; }
+
+    internal override int ChildCount => 1 + HeadersFooters.Count + MarginBoxes.Count;
 
     /// <inheritdoc/>
     public override Section Clone(bool deep = true)
@@ -36,7 +40,12 @@ public sealed class Section : Node
 
     internal override Node GetChild(int index)
     {
-        return index == 0 ? Body : HeadersFooters[index - 1];
+        if (index == 0)
+        {
+            return Body;
+        }
+
+        return index <= HeadersFooters.Count ? HeadersFooters[index - 1] : MarginBoxes[index - 1 - HeadersFooters.Count];
     }
 
     private protected override VisitorAction VisitStart(DocumentVisitor visitor)
@@ -68,6 +77,11 @@ public sealed class Section : Node
         foreach (HeaderFooter story in HeadersFooters)
         {
             section.HeadersFooters.AddTrusted(CloneChild(story, context, pending));
+        }
+
+        foreach (MarginBox box in MarginBoxes)
+        {
+            section.MarginBoxes.AddTrusted(CloneChild(box, context, pending));
         }
     }
 }

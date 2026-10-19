@@ -88,7 +88,9 @@ internal sealed partial class HtmlReader
 
         quirks = dom.QuirksMode == HtmlQuirksMode.Quirks;
         HtmlStyle rootStyle = StyleOf(html, null);
-        ApplyPage(section, FirstPageName(html, rootStyle, 0));
+        string? pageName = FirstPageName(html, rootStyle, 0);
+        ApplyPage(section, pageName);
+        ReadMarginBoxes(section, pageName, rootStyle);
         double width = (section.PageSetup.PageWidth ?? 612) - (section.PageSetup.MarginLeft ?? 72) - (section.PageSetup.MarginRight ?? 72);
         Flow flow = new(section.Body, width);
         Frame frame = new(html, rootStyle, null);

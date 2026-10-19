@@ -157,7 +157,7 @@ internal sealed class PdfTagger
 
         public override void BeginBox(LayoutBox box)
         {
-            if (box is AreaBox { Area: PageArea.Header or PageArea.Footer })
+            if (box is AreaBox { Area: PageArea.Header or PageArea.Footer or PageArea.MarginBox })
             {
                 artifactAreas++;
             }
@@ -186,7 +186,7 @@ internal sealed class PdfTagger
                 canvas.EndTag();
             }
 
-            if (box is AreaBox { Area: PageArea.Header or PageArea.Footer })
+            if (box is AreaBox { Area: PageArea.Header or PageArea.Footer or PageArea.MarginBox })
             {
                 artifactAreas--;
             }

@@ -36,6 +36,9 @@ public enum PageArea
 
     /// <summary>The footnotes at the foot of the page, or endnotes.</summary>
     Notes,
+
+    /// <summary>A margin box, in the page margins.</summary>
+    MarginBox,
 }
 
 /// <summary>
@@ -93,7 +96,7 @@ public sealed class ScaledBox : LayoutBox
     public double Scale { get; }
 }
 
-/// <summary>A page area (body column, header, footer or notes) holding block boxes.</summary>
+/// <summary>A page area (body column, header, footer, notes or margin box) holding block boxes.</summary>
 public sealed class AreaBox : LayoutBox
 {
     internal AreaBox(PageArea area, Story? story, LayoutRect bounds, IReadOnlyList<LayoutBox> children)

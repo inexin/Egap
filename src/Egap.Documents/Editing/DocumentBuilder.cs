@@ -383,6 +383,29 @@ public sealed class DocumentBuilder
         before = null;
     }
 
+    /// <summary>
+    /// Moves the cursor to the end of the current section's margin box at <paramref name="position"/>, adding it when missing.
+    /// </summary>
+    /// <param name="position">Where the box sits.</param>
+    /// <param name="firstPage">Whether the box is only for the section's first page.</param>
+    public void MoveToMarginBox(MarginBoxPosition position, bool firstPage = false)
+    {
+        Section section = paragraph.GetAncestor<Section>() ?? (Document.Sections.Count > 0 ? Document.Sections[0] : Document.AddSection());
+        MarginBox box = section.MarginBoxes.GetOrAdd(position, firstPage);
+        if (box.Paragraphs.LastOrDefault() is { } last)
+        {
+            paragraph = last;
+        }
+        else
+        {
+            // A new box starts with the alignment CSS gives its position.
+            paragraph = box.AddParagraph();
+            paragraph.Format.Alignment = MarginBox.DefaultAlignment(position);
+        }
+
+        before = null;
+    }
+
     /// <summary>Moves the cursor to the end of bookmark <paramref name="name"/> (or its start when it has no end).</summary>
     /// <returns>False when there is no such bookmark.</returns>
     public bool MoveToBookmark(string name)

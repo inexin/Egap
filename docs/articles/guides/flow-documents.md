@@ -104,6 +104,28 @@ builder.Write("Total: 1 500 NOK");
 builder.EndGroup();
 ```
 
+Margin boxes put text in the page margins, as CSS's `@page` margin boxes do: a box in each corner and three along each
+edge, on every page of the section or only the first. They hold PAGE and NUMPAGES fields for page numbers and sit beside
+the headers and footers without moving the body. HTML's `@top-left`, `@bottom-center` and the other margin box rules read
+into them, `counter(page)` and `counter(pages)` included, and write back the same way. DOCX has no margin boxes, so the
+top and bottom ones are saved as a three-part table in the header or footer; the corner and side boxes are left out with
+a warning.
+
+```csharp
+using Egap.Documents;
+
+Document report = Document.Load("report.docx");
+DocumentBuilder builder = new(report);
+builder.MoveToMarginBox(MarginBoxPosition.TopLeft);
+builder.Write("Quarterly report");
+builder.MoveToMarginBox(MarginBoxPosition.BottomRight);
+builder.Write("Page ");
+builder.InsertField("PAGE");
+builder.Write(" of ");
+builder.InsertField("NUMPAGES");
+builder.MoveToMarginBox(MarginBoxPosition.TopLeft, firstPage: true);   // an empty box: no title on the cover
+```
+
 With `Strict`, layout throws a `LayoutException` naming the node and the page instead of degrading: a word too long for
 its column, a table or picture past the page, a character no font has, or a font with no stand-in. `FontSettings.Portable`
 uses only the document's embedded fonts and the bundled substitutes, never the system's, so a document prints the same

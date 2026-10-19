@@ -2,6 +2,7 @@
 Egap.Documents.ContentControl.Paging.get -> Egap.Documents.GroupPaging?
 Egap.Documents.ContentControl.Paging.set -> void
 Egap.Documents.DocumentBuilder.EndGroup() -> Egap.Documents.ContentControl!
+Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> void
 Egap.Documents.DocumentBuilder.StartGroup() -> Egap.Documents.ContentControl!
 Egap.Documents.FontFeatures
 Egap.Documents.FontFeatures.Count.get -> int
@@ -35,8 +36,34 @@ Egap.Documents.Layout.LayoutProblem.ContentOverflow = 1 -> Egap.Documents.Layout
 Egap.Documents.Layout.LayoutProblem.MissingFont = 3 -> Egap.Documents.Layout.LayoutProblem
 Egap.Documents.Layout.LayoutProblem.MissingGlyph = 2 -> Egap.Documents.Layout.LayoutProblem
 Egap.Documents.Layout.LayoutProblem.TextOverflow = 0 -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.PageArea.MarginBox = 4 -> Egap.Documents.Layout.PageArea
 Egap.Documents.Layout.ScaledBox
 Egap.Documents.Layout.ScaledBox.Scale.get -> double
+Egap.Documents.MarginBox
+Egap.Documents.MarginBox.FirstPage.get -> bool
+Egap.Documents.MarginBox.MarginBox(Egap.Documents.Document! document, Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> void
+Egap.Documents.MarginBox.Position.get -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBox.Section.get -> Egap.Documents.Section?
+Egap.Documents.MarginBoxCollection
+Egap.Documents.MarginBoxCollection.GetOrAdd(Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> Egap.Documents.MarginBox!
+Egap.Documents.MarginBoxCollection.this[Egap.Documents.MarginBoxPosition position, bool firstPage = false].get -> Egap.Documents.MarginBox?
+Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomCenter = 10 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomLeft = 11 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomLeftCorner = 12 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomRight = 9 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomRightCorner = 8 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.LeftBottom = 13 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.LeftMiddle = 14 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.LeftTop = 15 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.RightBottom = 7 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.RightMiddle = 6 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.RightTop = 5 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopCenter = 2 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopLeft = 1 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopLeftCorner = 0 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopRight = 3 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopRightCorner = 4 -> Egap.Documents.MarginBoxPosition
 Egap.Documents.PageSetup.BalanceColumns.get -> bool?
 Egap.Documents.PageSetup.BalanceColumns.set -> void
 Egap.Documents.ParagraphFormat.MaxLines.get -> int?
@@ -56,6 +83,7 @@ Egap.Documents.RunFormat.Overline.get -> bool?
 Egap.Documents.RunFormat.Overline.set -> void
 Egap.Documents.RunFormat.WordSpacing.get -> double?
 Egap.Documents.RunFormat.WordSpacing.set -> void
+Egap.Documents.Section.MarginBoxes.get -> Egap.Documents.MarginBoxCollection!
 Egap.Documents.WordBreak
 Egap.Documents.WordBreak.Anywhere = 3 -> Egap.Documents.WordBreak
 Egap.Documents.WordBreak.BreakAll = 1 -> Egap.Documents.WordBreak
@@ -67,6 +95,7 @@ override Egap.Documents.FontFeatures.ToString() -> string!
 override Egap.Documents.GroupPaging.Equals(object? obj) -> bool
 override Egap.Documents.GroupPaging.GetHashCode() -> int
 override Egap.Documents.GroupPaging.ToString() -> string!
+override Egap.Documents.MarginBox.Clone(bool deep = true) -> Egap.Documents.MarginBox!
 static Egap.Documents.FontFeatures.None.get -> Egap.Documents.FontFeatures!
 static Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable<(string! Tag, int Value)>! features) -> Egap.Documents.FontFeatures!
 static Egap.Documents.FontFeatures.Parse(string! text) -> Egap.Documents.FontFeatures!
