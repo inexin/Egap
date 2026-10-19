@@ -219,7 +219,7 @@ Class Picture  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="Egap_Documents_Picture__ctor_Egap_Documents_Document_Egap_Documents_ImageData_System_Double_System_Double_" data-uid="Egap.Documents.Picture.#ctor(Egap.Documents.Document,Egap.Documents.ImageData,System.Double,System.Double)">
   Picture(Document, ImageData, double, double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L192"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A picture of <code class="paramref">image</code> shown at <code class="paramref">width</code> by <code class="paramref">height</code> points, not yet in a paragraph.</p>
@@ -261,7 +261,7 @@ Class Picture  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="Egap_Documents_Picture_Crop" data-uid="Egap.Documents.Picture.Crop">
   Crop
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L252"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L253"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How much of the image is cut off on each side, as fractions of its size (negative adds space).</p>
@@ -293,7 +293,7 @@ Class Picture  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="Egap_Documents_Picture_Description" data-uid="Egap.Documents.Picture.Description">
   Description
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L229"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The alternative text, or null.</p>
@@ -321,11 +321,44 @@ Class Picture  <a class="header-action link-secondary" title="View source" href=
 
 
 
+  <a id="Egap_Documents_Picture_Fallback_" data-uid="Egap.Documents.Picture.Fallback*"></a>
+
+  <h3 id="Egap_Documents_Picture_Fallback" data-uid="Egap.Documents.Picture.Fallback">
+  Fallback
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L263"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A raster stand-in for <a class="xref" href="Egap.Documents.Picture.html#Egap_Documents_Picture_Image">Image</a> where it cannot be shown, or null: Word keeps a PNG beside an SVG picture for
+readers without SVG, and DOCX writes this one there.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ImageData? Fallback { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.ImageData.html">ImageData</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Picture_Floating_" data-uid="Egap.Documents.Picture.Floating*"></a>
 
   <h3 id="Egap_Documents_Picture_Floating" data-uid="Egap.Documents.Picture.Floating">
   Floating
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L236"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Where the picture floats, or null for a picture in the line.</p>
@@ -357,7 +390,7 @@ Class Picture  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="Egap_Documents_Picture_Height" data-uid="Egap.Documents.Picture.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L215"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The height shown, in points.</p>
@@ -389,7 +422,7 @@ Class Picture  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="Egap_Documents_Picture_Image" data-uid="Egap.Documents.Picture.Image">
   Image
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L200"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L201"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The image as stored.</p>
@@ -421,7 +454,7 @@ Class Picture  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="Egap_Documents_Picture_SourceUrl" data-uid="Egap.Documents.Picture.SourceUrl">
   SourceUrl
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L246"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The address of a linked image (one the file names by URL instead of holding), or null; Egap keeps it and never fetches
@@ -454,7 +487,7 @@ it. A linked picture may have empty <a class="xref" href="Egap.Documents.Picture
 
   <h3 id="Egap_Documents_Picture_Title" data-uid="Egap.Documents.Picture.Title">
   Title
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L221"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L222"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The picture's title (alternative text title), or null.</p>
@@ -486,7 +519,7 @@ it. A linked picture may have empty <a class="xref" href="Egap.Documents.Picture
 
   <h3 id="Egap_Documents_Picture_Width" data-uid="Egap.Documents.Picture.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L208"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The width shown, in points.</p>
@@ -522,7 +555,7 @@ it. A linked picture may have empty <a class="xref" href="Egap.Documents.Picture
 
   <h3 id="Egap_Documents_Picture_Clone_System_Boolean_" data-uid="Egap.Documents.Picture.Clone(System.Boolean)">
   Clone(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L259"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L270"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A copy of this node in the same document, not yet in the tree. A deep copy includes everything the node holds; a shallow

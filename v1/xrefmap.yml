@@ -2891,6 +2891,22 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentBuilder.Font
   nameWithType: DocumentBuilder.Font
+- uid: Egap.Documents.DocumentBuilder.InsertBarcode(Egami.Barcodes.Barcode,System.Double,System.Double,Egami.Barcodes.BarcodeDrawOptions)
+  name: InsertBarcode(Barcode, double, double, BarcodeDrawOptions?)
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_InsertBarcode_Egami_Barcodes_Barcode_System_Double_System_Double_Egami_Barcodes_BarcodeDrawOptions_
+  commentId: M:Egap.Documents.DocumentBuilder.InsertBarcode(Egami.Barcodes.Barcode,System.Double,System.Double,Egami.Barcodes.BarcodeDrawOptions)
+  name.vb: InsertBarcode(Barcode, Double, Double, BarcodeDrawOptions)
+  fullName: Egap.Documents.DocumentBuilder.InsertBarcode(Egami.Barcodes.Barcode, double, double, Egami.Barcodes.BarcodeDrawOptions?)
+  fullName.vb: Egap.Documents.DocumentBuilder.InsertBarcode(Egami.Barcodes.Barcode, Double, Double, Egami.Barcodes.BarcodeDrawOptions)
+  nameWithType: DocumentBuilder.InsertBarcode(Barcode, double, double, BarcodeDrawOptions?)
+  nameWithType.vb: DocumentBuilder.InsertBarcode(Barcode, Double, Double, BarcodeDrawOptions)
+- uid: Egap.Documents.DocumentBuilder.InsertBarcode*
+  name: InsertBarcode
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_InsertBarcode_
+  commentId: Overload:Egap.Documents.DocumentBuilder.InsertBarcode
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentBuilder.InsertBarcode
+  nameWithType: DocumentBuilder.InsertBarcode
 - uid: Egap.Documents.DocumentBuilder.InsertBreak(Egap.Documents.BreakKind)
   name: InsertBreak(BreakKind)
   href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_InsertBreak_Egap_Documents_BreakKind_
@@ -11789,6 +11805,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Picture.Description
   nameWithType: Picture.Description
+- uid: Egap.Documents.Picture.Fallback
+  name: Fallback
+  href: api/Egap.Documents.Picture.html#Egap_Documents_Picture_Fallback
+  commentId: P:Egap.Documents.Picture.Fallback
+  fullName: Egap.Documents.Picture.Fallback
+  nameWithType: Picture.Fallback
+- uid: Egap.Documents.Picture.Fallback*
+  name: Fallback
+  href: api/Egap.Documents.Picture.html#Egap_Documents_Picture_Fallback_
+  commentId: Overload:Egap.Documents.Picture.Fallback
+  isSpec: "True"
+  fullName: Egap.Documents.Picture.Fallback
+  nameWithType: Picture.Fallback
 - uid: Egap.Documents.Picture.Floating
   name: Floating
   href: api/Egap.Documents.Picture.html#Egap_Documents_Picture_Floating
@@ -39952,6 +39981,22 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfStamp.Anchor
   nameWithType: PdfStamp.Anchor
+- uid: Egap.Pdf.PdfStamp.Barcode(Egami.Barcodes.Barcode,System.Double,System.Double,Egami.Barcodes.BarcodeDrawOptions)
+  name: Barcode(Barcode, double, double, BarcodeDrawOptions?)
+  href: api/Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Barcode_Egami_Barcodes_Barcode_System_Double_System_Double_Egami_Barcodes_BarcodeDrawOptions_
+  commentId: M:Egap.Pdf.PdfStamp.Barcode(Egami.Barcodes.Barcode,System.Double,System.Double,Egami.Barcodes.BarcodeDrawOptions)
+  name.vb: Barcode(Barcode, Double, Double, BarcodeDrawOptions)
+  fullName: Egap.Pdf.PdfStamp.Barcode(Egami.Barcodes.Barcode, double, double, Egami.Barcodes.BarcodeDrawOptions?)
+  fullName.vb: Egap.Pdf.PdfStamp.Barcode(Egami.Barcodes.Barcode, Double, Double, Egami.Barcodes.BarcodeDrawOptions)
+  nameWithType: PdfStamp.Barcode(Barcode, double, double, BarcodeDrawOptions?)
+  nameWithType.vb: PdfStamp.Barcode(Barcode, Double, Double, BarcodeDrawOptions)
+- uid: Egap.Pdf.PdfStamp.Barcode*
+  name: Barcode
+  href: api/Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Barcode_
+  commentId: Overload:Egap.Pdf.PdfStamp.Barcode
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfStamp.Barcode
+  nameWithType: PdfStamp.Barcode
 - uid: Egap.Pdf.PdfStamp.Bates(Egap.Pdf.PdfBatesSequence)
   name: Bates(PdfBatesSequence)
   href: api/Egap.Pdf.PdfStamp.html#Egap_Pdf_PdfStamp_Bates_Egap_Pdf_PdfBatesSequence_

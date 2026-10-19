@@ -401,7 +401,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.DocumentBuilder",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentBuilder.yml\" sourcestartlinenumber=\"1\">Writes into a document at a cursor (Phase 6 design Q3, as Aspose.Words' DocumentBuilder): text, paragraphs, breaks,\ntables, pictures, fields, hyperlinks and bookmarks. The cursor sits in a paragraph, before an inline or at its end;\n<xref href=\"Egap.Documents.DocumentBuilder.Font\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Egap.Documents.DocumentBuilder.ParagraphFormat\" data-throw-if-not-resolved=\"false\"></xref> give what is written its direct formatting.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentBuilder.yml\" sourcestartlinenumber=\"1\">Barcodes.</p>\n"
     },
     {
       "type": "ManagedReference",

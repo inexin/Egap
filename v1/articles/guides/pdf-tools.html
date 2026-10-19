@@ -115,6 +115,17 @@ contract.Stamp(PdfStamp.Bates(new PdfBatesSequence(&quot;ACME-&quot;, digits: 6)
 using PdfDocument handout = PdfImpose.NUp(contract, new NUpOptions { Columns = 2, Rows = 2 });
 handout.Save(&quot;handout.pdf&quot;);
 </code></pre>
+<p><code>PdfStamp.Barcode</code> stamps any symbol Egami.Barcodes makes (QR, Data Matrix, PDF417, Aztec, Code 128, Code 39, ITF, EAN and
+UPC) as vector paths, so it scans at any zoom and in print. The draw options choose the quiet zone, bar width reduction and
+the font of the digits under a linear symbol.</p>
+<pre><code class="lang-csharp">using Egami.Barcodes;
+using Egap.Pdf;
+
+using PdfDocument invoice = PdfDocument.Open(&quot;invoice.pdf&quot;);
+invoice.Stamp(PdfStamp.Barcode(Barcode.Qr(&quot;https://pay.example.com/2026-118&quot;), 72, 72) with { Pages = [1], Anchor = StampAnchor.TopRight });
+invoice.Stamp(PdfStamp.Barcode(Barcode.Code128(&quot;ORDER-118&quot;), 160, 40) with { Anchor = StampAnchor.BottomLeft });
+invoice.Save(&quot;invoice-coded.pdf&quot;);
+</code></pre>
 <h2 id="page-ranges-and-units">Page ranges and units</h2>
 <p><code>PdfPageRange.Parse</code> reads pages written as text: numbers from 1, <code>z</code> for the last page, <code>r2</code> for the second from the end,
 ranges such as <code>5-10</code> (or <code>10-5</code>, backwards), <code>:odd</code> or <code>:even</code> after a part, and <code>x</code> before a part to leave its pages out.

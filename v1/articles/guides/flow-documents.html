@@ -141,6 +141,19 @@ builder.Font.Features = FontFeatures.Parse(&quot;liga=0, tnum&quot;);
 builder.ParagraphFormat.WordBreak = WordBreak.Anywhere;
 builder.Writeln(&quot;Invoice 2026-118: https://example.com/a/very/long/address/that/must/break&quot;);
 </code></pre>
+<h2 id="barcodes">Barcodes</h2>
+<p><code>InsertBarcode</code> writes a barcode as a picture of the size you give. Layout and PDF export draw it as vectors; DOCX keeps it
+as an SVG picture with a PNG stand-in at 300 pixels per inch, as Word stores SVG pictures, so older readers show it too. Any
+SVG picture can carry such a stand-in in <code>Picture.Fallback</code>.</p>
+<pre><code class="lang-csharp">using Egami.Barcodes;
+using Egap.Documents;
+
+Document label = new();
+DocumentBuilder builder = new(label);
+builder.Writeln(&quot;Parcel 2026-118&quot;);
+builder.InsertBarcode(Barcode.Code128(&quot;PARCEL-2026-118&quot;), 200, 50);
+label.Save(&quot;label.docx&quot;);
+</code></pre>
 <h2 id="mail-merge">Mail merge</h2>
 <p><code>FillMergeFields</code> fills a template's MERGEFIELD fields from one record. Each field becomes plain text in its own
 formatting, written with its number (<code>\#</code>), date (<code>\@</code>) and text (<code>\*</code>) formats and the text it puts before and after a
