@@ -440,13 +440,29 @@ internal sealed partial class Paginator
     private string? PageFieldText(Field field)
     {
         NumberStyle style = section?.PageSetup.PageNumberStyle ?? NumberStyle.Decimal;
-        return field.Kind switch
+        int? number = field.Kind switch
         {
-            FieldKind.Page => Numbering.Format(pageNumber, style),
-            FieldKind.NumPages => (totalPages == 0 ? 1 : totalPages).ToString(CultureInfo.InvariantCulture),
-            FieldKind.SectionPages => (section is not null && sectionPages.TryGetValue(section, out int count) ? count : 1).ToString(CultureInfo.InvariantCulture),
+            FieldKind.Page => pageNumber,
+            FieldKind.NumPages => totalPages == 0 ? 1 : totalPages,
+            FieldKind.SectionPages => section is not null && sectionPages.TryGetValue(section, out int count) ? count : 1,
             _ => null,
         };
+        if (number is not { } value)
+        {
+            return null;
+        }
+
+        string code = field.Code;
+        if (!code.Contains('\\', StringComparison.Ordinal))
+        {
+            return field.Kind == FieldKind.Page ? Numbering.Format(value, style) : value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        // The field's own switches: a \# number picture, and \* formats such as roman numerals.
+        FieldCode parsed = FieldCode.Parse(code);
+        string text = parsed.Switch("\\#") is { Length: > 0 } picture ? FieldCode.FormatNumber(value, picture)
+            : field.Kind == FieldKind.Page ? Numbering.Format(value, style) : value.ToString(CultureInfo.InvariantCulture);
+        return parsed.ApplyGeneralFormat(text);
     }
 
     /// <summary>A paragraph's lines at a column width, with their heights and baselines under its line spacing rule.</summary>

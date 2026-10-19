@@ -5,6 +5,30 @@ namespace Egap.Documents.Html;
 /// <summary>The @page margin boxes, read into the section's margin boxes.</summary>
 internal sealed partial class HtmlReader
 {
+    /// <summary>The first element of each running name (position: running(name)), with its parent's style.</summary>
+    private readonly Dictionary<string, (HtmlElement Element, HtmlStyle ParentStyle)> runningElements = new(StringComparer.Ordinal);
+
+    /// <summary>The running element being written into a margin box, which is read as an ordinary element there.</summary>
+    private HtmlElement? placingRunning;
+
+    private Frame? rootFrame;
+
+    /// <summary>The name in position: running(name), or null.</summary>
+    private static string? RunningName(HtmlStyle style)
+    {
+        if (!style.Computed.TryGetValue("position", out IReadOnlyList<CssComponentValue>? value))
+        {
+            return null;
+        }
+
+        return value.FirstOrDefault(v => v is CssFunction) is CssFunction function && function.NameIs("running") ? IdentOf(function) : null;
+    }
+
+    private static string? IdentOf(CssFunction function)
+    {
+        return function.Arguments.FirstOrDefault(a => a is CssTokenValue { Token.Kind: CssTokenKind.Ident }) is CssTokenValue { Token: { } token } ? token.Value : null;
+    }
+
     private void ReadMarginBoxes(Section section, string? name, HtmlStyle rootStyle)
     {
         CssPageStyle every = cascade.CascadePage(new CssPage(name, IsFirst: false, IsLeft: false));
@@ -95,6 +119,14 @@ internal sealed partial class HtmlReader
                 case CssTokenValue { Token: { Kind: CssTokenKind.String } token }:
                     builder.Write(token.Value);
                     break;
+                case CssFunction function when function.NameIs("element") && IdentOf(function) is { } name:
+                    if (runningElements.TryGetValue(name, out (HtmlElement Element, HtmlStyle ParentStyle) running) && placingRunning is null)
+                    {
+                        PlaceRunning(box, running.Element, running.ParentStyle);
+                        builder.MoveToMarginBox(box.Position, box.FirstPage);
+                    }
+
+                    break;
                 case CssFunction function when function.NameIs("counter") && CounterName(function) is { } counter:
                     if (counter == "page")
                     {
@@ -114,6 +146,34 @@ internal sealed partial class HtmlReader
                     Warn(ConversionWarningKind.PageLayoutDropped, $"The content {item} in a page margin box");
                     break;
             }
+        }
+    }
+
+    /// <summary>Reads a running element into a margin box as the body would read it, after what the box holds so far.</summary>
+    private void PlaceRunning(MarginBox box, HtmlElement element, HtmlStyle parentStyle)
+    {
+        // The box's empty starting paragraph gives way to the element's blocks.
+        if (box.Blocks is [Paragraph { Inlines.Count: 0 } empty])
+        {
+            empty.Remove();
+        }
+
+        placingRunning = element;
+        try
+        {
+            Flow flow = new(box, box.Section?.PageSetup.PageWidth ?? 612);
+            Element(element, parentStyle, flow, rootFrame ?? new Frame(element, parentStyle, null));
+            Close(flow);
+            FinishFlow(flow);
+        }
+        finally
+        {
+            placingRunning = null;
+        }
+
+        if (box.Blocks.Count == 0)
+        {
+            box.AddParagraph();
         }
     }
 

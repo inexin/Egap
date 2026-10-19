@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 using Egap.Documents;
 
 namespace Egap.Pdf.Conversion;
@@ -38,6 +40,18 @@ public sealed record PdfConvertOptions
     /// </summary>
     public string? BaseDirectory { get; init; }
 
+    /// <summary>
+    /// Gets the header put in the top margin of every page, in place of the input's own headers and top margin boxes;
+    /// null (the default) to keep those.
+    /// </summary>
+    public PageBand? Header { get; init; }
+
+    /// <summary>
+    /// Gets the footer put in the bottom margin of every page, in place of the input's own footers and bottom margin boxes;
+    /// null (the default) to keep those.
+    /// </summary>
+    public PageBand? Footer { get; init; }
+
     /// <summary>Gets the PDF/A level to write; <see cref="PdfAConformance.None"/> (the default) for none.</summary>
     public PdfAConformance Conformance { get; init; }
 
@@ -72,7 +86,7 @@ public sealed record PdfConvertOptions
 /// PdfConvert.FromFile("report.docx", "report.pdf");
 /// </code>
 /// </example>
-public static class PdfConvert
+public static partial class PdfConvert
 {
     /// <summary>Lays out HTML and makes a PDF of it, open for more changes before it is saved.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="html"/> is null.</exception>
@@ -80,7 +94,8 @@ public static class PdfConvert
     {
         ArgumentNullException.ThrowIfNull(html);
         options ??= PdfConvertOptions.Default;
-        return ToPdf(HtmlFormat.Parse(html, HtmlOptions(options.BaseDirectory)), options);
+        HtmlLoadOptions load = HtmlOptions(options.BaseDirectory);
+        return ToPdf(HtmlFormat.Parse(html, load), options, new Bands(null, load, html));
     }
 
     /// <summary>Converts HTML to a PDF file.</summary>
@@ -124,10 +139,13 @@ public static class PdfConvert
         string folder = Path.GetDirectoryName(Path.GetFullPath(path))!;
         string extension = Path.GetExtension(path).ToUpperInvariant();
         Document document;
+        Bands bands = new(path, null, null);
         switch (extension)
         {
             case ".HTML" or ".HTM" or ".XHTML":
-                document = HtmlFormat.Load(path, HtmlOptions(options.BaseDirectory ?? folder));
+                HtmlLoadOptions load = HtmlOptions(options.BaseDirectory ?? folder);
+                document = HtmlFormat.Load(path, load);
+                bands = new Bands(path, load, options.Header?.HtmlContent is null && options.Footer?.HtmlContent is null ? null : File.ReadAllText(path));
                 break;
             case ".MD" or ".MARKDOWN" or ".MDOWN" or ".MKD":
                 document = MarkdownFormat.Load(path, MarkdownOptions(options.BaseDirectory ?? folder));
@@ -146,7 +164,7 @@ public static class PdfConvert
                 break;
         }
 
-        return ToPdf(document, options);
+        return ToPdf(document, options, bands);
     }
 
     /// <summary>Converts a file to a PDF file, as <see cref="FromFile(string, PdfConvertOptions?)"/> reads it.</summary>
@@ -171,8 +189,15 @@ public static class PdfConvert
     }
 
     /// <summary>Lays a document out on the options' page size and margins and exports it.</summary>
-    internal static PdfDocument ToPdf(Document document, PdfConvertOptions options)
+    internal static PdfDocument ToPdf(Document document, PdfConvertOptions options, Bands bands = default)
     {
+        if (options.Header is not null || options.Footer is not null)
+        {
+            PageBandContext context = new(document, bands.File, bands.Load, bands.Source is null ? null : StyleSheets(bands.Source));
+            options.Header?.Apply(document, header: true, context);
+            options.Footer?.Apply(document, header: false, context);
+        }
+
         foreach (Section section in document.Sections)
         {
             if (options.PageSize is { } size)
@@ -193,6 +218,18 @@ public static class PdfConvert
 
         return document.ToPdf(options.ExportOptions());
     }
+
+    /// <summary>Where a document came from, for the placeholders and the style sheets of HTML bands.</summary>
+    internal readonly record struct Bands(string? File, HtmlLoadOptions? Load, string? Source);
+
+    /// <summary>The style and style sheet link elements of an HTML source, for a band to be styled as the page is.</summary>
+    private static string StyleSheets(string html)
+    {
+        return string.Concat(StyleElements().Matches(html).Select(m => m.Value));
+    }
+
+    [GeneratedRegex(@"<style\b[^>]*>.*?</style\s*>|<link\b[^>]*\bstylesheet\b[^>]*>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    private static partial Regex StyleElements();
 
     internal static HtmlLoadOptions HtmlOptions(string? folder, IReadOnlyList<string>? userStyleSheets = null)
     {

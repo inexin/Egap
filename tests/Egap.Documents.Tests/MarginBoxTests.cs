@@ -36,13 +36,13 @@ public sealed class MarginBoxTests
             Assert.Equal(3, boxes.Length);
             AreaBox number = boxes.Single(b => ((MarginBox)b.Node!).Position == MarginBoxPosition.BottomRight);
             Assert.True(number.Bounds.Y >= 400 - 36 - 0.5);
-            Assert.Equal(200, number.Bounds.X, 1);
+            Assert.Equal(364, number.Bounds.Right, 1);
             string text = string.Concat(number.Descendants().OfType<LineBox>().Select(l => l.Text));
             Assert.Equal($"Page {page.Index + 1} of {layout.Pages.Count}", text.Trim());
 
             AreaBox side = boxes.Single(b => ((MarginBox)b.Node!).Position == MarginBoxPosition.LeftMiddle);
             Assert.True(side.Bounds.Right <= 36.5);
-            Assert.InRange(side.Bounds.Y, 100, 200);
+            Assert.InRange(side.Descendants().OfType<LineBox>().First().Bounds.Y, 150, 250);
         }
 
         // Boxes leave the body where it was.

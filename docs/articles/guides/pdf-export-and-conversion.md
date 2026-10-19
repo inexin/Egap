@@ -50,6 +50,22 @@ using PdfDocument scans = PdfConvert.FromImages(["scan-1.jpg", "scan-2.png"], ne
 scans.RenderPagesToFiles("thumbs/page-{page:00}.png", new PdfRenderOptions { Dpi = 72 });
 ```
 
+`Header` and `Footer` put the same band on every page, in the top or bottom margin, in place of the input's own headers
+and footers. A text band has up to three parts (left, middle and right); an HTML band is styled with the page's own style
+sheets. Both take the placeholders `{page}`, `{total-pages}`, `{label}`, `{date}`, `{time}`, `{title}` and `{file}`, and
+a number format after a colon, as in `{page:000}`. HTML pages can set the same thing themselves with `@page` margin boxes
+and running elements (`position: running(header)` with `content: element(header)`).
+
+```csharp
+using Egap.Pdf.Conversion;
+
+PdfConvert.FromHtml("<title>Invoice 2026-118</title><style>.hdr { text-align: right }</style><p>Total: 120 EUR</p>", "invoice.pdf", new PdfConvertOptions
+{
+    Header = PageBand.Html("<div class='hdr'><b>ACME</b> {date}</div>"),
+    Footer = PageBand.Text(left: "{title}", center: "Page {page} of {total-pages}") with { FontSize = 8 },
+});
+```
+
 `PdfStamp.Html` lays out a piece of HTML as a stamp, such as a seal or a letterhead, and draws it on every page.
 
 ```csharp

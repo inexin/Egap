@@ -186,7 +186,11 @@ internal sealed partial class HtmlReader
             text.Clear();
             Run run = new(document, value);
             run.Format.CopyRaw(RunFormatOf(style));
+
+            // Starting a paragraph marks the flow at a line start; the text just written decides that instead.
+            bool atLineStart = flow.AtLineStart;
             Target(flow, frame, currentLink).Add(run);
+            flow.AtLineStart = atLineStart;
         }
     }
 

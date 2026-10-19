@@ -87,16 +87,45 @@ internal sealed partial class HtmlReader
         }
 
         quirks = dom.QuirksMode == HtmlQuirksMode.Quirks;
+        ReadProperties(html);
         HtmlStyle rootStyle = StyleOf(html, null);
         string? pageName = FirstPageName(html, rootStyle, 0);
         ApplyPage(section, pageName);
-        ReadMarginBoxes(section, pageName, rootStyle);
         double width = (section.PageSetup.PageWidth ?? 612) - (section.PageSetup.MarginLeft ?? 72) - (section.PageSetup.MarginRight ?? 72);
         Flow flow = new(section.Body, width);
         Frame frame = new(html, rootStyle, null);
+        rootFrame = frame;
         Children(html, rootStyle, flow, frame);
         Close(flow);
         FinishFlow(flow);
+
+        // After the body, so the running elements the margin boxes show are known.
+        ReadMarginBoxes(section, pageName, rootStyle);
+    }
+
+    /// <summary>The title and author in the head, as the writer puts them there.</summary>
+    private void ReadProperties(HtmlElement html)
+    {
+        foreach (HtmlElement element in html.Descendants().OfType<HtmlElement>())
+        {
+            if (element.IsHtml("title") && document.Properties.Title is null)
+            {
+                string title = string.Join(' ', string.Concat(element.Descendants().OfType<HtmlText>().Select(t => t.Data)).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+                if (title.Length > 0)
+                {
+                    document.Properties.Title = title;
+                }
+            }
+            else if (element.IsHtml("meta") && document.Properties.Author is null && string.Equals(element.GetAttribute("name", null), "author", StringComparison.OrdinalIgnoreCase)
+                && element.GetAttribute("content", null) is { Length: > 0 } author)
+            {
+                document.Properties.Author = author;
+            }
+            else if (element.IsHtml("body"))
+            {
+                break;
+            }
+        }
     }
 
     /// <summary>
@@ -270,6 +299,17 @@ internal sealed partial class HtmlReader
         string display = style.Keyword("display") ?? "inline";
         if (display == "none")
         {
+            return;
+        }
+
+        if (element != placingRunning && RunningName(style) is { } running)
+        {
+            // A running element leaves the flow; the margin boxes that name it show it.
+            if (!runningElements.TryAdd(running, (element, parentStyle)))
+            {
+                Warn(ConversionWarningKind.PageLayoutDropped, "Running elements after the first of a name, which show on every page");
+            }
+
             return;
         }
 

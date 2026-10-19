@@ -274,8 +274,8 @@ internal sealed partial class Paginator
 
     /// <summary>
     /// Lays out the section's margin boxes in the page margins, as CSS Paged Media places them: corners in the margin
-    /// squares, the boxes of an edge side by side between them (in thirds, or halves when the middle one is missing), each
-    /// centred across the margin's depth, or at the top, middle or bottom of a side.
+    /// squares, the boxes of an edge side by side between them (in thirds, halves when the middle one is missing, or the
+    /// whole edge for a box alone), each centred across the margin's depth, or at the top, middle or bottom of a side.
     /// </summary>
     private void LayMarginBoxes(PageBuilder target, bool first)
     {
@@ -299,20 +299,19 @@ internal sealed partial class Paginator
                 continue;
             }
 
-            bool hasTopMiddle = all.For(MarginBoxPosition.TopCenter, first) is { Blocks.Count: > 0 };
-            bool hasBottomMiddle = all.For(MarginBoxPosition.BottomCenter, first) is { Blocks.Count: > 0 };
-            bool hasLeftMiddle = all.For(MarginBoxPosition.LeftMiddle, first) is { Blocks.Count: > 0 };
-            bool hasRightMiddle = all.For(MarginBoxPosition.RightMiddle, first) is { Blocks.Count: > 0 };
             (double x, double y, double w, double h) = position switch
             {
                 MarginBoxPosition.TopLeftCorner => (0, 0, left, top),
                 MarginBoxPosition.TopRightCorner => (g.BodyRight, 0, right, top),
                 MarginBoxPosition.BottomRightCorner => (g.BodyRight, g.BodyBottom, right, bottom),
                 MarginBoxPosition.BottomLeftCorner => (0, g.BodyBottom, left, bottom),
-                MarginBoxPosition.TopLeft or MarginBoxPosition.TopCenter or MarginBoxPosition.TopRight => Along(position - MarginBoxPosition.TopLeft, hasTopMiddle, left, across, 0, top),
-                MarginBoxPosition.BottomLeft or MarginBoxPosition.BottomCenter or MarginBoxPosition.BottomRight => Along(MarginBoxPosition.BottomLeft - position, hasBottomMiddle, left, across, g.BodyBottom, bottom),
-                MarginBoxPosition.LeftTop or MarginBoxPosition.LeftMiddle or MarginBoxPosition.LeftBottom => Side(MarginBoxPosition.LeftTop - position, hasLeftMiddle, 0, left),
-                _ => Side(position - MarginBoxPosition.RightTop, hasRightMiddle, g.BodyRight, right),
+                MarginBoxPosition.TopLeft or MarginBoxPosition.TopCenter or MarginBoxPosition.TopRight
+                    => At(Along(position - MarginBoxPosition.TopLeft, Present(MarginBoxPosition.TopLeft, MarginBoxPosition.TopCenter, MarginBoxPosition.TopRight), left, across), 0, top),
+                MarginBoxPosition.BottomLeft or MarginBoxPosition.BottomCenter or MarginBoxPosition.BottomRight
+                    => At(Along(MarginBoxPosition.BottomLeft - position, Present(MarginBoxPosition.BottomLeft, MarginBoxPosition.BottomCenter, MarginBoxPosition.BottomRight), left, across), g.BodyBottom, bottom),
+                MarginBoxPosition.LeftTop or MarginBoxPosition.LeftMiddle or MarginBoxPosition.LeftBottom
+                    => Down(Along(MarginBoxPosition.LeftTop - position, Present(MarginBoxPosition.LeftTop, MarginBoxPosition.LeftMiddle, MarginBoxPosition.LeftBottom), top, down), 0, left),
+                _ => Down(Along(position - MarginBoxPosition.RightTop, Present(MarginBoxPosition.RightTop, MarginBoxPosition.RightMiddle, MarginBoxPosition.RightBottom), top, down), g.BodyRight, right),
             };
             if (w <= 0 || h <= 0)
             {
@@ -332,22 +331,30 @@ internal sealed partial class Paginator
             target.MarginBoxes.Add(new AreaBox(PageArea.MarginBox, box, new LayoutRect(x, y, w, h), blocks));
         }
 
-        // An edge's boxes in order from its start: thirds, or halves when the middle box is missing.
-        static (double, double, double, double) Along(int index, bool middle, double start, double length, double y, double depth)
+        // Which of an edge's three boxes have content, in order from its start.
+        (bool, bool, bool) Present(MarginBoxPosition start, MarginBoxPosition middle, MarginBoxPosition end)
+            => (all.For(start, first) is { Blocks.Count: > 0 }, all.For(middle, first) is { Blocks.Count: > 0 }, all.For(end, first) is { Blocks.Count: > 0 });
+
+        // A box's start and length along its edge: thirds with a middle box, halves without one, the whole edge for a box alone.
+        static (double, double) Along(int index, (bool Start, bool Middle, bool End) present, double start, double length)
         {
-            if (middle)
+            int count = (present.Start ? 1 : 0) + (present.Middle ? 1 : 0) + (present.End ? 1 : 0);
+            if (count <= 1)
             {
-                return (start + (index * length / 3), y, length / 3, depth);
+                return (start, length);
             }
 
-            return (start + (index == 0 ? 0 : length / 2), y, length / 2, depth);
+            if (present.Middle)
+            {
+                return (start + (index * length / 3), length / 3);
+            }
+
+            return (start + (index == 0 ? 0 : length / 2), length / 2);
         }
 
-        (double, double, double, double) Side(int index, bool middle, double x, double width)
-        {
-            (double from, _, double length, _) = Along(index, middle, top, down, 0, 0);
-            return (x, from, width, length);
-        }
+        static (double, double, double, double) At((double Start, double Length) along, double y, double depth) => (along.Start, y, along.Length, depth);
+
+        static (double, double, double, double) Down((double Start, double Length) along, double x, double width) => (x, along.Start, width, along.Length);
     }
 
     /// <summary>Lays a header, footer or other story's blocks out in one column without page breaks.</summary>

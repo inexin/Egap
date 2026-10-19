@@ -29,12 +29,28 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - HTML reads and writes `@page` margin boxes (`@bottom-center { content: "Page " counter(page) " of " counter(pages) }`),
   `@page :first` included. DOCX writes the top and bottom boxes as a three-part table in the header or footer, and
   `DocxFormat.Save` now returns a warning for the corner and side boxes it leaves out.
+- HTML running elements: an element with `position: running(name)` leaves the body and shows in the margin boxes whose
+  content is `element(name)`.
+- PAGE, NUMPAGES and SECTIONPAGES fields in headers, footers and margin boxes follow their `\#` number format and `\*`
+  formats such as roman numerals.
+
+### Fixes
+- HTML: a space after an inline element at the start of a paragraph (`<b>ACME</b> Ltd`) was lost.
+- HTML: the `<title>` and the author meta element are read into the document properties, as the writer writes them.
 
 ### Strict layout and portable fonts
 - `LayoutOptions.Strict` throws a `LayoutException` naming the node, the page and the `LayoutProblem` (text or content
   running past its area, a missing glyph, a font with no stand-in) instead of degrading.
 - `FontSettings.Portable` uses only embedded fonts and the bundled substitutes, so layout and, with a deterministic save,
   the PDF bytes are the same on every machine.
+
+## Egap.Pdf.Conversion 1.3.0 (unreleased)
+
+### Headers and footers
+- `PdfConvertOptions.Header` and `Footer` put a `PageBand` on every page in place of the input's own: text at the left,
+  middle and right (`PageBand.Text`), or HTML styled with the page's own style sheets (`PageBand.Html`), with the
+  placeholders `{page}`, `{total-pages}`, `{label}`, `{date}`, `{time}`, `{title}` and `{file}`.
+- Margin boxes are tagged as artifacts in tagged PDF, as headers and footers are.
 
 ## Egap.Pdf 1.5.0 (unreleased)
 

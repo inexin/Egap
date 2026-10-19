@@ -107,7 +107,8 @@ builder.EndGroup();
 Margin boxes put text in the page margins, as CSS's `@page` margin boxes do: a box in each corner and three along each
 edge, on every page of the section or only the first. They hold PAGE and NUMPAGES fields for page numbers and sit beside
 the headers and footers without moving the body. HTML's `@top-left`, `@bottom-center` and the other margin box rules read
-into them, `counter(page)` and `counter(pages)` included, and write back the same way. DOCX has no margin boxes, so the
+into them, `counter(page)` and `counter(pages)` included, and write back the same way. An element with
+`position: running(name)` leaves the body and shows in the boxes whose content is `element(name)`. DOCX has no margin boxes, so the
 top and bottom ones are saved as a three-part table in the header or footer; the corner and side boxes are left out with
 a warning.
 
