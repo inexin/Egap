@@ -151,6 +151,17 @@ Egap.Pdf.Conversion.OutlineFrom
 Egap.Pdf.Conversion.OutlineFrom.Bookmarks = 2 -> Egap.Pdf.Conversion.OutlineFrom
 Egap.Pdf.Conversion.OutlineFrom.Headings = 1 -> Egap.Pdf.Conversion.OutlineFrom
 Egap.Pdf.Conversion.OutlineFrom.None = 0 -> Egap.Pdf.Conversion.OutlineFrom
+Egap.Pdf.Conversion.PageBand
+Egap.Pdf.Conversion.PageBand.<Clone>$() -> Egap.Pdf.Conversion.PageBand!
+Egap.Pdf.Conversion.PageBand.Center.get -> string?
+Egap.Pdf.Conversion.PageBand.Equals(Egap.Pdf.Conversion.PageBand? other) -> bool
+Egap.Pdf.Conversion.PageBand.FontFamily.get -> string?
+Egap.Pdf.Conversion.PageBand.FontFamily.init -> void
+Egap.Pdf.Conversion.PageBand.FontSize.get -> double
+Egap.Pdf.Conversion.PageBand.FontSize.init -> void
+Egap.Pdf.Conversion.PageBand.HtmlContent.get -> string?
+Egap.Pdf.Conversion.PageBand.Left.get -> string?
+Egap.Pdf.Conversion.PageBand.Right.get -> string?
 Egap.Pdf.Conversion.PageMargins
 Egap.Pdf.Conversion.PageMargins.Bottom.get -> Egap.Pdf.Length
 Egap.Pdf.Conversion.PageMargins.Bottom.init -> void
@@ -197,11 +208,17 @@ Egap.Pdf.Conversion.PdfConvertOptions.Conformance.init -> void
 Egap.Pdf.Conversion.PdfConvertOptions.Equals(Egap.Pdf.Conversion.PdfConvertOptions? other) -> bool
 Egap.Pdf.Conversion.PdfConvertOptions.Export.get -> Egap.Pdf.Conversion.PdfExportOptions?
 Egap.Pdf.Conversion.PdfConvertOptions.Export.init -> void
+Egap.Pdf.Conversion.PdfConvertOptions.Footer.get -> Egap.Pdf.Conversion.PageBand?
+Egap.Pdf.Conversion.PdfConvertOptions.Footer.init -> void
+Egap.Pdf.Conversion.PdfConvertOptions.Header.get -> Egap.Pdf.Conversion.PageBand?
+Egap.Pdf.Conversion.PdfConvertOptions.Header.init -> void
 Egap.Pdf.Conversion.PdfConvertOptions.Margins.get -> Egap.Pdf.Conversion.PageMargins?
 Egap.Pdf.Conversion.PdfConvertOptions.Margins.init -> void
 Egap.Pdf.Conversion.PdfConvertOptions.PageSize.get -> Egap.Pdf.PdfPageSize?
 Egap.Pdf.Conversion.PdfConvertOptions.PageSize.init -> void
 Egap.Pdf.Conversion.PdfConvertOptions.PdfConvertOptions() -> void
+Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents.get -> Egap.Pdf.Conversion.TableOfContentsMode
+Egap.Pdf.Conversion.PdfConvertOptions.TableOfContents.init -> void
 Egap.Pdf.Conversion.PdfConvertOptions.Tagged.get -> bool
 Egap.Pdf.Conversion.PdfConvertOptions.Tagged.init -> void
 Egap.Pdf.Conversion.PdfExport
@@ -319,6 +336,10 @@ Egap.Pdf.Conversion.TableDetection
 Egap.Pdf.Conversion.TableDetection.None = 0 -> Egap.Pdf.Conversion.TableDetection
 Egap.Pdf.Conversion.TableDetection.Ruled = 1 -> Egap.Pdf.Conversion.TableDetection
 Egap.Pdf.Conversion.TableDetection.RuledAndAligned = 2 -> Egap.Pdf.Conversion.TableDetection
+Egap.Pdf.Conversion.TableOfContentsMode
+Egap.Pdf.Conversion.TableOfContentsMode.None = 0 -> Egap.Pdf.Conversion.TableOfContentsMode
+Egap.Pdf.Conversion.TableOfContentsMode.WithoutPageNumbers = 2 -> Egap.Pdf.Conversion.TableOfContentsMode
+Egap.Pdf.Conversion.TableOfContentsMode.WithPageNumbers = 1 -> Egap.Pdf.Conversion.TableOfContentsMode
 override Egap.Pdf.Conversion.DoclingImage.Equals(object? obj) -> bool
 override Egap.Pdf.Conversion.DoclingImage.GetHashCode() -> int
 override Egap.Pdf.Conversion.DoclingImage.ToString() -> string!
@@ -337,6 +358,9 @@ override Egap.Pdf.Conversion.LayoutThresholds.Equals(object? obj) -> bool
 override Egap.Pdf.Conversion.LayoutThresholds.GetHashCode() -> int
 override Egap.Pdf.Conversion.LayoutThresholds.ToString() -> string!
 override Egap.Pdf.Conversion.LayoutWord.ToString() -> string!
+override Egap.Pdf.Conversion.PageBand.Equals(object? obj) -> bool
+override Egap.Pdf.Conversion.PageBand.GetHashCode() -> int
+override Egap.Pdf.Conversion.PageBand.ToString() -> string!
 override Egap.Pdf.Conversion.PageMargins.GetHashCode() -> int
 override Egap.Pdf.Conversion.PdfAutoTagFigure.Equals(object? obj) -> bool
 override Egap.Pdf.Conversion.PdfAutoTagFigure.GetHashCode() -> int
@@ -384,6 +408,10 @@ static Egap.Pdf.Conversion.LayoutRegionHint.operator ==(Egap.Pdf.Conversion.Layo
 static Egap.Pdf.Conversion.LayoutThresholds.Default.get -> Egap.Pdf.Conversion.LayoutThresholds!
 static Egap.Pdf.Conversion.LayoutThresholds.operator !=(Egap.Pdf.Conversion.LayoutThresholds? left, Egap.Pdf.Conversion.LayoutThresholds? right) -> bool
 static Egap.Pdf.Conversion.LayoutThresholds.operator ==(Egap.Pdf.Conversion.LayoutThresholds? left, Egap.Pdf.Conversion.LayoutThresholds? right) -> bool
+static Egap.Pdf.Conversion.PageBand.Html(string! html) -> Egap.Pdf.Conversion.PageBand!
+static Egap.Pdf.Conversion.PageBand.operator !=(Egap.Pdf.Conversion.PageBand? left, Egap.Pdf.Conversion.PageBand? right) -> bool
+static Egap.Pdf.Conversion.PageBand.operator ==(Egap.Pdf.Conversion.PageBand? left, Egap.Pdf.Conversion.PageBand? right) -> bool
+static Egap.Pdf.Conversion.PageBand.Text(string? left = null, string? center = null, string? right = null) -> Egap.Pdf.Conversion.PageBand!
 static Egap.Pdf.Conversion.PageMargins.All(Egap.Pdf.Length margin) -> Egap.Pdf.Conversion.PageMargins
 static Egap.Pdf.Conversion.PageMargins.operator !=(Egap.Pdf.Conversion.PageMargins left, Egap.Pdf.Conversion.PageMargins right) -> bool
 static Egap.Pdf.Conversion.PageMargins.operator ==(Egap.Pdf.Conversion.PageMargins left, Egap.Pdf.Conversion.PageMargins right) -> bool

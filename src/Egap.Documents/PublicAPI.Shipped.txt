@@ -228,6 +228,8 @@ Egap.Documents.ContentControl
 Egap.Documents.ContentControl.AddParagraph(string? text = null) -> Egap.Documents.Paragraph!
 Egap.Documents.ContentControl.Blocks.get -> Egap.Documents.NodeCollection<Egap.Documents.Block!>!
 Egap.Documents.ContentControl.ContentControl(Egap.Documents.Document! document) -> void
+Egap.Documents.ContentControl.Paging.get -> Egap.Documents.GroupPaging?
+Egap.Documents.ContentControl.Paging.set -> void
 Egap.Documents.ContentControl.Properties.get -> Egap.Documents.ContentControlProperties!
 Egap.Documents.ContentControlKind
 Egap.Documents.ContentControlKind.Bibliography = 11 -> Egap.Documents.ContentControlKind
@@ -283,6 +285,7 @@ Egap.Documents.ConversionWarningKind.FieldsFlattened = 8 -> Egap.Documents.Conve
 Egap.Documents.ConversionWarningKind.FormattingDropped = 0 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.LayoutApproximated = 10 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.MergedCellsSplit = 1 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.ConversionWarningKind.MergeFieldsRemoved = 12 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.PageLayoutDropped = 5 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.PictureDropped = 3 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.ConversionWarningKind.ResourceNotLoaded = 11 -> Egap.Documents.ConversionWarningKind
@@ -294,6 +297,7 @@ Egap.Documents.Document.Document() -> void
 Egap.Documents.Document.EmbeddedFonts.get -> System.Collections.Generic.IList<Egap.Documents.EmbeddedFont!>!
 Egap.Documents.Document.FileName.get -> string?
 Egap.Documents.Document.FileName.set -> void
+Egap.Documents.Document.FillMergeFields(Egap.Documents.IMergeData! record, Egap.Documents.MailMergeOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 Egap.Documents.Document.FormattingVersion.get -> long
 Egap.Documents.Document.GetBookmark(string! name) -> Egap.Documents.Bookmark?
 Egap.Documents.Document.GetBookmarks() -> System.Collections.Generic.IEnumerable<Egap.Documents.Bookmark!>!
@@ -302,6 +306,8 @@ Egap.Documents.Document.Import(Egap.Documents.Node! node, bool deep = true) -> E
 Egap.Documents.Document.Import<T>(T! node, bool deep = true) -> T!
 Egap.Documents.Document.Layout(Egap.Documents.Layout.LayoutOptions? options = null) -> Egap.Documents.Layout.DocumentLayout!
 Egap.Documents.Document.Lists.get -> Egap.Documents.ListCollection!
+Egap.Documents.Document.MailMerge(System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>! records, Egap.Documents.MailMergeOptions? options = null) -> System.Collections.Generic.IEnumerable<Egap.Documents.Document!>!
+Egap.Documents.Document.MailMergeAll(System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>! records, Egap.Documents.MailMergeOptions? options = null) -> Egap.Documents.Document!
 Egap.Documents.Document.Properties.get -> Egap.Documents.DocumentProperties!
 Egap.Documents.Document.Revisions.get -> Egap.Documents.TrackedChangeCollection!
 Egap.Documents.Document.Save(string! path) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
@@ -318,6 +324,7 @@ Egap.Documents.DocumentBuilder.CurrentParagraph.get -> Egap.Documents.Paragraph!
 Egap.Documents.DocumentBuilder.Document.get -> Egap.Documents.Document!
 Egap.Documents.DocumentBuilder.DocumentBuilder(Egap.Documents.Document! document) -> void
 Egap.Documents.DocumentBuilder.EndBookmark(string! name) -> Egap.Documents.BookmarkEnd!
+Egap.Documents.DocumentBuilder.EndGroup() -> Egap.Documents.ContentControl!
 Egap.Documents.DocumentBuilder.EndRow() -> Egap.Documents.Row!
 Egap.Documents.DocumentBuilder.EndTable() -> Egap.Documents.Table!
 Egap.Documents.DocumentBuilder.Font.get -> Egap.Documents.RunFormat!
@@ -330,15 +337,18 @@ Egap.Documents.DocumentBuilder.InsertImage(Egap.Documents.ImageData! image, doub
 Egap.Documents.DocumentBuilder.InsertParagraph() -> Egap.Documents.Paragraph!
 Egap.Documents.DocumentBuilder.InsertSectionBreak(Egap.Documents.SectionStart start = Egap.Documents.SectionStart.NewPage) -> Egap.Documents.Section!
 Egap.Documents.DocumentBuilder.InsertTab() -> Egap.Documents.Tab!
+Egap.Documents.DocumentBuilder.InsertTableOfContents(string! switches = "\\o \"1-3\" \\h \\z \\u") -> Egap.Documents.Field!
 Egap.Documents.DocumentBuilder.MoveTo(Egap.Documents.Node! target) -> void
 Egap.Documents.DocumentBuilder.MoveToBookmark(string! name) -> bool
 Egap.Documents.DocumentBuilder.MoveToDocumentEnd() -> void
 Egap.Documents.DocumentBuilder.MoveToDocumentStart() -> void
 Egap.Documents.DocumentBuilder.MoveToHeaderFooter(Egap.Documents.HeaderFooterKind kind) -> void
+Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> void
 Egap.Documents.DocumentBuilder.ParagraphFormat.get -> Egap.Documents.ParagraphFormat!
 Egap.Documents.DocumentBuilder.ParagraphStyle.get -> Egap.Documents.ParagraphStyle?
 Egap.Documents.DocumentBuilder.ParagraphStyle.set -> void
 Egap.Documents.DocumentBuilder.StartBookmark(string! name) -> Egap.Documents.BookmarkStart!
+Egap.Documents.DocumentBuilder.StartGroup() -> Egap.Documents.ContentControl!
 Egap.Documents.DocumentBuilder.StartTable() -> Egap.Documents.Table!
 Egap.Documents.DocumentBuilder.Write(string! text) -> void
 Egap.Documents.DocumentBuilder.Writeln(string! text = "") -> void
@@ -474,6 +484,7 @@ Egap.Documents.Field.Result.get -> string!
 Egap.Documents.Field.ResultNodes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Node!>!
 Egap.Documents.Field.Separator.get -> Egap.Documents.FieldSeparator?
 Egap.Documents.Field.Start.get -> Egap.Documents.FieldStart!
+Egap.Documents.Field.Update(System.DateTimeOffset? now = null) -> bool
 Egap.Documents.FieldEnd
 Egap.Documents.FieldEnd.FieldEnd(Egap.Documents.Document! document) -> void
 Egap.Documents.FieldKind
@@ -569,6 +580,13 @@ Egap.Documents.FloatingPlacement.WrapSide.get -> Egap.Documents.WrapSide
 Egap.Documents.FloatingPlacement.WrapSide.init -> void
 Egap.Documents.FloatingPlacement.ZOrder.get -> long
 Egap.Documents.FloatingPlacement.ZOrder.init -> void
+Egap.Documents.FontFeatures
+Egap.Documents.FontFeatures.Count.get -> int
+Egap.Documents.FontFeatures.Equals(Egap.Documents.FontFeatures? other) -> bool
+Egap.Documents.FontFeatures.GetEnumerator() -> System.Collections.Generic.IEnumerator<(string! Tag, int Value)>!
+Egap.Documents.FontFeatures.this[int index].get -> (string! Tag, int Value)
+Egap.Documents.FontFeatures.ValueOf(string! tag) -> int?
+Egap.Documents.FontFeatures.With(Egap.Documents.FontFeatures! other) -> Egap.Documents.FontFeatures!
 Egap.Documents.Footnote
 Egap.Documents.Footnote.AddParagraph(string? text = null) -> Egap.Documents.Paragraph!
 Egap.Documents.Footnote.CustomMark.get -> string?
@@ -593,6 +611,20 @@ Egap.Documents.FormatRevision.Equals(Egap.Documents.FormatRevision? other) -> bo
 Egap.Documents.FormatRevision.FormatRevision(string! Author, System.DateTimeOffset? Date, Egap.Documents.FormatBase! OldFormat) -> void
 Egap.Documents.FormatRevision.OldFormat.get -> Egap.Documents.FormatBase!
 Egap.Documents.FormatRevision.OldFormat.init -> void
+Egap.Documents.GroupPaging
+Egap.Documents.GroupPaging.<Clone>$() -> Egap.Documents.GroupPaging!
+Egap.Documents.GroupPaging.EnsureSpace.get -> double?
+Egap.Documents.GroupPaging.EnsureSpace.init -> void
+Egap.Documents.GroupPaging.Equals(Egap.Documents.GroupPaging? other) -> bool
+Egap.Documents.GroupPaging.GroupPaging() -> void
+Egap.Documents.GroupPaging.KeepTogether.get -> bool
+Egap.Documents.GroupPaging.KeepTogether.init -> void
+Egap.Documents.GroupPaging.ScaleToFit.get -> bool
+Egap.Documents.GroupPaging.ScaleToFit.init -> void
+Egap.Documents.GroupPaging.ShowEntire.get -> bool
+Egap.Documents.GroupPaging.ShowEntire.init -> void
+Egap.Documents.GroupPaging.StopPaging.get -> bool
+Egap.Documents.GroupPaging.StopPaging.init -> void
 Egap.Documents.HeaderFooter
 Egap.Documents.HeaderFooter.HeaderFooter(Egap.Documents.Document! document, Egap.Documents.HeaderFooterKind kind) -> void
 Egap.Documents.HeaderFooter.IsHeader.get -> bool
@@ -676,6 +708,9 @@ Egap.Documents.ImageData.ContentType.init -> void
 Egap.Documents.ImageData.Deconstruct(out System.ReadOnlyMemory<byte> Bytes, out string! ContentType) -> void
 Egap.Documents.ImageData.Equals(Egap.Documents.ImageData? other) -> bool
 Egap.Documents.ImageData.ImageData(System.ReadOnlyMemory<byte> Bytes, string! ContentType) -> void
+Egap.Documents.IMergeData
+Egap.Documents.IMergeData.GetRegion(string! name) -> System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>?
+Egap.Documents.IMergeData.TryGetValue(string! name, out object? value) -> bool
 Egap.Documents.Inline
 Egap.Documents.Inline.Paragraph.get -> Egap.Documents.Paragraph?
 Egap.Documents.Inline.Revision.get -> Egap.Documents.Revision?
@@ -787,10 +822,21 @@ Egap.Documents.Layout.LayoutBox.Descendants() -> System.Collections.Generic.IEnu
 Egap.Documents.Layout.LayoutBox.Node.get -> Egap.Documents.Node?
 Egap.Documents.Layout.LayoutDrawObserver
 Egap.Documents.Layout.LayoutDrawObserver.LayoutDrawObserver() -> void
+Egap.Documents.Layout.LayoutException
+Egap.Documents.Layout.LayoutException.Node.get -> Egap.Documents.Node?
+Egap.Documents.Layout.LayoutException.PageIndex.get -> int?
+Egap.Documents.Layout.LayoutException.Problem.get -> Egap.Documents.Layout.LayoutProblem
 Egap.Documents.Layout.LayoutOptions
 Egap.Documents.Layout.LayoutOptions.Fonts.get -> Egap.Documents.Layout.FontSettings?
 Egap.Documents.Layout.LayoutOptions.Fonts.init -> void
 Egap.Documents.Layout.LayoutOptions.LayoutOptions() -> void
+Egap.Documents.Layout.LayoutOptions.Strict.get -> bool
+Egap.Documents.Layout.LayoutOptions.Strict.init -> void
+Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutProblem.ContentOverflow = 1 -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutProblem.MissingFont = 3 -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutProblem.MissingGlyph = 2 -> Egap.Documents.Layout.LayoutProblem
+Egap.Documents.Layout.LayoutProblem.TextOverflow = 0 -> Egap.Documents.Layout.LayoutProblem
 Egap.Documents.Layout.LayoutRect
 Egap.Documents.Layout.LayoutRect.Bottom.get -> double
 Egap.Documents.Layout.LayoutRect.Contains(double x, double y) -> bool
@@ -817,6 +863,7 @@ Egap.Documents.Layout.PageArea
 Egap.Documents.Layout.PageArea.Body = 0 -> Egap.Documents.Layout.PageArea
 Egap.Documents.Layout.PageArea.Footer = 2 -> Egap.Documents.Layout.PageArea
 Egap.Documents.Layout.PageArea.Header = 1 -> Egap.Documents.Layout.PageArea
+Egap.Documents.Layout.PageArea.MarginBox = 4 -> Egap.Documents.Layout.PageArea
 Egap.Documents.Layout.PageArea.Notes = 3 -> Egap.Documents.Layout.PageArea
 Egap.Documents.Layout.PageLayout
 Egap.Documents.Layout.PageLayout.BodyLines.get -> System.Collections.Generic.IEnumerable<Egap.Documents.Layout.LineBox!>!
@@ -845,6 +892,8 @@ Egap.Documents.Layout.ParagraphBox.Lines.get -> System.Collections.Generic.IRead
 Egap.Documents.Layout.ParagraphBox.Paragraph.get -> Egap.Documents.Paragraph!
 Egap.Documents.Layout.RowBox
 Egap.Documents.Layout.RowBox.IsRepeatedHeader.get -> bool
+Egap.Documents.Layout.ScaledBox
+Egap.Documents.Layout.ScaledBox.Scale.get -> double
 Egap.Documents.Layout.TableBox
 Egap.Documents.LineSpacingRule
 Egap.Documents.LineSpacingRule.AtLeast = 1 -> Egap.Documents.LineSpacingRule
@@ -928,6 +977,43 @@ Egap.Documents.ListLevelOverride.StartAt.set -> void
 Egap.Documents.ListStyle
 Egap.Documents.ListStyle.List.get -> Egap.Documents.List?
 Egap.Documents.ListStyle.List.set -> void
+Egap.Documents.MailMergeOptions
+Egap.Documents.MailMergeOptions.<Clone>$() -> Egap.Documents.MailMergeOptions!
+Egap.Documents.MailMergeOptions.Culture.get -> System.Globalization.CultureInfo?
+Egap.Documents.MailMergeOptions.Culture.init -> void
+Egap.Documents.MailMergeOptions.Equals(Egap.Documents.MailMergeOptions? other) -> bool
+Egap.Documents.MailMergeOptions.MailMergeOptions() -> void
+Egap.Documents.MailMergeOptions.OnWarning.get -> System.Action<Egap.Documents.ConversionWarning!>?
+Egap.Documents.MailMergeOptions.OnWarning.init -> void
+Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs.get -> bool
+Egap.Documents.MailMergeOptions.RemoveEmptyParagraphs.init -> void
+Egap.Documents.MailMergeOptions.Separator.get -> Egap.Documents.SectionStart
+Egap.Documents.MailMergeOptions.Separator.init -> void
+Egap.Documents.MarginBox
+Egap.Documents.MarginBox.FirstPage.get -> bool
+Egap.Documents.MarginBox.MarginBox(Egap.Documents.Document! document, Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> void
+Egap.Documents.MarginBox.Position.get -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBox.Section.get -> Egap.Documents.Section?
+Egap.Documents.MarginBoxCollection
+Egap.Documents.MarginBoxCollection.GetOrAdd(Egap.Documents.MarginBoxPosition position, bool firstPage = false) -> Egap.Documents.MarginBox!
+Egap.Documents.MarginBoxCollection.this[Egap.Documents.MarginBoxPosition position, bool firstPage = false].get -> Egap.Documents.MarginBox?
+Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomCenter = 10 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomLeft = 11 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomLeftCorner = 12 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomRight = 9 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.BottomRightCorner = 8 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.LeftBottom = 13 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.LeftMiddle = 14 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.LeftTop = 15 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.RightBottom = 7 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.RightMiddle = 6 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.RightTop = 5 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopCenter = 2 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopLeft = 1 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopLeftCorner = 0 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopRight = 3 -> Egap.Documents.MarginBoxPosition
+Egap.Documents.MarginBoxPosition.TopRightCorner = 4 -> Egap.Documents.MarginBoxPosition
 Egap.Documents.MarkdownExtensions
 Egap.Documents.MarkdownExtensions.Autolinks = 8 -> Egap.Documents.MarkdownExtensions
 Egap.Documents.MarkdownExtensions.Footnotes = 16 -> Egap.Documents.MarkdownExtensions
@@ -986,6 +1072,7 @@ Egap.Documents.MarkdownSaveOptions.VectorFiguresAsSvg.get -> bool
 Egap.Documents.MarkdownSaveOptions.VectorFiguresAsSvg.init -> void
 Egap.Documents.MarkdownSaveOptions.WriteFrontMatter.get -> bool
 Egap.Documents.MarkdownSaveOptions.WriteFrontMatter.init -> void
+Egap.Documents.MergeData
 Egap.Documents.Node
 Egap.Documents.Node.Accept(Egap.Documents.DocumentVisitor! visitor) -> bool
 Egap.Documents.Node.Ancestors() -> System.Collections.Generic.IEnumerable<Egap.Documents.Node!>!
@@ -1038,6 +1125,8 @@ Egap.Documents.PageOrientation
 Egap.Documents.PageOrientation.Landscape = 1 -> Egap.Documents.PageOrientation
 Egap.Documents.PageOrientation.Portrait = 0 -> Egap.Documents.PageOrientation
 Egap.Documents.PageSetup
+Egap.Documents.PageSetup.BalanceColumns.get -> bool?
+Egap.Documents.PageSetup.BalanceColumns.set -> void
 Egap.Documents.PageSetup.Bidi.get -> bool?
 Egap.Documents.PageSetup.Bidi.set -> void
 Egap.Documents.PageSetup.ColumnCount.get -> int?
@@ -1150,6 +1239,8 @@ Egap.Documents.ParagraphFormat.List.get -> Egap.Documents.List?
 Egap.Documents.ParagraphFormat.List.set -> void
 Egap.Documents.ParagraphFormat.ListLevel.get -> int?
 Egap.Documents.ParagraphFormat.ListLevel.set -> void
+Egap.Documents.ParagraphFormat.MaxLines.get -> int?
+Egap.Documents.ParagraphFormat.MaxLines.set -> void
 Egap.Documents.ParagraphFormat.MirrorIndents.get -> bool?
 Egap.Documents.ParagraphFormat.MirrorIndents.set -> void
 Egap.Documents.ParagraphFormat.OutlineLevel.get -> int?
@@ -1179,6 +1270,8 @@ Egap.Documents.ParagraphFormat.TabStops.get -> System.Collections.Generic.IReadO
 Egap.Documents.ParagraphFormat.TabStops.set -> void
 Egap.Documents.ParagraphFormat.WidowControl.get -> bool?
 Egap.Documents.ParagraphFormat.WidowControl.set -> void
+Egap.Documents.ParagraphFormat.WordBreak.get -> Egap.Documents.WordBreak?
+Egap.Documents.ParagraphFormat.WordBreak.set -> void
 Egap.Documents.ParagraphStyle
 Egap.Documents.ParagraphStyle.Linked.get -> Egap.Documents.CharacterStyle?
 Egap.Documents.ParagraphStyle.Linked.set -> void
@@ -1222,6 +1315,7 @@ Egap.Documents.ResolvedParagraphFormat.LineSpacing.get -> double
 Egap.Documents.ResolvedParagraphFormat.LineSpacingRule.get -> Egap.Documents.LineSpacingRule
 Egap.Documents.ResolvedParagraphFormat.List.get -> Egap.Documents.List?
 Egap.Documents.ResolvedParagraphFormat.ListLevel.get -> int
+Egap.Documents.ResolvedParagraphFormat.MaxLines.get -> int
 Egap.Documents.ResolvedParagraphFormat.MirrorIndents.get -> bool
 Egap.Documents.ResolvedParagraphFormat.OutlineLevel.get -> int
 Egap.Documents.ResolvedParagraphFormat.PageBreakBefore.get -> bool
@@ -1237,6 +1331,7 @@ Egap.Documents.ResolvedParagraphFormat.SuppressLineNumbers.get -> bool
 Egap.Documents.ResolvedParagraphFormat.TabStops.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.TabStop!>!
 Egap.Documents.ResolvedParagraphFormat.ToParagraphFormat() -> Egap.Documents.ParagraphFormat!
 Egap.Documents.ResolvedParagraphFormat.WidowControl.get -> bool
+Egap.Documents.ResolvedParagraphFormat.WordBreak.get -> Egap.Documents.WordBreak
 Egap.Documents.ResolvedRunFormat
 Egap.Documents.ResolvedRunFormat.AllCaps.get -> bool
 Egap.Documents.ResolvedRunFormat.Bold.get -> bool
@@ -1246,6 +1341,7 @@ Egap.Documents.ResolvedRunFormat.Color.get -> Egap.Documents.DocumentColor
 Egap.Documents.ResolvedRunFormat.ComplexScript.get -> bool
 Egap.Documents.ResolvedRunFormat.DoubleStrikethrough.get -> bool
 Egap.Documents.ResolvedRunFormat.Emboss.get -> bool
+Egap.Documents.ResolvedRunFormat.Features.get -> Egap.Documents.FontFeatures!
 Egap.Documents.ResolvedRunFormat.FontAscii.get -> string!
 Egap.Documents.ResolvedRunFormat.FontComplexScript.get -> string!
 Egap.Documents.ResolvedRunFormat.FontEastAsia.get -> string!
@@ -1261,6 +1357,7 @@ Egap.Documents.ResolvedRunFormat.LanguageBidi.get -> string?
 Egap.Documents.ResolvedRunFormat.LanguageEastAsia.get -> string?
 Egap.Documents.ResolvedRunFormat.NoProof.get -> bool
 Egap.Documents.ResolvedRunFormat.Outline.get -> bool
+Egap.Documents.ResolvedRunFormat.Overline.get -> bool
 Egap.Documents.ResolvedRunFormat.Position.get -> double
 Egap.Documents.ResolvedRunFormat.RightToLeft.get -> bool
 Egap.Documents.ResolvedRunFormat.Scale.get -> double
@@ -1277,6 +1374,7 @@ Egap.Documents.ResolvedRunFormat.ToRunFormat() -> Egap.Documents.RunFormat!
 Egap.Documents.ResolvedRunFormat.Underline.get -> Egap.Documents.UnderlineStyle
 Egap.Documents.ResolvedRunFormat.UnderlineColor.get -> Egap.Documents.DocumentColor
 Egap.Documents.ResolvedRunFormat.VerticalPosition.get -> Egap.Documents.VerticalTextPosition
+Egap.Documents.ResolvedRunFormat.WordSpacing.get -> double
 Egap.Documents.Revision
 Egap.Documents.Revision.<Clone>$() -> Egap.Documents.Revision!
 Egap.Documents.Revision.Author.get -> string!
@@ -1316,6 +1414,8 @@ Egap.Documents.RowFormat.HeightRule.get -> Egap.Documents.RowHeightRule?
 Egap.Documents.RowFormat.HeightRule.set -> void
 Egap.Documents.RowFormat.Hidden.get -> bool?
 Egap.Documents.RowFormat.Hidden.set -> void
+Egap.Documents.RowFormat.IsFooter.get -> bool?
+Egap.Documents.RowFormat.IsFooter.set -> void
 Egap.Documents.RowFormat.IsHeader.get -> bool?
 Egap.Documents.RowFormat.IsHeader.set -> void
 Egap.Documents.RowFormat.RowFormat() -> void
@@ -1350,6 +1450,8 @@ Egap.Documents.RunFormat.DoubleStrikethrough.get -> bool?
 Egap.Documents.RunFormat.DoubleStrikethrough.set -> void
 Egap.Documents.RunFormat.Emboss.get -> bool?
 Egap.Documents.RunFormat.Emboss.set -> void
+Egap.Documents.RunFormat.Features.get -> Egap.Documents.FontFeatures?
+Egap.Documents.RunFormat.Features.set -> void
 Egap.Documents.RunFormat.FontAscii.get -> string?
 Egap.Documents.RunFormat.FontAscii.set -> void
 Egap.Documents.RunFormat.FontComplexScript.get -> string?
@@ -1382,6 +1484,8 @@ Egap.Documents.RunFormat.NoProof.get -> bool?
 Egap.Documents.RunFormat.NoProof.set -> void
 Egap.Documents.RunFormat.Outline.get -> bool?
 Egap.Documents.RunFormat.Outline.set -> void
+Egap.Documents.RunFormat.Overline.get -> bool?
+Egap.Documents.RunFormat.Overline.set -> void
 Egap.Documents.RunFormat.Position.get -> double?
 Egap.Documents.RunFormat.Position.set -> void
 Egap.Documents.RunFormat.RightToLeft.get -> bool?
@@ -1419,9 +1523,12 @@ Egap.Documents.RunFormat.UnderlineColor.get -> Egap.Documents.DocumentColor?
 Egap.Documents.RunFormat.UnderlineColor.set -> void
 Egap.Documents.RunFormat.VerticalPosition.get -> Egap.Documents.VerticalTextPosition?
 Egap.Documents.RunFormat.VerticalPosition.set -> void
+Egap.Documents.RunFormat.WordSpacing.get -> double?
+Egap.Documents.RunFormat.WordSpacing.set -> void
 Egap.Documents.Section
 Egap.Documents.Section.Body.get -> Egap.Documents.Body!
 Egap.Documents.Section.HeadersFooters.get -> Egap.Documents.HeaderFooterCollection!
+Egap.Documents.Section.MarginBoxes.get -> Egap.Documents.MarginBoxCollection!
 Egap.Documents.Section.PageSetup.get -> Egap.Documents.PageSetup!
 Egap.Documents.Section.Section(Egap.Documents.Document! document) -> void
 Egap.Documents.SectionStart
@@ -1810,6 +1917,11 @@ Egap.Documents.WidthUnit
 Egap.Documents.WidthUnit.Auto = 0 -> Egap.Documents.WidthUnit
 Egap.Documents.WidthUnit.Percent = 2 -> Egap.Documents.WidthUnit
 Egap.Documents.WidthUnit.Points = 1 -> Egap.Documents.WidthUnit
+Egap.Documents.WordBreak
+Egap.Documents.WordBreak.Anywhere = 3 -> Egap.Documents.WordBreak
+Egap.Documents.WordBreak.BreakAll = 1 -> Egap.Documents.WordBreak
+Egap.Documents.WordBreak.KeepAll = 2 -> Egap.Documents.WordBreak
+Egap.Documents.WordBreak.Normal = 0 -> Egap.Documents.WordBreak
 Egap.Documents.WrapMode
 Egap.Documents.WrapMode.BehindText = 4 -> Egap.Documents.WrapMode
 Egap.Documents.WrapMode.InFrontOfText = 5 -> Egap.Documents.WrapMode
@@ -1855,10 +1967,16 @@ override Egap.Documents.FieldStart.Clone(bool deep = true) -> Egap.Documents.Fie
 override Egap.Documents.FloatingPlacement.Equals(object? obj) -> bool
 override Egap.Documents.FloatingPlacement.GetHashCode() -> int
 override Egap.Documents.FloatingPlacement.ToString() -> string!
+override Egap.Documents.FontFeatures.Equals(object? obj) -> bool
+override Egap.Documents.FontFeatures.GetHashCode() -> int
+override Egap.Documents.FontFeatures.ToString() -> string!
 override Egap.Documents.Footnote.Clone(bool deep = true) -> Egap.Documents.Footnote!
 override Egap.Documents.FormatRevision.Equals(object? obj) -> bool
 override Egap.Documents.FormatRevision.GetHashCode() -> int
 override Egap.Documents.FormatRevision.ToString() -> string!
+override Egap.Documents.GroupPaging.Equals(object? obj) -> bool
+override Egap.Documents.GroupPaging.GetHashCode() -> int
+override Egap.Documents.GroupPaging.ToString() -> string!
 override Egap.Documents.HeaderFooter.Clone(bool deep = true) -> Egap.Documents.HeaderFooter!
 override Egap.Documents.Hyperlink.Clone(bool deep = true) -> Egap.Documents.Hyperlink!
 override Egap.Documents.ImageData.Equals(object? obj) -> bool
@@ -1879,6 +1997,10 @@ override Egap.Documents.ListLabel.Equals(object? obj) -> bool
 override Egap.Documents.ListLabel.GetHashCode() -> int
 override Egap.Documents.ListLabel.ToString() -> string!
 override Egap.Documents.ListStyle.Type.get -> Egap.Documents.StyleType
+override Egap.Documents.MailMergeOptions.Equals(object? obj) -> bool
+override Egap.Documents.MailMergeOptions.GetHashCode() -> int
+override Egap.Documents.MailMergeOptions.ToString() -> string!
+override Egap.Documents.MarginBox.Clone(bool deep = true) -> Egap.Documents.MarginBox!
 override Egap.Documents.MarkdownImage.Equals(object? obj) -> bool
 override Egap.Documents.MarkdownImage.GetHashCode() -> int
 override Egap.Documents.MarkdownImage.ToString() -> string!
@@ -1941,8 +2063,13 @@ static Egap.Documents.EmbeddedFont.operator ==(Egap.Documents.EmbeddedFont? left
 static Egap.Documents.Field.KindOf(string! code) -> Egap.Documents.FieldKind
 static Egap.Documents.FloatingPlacement.operator !=(Egap.Documents.FloatingPlacement? left, Egap.Documents.FloatingPlacement? right) -> bool
 static Egap.Documents.FloatingPlacement.operator ==(Egap.Documents.FloatingPlacement? left, Egap.Documents.FloatingPlacement? right) -> bool
+static Egap.Documents.FontFeatures.None.get -> Egap.Documents.FontFeatures!
+static Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable<(string! Tag, int Value)>! features) -> Egap.Documents.FontFeatures!
+static Egap.Documents.FontFeatures.Parse(string! text) -> Egap.Documents.FontFeatures!
 static Egap.Documents.FormatRevision.operator !=(Egap.Documents.FormatRevision? left, Egap.Documents.FormatRevision? right) -> bool
 static Egap.Documents.FormatRevision.operator ==(Egap.Documents.FormatRevision? left, Egap.Documents.FormatRevision? right) -> bool
+static Egap.Documents.GroupPaging.operator !=(Egap.Documents.GroupPaging? left, Egap.Documents.GroupPaging? right) -> bool
+static Egap.Documents.GroupPaging.operator ==(Egap.Documents.GroupPaging? left, Egap.Documents.GroupPaging? right) -> bool
 static Egap.Documents.HtmlFormat.Load(string! path, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.HtmlFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.HtmlFormat.Load(System.IO.Stream! stream, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
@@ -1963,6 +2090,7 @@ static Egap.Documents.Layout.CellBorders.operator ==(Egap.Documents.Layout.CellB
 static Egap.Documents.Layout.DocumentPosition.operator !=(Egap.Documents.Layout.DocumentPosition left, Egap.Documents.Layout.DocumentPosition right) -> bool
 static Egap.Documents.Layout.DocumentPosition.operator ==(Egap.Documents.Layout.DocumentPosition left, Egap.Documents.Layout.DocumentPosition right) -> bool
 static Egap.Documents.Layout.FontSettings.Default.get -> Egap.Documents.Layout.FontSettings!
+static Egap.Documents.Layout.FontSettings.Portable.get -> Egap.Documents.Layout.FontSettings!
 static Egap.Documents.Layout.FontSubstitution.operator !=(Egap.Documents.Layout.FontSubstitution? left, Egap.Documents.Layout.FontSubstitution? right) -> bool
 static Egap.Documents.Layout.FontSubstitution.operator ==(Egap.Documents.Layout.FontSubstitution? left, Egap.Documents.Layout.FontSubstitution? right) -> bool
 static Egap.Documents.Layout.LayoutRect.operator !=(Egap.Documents.Layout.LayoutRect left, Egap.Documents.Layout.LayoutRect right) -> bool
@@ -1972,6 +2100,8 @@ static Egap.Documents.Layout.PageRect.operator ==(Egap.Documents.Layout.PageRect
 static Egap.Documents.List.None.get -> Egap.Documents.List!
 static Egap.Documents.ListLabel.operator !=(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
 static Egap.Documents.ListLabel.operator ==(Egap.Documents.ListLabel? left, Egap.Documents.ListLabel? right) -> bool
+static Egap.Documents.MailMergeOptions.operator !=(Egap.Documents.MailMergeOptions? left, Egap.Documents.MailMergeOptions? right) -> bool
+static Egap.Documents.MailMergeOptions.operator ==(Egap.Documents.MailMergeOptions? left, Egap.Documents.MailMergeOptions? right) -> bool
 static Egap.Documents.MarkdownFormat.Load(string! path, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.MarkdownFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.MarkdownFormat.Load(System.IO.Stream! stream, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
@@ -1984,6 +2114,11 @@ static Egap.Documents.MarkdownFormat.ToMarkdown(Egap.Documents.Document! documen
 static Egap.Documents.MarkdownFormat.ToMarkdown(Egap.Documents.Document! document, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.MarkdownSaveOptions? options = null) -> string!
 static Egap.Documents.MarkdownImage.operator !=(Egap.Documents.MarkdownImage? left, Egap.Documents.MarkdownImage? right) -> bool
 static Egap.Documents.MarkdownImage.operator ==(Egap.Documents.MarkdownImage? left, Egap.Documents.MarkdownImage? right) -> bool
+static Egap.Documents.MergeData.From(System.Collections.Generic.IEnumerable<System.Collections.Generic.IReadOnlyDictionary<string!, object?>!>! records) -> System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>!
+static Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyDictionary<string!, object?>! values) -> Egap.Documents.IMergeData!
+static Egap.Documents.MergeData.From(System.Collections.Generic.IReadOnlyList<string!>! columns, System.Collections.Generic.IEnumerable<System.Collections.Generic.IReadOnlyList<object?>!>! rows) -> System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>!
+static Egap.Documents.MergeData.FromObject<T>(T value) -> Egap.Documents.IMergeData!
+static Egap.Documents.MergeData.FromObjects<T>(System.Collections.Generic.IEnumerable<T>! values) -> System.Collections.Generic.IEnumerable<Egap.Documents.IMergeData!>!
 static Egap.Documents.Revision.operator !=(Egap.Documents.Revision? left, Egap.Documents.Revision? right) -> bool
 static Egap.Documents.Revision.operator ==(Egap.Documents.Revision? left, Egap.Documents.Revision? right) -> bool
 static Egap.Documents.Shading.operator !=(Egap.Documents.Shading? left, Egap.Documents.Shading? right) -> bool
