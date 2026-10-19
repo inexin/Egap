@@ -91,6 +91,25 @@ IReadOnlyList<ConversionWarning> missing = letter.FillMergeFields(MergeData.From
 letter.Save("letter-kari.docx");
 ```
 
+A region repeats once per record of a sequence in the data: the rows or paragraphs from a `TableStart:Lines` merge field to
+a `TableEnd:Lines` one, or a table row whose fields are all named `Lines.Something`. Regions nest, and a field a line does
+not have is read from the record around it. `MailMerge` makes one document per record, as the sequence is read, and
+`MailMergeAll` one document of them all, each record starting on a new page (or as `Separator` says).
+
+```csharp
+using Egap.Documents;
+
+Document template = Document.Load("invoice-template.docx");
+IEnumerable<IMergeData> customers = MergeData.From(["Name", "City"], [["Ola", "Oslo"], ["Kari", "Bergen"]]);
+int number = 1;
+foreach (Document invoice in template.MailMerge(customers))
+{
+    invoice.Save($"invoice-{number++}.docx");
+}
+
+Document statements = template.MailMergeAll(customers, new MailMergeOptions { OnWarning = w => Console.WriteLine(w) });
+```
+
 ## Page layout
 
 `Layout` breaks the document into pages, with floats, columns, headers and footers, and footnotes. Each page draws onto any

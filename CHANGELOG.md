@@ -45,6 +45,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `MailMergeOptions` sets the culture and can remove paragraphs left empty.
 - `MergeData` makes records from dictionaries, rows with column names and objects (trimming-safe), with dotted names for
   nested records.
+- Repeated regions, between `TableStart:Name` and `TableEnd:Name` merge fields (rows of one table, or blocks of one story)
+  or in a table row of `Name.Field` fields, nested and reading what a record lacks from the record around it; a region
+  with no records is removed with a warning.
+- `Document.MailMerge` makes one document per record, lazily; `MailMergeAll` makes one document of all records, separated
+  by `MailMergeOptions.Separator`, with warnings through `OnWarning`.
 
 ### Fixes
 - HTML: a space after an inline element at the start of a paragraph (`<b>ACME</b> Ltd`) was lost.
