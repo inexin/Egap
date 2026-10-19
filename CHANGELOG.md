@@ -12,6 +12,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `font-variant-ligatures`, `font-variant-numeric`, `word-break` and `overflow-wrap`; DOCX keeps ligatures, number forms
   and spacing, stylistic sets and contextual alternates.
 
+### Paging groups
+- `ContentControl.Paging` (`GroupPaging`) keeps a group of blocks together, starts it on a new page when too little room is
+  left (`EnsureSpace`), never splits it (`ShowEntire`) or cuts it where its page ends (`StopPaging`).
+  `DocumentBuilder.StartGroup` and `EndGroup` make groups; HTML `break-inside: avoid` on a box of several blocks makes one.
+- Content controls inside headers, footers, table cells and text boxes are now laid out; before, their blocks were left out.
+
 ### Strict layout and portable fonts
 - `LayoutOptions.Strict` throws a `LayoutException` naming the node, the page and the `LayoutProblem` (text or content
   running past its area, a missing glyph, a font with no stand-in) instead of degrading.

@@ -84,6 +84,23 @@ DocumentLayout pages = doc.Layout();                              // pages, line
 pages.Pages[0].Render(dpi: 150).Save("page1.png");
 ```
 
+A group of blocks (a block content control) can say how it is placed across pages: kept together on one page, started
+on a new page when less than some height is left, never split, or cut where the page ends. HTML's `break-inside: avoid`
+on a box of several blocks makes such a group. Word keeps the blocks, not these settings.
+
+```csharp
+using Egap.Documents;
+
+Document invoice = new();
+DocumentBuilder builder = new(invoice);
+builder.Writeln("Lines of the invoice...");
+ContentControl totals = builder.StartGroup();
+totals.Paging = new GroupPaging { KeepTogether = true, EnsureSpace = 120 };
+builder.Writeln("Subtotal: 1 200 NOK");
+builder.Write("Total: 1 500 NOK");
+builder.EndGroup();
+```
+
 With `Strict`, layout throws a `LayoutException` naming the node and the page instead of degrading: a word too long for
 its column, a table or picture past the page, a character no font has, or a font with no stand-in. `FontSettings.Portable`
 uses only the document's embedded fonts and the bundled substitutes, never the system's, so a document prints the same

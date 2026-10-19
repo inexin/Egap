@@ -8,6 +8,7 @@ namespace Egap.Documents;
 public sealed class DocumentBuilder
 {
     private readonly Stack<TableState> tables = new();
+    private readonly Stack<(ContentControl Group, Paragraph Paragraph, Inline? Before)> groups = new();
     private Paragraph paragraph;
     private Inline? before;
 
@@ -280,6 +281,57 @@ public sealed class DocumentBuilder
         paragraph = state.Paragraph;
         before = state.Before;
         return state.Table;
+    }
+
+    /// <summary>
+    /// Starts a group of blocks before the cursor's paragraph and moves the cursor into it: what is written until
+    /// <see cref="EndGroup"/> goes inside, and the group's <see cref="ContentControl.Paging"/> says how it is placed across
+    /// pages (kept together, given room, shown entire). Groups nest.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// ContentControl totals = builder.StartGroup();
+    /// totals.Paging = new GroupPaging { KeepTogether = true };
+    /// builder.Writeln("Subtotal: 1 200");
+    /// builder.Write("Total: 1 500");
+    /// builder.EndGroup();
+    /// </code>
+    /// </example>
+    public ContentControl StartGroup()
+    {
+        ContentControl group = new(Document);
+        group.Properties.Kind = ContentControlKind.Group;
+        switch (paragraph.Parent)
+        {
+            case BlockContainer container:
+                container.Blocks.Insert(paragraph.IndexInParent, group);
+                break;
+            case ContentControl control:
+                control.Blocks.Insert(paragraph.IndexInParent, group);
+                break;
+            default:
+                throw new InvalidOperationException("Groups go where blocks go.");
+        }
+
+        groups.Push((group, paragraph, before));
+        paragraph = group.AddParagraph();
+        paragraph.Format.Apply(ParagraphFormat);
+        before = null;
+        return group;
+    }
+
+    /// <summary>Ends the innermost group and moves the cursor back to the paragraph after it.</summary>
+    /// <exception cref="InvalidOperationException">No group is open.</exception>
+    public ContentControl EndGroup()
+    {
+        if (!groups.TryPop(out (ContentControl Group, Paragraph Paragraph, Inline? Before) state))
+        {
+            throw new InvalidOperationException("No group is open; call StartGroup first.");
+        }
+
+        paragraph = state.Paragraph;
+        before = state.Before;
+        return state.Group;
     }
 
     /// <summary>Moves the cursor to the end of the document's last body paragraph, adding a section or paragraph when missing.</summary>

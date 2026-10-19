@@ -261,9 +261,48 @@ internal sealed partial class Paginator
     /// <summary>Lays a header, footer or other story's blocks out in one column without page breaks.</summary>
     private (List<LayoutBox> Blocks, double Height) LayStory(BlockContainer story, double x, double top, double width)
     {
+        return LayBlocks(story.Blocks, x, top, width);
+    }
+
+    /// <summary>The blocks with every content control's blocks in its place, as layout reads them.</summary>
+    private static IEnumerable<Block> Flatten(IEnumerable<Block> blocks)
+    {
+        foreach (Block block in blocks)
+        {
+            if (block is ContentControl control)
+            {
+                foreach (Block inner in Flatten(control.Blocks))
+                {
+                    yield return inner;
+                }
+            }
+            else
+            {
+                yield return block;
+            }
+        }
+    }
+
+    /// <summary>The height blocks take in one column of <paramref name="width"/>, laid out without page breaks.</summary>
+    private double MeasureBlocks(IEnumerable<Block> blocks, double width)
+    {
+        measuring++;
+        try
+        {
+            return LayBlocks(blocks, 0, 0, width).Height;
+        }
+        finally
+        {
+            measuring--;
+        }
+    }
+
+    /// <summary>Lays blocks out in one column without page breaks, content controls' blocks in their place.</summary>
+    private (List<LayoutBox> Blocks, double Height) LayBlocks(IEnumerable<Block> story, double x, double top, double width)
+    {
         List<LayoutBox> boxes = [];
         double at = top;
-        foreach (Block block in story.Blocks)
+        foreach (Block block in Flatten(story))
         {
             switch (block)
             {

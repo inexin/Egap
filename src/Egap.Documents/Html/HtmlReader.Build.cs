@@ -327,6 +327,21 @@ internal sealed partial class HtmlReader
         InlineElement(element, style, flow, frame);
     }
 
+    /// <summary>Moves the blocks from <paramref name="first"/> on into a group kept on one page.</summary>
+    private void Group(NodeCollection<Block> blocks, int first)
+    {
+        ContentControl group = new(document) { Paging = new GroupPaging { KeepTogether = true } };
+        group.Properties.Kind = ContentControlKind.Group;
+        List<Block> moved = [.. blocks.Skip(first)];
+        foreach (Block block in moved)
+        {
+            blocks.Remove(block);
+            group.Blocks.Add(block);
+        }
+
+        blocks.Add(group);
+    }
+
     private static bool IsBlockDisplay(string display)
     {
         return display is "block" or "list-item" or "flow-root" or "flex" or "grid" or "table-caption" or "table-row-group"
@@ -414,8 +429,15 @@ internal sealed partial class HtmlReader
         }
 
         flow.PendingSpace = Collapse(flow.PendingSpace, marginTop) + (borderTop is null ? paddingTop : 0);
+        int firstBlock = flow.Container.Blocks.Count;
         Children(element, style, flow, frame);
         Close(flow);
+
+        // break-inside: avoid on a box of several blocks keeps them on one page, as a group.
+        if (frame.KeepTogether && !parent.KeepTogether && flow.Container.Blocks.Count - firstBlock > 1)
+        {
+            Group(flow.Container.Blocks, firstBlock);
+        }
         flow.PendingSpace = (borderBottom is null ? paddingBottom : 0) + Math.Max(0, marginBottom) + Math.Min(0, marginBottom);
 
         // The box's borders on its paragraphs: top on the first, bottom on the last, the sides on all.

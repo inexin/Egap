@@ -47,6 +47,7 @@ public class ChangeNotificationTests
         ["Paragraph.AddPicture"] = f => f.Paragraph.AddPicture(new ImageData(new byte[] { 1 }, "image/png"), 1, 1),
         ["CompositeInline.AddRun"] = f => f.Paragraph.AddHyperlink("a", "b").AddRun("more"),
         ["ContentControl.AddParagraph"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).AddParagraph("x"),
+        ["ContentControl.Paging"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).Paging = new GroupPaging { KeepTogether = true },
         ["Shape.AddTextBox"] = f => f.Paragraph.Inlines.Add(new Shape(f.Doc, ShapeKind.Rectangle, 1, 1)).AddTextBox(),
         ["Footnote.AddParagraph"] = f => f.Paragraph.AddFootnote("n").AddParagraph("more"),
         ["Comment.AddParagraph"] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")).AddParagraph("x"),

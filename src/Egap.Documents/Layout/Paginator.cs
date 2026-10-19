@@ -222,6 +222,9 @@ internal sealed partial class Paginator
                 case Table table:
                     FlowTable(table);
                     break;
+                case ContentControl { Paging: { } paging } control:
+                    FlowGroup(control, paging);
+                    break;
                 case ContentControl control:
                     FlowBlocks(control.Blocks);
                     break;
@@ -230,6 +233,84 @@ internal sealed partial class Paginator
             }
 
             _ = next;
+        }
+    }
+
+    /// <summary>
+    /// A group with paging options: it moves to the next column or page when it lacks the room it asks for (<see cref="GroupPaging.EnsureSpace"/>)
+    /// or when it is kept together and does not fit where it is but would at the top of a column; with
+    /// <see cref="GroupPaging.StopPaging"/>, only the blocks that fit where it starts are laid out.
+    /// </summary>
+    private void FlowGroup(ContentControl group, GroupPaging paging)
+    {
+        double room = ColumnBottom - y;
+        if (paging.EnsureSpace is double need && room < need && !AtColumnTop)
+        {
+            NextColumn();
+            room = ColumnBottom - y;
+        }
+
+        if (paging.KeepTogether || paging.ShowEntire)
+        {
+            double height = MeasureBlocks(group.Blocks, Column.Width);
+            double full = ColumnBottom - page!.ColumnTop(column);
+            // Kept together, a group taller than an empty column flows on from here; shown entire, it starts a column anyway.
+            if (height > room + 0.01 && !AtColumnTop && (height <= full + 0.01 || paging.ShowEntire))
+            {
+                NextColumn();
+            }
+
+            if (paging.ShowEntire && strict && height > ColumnBottom - y + 0.5)
+            {
+                throw new LayoutException(LayoutProblem.ContentOverflow,
+                    $"A group to be shown entire is {(height - (ColumnBottom - y)).ToString("0.#", CultureInfo.InvariantCulture)} pt taller than an empty page's body; make it smaller or let it break.",
+                    group, pages.Count - 1);
+            }
+        }
+
+        if (paging.StopPaging)
+        {
+            double left = ColumnBottom - y;
+            List<Block> fitting = [];
+            foreach (Block block in group.Blocks)
+            {
+                double height = MeasureBlocks([block], Column.Width);
+                if (height > left + 0.01)
+                {
+                    break;
+                }
+
+                left -= height;
+                fitting.Add(block);
+            }
+
+            FlowList(fitting);
+            return;
+        }
+
+        FlowBlocks(group.Blocks);
+    }
+
+    /// <summary>Flows some blocks of a container, as <see cref="FlowBlocks"/> flows all of them.</summary>
+    private void FlowList(List<Block> blocks)
+    {
+        for (int i = 0; i < blocks.Count; i++)
+        {
+            switch (blocks[i])
+            {
+                case Paragraph paragraph:
+                    FlowParagraph(paragraph, i + 1 < blocks.Count ? blocks[i + 1] as Paragraph : null, i > 0 ? blocks[i - 1] as Paragraph : null);
+                    break;
+                case Table table:
+                    FlowTable(table);
+                    break;
+                case ContentControl { Paging: { } paging } control:
+                    FlowGroup(control, paging);
+                    break;
+                case ContentControl control:
+                    FlowBlocks(control.Blocks);
+                    break;
+            }
         }
     }
 

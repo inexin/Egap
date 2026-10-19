@@ -1,4 +1,8 @@
 #nullable enable
+Egap.Documents.ContentControl.Paging.get -> Egap.Documents.GroupPaging?
+Egap.Documents.ContentControl.Paging.set -> void
+Egap.Documents.DocumentBuilder.EndGroup() -> Egap.Documents.ContentControl!
+Egap.Documents.DocumentBuilder.StartGroup() -> Egap.Documents.ContentControl!
 Egap.Documents.FontFeatures
 Egap.Documents.FontFeatures.Count.get -> int
 Egap.Documents.FontFeatures.Equals(Egap.Documents.FontFeatures? other) -> bool
@@ -6,6 +10,18 @@ Egap.Documents.FontFeatures.GetEnumerator() -> System.Collections.Generic.IEnume
 Egap.Documents.FontFeatures.this[int index].get -> (string! Tag, int Value)
 Egap.Documents.FontFeatures.ValueOf(string! tag) -> int?
 Egap.Documents.FontFeatures.With(Egap.Documents.FontFeatures! other) -> Egap.Documents.FontFeatures!
+Egap.Documents.GroupPaging
+Egap.Documents.GroupPaging.<Clone>$() -> Egap.Documents.GroupPaging!
+Egap.Documents.GroupPaging.EnsureSpace.get -> double?
+Egap.Documents.GroupPaging.EnsureSpace.init -> void
+Egap.Documents.GroupPaging.Equals(Egap.Documents.GroupPaging? other) -> bool
+Egap.Documents.GroupPaging.GroupPaging() -> void
+Egap.Documents.GroupPaging.KeepTogether.get -> bool
+Egap.Documents.GroupPaging.KeepTogether.init -> void
+Egap.Documents.GroupPaging.ShowEntire.get -> bool
+Egap.Documents.GroupPaging.ShowEntire.init -> void
+Egap.Documents.GroupPaging.StopPaging.get -> bool
+Egap.Documents.GroupPaging.StopPaging.init -> void
 Egap.Documents.Layout.LayoutException
 Egap.Documents.Layout.LayoutException.Node.get -> Egap.Documents.Node?
 Egap.Documents.Layout.LayoutException.PageIndex.get -> int?
@@ -37,7 +53,12 @@ Egap.Documents.WordBreak.Normal = 0 -> Egap.Documents.WordBreak
 override Egap.Documents.FontFeatures.Equals(object? obj) -> bool
 override Egap.Documents.FontFeatures.GetHashCode() -> int
 override Egap.Documents.FontFeatures.ToString() -> string!
+override Egap.Documents.GroupPaging.Equals(object? obj) -> bool
+override Egap.Documents.GroupPaging.GetHashCode() -> int
+override Egap.Documents.GroupPaging.ToString() -> string!
 static Egap.Documents.FontFeatures.None.get -> Egap.Documents.FontFeatures!
 static Egap.Documents.FontFeatures.Of(System.Collections.Generic.IEnumerable<(string! Tag, int Value)>! features) -> Egap.Documents.FontFeatures!
 static Egap.Documents.FontFeatures.Parse(string! text) -> Egap.Documents.FontFeatures!
+static Egap.Documents.GroupPaging.operator !=(Egap.Documents.GroupPaging? left, Egap.Documents.GroupPaging? right) -> bool
+static Egap.Documents.GroupPaging.operator ==(Egap.Documents.GroupPaging? left, Egap.Documents.GroupPaging? right) -> bool
 static Egap.Documents.Layout.FontSettings.Portable.get -> Egap.Documents.Layout.FontSettings!
