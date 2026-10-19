@@ -51,6 +51,15 @@ public sealed record PdfTextGlyph(string Text, PdfRectangle Box, PdfFont? Font, 
     /// <summary>The baseline's end: the origin moved by the glyph's advance.</summary>
     public PdfPoint End { get; init; }
 
+    /// <summary>The glyph's text rendering matrix: text space, font size included, to default user space.</summary>
+    internal PdfMatrix Matrix { get; init; }
+
+    /// <summary>The text rendering mode it was shown with (<c>Tr</c>), 3 for invisible text.</summary>
+    internal int RenderMode { get; init; }
+
+    /// <summary>The font as the resources hold it (usually a reference), for writing text in the same font.</summary>
+    internal PdfObject? FontResource { get; init; }
+
     /// <summary>Whether the glyph is a space in the text (shown by the content, not inserted for a gap).</summary>
     public bool IsSpace => Text.Length > 0 && Text.All(char.IsWhiteSpace);
 }

@@ -11,7 +11,13 @@ Egap.Pdf.Length.ToString(string? format, System.IFormatProvider? formatProvider)
 Egap.Pdf.PdfDocument.ExtractPages(Egap.Pdf.PdfPageRange! range) -> Egap.Pdf.PdfDocument!
 Egap.Pdf.PdfDocument.FindText(string! text, Egap.Pdf.PdfFindOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
 Egap.Pdf.PdfDocument.FindText(System.Text.RegularExpressions.Regex! pattern, Egap.Pdf.PdfFindOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
+Egap.Pdf.PdfDocument.MarkRedactions(string! text, Egap.Pdf.PdfFindOptions? find = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfRedactAnnotation!>!
+Egap.Pdf.PdfDocument.MarkRedactions(System.Text.RegularExpressions.Regex! pattern, Egap.Pdf.PdfFindOptions? find = null) -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfRedactAnnotation!>!
+Egap.Pdf.PdfDocument.RedactText(string! text, Egap.Pdf.PdfFindOptions? find = null, Egap.Pdf.PdfRedactionOptions? options = null) -> Egap.Pdf.PdfRedactionResult!
+Egap.Pdf.PdfDocument.RedactText(System.Text.RegularExpressions.Regex! pattern, Egap.Pdf.PdfFindOptions? find = null, Egap.Pdf.PdfRedactionOptions? options = null) -> Egap.Pdf.PdfRedactionResult!
 Egap.Pdf.PdfDocument.RenderPagesToFiles(string! path, Egap.Pdf.PdfRenderOptions? options = null, Egap.Pdf.PdfPageRange? pages = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfDocument.ReplaceText(string! text, string! replacement, Egap.Pdf.PdfFindOptions? find = null, Egap.Pdf.PdfReplaceOptions? options = null) -> Egap.Pdf.PdfReplaceResult!
+Egap.Pdf.PdfDocument.ReplaceText(System.Text.RegularExpressions.Regex! pattern, string! replacement, Egap.Pdf.PdfFindOptions? find = null, Egap.Pdf.PdfReplaceOptions? options = null) -> Egap.Pdf.PdfReplaceResult!
 Egap.Pdf.PdfFindOptions
 Egap.Pdf.PdfFindOptions.<Clone>$() -> Egap.Pdf.PdfFindOptions!
 Egap.Pdf.PdfFindOptions.Equals(Egap.Pdf.PdfFindOptions? other) -> bool
@@ -75,6 +81,23 @@ Egap.Pdf.PdfQuad.UpperLeft.get -> Egap.Pdf.PdfPoint
 Egap.Pdf.PdfQuad.UpperLeft.init -> void
 Egap.Pdf.PdfQuad.UpperRight.get -> Egap.Pdf.PdfPoint
 Egap.Pdf.PdfQuad.UpperRight.init -> void
+Egap.Pdf.PdfReplaceOptions
+Egap.Pdf.PdfReplaceOptions.<Clone>$() -> Egap.Pdf.PdfReplaceOptions!
+Egap.Pdf.PdfReplaceOptions.Equals(Egap.Pdf.PdfReplaceOptions? other) -> bool
+Egap.Pdf.PdfReplaceOptions.FallbackFont.get -> Egami.Fonts.Typeface?
+Egap.Pdf.PdfReplaceOptions.FallbackFont.init -> void
+Egap.Pdf.PdfReplaceOptions.PdfReplaceOptions() -> void
+Egap.Pdf.PdfReplaceResult
+Egap.Pdf.PdfReplaceResult.<Clone>$() -> Egap.Pdf.PdfReplaceResult!
+Egap.Pdf.PdfReplaceResult.Deconstruct(out System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>! Replaced, out System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>! Skipped, out System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>! Warnings) -> void
+Egap.Pdf.PdfReplaceResult.Equals(Egap.Pdf.PdfReplaceResult? other) -> bool
+Egap.Pdf.PdfReplaceResult.PdfReplaceResult(System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>! Replaced, System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>! Skipped, System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>! Warnings) -> void
+Egap.Pdf.PdfReplaceResult.Replaced.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
+Egap.Pdf.PdfReplaceResult.Replaced.init -> void
+Egap.Pdf.PdfReplaceResult.Skipped.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfTextMatch!>!
+Egap.Pdf.PdfReplaceResult.Skipped.init -> void
+Egap.Pdf.PdfReplaceResult.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfReplaceResult.Warnings.init -> void
 Egap.Pdf.PdfStamp.PageRange.get -> Egap.Pdf.PdfPageRange?
 Egap.Pdf.PdfStamp.PageRange.init -> void
 Egap.Pdf.PdfTextMatch
@@ -83,6 +106,7 @@ Egap.Pdf.PdfTextMatch.Glyphs.get -> System.Collections.Generic.IReadOnlyList<Ega
 Egap.Pdf.PdfTextMatch.PageIndex.get -> int
 Egap.Pdf.PdfTextMatch.Quads.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfQuad>!
 Egap.Pdf.PdfTextMatch.Text.get -> string!
+Egap.Pdf.PdfWarningCode.TextNotReplaced = 43 -> Egap.Pdf.PdfWarningCode
 override Egap.Pdf.Length.GetHashCode() -> int
 override Egap.Pdf.Length.ToString() -> string!
 override Egap.Pdf.PdfFindOptions.Equals(object? obj) -> bool
@@ -96,6 +120,12 @@ override Egap.Pdf.PdfPlaceholderValues.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPlaceholderValues.GetHashCode() -> int
 override Egap.Pdf.PdfPlaceholderValues.ToString() -> string!
 override Egap.Pdf.PdfQuad.GetHashCode() -> int
+override Egap.Pdf.PdfReplaceOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfReplaceOptions.GetHashCode() -> int
+override Egap.Pdf.PdfReplaceOptions.ToString() -> string!
+override Egap.Pdf.PdfReplaceResult.Equals(object? obj) -> bool
+override Egap.Pdf.PdfReplaceResult.GetHashCode() -> int
+override Egap.Pdf.PdfReplaceResult.ToString() -> string!
 override Egap.Pdf.PdfTextMatch.ToString() -> string!
 static Egap.Pdf.Length.Cm(double centimetres) -> Egap.Pdf.Length
 static Egap.Pdf.Length.implicit operator double(Egap.Pdf.Length length) -> double
@@ -136,6 +166,11 @@ static Egap.Pdf.PdfPlaceholderValues.operator ==(Egap.Pdf.PdfPlaceholderValues? 
 static Egap.Pdf.PdfQuad.FromRectangle(Egap.Pdf.PdfRectangle rectangle) -> Egap.Pdf.PdfQuad
 static Egap.Pdf.PdfQuad.operator !=(Egap.Pdf.PdfQuad left, Egap.Pdf.PdfQuad right) -> bool
 static Egap.Pdf.PdfQuad.operator ==(Egap.Pdf.PdfQuad left, Egap.Pdf.PdfQuad right) -> bool
+static Egap.Pdf.PdfReplaceOptions.Default.get -> Egap.Pdf.PdfReplaceOptions!
+static Egap.Pdf.PdfReplaceOptions.operator !=(Egap.Pdf.PdfReplaceOptions? left, Egap.Pdf.PdfReplaceOptions? right) -> bool
+static Egap.Pdf.PdfReplaceOptions.operator ==(Egap.Pdf.PdfReplaceOptions? left, Egap.Pdf.PdfReplaceOptions? right) -> bool
+static Egap.Pdf.PdfReplaceResult.operator !=(Egap.Pdf.PdfReplaceResult? left, Egap.Pdf.PdfReplaceResult? right) -> bool
+static Egap.Pdf.PdfReplaceResult.operator ==(Egap.Pdf.PdfReplaceResult? left, Egap.Pdf.PdfReplaceResult? right) -> bool
 ~override Egap.Pdf.Length.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfQuad.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfQuad.ToString() -> string

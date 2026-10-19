@@ -21,6 +21,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   range. Each match gives its page, text, glyphs and a quadrilateral per line; phrases are found across line breaks within
   a paragraph.
 
+### Redact and replace text
+- `RedactText` redacts every match of a phrase or regular expression for real in one call; `MarkRedactions` adds the marks
+  without applying them. Redaction marks already in the document are left alone.
+- `ReplaceText` replaces a phrase or a regular expression (with `$1` groups) in the match's own font, size, colour and
+  rendering mode. A match whose font lacks a glyph for the new text is left as it was with a `TextNotReplaced` warning, or
+  written in a fallback font when one is given.
+
 ### Images and page files
 - `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
   GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.

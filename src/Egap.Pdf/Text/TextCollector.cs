@@ -15,6 +15,7 @@ internal sealed class TextCollector : PdfContentWalker
     private readonly Stack<List<Item>?> spans = new();
     private readonly Stack<string> actualTexts = new();
     private int unmapped;
+    private (PdfName? Name, PdfDictionary? Resources, PdfObject? Value) fontResource;
 
     /// <summary>Walks a page and builds its text.</summary>
     public static PdfTextPage Read(PdfPage page, PdfTextOptions options)
@@ -29,6 +30,17 @@ internal sealed class TextCollector : PdfContentWalker
 
         List<PdfTextLine> lines = options.Order == PdfTextOrder.Position ? ByPosition(collector.items, options) : ByContent(collector.items, options);
         return new PdfTextPage([.. collector.items.Select(i => i.Glyph)], lines, warnings);
+    }
+
+    /// <summary>The current font as the resources hold it, looked up again only when the font or the resources change.</summary>
+    private PdfObject? FontResource()
+    {
+        if (!ReferenceEquals(fontResource.Name, State.FontName) || !ReferenceEquals(fontResource.Resources, Resources))
+        {
+            fontResource = (State.FontName, Resources, State.FontName is { } name ? Resources?.Get<PdfDictionary>("Font")?[name] : null);
+        }
+
+        return fontResource.Value;
     }
 
     protected override void OnGlyph(PdfGlyph glyph)
@@ -56,7 +68,7 @@ internal sealed class TextCollector : PdfContentWalker
         double size = Math.Sqrt(Math.Abs((m.A * m.D) - (m.B * m.C)));
         (double dx, double dy) = Unit(m.A, m.B);
         double space = font is not null && !font.IsComposite && font.GetWidth(32) is > 0 and var w ? w : 250;
-        Item item = new(new PdfTextGlyph(text, box, font, size, State.FillColor, glyph.Code) { Origin = origin, End = end }, dx, dy, size, space / 1000 * size);
+        Item item = new(new PdfTextGlyph(text, box, font, size, State.FillColor, glyph.Code) { Origin = origin, End = end, Matrix = m, RenderMode = State.TextRenderMode, FontResource = FontResource() }, dx, dy, size, space / 1000 * size);
         if (spans.Count > 0 && spans.Peek() is List<Item> span)
         {
             span.Add(item);

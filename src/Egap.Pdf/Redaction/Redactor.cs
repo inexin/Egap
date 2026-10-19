@@ -7,14 +7,15 @@ namespace Egap.Pdf.Redaction;
 /// </summary>
 internal static class Redactor
 {
-    public static PdfRedactionResult Apply(PdfDocument document, PdfRedactionOptions options)
+    /// <summary>Applies the redaction annotations <paramref name="which"/> chooses, all of them when it is null.</summary>
+    public static PdfRedactionResult Apply(PdfDocument document, PdfRedactionOptions options, Func<PdfRedactAnnotation, bool>? which = null)
     {
         RedactionCounters counters = new();
         int applied = 0;
         for (int i = 0; i < document.Pages.Count; i++)
         {
             PdfPage page = document.Pages[i];
-            List<PdfRedactAnnotation> redactions = [.. page.Annotations.OfType<PdfRedactAnnotation>()];
+            List<PdfRedactAnnotation> redactions = [.. page.Annotations.OfType<PdfRedactAnnotation>().Where(r => which is null || which(r))];
             if (redactions.Count == 0)
             {
                 continue;
@@ -54,6 +55,27 @@ internal static class Redactor
 
         document.MarkRedacted();
         return new PdfRedactionResult(applied, counters.Glyphs, counters.Paths, counters.Images, counters.Forms, counters.Annotations);
+    }
+
+    /// <summary>
+    /// Removes what the areas cover from a page's content and the forms it draws, as applying redaction annotations does,
+    /// without touching the page's annotations or drawing overlays; the document must then be saved whole.
+    /// </summary>
+    public static void RedactContent(PdfDocument document, PdfPage page, IReadOnlyList<PdfRectangle> areas, PdfRedactionOptions options)
+    {
+        if (areas.Count == 0)
+        {
+            return;
+        }
+
+        PdfDictionary resources = Pages.PageDrawing.OwnResources(page);
+        ContentRedactor redactor = new(document, areas, [.. areas.Select(_ => (PdfRgbColor?)null)], options, new RedactionCounters());
+        if (redactor.Redact(page.GetContent(), resources, PdfMatrix.Identity, 0) is PdfContent redacted)
+        {
+            page.SetContent(redacted);
+        }
+
+        document.MarkRedacted();
     }
 
     /// <summary>

@@ -14,6 +14,26 @@ pdf.ApplyRedactions();                                            // covered tex
 pdf.Save("redacted.pdf");
 ```
 
+`RedactText` finds a phrase or a regular expression and redacts every match in one call; `MarkRedactions` only adds the
+marks, so they can be checked in a viewer before `ApplyRedactions`. `ReplaceText` swaps one text for another in the same
+font, size and colour. Where that font, often an embedded subset, has no glyph for a character of the new text, the match
+is left as it was with a warning, unless you give a fallback font.
+
+```csharp
+using Egap.Pdf;
+using Egami.Fonts;
+
+using PdfDocument pdf = PdfDocument.Open("contract.pdf");
+pdf.RedactText("Confidential", new PdfFindOptions { MatchCase = false });
+PdfReplaceResult replaced = pdf.ReplaceText("2025", "2026", options: new PdfReplaceOptions { FallbackFont = Typeface.FromFile("NotoSans.ttf") });
+foreach (PdfWarning warning in replaced.Warnings)
+{
+    Console.WriteLine(warning.Message);                           // matches left as they were
+}
+
+pdf.Save("contract-2026.pdf");
+```
+
 `Sanitize` removes hidden data in one call: metadata, scripts, attachments, hidden layers, comments, form data, thumbnails
 and old revisions.
 
