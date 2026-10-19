@@ -408,7 +408,9 @@ internal sealed class MarkdownReader
                 case MdImage image:
                     {
                         ImageData data = options.ImageResolver?.Invoke(image.Destination) ?? new ImageData(ReadOnlyMemory<byte>.Empty, "application/octet-stream");
-                        Picture picture = new(document, data, 0, 0)
+                        // A resolved image takes its own size, at 96 pixels an inch, as a browser shows it.
+                        (double width, double height) = data.Bytes.IsEmpty ? (0, 0) : Html.HtmlReader.IntrinsicSize(data.Bytes);
+                        Picture picture = new(document, data, width, height)
                         {
                             Description = MdHtmlRenderer.PlainText(image),
                             Title = image.Title,

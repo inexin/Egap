@@ -37,6 +37,100 @@ internal sealed partial class HtmlReader
         currentLink = outer;
     }
 
+    /// <summary>
+    /// A form control as an inline content control holding its value, so it keeps its place in the text and an export can
+    /// make a PDF form field of it: text inputs and text areas as plain or rich text, check boxes and radio buttons as check
+    /// boxes (radio buttons in a <see cref="ContentControlProperties.RadioGroup"/>), selects as drop-down lists. An empty
+    /// control holds no-break spaces as wide as its <c>size</c> or <c>cols</c> and as tall as its <c>rows</c>. False for
+    /// buttons, files and hidden inputs, which are left to the caller.
+    /// </summary>
+    private bool FormControl(HtmlElement element, HtmlStyle style, Flow flow, Frame frame)
+    {
+        string type = element.IsHtml("input") ? (element.GetAttribute("type", null) ?? "text").Trim().ToLowerInvariant() : element.LocalName;
+        if (type is "hidden")
+        {
+            return true;
+        }
+
+        if (type is "submit" or "reset" or "button" or "image" or "file" or "range" or "color")
+        {
+            return false;
+        }
+
+        InlineContentControl control = new(document);
+        ContentControlProperties properties = control.Properties;
+        properties.Tag = element.GetAttribute("name", null) ?? element.Id;
+        properties.Title = element.GetAttribute("title", null) ?? element.GetAttribute("placeholder", null);
+        List<string> lines = [];
+        switch (type)
+        {
+            case "checkbox" or "radio":
+                properties.Kind = ContentControlKind.CheckBox;
+                properties.IsChecked = element.GetAttribute("checked", null) is not null;
+                if (type == "radio")
+                {
+                    properties.RadioGroup = properties.Tag ?? "radio";
+                    properties.Tag = element.GetAttribute("value", null) ?? "on";
+                }
+
+                lines.Add("\u2002\u2002");
+                break;
+            case "select":
+                properties.Kind = ContentControlKind.DropDownList;
+                List<HtmlElement> options = [.. element.Descendants().OfType<HtmlElement>().Where(e => e.IsHtml("option"))];
+                properties.Items = [.. options.Select(OptionText)];
+                HtmlElement? selected = options.FirstOrDefault(o => o.GetAttribute("selected", null) is not null) ?? options.FirstOrDefault();
+                string shown = selected is null ? string.Empty : OptionText(selected);
+                int width = Math.Max(4, properties.Items.Count > 0 ? properties.Items.Max(i => i.Length) + 2 : 4);
+                lines.Add(shown.Length >= width ? shown : shown + new string('\u00A0', width - shown.Length));
+                break;
+            case "textarea":
+                properties.Kind = ContentControlKind.RichText;
+                int cols = int.TryParse(element.GetAttribute("cols", null), out int c) && c > 0 ? Math.Min(c, 200) : 20;
+                int rows = int.TryParse(element.GetAttribute("rows", null), out int r) && r > 0 ? Math.Min(r, 100) : 2;
+                lines.AddRange(TextOf(element).Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n'));
+                while (lines.Count < rows)
+                {
+                    lines.Add(string.Empty);
+                }
+
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    lines[i] = lines[i].Length >= cols ? lines[i] : lines[i] + new string('\u00A0', cols - lines[i].Length);
+                }
+
+                break;
+            default:
+                properties.Kind = type == "date" ? ContentControlKind.Date : ContentControlKind.PlainText;
+                string value = type == "password" ? string.Empty : element.GetAttribute("value", null) ?? string.Empty;
+                int size = int.TryParse(element.GetAttribute("size", null), out int n) && n > 0 ? Math.Min(n, 200) : 20;
+                lines.Add(value.Length >= size ? value : value + new string('\u00A0', size - value.Length));
+                break;
+        }
+
+        properties.ShowingPlaceholder = lines.All(l => l.Trim('\u00A0', '\u2002', ' ').Length == 0) && type is not ("checkbox" or "radio");
+        RunFormat format = RunFormatOf(style);
+        for (int i = 0; i < lines.Count; i++)
+        {
+            if (i > 0)
+            {
+                control.Inlines.Add(new Break(document, BreakKind.Line));
+            }
+
+            Run run = new(document, lines[i].Length == 0 ? "\u00A0" : lines[i]);
+            run.Format.CopyRaw(format);
+            control.Inlines.Add(run);
+        }
+
+        Target(flow, frame, currentLink).Add(control);
+        flow.AtLineStart = false;
+        return true;
+
+        static string OptionText(HtmlElement option) => (option.GetAttribute("label", null) ?? TextOf(option)).Trim();
+
+        static string TextOf(HtmlElement e) => string.Concat(e.Descendants().OfType<HtmlText>().Select(t => t.Data));
+    }
+
     /// <summary>Text with CSS white-space rules: collapsed (normal, nowrap), kept with line breaks (pre, pre-wrap), or pre-line.</summary>
     private void AddText(string data, HtmlStyle style, Flow flow, Frame frame)
     {
@@ -330,7 +424,7 @@ internal sealed partial class HtmlReader
     }
 
     /// <summary>A picture's size in points at 96 pixels an inch, from its header; 100 by 100 when Egami cannot tell.</summary>
-    private static (double Width, double Height) IntrinsicSize(byte[] bytes)
+    internal static (double Width, double Height) IntrinsicSize(ReadOnlyMemory<byte> bytes)
     {
         try
         {

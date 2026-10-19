@@ -7,7 +7,7 @@ namespace Egap.Pdf;
 /// of the field tree. A document without one has no fields. Fields are read leniently: loops, entries that are not
 /// dictionaries and trees deeper than 64 levels are skipped, as pdf.js and qpdf skip them.
 /// </summary>
-public sealed class PdfForm : IReadOnlyList<PdfField>
+public sealed partial class PdfForm : IReadOnlyList<PdfField>
 {
     /// <summary>How deep the field tree is followed.</summary>
     internal const int MaxDepth = 64;

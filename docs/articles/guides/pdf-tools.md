@@ -24,14 +24,35 @@ Stamps are page numbers, headers and footers, Bates numbers, watermarks, text, i
 pagination artifacts, so a viewer or a later pass can tell them from the content. `PdfImpose` places pages onto sheets:
 N-up, booklets, posters, grids and fit to a page size.
 
+Text stamps fill placeholders per page: `{page}`, `{total-pages}` (or `{pages}`), `{label}`, `{date}`, `{time}`, `{title}`
+and `{file}`, with an optional format such as `{page:000}` or `{date:yyyy-MM-dd}`. `PdfPlaceholders.Fill` fills the same
+names in your own text.
+
 ```csharp
 using Egap.Pdf;
 
 using PdfDocument contract = PdfDocument.Open("contract.pdf");
-contract.Stamp(PdfStamp.Text("Page {page} of {pages}") with { Anchor = StampAnchor.BottomCenter, Offset = new(0, 24) });
+contract.Stamp(PdfStamp.Text("Page {page} of {total-pages}") with { Anchor = StampAnchor.BottomCenter, Offset = new(0, 24) });
 contract.Stamp(PdfStamp.Bates(new PdfBatesSequence("ACME-", digits: 6)) with { Anchor = StampAnchor.BottomRight });
 using PdfDocument handout = PdfImpose.NUp(contract, new NUpOptions { Columns = 2, Rows = 2 });
 handout.Save("handout.pdf");
+```
+
+## Page ranges and units
+
+`PdfPageRange.Parse` reads pages written as text: numbers from 1, `z` for the last page, `r2` for the second from the end,
+ranges such as `5-10` (or `10-5`, backwards), `:odd` or `:even` after a part, and `x` before a part to leave its pages out.
+`Length` holds a size made from points, millimetres, centimetres or inches. It turns into points by itself, so it goes
+wherever a size in points is asked for.
+
+```csharp
+using Egap.Pdf;
+
+using PdfDocument report = PdfDocument.Open("report.pdf");
+using PdfDocument summary = report.ExtractPages(PdfPageRange.Parse("1-3,z"));
+report.Stamp(PdfStamp.Text("Draft") with { PageRange = PdfPageRange.Parse("2-z"), Offset = new(0, Length.Mm(10)) });
+using PdfDocument handout = PdfImpose.NUp(report, new NUpOptions { Margin = Length.Mm(10), Gutter = Length.Mm(4) });
+IReadOnlyList<int> evenPages = PdfPageRange.Parse("1-z:even").Resolve(report.Pages.Count);   // 0-based indices
 ```
 
 ## Compare

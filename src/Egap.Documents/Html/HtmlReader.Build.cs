@@ -294,8 +294,10 @@ internal sealed partial class HtmlReader
             case "img":
                 Image(element, style, flow, frame);
                 return;
+            case "input" or "select" or "textarea" when FormControl(element, style, flow, frame):
+                return;
             case "input" or "select" or "button" or "textarea" or "iframe" or "object" or "embed" or "video" or "audio" or "canvas":
-                if (element.LocalName is "textarea" or "button")
+                if (element.LocalName is "button")
                 {
                     break;
                 }

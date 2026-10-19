@@ -2,6 +2,8 @@
   href: getting-started.md
 - name: Packages
   href: packages.md
+- name: Cookbook
+  href: cookbook.md
 - name: Guides
   items:
     - name: Editing PDF files

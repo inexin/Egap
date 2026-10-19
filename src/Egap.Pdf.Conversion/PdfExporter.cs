@@ -34,6 +34,11 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
                 page.Draw(canvas, tagger?.ObserverFor(canvas));
             }
 
+            if (options.FormFields)
+            {
+                FormFieldExport.Add(layout, pdf, pageOf);
+            }
+
             WriteMetadata(language);
             Dictionary<string, PdfDestination> bookmarks = Bookmarks();
             if (options.NamedDestinations)

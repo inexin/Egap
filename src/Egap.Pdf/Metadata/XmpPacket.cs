@@ -247,6 +247,50 @@ internal sealed class XmpPacket
         }
     }
 
+    /// <summary>
+    /// Declares a PDF/A extension schema with several properties (ISO 19005-1 6.7.8), each as name, value type, category and
+    /// description; nothing changes when a schema for the namespace is declared already.
+    /// </summary>
+    public void DeclareExtension(XNamespace ns, string prefix, string schemaName, IEnumerable<(string Name, string ValueType, string Category, string Description)> properties)
+    {
+        XElement target = Descriptions().FirstOrDefault() ?? NewDescription();
+        foreach ((string p, XNamespace n) in (ReadOnlySpan<(string, XNamespace)>)[("pdfaExtension", Extension), ("pdfaSchema", Schema), ("pdfaProperty", Property)])
+        {
+            if (target.GetPrefixOfNamespace(n) is null)
+            {
+                target.SetAttributeValue(XNamespace.Xmlns + p, n.NamespaceName);
+            }
+        }
+
+        XElement? schemas = Document.Descendants(Extension + "schemas").FirstOrDefault();
+        if (schemas is null)
+        {
+            schemas = new XElement(Extension + "schemas", new XElement(Rdf + "Bag"));
+            target.Add(schemas);
+        }
+
+        XElement bag = schemas.Element(Rdf + "Bag") ?? new XElement(Rdf + "Bag");
+        if (bag.Parent is null)
+        {
+            schemas.Add(bag);
+        }
+
+        if (bag.Descendants(Schema + "namespaceURI").Any(u => u.Value.Trim() == ns.NamespaceName))
+        {
+            return;
+        }
+
+        bag.Add(new XElement(Rdf + "li", new XAttribute(Rdf + "parseType", "Resource"),
+            new XElement(Schema + "schema", schemaName),
+            new XElement(Schema + "namespaceURI", ns.NamespaceName),
+            new XElement(Schema + "prefix", prefix),
+            new XElement(Schema + "property", new XElement(Rdf + "Seq", properties.Select(p => new XElement(Rdf + "li", new XAttribute(Rdf + "parseType", "Resource"),
+                new XElement(Property + "name", p.Name),
+                new XElement(Property + "valueType", p.ValueType),
+                new XElement(Property + "category", p.Category),
+                new XElement(Property + "description", p.Description)))))));
+    }
+
     /// <summary>Sets a language alternative with one <c>x-default</c> item, or removes it.</summary>
     public void SetAlternative(XName name, string? value)
     {
@@ -259,6 +303,16 @@ internal sealed class XmpPacket
     {
         value = Clean(value);
         Set(name, value is null ? null : new XElement(name, new XElement(Rdf + "Seq", new XElement(Rdf + "li", value))));
+    }
+
+    /// <summary>Binds a prefix to a namespace on the first description, so properties in it are written with that prefix.</summary>
+    public void DeclarePrefix(XNamespace ns, string prefix)
+    {
+        XElement target = Descriptions().FirstOrDefault() ?? NewDescription();
+        if (target.GetPrefixOfNamespace(ns) is null)
+        {
+            target.SetAttributeValue(XNamespace.Xmlns + prefix, ns.NamespaceName);
+        }
     }
 
     /// <summary>Replaces a property in every description with <paramref name="element"/>, put in the first description.</summary>

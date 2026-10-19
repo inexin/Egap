@@ -8,6 +8,7 @@ which is managed too: no native binaries, no P/Invoke.
 - Content streams, text extraction in reading order, image extraction and replacement, drawing through an Egami canvas.
 - Rendering to rasters or onto any Egami canvas.
 - Signatures (PAdES B-B to B-LTA) and verification, true redaction, PDF/A, tagged PDF, linearization, an OCR text layer.
+- Find, redact and replace text by phrase or regular expression; Factur-X and ZUGFeRD e-invoices.
 - Tools: optimize, N-up and booklets, stamps and Bates numbers, compare, blank page removal and deskew.
 
 PDF to DOCX, HTML or Markdown, and documents to tagged PDF, are in

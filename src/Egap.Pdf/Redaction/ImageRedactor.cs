@@ -19,6 +19,12 @@ internal static class ImageRedactor
             return null;
         }
 
+        // An image bigger than a decoded stream may be cannot be decoded to redact its pixels; the caller removes it whole.
+        if ((long)width * height * 4 > document.Options.MaxDecodedStreamBytes)
+        {
+            throw new PdfException($"The {width} by {height} image is too large to redact pixel by pixel.");
+        }
+
         int?[] cover = new int?[width * height];
         bool any = false;
         for (int a = 0; a < areas.Count; a++)

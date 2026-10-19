@@ -45,6 +45,9 @@ public static class PdfAConverter
         }
 
         options ??= PdfAConvertOptions.Default;
+
+        // Font subsets drawing made are written first, so their programs and maps are there to check.
+        document.WrittenResources.Finish();
         List<PdfAIssue> found = PdfA.PdfARules.Run(document, conformance, options, fixing: false, allowLossy: true);
         if (found.Any(i => !i.Fixable))
         {

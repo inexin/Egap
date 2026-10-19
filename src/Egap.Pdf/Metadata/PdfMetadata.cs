@@ -126,6 +126,18 @@ public sealed class PdfMetadata
         Write(packet);
     }
 
+    /// <summary>Changes the XMP packet, made from the Info values first when the document has none.</summary>
+    internal void EditXmp(Action<XmpPacket> edit)
+    {
+        CreateXmp();
+        XmpPacket packet = Xmp() ?? throw new InvalidOperationException("The document's XMP packet cannot be read.");
+        edit(packet);
+        Write(packet);
+    }
+
+    /// <summary>The XMP packet, or null when there is none that parses.</summary>
+    internal XmpPacket? ReadXmp() => Xmp();
+
     /// <summary>
     /// Sets the modification date in the stores the document has (and <c>xmp:MetadataDate</c>), as a save with changes
     /// does. A store the document lacks is not created, so a removed Info dictionary stays removed.

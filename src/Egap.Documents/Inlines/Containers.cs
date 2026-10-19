@@ -156,6 +156,8 @@ public sealed class ContentControlProperties
     private bool lockControl;
     private bool showingPlaceholder;
     private bool? isChecked;
+    private IReadOnlyList<string>? items;
+    private string? radioGroup;
 
     internal ContentControlProperties(Node owner)
     {
@@ -211,8 +213,28 @@ public sealed class ContentControlProperties
         set => Set(ref isChecked, value);
     }
 
+    /// <summary>For a drop-down list or combo box, the items to choose from, in order; otherwise null.</summary>
+    public IReadOnlyList<string>? Items
+    {
+        get => items;
+        set => Set(ref items, value is null ? null : [.. value]);
+    }
+
+    /// <summary>
+    /// For a check box that is one of a set of options (an HTML radio button), the set's name: check boxes with the same
+    /// group are exclusive, and each one's <see cref="Tag"/> is the value it stands for. Null for an ordinary check box.
+    /// Word has no such control, so DOCX keeps them as check boxes.
+    /// </summary>
+    public string? RadioGroup
+    {
+        get => radioGroup;
+        set => Set(ref radioGroup, value);
+    }
+
     internal void CopyFrom(ContentControlProperties source)
     {
+        items = source.items;
+        radioGroup = source.radioGroup;
         kind = source.kind;
         tag = source.tag;
         title = source.title;

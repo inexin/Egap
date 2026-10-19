@@ -40,6 +40,14 @@ public sealed record PdfExportOptions
     /// <summary>Whether bookmarks become named destinations, so links from outside can open the PDF at them; on by default.</summary>
     public bool NamedDestinations { get; init; } = true;
 
+    /// <summary>
+    /// Whether form controls become PDF form fields at their laid-out place: HTML inputs, check boxes, radio buttons,
+    /// selects and text areas, and DOCX plain text, date, drop-down list, combo box and check box content controls. Each
+    /// field is named by the control's tag (an HTML name) and starts with its value; the control's own text is taken out of
+    /// the page. Off by default.
+    /// </summary>
+    public bool FormFields { get; init; }
+
     /// <summary>The PDF/A part and level the file is written to, with Phase 5's writer rules; none by default.</summary>
     public PdfAConformance Conformance { get; init; }
 

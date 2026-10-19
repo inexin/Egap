@@ -170,4 +170,11 @@ public enum PdfWarningCode
     /// <see cref="PdfSaveOptions.AllowInvalidatingSignatures"/> or <see cref="PdfSignOptions.AllowInvalidatingSignatures"/> lets it go ahead.
     /// </summary>
     SignatureInvalidated,
+
+    /// <summary>
+    /// A match of <see cref="PdfDocument.ReplaceText(string, string, PdfFindOptions?, PdfReplaceOptions?)"/> was left as it
+    /// was: its font lacks a glyph the new text needs, or its text cannot be written in that font, and no fallback font was
+    /// given; or the match is a marked-content span's replacement text (<c>/ActualText</c>), not glyphs.
+    /// </summary>
+    TextNotReplaced,
 }

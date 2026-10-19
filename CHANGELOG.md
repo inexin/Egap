@@ -3,7 +3,79 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Pdf 1.4.1 and Egap.Documents 1.1.1 (unreleased)
+## Egap.Pdf 1.5.0 (unreleased)
+
+### Page ranges and units
+- `PdfPageRange.Parse` reads page choices such as `"1,3,5-10,z"`, with `r` counting from the end, `:odd` and `:even`, and
+  `x` to leave pages out. `ExtractPages` and `PdfStamp.PageRange` take one; `Resolve` turns one into page indices.
+- `Length` holds a size in points made from millimetres, centimetres, inches or points (`Length.Mm(20)`, `Length.Parse("2cm")`).
+  It converts to and from points without a cast, so it works wherever a size in points is asked for.
+
+### Placeholders
+- One set of placeholder names for page furniture: `{page}`, `{total-pages}`, `{label}`, `{date}`, `{time}`, `{title}` and
+  `{file}`, each with an optional format. Stamps take them, `{pages}` still works, and `{{` writes a brace.
+  `PdfPlaceholders.Fill` fills them in any text.
+
+### Find text
+- `FindText` on a document or a page finds a phrase or a regular expression, with case and whole-word options and a page
+  range. Each match gives its page, text, glyphs and a quadrilateral per line; phrases are found across line breaks within
+  a paragraph.
+
+### Redact and replace text
+- `RedactText` redacts every match of a phrase or regular expression for real in one call; `MarkRedactions` adds the marks
+  without applying them. Redaction marks already in the document are left alone.
+- `ReplaceText` replaces a phrase or a regular expression (with `$1` groups) in the match's own font, size, colour and
+  rendering mode. A match whose font lacks a glyph for the new text is left as it was with a `TextNotReplaced` warning, or
+  written in a fallback font when one is given.
+
+### Form fields in code
+- `PdfForm` adds text fields, check boxes, radio groups, combo boxes, list boxes, push buttons and signature fields, with
+  options for value, length, flags, tooltip, colours and border, and appearances drawn for each. Dotted names make parent
+  fields.
+
+### E-invoices
+- `PdfInvoice.Embed` makes a Factur-X (ZUGFeRD 2.1 and later) e-invoice: the XML attached as `factur-x.xml` or
+  `xrechnung.xml` with the relationship its profile asks for, the document converted to PDF/A-3, and the Factur-X extension
+  schema in the XMP. `PdfInvoice.Read` reads Factur-X and ZUGFeRD 1.0 to 2.3 invoices back.
+- `Attachments.Add` takes a `PdfAttachmentRelationship` and lists the file among the document's associated files.
+
+### Docs
+- A cookbook of short recipes (merge, page numbers, signing, redacting a phrase, an HTML invoice as Factur-X PDF/A-3), and a
+  PKCS#11 sample in the signatures guide for keys on smart cards and HSMs.
+
+### Fixes
+- Redaction, PDF/A conversion and text search on a document that was drawn on since it was last saved first write the font
+  subsets the drawing used, so glyph positions and fonts are right.
+- Redaction removes a covered image whole when it cannot be decoded or is too large to decode, instead of throwing or
+  taking minutes.
+- `PdfInvoice.Read` skips an attachment whose stream cannot be decoded.
+
+### Images and page files
+- `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
+  GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.
+- `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
+  `"page-{page:00}.png"`.
+
+## Egap.Documents 1.2.0 (unreleased)
+
+### Form controls
+- HTML inputs, check boxes, radio buttons, selects and text areas are read as inline content controls holding their values,
+  instead of being dropped.
+- `ContentControlProperties.Items` holds a drop-down list's or combo box's items, read from and written to DOCX;
+  `RadioGroup` ties check boxes into a set of options.
+
+## Egap.Pdf.Conversion 1.2.0 (unreleased)
+
+### Form fields
+- `PdfExportOptions.FormFields` turns HTML form controls and DOCX content controls (plain text, date, drop-down list, combo
+  box, check box) into PDF form fields at their laid-out place, named by the control's name or tag, with its value.
+
+### One-line conversions
+- `PdfConvert` converts HTML, Markdown, DOCX and image files to PDF in one call, with the page size, margins, PDF/A level and
+  tagging as options. HTML and Markdown read their images from their own folder only.
+- `PdfStamp.Html` makes a stamp of laid-out HTML, such as a seal or a letterhead.
+
+## Egap.Pdf 1.4.1 and Egap.Documents 1.1.1 (2026-10-18)
 
 - The bundled substitute fonts (Liberation Sans, Serif and Mono, Carlito, Caladea) now come from Egami's
   [Egami.Fonts.Substitutes](https://www.nuget.org/packages/Egami.Fonts.Substitutes) 1.0.0 instead of Egap.Fonts. The fonts are
@@ -13,6 +85,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   Egap.Pdf or Egap.Documents needs the same change, since they no longer bring it in.
 
 ### Fixes
+- Markdown images that an image resolver supplies take their own size, at 96 pixels an inch, instead of none, so they show
+  when the document is laid out.
 - Page tree repair never takes the catalog for a page, and finds pages by scanning only where it would also accept them
   as kids of a tree. A file whose catalog named itself as the page tree no longer breaks a linearized save, and pages of a
   damaged file no longer go missing after an extract, merge and rewrite.

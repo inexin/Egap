@@ -103,7 +103,7 @@ public sealed class PdfAnnotationCollection : IReadOnlyList<PdfAnnotation>
 
     /// <summary>
     /// Adds a file attachment annotation: the file is embedded with its size, MD5 checksum, MIME type and date, as
-    /// <see cref="PdfAttachmentCollection.Add"/> embeds one, and shown as an icon in a rectangle. The document's
+    /// <see cref="PdfAttachmentCollection.Add(string, ReadOnlySpan{byte}, string?, string?, DateTimeOffset?)"/> embeds one, and shown as an icon in a rectangle. The document's
     /// <c>/EmbeddedFiles</c> tree is not changed.
     /// </summary>
     public PdfFileAttachmentAnnotation AddFileAttachment(PdfRectangle rectangle, string fileName, ReadOnlySpan<byte> bytes, string? mimeType = null, string? description = null, DateTimeOffset? modified = null)
@@ -240,6 +240,12 @@ public sealed class PdfAnnotationCollection : IReadOnlyList<PdfAnnotation>
     }
 
     /// <summary>Stores an annotation dictionary as an indirect object, points it at the page and appends it to <c>/Annots</c>.</summary>
+    /// <summary>Stores a widget dictionary (often merged with its field) on this page and returns its reference.</summary>
+    internal PdfReference AddWidget(PdfDictionary widget)
+    {
+        return Store(widget).Reference!;
+    }
+
     private PdfAnnotation Store(PdfDictionary dictionary)
     {
         page = Document.Pages.EnsureTree(page);

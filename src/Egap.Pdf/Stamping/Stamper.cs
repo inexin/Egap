@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Numerics;
-using System.Text.RegularExpressions;
 
 using Egami.Drawing;
 using Egami.Fonts;
@@ -62,6 +61,18 @@ internal static partial class Stamper
 
         int count = document.Pages.Count;
         HashSet<int>? chosen = stamp.Pages is null ? null : [.. stamp.Pages];
+        if (stamp.PageRange is not null)
+        {
+            HashSet<int> ranged = [.. stamp.PageRange.Resolve(count).Select(i => i + 1)];
+            if (chosen is null)
+            {
+                chosen = ranged;
+            }
+            else
+            {
+                chosen.IntersectWith(ranged);
+            }
+        }
         CultureInfo culture = stamp.Culture ?? CultureInfo.InvariantCulture;
         PdfReference? helvetica = null, state = null, layer = null;
         PdfFormXObject? shared = null;
@@ -187,25 +198,18 @@ internal static partial class Stamper
     /// <summary>The template with its fields filled for one page; fields it does not know stay as they are.</summary>
     internal static string Fill(string template, int index, int count, PdfDocument document, string title, string file, DateTimeOffset now, string? bates, CultureInfo culture)
     {
-        return Field().Replace(template, m =>
+        return PdfPlaceholders.Fill(template, new PdfPlaceholderValues
         {
-            string format = m.Groups[2].Success ? m.Groups[2].Value : string.Empty;
-            return m.Groups[1].Value switch
-            {
-                "page" => (index + 1).ToString(format, culture),
-                "pages" => count.ToString(format, culture),
-                "label" => document.Pages.GetLabel(index),
-                "date" => now.ToString(format.Length > 0 ? format : "d", culture),
-                "title" => title,
-                "file" => file,
-                "bates" when bates is not null => bates,
-                _ => m.Value,
-            };
+            Page = index + 1,
+            TotalPages = count,
+            Label = document.Pages.GetLabel(index),
+            Now = now,
+            Title = title,
+            File = file,
+            Culture = culture,
+            Bates = bates,
         });
     }
-
-    [GeneratedRegex(@"\{(page|pages|label|date|title|file|bates)(?::([^}]*))?\}")]
-    private static partial Regex Field();
 
     private static PdfReference Helvetica(PdfDocument document)
     {

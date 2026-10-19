@@ -81,7 +81,19 @@ internal sealed class ContentRedactor(PdfDocument document, IReadOnlyList<PdfRec
                     continue;
                 }
 
-                if (options.Images == PdfRedactImages.Pixels && ImageRedactor.Redact(document, image.Image, image.Matrix, areas, fills) is PdfStream redactedImage && resources is not null)
+                PdfStream? redactedImage;
+                try
+                {
+                    redactedImage = options.Images == PdfRedactImages.Pixels ? ImageRedactor.Redact(document, image.Image, image.Matrix, areas, fills) : null;
+                }
+                catch (PdfException e) when (e is not PdfLimitException)
+                {
+                    // A covered image that cannot be decoded cannot have its pixels redacted, so it goes whole.
+                    counters.Images++;
+                    continue;
+                }
+
+                if (redactedImage is not null && resources is not null)
                 {
                     // Inline images too become XObjects of their own: an inline image cannot be written back in place.
                     counters.Images++;
