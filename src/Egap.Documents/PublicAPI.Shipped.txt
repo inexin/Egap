@@ -328,6 +328,7 @@ Egap.Documents.DocumentBuilder.EndGroup() -> Egap.Documents.ContentControl!
 Egap.Documents.DocumentBuilder.EndRow() -> Egap.Documents.Row!
 Egap.Documents.DocumentBuilder.EndTable() -> Egap.Documents.Table!
 Egap.Documents.DocumentBuilder.Font.get -> Egap.Documents.RunFormat!
+Egap.Documents.DocumentBuilder.InsertBarcode(Egami.Barcodes.Barcode! barcode, double width, double height, Egami.Barcodes.BarcodeDrawOptions? options = null) -> Egap.Documents.Picture!
 Egap.Documents.DocumentBuilder.InsertBreak(Egap.Documents.BreakKind kind) -> void
 Egap.Documents.DocumentBuilder.InsertCell() -> Egap.Documents.Cell!
 Egap.Documents.DocumentBuilder.InsertField(string! code, string! result = "") -> Egap.Documents.Field!
@@ -1284,6 +1285,8 @@ Egap.Documents.Picture.Crop.get -> (double Left, double Top, double Right, doubl
 Egap.Documents.Picture.Crop.set -> void
 Egap.Documents.Picture.Description.get -> string?
 Egap.Documents.Picture.Description.set -> void
+Egap.Documents.Picture.Fallback.get -> Egap.Documents.ImageData?
+Egap.Documents.Picture.Fallback.set -> void
 Egap.Documents.Picture.Floating.get -> Egap.Documents.FloatingPlacement?
 Egap.Documents.Picture.Floating.set -> void
 Egap.Documents.Picture.Height.get -> double

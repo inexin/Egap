@@ -1,4 +1,1 @@
 #nullable enable
-Egap.Documents.DocumentBuilder.InsertBarcode(Egami.Barcodes.Barcode! barcode, double width, double height, Egami.Barcodes.BarcodeDrawOptions? options = null) -> Egap.Documents.Picture!
-Egap.Documents.Picture.Fallback.get -> Egap.Documents.ImageData?
-Egap.Documents.Picture.Fallback.set -> void
