@@ -1,4 +1,27 @@
 #nullable enable
+*REMOVED*Egap.Documents.HtmlFormat
+*REMOVED*Egap.Documents.HtmlLoadOptions
+*REMOVED*Egap.Documents.HtmlLoadOptions.BaseUri.get -> System.Uri?
+*REMOVED*Egap.Documents.HtmlLoadOptions.BaseUri.init -> void
+*REMOVED*Egap.Documents.HtmlLoadOptions.Encoding.get -> string?
+*REMOVED*Egap.Documents.HtmlLoadOptions.Encoding.init -> void
+*REMOVED*Egap.Documents.HtmlLoadOptions.HtmlLoadOptions() -> void
+*REMOVED*Egap.Documents.HtmlLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
+*REMOVED*Egap.Documents.HtmlLoadOptions.Limits.init -> void
+*REMOVED*Egap.Documents.HtmlLoadOptions.Media.get -> string!
+*REMOVED*Egap.Documents.HtmlLoadOptions.Media.init -> void
+*REMOVED*Egap.Documents.HtmlLoadOptions.ResourceResolver.get -> System.Func<System.Uri!, byte[]?>?
+*REMOVED*Egap.Documents.HtmlLoadOptions.ResourceResolver.init -> void
+*REMOVED*Egap.Documents.HtmlLoadOptions.UserStyleSheets.get -> System.Collections.Generic.IReadOnlyList<string!>!
+*REMOVED*Egap.Documents.HtmlLoadOptions.UserStyleSheets.init -> void
+*REMOVED*Egap.Documents.HtmlSaveOptions
+*REMOVED*Egap.Documents.HtmlSaveOptions.EmbedImages.get -> bool
+*REMOVED*Egap.Documents.HtmlSaveOptions.EmbedImages.init -> void
+*REMOVED*Egap.Documents.HtmlSaveOptions.HtmlSaveOptions() -> void
+*REMOVED*Egap.Documents.HtmlSaveOptions.ImageWriter.get -> System.Func<Egap.Documents.Picture!, string?>?
+*REMOVED*Egap.Documents.HtmlSaveOptions.ImageWriter.init -> void
+*REMOVED*Egap.Documents.HtmlSaveOptions.WritePageSetup.get -> bool
+*REMOVED*Egap.Documents.HtmlSaveOptions.WritePageSetup.init -> void
 *REMOVED*Egap.Documents.MarkdownExtensions
 *REMOVED*Egap.Documents.MarkdownExtensions.Autolinks = 8 -> Egap.Documents.MarkdownExtensions
 *REMOVED*Egap.Documents.MarkdownExtensions.Footnotes = 16 -> Egap.Documents.MarkdownExtensions
@@ -60,6 +83,17 @@
 *REMOVED*override Egap.Documents.MarkdownImage.Equals(object? obj) -> bool
 *REMOVED*override Egap.Documents.MarkdownImage.GetHashCode() -> int
 *REMOVED*override Egap.Documents.MarkdownImage.ToString() -> string!
+*REMOVED*static Egap.Documents.HtmlFormat.Load(string! path, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+*REMOVED*static Egap.Documents.HtmlFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+*REMOVED*static Egap.Documents.HtmlFormat.Load(System.IO.Stream! stream, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+*REMOVED*static Egap.Documents.HtmlFormat.Load(System.IO.Stream! stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+*REMOVED*static Egap.Documents.HtmlFormat.Load(System.ReadOnlySpan<byte> html, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+*REMOVED*static Egap.Documents.HtmlFormat.Parse(string! html, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+*REMOVED*static Egap.Documents.HtmlFormat.Parse(string! html, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+*REMOVED*static Egap.Documents.HtmlFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+*REMOVED*static Egap.Documents.HtmlFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+*REMOVED*static Egap.Documents.HtmlFormat.ToHtml(Egap.Documents.Document! document, Egap.Documents.HtmlSaveOptions? options = null) -> string!
+*REMOVED*static Egap.Documents.HtmlFormat.ToHtml(Egap.Documents.Document! document, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlSaveOptions? options = null) -> string!
 *REMOVED*static Egap.Documents.MarkdownFormat.Load(string! path, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
 *REMOVED*static Egap.Documents.MarkdownFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
 *REMOVED*static Egap.Documents.MarkdownFormat.Load(System.IO.Stream! stream, Egap.Documents.MarkdownLoadOptions? options = null) -> Egap.Documents.Document!
@@ -126,8 +160,6 @@ Egap.Documents.DocumentFormatKind.Unknown = 0 -> Egap.Documents.DocumentFormatKi
 Egap.Documents.DocxFormat.extension(Egap.Documents.Document!)
 Egap.Documents.DocxFormat.extension(Egap.Documents.Document!).SaveAsDocx(string! path, Egap.Documents.DocxSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 Egap.Documents.DocxFormat.extension(Egap.Documents.Document!).SaveAsDocx(System.IO.Stream! stream, Egap.Documents.DocxSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
-Egap.Documents.Pdf.HtmlStamp
-Egap.Documents.Pdf.HtmlStamp.extension(Egap.Pdf.PdfStamp!)
 Egap.Documents.Pdf.ILayoutRegionDetector
 Egap.Documents.Pdf.ILayoutRegionDetector.Detect(Egap.Pdf.PdfPage! page) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Pdf.LayoutRegionHint!>!
 Egap.Documents.Pdf.IReadingOrderDetector
@@ -506,9 +538,6 @@ static Egap.Documents.DocxFormat.LoadDocx(System.IO.Stream! stream, Egap.Documen
 static Egap.Documents.DocxFormat.LoadDocx(System.IO.Stream! stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.DocxLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.DocxFormat.SaveAsDocx(this Egap.Documents.Document! document, string! path, Egap.Documents.DocxSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 static Egap.Documents.DocxFormat.SaveAsDocx(this Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.DocxSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
-static Egap.Documents.HtmlFormat.Register() -> void
-static Egap.Documents.Pdf.HtmlStamp.extension(Egap.Pdf.PdfStamp!).Html(string! html, Egap.Pdf.Length width, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> Egap.Pdf.PdfStamp!
-static Egap.Documents.Pdf.HtmlStamp.Html(string! html, Egap.Pdf.Length width, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> Egap.Pdf.PdfStamp!
 static Egap.Documents.Pdf.LayoutRegionHint.operator !=(Egap.Documents.Pdf.LayoutRegionHint? left, Egap.Documents.Pdf.LayoutRegionHint? right) -> bool
 static Egap.Documents.Pdf.LayoutRegionHint.operator ==(Egap.Documents.Pdf.LayoutRegionHint? left, Egap.Documents.Pdf.LayoutRegionHint? right) -> bool
 static Egap.Documents.Pdf.LayoutThresholds.Default.get -> Egap.Documents.Pdf.LayoutThresholds!
@@ -529,8 +558,6 @@ static Egap.Documents.Pdf.PdfAutoTagReport.operator !=(Egap.Documents.Pdf.PdfAut
 static Egap.Documents.Pdf.PdfAutoTagReport.operator ==(Egap.Documents.Pdf.PdfAutoTagReport? left, Egap.Documents.Pdf.PdfAutoTagReport? right) -> bool
 static Egap.Documents.Pdf.PdfConvert.FromFile(string! inputPath, string! outputPath, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> void
 static Egap.Documents.Pdf.PdfConvert.FromFile(string! path, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> Egap.Pdf.PdfDocument!
-static Egap.Documents.Pdf.PdfConvert.FromHtml(string! html, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> Egap.Pdf.PdfDocument!
-static Egap.Documents.Pdf.PdfConvert.FromHtml(string! html, string! outputPath, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> void
 static Egap.Documents.Pdf.PdfConvert.FromImages(System.Collections.Generic.IEnumerable<string!>! paths, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> Egap.Pdf.PdfDocument!
 static Egap.Documents.Pdf.PdfConvertOptions.Default.get -> Egap.Documents.Pdf.PdfConvertOptions!
 static Egap.Documents.Pdf.PdfConvertOptions.operator !=(Egap.Documents.Pdf.PdfConvertOptions? left, Egap.Documents.Pdf.PdfConvertOptions? right) -> bool

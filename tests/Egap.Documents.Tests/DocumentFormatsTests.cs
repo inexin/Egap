@@ -11,11 +11,6 @@ public sealed class DocumentFormatsTests : IDisposable
 {
     private readonly string folder = Directory.CreateTempSubdirectory("egap-formats-").FullName;
 
-    public DocumentFormatsTests()
-    {
-        HtmlFormat.Register();
-    }
-
     public void Dispose()
     {
         Directory.Delete(folder, recursive: true);
@@ -32,7 +27,6 @@ public sealed class DocumentFormatsTests : IDisposable
 
     [Theory]
     [InlineData("a.docx")]
-    [InlineData("a.html")]
     [InlineData("a.txt")]
     [InlineData("a.pdf")]
     public void SaveByExtensionAndLoadBack(string name)
@@ -58,9 +52,12 @@ public sealed class DocumentFormatsTests : IDisposable
         using MemoryStream markdown = new(Encoding.UTF8.GetBytes("# From Markdown\n\n<b>inline html</b> stays text"));
 
         Assert.Contains("Hello, world", Document.Load(docx).GetText(), StringComparison.Ordinal);
-        Assert.Contains("From HTML", Document.Load(html).GetText(), StringComparison.Ordinal);
 
-        // The core alone does not read Markdown: the error names the add-on and the call that registers it.
+        // The core alone reads neither HTML nor Markdown: the error names the add-on and the call that registers it.
+        NotSupportedException noHtml = Assert.Throws<NotSupportedException>(() => Document.Load(html));
+        Assert.Contains("Egap.Documents.Html", noHtml.Message, StringComparison.Ordinal);
+        Assert.Contains("HtmlFormat.Register()", noHtml.Message, StringComparison.Ordinal);
+        Assert.Throws<NotSupportedException>(() => Sample().Save(Path.Combine(folder, "a.html")));
         NotSupportedException missing = Assert.Throws<NotSupportedException>(() => Document.Load(markdown));
         Assert.Contains("Egap.Documents.Markdown", missing.Message, StringComparison.Ordinal);
         Assert.Contains("MarkdownFormat.Register()", missing.Message, StringComparison.Ordinal);

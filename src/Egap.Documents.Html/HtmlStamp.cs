@@ -36,7 +36,7 @@ public static class HtmlStamp
                 throw new ArgumentOutOfRangeException(nameof(width), width, "The width must be positive.");
             }
 
-            HtmlLoadOptions load = PdfConvert.HtmlOptions(options?.BaseDirectory, ["body { margin: 0 }"]);
+            HtmlLoadOptions load = HtmlFormat.InFolder(options?.BaseDirectory, ["body { margin: 0 }"]);
             Document document = HtmlFormat.Parse(html, load);
             foreach (Section section in document.Sections)
             {

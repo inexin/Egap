@@ -54,7 +54,8 @@ public sealed partial record PageBand
 
     /// <summary>
     /// A band of HTML across the margin. When the document was HTML, the band is styled with the document's own style
-    /// sheets; images and links are read as the document's are.
+    /// sheets; images and links are read as the document's are. Applying it needs the Egap.Documents.Html package and
+    /// <c>HtmlFormat.Register()</c>; without them the conversion throws a <see cref="NotSupportedException"/> that names them.
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="html"/> is null.</exception>
     public static PageBand Html(string html)
@@ -141,7 +142,7 @@ public sealed partial record PageBand
 }
 
 /// <summary>What a band is filled from: the document's title and file, the time of the conversion, and its style sheets.</summary>
-internal sealed class PageBandContext(Document document, string? file, HtmlLoadOptions? load, string? styleSheets)
+internal sealed class PageBandContext(Document document, string? file, string? folder, string? styleSheets, Func<string, string?, Document>? readHtml = null)
 {
     private readonly PdfPlaceholderValues fixedValues = new()
     {
@@ -180,7 +181,8 @@ internal sealed class PageBandContext(Document document, string? file, HtmlLoadO
         }
 
         marked.Append(html, at, html.Length - at);
-        Document band = HtmlFormat.Parse("<!DOCTYPE html><html><head>" + styleSheets + "</head><body style='margin:0'>" + marked + "</body></html>", load);
+        // HTML comes from its add-on: without it registered, this names the package to add.
+        Document band = (readHtml ?? DocumentFormatRegistry.TextReaderFor(DocumentFormatKind.Html))("<!DOCTYPE html><html><head>" + styleSheets + "</head><body style='margin:0'>" + marked + "</body></html>", folder);
         foreach (Run run in band.Descendants<Run>().Where(r => r.Text.Contains('', StringComparison.Ordinal)).ToList())
         {
             Split(band, run);

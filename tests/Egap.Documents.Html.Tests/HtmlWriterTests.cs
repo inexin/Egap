@@ -1,6 +1,6 @@
 using Egap.Documents.Html;
 
-namespace Egap.Documents.Tests;
+namespace Egap.Documents.Html.Tests;
 
 /// <summary>The model written as HTML5 (Phase 6 Build Plan task 26), checked by reading it back.</summary>
 public class HtmlWriterTests

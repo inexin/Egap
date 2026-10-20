@@ -95,30 +95,11 @@ public sealed record PdfConvertOptions
 /// </example>
 public static partial class PdfConvert
 {
-    /// <summary>Lays out HTML and makes a PDF of it, open for more changes before it is saved.</summary>
-    /// <exception cref="ArgumentNullException"><paramref name="html"/> is null.</exception>
-    public static PdfDocument FromHtml(string html, PdfConvertOptions? options = null)
-    {
-        ArgumentNullException.ThrowIfNull(html);
-        options ??= PdfConvertOptions.Default;
-        HtmlLoadOptions load = HtmlOptions(options.BaseDirectory);
-        return ToPdf(HtmlFormat.Parse(html, load), options, new Bands(null, load, html));
-    }
-
-    /// <summary>Converts HTML to a PDF file.</summary>
-    /// <exception cref="ArgumentNullException">An argument is null.</exception>
-    public static void FromHtml(string html, string outputPath, PdfConvertOptions? options = null)
-    {
-        ArgumentNullException.ThrowIfNull(outputPath);
-        using PdfDocument pdf = FromHtml(html, options);
-        pdf.Save(outputPath, options?.Export?.Save);
-    }
-
     /// <summary>
     /// Makes a PDF of a file: DOCX (and DOTX, DOCM), HTML, Markdown and any other format <see cref="Document.Load(string)"/>
     /// reads are laid out; an image file (JPEG, PNG, TIFF, WebP, GIF and the other formats Egami reads) becomes one page per
-    /// frame. HTML and Markdown read their images from the file's own folder. Markdown needs the Egap.Documents.Markdown
-    /// package and <c>MarkdownFormat.Register()</c>.
+    /// frame. HTML and Markdown read their images from the file's own folder. HTML needs the Egap.Documents.Html package and
+    /// <c>HtmlFormat.Register()</c>, Markdown the Egap.Documents.Markdown package and <c>MarkdownFormat.Register()</c>.
     /// </summary>
     /// <exception cref="ArgumentException"><paramref name="path"/> is empty.</exception>
     /// <exception cref="DocumentException">The file is not a document or image Egap can read.</exception>
@@ -134,9 +115,10 @@ public static partial class PdfConvert
         switch (extension)
         {
             case ".HTML" or ".HTM" or ".XHTML":
-                HtmlLoadOptions load = HtmlOptions(options.BaseDirectory ?? folder);
-                document = HtmlFormat.Load(path, load);
-                bands = new Bands(path, load, options.Header?.HtmlContent is null && options.Footer?.HtmlContent is null ? null : File.ReadAllText(path));
+                // HTML comes from its add-on, once registered; its images and style sheets are read from the file's folder only.
+                string root = options.BaseDirectory ?? folder;
+                document = DocumentFormatRegistry.FolderReaderFor(DocumentFormatKind.Html)!(path, root);
+                bands = new Bands(path, root, options.Header?.HtmlContent is null && options.Footer?.HtmlContent is null ? null : File.ReadAllText(path));
                 break;
             case ".MD" or ".MARKDOWN" or ".MDOWN" or ".MKD":
                 // Markdown comes from its add-on, once registered; its images are read from the file's folder only.
@@ -186,7 +168,7 @@ public static partial class PdfConvert
         TableOfContentsPlacement.Apply(document, options.TableOfContents);
         if (options.Header is not null || options.Footer is not null)
         {
-            PageBandContext context = new(document, bands.File, bands.Load, bands.Source is null ? null : StyleSheets(bands.Source));
+            PageBandContext context = new(document, bands.File, bands.Folder, bands.Source is null ? null : StyleSheets(bands.Source), bands.ReadHtml);
             options.Header?.Apply(document, header: true, context);
             options.Footer?.Apply(document, header: false, context);
         }
@@ -212,8 +194,11 @@ public static partial class PdfConvert
         return document.ToPdf(options.ExportOptions());
     }
 
-    /// <summary>Where a document came from, for the placeholders and the style sheets of HTML bands.</summary>
-    internal readonly record struct Bands(string? File, HtmlLoadOptions? Load, string? Source);
+    /// <summary>
+    /// Where a document came from, for the placeholders and the style sheets of HTML bands: its file, the folder HTML bands
+    /// read images from (none when null), its HTML, and how bands' HTML is read when not through the format registry.
+    /// </summary>
+    internal readonly record struct Bands(string? File, string? Folder, string? Source, Func<string, string?, Document>? ReadHtml = null);
 
     /// <summary>The style and style sheet link elements of an HTML source, for a band to be styled as the page is.</summary>
     private static string StyleSheets(string html)
@@ -223,22 +208,6 @@ public static partial class PdfConvert
 
     [GeneratedRegex(@"<style\b[^>]*>.*?</style\s*>|<link\b[^>]*\bstylesheet\b[^>]*>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex StyleElements();
-
-    internal static HtmlLoadOptions HtmlOptions(string? folder, IReadOnlyList<string>? userStyleSheets = null)
-    {
-        if (folder is null)
-        {
-            return new HtmlLoadOptions { UserStyleSheets = userStyleSheets ?? [] };
-        }
-
-        string root = Path.GetFullPath(folder);
-        return new HtmlLoadOptions
-        {
-            BaseUri = new Uri(Path.EndsInDirectorySeparator(root) ? root : root + Path.DirectorySeparatorChar),
-            ResourceResolver = uri => uri.IsFile ? ReadInside(root, uri.LocalPath) : null,
-            UserStyleSheets = userStyleSheets ?? [],
-        };
-    }
 
     private static PdfDocument FromImages(IEnumerable<ReadOnlyMemory<byte>> images, PdfConvertOptions? options)
     {

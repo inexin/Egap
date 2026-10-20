@@ -20,10 +20,17 @@ internal static class DocumentFormatRegistry
     internal delegate Document FolderReader(string path, string folder);
 
     /// <summary>
-    /// A format's reader and writer; either may be missing when the format only goes one way. <paramref name="ReadInFolder"/>
-    /// is how <see cref="Pdf.PdfConvert"/> reads a file whose links point at other files, such as HTML's and Markdown's images.
+    /// A format's readers and writer, any of which may be missing: <c>Read</c> and <c>Save</c> for whole files,
+    /// <c>ReadInFolder</c> for how <see cref="Pdf.PdfConvert"/> reads a file whose links point at files beside it (HTML's and
+    /// Markdown's images), and <c>ParseInFolder</c> for text whose links resolve in a folder, or nowhere when it is null (how
+    /// <see cref="Pdf.PageBand"/> reads an HTML band).
     /// </summary>
-    internal sealed record Format(DocumentFormatKind Kind, Reader? Read, Func<Document, string, IReadOnlyList<ConversionWarning>>? Save, FolderReader? ReadInFolder = null);
+    internal sealed record Format(
+        DocumentFormatKind Kind,
+        Reader? Read,
+        Func<Document, string, IReadOnlyList<ConversionWarning>>? Save,
+        FolderReader? ReadInFolder = null,
+        Func<string, string?, Document>? ParseInFolder = null);
 
     private static readonly ConcurrentDictionary<DocumentFormatKind, Format> Formats = new()
     {
@@ -59,6 +66,15 @@ internal static class DocumentFormatRegistry
     {
         return Formats.TryGetValue(kind, out Format? format)
             ? format.ReadInFolder
+            : throw new NotSupportedException($"Reading {Name(kind)} {Missing(kind)}");
+    }
+
+    /// <summary>The reader for text of <paramref name="kind"/> whose links resolve in a folder.</summary>
+    /// <exception cref="NotSupportedException">The format is not registered; the message names the package and the call that adds it.</exception>
+    public static Func<string, string?, Document> TextReaderFor(DocumentFormatKind kind)
+    {
+        return Formats.TryGetValue(kind, out Format? format) && format.ParseInFolder is { } parse
+            ? parse
             : throw new NotSupportedException($"Reading {Name(kind)} {Missing(kind)}");
     }
 

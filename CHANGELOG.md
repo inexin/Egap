@@ -80,11 +80,27 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - The writer puts a list item's first block on the marker line, such as a code fence right after `1.`, and writes a
   no-break space at the start of a line as `&#160;`, so other readers read the output as meant.
 
+## Egap.Documents.Html 2.0.0 (unreleased)
+
+### A package of its own
+- HTML reading and writing moves out of Egap.Documents into this package, with the CSS cascade (Egami.Css), `@page` rules
+  and margin boxes. `HtmlFormat`, `HtmlLoadOptions` and `HtmlSaveOptions` keep their names and namespace
+  (`Egap.Documents`), and `HtmlStamp` keeps `Egap.Documents.Pdf`, so code compiles once the package is added.
+- `HtmlFormat.Register()` lets `Document.Load`, `Document.Save` and `PdfConvert.FromFile` handle `.html` files and
+  `PageBand.Html` bands.
+- HTML as members of `Document`: `Document.ParseHtml`, `Document.LoadHtml`, `ToHtml` and `SaveAsHtml`.
+  `HtmlFormat.ToHtml(document)` still works.
+- `PdfConvert.FromHtml` and `PdfStamp.Html` come from this package as extension members, so the calls compile unchanged.
+  `PdfConvert.FromHtml` lays out HTML bands without `Register()`.
+
 ## Egap.Documents 2.0.0 (unreleased)
 
-### Markdown moves out
+### Markdown and HTML move out
 - Breaking: Markdown is now the Egap.Documents.Markdown package. Add it, and call `MarkdownFormat.Register()` where
   `Document.Load`, `Document.Save` or `PdfConvert.FromFile` should handle Markdown.
+- Breaking: HTML is now the Egap.Documents.Html package, and Egap.Documents no longer depends on Egami.Css. Add it, and
+  call `HtmlFormat.Register()` where `Document.Load`, `Document.Save`, `PdfConvert.FromFile` or a `PageBand.Html` band
+  outside `PdfConvert.FromHtml` should handle HTML. Without it they throw a `NotSupportedException` that names the package.
 
 ### Formats
 - Breaking: `Document.Load` and `Document.Save` read and write HTML and Markdown only after `HtmlFormat.Register()` and

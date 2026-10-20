@@ -51,18 +51,21 @@ public sealed class HtmlSaveOptions
 /// cascade with HTML's default style sheet, and the computed styles mapped onto paragraphs, runs, lists and tables. Flexbox
 /// and grid are read as stacked blocks, with a warning (design Q15).
 /// </summary>
-public static class HtmlFormat
+public static partial class HtmlFormat
 {
     /// <summary>
-    /// Lets <see cref="Document.Load(string)"/> read and <see cref="Document.Save(string)"/> write HTML. Call it once at startup;
-    /// calling it again changes nothing.
+    /// Lets <see cref="Document.Load(string)"/> read and <see cref="Document.Save(string)"/> write HTML, and
+    /// <see cref="Pdf.PdfConvert.FromFile(string, Pdf.PdfConvertOptions?)"/> convert it and lay out
+    /// <see cref="Pdf.PageBand.Html(string)"/> bands. Call it once at startup; calling it again changes nothing.
     /// </summary>
     public static void Register()
     {
         DocumentFormatRegistry.Register(new(
             DocumentFormatKind.Html,
             (byte[] bytes, out IReadOnlyList<ConversionWarning> warnings) => Load(bytes, out warnings),
-            (document, path) => Save(document, path)));
+            (document, path) => Save(document, path),
+            (path, folder) => Load(path, InFolder(folder)),
+            (html, folder) => Parse(html, InFolder(folder))));
     }
 
     /// <summary>Reads HTML from a string.</summary>
@@ -115,24 +118,11 @@ public static class HtmlFormat
         return Load(bytes.ToArray(), out warnings, options);
     }
 
-    /// <summary>Writes the document as an HTML5 page with one style sheet, reporting what HTML could not hold.</summary>
-    public static string ToHtml(Document document, out IReadOnlyList<ConversionWarning> warnings, HtmlSaveOptions? options = null)
-    {
-        ArgumentNullException.ThrowIfNull(document);
-        return HtmlWriter.Write(document, options ?? new HtmlSaveOptions(), out warnings);
-    }
-
-    /// <summary>Writes the document as an HTML5 page.</summary>
-    public static string ToHtml(Document document, HtmlSaveOptions? options = null)
-    {
-        return ToHtml(document, out _, options);
-    }
-
     /// <summary>Saves the document as an HTML file (UTF-8), returning what HTML could not hold.</summary>
     public static IReadOnlyList<ConversionWarning> Save(Document document, string path, HtmlSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(path);
-        File.WriteAllText(path, ToHtml(document, out IReadOnlyList<ConversionWarning> warnings, options), new System.Text.UTF8Encoding(false));
+        File.WriteAllText(path, document.ToHtml(out IReadOnlyList<ConversionWarning> warnings, options), new System.Text.UTF8Encoding(false));
         return warnings;
     }
 
@@ -140,7 +130,7 @@ public static class HtmlFormat
     public static IReadOnlyList<ConversionWarning> Save(Document document, Stream stream, HtmlSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
-        byte[] bytes = new System.Text.UTF8Encoding(false).GetBytes(ToHtml(document, out IReadOnlyList<ConversionWarning> warnings, options));
+        byte[] bytes = new System.Text.UTF8Encoding(false).GetBytes(document.ToHtml(out IReadOnlyList<ConversionWarning> warnings, options));
         stream.Write(bytes);
         return warnings;
     }

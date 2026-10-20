@@ -4,7 +4,7 @@ using Egami.Css;
 
 using Egap.Documents.Html;
 
-namespace Egap.Documents.Tests;
+namespace Egap.Documents.Html.Tests;
 
 /// <summary>The HTML parser and its DOM (Phase 6 Build Plan task 24); html5lib's tests run in the compare repo.</summary>
 public class HtmlParserTests

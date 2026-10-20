@@ -1,6 +1,6 @@
 using Egap.Documents.Layout;
 
-namespace Egap.Documents.Tests;
+namespace Egap.Documents.Html.Tests;
 
 /// <summary>HTML read into the model through the CSS cascade (Phase 6 Build Plan task 25).</summary>
 public class HtmlReaderTests

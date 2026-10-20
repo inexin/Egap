@@ -128,7 +128,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## HTML named character references
 
-`src/Egap.Documents/Html/entities.txt`, embedded in Egap.Documents.dll, lists the named character references of the
+`src/Egap.Documents.Html/entities.txt`, embedded in Egap.Documents.Html.dll, lists the named character references of the
 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/named-characters.html), taken from
 <https://html.spec.whatwg.org/entities.json> with each name's code points written in hex. The HTML Standard is
 Copyright © WHATWG (Apple, Google, Mozilla, Microsoft) and licensed under the

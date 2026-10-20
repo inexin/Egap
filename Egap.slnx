@@ -5,11 +5,13 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Egap.Documents/Egap.Documents.csproj" />
+    <Project Path="src/Egap.Documents.Html/Egap.Documents.Html.csproj" />
     <Project Path="src/Egap.Documents.Markdown/Egap.Documents.Markdown.csproj" />
     <Project Path="src/Egap.Pdf/Egap.Pdf.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Egap.Documents.Fuzz/Egap.Documents.Fuzz.csproj" />
+    <Project Path="tests/Egap.Documents.Html.Tests/Egap.Documents.Html.Tests.csproj" />
     <Project Path="tests/Egap.Documents.Markdown.Tests/Egap.Documents.Markdown.Tests.csproj" />
     <Project Path="tests/Egap.Documents.Tests/Egap.Documents.Tests.csproj" />
     <Project Path="tests/Egap.Pdf.Fuzz/Egap.Pdf.Fuzz.csproj" />

@@ -28,42 +28,6 @@ public sealed class PdfConvertTests : IDisposable
     }
 
     [Fact]
-    public void HtmlBecomesAPdfOnTheChosenPage()
-    {
-        using PdfDocument pdf = Reopen(PdfConvert.FromHtml("<h1>Invoice</h1><p>Total: 120 EUR</p>", Isolated with
-        {
-            PageSize = PdfPageSize.A5,
-            Margins = PageMargins.All(Length.Mm(30)),
-        }));
-
-        PdfPage page = Assert.Single(pdf.Pages);
-        Assert.Equal(PdfPageSize.A5.Width, page.MediaBox.Right, 1);
-        Assert.Equal(PdfPageSize.A5.Height, page.MediaBox.Top, 1);
-        Assert.Contains("Total: 120 EUR", page.ExtractText(), StringComparison.Ordinal);
-        PdfTextLine heading = page.GetText().Lines.First(l => l.Text.Contains("Invoice", StringComparison.Ordinal));
-        Assert.InRange(heading.Box.Left, Length.Mm(30).Points, Length.Mm(30).Points + 7);   // the body's own 8px margin
-    }
-
-    [Fact]
-    public void HtmlFilesReadImagesOnlyFromTheirOwnFolder()
-    {
-        string inner = Path.Combine(folder, "site");
-        Directory.CreateDirectory(inner);
-        File.WriteAllBytes(Path.Combine(inner, "in.png"), Png());
-        File.WriteAllBytes(Path.Combine(folder, "out.png"), Png());
-        string html = Path.Combine(inner, "page.html");
-        File.WriteAllText(html, "<p><img src='in.png'></p><p><img src='../out.png'></p>");
-
-        using PdfDocument pdf = PdfConvert.FromFile(html, Isolated);
-        Assert.Single(pdf.Pages[0].GetImages());
-
-        using PdfDocument noFolder = PdfConvert.FromHtml("<img src='in.png'>", Isolated);
-        Assert.Empty(noFolder.Pages[0].GetImages());
-        using PdfDocument withFolder = PdfConvert.FromHtml("<img src='in.png'>", Isolated with { BaseDirectory = inner });
-        Assert.Single(withFolder.Pages[0].GetImages());
-    }
-
-    [Fact]
     public void DocxAndImageFilesConvert()
     {
         Document word = new();
@@ -84,24 +48,20 @@ public sealed class PdfConvertTests : IDisposable
     }
 
     [Fact]
-    public void HtmlStampsDrawLaidOutHtmlAtTheAnchor()
+    public void HtmlBandsAndFilesNameTheHtmlPackageWhenItIsMissing()
     {
-        using PdfDocument pdf = PdfDocument.Create();
-        pdf.Pages.AddBlank(PdfPageSize.A4.ToRectangle());
-        pdf.Pages.AddBlank(PdfPageSize.A4.ToRectangle());
+        Document word = new();
+        word.AddSection().Body.AddParagraph("From Word");
+        string docx = Path.Combine(folder, "banded.docx");
+        DocxFormat.Save(word, docx);
+        string html = Path.Combine(folder, "page.html");
+        File.WriteAllText(html, "<p>x</p>");
 
-        PdfStamp stamp = PdfStamp.Html("<p style='font-size:20pt;color:#c00'>PAID</p>", Length.Mm(60), Isolated) with { Anchor = StampAnchor.TopLeft };
-        PdfStampResult result = pdf.Stamp(stamp);
+        NotSupportedException band = Assert.Throws<NotSupportedException>(() => PdfConvert.FromFile(docx, Isolated with { Header = PageBand.Html("<b>Head</b>") }));
+        NotSupportedException file = Assert.Throws<NotSupportedException>(() => PdfConvert.FromFile(html, Isolated));
 
-        Assert.Equal(2, result.Pages);
-        using MemoryStream saved = new();
-        pdf.Save(saved);
-        using PdfDocument reopened = PdfDocument.Open(saved.ToArray());
-        PdfTextLine line = Assert.Single(reopened.Pages[1].GetText().Lines);
-        Assert.Equal("PAID", line.Text.Trim());
-        Assert.InRange(line.Box.Left, 0, 10);
-        Assert.InRange(line.Box.Top, PdfPageSize.A4.Height - 40, PdfPageSize.A4.Height);
-        Assert.Throws<ArgumentOutOfRangeException>(() => PdfStamp.Html("x", 0));
+        Assert.Contains("HtmlFormat.Register()", band.Message, StringComparison.Ordinal);
+        Assert.Contains("Egap.Documents.Html", file.Message, StringComparison.Ordinal);
     }
 
     private static PdfDocument Reopen(PdfDocument pdf)

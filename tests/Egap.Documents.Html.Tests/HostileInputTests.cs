@@ -3,7 +3,7 @@ using System.Text;
 
 using Egap.Documents.Layout;
 
-namespace Egap.Documents.Tests;
+namespace Egap.Documents.Html.Tests;
 
 /// <summary>Hostile input for the readers and the layout (Phase 6 Build Plan task 28): deep nesting and repetition stay bounded.</summary>
 public class HostileInputTests

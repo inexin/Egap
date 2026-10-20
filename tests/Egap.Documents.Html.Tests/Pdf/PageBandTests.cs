@@ -2,7 +2,7 @@ using Egap.Documents.Layout;
 using Egap.Documents.Pdf;
 using Egap.Pdf;
 
-namespace Egap.Documents.Tests.Pdf;
+namespace Egap.Documents.Html.Tests.Pdf;
 
 /// <summary>Header and footer options on conversion, and running elements.</summary>
 public sealed class PageBandTests

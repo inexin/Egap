@@ -22,7 +22,9 @@ SEEDS = {"lexer": "tests/fuzz-seeds/lexer/*", "parser": "tests/fuzz-seeds/parser
 DOCUMENTS = {"markdown", "package", "docx", "html", "layout", "pagemedia", "mailmerge"}
 
 # Libraries SharpFuzz instruments for a target, when not just the harness's own library.
-LIBRARIES = {"pdflayout": ["Egap.Pdf", "Egap.Documents"], "markdown": ["Egap.Documents", "Egap.Documents.Markdown"]}
+LIBRARIES = {"pdflayout": ["Egap.Pdf", "Egap.Documents"], "markdown": ["Egap.Documents", "Egap.Documents.Markdown"],
+             "html": ["Egap.Documents", "Egap.Documents.Html"], "layout": ["Egap.Documents", "Egap.Documents.Html"],
+             "pagemedia": ["Egap.Documents", "Egap.Documents.Html"]}
 
 SCRIPT = """
 set -e

@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Egap.Documents</RootNamespace>
+    <PackageId>Egap.Documents.Html</PackageId>
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <Description>HTML for Egap.Documents: HTML and XHTML read into the document model through the CSS cascade and written from it, with @page rules and margin boxes, HTML to PDF, and HTML stamps and page bands.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Build-time analyzer only; ships nothing. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- A format add-on: it builds on Egap.Documents and registers its format there; the core never references it. -->
+  <ItemGroup>
+    <ProjectReference Include="../Egap.Documents/Egap.Documents.csproj" />
+  </ItemGroup>
+
+  <!-- Egami.Css runs the cascade, @page rules and margin boxes. -->
+  <ItemGroup>
+    <PackageReference Include="Egami.Css" />
+  </ItemGroup>
+
+  <!-- HTML named character references (WHATWG, CC BY 4.0; THIRD-PARTY-NOTICES.md) and HTML's default style sheet. -->
+  <ItemGroup>
+    <EmbeddedResource Include="entities.txt" LogicalName="Egap.Documents.Html.entities.txt" />
+    <EmbeddedResource Include="html.css" LogicalName="Egap.Documents.Html.html.css" />
+    <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Egap.Documents.Html.Tests" />
+    <InternalsVisibleTo Include="Egap.Documents.Fuzz" />
+    <InternalsVisibleTo Include="Compare" />
+    <InternalsVisibleTo Include="Compare.Tests" />
+    <InternalsVisibleTo Include="Compare.Benchmarks" />
+  </ItemGroup>
+
+</Project>

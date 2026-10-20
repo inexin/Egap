@@ -34,25 +34,6 @@ public sealed class MorePagingTests
     }
 
     [Fact]
-    public void MaxLinesClampsAParagraphWithAnEllipsis()
-    {
-        Document document = Page(out Section section);
-        Paragraph paragraph = section.Body.AddParagraph(string.Join(' ', Enumerable.Repeat("words that wrap", 40)));
-        int lines = document.Layout(Isolated).Pages[0].BodyLines.Count();
-
-        paragraph.Format.MaxLines = 2;
-        LineBox[] clamped = [.. document.Layout(Isolated).Pages[0].BodyLines];
-
-        Assert.True(lines > 2);
-        Assert.Equal(2, clamped.Length);
-        Assert.True(clamped[^1].Line.Ellipsized);
-
-        Document html = HtmlFormat.Parse("<p style='-webkit-line-clamp: 3'>x</p>");
-        Assert.Equal(3, html.Descendants().OfType<Paragraph>().Single().Format.MaxLines);
-        Assert.Contains("line-clamp", HtmlFormat.ToHtml(html, out _), StringComparison.Ordinal);
-    }
-
-    [Fact]
     public void FooterRowsRepeatAtTheBottomOfEachPart()
     {
         Document document = Page(out Section section);
