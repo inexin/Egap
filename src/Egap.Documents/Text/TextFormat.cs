@@ -20,7 +20,7 @@ public sealed class TextSaveOptions
 /// paragraph, list labels before their text with a tab, table rows as tab-separated cells, text boxes after the paragraph
 /// they are anchored in, equations as their text. Field codes, deleted and hidden text, comments and pictures are left out.
 /// </summary>
-public static class TextFormat
+public static partial class TextFormat
 {
     /// <summary>
     /// Reads plain text: each line becomes a paragraph, a tab a tab and a form feed a page break. Line ends may be CR LF, LF
@@ -103,13 +103,6 @@ public static class TextFormat
         ArgumentNullException.ThrowIfNull(stream);
         using StreamReader reader = new(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
         return Parse(reader.ReadToEnd());
-    }
-
-    /// <summary>The document as plain text.</summary>
-    public static string ToText(Document document, TextSaveOptions? options = null)
-    {
-        ArgumentNullException.ThrowIfNull(document);
-        return new PlainTextWriter(document, options ?? new TextSaveOptions()).Write();
     }
 
     /// <summary>Writes the document as a plain-text file (UTF-8 without a byte order mark).</summary>

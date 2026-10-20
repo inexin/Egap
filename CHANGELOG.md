@@ -73,6 +73,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   page breaks.
 - `Document.Load` reads PDF (as `PdfToDocument` does) and Docling JSON, and `Document.Save` writes `.pdf` (as `SaveAsPdf`
   does).
+- Each core format reads as members of `Document`: `Document.LoadDocx`, `SaveAsDocx`, `Document.LoadText`,
+  `Document.ParseText`, `ToText`, `SaveAsText` and `Document.LoadPdf`, forwarding to `DocxFormat`, `TextFormat` and
+  `PdfToDocument`. `TextFormat.ToText(document)` still works.
 
 ### Egap.Pdf.Conversion folded in
 - Breaking: everything Egap.Pdf.Conversion held now ships in Egap.Documents, which references Egap.Pdf: PDF export

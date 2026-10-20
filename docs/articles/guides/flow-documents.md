@@ -23,7 +23,20 @@ IReadOnlyList<ConversionWarning> dropped = doc.Save("report.md"); // the format 
 DOCX to DOCX is lossless: what the model does not name travels along in each node's extension data. Saving to a format that
 cannot hold something, such as Markdown, returns a warning for each thing left out.
 
-`Document.Load` and `Save` know DOCX and plain text by themselves. HTML and Markdown join them once you register them at
+Each format also reads as members of `Document`, which forward to the format's class with the same options and warnings:
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Pdf;
+
+Document report = Document.LoadDocx("report.docx");
+report.SaveAsDocx("report-copy.docx");
+string text = report.ToText();                                    // as TextFormat.ToText
+report.SaveAsPdf("report.pdf");
+Document scanned = Document.LoadPdf("scanned.pdf");               // as PdfToDocument.Convert
+```
+
+`Document.Load` and `Save` know DOCX, PDF and plain text by themselves. HTML and Markdown join them once you register them at
 startup; until then, loading such a file throws a `NotSupportedException` that names the call to make. `Document.Identify`
 tells which format a file is in without loading it, so a program can say what a file needs.
 

@@ -14,7 +14,7 @@ namespace Egap.Documents.Pdf;
 /// DocxFormat.Save(doc, "report.docx");
 /// </code>
 /// </example>
-public static class PdfToDocument
+public static partial class PdfToDocument
 {
     /// <summary>Converts every page of <paramref name="document"/> into a new <see cref="Document"/>.</summary>
     /// <param name="document">The PDF.</param>
