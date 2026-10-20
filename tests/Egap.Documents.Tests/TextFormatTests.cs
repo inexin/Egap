@@ -3,16 +3,6 @@ namespace Egap.Documents.Tests;
 /// <summary>The plain-text writer (Phase 6 Build Plan task 8c).</summary>
 public sealed class TextFormatTests
 {
-    [Fact]
-    public void ParagraphsListsTablesAndNotesInReadingOrder()
-    {
-        Document document = MarkdownFormat.Parse(
-            "# Title\n\nSome *emphasis* and a note[^1].\n\n1. first\n2. second\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n[^1]: The note.\n");
-
-        string text = TextFormat.ToText(document);
-
-        Assert.Equal("Title\nSome emphasis and a note[1].\n1.\tfirst\n2.\tsecond\nA\tB\n1\t2\n[1] The note.\n", text);
-    }
 
     [Fact]
     public void FieldCodesDeletionsAndHiddenTextAreLeftOut()

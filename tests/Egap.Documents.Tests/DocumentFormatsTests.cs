@@ -14,7 +14,6 @@ public sealed class DocumentFormatsTests : IDisposable
     public DocumentFormatsTests()
     {
         HtmlFormat.Register();
-        MarkdownFormat.Register();
     }
 
     public void Dispose()
@@ -34,7 +33,6 @@ public sealed class DocumentFormatsTests : IDisposable
     [Theory]
     [InlineData("a.docx")]
     [InlineData("a.html")]
-    [InlineData("a.md")]
     [InlineData("a.txt")]
     [InlineData("a.pdf")]
     public void SaveByExtensionAndLoadBack(string name)
@@ -61,7 +59,12 @@ public sealed class DocumentFormatsTests : IDisposable
 
         Assert.Contains("Hello, world", Document.Load(docx).GetText(), StringComparison.Ordinal);
         Assert.Contains("From HTML", Document.Load(html).GetText(), StringComparison.Ordinal);
-        Assert.Equal("Heading1", Document.Load(markdown).Sections[0].Body.Paragraphs.First().Style!.Id);
+
+        // The core alone does not read Markdown: the error names the add-on and the call that registers it.
+        NotSupportedException missing = Assert.Throws<NotSupportedException>(() => Document.Load(markdown));
+        Assert.Contains("Egap.Documents.Markdown", missing.Message, StringComparison.Ordinal);
+        Assert.Contains("MarkdownFormat.Register()", missing.Message, StringComparison.Ordinal);
+        Assert.Throws<NotSupportedException>(() => Sample().Save(Path.Combine(folder, "a.md")));
     }
 
     [Fact]

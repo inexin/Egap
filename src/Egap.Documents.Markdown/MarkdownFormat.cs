@@ -127,15 +127,16 @@ public sealed class MarkdownSaveOptions
 /// and HTML Preformatted styles, lists Word list definitions built from their nesting. Writing says in warnings what Markdown
 /// cannot hold.
 /// </summary>
-public static class MarkdownFormat
+public static partial class MarkdownFormat
 {
     /// <summary>
-    /// Lets <see cref="Document.Load(string)"/> read and <see cref="Document.Save(string)"/> write Markdown. Call it once at
-    /// startup; calling it again changes nothing.
+    /// Lets <see cref="Document.Load(string)"/> read and <see cref="Document.Save(string)"/> write Markdown, and
+    /// <see cref="Pdf.PdfConvert.FromFile(string, Pdf.PdfConvertOptions?)"/> convert it. Call it once at startup; calling it
+    /// again changes nothing.
     /// </summary>
     public static void Register()
     {
-        DocumentFormatRegistry.Register(new(DocumentFormatKind.Markdown, Read, (document, path) => Save(document, path)));
+        DocumentFormatRegistry.Register(new(DocumentFormatKind.Markdown, Read, (document, path) => Save(document, path), (path, folder) => Load(path, InFolder(folder))));
 
         static Document Read(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
         {
@@ -191,19 +192,6 @@ public static class MarkdownFormat
         return Parse(reader.ReadToEnd(), out warnings, options);
     }
 
-    /// <summary>The document as GitHub Flavored Markdown, with what was left out in <paramref name="warnings"/>.</summary>
-    public static string ToMarkdown(Document document, out IReadOnlyList<ConversionWarning> warnings, MarkdownSaveOptions? options = null)
-    {
-        ArgumentNullException.ThrowIfNull(document);
-        return MarkdownWriter.Write(document, options ?? new MarkdownSaveOptions(), null, out warnings);
-    }
-
-    /// <summary>The document as GitHub Flavored Markdown.</summary>
-    public static string ToMarkdown(Document document, MarkdownSaveOptions? options = null)
-    {
-        return ToMarkdown(document, out _, options);
-    }
-
     /// <summary>Writes the document as a Markdown file (UTF-8, LF line ends).</summary>
     /// <returns>What Markdown could not hold.</returns>
     public static IReadOnlyList<ConversionWarning> Save(Document document, string path, MarkdownSaveOptions? options = null)
@@ -220,7 +208,7 @@ public static class MarkdownFormat
     public static IReadOnlyList<ConversionWarning> Save(Document document, Stream stream, MarkdownSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
-        string text = ToMarkdown(document, out IReadOnlyList<ConversionWarning> warnings, options);
+        string text = document.ToMarkdown(out IReadOnlyList<ConversionWarning> warnings, options);
         byte[] bytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false).GetBytes(text);
         stream.Write(bytes);
         return warnings;

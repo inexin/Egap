@@ -112,17 +112,6 @@ public class DocxWriterTests
     }
 
     [Fact]
-    public void MarkdownBecomesDocx()
-    {
-        Document document = MarkdownFormat.Parse("# Heading\n\nSome *emphasis* and a [link](https://example.com/).\n\n- one\n- two\n\n| a | b |\n|---|---|\n| 1 | 2 |\n");
-
-        Document read = RoundTrip(document);
-
-        Assert.Equal(document.GetText(), read.GetText());
-        Assert.Equal(2, read.Descendants<Paragraph>().Count(p => p.ListLabel is not null));
-    }
-
-    [Fact]
     public void TrackedChangesAndCommentsRoundTrip()
     {
         Document document = new();

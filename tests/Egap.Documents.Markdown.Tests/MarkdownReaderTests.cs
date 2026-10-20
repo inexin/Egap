@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Egap.Documents.Tests;
+namespace Egap.Documents.Markdown.Tests;
 
 /// <summary>
 /// Markdown into the model (Phase 6 Build Plan task 7, design Q17). The CommonMark and GFM spec examples run in the compare

@@ -60,7 +60,22 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
   `"page-{page:00}.png"`.
 
+## Egap.Documents.Markdown 2.0.0 (unreleased)
+
+### A package of its own
+- Markdown reading and writing moves out of Egap.Documents into this package. `MarkdownFormat`, `MarkdownLoadOptions`,
+  `MarkdownSaveOptions`, `MarkdownExtensions`, `MarkdownImage` and `MarkdownImageMode` keep their names and namespace
+  (`Egap.Documents`), so code compiles once the package is added.
+- `MarkdownFormat.Register()` lets `Document.Load`, `Document.Save` and `PdfConvert.FromFile` handle `.md` files.
+- Markdown as members of `Document`: `Document.ParseMarkdown`, `Document.LoadMarkdown`, `ToMarkdown` and `SaveAsMarkdown`.
+  `MarkdownFormat.ToMarkdown(document)` still works.
+- `PdfConvert.FromMarkdown` comes from this package as an extension member, so the call compiles unchanged.
+
 ## Egap.Documents 2.0.0 (unreleased)
+
+### Markdown moves out
+- Breaking: Markdown is now the Egap.Documents.Markdown package. Add it, and call `MarkdownFormat.Register()` where
+  `Document.Load`, `Document.Save` or `PdfConvert.FromFile` should handle Markdown.
 
 ### Formats
 - Breaking: `Document.Load` and `Document.Save` read and write HTML and Markdown only after `HtmlFormat.Register()` and

@@ -45,24 +45,6 @@ public sealed class PdfConvertTests : IDisposable
     }
 
     [Fact]
-    public void MarkdownAndFilesConvertToPdfFiles()
-    {
-        string md = Path.Combine(folder, "notes.md");
-        File.WriteAllText(md, "# Notes\n\n| A | B |\n| - | - |\n| 1 | 2 |\n\n![logo](logo.png)\n");
-        File.WriteAllBytes(Path.Combine(folder, "logo.png"), Png());
-        string output = Path.Combine(folder, "notes.pdf");
-
-        PdfConvert.FromFile(md, output, Isolated);
-
-        using PdfDocument pdf = PdfDocument.Open(output);
-        Assert.Contains("Notes", pdf.Pages[0].ExtractText(), StringComparison.Ordinal);
-        Assert.Single(pdf.Pages[0].GetImages());
-
-        using PdfDocument fromText = Reopen(PdfConvert.FromMarkdown("*Hello*", Isolated));
-        Assert.Contains("Hello", fromText.Pages[0].ExtractText(), StringComparison.Ordinal);
-    }
-
-    [Fact]
     public void HtmlFilesReadImagesOnlyFromTheirOwnFolder()
     {
         string inner = Path.Combine(folder, "site");

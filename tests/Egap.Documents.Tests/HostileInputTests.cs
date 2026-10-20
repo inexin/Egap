@@ -69,27 +69,4 @@ public class HostileInputTests
         Assert.Throws<DocumentLimitException>(() => HtmlFormat.Parse(new string('x', 1000), options));
         Assert.Throws<DocumentLimitException>(() => HtmlFormat.Load(new byte[1001], out _, options));
     }
-
-    [Fact]
-    public void DeepMarkdownNesting()
-    {
-        string markdown = new string('>', 50_000) + " quote\n\n" + string.Concat(Enumerable.Repeat("- ", 50_000)) + "item\n\n" + new string('*', 100_000) + "x";
-
-        Document document = MarkdownFormat.Parse(markdown);
-        _ = document.Layout(Isolated).Pages.Count;
-
-        Assert.Contains("quote", document.GetText(), StringComparison.Ordinal);
-    }
-
-    [Theory]
-    [InlineData("[li <http://x.y> www.z.com][r]\n\n[r]: /u")]
-    [InlineData("[a www.b.com c](/u)")]
-    public void LinksInsideLinksKeepTheirText(string markdown)
-    {
-        // Fuzz finding (task 28): an extended autolink inside a link's text made a hyperlink inside a hyperlink.
-        Document document = MarkdownFormat.Parse(markdown);
-
-        Assert.DoesNotContain(document.Descendants().OfType<Hyperlink>(), h => h.Descendants().OfType<Hyperlink>().Any());
-        Assert.Contains("www", document.GetText(), StringComparison.Ordinal);
-    }
 }

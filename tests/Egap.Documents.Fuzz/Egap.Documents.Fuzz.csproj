@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Egap.Documents\Egap.Documents.csproj" />
+    <ProjectReference Include="..\..\src\Egap.Documents.Markdown\Egap.Documents.Markdown.csproj" />
   </ItemGroup>
 
   <ItemGroup>

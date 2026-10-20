@@ -1,4 +1,4 @@
-namespace Egap.Documents.Tests;
+namespace Egap.Documents.Markdown.Tests;
 
 /// <summary>
 /// The Markdown writer (Phase 6 Build Plan task 8): Markdown written back from the model, documents made in code or read

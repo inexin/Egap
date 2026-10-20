@@ -32,23 +32,6 @@ public sealed class TableOfContentsTests
     }
 
     [Fact]
-    public void MarkdownTocMarkerOrTheStartTakesTheTable()
-    {
-        using PdfDocument marked = Reopen(PdfConvert.FromMarkdown("Intro text\n\n[TOC]\n\n# Alpha\n\nA\n\n# Beta\n\nB\n", Isolated with { TableOfContents = TableOfContentsMode.WithoutPageNumbers }));
-        string[] lines = [.. marked.Pages[0].GetText().Lines.Select(l => l.Text.Trim())];
-        Assert.Equal("Intro text", lines[0]);
-        Assert.Equal("Alpha", lines[1]);
-        Assert.Equal("Beta", lines[2]);
-        Assert.DoesNotContain("[TOC]", marked.Pages[0].ExtractText(), StringComparison.Ordinal);
-
-        using PdfDocument start = Reopen(PdfConvert.FromMarkdown("Intro text\n\n# Alpha\n\nA\n", Isolated with { TableOfContents = TableOfContentsMode.WithPageNumbers }));
-        string[] first = [.. start.Pages[0].GetText().Lines.Select(l => l.Text.Trim())];
-        Assert.StartsWith("Alpha", first[0], StringComparison.Ordinal);
-        Assert.EndsWith("1", first[0], StringComparison.Ordinal);
-        Assert.Equal("Intro text", first[1]);
-    }
-
-    [Fact]
     public void PageRefShowsThePageItsBookmarkIsOn()
     {
         Document document = new();

@@ -16,8 +16,14 @@ internal static class DocumentFormatRegistry
     /// <summary>Reads a whole file's bytes.</summary>
     internal delegate Document Reader(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings);
 
-    /// <summary>A format's reader and writer; either may be missing when the format only goes one way.</summary>
-    internal sealed record Format(DocumentFormatKind Kind, Reader? Read, Func<Document, string, IReadOnlyList<ConversionWarning>>? Save);
+    /// <summary>Reads a file for conversion, taking its images and style sheets only from <paramref name="folder"/>.</summary>
+    internal delegate Document FolderReader(string path, string folder);
+
+    /// <summary>
+    /// A format's reader and writer; either may be missing when the format only goes one way. <paramref name="ReadInFolder"/>
+    /// is how <see cref="Pdf.PdfConvert"/> reads a file whose links point at other files, such as HTML's and Markdown's images.
+    /// </summary>
+    internal sealed record Format(DocumentFormatKind Kind, Reader? Read, Func<Document, string, IReadOnlyList<ConversionWarning>>? Save, FolderReader? ReadInFolder = null);
 
     private static readonly ConcurrentDictionary<DocumentFormatKind, Format> Formats = new()
     {
@@ -44,6 +50,15 @@ internal static class DocumentFormatRegistry
     {
         return Formats.TryGetValue(kind, out Format? format) && format.Read is { } read
             ? read
+            : throw new NotSupportedException($"Reading {Name(kind)} {Missing(kind)}");
+    }
+
+    /// <summary>The reader for files of <paramref name="kind"/> that link to files beside them, or null when it has none.</summary>
+    /// <exception cref="NotSupportedException">The format is not registered; the message names the package and the call that adds it.</exception>
+    public static FolderReader? FolderReaderFor(DocumentFormatKind kind)
+    {
+        return Formats.TryGetValue(kind, out Format? format)
+            ? format.ReadInFolder
             : throw new NotSupportedException($"Reading {Name(kind)} {Missing(kind)}");
     }
 

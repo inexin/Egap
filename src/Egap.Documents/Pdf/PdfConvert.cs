@@ -114,31 +114,15 @@ public static partial class PdfConvert
         pdf.Save(outputPath, options?.Export?.Save);
     }
 
-    /// <summary>Lays out Markdown (CommonMark with GitHub's tables, task lists and strikethrough) and makes a PDF of it.</summary>
-    /// <exception cref="ArgumentNullException"><paramref name="markdown"/> is null.</exception>
-    public static PdfDocument FromMarkdown(string markdown, PdfConvertOptions? options = null)
-    {
-        ArgumentNullException.ThrowIfNull(markdown);
-        options ??= PdfConvertOptions.Default;
-        return ToPdf(MarkdownFormat.Parse(markdown, MarkdownOptions(options.BaseDirectory)), options);
-    }
-
-    /// <summary>Converts Markdown to a PDF file.</summary>
-    /// <exception cref="ArgumentNullException">An argument is null.</exception>
-    public static void FromMarkdown(string markdown, string outputPath, PdfConvertOptions? options = null)
-    {
-        ArgumentNullException.ThrowIfNull(outputPath);
-        using PdfDocument pdf = FromMarkdown(markdown, options);
-        pdf.Save(outputPath, options?.Export?.Save);
-    }
-
     /// <summary>
-    /// Makes a PDF of a file: DOCX (and DOTX, DOCM), HTML and Markdown are laid out; an image file (JPEG, PNG, TIFF, WebP,
-    /// GIF and the other formats Egami reads) becomes one page per frame. HTML and Markdown read their images from the
-    /// file's own folder.
+    /// Makes a PDF of a file: DOCX (and DOTX, DOCM), HTML, Markdown and any other format <see cref="Document.Load(string)"/>
+    /// reads are laid out; an image file (JPEG, PNG, TIFF, WebP, GIF and the other formats Egami reads) becomes one page per
+    /// frame. HTML and Markdown read their images from the file's own folder. Markdown needs the Egap.Documents.Markdown
+    /// package and <c>MarkdownFormat.Register()</c>.
     /// </summary>
     /// <exception cref="ArgumentException"><paramref name="path"/> is empty.</exception>
     /// <exception cref="DocumentException">The file is not a document or image Egap can read.</exception>
+    /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
     public static PdfDocument FromFile(string path, PdfConvertOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
@@ -155,7 +139,8 @@ public static partial class PdfConvert
                 bands = new Bands(path, load, options.Header?.HtmlContent is null && options.Footer?.HtmlContent is null ? null : File.ReadAllText(path));
                 break;
             case ".MD" or ".MARKDOWN" or ".MDOWN" or ".MKD":
-                document = MarkdownFormat.Load(path, MarkdownOptions(options.BaseDirectory ?? folder));
+                // Markdown comes from its add-on, once registered; its images are read from the file's folder only.
+                document = DocumentFormatRegistry.FolderReaderFor(DocumentFormatKind.Markdown)!(path, options.BaseDirectory ?? folder);
                 break;
             case ".DOCX" or ".DOTX" or ".DOCM" or ".DOTM":
                 document = DocxFormat.Load(path);
@@ -265,23 +250,8 @@ public static partial class PdfConvert
         return PdfDocument.FromImages(images, pages);
     }
 
-    private static MarkdownLoadOptions MarkdownOptions(string? folder)
-    {
-        if (folder is null)
-        {
-            return new MarkdownLoadOptions();
-        }
-
-        string root = Path.GetFullPath(folder);
-        return new MarkdownLoadOptions
-        {
-            ImageResolver = link => Uri.TryCreate(link, UriKind.Absolute, out Uri? absolute) && !absolute.IsFile ? null
-                : ReadInside(root, Uri.UnescapeDataString(absolute?.LocalPath ?? link)) is { } bytes ? new ImageData(bytes, ImageData.GuessContentType(bytes)) : null,
-        };
-    }
-
     /// <summary>A file's bytes when it lies inside the folder; null for anything outside it or missing.</summary>
-    private static byte[]? ReadInside(string root, string path)
+    internal static byte[]? ReadInside(string root, string path)
     {
         string full = Path.GetFullPath(Path.Combine(root, path));
         string prefix = Path.EndsInDirectorySeparator(root) ? root : root + Path.DirectorySeparatorChar;

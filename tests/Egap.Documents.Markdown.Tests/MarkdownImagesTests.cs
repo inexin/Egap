@@ -1,6 +1,6 @@
 using Egami.Pixels;
 
-namespace Egap.Documents.Tests;
+namespace Egap.Documents.Markdown.Tests;
 
 /// <summary>Pictures in Markdown output (Phase 6 Build Plan task 8b, design Q20).</summary>
 public sealed class MarkdownImagesTests : IDisposable
