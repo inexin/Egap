@@ -67,15 +67,19 @@ jobs:
         run: dotnet build Egap.slnx -c Release
       - name: No package references in src/
         run: |
-          # Only build-time analyzers, Egami's packages (Phase 3 design Q2) and .NET's own CMS package (Phase 5 design Q2) are allowed.
+          # Only build-time analyzers, Egami's packages (Phase 3 design Q2) and .NET's own CMS package (Phase 5 design Q2) are allowed,
+          # plus the approved packages in docs/references.md for the format add-ons (Egap.Documents.<Format>) only.
           # Anything else would ship as a dependency.
           allowed='Microsoft.CodeAnalysis.PublicApiAnalyzers Egami Egami.Fonts Egami.Fonts.Substitutes Egami.Drawing Egami.Metafiles Egami.Css Egami.Svg Egami.Barcodes
             System.Security.Cryptography.Pkcs'
+          addon_allowed='AngleSharp Markdig'
           status=0
           for proj in $(find src -name '*.csproj'); do
             for pkg in $(dotnet list "$proj" package --include-transitive --format json \
                          | jq -r '.projects[].frameworks[]? | (.topLevelPackages // []) + (.transitivePackages // []) | .[] | select(.autoReferenced != "true") | .id'); do
-              if ! tr -s ' \n' '\n' <<< "$allowed" | grep -qxF "$pkg"; then
+              list="$allowed"
+              case "$proj" in src/Egap.Documents.*/*) list="$allowed $addon_allowed" ;; esac
+              if ! tr -s ' \n' '\n' <<< "$list" | grep -qxF "$pkg"; then
                 echo "::error file=$proj::Package reference '$pkg' is not allowed in src/"
                 status=1
               fi
