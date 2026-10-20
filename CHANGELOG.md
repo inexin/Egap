@@ -62,6 +62,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents.Markdown 2.0.0 (unreleased)
 
+### Trimming and Native AOT
+- The package is marked trimmable and AOT compatible: a Native AOT app that uses all of it, with Markdig, publishes
+  without a trim or AOT warning and runs.
+
 ### A package of its own
 - Markdown reading and writing moves out of Egap.Documents into this package. `MarkdownFormat`, `MarkdownLoadOptions`,
   `MarkdownSaveOptions`, `MarkdownExtensions`, `MarkdownImage` and `MarkdownImageMode` keep their names and namespace
@@ -81,6 +85,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   no-break space at the start of a line as `&#160;`, so other readers read the output as meant.
 
 ## Egap.Documents.Html 2.0.0 (unreleased)
+
+### Trimming and Native AOT
+- The package is marked trimmable and AOT compatible: a Native AOT app that uses all of it, with AngleSharp, publishes
+  without a trim or AOT warning and runs.
 
 ### A package of its own
 - HTML reading and writing moves out of Egap.Documents into this package, with the CSS cascade (Egami.Css), `@page` rules

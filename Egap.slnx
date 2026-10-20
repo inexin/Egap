@@ -11,7 +11,9 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Egap.Documents.Fuzz/Egap.Documents.Fuzz.csproj" />
+    <Project Path="tests/Egap.Documents.Html.AotSmoke/Egap.Documents.Html.AotSmoke.csproj" />
     <Project Path="tests/Egap.Documents.Html.Tests/Egap.Documents.Html.Tests.csproj" />
+    <Project Path="tests/Egap.Documents.Markdown.AotSmoke/Egap.Documents.Markdown.AotSmoke.csproj" />
     <Project Path="tests/Egap.Documents.Markdown.Tests/Egap.Documents.Markdown.Tests.csproj" />
     <Project Path="tests/Egap.Documents.Tests/Egap.Documents.Tests.csproj" />
     <Project Path="tests/Egap.Pdf.Fuzz/Egap.Pdf.Fuzz.csproj" />

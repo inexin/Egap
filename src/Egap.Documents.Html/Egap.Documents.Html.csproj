@@ -6,6 +6,9 @@
     <VersionPrefix>2.0.0</VersionPrefix>
     <Description>HTML for Egap.Documents: HTML and XHTML read into the document model through the CSS cascade and written from it, with @page rules and margin boxes, HTML to PDF, and HTML stamps and page bands.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Claimed because tests/Egap.Documents.Html.AotSmoke publishes with Native AOT without a warning. -->
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
   <!-- Build-time analyzer only; ships nothing. -->

@@ -52,6 +52,21 @@ jobs:
       - run: dotnet build Egap.slnx -c Release
       - run: dotnet test Egap.slnx -c Release --no-build
 
+  aot-smoke:
+    name: Native AOT smoke apps (format add-ons)
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      # Warnings are errors, so any trim or AOT warning fails the publish; the add-ons claim AOT only while these pass.
+      - run: dotnet publish tests/Egap.Documents.Markdown.AotSmoke -c Release -r linux-x64 -o artifacts/aot-markdown
+      - run: ./artifacts/aot-markdown/Egap.Documents.Markdown.AotSmoke
+      - run: dotnet publish tests/Egap.Documents.Html.AotSmoke -c Release -r linux-x64 -o artifacts/aot-html
+      - run: ./artifacts/aot-html/Egap.Documents.Html.AotSmoke
+
   checks:
     name: Format, API and dependency checks
     runs-on: ubuntu-latest

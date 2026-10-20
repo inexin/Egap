@@ -6,6 +6,9 @@
     <VersionPrefix>2.0.0</VersionPrefix>
     <Description>Markdown for Egap.Documents: CommonMark and GitHub Markdown read into the document model and written from it, with front matter, images and Markdown to PDF.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Claimed because tests/Egap.Documents.Markdown.AotSmoke publishes with Native AOT without a warning. -->
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
   <!-- Build-time analyzer only; ships nothing. -->
