@@ -1,6 +1,8 @@
 # PDF export and conversion
 
-Egap.Pdf.Conversion connects Egap.Documents and Egap.Pdf in both directions.
+Egap.Documents saves documents as PDF and turns PDF pages back into documents, in namespace `Egap.Documents.Pdf`. HTML and
+Markdown come from their add-on packages, Egap.Documents.Html and Egap.Documents.Markdown, which add `PdfConvert.FromHtml`,
+`PdfConvert.FromMarkdown`, `PdfStamp.Html` and HTML page bands.
 
 ## Documents to PDF
 
@@ -33,7 +35,8 @@ form.SaveAsPdf("application.pdf", new PdfExportOptions { FormFields = true });
 
 `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
 input's own. Converting a file reads its images from the file's own folder; HTML or Markdown given as text reads them only
-from `BaseDirectory`, and never from the network.
+from `BaseDirectory`, and never from the network. `FromFile` handles HTML and Markdown files once their add-on is
+registered with `HtmlFormat.Register()` or `MarkdownFormat.Register()`.
 
 ```csharp
 using Egap.Pdf;
@@ -70,8 +73,10 @@ PdfConvert.FromHtml("<title>Invoice 2026-118</title><style>.hdr { text-align: ri
 numbers. It goes where HTML has `<nav data-toc>` or Markdown a `[TOC]` paragraph, else at the start.
 
 ```csharp
+using Egap.Documents;
 using Egap.Documents.Pdf;
 
+MarkdownFormat.Register();
 PdfConvert.FromFile("handbook.md", "handbook.pdf", new PdfConvertOptions { TableOfContents = TableOfContentsMode.WithPageNumbers });
 ```
 

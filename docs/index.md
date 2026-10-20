@@ -7,7 +7,8 @@ It is a sister project to [Egami](https://inexin.github.io/Egami/), the 2D imagi
 - **Fully managed C#**: no native binaries, no P/Invoke; images, fonts and drawing come from Egami, which is managed too.
 - **Safe on untrusted files**: damaged files are repaired where possible, and every reader is fuzz-tested.
 - **PDF**: read, edit, render, sign and verify, redact, PDF/A, tagged PDF, optimize, imposition, stamps and compare.
-- **Flow documents**: one model for DOCX, HTML and Markdown, with page layout and export to PDF.
+- **Flow documents**: one model for DOCX, HTML and Markdown (HTML and Markdown as add-on packages), with page layout,
+  export to PDF and PDF converted back into documents.
 
 ```csharp
 using Egap.Pdf;

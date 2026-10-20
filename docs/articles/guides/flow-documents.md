@@ -1,7 +1,8 @@
 # Flow documents
 
-Egap.Documents holds one editable document model for DOCX, HTML and Markdown: sections, paragraphs, runs, tables, lists,
-pictures, headers and footers, notes, fields, comments and tracked changes, with Word's style model.
+Egap.Documents holds one editable document model for DOCX, plain text and, with the add-on packages Egap.Documents.Html
+and Egap.Documents.Markdown, HTML and Markdown: sections, paragraphs, runs, tables, lists, pictures, headers and footers,
+notes, fields, comments and tracked changes, with Word's style model.
 
 ```csharp
 using Egap.Documents;
@@ -17,7 +18,7 @@ builder.Writeln("Added at the end.");
 doc.Replace("colour", "color");                                   // also where the text crosses runs
 IReadOnlyList<TextMatch> found = doc.Find("color");               // paragraph, offset and text of each match
 doc.Save("report-edited.docx");                                   // what the model does not name is kept
-IReadOnlyList<ConversionWarning> dropped = doc.Save("report.md"); // the format from the extension, with what it could not hold
+IReadOnlyList<ConversionWarning> dropped = doc.Save("report.txt"); // the format from the extension, with what it left out
 ```
 
 DOCX to DOCX is lossless: what the model does not name travels along in each node's extension data. Saving to a format that
@@ -51,7 +52,9 @@ Document notes = TextFormat.Load("notes.txt");                    // one paragra
 
 ## Format options
 
-Each format has its own class with its own options.
+Each format has its own class with its own options. `MarkdownFormat` comes from Egap.Documents.Markdown and `HtmlFormat`
+from Egap.Documents.Html, both in namespace `Egap.Documents`; they need no `Register()` when you call them directly, and add
+members to `Document` too: `Document.LoadMarkdown`, `ToMarkdown`, `Document.ParseHtml`, `ToHtml` and their `Save` forms.
 
 ```csharp
 using Egap.Documents;
@@ -60,7 +63,7 @@ Document readme = MarkdownFormat.Load("README.md", new MarkdownLoadOptions { Ext
 DocxFormat.Save(readme, "readme.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
 ```
 
-HTML is parsed as browsers parse it and styled through the CSS cascade. Nothing outside the file is fetched unless you pass
+HTML is parsed by AngleSharp as browsers parse it and styled through the CSS cascade (Markdown is parsed by Markdig). Nothing outside the file is fetched unless you pass
 a resolver:
 
 ```csharp

@@ -4,8 +4,9 @@ Egap needs .NET 10. Add the package for what you need:
 
 ```sh
 dotnet add package Egap.Pdf            # PDF files
-dotnet add package Egap.Documents      # DOCX, HTML and Markdown
-dotnet add package Egap.Pdf.Conversion     # documents to PDF, and PDF back to documents
+dotnet add package Egap.Documents      # DOCX and plain text, documents to PDF, and PDF back to documents
+dotnet add package Egap.Documents.Html      # HTML
+dotnet add package Egap.Documents.Markdown  # Markdown
 ```
 
 Egami, the imaging library Egap draws with, comes along as a dependency. See [Packages](packages.md) for what each one holds.

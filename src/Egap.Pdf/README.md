@@ -12,7 +12,7 @@ which is managed too: no native binaries, no P/Invoke.
 - Tools: optimize, N-up and booklets, stamps and Bates numbers, compare, blank page removal and deskew.
 
 PDF to DOCX, HTML or Markdown, and documents to tagged PDF, are in
-[Egap.Pdf.Conversion](https://www.nuget.org/packages/Egap.Pdf.Conversion).
+[Egap.Documents](https://www.nuget.org/packages/Egap.Documents).
 
 ```csharp
 using Egap.Pdf;

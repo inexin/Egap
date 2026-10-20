@@ -117,6 +117,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.0.0 (unreleased)
 
+### Docs
+- A migration guide, "Moving to Egap.Documents 2.0", maps old packages and namespaces to new ones; the packages page,
+  getting started, the flow documents and PDF conversion guides and the package READMEs describe the four packages.
+
 ### Markdown and HTML move out
 - Breaking: Markdown is now the Egap.Documents.Markdown package. Add it, and call `MarkdownFormat.Register()` where
   `Document.Load`, `Document.Save` or `PdfConvert.FromFile` should handle Markdown.
