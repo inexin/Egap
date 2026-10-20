@@ -53,6 +53,18 @@ public sealed class HtmlSaveOptions
 /// </summary>
 public static class HtmlFormat
 {
+    /// <summary>
+    /// Lets <see cref="Document.Load(string)"/> read and <see cref="Document.Save(string)"/> write HTML. Call it once at startup;
+    /// calling it again changes nothing.
+    /// </summary>
+    public static void Register()
+    {
+        DocumentFormatRegistry.Register(new(
+            DocumentFormatKind.Html,
+            (byte[] bytes, out IReadOnlyList<ConversionWarning> warnings) => Load(bytes, out warnings),
+            (document, path) => Save(document, path)));
+    }
+
     /// <summary>Reads HTML from a string.</summary>
     public static Document Parse(string html, HtmlLoadOptions? options = null)
     {

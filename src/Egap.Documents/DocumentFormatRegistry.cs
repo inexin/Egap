@@ -1,0 +1,83 @@
+using System.Collections.Concurrent;
+
+namespace Egap.Documents;
+
+/// <summary>
+/// The formats <see cref="Document.Load(string)"/> and <see cref="Document.Save(string)"/> reach: the core's own, and those an
+/// add-on package registers once with its format class's <c>Register()</c>, such as <c>MarkdownFormat.Register()</c>. An
+/// explicit call keeps the lookup free of reflection, so it works trimmed and ahead-of-time compiled.
+/// </summary>
+internal static class DocumentFormatRegistry
+{
+    /// <summary>Reads a whole file's bytes.</summary>
+    internal delegate Document Reader(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings);
+
+    /// <summary>A format's reader and writer; either may be missing when the format only goes one way.</summary>
+    internal sealed record Format(DocumentFormatKind Kind, Reader? Read, Func<Document, string, IReadOnlyList<ConversionWarning>>? Save);
+
+    private static readonly ConcurrentDictionary<DocumentFormatKind, Format> Formats = new()
+    {
+        [DocumentFormatKind.Docx] = new(DocumentFormatKind.Docx, ReadDocx, (document, path) => DocxFormat.Save(document, path)),
+        [DocumentFormatKind.Text] = new(DocumentFormatKind.Text, ReadText, (document, path) => TextFormat.Save(document, path)),
+    };
+
+    /// <summary>Adds or replaces a format; registering the same format again changes nothing.</summary>
+    public static void Register(Format format)
+    {
+        Formats[format.Kind] = format;
+    }
+
+    /// <summary>Whether a reader or writer for <paramref name="kind"/> is registered.</summary>
+    public static bool IsRegistered(DocumentFormatKind kind) => Formats.ContainsKey(kind);
+
+    /// <summary>The reader for <paramref name="kind"/>.</summary>
+    /// <exception cref="NotSupportedException">No reader is registered; the message names the package and the call that adds one.</exception>
+    public static Reader ReaderFor(DocumentFormatKind kind)
+    {
+        return Formats.TryGetValue(kind, out Format? format) && format.Read is { } read
+            ? read
+            : throw new NotSupportedException($"Reading {Name(kind)} {Missing(kind)}");
+    }
+
+    /// <summary>The writer for <paramref name="kind"/>.</summary>
+    /// <exception cref="NotSupportedException">No writer is registered; the message names the package and the call that adds one.</exception>
+    public static Func<Document, string, IReadOnlyList<ConversionWarning>> WriterFor(DocumentFormatKind kind)
+    {
+        return Formats.TryGetValue(kind, out Format? format) && format.Save is { } save
+            ? save
+            : throw new NotSupportedException($"Writing {Name(kind)} {Missing(kind)}");
+    }
+
+    private static Document ReadDocx(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
+    {
+        using MemoryStream stream = new(bytes, writable: false);
+        return DocxFormat.Load(stream, out warnings);
+    }
+
+    private static Document ReadText(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
+    {
+        warnings = [];
+        using MemoryStream stream = new(bytes, writable: false);
+        return TextFormat.Load(stream);
+    }
+
+    private static string Name(DocumentFormatKind kind) => kind switch
+    {
+        DocumentFormatKind.Pdf => "PDF",
+        DocumentFormatKind.Docx => "DOCX",
+        DocumentFormatKind.Html => "HTML",
+        DocumentFormatKind.Markdown => "Markdown",
+        DocumentFormatKind.Text => "plain text",
+        DocumentFormatKind.DoclingJson => "Docling JSON",
+        _ => "this file",
+    };
+
+    private static string Missing(DocumentFormatKind kind) => kind switch
+    {
+        DocumentFormatKind.Html => "needs the Egap.Documents.Html package: add it and call HtmlFormat.Register() once at startup.",
+        DocumentFormatKind.Markdown => "needs the Egap.Documents.Markdown package: add it and call MarkdownFormat.Register() once at startup.",
+        DocumentFormatKind.Pdf => "goes through PdfConvert and SaveAsPdf in the Egap.Pdf.Conversion package.",
+        DocumentFormatKind.DoclingJson => "goes through the Docling types in the Egap.Pdf.Conversion package.",
+        _ => "is not supported.",
+    };
+}

@@ -1,4 +1,19 @@
 #nullable enable
 Egap.Documents.DocumentBuilder.InsertBarcode(Egami.Barcodes.Barcode! barcode, double width, double height, Egami.Barcodes.BarcodeDrawOptions? options = null) -> Egap.Documents.Picture!
+Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.DoclingJson = 6 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Docx = 2 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Html = 3 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Markdown = 4 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Pdf = 1 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Text = 5 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Unknown = 0 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.Picture.Fallback.get -> Egap.Documents.ImageData?
 Egap.Documents.Picture.Fallback.set -> void
+static Egap.Documents.Document.Identify(string! path) -> Egap.Documents.DocumentFormatKind
+static Egap.Documents.Document.Identify(System.IO.Stream! stream, string? fileName = null) -> Egap.Documents.DocumentFormatKind
+static Egap.Documents.HtmlFormat.Register() -> void
+static Egap.Documents.MarkdownFormat.Register() -> void
+static Egap.Documents.TextFormat.Load(string! path) -> Egap.Documents.Document!
+static Egap.Documents.TextFormat.Load(System.IO.Stream! stream) -> Egap.Documents.Document!
+static Egap.Documents.TextFormat.Parse(string! text) -> Egap.Documents.Document!

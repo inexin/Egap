@@ -129,6 +129,21 @@ public sealed class MarkdownSaveOptions
 /// </summary>
 public static class MarkdownFormat
 {
+    /// <summary>
+    /// Lets <see cref="Document.Load(string)"/> read and <see cref="Document.Save(string)"/> write Markdown. Call it once at
+    /// startup; calling it again changes nothing.
+    /// </summary>
+    public static void Register()
+    {
+        DocumentFormatRegistry.Register(new(DocumentFormatKind.Markdown, Read, (document, path) => Save(document, path)));
+
+        static Document Read(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
+        {
+            using MemoryStream stream = new(bytes, writable: false);
+            return Load(stream, out warnings);
+        }
+    }
+
     /// <summary>Reads Markdown text.</summary>
     public static Document Parse(string markdown, MarkdownLoadOptions? options = null)
     {

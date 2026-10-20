@@ -6,7 +6,7 @@ pictures, headers and footers, notes, fields, comments and tracked changes, with
 ```csharp
 using Egap.Documents;
 
-Document doc = Document.Load("report.docx");                      // DOCX, DOTX, DOCM, HTML or Markdown, told apart by content
+Document doc = Document.Load("report.docx");                      // any format Egap reads, told apart by content
 foreach (Paragraph p in doc.Descendants<Paragraph>())
 {
     Console.WriteLine($"{p.ListLabel?.Text} {p.GetText()}");    // list labels computed as Word numbers them
@@ -22,6 +22,19 @@ IReadOnlyList<ConversionWarning> dropped = doc.Save("report.md"); // the format 
 
 DOCX to DOCX is lossless: what the model does not name travels along in each node's extension data. Saving to a format that
 cannot hold something, such as Markdown, returns a warning for each thing left out.
+
+`Document.Load` and `Save` know DOCX and plain text by themselves. HTML and Markdown join them once you register them at
+startup; until then, loading such a file throws a `NotSupportedException` that names the call to make. `Document.Identify`
+tells which format a file is in without loading it, so a program can say what a file needs.
+
+```csharp
+using Egap.Documents;
+
+HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
+MarkdownFormat.Register();
+DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Html, Markdown, Text, DoclingJson or Unknown
+Document notes = TextFormat.Load("notes.txt");                    // one paragraph per line
+```
 
 ## Format options
 

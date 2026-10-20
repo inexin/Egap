@@ -16,12 +16,95 @@ public sealed class TextSaveOptions
 }
 
 /// <summary>
-/// The document as plain text in reading order, for search and indexing (Phase 6 Build Plan task 8c): one line per
+/// Plain text read line by line into paragraphs, and the document written as plain text in reading order, for search and indexing (Phase 6 Build Plan task 8c): one line per
 /// paragraph, list labels before their text with a tab, table rows as tab-separated cells, text boxes after the paragraph
 /// they are anchored in, equations as their text. Field codes, deleted and hidden text, comments and pictures are left out.
 /// </summary>
 public static class TextFormat
 {
+    /// <summary>
+    /// Reads plain text: each line becomes a paragraph, a tab a tab and a form feed a page break. Line ends may be CR LF, LF
+    /// or CR.
+    /// </summary>
+    public static Document Parse(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        Document document = new();
+        Body body = document.AddSection().Body;
+        ReadOnlySpan<char> remaining = text;
+        while (true)
+        {
+            // Only CR and LF end a line: a form feed is a page break inside one.
+            int end = remaining.IndexOfAny('\r', '\n');
+            ReadOnlySpan<char> rest = end < 0 ? remaining : remaining[..end];
+            Paragraph paragraph = body.AddParagraph();
+            AddLine(paragraph, rest);
+            if (end < 0)
+            {
+                break;
+            }
+
+            remaining = remaining[(remaining[end] == '\r' && end + 1 < remaining.Length && remaining[end + 1] == '\n' ? end + 2 : end + 1)..];
+        }
+
+        // A file's last line end closes its last line; it does not start an empty paragraph.
+        if (text.EndsWith('\n') || text.EndsWith('\r'))
+        {
+            body.Blocks.RemoveAt(body.Blocks.Count - 1);
+        }
+
+        return document;
+    }
+
+    private static void AddLine(Paragraph paragraph, ReadOnlySpan<char> rest)
+    {
+        while (!rest.IsEmpty)
+        {
+            int stop = rest.IndexOfAny('\t', '\f');
+            if (stop < 0)
+            {
+                paragraph.AddRun(rest.ToString());
+                return;
+            }
+
+            if (stop > 0)
+            {
+                paragraph.AddRun(rest[..stop].ToString());
+            }
+
+            if (rest[stop] == '\t')
+            {
+                paragraph.AddTab();
+            }
+            else
+            {
+                paragraph.AddBreak(BreakKind.Page);
+            }
+
+            rest = rest[(stop + 1)..];
+        }
+    }
+
+    /// <summary>Reads a plain-text file, as UTF-8 unless a byte order mark names UTF-16 or UTF-32. See <see cref="Parse(string)"/>.</summary>
+    public static Document Load(string path)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        Document document = Parse(File.ReadAllText(path, Encoding.UTF8));
+        document.FileName = path;
+        return document;
+    }
+
+    /// <summary>
+    /// Reads plain text from a stream, which is left open, as UTF-8 unless a byte order mark names UTF-16 or UTF-32. See
+    /// <see cref="Parse(string)"/>.
+    /// </summary>
+    public static Document Load(Stream stream)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        using StreamReader reader = new(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+        return Parse(reader.ReadToEnd());
+    }
+
     /// <summary>The document as plain text.</summary>
     public static string ToText(Document document, TextSaveOptions? options = null)
     {

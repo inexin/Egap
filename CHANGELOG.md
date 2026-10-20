@@ -60,7 +60,19 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
   `"page-{page:00}.png"`.
 
-## Egap.Documents 1.2.0 (unreleased)
+## Egap.Documents 2.0.0 (unreleased)
+
+### Formats
+- Breaking: `Document.Load` and `Document.Save` read and write HTML and Markdown only after `HtmlFormat.Register()` and
+  `MarkdownFormat.Register()`. Without the call they throw a `NotSupportedException` that names the package and the call.
+- Breaking: a `.txt` file loads as plain text, one paragraph per line, instead of as Markdown. Text without an extension
+  that does not start with a tag still loads as Markdown.
+- `Document.Identify` tells PDF, DOCX, HTML, Markdown, plain text and Docling JSON apart without loading the file and
+  returns a `DocumentFormatKind`.
+- `TextFormat.Parse` and `TextFormat.Load` read plain text: a paragraph per line, tabs and form feeds kept as tabs and
+  page breaks.
+- Saving to `.pdf` with `Document.Save` throws a `NotSupportedException` naming `SaveAsPdf` instead of an
+  `ArgumentException`.
 
 ### Barcodes
 - `DocumentBuilder.InsertBarcode` writes a barcode as an SVG picture, drawn as vectors by layout and PDF export, with a PNG
