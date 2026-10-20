@@ -11,7 +11,7 @@ namespace Egap.Documents.Html;
 internal sealed class HtmlStyle
 {
     /// <summary>Points per CSS pixel.</summary>
-    public const double PointsPerPixel = 0.75;
+    public const double PointsPerPixel = ImageSize.PointsPerPixel;
 
     /// <summary>The medium font size: 16 CSS pixels.</summary>
     public const double MediumSize = 12;

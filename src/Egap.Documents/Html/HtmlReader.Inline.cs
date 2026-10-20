@@ -444,7 +444,7 @@ internal sealed partial class HtmlReader
         string contentType = ContentTypeOf(bytes, source!);
         double? width = style.Length("width", flow.Width);
         double? height = style.Length("height", flow.Width);
-        (double intrinsicWidth, double intrinsicHeight) = IntrinsicSize(bytes);
+        (double intrinsicWidth, double intrinsicHeight) = ImageSize.Intrinsic(bytes);
         if (width is null && height is null)
         {
             (width, height) = (intrinsicWidth, intrinsicHeight);
@@ -514,20 +514,6 @@ internal sealed partial class HtmlReader
             _ when source.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) => "image/svg+xml",
             _ => "application/octet-stream",
         };
-    }
-
-    /// <summary>A picture's size in points at 96 pixels an inch, from its header; 100 by 100 when Egami cannot tell.</summary>
-    internal static (double Width, double Height) IntrinsicSize(ReadOnlyMemory<byte> bytes)
-    {
-        try
-        {
-            Egami.Drawing.EncodedImage image = Egami.Drawing.EncodedImage.Load(bytes);
-            return (image.Width * HtmlStyle.PointsPerPixel, image.Height * HtmlStyle.PointsPerPixel);
-        }
-        catch (Exception e) when (e is Egami.EgamiException or ArgumentException or InvalidDataException or NotSupportedException)
-        {
-            return (75, 75);
-        }
     }
 
     // ---- Tables -------------------------------------------------------------------------------------------------------
