@@ -11,7 +11,10 @@ Egap.Pdf.Conversion. It draws, decodes images and reads fonts through [Egami](ht
   or docs from GPL, LGPL or AGPL projects or from code without a license. If you translate code closely from a permissive
   library, add its notice to `THIRD-PARTY-NOTICES.md` in the same change.
 - **Managed .NET 10 only.** No P/Invoke, no native binaries, no wrappers around C or C++ libraries. .NET's own APIs are fine.
-  `src/` takes no package references except Egami's packages, .NET's own packages and build-time analyzers.
+  Egap.Pdf and Egap.Documents take no package references except Egami's packages, .NET's own packages and build-time
+  analyzers. A format add-on (`Egap.Documents.<Format>`) may also reference a managed MIT, BSD or Apache-2.0 package that
+  the maintainer approved by name; the approved packages are listed in [docs/references.md](docs/references.md) with their
+  licence and minimum version, and their versions are set in `Directory.Packages.props`. Ask before adding any other.
 - **No comparisons with other PDF libraries** in this repository (output, speed or conformance).
 - **Never publish.** Don't push to NuGet, push tags, create releases or change GitHub Actions settings, unless the maintainer
   explicitly asks for that.

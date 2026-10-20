@@ -42,7 +42,9 @@ Fuzzing: see [tests/Egap.Pdf.Fuzz/README.md](tests/Egap.Pdf.Fuzz/README.md).
 - Format with `dotnet format Egap.slnx` before committing; the build treats warnings as errors.
 - New public API needs XML docs and an entry in `PublicAPI.Unshipped.txt`. `PublicAPI.Shipped.txt` holds released API:
   changing or removing anything in it is a breaking change and needs a maintainer's agreement first.
-- `src/` takes no package references except build-time analyzers and Egami's own packages.
+- Egap.Pdf and Egap.Documents take no package references except build-time analyzers, Egami's own packages and .NET's own
+  packages. A format add-on (`Egap.Documents.<Format>`) may also use a managed MIT, BSD or Apache-2.0 package the maintainer
+  approved by name, listed in [docs/references.md](docs/references.md). Propose any new one in an issue first.
 - Changes to hot code (parsing, filters, rendering) need benchmark results. They must not be slower or allocate more than
   `main`.
 - New test files must have a clear license.
