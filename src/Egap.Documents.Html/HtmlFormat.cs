@@ -14,7 +14,10 @@ public sealed class HtmlLoadOptions
     /// </summary>
     public Func<Uri, byte[]?>? ResourceResolver { get; init; }
 
-    /// <summary>The encoding of HTML given as bytes when it does not say; sniffed by the HTML rules when null.</summary>
+    /// <summary>
+    /// The encoding of HTML given as bytes when neither a byte order mark nor a meta charset names one; when null, UTF-8 if the
+    /// bytes are valid UTF-8, else windows-1252.
+    /// </summary>
     public string? Encoding { get; init; }
 
     /// <summary>The media the style sheets are applied for: "print" (the default) or "screen".</summary>
@@ -47,9 +50,9 @@ public sealed class HtmlSaveOptions
 }
 
 /// <summary>
-/// HTML read into the model (Phase 6 Build Plan tasks 24 and 25): parsed as browsers parse it, styled through Egami.Css's
-/// cascade with HTML's default style sheet, and the computed styles mapped onto paragraphs, runs, lists and tables. Flexbox
-/// and grid are read as stacked blocks, with a warning (design Q15).
+/// HTML read into the model: parsed by AngleSharp as browsers parse it, styled through Egami.Css's cascade with HTML's
+/// default style sheet, and the computed styles mapped onto paragraphs, runs, lists and tables. Flexbox and grid are read as
+/// stacked blocks, with a warning.
 /// </summary>
 public static partial class HtmlFormat
 {
@@ -84,7 +87,7 @@ public static partial class HtmlFormat
             throw new DocumentLimitException($"The page is larger than the limit of {options.Limits.MaxPartSize} bytes.");
         }
 
-        HtmlDocument dom = HtmlTreeBuilder.Parse(html);
+        HtmlDocument dom = HtmlParsing.Parse(html);
         return HtmlReader.Read(dom, options, out warnings);
     }
 
@@ -144,7 +147,7 @@ public static partial class HtmlFormat
             throw new DocumentLimitException($"The page is larger than the limit of {options.Limits.MaxPartSize} bytes.");
         }
 
-        HtmlDocument dom = HtmlTreeBuilder.Parse(html, out _, options.Encoding);
+        HtmlDocument dom = HtmlParsing.Parse(html, options.Encoding);
         return HtmlReader.Read(dom, options, out warnings);
     }
 }

@@ -18,14 +18,17 @@
     <ProjectReference Include="../Egap.Documents/Egap.Documents.csproj" />
   </ItemGroup>
 
-  <!-- Egami.Css runs the cascade, @page rules and margin boxes. -->
+  <!--
+    AngleSharp (MIT, approved in docs/references.md) parses; Egami.Css runs the cascade, @page rules and margin boxes over the
+    parsed tree.
+  -->
   <ItemGroup>
+    <PackageReference Include="AngleSharp" />
     <PackageReference Include="Egami.Css" />
   </ItemGroup>
 
-  <!-- HTML named character references (WHATWG, CC BY 4.0; THIRD-PARTY-NOTICES.md) and HTML's default style sheet. -->
+  <!-- HTML's default style sheet. -->
   <ItemGroup>
-    <EmbeddedResource Include="entities.txt" LogicalName="Egap.Documents.Html.entities.txt" />
     <EmbeddedResource Include="html.css" LogicalName="Egap.Documents.Html.html.css" />
     <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" />
   </ItemGroup>

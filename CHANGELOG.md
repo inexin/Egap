@@ -93,6 +93,16 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `PdfConvert.FromHtml` and `PdfStamp.Html` come from this package as extension members, so the calls compile unchanged.
   `PdfConvert.FromHtml` lays out HTML bands without `Register()`.
 
+### AngleSharp
+- HTML is parsed by [AngleSharp](https://github.com/AngleSharp/AngleSharp) (MIT) instead of Egap's own tokenizer and tree
+  builder, which are gone, with the entity table. The package depends on AngleSharp 1.8.5 or later. AngleSharp fetches
+  nothing: images and style sheets still come only through `HtmlLoadOptions.ResourceResolver`.
+- `HtmlLoadOptions.Encoding` is now the fallback for bytes without a byte order mark or a meta charset, as its
+  documentation said; before, it also overrode a meta charset.
+- Pages nested more than 4,096 elements deep, which only hostile input has, are read with the deeper start tags left out
+  and all text kept, so they take no longer to read than a flat page.
+- Loading speed is unchanged within 9 % either way, with 1 to 2 % less memory.
+
 ## Egap.Documents 2.0.0 (unreleased)
 
 ### Markdown and HTML move out

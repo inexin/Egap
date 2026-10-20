@@ -91,8 +91,10 @@ public class HtmlWriterTests
     {
         string html = HtmlFormat.ToHtml(Sample());
         List<string> errors = [];
+        AngleSharp.Html.Parser.HtmlParser parser = new();
+        parser.Error += (_, e) => errors.Add(((AngleSharp.Html.Dom.Events.HtmlErrorEvent)e).Message);
 
-        HtmlTreeBuilder.Parse(html, errors: errors);
+        parser.ParseDocument(html);
 
         Assert.Empty(errors);
     }

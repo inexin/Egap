@@ -2,65 +2,29 @@ using Egami.Css;
 
 namespace Egap.Documents.Html;
 
-/// <summary>A node of the small HTML DOM the parser builds (Phase 6 design Q14, Build Plan task 24).</summary>
+/// <summary>
+/// A node of the small tree the reader and the cascade work on, copied from AngleSharp's parse: built by appending only, so
+/// each node knows its place among its siblings.
+/// </summary>
 internal abstract class HtmlNode
 {
     private readonly List<HtmlNode> children = [];
 
-    /// <summary>The parent node, or null for a document, a fragment or a detached node.</summary>
+    /// <summary>The parent node, or null for a document or a fragment.</summary>
     public HtmlNode? Parent { get; private set; }
 
     /// <summary>The child nodes in order.</summary>
     public IReadOnlyList<HtmlNode> Children => children;
 
     /// <summary>The node's index among its parent's children, or -1 when it has no parent.</summary>
-    public int Index => Parent is null ? -1 : Parent.children.IndexOf(this);
+    public int Index { get; private set; } = -1;
 
-    /// <summary>Adds <paramref name="node"/> as the last child, merging text into a text node already last.</summary>
+    /// <summary>Adds <paramref name="node"/>, which has no parent yet, as the last child.</summary>
     public void Append(HtmlNode node)
     {
-        Insert(children.Count, node);
-    }
-
-    /// <summary>Inserts <paramref name="node"/> before <paramref name="reference"/> (or last when it is null).</summary>
-    public void InsertBefore(HtmlNode node, HtmlNode? reference)
-    {
-        Insert(reference is null ? children.Count : children.IndexOf(reference), node);
-    }
-
-    /// <summary>Adds text before <paramref name="reference"/> (or last), joining a text node next to it as the DOM does.</summary>
-    public void InsertText(string text, HtmlNode? reference)
-    {
-        int index = reference is null ? children.Count : children.IndexOf(reference);
-        if (index > 0 && children[index - 1] is HtmlText previous)
-        {
-            previous.Append(text);
-            return;
-        }
-
-        Insert(index, new HtmlText(text));
-    }
-
-    /// <summary>Takes <paramref name="node"/> out of its parent.</summary>
-    public static void Detach(HtmlNode node)
-    {
-        if (node.Parent is { } parent)
-        {
-            parent.children.Remove(node);
-            node.Parent = null;
-        }
-    }
-
-    /// <summary>Moves every child of this node to the end of <paramref name="target"/>.</summary>
-    public void MoveChildrenTo(HtmlNode target)
-    {
-        foreach (HtmlNode child in children)
-        {
-            child.Parent = target;
-            target.children.Add(child);
-        }
-
-        children.Clear();
+        node.Parent = this;
+        node.Index = children.Count;
+        children.Add(node);
     }
 
     /// <summary>The parent, its parent and so on up to the root.</summary>
@@ -89,13 +53,6 @@ internal abstract class HtmlNode
             }
         }
     }
-
-    private void Insert(int index, HtmlNode node)
-    {
-        Detach(node);
-        node.Parent = this;
-        children.Insert(index, node);
-    }
 }
 
 /// <summary>Whether a document renders in quirks mode, limited quirks or no quirks (WHATWG 13.2.6.4.1).</summary>
@@ -122,7 +79,7 @@ internal sealed class HtmlDocument : HtmlNode
     public HtmlElement? Head => DocumentElement?.Children.OfType<HtmlElement>().FirstOrDefault(e => e.IsHtml("head"));
 }
 
-/// <summary>A document fragment: a template's contents or a fragment parse's result.</summary>
+/// <summary>A document fragment: a template's contents.</summary>
 internal sealed class HtmlFragment : HtmlNode
 {
 }
@@ -152,30 +109,9 @@ internal sealed class HtmlProcessingInstruction(string target, string data) : Ht
 }
 
 /// <summary>Text.</summary>
-internal sealed class HtmlText : HtmlNode
+internal sealed class HtmlText(string data) : HtmlNode
 {
-    private System.Text.StringBuilder? builder;
-    private string data;
-
-    public HtmlText(string data)
-    {
-        this.data = data;
-    }
-
-    public string Data => builder is null ? data : data = Flush();
-
-    public void Append(string text)
-    {
-        builder ??= new System.Text.StringBuilder(data);
-        builder.Append(text);
-    }
-
-    private string Flush()
-    {
-        string value = builder!.ToString();
-        builder = null;
-        return value;
-    }
+    public string Data { get; } = data;
 }
 
 /// <summary>An element: HTML, SVG or MathML, with its attributes; it is what Egami.Css's selectors match.</summary>
