@@ -83,6 +83,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `FormattingDropped` warning.
 - The writer puts a list item's first block on the marker line, such as a code fence right after `1.`, and writes a
   no-break space at the start of a line as `&#160;`, so other readers read the output as meant.
+- Loading speed against Egap.Documents 1.x's own parser, same machine and session: 1 KB files take 22 % longer (94 to
+  115 us) with 13 % less memory; 45 KB files 2 % longer with 11 % less memory; 900 KB files 4 % longer with 2 % more
+  memory. Design Q7 accepts up to 25 %.
 
 ## Egap.Documents.Html 2.0.0 (unreleased)
 
@@ -109,7 +112,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   documentation said; before, it also overrode a meta charset.
 - Pages nested more than 4,096 elements deep, which only hostile input has, are read with the deeper start tags left out
   and all text kept, so they take no longer to read than a flat page.
-- Loading speed is unchanged within 9 % either way, with 1 to 2 % less memory.
+- Loading speed against Egap.Documents 1.x's own parser, same machine and session: within 2 % for text and 1 KB
+  pages, 11 % faster for 900 KB pages read from bytes and up to 6 % slower for 45 KB ones, with 1 to 2 % less memory.
 
 ## Egap.Documents 2.0.0 (unreleased)
 
