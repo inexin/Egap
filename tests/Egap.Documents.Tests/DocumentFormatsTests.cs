@@ -71,10 +71,10 @@ public sealed class DocumentFormatsTests : IDisposable
     }
 
     [Theory]
-    [InlineData("%PDF-1.7\n%âã", null, DocumentFormatKind.Pdf)]
+    [InlineData("%PDF-1.7\n%\u00e2\u00e3", null, DocumentFormatKind.Pdf)]
     [InlineData("junk before the header %PDF-2.0\n", "scan.bin", DocumentFormatKind.Pdf)]
     [InlineData("{ \"schema_name\": \"DoclingDocument\", \"version\": \"1.3.0\" }", "doc.json", DocumentFormatKind.DoclingJson)]
-    [InlineData("﻿{\"schema_name\":\"DoclingDocument\"}", null, DocumentFormatKind.DoclingJson)]
+    [InlineData("\uFEFF{\"schema_name\":\"DoclingDocument\"}", null, DocumentFormatKind.DoclingJson)]
     [InlineData("{ \"name\": \"other\" }", "data.json", DocumentFormatKind.Markdown)]
     [InlineData("  <!DOCTYPE html><p>x</p>", null, DocumentFormatKind.Html)]
     [InlineData("<p>x</p>", "page.md", DocumentFormatKind.Markdown)]
