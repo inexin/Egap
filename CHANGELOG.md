@@ -71,8 +71,16 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   returns a `DocumentFormatKind`.
 - `TextFormat.Parse` and `TextFormat.Load` read plain text: a paragraph per line, tabs and form feeds kept as tabs and
   page breaks.
-- Saving to `.pdf` with `Document.Save` throws a `NotSupportedException` naming `SaveAsPdf` instead of an
-  `ArgumentException`.
+- `Document.Load` reads PDF (as `PdfToDocument` does) and Docling JSON, and `Document.Save` writes `.pdf` (as `SaveAsPdf`
+  does).
+
+### Egap.Pdf.Conversion folded in
+- Breaking: everything Egap.Pdf.Conversion held now ships in Egap.Documents, which references Egap.Pdf: PDF export
+  (`SaveAsPdf`, `ToPdf`, `PdfExportOptions`), `PdfConvert`, PDF to document (`PdfToDocument`), layout analysis
+  (`PdfLayoutAnalyzer`), tagging (`PdfAutoTagger`), `TableCsv`, `PageBand` and `HtmlStamp`. These types move from
+  namespace `Egap.Pdf.Conversion` to `Egap.Documents.Pdf`; the Docling types (`DoclingJson`, `DoclingJsonOptions`,
+  `DoclingImage`, `DoclingImageMode`) move to `Egap.Documents`. Replace the package reference and the using line.
+  Egap.Pdf.Conversion gets no new version.
 
 ### Barcodes
 - `DocumentBuilder.InsertBarcode` writes a barcode as an SVG picture, drawn as vectors by layout and PDF export, with a PNG
@@ -145,8 +153,6 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   running past its area, a missing glyph, a font with no stand-in) instead of degrading.
 - `FontSettings.Portable` uses only embedded fonts and the bundled substitutes, so layout and, with a deterministic save,
   the PDF bytes are the same on every machine.
-
-## Egap.Pdf.Conversion 1.2.0 (unreleased)
 
 ### Form fields
 - `PdfExportOptions.FormFields` turns HTML form controls and DOCX content controls (plain text, date, drop-down list, combo

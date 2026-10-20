@@ -2,7 +2,7 @@ namespace Egap.Documents.Layout;
 
 /// <summary>
 /// Told what <see cref="PageLayout.Draw(Egami.Drawing.Canvas, LayoutDrawObserver?)"/> is drawing, so the target canvas can
-/// group its output: Egap.Pdf.Conversion marks each line and picture with its structure element and the rest as artifacts
+/// group its output: PDF export marks each line and picture with its structure element and the rest as artifacts
 /// (Phase 6 Build Plan task 22). Every Begin is matched by its End, and calls nest as the boxes do.
 /// </summary>
 public abstract class LayoutDrawObserver

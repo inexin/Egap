@@ -1,3 +1,5 @@
+using Egap.Documents.Pdf;
+
 namespace Egap.Documents;
 
 /// <summary>Loading and saving without naming the format, and telling formats apart.</summary>
@@ -8,8 +10,8 @@ public sealed partial class Document
 
     /// <summary>
     /// Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
-    /// <see cref="Identify(Stream, string?)"/>). DOCX and plain text are built in; HTML and Markdown need their add-on package
-    /// and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>.
+    /// <see cref="Identify(Stream, string?)"/>). DOCX, PDF, plain text and Docling JSON are built in; HTML and Markdown
+    /// need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>.
     /// </summary>
     /// <exception cref="DocumentException">The file is not one Egap can read.</exception>
     /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
@@ -53,9 +55,9 @@ public sealed partial class Document
     }
 
     /// <summary>
-    /// Saves the document in the format its file extension names: .docx, .dotx, .docm and .dotm as Word's, .txt as plain
-    /// text, and, once their add-on is registered, .html and .htm as HTML and .md and .markdown as Markdown. PDF is
-    /// <c>SaveAsPdf</c> in Egap.Pdf.Conversion.
+    /// Saves the document in the format its file extension names: .docx, .dotx, .docm and .dotm as Word's, .pdf as PDF (as
+    /// <see cref="PdfExport.SaveAsPdf(Document, string, PdfExportOptions?)"/> writes it), .txt as plain text, and, once their
+    /// add-on is registered, .html and .htm as HTML and .md and .markdown as Markdown.
     /// </summary>
     /// <returns>What the format could not hold.</returns>
     /// <exception cref="ArgumentException">The extension names no format Egap.Documents writes.</exception>

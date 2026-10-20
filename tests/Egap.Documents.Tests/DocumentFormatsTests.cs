@@ -1,6 +1,9 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Egap.Documents.Pdf;
+using Egap.Pdf;
+
 namespace Egap.Documents.Tests;
 
 /// <summary>Loading and saving without naming the format, telling formats apart, and Find.</summary>
@@ -33,6 +36,7 @@ public sealed class DocumentFormatsTests : IDisposable
     [InlineData("a.html")]
     [InlineData("a.md")]
     [InlineData("a.txt")]
+    [InlineData("a.pdf")]
     public void SaveByExtensionAndLoadBack(string name)
     {
         string path = Path.Combine(folder, name);
@@ -61,10 +65,10 @@ public sealed class DocumentFormatsTests : IDisposable
     }
 
     [Fact]
-    public void UnknownExtensionsAndPdfAreRefused()
+    public void UnknownExtensionsAndBinaryDataAreRefused()
     {
-        NotSupportedException pdf = Assert.Throws<NotSupportedException>(() => Sample().Save(Path.Combine(folder, "a.pdf")));
-        Assert.Contains("Egap.Pdf.Conversion", pdf.Message, StringComparison.Ordinal);
+        NotSupportedException docling = Assert.Throws<NotSupportedException>(() => Sample().Save(Path.Combine(folder, "a.json")));
+        Assert.Contains("DoclingJson.Write", docling.Message, StringComparison.Ordinal);
         Assert.Throws<ArgumentException>(() => Sample().Save(Path.Combine(folder, "a.xyz")));
         using MemoryStream binary = new([0x00, 0x01, 0x02, 0x03]);
         Assert.Throws<DocumentException>(() => Document.Load(binary));
@@ -104,13 +108,17 @@ public sealed class DocumentFormatsTests : IDisposable
     }
 
     [Fact]
-    public void FormatsThatNeedAnotherPackageNameIt()
+    public void PdfAndDoclingJsonLoadWithoutAnAddOn()
     {
-        string path = Path.Combine(folder, "a.pdf");
-        File.WriteAllText(path, "%PDF-1.7\n");
+        using MemoryStream pdf = new();
+        Sample().SaveAsPdf(pdf);
+        pdf.Position = 0;
+        string docling = DoclingJson.Write(PdfLayoutAnalyzer.Analyze(PdfDocument.Open(pdf.ToArray()), cancellationToken: TestContext.Current.CancellationToken));
+        using MemoryStream json = new(Encoding.UTF8.GetBytes(docling));
 
-        NotSupportedException e = Assert.Throws<NotSupportedException>(() => Document.Load(path));
-        Assert.Contains("Egap.Pdf.Conversion", e.Message, StringComparison.Ordinal);
+        Assert.Contains("Hello, world", Document.Load(pdf).GetText(), StringComparison.Ordinal);
+        Assert.Equal(DocumentFormatKind.DoclingJson, Document.Identify(json));
+        Assert.Contains("Hello, world", Document.Load(json).GetText(), StringComparison.Ordinal);
     }
 
     [Fact]

@@ -60,7 +60,7 @@ pdf.Save("statement-redacted.pdf");                      // written whole, so no
 
 ```csharp
 using Egap.Pdf;
-using Egap.Pdf.Conversion;
+using Egap.Documents.Pdf;
 
 using PdfDocument invoice = PdfConvert.FromFile("invoice.html", new PdfConvertOptions
 {

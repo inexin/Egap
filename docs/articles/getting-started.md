@@ -42,7 +42,7 @@ image.Save("page.png");
 
 ```csharp
 using Egap.Documents;
-using Egap.Pdf.Conversion;
+using Egap.Documents.Pdf;
 
 Document report = Document.Load("report.docx");
 report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true });

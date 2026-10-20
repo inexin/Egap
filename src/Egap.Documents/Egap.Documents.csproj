@@ -4,7 +4,7 @@
     <RootNamespace>Egap.Documents</RootNamespace>
     <PackageId>Egap.Documents</PackageId>
     <VersionPrefix>1.2.0</VersionPrefix>
-    <Description>Flow documents for .NET: one editable document model with Markdown, DOCX and HTML readers and writers and a page layout engine that draws onto any Egami canvas.</Description>
+    <Description>Flow documents for .NET: one editable document model with Markdown, DOCX and HTML readers and writers, a page layout engine that draws onto any Egami canvas, PDF export with links, outline and tags, and PDF pages analysed back into documents.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTrimmable>true</IsTrimmable>
     <IsAotCompatible>true</IsAotCompatible>
@@ -16,10 +16,13 @@
   </ItemGroup>
 
   <!--
-    Pages are laid out with Egami's fonts and drawn on Egami's canvas (Phase 6 design Q11, Q13); Egami.Fonts.Substitutes is
-    the last stop of the font chain (Q12). Never Egap.Pdf (hub decision 2026-10-11): PDF export lives in Egap.Pdf.Conversion
-    (Q2).
+    Pages are laid out with Egami's fonts and drawn on Egami's canvas; Egami.Fonts.Substitutes is the last stop of the font
+    chain. Egap.Pdf for PDF export and PDF to document, which live here since 2.0.0 (namespace Egap.Documents.Pdf).
   -->
+  <ItemGroup>
+    <ProjectReference Include="../Egap.Pdf/Egap.Pdf.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Egami.Drawing" />
     <PackageReference Include="Egami.Barcodes" />
@@ -40,6 +43,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Egap.Documents.Tests" />
     <InternalsVisibleTo Include="Egap.Documents.Fuzz" />
+    <InternalsVisibleTo Include="Egap.Pdf.Fuzz" />
     <InternalsVisibleTo Include="Compare" />
     <InternalsVisibleTo Include="Compare.Tests" />
     <InternalsVisibleTo Include="Compare.Benchmarks" />

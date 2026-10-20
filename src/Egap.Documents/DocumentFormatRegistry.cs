@@ -1,4 +1,8 @@
 using System.Collections.Concurrent;
+using System.Text;
+
+using Egap.Documents.Pdf;
+using Egap.Pdf;
 
 namespace Egap.Documents;
 
@@ -19,6 +23,10 @@ internal static class DocumentFormatRegistry
     {
         [DocumentFormatKind.Docx] = new(DocumentFormatKind.Docx, ReadDocx, (document, path) => DocxFormat.Save(document, path)),
         [DocumentFormatKind.Text] = new(DocumentFormatKind.Text, ReadText, (document, path) => TextFormat.Save(document, path)),
+        [DocumentFormatKind.Pdf] = new(DocumentFormatKind.Pdf, ReadPdf, SavePdf),
+
+        // Docling JSON holds page layouts, which a document is read from; a document is not written back as one.
+        [DocumentFormatKind.DoclingJson] = new(DocumentFormatKind.DoclingJson, ReadDocling, null),
     };
 
     /// <summary>Adds or replaces a format; registering the same format again changes nothing.</summary>
@@ -61,6 +69,25 @@ internal static class DocumentFormatRegistry
         return TextFormat.Load(stream);
     }
 
+    private static Document ReadPdf(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
+    {
+        warnings = [];
+        using PdfDocument pdf = PdfDocument.Open(bytes);
+        return PdfToDocument.Convert(pdf);
+    }
+
+    private static IReadOnlyList<ConversionWarning> SavePdf(Document document, string path)
+    {
+        document.SaveAsPdf(path);
+        return [];
+    }
+
+    private static Document ReadDocling(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
+    {
+        warnings = [];
+        return DoclingJson.ToDocument(Encoding.UTF8.GetString(bytes.AsSpan(bytes is [0xEF, 0xBB, 0xBF, ..] ? 3 : 0)));
+    }
+
     private static string Name(DocumentFormatKind kind) => kind switch
     {
         DocumentFormatKind.Pdf => "PDF",
@@ -76,8 +103,7 @@ internal static class DocumentFormatRegistry
     {
         DocumentFormatKind.Html => "needs the Egap.Documents.Html package: add it and call HtmlFormat.Register() once at startup.",
         DocumentFormatKind.Markdown => "needs the Egap.Documents.Markdown package: add it and call MarkdownFormat.Register() once at startup.",
-        DocumentFormatKind.Pdf => "goes through PdfConvert and SaveAsPdf in the Egap.Pdf.Conversion package.",
-        DocumentFormatKind.DoclingJson => "goes through the Docling types in the Egap.Pdf.Conversion package.",
+        DocumentFormatKind.DoclingJson => "is not supported: Docling JSON holds page layouts, which DoclingJson.Write writes from PdfLayoutAnalyzer's.",
         _ => "is not supported.",
     };
 }
