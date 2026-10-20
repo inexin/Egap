@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Egap.Documents.Benchmarks/Egap.Documents.Benchmarks.csproj" />
     <Project Path="benchmarks/Egap.Pdf.Benchmarks/Egap.Pdf.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/">

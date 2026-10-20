@@ -34,7 +34,7 @@ docfx docs/docfx.json                             # the docs site, into docs/_si
 - Run only the tests for the area you change while working (`dotnet test --filter FullyQualifiedName~Redaction`), then the
   whole solution before landing.
 - Hot code (parsing, filters, rendering, layout) must not get slower or allocate more than `main`; run the benchmarks in
-  `benchmarks/Egap.Pdf.Benchmarks` and include the before and after numbers.
+  `benchmarks/Egap.Pdf.Benchmarks` (`benchmarks/Egap.Documents.Benchmarks` for document loading) and include the before and after numbers.
 - **Fuzzing:** runs are 10 minutes (`tools/fuzz-afl.py`, see `tests/Egap.Pdf.Fuzz/README.md`). Longer runs only when the
   maintainer asks: they load the machine and skew other sessions' speed measurements.
 - To build against an unreleased Egami commit, use `tools/pack-egami.py` (see the README's Building section); never commit

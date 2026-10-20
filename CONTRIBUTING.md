@@ -31,7 +31,8 @@ To try an unreleased Egami commit, `python tools/pack-egami.py --update` packs a
 `../egami-feed` and points `Directory.Packages.props` at it; then build with
 `dotnet build -p:RestoreAdditionalProjectSources=../egami-feed`.
 
-Benchmarks: `dotnet run -c Release --project benchmarks/Egap.Pdf.Benchmarks -- --filter "*"`.
+Benchmarks: `dotnet run -c Release --project benchmarks/Egap.Pdf.Benchmarks -- --filter "*"` for PDF, and
+`benchmarks/Egap.Documents.Benchmarks` the same way for loading HTML and Markdown.
 
 Fuzzing: see [tests/Egap.Pdf.Fuzz/README.md](tests/Egap.Pdf.Fuzz/README.md).
 
