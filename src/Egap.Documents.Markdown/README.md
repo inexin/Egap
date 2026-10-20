@@ -1,8 +1,8 @@
 # Egap.Documents.Markdown
 
 Markdown for [Egap.Documents](https://www.nuget.org/packages/Egap.Documents): CommonMark and GitHub Markdown read into the
-document model and written from it, with front matter, images, footnotes and task lists, and Markdown to PDF. Fully managed
-and MIT-licensed.
+document model and written from it, with front matter, images, footnotes and task lists, and Markdown to PDF. Parsing is
+[Markdig](https://github.com/xoofx/markdig)'s; fully managed and MIT-licensed.
 
 ```csharp
 using Egap.Documents;

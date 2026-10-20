@@ -122,10 +122,10 @@ public sealed class MarkdownSaveOptions
 }
 
 /// <summary>
-/// Reads Markdown into a <see cref="Document"/> and writes documents as GitHub Flavored Markdown (Phase 6 design Q17):
-/// CommonMark 0.31 with GitHub's tables, task lists, strikethrough, autolinks and footnotes, and YAML front matter. Headings take the Heading 1 to 6 styles, code the HTML Code
-/// and HTML Preformatted styles, lists Word list definitions built from their nesting. Writing says in warnings what Markdown
-/// cannot hold.
+/// Reads Markdown into a <see cref="Document"/> and writes documents as GitHub Flavored Markdown: CommonMark 0.31 with
+/// GitHub's tables, task lists, strikethrough, autolinks and footnotes, and YAML front matter, parsed by Markdig. Headings
+/// take the Heading 1 to 6 styles, code the HTML Code and HTML Preformatted styles, lists Word list definitions built from
+/// their nesting. Writing says in warnings what Markdown cannot hold.
 /// </summary>
 public static partial class MarkdownFormat
 {
@@ -156,9 +156,15 @@ public static partial class MarkdownFormat
     {
         ArgumentNullException.ThrowIfNull(markdown);
         options ??= new MarkdownLoadOptions();
-        MdDocument syntax = BlockParser.Parse(markdown, options.Extensions);
+        if (MarkdownPipelines.TryParse(markdown, options.Extensions) is not { } syntax)
+        {
+            // Markdig refuses quotes, lists or brackets nested hundreds deep, which only hostile input has: such a file is
+            // read as plain text, so no text is lost and reading still never fails.
+            warnings = [new ConversionWarning(ConversionWarningKind.FormattingDropped, "Markdown nested too deeply to read as structure was read as plain text", 1)];
+            return TextFormat.Parse(markdown);
+        }
 
-        // Every CommonMark and GitHub construct maps onto the model, so reading has nothing to report yet.
+        // Every CommonMark and GitHub construct maps onto the model, so reading has nothing more to report.
         warnings = [];
         return MarkdownReader.Build(syntax, options);
     }

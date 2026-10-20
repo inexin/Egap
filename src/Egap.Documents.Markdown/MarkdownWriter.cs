@@ -338,6 +338,10 @@ internal sealed class MarkdownWriter
         OutBlock? previous = null;
         Dictionary<int, string> markers = [];
         Dictionary<int, (int List, char Char)> lastAtDepth = [];
+
+        // An item opened by an empty paragraph waits for its marker line: the item's next block goes on it, as "1. ```".
+        // A marker alone on its line with the block under it is valid CommonMark too, but parsers differ on it.
+        int pendingMarker = -1;
         foreach (OutBlock block in blocks)
         {
             IReadOnlyList<MarkdownFrame> frames = block.Frames;
@@ -345,6 +349,12 @@ internal sealed class MarkdownWriter
             while (common < open.Count && common < frames.Count && open[common].Id == frames[common].Id)
             {
                 common++;
+            }
+
+            bool joins = pendingMarker >= 0 && common == frames.Count && open.Count == frames.Count && block.Lines.Count > 0;
+            if (pendingMarker >= 0 && !joins)
+            {
+                lines.Add(Prefix(open, pendingMarker, isFirstLine: true, markers).TrimEnd());
             }
 
             if (previous is not null)
@@ -428,20 +438,24 @@ internal sealed class MarkdownWriter
                 lastAtDepth[i] = (frame.List, chosen[^1]);
             }
 
-            if (block.Lines.Count == 0)
-            {
-                lines.Add(Prefix(frames, common, isFirstLine: true, markers).TrimEnd());
-            }
-
+            int markerFrom = joins ? pendingMarker : common;
+            pendingMarker = block.Lines.Count == 0 ? common : -1;
             for (int j = 0; j < block.Lines.Count; j++)
             {
-                string prefix = Prefix(frames, common, j == 0, markers);
-                string line = block.Lines[j];
+                string prefix = Prefix(frames, markerFrom, j == 0, markers);
+
+                // A rule on the marker line is written with underscores, so "- ---" is not read as a rule of its own.
+                string line = joins && j == 0 && block.Kind == "hr" ? "___" : block.Lines[j];
                 lines.Add(line.Length == 0 ? prefix.TrimEnd() : prefix + line);
             }
 
             open = frames;
             previous = block;
+        }
+
+        if (pendingMarker >= 0)
+        {
+            lines.Add(Prefix(open, pendingMarker, isFirstLine: true, markers).TrimEnd());
         }
     }
 
@@ -1066,6 +1080,13 @@ internal sealed class MarkdownWriter
         }
 
         char c = line[0];
+
+        // White space other than spaces and tabs (a no-break space, say) as a character reference: some readers trim it.
+        if (char.IsWhiteSpace(c) && c is not ' ' and not '\t')
+        {
+            return "&#" + ((int)c).ToString(System.Globalization.CultureInfo.InvariantCulture) + ";" + line[1..];
+        }
+
         if (c is '#' or '+' or '-' or '=' or '>')
         {
             return "\\" + line;

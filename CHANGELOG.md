@@ -71,6 +71,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `MarkdownFormat.ToMarkdown(document)` still works.
 - `PdfConvert.FromMarkdown` comes from this package as an extension member, so the call compiles unchanged.
 
+### Markdig
+- Markdown is parsed by [Markdig](https://github.com/xoofx/markdig) (BSD-2-Clause) instead of Egap's own parser, which is
+  gone. The package depends on Markdig 1.4.1 or later. Every CommonMark 0.31 and GFM table, strikethrough and autolink spec
+  example still reads as before; GitHub's email autolinks and parentheses in links are added on top of Markdig's.
+- Markdown nested hundreds of levels deep (quotes, lists or brackets), which Markdig refuses, is read as plain text with a
+  `FormattingDropped` warning.
+- The writer puts a list item's first block on the marker line, such as a code fence right after `1.`, and writes a
+  no-break space at the start of a line as `&#160;`, so other readers read the output as meant.
+
 ## Egap.Documents 2.0.0 (unreleased)
 
 ### Markdown moves out

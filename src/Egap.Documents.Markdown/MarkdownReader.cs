@@ -1,6 +1,18 @@
 using System.Globalization;
 using System.Text;
 
+using Markdig.Extensions.Footnotes;
+using Markdig.Extensions.Tables;
+using Markdig.Extensions.TaskLists;
+using Markdig.Extensions.Yaml;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
+using MdFootnote = Markdig.Extensions.Footnotes.Footnote;
+using MdTable = Markdig.Extensions.Tables.Table;
+using MdTableCell = Markdig.Extensions.Tables.TableCell;
+using MdTableRow = Markdig.Extensions.Tables.TableRow;
+
 namespace Egap.Documents.Markdown;
 
 /// <summary>One container a Markdown block sat in: a block quote or a list item, outermost first.</summary>
@@ -25,10 +37,9 @@ internal sealed record MarkdownExtension(string Kind, string? Info = null, bool?
 }
 
 /// <summary>
-/// Maps the Markdown syntax tree onto the document model (Phase 6 design Q17): headings to Heading 1 to 6, emphasis to run
-/// formatting, code to the HTML Code and HTML Preformatted styles, block quotes to a Block Quote style indented per level,
-/// lists to Word list definitions built from their nesting, tables to Table Grid tables, footnotes to notes, raw HTML to
-/// islands kept as text (6.5's reader takes them later).
+/// Maps Markdig's syntax tree onto the document model: headings to Heading 1 to 6, emphasis to run formatting, code to the
+/// HTML Code and HTML Preformatted styles, block quotes to a Block Quote style indented per level, lists to Word list
+/// definitions built from their nesting, tables to Table Grid tables, footnotes to notes, raw HTML to islands kept as text.
 /// </summary>
 internal sealed class MarkdownReader
 {
@@ -45,19 +56,22 @@ internal sealed class MarkdownReader
     private int linksInProgress;
     private int nextFrameId = 1;
 
+    /// <summary>Set after a task list's check box, so the space Markdig leaves before the item's text is not doubled.</summary>
+    private bool afterTaskBox;
+
     private MarkdownReader(Document document, MarkdownLoadOptions options)
     {
         this.document = document;
         this.options = options;
     }
 
-    public static Document Build(MdDocument syntax, MarkdownLoadOptions options)
+    public static Document Build(MarkdownDocument syntax, MarkdownLoadOptions options)
     {
         Document document = new();
         MarkdownReader reader = new(document, options);
-        if (syntax.FrontMatter is { } front)
+        if (syntax.Count > 0 && syntax[0] is YamlFrontMatterBlock front)
         {
-            reader.ReadFrontMatter(front);
+            reader.ReadFrontMatter(front.Lines.ToString());
         }
 
         Section section = document.AddSection();
@@ -67,7 +81,7 @@ internal sealed class MarkdownReader
     }
 
     /// <summary>Where blocks go: the container, the block quote depth, the list and level they are in, the extra indent.</summary>
-    private sealed record Context(BlockContainer Container, int QuoteDepth, ListState? List, int Level, MdList? MdList, MarkdownFrame[] Frames)
+    private sealed record Context(BlockContainer Container, int QuoteDepth, ListState? List, int Level, ListBlock? MdList, MarkdownFrame[] Frames)
     {
         public double Indent => (List is null ? 0 : LevelIndent * (Level + 1)) + (QuoteDepth * LevelIndent);
     }
@@ -80,9 +94,9 @@ internal sealed class MarkdownReader
         public bool[] Configured { get; } = new bool[9];
     }
 
-    private void AddBlocks(MdNode parent, Context context)
+    private void AddBlocks(ContainerBlock parent, Context context)
     {
-        foreach (MdNode child in parent.Children)
+        foreach (Markdig.Syntax.Block child in parent)
         {
             int before = context.Container.Blocks.Count;
             AddBlock(child, context);
@@ -108,22 +122,25 @@ internal sealed class MarkdownReader
         }
     }
 
-    private void AddBlock(MdNode node, Context context)
+    private void AddBlock(Markdig.Syntax.Block node, Context context)
     {
         switch (node)
         {
-            case MdParagraph p:
-                AddInlines(NewParagraph(context), p);
+            // Read once at the start, kept where the writer finds it; definitions and notes are reached from their references.
+            case YamlFrontMatterBlock or LinkReferenceDefinitionGroup or LinkReferenceDefinition or FootnoteGroup or BlankLineBlock:
                 break;
-            case MdHeading h:
+            case ParagraphBlock p:
+                AddInlines(NewParagraph(context), p.Inline);
+                break;
+            case HeadingBlock h:
                 {
                     Paragraph paragraph = NewParagraph(context);
                     paragraph.Style = (ParagraphStyle)document.Styles.AddBuiltIn(BuiltInStyle.Heading1 + (h.Level - 1));
-                    AddInlines(paragraph, h);
+                    AddInlines(paragraph, h.Inline);
                     break;
                 }
 
-            case MdThematicBreak:
+            case ThematicBreakBlock:
                 {
                     Paragraph paragraph = NewParagraph(context);
                     paragraph.Format.BorderBottom = new Border(BorderStyle.Single, 0.75, DocumentColor.FromHex("#A0A0A0"), 1);
@@ -131,41 +148,53 @@ internal sealed class MarkdownReader
                     break;
                 }
 
-            case MdCodeBlock code:
+            case CodeBlock code:
                 {
                     Paragraph paragraph = NewParagraph(context);
                     paragraph.Style = (ParagraphStyle)document.Styles.AddBuiltIn(BuiltInStyle.HtmlPreformatted);
-                    string[] lines = (code.Literal.EndsWith('\n') ? code.Literal[..^1] : code.Literal).Split('\n');
-                    for (int i = 0; i < lines.Length; i++)
+                    for (int i = 0; i < code.Lines.Count; i++)
                     {
                         if (i > 0)
                         {
                             paragraph.AddBreak();
                         }
 
-                        if (lines[i].Length > 0)
+                        ReadOnlySpan<char> line = code.Lines.Lines[i].Slice.AsSpan();
+                        if (line.Length > 0)
                         {
-                            paragraph.AddRun(lines[i]);
+                            paragraph.AddRun(line.ToString());
                         }
                     }
 
-                    paragraph.Extensions.Set(MarkdownExtension.Format, new MarkdownExtension("code", code.Fenced ? code.Info : null));
+                    paragraph.Extensions.Set(MarkdownExtension.Format, new MarkdownExtension("code", code is FencedCodeBlock fenced ? InfoString(fenced) : null));
                     break;
                 }
 
-            case MdHtmlBlock html:
-                context.Container.Blocks.Add(new BlockIsland(document, "html", html.Literal));
+            case HtmlBlock html:
+                context.Container.Blocks.Add(new BlockIsland(document, "html", html.Lines.ToString()));
                 break;
-            case MdBlockQuote quote:
+            case QuoteBlock quote:
                 AddBlocks(quote, context with { QuoteDepth = context.QuoteDepth + 1, Frames = [.. context.Frames, new MarkdownFrame('Q', nextFrameId++)] });
                 break;
-            case MdList list:
+            case ListBlock list:
                 AddList(list, context);
                 break;
             case MdTable table:
                 AddTable(table, context);
                 break;
+            case LeafBlock { Inline: { } inline }:
+                AddInlines(NewParagraph(context), inline);
+                break;
+            case ContainerBlock container:
+                AddBlocks(container, context);
+                break;
         }
+    }
+
+    /// <summary>A fenced code block's info string as written: its first word and what follows it.</summary>
+    private static string InfoString(FencedCodeBlock fenced)
+    {
+        return string.IsNullOrEmpty(fenced.Arguments) ? fenced.Info ?? "" : fenced.Info + " " + fenced.Arguments;
     }
 
     private Paragraph NewParagraph(Context context)
@@ -199,7 +228,7 @@ internal sealed class MarkdownReader
         return style;
     }
 
-    private void AddList(MdList mdList, Context context)
+    private void AddList(ListBlock mdList, Context context)
     {
         ListState state;
         int level;
@@ -214,26 +243,27 @@ internal sealed class MarkdownReader
             level = Math.Min(context.Level + 1, 8);
         }
 
-        ConfigureLevel(state, level, mdList);
+        int start = StartOf(mdList);
+        ConfigureLevel(state, level, mdList, start);
         int listId = nextFrameId++;
-        int number = mdList.Start;
-        foreach (MdNode itemNode in mdList.Children)
+        int number = start;
+        foreach (Markdig.Syntax.Block itemNode in mdList)
         {
-            MdListItem item = (MdListItem)itemNode;
-            string marker = mdList.Ordered ? number++.ToString(CultureInfo.InvariantCulture) + mdList.Delimiter : mdList.BulletChar.ToString();
-            MarkdownFrame frame = new('I', nextFrameId++, marker, mdList.Tight, listId);
+            ListItemBlock item = (ListItemBlock)itemNode;
+            string marker = mdList.IsOrdered ? number++.ToString(CultureInfo.InvariantCulture) + mdList.OrderedDelimiter : mdList.BulletType.ToString();
+            MarkdownFrame frame = new('I', nextFrameId++, marker, !mdList.IsLoose, listId);
             Context inner = context with { List = state, Level = level, MdList = mdList, Frames = [.. context.Frames, frame] };
             bool first = true;
-            foreach (MdNode child in item.Children)
+            foreach (Markdig.Syntax.Block child in item)
             {
-                if (first && child is MdParagraph p)
+                if (first && child is ParagraphBlock p)
                 {
-                    Paragraph paragraph = ListParagraph(context, state, level, mdList, item, inner.Frames);
-                    AddInlines(paragraph, p);
+                    Paragraph paragraph = ListParagraph(context, state, level, mdList, p.Inline?.FirstChild is TaskList task ? task.Checked : null, inner.Frames);
+                    AddInlines(paragraph, p.Inline);
                 }
                 else if (first)
                 {
-                    ListParagraph(context, state, level, mdList, item, inner.Frames);
+                    ListParagraph(context, state, level, mdList, null, inner.Frames);
                     int before = inner.Container.Blocks.Count;
                     AddBlock(child, inner);
                     MarkFrames(inner, before);
@@ -246,21 +276,27 @@ internal sealed class MarkdownReader
                     foreach (Paragraph added in inner.Container.Blocks.Skip(before).OfType<Paragraph>().Where(x => x.Format.List is null))
                     {
                         added.Style ??= (ParagraphStyle)document.Styles.AddBuiltIn(BuiltInStyle.ListParagraph);
-                        added.Format.ContextualSpacing = mdList.Tight ? null : false;
+                        added.Format.ContextualSpacing = mdList.IsLoose ? false : null;
                     }
                 }
 
                 first = false;
             }
 
-            if (item.Children.Count == 0)
+            if (item.Count == 0)
             {
-                ListParagraph(context, state, level, mdList, item, inner.Frames);
+                ListParagraph(context, state, level, mdList, null, inner.Frames);
             }
         }
     }
 
-    private Paragraph ListParagraph(Context context, ListState state, int level, MdList mdList, MdListItem item, MarkdownFrame[] frames)
+    /// <summary>An ordered list's start number (CommonMark allows up to nine digits); 1 for a bullet list.</summary>
+    private static int StartOf(ListBlock list)
+    {
+        return list.IsOrdered && int.TryParse(list.OrderedStart, NumberStyles.None, CultureInfo.InvariantCulture, out int start) ? start : 1;
+    }
+
+    private Paragraph ListParagraph(Context context, ListState state, int level, ListBlock mdList, bool? taskChecked, MarkdownFrame[] frames)
     {
         Paragraph paragraph = context.Container.AddParagraph();
         paragraph.Style = (ParagraphStyle)document.Styles.AddBuiltIn(BuiltInStyle.ListParagraph);
@@ -270,13 +306,13 @@ internal sealed class MarkdownReader
             paragraph.Format.LeftIndent = (LevelIndent * (level + 1)) + (context.QuoteDepth * LevelIndent);
         }
 
-        if (!mdList.Tight)
+        if (mdList.IsLoose)
         {
             paragraph.Format.ContextualSpacing = false;
         }
 
-        paragraph.Extensions.Set(MarkdownExtension.Format, new MarkdownExtension("list", null, mdList.Tight, mdList.Ordered ? mdList.Delimiter : mdList.BulletChar) { Frames = frames });
-        if (item.TaskChecked is bool done)
+        paragraph.Extensions.Set(MarkdownExtension.Format, new MarkdownExtension("list", null, !mdList.IsLoose, mdList.IsOrdered ? mdList.OrderedDelimiter : mdList.BulletType) { Frames = frames });
+        if (taskChecked is bool done)
         {
             InlineContentControl box = new(document);
             box.Properties.Kind = ContentControlKind.CheckBox;
@@ -289,7 +325,7 @@ internal sealed class MarkdownReader
         return paragraph;
     }
 
-    private static void ConfigureLevel(ListState state, int level, MdList mdList)
+    private static void ConfigureLevel(ListState state, int level, ListBlock mdList, int start)
     {
         if (state.Configured[level])
         {
@@ -300,11 +336,11 @@ internal sealed class MarkdownReader
         ListLevel format = state.List.Definition.Levels[level];
         format.ParagraphFormat.LeftIndent = LevelIndent * (level + 1);
         format.ParagraphFormat.FirstLineIndent = -18;
-        if (mdList.Ordered)
+        if (mdList.IsOrdered)
         {
             format.NumberStyle = NumberStyle.Decimal;
-            format.LevelText = "%" + (level + 1) + mdList.Delimiter;
-            format.StartAt = mdList.Start;
+            format.LevelText = "%" + (level + 1) + mdList.OrderedDelimiter;
+            format.StartAt = start;
         }
         else
         {
@@ -322,134 +358,236 @@ internal sealed class MarkdownReader
     {
         Table table = context.Container.Blocks.Add(new Table(document));
         table.Style = (TableStyle)document.Styles.AddBuiltIn(BuiltInStyle.TableGrid);
-        foreach (MdNode rowNode in mdTable.Children)
+        foreach (Markdig.Syntax.Block rowNode in mdTable)
         {
-            MdTableRow mdRow = (MdTableRow)rowNode;
+            if (rowNode is not MdTableRow mdRow)
+            {
+                continue;
+            }
+
             Row row = table.Rows.Add(new Row(document));
-            if (mdRow.Header)
+            if (mdRow.IsHeader)
             {
                 row.Format.IsHeader = true;
             }
 
-            foreach (MdNode cellNode in mdRow.Children)
+            int column = 0;
+            foreach (Markdig.Syntax.Block cellNode in mdRow)
             {
                 MdTableCell mdCell = (MdTableCell)cellNode;
                 Cell cell = row.Cells.Add(new Cell(document));
                 Paragraph paragraph = cell.AddParagraph();
-                paragraph.Format.Alignment = mdCell.Align switch
+                int index = mdCell.ColumnIndex >= 0 ? mdCell.ColumnIndex : column;
+                paragraph.Format.Alignment = (index < mdTable.ColumnDefinitions.Count ? mdTable.ColumnDefinitions[index].Alignment : null) switch
                 {
-                    MdAlign.Center => ParagraphAlignment.Center,
-                    MdAlign.Right => ParagraphAlignment.Right,
-                    MdAlign.Left => ParagraphAlignment.Left,
+                    TableColumnAlign.Center => ParagraphAlignment.Center,
+                    TableColumnAlign.Right => ParagraphAlignment.Right,
+                    TableColumnAlign.Left => ParagraphAlignment.Left,
                     _ => null,
                 };
-                AddInlines(paragraph, mdCell, new RunFormat { Bold = mdRow.Header ? true : null });
+                RunFormat format = new() { Bold = mdRow.IsHeader ? true : null };
+                FlushRun();
+                foreach (Markdig.Syntax.Block content in mdCell)
+                {
+                    if (content is LeafBlock { Inline: { } inline })
+                    {
+                        AddInlines(paragraph.Inlines, inline, format, null);
+                    }
+                }
+
+                FlushRun();
+                column++;
             }
         }
     }
 
-    private void AddInlines(Paragraph paragraph, MdNode parent, RunFormat? format = null)
+    private void AddInlines(Paragraph paragraph, ContainerInline? parent, RunFormat? format = null)
     {
         FlushRun();
-        AddInlines(paragraph.Inlines, parent, format ?? new RunFormat(), null);
+        if (parent is not null)
+        {
+            AddInlines(paragraph.Inlines, parent, format ?? new RunFormat(), null);
+        }
+
         FlushRun();
     }
 
-    private void AddInlines(NodeCollection<Inline> target, MdNode parent, RunFormat format, CharacterStyle? style)
+    private void AddInlines(NodeCollection<Inline> target, ContainerInline parent, RunFormat format, CharacterStyle? style)
     {
-        foreach (MdNode node in parent.Children)
+        for (Markdig.Syntax.Inlines.Inline? node = parent.FirstChild; node is not null; node = node.NextSibling)
         {
             switch (node)
             {
-                case MdText text:
-                    AppendRun(target, text.Span, format, style);
-                    break;
-                case MdSoftBreak:
-                    AppendRun(target, " ", format, style);
-                    break;
-                case MdHardBreak:
-                    target.Add(new Break(document));
-                    break;
-                case MdCode code:
-                    AppendRun(target, code.Literal, format, (CharacterStyle)document.Styles.AddBuiltIn(BuiltInStyle.HtmlCode));
-                    break;
-                case MdEmphasis:
-                    AddInlines(target, node, With(format, f => f.Italic = true), style);
-                    break;
-                case MdStrong:
-                    AddInlines(target, node, With(format, f => f.Bold = true), style);
-                    break;
-                case MdStrikethrough:
-                    AddInlines(target, node, With(format, f => f.Strikethrough = true), style);
-                    break;
-                case MdLink link when linksInProgress > 0:
-                    AddInlines(target, link, format, style);
-                    break;
-                case MdLink link:
+                case LiteralInline text:
                     {
-                        Hyperlink hyperlink = new(document);
-                        if (link.Destination.StartsWith('#'))
+                        ReadOnlySpan<char> span = text.Content.AsSpan();
+                        if (afterTaskBox)
                         {
-                            hyperlink.Anchor = link.Destination[1..];
-                        }
-                        else
-                        {
-                            hyperlink.Address = link.Destination;
+                            span = span.StartsWith(' ') ? span[1..] : span;
+                            afterTaskBox = false;
                         }
 
-                        hyperlink.Tooltip = link.Title;
-                        target.Add(hyperlink);
-                        linksInProgress++;
-                        AddInlines(hyperlink.Inlines, link, format, (CharacterStyle)document.Styles.AddBuiltIn(BuiltInStyle.Hyperlink));
-                        linksInProgress--;
+                        if (!span.IsEmpty)
+                        {
+                            AppendRun(target, span, format, style);
+                        }
+
                         break;
                     }
 
-                case MdImage image:
+                case HtmlEntityInline entity:
+                    AppendRun(target, entity.Transcoded.AsSpan(), format, style);
+                    break;
+                case LineBreakInline { IsHard: true }:
+                    target.Add(new Break(document));
+                    break;
+                case LineBreakInline:
+                    AppendRun(target, " ", format, style);
+                    break;
+                case CodeInline code:
+                    AppendRun(target, code.Content, format, (CharacterStyle)document.Styles.AddBuiltIn(BuiltInStyle.HtmlCode));
+                    break;
+                case TaskList:
+                    // The list paragraph already holds the check box.
+                    afterTaskBox = true;
+                    break;
+                case EmphasisInline { DelimiterChar: '~' } strike:
+                    AddInlines(target, strike, With(format, f => f.Strikethrough = true), style);
+                    break;
+                case EmphasisInline { DelimiterCount: >= 2 } strong:
+                    AddInlines(target, strong, With(format, f => f.Bold = true), style);
+                    break;
+                case EmphasisInline emphasis:
+                    AddInlines(target, emphasis, With(format, f => f.Italic = true), style);
+                    break;
+                case LinkInline { IsImage: true } image:
                     {
-                        ImageData data = options.ImageResolver?.Invoke(image.Destination) ?? new ImageData(ReadOnlyMemory<byte>.Empty, "application/octet-stream");
+                        string destination = image.Url ?? "";
+                        ImageData data = options.ImageResolver?.Invoke(destination) ?? new ImageData(ReadOnlyMemory<byte>.Empty, "application/octet-stream");
                         // A resolved image takes its own size, at 96 pixels an inch, as a browser shows it.
                         (double width, double height) = data.Bytes.IsEmpty ? (0, 0) : ImageSize.Intrinsic(data.Bytes);
                         Picture picture = new(document, data, width, height)
                         {
-                            Description = MdHtmlRenderer.PlainText(image),
-                            Title = image.Title,
-                            SourceUrl = image.Destination,
+                            Description = PlainText(image),
+                            Title = string.IsNullOrEmpty(image.Title) ? null : image.Title,
+                            SourceUrl = destination,
                         };
                         target.Add(picture);
                         break;
                     }
 
-                case MdHtmlInline html:
-                    target.Add(new Island(document, IslandKind.Other, "html", html.Literal));
+                case LinkInline link when linksInProgress > 0:
+                    AddInlines(target, link, format, style);
                     break;
-                case MdFootnoteReference reference when notesInProgress > 0:
+                case LinkInline link:
+                    AddHyperlink(target, link.Url ?? "", string.IsNullOrEmpty(link.Title) ? null : link.Title, format, h => AddInlines(h.Inlines, link, format, HyperlinkStyle()));
+                    break;
+                case AutolinkInline auto when linksInProgress > 0:
+                    AppendRun(target, auto.Url, format, style);
+                    break;
+                case AutolinkInline auto:
+                    AddHyperlink(target, auto.IsEmail ? "mailto:" + auto.Url : auto.Url, null, format, h => AppendRun(h.Inlines, auto.Url, format, HyperlinkStyle()));
+                    break;
+                case HtmlInline html:
+                    target.Add(new Island(document, IslandKind.Other, "html", html.Tag));
+                    break;
+                case FootnoteLink { IsBackLink: true }:
+                    break;
+                case FootnoteLink reference when notesInProgress > 0:
                     // Notes cannot hold notes (as in Word): a reference inside a note stays as its number, superscript.
-                    AppendRun(target, reference.Definition.Number.ToString(CultureInfo.InvariantCulture), With(format, f => f.VerticalPosition = VerticalTextPosition.Superscript), style);
+                    AppendRun(target, reference.Footnote.Order.ToString(CultureInfo.InvariantCulture), With(format, f => f.VerticalPosition = VerticalTextPosition.Superscript), style);
                     break;
-                case MdFootnoteReference reference:
-                    {
-                        Footnote note = new(document);
-                        notesInProgress++;
-                        AddBlocks(reference.Definition, new Context(note.Story, 0, null, 0, null, []));
-                        notesInProgress--;
-                        if (note.Story.Blocks.Count == 0)
-                        {
-                            note.AddParagraph();
-                        }
-
-                        if (note.Story.Paragraphs.FirstOrDefault() is { } firstParagraph)
-                        {
-                            firstParagraph.Style ??= (ParagraphStyle)document.Styles.AddBuiltIn(BuiltInStyle.FootnoteText);
-                        }
-                        target.Add(note);
-                        break;
-                    }
+                case FootnoteLink reference:
+                    AddFootnote(target, reference.Footnote);
+                    break;
+                case DelimiterInline delimiter:
+                    // An opener nothing closed, such as a lone "[": its text, then what Markdig left inside it.
+                    AppendRun(target, delimiter.ToLiteral(), format, style);
+                    AddInlines(target, delimiter, format, style);
+                    break;
+                case ContainerInline container:
+                    AddInlines(target, container, format, style);
+                    break;
             }
         }
     }
 
-    /// <summary>Adds text as a run, joining it to the last run when that one has the same formatting and style.</summary>
+    private CharacterStyle HyperlinkStyle() => (CharacterStyle)document.Styles.AddBuiltIn(BuiltInStyle.Hyperlink);
+
+    private void AddHyperlink(NodeCollection<Inline> target, string destination, string? title, RunFormat format, Action<Hyperlink> addText)
+    {
+        Hyperlink hyperlink = new(document);
+        if (destination.StartsWith('#'))
+        {
+            hyperlink.Anchor = destination[1..];
+        }
+        else
+        {
+            hyperlink.Address = destination;
+        }
+
+        hyperlink.Tooltip = title;
+        target.Add(hyperlink);
+        linksInProgress++;
+        addText(hyperlink);
+        linksInProgress--;
+    }
+
+    private void AddFootnote(NodeCollection<Inline> target, MdFootnote definition)
+    {
+        Footnote note = new(document);
+        notesInProgress++;
+        AddBlocks(definition, new Context(note.Story, 0, null, 0, null, []));
+        notesInProgress--;
+        if (note.Story.Blocks.Count == 0)
+        {
+            note.AddParagraph();
+        }
+
+        if (note.Story.Paragraphs.FirstOrDefault() is { } firstParagraph)
+        {
+            firstParagraph.Style ??= (ParagraphStyle)document.Styles.AddBuiltIn(BuiltInStyle.FootnoteText);
+        }
+
+        target.Add(note);
+    }
+
+    /// <summary>The text of an image's description, as its alt attribute: markup dropped.</summary>
+    internal static string PlainText(ContainerInline node)
+    {
+        StringBuilder text = new();
+        AppendPlainText(node, text);
+        return text.ToString();
+    }
+
+    private static void AppendPlainText(ContainerInline node, StringBuilder text)
+    {
+        for (Markdig.Syntax.Inlines.Inline? child = node.FirstChild; child is not null; child = child.NextSibling)
+        {
+            switch (child)
+            {
+                case LiteralInline t:
+                    text.Append(t.Content.AsSpan());
+                    break;
+                case HtmlEntityInline e:
+                    text.Append(e.Transcoded.AsSpan());
+                    break;
+                case CodeInline c:
+                    text.Append(c.Content);
+                    break;
+                case LineBreakInline:
+                    text.Append('\n');
+                    break;
+                case AutolinkInline a:
+                    text.Append(a.Url);
+                    break;
+                case ContainerInline inner:
+                    AppendPlainText(inner, text);
+                    break;
+            }
+        }
+    }
+
     /// <summary>
     /// Adds text to the last run when it has the same style and formatting, else to a new run. The last run's text is
     /// gathered in <see cref="openText"/> and set once (<see cref="FlushRun"/>), not joined piece by piece.
