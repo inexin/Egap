@@ -32,10 +32,12 @@ pdf.Save("out.pdf");                                             // incremental:
 | Package | Version | What it does |
 | --- | --- | --- |
 | Egap.Pdf | 1.4.1 | Reads, edits, renders, signs, redacts and saves PDF; PDF/A, tagged PDF, optimize, imposition, stamps, compare |
-| Egap.Documents | 1.1.1 | One document model for DOCX, HTML and Markdown, with page layout onto any Egami canvas |
-| Egap.Pdf.Conversion | 1.1.0 | Documents to tagged PDF, and PDF pages analysed and converted back into documents |
+| Egap.Documents | 2.0.0 | One document model with DOCX, page layout onto any Egami canvas, PDF export, and PDF converted back into documents |
+| Egap.Documents.Html | 2.0.0 | HTML read and written through the CSS cascade, HTML to PDF |
+| Egap.Documents.Markdown | 2.0.0 | CommonMark and GitHub Markdown read and written, Markdown to PDF |
 
-All three are on [NuGet](https://www.nuget.org/packages?q=Egap).
+All four are on [NuGet](https://www.nuget.org/packages?q=Egap). Egap.Pdf.Conversion is retired; its code is in
+Egap.Documents 2.0.
 
 ## Documentation
 

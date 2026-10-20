@@ -1,9 +1,12 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Egap.Documents.Pdf;
+using Egap.Pdf;
+
 namespace Egap.Documents.Tests;
 
-/// <summary>Loading and saving without naming the format, and Find (Phase 6 API review points 2 to 4).</summary>
+/// <summary>Loading and saving without naming the format, telling formats apart, and Find.</summary>
 public sealed class DocumentFormatsTests : IDisposable
 {
     private readonly string folder = Directory.CreateTempSubdirectory("egap-formats-").FullName;
@@ -24,8 +27,8 @@ public sealed class DocumentFormatsTests : IDisposable
 
     [Theory]
     [InlineData("a.docx")]
-    [InlineData("a.html")]
-    [InlineData("a.md")]
+    [InlineData("a.txt")]
+    [InlineData("a.pdf")]
     public void SaveByExtensionAndLoadBack(string name)
     {
         string path = Path.Combine(folder, name);
@@ -49,15 +52,87 @@ public sealed class DocumentFormatsTests : IDisposable
         using MemoryStream markdown = new(Encoding.UTF8.GetBytes("# From Markdown\n\n<b>inline html</b> stays text"));
 
         Assert.Contains("Hello, world", Document.Load(docx).GetText(), StringComparison.Ordinal);
-        Assert.Contains("From HTML", Document.Load(html).GetText(), StringComparison.Ordinal);
-        Assert.Equal("Heading1", Document.Load(markdown).Sections[0].Body.Paragraphs.First().Style!.Id);
+
+        // The core alone reads neither HTML nor Markdown: the error names the add-on and the call that registers it.
+        NotSupportedException noHtml = Assert.Throws<NotSupportedException>(() => Document.Load(html));
+        Assert.Contains("Egap.Documents.Html", noHtml.Message, StringComparison.Ordinal);
+        Assert.Contains("HtmlFormat.Register()", noHtml.Message, StringComparison.Ordinal);
+        Assert.Throws<NotSupportedException>(() => Sample().Save(Path.Combine(folder, "a.html")));
+        NotSupportedException missing = Assert.Throws<NotSupportedException>(() => Document.Load(markdown));
+        Assert.Contains("Egap.Documents.Markdown", missing.Message, StringComparison.Ordinal);
+        Assert.Contains("MarkdownFormat.Register()", missing.Message, StringComparison.Ordinal);
+        Assert.Throws<NotSupportedException>(() => Sample().Save(Path.Combine(folder, "a.md")));
     }
 
     [Fact]
-    public void UnknownExtensionsAndPdfAreRefused()
+    public void UnknownExtensionsAndBinaryDataAreRefused()
     {
-        Assert.Throws<ArgumentException>(() => Sample().Save(Path.Combine(folder, "a.pdf")));
+        NotSupportedException docling = Assert.Throws<NotSupportedException>(() => Sample().Save(Path.Combine(folder, "a.json")));
+        Assert.Contains("DoclingJson.Write", docling.Message, StringComparison.Ordinal);
         Assert.Throws<ArgumentException>(() => Sample().Save(Path.Combine(folder, "a.xyz")));
+        using MemoryStream binary = new([0x00, 0x01, 0x02, 0x03]);
+        Assert.Throws<DocumentException>(() => Document.Load(binary));
+    }
+
+    [Theory]
+    [InlineData("%PDF-1.7\n%\u00e2\u00e3", null, DocumentFormatKind.Pdf)]
+    [InlineData("junk before the header %PDF-2.0\n", "scan.bin", DocumentFormatKind.Pdf)]
+    [InlineData("{ \"schema_name\": \"DoclingDocument\", \"version\": \"1.3.0\" }", "doc.json", DocumentFormatKind.DoclingJson)]
+    [InlineData("\uFEFF{\"schema_name\":\"DoclingDocument\"}", null, DocumentFormatKind.DoclingJson)]
+    [InlineData("{ \"name\": \"other\" }", "data.json", DocumentFormatKind.Markdown)]
+    [InlineData("  <!DOCTYPE html><p>x</p>", null, DocumentFormatKind.Html)]
+    [InlineData("<p>x</p>", "page.md", DocumentFormatKind.Markdown)]
+    [InlineData("# Title", null, DocumentFormatKind.Markdown)]
+    [InlineData("# Title", "notes.txt", DocumentFormatKind.Text)]
+    [InlineData("plain", ".TXT", DocumentFormatKind.Text)]
+    [InlineData("a\0b", null, DocumentFormatKind.Unknown)]
+    public void IdentifyTellsFormatsApartWithoutLoading(string content, string? fileName, DocumentFormatKind expected)
+    {
+        using MemoryStream stream = new(Encoding.UTF8.GetBytes(content));
+
+        Assert.Equal(expected, Document.Identify(stream, fileName));
+    }
+
+    [Fact]
+    public void IdentifyPutsTheStreamBackAndNeedsNoAddOn()
+    {
+        using MemoryStream docx = new();
+        DocxFormat.Save(Sample(), docx);
+        docx.Position = 0;
+        Assert.Equal(DocumentFormatKind.Docx, Document.Identify(docx));
+        Assert.Equal(0, docx.Position);
+
+        string path = Path.Combine(folder, "page.html");
+        File.WriteAllText(path, "<p>x</p>");
+        Assert.Equal(DocumentFormatKind.Html, Document.Identify(path));
+    }
+
+    [Fact]
+    public void PdfAndDoclingJsonLoadWithoutAnAddOn()
+    {
+        using MemoryStream pdf = new();
+        Sample().SaveAsPdf(pdf);
+        pdf.Position = 0;
+        string docling = DoclingJson.Write(PdfLayoutAnalyzer.Analyze(PdfDocument.Open(pdf.ToArray()), cancellationToken: TestContext.Current.CancellationToken));
+        using MemoryStream json = new(Encoding.UTF8.GetBytes(docling));
+
+        Assert.Contains("Hello, world", Document.Load(pdf).GetText(), StringComparison.Ordinal);
+        Assert.Equal(DocumentFormatKind.DoclingJson, Document.Identify(json));
+        Assert.Contains("Hello, world", Document.Load(json).GetText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PlainTextIsReadLineByLine()
+    {
+        Document document = TextFormat.Parse("First\tline\r\nSecond\n\nPage\fbreak\n");
+        Paragraph[] paragraphs = [.. document.Sections[0].Body.Paragraphs];
+
+        Assert.Equal(4, paragraphs.Length);
+        Assert.Equal("Second", paragraphs[1].GetText().TrimEnd('\r'));
+        Assert.IsType<Tab>(paragraphs[0].Inlines[1]);
+        Assert.Equal("", paragraphs[2].GetText().TrimEnd('\r'));
+        Assert.Equal(BreakKind.Page, Assert.IsType<Break>(paragraphs[3].Inlines[1]).Kind);
+        Assert.Single(TextFormat.Parse("").Sections[0].Body.Paragraphs);
     }
 
     [Fact]

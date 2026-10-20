@@ -24,3 +24,5 @@
       href: guides/pdf-export-and-conversion.md
     - name: Fonts
       href: guides/fonts.md
+    - name: Moving to Egap.Documents 2.0
+      href: guides/migrating-to-2.0.md

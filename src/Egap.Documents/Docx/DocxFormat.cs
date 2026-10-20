@@ -39,7 +39,7 @@ public sealed class DocxSaveOptions
 /// Word's DOCX format, with its DOTX and DOCM variants (Phase 6 design Q9 and Q10): strict and transitional files read
 /// into the model, with what the model does not name kept as extension data so a DOCX round trip keeps it.
 /// </summary>
-public static class DocxFormat
+public static partial class DocxFormat
 {
     /// <summary>Reads the DOCX, DOTX or DOCM file at <paramref name="path"/>.</summary>
     /// <exception cref="DocumentException">The file is not a Word document Egap can read.</exception>

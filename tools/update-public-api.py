@@ -1,8 +1,9 @@
 """Brings each src project's PublicAPI.Unshipped.txt in line with its code.
 
 Adds every symbol the public API analyzer reports as undeclared (RS0016) and removes every declared one it can no longer find
-(RS0017), such as a renamed or internalized member, in the project the analyzer reports it for. PublicAPI.Shipped.txt holds
-released API and is edited by hand only at a release.
+(RS0017), such as a renamed or internalized member, in the project the analyzer reports it for. A gone symbol that was
+released (one in PublicAPI.Shipped.txt) is listed as *REMOVED* in PublicAPI.Unshipped.txt instead. PublicAPI.Shipped.txt
+holds released API and is edited by hand only at a release.
 
 Usage, from the repo root: python tools/update-public-api.py
 """
@@ -22,8 +23,11 @@ for project in PROJECTS:
 
     with open(api_file, encoding="utf-8") as f:
         lines = [line.rstrip("\n") for line in f if line.strip()]
+    with open(project.parent / "PublicAPI.Shipped.txt", encoding="utf-8") as f:
+        shipped = {line.rstrip("\n") for line in f}
     header = [line for line in lines if line.startswith("#")]
-    entries = (set(line for line in lines if not line.startswith("#")) - gone) | added
+    # A released symbol that is gone stays listed, marked *REMOVED*, as the analyzer wants for a breaking change.
+    entries = (set(line for line in lines if not line.startswith("#")) - gone) | added | {"*REMOVED*" + s for s in gone & shipped}
 
     with open(api_file, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(header + sorted(entries, key=str.lower)) + "\n")

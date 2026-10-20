@@ -1,12 +1,13 @@
 # Flow documents
 
-Egap.Documents holds one editable document model for DOCX, HTML and Markdown: sections, paragraphs, runs, tables, lists,
-pictures, headers and footers, notes, fields, comments and tracked changes, with Word's style model.
+Egap.Documents holds one editable document model for DOCX, plain text and, with the add-on packages Egap.Documents.Html
+and Egap.Documents.Markdown, HTML and Markdown: sections, paragraphs, runs, tables, lists, pictures, headers and footers,
+notes, fields, comments and tracked changes, with Word's style model.
 
 ```csharp
 using Egap.Documents;
 
-Document doc = Document.Load("report.docx");                      // DOCX, DOTX, DOCM, HTML or Markdown, told apart by content
+Document doc = Document.Load("report.docx");                      // any format Egap reads, told apart by content
 foreach (Paragraph p in doc.Descendants<Paragraph>())
 {
     Console.WriteLine($"{p.ListLabel?.Text} {p.GetText()}");    // list labels computed as Word numbers them
@@ -17,15 +18,43 @@ builder.Writeln("Added at the end.");
 doc.Replace("colour", "color");                                   // also where the text crosses runs
 IReadOnlyList<TextMatch> found = doc.Find("color");               // paragraph, offset and text of each match
 doc.Save("report-edited.docx");                                   // what the model does not name is kept
-IReadOnlyList<ConversionWarning> dropped = doc.Save("report.md"); // the format from the extension, with what it could not hold
+IReadOnlyList<ConversionWarning> dropped = doc.Save("report.txt"); // the format from the extension, with what it left out
 ```
 
 DOCX to DOCX is lossless: what the model does not name travels along in each node's extension data. Saving to a format that
 cannot hold something, such as Markdown, returns a warning for each thing left out.
 
+Each format also reads as members of `Document`, which forward to the format's class with the same options and warnings:
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Pdf;
+
+Document report = Document.LoadDocx("report.docx");
+report.SaveAsDocx("report-copy.docx");
+string text = report.ToText();                                    // as TextFormat.ToText
+report.SaveAsPdf("report.pdf");
+Document scanned = Document.LoadPdf("scanned.pdf");               // as PdfToDocument.Convert
+```
+
+`Document.Load` and `Save` know DOCX, PDF and plain text by themselves. HTML and Markdown join them once you register them at
+startup; until then, loading such a file throws a `NotSupportedException` that names the call to make. `Document.Identify`
+tells which format a file is in without loading it, so a program can say what a file needs.
+
+```csharp
+using Egap.Documents;
+
+HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
+MarkdownFormat.Register();
+DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Html, Markdown, Text, DoclingJson or Unknown
+Document notes = TextFormat.Load("notes.txt");                    // one paragraph per line
+```
+
 ## Format options
 
-Each format has its own class with its own options.
+Each format has its own class with its own options. `MarkdownFormat` comes from Egap.Documents.Markdown and `HtmlFormat`
+from Egap.Documents.Html, both in namespace `Egap.Documents`; they need no `Register()` when you call them directly, and add
+members to `Document` too: `Document.LoadMarkdown`, `ToMarkdown`, `Document.ParseHtml`, `ToHtml` and their `Save` forms.
 
 ```csharp
 using Egap.Documents;
@@ -34,7 +63,7 @@ Document readme = MarkdownFormat.Load("README.md", new MarkdownLoadOptions { Ext
 DocxFormat.Save(readme, "readme.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
 ```
 
-HTML is parsed as browsers parse it and styled through the CSS cascade. Nothing outside the file is fetched unless you pass
+HTML is parsed by AngleSharp as browsers parse it and styled through the CSS cascade (Markdown is parsed by Markdig). Nothing outside the file is fetched unless you pass
 a resolver:
 
 ```csharp

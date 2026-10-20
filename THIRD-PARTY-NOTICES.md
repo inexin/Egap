@@ -125,12 +125,3 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
-
-## HTML named character references
-
-`src/Egap.Documents/Html/entities.txt`, embedded in Egap.Documents.dll, lists the named character references of the
-[WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/named-characters.html), taken from
-<https://html.spec.whatwg.org/entities.json> with each name's code points written in hex. The HTML Standard is
-Copyright © WHATWG (Apple, Google, Mozilla, Microsoft) and licensed under the
-[Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). Egap's Markdown and
-HTML readers use the list to decode character references.

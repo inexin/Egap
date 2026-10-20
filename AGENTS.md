@@ -1,7 +1,7 @@
 # Instructions for AI coding agents
 
-Egap is a fully managed, MIT-licensed family of document libraries for .NET 10: Egap.Pdf, Egap.Documents and
-Egap.Pdf.Conversion. It draws, decodes images and reads fonts through [Egami](https://github.com/inexin/Egami). Read
+Egap is a fully managed, MIT-licensed family of document libraries for .NET 10: Egap.Pdf, Egap.Documents and its format
+add-ons Egap.Documents.Html and Egap.Documents.Markdown. It draws, decodes images and reads fonts through [Egami](https://github.com/inexin/Egami). Read
 [CONTRIBUTING.md](CONTRIBUTING.md) first; this file adds what an agent needs on top of it.
 
 ## Hard rules
@@ -11,7 +11,10 @@ Egap.Pdf.Conversion. It draws, decodes images and reads fonts through [Egami](ht
   or docs from GPL, LGPL or AGPL projects or from code without a license. If you translate code closely from a permissive
   library, add its notice to `THIRD-PARTY-NOTICES.md` in the same change.
 - **Managed .NET 10 only.** No P/Invoke, no native binaries, no wrappers around C or C++ libraries. .NET's own APIs are fine.
-  `src/` takes no package references except Egami's packages, .NET's own packages and build-time analyzers.
+  Egap.Pdf and Egap.Documents take no package references except Egami's packages, .NET's own packages and build-time
+  analyzers. A format add-on (`Egap.Documents.<Format>`) may also reference a managed MIT, BSD or Apache-2.0 package that
+  the maintainer approved by name; the approved packages are listed in [docs/references.md](docs/references.md) with their
+  licence and minimum version, and their versions are set in `Directory.Packages.props`. Ask before adding any other.
 - **No comparisons with other PDF libraries** in this repository (output, speed or conformance).
 - **Never publish.** Don't push to NuGet, push tags, create releases or change GitHub Actions settings, unless the maintainer
   explicitly asks for that.
@@ -34,7 +37,7 @@ docfx docs/docfx.json                             # the docs site, into docs/_si
 - Run only the tests for the area you change while working (`dotnet test --filter FullyQualifiedName~Redaction`), then the
   whole solution before landing.
 - Hot code (parsing, filters, rendering, layout) must not get slower or allocate more than `main`; run the benchmarks in
-  `benchmarks/Egap.Pdf.Benchmarks` and include the before and after numbers.
+  `benchmarks/Egap.Pdf.Benchmarks` (`benchmarks/Egap.Documents.Benchmarks` for document loading) and include the before and after numbers.
 - **Fuzzing:** runs are 10 minutes (`tools/fuzz-afl.py`, see `tests/Egap.Pdf.Fuzz/README.md`). Longer runs only when the
   maintainer asks: they load the machine and skew other sessions' speed measurements.
 - To build against an unreleased Egami commit, use `tools/pack-egami.py` (see the README's Building section); never commit

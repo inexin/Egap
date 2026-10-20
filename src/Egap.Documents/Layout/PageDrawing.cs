@@ -7,7 +7,6 @@ using Egami.Drawing;
 using Egami.Fonts;
 using Egami.Fonts.Layout;
 using Egami.Pixels;
-using Egami.Svg;
 
 using EgamiBorderStyle = Egap.Documents.BorderStyle;
 
@@ -291,24 +290,16 @@ internal static class PageDrawing
     {
         try
         {
-            if (image.ContentType is "image/x-emf" or "image/x-wmf" or "image/emf" or "image/wmf")
+            // EMF, WMF and SVG stay vector, drawn by their own drawer onto whatever canvas this is.
+            if (PictureDrawers.For(image.ContentType) is { } drawer)
             {
-                // Word's EMF and WMF pictures play back through Egami.Metafiles (Phase 6 design Q18).
-                Egami.Metafiles.Metafile.Load(image.Bytes).Draw(canvas, rect);
-                return;
-            }
-
-            if (image.ContentType == "image/svg+xml")
-            {
-                // SVG stays vector: drawn through Egami.Svg onto whatever canvas this is, fitted by its preserveAspectRatio.
-                using MemoryStream stream = new(image.Bytes.ToArray(), writable: false);
-                SvgDocument.Load(stream).Draw(canvas, rect);
+                drawer.Draw(image.Bytes, canvas, rect);
                 return;
             }
 
             canvas.DrawImage(Images.GetOrCreateValue(document).GetOrAdd(image, i => EncodedImage.Load(i.Bytes)), rect);
         }
-        catch (Exception e) when (e is NotSupportedException or InvalidDataException or ArgumentException or EgamiException or SvgException)
+        catch (Exception e) when (PictureDrawers.IsDrawFailure(e))
         {
             // A format Egami has no decoder for (or a damaged image): the box stays empty.
         }
