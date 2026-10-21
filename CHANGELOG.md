@@ -3,7 +3,7 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Documents 2.0.0 (unreleased)
+## Egap.Documents 2.0.0 (2026-10-21)
 
 ### Docs
 - A migration guide, "Moving to Egap.Documents 2.0", maps old packages and namespaces to new ones; the packages page,
@@ -131,7 +131,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `PdfConvertOptions.TableOfContents` builds a table of contents from the headings, with or without page numbers, at
   HTML's `<nav data-toc>`, a Markdown `[TOC]` paragraph or the start; its entries link to the headings.
 
-## Egap.Documents.Html 2.0.0 (unreleased)
+## Egap.Documents.Html 2.0.0 (2026-10-21)
 
 ### Trimming and Native AOT
 - The package is marked trimmable and AOT compatible: a Native AOT app that uses all of it, with AngleSharp, publishes
@@ -159,7 +159,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Loading speed against Egap.Documents 1.x's own parser, same machine and session: within 2 % for text and 1 KB
   pages, 11 % faster for 900 KB pages read from bytes and up to 6 % slower for 45 KB ones, with 1 to 2 % less memory.
 
-## Egap.Documents.Markdown 2.0.0 (unreleased)
+## Egap.Documents.Markdown 2.0.0 (2026-10-21)
 
 ### Trimming and Native AOT
 - The package is marked trimmable and AOT compatible: a Native AOT app that uses all of it, with Markdig, publishes
