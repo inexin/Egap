@@ -1,2 +1,1 @@
 #nullable enable
-static Egap.Pdf.PdfStamp.Barcode(Egami.Barcodes.Barcode! barcode, double width, double height, Egami.Barcodes.BarcodeDrawOptions? options = null) -> Egap.Pdf.PdfStamp!

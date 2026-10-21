@@ -2842,6 +2842,7 @@ static Egap.Pdf.PdfSigner.FromCertificate(System.Security.Cryptography.X509Certi
 static Egap.Pdf.PdfSigner.FromKey(System.Security.Cryptography.AsymmetricAlgorithm! key, System.Security.Cryptography.X509Certificates.X509Certificate2! certificate, System.Collections.Generic.IEnumerable<System.Security.Cryptography.X509Certificates.X509Certificate2!>? chain = null) -> Egap.Pdf.PdfSigner!
 static Egap.Pdf.PdfSignOptions.operator !=(Egap.Pdf.PdfSignOptions? left, Egap.Pdf.PdfSignOptions? right) -> bool
 static Egap.Pdf.PdfSignOptions.operator ==(Egap.Pdf.PdfSignOptions? left, Egap.Pdf.PdfSignOptions? right) -> bool
+static Egap.Pdf.PdfStamp.Barcode(Egami.Barcodes.Barcode! barcode, double width, double height, Egami.Barcodes.BarcodeDrawOptions? options = null) -> Egap.Pdf.PdfStamp!
 static Egap.Pdf.PdfStamp.Bates(Egap.Pdf.PdfBatesSequence! sequence) -> Egap.Pdf.PdfStamp!
 static Egap.Pdf.PdfStamp.Image(Egami.Raster! image, double width, double height) -> Egap.Pdf.PdfStamp!
 static Egap.Pdf.PdfStamp.operator !=(Egap.Pdf.PdfStamp? left, Egap.Pdf.PdfStamp? right) -> bool
