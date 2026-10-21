@@ -640,6 +640,9 @@ internal sealed partial class DocxWriter
                 return WriteParagraph(paragraph);
             case Table table:
                 return WriteTable(table);
+            case FlexContainer or GridContainer:
+                // Word has no such containers: a borderless table (Phase 9 design Q8).
+                return WriteTable(ContainerTables.For(block, ContainerTables.TextWidth(block))!);
             case ContentControl control:
                 {
                     DocxExtension? kept = Kept(control);
@@ -648,7 +651,8 @@ internal sealed partial class DocxWriter
                         return new XElement(original);
                     }
 
-                    List<XElement> content = [.. WriteBlocks(control.Blocks, ensureParagraph: kept is null)];
+                    List<XElement> content = control.Box is null ? [.. WriteBlocks(control.Blocks, ensureParagraph: kept is null)]
+                        : [WriteTable(ContainerTables.For(control, ContainerTables.TextWidth(control))!), new XElement(Ns.W + "p")];
                     return new XElement(Ns.W + "sdt", SdtProperties(control.Properties, kept, kept?.Original), SdtEnd(kept), new XElement(Ns.W + "sdtContent", content));
                 }
 

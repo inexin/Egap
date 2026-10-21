@@ -509,6 +509,26 @@ internal sealed partial class Paginator
                         break;
                     }
 
+                case FlexContainer or GridContainer or ContentControl { Box: not null }:
+                    {
+                        // Laid out whole: a cell's part ends before one that does not fit.
+                        measuring++;
+                        LayWhole(blocks[b], x, at, width, out double height);
+                        measuring--;
+                        if (at + height - top > limit + 0.01 && boxes.Count > 0)
+                        {
+                            return (boxes, at - top, (b, 0));
+                        }
+
+                        if (LayWhole(blocks[b], x, at, width, out _) is { } whole)
+                        {
+                            boxes.Add(whole);
+                        }
+
+                        at += height;
+                        break;
+                    }
+
                 case ContentControl control:
                     {
                         // A content control in a cell lays out its blocks in place.

@@ -516,6 +516,24 @@ internal sealed partial class DocxWriter
         spPr.Add(shape.Outline is { Style: not BorderStyle.None } outline
             ? new XElement(Ns.A + "ln", new XAttribute("w", Math.Round(outline.Width * 12700).ToString(CultureInfo.InvariantCulture)), new XElement(Ns.A + "solidFill", DrawingColor(outline.Color)))
             : new XElement(Ns.A + "ln", new XElement(Ns.A + "noFill")));
+        if (shape.Shadow is { } shadow)
+        {
+            // An outer shadow: its offset as a distance and direction (clockwise from the right), its blur as the radius.
+            double distance = Math.Sqrt((shadow.OffsetX * shadow.OffsetX) + (shadow.OffsetY * shadow.OffsetY));
+            double direction = (Math.Atan2(shadow.OffsetY, shadow.OffsetX) * 180 / Math.PI + 360) % 360;
+            XElement color = DrawingColor(shadow.Color);
+            if (shadow.Opacity < 1)
+            {
+                color.Add(new XElement(Ns.A + "alpha", new XAttribute("val", Math.Round(Math.Clamp(shadow.Opacity, 0, 1) * 100000).ToString(CultureInfo.InvariantCulture))));
+            }
+
+            spPr.Add(new XElement(Ns.A + "effectLst", new XElement(Ns.A + "outerShdw",
+                new XAttribute("blurRad", Math.Round(Math.Max(0, shadow.Blur) * 12700).ToString(CultureInfo.InvariantCulture)),
+                new XAttribute("dist", Math.Round(distance * 12700).ToString(CultureInfo.InvariantCulture)),
+                new XAttribute("dir", Math.Round(direction * 60000).ToString(CultureInfo.InvariantCulture)),
+                new XAttribute("algn", "ctr"), new XAttribute("rotWithShape", "0"), color)));
+        }
+
         XElement wsp = new(Ns.Wps + "wsp", new XElement(Ns.Wps + "cNvSpPr"), spPr);
         if (shape.TextBox is { } box)
         {
@@ -524,7 +542,21 @@ internal sealed partial class DocxWriter
             currentPart = previous;
         }
 
-        wsp.Add(new XElement(Ns.Wps + "bodyPr"));
+        XElement bodyPr = new(Ns.Wps + "bodyPr");
+        if (shape.TextInsets is { } insets)
+        {
+            foreach ((string name, double value) in (ReadOnlySpan<(string, double)>)[("lIns", insets.Left), ("tIns", insets.Top), ("rIns", insets.Right), ("bIns", insets.Bottom)])
+            {
+                bodyPr.Add(new XAttribute(name, Math.Round(value * 12700).ToString(CultureInfo.InvariantCulture)));
+            }
+        }
+
+        if (shape.FitToText)
+        {
+            bodyPr.Add(new XElement(Ns.A + "spAutoFit"));
+        }
+
+        wsp.Add(bodyPr);
         XElement graphic = new(Ns.A + "graphic", new XElement(Ns.A + "graphicData", new XAttribute("uri", "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"), wsp));
         return new XElement(Ns.W + "drawing", Frame(shape.Floating, cx, cy, id, "Shape " + id, shape.Title, shape.Description, graphic));
     }
@@ -536,6 +568,15 @@ internal sealed partial class DocxWriter
             && (spPr.Element(Ns.A + "custGeom") ?? spPr.Element(Ns.A + "prstGeom")) is { } geometry)
         {
             return new XElement(geometry);
+        }
+
+        if (shape.CornerRadius > 0 && shape.Kind is ShapeKind.Rectangle or ShapeKind.RoundedRectangle)
+        {
+            // The radius as a share of the shorter side, in 100 000ths, as the roundRect preset's adj guide takes it.
+            double shorter = Math.Max(0.01, Math.Min(shape.Width, shape.Height));
+            int adj = (int)Math.Round(Math.Clamp(shape.CornerRadius / shorter, 0, 0.5) * 100000);
+            return new XElement(Ns.A + "prstGeom", new XAttribute("prst", "roundRect"),
+                new XElement(Ns.A + "avLst", new XElement(Ns.A + "gd", new XAttribute("name", "adj"), new XAttribute("fmla", "val " + adj.ToString(CultureInfo.InvariantCulture)))));
         }
 
         return new XElement(Ns.A + "prstGeom", new XAttribute("prst", shape.Kind switch

@@ -428,7 +428,7 @@ internal sealed partial class Paginator
     {
         foreach (Block block in blocks)
         {
-            if (block is ContentControl control)
+            if (block is ContentControl { Box: null } control)
             {
                 foreach (Block inner in Flatten(control.Blocks))
                 {
@@ -502,6 +502,17 @@ internal sealed partial class Paginator
                         TableBox box = LayTable(table, x, at, width);
                         boxes.Add(box);
                         at = box.Bounds.Bottom;
+                        break;
+                    }
+
+                default:
+                    {
+                        if (LayWhole(block, x, at, width, out double height) is { } box)
+                        {
+                            boxes.Add(box);
+                        }
+
+                        at += height;
                         break;
                     }
             }

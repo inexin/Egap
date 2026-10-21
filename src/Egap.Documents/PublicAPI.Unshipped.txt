@@ -1,1 +1,292 @@
 #nullable enable
+Egap.Documents.BoxCorners
+Egap.Documents.BoxCorners.BottomLeft.get -> double
+Egap.Documents.BoxCorners.BottomLeft.init -> void
+Egap.Documents.BoxCorners.BottomRight.get -> double
+Egap.Documents.BoxCorners.BottomRight.init -> void
+Egap.Documents.BoxCorners.BoxCorners() -> void
+Egap.Documents.BoxCorners.BoxCorners(double TopLeft, double TopRight, double BottomRight, double BottomLeft) -> void
+Egap.Documents.BoxCorners.Deconstruct(out double TopLeft, out double TopRight, out double BottomRight, out double BottomLeft) -> void
+Egap.Documents.BoxCorners.Equals(Egap.Documents.BoxCorners other) -> bool
+Egap.Documents.BoxCorners.IsSquare.get -> bool
+Egap.Documents.BoxCorners.TopLeft.get -> double
+Egap.Documents.BoxCorners.TopLeft.init -> void
+Egap.Documents.BoxCorners.TopRight.get -> double
+Egap.Documents.BoxCorners.TopRight.init -> void
+Egap.Documents.BoxShadow
+Egap.Documents.BoxShadow.<Clone>$() -> Egap.Documents.BoxShadow!
+Egap.Documents.BoxShadow.Blur.get -> double
+Egap.Documents.BoxShadow.Blur.init -> void
+Egap.Documents.BoxShadow.BoxShadow(double OffsetX, double OffsetY, double Blur = 0, double Spread = 0) -> void
+Egap.Documents.BoxShadow.Color.get -> Egap.Documents.DocumentColor
+Egap.Documents.BoxShadow.Color.init -> void
+Egap.Documents.BoxShadow.Deconstruct(out double OffsetX, out double OffsetY, out double Blur, out double Spread) -> void
+Egap.Documents.BoxShadow.Equals(Egap.Documents.BoxShadow? other) -> bool
+Egap.Documents.BoxShadow.OffsetX.get -> double
+Egap.Documents.BoxShadow.OffsetX.init -> void
+Egap.Documents.BoxShadow.OffsetY.get -> double
+Egap.Documents.BoxShadow.OffsetY.init -> void
+Egap.Documents.BoxShadow.Opacity.get -> double
+Egap.Documents.BoxShadow.Opacity.init -> void
+Egap.Documents.BoxShadow.Spread.get -> double
+Egap.Documents.BoxShadow.Spread.init -> void
+Egap.Documents.BoxStyle
+Egap.Documents.BoxStyle.<Clone>$() -> Egap.Documents.BoxStyle!
+Egap.Documents.BoxStyle.Background.get -> Egap.Documents.DocumentColor?
+Egap.Documents.BoxStyle.Background.init -> void
+Egap.Documents.BoxStyle.BorderBottom.get -> Egap.Documents.Border?
+Egap.Documents.BoxStyle.BorderBottom.init -> void
+Egap.Documents.BoxStyle.BorderLeft.get -> Egap.Documents.Border?
+Egap.Documents.BoxStyle.BorderLeft.init -> void
+Egap.Documents.BoxStyle.BorderRight.get -> Egap.Documents.Border?
+Egap.Documents.BoxStyle.BorderRight.init -> void
+Egap.Documents.BoxStyle.BorderTop.get -> Egap.Documents.Border?
+Egap.Documents.BoxStyle.BorderTop.init -> void
+Egap.Documents.BoxStyle.BoxStyle() -> void
+Egap.Documents.BoxStyle.CornerRadius.get -> Egap.Documents.BoxCorners
+Egap.Documents.BoxStyle.CornerRadius.init -> void
+Egap.Documents.BoxStyle.Equals(Egap.Documents.BoxStyle? other) -> bool
+Egap.Documents.BoxStyle.MarginBottom.get -> double
+Egap.Documents.BoxStyle.MarginBottom.init -> void
+Egap.Documents.BoxStyle.MarginLeft.get -> double
+Egap.Documents.BoxStyle.MarginLeft.init -> void
+Egap.Documents.BoxStyle.MarginRight.get -> double
+Egap.Documents.BoxStyle.MarginRight.init -> void
+Egap.Documents.BoxStyle.MarginTop.get -> double
+Egap.Documents.BoxStyle.MarginTop.init -> void
+Egap.Documents.BoxStyle.MinHeight.get -> double
+Egap.Documents.BoxStyle.MinHeight.init -> void
+Egap.Documents.BoxStyle.PaddingBottom.get -> double
+Egap.Documents.BoxStyle.PaddingBottom.init -> void
+Egap.Documents.BoxStyle.PaddingLeft.get -> double
+Egap.Documents.BoxStyle.PaddingLeft.init -> void
+Egap.Documents.BoxStyle.PaddingRight.get -> double
+Egap.Documents.BoxStyle.PaddingRight.init -> void
+Egap.Documents.BoxStyle.PaddingTop.get -> double
+Egap.Documents.BoxStyle.PaddingTop.init -> void
+Egap.Documents.BoxStyle.Shadow.get -> Egap.Documents.BoxShadow?
+Egap.Documents.BoxStyle.Shadow.init -> void
+Egap.Documents.BoxStyle.Width.get -> Egap.Documents.TableWidth
+Egap.Documents.BoxStyle.Width.init -> void
+Egap.Documents.BoxStyle.WithBorder(Egap.Documents.Border? border) -> Egap.Documents.BoxStyle!
+Egap.Documents.ContentControl.Box.get -> Egap.Documents.BoxStyle?
+Egap.Documents.ContentControl.Box.set -> void
+Egap.Documents.FlexContainer
+Egap.Documents.FlexContainer.AddItem(string? text = null) -> Egap.Documents.FlexItem!
+Egap.Documents.FlexContainer.Box.get -> Egap.Documents.BoxStyle?
+Egap.Documents.FlexContainer.Box.set -> void
+Egap.Documents.FlexContainer.FlexContainer(Egap.Documents.Document! document) -> void
+Egap.Documents.FlexContainer.Items.get -> Egap.Documents.NodeCollection<Egap.Documents.FlexItem!>!
+Egap.Documents.FlexContainer.Layout.get -> Egap.Documents.FlexLayout!
+Egap.Documents.FlexContainer.Layout.set -> void
+Egap.Documents.FlexDirection
+Egap.Documents.FlexDirection.Column = 2 -> Egap.Documents.FlexDirection
+Egap.Documents.FlexDirection.ColumnReverse = 3 -> Egap.Documents.FlexDirection
+Egap.Documents.FlexDirection.Row = 0 -> Egap.Documents.FlexDirection
+Egap.Documents.FlexDirection.RowReverse = 1 -> Egap.Documents.FlexDirection
+Egap.Documents.FlexItem
+Egap.Documents.FlexItem.AlignSelf.get -> Egap.Documents.LayoutAlignment?
+Egap.Documents.FlexItem.AlignSelf.set -> void
+Egap.Documents.FlexItem.Basis.get -> Egap.Documents.TableWidth
+Egap.Documents.FlexItem.Basis.set -> void
+Egap.Documents.FlexItem.Box.get -> Egap.Documents.BoxStyle?
+Egap.Documents.FlexItem.Box.set -> void
+Egap.Documents.FlexItem.Container.get -> Egap.Documents.FlexContainer?
+Egap.Documents.FlexItem.FlexItem(Egap.Documents.Document! document) -> void
+Egap.Documents.FlexItem.Grow.get -> double
+Egap.Documents.FlexItem.Grow.set -> void
+Egap.Documents.FlexItem.Order.get -> int
+Egap.Documents.FlexItem.Order.set -> void
+Egap.Documents.FlexItem.Shrink.get -> double
+Egap.Documents.FlexItem.Shrink.set -> void
+Egap.Documents.FlexLayout
+Egap.Documents.FlexLayout.<Clone>$() -> Egap.Documents.FlexLayout!
+Egap.Documents.FlexLayout.AlignContent.get -> Egap.Documents.LayoutAlignment
+Egap.Documents.FlexLayout.AlignContent.init -> void
+Egap.Documents.FlexLayout.AlignItems.get -> Egap.Documents.LayoutAlignment
+Egap.Documents.FlexLayout.AlignItems.init -> void
+Egap.Documents.FlexLayout.ColumnGap.get -> double
+Egap.Documents.FlexLayout.ColumnGap.init -> void
+Egap.Documents.FlexLayout.Direction.get -> Egap.Documents.FlexDirection
+Egap.Documents.FlexLayout.Direction.init -> void
+Egap.Documents.FlexLayout.Equals(Egap.Documents.FlexLayout? other) -> bool
+Egap.Documents.FlexLayout.FlexLayout() -> void
+Egap.Documents.FlexLayout.JustifyContent.get -> Egap.Documents.LayoutAlignment
+Egap.Documents.FlexLayout.JustifyContent.init -> void
+Egap.Documents.FlexLayout.RowGap.get -> double
+Egap.Documents.FlexLayout.RowGap.init -> void
+Egap.Documents.FlexLayout.Wrap.get -> Egap.Documents.FlexWrap
+Egap.Documents.FlexLayout.Wrap.init -> void
+Egap.Documents.FlexWrap
+Egap.Documents.FlexWrap.NoWrap = 0 -> Egap.Documents.FlexWrap
+Egap.Documents.FlexWrap.Wrap = 1 -> Egap.Documents.FlexWrap
+Egap.Documents.FlexWrap.WrapReverse = 2 -> Egap.Documents.FlexWrap
+Egap.Documents.GridAutoFlow
+Egap.Documents.GridAutoFlow.Column = 1 -> Egap.Documents.GridAutoFlow
+Egap.Documents.GridAutoFlow.ColumnDense = 3 -> Egap.Documents.GridAutoFlow
+Egap.Documents.GridAutoFlow.Row = 0 -> Egap.Documents.GridAutoFlow
+Egap.Documents.GridAutoFlow.RowDense = 2 -> Egap.Documents.GridAutoFlow
+Egap.Documents.GridContainer
+Egap.Documents.GridContainer.AddItem(string? text = null) -> Egap.Documents.GridItem!
+Egap.Documents.GridContainer.Box.get -> Egap.Documents.BoxStyle?
+Egap.Documents.GridContainer.Box.set -> void
+Egap.Documents.GridContainer.GridContainer(Egap.Documents.Document! document) -> void
+Egap.Documents.GridContainer.Items.get -> Egap.Documents.NodeCollection<Egap.Documents.GridItem!>!
+Egap.Documents.GridContainer.Layout.get -> Egap.Documents.GridLayout!
+Egap.Documents.GridContainer.Layout.set -> void
+Egap.Documents.GridItem
+Egap.Documents.GridItem.AlignSelf.get -> Egap.Documents.LayoutAlignment?
+Egap.Documents.GridItem.AlignSelf.set -> void
+Egap.Documents.GridItem.Area.get -> string?
+Egap.Documents.GridItem.Area.set -> void
+Egap.Documents.GridItem.Box.get -> Egap.Documents.BoxStyle?
+Egap.Documents.GridItem.Box.set -> void
+Egap.Documents.GridItem.Column.get -> int?
+Egap.Documents.GridItem.Column.set -> void
+Egap.Documents.GridItem.ColumnSpan.get -> int
+Egap.Documents.GridItem.ColumnSpan.set -> void
+Egap.Documents.GridItem.Container.get -> Egap.Documents.GridContainer?
+Egap.Documents.GridItem.GridItem(Egap.Documents.Document! document) -> void
+Egap.Documents.GridItem.JustifySelf.get -> Egap.Documents.LayoutAlignment?
+Egap.Documents.GridItem.JustifySelf.set -> void
+Egap.Documents.GridItem.Row.get -> int?
+Egap.Documents.GridItem.Row.set -> void
+Egap.Documents.GridItem.RowSpan.get -> int
+Egap.Documents.GridItem.RowSpan.set -> void
+Egap.Documents.GridLayout
+Egap.Documents.GridLayout.<Clone>$() -> Egap.Documents.GridLayout!
+Egap.Documents.GridLayout.AlignItems.get -> Egap.Documents.LayoutAlignment
+Egap.Documents.GridLayout.AlignItems.init -> void
+Egap.Documents.GridLayout.Areas.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Documents.GridLayout.Areas.init -> void
+Egap.Documents.GridLayout.AutoColumns.get -> Egap.Documents.GridTrack
+Egap.Documents.GridLayout.AutoColumns.init -> void
+Egap.Documents.GridLayout.AutoFlow.get -> Egap.Documents.GridAutoFlow
+Egap.Documents.GridLayout.AutoFlow.init -> void
+Egap.Documents.GridLayout.AutoRows.get -> Egap.Documents.GridTrack
+Egap.Documents.GridLayout.AutoRows.init -> void
+Egap.Documents.GridLayout.ColumnGap.get -> double
+Egap.Documents.GridLayout.ColumnGap.init -> void
+Egap.Documents.GridLayout.Columns.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.GridTrack>!
+Egap.Documents.GridLayout.Columns.init -> void
+Egap.Documents.GridLayout.Equals(Egap.Documents.GridLayout? other) -> bool
+Egap.Documents.GridLayout.GridLayout() -> void
+Egap.Documents.GridLayout.JustifyContent.get -> Egap.Documents.LayoutAlignment
+Egap.Documents.GridLayout.JustifyContent.init -> void
+Egap.Documents.GridLayout.JustifyItems.get -> Egap.Documents.LayoutAlignment
+Egap.Documents.GridLayout.JustifyItems.init -> void
+Egap.Documents.GridLayout.RowGap.get -> double
+Egap.Documents.GridLayout.RowGap.init -> void
+Egap.Documents.GridLayout.Rows.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.GridTrack>!
+Egap.Documents.GridLayout.Rows.init -> void
+Egap.Documents.GridTrack
+Egap.Documents.GridTrack.Deconstruct(out Egap.Documents.GridTrackSize Min, out Egap.Documents.GridTrackSize Max) -> void
+Egap.Documents.GridTrack.Equals(Egap.Documents.GridTrack other) -> bool
+Egap.Documents.GridTrack.GridTrack() -> void
+Egap.Documents.GridTrack.GridTrack(Egap.Documents.GridTrackSize Min, Egap.Documents.GridTrackSize Max) -> void
+Egap.Documents.GridTrack.Max.get -> Egap.Documents.GridTrackSize
+Egap.Documents.GridTrack.Max.init -> void
+Egap.Documents.GridTrack.Min.get -> Egap.Documents.GridTrackSize
+Egap.Documents.GridTrack.Min.init -> void
+Egap.Documents.GridTrackSize
+Egap.Documents.GridTrackSize.Deconstruct(out Egap.Documents.GridTrackUnit Unit, out double Value) -> void
+Egap.Documents.GridTrackSize.Equals(Egap.Documents.GridTrackSize other) -> bool
+Egap.Documents.GridTrackSize.GridTrackSize() -> void
+Egap.Documents.GridTrackSize.GridTrackSize(Egap.Documents.GridTrackUnit Unit, double Value) -> void
+Egap.Documents.GridTrackSize.Unit.get -> Egap.Documents.GridTrackUnit
+Egap.Documents.GridTrackSize.Unit.init -> void
+Egap.Documents.GridTrackSize.Value.get -> double
+Egap.Documents.GridTrackSize.Value.init -> void
+Egap.Documents.GridTrackUnit
+Egap.Documents.GridTrackUnit.Auto = 0 -> Egap.Documents.GridTrackUnit
+Egap.Documents.GridTrackUnit.Fraction = 3 -> Egap.Documents.GridTrackUnit
+Egap.Documents.GridTrackUnit.MaxContent = 5 -> Egap.Documents.GridTrackUnit
+Egap.Documents.GridTrackUnit.MinContent = 4 -> Egap.Documents.GridTrackUnit
+Egap.Documents.GridTrackUnit.Percent = 2 -> Egap.Documents.GridTrackUnit
+Egap.Documents.GridTrackUnit.Points = 1 -> Egap.Documents.GridTrackUnit
+Egap.Documents.Layout.ContainerBox
+Egap.Documents.Layout.ContainerBox.Block.get -> Egap.Documents.Block!
+Egap.Documents.Layout.ContainerBox.Continues.get -> bool
+Egap.Documents.Layout.ContainerBox.IsContinuation.get -> bool
+Egap.Documents.Layout.ContainerBox.Style.get -> Egap.Documents.BoxStyle?
+Egap.Documents.Layout.ItemBox
+Egap.Documents.Layout.ItemBox.Item.get -> Egap.Documents.BlockContainer!
+Egap.Documents.Layout.ItemBox.Style.get -> Egap.Documents.BoxStyle?
+Egap.Documents.LayoutAlignment
+Egap.Documents.LayoutAlignment.Baseline = 7 -> Egap.Documents.LayoutAlignment
+Egap.Documents.LayoutAlignment.Center = 2 -> Egap.Documents.LayoutAlignment
+Egap.Documents.LayoutAlignment.End = 1 -> Egap.Documents.LayoutAlignment
+Egap.Documents.LayoutAlignment.SpaceAround = 5 -> Egap.Documents.LayoutAlignment
+Egap.Documents.LayoutAlignment.SpaceBetween = 4 -> Egap.Documents.LayoutAlignment
+Egap.Documents.LayoutAlignment.SpaceEvenly = 6 -> Egap.Documents.LayoutAlignment
+Egap.Documents.LayoutAlignment.Start = 0 -> Egap.Documents.LayoutAlignment
+Egap.Documents.LayoutAlignment.Stretch = 3 -> Egap.Documents.LayoutAlignment
+Egap.Documents.Shape.CornerRadius.get -> double
+Egap.Documents.Shape.CornerRadius.set -> void
+Egap.Documents.Shape.FitToText.get -> bool
+Egap.Documents.Shape.FitToText.set -> void
+Egap.Documents.Shape.Shadow.get -> Egap.Documents.BoxShadow?
+Egap.Documents.Shape.Shadow.set -> void
+Egap.Documents.Shape.TextInsets.get -> (double Left, double Top, double Right, double Bottom)?
+Egap.Documents.Shape.TextInsets.set -> void
+override Egap.Documents.BoxCorners.GetHashCode() -> int
+override Egap.Documents.BoxShadow.Equals(object? obj) -> bool
+override Egap.Documents.BoxShadow.GetHashCode() -> int
+override Egap.Documents.BoxShadow.ToString() -> string!
+override Egap.Documents.BoxStyle.Equals(object? obj) -> bool
+override Egap.Documents.BoxStyle.GetHashCode() -> int
+override Egap.Documents.BoxStyle.ToString() -> string!
+override Egap.Documents.FlexContainer.Clone(bool deep = true) -> Egap.Documents.FlexContainer!
+override Egap.Documents.FlexItem.Clone(bool deep = true) -> Egap.Documents.FlexItem!
+override Egap.Documents.FlexLayout.Equals(object? obj) -> bool
+override Egap.Documents.FlexLayout.GetHashCode() -> int
+override Egap.Documents.FlexLayout.ToString() -> string!
+override Egap.Documents.GridContainer.Clone(bool deep = true) -> Egap.Documents.GridContainer!
+override Egap.Documents.GridItem.Clone(bool deep = true) -> Egap.Documents.GridItem!
+override Egap.Documents.GridLayout.Equals(object? obj) -> bool
+override Egap.Documents.GridLayout.GetHashCode() -> int
+override Egap.Documents.GridLayout.ToString() -> string!
+override Egap.Documents.GridTrack.GetHashCode() -> int
+override Egap.Documents.GridTrackSize.GetHashCode() -> int
+static Egap.Documents.BoxCorners.All(double radius) -> Egap.Documents.BoxCorners
+static Egap.Documents.BoxCorners.operator !=(Egap.Documents.BoxCorners left, Egap.Documents.BoxCorners right) -> bool
+static Egap.Documents.BoxCorners.operator ==(Egap.Documents.BoxCorners left, Egap.Documents.BoxCorners right) -> bool
+static Egap.Documents.BoxShadow.operator !=(Egap.Documents.BoxShadow? left, Egap.Documents.BoxShadow? right) -> bool
+static Egap.Documents.BoxShadow.operator ==(Egap.Documents.BoxShadow? left, Egap.Documents.BoxShadow? right) -> bool
+static Egap.Documents.BoxStyle.operator !=(Egap.Documents.BoxStyle? left, Egap.Documents.BoxStyle? right) -> bool
+static Egap.Documents.BoxStyle.operator ==(Egap.Documents.BoxStyle? left, Egap.Documents.BoxStyle? right) -> bool
+static Egap.Documents.BoxStyle.Padded(double padding) -> Egap.Documents.BoxStyle!
+static Egap.Documents.FlexLayout.operator !=(Egap.Documents.FlexLayout? left, Egap.Documents.FlexLayout? right) -> bool
+static Egap.Documents.FlexLayout.operator ==(Egap.Documents.FlexLayout? left, Egap.Documents.FlexLayout? right) -> bool
+static Egap.Documents.GridLayout.operator !=(Egap.Documents.GridLayout? left, Egap.Documents.GridLayout? right) -> bool
+static Egap.Documents.GridLayout.operator ==(Egap.Documents.GridLayout? left, Egap.Documents.GridLayout? right) -> bool
+static Egap.Documents.GridTrack.Auto.get -> Egap.Documents.GridTrack
+static Egap.Documents.GridTrack.Fraction(double fraction) -> Egap.Documents.GridTrack
+static Egap.Documents.GridTrack.MinMax(Egap.Documents.GridTrackSize min, Egap.Documents.GridTrackSize max) -> Egap.Documents.GridTrack
+static Egap.Documents.GridTrack.Of(Egap.Documents.GridTrackSize size) -> Egap.Documents.GridTrack
+static Egap.Documents.GridTrack.operator !=(Egap.Documents.GridTrack left, Egap.Documents.GridTrack right) -> bool
+static Egap.Documents.GridTrack.operator ==(Egap.Documents.GridTrack left, Egap.Documents.GridTrack right) -> bool
+static Egap.Documents.GridTrack.Percent(double percent) -> Egap.Documents.GridTrack
+static Egap.Documents.GridTrack.Points(double points) -> Egap.Documents.GridTrack
+static Egap.Documents.GridTrackSize.Auto.get -> Egap.Documents.GridTrackSize
+static Egap.Documents.GridTrackSize.Fraction(double fraction) -> Egap.Documents.GridTrackSize
+static Egap.Documents.GridTrackSize.MaxContent.get -> Egap.Documents.GridTrackSize
+static Egap.Documents.GridTrackSize.MinContent.get -> Egap.Documents.GridTrackSize
+static Egap.Documents.GridTrackSize.operator !=(Egap.Documents.GridTrackSize left, Egap.Documents.GridTrackSize right) -> bool
+static Egap.Documents.GridTrackSize.operator ==(Egap.Documents.GridTrackSize left, Egap.Documents.GridTrackSize right) -> bool
+static Egap.Documents.GridTrackSize.Percent(double percent) -> Egap.Documents.GridTrackSize
+static Egap.Documents.GridTrackSize.Points(double points) -> Egap.Documents.GridTrackSize
+virtual Egap.Documents.DocumentVisitor.VisitFlexContainerEnd(Egap.Documents.FlexContainer! container) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitFlexContainerStart(Egap.Documents.FlexContainer! container) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitFlexItemEnd(Egap.Documents.FlexItem! item) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitFlexItemStart(Egap.Documents.FlexItem! item) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitGridContainerEnd(Egap.Documents.GridContainer! container) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitGridContainerStart(Egap.Documents.GridContainer! container) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitGridItemEnd(Egap.Documents.GridItem! item) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitGridItemStart(Egap.Documents.GridItem! item) -> Egap.Documents.VisitorAction
+~override Egap.Documents.BoxCorners.Equals(object obj) -> bool
+~override Egap.Documents.BoxCorners.ToString() -> string
+~override Egap.Documents.GridTrack.Equals(object obj) -> bool
+~override Egap.Documents.GridTrack.ToString() -> string
+~override Egap.Documents.GridTrackSize.Equals(object obj) -> bool
+~override Egap.Documents.GridTrackSize.ToString() -> string

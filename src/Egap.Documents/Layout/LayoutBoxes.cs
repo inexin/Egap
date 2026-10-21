@@ -211,3 +211,46 @@ public sealed class CellBox : LayoutBox
     /// <summary>The cell's background colour, or null for none.</summary>
     public Egami.Pixels.Rgba8? Fill { get; }
 }
+
+/// <summary>
+/// A flex or grid container, or a group of blocks with a box, or the part of one on this page or column: its box and the
+/// boxes inside it.
+/// </summary>
+public sealed class ContainerBox : LayoutBox
+{
+    internal ContainerBox(Block block, LayoutRect bounds, BoxStyle? style, IReadOnlyList<LayoutBox> children, bool continued, bool continues)
+        : base(block, bounds, children)
+    {
+        Style = style;
+        IsContinuation = continued;
+        Continues = continues;
+    }
+
+    /// <summary>The container or group.</summary>
+    public Block Block => (Block)Node!;
+
+    /// <summary>The box drawn around the content, or null for none.</summary>
+    public BoxStyle? Style { get; }
+
+    /// <summary>Whether the container started on an earlier page or column; its top edge is not drawn.</summary>
+    public bool IsContinuation { get; }
+
+    /// <summary>Whether the container goes on in the next page or column; its bottom edge is not drawn.</summary>
+    public bool Continues { get; }
+}
+
+/// <summary>A flex or grid item: its box and its blocks.</summary>
+public sealed class ItemBox : LayoutBox
+{
+    internal ItemBox(BlockContainer item, LayoutRect bounds, BoxStyle? style, IReadOnlyList<LayoutBox> blocks)
+        : base(item, bounds, blocks)
+    {
+        Style = style;
+    }
+
+    /// <summary>The flex or grid item.</summary>
+    public BlockContainer Item => (BlockContainer)Node!;
+
+    /// <summary>The box drawn around the item's blocks, or null for none.</summary>
+    public BoxStyle? Style { get; }
+}

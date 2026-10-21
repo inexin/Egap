@@ -100,6 +100,12 @@ internal static class PageDrawing
             case ObjectBox item:
                 DrawObject(item, canvas, observer);
                 return;
+            case ContainerBox container:
+                DrawStyledBox(container, container.Style, container.Block.Document.Theme, container.IsContinuation, container.Continues, canvas, observer);
+                return;
+            case ItemBox item:
+                DrawStyledBox(item, item.Style, item.Item.Document.Theme, false, false, canvas, observer);
+                return;
             case ScaledBox scaled:
                 canvas.Save();
                 canvas.Translate((float)scaled.Bounds.X, (float)scaled.Bounds.Y);
@@ -261,8 +267,16 @@ internal static class PageDrawing
                     {
                         ShapeKind.Ellipse => Egami.Drawing.Path.Oval(rect),
                         ShapeKind.Line => Egami.Drawing.Path.Polygon([new Vector2(rect.Left, rect.Top), new Vector2(rect.Right, rect.Bottom)], close: false),
+                        ShapeKind.RoundedRectangle => Egami.Drawing.Path.RoundRect(new RoundRect(rect, Corner(shape, rect))),
+                        ShapeKind.Rectangle when shape.CornerRadius > 0 => Egami.Drawing.Path.RoundRect(new RoundRect(rect, Corner(shape, rect))),
                         _ => Egami.Drawing.Path.Rect(rect),
                     };
+                    if (shape.Shadow is { } shadow && shape.Kind != ShapeKind.Line)
+                    {
+                        CornerRadii corners = shape.Kind == ShapeKind.RoundedRectangle || shape.CornerRadius > 0 ? new CornerRadii(Corner(shape, rect)) : CornerRadii.Zero;
+                        DrawShadow(canvas, rect, corners, shadow, theme, shape.Kind == ShapeKind.Ellipse);
+                    }
+
                     if (shape.Fill is { } fill && shape.Kind != ShapeKind.Line)
                     {
                         canvas.FillPath(path, fill.Resolve(theme, new Rgba8(255, 255, 255, 255)));
@@ -283,6 +297,124 @@ internal static class PageDrawing
         }
 
         DrawChildren(box, canvas, observer);
+    }
+
+    /// <summary>A rounded shape's corner radius: its own, or a sixth of its shorter side, as Word's rounded rectangle draws it.</summary>
+    private static float Corner(Shape shape, RectF rect)
+    {
+        return shape.CornerRadius > 0 ? (float)shape.CornerRadius : Math.Min(rect.Width, rect.Height) / 6;
+    }
+
+    /// <summary>
+    /// A flex or grid container, an item or a boxed group: its shadow, background, children and borders, the corners rounded;
+    /// a part that continues from or on another page is drawn open on that side, square there.
+    /// </summary>
+    private static void DrawStyledBox(LayoutBox box, BoxStyle? style, Theme theme, bool continued, bool continues, Canvas canvas, LayoutDrawObserver? observer)
+    {
+        if (style is null || !style.Draws)
+        {
+            DrawChildren(box, canvas, observer);
+            return;
+        }
+
+        RectF rect = Rect(box.Bounds);
+        BoxCorners r = style.CornerRadius;
+        CornerRadii corners = r.IsSquare ? CornerRadii.Zero : new CornerRadii(
+            continued ? 0 : (float)r.TopLeft, continued ? 0 : (float)r.TopRight, continues ? 0 : (float)r.BottomRight, continues ? 0 : (float)r.BottomLeft);
+        observer?.BeginDecoration();
+        if (style.Shadow is { } shadow)
+        {
+            DrawShadow(canvas, rect, corners, shadow, theme, oval: false);
+        }
+
+        if (style.Background is { } background && background.Kind != DocumentColorKind.Auto)
+        {
+            Rgba8 fill = background.Resolve(theme, default);
+            if (r.IsSquare)
+            {
+                canvas.FillRect(rect, fill);
+            }
+            else
+            {
+                canvas.FillRoundRect(new RoundRect(rect, corners), fill);
+            }
+        }
+
+        observer?.EndDecoration();
+        DrawChildren(box, canvas, observer);
+        observer?.BeginDecoration();
+        Border? top = continued ? null : style.BorderTop;
+        Border? bottom = continues ? null : style.BorderBottom;
+        if (!r.IsSquare && Uniform(style) is { } border && top is not null && bottom is not null)
+        {
+            // One border all round with rounded corners: one stroke along the rounded outline, inside the box's edge.
+            float half = (float)border.Width / 2;
+            RectF inner = RectF.FromEdges(rect.Left + half, rect.Top + half, rect.Right - half, rect.Bottom - half);
+            CornerRadii radii = new(Math.Max(0, (float)r.TopLeft - half), Math.Max(0, (float)r.TopRight - half), Math.Max(0, (float)r.BottomRight - half), Math.Max(0, (float)r.BottomLeft - half));
+            canvas.StrokeRoundRect(new RoundRect(inner, radii), BorderStroke(border), border.Color.Kind == DocumentColorKind.Auto ? Black : border.Color.Resolve(theme, Black));
+        }
+        else
+        {
+            // CSS draws a border inside the box's edge: each line is centred half its width in.
+            LayoutRect b = box.Bounds;
+            double left = Half(style.BorderLeft), right = Half(style.BorderRight), above = Half(top), below = Half(bottom);
+            DrawBorders(canvas, new LayoutRect(b.X + left, b.Y + above, b.Width - left - right, b.Height - above - below), top, style.BorderLeft, bottom, style.BorderRight, theme);
+        }
+
+        observer?.EndDecoration();
+
+        static double Half(Border? side) => side is { IsVisible: true } ? side.Width / 2 : 0;
+    }
+
+    /// <summary>The border every side has, when all four are the same and visible; null otherwise.</summary>
+    private static Border? Uniform(BoxStyle style)
+    {
+        return style.BorderTop is { IsVisible: true } top && Equals(top, style.BorderRight) && Equals(top, style.BorderBottom) && Equals(top, style.BorderLeft) ? top : null;
+    }
+
+    private static Stroke BorderStroke(Border border)
+    {
+        float width = (float)border.Width;
+        Stroke stroke = new(width);
+        return border.Style is EgamiBorderStyle.Dotted or EgamiBorderStyle.Dashed or EgamiBorderStyle.DashSmallGap or EgamiBorderStyle.DotDash or EgamiBorderStyle.DotDotDash
+            ? stroke with { Dash = new DashPattern(border.Style == EgamiBorderStyle.Dotted ? [width, width * 2] : [width * 4, width * 2], 0) }
+            : stroke;
+    }
+
+    /// <summary>
+    /// A box's shadow (CSS box-shadow): its shape moved, grown by the spread and blurred, the blur's standard deviation half its
+    /// radius as CSS defines it, scaled to the canvas's device pixels.
+    /// </summary>
+    private static void DrawShadow(Canvas canvas, RectF rect, CornerRadii corners, BoxShadow shadow, Theme theme, bool oval)
+    {
+        float spread = (float)shadow.Spread;
+        RectF moved = RectF.FromEdges(rect.Left + (float)shadow.OffsetX - spread, rect.Top + (float)shadow.OffsetY - spread, rect.Right + (float)shadow.OffsetX + spread, rect.Bottom + (float)shadow.OffsetY + spread);
+        if (shadow.Opacity <= 0 || moved.Width <= 0 || moved.Height <= 0)
+        {
+            return;
+        }
+
+        Rgba8 color = shadow.Color.Kind == DocumentColorKind.Auto ? Black : shadow.Color.Resolve(theme, Black);
+        Matrix3x2 matrix = canvas.Matrix;
+        float scale = MathF.Sqrt(MathF.Abs((matrix.M11 * matrix.M22) - (matrix.M12 * matrix.M21)));
+        float sigma = Math.Min(MaskBlur.MaxSigma, (float)shadow.Blur / 2 * (scale > 0 ? scale : 1));
+        SolidPaint paint = new(color) { Opacity = (float)Math.Clamp(shadow.Opacity, 0, 1), Blur = sigma > 0 ? new MaskBlur(sigma, BlurStyle.Normal) : null };
+        if (oval)
+        {
+            canvas.FillOval(moved, paint);
+        }
+        else
+        {
+            canvas.FillRoundRect(new RoundRect(moved, Grow(corners, spread)), paint);
+        }
+    }
+
+    /// <summary>Each rounded corner grown by <paramref name="by"/>, as CSS grows a shadow's corners with its spread; square ones stay square.</summary>
+    private static CornerRadii Grow(CornerRadii corners, float by)
+    {
+        return new CornerRadii(G(corners.TopLeft), G(corners.TopRight), G(corners.BottomRight), G(corners.BottomLeft));
+
+        float G(Vector2 radius) => radius.X <= 0 ? 0 : Math.Max(0, radius.X + by);
     }
 
     /// <summary>Draws an image the file stores, decoding it with Egami's codecs; one Egami cannot decode is left out.</summary>

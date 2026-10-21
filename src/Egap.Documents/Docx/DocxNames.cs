@@ -252,11 +252,13 @@ internal sealed record PictureState(ImageData Image, double Width, double Height
 }
 
 /// <summary>What a shape showed when it was read, so the writer can tell whether only its text changed.</summary>
-internal sealed record ShapeState(ShapeKind Kind, double Width, double Height, DocumentColor? Fill, Border? Outline, FloatingPlacement? Floating, double Rotation, string? Title, string? Description)
+internal sealed record ShapeState(ShapeKind Kind, double Width, double Height, DocumentColor? Fill, Border? Outline, FloatingPlacement? Floating, double Rotation, string? Title, string? Description,
+    double CornerRadius, BoxShadow? Shadow, (double, double, double, double)? TextInsets, bool FitToText)
 {
     public static ShapeState Of(Shape shape)
     {
-        return new ShapeState(shape.Kind, shape.Width, shape.Height, shape.Fill, shape.Outline, shape.Floating, shape.Rotation, shape.Title, shape.Description);
+        return new ShapeState(shape.Kind, shape.Width, shape.Height, shape.Fill, shape.Outline, shape.Floating, shape.Rotation, shape.Title, shape.Description,
+            shape.CornerRadius, shape.Shadow, shape.TextInsets, shape.FitToText);
     }
 }
 

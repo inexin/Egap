@@ -196,6 +196,11 @@ internal sealed partial class Paginator
     private void Flow()
     {
         plans.Clear();
+        flexPlans.Clear();
+        gridPlans.Clear();
+        openBoxes.Clear();
+        insetLeft = 0;
+        insetRight = 0;
         pages.Clear();
         page = null;
         section = null;
@@ -265,6 +270,7 @@ internal sealed partial class Paginator
 
     private void NewPage()
     {
+        BreakBoxes();
         Section current = section!;
         bool restart = pages.Count == 0 || page?.Section != current;
         pageNumber = restart && current.PageSetup.PageNumberStart is int start ? start : pageNumber + 1;
@@ -279,6 +285,7 @@ internal sealed partial class Paginator
         }
 
         y = page.ColumnTop(0);
+        ResumeBoxes();
     }
 
     /// <summary>The next column, or the next page when this was the last.</summary>
@@ -286,8 +293,10 @@ internal sealed partial class Paginator
     {
         if (page is not null && column + 1 < page.Columns.Count)
         {
+            BreakBoxes();
             column++;
             y = page.ColumnTop(column);
+            ResumeBoxes();
         }
         else
         {
@@ -298,8 +307,6 @@ internal sealed partial class Paginator
     private bool AtColumnTop => page is not null && Math.Abs(y - page.ColumnTop(column)) < 0.01 && page.ColumnContents(column).Count == 0;
 
     private double ColumnBottom => page!.ColumnBottom(column);
-
-    private ColumnGeometry Column => page!.Columns[column];
 
     /// <summary>The break that ends a section's blocks.</summary>
     private enum SectionBreak
@@ -327,11 +334,20 @@ internal sealed partial class Paginator
                 case Table table:
                     FlowTable(table);
                     break;
+                case ContentControl { Box: { } box } control:
+                    FlowBoxedGroup(control, box);
+                    break;
                 case ContentControl { Paging: { } paging } control:
                     FlowGroup(control, paging);
                     break;
                 case ContentControl control:
                     FlowBlocks(control.Blocks);
+                    break;
+                case FlexContainer flex:
+                    FlowFlex(flex);
+                    break;
+                case GridContainer grid:
+                    FlowGrid(grid);
                     break;
                 case BlockIsland:
                     break;
@@ -451,11 +467,20 @@ internal sealed partial class Paginator
                 case Table table:
                     FlowTable(table);
                     break;
+                case ContentControl { Box: { } box } control:
+                    FlowBoxedGroup(control, box);
+                    break;
                 case ContentControl { Paging: { } paging } control:
                     FlowGroup(control, paging);
                     break;
                 case ContentControl control:
                     FlowBlocks(control.Blocks);
+                    break;
+                case FlexContainer flex:
+                    FlowFlex(flex);
+                    break;
+                case GridContainer grid:
+                    FlowGrid(grid);
                     break;
             }
         }
