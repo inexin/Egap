@@ -87,3 +87,22 @@ changes.WriteMarkup("contract-changes.pdf");                      // the new doc
 
 `ConvertToGray` turns every colour to gray, `RemoveBlankPages` drops empty pages, `DeskewScannedPages` straightens scans,
 and `ConvertTextToOutlines` turns text into paths so a file shows the same without its fonts.
+
+## Recipes
+
+Short answers to common tasks in this area. Each one is complete: open, change, save.
+
+### Add page numbers
+
+```csharp
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("report.pdf");
+pdf.Stamp(PdfStamp.Text("Page {page} of {total-pages}") with
+{
+    Anchor = StampAnchor.BottomCenter,
+    Offset = new(0, Length.Mm(10)),
+    PageRange = PdfPageRange.Parse("2-z"),              // no number on the cover
+});
+pdf.Save("report-numbered.pdf");
+```

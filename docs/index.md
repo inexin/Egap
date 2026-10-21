@@ -21,5 +21,5 @@ pdf.Outline.Add("Summary", PdfDestination.ToPage(pdf.Pages[0]));
 pdf.Save("out.pdf");                                             // incremental: the original bytes plus the changes
 ```
 
-Start with [Getting started](articles/getting-started.md), browse the [guides](articles/guides/editing.md), or look anything
-up in the [API reference](api/Egap.Pdf.yml).
+Start with [Getting started](articles/getting-started.md), browse the [guides](articles/guides/index.md) and the
+[document formats](articles/formats/index.md), or look anything up in the [API reference](api/Egap.Pdf.yml).

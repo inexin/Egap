@@ -37,47 +37,9 @@ report.SaveAsPdf("report.pdf");
 Document scanned = Document.LoadPdf("scanned.pdf");               // as PdfToDocument.Convert
 ```
 
-`Document.Load` and `Save` know DOCX, PDF and plain text by themselves. HTML and Markdown join them once you register them at
-startup; until then, loading such a file throws a `NotSupportedException` that names the call to make. `Document.Identify`
-tells which format a file is in without loading it, so a program can say what a file needs.
-
-```csharp
-using Egap.Documents;
-
-HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
-MarkdownFormat.Register();
-DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Html, Markdown, Text, DoclingJson or Unknown
-Document notes = TextFormat.Load("notes.txt");                    // one paragraph per line
-```
-
-## Format options
-
-Each format has its own class with its own options. `MarkdownFormat` comes from Egap.Documents.Markdown and `HtmlFormat`
-from Egap.Documents.Html, both in namespace `Egap.Documents`; they need no `Register()` when you call them directly, and add
-members to `Document` too: `Document.LoadMarkdown`, `ToMarkdown`, `Document.ParseHtml`, `ToHtml` and their `Save` forms.
-
-```csharp
-using Egap.Documents;
-
-Document readme = MarkdownFormat.Load("README.md", new MarkdownLoadOptions { Extensions = MarkdownExtensions.GitHub });
-DocxFormat.Save(readme, "readme.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
-```
-
-HTML is parsed by AngleSharp as browsers parse it and styled through the CSS cascade (Markdown is parsed by Markdig). Nothing outside the file is fetched unless you pass
-a resolver:
-
-```csharp
-using Egap.Documents;
-
-Document page = HtmlFormat.Load("invoice.html", new HtmlLoadOptions
-{
-    BaseUri = new Uri("https://example.com/"),
-    ResourceResolver = uri => File.Exists(uri.LocalPath) ? File.ReadAllBytes(uri.LocalPath) : null,
-});
-```
-
-Form controls in HTML (text inputs, check boxes, radio buttons, selects and text areas) are read as content controls that
-hold their values, as Word's are, so they keep their place in the text and a PDF export can turn them into form fields.
+`Document.Load` and `Save` know DOCX, PDF, plain text and Docling JSON by themselves; HTML and Markdown join them once
+their add-on package is registered. Each format has its own page under [Document formats](../formats/index.md), with its
+options and what it keeps.
 
 ## Text options
 

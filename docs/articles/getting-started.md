@@ -51,5 +51,5 @@ report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true });
 
 ## Next
 
-The [guides](guides/editing.md) cover each area in more depth. Every public type and member is in the
-[API reference](../api/Egap.Pdf.yml).
+The [guides](guides/index.md) cover each area in more depth, grouped by package, and each document format has a page in
+[Document formats](formats/index.md). Every public type and member is in the [API reference](../api/Egap.Pdf.yml).
