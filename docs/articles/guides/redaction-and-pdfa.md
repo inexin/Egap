@@ -78,3 +78,39 @@ if (PdfInvoice.Read(received) is PdfInvoice invoice)
 
 received.Attachments.Add("data.csv", File.ReadAllBytes("data.csv"), PdfAttachmentRelationship.Data, "text/csv");
 ```
+
+## Recipes
+
+Short answers to common tasks in this area. Each one is complete: open, change, save.
+
+### Redact a phrase
+
+```csharp
+using System.Text.RegularExpressions;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("statement.pdf");
+pdf.RedactText("Ola Nordmann", new PdfFindOptions { MatchCase = false });
+pdf.RedactText(new Regex(@"\b\d{11}\b"));                 // Norwegian national identity numbers
+pdf.Save("statement-redacted.pdf");                      // written whole, so nothing redacted survives
+```
+
+### Turn an HTML invoice into a Factur-X PDF/A-3
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Pdf;
+using Egap.Pdf;
+
+HtmlFormat.Register();                                           // once at startup: PdfConvert.FromFile reads .html
+using PdfDocument invoice = PdfConvert.FromFile("invoice.html", new PdfConvertOptions
+{
+    PageSize = PdfPageSize.A4,
+    Margins = PageMargins.All(Length.Mm(15)),
+});
+PdfAReport report = PdfInvoice.Embed(invoice, File.ReadAllBytes("factur-x.xml"));   // PDF/A-3b with the XML attached
+if (report.Succeeded)
+{
+    invoice.Save("invoice-2026-118.pdf");
+}
+```

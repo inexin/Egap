@@ -20,7 +20,8 @@ Document notes = Document.Load("notes.md");
 ```
 
 Without the call, loading such a file throws a `NotSupportedException` that names the package and the call.
-`Document.Identify` tells which format a file is in without any add-on.
+`Document.Identify` tells which format a file is in without any add-on. Each format's page under [Document formats](formats/index.md) says
+which package it needs and what it reads and writes.
 
 The add-ons start at 2.0.0 and move in step with Egap.Documents. Egap.Pdf.Conversion is retired: its code is in
 Egap.Documents 2.0 (see [Moving to Egap.Documents 2.0](guides/migrating-to-2.0.md)).

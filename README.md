@@ -29,21 +29,31 @@ pdf.Save("out.pdf");                                             // incremental:
 
 ## Packages
 
-| Package | Version | What it does |
-| --- | --- | --- |
-| Egap.Pdf | 1.4.1 | Reads, edits, renders, signs, redacts and saves PDF; PDF/A, tagged PDF, optimize, imposition, stamps, compare |
-| Egap.Documents | 2.0.0 | One document model with DOCX, page layout onto any Egami canvas, PDF export, and PDF converted back into documents |
-| Egap.Documents.Html | 2.0.0 | HTML read and written through the CSS cascade, HTML to PDF |
-| Egap.Documents.Markdown | 2.0.0 | CommonMark and GitHub Markdown read and written, Markdown to PDF |
+Add only the packages you use. Each one has its own guides.
 
-All four are on [NuGet](https://www.nuget.org/packages?q=Egap). Egap.Pdf.Conversion is retired; its code is in
-Egap.Documents 2.0.
+| Package | Version | What it does | Docs |
+| --- | --- | --- | --- |
+| [Egap.Pdf](https://www.nuget.org/packages/Egap.Pdf) | 1.5.0 | Reads, edits, renders, signs, redacts and saves PDF; PDF/A, tagged PDF, optimize, imposition, stamps, compare | [Editing](docs/articles/guides/editing.md), [rendering](docs/articles/guides/rendering.md), [signatures](docs/articles/guides/signatures.md), [redaction and PDF/A](docs/articles/guides/redaction-and-pdfa.md), [PDF tools](docs/articles/guides/pdf-tools.md) |
+| [Egap.Documents](https://www.nuget.org/packages/Egap.Documents) | 2.0.0 | One document model with DOCX, page layout onto any Egami canvas, PDF export, and PDF converted back into documents | [Flow documents](docs/articles/guides/flow-documents.md), [PDF export and conversion](docs/articles/guides/pdf-export-and-conversion.md), [formats](docs/articles/formats/index.md), [moving to 2.0](docs/articles/guides/migrating-to-2.0.md) |
+| [Egap.Documents.Html](https://www.nuget.org/packages/Egap.Documents.Html) | 2.0.0 | HTML read and written through the CSS cascade, HTML to PDF | [HTML](docs/articles/formats/html.md) |
+| [Egap.Documents.Markdown](https://www.nuget.org/packages/Egap.Documents.Markdown) | 2.0.0 | CommonMark and GitHub Markdown read and written, Markdown to PDF | [Markdown](docs/articles/formats/markdown.md) |
+
+All four are on [NuGet](https://www.nuget.org/packages?q=Egap). [Packages](docs/articles/packages.md) lists what each one
+needs. Egap.Pdf.Conversion is retired; its code is in Egap.Documents 2.0.
 
 ## Documentation
 
-The [documentation site](https://inexin.github.io/Egap/) has guides for each area and the API reference; its sources are
-in [docs](docs/articles). Each package also has a short README with an example. What each version adds is in the
-[changelog](CHANGELOG.md).
+The documentation is at [inexin.github.io/Egap](https://inexin.github.io/Egap/), and its sources are in
+[docs](docs/articles):
+
+- **[Getting started](docs/articles/getting-started.md)** opens, edits and saves a first PDF and turns a Word file into PDF.
+- **The [guides](docs/articles/guides/index.md)** explain one area each: what it does, the options, the defaults and the
+  limits. They are grouped by package, and some end with recipes for common tasks.
+- **[Document formats](docs/articles/formats/index.md)** has a page for each format Egap.Documents reads and writes, with
+  its options.
+- **The API reference** on the site lists every type and member.
+
+Each package also has a short README with an example. What each version adds is in the [changelog](CHANGELOG.md).
 
 ## Building
 

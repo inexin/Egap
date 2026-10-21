@@ -120,6 +120,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 ### Docs
 - A migration guide, "Moving to Egap.Documents 2.0", maps old packages and namespaces to new ones; the packages page,
   getting started, the flow documents and PDF conversion guides and the package READMEs describe the four packages.
+- Each document format has its own page (DOCX, HTML, Markdown, plain text, Docling JSON) with its options, under a new
+  Document formats section. The guides are grouped by package in alphabetical order, with an index page, and the
+  cookbook's recipes moved to the end of their guides.
 
 ### Markdown and HTML move out
 - Breaking: Markdown is now the Egap.Documents.Markdown package. Add it, and call `MarkdownFormat.Register()` where

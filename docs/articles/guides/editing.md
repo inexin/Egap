@@ -58,3 +58,19 @@ using PdfDocument other = PdfDocument.Open("other.pdf");
 using PdfDocument merged = PdfDocument.Merge(pdf, other);  // fields renamed on a clash, outlines appended
 merged.Save("merged.pdf", new PdfSaveOptions { Mode = PdfSaveMode.Rewrite, Compression = PdfCompression.Compact });
 ```
+
+## Recipes
+
+Short answers to common tasks in this area. Each one is complete: open, change, save.
+
+### Merge files and keep some pages
+
+```csharp
+using Egap.Pdf;
+
+using PdfDocument cover = PdfDocument.Open("cover.pdf");
+using PdfDocument report = PdfDocument.Open("report.pdf");
+using PdfDocument merged = PdfDocument.Merge(cover, report);
+using PdfDocument chosen = merged.ExtractPages(PdfPageRange.Parse("1-3,5,z"));
+chosen.Save("merged.pdf");
+```

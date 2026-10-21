@@ -46,7 +46,9 @@ docfx docs/docfx.json                             # the docs site, into docs/_si
 ## Documentation
 
 Every user-visible change updates, in the same commit, the XML docs, the package's `README.md` in `src/<package>/` where its
-summary changes, the guide in `docs/articles/guides/` for the area (new guides go into `docs/articles/toc.yml`), and
+summary changes, the guide in `docs/articles/guides/` for the area, or the format's page in `docs/articles/formats/` (new
+pages go into their package's group in `docs/articles/toc.yml` and into `docs/articles/guides/index.md`, alphabetically;
+a short task with its code goes under the guide's `## Recipes` heading, not a separate page), and
 `CHANGELOG.md` under the package's next version (`## Egap.Pdf 1.5.0 (unreleased)`; add that heading if it is not there yet).
 Write docs in plain, short sentences that say what the user gets. Describe behavior, not the planning history (no phase or
 task numbers in docs).
