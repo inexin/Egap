@@ -1,8 +1,9 @@
 name: Release
 
-# A tag v<version>, the version of src/Egap.Pdf, publishes the four packages: Egap.Pdf, Egap.Documents, Egap.Documents.Html
-# and Egap.Documents.Markdown, each at the version in its own project file; a package whose version is already on nuget.org is
-# skipped. Egap.Pdf.Conversion is retired (its code is in Egap.Documents) and is never published again.
+# A tag v<version>, the version of src/Egap.Documents (Egap.Documents and its add-ons share one version), publishes the four
+# packages: Egap.Pdf, Egap.Documents, Egap.Documents.Html and Egap.Documents.Markdown, each at the version in its own project
+# file; a package whose version is already on nuget.org is skipped, so v2.0.0 publishes the Documents family and leaves
+# Egap.Pdf 1.5.0 as it is. Egap.Pdf.Conversion is retired (its code is in Egap.Documents) and is never published again.
 # A tag <package>-v<version>, for example Egap.Pdf-v1.5.0, publishes that one package, which must be at that version.
 # The push uses nuget.org trusted publishing: NuGet/login trades the job's OIDC token for a short-lived API key, so the
 # repository keeps no NuGet key. The trusted publishing policy on nuget.org names this repository, this workflow file and the
@@ -36,7 +37,7 @@ jobs:
       - name: Pick the packages from the tag
         run: |
           case "$GITHUB_REF_NAME" in
-            v*) project=Egap.Pdf; packages="Egap.Pdf Egap.Documents Egap.Documents.Html Egap.Documents.Markdown"; tag_version=${GITHUB_REF_NAME#v} ;;
+            v*) project=Egap.Documents; packages="Egap.Pdf Egap.Documents Egap.Documents.Html Egap.Documents.Markdown"; tag_version=${GITHUB_REF_NAME#v} ;;
             *-v*) project=${GITHUB_REF_NAME%-v*}; packages=$project; tag_version=${GITHUB_REF_NAME##*-v} ;;
           esac
           if [ ! -f "src/$project/$project.csproj" ]; then
