@@ -55,14 +55,14 @@ internal static class Targets
     }
 
     /// <summary>
-    /// Any bytes parsed as an HTML document (encoding sniffed) and as fragments in a few contexts; every element must answer
-    /// Egami.Css's element members, as selector matching asks them.
+    /// Any bytes parsed as an HTML document (encoding sniffed); every element must answer Egami.Css's element members, as
+    /// selector matching asks them.
     /// </summary>
     private static void Html(Stream input)
     {
         using MemoryStream bytes = new();
         input.CopyTo(bytes);
-        Egap.Documents.Html.HtmlDocument document = Egap.Documents.Html.HtmlTreeBuilder.Parse(bytes.ToArray(), out _);
+        Egap.Documents.Html.HtmlDocument document = Egap.Documents.Html.HtmlParsing.Parse(bytes.ToArray(), null);
         Visit(document);
 
         // The reader maps every page onto the model through the cascade, and the model answers its formatting.
@@ -72,11 +72,6 @@ internal static class Targets
         {
             _ = paragraph.ListLabel;
             _ = paragraph.GetEffectiveFormat();
-        }
-        string text = System.Text.Encoding.UTF8.GetString(bytes.ToArray());
-        foreach (string context in (string[])["body", "td", "template", "select", "svg"])
-        {
-            Visit(Egap.Documents.Html.HtmlTreeBuilder.ParseFragment(text, context, context == "svg" ? Egap.Documents.Html.HtmlElement.SvgNamespace : Egap.Documents.Html.HtmlElement.HtmlNamespace));
         }
 
         static void Visit(Egap.Documents.Html.HtmlNode root)

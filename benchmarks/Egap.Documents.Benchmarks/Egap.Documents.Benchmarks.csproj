@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Egap.Documents\Egap.Documents.csproj" />
+    <ProjectReference Include="..\..\src\Egap.Documents.Markdown\Egap.Documents.Markdown.csproj" />
+    <ProjectReference Include="..\..\src\Egap.Documents.Html\Egap.Documents.Html.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+  </ItemGroup>
+
+</Project>

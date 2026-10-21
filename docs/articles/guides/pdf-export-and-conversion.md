@@ -1,6 +1,8 @@
 # PDF export and conversion
 
-Egap.Pdf.Conversion connects Egap.Documents and Egap.Pdf in both directions.
+Egap.Documents saves documents as PDF and turns PDF pages back into documents, in namespace `Egap.Documents.Pdf`. HTML and
+Markdown come from their add-on packages, Egap.Documents.Html and Egap.Documents.Markdown, which add `PdfConvert.FromHtml`,
+`PdfConvert.FromMarkdown`, `PdfStamp.Html` and HTML page bands.
 
 ## Documents to PDF
 
@@ -9,7 +11,7 @@ A document saves as PDF with its links, outline and, when asked, tags for access
 ```csharp
 using Egap.Documents;
 using Egap.Pdf;
-using Egap.Pdf.Conversion;
+using Egap.Documents.Pdf;
 
 Document doc = Document.Load("report.docx");
 doc.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
@@ -23,7 +25,7 @@ named by its HTML name or Word tag and starting with its value.
 
 ```csharp
 using Egap.Documents;
-using Egap.Pdf.Conversion;
+using Egap.Documents.Pdf;
 
 Document form = HtmlFormat.Load("application.html");
 form.SaveAsPdf("application.pdf", new PdfExportOptions { FormFields = true });
@@ -33,11 +35,12 @@ form.SaveAsPdf("application.pdf", new PdfExportOptions { FormFields = true });
 
 `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
 input's own. Converting a file reads its images from the file's own folder; HTML or Markdown given as text reads them only
-from `BaseDirectory`, and never from the network.
+from `BaseDirectory`, and never from the network. `FromFile` handles HTML and Markdown files once their add-on is
+registered with `HtmlFormat.Register()` or `MarkdownFormat.Register()`.
 
 ```csharp
 using Egap.Pdf;
-using Egap.Pdf.Conversion;
+using Egap.Documents.Pdf;
 
 PdfConvert.FromFile("report.docx", "report.pdf");
 PdfConvert.FromHtml("<h1>Invoice</h1><p>Total: 120 EUR</p>", "invoice.pdf", new PdfConvertOptions
@@ -57,7 +60,7 @@ a number format after a colon, as in `{page:000}`. HTML pages can set the same t
 and running elements (`position: running(header)` with `content: element(header)`).
 
 ```csharp
-using Egap.Pdf.Conversion;
+using Egap.Documents.Pdf;
 
 PdfConvert.FromHtml("<title>Invoice 2026-118</title><style>.hdr { text-align: right }</style><p>Total: 120 EUR</p>", "invoice.pdf", new PdfConvertOptions
 {
@@ -70,8 +73,10 @@ PdfConvert.FromHtml("<title>Invoice 2026-118</title><style>.hdr { text-align: ri
 numbers. It goes where HTML has `<nav data-toc>` or Markdown a `[TOC]` paragraph, else at the start.
 
 ```csharp
-using Egap.Pdf.Conversion;
+using Egap.Documents;
+using Egap.Documents.Pdf;
 
+MarkdownFormat.Register();
 PdfConvert.FromFile("handbook.md", "handbook.pdf", new PdfConvertOptions { TableOfContents = TableOfContentsMode.WithPageNumbers });
 ```
 
@@ -79,7 +84,7 @@ PdfConvert.FromFile("handbook.md", "handbook.pdf", new PdfConvertOptions { Table
 
 ```csharp
 using Egap.Pdf;
-using Egap.Pdf.Conversion;
+using Egap.Documents.Pdf;
 
 using PdfDocument invoice = PdfDocument.Open("invoice.pdf");
 invoice.Stamp(PdfStamp.Html("<div style='border:3px solid green;color:green;font:bold 28pt sans-serif'>PAID</div>", Length.Mm(50))
@@ -95,7 +100,7 @@ can save as DOCX, HTML or Markdown. Tagged PDFs, such as Word's, keep their tabl
 ```csharp
 using Egap.Documents;
 using Egap.Pdf;
-using Egap.Pdf.Conversion;
+using Egap.Documents.Pdf;
 
 using PdfDocument pdf = PdfDocument.Open("paper.pdf");
 Document flow = PdfToDocument.Convert(pdf);

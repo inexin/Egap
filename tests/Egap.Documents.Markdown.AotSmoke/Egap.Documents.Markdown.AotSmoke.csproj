@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Published with Native AOT to check Egap.Documents.Markdown's trim and AOT claim. Rooting the add-on makes the trim and
+    AOT analyzers check every code path in it and in Markdig; warnings are errors, so any warning fails the publish.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <PublishAot>true</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Egap.Documents.Markdown\Egap.Documents.Markdown.csproj" />
+    <TrimmerRootAssembly Include="Egap.Documents.Markdown" />
+  </ItemGroup>
+
+</Project>

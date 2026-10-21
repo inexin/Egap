@@ -782,25 +782,25 @@ internal static class Targets
                     pdf.Pages.RemoveAt(pdf.Pages.Count - 1);
                 }
 
-                foreach (Egap.Pdf.Conversion.PdfPageLayout page in Egap.Pdf.Conversion.PdfLayoutAnalyzer.Analyze(pdf))
+                foreach (Egap.Documents.Pdf.PdfPageLayout page in Egap.Documents.Pdf.PdfLayoutAnalyzer.Analyze(pdf))
                 {
                     Count("layout pages");
                     Count(page.FromTags ? "layout pages from tags" : "layout pages from geometry");
                 }
 
-                foreach (Egap.Pdf.Conversion.PdfToDocumentMode mode in (Egap.Pdf.Conversion.PdfToDocumentMode[])[Egap.Pdf.Conversion.PdfToDocumentMode.Flow, Egap.Pdf.Conversion.PdfToDocumentMode.Exact])
+                foreach (Egap.Documents.Pdf.PdfToDocumentMode mode in (Egap.Documents.Pdf.PdfToDocumentMode[])[Egap.Documents.Pdf.PdfToDocumentMode.Flow, Egap.Documents.Pdf.PdfToDocumentMode.Exact])
                 {
-                    Egap.Documents.Document document = Egap.Pdf.Conversion.PdfToDocument.Convert(pdf, new Egap.Pdf.Conversion.PdfToDocumentOptions { Mode = mode, FigureResolution = 24 });
+                    Egap.Documents.Document document = Egap.Documents.Pdf.PdfToDocument.Convert(pdf, new Egap.Documents.Pdf.PdfToDocumentOptions { Mode = mode, FigureResolution = 24 });
                     Egap.Documents.DocxFormat.Save(document, Stream.Null);
                 }
 
-                List<int> glyphs = [.. Enumerable.Range(0, pdf.Pages.Count).Select(i => Egap.Pdf.Conversion.PageReader.Read(pdf, i).Glyphs.Count)];
-                if (Egap.Pdf.Conversion.PdfAutoTagger.Tag(pdf).Tagged)
+                List<int> glyphs = [.. Enumerable.Range(0, pdf.Pages.Count).Select(i => Egap.Documents.Pdf.PageReader.Read(pdf, i).Glyphs.Count)];
+                if (Egap.Documents.Pdf.PdfAutoTagger.Tag(pdf).Tagged)
                 {
                     using MemoryStream saved = new();
                     pdf.Save(saved, new PdfSaveOptions { Mode = PdfSaveMode.Rewrite });
                     using PdfDocument tagged = PdfDocument.Open(saved.ToArray(), options);
-                    List<int> after = [.. Enumerable.Range(0, tagged.Pages.Count).Select(i => Egap.Pdf.Conversion.PageReader.Read(tagged, i).Glyphs.Count)];
+                    List<int> after = [.. Enumerable.Range(0, tagged.Pages.Count).Select(i => Egap.Documents.Pdf.PageReader.Read(tagged, i).Glyphs.Count)];
                     if (!after.SequenceEqual(glyphs))
                     {
                         throw new InvalidOperationException($"Tagging changed the glyphs drawn: {string.Join(",", glyphs)} became {string.Join(",", after)}.");

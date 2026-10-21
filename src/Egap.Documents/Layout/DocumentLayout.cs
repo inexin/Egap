@@ -150,7 +150,7 @@ public sealed class PageLayout
 
     /// <summary>
     /// Draws the page onto <paramref name="canvas"/> with its top left corner at the canvas's origin, one canvas unit to the
-    /// point: any Egami canvas, such as a raster, an SVG or, through Egap.Pdf.Conversion, a PDF page.
+    /// point: any Egami canvas, such as a raster, an SVG or, through PdfExport, a PDF page.
     /// </summary>
     public void Draw(Egami.Drawing.Canvas canvas)
     {

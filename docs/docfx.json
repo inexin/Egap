@@ -12,8 +12,12 @@
           "files": [ "Egap.Documents.csproj" ]
         },
         {
-          "src": "../src/Egap.Pdf.Conversion",
-          "files": [ "Egap.Pdf.Conversion.csproj" ]
+          "src": "../src/Egap.Documents.Html",
+          "files": [ "Egap.Documents.Html.csproj" ]
+        },
+        {
+          "src": "../src/Egap.Documents.Markdown",
+          "files": [ "Egap.Documents.Markdown.csproj" ]
         }
       ],
       "dest": "api",

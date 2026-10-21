@@ -1,18 +1,20 @@
-# Egap.Pdf.Conversion
+# Egap.Pdf.Conversion (retired)
 
-The bridge between [Egap.Documents](https://www.nuget.org/packages/Egap.Documents) and
-[Egap.Pdf](https://www.nuget.org/packages/Egap.Pdf), in both directions. Fully managed and MIT-licensed.
+Egap.Pdf.Conversion is retired: everything it held ships in [Egap.Documents](https://www.nuget.org/packages/Egap.Documents)
+2.0 and later. Its last release on nuget.org stays as it is and gets no new version.
 
-- Documents saved as PDF with links, outline and tags, PDF/A included.
-- One-line conversions of HTML, Markdown, DOCX and images to PDF, and stamps made from HTML.
-- PDF pages analysed into blocks, reading order, headings, lists, tables and figures, and converted back into documents
-  you can save as DOCX, HTML or Markdown; tagged PDFs such as Word's keep their tables' merged and nested cells.
-- Untagged PDFs auto-tagged; layout written as DoclingDocument JSON or tables as CSV.
+To move over, replace the package reference with Egap.Documents and change the using lines:
+
+- PDF export, `PdfConvert`, `PdfToDocument`, `PdfLayoutAnalyzer`, `PdfAutoTagger`, `TableCsv`, `PageBand` and `HtmlStamp`
+  are in namespace `Egap.Documents.Pdf`.
+- `DoclingJson` and its options are in namespace `Egap.Documents`.
+- `PdfConvert.FromHtml`, `PdfStamp.Html` and HTML page bands need Egap.Documents.Html, and `PdfConvert.FromMarkdown` needs
+  Egap.Documents.Markdown.
 
 ```csharp
 using Egap.Documents;
+using Egap.Documents.Pdf;
 using Egap.Pdf;
-using Egap.Pdf.Conversion;
 
 Document report = Document.Load("report.docx");
 report.SaveAsPdf("report.pdf", new PdfExportOptions { Tagged = true });

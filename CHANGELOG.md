@@ -3,64 +3,44 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Pdf 1.5.0 (2026-10-19)
-
-### Barcodes
-- `PdfStamp.Barcode` stamps any symbol of Egami.Barcodes (QR, Data Matrix, PDF417, Aztec, Code 128, Code 39, ITF, EAN and
-  UPC) as vector paths in the stamp's colour. Egap.Pdf now depends on Egami.Barcodes.
-
-### Page ranges and units
-- `PdfPageRange.Parse` reads page choices such as `"1,3,5-10,z"`, with `r` counting from the end, `:odd` and `:even`, and
-  `x` to leave pages out. `ExtractPages` and `PdfStamp.PageRange` take one; `Resolve` turns one into page indices.
-- `Length` holds a size in points made from millimetres, centimetres, inches or points (`Length.Mm(20)`, `Length.Parse("2cm")`).
-  It converts to and from points without a cast, so it works wherever a size in points is asked for.
-
-### Placeholders
-- One set of placeholder names for page furniture: `{page}`, `{total-pages}`, `{label}`, `{date}`, `{time}`, `{title}` and
-  `{file}`, each with an optional format. Stamps take them, `{pages}` still works, and `{{` writes a brace.
-  `PdfPlaceholders.Fill` fills them in any text.
-
-### Find text
-- `FindText` on a document or a page finds a phrase or a regular expression, with case and whole-word options and a page
-  range. Each match gives its page, text, glyphs and a quadrilateral per line; phrases are found across line breaks within
-  a paragraph.
-
-### Redact and replace text
-- `RedactText` redacts every match of a phrase or regular expression for real in one call; `MarkRedactions` adds the marks
-  without applying them. Redaction marks already in the document are left alone.
-- `ReplaceText` replaces a phrase or a regular expression (with `$1` groups) in the match's own font, size, colour and
-  rendering mode. A match whose font lacks a glyph for the new text is left as it was with a `TextNotReplaced` warning, or
-  written in a fallback font when one is given.
-
-### Form fields in code
-- `PdfForm` adds text fields, check boxes, radio groups, combo boxes, list boxes, push buttons and signature fields, with
-  options for value, length, flags, tooltip, colours and border, and appearances drawn for each. Dotted names make parent
-  fields.
-
-### E-invoices
-- `PdfInvoice.Embed` makes a Factur-X (ZUGFeRD 2.1 and later) e-invoice: the XML attached as `factur-x.xml` or
-  `xrechnung.xml` with the relationship its profile asks for, the document converted to PDF/A-3, and the Factur-X extension
-  schema in the XMP. `PdfInvoice.Read` reads Factur-X and ZUGFeRD 1.0 to 2.3 invoices back.
-- `Attachments.Add` takes a `PdfAttachmentRelationship` and lists the file among the document's associated files.
+## Egap.Documents 2.0.0 (unreleased)
 
 ### Docs
-- A cookbook of short recipes (merge, page numbers, signing, redacting a phrase, an HTML invoice as Factur-X PDF/A-3), and a
-  PKCS#11 sample in the signatures guide for keys on smart cards and HSMs.
+- A migration guide, "Moving to Egap.Documents 2.0", maps old packages and namespaces to new ones; the packages page,
+  getting started, the flow documents and PDF conversion guides and the package READMEs describe the four packages.
+- Each document format has its own page (DOCX, HTML, Markdown, plain text, Docling JSON) with its options, under a new
+  Document formats section. The guides are grouped by package in alphabetical order, with an index page, and the
+  cookbook's recipes moved to the end of their guides.
 
-### Fixes
-- Redaction, PDF/A conversion and text search on a document that was drawn on since it was last saved first write the font
-  subsets the drawing used, so glyph positions and fonts are right.
-- Redaction removes a covered image whole when it cannot be decoded or is too large to decode, instead of throwing or
-  taking minutes.
-- `PdfInvoice.Read` skips an attachment whose stream cannot be decoded.
+### Markdown and HTML move out
+- Breaking: Markdown is now the Egap.Documents.Markdown package. Add it, and call `MarkdownFormat.Register()` where
+  `Document.Load`, `Document.Save` or `PdfConvert.FromFile` should handle Markdown.
+- Breaking: HTML is now the Egap.Documents.Html package, and Egap.Documents no longer depends on Egami.Css. Add it, and
+  call `HtmlFormat.Register()` where `Document.Load`, `Document.Save`, `PdfConvert.FromFile` or a `PageBand.Html` band
+  outside `PdfConvert.FromHtml` should handle HTML. Without it they throw a `NotSupportedException` that names the package.
 
-### Images and page files
-- `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
-  GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.
-- `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
-  `"page-{page:00}.png"`.
+### Formats
+- Breaking: `Document.Load` and `Document.Save` read and write HTML and Markdown only after `HtmlFormat.Register()` and
+  `MarkdownFormat.Register()`. Without the call they throw a `NotSupportedException` that names the package and the call.
+- Breaking: a `.txt` file loads as plain text, one paragraph per line, instead of as Markdown. Text without an extension
+  that does not start with a tag still loads as Markdown.
+- `Document.Identify` tells PDF, DOCX, HTML, Markdown, plain text and Docling JSON apart without loading the file and
+  returns a `DocumentFormatKind`.
+- `TextFormat.Parse` and `TextFormat.Load` read plain text: a paragraph per line, tabs and form feeds kept as tabs and
+  page breaks.
+- `Document.Load` reads PDF (as `PdfToDocument` does) and Docling JSON, and `Document.Save` writes `.pdf` (as `SaveAsPdf`
+  does).
+- Each core format reads as members of `Document`: `Document.LoadDocx`, `SaveAsDocx`, `Document.LoadText`,
+  `Document.ParseText`, `ToText`, `SaveAsText` and `Document.LoadPdf`, forwarding to `DocxFormat`, `TextFormat` and
+  `PdfToDocument`. `TextFormat.ToText(document)` still works.
 
-## Egap.Documents 1.2.0 (unreleased)
+### Egap.Pdf.Conversion folded in
+- Breaking: everything Egap.Pdf.Conversion held now ships in Egap.Documents, which references Egap.Pdf: PDF export
+  (`SaveAsPdf`, `ToPdf`, `PdfExportOptions`), `PdfConvert`, PDF to document (`PdfToDocument`), layout analysis
+  (`PdfLayoutAnalyzer`), tagging (`PdfAutoTagger`), `TableCsv`, `PageBand` and `HtmlStamp`. These types move from
+  namespace `Egap.Pdf.Conversion` to `Egap.Documents.Pdf`; the Docling types (`DoclingJson`, `DoclingJsonOptions`,
+  `DoclingImage`, `DoclingImageMode`) move to `Egap.Documents`. Replace the package reference and the using line.
+  Egap.Pdf.Conversion gets no new version.
 
 ### Barcodes
 - `DocumentBuilder.InsertBarcode` writes a barcode as an SVG picture, drawn as vectors by layout and PDF export, with a PNG
@@ -134,8 +114,6 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `FontSettings.Portable` uses only embedded fonts and the bundled substitutes, so layout and, with a deterministic save,
   the PDF bytes are the same on every machine.
 
-## Egap.Pdf.Conversion 1.2.0 (unreleased)
-
 ### Form fields
 - `PdfExportOptions.FormFields` turns HTML form controls and DOCX content controls (plain text, date, drop-down list, combo
   box, check box) into PDF form fields at their laid-out place, named by the control's name or tag, with its value.
@@ -152,6 +130,118 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Margin boxes are tagged as artifacts in tagged PDF, as headers and footers are.
 - `PdfConvertOptions.TableOfContents` builds a table of contents from the headings, with or without page numbers, at
   HTML's `<nav data-toc>`, a Markdown `[TOC]` paragraph or the start; its entries link to the headings.
+
+## Egap.Documents.Html 2.0.0 (unreleased)
+
+### Trimming and Native AOT
+- The package is marked trimmable and AOT compatible: a Native AOT app that uses all of it, with AngleSharp, publishes
+  without a trim or AOT warning and runs.
+
+### A package of its own
+- HTML reading and writing moves out of Egap.Documents into this package, with the CSS cascade (Egami.Css), `@page` rules
+  and margin boxes. `HtmlFormat`, `HtmlLoadOptions` and `HtmlSaveOptions` keep their names and namespace
+  (`Egap.Documents`), and `HtmlStamp` keeps `Egap.Documents.Pdf`, so code compiles once the package is added.
+- `HtmlFormat.Register()` lets `Document.Load`, `Document.Save` and `PdfConvert.FromFile` handle `.html` files and
+  `PageBand.Html` bands.
+- HTML as members of `Document`: `Document.ParseHtml`, `Document.LoadHtml`, `ToHtml` and `SaveAsHtml`.
+  `HtmlFormat.ToHtml(document)` still works.
+- `PdfConvert.FromHtml` and `PdfStamp.Html` come from this package as extension members, so the calls compile unchanged.
+  `PdfConvert.FromHtml` lays out HTML bands without `Register()`.
+
+### AngleSharp
+- HTML is parsed by [AngleSharp](https://github.com/AngleSharp/AngleSharp) (MIT) instead of Egap's own tokenizer and tree
+  builder, which are gone, with the entity table. The package depends on AngleSharp 1.8.5 or later. AngleSharp fetches
+  nothing: images and style sheets still come only through `HtmlLoadOptions.ResourceResolver`.
+- `HtmlLoadOptions.Encoding` is now the fallback for bytes without a byte order mark or a meta charset, as its
+  documentation said; before, it also overrode a meta charset.
+- Pages nested more than 4,096 elements deep, which only hostile input has, are read with the deeper start tags left out
+  and all text kept, so they take no longer to read than a flat page.
+- Loading speed against Egap.Documents 1.x's own parser, same machine and session: within 2 % for text and 1 KB
+  pages, 11 % faster for 900 KB pages read from bytes and up to 6 % slower for 45 KB ones, with 1 to 2 % less memory.
+
+## Egap.Documents.Markdown 2.0.0 (unreleased)
+
+### Trimming and Native AOT
+- The package is marked trimmable and AOT compatible: a Native AOT app that uses all of it, with Markdig, publishes
+  without a trim or AOT warning and runs.
+
+### A package of its own
+- Markdown reading and writing moves out of Egap.Documents into this package. `MarkdownFormat`, `MarkdownLoadOptions`,
+  `MarkdownSaveOptions`, `MarkdownExtensions`, `MarkdownImage` and `MarkdownImageMode` keep their names and namespace
+  (`Egap.Documents`), so code compiles once the package is added.
+- `MarkdownFormat.Register()` lets `Document.Load`, `Document.Save` and `PdfConvert.FromFile` handle `.md` files.
+- Markdown as members of `Document`: `Document.ParseMarkdown`, `Document.LoadMarkdown`, `ToMarkdown` and `SaveAsMarkdown`.
+  `MarkdownFormat.ToMarkdown(document)` still works.
+- `PdfConvert.FromMarkdown` comes from this package as an extension member, so the call compiles unchanged.
+
+### Markdig
+- Markdown is parsed by [Markdig](https://github.com/xoofx/markdig) (BSD-2-Clause) instead of Egap's own parser, which is
+  gone. The package depends on Markdig 1.4.1 or later. Every CommonMark 0.31 and GFM table, strikethrough and autolink spec
+  example still reads as before; GitHub's email autolinks and parentheses in links are added on top of Markdig's.
+- Markdown nested hundreds of levels deep (quotes, lists or brackets), which Markdig refuses, is read as plain text with a
+  `FormattingDropped` warning.
+- The writer puts a list item's first block on the marker line, such as a code fence right after `1.`, and writes a
+  no-break space at the start of a line as `&#160;`, so other readers read the output as meant.
+- Loading speed against Egap.Documents 1.x's own parser, same machine and session: 1 KB files take 22 % longer (94 to
+  115 us) with 13 % less memory; 45 KB files 2 % longer with 11 % less memory; 900 KB files 4 % longer with 2 % more
+  memory. Design Q7 accepts up to 25 %.
+
+## Egap.Pdf 1.5.0 (2026-10-19)
+
+### Barcodes
+- `PdfStamp.Barcode` stamps any symbol of Egami.Barcodes (QR, Data Matrix, PDF417, Aztec, Code 128, Code 39, ITF, EAN and
+  UPC) as vector paths in the stamp's colour. Egap.Pdf now depends on Egami.Barcodes.
+
+### Page ranges and units
+- `PdfPageRange.Parse` reads page choices such as `"1,3,5-10,z"`, with `r` counting from the end, `:odd` and `:even`, and
+  `x` to leave pages out. `ExtractPages` and `PdfStamp.PageRange` take one; `Resolve` turns one into page indices.
+- `Length` holds a size in points made from millimetres, centimetres, inches or points (`Length.Mm(20)`, `Length.Parse("2cm")`).
+  It converts to and from points without a cast, so it works wherever a size in points is asked for.
+
+### Placeholders
+- One set of placeholder names for page furniture: `{page}`, `{total-pages}`, `{label}`, `{date}`, `{time}`, `{title}` and
+  `{file}`, each with an optional format. Stamps take them, `{pages}` still works, and `{{` writes a brace.
+  `PdfPlaceholders.Fill` fills them in any text.
+
+### Find text
+- `FindText` on a document or a page finds a phrase or a regular expression, with case and whole-word options and a page
+  range. Each match gives its page, text, glyphs and a quadrilateral per line; phrases are found across line breaks within
+  a paragraph.
+
+### Redact and replace text
+- `RedactText` redacts every match of a phrase or regular expression for real in one call; `MarkRedactions` adds the marks
+  without applying them. Redaction marks already in the document are left alone.
+- `ReplaceText` replaces a phrase or a regular expression (with `$1` groups) in the match's own font, size, colour and
+  rendering mode. A match whose font lacks a glyph for the new text is left as it was with a `TextNotReplaced` warning, or
+  written in a fallback font when one is given.
+
+### Form fields in code
+- `PdfForm` adds text fields, check boxes, radio groups, combo boxes, list boxes, push buttons and signature fields, with
+  options for value, length, flags, tooltip, colours and border, and appearances drawn for each. Dotted names make parent
+  fields.
+
+### E-invoices
+- `PdfInvoice.Embed` makes a Factur-X (ZUGFeRD 2.1 and later) e-invoice: the XML attached as `factur-x.xml` or
+  `xrechnung.xml` with the relationship its profile asks for, the document converted to PDF/A-3, and the Factur-X extension
+  schema in the XMP. `PdfInvoice.Read` reads Factur-X and ZUGFeRD 1.0 to 2.3 invoices back.
+- `Attachments.Add` takes a `PdfAttachmentRelationship` and lists the file among the document's associated files.
+
+### Docs
+- A cookbook of short recipes (merge, page numbers, signing, redacting a phrase, an HTML invoice as Factur-X PDF/A-3), and a
+  PKCS#11 sample in the signatures guide for keys on smart cards and HSMs.
+
+### Fixes
+- Redaction, PDF/A conversion and text search on a document that was drawn on since it was last saved first write the font
+  subsets the drawing used, so glyph positions and fonts are right.
+- Redaction removes a covered image whole when it cannot be decoded or is too large to decode, instead of throwing or
+  taking minutes.
+- `PdfInvoice.Read` skips an attachment whose stream cannot be decoded.
+
+### Images and page files
+- `PdfDocument.FromImages` makes a page per image: JPEG files are embedded as they are stored, and each frame of a TIFF or
+  GIF gets its own page. Pages take the image's size at its resolution, or fit a page size within a margin.
+- `RenderPagesToFiles` writes pages as PNG, JPEG, WebP, TIFF or other image files, named by a pattern such as
+  `"page-{page:00}.png"`.
 
 ## Egap.Pdf 1.4.1 and Egap.Documents 1.1.1 (2026-10-18)
 

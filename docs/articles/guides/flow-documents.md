@@ -1,12 +1,13 @@
 # Flow documents
 
-Egap.Documents holds one editable document model for DOCX, HTML and Markdown: sections, paragraphs, runs, tables, lists,
-pictures, headers and footers, notes, fields, comments and tracked changes, with Word's style model.
+Egap.Documents holds one editable document model for DOCX, plain text and, with the add-on packages Egap.Documents.Html
+and Egap.Documents.Markdown, HTML and Markdown: sections, paragraphs, runs, tables, lists, pictures, headers and footers,
+notes, fields, comments and tracked changes, with Word's style model.
 
 ```csharp
 using Egap.Documents;
 
-Document doc = Document.Load("report.docx");                      // DOCX, DOTX, DOCM, HTML or Markdown, told apart by content
+Document doc = Document.Load("report.docx");                      // any format Egap reads, told apart by content
 foreach (Paragraph p in doc.Descendants<Paragraph>())
 {
     Console.WriteLine($"{p.ListLabel?.Text} {p.GetText()}");    // list labels computed as Word numbers them
@@ -17,38 +18,28 @@ builder.Writeln("Added at the end.");
 doc.Replace("colour", "color");                                   // also where the text crosses runs
 IReadOnlyList<TextMatch> found = doc.Find("color");               // paragraph, offset and text of each match
 doc.Save("report-edited.docx");                                   // what the model does not name is kept
-IReadOnlyList<ConversionWarning> dropped = doc.Save("report.md"); // the format from the extension, with what it could not hold
+IReadOnlyList<ConversionWarning> dropped = doc.Save("report.txt"); // the format from the extension, with what it left out
 ```
 
 DOCX to DOCX is lossless: what the model does not name travels along in each node's extension data. Saving to a format that
 cannot hold something, such as Markdown, returns a warning for each thing left out.
 
-## Format options
-
-Each format has its own class with its own options.
+Each format also reads as members of `Document`, which forward to the format's class with the same options and warnings:
 
 ```csharp
 using Egap.Documents;
+using Egap.Documents.Pdf;
 
-Document readme = MarkdownFormat.Load("README.md", new MarkdownLoadOptions { Extensions = MarkdownExtensions.GitHub });
-DocxFormat.Save(readme, "readme.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
+Document report = Document.LoadDocx("report.docx");
+report.SaveAsDocx("report-copy.docx");
+string text = report.ToText();                                    // as TextFormat.ToText
+report.SaveAsPdf("report.pdf");
+Document scanned = Document.LoadPdf("scanned.pdf");               // as PdfToDocument.Convert
 ```
 
-HTML is parsed as browsers parse it and styled through the CSS cascade. Nothing outside the file is fetched unless you pass
-a resolver:
-
-```csharp
-using Egap.Documents;
-
-Document page = HtmlFormat.Load("invoice.html", new HtmlLoadOptions
-{
-    BaseUri = new Uri("https://example.com/"),
-    ResourceResolver = uri => File.Exists(uri.LocalPath) ? File.ReadAllBytes(uri.LocalPath) : null,
-});
-```
-
-Form controls in HTML (text inputs, check boxes, radio buttons, selects and text areas) are read as content controls that
-hold their values, as Word's are, so they keep their place in the text and a PDF export can turn them into form fields.
+`Document.Load` and `Save` know DOCX, PDF, plain text and Docling JSON by themselves; HTML and Markdown join them once
+their add-on package is registered. Each format has its own page under [Document formats](../formats/index.md), with its
+options and what it keeps.
 
 ## Text options
 

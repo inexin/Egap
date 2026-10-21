@@ -9,7 +9,8 @@ body:
       options:
         - Egap.Pdf
         - Egap.Documents
-        - Egap.Pdf.Conversion
+        - Egap.Documents.Html
+        - Egap.Documents.Markdown
         - A new package
     validations:
       required: true

@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <None Include="../files/fonts/*" LinkBase="files/fonts" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../files/fuzz/layout-*" LinkBase="files/fuzz" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -104,3 +104,22 @@ sealed class TokenRsa : RSA
 Egap signs with SHA-256 and PKCS#1 v1.5 padding by default, so this is all a token has to do. For a token reached
 over a network, or a signing service with its own API, deferred signing (`PrepareSignatureAsync`) hands out the bytes to
 sign and takes the signature back later.
+
+## Recipes
+
+Short answers to common tasks in this area. Each one is complete: open, change, save.
+
+### Sign a document
+
+```csharp
+using System.Security.Cryptography.X509Certificates;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("contract.pdf");
+using X509Certificate2 certificate = X509CertificateLoader.LoadPkcs12FromFile("me.pfx", "password");
+await using FileStream signed = File.Create("contract-signed.pdf");
+await pdf.SignAsync("Signature1", new PdfSignOptions { Signer = PdfSigner.FromCertificate(certificate) }, signed);
+```
+
+A key on a smart card or an HSM signs the same way, through an `RSA` that calls the device; see
+[Smart cards and HSMs](#smart-cards-and-hsms-pkcs11).
