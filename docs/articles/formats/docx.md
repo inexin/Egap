@@ -35,5 +35,8 @@ A document read from another format saves as DOCX with what Word can hold. Some 
   [Page layout](../guides/flow-documents.md#page-layout).
 - Margin boxes at the top and bottom of the page are saved as a three-part table in the header or footer; those in the
   corners and at the sides are left out with a warning.
+- Flex and grid containers are saved as borderless tables with their items in the cells, and a group with a box as a
+  one-cell table; the cells keep the items' backgrounds, borders and padding, not rounded corners or shadows. See
+  [Flex and grid layout](../guides/flow-documents.md#flex-and-grid-layout).
 - An SVG picture is saved with the PNG stand-in in `Picture.Fallback`, as Word stores SVG pictures, so older readers show
   it too. [Barcodes](../guides/flow-documents.md#barcodes) get one at 300 pixels per inch.

@@ -25,9 +25,9 @@ PdfConvert.FromHtml("<h1>Invoice</h1><p>Total: 120 EUR</p>", "invoice.pdf");
 ## Reading
 
 HTML is parsed by AngleSharp as browsers parse it, and styled through Egami.Css's cascade with HTML's default style sheet,
-for print media unless `Media` says `"screen"`. The computed styles become paragraphs, runs, lists and tables. Flexbox and
-grid containers are read as stacked blocks, with a warning. Scripts never run, and nothing outside the page is fetched
-unless you pass a resolver:
+for print media unless `Media` says `"screen"`. The computed styles become paragraphs, runs, lists, tables, and flex and
+grid containers ([CSS layout](#css-layout)). Scripts never run, and nothing outside the page is fetched unless you pass a
+resolver:
 
 ```csharp
 using Egap.Documents;
@@ -65,6 +65,27 @@ Besides fonts, colours, spacing, borders, lists and tables, these read into the 
   margin boxes. An element with `position: running(name)` leaves the body and shows in the boxes whose content is
   `element(name)`. Margin boxes are written back as the same rules.
 - `<nav data-toc>` is read as a table of contents field.
+
+## CSS layout
+
+`display: flex` and `display: grid` read into [flex and grid containers](../guides/flow-documents.md#flex-and-grid-layout),
+laid out as browsers lay them out and broken across pages between lines and rows. Each child element is an item, and text
+directly in the container an item of its own.
+
+| CSS | Read |
+| --- | --- |
+| Flex containers | `flex-direction`, `flex-wrap`, `flex-flow`, `justify-content`, `align-items`, `align-content`, `gap`, `row-gap`, `column-gap` |
+| Flex items | `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `order`, `align-self` |
+| Grid containers | `grid-template-columns` and `grid-template-rows` (lengths, `%`, `fr`, `auto`, `min-content`, `max-content`, `minmax()`, `fit-content()`, `repeat()` with a count, `auto-fill` or `auto-fit`), `grid-template-areas`, `grid-template`, `grid-auto-rows`, `grid-auto-columns`, `grid-auto-flow` with `dense`, the gaps, `justify-items`, `align-items`, `justify-content` and `place-items` |
+| Grid items | `grid-area` (a name or lines), `grid-row`, `grid-column` and their `-start` and `-end` forms, `span`, negative lines, `justify-self`, `align-self`, `place-self` |
+| Boxes | `margin`, `padding`, `border`, `background-color`, `border-radius`, `box-shadow` (the first outer shadow), `width`, `height`, `min-height` and `box-sizing` on containers and items |
+| Positioned boxes | `position: absolute` and `fixed` with `top`, `right`, `bottom`, `left`, `width`, `height` and `z-index` |
+
+A block with `border-radius` or `box-shadow` becomes a group with a box around its blocks; other blocks keep their
+borders and background as paragraph borders and shading. An absolutely positioned box becomes a text box floating in front
+of the text (behind it for a negative `z-index`), placed on the first page's body area, or from its positioned parent's
+first line; a fixed box goes in the header, so it shows on every page. `position: sticky`, subgrid, masonry, named grid
+lines and `inline-flex` and `inline-grid` boxes are not laid out as such; the last two read as inline content.
 
 ## Writing
 

@@ -3,6 +3,45 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Documents 2.1.0 (unreleased)
+
+### Flex and grid layout
+- `FlexContainer` and `FlexItem`: items in a row or a column that grow and shrink to share the space, wrap onto more
+  lines, and line up by `FlexLayout`'s justify and align settings and gaps. Layout breaks pages between lines.
+- `GridContainer` and `GridItem`: column and row tracks in points, per cent, fractions or sized to their content
+  (`GridTrack`, `GridTrackSize`), items placed by line, span or named area, the rest by automatic placement, dense or not.
+  Layout breaks pages between rows and keeps rows an item spans together.
+- `BoxStyle` draws a box around a container, an item or a group of blocks (`ContentControl.Box`): margins, padding,
+  borders, background, rounded corners (`BoxCorners`), a shadow (`BoxShadow`), width and least height. A boxed group
+  breaks across pages, drawn open at the break. `LayoutAlignment` names the alignments.
+- Layout gives `ContainerBox` and `ItemBox` boxes for them; `DocumentVisitor` has start and end methods for each.
+- DOCX saves a container as a borderless table with the items in its cells, spans and merged cells for a grid, and a
+  boxed group as a one-cell table, with the items' backgrounds, borders and padding. Plain text lists the items' text,
+  and tagged PDF tags a container and each item as a `Div`.
+
+### Shapes and text boxes
+- `Shape.CornerRadius`, `Shape.Shadow`, `Shape.TextInsets` and `Shape.FitToText`: rounded rectangles of any radius, a
+  blurred shadow, a text box's own insets, and a text box that takes the size of its text. DOCX reads and writes them
+  (the roundRect adjustment, an outer shadow, the body insets and shape auto-fit). A rounded rectangle without a radius
+  is drawn with Word's default corners instead of square ones.
+
+## Egap.Documents.Html 2.1.0 (unreleased)
+
+### CSS layout
+- `display: flex` and `display: grid` read into flex and grid containers with their items, instead of stacked blocks
+  with a warning: direction, wrapping, grow, shrink, basis, order, justify and align settings, gaps, track lists with
+  `fr`, `minmax()`, `fit-content()` and `repeat()`, named areas, line and span placement, and automatic placement.
+- A block with `border-radius` or `box-shadow` becomes a group with a box: background, borders, padding, rounded
+  corners and the first outer shadow, drawn around its blocks.
+- `position: absolute` and `fixed` boxes become text boxes floating in front of the text, placed by `top`, `right`,
+  `bottom` and `left`, instead of staying in the flow with a warning; a fixed box shows on every page.
+- HTML writing writes flex and grid containers, boxed groups and floating text boxes back as the same CSS.
+
+## Egap.Documents.Markdown 2.1.0 (unreleased)
+
+### Flex and grid containers
+- Flex and grid containers are written as their items' content in order, with a warning.
+
 ## Egap.Documents 2.0.0 (2026-10-21)
 
 ### Docs
