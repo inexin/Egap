@@ -71,7 +71,9 @@ public class HtmlReaderTests
         Assert.Contains(pre.Inlines, i => i is Break);
         Assert.Equal("Courier New", pre.Runs.First().Format.FontAscii);
 
-        Assert.Contains(warnings, w => w.Kind == ConversionWarningKind.LayoutApproximated);
+        // A flex container is laid out as one, with nothing approximated.
+        Assert.Equal("flex", Assert.Single(section.Body.Blocks.OfType<FlexContainer>()).Items.Single().GetText().Trim());
+        Assert.DoesNotContain(warnings, w => w.Kind == ConversionWarningKind.LayoutApproximated);
     }
 
     [Fact]

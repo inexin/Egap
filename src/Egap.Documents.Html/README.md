@@ -1,8 +1,8 @@
 # Egap.Documents.Html
 
 HTML for [Egap.Documents](https://www.nuget.org/packages/Egap.Documents): HTML and XHTML read into the document model,
-styled through the CSS cascade, and written from it, with `@page` rules and margin boxes, HTML to PDF, and HTML stamps and
-page bands. Nothing outside the page is fetched unless you give a resolver. Fully managed and MIT-licensed.
+styled through the CSS cascade, and written from it, with flexbox and grid layout, rounded and shadowed boxes, positioned
+boxes, `@page` rules and margin boxes, HTML to PDF, and HTML stamps and page bands. Nothing outside the page is fetched unless you give a resolver. Fully managed and MIT-licensed.
 
 ```csharp
 using Egap.Documents;

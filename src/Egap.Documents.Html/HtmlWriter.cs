@@ -11,7 +11,7 @@ namespace Egap.Documents.Html;
 /// and pictures; one style sheet with a class per style the document uses and inline styles only for direct formatting;
 /// pictures as data URLs or through the caller's callback; the page setup and simple headers and footers as @page rules.
 /// </summary>
-internal sealed class HtmlWriter
+internal sealed partial class HtmlWriter
 {
     private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
@@ -326,13 +326,23 @@ internal sealed class HtmlWriter
             {
                 case Paragraph paragraph:
                     WriteParagraph(paragraph);
+                    WritePositioned(depth);
                     break;
                 case Table table:
                     WriteTable(table, depth);
                     break;
+                case ContentControl { Box: { } box } group:
+                    WriteBoxed(group, box, depth);
+                    break;
                 case ContentControl control:
                     warnings.Add(ConversionWarningKind.ContentControlsDropped, "content controls, written as their content");
                     WriteBlocks(control.Blocks, depth);
+                    break;
+                case FlexContainer flex:
+                    WriteFlex(flex, depth);
+                    break;
+                case GridContainer grid:
+                    WriteGrid(grid, depth);
                     break;
                 case BlockIsland island when island.Format == "html":
                     body.Append(island.Markup).Append('\n');
@@ -700,6 +710,9 @@ internal sealed class HtmlWriter
                 case Island island:
                     warnings.Add(ConversionWarningKind.DrawingDropped, "equations, charts and other kept objects" + (island.Text.Length > 0 ? ", written as their text" : ""));
                     body.Append(Text(island.Text));
+                    break;
+                case Shape shape when IsPositioned(shape):
+                    positioned.Add(shape);
                     break;
                 case Shape shape:
                     if (shape.TextBox is { } story)
