@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ResolvedParagraphFormat | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ResolvedParagraphFormat | Egap ">
+      
+      <meta name="description" content="A paragraph&#39;s effective formatting (): every property with its final value, styles and defaults applied, tab stops added up. Where neither the document nor Word gives a value, Word&#39;s defaults apply.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_ResolvedParagraphFormat.md&amp;value=---%0Auid%3A%20Egap.Documents.ResolvedParagraphFormat%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.ResolvedParagraphFormat">
+
+
+
+  <h1 id="Egap_Documents_ResolvedParagraphFormat" data-uid="Egap.Documents.ResolvedParagraphFormat" class="text-break">
+Class ResolvedParagraphFormat  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A paragraph's effective formatting (<a class="xref" href="Egap.Documents.Paragraph.html#Egap_Documents_Paragraph_GetEffectiveFormat">GetEffectiveFormat()</a>): every property with its final value, styles
+and defaults applied, tab stops added up. Where neither the document nor Word gives a value, Word's defaults apply.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ResolvedParagraphFormat</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">ResolvedParagraphFormat</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_Alignment_" data-uid="Egap.Documents.ResolvedParagraphFormat.Alignment*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_Alignment" data-uid="Egap.Documents.ResolvedParagraphFormat.Alignment">
+  Alignment
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L192"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How lines line up.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ParagraphAlignment Alignment { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.ParagraphAlignment.html">ParagraphAlignment</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_Bidi_" data-uid="Egap.Documents.ResolvedParagraphFormat.Bidi*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_Bidi" data-uid="Egap.Documents.ResolvedParagraphFormat.Bidi">
+  Bidi
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L264"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Right-to-left paragraph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Bidi { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_BorderBar_" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderBar*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_BorderBar" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderBar">
+  BorderBar
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L255"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The bar border, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Border? BorderBar { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Border.html">Border</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_BorderBetween_" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderBetween*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_BorderBetween" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderBetween">
+  BorderBetween
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L252"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The border between paragraphs with the same borders, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Border? BorderBetween { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Border.html">Border</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_BorderBottom_" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderBottom*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_BorderBottom" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderBottom">
+  BorderBottom
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L243"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The border below, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Border? BorderBottom { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Border.html">Border</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_BorderLeft_" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderLeft*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_BorderLeft" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderLeft">
+  BorderLeft
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L246"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The border at the start, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Border? BorderLeft { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Border.html">Border</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_BorderRight_" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderRight*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_BorderRight" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderRight">
+  BorderRight
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L249"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The border at the end, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Border? BorderRight { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Border.html">Border</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_BorderTop_" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderTop*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_BorderTop" data-uid="Egap.Documents.ResolvedParagraphFormat.BorderTop">
+  BorderTop
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L240"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The border above, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Border? BorderTop { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Border.html">Border</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_ContextualSpacing_" data-uid="Egap.Documents.ResolvedParagraphFormat.ContextualSpacing*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_ContextualSpacing" data-uid="Egap.Documents.ResolvedParagraphFormat.ContextualSpacing">
+  ContextualSpacing
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L261"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>No space between paragraphs of the same style.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContextualSpacing { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_FirstLineIndent_" data-uid="Egap.Documents.ResolvedParagraphFormat.FirstLineIndent*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_FirstLineIndent" data-uid="Egap.Documents.ResolvedParagraphFormat.FirstLineIndent">
+  FirstLineIndent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The first line's extra indent in points (negative hangs).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double FirstLineIndent { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_KeepTogether_" data-uid="Egap.Documents.ResolvedParagraphFormat.KeepTogether*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_KeepTogether" data-uid="Egap.Documents.ResolvedParagraphFormat.KeepTogether">
+  KeepTogether
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L225"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>All lines on one page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool KeepTogether { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_KeepWithNext_" data-uid="Egap.Documents.ResolvedParagraphFormat.KeepWithNext*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_KeepWithNext" data-uid="Egap.Documents.ResolvedParagraphFormat.KeepWithNext">
+  KeepWithNext
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Kept on the page of the next paragraph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool KeepWithNext { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_LeftIndent_" data-uid="Egap.Documents.ResolvedParagraphFormat.LeftIndent*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_LeftIndent" data-uid="Egap.Documents.ResolvedParagraphFormat.LeftIndent">
+  LeftIndent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L195"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The start indent in points.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double LeftIndent { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_LineSpacing_" data-uid="Egap.Documents.ResolvedParagraphFormat.LineSpacing*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_LineSpacing" data-uid="Egap.Documents.ResolvedParagraphFormat.LineSpacing">
+  LineSpacing
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The line spacing, read as <a class="xref" href="Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_LineSpacingRule">LineSpacingRule</a> says.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double LineSpacing { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_LineSpacingRule_" data-uid="Egap.Documents.ResolvedParagraphFormat.LineSpacingRule*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_LineSpacingRule" data-uid="Egap.Documents.ResolvedParagraphFormat.LineSpacingRule">
+  LineSpacingRule
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L219"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How <a class="xref" href="Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_LineSpacing">LineSpacing</a> is read.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LineSpacingRule LineSpacingRule { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.LineSpacingRule.html">LineSpacingRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_List_" data-uid="Egap.Documents.ResolvedParagraphFormat.List*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_List" data-uid="Egap.Documents.ResolvedParagraphFormat.List">
+  List
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L279"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The list the paragraph is in, or null (also when a level says <a class="xref" href="Egap.Documents.List.html#Egap_Documents_List_None">None</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List? List { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.List.html">List</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_ListLevel_" data-uid="Egap.Documents.ResolvedParagraphFormat.ListLevel*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_ListLevel" data-uid="Egap.Documents.ResolvedParagraphFormat.ListLevel">
+  ListLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L282"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The paragraph's level in its list, 0 to 8.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ListLevel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_MaxLines_" data-uid="Egap.Documents.ResolvedParagraphFormat.MaxLines*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_MaxLines" data-uid="Egap.Documents.ResolvedParagraphFormat.MaxLines">
+  MaxLines
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L288"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The most lines shown, 0 for no limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxLines { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_MirrorIndents_" data-uid="Egap.Documents.ResolvedParagraphFormat.MirrorIndents*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_MirrorIndents" data-uid="Egap.Documents.ResolvedParagraphFormat.MirrorIndents">
+  MirrorIndents
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L276"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indents swap on even pages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool MirrorIndents { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_OutlineLevel_" data-uid="Egap.Documents.ResolvedParagraphFormat.OutlineLevel*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_OutlineLevel" data-uid="Egap.Documents.ResolvedParagraphFormat.OutlineLevel">
+  OutlineLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The outline level, 0 to 8, or 9 for body text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int OutlineLevel { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_PageBreakBefore_" data-uid="Egap.Documents.ResolvedParagraphFormat.PageBreakBefore*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_PageBreakBefore" data-uid="Egap.Documents.ResolvedParagraphFormat.PageBreakBefore">
+  PageBreakBefore
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts on a new page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool PageBreakBefore { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_RightIndent_" data-uid="Egap.Documents.ResolvedParagraphFormat.RightIndent*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_RightIndent" data-uid="Egap.Documents.ResolvedParagraphFormat.RightIndent">
+  RightIndent
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The end indent in points.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double RightIndent { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_Shading_" data-uid="Egap.Documents.ResolvedParagraphFormat.Shading*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_Shading" data-uid="Egap.Documents.ResolvedParagraphFormat.Shading">
+  Shading
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The shading, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Shading? Shading { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Shading.html">Shading</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_SnapToGrid_" data-uid="Egap.Documents.ResolvedParagraphFormat.SnapToGrid*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_SnapToGrid" data-uid="Egap.Documents.ResolvedParagraphFormat.SnapToGrid">
+  SnapToGrid
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lines follow the document grid; on unless turned off, as in Word.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SnapToGrid { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_SpaceAfter_" data-uid="Egap.Documents.ResolvedParagraphFormat.SpaceAfter*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_SpaceAfter" data-uid="Egap.Documents.ResolvedParagraphFormat.SpaceAfter">
+  SpaceAfter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Space after in points.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double SpaceAfter { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_SpaceAfterAuto_" data-uid="Egap.Documents.ResolvedParagraphFormat.SpaceAfterAuto*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_SpaceAfterAuto" data-uid="Egap.Documents.ResolvedParagraphFormat.SpaceAfterAuto">
+  SpaceAfterAuto
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L213"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the space after is chosen by the application.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SpaceAfterAuto { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_SpaceBefore_" data-uid="Egap.Documents.ResolvedParagraphFormat.SpaceBefore*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_SpaceBefore" data-uid="Egap.Documents.ResolvedParagraphFormat.SpaceBefore">
+  SpaceBefore
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Space before in points.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double SpaceBefore { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_SpaceBeforeAuto_" data-uid="Egap.Documents.ResolvedParagraphFormat.SpaceBeforeAuto*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_SpaceBeforeAuto" data-uid="Egap.Documents.ResolvedParagraphFormat.SpaceBeforeAuto">
+  SpaceBeforeAuto
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the space before is chosen by the application.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SpaceBeforeAuto { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_SuppressAutoHyphens_" data-uid="Egap.Documents.ResolvedParagraphFormat.SuppressAutoHyphens*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_SuppressAutoHyphens" data-uid="Egap.Documents.ResolvedParagraphFormat.SuppressAutoHyphens">
+  SuppressAutoHyphens
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Not hyphenated automatically.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SuppressAutoHyphens { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_SuppressLineNumbers_" data-uid="Egap.Documents.ResolvedParagraphFormat.SuppressLineNumbers*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_SuppressLineNumbers" data-uid="Egap.Documents.ResolvedParagraphFormat.SuppressLineNumbers">
+  SuppressLineNumbers
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L267"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Left out of line numbering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SuppressLineNumbers { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_TabStops_" data-uid="Egap.Documents.ResolvedParagraphFormat.TabStops*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_TabStops" data-uid="Egap.Documents.ResolvedParagraphFormat.TabStops">
+  TabStops
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L237"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The tab stops in position order, Clear stops applied.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;TabStop&gt; TabStops { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.TabStop.html">TabStop</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_WidowControl_" data-uid="Egap.Documents.ResolvedParagraphFormat.WidowControl*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_WidowControl" data-uid="Egap.Documents.ResolvedParagraphFormat.WidowControl">
+  WidowControl
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Widow and orphan control; on unless a level turns it off, as in Word.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool WidowControl { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_WordBreak_" data-uid="Egap.Documents.ResolvedParagraphFormat.WordBreak*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_WordBreak" data-uid="Egap.Documents.ResolvedParagraphFormat.WordBreak">
+  WordBreak
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L285"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Where lines may break inside words.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WordBreak WordBreak { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.WordBreak.html">WordBreak</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_ToParagraphFormat_" data-uid="Egap.Documents.ResolvedParagraphFormat.ToParagraphFormat*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_ToParagraphFormat" data-uid="Egap.Documents.ResolvedParagraphFormat.ToParagraphFormat">
+  ToParagraphFormat()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L291"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The effective values as a stand-alone <a class="xref" href="Egap.Documents.ParagraphFormat.html">ParagraphFormat</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ParagraphFormat ToParagraphFormat()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.ParagraphFormat.html">ParagraphFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L182" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

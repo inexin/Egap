@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Enum FieldKind | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Enum FieldKind | Egap ">
+      
+      <meta name="description" content="The kind of a field, from the first word of its code. Fields Egap does not know are  and keep their stored result (Phase 6 design Q8).">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_FieldKind.md&amp;value=---%0Auid%3A%20Egap.Documents.FieldKind%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.FieldKind">
+
+
+
+
+  <h1 id="Egap_Documents_FieldKind" data-uid="Egap.Documents.FieldKind" class="text-break">
+Enum FieldKind  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Fields.cs/#L9"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>The kind of a field, from the first word of its code. Fields Egap does not know are <a class="xref" href="Egap.Documents.FieldKind.html#Egap_Documents_FieldKind_Unknown">Unknown</a> and keep their
+stored result (Phase 6 design Q8).</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public enum FieldKind</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h2 id="fields">Fields
+</h2>
+  <dl class="parameters">
+    <dt id="Egap_Documents_FieldKind_Author"><code>Author = 17</code></dt>
+  
+  <dd><p>AUTHOR: the document's author.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Comments"><code>Comments = 21</code></dt>
+  
+  <dd><p>COMMENTS: the document's comments property.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_CreateDate"><code>CreateDate = 14</code></dt>
+  
+  <dd><p>CREATEDATE: when the document was made.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Date"><code>Date = 12</code></dt>
+  
+  <dd><p>DATE: today's date.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_DocProperty"><code>DocProperty = 24</code></dt>
+  
+  <dd><p>DOCPROPERTY: a document property by name.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Equation"><code>Equation = 29</code></dt>
+  
+  <dd><p>EQ, the old equation field (kept).</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_FileName"><code>FileName = 23</code></dt>
+  
+  <dd><p>FILENAME: the file's name.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_FormField"><code>FormField = 26</code></dt>
+  
+  <dd><p>FORMTEXT, FORMCHECKBOX or FORMDROPDOWN: a legacy form field.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Hyperlink"><code>Hyperlink = 9</code></dt>
+  
+  <dd><p>HYPERLINK: a link.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_If"><code>If = 10</code></dt>
+  
+  <dd><p>IF: a comparison choosing between two texts.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Include"><code>Include = 28</code></dt>
+  
+  <dd><p>INCLUDEPICTURE, INCLUDETEXT and other links to outside content (kept, never fetched).</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Keywords"><code>Keywords = 20</code></dt>
+  
+  <dd><p>KEYWORDS: the document's keywords.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_LastSavedBy"><code>LastSavedBy = 22</code></dt>
+  
+  <dd><p>LASTSAVEDBY: who last saved the document.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_MergeField"><code>MergeField = 25</code></dt>
+  
+  <dd><p>MERGEFIELD: a mail merge field (kept, not merged).</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_NoteRef"><code>NoteRef = 6</code></dt>
+  
+  <dd><p>NOTEREF: a footnote's or endnote's number.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_NumPages"><code>NumPages = 2</code></dt>
+  
+  <dd><p>NUMPAGES: the number of pages.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Page"><code>Page = 1</code></dt>
+  
+  <dd><p>PAGE: the page number.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_PageRef"><code>PageRef = 4</code></dt>
+  
+  <dd><p>PAGEREF: the page a bookmark is on.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_PrintDate"><code>PrintDate = 16</code></dt>
+  
+  <dd><p>PRINTDATE: when the document was last printed.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Ref"><code>Ref = 5</code></dt>
+  
+  <dd><p>REF: a bookmark's text.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_SaveDate"><code>SaveDate = 15</code></dt>
+  
+  <dd><p>SAVEDATE: when the document was last saved.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_SectionPages"><code>SectionPages = 3</code></dt>
+  
+  <dd><p>SECTIONPAGES: the number of pages in the section.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Seq"><code>Seq = 7</code></dt>
+  
+  <dd><p>SEQ: a numbered sequence, such as figure numbers.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_StyleRef"><code>StyleRef = 8</code></dt>
+  
+  <dd><p>STYLEREF: the text of the nearest paragraph with a style.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Subject"><code>Subject = 19</code></dt>
+  
+  <dd><p>SUBJECT: the document's subject.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Symbol"><code>Symbol = 27</code></dt>
+  
+  <dd><p>SYMBOL: a character from a font.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Time"><code>Time = 13</code></dt>
+  
+  <dd><p>TIME: the time now.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Title"><code>Title = 18</code></dt>
+  
+  <dd><p>TITLE: the document's title.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Toc"><code>Toc = 11</code></dt>
+  
+  <dd><p>TOC: a table of contents.</p>
+</dd>
+    <dt id="Egap_Documents_FieldKind_Unknown"><code>Unknown = 0</code></dt>
+  
+  <dd><p>A field whose code Egap does not know.</p>
+</dd>
+  </dl>
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Fields.cs/#L9" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

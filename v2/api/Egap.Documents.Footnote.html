@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Footnote | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Footnote | Egap ">
+      
+      <meta name="description" content="A footnote or endnote: the reference mark in the text, which holds the note&#39;s own text as a story (Phase 6 design Q8). The mark is numbered automatically unless it has a .">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Footnote.md&amp;value=---%0Auid%3A%20Egap.Documents.Footnote%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Footnote">
+
+
+
+  <h1 id="Egap_Documents_Footnote" data-uid="Egap.Documents.Footnote" class="text-break">
+Class Footnote  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A footnote or endnote: the reference mark in the text, which holds the note's own text as a story (Phase 6 design Q8).
+The mark is numbered automatically unless it has a <a class="xref" href="Egap.Documents.Footnote.html#Egap_Documents_Footnote_CustomMark">CustomMark</a>.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Footnote : Inline</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Egap.Documents.Node.html">Node</a></div>
+      <div><a class="xref" href="Egap.Documents.Inline.html">Inline</a></div>
+      <div><span class="xref">Footnote</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Egap.Documents.Inline.html#Egap_Documents_Inline_Paragraph">Inline.Paragraph</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Inline.html#Egap_Documents_Inline_Revision">Inline.Revision</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Document">Node.Document</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Parent">Node.Parent</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_NextSibling">Node.NextSibling</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_PreviousSibling">Node.PreviousSibling</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Extensions">Node.Extensions</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_HasExtensions">Node.HasExtensions</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_ChildNodes">Node.ChildNodes</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Remove">Node.Remove()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Ancestors">Node.Ancestors()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_GetAncestor__1">Node.GetAncestor&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Descendants">Node.Descendants()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Descendants__1">Node.Descendants&lt;T&gt;()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_GetText">Node.GetText()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_String_System_String_Egap_Documents_FindOptions_">Node.Replace(string, string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Find_System_String_Egap_Documents_FindOptions_">Node.Find(string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Find_System_Text_RegularExpressions_Regex_Egap_Documents_FindOptions_">Node.Find(Regex, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_Text_RegularExpressions_Regex_System_String_Egap_Documents_FindOptions_">Node.Replace(Regex, string, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Replace_System_Text_RegularExpressions_Regex_System_Func_System_Text_RegularExpressions_Match_System_String__Egap_Documents_FindOptions_">Node.Replace(Regex, Func&lt;Match, string&gt;, FindOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Documents.Node.html#Egap_Documents_Node_Accept_Egap_Documents_DocumentVisitor_">Node.Accept(DocumentVisitor)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Egap_Documents_Footnote__ctor_" data-uid="Egap.Documents.Footnote.#ctor*"></a>
+
+  <h3 id="Egap_Documents_Footnote__ctor_Egap_Documents_Document_Egap_Documents_NoteKind_" data-uid="Egap.Documents.Footnote.#ctor(Egap.Documents.Document,Egap.Documents.NoteKind)">
+  Footnote(Document, NoteKind)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An empty note of <code class="paramref">kind</code>, not yet in a paragraph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Footnote(Document document, NoteKind kind = NoteKind.Footnote)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="Egap.Documents.NoteKind.html">NoteKind</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_Footnote_CustomMark_" data-uid="Egap.Documents.Footnote.CustomMark*"></a>
+
+  <h3 id="Egap_Documents_Footnote_CustomMark" data-uid="Egap.Documents.Footnote.CustomMark">
+  CustomMark
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A mark of its own instead of the next number, such as &quot;*&quot;, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? CustomMark { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Footnote_Kind_" data-uid="Egap.Documents.Footnote.Kind*"></a>
+
+  <h3 id="Egap_Documents_Footnote_Kind" data-uid="Egap.Documents.Footnote.Kind">
+  Kind
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Footnote or endnote.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NoteKind Kind { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.NoteKind.html">NoteKind</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Footnote_Mark_" data-uid="Egap.Documents.Footnote.Mark*"></a>
+
+  <h3 id="Egap_Documents_Footnote_Mark" data-uid="Egap.Documents.Footnote.Mark">
+  Mark
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The mark shown at the reference and before the note: its custom mark, or its number in document order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Mark { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Footnote_Story_" data-uid="Egap.Documents.Footnote.Story*"></a>
+
+  <h3 id="Egap_Documents_Footnote_Story" data-uid="Egap.Documents.Footnote.Story">
+  Story
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The note's text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NoteStory Story { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.NoteStory.html">NoteStory</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_Footnote_AddParagraph_" data-uid="Egap.Documents.Footnote.AddParagraph*"></a>
+
+  <h3 id="Egap_Documents_Footnote_AddParagraph_System_String_" data-uid="Egap.Documents.Footnote.AddParagraph(System.String)">
+  AddParagraph(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a paragraph to the note's text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Paragraph AddParagraph(string? text = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Paragraph.html">Paragraph</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Footnote_Clone_" data-uid="Egap.Documents.Footnote.Clone*"></a>
+
+  <h3 id="Egap_Documents_Footnote_Clone_System_Boolean_" data-uid="Egap.Documents.Footnote.Clone(System.Boolean)">
+  Clone(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy of this node in the same document, not yet in the tree. A deep copy includes everything the node holds; a shallow
+one only the node itself, such as a paragraph without its runs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Footnote Clone(bool deep = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>deep</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Footnote.html">Footnote</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Notes.cs/#L40" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

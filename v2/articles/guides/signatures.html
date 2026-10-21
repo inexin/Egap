@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Signatures | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Signatures | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/signatures.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="signatures">Signatures</h1>
+
+<p>Egap signs with .NET's own cryptography: PAdES baseline levels B-B to B-LTA, with approval and certification signatures,
+timestamps and visible appearances. Signing always writes to a new stream, as an incremental update.</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography.X509Certificates;
+using Egap.Pdf;
+
+using HttpClient http = new();
+using PdfDocument pdf = PdfDocument.Open(&quot;in.pdf&quot;);
+using X509Certificate2 certificate = X509CertificateLoader.LoadPkcs12FromFile(&quot;me.pfx&quot;, &quot;password&quot;);
+await using (FileStream signed = File.Create(&quot;signed.pdf&quot;))
+{
+    await pdf.SignAsync(&quot;Signature1&quot;, new PdfSignOptions             // PAdES, incremental, written to a new stream
+    {
+        Signer = PdfSigner.FromCertificate(certificate),
+        Level = PadesLevel.BaselineT,
+        Timestamp = new PdfTimestampClient(new Uri(&quot;https://tsa.example.com&quot;), http),  // Egap opens no connection itself
+    }, signed);
+}
+</code></pre>
+<p>Egap never opens a network connection on its own. Timestamps and revocation data come through the <code>HttpClient</code> you pass.
+Keys that live elsewhere (a smart card, an HSM, a cloud service) sign through any <code>RSA</code> or <code>ECDsa</code> object, or through deferred
+signing.</p>
+<h2 id="verifying">Verifying</h2>
+<pre><code class="lang-csharp">using System.Security.Cryptography.X509Certificates;
+using Egap.Pdf;
+
+X509Certificate2 root = X509CertificateLoader.LoadCertificateFromFile(&quot;root.cer&quot;);
+using PdfDocument check = PdfDocument.Open(&quot;signed.pdf&quot;);
+foreach (PdfSignature signature in check.Signatures)
+{
+    PdfSignatureReport report = signature.Verify(new PdfVerifyOptions { TrustAnchors = [root] });
+    Console.WriteLine($&quot;{signature.Name}: {report.Integrity} {report.Chain} {report.Timestamp} {report.ChangesSince}&quot;);
+}
+</code></pre>
+<p>The report gives a verdict for integrity, the certificate chain, revocation and the timestamp, and lists every change made
+after signing, each one rated allowed, suspicious or disallowed. Trust anchors always come from you.</p>
+<h2 id="smart-cards-and-hsms-pkcs11">Smart cards and HSMs (PKCS#11)</h2>
+<p>A key on a smart card, a USB token or an HSM is reached through its PKCS#11 library. Egap does not load native libraries,
+so the PKCS#11 calls come from a library you choose, such as <a href="https://github.com/Pkcs11Interop/Pkcs11Interop">Pkcs11Interop</a>
+(Apache-2.0). Wrap the token's signing call in an <code>RSA</code> (or <code>ECDsa</code>) whose <code>SignHash</code> asks the token, and pass it to
+<code>PdfSigner.FromKey</code> with the certificate read from the token. The private key never leaves the device.</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using Egap.Pdf;
+
+// signOnToken stands for the PKCS#11 call: with Pkcs11Interop, session.Sign(new Mechanism(CKM.CKM_RSA_PKCS), key, digestInfo).
+Func&lt;byte[], byte[]&gt; signOnToken = digestInfo =&gt; throw new NotImplementedException(&quot;call the token here&quot;);
+X509Certificate2 certificate = X509CertificateLoader.LoadCertificate(File.ReadAllBytes(&quot;token-certificate.cer&quot;));
+
+using PdfDocument pdf = PdfDocument.Open(&quot;contract.pdf&quot;);
+using RSA tokenKey = new TokenRsa(certificate, signOnToken);
+await using FileStream output = File.Create(&quot;contract-signed.pdf&quot;);
+await pdf.SignAsync(&quot;Signature1&quot;, new PdfSignOptions { Signer = PdfSigner.FromKey(tokenKey, certificate) }, output);
+
+/// &lt;summary&gt;An RSA key whose private operation runs on a PKCS#11 token; it signs SHA-256 digests with PKCS#1 v1.5 padding.&lt;/summary&gt;
+sealed class TokenRsa : RSA
+{
+    // The DER prefix of a SHA-256 DigestInfo (RFC 8017 9.2), which CKM_RSA_PKCS expects in front of the digest.
+    private static readonly byte[] Sha256Prefix = [0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05, 0x00, 0x04, 0x20];
+    private readonly X509Certificate2 certificate;
+    private readonly Func&lt;byte[], byte[]&gt; signOnToken;
+
+    public TokenRsa(X509Certificate2 certificate, Func&lt;byte[], byte[]&gt; signOnToken)
+    {
+        this.certificate = certificate;
+        this.signOnToken = signOnToken;
+        using RSA publicKey = certificate.GetRSAPublicKey()!;
+        KeySizeValue = publicKey.KeySize;               // the size of the signatures it makes
+        LegalKeySizesValue = [new KeySizes(KeySizeValue, KeySizeValue, 0)];
+    }
+
+    public override byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
+    {
+        if (hashAlgorithm != HashAlgorithmName.SHA256 || padding != RSASignaturePadding.Pkcs1)
+        {
+            throw new CryptographicException(&quot;The token signs SHA-256 with PKCS#1 v1.5 padding.&quot;);
+        }
+
+        return signOnToken([.. Sha256Prefix, .. hash]);
+    }
+
+    public override RSAParameters ExportParameters(bool includePrivateParameters)
+    {
+        using RSA publicKey = certificate.GetRSAPublicKey()!;
+        return includePrivateParameters ? throw new CryptographicException(&quot;The private key stays on the token.&quot;) : publicKey.ExportParameters(false);
+    }
+
+    public override void ImportParameters(RSAParameters parameters) =&gt; throw new NotSupportedException();
+}
+</code></pre>
+<p>Egap signs with SHA-256 and PKCS#1 v1.5 padding by default, so this is all a token has to do. For a token reached
+over a network, or a signing service with its own API, deferred signing (<code>PrepareSignatureAsync</code>) hands out the bytes to
+sign and takes the signature back later.</p>
+<h2 id="recipes">Recipes</h2>
+<p>Short answers to common tasks in this area. Each one is complete: open, change, save.</p>
+<h3 id="sign-a-document">Sign a document</h3>
+<pre><code class="lang-csharp">using System.Security.Cryptography.X509Certificates;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;contract.pdf&quot;);
+using X509Certificate2 certificate = X509CertificateLoader.LoadPkcs12FromFile(&quot;me.pfx&quot;, &quot;password&quot;);
+await using FileStream signed = File.Create(&quot;contract-signed.pdf&quot;);
+await pdf.SignAsync(&quot;Signature1&quot;, new PdfSignOptions { Signer = PdfSigner.FromCertificate(certificate) }, signed);
+</code></pre>
+<p>A key on a smart card or an HSM signs the same way, through an <code>RSA</code> that calls the device; see
+<a href="#smart-cards-and-hsms-pkcs11">Smart cards and HSMs</a>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/signatures.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

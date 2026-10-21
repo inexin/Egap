@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Guides | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Guides | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="guides">Guides</h1>
+
+<p>Each guide covers one area of Egap: what it does, the options and their defaults, and the limits. Some guides end with
+<strong>Recipes</strong>, short complete answers to common tasks such as merging files or adding page numbers, with code you can copy.</p>
+<p>The guides are grouped by package, and within a group they are in alphabetical order. Each document format has its own
+page in <a href="../formats/index.html">Document formats</a>. If you are new, read <a href="../getting-started.html">Getting started</a> first, and
+<a href="../packages.html">Packages</a> to pick what to install.</p>
+<h2 id="egappdf">Egap.Pdf</h2>
+<p>Reading, editing, rendering and saving PDF files.</p>
+<ul>
+<li><a href="editing.html">Editing PDF files</a>: pages, metadata, outlines, annotations and forms; damaged and encrypted files; saving.</li>
+<li><a href="fonts.html">Fonts</a>: the open fonts that stand in for missing ones, in Egap.Pdf and Egap.Documents alike.</li>
+<li><a href="pdf-tools.html">PDF tools</a>: optimize, stamps and imposition, page ranges, compare and clean-up.</li>
+<li><a href="redaction-and-pdfa.html">Redaction and PDF/A</a>: true redaction, replacing text, PDF/A and e-invoices.</li>
+<li><a href="rendering.html">Rendering pages</a>: pages to images, or onto any Egami canvas.</li>
+<li><a href="signatures.html">Signatures</a>: signing, verifying, and keys on smart cards and HSMs.</li>
+<li><a href="text-images-drawing.html">Text, images and drawing</a>: text extraction, finding text, images, and drawing on a page.</li>
+</ul>
+<h2 id="egapdocuments">Egap.Documents</h2>
+<p>One document model for DOCX, HTML, Markdown and plain text, its page layout, and conversions to and from PDF.</p>
+<ul>
+<li><a href="flow-documents.html">Flow documents</a>: the document model, editing, text options, barcodes, mail merge and page layout.</li>
+<li><a href="migrating-to-2.0.html">Moving to Egap.Documents 2.0</a>: the new packages and namespaces, and what else changed.</li>
+<li><a href="pdf-export-and-conversion.html">PDF export and conversion</a>: documents to PDF, one-line conversions, and PDF back to
+documents.</li>
+</ul>
+<h2 id="document-formats">Document formats</h2>
+<p>The <a href="../formats/index.html">overview</a> says what each format reads and writes, and how a file's format is found; then one page
+per format, with its options:</p>
+<ul>
+<li><a href="../formats/docling-json.html">Docling JSON</a></li>
+<li><a href="../formats/docx.html">DOCX</a></li>
+<li><a href="../formats/html.html">HTML</a>, in the Egap.Documents.Html package</li>
+<li><a href="../formats/markdown.html">Markdown</a>, in the Egap.Documents.Markdown package</li>
+<li><a href="../formats/text.html">Plain text</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

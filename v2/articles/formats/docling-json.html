@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Docling JSON | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Docling JSON | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/formats/docling-json.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="docling-json">Docling JSON</h1>
+
+<p>Docling JSON is the DoclingDocument format that <a href="https://github.com/docling-project/docling">Docling</a> writes: texts,
+tables, pictures and list groups, linked into reading order, each with its role and its box on the page. Egap.Documents
+writes a PDF's analysed page layouts as Docling JSON and reads Docling JSON back, from Docling or from Egap, without an
+add-on package. The schema version written, and the newest read, is <code>DoclingJson.SchemaVersion</code>.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Pdf;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;report.pdf&quot;);
+IReadOnlyList&lt;PdfPageLayout&gt; pages = PdfLayoutAnalyzer.Analyze(pdf);
+DoclingJson.Write(pages, &quot;report.json&quot;, new DoclingJsonOptions { Name = &quot;report&quot;, Indented = true });
+
+IReadOnlyList&lt;PdfPageLayout&gt; back = DoclingJson.Read(File.ReadAllText(&quot;report.json&quot;));   // page layouts again
+Document flow = Document.Load(&quot;report.json&quot;);                                           // or a flow document
+</code></pre>
+<h2 id="writing">Writing</h2>
+<p><code>DoclingJson.Write</code> takes the page layouts that <code>PdfLayoutAnalyzer</code> finds (see
+<a href="../guides/pdf-export-and-conversion.html#pdf-to-documents">PDF to documents</a>). Roles become Docling's labels, boxes become
+provenance with the page number and a box from the page's bottom left, as PDF measures, and page headers and footers go to
+the furniture layer. Egap's own role and confidence go in each item's <code>meta</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Name</code></td>
+<td><code>&quot;document&quot;</code></td>
+<td>The document's name, Docling's <code>name</code></td>
+</tr>
+<tr>
+<td><code>FileName</code>, <code>Source</code></td>
+<td>None</td>
+<td>The source file's name and bytes; with <code>Source</code> set, the origin is written with its hash</td>
+</tr>
+<tr>
+<td><code>Indented</code></td>
+<td><code>false</code></td>
+<td>Indents the JSON for reading</td>
+</tr>
+<tr>
+<td><code>Images</code></td>
+<td><code>DataUris</code></td>
+<td>How pictures carry their image: <code>DataUris</code> (the file stands alone), <code>Files</code> or <code>Omit</code></td>
+</tr>
+<tr>
+<td><code>ImagesFolder</code></td>
+<td><code>&lt;name&gt;.images</code></td>
+<td>The folder beside the JSON that <code>Files</code> writes images to, each image once, named in reading order</td>
+</tr>
+<tr>
+<td><code>ImageResolver</code></td>
+<td>None</td>
+<td>Stores each picture's image and returns the URI to write</td>
+</tr>
+<tr>
+<td><code>FigureResolution</code></td>
+<td>200</td>
+<td>Pixels per inch at which figures drawn on the page become images, 10 to 1200</td>
+</tr>
+<tr>
+<td><code>MinImageSize</code></td>
+<td>6</td>
+<td>Figures smaller than this on both sides, in points, get no image (bullets, rules, specks)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reading">Reading</h2>
+<p><code>DoclingJson.Read</code> gives page layouts: texts become blocks with their roles, tables keep their cells, pictures become
+figures, all in reading order. The JSON keeps no line breaks or fonts, so each text becomes one line with its words spread
+over its box. <code>DoclingJson.ToDocument</code>, and <code>Document.Load</code> for a file that names the <code>DoclingDocument</code> schema, give a flow
+document instead: texts as paragraphs in the styles of their roles, list items in lists, tables with their cells and spans,
+pictures with the images the JSON carries, and page headers and footers in each section's header and footer.</p>
+<p>Docling JSON holds page layouts, not flow documents, so <code>Document.Save</code> does not write it; use <code>DoclingJson.Write</code>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/formats/docling-json.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

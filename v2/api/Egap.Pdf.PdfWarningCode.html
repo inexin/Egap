@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Enum PdfWarningCode | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Enum PdfWarningCode | Egap ">
+      
+      <meta name="description" content="What kind of repair a  records.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfWarningCode.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfWarningCode%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfWarningCode">
+
+
+
+
+  <h1 id="Egap_Pdf_PdfWarningCode" data-uid="Egap.Pdf.PdfWarningCode" class="text-break">
+Enum PdfWarningCode  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfWarningCode.cs/#L4"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>What kind of repair a <a class="xref" href="Egap.Pdf.PdfWarning.html">PdfWarning</a> records.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public enum PdfWarningCode</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h2 id="fields">Fields
+</h2>
+  <dl class="parameters">
+    <dt id="Egap_Pdf_PdfWarningCode_AppearanceNotDrawn"><code>AppearanceNotDrawn = 32</code></dt>
+  
+  <dd><p>An appearance stream was not drawn, such as for text the standard 14 fonts cannot show; the annotation or field keeps
+the appearance it had.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_BrokenXrefChain"><code>BrokenXrefChain = 21</code></dt>
+  
+  <dd><p>A <code>/Prev</code> or <code>/XRefStm</code> pointed nowhere useful or back into the chain; older sections were not read.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_DamagedFilterData"><code>DamagedFilterData = 18</code></dt>
+  
+  <dd><p>A stream's encoded data was damaged; what decoded before the damage was kept.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_DuplicateKey"><code>DuplicateKey = 12</code></dt>
+  
+  <dd><p>A dictionary had the same key twice; the last value was kept.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_FieldRenamed"><code>FieldRenamed = 34</code></dt>
+  
+  <dd><p>An imported form field was renamed with a suffix, since the document has a field of that name (Phase 2 Q5).</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_FontProgramUnreadable"><code>FontProgramUnreadable = 40</code></dt>
+  
+  <dd><p>A font's embedded program could not be read as TrueType, OpenType, CFF or Type 1; the font's metrics and text still
+work, but not its outlines.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_InvalidReference"><code>InvalidReference = 13</code></dt>
+  
+  <dd><p>A reference had an object number below 1 or a generation above 65,535; it was read as null.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedContent"><code>MalformedContent = 36</code></dt>
+  
+  <dd><p>A content stream held something that is not an operation (stray delimiters, operands with no operator after them, an
+unclosed array, a stream that could not be decoded); it was skipped or closed and reading went on.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedDictionary"><code>MalformedDictionary = 11</code></dt>
+  
+  <dd><p>A dictionary key was not a name, or a key had no value; the entry was dropped.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedEncryption"><code>MalformedEncryption = 28</code></dt>
+  
+  <dd><p>Encrypted data or the encryption dictionary was malformed; it was read as far as it made sense.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedFilterParameters"><code>MalformedFilterParameters = 19</code></dt>
+  
+  <dd><p>A filter's <code>/DecodeParms</code> held values out of range; the filter ran with its defaults or without a predictor.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedHexString"><code>MalformedHexString = 5</code></dt>
+  
+  <dd><p>A hex string held a character that is not a hex digit or white space, or had no closing <code>&gt;</code>.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedInlineImage"><code>MalformedInlineImage = 38</code></dt>
+  
+  <dd><p>An inline image's end (<code>EI</code>) could not be found where its length or filters put it; it was found by searching,
+or the image runs to the end of the content.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedName"><code>MalformedName = 3</code></dt>
+  
+  <dd><p>A name had a <code>#</code> not followed by two hex digits; the <code>#</code> was kept as is.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedNumber"><code>MalformedNumber = 1</code></dt>
+  
+  <dd><p>A number was malformed (such as <code>--5</code>, <code>1.2.3</code> or <code>4-2</code>) and was read the way other readers do.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedObjectStream"><code>MalformedObjectStream = 22</code></dt>
+  
+  <dd><p>An object stream's header or offsets were malformed; the objects that could be found were kept.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedOutline"><code>MalformedOutline = 31</code></dt>
+  
+  <dd><p>The outline was malformed (chains of items that loop or reach something that is not an item, or a wrong
+<code>/Parent</code>, <code>/Prev</code> or <code>/Last</code>); it was repaired in memory.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedPageTree"><code>MalformedPageTree = 30</code></dt>
+  
+  <dd><p>The page tree was malformed (kids that are not dictionaries or loop back, a wrong <code>/Type</code>, <code>/Parent</code> or
+<code>/Count</code>, or no tree at all); it was repaired in memory.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedStreamKeyword"><code>MalformedStreamKeyword = 15</code></dt>
+  
+  <dd><p>The <code>stream</code> keyword was not followed by a line feed or carriage return and line feed.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedTree"><code>MalformedTree = 29</code></dt>
+  
+  <dd><p>A name tree or number tree was malformed (its nodes loop, its limits or entries are missing, wrong or out of order);
+it was read as far as it made sense, and rebuilt from its entries when edited.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MalformedXref"><code>MalformedXref = 20</code></dt>
+  
+  <dd><p>A cross-reference table or stream was malformed (wrong counts, bad entries, numbering off by one); it was read as far as it made sense.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MissingEndobj"><code>MissingEndobj = 14</code></dt>
+  
+  <dd><p>An indirect object had no <code>endobj</code>.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MissingEndstream"><code>MissingEndstream = 17</code></dt>
+  
+  <dd><p>A stream had no <code>endstream</code>; its data was taken to run to <code>endobj</code> or the end of the file.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MissingHeader"><code>MissingHeader = 24</code></dt>
+  
+  <dd><p>The file has no <code>%PDF-n.n</code> header in its first kilobyte; version 1.7 was assumed.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MissingObject"><code>MissingObject = 23</code></dt>
+  
+  <dd><p>An object was not where the cross-reference said, or had another number or generation, or could not be loaded; the
+reference was read as null.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_MissingSeparator"><code>MissingSeparator = 7</code></dt>
+  
+  <dd><p>Two tokens were run together with no white space or delimiter between them.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_NotImported"><code>NotImported = 33</code></dt>
+  
+  <dd><p>Part of a source document was not brought along with imported pages, such as its structure tree (tagged PDF comes in
+5.x) or its XFA form.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_NumberOutOfRange"><code>NumberOutOfRange = 2</code></dt>
+  
+  <dd><p>An integer was too large for 64 bits and was read as a real number.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_ObjectRelocated"><code>ObjectRelocated = 27</code></dt>
+  
+  <dd><p>An object was not at the offset the cross-reference gave; it was found nearby or by scanning the file.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_PageReferencesRemoved"><code>PageReferencesRemoved = 35</code></dt>
+  
+  <dd><p>A removed page's outline destinations, links or named destinations were cleaned up (Phase 2 Q7); the message gives the
+counts.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_RasterFallback"><code>RasterFallback = 39</code></dt>
+  
+  <dd><p>A <a class="xref" href="Egap.Pdf.PdfCanvas.html">PdfCanvas</a> call that PDF cannot express (a blur, noise, a Porter-Duff blend, a layer filter) was drawn
+into an image at the fallback resolution and placed instead (Phase 3 design Q14).</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_ShiftedOffsets"><code>ShiftedOffsets = 25</code></dt>
+  
+  <dd><p>The header was not at the start of the file, and the file's offsets count from the header; they were read that way.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_SignatureInvalidated"><code>SignatureInvalidated = 42</code></dt>
+  
+  <dd><p>A save or a new signature changes the document in a way an existing signature does not allow, or rewrites a signed
+file whole, so that signature no longer verifies (Phase 5 design Q7); in strict mode it throws instead, and
+<a class="xref" href="Egap.Pdf.PdfSaveOptions.html#Egap_Pdf_PdfSaveOptions_AllowInvalidatingSignatures">AllowInvalidatingSignatures</a> or <a class="xref" href="Egap.Pdf.PdfSignOptions.html#Egap_Pdf_PdfSignOptions_AllowInvalidatingSignatures">AllowInvalidatingSignatures</a> lets it go ahead.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_TextNotReplaced"><code>TextNotReplaced = 43</code></dt>
+  
+  <dd><p>A match of <a class="xref" href="Egap.Pdf.PdfDocument.html#Egap_Pdf_PdfDocument_ReplaceText_System_String_System_String_Egap_Pdf_PdfFindOptions_Egap_Pdf_PdfReplaceOptions_">ReplaceText(string, string, PdfFindOptions?, PdfReplaceOptions?)</a> was left as it
+was: its font lacks a glyph the new text needs, or its text cannot be written in that font, and no fallback font was
+given; or the match is a marked-content span's replacement text (<code>/ActualText</code>), not glyphs.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_TextWithoutUnicode"><code>TextWithoutUnicode = 41</code></dt>
+  
+  <dd><p>Text extraction found glyphs whose fonts say no Unicode text for them (no ToUnicode map, no glyph name the Adobe
+Glyph List knows); they were given private-use characters (Phase 3 design Q10).</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_TooManyWarnings"><code>TooManyWarnings = 8</code></dt>
+  
+  <dd><p>The file had so many warnings that the rest were dropped.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_UnexpectedDelimiter"><code>UnexpectedDelimiter = 6</code></dt>
+  
+  <dd><p>A stray delimiter (<code>)</code> or a single <code>&gt;</code>) was skipped.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_UnexpectedToken"><code>UnexpectedToken = 9</code></dt>
+  
+  <dd><p>A token that cannot appear where it was found, such as an unknown keyword or a stray <code>]</code>, was skipped.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_UnterminatedObject"><code>UnterminatedObject = 10</code></dt>
+  
+  <dd><p>An array or dictionary was not closed; it was closed where the object ended.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_UnterminatedString"><code>UnterminatedString = 4</code></dt>
+  
+  <dd><p>A literal string ran to the end of the data without its closing parenthesis.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_WrongOperandCount"><code>WrongOperandCount = 37</code></dt>
+  
+  <dd><p>An operator had more or fewer operands than the spec gives it; the operation was kept as written.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_WrongStreamLength"><code>WrongStreamLength = 16</code></dt>
+  
+  <dd><p>A stream's <code>/Length</code> was missing or wrong; its data was found by searching for <code>endstream</code>.</p>
+</dd>
+    <dt id="Egap_Pdf_PdfWarningCode_XrefRebuilt"><code>XrefRebuilt = 26</code></dt>
+  
+  <dd><p>The cross-reference could not be used, or named no catalog; it was rebuilt by scanning the file for objects.</p>
+</dd>
+  </dl>
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfWarningCode.cs/#L4" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

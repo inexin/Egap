@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfSaveOptions | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfSaveOptions | Egap ">
+      
+      <meta name="description" content="Options for saving a document.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfSaveOptions.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfSaveOptions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfSaveOptions">
+
+
+
+  <h1 id="Egap_Pdf_PdfSaveOptions" data-uid="Egap.Pdf.PdfSaveOptions" class="text-break">
+Class PdfSaveOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Options for saving a document.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record PdfSaveOptions : IEquatable&lt;PdfSaveOptions&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PdfSaveOptions</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Egap.Pdf.PdfSaveOptions.html">PdfSaveOptions</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_AllowInvalidatingSignatures_" data-uid="Egap.Pdf.PdfSaveOptions.AllowInvalidatingSignatures*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_AllowInvalidatingSignatures" data-uid="Egap.Pdf.PdfSaveOptions.AllowInvalidatingSignatures">
+  AllowInvalidatingSignatures
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a save may break signatures knowingly (Phase 5 design Q7). Left false, a save that would invalidate a
+signature (a change its permissions forbid, or a rewrite of a signed file) adds a
+<a class="xref" href="Egap.Pdf.PdfWarningCode.html#Egap_Pdf_PdfWarningCode_SignatureInvalidated">SignatureInvalidated</a> warning first, or throws in strict mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowInvalidatingSignatures { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_Compression_" data-uid="Egap.Pdf.PdfSaveOptions.Compression*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_Compression" data-uid="Egap.Pdf.PdfSaveOptions.Compression">
+  Compression
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How the output is compressed. The default is <a class="xref" href="Egap.Pdf.PdfCompression.html#Egap_Pdf_PdfCompression_Preserve">Preserve</a>; any other value writes the whole
+document, whatever the <a class="xref" href="Egap.Pdf.PdfSaveOptions.html#Egap_Pdf_PdfSaveOptions_Mode">Mode</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfCompression Compression { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfCompression.html">PdfCompression</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_Default_" data-uid="Egap.Pdf.PdfSaveOptions.Default*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_Default" data-uid="Egap.Pdf.PdfSaveOptions.Default">
+  Default
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfSaveOptions Default { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfSaveOptions.html">PdfSaveOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_Deterministic_" data-uid="Egap.Pdf.PdfSaveOptions.Deterministic*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_Deterministic" data-uid="Egap.Pdf.PdfSaveOptions.Deterministic">
+  Deterministic
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the file ID's second part is derived from the written content instead of being new for every save, so the
+same document always saves to the same bytes. The default is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Deterministic { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_Encryption_" data-uid="Egap.Pdf.PdfSaveOptions.Encryption*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_Encryption" data-uid="Egap.Pdf.PdfSaveOptions.Encryption">
+  Encryption
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the saved file is encrypted: <a class="xref" href="Egap.Pdf.PdfEncryption.html#Egap_Pdf_PdfEncryption_Keep">Keep</a> (the default) keeps the document's encryption,
+if any; <a class="xref" href="Egap.Pdf.PdfEncryption.html#Egap_Pdf_PdfEncryption_None">None</a> drops it and <a class="xref" href="Egap.Pdf.PdfEncryption.html#Egap_Pdf_PdfEncryption_Aes256_System_String_System_String_Egap_Pdf_PdfPermissions_">Aes256(string, string, PdfPermissions)</a> applies new encryption, both
+writing the whole document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfEncryption Encryption { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfEncryption.html">PdfEncryption</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_KeepObjectNumbers_" data-uid="Egap.Pdf.PdfSaveOptions.KeepObjectNumbers*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_KeepObjectNumbers" data-uid="Egap.Pdf.PdfSaveOptions.KeepObjectNumbers">
+  KeepObjectNumbers
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>For a rewrite, whether objects keep their numbers and generations instead of being renumbered densely in the order
+they are reached from the trailer. Useful for comparing with the original while debugging. The default is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool KeepObjectNumbers { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_Linearize_" data-uid="Egap.Pdf.PdfSaveOptions.Linearize*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_Linearize" data-uid="Egap.Pdf.PdfSaveOptions.Linearize">
+  Linearize
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the file is written linearized for fast web view (ISO 32000-1 Annex F, Phase 5 design Q15): a full rewrite with
+the first page's objects first and hint tables a viewer reads to show pages before the whole file arrives, checked
+against qpdf. Objects are written on their own with classic cross-reference tables whatever
+<a class="xref" href="Egap.Pdf.PdfSaveOptions.html#Egap_Pdf_PdfSaveOptions_Compression">Compression</a> says, and linearization is not combined with encryption. The default is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Linearize { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_MergeIdenticalObjects_" data-uid="Egap.Pdf.PdfSaveOptions.MergeIdenticalObjects*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_MergeIdenticalObjects" data-uid="Egap.Pdf.PdfSaveOptions.MergeIdenticalObjects">
+  MergeIdenticalObjects
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>For a rewrite with <a class="xref" href="Egap.Pdf.PdfCompression.html#Egap_Pdf_PdfCompression_Compact">Compact</a>, whether identical objects are written once (Phase 2 Q4):
+streams with the same dictionary and data, and dictionaries and arrays with the same content, such as the logo and
+fonts of many merged files. The default is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>; false saves the time and memory of comparing
+them, about a tenth of a compact rewrite of a large file with nothing to merge.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool MergeIdenticalObjects { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_Mode_" data-uid="Egap.Pdf.PdfSaveOptions.Mode*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_Mode" data-uid="Egap.Pdf.PdfSaveOptions.Mode">
+  Mode
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The save mode. The default is <a class="xref" href="Egap.Pdf.PdfSaveMode.html#Egap_Pdf_PdfSaveMode_Incremental">Incremental</a>; the whole document is written anyway when
+<a class="xref" href="Egap.Pdf.PdfSaveOptions.html#Egap_Pdf_PdfSaveOptions_Compression">Compression</a> or <a class="xref" href="Egap.Pdf.PdfSaveOptions.html#Egap_Pdf_PdfSaveOptions_Encryption">Encryption</a> asks for a change, or the file needed repair.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfSaveMode Mode { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfSaveMode.html">PdfSaveMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_RemoveUnused_" data-uid="Egap.Pdf.PdfSaveOptions.RemoveUnused*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_RemoveUnused" data-uid="Egap.Pdf.PdfSaveOptions.RemoveUnused">
+  RemoveUnused
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>For a rewrite, whether objects that nothing reaches from the trailer are left out. The default is
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveUnused { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfSaveOptions_UpdateModificationDate_" data-uid="Egap.Pdf.PdfSaveOptions.UpdateModificationDate*"></a>
+
+  <h3 id="Egap_Pdf_PdfSaveOptions_UpdateModificationDate" data-uid="Egap.Pdf.PdfSaveOptions.UpdateModificationDate">
+  UpdateModificationDate
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a save with changes sets the modification date (<code>/ModDate</code>, and <code>xmp:ModifyDate</code> when there is an
+XMP packet) to the time of saving (Phase 2 Q9). A save without changes, or a <a class="xref" href="Egap.Pdf.PdfSaveOptions.html#Egap_Pdf_PdfSaveOptions_Deterministic">Deterministic</a> one, never
+does. The default is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool UpdateModificationDate { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/PdfSaveOptions.cs/#L35" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

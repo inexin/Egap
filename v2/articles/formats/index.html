@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Document formats | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Document formats | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/formats/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="document-formats">Document formats</h1>
+
+<p>Egap.Documents reads each format below into one document model and writes the model back out, so any format it reads can
+be saved as any format it writes. DOCX, PDF, plain text and Docling JSON are built in. HTML and Markdown come from the
+add-on packages Egap.Documents.Html and Egap.Documents.Markdown.</p>
+<p>Each format has its own page with its options and what it keeps. This page covers what they share: loading and saving
+without naming the format, how a file's format is found, warnings and limits.</p>
+<h2 id="at-a-glance">At a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Package</th>
+<th>Reads</th>
+<th>Writes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="docx.html">DOCX</a></td>
+<td>Egap.Documents</td>
+<td>DOCX, DOTX, DOCM and DOTM, strict and transitional</td>
+<td>The same four kinds; DOCX to DOCX keeps what the model does not name</td>
+</tr>
+<tr>
+<td><a href="html.html">HTML</a></td>
+<td>Egap.Documents.Html</td>
+<td>HTML and XHTML, parsed as browsers parse it and styled through the CSS cascade</td>
+<td>HTML (UTF-8), with the page setup as <code>@page</code> rules</td>
+</tr>
+<tr>
+<td><a href="markdown.html">Markdown</a></td>
+<td>Egap.Documents.Markdown</td>
+<td>CommonMark with GitHub's extensions and YAML front matter</td>
+<td>GitHub Flavored Markdown (UTF-8)</td>
+</tr>
+<tr>
+<td><a href="text.html">Plain text</a></td>
+<td>Egap.Documents</td>
+<td>One paragraph per line</td>
+<td>The text in reading order, for search and indexing</td>
+</tr>
+<tr>
+<td><a href="docling-json.html">Docling JSON</a></td>
+<td>Egap.Documents</td>
+<td>DoclingDocument JSON, from Docling or from Egap</td>
+<td>Page layouts of a PDF, through <code>DoclingJson.Write</code></td>
+</tr>
+<tr>
+<td>PDF</td>
+<td>Egap.Documents</td>
+<td>Pages analysed into blocks, headings, lists, tables and figures</td>
+<td>Tagged PDF and PDF/A</td>
+</tr>
+</tbody>
+</table>
+<p>PDF in and out is covered in <a href="../guides/pdf-export-and-conversion.html">PDF export and conversion</a>.</p>
+<h2 id="loading-and-saving">Loading and saving</h2>
+<p><code>Document.Load</code> and <code>Document.Save</code> work out the format by themselves. <code>Load</code> looks at the file's first bytes and, for
+text, at its extension; <code>Save</code> goes by the extension. DOCX, PDF, plain text and Docling JSON need nothing more. HTML and
+Markdown join them once you register their add-on at startup; until then, loading such a file throws a
+<code>NotSupportedException</code> that names the package and the call to make. <code>Document.Identify</code> tells which format a file is in
+without loading it and without any add-on, so a program can say what a file needs.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
+MarkdownFormat.Register();
+DocumentFormatKind kind = Document.Identify(&quot;upload.bin&quot;);        // Pdf, Docx, Html, Markdown, Text, DoclingJson or Unknown
+Document notes = TextFormat.Load(&quot;notes.txt&quot;);                    // one paragraph per line
+</code></pre>
+<p><code>Identify</code> decides in this order:</p>
+<ol>
+<li>A ZIP package, or an old binary Word file, is <code>Docx</code>. Reading an old binary Word file fails with an error that says so.</li>
+<li><code>%PDF-</code> in the first 1024 bytes is <code>Pdf</code>.</li>
+<li>Text whose extension names HTML (<code>.html</code>, <code>.htm</code>, <code>.xhtml</code>), Markdown (<code>.md</code>, <code>.markdown</code>, <code>.mdown</code>, <code>.mkd</code>) or plain
+text (<code>.txt</code>, <code>.text</code>) is that format.</li>
+<li>A JSON object that names the <code>DoclingDocument</code> schema is <code>DoclingJson</code>.</li>
+<li>Text that starts with a tag is <code>Html</code>, and other text is <code>Markdown</code>.</li>
+<li>Binary data no format knows is <code>Unknown</code>.</li>
+</ol>
+<p><code>Save</code> writes <code>.docx</code>, <code>.dotx</code>, <code>.docm</code> and <code>.dotm</code> as Word's, <code>.pdf</code> as PDF, <code>.txt</code> as plain text, and, once their
+add-on is registered, <code>.html</code> and <code>.htm</code> as HTML and <code>.md</code> and <code>.markdown</code> as Markdown. Any other extension throws an
+<code>ArgumentException</code>.</p>
+<p>Each format also has its own class (<code>DocxFormat</code>, <code>HtmlFormat</code>, <code>MarkdownFormat</code>, <code>TextFormat</code>, <code>DoclingJson</code>) with its
+own options, and members on <code>Document</code> that forward to it, such as <code>Document.LoadDocx</code>, <code>ToHtml</code> and <code>SaveAsMarkdown</code>.
+Calling a format directly needs no <code>Register()</code>.</p>
+<h2 id="warnings">Warnings</h2>
+<p>Each <code>Load</code> has a form with an <code>out</code> list of <code>ConversionWarning</code>s for what could not be read as it was, and each <code>Save</code>
+returns a list of what the format could not hold, so a program can log it or show it.</p>
+<h2 id="limits">Limits</h2>
+<p>DOCX and HTML files are read under <code>DocumentLimits</code>, so an untrusted file cannot exhaust memory. Pass your own in the
+format's load options (<code>DocxLoadOptions.Limits</code>, <code>HtmlLoadOptions.Limits</code>); a file past a limit throws a
+<code>DocumentLimitException</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Default</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MaxEntries</code></td>
+<td>10,000</td>
+<td>The most entries a DOCX package may have</td>
+</tr>
+<tr>
+<td><code>MaxPartSize</code></td>
+<td>512 MiB</td>
+<td>The largest uncompressed part, or the largest HTML page</td>
+</tr>
+<tr>
+<td><code>MaxTotalSize</code></td>
+<td>2 GiB</td>
+<td>The most uncompressed bytes in all parts together</td>
+</tr>
+<tr>
+<td><code>MaxCompressionRatio</code></td>
+<td>1,000</td>
+<td>The highest compression ratio a part over 1 MiB may have, against ZIP bombs</td>
+</tr>
+<tr>
+<td><code>MaxDepth</code></td>
+<td>256</td>
+<td>How deep elements, tables and other structures may nest; deeper HTML is kept as plain text</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/formats/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

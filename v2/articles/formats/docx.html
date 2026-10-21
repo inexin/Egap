@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>DOCX | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="DOCX | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/formats/docx.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="docx">DOCX</h1>
+
+<p>Egap.Documents reads and writes Word's files: documents (<code>.docx</code>), templates (<code>.dotx</code>) and their macro-enabled forms
+(<code>.docm</code>, <code>.dotm</code>), strict and transitional. It needs no add-on package.</p>
+<h2 id="reading">Reading</h2>
+<p>A Word file reads into the model with Word's style model, lists numbered as Word numbers them, tables, fields, comments
+and tracked changes; the <a href="../guides/flow-documents.html">flow documents guide</a> shows what you can do with them. What the model
+does not name travels along in each node's extension data. Macros are kept and never run. An old binary Word file (<code>.doc</code>)
+is recognized and refused with an error that says so. <code>DocxLoadOptions.Limits</code> keeps untrusted files in bounds (see
+<a href="index.html#limits">Limits</a>).</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document report = Document.LoadDocx(&quot;report.docx&quot;, out IReadOnlyList&lt;ConversionWarning&gt; warnings);
+DocxKind? kind = DocxFormat.KindOf(report);                       // Document, Template or a macro-enabled kind
+report.SaveAsDocx(&quot;report-copy.docx&quot;);                            // what the model does not name is kept
+DocxFormat.Save(report, &quot;report.dotx&quot;, new DocxSaveOptions { Kind = DocxKind.Template });
+</code></pre>
+<h2 id="writing">Writing</h2>
+<p>DOCX to DOCX is lossless: parts and paragraphs you did not edit are written as they were read. Saving to a path takes the
+kind from the extension, so <code>report.dotx</code> is a template; saving to a stream keeps the kind the document was read as (a new
+document is a <code>.docx</code>). <code>DocxSaveOptions.Kind</code> overrides both. A kind that holds no macros drops the macros a <code>.docm</code> or
+<code>.dotm</code> had.</p>
+<p>A document read from another format saves as DOCX with what Word can hold. Some things the model has Word does not:</p>
+<ul>
+<li>Word has no word spacing or overline; it keeps the OpenType features it knows (ligatures, number forms and spacing,
+stylistic sets, contextual alternates). See <a href="../guides/flow-documents.html#text-options">Text options</a>.</li>
+<li>Paging settings on groups of blocks, clamped lines and balanced columns are not saved; the content is. See
+<a href="../guides/flow-documents.html#page-layout">Page layout</a>.</li>
+<li>Margin boxes at the top and bottom of the page are saved as a three-part table in the header or footer; those in the
+corners and at the sides are left out with a warning.</li>
+<li>An SVG picture is saved with the PNG stand-in in <code>Picture.Fallback</code>, as Word stores SVG pictures, so older readers show
+it too. <a href="../guides/flow-documents.html#barcodes">Barcodes</a> get one at 300 pixels per inch.</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/formats/docx.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

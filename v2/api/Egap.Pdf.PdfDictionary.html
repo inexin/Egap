@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfDictionary | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfDictionary | Egap ">
+      
+      <meta name="description" content="A PDF dictionary: names mapped to objects, kept in the order they were added so a rewrite keeps the file&#39;s order.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfDictionary.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfDictionary%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfDictionary">
+
+
+
+  <h1 id="Egap_Pdf_PdfDictionary" data-uid="Egap.Pdf.PdfDictionary" class="text-break">
+Class PdfDictionary  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A PDF dictionary: names mapped to objects, kept in the order they were added so a rewrite keeps the file's order.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[SuppressMessage(&quot;Naming&quot;, &quot;CA1711&quot;, Justification = &quot;Named after the PDF object type (design Q1).&quot;)]
+public sealed class PdfDictionary : PdfObject, IEnumerable&lt;KeyValuePair&lt;PdfName, PdfObject&gt;&gt;, IEnumerable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a></div>
+      <div><span class="xref">PdfDictionary</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a>, <a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a>&gt;&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfObject.html#Egap_Pdf_PdfObject_Resolve">PdfObject.Resolve()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfObject.html#Egap_Pdf_PdfObject_ToString">PdfObject.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfObject.html#Egap_Pdf_PdfObject_FromInt64_System_Int64_">PdfObject.FromInt64(long)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfObject.html#Egap_Pdf_PdfObject_FromDouble_System_Double_">PdfObject.FromDouble(double)</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Pdf.PdfObject.html#Egap_Pdf_PdfObject_FromBoolean_System_Boolean_">PdfObject.FromBoolean(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Egap_Pdf_PdfDictionary_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The indexer and <a class="xref" href="Egap.Pdf.PdfDictionary.html#Egap_Pdf_PdfDictionary_Entries">Entries</a> give values as stored, references included. <a class="xref" href="Egap.Pdf.PdfDictionary.html#Egap_Pdf_PdfDictionary_Get_Egap_Pdf_PdfName_">Get(PdfName)</a> and the
+typed getters follow references, loading the target on first use. Changing a dictionary marks the indirect object it
+belongs to as changed, so an incremental save writes it.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Egap_Pdf_PdfDictionary__ctor_" data-uid="Egap.Pdf.PdfDictionary.#ctor*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary__ctor" data-uid="Egap.Pdf.PdfDictionary.#ctor">
+  PdfDictionary()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An empty dictionary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfDictionary()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfDictionary_Count_" data-uid="Egap.Pdf.PdfDictionary.Count*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Count" data-uid="Egap.Pdf.PdfDictionary.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of entries.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_Entries_" data-uid="Egap.Pdf.PdfDictionary.Entries*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Entries" data-uid="Egap.Pdf.PdfDictionary.Entries">
+  Entries
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The entries as stored, in order; references are not followed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;KeyValuePair&lt;PdfName, PdfObject&gt;&gt; Entries { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a>, <a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_Item_" data-uid="Egap.Pdf.PdfDictionary.Item*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Item_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.Item(Egap.Pdf.PdfName)">
+  this[PdfName]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The value stored for a key, not following references; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when there is none. Setting
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> removes the entry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfObject? this[PdfName key] { get; set; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_Keys_" data-uid="Egap.Pdf.PdfDictionary.Keys*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Keys" data-uid="Egap.Pdf.PdfDictionary.Keys">
+  Keys
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The keys, in order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;PdfName&gt; Keys { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Pdf_PdfDictionary_Add_" data-uid="Egap.Pdf.PdfDictionary.Add*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Add_Egap_Pdf_PdfName_Egap_Pdf_PdfObject_" data-uid="Egap.Pdf.PdfDictionary.Add(Egap.Pdf.PdfName,Egap.Pdf.PdfObject)">
+  Add(PdfName, PdfObject)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an entry; throws if the key is already there. With the indexer, this allows collection initializers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Add(PdfName key, PdfObject value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_Clone_" data-uid="Egap.Pdf.PdfDictionary.Clone*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Clone" data-uid="Egap.Pdf.PdfDictionary.Clone">
+  Clone()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L171"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A deep copy: arrays and dictionaries inside are copied too, while references stay references to the same objects.
+The copy belongs nowhere, so it can be put anywhere.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfDictionary Clone()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfDictionary.html">PdfDictionary</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_ContainsKey_" data-uid="Egap.Pdf.PdfDictionary.ContainsKey*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_ContainsKey_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.ContainsKey(Egap.Pdf.PdfName)">
+  ContainsKey(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the dictionary has the key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ContainsKey(PdfName key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_Get_" data-uid="Egap.Pdf.PdfDictionary.Get*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Get_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.Get(Egap.Pdf.PdfName)">
+  Get(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L120"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The value for a key with references followed; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when there is none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfObject? Get(PdfName key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_GetBool_" data-uid="Egap.Pdf.PdfDictionary.GetBool*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_GetBool_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.GetBool(Egap.Pdf.PdfName)">
+  GetBool(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L150"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A boolean, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? GetBool(PdfName key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_GetEnumerator_" data-uid="Egap.Pdf.PdfDictionary.GetEnumerator*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_GetEnumerator" data-uid="Egap.Pdf.PdfDictionary.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;KeyValuePair&lt;PdfName, PdfObject&gt;&gt; GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;<a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a>, <a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a>&gt;&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_GetInt_" data-uid="Egap.Pdf.PdfDictionary.GetInt*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_GetInt_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.GetInt(Egap.Pdf.PdfName)">
+  GetInt(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>An integer; a real is truncated toward zero, as other readers do. <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not a number
+or a real is out of range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long? GetInt(PdfName key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_GetName_" data-uid="Egap.Pdf.PdfDictionary.GetName*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_GetName_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.GetName(Egap.Pdf.PdfName)">
+  GetName(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfName? GetName(PdfName key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_GetNumber_" data-uid="Egap.Pdf.PdfDictionary.GetNumber*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_GetNumber_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.GetNumber(Egap.Pdf.PdfName)">
+  GetNumber(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A number, integer or real, as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the value is not a number.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double? GetNumber(PdfName key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_GetText_" data-uid="Egap.Pdf.PdfDictionary.GetText*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_GetText_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.GetText(Egap.Pdf.PdfName)">
+  GetText(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A string decoded as text (see <a class="xref" href="Egap.Pdf.PdfString.html#Egap_Pdf_PdfString_ToText">ToText()</a>), or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? GetText(PdfName key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_Get_" data-uid="Egap.Pdf.PdfDictionary.Get*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Get__1_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.Get``1(Egap.Pdf.PdfName)">
+  Get&lt;T&gt;(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The value for a key with references followed, if it is a <code class="typeparamref">T</code>; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T? Get&lt;T&gt;(PdfName key) where T : PdfObject</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_Remove_" data-uid="Egap.Pdf.PdfDictionary.Remove*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Remove_Egap_Pdf_PdfName_" data-uid="Egap.Pdf.PdfDictionary.Remove(Egap.Pdf.PdfName)">
+  Remove(PdfName)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes a key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Remove(PdfName key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the key was there.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfDictionary_Set_" data-uid="Egap.Pdf.PdfDictionary.Set*"></a>
+
+  <h3 id="Egap_Pdf_PdfDictionary_Set_Egap_Pdf_PdfName_Egap_Pdf_PdfObject_" data-uid="Egap.Pdf.PdfDictionary.Set(Egap.Pdf.PdfName,Egap.Pdf.PdfObject)">
+  Set(PdfName, PdfObject)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets a key's value, replacing any value it had.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Set(PdfName key, PdfObject value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="Egap.Pdf.PdfName.html">PdfName</a></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="Egap.Pdf.PdfObject.html">PdfObject</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Objects/PdfDictionary.cs/#L15" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

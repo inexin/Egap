@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PdfInvoice | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PdfInvoice | Egap ">
+      
+      <meta name="description" content="A Factur-X or ZUGFeRD e-invoice in a PDF: the invoice&#39;s XML (UN/CEFACT Cross Industry Invoice) attached to a PDF/A-3 document, with the Factur-X schema in the document&#39;s XMP saying the file name, the profile and the version. The XML is the invoicing system&#39;s to write; Egap embeds it and reads it back.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Pdf_PdfInvoice.md&amp;value=---%0Auid%3A%20Egap.Pdf.PdfInvoice%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Pdf.PdfInvoice">
+
+
+
+  <h1 id="Egap_Pdf_PdfInvoice" data-uid="Egap.Pdf.PdfInvoice" class="text-break">
+Class PdfInvoice  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Pdf.html">Pdf</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Pdf.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A Factur-X or ZUGFeRD e-invoice in a PDF: the invoice's XML (UN/CEFACT Cross Industry Invoice) attached to a PDF/A-3
+document, with the Factur-X schema in the document's XMP saying the file name, the profile and the version. The XML is
+the invoicing system's to write; Egap embeds it and reads it back.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record PdfInvoice : IEquatable&lt;PdfInvoice&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PdfInvoice</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Egap.Pdf.PdfInvoice.html">PdfInvoice</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Egap_Pdf_PdfInvoice__ctor_" data-uid="Egap.Pdf.PdfInvoice.#ctor*"></a>
+
+  <h3 id="Egap_Pdf_PdfInvoice__ctor_System_Byte___System_String_Egap_Pdf_PdfInvoiceStandard_System_Nullable_Egap_Pdf_PdfInvoiceProfile__" data-uid="Egap.Pdf.PdfInvoice.#ctor(System.Byte[],System.String,Egap.Pdf.PdfInvoiceStandard,System.Nullable{Egap.Pdf.PdfInvoiceProfile})">
+  PdfInvoice(byte[], string, PdfInvoiceStandard, PdfInvoiceProfile?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A Factur-X or ZUGFeRD e-invoice in a PDF: the invoice's XML (UN/CEFACT Cross Industry Invoice) attached to a PDF/A-3
+document, with the Factur-X schema in the document's XMP saying the file name, the profile and the version. The XML is
+the invoicing system's to write; Egap embeds it and reads it back.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfInvoice(byte[] Xml, string FileName, PdfInvoiceStandard Standard, PdfInvoiceProfile? Profile)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Xml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>The invoice's XML as stored.</p>
+</dd>
+    <dt><code>FileName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The attachment's name, such as <code>factur-x.xml</code>.</p>
+</dd>
+    <dt><code>Standard</code> <a class="xref" href="Egap.Pdf.PdfInvoiceStandard.html">PdfInvoiceStandard</a></dt>
+    <dd><p>The standard, from the XMP or the file name.</p>
+</dd>
+    <dt><code>Profile</code> <a class="xref" href="Egap.Pdf.PdfInvoiceProfile.html">PdfInvoiceProfile</a>?</dt>
+    <dd><p>The profile, from the XMP or else the XML; null when neither says.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Pdf_PdfInvoice_FileName_" data-uid="Egap.Pdf.PdfInvoice.FileName*"></a>
+
+  <h3 id="Egap_Pdf_PdfInvoice_FileName" data-uid="Egap.Pdf.PdfInvoice.FileName">
+  FileName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The attachment's name, such as <code>factur-x.xml</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string FileName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfInvoice_Profile_" data-uid="Egap.Pdf.PdfInvoice.Profile*"></a>
+
+  <h3 id="Egap_Pdf_PdfInvoice_Profile" data-uid="Egap.Pdf.PdfInvoice.Profile">
+  Profile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The profile, from the XMP or else the XML; null when neither says.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfInvoiceProfile? Profile { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfInvoiceProfile.html">PdfInvoiceProfile</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfInvoice_Standard_" data-uid="Egap.Pdf.PdfInvoice.Standard*"></a>
+
+  <h3 id="Egap_Pdf_PdfInvoice_Standard" data-uid="Egap.Pdf.PdfInvoice.Standard">
+  Standard
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The standard, from the XMP or the file name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfInvoiceStandard Standard { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfInvoiceStandard.html">PdfInvoiceStandard</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfInvoice_Xml_" data-uid="Egap.Pdf.PdfInvoice.Xml*"></a>
+
+  <h3 id="Egap_Pdf_PdfInvoice_Xml" data-uid="Egap.Pdf.PdfInvoice.Xml">
+  Xml
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The invoice's XML as stored.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] Xml { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Pdf_PdfInvoice_Embed_" data-uid="Egap.Pdf.PdfInvoice.Embed*"></a>
+
+  <h3 id="Egap_Pdf_PdfInvoice_Embed_Egap_Pdf_PdfDocument_System_ReadOnlySpan_System_Byte__Egap_Pdf_PdfInvoiceOptions_" data-uid="Egap.Pdf.PdfInvoice.Embed(Egap.Pdf.PdfDocument,System.ReadOnlySpan{System.Byte},Egap.Pdf.PdfInvoiceOptions)">
+  Embed(PdfDocument, ReadOnlySpan&lt;byte&gt;, PdfInvoiceOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Embeds an invoice's XML: attached under its Factur-X name with the relationship Factur-X asks for and the
+<code>text/xml</code> type, listed among the document's associated files, the document converted to PDF/A-3 when it is not
+already, and the Factur-X extension schema written into its XMP. Save the document afterwards.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfAReport Embed(PdfDocument document, ReadOnlySpan&lt;byte&gt; xml, PdfInvoiceOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Pdf.PdfDocument.html">PdfDocument</a></dt>
+    <dd></dd>
+    <dt><code>xml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfInvoiceOptions.html">PdfInvoiceOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfAReport.html">PdfAReport</a></dt>
+    <dd><p>The PDF/A conversion's report; it changed nothing when <a class="xref" href="Egap.Pdf.PdfAReport.html#Egap_Pdf_PdfAReport_Succeeded">Succeeded</a> is false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Pdf_PdfInvoice_Embed_Egap_Pdf_PdfDocument_System_ReadOnlySpan_System_Byte__Egap_Pdf_PdfInvoiceOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">using PdfDocument pdf = PdfDocument.Open("invoice.pdf");
+PdfInvoice.Embed(pdf, File.ReadAllBytes("factur-x.xml"), new PdfInvoiceOptions { Profile = PdfInvoiceProfile.EN16931 });
+pdf.Save("invoice-facturx.pdf");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">document</code> is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The XML is not well-formed, the profile is not given and the XML does not say it, a legacy standard is asked for, or
+the conformance is not PDF/A-3.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Pdf_PdfInvoice_Read_" data-uid="Egap.Pdf.PdfInvoice.Read*"></a>
+
+  <h3 id="Egap_Pdf_PdfInvoice_Read_Egap_Pdf_PdfDocument_" data-uid="Egap.Pdf.PdfInvoice.Read(Egap.Pdf.PdfDocument)">
+  Read(PdfDocument)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The e-invoice a document carries, Factur-X or ZUGFeRD 1.0 to 2.3: found by the file name the document's XMP names,
+else by the standard file names; null when there is none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PdfInvoice? Read(PdfDocument document)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Pdf.PdfDocument.html">PdfDocument</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfInvoice.html">PdfInvoice</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">document</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Attachments/PdfInvoice.cs/#L105" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

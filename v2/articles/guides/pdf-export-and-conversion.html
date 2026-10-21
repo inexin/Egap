@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>PDF export and conversion | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="PDF export and conversion | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/pdf-export-and-conversion.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="pdf-export-and-conversion">PDF export and conversion</h1>
+
+<p>Egap.Documents saves documents as PDF and turns PDF pages back into documents, in namespace <code>Egap.Documents.Pdf</code>. HTML and
+Markdown come from their add-on packages, Egap.Documents.Html and Egap.Documents.Markdown, which add <code>PdfConvert.FromHtml</code>,
+<code>PdfConvert.FromMarkdown</code>, <code>PdfStamp.Html</code> and HTML page bands.</p>
+<h2 id="documents-to-pdf">Documents to PDF</h2>
+<p>A document saves as PDF with its links, outline and, when asked, tags for accessibility. PDF/A works the same way.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Pdf;
+using Egap.Documents.Pdf;
+
+Document doc = Document.Load(&quot;report.docx&quot;);
+doc.SaveAsPdf(&quot;report.pdf&quot;, new PdfExportOptions { Tagged = true, Conformance = PdfAConformance.PdfA2a });
+
+Document page = HtmlFormat.Load(&quot;invoice.html&quot;);
+page.SaveAsPdf(&quot;invoice.pdf&quot;);
+</code></pre>
+<p>With <code>FormFields</code>, HTML form controls and Word content controls become PDF form fields where they were laid out, each
+named by its HTML name or Word tag and starting with its value.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Pdf;
+
+Document form = HtmlFormat.Load(&quot;application.html&quot;);
+form.SaveAsPdf(&quot;application.pdf&quot;, new PdfExportOptions { FormFields = true });
+</code></pre>
+<h2 id="one-line-conversions">One-line conversions</h2>
+<p><code>PdfConvert</code> turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
+input's own. Converting a file reads its images from the file's own folder; HTML or Markdown given as text reads them only
+from <code>BaseDirectory</code>, and never from the network. <code>FromFile</code> handles HTML and Markdown files once their add-on is
+registered with <code>HtmlFormat.Register()</code> or <code>MarkdownFormat.Register()</code>.</p>
+<pre><code class="lang-csharp">using Egap.Pdf;
+using Egap.Documents.Pdf;
+
+PdfConvert.FromFile(&quot;report.docx&quot;, &quot;report.pdf&quot;);
+PdfConvert.FromHtml(&quot;&lt;h1&gt;Invoice&lt;/h1&gt;&lt;p&gt;Total: 120 EUR&lt;/p&gt;&quot;, &quot;invoice.pdf&quot;, new PdfConvertOptions
+{
+    PageSize = PdfPageSize.A4,
+    Margins = PageMargins.All(Length.Mm(20)),
+    Conformance = PdfAConformance.PdfA3b,
+});
+using PdfDocument scans = PdfConvert.FromImages([&quot;scan-1.jpg&quot;, &quot;scan-2.png&quot;], new PdfConvertOptions { PageSize = PdfPageSize.A4 });
+scans.RenderPagesToFiles(&quot;thumbs/page-{page:00}.png&quot;, new PdfRenderOptions { Dpi = 72 });
+</code></pre>
+<p><code>Header</code> and <code>Footer</code> put the same band on every page, in the top or bottom margin, in place of the input's own headers
+and footers. A text band has up to three parts (left, middle and right); an HTML band is styled with the page's own style
+sheets. Both take the placeholders <code>{page}</code>, <code>{total-pages}</code>, <code>{label}</code>, <code>{date}</code>, <code>{time}</code>, <code>{title}</code> and <code>{file}</code>, and
+a number format after a colon, as in <code>{page:000}</code>. HTML pages can set the same thing themselves with <code>@page</code> margin boxes
+and running elements (<code>position: running(header)</code> with <code>content: element(header)</code>).</p>
+<pre><code class="lang-csharp">using Egap.Documents.Pdf;
+
+PdfConvert.FromHtml(&quot;&lt;title&gt;Invoice 2026-118&lt;/title&gt;&lt;style&gt;.hdr { text-align: right }&lt;/style&gt;&lt;p&gt;Total: 120 EUR&lt;/p&gt;&quot;, &quot;invoice.pdf&quot;, new PdfConvertOptions
+{
+    Header = PageBand.Html(&quot;&lt;div class='hdr'&gt;&lt;b&gt;ACME&lt;/b&gt; {date}&lt;/div&gt;&quot;),
+    Footer = PageBand.Text(left: &quot;{title}&quot;, center: &quot;Page {page} of {total-pages}&quot;) with { FontSize = 8 },
+});
+</code></pre>
+<p><code>TableOfContents</code> builds a table of contents from the headings, each entry linked to its heading, with or without page
+numbers. It goes where HTML has <code>&lt;nav data-toc&gt;</code> or Markdown a <code>[TOC]</code> paragraph, else at the start.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Pdf;
+
+MarkdownFormat.Register();
+PdfConvert.FromFile(&quot;handbook.md&quot;, &quot;handbook.pdf&quot;, new PdfConvertOptions { TableOfContents = TableOfContentsMode.WithPageNumbers });
+</code></pre>
+<p><code>PdfStamp.Html</code> lays out a piece of HTML as a stamp, such as a seal or a letterhead, and draws it on every page.</p>
+<pre><code class="lang-csharp">using Egap.Pdf;
+using Egap.Documents.Pdf;
+
+using PdfDocument invoice = PdfDocument.Open(&quot;invoice.pdf&quot;);
+invoice.Stamp(PdfStamp.Html(&quot;&lt;div style='border:3px solid green;color:green;font:bold 28pt sans-serif'&gt;PAID&lt;/div&gt;&quot;, Length.Mm(50))
+    with { Anchor = StampAnchor.TopRight, Offset = new(-40, -40), Rotation = 15 });
+invoice.Save(&quot;invoice-paid.pdf&quot;);
+</code></pre>
+<h2 id="pdf-to-documents">PDF to documents</h2>
+<p><code>PdfToDocument</code> analyses the pages into blocks, reading order, headings, lists, tables and figures, and builds a document you
+can save as DOCX, HTML or Markdown. Tagged PDFs, such as Word's, keep their tables' merged and nested cells.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Pdf;
+using Egap.Documents.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;paper.pdf&quot;);
+Document flow = PdfToDocument.Convert(pdf);
+flow.Save(&quot;paper.docx&quot;);
+</code></pre>
+<p>The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/pdf-export-and-conversion.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

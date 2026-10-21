@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Egap | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Egap | Egap ">
+      
+      
+      <link rel="icon" href="images/favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="egap">Egap</h1>
+
+<p>Egap is an open source family of document libraries for .NET 10: PDF files, and flow documents in DOCX, HTML and Markdown.
+It is a sister project to <a href="https://inexin.github.io/Egami/">Egami</a>, the 2D imaging library it draws with.</p>
+<ul>
+<li><strong>MIT-licensed</strong>, with no strings for commercial use.</li>
+<li><strong>Fully managed C#</strong>: no native binaries, no P/Invoke; images, fonts and drawing come from Egami, which is managed too.</li>
+<li><strong>Safe on untrusted files</strong>: damaged files are repaired where possible, and every reader is fuzz-tested.</li>
+<li><strong>PDF</strong>: read, edit, render, sign and verify, redact, PDF/A, tagged PDF, optimize, imposition, stamps and compare.</li>
+<li><strong>Flow documents</strong>: one model for DOCX, HTML and Markdown (HTML and Markdown as add-on packages), with page layout,
+export to PDF and PDF converted back into documents.</li>
+</ul>
+<pre><code class="lang-csharp">using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;in.pdf&quot;);
+Console.WriteLine(pdf.Pages[0].ExtractText());                   // lines in reading order
+
+pdf.Metadata.Title = &quot;Quarterly report&quot;;
+pdf.Outline.Add(&quot;Summary&quot;, PdfDestination.ToPage(pdf.Pages[0]));
+pdf.Save(&quot;out.pdf&quot;);                                             // incremental: the original bytes plus the changes
+</code></pre>
+<p>Start with <a href="articles/getting-started.html">Getting started</a>, browse the <a href="articles/guides/index.html">guides</a> and the
+<a href="articles/formats/index.html">document formats</a>, or look anything up in the <a href="api/Egap.Pdf.html">API reference</a>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

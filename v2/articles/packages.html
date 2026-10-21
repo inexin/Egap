@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Packages | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Packages | Egap ">
+      
+      
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/packages.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="packages">Packages</h1>
+
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it does</th>
+<th>Depends on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Egap.Pdf</td>
+<td>Reads, edits, renders, signs, redacts and saves PDF; PDF/A, tagged PDF, optimize, imposition, stamps, barcodes, compare</td>
+<td>Egami.Drawing, Egami.Barcodes, Egami.Fonts.Substitutes</td>
+</tr>
+<tr>
+<td>Egap.Documents</td>
+<td>One document model with DOCX, plain text and Docling JSON, page layout onto any Egami canvas, PDF export, and PDF pages analysed and converted back into documents</td>
+<td>Egap.Pdf, Egami.Drawing, Egami.Barcodes, Egami.Svg, Egami.Metafiles, Egami.Fonts.Substitutes</td>
+</tr>
+<tr>
+<td>Egap.Documents.Html</td>
+<td>HTML and XHTML read and written through the CSS cascade, with <code>@page</code> rules and margin boxes, HTML to PDF, HTML stamps and page bands</td>
+<td>Egap.Documents, Egami.Css, AngleSharp</td>
+</tr>
+<tr>
+<td>Egap.Documents.Markdown</td>
+<td>CommonMark and GitHub Markdown read and written, with front matter and images, and Markdown to PDF</td>
+<td>Egap.Documents, Markdig</td>
+</tr>
+</tbody>
+</table>
+<p>Take Egap.Pdf alone for PDF work, Egap.Documents for documents and conversions, and an add-on for each of HTML and Markdown
+you read or write. The add-ons keep the class names you know (<code>HtmlFormat</code>, <code>MarkdownFormat</code>) in namespace
+<code>Egap.Documents</code>. <code>Document.Load</code> and <code>Document.Save</code> reach an add-on's format once you call its <code>Register()</code> at startup:</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+HtmlFormat.Register();
+MarkdownFormat.Register();
+Document notes = Document.Load(&quot;notes.md&quot;);
+</code></pre>
+<p>Without the call, loading such a file throws a <code>NotSupportedException</code> that names the package and the call.
+<code>Document.Identify</code> tells which format a file is in without any add-on. Each format's page under <a href="formats/index.html">Document formats</a> says
+which package it needs and what it reads and writes.</p>
+<p>The add-ons start at 2.0.0 and move in step with Egap.Documents. Egap.Pdf.Conversion is retired: its code is in
+Egap.Documents 2.0 (see <a href="guides/migrating-to-2.0.html">Moving to Egap.Documents 2.0</a>).</p>
+<p>Egami.Drawing brings in Egami and Egami.Fonts. Every package is fully managed, MIT-licensed, and targets .NET 10; the
+add-ons' parsers, AngleSharp (MIT) and Markdig (BSD-2-Clause), are managed too. The substitute fonts for missing fonts come
+from Egami.Fonts.Substitutes, under the SIL Open Font License 1.1. All four packages are trimmable and work with Native AOT.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/packages.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
