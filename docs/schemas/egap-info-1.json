@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-info-1.json",
+  "title": "egap info",
+  "description": "What 'egap info --json' writes: one object per file that could be read. Properties marked --all appear only with --all.",
+  "type": "object",
+  "required": [ "schema", "files" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "files": { "type": "array", "items": { "$ref": "#/$defs/file" } }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "required": [ "path", "version", "pages", "pageSizes", "encrypted", "encryption", "permissions", "linearized", "tagged", "pdfa", "formFields", "layers", "warnings", "signatures", "attachments" ],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "description": "The file as the command line named it, or as a glob found it.", "type": "string" },
+        "version": { "description": "The PDF version, such as 1.7 or 2.0.", "type": "string" },
+        "pages": { "type": "integer", "minimum": 0 },
+        "pageSizes": {
+          "description": "Each size of page as a viewer shows it (crop box, user unit and rotation applied), in points, in order of first use.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "width", "height", "name", "pages" ],
+            "additionalProperties": false,
+            "properties": {
+              "width": { "type": "number" },
+              "height": { "type": "number" },
+              "name": { "description": "The paper it matches within a point, such as A4 or Letter, or null.", "type": [ "string", "null" ] },
+              "pages": { "description": "How many pages have this size.", "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "encrypted": { "type": "boolean" },
+        "encryption": { "type": [ "string", "null" ], "enum": [ "rc4-40", "rc4-128", "aes-128", "aes-256", "unknown", null ] },
+        "permissions": {
+          "description": "What the file allows someone without the owner password to do.",
+          "type": "array",
+          "items": { "enum": [ "print", "print-high-quality", "modify", "assemble", "copy-content", "extract-for-accessibility", "annotate", "fill-forms" ] }
+        },
+        "linearized": { "description": "Whether the file is laid out for fast web view.", "type": "boolean" },
+        "tagged": { "description": "Whether the file has a structure tree.", "type": "boolean" },
+        "pdfa": { "description": "The PDF/A part and level the file claims, such as PDF/A-2b, or null. A claim, not a check: egap pdfa checks.", "type": [ "string", "null" ] },
+        "formFields": { "type": "integer", "minimum": 0 },
+        "layers": { "description": "Optional content groups.", "type": "integer", "minimum": 0 },
+        "warnings": { "description": "Repairs made while reading; each is also written to standard error.", "type": "integer", "minimum": 0 },
+        "signatures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "field", "kind", "signer", "time", "subFilter", "coversWholeFile" ],
+            "additionalProperties": false,
+            "properties": {
+              "field": { "type": "string" },
+              "kind": { "enum": [ "approval", "certification", "document-timestamp" ] },
+              "signer": { "description": "The name the signature dictionary gives; egap verify reads the certificate.", "type": [ "string", "null" ] },
+              "time": { "description": "The signing time the dictionary claims, ISO 8601.", "type": [ "string", "null" ] },
+              "subFilter": { "type": [ "string", "null" ] },
+              "coversWholeFile": { "description": "Whether nothing was added after the signature.", "type": "boolean" }
+            }
+          }
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "name", "size", "mimeType", "relationship" ],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "size": { "type": [ "integer", "null" ] },
+              "mimeType": { "type": [ "string", "null" ] },
+              "relationship": { "description": "PDF/A-3's AFRelationship, such as Data or Source.", "type": [ "string", "null" ] }
+            }
+          }
+        },
+        "metadata": {
+          "description": "--all: the document information, as text.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": { "type": "string" },
+            "author": { "type": "string" },
+            "subject": { "type": "string" },
+            "keywords": { "type": "string" },
+            "creator": { "type": "string" },
+            "producer": { "type": "string" },
+            "created": { "type": "string" },
+            "modified": { "type": "string" },
+            "xmp": { "description": "yes when the file has an XMP packet; egap metadata shows it.", "const": "yes" }
+          }
+        },
+        "bookmarks": { "description": "--all: outline items at every level.", "type": "integer", "minimum": 0 },
+        "revisions": { "description": "--all: the saves the file holds, incremental updates included.", "type": "integer", "minimum": 0 },
+        "layerNames": {
+          "description": "--all",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "name", "visible" ],
+            "additionalProperties": false,
+            "properties": { "name": { "type": "string" }, "visible": { "type": "boolean" } }
+          }
+        },
+        "fonts": {
+          "description": "--all: each font the pages use, once.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "name", "type", "embedded", "subset" ],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "description": "type1, true-type, type0, type3 and so on.", "type": "string" },
+              "embedded": { "type": "boolean" },
+              "subset": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
