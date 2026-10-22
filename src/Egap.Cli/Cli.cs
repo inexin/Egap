@@ -122,6 +122,10 @@ internal static class Cli
         root.Subcommands.Add(new OcrLayerEdit().CreateCommand(session));
         root.Subcommands.Add(new CleanEdit().CreateCommand(session));
         root.Subcommands.Add(MergeDataCommand.Create(session));
+        root.Subcommands.Add(PrintCommands.Preflight(session));
+        root.Subcommands.Add(PrintCommands.Pdfx(session));
+        root.Subcommands.Add(PrintCommands.Separations(session));
+        root.Subcommands.Add(new ColorEdit().CreateCommand(session));
         root.Subcommands.Add(RunCommand.Create());
         root.Subcommands.Add(McpCommand.Create(session));
         return root;

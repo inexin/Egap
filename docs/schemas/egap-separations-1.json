@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-separations-1.json",
+  "title": "egap separations",
+  "description": "What 'egap separations --json' writes: for each page, the highest total area coverage in percent, the share of the page over the limit, and the coverage of each plate in percent of the page.",
+  "type": "object",
+  "required": [ "schema", "limit", "files" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "limit": { "description": "The total area coverage limit, in percent.", "type": "number" },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "path", "pages" ],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "pages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [ "page", "maxCoverage", "shareOverLimit", "plates" ],
+              "additionalProperties": false,
+              "properties": {
+                "page": { "type": "integer", "minimum": 1 },
+                "maxCoverage": { "type": "number" },
+                "shareOverLimit": { "description": "The share of the page's pixels over the limit, from 0 to 1.", "type": "number" },
+                "plates": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

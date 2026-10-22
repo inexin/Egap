@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-preflight-1.json",
+  "title": "egap preflight",
+  "description": "What 'egap preflight --json' writes: each file's checks against a print profile. A file passes when no issue is found; the exit code is 1 otherwise.",
+  "type": "object",
+  "required": [ "schema", "files" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "path", "profile", "passed", "spots", "issues", "items" ],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "profile": { "description": "The profile checked against, such as PDF/X-4.", "type": "string" },
+          "passed": { "type": "boolean" },
+          "spots": { "description": "The spot colors the file uses.", "type": "array", "items": { "type": "string" } },
+          "issues": {
+            "description": "What fails the profile.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [ "check", "description", "page" ],
+              "additionalProperties": false,
+              "properties": {
+                "check": { "type": "string" },
+                "description": { "type": "string" },
+                "page": { "type": [ "integer", "null" ] }
+              }
+            }
+          },
+          "items": {
+            "description": "What the file holds, issue or not: output intents, color spaces, images, fonts, transparency, overprint, hairlines, page boxes and ink coverage.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [ "kind", "page", "description", "count" ],
+              "additionalProperties": false,
+              "properties": {
+                "kind": { "enum": [ "output-intent", "color-space", "image", "font", "transparency", "overprint", "hairline", "page-boxes", "ink-coverage" ] },
+                "page": { "type": [ "integer", "null" ] },
+                "description": { "type": "string" },
+                "count": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
