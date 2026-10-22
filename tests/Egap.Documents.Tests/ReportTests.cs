@@ -33,16 +33,17 @@ public sealed class ReportTests
             .Title("Invoice 2026-118")
             .Style("Total", s => s.FontSize(14).Bold())
             .DefaultTextStyle(s => s.FontSize(10))
-            .Page(p => p
-                .Size(PdfPageSize.A4).Margins(Length.Mm(15))
-                .Header(h => h.BorderBottom(1).Row(row =>
+            .Page(p =>
+            {
+                p.Size(PdfPageSize.A4).Margins(Length.Mm(15));
+                p.Header().BorderBottom(1).Row(row =>
                 {
                     row.Spacing(10);
                     row.Fixed(Length.Mm(30)).Barcode(Barcode.Qr("https://egap.dev/i/118"), Length.Mm(20), Length.Mm(20));
-                    row.Grow().Text("Invoice 2026-118").Style(s => s.FontSize(20).Bold());
+                    row.Relative().Text("Invoice 2026-118").Style(s => s.FontSize(20).Bold());
                     row.Auto().AlignRight().Text("21 October 2026");
-                }))
-                .Content(c => c.Column(col =>
+                });
+                p.Content().Column(col =>
                 {
                     col.Spacing(8);
                     col.Item().Grid(g => g.Columns(GridTrack.Fraction(1), GridTrack.Fraction(1)).Spacing(0, 12)
@@ -62,10 +63,17 @@ public sealed class ReportTests
                     col.Item().Row(row =>
                     {
                         row.Auto().CheckBox("paid");
-                        row.Grow().Text(" Paid");
+                        row.Relative().Text(" Paid");
                     });
-                }))
-                .Footer(f => f.AlignCenter().Text($"Page {Fields.Page} of {Fields.Pages}"))));
+                });
+                p.Footer().AlignCenter().Text(t =>
+                {
+                    t.Span("Page ");
+                    t.CurrentPageNumber();
+                    t.Span(" of ");
+                    t.TotalPages();
+                });
+            }));
     }
 
     [Fact]
@@ -148,13 +156,18 @@ public sealed class ReportTests
     [Fact]
     public void ContainersTakeOneElementAndStrictLayoutFailsLoudly()
     {
-        Assert.Throws<InvalidOperationException>(() => Report.Create(r => r.Page(p => p.Content(c =>
+        Assert.Throws<InvalidOperationException>(() => Report.Create(r => r.Page(p =>
         {
-            c.Text("one");
-            c.Text("two");
-        }))));
+            Container content = p.Content();
+            content.Text("one");
+            content.Text("two");
+        })));
 
-        Document tooWide = Report.Create(r => r.Page(p => p.Size(Length.Mm(80), Length.Mm(80)).Margins(Length.Mm(5)).Content(c => c.Text(new string('W', 200)))));
+        Document tooWide = Report.Create(r => r.Page(p =>
+        {
+            p.Size(Length.Mm(80), Length.Mm(80)).Margins(Length.Mm(5));
+            p.Content().Text(new string('W', 200));
+        }));
         Assert.Throws<LayoutException>(() => tooWide.Layout());
         Assert.NotEmpty(tooWide.Layout(new LayoutOptions()).Pages);
     }
@@ -163,8 +176,9 @@ public sealed class ReportTests
     public void TextSpansStylesAndPagingSettings()
     {
         TextStyle note = TextStyle.Default.FontSize(8).Italic().FontColor("666666");
-        Document report = Report.Create(r => r.Page(p => p.Content(c => c.Column(col =>
+        Document report = Report.Create(r => r.Page(p => p.Content().Column(col =>
         {
+            col.Item().Text("{page} stays as written");
             col.Item().Text(t =>
             {
                 t.Span("Page ");
@@ -178,12 +192,13 @@ public sealed class ReportTests
             col.Item().EnsureSpace(Length.Mm(40)).ScaleToFit().Text("Scaled when it must be").ClampLines(2);
             col.Item().PageBreak();
             col.Item().Line(1);
-        }))));
+        })));
 
         Paragraph[] paragraphs = [.. report.Sections[0].Body.Descendants<Paragraph>()];
         Assert.Equal(2, report.GetFields().Count());
-        Assert.Single(paragraphs[0].Inlines.OfType<Hyperlink>());
-        Run noted = paragraphs[1].Runs.Single();
+        Assert.Equal("{page} stays as written", paragraphs[0].GetText().TrimEnd());
+        Assert.Single(paragraphs[1].Inlines.OfType<Hyperlink>());
+        Run noted = paragraphs[2].Runs.Single();
         Assert.Equal((8.0, true), (noted.Format.Size!.Value, noted.Format.Italic!.Value));
         ContentControl paged = report.Descendants<ContentControl>().Single();
         Assert.Equal(Length.Mm(40).Points, paged.Paging!.EnsureSpace!.Value, 0.01);

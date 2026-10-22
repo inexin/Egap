@@ -125,15 +125,22 @@ public sealed record GridLayout
     /// <summary>The gap between columns, in points.</summary>
     public double ColumnGap { get; init; }
 
-    /// <summary>How items line up across their cells (CSS justify-items); an item's <see cref="GridItem.JustifySelf"/> wins over it.</summary>
+    /// <summary>
+    /// How items line up across their cells (CSS justify-items); an item's <see cref="GridItem.JustifySelf"/> wins over it.
+    /// Takes Start, End, Center and Stretch; any other value lines up as Start.
+    /// </summary>
     public LayoutAlignment JustifyItems { get; init; } = LayoutAlignment.Stretch;
 
-    /// <summary>How items line up down their cells (CSS align-items); an item's <see cref="GridItem.AlignSelf"/> wins over it.</summary>
+    /// <summary>
+    /// How items line up down their cells (CSS align-items); an item's <see cref="GridItem.AlignSelf"/> wins over it.
+    /// Takes Start, End, Center and Stretch; any other value lines up as Start.
+    /// </summary>
     public LayoutAlignment AlignItems { get; init; } = LayoutAlignment.Stretch;
 
     /// <summary>
     /// How the columns share the width left over when they do not fill the container (CSS justify-content); stretch, as CSS's
-    /// normal, widens the columns sized to their content.
+    /// normal, widens the columns sized to their content. Takes Start, End, Center, Stretch, SpaceBetween, SpaceAround and
+    /// SpaceEvenly; any other value lines up as Start.
     /// </summary>
     public LayoutAlignment JustifyContent { get; init; } = LayoutAlignment.Stretch;
 }
@@ -305,14 +312,14 @@ public sealed class GridItem : BlockContainer
         set => SetProperty(ref area, value);
     }
 
-    /// <summary>How the item lines up across its cells, or null for the container's <see cref="GridLayout.JustifyItems"/>.</summary>
+    /// <summary>How the item lines up across its cells, or null for the container's <see cref="GridLayout.JustifyItems"/>. Takes Start, End, Center and Stretch; any other value lines up as Start.</summary>
     public LayoutAlignment? JustifySelf
     {
         get => justifySelf;
         set => SetProperty(ref justifySelf, value is null || Enum.IsDefined(value.Value) ? value : throw new ArgumentOutOfRangeException(nameof(value)));
     }
 
-    /// <summary>How the item lines up down its cells, or null for the container's <see cref="GridLayout.AlignItems"/>.</summary>
+    /// <summary>How the item lines up down its cells, or null for the container's <see cref="GridLayout.AlignItems"/>. Takes Start, End, Center and Stretch; any other value lines up as Start.</summary>
     public LayoutAlignment? AlignSelf
     {
         get => alignSelf;

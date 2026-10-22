@@ -1,6 +1,9 @@
 namespace Egap.Documents;
 
-/// <summary>How boxes line up along a container's axis: flex and grid containers and their items use the same values.</summary>
+/// <summary>
+/// How boxes line up along a container's axis: flex and grid containers and their items use the same values. Each property
+/// says which values it takes, as CSS gives each its own set; a value a property does not take lines up as Start.
+/// </summary>
 public enum LayoutAlignment
 {
     /// <summary>At the start (left, or top).</summary>
@@ -24,7 +27,7 @@ public enum LayoutAlignment
     /// <summary>The space shared equally before, between and after the boxes.</summary>
     SpaceEvenly,
 
-    /// <summary>The first lines' baselines lined up; laid out as <see cref="Start"/> where there is no baseline to share.</summary>
+    /// <summary>CSS baseline alignment, read from HTML and written back; layout lines it up as <see cref="Start"/>.</summary>
     Baseline,
 }
 

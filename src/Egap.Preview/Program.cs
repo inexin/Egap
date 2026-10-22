@@ -26,7 +26,7 @@ for (int i = 0; i < args.Length; i++)
             break;
         case "-h" or "--help":
             Console.WriteLine("""
-                egap-preview [file] [--port 12500] [--dpi 110] [--no-open]
+                egap-preview [file] [--port 12501] [--dpi 110] [--no-open]
 
                 Shows Egap documents on a local web page. Without a file, it shows what a program sends with
                 Document.ShowPreview(); run the program under dotnet watch and the page follows every edit. With a DOCX
