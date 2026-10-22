@@ -223,18 +223,20 @@ public sealed class FlexGridHtmlTests
     [Fact]
     public void AFluentReportSavesAsHtml()
     {
-        Document report = Reports.Report.Create(r => r.Page(p => p
-            .Header(h => h.Row(row =>
+        Document report = Reports.Report.Create(r => r.Page(p =>
+        {
+            p.Header().Row(row =>
             {
-                row.Grow().Text("Acme");
+                row.Relative().Text("Acme");
                 row.Auto().Text("Invoice");
-            }))
-            .Content(c => c.Column(col =>
+            });
+            p.Content().Column(col =>
             {
                 col.Spacing(6);
                 col.Item().Background("EEEEEE").CornerRadius(4).Padding(6).Text("Boxed");
                 col.Item().Table(t => t.Columns(2).Header("A", "B").Rows([1, 2], i => [i, i * 2]));
-            }))));
+            });
+        }));
 
         Document back = HtmlFormat.Parse(report.ToHtml());
 

@@ -16,12 +16,12 @@ public sealed class PreviewTests
     {
         PreviewState state = new();
         using PreviewServer server = new(state, 0);
-        Document report = Report.Create(r => r.Page(p => p.Content(c => c.Column(col =>
+        Document report = Report.Create(r => r.Page(p => p.Content().Column(col =>
         {
             col.Item().Text("First page");
             col.Item().PageBreak();
             col.Item().Text("Second page");
-        }))));
+        })));
 
         Task change = state.NextChange();
         Assert.True(report.ShowPreview(new PreviewOptions { Port = server.Port, Dpi = 36, Name = "Test report" }));
@@ -121,7 +121,11 @@ public sealed class PreviewTests
     {
         PreviewState state = new();
         using PreviewServer server = new(state, 0);
-        Document tooWide = Report.Create(r => r.Page(p => p.Size(80, 80).Margins(5).Content(c => c.Text(new string('W', 100)))));
+        Document tooWide = Report.Create(r => r.Page(p =>
+        {
+            p.Size(80, 80).Margins(5);
+            p.Content().Text(new string('W', 100));
+        }));
 
         Assert.Throws<LayoutException>(() => tooWide.ShowPreview(new PreviewOptions { Port = server.Port }));
 

@@ -13,7 +13,7 @@ namespace Egap.Documents;
 /// <summary>Where <see cref="DocumentPreview.ShowPreview"/> sends a document's pages, and how sharp they are drawn.</summary>
 public sealed class PreviewOptions
 {
-    /// <summary>The port the egap-preview tool listens on, on this machine; 12500 unless set.</summary>
+    /// <summary>The port the egap-preview tool listens on, on this machine; 12501 unless set.</summary>
     public int Port { get; init; } = DocumentPreview.DefaultPort;
 
     /// <summary>The resolution the pages are drawn at, in dots per inch; 110 unless set.</summary>
@@ -34,7 +34,7 @@ public sealed class PreviewOptions
 public static class DocumentPreview
 {
     /// <summary>The port the tool listens on unless told otherwise.</summary>
-    public const int DefaultPort = 12500;
+    public const int DefaultPort = 12501;
 
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromSeconds(5) };
 

@@ -41,13 +41,18 @@ public sealed record FlexLayout
     /// <summary>Whether items go on more lines when they do not fit on one.</summary>
     public FlexWrap Wrap { get; init; }
 
-    /// <summary>How the space left on a line is shared out along it (CSS justify-content).</summary>
+    /// <summary>How the space left on a line is shared out along it (CSS justify-content). Takes Start, End, Center, SpaceBetween, SpaceAround and SpaceEvenly; any other value lines up as Start.</summary>
     public LayoutAlignment JustifyContent { get; init; } = LayoutAlignment.Start;
 
-    /// <summary>How items line up across a line (CSS align-items); an item's <see cref="FlexItem.AlignSelf"/> wins over it.</summary>
+    /// <summary>
+    /// How items line up across a line (CSS align-items); an item's <see cref="FlexItem.AlignSelf"/> wins over it. Takes Start, End, Center and Stretch; any other value lines up as Start.
+    /// </summary>
     public LayoutAlignment AlignItems { get; init; } = LayoutAlignment.Stretch;
 
-    /// <summary>How the lines share the container's height when it is taller than they are (CSS align-content).</summary>
+    /// <summary>
+    /// How the lines share the container's height when it is taller than they are (CSS align-content). Takes Start, End,
+    /// Center, Stretch, SpaceBetween, SpaceAround and SpaceEvenly; any other value lines up as Start.
+    /// </summary>
     public LayoutAlignment AlignContent { get; init; } = LayoutAlignment.Stretch;
 
     /// <summary>The gap between lines in a row container, or between items in a column container, in points.</summary>
@@ -199,7 +204,7 @@ public sealed class FlexItem : BlockContainer
         set => SetProperty(ref basis, value.Value >= 0 && double.IsFinite(value.Value) && Enum.IsDefined(value.Unit) ? value : throw new ArgumentOutOfRangeException(nameof(value)));
     }
 
-    /// <summary>How the item lines up across its line, or null for the container's <see cref="FlexLayout.AlignItems"/>.</summary>
+    /// <summary>How the item lines up across its line, or null for the container's <see cref="FlexLayout.AlignItems"/>. Takes Start, End, Center and Stretch; any other value lines up as Start.</summary>
     public LayoutAlignment? AlignSelf
     {
         get => alignSelf;

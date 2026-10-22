@@ -126,7 +126,7 @@ public sealed class TextBuilder
         this.style = style;
     }
 
-    /// <summary>A span of text; page placeholders in it become fields.</summary>
+    /// <summary>A span of text, as written.</summary>
     public TextDescriptor Span(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
@@ -134,10 +134,10 @@ public sealed class TextBuilder
     }
 
     /// <summary>The page's number.</summary>
-    public TextDescriptor CurrentPageNumber() => Span(Fields.Page);
+    public TextDescriptor CurrentPageNumber() => new(report, paragraph, Container.AddField(paragraph, "PAGE", style), style);
 
     /// <summary>The number of pages.</summary>
-    public TextDescriptor TotalPages() => Span(Fields.Pages);
+    public TextDescriptor TotalPages() => new(report, paragraph, Container.AddField(paragraph, "NUMPAGES", style), style);
 
     /// <summary>A line break.</summary>
     public void LineBreak() => paragraph.AddBreak(BreakKind.Line);
@@ -229,7 +229,7 @@ public sealed class RowBuilder
     }
 
     /// <summary>An element that takes <paramref name="weight"/> shares of the width the others leave.</summary>
-    public Container Grow(double weight = 1)
+    public Container Relative(double weight = 1)
     {
         FlexItem item = Add();
         item.Basis = TableWidth.Points(0);

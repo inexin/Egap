@@ -10,20 +10,28 @@ namespace Egap.Documents.Reports;
 /// </summary>
 /// <example>
 /// <code language="csharp">
-/// Document invoice = Report.Create(r => r.Page(p => p
-///     .Size(PdfPageSize.A4).Margins(Length.Mm(15))
-///     .Header(h => h.Row(row =>
+/// Document invoice = Report.Create(r => r.Page(p =>
+/// {
+///     p.Size(PdfPageSize.A4).Margins(Length.Mm(15));
+///     p.Header().Row(row =>
 ///     {
-///         row.Grow().Text("Acme Ltd").FontSize(20).Bold();
+///         row.Relative().Text("Acme Ltd").FontSize(20).Bold();
 ///         row.Auto().AlignRight().Text("Invoice 2026-118");
-///     }))
-///     .Content(c => c.Column(col =>
+///     });
+///     p.Content().Column(col =>
 ///     {
 ///         col.Spacing(6);
 ///         col.Item().Text("Thank you for your order.");
 ///         col.Item().Table(t => t.Columns(3).Header("Item", "Qty", "Price").Rows(lines, l => [l.Name, l.Qty, l.Price]));
-///     }))
-///     .Footer(f => f.AlignCenter().Text($"Page {Fields.Page} of {Fields.Pages}"))));
+///     });
+///     p.Footer().AlignCenter().Text(t =>
+///     {
+///         t.Span("Page ");
+///         t.CurrentPageNumber();
+///         t.Span(" of ");
+///         t.TotalPages();
+///     });
+/// }));
 /// invoice.SaveAsPdf("invoice.pdf");
 /// </code>
 /// </example>
@@ -49,16 +57,6 @@ public static class Report
 
         return document;
     }
-}
-
-/// <summary>The placeholders text in a report can hold for page fields: <c>{page}</c> and <c>{total-pages}</c>.</summary>
-public static class Fields
-{
-    /// <summary>The page's number, filled in by layout.</summary>
-    public const string Page = "{page}";
-
-    /// <summary>The number of pages, filled in by layout.</summary>
-    public const string Pages = "{total-pages}";
 }
 
 /// <summary>A reusable part of a report: it composes itself into the container it is given.</summary>
@@ -203,30 +201,27 @@ public sealed class PageDescriptor
         return this;
     }
 
-    /// <summary>The header, at the top of every page; the content starts below it.</summary>
-    public PageDescriptor Header(Action<Container> header)
+    /// <summary>
+    /// The header, at the top of every page; the content starts below it. What goes in it is added after what is there
+    /// already, so the size, margins and text style come first.
+    /// </summary>
+    public Container Header()
     {
-        ArgumentNullException.ThrowIfNull(header);
         HeaderFooter story = section.HeadersFooters.GetOrAdd(HeaderFooterKind.HeaderPrimary);
-        header(new Container(Slot.Flow(report, story.Blocks, style, Width)));
-        return this;
+        return new Container(Slot.Flow(report, story.Blocks, style, Width));
     }
 
     /// <summary>The footer, at the foot of every page; the content stops above it.</summary>
-    public PageDescriptor Footer(Action<Container> footer)
+    public Container Footer()
     {
-        ArgumentNullException.ThrowIfNull(footer);
         HeaderFooter story = section.HeadersFooters.GetOrAdd(HeaderFooterKind.FooterPrimary);
-        footer(new Container(Slot.Flow(report, story.Blocks, style, Width)));
-        return this;
+        return new Container(Slot.Flow(report, story.Blocks, style, Width));
     }
 
     /// <summary>The content, flowed onto as many pages as it takes.</summary>
-    public PageDescriptor Content(Action<Container> content)
+    public Container Content()
     {
-        ArgumentNullException.ThrowIfNull(content);
-        content(new Container(Slot.Flow(report, section.Body.Blocks, style, Width)));
-        return this;
+        return new Container(Slot.Flow(report, section.Body.Blocks, style, Width));
     }
 
     private double Width => (section.PageSetup.PageWidth ?? 612) - (section.PageSetup.MarginLeft ?? 72) - (section.PageSetup.MarginRight ?? 72);

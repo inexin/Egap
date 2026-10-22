@@ -1,6 +1,6 @@
 # Reports in code
 
-`Report.Create` builds a document from code with nested lambdas: pages with a header, a footer and content, and in them
+`Report.Create` builds a document from code: pages with a header, a footer and content, and in them
 columns, rows, tables, grids, text, pictures, barcodes and form fields. It builds an ordinary `Document`, so the same report
 saves as PDF, DOCX or HTML and lays out with the same page flow as any other document. The types are in
 `Egap.Documents.Reports`.
@@ -15,14 +15,15 @@ using Egap.Pdf;
 Document invoice = Report.Create(r => r
     .Title("Invoice 2026-118")
     .DefaultTextStyle(s => s.FontSize(10))
-    .Page(p => p
-        .Size(PdfPageSize.A4).Margins(Length.Mm(15))
-        .Header(h => h.BorderBottom(1).Row(row =>
+    .Page(p =>
+    {
+        p.Size(PdfPageSize.A4).Margins(Length.Mm(15));
+        p.Header().BorderBottom(1).Row(row =>
         {
-            row.Grow().Text("Acme Ltd").Style(s => s.FontSize(20).Bold());
+            row.Relative().Text("Acme Ltd").Style(s => s.FontSize(20).Bold());
             row.Auto().AlignRight().Text("Invoice 2026-118");
-        }))
-        .Content(c => c.Column(col =>
+        });
+        p.Content().Column(col =>
         {
             col.Spacing(8);
             col.Item().Text("Thank you for your order.");
@@ -33,11 +34,21 @@ Document invoice = Report.Create(r => r
                 .Rows(lines, l => [l.Name, l.Qty, l.Price]));
             col.Item().KeepTogether().Background("F4F8FC").CornerRadius(6).Padding(8)
                 .AlignRight().Text("Total: 670").Bold();
-        }))
-        .Footer(f => f.AlignCenter().Text($"Page {Fields.Page} of {Fields.Pages}"))));
+        });
+        p.Footer().AlignCenter().Text(t =>
+        {
+            t.Span("Page ");
+            t.CurrentPageNumber();
+            t.Span(" of ");
+            t.TotalPages();
+        });
+    }));
 invoice.SaveAsPdf("invoice.pdf");
 invoice.Save("invoice.docx");
 ```
+
+The page's `Header()`, `Content()` and `Footer()` each return the container to fill. Set the page's size, margins and text
+style before them: what goes into a container takes the settings in force when it was asked for.
 
 ## Containers
 
@@ -52,14 +63,18 @@ Each place in a report is a `Container`. Settings come first and return the cont
 | `Text("...")`, `Text(t => ...)` | A paragraph; spans with their own styles, page numbers, line breaks and links |
 | `Image`, `Barcode` | A picture, held to the width there is unless a size is given; a barcode drawn as vectors |
 | `Column` | Elements one under another, with `Spacing` between them |
-| `Row` | A flex container: `Fixed` widths, `Grow` shares and `Auto` content widths side by side |
+| `Row` | A flex container: `Fixed` widths, `Relative` shares and `Auto` content widths side by side, as a table's columns are |
 | `Grid` | A grid container: column tracks, spans and named areas |
 | `Table` | A table: `Columns`, `Header` and `Footer` rows that repeat on every page, cells in order, `Rows` from data |
 | `Line`, `PageBreak` | A rule across the width; a break to the next page |
 | `TextField`, `CheckBox`, `DropDown` | Form controls that PDF export can turn into fields |
 | `Component` | An `IComponent`, which composes itself into the container |
 
-`{page}` and `{total-pages}` in text (`Fields.Page` and `Fields.Pages`) become page fields.
+Page numbers are spans: `CurrentPageNumber()` and `TotalPages()` in `Text(t => ...)`. Text is written as given, so
+`{page}` in data stays `{page}`.
+
+`TextStyle` and `Container` here are the report's own. Code that also uses Egami's text layout can name one with an alias,
+`using ReportStyle = Egap.Documents.Reports.TextStyle;`.
 
 ## Styles
 
@@ -74,11 +89,11 @@ using Egap.Documents.Reports;
 TextStyle note = TextStyle.Default.FontSize(8).Italic().FontColor("666666");
 Document letter = Report.Create(r => r
     .Style("Strong", s => s.Bold().FontColor("993300"))
-    .Page(p => p.Content(c => c.Column(col =>
+    .Page(p => p.Content().Column(col =>
     {
         col.Item().Text("Payment is due within 14 days.").Style("Strong");
         col.Item().Text("Prices include VAT.").Style(note);
-    }))));
+    })));
 ```
 
 ## Components
@@ -89,11 +104,11 @@ A component is a class with a `Compose` method. It fills the container it is giv
 using Egap.Documents;
 using Egap.Documents.Reports;
 
-Document report = Report.Create(r => r.Page(p => p.Content(c => c.Row(row =>
+Document report = Report.Create(r => r.Page(p => p.Content().Row(row =>
 {
-    row.Grow().Component(new AddressBlock("Acme Ltd", "Storgata 1, Oslo"));
-    row.Grow().Component(new AddressBlock("Customer AS", "Kirkegata 9, Bergen"));
-}))));
+    row.Relative().Component(new AddressBlock("Acme Ltd", "Storgata 1, Oslo"));
+    row.Relative().Component(new AddressBlock("Customer AS", "Kirkegata 9, Bergen"));
+})));
 
 /// <summary>A name and a street in a thin box.</summary>
 sealed class AddressBlock(string name, string street) : IComponent
@@ -114,7 +129,7 @@ sealed class AddressBlock(string name, string street) : IComponent
 The `egap-preview` dotnet tool shows documents on a local web page, drawn by Egap's own renderer, and shows them again when
 they change. `ShowPreview()` sends a document's pages to it; run the program under `dotnet watch` and the page follows each
 edit. Given a DOCX file instead, the tool draws the file again whenever it is saved. It listens on
-127.0.0.1 only, on port 12500 unless `--port` says otherwise, and `ShowPreview()` returns false when it is not running.
+127.0.0.1 only, on port 12501 unless `--port` says otherwise, and `ShowPreview()` returns false when it is not running.
 It answers only requests addressed to 127.0.0.1 or localhost from programs and its own page, so other web pages can
 neither send it pages nor read the ones it shows.
 
@@ -128,7 +143,7 @@ egap-preview letter.docx      # or shows a file
 using Egap.Documents;
 using Egap.Documents.Reports;
 
-Document report = Report.Create(r => r.Page(p => p.Content(c => c.Text("Draft"))));
+Document report = Report.Create(r => r.Page(p => p.Content().Text("Draft")));
 report.ShowPreview();                                            // dotnet watch run: the page follows every edit
 ```
 

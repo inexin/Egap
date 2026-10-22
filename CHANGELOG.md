@@ -6,8 +6,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 ## Egap.Documents 2.1.0 (unreleased)
 
 ### Reports in code
-- `Report.Create` builds a document with nested lambdas (`Egap.Documents.Reports`): pages with size, margins, header,
-  footer and content; containers with box, alignment, text style and paging settings; and text with spans and page
+- `Report.Create` builds a document in code (`Egap.Documents.Reports`): pages with size and margins whose `Header()`,
+  `Content()` and `Footer()` return the containers to fill; containers with box, alignment, text style and paging settings; and text with spans and page
   numbers, pictures, barcodes, columns, rows (flex), grids, tables with repeating header and footer rows, rules, page
   breaks, form fields and reusable `IComponent`s. `TextStyle` chains are immutable and shared; named styles are
   character styles in the document. The same report saves as PDF, DOCX and HTML.
@@ -55,7 +55,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `egap-preview`, a dotnet tool, shows documents on a local web page and reloads it when new pages arrive: the pages a
   program sends with `ShowPreview()`, so a report run under `dotnet watch` follows every edit, or a DOCX file, drawn
   again whenever it is saved; HTML and Markdown are shown from code with their add-on and `ShowPreview()`. A strict layout's failure shows on the page. It listens on 127.0.0.1
-  only, port 12500 unless `--port` says otherwise, refuses requests from other web pages, and needs nothing but Egap's packages.
+  only, port 12501 unless `--port` says otherwise, refuses requests from other web pages, and needs nothing but Egap's packages.
 
 ## Egap.Documents.Html 2.1.0 (unreleased)
 

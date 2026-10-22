@@ -316,7 +316,7 @@ public sealed partial class Container
 
     // ---- Elements ---------------------------------------------------------------------------------------------------------
 
-    /// <summary>A paragraph of <paramref name="text"/>; <see cref="Fields.Page"/> and <see cref="Fields.Pages"/> in it become page fields.</summary>
+    /// <summary>A paragraph of <paramref name="text"/>, as written: page numbers come from <see cref="Text(Action{TextBuilder})"/>.</summary>
     public TextDescriptor Text(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
@@ -522,37 +522,18 @@ public sealed partial class Container
         slot.Close();
     }
 
-    /// <summary>Runs for <paramref name="text"/> in <paramref name="style"/>, its page placeholders made fields.</summary>
+    /// <summary>A run of <paramref name="text"/> in <paramref name="style"/>, the text as written.</summary>
     internal static List<Run> AddText(Paragraph paragraph, string text, TextStyle style)
     {
-        List<Run> runs = [];
-        int at = 0;
-        foreach (Match match in PageBand.Placeholder().Matches(text))
-        {
-            if (match.Index > at)
-            {
-                runs.Add(Styled(paragraph.AddRun(text[at..match.Index]), style));
-            }
+        return [Styled(paragraph.AddRun(text), style)];
+    }
 
-            at = match.Index + match.Length;
-            if (PageBandContext.FieldCode(match) is { } code)
-            {
-                Field field = paragraph.AddField(code, "1");
-                field.Start.IsDirty = true;
-                runs.AddRange(field.ResultNodes.OfType<Run>().Select(r => Styled(r, style)));
-            }
-            else
-            {
-                runs.Add(Styled(paragraph.AddRun(match.Value == "{{" ? "{" : match.Value), style));
-            }
-        }
-
-        if (at < text.Length || runs.Count == 0)
-        {
-            runs.Add(Styled(paragraph.AddRun(text[at..]), style));
-        }
-
-        return runs;
+    /// <summary>A field (PAGE or NUMPAGES) in <paramref name="style"/>, filled in by layout.</summary>
+    internal static List<Run> AddField(Paragraph paragraph, string code, TextStyle style)
+    {
+        Field field = paragraph.AddField(code, "1");
+        field.Start.IsDirty = true;
+        return [.. field.ResultNodes.OfType<Run>().Select(r => Styled(r, style))];
     }
 
     internal static Run Styled(Run run, TextStyle style)

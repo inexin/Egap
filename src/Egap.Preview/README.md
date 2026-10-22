@@ -11,6 +11,6 @@ egap-preview letter.docx      # shows a DOCX file, again whenever it is saved
 
 In code, call `ShowPreview()` on a document (Egap.Documents) and run the program under `dotnet watch`: each run sends the
 new pages and the page reloads. HTML and Markdown are previewed the same way: load them in your program with
-Egap.Documents.Html or Egap.Documents.Markdown and call `ShowPreview()`; the tool itself reads only DOCX. The tool listens on 127.0.0.1 only, port 12500 unless `--port` says otherwise, and answers only programs and its own
+Egap.Documents.Html or Egap.Documents.Markdown and call `ShowPreview()`; the tool itself reads only DOCX. The tool listens on 127.0.0.1 only, port 12501 unless `--port` says otherwise, and answers only programs and its own
 page: other web pages can neither send it pages nor read them. Fully
 managed and MIT-licensed.
