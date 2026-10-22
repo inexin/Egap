@@ -39,7 +39,7 @@ Add only the packages you use. Each one has its own guides.
 | [Egap.Documents.Markdown](https://www.nuget.org/packages/Egap.Documents.Markdown) | 2.0.0 | CommonMark and GitHub Markdown read and written, Markdown to PDF | [Markdown](docs/articles/formats/markdown.md) |
 
 All four are on [NuGet](https://www.nuget.org/packages?q=Egap). [Packages](docs/articles/packages.md) lists what each one
-needs. Egap.Pdf.Conversion is retired; its code is in Egap.Documents 2.0.
+needs. From 2.1.0 every Egap package shares one version and they release together. Egap.Pdf.Conversion is retired; its code is in Egap.Documents 2.0.
 
 ## Documentation
 

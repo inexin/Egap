@@ -17,6 +17,9 @@
     <PackageProjectUrl>https://github.com/inexin/Egap</PackageProjectUrl>
     <RepositoryUrl>https://github.com/inexin/Egap</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <!-- One version for every Egap package: Egap.Pdf, Egap.Documents and its add-ons, and Egap.Preview. They release together
+         on the tag v<version>. -->
+    <EgapVersion>2.1.0</EgapVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">

@@ -1,6 +1,6 @@
 # Changelog
 
-What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
+What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
 ## Egap.Documents 2.1.0 (2026-10-22)
@@ -53,7 +53,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - DOCX: Word 2010 run properties are written in the schema's order, text effects such as `w14:shadow` before font
   features such as `w14:numForm`, so Word's validator no longer reports an unexpected element in a saved file.
 
-## Egap.Preview 1.0.0 (2026-10-22)
+## Egap.Preview 2.1.0 (2026-10-22)
+
+The first release, at the version every Egap package now shares.
 
 ### A live preview tool
 - `egap-preview`, a dotnet tool, shows documents on a local web page and reloads it when new pages arrive: the pages a
@@ -90,7 +92,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 ### Flex and grid containers
 - Flex and grid containers are written as their items' content in order, with a warning.
 
-## Egap.Pdf 1.5.1 (2026-10-22)
+## Egap.Pdf 2.1.0 (2026-10-22)
+
+From this release every Egap package shares one version, so Egap.Pdf moves from 1.5.0 to 2.1.0 with Egap.Documents. Nothing
+was removed or changed in a way that breaks code: 2.1.0 is 1.5.0 plus what is below.
 
 ### Speed
 - Content streams write coordinates faster, with the same text as before.
