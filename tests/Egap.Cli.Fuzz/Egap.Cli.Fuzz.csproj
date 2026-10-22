@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Fuzzing harness for egap's own parsers (Egap CLI Build Plan task 22): SharpFuzz with AFL++, or the managed mutator. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Egap.Cli.Fuzz</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Egap.Cli\Egap.Cli.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpFuzz" />
+  </ItemGroup>
+
+  <!-- The PDF harness's mutator, shared rather than copied. -->
+  <ItemGroup>
+    <Compile Include="..\Egap.Pdf.Fuzz\Mutator.cs" Link="Mutator.cs" />
+    <Using Include="Egami.Cli.Hosting" />
+  </ItemGroup>
+
+</Project>

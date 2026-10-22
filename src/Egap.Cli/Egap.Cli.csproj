@@ -47,6 +47,7 @@
     <Using Include="Egami.Cli.Hosting" />
     <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" />
     <InternalsVisibleTo Include="Egap.Cli.Tests" />
+    <InternalsVisibleTo Include="Egap.Cli.Fuzz" />
   </ItemGroup>
 
 </Project>

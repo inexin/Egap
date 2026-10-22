@@ -12,6 +12,7 @@
     <Project Path="src/Egap.Preview/Egap.Preview.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Egap.Cli.Fuzz/Egap.Cli.Fuzz.csproj" />
     <Project Path="tests/Egap.Cli.Tests/Egap.Cli.Tests.csproj" />
     <Project Path="tests/Egap.Documents.Fuzz/Egap.Documents.Fuzz.csproj" />
     <Project Path="tests/Egap.Documents.Html.AotSmoke/Egap.Documents.Html.AotSmoke.csproj" />
