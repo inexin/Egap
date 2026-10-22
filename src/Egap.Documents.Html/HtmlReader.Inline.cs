@@ -528,8 +528,29 @@ internal sealed partial class HtmlReader
             Block(caption, captionStyle, "block", flow, frame);
         }
 
+        // The margin above the table (collapsed with the one before it) as a group's margin, and a page break waiting for it.
+        double above = Math.Max(0, Collapse(flow.PendingSpace, style.Length("margin-top", flow.Width) ?? 0));
+        flow.PendingSpace = 0;
+        BreakBefore(style, flow);
         Table table = new(document);
-        flow.Container.Blocks.Add(table);
+        if (above > 0 && flow.Container.Blocks.Count > 0 && flow.Container.Blocks[^1] is Paragraph previous)
+        {
+            // After a paragraph, the space is the paragraph's: the table stays a plain block, which breaks between rows.
+            previous.Format.SpaceAfter = (previous.Format.SpaceAfter ?? 0) + above;
+            flow.Container.Blocks.Add(table);
+        }
+        else if (above > 0)
+        {
+            ContentControl spaced = new(document) { Box = new BoxStyle { MarginTop = above } };
+            spaced.Properties.Kind = ContentControlKind.Group;
+            flow.Container.Blocks.Add(spaced);
+            spaced.Blocks.Add(table);
+        }
+        else
+        {
+            flow.Container.Blocks.Add(table);
+        }
+
         TableFormat format = table.Format;
         double available = Math.Max(1, flow.Width - frame.Left - frame.Right);
         if (style.Computed.TryGetValue("width", out IReadOnlyList<CssComponentValue>? widthValue)
@@ -670,10 +691,11 @@ internal sealed partial class HtmlReader
 
         if (table.Rows.Count == 0)
         {
-            flow.Container.Blocks.Remove(table);
+            (table.Parent as ContentControl ?? (Node)table).Remove();
         }
 
         flow.PendingSpace = Math.Max(0, style.Length("margin-bottom", flow.Width) ?? 0);
+        BreakAfter(style, flow);
     }
 
     /// <summary>Continuation cells for row spans that cover the columns up to <paramref name="before"/>; the next free column.</summary>
@@ -719,6 +741,20 @@ internal sealed partial class HtmlReader
         format.BorderBottom = BorderOf(style, "bottom");
         format.BorderLeft = BorderOf(style, "left");
         format.BorderRight = BorderOf(style, "right");
+
+        // A cell's top and bottom borders add to its height in CSS: all of each where they are separate; where borders
+        // collapse onto the lines between rows, half of the line above and half of the one below, the neighbour's line
+        // taken to be the cell's own where the cell draws only one (rows ruled by bottom borders alone).
+        double top = format.BorderTop?.Width ?? 0, bottom = format.BorderBottom?.Width ?? 0;
+        if (style.Keyword("border-collapse") == "collapse")
+        {
+            (top, bottom) = (top > 0 ? top : bottom, bottom > 0 ? bottom : top);
+            top /= 2;
+            bottom /= 2;
+        }
+
+        format.MarginTop += top;
+        format.MarginBottom += bottom;
         if (style.Color("background-color") is { } background)
         {
             format.Shading = Shading.Solid(background);

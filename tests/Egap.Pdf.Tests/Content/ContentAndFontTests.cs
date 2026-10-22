@@ -107,6 +107,25 @@ public sealed class ContentAndFontTests
     }
 
     [Fact]
+    public void WritesNumbersAsTheShortestTextOfTheirFiveDecimals()
+    {
+        Random random = new(7);
+        for (int i = 0; i < 20000; i++)
+        {
+            double value = (random.NextDouble() - 0.5) * Math.Pow(10, random.Next(0, 11)) * (i % 3 == 0 ? 1 : 1.000001);
+            double rounded = Math.Abs(value) >= 1 ? Math.Round(value, 5) : value;
+            if (Math.Abs(rounded) < 1 || rounded == Math.Floor(rounded))
+            {
+                continue;
+            }
+
+            string expected = Egap.Pdf.Objects.ObjectWriter.FormatReal(rounded);
+            string content = Encoding.ASCII.GetString(new PdfContentWriter().MoveTo(value, 0).ToArray());
+            Assert.Equal(expected + " 0 m\n", content);
+        }
+    }
+
+    [Fact]
     public void DrawsAnEllipseWithFourCurves()
     {
         string content = Encoding.ASCII.GetString(new PdfContentWriter().Ellipse(0, 0, 20, 10).Stroke().ToArray());

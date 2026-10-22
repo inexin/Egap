@@ -29,6 +29,9 @@ public abstract class Style : IFormatOwner
     private int? priority;
     private bool primary;
 
+    /// <summary>The style's BasedOn chain as formatting last resolved it, with the formatting version it is for.</summary>
+    internal (long FormattingVersion, object Chain)? ChainCache { get; set; }
+
     private protected Style(Document document, string id, string name)
     {
         Document = document;

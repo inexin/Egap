@@ -15,6 +15,8 @@ PROJECTS = sorted(pathlib.Path("src").glob("*/*.csproj"))
 
 for project in PROJECTS:
     api_file = project.parent / "PublicAPI.Unshipped.txt"
+    if not api_file.exists():
+        continue  # a tool, such as egap-preview, has no public API to track
     build = subprocess.run(["dotnet", "build", str(project), "-c", "Release", "--no-incremental"], capture_output=True, text=True).stdout
     # Only this project's own diagnostics: a referenced project's errors end with that project's path.
     mine = "\n".join(line for line in build.splitlines() if line.rstrip().lower().endswith(f"{project.name.lower()}]"))

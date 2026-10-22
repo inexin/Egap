@@ -88,6 +88,22 @@ internal sealed class PdfTagger
                 case ContentControl control:
                     AddBlocks(parent, control.Blocks);
                     break;
+                case FlexContainer or GridContainer:
+                    {
+                        // A layout container groups its items: a Div, and a Div for each item in reading order.
+                        PdfStructureElement division = parent.Add(PdfStructureType.Div);
+                        elements[block] = division;
+                        IEnumerable<BlockContainer> items = block is FlexContainer flex ? flex.Items.OrderBy(i => i.Order) : ((GridContainer)block).Items;
+                        foreach (BlockContainer item in items)
+                        {
+                            PdfStructureElement itemElement = division.Add(PdfStructureType.Div);
+                            elements[item] = itemElement;
+                            AddBlocks(itemElement, item.Blocks);
+                        }
+
+                        break;
+                    }
+
                 default:
                     elements[block] = parent;
                     break;

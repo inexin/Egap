@@ -253,4 +253,52 @@ public abstract class DocumentVisitor
     {
         return VisitorAction.Continue;
     }
+
+    /// <summary>Entering a flex container; its items follow.</summary>
+    public virtual VisitorAction VisitFlexContainerStart(FlexContainer container)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>Leaving a flex container.</summary>
+    public virtual VisitorAction VisitFlexContainerEnd(FlexContainer container)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>Entering a flex item; its blocks follow.</summary>
+    public virtual VisitorAction VisitFlexItemStart(FlexItem item)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>Leaving a flex item.</summary>
+    public virtual VisitorAction VisitFlexItemEnd(FlexItem item)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>Entering a grid container; its items follow.</summary>
+    public virtual VisitorAction VisitGridContainerStart(GridContainer container)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>Leaving a grid container.</summary>
+    public virtual VisitorAction VisitGridContainerEnd(GridContainer container)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>Entering a grid item; its blocks follow.</summary>
+    public virtual VisitorAction VisitGridItemStart(GridItem item)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>Leaving a grid item.</summary>
+    public virtual VisitorAction VisitGridItemEnd(GridItem item)
+    {
+        return VisitorAction.Continue;
+    }
 }

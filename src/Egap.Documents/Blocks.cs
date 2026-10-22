@@ -17,6 +17,9 @@ public sealed class Paragraph : Block
     private Revision? markRevision;
     private FormatRevision? formatRevision;
 
+    /// <summary>The content layout last made for the paragraph, kept with it so the next layout finds it without a lookup.</summary>
+    internal object? LayoutContent { get; set; }
+
     /// <summary>An empty paragraph of <paramref name="document"/>, not yet in the tree.</summary>
     public Paragraph(Document document)
         : base(document)
@@ -462,6 +465,9 @@ public sealed class Row : Node
 /// </summary>
 public sealed class Cell : BlockContainer
 {
+    /// <summary>The table style levels that last applied to the cell, with what they depended on.</summary>
+    internal FormatResolver.LayerCache? LayerCache { get; set; }
+
     /// <summary>An empty cell of <paramref name="document"/>, not yet in a row.</summary>
     public Cell(Document document)
         : base(document)

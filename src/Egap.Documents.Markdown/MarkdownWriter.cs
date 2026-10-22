@@ -221,6 +221,15 @@ internal sealed class MarkdownWriter
                     warnings.Add(ConversionWarningKind.ContentControlsDropped, "content controls, written as their content");
                     Collect([.. control.Blocks], collected, state);
                     break;
+                case FlexContainer flex:
+                    // Markdown has no layout: the items' blocks one after another, in the order they are laid out.
+                    warnings.Add(ConversionWarningKind.LayoutApproximated, "flex and grid containers, written as their items' content in order");
+                    Collect([.. flex.Items.OrderBy(i => i.Order).SelectMany(i => i.Blocks)], collected, state);
+                    break;
+                case GridContainer grid:
+                    warnings.Add(ConversionWarningKind.LayoutApproximated, "flex and grid containers, written as their items' content in order");
+                    Collect([.. grid.Items.SelectMany(i => i.Blocks)], collected, state);
+                    break;
             }
         }
     }

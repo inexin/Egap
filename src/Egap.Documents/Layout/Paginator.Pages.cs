@@ -406,7 +406,7 @@ internal sealed partial class Paginator
                 return double.MaxValue / 4;
             }
 
-            ParagraphContent content = ContentOf(paragraph, PageFieldText);
+            ParagraphContent content = ContentOf(paragraph);
             double indents = content.Format.LeftIndent + content.Format.RightIndent;
             foreach (Egami.Fonts.Layout.TextLine line in content.Text.Layout(1e6f).Lines)
             {
@@ -428,7 +428,7 @@ internal sealed partial class Paginator
     {
         foreach (Block block in blocks)
         {
-            if (block is ContentControl control)
+            if (block is ContentControl { Box: null } control)
             {
                 foreach (Block inner in Flatten(control.Blocks))
                 {
@@ -467,7 +467,7 @@ internal sealed partial class Paginator
             {
                 case Paragraph paragraph:
                     {
-                        ParagraphContent content = ContentOf(paragraph, PageFieldText);
+                        ParagraphContent content = ContentOf(paragraph);
                         ResolvedParagraphFormat format = content.Format;
                         at += format.SpaceBefore;
                         if (content.Floats.Count > 0 && page is not null)
@@ -477,6 +477,18 @@ internal sealed partial class Paginator
                         }
 
                         List<PlacedLine> lines = Lines(content, width);
+                        if (measuring > 0)
+                        {
+                            // Measuring needs only the height: the lines' heights, without boxes for them.
+                            foreach (PlacedLine line in lines)
+                            {
+                                at += line.Height;
+                            }
+
+                            at += format.SpaceAfter;
+                            break;
+                        }
+
                         List<LineBox> lineBoxes = [];
                         double lineTop = at;
                         foreach (PlacedLine line in lines)
@@ -502,6 +514,17 @@ internal sealed partial class Paginator
                         TableBox box = LayTable(table, x, at, width);
                         boxes.Add(box);
                         at = box.Bounds.Bottom;
+                        break;
+                    }
+
+                default:
+                    {
+                        if (LayWhole(block, x, at, width, out double height) is { } box)
+                        {
+                            boxes.Add(box);
+                        }
+
+                        at += height;
                         break;
                     }
             }

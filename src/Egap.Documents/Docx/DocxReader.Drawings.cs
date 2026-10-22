@@ -65,6 +65,8 @@ internal sealed partial class DocxReader
                         ReadTextBox(content, shape);
                     }
 
+                    ReadBodyProperties(wsp.Element(Ns.Wps + "bodyPr"), shape);
+
                     DocxExtension.Of(shape).Snapshot = ShapeState.Of(shape);
 
                     break;
@@ -204,6 +206,8 @@ internal sealed partial class DocxReader
             shape.Fill = fillColor;
         }
 
+        ReadEffects(spPr, shape);
+
         if (spPr.Element(Ns.A + "ln") is { } line)
         {
             if (line.Element(Ns.A + "noFill") is not null)
@@ -216,6 +220,54 @@ internal sealed partial class DocxReader
                 DocumentColor color = line.Element(Ns.A + "solidFill") is { } lineFill && DrawingColor(lineFill) is { } c ? c : DocumentColor.Auto;
                 shape.Outline = new Border(BorderStyle.Single, lineWidth, color, 0, false, false);
             }
+        }
+    }
+
+    /// <summary>
+    /// A text box's insets (lIns, tIns, rIns, bIns) where the file gives any, and whether it resizes to fit its text
+    /// (spAutoFit).
+    /// </summary>
+    private static void ReadBodyProperties(XElement? bodyPr, Shape shape)
+    {
+        if (bodyPr is null || shape.TextBox is null)
+        {
+            return;
+        }
+
+        double? Inset(string name) => DocxUnits.Int((string?)bodyPr.Attribute(name)) is int emu ? Math.Max(0, emu * DocxUnits.Emu) : null;
+        (double? left, double? top, double? right, double? bottom) = (Inset("lIns"), Inset("tIns"), Inset("rIns"), Inset("bIns"));
+        if (left is not null || top is not null || right is not null || bottom is not null)
+        {
+            shape.TextInsets = (left ?? 7.2, top ?? 3.6, right ?? 7.2, bottom ?? 3.6);
+        }
+
+        if (bodyPr.Element(Ns.A + "spAutoFit") is not null)
+        {
+            shape.FitToText = true;
+        }
+    }
+
+    /// <summary>A rounded rectangle's corner radius from its adj guide (a share of the shorter side, in 100 000ths), and an outer shadow.</summary>
+    private static void ReadEffects(XElement spPr, Shape shape)
+    {
+        if (shape.Kind == ShapeKind.RoundedRectangle && spPr.Element(Ns.A + "prstGeom")?.Element(Ns.A + "avLst")?.Elements(Ns.A + "gd")
+            .FirstOrDefault(g => (string?)g.Attribute("name") == "adj") is { } adjust
+            && ((string?)adjust.Attribute("fmla"))?.Split(' ') is ["val", var number] && int.TryParse(number, out int adj))
+        {
+            shape.CornerRadius = Math.Clamp(adj, 0, 50000) / 100000.0 * Math.Min(shape.Width, shape.Height);
+        }
+
+        if (spPr.Element(Ns.A + "effectLst")?.Element(Ns.A + "outerShdw") is { } shadow)
+        {
+            double distance = (DocxUnits.Int((string?)shadow.Attribute("dist")) ?? 0) * DocxUnits.Emu;
+            double angle = (DocxUnits.Int((string?)shadow.Attribute("dir")) ?? 0) / 60000.0 * Math.PI / 180;
+            XElement? color = shadow.Elements().FirstOrDefault();
+            double opacity = color?.Element(Ns.A + "alpha") is { } alpha && DocxUnits.Int((string?)alpha.Attribute("val")) is int value ? Math.Clamp(value / 100000.0, 0, 1) : 1;
+            shape.Shadow = new BoxShadow(distance * Math.Cos(angle), distance * Math.Sin(angle), (DocxUnits.Int((string?)shadow.Attribute("blurRad")) ?? 0) * DocxUnits.Emu)
+            {
+                Color = DrawingColor(shadow) ?? DocumentColor.FromRgb(new Rgba8(0, 0, 0, 255)),
+                Opacity = opacity,
+            };
         }
     }
 

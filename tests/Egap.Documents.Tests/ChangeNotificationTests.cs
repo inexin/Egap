@@ -48,6 +48,10 @@ public class ChangeNotificationTests
         ["CompositeInline.AddRun"] = f => f.Paragraph.AddHyperlink("a", "b").AddRun("more"),
         ["ContentControl.AddParagraph"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).AddParagraph("x"),
         ["ContentControl.Paging"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).Paging = new GroupPaging { KeepTogether = true },
+        ["ContentControl.Box"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).Box = BoxStyle.Padded(3),
+        ["Document.DefaultLayoutOptions"] = f => f.Doc.DefaultLayoutOptions = new Egap.Documents.Layout.LayoutOptions { Strict = true },
+        ["FlexContainer.AddItem"] = f => f.Body.Blocks.Add(new FlexContainer(f.Doc)).AddItem("x"),
+        ["GridContainer.AddItem"] = f => f.Body.Blocks.Add(new GridContainer(f.Doc)).AddItem("x"),
         ["Shape.AddTextBox"] = f => f.Paragraph.Inlines.Add(new Shape(f.Doc, ShapeKind.Rectangle, 1, 1)).AddTextBox(),
         ["Footnote.AddParagraph"] = f => f.Paragraph.AddFootnote("n").AddParagraph("more"),
         ["Comment.AddParagraph"] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")).AddParagraph("x"),
@@ -82,6 +86,10 @@ public class ChangeNotificationTests
         [typeof(Footnote)] = f => f.Paragraph.AddFootnote("n"),
         [typeof(Comment)] = f => f.Paragraph.Inlines.Add(new Comment(f.Doc, "a")),
         [typeof(Island)] = f => f.Paragraph.Inlines.Add(new Island(f.Doc, IslandKind.Math, "docx", "<x/>")),
+        [typeof(FlexContainer)] = f => f.Body.Blocks.Add(new FlexContainer(f.Doc)),
+        [typeof(FlexItem)] = f => f.Body.Blocks.Add(new FlexContainer(f.Doc)).AddItem(),
+        [typeof(GridContainer)] = f => f.Body.Blocks.Add(new GridContainer(f.Doc)),
+        [typeof(GridItem)] = f => f.Body.Blocks.Add(new GridContainer(f.Doc)).AddItem(),
     };
 
     /// <summary>Public members that only read, or make detached copies, and so raise nothing.</summary>
@@ -111,7 +119,7 @@ public class ChangeNotificationTests
         Assert.NotEmpty(changes);
         Assert.Equal(before + changes.Count, f.Doc.Version);
         Assert.Equal(f.Doc.Version, changes[^1].Version);
-        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "MarginBoxCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph" or "Document.FileName"))
+        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "MarginBoxCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph" or "Document.FileName" or "Document.DefaultLayoutOptions"))
         {
             Assert.Equal(f.Doc.Version, f.Body.Version);   // the others change another story or none
         }
@@ -249,6 +257,12 @@ public class ChangeNotificationTests
                     "Image" => new ImageData(new byte[] { 2 }, "image/gif"),
                     "Floating" => new FloatingPlacement { Wrap = WrapMode.Through },
                     "Crop" => (0.1, 0.0, 0.0, 0.0),
+                    "TextInsets" => (1.0, 2.0, 3.0, 4.0),
+                    "Layout" when node is FlexContainer => new FlexLayout { Wrap = FlexWrap.Wrap },
+                    "Layout" => new GridLayout { Columns = [GridTrack.Fraction(1)] },
+                    "Shadow" => new BoxShadow(1, 1, 2),
+                    "Box" => BoxStyle.Padded(2),
+                    "Column" or "Row" => -1,
                     "Outline" => new Border(BorderStyle.Dashed),
                     "Fill" => DocumentColor.FromHex("#010203"),
                     "Kind" when node is Shape => ShapeKind.Ellipse,

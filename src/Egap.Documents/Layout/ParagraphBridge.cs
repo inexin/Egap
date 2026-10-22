@@ -62,6 +62,25 @@ internal sealed class ParagraphContent
 
     /// <summary>The largest font size in the paragraph (its mark when empty), for an empty line's height.</summary>
     public required double MaxFontSize { get; init; }
+
+    /// <summary>The lines last broken for this content, at the width they were broken for; layout keeps them here.</summary>
+    internal (double Width, object Lines)? Broken { get; set; }
+
+    /// <summary>The text's narrowest and widest widths, unwrapped and wrapped at every opportunity, once measured.</summary>
+    internal (double Min, double Max)? IntrinsicWidths { get; set; }
+
+    /// <summary>The text's narrowest and widest widths (CSS min-content and max-content), measured once.</summary>
+    internal (double Min, double Max) Intrinsic()
+    {
+        if (IntrinsicWidths is not { } widths)
+        {
+            Egami.Fonts.Layout.TextLayout layout = Text.Layout(float.PositiveInfinity);
+            widths = (layout.MinIntrinsicWidth, layout.MaxIntrinsicWidth);
+            IntrinsicWidths = widths;
+        }
+
+        return widths;
+    }
 }
 
 /// <summary>Builds <see cref="ParagraphContent"/> from model paragraphs with one <see cref="FontProvider"/>.</summary>
@@ -85,6 +104,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         Stack<(FieldStart Start, bool InCode, int ResultStart)> fields = new();
         int replacing = 0;
         TextStyle? last = null;
+        TextStyle? mark = null;
 
         int labelLength = 0;
         if (paragraph.ListLabel is { } label && label.Text.Length + 1 is int length)
@@ -109,7 +129,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         if (noteMark is not null)
         {
             // The note's own text starts with its mark, as Word's footnoteRef shows it.
-            TextStyle markStyle = MarkStyle(paragraph);
+            TextStyle markStyle = Mark();
             float markSize = markStyle.Size ?? 10;
             AddText(noteMark.Mark, noteMark, markStyle with { Size = markSize * 0.65f, BaselineShift = -markSize * 0.35f });
         }
@@ -123,14 +143,14 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             if (text.Length == 0)
             {
                 // An empty paragraph still has a line, as tall as its mark's font: a zero-width space gives Egami one.
-                last = MarkStyle(paragraph);
+                last = Mark();
                 text.Push(last).Append("\u200B").Pop();
             }
         }
 
         RichText rich = text.ToRichText();
         // Text outside every span (a placeholder's character) takes the default style, which must name fonts.
-        EgamiParagraphStyle paragraphStyle = ParagraphStyleOf(format, MarkStyle(paragraph));
+        EgamiParagraphStyle paragraphStyle = ParagraphStyleOf(format, Mark());
         return new ParagraphContent
         {
             Source = paragraph,
@@ -144,6 +164,12 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             PageFields = pageFields,
             MaxFontSize = maxSize,
         };
+
+        // The mark's style, resolved once for the paragraph.
+        TextStyle Mark()
+        {
+            return mark ??= MarkStyle(paragraph);
+        }
 
         void Walk(IEnumerable<Inline> inlines)
         {
@@ -171,7 +197,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                             {
                                 // The layout's own number stands in for the stored result, in the result's first run's style.
                                 ResolvedRunFormat? resultFormat = field.ResultNodes.OfType<Run>().FirstOrDefault()?.GetEffectiveFormat();
-                                AddText(value, start, resultFormat is null ? last ?? MarkStyle(paragraph) : Style(paragraph, resultFormat));
+                                AddText(value, start, resultFormat is null ? last ?? Mark() : Style(paragraph, resultFormat));
                                 replacing = fields.Count;
                             }
                         }
@@ -200,7 +226,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                         AddText("\t", tab, Style(tab.Paragraph, null));
                         break;
                     case Break breakNode when !inCode:
-                        AddText("\n", breakNode, last ?? MarkStyle(paragraph));
+                        AddText("\n", breakNode, last ?? Mark());
                         if (breakNode.Kind != BreakKind.Line)
                         {
                             breaks.Add((text.Length, breakNode.Kind));
@@ -212,7 +238,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                         break;
                     case Footnote note when !inCode:
                         {
-                            TextStyle style = (last ?? MarkStyle(paragraph)) with { };
+                            TextStyle style = (last ?? Mark()) with { };
                             float size = style.Size ?? 10;
                             AddText(note.Mark, note, style with { Size = size * 0.65f, BaselineShift = -size * 0.35f });
                             break;
@@ -231,7 +257,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                         }
                         else if (island.Text.Length > 0)
                         {
-                            AddText(island.Text, island, last ?? MarkStyle(paragraph));
+                            AddText(island.Text, island, last ?? Mark());
                         }
 
                         break;
@@ -401,6 +427,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
     /// <summary>How far default tab stops are laid out: past the widest page Word allows (22 inches).</summary>
     private const double DefaultStopsReach = 1584;
 
+    /// <summary>The default tab stops alone, at the interval they were made for, shared by paragraphs with no stops of their own.</summary>
+    private (double Interval, List<EgamiTab> Stops)? defaultTabs;
+
     private static readonly FontFeature[] NoLigatures = [FontFeature.Parse("liga=0"), FontFeature.Parse("clig=0")];
 
     /// <summary>The default features with the run's own added after them.</summary>
@@ -533,10 +562,25 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         // Word's default stops every DefaultTabStop points after the last explicit one. Egami's TabSize counts spaces of the
         // default font (CSS tab-size), so the stops are given explicitly, as far as any page reaches.
         double interval = document.Settings.DefaultTabStop > 0 ? document.Settings.DefaultTabStop : 36;
-        double after = tabs.Count > 0 ? tabs[^1].Position : 0;
-        for (double stop = (Math.Floor(after / interval) + 1) * interval; stop <= DefaultStopsReach; stop += interval)
+        IReadOnlyList<EgamiTab> stops = tabs;
+        if (tabs.Count == 0 && defaultTabs is { } shared && shared.Interval == interval)
         {
-            tabs.Add(new EgamiTab((float)stop));
+            // Most paragraphs have only the default stops; they share one list.
+            stops = shared.Stops;
+        }
+        else
+        {
+            bool onlyDefaults = tabs.Count == 0;
+            double after = tabs.Count > 0 ? tabs[^1].Position : 0;
+            for (double stop = (Math.Floor(after / interval) + 1) * interval; stop <= DefaultStopsReach; stop += interval)
+            {
+                tabs.Add(new EgamiTab((float)stop));
+            }
+
+            if (onlyDefaults)
+            {
+                defaultTabs = (interval, tabs);
+            }
         }
 
         return new EgamiParagraphStyle
@@ -552,7 +596,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             },
             AlignLast = format.Alignment == ParagraphAlignment.Distribute ? TextAlignLast.Justify : TextAlignLast.Auto,
             TabSize = (float)document.Settings.DefaultTabStop,
-            TabStops = tabs,
+            TabStops = stops,
             Hyphen = null,
             Fallback = fonts.Fallback,
             MaxLines = format.MaxLines > 0 ? format.MaxLines : null,

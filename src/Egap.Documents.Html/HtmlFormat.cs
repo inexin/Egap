@@ -51,8 +51,8 @@ public sealed class HtmlSaveOptions
 
 /// <summary>
 /// HTML read into the model: parsed by AngleSharp as browsers parse it, styled through Egami.Css's cascade with HTML's
-/// default style sheet, and the computed styles mapped onto paragraphs, runs, lists and tables. Flexbox and grid are read as
-/// stacked blocks, with a warning.
+/// default style sheet, and the computed styles mapped onto paragraphs, runs, lists, tables, and flex and grid containers;
+/// positioned boxes become floating text boxes.
 /// </summary>
 public static partial class HtmlFormat
 {

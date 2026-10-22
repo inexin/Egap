@@ -351,6 +351,10 @@ public sealed class Shape : Inline
     private double rotation;
     private string? title;
     private string? description;
+    private double cornerRadius;
+    private BoxShadow? shadow;
+    private (double Left, double Top, double Right, double Bottom)? textInsets;
+    private bool fitToText;
 
     /// <summary>A shape of <paramref name="kind"/> and size in points, not yet in a paragraph.</summary>
     public Shape(Document document, ShapeKind kind, double width, double height)
@@ -424,6 +428,40 @@ public sealed class Shape : Inline
         set => SetProperty(ref description, value);
     }
 
+    /// <summary>The radius of a rectangle's corners in points; 0 for square corners.</summary>
+    public double CornerRadius
+    {
+        get => cornerRadius;
+        set => SetProperty(ref cornerRadius, Picture.CheckSize(value));
+    }
+
+    /// <summary>The shadow the shape casts, or null for none.</summary>
+    public BoxShadow? Shadow
+    {
+        get => shadow;
+        set => SetProperty(ref shadow, value);
+    }
+
+    /// <summary>
+    /// The space between a text box's edges and its text, in points; null for Word's default of a tenth of an inch at the sides
+    /// and a twentieth at top and bottom.
+    /// </summary>
+    public (double Left, double Top, double Right, double Bottom)? TextInsets
+    {
+        get => textInsets;
+        set => SetProperty(ref textInsets, value is not { } v || (Picture.CheckSize(v.Left) >= 0 && Picture.CheckSize(v.Top) >= 0 && Picture.CheckSize(v.Right) >= 0 && Picture.CheckSize(v.Bottom) >= 0) ? value : null);
+    }
+
+    /// <summary>
+    /// Whether a text box takes the size of its text (Word's resize shape to fit text): at least <see cref="Height"/> tall, and,
+    /// when <see cref="Width"/> is 0, as wide as its widest line up to the room it has.
+    /// </summary>
+    public bool FitToText
+    {
+        get => fitToText;
+        set => SetProperty(ref fitToText, value);
+    }
+
     /// <summary>The text inside, for a text box; null for a shape without text.</summary>
     public TextBoxStory? TextBox { get; private set; }
 
@@ -473,6 +511,10 @@ public sealed class Shape : Inline
             rotation = rotation,
             title = title,
             description = description,
+            cornerRadius = cornerRadius,
+            shadow = shadow,
+            textInsets = textInsets,
+            fitToText = fitToText,
         });
     }
 

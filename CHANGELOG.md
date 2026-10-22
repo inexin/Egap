@@ -3,22 +3,97 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Documents 2.0.1 (unreleased)
+## Egap.Documents 2.1.0 (unreleased)
+
+### Reports in code
+- `Report.Create` builds a document with nested lambdas (`Egap.Documents.Reports`): pages with size, margins, header,
+  footer and content; containers with box, alignment, text style and paging settings; and text with spans and page
+  numbers, pictures, barcodes, columns, rows (flex), grids, tables with repeating header and footer rows, rules, page
+  breaks, form fields and reusable `IComponent`s. `TextStyle` chains are immutable and shared; named styles are
+  character styles in the document. The same report saves as PDF, DOCX and HTML.
+- A report lays out strictly with portable fonts. `Document.DefaultLayoutOptions` holds that, and is used wherever a
+  layout or export is asked for without options.
+- `ShowPreview()` sends a document's pages, drawn by Egap's renderer, to the egap-preview tool on this machine
+  (`PreviewOptions`: port, resolution, layout options, name); it returns false when the tool is not running.
+
+### Flex and grid layout
+- `FlexContainer` and `FlexItem`: items in a row or a column that grow and shrink to share the space, wrap onto more
+  lines, and line up by `FlexLayout`'s justify and align settings and gaps. Layout breaks pages between lines.
+- `GridContainer` and `GridItem`: column and row tracks in points, per cent, fractions or sized to their content
+  (`GridTrack`, `GridTrackSize`), items placed by line, span or named area, the rest by automatic placement, dense or not.
+  Layout breaks pages between rows and keeps rows an item spans together.
+- `BoxStyle` draws a box around a container, an item or a group of blocks (`ContentControl.Box`): margins, padding,
+  borders, background, rounded corners (`BoxCorners`), a shadow (`BoxShadow`), width and least height. A boxed group
+  breaks across pages, drawn open at the break. `LayoutAlignment` names the alignments.
+- A flex line or grid row too tall for the room left breaks inside its items, between lines of text and between table
+  rows, each item's part open at the break; a line or row that does not start before the foot of the page moves on whole.
+- Layout gives `ContainerBox` and `ItemBox` boxes for them; `DocumentVisitor` has start and end methods for each.
+- DOCX saves a container as a borderless table with the items in its cells, spans and merged cells for a grid, and a
+  boxed group as a one-cell table, with the items' backgrounds, borders and padding. Plain text lists the items' text,
+  and tagged PDF tags a container and each item as a `Div`.
+
+### Line spacing
+- `LineSpacingRule.AtLeastCentered`: at least the given height, the extra space shared above and below the text as CSS's
+  line-height shares it. DOCX saves it as at least.
+
+### Shapes and text boxes
+- `Shape.CornerRadius`, `Shape.Shadow`, `Shape.TextInsets` and `Shape.FitToText`: rounded rectangles of any radius, a
+  blurred shadow, a text box's own insets, and a text box that takes the size of its text. DOCX reads and writes them
+  (the roundRect adjustment, an outer shadow, the body insets and shape auto-fit). A rounded rectangle without a radius
+  is drawn with Word's default corners instead of square ones.
+
+### Speed
+- A generated report lays out, exports and saves faster: table cells, paragraphs and the table style levels a cell takes
+  from its style are resolved with fewer allocations, a paragraph keeps its laid-out text and its widths for the next pass,
+  and tables, flex and grid containers keep their plans from one pass to the next.
+- An SVG picture drawn on every page, such as a logo or a barcode in a header, is read and drawn once; a PDF writes it once
+  as a form and shows it on every page.
 
 ### Fixes
 - DOCX: Word 2010 run properties are written in the schema's order, text effects such as `w14:shadow` before font
   features such as `w14:numForm`, so Word's validator no longer reports an unexpected element in a saved file.
 
-## Egap.Documents.Html 2.0.1 (unreleased)
+## Egap.Preview 1.0.0 (unreleased)
+
+### A live preview tool
+- `egap-preview`, a dotnet tool, shows documents on a local web page and reloads it when new pages arrive: the pages a
+  program sends with `ShowPreview()`, so a report run under `dotnet watch` follows every edit, or a DOCX file, drawn
+  again whenever it is saved; HTML and Markdown are shown from code with their add-on and `ShowPreview()`. A strict layout's failure shows on the page. It listens on 127.0.0.1
+  only, port 12500 unless `--port` says otherwise, refuses requests from other web pages, and needs nothing but Egap's packages.
+
+## Egap.Documents.Html 2.1.0 (unreleased)
+
+### CSS layout
+- `display: flex` and `display: grid` read into flex and grid containers with their items, instead of stacked blocks
+  with a warning: direction, wrapping, grow, shrink, basis, order, justify and align settings, gaps, track lists with
+  `fr`, `minmax()`, `fit-content()` and `repeat()`, named areas, line and span placement, and automatic placement.
+- A block with `border-radius` or `box-shadow` becomes a group with a box: background, borders, padding, rounded
+  corners and the first outer shadow, drawn around its blocks.
+- `position: absolute` and `fixed` boxes become text boxes floating in front of the text, placed by `top`, `right`,
+  `bottom` and `left`, instead of staying in the flow with a warning; a fixed box shows on every page.
+- HTML writing writes flex and grid containers, boxed groups and floating text boxes back as the same CSS.
+
+### Closer to browsers
+- `line-height` shares its extra space above and below the text, as browsers do, instead of putting it all above.
+- A table keeps the space above it; a cell's top and bottom borders add to its height (half of each where borders
+  collapse); an empty box with a border (a rule) is as thin as its border; and a page break before or after a table, a
+  flex or grid container or a box breaks there.
+- A flex or grid item keeps its bottom margin and its last child's, as browsers keep them inside the item.
 
 ### Fixes
 - A bookmark or a footnote mark inside a hyperlink no longer writes a link inside the link, which HTML does not allow and
   which made browsers end the link early. The bookmark is written as `<span id>`, and the note mark keeps its id without a
   link of its own.
 
-## Egap.Documents.Markdown 2.0.1 (unreleased)
+## Egap.Documents.Markdown 2.1.0 (unreleased)
 
-- No changes; released with Egap.Documents 2.0.1, as the add-ons share its version.
+### Flex and grid containers
+- Flex and grid containers are written as their items' content in order, with a warning.
+
+## Egap.Pdf 1.5.1 (unreleased)
+
+### Speed
+- Content streams write coordinates faster, with the same text as before.
 
 ## Egap.Documents 2.0.0 (2026-10-21)
 

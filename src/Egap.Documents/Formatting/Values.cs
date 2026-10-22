@@ -574,6 +574,12 @@ public enum LineSpacingRule
 
     /// <summary>Exactly this many points; taller content is clipped.</summary>
     Exactly,
+
+    /// <summary>
+    /// At least this many points, the extra space shared above and below the text as CSS's line-height shares it (half
+    /// leading); taller lines grow. DOCX, which has no such rule, saves it as <see cref="AtLeast"/>.
+    /// </summary>
+    AtLeastCentered,
 }
 
 /// <summary>How a table, cell or row width or height is given.</summary>
