@@ -30,7 +30,16 @@ public sealed partial class PdfPage
             throw new PdfLimitException(nameof(PdfRenderOptions.MaxOutputPixels), $"Plates of {geometry.Width} by {geometry.Height} pixels pass the limit of {options.MaxOutputPixels:N0}; render them in tiles through the region.");
         }
 
-        InkRaster raster = new(InkSetFor(separation), geometry.Width, geometry.Height);
+        InkRaster raster;
+        try
+        {
+            raster = new(InkSetFor(separation), geometry.Width, geometry.Height);
+        }
+        catch (Egami.LimitExceededException e)
+        {
+            throw new PdfLimitException(nameof(PdfRenderOptions.MaxOutputPixels), $"Plates of {geometry.Width} by {geometry.Height} pixels pass Egami's limits: {e.Message}");
+        }
+
         try
         {
             using InkCanvas canvas = new(raster);

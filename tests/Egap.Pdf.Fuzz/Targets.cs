@@ -535,7 +535,9 @@ internal static class Targets
                 return;
             }
 
-            PdfPreflightReport report = PdfPreflight.Run(pdf, PdfPrintProfile.SheetfedCoated with { InkCoverageDpi = 9 });
+            // The ink check separates every page: only on short files, at a coarse resolution, so a run stays fast.
+            PdfPrintProfile profile = pdf.Pages.Count <= 3 ? PdfPrintProfile.SheetfedCoated with { InkCoverageDpi = 6 } : PdfPrintProfile.SheetfedCoated with { MaxInkCoverage = null };
+            PdfPreflightReport report = PdfPreflight.Run(pdf, profile);
             Check(report.Items.All(i => i.Page is null || (i.Page >= 1 && i.Page <= pdf.Pages.Count)), "preflight items name pages of the document");
             _ = report.ToString();
         });

@@ -396,7 +396,7 @@ internal abstract class ImageColorSpace
             this.components = components;
             double[] w = Numbers(parameters.Get<PdfArray>("WhitePoint"), 3, [0.9505, 1, 1.089]);
             white = w[1] > 0 && w[0] > 0 && w[2] > 0 ? w : [0.9505, 1, 1.089];
-            gamma = Numbers(parameters.Get("Gamma")?.Resolve() switch { PdfArray g => g, PdfObject g => new PdfArray { g }, _ => null }, components, components == 1 ? [1] : [1, 1, 1]);
+            gamma = Numbers(parameters.Get("Gamma")?.Resolve() switch { PdfArray g => g, PdfInteger or PdfReal => new PdfArray { new PdfReal(parameters.GetNumber("Gamma") ?? 1) }, _ => null }, components, components == 1 ? [1] : [1, 1, 1]);
             matrix = components == 3 ? Numbers(parameters.Get<PdfArray>("Matrix"), 9, [1, 0, 0, 0, 1, 0, 0, 0, 1]) : [];
         }
 

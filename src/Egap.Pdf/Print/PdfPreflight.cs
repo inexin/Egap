@@ -56,8 +56,18 @@ public static class PdfPreflight
         for (int i = 0; i < document.Pages.Count; i++)
         {
             result.AddRange(items.Where(item => item.Page == i + 1));
-            using PdfSeparations plates = document.Pages[i].RenderSeparations(render, cancellationToken: cancellationToken);
-            double max = plates.MaxCoverage, share = plates.ShareOver(limit);
+            double max, share;
+            try
+            {
+                using PdfSeparations plates = document.Pages[i].RenderSeparations(render, cancellationToken: cancellationToken);
+                (max, share) = (plates.MaxCoverage, plates.ShareOver(limit));
+            }
+            catch (PdfLimitException e)
+            {
+                result.Add(new PdfPreflightItem(PdfPreflightItemKind.InkCoverage, i + 1, $"total ink not measured: {e.Message}"));
+                continue;
+            }
+
             result.Add(new PdfPreflightItem(PdfPreflightItemKind.InkCoverage, i + 1, string.Create(CultureInfo.InvariantCulture,
                 $"total ink up to {max:0.#}%, {share:P1} of the page over {limit:0}%"))
             {

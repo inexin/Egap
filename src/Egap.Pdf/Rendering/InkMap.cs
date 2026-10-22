@@ -107,7 +107,7 @@ internal sealed class InkMap(InkSet inks)
                     continue;
             }
 
-            int index = Index(names[i]);
+            int index = names[i].Length > 0 ? Index(names[i]) : -1;
             if (index < 0 || inks.IsDisabled(index))
             {
                 return space.Alternate is ImageColorSpace alternate && Make(alternate, depth + 1) is InkPlan through

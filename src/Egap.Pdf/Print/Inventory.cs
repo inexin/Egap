@@ -284,7 +284,7 @@ internal sealed class Inventory
     {
         foreach (string name in names)
         {
-            if (name is not ("Cyan" or "Magenta" or "Yellow" or "Black" or "None" or "All") && spotSpaces.TryAdd(name, space))
+            if (name.Length > 0 && name is not ("Cyan" or "Magenta" or "Yellow" or "Black" or "None" or "All") && spotSpaces.TryAdd(name, space))
             {
                 spotOrder.Add(name);
             }
