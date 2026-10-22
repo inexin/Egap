@@ -7,117 +7,105 @@ using Egap.Pdf;
 namespace Egap.Cli.Commands;
 
 /// <summary>
-/// <c>egap pages</c>: select, reorder, rotate, delete and insert pages, and set page labels, in that order. An edit keeps
-/// the file's signatures where it can, appending the change (CLI design Q10); choosing a page twice makes a new document.
+/// <c>egap pages</c> and the <c>pages</c> step: select, reorder, rotate, delete and insert pages, and set page labels, in that
+/// order. An edit keeps the file's signatures where it can, appending the change (CLI design Q10); choosing a page twice
+/// makes a new document.
 /// </summary>
-internal static class PagesCommand
+internal sealed class PagesEdit : Edit
 {
-    public static Command Create(EgapSession session)
+    private readonly Option<string?> _select = new("--select") { Description = "Keep these pages in this order, such as 3,1,2 or 1-z,x5; a page named twice is copied.", HelpName = "range" };
+    private readonly Option<string?> _delete = new("--delete") { Description = "Remove these pages, such as 1 or 4-6.", HelpName = "range" };
+    private readonly Option<string[]> _rotate = new("--rotate")
     {
-        InputOptions inputs = new();
-        OutputOptions output = new();
-        Option<string?> select = new("--select") { Description = "Keep these pages in this order, such as 3,1,2 or 1-z,x5; a page named twice is copied.", HelpName = "range" };
-        Option<string?> delete = new("--delete") { Description = "Remove these pages, such as 1 or 4-6.", HelpName = "range" };
-        Option<string[]> rotate = new("--rotate")
+        Description = "Turn pages by 90, 180 or 270 degrees (or -90), all of them or those after a colon: 90 or 90:2-4; give it more than once.",
+        HelpName = "angle[:range]",
+        AllowMultipleArgumentsPerToken = false,
+    };
+
+    private readonly Option<string[]> _blank = new("--blank")
+    {
+        Description = "Insert a blank page, the size of its neighbour, before this page number, or at the end with end; give it more than once.",
+        HelpName = "page|end",
+        AllowMultipleArgumentsPerToken = false,
+    };
+
+    private readonly Option<string[]> _label = new("--label")
+    {
+        Description = "Number pages from a page on: page:style[:prefix[:first]], style D (1, 2), r (i, ii), R (I, II), a, A or none, such as 1:r or 5:D::1; give it more than once.",
+        HelpName = "label",
+        AllowMultipleArgumentsPerToken = false,
+    };
+
+    /// <inheritdoc/>
+    public override string Name => "pages";
+
+    /// <inheritdoc/>
+    public override string Description => "Select, reorder, rotate, delete and insert pages, and set page labels, applied in that order.";
+
+    /// <inheritdoc/>
+    public override void AddTo(Command command)
+    {
+        command.Options.Add(_select);
+        command.Options.Add(_delete);
+        command.Options.Add(_rotate);
+        command.Options.Add(_blank);
+        command.Options.Add(_label);
+    }
+
+    /// <inheritdoc/>
+    public override EditAction Bind(EgapSession session, ParseResult result)
+    {
+        PdfPageRange? selected = PageOption.Parse(result.GetValue(_select), "--select");
+        PdfPageRange? deleted = PageOption.Parse(result.GetValue(_delete), "--delete");
+        List<(int Angle, PdfPageRange? Range)> turns = [.. (result.GetValue(_rotate) ?? []).Select(Turn)];
+        string[] blanks = result.GetValue(_blank) ?? [];
+        List<PdfPageLabelRange> labels = [.. (result.GetValue(_label) ?? []).Select(Label)];
+        if (selected is null && deleted is null && turns.Count == 0 && blanks.Length == 0 && labels.Count == 0)
         {
-            Description = "Turn pages by 90, 180 or 270 degrees (or -90), all of them or those after a colon: 90 or 90:2-4; give it more than once.",
-            HelpName = "angle[:range]",
-            AllowMultipleArgumentsPerToken = false,
-        };
-        Option<string[]> blank = new("--blank")
+            throw new UsageException("Nothing to do: give --select, --delete, --rotate, --blank or --label.");
+        }
+
+        return (document, _) =>
         {
-            Description = "Insert a blank page, the size of its neighbour, before this page number, or at the end with end; give it more than once.",
-            HelpName = "page|end",
-            AllowMultipleArgumentsPerToken = false,
-        };
-        Option<string[]> label = new("--label")
-        {
-            Description = "Number pages from a page on: page:style[:prefix[:first]], style D (1, 2), r (i, ii), R (I, II), a, A or none, such as 1:r or 5:D::1; give it more than once.",
-            HelpName = "label",
-            AllowMultipleArgumentsPerToken = false,
-        };
-        SaveOptions save = new();
-        SecretOptions password = new("password", "password that opens encrypted inputs");
-        Command command = new("pages", "Select, reorder, rotate, delete and insert pages, and set page labels, applied in that order.");
-        inputs.AddTo(command);
-        output.AddTo(command);
-        command.Options.Add(select);
-        command.Options.Add(delete);
-        command.Options.Add(rotate);
-        command.Options.Add(blank);
-        command.Options.Add(label);
-        save.AddTo(command);
-        password.AddTo(command);
-        command.SetAction(result =>
-        {
-            BatchOptions batch = inputs.Batch(session, result, output.IsInPlace(result));
-            List<InputFile> files = inputs.Expand(session, result);
-            OutputTemplate? template = output.Template(session, result, files);
-            PdfPageRange? selected = PageOption.Parse(result.GetValue(select), "--select");
-            PdfPageRange? deleted = PageOption.Parse(result.GetValue(delete), "--delete");
-            List<(int Angle, PdfPageRange? Range)> turns = [.. (result.GetValue(rotate) ?? []).Select(Turn)];
-            string[] blanks = result.GetValue(blank) ?? [];
-            List<PdfPageLabelRange> labels = [.. (result.GetValue(label) ?? []).Select(Label)];
-            if (selected is null && deleted is null && turns.Count == 0 && blanks.Length == 0 && labels.Count == 0)
+            if (selected is not null)
             {
-                throw new UsageException("Nothing to do: give --select, --delete, --rotate, --blank or --label.");
+                document = Select(document, PageOption.Indices(document, selected));
             }
 
-            PdfSaveOptions saveOptions = save.Build(result);
-            string? secret = password.Read(session, result);
-            return Batch.Run(session, files, batch, file =>
+            if (deleted is not null)
             {
-                string path = template is null ? file.Path ?? throw new UsageException("--in-place needs files, not standard input.") : OutputOptions.PathFor(session, template, file, "pdf");
-                PdfDocument document = PdfInput.Open(session, file, secret, inMemory: template is null);
-                try
+                foreach (int index in PageOption.Indices(document, deleted).Distinct().OrderDescending())
                 {
-                    if (selected is not null)
-                    {
-                        document = Select(document, PageOption.Indices(document, selected));
-                    }
-
-                    if (deleted is not null)
-                    {
-                        foreach (int index in PageOption.Indices(document, deleted).Distinct().OrderDescending())
-                        {
-                            document.Pages.RemoveAt(index);
-                        }
-                    }
-
-                    foreach ((int angle, PdfPageRange? range) in turns)
-                    {
-                        foreach (int index in PageOption.Indices(document, range).Distinct())
-                        {
-                            PdfPage page = document.Pages[index];
-                            page.Rotate = ((page.Rotate + angle) % 360 + 360) % 360;
-                        }
-                    }
-
-                    foreach (string at in blanks)
-                    {
-                        Insert(document, at);
-                    }
-
-                    foreach (PdfPageLabelRange range in labels)
-                    {
-                        if (range.StartIndex >= document.Pages.Count)
-                        {
-                            throw new InvalidOperationException($"--label starts at page {range.StartIndex + 1}, but the file has {document.Pages.Count} pages.");
-                        }
-
-                        document.Pages.SetLabelRange(range);
-                    }
-
-                    SaveOptions.Save(session, document, path, saveOptions);
-                    return [path];
+                    document.Pages.RemoveAt(index);
                 }
-                finally
+            }
+
+            foreach ((int angle, PdfPageRange? range) in turns)
+            {
+                foreach (int index in PageOption.Indices(document, range).Distinct())
                 {
-                    document.Dispose();
+                    PdfPage page = document.Pages[index];
+                    page.Rotate = ((page.Rotate + angle) % 360 + 360) % 360;
                 }
-            });
-        });
-        return command;
+            }
+
+            foreach (string at in blanks)
+            {
+                Insert(document, at);
+            }
+
+            foreach (PdfPageLabelRange range in labels)
+            {
+                if (range.StartIndex >= document.Pages.Count)
+                {
+                    throw new InvalidOperationException($"--label starts at page {range.StartIndex + 1}, but the file has {document.Pages.Count} pages.");
+                }
+
+                document.Pages.SetLabelRange(range);
+            }
+
+            return document;
+        };
     }
 
     /// <summary>

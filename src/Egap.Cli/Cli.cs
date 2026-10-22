@@ -45,6 +45,12 @@ internal static class Cli
                 return ExitCodes.Usage;
             }
 
+            // run parses its own arguments, since each step carries options of its own; its help comes from the parser.
+            if (args[0] == "run" && !args.Skip(1).Any(a => a is "-h" or "--help" or "-?"))
+            {
+                return RunCommand.Execute(session, args[1..]);
+            }
+
             ParseResult result = root.Parse(args, new ParserConfiguration { EnablePosixBundling = false });
             if (result.Errors.Count > 0 && result.Action is not System.CommandLine.Help.HelpAction)
             {
@@ -97,10 +103,11 @@ internal static class Cli
         root.Subcommands.Add(RenderCommand.Create(session));
         root.Subcommands.Add(MergeCommand.Create(session));
         root.Subcommands.Add(SplitCommand.Create(session));
-        root.Subcommands.Add(PagesCommand.Create(session));
-        root.Subcommands.Add(EncryptCommands.Encrypt(session));
-        root.Subcommands.Add(EncryptCommands.Decrypt(session));
+        root.Subcommands.Add(new PagesEdit().CreateCommand(session));
+        root.Subcommands.Add(new EncryptEdit().CreateCommand(session));
+        root.Subcommands.Add(new DecryptEdit().CreateCommand(session));
         root.Subcommands.Add(MetadataCommand.Create(session));
+        root.Subcommands.Add(RunCommand.Create());
         return root;
     }
 }

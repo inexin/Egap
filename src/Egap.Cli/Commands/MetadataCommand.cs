@@ -24,8 +24,8 @@ internal static class MetadataCommand
     {
         Command command = new("metadata", "Show, set or strip document information, XMP and the outline (bookmarks).");
         command.Subcommands.Add(Show(session));
-        command.Subcommands.Add(Set(session));
-        command.Subcommands.Add(Strip(session));
+        command.Subcommands.Add(new MetadataEdit().CreateCommand(session, "set"));
+        command.Subcommands.Add(new StripMetadataEdit().CreateCommand(session, "strip"));
         return command;
     }
 
@@ -85,151 +85,6 @@ internal static class MetadataCommand
             }
 
             return code;
-        });
-        return command;
-    }
-
-    private static Command Set(EgapSession session)
-    {
-        InputOptions inputs = new();
-        OutputOptions output = new();
-        SaveOptions save = new();
-        SecretOptions password = new("password", "password that opens encrypted inputs");
-        (string Name, Option<string?> Option)[] fields =
-        [
-            .. ((string[])["title", "author", "subject", "keywords", "creator", "producer"]).Select(name =>
-                (name, new Option<string?>("--" + name) { Description = $"Set the {name}; an empty value removes it.", HelpName = "text" })),
-        ];
-        Option<string?> created = new("--created") { Description = "Set the creation date, ISO 8601 such as 2026-10-22T09:30:00Z.", HelpName = "date" };
-        Option<string?> modified = new("--modified") { Description = "Set the modification date, ISO 8601; without it a change sets it to now.", HelpName = "date" };
-        Option<string?> xmp = new("--xmp") { Description = "Replace the XMP packet with this XML file.", HelpName = "file" };
-        Option<string?> outline = new("--outline") { Description = "Replace the outline (bookmarks) with this JSON file, as metadata show --outline --json writes it.", HelpName = "file" };
-        Command command = new("set", "Set document information fields, the XMP packet or the outline (bookmarks).");
-        inputs.AddTo(command);
-        output.AddTo(command);
-        foreach ((_, Option<string?> option) in fields)
-        {
-            command.Options.Add(option);
-        }
-
-        command.Options.Add(created);
-        command.Options.Add(modified);
-        command.Options.Add(xmp);
-        command.Options.Add(outline);
-        save.AddTo(command);
-        password.AddTo(command);
-        command.SetAction(result =>
-        {
-            BatchOptions batch = inputs.Batch(session, result, output.IsInPlace(result));
-            List<InputFile> files = inputs.Expand(session, result);
-            OutputTemplate? template = output.Template(session, result, files);
-            Dictionary<string, string?> values = [];
-            foreach ((string name, Option<string?> option) in fields)
-            {
-                if (result.GetResult(option) is not null)
-                {
-                    values[name] = result.GetValue(option) is { Length: > 0 } value ? value : null;
-                }
-            }
-
-            DateTimeOffset? createdDate = Date(result.GetValue(created), "--created"), modifiedDate = Date(result.GetValue(modified), "--modified");
-            XDocument? packet = result.GetValue(xmp) is { } xmpFile ? XDocument.Load(session.ResolvePath(xmpFile)) : null;
-            List<OutlineEntry>? entries = result.GetValue(outline) is { } outlineFile ? ReadOutline(File.ReadAllBytes(session.ResolvePath(outlineFile)), outlineFile) : null;
-            if (values.Count == 0 && createdDate is null && modifiedDate is null && packet is null && entries is null)
-            {
-                throw new UsageException("Nothing to set: give --title, --author, --subject, --keywords, --creator, --producer, --created, --modified, --xmp or --outline.");
-            }
-
-            PdfSaveOptions saveOptions = save.Build(result);
-            if (modifiedDate is not null)
-            {
-                saveOptions = saveOptions with { UpdateModificationDate = false };
-            }
-
-            string? secret = password.Read(session, result);
-            return Batch.Run(session, files, batch, file =>
-            {
-                string path = template is null ? file.Path ?? throw new UsageException("--in-place needs files, not standard input.") : OutputOptions.PathFor(session, template, file, "pdf");
-                using PdfDocument document = PdfInput.Open(session, file, secret, inMemory: template is null);
-                PdfMetadata info = document.Metadata;
-                foreach ((string name, string? value) in values)
-                {
-                    switch (name)
-                    {
-                        case "title": info.Title = value; break;
-                        case "author": info.Author = value; break;
-                        case "subject": info.Subject = value; break;
-                        case "keywords": info.Keywords = value; break;
-                        case "creator": info.Creator = value; break;
-                        default: info.Producer = value; break;
-                    }
-                }
-
-                if (createdDate is { } c)
-                {
-                    info.CreationDate = c;
-                }
-
-                if (modifiedDate is { } m)
-                {
-                    info.ModificationDate = m;
-                }
-
-                if (packet is not null)
-                {
-                    info.SetXmp(new XDocument(packet));
-                }
-
-                if (entries is not null)
-                {
-                    WriteOutline(document, entries);
-                }
-
-                SaveOptions.Save(session, document, path, saveOptions);
-                return [path];
-            });
-        });
-        return command;
-    }
-
-    private static Command Strip(EgapSession session)
-    {
-        InputOptions inputs = new();
-        OutputOptions output = new();
-        SaveOptions save = new();
-        SecretOptions password = new("password", "password that opens encrypted inputs");
-        Command command = new("strip", "Remove the document information and every XMP packet, the document's and each object's.");
-        inputs.AddTo(command);
-        output.AddTo(command);
-        save.AddTo(command);
-        password.AddTo(command);
-        command.SetAction(result =>
-        {
-            BatchOptions batch = inputs.Batch(session, result, output.IsInPlace(result));
-            List<InputFile> files = inputs.Expand(session, result);
-            OutputTemplate? template = output.Template(session, result, files);
-            PdfSaveOptions saveOptions = save.Build(result) with { UpdateModificationDate = false };
-            PdfSanitizeOptions metadataOnly = new()
-            {
-                Metadata = true,
-                JavaScript = false,
-                Attachments = false,
-                HiddenLayers = false,
-                Comments = false,
-                FormData = false,
-                Thumbnails = false,
-                PrivateData = false,
-            };
-            string? secret = password.Read(session, result);
-            return Batch.Run(session, files, batch, file =>
-            {
-                string path = template is null ? file.Path ?? throw new UsageException("--in-place needs files, not standard input.") : OutputOptions.PathFor(session, template, file, "pdf");
-                using PdfDocument document = PdfInput.Open(session, file, secret, inMemory: template is null);
-                PdfSanitizeResult removed = document.Sanitize(metadataOnly);
-                session.Info($"{file.Display}: removed {removed.Metadata} metadata dictionaries and streams");
-                SaveOptions.Save(session, document, path, saveOptions);
-                return [path];
-            });
         });
         return command;
     }
@@ -369,7 +224,7 @@ internal static class MetadataCommand
         }
     }
 
-    private static DateTimeOffset? Date(string? text, string option)
+    internal static DateTimeOffset? Date(string? text, string option)
     {
         return text is null ? null
             : DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTimeOffset date) ? date
@@ -422,7 +277,7 @@ internal static class MetadataCommand
         return entries;
     }
 
-    private static void WriteOutline(PdfDocument document, List<OutlineEntry> entries)
+    internal static void WriteOutline(PdfDocument document, List<OutlineEntry> entries)
     {
         foreach (PdfOutlineItem item in document.Outline.Children.ToList())
         {
@@ -447,5 +302,144 @@ internal static class MetadataCommand
         }
 
         Add(document.Outline, entries);
+    }
+}
+
+/// <summary>
+/// <c>egap metadata set</c> and the <c>metadata</c> step: document information fields, dates, an XMP packet and the outline
+/// (bookmarks) from a JSON file.
+/// </summary>
+internal sealed class MetadataEdit : Edit
+{
+    private readonly (string Name, Option<string?> Option)[] _fields =
+    [
+        .. ((string[])["title", "author", "subject", "keywords", "creator", "producer"]).Select(name =>
+            (name, new Option<string?>("--" + name) { Description = $"Set the {name}; an empty value removes it.", HelpName = "text" })),
+    ];
+
+    private readonly Option<string?> _created = new("--created") { Description = "Set the creation date, ISO 8601 such as 2026-10-22T09:30:00Z.", HelpName = "date" };
+    private readonly Option<string?> _modified = new("--modified") { Description = "Set the modification date, ISO 8601; without it a change sets it to now.", HelpName = "date" };
+    private readonly Option<string?> _xmp = new("--xmp") { Description = "Replace the XMP packet with this XML file.", HelpName = "file" };
+    private readonly Option<string?> _outline = new("--outline") { Description = "Replace the outline (bookmarks) with this JSON file, as metadata show --outline --json writes it.", HelpName = "file" };
+
+    /// <inheritdoc/>
+    public override string Name => "metadata";
+
+    /// <inheritdoc/>
+    public override string Description => "Set document information fields, the XMP packet or the outline (bookmarks).";
+
+    /// <inheritdoc/>
+    public override void AddTo(Command command)
+    {
+        foreach ((_, Option<string?> option) in _fields)
+        {
+            command.Options.Add(option);
+        }
+
+        command.Options.Add(_created);
+        command.Options.Add(_modified);
+        command.Options.Add(_xmp);
+        command.Options.Add(_outline);
+    }
+
+    /// <inheritdoc/>
+    public override EditAction Bind(EgapSession session, ParseResult result)
+    {
+        Dictionary<string, string?> values = [];
+        foreach ((string name, Option<string?> option) in _fields)
+        {
+            if (result.GetResult(option) is not null)
+            {
+                values[name] = result.GetValue(option) is { Length: > 0 } value ? value : null;
+            }
+        }
+
+        DateTimeOffset? created = MetadataCommand.Date(result.GetValue(_created), "--created"), modified = MetadataCommand.Date(result.GetValue(_modified), "--modified");
+        XDocument? packet = result.GetValue(_xmp) is { } xmpFile ? XDocument.Load(session.ResolvePath(xmpFile)) : null;
+        List<MetadataCommand.OutlineEntry>? entries = result.GetValue(_outline) is { } outlineFile
+            ? MetadataCommand.ReadOutline(File.ReadAllBytes(session.ResolvePath(outlineFile)), outlineFile) : null;
+        if (values.Count == 0 && created is null && modified is null && packet is null && entries is null)
+        {
+            throw new UsageException("Nothing to set: give --title, --author, --subject, --keywords, --creator, --producer, --created, --modified, --xmp or --outline.");
+        }
+
+        return (document, context) =>
+        {
+            PdfMetadata info = document.Metadata;
+            foreach ((string name, string? value) in values)
+            {
+                switch (name)
+                {
+                    case "title": info.Title = value; break;
+                    case "author": info.Author = value; break;
+                    case "subject": info.Subject = value; break;
+                    case "keywords": info.Keywords = value; break;
+                    case "creator": info.Creator = value; break;
+                    default: info.Producer = value; break;
+                }
+            }
+
+            if (created is { } c)
+            {
+                info.CreationDate = c;
+            }
+
+            if (modified is { } m)
+            {
+                info.ModificationDate = m;
+                context.KeepModificationDate = true;
+            }
+
+            if (packet is not null)
+            {
+                info.SetXmp(new XDocument(packet));
+            }
+
+            if (entries is not null)
+            {
+                MetadataCommand.WriteOutline(document, entries);
+            }
+
+            return document;
+        };
+    }
+}
+
+/// <summary><c>egap metadata strip</c> and the <c>strip-metadata</c> step: the information dictionary and every XMP packet.</summary>
+internal sealed class StripMetadataEdit : Edit
+{
+    private static readonly PdfSanitizeOptions MetadataOnly = new()
+    {
+        Metadata = true,
+        JavaScript = false,
+        Attachments = false,
+        HiddenLayers = false,
+        Comments = false,
+        FormData = false,
+        Thumbnails = false,
+        PrivateData = false,
+    };
+
+    /// <inheritdoc/>
+    public override string Name => "strip-metadata";
+
+    /// <inheritdoc/>
+    public override string Description => "Remove the document information and every XMP packet, the document's and each object's.";
+
+    /// <inheritdoc/>
+    public override void AddTo(Command command)
+    {
+    }
+
+    /// <inheritdoc/>
+    public override EditAction Bind(EgapSession session, ParseResult result)
+    {
+        return (document, context) =>
+        {
+            PdfSanitizeResult removed = document.Sanitize(MetadataOnly);
+            context.KeepModificationDate = true;
+            session.Info($"{context.File.Display}: removed {removed.Metadata} metadata dictionaries and streams");
+            return document;
+        };
     }
 }
