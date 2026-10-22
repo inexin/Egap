@@ -84,7 +84,7 @@ egap impose handout.pdf --nup 2x2 --sheet A4 -o handout-4up.pdf
 egap impose zine.pdf --booklet -o zine-booklet.pdf
 egap stamp report.pdf --page-numbers -o numbered.pdf
 egap stamp draft.pdf --watermark DRAFT --opacity 0.2 -o watermarked.pdf
-egap stamp "evidence/*.pdf" --bates ACME- --bates-digits 6 --jobs 1 -o stamped/
+egap stamp "evidence/*.pdf" --bates ACME- --bates-digits 6 -o stamped/
 ```
 
 ## Editing and protecting

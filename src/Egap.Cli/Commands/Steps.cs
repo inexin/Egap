@@ -15,8 +15,8 @@ internal sealed record StepWords(string Name, IReadOnlyList<string> Words);
 /// <summary>A step ready to run: an edit, or a save to a path.</summary>
 internal abstract record BoundStep(StepWords Source);
 
-/// <summary>An edit step.</summary>
-internal sealed record EditStep(StepWords Source, EditAction Action) : BoundStep(Source);
+/// <summary>An edit step; <paramref name="InOrder"/> says whether the batch must go one file at a time, in input order.</summary>
+internal sealed record EditStep(StepWords Source, EditAction Action, bool InOrder) : BoundStep(Source);
 
 /// <summary>A save step: where to write and how.</summary>
 internal sealed record SaveStep(StepWords Source, string Path, PdfSaveOptions Options) : BoundStep(Source);
@@ -80,7 +80,7 @@ internal static class Steps
 
         if (edit is not null)
         {
-            return new EditStep(step, edit.Bind(session, result));
+            return new EditStep(step, edit.Bind(session, result), edit.InOrder(result));
         }
 
         string path = result.GetValue<string>("path") ?? throw new UsageException("save needs a path, such as save out/{name}.pdf.");

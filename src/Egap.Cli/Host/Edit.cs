@@ -80,6 +80,9 @@ internal abstract class Edit
     /// <summary>Reads the options; throws <see cref="UsageException"/> for wrong ones.</summary>
     public abstract EditAction Bind(EgapSession session, ParseResult result);
 
+    /// <summary>Whether the files of a batch must go one at a time, in input order, such as for Bates numbers that run on.</summary>
+    public virtual bool InOrder(ParseResult result) => false;
+
     /// <summary>A command of its own: inputs, <c>-o</c> or <c>--in-place</c>, the save options, a password and the edit's options.</summary>
     public Command CreateCommand(EgapSession session, string? name = null)
     {
@@ -96,6 +99,11 @@ internal abstract class Edit
         command.SetAction(result =>
         {
             BatchOptions batch = inputs.Batch(session, result, output.IsInPlace(result));
+            if (InOrder(result))
+            {
+                batch = batch with { Jobs = 1 };
+            }
+
             List<InputFile> files = inputs.Expand(session, result);
             OutputTemplate? template = output.Template(session, result, files);
             EditAction action = Bind(session, result);

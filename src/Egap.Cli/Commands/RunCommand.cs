@@ -160,7 +160,7 @@ internal static class RunCommand
             return ExitCodes.Success;
         }
 
-        BatchOptions batch = new(jobs, options.ContainsKey("--fail-fast"), session.InPlace);
+        BatchOptions batch = new(plan.OfType<EditStep>().Any(s => s.InOrder) ? 1 : jobs, options.ContainsKey("--fail-fast"), session.InPlace);
         return Batch.Run(session, files, batch, input => Execute(session, input, plan, templates, password));
     }
 

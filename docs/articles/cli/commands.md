@@ -394,7 +394,7 @@ Stamp pages with text, page numbers, a watermark, an image, a barcode or Bates n
 | `--watermark <text>` | Large faint text across the middle of each page, such as DRAFT. |
 | `--image <file>` | An image file (PNG, JPEG, SVG and the other formats Egami reads); give --width. |
 | `--barcode <format:data>` | A barcode, format:data such as qr:https://example.com or code128:A-123; give --width. |
-| `--bates <prefix>` | Bates numbers with this prefix, such as ACME-; numbering goes on across the files of a batch. |
+| `--bates <prefix>` | Bates numbers with this prefix, such as ACME-; numbering goes on across the files of a batch, one file at a time in input order. |
 | `--bates-digits <count>` | Digits in a Bates number; 6 by default. |
 | `--bates-start <number>` | The first Bates number; 1 by default. |
 | `--remove` | Remove the stamps egap and Egap added before. |
@@ -1192,7 +1192,7 @@ Stamp pages with text, page numbers, a watermark, an image, a barcode or Bates n
 | `--watermark <text>` | Large faint text across the middle of each page, such as DRAFT. |
 | `--image <file>` | An image file (PNG, JPEG, SVG and the other formats Egami reads); give --width. |
 | `--barcode <format:data>` | A barcode, format:data such as qr:https://example.com or code128:A-123; give --width. |
-| `--bates <prefix>` | Bates numbers with this prefix, such as ACME-; numbering goes on across the files of a batch. |
+| `--bates <prefix>` | Bates numbers with this prefix, such as ACME-; numbering goes on across the files of a batch, one file at a time in input order. |
 | `--bates-digits <count>` | Digits in a Bates number; 6 by default. |
 | `--bates-start <number>` | The first Bates number; 1 by default. |
 | `--remove` | Remove the stamps egap and Egap added before. |

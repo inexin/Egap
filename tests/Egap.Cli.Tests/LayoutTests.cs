@@ -59,7 +59,7 @@ public sealed class LayoutTests : IDisposable
     {
         MakePdf("in/a.pdf", 2);
         MakePdf("in/b.pdf", 2);
-        Assert.Equal(ExitCodes.Success, _tool.Run("stamp", "in/*.pdf", "--bates", "ACME-", "--bates-digits", "4", "-j", "1", "-o", "out/{name}.pdf").Code);
+        Assert.Equal(ExitCodes.Success, _tool.Run("stamp", "in/*.pdf", "--bates", "ACME-", "--bates-digits", "4", "-j", "8", "-o", "out/{name}.pdf").Code);
         using PdfDocument second = PdfDocument.Open(_tool.PathOf("out/b.pdf"));
         Assert.Contains("ACME-0004", second.Pages[1].ExtractText(), StringComparison.Ordinal);
     }

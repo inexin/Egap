@@ -218,7 +218,7 @@ internal sealed class StampEdit : Edit
     private readonly Option<string?> _watermark = new("--watermark") { Description = "Large faint text across the middle of each page, such as DRAFT.", HelpName = "text" };
     private readonly Option<string?> _image = new("--image") { Description = "An image file (PNG, JPEG, SVG and the other formats Egami reads); give --width.", HelpName = "file" };
     private readonly Option<string?> _barcode = new("--barcode") { Description = "A barcode, format:data such as qr:https://example.com or code128:A-123; give --width.", HelpName = "format:data" };
-    private readonly Option<string?> _bates = new("--bates") { Description = "Bates numbers with this prefix, such as ACME-; numbering goes on across the files of a batch.", HelpName = "prefix" };
+    private readonly Option<string?> _bates = new("--bates") { Description = "Bates numbers with this prefix, such as ACME-; numbering goes on across the files of a batch, one file at a time in input order.", HelpName = "prefix" };
     private readonly Option<int?> _batesDigits = new("--bates-digits") { Description = "Digits in a Bates number; 6 by default.", HelpName = "count" };
     private readonly Option<long?> _batesStart = new("--bates-start") { Description = "The first Bates number; 1 by default.", HelpName = "number" };
     private readonly Option<bool> _remove = new("--remove") { Description = "Remove the stamps egap and Egap added before." };
@@ -236,6 +236,9 @@ internal sealed class StampEdit : Edit
 
     /// <inheritdoc/>
     public override string Name => "stamp";
+
+    /// <inheritdoc/>
+    public override bool InOrder(ParseResult result) => result.GetValue(_bates) is not null;
 
     /// <inheritdoc/>
     public override string Description => "Stamp pages with text, page numbers, a watermark, an image, a barcode or Bates numbers; or --remove earlier stamps.";
