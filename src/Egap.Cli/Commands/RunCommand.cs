@@ -168,7 +168,7 @@ internal static class RunCommand
     private static List<string> Execute(EgapSession session, InputFile input, List<BoundStep> plan, Dictionary<SaveStep, OutputTemplate> templates, string? password)
     {
         List<string> written = [];
-        using EditContext context = new(session, input);
+        using EditContext context = new(session, input) { AllowInvalidatingSignatures = plan.OfType<SaveStep>().Any(s => s.Options.AllowInvalidatingSignatures) };
         PdfDocument document = PdfInput.Open(session, input, password, inMemory: session.InPlace);
         try
         {

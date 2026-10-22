@@ -107,6 +107,9 @@ internal static class Cli
         root.Subcommands.Add(new EncryptEdit().CreateCommand(session));
         root.Subcommands.Add(new DecryptEdit().CreateCommand(session));
         root.Subcommands.Add(MetadataCommand.Create(session));
+        root.Subcommands.Add(new OptimizeEdit().CreateCommand(session));
+        root.Subcommands.Add(new ImposeEdit().CreateCommand(session));
+        root.Subcommands.Add(new StampEdit().CreateCommand(session));
         root.Subcommands.Add(RunCommand.Create());
         return root;
     }

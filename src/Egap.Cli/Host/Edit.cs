@@ -18,6 +18,9 @@ internal sealed class EditContext(EgapSession session, InputFile file) : IDispos
     /// <summary>Gets or sets the encryption later saves write: the file's own unless an encrypt or decrypt said otherwise.</summary>
     public PdfEncryption Encryption { get; set; } = PdfEncryption.Keep;
 
+    /// <summary>Gets or sets a value indicating whether edits may break signatures (<c>--allow-invalidating-signatures</c>).</summary>
+    public bool AllowInvalidatingSignatures { get; set; }
+
     /// <summary>Gets or sets a value indicating whether an edit set the modification date itself, so a save leaves it.</summary>
     public bool KeepModificationDate { get; set; }
 
@@ -46,7 +49,10 @@ internal sealed class EditContext(EgapSession session, InputFile file) : IDispos
     }
 }
 
-/// <summary>A change to an open document; it may return a new document in its place, and then disposes the old one.</summary>
+/// <summary>
+/// A change to an open document. It may return a new document in its place; the old one is then disposed, or kept open with
+/// <see cref="EditContext.KeepOpen"/> when the new one still reads from it.
+/// </summary>
 internal delegate PdfDocument EditAction(PdfDocument document, EditContext context);
 
 /// <summary>
@@ -91,7 +97,7 @@ internal abstract class Edit
             return Batch.Run(session, files, batch, file =>
             {
                 string path = template is null ? file.Path ?? throw new UsageException("--in-place needs files, not standard input.") : OutputOptions.PathFor(session, template, file, "pdf");
-                using EditContext context = new(session, file);
+                using EditContext context = new(session, file) { AllowInvalidatingSignatures = saveOptions.AllowInvalidatingSignatures };
                 PdfDocument document = PdfInput.Open(session, file, secret, inMemory: template is null);
                 try
                 {
