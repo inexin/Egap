@@ -341,7 +341,7 @@ internal sealed class LinearizedWriter
         }
 
         // Layout. Values filled in later are written at fixed widths, so the positions hold.
-        string version = document.WriterConformance == PdfAConformance.None ? document.Version : PdfA.PdfAWriter.Version(document.WriterConformance);
+        string version = document.WriterVersion;
         byte[] header = [.. Encoding.ASCII.GetBytes($"%PDF-{version}\n"), (byte)'%', 0xE2, 0xE3, 0xCF, 0xD3, (byte)'\n'];
         int firstCount = size - linearizationNumber;
         int linearizationLength = Linearization(linearizationNumber, 0, 0, 0, 0, 0, 0, 0).Length;

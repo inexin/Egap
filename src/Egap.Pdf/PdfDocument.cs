@@ -791,6 +791,13 @@ public sealed partial class PdfDocument : IDisposable
     /// <summary>The conformance the document was created with or converted to, whose rules each save applies; None otherwise.</summary>
     internal PdfAConformance WriterConformance { get; set; }
 
+    /// <summary>The PDF/X version the document was converted to, whose saves write it whole, unencrypted, as its PDF version; None otherwise.</summary>
+    internal PdfXConformance WriterPdfX { get; set; }
+
+    /// <summary>The version a save writes: a PDF/A part's, a PDF/X version's, or the document's own.</summary>
+    internal string WriterVersion => WriterConformance != PdfAConformance.None ? PdfA.PdfAWriter.Version(WriterConformance)
+        : WriterPdfX != PdfXConformance.None ? Print.PdfXRules.Version(WriterPdfX) : Version;
+
     /// <summary>Whether the document was created claiming PDF/UA-1, whose basics each save checks.</summary>
     internal bool WriterAccessibility { get; private set; }
 
@@ -935,6 +942,18 @@ public sealed partial class PdfDocument : IDisposable
     {
         options = Redacted ? options with { Mode = PdfSaveMode.Rewrite, RemoveUnused = true } : options;
         options = Optimized ? Optimizing.Optimizer.Forced(this, options) : options;
+        if (WriterPdfX != PdfXConformance.None)
+        {
+            if (options.Encryption.Kind == PdfEncryptionKind.Aes256)
+            {
+                throw new PdfException($"Cannot save as {Print.PdfXRules.VersionName(WriterPdfX)}: a PDF/X file cannot be encrypted.");
+            }
+
+            // PDF/X-1a and X-3 are PDF 1.4, which has no object or cross-reference streams.
+            options = options with { Mode = PdfSaveMode.Rewrite, Encryption = IsEncrypted ? PdfEncryption.None : options.Encryption };
+            options = WriterPdfX is PdfXConformance.PdfX1a or PdfXConformance.PdfX3 ? options with { Compression = PdfCompression.None } : options;
+        }
+
         return WriterConformance == PdfAConformance.None ? options : PdfA.PdfAWriter.Options(this, WriterConformance, options);
     }
 

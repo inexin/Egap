@@ -184,7 +184,7 @@ internal sealed partial class PageRenderer
     /// <summary>Strokes the outlines in the user space the line width is measured in (9.3.6).</summary>
     private void StrokeGlyphs(PdfGraphicsState state, Path?[] outlines, List<PdfGlyph> glyphs)
     {
-        if (!state.Matrix.TryInvert(out PdfMatrix toUser) || ColorPaint(state.StrokeColor, state.StrokeAlpha) is not Paint paint || Begin(state, 0, state.Matrix) is not int restore)
+        if (!state.Matrix.TryInvert(out PdfMatrix toUser) || ColorPaint(state.StrokeColor, state.StrokeAlpha, fill: false) is not Paint paint || Begin(state, 0, state.Matrix) is not int restore)
         {
             return;
         }

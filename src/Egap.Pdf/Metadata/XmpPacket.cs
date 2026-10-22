@@ -17,6 +17,7 @@ internal sealed class XmpPacket
     public static readonly XNamespace Pdf = "http://ns.adobe.com/pdf/1.3/";
     public static readonly XNamespace PdfAId = "http://www.aiim.org/pdfa/ns/id/";
     public static readonly XNamespace PdfUAId = "http://www.aiim.org/pdfua/ns/id/";
+    public static readonly XNamespace PdfXId = "http://www.npes.org/pdfx/ns/id/";
     public static readonly XNamespace Extension = "http://www.aiim.org/pdfa/ns/extension/";
     public static readonly XNamespace Schema = "http://www.aiim.org/pdfa/ns/schema#";
     public static readonly XNamespace Property = "http://www.aiim.org/pdfa/ns/property#";

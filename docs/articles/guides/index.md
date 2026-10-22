@@ -14,6 +14,7 @@ Reading, editing, rendering and saving PDF files.
 - [Editing PDF files](editing.md): pages, metadata, outlines, annotations and forms; damaged and encrypted files; saving.
 - [Fonts](fonts.md): the open fonts that stand in for missing ones, in Egap.Pdf and Egap.Documents alike.
 - [PDF tools](pdf-tools.md): optimize, stamps and imposition, page ranges, compare and clean-up.
+- [Print production](print-production.md): preflight against a print profile, separations and ink coverage, colour conversion, PDF/X and overprint preview.
 - [Redaction and PDF/A](redaction-and-pdfa.md): true redaction, replacing text, PDF/A and e-invoices.
 - [Rendering pages](rendering.md): pages to images, or onto any Egami canvas.
 - [Signatures](signatures.md): signing, verifying, and keys on smart cards and HSMs.

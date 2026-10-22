@@ -3,6 +3,41 @@
 What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Pdf 2.2.0 (unreleased)
+
+### Preflight
+- `PdfPreflight.Run` lists what a document uses for print, page by page: output intents, colour spaces with their ICC
+  profiles and spot inks, images with their effective resolution, fonts, transparency, overprint, hairlines and bleed.
+- `PdfPrintProfile` says what a print job accepts (most ink, least image resolution, colour spaces, bleed, thinnest rule,
+  embedded fonts, transparency), with presets for PDF/X-4, sheetfed coated, web offset and newspaper. Preflight lists the
+  issues that break it as `PdfAIssue` records.
+
+### Separations and ink coverage
+- `PdfPage.RenderSeparations` renders a page as ink plates, one per process and spot ink, with a multi-ink renderer:
+  overprint, overprint mode, knockout and blend modes act on the inks. `PdfSeparations` measures total ink coverage
+  (`MaxCoverage`, `ShareOver`, `CoveragePerPlate`) and draws a heat map (`CoverageMap`). `PdfSeparationOptions` sets the
+  press profile and which spot inks get plates.
+- Preflight's ink check: `PdfPrintProfile.MaxInkCoverage` is measured on each page's plates and reported.
+
+### Colour conversion
+- `PdfColorConverter.Convert` converts a document's RGB, calibrated, Lab and ICC-based colours into a print profile
+  (FOGRA39 or the output intent by default) through Egami's colour engine: colour operators, images, shadings, patterns,
+  soft masks, Type 3 glyphs and annotations. CMYK and spot colours are kept; `Spots` converts spots and `RetargetCmyk`
+  moves CMYK between press profiles. Black and gray text and thin rules go on black ink alone by default.
+- `PdfDocument.ConvertToGray` now runs on the same conversion pass, and also converts the page's transparency group space.
+
+### PDF/X
+- `PdfXConverter.Check` and `Convert` for PDF/X-1a, X-3, X-4 and X-6 (X-1a and X-3 only without transparency), and checks
+  for X-4p, X-5g, X-5pg, X-5n, X-6p and X-6n: output intent, trim and bleed boxes, identification and XMP, `/Trapped`, fonts,
+  colour spaces against the output intent, transparency, encryption, external content, transfer functions, annotations
+  in the print area, actions and optional content. Reports are `PdfAReport`s.
+- `PdfOutputCondition` names registered print conditions (FOGRA39 with Egami's profile, FOGRA51, FOGRA52, GRACoL 2013,
+  SWOP 2013, newspaper). A converted document saves whole, unencrypted, as its version's PDF version.
+
+### Overprint preview
+- `PdfRenderOptions.SimulateOverprint` renders a page as it prints: through its ink plates, proofed back to sRGB through
+  the press profile, so overprint and spot colours show as on press.
+
 ## Egap.Documents 2.1.0 (2026-10-22)
 
 ### Reports in code
@@ -99,6 +134,32 @@ was removed or changed in a way that breaks code: 2.1.0 is 1.5.0 plus what is be
 
 ### Speed
 - Content streams write coordinates faster, with the same text as before.
+
+### Separations and ink coverage
+- `PdfPage.RenderSeparations` renders a page as ink plates, one per process and spot ink, with a multi-ink renderer:
+  overprint, overprint mode, knockout and blend modes act on the inks. `PdfSeparations` measures total ink coverage
+  (`MaxCoverage`, `ShareOver`, `CoveragePerPlate`) and draws a heat map (`CoverageMap`). `PdfSeparationOptions` sets the
+  press profile and which spot inks get plates.
+- Preflight's ink check: `PdfPrintProfile.MaxInkCoverage` is measured on each page's plates and reported.
+
+### Colour conversion
+- `PdfColorConverter.Convert` converts a document's RGB, calibrated, Lab and ICC-based colours into a print profile
+  (FOGRA39 or the output intent by default) through Egami's colour engine: colour operators, images, shadings, patterns,
+  soft masks, Type 3 glyphs and annotations. CMYK and spot colours are kept; `Spots` converts spots and `RetargetCmyk`
+  moves CMYK between press profiles. Black and gray text and thin rules go on black ink alone by default.
+- `PdfDocument.ConvertToGray` now runs on the same conversion pass, and also converts the page's transparency group space.
+
+### PDF/X
+- `PdfXConverter.Check` and `Convert` for PDF/X-1a, X-3, X-4 and X-6 (X-1a and X-3 only without transparency), and checks
+  for X-4p, X-5g, X-5pg, X-5n, X-6p and X-6n: output intent, trim and bleed boxes, identification and XMP, `/Trapped`, fonts,
+  colour spaces against the output intent, transparency, encryption, external content, transfer functions, annotations
+  in the print area, actions and optional content. Reports are `PdfAReport`s.
+- `PdfOutputCondition` names registered print conditions (FOGRA39 with Egami's profile, FOGRA51, FOGRA52, GRACoL 2013,
+  SWOP 2013, newspaper). A converted document saves whole, unencrypted, as its version's PDF version.
+
+### Overprint preview
+- `PdfRenderOptions.SimulateOverprint` renders a page as it prints: through its ink plates, proofed back to sRGB through
+  the press profile, so overprint and spot colours show as on press.
 
 ## Egap.Documents 2.0.0 (2026-10-21)
 

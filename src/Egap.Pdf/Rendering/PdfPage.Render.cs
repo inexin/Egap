@@ -46,6 +46,12 @@ public sealed partial class PdfPage
             throw new PdfLimitException(nameof(PdfRenderOptions.MaxOutputPixels), $"A render of {geometry.Width} by {geometry.Height} pixels passes the limit of {options.MaxOutputPixels:N0}; render it in tiles through the region.");
         }
 
+        if (options.SimulateOverprint)
+        {
+            using PdfSeparations plates = RenderSeparations(options with { SimulateOverprint = false }, cancellationToken: cancellationToken);
+            return plates.Inks.Proof<TPixel>();
+        }
+
         Raster<TPixel> raster = Raster.Create<TPixel>(geometry.Width, geometry.Height);
         try
         {
@@ -77,6 +83,14 @@ public sealed partial class PdfPage
     {
         ArgumentNullException.ThrowIfNull(canvas);
         options ??= PdfRenderOptions.Default;
+        if (options.SimulateOverprint)
+        {
+            // The soft proof is pixels: it is drawn as an image where the page goes.
+            using Raster<Rgba8> proof = Render<Rgba8>(options, cancellationToken);
+            canvas.DrawImage(proof, new RectF(0, 0, proof.Width, proof.Height));
+            return;
+        }
+
         Draw(canvas, RenderGeometry.Of(this, options).PageToDevice, options, background: true, cancellationToken);
     }
 

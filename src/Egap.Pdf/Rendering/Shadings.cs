@@ -60,7 +60,7 @@ internal static class Shadings
     private const int Stops = 256;
 
     /// <summary>The paint for a shading, or one with no paint for a mesh type or a shading that cannot be read.</summary>
-    public static ShadingPaint Read(PdfObject shading, ColorCache colors, PdfDictionary? resources, RenderingIntent intent)
+    public static ShadingPaint Read(PdfObject shading, ColorCache colors, PdfDictionary? resources, RenderingIntent intent, InkMap? inks = null)
     {
         PdfDictionary dictionary = shading switch
         {
@@ -77,15 +77,15 @@ internal static class Shadings
         if (type is >= 4 and <= 7)
         {
             return shading is PdfStream mesh
-                ? new ShadingPaint(null, box, background, dictionary, MeshShading.Read(mesh, type, space))
+                ? new ShadingPaint(null, box, background, dictionary, MeshShading.Read(mesh, type, space, inks))
                 : throw new InvalidDataException("A mesh shading is not a stream.");
         }
 
         Paint paint = type switch
         {
             1 => Function(dictionary, space),
-            2 => Axial(dictionary, space),
-            3 => Radial(dictionary, space),
+            2 => Axial(dictionary, space, inks),
+            3 => Radial(dictionary, space, inks),
             _ => throw new InvalidDataException($"The shading type {type} is not known."),
         };
         return new ShadingPaint(paint, box, background, dictionary);
@@ -101,18 +101,18 @@ internal static class Shadings
         return space.PaintsNothing ? default : new RgbaF32(Unit(rgb[0]), Unit(rgb[1]), Unit(rgb[2]), 1);
     }
 
-    private static LinearGradient Axial(PdfDictionary d, ImageColorSpace space)
+    private static LinearGradient Axial(PdfDictionary d, ImageColorSpace space, InkMap? inks)
     {
         double[] coords = Numbers(d.Get<PdfArray>("Coords")) is { Length: >= 4 } c ? c : throw new InvalidDataException("An axial shading has no /Coords.");
         (bool start, bool end) = Extend(d);
-        return new LinearGradient(new Vector2((float)coords[0], (float)coords[1]), new Vector2((float)coords[2], (float)coords[3]), StopsOf(d, space))
+        return new LinearGradient(new Vector2((float)coords[0], (float)coords[1]), new Vector2((float)coords[2], (float)coords[3]), StopsOf(d, space, inks))
         {
             ExtendStart = start,
             ExtendEnd = end,
         };
     }
 
-    private static ConicalGradient Radial(PdfDictionary d, ImageColorSpace space)
+    private static ConicalGradient Radial(PdfDictionary d, ImageColorSpace space, InkMap? inks)
     {
         double[] coords = Numbers(d.Get<PdfArray>("Coords")) is { Length: >= 6 } c ? c : throw new InvalidDataException("A radial shading has no /Coords.");
         (bool start, bool end) = Extend(d);
@@ -121,7 +121,7 @@ internal static class Shadings
             (float)Math.Max(coords[2], 0),
             new Vector2((float)coords[3], (float)coords[4]),
             (float)Math.Max(coords[5], 0),
-            StopsOf(d, space))
+            StopsOf(d, space, inks))
         {
             ExtendStart = start,
             ExtendEnd = end,
@@ -129,7 +129,7 @@ internal static class Shadings
     }
 
     /// <summary>The colour at evenly spaced t over /Domain, as gradient stops from 0 to 1.</summary>
-    private static GradientStop[] StopsOf(PdfDictionary d, ImageColorSpace space)
+    private static GradientStop[] StopsOf(PdfDictionary d, ImageColorSpace space, InkMap? inks)
     {
         PdfFunction function = PdfFunction.Read(d.Get("Function") ?? throw new InvalidDataException("A shading has no /Function."));
         double[] domain = Numbers(d.Get<PdfArray>("Domain")) is { Length: >= 2 } given ? given : [0, 1];
@@ -142,10 +142,23 @@ internal static class Shadings
             input[0] = domain[0] + ((domain[1] - domain[0]) * offset);
             Array.Clear(output);
             function.Evaluate(input, output);
-            stops[i] = new GradientStop(offset, Convert(space, output));
+            stops[i] = Stop(offset, space, output, inks);
         }
 
         return stops;
+    }
+
+    /// <summary>A gradient stop: an ink colour when the space prints on the plates being drawn, else sRGB.</summary>
+    public static GradientStop Stop(float offset, ImageColorSpace space, ReadOnlySpan<double> components, InkMap? inks)
+    {
+        if (inks?.Plan(space) is InkPlan plan && !plan.PaintsNothing)
+        {
+            Span<double> c = stackalloc double[Math.Max(space.Components, 1)];
+            components[..Math.Min(components.Length, c.Length)].CopyTo(c);
+            return new GradientStop(offset, plan.Color(c));
+        }
+
+        return new GradientStop(offset, Convert(space, components));
     }
 
     private static FunctionShading Function(PdfDictionary d, ImageColorSpace space)

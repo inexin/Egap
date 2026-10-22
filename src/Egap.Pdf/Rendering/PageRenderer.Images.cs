@@ -60,6 +60,11 @@ internal sealed partial class PageRenderer
             Colors = colors.Context.WithIntent(ColorContext.IntentOf(source.Intent ?? state.RenderingIntent)),
         };
 
+        if (!source.IsStencilMask && DrawInkImage(source, options, state, name, image, reduction))
+        {
+            return;
+        }
+
         Raster raster;
         try
         {
@@ -93,7 +98,9 @@ internal sealed partial class PageRenderer
         }
 
         BlendMode blend = BlendModeOf(state.BlendMode);
-        canvas.DrawImage(raster, unit, sampling, state.FillAlpha < 1 || blend != BlendMode.SourceOver ? new SolidPaint(new RgbaF32(1, 1, 1, 1)) { Opacity = (float)state.FillAlpha, BlendMode = blend } : null);
+        Overprint overprint = OverprintOf(fill: true, null, null);
+        canvas.DrawImage(raster, unit, sampling, state.FillAlpha < 1 || blend != BlendMode.SourceOver || overprint != Overprint.Off
+            ? new SolidPaint(new RgbaF32(1, 1, 1, 1)) { Opacity = (float)state.FillAlpha, BlendMode = blend, Overprint = overprint } : null);
         End(restore);
     }
 

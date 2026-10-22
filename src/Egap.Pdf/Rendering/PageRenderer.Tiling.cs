@@ -16,7 +16,7 @@ namespace Egap.Pdf.Rendering;
 /// </summary>
 internal sealed partial class PageRenderer
 {
-    private static readonly ConditionalWeakTable<PdfStream, Dictionary<RgbaF32, Picture?>> Cells = [];
+    private static readonly ConditionalWeakTable<PdfStream, Dictionary<(RgbaF32 Tint, string? Ink, InkMap? Inks), Picture?>> Cells = [];
 
     /// <summary>Forgets a tiling pattern's recorded cells, after its content was rewritten in place.</summary>
     internal static void ForgetPattern(PdfStream pattern)
@@ -57,7 +57,7 @@ internal sealed partial class PageRenderer
             tint = rgb;
         }
 
-        if (Cell(stream, box, tint, d.GetInt("PaintType") == 2) is not Picture cell)
+        if (Cell(stream, box, tint, d.GetInt("PaintType") == 2, null) is not Picture cell)
         {
             return null;
         }
@@ -113,12 +113,14 @@ internal sealed partial class PageRenderer
     }
 
     /// <summary>The pattern cell as a picture in pattern space, made once per pattern and colour; null when it cannot be drawn.</summary>
-    private Picture? Cell(PdfStream pattern, PdfRectangle box, RgbaF32 tint, bool uncoloredPattern)
+    private Picture? Cell(PdfStream pattern, PdfRectangle box, RgbaF32 tint, bool uncoloredPattern, Egami.Colors.InkColor? inkTint)
     {
-        Dictionary<RgbaF32, Picture?> byColor = Cells.GetValue(pattern, _ => []);
+        // A cell drawn for plates keeps its inks, so it is recorded per ink set as well as per colour.
+        Dictionary<(RgbaF32, string?, InkMap?), Picture?> byColor = Cells.GetValue(pattern, _ => []);
+        (RgbaF32, string?, InkMap?) key = (tint, inkTint?.ToString(), inks);
         lock (byColor)
         {
-            if (byColor.TryGetValue(tint, out Picture? known))
+            if (byColor.TryGetValue(key, out Picture? known))
             {
                 return known;
             }
@@ -128,7 +130,13 @@ internal sealed partial class PageRenderer
         try
         {
             PictureRecorder recorder = new(new RectF((float)box.Left, (float)box.Bottom, (float)box.Width, (float)box.Height));
-            PageRenderer inner = new(recorder, Matrix3x2.Identity, settings, cache) { maskDepth = maskDepth + 1, uncolored = uncoloredPattern ? tint : null };
+            PageRenderer inner = new(recorder, Matrix3x2.Identity, settings, cache)
+            {
+                maskDepth = maskDepth + 1,
+                uncolored = uncoloredPattern ? tint : null,
+                inks = inks,
+                uncoloredInk = uncoloredPattern ? inkTint : null,
+            };
             PdfContent content = PdfContent.Parse(System.Text.Encoding.ASCII.GetBytes(FormattableString.Invariant($"{box.Left} {box.Bottom} {box.Width} {box.Height} re W n")));
             content.AddRange(PdfContent.Read(pattern));
             try
@@ -150,7 +158,7 @@ internal sealed partial class PageRenderer
 
         lock (byColor)
         {
-            byColor[tint] = picture;
+            byColor[key] = picture;
         }
 
         return picture;
