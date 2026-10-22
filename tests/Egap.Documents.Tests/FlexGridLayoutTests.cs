@@ -96,7 +96,7 @@ public sealed class FlexGridLayoutTests
 
         Assert.True(layout.Pages.Count >= 2);
         List<ContainerBox> parts = [.. layout.FindBoxes(flex).Select(b => b.Box).OfType<ContainerBox>()];
-        Assert.True(parts.Count >= 2);
+        Assert.True(parts.Count >= 2, $"{parts.Count} parts");
         Assert.True(parts[0].Continues && !parts[0].IsContinuation);
         Assert.True(parts[^1].IsContinuation && !parts[^1].Continues);
         LayoutRect first = ItemBounds(layout, items[0]);
@@ -209,7 +209,7 @@ public sealed class FlexGridLayoutTests
         DocumentLayout layout = document.Layout(Isolated);
 
         List<ContainerBox> parts = [.. layout.FindBoxes(group).Select(b => b.Box).OfType<ContainerBox>()];
-        Assert.True(parts.Count >= 2);
+        Assert.True(parts.Count >= 2, $"{parts.Count} parts");
         Assert.Equal(36, parts[0].Bounds.X, 0.01);
         Assert.Equal(228, parts[0].Bounds.Width, 0.01);
         Assert.Equal(300 - 36, parts[0].Bounds.Bottom, 0.01);
@@ -400,6 +400,39 @@ public sealed class FlexGridLayoutTests
         foreach (LineBox line in layout.Pages.SelectMany(page => page.BodyLines))
         {
             Assert.True(line.Bounds.Bottom <= 300 - 36 + 0.01, "every line inside the body");
+        }
+    }
+
+    [Fact]
+    public void SplitLinesAndRowsGoOnInTheNextColumn()
+    {
+        (Document document, Body body) = Page(400, 300);
+        document.Sections[0].PageSetup.ColumnCount = 2;
+        FlexContainer flex = Add(body, new FlexContainer(document));
+        FlexItem item = flex.AddItem();
+        GridContainer grid = Add(body, new GridContainer(document) { Layout = new GridLayout { Columns = [GridTrack.Fraction(1)] } });
+        GridItem cell = grid.AddItem();
+        for (int i = 0; i < 30; i++)
+        {
+            item.AddParagraph("Flex line " + i);
+            cell.AddParagraph("Grid line " + i);
+        }
+
+        DocumentLayout layout = document.Layout(Isolated);
+
+        foreach (BlockContainer split in new BlockContainer[] { item, cell })
+        {
+            List<(LayoutBox Box, PageLayout Page)> parts = [.. layout.FindBoxes(split).Select(b => (b.Box, b.Page))];
+            Assert.True(parts.Count >= 2, $"{parts.Count} parts");
+            foreach ((LayoutBox part, PageLayout page) in parts)
+            {
+                ContainerBox container = page.Boxes.SelectMany(b => b.Descendants().Prepend(b)).OfType<ContainerBox>().First(c => c.Children.Contains(part));
+                Assert.InRange(part.Bounds.X, container.Bounds.X - 0.01, container.Bounds.Right + 0.01);
+                foreach (LineBox line in part.Descendants().OfType<LineBox>())
+                {
+                    Assert.InRange(line.Bounds.X, container.Bounds.X - 0.01, container.Bounds.Right + 0.01);
+                }
+            }
         }
     }
 

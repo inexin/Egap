@@ -202,6 +202,7 @@ internal sealed partial class HtmlReader
         int first = flow.Container.Blocks.Count;
         Children(element, style, inside, frame);
         Close(inside);
+        KeepPending(inside, flow.Container.Blocks, first, flow);
 
         // The last child's bottom margin stays inside a box with bottom padding or a border; else it collapses through it.
         double trailing = inside.PendingSpace;
@@ -227,6 +228,41 @@ internal sealed partial class HtmlReader
         flow.Container.Blocks.Add(group);
         flow.PendingSpace = Math.Max(0, Collapse(trailing, style.Length("margin-bottom", width) ?? 0));
         BreakAfter(style, flow);
+    }
+
+    /// <summary>
+    /// Positioned boxes and bookmarks still waiting when a box or item ends: they go in its last paragraph, or on to the
+    /// flow around it when it has none, so none is lost.
+    /// </summary>
+    private static void KeepPending(Flow inner, NodeCollection<Block> blocks, int first, Flow outer)
+    {
+        if (inner.PendingFloats.Count == 0 && inner.PendingBookmarks.Count == 0)
+        {
+            return;
+        }
+
+        Paragraph? last = null;
+        for (int i = blocks.Count - 1; i >= first && last is null; i--)
+        {
+            last = blocks[i] as Paragraph ?? blocks[i].Descendants<Paragraph>().LastOrDefault();
+        }
+
+        if (last is null)
+        {
+            outer.PendingFloats.AddRange(inner.PendingFloats);
+            outer.PendingBookmarks.AddRange(inner.PendingBookmarks);
+            inner.PendingFloats.Clear();
+            inner.PendingBookmarks.Clear();
+            return;
+        }
+
+        for (int i = inner.PendingBookmarks.Count - 1; i >= 0; i--)
+        {
+            last.Inlines.Insert(0, new BookmarkStart(last.Document, inner.PendingBookmarks[i]));
+        }
+
+        inner.PendingBookmarks.Clear();
+        AnchorPendingFloats(inner, last);
     }
 
     /// <summary>A margin left at the end of a box's blocks, kept as space after its last paragraph.</summary>
@@ -438,6 +474,7 @@ internal sealed partial class HtmlReader
 
         currentLink = outerLink;
         Close(flow);
+        KeepPending(flow, flow.Container.Blocks, 0, outer);
 
         // An item is a box of its own: its last child's bottom margin stays inside it.
         KeepTrailingSpace(flow.Container.Blocks, 0, flow.PendingSpace);

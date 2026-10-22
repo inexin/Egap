@@ -370,7 +370,8 @@ internal sealed partial class Paginator
 
         public BoxStyle? Box { get; } = box;
 
-        public double X { get; } = x;
+        /// <summary>Where the item starts across, in the column being filled; it moves with the column.</summary>
+        public double X { get; set; } = x;
 
         public double Width { get; } = width;
 
@@ -394,6 +395,7 @@ internal sealed partial class Paginator
     private double SplitBand(List<SplitItem> items, double top, Func<List<LayoutBox>> placed, Action endPart)
     {
         double at = top;
+        double columnX = Column.X;
         while (true)
         {
             // At the top of a column every item places something; elsewhere an item may wait for the next part.
@@ -423,6 +425,7 @@ internal sealed partial class Paginator
 
                 endPart();
                 at = y;
+                columnX = FollowColumn(items, columnX);
                 continue;
             }
 
@@ -441,7 +444,20 @@ internal sealed partial class Paginator
 
             endPart();
             at = y;
+            columnX = FollowColumn(items, columnX);
         }
+    }
+
+    /// <summary>Moves split items across with the column a part went on to: the next column of the page, or the first of the next.</summary>
+    private double FollowColumn(List<SplitItem> items, double columnX)
+    {
+        double shift = Column.X - columnX;
+        foreach (SplitItem split in items)
+        {
+            split.X += shift;
+        }
+
+        return Column.X;
     }
 
     /// <summary>The offset of the first box and the space between boxes when <paramref name="free"/> is shared out by <paramref name="alignment"/>.</summary>

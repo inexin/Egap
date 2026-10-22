@@ -38,6 +38,53 @@ public sealed class PreviewTests
     }
 
     [Fact]
+    public async Task OnlyThisMachinesPagesAndProgramsAreServed()
+    {
+        PreviewState state = new();
+        using PreviewServer server = new(state, 0);
+        CancellationToken token = TestContext.Current.CancellationToken;
+
+        // A host name rebound to the loopback address, and a page elsewhere posting to the tool, are refused.
+        using HttpRequestMessage rebound = new(HttpMethod.Get, server.Address);
+        rebound.Headers.Host = "attacker.example:" + server.Port;
+        Assert.Equal(System.Net.HttpStatusCode.Forbidden, (await Client.SendAsync(rebound, token)).StatusCode);
+
+        using HttpRequestMessage foreign = new(HttpMethod.Post, server.Address + "api/document") { Content = Zip(1) };
+        foreign.Headers.Add("Origin", "https://attacker.example");
+        Assert.Equal(System.Net.HttpStatusCode.Forbidden, (await Client.SendAsync(foreign, token)).StatusCode);
+
+        // A post a page could send without asking first (no preflight) is refused for its content type.
+        using ByteArrayContent plain = new(await Zip(1).ReadAsByteArrayAsync(token));
+        plain.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/plain");
+        Assert.Equal(System.Net.HttpStatusCode.UnsupportedMediaType, (await Client.PostAsync(server.Address + "api/document", plain, token)).StatusCode);
+
+        // Too many pages are refused whole; the tool's own page and a program's post are taken.
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, (await Client.PostAsync(server.Address + "api/document", Zip(PreviewState.MaxPages + 1), token)).StatusCode);
+        Assert.Empty(state.Snapshot().Pages);
+        using HttpRequestMessage own = new(HttpMethod.Post, server.Address + "api/document") { Content = Zip(2) };
+        own.Headers.Add("Origin", $"http://127.0.0.1:{server.Port}");
+        Assert.Equal(System.Net.HttpStatusCode.NoContent, (await Client.SendAsync(own, token)).StatusCode);
+        Assert.Equal(2, state.Snapshot().Pages.Count);
+
+        static ByteArrayContent Zip(int pages)
+        {
+            using MemoryStream bytes = new();
+            using (System.IO.Compression.ZipArchive archive = new(bytes, System.IO.Compression.ZipArchiveMode.Create, leaveOpen: true))
+            {
+                for (int i = 1; i <= pages; i++)
+                {
+                    using Stream entry = archive.CreateEntry($"page-{i}.png").Open();
+                    entry.WriteByte(0x89);
+                }
+            }
+
+            ByteArrayContent content = new(bytes.ToArray());
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/zip");
+            return content;
+        }
+    }
+
+    [Fact]
     public async Task TheEventStreamTellsThePageToReload()
     {
         PreviewState state = new();

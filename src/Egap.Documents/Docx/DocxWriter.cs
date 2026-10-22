@@ -641,7 +641,7 @@ internal sealed partial class DocxWriter
             case Table table:
                 return WriteTable(table);
             case FlexContainer or GridContainer:
-                // Word has no such containers: a borderless table (Phase 9 design Q8).
+                // Word has no such containers: a borderless table.
                 return WriteTable(ContainerTables.For(block, ContainerTables.TextWidth(block))!);
             case ContentControl control:
                 {

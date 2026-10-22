@@ -115,6 +115,8 @@ The `egap-preview` dotnet tool shows documents on a local web page, drawn by Ega
 they change. `ShowPreview()` sends a document's pages to it; run the program under `dotnet watch` and the page follows each
 edit. Given a DOCX file instead, the tool draws the file again whenever it is saved. It listens on
 127.0.0.1 only, on port 12500 unless `--port` says otherwise, and `ShowPreview()` returns false when it is not running.
+It answers only requests addressed to 127.0.0.1 or localhost from programs and its own page, so other web pages can
+neither send it pages nor read the ones it shows.
 
 ```sh
 dotnet tool install -g Egap.Preview

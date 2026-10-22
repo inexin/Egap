@@ -350,8 +350,9 @@ internal sealed partial class Paginator
             items = [];
         }
 
-        foreach (FlexLine line in plan.Lines)
+        for (int index = 0; index < plan.Lines.Count; index++)
         {
+            FlexLine line = plan.Lines[index];
             double before = items.Count == 0 && continued ? 0 : line.Before;
             bool overflows = at + before + line.Height > ColumnBottom + 0.01;
 
@@ -380,6 +381,10 @@ internal sealed partial class Paginator
                     partTop = y;
                     partAtTop = true;
                     at = y + (box?.InsetTop ?? 0);
+
+                    // At the top of a column the line may still be too tall: it is looked at again there, to split.
+                    index--;
+                    continue;
                 }
                 else
                 {

@@ -321,7 +321,7 @@ internal sealed partial class HtmlWriter
                 continue;
             }
 
-            FlushList(list);
+            FlushList(list, depth);
             switch (block)
             {
                 case Paragraph paragraph:
@@ -358,7 +358,7 @@ internal sealed partial class HtmlWriter
             }
         }
 
-        FlushList(list);
+        FlushList(list, depth);
     }
 
     private void WriteParagraph(Paragraph paragraph)
@@ -404,7 +404,7 @@ internal sealed partial class HtmlWriter
         }
     }
 
-    private void FlushList(List<Paragraph> items)
+    private void FlushList(List<Paragraph> items, int depth)
     {
         if (items.Count == 0)
         {
@@ -446,6 +446,9 @@ internal sealed partial class HtmlWriter
             Attributes(item, direct, item.Style ?? document.Styles.GetDefault(StyleType.Paragraph));
             body.Append('>');
             WriteInlines(item.Inlines);
+
+            // A text box anchored in the item goes inside it, as it goes after a plain paragraph.
+            WritePositioned(depth + 1);
         }
 
         while (open.Count > 0)
@@ -857,6 +860,7 @@ internal sealed partial class HtmlWriter
             {
                 WriteInlines(paragraph.Inlines);
                 body.Append(' ');
+                WritePositioned(1);
             }
 
             body.Append("<a href=\"#fnref").Append(number).Append("\">↩</a></li>\n");

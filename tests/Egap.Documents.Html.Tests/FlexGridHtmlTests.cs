@@ -139,6 +139,32 @@ public sealed class FlexGridHtmlTests
     }
 
     [Fact]
+    public void PositionedBoxesAndIdsInsideBoxesAndItemsAreKept()
+    {
+        Document document = HtmlFormat.Parse("""
+            <div id="card" style="border-radius: 8px"><span style="position: absolute; left: 0; width: 40px">NEW</span></div>
+            <div style="display: flex"><div id="cell"><span style="position: absolute; left: 0; width: 40px">HOT</span></div></div>
+            <p>After</p>
+            """);
+
+        Assert.Equal(2, document.Descendants<Shape>().Count(s => s.Floating is not null));
+        Assert.Contains(document.Descendants<BookmarkStart>(), b => b.Name == "card");
+        Assert.Contains(document.Descendants<BookmarkStart>(), b => b.Name == "cell");
+    }
+
+    [Fact]
+    public void PositionedBoxesInListItemsAndNotesAreWritten()
+    {
+        Document document = HtmlFormat.Parse("""
+            <ul><li>Item<span style="position: absolute; left: 0; width: 40px">BOX</span></li></ul>
+            """);
+        string html = document.ToHtml();
+
+        Assert.Contains("BOX", html, StringComparison.Ordinal);
+        Assert.True(html.IndexOf("BOX", StringComparison.Ordinal) < html.IndexOf("</ul>", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void ContainersAndBoxesWriteBackAsCss()
     {
         Document document = HtmlFormat.Parse("""

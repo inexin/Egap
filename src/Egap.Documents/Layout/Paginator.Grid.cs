@@ -608,8 +608,10 @@ internal sealed partial class Paginator
             items = [];
         }
 
-        foreach ((int first, int last) in GridBands(plan))
+        List<(int First, int Last)> bands = GridBands(plan);
+        for (int index = 0; index < bands.Count; index++)
         {
+            (int first, int last) = bands[index];
             double bandHeight = plan.RowY[last] + plan.RowHeight[last] - plan.RowY[first];
             double before = first == 0 || (items.Count == 0 && continued) ? 0 : gap;
             bool overflows = at + before + bandHeight > ColumnBottom + 0.01;
@@ -634,11 +636,15 @@ internal sealed partial class Paginator
             {
                 if (items.Count == 0 && !continued)
                 {
-                    // Not even the first row fits: the whole grid moves to the next column or page.
+                    // Not even the first row fits: the whole grid moves to the next column or page, where the row is
+                    // looked at again, to split if it is still too tall.
                     NextColumn();
                     geometry = Shifted(Column, marginLeft);
                     partTop = y;
                     at = y + (box?.InsetTop ?? 0);
+                    partAtTop = true;
+                    index--;
+                    continue;
                 }
                 else
                 {

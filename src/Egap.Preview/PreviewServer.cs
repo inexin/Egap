@@ -25,19 +25,35 @@ internal sealed class PreviewState
         }
     }
 
-    /// <summary>Takes a package as <see cref="Egap.Documents.DocumentPreview"/> sends it: name, error, page images.</summary>
+    /// <summary>The most pages a package may hold.</summary>
+    internal const int MaxPages = 2000;
+
+    /// <summary>The most bytes a package's entries may unpack to, all together: 1 GB.</summary>
+    internal const long MaxUnpacked = 1L << 30;
+
+    /// <summary>The most bytes the name or the error may unpack to.</summary>
+    private const int MaxText = 64 * 1024;
+
+    /// <summary>
+    /// Takes a package as <see cref="Egap.Documents.DocumentPreview"/> sends it: name, error, page images. A package that
+    /// holds too many pages or unpacks to too much is refused whole, so a hostile one cannot fill the memory.
+    /// </summary>
+    /// <exception cref="InvalidDataException">The package is not a ZIP, or is too large unpacked.</exception>
     public void Update(byte[] package)
     {
         using ZipArchive archive = new(new MemoryStream(package), ZipArchiveMode.Read);
-        string? newName = Read(archive, "name.txt");
-        string? newError = Read(archive, "error.txt");
+        long budget = MaxUnpacked;
+        string? newName = Read(archive, "name.txt", ref budget);
+        string? newError = Read(archive, "error.txt", ref budget);
         List<byte[]> newPages = [];
         for (int i = 1; archive.GetEntry($"page-{i}.png") is { } entry; i++)
         {
-            using Stream stream = entry.Open();
-            using MemoryStream bytes = new();
-            stream.CopyTo(bytes);
-            newPages.Add(bytes.ToArray());
+            if (i > MaxPages)
+            {
+                throw new InvalidDataException($"A package holds at most {MaxPages} pages.");
+            }
+
+            newPages.Add(Unpack(entry, int.MaxValue, ref budget));
         }
 
         Set(newPages, newName ?? "Document", newError);
@@ -69,15 +85,31 @@ internal sealed class PreviewState
         }
     }
 
-    private static string? Read(ZipArchive archive, string name)
+    private static string? Read(ZipArchive archive, string name, ref long budget)
     {
-        if (archive.GetEntry(name) is not { } entry)
+        return archive.GetEntry(name) is { } entry ? Encoding.UTF8.GetString(Unpack(entry, MaxText, ref budget)) : null;
+    }
+
+    /// <summary>An entry's bytes, at most <paramref name="limit"/> and what is left of <paramref name="budget"/>, whatever its header claims.</summary>
+    private static byte[] Unpack(ZipArchiveEntry entry, int limit, ref long budget)
+    {
+        long most = Math.Min(limit, budget);
+        using Stream stream = entry.Open();
+        using MemoryStream bytes = new();
+        byte[] buffer = new byte[81920];
+        int read;
+        while ((read = stream.Read(buffer)) > 0)
         {
-            return null;
+            if (bytes.Length + read > most)
+            {
+                throw new InvalidDataException("The package is too large unpacked.");
+            }
+
+            bytes.Write(buffer, 0, read);
         }
 
-        using StreamReader reader = new(entry.Open(), Encoding.UTF8);
-        return reader.ReadToEnd();
+        budget -= bytes.Length;
+        return bytes.ToArray();
     }
 }
 
@@ -140,10 +172,18 @@ internal sealed class PreviewServer : IDisposable
             try
             {
                 NetworkStream stream = client.GetStream();
-                (string method, string path, int length) = await ReadRequest(stream);
-                byte[] body = new byte[Math.Clamp(length, 0, MaxBody)];
+                Request request = await ReadRequest(stream);
+                byte[] body = new byte[Math.Clamp(request.Length, 0, MaxBody)];
                 await stream.ReadExactlyAsync(body, stop.Token);
-                await Respond(stream, method, path, body);
+                if (!Trusted(request))
+                {
+                    // Only this machine's own pages and programs: a web page elsewhere, or one reached through a
+                    // rebound host name, may neither send pages nor read them.
+                    await Send(stream, 403, "text/plain", "Only requests to 127.0.0.1 or localhost from the preview page itself."u8.ToArray());
+                    return;
+                }
+
+                await Respond(stream, request, body);
             }
             catch (Exception e) when (e is IOException or SocketException or OperationCanceledException or InvalidDataException or ObjectDisposedException or EndOfStreamException)
             {
@@ -152,8 +192,26 @@ internal sealed class PreviewServer : IDisposable
         }
     }
 
-    /// <summary>The request line and the body's length; the headers are read up to the blank line that ends them.</summary>
-    private async Task<(string Method, string Path, int Length)> ReadRequest(NetworkStream stream)
+    /// <summary>A request's line and the headers the server looks at.</summary>
+    private sealed record Request(string Method, string Path, int Length, string? Host, string? Origin, string? ContentType);
+
+    /// <summary>
+    /// Whether a request may be served: its Host names the loopback address or localhost on this port (no DNS rebinding),
+    /// and any Origin is the preview page itself. Programs that send pages send no Origin; browsers send one with every POST.
+    /// </summary>
+    private bool Trusted(Request request)
+    {
+        string[] hosts = [$"127.0.0.1:{Port}", $"localhost:{Port}", $"[::1]:{Port}"];
+        if (request.Host is null || !hosts.Contains(request.Host, StringComparer.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return request.Origin is null || hosts.Any(h => string.Equals(request.Origin, "http://" + h, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>The request line, the body's length and the headers looked at; the headers are read up to the blank line that ends them.</summary>
+    private async Task<Request> ReadRequest(NetworkStream stream)
     {
         StringBuilder head = new();
         byte[] one = new byte[1];
@@ -179,11 +237,32 @@ internal sealed class PreviewServer : IDisposable
         }
 
         int length = 0;
+        string? host = null, origin = null, contentType = null;
         foreach (string line in lines.Skip(1))
         {
-            if (line.StartsWith("Content-Length:", StringComparison.OrdinalIgnoreCase) && int.TryParse(line[15..].Trim(), out int value))
+            int colon = line.IndexOf(':', StringComparison.Ordinal);
+            if (colon <= 0)
             {
-                length = value;
+                continue;
+            }
+
+            string field = line[..colon].Trim();
+            string value = line[(colon + 1)..].Trim();
+            if (field.Equals("Content-Length", StringComparison.OrdinalIgnoreCase) && int.TryParse(value, out int parsed))
+            {
+                length = parsed;
+            }
+            else if (field.Equals("Host", StringComparison.OrdinalIgnoreCase))
+            {
+                host = value;
+            }
+            else if (field.Equals("Origin", StringComparison.OrdinalIgnoreCase))
+            {
+                origin = value;
+            }
+            else if (field.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
+            {
+                contentType = value;
             }
         }
 
@@ -192,15 +271,32 @@ internal sealed class PreviewServer : IDisposable
             throw new InvalidDataException("The body is too large.");
         }
 
-        return (request[0], request[1], length);
+        return new Request(request[0], request[1], length, host, origin, contentType);
     }
 
-    private async Task Respond(NetworkStream stream, string method, string path, byte[] body)
+    private async Task Respond(NetworkStream stream, Request request, byte[] body)
     {
-        string route = path.Split('?')[0];
+        string method = request.Method;
+        string route = request.Path.Split('?')[0];
         if (method == "POST" && route == "/api/document")
         {
-            State.Update(body);
+            // application/zip is not a type a page may send without asking first (CORS), so no page can post unasked.
+            if (request.ContentType?.Split(';')[0].Trim().Equals("application/zip", StringComparison.OrdinalIgnoreCase) != true)
+            {
+                await Send(stream, 415, "text/plain", "Pages come as application/zip."u8.ToArray());
+                return;
+            }
+
+            try
+            {
+                State.Update(body);
+            }
+            catch (InvalidDataException e)
+            {
+                await Send(stream, 400, "text/plain", Encoding.UTF8.GetBytes(e.Message));
+                return;
+            }
+
             await Send(stream, 204, "text/plain", []);
             return;
         }
@@ -256,7 +352,7 @@ internal sealed class PreviewServer : IDisposable
 
     private async Task Send(NetworkStream stream, int status, string type, byte[] body)
     {
-        string reason = status switch { 200 => "OK", 204 => "No Content", 404 => "Not Found", 405 => "Method Not Allowed", _ => "Error" };
+        string reason = status switch { 200 => "OK", 204 => "No Content", 400 => "Bad Request", 403 => "Forbidden", 404 => "Not Found", 405 => "Method Not Allowed", 415 => "Unsupported Media Type", _ => "Error" };
         byte[] head = Encoding.ASCII.GetBytes($"HTTP/1.1 {status} {reason}\r\nContent-Type: {type}\r\nContent-Length: {body.Length}\r\nCache-Control: no-store\r\nConnection: close\r\n\r\n");
         await stream.WriteAsync(head, stop.Token);
         await stream.WriteAsync(body, stop.Token);

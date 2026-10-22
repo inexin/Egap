@@ -3,7 +3,7 @@ using Egap.Documents.Layout;
 namespace Egap.Documents.Docx;
 
 /// <summary>
-/// Flex and grid containers and boxed groups as Word tables (Phase 9 design Q8), for formats without such containers: a
+/// Flex and grid containers and boxed groups as Word tables, for formats without such containers: a
 /// borderless table whose cells hold copies of the items' blocks, each cell with its item's background, borders and padding.
 /// A row container is one row, its items wrapped onto more rows where their widths say so; a column container is a row per
 /// item; a grid keeps its columns, spans and empty cells. Rounded corners and shadows have no place in a table and are left out.
