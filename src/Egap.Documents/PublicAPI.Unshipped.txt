@@ -1,4 +1,5 @@
 #nullable enable
+const Egap.Documents.DocumentPreview.DefaultPort = 12500 -> int
 const Egap.Documents.Reports.Fields.Page = "{page}" -> string!
 const Egap.Documents.Reports.Fields.Pages = "{total-pages}" -> string!
 Egap.Documents.BoxCorners
@@ -75,6 +76,7 @@ Egap.Documents.ContentControl.Box.get -> Egap.Documents.BoxStyle?
 Egap.Documents.ContentControl.Box.set -> void
 Egap.Documents.Document.DefaultLayoutOptions.get -> Egap.Documents.Layout.LayoutOptions?
 Egap.Documents.Document.DefaultLayoutOptions.set -> void
+Egap.Documents.DocumentPreview
 Egap.Documents.FlexContainer
 Egap.Documents.FlexContainer.AddItem(string? text = null) -> Egap.Documents.FlexItem!
 Egap.Documents.FlexContainer.Box.get -> Egap.Documents.BoxStyle?
@@ -225,6 +227,16 @@ Egap.Documents.LayoutAlignment.SpaceBetween = 4 -> Egap.Documents.LayoutAlignmen
 Egap.Documents.LayoutAlignment.SpaceEvenly = 6 -> Egap.Documents.LayoutAlignment
 Egap.Documents.LayoutAlignment.Start = 0 -> Egap.Documents.LayoutAlignment
 Egap.Documents.LayoutAlignment.Stretch = 3 -> Egap.Documents.LayoutAlignment
+Egap.Documents.PreviewOptions
+Egap.Documents.PreviewOptions.Dpi.get -> double
+Egap.Documents.PreviewOptions.Dpi.init -> void
+Egap.Documents.PreviewOptions.Layout.get -> Egap.Documents.Layout.LayoutOptions?
+Egap.Documents.PreviewOptions.Layout.init -> void
+Egap.Documents.PreviewOptions.Name.get -> string?
+Egap.Documents.PreviewOptions.Name.init -> void
+Egap.Documents.PreviewOptions.Port.get -> int
+Egap.Documents.PreviewOptions.Port.init -> void
+Egap.Documents.PreviewOptions.PreviewOptions() -> void
 Egap.Documents.Reports.ColumnBuilder
 Egap.Documents.Reports.ColumnBuilder.Item() -> Egap.Documents.Reports.Container!
 Egap.Documents.Reports.ColumnBuilder.Spacing(Egap.Pdf.Length space) -> Egap.Documents.Reports.ColumnBuilder!
@@ -404,6 +416,7 @@ static Egap.Documents.BoxShadow.operator ==(Egap.Documents.BoxShadow? left, Egap
 static Egap.Documents.BoxStyle.operator !=(Egap.Documents.BoxStyle? left, Egap.Documents.BoxStyle? right) -> bool
 static Egap.Documents.BoxStyle.operator ==(Egap.Documents.BoxStyle? left, Egap.Documents.BoxStyle? right) -> bool
 static Egap.Documents.BoxStyle.Padded(double padding) -> Egap.Documents.BoxStyle!
+static Egap.Documents.DocumentPreview.ShowPreview(this Egap.Documents.Document! document, Egap.Documents.PreviewOptions? options = null) -> bool
 static Egap.Documents.FlexLayout.operator !=(Egap.Documents.FlexLayout? left, Egap.Documents.FlexLayout? right) -> bool
 static Egap.Documents.FlexLayout.operator ==(Egap.Documents.FlexLayout? left, Egap.Documents.FlexLayout? right) -> bool
 static Egap.Documents.GridLayout.operator !=(Egap.Documents.GridLayout? left, Egap.Documents.GridLayout? right) -> bool

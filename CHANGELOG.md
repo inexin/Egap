@@ -13,6 +13,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   character styles in the document. The same report saves as PDF, DOCX and HTML.
 - A report lays out strictly with portable fonts. `Document.DefaultLayoutOptions` holds that, and is used wherever a
   layout or export is asked for without options.
+- `ShowPreview()` sends a document's pages, drawn by Egap's renderer, to the egap-preview tool on this machine
+  (`PreviewOptions`: port, resolution, layout options, name); it returns false when the tool is not running.
 
 ### Flex and grid layout
 - `FlexContainer` and `FlexItem`: items in a row or a column that grow and shrink to share the space, wrap onto more
@@ -33,6 +35,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   blurred shadow, a text box's own insets, and a text box that takes the size of its text. DOCX reads and writes them
   (the roundRect adjustment, an outer shadow, the body insets and shape auto-fit). A rounded rectangle without a radius
   is drawn with Word's default corners instead of square ones.
+
+## Egap.Preview 1.0.0 (unreleased)
+
+### A live preview tool
+- `egap-preview`, a dotnet tool, shows documents on a local web page and reloads it when new pages arrive: the pages a
+  program sends with `ShowPreview()`, so a report run under `dotnet watch` follows every edit, or a DOCX, HTML or
+  Markdown file, drawn again whenever it is saved. A strict layout's failure shows on the page. It listens on 127.0.0.1
+  only, port 12500 unless `--port` says otherwise, and needs nothing but Egap's packages.
 
 ## Egap.Documents.Html 2.1.0 (unreleased)
 

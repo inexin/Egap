@@ -38,6 +38,8 @@
   <!-- The format add-ons build on the core's internals: the format registry, conversion and layout helpers. -->
   <ItemGroup>
     <InternalsVisibleTo Include="Egap.Documents.Tests" />
+    <InternalsVisibleTo Include="Egap.Preview" />
+    <InternalsVisibleTo Include="Egap.Preview.Tests" />
     <InternalsVisibleTo Include="Egap.Documents.Markdown" />
     <InternalsVisibleTo Include="Egap.Documents.Html" />
     <InternalsVisibleTo Include="Egap.Documents.Html.Tests" />

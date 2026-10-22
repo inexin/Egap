@@ -6,6 +6,7 @@
 | Egap.Documents | One document model with DOCX, plain text and Docling JSON, page layout onto any Egami canvas, PDF export, and PDF pages analysed and converted back into documents | Egap.Pdf, Egami.Drawing, Egami.Barcodes, Egami.Svg, Egami.Metafiles, Egami.Fonts.Substitutes |
 | Egap.Documents.Html | HTML and XHTML read and written through the CSS cascade, with `@page` rules and margin boxes, HTML to PDF, HTML stamps and page bands | Egap.Documents, Egami.Css, AngleSharp |
 | Egap.Documents.Markdown | CommonMark and GitHub Markdown read and written, with front matter and images, and Markdown to PDF | Egap.Documents, Markdig |
+| Egap.Preview | The `egap-preview` dotnet tool: a live preview of documents on a local web page | Egap.Documents and its add-ons |
 
 Take Egap.Pdf alone for PDF work, Egap.Documents for documents and conversions, and an add-on for each of HTML and Markdown
 you read or write. The add-ons keep the class names you know (`HtmlFormat`, `MarkdownFormat`) in namespace

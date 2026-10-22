@@ -109,6 +109,29 @@ sealed class AddressBlock(string name, string street) : IComponent
 }
 ```
 
+## Live preview
+
+The `egap-preview` dotnet tool shows documents on a local web page, drawn by Egap's own renderer, and shows them again when
+they change. `ShowPreview()` sends a document's pages to it; run the program under `dotnet watch` and the page follows each
+edit. Given a DOCX, HTML or Markdown file instead, the tool draws the file again whenever it is saved. It listens on
+127.0.0.1 only, on port 12500 unless `--port` says otherwise, and `ShowPreview()` returns false when it is not running.
+
+```sh
+dotnet tool install -g Egap.Preview
+egap-preview                  # waits for ShowPreview()
+egap-preview letter.docx      # or shows a file
+```
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Reports;
+
+Document report = Report.Create(r => r.Page(p => p.Content(c => c.Text("Draft"))));
+report.ShowPreview();                                            // dotnet watch run: the page follows every edit
+```
+
+A strict layout that fails shows its message on the page, above the last pages that laid out, and is thrown as well.
+
 ## Strict layout and portable fonts
 
 A report's layout is strict and uses only portable fonts (`Document.DefaultLayoutOptions`): text that does not fit its

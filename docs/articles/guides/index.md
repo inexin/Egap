@@ -27,7 +27,8 @@ One document model for DOCX, HTML, Markdown and plain text, its page layout, and
 - [Moving to Egap.Documents 2.0](migrating-to-2.0.md): the new packages and namespaces, and what else changed.
 - [PDF export and conversion](pdf-export-and-conversion.md): documents to PDF, one-line conversions, and PDF back to
   documents.
-- [Reports in code](reports.md): the fluent report API, with rows, tables, grids, styles, components and paging.
+- [Reports in code](reports.md): the fluent report API, with rows, tables, grids, styles, components and paging, and the
+  live preview tool.
 
 ## Document formats
 
