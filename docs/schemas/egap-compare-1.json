@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-compare-1.json",
+  "title": "egap compare",
+  "description": "What 'egap compare --json' writes: how the pages pair up, the text that changed and the pages that look different. Page numbers count from 1; boxes are [left, bottom, right, top] in points on the new page.",
+  "type": "object",
+  "required": [ "schema", "old", "new", "identical", "pages", "textChanges", "visualChanges" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "old": { "type": "string" },
+    "new": { "type": "string" },
+    "identical": { "description": "Whether nothing changed; the exit code is 0 when true and 1 when false.", "type": "boolean" },
+    "pages": {
+      "description": "Each old page with the new page it became; null on one side for a page removed or added.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "old", "new" ],
+        "additionalProperties": false,
+        "properties": { "old": { "type": [ "integer", "null" ] }, "new": { "type": [ "integer", "null" ] } }
+      }
+    },
+    "textChanges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "kind", "oldPage", "newPage", "oldText", "newText" ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": { "enum": [ "inserted", "deleted", "replaced", "moved" ] },
+          "oldPage": { "type": [ "integer", "null" ] },
+          "newPage": { "type": [ "integer", "null" ] },
+          "oldText": { "type": "string" },
+          "newText": { "type": "string" }
+        }
+      }
+    },
+    "visualChanges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "oldPage", "newPage", "boxes" ],
+        "additionalProperties": false,
+        "properties": {
+          "oldPage": { "type": "integer" },
+          "newPage": { "type": "integer" },
+          "boxes": { "type": "array", "items": { "type": "array", "items": { "type": "number" } } }
+        }
+      }
+    }
+  }
+}

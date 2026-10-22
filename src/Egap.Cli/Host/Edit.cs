@@ -21,6 +21,12 @@ internal sealed class EditContext(EgapSession session, InputFile file) : IDispos
     /// <summary>Gets or sets a value indicating whether edits may break signatures (<c>--allow-invalidating-signatures</c>).</summary>
     public bool AllowInvalidatingSignatures { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether a save must write the whole file: after a redaction or a sanitize, an
+    /// incremental update would leave the removed content in the file's earlier revision.
+    /// </summary>
+    public bool Rewrite { get; set; }
+
     /// <summary>Gets or sets a value indicating whether an edit set the modification date itself, so a save leaves it.</summary>
     public bool KeepModificationDate { get; set; }
 
@@ -45,6 +51,7 @@ internal sealed class EditContext(EgapSession session, InputFile file) : IDispos
         {
             Encryption = Encryption.Kind == PdfEncryptionKind.Keep ? options.Encryption : Encryption,
             UpdateModificationDate = options.UpdateModificationDate && !KeepModificationDate,
+            Mode = Rewrite ? PdfSaveMode.Rewrite : options.Mode,
         };
     }
 }

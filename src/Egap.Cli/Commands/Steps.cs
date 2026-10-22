@@ -32,7 +32,7 @@ internal static class Steps
     public static IReadOnlyList<Edit> Edits { get; } =
     [
         new PagesEdit(), new AppendEdit(), new MetadataEdit(), new StripMetadataEdit(), new EncryptEdit(), new DecryptEdit(),
-        new OptimizeEdit(), new ImposeEdit(), new StampEdit(),
+        new OptimizeEdit(), new ImposeEdit(), new StampEdit(), new RedactEdit(), new SanitizeEdit(),
     ];
 
     /// <summary>Gets every step name, <c>save</c> included.</summary>

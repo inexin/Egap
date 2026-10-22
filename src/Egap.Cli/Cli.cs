@@ -110,6 +110,9 @@ internal static class Cli
         root.Subcommands.Add(new OptimizeEdit().CreateCommand(session));
         root.Subcommands.Add(new ImposeEdit().CreateCommand(session));
         root.Subcommands.Add(new StampEdit().CreateCommand(session));
+        root.Subcommands.Add(CompareCommand.Create(session));
+        root.Subcommands.Add(new RedactEdit().CreateCommand(session));
+        root.Subcommands.Add(new SanitizeEdit().CreateCommand(session));
         root.Subcommands.Add(RunCommand.Create());
         return root;
     }
