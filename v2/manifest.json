@@ -1703,7 +1703,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.LayoutAlignment",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.LayoutAlignment.yml\" sourcestartlinenumber=\"1\">How boxes line up along a container's axis: flex and grid containers and their items use the same values.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.LayoutAlignment.yml\" sourcestartlinenumber=\"1\">How boxes line up along a container's axis: flex and grid containers and their items use the same values. Each property\nsays which values it takes, as CSS gives each its own set; a value a property does not take lines up as Start.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2754,20 +2754,6 @@
       "IsMRef": true,
       "Title": "Egap.Documents.Reports.Container",
       "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.Container.yml\" sourcestartlinenumber=\"1\">A place in a report that takes one element (text, an image, a column, a row, a table, a grid, a barcode, a form field\nor a component), with the box, alignment, style and paging settings set on it first: each setting returns the\ncontainer, and the element ends the chain.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Documents.Reports.Fields.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Documents.Reports.Fields.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Documents.Reports.Fields",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.Fields.yml\" sourcestartlinenumber=\"1\">The placeholders text in a report can hold for page fields: <code>{page}</code> and <code>{total-pages}</code>.</p>\n"
     },
     {
       "type": "ManagedReference",

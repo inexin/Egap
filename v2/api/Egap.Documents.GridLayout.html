@@ -161,10 +161,11 @@ automatic placement, gaps and alignment. Immutable; set a new one to change it.<
 
   <h3 id="Egap_Documents_GridLayout_AlignItems" data-uid="Egap.Documents.GridLayout.AlignItems">
   AlignItems
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/GridBlocks.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/GridBlocks.cs/#L138"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>How items line up down their cells (CSS align-items); an item's <a class="xref" href="Egap.Documents.GridItem.html#Egap_Documents_GridItem_AlignSelf">AlignSelf</a> wins over it.</p>
+  <div class="markdown level1 summary"><p>How items line up down their cells (CSS align-items); an item's <a class="xref" href="Egap.Documents.GridItem.html#Egap_Documents_GridItem_AlignSelf">AlignSelf</a> wins over it.
+Takes Start, End, Center and Stretch; any other value lines up as Start.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -386,11 +387,12 @@ a dot leaves a cell unnamed. Each name must make a rectangle. Empty for none.</p
 
   <h3 id="Egap_Documents_GridLayout_JustifyContent" data-uid="Egap.Documents.GridLayout.JustifyContent">
   JustifyContent
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/GridBlocks.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/GridBlocks.cs/#L145"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the columns share the width left over when they do not fill the container (CSS justify-content); stretch, as CSS's
-normal, widens the columns sized to their content.</p>
+normal, widens the columns sized to their content. Takes Start, End, Center, Stretch, SpaceBetween, SpaceAround and
+SpaceEvenly; any other value lines up as Start.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -419,10 +421,11 @@ normal, widens the columns sized to their content.</p>
 
   <h3 id="Egap_Documents_GridLayout_JustifyItems" data-uid="Egap.Documents.GridLayout.JustifyItems">
   JustifyItems
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/GridBlocks.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/GridBlocks.cs/#L132"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>How items line up across their cells (CSS justify-items); an item's <a class="xref" href="Egap.Documents.GridItem.html#Egap_Documents_GridItem_JustifySelf">JustifySelf</a> wins over it.</p>
+  <div class="markdown level1 summary"><p>How items line up across their cells (CSS justify-items); an item's <a class="xref" href="Egap.Documents.GridItem.html#Egap_Documents_GridItem_JustifySelf">JustifySelf</a> wins over it.
+Takes Start, End, Center and Stretch; any other value lines up as Start.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

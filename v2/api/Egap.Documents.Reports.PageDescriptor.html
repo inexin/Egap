@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_Reports_PageDescriptor" data-uid="Egap.Documents.Reports.PageDescriptor" class="text-break">
-Class PageDescriptor  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L136"><i class="bi bi-code-slash"></i></a>
+Class PageDescriptor  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L134"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -152,9 +152,9 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <a id="Egap_Documents_Reports_PageDescriptor_Content_" data-uid="Egap.Documents.Reports.PageDescriptor.Content*"></a>
 
-  <h3 id="Egap_Documents_Reports_PageDescriptor_Content_System_Action_Egap_Documents_Reports_Container__" data-uid="Egap.Documents.Reports.PageDescriptor.Content(System.Action{Egap.Documents.Reports.Container})">
-  Content(Action&lt;Container&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L225"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Documents_Reports_PageDescriptor_Content" data-uid="Egap.Documents.Reports.PageDescriptor.Content">
+  Content()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L222"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The content, flowed onto as many pages as it takes.</p>
@@ -162,18 +162,13 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PageDescriptor Content(Action&lt;Container&gt; content)</code></pre>
+    <pre><code class="lang-csharp hljs">public Container Content()</code></pre>
   </div>
 
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>content</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.Container.html">Container</a>&gt;</dt>
-    <dd></dd>
-  </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="Egap.Documents.Reports.PageDescriptor.html">PageDescriptor</a></dt>
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
     <dd></dd>
   </dl>
 
@@ -191,7 +186,7 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Documents_Reports_PageDescriptor_DefaultTextStyle_System_Func_Egap_Documents_Reports_TextStyle_Egap_Documents_Reports_TextStyle__" data-uid="Egap.Documents.Reports.PageDescriptor.DefaultTextStyle(System.Func{Egap.Documents.Reports.TextStyle,Egap.Documents.Reports.TextStyle})">
   DefaultTextStyle(Func&lt;TextStyle, TextStyle&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L197"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The text style the page's content starts from.</p>
@@ -226,9 +221,9 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <a id="Egap_Documents_Reports_PageDescriptor_Footer_" data-uid="Egap.Documents.Reports.PageDescriptor.Footer*"></a>
 
-  <h3 id="Egap_Documents_Reports_PageDescriptor_Footer_System_Action_Egap_Documents_Reports_Container__" data-uid="Egap.Documents.Reports.PageDescriptor.Footer(System.Action{Egap.Documents.Reports.Container})">
-  Footer(Action&lt;Container&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Documents_Reports_PageDescriptor_Footer" data-uid="Egap.Documents.Reports.PageDescriptor.Footer">
+  Footer()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L215"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The footer, at the foot of every page; the content stops above it.</p>
@@ -236,18 +231,13 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PageDescriptor Footer(Action&lt;Container&gt; footer)</code></pre>
+    <pre><code class="lang-csharp hljs">public Container Footer()</code></pre>
   </div>
 
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>footer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.Container.html">Container</a>&gt;</dt>
-    <dd></dd>
-  </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="Egap.Documents.Reports.PageDescriptor.html">PageDescriptor</a></dt>
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
     <dd></dd>
   </dl>
 
@@ -263,28 +253,24 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <a id="Egap_Documents_Reports_PageDescriptor_Header_" data-uid="Egap.Documents.Reports.PageDescriptor.Header*"></a>
 
-  <h3 id="Egap_Documents_Reports_PageDescriptor_Header_System_Action_Egap_Documents_Reports_Container__" data-uid="Egap.Documents.Reports.PageDescriptor.Header(System.Action{Egap.Documents.Reports.Container})">
-  Header(Action&lt;Container&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Documents_Reports_PageDescriptor_Header" data-uid="Egap.Documents.Reports.PageDescriptor.Header">
+  Header()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L208"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The header, at the top of every page; the content starts below it.</p>
+  <div class="markdown level1 summary"><p>The header, at the top of every page; the content starts below it. What goes in it is added after what is there
+already, so the size, margins and text style come first.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PageDescriptor Header(Action&lt;Container&gt; header)</code></pre>
+    <pre><code class="lang-csharp hljs">public Container Header()</code></pre>
   </div>
 
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>header</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.Container.html">Container</a>&gt;</dt>
-    <dd></dd>
-  </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="Egap.Documents.Reports.PageDescriptor.html">PageDescriptor</a></dt>
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
     <dd></dd>
   </dl>
 
@@ -302,7 +288,7 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Documents_Reports_PageDescriptor_Landscape" data-uid="Egap.Documents.Reports.PageDescriptor.Landscape">
   Landscape()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L167"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L165"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Turns the page so it is wider than tall.</p>
@@ -334,7 +320,7 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Documents_Reports_PageDescriptor_Margins_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.PageDescriptor.Margins(Egap.Pdf.Length)">
   Margins(Length)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L172"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The same margin on every side.</p>
@@ -371,7 +357,7 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Documents_Reports_PageDescriptor_Margins_Egap_Pdf_Length_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.PageDescriptor.Margins(Egap.Pdf.Length,Egap.Pdf.Length)">
   Margins(Length, Length)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L178"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The margins top and bottom, and left and right.</p>
@@ -410,7 +396,7 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Documents_Reports_PageDescriptor_Margins_Egap_Pdf_Length_Egap_Pdf_Length_Egap_Pdf_Length_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.PageDescriptor.Margins(Egap.Pdf.Length,Egap.Pdf.Length,Egap.Pdf.Length,Egap.Pdf.Length)">
   Margins(Length, Length, Length, Length)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L186"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L184"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The margins on each side; the header sits in the top one's place and the footer in the bottom one's.</p>
@@ -453,7 +439,7 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Documents_Reports_PageDescriptor_Size_Egap_Pdf_Length_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.PageDescriptor.Size(Egap.Pdf.Length,Egap.Pdf.Length)">
   Size(Length, Length)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L159"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets the page size.</p>
@@ -492,7 +478,7 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Documents_Reports_PageDescriptor_Size_Egap_Pdf_PdfPageSize_" data-uid="Egap.Documents.Reports.PageDescriptor.Size(Egap.Pdf.PdfPageSize)">
   Size(PdfPageSize)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L150"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets the page size.</p>
@@ -529,7 +515,7 @@ Class PageDescriptor  <a class="header-action link-secondary" title="View source
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L136" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L134" class="edit-link">Edit this page</a>
         </div>
 
 

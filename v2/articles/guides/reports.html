@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="reports-in-code">Reports in code</h1>
 
-<p><code>Report.Create</code> builds a document from code with nested lambdas: pages with a header, a footer and content, and in them
+<p><code>Report.Create</code> builds a document from code: pages with a header, a footer and content, and in them
 columns, rows, tables, grids, text, pictures, barcodes and form fields. It builds an ordinary <code>Document</code>, so the same report
 saves as PDF, DOCX or HTML and lays out with the same page flow as any other document. The types are in
 <code>Egap.Documents.Reports</code>.</p>
@@ -100,14 +100,15 @@ using Egap.Pdf;
 Document invoice = Report.Create(r =&gt; r
     .Title(&quot;Invoice 2026-118&quot;)
     .DefaultTextStyle(s =&gt; s.FontSize(10))
-    .Page(p =&gt; p
-        .Size(PdfPageSize.A4).Margins(Length.Mm(15))
-        .Header(h =&gt; h.BorderBottom(1).Row(row =&gt;
+    .Page(p =&gt;
+    {
+        p.Size(PdfPageSize.A4).Margins(Length.Mm(15));
+        p.Header().BorderBottom(1).Row(row =&gt;
         {
-            row.Grow().Text(&quot;Acme Ltd&quot;).Style(s =&gt; s.FontSize(20).Bold());
+            row.Relative().Text(&quot;Acme Ltd&quot;).Style(s =&gt; s.FontSize(20).Bold());
             row.Auto().AlignRight().Text(&quot;Invoice 2026-118&quot;);
-        }))
-        .Content(c =&gt; c.Column(col =&gt;
+        });
+        p.Content().Column(col =&gt;
         {
             col.Spacing(8);
             col.Item().Text(&quot;Thank you for your order.&quot;);
@@ -118,11 +119,20 @@ Document invoice = Report.Create(r =&gt; r
                 .Rows(lines, l =&gt; [l.Name, l.Qty, l.Price]));
             col.Item().KeepTogether().Background(&quot;F4F8FC&quot;).CornerRadius(6).Padding(8)
                 .AlignRight().Text(&quot;Total: 670&quot;).Bold();
-        }))
-        .Footer(f =&gt; f.AlignCenter().Text($&quot;Page {Fields.Page} of {Fields.Pages}&quot;))));
+        });
+        p.Footer().AlignCenter().Text(t =&gt;
+        {
+            t.Span(&quot;Page &quot;);
+            t.CurrentPageNumber();
+            t.Span(&quot; of &quot;);
+            t.TotalPages();
+        });
+    }));
 invoice.SaveAsPdf(&quot;invoice.pdf&quot;);
 invoice.Save(&quot;invoice.docx&quot;);
 </code></pre>
+<p>The page's <code>Header()</code>, <code>Content()</code> and <code>Footer()</code> each return the container to fill. Set the page's size, margins and text
+style before them: what goes into a container takes the settings in force when it was asked for.</p>
 <h2 id="containers">Containers</h2>
 <p>Each place in a report is a <code>Container</code>. Settings come first and return the container: a box (<code>Padding</code>, <code>Background</code>,
 <code>Border</code>, <code>BorderBottom</code>, <code>CornerRadius</code>, <code>Shadow</code>, <code>Width</code>, <code>MinHeight</code>, <code>MarginTop</code>), the alignment of text inside
@@ -151,7 +161,7 @@ invoice.Save(&quot;invoice.docx&quot;);
 </tr>
 <tr>
 <td><code>Row</code></td>
-<td>A flex container: <code>Fixed</code> widths, <code>Grow</code> shares and <code>Auto</code> content widths side by side</td>
+<td>A flex container: <code>Fixed</code> widths, <code>Relative</code> shares and <code>Auto</code> content widths side by side, as a table's columns are</td>
 </tr>
 <tr>
 <td><code>Grid</code></td>
@@ -175,7 +185,10 @@ invoice.Save(&quot;invoice.docx&quot;);
 </tr>
 </tbody>
 </table>
-<p><code>{page}</code> and <code>{total-pages}</code> in text (<code>Fields.Page</code> and <code>Fields.Pages</code>) become page fields.</p>
+<p>Page numbers are spans: <code>CurrentPageNumber()</code> and <code>TotalPages()</code> in <code>Text(t =&gt; ...)</code>. Text is written as given, so
+<code>{page}</code> in data stays <code>{page}</code>.</p>
+<p><code>TextStyle</code> and <code>Container</code> here are the report's own. Code that also uses Egami's text layout can name one with an alias,
+<code>using ReportStyle = Egap.Documents.Reports.TextStyle;</code>.</p>
 <h2 id="styles">Styles</h2>
 <p>A <code>TextStyle</code> is immutable: each method returns a changed copy, so a style can be kept in a field and shared. What a style
 leaves unset comes from the text around it: the report's <code>DefaultTextStyle</code>, the page's, then the container's. A named
@@ -186,22 +199,22 @@ using Egap.Documents.Reports;
 TextStyle note = TextStyle.Default.FontSize(8).Italic().FontColor(&quot;666666&quot;);
 Document letter = Report.Create(r =&gt; r
     .Style(&quot;Strong&quot;, s =&gt; s.Bold().FontColor(&quot;993300&quot;))
-    .Page(p =&gt; p.Content(c =&gt; c.Column(col =&gt;
+    .Page(p =&gt; p.Content().Column(col =&gt;
     {
         col.Item().Text(&quot;Payment is due within 14 days.&quot;).Style(&quot;Strong&quot;);
         col.Item().Text(&quot;Prices include VAT.&quot;).Style(note);
-    }))));
+    })));
 </code></pre>
 <h2 id="components">Components</h2>
 <p>A component is a class with a <code>Compose</code> method. It fills the container it is given, with any settings the caller put on it.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Documents.Reports;
 
-Document report = Report.Create(r =&gt; r.Page(p =&gt; p.Content(c =&gt; c.Row(row =&gt;
+Document report = Report.Create(r =&gt; r.Page(p =&gt; p.Content().Row(row =&gt;
 {
-    row.Grow().Component(new AddressBlock(&quot;Acme Ltd&quot;, &quot;Storgata 1, Oslo&quot;));
-    row.Grow().Component(new AddressBlock(&quot;Customer AS&quot;, &quot;Kirkegata 9, Bergen&quot;));
-}))));
+    row.Relative().Component(new AddressBlock(&quot;Acme Ltd&quot;, &quot;Storgata 1, Oslo&quot;));
+    row.Relative().Component(new AddressBlock(&quot;Customer AS&quot;, &quot;Kirkegata 9, Bergen&quot;));
+})));
 
 /// &lt;summary&gt;A name and a street in a thin box.&lt;/summary&gt;
 sealed class AddressBlock(string name, string street) : IComponent
@@ -220,7 +233,7 @@ sealed class AddressBlock(string name, string street) : IComponent
 <p>The <code>egap-preview</code> dotnet tool shows documents on a local web page, drawn by Egap's own renderer, and shows them again when
 they change. <code>ShowPreview()</code> sends a document's pages to it; run the program under <code>dotnet watch</code> and the page follows each
 edit. Given a DOCX file instead, the tool draws the file again whenever it is saved. It listens on
-127.0.0.1 only, on port 12500 unless <code>--port</code> says otherwise, and <code>ShowPreview()</code> returns false when it is not running.
+127.0.0.1 only, on port 12501 unless <code>--port</code> says otherwise, and <code>ShowPreview()</code> returns false when it is not running.
 It answers only requests addressed to 127.0.0.1 or localhost from programs and its own page, so other web pages can
 neither send it pages nor read the ones it shows.</p>
 <pre><code class="lang-sh">dotnet tool install -g Egap.Preview
@@ -230,7 +243,7 @@ egap-preview letter.docx      # or shows a file
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Documents.Reports;
 
-Document report = Report.Create(r =&gt; r.Page(p =&gt; p.Content(c =&gt; c.Text(&quot;Draft&quot;))));
+Document report = Report.Create(r =&gt; r.Page(p =&gt; p.Content().Text(&quot;Draft&quot;)));
 report.ShowPreview();                                            // dotnet watch run: the page follows every edit
 </code></pre>
 <p>HTML and Markdown are previewed from code, with the add-on that reads them: the tool itself only shows pages. To redraw

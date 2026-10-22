@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_Reports_Report" data-uid="Egap.Documents.Reports.Report" class="text-break">
-Class Report  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L30"><i class="bi bi-code-slash"></i></a>
+Class Report  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -149,20 +149,28 @@ tables, grids, text, images and barcodes, each with its box and paging settings.
 
 
   <h2 id="Egap_Documents_Reports_Report_examples">Examples</h2>
-  <pre><code class="lang-csharp">Document invoice = Report.Create(r =&gt; r.Page(p =&gt; p
-    .Size(PdfPageSize.A4).Margins(Length.Mm(15))
-    .Header(h =&gt; h.Row(row =&gt;
+  <pre><code class="lang-csharp">Document invoice = Report.Create(r =&gt; r.Page(p =&gt;
+{
+    p.Size(PdfPageSize.A4).Margins(Length.Mm(15));
+    p.Header().Row(row =&gt;
     {
-        row.Grow().Text("Acme Ltd").FontSize(20).Bold();
+        row.Relative().Text("Acme Ltd").FontSize(20).Bold();
         row.Auto().AlignRight().Text("Invoice 2026-118");
-    }))
-    .Content(c =&gt; c.Column(col =&gt;
+    });
+    p.Content().Column(col =&gt;
     {
         col.Spacing(6);
         col.Item().Text("Thank you for your order.");
         col.Item().Table(t =&gt; t.Columns(3).Header("Item", "Qty", "Price").Rows(lines, l =&gt; [l.Name, l.Qty, l.Price]));
-    }))
-    .Footer(f =&gt; f.AlignCenter().Text($"Page {Fields.Page} of {Fields.Pages}"))));
+    });
+    p.Footer().AlignCenter().Text(t =&gt;
+    {
+        t.Span("Page ");
+        t.CurrentPageNumber();
+        t.Span(" of ");
+        t.TotalPages();
+    });
+}));
 invoice.SaveAsPdf("invoice.pdf");</code></pre>
 
 
@@ -176,7 +184,7 @@ invoice.SaveAsPdf("invoice.pdf");</code></pre>
 
   <h3 id="Egap_Documents_Reports_Report_Create_System_Action_Egap_Documents_Reports_ReportBuilder__Egap_Documents_Layout_LayoutOptions_" data-uid="Egap.Documents.Reports.Report.Create(System.Action{Egap.Documents.Reports.ReportBuilder},Egap.Documents.Layout.LayoutOptions)">
   Create(Action&lt;ReportBuilder&gt;, LayoutOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A new document built by <code class="paramref">compose</code>. Its layout is strict and uses only portable fonts unless
@@ -219,7 +227,7 @@ fails loudly and prints the same on every machine.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L30" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Report.cs/#L38" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -17357,24 +17357,6 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Reports.Container.Width
   nameWithType: Container.Width
-- uid: Egap.Documents.Reports.Fields
-  name: Fields
-  href: api/Egap.Documents.Reports.Fields.html
-  commentId: T:Egap.Documents.Reports.Fields
-  fullName: Egap.Documents.Reports.Fields
-  nameWithType: Fields
-- uid: Egap.Documents.Reports.Fields.Page
-  name: Page
-  href: api/Egap.Documents.Reports.Fields.html#Egap_Documents_Reports_Fields_Page
-  commentId: F:Egap.Documents.Reports.Fields.Page
-  fullName: Egap.Documents.Reports.Fields.Page
-  nameWithType: Fields.Page
-- uid: Egap.Documents.Reports.Fields.Pages
-  name: Pages
-  href: api/Egap.Documents.Reports.Fields.html#Egap_Documents_Reports_Fields_Pages
-  commentId: F:Egap.Documents.Reports.Fields.Pages
-  fullName: Egap.Documents.Reports.Fields.Pages
-  nameWithType: Fields.Pages
 - uid: Egap.Documents.Reports.GridBuilder
   name: GridBuilder
   href: api/Egap.Documents.Reports.GridBuilder.html
@@ -17492,15 +17474,12 @@ references:
   commentId: T:Egap.Documents.Reports.PageDescriptor
   fullName: Egap.Documents.Reports.PageDescriptor
   nameWithType: PageDescriptor
-- uid: Egap.Documents.Reports.PageDescriptor.Content(System.Action{Egap.Documents.Reports.Container})
-  name: Content(Action<Container>)
-  href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Content_System_Action_Egap_Documents_Reports_Container__
-  commentId: M:Egap.Documents.Reports.PageDescriptor.Content(System.Action{Egap.Documents.Reports.Container})
-  name.vb: Content(Action(Of Container))
-  fullName: Egap.Documents.Reports.PageDescriptor.Content(System.Action<Egap.Documents.Reports.Container>)
-  fullName.vb: Egap.Documents.Reports.PageDescriptor.Content(System.Action(Of Egap.Documents.Reports.Container))
-  nameWithType: PageDescriptor.Content(Action<Container>)
-  nameWithType.vb: PageDescriptor.Content(Action(Of Container))
+- uid: Egap.Documents.Reports.PageDescriptor.Content
+  name: Content()
+  href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Content
+  commentId: M:Egap.Documents.Reports.PageDescriptor.Content
+  fullName: Egap.Documents.Reports.PageDescriptor.Content()
+  nameWithType: PageDescriptor.Content()
 - uid: Egap.Documents.Reports.PageDescriptor.Content*
   name: Content
   href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Content_
@@ -17524,15 +17503,12 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Reports.PageDescriptor.DefaultTextStyle
   nameWithType: PageDescriptor.DefaultTextStyle
-- uid: Egap.Documents.Reports.PageDescriptor.Footer(System.Action{Egap.Documents.Reports.Container})
-  name: Footer(Action<Container>)
-  href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Footer_System_Action_Egap_Documents_Reports_Container__
-  commentId: M:Egap.Documents.Reports.PageDescriptor.Footer(System.Action{Egap.Documents.Reports.Container})
-  name.vb: Footer(Action(Of Container))
-  fullName: Egap.Documents.Reports.PageDescriptor.Footer(System.Action<Egap.Documents.Reports.Container>)
-  fullName.vb: Egap.Documents.Reports.PageDescriptor.Footer(System.Action(Of Egap.Documents.Reports.Container))
-  nameWithType: PageDescriptor.Footer(Action<Container>)
-  nameWithType.vb: PageDescriptor.Footer(Action(Of Container))
+- uid: Egap.Documents.Reports.PageDescriptor.Footer
+  name: Footer()
+  href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Footer
+  commentId: M:Egap.Documents.Reports.PageDescriptor.Footer
+  fullName: Egap.Documents.Reports.PageDescriptor.Footer()
+  nameWithType: PageDescriptor.Footer()
 - uid: Egap.Documents.Reports.PageDescriptor.Footer*
   name: Footer
   href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Footer_
@@ -17540,15 +17516,12 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Reports.PageDescriptor.Footer
   nameWithType: PageDescriptor.Footer
-- uid: Egap.Documents.Reports.PageDescriptor.Header(System.Action{Egap.Documents.Reports.Container})
-  name: Header(Action<Container>)
-  href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Header_System_Action_Egap_Documents_Reports_Container__
-  commentId: M:Egap.Documents.Reports.PageDescriptor.Header(System.Action{Egap.Documents.Reports.Container})
-  name.vb: Header(Action(Of Container))
-  fullName: Egap.Documents.Reports.PageDescriptor.Header(System.Action<Egap.Documents.Reports.Container>)
-  fullName.vb: Egap.Documents.Reports.PageDescriptor.Header(System.Action(Of Egap.Documents.Reports.Container))
-  nameWithType: PageDescriptor.Header(Action<Container>)
-  nameWithType.vb: PageDescriptor.Header(Action(Of Container))
+- uid: Egap.Documents.Reports.PageDescriptor.Header
+  name: Header()
+  href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Header
+  commentId: M:Egap.Documents.Reports.PageDescriptor.Header
+  fullName: Egap.Documents.Reports.PageDescriptor.Header()
+  nameWithType: PageDescriptor.Header()
 - uid: Egap.Documents.Reports.PageDescriptor.Header*
   name: Header
   href: api/Egap.Documents.Reports.PageDescriptor.html#Egap_Documents_Reports_PageDescriptor_Header_
@@ -17779,22 +17752,22 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Reports.RowBuilder.Fixed
   nameWithType: RowBuilder.Fixed
-- uid: Egap.Documents.Reports.RowBuilder.Grow(System.Double)
-  name: Grow(double)
-  href: api/Egap.Documents.Reports.RowBuilder.html#Egap_Documents_Reports_RowBuilder_Grow_System_Double_
-  commentId: M:Egap.Documents.Reports.RowBuilder.Grow(System.Double)
-  name.vb: Grow(Double)
-  fullName: Egap.Documents.Reports.RowBuilder.Grow(double)
-  fullName.vb: Egap.Documents.Reports.RowBuilder.Grow(Double)
-  nameWithType: RowBuilder.Grow(double)
-  nameWithType.vb: RowBuilder.Grow(Double)
-- uid: Egap.Documents.Reports.RowBuilder.Grow*
-  name: Grow
-  href: api/Egap.Documents.Reports.RowBuilder.html#Egap_Documents_Reports_RowBuilder_Grow_
-  commentId: Overload:Egap.Documents.Reports.RowBuilder.Grow
+- uid: Egap.Documents.Reports.RowBuilder.Relative(System.Double)
+  name: Relative(double)
+  href: api/Egap.Documents.Reports.RowBuilder.html#Egap_Documents_Reports_RowBuilder_Relative_System_Double_
+  commentId: M:Egap.Documents.Reports.RowBuilder.Relative(System.Double)
+  name.vb: Relative(Double)
+  fullName: Egap.Documents.Reports.RowBuilder.Relative(double)
+  fullName.vb: Egap.Documents.Reports.RowBuilder.Relative(Double)
+  nameWithType: RowBuilder.Relative(double)
+  nameWithType.vb: RowBuilder.Relative(Double)
+- uid: Egap.Documents.Reports.RowBuilder.Relative*
+  name: Relative
+  href: api/Egap.Documents.Reports.RowBuilder.html#Egap_Documents_Reports_RowBuilder_Relative_
+  commentId: Overload:Egap.Documents.Reports.RowBuilder.Relative
   isSpec: "True"
-  fullName: Egap.Documents.Reports.RowBuilder.Grow
-  nameWithType: RowBuilder.Grow
+  fullName: Egap.Documents.Reports.RowBuilder.Relative
+  nameWithType: RowBuilder.Relative
 - uid: Egap.Documents.Reports.RowBuilder.Spacing(Egap.Pdf.Length)
   name: Spacing(Length)
   href: api/Egap.Documents.Reports.RowBuilder.html#Egap_Documents_Reports_RowBuilder_Spacing_Egap_Pdf_Length_
