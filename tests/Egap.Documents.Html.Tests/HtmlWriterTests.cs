@@ -98,4 +98,27 @@ public class HtmlWriterTests
 
         Assert.Empty(errors);
     }
+
+    [Fact]
+    public void ABookmarkOrNoteInsideALinkDoesNotNestLinks()
+    {
+        Document document = new();
+        Paragraph paragraph = document.AddSection().Body.AddParagraph("See ");
+        Hyperlink link = paragraph.AddHyperlink("the site", "https://example.com/");
+        link.Inlines.Insert(0, new BookmarkStart(document, "site"));
+        Footnote note = new(document);
+        note.AddParagraph("A note.");
+        link.Inlines.Add(note);
+
+        string html = HtmlFormat.ToHtml(document);
+
+        string anchor = html[html.IndexOf("<a href=\"https://example.com/\"", StringComparison.Ordinal)..];
+        anchor = anchor[..(anchor.IndexOf("</a>", StringComparison.Ordinal) + 4)];
+        Assert.Equal(1, anchor.Split("<a ").Length - 1);
+        Assert.Contains("<span id=\"site\"></span>", anchor, StringComparison.Ordinal);
+        Assert.Contains("id=\"fnref1\"", anchor, StringComparison.Ordinal);
+        Paragraph read = HtmlFormat.Parse(html).Sections[0].Body.Paragraphs.First();
+        Assert.Contains(read.Descendants().OfType<BookmarkStart>(), b => b.Name == "site");
+        Assert.StartsWith("the site", read.Inlines.OfType<Hyperlink>().Single().GetText(), StringComparison.Ordinal);
+    }
 }

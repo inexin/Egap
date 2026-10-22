@@ -18,6 +18,13 @@ internal static class DocxPropertyWriter
         "u", "effect", "bdr", "shd", "fitText", "vertAlign", "rtl", "cs", "em", "lang", "eastAsianLayout", "specVanish", "oMath", "rPrChange",
     ];
 
+    // Word 2010's run properties, after the w: ones: the text effects, then the OpenType features (w14 CT_RPr extension).
+    private static readonly string[] W14RunOrder =
+    [
+        "glow", "shadow", "reflection", "textOutline", "textFill", "scene3d", "props3d", "ligatures", "numForm", "numSpacing", "stylisticSets",
+        "cntxtAlts",
+    ];
+
     private static readonly string[] ParagraphOrder =
     [
         "pStyle", "keepNext", "keepLines", "pageBreakBefore", "framePr", "widowControl", "numPr", "suppressLineNumbers", "pBdr", "shd", "tabs",
@@ -597,20 +604,26 @@ internal static class DocxPropertyWriter
             return null;
         }
 
-        // A stable sort: schema order for the w: elements, other namespaces after them in the order they came.
+        // A stable sort: schema order for the w: elements, then Word 2010's w14 run properties in their schema order, other
+        // namespaces after them in the order they came.
         List<XElement> sorted = [.. generated.Select((e, i) => (e, i)).OrderBy(x => Rank(x.e, order)).ThenBy(x => x.i).Select(x => x.e)];
         return new XElement(Ns.W + name, sorted);
     }
 
     private static int Rank(XElement element, string[] order)
     {
+        if (element.Name.Namespace == Ns.W14 && Array.IndexOf(W14RunOrder, element.Name.LocalName) is int w14 && w14 >= 0)
+        {
+            return order.Length + w14;
+        }
+
         if (element.Name.Namespace != Ns.W)
         {
-            return order.Length;
+            return order.Length + W14RunOrder.Length;
         }
 
         int index = Array.IndexOf(order, element.Name.LocalName);
-        return index < 0 ? order.Length : index;
+        return index < 0 ? order.Length + W14RunOrder.Length : index;
     }
 
     public static XElement Val(string name, string value)

@@ -49,6 +49,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - An SVG picture drawn on every page, such as a logo or a barcode in a header, is read and drawn once; a PDF writes it once
   as a form and shows it on every page.
 
+### Fixes
+- DOCX: Word 2010 run properties are written in the schema's order, text effects such as `w14:shadow` before font
+  features such as `w14:numForm`, so Word's validator no longer reports an unexpected element in a saved file.
+
 ## Egap.Preview 1.0.0 (unreleased)
 
 ### A live preview tool
@@ -75,6 +79,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   collapse); an empty box with a border (a rule) is as thin as its border; and a page break before or after a table, a
   flex or grid container or a box breaks there.
 - A flex or grid item keeps its bottom margin and its last child's, as browsers keep them inside the item.
+
+### Fixes
+- A bookmark or a footnote mark inside a hyperlink no longer writes a link inside the link, which HTML does not allow and
+  which made browsers end the link early. The bookmark is written as `<span id>`, and the note mark keeps its id without a
+  link of its own.
 
 ## Egap.Documents.Markdown 2.1.0 (unreleased)
 

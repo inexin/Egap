@@ -19,6 +19,9 @@ internal sealed partial class HtmlWriter
     private readonly HtmlSaveOptions options;
     private readonly WarningCollector warnings = new();
     private readonly StringBuilder body = new();
+
+    // Inside a hyperlink's <a>: an anchor there would nest links, which HTML does not allow.
+    private int linkDepth;
     private readonly List<Footnote> notes = [];
     private readonly HashSet<Style> used = [];
     private readonly Dictionary<Style, string> classNames = [];
@@ -686,7 +689,9 @@ internal sealed partial class HtmlWriter
                     }
 
                     body.Append('>');
+                    linkDepth++;
                     WriteInlines(link.Inlines);
+                    linkDepth--;
                     body.Append("</a>");
                     break;
                 case InlineContentControl control:
@@ -697,12 +702,21 @@ internal sealed partial class HtmlWriter
                     WritePicture(picture);
                     break;
                 case BookmarkStart bookmark when inlines.IndexOf(bookmark) > 0 || bookmark.Parent is not Paragraph:
-                    body.Append("<a id=\"").Append(Attribute(bookmark.Name)).Append("\"></a>");
+                    body.Append(linkDepth > 0 ? "<span id=\"" : "<a id=\"").Append(Attribute(bookmark.Name)).Append(linkDepth > 0 ? "\"></span>" : "\"></a>");
                     break;
                 case Footnote note:
                     notes.Add(note);
                     string number = notes.Count.ToString(Invariant);
-                    body.Append("<sup><a href=\"#fn").Append(number).Append("\" id=\"fnref").Append(number).Append("\">").Append(Text(note.Mark)).Append("</a></sup>");
+                    if (linkDepth > 0)
+                    {
+                        // The mark stays inside the hyperlink; the note's back link still finds it by id.
+                        body.Append("<sup id=\"fnref").Append(number).Append("\">").Append(Text(note.Mark)).Append("</sup>");
+                    }
+                    else
+                    {
+                        body.Append("<sup><a href=\"#fn").Append(number).Append("\" id=\"fnref").Append(number).Append("\">").Append(Text(note.Mark)).Append("</a></sup>");
+                    }
+
                     break;
                 case Comment:
                     warnings.Add(ConversionWarningKind.CommentsDropped, "comments");
