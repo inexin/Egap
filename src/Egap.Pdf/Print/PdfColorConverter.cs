@@ -162,6 +162,12 @@ public static class PdfColorConverter
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> was cancelled.</exception>
     public static PdfColorConversionResult Convert(PdfDocument document, PdfColorConversionOptions? options = null, CancellationToken cancellationToken = default)
     {
+        return Convert(document, options, forceDevice: false, cancellationToken);
+    }
+
+    /// <summary>The conversion; with <paramref name="forceDevice"/>, ICC-based CMYK in the target's own profile becomes DeviceCMYK too (PDF/X-1a).</summary>
+    internal static PdfColorConversionResult Convert(PdfDocument document, PdfColorConversionOptions? options, bool forceDevice, CancellationToken cancellationToken = default)
+    {
         ArgumentNullException.ThrowIfNull(document);
         options ??= PdfColorConversionOptions.Default;
         ColorProfile intent = PdfPage.PressProfile(document);
@@ -174,6 +180,7 @@ public static class PdfColorConverter
             SourceCmyk = options.SourceCmyk ?? intent,
             BlackText = options.BlackText,
             ThinRuleWidth = options.ThinRuleWidth,
+            ForceDevice = forceDevice,
         };
         try
         {

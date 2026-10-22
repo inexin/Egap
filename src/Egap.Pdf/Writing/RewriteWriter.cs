@@ -372,7 +372,7 @@ internal sealed class RewriteWriter
 
         // Object and cross-reference streams need PDF 1.5; the version is raised only when they are written (hub Q11).
         // A document under PDF/A rules is written as its part's version (ISO 19005-1 6.1.2 and its successors).
-        string version = document.WriterConformance == PdfAConformance.None ? document.Version : PdfA.PdfAWriter.Version(document.WriterConformance);
+        string version = document.WriterVersion;
         if ((objectStreams || xrefStream) && string.CompareOrdinal(version, "1.5") < 0)
         {
             version = "1.5";

@@ -137,6 +137,9 @@ internal sealed class IccTarget : ColorTarget
     /// <summary>How black and gray text and thin rules convert.</summary>
     public PdfBlackText BlackText { get; init; }
 
+    /// <summary>Whether every colour-managed space is converted, ICC-based CMYK in the target's own profile included (PDF/X-1a).</summary>
+    public bool ForceDevice { get; init; }
+
     /// <summary>The widest rule, in points, that black handling treats as thin.</summary>
     public double ThinRuleWidth { get; init; } = 0.5;
 
@@ -148,9 +151,9 @@ internal sealed class IccTarget : ColorTarget
     {
         return space.Family switch
         {
-            ColorFamily.Gray => !space.IsDevice && components != 1,
+            ColorFamily.Gray => !space.IsDevice && (components != 1 || ForceDevice),
             ColorFamily.Rgb or ColorFamily.Lab => components != 3 || !space.IsDevice,
-            ColorFamily.Cmyk when components == 4 => RetargetCmyk || (!space.IsDevice && space.Profile is ColorProfile own && !own.IsEquivalentTo(target)) || (!space.IsDevice && space.Profile is null),
+            ColorFamily.Cmyk when components == 4 => RetargetCmyk || (!space.IsDevice && (ForceDevice || space.Profile is null || !space.Profile.IsEquivalentTo(target))),
             ColorFamily.Cmyk => true,
             ColorFamily.Indexed => space is ImageColorSpace.IndexedSpace indexed && Converts(indexed.Base),
             ColorFamily.Separation => ConvertsSpot(space),

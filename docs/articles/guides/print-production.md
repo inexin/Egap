@@ -116,3 +116,44 @@ pdf.Save("cmyk.pdf");
 
 Conversion does not limit ink: the target profile decides how much ink each colour takes, and preflight reports anything
 over a print profile's `MaxInkCoverage`.
+
+## PDF/X
+
+`PdfXConverter.Check` checks a document against a PDF/X version and changes nothing; `PdfXConverter.Convert` fixes what it
+can in place and reports each fix. When a rule cannot be met, conversion changes nothing and the report says why. The
+reports are the same `PdfAReport` as for PDF/A.
+
+```csharp
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("brochure.pdf");
+PdfAReport report = PdfXConverter.Convert(pdf, PdfXConformance.PdfX4, new PdfXConvertOptions
+{
+    OutputCondition = PdfOutputCondition.Fogra39,     // the registered condition; its profile is embedded
+    Bleed = 3,                                        // millimetres past the trim box, where conversion sets the boxes
+});
+if (report.Succeeded)
+{
+    pdf.Save("print.pdf");                            // written whole, unencrypted, as PDF 1.6
+}
+else
+{
+    Console.WriteLine(report);
+}
+```
+
+| Version | Check | Convert |
+| --- | --- | --- |
+| PDF/X-4, X-6 | yes | yes |
+| PDF/X-1a, X-3 | yes | when the file has no transparency (conversion does not flatten it) |
+| PDF/X-5n, X-6n | yes | with an n-colorant output condition, for content already in its inks |
+| PDF/X-4p, X-5g, X-5pg, X-6p | yes | no |
+
+Conversion adds the output intent, sets a trim box (the crop box) and a bleed box where they are missing or wrong, writes the
+identification, title, dates and `/Trapped`, embeds fonts (from the machine, or bundled substitutes with
+`AllowFontSubstitution`), converts colours the output intent does not allow through `PdfColorConverter`, removes transfer
+functions, JavaScript and external content references, and flattens annotations that print inside the bleed box.
+
+`PdfOutputCondition` names registered print conditions: `Fogra39` carries Egami's bundled profile; `Fogra51`, `Fogra52`,
+`Gracol2013`, `Swop2013` and `Newspaper` need the profile from you with `WithProfile`. No open-source PDF/X validator exists;
+check important output in Acrobat Preflight or PackzView.

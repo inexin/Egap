@@ -293,6 +293,22 @@ public sealed class PdfMetadata
         Write(packet);
     }
 
+    /// <summary>The PDF/X version the XMP packet claims (<c>pdfxid:GTS_PDFXVersion</c>), or null.</summary>
+    internal string? GetPdfXId()
+    {
+        return Xmp()?.GetText(XmpPacket.PdfXId + "GTS_PDFXVersion")?.Trim();
+    }
+
+    /// <summary>Writes the PDF/X identification (<c>pdfxid:GTS_PDFXVersion</c>), creating the XMP packet when there is none.</summary>
+    internal void SetPdfXId(string version)
+    {
+        CreateXmp();
+        XmpPacket packet = Xmp()!;
+        packet.DeclarePrefix(XmpPacket.PdfXId, "pdfxid");
+        packet.SetText(XmpPacket.PdfXId + "GTS_PDFXVersion", version);
+        Write(packet);
+    }
+
     /// <summary>The PDF/A identification in the XMP packet (ISO 19005-2 6.6.4): part, conformance letter and revision; nulls without one.</summary>
     internal (string? Part, string? Conformance, string? Revision) GetPdfAId()
     {

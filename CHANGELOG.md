@@ -114,6 +114,14 @@ was removed or changed in a way that breaks code: 2.1.0 is 1.5.0 plus what is be
   moves CMYK between press profiles. Black and gray text and thin rules go on black ink alone by default.
 - `PdfDocument.ConvertToGray` now runs on the same conversion pass, and also converts the page's transparency group space.
 
+### PDF/X
+- `PdfXConverter.Check` and `Convert` for PDF/X-1a, X-3, X-4 and X-6 (X-1a and X-3 only without transparency), and checks
+  for X-4p, X-5g, X-5pg, X-5n, X-6p and X-6n: output intent, trim and bleed boxes, identification and XMP, `/Trapped`, fonts,
+  colour spaces against the output intent, transparency, encryption, external content, transfer functions, annotations
+  in the print area, actions and optional content. Reports are `PdfAReport`s.
+- `PdfOutputCondition` names registered print conditions (FOGRA39 with Egami's profile, FOGRA51, FOGRA52, GRACoL 2013,
+  SWOP 2013, newspaper). A converted document saves whole, unencrypted, as its version's PDF version.
+
 ## Egap.Documents 2.0.0 (2026-10-21)
 
 ### Docs
