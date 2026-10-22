@@ -5,9 +5,6 @@ using Egap.Documents;
 using Egap.Documents.Layout;
 using Egap.Preview;
 
-HtmlFormat.Register();
-MarkdownFormat.Register();
-
 int port = DocumentPreview.DefaultPort;
 double dpi = 110;
 bool open = true;
@@ -32,8 +29,9 @@ for (int i = 0; i < args.Length; i++)
                 egap-preview [file] [--port 12500] [--dpi 110] [--no-open]
 
                 Shows Egap documents on a local web page. Without a file, it shows what a program sends with
-                Document.ShowPreview(); run the program under dotnet watch and the page follows every edit. With a DOCX,
-                HTML or Markdown file, it shows the file and draws it again whenever it changes.
+                Document.ShowPreview(); run the program under dotnet watch and the page follows every edit. With a DOCX
+                file, it shows the file and draws it again whenever it changes; HTML and Markdown are shown from code,
+                with the add-on that reads them and ShowPreview().
                 """);
             return 0;
         default:

@@ -113,7 +113,7 @@ sealed class AddressBlock(string name, string street) : IComponent
 
 The `egap-preview` dotnet tool shows documents on a local web page, drawn by Egap's own renderer, and shows them again when
 they change. `ShowPreview()` sends a document's pages to it; run the program under `dotnet watch` and the page follows each
-edit. Given a DOCX, HTML or Markdown file instead, the tool draws the file again whenever it is saved. It listens on
+edit. Given a DOCX file instead, the tool draws the file again whenever it is saved. It listens on
 127.0.0.1 only, on port 12500 unless `--port` says otherwise, and `ShowPreview()` returns false when it is not running.
 
 ```sh
@@ -128,6 +128,18 @@ using Egap.Documents.Reports;
 
 Document report = Report.Create(r => r.Page(p => p.Content(c => c.Text("Draft"))));
 report.ShowPreview();                                            // dotnet watch run: the page follows every edit
+```
+
+HTML and Markdown are previewed from code, with the add-on that reads them: the tool itself only shows pages. To redraw
+an HTML template on every save, have `dotnet watch` watch it too, with `<Watch Include="**/*.html" />` in an item group
+of the project file.
+
+```csharp
+using Egap.Documents;
+
+HtmlFormat.Register();                                           // Egap.Documents.Html
+Document invoice = Document.Load("invoice.html");
+invoice.ShowPreview();
 ```
 
 A strict layout that fails shows its message on the page, above the last pages that laid out, and is thrown as well.

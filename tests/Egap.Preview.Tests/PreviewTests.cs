@@ -88,16 +88,14 @@ public sealed class PreviewTests
         string folder = Directory.CreateTempSubdirectory("egap-preview-").FullName;
         try
         {
-            string file = Path.Combine(folder, "notes.md");
-            await File.WriteAllTextAsync(file, "# One page", TestContext.Current.CancellationToken);
-            HtmlFormat.Register();
-            MarkdownFormat.Register();
+            string file = Path.Combine(folder, "notes.docx");
+            Save(file, 1);
             PreviewState state = new();
             using FilePreview preview = new(state, file, 24);
             Assert.Single(state.Snapshot().Pages);
 
             Task change = state.NextChange();
-            await File.WriteAllTextAsync(file, "# One\n\n" + string.Concat(Enumerable.Repeat("Paragraph of text.\n\n", 120)), TestContext.Current.CancellationToken);
+            Save(file, 120);
             await change.WaitAsync(TimeSpan.FromSeconds(20), TestContext.Current.CancellationToken);
             await Task.Delay(500, TestContext.Current.CancellationToken);
 
@@ -107,6 +105,18 @@ public sealed class PreviewTests
         finally
         {
             Directory.Delete(folder, recursive: true);
+        }
+
+        static void Save(string file, int paragraphs)
+        {
+            Document document = new();
+            DocumentBuilder builder = new(document);
+            for (int i = 0; i < paragraphs; i++)
+            {
+                builder.Writeln("Paragraph of text.");
+            }
+
+            document.Save(file);
         }
     }
 }

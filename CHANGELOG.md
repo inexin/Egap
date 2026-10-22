@@ -53,8 +53,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ### A live preview tool
 - `egap-preview`, a dotnet tool, shows documents on a local web page and reloads it when new pages arrive: the pages a
-  program sends with `ShowPreview()`, so a report run under `dotnet watch` follows every edit, or a DOCX, HTML or
-  Markdown file, drawn again whenever it is saved. A strict layout's failure shows on the page. It listens on 127.0.0.1
+  program sends with `ShowPreview()`, so a report run under `dotnet watch` follows every edit, or a DOCX file, drawn
+  again whenever it is saved; HTML and Markdown are shown from code with their add-on and `ShowPreview()`. A strict layout's failure shows on the page. It listens on 127.0.0.1
   only, port 12500 unless `--port` says otherwise, and needs nothing but Egap's packages.
 
 ## Egap.Documents.Html 2.1.0 (unreleased)
