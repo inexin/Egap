@@ -6,7 +6,9 @@ back into documents. Fully managed and MIT-licensed.
 
 - DOCX, DOTX and DOCM read and written; what the model does not name is kept, so DOCX to DOCX is lossless.
 - Styles, lists numbered as Word numbers them, tables, fields, comments, tracked changes; find, replace and a builder.
-- Page layout with floats, columns, headers and footers and footnotes, rendered to images, SVG or PDF.
+- Page layout with floats, columns, headers and footers, footnotes, and flex and grid containers, rendered to images, SVG
+  or PDF.
+- Reports in code with `Report.Create`: nested lambdas for pages, rows, columns, tables, text, styles and components.
 - PDF export with links, outline, tags and PDF/A; one-line conversions with `PdfConvert`.
 - PDF to document: blocks, reading order, headings, lists, tables and figures; auto-tagging, Docling JSON and table CSV.
 - HTML and Markdown come as add-on packages:

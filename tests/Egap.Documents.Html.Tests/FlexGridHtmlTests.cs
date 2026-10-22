@@ -194,6 +194,29 @@ public sealed class FlexGridHtmlTests
         Assert.True(watch.Elapsed < TimeSpan.FromSeconds(30), $"{watch.Elapsed}");
     }
 
+    [Fact]
+    public void AFluentReportSavesAsHtml()
+    {
+        Document report = Reports.Report.Create(r => r.Page(p => p
+            .Header(h => h.Row(row =>
+            {
+                row.Grow().Text("Acme");
+                row.Auto().Text("Invoice");
+            }))
+            .Content(c => c.Column(col =>
+            {
+                col.Spacing(6);
+                col.Item().Background("EEEEEE").CornerRadius(4).Padding(6).Text("Boxed");
+                col.Item().Table(t => t.Columns(2).Header("A", "B").Rows([1, 2], i => [i, i * 2]));
+            }))));
+
+        Document back = HtmlFormat.Parse(report.ToHtml());
+
+        Assert.Contains("Boxed", back.GetText(), StringComparison.Ordinal);
+        Assert.NotNull(Assert.Single(back.Descendants<ContentControl>()).Box);
+        Assert.Equal(3, Assert.Single(back.Descendants<Table>()).Rows.Count);
+    }
+
     private static LayoutRect Bounds(DocumentLayout layout, BlockContainer item)
     {
         return layout.FindBoxes(item).Select(b => b.Box).OfType<ItemBox>().Single().Bounds;

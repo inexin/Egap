@@ -1,4 +1,6 @@
 #nullable enable
+const Egap.Documents.Reports.Fields.Page = "{page}" -> string!
+const Egap.Documents.Reports.Fields.Pages = "{total-pages}" -> string!
 Egap.Documents.BoxCorners
 Egap.Documents.BoxCorners.BottomLeft.get -> double
 Egap.Documents.BoxCorners.BottomLeft.init -> void
@@ -71,6 +73,8 @@ Egap.Documents.BoxStyle.Width.init -> void
 Egap.Documents.BoxStyle.WithBorder(Egap.Documents.Border? border) -> Egap.Documents.BoxStyle!
 Egap.Documents.ContentControl.Box.get -> Egap.Documents.BoxStyle?
 Egap.Documents.ContentControl.Box.set -> void
+Egap.Documents.Document.DefaultLayoutOptions.get -> Egap.Documents.Layout.LayoutOptions?
+Egap.Documents.Document.DefaultLayoutOptions.set -> void
 Egap.Documents.FlexContainer
 Egap.Documents.FlexContainer.AddItem(string? text = null) -> Egap.Documents.FlexItem!
 Egap.Documents.FlexContainer.Box.get -> Egap.Documents.BoxStyle?
@@ -221,6 +225,147 @@ Egap.Documents.LayoutAlignment.SpaceBetween = 4 -> Egap.Documents.LayoutAlignmen
 Egap.Documents.LayoutAlignment.SpaceEvenly = 6 -> Egap.Documents.LayoutAlignment
 Egap.Documents.LayoutAlignment.Start = 0 -> Egap.Documents.LayoutAlignment
 Egap.Documents.LayoutAlignment.Stretch = 3 -> Egap.Documents.LayoutAlignment
+Egap.Documents.Reports.ColumnBuilder
+Egap.Documents.Reports.ColumnBuilder.Item() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.ColumnBuilder.Spacing(Egap.Pdf.Length space) -> Egap.Documents.Reports.ColumnBuilder!
+Egap.Documents.Reports.Container
+Egap.Documents.Reports.Container.AlignCenter() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.AlignJustify() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.AlignLeft() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.AlignRight() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Background(Egap.Documents.DocumentColor color) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Background(string! hex) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Barcode(Egami.Barcodes.Barcode! barcode, Egap.Pdf.Length width, Egap.Pdf.Length height, Egami.Barcodes.BarcodeDrawOptions? options = null) -> Egap.Documents.Picture!
+Egap.Documents.Reports.Container.Border(Egap.Pdf.Length width, Egap.Documents.DocumentColor? color = null) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.BorderBottom(Egap.Pdf.Length width, Egap.Documents.DocumentColor? color = null) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.CheckBox(string! name, bool isChecked = false) -> Egap.Documents.InlineContentControl!
+Egap.Documents.Reports.Container.Column(System.Action<Egap.Documents.Reports.ColumnBuilder!>! column) -> void
+Egap.Documents.Reports.Container.Component(Egap.Documents.Reports.IComponent! component) -> void
+Egap.Documents.Reports.Container.CornerRadius(Egap.Pdf.Length radius) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.DefaultTextStyle(System.Func<Egap.Documents.Reports.TextStyle!, Egap.Documents.Reports.TextStyle!>! change) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Document.get -> Egap.Documents.Document!
+Egap.Documents.Reports.Container.DropDown(string! name, System.Collections.Generic.IReadOnlyList<string!>! items, string? selected = null) -> Egap.Documents.InlineContentControl!
+Egap.Documents.Reports.Container.Element(System.Action<Egap.Documents.Reports.Container!>! compose) -> void
+Egap.Documents.Reports.Container.EnsureSpace(Egap.Pdf.Length height) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Grid(System.Action<Egap.Documents.Reports.GridBuilder!>! grid) -> void
+Egap.Documents.Reports.Container.Image(Egap.Documents.ImageData! image, Egap.Pdf.Length? width = null, Egap.Pdf.Length? height = null) -> Egap.Documents.Picture!
+Egap.Documents.Reports.Container.KeepTogether() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Line(Egap.Pdf.Length? thickness = null, Egap.Documents.DocumentColor? color = null) -> void
+Egap.Documents.Reports.Container.MarginTop(Egap.Pdf.Length space) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.MinHeight(Egap.Pdf.Length height) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Padding(Egap.Pdf.Length all) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Padding(Egap.Pdf.Length top, Egap.Pdf.Length right, Egap.Pdf.Length bottom, Egap.Pdf.Length left) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Padding(Egap.Pdf.Length vertical, Egap.Pdf.Length horizontal) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.PageBreak() -> void
+Egap.Documents.Reports.Container.Row(System.Action<Egap.Documents.Reports.RowBuilder!>! row) -> void
+Egap.Documents.Reports.Container.ScaleToFit() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Shadow(Egap.Documents.BoxShadow! shadow) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.ShowEntire() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.StopPaging() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Container.Table(System.Action<Egap.Documents.Reports.TableBuilder!>! table) -> void
+Egap.Documents.Reports.Container.Text(string! text) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.Container.Text(System.Action<Egap.Documents.Reports.TextBuilder!>! spans) -> void
+Egap.Documents.Reports.Container.TextField(string! name, string! value = "", int width = 20) -> Egap.Documents.InlineContentControl!
+Egap.Documents.Reports.Container.Width(Egap.Pdf.Length width) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.Fields
+Egap.Documents.Reports.GridBuilder
+Egap.Documents.Reports.GridBuilder.Areas(params string![]! rows) -> Egap.Documents.Reports.GridBuilder!
+Egap.Documents.Reports.GridBuilder.Columns(params Egap.Documents.GridTrack[]! tracks) -> Egap.Documents.Reports.GridBuilder!
+Egap.Documents.Reports.GridBuilder.Item(int columnSpan = 1, int rowSpan = 1) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.GridBuilder.Item(string! area) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.GridBuilder.Rows(params Egap.Documents.GridTrack[]! tracks) -> Egap.Documents.Reports.GridBuilder!
+Egap.Documents.Reports.GridBuilder.Spacing(Egap.Pdf.Length rows, Egap.Pdf.Length columns) -> Egap.Documents.Reports.GridBuilder!
+Egap.Documents.Reports.IComponent
+Egap.Documents.Reports.IComponent.Compose(Egap.Documents.Reports.Container! container) -> void
+Egap.Documents.Reports.PageDescriptor
+Egap.Documents.Reports.PageDescriptor.Content(System.Action<Egap.Documents.Reports.Container!>! content) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.DefaultTextStyle(System.Func<Egap.Documents.Reports.TextStyle!, Egap.Documents.Reports.TextStyle!>! change) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.Footer(System.Action<Egap.Documents.Reports.Container!>! footer) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.Header(System.Action<Egap.Documents.Reports.Container!>! header) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.Landscape() -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.Margins(Egap.Pdf.Length all) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.Margins(Egap.Pdf.Length top, Egap.Pdf.Length right, Egap.Pdf.Length bottom, Egap.Pdf.Length left) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.Margins(Egap.Pdf.Length vertical, Egap.Pdf.Length horizontal) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.Size(Egap.Pdf.Length width, Egap.Pdf.Length height) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.PageDescriptor.Size(Egap.Pdf.PdfPageSize size) -> Egap.Documents.Reports.PageDescriptor!
+Egap.Documents.Reports.Report
+Egap.Documents.Reports.ReportBuilder
+Egap.Documents.Reports.ReportBuilder.Author(string! author) -> Egap.Documents.Reports.ReportBuilder!
+Egap.Documents.Reports.ReportBuilder.DefaultTextStyle(System.Func<Egap.Documents.Reports.TextStyle!, Egap.Documents.Reports.TextStyle!>! style) -> Egap.Documents.Reports.ReportBuilder!
+Egap.Documents.Reports.ReportBuilder.Document.get -> Egap.Documents.Document!
+Egap.Documents.Reports.ReportBuilder.Page(System.Action<Egap.Documents.Reports.PageDescriptor!>! page) -> Egap.Documents.Reports.ReportBuilder!
+Egap.Documents.Reports.ReportBuilder.Style(string! name, System.Func<Egap.Documents.Reports.TextStyle!, Egap.Documents.Reports.TextStyle!>! style) -> Egap.Documents.Reports.ReportBuilder!
+Egap.Documents.Reports.ReportBuilder.Title(string! title) -> Egap.Documents.Reports.ReportBuilder!
+Egap.Documents.Reports.RowBuilder
+Egap.Documents.Reports.RowBuilder.AlignItems(Egap.Documents.LayoutAlignment alignment) -> Egap.Documents.Reports.RowBuilder!
+Egap.Documents.Reports.RowBuilder.Auto() -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.RowBuilder.Fixed(Egap.Pdf.Length width) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.RowBuilder.Grow(double weight = 1) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.RowBuilder.Spacing(Egap.Pdf.Length space) -> Egap.Documents.Reports.RowBuilder!
+Egap.Documents.Reports.RowBuilder.Wrap() -> Egap.Documents.Reports.RowBuilder!
+Egap.Documents.Reports.TableBuilder
+Egap.Documents.Reports.TableBuilder.Cell(int columnSpan = 1) -> Egap.Documents.Reports.Container!
+Egap.Documents.Reports.TableBuilder.CellPadding(Egap.Pdf.Length all) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableBuilder.Columns(int count) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableBuilder.Columns(System.Action<Egap.Documents.Reports.TableColumns!>! define) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableBuilder.Footer(System.Action<Egap.Documents.Reports.TableBuilder!>! cells) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableBuilder.Header(params string![]! texts) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableBuilder.Header(System.Action<Egap.Documents.Reports.TableBuilder!>! cells) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableBuilder.HeaderBackground(Egap.Documents.DocumentColor color) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableBuilder.Lines(Egap.Pdf.Length width, Egap.Documents.DocumentColor? color = null) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableBuilder.Rows<T>(System.Collections.Generic.IEnumerable<T>! items, System.Func<T, object?[]!>! cells) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.Reports.TableColumns
+Egap.Documents.Reports.TableColumns.Fixed(Egap.Pdf.Length width) -> Egap.Documents.Reports.TableColumns!
+Egap.Documents.Reports.TableColumns.Relative(double weight = 1) -> Egap.Documents.Reports.TableColumns!
+Egap.Documents.Reports.TableColumns.TableColumns() -> void
+Egap.Documents.Reports.TextBuilder
+Egap.Documents.Reports.TextBuilder.CurrentPageNumber() -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextBuilder.Hyperlink(string! text, string! address) -> Egap.Documents.Hyperlink!
+Egap.Documents.Reports.TextBuilder.LineBreak() -> void
+Egap.Documents.Reports.TextBuilder.Span(string! text) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextBuilder.TotalPages() -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor
+Egap.Documents.Reports.TextDescriptor.AlignCenter() -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.AlignRight() -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.Bold(bool bold = true) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.ClampLines(int lines) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.FontColor(Egap.Documents.DocumentColor color) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.FontColor(string! hex) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.FontFamily(string! family) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.FontSize(double size) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.Italic(bool italic = true) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.LineHeight(double multiple) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.Paragraph.get -> Egap.Documents.Paragraph!
+Egap.Documents.Reports.TextDescriptor.Style(Egap.Documents.Reports.TextStyle! shared) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.Style(string! name) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.Style(System.Func<Egap.Documents.Reports.TextStyle!, Egap.Documents.Reports.TextStyle!>! change) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextDescriptor.Underline(bool underline = true) -> Egap.Documents.Reports.TextDescriptor!
+Egap.Documents.Reports.TextStyle
+Egap.Documents.Reports.TextStyle.<Clone>$() -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.Background.get -> Egap.Documents.DocumentColor?
+Egap.Documents.Reports.TextStyle.BackgroundColor(Egap.Documents.DocumentColor color) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.Bold(bool bold = true) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.Color.get -> Egap.Documents.DocumentColor?
+Egap.Documents.Reports.TextStyle.Equals(Egap.Documents.Reports.TextStyle? other) -> bool
+Egap.Documents.Reports.TextStyle.Family.get -> string?
+Egap.Documents.Reports.TextStyle.FontColor(Egap.Documents.DocumentColor color) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.FontColor(string! hex) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.FontFamily(string! family) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.FontSize(double size) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.IsBold.get -> bool?
+Egap.Documents.Reports.TextStyle.IsItalic.get -> bool?
+Egap.Documents.Reports.TextStyle.IsStruckThrough.get -> bool?
+Egap.Documents.Reports.TextStyle.IsUnderlined.get -> bool?
+Egap.Documents.Reports.TextStyle.Italic(bool italic = true) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.LetterSpacing.get -> double?
+Egap.Documents.Reports.TextStyle.LineHeight.get -> double?
+Egap.Documents.Reports.TextStyle.LineHeightMultiple(double multiple) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.Over(Egap.Documents.Reports.TextStyle! under) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.Size.get -> double?
+Egap.Documents.Reports.TextStyle.Spacing(double points) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.Strikethrough(bool strike = true) -> Egap.Documents.Reports.TextStyle!
+Egap.Documents.Reports.TextStyle.TextStyle() -> void
+Egap.Documents.Reports.TextStyle.Underline(bool underline = true) -> Egap.Documents.Reports.TextStyle!
 Egap.Documents.Shape.CornerRadius.get -> double
 Egap.Documents.Shape.CornerRadius.set -> void
 Egap.Documents.Shape.FitToText.get -> bool
@@ -248,6 +393,9 @@ override Egap.Documents.GridLayout.GetHashCode() -> int
 override Egap.Documents.GridLayout.ToString() -> string!
 override Egap.Documents.GridTrack.GetHashCode() -> int
 override Egap.Documents.GridTrackSize.GetHashCode() -> int
+override Egap.Documents.Reports.TextStyle.Equals(object? obj) -> bool
+override Egap.Documents.Reports.TextStyle.GetHashCode() -> int
+override Egap.Documents.Reports.TextStyle.ToString() -> string!
 static Egap.Documents.BoxCorners.All(double radius) -> Egap.Documents.BoxCorners
 static Egap.Documents.BoxCorners.operator !=(Egap.Documents.BoxCorners left, Egap.Documents.BoxCorners right) -> bool
 static Egap.Documents.BoxCorners.operator ==(Egap.Documents.BoxCorners left, Egap.Documents.BoxCorners right) -> bool
@@ -276,6 +424,10 @@ static Egap.Documents.GridTrackSize.operator !=(Egap.Documents.GridTrackSize lef
 static Egap.Documents.GridTrackSize.operator ==(Egap.Documents.GridTrackSize left, Egap.Documents.GridTrackSize right) -> bool
 static Egap.Documents.GridTrackSize.Percent(double percent) -> Egap.Documents.GridTrackSize
 static Egap.Documents.GridTrackSize.Points(double points) -> Egap.Documents.GridTrackSize
+static Egap.Documents.Reports.Report.Create(System.Action<Egap.Documents.Reports.ReportBuilder!>! compose, Egap.Documents.Layout.LayoutOptions? layout = null) -> Egap.Documents.Document!
+static Egap.Documents.Reports.TextStyle.Default.get -> Egap.Documents.Reports.TextStyle!
+static Egap.Documents.Reports.TextStyle.operator !=(Egap.Documents.Reports.TextStyle? left, Egap.Documents.Reports.TextStyle? right) -> bool
+static Egap.Documents.Reports.TextStyle.operator ==(Egap.Documents.Reports.TextStyle? left, Egap.Documents.Reports.TextStyle? right) -> bool
 virtual Egap.Documents.DocumentVisitor.VisitFlexContainerEnd(Egap.Documents.FlexContainer! container) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitFlexContainerStart(Egap.Documents.FlexContainer! container) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitFlexItemEnd(Egap.Documents.FlexItem! item) -> Egap.Documents.VisitorAction

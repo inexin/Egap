@@ -25,6 +25,12 @@ public sealed partial class DocumentBuilder
     /// <exception cref="ArgumentOutOfRangeException">A size is not positive.</exception>
     public Picture InsertBarcode(Barcode barcode, double width, double height, BarcodeDrawOptions? options = null)
     {
+        return Put(BarcodePicture(Document, barcode, width, height, options));
+    }
+
+    /// <summary>A barcode picture of <paramref name="document"/>, not yet in a paragraph: the SVG and its PNG stand-in.</summary>
+    internal static Picture BarcodePicture(Document document, Barcode barcode, double width, double height, BarcodeDrawOptions? options)
+    {
         ArgumentNullException.ThrowIfNull(barcode);
         if (!(width > 0 && height > 0 && double.IsFinite(width) && double.IsFinite(height)))
         {
@@ -49,11 +55,10 @@ public sealed partial class DocumentBuilder
 
         using MemoryStream png = new();
         raster.Save(png, PngFormat.Info);
-        Picture picture = new(Document, new ImageData(svg.ToArray(), "image/svg+xml"), width, height)
+        return new Picture(document, new ImageData(svg.ToArray(), "image/svg+xml"), width, height)
         {
             Fallback = new ImageData(png.ToArray(), "image/png"),
             Description = barcode.HumanReadableText,
         };
-        return Put(picture);
     }
 }

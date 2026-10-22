@@ -5,6 +5,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.1.0 (unreleased)
 
+### Reports in code
+- `Report.Create` builds a document with nested lambdas (`Egap.Documents.Reports`): pages with size, margins, header,
+  footer and content; containers with box, alignment, text style and paging settings; and text with spans and page
+  numbers, pictures, barcodes, columns, rows (flex), grids, tables with repeating header and footer rows, rules, page
+  breaks, form fields and reusable `IComponent`s. `TextStyle` chains are immutable and shared; named styles are
+  character styles in the document. The same report saves as PDF, DOCX and HTML.
+- A report lays out strictly with portable fonts. `Document.DefaultLayoutOptions` holds that, and is used wherever a
+  layout or export is asked for without options.
+
 ### Flex and grid layout
 - `FlexContainer` and `FlexItem`: items in a row or a column that grow and shrink to share the space, wrap onto more
   lines, and line up by `FlexLayout`'s justify and align settings and gaps. Layout breaks pages between lines.

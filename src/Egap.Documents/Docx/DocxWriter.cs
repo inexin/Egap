@@ -651,7 +651,9 @@ internal sealed partial class DocxWriter
                         return new XElement(original);
                     }
 
-                    List<XElement> content = control.Box is null ? [.. WriteBlocks(control.Blocks, ensureParagraph: kept is null)]
+                    // A box that only keeps space around the blocks (a report column's spacing) needs no table.
+                    bool boxed = control.Box is { } box && (box.Draws || box.Horizontal > 0 || box.Vertical > 0 || box.Width.Unit != WidthUnit.Auto);
+                    List<XElement> content = !boxed ? [.. WriteBlocks(control.Blocks, ensureParagraph: kept is null)]
                         : [WriteTable(ContainerTables.For(control, ContainerTables.TextWidth(control))!), new XElement(Ns.W + "p")];
                     return new XElement(Ns.W + "sdt", SdtProperties(control.Properties, kept, kept?.Original), SdtEnd(kept), new XElement(Ns.W + "sdtContent", content));
                 }

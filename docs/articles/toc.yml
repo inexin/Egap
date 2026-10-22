@@ -28,6 +28,8 @@
       href: guides/migrating-to-2.0.md
     - name: PDF export and conversion
       href: guides/pdf-export-and-conversion.md
+    - name: Reports in code
+      href: guides/reports.md
 - name: Document formats
   items:
     - name: Overview

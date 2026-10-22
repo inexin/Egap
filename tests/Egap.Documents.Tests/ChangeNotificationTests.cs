@@ -49,6 +49,7 @@ public class ChangeNotificationTests
         ["ContentControl.AddParagraph"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).AddParagraph("x"),
         ["ContentControl.Paging"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).Paging = new GroupPaging { KeepTogether = true },
         ["ContentControl.Box"] = f => f.Body.Blocks.Add(new ContentControl(f.Doc)).Box = BoxStyle.Padded(3),
+        ["Document.DefaultLayoutOptions"] = f => f.Doc.DefaultLayoutOptions = new Egap.Documents.Layout.LayoutOptions { Strict = true },
         ["FlexContainer.AddItem"] = f => f.Body.Blocks.Add(new FlexContainer(f.Doc)).AddItem("x"),
         ["GridContainer.AddItem"] = f => f.Body.Blocks.Add(new GridContainer(f.Doc)).AddItem("x"),
         ["Shape.AddTextBox"] = f => f.Paragraph.Inlines.Add(new Shape(f.Doc, ShapeKind.Rectangle, 1, 1)).AddTextBox(),
@@ -118,7 +119,7 @@ public class ChangeNotificationTests
         Assert.NotEmpty(changes);
         Assert.Equal(before + changes.Count, f.Doc.Version);
         Assert.Equal(f.Doc.Version, changes[^1].Version);
-        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "MarginBoxCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph" or "Document.FileName"))
+        if (name is not ("Document.AddSection" or "HeaderFooterCollection.GetOrAdd" or "MarginBoxCollection.GetOrAdd" or "Footnote.AddParagraph" or "Comment.AddParagraph" or "Document.FileName" or "Document.DefaultLayoutOptions"))
         {
             Assert.Equal(f.Doc.Version, f.Body.Version);   // the others change another story or none
         }
