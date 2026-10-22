@@ -289,7 +289,7 @@ internal static class RunCommand
         {
             using JsonDocument document = JsonDocument.Parse(json);
             JsonElement root = document.RootElement;
-            if (root.ValueKind != JsonValueKind.Object || !root.TryGetProperty("egap", out JsonElement version) || version.ValueKind != JsonValueKind.Number || version.GetInt32() != WorkflowVersion)
+            if (root.ValueKind != JsonValueKind.Object || !root.TryGetProperty("egap", out JsonElement version) || !version.TryGetInt32(out int number) || number != WorkflowVersion)
             {
                 throw new UsageException($"{source} is not an egap workflow: {{ \"egap\": 1, \"steps\": [ ... ] }}.");
             }
