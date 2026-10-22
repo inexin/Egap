@@ -182,6 +182,12 @@ internal abstract class ImageColorSpace
         context ??= new ColorContext();
         ColorProfile? profile = stream is not null && n is 1 or 3 or 4 ? context.Profile(stream) : null;
 
+        // A profile whose colour space has another number of channels than /N says is not used (the alternate is).
+        if (profile is not null && profile.ChannelCount != n)
+        {
+            profile = null;
+        }
+
         ImageColorSpace alternate = stream?.Dictionary.Get("Alternate") is PdfObject alt
             ? Read(alt, resources, context, depth + 1)
             : n switch

@@ -107,6 +107,13 @@ was removed or changed in a way that breaks code: 2.1.0 is 1.5.0 plus what is be
   press profile and which spot inks get plates.
 - Preflight's ink check: `PdfPrintProfile.MaxInkCoverage` is measured on each page's plates and reported.
 
+### Colour conversion
+- `PdfColorConverter.Convert` converts a document's RGB, calibrated, Lab and ICC-based colours into a print profile
+  (FOGRA39 or the output intent by default) through Egami's colour engine: colour operators, images, shadings, patterns,
+  soft masks, Type 3 glyphs and annotations. CMYK and spot colours are kept; `Spots` converts spots and `RetargetCmyk`
+  moves CMYK between press profiles. Black and gray text and thin rules go on black ink alone by default.
+- `PdfDocument.ConvertToGray` now runs on the same conversion pass, and also converts the page's transparency group space.
+
 ## Egap.Documents 2.0.0 (2026-10-21)
 
 ### Docs

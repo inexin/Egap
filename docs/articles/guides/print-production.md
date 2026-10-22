@@ -83,3 +83,36 @@ Egami `InkRaster` behind the plates, which saves a separated TIFF and makes a so
 
 When a print profile sets `MaxInkCoverage`, preflight separates every page at `InkCoverageDpi` (36 by default) and reports
 its most total ink and the share over the limit. Coverage is only reported: preflight does not change any colour.
+
+## Colour conversion
+
+`PdfColorConverter.Convert` converts a document's colours into a print profile in place: RGB, calibrated, Lab and
+ICC-based colours go to the target, while CMYK and spot colours keep their numbers and plates. Vectors stay vectors.
+Colour operators, images, shadings, patterns, soft masks, Type 3 glyphs and annotation appearances are all converted; a
+JPEG photo stays a JPEG at the quality it had, and an Indexed image keeps its samples under a converted palette.
+
+```csharp
+using Egami.Colors;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("rgb.pdf");
+PdfColorConversionResult result = PdfColorConverter.Convert(pdf, new PdfColorConversionOptions
+{
+    Target = ColorProfile.Fogra39,                // the default: the CMYK output intent, else FOGRA39
+    Spots = PdfSpotConversion.Keep,               // Keep, Convert or ConvertAllButNamed
+    BlackText = PdfBlackText.PureBlack,           // black and gray text and thin rules on black ink alone
+});
+Console.WriteLine(result);                        // what changed
+pdf.Save("cmyk.pdf");
+```
+
+| Option | Default | What it does |
+| --- | --- | --- |
+| `Target` | output intent, else FOGRA39 | The gray, RGB or CMYK profile colours convert into |
+| `Intent`, `BlackPointCompensation` | relative colorimetric, on | How every conversion maps colours |
+| `Spots` | `Keep` | Spot colours keep their plates, with their alternate colours converted; `Convert` converts them too |
+| `RetargetCmyk`, `SourceCmyk` | off | Also convert CMYK from one press profile to another, such as coated to newspaper |
+| `BlackText`, `ThinRuleWidth` | `PureBlack`, 0.5 pt | Neutral text and rules up to the width go on black ink alone; images stay colorimetric |
+
+Conversion does not limit ink: the target profile decides how much ink each colour takes, and preflight reports anything
+over a print profile's `MaxInkCoverage`.

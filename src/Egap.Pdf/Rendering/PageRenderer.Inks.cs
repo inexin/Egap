@@ -129,16 +129,19 @@ internal sealed partial class PageRenderer
     /// </summary>
     private bool DrawInkImage(PdfImage source, PdfImageOptions options, PdfGraphicsState state, PdfName? name)
     {
-        if (inks is null || canvas is not InkCanvas ink || source.ColorSpace is not PdfObject spaceObject
-            || colors.Space(spaceObject, Resources, ColorContext.IntentOf(state.RenderingIntent)) is not ImageColorSpace space || inks.Plan(space) is not InkPlan plan)
+        if (inks is null || canvas is not InkCanvas ink)
         {
             return false;
         }
 
+        ImageColorSpace? space = source.ColorSpace is PdfObject spaceObject ? colors.Space(spaceObject, Resources, ColorContext.IntentOf(state.RenderingIntent)) : null;
+        InkPlan? plan = space is null ? null : inks.Plan(space);
         InkRaster raster;
         try
         {
-            raster = ImageDecoder.DecodeInks(source, options, plan, inks.Inks);
+            // Every other image converts from sRGB into the process inks here, onto plates of the whole ink set, so it
+            // knocks out the spot plates below it as well.
+            raster = plan is not null ? ImageDecoder.DecodeInks(source, options, plan, inks.Inks) : SrgbToPlates(source.ToRaster<Rgba8>(options));
         }
         catch (PdfException e) when (e is not PdfLimitException)
         {
@@ -158,7 +161,7 @@ internal sealed partial class PageRenderer
             SamplingOptions sampling = new() { Filter = !settings.AntialiasImages ? ResampleFilter.Nearest : interpolate ? ResampleFilter.Bilinear : ResampleFilter.Nearest };
             Overprint overprint = OverprintOf(fill: true, plan, space);
             RectF unit = new(0, 0, 1, 1);
-            if (overprint != Overprint.Off && !plan.IsCmyk)
+            if (overprint != Overprint.Off && plan is { IsCmyk: false })
             {
                 foreach (Colorant colorant in plan.Colorants)
                 {
@@ -197,6 +200,57 @@ internal sealed partial class PageRenderer
         }
 
         return true;
+    }
+
+    /// <summary>An sRGB image as plates of the ink set: its colours in the process inks, premultiplied by its alpha.</summary>
+    private InkRaster SrgbToPlates(Raster<Rgba8> image)
+    {
+        using (image)
+        {
+            InkRaster raster = new(inks!.Inks, image.Width, image.Height);
+            ColorTransform transform = inks.FromSrgb;
+            InkPlate?[] process = [raster.Plate("Cyan"), raster.Plate("Magenta"), raster.Plate("Yellow"), raster.Plate("Black")];
+            Rgb8[] rgb = new Rgb8[image.Width];
+            Cmyk8[] cmyk = new Cmyk8[image.Width];
+            for (int y = 0; y < image.Height; y++)
+            {
+                Span<Rgba8> row = image.Row(y);
+                Span<byte> alpha = raster.Alpha.Row8(y);
+                for (int x = 0; x < row.Length; x++)
+                {
+                    rgb[x] = new Rgb8(row[x].R, row[x].G, row[x].B);
+                    alpha[x] = row[x].A;
+                }
+
+                transform.Apply<Rgb8, Cmyk8>(rgb, cmyk);
+                for (int x = 0; x < row.Length; x++)
+                {
+                    int a = row[x].A;
+                    Cmyk8 c = cmyk[x];
+                    if (process[0] is InkPlate cyan)
+                    {
+                        cyan.Row8(y)[x] = (byte)((c.C * a + 127) / 255);
+                    }
+
+                    if (process[1] is InkPlate magenta)
+                    {
+                        magenta.Row8(y)[x] = (byte)((c.M * a + 127) / 255);
+                    }
+
+                    if (process[2] is InkPlate yellow)
+                    {
+                        yellow.Row8(y)[x] = (byte)((c.Y * a + 127) / 255);
+                    }
+
+                    if (process[3] is InkPlate black)
+                    {
+                        black.Row8(y)[x] = (byte)((c.K * a + 127) / 255);
+                    }
+                }
+            }
+
+            return raster;
+        }
     }
 
     /// <summary>

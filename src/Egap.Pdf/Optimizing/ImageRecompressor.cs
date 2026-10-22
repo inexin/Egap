@@ -314,7 +314,7 @@ internal static class ImageRecompressor
     }
 
     /// <summary>Samples as a baseline JPEG at a quality; CMYK written by Egami with an Adobe marker and inverted inks.</summary>
-    private static PdfStream Jpeg(Raster raster, int quality)
+    internal static PdfStream Jpeg(Raster raster, int quality)
     {
         using MemoryStream jpeg = new();
         raster.Save(jpeg, JpegFormat.Info, new JpegWriterOptions { Quality = quality, OptimizeHuffman = true });

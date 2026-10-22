@@ -17,8 +17,14 @@ internal sealed class InkMap(InkSet inks)
 {
     private readonly ConditionalWeakTable<ImageColorSpace, Holder> plans = [];
 
+    private ColorTransform? fromSrgb;
+
     /// <summary>The plates drawn on.</summary>
     public InkSet Inks => inks;
+
+    /// <summary>sRGB into the process inks, as the ink canvas converts it: relative colorimetric with black point compensation.</summary>
+    public ColorTransform FromSrgb => LazyInitializer.EnsureInitialized(ref fromSrgb, () => ColorTransform.Create(ColorProfile.Srgb, inks.Profile,
+        new ColorTransformOptions { Intent = RenderingIntent.RelativeColorimetric, BlackPointCompensation = true }));
 
     /// <summary>How the space prints, or null when it is drawn as sRGB.</summary>
     public InkPlan? Plan(ImageColorSpace space)
@@ -46,6 +52,18 @@ internal sealed class InkMap(InkSet inks)
 
         switch (space.Family)
         {
+            case ColorFamily.Cmyk when space.Components == 4 && Process() is Colorant[] cmyk && !space.IsDevice && space.Profile is { Model: ColorModel.Cmyk, ChannelCount: 4 } own
+                && !own.IsEquivalentTo(inks.Profile):
+                {
+                    // ICCBased CMYK in another press's profile is colour-managed into this one (8.6.5.5), as a RIP does.
+                    ColorTransform transform = ColorTransform.Create(own, inks.Profile, new ColorTransformOptions { Intent = RenderingIntent.RelativeColorimetric, BlackPointCompensation = true });
+                    return new InkPlan(cmyk, (c, t) =>
+                    {
+                        Span<float> from = [Unit(c[0]), Unit(c[1]), Unit(c[2]), Unit(c[3])];
+                        transform.Apply(from, t[..4]);
+                    }, Cmyk: true);
+                }
+
             case ColorFamily.Cmyk when space.Components == 4 && Process() is Colorant[] cmyk:
                 return new InkPlan(cmyk, (c, t) =>
                 {

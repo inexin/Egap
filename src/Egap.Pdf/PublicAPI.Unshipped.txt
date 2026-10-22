@@ -1,5 +1,41 @@
 #nullable enable
 const Egap.Pdf.PdfPreflight.DefaultHairline = 0.25 -> double
+Egap.Pdf.PdfBlackText
+Egap.Pdf.PdfBlackText.Colorimetric = 1 -> Egap.Pdf.PdfBlackText
+Egap.Pdf.PdfBlackText.PureBlack = 0 -> Egap.Pdf.PdfBlackText
+Egap.Pdf.PdfColorConversionOptions
+Egap.Pdf.PdfColorConversionOptions.<Clone>$() -> Egap.Pdf.PdfColorConversionOptions!
+Egap.Pdf.PdfColorConversionOptions.BlackPointCompensation.get -> bool
+Egap.Pdf.PdfColorConversionOptions.BlackPointCompensation.init -> void
+Egap.Pdf.PdfColorConversionOptions.BlackText.get -> Egap.Pdf.PdfBlackText
+Egap.Pdf.PdfColorConversionOptions.BlackText.init -> void
+Egap.Pdf.PdfColorConversionOptions.Equals(Egap.Pdf.PdfColorConversionOptions? other) -> bool
+Egap.Pdf.PdfColorConversionOptions.Intent.get -> Egami.Colors.RenderingIntent
+Egap.Pdf.PdfColorConversionOptions.Intent.init -> void
+Egap.Pdf.PdfColorConversionOptions.KeepSpots.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Egap.Pdf.PdfColorConversionOptions.KeepSpots.init -> void
+Egap.Pdf.PdfColorConversionOptions.PdfColorConversionOptions() -> void
+Egap.Pdf.PdfColorConversionOptions.RetargetCmyk.get -> bool
+Egap.Pdf.PdfColorConversionOptions.RetargetCmyk.init -> void
+Egap.Pdf.PdfColorConversionOptions.SourceCmyk.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfColorConversionOptions.SourceCmyk.init -> void
+Egap.Pdf.PdfColorConversionOptions.Spots.get -> Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfColorConversionOptions.Spots.init -> void
+Egap.Pdf.PdfColorConversionOptions.Target.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfColorConversionOptions.Target.init -> void
+Egap.Pdf.PdfColorConversionOptions.ThinRuleWidth.get -> double
+Egap.Pdf.PdfColorConversionOptions.ThinRuleWidth.init -> void
+Egap.Pdf.PdfColorConversionResult
+Egap.Pdf.PdfColorConversionResult.Alternates.get -> int
+Egap.Pdf.PdfColorConversionResult.Annotations.get -> int
+Egap.Pdf.PdfColorConversionResult.Changed.get -> bool
+Egap.Pdf.PdfColorConversionResult.Colors.get -> int
+Egap.Pdf.PdfColorConversionResult.Images.get -> int
+Egap.Pdf.PdfColorConversionResult.PureBlack.get -> int
+Egap.Pdf.PdfColorConversionResult.Shadings.get -> int
+Egap.Pdf.PdfColorConversionResult.Target.get -> Egami.Colors.ColorProfile!
+Egap.Pdf.PdfColorConversionResult.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfColorConverter
 Egap.Pdf.PdfColorSpaceKinds
 Egap.Pdf.PdfColorSpaceKinds.All = Egap.Pdf.PdfColorSpaceKinds.Gray | Egap.Pdf.PdfColorSpaceKinds.Rgb | Egap.Pdf.PdfColorSpaceKinds.Cmyk | Egap.Pdf.PdfColorSpaceKinds.Lab | Egap.Pdf.PdfColorSpaceKinds.Spot -> Egap.Pdf.PdfColorSpaceKinds
 Egap.Pdf.PdfColorSpaceKinds.CalibratedCmyk = 32 -> Egap.Pdf.PdfColorSpaceKinds
@@ -118,6 +154,14 @@ Egap.Pdf.PdfSeparations.MaxCoverage.get -> double
 Egap.Pdf.PdfSeparations.Plates.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfInkPlate!>!
 Egap.Pdf.PdfSeparations.ShareOver(double limit) -> double
 Egap.Pdf.PdfSeparations.Width.get -> int
+Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfSpotConversion.Convert = 1 -> Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfSpotConversion.ConvertAllButNamed = 2 -> Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfSpotConversion.Keep = 0 -> Egap.Pdf.PdfSpotConversion
+override Egap.Pdf.PdfColorConversionOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfColorConversionOptions.GetHashCode() -> int
+override Egap.Pdf.PdfColorConversionOptions.ToString() -> string!
+override Egap.Pdf.PdfColorConversionResult.ToString() -> string!
 override Egap.Pdf.PdfInkPlate.ToString() -> string!
 override Egap.Pdf.PdfPreflightItem.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPreflightItem.GetHashCode() -> int
@@ -129,6 +173,10 @@ override Egap.Pdf.PdfPrintProfile.ToString() -> string!
 override Egap.Pdf.PdfSeparationOptions.Equals(object? obj) -> bool
 override Egap.Pdf.PdfSeparationOptions.GetHashCode() -> int
 override Egap.Pdf.PdfSeparationOptions.ToString() -> string!
+static Egap.Pdf.PdfColorConversionOptions.Default.get -> Egap.Pdf.PdfColorConversionOptions!
+static Egap.Pdf.PdfColorConversionOptions.operator !=(Egap.Pdf.PdfColorConversionOptions? left, Egap.Pdf.PdfColorConversionOptions? right) -> bool
+static Egap.Pdf.PdfColorConversionOptions.operator ==(Egap.Pdf.PdfColorConversionOptions? left, Egap.Pdf.PdfColorConversionOptions? right) -> bool
+static Egap.Pdf.PdfColorConverter.Convert(Egap.Pdf.PdfDocument! document, Egap.Pdf.PdfColorConversionOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfColorConversionResult!
 static Egap.Pdf.PdfPreflight.Run(Egap.Pdf.PdfDocument! document, Egap.Pdf.PdfPrintProfile? profile = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfPreflightReport!
 static Egap.Pdf.PdfPreflightItem.operator !=(Egap.Pdf.PdfPreflightItem? left, Egap.Pdf.PdfPreflightItem? right) -> bool
 static Egap.Pdf.PdfPreflightItem.operator ==(Egap.Pdf.PdfPreflightItem? left, Egap.Pdf.PdfPreflightItem? right) -> bool
