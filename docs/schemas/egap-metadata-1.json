@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-metadata-1.json",
+  "title": "egap metadata show",
+  "description": "What 'egap metadata show --json' writes. Each file's outline object is also an outline file that 'egap metadata set --outline' reads.",
+  "type": "object",
+  "required": [ "schema", "files" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "path", "info" ],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "info": {
+            "description": "The document information fields that are set.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": { "type": "string" },
+              "author": { "type": "string" },
+              "subject": { "type": "string" },
+              "keywords": { "type": "string" },
+              "creator": { "type": "string" },
+              "producer": { "type": "string" },
+              "created": { "description": "ISO 8601.", "type": "string" },
+              "modified": { "description": "ISO 8601.", "type": "string" }
+            }
+          },
+          "xmp": { "description": "--xmp: the XMP packet as XML, or null when there is none.", "type": [ "string", "null" ] },
+          "outline": { "description": "--outline", "$ref": "#/$defs/outline" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "outline": {
+      "type": "object",
+      "required": [ "egap-outline", "items" ],
+      "additionalProperties": false,
+      "properties": {
+        "egap-outline": { "description": "The outline format's version.", "const": 1 },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/item" } }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": [ "title" ],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "page": { "description": "The page it goes to, from 1, or null for an item that goes elsewhere.", "type": [ "integer", "null" ] },
+        "bold": { "type": "boolean" },
+        "italic": { "type": "boolean" },
+        "open": { "description": "Whether its children show at first.", "type": "boolean" },
+        "children": { "type": "array", "items": { "$ref": "#/$defs/item" } }
+      }
+    }
+  }
+}

@@ -98,6 +98,9 @@ internal static class Cli
         root.Subcommands.Add(MergeCommand.Create(session));
         root.Subcommands.Add(SplitCommand.Create(session));
         root.Subcommands.Add(PagesCommand.Create(session));
+        root.Subcommands.Add(EncryptCommands.Encrypt(session));
+        root.Subcommands.Add(EncryptCommands.Decrypt(session));
+        root.Subcommands.Add(MetadataCommand.Create(session));
         return root;
     }
 }
