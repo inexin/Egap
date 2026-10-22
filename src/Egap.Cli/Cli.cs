@@ -93,6 +93,8 @@ internal static class Cli
         GlobalOptions.AddTo(root, session);
         root.Subcommands.Add(InfoCommand.Create(session));
         root.Subcommands.Add(ConvertCommand.Create(session));
+        root.Subcommands.Add(TextCommand.Create(session));
+        root.Subcommands.Add(RenderCommand.Create(session));
         return root;
     }
 }
