@@ -77,7 +77,9 @@ static void FileRange(Stream input)
     {
         MergeCommand.Parts(session, Text(input).Split('\n'));
     }
-    catch (Exception error) when (error is UsageException or FileNotFoundException or DirectoryNotFoundException or IOException)
+
+    // A path the system can't hold (a NUL in it) is an ArgumentException, which the tool reports as a failed file.
+    catch (Exception error) when (error is UsageException or FileNotFoundException or DirectoryNotFoundException or IOException or ArgumentException)
     {
     }
 }

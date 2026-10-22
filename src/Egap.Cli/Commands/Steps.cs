@@ -46,19 +46,19 @@ internal static class Steps
     /// <summary>The command a step's words are parsed with: its options and arguments, nothing else.</summary>
     public static Command CommandOf(string name, out Edit? edit, out SaveOptions? save)
     {
-        Command command = new(name);
         save = null;
         edit = Edits.FirstOrDefault(e => e.Name == name);
+        if (edit is null && name != "save")
+        {
+            throw new UsageException($"'{name}' is not a step; 'egap run --list' lists them.");
+        }
+
+        Command command = new(name);
         if (edit is not null)
         {
             command.Description = edit.Description;
             edit.AddTo(command);
             return command;
-        }
-
-        if (name != "save")
-        {
-            throw new UsageException($"'{name}' is not a step; 'egap run --list' lists them.");
         }
 
         command.Description = "Write the document as it stands, to a file or a template such as out/{name}.pdf; it may come more than once.";
