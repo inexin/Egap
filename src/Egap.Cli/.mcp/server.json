@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "io.github.inexin/egap",
+  "title": "Egap",
+  "description": "Turn documents into PDF, and inspect, merge, split, stamp, redact, fill and check PDFs on this computer with Egap, a fully managed .NET library.",
+  "websiteUrl": "https://github.com/inexin/Egap",
+  "repository": {
+    "url": "https://github.com/inexin/Egap",
+    "source": "github",
+    "subfolder": "src/Egap.Cli"
+  },
+  "version": "2.2.0",
+  "packages": [
+    {
+      "registryType": "nuget",
+      "registryBaseUrl": "https://api.nuget.org",
+      "identifier": "Egap.Cli",
+      "version": "2.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
+    }
+  ]
+}

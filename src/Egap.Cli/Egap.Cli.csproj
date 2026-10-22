@@ -10,6 +10,8 @@
     <VersionPrefix>$(EgapVersion)</VersionPrefix>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>egap</ToolCommandName>
+    <!-- Also listed as an MCP server on NuGet, with .mcp/server.json (CLI design Q16). -->
+    <PackageType>McpServer</PackageType>
     <Description>The egap command: turn HTML, Markdown, DOCX and images into PDF, and merge, split, inspect, encrypt and edit PDFs from a shell, a build script or an AI agent, with Egap, a fully managed PDF and document library.</Description>
     <PackageTags>egap;pdf;cli;tool;convert;merge;split;html-to-pdf</PackageTags>
     <InvariantGlobalization>true</InvariantGlobalization>
@@ -35,6 +37,12 @@
     <ProjectReference Include="../Egap.Documents/Egap.Documents.csproj" />
     <ProjectReference Include="../Egap.Documents.Html/Egap.Documents.Html.csproj" />
     <ProjectReference Include="../Egap.Documents.Markdown/Egap.Documents.Markdown.csproj" />
+  </ItemGroup>
+
+  <!-- egap mcp's run tool takes a workflow object with the published schema. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\docs\schemas\egap-workflow-1.json" LogicalName="egap-workflow-1.json" />
+    <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
   </ItemGroup>
 
   <ItemGroup>
