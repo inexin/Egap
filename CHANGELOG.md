@@ -3,7 +3,7 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Documents 2.1.0 (unreleased)
+## Egap.Documents 2.1.0 (2026-10-22)
 
 ### Reports in code
 - `Report.Create` builds a document in code (`Egap.Documents.Reports`): pages with size and margins whose `Header()`,
@@ -53,7 +53,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - DOCX: Word 2010 run properties are written in the schema's order, text effects such as `w14:shadow` before font
   features such as `w14:numForm`, so Word's validator no longer reports an unexpected element in a saved file.
 
-## Egap.Preview 1.0.0 (unreleased)
+## Egap.Preview 1.0.0 (2026-10-22)
 
 ### A live preview tool
 - `egap-preview`, a dotnet tool, shows documents on a local web page and reloads it when new pages arrive: the pages a
@@ -61,7 +61,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   again whenever it is saved; HTML and Markdown are shown from code with their add-on and `ShowPreview()`. A strict layout's failure shows on the page. It listens on 127.0.0.1
   only, port 12501 unless `--port` says otherwise, refuses requests from other web pages, and needs nothing but Egap's packages.
 
-## Egap.Documents.Html 2.1.0 (unreleased)
+## Egap.Documents.Html 2.1.0 (2026-10-22)
 
 ### CSS layout
 - `display: flex` and `display: grid` read into flex and grid containers with their items, instead of stacked blocks
@@ -85,12 +85,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   which made browsers end the link early. The bookmark is written as `<span id>`, and the note mark keeps its id without a
   link of its own.
 
-## Egap.Documents.Markdown 2.1.0 (unreleased)
+## Egap.Documents.Markdown 2.1.0 (2026-10-22)
 
 ### Flex and grid containers
 - Flex and grid containers are written as their items' content in order, with a warning.
 
-## Egap.Pdf 1.5.1 (unreleased)
+## Egap.Pdf 1.5.1 (2026-10-22)
 
 ### Speed
 - Content streams write coordinates faster, with the same text as before.
