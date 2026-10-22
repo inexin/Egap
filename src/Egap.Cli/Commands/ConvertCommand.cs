@@ -63,6 +63,7 @@ internal static class ConvertCommand
         password.AddTo(command);
         command.SetAction(result =>
         {
+            Cli.RegisterFormats();
             BatchOptions batch = inputs.Batch(session, result);
             List<InputFile> files = inputs.Expand(session, result);
             OutputTemplate template = output.Template(session, result, files)!;

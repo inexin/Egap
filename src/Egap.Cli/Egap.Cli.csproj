@@ -20,8 +20,6 @@
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
     <PublishAot Condition="'$(EgapNativeAot)' == 'true'">true</PublishAot>
-    <!-- A run is short, so loops get optimized code at once rather than after on-stack replacement. -->
-    <TieredCompilationQuickJitForLoops>false</TieredCompilationQuickJitForLoops>
   </PropertyGroup>
 
   <ItemGroup>

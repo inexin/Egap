@@ -35,6 +35,7 @@ internal static class MergeDataCommand
         save.AddTo(command, edits: false);
         command.SetAction(result =>
         {
+            Cli.RegisterFormats();
             string templatePath = session.ResolvePath(result.GetValue(template)!);
             string dataPath = session.ResolvePath(result.GetValue(data)!);
             List<Dictionary<string, object?>> records = Path.GetExtension(dataPath).Equals(".csv", StringComparison.OrdinalIgnoreCase)

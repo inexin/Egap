@@ -13,13 +13,6 @@ namespace Egap.Cli;
 /// </summary>
 internal static class Cli
 {
-    static Cli()
-    {
-        // All four packages (Q3): HTML and Markdown come from their add-ons once registered.
-        Documents.HtmlFormat.Register();
-        Documents.MarkdownFormat.Register();
-    }
-
     /// <summary>Runs the tool in this process; <paramref name="setup"/> may set up the session first, as egap mcp does for each call.</summary>
     public static int Run(string[] args, CliConsole console, string workingDirectory, Func<string, string?> environment, Action<CliHostSession>? setup = null)
     {
@@ -31,7 +24,7 @@ internal static class Cli
         System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
         try
         {
-            Command root = CreateRoot(session);
+            Command root = CreateRoot(session, args.Length > 0 && !args[0].StartsWith('-') ? args[0] : null);
             if (args.Length > 0 && !args[0].StartsWith('-') && !root.Subcommands.Any(c => c.Name == args[0] || c.Aliases.Contains(args[0]))
                 && External.Find("egap", args[0], environment) is { } program)
             {
@@ -90,44 +83,68 @@ internal static class Cli
         }
     }
 
-    /// <summary>Builds the command tree; the root is named egap whatever the executable is called.</summary>
-    public static Command CreateRoot(EgapSession session)
+    /// <summary>The commands, by name, in the order help lists them; each is built only when asked for.</summary>
+    private static readonly (string Name, Func<EgapSession, Command> Create)[] Commands =
+    [
+        ("info", InfoCommand.Create),
+        ("convert", ConvertCommand.Create),
+        ("text", TextCommand.Create),
+        ("render", RenderCommand.Create),
+        ("merge", MergeCommand.Create),
+        ("split", SplitCommand.Create),
+        ("pages", session => new PagesEdit().CreateCommand(session)),
+        ("encrypt", session => new EncryptEdit().CreateCommand(session)),
+        ("decrypt", session => new DecryptEdit().CreateCommand(session)),
+        ("metadata", MetadataCommand.Create),
+        ("optimize", session => new OptimizeEdit().CreateCommand(session)),
+        ("impose", session => new ImposeEdit().CreateCommand(session)),
+        ("stamp", session => new StampEdit().CreateCommand(session)),
+        ("compare", CompareCommand.Create),
+        ("redact", session => new RedactEdit().CreateCommand(session)),
+        ("sanitize", session => new SanitizeEdit().CreateCommand(session)),
+        ("form", FormCommands.Create),
+        ("attach", AttachCommands.Attach),
+        ("invoice", AttachCommands.Invoice),
+        ("sign", SignCommand.Create),
+        ("verify", CheckCommands.Verify),
+        ("pdfa", CheckCommands.Pdfa),
+        ("ocr-layer", session => new OcrLayerEdit().CreateCommand(session)),
+        ("clean", session => new CleanEdit().CreateCommand(session)),
+        ("merge-data", MergeDataCommand.Create),
+        ("preflight", PrintCommands.Preflight),
+        ("pdfx", PrintCommands.Pdfx),
+        ("separations", PrintCommands.Separations),
+        ("color", session => new ColorEdit().CreateCommand(session)),
+        ("run", _ => RunCommand.Create()),
+        ("mcp", McpCommand.Create),
+    ];
+
+    /// <summary>
+    /// Builds the command tree; the root is named egap whatever the executable is called. With <paramref name="only"/>, the
+    /// tree holds just that command, which is all a run needs and keeps start-up short.
+    /// </summary>
+    public static Command CreateRoot(EgapSession session, string? only = null)
     {
         Command root = new("egap", "Turn HTML, Markdown, DOCX and images into PDF, and inspect, merge, split, encrypt and edit PDFs with Egap, a fully managed PDF library.");
         root.Options.Add(new System.CommandLine.Help.HelpOption());
         root.Options.Add(new VersionOption());
         GlobalOptions.AddTo(root, session);
-        root.Subcommands.Add(InfoCommand.Create(session));
-        root.Subcommands.Add(ConvertCommand.Create(session));
-        root.Subcommands.Add(TextCommand.Create(session));
-        root.Subcommands.Add(RenderCommand.Create(session));
-        root.Subcommands.Add(MergeCommand.Create(session));
-        root.Subcommands.Add(SplitCommand.Create(session));
-        root.Subcommands.Add(new PagesEdit().CreateCommand(session));
-        root.Subcommands.Add(new EncryptEdit().CreateCommand(session));
-        root.Subcommands.Add(new DecryptEdit().CreateCommand(session));
-        root.Subcommands.Add(MetadataCommand.Create(session));
-        root.Subcommands.Add(new OptimizeEdit().CreateCommand(session));
-        root.Subcommands.Add(new ImposeEdit().CreateCommand(session));
-        root.Subcommands.Add(new StampEdit().CreateCommand(session));
-        root.Subcommands.Add(CompareCommand.Create(session));
-        root.Subcommands.Add(new RedactEdit().CreateCommand(session));
-        root.Subcommands.Add(new SanitizeEdit().CreateCommand(session));
-        root.Subcommands.Add(FormCommands.Create(session));
-        root.Subcommands.Add(AttachCommands.Attach(session));
-        root.Subcommands.Add(AttachCommands.Invoice(session));
-        root.Subcommands.Add(SignCommand.Create(session));
-        root.Subcommands.Add(CheckCommands.Verify(session));
-        root.Subcommands.Add(CheckCommands.Pdfa(session));
-        root.Subcommands.Add(new OcrLayerEdit().CreateCommand(session));
-        root.Subcommands.Add(new CleanEdit().CreateCommand(session));
-        root.Subcommands.Add(MergeDataCommand.Create(session));
-        root.Subcommands.Add(PrintCommands.Preflight(session));
-        root.Subcommands.Add(PrintCommands.Pdfx(session));
-        root.Subcommands.Add(PrintCommands.Separations(session));
-        root.Subcommands.Add(new ColorEdit().CreateCommand(session));
-        root.Subcommands.Add(RunCommand.Create());
-        root.Subcommands.Add(McpCommand.Create(session));
+        bool known = only is not null && Commands.Any(c => c.Name == only);
+        foreach ((string name, Func<EgapSession, Command> create) in Commands)
+        {
+            if (!known || name == only)
+            {
+                root.Subcommands.Add(create(session));
+            }
+        }
+
         return root;
+    }
+
+    /// <summary>Registers the HTML and Markdown add-ons, for the commands that read or write those formats (Q3).</summary>
+    internal static void RegisterFormats()
+    {
+        Documents.HtmlFormat.Register();
+        Documents.MarkdownFormat.Register();
     }
 }

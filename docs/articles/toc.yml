@@ -32,6 +32,12 @@
       href: guides/pdf-export-and-conversion.md
     - name: Reports in code
       href: guides/reports.md
+- name: The egap command
+  items:
+    - name: Guide
+      href: cli/index.md
+    - name: Command reference
+      href: cli/commands.md
 - name: Document formats
   items:
     - name: Overview
