@@ -14,7 +14,10 @@ internal sealed partial class Paginator
     private readonly Document document;
     private readonly FontProvider fonts;
     private readonly ParagraphBridge bridge;
-    private readonly Dictionary<Paragraph, CachedContent> contents;
+    private readonly LayoutCache cache;
+
+    /// <summary><see cref="PageFieldText"/> as a delegate, made once.</summary>
+    private readonly Func<Field, string?> pageFieldText;
 
     /// <summary>What a layout keeps for the next layout of the same document with the same font settings (design Q13).</summary>
     private sealed class LayoutCache(FontSettings? settings, FontProvider fonts, ParagraphBridge bridge)
@@ -24,12 +27,13 @@ internal sealed partial class Paginator
         public FontProvider Fonts { get; } = fonts;
 
         public ParagraphBridge Bridge { get; } = bridge;
-
-        public Dictionary<Paragraph, CachedContent> Contents { get; } = [];
     }
 
-    /// <summary>A paragraph's laid-out content with what it depended on: its version, the formatting's, its list label.</summary>
-    private readonly record struct CachedContent(long Version, long FormattingVersion, string? Label, ParagraphContent Content);
+    /// <summary>
+    /// A paragraph's laid-out content with what it depended on: the cache it belongs to, the paragraph's version, the
+    /// formatting's and its list label.
+    /// </summary>
+    private sealed record CachedContent(LayoutCache Owner, long Version, long FormattingVersion, string? Label, ParagraphContent Content);
 
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Document, LayoutCache> Caches = [];
     private readonly List<PageBuilder> pages = [];
@@ -65,7 +69,8 @@ internal sealed partial class Paginator
         fonts = cache.Fonts;
         bridge = cache.Bridge;
         strict = options?.Strict ?? false;
-        contents = cache.Contents;
+        this.cache = cache;
+        pageFieldText = PageFieldText;
     }
 
     public DocumentLayout Run()
@@ -195,9 +200,8 @@ internal sealed partial class Paginator
 
     private void Flow()
     {
-        plans.Clear();
-        flexPlans.Clear();
-        gridPlans.Clear();
+        // Table, flex and grid plans stay from one pass to the next (for the page count, PAGEREF, balanced columns): the
+        // blocks and widths they are made from do not change between passes.
         openBoxes.Clear();
         insetLeft = 0;
         insetRight = 0;
@@ -491,18 +495,18 @@ internal sealed partial class Paginator
     {
         if (notePrefix is { } note && note.Story.Blocks.Count > 0 && note.Story.Blocks[0] == paragraph)
         {
-            return bridge.Build(paragraph, pageField ?? PageFieldText, note);
+            return bridge.Build(paragraph, pageField ?? pageFieldText, note);
         }
 
         string? label = paragraph.ListLabel?.Text;
-        if (contents.TryGetValue(paragraph, out CachedContent cached) && cached.Version == paragraph.Version && cached.FormattingVersion == document.FormattingVersion
-            && cached.Label == label && cached.Content.PageFields.Count == 0)
+        if (paragraph.LayoutContent is CachedContent cached && cached.Owner == cache && cached.Version == paragraph.Version
+            && cached.FormattingVersion == document.FormattingVersion && cached.Label == label && cached.Content.PageFields.Count == 0)
         {
             return cached.Content;
         }
 
-        ParagraphContent content = bridge.Build(paragraph, pageField ?? PageFieldText);
-        contents[paragraph] = new CachedContent(paragraph.Version, document.FormattingVersion, label, content);
+        ParagraphContent content = bridge.Build(paragraph, pageField ?? pageFieldText);
+        paragraph.LayoutContent = new CachedContent(cache, paragraph.Version, document.FormattingVersion, label, content);
         return content;
     }
 
@@ -542,12 +546,6 @@ internal sealed partial class Paginator
         return parsed.ApplyGeneralFormat(text);
     }
 
-    /// <summary>The lines last broken for each paragraph content, at the width they were broken for.</summary>
-    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ParagraphContent, BrokenLines> Broken = [];
-
-    /// <summary>A paragraph content's lines at one width.</summary>
-    private sealed record BrokenLines(double Width, List<PlacedLine> Lines);
-
     /// <summary>
     /// A paragraph's lines at a column width, with their heights and baselines under its line spacing rule. Lines depend on
     /// the content and the width alone, so a content measured and then placed at one width (a table cell, an item) is
@@ -555,13 +553,13 @@ internal sealed partial class Paginator
     /// </summary>
     private static List<PlacedLine> Lines(ParagraphContent content, double width)
     {
-        if (Broken.TryGetValue(content, out BrokenLines? broken) && broken.Width == width)
+        if (content.Broken is { } broken && broken.Width == width)
         {
-            return broken.Lines;
+            return (List<PlacedLine>)broken.Lines;
         }
 
         List<PlacedLine> lines = BreakLines(content, width);
-        Broken.AddOrUpdate(content, new BrokenLines(width, lines));
+        content.Broken = (width, lines);
         return lines;
     }
 

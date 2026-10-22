@@ -470,7 +470,7 @@ internal sealed partial class Paginator
             {
                 case Paragraph paragraph:
                     {
-                        ParagraphContent content = ContentOf(paragraph, PageFieldText);
+                        ParagraphContent content = ContentOf(paragraph);
                         ResolvedParagraphFormat format = content.Format;
                         int firstLine = b == start.Block ? start.Line : 0;
                         double before = firstLine == 0 ? format.SpaceBefore : 0;
@@ -579,7 +579,7 @@ internal sealed partial class Paginator
                         {
                             if (inner is Paragraph p)
                             {
-                                ParagraphContent content = ContentOf(p, PageFieldText);
+                                ParagraphContent content = ContentOf(p);
                                 List<PlacedLine> lines = Lines(content, width);
                                 List<LineBox> lineBoxes = [];
                                 double lineTop = at + content.Format.SpaceBefore;
@@ -740,10 +740,10 @@ internal sealed partial class Paginator
         foreach (Paragraph paragraph in cell.Blocks.OfType<Paragraph>())
         {
             ParagraphContent content = ContentOf(paragraph);
-            Egami.Fonts.Layout.TextLayout layout = content.Text.Layout(float.PositiveInfinity);
+            (double contentMin, double contentMax) = content.Intrinsic();
             double indents = content.Format.LeftIndent + content.Format.RightIndent + Math.Max(0, content.Format.FirstLineIndent);
-            min = Math.Max(min, layout.MinIntrinsicWidth + indents);
-            max = Math.Max(max, layout.MaxIntrinsicWidth + indents);
+            min = Math.Max(min, contentMin + indents);
+            max = Math.Max(max, contentMax + indents);
         }
 
         foreach (Table nested in cell.Blocks.OfType<Table>())

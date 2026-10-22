@@ -42,6 +42,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   (the roundRect adjustment, an outer shadow, the body insets and shape auto-fit). A rounded rectangle without a radius
   is drawn with Word's default corners instead of square ones.
 
+### Speed
+- A generated report lays out, exports and saves faster: table cells, paragraphs and the table style levels a cell takes
+  from its style are resolved with fewer allocations, a paragraph keeps its laid-out text and its widths for the next pass,
+  and tables, flex and grid containers keep their plans from one pass to the next.
+- An SVG picture drawn on every page, such as a logo or a barcode in a header, is read and drawn once; a PDF writes it once
+  as a form and shows it on every page.
+
 ## Egap.Preview 1.0.0 (unreleased)
 
 ### A live preview tool
@@ -73,6 +80,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ### Flex and grid containers
 - Flex and grid containers are written as their items' content in order, with a warning.
+
+## Egap.Pdf 1.5.1 (unreleased)
+
+### Speed
+- Content streams write coordinates faster, with the same text as before.
 
 ## Egap.Documents 2.0.0 (2026-10-21)
 

@@ -243,9 +243,9 @@ internal sealed partial class Paginator
             case Paragraph paragraph:
                 {
                     ParagraphContent content = ContentOf(paragraph);
-                    Egami.Fonts.Layout.TextLayout layout = content.Text.Layout(float.PositiveInfinity);
+                    (double min, double max) = content.Intrinsic();
                     double indents = content.Format.LeftIndent + content.Format.RightIndent + Math.Max(0, content.Format.FirstLineIndent);
-                    return (layout.MinIntrinsicWidth + indents, layout.MaxIntrinsicWidth + indents);
+                    return (min + indents, max + indents);
                 }
 
             case Table nested:

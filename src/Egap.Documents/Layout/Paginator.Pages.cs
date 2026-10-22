@@ -406,7 +406,7 @@ internal sealed partial class Paginator
                 return double.MaxValue / 4;
             }
 
-            ParagraphContent content = ContentOf(paragraph, PageFieldText);
+            ParagraphContent content = ContentOf(paragraph);
             double indents = content.Format.LeftIndent + content.Format.RightIndent;
             foreach (Egami.Fonts.Layout.TextLine line in content.Text.Layout(1e6f).Lines)
             {
@@ -467,7 +467,7 @@ internal sealed partial class Paginator
             {
                 case Paragraph paragraph:
                     {
-                        ParagraphContent content = ContentOf(paragraph, PageFieldText);
+                        ParagraphContent content = ContentOf(paragraph);
                         ResolvedParagraphFormat format = content.Format;
                         at += format.SpaceBefore;
                         if (content.Floats.Count > 0 && page is not null)
