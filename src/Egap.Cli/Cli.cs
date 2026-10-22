@@ -95,6 +95,9 @@ internal static class Cli
         root.Subcommands.Add(ConvertCommand.Create(session));
         root.Subcommands.Add(TextCommand.Create(session));
         root.Subcommands.Add(RenderCommand.Create(session));
+        root.Subcommands.Add(MergeCommand.Create(session));
+        root.Subcommands.Add(SplitCommand.Create(session));
+        root.Subcommands.Add(PagesCommand.Create(session));
         return root;
     }
 }

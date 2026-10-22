@@ -113,7 +113,7 @@ internal static class RenderCommand
     }
 
     /// <summary>
-    /// The path for one page: a folder gets <c>{name}-{page}</c>; a template without <c>{page}</c> or <c>{index}</c> gets
+    /// The path for one page: a folder gets <c>{name}-{page}</c>; a template without <c>{page}</c> gets
     /// <c>-{page}</c> before its extension, as <see cref="PdfDocument.RenderPagesToFiles"/> does.
     /// </summary>
     private static string PagePath(EgapSession session, OutputTemplate template, InputFile file, string extension, int page)
@@ -123,7 +123,7 @@ internal static class RenderCommand
         {
             text = Path.Combine(text, "{name}-{page}.{format}");
         }
-        else if (!template.NamesFrames)
+        else if (!text.Contains("{page", StringComparison.OrdinalIgnoreCase))
         {
             string ext = Path.GetExtension(text);
             text = text[..^ext.Length] + "-{page}" + (ext.Length > 0 ? ext : ".{format}");
