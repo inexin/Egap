@@ -1201,11 +1201,67 @@ and gaps, Unicode from ToUnicode maps, then glyph names, then a private-use char
 
 
 
+  <a id="Egap_Pdf_PdfPage_RenderSeparations_" data-uid="Egap.Pdf.PdfPage.RenderSeparations*"></a>
+
+  <h3 id="Egap_Pdf_PdfPage_RenderSeparations_Egap_Pdf_PdfRenderOptions_Egap_Pdf_PdfSeparationOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfPage.RenderSeparations(Egap.Pdf.PdfRenderOptions,Egap.Pdf.PdfSeparationOptions,System.Threading.CancellationToken)">
+  RenderSeparations(PdfRenderOptions?, PdfSeparationOptions?, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfPage.Separations.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renders the page as ink plates (Phase 8 design Q4): one per process ink of the press profile and one per spot ink the
+page uses, drawn by a multi-ink renderer, so overprint, knockout and blend modes act on the inks as printed. CMYK and
+gray content goes straight onto the process plates, Separation and DeviceN colourants onto their own; RGB, Lab and
+calibrated colours convert through the press profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfSeparations RenderSeparations(PdfRenderOptions? options = null, PdfSeparationOptions? separation = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Egap.Pdf.PdfRenderOptions.html">PdfRenderOptions</a></dt>
+    <dd><p>The resolution, box, region, annotations and the rest; the background is paper, without ink.</p>
+</dd>
+    <dt><code>separation</code> <a class="xref" href="Egap.Pdf.PdfSeparationOptions.html">PdfSeparationOptions</a></dt>
+    <dd><p>The press profile and the spot inks that get plates; <a class="xref" href="Egap.Pdf.PdfSeparationOptions.html#Egap_Pdf_PdfSeparationOptions_Default">Default</a> when null.</p>
+</dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd><p>Checked between content operators.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfSeparations.html">PdfSeparations</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Pdf.PdfLimitException.html">PdfLimitException</a></dt>
+    <dd><p>The plates would have more than <a class="xref" href="Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_MaxOutputPixels">MaxOutputPixels</a> pixels.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></dt>
+    <dd><p>The render was cancelled.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Pdf_PdfPage_RenderTo_" data-uid="Egap.Pdf.PdfPage.RenderTo*"></a>
 
   <h3 id="Egap_Pdf_PdfPage_RenderTo_Egami_Drawing_Canvas_Egap_Pdf_PdfRenderOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfPage.RenderTo(Egami.Drawing.Canvas,Egap.Pdf.PdfRenderOptions,System.Threading.CancellationToken)">
   RenderTo(Canvas, PdfRenderOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfPage.Render.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfPage.Render.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Draws the page onto any Egami canvas (design Q2): a raster, Egami.Svg's SVG canvas, a picture recorder or a PDF
@@ -1406,7 +1462,7 @@ canvas.DrawForm(form, new RectF(36, 36, (float)form.Width / 2, (float)form.Heigh
 
   <h3 id="Egap_Pdf_PdfPage_ToPicture_Egap_Pdf_PdfRenderOptions_System_Threading_CancellationToken_" data-uid="Egap.Pdf.PdfPage.ToPicture(Egap.Pdf.PdfRenderOptions,System.Threading.CancellationToken)">
   ToPicture(PdfRenderOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfPage.Render.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfPage.Render.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Records the page once as an Egami picture (design Q16), a display list: parsing, fonts and image decoding are done,

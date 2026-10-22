@@ -4059,6 +4059,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfBlackText.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfBlackText.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfBlackText",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfBlackText.yml\" sourcestartlinenumber=\"1\">How colour conversion treats black and gray text and thin rules.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfBoolean.yml",
       "output": {
         ".html": {
@@ -4350,6 +4364,62 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfColor",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfColor.yml\" sourcestartlinenumber=\"1\">A colour as content sets it (8.6): its colour space, as named in the content and resolved through the resources (a name\nsuch as <code>DeviceRGB</code>, or an array such as <code>[/ICCBased 7 0 R]</code>), its components, and for a pattern the pattern's\nresource name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfColorConversionOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfColorConversionOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfColorConversionOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfColorConversionOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.PdfColorConverter.Convert(Egap.Pdf.PdfDocument%2cEgap.Pdf.PdfColorConversionOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> converts a document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfColorConversionResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfColorConversionResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfColorConversionResult",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfColorConversionResult.yml\" sourcestartlinenumber=\"1\">What a colour conversion changed.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfColorConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfColorConverter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfColorConverter",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfColorConverter.yml\" sourcestartlinenumber=\"1\">Converts a document's colours into a print profile (Phase 8 design Q6 to Q8): RGB, calibrated, Lab and ICC-based colours\ngo to the target, CMYK and spot colours stay unless the options say otherwise, and vectors stay vectors. Colour\noperators, images, shadings, patterns, soft masks, Type 3 glyphs, annotation appearances and spot alternates are all\nconverted. Ink coverage is not limited: the target profile sets it, and preflight reports anything over a print\nprofile's limit.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfColorSpaceKinds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfColorSpaceKinds.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfColorSpaceKinds",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfColorSpaceKinds.yml\" sourcestartlinenumber=\"1\">Kinds of colour space, as a print profile allows them and a preflight report lists them.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5011,6 +5081,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfInkPlate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfInkPlate.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfInkPlate",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfInkPlate.yml\" sourcestartlinenumber=\"1\">One ink's plate: its name, whether it is a spot ink, and its raster of how much ink prints where.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfInlineImage.yml",
       "output": {
         ".html": {
@@ -5529,6 +5613,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfOutputCondition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfOutputCondition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfOutputCondition",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfOutputCondition.yml\" sourcestartlinenumber=\"1\">A registered print characterization (design Q10): the identifier PDF/X output intents name, such as <code>FOGRA39</code>, how\nit is described, and the ICC profile that is embedded with it. <xref href=\"Egap.Pdf.PdfOutputCondition.Fogra39\" data-throw-if-not-resolved=\"false\"></xref> carries Egami's bundled profile;\nthe others need one from the caller (<xref href=\"Egap.Pdf.PdfOutputCondition.WithProfile(Egami.Colors.ColorProfile)\" data-throw-if-not-resolved=\"false\"></xref>), since their profiles may not be redistributed freely.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfPage.yml",
       "output": {
         ".html": {
@@ -5823,6 +5921,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfPreflight.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfPreflight.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfPreflight",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPreflight.yml\" sourcestartlinenumber=\"1\">Preflight for print: lists what a document uses and checks it against a <xref href=\"Egap.Pdf.PdfPrintProfile\" data-throw-if-not-resolved=\"false\"></xref>. The report shows\nevery output intent, colour space (with its ICC profile and spot names), image resolution, font, transparency, overprint\nand hairline, page by page, so a file can be shown to hold CMYK under a FOGRA39 intent, or found to carry an RGB photo.\nPreflight changes nothing.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfPreflightItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfPreflightItem.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfPreflightItem",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPreflightItem.yml\" sourcestartlinenumber=\"1\">One thing a preflight found in a document: what it is, the page it is on (null for the whole document), a line describing\nit, and the details that apply to its kind. Uses of the same thing on a page are counted in one item.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfPreflightItemKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfPreflightItemKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfPreflightItemKind",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPreflightItemKind.yml\" sourcestartlinenumber=\"1\">What a <xref href=\"Egap.Pdf.PdfPreflightItem\" data-throw-if-not-resolved=\"false\"></xref> reports.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfPreflightReport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfPreflightReport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfPreflightReport",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPreflightReport.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Pdf.PdfPreflight.Run(Egap.Pdf.PdfDocument%2cEgap.Pdf.PdfPrintProfile%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> found: every colour space, profile, spot ink, output\nintent, image resolution, font, transparency, overprint and hairline the document uses, page by page, and the issues\nthat break the print profile it was checked against. Issues are <xref href=\"Egap.Pdf.PdfAIssue\" data-throw-if-not-resolved=\"false\"></xref>s, as for PDF/A; preflight fixes\nnothing, so none is fixable.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfPreparedSignature.yml",
       "output": {
         ".html": {
@@ -5834,6 +5988,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfPreparedSignature",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPreparedSignature.yml\" sourcestartlinenumber=\"1\">A signature waiting for its CMS (Phase 5 design Q3): the file is written with the space reserved, and\n<xref href=\"Egap.Pdf.PdfPreparedSignature.Digest\" data-throw-if-not-resolved=\"false\"></xref> is what a signing service signs. <xref href=\"Egap.Pdf.PdfPreparedSignature.CompleteAsync(System.ReadOnlyMemory%7bSystem.Byte%7d%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>\nwrites the CMS it returns into that space, in the same stream; a file prepared earlier, in another process, is completed with\n<xref href=\"Egap.Pdf.PdfPreparedSignature.CompleteAsync(System.IO.Stream%2cSystem.ReadOnlyMemory%7bSystem.Byte%7d%2cEgap.Pdf.PdfTimestampClient%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfPrintProfile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfPrintProfile.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfPrintProfile",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfPrintProfile.yml\" sourcestartlinenumber=\"1\">What a print job accepts, as <xref href=\"Egap.Pdf.PdfPreflight.Run(Egap.Pdf.PdfDocument%2cEgap.Pdf.PdfPrintProfile%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> checks it: the most ink, the\nleast image resolution, the colour spaces allowed, the bleed past the trim box, the thinnest rule and whether fonts must\nbe embedded. A preset fills in the values for a common job; each can be changed with <code>with</code>. A value left null is\nnot checked.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -6215,6 +6383,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfSeparationOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfSeparationOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfSeparationOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfSeparationOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.PdfPage.RenderSeparations(Egap.Pdf.PdfRenderOptions%2cEgap.Pdf.PdfSeparationOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> makes plates: the\npress profile behind the process inks, and which spot inks get plates of their own.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfSeparations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfSeparations.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfSeparations",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfSeparations.yml\" sourcestartlinenumber=\"1\">A page rendered as ink plates (Phase 8 design Q4, Q5): one gray raster per process and spot ink, drawn by a true\nmulti-ink renderer, so overprint, knockout and blend modes act on the inks as a press prints them. It measures total\narea coverage (TAC), the sum of every plate in percent, and draws a heat map of it. Dispose it to free the plates.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfSetOcgStateAction.yml",
       "output": {
         ".html": {
@@ -6352,6 +6548,20 @@
       "IsMRef": true,
       "Title": "Egap.Pdf.PdfSigner",
       "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfSigner.yml\" sourcestartlinenumber=\"1\">Who signs and with which key (Phase 5 design Q3): a certificate with its private key, or any RSA or ECDsa object with the\ncertificate it belongs to. A subclass of RSA or ECDsa reaches a smart card, an HSM or a cloud key service, since Egap only\never asks it to sign the signed attributes. A signature made somewhere else entirely goes through\n<xref href=\"Egap.Pdf.PdfDocument.PrepareSignatureAsync(System.String%2cEgap.Pdf.PdfSignOptions%2cSystem.IO.Stream%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> instead.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfSpotConversion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfSpotConversion.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfSpotConversion",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfSpotConversion.yml\" sourcestartlinenumber=\"1\">What colour conversion does with spot colours (Separation and DeviceN).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -6887,6 +7097,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfXConformance.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfXConformance.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfXConformance",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfXConformance.yml\" sourcestartlinenumber=\"1\">A PDF/X version a file is checked against or converted to (ISO 15930; Phase 8 design Q9).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfXConvertOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfXConvertOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfXConvertOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfXConvertOptions.yml\" sourcestartlinenumber=\"1\">Options for <xref href=\"Egap.Pdf.PdfXConverter.Convert(Egap.Pdf.PdfDocument%2cEgap.Pdf.PdfXConformance%2cEgap.Pdf.PdfXConvertOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.PdfXConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.PdfXConverter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.PdfXConverter",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.PdfXConverter.yml\" sourcestartlinenumber=\"1\">Checks documents against PDF/X and converts them to it (Phase 8 design Q9, Q10). PDF/X-4 and X-6 are checked and\nconverted; X-1a and X-3 too when the file has no transparency, which conversion does not flatten; X-4p, X-5g, X-5pg and\nX-6p are checked only; X-5n and X-6n are checked, with an n-colorant output intent. Conversion fixes in place what it\ncan (output intent, trim and bleed boxes, identification and metadata, trapping key, fonts, colours through\n<xref href=\"Egap.Pdf.PdfColorConverter\" data-throw-if-not-resolved=\"false\"></xref>, transfer functions, annotations in the print area, actions) and reports every fix; when\na rule cannot be met nothing is changed. Issues are <xref href=\"Egap.Pdf.PdfAIssue\" data-throw-if-not-resolved=\"false\"></xref>s, as for PDF/A. No open validator judges\nPDF/X: Acrobat Preflight or PackzView is the full judge.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PdfXfa.yml",
       "output": {
         ".html": {
@@ -7090,6 +7342,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/guides/pdf-tools.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/guides/print-production.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/print-production.html"
         }
       },
       "version": ""

@@ -252,6 +252,25 @@ resource name.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfColorConversionOptions.html">PdfColorConversionOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Pdf.PdfColorConverter.html#Egap_Pdf_PdfColorConverter_Convert_Egap_Pdf_PdfDocument_Egap_Pdf_PdfColorConversionOptions_System_Threading_CancellationToken_">Convert(PdfDocument, PdfColorConversionOptions?, CancellationToken)</a> converts a document.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfColorConversionResult.html">PdfColorConversionResult</a></dt>
+      <dd><p>What a colour conversion changed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfColorConverter.html">PdfColorConverter</a></dt>
+      <dd><p>Converts a document's colours into a print profile (Phase 8 design Q6 to Q8): RGB, calibrated, Lab and ICC-based colours
+go to the target, CMYK and spot colours stay unless the options say otherwise, and vectors stay vectors. Colour
+operators, images, shadings, patterns, soft masks, Type 3 glyphs, annotation appearances and spot alternates are all
+converted. Ink coverage is not limited: the target profile sets it, and preflight reports anything over a print
+profile's limit.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfComboBoxField.html">PdfComboBoxField</a></dt>
       <dd><p>A combo box (12.7.5.4): a drop-down list, editable or not.</p>
 </dd>
@@ -470,6 +489,11 @@ Every layout keeps each page's content, resources and printable annotations, sha
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfInkPlate.html">PdfInkPlate</a></dt>
+      <dd><p>One ink's plate: its name, whether it is a spot ink, and its raster of how much ink prints where.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfInlineImage.html">PdfInlineImage</a></dt>
       <dd><p>An inline image (8.9.7): <code>BI</code>, its parameters, <code>ID</code>, its data and <code>EI</code>, kept as one operation with the
 data as stored. Its <a class="xref" href="Egap.Pdf.PdfOperation.html#Egap_Pdf_PdfOperation_Operator">Operator</a> is <code>BI</code> and it has no operands.</p>
@@ -669,6 +693,13 @@ destination (<code>/Dest</code>) or runs an action (<code>/A</code>), and has a 
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfOutputCondition.html">PdfOutputCondition</a></dt>
+      <dd><p>A registered print characterization (design Q10): the identifier PDF/X output intents name, such as <code>FOGRA39</code>, how
+it is described, and the ICC profile that is embedded with it. <a class="xref" href="Egap.Pdf.PdfOutputCondition.html#Egap_Pdf_PdfOutputCondition_Fogra39">Fogra39</a> carries Egami's bundled profile;
+the others need one from the caller (<a class="xref" href="Egap.Pdf.PdfOutputCondition.html#Egap_Pdf_PdfOutputCondition_WithProfile_Egami_Colors_ColorProfile_">WithProfile(ColorProfile)</a>), since their profiles may not be redistributed freely.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfPage.html">PdfPage</a></dt>
       <dd><p>A page (7.7.3.3): a thin view over the page's dictionary, which it reads and writes directly, so anything it does not
 cover is still there in <a class="xref" href="Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_Dictionary">Dictionary</a>. Two views are equal when they wrap the same dictionary (Phase 2 Q1).</p>
@@ -745,11 +776,41 @@ footers on export): <code>{page}</code>, <code>{total-pages}</code> (also <code>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfPreflight.html">PdfPreflight</a></dt>
+      <dd><p>Preflight for print: lists what a document uses and checks it against a <a class="xref" href="Egap.Pdf.PdfPrintProfile.html">PdfPrintProfile</a>. The report shows
+every output intent, colour space (with its ICC profile and spot names), image resolution, font, transparency, overprint
+and hairline, page by page, so a file can be shown to hold CMYK under a FOGRA39 intent, or found to carry an RGB photo.
+Preflight changes nothing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfPreflightItem.html">PdfPreflightItem</a></dt>
+      <dd><p>One thing a preflight found in a document: what it is, the page it is on (null for the whole document), a line describing
+it, and the details that apply to its kind. Uses of the same thing on a page are counted in one item.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfPreflightReport.html">PdfPreflightReport</a></dt>
+      <dd><p>What <a class="xref" href="Egap.Pdf.PdfPreflight.html#Egap_Pdf_PdfPreflight_Run_Egap_Pdf_PdfDocument_Egap_Pdf_PdfPrintProfile_System_Threading_CancellationToken_">Run(PdfDocument, PdfPrintProfile?, CancellationToken)</a> found: every colour space, profile, spot ink, output
+intent, image resolution, font, transparency, overprint and hairline the document uses, page by page, and the issues
+that break the print profile it was checked against. Issues are <a class="xref" href="Egap.Pdf.PdfAIssue.html">PdfAIssue</a>s, as for PDF/A; preflight fixes
+nothing, so none is fixable.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfPreparedSignature.html">PdfPreparedSignature</a></dt>
       <dd><p>A signature waiting for its CMS (Phase 5 design Q3): the file is written with the space reserved, and
 <a class="xref" href="Egap.Pdf.PdfPreparedSignature.html#Egap_Pdf_PdfPreparedSignature_Digest">Digest</a> is what a signing service signs. <a class="xref" href="Egap.Pdf.PdfPreparedSignature.html#Egap_Pdf_PdfPreparedSignature_CompleteAsync_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">CompleteAsync(ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
 writes the CMS it returns into that space, in the same stream; a file prepared earlier, in another process, is completed with
 <a class="xref" href="Egap.Pdf.PdfPreparedSignature.html#Egap_Pdf_PdfPreparedSignature_CompleteAsync_System_IO_Stream_System_ReadOnlyMemory_System_Byte__Egap_Pdf_PdfTimestampClient_System_Threading_CancellationToken_">CompleteAsync(Stream, ReadOnlyMemory&lt;byte&gt;, PdfTimestampClient?, CancellationToken)</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfPrintProfile.html">PdfPrintProfile</a></dt>
+      <dd><p>What a print job accepts, as <a class="xref" href="Egap.Pdf.PdfPreflight.html#Egap_Pdf_PdfPreflight_Run_Egap_Pdf_PdfDocument_Egap_Pdf_PdfPrintProfile_System_Threading_CancellationToken_">Run(PdfDocument, PdfPrintProfile?, CancellationToken)</a> checks it: the most ink, the
+least image resolution, the colour spaces allowed, the bleed past the trim box, the thinnest rule and whether fonts must
+be embedded. A preset fills in the values for a common job; each can be changed with <code>with</code>. A value left null is
+not checked.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -848,6 +909,19 @@ certificate's OCSP responder, then its CRL distribution point, through the calle
       <dt><a class="xref" href="Egap.Pdf.PdfSeedValue.html">PdfSeedValue</a></dt>
       <dd><p>A signature field's seed values (<code>/SV</code>, ISO 32000-2, 12.7.5.5): constraints on how the field may be signed, honoured
 when signing (Phase 5 design Q7).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfSeparationOptions.html">PdfSeparationOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_RenderSeparations_Egap_Pdf_PdfRenderOptions_Egap_Pdf_PdfSeparationOptions_System_Threading_CancellationToken_">RenderSeparations(PdfRenderOptions?, PdfSeparationOptions?, CancellationToken)</a> makes plates: the
+press profile behind the process inks, and which spot inks get plates of their own.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfSeparations.html">PdfSeparations</a></dt>
+      <dd><p>A page rendered as ink plates (Phase 8 design Q4, Q5): one gray raster per process and spot ink, drawn by a true
+multi-ink renderer, so overprint, knockout and blend modes act on the inks as a press prints them. It measures total
+area coverage (TAC), the sum of every plate in percent, and draws a heat map of it. Dispose it to free the plates.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1065,6 +1139,22 @@ list, and nothing is fetched from the network unless a revocation source says so
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfXConvertOptions.html">PdfXConvertOptions</a></dt>
+      <dd><p>Options for <a class="xref" href="Egap.Pdf.PdfXConverter.html#Egap_Pdf_PdfXConverter_Convert_Egap_Pdf_PdfDocument_Egap_Pdf_PdfXConformance_Egap_Pdf_PdfXConvertOptions_System_Threading_CancellationToken_">Convert(PdfDocument, PdfXConformance, PdfXConvertOptions?, CancellationToken)</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfXConverter.html">PdfXConverter</a></dt>
+      <dd><p>Checks documents against PDF/X and converts them to it (Phase 8 design Q9, Q10). PDF/X-4 and X-6 are checked and
+converted; X-1a and X-3 too when the file has no transparency, which conversion does not flatten; X-4p, X-5g, X-5pg and
+X-6p are checked only; X-5n and X-6n are checked, with an n-colorant output intent. Conversion fixes in place what it
+can (output intent, trim and bleed boxes, identification and metadata, trapping key, fonts, colours through
+<a class="xref" href="Egap.Pdf.PdfColorConverter.html">PdfColorConverter</a>, transfer functions, annotations in the print area, actions) and reports every fix; when
+a rule cannot be met nothing is changed. Issues are <a class="xref" href="Egap.Pdf.PdfAIssue.html">PdfAIssue</a>s, as for PDF/A. No open validator judges
+PDF/X: Acrobat Preflight or PackzView is the full judge.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfXfa.html">PdfXfa</a></dt>
       <dd><p>The XFA form of a document (12.7.8, hub Q7): the form's <code>/XFA</code>, one XDP stream or an array of named packets. Egap
 keeps it on save as it is, reads its packets, and keeps the <code>datasets</code> packet in step with the AcroForm field
@@ -1200,6 +1290,11 @@ Enums
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfBlackText.html">PdfBlackText</a></dt>
+      <dd><p>How colour conversion treats black and gray text and thin rules.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfBorderStyle.html">PdfBorderStyle</a></dt>
       <dd><p>A border style (12.5.4, table 168).</p>
 </dd>
@@ -1234,6 +1329,11 @@ numbers in the file.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfChangeVerdict.html">PdfChangeVerdict</a></dt>
       <dd><p>How a change made after a signature is judged (Phase 5 design Q8).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfColorSpaceKinds.html">PdfColorSpaceKinds</a></dt>
+      <dd><p>Kinds of colour space, as a print profile allows them and a preflight report lists them.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1323,6 +1423,11 @@ can read everything in it, so honouring them is the caller's job (design Q5). Th
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfPreflightItemKind.html">PdfPreflightItemKind</a></dt>
+      <dd><p>What a <a class="xref" href="Egap.Pdf.PdfPreflightItem.html">PdfPreflightItem</a> reports.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfRedactImages.html">PdfRedactImages</a></dt>
       <dd><p>What redaction does to an image the area covers (Phase 5 design Q9).</p>
 </dd>
@@ -1364,6 +1469,11 @@ is clear is only a suggestion.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfSpotConversion.html">PdfSpotConversion</a></dt>
+      <dd><p>What colour conversion does with spot colours (Separation and DeviceN).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfStampSubtype.html">PdfStampSubtype</a></dt>
       <dd><p>The kind of page furniture a stamp is marked as (ISO 32000-2 14.8.2.2, pagination artifacts).</p>
 </dd>
@@ -1391,6 +1501,11 @@ is clear is only a suggestion.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Pdf.PdfWarningCode.html">PdfWarningCode</a></dt>
       <dd><p>What kind of repair a <a class="xref" href="Egap.Pdf.PdfWarning.html">PdfWarning</a> records.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Pdf.PdfXConformance.html">PdfXConformance</a></dt>
+      <dd><p>A PDF/X version a file is checked against or converted to (ISO 15930; Phase 8 design Q9).</p>
 </dd>
     </dl>
     <dl class="jumplist">

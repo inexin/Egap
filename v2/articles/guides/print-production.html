@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Print production | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Print production | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/print-production.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="print-production">Print production</h1>
+
+<p>Check a PDF before it goes to a printer: what colours, profiles, inks and image resolutions it uses, and whether that fits
+the print job.</p>
+<h2 id="preflight">Preflight</h2>
+<p><code>PdfPreflight.Run</code> lists what a document uses, page by page: output intents with their condition and profile, every
+colour space painted with (with its ICC profile description and spot ink names), images with their effective resolution
+where they are placed largest, fonts and whether they are embedded, transparency, overprint, hairlines, and each page's
+trim box and bleed. A device colour space that the page's resources replace with a Default space is reported as that space.</p>
+<p>Given a <code>PdfPrintProfile</code>, it also lists the issues that break it. Issues are the same <code>PdfAIssue</code> records as PDF/A checks
+use; preflight changes nothing, so none is fixable.</p>
+<pre><code class="lang-csharp">using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;brochure.pdf&quot;);
+PdfPreflightReport report = PdfPreflight.Run(pdf, PdfPrintProfile.SheetfedCoated);
+foreach (PdfPreflightItem item in report.OutputIntents)
+{
+    Console.WriteLine(item);                 // GTS_PDFX output intent FOGRA39 (Coated FOGRA39), CMYK profile &quot;...&quot;
+}
+
+foreach (PdfAIssue issue in report.Issues)
+{
+    Console.WriteLine($&quot;{issue.Clause} page {issue.Page}: {issue.Description}&quot;);
+}
+</code></pre>
+<h2 id="print-profiles">Print profiles</h2>
+<p>A <code>PdfPrintProfile</code> says what the job accepts. A value left null is not checked.</p>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th style="text-align: right;">Max ink</th>
+<th style="text-align: right;">Min image dpi</th>
+<th>Colour spaces</th>
+<th style="text-align: right;">Bleed</th>
+<th style="text-align: right;">Thinnest rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PdfX4</code></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">150</td>
+<td>all but DeviceRGB</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td><code>SheetfedCoated</code></td>
+<td style="text-align: right;">330 %</td>
+<td style="text-align: right;">250</td>
+<td>CMYK, gray, spot</td>
+<td style="text-align: right;">3 mm</td>
+<td style="text-align: right;">0.25 pt</td>
+</tr>
+<tr>
+<td><code>WebOffset</code></td>
+<td style="text-align: right;">300 %</td>
+<td style="text-align: right;">200</td>
+<td>CMYK, gray, spot</td>
+<td style="text-align: right;">3 mm</td>
+<td style="text-align: right;">0.25 pt</td>
+</tr>
+<tr>
+<td><code>Newspaper</code></td>
+<td style="text-align: right;">240 %</td>
+<td style="text-align: right;">150</td>
+<td>CMYK, gray</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">0.3 pt</td>
+</tr>
+</tbody>
+</table>
+<p>Every preset requires embedded fonts and allows transparency. Images of one bit per pixel (line art) need twice the
+minimum resolution. Change any value with <code>with</code>:</p>
+<pre><code class="lang-csharp">using Egap.Pdf;
+
+PdfPrintProfile vinyl = PdfPrintProfile.WebOffset with { Name = &quot;Vinyl sleeve&quot;, MaxInkCoverage = 260, AllowTransparency = false };
+</code></pre>
+<p>Without a profile, <code>Run</code> only lists what the document uses. Strokes thinner than 0.25 pt (<code>PdfPreflight.DefaultHairline</code>)
+are then listed as hairlines.</p>
+<h2 id="separations-and-ink-coverage">Separations and ink coverage</h2>
+<p><code>RenderSeparations</code> renders a page as ink plates: one gray raster per process ink of the press profile and one per spot
+ink the page uses. It draws with a true multi-ink renderer, so overprint, overprint mode, knockout and blend modes act on
+the inks as a press prints them. CMYK and gray go straight onto the process plates, Separation and DeviceN colourants onto
+their own plates, and RGB, Lab and calibrated colours convert through the press profile: the document's CMYK output intent,
+or FOGRA39 when it has none.</p>
+<pre><code class="lang-csharp">using Egami;
+using Egami.Pixels;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;brochure.pdf&quot;);
+using PdfSeparations plates = pdf.Pages[0].RenderSeparations(new PdfRenderOptions { Dpi = 150 });
+foreach (PdfInkPlate plate in plates.Plates)
+{
+    plate.Raster.Save($&quot;{plate.Name}.png&quot;);                       // 255 is full ink
+}
+
+Console.WriteLine($&quot;max TAC {plates.MaxCoverage}%, {plates.ShareOver(300):P1} of the page over 300%&quot;);
+using Raster&lt;Rgba8&gt; heat = plates.CoverageMap(limit: 300);        // red where the ink is over the limit
+heat.Save(&quot;coverage.png&quot;);
+</code></pre>
+<p><code>PdfSeparationOptions</code> picks another press profile, leaves some spot inks without a plate (<code>DisabledSpots</code>) or converts
+every spot to process (<code>SpotsToProcess</code>); a spot without a plate prints through its alternate colour. <code>plates.Inks</code> is the
+Egami <code>InkRaster</code> behind the plates, which saves a separated TIFF and makes a soft proof.</p>
+<p>When a print profile sets <code>MaxInkCoverage</code>, preflight separates every page at <code>InkCoverageDpi</code> (36 by default) and reports
+its most total ink and the share over the limit. Coverage is only reported: preflight does not change any colour.</p>
+<h2 id="colour-conversion">Colour conversion</h2>
+<p><code>PdfColorConverter.Convert</code> converts a document's colours into a print profile in place: RGB, calibrated, Lab and
+ICC-based colours go to the target, while CMYK and spot colours keep their numbers and plates. Vectors stay vectors.
+Colour operators, images, shadings, patterns, soft masks, Type 3 glyphs and annotation appearances are all converted; a
+JPEG photo stays a JPEG at the quality it had, and an Indexed image keeps its samples under a converted palette.</p>
+<pre><code class="lang-csharp">using Egami.Colors;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;rgb.pdf&quot;);
+PdfColorConversionResult result = PdfColorConverter.Convert(pdf, new PdfColorConversionOptions
+{
+    Target = ColorProfile.Fogra39,                // the default: the CMYK output intent, else FOGRA39
+    Spots = PdfSpotConversion.Keep,               // Keep, Convert or ConvertAllButNamed
+    BlackText = PdfBlackText.PureBlack,           // black and gray text and thin rules on black ink alone
+});
+Console.WriteLine(result);                        // what changed
+pdf.Save(&quot;cmyk.pdf&quot;);
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Target</code></td>
+<td>output intent, else FOGRA39</td>
+<td>The gray, RGB or CMYK profile colours convert into</td>
+</tr>
+<tr>
+<td><code>Intent</code>, <code>BlackPointCompensation</code></td>
+<td>relative colorimetric, on</td>
+<td>How every conversion maps colours</td>
+</tr>
+<tr>
+<td><code>Spots</code></td>
+<td><code>Keep</code></td>
+<td>Spot colours keep their plates, with their alternate colours converted; <code>Convert</code> converts them too</td>
+</tr>
+<tr>
+<td><code>RetargetCmyk</code>, <code>SourceCmyk</code></td>
+<td>off</td>
+<td>Also convert CMYK from one press profile to another, such as coated to newspaper</td>
+</tr>
+<tr>
+<td><code>BlackText</code>, <code>ThinRuleWidth</code></td>
+<td><code>PureBlack</code>, 0.5 pt</td>
+<td>Neutral text and rules up to the width go on black ink alone; images stay colorimetric</td>
+</tr>
+</tbody>
+</table>
+<p>Conversion does not limit ink: the target profile decides how much ink each colour takes, and preflight reports anything
+over a print profile's <code>MaxInkCoverage</code>.</p>
+<h2 id="pdfx">PDF/X</h2>
+<p><code>PdfXConverter.Check</code> checks a document against a PDF/X version and changes nothing; <code>PdfXConverter.Convert</code> fixes what it
+can in place and reports each fix. When a rule cannot be met, conversion changes nothing and the report says why. The
+reports are the same <code>PdfAReport</code> as for PDF/A.</p>
+<pre><code class="lang-csharp">using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;brochure.pdf&quot;);
+PdfAReport report = PdfXConverter.Convert(pdf, PdfXConformance.PdfX4, new PdfXConvertOptions
+{
+    OutputCondition = PdfOutputCondition.Fogra39,     // the registered condition; its profile is embedded
+    Bleed = 3,                                        // millimetres past the trim box, where conversion sets the boxes
+});
+if (report.Succeeded)
+{
+    pdf.Save(&quot;print.pdf&quot;);                            // written whole, unencrypted, as PDF 1.6
+}
+else
+{
+    Console.WriteLine(report);
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Check</th>
+<th>Convert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF/X-4, X-6</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>PDF/X-1a, X-3</td>
+<td>yes</td>
+<td>when the file has no transparency (conversion does not flatten it)</td>
+</tr>
+<tr>
+<td>PDF/X-5n, X-6n</td>
+<td>yes</td>
+<td>with an n-colorant output condition, for content already in its inks</td>
+</tr>
+<tr>
+<td>PDF/X-4p, X-5g, X-5pg, X-6p</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>Conversion adds the output intent, sets a trim box (the crop box) and a bleed box where they are missing or wrong, writes the
+identification, title, dates and <code>/Trapped</code>, embeds fonts (from the machine, or bundled substitutes with
+<code>AllowFontSubstitution</code>), converts colours the output intent does not allow through <code>PdfColorConverter</code>, removes transfer
+functions, JavaScript and external content references, and flattens annotations that print inside the bleed box.</p>
+<p><code>PdfOutputCondition</code> names registered print conditions: <code>Fogra39</code> carries Egami's bundled profile; <code>Fogra51</code>, <code>Fogra52</code>,
+<code>Gracol2013</code>, <code>Swop2013</code> and <code>Newspaper</code> need the profile from you with <code>WithProfile</code>. No open-source PDF/X validator exists;
+check important output in Acrobat Preflight or PackzView.</p>
+<h2 id="overprint-preview">Overprint preview</h2>
+<p><code>SimulateOverprint</code> renders a page as it prints: as ink plates, so overprint and spot colours act as on press, then proofed
+back to sRGB through the press profile, as Acrobat's Output Preview does. Without it, overprint is ignored, as viewers show
+pages on screen.</p>
+<pre><code class="lang-csharp">using Egami;
+using Egami.Pixels;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;brochure.pdf&quot;);
+using Raster&lt;Rgba8&gt; preview = pdf.Pages[0].Render(new PdfRenderOptions { Dpi = 150, SimulateOverprint = true });
+preview.Save(&quot;as-printed.png&quot;);
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/print-production.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
