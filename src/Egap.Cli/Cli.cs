@@ -13,6 +13,13 @@ namespace Egap.Cli;
 /// </summary>
 internal static class Cli
 {
+    static Cli()
+    {
+        // All four packages (Q3): HTML and Markdown come from their add-ons once registered.
+        Documents.HtmlFormat.Register();
+        Documents.MarkdownFormat.Register();
+    }
+
     /// <summary>Runs the tool in this process; <paramref name="setup"/> may set up the session first, as egap mcp does for each call.</summary>
     public static int Run(string[] args, CliConsole console, string workingDirectory, Func<string, string?> environment, Action<CliHostSession>? setup = null)
     {
@@ -85,6 +92,7 @@ internal static class Cli
         root.Options.Add(new VersionOption());
         GlobalOptions.AddTo(root, session);
         root.Subcommands.Add(InfoCommand.Create(session));
+        root.Subcommands.Add(ConvertCommand.Create(session));
         return root;
     }
 }
