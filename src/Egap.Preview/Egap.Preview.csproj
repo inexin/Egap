@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Egap.Preview</RootNamespace>
     <PackageId>Egap.Preview</PackageId>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionPrefix>$(EgapVersion)</VersionPrefix>
     <Description>egap-preview: a live preview of Egap documents on a local web page. It shows the pages a program sends with Document.ShowPreview() as the program runs under dotnet watch, or a DOCX file, drawn again whenever it changes.</Description>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>egap-preview</ToolCommandName>

@@ -49,7 +49,8 @@ Every user-visible change updates, in the same commit, the XML docs, the package
 summary changes, the guide in `docs/articles/guides/` for the area, or the format's page in `docs/articles/formats/` (new
 pages go into their package's group in `docs/articles/toc.yml` and into `docs/articles/guides/index.md`, alphabetically;
 a short task with its code goes under the guide's `## Recipes` heading, not a separate page), and
-`CHANGELOG.md` under the package's next version (`## Egap.Pdf 1.5.0 (unreleased)`; add that heading if it is not there yet).
+`CHANGELOG.md` under the package's next version (`## Egap.Pdf 2.2.0 (unreleased)`; add that heading if it is not there yet).
+All Egap packages share one version, `EgapVersion` in `Directory.Build.props`; never set a version in a project file.
 Write docs in plain, short sentences that say what the user gets. Describe behavior, not the planning history (no phase or
 task numbers in docs).
 
