@@ -54,6 +54,10 @@ internal static class Targets
             "invoice" => Invoice,
             "compare" => Compare,
             "cleanup" => Cleanup,
+            "preflight" => Preflight,
+            "separations" => Separations,
+            "convert" => ConvertColors,
+            "pdfx" => PdfX,
             "signatures" => Signatures,
             "cms" => Cms,
             "revocation" => Revocation,
@@ -512,6 +516,103 @@ internal static class Targets
 
             using MemoryStream saved = new();
             pdf.Save(saved, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+        });
+    }
+
+    /// <summary>Preflight of a hostile file's first pages against the sheetfed profile, ink check included (Phase 8 task 21).</summary>
+    private static void Preflight(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            if (pdf.Pages.Count > 20)
+            {
+                return;
+            }
+
+            PdfPreflightReport report = PdfPreflight.Run(pdf, PdfPrintProfile.SheetfedCoated with { InkCoverageDpi = 9 });
+            Check(report.Items.All(i => i.Page is null || (i.Page >= 1 && i.Page <= pdf.Pages.Count)), "preflight items name pages of the document");
+            _ = report.ToString();
+        });
+    }
+
+    /// <summary>Plates of a hostile file's first pages at a low resolution, with coverage, a heat map and an overprint preview.</summary>
+    private static void Separations(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            foreach (PdfPage page in pdf.Pages.Take(3))
+            {
+                PdfRenderOptions low = new() { Dpi = 9, MaxOperations = 200_000 };
+                using PdfSeparations plates = page.RenderSeparations(low);
+                Check(plates.MaxCoverage >= 0 && plates.ShareOver(300) is >= 0 and <= 1, "coverage is a share of the page");
+                using Egami.Raster<Egami.Pixels.Rgba8> map = plates.CoverageMap();
+                using Egami.Raster<Egami.Pixels.Rgba8> proof = page.Render(low with { SimulateOverprint = true });
+                Check(proof.Width == plates.Width && proof.Height == plates.Height, "the overprint preview is the plates' size");
+            }
+        });
+    }
+
+    /// <summary>Colour conversion of a hostile file into FOGRA39, pure black on, then a save that must open again.</summary>
+    private static void ConvertColors(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            if (pdf.Pages.Count > 50)
+            {
+                return;
+            }
+
+            PdfColorConverter.Convert(pdf, new PdfColorConversionOptions { Spots = PdfSpotConversion.ConvertAllButNamed, KeepSpots = ["PANTONE 186 C"] });
+            using MemoryStream saved = new();
+            pdf.Save(saved, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+            using PdfDocument reopened = PdfDocument.Open(saved.ToArray());
+            Check(reopened.Pages.Count == pdf.Pages.Count, "a converted file keeps its pages");
+        });
+    }
+
+    /// <summary>PDF/X-4 checked and converted on a hostile file; a converted one must check clean after a save.</summary>
+    private static void PdfX(Stream input)
+    {
+        using PdfDocument? pdf = OpenForTools(input);
+        if (pdf is null)
+        {
+            return;
+        }
+
+        Tool(() =>
+        {
+            if (pdf.Pages.Count > 50)
+            {
+                return;
+            }
+
+            _ = PdfXConverter.Check(pdf, PdfXConformance.PdfX1a);
+            PdfAReport report = PdfXConverter.Convert(pdf, PdfXConformance.PdfX4, new PdfXConvertOptions { Bleed = 3, UseSystemFonts = false, AllowFontSubstitution = true });
+            using MemoryStream saved = new();
+            pdf.Save(saved, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+            if (report.Succeeded)
+            {
+                using PdfDocument reopened = PdfDocument.Open(saved.ToArray());
+                Check(PdfXConverter.Check(reopened, PdfXConformance.PdfX4).Succeeded, "a file converted to PDF/X-4 checks clean after a save");
+            }
         });
     }
 

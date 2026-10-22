@@ -1,0 +1,41 @@
+%PDF-1.6
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /ColorSpace << /CS0 [/Separation /PANTONE#20186#20C /DeviceCMYK << /FunctionType 2 /Domain [0 1] /C0 [0 0 0 0] /C1 [0 1 0.81 0.04] /N 1 >>] /CS1 [/DeviceN [/Cyan /Magenta /Gold] /DeviceCMYK 4 0 R] /CS2 [/Separation /All /DeviceCMYK << /FunctionType 2 /Domain [0 1] /C0 [0 0 0 0] /C1 [1 1 1 1] /N 1 >>] >> /ExtGState << /GS0 << /Type /ExtGState /op true /OP true /OPM 1 >> >> >> >>
+endobj
+4 0 obj
+<< /FunctionType 4 /Domain [0 1 0 1 0 1] /Range [0 1 0 1 0 1 0 1] /Length 13 >>
+stream
+{ 0.8 mul 0 }
+endstream
+endobj
+5 0 obj
+<<  /Length 225 >>
+stream
+0.2 0.3 0 0 k 50 500 300 200 re f
+/CS0 cs 1 scn 50 600 100 100 re f 0.5 scn 200 600 100 100 re f
+q /GS0 gs /CS0 cs 1 scn 100 520 100 60 re f Q
+/CS1 cs 0.5 0.2 1 scn 50 300 200 150 re f
+/CS2 CS 1 SCN 2 w 400 100 m 500 100 l S
+
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000019 00000 n 
+0000000068 00000 n 
+0000000125 00000 n 
+0000000604 00000 n 
+0000000730 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1007
+%%EOF

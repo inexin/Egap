@@ -33,6 +33,10 @@ crash, and AFL++ also reports hangs.
 | `fonts` | A font program or CMap, the first byte picking which: a Type 1 program (converted to CFF), a bare CFF font, a TrueType font, a ToUnicode CMap or a composite font's encoding CMap; the typeface must load or a warning say why, and every code's width, text, CID, glyph and outline must be read without an exception | `tests/fuzz-seeds/fonts/*` |
 | `findtext` | PDF bytes: a regular expression and words of the file's own text found on the first 20 pages, each match on a page and holding glyphs; the first word redacted and the second replaced, and the file written whole must open again with its pages | `tests/fuzz-seeds/tools/*`, `tests/fuzz-seeds/walker/*` |
 | `newfields` | PDF bytes: a text field, check box, radio group, combo box, list box, push button and signature field added to the first page; written whole, the file must open again with each new field found by its name | `tests/fuzz-seeds/tools/*`, `tests/fuzz-seeds/forms/*` |
+| `preflight` | PDF bytes: preflight of up to 20 pages against the sheetfed profile with its ink check; every item names a page of the document | `tests/fuzz-seeds/print/*`, `tests/fuzz-seeds/walker/*` |
+| `separations` | PDF bytes: the first 3 pages as ink plates at 9 dpi, their coverage, heat map and overprint preview, which must be the plates' size | `tests/fuzz-seeds/print/*`, `tests/fuzz-seeds/shadings/*`, `tests/fuzz-seeds/render/*` |
+| `convert` | PDF bytes: colours converted into FOGRA39 with one spot kept; the saved file must open with the same pages | `tests/fuzz-seeds/print/*`, `tests/fuzz-seeds/shadings/*`, `tests/fuzz-seeds/images/*` |
+| `pdfx` | PDF bytes: a PDF/X-1a check and a PDF/X-4 conversion with a 3 mm bleed; a converted file must check clean after a save | `tests/fuzz-seeds/print/*`, `tests/fuzz-seeds/pdfa/*` |
 | `invoice` | PDF bytes: the Factur-X or ZUGFeRD invoice read back and every attachment's relationship read | `tests/fuzz-seeds/invoice/*`, `tests/fuzz-seeds/attachments/*` |
 
 Daytime runs are 10 minutes per target; long runs only when the maintainer asks.
