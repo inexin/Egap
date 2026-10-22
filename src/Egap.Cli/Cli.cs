@@ -116,6 +116,9 @@ internal static class Cli
         root.Subcommands.Add(FormCommands.Create(session));
         root.Subcommands.Add(AttachCommands.Attach(session));
         root.Subcommands.Add(AttachCommands.Invoice(session));
+        root.Subcommands.Add(SignCommand.Create(session));
+        root.Subcommands.Add(CheckCommands.Verify(session));
+        root.Subcommands.Add(CheckCommands.Pdfa(session));
         root.Subcommands.Add(RunCommand.Create());
         return root;
     }

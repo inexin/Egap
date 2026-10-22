@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-pdfa-1.json",
+  "title": "egap pdfa check",
+  "description": "What 'egap pdfa check --json' writes: each file's level checked and the issues found. A file is valid when no issue is left unmet; the exit code is 1 otherwise.",
+  "type": "object",
+  "required": [ "schema", "files" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "path", "level", "valid", "issues" ],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "level": { "description": "Such as PDF/A-2b, or PDF/UA-1 with --ua.", "type": "string" },
+          "valid": { "type": "boolean" },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [ "clause", "description", "page", "fixable" ],
+              "additionalProperties": false,
+              "properties": {
+                "clause": { "description": "The clause of ISO 19005 or ISO 14289.", "type": "string" },
+                "description": { "type": "string" },
+                "page": { "description": "The page, from 1, or null for the whole file.", "type": [ "integer", "null" ] },
+                "fixable": { "description": "Whether pdfa convert fixes it.", "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -33,7 +33,7 @@ internal static class Steps
     [
         new PagesEdit(), new AppendEdit(), new MetadataEdit(), new StripMetadataEdit(), new EncryptEdit(), new DecryptEdit(),
         new OptimizeEdit(), new ImposeEdit(), new StampEdit(), new RedactEdit(), new SanitizeEdit(),
-        new FillEdit(), new FlattenEdit(), new ResetEdit(), new AttachEdit(), new DetachEdit(), new InvoiceEdit(),
+        new FillEdit(), new FlattenEdit(), new ResetEdit(), new AttachEdit(), new DetachEdit(), new InvoiceEdit(), new PdfaEdit(),
     ];
 
     /// <summary>Gets every step name, <c>save</c> included.</summary>
