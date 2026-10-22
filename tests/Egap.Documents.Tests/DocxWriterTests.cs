@@ -94,6 +94,21 @@ public class DocxWriterTests
     }
 
     [Fact]
+    public void Word2010RunPropertiesAreWrittenInSchemaOrder()
+    {
+        // A text effect the model keeps as it is, and a number form it reads as a font feature: Word's schema puts the
+        // effects first.
+        Document document = DocxFormat.Load(new MemoryStream(Sample(
+            "<w:p><w:r><w:rPr><w:b/><w14:shadow w14:blurRad=\"38100\" w14:dist=\"19050\" w14:dir=\"2700000\" w14:sx=\"100000\" w14:sy=\"100000\" w14:kx=\"0\" w14:ky=\"0\" w14:algn=\"tl\"/>"
+            + "<w14:numForm w14:val=\"lining\"/></w:rPr><w:t>2026</w:t></w:r></w:p>")));
+        document.Sections[0].Body.Paragraphs.First().Runs.First().Text = "2027";
+
+        XElement rPr = Part(Save(document), "word/document.xml").Descendants(W + "rPr").First();
+
+        Assert.Equal(["b", "shadow", "numForm"], rPr.Elements().Select(e => e.Name.LocalName).ToArray());
+    }
+
+    [Fact]
     public void EmbeddedFontsAreWrittenObfuscated()
     {
         Document document = new();
@@ -205,15 +220,16 @@ public class DocxWriterTests
         return copy.ToArray();
     }
 
-    /// <summary>A small DOCX with markup the model does not name.</summary>
-    private static byte[] Sample()
+    /// <summary>A small DOCX with markup the model does not name, or with the given paragraphs.</summary>
+    private static byte[] Sample(string? paragraphs = null)
     {
         const string ns = "xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"";
+        const string w14 = " xmlns:w14=\"http://schemas.microsoft.com/office/word/2010/wordml\"";
         OpcPackageWriter writer = new();
         writer.AddXmlPart("/word/document.xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml", XDocument.Parse(
-            "<w:document " + ns + "><w:body>"
-            + "<w:p w:rsidR=\"00AB\"><w:pPr><w:kinsoku w:val=\"0\"/><w:jc w:val=\"right\"/></w:pPr><w:r><w:t>One</w:t></w:r></w:p>"
-            + "<w:p><w:proofErr w:type=\"spellStart\"/><w:r><w:t>Twoo</w:t></w:r><w:proofErr w:type=\"spellEnd\"/></w:p>"
+            "<w:document " + ns + (paragraphs is null ? "" : w14) + "><w:body>"
+            + (paragraphs ?? "<w:p w:rsidR=\"00AB\"><w:pPr><w:kinsoku w:val=\"0\"/><w:jc w:val=\"right\"/></w:pPr><w:r><w:t>One</w:t></w:r></w:p>"
+            + "<w:p><w:proofErr w:type=\"spellStart\"/><w:r><w:t>Twoo</w:t></w:r><w:proofErr w:type=\"spellEnd\"/></w:p>")
             + "<w:sectPr><w:pgSz w:w=\"12240\" w:h=\"15840\"/></w:sectPr></w:body></w:document>"));
         writer.AddXmlPart("/word/styles.xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml", XDocument.Parse(
             "<w:styles " + ns + "><w:style w:type=\"paragraph\" w:default=\"1\" w:styleId=\"Normal\"><w:name w:val=\"Normal\"/><w:rsid w:val=\"00AB\"/></w:style></w:styles>"));

@@ -3,6 +3,23 @@
 What each Egap package adds, newest first. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Documents 2.0.1 (unreleased)
+
+### Fixes
+- DOCX: Word 2010 run properties are written in the schema's order, text effects such as `w14:shadow` before font
+  features such as `w14:numForm`, so Word's validator no longer reports an unexpected element in a saved file.
+
+## Egap.Documents.Html 2.0.1 (unreleased)
+
+### Fixes
+- A bookmark or a footnote mark inside a hyperlink no longer writes a link inside the link, which HTML does not allow and
+  which made browsers end the link early. The bookmark is written as `<span id>`, and the note mark keeps its id without a
+  link of its own.
+
+## Egap.Documents.Markdown 2.0.1 (unreleased)
+
+- No changes; released with Egap.Documents 2.0.1, as the add-ons share its version.
+
 ## Egap.Documents 2.0.0 (2026-10-21)
 
 ### Docs
