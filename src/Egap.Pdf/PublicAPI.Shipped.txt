@@ -2960,3 +2960,258 @@ virtual Egap.Pdf.PdfObject.Resolve() -> Egap.Pdf.PdfObject!
 ~override Egap.Pdf.PdfStructureType.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfVerticalMetrics.Equals(object obj) -> bool
 ~override Egap.Pdf.PdfVerticalMetrics.ToString() -> string
+const Egap.Pdf.PdfOutputCondition.Registry = "http://www.color.org" -> string!
+const Egap.Pdf.PdfPreflight.DefaultHairline = 0.25 -> double
+Egap.Pdf.PdfBlackText
+Egap.Pdf.PdfBlackText.Colorimetric = 1 -> Egap.Pdf.PdfBlackText
+Egap.Pdf.PdfBlackText.PureBlack = 0 -> Egap.Pdf.PdfBlackText
+Egap.Pdf.PdfColorConversionOptions
+Egap.Pdf.PdfColorConversionOptions.<Clone>$() -> Egap.Pdf.PdfColorConversionOptions!
+Egap.Pdf.PdfColorConversionOptions.BlackPointCompensation.get -> bool
+Egap.Pdf.PdfColorConversionOptions.BlackPointCompensation.init -> void
+Egap.Pdf.PdfColorConversionOptions.BlackText.get -> Egap.Pdf.PdfBlackText
+Egap.Pdf.PdfColorConversionOptions.BlackText.init -> void
+Egap.Pdf.PdfColorConversionOptions.Equals(Egap.Pdf.PdfColorConversionOptions? other) -> bool
+Egap.Pdf.PdfColorConversionOptions.Intent.get -> Egami.Colors.RenderingIntent
+Egap.Pdf.PdfColorConversionOptions.Intent.init -> void
+Egap.Pdf.PdfColorConversionOptions.KeepSpots.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Egap.Pdf.PdfColorConversionOptions.KeepSpots.init -> void
+Egap.Pdf.PdfColorConversionOptions.PdfColorConversionOptions() -> void
+Egap.Pdf.PdfColorConversionOptions.RetargetCmyk.get -> bool
+Egap.Pdf.PdfColorConversionOptions.RetargetCmyk.init -> void
+Egap.Pdf.PdfColorConversionOptions.SourceCmyk.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfColorConversionOptions.SourceCmyk.init -> void
+Egap.Pdf.PdfColorConversionOptions.Spots.get -> Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfColorConversionOptions.Spots.init -> void
+Egap.Pdf.PdfColorConversionOptions.Target.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfColorConversionOptions.Target.init -> void
+Egap.Pdf.PdfColorConversionOptions.ThinRuleWidth.get -> double
+Egap.Pdf.PdfColorConversionOptions.ThinRuleWidth.init -> void
+Egap.Pdf.PdfColorConversionResult
+Egap.Pdf.PdfColorConversionResult.Alternates.get -> int
+Egap.Pdf.PdfColorConversionResult.Annotations.get -> int
+Egap.Pdf.PdfColorConversionResult.Changed.get -> bool
+Egap.Pdf.PdfColorConversionResult.Colors.get -> int
+Egap.Pdf.PdfColorConversionResult.Images.get -> int
+Egap.Pdf.PdfColorConversionResult.PureBlack.get -> int
+Egap.Pdf.PdfColorConversionResult.Shadings.get -> int
+Egap.Pdf.PdfColorConversionResult.Target.get -> Egami.Colors.ColorProfile!
+Egap.Pdf.PdfColorConversionResult.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfWarning!>!
+Egap.Pdf.PdfColorConverter
+Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.All = Egap.Pdf.PdfColorSpaceKinds.Gray | Egap.Pdf.PdfColorSpaceKinds.Rgb | Egap.Pdf.PdfColorSpaceKinds.Cmyk | Egap.Pdf.PdfColorSpaceKinds.Lab | Egap.Pdf.PdfColorSpaceKinds.Spot -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.CalibratedCmyk = 32 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.CalibratedGray = 8 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.CalibratedRgb = 16 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.Cmyk = Egap.Pdf.PdfColorSpaceKinds.DeviceCmyk | Egap.Pdf.PdfColorSpaceKinds.CalibratedCmyk -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.DeviceCmyk = 4 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.DeviceGray = 1 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.DeviceRgb = 2 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.Gray = Egap.Pdf.PdfColorSpaceKinds.DeviceGray | Egap.Pdf.PdfColorSpaceKinds.CalibratedGray -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.Lab = 64 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.None = 0 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.Rgb = Egap.Pdf.PdfColorSpaceKinds.DeviceRgb | Egap.Pdf.PdfColorSpaceKinds.CalibratedRgb -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfColorSpaceKinds.Spot = 128 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfInkPlate
+Egap.Pdf.PdfInkPlate.IsSpot.get -> bool
+Egap.Pdf.PdfInkPlate.Name.get -> string!
+Egap.Pdf.PdfInkPlate.Raster.get -> Egami.Raster<Egami.Pixels.Gray8>!
+Egap.Pdf.PdfOutputCondition
+Egap.Pdf.PdfOutputCondition.<Clone>$() -> Egap.Pdf.PdfOutputCondition!
+Egap.Pdf.PdfOutputCondition.Deconstruct(out string! Identifier, out string! Description, out Egami.Colors.ColorProfile? Profile) -> void
+Egap.Pdf.PdfOutputCondition.Description.get -> string!
+Egap.Pdf.PdfOutputCondition.Description.init -> void
+Egap.Pdf.PdfOutputCondition.Equals(Egap.Pdf.PdfOutputCondition? other) -> bool
+Egap.Pdf.PdfOutputCondition.Identifier.get -> string!
+Egap.Pdf.PdfOutputCondition.Identifier.init -> void
+Egap.Pdf.PdfOutputCondition.PdfOutputCondition(string! Identifier, string! Description, Egami.Colors.ColorProfile? Profile = null) -> void
+Egap.Pdf.PdfOutputCondition.Profile.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfOutputCondition.Profile.init -> void
+Egap.Pdf.PdfOutputCondition.WithProfile(Egami.Colors.ColorProfile! profile) -> Egap.Pdf.PdfOutputCondition!
+Egap.Pdf.PdfPage.RenderSeparations(Egap.Pdf.PdfRenderOptions? options = null, Egap.Pdf.PdfSeparationOptions? separation = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfSeparations!
+Egap.Pdf.PdfPreflight
+Egap.Pdf.PdfPreflightItem
+Egap.Pdf.PdfPreflightItem.<Clone>$() -> Egap.Pdf.PdfPreflightItem!
+Egap.Pdf.PdfPreflightItem.BitsPerComponent.get -> int?
+Egap.Pdf.PdfPreflightItem.BitsPerComponent.init -> void
+Egap.Pdf.PdfPreflightItem.Bleed.get -> double?
+Egap.Pdf.PdfPreflightItem.Bleed.init -> void
+Egap.Pdf.PdfPreflightItem.ColorSpace.get -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfPreflightItem.ColorSpace.init -> void
+Egap.Pdf.PdfPreflightItem.ColorSpaceName.get -> string?
+Egap.Pdf.PdfPreflightItem.ColorSpaceName.init -> void
+Egap.Pdf.PdfPreflightItem.Count.get -> int
+Egap.Pdf.PdfPreflightItem.Count.init -> void
+Egap.Pdf.PdfPreflightItem.Deconstruct(out Egap.Pdf.PdfPreflightItemKind Kind, out int? Page, out string! Description) -> void
+Egap.Pdf.PdfPreflightItem.Description.get -> string!
+Egap.Pdf.PdfPreflightItem.Description.init -> void
+Egap.Pdf.PdfPreflightItem.Dpi.get -> double?
+Egap.Pdf.PdfPreflightItem.Dpi.init -> void
+Egap.Pdf.PdfPreflightItem.Embedded.get -> bool?
+Egap.Pdf.PdfPreflightItem.Embedded.init -> void
+Egap.Pdf.PdfPreflightItem.Equals(Egap.Pdf.PdfPreflightItem? other) -> bool
+Egap.Pdf.PdfPreflightItem.Kind.get -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItem.Kind.init -> void
+Egap.Pdf.PdfPreflightItem.LineWidth.get -> double?
+Egap.Pdf.PdfPreflightItem.LineWidth.init -> void
+Egap.Pdf.PdfPreflightItem.MaxInkCoverage.get -> double?
+Egap.Pdf.PdfPreflightItem.MaxInkCoverage.init -> void
+Egap.Pdf.PdfPreflightItem.Name.get -> string?
+Egap.Pdf.PdfPreflightItem.Name.init -> void
+Egap.Pdf.PdfPreflightItem.Page.get -> int?
+Egap.Pdf.PdfPreflightItem.Page.init -> void
+Egap.Pdf.PdfPreflightItem.PdfPreflightItem(Egap.Pdf.PdfPreflightItemKind Kind, int? Page, string! Description) -> void
+Egap.Pdf.PdfPreflightItem.ProfileName.get -> string?
+Egap.Pdf.PdfPreflightItem.ProfileName.init -> void
+Egap.Pdf.PdfPreflightItem.ShareOverLimit.get -> double?
+Egap.Pdf.PdfPreflightItem.ShareOverLimit.init -> void
+Egap.Pdf.PdfPreflightItem.Spots.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfPreflightItem.Spots.init -> void
+Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.ColorSpace = 1 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.Font = 3 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.Hairline = 6 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.Image = 2 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.InkCoverage = 8 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.OutputIntent = 0 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.Overprint = 5 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.PageBoxes = 7 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightItemKind.Transparency = 4 -> Egap.Pdf.PdfPreflightItemKind
+Egap.Pdf.PdfPreflightReport
+Egap.Pdf.PdfPreflightReport.ColorSpaces.get -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfPreflightReport.Issues.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfAIssue!>!
+Egap.Pdf.PdfPreflightReport.Items.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfPreflightItem!>!
+Egap.Pdf.PdfPreflightReport.ItemsOn(int page) -> System.Collections.Generic.IEnumerable<Egap.Pdf.PdfPreflightItem!>!
+Egap.Pdf.PdfPreflightReport.OutputIntents.get -> System.Collections.Generic.IEnumerable<Egap.Pdf.PdfPreflightItem!>!
+Egap.Pdf.PdfPreflightReport.Passed.get -> bool
+Egap.Pdf.PdfPreflightReport.Profile.get -> Egap.Pdf.PdfPrintProfile!
+Egap.Pdf.PdfPreflightReport.Spots.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.PdfPrintProfile
+Egap.Pdf.PdfPrintProfile.<Clone>$() -> Egap.Pdf.PdfPrintProfile!
+Egap.Pdf.PdfPrintProfile.AllowedColorSpaces.get -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfPrintProfile.AllowedColorSpaces.init -> void
+Egap.Pdf.PdfPrintProfile.AllowTransparency.get -> bool
+Egap.Pdf.PdfPrintProfile.AllowTransparency.init -> void
+Egap.Pdf.PdfPrintProfile.Equals(Egap.Pdf.PdfPrintProfile? other) -> bool
+Egap.Pdf.PdfPrintProfile.InkCoverageDpi.get -> double
+Egap.Pdf.PdfPrintProfile.InkCoverageDpi.init -> void
+Egap.Pdf.PdfPrintProfile.MaxInkCoverage.get -> double?
+Egap.Pdf.PdfPrintProfile.MaxInkCoverage.init -> void
+Egap.Pdf.PdfPrintProfile.MinImageDpi.get -> double?
+Egap.Pdf.PdfPrintProfile.MinImageDpi.init -> void
+Egap.Pdf.PdfPrintProfile.MinLineWidth.get -> double?
+Egap.Pdf.PdfPrintProfile.MinLineWidth.init -> void
+Egap.Pdf.PdfPrintProfile.Name.get -> string!
+Egap.Pdf.PdfPrintProfile.Name.init -> void
+Egap.Pdf.PdfPrintProfile.PdfPrintProfile() -> void
+Egap.Pdf.PdfPrintProfile.RequiredBleed.get -> double?
+Egap.Pdf.PdfPrintProfile.RequiredBleed.init -> void
+Egap.Pdf.PdfPrintProfile.RequireEmbeddedFonts.get -> bool
+Egap.Pdf.PdfPrintProfile.RequireEmbeddedFonts.init -> void
+Egap.Pdf.PdfRenderOptions.SimulateOverprint.get -> bool
+Egap.Pdf.PdfRenderOptions.SimulateOverprint.init -> void
+Egap.Pdf.PdfSeparationOptions
+Egap.Pdf.PdfSeparationOptions.<Clone>$() -> Egap.Pdf.PdfSeparationOptions!
+Egap.Pdf.PdfSeparationOptions.DisabledSpots.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Egap.Pdf.PdfSeparationOptions.DisabledSpots.init -> void
+Egap.Pdf.PdfSeparationOptions.Equals(Egap.Pdf.PdfSeparationOptions? other) -> bool
+Egap.Pdf.PdfSeparationOptions.PdfSeparationOptions() -> void
+Egap.Pdf.PdfSeparationOptions.Profile.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfSeparationOptions.Profile.init -> void
+Egap.Pdf.PdfSeparationOptions.SpotsToProcess.get -> bool
+Egap.Pdf.PdfSeparationOptions.SpotsToProcess.init -> void
+Egap.Pdf.PdfSeparations
+Egap.Pdf.PdfSeparations.CoverageMap(double limit = 300) -> Egami.Raster<Egami.Pixels.Rgba8>!
+Egap.Pdf.PdfSeparations.CoveragePerPlate.get -> System.Collections.Generic.IReadOnlyDictionary<string!, double>!
+Egap.Pdf.PdfSeparations.Dispose() -> void
+Egap.Pdf.PdfSeparations.Height.get -> int
+Egap.Pdf.PdfSeparations.Inks.get -> Egami.InkRaster!
+Egap.Pdf.PdfSeparations.MaxCoverage.get -> double
+Egap.Pdf.PdfSeparations.Plates.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfInkPlate!>!
+Egap.Pdf.PdfSeparations.ShareOver(double limit) -> double
+Egap.Pdf.PdfSeparations.Width.get -> int
+Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfSpotConversion.Convert = 1 -> Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfSpotConversion.ConvertAllButNamed = 2 -> Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfSpotConversion.Keep = 0 -> Egap.Pdf.PdfSpotConversion
+Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.None = 0 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX1a = 1 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX3 = 2 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX4 = 3 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX4p = 4 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX5g = 5 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX5n = 7 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX5pg = 6 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX6 = 8 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX6n = 10 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConformance.PdfX6p = 9 -> Egap.Pdf.PdfXConformance
+Egap.Pdf.PdfXConverter
+Egap.Pdf.PdfXConvertOptions
+Egap.Pdf.PdfXConvertOptions.<Clone>$() -> Egap.Pdf.PdfXConvertOptions!
+Egap.Pdf.PdfXConvertOptions.AllowFontSubstitution.get -> bool
+Egap.Pdf.PdfXConvertOptions.AllowFontSubstitution.init -> void
+Egap.Pdf.PdfXConvertOptions.Bleed.get -> double
+Egap.Pdf.PdfXConvertOptions.Bleed.init -> void
+Egap.Pdf.PdfXConvertOptions.ColorConversion.get -> Egap.Pdf.PdfColorConversionOptions!
+Egap.Pdf.PdfXConvertOptions.ColorConversion.init -> void
+Egap.Pdf.PdfXConvertOptions.Equals(Egap.Pdf.PdfXConvertOptions? other) -> bool
+Egap.Pdf.PdfXConvertOptions.OutputCondition.get -> Egap.Pdf.PdfOutputCondition?
+Egap.Pdf.PdfXConvertOptions.OutputCondition.init -> void
+Egap.Pdf.PdfXConvertOptions.PdfXConvertOptions() -> void
+Egap.Pdf.PdfXConvertOptions.Trapped.get -> bool
+Egap.Pdf.PdfXConvertOptions.Trapped.init -> void
+Egap.Pdf.PdfXConvertOptions.UseSystemFonts.get -> bool
+Egap.Pdf.PdfXConvertOptions.UseSystemFonts.init -> void
+override Egap.Pdf.PdfColorConversionOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfColorConversionOptions.GetHashCode() -> int
+override Egap.Pdf.PdfColorConversionOptions.ToString() -> string!
+override Egap.Pdf.PdfColorConversionResult.ToString() -> string!
+override Egap.Pdf.PdfInkPlate.ToString() -> string!
+override Egap.Pdf.PdfOutputCondition.Equals(object? obj) -> bool
+override Egap.Pdf.PdfOutputCondition.GetHashCode() -> int
+override Egap.Pdf.PdfOutputCondition.ToString() -> string!
+override Egap.Pdf.PdfPreflightItem.Equals(object? obj) -> bool
+override Egap.Pdf.PdfPreflightItem.GetHashCode() -> int
+override Egap.Pdf.PdfPreflightItem.ToString() -> string!
+override Egap.Pdf.PdfPreflightReport.ToString() -> string!
+override Egap.Pdf.PdfPrintProfile.Equals(object? obj) -> bool
+override Egap.Pdf.PdfPrintProfile.GetHashCode() -> int
+override Egap.Pdf.PdfPrintProfile.ToString() -> string!
+override Egap.Pdf.PdfSeparationOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfSeparationOptions.GetHashCode() -> int
+override Egap.Pdf.PdfSeparationOptions.ToString() -> string!
+override Egap.Pdf.PdfXConvertOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfXConvertOptions.GetHashCode() -> int
+override Egap.Pdf.PdfXConvertOptions.ToString() -> string!
+static Egap.Pdf.PdfColorConversionOptions.Default.get -> Egap.Pdf.PdfColorConversionOptions!
+static Egap.Pdf.PdfColorConversionOptions.operator !=(Egap.Pdf.PdfColorConversionOptions? left, Egap.Pdf.PdfColorConversionOptions? right) -> bool
+static Egap.Pdf.PdfColorConversionOptions.operator ==(Egap.Pdf.PdfColorConversionOptions? left, Egap.Pdf.PdfColorConversionOptions? right) -> bool
+static Egap.Pdf.PdfColorConverter.Convert(Egap.Pdf.PdfDocument! document, Egap.Pdf.PdfColorConversionOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfColorConversionResult!
+static Egap.Pdf.PdfOutputCondition.Find(string! identifier) -> Egap.Pdf.PdfOutputCondition?
+static Egap.Pdf.PdfOutputCondition.Fogra39.get -> Egap.Pdf.PdfOutputCondition!
+static Egap.Pdf.PdfOutputCondition.Fogra51.get -> Egap.Pdf.PdfOutputCondition!
+static Egap.Pdf.PdfOutputCondition.Fogra52.get -> Egap.Pdf.PdfOutputCondition!
+static Egap.Pdf.PdfOutputCondition.Gracol2013.get -> Egap.Pdf.PdfOutputCondition!
+static Egap.Pdf.PdfOutputCondition.Known.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfOutputCondition!>!
+static Egap.Pdf.PdfOutputCondition.Newspaper.get -> Egap.Pdf.PdfOutputCondition!
+static Egap.Pdf.PdfOutputCondition.operator !=(Egap.Pdf.PdfOutputCondition? left, Egap.Pdf.PdfOutputCondition? right) -> bool
+static Egap.Pdf.PdfOutputCondition.operator ==(Egap.Pdf.PdfOutputCondition? left, Egap.Pdf.PdfOutputCondition? right) -> bool
+static Egap.Pdf.PdfOutputCondition.Swop2013.get -> Egap.Pdf.PdfOutputCondition!
+static Egap.Pdf.PdfPreflight.Run(Egap.Pdf.PdfDocument! document, Egap.Pdf.PdfPrintProfile? profile = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfPreflightReport!
+static Egap.Pdf.PdfPreflightItem.operator !=(Egap.Pdf.PdfPreflightItem? left, Egap.Pdf.PdfPreflightItem? right) -> bool
+static Egap.Pdf.PdfPreflightItem.operator ==(Egap.Pdf.PdfPreflightItem? left, Egap.Pdf.PdfPreflightItem? right) -> bool
+static Egap.Pdf.PdfPrintProfile.Newspaper.get -> Egap.Pdf.PdfPrintProfile!
+static Egap.Pdf.PdfPrintProfile.operator !=(Egap.Pdf.PdfPrintProfile? left, Egap.Pdf.PdfPrintProfile? right) -> bool
+static Egap.Pdf.PdfPrintProfile.operator ==(Egap.Pdf.PdfPrintProfile? left, Egap.Pdf.PdfPrintProfile? right) -> bool
+static Egap.Pdf.PdfPrintProfile.PdfX4.get -> Egap.Pdf.PdfPrintProfile!
+static Egap.Pdf.PdfPrintProfile.SheetfedCoated.get -> Egap.Pdf.PdfPrintProfile!
+static Egap.Pdf.PdfPrintProfile.WebOffset.get -> Egap.Pdf.PdfPrintProfile!
+static Egap.Pdf.PdfSeparationOptions.Default.get -> Egap.Pdf.PdfSeparationOptions!
+static Egap.Pdf.PdfSeparationOptions.operator !=(Egap.Pdf.PdfSeparationOptions? left, Egap.Pdf.PdfSeparationOptions? right) -> bool
+static Egap.Pdf.PdfSeparationOptions.operator ==(Egap.Pdf.PdfSeparationOptions? left, Egap.Pdf.PdfSeparationOptions? right) -> bool
+static Egap.Pdf.PdfXConverter.Check(Egap.Pdf.PdfDocument! document, Egap.Pdf.PdfXConformance conformance, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfAReport!
+static Egap.Pdf.PdfXConverter.Convert(Egap.Pdf.PdfDocument! document, Egap.Pdf.PdfXConformance conformance, Egap.Pdf.PdfXConvertOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfAReport!
+static Egap.Pdf.PdfXConvertOptions.Default.get -> Egap.Pdf.PdfXConvertOptions!
+static Egap.Pdf.PdfXConvertOptions.operator !=(Egap.Pdf.PdfXConvertOptions? left, Egap.Pdf.PdfXConvertOptions? right) -> bool
+static Egap.Pdf.PdfXConvertOptions.operator ==(Egap.Pdf.PdfXConvertOptions? left, Egap.Pdf.PdfXConvertOptions? right) -> bool
