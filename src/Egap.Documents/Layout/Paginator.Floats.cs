@@ -37,8 +37,9 @@ internal sealed partial class Paginator
             return;
         }
 
-        foreach (FloatingObject floating in content.Floats)
+        foreach (FloatingObject placed in content.Floats)
         {
+            FloatingObject floating = FitToText(placed);
             LayoutRect bounds = FloatBounds(floating, paragraphTop);
             ObjectBox box = new(floating.Node, bounds, floating: true, ObjectContent(floating.Node, bounds));
             page!.Floats.Add(new PlacedFloat(floating, bounds, box));
@@ -97,14 +98,43 @@ internal sealed partial class Paginator
     /// <summary>A text box's laid-out text, inside the shape's insets; none for other objects.</summary>
     private List<LayoutBox>? ObjectContent(Inline node, LayoutRect bounds)
     {
-        if (node is not Shape { TextBox: { } box })
+        if (node is not Shape { TextBox: { } box } shape)
         {
             return null;
         }
 
-        // Word's default text box insets: a tenth of an inch at the sides, a twentieth at top and bottom.
-        (List<LayoutBox> blocks, _) = LayStory(box, bounds.X + 7.2, bounds.Y + 3.6, Math.Max(1, bounds.Width - 14.4));
+        (double left, double top, double right, _) = Insets(shape);
+        (List<LayoutBox> blocks, _) = LayStory(box, bounds.X + left, bounds.Y + top, Math.Max(1, bounds.Width - left - right));
         return blocks;
+    }
+
+    /// <summary>A text box's insets: its own, or Word's default of a tenth of an inch at the sides and a twentieth at top and bottom.</summary>
+    private static (double Left, double Top, double Right, double Bottom) Insets(Shape shape)
+    {
+        return shape.TextInsets ?? (7.2, 3.6, 7.2, 3.6);
+    }
+
+    /// <summary>
+    /// A text box that fits its text: as tall as its text needs, never less than its height, and, with no width of its own, as
+    /// wide as its widest line, up to the width of the body.
+    /// </summary>
+    private FloatingObject FitToText(FloatingObject floating)
+    {
+        if (floating.Node is not Shape { FitToText: true, TextBox: { } story } shape)
+        {
+            return floating;
+        }
+
+        (double left, double top, double right, double bottom) = Insets(shape);
+        double width = floating.Width;
+        if (width <= 0)
+        {
+            double room = page!.Geometry.BodyRight - page.Geometry.BodyLeft - Math.Max(0, floating.Placement.HorizontalOffset);
+            width = Math.Min(ContentWidths(story).Max + left + right, Math.Max(left + right + 1, room));
+        }
+
+        double height = Math.Max(floating.Height, MeasureBlocks(story.Blocks, Math.Max(1, width - left - right)) + top + bottom);
+        return floating with { Width = width, Height = height };
     }
 
     /// <summary>The floats on this page that push text of the current column aside.</summary>

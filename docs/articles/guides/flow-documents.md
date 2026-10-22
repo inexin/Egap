@@ -209,4 +209,71 @@ catch (LayoutException e)
 }
 ```
 
+## Flex and grid layout
+
+A `FlexContainer` lays its items out in a row or a column, as CSS flexbox does: each item starts from its basis or its
+content's width, takes a share of the space left by its grow factor or gives some up by its shrink factor, and lines up
+along and across its line by the container's `JustifyContent` and `AlignItems`. With `Wrap`, items that do not fit go on
+the next line. A `GridContainer` places its items in columns and rows of tracks, as CSS grid does: tracks in points, per
+cent, fractions of what is left (`fr`) or sized to their content, items placed by line, span or named area, and the rest
+filled in by automatic placement. Pages break between a flex container's lines and between a grid's rows, and inside a
+line or row too tall for the room left; rows an item spans stay together.
+
+```csharp
+using Egap.Documents;
+
+Document invoice = new();
+Body body = invoice.AddSection().Body;
+
+FlexContainer header = new(invoice) { Layout = new FlexLayout { JustifyContent = LayoutAlignment.SpaceBetween, ColumnGap = 12 } };
+header.AddItem("Acme Ltd");
+header.AddItem("Invoice 2026-118").Box = new BoxStyle { PaddingLeft = 6, Width = TableWidth.Points(160) };
+body.Blocks.Add(header);
+
+GridContainer lines = new(invoice)
+{
+    Layout = new GridLayout { Columns = [GridTrack.Fraction(1), GridTrack.Points(60), GridTrack.Points(80)], ColumnGap = 6, RowGap = 2 },
+};
+foreach (string cell in (string[])["Item", "Qty", "Price", "Paper", "2", "40 NOK"])
+{
+    lines.AddItem(cell);
+}
+
+GridItem total = lines.AddItem("Total: 80 NOK");
+total.Column = 2;
+total.ColumnSpan = 2;
+body.Blocks.Add(lines);
+```
+
+A `BoxStyle` draws a box around a container, an item or a group of blocks: margins, padding, borders, a background,
+rounded corners and a shadow, with a width and a least height. A group with a box breaks across pages like any other
+blocks; its box is drawn open where it breaks. Rounded corners and shadows draw on every Egami canvas; in a PDF a blurred
+shadow is drawn as an image.
+
+```csharp
+using Egap.Documents;
+
+Document letter = new();
+ContentControl card = new(letter)
+{
+    Box = BoxStyle.Padded(10).WithBorder(new Border(BorderStyle.Single, 1, DocumentColor.FromHex("336699"))) with
+    {
+        Background = DocumentColor.FromHex("F4F8FC"),
+        CornerRadius = BoxCorners.All(6),
+        Shadow = new BoxShadow(0, 2, 6) { Opacity = 0.3 },
+        MarginTop = 12,
+    },
+};
+card.AddParagraph("Paid in full on 21 October.");
+letter.AddSection().Body.Blocks.Add(card);
+```
+
+HTML's `display: flex` and `display: grid` read into these containers, with the properties listed on the
+[HTML](../formats/html.md#css-layout) page; a box with `border-radius` or `box-shadow` becomes a group with a box. DOCX has
+no such containers, so a container is saved as a borderless table with its items in the cells, and a boxed group as a
+one-cell table; Word keeps the content and the cells' backgrounds, borders and padding, not the corners or the shadow.
+
+A text box can fit its text (`FitToText`), have its own insets (`TextInsets`), rounded corners (`CornerRadius`) and a
+shadow (`Shadow`). HTML's absolutely positioned and fixed boxes read as such text boxes, floating in front of the text.
+
 For PDF output, see [PDF export and conversion](pdf-export-and-conversion.md).

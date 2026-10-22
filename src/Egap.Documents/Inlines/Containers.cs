@@ -320,6 +320,7 @@ public sealed record GroupPaging
 public sealed class ContentControl : Block
 {
     private GroupPaging? paging;
+    private BoxStyle? box;
 
     /// <summary>An empty content control of <paramref name="document"/>, not yet in the tree.</summary>
     public ContentControl(Document document)
@@ -352,6 +353,16 @@ public sealed class ContentControl : Block
                 Document.NotifyChanged(this, DocumentChangeKind.PropertyChanged, this, property: nameof(Paging));
             }
         }
+    }
+
+    /// <summary>
+    /// The box drawn around the group's blocks (padding, borders, background, rounded corners, shadow), or null for none. A
+    /// group with a box that breaks across pages is drawn open at the break, as CSS's box-decoration-break: slice draws it.
+    /// </summary>
+    public BoxStyle? Box
+    {
+        get => box;
+        set => SetProperty(ref box, value);
     }
 
     internal override int ChildCount => Blocks.Count;
@@ -391,7 +402,7 @@ public sealed class ContentControl : Block
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        ContentControl copy = new(context.Target) { paging = paging };
+        ContentControl copy = new(context.Target) { paging = paging, box = box };
         copy.Properties.CopyFrom(Properties);
         return copy;
     }

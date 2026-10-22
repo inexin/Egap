@@ -14,7 +14,10 @@ internal sealed partial class Paginator
     private readonly Document document;
     private readonly FontProvider fonts;
     private readonly ParagraphBridge bridge;
-    private readonly Dictionary<Paragraph, CachedContent> contents;
+    private readonly LayoutCache cache;
+
+    /// <summary><see cref="PageFieldText"/> as a delegate, made once.</summary>
+    private readonly Func<Field, string?> pageFieldText;
 
     /// <summary>What a layout keeps for the next layout of the same document with the same font settings (design Q13).</summary>
     private sealed class LayoutCache(FontSettings? settings, FontProvider fonts, ParagraphBridge bridge)
@@ -24,12 +27,13 @@ internal sealed partial class Paginator
         public FontProvider Fonts { get; } = fonts;
 
         public ParagraphBridge Bridge { get; } = bridge;
-
-        public Dictionary<Paragraph, CachedContent> Contents { get; } = [];
     }
 
-    /// <summary>A paragraph's laid-out content with what it depended on: its version, the formatting's, its list label.</summary>
-    private readonly record struct CachedContent(long Version, long FormattingVersion, string? Label, ParagraphContent Content);
+    /// <summary>
+    /// A paragraph's laid-out content with what it depended on: the cache it belongs to, the paragraph's version, the
+    /// formatting's and its list label.
+    /// </summary>
+    private sealed record CachedContent(LayoutCache Owner, long Version, long FormattingVersion, string? Label, ParagraphContent Content);
 
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Document, LayoutCache> Caches = [];
     private readonly List<PageBuilder> pages = [];
@@ -65,7 +69,8 @@ internal sealed partial class Paginator
         fonts = cache.Fonts;
         bridge = cache.Bridge;
         strict = options?.Strict ?? false;
-        contents = cache.Contents;
+        this.cache = cache;
+        pageFieldText = PageFieldText;
     }
 
     public DocumentLayout Run()
@@ -195,7 +200,11 @@ internal sealed partial class Paginator
 
     private void Flow()
     {
-        plans.Clear();
+        // Table, flex and grid plans stay from one pass to the next (for the page count, PAGEREF, balanced columns): the
+        // blocks and widths they are made from do not change between passes.
+        openBoxes.Clear();
+        insetLeft = 0;
+        insetRight = 0;
         pages.Clear();
         page = null;
         section = null;
@@ -265,6 +274,7 @@ internal sealed partial class Paginator
 
     private void NewPage()
     {
+        BreakBoxes();
         Section current = section!;
         bool restart = pages.Count == 0 || page?.Section != current;
         pageNumber = restart && current.PageSetup.PageNumberStart is int start ? start : pageNumber + 1;
@@ -279,6 +289,7 @@ internal sealed partial class Paginator
         }
 
         y = page.ColumnTop(0);
+        ResumeBoxes();
     }
 
     /// <summary>The next column, or the next page when this was the last.</summary>
@@ -286,8 +297,10 @@ internal sealed partial class Paginator
     {
         if (page is not null && column + 1 < page.Columns.Count)
         {
+            BreakBoxes();
             column++;
             y = page.ColumnTop(column);
+            ResumeBoxes();
         }
         else
         {
@@ -298,8 +311,6 @@ internal sealed partial class Paginator
     private bool AtColumnTop => page is not null && Math.Abs(y - page.ColumnTop(column)) < 0.01 && page.ColumnContents(column).Count == 0;
 
     private double ColumnBottom => page!.ColumnBottom(column);
-
-    private ColumnGeometry Column => page!.Columns[column];
 
     /// <summary>The break that ends a section's blocks.</summary>
     private enum SectionBreak
@@ -327,11 +338,20 @@ internal sealed partial class Paginator
                 case Table table:
                     FlowTable(table);
                     break;
+                case ContentControl { Box: { } box } control:
+                    FlowBoxedGroup(control, box);
+                    break;
                 case ContentControl { Paging: { } paging } control:
                     FlowGroup(control, paging);
                     break;
                 case ContentControl control:
                     FlowBlocks(control.Blocks);
+                    break;
+                case FlexContainer flex:
+                    FlowFlex(flex);
+                    break;
+                case GridContainer grid:
+                    FlowGrid(grid);
                     break;
                 case BlockIsland:
                     break;
@@ -451,11 +471,20 @@ internal sealed partial class Paginator
                 case Table table:
                     FlowTable(table);
                     break;
+                case ContentControl { Box: { } box } control:
+                    FlowBoxedGroup(control, box);
+                    break;
                 case ContentControl { Paging: { } paging } control:
                     FlowGroup(control, paging);
                     break;
                 case ContentControl control:
                     FlowBlocks(control.Blocks);
+                    break;
+                case FlexContainer flex:
+                    FlowFlex(flex);
+                    break;
+                case GridContainer grid:
+                    FlowGrid(grid);
                     break;
             }
         }
@@ -466,18 +495,18 @@ internal sealed partial class Paginator
     {
         if (notePrefix is { } note && note.Story.Blocks.Count > 0 && note.Story.Blocks[0] == paragraph)
         {
-            return bridge.Build(paragraph, pageField ?? PageFieldText, note);
+            return bridge.Build(paragraph, pageField ?? pageFieldText, note);
         }
 
         string? label = paragraph.ListLabel?.Text;
-        if (contents.TryGetValue(paragraph, out CachedContent cached) && cached.Version == paragraph.Version && cached.FormattingVersion == document.FormattingVersion
-            && cached.Label == label && cached.Content.PageFields.Count == 0)
+        if (paragraph.LayoutContent is CachedContent cached && cached.Owner == cache && cached.Version == paragraph.Version
+            && cached.FormattingVersion == document.FormattingVersion && cached.Label == label && cached.Content.PageFields.Count == 0)
         {
             return cached.Content;
         }
 
-        ParagraphContent content = bridge.Build(paragraph, pageField ?? PageFieldText);
-        contents[paragraph] = new CachedContent(paragraph.Version, document.FormattingVersion, label, content);
+        ParagraphContent content = bridge.Build(paragraph, pageField ?? pageFieldText);
+        paragraph.LayoutContent = new CachedContent(cache, paragraph.Version, document.FormattingVersion, label, content);
         return content;
     }
 
@@ -517,8 +546,24 @@ internal sealed partial class Paginator
         return parsed.ApplyGeneralFormat(text);
     }
 
-    /// <summary>A paragraph's lines at a column width, with their heights and baselines under its line spacing rule.</summary>
+    /// <summary>
+    /// A paragraph's lines at a column width, with their heights and baselines under its line spacing rule. Lines depend on
+    /// the content and the width alone, so a content measured and then placed at one width (a table cell, an item) is
+    /// broken into lines once.
+    /// </summary>
     private static List<PlacedLine> Lines(ParagraphContent content, double width)
+    {
+        if (content.Broken is { } broken && broken.Width == width)
+        {
+            return (List<PlacedLine>)broken.Lines;
+        }
+
+        List<PlacedLine> lines = BreakLines(content, width);
+        content.Broken = (width, lines);
+        return lines;
+    }
+
+    private static List<PlacedLine> BreakLines(ParagraphContent content, double width)
     {
         ResolvedParagraphFormat format = content.Format;
         double first = format.FirstLineIndent;
@@ -604,6 +649,13 @@ internal sealed partial class Paginator
 
                     // Word keeps the baseline where the text's own proportions put it in the exact height.
                     return (height, natural <= 0 ? height * 0.8 : height * ascent / natural);
+                }
+
+            case LineSpacingRule.AtLeastCentered:
+                {
+                    // CSS's half leading: the space a taller line adds goes half above the text, half below.
+                    double height = Math.Max(format.LineSpacing, natural);
+                    return (height, ascent + ((height - natural) / 2));
                 }
 
             case LineSpacingRule.AtLeast:

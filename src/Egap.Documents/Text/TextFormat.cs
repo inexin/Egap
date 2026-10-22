@@ -196,6 +196,20 @@ internal sealed class PlainTextWriter(Document document, TextSaveOptions options
                 case ContentControl control:
                     Blocks(control.Blocks);
                     break;
+                case FlexContainer flex:
+                    foreach (FlexItem item in flex.Items.OrderBy(i => i.Order))
+                    {
+                        Blocks(item.Blocks);
+                    }
+
+                    break;
+                case GridContainer grid:
+                    foreach (GridItem item in grid.Items)
+                    {
+                        Blocks(item.Blocks);
+                    }
+
+                    break;
             }
         }
     }
@@ -235,6 +249,9 @@ internal sealed class PlainTextWriter(Document document, TextSaveOptions options
                     break;
                 case Table table:
                     part.AppendJoin(' ', table.Rows.SelectMany(r => r.Cells).Select(CellText));
+                    break;
+                case FlexContainer or GridContainer or ContentControl:
+                    part.AppendJoin(' ', block.Descendants<Paragraph>().Select(p => p.GetText()));
                     break;
             }
 

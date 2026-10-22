@@ -627,6 +627,37 @@ public sealed class PdfContentWriter
             return;
         }
 
+        // Most operands (coordinates) have at most five decimals and are under a billion: their digits are those of the
+        // integer rounded * 100000, the same digits FormatReal gives (no shorter text reads back to the same double there).
+        if (Math.Abs(rounded) is >= 1 and < 1e9 && Math.Round(rounded * 100000) is double scaled && scaled / 100000 == rounded)
+        {
+            long units = (long)Math.Abs(scaled);
+            if (rounded < 0)
+            {
+                output.Write((byte)'-');
+            }
+
+            output.WriteInteger(units / 100000);
+            long fraction = units % 100000;
+            int digits = 5;
+            while (fraction % 10 == 0)
+            {
+                fraction /= 10;
+                digits--;
+            }
+
+            Span<byte> decimals = stackalloc byte[6];
+            decimals[0] = (byte)'.';
+            for (int i = digits; i > 0; i--)
+            {
+                decimals[i] = (byte)('0' + (fraction % 10));
+                fraction /= 10;
+            }
+
+            output.Write(decimals[..(digits + 1)]);
+            return;
+        }
+
         // Plain notation, without the leading zero PDF does not need (".5", "-.25").
         string text = ObjectWriter.FormatReal(rounded);
         if (text.StartsWith("0.", StringComparison.Ordinal))

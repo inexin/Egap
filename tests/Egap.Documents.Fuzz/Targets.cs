@@ -16,6 +16,7 @@ internal static class Targets
         ["layout"] = LayoutTarget,
         ["pagemedia"] = PageMedia,
         ["mailmerge"] = MailMergeTarget,
+        ["csslayout"] = CssLayout,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -151,6 +152,30 @@ internal static class Targets
 
         _ = HtmlFormat.Parse(HtmlFormat.ToHtml(document, out _)).GetText();
         DocxFormat.Save(document, Stream.Null);
+    }
+
+    /// <summary>
+    /// Any bytes read as HTML with flex and grid containers, boxes with rounded corners and shadows, and positioned boxes:
+    /// laid out with every page drawn, written back as HTML, which must read and lay out again, and as DOCX, whose
+    /// borderless tables must read again.
+    /// </summary>
+    private static void CssLayout(Stream input)
+    {
+        using MemoryStream bytes = new();
+        input.CopyTo(bytes);
+        Document document = HtmlFormat.Load(bytes.ToArray(), out _);
+        Egap.Documents.Layout.LayoutOptions options = new() { Fonts = new Egap.Documents.Layout.FontSettings { UseSystemFonts = false } };
+        Egap.Documents.Layout.DocumentLayout layout = document.Layout(options);
+        foreach (Egap.Documents.Layout.PageLayout page in layout.Pages.Take(3))
+        {
+            _ = page.Render(6);
+        }
+
+        Document again = HtmlFormat.Parse(HtmlFormat.ToHtml(document, out _));
+        _ = again.Layout(options).Pages.Count;
+        using MemoryStream docx = new();
+        DocxFormat.Save(document, docx);
+        _ = DocxFormat.Load(new MemoryStream(docx.ToArray())).GetText();
     }
 
     /// <summary>

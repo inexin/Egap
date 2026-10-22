@@ -8,6 +8,7 @@
     <Project Path="src/Egap.Documents.Html/Egap.Documents.Html.csproj" />
     <Project Path="src/Egap.Documents.Markdown/Egap.Documents.Markdown.csproj" />
     <Project Path="src/Egap.Pdf/Egap.Pdf.csproj" />
+    <Project Path="src/Egap.Preview/Egap.Preview.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Egap.Documents.Fuzz/Egap.Documents.Fuzz.csproj" />
@@ -19,5 +20,6 @@
     <Project Path="tests/Egap.Pdf.Fuzz/Egap.Pdf.Fuzz.csproj" />
     <Project Path="tests/Egap.Pdf.MemoryTests/Egap.Pdf.MemoryTests.csproj" />
     <Project Path="tests/Egap.Pdf.Tests/Egap.Pdf.Tests.csproj" />
+    <Project Path="tests/Egap.Preview.Tests/Egap.Preview.Tests.csproj" />
   </Folder>
 </Solution>

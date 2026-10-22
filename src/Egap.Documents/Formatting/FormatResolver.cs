@@ -21,8 +21,22 @@ internal static class FormatResolver
         public Dictionary<Run, ResolvedRunFormat> Runs { get; } = [];
     }
 
+    /// <summary>A cell's table style levels, with and without the regions about columns, and what they depend on.</summary>
+    internal sealed class LayerCache(CacheKey key)
+    {
+        public CacheKey Key { get; } = key;
+
+        public List<TableLayer>? All { get; set; }
+
+        public List<TableLayer>? RowOnly { get; set; }
+    }
+
+    private static readonly List<TableLayer> NoLayers = [];
+    private static readonly object True = true;
+    private static readonly object False = false;
+
     /// <summary>One level of a table style for a cell: the whole table or one region, of one style in the BasedOn chain.</summary>
-    private readonly record struct TableLayer(TableFormat Table, RowFormat Row, CellFormat Cell, ParagraphFormat Paragraph, RunFormat Run);
+    internal readonly record struct TableLayer(TableFormat Table, RowFormat Row, CellFormat Cell, ParagraphFormat Paragraph, RunFormat Run);
 
     /// <summary>Regions in increasing precedence (ECMA-376 17.7.6): later ones win.</summary>
     private static readonly TableStyleRegion[] RegionOrder =
@@ -179,13 +193,36 @@ internal static class FormatResolver
     {
         Document document = run.Document;
         RunFormat defaults = document.Styles.DefaultRunFormat;
-        List<RunFormat> table = paragraph?.Parent is Cell cell ? [.. Layers(cell, rowOnly: false).Select(l => l.Run)] : [];
-        List<RunFormat> paragraphStyle = paragraph is null ? [] : [.. Chain(StyleOf(paragraph)).Select(s => s.RunFormat)];
-        List<RunFormat> characterStyle = [.. Chain(StyleOf(run)).Select(s => s.RunFormat)];
-        IEnumerable<RunFormat> all = [defaults, .. table, .. paragraphStyle, .. characterStyle, run.Format];
+        List<TableLayer> table = paragraph?.Parent is Cell cell ? Layers(cell, rowOnly: false) : NoLayers;
+        List<ParagraphStyle> paragraphStyle = paragraph is null ? Chain<ParagraphStyle>(null) : Chain(StyleOf(paragraph));
+        List<CharacterStyle> characterStyle = Chain(StyleOf(run));
 
         object?[] values = new object?[RunFormat.Count];
-        foreach (RunFormat level in all)
+        Apply(defaults);
+        foreach (TableLayer level in table)
+        {
+            Apply(level.Run);
+        }
+
+        foreach (ParagraphStyle level in paragraphStyle)
+        {
+            Apply(level.RunFormat);
+        }
+
+        foreach (CharacterStyle level in characterStyle)
+        {
+            Apply(level.RunFormat);
+        }
+
+        Apply(run.Format);
+        foreach (int id in RunFormat.Toggles)
+        {
+            values[id] = Toggle(id, defaults, table, paragraphStyle, characterStyle, run.Format) ? True : False;
+        }
+
+        return new ResolvedRunFormat(values, document.Theme);
+
+        void Apply(RunFormat level)
         {
             for (int i = 0; i < values.Length; i++)
             {
@@ -207,20 +244,13 @@ internal static class FormatResolver
                 }
             }
         }
-
-        foreach (int id in RunFormat.Toggles)
-        {
-            values[id] = Toggle(id, defaults, table, paragraphStyle, characterStyle, run.Format);
-        }
-
-        return new ResolvedRunFormat(values, document.Theme);
     }
 
     /// <summary>
     /// A toggle property: direct formatting sets it outright; otherwise each kind of style (table, paragraph, character) gives
     /// the value nearest in its own chain, and those combine by exclusive or; with no style setting it, the default holds.
     /// </summary>
-    private static bool Toggle(int id, RunFormat defaults, List<RunFormat> table, List<RunFormat> paragraph, List<RunFormat> character, RunFormat direct)
+    private static bool Toggle(int id, RunFormat defaults, List<TableLayer> table, List<ParagraphStyle> paragraph, List<CharacterStyle> character, RunFormat direct)
     {
         if (direct.GetRaw(id) is bool set)
         {
@@ -228,24 +258,33 @@ internal static class FormatResolver
         }
 
         bool? result = null;
-        foreach (List<RunFormat> group in (List<RunFormat>[])[table, paragraph, character])
+        bool? value = null;
+        foreach (TableLayer level in table)
         {
-            bool? value = null;
-            foreach (RunFormat level in group)
-            {
-                if (level.GetRaw(id) is bool v)
-                {
-                    value = v;
-                }
-            }
-
-            if (value is bool b)
-            {
-                result = (result ?? false) ^ b;
-            }
+            value = level.Run.GetRaw(id) as bool? ?? value;
         }
 
+        result = Combine(result, value);
+        value = null;
+        foreach (ParagraphStyle level in paragraph)
+        {
+            value = level.RunFormat.GetRaw(id) as bool? ?? value;
+        }
+
+        result = Combine(result, value);
+        value = null;
+        foreach (CharacterStyle level in character)
+        {
+            value = level.RunFormat.GetRaw(id) as bool? ?? value;
+        }
+
+        result = Combine(result, value);
         return result ?? (defaults.GetRaw(id) as bool? ?? false);
+
+        static bool? Combine(bool? result, bool? value)
+        {
+            return value is bool b ? (result ?? false) ^ b : result;
+        }
     }
 
     private static bool IsFontSlot(int id)
@@ -260,11 +299,25 @@ internal static class FormatResolver
     /// </summary>
     private static List<TableLayer> Layers(Cell cell, bool rowOnly)
     {
-        List<TableLayer> layers = [];
         if (cell.Row is not { Table: { } table } row)
         {
-            return layers;
+            return [];
         }
+
+        // Cached on the cell: every paragraph and run in it asks for the same levels.
+        CacheKey key = new(0, cell.Document.FormattingVersion, table.Stamp, row.IndexInParent, cell.IndexInParent, table.Rows.Count, row.Cells.Count);
+        if (cell.LayerCache is not { } cache || cache.Key != key)
+        {
+            cache = new LayerCache(key);
+            cell.LayerCache = cache;
+        }
+
+        return rowOnly ? cache.RowOnly ??= MakeLayers(cell, row, table, rowOnly) : cache.All ??= MakeLayers(cell, row, table, rowOnly);
+    }
+
+    private static List<TableLayer> MakeLayers(Cell cell, Row row, Table table, bool rowOnly)
+    {
+        List<TableLayer> layers = [];
 
         List<TableStyle> chain = Chain(StyleOf(table));
         if (chain.Count == 0)
@@ -343,8 +396,27 @@ internal static class FormatResolver
         return table.Style is { IsInDocument: true } s ? s : table.Document.Styles.DefaultTableStyle;
     }
 
-    /// <summary>A style's BasedOn chain, base first, leaving out styles removed from the document.</summary>
+    /// <summary>A style's BasedOn chain, base first, leaving out styles removed from the document; cached on the style, not to be changed.</summary>
     private static List<T> Chain<T>(T? style)
+        where T : Style
+    {
+        if (style is null)
+        {
+            return EmptyChain<T>.Value;
+        }
+
+        long version = style.Document.FormattingVersion;
+        if (style.ChainCache is { } cached && cached.FormattingVersion == version)
+        {
+            return (List<T>)cached.Chain;
+        }
+
+        List<T> chain = MakeChain(style);
+        style.ChainCache = (version, chain);
+        return chain;
+    }
+
+    private static List<T> MakeChain<T>(T style)
         where T : Style
     {
         List<T> chain = [];
@@ -358,6 +430,11 @@ internal static class FormatResolver
 
         chain.Reverse();
         return chain;
+    }
+
+    private static class EmptyChain<T>
+    {
+        public static readonly List<T> Value = [];
     }
 
     private static void Merge(FormatBase target, FormatBase level)

@@ -30,6 +30,9 @@ internal sealed partial class HtmlReader
 
         public List<string> PendingBookmarks { get; } = [];
 
+        /// <summary>Positioned boxes waiting for a paragraph to anchor them.</summary>
+        public List<Shape> PendingFloats { get; } = [];
+
         /// <summary>Whether collapsible white space is dropped here: at a line's start or after a space.</summary>
         public bool AtLineStart { get; set; } = true;
 
@@ -335,9 +338,10 @@ internal sealed partial class HtmlReader
             }
         }
 
-        if (style.Keyword("position") is "absolute" or "fixed")
+        if (IsPositioned(style))
         {
-            Warn(ConversionWarningKind.LayoutApproximated, "Absolutely positioned boxes, placed in the flow");
+            Positioned(element, style, flow, frame);
+            return;
         }
 
         switch (element.LocalName)
@@ -370,6 +374,12 @@ internal sealed partial class HtmlReader
         if (display is "table" or "inline-table")
         {
             BuildTable(element, style, flow, frame);
+            return;
+        }
+
+        if (display is "flex" or "grid")
+        {
+            LayoutContainer(element, style, display, flow, frame);
             return;
         }
 
@@ -409,9 +419,10 @@ internal sealed partial class HtmlReader
     private void Block(HtmlElement element, HtmlStyle style, string display, Flow flow, Frame parent)
     {
         Close(flow);
-        if (display is "flex" or "grid")
+        if (display != "list-item" && NeedsBox(style))
         {
-            Warn(ConversionWarningKind.LayoutApproximated, "Flexbox and grid containers, laid out as stacked blocks");
+            BoxedBlock(element, style, flow, parent);
+            return;
         }
 
         double width = flow.Width;
@@ -484,6 +495,7 @@ internal sealed partial class HtmlReader
         }
 
         flow.PendingSpace = Collapse(flow.PendingSpace, marginTop) + (borderTop is null ? paddingTop : 0);
+        double above = flow.PendingSpace;
         int firstBlock = flow.Container.Blocks.Count;
         Children(element, style, flow, frame);
         Close(flow);
@@ -529,9 +541,15 @@ internal sealed partial class HtmlReader
         else if (borderTop is not null || borderBottom is not null)
         {
             // An empty box with a border (a rule): one empty paragraph that shows it.
+            // The rule sits between its own top and bottom margins.
+            double below = flow.PendingSpace;
+            flow.PendingSpace = above;
             Paragraph rule = NewParagraph(flow, frame);
             rule.Format.BorderBottom = (borderBottom ?? borderTop)! with { Space = 0 };
+            rule.Format.LineSpacingRule = LineSpacingRule.Exactly;
+            rule.Format.LineSpacing = 0.01;
             Close(flow);
+            flow.PendingSpace = below;
         }
 
         if (style.Keyword("break-after") is "page" or "always" or "left" or "right" or "recto" or "verso"
@@ -760,6 +778,11 @@ internal sealed partial class HtmlReader
 
         paragraph.Extensions.Set(HtmlExtension.Format, new HtmlExtension(frame.Element.LocalName, frame.Element.Id, frame.Element.GetAttribute("class", null), frame.Element.GetAttribute("style", null)));
         FlushBookmarks(flow);
+        if (flow.PendingFloats.Count > 0)
+        {
+            AnchorPendingFloats(flow, paragraph);
+        }
+
         return paragraph;
     }
 
@@ -782,7 +805,7 @@ internal sealed partial class HtmlReader
         if (points is { } height && height > 0)
         {
             // A taller line than the font's own takes the height; the text sets the line where it is taller (an image).
-            format.LineSpacingRule = LineSpacingRule.AtLeast;
+            format.LineSpacingRule = LineSpacingRule.AtLeastCentered;
             format.LineSpacing = height;
         }
     }
@@ -900,6 +923,11 @@ internal sealed partial class HtmlReader
         if (flow.Container.Blocks.Count == 0)
         {
             flow.Container.Blocks.Add(new Paragraph(flow.Container.Document));
+        }
+
+        if (flow.PendingFloats.Count > 0)
+        {
+            AnchorPendingFloats(flow, flow.Container.Descendants<Paragraph>().LastOrDefault() ?? flow.Container.AddParagraph());
         }
     }
 }

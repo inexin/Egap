@@ -62,6 +62,8 @@ public sealed partial class Document : Node
     /// <summary>The tracked changes, to accept or reject (Phase 6 design Q8).</summary>
     public TrackedChangeCollection Revisions { get; }
 
+    private Layout.LayoutOptions? defaultLayoutOptions;
+
     /// <summary>The file the document was loaded from or last saved to, for FILENAME fields; null when not known.</summary>
     public string? FileName
     {
@@ -75,7 +77,17 @@ public sealed partial class Document : Node
     /// </summary>
     public Layout.DocumentLayout Layout(Layout.LayoutOptions? options = null)
     {
-        return new Layout.Paginator(this, options).Run();
+        return new Layout.Paginator(this, options ?? DefaultLayoutOptions).Run();
+    }
+
+    /// <summary>
+    /// The layout options used when a layout or an export is asked for without any, or null for the defaults. A report built
+    /// with <see cref="Reports.Report.Create"/> keeps strict layout with portable fonts here.
+    /// </summary>
+    public Layout.LayoutOptions? DefaultLayoutOptions
+    {
+        get => defaultLayoutOptions;
+        set => SetProperty(ref defaultLayoutOptions, value);
     }
 
     /// <summary>
