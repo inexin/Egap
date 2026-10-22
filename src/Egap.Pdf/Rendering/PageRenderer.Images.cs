@@ -60,7 +60,7 @@ internal sealed partial class PageRenderer
             Colors = colors.Context.WithIntent(ColorContext.IntentOf(source.Intent ?? state.RenderingIntent)),
         };
 
-        if (!source.IsStencilMask && DrawInkImage(source, options, state, name))
+        if (!source.IsStencilMask && DrawInkImage(source, options, state, name, image, reduction))
         {
             return;
         }

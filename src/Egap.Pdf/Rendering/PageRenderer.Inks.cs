@@ -26,6 +26,20 @@ internal sealed partial class PageRenderer
     /// <summary>The plates drawn on, for an ink canvas or a pattern cell recorded for one; null when drawing RGB.</summary>
     private InkMap? inks;
 
+    /// <summary>The plates of the image XObjects drawn so far in this render, by image and reduction; disposed when it ends.</summary>
+    private Dictionary<(PdfStream, int), InkRaster>? inkImages;
+
+    /// <summary>Frees the plates of the images this render made.</summary>
+    private void ForgetInkImages()
+    {
+        foreach (InkRaster raster in inkImages?.Values ?? Enumerable.Empty<InkRaster>())
+        {
+            raster.Dispose();
+        }
+
+        inkImages = null;
+    }
+
     /// <summary>For the cell of an uncoloured pattern on plates: the ink colour every fill and stroke takes.</summary>
     private InkColor? uncoloredInk;
 
@@ -127,7 +141,7 @@ internal sealed partial class PageRenderer
     /// as sRGB instead. An overprinting image in spot colourants paints each of its plates through itself as a mask, so the
     /// plates it does not name keep what is below (8.6.7).
     /// </summary>
-    private bool DrawInkImage(PdfImage source, PdfImageOptions options, PdfGraphicsState state, PdfName? name)
+    private bool DrawInkImage(PdfImage source, PdfImageOptions options, PdfGraphicsState state, PdfName? name, PdfStream? stream, int reduction)
     {
         if (inks is null || canvas is not InkCanvas ink)
         {
@@ -140,8 +154,27 @@ internal sealed partial class PageRenderer
         try
         {
             // Every other image converts from sRGB into the process inks here, onto plates of the whole ink set, so it
-            // knocks out the spot plates below it as well.
-            raster = plan is not null ? ImageDecoder.DecodeInks(source, options, plan, inks.Inks) : SrgbToPlates(source.ToRaster<Rgba8>(options));
+            // knocks out the spot plates below it as well. An XObject's plates are made once per render, however often it is drawn.
+            (PdfStream, int) key = (stream!, reduction);
+            if (stream is not null && inkImages?.TryGetValue(key, out InkRaster? known) == true)
+            {
+                raster = known;
+            }
+            else
+            {
+                raster = plan is not null ? ImageDecoder.DecodeInks(source, options, plan, inks.Inks)
+                    : stream is not null && cache.Images.GetOrDecode(stream, reduction, settings.ImageCacheLimit, () => source.ToRaster(options)) is Raster<Rgba8> decoded
+                        ? SrgbToPlates(decoded, owned: false) : SrgbToPlates(source.ToRaster<Rgba8>(options), owned: true);
+                if (stream is not null)
+                {
+                    (inkImages ??= new()).Add(key, raster);
+                }
+            }
+        }
+        catch (Egami.EgamiException e)
+        {
+            Warn(PdfWarningCode.MalformedContent, $"The image {(name is null ? "inline" : "/" + name.Value)} could not be drawn: {e.Message}");
+            return true;
         }
         catch (PdfException e) when (e is not PdfLimitException)
         {
@@ -149,7 +182,7 @@ internal sealed partial class PageRenderer
             return true;
         }
 
-        using (raster)
+        using (stream is null ? raster : null)
         {
             if (Begin(state, 0, ImageSpace * state.Matrix) is not int restore)
             {
@@ -203,9 +236,9 @@ internal sealed partial class PageRenderer
     }
 
     /// <summary>An sRGB image as plates of the ink set: its colours in the process inks, premultiplied by its alpha.</summary>
-    private InkRaster SrgbToPlates(Raster<Rgba8> image)
+    private InkRaster SrgbToPlates(Raster<Rgba8> image, bool owned)
     {
-        using (image)
+        using (owned ? image : null)
         {
             InkRaster raster = new(inks!.Inks, image.Width, image.Height);
             ColorTransform transform = inks.FromSrgb;

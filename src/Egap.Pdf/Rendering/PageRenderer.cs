@@ -83,6 +83,7 @@ internal sealed partial class PageRenderer : PdfContentWalker
         finally
         {
             canvas.RestoreToCount(baseSaveCount);
+            ForgetInkImages();
         }
     }
 
