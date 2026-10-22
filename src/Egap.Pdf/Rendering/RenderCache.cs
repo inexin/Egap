@@ -28,11 +28,23 @@ internal sealed class RenderCache(PdfDocument document)
     public ImageCache Images { get; } = new();
 
     private readonly ConditionalWeakTable<PdfObject, ShadingPaint> shadings = [];
+    private readonly ConditionalWeakTable<InkMap, ConditionalWeakTable<PdfObject, ShadingPaint>> inkShadings = [];
+    private readonly ConditionalWeakTable<Egami.Colors.InkSet, InkMap> inkMaps = [];
 
-    /// <summary>A shading made ready once per document: its function sampled into stops (design Q10).</summary>
-    public ShadingPaint Shading(PdfObject shading, Func<ShadingPaint> read)
+    /// <summary>
+    /// A shading made ready once per document: its function sampled into stops (design Q10), for plates once per ink set,
+    /// with ink stops and vertex inks.
+    /// </summary>
+    public ShadingPaint Shading(PdfObject shading, InkMap? inks, Func<ShadingPaint> read)
     {
-        return shadings.GetValue(shading, _ => read());
+        ConditionalWeakTable<PdfObject, ShadingPaint> table = inks is null ? shadings : inkShadings.GetValue(inks, _ => []);
+        return table.GetValue(shading, _ => read());
+    }
+
+    /// <summary>How colour spaces print on plates of these inks, made once per ink set.</summary>
+    public InkMap Inks(Egami.Colors.InkSet set)
+    {
+        return inkMaps.GetValue(set, s => new InkMap(s));
     }
 
     /// <summary>The substitute for a font with no usable program, chosen once per font and setting (design Q5).</summary>

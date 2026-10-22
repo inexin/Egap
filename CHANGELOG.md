@@ -100,6 +100,13 @@ was removed or changed in a way that breaks code: 2.1.0 is 1.5.0 plus what is be
 ### Speed
 - Content streams write coordinates faster, with the same text as before.
 
+### Separations and ink coverage
+- `PdfPage.RenderSeparations` renders a page as ink plates, one per process and spot ink, with a multi-ink renderer:
+  overprint, overprint mode, knockout and blend modes act on the inks. `PdfSeparations` measures total ink coverage
+  (`MaxCoverage`, `ShareOver`, `CoveragePerPlate`) and draws a heat map (`CoverageMap`). `PdfSeparationOptions` sets the
+  press profile and which spot inks get plates.
+- Preflight's ink check: `PdfPrintProfile.MaxInkCoverage` is measured on each page's plates and reported.
+
 ## Egap.Documents 2.0.0 (2026-10-21)
 
 ### Docs

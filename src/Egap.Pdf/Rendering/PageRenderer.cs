@@ -39,6 +39,7 @@ internal sealed partial class PageRenderer : PdfContentWalker
         this.settings = settings;
         this.cache = cache;
         colors = cache.Colors(settings.OutputIntents);
+        inks = canvas is InkCanvas ink ? cache.Inks(ink.Raster.Inks) : null;
     }
 
     /// <summary>Draws content with its resources, in default user space mapped to the canvas by the page matrix.</summary>
@@ -101,12 +102,20 @@ internal sealed partial class PageRenderer : PdfContentWalker
             return;
         }
 
-        if ((draw & (PdfPathPaint.Fill | PdfPathPaint.EvenOddFill)) != 0 && ColorPaint(state.FillColor, state.FillAlpha) is Paint fill)
+        if ((draw & (PdfPathPaint.Fill | PdfPathPaint.EvenOddFill)) != 0)
         {
-            canvas.FillPath(ToPath(path, (draw & PdfPathPaint.EvenOddFill) != 0 ? FillRule.EvenOdd : FillRule.NonZero), fill);
+            Path filled = ToPath(path, (draw & PdfPathPaint.EvenOddFill) != 0 ? FillRule.EvenOdd : FillRule.NonZero);
+            if (inks is not null && uncoloredInk is null && state.FillColor.Family == "Pattern" && FillPatternWithInks(filled, state.FillColor, state.FillAlpha))
+            {
+                // Drawn on the plates through a clip.
+            }
+            else if (ColorPaint(state.FillColor, state.FillAlpha) is Paint fill)
+            {
+                canvas.FillPath(filled, fill);
+            }
         }
 
-        if ((draw & PdfPathPaint.Stroke) != 0 && ColorPaint(state.StrokeColor, state.StrokeAlpha) is Paint stroke)
+        if ((draw & PdfPathPaint.Stroke) != 0 && ColorPaint(state.StrokeColor, state.StrokeAlpha, fill: false) is Paint stroke)
         {
             canvas.StrokePath(ToPath(path, FillRule.NonZero), ToStroke(state), stroke);
         }
@@ -208,12 +217,17 @@ internal sealed partial class PageRenderer : PdfContentWalker
     /// The paint for a colour at an alpha; a pattern's is mapped for drawing under <paramref name="drawing"/> (the current
     /// matrix when null), the user space matrix the canvas will have when the paint is used.
     /// </summary>
-    private Paint? ColorPaint(PdfColor color, double alpha, PdfMatrix? drawing = null)
+    private Paint? ColorPaint(PdfColor color, double alpha, PdfMatrix? drawing = null, bool fill = true)
     {
+        if (InkPaint(color, alpha, fill, out Paint? ink))
+        {
+            return ink;
+        }
+
         if (uncolored is RgbaF32 tint)
         {
             // Inside an uncoloured pattern's cell everything takes the pattern's colour (8.7.3.3).
-            return new SolidPaint(tint with { A = (float)alpha }) { Antialias = settings.AntialiasPaths, BlendMode = BlendModeOf(State.BlendMode) };
+            return new SolidPaint(tint with { A = (float)alpha }) { Antialias = settings.AntialiasPaths, BlendMode = BlendModeOf(State.BlendMode), Overprint = OverprintOf(fill, null, null) };
         }
 
         if (color.Family == "Pattern")
@@ -228,7 +242,7 @@ internal sealed partial class PageRenderer : PdfContentWalker
         }
 
         // A colourant that marks nothing (None) paints nothing at all (8.6.6.4).
-        return rgb.A == 0 ? null : new SolidPaint(new RgbaF32(rgb.R, rgb.G, rgb.B, (float)alpha)) { Antialias = settings.AntialiasPaths, BlendMode = BlendModeOf(State.BlendMode) };
+        return rgb.A == 0 ? null : new SolidPaint(new RgbaF32(rgb.R, rgb.G, rgb.B, (float)alpha)) { Antialias = settings.AntialiasPaths, BlendMode = BlendModeOf(State.BlendMode), Overprint = OverprintOf(fill, null, null) };
     }
 
     /// <summary>Whether every point of a path is a finite number in single precision, as Egami's paths need: a coordinate too large for a float is drawn as nothing.</summary>

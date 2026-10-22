@@ -59,7 +59,7 @@ internal sealed class MeshShading
     }
 
     /// <summary>Reads a mesh shading's stream; throws <see cref="InvalidDataException"/> for one that cannot be read.</summary>
-    public static MeshShading Read(PdfStream stream, int type, ImageColorSpace space)
+    public static MeshShading Read(PdfStream stream, int type, ImageColorSpace space, InkMap? inks = null)
     {
         PdfDictionary d = stream.Dictionary;
         int coordBits = (int)(d.GetInt("BitsPerCoordinate") ?? 0), componentBits = (int)(d.GetInt("BitsPerComponent") ?? 0);
@@ -90,13 +90,13 @@ internal sealed class MeshShading
                 input[0] = decode[4] + ((decode[5] - decode[4]) * offset);
                 Array.Clear(output);
                 function.Evaluate(input, output);
-                stops[i] = new GradientStop(offset, Shadings.Convert(space, output));
+                stops[i] = Shadings.Stop(offset, space, output, inks);
             }
         }
 
         MeshShading shading = new(stops);
         BitReader reader = new(stream.GetDecodedBytes());
-        Reading read = new(reader, coordBits, componentBits, flagBits, decode, components, space, function is not null);
+        Reading read = new(reader, coordBits, componentBits, flagBits, decode, components, space, function is not null, function is null ? inks?.Plan(space) : null);
         switch (type)
         {
             case 4:
@@ -233,7 +233,7 @@ internal sealed class MeshShading
 
             for (int k = 4 - newColors; k < 4; k++)
             {
-                corners[k] = new Vertex(default, read.Color());
+                corners[k] = read.ColorOnly();
             }
 
             read.Reader.Align();
@@ -259,6 +259,10 @@ internal sealed class MeshShading
         Mesh mesh = stops is not null
             ? new Mesh(MeshMode.Triangles, positions, values: [.. vertices.Select(v => v.Color.R)])
             : new Mesh(MeshMode.Triangles, positions, colors: [.. vertices.Select(v => v.Color)]);
+        if (stops is null && vertices.All(v => v.Ink is not null))
+        {
+            mesh = mesh.WithInks([.. vertices.Select(v => v.Ink!)]);
+        }
         meshes.Add(mesh);
         Grow(mesh.Bounds);
     }
@@ -285,6 +289,11 @@ internal sealed class MeshShading
             patch = stops is not null ? Patch.Coons(points, cornerValues: values) : Patch.Coons(points, colors);
         }
 
+        if (stops is null && corners.All(c => c.Ink is not null))
+        {
+            patch = patch.WithInks([.. corners.Select(c => c.Ink!)]);
+        }
+
         patches.Add(patch);
         Grow(patch.Bounds);
     }
@@ -303,10 +312,10 @@ internal sealed class MeshShading
     /// A vertex: its point in shading space and colour, sRGB with alpha 1; with a function, the parametric value normalized
     /// to 0 to 1 over its decode range is kept in R.
     /// </summary>
-    private readonly record struct Vertex(Vector2 Position, RgbaF32 Color);
+    private readonly record struct Vertex(Vector2 Position, RgbaF32 Color, Egami.Colors.InkColor? Ink = null);
 
     /// <summary>How a shading's data is laid out and decoded.</summary>
-    private sealed class Reading(BitReader reader, int coordBits, int componentBits, int flagBits, double[] decode, int components, ImageColorSpace space, bool parametric)
+    private sealed class Reading(BitReader reader, int coordBits, int componentBits, int flagBits, double[] decode, int components, ImageColorSpace space, bool parametric, InkPlan? plan)
     {
         public BitReader Reader => reader;
 
@@ -337,6 +346,12 @@ internal sealed class MeshShading
 
         public RgbaF32 Color()
         {
+            return ColorOnly().Color;
+        }
+
+        /// <summary>A vertex colour without its point: sRGB, and on plates its ink colour too.</summary>
+        public Vertex ColorOnly()
+        {
             Span<double> c = stackalloc double[Math.Max(components, 1)];
             for (int i = 0; i < components; i++)
             {
@@ -346,16 +361,16 @@ internal sealed class MeshShading
             if (parametric)
             {
                 double range = decode[5] - decode[4];
-                return new RgbaF32(range == 0 ? 0 : (float)Math.Clamp((c[0] - decode[4]) / range, 0, 1), 0, 0, 1);
+                return new Vertex(default, new RgbaF32(range == 0 ? 0 : (float)Math.Clamp((c[0] - decode[4]) / range, 0, 1), 0, 0, 1));
             }
 
-            return Shadings.Convert(space, c);
+            return new Vertex(default, Shadings.Convert(space, c), plan is { PaintsNothing: false } ? plan.Color(c) : null);
         }
 
         public Vertex Vertex()
         {
             Vector2 point = Point();
-            return new Vertex(point, Color());
+            return ColorOnly() with { Position = point };
         }
 
         private static double Decode(ulong value, int bits, double min, double max)

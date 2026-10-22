@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 
 using Egami;
+using Egami.Colors;
 using Egami.Formats;
 using Egami.Formats.Ccitt;
 using Egami.Formats.Jbig2;
@@ -36,6 +37,114 @@ internal static class ImageDecoder
 
     private static Raster DecodeCore(PdfImage image, PdfImageOptions options, int depth)
     {
+        if (Prepare(image, options, depth, out Raster? stencil) is not Prepared ready)
+        {
+            return stencil!;
+        }
+
+        (Samples samples, ImageColorSpace space, double[] decode, double max, byte[]? alpha, double[]? matte) = ready;
+        bool keep = !options.ConvertColor && space.Family is ColorFamily.Gray or ColorFamily.Rgb or ColorFamily.Cmyk && matte is null;
+        return keep ? Native(samples, space, decode, alpha) : Srgb(samples, space, decode, max, alpha, matte);
+    }
+
+    /// <summary>
+    /// Decodes an image straight onto plates (Phase 8 Build Plan task 7): each pixel's components through
+    /// <paramref name="plan"/> into the tints of its colourants, premultiplied by the image's alpha, which goes on the alpha
+    /// plane. Plates the plan does not name stay empty.
+    /// </summary>
+    public static InkRaster DecodeInks(PdfImage image, PdfImageOptions options, Rendering.InkPlan plan, InkSet inks)
+    {
+        try
+        {
+            if (image.IsStencilMask || Prepare(image, options, 0, out _) is not Prepared ready)
+            {
+                throw new InvalidDataException("A stencil mask has no colours of its own.");
+            }
+
+            (Samples samples, ImageColorSpace space, double[] decode, double max, byte[]? alpha, double[]? matte) = ready;
+            int width = samples.Width, height = samples.Height, n = space.Components;
+            InkRaster raster = new(inks, width, height);
+            try
+            {
+                InkPlate?[] plates = [.. plan.Colorants.Select(c => raster.Plate(c.Name))];
+                double[] components = new double[n];
+                float[] tints = new float[plates.Length];
+
+                // One-component spaces at up to 8 bits look each sample value up once.
+                float[][]? table = n == 1 && samples.Bits <= 8 && matte is null ? InkTable(plan, decode, samples.Bits) : null;
+                for (int y = 0; y < height; y++)
+                {
+                    Span<byte> alphaRow = raster.Alpha.Row8(y);
+                    for (int x = 0; x < width; x++)
+                    {
+                        double a = alpha is null ? 1 : alpha[(y * width) + x] / 255.0;
+                        float[] t;
+                        if (table is not null)
+                        {
+                            t = table[samples.Get(x, y, 0)];
+                        }
+                        else
+                        {
+                            for (int c = 0; c < n; c++)
+                            {
+                                double v = decode[2 * c] + (samples.Get(x, y, c) * (decode[(2 * c) + 1] - decode[2 * c]) / max);
+                                if (matte is not null && c < matte.Length && a > 0)
+                                {
+                                    v = matte[c] + ((v - matte[c]) / a);
+                                }
+
+                                components[c] = v;
+                            }
+
+                            plan.Tints(components, tints);
+                            t = tints;
+                        }
+
+                        alphaRow[x] = Unit8(a);
+                        for (int k = 0; k < plates.Length; k++)
+                        {
+                            if (plates[k] is InkPlate plate)
+                            {
+                                plate.Row8(y)[x] = Unit8(t[k] * a);
+                            }
+                        }
+                    }
+                }
+
+                return raster;
+            }
+            catch
+            {
+                raster.Dispose();
+                throw;
+            }
+        }
+        catch (Exception e) when (e is InvalidDataException or EgamiException or ArgumentException or OverflowException or IndexOutOfRangeException)
+        {
+            throw new PdfException($"The image could not be decoded: {e.Message}", e);
+        }
+    }
+
+    private static float[][] InkTable(Rendering.InkPlan plan, double[] decode, int bits)
+    {
+        int count = 1 << bits;
+        double max = count - 1;
+        float[][] table = new float[count][];
+        for (int v = 0; v < count; v++)
+        {
+            table[v] = new float[plan.Colorants.Length];
+            plan.Tints([decode[0] + (v * (decode[1] - decode[0]) / max)], table[v]);
+        }
+
+        return table;
+    }
+
+    /// <summary>The samples, colour space, decode ranges and alpha of an image, or null for a stencil mask.</summary>
+    private sealed record Prepared(Samples Samples, ImageColorSpace Space, double[] Decode, double Max, byte[]? Alpha, double[]? Matte);
+
+    private static Prepared? Prepare(PdfImage image, PdfImageOptions options, int depth, out Raster? stencilRaster)
+    {
+        stencilRaster = null;
         PdfDictionary d = image.Parameters;
         (Samples samples, ImageColorSpace? ownSpace, byte[]? ownAlpha) = ReadSamples(image, d, options.MinimumSize);
         int width = samples.Width, height = samples.Height;
@@ -54,7 +163,8 @@ internal static class ImageDecoder
                 }
             }
 
-            return stencil;
+            stencilRaster = stencil;
+            return null;
         }
 
         ImageColorSpace space = ownSpace ?? ImageColorSpace.Read(d.Get("ColorSpace"), image.Resources, options.Colors ?? new ColorContext { Cmyk = options.CmykProfile });
@@ -119,8 +229,7 @@ internal static class ImageDecoder
             }
         }
 
-        bool keep = !options.ConvertColor && space.Family is ColorFamily.Gray or ColorFamily.Rgb or ColorFamily.Cmyk && matte is null;
-        return keep ? Native(samples, space, decode, alpha) : Srgb(samples, space, decode, max, alpha, matte);
+        return new Prepared(samples, space, decode, max, alpha, matte);
     }
 
     /// <summary>The image in sRGB: 16 bits a channel for 16-bit samples, else 8, with alpha when a mask gives it.</summary>

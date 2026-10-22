@@ -21,6 +21,10 @@ internal sealed class Inventory
     private readonly ConditionalWeakTable<PdfStream, string?> profileNames = [];
     private readonly HashSet<PdfDictionary> fontsSeen = new(ReferenceEqualityComparer.Instance);
 
+    /// <summary>Each spot ink's first Separation or DeviceN space, by name, in the order found.</summary>
+    private readonly Dictionary<string, PdfArray> spotSpaces = new(StringComparer.Ordinal);
+    private readonly List<string> spotOrder = [];
+
     /// <summary>The page's items by key, in the order first found.</summary>
     private readonly Dictionary<string, Builder> page = new(StringComparer.Ordinal);
     private readonly List<string> order = [];
@@ -44,6 +48,19 @@ internal sealed class Inventory
 
         return items;
     }
+
+    /// <summary>
+    /// The spot inks a page paints with, in the order found, each with the first Separation or DeviceN space that names it:
+    /// the plates a separation render needs beside the process inks.
+    /// </summary>
+    internal static List<(string Name, PdfArray Space)> Spots(PdfPage page)
+    {
+        Inventory inventory = new(page.Document, DefaultHairlineForSpots);
+        inventory.Page(page, 1);
+        return [.. inventory.spotOrder.Select(n => (n, inventory.spotSpaces[n]))];
+    }
+
+    private const double DefaultHairlineForSpots = 0;
 
     /// <summary>The document's output intents, each with its condition and profile.</summary>
     private IEnumerable<PdfPreflightItem> OutputIntents()
@@ -247,6 +264,7 @@ internal sealed class Inventory
             case "Pattern" when array.Count > 1 && Describe(array[1], resources, depth + 1) is Space under:
                 return under;
             case "Separation" when array.Count > 1 && array.GetName(1)?.Value is string colorant:
+                Note(array, [colorant]);
                 return colorant switch
                 {
                     "None" => null,
@@ -254,9 +272,22 @@ internal sealed class Inventory
                     _ => Colorants("Separation", [colorant]),
                 };
             case "DeviceN" when array.Count > 1 && array[1].Resolve() is PdfArray names:
+                Note(array, [.. names.Select(n => n.Resolve()).OfType<PdfName>().Select(n => n.Value)]);
                 return Colorants("DeviceN", [.. names.Select(n => n.Resolve()).OfType<PdfName>().Select(n => n.Value)]);
             default:
                 return null;
+        }
+    }
+
+    /// <summary>Keeps the first space that names each spot ink.</summary>
+    private void Note(PdfArray space, IEnumerable<string> names)
+    {
+        foreach (string name in names)
+        {
+            if (name is not ("Cyan" or "Magenta" or "Yellow" or "Black" or "None" or "All") && spotSpaces.TryAdd(name, space))
+            {
+                spotOrder.Add(name);
+            }
         }
     }
 

@@ -51,3 +51,35 @@ PdfPrintProfile vinyl = PdfPrintProfile.WebOffset with { Name = "Vinyl sleeve", 
 
 Without a profile, `Run` only lists what the document uses. Strokes thinner than 0.25 pt (`PdfPreflight.DefaultHairline`)
 are then listed as hairlines.
+
+## Separations and ink coverage
+
+`RenderSeparations` renders a page as ink plates: one gray raster per process ink of the press profile and one per spot
+ink the page uses. It draws with a true multi-ink renderer, so overprint, overprint mode, knockout and blend modes act on
+the inks as a press prints them. CMYK and gray go straight onto the process plates, Separation and DeviceN colourants onto
+their own plates, and RGB, Lab and calibrated colours convert through the press profile: the document's CMYK output intent,
+or FOGRA39 when it has none.
+
+```csharp
+using Egami;
+using Egami.Pixels;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("brochure.pdf");
+using PdfSeparations plates = pdf.Pages[0].RenderSeparations(new PdfRenderOptions { Dpi = 150 });
+foreach (PdfInkPlate plate in plates.Plates)
+{
+    plate.Raster.Save($"{plate.Name}.png");                       // 255 is full ink
+}
+
+Console.WriteLine($"max TAC {plates.MaxCoverage}%, {plates.ShareOver(300):P1} of the page over 300%");
+using Raster<Rgba8> heat = plates.CoverageMap(limit: 300);        // red where the ink is over the limit
+heat.Save("coverage.png");
+```
+
+`PdfSeparationOptions` picks another press profile, leaves some spot inks without a plate (`DisabledSpots`) or converts
+every spot to process (`SpotsToProcess`); a spot without a plate prints through its alternate colour. `plates.Inks` is the
+Egami `InkRaster` behind the plates, which saves a separated TIFF and makes a soft proof.
+
+When a print profile sets `MaxInkCoverage`, preflight separates every page at `InkCoverageDpi` (36 by default) and reports
+its most total ink and the share over the limit. Coverage is only reported: preflight does not change any colour.

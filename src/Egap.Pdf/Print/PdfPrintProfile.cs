@@ -128,6 +128,18 @@ public sealed record PdfPrintProfile
     /// </summary>
     public double? MinLineWidth { get; init; }
 
+    /// <summary>
+    /// Gets the resolution, in pixels per inch, at which pages are separated to measure their ink when
+    /// <see cref="MaxInkCoverage"/> is set. Coverage is an average over each pixel, so a lower resolution smooths small
+    /// peaks. Defaults to 36.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">The value is not a positive finite number.</exception>
+    public double InkCoverageDpi
+    {
+        get;
+        init => field = value > 0 && double.IsFinite(value) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "The resolution must be a positive number.");
+    } = 36;
+
     /// <summary>Gets whether every font that draws visible text must be embedded. Defaults to true.</summary>
     public bool RequireEmbeddedFonts { get; init; } = true;
 

@@ -80,6 +80,23 @@ public sealed class PreflightTests
     }
 
     [Fact]
+    public void TheInkCheckMeasuresEachPageOnItsPlates()
+    {
+        using PdfDocument pdf = PdfDocument.Open(new MemoryStream(PrintSamples.FlatInk().Bytes));
+
+        PdfPreflightReport web = PdfPreflight.Run(pdf, PdfPrintProfile.WebOffset with { RequiredBleed = null }, TestContext.Current.CancellationToken);
+        PdfPreflightReport sheetfed = PdfPreflight.Run(pdf, PdfPrintProfile.SheetfedCoated with { RequiredBleed = null }, TestContext.Current.CancellationToken);
+
+        PdfPreflightItem ink = Assert.Single(web.Items, i => i.Kind == PdfPreflightItemKind.InkCoverage);
+        Assert.Equal(1, ink.Page);
+        Assert.InRange(ink.MaxInkCoverage!.Value, 325, 327);
+        Assert.InRange(ink.ShareOverLimit!.Value, 0.45, 0.55);
+        PdfAIssue issue = Assert.Single(web.Issues, i => i.Clause == "InkCoverage");
+        Assert.Contains("326%", issue.Description, StringComparison.Ordinal);
+        Assert.DoesNotContain(sheetfed.Issues, i => i.Clause == "InkCoverage");
+    }
+
+    [Fact]
     public void NoProfileMeansNoIssues()
     {
         foreach (PrintSamples.PrintFile file in PrintSamples.All())

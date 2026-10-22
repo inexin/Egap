@@ -40,7 +40,33 @@ public static class PdfPreflight
         ArgumentNullException.ThrowIfNull(document);
         PdfPrintProfile used = profile ?? new PdfPrintProfile { Name = "no profile", RequireEmbeddedFonts = false };
         List<PdfPreflightItem> items = new Print.Inventory(document, used.MinLineWidth ?? DefaultHairline).Run(cancellationToken);
+        if (used.MaxInkCoverage is double limit)
+        {
+            items = WithInk(document, items, limit, used.InkCoverageDpi, cancellationToken);
+        }
+
         return new PdfPreflightReport(used, items, Check(items, used));
+    }
+
+    /// <summary>The items with each page's ink coverage after its own, measured on its plates (report only, design Q8).</summary>
+    private static List<PdfPreflightItem> WithInk(PdfDocument document, List<PdfPreflightItem> items, double limit, double dpi, CancellationToken cancellationToken)
+    {
+        List<PdfPreflightItem> result = [.. items.Where(i => i.Page is null)];
+        PdfRenderOptions render = new() { Dpi = dpi, Intent = PdfRenderIntent.Print, Annotations = PdfAnnotationRendering.All };
+        for (int i = 0; i < document.Pages.Count; i++)
+        {
+            result.AddRange(items.Where(item => item.Page == i + 1));
+            using PdfSeparations plates = document.Pages[i].RenderSeparations(render, cancellationToken: cancellationToken);
+            double max = plates.MaxCoverage, share = plates.ShareOver(limit);
+            result.Add(new PdfPreflightItem(PdfPreflightItemKind.InkCoverage, i + 1, string.Create(CultureInfo.InvariantCulture,
+                $"total ink up to {max:0.#}%, {share:P1} of the page over {limit:0}%"))
+            {
+                MaxInkCoverage = max,
+                ShareOverLimit = share,
+            });
+        }
+
+        return result;
     }
 
     /// <summary>The issues each item raises under the profile.</summary>

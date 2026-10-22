@@ -141,7 +141,7 @@ internal static class PrintSamples
         byte[] samples = new byte[100 * 100];
         for (int i = 0; i < samples.Length; i++)
         {
-            samples[i] = (byte)(i % 4);
+            samples[i] = (byte)((i % 100 / 25) % 4);
         }
 
         int image = pdf.Stream("/Type /XObject /Subtype /Image /Width 100 /Height 100 /BitsPerComponent 8 /ColorSpace [/Indexed /DeviceRGB 3 <FF000000FF000000FFFFFFFF>]", samples);

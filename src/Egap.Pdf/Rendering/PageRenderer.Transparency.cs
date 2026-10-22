@@ -83,6 +83,7 @@ internal sealed partial class PageRenderer
             Opacity = (float)state.FillAlpha,
             BlendMode = blend,
             Mask = soft,
+            ColorSpace = GroupSpace(group, form.Dictionary.Get<PdfDictionary>("Resources") ?? Resources),
         });
         groups.Push(new Group(form, before, clipFloor));
         patternSpaces.Push(state.Matrix);

@@ -10,7 +10,7 @@ which is managed too: no native binaries, no P/Invoke.
 - Signatures (PAdES B-B to B-LTA) and verification, true redaction, PDF/A, tagged PDF, linearization, an OCR text layer.
 - Find, redact and replace text by phrase or regular expression; Factur-X and ZUGFeRD e-invoices.
 - Tools: optimize, N-up and booklets, stamps and Bates numbers, compare, blank page removal and deskew.
-- Print: preflight against a print profile.
+- Print: preflight against a print profile, ink separations and total ink coverage.
 
 PDF to DOCX, HTML or Markdown, and documents to tagged PDF, are in
 [Egap.Documents](https://www.nuget.org/packages/Egap.Documents).

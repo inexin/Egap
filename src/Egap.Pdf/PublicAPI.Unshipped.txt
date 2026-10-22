@@ -14,6 +14,11 @@ Egap.Pdf.PdfColorSpaceKinds.Lab = 64 -> Egap.Pdf.PdfColorSpaceKinds
 Egap.Pdf.PdfColorSpaceKinds.None = 0 -> Egap.Pdf.PdfColorSpaceKinds
 Egap.Pdf.PdfColorSpaceKinds.Rgb = Egap.Pdf.PdfColorSpaceKinds.DeviceRgb | Egap.Pdf.PdfColorSpaceKinds.CalibratedRgb -> Egap.Pdf.PdfColorSpaceKinds
 Egap.Pdf.PdfColorSpaceKinds.Spot = 128 -> Egap.Pdf.PdfColorSpaceKinds
+Egap.Pdf.PdfInkPlate
+Egap.Pdf.PdfInkPlate.IsSpot.get -> bool
+Egap.Pdf.PdfInkPlate.Name.get -> string!
+Egap.Pdf.PdfInkPlate.Raster.get -> Egami.Raster<Egami.Pixels.Gray8>!
+Egap.Pdf.PdfPage.RenderSeparations(Egap.Pdf.PdfRenderOptions? options = null, Egap.Pdf.PdfSeparationOptions? separation = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfSeparations!
 Egap.Pdf.PdfPreflight
 Egap.Pdf.PdfPreflightItem
 Egap.Pdf.PdfPreflightItem.<Clone>$() -> Egap.Pdf.PdfPreflightItem!
@@ -78,6 +83,8 @@ Egap.Pdf.PdfPrintProfile.AllowedColorSpaces.init -> void
 Egap.Pdf.PdfPrintProfile.AllowTransparency.get -> bool
 Egap.Pdf.PdfPrintProfile.AllowTransparency.init -> void
 Egap.Pdf.PdfPrintProfile.Equals(Egap.Pdf.PdfPrintProfile? other) -> bool
+Egap.Pdf.PdfPrintProfile.InkCoverageDpi.get -> double
+Egap.Pdf.PdfPrintProfile.InkCoverageDpi.init -> void
 Egap.Pdf.PdfPrintProfile.MaxInkCoverage.get -> double?
 Egap.Pdf.PdfPrintProfile.MaxInkCoverage.init -> void
 Egap.Pdf.PdfPrintProfile.MinImageDpi.get -> double?
@@ -91,6 +98,27 @@ Egap.Pdf.PdfPrintProfile.RequiredBleed.get -> double?
 Egap.Pdf.PdfPrintProfile.RequiredBleed.init -> void
 Egap.Pdf.PdfPrintProfile.RequireEmbeddedFonts.get -> bool
 Egap.Pdf.PdfPrintProfile.RequireEmbeddedFonts.init -> void
+Egap.Pdf.PdfSeparationOptions
+Egap.Pdf.PdfSeparationOptions.<Clone>$() -> Egap.Pdf.PdfSeparationOptions!
+Egap.Pdf.PdfSeparationOptions.DisabledSpots.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Egap.Pdf.PdfSeparationOptions.DisabledSpots.init -> void
+Egap.Pdf.PdfSeparationOptions.Equals(Egap.Pdf.PdfSeparationOptions? other) -> bool
+Egap.Pdf.PdfSeparationOptions.PdfSeparationOptions() -> void
+Egap.Pdf.PdfSeparationOptions.Profile.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfSeparationOptions.Profile.init -> void
+Egap.Pdf.PdfSeparationOptions.SpotsToProcess.get -> bool
+Egap.Pdf.PdfSeparationOptions.SpotsToProcess.init -> void
+Egap.Pdf.PdfSeparations
+Egap.Pdf.PdfSeparations.CoverageMap(double limit = 300) -> Egami.Raster<Egami.Pixels.Rgba8>!
+Egap.Pdf.PdfSeparations.CoveragePerPlate.get -> System.Collections.Generic.IReadOnlyDictionary<string!, double>!
+Egap.Pdf.PdfSeparations.Dispose() -> void
+Egap.Pdf.PdfSeparations.Height.get -> int
+Egap.Pdf.PdfSeparations.Inks.get -> Egami.InkRaster!
+Egap.Pdf.PdfSeparations.MaxCoverage.get -> double
+Egap.Pdf.PdfSeparations.Plates.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.PdfInkPlate!>!
+Egap.Pdf.PdfSeparations.ShareOver(double limit) -> double
+Egap.Pdf.PdfSeparations.Width.get -> int
+override Egap.Pdf.PdfInkPlate.ToString() -> string!
 override Egap.Pdf.PdfPreflightItem.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPreflightItem.GetHashCode() -> int
 override Egap.Pdf.PdfPreflightItem.ToString() -> string!
@@ -98,6 +126,9 @@ override Egap.Pdf.PdfPreflightReport.ToString() -> string!
 override Egap.Pdf.PdfPrintProfile.Equals(object? obj) -> bool
 override Egap.Pdf.PdfPrintProfile.GetHashCode() -> int
 override Egap.Pdf.PdfPrintProfile.ToString() -> string!
+override Egap.Pdf.PdfSeparationOptions.Equals(object? obj) -> bool
+override Egap.Pdf.PdfSeparationOptions.GetHashCode() -> int
+override Egap.Pdf.PdfSeparationOptions.ToString() -> string!
 static Egap.Pdf.PdfPreflight.Run(Egap.Pdf.PdfDocument! document, Egap.Pdf.PdfPrintProfile? profile = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> Egap.Pdf.PdfPreflightReport!
 static Egap.Pdf.PdfPreflightItem.operator !=(Egap.Pdf.PdfPreflightItem? left, Egap.Pdf.PdfPreflightItem? right) -> bool
 static Egap.Pdf.PdfPreflightItem.operator ==(Egap.Pdf.PdfPreflightItem? left, Egap.Pdf.PdfPreflightItem? right) -> bool
@@ -107,3 +138,6 @@ static Egap.Pdf.PdfPrintProfile.operator ==(Egap.Pdf.PdfPrintProfile? left, Egap
 static Egap.Pdf.PdfPrintProfile.PdfX4.get -> Egap.Pdf.PdfPrintProfile!
 static Egap.Pdf.PdfPrintProfile.SheetfedCoated.get -> Egap.Pdf.PdfPrintProfile!
 static Egap.Pdf.PdfPrintProfile.WebOffset.get -> Egap.Pdf.PdfPrintProfile!
+static Egap.Pdf.PdfSeparationOptions.Default.get -> Egap.Pdf.PdfSeparationOptions!
+static Egap.Pdf.PdfSeparationOptions.operator !=(Egap.Pdf.PdfSeparationOptions? left, Egap.Pdf.PdfSeparationOptions? right) -> bool
+static Egap.Pdf.PdfSeparationOptions.operator ==(Egap.Pdf.PdfSeparationOptions? left, Egap.Pdf.PdfSeparationOptions? right) -> bool
