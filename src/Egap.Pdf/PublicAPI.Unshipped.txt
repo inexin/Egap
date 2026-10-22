@@ -147,6 +147,8 @@ Egap.Pdf.PdfPrintProfile.RequiredBleed.get -> double?
 Egap.Pdf.PdfPrintProfile.RequiredBleed.init -> void
 Egap.Pdf.PdfPrintProfile.RequireEmbeddedFonts.get -> bool
 Egap.Pdf.PdfPrintProfile.RequireEmbeddedFonts.init -> void
+Egap.Pdf.PdfRenderOptions.SimulateOverprint.get -> bool
+Egap.Pdf.PdfRenderOptions.SimulateOverprint.init -> void
 Egap.Pdf.PdfSeparationOptions
 Egap.Pdf.PdfSeparationOptions.<Clone>$() -> Egap.Pdf.PdfSeparationOptions!
 Egap.Pdf.PdfSeparationOptions.DisabledSpots.get -> System.Collections.Generic.IReadOnlyCollection<string!>!

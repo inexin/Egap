@@ -157,3 +157,19 @@ functions, JavaScript and external content references, and flattens annotations 
 `PdfOutputCondition` names registered print conditions: `Fogra39` carries Egami's bundled profile; `Fogra51`, `Fogra52`,
 `Gracol2013`, `Swop2013` and `Newspaper` need the profile from you with `WithProfile`. No open-source PDF/X validator exists;
 check important output in Acrobat Preflight or PackzView.
+
+## Overprint preview
+
+`SimulateOverprint` renders a page as it prints: as ink plates, so overprint and spot colours act as on press, then proofed
+back to sRGB through the press profile, as Acrobat's Output Preview does. Without it, overprint is ignored, as viewers show
+pages on screen.
+
+```csharp
+using Egami;
+using Egami.Pixels;
+using Egap.Pdf;
+
+using PdfDocument pdf = PdfDocument.Open("brochure.pdf");
+using Raster<Rgba8> preview = pdf.Pages[0].Render(new PdfRenderOptions { Dpi = 150, SimulateOverprint = true });
+preview.Save("as-printed.png");
+```

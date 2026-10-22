@@ -122,6 +122,10 @@ was removed or changed in a way that breaks code: 2.1.0 is 1.5.0 plus what is be
 - `PdfOutputCondition` names registered print conditions (FOGRA39 with Egami's profile, FOGRA51, FOGRA52, GRACoL 2013,
   SWOP 2013, newspaper). A converted document saves whole, unencrypted, as its version's PDF version.
 
+### Overprint preview
+- `PdfRenderOptions.SimulateOverprint` renders a page as it prints: through its ink plates, proofed back to sRGB through
+  the press profile, so overprint and spot colours show as on press.
+
 ## Egap.Documents 2.0.0 (2026-10-21)
 
 ### Docs

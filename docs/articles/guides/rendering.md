@@ -19,3 +19,6 @@ using Raster<Rgba8> thumbnail = pdf.Pages[0].Render(PdfRenderOptions.FitTo(256, 
 `PdfRenderOptions` also picks the page box, a region, the background, which annotations and layers are drawn, and whether
 system fonts may stand in for fonts the file does not embed. Turn system fonts off for output that is the same on every
 machine. Fonts a file names but does not embed are drawn with bundled substitutes that keep the same widths.
+
+Pages render as on screen, where overprint is ignored. `SimulateOverprint` shows them as they print instead, and
+`RenderSeparations` gives the ink plates themselves; see [Print production](print-production.md).

@@ -143,6 +143,14 @@ public sealed record PdfRenderOptions
     /// <summary>What is anti-aliased (design Q11); everything by default.</summary>
     public PdfAntialiasing Antialiasing { get; init; } = PdfAntialiasing.All;
 
+    /// <summary>
+    /// Whether the page is shown as it prints (Phase 8 design Q11): rendered as ink plates, so overprint and spot colours act
+    /// as on press, and proofed back to sRGB through the press profile (the CMYK output intent, else FOGRA39), as a soft
+    /// proof such as Acrobat's Output Preview. The background is the paper; the result is opaque. Off by default, when
+    /// overprint is ignored as on screen.
+    /// </summary>
+    public bool SimulateOverprint { get; init; }
+
     /// <summary>Options that fit the page inside <paramref name="width"/> by <paramref name="height"/> pixels, keeping its aspect, as for a thumbnail.</summary>
     public static PdfRenderOptions FitTo(int width, int height)
     {
