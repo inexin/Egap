@@ -139,6 +139,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.BoxCorners.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.BoxCorners.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.BoxCorners",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.BoxCorners.yml\" sourcestartlinenumber=\"1\">The radius of each corner of a box, in points; 0 for a square corner.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.BoxShadow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.BoxShadow.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.BoxShadow",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.BoxShadow.yml\" sourcestartlinenumber=\"1\">A shadow a box casts (CSS box-shadow): the box's shape moved by the offsets, grown by <xref href=\"Egap.Documents.BoxShadow.Spread\" data-throw-if-not-resolved=\"false\"></xref> and blurred by\n<xref href=\"Egap.Documents.BoxShadow.Blur\" data-throw-if-not-resolved=\"false\"></xref>, drawn behind the box.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.BoxStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.BoxStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.BoxStyle",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.BoxStyle.yml\" sourcestartlinenumber=\"1\">How a box is drawn around its content: margins, padding, borders, background, rounded corners and a shadow, and the size\nit asks for. Flex and grid containers and their items, and groups of blocks (<xref href=\"Egap.Documents.ContentControl.Box\" data-throw-if-not-resolved=\"false\"></xref>), take one.\nImmutable; set a new one to change the box.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Break.yml",
       "output": {
         ".html": {
@@ -573,6 +615,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.DocumentPreview.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.DocumentPreview.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.DocumentPreview",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentPreview.yml\" sourcestartlinenumber=\"1\">Sends a document's pages to the egap-preview tool (<code>dotnet tool install -g Egap.Preview</code>), which shows them on a\nlocal web page and shows them again each time new pages arrive: run the code under <code>dotnet watch</code> and the page\nfollows every edit.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.DocumentProperties.yml",
       "output": {
         ".html": {
@@ -783,6 +839,76 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.FlexContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.FlexContainer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.FlexContainer",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.FlexContainer.yml\" sourcestartlinenumber=\"1\">A flex container (CSS flexbox): items laid out in a row or a column, growing and shrinking to share the space, wrapped onto\nmore lines when they ask for it. The page flow breaks between lines; DOCX writes the container as a borderless table.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.FlexDirection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.FlexDirection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.FlexDirection",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.FlexDirection.yml\" sourcestartlinenumber=\"1\">Which way a flex container lays its items out.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.FlexItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.FlexItem.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.FlexItem",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.FlexItem.yml\" sourcestartlinenumber=\"1\">An item of a <xref href=\"Egap.Documents.FlexContainer\" data-throw-if-not-resolved=\"false\"></xref>: blocks laid out in a box that grows and shrinks with the line.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.FlexLayout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.FlexLayout.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.FlexLayout",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.FlexLayout.yml\" sourcestartlinenumber=\"1\">How a flex container lays out its items (CSS flexbox): direction, wrapping, how the space left on a line is shared and\nhow items line up across it, and the gaps between items and lines. Immutable; set a new one to change it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.FlexWrap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.FlexWrap.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.FlexWrap",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.FlexWrap.yml\" sourcestartlinenumber=\"1\">Whether a flex container's items go on more lines when they do not fit on one.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.FloatingAlignment.yml",
       "output": {
         ".html": {
@@ -864,6 +990,104 @@
       "IsMRef": true,
       "Title": "Egap.Documents.FormatRevision",
       "Summary": "<p sourcefile=\"api/Egap.Documents.FormatRevision.yml\" sourcestartlinenumber=\"1\">A tracked formatting change: who changed the formatting, when, and what it was before.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.GridAutoFlow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.GridAutoFlow.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.GridAutoFlow",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.GridAutoFlow.yml\" sourcestartlinenumber=\"1\">Which way a grid's automatic placement fills cells, and whether it goes back to fill holes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.GridContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.GridContainer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.GridContainer",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.GridContainer.yml\" sourcestartlinenumber=\"1\">A grid container (CSS grid): items placed in cells of column and row tracks, by line, by named area or automatically, and\nspanning several. The page flow breaks between rows; DOCX writes the container as a borderless table.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.GridItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.GridItem.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.GridItem",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.GridItem.yml\" sourcestartlinenumber=\"1\">An item of a <xref href=\"Egap.Documents.GridContainer\" data-throw-if-not-resolved=\"false\"></xref>: blocks in a box placed in one cell or spanning several. A line number counts\nfrom 1 at the grid's start, and from -1 at the end of the explicit grid; null leaves the item to automatic placement.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.GridLayout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.GridLayout.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.GridLayout",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.GridLayout.yml\" sourcestartlinenumber=\"1\">How a grid container lays out its items (CSS grid): the column and row tracks, the size of tracks it adds, named areas,\nautomatic placement, gaps and alignment. Immutable; set a new one to change it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.GridTrack.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.GridTrack.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.GridTrack",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.GridTrack.yml\" sourcestartlinenumber=\"1\">A grid column or row: its least and greatest size (CSS minmax). A single size is both, except a fraction, which grows from\nits content's size as CSS's 1fr does.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.GridTrackSize.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.GridTrackSize.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.GridTrackSize",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.GridTrackSize.yml\" sourcestartlinenumber=\"1\">One limit of a grid track's size: a length, a share of the space, or a size from the content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.GridTrackUnit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.GridTrackUnit.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.GridTrackUnit",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.GridTrackUnit.yml\" sourcestartlinenumber=\"1\">What a grid track size is given in.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -961,7 +1185,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.HtmlFormat",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.HtmlFormat.yml\" sourcestartlinenumber=\"1\">HTML read into the model: parsed by AngleSharp as browsers parse it, styled through Egami.Css's cascade with HTML's\ndefault style sheet, and the computed styles mapped onto paragraphs, runs, lists and tables. Flexbox and grid are read as\nstacked blocks, with a warning.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.HtmlFormat.yml\" sourcestartlinenumber=\"1\">HTML read into the model: parsed by AngleSharp as browsers parse it, styled through Egami.Css's cascade with HTML's\ndefault style sheet, and the computed styles mapped onto paragraphs, runs, lists, tables, and flex and grid containers;\npositioned boxes become floating text boxes.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1147,6 +1371,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Layout.ContainerBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Layout.ContainerBox.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Layout.ContainerBox",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.ContainerBox.yml\" sourcestartlinenumber=\"1\">A flex or grid container, or a group of blocks with a box, or the part of one on this page or column: its box and the\nboxes inside it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Layout.DocumentLayout.yml",
       "output": {
         ".html": {
@@ -1214,6 +1452,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.Layout.FontSubstitutionReason",
       "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.FontSubstitutionReason.yml\" sourcestartlinenumber=\"1\">Why a font the document asked for was not used as asked.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Layout.ItemBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Layout.ItemBox.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Layout.ItemBox",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.ItemBox.yml\" sourcestartlinenumber=\"1\">A flex or grid item, or the part of one on this page or column: its box and its blocks.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1438,6 +1690,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.Layout",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.LayoutAlignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.LayoutAlignment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.LayoutAlignment",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.LayoutAlignment.yml\" sourcestartlinenumber=\"1\">How boxes line up along a container's axis: flex and grid containers and their items use the same values.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2446,6 +2712,230 @@
       "IsMRef": true,
       "Title": "Egap.Documents.Picture",
       "Summary": "<p sourcefile=\"api/Egap.Documents.Picture.yml\" sourcestartlinenumber=\"1\">A picture in the text: an image of given size, in the line or floating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.PreviewOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.PreviewOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.PreviewOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.PreviewOptions.yml\" sourcestartlinenumber=\"1\">Where <xref href=\"Egap.Documents.DocumentPreview.ShowPreview(Egap.Documents.Document%2cEgap.Documents.PreviewOptions)\" data-throw-if-not-resolved=\"false\"></xref> sends a document's pages, and how sharp they are drawn.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.ColumnBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.ColumnBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.ColumnBuilder",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.ColumnBuilder.yml\" sourcestartlinenumber=\"1\">Elements one under another.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.Container.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.Container.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.Container",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.Container.yml\" sourcestartlinenumber=\"1\">A place in a report that takes one element (text, an image, a column, a row, a table, a grid, a barcode, a form field\nor a component), with the box, alignment, style and paging settings set on it first: each setting returns the\ncontainer, and the element ends the chain.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.Fields.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.Fields.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.Fields",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.Fields.yml\" sourcestartlinenumber=\"1\">The placeholders text in a report can hold for page fields: <code>{page}</code> and <code>{total-pages}</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.GridBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.GridBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.GridBuilder",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.GridBuilder.yml\" sourcestartlinenumber=\"1\">Elements in a grid of tracks.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.IComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.IComponent.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.IComponent",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.IComponent.yml\" sourcestartlinenumber=\"1\">A reusable part of a report: it composes itself into the container it is given.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.PageDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.PageDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.PageDescriptor",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.PageDescriptor.yml\" sourcestartlinenumber=\"1\">One page of a report, repeated as the content needs: size, margins, header, footer and content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.Report.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.Report.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.Report",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.Report.yml\" sourcestartlinenumber=\"1\">Builds a document from code with nested lambdas: pages with a header, a footer and content, and in them columns, rows,\ntables, grids, text, images and barcodes, each with its box and paging settings. The result is an ordinary\n<xref href=\"Egap.Documents.Document\" data-throw-if-not-resolved=\"false\"></xref>, so the same report saves as PDF, DOCX or HTML and lays out with the same page flow.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.ReportBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.ReportBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.ReportBuilder",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.ReportBuilder.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Documents.Reports.Report.Create(System.Action%7bEgap.Documents.Reports.ReportBuilder%7d%2cEgap.Documents.Layout.LayoutOptions)\" data-throw-if-not-resolved=\"false\"></xref> gives the composing code: the document's properties, styles and pages.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.RowBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.RowBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.RowBuilder",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.RowBuilder.yml\" sourcestartlinenumber=\"1\">Elements side by side: each of a fixed width, its content's width, or a share of what is left.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.TableBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.TableBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.TableBuilder",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.TableBuilder.yml\" sourcestartlinenumber=\"1\">A table: columns, cells filled in order row by row, and header and footer rows that repeat on every page.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.TableColumns.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.TableColumns.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.TableColumns",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.TableColumns.yml\" sourcestartlinenumber=\"1\">The columns of a table: fixed widths and shares of what is left.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.TextBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.TextBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.TextBuilder",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.TextBuilder.yml\" sourcestartlinenumber=\"1\">The spans of one paragraph, each with its own style.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.TextDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.TextDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.TextDescriptor",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.TextDescriptor.yml\" sourcestartlinenumber=\"1\">A paragraph of text a container made: its look set by a style chain.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.TextStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.TextStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports.TextStyle",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Reports.TextStyle.yml\" sourcestartlinenumber=\"1\">How text in a report looks: font, size, weight, slant, lines, colours, letter spacing and line height. Immutable: each\nmethod returns a changed copy, so a style can be kept and shared (<code>TextStyle.Default.FontSize(18).Bold()</code>).\nWhat a style leaves unset comes from the style of the text around it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Reports.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Reports.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Reports",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -6469,11 +6959,11 @@
       "type": "Toc",
       "source_relative_path": "api/toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "api/toc.html"
-        },
         ".json": {
           "relative_path": "api/toc.json"
+        },
+        ".html": {
+          "relative_path": "api/toc.html"
         }
       },
       "version": ""
@@ -6640,6 +7130,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/guides/reports.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/reports.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/guides/signatures.md",
       "output": {
         ".html": {
@@ -6672,11 +7172,11 @@
       "type": "Toc",
       "source_relative_path": "articles/toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "articles/toc.html"
-        },
         ".json": {
           "relative_path": "articles/toc.json"
+        },
+        ".html": {
+          "relative_path": "articles/toc.html"
         }
       },
       "version": ""
@@ -6715,11 +7215,11 @@
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "toc.html"
-        },
         ".json": {
           "relative_path": "toc.json"
+        },
+        ".html": {
+          "relative_path": "toc.html"
         }
       },
       "version": ""

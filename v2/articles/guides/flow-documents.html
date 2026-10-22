@@ -257,6 +257,64 @@ catch (LayoutException e)
     Console.WriteLine($&quot;{e.Problem} on page {e.PageIndex + 1}: {e.Message}&quot;);
 }
 </code></pre>
+<h2 id="flex-and-grid-layout">Flex and grid layout</h2>
+<p>A <code>FlexContainer</code> lays its items out in a row or a column, as CSS flexbox does: each item starts from its basis or its
+content's width, takes a share of the space left by its grow factor or gives some up by its shrink factor, and lines up
+along and across its line by the container's <code>JustifyContent</code> and <code>AlignItems</code>. With <code>Wrap</code>, items that do not fit go on
+the next line. A <code>GridContainer</code> places its items in columns and rows of tracks, as CSS grid does: tracks in points, per
+cent, fractions of what is left (<code>fr</code>) or sized to their content, items placed by line, span or named area, and the rest
+filled in by automatic placement. Pages break between a flex container's lines and between a grid's rows, and inside a
+line or row too tall for the room left; rows an item spans stay together.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document invoice = new();
+Body body = invoice.AddSection().Body;
+
+FlexContainer header = new(invoice) { Layout = new FlexLayout { JustifyContent = LayoutAlignment.SpaceBetween, ColumnGap = 12 } };
+header.AddItem(&quot;Acme Ltd&quot;);
+header.AddItem(&quot;Invoice 2026-118&quot;).Box = new BoxStyle { PaddingLeft = 6, Width = TableWidth.Points(160) };
+body.Blocks.Add(header);
+
+GridContainer lines = new(invoice)
+{
+    Layout = new GridLayout { Columns = [GridTrack.Fraction(1), GridTrack.Points(60), GridTrack.Points(80)], ColumnGap = 6, RowGap = 2 },
+};
+foreach (string cell in (string[])[&quot;Item&quot;, &quot;Qty&quot;, &quot;Price&quot;, &quot;Paper&quot;, &quot;2&quot;, &quot;40 NOK&quot;])
+{
+    lines.AddItem(cell);
+}
+
+GridItem total = lines.AddItem(&quot;Total: 80 NOK&quot;);
+total.Column = 2;
+total.ColumnSpan = 2;
+body.Blocks.Add(lines);
+</code></pre>
+<p>A <code>BoxStyle</code> draws a box around a container, an item or a group of blocks: margins, padding, borders, a background,
+rounded corners and a shadow, with a width and a least height. A group with a box breaks across pages like any other
+blocks; its box is drawn open where it breaks. Rounded corners and shadows draw on every Egami canvas; in a PDF a blurred
+shadow is drawn as an image.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document letter = new();
+ContentControl card = new(letter)
+{
+    Box = BoxStyle.Padded(10).WithBorder(new Border(BorderStyle.Single, 1, DocumentColor.FromHex(&quot;336699&quot;))) with
+    {
+        Background = DocumentColor.FromHex(&quot;F4F8FC&quot;),
+        CornerRadius = BoxCorners.All(6),
+        Shadow = new BoxShadow(0, 2, 6) { Opacity = 0.3 },
+        MarginTop = 12,
+    },
+};
+card.AddParagraph(&quot;Paid in full on 21 October.&quot;);
+letter.AddSection().Body.Blocks.Add(card);
+</code></pre>
+<p>HTML's <code>display: flex</code> and <code>display: grid</code> read into these containers, with the properties listed on the
+<a href="../formats/html.html#css-layout">HTML</a> page; a box with <code>border-radius</code> or <code>box-shadow</code> becomes a group with a box. DOCX has
+no such containers, so a container is saved as a borderless table with its items in the cells, and a boxed group as a
+one-cell table; Word keeps the content and the cells' backgrounds, borders and padding, not the corners or the shadow.</p>
+<p>A text box can fit its text (<code>FitToText</code>), have its own insets (<code>TextInsets</code>), rounded corners (<code>CornerRadius</code>) and a
+shadow (<code>Shadow</code>). HTML's absolutely positioned and fixed boxes read as such text boxes, floating in front of the text.</p>
 <p>For PDF output, see <a href="pdf-export-and-conversion.html">PDF export and conversion</a>.</p>
 
 </article>

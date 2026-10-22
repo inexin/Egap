@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace Egap.Documents.Reports | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace Egap.Documents.Reports | Egap ">
+      
+      
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Reports">
+
+  <h1 id="Egap_Documents_Reports" data-uid="Egap.Documents.Reports" class="text-break">Namespace Egap.Documents.Reports</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.ColumnBuilder.html">ColumnBuilder</a></dt>
+      <dd><p>Elements one under another.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+      <dd><p>A place in a report that takes one element (text, an image, a column, a row, a table, a grid, a barcode, a form field
+or a component), with the box, alignment, style and paging settings set on it first: each setting returns the
+container, and the element ends the chain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.Fields.html">Fields</a></dt>
+      <dd><p>The placeholders text in a report can hold for page fields: <code>{page}</code> and <code>{total-pages}</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.GridBuilder.html">GridBuilder</a></dt>
+      <dd><p>Elements in a grid of tracks.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.PageDescriptor.html">PageDescriptor</a></dt>
+      <dd><p>One page of a report, repeated as the content needs: size, margins, header, footer and content.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.Report.html">Report</a></dt>
+      <dd><p>Builds a document from code with nested lambdas: pages with a header, a footer and content, and in them columns, rows,
+tables, grids, text, images and barcodes, each with its box and paging settings. The result is an ordinary
+<a class="xref" href="Egap.Documents.Document.html">Document</a>, so the same report saves as PDF, DOCX or HTML and lays out with the same page flow.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.ReportBuilder.html">ReportBuilder</a></dt>
+      <dd><p>What <a class="xref" href="Egap.Documents.Reports.Report.html#Egap_Documents_Reports_Report_Create_System_Action_Egap_Documents_Reports_ReportBuilder__Egap_Documents_Layout_LayoutOptions_">Create(Action&lt;ReportBuilder&gt;, LayoutOptions?)</a> gives the composing code: the document's properties, styles and pages.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.RowBuilder.html">RowBuilder</a></dt>
+      <dd><p>Elements side by side: each of a fixed width, its content's width, or a share of what is left.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.TableBuilder.html">TableBuilder</a></dt>
+      <dd><p>A table: columns, cells filled in order row by row, and header and footer rows that repeat on every page.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.TableColumns.html">TableColumns</a></dt>
+      <dd><p>The columns of a table: fixed widths and shares of what is left.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.TextBuilder.html">TextBuilder</a></dt>
+      <dd><p>The spans of one paragraph, each with its own style.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.TextDescriptor.html">TextDescriptor</a></dt>
+      <dd><p>A paragraph of text a container made: its look set by a style chain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+      <dd><p>How text in a report looks: font, size, weight, slant, lines, colours, letter spacing and line height. Immutable: each
+method returns a changed copy, so a style can be kept and shared (<code>TextStyle.Default.FontSize(18).Bold()</code>).
+What a style leaves unset comes from the style of the text around it.</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.Reports.IComponent.html">IComponent</a></dt>
+      <dd><p>A reusable part of a report: it composes itself into the container it is given.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -204,6 +204,9 @@ and the rest of the model (Phase 6 design Q3). The root of the tree; every other
     <dt>Extension Methods</dt>
     <dd>
   <div>
+      <a class="xref" href="Egap.Documents.DocumentPreview.html#Egap_Documents_DocumentPreview_ShowPreview_Egap_Documents_Document_Egap_Documents_PreviewOptions_">DocumentPreview.ShowPreview(Document, PreviewOptions?)</a>
+  </div>
+  <div>
       <a class="xref" href="Egap.Documents.Pdf.PdfExport.html#Egap_Documents_Pdf_PdfExport_SaveAsPdf_Egap_Documents_Document_System_IO_Stream_Egap_Documents_Pdf_PdfExportOptions_">PdfExport.SaveAsPdf(Document, Stream, PdfExportOptions?)</a>
   </div>
   <div>
@@ -254,6 +257,39 @@ Normal Table styles, an 11 pt body font from the theme, 8 pt after paragraphs an
 </h2>
 
 
+  <a id="Egap_Documents_Document_DefaultLayoutOptions_" data-uid="Egap.Documents.Document.DefaultLayoutOptions*"></a>
+
+  <h3 id="Egap_Documents_Document_DefaultLayoutOptions" data-uid="Egap.Documents.Document.DefaultLayoutOptions">
+  DefaultLayoutOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The layout options used when a layout or an export is asked for without any, or null for the defaults. A report built
+with <a class="xref" href="Egap.Documents.Reports.Report.html#Egap_Documents_Reports_Report_Create_System_Action_Egap_Documents_Reports_ReportBuilder__Egap_Documents_Layout_LayoutOptions_">Create(Action&lt;ReportBuilder&gt;, LayoutOptions?)</a> keeps strict layout with portable fonts here.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LayoutOptions? DefaultLayoutOptions { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Layout.LayoutOptions.html">LayoutOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Document_EmbeddedFonts_" data-uid="Egap.Documents.Document.EmbeddedFonts*"></a>
 
   <h3 id="Egap_Documents_Document_EmbeddedFonts" data-uid="Egap.Documents.Document.EmbeddedFonts">
@@ -290,7 +326,7 @@ Normal Table styles, an 11 pt body font from the theme, 8 pt after paragraphs an
 
   <h3 id="Egap_Documents_Document_FileName" data-uid="Egap.Documents.Document.FileName">
   FileName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L68"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The file the document was loaded from or last saved to, for FILENAME fields; null when not known.</p>
@@ -322,7 +358,7 @@ Normal Table styles, an 11 pt body font from the theme, 8 pt after paragraphs an
 
   <h3 id="Egap_Documents_Document_FormattingVersion" data-uid="Egap.Documents.Document.FormattingVersion">
   FormattingVersion
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Counts changes to styles, document defaults and the theme, which change the effective formatting of many paragraphs
@@ -579,7 +615,7 @@ at once; each one also counts in <a class="xref" href="Egap.Documents.Document.h
 
   <h3 id="Egap_Documents_Document_Version" data-uid="Egap.Documents.Document.Version">
   Version
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Counts the changes made to this document: every change, through any public member, adds one and stamps the paragraph
@@ -616,7 +652,7 @@ and story it touched with the new value (<a class="xref" href="Egap.Documents.Pa
 
   <h3 id="Egap_Documents_Document_AddSection" data-uid="Egap.Documents.Document.AddSection">
   AddSection()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L129"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a new, empty section at the end.</p>
@@ -648,7 +684,7 @@ and story it touched with the new value (<a class="xref" href="Egap.Documents.Pa
 
   <h3 id="Egap_Documents_Document_Clone_System_Boolean_" data-uid="Egap.Documents.Document.Clone(System.Boolean)">
   Clone(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L158"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A copy of the whole document (or, shallow, an empty document).</p>
@@ -735,7 +771,7 @@ formats and the text it puts before and after a value (<code>\b</code>, <code>\f
 
   <h3 id="Egap_Documents_Document_GetBookmark_System_String_" data-uid="Egap.Documents.Document.GetBookmark(System.String)">
   GetBookmark(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L287"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L299"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The bookmark named <code class="paramref">name</code> (Word compares bookmark names without case), or null.</p>
@@ -772,7 +808,7 @@ formats and the text it puts before and after a value (<code>\b</code>, <code>\f
 
   <h3 id="Egap_Documents_Document_GetBookmarks" data-uid="Egap.Documents.Document.GetBookmarks">
   GetBookmarks()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L266"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L278"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Every bookmark, in document order, each start paired with the next end of the same name in its story.</p>
@@ -804,7 +840,7 @@ formats and the text it puts before and after a value (<code>\b</code>, <code>\f
 
   <h3 id="Egap_Documents_Document_GetFields" data-uid="Egap.Documents.Document.GetFields">
   GetFields()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L293"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L305"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Every field in document order, nested ones after the field holding them; fields with no end are left out.</p>
@@ -919,7 +955,7 @@ so. It needs no add-on package, so a program can tell its user which package a f
 
   <h3 id="Egap_Documents_Document_Import_Egap_Documents_Node_System_Boolean_" data-uid="Egap.Documents.Document.Import(Egap.Documents.Node,System.Boolean)">
   Import(Node, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L139"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A copy of <code class="paramref">node</code> (from any document) that belongs to this one, not yet in the tree. A deep import
@@ -965,7 +1001,7 @@ includes everything the node holds. The styles and lists the copy uses come alon
 
   <h3 id="Egap_Documents_Document_Import__1___0_System_Boolean_" data-uid="Egap.Documents.Document.Import``1(``0,System.Boolean)">
   Import&lt;T&gt;(T, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L151"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Imports <code class="paramref">node</code> as <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Import_Egap_Documents_Node_System_Boolean_">Import(Node, bool)</a> does, typed.</p>
@@ -1009,7 +1045,7 @@ includes everything the node holds. The styles and lists the copy uses come alon
 
   <h3 id="Egap_Documents_Document_Layout_Egap_Documents_Layout_LayoutOptions_" data-uid="Egap.Documents.Document.Layout(Egap.Documents.Layout.LayoutOptions)">
   Layout(LayoutOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Lays the document out into pages (Phase 6 design Q11 and Q13): an immutable snapshot linked to this document's nodes;
@@ -1384,7 +1420,7 @@ add-on is registered, .html and .htm as HTML and .md and .markdown as Markdown.<
 
   <h3 id="Egap_Documents_Document_UpdateFields_System_Nullable_System_DateTimeOffset__" data-uid="Egap.Documents.Document.UpdateFields(System.Nullable{System.DateTimeOffset})">
   UpdateFields(DateTimeOffset?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Recomputes the fields Egap understands (Phase 6 design Q8): DATE, TIME and the other date fields, the document
@@ -1428,7 +1464,7 @@ layout; locked fields and others keep their stored result.</p>
 
   <h3 id="Egap_Documents_Document_Changed" data-uid="Egap.Documents.Document.Changed">
   Changed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Document.cs/#L121"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Raised after every change to the document or any of its nodes, in or out of the tree, on the thread that made it. All

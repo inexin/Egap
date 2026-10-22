@@ -220,7 +220,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape__ctor_Egap_Documents_Document_Egap_Documents_ShapeKind_System_Double_System_Double_" data-uid="Egap.Documents.Shape.#ctor(Egap.Documents.Document,Egap.Documents.ShapeKind,System.Double,System.Double)">
   Shape(Document, ShapeKind, double, double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L356"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L360"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A shape of <code class="paramref">kind</code> and size in points, not yet in a paragraph.</p>
@@ -258,11 +258,43 @@ Phase 6 design Q11).</p>
 </h2>
 
 
+  <a id="Egap_Documents_Shape_CornerRadius_" data-uid="Egap.Documents.Shape.CornerRadius*"></a>
+
+  <h3 id="Egap_Documents_Shape_CornerRadius" data-uid="Egap.Documents.Shape.CornerRadius">
+  CornerRadius
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L432"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The radius of a rectangle's corners in points; 0 for square corners.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double CornerRadius { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Shape_Description_" data-uid="Egap.Documents.Shape.Description*"></a>
 
   <h3 id="Egap_Documents_Shape_Description" data-uid="Egap.Documents.Shape.Description">
   Description
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L421"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L425"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The alternative text, or null.</p>
@@ -294,7 +326,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape_Fill" data-uid="Egap.Documents.Shape.Fill">
   Fill
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L386"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L390"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The fill colour, or null for no fill.</p>
@@ -322,11 +354,44 @@ Phase 6 design Q11).</p>
 
 
 
+  <a id="Egap_Documents_Shape_FitToText_" data-uid="Egap.Documents.Shape.FitToText*"></a>
+
+  <h3 id="Egap_Documents_Shape_FitToText" data-uid="Egap.Documents.Shape.FitToText">
+  FitToText
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L459"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a text box takes the size of its text (Word's resize shape to fit text): at least <a class="xref" href="Egap.Documents.Shape.html#Egap_Documents_Shape_Height">Height</a> tall, and,
+when <a class="xref" href="Egap.Documents.Shape.html#Egap_Documents_Shape_Width">Width</a> is 0, as wide as its widest line up to the room it has.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool FitToText { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Shape_Floating_" data-uid="Egap.Documents.Shape.Floating*"></a>
 
   <h3 id="Egap_Documents_Shape_Floating" data-uid="Egap.Documents.Shape.Floating">
   Floating
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L400"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L404"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Where the shape floats, or null for a shape in the line.</p>
@@ -358,7 +423,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape_Height" data-uid="Egap.Documents.Shape.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L379"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L383"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The height in points.</p>
@@ -390,7 +455,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape_Kind" data-uid="Egap.Documents.Shape.Kind">
   Kind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L365"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L369"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>What the shape draws.</p>
@@ -422,7 +487,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape_Outline" data-uid="Egap.Documents.Shape.Outline">
   Outline
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L393"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L397"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The outline, or null for none.</p>
@@ -454,7 +519,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape_Rotation" data-uid="Egap.Documents.Shape.Rotation">
   Rotation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L407"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L411"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The rotation in degrees, clockwise.</p>
@@ -482,11 +547,43 @@ Phase 6 design Q11).</p>
 
 
 
+  <a id="Egap_Documents_Shape_Shadow_" data-uid="Egap.Documents.Shape.Shadow*"></a>
+
+  <h3 id="Egap_Documents_Shape_Shadow" data-uid="Egap.Documents.Shape.Shadow">
+  Shadow
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L439"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The shadow the shape casts, or null for none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BoxShadow? Shadow { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.BoxShadow.html">BoxShadow</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Shape_TextBox_" data-uid="Egap.Documents.Shape.TextBox*"></a>
 
   <h3 id="Egap_Documents_Shape_TextBox" data-uid="Egap.Documents.Shape.TextBox">
   TextBox
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L428"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L466"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The text inside, for a text box; null for a shape without text.</p>
@@ -514,11 +611,44 @@ Phase 6 design Q11).</p>
 
 
 
+  <a id="Egap_Documents_Shape_TextInsets_" data-uid="Egap.Documents.Shape.TextInsets*"></a>
+
+  <h3 id="Egap_Documents_Shape_TextInsets" data-uid="Egap.Documents.Shape.TextInsets">
+  TextInsets
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L449"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The space between a text box's edges and its text, in points; null for Word's default of a tenth of an inch at the sides
+and a twentieth at top and bottom.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public (double Left, double Top, double Right, double Bottom)? TextInsets { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt>(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.double,system.double,system.double,system.double-.left">Left</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.double,system.double,system.double,system.double-.top">Top</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.double,system.double,system.double,system.double-.right">Right</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetuple-system.double,system.double,system.double,system.double-.bottom">Bottom</a>)?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Shape_Title_" data-uid="Egap.Documents.Shape.Title*"></a>
 
   <h3 id="Egap_Documents_Shape_Title" data-uid="Egap.Documents.Shape.Title">
   Title
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L414"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L418"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The shape's title (alternative text title), or null.</p>
@@ -550,7 +680,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape_Width" data-uid="Egap.Documents.Shape.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L372"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L376"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The width in points.</p>
@@ -586,7 +716,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape_AddTextBox" data-uid="Egap.Documents.Shape.AddTextBox">
   AddTextBox()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L433"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L471"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Makes the shape a text box: gives it an empty story for its text, or returns the one it has.</p>
@@ -618,7 +748,7 @@ Phase 6 design Q11).</p>
 
   <h3 id="Egap_Documents_Shape_Clone_System_Boolean_" data-uid="Egap.Documents.Shape.Clone(System.Boolean)">
   Clone(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L446"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Drawings.cs/#L484"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A copy of this node in the same document, not yet in the tree. A deep copy includes everything the node holds; a shallow

@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class TextStyle | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class TextStyle | Egap ">
+      
+      <meta name="description" content="How text in a report looks: font, size, weight, slant, lines, colours, letter spacing and line height. Immutable: each method returns a changed copy, so a style can be kept and shared (TextStyle.Default.FontSize(18).Bold()). What a style leaves unset comes from the style of the text around it.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Reports_TextStyle.md&amp;value=---%0Auid%3A%20Egap.Documents.Reports.TextStyle%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Reports.TextStyle">
+
+
+
+  <h1 id="Egap_Documents_Reports_TextStyle" data-uid="Egap.Documents.Reports.TextStyle" class="text-break">
+Class TextStyle  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L8"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a>.<a class="xref" href="Egap.Documents.Reports.html">Reports</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>How text in a report looks: font, size, weight, slant, lines, colours, letter spacing and line height. Immutable: each
+method returns a changed copy, so a style can be kept and shared (<code>TextStyle.Default.FontSize(18).Bold()</code>).
+What a style leaves unset comes from the style of the text around it.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed record TextStyle : IEquatable&lt;TextStyle&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">TextStyle</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a>&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Background_" data-uid="Egap.Documents.Reports.TextStyle.Background*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Background" data-uid="Egap.Documents.Reports.TextStyle.Background">
+  Background
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The colour behind the text, or null for none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentColor? Background { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Color_" data-uid="Egap.Documents.Reports.TextStyle.Color*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Color" data-uid="Egap.Documents.Reports.TextStyle.Color">
+  Color
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The text colour, or null to keep the surrounding one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentColor? Color { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Default_" data-uid="Egap.Documents.Reports.TextStyle.Default*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Default" data-uid="Egap.Documents.Reports.TextStyle.Default">
+  Default
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L11"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A style that sets nothing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TextStyle Default { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Family_" data-uid="Egap.Documents.Reports.TextStyle.Family*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Family" data-uid="Egap.Documents.Reports.TextStyle.Family">
+  Family
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L14"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The font family, or null to keep the surrounding one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Family { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_IsBold_" data-uid="Egap.Documents.Reports.TextStyle.IsBold*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_IsBold" data-uid="Egap.Documents.Reports.TextStyle.IsBold">
+  IsBold
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Bold, or null to keep the surrounding weight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? IsBold { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_IsItalic_" data-uid="Egap.Documents.Reports.TextStyle.IsItalic*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_IsItalic" data-uid="Egap.Documents.Reports.TextStyle.IsItalic">
+  IsItalic
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Italic, or null to keep the surrounding slant.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? IsItalic { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_IsStruckThrough_" data-uid="Egap.Documents.Reports.TextStyle.IsStruckThrough*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_IsStruckThrough" data-uid="Egap.Documents.Reports.TextStyle.IsStruckThrough">
+  IsStruckThrough
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Struck through, or null to keep the surrounding setting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? IsStruckThrough { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_IsUnderlined_" data-uid="Egap.Documents.Reports.TextStyle.IsUnderlined*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_IsUnderlined" data-uid="Egap.Documents.Reports.TextStyle.IsUnderlined">
+  IsUnderlined
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Underlined, or null to keep the surrounding setting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? IsUnderlined { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_LetterSpacing_" data-uid="Egap.Documents.Reports.TextStyle.LetterSpacing*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_LetterSpacing" data-uid="Egap.Documents.Reports.TextStyle.LetterSpacing">
+  LetterSpacing
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Extra space between letters in points, or null to keep the surrounding spacing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double? LetterSpacing { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_LineHeight_" data-uid="Egap.Documents.Reports.TextStyle.LineHeight*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_LineHeight" data-uid="Egap.Documents.Reports.TextStyle.LineHeight">
+  LineHeight
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The line height as a multiple of the font's, or null to keep the surrounding one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double? LineHeight { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Size_" data-uid="Egap.Documents.Reports.TextStyle.Size*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Size" data-uid="Egap.Documents.Reports.TextStyle.Size">
+  Size
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The size in points, or null to keep the surrounding one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double? Size { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_Reports_TextStyle_BackgroundColor_" data-uid="Egap.Documents.Reports.TextStyle.BackgroundColor*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_BackgroundColor_Egap_Documents_DocumentColor_" data-uid="Egap.Documents.Reports.TextStyle.BackgroundColor(Egap.Documents.DocumentColor)">
+  BackgroundColor(DocumentColor)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy with <code class="paramref">color</code> behind the text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle BackgroundColor(DocumentColor color)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>color</code> <a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Bold_" data-uid="Egap.Documents.Reports.TextStyle.Bold*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Bold_System_Boolean_" data-uid="Egap.Documents.Reports.TextStyle.Bold(System.Boolean)">
+  Bold(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy that is bold, or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle Bold(bool bold = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bold</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_FontColor_" data-uid="Egap.Documents.Reports.TextStyle.FontColor*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_FontColor_Egap_Documents_DocumentColor_" data-uid="Egap.Documents.Reports.TextStyle.FontColor(Egap.Documents.DocumentColor)">
+  FontColor(DocumentColor)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy in <code class="paramref">color</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle FontColor(DocumentColor color)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>color</code> <a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_FontColor_" data-uid="Egap.Documents.Reports.TextStyle.FontColor*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_FontColor_System_String_" data-uid="Egap.Documents.Reports.TextStyle.FontColor(System.String)">
+  FontColor(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy in the colour of a hex string such as <code>&quot;336699&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle FontColor(string hex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_FontFamily_" data-uid="Egap.Documents.Reports.TextStyle.FontFamily*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_FontFamily_System_String_" data-uid="Egap.Documents.Reports.TextStyle.FontFamily(System.String)">
+  FontFamily(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy in <code class="paramref">family</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle FontFamily(string family)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>family</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_FontSize_" data-uid="Egap.Documents.Reports.TextStyle.FontSize*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_FontSize_System_Double_" data-uid="Egap.Documents.Reports.TextStyle.FontSize(System.Double)">
+  FontSize(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy at <code class="paramref">size</code> points.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle FontSize(double size)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>size</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Italic_" data-uid="Egap.Documents.Reports.TextStyle.Italic*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Italic_System_Boolean_" data-uid="Egap.Documents.Reports.TextStyle.Italic(System.Boolean)">
+  Italic(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy that is italic, or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle Italic(bool italic = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>italic</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_LineHeightMultiple_" data-uid="Egap.Documents.Reports.TextStyle.LineHeightMultiple*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_LineHeightMultiple_System_Double_" data-uid="Egap.Documents.Reports.TextStyle.LineHeightMultiple(System.Double)">
+  LineHeightMultiple(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy whose lines are <code class="paramref">multiple</code> times the font's height.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle LineHeightMultiple(double multiple)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>multiple</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Over_" data-uid="Egap.Documents.Reports.TextStyle.Over*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Over_Egap_Documents_Reports_TextStyle_" data-uid="Egap.Documents.Reports.TextStyle.Over(Egap.Documents.Reports.TextStyle)">
+  Over(TextStyle)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L77"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>This style over <code class="paramref">under</code>: what this one sets wins, the rest comes from it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle Over(TextStyle under)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>under</code> <a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Spacing_" data-uid="Egap.Documents.Reports.TextStyle.Spacing*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Spacing_System_Double_" data-uid="Egap.Documents.Reports.TextStyle.Spacing(System.Double)">
+  Spacing(double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy with <code class="paramref">points</code> of extra space between letters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle Spacing(double points)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>points</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Strikethrough_" data-uid="Egap.Documents.Reports.TextStyle.Strikethrough*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Strikethrough_System_Boolean_" data-uid="Egap.Documents.Reports.TextStyle.Strikethrough(System.Boolean)">
+  Strikethrough(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy that is struck through, or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle Strikethrough(bool strike = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>strike</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_TextStyle_Underline_" data-uid="Egap.Documents.Reports.TextStyle.Underline*"></a>
+
+  <h3 id="Egap_Documents_Reports_TextStyle_Underline_System_Boolean_" data-uid="Egap.Documents.Reports.TextStyle.Underline(System.Boolean)">
+  Underline(bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy that is underlined, or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextStyle Underline(bool underline = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>underline</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/TextStyle.cs/#L8" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

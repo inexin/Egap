@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Container | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Container | Egap ">
+      
+      <meta name="description" content="A place in a report that takes one element (text, an image, a column, a row, a table, a grid, a barcode, a form field or a component), with the box, alignment, style and paging settings set on it first: each setting returns the container, and the element ends the chain.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Reports_Container.md&amp;value=---%0Auid%3A%20Egap.Documents.Reports.Container%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Reports.Container">
+
+
+
+  <h1 id="Egap_Documents_Reports_Container" data-uid="Egap.Documents.Reports.Container" class="text-break">
+Class Container  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a>.<a class="xref" href="Egap.Documents.Reports.html">Reports</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A place in a report that takes one element (text, an image, a column, a row, a table, a grid, a barcode, a form field
+or a component), with the box, alignment, style and paging settings set on it first: each setting returns the
+container, and the element ends the chain.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Container</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Container</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_Reports_Container_Document_" data-uid="Egap.Documents.Reports.Container.Document*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Document" data-uid="Egap.Documents.Reports.Container.Document">
+  Document
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L206"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The document being built.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Document Document { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_Reports_Container_AlignCenter_" data-uid="Egap.Documents.Reports.Container.AlignCenter*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_AlignCenter" data-uid="Egap.Documents.Reports.Container.AlignCenter">
+  AlignCenter()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L272"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Text inside is centred.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container AlignCenter()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_AlignJustify_" data-uid="Egap.Documents.Reports.Container.AlignJustify*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_AlignJustify" data-uid="Egap.Documents.Reports.Container.AlignJustify">
+  AlignJustify()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L278"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Text inside is justified.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container AlignJustify()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_AlignLeft_" data-uid="Egap.Documents.Reports.Container.AlignLeft*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_AlignLeft" data-uid="Egap.Documents.Reports.Container.AlignLeft">
+  AlignLeft()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L269"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Text inside lines up on the left.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container AlignLeft()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_AlignRight_" data-uid="Egap.Documents.Reports.Container.AlignRight*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_AlignRight" data-uid="Egap.Documents.Reports.Container.AlignRight">
+  AlignRight()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L275"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Text inside lines up on the right.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container AlignRight()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Background_" data-uid="Egap.Documents.Reports.Container.Background*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Background_Egap_Documents_DocumentColor_" data-uid="Egap.Documents.Reports.Container.Background(Egap.Documents.DocumentColor)">
+  Background(DocumentColor)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A background colour.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container Background(DocumentColor color)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>color</code> <a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Background_" data-uid="Egap.Documents.Reports.Container.Background*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Background_System_String_" data-uid="Egap.Documents.Reports.Container.Background(System.String)">
+  Background(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L226"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A background colour from a hex string such as <code>&quot;F4F8FC&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container Background(string hex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hex</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Barcode_" data-uid="Egap.Documents.Reports.Container.Barcode*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Barcode_Egami_Barcodes_Barcode_Egap_Pdf_Length_Egap_Pdf_Length_Egami_Barcodes_BarcodeDrawOptions_" data-uid="Egap.Documents.Reports.Container.Barcode(Egami.Barcodes.Barcode,Egap.Pdf.Length,Egap.Pdf.Length,Egami.Barcodes.BarcodeDrawOptions)">
+  Barcode(Barcode, Length, Length, BarcodeDrawOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L367"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A barcode or QR code, drawn as vectors, <code class="paramref">width</code> by <code class="paramref">height</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Picture Barcode(Barcode barcode, Length width, Length height, BarcodeDrawOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>barcode</code> <span class="xref">Barcode</span></dt>
+    <dd></dd>
+    <dt><code>width</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+    <dt><code>height</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <span class="xref">BarcodeDrawOptions</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Picture.html">Picture</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Border_" data-uid="Egap.Documents.Reports.Container.Border*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Border_Egap_Pdf_Length_System_Nullable_Egap_Documents_DocumentColor__" data-uid="Egap.Documents.Reports.Container.Border(Egap.Pdf.Length,System.Nullable{Egap.Documents.DocumentColor})">
+  Border(Length, DocumentColor?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L229"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A border on every side, black unless <code class="paramref">color</code> is given.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container Border(Length width, DocumentColor? color = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>width</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+    <dt><code>color</code> <a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_BorderBottom_" data-uid="Egap.Documents.Reports.Container.BorderBottom*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_BorderBottom_Egap_Pdf_Length_System_Nullable_Egap_Documents_DocumentColor__" data-uid="Egap.Documents.Reports.Container.BorderBottom(Egap.Pdf.Length,System.Nullable{Egap.Documents.DocumentColor})">
+  BorderBottom(Length, DocumentColor?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L236"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A border along the bottom only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container BorderBottom(Length width, DocumentColor? color = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>width</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+    <dt><code>color</code> <a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_CheckBox_" data-uid="Egap.Documents.Reports.Container.CheckBox*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_CheckBox_System_String_System_Boolean_" data-uid="Egap.Documents.Reports.Container.CheckBox(System.String,System.Boolean)">
+  CheckBox(string, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L465"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A check box named <code class="paramref">name</code>; PDF export can make it a field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InlineContentControl CheckBox(string name, bool isChecked = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>isChecked</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.InlineContentControl.html">InlineContentControl</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Column_" data-uid="Egap.Documents.Reports.Container.Column*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Column_System_Action_Egap_Documents_Reports_ColumnBuilder__" data-uid="Egap.Documents.Reports.Container.Column(System.Action{Egap.Documents.Reports.ColumnBuilder})">
+  Column(Action&lt;ColumnBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L396"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Elements one under another, with <a class="xref" href="Egap.Documents.Reports.ColumnBuilder.html#Egap_Documents_Reports_ColumnBuilder_Spacing_Egap_Pdf_Length_">Spacing(Length)</a> between them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Column(Action&lt;ColumnBuilder&gt; column)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>column</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.ColumnBuilder.html">ColumnBuilder</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Component_" data-uid="Egap.Documents.Reports.Container.Component*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Component_Egap_Documents_Reports_IComponent_" data-uid="Egap.Documents.Reports.Container.Component(Egap.Documents.Reports.IComponent)">
+  Component(IComponent)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L440"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A reusable component, composed into this container.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Component(IComponent component)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>component</code> <a class="xref" href="Egap.Documents.Reports.IComponent.html">IComponent</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_CornerRadius_" data-uid="Egap.Documents.Reports.Container.CornerRadius*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_CornerRadius_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.Container.CornerRadius(Egap.Pdf.Length)">
+  CornerRadius(Length)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L242"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rounded corners of <code class="paramref">radius</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container CornerRadius(Length radius)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>radius</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_DefaultTextStyle_" data-uid="Egap.Documents.Reports.Container.DefaultTextStyle*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_DefaultTextStyle_System_Func_Egap_Documents_Reports_TextStyle_Egap_Documents_Reports_TextStyle__" data-uid="Egap.Documents.Reports.Container.DefaultTextStyle(System.Func{Egap.Documents.Reports.TextStyle,Egap.Documents.Reports.TextStyle})">
+  DefaultTextStyle(Func&lt;TextStyle, TextStyle&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L287"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The text style everything inside starts from.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container DefaultTextStyle(Func&lt;TextStyle, TextStyle&gt; change)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>change</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a>, <a class="xref" href="Egap.Documents.Reports.TextStyle.html">TextStyle</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_DropDown_" data-uid="Egap.Documents.Reports.Container.DropDown*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_DropDown_System_String_System_Collections_Generic_IReadOnlyList_System_String__System_String_" data-uid="Egap.Documents.Reports.Container.DropDown(System.String,System.Collections.Generic.IReadOnlyList{System.String},System.String)">
+  DropDown(string, IReadOnlyList&lt;string&gt;, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L475"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A drop-down list named <code class="paramref">name</code> of <code class="paramref">items</code>; PDF export can make it a field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InlineContentControl DropDown(string name, IReadOnlyList&lt;string&gt; items, string? selected = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>items</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>selected</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.InlineContentControl.html">InlineContentControl</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Element_" data-uid="Egap.Documents.Reports.Container.Element*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Element_System_Action_Egap_Documents_Reports_Container__" data-uid="Egap.Documents.Reports.Container.Element(System.Action{Egap.Documents.Reports.Container})">
+  Element(Action&lt;Container&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L447"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Content added by <code class="paramref">compose</code>, for a container's settings to wrap a piece of code.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Element(Action&lt;Container&gt; compose)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>compose</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.Container.html">Container</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_EnsureSpace_" data-uid="Egap.Documents.Reports.Container.EnsureSpace*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_EnsureSpace_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.Container.EnsureSpace(Egap.Pdf.Length)">
+  EnsureSpace(Length)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L300"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The content starts on the next page when less than <code class="paramref">height</code> is left on this one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container EnsureSpace(Length height)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>height</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Grid_" data-uid="Egap.Documents.Reports.Container.Grid*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Grid_System_Action_Egap_Documents_Reports_GridBuilder__" data-uid="Egap.Documents.Reports.Container.Grid(System.Action{Egap.Documents.Reports.GridBuilder})">
+  Grid(Action&lt;GridBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L416"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Elements in columns and rows of tracks, placed in order or by line, span and area (a grid container).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Grid(Action&lt;GridBuilder&gt; grid)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>grid</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.GridBuilder.html">GridBuilder</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Image_" data-uid="Egap.Documents.Reports.Container.Image*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Image_Egap_Documents_ImageData_System_Nullable_Egap_Pdf_Length__System_Nullable_Egap_Pdf_Length__" data-uid="Egap.Documents.Reports.Container.Image(Egap.Documents.ImageData,System.Nullable{Egap.Pdf.Length},System.Nullable{Egap.Pdf.Length})">
+  Image(ImageData, Length?, Length?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L342"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A picture of <code class="paramref">image</code>: at its own size held to the width there is, or at the size given (one side
+alone keeps its proportions).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Picture Image(ImageData image, Length? width = null, Length? height = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>image</code> <a class="xref" href="Egap.Documents.ImageData.html">ImageData</a></dt>
+    <dd></dd>
+    <dt><code>width</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a>?</dt>
+    <dd></dd>
+    <dt><code>height</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Picture.html">Picture</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_KeepTogether_" data-uid="Egap.Documents.Reports.Container.KeepTogether*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_KeepTogether" data-uid="Egap.Documents.Reports.Container.KeepTogether">
+  KeepTogether()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L297"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The content starts on the next page when it does not fit on this one but would on an empty one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container KeepTogether()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Line_" data-uid="Egap.Documents.Reports.Container.Line*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Line_System_Nullable_Egap_Pdf_Length__System_Nullable_Egap_Documents_DocumentColor__" data-uid="Egap.Documents.Reports.Container.Line(System.Nullable{Egap.Pdf.Length},System.Nullable{Egap.Documents.DocumentColor})">
+  Line(Length?, DocumentColor?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L378"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A horizontal line across the width, <code class="paramref">thickness</code> thick.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Line(Length? thickness = null, DocumentColor? color = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>thickness</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a>?</dt>
+    <dd></dd>
+    <dt><code>color</code> <a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_MarginTop_" data-uid="Egap.Documents.Reports.Container.MarginTop*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_MarginTop_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.Container.MarginTop(Egap.Pdf.Length)">
+  MarginTop(Length)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Space above, which a page break leaves out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container MarginTop(Length space)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>space</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_MinHeight_" data-uid="Egap.Documents.Reports.Container.MinHeight*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_MinHeight_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.Container.MinHeight(Egap.Pdf.Length)">
+  MinHeight(Length)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L255"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A least height, borders and padding included.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container MinHeight(Length height)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>height</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Padding_" data-uid="Egap.Documents.Reports.Container.Padding*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Padding_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.Container.Padding(Egap.Pdf.Length)">
+  Padding(Length)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The same padding on every side.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container Padding(Length all)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>all</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Padding_" data-uid="Egap.Documents.Reports.Container.Padding*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Padding_Egap_Pdf_Length_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.Container.Padding(Egap.Pdf.Length,Egap.Pdf.Length)">
+  Padding(Length, Length)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Padding above and below, and left and right.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container Padding(Length vertical, Length horizontal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>vertical</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+    <dt><code>horizontal</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Padding_" data-uid="Egap.Documents.Reports.Container.Padding*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Padding_Egap_Pdf_Length_Egap_Pdf_Length_Egap_Pdf_Length_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.Container.Padding(Egap.Pdf.Length,Egap.Pdf.Length,Egap.Pdf.Length,Egap.Pdf.Length)">
+  Padding(Length, Length, Length, Length)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L217"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Padding on each side.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container Padding(Length top, Length right, Length bottom, Length left)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>top</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+    <dt><code>bottom</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+    <dt><code>left</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_PageBreak_" data-uid="Egap.Documents.Reports.Container.PageBreak*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_PageBreak" data-uid="Egap.Documents.Reports.Container.PageBreak">
+  PageBreak()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L388"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A page break: what follows starts on the next page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void PageBreak()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Row_" data-uid="Egap.Documents.Reports.Container.Row*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Row_System_Action_Egap_Documents_Reports_RowBuilder__" data-uid="Egap.Documents.Reports.Container.Row(System.Action{Egap.Documents.Reports.RowBuilder})">
+  Row(Action&lt;RowBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L405"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Elements side by side, of fixed widths or sharing the width (a flex container).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Row(Action&lt;RowBuilder&gt; row)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>row</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.RowBuilder.html">RowBuilder</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_ScaleToFit_" data-uid="Egap.Documents.Reports.Container.ScaleToFit*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_ScaleToFit" data-uid="Egap.Documents.Reports.Container.ScaleToFit">
+  ScaleToFit()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L309"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The content is drawn smaller, down to a fifth, when that makes it fit where it starts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container ScaleToFit()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Shadow_" data-uid="Egap.Documents.Reports.Container.Shadow*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Shadow_Egap_Documents_BoxShadow_" data-uid="Egap.Documents.Reports.Container.Shadow(Egap.Documents.BoxShadow)">
+  Shadow(BoxShadow)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A shadow behind the box.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container Shadow(BoxShadow shadow)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shadow</code> <a class="xref" href="Egap.Documents.BoxShadow.html">BoxShadow</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_ShowEntire_" data-uid="Egap.Documents.Reports.Container.ShowEntire*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_ShowEntire" data-uid="Egap.Documents.Reports.Container.ShowEntire">
+  ShowEntire()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L303"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The content is never split across pages; strict layout fails when it does not fit even on an empty page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container ShowEntire()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_StopPaging_" data-uid="Egap.Documents.Reports.Container.StopPaging*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_StopPaging" data-uid="Egap.Documents.Reports.Container.StopPaging">
+  StopPaging()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L306"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Only what fits on the page the content starts on is shown.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container StopPaging()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Table_" data-uid="Egap.Documents.Reports.Container.Table*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Table_System_Action_Egap_Documents_Reports_TableBuilder__" data-uid="Egap.Documents.Reports.Container.Table(System.Action{Egap.Documents.Reports.TableBuilder})">
+  Table(Action&lt;TableBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L427"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A table: its columns, header and footer rows that repeat on every page, and cells filled in order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Table(Action&lt;TableBuilder&gt; table)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>table</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.TableBuilder.html">TableBuilder</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Text_" data-uid="Egap.Documents.Reports.Container.Text*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Text_System_Action_Egap_Documents_Reports_TextBuilder__" data-uid="Egap.Documents.Reports.Container.Text(System.Action{Egap.Documents.Reports.TextBuilder})">
+  Text(Action&lt;TextBuilder&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L330"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A paragraph of spans, each styled on its own, with page numbers and links.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Text(Action&lt;TextBuilder&gt; spans)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>spans</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="Egap.Documents.Reports.TextBuilder.html">TextBuilder</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Text_" data-uid="Egap.Documents.Reports.Container.Text*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Text_System_String_" data-uid="Egap.Documents.Reports.Container.Text(System.String)">
+  Text(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L320"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A paragraph of <code class="paramref">text</code>; <a class="xref" href="Egap.Documents.Reports.Fields.html#Egap_Documents_Reports_Fields_Page">Page</a> and <a class="xref" href="Egap.Documents.Reports.Fields.html#Egap_Documents_Reports_Fields_Pages">Pages</a> in it become page fields.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextDescriptor Text(string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TextDescriptor.html">TextDescriptor</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_TextField_" data-uid="Egap.Documents.Reports.Container.TextField*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_TextField_System_String_System_String_System_Int32_" data-uid="Egap.Documents.Reports.Container.TextField(System.String,System.String,System.Int32)">
+  TextField(string, string, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L454"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A text form field named <code class="paramref">name</code>, <code class="paramref">width</code> characters wide; PDF export can make it a field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InlineContentControl TextField(string name, string value = &quot;&quot;, int width = 20)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>value</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>width</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.InlineContentControl.html">InlineContentControl</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Reports_Container_Width_" data-uid="Egap.Documents.Reports.Container.Width*"></a>
+
+  <h3 id="Egap_Documents_Reports_Container_Width_Egap_Pdf_Length_" data-uid="Egap.Documents.Reports.Container.Width(Egap.Pdf.Length)">
+  Width(Length)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L252"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A width, borders and padding included.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Container Width(Length width)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>width</code> <a class="xref" href="Egap.Pdf.Length.html">Length</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.Container.html">Container</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Container.cs/#L196" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

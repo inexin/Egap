@@ -115,6 +115,9 @@ stylistic sets, contextual alternates). See <a href="../guides/flow-documents.ht
 <a href="../guides/flow-documents.html#page-layout">Page layout</a>.</li>
 <li>Margin boxes at the top and bottom of the page are saved as a three-part table in the header or footer; those in the
 corners and at the sides are left out with a warning.</li>
+<li>Flex and grid containers are saved as borderless tables with their items in the cells, and a group with a box as a
+one-cell table; the cells keep the items' backgrounds, borders and padding, not rounded corners or shadows. See
+<a href="../guides/flow-documents.html#flex-and-grid-layout">Flex and grid layout</a>.</li>
 <li>An SVG picture is saved with the PNG stand-in in <code>Picture.Fallback</code>, as Word stores SVG pictures, so older readers show
 it too. <a href="../guides/flow-documents.html#barcodes">Barcodes</a> get one at 300 pixels per inch.</li>
 </ul>

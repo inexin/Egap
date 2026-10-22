@@ -105,9 +105,9 @@ PdfConvert.FromHtml(&quot;&lt;h1&gt;Invoice&lt;/h1&gt;&lt;p&gt;Total: 120 EUR&lt
 </code></pre>
 <h2 id="reading">Reading</h2>
 <p>HTML is parsed by AngleSharp as browsers parse it, and styled through Egami.Css's cascade with HTML's default style sheet,
-for print media unless <code>Media</code> says <code>&quot;screen&quot;</code>. The computed styles become paragraphs, runs, lists and tables. Flexbox and
-grid containers are read as stacked blocks, with a warning. Scripts never run, and nothing outside the page is fetched
-unless you pass a resolver:</p>
+for print media unless <code>Media</code> says <code>&quot;screen&quot;</code>. The computed styles become paragraphs, runs, lists, tables, and flex and
+grid containers (<a href="#css-layout">CSS layout</a>). Scripts never run, and nothing outside the page is fetched unless you pass a
+resolver:</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 
 Document page = HtmlFormat.Load(&quot;invoice.html&quot;, new HtmlLoadOptions
@@ -173,6 +173,51 @@ margin boxes. An element with <code>position: running(name)</code> leaves the bo
 <code>element(name)</code>. Margin boxes are written back as the same rules.</li>
 <li><code>&lt;nav data-toc&gt;</code> is read as a table of contents field.</li>
 </ul>
+<h2 id="css-layout">CSS layout</h2>
+<p><code>display: flex</code> and <code>display: grid</code> read into <a href="../guides/flow-documents.html#flex-and-grid-layout">flex and grid containers</a>,
+laid out as browsers lay them out and broken across pages between lines and rows. Each child element is an item, and text
+directly in the container an item of its own.</p>
+<table>
+<thead>
+<tr>
+<th>CSS</th>
+<th>Read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flex containers</td>
+<td><code>flex-direction</code>, <code>flex-wrap</code>, <code>flex-flow</code>, <code>justify-content</code>, <code>align-items</code>, <code>align-content</code>, <code>gap</code>, <code>row-gap</code>, <code>column-gap</code></td>
+</tr>
+<tr>
+<td>Flex items</td>
+<td><code>flex</code>, <code>flex-grow</code>, <code>flex-shrink</code>, <code>flex-basis</code>, <code>order</code>, <code>align-self</code></td>
+</tr>
+<tr>
+<td>Grid containers</td>
+<td><code>grid-template-columns</code> and <code>grid-template-rows</code> (lengths, <code>%</code>, <code>fr</code>, <code>auto</code>, <code>min-content</code>, <code>max-content</code>, <code>minmax()</code>, <code>fit-content()</code>, <code>repeat()</code> with a count, <code>auto-fill</code> or <code>auto-fit</code>), <code>grid-template-areas</code>, <code>grid-template</code>, <code>grid-auto-rows</code>, <code>grid-auto-columns</code>, <code>grid-auto-flow</code> with <code>dense</code>, the gaps, <code>justify-items</code>, <code>align-items</code>, <code>justify-content</code> and <code>place-items</code></td>
+</tr>
+<tr>
+<td>Grid items</td>
+<td><code>grid-area</code> (a name or lines), <code>grid-row</code>, <code>grid-column</code> and their <code>-start</code> and <code>-end</code> forms, <code>span</code>, negative lines, <code>justify-self</code>, <code>align-self</code>, <code>place-self</code></td>
+</tr>
+<tr>
+<td>Boxes</td>
+<td><code>margin</code>, <code>padding</code>, <code>border</code>, <code>background-color</code>, <code>border-radius</code>, <code>box-shadow</code> (the first outer shadow), <code>width</code>, <code>height</code>, <code>min-height</code> and <code>box-sizing</code> on containers and items</td>
+</tr>
+<tr>
+<td>Positioned boxes</td>
+<td><code>position: absolute</code> and <code>fixed</code> with <code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code>, <code>width</code>, <code>height</code> and <code>z-index</code></td>
+</tr>
+</tbody>
+</table>
+<p>Pages break between a container's lines and rows, and inside a line or row too tall for the room left, between its
+items' lines of text and table rows, as browsers break them. A block with <code>border-radius</code> or <code>box-shadow</code> becomes a group
+with a box around its blocks; other blocks keep their
+borders and background as paragraph borders and shading. An absolutely positioned box becomes a text box floating in front
+of the text (behind it for a negative <code>z-index</code>), placed on the first page's body area, or from its positioned parent's
+first line; a fixed box goes in the header, so it shows on every page. <code>position: sticky</code>, subgrid, masonry, named grid
+lines and <code>inline-flex</code> and <code>inline-grid</code> boxes are not laid out as such; the last two read as inline content.</p>
 <h2 id="writing">Writing</h2>
 <p>The model is written as HTML in UTF-8, with what HTML cannot hold returned as warnings.</p>
 <table>

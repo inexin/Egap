@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Reports in code | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Reports in code | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/reports.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="reports-in-code">Reports in code</h1>
+
+<p><code>Report.Create</code> builds a document from code with nested lambdas: pages with a header, a footer and content, and in them
+columns, rows, tables, grids, text, pictures, barcodes and form fields. It builds an ordinary <code>Document</code>, so the same report
+saves as PDF, DOCX or HTML and lays out with the same page flow as any other document. The types are in
+<code>Egap.Documents.Reports</code>.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Pdf;
+using Egap.Documents.Reports;
+using Egap.Pdf;
+
+(string Name, int Qty, decimal Price)[] lines = [(&quot;Paper&quot;, 2, 40m), (&quot;Toner&quot;, 1, 590m)];
+Document invoice = Report.Create(r =&gt; r
+    .Title(&quot;Invoice 2026-118&quot;)
+    .DefaultTextStyle(s =&gt; s.FontSize(10))
+    .Page(p =&gt; p
+        .Size(PdfPageSize.A4).Margins(Length.Mm(15))
+        .Header(h =&gt; h.BorderBottom(1).Row(row =&gt;
+        {
+            row.Grow().Text(&quot;Acme Ltd&quot;).Style(s =&gt; s.FontSize(20).Bold());
+            row.Auto().AlignRight().Text(&quot;Invoice 2026-118&quot;);
+        }))
+        .Content(c =&gt; c.Column(col =&gt;
+        {
+            col.Spacing(8);
+            col.Item().Text(&quot;Thank you for your order.&quot;);
+            col.Item().Table(t =&gt; t
+                .Columns(cols =&gt; cols.Relative(3).Fixed(40).Fixed(70))
+                .Lines(0.5)
+                .Header(&quot;Item&quot;, &quot;Qty&quot;, &quot;Price&quot;)
+                .Rows(lines, l =&gt; [l.Name, l.Qty, l.Price]));
+            col.Item().KeepTogether().Background(&quot;F4F8FC&quot;).CornerRadius(6).Padding(8)
+                .AlignRight().Text(&quot;Total: 670&quot;).Bold();
+        }))
+        .Footer(f =&gt; f.AlignCenter().Text($&quot;Page {Fields.Page} of {Fields.Pages}&quot;))));
+invoice.SaveAsPdf(&quot;invoice.pdf&quot;);
+invoice.Save(&quot;invoice.docx&quot;);
+</code></pre>
+<h2 id="containers">Containers</h2>
+<p>Each place in a report is a <code>Container</code>. Settings come first and return the container: a box (<code>Padding</code>, <code>Background</code>,
+<code>Border</code>, <code>BorderBottom</code>, <code>CornerRadius</code>, <code>Shadow</code>, <code>Width</code>, <code>MinHeight</code>, <code>MarginTop</code>), the alignment of text inside
+(<code>AlignLeft</code>, <code>AlignCenter</code>, <code>AlignRight</code>, <code>AlignJustify</code>), a <code>DefaultTextStyle</code>, and paging (<code>KeepTogether</code>,
+<code>EnsureSpace</code>, <code>ShowEntire</code>, <code>StopPaging</code>, <code>ScaleToFit</code>). One element ends the chain; a container holds one, and
+<code>Column</code> puts several one under another.</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Builds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Text(&quot;...&quot;)</code>, <code>Text(t =&gt; ...)</code></td>
+<td>A paragraph; spans with their own styles, page numbers, line breaks and links</td>
+</tr>
+<tr>
+<td><code>Image</code>, <code>Barcode</code></td>
+<td>A picture, held to the width there is unless a size is given; a barcode drawn as vectors</td>
+</tr>
+<tr>
+<td><code>Column</code></td>
+<td>Elements one under another, with <code>Spacing</code> between them</td>
+</tr>
+<tr>
+<td><code>Row</code></td>
+<td>A flex container: <code>Fixed</code> widths, <code>Grow</code> shares and <code>Auto</code> content widths side by side</td>
+</tr>
+<tr>
+<td><code>Grid</code></td>
+<td>A grid container: column tracks, spans and named areas</td>
+</tr>
+<tr>
+<td><code>Table</code></td>
+<td>A table: <code>Columns</code>, <code>Header</code> and <code>Footer</code> rows that repeat on every page, cells in order, <code>Rows</code> from data</td>
+</tr>
+<tr>
+<td><code>Line</code>, <code>PageBreak</code></td>
+<td>A rule across the width; a break to the next page</td>
+</tr>
+<tr>
+<td><code>TextField</code>, <code>CheckBox</code>, <code>DropDown</code></td>
+<td>Form controls that PDF export can turn into fields</td>
+</tr>
+<tr>
+<td><code>Component</code></td>
+<td>An <code>IComponent</code>, which composes itself into the container</td>
+</tr>
+</tbody>
+</table>
+<p><code>{page}</code> and <code>{total-pages}</code> in text (<code>Fields.Page</code> and <code>Fields.Pages</code>) become page fields.</p>
+<h2 id="styles">Styles</h2>
+<p>A <code>TextStyle</code> is immutable: each method returns a changed copy, so a style can be kept in a field and shared. What a style
+leaves unset comes from the text around it: the report's <code>DefaultTextStyle</code>, the page's, then the container's. A named
+style made with <code>ReportBuilder.Style</code> is also a character style in the document, so DOCX keeps it by name.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Reports;
+
+TextStyle note = TextStyle.Default.FontSize(8).Italic().FontColor(&quot;666666&quot;);
+Document letter = Report.Create(r =&gt; r
+    .Style(&quot;Strong&quot;, s =&gt; s.Bold().FontColor(&quot;993300&quot;))
+    .Page(p =&gt; p.Content(c =&gt; c.Column(col =&gt;
+    {
+        col.Item().Text(&quot;Payment is due within 14 days.&quot;).Style(&quot;Strong&quot;);
+        col.Item().Text(&quot;Prices include VAT.&quot;).Style(note);
+    }))));
+</code></pre>
+<h2 id="components">Components</h2>
+<p>A component is a class with a <code>Compose</code> method. It fills the container it is given, with any settings the caller put on it.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Reports;
+
+Document report = Report.Create(r =&gt; r.Page(p =&gt; p.Content(c =&gt; c.Row(row =&gt;
+{
+    row.Grow().Component(new AddressBlock(&quot;Acme Ltd&quot;, &quot;Storgata 1, Oslo&quot;));
+    row.Grow().Component(new AddressBlock(&quot;Customer AS&quot;, &quot;Kirkegata 9, Bergen&quot;));
+}))));
+
+/// &lt;summary&gt;A name and a street in a thin box.&lt;/summary&gt;
+sealed class AddressBlock(string name, string street) : IComponent
+{
+    public void Compose(Container container)
+    {
+        container.Padding(4).Border(0.5).Column(col =&gt;
+        {
+            col.Item().Text(name).Bold();
+            col.Item().Text(street);
+        });
+    }
+}
+</code></pre>
+<h2 id="live-preview">Live preview</h2>
+<p>The <code>egap-preview</code> dotnet tool shows documents on a local web page, drawn by Egap's own renderer, and shows them again when
+they change. <code>ShowPreview()</code> sends a document's pages to it; run the program under <code>dotnet watch</code> and the page follows each
+edit. Given a DOCX file instead, the tool draws the file again whenever it is saved. It listens on
+127.0.0.1 only, on port 12500 unless <code>--port</code> says otherwise, and <code>ShowPreview()</code> returns false when it is not running.
+It answers only requests addressed to 127.0.0.1 or localhost from programs and its own page, so other web pages can
+neither send it pages nor read the ones it shows.</p>
+<pre><code class="lang-sh">dotnet tool install -g Egap.Preview
+egap-preview                  # waits for ShowPreview()
+egap-preview letter.docx      # or shows a file
+</code></pre>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Reports;
+
+Document report = Report.Create(r =&gt; r.Page(p =&gt; p.Content(c =&gt; c.Text(&quot;Draft&quot;))));
+report.ShowPreview();                                            // dotnet watch run: the page follows every edit
+</code></pre>
+<p>HTML and Markdown are previewed from code, with the add-on that reads them: the tool itself only shows pages. To redraw
+an HTML template on every save, have <code>dotnet watch</code> watch it too, with <code>&lt;Watch Include=&quot;**/*.html&quot; /&gt;</code> in an item group
+of the project file.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+HtmlFormat.Register();                                           // Egap.Documents.Html
+Document invoice = Document.Load(&quot;invoice.html&quot;);
+invoice.ShowPreview();
+</code></pre>
+<p>A strict layout that fails shows its message on the page, above the last pages that laid out, and is thrown as well.</p>
+<h2 id="strict-layout-and-portable-fonts">Strict layout and portable fonts</h2>
+<p>A report's layout is strict and uses only portable fonts (<code>Document.DefaultLayoutOptions</code>): text that does not fit its
+column, a character no font has or a group that cannot be shown entire throws a <code>LayoutException</code> naming the node, and the
+report prints the same on every machine. Pass other <code>LayoutOptions</code> to <code>Report.Create</code>, or set <code>DefaultLayoutOptions</code>, to
+change that.</p>
+<p>DOCX keeps what Word can hold: rows and grids become borderless tables, and boxes become one-cell tables, without rounded
+corners or shadows. See <a href="flow-documents.html#flex-and-grid-layout">Flex and grid layout</a>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/reports.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

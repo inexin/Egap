@@ -135,6 +135,19 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.BoxShadow.html">BoxShadow</a></dt>
+      <dd><p>A shadow a box casts (CSS box-shadow): the box's shape moved by the offsets, grown by <a class="xref" href="Egap.Documents.BoxShadow.html#Egap_Documents_BoxShadow_Spread">Spread</a> and blurred by
+<a class="xref" href="Egap.Documents.BoxShadow.html#Egap_Documents_BoxShadow_Blur">Blur</a>, drawn behind the box.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.BoxStyle.html">BoxStyle</a></dt>
+      <dd><p>How a box is drawn around its content: margins, padding, borders, background, rounded corners and a shadow, and the size
+it asks for. Flex and grid containers and their items, and groups of blocks (<a class="xref" href="Egap.Documents.ContentControl.html#Egap_Documents_ContentControl_Box">Box</a>), take one.
+Immutable; set a new one to change the box.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.Break.html">Break</a></dt>
       <dd><p>A line, page or column break inside a paragraph.</p>
 </dd>
@@ -256,6 +269,13 @@ reading stopped instead of using unbounded memory or time. The limits are in the
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.DocumentPreview.html">DocumentPreview</a></dt>
+      <dd><p>Sends a document's pages to the egap-preview tool (<code>dotnet tool install -g Egap.Preview</code>), which shows them on a
+local web page and shows them again each time new pages arrive: run the code under <code>dotnet watch</code> and the page
+follows every edit.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.DocumentProperties.html">DocumentProperties</a></dt>
       <dd><p>A document's properties: the core ones every format knows (title, author, dates) and custom ones by name, which fields
 such as TITLE, AUTHOR and DOCPROPERTY show.</p>
@@ -332,6 +352,23 @@ and the separator (or the end); the result is between the separator and the end.
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.FlexContainer.html">FlexContainer</a></dt>
+      <dd><p>A flex container (CSS flexbox): items laid out in a row or a column, growing and shrinking to share the space, wrapped onto
+more lines when they ask for it. The page flow breaks between lines; DOCX writes the container as a borderless table.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.FlexItem.html">FlexItem</a></dt>
+      <dd><p>An item of a <a class="xref" href="Egap.Documents.FlexContainer.html">FlexContainer</a>: blocks laid out in a box that grows and shrinks with the line.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.FlexLayout.html">FlexLayout</a></dt>
+      <dd><p>How a flex container lays out its items (CSS flexbox): direction, wrapping, how the space left on a line is shared and
+how items line up across it, and the gaps between items and lines. Immutable; set a new one to change it.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.FloatingPlacement.html">FloatingPlacement</a></dt>
       <dd><p>Where a floating picture, shape or text box sits and how text wraps around it (Word's anchor): position by alignment or
 offset from a reference area, wrap mode and side, the distances text keeps, and the stacking order. Immutable; set a new
@@ -364,6 +401,24 @@ reports each change to its document; a format made with <code>new</code> stands 
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.GridContainer.html">GridContainer</a></dt>
+      <dd><p>A grid container (CSS grid): items placed in cells of column and row tracks, by line, by named area or automatically, and
+spanning several. The page flow breaks between rows; DOCX writes the container as a borderless table.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.GridItem.html">GridItem</a></dt>
+      <dd><p>An item of a <a class="xref" href="Egap.Documents.GridContainer.html">GridContainer</a>: blocks in a box placed in one cell or spanning several. A line number counts
+from 1 at the grid's start, and from -1 at the end of the explicit grid; null leaves the item to automatic placement.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.GridLayout.html">GridLayout</a></dt>
+      <dd><p>How a grid container lays out its items (CSS grid): the column and row tracks, the size of tracks it adds, named areas,
+automatic placement, gaps and alignment. Immutable; set a new one to change it.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.GroupPaging.html">GroupPaging</a></dt>
       <dd><p>How a group of blocks (a block content control) is placed across pages. Word keeps the blocks but not these settings,
 which only Egap's layout follows.</p>
@@ -382,8 +437,8 @@ which only Egap's layout follows.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.HtmlFormat.html">HtmlFormat</a></dt>
       <dd><p>HTML read into the model: parsed by AngleSharp as browsers parse it, styled through Egami.Css's cascade with HTML's
-default style sheet, and the computed styles mapped onto paragraphs, runs, lists and tables. Flexbox and grid are read as
-stacked blocks, with a warning.</p>
+default style sheet, and the computed styles mapped onto paragraphs, runs, lists, tables, and flex and grid containers;
+positioned boxes become floating text boxes.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -553,6 +608,11 @@ already in the tree and a node that holds the parent.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.PreviewOptions.html">PreviewOptions</a></dt>
+      <dd><p>Where <a class="xref" href="Egap.Documents.DocumentPreview.html#Egap_Documents_DocumentPreview_ShowPreview_Egap_Documents_Document_Egap_Documents_PreviewOptions_">ShowPreview(Document, PreviewOptions?)</a> sends a document's pages, and how sharp they are drawn.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.ResolvedParagraphFormat.html">ResolvedParagraphFormat</a></dt>
       <dd><p>A paragraph's effective formatting (<a class="xref" href="Egap.Documents.Paragraph.html#Egap_Documents_Paragraph_GetEffectiveFormat">GetEffectiveFormat()</a>): every property with its final value, styles
 and defaults applied, tab stops added up. Where neither the document nor Word gives a value, Word's defaults apply.</p>
@@ -712,9 +772,25 @@ which can be accepted or rejected on its own.</p>
 Structs
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.BoxCorners.html">BoxCorners</a></dt>
+      <dd><p>The radius of each corner of a box, in points; 0 for a square corner.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.DocumentColor.html">DocumentColor</a></dt>
       <dd><p>A colour as documents give it: automatic, a fixed colour, or a theme colour with Word's tint (towards white) or shade
 (towards black), so a theme change recolours the text that uses it. The default value is automatic.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.GridTrack.html">GridTrack</a></dt>
+      <dd><p>A grid column or row: its least and greatest size (CSS minmax). A single size is both, except a fraction, which grows from
+its content's size as CSS's 1fr does.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.GridTrackSize.html">GridTrackSize</a></dt>
+      <dd><p>One limit of a grid track's size: a length, a share of the space, or a size from the content.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -791,8 +867,28 @@ stored result (Phase 6 design Q8).</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.FlexDirection.html">FlexDirection</a></dt>
+      <dd><p>Which way a flex container lays its items out.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.FlexWrap.html">FlexWrap</a></dt>
+      <dd><p>Whether a flex container's items go on more lines when they do not fit on one.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.FloatingAlignment.html">FloatingAlignment</a></dt>
       <dd><p>Where a floating object lines up within what it is measured from, instead of an offset.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.GridAutoFlow.html">GridAutoFlow</a></dt>
+      <dd><p>Which way a grid's automatic placement fills cells, and whether it goes back to fill holes.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.GridTrackUnit.html">GridTrackUnit</a></dt>
+      <dd><p>What a grid track size is given in.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -813,6 +909,11 @@ stored result (Phase 6 design Q8).</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.IslandKind.html">IslandKind</a></dt>
       <dd><p>What a kept island holds (Phase 6 design Q4): content the model keeps whole, as raw markup, drawn as its picture.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.LayoutAlignment.html">LayoutAlignment</a></dt>
+      <dd><p>How boxes line up along a container's axis: flex and grid containers and their items use the same values.</p>
 </dd>
     </dl>
     <dl class="jumplist">
