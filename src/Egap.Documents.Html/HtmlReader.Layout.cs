@@ -26,6 +26,7 @@ internal sealed partial class HtmlReader
         BoxStyle box = new()
         {
             MarginTop = Math.Max(0, Collapse(pending, Length("margin-top"))),
+            MarginBottom = Length("margin-bottom"),
             MarginLeft = indentLeft + Length("margin-left"),
             MarginRight = indentRight + Length("margin-right"),
             PaddingTop = Math.Max(0, Length("padding-top")),
@@ -178,7 +179,7 @@ internal sealed partial class HtmlReader
     {
         Close(flow);
         double width = flow.Width;
-        BoxStyle box = ReadBox(style, width, flow.PendingSpace, parent.Left, parent.Right);
+        BoxStyle box = ReadBox(style, width, flow.PendingSpace, parent.Left, parent.Right) with { MarginBottom = 0 };
         if (style.Keyword("margin-left") == "auto" && style.Keyword("margin-right") == "auto" && box.Width.Unit == WidthUnit.Points)
         {
             double free = Math.Max(0, width - parent.Left - parent.Right - box.Width.Value);
@@ -186,10 +187,7 @@ internal sealed partial class HtmlReader
         }
 
         flow.PendingSpace = 0;
-        if (style.Keyword("break-before") is "page" or "always" or "left" or "right" or "recto" or "verso" || style.Keyword("page-break-before") is "always" or "left" or "right")
-        {
-            flow.PendingPageBreak = true;
-        }
+        BreakBefore(style, flow);
 
         // Inside the box its padding and borders do the indenting: the text starts from the box's own edges.
         Frame frame = new(element, style, null)
@@ -198,13 +196,21 @@ internal sealed partial class HtmlReader
             HeadingLevel = element.LocalName is ['h', >= '1' and <= '6'] ? element.LocalName[1] - '0' : null,
         };
         double inner = Math.Max(1, box.Width.Unit == WidthUnit.Points ? box.Width.Value - box.Horizontal : width - box.MarginsX - box.Horizontal);
-        Flow inside = new(flow.Container, inner) { PendingPageBreak = flow.PendingPageBreak };
+        Flow inside = new(flow.Container, inner);
         inside.PendingBookmarks.AddRange(flow.PendingBookmarks);
         flow.PendingBookmarks.Clear();
-        flow.PendingPageBreak = false;
         int first = flow.Container.Blocks.Count;
         Children(element, style, inside, frame);
         Close(inside);
+
+        // The last child's bottom margin stays inside a box with bottom padding or a border; else it collapses through it.
+        double trailing = inside.PendingSpace;
+        if (box.PaddingBottom > 0 || box.BorderBottom is { IsVisible: true })
+        {
+            KeepTrailingSpace(flow.Container.Blocks, first, trailing);
+            trailing = 0;
+        }
+
         ContentControl group = new(document) { Box = box };
         group.Properties.Kind = ContentControlKind.Group;
         foreach (Block block in flow.Container.Blocks.Skip(first).ToList())
@@ -219,7 +225,53 @@ internal sealed partial class HtmlReader
         }
 
         flow.Container.Blocks.Add(group);
-        flow.PendingSpace = Math.Max(0, style.Length("margin-bottom", width) ?? 0);
+        flow.PendingSpace = Math.Max(0, Collapse(trailing, style.Length("margin-bottom", width) ?? 0));
+        BreakAfter(style, flow);
+    }
+
+    /// <summary>A margin left at the end of a box's blocks, kept as space after its last paragraph.</summary>
+    private static void KeepTrailingSpace(NodeCollection<Block> blocks, int first, double space)
+    {
+        if (space > 0 && blocks.Count > first && blocks[^1] is Paragraph last)
+        {
+            last.Format.SpaceAfter = (last.Format.SpaceAfter ?? 0) + space;
+        }
+    }
+
+    /// <summary>
+    /// A page break before a block that is not a paragraph (a container, a group, a table): asked for by the block's
+    /// break-before, or waiting from an earlier block's break-after. A paragraph holding only the break makes it, as an
+    /// HTML break between blocks has nothing to hang on; at the start of the flow there is nothing to break from.
+    /// </summary>
+    private void BreakBefore(HtmlStyle style, Flow flow)
+    {
+        if (style.Keyword("break-before") is "page" or "always" or "left" or "right" or "recto" or "verso" || style.Keyword("page-break-before") is "always" or "left" or "right")
+        {
+            flow.PendingPageBreak = true;
+        }
+
+        if (!flow.PendingPageBreak)
+        {
+            return;
+        }
+
+        flow.PendingPageBreak = false;
+        if (flow.Container.Blocks.Count == 0)
+        {
+            return;
+        }
+
+        Paragraph breaker = new(document);
+        breaker.Format.PageBreakBefore = true;
+        breaker.Format.SpaceBefore = 0;
+        breaker.Format.SpaceAfter = 0;
+        breaker.Format.LineSpacingRule = LineSpacingRule.Exactly;
+        breaker.Format.LineSpacing = 1;
+        flow.Container.Blocks.Add(breaker);
+    }
+
+    private static void BreakAfter(HtmlStyle style, Flow flow)
+    {
         if (style.Keyword("break-after") is "page" or "always" or "left" or "right" or "recto" or "verso" || style.Keyword("page-break-after") is "always" or "left" or "right")
         {
             flow.PendingPageBreak = true;
@@ -233,7 +285,7 @@ internal sealed partial class HtmlReader
     {
         Close(flow);
         double width = flow.Width;
-        BoxStyle box = ReadBox(style, width, flow.PendingSpace, frame.Left, frame.Right);
+        BoxStyle box = ReadBox(style, width, flow.PendingSpace, frame.Left, frame.Right) with { MarginBottom = 0 };
         if (style.Keyword("margin-left") == "auto" && style.Keyword("margin-right") == "auto" && box.Width.Unit == WidthUnit.Points)
         {
             double free = Math.Max(0, width - frame.Left - frame.Right - box.Width.Value);
@@ -241,6 +293,7 @@ internal sealed partial class HtmlReader
         }
 
         flow.PendingSpace = 0;
+        BreakBefore(style, flow);
         Block container = Container(element, style, display, box, Math.Max(1, width - box.MarginsX - box.Horizontal), flow, frame);
         int index = flow.Container.Blocks.Count;
         flow.Container.Blocks.Add(container);
@@ -250,6 +303,7 @@ internal sealed partial class HtmlReader
         }
 
         flow.PendingSpace = Math.Max(0, style.Length("margin-bottom", width) ?? 0);
+        BreakAfter(style, flow);
     }
 
     /// <summary>A flex or grid container read from an element, with its items; <paramref name="flow"/> takes its out-of-flow children.</summary>
@@ -384,6 +438,9 @@ internal sealed partial class HtmlReader
 
         currentLink = outerLink;
         Close(flow);
+
+        // An item is a box of its own: its last child's bottom margin stays inside it.
+        KeepTrailingSpace(flow.Container.Blocks, 0, flow.PendingSpace);
     }
 
     // ---- Flex properties ----------------------------------------------------------------------------------------------

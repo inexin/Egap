@@ -216,8 +216,8 @@ content's width, takes a share of the space left by its grow factor or gives som
 along and across its line by the container's `JustifyContent` and `AlignItems`. With `Wrap`, items that do not fit go on
 the next line. A `GridContainer` places its items in columns and rows of tracks, as CSS grid does: tracks in points, per
 cent, fractions of what is left (`fr`) or sized to their content, items placed by line, span or named area, and the rest
-filled in by automatic placement. Pages break between a flex container's lines and between a grid's rows; rows an item
-spans stay together.
+filled in by automatic placement. Pages break between a flex container's lines and between a grid's rows, and inside a
+line or row too tall for the room left; rows an item spans stay together.
 
 ```csharp
 using Egap.Documents;

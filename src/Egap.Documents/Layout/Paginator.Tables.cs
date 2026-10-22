@@ -445,10 +445,20 @@ internal sealed partial class Paginator
     /// </summary>
     private (List<LayoutBox> Blocks, double Height, (int Block, int Line)? Stop) LayCell(CellPlan cell, double x, double top, double limit, (int Block, int Line) start)
     {
-        double width = Math.Max(1, cell.Width - cell.Margins.Left - cell.Margins.Right);
+        return LayBlocksFrom(cell.Cell.Blocks, x, top, Math.Max(1, cell.Width - cell.Margins.Left - cell.Margins.Right), limit, start);
+    }
+
+    /// <summary>
+    /// Lays blocks out from <paramref name="start"/> (block and line) within <paramref name="limit"/>, breaking between lines
+    /// of a paragraph or before a block that does not fit; the stop is where they go on, null when all fitted. Something is
+    /// placed even when it does not fit, so a part never comes out empty, unless <paramref name="mayPlaceNothing"/> says the
+    /// part may. With <paramref name="splitTables"/>, a table breaks between its rows, the stop's line being the row it goes
+    /// on from.
+    /// </summary>
+    private (List<LayoutBox> Blocks, double Height, (int Block, int Line)? Stop) LayBlocksFrom(NodeCollection<Block> blocks, double x, double top, double width, double limit, (int Block, int Line) start, bool mayPlaceNothing = false, bool splitTables = false)
+    {
         List<LayoutBox> boxes = [];
         double at = top;
-        NodeCollection<Block> blocks = cell.Cell.Blocks;
         if (start.Block >= blocks.Count)
         {
             return (boxes, 0, null);
@@ -475,7 +485,7 @@ internal sealed partial class Paginator
                         for (int l = firstLine; l < lines.Count; l++)
                         {
                             PlacedLine line = lines[l];
-                            if (lineTop + line.Height - top > limit + 0.01 && (lineBoxes.Count > 0 || boxes.Count > 0 || l > firstLine))
+                            if (lineTop + line.Height - top > limit + 0.01 && (lineBoxes.Count > 0 || boxes.Count > 0 || l > firstLine || mayPlaceNothing))
                             {
                                 if (lineBoxes.Count > 0)
                                 {
@@ -495,11 +505,44 @@ internal sealed partial class Paginator
                         break;
                     }
 
+                case Table nested when splitTables:
+                    {
+                        // Rows from where the table goes on, as many as fit.
+                        TablePlan plan = Plan(nested, x, width);
+                        int firstRow = b == start.Block ? start.Line : 0;
+                        List<LayoutBox> rows = [];
+                        double rowTop = at;
+                        for (int r = firstRow; r < plan.Rows.Count; r++)
+                        {
+                            RowPlan row = plan.Rows[r];
+                            if (rowTop + row.Height - top > limit + 0.01 && !row.HasMerges && (rows.Count > 0 || boxes.Count > 0 || mayPlaceNothing))
+                            {
+                                if (rows.Count > 0)
+                                {
+                                    boxes.Add(new TableBox(nested, new LayoutRect(plan.Left, at, plan.Width, rowTop - at), rows));
+                                }
+
+                                return (boxes, rowTop - top, (b, r));
+                            }
+
+                            rows.Add(PlaceRow(plan, row, rowTop, row.Height, null, out _, repeated: false));
+                            rowTop += row.Height;
+                        }
+
+                        if (rows.Count > 0)
+                        {
+                            boxes.Add(new TableBox(nested, new LayoutRect(plan.Left, at, plan.Width, rowTop - at), rows));
+                        }
+
+                        at = rowTop;
+                        break;
+                    }
+
                 case Table nested:
                     {
                         TablePlan plan = Plan(nested, x, width);
                         double height = plan.Rows.Sum(r => r.Height);
-                        if (at + height - top > limit + 0.01 && boxes.Count > 0)
+                        if (at + height - top > limit + 0.01 && (boxes.Count > 0 || mayPlaceNothing))
                         {
                             return (boxes, at - top, (b, 0));
                         }
@@ -515,7 +558,7 @@ internal sealed partial class Paginator
                         measuring++;
                         LayWhole(blocks[b], x, at, width, out double height);
                         measuring--;
-                        if (at + height - top > limit + 0.01 && boxes.Count > 0)
+                        if (at + height - top > limit + 0.01 && (boxes.Count > 0 || mayPlaceNothing))
                         {
                             return (boxes, at - top, (b, 0));
                         }

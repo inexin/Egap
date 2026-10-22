@@ -349,6 +349,15 @@ public sealed class FlexGridLayoutTests
         Assert.Equal(VerticalMerge.Continue, tables[1].Rows[2].Cells[0].Format.VerticalMerge);
         Assert.Equal("Right 2", tables[1].Rows[2].Cells[1].GetText().Trim());
         Assert.Equal("Boxed", tables[2].GetText().Trim());
+
+        // Two items placed on one cell share it in the table, so neither's text is lost.
+        GridContainer stacked = new(document);
+        stacked.AddItem("first").Column = 1;
+        stacked.AddItem("second").Column = 1;
+        stacked.Items[0].Row = stacked.Items[1].Row = 1;
+        Table shared = ContainerTablesFor(stacked);
+        Assert.Contains("first", shared.GetText(), StringComparison.Ordinal);
+        Assert.Contains("second", shared.GetText(), StringComparison.Ordinal);
         Assert.NotNull(tables[2].GetAncestor<ContentControl>());
 
         Shape read = Assert.Single(back.Descendants<Shape>());
@@ -358,6 +367,43 @@ public sealed class FlexGridLayoutTests
         Assert.Equal((3.0, 2.0, 3.0, 2.0), read.TextInsets);
         Assert.True(read.FitToText);
     }
+
+    [Fact]
+    public void TallRowsAndLinesSplitAcrossPagesBetweenLines()
+    {
+        (Document document, Body body) = Page(300, 300);
+        body.AddParagraph("Before the grid");
+        GridContainer grid = Add(body, new GridContainer(document) { Layout = new GridLayout { Columns = [GridTrack.Fraction(2), GridTrack.Fraction(1)], ColumnGap = 6 } });
+        GridItem tall = grid.AddItem();
+        tall.Box = BoxStyle.Padded(4).WithBorder(new Border(BorderStyle.Single, 1));
+        for (int i = 0; i < 40; i++)
+        {
+            tall.AddParagraph("Line " + i);
+        }
+
+        Table table = tall.AddTable(12, 2);
+        table.Rows[11].Cells[0].AddParagraph("Last row");
+        GridItem side = grid.AddItem("Side note");
+
+        DocumentLayout layout = document.Layout(Isolated);
+
+        List<ItemBox> parts = [.. layout.FindBoxes(tall).Select(b => b.Box).OfType<ItemBox>()];
+        Assert.True(parts.Count >= 3, $"{parts.Count} parts");
+        Assert.True(parts[0].Continues && !parts[0].IsContinuation);
+        Assert.True(parts[^1].IsContinuation && !parts[^1].Continues);
+        Assert.Equal(300 - 36, parts[0].Bounds.Bottom, 0.01);
+        Assert.Equal(0, layout.PageOf(tall.Blocks[0])!.Index);
+        Assert.Equal(0, layout.PageOf(side.Blocks[0])!.Index);
+        Assert.Single(layout.FindBoxes(side));
+        Assert.True(layout.FindBoxes(table).Count >= 1);
+        Assert.Equal(layout.Pages.Count - 1, layout.PageOf(table.Rows[11].Cells[0].Blocks[^1])!.Index);
+        foreach (LineBox line in layout.Pages.SelectMany(page => page.BodyLines))
+        {
+            Assert.True(line.Bounds.Bottom <= 300 - 36 + 0.01, "every line inside the body");
+        }
+    }
+
+    private static Table ContainerTablesFor(Block block) => Egap.Documents.Docx.ContainerTables.For(block, 468)!;
 
     private static T Add<T>(Body body, T block)
         where T : Block

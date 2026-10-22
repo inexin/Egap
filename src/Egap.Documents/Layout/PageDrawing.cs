@@ -104,7 +104,7 @@ internal static class PageDrawing
                 DrawStyledBox(container, container.Style, container.Block.Document.Theme, container.IsContinuation, container.Continues, canvas, observer);
                 return;
             case ItemBox item:
-                DrawStyledBox(item, item.Style, item.Item.Document.Theme, false, false, canvas, observer);
+                DrawStyledBox(item, item.Style, item.Item.Document.Theme, item.IsContinuation, item.Continues, canvas, observer);
                 return;
             case ScaledBox scaled:
                 canvas.Save();

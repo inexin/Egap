@@ -363,6 +363,87 @@ internal sealed partial class Paginator
         return new ItemBox(item, bounds, box, blocks);
     }
 
+    /// <summary>An item of a line or row being split across columns or pages: where it is across, and how far its blocks got.</summary>
+    private sealed class SplitItem(BlockContainer item, BoxStyle? box, double x, double width)
+    {
+        public BlockContainer Item { get; } = item;
+
+        public BoxStyle? Box { get; } = box;
+
+        public double X { get; } = x;
+
+        public double Width { get; } = width;
+
+        public (int Block, int Line) Cursor { get; set; }
+
+        public bool Done { get; set; }
+
+        public bool Started { get; set; }
+    }
+
+    /// <summary>The least room a line or row is split into; with less, it moves on whole.</summary>
+    private const double MinSplitRoom = 36;
+
+    /// <summary>
+    /// Places a flex line's or grid row's items across columns and pages, each item's blocks breaking where the room ends
+    /// (as Chromium fragments them): each part is as tall as the room, open at the break, and the last parts as tall as the
+    /// tallest of them. The parts go into the list <paramref name="placed"/> gives; <paramref name="endPart"/> ends the
+    /// container's part at the foot of the column and moves on to the next.
+    /// </summary>
+    /// <returns>The y the line or row ends at.</returns>
+    private double SplitBand(List<SplitItem> items, double top, Func<List<LayoutBox>> placed, Action endPart)
+    {
+        double at = top;
+        while (true)
+        {
+            // At the top of a column every item places something; elsewhere an item may wait for the next part.
+            bool atTop = AtColumnTop && placed().Count == 0;
+            double room = ColumnBottom - at;
+            List<(SplitItem Item, List<LayoutBox> Blocks, double Height)> parts = [];
+            foreach (SplitItem split in items.Where(i => !i.Done))
+            {
+                BoxStyle? box = split.Box;
+                double insetTop = split.Started ? 0 : box?.InsetTop ?? 0;
+                double inner = Math.Max(1, split.Width - (box?.Horizontal ?? 0));
+                (List<LayoutBox> blocks, double used, (int Block, int Line)? stop) = LayBlocksFrom(split.Item.Blocks, split.X + (box?.InsetLeft ?? 0), at + insetTop, inner,
+                    Math.Max(1, room - insetTop - (box?.InsetBottom ?? 0)), split.Cursor, mayPlaceNothing: !atTop, splitTables: true);
+                double height = insetTop + used + (stop is null ? box?.InsetBottom ?? 0 : 0);
+                parts.Add((split, blocks, height));
+                split.Cursor = stop ?? default;
+                split.Done = stop is null;
+            }
+
+            if (!atTop && parts.All(p => p.Blocks.Count == 0 && !p.Item.Done))
+            {
+                // Nothing of the line fits here: it starts the next part whole.
+                foreach (SplitItem split in items)
+                {
+                    split.Done = false;
+                }
+
+                endPart();
+                at = y;
+                continue;
+            }
+
+            bool finished = items.All(i => i.Done);
+            double bandHeight = finished ? parts.Count == 0 ? 0 : parts.Max(p => p.Height) : room;
+            foreach ((SplitItem split, List<LayoutBox> blocks, double height) in parts)
+            {
+                placed().Add(new ItemBox(split.Item, new LayoutRect(split.X, at, split.Width, bandHeight), split.Box, blocks, split.Started, !split.Done));
+                split.Started = true;
+            }
+
+            if (finished)
+            {
+                return at + bandHeight;
+            }
+
+            endPart();
+            at = y;
+        }
+    }
+
     /// <summary>The offset of the first box and the space between boxes when <paramref name="free"/> is shared out by <paramref name="alignment"/>.</summary>
     private static (double Before, double Between) Distribute(LayoutAlignment alignment, double free, int count)
     {

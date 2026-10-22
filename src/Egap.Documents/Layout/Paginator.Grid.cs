@@ -598,11 +598,39 @@ internal sealed partial class Paginator
         bool partAtTop = AtColumnTop;
         List<LayoutBox> items = [];
         double at = y + (box?.InsetTop ?? 0);
+        void EndPart()
+        {
+            page!.Add(column, new ContainerBox(container, new LayoutRect(geometry.X, partTop, plan.Width, Math.Max(0, ColumnBottom - partTop)), box, items, continued, true));
+            NextColumn();
+            geometry = Shifted(Column, marginLeft);
+            continued = true;
+            partTop = y;
+            items = [];
+        }
+
         foreach ((int first, int last) in GridBands(plan))
         {
             double bandHeight = plan.RowY[last] + plan.RowHeight[last] - plan.RowY[first];
             double before = first == 0 || (items.Count == 0 && continued) ? 0 : gap;
-            if (at + before + bandHeight > ColumnBottom + 0.01 && !(items.Count == 0 && partAtTop))
+            bool overflows = at + before + bandHeight > ColumnBottom + 0.01;
+
+            // A row of items one row tall that does not fit splits where the room ends, its items going on in the next part.
+            if (overflows && first == last && plan.Slots.Where(s => s.Row == first).All(s => s.RowSpan == 1)
+                && (ColumnBottom - at - before >= MinSplitRoom || (items.Count == 0 && partAtTop)))
+            {
+                at += before;
+                double rowShift = at - plan.RowY[first];
+                List<SplitItem> split = [.. plan.Slots.Where(s => s.Row == first).Select(s =>
+                {
+                    LayoutRect rect = ItemRect(plan, s, geometry.X, rowShift);
+                    return new SplitItem(s.Item, s.Item.Box, rect.X, rect.Width);
+                })];
+                at = SplitBand(split, at, () => items, EndPart);
+                partAtTop = false;
+                continue;
+            }
+
+            if (overflows && !(items.Count == 0 && partAtTop))
             {
                 if (items.Count == 0 && !continued)
                 {
@@ -614,12 +642,7 @@ internal sealed partial class Paginator
                 }
                 else
                 {
-                    page!.Add(column, new ContainerBox(container, new LayoutRect(geometry.X, partTop, plan.Width, Math.Max(0, ColumnBottom - partTop)), box, items, continued, true));
-                    NextColumn();
-                    geometry = Shifted(Column, marginLeft);
-                    continued = true;
-                    partTop = y;
-                    items = [];
+                    EndPart();
                     at = y;
                     before = 0;
                 }

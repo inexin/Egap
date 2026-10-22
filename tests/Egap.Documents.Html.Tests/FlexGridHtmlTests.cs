@@ -213,8 +213,47 @@ public sealed class FlexGridHtmlTests
         Document back = HtmlFormat.Parse(report.ToHtml());
 
         Assert.Contains("Boxed", back.GetText(), StringComparison.Ordinal);
-        Assert.NotNull(Assert.Single(back.Descendants<ContentControl>()).Box);
+        Assert.Single(back.Descendants<ContentControl>(), c => c.Box?.Background is not null && !c.Box.CornerRadius.IsSquare);
         Assert.Equal(3, Assert.Single(back.Descendants<Table>()).Rows.Count);
+    }
+
+    [Fact]
+    public void MarginsBreaksRulesAndLineHeightsAsBrowsersHaveThem()
+    {
+        Document document = HtmlFormat.Parse("""
+            <p style="margin: 0 0 12px">Intro</p>
+            <table><tr><td style="border-bottom: 1px solid black; padding: 2px">cell</td></tr></table>
+            <div style="display: flex; flex-direction: column; break-before: page; break-after: page">
+              <h3 style="margin: 0 0 6px">Title</h3><p style="margin: 8px 0">Body</p>
+            </div>
+            <div style="display: grid">After the break</div>
+            <hr style="margin: 6px 0">
+            <p style="line-height: 2">Tall lines</p>
+            """);
+
+        Block[] blocks = [.. document.Sections[0].Body.Blocks];
+        Paragraph intro = (Paragraph)blocks[0];
+        Assert.Equal(9, intro.Format.SpaceAfter);
+        Table table = Assert.IsType<Table>(blocks[1]);
+        // Separate borders add their whole width to the cell's height.
+        Assert.Equal(1.5 + 0.75, table.Rows[0].Cells[0].Format.MarginBottom!.Value, 0.01);
+        Assert.Equal(1.5, table.Rows[0].Cells[0].Format.MarginTop!.Value, 0.01);
+        Assert.True(((Paragraph)blocks[2]).Format.PageBreakBefore);
+        FlexContainer flex = Assert.IsType<FlexContainer>(blocks[3]);
+        Assert.Equal(4.5, flex.Items[0].Box!.MarginBottom);
+        Assert.Equal(6, flex.Items[1].Box!.MarginBottom);
+        Assert.True(((Paragraph)blocks[4]).Format.PageBreakBefore);
+        Assert.IsType<GridContainer>(blocks[5]);
+        Paragraph rule = (Paragraph)blocks[6];
+        Assert.Equal(LineSpacingRule.Exactly, rule.Format.LineSpacingRule);
+        Assert.Equal(4.5, rule.Format.SpaceBefore);
+        Assert.Equal(12, ((Paragraph)blocks[7]).Format.SpaceBefore);
+        Assert.Equal(LineSpacingRule.AtLeastCentered, ((Paragraph)blocks[7]).Format.LineSpacingRule);
+
+        DocumentLayout layout = document.Layout(Isolated);
+        Assert.Equal(3, layout.Pages.Count);
+        LineBox tall = layout.Pages[2].BodyLines.Single(l => l.Text.StartsWith("Tall", StringComparison.Ordinal));
+        Assert.InRange(tall.Baseline - tall.Bounds.Y, (tall.Bounds.Height / 2) - 1, tall.Bounds.Height * 0.75);
     }
 
     private static LayoutRect Bounds(DocumentLayout layout, BlockContainer item)

@@ -141,7 +141,17 @@ internal static class ContainerTables
         }
 
         table.Grid = grid;
-        Dictionary<(int Row, int Column), GridSlot> starts = placement.Slots.ToDictionary(s => (s.Row, s.Column));
+        // Items placed on the same cell share it: the first sets the cell, the others add their blocks to it.
+        Dictionary<(int Row, int Column), GridSlot> starts = [];
+        Dictionary<(int Row, int Column), List<GridSlot>> sharing = [];
+        foreach (GridSlot slot in placement.Slots)
+        {
+            if (!starts.TryAdd((slot.Row, slot.Column), slot))
+            {
+                (sharing.TryGetValue((slot.Row, slot.Column), out List<GridSlot>? list) ? list : sharing[(slot.Row, slot.Column)] = []).Add(slot);
+            }
+        }
+
         Dictionary<(int Row, int Column), GridSlot> covered = [];
         foreach (GridSlot slot in placement.Slots)
         {
@@ -161,6 +171,14 @@ internal static class ContainerTables
                 {
                     int span = Math.Min(slot.ColumnSpan, columns - c);
                     Cell cell = AddCell(row, slot.Item, slot.Item.Box, grid.Skip(c).Take(span).Sum(), Align(slot.Item.AlignSelf ?? layout.AlignItems));
+                    foreach (GridSlot other in sharing.GetValueOrDefault((r, c)) ?? [])
+                    {
+                        foreach (Block block in other.Item.Blocks)
+                        {
+                            cell.Blocks.Add((Block)block.Clone());
+                        }
+                    }
+
                     if (span > 1)
                     {
                         cell.Format.GridSpan = span;

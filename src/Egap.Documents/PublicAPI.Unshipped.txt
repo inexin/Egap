@@ -216,6 +216,8 @@ Egap.Documents.Layout.ContainerBox.Continues.get -> bool
 Egap.Documents.Layout.ContainerBox.IsContinuation.get -> bool
 Egap.Documents.Layout.ContainerBox.Style.get -> Egap.Documents.BoxStyle?
 Egap.Documents.Layout.ItemBox
+Egap.Documents.Layout.ItemBox.Continues.get -> bool
+Egap.Documents.Layout.ItemBox.IsContinuation.get -> bool
 Egap.Documents.Layout.ItemBox.Item.get -> Egap.Documents.BlockContainer!
 Egap.Documents.Layout.ItemBox.Style.get -> Egap.Documents.BoxStyle?
 Egap.Documents.LayoutAlignment
@@ -227,6 +229,7 @@ Egap.Documents.LayoutAlignment.SpaceBetween = 4 -> Egap.Documents.LayoutAlignmen
 Egap.Documents.LayoutAlignment.SpaceEvenly = 6 -> Egap.Documents.LayoutAlignment
 Egap.Documents.LayoutAlignment.Start = 0 -> Egap.Documents.LayoutAlignment
 Egap.Documents.LayoutAlignment.Stretch = 3 -> Egap.Documents.LayoutAlignment
+Egap.Documents.LineSpacingRule.AtLeastCentered = 3 -> Egap.Documents.LineSpacingRule
 Egap.Documents.PreviewOptions
 Egap.Documents.PreviewOptions.Dpi.get -> double
 Egap.Documents.PreviewOptions.Dpi.init -> void

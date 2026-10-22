@@ -495,6 +495,7 @@ internal sealed partial class HtmlReader
         }
 
         flow.PendingSpace = Collapse(flow.PendingSpace, marginTop) + (borderTop is null ? paddingTop : 0);
+        double above = flow.PendingSpace;
         int firstBlock = flow.Container.Blocks.Count;
         Children(element, style, flow, frame);
         Close(flow);
@@ -540,9 +541,15 @@ internal sealed partial class HtmlReader
         else if (borderTop is not null || borderBottom is not null)
         {
             // An empty box with a border (a rule): one empty paragraph that shows it.
+            // The rule sits between its own top and bottom margins.
+            double below = flow.PendingSpace;
+            flow.PendingSpace = above;
             Paragraph rule = NewParagraph(flow, frame);
             rule.Format.BorderBottom = (borderBottom ?? borderTop)! with { Space = 0 };
+            rule.Format.LineSpacingRule = LineSpacingRule.Exactly;
+            rule.Format.LineSpacing = 0.01;
             Close(flow);
+            flow.PendingSpace = below;
         }
 
         if (style.Keyword("break-after") is "page" or "always" or "left" or "right" or "recto" or "verso"
@@ -798,7 +805,7 @@ internal sealed partial class HtmlReader
         if (points is { } height && height > 0)
         {
             // A taller line than the font's own takes the height; the text sets the line where it is taller (an image).
-            format.LineSpacingRule = LineSpacingRule.AtLeast;
+            format.LineSpacingRule = LineSpacingRule.AtLeastCentered;
             format.LineSpacing = height;
         }
     }

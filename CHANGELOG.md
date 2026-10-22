@@ -25,10 +25,16 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `BoxStyle` draws a box around a container, an item or a group of blocks (`ContentControl.Box`): margins, padding,
   borders, background, rounded corners (`BoxCorners`), a shadow (`BoxShadow`), width and least height. A boxed group
   breaks across pages, drawn open at the break. `LayoutAlignment` names the alignments.
+- A flex line or grid row too tall for the room left breaks inside its items, between lines of text and between table
+  rows, each item's part open at the break; a line or row that does not start before the foot of the page moves on whole.
 - Layout gives `ContainerBox` and `ItemBox` boxes for them; `DocumentVisitor` has start and end methods for each.
 - DOCX saves a container as a borderless table with the items in its cells, spans and merged cells for a grid, and a
   boxed group as a one-cell table, with the items' backgrounds, borders and padding. Plain text lists the items' text,
   and tagged PDF tags a container and each item as a `Div`.
+
+### Line spacing
+- `LineSpacingRule.AtLeastCentered`: at least the given height, the extra space shared above and below the text as CSS's
+  line-height shares it. DOCX saves it as at least.
 
 ### Shapes and text boxes
 - `Shape.CornerRadius`, `Shape.Shadow`, `Shape.TextInsets` and `Shape.FitToText`: rounded rectangles of any radius, a
@@ -55,6 +61,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `position: absolute` and `fixed` boxes become text boxes floating in front of the text, placed by `top`, `right`,
   `bottom` and `left`, instead of staying in the flow with a warning; a fixed box shows on every page.
 - HTML writing writes flex and grid containers, boxed groups and floating text boxes back as the same CSS.
+
+### Closer to browsers
+- `line-height` shares its extra space above and below the text, as browsers do, instead of putting it all above.
+- A table keeps the space above it; a cell's top and bottom borders add to its height (half of each where borders
+  collapse); an empty box with a border (a rule) is as thin as its border; and a page break before or after a table, a
+  flex or grid container or a box breaks there.
+- A flex or grid item keeps its bottom margin and its last child's, as browsers keep them inside the item.
 
 ## Egap.Documents.Markdown 2.1.0 (unreleased)
 

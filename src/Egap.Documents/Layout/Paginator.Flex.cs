@@ -340,10 +340,37 @@ internal sealed partial class Paginator
         bool partAtTop = AtColumnTop;
         List<LayoutBox> items = [];
         double at = y + (box?.InsetTop ?? 0);
+        void EndPart()
+        {
+            page!.Add(column, new ContainerBox(container, new LayoutRect(geometry.X, partTop, plan.Width, Math.Max(0, ColumnBottom - partTop)), box, items, continued, true));
+            NextColumn();
+            geometry = Shifted(Column, marginLeft);
+            continued = true;
+            partTop = y;
+            items = [];
+        }
+
         foreach (FlexLine line in plan.Lines)
         {
             double before = items.Count == 0 && continued ? 0 : line.Before;
-            if (at + before + line.Height > ColumnBottom + 0.01 && !(items.Count == 0 && partAtTop))
+            bool overflows = at + before + line.Height > ColumnBottom + 0.01;
+
+            // A line that does not fit splits where the room ends, its items going on in the next part.
+            if (overflows && (ColumnBottom - at - before >= MinSplitRoom || (items.Count == 0 && partAtTop)))
+            {
+                at += before;
+                double left = geometry.X + plan.ContentX;
+                List<SplitItem> split = [.. line.Items.Select(p =>
+                {
+                    LayoutRect rect = Inside(p.Item.Box, new LayoutRect(left + p.X, at, p.Width, p.Height));
+                    return new SplitItem(p.Item, p.Item.Box, rect.X, rect.Width);
+                })];
+                at = SplitBand(split, at, () => items, EndPart);
+                partAtTop = false;
+                continue;
+            }
+
+            if (overflows && !(items.Count == 0 && partAtTop))
             {
                 if (items.Count == 0)
                 {
@@ -357,13 +384,8 @@ internal sealed partial class Paginator
                 else
                 {
                     // The line starts the container's next part, in the next column or on the next page.
-                    page!.Add(column, new ContainerBox(container, new LayoutRect(geometry.X, partTop, plan.Width, Math.Max(0, ColumnBottom - partTop)), box, items, continued, true));
-                    NextColumn();
-                    geometry = Shifted(Column, marginLeft);
-                    continued = true;
-                    partTop = y;
+                    EndPart();
                     partAtTop = true;
-                    items = [];
                     at = y;
                     before = 0;
                 }

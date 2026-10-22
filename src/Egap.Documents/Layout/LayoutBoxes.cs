@@ -239,14 +239,22 @@ public sealed class ContainerBox : LayoutBox
     public bool Continues { get; }
 }
 
-/// <summary>A flex or grid item: its box and its blocks.</summary>
+/// <summary>A flex or grid item, or the part of one on this page or column: its box and its blocks.</summary>
 public sealed class ItemBox : LayoutBox
 {
-    internal ItemBox(BlockContainer item, LayoutRect bounds, BoxStyle? style, IReadOnlyList<LayoutBox> blocks)
+    internal ItemBox(BlockContainer item, LayoutRect bounds, BoxStyle? style, IReadOnlyList<LayoutBox> blocks, bool continued = false, bool continues = false)
         : base(item, bounds, blocks)
     {
         Style = style;
+        IsContinuation = continued;
+        Continues = continues;
     }
+
+    /// <summary>Whether the item started on an earlier page or column; its top edge is not drawn.</summary>
+    public bool IsContinuation { get; }
+
+    /// <summary>Whether the item goes on in the next page or column; its bottom edge is not drawn.</summary>
+    public bool Continues { get; }
 
     /// <summary>The flex or grid item.</summary>
     public BlockContainer Item => (BlockContainer)Node!;

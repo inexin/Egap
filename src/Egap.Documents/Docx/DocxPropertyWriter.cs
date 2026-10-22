@@ -247,7 +247,7 @@ internal static class DocxPropertyWriter
             spacing.SetAttributeValue(Ns.W + "lineRule", rule switch
             {
                 LineSpacingRule.Exactly => "exact",
-                LineSpacingRule.AtLeast => "atLeast",
+                LineSpacingRule.AtLeast or LineSpacingRule.AtLeastCentered => "atLeast",
                 _ => "auto",
             });
         }

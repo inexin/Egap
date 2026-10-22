@@ -542,8 +542,30 @@ internal sealed partial class Paginator
         return parsed.ApplyGeneralFormat(text);
     }
 
-    /// <summary>A paragraph's lines at a column width, with their heights and baselines under its line spacing rule.</summary>
+    /// <summary>The lines last broken for each paragraph content, at the width they were broken for.</summary>
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ParagraphContent, BrokenLines> Broken = [];
+
+    /// <summary>A paragraph content's lines at one width.</summary>
+    private sealed record BrokenLines(double Width, List<PlacedLine> Lines);
+
+    /// <summary>
+    /// A paragraph's lines at a column width, with their heights and baselines under its line spacing rule. Lines depend on
+    /// the content and the width alone, so a content measured and then placed at one width (a table cell, an item) is
+    /// broken into lines once.
+    /// </summary>
     private static List<PlacedLine> Lines(ParagraphContent content, double width)
+    {
+        if (Broken.TryGetValue(content, out BrokenLines? broken) && broken.Width == width)
+        {
+            return broken.Lines;
+        }
+
+        List<PlacedLine> lines = BreakLines(content, width);
+        Broken.AddOrUpdate(content, new BrokenLines(width, lines));
+        return lines;
+    }
+
+    private static List<PlacedLine> BreakLines(ParagraphContent content, double width)
     {
         ResolvedParagraphFormat format = content.Format;
         double first = format.FirstLineIndent;
@@ -629,6 +651,13 @@ internal sealed partial class Paginator
 
                     // Word keeps the baseline where the text's own proportions put it in the exact height.
                     return (height, natural <= 0 ? height * 0.8 : height * ascent / natural);
+                }
+
+            case LineSpacingRule.AtLeastCentered:
+                {
+                    // CSS's half leading: the space a taller line adds goes half above the text, half below.
+                    double height = Math.Max(format.LineSpacing, natural);
+                    return (height, ascent + ((height - natural) / 2));
                 }
 
             case LineSpacingRule.AtLeast:

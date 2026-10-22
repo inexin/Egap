@@ -477,6 +477,18 @@ internal sealed partial class Paginator
                         }
 
                         List<PlacedLine> lines = Lines(content, width);
+                        if (measuring > 0)
+                        {
+                            // Measuring needs only the height: the lines' heights, without boxes for them.
+                            foreach (PlacedLine line in lines)
+                            {
+                                at += line.Height;
+                            }
+
+                            at += format.SpaceAfter;
+                            break;
+                        }
+
                         List<LineBox> lineBoxes = [];
                         double lineTop = at;
                         foreach (PlacedLine line in lines)
