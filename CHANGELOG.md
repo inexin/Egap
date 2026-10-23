@@ -8,6 +8,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 A new package: the `egap` command, a .NET tool on Egap's public API, on the Egap release train. It shares egami's
 conventions and command host (Egami.Cli.Host): globs, output templates, batches, exit codes 0 to 3 and an MCP server.
 
+### Package icon
+
+- The package has its own icon on NuGet: a prompt on a charcoal tile.
+
 ### Commands
 - `info` (summary, `--all`, `--json`), `text` (reading order, or words with boxes as JSON) and `render` (PNG, JPEG, WebP,
   TIFF at a dpi or fitted).
@@ -71,6 +75,12 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 ### PDF/A
 - Converting to PDF/A-1b now writes the `/CIDSet` that PDF/A-1 asks of subset CID fonts. Files made without it, such as
   ones made for another level, failed veraPDF after conversion.
+
+## Egap.Preview 2.2.0 (unreleased)
+
+### Package icon
+
+- The tool has its own icon on NuGet: an eye on a deep olive tile.
 
 ## Egap.Documents 2.1.0 (2026-10-22)
 
