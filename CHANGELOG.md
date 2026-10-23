@@ -3,6 +3,36 @@
 What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Cli 2.2.0 (unreleased)
+
+A new package: the `egap` command, a .NET tool on Egap's public API, on the Egap release train. It shares egami's
+conventions and command host (Egami.Cli.Host): globs, output templates, batches, exit codes 0 to 3 and an MCP server.
+
+### Commands
+- `info` (summary, `--all`, `--json`), `text` (reading order, or words with boxes as JSON) and `render` (PNG, JPEG, WebP,
+  TIFF at a dpi or fitted).
+- `convert` in every direction by the output's extension: HTML, Markdown, DOCX, text and images to PDF with
+  `PdfConvertOptions` as flags; PDF to DOCX, HTML, Markdown or text; and the flow formats to each other. HTML resources
+  stay in the input's folder unless `--allow-path` or `--allow-network`.
+- `merge` (each file with its own pages after a `#`), `split` (per page, per range, every N pages), `pages` (select,
+  reorder, delete, rotate, insert blank pages, labels), `impose`, `stamp`, `optimize`.
+- `encrypt`, `decrypt`, `metadata show`, `set` and `strip` (with the outline as JSON), `redact`, `sanitize`, `form list`,
+  `fill`, `flatten` and `reset`, `attach list`, `add`, `extract` and `remove`, `invoice embed` and `read`.
+- `sign` (PFX, PEM or the certificate store; PAdES B-B to B-LTA; visible; certification), `verify`, `compare`,
+  `pdfa check` and `convert` (PDF/UA check too).
+- Print production: `preflight`, `pdfx check` and `convert`, `separations` (plates and a coverage heat map) and `color`.
+- `ocr-layer` (hOCR and ALTO), `clean` (grayscale, blank pages, deskew, text to outlines) and `merge-data` (mail merge from
+  JSON or CSV).
+
+### Pipelines, batches and assistants
+- `run` chains steps with a bare `+`; every edit command is a step, `save` may come more than once, `--dry-run` prints
+  the plan, and `--workflow` and `--save-workflow` read and write JSON workflows (`egap-workflow-1.json`).
+- Passwords by `--password-env`, `--password-file` or a prompt; edits keep signatures where they can and stop before
+  breaking one unless `--allow-invalidating-signatures`.
+- `egap mcp`: every command as a tool for AI assistants, inside allowed folders; signing and encryption only with
+  `--allow-sign`.
+- `egap <name>` runs `egap-<name>` from the PATH, so `egap preview` starts egap-preview.
+
 ## Egap.Pdf 2.2.0 (unreleased)
 
 ### Preflight

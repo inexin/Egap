@@ -1,4 +1,4 @@
-"""Packs Egami, Egami.Fonts, Egami.Fonts.Substitutes, Egami.Drawing, Egami.Metafiles, Egami.Css and Egami.Svg from an Egami commit into a local NuGet folder feed (Phase 3 design Q2).
+"""Packs Egami, Egami.Fonts, Egami.Fonts.Substitutes, Egami.Drawing, Egami.Metafiles, Egami.Css and Egami.Svg from an Egami commit into a local NuGet folder feed (Phase 3 design Q2); --projects Egami.Cli.Host packs egap's command host.
 
 Usage: python tools/pack-egami.py [--egami ../Egami] [--commit HEAD] [--feed ../egami-feed] [--update] [--projects Egami.Svg ...]
 
@@ -46,7 +46,12 @@ def main():
         for project in args.projects:
             csproj = pathlib.Path(temp, "src", project, f"{project}.csproj")
             match = re.search(r"<Version>([^<]+)</Version>", csproj.read_text(encoding="utf-8"))
-            versions[project] = f"{match.group(1) if match else '1.0.0'}-{suffix}"
+            version = match.group(1) if match else "1.0.0"
+            if version == "$(EgamiVersion)":
+                # Packages on the Egami train (Egami.Cli.Host) take the train's version from Directory.Build.props.
+                train = re.search(r"<EgamiVersion>([^<]+)</EgamiVersion>", pathlib.Path(temp, "Directory.Build.props").read_text(encoding="utf-8"))
+                version = train.group(1) if train else "1.0.0"
+            versions[project] = f"{version}-{suffix}"
             subprocess.check_call([
                 "dotnet", "pack", str(csproj), "-c", "Release", "-o", str(feed), "--nologo", "-v", "q",
                 f"-p:EgamiLocalSuffix={suffix}",

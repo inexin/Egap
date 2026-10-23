@@ -1,0 +1,1 @@
+{ "egap": 1, "steps": [ { "op": "pages", "rotate": [ "90:1" ], "select": "1-2" }, { "op": "stamp", "page-numbers": true }, { "op": "save", "path": "out/{name}.pdf", "linearize": true } ] }

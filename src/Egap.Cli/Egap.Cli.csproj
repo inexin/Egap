@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Egap.Cli</RootNamespace>
+    <!-- Not "egap": on a case-insensitive file system egap.dll and Egap.dll could collide. The tool command is egap. -->
+    <AssemblyName>Egap.Cli</AssemblyName>
+    <PackageId>Egap.Cli</PackageId>
+    <!-- On the Egap release train (CLI design Q1), but out of release.yml until the command review (Q19). -->
+    <VersionPrefix>$(EgapVersion)</VersionPrefix>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>egap</ToolCommandName>
+    <!-- Also listed as an MCP server on NuGet, with .mcp/server.json (CLI design Q16). -->
+    <PackageType>McpServer</PackageType>
+    <Description>The egap command: turn HTML, Markdown, DOCX and images into PDF, and merge, split, inspect, encrypt and edit PDFs from a shell, a build script or an AI agent, with Egap, a fully managed PDF and document library.</Description>
+    <PackageTags>egap;pdf;cli;tool;convert;merge;split;html-to-pdf</PackageTags>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- AOT-clean from the start: the trimming and AOT analyzers run in every build, and warnings are errors. The tool ships as
+         a dotnet tool only (Q18), so native binaries stay a switch: dotnet publish -p:EgapNativeAot=true -r <rid>. -->
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
+    <PublishAot Condition="'$(EgapNativeAot)' == 'true'">true</PublishAot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+    <PackageReference Include="ModelContextProtocol.Core" />
+    <!-- The command host shared with egami (Q14): sources with internal types, compiled in. -->
+    <PackageReference Include="Egami.Cli.Host" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- All four Egap packages (Q3). -->
+  <ItemGroup>
+    <ProjectReference Include="../Egap.Pdf/Egap.Pdf.csproj" />
+    <ProjectReference Include="../Egap.Documents/Egap.Documents.csproj" />
+    <ProjectReference Include="../Egap.Documents.Html/Egap.Documents.Html.csproj" />
+    <ProjectReference Include="../Egap.Documents.Markdown/Egap.Documents.Markdown.csproj" />
+  </ItemGroup>
+
+  <!-- egap mcp's run tool takes a workflow object with the published schema. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\docs\schemas\egap-workflow-1.json" LogicalName="egap-workflow-1.json" />
+    <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Egami.Cli.Hosting" />
+    <None Include="../../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="" />
+    <InternalsVisibleTo Include="Egap.Cli.Tests" />
+    <InternalsVisibleTo Include="Egap.Cli.Fuzz" />
+  </ItemGroup>
+
+</Project>

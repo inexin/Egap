@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-text-1.json",
+  "title": "egap text",
+  "description": "What 'egap text --json' writes for one file: the chosen pages, their lines in reading order and each line's words, with boxes in points as [left, bottom, right, top] in the page's own coordinates.",
+  "type": "object",
+  "required": [ "schema", "path", "pages" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "path": { "type": "string" },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "page", "box", "lines" ],
+        "additionalProperties": false,
+        "properties": {
+          "page": { "description": "The page number, from 1.", "type": "integer", "minimum": 1 },
+          "box": { "description": "The page's crop box.", "$ref": "#/$defs/box" },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [ "text", "box", "words" ],
+              "additionalProperties": false,
+              "properties": {
+                "text": { "type": "string" },
+                "box": { "$ref": "#/$defs/box" },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [ "text", "box" ],
+                    "additionalProperties": false,
+                    "properties": { "text": { "type": "string" }, "box": { "$ref": "#/$defs/box" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "box": { "type": "array", "items": { "type": "number" } }
+  }
+}

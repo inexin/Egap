@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-verify-1.json",
+  "title": "egap verify",
+  "description": "What 'egap verify --json' writes: each file's signatures and the verdict on each part of the check. A file is valid when it has signatures and every one is valid; the exit code is 1 otherwise.",
+  "type": "object",
+  "required": [ "schema", "files" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "path", "valid", "signatures" ],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "valid": { "type": "boolean" },
+          "signatures": { "type": "array", "items": { "$ref": "#/$defs/signature" } }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "verdict": { "enum": [ "valid", "invalid", "indeterminate", "not-applicable" ] },
+    "signature": {
+      "type": "object",
+      "required": [ "field", "kind", "valid", "integrity", "chain", "timestamp", "revocation", "changesSince", "signer", "signingTime", "timestampTime", "digest", "algorithm", "coversWholeFile", "problems", "warnings", "changes" ],
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string" },
+        "kind": { "enum": [ "approval", "certification", "document-timestamp" ] },
+        "valid": { "type": "boolean" },
+        "integrity": { "description": "Whether the signed bytes are unchanged and the signature matches them.", "$ref": "#/$defs/verdict" },
+        "chain": { "description": "Whether the signer's certificate leads to a trusted root.", "$ref": "#/$defs/verdict" },
+        "timestamp": { "$ref": "#/$defs/verdict" },
+        "revocation": { "$ref": "#/$defs/verdict" },
+        "changesSince": { "description": "Whether what was added after the signature is allowed.", "$ref": "#/$defs/verdict" },
+        "signer": { "description": "The signer certificate's subject.", "type": [ "string", "null" ] },
+        "signingTime": { "type": [ "string", "null" ] },
+        "timestampTime": { "type": [ "string", "null" ] },
+        "digest": { "type": [ "string", "null" ] },
+        "algorithm": { "type": [ "string", "null" ] },
+        "coversWholeFile": { "type": "boolean" },
+        "problems": { "type": "array", "items": { "type": "string" } },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "revision", "object", "description", "verdict" ],
+            "additionalProperties": false,
+            "properties": {
+              "revision": { "type": "integer" },
+              "object": { "type": "integer" },
+              "description": { "type": "string" },
+              "verdict": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-form-1.json",
+  "title": "egap form list",
+  "description": "What 'egap form list --json' writes: each file's terminal form fields. With one file, the output is also a fill file for 'egap form fill --data'.",
+  "type": "object",
+  "required": [ "schema", "files" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "path", "fields" ],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [ "name", "kind", "value", "choices", "readOnly", "required" ],
+              "additionalProperties": false,
+              "properties": {
+                "name": { "description": "The field's full name, parts joined by dots.", "type": "string" },
+                "kind": { "enum": [ "text", "checkbox", "radio", "combo", "list", "signature", "button", "other" ] },
+                "value": { "description": "The value as text: true or false for a check box, the choices joined by commas for a list box.", "type": [ "string", "null" ] },
+                "choices": { "description": "The export values a radio group, combo box or list box offers.", "type": "array", "items": { "type": "string" } },
+                "readOnly": { "type": "boolean" },
+                "required": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
