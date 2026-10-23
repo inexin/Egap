@@ -1,0 +1,4132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>egap command reference | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="egap command reference | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/cli/commands.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="egap-command-reference">egap command reference</h1>
+
+<p>Every command, its arguments and its options, as <code>egap &lt;command&gt; --help</code> shows them. This page is written from the
+command tree by the tests, so it always matches the tool. The <a href="index.html">guide</a> explains the conventions all commands
+share. Options every command takes: <code>--help</code>, <code>--verbose</code>, <code>--debug</code>, <code>--quiet</code>, <code>--limit</code>, <code>--strict</code>.</p>
+<h2 id="egap-info">egap info</h2>
+<p><code>egap info &lt;inputs&gt;... [options]</code></p>
+<p>Show what PDFs are: version, pages and sizes, encryption, signatures, PDF/A claim, forms and attachments; with --all, much more.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+<tr>
+<td><code>--all</code>, <code>-a</code></td>
+<td>Also list the metadata, fonts, page sizes, layers, attachments, signatures and revisions.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write JSON (schema 1, docs/schemas/egap-info-1.json) instead of text.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-convert">egap convert</h2>
+<p><code>egap convert &lt;inputs&gt;... [options]</code></p>
+<p>Convert between formats by the output's extension: HTML, Markdown, DOCX, text and images to PDF; PDF to DOCX, HTML, Markdown or text; and the flow formats to each other.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>HTML, Markdown, DOCX, text, image or PDF files, globs (*, ?, **), or folders with --recursive.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--to &lt;format&gt;</code></td>
+<td>The output format when -o does not say: pdf, docx, html, md, txt.</td>
+</tr>
+<tr>
+<td><code>--page-size &lt;size&gt;</code></td>
+<td>To PDF: the page size, A3, A4, A5, Letter, Legal, Tabloid or WxH such as 210mmx297mm.</td>
+</tr>
+<tr>
+<td><code>--landscape</code></td>
+<td>To PDF: turn the page size to landscape.</td>
+</tr>
+<tr>
+<td><code>--margins &lt;lengths&gt;</code></td>
+<td>To PDF: page margins, one length for all sides, two (top and bottom, then the sides) or four (top, right, bottom, left), such as 2cm or 20mm,15mm.</td>
+</tr>
+<tr>
+<td><code>--header &lt;text&gt;</code></td>
+<td>To PDF: a text header, left|center|right, with {page}, {total-pages}, {label}, {date}, {time}, {title} and {file}.</td>
+</tr>
+<tr>
+<td><code>--footer &lt;text&gt;</code></td>
+<td>To PDF: a text footer, as --header.</td>
+</tr>
+<tr>
+<td><code>--header-html &lt;html&gt;</code></td>
+<td>To PDF: an HTML header styled with the document's own CSS.</td>
+</tr>
+<tr>
+<td><code>--footer-html &lt;html&gt;</code></td>
+<td>To PDF: an HTML footer, as --header-html.</td>
+</tr>
+<tr>
+<td><code>--toc &lt;pages|no-pages&gt;</code></td>
+<td>To PDF: a table of contents at the start, with page numbers (pages) or without (no-pages).</td>
+</tr>
+<tr>
+<td><code>--pdfa &lt;level&gt;</code></td>
+<td>To PDF: write PDF/A, one of 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4 and 4f.</td>
+</tr>
+<tr>
+<td><code>--tagged</code></td>
+<td>To PDF: write a tagged PDF with a structure tree, for accessibility.</td>
+</tr>
+<tr>
+<td><code>--set &lt;key=value&gt;</code></td>
+<td>To PDF, any export setting as key=value: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua.</td>
+</tr>
+<tr>
+<td><code>--base-dir &lt;folder&gt;</code></td>
+<td>HTML and Markdown: the folder images and style sheets are read from; the input's folder by default.</td>
+</tr>
+<tr>
+<td><code>--allow-path &lt;folder&gt;</code></td>
+<td>HTML: a further folder resources may come from; give it once per folder.</td>
+</tr>
+<tr>
+<td><code>--allow-network</code></td>
+<td>HTML: fetch http and https resources (10 s and 50 MB each at most).</td>
+</tr>
+<tr>
+<td><code>--mode &lt;flow|exact&gt;</code></td>
+<td>From PDF: flow (reflowing text, the default) or exact (every line where it stands).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted PDF inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted PDF inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted PDF inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-text">egap text</h2>
+<p><code>egap text &lt;inputs&gt;... [options]</code></p>
+<p>Write the text of PDF pages: to standard output, or with -o to a file per input. Pages are separated by a form feed.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to read, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--order &lt;position|content&gt;</code></td>
+<td>position (reading order, the default) or content (the order the page draws text in).</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write lines and words with their boxes in points as JSON (schema 1, docs/schemas/egap-text-1.json).</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-render">egap render</h2>
+<p><code>egap render &lt;inputs&gt;... [options]</code></p>
+<p>Render PDF pages to images, one file per page, named by a template such as out/{name}-{page}.png.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to render, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--dpi &lt;dpi&gt;</code></td>
+<td>Dots per inch; 150 by default.</td>
+</tr>
+<tr>
+<td><code>--fit &lt;size&gt;</code></td>
+<td>Scale each page to fit a box in pixels instead of --dpi: W, xH or WxH.</td>
+</tr>
+<tr>
+<td><code>--format &lt;format&gt;</code>, <code>-f</code></td>
+<td>The image format when -o does not say: png, jpg, webp, tif.</td>
+</tr>
+<tr>
+<td><code>--transparent</code></td>
+<td>Leave the page background transparent instead of white (PNG, WebP, TIFF).</td>
+</tr>
+<tr>
+<td><code>--box &lt;box&gt;</code></td>
+<td>The page box to render: crop (the default), media, bleed, trim or art.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-merge">egap merge</h2>
+<p><code>egap merge &lt;inputs&gt;... [options]</code></p>
+<p>Join PDFs into one, in order, each with its own pages: a.pdf b.pdf#2-z c.pdf#1,3 -o all.pdf.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files or globs, in order, each optionally with its pages after a #, such as cover.pdf body.pdf#2-z appendix.pdf#1-3.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>The file to write, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--join-fields</code></td>
+<td>Join form fields of the same name into one field instead of renaming them apart.</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-split">egap split</h2>
+<p><code>egap split &lt;inputs&gt;... [options]</code></p>
+<p>Split PDFs into one file per page, per range, or every N pages, named by a template such as out/{name}-{page}.pdf.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--range &lt;range&gt;</code></td>
+<td>A part of its own, such as 1-3 or 4-z:odd; give it once per part. Without --range or --every, each page is a part.</td>
+</tr>
+<tr>
+<td><code>--every &lt;count&gt;</code></td>
+<td>Parts of this many pages each, the last part taking what is left.</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-pages">egap pages</h2>
+<p><code>egap pages &lt;inputs&gt;... [options]</code></p>
+<p>Select, reorder, rotate, delete and insert pages, and set page labels, applied in that order.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--select &lt;range&gt;</code></td>
+<td>Keep these pages in this order, such as 3,1,2 or 1-z,x5; a page named twice is copied.</td>
+</tr>
+<tr>
+<td><code>--delete &lt;range&gt;</code></td>
+<td>Remove these pages, such as 1 or 4-6.</td>
+</tr>
+<tr>
+<td><code>--rotate &lt;angle[:range]&gt;</code></td>
+<td>Turn pages by 90, 180 or 270 degrees (or -90), all of them or those after a colon: 90 or 90:2-4; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--blank &lt;page|end&gt;</code></td>
+<td>Insert a blank page, the size of its neighbour, before this page number, or at the end with end; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--label &lt;label&gt;</code></td>
+<td>Number pages from a page on: page:style[:prefix[:first]], style D (1, 2), r (i, ii), R (I, II), a, A or none, such as 1:r or 5:D::1; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-encrypt">egap encrypt</h2>
+<p><code>egap encrypt &lt;inputs&gt;... [options]</code></p>
+<p>Encrypt with AES-256: a user password to open the file, an owner password for full rights, and permissions.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--user-password &lt;text&gt;</code></td>
+<td>The password that opens the file (empty lets anyone open it). Prefer --user-password-env or --user-password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--user-password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens the file (empty lets anyone open it) from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--user-password-file &lt;path&gt;</code></td>
+<td>Read the password that opens the file (empty lets anyone open it) from the first line of this file.</td>
+</tr>
+<tr>
+<td><code>--owner-password &lt;text&gt;</code></td>
+<td>The password that unlocks every permission. Prefer --owner-password-env or --owner-password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--owner-password-env &lt;NAME&gt;</code></td>
+<td>Read the password that unlocks every permission from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--owner-password-file &lt;path&gt;</code></td>
+<td>Read the password that unlocks every permission from the first line of this file.</td>
+</tr>
+<tr>
+<td><code>--allow &lt;permissions&gt;</code></td>
+<td>What someone without the owner password may do: all (the default), none, or a list of print, print-high-quality, modify, assemble, copy-content, extract-for-accessibility, annotate, fill-forms.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-decrypt">egap decrypt</h2>
+<p><code>egap decrypt &lt;inputs&gt;... [options]</code></p>
+<p>Remove the encryption, given the owner password (or the user password when the file allows changes).</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-metadata">egap metadata</h2>
+<p>Show, set or strip document information, XMP and the outline (bookmarks).</p>
+<h2 id="egap-metadata-show">egap metadata show</h2>
+<p><code>egap metadata show &lt;inputs&gt;... [options]</code></p>
+<p>Show the document information, and with --xmp and --outline the XMP packet and the bookmarks.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write JSON (schema 1, docs/schemas/egap-metadata-1.json) instead of text.</td>
+</tr>
+<tr>
+<td><code>--xmp</code></td>
+<td>Also show the XMP packet.</td>
+</tr>
+<tr>
+<td><code>--outline</code></td>
+<td>Also show the outline (bookmarks).</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-metadata-set">egap metadata set</h2>
+<p><code>egap metadata set &lt;inputs&gt;... [options]</code></p>
+<p>Set document information fields, the XMP packet or the outline (bookmarks).</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--title &lt;text&gt;</code></td>
+<td>Set the title; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--author &lt;text&gt;</code></td>
+<td>Set the author; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--subject &lt;text&gt;</code></td>
+<td>Set the subject; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--keywords &lt;text&gt;</code></td>
+<td>Set the keywords; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--creator &lt;text&gt;</code></td>
+<td>Set the creator; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--producer &lt;text&gt;</code></td>
+<td>Set the producer; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--created &lt;date&gt;</code></td>
+<td>Set the creation date, ISO 8601 such as 2026-10-22T09:30:00Z.</td>
+</tr>
+<tr>
+<td><code>--modified &lt;date&gt;</code></td>
+<td>Set the modification date, ISO 8601; without it a change sets it to now.</td>
+</tr>
+<tr>
+<td><code>--xmp &lt;file&gt;</code></td>
+<td>Replace the XMP packet with this XML file.</td>
+</tr>
+<tr>
+<td><code>--outline &lt;file&gt;</code></td>
+<td>Replace the outline (bookmarks) with this JSON file, as metadata show --outline --json writes it.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-metadata-strip">egap metadata strip</h2>
+<p><code>egap metadata strip &lt;inputs&gt;... [options]</code></p>
+<p>Remove the document information and every XMP packet, the document's and each object's.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-optimize">egap optimize</h2>
+<p><code>egap optimize &lt;inputs&gt;... [options]</code></p>
+<p>Make PDFs smaller: a preset (lossless, print, ebook, screen) and its settings, such as --image-resolution 150.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--preset &lt;preset&gt;</code></td>
+<td>lossless (the default), print, ebook or screen.</td>
+</tr>
+<tr>
+<td><code>--image-resolution &lt;ppi&gt;</code></td>
+<td>Downsample images above this many pixels per inch.</td>
+</tr>
+<tr>
+<td><code>--downsample-threshold &lt;factor&gt;</code></td>
+<td>Downsample only images more than this many times the target resolution, such as 1.5.</td>
+</tr>
+<tr>
+<td><code>--jpeg-quality &lt;quality&gt;</code></td>
+<td>JPEG quality for recompressed images, 1 to 100.</td>
+</tr>
+<tr>
+<td><code>--lossy-images</code></td>
+<td>Allow lossy recompression of images (true or false).</td>
+</tr>
+<tr>
+<td><code>--optimize-images</code></td>
+<td>Recompress and downsample images (true or false).</td>
+</tr>
+<tr>
+<td><code>--subset-fonts</code></td>
+<td>Keep only the glyphs used of embedded fonts (true or false).</td>
+</tr>
+<tr>
+<td><code>--merge-duplicates</code></td>
+<td>Store identical images, fonts and other streams once (true or false).</td>
+</tr>
+<tr>
+<td><code>--remove-thumbnails</code></td>
+<td>Remove page thumbnails (true or false).</td>
+</tr>
+<tr>
+<td><code>--remove-private-data</code></td>
+<td>Remove private application data (true or false).</td>
+</tr>
+<tr>
+<td><code>--remove-empty-content</code></td>
+<td>Remove content streams that draw nothing (true or false).</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-impose">egap impose</h2>
+<p><code>egap impose &lt;inputs&gt;... [options]</code></p>
+<p>Lay pages out on sheets: --nup 2x1, --booklet, --poster A4, --grid 3 or --fit A4.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--nup &lt;columns x rows&gt;</code></td>
+<td>Several pages on each sheet, CxR such as 2x1 or 2x2.</td>
+</tr>
+<tr>
+<td><code>--booklet</code></td>
+<td>Fold-and-staple booklet order, two pages on each side of a sheet.</td>
+</tr>
+<tr>
+<td><code>--poster &lt;size&gt;</code></td>
+<td>Spread each page over tiles of this size, such as A4.</td>
+</tr>
+<tr>
+<td><code>--grid &lt;columns&gt;</code></td>
+<td>Pages in a grid of this many columns on one tall sheet.</td>
+</tr>
+<tr>
+<td><code>--fit &lt;size&gt;</code></td>
+<td>Scale every page to fit this size, such as A4 or Letter.</td>
+</tr>
+<tr>
+<td><code>--sheet &lt;size&gt;</code></td>
+<td>The sheet size for --nup and --booklet, such as A3; by default the pages' size.</td>
+</tr>
+<tr>
+<td><code>--margin &lt;length&gt;</code></td>
+<td>The margin around the sheet, such as 10mm.</td>
+</tr>
+<tr>
+<td><code>--gutter &lt;length&gt;</code></td>
+<td>The space between pages, such as 5mm.</td>
+</tr>
+<tr>
+<td><code>--border</code></td>
+<td>Draw a thin border around each page.</td>
+</tr>
+<tr>
+<td><code>--order &lt;order&gt;</code></td>
+<td>The order on a sheet: across (the default), across-rtl, down or down-rtl.</td>
+</tr>
+<tr>
+<td><code>--auto-rotate</code></td>
+<td>Turn pages to make the best use of the sheet.</td>
+</tr>
+<tr>
+<td><code>--binding &lt;edge&gt;</code></td>
+<td>The booklet's binding edge: left (the default) or right.</td>
+</tr>
+<tr>
+<td><code>--sheets-per-signature &lt;count&gt;</code></td>
+<td>Sheets folded together per booklet signature; 0 for one signature.</td>
+</tr>
+<tr>
+<td><code>--overlap &lt;length&gt;</code></td>
+<td>How far poster tiles overlap, such as 10mm.</td>
+</tr>
+<tr>
+<td><code>--scale &lt;factor&gt;</code></td>
+<td>How much to enlarge a poster, such as 2.</td>
+</tr>
+<tr>
+<td><code>--cut-marks</code></td>
+<td>Draw cut marks on poster tiles.</td>
+</tr>
+<tr>
+<td><code>--labels</code></td>
+<td>Label each poster tile with its row and column.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-stamp">egap stamp</h2>
+<p><code>egap stamp &lt;inputs&gt;... [options]</code></p>
+<p>Stamp pages with text, page numbers, a watermark, an image, a barcode or Bates numbers; or --remove earlier stamps.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--text &lt;template&gt;</code></td>
+<td>Text with {page}, {total-pages}, {label}, {date}, {time}, {title} and {file}, such as &quot;Page {page} of {total-pages}&quot;.</td>
+</tr>
+<tr>
+<td><code>--page-numbers</code></td>
+<td>&quot;Page {page} of {total-pages}&quot; at the bottom centre.</td>
+</tr>
+<tr>
+<td><code>--watermark &lt;text&gt;</code></td>
+<td>Large faint text across the middle of each page, such as DRAFT.</td>
+</tr>
+<tr>
+<td><code>--image &lt;file&gt;</code></td>
+<td>An image file (PNG, JPEG, SVG and the other formats Egami reads); give --width.</td>
+</tr>
+<tr>
+<td><code>--barcode &lt;format:data&gt;</code></td>
+<td>A barcode, format:data such as qr:https://example.com or code128:A-123; give --width.</td>
+</tr>
+<tr>
+<td><code>--bates &lt;prefix&gt;</code></td>
+<td>Bates numbers with this prefix, such as ACME-; numbering goes on across the files of a batch, one file at a time in input order.</td>
+</tr>
+<tr>
+<td><code>--bates-digits &lt;count&gt;</code></td>
+<td>Digits in a Bates number; 6 by default.</td>
+</tr>
+<tr>
+<td><code>--bates-start &lt;number&gt;</code></td>
+<td>The first Bates number; 1 by default.</td>
+</tr>
+<tr>
+<td><code>--remove</code></td>
+<td>Remove the stamps egap and Egap added before.</td>
+</tr>
+<tr>
+<td><code>--anchor &lt;place&gt;</code></td>
+<td>Where on the page: top-left, top-center, top-right, middle-left, center, middle-right, bottom-left, bottom-center or bottom-right.</td>
+</tr>
+<tr>
+<td><code>--offset &lt;x,y&gt;</code></td>
+<td>Move from the anchor, x right and y up, such as 10mm,15mm.</td>
+</tr>
+<tr>
+<td><code>--width &lt;length&gt;</code></td>
+<td>The image's or barcode's width, such as 40mm.</td>
+</tr>
+<tr>
+<td><code>--height &lt;length&gt;</code></td>
+<td>The image's or barcode's height; by default from its shape.</td>
+</tr>
+<tr>
+<td><code>--font-size &lt;points&gt;</code></td>
+<td>Text size in points.</td>
+</tr>
+<tr>
+<td><code>--color &lt;color&gt;</code></td>
+<td>Text color, such as #c00 or #336699.</td>
+</tr>
+<tr>
+<td><code>--opacity &lt;0-1&gt;</code></td>
+<td>From 0 (invisible) to 1 (solid).</td>
+</tr>
+<tr>
+<td><code>--rotation &lt;degrees&gt;</code></td>
+<td>Degrees, counterclockwise.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to stamp, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--under</code></td>
+<td>Put the stamp under the page's content instead of over it.</td>
+</tr>
+<tr>
+<td><code>--layer &lt;name&gt;</code></td>
+<td>Put the stamp on a layer of this name, which viewers can hide.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-compare">egap compare</h2>
+<p><code>egap compare &lt;old&gt; &lt;new&gt; [options]</code></p>
+<p>Show what changed between two PDFs, in text and in how pages look; exit code 1 when they differ.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;old&gt;</code></td>
+<td>The earlier PDF.</td>
+</tr>
+<tr>
+<td><code>&lt;new&gt;</code></td>
+<td>The later PDF.</td>
+</tr>
+<tr>
+<td><code>--text-only</code></td>
+<td>Compare the text only.</td>
+</tr>
+<tr>
+<td><code>--visual-only</code></td>
+<td>Compare how the pages look only.</td>
+</tr>
+<tr>
+<td><code>--dpi &lt;dpi&gt;</code></td>
+<td>The resolution pages are compared at; 72 by default.</td>
+</tr>
+<tr>
+<td><code>--tolerance &lt;level&gt;</code></td>
+<td>How much a pixel's channels may differ and still count as the same, 0 to 255.</td>
+</tr>
+<tr>
+<td><code>--min-changed-pixels &lt;count&gt;</code></td>
+<td>The fewest changed pixels that make a page differ.</td>
+</tr>
+<tr>
+<td><code>--markup &lt;file&gt;</code></td>
+<td>Write the new PDF with the changes marked to this file.</td>
+</tr>
+<tr>
+<td><code>--diff-images &lt;folder&gt;</code></td>
+<td>Write a difference image per changed page into this folder.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write the changes as JSON (schema 1, docs/schemas/egap-compare-1.json).</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens the old file (and the new one, unless --new-password is given). Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens the old file (and the new one, unless --new-password is given) from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens the old file (and the new one, unless --new-password is given) from the first line of this file.</td>
+</tr>
+<tr>
+<td><code>--new-password &lt;text&gt;</code></td>
+<td>The password that opens the new file. Prefer --new-password-env or --new-password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--new-password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens the new file from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--new-password-file &lt;path&gt;</code></td>
+<td>Read the password that opens the new file from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-redact">egap redact</h2>
+<p><code>egap redact &lt;inputs&gt;... [options]</code></p>
+<p>Remove text by phrase or pattern, and areas by rectangle, for real; the file is written whole.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--text &lt;phrase&gt;</code></td>
+<td>A phrase to remove; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--regex &lt;pattern&gt;</code></td>
+<td>A .NET regular expression to remove, such as \d{3}-\d{2}-\d{4}; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--rect &lt;page:x,y,w,h&gt;</code></td>
+<td>An area to remove, page:left,bottom,width,height in lengths from the page's lower left corner, such as 1:20mm,250mm,80mm,10mm; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--match-case</code></td>
+<td>Match --text with the case as written.</td>
+</tr>
+<tr>
+<td><code>--whole-word</code></td>
+<td>Match --text only as whole words.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to search, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--mark-only</code></td>
+<td>Only mark the areas with redaction annotations, for review; remove nothing yet.</td>
+</tr>
+<tr>
+<td><code>--images &lt;how&gt;</code></td>
+<td>Image parts under an area: pixels (blacked out, the default), remove (the whole image) or none.</td>
+</tr>
+<tr>
+<td><code>--paths &lt;how&gt;</code></td>
+<td>Vector paths: covered (removed when fully covered, the default), touched (removed when touched) or none.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-sanitize">egap sanitize</h2>
+<p><code>egap sanitize &lt;inputs&gt;... [options]</code></p>
+<p>Strip hidden data: JavaScript and actions, attachments, metadata, hidden layers, comments, form data, thumbnails and private data.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--keep &lt;kinds&gt;</code></td>
+<td>What to leave in, a list of metadata, javascript, attachments, hidden-layers, comments, form-data, thumbnails, private-data.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-form">egap form</h2>
+<p>List, fill, flatten and reset the form fields of PDFs.</p>
+<h2 id="egap-form-list">egap form list</h2>
+<p><code>egap form list &lt;inputs&gt;... [options]</code></p>
+<p>List the form fields: name, kind, value, choices, and whether each is read-only or required.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write JSON (schema 1, docs/schemas/egap-form-1.json); its values can be edited and given to form fill.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-form-fill">egap form fill</h2>
+<p><code>egap form fill &lt;inputs&gt;... [options]</code></p>
+<p>Fill form fields from a JSON file or --set name=value; --flatten fixes the values into the page.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--data &lt;file&gt;</code></td>
+<td>A JSON file of values: { &quot;name&quot;: &quot;Ada&quot;, &quot;subscribe&quot;: true, &quot;colours&quot;: [ &quot;red&quot; ] }, or the output of form list --json.</td>
+</tr>
+<tr>
+<td><code>--set &lt;name=value&gt;</code></td>
+<td>One value, name=value; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--flatten</code></td>
+<td>Flatten the form after filling it, so the values become page content.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-form-flatten">egap form flatten</h2>
+<p><code>egap form flatten &lt;inputs&gt;... [options]</code></p>
+<p>Draw form fields into the page and remove them from the form, so the values can no longer change.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--field &lt;name&gt;</code></td>
+<td>Flatten only this field; give it more than once. All fields by default.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-form-reset">egap form reset</h2>
+<p><code>egap form reset &lt;inputs&gt;... [options]</code></p>
+<p>Set form fields back to their default values.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--field &lt;name&gt;</code></td>
+<td>Reset only this field; give it more than once. All fields by default.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-attach">egap attach</h2>
+<p>List, add, extract and remove the files embedded in PDFs.</p>
+<h2 id="egap-attach-list">egap attach list</h2>
+<p><code>egap attach list &lt;inputs&gt;... [options]</code></p>
+<p>List the embedded files: name, size, type, relationship and description.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-attach-add">egap attach add</h2>
+<p><code>egap attach add &lt;inputs&gt;... [options]</code></p>
+<p>Embed files in PDFs; --relationship makes them PDF/A-3 associated files.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--file &lt;path&gt;</code></td>
+<td>A file to embed; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--name &lt;name&gt;</code></td>
+<td>The name to embed a single file under; its own name by default.</td>
+</tr>
+<tr>
+<td><code>--description &lt;text&gt;</code></td>
+<td>A description shown by viewers.</td>
+</tr>
+<tr>
+<td><code>--mime-type &lt;type&gt;</code></td>
+<td>The file's media type, such as text/csv.</td>
+</tr>
+<tr>
+<td><code>--relationship &lt;kind&gt;</code></td>
+<td>Make it a PDF/A-3 associated file: source, data, alternative, supplement, encrypted-payload, form-data, schema or unspecified.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-attach-extract">egap attach extract</h2>
+<p><code>egap attach extract &lt;inputs&gt;... [options]</code></p>
+<p>Write embedded files out, each under its own name, byte for byte.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;folder&gt;</code>, <code>-o</code></td>
+<td>The folder to write into; with several inputs, a template such as out/{name}/.</td>
+</tr>
+<tr>
+<td><code>--name &lt;name&gt;</code></td>
+<td>Extract only this attachment; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-attach-remove">egap attach remove</h2>
+<p><code>egap attach remove &lt;inputs&gt;... [options]</code></p>
+<p>Remove embedded files by name.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--name &lt;name&gt;</code></td>
+<td>The attachment to remove; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-invoice">egap invoice</h2>
+<p>Embed or read a ZUGFeRD or Factur-X e-invoice: the XML inside a PDF/A-3.</p>
+<h2 id="egap-invoice-embed">egap invoice embed</h2>
+<p><code>egap invoice embed &lt;inputs&gt;... [options]</code></p>
+<p>Embed a ZUGFeRD or Factur-X e-invoice XML and the PDF/A-3 metadata it needs.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--xml &lt;file&gt;</code></td>
+<td>The invoice XML (Cross Industry Invoice).</td>
+</tr>
+<tr>
+<td><code>--standard &lt;standard&gt;</code></td>
+<td>factur-x (the default), zugferd20 or zugferd10.</td>
+</tr>
+<tr>
+<td><code>--profile &lt;profile&gt;</code></td>
+<td>minimum, basic-wl, basic, en16931, extended or xrechnung; read from the XML by default.</td>
+</tr>
+<tr>
+<td><code>--pdfa &lt;level&gt;</code></td>
+<td>The PDF/A-3 level to claim: 3b (the default), 3u or 3a.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-invoice-read">egap invoice read</h2>
+<p><code>egap invoice read &lt;input&gt; [options]</code></p>
+<p>Write the e-invoice XML a PDF carries, and say which standard and profile it follows.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;input&gt;</code></td>
+<td>The PDF.</td>
+</tr>
+<tr>
+<td><code>--output &lt;file&gt;</code>, <code>-o</code></td>
+<td>Write the XML to this file instead of standard output.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens an encrypted input. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens an encrypted input from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens an encrypted input from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-sign">egap sign</h2>
+<p><code>egap sign &lt;inputs&gt;... [options]</code></p>
+<p>Sign PDFs: PAdES B-B to B-LTA from a PFX, a PEM certificate and key, or the certificate store; always an incremental update.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--cert &lt;file&gt;</code></td>
+<td>The certificate: a PFX (.pfx, .p12) with its key, or a PEM certificate with --key.</td>
+</tr>
+<tr>
+<td><code>--key &lt;file&gt;</code></td>
+<td>The PEM private key that goes with a PEM --cert.</td>
+</tr>
+<tr>
+<td><code>--cert-store &lt;thumbprint&gt;</code></td>
+<td>Sign with the certificate of this SHA-1 thumbprint from the user's store (Windows and macOS).</td>
+</tr>
+<tr>
+<td><code>--chain &lt;file&gt;</code></td>
+<td>A PEM or DER certificate to include in the chain; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--level &lt;level&gt;</code></td>
+<td>PAdES level: b-b (the default), b-t (with a timestamp), b-lt (plus revocation data) or b-lta (plus an archive timestamp).</td>
+</tr>
+<tr>
+<td><code>--timestamp &lt;url&gt;</code></td>
+<td>The RFC 3161 timestamp authority's URL, needed for b-t, b-lt and b-lta.</td>
+</tr>
+<tr>
+<td><code>--reason &lt;text&gt;</code></td>
+<td>Why it was signed.</td>
+</tr>
+<tr>
+<td><code>--location &lt;text&gt;</code></td>
+<td>Where it was signed.</td>
+</tr>
+<tr>
+<td><code>--contact &lt;text&gt;</code></td>
+<td>How to reach the signer.</td>
+</tr>
+<tr>
+<td><code>--name &lt;text&gt;</code></td>
+<td>The signer's name as shown; the certificate's by default.</td>
+</tr>
+<tr>
+<td><code>--field &lt;name&gt;</code></td>
+<td>The signature field to sign; a new invisible one, Signature<n>, by default.</n></td>
+</tr>
+<tr>
+<td><code>--visible &lt;page:x,y,w,h&gt;</code></td>
+<td>Show the signature: page:x,y,width,height in lengths from the page's top left, such as 1:20mm,250mm,60mm,20mm.</td>
+</tr>
+<tr>
+<td><code>--image &lt;file&gt;</code></td>
+<td>A picture shown at the left of a visible signature, such as a scanned signature.</td>
+</tr>
+<tr>
+<td><code>--certify &lt;allowed&gt;</code></td>
+<td>Make it a certification signature that allows no-changes, form-filling or annotations afterwards.</td>
+</tr>
+<tr>
+<td><code>--pkcs7</code></td>
+<td>Write an adbe.pkcs7.detached signature instead of PAdES (ETSI.CAdES.detached).</td>
+</tr>
+<tr>
+<td><code>--digest &lt;algorithm&gt;</code></td>
+<td>The digest: sha256 (the default), sha384 or sha512.</td>
+</tr>
+<tr>
+<td><code>--rsa-pss</code></td>
+<td>Sign with RSASSA-PSS instead of PKCS #1 v1.5 (RSA keys).</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Sign even when the change breaks an earlier signature's permissions.</td>
+</tr>
+<tr>
+<td><code>--cert-password &lt;text&gt;</code></td>
+<td>The password of the PFX file or the encrypted PEM key. Prefer --cert-password-env or --cert-password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--cert-password-env &lt;NAME&gt;</code></td>
+<td>Read the password of the PFX file or the encrypted PEM key from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--cert-password-file &lt;path&gt;</code></td>
+<td>Read the password of the PFX file or the encrypted PEM key from the first line of this file.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-verify">egap verify</h2>
+<p><code>egap verify &lt;inputs&gt;... [options]</code></p>
+<p>Check every signature of PDFs: integrity, chain, timestamp, revocation and what changed after it; exit code 1 when one fails or a file has none.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--trust &lt;file&gt;</code></td>
+<td>A root certificate to trust, PEM or DER; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--system-trust</code></td>
+<td>Also trust the operating system's root certificates.</td>
+</tr>
+<tr>
+<td><code>--extra &lt;file&gt;</code></td>
+<td>A certificate that may complete a chain the file leaves out; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--online</code></td>
+<td>Fetch OCSP responses and CRLs the file does not carry (network).</td>
+</tr>
+<tr>
+<td><code>--at &lt;time&gt;</code></td>
+<td>Check as of this time instead of now, ISO 8601.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write JSON (schema 1, docs/schemas/egap-verify-1.json).</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-pdfa">egap pdfa</h2>
+<p>Check PDFs against PDF/A or PDF/UA, or convert them to PDF/A.</p>
+<h2 id="egap-pdfa-check">egap pdfa check</h2>
+<p><code>egap pdfa check &lt;inputs&gt;... [options]</code></p>
+<p>Check PDFs against PDF/A or, with --ua, PDF/UA; exit code 1 when a clause is not met.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--level &lt;level&gt;</code></td>
+<td>The PDF/A level to check against: 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4 or 4f; the file's claim by default.</td>
+</tr>
+<tr>
+<td><code>--ua</code></td>
+<td>Check PDF/UA (accessibility) instead of PDF/A.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write JSON (schema 1, docs/schemas/egap-pdfa-1.json).</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-pdfa-convert">egap pdfa convert</h2>
+<p><code>egap pdfa convert &lt;inputs&gt;... [options]</code></p>
+<p>Convert to PDF/A: embed fonts, add an output intent and XMP, remove what PDF/A forbids; fails the file when a clause cannot be met.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--level &lt;level&gt;</code></td>
+<td>1b, 2a, 2b, 2u, 3a, 3b, 3u, 4 or 4f; the best the file can meet by default.</td>
+</tr>
+<tr>
+<td><code>--icc &lt;file&gt;</code></td>
+<td>The output intent's ICC profile; sRGB by default.</td>
+</tr>
+<tr>
+<td><code>--output-condition &lt;name&gt;</code></td>
+<td>The output condition's name, such as FOGRA39.</td>
+</tr>
+<tr>
+<td><code>--allow-font-substitution</code></td>
+<td>Embed a stand-in for a font the file does not embed.</td>
+</tr>
+<tr>
+<td><code>--system-fonts</code></td>
+<td>Look for fonts the file does not embed among the system's fonts.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-ocr-layer">egap ocr-layer</h2>
+<p><code>egap ocr-layer &lt;inputs&gt;... [options]</code></p>
+<p>Add an invisible, searchable text layer from hOCR or ALTO files (from Tesseract, ABBYY and the like), one per page.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--hocr &lt;template&gt;</code></td>
+<td>hOCR files, one per page, named by a template such as scan-{page}.hocr ({page} from 1).</td>
+</tr>
+<tr>
+<td><code>--alto &lt;template&gt;</code></td>
+<td>ALTO XML files, one per page, named as --hocr.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to add text to, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-clean">egap clean</h2>
+<p><code>egap clean &lt;inputs&gt;... [options]</code></p>
+<p>Tidy scans and prints: --grayscale, --remove-blank-pages, --deskew and --text-to-outlines, in that order.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--grayscale</code></td>
+<td>Turn every color to gray.</td>
+</tr>
+<tr>
+<td><code>--remove-blank-pages</code></td>
+<td>Remove pages with next to no ink.</td>
+</tr>
+<tr>
+<td><code>--blank-ink &lt;fraction&gt;</code></td>
+<td>The most ink, as a fraction of the page, that still counts as blank, such as 0.002.</td>
+</tr>
+<tr>
+<td><code>--deskew</code></td>
+<td>Straighten scanned pages that are a little crooked.</td>
+</tr>
+<tr>
+<td><code>--max-angle &lt;degrees&gt;</code></td>
+<td>The largest tilt --deskew corrects, in degrees.</td>
+</tr>
+<tr>
+<td><code>--text-to-outlines</code></td>
+<td>Turn text into outlines, so it prints the same everywhere and needs no fonts (it can no longer be searched).</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-merge-data">egap merge-data</h2>
+<p><code>egap merge-data &lt;template&gt; [options]</code></p>
+<p>Mail merge a DOCX template with JSON or CSV records, into one PDF or DOCX, or one file per record.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;template&gt;</code></td>
+<td>The DOCX template, with MERGEFIELD fields and regions.</td>
+</tr>
+<tr>
+<td><code>--data &lt;file&gt;</code></td>
+<td>The records: a JSON array of objects (nested arrays fill regions) or a CSV file with a header row.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>The file to write (.pdf or .docx); with --each, a template such as out/letter-{index}.pdf.</td>
+</tr>
+<tr>
+<td><code>--each</code></td>
+<td>Write one file per record; {index} counts records from 0.</td>
+</tr>
+<tr>
+<td><code>--name-field &lt;field&gt;</code></td>
+<td>With --each, name each file by this field of its record, in place of {name}.</td>
+</tr>
+<tr>
+<td><code>--remove-empty-paragraphs</code></td>
+<td>Drop paragraphs left empty by fields without a value.</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-preflight">egap preflight</h2>
+<p><code>egap preflight &lt;inputs&gt;... [options]</code></p>
+<p>Check PDFs for print: output intent, color spaces, image resolution, fonts, transparency, overprint, hairlines, bleed and ink coverage; exit code 1 when a check fails.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--profile &lt;profile&gt;</code></td>
+<td>The checks: pdf-x4 (the default), sheetfed-coated, web-offset or newspaper.</td>
+</tr>
+<tr>
+<td><code>--max-ink &lt;percent&gt;</code></td>
+<td>The most total ink coverage allowed, in percent, such as 300.</td>
+</tr>
+<tr>
+<td><code>--min-image-dpi &lt;dpi&gt;</code></td>
+<td>The lowest image resolution allowed.</td>
+</tr>
+<tr>
+<td><code>--min-line-width &lt;length&gt;</code></td>
+<td>The thinnest line allowed, such as 0.25pt.</td>
+</tr>
+<tr>
+<td><code>--bleed &lt;length&gt;</code></td>
+<td>The bleed every page needs, such as 3mm.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write JSON (schema 1, docs/schemas/egap-preflight-1.json).</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-pdfx">egap pdfx</h2>
+<p>Check PDFs against PDF/X, or convert them to PDF/X.</p>
+<h2 id="egap-pdfx-check">egap pdfx check</h2>
+<p><code>egap pdfx check &lt;inputs&gt;... [options]</code></p>
+<p>Check PDFs against a PDF/X level; exit code 1 when a clause is not met.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--level &lt;level&gt;</code></td>
+<td>The PDF/X level: x-1a, x-3, x-4 (the default), x-4p, x-5g, x-5pg, x-5n, x-6, x-6p or x-6n.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write JSON (schema 1, docs/schemas/egap-pdfa-1.json, which pdfx shares).</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-pdfx-convert">egap pdfx convert</h2>
+<p><code>egap pdfx convert &lt;inputs&gt;... [options]</code></p>
+<p>Convert to PDF/X: an output intent, colors in its CMYK where the level needs it, embedded fonts, page boxes; fails the file when a clause cannot be met.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--level &lt;level&gt;</code></td>
+<td>The PDF/X level: x-1a, x-3, x-4 (the default), x-4p, x-5g, x-5pg, x-5n, x-6, x-6p or x-6n.</td>
+</tr>
+<tr>
+<td><code>--output-condition &lt;name&gt;</code></td>
+<td>The printing condition: FOGRA39, FOGRA51, FOGRA52, GRACoL2013, SWOP2013 or newspaper.</td>
+</tr>
+<tr>
+<td><code>--icc &lt;file&gt;</code></td>
+<td>The output intent's ICC profile, for a condition egap does not bundle.</td>
+</tr>
+<tr>
+<td><code>--bleed &lt;length&gt;</code></td>
+<td>Add a bleed box this far around the trim box, such as 3mm.</td>
+</tr>
+<tr>
+<td><code>--trapped</code></td>
+<td>Say the file has been trapped.</td>
+</tr>
+<tr>
+<td><code>--allow-font-substitution</code></td>
+<td>Embed a stand-in for a font the file does not embed.</td>
+</tr>
+<tr>
+<td><code>--system-fonts</code></td>
+<td>Look for fonts the file does not embed among the system's fonts.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-separations">egap separations</h2>
+<p><code>egap separations &lt;inputs&gt;... [options]</code></p>
+<p>Render each page as one gray image per ink (cyan, magenta, yellow, black and each spot color), with the total area coverage.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;folder&gt;</code>, <code>-o</code></td>
+<td>The folder for the plates, written as <name>-<page>-<plate>.png.</plate></page></name></td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to separate, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--dpi &lt;dpi&gt;</code></td>
+<td>The resolution of the plates; 150 by default.</td>
+</tr>
+<tr>
+<td><code>--coverage</code></td>
+<td>Also write a heat map of the total area coverage, <name>-<page>-coverage.png.</page></name></td>
+</tr>
+<tr>
+<td><code>--limit-tac &lt;percent&gt;</code></td>
+<td>The total area coverage the heat map marks as too much, in percent; 300 by default.</td>
+</tr>
+<tr>
+<td><code>--no-plates</code></td>
+<td>Write no plate images, only the coverage (with --coverage or --json).</td>
+</tr>
+<tr>
+<td><code>--spots-to-process</code></td>
+<td>Print spot colors with process inks instead of plates of their own.</td>
+</tr>
+<tr>
+<td><code>--disable-spot &lt;name&gt;</code></td>
+<td>Leave out this spot plate; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write each page's coverage per plate and its total area coverage as JSON (schema 1, docs/schemas/egap-separations-1.json).</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-color">egap color</h2>
+<p><code>egap color &lt;inputs&gt;... [options]</code></p>
+<p>Convert RGB, Lab, gray and ICC colors to the output intent's CMYK, or another CMYK; spot colors on request.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--target &lt;condition|file&gt;</code></td>
+<td>The CMYK to convert to: an output condition (FOGRA39, GRACoL2013, ...) or an ICC file; the file's output intent by default.</td>
+</tr>
+<tr>
+<td><code>--intent &lt;intent&gt;</code></td>
+<td>relative (the default), perceptual, saturation or absolute.</td>
+</tr>
+<tr>
+<td><code>--black-point-compensation</code></td>
+<td>Map black to black (true or false).</td>
+</tr>
+<tr>
+<td><code>--black-text &lt;how&gt;</code></td>
+<td>Black text and thin rules: pure (100% K, the default) or colorimetric.</td>
+</tr>
+<tr>
+<td><code>--spots &lt;how&gt;</code></td>
+<td>Spot colors: keep (the default), convert, or convert-but-kept with --keep-spot.</td>
+</tr>
+<tr>
+<td><code>--keep-spot &lt;name&gt;</code></td>
+<td>A spot color to keep with --spots convert-but-kept; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--retarget-cmyk</code></td>
+<td>Also convert CMYK that was made for another printing condition.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-run">egap run</h2>
+<p><code>egap run &lt;inputs-and-steps&gt;... [options]</code></p>
+<p>Run steps over PDFs, separated by +: 'egap run in.pdf pages --rotate 90:1 + metadata --title Report + save out.pdf --linearize'. Every edit command is a step ('egap run --list'); save writes, and may come more than once.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs-and-steps&gt;</code></td>
+<td>Inputs (files, globs, -), then steps separated by +.</td>
+</tr>
+<tr>
+<td><code>--workflow &lt;file&gt;</code>, <code>-w</code></td>
+<td>Take the steps from a JSON workflow file (egap-workflow-1.json).</td>
+</tr>
+<tr>
+<td><code>--save-workflow &lt;file&gt;</code></td>
+<td>Write the steps to a JSON workflow file, then run them unless --dry-run.</td>
+</tr>
+<tr>
+<td><code>--dry-run</code></td>
+<td>Print the steps and the files each input would write, and stop.</td>
+</tr>
+<tr>
+<td><code>--list</code></td>
+<td>List every step with its options; --list <step> shows one.</step></td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 for one per processor.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Allow a save to replace its input.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable; --password-file and --password work too.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-mcp">egap mcp</h2>
+<p><code>egap mcp [options]</code></p>
+<p>Serve egap's commands as tools to an AI assistant over the Model Context Protocol, on standard input and output. Tools read and write only inside the folders the assistant opened and those given with --allow, and never replace an input unless asked.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--allow &lt;folder&gt;</code></td>
+<td>A folder the tools may read and write, besides the folders the assistant opened; give it once per folder. With neither, the working folder.</td>
+</tr>
+<tr>
+<td><code>--max-inputs &lt;count&gt;</code></td>
+<td>The most files one tool call may take; 1000 by default.</td>
+</tr>
+<tr>
+<td><code>--allow-sign</code></td>
+<td>Offer the sign, encrypt and decrypt tools, and the encrypt and decrypt steps of run.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="run-steps">run steps</h2>
+<p>The steps <code>egap run</code> chains with <code>+</code>, each with the options of its command; a workflow file names them the same way,
+without the dashes.</p>
+<h3 id="pages">pages</h3>
+<p>Select, reorder, rotate, delete and insert pages, and set page labels, applied in that order.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--select &lt;range&gt;</code></td>
+<td>Keep these pages in this order, such as 3,1,2 or 1-z,x5; a page named twice is copied.</td>
+</tr>
+<tr>
+<td><code>--delete &lt;range&gt;</code></td>
+<td>Remove these pages, such as 1 or 4-6.</td>
+</tr>
+<tr>
+<td><code>--rotate &lt;angle[:range]&gt;</code></td>
+<td>Turn pages by 90, 180 or 270 degrees (or -90), all of them or those after a colon: 90 or 90:2-4; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--blank &lt;page|end&gt;</code></td>
+<td>Insert a blank page, the size of its neighbour, before this page number, or at the end with end; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--label &lt;label&gt;</code></td>
+<td>Number pages from a page on: page:style[:prefix[:first]], style D (1, 2), r (i, ii), R (I, II), a, A or none, such as 1:r or 5:D::1; give it more than once.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="append">append</h3>
+<p>Add the pages of other PDFs at the end, each with its own pages after a #, as merge takes them.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;files&gt;</code></td>
+<td>PDF files or globs, each optionally with its pages after a #, such as appendix.pdf#1-3.</td>
+</tr>
+<tr>
+<td><code>--join-fields</code></td>
+<td>Join form fields of the same name into one field instead of renaming them apart.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="metadata">metadata</h3>
+<p>Set document information fields, the XMP packet or the outline (bookmarks).</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--title &lt;text&gt;</code></td>
+<td>Set the title; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--author &lt;text&gt;</code></td>
+<td>Set the author; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--subject &lt;text&gt;</code></td>
+<td>Set the subject; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--keywords &lt;text&gt;</code></td>
+<td>Set the keywords; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--creator &lt;text&gt;</code></td>
+<td>Set the creator; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--producer &lt;text&gt;</code></td>
+<td>Set the producer; an empty value removes it.</td>
+</tr>
+<tr>
+<td><code>--created &lt;date&gt;</code></td>
+<td>Set the creation date, ISO 8601 such as 2026-10-22T09:30:00Z.</td>
+</tr>
+<tr>
+<td><code>--modified &lt;date&gt;</code></td>
+<td>Set the modification date, ISO 8601; without it a change sets it to now.</td>
+</tr>
+<tr>
+<td><code>--xmp &lt;file&gt;</code></td>
+<td>Replace the XMP packet with this XML file.</td>
+</tr>
+<tr>
+<td><code>--outline &lt;file&gt;</code></td>
+<td>Replace the outline (bookmarks) with this JSON file, as metadata show --outline --json writes it.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="strip-metadata">strip-metadata</h3>
+<p>Remove the document information and every XMP packet, the document's and each object's.</p>
+<h3 id="encrypt">encrypt</h3>
+<p>Encrypt with AES-256: a user password to open the file, an owner password for full rights, and permissions.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--user-password &lt;text&gt;</code></td>
+<td>The password that opens the file (empty lets anyone open it). Prefer --user-password-env or --user-password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--user-password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens the file (empty lets anyone open it) from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--user-password-file &lt;path&gt;</code></td>
+<td>Read the password that opens the file (empty lets anyone open it) from the first line of this file.</td>
+</tr>
+<tr>
+<td><code>--owner-password &lt;text&gt;</code></td>
+<td>The password that unlocks every permission. Prefer --owner-password-env or --owner-password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--owner-password-env &lt;NAME&gt;</code></td>
+<td>Read the password that unlocks every permission from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--owner-password-file &lt;path&gt;</code></td>
+<td>Read the password that unlocks every permission from the first line of this file.</td>
+</tr>
+<tr>
+<td><code>--allow &lt;permissions&gt;</code></td>
+<td>What someone without the owner password may do: all (the default), none, or a list of print, print-high-quality, modify, assemble, copy-content, extract-for-accessibility, annotate, fill-forms.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="decrypt">decrypt</h3>
+<p>Remove the encryption, given the owner password (or the user password when the file allows changes).</p>
+<h3 id="optimize">optimize</h3>
+<p>Make PDFs smaller: a preset (lossless, print, ebook, screen) and its settings, such as --image-resolution 150.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--preset &lt;preset&gt;</code></td>
+<td>lossless (the default), print, ebook or screen.</td>
+</tr>
+<tr>
+<td><code>--image-resolution &lt;ppi&gt;</code></td>
+<td>Downsample images above this many pixels per inch.</td>
+</tr>
+<tr>
+<td><code>--downsample-threshold &lt;factor&gt;</code></td>
+<td>Downsample only images more than this many times the target resolution, such as 1.5.</td>
+</tr>
+<tr>
+<td><code>--jpeg-quality &lt;quality&gt;</code></td>
+<td>JPEG quality for recompressed images, 1 to 100.</td>
+</tr>
+<tr>
+<td><code>--lossy-images</code></td>
+<td>Allow lossy recompression of images (true or false).</td>
+</tr>
+<tr>
+<td><code>--optimize-images</code></td>
+<td>Recompress and downsample images (true or false).</td>
+</tr>
+<tr>
+<td><code>--subset-fonts</code></td>
+<td>Keep only the glyphs used of embedded fonts (true or false).</td>
+</tr>
+<tr>
+<td><code>--merge-duplicates</code></td>
+<td>Store identical images, fonts and other streams once (true or false).</td>
+</tr>
+<tr>
+<td><code>--remove-thumbnails</code></td>
+<td>Remove page thumbnails (true or false).</td>
+</tr>
+<tr>
+<td><code>--remove-private-data</code></td>
+<td>Remove private application data (true or false).</td>
+</tr>
+<tr>
+<td><code>--remove-empty-content</code></td>
+<td>Remove content streams that draw nothing (true or false).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="impose">impose</h3>
+<p>Lay pages out on sheets: --nup 2x1, --booklet, --poster A4, --grid 3 or --fit A4.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--nup &lt;columns x rows&gt;</code></td>
+<td>Several pages on each sheet, CxR such as 2x1 or 2x2.</td>
+</tr>
+<tr>
+<td><code>--booklet</code></td>
+<td>Fold-and-staple booklet order, two pages on each side of a sheet.</td>
+</tr>
+<tr>
+<td><code>--poster &lt;size&gt;</code></td>
+<td>Spread each page over tiles of this size, such as A4.</td>
+</tr>
+<tr>
+<td><code>--grid &lt;columns&gt;</code></td>
+<td>Pages in a grid of this many columns on one tall sheet.</td>
+</tr>
+<tr>
+<td><code>--fit &lt;size&gt;</code></td>
+<td>Scale every page to fit this size, such as A4 or Letter.</td>
+</tr>
+<tr>
+<td><code>--sheet &lt;size&gt;</code></td>
+<td>The sheet size for --nup and --booklet, such as A3; by default the pages' size.</td>
+</tr>
+<tr>
+<td><code>--margin &lt;length&gt;</code></td>
+<td>The margin around the sheet, such as 10mm.</td>
+</tr>
+<tr>
+<td><code>--gutter &lt;length&gt;</code></td>
+<td>The space between pages, such as 5mm.</td>
+</tr>
+<tr>
+<td><code>--border</code></td>
+<td>Draw a thin border around each page.</td>
+</tr>
+<tr>
+<td><code>--order &lt;order&gt;</code></td>
+<td>The order on a sheet: across (the default), across-rtl, down or down-rtl.</td>
+</tr>
+<tr>
+<td><code>--auto-rotate</code></td>
+<td>Turn pages to make the best use of the sheet.</td>
+</tr>
+<tr>
+<td><code>--binding &lt;edge&gt;</code></td>
+<td>The booklet's binding edge: left (the default) or right.</td>
+</tr>
+<tr>
+<td><code>--sheets-per-signature &lt;count&gt;</code></td>
+<td>Sheets folded together per booklet signature; 0 for one signature.</td>
+</tr>
+<tr>
+<td><code>--overlap &lt;length&gt;</code></td>
+<td>How far poster tiles overlap, such as 10mm.</td>
+</tr>
+<tr>
+<td><code>--scale &lt;factor&gt;</code></td>
+<td>How much to enlarge a poster, such as 2.</td>
+</tr>
+<tr>
+<td><code>--cut-marks</code></td>
+<td>Draw cut marks on poster tiles.</td>
+</tr>
+<tr>
+<td><code>--labels</code></td>
+<td>Label each poster tile with its row and column.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stamp">stamp</h3>
+<p>Stamp pages with text, page numbers, a watermark, an image, a barcode or Bates numbers; or --remove earlier stamps.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--text &lt;template&gt;</code></td>
+<td>Text with {page}, {total-pages}, {label}, {date}, {time}, {title} and {file}, such as &quot;Page {page} of {total-pages}&quot;.</td>
+</tr>
+<tr>
+<td><code>--page-numbers</code></td>
+<td>&quot;Page {page} of {total-pages}&quot; at the bottom centre.</td>
+</tr>
+<tr>
+<td><code>--watermark &lt;text&gt;</code></td>
+<td>Large faint text across the middle of each page, such as DRAFT.</td>
+</tr>
+<tr>
+<td><code>--image &lt;file&gt;</code></td>
+<td>An image file (PNG, JPEG, SVG and the other formats Egami reads); give --width.</td>
+</tr>
+<tr>
+<td><code>--barcode &lt;format:data&gt;</code></td>
+<td>A barcode, format:data such as qr:https://example.com or code128:A-123; give --width.</td>
+</tr>
+<tr>
+<td><code>--bates &lt;prefix&gt;</code></td>
+<td>Bates numbers with this prefix, such as ACME-; numbering goes on across the files of a batch, one file at a time in input order.</td>
+</tr>
+<tr>
+<td><code>--bates-digits &lt;count&gt;</code></td>
+<td>Digits in a Bates number; 6 by default.</td>
+</tr>
+<tr>
+<td><code>--bates-start &lt;number&gt;</code></td>
+<td>The first Bates number; 1 by default.</td>
+</tr>
+<tr>
+<td><code>--remove</code></td>
+<td>Remove the stamps egap and Egap added before.</td>
+</tr>
+<tr>
+<td><code>--anchor &lt;place&gt;</code></td>
+<td>Where on the page: top-left, top-center, top-right, middle-left, center, middle-right, bottom-left, bottom-center or bottom-right.</td>
+</tr>
+<tr>
+<td><code>--offset &lt;x,y&gt;</code></td>
+<td>Move from the anchor, x right and y up, such as 10mm,15mm.</td>
+</tr>
+<tr>
+<td><code>--width &lt;length&gt;</code></td>
+<td>The image's or barcode's width, such as 40mm.</td>
+</tr>
+<tr>
+<td><code>--height &lt;length&gt;</code></td>
+<td>The image's or barcode's height; by default from its shape.</td>
+</tr>
+<tr>
+<td><code>--font-size &lt;points&gt;</code></td>
+<td>Text size in points.</td>
+</tr>
+<tr>
+<td><code>--color &lt;color&gt;</code></td>
+<td>Text color, such as #c00 or #336699.</td>
+</tr>
+<tr>
+<td><code>--opacity &lt;0-1&gt;</code></td>
+<td>From 0 (invisible) to 1 (solid).</td>
+</tr>
+<tr>
+<td><code>--rotation &lt;degrees&gt;</code></td>
+<td>Degrees, counterclockwise.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to stamp, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--under</code></td>
+<td>Put the stamp under the page's content instead of over it.</td>
+</tr>
+<tr>
+<td><code>--layer &lt;name&gt;</code></td>
+<td>Put the stamp on a layer of this name, which viewers can hide.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="redact">redact</h3>
+<p>Remove text by phrase or pattern, and areas by rectangle, for real; the file is written whole.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--text &lt;phrase&gt;</code></td>
+<td>A phrase to remove; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--regex &lt;pattern&gt;</code></td>
+<td>A .NET regular expression to remove, such as \d{3}-\d{2}-\d{4}; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--rect &lt;page:x,y,w,h&gt;</code></td>
+<td>An area to remove, page:left,bottom,width,height in lengths from the page's lower left corner, such as 1:20mm,250mm,80mm,10mm; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--match-case</code></td>
+<td>Match --text with the case as written.</td>
+</tr>
+<tr>
+<td><code>--whole-word</code></td>
+<td>Match --text only as whole words.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to search, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--mark-only</code></td>
+<td>Only mark the areas with redaction annotations, for review; remove nothing yet.</td>
+</tr>
+<tr>
+<td><code>--images &lt;how&gt;</code></td>
+<td>Image parts under an area: pixels (blacked out, the default), remove (the whole image) or none.</td>
+</tr>
+<tr>
+<td><code>--paths &lt;how&gt;</code></td>
+<td>Vector paths: covered (removed when fully covered, the default), touched (removed when touched) or none.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sanitize">sanitize</h3>
+<p>Strip hidden data: JavaScript and actions, attachments, metadata, hidden layers, comments, form data, thumbnails and private data.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--keep &lt;kinds&gt;</code></td>
+<td>What to leave in, a list of metadata, javascript, attachments, hidden-layers, comments, form-data, thumbnails, private-data.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="form-fill">form-fill</h3>
+<p>Fill form fields from a JSON file or --set name=value; --flatten fixes the values into the page.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--data &lt;file&gt;</code></td>
+<td>A JSON file of values: { &quot;name&quot;: &quot;Ada&quot;, &quot;subscribe&quot;: true, &quot;colours&quot;: [ &quot;red&quot; ] }, or the output of form list --json.</td>
+</tr>
+<tr>
+<td><code>--set &lt;name=value&gt;</code></td>
+<td>One value, name=value; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--flatten</code></td>
+<td>Flatten the form after filling it, so the values become page content.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="form-flatten">form-flatten</h3>
+<p>Draw form fields into the page and remove them from the form, so the values can no longer change.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--field &lt;name&gt;</code></td>
+<td>Flatten only this field; give it more than once. All fields by default.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="form-reset">form-reset</h3>
+<p>Set form fields back to their default values.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--field &lt;name&gt;</code></td>
+<td>Reset only this field; give it more than once. All fields by default.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="attach">attach</h3>
+<p>Embed files in PDFs; --relationship makes them PDF/A-3 associated files.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--file &lt;path&gt;</code></td>
+<td>A file to embed; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--name &lt;name&gt;</code></td>
+<td>The name to embed a single file under; its own name by default.</td>
+</tr>
+<tr>
+<td><code>--description &lt;text&gt;</code></td>
+<td>A description shown by viewers.</td>
+</tr>
+<tr>
+<td><code>--mime-type &lt;type&gt;</code></td>
+<td>The file's media type, such as text/csv.</td>
+</tr>
+<tr>
+<td><code>--relationship &lt;kind&gt;</code></td>
+<td>Make it a PDF/A-3 associated file: source, data, alternative, supplement, encrypted-payload, form-data, schema or unspecified.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="detach">detach</h3>
+<p>Remove embedded files by name.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--name &lt;name&gt;</code></td>
+<td>The attachment to remove; give it more than once.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="invoice">invoice</h3>
+<p>Embed a ZUGFeRD or Factur-X e-invoice XML and the PDF/A-3 metadata it needs.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--xml &lt;file&gt;</code></td>
+<td>The invoice XML (Cross Industry Invoice).</td>
+</tr>
+<tr>
+<td><code>--standard &lt;standard&gt;</code></td>
+<td>factur-x (the default), zugferd20 or zugferd10.</td>
+</tr>
+<tr>
+<td><code>--profile &lt;profile&gt;</code></td>
+<td>minimum, basic-wl, basic, en16931, extended or xrechnung; read from the XML by default.</td>
+</tr>
+<tr>
+<td><code>--pdfa &lt;level&gt;</code></td>
+<td>The PDF/A-3 level to claim: 3b (the default), 3u or 3a.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pdfa">pdfa</h3>
+<p>Convert to PDF/A: embed fonts, add an output intent and XMP, remove what PDF/A forbids; fails the file when a clause cannot be met.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--level &lt;level&gt;</code></td>
+<td>1b, 2a, 2b, 2u, 3a, 3b, 3u, 4 or 4f; the best the file can meet by default.</td>
+</tr>
+<tr>
+<td><code>--icc &lt;file&gt;</code></td>
+<td>The output intent's ICC profile; sRGB by default.</td>
+</tr>
+<tr>
+<td><code>--output-condition &lt;name&gt;</code></td>
+<td>The output condition's name, such as FOGRA39.</td>
+</tr>
+<tr>
+<td><code>--allow-font-substitution</code></td>
+<td>Embed a stand-in for a font the file does not embed.</td>
+</tr>
+<tr>
+<td><code>--system-fonts</code></td>
+<td>Look for fonts the file does not embed among the system's fonts.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ocr-layer">ocr-layer</h3>
+<p>Add an invisible, searchable text layer from hOCR or ALTO files (from Tesseract, ABBYY and the like), one per page.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--hocr &lt;template&gt;</code></td>
+<td>hOCR files, one per page, named by a template such as scan-{page}.hocr ({page} from 1).</td>
+</tr>
+<tr>
+<td><code>--alto &lt;template&gt;</code></td>
+<td>ALTO XML files, one per page, named as --hocr.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to add text to, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clean">clean</h3>
+<p>Tidy scans and prints: --grayscale, --remove-blank-pages, --deskew and --text-to-outlines, in that order.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--grayscale</code></td>
+<td>Turn every color to gray.</td>
+</tr>
+<tr>
+<td><code>--remove-blank-pages</code></td>
+<td>Remove pages with next to no ink.</td>
+</tr>
+<tr>
+<td><code>--blank-ink &lt;fraction&gt;</code></td>
+<td>The most ink, as a fraction of the page, that still counts as blank, such as 0.002.</td>
+</tr>
+<tr>
+<td><code>--deskew</code></td>
+<td>Straighten scanned pages that are a little crooked.</td>
+</tr>
+<tr>
+<td><code>--max-angle &lt;degrees&gt;</code></td>
+<td>The largest tilt --deskew corrects, in degrees.</td>
+</tr>
+<tr>
+<td><code>--text-to-outlines</code></td>
+<td>Turn text into outlines, so it prints the same everywhere and needs no fonts (it can no longer be searched).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pdfx">pdfx</h3>
+<p>Convert to PDF/X: an output intent, colors in its CMYK where the level needs it, embedded fonts, page boxes; fails the file when a clause cannot be met.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--level &lt;level&gt;</code></td>
+<td>The PDF/X level: x-1a, x-3, x-4 (the default), x-4p, x-5g, x-5pg, x-5n, x-6, x-6p or x-6n.</td>
+</tr>
+<tr>
+<td><code>--output-condition &lt;name&gt;</code></td>
+<td>The printing condition: FOGRA39, FOGRA51, FOGRA52, GRACoL2013, SWOP2013 or newspaper.</td>
+</tr>
+<tr>
+<td><code>--icc &lt;file&gt;</code></td>
+<td>The output intent's ICC profile, for a condition egap does not bundle.</td>
+</tr>
+<tr>
+<td><code>--bleed &lt;length&gt;</code></td>
+<td>Add a bleed box this far around the trim box, such as 3mm.</td>
+</tr>
+<tr>
+<td><code>--trapped</code></td>
+<td>Say the file has been trapped.</td>
+</tr>
+<tr>
+<td><code>--allow-font-substitution</code></td>
+<td>Embed a stand-in for a font the file does not embed.</td>
+</tr>
+<tr>
+<td><code>--system-fonts</code></td>
+<td>Look for fonts the file does not embed among the system's fonts.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="color">color</h3>
+<p>Convert RGB, Lab, gray and ICC colors to the output intent's CMYK, or another CMYK; spot colors on request.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--target &lt;condition|file&gt;</code></td>
+<td>The CMYK to convert to: an output condition (FOGRA39, GRACoL2013, ...) or an ICC file; the file's output intent by default.</td>
+</tr>
+<tr>
+<td><code>--intent &lt;intent&gt;</code></td>
+<td>relative (the default), perceptual, saturation or absolute.</td>
+</tr>
+<tr>
+<td><code>--black-point-compensation</code></td>
+<td>Map black to black (true or false).</td>
+</tr>
+<tr>
+<td><code>--black-text &lt;how&gt;</code></td>
+<td>Black text and thin rules: pure (100% K, the default) or colorimetric.</td>
+</tr>
+<tr>
+<td><code>--spots &lt;how&gt;</code></td>
+<td>Spot colors: keep (the default), convert, or convert-but-kept with --keep-spot.</td>
+</tr>
+<tr>
+<td><code>--keep-spot &lt;name&gt;</code></td>
+<td>A spot color to keep with --spots convert-but-kept; give it more than once.</td>
+</tr>
+<tr>
+<td><code>--retarget-cmyk</code></td>
+<td>Also convert CMYK that was made for another printing condition.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="save">save</h3>
+<p>Write the document as it stands, to a file or a template such as out/{name}.pdf; it may come more than once.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;path&gt;</code></td>
+<td>Where to write: a file, a template with {name}, {ext}, {dir} and {index}, or -.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/cli/commands.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -7208,6 +7208,26 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/cli/commands.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/cli/commands.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/cli/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/cli/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/formats/docling-json.md",
       "output": {
         ".html": {
