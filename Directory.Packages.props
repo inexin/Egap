@@ -12,11 +12,8 @@
     <PackageVersion Include="Egami.Css" Version="1.0.0" />
     <PackageVersion Include="Egami.Svg" Version="1.0.0" />
     <PackageVersion Include="Egami.Barcodes" Version="1.0.0" />
-    <!--
-      The egap command (CLI design Q14): egami's command host as a source package, on the Egami train. Until it is on
-      nuget.org, pack it with tools/pack-egami.py (projects Egami.Cli.Host) and restore with the feed added.
-    -->
-    <PackageVersion Include="Egami.Cli.Host" Version="1.1.0-local.g92650fe" />
+    <!-- The egap command (CLI design Q14): egami's command host as a source package, on the Egami train, unlisted on nuget.org. -->
+    <PackageVersion Include="Egami.Cli.Host" Version="1.1.0" />
     <!-- The command line and the MCP server under egap (CLI design Q4, Q16), as in egami. -->
     <PackageVersion Include="System.CommandLine" Version="2.0.13" />
     <PackageVersion Include="ModelContextProtocol.Core" Version="2.3.0" />
