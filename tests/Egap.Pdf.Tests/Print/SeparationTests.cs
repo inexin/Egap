@@ -126,4 +126,37 @@ public sealed class SeparationTests
         Assert.Equal(255, At(plates, "Magenta", 250, 200));
         Assert.Equal(128, At(plates, "Cyan", 250, 200));
     }
+
+    [Fact]
+    public void SpotsInFunctionShadingsAndPatternStrokesAndTextKeepTheirPlate()
+    {
+        using PdfSeparations plates = Plates(PrintSamples.PlateGaps());
+
+        Assert.Contains(plates.Plates, p => p.Name == "Gold");
+
+        // The function shading's tint is x over its domain: about half at x = 150, y = 792 - 650; no process ink.
+        Assert.InRange(At(plates, "Gold", 150, 142), 120, 136);
+        Assert.InRange(At(plates, "Gold", 240, 142), 235, 255);
+        Assert.Equal(0, At(plates, "Magenta", 150, 142));
+        Assert.Equal(0, At(plates, "Yellow", 240, 142));
+
+        // The pattern stroke at y = 792 - 400.
+        Assert.Equal(255, At(plates, "Gold", 150, 392));
+        Assert.Equal(0, At(plates, "Magenta", 150, 392));
+        Assert.Equal(0, At(plates, "Yellow", 150, 392));
+
+        // The pattern-filled "H": Gold where it covers, and no process ink anywhere in its box.
+        int gold = 0, process = 0;
+        for (int y = 792 - 210; y < 792 - 150; y++)
+        {
+            for (int x = 50; x < 110; x++)
+            {
+                gold = Math.Max(gold, At(plates, "Gold", x, y));
+                process = Math.Max(process, Math.Max(At(plates, "Magenta", x, y), At(plates, "Yellow", x, y)));
+            }
+        }
+
+        Assert.Equal(255, gold);
+        Assert.Equal(0, process);
+    }
 }

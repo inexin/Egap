@@ -106,7 +106,7 @@ internal sealed partial class PageRenderer : PdfContentWalker
         if ((draw & (PdfPathPaint.Fill | PdfPathPaint.EvenOddFill)) != 0)
         {
             Path filled = ToPath(path, (draw & PdfPathPaint.EvenOddFill) != 0 ? FillRule.EvenOdd : FillRule.NonZero);
-            if (inks is not null && uncoloredInk is null && state.FillColor.Family == "Pattern" && FillPatternWithInks(filled, state.FillColor, state.FillAlpha))
+            if (PatternOnPlates(state.FillColor) && FillPatternWithInks(filled, state.FillColor, state.FillAlpha, state.Matrix))
             {
                 // Drawn on the plates through a clip.
             }
@@ -116,9 +116,19 @@ internal sealed partial class PageRenderer : PdfContentWalker
             }
         }
 
-        if ((draw & PdfPathPaint.Stroke) != 0 && ColorPaint(state.StrokeColor, state.StrokeAlpha, fill: false) is Paint stroke)
+        if ((draw & PdfPathPaint.Stroke) != 0)
         {
-            canvas.StrokePath(ToPath(path, FillRule.NonZero), ToStroke(state), stroke);
+            Path stroked = ToPath(path, FillRule.NonZero);
+            Stroke pen = ToStroke(state);
+            if (PatternOnPlates(state.StrokeColor) && StrokeOutline(stroked, pen) is Path outline
+                && FillPatternWithInks(outline, state.StrokeColor, state.StrokeAlpha, state.Matrix, fill: false))
+            {
+                // Drawn on the plates through the stroke's outline as a clip.
+            }
+            else if (ColorPaint(state.StrokeColor, state.StrokeAlpha, fill: false) is Paint stroke)
+            {
+                canvas.StrokePath(stroked, pen, stroke);
+            }
         }
 
         End(restore);

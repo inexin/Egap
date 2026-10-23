@@ -81,6 +81,13 @@ internal static class Shadings
                 : throw new InvalidDataException("A mesh shading is not a stream.");
         }
 
+        // On plates a function shading's inks are sampled into a mesh: a per-pixel paint can only give sRGB.
+        if (type == 1 && inks?.Plan(space) is InkPlan { PaintsNothing: false } plan)
+        {
+            FunctionShading function = Function(dictionary, space);
+            return new ShadingPaint(null, box, background, dictionary, MeshShading.Sampled(function.Function, space, function.Domain, function.Matrix, plan));
+        }
+
         Paint paint = type switch
         {
             1 => Function(dictionary, space),
@@ -196,11 +203,19 @@ internal static class Shadings
         private readonly double[] domain;
         private readonly Matrix3x2 toDomain;
 
+        public PdfFunction Function => function;
+
+        public double[] Domain => domain;
+
+        /// <summary>The shading's /Matrix, from the domain to shading space.</summary>
+        public PdfMatrix Matrix { get; }
+
         public FunctionShading(PdfFunction function, ImageColorSpace space, double[] domain, PdfMatrix matrix)
         {
             this.function = function;
             this.space = space;
             this.domain = domain;
+            Matrix = matrix;
             Matrix3x2 m = new((float)matrix.A, (float)matrix.B, (float)matrix.C, (float)matrix.D, (float)matrix.E, (float)matrix.F);
             toDomain = Matrix3x2.Invert(m, out Matrix3x2 inverse) ? inverse : default;
         }
