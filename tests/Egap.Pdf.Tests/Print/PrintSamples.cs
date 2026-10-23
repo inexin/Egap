@@ -195,6 +195,31 @@ internal static class PrintSamples
         ]));
     }
 
+    /// <summary>
+    /// A spot ink where plates are easy to miss: a function-based shading in Gold (tint = x over 50 to 250 pt, y 600 to
+    /// 700), and a tiling pattern whose cell is solid Gold, stroking a 20 pt line at y 400 and filling a 72 pt "H" at (50, 150).
+    /// </summary>
+    public static byte[] PlateGaps()
+    {
+        const string content = "q 50 600 200 100 re W n /Sh0 sh Q\n"
+            + "/Pattern CS /P0 SCN 20 w 50 400 m 250 400 l S\n"
+            + "BT /F1 72 Tf /Pattern cs /P0 scn 50 150 Td (H) Tj ET\n";
+        const string gold = "/CS0 [/Separation /Gold /DeviceCMYK << /FunctionType 2 /Domain [0 1] /C0 [0 0 0 0] /C1 [0 0.2 1 0] /N 1 >>]";
+        Builder pdf = new();
+        int catalog = pdf.Reserve(), pages = pdf.Reserve(), page = pdf.Reserve();
+        int function = pdf.Stream("/FunctionType 4 /Domain [0 1 0 1] /Range [0 1]", Encoding.ASCII.GetBytes("{ pop }"));
+        int cell = pdf.Stream($"/PatternType 1 /PaintType 1 /TilingType 1 /BBox [0 0 10 10] /XStep 10 /YStep 10 /Resources << /ColorSpace << {gold} >> >>",
+            Encoding.ASCII.GetBytes("/CS0 cs 1 scn 0 0 10 10 re f"));
+        int contents = pdf.Stream("", Encoding.ASCII.GetBytes(content));
+        pdf.Set(catalog, $"<< /Type /Catalog /Pages {pages} 0 R >>");
+        pdf.Set(pages, $"<< /Type /Pages /Kids [{page} 0 R] /Count 1 >>");
+        pdf.Set(page, $"<< /Type /Page /Parent {pages} 0 R /MediaBox [0 0 612 792] /Contents {contents} 0 R /Resources <<"
+            + $" /ColorSpace << {gold} >> /Pattern << /P0 {cell} 0 R >>"
+            + $" /Shading << /Sh0 << /ShadingType 1 /ColorSpace /CS0 /Domain [0 1 0 1] /Matrix [200 0 0 100 50 600] /Function {function} 0 R >> >>"
+            + " /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >> >> >> >>");
+        return pdf.ToBytes(catalog);
+    }
+
     /// <summary>A smooth test image: <paramref name="components"/> channels of diagonal ramps.</summary>
     private static byte[] Gradient(int width, int height, int components)
     {

@@ -286,12 +286,43 @@ internal sealed partial class PageRenderer
         }
     }
 
+    /// <summary>Whether a colour is a pattern drawn on plates by clipping to the shape and replaying the pattern there.</summary>
+    private bool PatternOnPlates(PdfColor color)
+    {
+        return inks is not null && uncoloredInk is null && color.Family == "Pattern";
+    }
+
+    /// <summary>
+    /// A stroke's outline as a path to fill, for a pattern stroked on plates: a hairline is outlined one device pixel wide.
+    /// Null when the outline does not fit in float coordinates.
+    /// </summary>
+    private Egami.Drawing.Path? StrokeOutline(Egami.Drawing.Path path, Stroke stroke)
+    {
+        float scale = MathF.Sqrt(MathF.Abs(canvas.Matrix.GetDeterminant()));
+        if (!(scale > 0 && float.IsFinite(scale)))
+        {
+            return null;
+        }
+
+        try
+        {
+            return (stroke.IsHairline ? stroke with { Width = 1 / scale } : stroke).ToPath(path, scale);
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
+    }
+
     /// <summary>
     /// Fills a path with a pattern on plates: the path becomes a clip and the pattern is drawn inside it, a shading as its
-    /// gradient or mesh, a tiling pattern as its cell replayed once per tile; false when the pattern cannot be read.
+    /// gradient or mesh, a tiling pattern as its cell replayed once per tile; false when the pattern cannot be read. Strokes
+    /// and glyphs take this path too, as their outlines, since a picture paint would draw the cell's inks as sRGB.
+    /// <paramref name="drawing"/> is the user space the canvas matrix maps to the page.
     /// </summary>
-    private bool FillPatternWithInks(Egami.Drawing.Path path, PdfColor color, double alpha)
+    private bool FillPatternWithInks(Egami.Drawing.Path path, PdfColor color, double alpha, PdfMatrix drawing, bool fill = true, bool? antialias = null)
     {
+        bool smooth = antialias ?? settings.AntialiasPaths;
         if (color.Pattern is not PdfName patternName || Resources?.Get<PdfDictionary>("Pattern")?.Get(patternName)?.Resolve() is not PdfObject pattern)
         {
             return false;
@@ -299,7 +330,7 @@ internal sealed partial class PageRenderer
 
         PdfDictionary dictionary = pattern as PdfDictionary ?? (pattern as PdfStream)?.Dictionary ?? [];
         PdfMatrix space = (PdfMatrix.FromArray(dictionary.Get<PdfArray>("Matrix")) ?? PdfMatrix.Identity) * patternSpaces.Peek();
-        if (!State.Matrix.TryInvert(out PdfMatrix fromUser))
+        if (!drawing.TryInvert(out PdfMatrix fromUser))
         {
             return false;
         }
@@ -314,21 +345,21 @@ internal sealed partial class PageRenderer
             }
 
             int saved = canvas.Save();
-            canvas.ClipPath(path, ClipOp.Intersect, settings.AntialiasPaths);
+            canvas.ClipPath(path, ClipOp.Intersect, smooth);
             canvas.SetMatrix(toUser * canvas.Matrix);
             if (ready.Background is RgbaF32 background && background.A > 0)
             {
-                canvas.DrawPaint(new SolidPaint(background) { Opacity = (float)alpha, BlendMode = BlendModeOf(State.BlendMode), Overprint = OverprintOf(true, null, null) });
+                canvas.DrawPaint(new SolidPaint(background) { Opacity = (float)alpha, BlendMode = BlendModeOf(State.BlendMode), Overprint = OverprintOf(fill, null, null) });
             }
 
             if (ready.BBox is PdfRectangle box)
             {
-                canvas.ClipRect(new RectF((float)box.Left, (float)box.Bottom, (float)box.Width, (float)box.Height), ClipOp.Intersect, settings.AntialiasPaths);
+                canvas.ClipRect(new RectF((float)box.Left, (float)box.Bottom, (float)box.Width, (float)box.Height), ClipOp.Intersect, smooth);
             }
 
             if (ready.Paint is Paint gradient)
             {
-                canvas.DrawPaint(Shaded(gradient, alpha, Matrix3x2.Identity) with { Overprint = OverprintOf(true, null, null) });
+                canvas.DrawPaint(Shaded(gradient, alpha, Matrix3x2.Identity) with { Overprint = OverprintOf(fill, null, null) });
             }
             else
             {
@@ -389,7 +420,7 @@ internal sealed partial class PageRenderer
         }
 
         int restore = canvas.Save();
-        canvas.ClipPath(path, ClipOp.Intersect, settings.AntialiasPaths);
+        canvas.ClipPath(path, ClipOp.Intersect, smooth);
         bool layered = alpha < 1 || State.BlendMode.Value is not ("Normal" or "Compatible");
         if (layered)
         {

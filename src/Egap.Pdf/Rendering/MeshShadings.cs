@@ -119,6 +119,55 @@ internal sealed class MeshShading
         return shading;
     }
 
+    /// <summary>
+    /// A function-based shading (type 1) on plates, as a lattice: the function sampled on a grid over /Domain and taken
+    /// through /Matrix, each vertex with its ink colour, which the canvas interpolates between grid points.
+    /// </summary>
+    public static MeshShading Sampled(PdfFunction function, ImageColorSpace space, double[] domain, PdfMatrix matrix, InkPlan plan)
+    {
+        const int Cells = 128;
+        MeshShading shading = new(null);
+        Vertex[] grid = new Vertex[(Cells + 1) * (Cells + 1)];
+        double[] input = new double[2];
+        double[] output = new double[Math.Max(Math.Max(function.Outputs, space.Components), 1)];
+        double[] components = new double[Math.Max(space.Components, 1)];
+        for (int r = 0; r <= Cells; r++)
+        {
+            for (int i = 0; i <= Cells; i++)
+            {
+                input[0] = domain[0] + ((domain[1] - domain[0]) * i / Cells);
+                input[1] = domain[2] + ((domain[3] - domain[2]) * r / Cells);
+                Array.Clear(output);
+                function.Evaluate(input, output);
+                for (int k = 0; k < components.Length; k++)
+                {
+                    components[k] = k < output.Length && double.IsFinite(output[k]) ? output[k] : 0;
+                }
+
+                PdfPoint p = matrix.Transform(new PdfPoint(input[0], input[1]));
+                grid[(r * (Cells + 1)) + i] = new Vertex(new Vector2((float)p.X, (float)p.Y), Shadings.Convert(space, components), plan.Color(components));
+            }
+        }
+
+        if (!grid.All(v => float.IsFinite(v.Position.X) && float.IsFinite(v.Position.Y)))
+        {
+            return shading;
+        }
+
+        List<Vertex> vertices = new(Cells * Cells * 6);
+        for (int r = 0; r < Cells; r++)
+        {
+            for (int i = 0; i < Cells; i++)
+            {
+                Vertex p = grid[(r * (Cells + 1)) + i], q = grid[(r * (Cells + 1)) + i + 1], s = grid[((r + 1) * (Cells + 1)) + i], t = grid[((r + 1) * (Cells + 1)) + i + 1];
+                vertices.AddRange([p, q, s, q, t, s]);
+            }
+        }
+
+        shading.AddTriangles(vertices);
+        return shading;
+    }
+
     /// <summary>Type 4: each vertex's flag says whether it starts a triangle or extends the last one (8.7.4.5.5).</summary>
     private void FreeForm(Reading read)
     {

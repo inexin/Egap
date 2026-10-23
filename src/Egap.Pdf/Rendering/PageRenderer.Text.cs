@@ -156,6 +156,11 @@ internal sealed partial class PageRenderer
     /// <summary>One glyph run for the glyphs, in the em space of the first glyph, so upright text takes Egami's glyph cache.</summary>
     private void FillGlyphs(PdfGraphicsState state, Typeface typeface, FontSynthesis synthesis, ushort[] ids, List<PdfGlyph> glyphs)
     {
+        if (PatternOnPlates(state.FillColor) && FillGlyphsWithInks(state, typeface, ids, glyphs))
+        {
+            return;
+        }
+
         PdfMatrix first = glyphs[0].Matrix;
         if (!first.TryInvert(out PdfMatrix inverse) || ColorPaint(state.FillColor, state.FillAlpha, PdfMatrix.Scale(1, -1) * first) is not Paint paint)
         {
@@ -181,6 +186,42 @@ internal sealed partial class PageRenderer
         End(restore);
     }
 
+    /// <summary>
+    /// Fills glyphs with a pattern on plates, through their outlines as a clip, so the pattern's inks reach their plates;
+    /// false when the pattern cannot be drawn so, and the glyphs are drawn as a run.
+    /// </summary>
+    private bool FillGlyphsWithInks(PdfGraphicsState state, Typeface typeface, ushort[] ids, List<PdfGlyph> glyphs)
+    {
+        if (!state.Matrix.TryInvert(out PdfMatrix toUser) || GlyphPath(typeface, ids, glyphs, toUser) is not Path path)
+        {
+            return true;
+        }
+
+        if (Begin(state, 0, state.Matrix) is not int restore)
+        {
+            return true;
+        }
+
+        bool drawn = FillPatternWithInks(path, state.FillColor, state.FillAlpha, state.Matrix, antialias: settings.AntialiasText);
+        End(restore);
+        return drawn;
+    }
+
+    /// <summary>The outlines of glyphs in user space, or null when none has one.</summary>
+    private static Path? GlyphPath(Typeface typeface, ushort[] ids, List<PdfGlyph> glyphs, PdfMatrix toUser)
+    {
+        PathBuilder builder = new();
+        for (int i = 0; i < ids.Length; i++)
+        {
+            if (Outline(typeface, ids[i]) is Path outline)
+            {
+                builder.AddPath(outline, ToMatrix(glyphs[i].Matrix * toUser));
+            }
+        }
+
+        return builder.IsEmpty ? null : builder.ToPath();
+    }
+
     /// <summary>Strokes the outlines in the user space the line width is measured in (9.3.6).</summary>
     private void StrokeGlyphs(PdfGraphicsState state, Path?[] outlines, List<PdfGlyph> glyphs)
     {
@@ -200,7 +241,13 @@ internal sealed partial class PageRenderer
 
         if (!builder.IsEmpty)
         {
-            canvas.StrokePath(builder.ToPath(), ToStroke(state), paint with { Antialias = settings.AntialiasText });
+            Path path = builder.ToPath();
+            Stroke pen = ToStroke(state);
+            if (!(PatternOnPlates(state.StrokeColor) && StrokeOutline(path, pen) is Path outline
+                && FillPatternWithInks(outline, state.StrokeColor, state.StrokeAlpha, state.Matrix, fill: false, antialias: settings.AntialiasText)))
+            {
+                canvas.StrokePath(path, pen, paint with { Antialias = settings.AntialiasText });
+            }
         }
 
         End(restore);
