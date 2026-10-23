@@ -93,6 +93,36 @@ public sealed class PdfACreateTests
     }
 
     [Fact]
+    public void ConvertingToPdfA1ListsTheCidsOfSubsets()
+    {
+        using PdfDocument plain = PdfDocument.Create();
+        PdfPage page = plain.Pages.AddBlank(new PdfRectangle(0, 0, 300, 300));
+        using (PdfCanvas canvas = new(page))
+        {
+            canvas.DrawText("Kept for ever", new Vector2(20, 40), new Font(Noto, 14), new SolidPaint(new RgbaF32(0, 0, 0, 1)));
+        }
+
+        using PdfDocument pdf = PdfDocument.Open(Save(plain));
+        PdfAReport report = PdfAConverter.Convert(pdf, PdfAConformance.PdfA1b);
+        Assert.True(report.Succeeded, report.ToString());
+        Assert.Contains(report.Issues, i => i.Clause == "6.3.5" && i.Fixed);
+
+        using PdfDocument saved = PdfDocument.Open(Save(pdf));
+        PdfDictionary fonts = saved.Pages[0].Resources!.Get<PdfDictionary>("Font")!;
+        PdfDictionary font = fonts.Get<PdfDictionary>(Assert.Single(fonts.Keys))!;
+        PdfDictionary descriptor = font.Get<PdfArray>("DescendantFonts")!.Get<PdfDictionary>(0)!.Get<PdfDictionary>("FontDescriptor")!;
+        byte[] bits = descriptor.Get<PdfStream>("CIDSet")!.GetDecodedBytes();
+        Assert.NotEqual(0, bits[0] & 0x80);
+        foreach (char c in "Kept for ever")
+        {
+            ushort glyph = Noto.GetGlyph(c);
+            Assert.NotEqual(0, bits[glyph / 8] & (0x80 >> (glyph % 8)));
+        }
+
+        Assert.True(PdfAConverter.Check(saved, PdfAConformance.PdfA1b).Succeeded);
+    }
+
+    [Fact]
     public void APlainDocumentClaimsNothing()
     {
         using PdfDocument pdf = PdfDocument.Create();

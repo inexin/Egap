@@ -68,6 +68,10 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `PdfRenderOptions.SimulateOverprint` renders a page as it prints: through its ink plates, proofed back to sRGB through
   the press profile, so overprint and spot colours show as on press.
 
+### PDF/A
+- Converting to PDF/A-1b now writes the `/CIDSet` that PDF/A-1 asks of subset CID fonts. Files made without it, such as
+  ones made for another level, failed veraPDF after conversion.
+
 ## Egap.Documents 2.1.0 (2026-10-22)
 
 ### Reports in code

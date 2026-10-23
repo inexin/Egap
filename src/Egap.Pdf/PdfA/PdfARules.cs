@@ -1,3 +1,5 @@
+using Egami.Fonts;
+
 using Egap.Pdf.Annotations;
 
 namespace Egap.Pdf.PdfA;
@@ -746,6 +748,26 @@ internal sealed partial class PdfARules
                     Issue("6.2.11.4.2", $"the font {name} lists its glyph names (/CharSet), which must then be complete; the list is removed", () => descriptor.Remove("CharSet"));
                 }
             }
+
+            // PDF/A-1 asks a subset CIDFont to list the CIDs its program holds (ISO 19005-1 6.3.5); files made for other levels
+            // leave the list out.
+            if (part == 1 && subtype == "Type0" && PdfFont.FromDictionary(font).IsSubset && FontDescriptor(font) is PdfDictionary listed
+                && listed.Get("CIDSet") is null)
+            {
+                if (CidSet(font, codes) is byte[] bits)
+                {
+                    Issue("6.3.5", $"the subset font {name} does not list its CIDs (/CIDSet); the list is written", () =>
+                    {
+                        PdfStream set = new();
+                        set.SetDecodedBytes(bits);
+                        listed["CIDSet"] = document.Objects.Add(set);
+                    });
+                }
+                else
+                {
+                    Issue("6.3.5", $"the subset font {name} does not list its CIDs (/CIDSet), and its program cannot be read to write the list");
+                }
+            }
         }
     }
 
@@ -797,6 +819,68 @@ internal sealed partial class PdfARules
             font["ToUnicode"] = StandardFontEmbedder.ToUnicode(document, map, parsed.IsComposite ? 2 : 1);
             PdfFont.Forget(font);
         });
+    }
+
+    /// <summary>
+    /// A CIDSet for a Type0 font: one bit per CID whose glyph its program holds, the high bit first. A glyph is held when it
+    /// has an outline, is shown, or is .notdef. Null when the program or its CID to glyph map cannot be read.
+    /// </summary>
+    private static byte[]? CidSet(PdfDictionary font, HashSet<int> codes)
+    {
+        PdfFont parsed = PdfFont.FromDictionary(font);
+        PdfDictionary? cid = font.Get<PdfArray>("DescendantFonts")?.Get<PdfDictionary>(0);
+        if (parsed.GetTypeface() is not Typeface face || cid is null)
+        {
+            return null;
+        }
+
+        HashSet<ushort> held = [0];
+        for (int glyph = 1; glyph < face.GlyphCount; glyph++)
+        {
+            if (!face.GetGlyphExtents((ushort)glyph).IsEmpty)
+            {
+                held.Add((ushort)glyph);
+            }
+        }
+
+        foreach (int code in codes)
+        {
+            if (parsed.GetGlyphId(code) is ushort glyph && glyph < face.GlyphCount)
+            {
+                held.Add(glyph);
+            }
+        }
+
+        // A TrueType CIDFont maps CIDs to glyphs by Identity or a stream of two-byte glyph ids (ISO 32000-1 Table 117); a CFF
+        // one by its charset when it is CID-keyed, else CID and glyph id are the same.
+        List<int> cids = [];
+        if (cid.GetName("Subtype")?.Value == "CIDFontType2" && cid.Get("CIDToGIDMap")?.Resolve() is PdfStream map)
+        {
+            byte[] glyphs = map.GetDecodedBytes();
+            for (int c = 0; c + 1 < glyphs.Length; c += 2)
+            {
+                if ((c == 0 || glyphs[c] != 0 || glyphs[c + 1] != 0) && held.Contains((ushort)((glyphs[c] << 8) | glyphs[c + 1])))
+                {
+                    cids.Add(c / 2);
+                }
+            }
+        }
+        else if (cid.GetName("Subtype")?.Value == "CIDFontType2" && cid.Get("CIDToGIDMap")?.Resolve() is PdfObject other && other is not PdfName { Value: "Identity" })
+        {
+            return null;
+        }
+        else
+        {
+            cids.AddRange(held.Select(g => face.GetCid(g) is int c and >= 0 ? c : g));
+        }
+
+        byte[] bits = new byte[(cids.Max() / 8) + 1];
+        foreach (int c in cids)
+        {
+            bits[c / 8] |= (byte)(0x80 >> (c % 8));
+        }
+
+        return bits;
     }
 
     private static PdfDictionary? FontDescriptor(PdfDictionary font)
