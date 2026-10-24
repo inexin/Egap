@@ -35,7 +35,7 @@ internal sealed partial class HtmlReader
         "table { font-weight: initial; font-style: initial; font-variant: initial; font-size: initial; line-height: initial; white-space: initial; text-align: initial; }" +
         "img[align=left i] { margin-right: 3px; } img[align=right i] { margin-left: 3px; }"));
 
-    private readonly Document document = new();
+    private readonly Document document;
     private readonly HtmlLoadOptions options;
     private readonly CssCascade cascade;
     private readonly Dictionary<HtmlElement, HtmlStyle> styles = new(ReferenceEqualityComparer.Instance);
@@ -43,13 +43,20 @@ internal sealed partial class HtmlReader
     private readonly Dictionary<HtmlStyle, RunFormat> runFormats = new(ReferenceEqualityComparer.Instance);
     private double rootSize = HtmlStyle.MediumSize;
 
-    private HtmlReader(HtmlLoadOptions options, CssCascade cascade)
+    private HtmlReader(HtmlLoadOptions options, CssCascade cascade, Document? into)
     {
+        document = into ?? new Document();
         this.options = options;
         this.cascade = cascade;
     }
 
     public static Document Read(HtmlDocument dom, HtmlLoadOptions options, out IReadOnlyList<ConversionWarning> warnings)
+    {
+        return Read(dom, options, null, out warnings);
+    }
+
+    /// <summary>Reads the page as a new section of <paramref name="into"/> when given (an EPUB chapter), else as a new document.</summary>
+    public static Document Read(HtmlDocument dom, HtmlLoadOptions options, Document? into, out IReadOnlyList<ConversionWarning> warnings)
     {
         List<(CssStyleSheet Sheet, CssOrigin Origin)> sheets = [(UserAgentSheet.Value, CssOrigin.UserAgent)];
         if (dom.QuirksMode == HtmlQuirksMode.Quirks)
@@ -89,7 +96,7 @@ internal sealed partial class HtmlReader
         {
             Media = new CssMediaContext { MediaType = options.Media, Width = 816, Height = 1056 },
         });
-        reader = new HtmlReader(options, cascade);
+        reader = new HtmlReader(options, cascade, into);
         foreach (string href in notLoaded)
         {
             reader.Warn(ConversionWarningKind.ResourceNotLoaded, "Style sheets and pictures the resolver did not give");

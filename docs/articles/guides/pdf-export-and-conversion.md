@@ -108,3 +108,46 @@ flow.Save("paper.docx");
 ```
 
 The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV.
+
+## Recipes
+
+Short answers to common tasks in this area. Each one is complete: open, change, save.
+
+### Turn a Word file into an e-book
+
+```csharp
+using Egap.Documents;
+
+Document handbook = Document.LoadDocx("handbook.docx");
+handbook.Properties.Title ??= "Staff handbook";
+handbook.SaveAsEpub("handbook.epub", new EpubSaveOptions { NavigationDepth = 2 });
+```
+
+Each level 1 heading starts a chapter, and the headings make the book's table of contents. See [EPUB](../formats/epub.md).
+
+### Print an e-book as PDF
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Pdf;
+
+Document book = Document.LoadEpub("novel.epub");
+book.SaveAsPdf("novel.pdf", new PdfExportOptions { Outline = OutlineFrom.Headings });
+```
+
+Each chapter starts a new page, and the book's table of contents becomes the PDF's bookmarks.
+
+### Save a page as one file
+
+```csharp
+using Egap.Documents;
+
+Document page = HtmlFormat.Load("offer.html", new HtmlLoadOptions
+{
+    BaseUri = new Uri(new FileInfo("offer.html").FullName),
+    ResourceResolver = uri => uri.IsFile && File.Exists(uri.LocalPath) ? File.ReadAllBytes(uri.LocalPath) : null,
+});
+page.SaveAsMhtml("offer.mhtml");
+```
+
+The archive holds the page with its pictures, and opens in Chromium, Edge and Word. See [MHTML](../formats/mhtml.md).

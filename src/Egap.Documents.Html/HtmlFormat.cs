@@ -57,7 +57,7 @@ public sealed class HtmlSaveOptions
 public static partial class HtmlFormat
 {
     /// <summary>
-    /// Lets <see cref="Document.Load(string)"/> read and <see cref="Document.Save(string)"/> write HTML, and
+    /// Lets <see cref="Document.Load(string)"/> read and <see cref="Document.Save(string)"/> write HTML, MHTML and EPUB, and
     /// <see cref="Pdf.PdfConvert.FromFile(string, Pdf.PdfConvertOptions?)"/> convert it and lay out
     /// <see cref="Pdf.PageBand.Html(string)"/> bands. Call it once at startup; calling it again changes nothing.
     /// </summary>
@@ -69,6 +69,18 @@ public static partial class HtmlFormat
             (document, path) => Save(document, path),
             (path, folder) => Load(path, InFolder(folder)),
             (html, folder) => Parse(html, InFolder(folder))));
+        DocumentFormatRegistry.Register(new(
+            DocumentFormatKind.Mhtml,
+            (byte[] bytes, out IReadOnlyList<ConversionWarning> warnings) => LoadMhtml(bytes, out warnings),
+            (document, path) => SaveMhtml(document, path)));
+        DocumentFormatRegistry.Register(new(
+            DocumentFormatKind.Epub,
+            (byte[] bytes, out IReadOnlyList<ConversionWarning> warnings) =>
+            {
+                using MemoryStream stream = new(bytes, writable: false);
+                return EpubFormat.Load(stream, out warnings);
+            },
+            (document, path) => EpubFormat.Save(document, path)));
     }
 
     /// <summary>Reads HTML from a string.</summary>

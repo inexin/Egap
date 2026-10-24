@@ -38,6 +38,8 @@ per format, with its options:
 
 - [Docling JSON](../formats/docling-json.md)
 - [DOCX](../formats/docx.md)
+- [EPUB](../formats/epub.md), in the Egap.Documents.Html package
 - [HTML](../formats/html.md), in the Egap.Documents.Html package
 - [Markdown](../formats/markdown.md), in the Egap.Documents.Markdown package
+- [MHTML](../formats/mhtml.md), in the Egap.Documents.Html package
 - [Plain text](../formats/text.md)

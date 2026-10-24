@@ -1,0 +1,4 @@
+<?xml version="1.0"?><package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="id"><metadata><dc-metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:title>Old</dc:title><dc:identifier id="id">isbn</dc:identifier></dc-metadata><meta name="cover" content="img"/></metadata>
+<manifest><item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/><item id="ch" href="ch%20one.html" media-type="application/xhtml+xml"/><item id="img" href="c.png" media-type="image/png"/></manifest>
+<spine toc="ncx"><itemref idref="ch"/></spine><guide><reference type="toc" href="toc.ncx"/></guide></package>

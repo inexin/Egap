@@ -1,0 +1,33 @@
+From: <Saved by Blink>
+Subject: =?utf-8?Q?Caf=C3=A9?=
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----B----"
+
+
+------B----
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://example.com/
+
+<html><head><link rel=3D"stylesheet" href=3D"s.css"></head><body><h1 id=3D"t">Caf=C3=A9</h1><p class=3D"r">soft =
+break</p><img src=3D"i.png" alt=3D"i"><img src=3D"cid:c@x"></body></html>
+------B----
+Content-Type: text/css
+Content-Location: https://example.com/s.css
+
+.r { color: red }
+------B----
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Location: https://example.com/i.png
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==
+------B----
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-ID: <c@x>
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==
+------B------

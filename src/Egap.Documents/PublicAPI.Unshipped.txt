@@ -1,1 +1,4 @@
 #nullable enable
+Egap.Documents.ConversionWarningKind.MediaDropped = 13 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.DocumentFormatKind.Epub = 7 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Mhtml = 8 -> Egap.Documents.DocumentFormatKind

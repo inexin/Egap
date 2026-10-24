@@ -41,6 +41,9 @@ public enum ConversionWarningKind
 
     /// <summary>Merge fields and regions a mail merge removed, as the data had no value or records for them.</summary>
     MergeFieldsRemoved,
+
+    /// <summary>Audio, video, media overlays and scripts, which a document holds none of.</summary>
+    MediaDropped,
 }
 
 /// <summary>One kind of thing a writer left out, with how many times it happened.</summary>

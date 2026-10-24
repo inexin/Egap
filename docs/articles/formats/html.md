@@ -1,14 +1,15 @@
 # HTML
 
 HTML and XHTML come from the add-on package Egap.Documents.Html. It reads a page into the document model, styled through
-the CSS cascade, and writes the model back as HTML. It also brings HTML to PDF, HTML stamps and HTML page bands.
+the CSS cascade, and writes the model back as HTML. It also brings HTML to PDF, HTML stamps and HTML page bands, and the
+two formats built on HTML: [MHTML](mhtml.md) web archives and [EPUB](epub.md) books.
 
 ```sh
 dotnet add package Egap.Documents.Html
 ```
 
 The format's class is `HtmlFormat`, in namespace `Egap.Documents`. Call `HtmlFormat.Register()` once at startup so that
-`Document.Load`, `Document.Save` and `PdfConvert.FromFile` handle `.html` files too. Calling `HtmlFormat` or the members it
+`Document.Load`, `Document.Save` and `PdfConvert.FromFile` handle `.html` files too, and `.mht`, `.mhtml` and `.epub`. Calling `HtmlFormat` or the members it
 adds to `Document` (`Document.ParseHtml`, `Document.LoadHtml`, `ToHtml`, `SaveAsHtml`) needs no registration.
 
 ```csharp

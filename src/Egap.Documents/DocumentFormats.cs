@@ -10,8 +10,8 @@ public sealed partial class Document
 
     /// <summary>
     /// Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
-    /// <see cref="Identify(Stream, string?)"/>). DOCX, PDF, plain text and Docling JSON are built in; HTML and Markdown
-    /// need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>.
+    /// <see cref="Identify(Stream, string?)"/>). DOCX, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
+    /// Markdown need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>.
     /// </summary>
     /// <exception cref="DocumentException">The file is not one Egap can read.</exception>
     /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
@@ -57,7 +57,7 @@ public sealed partial class Document
     /// <summary>
     /// Saves the document in the format its file extension names: .docx, .dotx, .docm and .dotm as Word's, .pdf as PDF (as
     /// <see cref="PdfExport.SaveAsPdf(Document, string, PdfExportOptions?)"/> writes it), .txt as plain text, and, once their
-    /// add-on is registered, .html and .htm as HTML and .md and .markdown as Markdown.
+    /// add-on is registered, .html and .htm as HTML, .mht and .mhtml as MHTML, .epub as EPUB and .md and .markdown as Markdown.
     /// </summary>
     /// <returns>What the format could not hold.</returns>
     /// <exception cref="ArgumentException">The extension names no format Egap.Documents writes.</exception>
@@ -76,7 +76,8 @@ public sealed partial class Document
 
     /// <summary>
     /// Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
-    /// or an old compound file is Word's, <c>%PDF-</c> is PDF, a JSON object naming the <c>DoclingDocument</c> schema is
+    /// whose first entry is an EPUB <c>mimetype</c> is EPUB, another ZIP package or an old compound file is Word's, a MIME
+    /// message of <c>multipart/related</c> parts is MHTML, <c>%PDF-</c> is PDF, a JSON object naming the <c>DoclingDocument</c> schema is
     /// Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
     /// so. It needs no add-on package, so a program can tell its user which package a file needs.
     /// </summary>
@@ -120,6 +121,13 @@ public sealed partial class Document
 
     private static DocumentFormatKind Identify(ReadOnlySpan<byte> head, string? extension)
     {
+        // An EPUB's first entry is its stored mimetype (EPUB 3.3 OCF 4.3): the name at offset 30, the type right after it.
+        if (head is [0x50, 0x4B, 0x03, 0x04, ..] && head.Length >= 58 && head[30..38].SequenceEqual("mimetype"u8)
+            && head[38..58].SequenceEqual("application/epub+zip"u8))
+        {
+            return DocumentFormatKind.Epub;
+        }
+
         // A ZIP package, or an old compound file (whose error names it), is Word's.
         if (head is [0x50, 0x4B, 0x03, 0x04, ..] or [0xD0, 0xCF, 0x11, 0xE0, ..])
         {
@@ -132,9 +140,14 @@ public sealed partial class Document
         }
 
         DocumentFormatKind named = KindOfExtension(extension);
-        if (named is DocumentFormatKind.Html or DocumentFormatKind.Markdown or DocumentFormatKind.Text)
+        if (named is DocumentFormatKind.Html or DocumentFormatKind.Markdown or DocumentFormatKind.Text or DocumentFormatKind.Mhtml)
         {
             return named;
+        }
+
+        if (IsMultipartRelated(head))
+        {
+            return DocumentFormatKind.Mhtml;
         }
 
         if (IsDoclingJson(head))
@@ -159,6 +172,8 @@ public sealed partial class Document
         ".TXT" or ".TEXT" => DocumentFormatKind.Text,
         ".PDF" => DocumentFormatKind.Pdf,
         ".JSON" => DocumentFormatKind.DoclingJson,
+        ".EPUB" => DocumentFormatKind.Epub,
+        ".MHT" or ".MHTML" => DocumentFormatKind.Mhtml,
         _ => DocumentFormatKind.Unknown,
     };
 
@@ -177,6 +192,58 @@ public sealed partial class Document
 
         int name = bytes.IndexOf("\"schema_name\""u8);
         return name >= 0 && bytes[(name + "\"schema_name\"".Length)..].TrimStart(" \t\r\n:"u8).StartsWith("\"DoclingDocument\""u8);
+    }
+
+    /// <summary>
+    /// Whether the bytes start with MIME headers (RFC 5322 header lines up to the first empty line) whose Content-Type is
+    /// multipart/related, as Chromium's and Word's web archives do.
+    /// </summary>
+    private static bool IsMultipartRelated(ReadOnlySpan<byte> bytes)
+    {
+        int end = bytes.IndexOf("\r\n\r\n"u8) is >= 0 and var crlf ? crlf : bytes.IndexOf("\n\n"u8);
+        ReadOnlySpan<byte> headers = end >= 0 ? bytes[..end] : bytes;
+        if (headers.IsEmpty || !char.IsAsciiLetter((char)headers[0]))
+        {
+            return false;
+        }
+
+        // Every line is a header (a name and a colon) or a folded continuation.
+        foreach (Range range in headers.Split((byte)'\n'))
+        {
+            ReadOnlySpan<byte> line = headers[range].TrimEnd((byte)'\r');
+            if (line.IsEmpty || line[0] is (byte)' ' or (byte)'\t')
+            {
+                continue;
+            }
+
+            int colon = line.IndexOf((byte)':');
+            if (colon <= 0 || line[..colon].ContainsAny(" \t"u8))
+            {
+                return false;
+            }
+        }
+
+        int type = IndexOfIgnoreCase(headers, "content-type:"u8);
+        return type >= 0 && IndexOfIgnoreCase(headers[type..], "multipart/related"u8) >= 0;
+    }
+
+    private static int IndexOfIgnoreCase(ReadOnlySpan<byte> bytes, ReadOnlySpan<byte> lower)
+    {
+        for (int i = 0; i + lower.Length <= bytes.Length; i++)
+        {
+            int j = 0;
+            while (j < lower.Length && (bytes[i + j] | 0x20) == lower[j])
+            {
+                j++;
+            }
+
+            if (j == lower.Length)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     /// <summary>Whether the text starts, past a byte order mark and white space, with a tag, a doctype or a comment.</summary>

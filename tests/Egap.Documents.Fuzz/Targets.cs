@@ -17,6 +17,11 @@ internal static class Targets
         ["pagemedia"] = PageMedia,
         ["mailmerge"] = MailMergeTarget,
         ["csslayout"] = CssLayout,
+        ["mime"] = Mime,
+        ["mhtml"] = Mhtml,
+        ["opf"] = Opf,
+        ["nav"] = Nav,
+        ["epub"] = Epub,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -313,6 +318,151 @@ internal static class Targets
             written.Position = 0;
             _ = Egap.Documents.DocxFormat.Load(written).GetText();
         }
+    }
+
+    /// <summary>Any bytes read as a MIME message; may throw only <see cref="DocumentException"/>. Every part answers its headers.</summary>
+    private static void Mime(Stream input)
+    {
+        byte[] data = ReadAll(input);
+        try
+        {
+            Egap.Documents.Html.MimeEntity root = Egap.Documents.Html.MimeReader.Read(data, new DocumentLimits());
+            foreach (Egap.Documents.Html.MimeEntity leaf in root.Leaves())
+            {
+                _ = leaf.MediaType;
+                _ = leaf.ContentId;
+                _ = leaf.ContentLocation;
+                _ = leaf.BodyText();
+            }
+        }
+        catch (DocumentException)
+        {
+        }
+
+        // The quoted-printable codec takes any bytes, and what it writes decodes to them.
+        byte[] decoded = Egap.Documents.Html.QuotedPrintable.Decode(data);
+        string encoded = Egap.Documents.Html.QuotedPrintable.Encode(decoded);
+        byte[] again = Egap.Documents.Html.QuotedPrintable.Decode(System.Text.Encoding.ASCII.GetBytes(encoded));
+        if (!again.AsSpan().SequenceEqual(Lf(decoded)))
+        {
+            throw new InvalidOperationException("Quoted-printable did not round trip.");
+        }
+    }
+
+    /// <summary>Bytes with each lone LF as CRLF, as quoted-printable writes line breaks.</summary>
+    private static byte[] Lf(byte[] bytes)
+    {
+        List<byte> result = new(bytes.Length);
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            if (bytes[i] == 10 && (i == 0 || bytes[i - 1] != 13))
+            {
+                result.Add(13);
+            }
+
+            result.Add(bytes[i]);
+        }
+
+        return [.. result];
+    }
+
+    /// <summary>Any bytes read as an MHTML archive; may throw only <see cref="DocumentException"/>. The model is written back and read again.</summary>
+    private static void Mhtml(Stream input)
+    {
+        Document document;
+        try
+        {
+            document = HtmlFormat.LoadMhtml(ReadAll(input), out _);
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+
+        _ = document.GetText();
+        string written = document.ToMhtml();
+        _ = HtmlFormat.LoadMhtml(System.Text.Encoding.ASCII.GetBytes(written), out _).GetText();
+    }
+
+    /// <summary>Any bytes read as a book's package document, in a container that holds nothing else; may throw only <see cref="DocumentException"/>.</summary>
+    private static void Opf(Stream input)
+    {
+        byte[] book = Book(("OEBPS/content.opf", ReadAll(input)));
+        ReadBook(book);
+    }
+
+    /// <summary>Any bytes read as a book's EPUB 3 navigation document and as its EPUB 2 NCX; may throw only <see cref="DocumentException"/>.</summary>
+    private static void Nav(Stream input)
+    {
+        byte[] data = ReadAll(input);
+        byte[] opf = System.Text.Encoding.UTF8.GetBytes(
+            "<package xmlns=\"http://www.idpf.org/2007/opf\" version=\"3.0\" unique-identifier=\"u\"><metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\">"
+            + "<dc:identifier id=\"u\">x</dc:identifier><dc:title>t</dc:title><dc:language>en</dc:language></metadata><manifest>"
+            + "<item id=\"nav\" href=\"nav.xhtml\" media-type=\"application/xhtml+xml\" properties=\"nav\"/><item id=\"ncx\" href=\"toc.ncx\" media-type=\"application/x-dtbncx+xml\"/>"
+            + "<item id=\"c\" href=\"c.xhtml\" media-type=\"application/xhtml+xml\"/></manifest><spine toc=\"ncx\"><itemref idref=\"c\"/></spine></package>");
+        byte[] chapter = "<html xmlns=\"http://www.w3.org/1999/xhtml\"><body><h1 id=\"a\">A</h1><p id=\"b\">B</p></body></html>"u8.ToArray();
+        ReadBook(Book(("OEBPS/content.opf", opf), ("OEBPS/nav.xhtml", data), ("OEBPS/c.xhtml", chapter)));
+        ReadBook(Book(("OEBPS/content.opf", opf), ("OEBPS/toc.ncx", data), ("OEBPS/c.xhtml", chapter)));
+    }
+
+    /// <summary>
+    /// Any bytes read as an EPUB book; may throw only <see cref="DocumentException"/>. The model is written as EPUB, which
+    /// must read again.
+    /// </summary>
+    private static void Epub(Stream input)
+    {
+        ReadBook(ReadAll(input));
+    }
+
+    private static void ReadBook(byte[] book)
+    {
+        Document document;
+        try
+        {
+            document = EpubFormat.Load(new MemoryStream(book), new EpubLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 } });
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+
+        _ = document.GetText();
+        foreach (Paragraph paragraph in document.Descendants<Paragraph>())
+        {
+            _ = paragraph.GetEffectiveFormat();
+        }
+
+        _ = EpubFormat.Load(new MemoryStream(document.ToEpub())).GetText();
+    }
+
+    /// <summary>A ZIP container with an EPUB mimetype, a container.xml pointing at OEBPS/content.opf, and the files.</summary>
+    private static byte[] Book(params (string Name, byte[] Data)[] files)
+    {
+        using MemoryStream stream = new();
+        using (System.IO.Compression.ZipArchive zip = new(stream, System.IO.Compression.ZipArchiveMode.Create, leaveOpen: true))
+        {
+            Add("mimetype", "application/epub+zip"u8.ToArray());
+            Add("META-INF/container.xml", "<container version=\"1.0\" xmlns=\"urn:oasis:names:tc:opendocument:xmlns:container\"><rootfiles><rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-package+xml\"/></rootfiles></container>"u8.ToArray());
+            foreach ((string name, byte[] data) in files)
+            {
+                Add(name, data);
+            }
+
+            void Add(string name, byte[] data)
+            {
+                using Stream entry = zip.CreateEntry(name).Open();
+                entry.Write(data);
+            }
+        }
+
+        return stream.ToArray();
+    }
+
+    private static byte[] ReadAll(Stream input)
+    {
+        using MemoryStream bytes = new();
+        input.CopyTo(bytes);
+        return bytes.ToArray();
     }
 
     private static MemoryStream Wrap(byte[] documentXml)
