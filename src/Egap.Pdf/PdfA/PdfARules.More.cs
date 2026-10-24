@@ -34,6 +34,12 @@ internal sealed partial class PdfARules
         }
     }
 
+    /// <summary>Whether a dictionary is an additional-actions dictionary: no other type, and every entry an action.</summary>
+    private static bool IsAdditionalActions(PdfDictionary triggers)
+    {
+        return triggers.GetName("Type") is null && triggers.Entries.All(e => e.Value.Resolve() is PdfDictionary action && action.GetName("Type")?.Value is null or "Action" && action.ContainsKey("S"));
+    }
+
     /// <summary>
     /// Rules over every object: actions and additional actions wherever they sit (form fields too), file specifications
     /// that name an embedded file both ways (/F and /UF), filters spelled as inline image abbreviations, page sizes.
@@ -72,12 +78,13 @@ internal sealed partial class PdfARules
             {
                 // Pages, annotations and outline items are judged where they are read; this finds the rest.
                 bool covered = dictionary.GetName("Type")?.Value is "Annot" or "Page" or "Catalog" || dictionary.ContainsKey("Title");
-                if (!covered && dictionary.ContainsKey("AA"))
+                // A resource named AA or A (a font, say) is not an action: only a dictionary of actions is.
+                if (!covered && dictionary.Get("AA")?.Resolve() is PdfDictionary triggers && IsAdditionalActions(triggers))
                 {
                     additional.Add(dictionary);
                 }
 
-                if (!covered && dictionary.Get("A")?.Resolve() is PdfDictionary action && action.ContainsKey("S") && Forbidden(action) is not null)
+                if (!covered && dictionary.Get("A")?.Resolve() is PdfDictionary action && action.ContainsKey("S") && action.GetName("Type")?.Value is null or "Action" && Forbidden(action) is not null)
                 {
                     actions.Add((dictionary, "A"));
                 }
