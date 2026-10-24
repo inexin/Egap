@@ -144,7 +144,7 @@ internal sealed partial class PdfARules
         HashSet<string> disagreeing = [];
         Arrays(array =>
         {
-            if (array is { Count: 4 } && array.GetName(0)?.Value == "Separation" && array.GetName(1)?.Value is string name and not ("All" or "None"))
+            if (array is { Count: 4 } && array.GetName(0)?.Value == "Separation" && array.GetName(1)?.Value is string name and not "None")
             {
                 PdfObject alternate = array.Get(2), transform = array.Get(3);
                 if (!first.TryGetValue(name, out (PdfObject Alternate, PdfObject Transform) known))
