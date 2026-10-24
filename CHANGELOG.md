@@ -39,6 +39,19 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 
 ## Egap.Pdf 2.2.0 (unreleased)
 
+### OCR
+- `PdfOcr.MakeSearchableAsync` makes scanned PDFs searchable through any `IOcrEngine` from Egami.Ocr (Egami 1.2.0), such as
+  `CommandOcrEngine` running Tesseract: the engine's words go over each page as invisible text, along each word's own
+  baseline and scaled to its width. A page that is one scanned image is read as its own pixels; other pages are rendered.
+- `PdfOcrOptions`: `Skip`, `Redo` and `Force` modes, a page range, languages, render resolution, a confidence floor,
+  deskew of the engine's copy, page rotation from the engine, parallel pages with progress, PDF/A in the same pass, and
+  page and pixel limits. A signed document is refused unless `AllowInvalidatingSignatures`. `PdfOcrReport` says per page
+  what was done, the words added, their mean confidence and the engine's time.
+- `PdfOcrLayer.AddResult` adds an engine's result to a page through an image-to-page matrix.
+- The glyphless font of OCR layers gives a descent of -1 instead of 0, so text extractors size the words' boxes to the
+  words instead of guessing a descent.
+- Egap now builds on Egami 1.2.0.
+
 ### Preflight
 - `PdfPreflight.Run` lists what a document uses for print, page by page: output intents, colour spaces with their ICC
   profiles and spot inks, images with their effective resolution, fonts, transparency, overprint, hairlines and bleed.
@@ -137,6 +150,12 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `DocumentFormatKind.Epub` and `DocumentFormatKind.Mhtml`: `Document.Identify` tells an EPUB by its first ZIP entry and
   an MHTML archive by its `multipart/related` headers or its `.mht` and `.mhtml` extension, without the add-on.
 - `ConversionWarningKind.MediaDropped` for audio, video, media overlays and scripts a reader left out.
+
+### Scanned pages
+- `Document.LoadPdfAsync` and `PdfToDocument.ConvertAsync` run scanned pages through `PdfToDocumentOptions.OcrEngine`, so
+  their text becomes paragraphs instead of a picture; `PdfToDocumentOptions.Ocr` sets the languages, resolution and the
+  rest. The sync `LoadPdf` and `Convert` keep a scanned page as a picture, as before.
+- `PdfToDocumentWarningKind.OcrFailed` when the engine fails on a page, which stays a picture.
 
 ## Egap.Documents 2.1.0 (2026-10-22)
 

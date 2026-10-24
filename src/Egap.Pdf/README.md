@@ -7,7 +7,7 @@ which is managed too: no native binaries, no P/Invoke.
 - Pages, outlines, labels, metadata, attachments, layers, annotations and forms (XFA data included); merge and split.
 - Content streams, text extraction in reading order, image extraction and replacement, drawing through an Egami canvas.
 - Rendering to rasters or onto any Egami canvas.
-- Signatures (PAdES B-B to B-LTA) and verification, true redaction, PDF/A, tagged PDF, linearization, an OCR text layer.
+- Signatures (PAdES B-B to B-LTA) and verification, true redaction, PDF/A, tagged PDF, linearization, and searchable scans through any OCR engine you plug in.
 - Find, redact and replace text by phrase or regular expression; Factur-X and ZUGFeRD e-invoices.
 - Tools: optimize, N-up and booklets, stamps and Bates numbers, compare, blank page removal and deskew.
 - Print: preflight against a print profile, ink separations and total ink coverage, colour conversion to CMYK, PDF/X, overprint preview.

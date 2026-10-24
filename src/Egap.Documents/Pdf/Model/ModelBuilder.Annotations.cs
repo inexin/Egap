@@ -18,17 +18,11 @@ internal sealed partial class ModelBuilder
     /// <summary>Markup annotations that become comments when they carry text.</summary>
     private static readonly HashSet<string> NoteKinds = ["Text", "Highlight", "Underline", "StrikeOut", "Squiggly", "Caret", "Square", "Circle", "Polygon", "PolyLine", "Ink", "Stamp"];
 
-    /// <summary>
-    /// The seam for an OCR engine (hub step 5.7, design Q9): given a scanned page, the text lines it recognises in page
-    /// space, or null. Until 5.7 registers an engine there is none, and a scanned page stays a picture with a warning.
-    /// </summary>
-    internal static Func<PdfPage, IReadOnlyList<PdfOcrLine>?>? Ocr { get; set; }
-
     private readonly List<(int Page, PageBox Box, Paragraph Paragraph)> written = [];
     private readonly List<(Hyperlink Link, int Page, double? Top)> internalLinks = [];
 
     /// <summary>The image a page is a scan of, when it has no text of its own and one image covers most of it.</summary>
-    private static PageImage? Scan(PageDraft page)
+    internal static PageImage? Scan(PageDraft page)
     {
         if (page.Content.Glyphs.Any(g => !g.IsArtifact && !g.IsSpace))
         {
@@ -40,14 +34,13 @@ internal sealed partial class ModelBuilder
     }
 
     /// <summary>
-    /// A scanned page (design Q9): run through the registered OCR engine when there is one, else kept as a picture across the
-    /// text area with a warning, since Egap does no OCR of its own.
+    /// A scanned page (design Q9) kept as a picture across the text area with a warning, since Egap does no OCR of its own;
+    /// <see cref="PdfToDocument.ConvertAsync"/> with an OCR engine gives such pages their text before they get here.
     /// </summary>
     private void WriteScan(BlockContainer body, ScannedPage scan, PlacedItem placed)
     {
         int index = placed.Page.Content.Index;
         PdfPage pdfPage = pdf.Pages[index];
-        _ = Ocr?.Invoke(pdfPage);
         options.OnWarning?.Invoke(new PdfToDocumentWarning(PdfToDocumentWarningKind.ScannedPage, index,
             $"Page {index + 1} is a scanned picture with no text; it is kept as a picture."));
 

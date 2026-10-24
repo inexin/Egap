@@ -10,6 +10,8 @@
       href: guides/editing.md
     - name: Fonts
       href: guides/fonts.md
+    - name: OCR and searchable scans
+      href: guides/ocr.md
     - name: PDF tools
       href: guides/pdf-tools.md
     - name: Print production

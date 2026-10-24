@@ -51,7 +51,8 @@ internal static class GlyphlessFont
             ["FontBBox"] = new PdfArray { new PdfInteger(0), new PdfInteger(0), new PdfInteger(500), new PdfInteger(1000) },
             ["ItalicAngle"] = new PdfInteger(0),
             ["Ascent"] = new PdfInteger(1000),
-            ["Descent"] = new PdfInteger(0),
+            // Not 0, which text extractors take as "not given" and replace with a guess below the baseline.
+            ["Descent"] = new PdfInteger(-1),
             ["CapHeight"] = new PdfInteger(1000),
             ["StemV"] = new PdfInteger(80),
             ["FontFile2"] = document.Objects.Add(file),

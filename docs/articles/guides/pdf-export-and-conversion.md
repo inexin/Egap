@@ -107,7 +107,9 @@ Document flow = PdfToDocument.Convert(pdf);
 flow.Save("paper.docx");
 ```
 
-The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV.
+The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV. A scanned
+page stays a picture unless you load with `Document.LoadPdfAsync` and an OCR engine (see
+[OCR and searchable scans](ocr.md#scans-in-document-conversion)).
 
 ## Recipes
 
