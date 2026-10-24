@@ -72,6 +72,14 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `PdfRenderOptions.SimulateOverprint` renders a page as it prints: through its ink plates, proofed back to sRGB through
   the press profile, so overprint and spot colours show as on press.
 
+### Changed
+- DeviceCMYK colours in a document without a CMYK output intent now render through Egami's Coated FOGRA39 profile in
+  place of a fitted approximation of it, the same press profile Egap's print tools use: CMYK pages look slightly different. `PdfRenderOptions.DefaultCmykProfile` picks another press profile. CMYK images
+  convert a row at a time, and each CMYK colour once.
+- Transfer functions in a graphics state (`/TR` and `/TR2`) now change the colours drawn after them: fills, strokes,
+  text, images and shadings, and each plate's ink on separations and overprint previews. Files that use them look as on a
+  printer; `PdfRenderOptions.ApplyTransferFunctions = false` draws colours as they are, as before.
+
 ### PDF/A
 - Converting to PDF/A-1b now writes the `/CIDSet` that PDF/A-1 asks of subset CID fonts. Files made without it, such as
   ones made for another level, failed veraPDF after conversion.
