@@ -41,7 +41,7 @@ internal sealed class TransferTable
                 throw new InvalidDataException("A transfer function array does not hold four functions.");
             }
 
-            // Each entry must be a function (10.5); a name such as Identity is not one, and PDFium ignores such an array too.
+            // Each entry must be a function (10.5); a name such as Identity is not one, so such an array is ignored.
             if (Enumerable.Range(0, 4).Any(i => array.Get(i).Resolve() is not (PdfDictionary or PdfStream)))
             {
                 throw new InvalidDataException("A transfer function array holds something other than four functions.");

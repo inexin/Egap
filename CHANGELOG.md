@@ -83,6 +83,16 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 ### PDF/A
 - Converting to PDF/A-1b now writes the `/CIDSet` that PDF/A-1 asks of subset CID fonts. Files made without it, such as
   ones made for another level, failed veraPDF after conversion.
+- Conversion now fixes more rules: rendering intents PDF does not define become RelativeColorimetric (in graphics
+  states, images and the `ri` operator); halftone names and halftone transfer functions on primary colourants are
+  removed; form field widgets lose their actions; pages lose `/PresSteps`; ICC profiles that cannot be read are replaced
+  by the standard profile with as many components; the catalog's metadata stream gets `/Type /Metadata /Subtype /XML`;
+  and XMP on structure elements and other objects is checked and put right like the rest.
+- Conversion now checks, and refuses, names longer than 127 bytes, Separation spaces of one name (All included) that
+  disagree on their alternate or tint transform, DeviceCMYK reached through a DeviceN colourant's alternate without a
+  CMYK output intent, and non-symbolic TrueType fonts that name neither MacRomanEncoding nor WinAnsiEncoding.
+- A resource named `AA`, such as a font, is no longer removed as if it were additional actions. Conversion removed it
+  and then refused the file, which it had already changed.
 
 ## Egap.Preview 2.2.0 (unreleased)
 

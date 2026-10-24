@@ -28,7 +28,7 @@ internal sealed partial class PdfARules
                 case PdfReal real when Math.Abs(real.Value) > 3.403e38:
                     reals++;
                     break;
-                case PdfName name when System.Text.Encoding.UTF8.GetByteCount(name.Value) > 127:
+                case PdfName name when name.Bytes.Length > 127:
                     names++;
                     break;
                 case PdfStream stream when depth <= MaxDepth && seen.Add(stream):

@@ -135,6 +135,18 @@ public sealed class PdfAGapTests
     }
 
     [Fact]
+    public void NameLengthCountsTheNamesBytes()
+    {
+        // 70 bytes that are not UTF-8 read as 70 Latin-1 characters, 140 bytes once encoded as UTF-8: still within the limit.
+        using PdfDocument pdf = PdfDocument.Open(PdfAConvertTests.Breaking());
+        pdf.Catalog["Short"] = PdfName.Get(Enumerable.Repeat((byte)0xE9, 70).ToArray());
+        Assert.DoesNotContain(PdfAConverter.Check(pdf, PdfAConformance.PdfA2b).Issues, i => i.Description.Contains("127", StringComparison.Ordinal));
+
+        pdf.Catalog["Long"] = PdfName.Get(Enumerable.Repeat((byte)'n', 128).ToArray());
+        Assert.Contains(PdfAConverter.Check(pdf, PdfAConformance.PdfA2b).Issues, i => i.Clause == "6.1.13" && i.Description.Contains("127", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void ANonSymbolicTrueTypeFontWithoutAStandardEncodingIsReported()
     {
         // Conversion embeds Helvetica as a TrueType subset with WinAnsiEncoding, which passes; Differences alone do not.
