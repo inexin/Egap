@@ -194,7 +194,7 @@ box at 72 dpi (one pixel per point) on white with annotations, as a viewer shows
 
   <h3 id="Egap_Pdf_PdfRenderOptions_Antialiasing" data-uid="Egap.Pdf.PdfRenderOptions.Antialiasing">
   Antialiasing
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L163"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>What is anti-aliased (design Q11); everything by default.</p>
@@ -212,6 +212,40 @@ box at 72 dpi (one pixel per point) on white with annotations, as a viewer shows
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Egap.Pdf.PdfAntialiasing.html">PdfAntialiasing</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Pdf_PdfRenderOptions_ApplyTransferFunctions_" data-uid="Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions*"></a>
+
+  <h3 id="Egap_Pdf_PdfRenderOptions_ApplyTransferFunctions" data-uid="Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions">
+  ApplyTransferFunctions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a graphics state's transfer functions (<code>/TR</code> and <code>/TR2</code>) change the colours drawn after it, as
+they do on a press or printer: on by default; off draws colours as they are. Black generation, undercolour removal and
+halftones are ignored either way.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ApplyTransferFunctions { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd></dd>
   </dl>
 
@@ -315,6 +349,46 @@ box at 72 dpi (one pixel per point) on white with annotations, as a viewer shows
 
 
 
+
+
+
+  <a id="Egap_Pdf_PdfRenderOptions_DefaultCmykProfile_" data-uid="Egap.Pdf.PdfRenderOptions.DefaultCmykProfile*"></a>
+
+  <h3 id="Egap_Pdf_PdfRenderOptions_DefaultCmykProfile" data-uid="Egap.Pdf.PdfRenderOptions.DefaultCmykProfile">
+  DefaultCmykProfile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The press profile DeviceCMYK colours are drawn through when the document has no CMYK output intent (or
+<a class="xref" href="Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_UseOutputIntents">UseOutputIntents</a> is off), such as U.S. Web Coated (SWOP) or GRACoL; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> (the default)
+for Coated FOGRA39 (<span class="xref">Egami.Colors.ColorProfile.Fogra39</span>). The profile must be a CMYK output profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ColorProfile? DefaultCmykProfile { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ColorProfile</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The profile is not a four-channel CMYK profile.</p>
+</dd>
+  </dl>
 
 
 
@@ -425,7 +499,7 @@ inside both. <a href="https://learn.microsoft.com/dotnet/csharp/language-referen
 
   <h3 id="Egap_Pdf_PdfRenderOptions_ImageCacheLimit" data-uid="Egap.Pdf.PdfRenderOptions.ImageCacheLimit">
   ImageCacheLimit
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L103"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How many bytes of decoded images a document keeps for its renders (design Q14), the least recently drawn dropped
@@ -496,7 +570,7 @@ first; 256 MB by default, 0 to keep none.</p>
 
   <h3 id="Egap_Pdf_PdfRenderOptions_LayerConfiguration" data-uid="Egap.Pdf.PdfRenderOptions.LayerConfiguration">
   LayerConfiguration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L119"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The optional content configuration to start from, by its <code>/Name</code> in <code>/OCProperties /Configs</code>; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
@@ -529,7 +603,7 @@ first; 256 MB by default, 0 to keep none.</p>
 
   <h3 id="Egap_Pdf_PdfRenderOptions_Layers" data-uid="Egap.Pdf.PdfRenderOptions.Layers">
   Layers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Layers shown or hidden whatever the document's configuration says (design Q13), applied last; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
@@ -562,7 +636,7 @@ to keep the configuration's choice for every layer.</p>
 
   <h3 id="Egap_Pdf_PdfRenderOptions_MaxImagePixels" data-uid="Egap.Pdf.PdfRenderOptions.MaxImagePixels">
   MaxImagePixels
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L156"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The most pixels an image may have to be decoded and drawn; larger ones are skipped with a warning. 256 megapixels by default.</p>
@@ -600,7 +674,7 @@ to keep the configuration's choice for every layer.</p>
 
   <h3 id="Egap_Pdf_PdfRenderOptions_MaxOperations" data-uid="Egap.Pdf.PdfRenderOptions.MaxOperations">
   MaxOperations
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L148"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The most content operators one render walks, forms, patterns and glyph procedures included; past it the rest of the
@@ -639,7 +713,7 @@ page is left out with a warning (a <a class="xref" href="Egap.Pdf.PdfLimitExcept
 
   <h3 id="Egap_Pdf_PdfRenderOptions_MaxOutputPixels" data-uid="Egap.Pdf.PdfRenderOptions.MaxOutputPixels">
   MaxOutputPixels
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The most pixels <a class="xref" href="Egap.Pdf.PdfPage.html#Egap_Pdf_PdfPage_Render_Egap_Pdf_PdfRenderOptions_System_Threading_CancellationToken_">Render(PdfRenderOptions?, CancellationToken)</a> makes (design Q15): a larger output throws
@@ -679,7 +753,7 @@ through <a class="xref" href="Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderO
 
   <h3 id="Egap_Pdf_PdfRenderOptions_OnWarning" data-uid="Egap.Pdf.PdfRenderOptions.OnWarning">
   OnWarning
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L129"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Called with each problem a lenient render worked around, after the page is drawn; null to ignore them.</p>
@@ -782,7 +856,7 @@ tiles; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/key
 
   <h3 id="Egap_Pdf_PdfRenderOptions_SimulateOverprint" data-uid="Egap.Pdf.PdfRenderOptions.SimulateOverprint">
   SimulateOverprint
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L171"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the page is shown as it prints (Phase 8 design Q11): rendered as ink plates, so overprint and spot colours act
@@ -817,7 +891,7 @@ overprint is ignored as on screen.</p>
 
   <h3 id="Egap_Pdf_PdfRenderOptions_Strict" data-uid="Egap.Pdf.PdfRenderOptions.Strict">
   Strict
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L126"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the first problem in the page throws a <a class="xref" href="Egap.Pdf.PdfException.html">PdfException</a> (design Q15). By default a render is
@@ -855,7 +929,7 @@ each is reported to <a class="xref" href="Egap.Pdf.PdfRenderOptions.html#Egap_Pd
   </h3>
 
   <div class="markdown level1 summary"><p>Whether a document's output intent decides what its device colours look like (design Q7): a PDF/X file's CMYK through
-its press profile. On by default; off draws device colours as they are, CMYK through Egap's built-in conversion.</p>
+its press profile. On by default; off draws device colours as they are, CMYK through <a class="xref" href="Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_DefaultCmykProfile">DefaultCmykProfile</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -921,7 +995,7 @@ and their aliases always use the fonts bundled with Egap; turn this off for outp
 
   <h3 id="Egap_Pdf_PdfRenderOptions_FitTo_System_Int32_System_Int32_" data-uid="Egap.Pdf.PdfRenderOptions.FitTo(System.Int32,System.Int32)">
   FitTo(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L155"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Pdf/Rendering/PdfRenderOptions.cs/#L174"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Options that fit the page inside <code class="paramref">width</code> by <code class="paramref">height</code> pixels, keeping its aspect, as for a thumbnail.</p>

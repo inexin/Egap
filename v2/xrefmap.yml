@@ -43022,6 +43022,19 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfRenderOptions.Antialiasing
   nameWithType: PdfRenderOptions.Antialiasing
+- uid: Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions
+  name: ApplyTransferFunctions
+  href: api/Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_ApplyTransferFunctions
+  commentId: P:Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions
+  fullName: Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions
+  nameWithType: PdfRenderOptions.ApplyTransferFunctions
+- uid: Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions*
+  name: ApplyTransferFunctions
+  href: api/Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_ApplyTransferFunctions_
+  commentId: Overload:Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions
+  nameWithType: PdfRenderOptions.ApplyTransferFunctions
 - uid: Egap.Pdf.PdfRenderOptions.Background
   name: Background
   href: api/Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_Background
@@ -43061,6 +43074,19 @@ references:
   isSpec: "True"
   fullName: Egap.Pdf.PdfRenderOptions.Default
   nameWithType: PdfRenderOptions.Default
+- uid: Egap.Pdf.PdfRenderOptions.DefaultCmykProfile
+  name: DefaultCmykProfile
+  href: api/Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_DefaultCmykProfile
+  commentId: P:Egap.Pdf.PdfRenderOptions.DefaultCmykProfile
+  fullName: Egap.Pdf.PdfRenderOptions.DefaultCmykProfile
+  nameWithType: PdfRenderOptions.DefaultCmykProfile
+- uid: Egap.Pdf.PdfRenderOptions.DefaultCmykProfile*
+  name: DefaultCmykProfile
+  href: api/Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_DefaultCmykProfile_
+  commentId: Overload:Egap.Pdf.PdfRenderOptions.DefaultCmykProfile
+  isSpec: "True"
+  fullName: Egap.Pdf.PdfRenderOptions.DefaultCmykProfile
+  nameWithType: PdfRenderOptions.DefaultCmykProfile
 - uid: Egap.Pdf.PdfRenderOptions.Dpi
   name: Dpi
   href: api/Egap.Pdf.PdfRenderOptions.html#Egap_Pdf_PdfRenderOptions_Dpi

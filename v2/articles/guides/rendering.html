@@ -105,6 +105,18 @@ system fonts may stand in for fonts the file does not embed. Turn system fonts o
 machine. Fonts a file names but does not embed are drawn with bundled substitutes that keep the same widths.</p>
 <p>Pages render as on screen, where overprint is ignored. <code>SimulateOverprint</code> shows them as they print instead, and
 <code>RenderSeparations</code> gives the ink plates themselves; see <a href="print-production.html">Print production</a>.</p>
+<h2 id="colour">Colour</h2>
+<p>Device colours draw as the document's output intent says when it has one. Without a CMYK output intent, DeviceCMYK
+colours, CMYK JPEGs and spot colours with a CMYK alternate draw through the Coated FOGRA39 press profile, as on a
+European offset press. <code>DefaultCmykProfile</code> picks another press profile, such as one for U.S. web presses:</p>
+<pre><code class="lang-csharp">using Egami.Colors;
+using Egap.Pdf;
+
+ColorProfile swop = ColorProfile.FromIcc(File.ReadAllBytes(&quot;USWebCoatedSWOP.icc&quot;));
+PdfRenderOptions us = new() { DefaultCmykProfile = swop };
+</code></pre>
+<p>Transfer functions in a graphics state (<code>/TR</code> and <code>/TR2</code>) change the colours drawn after it, as they do on a printer.
+Set <code>ApplyTransferFunctions</code> to <code>false</code> to draw colours as they are.</p>
 
 </article>
 
