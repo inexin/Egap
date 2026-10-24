@@ -253,7 +253,10 @@ internal abstract class ImageColorSpace
         private const int MaxRemembered = 4096;
 
         private readonly ColorProfile? profile = context?.Cmyk;
-        private readonly ColorTransform transform = (context ?? ColorContext.Plain).Transform(context?.Cmyk ?? context?.DefaultCmyk ?? ColorProfile.Fogra39);
+        // FOGRA39's transforms are made once for the process; any other profile's in the context that reads the space.
+        private readonly ColorTransform transform = context?.Cmyk is ColorProfile own ? context.Transform(own)
+            : context?.DefaultCmyk is ColorProfile chosen && !ReferenceEquals(chosen, ColorProfile.Fogra39) ? context.Transform(chosen)
+            : ColorContext.Plain.WithIntent(context?.Intent ?? RenderingIntent.RelativeColorimetric).Transform(ColorProfile.Fogra39);
         private readonly Dictionary<Egami.Pixels.Cmyk16, Egami.Pixels.Rgb16> remembered = [];
 
         public override int Components => 4;

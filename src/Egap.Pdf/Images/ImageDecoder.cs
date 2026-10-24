@@ -167,7 +167,7 @@ internal static class ImageDecoder
             return null;
         }
 
-        ImageColorSpace space = ownSpace ?? ImageColorSpace.Read(d.Get("ColorSpace"), image.Resources, options.Colors ?? (options.CmykProfile is null ? ColorContext.Plain : new ColorContext { Cmyk = options.CmykProfile }));
+        ImageColorSpace space = ownSpace ?? ImageColorSpace.Read(d.Get("ColorSpace"), image.Resources, options.Colors ?? new ColorContext { Cmyk = options.CmykProfile });
         int n = space.Components;
         if (samples.Components < n)
         {

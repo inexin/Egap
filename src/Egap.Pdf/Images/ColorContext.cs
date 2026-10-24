@@ -18,7 +18,7 @@ internal sealed class ColorContext
         shared = new Shared();
     }
 
-    /// <summary>A context with no profiles of its own, shared by colour spaces read without one so their transforms are made once.</summary>
+    /// <summary>A context shared by every DeviceCMYK space that goes through FOGRA39, so its transforms are made once; it holds nothing else.</summary>
     public static ColorContext Plain { get; } = new();
 
     private ColorContext(ColorContext other, RenderingIntent intent)
