@@ -2788,6 +2788,12 @@ references:
   commentId: F:Egap.Documents.ConversionWarningKind.LayoutApproximated
   fullName: Egap.Documents.ConversionWarningKind.LayoutApproximated
   nameWithType: ConversionWarningKind.LayoutApproximated
+- uid: Egap.Documents.ConversionWarningKind.MediaDropped
+  name: MediaDropped
+  href: api/Egap.Documents.ConversionWarningKind.html#Egap_Documents_ConversionWarningKind_MediaDropped
+  commentId: F:Egap.Documents.ConversionWarningKind.MediaDropped
+  fullName: Egap.Documents.ConversionWarningKind.MediaDropped
+  nameWithType: ConversionWarningKind.MediaDropped
 - uid: Egap.Documents.ConversionWarningKind.MergeFieldsRemoved
   name: MergeFieldsRemoved
   href: api/Egap.Documents.ConversionWarningKind.html#Egap_Documents_ConversionWarningKind_MergeFieldsRemoved
@@ -4430,6 +4436,12 @@ references:
   commentId: F:Egap.Documents.DocumentFormatKind.Docx
   fullName: Egap.Documents.DocumentFormatKind.Docx
   nameWithType: DocumentFormatKind.Docx
+- uid: Egap.Documents.DocumentFormatKind.Epub
+  name: Epub
+  href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Epub
+  commentId: F:Egap.Documents.DocumentFormatKind.Epub
+  fullName: Egap.Documents.DocumentFormatKind.Epub
+  nameWithType: DocumentFormatKind.Epub
 - uid: Egap.Documents.DocumentFormatKind.Html
   name: Html
   href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Html
@@ -4442,6 +4454,12 @@ references:
   commentId: F:Egap.Documents.DocumentFormatKind.Markdown
   fullName: Egap.Documents.DocumentFormatKind.Markdown
   nameWithType: DocumentFormatKind.Markdown
+- uid: Egap.Documents.DocumentFormatKind.Mhtml
+  name: Mhtml
+  href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Mhtml
+  commentId: F:Egap.Documents.DocumentFormatKind.Mhtml
+  fullName: Egap.Documents.DocumentFormatKind.Mhtml
+  nameWithType: DocumentFormatKind.Mhtml
 - uid: Egap.Documents.DocumentFormatKind.Pdf
   name: Pdf
   href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Pdf
@@ -5766,6 +5784,259 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.EmbeddedFont.Italic
   nameWithType: EmbeddedFont.Italic
+- uid: Egap.Documents.EpubFormat
+  name: EpubFormat
+  href: api/Egap.Documents.EpubFormat.html
+  commentId: T:Egap.Documents.EpubFormat
+  fullName: Egap.Documents.EpubFormat
+  nameWithType: EpubFormat
+- uid: Egap.Documents.EpubFormat.Load(System.IO.Stream,Egap.Documents.EpubLoadOptions)
+  name: Load(Stream, EpubLoadOptions?)
+  href: api/Egap.Documents.EpubFormat.html#Egap_Documents_EpubFormat_Load_System_IO_Stream_Egap_Documents_EpubLoadOptions_
+  commentId: M:Egap.Documents.EpubFormat.Load(System.IO.Stream,Egap.Documents.EpubLoadOptions)
+  name.vb: Load(Stream, EpubLoadOptions)
+  fullName: Egap.Documents.EpubFormat.Load(System.IO.Stream, Egap.Documents.EpubLoadOptions?)
+  fullName.vb: Egap.Documents.EpubFormat.Load(System.IO.Stream, Egap.Documents.EpubLoadOptions)
+  nameWithType: EpubFormat.Load(Stream, EpubLoadOptions?)
+  nameWithType.vb: EpubFormat.Load(Stream, EpubLoadOptions)
+- uid: Egap.Documents.EpubFormat.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.EpubLoadOptions)
+  name: Load(Stream, out IReadOnlyList<ConversionWarning>, EpubLoadOptions?)
+  href: api/Egap.Documents.EpubFormat.html#Egap_Documents_EpubFormat_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_EpubLoadOptions_
+  commentId: M:Egap.Documents.EpubFormat.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.EpubLoadOptions)
+  name.vb: Load(Stream, IReadOnlyList(Of ConversionWarning), EpubLoadOptions)
+  fullName: Egap.Documents.EpubFormat.Load(System.IO.Stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.EpubLoadOptions?)
+  fullName.vb: Egap.Documents.EpubFormat.Load(System.IO.Stream, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.EpubLoadOptions)
+  nameWithType: EpubFormat.Load(Stream, out IReadOnlyList<ConversionWarning>, EpubLoadOptions?)
+  nameWithType.vb: EpubFormat.Load(Stream, IReadOnlyList(Of ConversionWarning), EpubLoadOptions)
+- uid: Egap.Documents.EpubFormat.Load(System.String,Egap.Documents.EpubLoadOptions)
+  name: Load(string, EpubLoadOptions?)
+  href: api/Egap.Documents.EpubFormat.html#Egap_Documents_EpubFormat_Load_System_String_Egap_Documents_EpubLoadOptions_
+  commentId: M:Egap.Documents.EpubFormat.Load(System.String,Egap.Documents.EpubLoadOptions)
+  name.vb: Load(String, EpubLoadOptions)
+  fullName: Egap.Documents.EpubFormat.Load(string, Egap.Documents.EpubLoadOptions?)
+  fullName.vb: Egap.Documents.EpubFormat.Load(String, Egap.Documents.EpubLoadOptions)
+  nameWithType: EpubFormat.Load(string, EpubLoadOptions?)
+  nameWithType.vb: EpubFormat.Load(String, EpubLoadOptions)
+- uid: Egap.Documents.EpubFormat.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.EpubLoadOptions)
+  name: Load(string, out IReadOnlyList<ConversionWarning>, EpubLoadOptions?)
+  href: api/Egap.Documents.EpubFormat.html#Egap_Documents_EpubFormat_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_EpubLoadOptions_
+  commentId: M:Egap.Documents.EpubFormat.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.EpubLoadOptions)
+  name.vb: Load(String, IReadOnlyList(Of ConversionWarning), EpubLoadOptions)
+  fullName: Egap.Documents.EpubFormat.Load(string, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.EpubLoadOptions?)
+  fullName.vb: Egap.Documents.EpubFormat.Load(String, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.EpubLoadOptions)
+  nameWithType: EpubFormat.Load(string, out IReadOnlyList<ConversionWarning>, EpubLoadOptions?)
+  nameWithType.vb: EpubFormat.Load(String, IReadOnlyList(Of ConversionWarning), EpubLoadOptions)
+- uid: Egap.Documents.EpubFormat.Load*
+  name: Load
+  href: api/Egap.Documents.EpubFormat.html#Egap_Documents_EpubFormat_Load_
+  commentId: Overload:Egap.Documents.EpubFormat.Load
+  isSpec: "True"
+  fullName: Egap.Documents.EpubFormat.Load
+  nameWithType: EpubFormat.Load
+- uid: Egap.Documents.EpubFormat.Save(Egap.Documents.Document,System.IO.Stream,Egap.Documents.EpubSaveOptions)
+  name: Save(Document, Stream, EpubSaveOptions?)
+  href: api/Egap.Documents.EpubFormat.html#Egap_Documents_EpubFormat_Save_Egap_Documents_Document_System_IO_Stream_Egap_Documents_EpubSaveOptions_
+  commentId: M:Egap.Documents.EpubFormat.Save(Egap.Documents.Document,System.IO.Stream,Egap.Documents.EpubSaveOptions)
+  name.vb: Save(Document, Stream, EpubSaveOptions)
+  fullName: Egap.Documents.EpubFormat.Save(Egap.Documents.Document, System.IO.Stream, Egap.Documents.EpubSaveOptions?)
+  fullName.vb: Egap.Documents.EpubFormat.Save(Egap.Documents.Document, System.IO.Stream, Egap.Documents.EpubSaveOptions)
+  nameWithType: EpubFormat.Save(Document, Stream, EpubSaveOptions?)
+  nameWithType.vb: EpubFormat.Save(Document, Stream, EpubSaveOptions)
+- uid: Egap.Documents.EpubFormat.Save(Egap.Documents.Document,System.String,Egap.Documents.EpubSaveOptions)
+  name: Save(Document, string, EpubSaveOptions?)
+  href: api/Egap.Documents.EpubFormat.html#Egap_Documents_EpubFormat_Save_Egap_Documents_Document_System_String_Egap_Documents_EpubSaveOptions_
+  commentId: M:Egap.Documents.EpubFormat.Save(Egap.Documents.Document,System.String,Egap.Documents.EpubSaveOptions)
+  name.vb: Save(Document, String, EpubSaveOptions)
+  fullName: Egap.Documents.EpubFormat.Save(Egap.Documents.Document, string, Egap.Documents.EpubSaveOptions?)
+  fullName.vb: Egap.Documents.EpubFormat.Save(Egap.Documents.Document, String, Egap.Documents.EpubSaveOptions)
+  nameWithType: EpubFormat.Save(Document, string, EpubSaveOptions?)
+  nameWithType.vb: EpubFormat.Save(Document, String, EpubSaveOptions)
+- uid: Egap.Documents.EpubFormat.Save*
+  name: Save
+  href: api/Egap.Documents.EpubFormat.html#Egap_Documents_EpubFormat_Save_
+  commentId: Overload:Egap.Documents.EpubFormat.Save
+  isSpec: "True"
+  fullName: Egap.Documents.EpubFormat.Save
+  nameWithType: EpubFormat.Save
+- uid: Egap.Documents.EpubLoadOptions
+  name: EpubLoadOptions
+  href: api/Egap.Documents.EpubLoadOptions.html
+  commentId: T:Egap.Documents.EpubLoadOptions
+  fullName: Egap.Documents.EpubLoadOptions
+  nameWithType: EpubLoadOptions
+- uid: Egap.Documents.EpubLoadOptions.Limits
+  name: Limits
+  href: api/Egap.Documents.EpubLoadOptions.html#Egap_Documents_EpubLoadOptions_Limits
+  commentId: P:Egap.Documents.EpubLoadOptions.Limits
+  fullName: Egap.Documents.EpubLoadOptions.Limits
+  nameWithType: EpubLoadOptions.Limits
+- uid: Egap.Documents.EpubLoadOptions.Limits*
+  name: Limits
+  href: api/Egap.Documents.EpubLoadOptions.html#Egap_Documents_EpubLoadOptions_Limits_
+  commentId: Overload:Egap.Documents.EpubLoadOptions.Limits
+  isSpec: "True"
+  fullName: Egap.Documents.EpubLoadOptions.Limits
+  nameWithType: EpubLoadOptions.Limits
+- uid: Egap.Documents.EpubLoadOptions.Media
+  name: Media
+  href: api/Egap.Documents.EpubLoadOptions.html#Egap_Documents_EpubLoadOptions_Media
+  commentId: P:Egap.Documents.EpubLoadOptions.Media
+  fullName: Egap.Documents.EpubLoadOptions.Media
+  nameWithType: EpubLoadOptions.Media
+- uid: Egap.Documents.EpubLoadOptions.Media*
+  name: Media
+  href: api/Egap.Documents.EpubLoadOptions.html#Egap_Documents_EpubLoadOptions_Media_
+  commentId: Overload:Egap.Documents.EpubLoadOptions.Media
+  isSpec: "True"
+  fullName: Egap.Documents.EpubLoadOptions.Media
+  nameWithType: EpubLoadOptions.Media
+- uid: Egap.Documents.EpubLoadOptions.ResourceResolver
+  name: ResourceResolver
+  href: api/Egap.Documents.EpubLoadOptions.html#Egap_Documents_EpubLoadOptions_ResourceResolver
+  commentId: P:Egap.Documents.EpubLoadOptions.ResourceResolver
+  fullName: Egap.Documents.EpubLoadOptions.ResourceResolver
+  nameWithType: EpubLoadOptions.ResourceResolver
+- uid: Egap.Documents.EpubLoadOptions.ResourceResolver*
+  name: ResourceResolver
+  href: api/Egap.Documents.EpubLoadOptions.html#Egap_Documents_EpubLoadOptions_ResourceResolver_
+  commentId: Overload:Egap.Documents.EpubLoadOptions.ResourceResolver
+  isSpec: "True"
+  fullName: Egap.Documents.EpubLoadOptions.ResourceResolver
+  nameWithType: EpubLoadOptions.ResourceResolver
+- uid: Egap.Documents.EpubLoadOptions.UserStyleSheets
+  name: UserStyleSheets
+  href: api/Egap.Documents.EpubLoadOptions.html#Egap_Documents_EpubLoadOptions_UserStyleSheets
+  commentId: P:Egap.Documents.EpubLoadOptions.UserStyleSheets
+  fullName: Egap.Documents.EpubLoadOptions.UserStyleSheets
+  nameWithType: EpubLoadOptions.UserStyleSheets
+- uid: Egap.Documents.EpubLoadOptions.UserStyleSheets*
+  name: UserStyleSheets
+  href: api/Egap.Documents.EpubLoadOptions.html#Egap_Documents_EpubLoadOptions_UserStyleSheets_
+  commentId: Overload:Egap.Documents.EpubLoadOptions.UserStyleSheets
+  isSpec: "True"
+  fullName: Egap.Documents.EpubLoadOptions.UserStyleSheets
+  nameWithType: EpubLoadOptions.UserStyleSheets
+- uid: Egap.Documents.EpubSaveOptions
+  name: EpubSaveOptions
+  href: api/Egap.Documents.EpubSaveOptions.html
+  commentId: T:Egap.Documents.EpubSaveOptions
+  fullName: Egap.Documents.EpubSaveOptions
+  nameWithType: EpubSaveOptions
+- uid: Egap.Documents.EpubSaveOptions.AccessibilitySummary
+  name: AccessibilitySummary
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_AccessibilitySummary
+  commentId: P:Egap.Documents.EpubSaveOptions.AccessibilitySummary
+  fullName: Egap.Documents.EpubSaveOptions.AccessibilitySummary
+  nameWithType: EpubSaveOptions.AccessibilitySummary
+- uid: Egap.Documents.EpubSaveOptions.AccessibilitySummary*
+  name: AccessibilitySummary
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_AccessibilitySummary_
+  commentId: Overload:Egap.Documents.EpubSaveOptions.AccessibilitySummary
+  isSpec: "True"
+  fullName: Egap.Documents.EpubSaveOptions.AccessibilitySummary
+  nameWithType: EpubSaveOptions.AccessibilitySummary
+- uid: Egap.Documents.EpubSaveOptions.CoverImage
+  name: CoverImage
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_CoverImage
+  commentId: P:Egap.Documents.EpubSaveOptions.CoverImage
+  fullName: Egap.Documents.EpubSaveOptions.CoverImage
+  nameWithType: EpubSaveOptions.CoverImage
+- uid: Egap.Documents.EpubSaveOptions.CoverImage*
+  name: CoverImage
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_CoverImage_
+  commentId: Overload:Egap.Documents.EpubSaveOptions.CoverImage
+  isSpec: "True"
+  fullName: Egap.Documents.EpubSaveOptions.CoverImage
+  nameWithType: EpubSaveOptions.CoverImage
+- uid: Egap.Documents.EpubSaveOptions.EmbedFonts
+  name: EmbedFonts
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_EmbedFonts
+  commentId: P:Egap.Documents.EpubSaveOptions.EmbedFonts
+  fullName: Egap.Documents.EpubSaveOptions.EmbedFonts
+  nameWithType: EpubSaveOptions.EmbedFonts
+- uid: Egap.Documents.EpubSaveOptions.EmbedFonts*
+  name: EmbedFonts
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_EmbedFonts_
+  commentId: Overload:Egap.Documents.EpubSaveOptions.EmbedFonts
+  isSpec: "True"
+  fullName: Egap.Documents.EpubSaveOptions.EmbedFonts
+  nameWithType: EpubSaveOptions.EmbedFonts
+- uid: Egap.Documents.EpubSaveOptions.Identifier
+  name: Identifier
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_Identifier
+  commentId: P:Egap.Documents.EpubSaveOptions.Identifier
+  fullName: Egap.Documents.EpubSaveOptions.Identifier
+  nameWithType: EpubSaveOptions.Identifier
+- uid: Egap.Documents.EpubSaveOptions.Identifier*
+  name: Identifier
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_Identifier_
+  commentId: Overload:Egap.Documents.EpubSaveOptions.Identifier
+  isSpec: "True"
+  fullName: Egap.Documents.EpubSaveOptions.Identifier
+  nameWithType: EpubSaveOptions.Identifier
+- uid: Egap.Documents.EpubSaveOptions.Modified
+  name: Modified
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_Modified
+  commentId: P:Egap.Documents.EpubSaveOptions.Modified
+  fullName: Egap.Documents.EpubSaveOptions.Modified
+  nameWithType: EpubSaveOptions.Modified
+- uid: Egap.Documents.EpubSaveOptions.Modified*
+  name: Modified
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_Modified_
+  commentId: Overload:Egap.Documents.EpubSaveOptions.Modified
+  isSpec: "True"
+  fullName: Egap.Documents.EpubSaveOptions.Modified
+  nameWithType: EpubSaveOptions.Modified
+- uid: Egap.Documents.EpubSaveOptions.NavigationDepth
+  name: NavigationDepth
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_NavigationDepth
+  commentId: P:Egap.Documents.EpubSaveOptions.NavigationDepth
+  fullName: Egap.Documents.EpubSaveOptions.NavigationDepth
+  nameWithType: EpubSaveOptions.NavigationDepth
+- uid: Egap.Documents.EpubSaveOptions.NavigationDepth*
+  name: NavigationDepth
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_NavigationDepth_
+  commentId: Overload:Egap.Documents.EpubSaveOptions.NavigationDepth
+  isSpec: "True"
+  fullName: Egap.Documents.EpubSaveOptions.NavigationDepth
+  nameWithType: EpubSaveOptions.NavigationDepth
+- uid: Egap.Documents.EpubSaveOptions.SplitAt
+  name: SplitAt
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_SplitAt
+  commentId: P:Egap.Documents.EpubSaveOptions.SplitAt
+  fullName: Egap.Documents.EpubSaveOptions.SplitAt
+  nameWithType: EpubSaveOptions.SplitAt
+- uid: Egap.Documents.EpubSaveOptions.SplitAt*
+  name: SplitAt
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_SplitAt_
+  commentId: Overload:Egap.Documents.EpubSaveOptions.SplitAt
+  isSpec: "True"
+  fullName: Egap.Documents.EpubSaveOptions.SplitAt
+  nameWithType: EpubSaveOptions.SplitAt
+- uid: Egap.Documents.EpubSplit
+  name: EpubSplit
+  href: api/Egap.Documents.EpubSplit.html
+  commentId: T:Egap.Documents.EpubSplit
+  fullName: Egap.Documents.EpubSplit
+  nameWithType: EpubSplit
+- uid: Egap.Documents.EpubSplit.HeadingLevel1
+  name: HeadingLevel1
+  href: api/Egap.Documents.EpubSplit.html#Egap_Documents_EpubSplit_HeadingLevel1
+  commentId: F:Egap.Documents.EpubSplit.HeadingLevel1
+  fullName: Egap.Documents.EpubSplit.HeadingLevel1
+  nameWithType: EpubSplit.HeadingLevel1
+- uid: Egap.Documents.EpubSplit.None
+  name: None
+  href: api/Egap.Documents.EpubSplit.html#Egap_Documents_EpubSplit_None
+  commentId: F:Egap.Documents.EpubSplit.None
+  fullName: Egap.Documents.EpubSplit.None
+  nameWithType: EpubSplit.None
+- uid: Egap.Documents.EpubSplit.SectionBreak
+  name: SectionBreak
+  href: api/Egap.Documents.EpubSplit.html#Egap_Documents_EpubSplit_SectionBreak
+  commentId: F:Egap.Documents.EpubSplit.SectionBreak
+  fullName: Egap.Documents.EpubSplit.SectionBreak
+  nameWithType: EpubSplit.SectionBreak
 - uid: Egap.Documents.ExtensionData
   name: ExtensionData
   href: api/Egap.Documents.ExtensionData.html
@@ -8590,6 +8861,49 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.HtmlFormat.Load
   nameWithType: HtmlFormat.Load
+- uid: Egap.Documents.HtmlFormat.LoadMhtml(System.IO.Stream,Egap.Documents.HtmlLoadOptions)
+  name: LoadMhtml(Stream, HtmlLoadOptions?)
+  href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_LoadMhtml_System_IO_Stream_Egap_Documents_HtmlLoadOptions_
+  commentId: M:Egap.Documents.HtmlFormat.LoadMhtml(System.IO.Stream,Egap.Documents.HtmlLoadOptions)
+  name.vb: LoadMhtml(Stream, HtmlLoadOptions)
+  fullName: Egap.Documents.HtmlFormat.LoadMhtml(System.IO.Stream, Egap.Documents.HtmlLoadOptions?)
+  fullName.vb: Egap.Documents.HtmlFormat.LoadMhtml(System.IO.Stream, Egap.Documents.HtmlLoadOptions)
+  nameWithType: HtmlFormat.LoadMhtml(Stream, HtmlLoadOptions?)
+  nameWithType.vb: HtmlFormat.LoadMhtml(Stream, HtmlLoadOptions)
+- uid: Egap.Documents.HtmlFormat.LoadMhtml(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)
+  name: LoadMhtml(ReadOnlySpan<byte>, out IReadOnlyList<ConversionWarning>, HtmlLoadOptions?)
+  href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_LoadMhtml_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_HtmlLoadOptions_
+  commentId: M:Egap.Documents.HtmlFormat.LoadMhtml(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)
+  name.vb: LoadMhtml(ReadOnlySpan(Of Byte), IReadOnlyList(Of ConversionWarning), HtmlLoadOptions)
+  fullName: Egap.Documents.HtmlFormat.LoadMhtml(System.ReadOnlySpan<byte>, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.HtmlLoadOptions?)
+  fullName.vb: Egap.Documents.HtmlFormat.LoadMhtml(System.ReadOnlySpan(Of Byte), System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.HtmlLoadOptions)
+  nameWithType: HtmlFormat.LoadMhtml(ReadOnlySpan<byte>, out IReadOnlyList<ConversionWarning>, HtmlLoadOptions?)
+  nameWithType.vb: HtmlFormat.LoadMhtml(ReadOnlySpan(Of Byte), IReadOnlyList(Of ConversionWarning), HtmlLoadOptions)
+- uid: Egap.Documents.HtmlFormat.LoadMhtml(System.String,Egap.Documents.HtmlLoadOptions)
+  name: LoadMhtml(string, HtmlLoadOptions?)
+  href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_LoadMhtml_System_String_Egap_Documents_HtmlLoadOptions_
+  commentId: M:Egap.Documents.HtmlFormat.LoadMhtml(System.String,Egap.Documents.HtmlLoadOptions)
+  name.vb: LoadMhtml(String, HtmlLoadOptions)
+  fullName: Egap.Documents.HtmlFormat.LoadMhtml(string, Egap.Documents.HtmlLoadOptions?)
+  fullName.vb: Egap.Documents.HtmlFormat.LoadMhtml(String, Egap.Documents.HtmlLoadOptions)
+  nameWithType: HtmlFormat.LoadMhtml(string, HtmlLoadOptions?)
+  nameWithType.vb: HtmlFormat.LoadMhtml(String, HtmlLoadOptions)
+- uid: Egap.Documents.HtmlFormat.LoadMhtml(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)
+  name: LoadMhtml(string, out IReadOnlyList<ConversionWarning>, HtmlLoadOptions?)
+  href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_LoadMhtml_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_HtmlLoadOptions_
+  commentId: M:Egap.Documents.HtmlFormat.LoadMhtml(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)
+  name.vb: LoadMhtml(String, IReadOnlyList(Of ConversionWarning), HtmlLoadOptions)
+  fullName: Egap.Documents.HtmlFormat.LoadMhtml(string, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.HtmlLoadOptions?)
+  fullName.vb: Egap.Documents.HtmlFormat.LoadMhtml(String, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.HtmlLoadOptions)
+  nameWithType: HtmlFormat.LoadMhtml(string, out IReadOnlyList<ConversionWarning>, HtmlLoadOptions?)
+  nameWithType.vb: HtmlFormat.LoadMhtml(String, IReadOnlyList(Of ConversionWarning), HtmlLoadOptions)
+- uid: Egap.Documents.HtmlFormat.LoadMhtml*
+  name: LoadMhtml
+  href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_LoadMhtml_
+  commentId: Overload:Egap.Documents.HtmlFormat.LoadMhtml
+  isSpec: "True"
+  fullName: Egap.Documents.HtmlFormat.LoadMhtml
+  nameWithType: HtmlFormat.LoadMhtml
 - uid: Egap.Documents.HtmlFormat.Parse(System.String,Egap.Documents.HtmlLoadOptions)
   name: Parse(string, HtmlLoadOptions?)
   href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_Parse_System_String_Egap_Documents_HtmlLoadOptions_
@@ -8653,6 +8967,31 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.HtmlFormat.Save
   nameWithType: HtmlFormat.Save
+- uid: Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document,System.IO.Stream,Egap.Documents.HtmlSaveOptions)
+  name: SaveMhtml(Document, Stream, HtmlSaveOptions?)
+  href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_SaveMhtml_Egap_Documents_Document_System_IO_Stream_Egap_Documents_HtmlSaveOptions_
+  commentId: M:Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document,System.IO.Stream,Egap.Documents.HtmlSaveOptions)
+  name.vb: SaveMhtml(Document, Stream, HtmlSaveOptions)
+  fullName: Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document, System.IO.Stream, Egap.Documents.HtmlSaveOptions?)
+  fullName.vb: Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document, System.IO.Stream, Egap.Documents.HtmlSaveOptions)
+  nameWithType: HtmlFormat.SaveMhtml(Document, Stream, HtmlSaveOptions?)
+  nameWithType.vb: HtmlFormat.SaveMhtml(Document, Stream, HtmlSaveOptions)
+- uid: Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document,System.String,Egap.Documents.HtmlSaveOptions)
+  name: SaveMhtml(Document, string, HtmlSaveOptions?)
+  href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_SaveMhtml_Egap_Documents_Document_System_String_Egap_Documents_HtmlSaveOptions_
+  commentId: M:Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document,System.String,Egap.Documents.HtmlSaveOptions)
+  name.vb: SaveMhtml(Document, String, HtmlSaveOptions)
+  fullName: Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document, string, Egap.Documents.HtmlSaveOptions?)
+  fullName.vb: Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document, String, Egap.Documents.HtmlSaveOptions)
+  nameWithType: HtmlFormat.SaveMhtml(Document, string, HtmlSaveOptions?)
+  nameWithType.vb: HtmlFormat.SaveMhtml(Document, String, HtmlSaveOptions)
+- uid: Egap.Documents.HtmlFormat.SaveMhtml*
+  name: SaveMhtml
+  href: api/Egap.Documents.HtmlFormat.html#Egap_Documents_HtmlFormat_SaveMhtml_
+  commentId: Overload:Egap.Documents.HtmlFormat.SaveMhtml
+  isSpec: "True"
+  fullName: Egap.Documents.HtmlFormat.SaveMhtml
+  nameWithType: HtmlFormat.SaveMhtml
 - uid: Egap.Documents.HtmlLoadOptions
   name: HtmlLoadOptions
   href: api/Egap.Documents.HtmlLoadOptions.html

@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_HtmlFormat" data-uid="Egap.Documents.HtmlFormat" class="text-break">
-Class HtmlFormat  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Members.cs/#L8"><i class="bi bi-code-slash"></i></a>
+Class HtmlFormat  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Mhtml.cs/#L5"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -160,7 +160,7 @@ public static class HtmlFormat</code></pre>
 
   <h3 id="Egap_Documents_HtmlFormat_Load_System_IO_Stream_Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.Load(System.IO.Stream,Egap.Documents.HtmlLoadOptions)">
   Load(Stream, HtmlLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L122"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads HTML from a stream; its encoding is sniffed unless the options name one.</p>
@@ -199,7 +199,7 @@ public static class HtmlFormat</code></pre>
 
   <h3 id="Egap_Documents_HtmlFormat_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)">
   Load(Stream, out IReadOnlyList&lt;ConversionWarning&gt;, HtmlLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads HTML from a stream, reporting what could only be approximated or was left out.</p>
@@ -240,7 +240,7 @@ public static class HtmlFormat</code></pre>
 
   <h3 id="Egap_Documents_HtmlFormat_Load_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.Load(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)">
   Load(ReadOnlySpan&lt;byte&gt;, out IReadOnlyList&lt;ConversionWarning&gt;, HtmlLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L154"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads HTML bytes, reporting what could only be approximated or was left out.</p>
@@ -281,7 +281,7 @@ public static class HtmlFormat</code></pre>
 
   <h3 id="Egap_Documents_HtmlFormat_Load_System_String_Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.Load(System.String,Egap.Documents.HtmlLoadOptions)">
   Load(string, HtmlLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads an HTML file; its encoding is sniffed unless the options name one.</p>
@@ -320,7 +320,7 @@ public static class HtmlFormat</code></pre>
 
   <h3 id="Egap_Documents_HtmlFormat_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)">
   Load(string, out IReadOnlyList&lt;ConversionWarning&gt;, HtmlLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L113"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads an HTML file, reporting what could only be approximated or was left out.</p>
@@ -357,11 +357,197 @@ public static class HtmlFormat</code></pre>
 
 
 
+  <a id="Egap_Documents_HtmlFormat_LoadMhtml_" data-uid="Egap.Documents.HtmlFormat.LoadMhtml*"></a>
+
+  <h3 id="Egap_Documents_HtmlFormat_LoadMhtml_System_IO_Stream_Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.LoadMhtml(System.IO.Stream,Egap.Documents.HtmlLoadOptions)">
+  LoadMhtml(Stream, HtmlLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Mhtml.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads an MHTML web archive from a stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document LoadMhtml(Stream stream, HtmlLoadOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.HtmlLoadOptions.html">HtmlLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The stream is not a web archive, or holds no HTML page.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_HtmlFormat_LoadMhtml_" data-uid="Egap.Documents.HtmlFormat.LoadMhtml*"></a>
+
+  <h3 id="Egap_Documents_HtmlFormat_LoadMhtml_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.LoadMhtml(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)">
+  LoadMhtml(ReadOnlySpan&lt;byte&gt;, out IReadOnlyList&lt;ConversionWarning&gt;, HtmlLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Mhtml.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads the bytes of an MHTML web archive, reporting what could only be approximated or was left out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document LoadMhtml(ReadOnlySpan&lt;byte&gt; mhtml, out IReadOnlyList&lt;ConversionWarning&gt; warnings, HtmlLoadOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mhtml</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>warnings</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.HtmlLoadOptions.html">HtmlLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The bytes are not a web archive, or hold no HTML page.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_HtmlFormat_LoadMhtml_" data-uid="Egap.Documents.HtmlFormat.LoadMhtml*"></a>
+
+  <h3 id="Egap_Documents_HtmlFormat_LoadMhtml_System_String_Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.LoadMhtml(System.String,Egap.Documents.HtmlLoadOptions)">
+  LoadMhtml(string, HtmlLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Mhtml.cs/#L13"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads an MHTML web archive (.mht, .mhtml), as Chromium, Edge and Word save pages: the page through the HTML reader,
+its pictures, style sheets and fonts from the archive's other parts. What the archive does not hold is fetched only
+through <a class="xref" href="Egap.Documents.HtmlLoadOptions.html#Egap_Documents_HtmlLoadOptions_ResourceResolver">ResourceResolver</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document LoadMhtml(string path, HtmlLoadOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.HtmlLoadOptions.html">HtmlLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file is not a web archive, or holds no HTML page.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_HtmlFormat_LoadMhtml_" data-uid="Egap.Documents.HtmlFormat.LoadMhtml*"></a>
+
+  <h3 id="Egap_Documents_HtmlFormat_LoadMhtml_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.LoadMhtml(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)">
+  LoadMhtml(string, out IReadOnlyList&lt;ConversionWarning&gt;, HtmlLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Mhtml.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads an MHTML web archive, reporting what could only be approximated or was left out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document LoadMhtml(string path, out IReadOnlyList&lt;ConversionWarning&gt; warnings, HtmlLoadOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>warnings</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.HtmlLoadOptions.html">HtmlLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file is not a web archive, or holds no HTML page.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Documents_HtmlFormat_Parse_" data-uid="Egap.Documents.HtmlFormat.Parse*"></a>
 
   <h3 id="Egap_Documents_HtmlFormat_Parse_System_String_Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.Parse(System.String,Egap.Documents.HtmlLoadOptions)">
   Parse(string, HtmlLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads HTML from a string.</p>
@@ -400,7 +586,7 @@ public static class HtmlFormat</code></pre>
 
   <h3 id="Egap_Documents_HtmlFormat_Parse_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_HtmlLoadOptions_" data-uid="Egap.Documents.HtmlFormat.Parse(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.HtmlLoadOptions)">
   Parse(string, out IReadOnlyList&lt;ConversionWarning&gt;, HtmlLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L81"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads HTML from a string, reporting what could only be approximated or was left out.</p>
@@ -444,7 +630,7 @@ public static class HtmlFormat</code></pre>
   <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Lets <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a> read and <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Save_System_String_">Save(string)</a> write HTML, and
+  <div class="markdown level1 summary"><p>Lets <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a> read and <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Save_System_String_">Save(string)</a> write HTML, MHTML and EPUB, and
 <a class="xref" href="Egap.Documents.Pdf.PdfConvert.html#Egap_Documents_Pdf_PdfConvert_FromFile_System_String_Egap_Documents_Pdf_PdfConvertOptions_">FromFile(string, PdfConvertOptions?)</a> convert it and lay out
 <a class="xref" href="Egap.Documents.Pdf.PageBand.html#Egap_Documents_Pdf_PageBand_Html_System_String_">Html(string)</a> bands. Call it once at startup; calling it again changes nothing.</p>
 </div>
@@ -470,7 +656,7 @@ public static class HtmlFormat</code></pre>
 
   <h3 id="Egap_Documents_HtmlFormat_Save_Egap_Documents_Document_System_IO_Stream_Egap_Documents_HtmlSaveOptions_" data-uid="Egap.Documents.HtmlFormat.Save(Egap.Documents.Document,System.IO.Stream,Egap.Documents.HtmlSaveOptions)">
   Save(Document, Stream, HtmlSaveOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L145"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the document as HTML (UTF-8) to a stream, returning what HTML could not hold.</p>
@@ -511,7 +697,7 @@ public static class HtmlFormat</code></pre>
 
   <h3 id="Egap_Documents_HtmlFormat_Save_Egap_Documents_Document_System_String_Egap_Documents_HtmlSaveOptions_" data-uid="Egap.Documents.HtmlFormat.Save(Egap.Documents.Document,System.String,Egap.Documents.HtmlSaveOptions)">
   Save(Document, string, HtmlSaveOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L125"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the document as an HTML file (UTF-8), returning what HTML could not hold.</p>
@@ -548,11 +734,94 @@ public static class HtmlFormat</code></pre>
 
 
 
+  <a id="Egap_Documents_HtmlFormat_SaveMhtml_" data-uid="Egap.Documents.HtmlFormat.SaveMhtml*"></a>
+
+  <h3 id="Egap_Documents_HtmlFormat_SaveMhtml_Egap_Documents_Document_System_IO_Stream_Egap_Documents_HtmlSaveOptions_" data-uid="Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document,System.IO.Stream,Egap.Documents.HtmlSaveOptions)">
+  SaveMhtml(Document, Stream, HtmlSaveOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Mhtml.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the document as an MHTML web archive to a stream, returning what HTML could not hold.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;ConversionWarning&gt; SaveMhtml(Document document, Stream stream, HtmlSaveOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.HtmlSaveOptions.html">HtmlSaveOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_HtmlFormat_SaveMhtml_" data-uid="Egap.Documents.HtmlFormat.SaveMhtml*"></a>
+
+  <h3 id="Egap_Documents_HtmlFormat_SaveMhtml_Egap_Documents_Document_System_String_Egap_Documents_HtmlSaveOptions_" data-uid="Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document,System.String,Egap.Documents.HtmlSaveOptions)">
+  SaveMhtml(Document, string, HtmlSaveOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Mhtml.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Saves the document as an MHTML web archive in the shape Chromium writes, which Chromium, Edge and Word open: the page
+and its pictures and embedded fonts in one file. Returns what HTML could not hold.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyList&lt;ConversionWarning&gt; SaveMhtml(Document document, string path, HtmlSaveOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.HtmlSaveOptions.html">HtmlSaveOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Members.cs/#L8" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.Mhtml.cs/#L5" class="edit-link">Edit this page</a>
         </div>
 
 

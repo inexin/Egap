@@ -317,6 +317,24 @@ into the model, with what the model does not name kept as extension data so a DO
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.EpubFormat.html">EpubFormat</a></dt>
+      <dd><p>EPUB books read into the model and written from it: EPUB 2.0.1 and 3.0 to 3.3 read as one document with a section per
+chapter, the table of contents as outline levels and the metadata as document properties; the model written as an
+EPUB 3.3 book with a navigation document, an EPUB 2 table of contents for older readers, and accessibility metadata.
+Books under DRM are refused.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.EpubLoadOptions.html">EpubLoadOptions</a></dt>
+      <dd><p>How an EPUB book is read.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.EpubSaveOptions.html">EpubSaveOptions</a></dt>
+      <dd><p>How the model is written as an EPUB 3.3 book.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.ExtensionData.html">ExtensionData</a></dt>
       <dd><p>What a format's reader found on a node that the model does not name, kept so the same format's writer can put it back
 (Phase 6 design Q7): for DOCX, unknown elements and attributes as raw XML with their place among the mapped children.
@@ -858,6 +876,11 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.DocxKind.html">DocxKind</a></dt>
       <dd><p>Which of Word's file kinds a DOCX package is (Phase 6 design Q10).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.EpubSplit.html">EpubSplit</a></dt>
+      <dd><p>Where the EPUB writer starts a new chapter file.</p>
 </dd>
     </dl>
     <dl class="jumplist">

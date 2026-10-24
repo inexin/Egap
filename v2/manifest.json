@@ -741,6 +741,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.EpubFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.EpubFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.EpubFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.EpubFormat.yml\" sourcestartlinenumber=\"1\">EPUB books read into the model and written from it: EPUB 2.0.1 and 3.0 to 3.3 read as one document with a section per\nchapter, the table of contents as outline levels and the metadata as document properties; the model written as an\nEPUB 3.3 book with a navigation document, an EPUB 2 table of contents for older readers, and accessibility metadata.\nBooks under DRM are refused.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.EpubLoadOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.EpubLoadOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.EpubLoadOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.EpubLoadOptions.yml\" sourcestartlinenumber=\"1\">How an EPUB book is read.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.EpubSaveOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.EpubSaveOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.EpubSaveOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.EpubSaveOptions.yml\" sourcestartlinenumber=\"1\">How the model is written as an EPUB 3.3 book.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.EpubSplit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.EpubSplit.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.EpubSplit",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.EpubSplit.yml\" sourcestartlinenumber=\"1\">Where the EPUB writer starts a new chapter file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.ExtensionData.yml",
       "output": {
         ".html": {
@@ -7248,6 +7304,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/formats/epub.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/formats/epub.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/formats/html.md",
       "output": {
         ".html": {
@@ -7272,6 +7338,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/formats/markdown.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/formats/mhtml.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/formats/mhtml.html"
         }
       },
       "version": ""

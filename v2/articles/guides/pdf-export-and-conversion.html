@@ -170,6 +170,35 @@ Document flow = PdfToDocument.Convert(pdf);
 flow.Save(&quot;paper.docx&quot;);
 </code></pre>
 <p>The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV.</p>
+<h2 id="recipes">Recipes</h2>
+<p>Short answers to common tasks in this area. Each one is complete: open, change, save.</p>
+<h3 id="turn-a-word-file-into-an-e-book">Turn a Word file into an e-book</h3>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document handbook = Document.LoadDocx(&quot;handbook.docx&quot;);
+handbook.Properties.Title ??= &quot;Staff handbook&quot;;
+handbook.SaveAsEpub(&quot;handbook.epub&quot;, new EpubSaveOptions { NavigationDepth = 2 });
+</code></pre>
+<p>Each level 1 heading starts a chapter, and the headings make the book's table of contents. See <a href="../formats/epub.html">EPUB</a>.</p>
+<h3 id="print-an-e-book-as-pdf">Print an e-book as PDF</h3>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Pdf;
+
+Document book = Document.LoadEpub(&quot;novel.epub&quot;);
+book.SaveAsPdf(&quot;novel.pdf&quot;, new PdfExportOptions { Outline = OutlineFrom.Headings });
+</code></pre>
+<p>Each chapter starts a new page, and the book's table of contents becomes the PDF's bookmarks.</p>
+<h3 id="save-a-page-as-one-file">Save a page as one file</h3>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document page = HtmlFormat.Load(&quot;offer.html&quot;, new HtmlLoadOptions
+{
+    BaseUri = new Uri(new FileInfo(&quot;offer.html&quot;).FullName),
+    ResourceResolver = uri =&gt; uri.IsFile &amp;&amp; File.Exists(uri.LocalPath) ? File.ReadAllBytes(uri.LocalPath) : null,
+});
+page.SaveAsMhtml(&quot;offer.mhtml&quot;);
+</code></pre>
+<p>The archive holds the page with its pictures, and opens in Chromium, Edge and Word. See <a href="../formats/mhtml.html">MHTML</a>.</p>
 
 </article>
 

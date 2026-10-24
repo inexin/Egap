@@ -88,11 +88,12 @@
 <h1 id="html">HTML</h1>
 
 <p>HTML and XHTML come from the add-on package Egap.Documents.Html. It reads a page into the document model, styled through
-the CSS cascade, and writes the model back as HTML. It also brings HTML to PDF, HTML stamps and HTML page bands.</p>
+the CSS cascade, and writes the model back as HTML. It also brings HTML to PDF, HTML stamps and HTML page bands, and the
+two formats built on HTML: <a href="mhtml.html">MHTML</a> web archives and <a href="epub.html">EPUB</a> books.</p>
 <pre><code class="lang-sh">dotnet add package Egap.Documents.Html
 </code></pre>
 <p>The format's class is <code>HtmlFormat</code>, in namespace <code>Egap.Documents</code>. Call <code>HtmlFormat.Register()</code> once at startup so that
-<code>Document.Load</code>, <code>Document.Save</code> and <code>PdfConvert.FromFile</code> handle <code>.html</code> files too. Calling <code>HtmlFormat</code> or the members it
+<code>Document.Load</code>, <code>Document.Save</code> and <code>PdfConvert.FromFile</code> handle <code>.html</code> files too, and <code>.mht</code>, <code>.mhtml</code> and <code>.epub</code>. Calling <code>HtmlFormat</code> or the members it
 adds to <code>Document</code> (<code>Document.ParseHtml</code>, <code>Document.LoadHtml</code>, <code>ToHtml</code>, <code>SaveAsHtml</code>) needs no registration.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Documents.Pdf;

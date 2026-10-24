@@ -88,8 +88,8 @@
 <h1 id="document-formats">Document formats</h1>
 
 <p>Egap.Documents reads each format below into one document model and writes the model back out, so any format it reads can
-be saved as any format it writes. DOCX, PDF, plain text and Docling JSON are built in. HTML and Markdown come from the
-add-on packages Egap.Documents.Html and Egap.Documents.Markdown.</p>
+be saved as any format it writes. DOCX, PDF, plain text and Docling JSON are built in. HTML, MHTML and EPUB come from the
+add-on package Egap.Documents.Html, and Markdown from Egap.Documents.Markdown.</p>
 <p>Each format has its own page with its options and what it keeps. This page covers what they share: loading and saving
 without naming the format, how a file's format is found, warnings and limits.</p>
 <h2 id="at-a-glance">At a glance</h2>
@@ -110,6 +110,12 @@ without naming the format, how a file's format is found, warnings and limits.</p
 <td>The same four kinds; DOCX to DOCX keeps what the model does not name</td>
 </tr>
 <tr>
+<td><a href="epub.html">EPUB</a></td>
+<td>Egap.Documents.Html</td>
+<td>EPUB 2 and 3 books, a section per chapter, the table of contents as the outline; books under DRM refused</td>
+<td>EPUB 3.3 with a navigation document, a toc.ncx and accessibility metadata</td>
+</tr>
+<tr>
 <td><a href="html.html">HTML</a></td>
 <td>Egap.Documents.Html</td>
 <td>HTML and XHTML, parsed as browsers parse it and styled through the CSS cascade</td>
@@ -120,6 +126,12 @@ without naming the format, how a file's format is found, warnings and limits.</p
 <td>Egap.Documents.Markdown</td>
 <td>CommonMark with GitHub's extensions and YAML front matter</td>
 <td>GitHub Flavored Markdown (UTF-8)</td>
+</tr>
+<tr>
+<td><a href="mhtml.html">MHTML</a></td>
+<td>Egap.Documents.Html</td>
+<td>Web archives as Chromium, Edge and Word save them</td>
+<td>One-file web archives in Chromium's shape</td>
 </tr>
 <tr>
 <td><a href="text.html">Plain text</a></td>
@@ -144,39 +156,43 @@ without naming the format, how a file's format is found, warnings and limits.</p
 <p>PDF in and out is covered in <a href="../guides/pdf-export-and-conversion.html">PDF export and conversion</a>.</p>
 <h2 id="loading-and-saving">Loading and saving</h2>
 <p><code>Document.Load</code> and <code>Document.Save</code> work out the format by themselves. <code>Load</code> looks at the file's first bytes and, for
-text, at its extension; <code>Save</code> goes by the extension. DOCX, PDF, plain text and Docling JSON need nothing more. HTML and
-Markdown join them once you register their add-on at startup; until then, loading such a file throws a
+text, at its extension; <code>Save</code> goes by the extension. DOCX, PDF, plain text and Docling JSON need nothing more. HTML,
+MHTML, EPUB and Markdown join them once you register their add-on at startup; until then, loading such a file throws a
 <code>NotSupportedException</code> that names the package and the call to make. <code>Document.Identify</code> tells which format a file is in
 without loading it and without any add-on, so a program can say what a file needs.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 
 HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
 MarkdownFormat.Register();
-DocumentFormatKind kind = Document.Identify(&quot;upload.bin&quot;);        // Pdf, Docx, Html, Markdown, Text, DoclingJson or Unknown
+DocumentFormatKind kind = Document.Identify(&quot;upload.bin&quot;);        // Pdf, Docx, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
 Document notes = TextFormat.Load(&quot;notes.txt&quot;);                    // one paragraph per line
 </code></pre>
 <p><code>Identify</code> decides in this order:</p>
 <ol>
-<li>A ZIP package, or an old binary Word file, is <code>Docx</code>. Reading an old binary Word file fails with an error that says so.</li>
+<li>A ZIP package whose first entry is EPUB's <code>mimetype</code> is <code>Epub</code>.</li>
+<li>Another ZIP package, or an old binary Word file, is <code>Docx</code>. Reading an old binary Word file fails with an error that
+says so.</li>
 <li><code>%PDF-</code> in the first 1024 bytes is <code>Pdf</code>.</li>
-<li>Text whose extension names HTML (<code>.html</code>, <code>.htm</code>, <code>.xhtml</code>), Markdown (<code>.md</code>, <code>.markdown</code>, <code>.mdown</code>, <code>.mkd</code>) or plain
-text (<code>.txt</code>, <code>.text</code>) is that format.</li>
+<li>Text whose extension names HTML (<code>.html</code>, <code>.htm</code>, <code>.xhtml</code>), MHTML (<code>.mht</code>, <code>.mhtml</code>), Markdown (<code>.md</code>, <code>.markdown</code>,
+<code>.mdown</code>, <code>.mkd</code>) or plain text (<code>.txt</code>, <code>.text</code>) is that format.</li>
+<li>Text that starts with MIME header lines naming <code>multipart/related</code> is <code>Mhtml</code>.</li>
 <li>A JSON object that names the <code>DoclingDocument</code> schema is <code>DoclingJson</code>.</li>
 <li>Text that starts with a tag is <code>Html</code>, and other text is <code>Markdown</code>.</li>
 <li>Binary data no format knows is <code>Unknown</code>.</li>
 </ol>
 <p><code>Save</code> writes <code>.docx</code>, <code>.dotx</code>, <code>.docm</code> and <code>.dotm</code> as Word's, <code>.pdf</code> as PDF, <code>.txt</code> as plain text, and, once their
-add-on is registered, <code>.html</code> and <code>.htm</code> as HTML and <code>.md</code> and <code>.markdown</code> as Markdown. Any other extension throws an
+add-on is registered, <code>.html</code> and <code>.htm</code> as HTML, <code>.mht</code> and <code>.mhtml</code> as MHTML, <code>.epub</code> as EPUB and <code>.md</code> and <code>.markdown</code>
+as Markdown. Any other extension throws an
 <code>ArgumentException</code>.</p>
-<p>Each format also has its own class (<code>DocxFormat</code>, <code>HtmlFormat</code>, <code>MarkdownFormat</code>, <code>TextFormat</code>, <code>DoclingJson</code>) with its
+<p>Each format also has its own class (<code>DocxFormat</code>, <code>HtmlFormat</code>, <code>EpubFormat</code>, <code>MarkdownFormat</code>, <code>TextFormat</code>, <code>DoclingJson</code>) with its
 own options, and members on <code>Document</code> that forward to it, such as <code>Document.LoadDocx</code>, <code>ToHtml</code> and <code>SaveAsMarkdown</code>.
 Calling a format directly needs no <code>Register()</code>.</p>
 <h2 id="warnings">Warnings</h2>
 <p>Each <code>Load</code> has a form with an <code>out</code> list of <code>ConversionWarning</code>s for what could not be read as it was, and each <code>Save</code>
 returns a list of what the format could not hold, so a program can log it or show it.</p>
 <h2 id="limits">Limits</h2>
-<p>DOCX and HTML files are read under <code>DocumentLimits</code>, so an untrusted file cannot exhaust memory. Pass your own in the
-format's load options (<code>DocxLoadOptions.Limits</code>, <code>HtmlLoadOptions.Limits</code>); a file past a limit throws a
+<p>DOCX, HTML, MHTML and EPUB files are read under <code>DocumentLimits</code>, so an untrusted file cannot exhaust memory. Pass your own
+in the format's load options (<code>DocxLoadOptions.Limits</code>, <code>HtmlLoadOptions.Limits</code>, <code>EpubLoadOptions.Limits</code>); a file past a limit throws a
 <code>DocumentLimitException</code>.</p>
 <table>
 <thead>
@@ -190,7 +206,7 @@ format's load options (<code>DocxLoadOptions.Limits</code>, <code>HtmlLoadOption
 <tr>
 <td><code>MaxEntries</code></td>
 <td>10,000</td>
-<td>The most entries a DOCX package may have</td>
+<td>The most entries a DOCX package or an EPUB book may have, or parts an MHTML archive</td>
 </tr>
 <tr>
 <td><code>MaxPartSize</code></td>

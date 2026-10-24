@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>EPUB | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="EPUB | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/formats/epub.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="epub">EPUB</h1>
+
+<p>EPUB books come from the add-on package Egap.Documents.Html, the same one that reads and writes HTML. It reads EPUB 2 and
+EPUB 3 books into the document model and writes the model as an EPUB 3.3 book, so a DOCX, HTML or Markdown file can become
+an e-book and a book can become a PDF or a Word file.</p>
+<pre><code class="lang-sh">dotnet add package Egap.Documents.Html
+</code></pre>
+<p>The format's class is <code>EpubFormat</code>, in namespace <code>Egap.Documents</code>. <code>HtmlFormat.Register()</code> at startup lets
+<code>Document.Load</code>, <code>Document.Save</code> and <code>PdfConvert.FromFile</code> handle <code>.epub</code> files too. Calling <code>EpubFormat</code> or the members it
+adds to <code>Document</code> (<code>Document.LoadEpub</code>, <code>ToEpub</code>, <code>SaveAsEpub</code>) needs no registration.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Pdf;
+
+Document book = Document.LoadEpub(&quot;novel.epub&quot;);
+book.SaveAsPdf(&quot;novel.pdf&quot;);
+Document.LoadDocx(&quot;handbook.docx&quot;).SaveAsEpub(&quot;handbook.epub&quot;);
+</code></pre>
+<h2 id="reading">Reading</h2>
+<p>A book is read into one document. Each file of the book's reading order (its spine) becomes a section that starts on a new
+page, read through the HTML reader with the book's own style sheets, for screen media unless <code>Media</code> says <code>&quot;print&quot;</code>. The
+cover image gets a section of its own at the start unless the first chapter already shows it. Links from one chapter to
+another become links inside the document, and an id that two chapters both use is renamed in the second.</p>
+<p>The book's table of contents (the EPUB 3 navigation document, or the EPUB 2 NCX) becomes the outline: each entry's
+target paragraph gets the entry's outline level unless it is a heading already, so a PDF made from the book gets the same
+bookmarks and a table of contents field lists the same entries.</p>
+<p>The package metadata becomes document properties:</p>
+<table>
+<thead>
+<tr>
+<th>EPUB</th>
+<th>Document</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dc:title</code></td>
+<td><code>Properties.Title</code></td>
+</tr>
+<tr>
+<td><code>dc:creator</code> (each)</td>
+<td><code>Properties.Author</code>, joined with &quot;; &quot;</td>
+</tr>
+<tr>
+<td><code>dc:subject</code> (each)</td>
+<td><code>Properties.Keywords</code>, joined with &quot;; &quot;</td>
+</tr>
+<tr>
+<td><code>dc:description</code></td>
+<td><code>Properties.Comments</code></td>
+</tr>
+<tr>
+<td><code>dc:date</code></td>
+<td><code>Properties.Created</code></td>
+</tr>
+<tr>
+<td><code>dcterms:modified</code></td>
+<td><code>Properties.Saved</code></td>
+</tr>
+<tr>
+<td><code>dc:language</code></td>
+<td>The default language of the text</td>
+</tr>
+<tr>
+<td><code>dc:publisher</code>, <code>dc:rights</code>, <code>dc:contributor</code>, the unique identifier</td>
+<td>Custom properties <code>Publisher</code>, <code>Rights</code>, <code>Contributors</code>, <code>Identifier</code></td>
+</tr>
+</tbody>
+</table>
+<p>Fonts that the book's style sheets declare with <code>@font-face</code> are loaded into <code>Document.EmbeddedFonts</code>, with the IDPF and
+Adobe font obfuscation undone. Fixed-layout books (comics, picture books) are read with one section per page, the page
+the size of the page's viewport and its positioned content placed as the HTML reader places it. Audio, video, media
+overlays and scripts are left out with a <code>MediaDropped</code> warning; scripts never run.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document book = EpubFormat.Load(&quot;novel.epub&quot;, out IReadOnlyList&lt;ConversionWarning&gt; warnings, new EpubLoadOptions
+{
+    Media = &quot;print&quot;,
+    UserStyleSheets = [&quot;body { font-size: 11pt; }&quot;],
+});
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ResourceResolver</code></td>
+<td>None</td>
+<td>Fetches what a chapter links to outside the book by absolute URL, or returns null to leave it out</td>
+</tr>
+<tr>
+<td><code>Media</code></td>
+<td><code>&quot;screen&quot;</code></td>
+<td>The media the book's style sheets apply for: <code>&quot;screen&quot;</code> or <code>&quot;print&quot;</code></td>
+</tr>
+<tr>
+<td><code>UserStyleSheets</code></td>
+<td>None</td>
+<td>Style sheets applied as the user's, after the default one and before the book's own</td>
+</tr>
+<tr>
+<td><code>Limits</code></td>
+<td><code>DocumentLimits</code> defaults</td>
+<td>Entries, entry and total sizes, compression ratio and nesting (see <a href="index.html#limits">Limits</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>Egap does not remove DRM. A book whose files are encrypted with Adobe ADEPT, Readium LCP, Apple FairPlay or any scheme
+other than font obfuscation throws a <code>DocumentException</code> that names the scheme. A book whose entries point outside the
+container is refused the same way, and nothing outside the book is fetched unless you give a resolver.</p>
+<h2 id="writing">Writing</h2>
+<p>The document is written as an EPUB 3.3 book that EPUBCheck, the W3C validator, passes without errors:</p>
+<ul>
+<li>XHTML chapter files from the HTML writer, split where <code>SplitAt</code> says: at section breaks and at level 1 headings by
+default. A book read from EPUB keeps its own chapter files and their ids.</li>
+<li>A navigation document with the outline down to <code>NavigationDepth</code> levels, and for EPUB 2 reading systems a <code>toc.ncx</code>
+and a <code>guide</code>.</li>
+<li>The pictures, written once each; pictures in formats EPUB does not hold are written as PNG.</li>
+<li>The metadata from the document properties, with the book's identifier kept when it was read from EPUB, else a
+<code>urn:uuid</code> made from the title and author.</li>
+<li>Accessibility metadata from what the document has (<code>schema:accessMode</code>, <code>accessibilityFeature</code>, <code>accessibilityHazard</code>
+and a summary), as the EPUB Accessibility 1.1 specification asks, with the language and the pictures' alternative text.</li>
+</ul>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document report = Document.LoadDocx(&quot;report.docx&quot;);
+EpubFormat.Save(report, &quot;report.epub&quot;, new EpubSaveOptions
+{
+    SplitAt = EpubSplit.HeadingLevel1,
+    NavigationDepth = 2,
+    CoverImage = new ImageData(File.ReadAllBytes(&quot;cover.jpg&quot;), &quot;image/jpeg&quot;),
+    EmbedFonts = true,
+});
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SplitAt</code></td>
+<td><code>SectionBreak</code> and <code>HeadingLevel1</code></td>
+<td>Where a new chapter file starts; <code>None</code> writes one file</td>
+</tr>
+<tr>
+<td><code>NavigationDepth</code></td>
+<td>3</td>
+<td>How many outline levels the table of contents shows (1 to 9)</td>
+</tr>
+<tr>
+<td><code>EmbedFonts</code></td>
+<td>Off</td>
+<td>Whether <code>Document.EmbeddedFonts</code> go into the book, subset to the characters used and obfuscated as EPUB says</td>
+</tr>
+<tr>
+<td><code>CoverImage</code></td>
+<td>None</td>
+<td>A picture for a cover page before the first chapter</td>
+</tr>
+<tr>
+<td><code>Identifier</code></td>
+<td>Kept, or made from the title and author</td>
+<td>The book's unique identifier</td>
+</tr>
+<tr>
+<td><code>AccessibilitySummary</code></td>
+<td>A sentence about what the book has</td>
+<td>The accessibility summary in the package</td>
+</tr>
+<tr>
+<td><code>Modified</code></td>
+<td>The document's saved time, else now</td>
+<td>The book's last-modified time</td>
+</tr>
+</tbody>
+</table>
+<p>Embedding fonts is a licence question only you can answer, so it is off until you turn it on. A reading system that lacks
+a font falls back to its own.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/formats/epub.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

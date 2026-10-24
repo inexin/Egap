@@ -872,11 +872,12 @@ formats and the text it puts before and after a value (<code>\b</code>, <code>\f
 
   <h3 id="Egap_Documents_Document_Identify_System_IO_Stream_System_String_" data-uid="Egap.Documents.Document.Identify(System.IO.Stream,System.String)">
   Identify(Stream, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
-or an old compound file is Word's, <code>%PDF-</code> is PDF, a JSON object naming the <code>DoclingDocument</code> schema is
+whose first entry is an EPUB <code>mimetype</code> is EPUB, another ZIP package or an old compound file is Word's, a MIME
+message of <code>multipart/related</code> parts is MHTML, <code>%PDF-</code> is PDF, a JSON object naming the <code>DoclingDocument</code> schema is
 Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
 so. It needs no add-on package, so a program can tell its user which package a file needs.</p>
 </div>
@@ -917,7 +918,7 @@ so. It needs no add-on package, so a program can tell its user which package a f
 
   <h3 id="Egap_Documents_Document_Identify_System_String_" data-uid="Egap.Documents.Document.Identify(System.String)">
   Identify(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tells which format the file at <code class="paramref">path</code> is in without loading it. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>.</p>
@@ -1182,8 +1183,8 @@ See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_L
   </h3>
 
   <div class="markdown level1 summary"><p>Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
-<a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>). DOCX, PDF, plain text and Docling JSON are built in; HTML and Markdown
-need their add-on package and its <code>Register()</code> call, such as <code>MarkdownFormat.Register()</code>.</p>
+<a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>). DOCX, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
+Markdown need their add-on package and its <code>Register()</code> call, such as <code>MarkdownFormat.Register()</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1376,7 +1377,7 @@ as the sequence is read; the template itself is not changed.</p>
 
   <div class="markdown level1 summary"><p>Saves the document in the format its file extension names: .docx, .dotx, .docm and .dotm as Word's, .pdf as PDF (as
 <a class="xref" href="Egap.Documents.Pdf.PdfExport.html#Egap_Documents_Pdf_PdfExport_SaveAsPdf_Egap_Documents_Document_System_String_Egap_Documents_Pdf_PdfExportOptions_">SaveAsPdf(Document, string, PdfExportOptions?)</a> writes it), .txt as plain text, and, once their
-add-on is registered, .html and .htm as HTML and .md and .markdown as Markdown.</p>
+add-on is registered, .html and .htm as HTML, .mht and .mhtml as MHTML, .epub as EPUB and .md and .markdown as Markdown.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
