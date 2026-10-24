@@ -1,1 +1,3 @@
 #nullable enable
+Egap.Pdf.PdfRenderOptions.DefaultCmykProfile.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfRenderOptions.DefaultCmykProfile.init -> void

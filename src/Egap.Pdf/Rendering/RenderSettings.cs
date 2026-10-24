@@ -15,6 +15,9 @@ internal sealed record RenderSettings
 
     public bool OutputIntents { get; init; } = true;
 
+    /// <summary>The profile DeviceCMYK goes through without a CMYK output intent; null for FOGRA39.</summary>
+    public Egami.Colors.ColorProfile? DefaultCmyk { get; init; }
+
     public bool Strict { get; init; }
 
     public long MaxOperations { get; init; } = PdfRenderOptions.Default.MaxOperations;
@@ -38,6 +41,7 @@ internal sealed record RenderSettings
             Intent = options.Intent,
             SystemFonts = options.UseSystemFonts,
             OutputIntents = options.UseOutputIntents,
+            DefaultCmyk = options.DefaultCmykProfile,
             Strict = options.Strict,
             MaxOperations = options.MaxOperations,
             MaxImagePixels = options.MaxImagePixels,

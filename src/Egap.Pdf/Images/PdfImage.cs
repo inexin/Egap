@@ -30,7 +30,7 @@ public sealed record PdfImageOptions
 
     /// <summary>
     /// Gets the profile DeviceCMYK images are converted through, such as a press profile; <see langword="null"/> (the
-    /// default) for the built-in conversion. ICCBased images use their own profiles.
+    /// default) for Coated FOGRA39 (<see cref="ColorProfile.Fogra39"/>). ICCBased images use their own profiles.
     /// </summary>
     public ColorProfile? CmykProfile { get; init; }
 

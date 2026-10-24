@@ -38,7 +38,7 @@ internal sealed partial class PageRenderer : PdfContentWalker
         this.pageToDevice = pageToDevice;
         this.settings = settings;
         this.cache = cache;
-        colors = cache.Colors(settings.OutputIntents);
+        colors = cache.Colors(settings.OutputIntents, settings.DefaultCmyk);
         inks = canvas is InkCanvas ink ? cache.Inks(ink.Raster.Inks) : null;
     }
 

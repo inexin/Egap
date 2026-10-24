@@ -13,16 +13,26 @@ internal sealed class RenderCache(PdfDocument document)
 {
     private ColorCache? withIntent;
     private ColorCache? withoutIntent;
+    private readonly ConditionalWeakTable<Egami.Colors.ColorProfile, ColorCache[]> byDefaultCmyk = [];
 
     private readonly ConditionalWeakTable<PdfFont, SubstituteFont?> withSystem = [];
     private readonly ConditionalWeakTable<PdfFont, SubstituteFont?> bundledOnly = [];
 
-    /// <summary>The colour spaces, read with the document's output intent or without it (design Q7).</summary>
-    public ColorCache Colors(bool outputIntent)
+    /// <summary>
+    /// The colour spaces, read with the document's output intent or without it (design Q7), DeviceCMYK without a CMYK intent
+    /// through <paramref name="defaultCmyk"/> (FOGRA39 when null).
+    /// </summary>
+    public ColorCache Colors(bool outputIntent, Egami.Colors.ColorProfile? defaultCmyk = null)
     {
+        if (defaultCmyk is not null)
+        {
+            ColorCache[] pair = byDefaultCmyk.GetValue(defaultCmyk, p => [new(ColorContext.ForDocument(document, true, p)), new(ColorContext.ForDocument(document, false, p))]);
+            return pair[outputIntent ? 0 : 1];
+        }
+
         return outputIntent
             ? LazyInitializer.EnsureInitialized(ref withIntent, () => new ColorCache(ColorContext.ForDocument(document, useOutputIntent: true)))
-            : LazyInitializer.EnsureInitialized(ref withoutIntent, () => new ColorCache(new ColorContext()));
+            : LazyInitializer.EnsureInitialized(ref withoutIntent, () => new ColorCache(ColorContext.ForDocument(document, useOutputIntent: false)));
     }
 
     public ImageCache Images { get; } = new();

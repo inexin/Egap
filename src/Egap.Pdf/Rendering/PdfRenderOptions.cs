@@ -72,9 +72,21 @@ public sealed record PdfRenderOptions
 
     /// <summary>
     /// Whether a document's output intent decides what its device colours look like (design Q7): a PDF/X file's CMYK through
-    /// its press profile. On by default; off draws device colours as they are, CMYK through Egap's built-in conversion.
+    /// its press profile. On by default; off draws device colours as they are, CMYK through <see cref="DefaultCmykProfile"/>.
     /// </summary>
     public bool UseOutputIntents { get; init; } = true;
+
+    /// <summary>
+    /// The press profile DeviceCMYK colours are drawn through when the document has no CMYK output intent (or
+    /// <see cref="UseOutputIntents"/> is off), such as U.S. Web Coated (SWOP) or GRACoL; <see langword="null"/> (the default)
+    /// for Coated FOGRA39 (<see cref="Egami.Colors.ColorProfile.Fogra39"/>). The profile must be a CMYK output profile.
+    /// </summary>
+    /// <exception cref="ArgumentException">The profile is not a four-channel CMYK profile.</exception>
+    public Egami.Colors.ColorProfile? DefaultCmykProfile
+    {
+        get;
+        init => field = value is null or { Model: Egami.Colors.ColorModel.Cmyk, ChannelCount: 4 } ? value : throw new ArgumentException("The default CMYK profile must be a CMYK profile.", nameof(value));
+    }
 
     /// <summary>
     /// How many bytes of decoded images a document keeps for its renders (design Q14), the least recently drawn dropped
