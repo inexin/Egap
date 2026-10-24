@@ -293,7 +293,7 @@ internal sealed class EpubWriter
 
                 pictures = true;
                 picturesWithoutText |= string.IsNullOrWhiteSpace(picture.Description);
-                return Image(picture.Image, null)?.Name;
+                return Image(picture.Image, null, picture)?.Name;
             },
         };
 
@@ -388,7 +388,7 @@ internal sealed class EpubWriter
     }
 
     /// <summary>The book's file for an image, written once per image: core types as they are, others as PNG.</summary>
-    private Resource? Image(ImageData image, string? properties)
+    private Resource? Image(ImageData image, string? properties, Picture? picture = null)
     {
         // The same picture shown twice is read as two images with the same bytes; it is written once.
         string hash = Convert.ToHexString(SHA256.HashData(image.Bytes.Span));
@@ -419,15 +419,18 @@ internal sealed class EpubWriter
         }
         if (!CoreImages.Contains(type))
         {
-            try
+            if (picture?.Fallback is { } fallback && CoreImages.Contains(fallback.ContentType.ToLowerInvariant()))
             {
-                using Egami.Raster raster = Egami.Raster.Load(image.Bytes);
-                using MemoryStream png = new();
-                raster.Save(png, "png");
-                data = png.ToArray();
+                // Word keeps a PNG beside a picture it stores in another format.
+                data = fallback.Bytes.ToArray();
+                type = fallback.ContentType.ToLowerInvariant();
+            }
+            else if (Png(image, picture) is { } png)
+            {
+                data = png;
                 type = "image/png";
             }
-            catch (Exception e) when (e is NotSupportedException or InvalidDataException or FormatException or ArgumentException or Egami.EgamiException)
+            else
             {
                 warnings.Add(ConversionWarningKind.PictureDropped, "pictures in a format EPUB does not hold and Egami could not convert");
                 return null;
@@ -439,6 +442,41 @@ internal sealed class EpubWriter
         images[hash] = resource;
         resources.Add(resource);
         return resource;
+    }
+
+    /// <summary>
+    /// A picture in a format EPUB does not hold as PNG: an EMF or WMF played back at twice the size it is shown (at most 4096
+    /// pixels a side), anything else decoded by Egami; null when neither can.
+    /// </summary>
+    private static byte[]? Png(ImageData image, Picture? picture)
+    {
+        try
+        {
+            using MemoryStream png = new();
+            if (Layout.PictureDrawers.For(image.ContentType.ToLowerInvariant()) is { } drawer)
+            {
+                double width = picture is { Width: > 0 } ? picture.Width : 300, height = picture is { Height: > 0 } ? picture.Height : 300;
+                double scale = Math.Min(2 * 96 / 72.0, 4096 / Math.Max(width, height));
+                using Egami.Raster<Egami.Pixels.Rgba8> raster = Egami.Raster.Create(Math.Max(1, (int)Math.Ceiling(width * scale)), Math.Max(1, (int)Math.Ceiling(height * scale)), new Egami.Pixels.Rgba8(0, 0, 0, 0));
+                using (Egami.Drawing.RasterCanvas<Egami.Pixels.Rgba8> canvas = new(raster))
+                {
+                    drawer.Draw(image.Bytes, canvas, new Egami.Drawing.RectF(0, 0, raster.Width, raster.Height));
+                }
+
+                raster.Save(png, Egami.Formats.Png.PngFormat.Info);
+            }
+            else
+            {
+                using Egami.Raster raster = Egami.Raster.Load(image.Bytes);
+                raster.Save(png, "png");
+            }
+
+            return png.ToArray();
+        }
+        catch (Exception e) when (Layout.PictureDrawers.IsDrawFailure(e) || e is FormatException or InvalidOperationException)
+        {
+            return null;
+        }
     }
 
     /// <summary>
