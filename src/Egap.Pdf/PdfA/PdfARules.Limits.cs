@@ -11,7 +11,7 @@ internal sealed partial class PdfARules
     /// </summary>
     private void Limits()
     {
-        int integers = 0, reals = 0;
+        int integers = 0, reals = 0, names = 0;
         HashSet<PdfObject> seen = new(ReferenceEqualityComparer.Instance);
         foreach (PdfReference reference in document.Objects)
         {
@@ -28,12 +28,16 @@ internal sealed partial class PdfARules
                 case PdfReal real when Math.Abs(real.Value) > 3.403e38:
                     reals++;
                     break;
+                case PdfName name when System.Text.Encoding.UTF8.GetByteCount(name.Value) > 127:
+                    names++;
+                    break;
                 case PdfStream stream when depth <= MaxDepth && seen.Add(stream):
                     Count(stream.Dictionary, depth + 1);
                     break;
                 case PdfDictionary dictionary when depth <= MaxDepth && seen.Add(dictionary):
-                    foreach ((PdfName _, PdfObject item) in dictionary.Entries)
+                    foreach ((PdfName key, PdfObject item) in dictionary.Entries)
                     {
+                        Count(key, depth + 1);
                         if (item is not PdfReference)
                         {
                             Count(item, depth + 1);
@@ -52,6 +56,11 @@ internal sealed partial class PdfARules
 
                     break;
             }
+        }
+
+        if (names > 0)
+        {
+            Issue("6.1.13", $"the file holds {names} names longer than 127 bytes, past PDF/A's limit");
         }
 
         if (integers > 0 || reals > 0)
