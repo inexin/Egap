@@ -20,6 +20,8 @@ internal sealed record RenderSettings
 
     public bool Strict { get; init; }
 
+    public bool TransferFunctions { get; init; } = true;
+
     public long MaxOperations { get; init; } = PdfRenderOptions.Default.MaxOperations;
 
     public long MaxImagePixels { get; init; } = PdfRenderOptions.Default.MaxImagePixels;
@@ -43,6 +45,7 @@ internal sealed record RenderSettings
             OutputIntents = options.UseOutputIntents,
             DefaultCmyk = options.DefaultCmykProfile,
             Strict = options.Strict,
+            TransferFunctions = options.ApplyTransferFunctions,
             MaxOperations = options.MaxOperations,
             MaxImagePixels = options.MaxImagePixels,
             ImageCacheLimit = options.ImageCacheLimit,

@@ -144,6 +144,12 @@ public sealed class PdfGraphicsState
     /// <summary>Text rise (<c>Ts</c>).</summary>
     public double TextRise { get; internal set; }
 
+    /// <summary>
+    /// The transfer function (<c>/TR</c>, or <c>/TR2</c> which takes its place): a function or four of them, or
+    /// <see langword="null"/> for none (Identity or Default).
+    /// </summary>
+    internal PdfObject? Transfer { get; set; }
+
     internal PdfGraphicsState Clone()
     {
         return (PdfGraphicsState)MemberwiseClone();

@@ -11,9 +11,10 @@ namespace Egap.Pdf.Rendering;
 /// ICCBased colours as process ink amounts, DeviceGray as black ink, Separation and DeviceN colourants on their own plates
 /// (a process name on that process plate, All on every plate, None on none), Indexed through its base. A Separation or
 /// DeviceN space naming a colourant the canvas lacks goes through its alternate (8.6.6.4); a space with no plan here, RGB,
-/// Lab and the rest, is drawn as sRGB and the canvas converts it into the process inks through its profile.
+/// Lab and the rest, is drawn as sRGB and the canvas converts it into the process inks through its profile. With a transfer
+/// function every tint goes through its plate's function.
 /// </summary>
-internal sealed class InkMap(InkSet inks)
+internal sealed class InkMap(InkSet inks, TransferTable? transfer = null)
 {
     private readonly ConditionalWeakTable<ImageColorSpace, Holder> plans = [];
 
@@ -29,7 +30,30 @@ internal sealed class InkMap(InkSet inks)
     /// <summary>How the space prints, or null when it is drawn as sRGB.</summary>
     public InkPlan? Plan(ImageColorSpace space)
     {
-        return plans.GetValue(space, s => new Holder(Make(s, 0))).Plan;
+        return plans.GetValue(space, s => new Holder(Transferred(Make(s, 0)))).Plan;
+    }
+
+    /// <summary>The plan with each tint through its plate's transfer function: process plates by name, spot plates as black.</summary>
+    private InkPlan? Transferred(InkPlan? plan)
+    {
+        if (transfer is null || plan is null || plan.PaintsNothing)
+        {
+            return plan;
+        }
+
+        int[] components = [.. plan.Colorants.Select(c => c.Name switch { "Cyan" => 0, "Magenta" => 1, "Yellow" => 2, _ => 3 })];
+        InkPlan.Mapping tints = plan.Tints;
+        return plan with
+        {
+            Tints = (c, t) =>
+            {
+                tints(c, t);
+                for (int i = 0; i < t.Length && i < components.Length; i++)
+                {
+                    t[i] = transfer.Tint(components[i], t[i]);
+                }
+            },
+        };
     }
 
     /// <summary>The ink colour for a colour in the space, or null when it is drawn as sRGB.</summary>

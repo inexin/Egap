@@ -89,6 +89,13 @@ public sealed record PdfRenderOptions
     }
 
     /// <summary>
+    /// Whether a graphics state's transfer functions (<c>/TR</c> and <c>/TR2</c>) change the colours drawn after it, as
+    /// they do on a press or printer: on by default; off draws colours as they are. Black generation, undercolour removal and
+    /// halftones are ignored either way.
+    /// </summary>
+    public bool ApplyTransferFunctions { get; init; } = true;
+
+    /// <summary>
     /// How many bytes of decoded images a document keeps for its renders (design Q14), the least recently drawn dropped
     /// first; 256 MB by default, 0 to keep none.
     /// </summary>

@@ -99,8 +99,20 @@ internal sealed partial class PageRenderer
 
         BlendMode blend = BlendModeOf(state.BlendMode);
         Overprint overprint = OverprintOf(fill: true, null, null);
-        canvas.DrawImage(raster, unit, sampling, state.FillAlpha < 1 || blend != BlendMode.SourceOver || overprint != Overprint.Off
-            ? new SolidPaint(new RgbaF32(1, 1, 1, 1)) { Opacity = (float)state.FillAlpha, BlendMode = blend, Overprint = overprint } : null);
+        Raster mapped = plates is null && Transfer is TransferTable transfer ? transfer.Apply(raster) : raster;
+        try
+        {
+            canvas.DrawImage(mapped, unit, sampling, state.FillAlpha < 1 || blend != BlendMode.SourceOver || overprint != Overprint.Off
+                ? new SolidPaint(new RgbaF32(1, 1, 1, 1)) { Opacity = (float)state.FillAlpha, BlendMode = blend, Overprint = overprint } : null);
+        }
+        finally
+        {
+            if (!ReferenceEquals(mapped, raster))
+            {
+                mapped.Dispose();
+            }
+        }
+
         End(restore);
     }
 

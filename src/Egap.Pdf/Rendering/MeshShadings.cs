@@ -59,7 +59,7 @@ internal sealed class MeshShading
     }
 
     /// <summary>Reads a mesh shading's stream; throws <see cref="InvalidDataException"/> for one that cannot be read.</summary>
-    public static MeshShading Read(PdfStream stream, int type, ImageColorSpace space, InkMap? inks = null)
+    public static MeshShading Read(PdfStream stream, int type, ImageColorSpace space, InkMap? inks = null, TransferTable? transfer = null)
     {
         PdfDictionary d = stream.Dictionary;
         int coordBits = (int)(d.GetInt("BitsPerCoordinate") ?? 0), componentBits = (int)(d.GetInt("BitsPerComponent") ?? 0);
@@ -90,13 +90,13 @@ internal sealed class MeshShading
                 input[0] = decode[4] + ((decode[5] - decode[4]) * offset);
                 Array.Clear(output);
                 function.Evaluate(input, output);
-                stops[i] = Shadings.Stop(offset, space, output, inks);
+                stops[i] = Shadings.Stop(offset, space, output, inks, transfer);
             }
         }
 
         MeshShading shading = new(stops);
         BitReader reader = new(stream.GetDecodedBytes());
-        Reading read = new(reader, coordBits, componentBits, flagBits, decode, components, space, function is not null, function is null ? inks?.Plan(space) : null);
+        Reading read = new(reader, coordBits, componentBits, flagBits, decode, components, space, function is not null, function is null ? inks?.Plan(space) : null, transfer);
         switch (type)
         {
             case 4:
@@ -364,7 +364,7 @@ internal sealed class MeshShading
     private readonly record struct Vertex(Vector2 Position, RgbaF32 Color, Egami.Colors.InkColor? Ink = null);
 
     /// <summary>How a shading's data is laid out and decoded.</summary>
-    private sealed class Reading(BitReader reader, int coordBits, int componentBits, int flagBits, double[] decode, int components, ImageColorSpace space, bool parametric, InkPlan? plan)
+    private sealed class Reading(BitReader reader, int coordBits, int componentBits, int flagBits, double[] decode, int components, ImageColorSpace space, bool parametric, InkPlan? plan, TransferTable? transfer)
     {
         public BitReader Reader => reader;
 
@@ -413,7 +413,7 @@ internal sealed class MeshShading
                 return new Vertex(default, new RgbaF32(range == 0 ? 0 : (float)Math.Clamp((c[0] - decode[4]) / range, 0, 1), 0, 0, 1));
             }
 
-            return new Vertex(default, Shadings.Convert(space, c), plan is { PaintsNothing: false } ? plan.Color(c) : null);
+            return new Vertex(default, Shadings.Convert(space, c, transfer), plan is { PaintsNothing: false } ? plan.Color(c) : null);
         }
 
         public Vertex Vertex()
