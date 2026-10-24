@@ -15,17 +15,16 @@ internal sealed class TransferTable
 {
     private const int Size = 1024;
 
-    /// <summary>The table for each of the four components; null where the component is left as it is (Identity).</summary>
-    private readonly float[]?[] tables;
+    /// <summary>The table for each of the four components.</summary>
+    private readonly float[][] tables;
 
-    private TransferTable(float[]?[] tables)
+    private TransferTable(float[][] tables)
     {
         this.tables = tables;
     }
 
     /// <summary>
-    /// The table for a <c>/TR</c> or <c>/TR2</c> value, or null when it changes nothing (Identity, Default, or four
-    /// Identity entries). Throws <see cref="InvalidDataException"/> for a value that is not a function or four of them.
+    /// The table for a <c>/TR</c> or <c>/TR2</c> value, or null when it changes nothing (Identity or Default). Throws <see cref="InvalidDataException"/> for a value that is not a function or four of them.
     /// </summary>
     public static TransferTable? Read(PdfObject value)
     {
@@ -42,8 +41,13 @@ internal sealed class TransferTable
                 throw new InvalidDataException("A transfer function array does not hold four functions.");
             }
 
-            float[]?[] four = [.. Enumerable.Range(0, 4).Select(i => array.Get(i).Resolve() is PdfName ? null : Sample(array.Get(i)))];
-            return four.All(t => t is null) ? null : new TransferTable(four);
+            // Each entry must be a function (10.5); a name such as Identity is not one, and PDFium ignores such an array too.
+            if (Enumerable.Range(0, 4).Any(i => array.Get(i).Resolve() is not (PdfDictionary or PdfStream)))
+            {
+                throw new InvalidDataException("A transfer function array holds something other than four functions.");
+            }
+
+            return new TransferTable([.. Enumerable.Range(0, 4).Select(i => Sample(array.Get(i)))]);
         }
 
         float[] one = Sample(value);
@@ -53,11 +57,7 @@ internal sealed class TransferTable
     /// <summary>An additive component through its function, 0 to 1.</summary>
     public float Map(int component, float value)
     {
-        if (tables[component] is not float[] table)
-        {
-            return value;
-        }
-
+        float[] table = tables[component];
         float position = float.IsFinite(value) ? Math.Clamp(value, 0, 1) * (Size - 1) : 0;
         int i = Math.Min((int)position, Size - 2);
         return table[i] + ((table[i + 1] - table[i]) * (position - i));

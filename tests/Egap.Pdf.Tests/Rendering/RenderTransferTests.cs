@@ -17,12 +17,16 @@ public sealed class RenderTransferTests
     }
 
     [Fact]
-    public void FourFunctionsChangeTheirOwnComponentsAndIdentityLeavesOne()
+    public void FourFunctionsChangeTheirOwnComponents()
     {
-        PdfArray four = [Invert(), PdfName.Get("Identity"), Invert(), PdfName.Get("Identity")];
+        PdfArray four = [Invert(), Power(1), Invert(), Power(1)];
         using Raster<Rgba8> raster = RenderCoreTests.Render("/T gs 0.2 0.4 0.6 rg 0 0 20 20 re f", resources: State(new PdfDictionary { ["TR"] = four }));
 
         AssertNear(new Rgba8(204, 102, 102, 255), raster.GetPixel(10, 10));
+
+        // Identity is a value of /TR, not an entry of its array: such an array is not read.
+        using Raster<Rgba8> named = RenderCoreTests.Render("/T gs 0.2 0.4 0.6 rg 0 0 20 20 re f", resources: State(new PdfDictionary { ["TR"] = new PdfArray { Invert(), PdfName.Get("Identity"), Invert(), PdfName.Get("Identity") } }));
+        AssertNear(new Rgba8(51, 102, 153, 255), named.GetPixel(10, 10));
     }
 
     [Fact]
