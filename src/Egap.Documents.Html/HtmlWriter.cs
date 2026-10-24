@@ -34,22 +34,38 @@ internal sealed partial class HtmlWriter
 
     public static string Write(Document document, HtmlSaveOptions options, out IReadOnlyList<ConversionWarning> warnings)
     {
+        return Write(document, options, null, null, out warnings);
+    }
+
+    /// <summary>
+    /// Writes a page of only <paramref name="blocks"/> when given (an EPUB chapter), with <paramref name="extraCss"/> (such as
+    /// @font-face rules) at the top of its style sheet.
+    /// </summary>
+    internal static string Write(Document document, HtmlSaveOptions options, IReadOnlyList<Block>? blocks, string? extraCss, out IReadOnlyList<ConversionWarning> warnings)
+    {
         HtmlWriter writer = new(document, options);
-        string html = writer.WriteDocument();
+        string html = writer.WriteDocument(blocks, extraCss);
         warnings = writer.warnings.ToList();
         return html;
     }
 
-    private string WriteDocument()
+    private string WriteDocument(IReadOnlyList<Block>? blocks, string? extraCss)
     {
-        foreach (Section section in document.Sections)
+        if (blocks is not null)
         {
-            if (section != document.Sections[0])
+            WriteBlocks(blocks, 0);
+        }
+        else
+        {
+            foreach (Section section in document.Sections)
             {
-                body.Append("<hr style=\"break-before: page; visibility: hidden; margin: 0\">\n");
-            }
+                if (section != document.Sections[0])
+                {
+                    body.Append("<hr style=\"break-before: page; visibility: hidden; margin: 0\">\n");
+                }
 
-            WriteBlocks(section.Body.Blocks, 0);
+                WriteBlocks(section.Body.Blocks, 0);
+            }
         }
 
         WriteNotes();
@@ -66,7 +82,7 @@ internal sealed partial class HtmlWriter
             html.Append("<meta name=\"author\" content=\"").Append(Attribute(author)).Append("\">\n");
         }
 
-        html.Append("<style>\n").Append(StyleSheet()).Append("</style>\n</head>\n<body>\n").Append(body).Append("</body>\n</html>\n");
+        html.Append("<style>\n").Append(extraCss).Append(StyleSheet()).Append("</style>\n</head>\n<body>\n").Append(body).Append("</body>\n</html>\n");
         return html.ToString();
     }
 

@@ -23,4 +23,10 @@ public enum DocumentFormatKind
 
     /// <summary>A Docling JSON document.</summary>
     DoclingJson,
+
+    /// <summary>An EPUB book (EPUB 2 or 3); reading and writing it needs the Egap.Documents.Html package.</summary>
+    Epub,
+
+    /// <summary>An MHTML web archive (.mht, .mhtml); reading and writing it needs the Egap.Documents.Html package.</summary>
+    Mhtml,
 }

@@ -127,12 +127,14 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.Markdown => "Markdown",
         DocumentFormatKind.Text => "plain text",
         DocumentFormatKind.DoclingJson => "Docling JSON",
+        DocumentFormatKind.Epub => "EPUB",
+        DocumentFormatKind.Mhtml => "MHTML",
         _ => "this file",
     };
 
     private static string Missing(DocumentFormatKind kind) => kind switch
     {
-        DocumentFormatKind.Html => "needs the Egap.Documents.Html package: add it and call HtmlFormat.Register() once at startup.",
+        DocumentFormatKind.Html or DocumentFormatKind.Epub or DocumentFormatKind.Mhtml => "needs the Egap.Documents.Html package: add it and call HtmlFormat.Register() once at startup.",
         DocumentFormatKind.Markdown => "needs the Egap.Documents.Markdown package: add it and call MarkdownFormat.Register() once at startup.",
         DocumentFormatKind.DoclingJson => "is not supported: Docling JSON holds page layouts, which DoclingJson.Write writes from PdfLayoutAnalyzer's.",
         _ => "is not supported.",
