@@ -2,3 +2,11 @@
 Egap.Documents.ConversionWarningKind.MediaDropped = 13 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.DocumentFormatKind.Epub = 7 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Mhtml = 8 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.High = 3 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.Low = 1 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.Medium = 2 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.None = 0 -> Egap.Documents.KashidaLevel
+Egap.Documents.ParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel?
+Egap.Documents.ParagraphFormat.Kashida.set -> void
+Egap.Documents.ResolvedParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel

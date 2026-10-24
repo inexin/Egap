@@ -38,6 +38,8 @@ Egap.Documents.HtmlFormat.extension(Egap.Documents.Document!).SaveAsMhtml(string
 Egap.Documents.HtmlFormat.extension(Egap.Documents.Document!).SaveAsMhtml(System.IO.Stream! stream, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 Egap.Documents.HtmlFormat.extension(Egap.Documents.Document!).ToMhtml(Egap.Documents.HtmlSaveOptions? options = null) -> string!
 Egap.Documents.HtmlFormat.extension(Egap.Documents.Document!).ToMhtml(out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlSaveOptions? options = null) -> string!
+Egap.Documents.HtmlLoadOptions.Kashida.get -> Egap.Documents.KashidaLevel
+Egap.Documents.HtmlLoadOptions.Kashida.init -> void
 static Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).LoadEpub(string! path, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).LoadEpub(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).LoadEpub(System.IO.Stream! stream, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!

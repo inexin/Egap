@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>Paragraph formatting: alignment, indents, spacing, keep rules, tabs, borders and shading (Word's paragraph properties). Every property is nullable: null means not set here.</summary>
 public sealed partial class ParagraphFormat : FormatBase
 {
-    internal const int Count = 33;
+    internal const int Count = 34;
 
     internal const int AlignmentId = 0;
     internal const int LeftIndentId = 1;
@@ -39,6 +39,7 @@ public sealed partial class ParagraphFormat : FormatBase
     internal const int ListLevelId = 30;
     internal const int WordBreakId = 31;
     internal const int MaxLinesId = 32;
+    internal const int KashidaId = 33;
 
     internal override int PropertyCount => Count;
 
@@ -273,6 +274,13 @@ public sealed partial class ParagraphFormat : FormatBase
         set => SetRaw(32, value is null or > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value)));
     }
 
+    /// <summary>How far justified Arabic lines are stretched with tatweels (Word's low, medium and high kashida); None for word spaces only.</summary>
+    public KashidaLevel? Kashida
+    {
+        get => Get<KashidaLevel>(33);
+        set => SetEnum(33, value);
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -310,6 +318,7 @@ public sealed partial class ParagraphFormat : FormatBase
             30 => nameof(ListLevel),
             31 => nameof(WordBreak),
             32 => nameof(MaxLines),
+            33 => nameof(Kashida),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }

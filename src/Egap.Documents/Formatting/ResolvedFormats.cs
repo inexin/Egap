@@ -287,6 +287,9 @@ public sealed class ResolvedParagraphFormat
     /// <summary>The most lines shown, 0 for no limit.</summary>
     public int MaxLines => Value(ParagraphFormat.MaxLinesId, 0);
 
+    /// <summary>How far justified Arabic lines are stretched with tatweels; <see cref="KashidaLevel.None"/> for word spaces only.</summary>
+    public KashidaLevel Kashida => Value(ParagraphFormat.KashidaId, KashidaLevel.None);
+
     /// <summary>The effective values as a stand-alone <see cref="ParagraphFormat"/>.</summary>
     public ParagraphFormat ToParagraphFormat()
     {
