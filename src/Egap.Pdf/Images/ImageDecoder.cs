@@ -240,6 +240,12 @@ internal static class ImageDecoder
         Raster<Rgba8>? narrow = wide ? null : Raster.Create<Rgba8>(width, height);
         Raster<Rgba16>? deep = wide ? Raster.Create<Rgba16>(width, height) : null;
 
+        if (space.RowTransform is ColorTransform transform && n == 4 && matte is null)
+        {
+            Rows(samples, transform, decode, max, alpha, narrow, deep);
+            return (Raster?)narrow ?? deep!;
+        }
+
         // One-component spaces at up to 8 bits convert through a table of every sample value.
         double[][]? table = n == 1 && samples.Bits <= 8 && matte is null ? Table(space, decode, samples.Bits) : null;
         double[] components = new double[n];
@@ -286,6 +292,61 @@ internal static class ImageDecoder
         }
 
         return (Raster?)narrow ?? deep!;
+    }
+
+    /// <summary>
+    /// A four-component image through its space's transform a row at a time, each sample decoded to 16 bits first: the same
+    /// colours as one at a time through <see cref="ImageColorSpace.ToRgb"/>, without a call per pixel.
+    /// </summary>
+    private static void Rows(Samples samples, ColorTransform transform, double[] decode, double max, byte[]? alpha, Raster<Rgba8>? narrow, Raster<Rgba16>? deep)
+    {
+        int width = samples.Width, height = samples.Height;
+        Cmyk16[] from = new Cmyk16[width];
+        Rgb16[] to = new Rgb16[width];
+
+        // Each component's 16-bit value for every sample value, when samples have at most 8 bits.
+        ushort[][]? levels = samples.Bits <= 8 ? new ushort[4][] : null;
+        for (int c = 0; levels is not null && c < 4; c++)
+        {
+            levels[c] = new ushort[1 << samples.Bits];
+            for (int v = 0; v < levels[c].Length; v++)
+            {
+                levels[c][v] = Unit16(decode[2 * c] + (v * (decode[(2 * c) + 1] - decode[2 * c]) / max));
+            }
+        }
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                from[x] = levels is not null
+                    ? new Cmyk16(levels[0][samples.Get(x, y, 0)], levels[1][samples.Get(x, y, 1)], levels[2][samples.Get(x, y, 2)], levels[3][samples.Get(x, y, 3)])
+                    : new Cmyk16(Component(x, y, 0), Component(x, y, 1), Component(x, y, 2), Component(x, y, 3));
+            }
+
+            transform.Apply<Cmyk16, Rgb16>(from, to);
+            if (narrow is not null)
+            {
+                Span<Rgba8> row = narrow.Row(y);
+                for (int x = 0; x < width; x++)
+                {
+                    row[x] = new Rgba8(Unit8(to[x].R / 65535.0), Unit8(to[x].G / 65535.0), Unit8(to[x].B / 65535.0), alpha is null ? (byte)255 : alpha[(y * width) + x]);
+                }
+            }
+            else
+            {
+                Span<Rgba16> row = deep!.Row(y);
+                for (int x = 0; x < width; x++)
+                {
+                    row[x] = new Rgba16(to[x].R, to[x].G, to[x].B, alpha is null ? ushort.MaxValue : (ushort)(alpha[(y * width) + x] * 257));
+                }
+            }
+        }
+
+        ushort Component(int x, int y, int c)
+        {
+            return Unit16(decode[2 * c] + (samples.Get(x, y, c) * (decode[(2 * c) + 1] - decode[2 * c]) / max));
+        }
     }
 
     private static double[][] Table(ImageColorSpace space, double[] decode, int bits)

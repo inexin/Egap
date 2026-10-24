@@ -103,7 +103,9 @@ internal sealed partial class PageRenderer
     {
         try
         {
-            return cache.Shading(shading, inks, () => Shadings.Read(shading, colors, Resources, ColorContext.IntentOf(State.RenderingIntent), inks));
+            InkMap? inks = Inks;
+            TransferTable? transfer = inks is null ? Transfer : null;
+            return cache.Shading(shading, inks, transfer, () => Shadings.Read(shading, colors, Resources, ColorContext.IntentOf(State.RenderingIntent), inks, transfer));
         }
         catch (Exception e) when (e is InvalidDataException or PdfException and not PdfLimitException)
         {

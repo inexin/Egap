@@ -37,9 +37,10 @@ public sealed class OverprintPreviewTests
         using Raster<Rgba8> screen = page.Render(new PdfRenderOptions { Dpi = 72 }, TestContext.Current.CancellationToken);
         using Raster<Rgba8> press = page.Render(new PdfRenderOptions { Dpi = 72, SimulateOverprint = true }, TestContext.Current.CancellationToken);
 
-        // The overprinting PANTONE 186 C square over the 0.2/0.3 CMYK fill prints darker than the spot alone.
-        Rgba8 shown = screen.GetPixel(150, 242), printed = press.GetPixel(150, 242);
-        Assert.True(printed.R + printed.G + printed.B < shown.R + shown.G + shown.B - 5 && printed.R < shown.R - 10, $"screen {shown}, press {printed}");
+        // The overprinting PANTONE 186 C square over the 0.2/0.3 CMYK fill prints darker than the spot alone does on press, and
+        // on screen it knocks the fill out and shows the spot alone.
+        Rgba8 shown = screen.GetPixel(150, 242), printed = press.GetPixel(150, 242), alone = press.GetPixel(100, 142);
+        Assert.True(printed.R + printed.G + printed.B < alone.R + alone.G + alone.B - 5 && printed.R < shown.R - 10, $"screen {shown}, press {printed}, spot alone on press {alone}");
         Assert.Equal(screen.Width, press.Width);
         Assert.Equal(screen.Height, press.Height);
     }

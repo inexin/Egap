@@ -24,10 +24,13 @@ internal sealed partial class PageRenderer
     private const int MaxInkTiles = 16384;
 
     /// <summary>The plates drawn on, for an ink canvas or a pattern cell recorded for one; null when drawing RGB.</summary>
-    private InkMap? inks;
+    private InkMap? plates;
 
-    /// <summary>The plates of the image XObjects drawn so far in this render, by image and reduction; disposed when it ends.</summary>
-    private Dictionary<(PdfStream, int), InkRaster>? inkImages;
+    /// <summary>How colours print on <see cref="plates"/> under the current transfer function.</summary>
+    private InkMap? Inks => plates is not null && Transfer is TransferTable transfer ? cache.Inks(plates.Inks, transfer) : plates;
+
+    /// <summary>The plates of the image XObjects drawn so far in this render, by image, reduction and ink map; disposed when it ends.</summary>
+    private Dictionary<(PdfStream, int, InkMap), InkRaster>? inkImages;
 
     /// <summary>Frees the plates of the images this render made.</summary>
     private void ForgetInkImages()
@@ -46,7 +49,7 @@ internal sealed partial class PageRenderer
     /// <summary>The plates a paint prints on: every plate without overprint, else its own, its zero CMYK ones left out in mode 1.</summary>
     private Overprint OverprintOf(bool fill, InkPlan? plan, ImageColorSpace? space)
     {
-        if (inks is null || !(fill ? State.FillOverprint : State.StrokeOverprint))
+        if (Inks is null || !(fill ? State.FillOverprint : State.StrokeOverprint))
         {
             return Overprint.Off;
         }
@@ -62,7 +65,7 @@ internal sealed partial class PageRenderer
     private bool InkPaint(PdfColor color, double alpha, bool fill, out Paint? paint)
     {
         paint = null;
-        if (inks is null)
+        if (Inks is null)
         {
             return false;
         }
@@ -74,7 +77,7 @@ internal sealed partial class PageRenderer
         }
 
         if (color.Family == "Pattern" || colors.Space(color.Space, Resources, ColorContext.IntentOf(State.RenderingIntent)) is not ImageColorSpace space
-            || inks.Plan(space) is not InkPlan plan)
+            || Inks.Plan(space) is not InkPlan plan)
         {
             return false;
         }
@@ -109,7 +112,7 @@ internal sealed partial class PageRenderer
     /// <summary>The ink colour of an uncoloured pattern's colour in its underlying space, or null to draw it as sRGB.</summary>
     private InkColor? UncoloredInk(PdfObject under, IReadOnlyList<double> components)
     {
-        if (inks is null || colors.Space(under, Resources, ColorContext.IntentOf(State.RenderingIntent)) is not ImageColorSpace space || inks.Plan(space) is not InkPlan plan)
+        if (Inks is null || colors.Space(under, Resources, ColorContext.IntentOf(State.RenderingIntent)) is not ImageColorSpace space || Inks.Plan(space) is not InkPlan plan)
         {
             return null;
         }
@@ -123,7 +126,7 @@ internal sealed partial class PageRenderer
     /// </summary>
     private ColorProfile? GroupSpace(PdfDictionary group, PdfDictionary? resources)
     {
-        if (inks is null || group.Get("CS")?.Resolve() is not PdfObject cs || colors.Space(cs, resources, RenderingIntent.RelativeColorimetric) is not ImageColorSpace space)
+        if (Inks is null || group.Get("CS")?.Resolve() is not PdfObject cs || colors.Space(cs, resources, RenderingIntent.RelativeColorimetric) is not ImageColorSpace space)
         {
             return null;
         }
@@ -143,26 +146,26 @@ internal sealed partial class PageRenderer
     /// </summary>
     private bool DrawInkImage(PdfImage source, PdfImageOptions options, PdfGraphicsState state, PdfName? name, PdfStream? stream, int reduction)
     {
-        if (inks is null || canvas is not InkCanvas ink)
+        if (Inks is null || canvas is not InkCanvas ink)
         {
             return false;
         }
 
         ImageColorSpace? space = source.ColorSpace is PdfObject spaceObject ? colors.Space(spaceObject, Resources, ColorContext.IntentOf(state.RenderingIntent)) : null;
-        InkPlan? plan = space is null ? null : inks.Plan(space);
+        InkPlan? plan = space is null ? null : Inks.Plan(space);
         InkRaster raster;
         try
         {
             // Every other image converts from sRGB into the process inks here, onto plates of the whole ink set, so it
             // knocks out the spot plates below it as well. An XObject's plates are made once per render, however often it is drawn.
-            (PdfStream, int) key = (stream!, reduction);
+            (PdfStream, int, InkMap) key = (stream!, reduction, Inks);
             if (stream is not null && inkImages?.TryGetValue(key, out InkRaster? known) == true)
             {
                 raster = known;
             }
             else
             {
-                raster = plan is not null ? ImageDecoder.DecodeInks(source, options, plan, inks.Inks)
+                raster = plan is not null ? ImageDecoder.DecodeInks(source, options, plan, Inks.Inks)
                     : stream is not null && cache.Images.GetOrDecode(stream, reduction, settings.ImageCacheLimit, () => source.ToRaster(options)) is Raster<Rgba8> decoded
                         ? SrgbToPlates(decoded, owned: false) : SrgbToPlates(source.ToRaster<Rgba8>(options), owned: true);
                 if (stream is not null)
@@ -240,8 +243,8 @@ internal sealed partial class PageRenderer
     {
         using (owned ? image : null)
         {
-            InkRaster raster = new(inks!.Inks, image.Width, image.Height);
-            ColorTransform transform = inks.FromSrgb;
+            InkRaster raster = new(Inks!.Inks, image.Width, image.Height);
+            ColorTransform transform = Inks.FromSrgb;
             InkPlate?[] process = [raster.Plate("Cyan"), raster.Plate("Magenta"), raster.Plate("Yellow"), raster.Plate("Black")];
             Rgb8[] rgb = new Rgb8[image.Width];
             Cmyk8[] cmyk = new Cmyk8[image.Width];
@@ -289,7 +292,7 @@ internal sealed partial class PageRenderer
     /// <summary>Whether a colour is a pattern drawn on plates by clipping to the shape and replaying the pattern there.</summary>
     private bool PatternOnPlates(PdfColor color)
     {
-        return inks is not null && uncoloredInk is null && color.Family == "Pattern";
+        return Inks is not null && uncoloredInk is null && color.Family == "Pattern";
     }
 
     /// <summary>

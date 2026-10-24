@@ -6,7 +6,7 @@ namespace Egap.Pdf.Images;
 
 /// <summary>
 /// How colour spaces turn into sRGB (Phase 4 design Q7): the profiles device spaces stand for (an output intent's, or a
-/// CMYK profile the caller gives), the rendering intent with black point compensation for relative colorimetric as Acrobat
+/// CMYK profile the caller gives, else FOGRA39 for CMYK), the rendering intent with black point compensation for relative colorimetric as Acrobat
 /// does, and the ICC profiles and transforms read so far, shared by every colour space made with this context.
 /// </summary>
 internal sealed class ColorContext
@@ -18,12 +18,16 @@ internal sealed class ColorContext
         shared = new Shared();
     }
 
+    /// <summary>A context shared by every DeviceCMYK space that goes through FOGRA39, so its transforms are made once; it holds nothing else.</summary>
+    public static ColorContext Plain { get; } = new();
+
     private ColorContext(ColorContext other, RenderingIntent intent)
     {
         shared = other.shared;
         Gray = other.Gray;
         Rgb = other.Rgb;
         Cmyk = other.Cmyk;
+        DefaultCmyk = other.DefaultCmyk;
         Intent = intent;
     }
 
@@ -33,8 +37,11 @@ internal sealed class ColorContext
     /// <summary>The profile DeviceRGB stands for; null for sRGB.</summary>
     public ColorProfile? Rgb { get; init; }
 
-    /// <summary>The profile DeviceCMYK stands for; null for the fitted coated press conversion (Phase 3 design Q12).</summary>
+    /// <summary>The profile DeviceCMYK stands for, from an output intent or the caller; null for <see cref="DefaultCmyk"/>.</summary>
     public ColorProfile? Cmyk { get; init; }
+
+    /// <summary>The profile DeviceCMYK goes through when <see cref="Cmyk"/> is null: FOGRA39 unless the caller picks another.</summary>
+    public ColorProfile DefaultCmyk { get; init; } = ColorProfile.Fogra39;
 
     public RenderingIntent Intent { get; private init; } = RenderingIntent.RelativeColorimetric;
 
@@ -93,13 +100,15 @@ internal sealed class ColorContext
 
     /// <summary>
     /// The context a document's output intent gives (14.11.5): its destination profile stands for the device space with as
-    /// many components. Without one, or when <paramref name="useOutputIntent"/> is false, device spaces are as they are.
+    /// many components. Without one, or when <paramref name="useOutputIntent"/> is false, device spaces are as they are and
+    /// DeviceCMYK goes through <paramref name="defaultCmyk"/>, FOGRA39 when null.
     /// </summary>
-    public static ColorContext ForDocument(PdfDocument document, bool useOutputIntent)
+    public static ColorContext ForDocument(PdfDocument document, bool useOutputIntent, ColorProfile? defaultCmyk = null)
     {
+        ColorProfile fallback = defaultCmyk ?? ColorProfile.Fogra39;
         if (!useOutputIntent)
         {
-            return new ColorContext();
+            return new ColorContext { DefaultCmyk = fallback };
         }
 
         ColorContext probe = new();
@@ -109,14 +118,14 @@ internal sealed class ColorContext
             {
                 return (stream.Dictionary.GetInt("N") ?? Components(profile)) switch
                 {
-                    1 => new ColorContext { Gray = profile },
-                    4 => new ColorContext { Cmyk = profile },
-                    _ => new ColorContext { Rgb = profile },
+                    1 => new ColorContext { Gray = profile, DefaultCmyk = fallback },
+                    4 => new ColorContext { Cmyk = profile, DefaultCmyk = fallback },
+                    _ => new ColorContext { Rgb = profile, DefaultCmyk = fallback },
                 };
             }
         }
 
-        return new ColorContext();
+        return new ColorContext { DefaultCmyk = fallback };
     }
 
     private static int Components(ColorProfile profile)

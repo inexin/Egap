@@ -117,7 +117,7 @@ internal sealed partial class PageRenderer
     {
         // A cell drawn for plates keeps its inks, so it is recorded per ink set as well as per colour.
         Dictionary<(RgbaF32, string?, InkMap?), Picture?> byColor = Cells.GetValue(pattern, _ => []);
-        (RgbaF32, string?, InkMap?) key = (tint, inkTint?.ToString(), inks);
+        (RgbaF32, string?, InkMap?) key = (tint, inkTint?.ToString(), Inks);
         lock (byColor)
         {
             if (byColor.TryGetValue(key, out Picture? known))
@@ -134,7 +134,7 @@ internal sealed partial class PageRenderer
             {
                 maskDepth = maskDepth + 1,
                 uncolored = uncoloredPattern ? tint : null,
-                inks = inks,
+                plates = plates,
                 uncoloredInk = uncoloredPattern ? inkTint : null,
             };
             PdfContent content = PdfContent.Parse(System.Text.Encoding.ASCII.GetBytes(FormattableString.Invariant($"{box.Left} {box.Bottom} {box.Width} {box.Height} re W n")));

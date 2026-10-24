@@ -72,9 +72,27 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `PdfRenderOptions.SimulateOverprint` renders a page as it prints: through its ink plates, proofed back to sRGB through
   the press profile, so overprint and spot colours show as on press.
 
+### Changed
+- DeviceCMYK colours in a document without a CMYK output intent now render through Egami's Coated FOGRA39 profile in
+  place of a fitted approximation of it, the same press profile Egap's print tools use: CMYK pages look slightly different. `PdfRenderOptions.DefaultCmykProfile` picks another press profile. CMYK images
+  convert a row at a time, and each CMYK colour once.
+- Transfer functions in a graphics state (`/TR` and `/TR2`) now change the colours drawn after them: fills, strokes,
+  text, images and shadings, and each plate's ink on separations and overprint previews. Files that use them look as on a
+  printer; `PdfRenderOptions.ApplyTransferFunctions = false` draws colours as they are, as before.
+
 ### PDF/A
 - Converting to PDF/A-1b now writes the `/CIDSet` that PDF/A-1 asks of subset CID fonts. Files made without it, such as
   ones made for another level, failed veraPDF after conversion.
+- Conversion now fixes more rules: rendering intents PDF does not define become RelativeColorimetric (in graphics
+  states, images and the `ri` operator); halftone names and halftone transfer functions on primary colourants are
+  removed; form field widgets lose their actions; pages lose `/PresSteps`; ICC profiles that cannot be read are replaced
+  by the standard profile with as many components; the catalog's metadata stream gets `/Type /Metadata /Subtype /XML`;
+  and XMP on structure elements and other objects is checked and put right like the rest.
+- Conversion now checks, and refuses, names longer than 127 bytes, Separation spaces of one name (All included) that
+  disagree on their alternate or tint transform, DeviceCMYK reached through a DeviceN colourant's alternate without a
+  CMYK output intent, and non-symbolic TrueType fonts that name neither MacRomanEncoding nor WinAnsiEncoding.
+- A resource named `AA`, such as a font, is no longer removed as if it were additional actions. Conversion removed it
+  and then refused the file, which it had already changed.
 
 ## Egap.Preview 2.2.0 (unreleased)
 

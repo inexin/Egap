@@ -792,6 +792,11 @@ public class PdfContentWalker
                 case "op" when value is PdfBoolean overprint:
                     state.FillOverprint = overprint.Value;
                     break;
+                case "TR2":
+                case "TR" when gs.Get("TR2") is null:
+                    // Identity and Default (TR2's device default, which on screen is identity) leave colours as they are.
+                    state.Transfer = value is PdfName ? null : value;
+                    break;
                 case "OPM" when number is double mode:
                     state.OverprintMode = mode == 1 ? 1 : 0;
                     break;

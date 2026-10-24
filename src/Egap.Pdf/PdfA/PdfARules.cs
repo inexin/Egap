@@ -19,6 +19,9 @@ internal sealed partial class PdfARules
     private static readonly HashSet<string> StandardFilters = ["ASCIIHexDecode", "ASCII85Decode", "LZWDecode", "FlateDecode", "RunLengthDecode", "CCITTFaxDecode", "JBIG2Decode", "DCTDecode", "JPXDecode", "Crypt",
         "AHx", "A85", "LZW", "Fl", "RL", "CCF", "DCT"];
 
+    /// <summary>The rendering intents ISO 32000-1 defines (Table 70), the only ones PDF/A allows (ISO 19005-2 6.2.6).</summary>
+    private static readonly HashSet<string> RenderingIntents = ["RelativeColorimetric", "AbsoluteColorimetric", "Perceptual", "Saturation"];
+
     private static readonly HashSet<string> ForbiddenAnnotations = ["Movie", "Sound", "Screen", "3D", "RichMedia", "TrapNet", "PrinterMark"];
 
     private readonly PdfDocument document;
@@ -71,6 +74,7 @@ internal sealed partial class PdfARules
         Fonts(resources, TextUse.Scan(document, forms));
         Graphics(resources, forms);
         Colors(resources, forms);
+        Gaps();
         Streams();
     }
 
@@ -223,11 +227,27 @@ internal sealed partial class PdfARules
             Issue("6.6.2.3", $"the XMP metadata breaks PDF/A's rules ({shown}); undeclared properties are removed and the rest put in form", metadata.FixXmpForPdfA);
         }
 
-        // Metadata of pages, images and forms follows the same rules (ISO 19005-2 6.6.2.1).
+        // Metadata of pages, images, forms and structure elements follows the same rules (ISO 19005-2 6.6.2.1), whether or
+        // not its stream says /Type /Metadata.
         PdfStream? own = document.Catalog.Get<PdfStream>("Metadata");
+        HashSet<PdfStream> described = new(ReferenceEqualityComparer.Instance);
         foreach (PdfReference reference in document.Objects)
         {
-            if (document.Objects[reference] is PdfStream other && !ReferenceEquals(other, own) && other.Dictionary.GetName("Type")?.Value == "Metadata")
+            PdfDictionary? holder = document.Objects[reference] switch
+            {
+                PdfStream s => s.Dictionary,
+                PdfDictionary d => d,
+                _ => null,
+            };
+            if (holder?.Get("Metadata")?.Resolve() is PdfStream described1)
+            {
+                described.Add(described1);
+            }
+        }
+
+        foreach (PdfReference reference in document.Objects)
+        {
+            if (document.Objects[reference] is PdfStream other && !ReferenceEquals(other, own) && (other.Dictionary.GetName("Type")?.Value == "Metadata" || described.Contains(other)))
             {
                 byte[]? bytes = TryDecode(other);
                 global::Egap.Pdf.Metadata.XmpPacket? packet = bytes is null ? null : global::Egap.Pdf.Metadata.XmpPacket.Parse(bytes);
@@ -249,6 +269,15 @@ internal sealed partial class PdfARules
                     });
                 }
             }
+        }
+
+        if (document.Catalog.Get<PdfStream>("Metadata") is PdfStream typed && (typed.Dictionary.GetName("Type")?.Value != "Metadata" || typed.Dictionary.GetName("Subtype")?.Value != "XML"))
+        {
+            Issue("6.6.2.1", "the XMP metadata stream does not say it is metadata (/Type /Metadata, /Subtype /XML); it is written", () =>
+            {
+                typed.Dictionary["Type"] = PdfName.Get("Metadata");
+                typed.Dictionary["Subtype"] = PdfName.Get("XML");
+            });
         }
 
         if (document.Catalog.Get<PdfStream>("Metadata") is PdfStream stream && stream.Filters.Count > 0)
@@ -389,6 +418,11 @@ internal sealed partial class PdfARules
                 }
 
                 AdditionalActions(dictionary, $"a {subtype} annotation", number);
+                if (subtype == "Widget" && dictionary.ContainsKey("A") && (dictionary.Get("A")?.Resolve() is not PdfDictionary given || Forbidden(given) is null))
+                {
+                    // ISO 19005-2 6.4.1: a widget runs no action at all, not only no forbidden one.
+                    Issue("6.4.1", "a form field widget runs an action; the action is removed", () => dictionary.Remove("A"), number, lossy: true);
+                }
                 if (dictionary.Get("A")?.Resolve() is PdfDictionary action && Forbidden(action) is string kind)
                 {
                     Issue("6.6.1", $"a {subtype} annotation runs a {kind} action; the action is removed", () => dictionary.Remove("A"), number, lossy: true);
@@ -703,6 +737,14 @@ internal sealed partial class PdfARules
                 Issue("6.2.11.6", $"the symbolic TrueType font {name} has an encoding, which PDF/A does not allow");
             }
 
+            // A non-symbolic TrueType font names MacRomanEncoding or WinAnsiEncoding, itself or as /BaseEncoding (ISO 19005-2
+            // 6.2.11.6); setting one would change which glyphs its codes show.
+            if (subtype == "TrueType" && (PdfFont.FromDictionary(font).Flags & PdfFontFlags.Symbolic) == 0
+                && (font.Get("Encoding")?.Resolve() switch { PdfName e => e.Value, PdfDictionary d => d.GetName("BaseEncoding")?.Value, _ => null }) is not ("MacRomanEncoding" or "WinAnsiEncoding"))
+            {
+                Issue("6.2.11.6", $"the non-symbolic TrueType font {name} names neither MacRomanEncoding nor WinAnsiEncoding");
+            }
+
             if (EmbeddedWidths.Missing(font, codes) is int missing and > 0)
             {
                 Issue("6.2.11.4.1", $"the font {name} shows {missing} codes its embedded program has no glyph for");
@@ -934,6 +976,16 @@ internal sealed partial class PdfARules
                     Issue("6.2.4.2", "a graphics state sets overprint mode 1; it is set to 0", () => state["OPM"] = new PdfInteger(0));
                 }
 
+                if (state.GetName("RI") is PdfName intent && !RenderingIntents.Contains(intent.Value))
+                {
+                    Issue("6.2.6", $"a graphics state sets the rendering intent {intent.Value}, which PDF does not define; it is set to RelativeColorimetric", () => state["RI"] = PdfName.Get("RelativeColorimetric"));
+                }
+
+                if (state.Get("HT")?.Resolve() is PdfObject halftone)
+                {
+                    Halftone(halftone, null, 0);
+                }
+
                 if (state.ContainsKey("HTP") || state.ContainsKey("HTO"))
                 {
                     Issue("6.2.5", "a graphics state sets halftone origins; they are removed", () =>
@@ -1000,6 +1052,11 @@ internal sealed partial class PdfARules
                 if (image.ContainsKey("Alternates"))
                 {
                     Issue("6.2.8", "an image has alternate images; they are removed", () => image.Remove("Alternates"));
+                }
+
+                if (image.GetName("Intent") is PdfName intent && !RenderingIntents.Contains(intent.Value))
+                {
+                    Issue("6.2.6", $"an image asks for the rendering intent {intent.Value}, which PDF does not define; it is set to RelativeColorimetric", () => image["Intent"] = PdfName.Get("RelativeColorimetric"));
                 }
             }
         }

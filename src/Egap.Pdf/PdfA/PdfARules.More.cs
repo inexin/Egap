@@ -34,6 +34,12 @@ internal sealed partial class PdfARules
         }
     }
 
+    /// <summary>Whether a dictionary is an additional-actions dictionary: no other type, and every entry an action.</summary>
+    private static bool IsAdditionalActions(PdfDictionary triggers)
+    {
+        return triggers.GetName("Type") is null && triggers.Entries.All(e => e.Value.Resolve() is PdfDictionary action && action.GetName("Type")?.Value is null or "Action" && action.ContainsKey("S"));
+    }
+
     /// <summary>
     /// Rules over every object: actions and additional actions wherever they sit (form fields too), file specifications
     /// that name an embedded file both ways (/F and /UF), filters spelled as inline image abbreviations, page sizes.
@@ -72,12 +78,13 @@ internal sealed partial class PdfARules
             {
                 // Pages, annotations and outline items are judged where they are read; this finds the rest.
                 bool covered = dictionary.GetName("Type")?.Value is "Annot" or "Page" or "Catalog" || dictionary.ContainsKey("Title");
-                if (!covered && dictionary.ContainsKey("AA"))
+                // A resource named AA or A (a font, say) is not an action: only a dictionary of actions is.
+                if (!covered && dictionary.Get("AA")?.Resolve() is PdfDictionary triggers && IsAdditionalActions(triggers))
                 {
                     additional.Add(dictionary);
                 }
 
-                if (!covered && dictionary.Get("A")?.Resolve() is PdfDictionary action && action.ContainsKey("S") && Forbidden(action) is not null)
+                if (!covered && dictionary.Get("A")?.Resolve() is PdfDictionary action && action.ContainsKey("S") && action.GetName("Type")?.Value is null or "Action" && Forbidden(action) is not null)
                 {
                     actions.Add((dictionary, "A"));
                 }
@@ -233,10 +240,15 @@ internal sealed partial class PdfARules
 
     private void Content(PdfContent content, PdfDictionary? resources, string where, Action write, int? page)
     {
-        List<PdfOperation> unknown = [], dangling = [];
+        List<PdfOperation> unknown = [], dangling = [], intents = [];
         HashSet<string> fonts = [];
         foreach (PdfOperation operation in content)
         {
+            if (operation.Operator == "ri" && operation.GetName(0) is PdfName intent && !RenderingIntents.Contains(intent.Value))
+            {
+                intents.Add(operation);
+            }
+
             if (!operation.IsKnown && operation is not PdfInlineImage)
             {
                 unknown.Add(operation);
@@ -270,6 +282,19 @@ internal sealed partial class PdfARules
         if (fonts.Count > 0)
         {
             Issue("6.2.2", $"{where} uses fonts, colour spaces, patterns or properties its resources lack ({string.Join(", ", fonts)})", page: page);
+        }
+
+        if (intents.Count > 0)
+        {
+            Issue("6.2.6", $"{where} sets rendering intents PDF does not define ({string.Join(", ", intents.Select(o => o.GetName(0)!.Value).Distinct().Take(5))}); they are set to RelativeColorimetric", () =>
+            {
+                foreach (PdfOperation operation in intents)
+                {
+                    content[content.IndexOf(operation)] = new PdfOperation("ri", [PdfName.Get("RelativeColorimetric")]);
+                }
+
+                write();
+            }, page);
         }
 
         if (unknown.Count > 0 || dangling.Count > 0)

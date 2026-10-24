@@ -51,8 +51,8 @@ public sealed class ImageDecodeTests
         PdfImage spot = Image(pdf, 1, 1, 8, separation, [255]);
         using (Raster<Rgba8> raster = spot.ToRaster<Rgba8>())
         {
-            // Half cyan on coated paper, through the fitted press profile.
-            Assert.Equal(new Rgba8(147, 216, 246, 255), Pixels(raster)[0]);
+            // Half cyan on coated paper, through FOGRA39.
+            Assert.Equal(new Rgba8(129, 208, 245, 255), Pixels(raster)[0]);
         }
 
         PdfStream program = new(new PdfDictionary { ["FunctionType"] = new PdfInteger(4), ["Domain"] = Numbers(0, 1, 0, 1), ["Range"] = Numbers(0, 1, 0, 1, 0, 1) });
@@ -119,8 +119,8 @@ public sealed class ImageDecodeTests
 
         using (Raster<Rgba8> raster = cmyk.ToRaster<Rgba8>())
         {
-            // Magenta and yellow print a press red, not sRGB's.
-            Assert.Equal(new Rgba8(237, 34, 15, 255), Pixels(raster)[0]);
+            // Magenta and yellow print a press red (FOGRA39's), not sRGB's.
+            Assert.Equal(new Rgba8(228, 9, 22, 255), Pixels(raster)[0]);
         }
     }
 

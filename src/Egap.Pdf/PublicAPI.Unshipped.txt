@@ -1,1 +1,5 @@
 #nullable enable
+Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions.get -> bool
+Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions.init -> void
+Egap.Pdf.PdfRenderOptions.DefaultCmykProfile.get -> Egami.Colors.ColorProfile?
+Egap.Pdf.PdfRenderOptions.DefaultCmykProfile.init -> void

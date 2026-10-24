@@ -113,6 +113,25 @@ public sealed class RenderColorTests
         Assert.True(perceptual.GetPixel(10, 10).G > 150);
     }
 
+    [Fact]
+    public void DeviceCmykWithoutAnOutputIntentGoesThroughFogra39()
+    {
+        ColorTransform fogra = ColorTransform.Create(ColorProfile.Fogra39, ColorProfile.Srgb, new ColorTransformOptions { Intent = RenderingIntent.RelativeColorimetric, BlackPointCompensation = true });
+        Rgb8[] expected = new Rgb8[1];
+        fogra.Apply<Cmyk8, Rgb8>([new Cmyk8(0, 255, 255, 0)], expected);
+
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = pdf.Pages.AddBlank(new PdfRectangle(0, 0, 10, 10));
+        page.SetContent(PdfContent.Parse(Encoding.ASCII.GetBytes("0 1 1 0 k 0 0 10 10 re f")));
+        using Raster<Rgba8> shown = page.Render();
+        using Raster<Rgba8> chosen = page.Render(new PdfRenderOptions { UseOutputIntents = false, DefaultCmykProfile = ColorProfile.Fogra39 });
+
+        Rgba8 p = shown.GetPixel(5, 5);
+        Assert.True(Math.Abs(p.R - expected[0].R) <= 1 && Math.Abs(p.G - expected[0].G) <= 1 && Math.Abs(p.B - expected[0].B) <= 1, $"{p} against {expected[0]}");
+        Assert.Equal(p, chosen.GetPixel(5, 5));
+        Assert.Throws<ArgumentException>(() => new PdfRenderOptions { DefaultCmykProfile = ColorProfile.Srgb });
+    }
+
     private static PdfReference Icc(ColorProfile profile, int components)
     {
         PdfStream stream = new(new PdfDictionary { ["N"] = new PdfInteger(components) });

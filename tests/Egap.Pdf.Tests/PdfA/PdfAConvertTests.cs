@@ -304,6 +304,18 @@ public sealed class PdfAConvertTests
     }
 
     [Fact]
+    public void AFontNamedAaIsNotTakenForAdditionalActions()
+    {
+        using PdfDocument pdf = PdfDocument.Open(Breaking("BT /AA 12 Tf 72 700 Td (Kept) Tj ET"));
+        PdfDictionary fonts = pdf.Pages[0].Resources!.Get<PdfDictionary>("Font")!;
+        fonts["AA"] = fonts["F1"]!;
+        fonts.Remove("F1");
+        PdfAReport report = PdfAConverter.Convert(pdf, PdfAConformance.PdfA2b);
+        Assert.True(report.Succeeded, report.ToString());
+        Assert.NotNull(fonts.Get("AA"));
+    }
+
+    [Fact]
     public void AButtonsAppearanceBecomesStates()
     {
         using PdfDocument pdf = PdfDocument.Open(Breaking());

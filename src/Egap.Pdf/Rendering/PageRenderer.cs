@@ -38,8 +38,8 @@ internal sealed partial class PageRenderer : PdfContentWalker
         this.pageToDevice = pageToDevice;
         this.settings = settings;
         this.cache = cache;
-        colors = cache.Colors(settings.OutputIntents);
-        inks = canvas is InkCanvas ink ? cache.Inks(ink.Raster.Inks) : null;
+        colors = cache.Colors(settings.OutputIntents, settings.DefaultCmyk);
+        plates = canvas is InkCanvas ink ? cache.Inks(ink.Raster.Inks) : null;
     }
 
     /// <summary>Draws content with its resources, in default user space mapped to the canvas by the page matrix.</summary>
@@ -225,6 +225,31 @@ internal sealed partial class PageRenderer : PdfContentWalker
     }
 
     /// <summary>
+    /// The current transfer function (10.5), sampled once per document; null when there is none, it changes nothing, it is
+    /// turned off, or it cannot be read (with a warning).
+    /// </summary>
+    private TransferTable? Transfer
+    {
+        get
+        {
+            if (!settings.TransferFunctions || State.Transfer is not PdfObject value)
+            {
+                return null;
+            }
+
+            TransferTable? table = cache.Transfer(value, out string? problem);
+            if (problem is not null && warnedTransfers.Add(value))
+            {
+                Warn(PdfWarningCode.MalformedContent, $"A transfer function could not be read; colours were drawn as they are: {problem}");
+            }
+
+            return table;
+        }
+    }
+
+    private readonly HashSet<PdfObject> warnedTransfers = new(ReferenceEqualityComparer.Instance);
+
+    /// <summary>
     /// The paint for a colour at an alpha; a pattern's is mapped for drawing under <paramref name="drawing"/> (the current
     /// matrix when null), the user space matrix the canvas will have when the paint is used.
     /// </summary>
@@ -250,6 +275,12 @@ internal sealed partial class PageRenderer : PdfContentWalker
         {
             Warn(PdfWarningCode.MalformedContent, $"The colour {color} could not be read; it was drawn black.");
             rgb = new RgbaF32(0, 0, 0, 1);
+        }
+
+        // On plates the transfer function acts on the inks, which the canvas makes from this sRGB colour after it is drawn.
+        if (plates is null && rgb.A > 0 && Transfer is TransferTable transfer)
+        {
+            rgb = transfer.Apply(rgb);
         }
 
         // A colourant that marks nothing (None) paints nothing at all (8.6.6.4).

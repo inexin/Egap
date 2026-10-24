@@ -177,6 +177,43 @@ public sealed class PdfCanvasTests
     }
 
     [Fact]
+    public void BlursAFallbackAsWideAsEgamisOwnRasterDoes()
+    {
+        // A blur's sigma is in page units: Egami's fallback raster scales it with the resolution, so the page must not scale it
+        // again. At 144 dpi a blurred square spreads twice as many pixels as on an Egami raster at 72 dpi, not four times.
+        SolidPaint blurred = new(new RgbaF32(1, 0, 0, 1)) { Blur = new MaskBlur(3) };
+        using PdfDocument pdf = PdfDocument.Create();
+        PdfPage page = pdf.Pages.AddBlank(new PdfRectangle(0, 0, 72, 72));
+        using (PdfCanvas canvas = new(page, new PdfCanvasOptions { FallbackDpi = 144 }))
+        {
+            canvas.FillRect(new RectF(30, 30, 10, 10), blurred);
+        }
+
+        PdfStream image = (PdfStream)page.Resources!.Get<PdfDictionary>("XObject")!["EgX0"]!.Resolve();
+        using Raster<RgbaF32> own = Raster.Create<RgbaF32>(72, 72);
+        using (RasterCanvas<RgbaF32> canvas = own.CreateCanvas())
+        {
+            canvas.FillRect(new RectF(30, 30, 10, 10), blurred);
+        }
+
+        int left = own.Width, right = -1;
+        for (int y = 0; y < own.Height; y++)
+        {
+            for (int x = 0; x < own.Width; x++)
+            {
+                if (own.GetPixel(x, y).A > 0)
+                {
+                    left = Math.Min(left, x);
+                    right = Math.Max(right, x);
+                }
+            }
+        }
+
+        int width = 2 * (right - left + 1);
+        Assert.InRange(image.Dictionary.GetInt("Width")!.Value, width - 2, width + 2);
+    }
+
+    [Fact]
     public void CountsRepeatedFallbacksInOneWarning()
     {
         using PdfDocument pdf = PdfDocument.Create();

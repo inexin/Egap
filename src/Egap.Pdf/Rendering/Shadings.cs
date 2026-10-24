@@ -60,7 +60,7 @@ internal static class Shadings
     private const int Stops = 256;
 
     /// <summary>The paint for a shading, or one with no paint for a mesh type or a shading that cannot be read.</summary>
-    public static ShadingPaint Read(PdfObject shading, ColorCache colors, PdfDictionary? resources, RenderingIntent intent, InkMap? inks = null)
+    public static ShadingPaint Read(PdfObject shading, ColorCache colors, PdfDictionary? resources, RenderingIntent intent, InkMap? inks = null, TransferTable? transfer = null)
     {
         PdfDictionary dictionary = shading switch
         {
@@ -72,54 +72,60 @@ internal static class Shadings
             ? found
             : throw new InvalidDataException("A shading has no usable colour space.");
         PdfRectangle? box = PdfRectangle.FromArray(dictionary.Get<PdfArray>("BBox"));
-        RgbaF32? background = dictionary.Get<PdfArray>("Background") is PdfArray bg ? Convert(space, Numbers(bg)) : null;
+        RgbaF32? background = dictionary.Get<PdfArray>("Background") is PdfArray bg ? Convert(space, Numbers(bg), transfer) : null;
         int type = (int)(dictionary.GetInt("ShadingType") ?? 0);
         if (type is >= 4 and <= 7)
         {
             return shading is PdfStream mesh
-                ? new ShadingPaint(null, box, background, dictionary, MeshShading.Read(mesh, type, space, inks))
+                ? new ShadingPaint(null, box, background, dictionary, MeshShading.Read(mesh, type, space, inks, transfer))
                 : throw new InvalidDataException("A mesh shading is not a stream.");
         }
 
         // On plates a function shading's inks are sampled into a mesh: a per-pixel paint can only give sRGB.
         if (type == 1 && inks?.Plan(space) is InkPlan { PaintsNothing: false } plan)
         {
-            FunctionShading function = Function(dictionary, space);
+            FunctionShading function = Function(dictionary, space, null);
             return new ShadingPaint(null, box, background, dictionary, MeshShading.Sampled(function.Function, space, function.Domain, function.Matrix, plan));
         }
 
         Paint paint = type switch
         {
-            1 => Function(dictionary, space),
-            2 => Axial(dictionary, space, inks),
-            3 => Radial(dictionary, space, inks),
+            1 => Function(dictionary, space, transfer),
+            2 => Axial(dictionary, space, inks, transfer),
+            3 => Radial(dictionary, space, inks, transfer),
             _ => throw new InvalidDataException($"The shading type {type} is not known."),
         };
         return new ShadingPaint(paint, box, background, dictionary);
     }
 
-    /// <summary>A colour in the shading's space as sRGB; components past the space's count are ignored.</summary>
-    public static RgbaF32 Convert(ImageColorSpace space, ReadOnlySpan<double> components)
+    /// <summary>A colour in the shading's space as sRGB, through the transfer function when there is one; components past the space's count are ignored.</summary>
+    public static RgbaF32 Convert(ImageColorSpace space, ReadOnlySpan<double> components, TransferTable? transfer = null)
     {
         Span<double> rgb = stackalloc double[3];
         Span<double> c = stackalloc double[Math.Max(space.Components, 1)];
         components[..Math.Min(components.Length, c.Length)].CopyTo(c);
         space.ToRgb(c[..space.Components], rgb);
-        return space.PaintsNothing ? default : new RgbaF32(Unit(rgb[0]), Unit(rgb[1]), Unit(rgb[2]), 1);
+        if (space.PaintsNothing)
+        {
+            return default;
+        }
+
+        RgbaF32 color = new(Unit(rgb[0]), Unit(rgb[1]), Unit(rgb[2]), 1);
+        return transfer is null ? color : transfer.Apply(color);
     }
 
-    private static LinearGradient Axial(PdfDictionary d, ImageColorSpace space, InkMap? inks)
+    private static LinearGradient Axial(PdfDictionary d, ImageColorSpace space, InkMap? inks, TransferTable? transfer)
     {
         double[] coords = Numbers(d.Get<PdfArray>("Coords")) is { Length: >= 4 } c ? c : throw new InvalidDataException("An axial shading has no /Coords.");
         (bool start, bool end) = Extend(d);
-        return new LinearGradient(new Vector2((float)coords[0], (float)coords[1]), new Vector2((float)coords[2], (float)coords[3]), StopsOf(d, space, inks))
+        return new LinearGradient(new Vector2((float)coords[0], (float)coords[1]), new Vector2((float)coords[2], (float)coords[3]), StopsOf(d, space, inks, transfer))
         {
             ExtendStart = start,
             ExtendEnd = end,
         };
     }
 
-    private static ConicalGradient Radial(PdfDictionary d, ImageColorSpace space, InkMap? inks)
+    private static ConicalGradient Radial(PdfDictionary d, ImageColorSpace space, InkMap? inks, TransferTable? transfer)
     {
         double[] coords = Numbers(d.Get<PdfArray>("Coords")) is { Length: >= 6 } c ? c : throw new InvalidDataException("A radial shading has no /Coords.");
         (bool start, bool end) = Extend(d);
@@ -128,7 +134,7 @@ internal static class Shadings
             (float)Math.Max(coords[2], 0),
             new Vector2((float)coords[3], (float)coords[4]),
             (float)Math.Max(coords[5], 0),
-            StopsOf(d, space, inks))
+            StopsOf(d, space, inks, transfer))
         {
             ExtendStart = start,
             ExtendEnd = end,
@@ -136,7 +142,7 @@ internal static class Shadings
     }
 
     /// <summary>The colour at evenly spaced t over /Domain, as gradient stops from 0 to 1.</summary>
-    private static GradientStop[] StopsOf(PdfDictionary d, ImageColorSpace space, InkMap? inks)
+    private static GradientStop[] StopsOf(PdfDictionary d, ImageColorSpace space, InkMap? inks, TransferTable? transfer)
     {
         PdfFunction function = PdfFunction.Read(d.Get("Function") ?? throw new InvalidDataException("A shading has no /Function."));
         double[] domain = Numbers(d.Get<PdfArray>("Domain")) is { Length: >= 2 } given ? given : [0, 1];
@@ -149,14 +155,14 @@ internal static class Shadings
             input[0] = domain[0] + ((domain[1] - domain[0]) * offset);
             Array.Clear(output);
             function.Evaluate(input, output);
-            stops[i] = Stop(offset, space, output, inks);
+            stops[i] = Stop(offset, space, output, inks, transfer);
         }
 
         return stops;
     }
 
-    /// <summary>A gradient stop: an ink colour when the space prints on the plates being drawn, else sRGB.</summary>
-    public static GradientStop Stop(float offset, ImageColorSpace space, ReadOnlySpan<double> components, InkMap? inks)
+    /// <summary>A gradient stop: an ink colour when the space prints on the plates being drawn, else sRGB through the transfer function.</summary>
+    public static GradientStop Stop(float offset, ImageColorSpace space, ReadOnlySpan<double> components, InkMap? inks, TransferTable? transfer = null)
     {
         if (inks?.Plan(space) is InkPlan plan && !plan.PaintsNothing)
         {
@@ -165,15 +171,15 @@ internal static class Shadings
             return new GradientStop(offset, plan.Color(c));
         }
 
-        return new GradientStop(offset, Convert(space, components));
+        return new GradientStop(offset, Convert(space, components, transfer));
     }
 
-    private static FunctionShading Function(PdfDictionary d, ImageColorSpace space)
+    private static FunctionShading Function(PdfDictionary d, ImageColorSpace space, TransferTable? transfer)
     {
         PdfFunction function = PdfFunction.Read(d.Get("Function") ?? throw new InvalidDataException("A function shading has no /Function."));
         double[] domain = Numbers(d.Get<PdfArray>("Domain")) is { Length: >= 4 } given ? given : [0, 1, 0, 1];
         PdfMatrix matrix = PdfMatrix.FromArray(d.Get<PdfArray>("Matrix")) ?? PdfMatrix.Identity;
-        return new FunctionShading(function, space, domain, matrix);
+        return new FunctionShading(function, space, domain, matrix, transfer);
     }
 
     private static (bool Start, bool End) Extend(PdfDictionary d)
@@ -202,6 +208,7 @@ internal static class Shadings
         private readonly ImageColorSpace space;
         private readonly double[] domain;
         private readonly Matrix3x2 toDomain;
+        private readonly TransferTable? transfer;
 
         public PdfFunction Function => function;
 
@@ -210,8 +217,9 @@ internal static class Shadings
         /// <summary>The shading's /Matrix, from the domain to shading space.</summary>
         public PdfMatrix Matrix { get; }
 
-        public FunctionShading(PdfFunction function, ImageColorSpace space, double[] domain, PdfMatrix matrix)
+        public FunctionShading(PdfFunction function, ImageColorSpace space, double[] domain, PdfMatrix matrix, TransferTable? transfer)
         {
+            this.transfer = transfer;
             this.function = function;
             this.space = space;
             this.domain = domain;
@@ -237,7 +245,7 @@ internal static class Shadings
                 input[1] = p.Y;
                 output.Clear();
                 function.Evaluate(input, output);
-                RgbaF32 c = Convert(space, output);
+                RgbaF32 c = Convert(space, output, transfer);
                 row[i] = new PremulRgbaF32 { R = c.R * c.A, G = c.G * c.A, B = c.B * c.A, A = c.A };
             }
         }

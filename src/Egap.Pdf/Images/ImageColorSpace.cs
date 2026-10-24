@@ -14,8 +14,8 @@ internal enum ColorFamily
 }
 
 /// <summary>
-/// An image's colour space (8.6) turned into sRGB: device spaces as they are (CMYK through a press profile when one is given,
-/// else the simple formula, design Q12), CIE-based spaces through their device counterparts or, for ICCBased, the alternate
+/// An image's colour space (8.6) turned into sRGB: device spaces as they are (CMYK through a press profile, FOGRA39 unless
+/// one is given), CIE-based spaces through their device counterparts or, for ICCBased, the alternate
 /// the profile's component count implies, Lab through XYZ, and Indexed, Separation and DeviceN through their base or
 /// alternate spaces and tint transforms. Components arrive decoded, each in its space's own range.
 /// </summary>
@@ -57,6 +57,12 @@ internal abstract class ImageColorSpace
     {
         return [.. Enumerable.Range(0, Components).SelectMany(_ => new double[] { 0, 1 })];
     }
+
+    /// <summary>
+    /// A transform from this space's components, 0 to 1, straight to sRGB, for converting a row of an image at a time; null
+    /// when colours convert one by one through <see cref="ToRgb"/>.
+    /// </summary>
+    public virtual ColorTransform? RowTransform => null;
 
     /// <summary>Converts one colour to sRGB, each channel 0 to 1.</summary>
     public abstract void ToRgb(ReadOnlySpan<double> components, Span<double> rgb);
@@ -237,11 +243,21 @@ internal abstract class ImageColorSpace
         }
     }
 
-    /// <summary>DeviceCMYK: through the given press profile, one colour at a time; without one, a fit of a coated press profile (<see cref="CmykPress"/>).</summary>
+    /// <summary>
+    /// DeviceCMYK: through the press profile an output intent or the caller gives, else the context's default (FOGRA39), each
+    /// colour converted once and remembered, as content sets the same colours again and again.
+    /// </summary>
     private sealed class CmykSpace(ColorContext? context) : ImageColorSpace
     {
+        /// <summary>How many colours one space remembers; past it colours convert without being kept.</summary>
+        private const int MaxRemembered = 4096;
+
         private readonly ColorProfile? profile = context?.Cmyk;
-        private readonly ColorTransform? transform = context?.Cmyk is ColorProfile cmyk ? context.Transform(cmyk) : null;
+        // FOGRA39's transforms are made once for the process; any other profile's in the context that reads the space.
+        private readonly ColorTransform transform = context?.Cmyk is ColorProfile own ? context.Transform(own)
+            : context?.DefaultCmyk is ColorProfile chosen && !ReferenceEquals(chosen, ColorProfile.Fogra39) ? context.Transform(chosen)
+            : ColorContext.Plain.WithIntent(context?.Intent ?? RenderingIntent.RelativeColorimetric).Transform(ColorProfile.Fogra39);
+        private readonly Dictionary<Egami.Pixels.Cmyk16, Egami.Pixels.Rgb16> remembered = [];
 
         public override int Components => 4;
 
@@ -251,20 +267,29 @@ internal abstract class ImageColorSpace
 
         public override ColorProfile? Profile => profile;
 
+        public override ColorTransform? RowTransform => transform;
+
         public override void ToRgb(ReadOnlySpan<double> c, Span<double> rgb)
         {
-            if (transform is not null)
+            Egami.Pixels.Cmyk16 from = new(Unit16(c[0]), Unit16(c[1]), Unit16(c[2]), Unit16(c[3]));
+            Egami.Pixels.Rgb16 to;
+            lock (remembered)
             {
-                Span<Egami.Pixels.Cmyk16> from = [new Egami.Pixels.Cmyk16(Unit16(c[0]), Unit16(c[1]), Unit16(c[2]), Unit16(c[3]))];
-                Span<Egami.Pixels.Rgb16> to = stackalloc Egami.Pixels.Rgb16[1];
-                transform.Apply<Egami.Pixels.Cmyk16, Egami.Pixels.Rgb16>(from, to);
-                rgb[0] = to[0].R / 65535.0;
-                rgb[1] = to[0].G / 65535.0;
-                rgb[2] = to[0].B / 65535.0;
-                return;
+                if (!remembered.TryGetValue(from, out to))
+                {
+                    Span<Egami.Pixels.Rgb16> converted = stackalloc Egami.Pixels.Rgb16[1];
+                    transform.Apply<Egami.Pixels.Cmyk16, Egami.Pixels.Rgb16>([from], converted);
+                    to = converted[0];
+                    if (remembered.Count < MaxRemembered)
+                    {
+                        remembered[from] = to;
+                    }
+                }
             }
 
-            CmykPress.ToRgb(Math.Clamp(c[0], 0, 1), Math.Clamp(c[1], 0, 1), Math.Clamp(c[2], 0, 1), Math.Clamp(c[3], 0, 1), rgb);
+            rgb[0] = to.R / 65535.0;
+            rgb[1] = to.G / 65535.0;
+            rgb[2] = to.B / 65535.0;
         }
     }
 

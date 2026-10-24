@@ -180,6 +180,16 @@ internal sealed class ColorScan(PdfDocument document)
                         break;
                     case "Separation" or "DeviceN" when array.Count > 2:
                         Space(array[2], resources, depth + 1);
+
+                        // A DeviceN space's colourants are Separation spaces with alternates of their own (8.6.6.5).
+                        if (family == "DeviceN" && array.Count > 4 && array.Get<PdfDictionary>(4)?.Get<PdfDictionary>("Colorants") is PdfDictionary colorants)
+                        {
+                            foreach ((PdfName _, PdfObject colorant) in colorants.Entries)
+                            {
+                                Space(colorant, resources, depth + 1);
+                            }
+                        }
+
                         break;
                     case "Pattern":
                         Space(array[1], resources, depth + 1);
