@@ -107,16 +107,16 @@ internal sealed class EpubWriter
         {
             // The navigation document needs an entry (EPUB 3.3 7.4.2): each chapter by its first words.
             int n = 1;
-            foreach (Chapter chapter in chapters.Where(c => !c.Cover))
+            foreach (Chapter chapter in chapters.Any(c => !c.Cover) ? chapters.Where(c => !c.Cover) : chapters)
             {
-                string first = chapter.Blocks.OfType<Paragraph>().Select(p => EpubPackage.Collapse(p.GetText())).FirstOrDefault(t => t.Length > 0) ?? "";
+                string first = chapter.Blocks.OfType<Paragraph>().Select(p => EpubPackage.Collapse(Clean(p.GetText()))).FirstOrDefault(t => t.Length > 0) ?? "";
                 string label = first.Length == 0 ? "Chapter " + n.ToString(CultureInfo.InvariantCulture) : first.Length > 60 ? first[..57] + "..." : first;
                 navigation.Add(new NavEntry(label, chapter.Name, 0));
                 n++;
             }
         }
 
-        string title = document.Properties.Title is { Length: > 0 } t ? t : navigation.FirstOrDefault()?.Title ?? "Untitled";
+        string title = document.Properties.Title is { Length: > 0 } t ? Clean(t) : navigation.FirstOrDefault()?.Title ?? "Untitled";
         using ZipArchive zip = new(stream, ZipArchiveMode.Create, leaveOpen: true);
 
         // The mimetype entry comes first and stored, so its bytes sit at offset 38 (EPUB 3.3 OCF 4.3).
@@ -252,7 +252,7 @@ internal sealed class EpubWriter
                         continue;
                     }
 
-                    string text = EpubPackage.Collapse(paragraph.GetText());
+                    string text = EpubPackage.Collapse(Clean(paragraph.GetText()));
                     if (text.Length == 0)
                     {
                         continue;
@@ -356,6 +356,23 @@ internal sealed class EpubWriter
             }
         }
 
+        // A caption the HTML reader kept from a figure the model has no box for is a paragraph outside a figure.
+        foreach (IElement caption in dom.QuerySelectorAll("figcaption").Where(e => e.ParentElement?.LocalName != "figure").ToList())
+        {
+            IElement paragraph = dom.CreateElement("p");
+            foreach (IAttr attribute in caption.Attributes.ToList())
+            {
+                paragraph.SetAttribute(attribute.Name, attribute.Value);
+            }
+
+            while (caption.FirstChild is { } child)
+            {
+                paragraph.AppendChild(child);
+            }
+
+            caption.Replace(paragraph);
+        }
+
         // XHTML has no name attribute on <a>; ids carry the targets.
         foreach (IElement anchor in dom.QuerySelectorAll("a[name]"))
         {
@@ -390,6 +407,16 @@ internal sealed class EpubWriter
 
         string type = image.ContentType.ToLowerInvariant();
         byte[] data = image.Bytes.ToArray();
+        if (type == "image/svg+xml")
+        {
+            if (SelfContainedSvg(data) is not { } svg)
+            {
+                warnings.Add(ConversionWarningKind.PictureDropped, "SVG pictures that are not well-formed XML");
+                return null;
+            }
+
+            data = svg;
+        }
         if (!CoreImages.Contains(type))
         {
             try
@@ -412,6 +439,71 @@ internal sealed class EpubWriter
         images[hash] = resource;
         resources.Add(resource);
         return resource;
+    }
+
+    /// <summary>
+    /// An SVG picture with only what a book file may hold on its own: no scripts or event handlers (which would need the
+    /// scripted property), no style sheet processing instructions, and no links to files outside it, which the book does
+    /// not carry; null when it is not XML.
+    /// </summary>
+    private byte[]? SelfContainedSvg(byte[] data)
+    {
+        XDocument svg;
+        try
+        {
+            svg = EpubContainer.LoadXml(data, new DocumentLimits());
+        }
+        catch (DocumentException)
+        {
+            return null;
+        }
+
+        bool changed = false;
+        foreach (XProcessingInstruction instruction in svg.Nodes().OfType<XProcessingInstruction>().Where(p => p.Target == "xml-stylesheet").ToList())
+        {
+            instruction.Remove();
+            changed = true;
+        }
+
+        foreach (XElement element in svg.Descendants().ToList())
+        {
+            if (element.Name.LocalName is "script" || (element.Name.LocalName is "image" or "use" or "feImage" && External(element)))
+            {
+                element.Remove();
+                changed = true;
+                continue;
+            }
+
+            foreach (XAttribute attribute in element.Attributes().Where(a => a.Name.LocalName.StartsWith("on", StringComparison.OrdinalIgnoreCase) && a.Name.Namespace == XNamespace.None).ToList())
+            {
+                attribute.Remove();
+                changed = true;
+            }
+
+            if (element.Name.LocalName == "a" && External(element))
+            {
+                element.Attributes().Where(a => a.Name.LocalName == "href").Remove();
+                changed = true;
+            }
+
+            if (element.Name.LocalName == "style" && element.Value.Contains("@import", StringComparison.OrdinalIgnoreCase))
+            {
+                element.Remove();
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            warnings.Add(ConversionWarningKind.FormattingDropped, "scripts and links to other files in SVG pictures");
+        }
+
+        using MemoryStream output = new();
+        svg.Save(output, SaveOptions.DisableFormatting);
+        return output.ToArray();
+
+        static bool External(XElement element) => element.Attributes().FirstOrDefault(a => a.Name.LocalName == "href")?.Value.Trim() is { Length: > 0 } href
+            && !href.StartsWith('#') && !href.StartsWith("data:", StringComparison.OrdinalIgnoreCase);
     }
 
     // ---- Fonts ---------------------------------------------------------------------------------------------------------
@@ -591,32 +683,32 @@ internal sealed class EpubWriter
             new XElement(dc + "language", language));
         foreach (string creator in Split(properties.Author))
         {
-            metadata.Add(new XElement(dc + "creator", creator));
+            metadata.Add(new XElement(dc + "creator", Clean(creator)));
         }
 
         foreach (string subject in Split(properties.Keywords))
         {
-            metadata.Add(new XElement(dc + "subject", subject));
+            metadata.Add(new XElement(dc + "subject", Clean(subject)));
         }
 
         if (properties.Comments is { Length: > 0 } description)
         {
-            metadata.Add(new XElement(dc + "description", description));
+            metadata.Add(new XElement(dc + "description", Clean(description)));
         }
 
         if (properties.GetCustom("Publisher") is { Length: > 0 } publisher)
         {
-            metadata.Add(new XElement(dc + "publisher", publisher));
+            metadata.Add(new XElement(dc + "publisher", Clean(publisher)));
         }
 
         if (properties.GetCustom("Rights") is { Length: > 0 } rights)
         {
-            metadata.Add(new XElement(dc + "rights", rights));
+            metadata.Add(new XElement(dc + "rights", Clean(rights)));
         }
 
         foreach (string contributor in Split(properties.GetCustom("Contributors")))
         {
-            metadata.Add(new XElement(dc + "contributor", contributor));
+            metadata.Add(new XElement(dc + "contributor", Clean(contributor)));
         }
 
         if (properties.Created is { } created)
@@ -690,6 +782,9 @@ internal sealed class EpubWriter
             spine.Add(new XElement(opf + "itemref", new XAttribute("idref", chapter.Id)));
         }
 
+        // The navigation document is in the spine out of the reading order, so the landmarks and guide may link to it.
+        spine.Add(new XElement(opf + "itemref", new XAttribute("idref", "nav"), new XAttribute("linear", "no")));
+
         // The guide is EPUB 2's and deprecated in EPUB 3, but old readers still use it (design Q2).
         XElement guide = new(opf + "guide", new XElement(opf + "reference", new XAttribute("type", "toc"), new XAttribute("title", "Contents"), new XAttribute("href", "nav.xhtml")));
         if (coverPage)
@@ -735,6 +830,21 @@ internal sealed class EpubWriter
         using StringWriter writer = new Utf8StringWriter();
         xml.Save(writer, SaveOptions.None);
         return writer.ToString().Replace("\r\n", "\n", StringComparison.Ordinal) + "\n";
+    }
+
+    /// <summary>Text with the characters XML cannot hold (controls, lone surrogates, U+FFFE and U+FFFF) left out.</summary>
+    private static string Clean(string text)
+    {
+        StringBuilder clean = new(text.Length);
+        foreach (Rune rune in text.EnumerateRunes())
+        {
+            if ((rune.Value >= 0x20 || rune.Value is 0x09 or 0x0A or 0x0D) && rune.Value is not (0xFFFE or 0xFFFF))
+            {
+                clean.Append(rune.ToString());
+            }
+        }
+
+        return clean.ToString();
     }
 
     private static string Text(string text) => text.Replace("&", "&amp;", StringComparison.Ordinal).Replace("<", "&lt;", StringComparison.Ordinal).Replace(">", "&gt;", StringComparison.Ordinal);

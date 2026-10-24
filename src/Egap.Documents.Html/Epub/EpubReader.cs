@@ -62,17 +62,25 @@ internal sealed class EpubReader
         ReadFonts();
         WarnMedia();
 
-        bool coverInSpine = package.CoverImage is not null && package.Spine.Count > 0 && package.Spine[0].Item.IsXhtml
-            && container.Get(package.Spine[0].Item.Name) is { } first
-            && Encoding.UTF8.GetString(first).Contains(Path.GetFileName(package.CoverImage), StringComparison.Ordinal);
-        if (package.CoverImage is not null && !coverInSpine)
-        {
-            AddCover(package.CoverImage);
-        }
-
         foreach (EpubSpineItem item in package.Spine)
         {
-            ReadChapter(item);
+            // The navigation document out of the reading order is the table of contents, read as the outline below.
+            if (!(item.Item.Has("nav") && !item.Linear))
+            {
+                ReadChapter(item);
+            }
+        }
+
+        // The cover on a first section of its own, unless the first chapter already shows it; a cover page whose picture
+        // the HTML reader could not show (an SVG wrapper) gets the picture instead.
+        if (package.CoverImage is { } cover && container.Get(cover) is { } coverBytes
+            && !(document.Sections.Count > 0 && document.Sections[0].Descendants<Picture>().Any(p => p.Image.Bytes.Span.SequenceEqual(coverBytes))))
+        {
+            Section? first = document.Sections.Count > 0 ? document.Sections[0] : null;
+            bool wrapper = first?.Extensions.Get<EpubChapterExtension>(EpubChapterExtension.Format) is { } chapter
+                && first.GetText().Trim().Length == 0 && !first.Descendants<Picture>().Any()
+                && container.Get(chapter.Name) is { } page && Encoding.UTF8.GetString(page).Contains(Path.GetFileName(cover), StringComparison.Ordinal);
+            AddCover(cover, coverBytes, wrapper ? first : null);
         }
 
         if (document.Sections.Count == 0)
@@ -230,14 +238,19 @@ internal sealed class EpubReader
 
     // ---- Chapters ------------------------------------------------------------------------------------------------------
 
-    private void AddCover(string name)
+    private void AddCover(string name, byte[] bytes, Section? into)
     {
-        if (container.Get(name) is not { } bytes)
+        Section section = into ?? document.AddSection();
+        if (into is null)
         {
-            return;
+            document.Sections.Remove(section);
+            document.Sections.Insert(0, section);
+        }
+        else
+        {
+            section.Body.Blocks.Clear();
         }
 
-        Section section = document.AddSection();
         section.PageSetup.SectionStart = SectionStart.NewPage;
         double pageWidth = section.PageSetup.PageWidth ?? 612, pageHeight = section.PageSetup.PageHeight ?? 792;
         double width = pageWidth - (section.PageSetup.MarginLeft ?? 72) - (section.PageSetup.MarginRight ?? 72);
@@ -252,7 +265,8 @@ internal sealed class EpubReader
             Description = "Cover",
             SourceUrl = name,
         });
-        section.Extensions.Set(EpubChapterExtension.Format, new EpubChapterExtension(name, "cover-image", ["cover"]));
+        EpubChapterExtension? kept = section.Extensions.Get<EpubChapterExtension>(EpubChapterExtension.Format);
+        section.Extensions.Set(EpubChapterExtension.Format, new EpubChapterExtension(kept?.Name ?? name, kept?.Id ?? "cover-image", ["cover"]));
     }
 
     private void ReadChapter(EpubSpineItem spine)
@@ -265,9 +279,10 @@ internal sealed class EpubReader
             return;
         }
 
-        if (!item.IsXhtml && item.MediaType != "image/svg+xml")
+        bool image = item.MediaType.StartsWith("image/", StringComparison.Ordinal);
+        if (!item.IsXhtml && !image)
         {
-            Warn(ConversionWarningKind.FormattingDropped, "Spine items that are neither XHTML nor SVG");
+            Warn(ConversionWarningKind.FormattingDropped, "Spine items that are neither XHTML nor pictures");
             return;
         }
 
@@ -275,10 +290,10 @@ internal sealed class EpubReader
         bool fixedLayout = spine.Properties.Contains("rendition:layout-pre-paginated")
             || (package.FixedLayout && !spine.Properties.Contains("rendition:layout-reflowable"));
         HtmlDocument dom;
-        if (item.MediaType == "image/svg+xml")
+        if (image)
         {
-            // An SVG page is shown as a picture filling it.
-            dom = HtmlParsing.Parse($"<!DOCTYPE html><html><body><img src=\"{Path.GetFileName(item.Name)}\" alt=\"\"></body></html>");
+            // A picture in the spine (an SVG page, a comic's PNG) is shown as a picture filling its page.
+            dom = HtmlParsing.Parse($"<!DOCTYPE html><html><body><img src=\"{Uri.EscapeDataString(Path.GetFileName(item.Name))}\" alt=\"\"></body></html>");
         }
         else
         {

@@ -46,9 +46,13 @@
       href: formats/docling-json.md
     - name: DOCX
       href: formats/docx.md
+    - name: EPUB
+      href: formats/epub.md
     - name: HTML
       href: formats/html.md
     - name: Markdown
       href: formats/markdown.md
+    - name: MHTML
+      href: formats/mhtml.md
     - name: Plain text
       href: formats/text.md

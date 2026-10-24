@@ -76,6 +76,26 @@ public class MimeTests
     }
 
     [Fact]
+    public void Base64IsReadLeniently()
+    {
+        // Word sets the spare bits of a last group and pads it oddly; line breaks and stray characters are skipped.
+        MimeEntity part = MimeReader.Read("Content-Transfer-Encoding: base64\r\n\r\nAAEC\r\nA*w"u8, new DocumentLimits());
+        MimeEntity word = MimeReader.Read("Content-Transfer-Encoding: base64\r\n\r\nQUJDRB=="u8, new DocumentLimits());
+
+        Assert.Equal(new byte[] { 0, 1, 2, 3 }, part.Body);
+        Assert.Equal("ABCD"u8.ToArray(), word.Body);
+    }
+
+    [Fact]
+    public void CharsetsNetTurnsOffAreUnknown()
+    {
+        Assert.Null(MimeEntity.Charset("utf-7"));
+        Assert.Equal(1252, MimeEntity.Charset("windows-1252")!.CodePage);
+        Assert.Equal("ISO-8859-1", MimeEntity.Charset("\"iso-8859-1\"")!.WebName, ignoreCase: true);
+        Assert.Null(MimeEntity.Charset("x-no-such-charset"));
+    }
+
+    [Fact]
     public void LimitsHold()
     {
         StringBuilder many = new("Content-Type: multipart/mixed; boundary=x\r\n\r\n");

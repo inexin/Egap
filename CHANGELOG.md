@@ -82,6 +82,44 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 
 - The tool has its own icon on NuGet: an eye on a deep olive tile.
 
+## Egap.Documents.Html 2.2.0 (unreleased)
+
+### EPUB
+- `EpubFormat.Load` reads EPUB 2.0.1 and EPUB 3.0 to 3.3 books into one document: a section per chapter starting on a new
+  page, read through the HTML reader with the book's style sheets; the cover on a section of its own; links between
+  chapters as links inside the document; the table of contents (EPUB 3 navigation document or EPUB 2 NCX) as outline
+  levels, so PDF bookmarks follow it; and the metadata as document properties.
+- Fonts the book declares with `@font-face` are loaded, with IDPF and Adobe font obfuscation undone. Fixed-layout books
+  are read a page per section at the page's viewport size. Audio, video, media overlays and scripts are left out with a
+  `MediaDropped` warning.
+- Books under DRM (Adobe ADEPT, Readium LCP, Apple FairPlay, any encryption other than font obfuscation) are refused with
+  a `DocumentException` that names the scheme. Entries that point outside the book are refused, and `DocumentLimits`
+  caps entries, sizes and the compression ratio.
+- `EpubFormat.Save` writes an EPUB 3.3 book that EPUBCheck passes: XHTML chapters split at section breaks and level 1
+  headings (`EpubSaveOptions.SplitAt`), a navigation document to `NavigationDepth`, a toc.ncx and guide for EPUB 2
+  readers, the pictures, accessibility metadata, and with `EmbedFonts` the embedded fonts subset and obfuscated. A book
+  read from EPUB keeps its chapter files, ids and identifier.
+- `Document.LoadEpub`, `ToEpub` and `SaveAsEpub`; `HtmlFormat.Register()` lets `Document.Load` and `Document.Save` handle
+  `.epub`.
+
+### MHTML
+- `HtmlFormat.LoadMhtml` reads web archives as Chromium, Edge and Word save them: the page through the HTML reader, its
+  pictures, style sheets and fonts from the archive's parts by `Content-Location` or `cid:` URL, in base64 or
+  quoted-printable. Nothing outside the archive is fetched unless `ResourceResolver` gives it.
+- `HtmlFormat.SaveMhtml`, `ToMhtml` and `SaveAsMhtml` write the archive in Chromium's shape, which Chromium, Edge and Word
+  open. `HtmlFormat.Register()` lets `Document.Load` and `Document.Save` handle `.mht` and `.mhtml`.
+
+### Fixes
+- A paragraph whose first bookmark is not at its start no longer writes that bookmark twice, as the paragraph's id and as
+  an anchor, which gave the page two elements with one id.
+
+## Egap.Documents 2.2.0 (unreleased)
+
+### Formats
+- `DocumentFormatKind.Epub` and `DocumentFormatKind.Mhtml`: `Document.Identify` tells an EPUB by its first ZIP entry and
+  an MHTML archive by its `multipart/related` headers or its `.mht` and `.mhtml` extension, without the add-on.
+- `ConversionWarningKind.MediaDropped` for audio, video, media overlays and scripts a reader left out.
+
 ## Egap.Documents 2.1.0 (2026-10-22)
 
 ### Reports in code

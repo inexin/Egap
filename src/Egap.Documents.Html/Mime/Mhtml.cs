@@ -47,10 +47,11 @@ internal static class MhtmlReader
         Func<Uri, byte[]?>? outside = options.ResourceResolver;
         byte[]? Resolve(Uri uri)
         {
+            // Chromium names style sheets it made by cid: URL in their Content-Location; Word links Content-IDs by cid: URL.
             if (uri.Scheme.Equals("cid", StringComparison.OrdinalIgnoreCase))
             {
                 string id = Uri.UnescapeDataString(uri.OriginalString[4..]).Trim().TrimStart('<').TrimEnd('>');
-                return byId.TryGetValue(id, out MimeEntity? part) ? part.Body : null;
+                return byId.TryGetValue(id, out MimeEntity? part) || byLocation.TryGetValue(Key(uri), out part) ? part.Body : null;
             }
 
             if (byLocation.TryGetValue(Key(uri), out MimeEntity? found))
@@ -99,7 +100,8 @@ internal static class MhtmlReader
     }
 
     /// <summary>The form two URLs are matched in: absolute, without a fragment.</summary>
-    private static string Key(Uri uri) => uri.IsAbsoluteUri ? uri.GetLeftPart(UriPartial.Query) : uri.OriginalString;
+    private static string Key(Uri uri) => !uri.IsAbsoluteUri ? uri.OriginalString
+        : uri.GetLeftPart(UriPartial.Query) is { Length: > 0 } left ? left : uri.AbsoluteUri.Split('#')[0];
 }
 
 /// <summary>

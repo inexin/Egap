@@ -435,6 +435,64 @@ public class EpubTests
     }
 
     [Fact]
+    public void PicturesInTheSpineAndANonLinearNavAreRead()
+    {
+        const string opf = """
+            <?xml version="1.0"?>
+            <package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="u">
+              <metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="u">x</dc:identifier><dc:title>Comic</dc:title><dc:language>en</dc:language></metadata>
+              <manifest>
+                <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+                <item id="p1" href="images/page%201.png" media-type="image/png"/>
+              </manifest>
+              <spine><itemref idref="p1"/><itemref idref="nav" linear="no"/></spine>
+            </package>
+            """;
+        byte[] book = BookBytes(
+            ("OEBPS/content.opf", Encoding.UTF8.GetBytes(opf)),
+            ("OEBPS/nav.xhtml", Encoding.UTF8.GetBytes(Nav)),
+            ("OEBPS/images/page 1.png", Convert.FromBase64String(MhtmlTests.Png)));
+
+        Document document = EpubFormat.Load(new MemoryStream(book));
+
+        Section page = Assert.Single(document.Sections);
+        Assert.Single(page.Descendants<Picture>());
+    }
+
+    [Fact]
+    public void WrittenSvgPicturesHoldOnlyThemselves()
+    {
+        Document document = new();
+        Paragraph paragraph = document.AddSection().Body.AddParagraph();
+        byte[] svg = Encoding.UTF8.GetBytes("""
+            <?xml-stylesheet href="style.css"?>
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 10 10" onload="go()">
+              <script>go()</script><image xlink:href="other.png" width="5" height="5"/><rect width="10" height="10"/>
+            </svg>
+            """);
+        paragraph.Inlines.Add(new Picture(document, new ImageData(svg, "image/svg+xml"), 10, 10) { Description = "Box" });
+
+        Dictionary<string, string> entries = Entries(document.ToEpub());
+
+        string written = entries.Single(e => e.Key.EndsWith(".svg", StringComparison.Ordinal)).Value;
+        Assert.Contains("<rect", written, StringComparison.Ordinal);
+        Assert.DoesNotContain("script", written, StringComparison.Ordinal);
+        Assert.DoesNotContain("other.png", written, StringComparison.Ordinal);
+        Assert.DoesNotContain("onload", written, StringComparison.Ordinal);
+        Assert.DoesNotContain("style.css", written, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ABookmarkInsideAParagraphIsWrittenOnce()
+    {
+        Document document = HtmlFormat.Parse("<p>Start <a id=\"mid\" href=\"#mid\">middle</a> end</p>");
+
+        string html = document.ToHtml();
+
+        Assert.Single(System.Text.RegularExpressions.Regex.Matches(html, "id=\"mid\""));
+    }
+
+    [Fact]
     public void SplittingCanBeTurnedOff()
     {
         Dictionary<string, string> entries = Entries(Sample().ToEpub(new EpubSaveOptions { SplitAt = EpubSplit.None }));

@@ -4,7 +4,7 @@
     <RootNamespace>Egap.Documents</RootNamespace>
     <PackageId>Egap.Documents.Html</PackageId>
     <VersionPrefix>$(EgapVersion)</VersionPrefix>
-    <Description>HTML for Egap.Documents: HTML and XHTML read into the document model through the CSS cascade and written from it, with flexbox and grid layout, rounded and shadowed boxes, positioned boxes, @page rules and margin boxes, HTML to PDF, and HTML stamps and page bands.</Description>
+    <Description>HTML for Egap.Documents: HTML and XHTML read into the document model through the CSS cascade and written from it, with flexbox and grid layout, rounded and shadowed boxes, positioned boxes, @page rules and margin boxes, HTML to PDF, HTML stamps and page bands, MHTML web archives, and EPUB 2 and 3 books read and EPUB 3.3 books written.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Claimed because tests/Egap.Documents.Html.AotSmoke publishes with Native AOT without a warning. -->
     <IsTrimmable>true</IsTrimmable>

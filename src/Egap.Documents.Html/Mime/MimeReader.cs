@@ -204,31 +204,41 @@ internal sealed class MimeReader
         return parts;
     }
 
+    /// <summary>
+    /// Base64 decoded leniently, as mail readers do: characters outside the alphabet skipped, padding optional, and the
+    /// spare bits of a last group (which Word sets) ignored.
+    /// </summary>
     private static byte[] Base64(ReadOnlySpan<byte> body)
     {
-        byte[] clean = new byte[body.Length];
-        int length = 0;
+        byte[] output = new byte[body.Length / 4 * 3 + 3];
+        int length = 0, bits = 0, count = 0;
         foreach (byte b in body)
         {
-            if (b is >= (byte)'A' and <= (byte)'Z' or >= (byte)'a' and <= (byte)'z' or >= (byte)'0' and <= (byte)'9' or (byte)'+' or (byte)'/')
+            int value = b switch
             {
-                clean[length++] = b;
+                >= (byte)'A' and <= (byte)'Z' => b - 'A',
+                >= (byte)'a' and <= (byte)'z' => b - 'a' + 26,
+                >= (byte)'0' and <= (byte)'9' => b - '0' + 52,
+                (byte)'+' => 62,
+                (byte)'/' => 63,
+                _ => -1,
+            };
+
+            if (value < 0)
+            {
+                continue;
+            }
+
+            bits = (bits << 6) | value;
+            count += 6;
+            if (count >= 8)
+            {
+                count -= 8;
+                output[length++] = (byte)(bits >> count);
+                bits &= (1 << count) - 1;
             }
         }
 
-        // Padding is put back, so a part whose padding was lost in transport still decodes.
-        int padded = (length + 3) / 4 * 4;
-        if (length % 4 == 1)
-        {
-            length--;
-            padded = length;
-        }
-
-        byte[] input = new byte[padded];
-        clean.AsSpan(0, length).CopyTo(input);
-        input.AsSpan(length).Fill((byte)'=');
-        byte[] output = new byte[padded / 4 * 3];
-        System.Buffers.OperationStatus status = System.Buffers.Text.Base64.DecodeFromUtf8(input, output, out _, out int written);
-        return status == System.Buffers.OperationStatus.Done ? output.AsSpan(0, written).ToArray() : [];
+        return output.AsSpan(0, length).ToArray();
     }
 }

@@ -87,5 +87,10 @@ internal sealed class MimeEntity
         {
             return CodePagesEncodingProvider.Instance.GetEncoding(name);
         }
+        catch (NotSupportedException)
+        {
+            // UTF-7, which .NET turns off for safety.
+            return null;
+        }
     }
 }

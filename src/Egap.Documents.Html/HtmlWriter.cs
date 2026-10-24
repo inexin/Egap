@@ -412,7 +412,8 @@ internal sealed partial class HtmlWriter
             body.Append(" class=\"").Append(ClassOf(style)).Append('"');
         }
 
-        if (paragraph?.Inlines.FirstOrDefault(i => i is BookmarkStart) is BookmarkStart bookmark)
+        // Only a bookmark at the paragraph's start is its id; one further in is written in place, as an anchor.
+        if (paragraph is { Inlines: [BookmarkStart bookmark, ..] })
         {
             body.Append(" id=\"").Append(Attribute(bookmark.Name)).Append('"');
         }

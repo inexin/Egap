@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="uid"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:identifier id="uid">urn:uuid:12345678-1234-5678-1234-567812345678</dc:identifier><dc:title>T</dc:title><dc:creator>A</dc:creator><dc:language>en</dc:language>
+<dc:date>2020-05-17</dc:date><meta property="dcterms:modified">2024-01-02T03:04:05Z</meta><meta property="rendition:layout">reflowable</meta></metadata>
+<manifest><item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="css" href="b.css" media-type="text/css"/>
+<item id="cover" href="c.png" media-type="image/png" properties="cover-image"/><item id="c1" href="t/one.xhtml" media-type="application/xhtml+xml"/></manifest>
+<spine page-progression-direction="ltr"><itemref idref="c1"/><itemref idref="c1" linear="no"/></spine></package>
