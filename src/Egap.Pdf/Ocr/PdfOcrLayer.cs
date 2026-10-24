@@ -126,18 +126,16 @@ public static class PdfOcrLayer
     }
 
     /// <summary>Writes the words, one text object per line, after the page's content. Returns how many were written.</summary>
-    private static int Write(PdfPage page, IEnumerable<IReadOnlyList<PlacedWord>> lines)
+    private static int Write(PdfPage page, IEnumerable<IReadOnlyList<PlacedWord>> wordLines)
     {
-        PdfDocument document = page.Document;
-        PdfReference font = Ocr.GlyphlessFont.For(document);
-        PdfDictionary resources = page.Resources ?? [];
-        PdfDictionary fonts = resources.Get<PdfDictionary>("Font") ?? [];
-        string name = "GlyphLess";
-        for (int i = 1; fonts.Get(name) is PdfObject existing && !(existing is PdfReference r && r.ObjectNumber == font.ObjectNumber); i++)
+        List<IReadOnlyList<PlacedWord>> lines = [.. wordLines.Where(l => l.Count > 0)];
+        if (lines.Count == 0)
         {
-            name = "GlyphLess" + i.ToString(CultureInfo.InvariantCulture);
+            return 0;
         }
 
+        // The page's own resources take the font, so inherited, shared or indirect dictionaries are never changed in place.
+        string name = Pages.PageDrawing.AddResource(page, PdfName.Get("Font"), Ocr.GlyphlessFont.For(page.Document)).Value;
         StringBuilder text = new();
         int count = 0;
         foreach (IReadOnlyList<PlacedWord> words in lines)
@@ -177,10 +175,6 @@ public static class PdfOcrLayer
 
         if (count > 0)
         {
-            fonts[name] = font;
-            resources["Font"] = fonts;
-            page.Dictionary["Resources"] = resources;
-
             // The layer goes after the page's content, wrapped so its state does not leak into anything drawn later.
             PdfContent content = page.GetContent();
             PdfContent layer = PdfContent.Parse(Encoding.ASCII.GetBytes("q\n" + text + "Q\n"));

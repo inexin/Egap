@@ -144,6 +144,26 @@ public sealed class PdfOcrTests
     }
 
     [Fact]
+    public async Task SharedAndIndirectResourcesAreLeftAsTheyWere()
+    {
+        // Found by the corpus gate: resources held by reference, or a font dictionary shared with other pages.
+        using PdfDocument pdf = Scans(2);
+        PdfDictionary shared = pdf.Pages[0].Resources!.Clone();
+        shared["Font"] = pdf.Objects.Add(new PdfDictionary());
+        PdfReference resources = pdf.Objects.Add(shared);
+        pdf.Pages[0].Dictionary["Resources"] = resources;
+        pdf.Pages[1].Dictionary["Resources"] = resources;
+
+        PdfOcrReport report = await PdfOcr.MakeSearchableAsync(pdf, new FakeEngine(TwoWords), new PdfOcrOptions { Pages = [0] }, Cancel);
+
+        Assert.Equal(2, report.Words);
+        Assert.Empty(((PdfDictionary)shared["Font"]!.Resolve()).Entries);
+        using PdfDocument back = Reopen(pdf);
+        Assert.Equal("Quarterly report", Words(back.Pages[0]));
+        Assert.Equal("", Words(back.Pages[1]));
+    }
+
+    [Fact]
     public async Task LowResolutionScansAndMixedPagesAreRendered()
     {
         using PdfDocument fax = Scans(dpi: 100);

@@ -55,14 +55,16 @@ public static class PdfOcr
         OcrEngineLimits limits = new(info.MaxImageDimension);
         PdfOcrPageReport[] reports = new PdfOcrPageReport[pages.Count];
 
-        // The document is read and written by one page at a time; only the engine's work runs side by side.
+        // The document is read and written by one page at a time; only the engine's work runs side by side. One page more
+        // than the engine takes is in flight, so the next page's image is ready when an engine call ends.
         using SemaphoreSlim gate = new(1, 1);
+        using SemaphoreSlim engines = new(degree, degree);
         int done = 0;
         try
         {
-            await Parallel.ForEachAsync(Enumerable.Range(0, pages.Count), new ParallelOptions { MaxDegreeOfParallelism = degree, CancellationToken = cancellationToken }, async (i, token) =>
+            await Parallel.ForEachAsync(Enumerable.Range(0, pages.Count), new ParallelOptions { MaxDegreeOfParallelism = degree + 1, CancellationToken = cancellationToken }, async (i, token) =>
             {
-                reports[i] = await Page(document, pages[i], engine, limits, options, gate, token).ConfigureAwait(false);
+                reports[i] = await Page(document, pages[i], engine, limits, options, gate, engines, token).ConfigureAwait(false);
                 options.Progress?.Report(Interlocked.Increment(ref done));
             }).ConfigureAwait(false);
         }
@@ -99,7 +101,7 @@ public static class PdfOcr
 
     /// <summary>One page: decided, read by the engine, written (design Q4 to Q6).</summary>
     private static async Task<PdfOcrPageReport> Page(PdfDocument document, int index, IOcrEngine engine, OcrEngineLimits limits, PdfOcrOptions options,
-        SemaphoreSlim gate, CancellationToken cancellationToken)
+        SemaphoreSlim gate, SemaphoreSlim engines, CancellationToken cancellationToken)
     {
         OcrImage? image;
         int removed = 0;
@@ -148,6 +150,7 @@ public static class PdfOcr
         using (image)
         {
             OcrRequest request = new(image.Image) { Dpi = image.Dpi, Languages = options.Languages, PageIndex = index };
+            await engines.WaitAsync(cancellationToken).ConfigureAwait(false);
             Stopwatch watch = Stopwatch.StartNew();
             OcrResult result;
             try
@@ -157,6 +160,10 @@ public static class PdfOcr
             catch (Exception e) when (!options.StopOnError && e is not OperationCanceledException)
             {
                 return new PdfOcrPageReport(index, PdfOcrPageStatus.Failed) { Message = e.Message, EngineTime = watch.Elapsed, Source = image.Source, Dpi = image.Dpi, RemovedGlyphs = removed };
+            }
+            finally
+            {
+                engines.Release();
             }
 
             TimeSpan engineTime = watch.Elapsed;

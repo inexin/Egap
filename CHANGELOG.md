@@ -49,7 +49,10 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
   what was done, the words added, their mean confidence and the engine's time.
 - `PdfOcrLayer.AddResult` adds an engine's result to a page through an image-to-page matrix.
 - The glyphless font of OCR layers gives a descent of -1 instead of 0, so text extractors size the words' boxes to the
-  words instead of guessing a descent.
+  words instead of guessing a descent, and its glyph has an outline (never drawn in render mode 3), so PDFium finds rotated
+  words, which it dropped before.
+- `PdfOcrLayer.AddLines`, `AddHocr` and `AddAlto` add the font to the page's own resources, so a page whose resources are
+  inherited, shared with other pages or held by reference no longer fails.
 - Egap now builds on Egami 1.2.0.
 
 ### Preflight
