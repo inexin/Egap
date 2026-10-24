@@ -7,6 +7,7 @@ using Egami.Fonts.Shaping;
 using Egami.Fonts.Substitutes;
 using Egami.Pixels;
 
+using EgamiKashidaLevel = Egami.Fonts.Layout.KashidaLevel;
 using EgamiParagraph = Egami.Fonts.Layout.Paragraph;
 using EgamiParagraphStyle = Egami.Fonts.Layout.ParagraphStyle;
 using EgamiTab = Egami.Fonts.Layout.TabStop;
@@ -595,6 +596,13 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                 _ => TextAlign.Start,
             },
             AlignLast = format.Alignment == ParagraphAlignment.Distribute ? TextAlignLast.Justify : TextAlignLast.Auto,
+            Justify = format.Alignment == ParagraphAlignment.Justify && format.Kashida != KashidaLevel.None ? TextJustify.Kashida : TextJustify.Auto,
+            Kashida = format.Kashida switch
+            {
+                KashidaLevel.Low => EgamiKashidaLevel.Low,
+                KashidaLevel.High => EgamiKashidaLevel.High,
+                _ => EgamiKashidaLevel.Medium,
+            },
             TabSize = (float)document.Settings.DefaultTabStop,
             TabStops = stops,
             Hyphen = null,

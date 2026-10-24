@@ -47,6 +47,7 @@ Document page = HtmlFormat.Load("invoice.html", new HtmlLoadOptions
 | `Encoding` | UTF-8 when the bytes are valid UTF-8, else windows-1252 | The encoding of bytes when neither a byte order mark nor a meta charset names one |
 | `Media` | `"print"` | The media the style sheets apply for: `"print"` or `"screen"` |
 | `UserStyleSheets` | None | Style sheets applied as the user's, after the default one and before the page's own |
+| `Kashida` | `KashidaLevel.None` | How far `text-align: justify` paragraphs stretch Arabic lines with tatweels; CSS has no kashida value and browsers justify at spaces, so none by default |
 | `Limits` | `DocumentLimits` defaults | The largest page and how deep elements are read as structure (see [Limits](index.md#limits)) |
 
 `PdfConvert.FromFile` reads an HTML file's images and style sheets from the file's own folder, or from

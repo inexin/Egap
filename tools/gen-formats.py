@@ -85,6 +85,7 @@ PARA = [
     ("ListLevel", "int", "listlevel", "The paragraph's level in its list, 0 to 8.", ""),
     ("WordBreak", "WordBreak", "enum", "Where lines may break inside words.", ""),
     ("MaxLines", "int", "posint", "The most lines shown; the last ends in an ellipsis where text is cut. Word has no such setting.", ""),
+    ("Kashida", "KashidaLevel", "enum", "How far justified Arabic lines are stretched with tatweels (Word's low, medium and high kashida); None for word spaces only.", ""),
 ]
 
 TABLE = [

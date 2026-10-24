@@ -563,6 +563,25 @@ public enum ParagraphAlignment
     Distribute,
 }
 
+/// <summary>
+/// How far a justified paragraph's Arabic lines are stretched with tatweels (kashida) between letters, as Word's low, medium
+/// and high kashida alignments; the rest of a line's free width goes to word spaces. Scripts without kashida justify at spaces.
+/// </summary>
+public enum KashidaLevel
+{
+    /// <summary>No kashida: lines are justified at word spaces only.</summary>
+    None,
+
+    /// <summary>Short kashidas, most of the free width at spaces (Word's lowKashida).</summary>
+    Low,
+
+    /// <summary>Medium kashidas (Word's mediumKashida).</summary>
+    Medium,
+
+    /// <summary>Long kashidas, most of the free width in the words (Word's highKashida).</summary>
+    High,
+}
+
 /// <summary>How <see cref="ParagraphFormat.LineSpacing"/> is read.</summary>
 public enum LineSpacingRule
 {

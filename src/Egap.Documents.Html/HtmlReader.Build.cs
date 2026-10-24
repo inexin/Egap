@@ -702,6 +702,11 @@ internal sealed partial class HtmlReader
             "justify" => ParagraphAlignment.Justify,
             _ => ParagraphAlignment.Left,
         };
+        if (format.Alignment == ParagraphAlignment.Justify && options.Kashida != KashidaLevel.None)
+        {
+            format.Kashida = options.Kashida;
+        }
+
         format.LeftIndent = frame.Left;
         format.RightIndent = frame.Right;
         if (style.Length("text-indent", flow.Width) is { } indent && indent != 0)
