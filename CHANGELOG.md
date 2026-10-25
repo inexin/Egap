@@ -25,6 +25,9 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `sign` (PFX, PEM or the certificate store; PAdES B-B to B-LTA; visible; certification), `verify`, `compare`,
   `pdfa check` and `convert` (PDF/UA check too).
 - Print production: `preflight`, `pdfx check` and `convert`, `separations` (plates and a coverage heat map) and `color`.
+- `ocr` runs an OCR program you name (`--engine-command`, such as Tesseract) on each page and adds its words as
+  invisible text: `--lang`, `--mode skip|redo|force`, `--pdfa` (2b by default, `none` to leave the level), `--page-jobs`,
+  `--dpi`, `--min-confidence`, `--deskew`, `--rotate-pages`, `--engine-timeout` and `--pages`.
 - `ocr-layer` (hOCR and ALTO), `clean` (grayscale, blank pages, deskew, text to outlines) and `merge-data` (mail merge from
   JSON or CSV).
 

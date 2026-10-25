@@ -841,6 +841,40 @@ Convert to PDF/A: embed fonts, add an output intent and XMP, remove what PDF/A f
 | `--password-env <NAME>` | Read the password that opens encrypted inputs from this environment variable. |
 | `--password-file <path>` | Read the password that opens encrypted inputs from the first line of this file. |
 
+## egap ocr
+
+`egap ocr <inputs>... [options]`
+
+Make scanned pages searchable: run an OCR program (Tesseract or any that writes hOCR or ALTO) on each page and add its words as invisible text; PDF/A-2b by default.
+
+| Argument or option | What it does |
+| --- | --- |
+| `<inputs>` | PDF files, globs (\*, ?, \*\*) expanded the same way in every shell, folders with --recursive, or - for standard input. |
+| `--recursive`, `-r` | Take every file egap reads in folders given as inputs, at any depth. |
+| `--jobs <count>`, `-j` | How many files to work on at once; 0 (the default) for one per processor. |
+| `--fail-fast` | Stop at the first file that fails. |
+| `--output <path>`, `-o` | Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output. |
+| `--in-place` | Write each output over its input. |
+| `--engine-command <command>` | The OCR program and its arguments, run once per page: {image} is the page image (PNG), {output} the result file without extension, {langs} the languages, {dpi} the resolution, {page} the page from 0. It must write hOCR or ALTO, such as "tesseract {image} {output} -l {langs} --dpi {dpi} hocr". |
+| `--lang <languages>`, `-l` | The languages to read, as the program names them, joined by + or commas, such as eng+nor. |
+| `--mode <skip|redo|force>` | skip (the default) leaves pages with text alone; redo replaces an earlier invisible text layer; force reads every page. |
+| `--pdfa <level>` | The PDF/A level the output meets: 2b by default, or 1b, 2a, 2u, 3a, 3b, 3u, 4, 4f, or none to leave it as it is. |
+| `--page-jobs <count>` | How many pages of a file the program reads at once; 0 (the default) for one per processor. |
+| `--dpi <dpi>` | The resolution pages are rendered at when they are not one scanned image; 300 by default. |
+| `--min-confidence <fraction>` | Leave out words the program is less sure of, from 0 to 1. |
+| `--deskew` | Straighten the image the program reads; the page is not changed. |
+| `--rotate-pages` | Turn pages the program finds sideways or upside down. |
+| `--engine-timeout <seconds>` | Seconds one run of the program may take; 300 by default. |
+| `--pages <range>`, `-p` | The pages to read, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default. |
+| `--rewrite` | Write the whole file anew instead of appending the changes (breaks signatures). |
+| `--linearize` | Lay the file out for fast web view; writes the whole file. |
+| `--compress` | Pack objects into compressed object streams; writes the whole file. |
+| `--allow-invalidating-signatures` | Save even when the change breaks a digital signature in the file. |
+| `--deterministic` | Derive the file ID from the content, so the same input always gives the same bytes. |
+| `--password <text>` | The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history. |
+| `--password-env <NAME>` | Read the password that opens encrypted inputs from this environment variable. |
+| `--password-file <path>` | Read the password that opens encrypted inputs from the first line of this file. |
+
 ## egap ocr-layer
 
 `egap ocr-layer <inputs>... [options]`
@@ -1300,6 +1334,24 @@ Convert to PDF/A: embed fonts, add an output intent and XMP, remove what PDF/A f
 | `--output-condition <name>` | The output condition's name, such as FOGRA39. |
 | `--allow-font-substitution` | Embed a stand-in for a font the file does not embed. |
 | `--system-fonts` | Look for fonts the file does not embed among the system's fonts. |
+
+### ocr
+
+Make scanned pages searchable: run an OCR program (Tesseract or any that writes hOCR or ALTO) on each page and add its words as invisible text; PDF/A-2b by default.
+
+| Argument or option | What it does |
+| --- | --- |
+| `--engine-command <command>` | The OCR program and its arguments, run once per page: {image} is the page image (PNG), {output} the result file without extension, {langs} the languages, {dpi} the resolution, {page} the page from 0. It must write hOCR or ALTO, such as "tesseract {image} {output} -l {langs} --dpi {dpi} hocr". |
+| `--lang <languages>`, `-l` | The languages to read, as the program names them, joined by + or commas, such as eng+nor. |
+| `--mode <skip|redo|force>` | skip (the default) leaves pages with text alone; redo replaces an earlier invisible text layer; force reads every page. |
+| `--pdfa <level>` | The PDF/A level the output meets: 2b by default, or 1b, 2a, 2u, 3a, 3b, 3u, 4, 4f, or none to leave it as it is. |
+| `--page-jobs <count>` | How many pages of a file the program reads at once; 0 (the default) for one per processor. |
+| `--dpi <dpi>` | The resolution pages are rendered at when they are not one scanned image; 300 by default. |
+| `--min-confidence <fraction>` | Leave out words the program is less sure of, from 0 to 1. |
+| `--deskew` | Straighten the image the program reads; the page is not changed. |
+| `--rotate-pages` | Turn pages the program finds sideways or upside down. |
+| `--engine-timeout <seconds>` | Seconds one run of the program may take; 300 by default. |
+| `--pages <range>`, `-p` | The pages to read, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default. |
 
 ### ocr-layer
 

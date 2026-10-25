@@ -135,7 +135,13 @@ egap color flyer.pdf --target FOGRA39 -o flyer-cmyk.pdf
 
 ## Scans and mail merge
 
+`ocr` makes scans searchable through an OCR program you install, such as Tesseract: it runs the program on each page
+image and adds the words as invisible text. The output is PDF/A-2b unless `--pdfa none`. Pages that already have text are
+left alone; `--mode redo` replaces an earlier OCR layer and `--mode force` reads every page.
+
 ```sh
+egap ocr scan.pdf --engine-command "tesseract {image} {output} -l {langs} --dpi {dpi} hocr" --lang eng -o searchable.pdf
+egap ocr "scans/*.pdf" --engine-command "tesseract {image} {output} -l {langs} hocr" --lang eng+nor --mode redo -o "ocr/{name}.pdf"
 egap ocr-layer scan.pdf --hocr "ocr/page-{page}.hocr" -o searchable.pdf
 egap clean scan.pdf --deskew --remove-blank-pages --grayscale -o tidy.pdf
 egap merge-data letter.docx --data people.json -o letters.pdf

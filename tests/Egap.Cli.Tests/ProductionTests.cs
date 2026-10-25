@@ -65,9 +65,62 @@ public sealed class ProductionTests : IDisposable
             </div></body></html>
             """));
         ToolRun run = _tool.Run("ocr-layer", "scan.pdf", "--hocr", "scan-{page}.hocr", "-o", "searchable.pdf");
-        Assert.Equal(ExitCodes.Success, run.Code);
+        Assert.True(run.Code == ExitCodes.Success, run.Error);
         using PdfDocument output = PdfDocument.Open(_tool.PathOf("searchable.pdf"));
         Assert.Contains("scanner", output.Pages[0].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OcrRunsTheEngineCommandOnEachPageAndWritesPdfA()
+    {
+        using (PdfDocument blank = PdfDocument.Create())
+        {
+            blank.Pages.AddBlank();
+            blank.Pages.AddBlank();
+            blank.Save(_tool.PathOf("scan.pdf"));
+        }
+
+        // A stand-in OCR program: it copies hOCR for a letter page rendered at 300 dpi to where the engine reads it.
+        _tool.Write("page.hocr", Encoding.UTF8.GetBytes("""
+            <html><body><div class="ocr_page" title="bbox 0 0 2550 3300">
+            <span class="ocr_line" title="bbox 300 300 1250 400"><span class="ocrx_word" title="bbox 300 300 660 400; x_wconf 95">Hello</span> <span class="ocrx_word" title="bbox 700 300 1250 400; x_wconf 91">scanner</span></span>
+            </div></body></html>
+            """));
+        string hocr = _tool.PathOf("page.hocr");
+        string engine = OperatingSystem.IsWindows() ? $"cmd /c copy /y \"{hocr}\" {{output}}.hocr" : $"cp \"{hocr}\" {{output}}.hocr";
+
+        ToolRun run = _tool.Run("ocr", "scan.pdf", "--engine-command", engine, "--pages", "2", "-o", "searchable.pdf");
+
+        Assert.True(run.Code == ExitCodes.Success, run.Error);
+        using PdfDocument output = PdfDocument.Open(_tool.PathOf("searchable.pdf"));
+        Assert.Equal("", output.Pages[0].ExtractText().Trim());
+        Assert.Contains("Hello scanner", output.Pages[1].ExtractText(), StringComparison.Ordinal);
+        Assert.True(PdfAConverter.Check(output, PdfAConformance.PdfA2b).Succeeded);
+
+        // --mode skip leaves the page that now has text; --pdfa none keeps the level as it is.
+        ToolRun again = _tool.Run("ocr", "searchable.pdf", "--engine-command", engine, "--pdfa", "none", "-o", "again.pdf");
+        Assert.True(again.Code == ExitCodes.Success, again.Error);
+        using PdfDocument twice = PdfDocument.Open(_tool.PathOf("again.pdf"));
+        Assert.Equal(1, twice.Pages[1].ExtractText().Split("scanner").Length - 1);
+        Assert.Contains("Hello scanner", twice.Pages[0].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OcrUsageErrorsAndAFailingEngine()
+    {
+        using (PdfDocument blank = PdfDocument.Create())
+        {
+            blank.Pages.AddBlank();
+            blank.Save(_tool.PathOf("scan.pdf"));
+        }
+
+        Assert.Equal(ExitCodes.Usage, _tool.Run("ocr", "scan.pdf", "-o", "x.pdf").Code);
+        Assert.Equal(ExitCodes.Usage, _tool.Run("ocr", "scan.pdf", "--engine-command", "tesseract {image} {output} hocr", "--mode", "sometimes", "-o", "x.pdf").Code);
+        Assert.Equal(ExitCodes.Usage, _tool.Run("ocr", "scan.pdf", "--engine-command", "tesseract {image} {output} hocr", "--pdfa", "9z", "-o", "x.pdf").Code);
+        ToolRun missing = _tool.Run("ocr", "scan.pdf", "--engine-command", "no-such-ocr-program-here {image} {output}", "-o", "x.pdf");
+        Assert.NotEqual(ExitCodes.Success, missing.Code);
+        Assert.NotEqual(ExitCodes.Usage, missing.Code);
+        Assert.False(File.Exists(_tool.PathOf("x.pdf")));
     }
 
     /// <summary>A DOCX template: "Dear «Name» of «City»."</summary>
