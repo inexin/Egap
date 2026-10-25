@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>OCR and searchable scans | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="OCR and searchable scans | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/ocr.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="ocr-and-searchable-scans">OCR and searchable scans</h1>
+
+<p>Egap makes scanned PDFs searchable through an OCR engine you plug in. It sends each page's image to the engine and writes
+the words that come back over the page as invisible text, so the page can be searched, selected and read aloud while it
+looks exactly as the scan. Egap ships no engine: use Egami's <code>CommandOcrEngine</code> for any program that writes hOCR or ALTO,
+such as Tesseract, or write a small class around an OS or cloud service (Egami's repository has samples for Tesseract,
+Windows OCR and Azure).</p>
+<h2 id="make-a-pdf-searchable">Make a PDF searchable</h2>
+<p><code>PdfOcr.MakeSearchableAsync</code> changes the document in place; you save it. The report says, page by page, what was done,
+how many words were added and how long the engine took.</p>
+<pre><code class="lang-csharp">using Egami.Ocr;
+using Egap.Pdf;
+using Egap.Pdf.Ocr;
+
+using PdfDocument pdf = PdfDocument.Open(&quot;scan.pdf&quot;);
+CommandOcrEngine tesseract = new(&quot;tesseract {image} {output} -l {langs} --dpi {dpi} hocr&quot;, new CommandOcrOptions { Output = OcrOutputFormat.Hocr });
+PdfOcrReport report = await PdfOcr.MakeSearchableAsync(pdf, tesseract, new PdfOcrOptions
+{
+    Languages = [&quot;eng&quot;],
+    PdfA = PdfAConformance.PdfA2b,
+});
+Console.WriteLine($&quot;{report.Words} words on {report.Pages.Count(p =&gt; p.Status == PdfOcrPageStatus.Recognized)} pages&quot;);
+pdf.Save(&quot;searchable.pdf&quot;);
+</code></pre>
+<p>A page that is one scanned image covering the page, at 150 dpi or more, is read as its own pixels, with no render and no
+resampling. Other pages are rendered at <code>Dpi</code> (300 by default). Each word is placed along its own baseline and scaled to its
+width, so selection follows rotated and skewed words. In a tagged document each word's language goes on its text.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Mode</code></td>
+<td><code>Skip</code></td>
+<td><code>Skip</code> leaves pages that have text alone; <code>Redo</code> removes an earlier invisible text layer and reads the page again, keeping visible text; <code>Force</code> reads every page, keeping its text</td>
+</tr>
+<tr>
+<td><code>Pages</code></td>
+<td>Every page</td>
+<td>The pages to look at, as indices from 0</td>
+</tr>
+<tr>
+<td><code>Languages</code></td>
+<td>The engine's default</td>
+<td>The languages to read, as the engine names them</td>
+</tr>
+<tr>
+<td><code>Dpi</code></td>
+<td>300</td>
+<td>The resolution pages are rendered at when they are not one scanned image</td>
+</tr>
+<tr>
+<td><code>MinConfidence</code></td>
+<td>0</td>
+<td>Words the engine is less sure of are left out</td>
+</tr>
+<tr>
+<td><code>Deskew</code></td>
+<td>Off</td>
+<td>Straightens the image sent to the engine; the page itself is not changed</td>
+</tr>
+<tr>
+<td><code>RotatePages</code></td>
+<td>Off</td>
+<td>Turns a page the engine finds sideways or upside down, with its <code>/Rotate</code></td>
+</tr>
+<tr>
+<td><code>MaxDegreeOfParallelism</code></td>
+<td>The processor count</td>
+<td>How many pages the engine reads at once; one at a time when the engine is not thread-safe</td>
+</tr>
+<tr>
+<td><code>Progress</code></td>
+<td>None</td>
+<td>Told how many pages are done</td>
+</tr>
+<tr>
+<td><code>StopOnError</code></td>
+<td>Off</td>
+<td>An engine error stops the run instead of marking the page as failed</td>
+</tr>
+<tr>
+<td><code>PdfA</code></td>
+<td>None</td>
+<td>A PDF/A level the document is converted to in the same pass</td>
+</tr>
+<tr>
+<td><code>AllowInvalidatingSignatures</code></td>
+<td>Off</td>
+<td>A signed document is refused unless this is set, since the text layer breaks its signatures</td>
+</tr>
+<tr>
+<td><code>MaxPages</code>, <code>MaxImagePixels</code></td>
+<td>10,000 pages, 100 million pixels</td>
+<td>Limits for untrusted files; a larger scan is rendered, a larger render is made at a lower resolution</td>
+</tr>
+</tbody>
+</table>
+<p>Words the page already has as text are not added twice in <code>Redo</code> and <code>Force</code>. An image larger than the engine's
+<code>MaxImageDimension</code> is scaled down for it and the words scaled back.</p>
+<h2 id="scans-in-document-conversion">Scans in document conversion</h2>
+<p><code>Document.LoadPdfAsync</code> and <code>PdfToDocument.ConvertAsync</code> run scanned pages through <code>PdfToDocumentOptions.OcrEngine</code>, so
+their text becomes paragraphs rather than a picture. The PDF you pass is not changed. The sync <code>LoadPdf</code> keeps a scanned page
+as a picture with a warning.</p>
+<pre><code class="lang-csharp">using Egami.Ocr;
+using Egap.Documents;
+using Egap.Documents.Pdf;
+
+CommandOcrEngine tesseract = new(&quot;tesseract {image} {output} --dpi {dpi} hocr&quot;, new CommandOcrOptions { Output = OcrOutputFormat.Hocr });
+Document minutes = await Document.LoadPdfAsync(&quot;minutes-scan.pdf&quot;, new PdfToDocumentOptions { OcrEngine = tesseract });
+minutes.Save(&quot;minutes.docx&quot;);
+</code></pre>
+<h2 id="an-existing-hocr-or-alto-file">An existing hOCR or ALTO file</h2>
+<p>When the OCR has already been run elsewhere, <code>PdfOcrLayer.AddHocr</code> and <code>AddAlto</code> add its words to a page, mapped onto the
+page's crop box; <code>PdfOcrLayer.AddResult</code> adds an engine's result through an image-to-page matrix you give.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/ocr.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

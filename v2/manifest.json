@@ -3877,6 +3877,118 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Ocr.PdfOcr.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Ocr.PdfOcr.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Ocr.PdfOcr",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Ocr.PdfOcr.yml\" sourcestartlinenumber=\"1\">Makes scanned PDFs searchable through any OCR engine (an <xref href=\"Egami.Ocr.IOcrEngine\" data-throw-if-not-resolved=\"false\"></xref> from Egami.Ocr): each page's image goes\nto the engine, and the words that come back are written over the page as invisible text, placed and scaled so selection\nfollows the scan. Egap ships no engine; plug in <xref href=\"Egami.Ocr.CommandOcrEngine\" data-throw-if-not-resolved=\"false\"></xref> for a program such as Tesseract, or your\nown class around an OS or cloud service.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Ocr.PdfOcrImageSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Ocr.PdfOcrImageSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Ocr.PdfOcrImageSource",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Ocr.PdfOcrImageSource.yml\" sourcestartlinenumber=\"1\">Where the image the engine read came from.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Ocr.PdfOcrMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Ocr.PdfOcrMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Ocr.PdfOcrMode",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Ocr.PdfOcrMode.yml\" sourcestartlinenumber=\"1\">Which pages <xref href=\"Egap.Pdf.Ocr.PdfOcr.MakeSearchableAsync(Egap.Pdf.PdfDocument%2cEgami.Ocr.IOcrEngine%2cEgap.Pdf.Ocr.PdfOcrOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> sends to the engine.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Ocr.PdfOcrOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Ocr.PdfOcrOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Ocr.PdfOcrOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Ocr.PdfOcrOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Pdf.Ocr.PdfOcr.MakeSearchableAsync(Egap.Pdf.PdfDocument%2cEgami.Ocr.IOcrEngine%2cEgap.Pdf.Ocr.PdfOcrOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> makes a PDF searchable.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Ocr.PdfOcrPageReport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Ocr.PdfOcrPageReport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Ocr.PdfOcrPageReport",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Ocr.PdfOcrPageReport.yml\" sourcestartlinenumber=\"1\">One page's part of a <xref href=\"Egap.Pdf.Ocr.PdfOcrReport\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Ocr.PdfOcrPageStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Ocr.PdfOcrPageStatus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Ocr.PdfOcrPageStatus",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Ocr.PdfOcrPageStatus.yml\" sourcestartlinenumber=\"1\">What happened to one page in <xref href=\"Egap.Pdf.Ocr.PdfOcr.MakeSearchableAsync(Egap.Pdf.PdfDocument%2cEgami.Ocr.IOcrEngine%2cEgap.Pdf.Ocr.PdfOcrOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Ocr.PdfOcrReport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Ocr.PdfOcrReport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Ocr.PdfOcrReport",
+      "Summary": "<p sourcefile=\"api/Egap.Pdf.Ocr.PdfOcrReport.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Pdf.Ocr.PdfOcr.MakeSearchableAsync(Egap.Pdf.PdfDocument%2cEgami.Ocr.IOcrEngine%2cEgap.Pdf.Ocr.PdfOcrOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref> did, page by page.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Pdf.Ocr.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Pdf.Ocr.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Pdf.Ocr",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Pdf.PadesLevel.yml",
       "output": {
         ".html": {
@@ -7432,6 +7544,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/guides/migrating-to-2.0.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/guides/ocr.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/ocr.html"
         }
       },
       "version": ""

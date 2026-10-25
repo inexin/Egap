@@ -169,7 +169,9 @@ using PdfDocument pdf = PdfDocument.Open(&quot;paper.pdf&quot;);
 Document flow = PdfToDocument.Convert(pdf);
 flow.Save(&quot;paper.docx&quot;);
 </code></pre>
-<p>The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV.</p>
+<p>The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV. A scanned
+page stays a picture unless you load with <code>Document.LoadPdfAsync</code> and an OCR engine (see
+<a href="ocr.html#scans-in-document-conversion">OCR and searchable scans</a>).</p>
 <h2 id="recipes">Recipes</h2>
 <p>Short answers to common tasks in this area. Each one is complete: open, change, save.</p>
 <h3 id="turn-a-word-file-into-an-e-book">Turn a Word file into an e-book</h3>
