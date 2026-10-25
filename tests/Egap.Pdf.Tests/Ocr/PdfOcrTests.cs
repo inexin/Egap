@@ -164,6 +164,25 @@ public sealed class PdfOcrTests
     }
 
     [Fact]
+    public void LanguagesGoOnTaggedPagesOnlyAndOnlyAsPlainTags()
+    {
+        // Found in review: hOCR and ALTO languages went into /Lang unchecked, and onto untagged documents too.
+        PdfOcrLine line = new([new PdfOcrWord("one", new PdfRectangle(72, 700, 120, 712), "en)"), new PdfOcrWord("two", new PdfRectangle(130, 700, 170, 712), "nb")]);
+        using PdfDocument untagged = Scans();
+        PdfOcrLayer.AddLines(untagged.Pages[0], [line]);
+        Assert.DoesNotContain("/Lang", Encoding.ASCII.GetString(untagged.Pages[0].GetContent().ToBytes()), StringComparison.Ordinal);
+
+        using PdfDocument tagged = Scans();
+        tagged.Structure.Add(PdfStructureType.Document);
+        PdfOcrLayer.AddLines(tagged.Pages[0], [line]);
+        string content = Encoding.ASCII.GetString(tagged.Pages[0].GetContent().ToBytes());
+        Assert.Contains("/Lang (nb)", content, StringComparison.Ordinal);
+        Assert.DoesNotContain("en)", content, StringComparison.Ordinal);
+        using PdfDocument back = Reopen(tagged);
+        Assert.Equal("one two", Words(back.Pages[0]));
+    }
+
+    [Fact]
     public async Task LowResolutionScansAndMixedPagesAreRendered()
     {
         using PdfDocument fax = Scans(dpi: 100);

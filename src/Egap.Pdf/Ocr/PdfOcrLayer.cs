@@ -77,9 +77,10 @@ public static class PdfOcrLayer
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(lines);
+        bool tagged = page.Document.Structure.Exists;
         return Write(page, lines.Select(line => line.Words
             .Where(w => !string.IsNullOrWhiteSpace(w.Text) && w.Box.Width > 0 && w.Box.Height > 0)
-            .Select(w => new PlacedWord(w.Text.Trim(), new Vector2((float)w.Box.Left, (float)w.Box.Bottom), new Vector2((float)w.Box.Width, 0), new Vector2(0, (float)w.Box.Height), w.Language))
+            .Select(w => new PlacedWord(w.Text.Trim(), new Vector2((float)w.Box.Left, (float)w.Box.Bottom), new Vector2((float)w.Box.Width, 0), new Vector2(0, (float)w.Box.Height), tagged && IsLanguageTag(w.Language) ? w.Language : null))
             .ToList()));
     }
 
