@@ -26,6 +26,12 @@ internal static class McpCommand
     /// <summary>The tools that act in someone's name or lock files, which need <c>--allow-sign</c>.</summary>
     private static readonly HashSet<string> Signing = new(StringComparer.Ordinal) { "sign", "encrypt", "decrypt" };
 
+    /// <summary>
+    /// The tools that run a program named in the call (ocr's --engine-command), which an assistant could turn into any command:
+    /// never offered.
+    /// </summary>
+    private static readonly HashSet<string> RunsPrograms = new(StringComparer.Ordinal) { "ocr" };
+
     public static Command Create(EgapSession session)
     {
         Option<string[]> allow = new("--allow")
@@ -61,7 +67,7 @@ internal static class McpCommand
     /// <summary>The tools a server offers: every command, without sign, encrypt and decrypt unless <paramref name="allowSign"/>.</summary>
     public static McpCatalog Catalog(bool allowSign)
     {
-        McpCatalog all = McpCatalog.Build(CreateTools(allowSign));
+        McpCatalog all = McpCatalog.Build(CreateTools(allowSign)).Where(tool => !RunsPrograms.Contains(tool.Name));
         return allowSign ? all : all.Where(tool => !Signing.Contains(tool.Name));
     }
 
@@ -104,6 +110,11 @@ internal static class McpCommand
                 (inputs, json) =>
                 {
                     List<StepWords> steps = RunCommand.ReadWorkflow(json, "workflow");
+                    if (steps.FirstOrDefault(s => RunsPrograms.Contains(s.Name)) is { } runs)
+                    {
+                        throw new UsageException($"The {runs.Name} step runs a program named in the call, so assistants cannot use it; run egap {runs.Name} yourself.");
+                    }
+
                     if (!allowSign && steps.FirstOrDefault(s => Signing.Contains(s.Name)) is { } step)
                     {
                         throw new UsageException($"The {step.Name} step needs the server to be started with --allow-sign.");

@@ -37,7 +37,7 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - Passwords by `--password-env`, `--password-file` or a prompt; edits keep signatures where they can and stop before
   breaking one unless `--allow-invalidating-signatures`.
 - `egap mcp`: every command as a tool for AI assistants, inside allowed folders; signing and encryption only with
-  `--allow-sign`.
+  `--allow-sign`; `ocr`, which runs a program the call names, never.
 - `egap <name>` runs `egap-<name>` from the PATH, so `egap preview` starts egap-preview.
 
 ## Egap.Pdf 2.2.0 (unreleased)

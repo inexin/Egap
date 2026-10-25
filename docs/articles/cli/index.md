@@ -181,7 +181,8 @@ A workflow file holds the same steps as JSON, each step's options named without 
 
 `egap mcp` serves every command as a tool over the Model Context Protocol, for Claude, GitHub Copilot, Cursor and other
 assistants. Tools read and write only inside the folders the assistant opened and those given with `--allow`; sign,
-encrypt and decrypt are offered only with `--allow-sign`, and passwords come only from environment variables.
+encrypt and decrypt are offered only with `--allow-sign`, and passwords come only from environment variables. `ocr` is
+never offered, since it runs the program the call names.
 
 ```sh
 egap mcp --allow ~/Documents/pdfs
