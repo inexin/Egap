@@ -4,16 +4,16 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Egami from nuget.org; tools/pack-egami.py can point these at a local build of an unreleased Egami commit. -->
-    <PackageVersion Include="Egami" Version="1.0.0" />
-    <PackageVersion Include="Egami.Drawing" Version="1.0.0" />
-    <PackageVersion Include="Egami.Fonts" Version="1.0.0" />
+    <PackageVersion Include="Egami" Version="1.2.0" />
+    <PackageVersion Include="Egami.Drawing" Version="1.2.0" />
+    <PackageVersion Include="Egami.Fonts" Version="1.2.0" />
     <PackageVersion Include="Egami.Fonts.Substitutes" Version="1.0.0" />
     <PackageVersion Include="Egami.Metafiles" Version="1.0.0" />
-    <PackageVersion Include="Egami.Css" Version="1.0.0" />
-    <PackageVersion Include="Egami.Svg" Version="1.0.0" />
+    <PackageVersion Include="Egami.Css" Version="1.2.0" />
+    <PackageVersion Include="Egami.Svg" Version="1.2.0" />
     <PackageVersion Include="Egami.Barcodes" Version="1.0.0" />
     <!-- The egap command (CLI design Q14): egami's command host as a source package, on the Egami train, unlisted on nuget.org. -->
-    <PackageVersion Include="Egami.Cli.Host" Version="1.1.0" />
+    <PackageVersion Include="Egami.Cli.Host" Version="1.2.0" />
     <!-- The command line and the MCP server under egap (CLI design Q4, Q16), as in egami. -->
     <PackageVersion Include="System.CommandLine" Version="2.0.13" />
     <PackageVersion Include="ModelContextProtocol.Core" Version="2.3.0" />

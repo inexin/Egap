@@ -285,7 +285,13 @@ internal static class DocxPropertyWriter
             {
                 ParagraphAlignment.Center => "center",
                 ParagraphAlignment.Right => "right",
-                ParagraphAlignment.Justify => "both",
+                ParagraphAlignment.Justify => f.Kashida switch
+                {
+                    KashidaLevel.Low => "lowKashida",
+                    KashidaLevel.Medium => "mediumKashida",
+                    KashidaLevel.High => "highKashida",
+                    _ => "both",
+                },
                 ParagraphAlignment.Distribute => "distribute",
                 _ => "left",
             }));
