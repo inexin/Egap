@@ -49,6 +49,11 @@ tabular or old-style figures and stylistic sets. Paragraphs choose where lines m
 `word-break` and `overflow-wrap` read into the same settings. DOCX keeps the features Word has (ligatures, number forms
 and spacing, stylistic sets, contextual alternates); Word has no word spacing or overline.
 
+A justified paragraph can also stretch its Arabic lines with tatweels (kashida) between letters, as Word's low, medium
+and high kashida alignments do: set `ParagraphFormat.Kashida` to `KashidaLevel.Low`, `Medium` or `High` with
+`ParagraphAlignment.Justify`. What the tatweels do not take goes to word spaces, and lines in other scripts justify at
+spaces as before. In PDF exports the inserted tatweels are left out of the text, so copy and search give the words as typed.
+
 ```csharp
 using Egap.Documents;
 
@@ -59,6 +64,11 @@ builder.Font.Overline = true;
 builder.Font.Features = FontFeatures.Parse("liga=0, tnum");
 builder.ParagraphFormat.WordBreak = WordBreak.Anywhere;
 builder.Writeln("Invoice 2026-118: https://example.com/a/very/long/address/that/must/break");
+
+builder.ParagraphFormat.Bidi = true;
+builder.ParagraphFormat.Alignment = ParagraphAlignment.Justify;
+builder.ParagraphFormat.Kashida = KashidaLevel.Medium;
+builder.Writeln("تعلم اللغة العربية يفتح أبواب الأدب والعلوم والتاريخ للطلاب في كل مكان");
 ```
 
 ## Barcodes

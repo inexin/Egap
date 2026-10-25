@@ -143,6 +143,16 @@ internal static class DocxProperties
                         "distribute" => ParagraphAlignment.Distribute,
                         _ => null,
                     };
+
+                    // Kashida is a kind of justification: a plain jc of both turns off a style's kashida.
+                    format.Kashida = e.Val() switch
+                    {
+                        "lowKashida" => KashidaLevel.Low,
+                        "mediumKashida" => KashidaLevel.Medium,
+                        "highKashida" => KashidaLevel.High,
+                        "both" or "thaiDistribute" => KashidaLevel.None,
+                        _ => null,
+                    };
                     break;
                 case "spacing":
                     format.SpaceBefore = Positive(DocxUnits.Points(e.W("before")));

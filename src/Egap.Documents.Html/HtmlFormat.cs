@@ -27,6 +27,12 @@ public sealed class HtmlLoadOptions
     public IReadOnlyList<string> UserStyleSheets { get; init; } = [];
 
     /// <summary>
+    /// How far justified paragraphs (<c>text-align: justify</c>) stretch Arabic lines with tatweels when laid out by Egap. CSS
+    /// has no kashida value and browsers justify at spaces, so the default, <see cref="KashidaLevel.None"/>, keeps their look.
+    /// </summary>
+    public KashidaLevel Kashida { get; init; }
+
+    /// <summary>
     /// The limits kept on untrusted pages: the largest page (<see cref="DocumentLimits.MaxPartSize"/>) and how deep elements
     /// are read as structure (<see cref="DocumentLimits.MaxDepth"/>; deeper content is kept as plain text).
     /// </summary>

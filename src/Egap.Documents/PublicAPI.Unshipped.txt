@@ -12,3 +12,11 @@ static Egap.Documents.Pdf.PdfToDocument.extension(Egap.Documents.Document!).Load
 static Egap.Documents.Pdf.PdfToDocument.extension(Egap.Documents.Document!).LoadPdfAsync(System.IO.Stream! stream, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
 static Egap.Documents.Pdf.PdfToDocument.LoadPdfAsync(string! path, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
 static Egap.Documents.Pdf.PdfToDocument.LoadPdfAsync(System.IO.Stream! stream, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.High = 3 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.Low = 1 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.Medium = 2 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.None = 0 -> Egap.Documents.KashidaLevel
+Egap.Documents.ParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel?
+Egap.Documents.ParagraphFormat.Kashida.set -> void
+Egap.Documents.ResolvedParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel

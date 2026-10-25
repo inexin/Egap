@@ -118,6 +118,10 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 
 ## Egap.Documents.Html 2.2.0 (unreleased)
 
+### Kashida
+- `HtmlLoadOptions.Kashida` turns on kashida for `text-align: justify` paragraphs, at a level you choose. CSS has no
+  kashida value, so pages keep the browsers' justification by default.
+
 ### EPUB
 - `EpubFormat.Load` reads EPUB 2.0.1 and EPUB 3.0 to 3.3 books into one document: a section per chapter starting on a new
   page, read through the HTML reader with the book's style sheets; the cover on a section of its own; links between
@@ -153,6 +157,14 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `DocumentFormatKind.Epub` and `DocumentFormatKind.Mhtml`: `Document.Identify` tells an EPUB by its first ZIP entry and
   an MHTML archive by its `multipart/related` headers or its `.mht` and `.mhtml` extension, without the add-on.
 - `ConversionWarningKind.MediaDropped` for audio, video, media overlays and scripts a reader left out.
+
+### Kashida justification
+- `ParagraphFormat.Kashida` (`KashidaLevel.None`, `Low`, `Medium`, `High`): a justified paragraph stretches its Arabic lines
+  with tatweels between letters, the rest of the free width going to word spaces. Built on Egami 1.2.0's kashida layout.
+- DOCX reads and writes Word's `lowKashida`, `mediumKashida` and `highKashida` alignments; they were read as plain
+  justification before.
+- PDF exports leave the inserted tatweels out of the text, so copied and searched text is the words as typed.
+- Egap now builds on Egami 1.2.0.
 
 ### Scanned pages
 - `Document.LoadPdfAsync` and `PdfToDocument.ConvertAsync` run scanned pages through `PdfToDocumentOptions.OcrEngine`, so
