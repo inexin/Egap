@@ -108,6 +108,7 @@ internal static class Cli
         ("sign", SignCommand.Create),
         ("verify", CheckCommands.Verify),
         ("pdfa", CheckCommands.Pdfa),
+        ("ocr", session => new OcrEdit().CreateCommand(session)),
         ("ocr-layer", session => new OcrLayerEdit().CreateCommand(session)),
         ("clean", session => new CleanEdit().CreateCommand(session)),
         ("merge-data", MergeDataCommand.Create),

@@ -25,6 +25,9 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `sign` (PFX, PEM or the certificate store; PAdES B-B to B-LTA; visible; certification), `verify`, `compare`,
   `pdfa check` and `convert` (PDF/UA check too).
 - Print production: `preflight`, `pdfx check` and `convert`, `separations` (plates and a coverage heat map) and `color`.
+- `ocr` runs an OCR program you name (`--engine-command`, such as Tesseract) on each page and adds its words as
+  invisible text: `--lang`, `--mode skip|redo|force`, `--pdfa` (2b by default, `none` to leave the level), `--page-jobs`,
+  `--dpi`, `--min-confidence`, `--deskew`, `--rotate-pages`, `--engine-timeout` and `--pages`.
 - `ocr-layer` (hOCR and ALTO), `clean` (grayscale, blank pages, deskew, text to outlines) and `merge-data` (mail merge from
   JSON or CSV).
 
@@ -34,7 +37,7 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - Passwords by `--password-env`, `--password-file` or a prompt; edits keep signatures where they can and stop before
   breaking one unless `--allow-invalidating-signatures`.
 - `egap mcp`: every command as a tool for AI assistants, inside allowed folders; signing and encryption only with
-  `--allow-sign`.
+  `--allow-sign`; `ocr`, which runs a program the call names, never.
 - `egap <name>` runs `egap-<name>` from the PATH, so `egap preview` starts egap-preview.
 
 ## Egap.Pdf 2.2.0 (unreleased)

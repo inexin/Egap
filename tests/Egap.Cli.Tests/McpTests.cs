@@ -54,7 +54,13 @@ public sealed class McpTests : IAsyncDisposable
         }
 
         McpClient signing = await Connect("--allow-sign");
-        Assert.Contains("sign", (await signing.ListToolsAsync(cancellationToken: Token)).Select(t => t.Name));
+        string[] all = [.. (await signing.ListToolsAsync(cancellationToken: Token)).Select(t => t.Name)];
+        Assert.Contains("sign", all);
+
+        // ocr runs a program named in the call, so it is never a tool.
+        Assert.DoesNotContain("ocr", names);
+        Assert.DoesNotContain("ocr", all);
+        Assert.Contains("ocr_layer", all);
     }
 
     [Fact]
@@ -98,6 +104,18 @@ public sealed class McpTests : IAsyncDisposable
         CallToolResult result = await client.CallToolAsync("run", new Dictionary<string, object?> { ["inputs"] = PlainPdf, ["workflow"] = workflow }, cancellationToken: Token);
         Assert.True(result.IsError);
         Assert.Contains("--allow-sign", JsonSerializer.Serialize(result.StructuredContent), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task RunRefusesTheOcrStep()
+    {
+        _tool.Copy("encrypted/plain.pdf");
+        McpClient client = await Connect("--allow-sign");
+        JsonElement workflow = JsonDocument.Parse("""{ "egap": 1, "steps": [ { "op": "ocr", "engine-command": "calc {image}" }, { "op": "save", "path": "o.pdf" } ] }""").RootElement;
+        CallToolResult result = await client.CallToolAsync("run", new Dictionary<string, object?> { ["inputs"] = PlainPdf, ["workflow"] = workflow }, cancellationToken: Token);
+        Assert.True(result.IsError);
+        Assert.Contains("runs a program", JsonSerializer.Serialize(result.StructuredContent), StringComparison.Ordinal);
+        Assert.False(File.Exists(_tool.PathOf("o.pdf")));
     }
 
     [Fact]
