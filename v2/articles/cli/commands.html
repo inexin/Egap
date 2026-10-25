@@ -2632,6 +2632,119 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 </tbody>
 </table>
+<h2 id="egap-ocr">egap ocr</h2>
+<p><code>egap ocr &lt;inputs&gt;... [options]</code></p>
+<p>Make scanned pages searchable: run an OCR program (Tesseract or any that writes hOCR or ALTO) on each page and add its words as invisible text; PDF/A-2b by default.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>PDF files, globs (*, ?, **) expanded the same way in every shell, folders with --recursive, or - for standard input.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+<tr>
+<td><code>--engine-command &lt;command&gt;</code></td>
+<td>The OCR program and its arguments, run once per page: {image} is the page image (PNG), {output} the result file without extension, {langs} the languages, {dpi} the resolution, {page} the page from 0. It must write hOCR or ALTO, such as &quot;tesseract {image} {output} -l {langs} --dpi {dpi} hocr&quot;.</td>
+</tr>
+<tr>
+<td><code>--lang &lt;languages&gt;</code>, <code>-l</code></td>
+<td>The languages to read, as the program names them, joined by + or commas, such as eng+nor.</td>
+</tr>
+<tr>
+<td><code>--mode &lt;skip|redo|force&gt;</code></td>
+<td>skip (the default) leaves pages with text alone; redo replaces an earlier invisible text layer; force reads every page.</td>
+</tr>
+<tr>
+<td><code>--pdfa &lt;level&gt;</code></td>
+<td>The PDF/A level the output meets: 2b by default, or 1b, 2a, 2u, 3a, 3b, 3u, 4, 4f, or none to leave it as it is.</td>
+</tr>
+<tr>
+<td><code>--page-jobs &lt;count&gt;</code></td>
+<td>How many pages of a file the program reads at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--dpi &lt;dpi&gt;</code></td>
+<td>The resolution pages are rendered at when they are not one scanned image; 300 by default.</td>
+</tr>
+<tr>
+<td><code>--min-confidence &lt;fraction&gt;</code></td>
+<td>Leave out words the program is less sure of, from 0 to 1.</td>
+</tr>
+<tr>
+<td><code>--deskew</code></td>
+<td>Straighten the image the program reads; the page is not changed.</td>
+</tr>
+<tr>
+<td><code>--rotate-pages</code></td>
+<td>Turn pages the program finds sideways or upside down.</td>
+</tr>
+<tr>
+<td><code>--engine-timeout &lt;seconds&gt;</code></td>
+<td>Seconds one run of the program may take; 300 by default.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to read, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
+</tr>
+<tr>
+<td><code>--rewrite</code></td>
+<td>Write the whole file anew instead of appending the changes (breaks signatures).</td>
+</tr>
+<tr>
+<td><code>--linearize</code></td>
+<td>Lay the file out for fast web view; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--compress</code></td>
+<td>Pack objects into compressed object streams; writes the whole file.</td>
+</tr>
+<tr>
+<td><code>--allow-invalidating-signatures</code></td>
+<td>Save even when the change breaks a digital signature in the file.</td>
+</tr>
+<tr>
+<td><code>--deterministic</code></td>
+<td>Derive the file ID from the content, so the same input always gives the same bytes.</td>
+</tr>
+<tr>
+<td><code>--password &lt;text&gt;</code></td>
+<td>The password that opens encrypted inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--password-env &lt;NAME&gt;</code></td>
+<td>Read the password that opens encrypted inputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--password-file &lt;path&gt;</code></td>
+<td>Read the password that opens encrypted inputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="egap-ocr-layer">egap ocr-layer</h2>
 <p><code>egap ocr-layer &lt;inputs&gt;... [options]</code></p>
 <p>Add an invisible, searchable text layer from hOCR or ALTO files (from Tesseract, ABBYY and the like), one per page.</p>
@@ -3924,6 +4037,62 @@ without the dashes.</p>
 <tr>
 <td><code>--system-fonts</code></td>
 <td>Look for fonts the file does not embed among the system's fonts.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ocr">ocr</h3>
+<p>Make scanned pages searchable: run an OCR program (Tesseract or any that writes hOCR or ALTO) on each page and add its words as invisible text; PDF/A-2b by default.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--engine-command &lt;command&gt;</code></td>
+<td>The OCR program and its arguments, run once per page: {image} is the page image (PNG), {output} the result file without extension, {langs} the languages, {dpi} the resolution, {page} the page from 0. It must write hOCR or ALTO, such as &quot;tesseract {image} {output} -l {langs} --dpi {dpi} hocr&quot;.</td>
+</tr>
+<tr>
+<td><code>--lang &lt;languages&gt;</code>, <code>-l</code></td>
+<td>The languages to read, as the program names them, joined by + or commas, such as eng+nor.</td>
+</tr>
+<tr>
+<td><code>--mode &lt;skip|redo|force&gt;</code></td>
+<td>skip (the default) leaves pages with text alone; redo replaces an earlier invisible text layer; force reads every page.</td>
+</tr>
+<tr>
+<td><code>--pdfa &lt;level&gt;</code></td>
+<td>The PDF/A level the output meets: 2b by default, or 1b, 2a, 2u, 3a, 3b, 3u, 4, 4f, or none to leave it as it is.</td>
+</tr>
+<tr>
+<td><code>--page-jobs &lt;count&gt;</code></td>
+<td>How many pages of a file the program reads at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--dpi &lt;dpi&gt;</code></td>
+<td>The resolution pages are rendered at when they are not one scanned image; 300 by default.</td>
+</tr>
+<tr>
+<td><code>--min-confidence &lt;fraction&gt;</code></td>
+<td>Leave out words the program is less sure of, from 0 to 1.</td>
+</tr>
+<tr>
+<td><code>--deskew</code></td>
+<td>Straighten the image the program reads; the page is not changed.</td>
+</tr>
+<tr>
+<td><code>--rotate-pages</code></td>
+<td>Turn pages the program finds sideways or upside down.</td>
+</tr>
+<tr>
+<td><code>--engine-timeout &lt;seconds&gt;</code></td>
+<td>Seconds one run of the program may take; 300 by default.</td>
+</tr>
+<tr>
+<td><code>--pages &lt;range&gt;</code>, <code>-p</code></td>
+<td>The pages to read, such as 1-3,z or 2-z:even (z is the last page, r2 the second to last, x leaves pages out); all by default.</td>
 </tr>
 </tbody>
 </table>

@@ -197,7 +197,12 @@ egap separations flyer.pdf -o plates --coverage --json
 egap color flyer.pdf --target FOGRA39 -o flyer-cmyk.pdf
 </code></pre>
 <h2 id="scans-and-mail-merge">Scans and mail merge</h2>
-<pre><code class="lang-sh">egap ocr-layer scan.pdf --hocr &quot;ocr/page-{page}.hocr&quot; -o searchable.pdf
+<p><code>ocr</code> makes scans searchable through an OCR program you install, such as Tesseract: it runs the program on each page
+image and adds the words as invisible text. The output is PDF/A-2b unless <code>--pdfa none</code>. Pages that already have text are
+left alone; <code>--mode redo</code> replaces an earlier OCR layer and <code>--mode force</code> reads every page.</p>
+<pre><code class="lang-sh">egap ocr scan.pdf --engine-command &quot;tesseract {image} {output} -l {langs} --dpi {dpi} hocr&quot; --lang eng -o searchable.pdf
+egap ocr &quot;scans/*.pdf&quot; --engine-command &quot;tesseract {image} {output} -l {langs} hocr&quot; --lang eng+nor --mode redo -o &quot;ocr/{name}.pdf&quot;
+egap ocr-layer scan.pdf --hocr &quot;ocr/page-{page}.hocr&quot; -o searchable.pdf
 egap clean scan.pdf --deskew --remove-blank-pages --grayscale -o tidy.pdf
 egap merge-data letter.docx --data people.json -o letters.pdf
 egap merge-data letter.docx --data people.csv --each --name-field Name -o &quot;letters/{name}.pdf&quot;
@@ -227,7 +232,8 @@ egap run &quot;jobs/*.pdf&quot; --workflow print.json
 <h2 id="ai-assistants">AI assistants</h2>
 <p><code>egap mcp</code> serves every command as a tool over the Model Context Protocol, for Claude, GitHub Copilot, Cursor and other
 assistants. Tools read and write only inside the folders the assistant opened and those given with <code>--allow</code>; sign,
-encrypt and decrypt are offered only with <code>--allow-sign</code>, and passwords come only from environment variables.</p>
+encrypt and decrypt are offered only with <code>--allow-sign</code>, and passwords come only from environment variables. <code>ocr</code> is
+never offered, since it runs the program the call names.</p>
 <pre><code class="lang-sh">egap mcp --allow ~/Documents/pdfs
 egap mcp --allow ./contracts --allow-sign
 </code></pre>
