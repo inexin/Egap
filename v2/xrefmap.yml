@@ -9024,6 +9024,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.HtmlLoadOptions.Encoding
   nameWithType: HtmlLoadOptions.Encoding
+- uid: Egap.Documents.HtmlLoadOptions.Kashida
+  name: Kashida
+  href: api/Egap.Documents.HtmlLoadOptions.html#Egap_Documents_HtmlLoadOptions_Kashida
+  commentId: P:Egap.Documents.HtmlLoadOptions.Kashida
+  fullName: Egap.Documents.HtmlLoadOptions.Kashida
+  nameWithType: HtmlLoadOptions.Kashida
+- uid: Egap.Documents.HtmlLoadOptions.Kashida*
+  name: Kashida
+  href: api/Egap.Documents.HtmlLoadOptions.html#Egap_Documents_HtmlLoadOptions_Kashida_
+  commentId: Overload:Egap.Documents.HtmlLoadOptions.Kashida
+  isSpec: "True"
+  fullName: Egap.Documents.HtmlLoadOptions.Kashida
+  nameWithType: HtmlLoadOptions.Kashida
 - uid: Egap.Documents.HtmlLoadOptions.Limits
   name: Limits
   href: api/Egap.Documents.HtmlLoadOptions.html#Egap_Documents_HtmlLoadOptions_Limits
@@ -9620,6 +9633,36 @@ references:
   commentId: F:Egap.Documents.IslandKind.Vml
   fullName: Egap.Documents.IslandKind.Vml
   nameWithType: IslandKind.Vml
+- uid: Egap.Documents.KashidaLevel
+  name: KashidaLevel
+  href: api/Egap.Documents.KashidaLevel.html
+  commentId: T:Egap.Documents.KashidaLevel
+  fullName: Egap.Documents.KashidaLevel
+  nameWithType: KashidaLevel
+- uid: Egap.Documents.KashidaLevel.High
+  name: High
+  href: api/Egap.Documents.KashidaLevel.html#Egap_Documents_KashidaLevel_High
+  commentId: F:Egap.Documents.KashidaLevel.High
+  fullName: Egap.Documents.KashidaLevel.High
+  nameWithType: KashidaLevel.High
+- uid: Egap.Documents.KashidaLevel.Low
+  name: Low
+  href: api/Egap.Documents.KashidaLevel.html#Egap_Documents_KashidaLevel_Low
+  commentId: F:Egap.Documents.KashidaLevel.Low
+  fullName: Egap.Documents.KashidaLevel.Low
+  nameWithType: KashidaLevel.Low
+- uid: Egap.Documents.KashidaLevel.Medium
+  name: Medium
+  href: api/Egap.Documents.KashidaLevel.html#Egap_Documents_KashidaLevel_Medium
+  commentId: F:Egap.Documents.KashidaLevel.Medium
+  fullName: Egap.Documents.KashidaLevel.Medium
+  nameWithType: KashidaLevel.Medium
+- uid: Egap.Documents.KashidaLevel.None
+  name: None
+  href: api/Egap.Documents.KashidaLevel.html#Egap_Documents_KashidaLevel_None
+  commentId: F:Egap.Documents.KashidaLevel.None
+  fullName: Egap.Documents.KashidaLevel.None
+  nameWithType: KashidaLevel.None
 - uid: Egap.Documents.Layout
   name: Egap.Documents.Layout
   href: api/Egap.Documents.Layout.html
@@ -14009,6 +14052,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ParagraphFormat.FirstLineIndent
   nameWithType: ParagraphFormat.FirstLineIndent
+- uid: Egap.Documents.ParagraphFormat.Kashida
+  name: Kashida
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_Kashida
+  commentId: P:Egap.Documents.ParagraphFormat.Kashida
+  fullName: Egap.Documents.ParagraphFormat.Kashida
+  nameWithType: ParagraphFormat.Kashida
+- uid: Egap.Documents.ParagraphFormat.Kashida*
+  name: Kashida
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_Kashida_
+  commentId: Overload:Egap.Documents.ParagraphFormat.Kashida
+  isSpec: "True"
+  fullName: Egap.Documents.ParagraphFormat.Kashida
+  nameWithType: ParagraphFormat.Kashida
 - uid: Egap.Documents.ParagraphFormat.KeepTogether
   name: KeepTogether
   href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_KeepTogether
@@ -19059,6 +19115,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedParagraphFormat.FirstLineIndent
   nameWithType: ResolvedParagraphFormat.FirstLineIndent
+- uid: Egap.Documents.ResolvedParagraphFormat.Kashida
+  name: Kashida
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_Kashida
+  commentId: P:Egap.Documents.ResolvedParagraphFormat.Kashida
+  fullName: Egap.Documents.ResolvedParagraphFormat.Kashida
+  nameWithType: ResolvedParagraphFormat.Kashida
+- uid: Egap.Documents.ResolvedParagraphFormat.Kashida*
+  name: Kashida
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_Kashida_
+  commentId: Overload:Egap.Documents.ResolvedParagraphFormat.Kashida
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedParagraphFormat.Kashida
+  nameWithType: ResolvedParagraphFormat.Kashida
 - uid: Egap.Documents.ResolvedParagraphFormat.KeepTogether
   name: KeepTogether
   href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_KeepTogether

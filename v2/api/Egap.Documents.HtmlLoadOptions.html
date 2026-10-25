@@ -215,11 +215,44 @@ bytes are valid UTF-8, else windows-1252.</p>
 
 
 
+  <a id="Egap_Documents_HtmlLoadOptions_Kashida_" data-uid="Egap.Documents.HtmlLoadOptions.Kashida*"></a>
+
+  <h3 id="Egap_Documents_HtmlLoadOptions_Kashida" data-uid="Egap.Documents.HtmlLoadOptions.Kashida">
+  Kashida
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How far justified paragraphs (<code>text-align: justify</code>) stretch Arabic lines with tatweels when laid out by Egap. CSS
+has no kashida value and browsers justify at spaces, so the default, <a class="xref" href="Egap.Documents.KashidaLevel.html#Egap_Documents_KashidaLevel_None">None</a>, keeps their look.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public KashidaLevel Kashida { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.KashidaLevel.html">KashidaLevel</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_HtmlLoadOptions_Limits_" data-uid="Egap.Documents.HtmlLoadOptions.Limits*"></a>
 
   <h3 id="Egap_Documents_HtmlLoadOptions_Limits" data-uid="Egap.Documents.HtmlLoadOptions.Limits">
   Limits
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents.Html/HtmlFormat.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The limits kept on untrusted pages: the largest page (<a class="xref" href="Egap.Documents.DocumentLimits.html#Egap_Documents_DocumentLimits_MaxPartSize">MaxPartSize</a>) and how deep elements

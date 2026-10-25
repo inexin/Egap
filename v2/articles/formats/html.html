@@ -152,6 +152,11 @@ Document page = HtmlFormat.Load(&quot;invoice.html&quot;, new HtmlLoadOptions
 <td>Style sheets applied as the user's, after the default one and before the page's own</td>
 </tr>
 <tr>
+<td><code>Kashida</code></td>
+<td><code>KashidaLevel.None</code></td>
+<td>How far <code>text-align: justify</code> paragraphs stretch Arabic lines with tatweels; CSS has no kashida value and browsers justify at spaces, so none by default</td>
+</tr>
+<tr>
 <td><code>Limits</code></td>
 <td><code>DocumentLimits</code> defaults</td>
 <td>The largest page and how deep elements are read as structure (see <a href="index.html#limits">Limits</a>)</td>

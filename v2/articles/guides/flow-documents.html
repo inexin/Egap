@@ -126,6 +126,10 @@ tabular or old-style figures and stylistic sets. Paragraphs choose where lines m
 <code>word-spacing</code>, <code>text-decoration: overline</code>, <code>font-feature-settings</code>, <code>font-variant-ligatures</code>, <code>font-variant-numeric</code>,
 <code>word-break</code> and <code>overflow-wrap</code> read into the same settings. DOCX keeps the features Word has (ligatures, number forms
 and spacing, stylistic sets, contextual alternates); Word has no word spacing or overline.</p>
+<p>A justified paragraph can also stretch its Arabic lines with tatweels (kashida) between letters, as Word's low, medium
+and high kashida alignments do: set <code>ParagraphFormat.Kashida</code> to <code>KashidaLevel.Low</code>, <code>Medium</code> or <code>High</code> with
+<code>ParagraphAlignment.Justify</code>. What the tatweels do not take goes to word spaces, and lines in other scripts justify at
+spaces as before. In PDF exports the inserted tatweels are left out of the text, so copy and search give the words as typed.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 
 Document doc = new();
@@ -135,6 +139,11 @@ builder.Font.Overline = true;
 builder.Font.Features = FontFeatures.Parse(&quot;liga=0, tnum&quot;);
 builder.ParagraphFormat.WordBreak = WordBreak.Anywhere;
 builder.Writeln(&quot;Invoice 2026-118: https://example.com/a/very/long/address/that/must/break&quot;);
+
+builder.ParagraphFormat.Bidi = true;
+builder.ParagraphFormat.Alignment = ParagraphAlignment.Justify;
+builder.ParagraphFormat.Kashida = KashidaLevel.Medium;
+builder.Writeln(&quot;تعلم اللغة العربية يفتح أبواب الأدب والعلوم والتاريخ للطلاب في كل مكان&quot;);
 </code></pre>
 <h2 id="barcodes">Barcodes</h2>
 <p><code>InsertBarcode</code> writes a barcode as a picture of the size you give. Layout and PDF export draw it as vectors; DOCX keeps it
