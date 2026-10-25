@@ -1,7 +1,8 @@
 using System.Globalization;
+using System.Numerics;
 using System.Text;
 
-using Egami.Fonts;
+using Egami.Ocr;
 
 namespace Egap.Pdf;
 
@@ -76,25 +77,70 @@ public static class PdfOcrLayer
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(lines);
-        PdfDocument document = page.Document;
-        PdfReference font = Ocr.GlyphlessFont.For(document);
-        PdfDictionary resources = page.Resources ?? [];
-        PdfDictionary fonts = resources.Get<PdfDictionary>("Font") ?? [];
-        string name = "GlyphLess";
-        for (int i = 1; fonts.Get(name) is PdfObject existing && !(existing is PdfReference r && r.ObjectNumber == font.ObjectNumber); i++)
+        bool tagged = page.Document.Structure.Exists;
+        return Write(page, lines.Select(line => line.Words
+            .Where(w => !string.IsNullOrWhiteSpace(w.Text) && w.Box.Width > 0 && w.Box.Height > 0)
+            .Select(w => new PlacedWord(w.Text.Trim(), new Vector2((float)w.Box.Left, (float)w.Box.Bottom), new Vector2((float)w.Box.Width, 0), new Vector2(0, (float)w.Box.Height), tagged && IsLanguageTag(w.Language) ? w.Language : null))
+            .ToList()));
+    }
+
+    /// <summary>
+    /// Adds an OCR engine's words as invisible text over the page's content. Each word's quad is mapped from the image's
+    /// pixels to the page's user space by <paramref name="imageToPage"/>; a rotated or skewed word gets a text matrix along
+    /// its own baseline and is scaled across its width, so selection follows the scan. Words less sure than
+    /// <paramref name="minConfidence"/> are left out; a word's language goes on a <c>/Span</c> with <c>/Lang</c> when the
+    /// document is tagged. Returns how many words were added.
+    /// </summary>
+    /// <param name="page">The page.</param>
+    /// <param name="result">The words, in pixels of the image the engine read.</param>
+    /// <param name="imageToPage">The image's pixels (origin at the top left) to the page's user space.</param>
+    /// <param name="minConfidence">The lowest confidence kept, from 0 (all words, the default) to 1; words with no confidence are kept.</param>
+    public static int AddResult(PdfPage page, OcrResult result, PdfMatrix imageToPage, double minConfidence = 0)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(result);
+        Matrix3x2 matrix = new((float)imageToPage.A, (float)imageToPage.B, (float)imageToPage.C, (float)imageToPage.D, (float)imageToPage.E, (float)imageToPage.F);
+        bool tagged = page.Document.Structure.Exists;
+        List<List<PlacedWord>> lines = [];
+        foreach (OcrLine line in result.Lines)
         {
-            name = "GlyphLess" + i.ToString(CultureInfo.InvariantCulture);
+            List<PlacedWord> words = [];
+            foreach (OcrWord word in line.Words)
+            {
+                if (string.IsNullOrWhiteSpace(word.Text) || word.Confidence < minConfidence)
+                {
+                    continue;
+                }
+
+                OcrQuad quad = word.Box.Transform(matrix);
+                Vector2 along = quad.BottomRight - quad.BottomLeft, up = quad.TopLeft - quad.BottomLeft;
+                if (along.Length() > 0 && up.Length() > 0 && float.IsFinite(along.X + along.Y + up.X + up.Y + quad.BottomLeft.X + quad.BottomLeft.Y))
+                {
+                    words.Add(new PlacedWord(word.Text.Trim(), quad.BottomLeft, along, up, tagged && IsLanguageTag(word.Language) ? word.Language : null));
+                }
+            }
+
+            lines.Add(words);
         }
 
-        fonts[name] = font;
-        resources["Font"] = fonts;
-        page.Dictionary["Resources"] = resources;
+        return Write(page, lines);
+    }
 
+    /// <summary>Writes the words, one text object per line, after the page's content. Returns how many were written.</summary>
+    private static int Write(PdfPage page, IEnumerable<IReadOnlyList<PlacedWord>> wordLines)
+    {
+        List<IReadOnlyList<PlacedWord>> lines = [.. wordLines.Where(l => l.Count > 0)];
+        if (lines.Count == 0)
+        {
+            return 0;
+        }
+
+        // The page's own resources take the font, so inherited, shared or indirect dictionaries are never changed in place.
+        string name = Pages.PageDrawing.AddResource(page, PdfName.Get("Font"), Ocr.GlyphlessFont.For(page.Document)).Value;
         StringBuilder text = new();
         int count = 0;
-        foreach (PdfOcrLine line in lines)
+        foreach (IReadOnlyList<PlacedWord> words in lines)
         {
-            List<PdfOcrWord> words = [.. line.Words.Where(w => !string.IsNullOrWhiteSpace(w.Text) && w.Box.Width > 0 && w.Box.Height > 0)];
             if (words.Count == 0)
             {
                 continue;
@@ -103,19 +149,25 @@ public static class PdfOcrLayer
             text.Append("BT 3 Tr\n");
             for (int i = 0; i < words.Count; i++)
             {
-                PdfOcrWord word = words[i];
-                string shown = i + 1 < words.Count ? word.Text.Trim() + " " : word.Text.Trim();
-                int letters = word.Text.Trim().Length;
-                double size = word.Box.Height;
-                double natural = letters * Advance / 1000.0 * size;
-                double scale = natural > 0 ? word.Box.Width / natural * 100 : 100;
-                text.Append(CultureInfo.InvariantCulture, $"/{name} {Number(size)} Tf {Number(scale)} Tz 1 0 0 1 {Number(word.Box.Left)} {Number(word.Box.Bottom)} Tm <");
+                PlacedWord word = words[i];
+                string shown = i + 1 < words.Count ? word.Text + " " : word.Text;
+                float width = word.Along.Length(), size = word.Up.Length();
+                double natural = word.Text.Length * Advance / 1000.0 * size;
+                double scale = natural > 0 ? width / natural * 100 : 100;
+                Vector2 x = word.Along / width, y = word.Up / size;
+                if (word.Language is { Length: > 0 } language)
+                {
+                    text.Append("/Span <</Lang (").Append(language).Append(")>> BDC ");
+                }
+
+                text.Append(CultureInfo.InvariantCulture, $"/{name} {Number(size)} Tf {Number(scale)} Tz {Number(x.X)} {Number(x.Y)} {Number(y.X)} {Number(y.Y)} {Number(word.Origin.X)} {Number(word.Origin.Y)} Tm <");
                 foreach (char c in shown)
                 {
                     text.Append(((int)c).ToString("X4", CultureInfo.InvariantCulture));
                 }
 
-                text.Append("> Tj\n");
+                text.Append("> Tj");
+                text.Append(word.Language is { Length: > 0 } ? " EMC\n" : "\n");
                 count++;
             }
 
@@ -144,4 +196,13 @@ public static class PdfOcrLayer
     {
         return Math.Round(value, 3).ToString("0.###", CultureInfo.InvariantCulture);
     }
+
+    /// <summary>Whether a language name is a plain tag (letters, digits and hyphens) that can go in a <c>/Lang</c> string as it is.</summary>
+    private static bool IsLanguageTag(string? language)
+    {
+        return language is { Length: > 0 and <= 35 } && language.All(c => char.IsAsciiLetterOrDigit(c) || c == '-');
+    }
+
+    /// <summary>A word in user space: its baseline start, the vectors along its baseline and up its height, and its language.</summary>
+    private readonly record struct PlacedWord(string Text, Vector2 Origin, Vector2 Along, Vector2 Up, string? Language);
 }

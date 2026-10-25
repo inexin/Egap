@@ -1,5 +1,8 @@
 
+using Egami.Ocr;
+
 using Egap.Pdf;
+using Egap.Pdf.Ocr;
 
 namespace Egap.Documents.Pdf;
 
@@ -26,6 +29,52 @@ public static partial class PdfToDocument
         options ??= PdfToDocumentOptions.Default;
         (List<PageDraft> drafts, List<Roles.NoteLink> notes) = PdfLayoutAnalyzer.Drafts(document, Enumerable.Range(0, document.Pages.Count), options.Layout, cancellationToken);
         return ModelBuilder.Build(document, drafts, notes, options, cancellationToken);
+    }
+
+    /// <summary>
+    /// Converts every page of <paramref name="document"/> into a new <see cref="Document"/>, as <see cref="Convert"/> does, and
+    /// runs scanned pages (no text, one image over most of the page) through <see cref="PdfToDocumentOptions.OcrEngine"/> when
+    /// one is set, so their text becomes paragraphs instead of a picture. <paramref name="document"/> is not changed.
+    /// </summary>
+    /// <param name="document">The PDF.</param>
+    /// <param name="options">How to analyse and build, and the OCR engine; <see cref="PdfToDocumentOptions.Default"/> when null.</param>
+    /// <param name="cancellationToken">Cancels the OCR and stops between pages and sections.</param>
+    /// <returns>The document.</returns>
+    public static async Task<Document> ConvertAsync(PdfDocument document, PdfToDocumentOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        options ??= PdfToDocumentOptions.Default;
+        IEnumerable<int> all = Enumerable.Range(0, document.Pages.Count);
+        (List<PageDraft> drafts, List<Roles.NoteLink> notes) = PdfLayoutAnalyzer.Drafts(document, all, options.Layout, cancellationToken);
+        List<int> scans = [.. drafts.Where(d => ModelBuilder.Scan(d) is not null).Select(d => d.Content.Index)];
+        if (options.OcrEngine is not IOcrEngine engine || scans.Count == 0)
+        {
+            return ModelBuilder.Build(document, drafts, notes, options, cancellationToken);
+        }
+
+        // The text layer goes into a copy, which layout analysis then reads as any page with text.
+        using MemoryStream bytes = new();
+        document.Save(bytes, new PdfSaveOptions { AllowInvalidatingSignatures = true });
+        using PdfDocument copy = PdfDocument.Open(bytes.ToArray(), document.Options);
+        PdfOcrOptions ocr = options.Ocr with { Mode = PdfOcrMode.Skip, Pages = scans, PdfA = null, AllowInvalidatingSignatures = true };
+        PdfOcrReport report = await PdfOcr.MakeSearchableAsync(copy, engine, ocr, cancellationToken).ConfigureAwait(false);
+        HashSet<int> read = [.. report.Pages.Where(p => p.Words > 0).Select(p => p.PageIndex)];
+        foreach (PdfOcrPageReport failed in report.Pages.Where(p => p.Status == PdfOcrPageStatus.Failed))
+        {
+            options.OnWarning?.Invoke(new PdfToDocumentWarning(PdfToDocumentWarningKind.OcrFailed, failed.PageIndex,
+                $"OCR failed on page {failed.PageIndex + 1}: {failed.Message}"));
+        }
+
+        (drafts, notes) = PdfLayoutAnalyzer.Drafts(copy, all, options.Layout, cancellationToken);
+        foreach (PageDraft draft in drafts.Where(d => read.Contains(d.Content.Index)))
+        {
+            // The scan itself is the page the text came from, not a figure on it.
+            double area = draft.Content.Width * draft.Content.Height;
+            draft.Figures.RemoveAll(f => f.Box.Intersect(draft.Content.Bounds).Area >= area * 0.6);
+        }
+
+        Document result = ModelBuilder.Build(copy, drafts, notes, options, cancellationToken);
+        return result;
     }
 }
 
@@ -68,6 +117,19 @@ public sealed record PdfToDocumentOptions
     /// most are subsets, holding only the glyphs the PDF uses, so text typed later may not show in them.
     /// </summary>
     public bool EmbedFonts { get; init; }
+
+    /// <summary>
+    /// The OCR engine <see cref="PdfToDocument.ConvertAsync"/> and <c>Document.LoadPdfAsync</c> run scanned pages through, so
+    /// their text becomes paragraphs; null (the default) keeps a scanned page as a picture with a warning. The sync
+    /// <see cref="PdfToDocument.Convert"/> never runs it.
+    /// </summary>
+    public IOcrEngine? OcrEngine { get; init; }
+
+    /// <summary>
+    /// How scanned pages are read by <see cref="OcrEngine"/>: languages, resolution, confidence, parallel pages. Its mode,
+    /// pages and PDF/A level are set by the conversion.
+    /// </summary>
+    public PdfOcrOptions Ocr { get; init; } = PdfOcrOptions.Default;
 }
 
 /// <summary>How <see cref="PdfToDocument"/> turns pages into a document (design Q8).</summary>
@@ -94,4 +156,7 @@ public enum PdfToDocumentWarningKind
 {
     /// <summary>A page with no text but a picture of a page (a scan): it is kept as a picture, its text not recognised.</summary>
     ScannedPage = 0,
+
+    /// <summary>The OCR engine failed on a scanned page, which is kept as a picture.</summary>
+    OcrFailed = 1,
 }

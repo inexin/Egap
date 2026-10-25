@@ -1,5 +1,104 @@
 #nullable enable
+Egap.Pdf.Ocr.PdfOcr
+Egap.Pdf.Ocr.PdfOcrImageSource
+Egap.Pdf.Ocr.PdfOcrImageSource.None = 0 -> Egap.Pdf.Ocr.PdfOcrImageSource
+Egap.Pdf.Ocr.PdfOcrImageSource.PageImage = 1 -> Egap.Pdf.Ocr.PdfOcrImageSource
+Egap.Pdf.Ocr.PdfOcrImageSource.Rendered = 2 -> Egap.Pdf.Ocr.PdfOcrImageSource
+Egap.Pdf.Ocr.PdfOcrMode
+Egap.Pdf.Ocr.PdfOcrMode.Force = 2 -> Egap.Pdf.Ocr.PdfOcrMode
+Egap.Pdf.Ocr.PdfOcrMode.Redo = 1 -> Egap.Pdf.Ocr.PdfOcrMode
+Egap.Pdf.Ocr.PdfOcrMode.Skip = 0 -> Egap.Pdf.Ocr.PdfOcrMode
+Egap.Pdf.Ocr.PdfOcrOptions
+Egap.Pdf.Ocr.PdfOcrOptions.<Clone>$() -> Egap.Pdf.Ocr.PdfOcrOptions!
+Egap.Pdf.Ocr.PdfOcrOptions.AllowInvalidatingSignatures.get -> bool
+Egap.Pdf.Ocr.PdfOcrOptions.AllowInvalidatingSignatures.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.Deskew.get -> bool
+Egap.Pdf.Ocr.PdfOcrOptions.Deskew.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.Dpi.get -> double
+Egap.Pdf.Ocr.PdfOcrOptions.Dpi.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.Equals(Egap.Pdf.Ocr.PdfOcrOptions? other) -> bool
+Egap.Pdf.Ocr.PdfOcrOptions.Languages.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Pdf.Ocr.PdfOcrOptions.Languages.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.MaxDegreeOfParallelism.get -> int
+Egap.Pdf.Ocr.PdfOcrOptions.MaxDegreeOfParallelism.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.MaxImagePixels.get -> long
+Egap.Pdf.Ocr.PdfOcrOptions.MaxImagePixels.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.MaxPages.get -> int
+Egap.Pdf.Ocr.PdfOcrOptions.MaxPages.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.MinConfidence.get -> double
+Egap.Pdf.Ocr.PdfOcrOptions.MinConfidence.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.Mode.get -> Egap.Pdf.Ocr.PdfOcrMode
+Egap.Pdf.Ocr.PdfOcrOptions.Mode.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.Pages.get -> System.Collections.Generic.IReadOnlyList<int>?
+Egap.Pdf.Ocr.PdfOcrOptions.Pages.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.PdfA.get -> Egap.Pdf.PdfAConformance?
+Egap.Pdf.Ocr.PdfOcrOptions.PdfA.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.PdfOcrOptions() -> void
+Egap.Pdf.Ocr.PdfOcrOptions.Progress.get -> System.IProgress<int>?
+Egap.Pdf.Ocr.PdfOcrOptions.Progress.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.RotatePages.get -> bool
+Egap.Pdf.Ocr.PdfOcrOptions.RotatePages.init -> void
+Egap.Pdf.Ocr.PdfOcrOptions.StopOnError.get -> bool
+Egap.Pdf.Ocr.PdfOcrOptions.StopOnError.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport
+Egap.Pdf.Ocr.PdfOcrPageReport.<Clone>$() -> Egap.Pdf.Ocr.PdfOcrPageReport!
+Egap.Pdf.Ocr.PdfOcrPageReport.Deconstruct(out int PageIndex, out Egap.Pdf.Ocr.PdfOcrPageStatus Status) -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.Dpi.get -> double
+Egap.Pdf.Ocr.PdfOcrPageReport.Dpi.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.EngineTime.get -> System.TimeSpan
+Egap.Pdf.Ocr.PdfOcrPageReport.EngineTime.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.Equals(Egap.Pdf.Ocr.PdfOcrPageReport? other) -> bool
+Egap.Pdf.Ocr.PdfOcrPageReport.MeanConfidence.get -> double?
+Egap.Pdf.Ocr.PdfOcrPageReport.MeanConfidence.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.Message.get -> string?
+Egap.Pdf.Ocr.PdfOcrPageReport.Message.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.PageIndex.get -> int
+Egap.Pdf.Ocr.PdfOcrPageReport.PageIndex.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.PdfOcrPageReport(int PageIndex, Egap.Pdf.Ocr.PdfOcrPageStatus Status) -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.RemovedGlyphs.get -> int
+Egap.Pdf.Ocr.PdfOcrPageReport.RemovedGlyphs.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.Rotation.get -> int
+Egap.Pdf.Ocr.PdfOcrPageReport.Rotation.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.Source.get -> Egap.Pdf.Ocr.PdfOcrImageSource
+Egap.Pdf.Ocr.PdfOcrPageReport.Source.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.Status.get -> Egap.Pdf.Ocr.PdfOcrPageStatus
+Egap.Pdf.Ocr.PdfOcrPageReport.Status.init -> void
+Egap.Pdf.Ocr.PdfOcrPageReport.Words.get -> int
+Egap.Pdf.Ocr.PdfOcrPageReport.Words.init -> void
+Egap.Pdf.Ocr.PdfOcrPageStatus
+Egap.Pdf.Ocr.PdfOcrPageStatus.Failed = 2 -> Egap.Pdf.Ocr.PdfOcrPageStatus
+Egap.Pdf.Ocr.PdfOcrPageStatus.Recognized = 0 -> Egap.Pdf.Ocr.PdfOcrPageStatus
+Egap.Pdf.Ocr.PdfOcrPageStatus.Skipped = 1 -> Egap.Pdf.Ocr.PdfOcrPageStatus
+Egap.Pdf.Ocr.PdfOcrReport
+Egap.Pdf.Ocr.PdfOcrReport.<Clone>$() -> Egap.Pdf.Ocr.PdfOcrReport!
+Egap.Pdf.Ocr.PdfOcrReport.Deconstruct(out System.Collections.Generic.IReadOnlyList<Egap.Pdf.Ocr.PdfOcrPageReport!>! Pages) -> void
+Egap.Pdf.Ocr.PdfOcrReport.EngineTime.get -> System.TimeSpan
+Egap.Pdf.Ocr.PdfOcrReport.Equals(Egap.Pdf.Ocr.PdfOcrReport? other) -> bool
+Egap.Pdf.Ocr.PdfOcrReport.Pages.get -> System.Collections.Generic.IReadOnlyList<Egap.Pdf.Ocr.PdfOcrPageReport!>!
+Egap.Pdf.Ocr.PdfOcrReport.Pages.init -> void
+Egap.Pdf.Ocr.PdfOcrReport.PdfA.get -> Egap.Pdf.PdfAReport?
+Egap.Pdf.Ocr.PdfOcrReport.PdfA.init -> void
+Egap.Pdf.Ocr.PdfOcrReport.PdfOcrReport(System.Collections.Generic.IReadOnlyList<Egap.Pdf.Ocr.PdfOcrPageReport!>! Pages) -> void
+Egap.Pdf.Ocr.PdfOcrReport.Words.get -> int
 Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions.get -> bool
 Egap.Pdf.PdfRenderOptions.ApplyTransferFunctions.init -> void
 Egap.Pdf.PdfRenderOptions.DefaultCmykProfile.get -> Egami.Colors.ColorProfile?
 Egap.Pdf.PdfRenderOptions.DefaultCmykProfile.init -> void
+override Egap.Pdf.Ocr.PdfOcrOptions.Equals(object? obj) -> bool
+override Egap.Pdf.Ocr.PdfOcrOptions.GetHashCode() -> int
+override Egap.Pdf.Ocr.PdfOcrOptions.ToString() -> string!
+override Egap.Pdf.Ocr.PdfOcrPageReport.Equals(object? obj) -> bool
+override Egap.Pdf.Ocr.PdfOcrPageReport.GetHashCode() -> int
+override Egap.Pdf.Ocr.PdfOcrPageReport.ToString() -> string!
+override Egap.Pdf.Ocr.PdfOcrReport.Equals(object? obj) -> bool
+override Egap.Pdf.Ocr.PdfOcrReport.GetHashCode() -> int
+override Egap.Pdf.Ocr.PdfOcrReport.ToString() -> string!
+static Egap.Pdf.Ocr.PdfOcr.MakeSearchableAsync(Egap.Pdf.PdfDocument! document, Egami.Ocr.IOcrEngine! engine, Egap.Pdf.Ocr.PdfOcrOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Pdf.Ocr.PdfOcrReport!>!
+static Egap.Pdf.Ocr.PdfOcrOptions.Default.get -> Egap.Pdf.Ocr.PdfOcrOptions!
+static Egap.Pdf.Ocr.PdfOcrOptions.operator !=(Egap.Pdf.Ocr.PdfOcrOptions? left, Egap.Pdf.Ocr.PdfOcrOptions? right) -> bool
+static Egap.Pdf.Ocr.PdfOcrOptions.operator ==(Egap.Pdf.Ocr.PdfOcrOptions? left, Egap.Pdf.Ocr.PdfOcrOptions? right) -> bool
+static Egap.Pdf.Ocr.PdfOcrPageReport.operator !=(Egap.Pdf.Ocr.PdfOcrPageReport? left, Egap.Pdf.Ocr.PdfOcrPageReport? right) -> bool
+static Egap.Pdf.Ocr.PdfOcrPageReport.operator ==(Egap.Pdf.Ocr.PdfOcrPageReport? left, Egap.Pdf.Ocr.PdfOcrPageReport? right) -> bool
+static Egap.Pdf.Ocr.PdfOcrReport.operator !=(Egap.Pdf.Ocr.PdfOcrReport? left, Egap.Pdf.Ocr.PdfOcrReport? right) -> bool
+static Egap.Pdf.Ocr.PdfOcrReport.operator ==(Egap.Pdf.Ocr.PdfOcrReport? left, Egap.Pdf.Ocr.PdfOcrReport? right) -> bool
+static Egap.Pdf.PdfOcrLayer.AddResult(Egap.Pdf.PdfPage! page, Egami.Ocr.OcrResult! result, Egap.Pdf.PdfMatrix imageToPage, double minConfidence = 0) -> int
