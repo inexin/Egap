@@ -4,8 +4,8 @@ namespace Egap.Documents.Docx;
 
 /// <summary>
 /// Floating table positions (<c>w:tblpPr</c>, <c>w:tblOverlap</c>, ECMA-376 Part 1, 17.4.57 and 17.4.56) and paragraph
-/// frames (<c>w:framePr</c>, 17.3.1.11) to and from the model. Anchors the file leaves out are the page's, as the standard
-/// says.
+/// frames (<c>w:framePr</c>, 17.3.1.11) to and from the model. A missing horizontal anchor is the text's, as Word reads it;
+/// a missing vertical one is the page's, as the standard says.
 /// </summary>
 internal static class DocxPositions
 {
@@ -120,13 +120,14 @@ internal static class DocxPositions
         return e;
     }
 
+    /// <summary>ST_HAnchor; a missing anchor is the text's, as Word reads it (the standard says the page's).</summary>
     private static HorizontalAnchor Horizontal(string? value)
     {
         return value switch
         {
-            "text" => HorizontalAnchor.Column,
+            "page" => HorizontalAnchor.Page,
             "margin" => HorizontalAnchor.Margin,
-            _ => HorizontalAnchor.Page,
+            _ => HorizontalAnchor.Column,
         };
     }
 

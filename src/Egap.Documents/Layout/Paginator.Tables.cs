@@ -83,6 +83,17 @@ internal sealed partial class Paginator
         return plan;
     }
 
+    /// <summary>
+    /// Before Word 2013's layout (compatibility mode 15), a left-aligned table's indent is measured to its first cell's text,
+    /// so the table's edge sits the cell's left margin further left: that margin, or 0.
+    /// </summary>
+    private double LegacyIndent(Table table, TableFormat format)
+    {
+        return document.Settings.WordCompatibility.TableIndentFromCellText && format.Alignment is null or TableAlignment.Left
+            && table.Rows.Count > 0 && table.Rows[0].Cells.Count > 0 && table.Rows[0].Cells[0] is { } firstCell
+            ? firstCell.GetEffectiveFormat().MarginLeft ?? format.CellMarginLeft ?? 5.4 : 0;
+    }
+
     private TablePlan MakePlan(Table table, double x, double available)
     {
         TableFormat format = table.GetEffectiveFormat();
@@ -90,13 +101,7 @@ internal sealed partial class Paginator
         double width = grid.Sum();
         double left = x + (format.Indent ?? 0);
 
-        // Before Word 2013's layout (compatibility mode 15), a left-aligned table's indent is measured to its first cell's
-        // text, so the table's edge sits the cell's left margin further left.
-        if (document.Settings.WordCompatibility.TableIndentFromCellText && format.Alignment is null or TableAlignment.Left
-            && table.Rows.Count > 0 && table.Rows[0].Cells.Count > 0 && table.Rows[0].Cells[0] is { } firstCell)
-        {
-            left -= firstCell.GetEffectiveFormat().MarginLeft ?? format.CellMarginLeft ?? 5.4;
-        }
+        left -= LegacyIndent(table, format);
 
         if (format.Alignment == TableAlignment.Center)
         {

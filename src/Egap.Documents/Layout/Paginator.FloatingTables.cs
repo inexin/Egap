@@ -3,8 +3,8 @@ namespace Egap.Documents.Layout;
 /// <summary>
 /// Floating tables (Word's <c>w:tblpPr</c>): placed by their anchors like floating pictures, kept clear of text by square
 /// wrap on the side with more room, and, when they do not fit, split between rows with the rest continuing as a float at the
-/// top of the next page's body, header rows repeated (Word 2013's rules). Word 2010's rules and Word's
-/// <c>doNotBreakWrappedTables</c> keep a floating table whole. Floating tables in cells, headers, footers, notes and text
+/// top of the next page's body, header rows repeated, as Word lays them out in every compatibility mode. Word's
+/// <c>doNotBreakWrappedTables</c> keeps a floating table whole. Floating tables in cells, headers, footers, notes and text
 /// boxes are laid out in the text.
 /// </summary>
 internal sealed partial class Paginator
@@ -44,26 +44,41 @@ internal sealed partial class Paginator
         // position puts it.
         TablePlan probe = Plan(table, 0, Column.Width);
         FloatingPlacement placement = PlacementOf(position);
-        LayoutRect bounds = FloatBounds(placement, probe.Width, probe.Rows.Sum(r => r.Height), y);
-        bounds = ClearOtherTables(bounds, position);
-        bool split = PlaceFloatingRows(table, position, bounds.X - probe.Left, bounds.Y, 0);
 
-        // Word 2013 moves the text after a table that breaks to the next page, unless allowTextAfterFloatingTableBreak.
+        // A table that may break is placed by its first row: the rest goes on on the next page instead of pushing it up.
+        double height = probe.Rows.Sum(r => r.Height);
+        if (MaySplit(position) && probe.Rows.Count > 0 && placement.VerticalAlignment is FloatingAlignment.None or FloatingAlignment.Start or FloatingAlignment.Inside)
+        {
+            height = probe.Rows[0].Height;
+        }
+
+        LayoutRect bounds = FloatBounds(placement, probe.Width, height, y);
+        bounds = ClearOtherTables(bounds, position);
+
+        // The position puts the table's edge, or its first cell's text where Word measures the indent there (mode below 15).
+        double legacy = LegacyIndent(table, table.GetEffectiveFormat());
+        bool split = PlaceFloatingRows(table, position, bounds.X - probe.Left - legacy, bounds.Y, 0);
+
+        // Word 2013 moves the text after a table that breaks to the page where the table ends, unless
+        // allowTextAfterFloatingTableBreak lets it follow the first part.
         if (split && !document.Settings.WordCompatibility.AllowTextAfterFloatingTableBreak)
         {
-            NewPage();
+            while (carriedTables.Exists(c => c.Table == table))
+            {
+                NewPage();
+            }
         }
     }
 
     /// <summary>
-    /// Places a floating table's rows from <paramref name="first"/> at <paramref name="top"/>, as many whole rows as fit when it
-    /// may split; the rest is carried to the next page. Returns whether some rows were carried.
+    /// Places a floating table's rows from <paramref name="first"/> at <paramref name="top"/>, as many whole rows as fit above
+    /// the body's foot when it may split; the rest is carried to the next page. A table placed on the page keeps its first row
+    /// where it is put; one placed by the text moves whole to the next page when not even that fits. Returns whether some
+    /// rows were carried.
     /// </summary>
     private bool PlaceFloatingRows(Table table, TablePosition position, double planX, double top, int first)
     {
         TablePlan plan = Plan(table, planX, Column.Width);
-        WordCompatibility compat = document.Settings.WordCompatibility;
-        bool maySplit = !compat.DoNotBreakWrappedTables && document.Settings.CompatibilityMode >= 15;
         double bottom = page!.Geometry.BodyBottom;
         List<LayoutBox> rows = [];
         double at = top;
@@ -81,7 +96,8 @@ internal sealed partial class Paginator
         for (; r < plan.Rows.Count; r++)
         {
             RowPlan row = plan.Rows[r];
-            if (maySplit && at + row.Height > bottom + 0.01 && (placed > 0 || top > page.Geometry.BodyTop + 0.01))
+            if (MaySplit(position) && at + row.Height > bottom + 0.01
+                && (placed > 0 || (position.VerticalAnchor == VerticalAnchor.Paragraph && top > page.Geometry.BodyTop + 0.01)))
             {
                 break;
             }
@@ -104,6 +120,16 @@ internal sealed partial class Paginator
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// A floating table breaks across pages, in every compatibility mode, unless <c>doNotBreakWrappedTables</c>; one centred
+    /// or aligned to the bottom of the page or margins stays where it is put, margins included.
+    /// </summary>
+    private bool MaySplit(TablePosition position)
+    {
+        return !document.Settings.WordCompatibility.DoNotBreakWrappedTables
+            && (position.VerticalAnchor == VerticalAnchor.Paragraph || position.VerticalAlignment is FloatingAlignment.None or FloatingAlignment.Start or FloatingAlignment.Inside);
     }
 
     /// <summary>Places the rows carried from the page before at the top of this page's body.</summary>
