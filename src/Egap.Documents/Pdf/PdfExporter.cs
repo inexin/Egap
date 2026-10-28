@@ -40,6 +40,11 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
             }
 
             WriteMetadata(language);
+            if (options.EmbedSource)
+            {
+                HybridPdf.Embed(pdf, document, options.Conformance);
+            }
+
             Dictionary<string, PdfDestination> bookmarks = Bookmarks();
             if (options.NamedDestinations)
             {
