@@ -17,8 +17,8 @@ public enum PdfCommentMode
 
     /// <summary>
     /// Comments are printed in a pane on the right of each page, as Word prints markup: the page keeps its paper size, its
-    /// content drawn a third smaller, each comment thread in a balloon beside its line with a line to it; balloons that do not
-    /// fit go to a Comments list at the end, with their page numbers.
+    /// content drawn at 76 %, each comment in a balloon beside its line with a line to it and its replies under it; balloons
+    /// that do not fit go to a Comments list at the end, with their page numbers.
     /// </summary>
     Margin,
 }

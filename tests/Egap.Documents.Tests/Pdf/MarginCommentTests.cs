@@ -60,8 +60,8 @@ public sealed class MarginCommentTests
         // The body text sits in the left two thirds, the balloons in the pane.
         PdfTextLine body = pdf.Pages[0].GetText().Lines.First(l => l.Text.Contains("Paragraph 1", StringComparison.Ordinal));
         PdfTextLine balloon = pdf.Pages[0].GetText().Lines.First(l => l.Text.Contains("Check this. 1", StringComparison.Ordinal));
-        Assert.True(body.Box.Right < 612 * 2 / 3.0, $"body to {body.Box.Right}");
-        Assert.True(balloon.Box.Left > 612 * 2 / 3.0, $"balloon from {balloon.Box.Left}");
+        Assert.True(body.Box.Right < 612 * MarginComments.ContentShare, $"body to {body.Box.Right}");
+        Assert.True(balloon.Box.Left > 612 * MarginComments.ContentShare, $"balloon from {balloon.Box.Left}");
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public sealed class MarginCommentTests
         using PdfDocument pdf = Export(Commented(2), new PdfExportOptions { Comments = PdfCommentMode.Margin, UniversalAccessibility = true });
 
         PdfStructureElement[] notes = [.. pdf.Structure.Root!.DescendantsAndSelf().Where(e => e.Type == PdfStructureType.Note)];
-        Assert.Equal(2, notes.Length);
+        Assert.Equal(3, notes.Length);   // two comments and the reply to the first, each a balloon
         PdfAReport ua = PdfAConverter.CheckUniversalAccessibility(pdf);
         Assert.True(ua.Succeeded, string.Join("\n", ua.Unmet.Select(i => i.Clause + " " + i.Description)));
     }

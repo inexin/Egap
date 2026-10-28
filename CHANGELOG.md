@@ -186,13 +186,14 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - PDF import reads a highlight's comment onto the words it covers, keeps reply chains and reads the `Completed` state as
   `Comment.Done`, so DOCX to PDF to DOCX keeps author, date, text, range, replies and resolved state.
 - `PdfCommentMode.Margin` prints comments beside each page, as Word prints markup: the paper size stays, the content is
-  drawn a third smaller, each thread is a balloon beside its line (pushed down on collision) with a line to it, and
+  drawn smaller, each thread is a balloon beside its line (pushed down on collision) with a line to it, and
   balloons that do not fit go to a Comments list at the end with their page numbers. Links and bookmarks follow the
   smaller page; form fields with this mode throw an `ArgumentException`. Tagged output makes each balloon a `Note`.
 - The margin looks like LibreOffice's: the commented words are shaded in their author's colour, each author has a colour
   for shading, balloon and line, the author and date sit under the comment's text, and a dashed line runs from an arrow
   under the comment's first character, under its line and straight to the balloon. Balloons are centred on their line and
-  move up as well as down to make room, so they stay beside the text they belong to.
+  move up as well as down to make room, so they stay beside the text they belong to. As in Word, the page shrinks to 76 %,
+  the balloons sit on a grey pane beside it, and each reply has a balloon of its own under the comment it answers.
 - Tagged output gives every `Note` element the `ID` PDF/UA asks for, footnotes included.
 ### Hybrid PDF
 - `PdfExportOptions.EmbedSource` and `PdfConvertOptions.EmbedSource` embed a DOCX of the document as the PDF's source (an
