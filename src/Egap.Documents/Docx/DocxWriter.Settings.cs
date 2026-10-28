@@ -100,7 +100,7 @@ internal sealed partial class DocxWriter
             {
                 if (mode is null)
                 {
-                    mode = new XElement(Ns.W + "compatSetting", new XAttribute(Ns.W + "name", "compatibilityMode"), new XAttribute(Ns.W + "uri", "http://schemas.microsoft.com/office/word"));
+                    mode = DocxCompatibility.NewSetting("compatibilityMode");
                     compat.Add(mode);
                 }
 
@@ -110,6 +110,8 @@ internal sealed partial class DocxWriter
             changed = true;
         }
 
+        // A new settings part gets every flag the model sets, and Word's other options the model holds.
+        changed |= DocxCompatibility.Write(root, settings.WordCompatibility, original is null ? null : read?.WordCompatibility, () => Set(root, new XElement(Ns.W + "compat")));
         if (!changed)
         {
             if (original is not null)
@@ -162,15 +164,7 @@ internal sealed partial class DocxWriter
             }
         }
 
-        // Settings without a compatibility mode are Word 2007's, which Word lays out in its mode 12.
-        settings.CompatibilityMode = 12;
-        foreach (XElement setting in root.Element(Ns.W + "compat")?.Elements(Ns.W + "compatSetting") ?? [])
-        {
-            if (setting.W("name") == "compatibilityMode" && DocxUnits.Int(setting.W("val")) is int mode && mode is >= 0 and <= 100)
-            {
-                settings.CompatibilityMode = mode;
-            }
-        }
+        DocxCompatibility.Read(root, settings);
     }
 
     private static bool SetNoteProperties(XElement root, string name, NumberStyle style, int start, NumberStyle defaultStyle)

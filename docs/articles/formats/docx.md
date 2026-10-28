@@ -20,6 +20,42 @@ report.SaveAsDocx("report-copy.docx");                            // what the mo
 DocxFormat.Save(report, "report.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
 ```
 
+## Word compatibility
+
+Word lays a file out by the rules of the Word version that made it: `DocumentSettings.CompatibilityMode` says which (15
+for Word 2013 and later, 14 for 2010, 12 for 2007, 11 and below for older files), and the settings part's compatibility
+options switch single layout rules on or off. Egap reads both and lays the document out by the same rules.
+
+`DocumentSettings.WordCompatibility` names each option Egap acts on. A flag is what the file or your code set, else the
+default for the compatibility mode, so changing the mode changes every flag nobody set:
+
+| Flag | When on |
+| --- | --- |
+| `AllowSpaceOfSameStyleInTable` | Contextual spacing is ignored in table cells. |
+| `DoNotUseIndentAsNumberingTabStop` | The tab after a list label skips the hanging indent and goes to the next tab stop. |
+| `SplitPageBreakAndParagraphMark` | After a page break that ends a paragraph, the paragraph mark takes a line on the next page. |
+| `OverrideTableStyleFontSizeAndJustification` | A table style's font size and alignment win over an 11 or 12 point, left-aligned default paragraph style. |
+| `EnableOpenTypeFeatures` | Runs' ligatures, contextual alternates, stylistic sets and number forms are used. |
+| `DoNotBreakWrappedTables` | A floating table stays on one page. |
+| `AllowTextAfterFloatingTableBreak` | Text may follow a floating table on the page where it breaks. |
+| `TableIndentFromCellText` | A table's indent is measured to its first cell's text (Word before 2013; not saved to DOCX). |
+
+A new document has Word 2013's options, and saving it writes them. A file's options go back as they were read; a flag
+you set is written, and the options Egap does not act on stay in the file and are listed in `OtherSettings`.
+
+```csharp
+using Egap.Documents;
+
+Document old = Document.LoadDocx("word-2007.docx");
+WordCompatibility compat = old.Settings.WordCompatibility;
+bool legacyTables = !compat.OverrideTableStyleFontSizeAndJustification;
+string? ulTrailSpace = compat.OtherSettings.GetValueOrDefault("ulTrailSpace");   // "1" when the file has it
+
+compat.EnableOpenTypeFeatures = true;          // shape with the runs' ligatures and number forms
+old.Settings.CompatibilityMode = 15;           // the flags nobody set follow Word 2013's rules
+compat.UseModeDefaults();                      // forget the file's values too
+```
+
 ## Writing
 
 DOCX to DOCX is lossless: parts and paragraphs you did not edit are written as they were read. Saving to a path takes the

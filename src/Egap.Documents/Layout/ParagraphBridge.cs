@@ -151,7 +151,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
 
         RichText rich = text.ToRichText();
         // Text outside every span (a placeholder's character) takes the default style, which must name fonts.
-        EgamiParagraphStyle paragraphStyle = ParagraphStyleOf(format, Mark());
+        EgamiParagraphStyle paragraphStyle = ParagraphStyleOf(format, Mark(), labelLength > 0);
         return new ParagraphContent
         {
             Source = paragraph,
@@ -420,8 +420,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             BaselineShift = shift == 0 ? null : shift,
 
             // Word kerns only text at or above the run's kerning size (w:kern), and sets no standard ligatures by default;
-            // the run's own features come after, so they win.
-            Features = WithOwn(format.Kerning > 0 && size >= format.Kerning ? NoLigatures : NoKerningNoLigatures, format.Features),
+            // the run's own features come after, so they win, unless Word's enableOpenTypeFeatures is off.
+            Features = WithOwn(format.Kerning > 0 && size >= format.Kerning ? NoLigatures : NoKerningNoLigatures,
+                document.Settings.WordCompatibility.EnableOpenTypeFeatures ? format.Features : FontFeatures.None),
         };
     }
 
@@ -528,7 +529,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         return list;
     }
 
-    private EgamiParagraphStyle ParagraphStyleOf(ResolvedParagraphFormat format, TextStyle? defaultStyle)
+    private EgamiParagraphStyle ParagraphStyleOf(ResolvedParagraphFormat format, TextStyle? defaultStyle, bool labelled = false)
     {
         double lineStart = format.LeftIndent + format.FirstLineIndent;
         List<EgamiTab> tabs = [];
@@ -552,8 +553,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             }
         }
 
-        // A hanging indent is a tab stop of its own in Word: the first tab after a list label reaches the text indent.
-        if (format.FirstLineIndent < 0 && -format.FirstLineIndent is double hanging && !tabs.Exists(t => Math.Abs(t.Position - hanging) < 0.01))
+        // A hanging indent is a tab stop of its own in Word: the first tab after a list label reaches the text indent, unless
+        // Word's doNotUseIndentAsNumberingTabStop sends a label's tab on to the next stop.
+        if (format.FirstLineIndent < 0 && !(labelled && document.Settings.WordCompatibility.DoNotUseIndentAsNumberingTabStop) && -format.FirstLineIndent is double hanging && !tabs.Exists(t => Math.Abs(t.Position - hanging) < 0.01))
         {
             tabs.Add(new EgamiTab((float)hanging));
         }

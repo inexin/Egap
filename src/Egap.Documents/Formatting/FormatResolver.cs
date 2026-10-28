@@ -140,9 +140,20 @@ internal static class FormatResolver
     {
         Document document = paragraph.Document;
         List<ParagraphFormat> levels = [document.Styles.DefaultParagraphFormat];
+        ParagraphFormat? keepTableAlignment = null;
         if (paragraph.Parent is Cell cell)
         {
-            levels.AddRange(Layers(cell, rowOnly: false).Select(l => l.Paragraph));
+            List<TableLayer> layers = Layers(cell, rowOnly: false);
+            levels.AddRange(layers.Select(l => l.Paragraph));
+
+            // Without Word's overrideTableStyleFontSizeAndJustification, a left-aligned default paragraph style leaves the
+            // table style's alignment in place.
+            if (!document.Settings.WordCompatibility.OverrideTableStyleFontSizeAndJustification
+                && document.Styles.DefaultParagraphStyle?.ParagraphFormat is { Alignment: ParagraphAlignment.Left } normal
+                && layers.Exists(l => l.Paragraph.Alignment is not null))
+            {
+                keepTableAlignment = normal;
+            }
         }
 
         levels.AddRange(Chain(StyleOf(paragraph)).Select(s => s.ParagraphFormat));
@@ -164,7 +175,7 @@ internal static class FormatResolver
         {
             for (int i = 0; i < values.Length; i++)
             {
-                if (level.GetRaw(i) is { } value)
+                if (level.GetRaw(i) is { } value && !(i == ParagraphFormat.AlignmentId && ReferenceEquals(level, keepTableAlignment)))
                 {
                     values[i] = value;
                 }
@@ -197,6 +208,11 @@ internal static class FormatResolver
         List<ParagraphStyle> paragraphStyle = paragraph is null ? Chain<ParagraphStyle>(null) : Chain(StyleOf(paragraph));
         List<CharacterStyle> characterStyle = Chain(StyleOf(run));
 
+        // Without Word's overrideTableStyleFontSizeAndJustification, an 11 or 12 point default paragraph style leaves the
+        // table style's font size in place.
+        RunFormat? keepTableSize = table.Count > 0 && !document.Settings.WordCompatibility.OverrideTableStyleFontSizeAndJustification
+            && document.Styles.DefaultParagraphStyle?.RunFormat is { Size: 11 or 12 } normal && table.Exists(l => l.Run.Size is not null) ? normal : null;
+
         object?[] values = new object?[RunFormat.Count];
         Apply(defaults);
         foreach (TableLayer level in table)
@@ -226,7 +242,7 @@ internal static class FormatResolver
         {
             for (int i = 0; i < values.Length; i++)
             {
-                if (level.GetRaw(i) is { } value && !IsFontSlot(i))
+                if (level.GetRaw(i) is { } value && !IsFontSlot(i) && !(i == RunFormat.SizeId && ReferenceEquals(level, keepTableSize)))
                 {
                     values[i] = value;
                 }
