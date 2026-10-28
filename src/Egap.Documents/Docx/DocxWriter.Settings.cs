@@ -34,6 +34,23 @@ internal sealed partial class DocxWriter
     {
         OpcPart? original = OriginalPart(OpcRelationshipTypes.Settings);
         XElement root = original?.LoadXml().Root ?? NewSettings();
+        if (original is null)
+        {
+            // A new part names the separator notes only when the notes part that holds them is written: Word refuses a file
+            // whose settings point at notes it does not have.
+            foreach ((NoteKind kind, string noteName) in (ReadOnlySpan<(NoteKind, string)>)[(NoteKind.Footnote, "footnote"), (NoteKind.Endnote, "endnote")])
+            {
+                if (!noteIds.Keys.Any(n => n.Kind == kind) && root.Element(Ns.W + noteName + "Pr") is { } properties)
+                {
+                    properties.Elements(Ns.W + noteName).Remove();
+                    if (!properties.HasElements)
+                    {
+                        properties.Remove();
+                    }
+                }
+            }
+        }
+
         DocumentSettings settings = document.Settings;
         DocumentSettings? read = null;
         if (original is not null || data is not null)
