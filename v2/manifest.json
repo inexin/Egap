@@ -653,7 +653,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.DocumentSettings",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentSettings.yml\" sourcestartlinenumber=\"1\">Document-wide settings that change layout and numbering: the default tab stop, odd and even headers, footnote and endnote\nnumbering, change tracking and Word's compatibility mode. Word's other settings are kept by the DOCX reader as extension\ndata on the document.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentSettings.yml\" sourcestartlinenumber=\"1\">Document-wide settings that change layout and numbering: the default tab stop, odd and even headers, footnote and endnote\nnumbering, change tracking and Word's compatibility mode and options. Word's other settings are kept by the DOCX reader as extension\ndata on the document.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3720,6 +3720,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.WordBreak",
       "Summary": "<p sourcefile=\"api/Egap.Documents.WordBreak.yml\" sourcestartlinenumber=\"1\">Where lines may break inside words.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.WordCompatibility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.WordCompatibility.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.WordCompatibility",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.WordCompatibility.yml\" sourcestartlinenumber=\"1\">Word's compatibility options that change how Egap lays a document out, one named flag each (Word's <code>w:compat</code>\nsettings). A flag's value is the one the file or code set, else the default for the document's\n<xref href=\"Egap.Documents.DocumentSettings.CompatibilityMode\" data-throw-if-not-resolved=\"false\"></xref>, so changing the mode changes every flag nobody set. Word's other\ncompatibility options are read too, kept for round trips and listed in <xref href=\"Egap.Documents.WordCompatibility.OtherSettings\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",

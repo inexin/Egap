@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class WordCompatibility | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class WordCompatibility | Egap ">
+      
+      <meta name="description" content="Word&#39;s compatibility options that change how Egap lays a document out, one named flag each (Word&#39;s w:compat settings). A flag&#39;s value is the one the file or code set, else the default for the document&#39;s , so changing the mode changes every flag nobody set. Word&#39;s other compatibility options are read too, kept for round trips and listed in .">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_WordCompatibility.md&amp;value=---%0Auid%3A%20Egap.Documents.WordCompatibility%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.WordCompatibility">
+
+
+
+  <h1 id="Egap_Documents_WordCompatibility" data-uid="Egap.Documents.WordCompatibility" class="text-break">
+Class WordCompatibility  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Word's compatibility options that change how Egap lays a document out, one named flag each (Word's <code>w:compat</code>
+settings). A flag's value is the one the file or code set, else the default for the document's
+<a class="xref" href="Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_CompatibilityMode">CompatibilityMode</a>, so changing the mode changes every flag nobody set. Word's other
+compatibility options are read too, kept for round trips and listed in <a class="xref" href="Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_OtherSettings">OtherSettings</a>.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class WordCompatibility</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">WordCompatibility</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Egap_Documents_WordCompatibility_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>A new document has Word 2013's settings: <a class="xref" href="Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_OverrideTableStyleFontSizeAndJustification">OverrideTableStyleFontSizeAndJustification</a> and
+<a class="xref" href="Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_EnableOpenTypeFeatures">EnableOpenTypeFeatures</a> on, and Word's <code>doNotFlipMirrorIndents</code> and
+<code>differentiateMultirowTableHeaders</code> in <a class="xref" href="Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_OtherSettings">OtherSettings</a>. A DOCX file's flags are what its settings part says; a flag the file does not
+set is off, as ECMA-376 and Word's own extensions define it.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_WordCompatibility_AllowSpaceOfSameStyleInTable_" data-uid="Egap.Documents.WordCompatibility.AllowSpaceOfSameStyleInTable*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_AllowSpaceOfSameStyleInTable" data-uid="Egap.Documents.WordCompatibility.AllowSpaceOfSameStyleInTable">
+  AllowSpaceOfSameStyleInTable
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Contextual spacing (<a class="xref" href="Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_ContextualSpacing">ContextualSpacing</a>) is ignored in table cells, so paragraphs of the
+same style there keep their space (Word's <code>allowSpaceOfSameStyleInTable</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowSpaceOfSameStyleInTable { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_WordCompatibility_AllowTextAfterFloatingTableBreak_" data-uid="Egap.Documents.WordCompatibility.AllowTextAfterFloatingTableBreak*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_AllowTextAfterFloatingTableBreak" data-uid="Egap.Documents.WordCompatibility.AllowTextAfterFloatingTableBreak">
+  AllowTextAfterFloatingTableBreak
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Text may follow a floating table on the page where the table breaks (Word's <code>allowTextAfterFloatingTableBreak</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowTextAfterFloatingTableBreak { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_WordCompatibility_DoNotBreakWrappedTables_" data-uid="Egap.Documents.WordCompatibility.DoNotBreakWrappedTables*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_DoNotBreakWrappedTables" data-uid="Egap.Documents.WordCompatibility.DoNotBreakWrappedTables">
+  DoNotBreakWrappedTables
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A floating table is kept on one page instead of continuing on the next (Word's <code>doNotBreakWrappedTables</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool DoNotBreakWrappedTables { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_WordCompatibility_DoNotUseIndentAsNumberingTabStop_" data-uid="Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_DoNotUseIndentAsNumberingTabStop" data-uid="Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop">
+  DoNotUseIndentAsNumberingTabStop
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A hanging indent is not a tab stop for the tab after a list label, which then goes to the next tab stop
+(Word's <code>doNotUseIndentAsNumberingTabStop</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool DoNotUseIndentAsNumberingTabStop { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_WordCompatibility_EnableOpenTypeFeatures_" data-uid="Egap.Documents.WordCompatibility.EnableOpenTypeFeatures*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_EnableOpenTypeFeatures" data-uid="Egap.Documents.WordCompatibility.EnableOpenTypeFeatures">
+  EnableOpenTypeFeatures
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The OpenType features runs ask for (<a class="xref" href="Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Features">Features</a>: ligatures, contextual alternates, stylistic
+sets, number forms and spacing) are used. When off, as in files older than Word 2010, text is shaped without them
+(Word's <code>enableOpenTypeFeatures</code>); kerning (<a class="xref" href="Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Kerning">Kerning</a>) still applies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool EnableOpenTypeFeatures { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_WordCompatibility_OtherSettings_" data-uid="Egap.Documents.WordCompatibility.OtherSettings*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_OtherSettings" data-uid="Egap.Documents.WordCompatibility.OtherSettings">
+  OtherSettings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Word's compatibility options read from the file that Egap keeps but does not act on, by name: a <code>w:compat</code>
+child's local name with its value (<code>1</code> when on), or a <code>w:compatSetting</code>'s name with its <code>val</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;string, string&gt; OtherSettings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_WordCompatibility_OverrideTableStyleFontSizeAndJustification_" data-uid="Egap.Documents.WordCompatibility.OverrideTableStyleFontSizeAndJustification*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_OverrideTableStyleFontSizeAndJustification" data-uid="Egap.Documents.WordCompatibility.OverrideTableStyleFontSizeAndJustification">
+  OverrideTableStyleFontSizeAndJustification
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A table style's font size and alignment win over the default paragraph style's, as the style hierarchy says. When off,
+as in files older than Word 2010, a default paragraph style of 11 or 12 points leaves table text at the table style's
+size, and a left-aligned default paragraph style leaves it at the table style's alignment (Word's
+<code>overrideTableStyleFontSizeAndJustification</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool OverrideTableStyleFontSizeAndJustification { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_WordCompatibility_SplitPageBreakAndParagraphMark_" data-uid="Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_SplitPageBreakAndParagraphMark" data-uid="Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark">
+  SplitPageBreakAndParagraphMark
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The paragraph mark after a page break that ends a paragraph moves to the next page and takes a line there, as before
+Word 2013 (Word's <code>splitPgBreakAndParaMark</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SplitPageBreakAndParagraphMark { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_WordCompatibility_TableIndentFromCellText_" data-uid="Egap.Documents.WordCompatibility.TableIndentFromCellText*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_TableIndentFromCellText" data-uid="Egap.Documents.WordCompatibility.TableIndentFromCellText">
+  TableIndentFromCellText
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A left-aligned table's indent is measured to its first cell's text, so the table's edge sits the cell's left margin
+further left. Word has no setting of its own for this: it is on below compatibility mode 15 (Word 2013), and a value
+set here is not saved to DOCX.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TableIndentFromCellText { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_WordCompatibility_UseModeDefaults_" data-uid="Egap.Documents.WordCompatibility.UseModeDefaults*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_UseModeDefaults" data-uid="Egap.Documents.WordCompatibility.UseModeDefaults">
+  UseModeDefaults()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Forgets every flag value the file or code set, so each flag follows <a class="xref" href="Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_CompatibilityMode">CompatibilityMode</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void UseModeDefaults()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L15" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -284,7 +284,7 @@ such as TITLE, AUTHOR and DOCPROPERTY show.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.DocumentSettings.html">DocumentSettings</a></dt>
       <dd><p>Document-wide settings that change layout and numbering: the default tab stop, odd and even headers, footnote and endnote
-numbering, change tracking and Word's compatibility mode. Word's other settings are kept by the DOCX reader as extension
+numbering, change tracking and Word's compatibility mode and options. Word's other settings are kept by the DOCX reader as extension
 data on the document.</p>
 </dd>
     </dl>
@@ -784,6 +784,14 @@ which can be accepted or rejected on its own.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.TrackedChangeCollection.html">TrackedChangeCollection</a></dt>
       <dd><p>A document's tracked changes in document order, to read, accept or reject.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.WordCompatibility.html">WordCompatibility</a></dt>
+      <dd><p>Word's compatibility options that change how Egap lays a document out, one named flag each (Word's <code>w:compat</code>
+settings). A flag's value is the one the file or code set, else the default for the document's
+<a class="xref" href="Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_CompatibilityMode">CompatibilityMode</a>, so changing the mode changes every flag nobody set. Word's other
+compatibility options are read too, kept for round trips and listed in <a class="xref" href="Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_OtherSettings">OtherSettings</a>.</p>
 </dd>
     </dl>
     <h3 id="structs">

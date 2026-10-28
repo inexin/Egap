@@ -102,6 +102,67 @@ DocxKind? kind = DocxFormat.KindOf(report);                       // Document, T
 report.SaveAsDocx(&quot;report-copy.docx&quot;);                            // what the model does not name is kept
 DocxFormat.Save(report, &quot;report.dotx&quot;, new DocxSaveOptions { Kind = DocxKind.Template });
 </code></pre>
+<h2 id="word-compatibility">Word compatibility</h2>
+<p>Word lays a file out by the rules of the Word version that made it: <code>DocumentSettings.CompatibilityMode</code> says which (15
+for Word 2013 and later, 14 for 2010, 12 for 2007, 11 and below for older files), and the settings part's compatibility
+options switch single layout rules on or off. Egap reads both and lays the document out by the same rules.</p>
+<p><code>DocumentSettings.WordCompatibility</code> names each option Egap acts on. A flag is what the file or your code set, else the
+default for the compatibility mode, so changing the mode changes every flag nobody set:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>When on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AllowSpaceOfSameStyleInTable</code></td>
+<td>Contextual spacing is ignored in table cells.</td>
+</tr>
+<tr>
+<td><code>DoNotUseIndentAsNumberingTabStop</code></td>
+<td>The tab after a list label skips the hanging indent and goes to the next tab stop.</td>
+</tr>
+<tr>
+<td><code>SplitPageBreakAndParagraphMark</code></td>
+<td>After a page break that ends a paragraph, the paragraph mark takes a line on the next page.</td>
+</tr>
+<tr>
+<td><code>OverrideTableStyleFontSizeAndJustification</code></td>
+<td>A table style's font size and alignment win over an 11 or 12 point, left-aligned default paragraph style.</td>
+</tr>
+<tr>
+<td><code>EnableOpenTypeFeatures</code></td>
+<td>Runs' ligatures, contextual alternates, stylistic sets and number forms are used.</td>
+</tr>
+<tr>
+<td><code>DoNotBreakWrappedTables</code></td>
+<td>A floating table stays on one page.</td>
+</tr>
+<tr>
+<td><code>AllowTextAfterFloatingTableBreak</code></td>
+<td>Text may follow a floating table on the page where it breaks.</td>
+</tr>
+<tr>
+<td><code>TableIndentFromCellText</code></td>
+<td>A table's indent is measured to its first cell's text (Word before 2013; not saved to DOCX).</td>
+</tr>
+</tbody>
+</table>
+<p>A new document has Word 2013's options, and saving it writes them. A file's options go back as they were read; a flag
+you set is written, and the options Egap does not act on stay in the file and are listed in <code>OtherSettings</code>.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document old = Document.LoadDocx(&quot;word-2007.docx&quot;);
+WordCompatibility compat = old.Settings.WordCompatibility;
+bool legacyTables = !compat.OverrideTableStyleFontSizeAndJustification;
+string? ulTrailSpace = compat.OtherSettings.GetValueOrDefault(&quot;ulTrailSpace&quot;);   // &quot;1&quot; when the file has it
+
+compat.EnableOpenTypeFeatures = true;          // shape with the runs' ligatures and number forms
+old.Settings.CompatibilityMode = 15;           // the flags nobody set follow Word 2013's rules
+compat.UseModeDefaults();                      // forget the file's values too
+</code></pre>
 <h2 id="writing">Writing</h2>
 <p>DOCX to DOCX is lossless: parts and paragraphs you did not edit are written as they were read. Saving to a path takes the
 kind from the extension, so <code>report.dotx</code> is a template; saving to a stream keeps the kind the document was read as (a new
