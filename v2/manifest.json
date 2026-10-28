@@ -2575,6 +2575,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Pdf.PdfCommentMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Pdf.PdfCommentMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Pdf.PdfCommentMode",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Pdf.PdfCommentMode.yml\" sourcestartlinenumber=\"1\">How a document's comments go into the PDF.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Pdf.PdfConvert.yml",
       "output": {
         ".html": {
@@ -7463,11 +7477,11 @@
       "type": "Toc",
       "source_relative_path": "api/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "api/toc.json"
-        },
         ".html": {
           "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
         }
       },
       "version": ""
@@ -7736,11 +7750,11 @@
       "type": "Toc",
       "source_relative_path": "articles/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "articles/toc.json"
-        },
         ".html": {
           "relative_path": "articles/toc.html"
+        },
+        ".json": {
+          "relative_path": "articles/toc.json"
         }
       },
       "version": ""
@@ -7779,11 +7793,11 @@
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "toc.json"
-        },
         ".html": {
           "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
         }
       },
       "version": ""

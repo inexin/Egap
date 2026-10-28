@@ -156,6 +156,39 @@ Class PdfExportOptions  <a class="header-action link-secondary" title="View sour
 </h2>
 
 
+  <a id="Egap_Documents_Pdf_PdfExportOptions_Comments_" data-uid="Egap.Documents.Pdf.PdfExportOptions.Comments*"></a>
+
+  <h3 id="Egap_Documents_Pdf_PdfExportOptions_Comments" data-uid="Egap.Documents.Pdf.PdfExportOptions.Comments">
+  Comments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How the document's comments go into the PDF: left out by default, or as annotations any PDF viewer shows, with
+replies and resolved state; <a class="xref" href="Egap.Documents.Pdf.PdfToDocument.html">PdfToDocument</a> reads them back as comments.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PdfCommentMode Comments { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Pdf.PdfCommentMode.html">PdfCommentMode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Pdf_PdfExportOptions_Conformance_" data-uid="Egap.Documents.Pdf.PdfExportOptions.Conformance*"></a>
 
   <h3 id="Egap_Documents_Pdf_PdfExportOptions_Conformance" data-uid="Egap.Documents.Pdf.PdfExportOptions.Conformance">
@@ -224,7 +257,7 @@ Class PdfExportOptions  <a class="header-action link-secondary" title="View sour
 
   <h3 id="Egap_Documents_Pdf_PdfExportOptions_EmbedSource" data-uid="Egap.Documents.Pdf.PdfExportOptions.EmbedSource">
   EmbedSource
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether a DOCX of the document is embedded as the PDF's source (an associated file at the catalog's <code>/AF</code> with
@@ -271,6 +304,38 @@ the page. Off by default.</p>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public bool FormFields { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Pdf_PdfExportOptions_IncludeResolved_" data-uid="Egap.Documents.Pdf.PdfExportOptions.IncludeResolved*"></a>
+
+  <h3 id="Egap_Documents_Pdf_PdfExportOptions_IncludeResolved" data-uid="Egap.Documents.Pdf.PdfExportOptions.IncludeResolved">
+  IncludeResolved
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether resolved comments are written too (marked <code>Completed</code>); on by default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IncludeResolved { get; init; }</code></pre>
   </div>
 
 
@@ -454,7 +519,7 @@ the page. Off by default.</p>
 
   <h3 id="Egap_Documents_Pdf_PdfExportOptions_Save" data-uid="Egap.Documents.Pdf.PdfExportOptions.Save">
   Save
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the PDF is saved by <a class="xref" href="Egap.Documents.Pdf.PdfExport.html#Egap_Documents_Pdf_PdfExport_SaveAsPdf_Egap_Documents_Document_System_String_Egap_Documents_Pdf_PdfExportOptions_">SaveAsPdf(Document, string, PdfExportOptions?)</a>.</p>

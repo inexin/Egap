@@ -110,6 +110,18 @@ using Egap.Documents.Pdf;
 Document form = HtmlFormat.Load(&quot;application.html&quot;);
 form.SaveAsPdf(&quot;application.pdf&quot;, new PdfExportOptions { FormFields = true });
 </code></pre>
+<p>With <code>Comments = PdfCommentMode.Annotations</code>, the document's comments become PDF annotations any viewer shows and
+edits, as Acrobat writes them: a highlight over the text each is about (a note icon where it is about no text) with its
+author, date and text in a popup, replies threaded under it, and a resolved comment marked <code>Completed</code>.
+<code>IncludeResolved = false</code> leaves resolved comments out. The annotations print and have appearances, so PDF/A-2 and later
+hold, and tagged output puts each in an <code>Annot</code> element. Reading the PDF back gives the comments again, on the words they
+were about.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Pdf;
+
+Document draft = Document.Load(&quot;draft.docx&quot;);
+draft.SaveAsPdf(&quot;draft-for-review.pdf&quot;, new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolved = false });
+</code></pre>
 <h2 id="one-line-conversions">One-line conversions</h2>
 <p><code>PdfConvert</code> turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
 input's own. Converting a file reads its images from the file's own folder; HTML or Markdown given as text reads them only

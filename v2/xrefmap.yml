@@ -16205,6 +16205,24 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Pdf.PdfAutoTagger.Tag
   nameWithType: PdfAutoTagger.Tag
+- uid: Egap.Documents.Pdf.PdfCommentMode
+  name: PdfCommentMode
+  href: api/Egap.Documents.Pdf.PdfCommentMode.html
+  commentId: T:Egap.Documents.Pdf.PdfCommentMode
+  fullName: Egap.Documents.Pdf.PdfCommentMode
+  nameWithType: PdfCommentMode
+- uid: Egap.Documents.Pdf.PdfCommentMode.Annotations
+  name: Annotations
+  href: api/Egap.Documents.Pdf.PdfCommentMode.html#Egap_Documents_Pdf_PdfCommentMode_Annotations
+  commentId: F:Egap.Documents.Pdf.PdfCommentMode.Annotations
+  fullName: Egap.Documents.Pdf.PdfCommentMode.Annotations
+  nameWithType: PdfCommentMode.Annotations
+- uid: Egap.Documents.Pdf.PdfCommentMode.None
+  name: None
+  href: api/Egap.Documents.Pdf.PdfCommentMode.html#Egap_Documents_Pdf_PdfCommentMode_None
+  commentId: F:Egap.Documents.Pdf.PdfCommentMode.None
+  fullName: Egap.Documents.Pdf.PdfCommentMode.None
+  nameWithType: PdfCommentMode.None
 - uid: Egap.Documents.Pdf.PdfConvert
   name: PdfConvert
   href: api/Egap.Documents.Pdf.PdfConvert.html
@@ -16463,6 +16481,19 @@ references:
   commentId: T:Egap.Documents.Pdf.PdfExportOptions
   fullName: Egap.Documents.Pdf.PdfExportOptions
   nameWithType: PdfExportOptions
+- uid: Egap.Documents.Pdf.PdfExportOptions.Comments
+  name: Comments
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_Comments
+  commentId: P:Egap.Documents.Pdf.PdfExportOptions.Comments
+  fullName: Egap.Documents.Pdf.PdfExportOptions.Comments
+  nameWithType: PdfExportOptions.Comments
+- uid: Egap.Documents.Pdf.PdfExportOptions.Comments*
+  name: Comments
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_Comments_
+  commentId: Overload:Egap.Documents.Pdf.PdfExportOptions.Comments
+  isSpec: "True"
+  fullName: Egap.Documents.Pdf.PdfExportOptions.Comments
+  nameWithType: PdfExportOptions.Comments
 - uid: Egap.Documents.Pdf.PdfExportOptions.Conformance
   name: Conformance
   href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_Conformance
@@ -16515,6 +16546,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Pdf.PdfExportOptions.FormFields
   nameWithType: PdfExportOptions.FormFields
+- uid: Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
+  name: IncludeResolved
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_IncludeResolved
+  commentId: P:Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
+  fullName: Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
+  nameWithType: PdfExportOptions.IncludeResolved
+- uid: Egap.Documents.Pdf.PdfExportOptions.IncludeResolved*
+  name: IncludeResolved
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_IncludeResolved_
+  commentId: Overload:Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
+  isSpec: "True"
+  fullName: Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
+  nameWithType: PdfExportOptions.IncludeResolved
 - uid: Egap.Documents.Pdf.PdfExportOptions.Language
   name: Language
   href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_Language
