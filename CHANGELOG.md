@@ -28,6 +28,8 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `ocr` runs an OCR program you name (`--engine-command`, such as Tesseract) on each page and adds its words as
   invisible text: `--lang`, `--mode skip|redo|force`, `--pdfa` (2b by default, `none` to leave the level), `--page-jobs`,
   `--dpi`, `--min-confidence`, `--deskew`, `--rotate-pages`, `--engine-timeout` and `--pages`.
+- `convert --embed-source` writes a hybrid PDF with the document's DOCX inside; converting such a PDF back uses that
+  copy unless `--ignore-embedded-source`.
 - `ocr-layer` (hOCR and ALTO), `clean` (grayscale, blank pages, deskew, text to outlines) and `merge-data` (mail merge from
   JSON or CSV).
 
@@ -168,6 +170,15 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
   justification before.
 - PDF exports leave the inserted tatweels out of the text, so copied and searched text is the words as typed.
 - Egap now builds on Egami 1.2.0.
+
+### Hybrid PDF
+- `PdfExportOptions.EmbedSource` and `PdfConvertOptions.EmbedSource` embed a DOCX of the document as the PDF's source (an
+  associated file at the catalog's `/AF`, `AFRelationship /Source`). PDF/A-1 and PDF/A-2 throw an `ArgumentException`;
+  PDF/A-3 and PDF/A-4f output stays valid.
+- `PdfToDocument` and `Document.LoadPdf` open a hybrid PDF's own document instead of analysing its pages when the copy is
+  marked as the source, is a DOCX, was embedded by Egap and the PDF has no later revision; otherwise they analyse the
+  pages and warn with `PdfToDocumentWarningKind.EmbeddedSourceSkipped`. `PdfToDocumentOptions.EmbeddedSource` is `Prefer`
+  (the default), `Ignore` or `Require` (throws a `DocumentException` without a trusted copy).
 
 ### Floating tables and frames
 - `TableFormat.Position` (`TablePosition`: anchors, alignment or offsets, distances from the text, `AllowOverlap`) makes a

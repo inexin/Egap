@@ -68,6 +68,7 @@ egap convert letter.docx -o letter.pdf --pdfa 2b
 egap convert photo.jpg -o photo.pdf
 egap convert report.pdf -o report.docx
 egap convert report.pdf -o report.md --mode flow
+egap convert report.docx -o report.pdf --embed-source        # a hybrid PDF: converts back to the DOCX
 egap convert notes.md -o notes.html
 egap convert page.html -o page.pdf --allow-network
 ```
