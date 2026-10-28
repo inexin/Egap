@@ -169,6 +169,23 @@ using PdfDocument pdf = PdfDocument.Open(&quot;paper.pdf&quot;);
 Document flow = PdfToDocument.Convert(pdf);
 flow.Save(&quot;paper.docx&quot;);
 </code></pre>
+<p>A hybrid PDF carries the editable document inside it. Export with <code>PdfExportOptions.EmbedSource</code> (or
+<code>PdfConvertOptions.EmbedSource</code>) and a DOCX of the document is attached as the PDF's source, an associated file marked
+<code>/Source</code>. Loading the PDF then gives that document back, styles and all, instead of analysing the pages. The copy is used
+only when it is marked as the source, is a DOCX, was embedded by Egap and the PDF has not been changed or signed since;
+otherwise the pages are analysed and a <code>PdfToDocumentWarningKind.EmbeddedSourceSkipped</code> warning says why.
+<code>PdfToDocumentOptions.EmbeddedSource</code> chooses <code>Prefer</code> (the default), <code>Ignore</code> or <code>Require</code>. PDF/A-1 and PDF/A-2 do not
+allow embedded files, so the export throws with them; PDF/A-3, PDF/A-4f and plain PDF carry the copy.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Pdf;
+using Egap.Pdf;
+
+Document report = Document.LoadDocx(&quot;report.docx&quot;);
+report.SaveAsPdf(&quot;report.pdf&quot;, new PdfExportOptions { EmbedSource = true, Conformance = PdfAConformance.PdfA3b });
+
+Document again = Document.LoadPdf(&quot;report.pdf&quot;);                 // the DOCX inside, not an analysis of the pages
+Document pages = Document.LoadPdf(&quot;report.pdf&quot;, new PdfToDocumentOptions { EmbeddedSource = EmbeddedSource.Ignore });
+</code></pre>
 <p>The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV. A scanned
 page stays a picture unless you load with <code>Document.LoadPdfAsync</code> and an OCR engine (see
 <a href="ocr.html#scans-in-document-conversion">OCR and searchable scans</a>).</p>

@@ -220,6 +220,41 @@ Class PdfExportOptions  <a class="header-action link-secondary" title="View sour
 
 
 
+  <a id="Egap_Documents_Pdf_PdfExportOptions_EmbedSource_" data-uid="Egap.Documents.Pdf.PdfExportOptions.EmbedSource*"></a>
+
+  <h3 id="Egap_Documents_Pdf_PdfExportOptions_EmbedSource" data-uid="Egap.Documents.Pdf.PdfExportOptions.EmbedSource">
+  EmbedSource
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a DOCX of the document is embedded as the PDF's source (an associated file at the catalog's <code>/AF</code> with
+<code>AFRelationship /Source</code>), making a hybrid PDF that <a class="xref" href="Egap.Documents.Pdf.PdfToDocument.html">PdfToDocument</a> opens again as the document instead of
+analysing its pages. Off by default. PDF/A-1 and PDF/A-2 do not allow it: the export throws an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> with them; PDF/A-3, PDF/A-4f and no PDF/A do.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool EmbedSource { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Pdf_PdfExportOptions_FormFields_" data-uid="Egap.Documents.Pdf.PdfExportOptions.FormFields*"></a>
 
   <h3 id="Egap_Documents_Pdf_PdfExportOptions_FormFields" data-uid="Egap.Documents.Pdf.PdfExportOptions.FormFields">
@@ -419,7 +454,7 @@ the page. Off by default.</p>
 
   <h3 id="Egap_Documents_Pdf_PdfExportOptions_Save" data-uid="Egap.Documents.Pdf.PdfExportOptions.Save">
   Save
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfExportOptions.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the PDF is saved by <a class="xref" href="Egap.Documents.Pdf.PdfExport.html#Egap_Documents_Pdf_PdfExport_SaveAsPdf_Egap_Documents_Document_System_String_Egap_Documents_Pdf_PdfExportOptions_">SaveAsPdf(Document, string, PdfExportOptions?)</a>.</p>

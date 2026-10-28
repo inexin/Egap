@@ -235,6 +235,14 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 <td>From PDF: flow (reflowing text, the default) or exact (every line where it stands).</td>
 </tr>
 <tr>
+<td><code>--embed-source</code></td>
+<td>To PDF: embed a DOCX of the document as the PDF's source (a hybrid PDF that converts back to the document); not with PDF/A-1 or 2.</td>
+</tr>
+<tr>
+<td><code>--ignore-embedded-source</code></td>
+<td>From PDF: analyse the pages even when the PDF carries an embedded source document Egap can use.</td>
+</tr>
+<tr>
 <td><code>--linearize</code></td>
 <td>Lay the file out for fast web view; writes the whole file.</td>
 </tr>

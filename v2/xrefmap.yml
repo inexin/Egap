@@ -14734,6 +14734,30 @@ references:
   commentId: N:Egap.Documents.Pdf
   fullName: Egap.Documents.Pdf
   nameWithType: Egap.Documents.Pdf
+- uid: Egap.Documents.Pdf.EmbeddedSource
+  name: EmbeddedSource
+  href: api/Egap.Documents.Pdf.EmbeddedSource.html
+  commentId: T:Egap.Documents.Pdf.EmbeddedSource
+  fullName: Egap.Documents.Pdf.EmbeddedSource
+  nameWithType: EmbeddedSource
+- uid: Egap.Documents.Pdf.EmbeddedSource.Ignore
+  name: Ignore
+  href: api/Egap.Documents.Pdf.EmbeddedSource.html#Egap_Documents_Pdf_EmbeddedSource_Ignore
+  commentId: F:Egap.Documents.Pdf.EmbeddedSource.Ignore
+  fullName: Egap.Documents.Pdf.EmbeddedSource.Ignore
+  nameWithType: EmbeddedSource.Ignore
+- uid: Egap.Documents.Pdf.EmbeddedSource.Prefer
+  name: Prefer
+  href: api/Egap.Documents.Pdf.EmbeddedSource.html#Egap_Documents_Pdf_EmbeddedSource_Prefer
+  commentId: F:Egap.Documents.Pdf.EmbeddedSource.Prefer
+  fullName: Egap.Documents.Pdf.EmbeddedSource.Prefer
+  nameWithType: EmbeddedSource.Prefer
+- uid: Egap.Documents.Pdf.EmbeddedSource.Require
+  name: Require
+  href: api/Egap.Documents.Pdf.EmbeddedSource.html#Egap_Documents_Pdf_EmbeddedSource_Require
+  commentId: F:Egap.Documents.Pdf.EmbeddedSource.Require
+  fullName: Egap.Documents.Pdf.EmbeddedSource.Require
+  nameWithType: EmbeddedSource.Require
 - uid: Egap.Documents.Pdf.HtmlStamp
   name: HtmlStamp
   href: api/Egap.Documents.Pdf.HtmlStamp.html
@@ -16273,6 +16297,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Pdf.PdfConvertOptions.Default
   nameWithType: PdfConvertOptions.Default
+- uid: Egap.Documents.Pdf.PdfConvertOptions.EmbedSource
+  name: EmbedSource
+  href: api/Egap.Documents.Pdf.PdfConvertOptions.html#Egap_Documents_Pdf_PdfConvertOptions_EmbedSource
+  commentId: P:Egap.Documents.Pdf.PdfConvertOptions.EmbedSource
+  fullName: Egap.Documents.Pdf.PdfConvertOptions.EmbedSource
+  nameWithType: PdfConvertOptions.EmbedSource
+- uid: Egap.Documents.Pdf.PdfConvertOptions.EmbedSource*
+  name: EmbedSource
+  href: api/Egap.Documents.Pdf.PdfConvertOptions.html#Egap_Documents_Pdf_PdfConvertOptions_EmbedSource_
+  commentId: Overload:Egap.Documents.Pdf.PdfConvertOptions.EmbedSource
+  isSpec: "True"
+  fullName: Egap.Documents.Pdf.PdfConvertOptions.EmbedSource
+  nameWithType: PdfConvertOptions.EmbedSource
 - uid: Egap.Documents.Pdf.PdfConvertOptions.Export
   name: Export
   href: api/Egap.Documents.Pdf.PdfConvertOptions.html#Egap_Documents_Pdf_PdfConvertOptions_Export
@@ -16452,6 +16489,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Pdf.PdfExportOptions.Default
   nameWithType: PdfExportOptions.Default
+- uid: Egap.Documents.Pdf.PdfExportOptions.EmbedSource
+  name: EmbedSource
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_EmbedSource
+  commentId: P:Egap.Documents.Pdf.PdfExportOptions.EmbedSource
+  fullName: Egap.Documents.Pdf.PdfExportOptions.EmbedSource
+  nameWithType: PdfExportOptions.EmbedSource
+- uid: Egap.Documents.Pdf.PdfExportOptions.EmbedSource*
+  name: EmbedSource
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_EmbedSource_
+  commentId: Overload:Egap.Documents.Pdf.PdfExportOptions.EmbedSource
+  isSpec: "True"
+  fullName: Egap.Documents.Pdf.PdfExportOptions.EmbedSource
+  nameWithType: PdfExportOptions.EmbedSource
 - uid: Egap.Documents.Pdf.PdfExportOptions.FormFields
   name: FormFields
   href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_FormFields
@@ -16947,6 +16997,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Pdf.PdfToDocumentOptions.EmbedFonts
   nameWithType: PdfToDocumentOptions.EmbedFonts
+- uid: Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource
+  name: EmbeddedSource
+  href: api/Egap.Documents.Pdf.PdfToDocumentOptions.html#Egap_Documents_Pdf_PdfToDocumentOptions_EmbeddedSource
+  commentId: P:Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource
+  fullName: Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource
+  nameWithType: PdfToDocumentOptions.EmbeddedSource
+- uid: Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource*
+  name: EmbeddedSource
+  href: api/Egap.Documents.Pdf.PdfToDocumentOptions.html#Egap_Documents_Pdf_PdfToDocumentOptions_EmbeddedSource_
+  commentId: Overload:Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource
+  isSpec: "True"
+  fullName: Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource
+  nameWithType: PdfToDocumentOptions.EmbeddedSource
 - uid: Egap.Documents.Pdf.PdfToDocumentOptions.FigureResolution
   name: FigureResolution
   href: api/Egap.Documents.Pdf.PdfToDocumentOptions.html#Egap_Documents_Pdf_PdfToDocumentOptions_FigureResolution
@@ -17095,6 +17158,12 @@ references:
   commentId: T:Egap.Documents.Pdf.PdfToDocumentWarningKind
   fullName: Egap.Documents.Pdf.PdfToDocumentWarningKind
   nameWithType: PdfToDocumentWarningKind
+- uid: Egap.Documents.Pdf.PdfToDocumentWarningKind.EmbeddedSourceSkipped
+  name: EmbeddedSourceSkipped
+  href: api/Egap.Documents.Pdf.PdfToDocumentWarningKind.html#Egap_Documents_Pdf_PdfToDocumentWarningKind_EmbeddedSourceSkipped
+  commentId: F:Egap.Documents.Pdf.PdfToDocumentWarningKind.EmbeddedSourceSkipped
+  fullName: Egap.Documents.Pdf.PdfToDocumentWarningKind.EmbeddedSourceSkipped
+  nameWithType: PdfToDocumentWarningKind.EmbeddedSourceSkipped
 - uid: Egap.Documents.Pdf.PdfToDocumentWarningKind.OcrFailed
   name: OcrFailed
   href: api/Egap.Documents.Pdf.PdfToDocumentWarningKind.html#Egap_Documents_Pdf_PdfToDocumentWarningKind_OcrFailed

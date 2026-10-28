@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_Pdf_PdfToDocumentOptions" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions" class="text-break">
-Class PdfToDocumentOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L82"><i class="bi bi-code-slash"></i></a>
+Class PdfToDocumentOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L104"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -160,7 +160,7 @@ Class PdfToDocumentOptions  <a class="header-action link-secondary" title="View 
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_ConfidenceThreshold" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.ConfidenceThreshold">
   ConfidenceThreshold
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>In <a class="xref" href="Egap.Documents.Pdf.PdfToDocumentMode.html#Egap_Documents_Pdf_PdfToDocumentMode_Flow">Flow</a>, blocks the analysis is less sure of than this (0 to 1) are kept where they
@@ -199,7 +199,7 @@ were as positioned text frames rather than reflowed. 0.5 by default; 0 reflows e
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_Default" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.Default">
   Default
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The defaults: Egap's layout analysis with its defaults, figures at 200 dpi, no fonts copied.</p>
@@ -231,7 +231,7 @@ were as positioned text frames rather than reflowed. 0.5 by default; 0 reflows e
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_EmbedFonts" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.EmbedFonts">
   EmbedFonts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L141"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the TrueType and OpenType fonts the PDF embeds are copied into the document (design Q6). False by default:
@@ -260,11 +260,44 @@ most are subsets, holding only the glyphs the PDF uses, so text typed later may 
 
 
 
+  <a id="Egap_Documents_Pdf_PdfToDocumentOptions_EmbeddedSource_" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource*"></a>
+
+  <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_EmbeddedSource" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource">
+  EmbeddedSource
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a hybrid PDF's embedded DOCX (see <a class="xref" href="Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_EmbedSource">EmbedSource</a>) is read instead of its pages:
+<a class="xref" href="Egap.Documents.Pdf.EmbeddedSource.html#Egap_Documents_Pdf_EmbeddedSource_Prefer">Prefer</a> by default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EmbeddedSource EmbeddedSource { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Pdf.EmbeddedSource.html">EmbeddedSource</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Pdf_PdfToDocumentOptions_FigureResolution_" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.FigureResolution*"></a>
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_FigureResolution" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.FigureResolution">
   FigureResolution
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L114"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The resolution, in pixels per inch, at which figures drawn from the page (rather than kept as stored images) become pictures. 200 by default.</p>
@@ -302,7 +335,7 @@ most are subsets, holding only the glyphs the PDF uses, so text typed later may 
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_Layout" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.Layout">
   Layout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L110"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the pages are analysed: tags, tables, replaceable stages and thresholds.</p>
@@ -334,7 +367,7 @@ most are subsets, holding only the glyphs the PDF uses, so text typed later may 
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_Mode" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.Mode">
   Mode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L121"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How pages become the document: reflowing text by default, or every line placed where it was (design Q8).</p>
@@ -366,7 +399,7 @@ most are subsets, holding only the glyphs the PDF uses, so text typed later may 
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_Ocr" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.Ocr">
   Ocr
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L154"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How scanned pages are read by <a class="xref" href="Egap.Documents.Pdf.PdfToDocumentOptions.html#Egap_Documents_Pdf_PdfToDocumentOptions_OcrEngine">OcrEngine</a>: languages, resolution, confidence, parallel pages. Its mode,
@@ -399,7 +432,7 @@ pages and PDF/A level are set by the conversion.</p>
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_OcrEngine" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine">
   OcrEngine
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L148"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The OCR engine <a class="xref" href="Egap.Documents.Pdf.PdfToDocument.html#Egap_Documents_Pdf_PdfToDocument_ConvertAsync_Egap_Pdf_PdfDocument_Egap_Documents_Pdf_PdfToDocumentOptions_System_Threading_CancellationToken_">ConvertAsync(PdfDocument, PdfToDocumentOptions?, CancellationToken)</a> and <code>Document.LoadPdfAsync</code> run scanned pages through, so
@@ -433,7 +466,7 @@ their text becomes paragraphs; null (the default) keeps a scanned page as a pict
 
   <h3 id="Egap_Documents_Pdf_PdfToDocumentOptions_OnWarning" data-uid="Egap.Documents.Pdf.PdfToDocumentOptions.OnWarning">
   OnWarning
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L135"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Called for what the conversion could not carry over as text, such as a scanned page kept as a picture; null to ignore.</p>
@@ -465,7 +498,7 @@ their text becomes paragraphs; null (the default) keeps a scanned page as a pict
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L82" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/Model/PdfToDocument.cs/#L104" class="edit-link">Edit this page</a>
         </div>
 
 
