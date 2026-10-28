@@ -86,6 +86,24 @@ public sealed class ConvertTests : IDisposable
     }
 
     [Fact]
+    public void HybridPdfsConvertBackThroughTheirSource()
+    {
+        WriteInputs();
+        Assert.Equal(ExitCodes.Usage, _tool.Run("convert", "report.md", "-o", "a.pdf", "--embed-source", "--pdfa", "2b").Code);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "report.md", "-o", "report.pdf", "--embed-source").Code);
+        using (PdfDocument pdf = PdfDocument.Open(_tool.PathOf("report.pdf")))
+        {
+            Assert.Equal("Source", Assert.Single(pdf.Attachments).Relationship);
+        }
+
+        ToolRun back = _tool.Run("convert", "report.pdf", "-o", "back.md");
+        Assert.Equal(ExitCodes.Success, back.Code);
+        Assert.Contains("# Quarterly report", File.ReadAllText(_tool.PathOf("back.md")), StringComparison.Ordinal);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "report.pdf", "-o", "pages.md", "--ignore-embedded-source").Code);
+        Assert.Contains("Quarterly report", File.ReadAllText(_tool.PathOf("pages.md")), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BetweenFlowFormats()
     {
         WriteInputs();

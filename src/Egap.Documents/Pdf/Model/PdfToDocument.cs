@@ -27,6 +27,11 @@ public static partial class PdfToDocument
     {
         ArgumentNullException.ThrowIfNull(document);
         options ??= PdfToDocumentOptions.Default;
+        if (EmbeddedCopy(document, options) is { } source)
+        {
+            return source;
+        }
+
         (List<PageDraft> drafts, List<Roles.NoteLink> notes) = PdfLayoutAnalyzer.Drafts(document, Enumerable.Range(0, document.Pages.Count), options.Layout, cancellationToken);
         return ModelBuilder.Build(document, drafts, notes, options, cancellationToken);
     }
@@ -44,6 +49,11 @@ public static partial class PdfToDocument
     {
         ArgumentNullException.ThrowIfNull(document);
         options ??= PdfToDocumentOptions.Default;
+        if (EmbeddedCopy(document, options) is { } source)
+        {
+            return source;
+        }
+
         IEnumerable<int> all = Enumerable.Range(0, document.Pages.Count);
         (List<PageDraft> drafts, List<Roles.NoteLink> notes) = PdfLayoutAnalyzer.Drafts(document, all, options.Layout, cancellationToken);
         List<int> scans = [.. drafts.Where(d => ModelBuilder.Scan(d) is not null).Select(d => d.Content.Index)];
@@ -75,6 +85,18 @@ public static partial class PdfToDocument
 
         Document result = ModelBuilder.Build(copy, drafts, notes, options, cancellationToken);
         return result;
+    }
+
+    /// <summary>A hybrid PDF's own document when <see cref="PdfToDocumentOptions.EmbeddedSource"/> lets it be used; null to analyse the pages.</summary>
+    private static Document? EmbeddedCopy(PdfDocument document, PdfToDocumentOptions options)
+    {
+        Document? source = HybridPdf.Open(document, options.EmbeddedSource, out string? skipped);
+        if (skipped is not null)
+        {
+            options.OnWarning?.Invoke(new PdfToDocumentWarning(PdfToDocumentWarningKind.EmbeddedSourceSkipped, 0, skipped));
+        }
+
+        return source;
     }
 }
 
@@ -130,6 +152,12 @@ public sealed record PdfToDocumentOptions
     /// pages and PDF/A level are set by the conversion.
     /// </summary>
     public PdfOcrOptions Ocr { get; init; } = PdfOcrOptions.Default;
+
+    /// <summary>
+    /// Whether a hybrid PDF's embedded DOCX (see <see cref="PdfExportOptions.EmbedSource"/>) is read instead of its pages:
+    /// <see cref="Documents.Pdf.EmbeddedSource.Prefer"/> by default.
+    /// </summary>
+    public EmbeddedSource EmbeddedSource { get; init; }
 }
 
 /// <summary>How <see cref="PdfToDocument"/> turns pages into a document (design Q8).</summary>
@@ -159,4 +187,7 @@ public enum PdfToDocumentWarningKind
 
     /// <summary>The OCR engine failed on a scanned page, which is kept as a picture.</summary>
     OcrFailed = 1,
+
+    /// <summary>A hybrid PDF's embedded source was not used, because it could not be trusted to match the pages; the pages were analysed.</summary>
+    EmbeddedSourceSkipped = 2,
 }

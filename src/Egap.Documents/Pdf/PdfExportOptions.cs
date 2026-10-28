@@ -67,6 +67,14 @@ public sealed record PdfExportOptions
     /// <summary>Whether resolved comments are written too (marked <c>Completed</c>); on by default.</summary>
     public bool IncludeResolved { get; init; } = true;
 
+    /// <summary>
+    /// Whether a DOCX of the document is embedded as the PDF's source (an associated file at the catalog's <c>/AF</c> with
+    /// <c>AFRelationship /Source</c>), making a hybrid PDF that <see cref="PdfToDocument"/> opens again as the document instead of
+    /// analysing its pages. Off by default. PDF/A-1 and PDF/A-2 do not allow it: the export throws an
+    /// <see cref="ArgumentException"/> with them; PDF/A-3, PDF/A-4f and no PDF/A do.
+    /// </summary>
+    public bool EmbedSource { get; init; }
+
     /// <summary>How the PDF is saved by <see cref="PdfExport.SaveAsPdf(Egap.Documents.Document, string, PdfExportOptions?)"/>.</summary>
     public PdfSaveOptions? Save { get; init; }
 

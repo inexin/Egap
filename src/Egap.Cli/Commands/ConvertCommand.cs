@@ -51,11 +51,13 @@ internal static class ConvertCommand
         Option<bool> allowNetwork = new("--allow-network") { Description = "HTML: fetch http and https resources (10 s and 50 MB each at most)." };
         Option<string?> mode = new("--mode") { Description = "From PDF: flow (reflowing text, the default) or exact (every line where it stands).", HelpName = "flow|exact" };
         Option<string?> comments = new("--comments") { Description = "To PDF: the document's comments left out (none, the default) or written as annotations a PDF viewer shows.", HelpName = "none|annotations" };
+        Option<bool> embedSource = new("--embed-source") { Description = "To PDF: embed a DOCX of the document as the PDF's source (a hybrid PDF that converts back to the document); not with PDF/A-1 or 2." };
+        Option<bool> ignoreSource = new("--ignore-embedded-source") { Description = "From PDF: analyse the pages even when the PDF carries an embedded source document Egap can use." };
         Command command = new("convert", "Convert between formats by the output's extension: HTML, Markdown, DOCX, text and images to PDF; PDF to DOCX, HTML, Markdown or text; and the flow formats to each other.");
         inputs.AddTo(command);
         output.AddTo(command);
         command.Options.Add(to);
-        foreach (Option option in (Option[])[pageSize, landscape, margins, header, footer, headerHtml, footerHtml, toc, pdfa, tagged, set, baseDir, allowPath, allowNetwork, mode, comments])
+        foreach (Option option in (Option[])[pageSize, landscape, margins, header, footer, headerHtml, footerHtml, toc, pdfa, tagged, set, baseDir, allowPath, allowNetwork, mode, embedSource, ignoreSource, comments])
         {
             command.Options.Add(option);
         }
@@ -80,6 +82,7 @@ internal static class ConvertCommand
                 TableOfContents = Toc(result.GetValue(toc)),
                 Conformance = Conformance(result.GetValue(pdfa)),
                 Tagged = result.GetValue(tagged),
+                EmbedSource = result.GetValue(embedSource),
                 BaseDirectory = result.GetValue(baseDir) is { } folder ? session.ResolvePath(folder) : null,
                 Export = Export(result.GetValue(set), saveOptions),
             };
@@ -94,6 +97,12 @@ internal static class ConvertCommand
                 options = options with { Export = (options.Export ?? PdfExportOptions.Default) with { Comments = commentMode } };
             }
 
+            if (options.EmbedSource && (options.Conformance != PdfAConformance.None ? options.Conformance : options.Export?.Conformance) is PdfAConformance.PdfA1b or PdfAConformance.PdfA2a or PdfAConformance.PdfA2b or PdfAConformance.PdfA2u)
+            {
+                throw new UsageException("--embed-source needs PDF/A-3, PDF/A-4f or no PDF/A: PDF/A-1 and 2 do not allow embedded files.");
+            }
+
+            EmbeddedSource embedded = result.GetValue(ignoreSource) ? EmbeddedSource.Ignore : EmbeddedSource.Prefer;
             string[] allowed = [.. (result.GetValue(allowPath) ?? []).Select(session.ResolvePath)];
             bool network = result.GetValue(allowNetwork);
             if ((allowed.Length > 0 || network) && (options.Header is not null || options.Footer is not null || options.TableOfContents != TableOfContentsMode.None))
@@ -129,7 +138,7 @@ internal static class ConvertCommand
                     return [path];
                 }
 
-                Document document = isPdf ? FromPdf(session, file, secret, fromPdf) : Document.Load(file.Path, out IReadOnlyList<ConversionWarning> warnings);
+                Document document = isPdf ? FromPdf(session, file, secret, fromPdf, embedded) : Document.Load(file.Path, out IReadOnlyList<ConversionWarning> warnings);
                 SaveOptions.WriteFile(session, path, target, temporary =>
                 {
                     foreach (ConversionWarning warning in document.Save(temporary))
@@ -161,11 +170,12 @@ internal static class ConvertCommand
     }
 
     /// <summary>A PDF read through layout analysis; an encrypted one is opened with its password and decrypted first.</summary>
-    private static Document FromPdf(EgapSession session, InputFile file, string? password, PdfToDocumentMode mode)
+    private static Document FromPdf(EgapSession session, InputFile file, string? password, PdfToDocumentMode mode, EmbeddedSource embedded)
     {
         PdfToDocumentOptions options = new()
         {
             Mode = mode,
+            EmbeddedSource = embedded,
             OnWarning = warning => session.Warn($"{file.Display}: {warning}"),
         };
         using PdfDocument pdf = PdfInput.Open(session, file, password);
@@ -227,6 +237,7 @@ internal static class ConvertCommand
         {
             Conformance = options.Conformance != PdfAConformance.None ? options.Conformance : (options.Export ?? PdfExportOptions.Default).Conformance,
             Tagged = options.Tagged || (options.Export?.Tagged ?? false),
+            EmbedSource = options.EmbedSource || (options.Export?.EmbedSource ?? false),
         };
         return document.ToPdf(export);
     }

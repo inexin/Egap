@@ -69,6 +69,7 @@ egap convert photo.jpg -o photo.pdf
 egap convert report.pdf -o report.docx
 egap convert report.pdf -o report.md --mode flow
 egap convert draft.docx -o review.pdf --comments annotations   # comments as PDF annotations
+egap convert report.docx -o report.pdf --embed-source        # a hybrid PDF: converts back to the DOCX
 egap convert notes.md -o notes.html
 egap convert page.html -o page.pdf --allow-network
 ```

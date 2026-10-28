@@ -65,9 +65,12 @@ public sealed record PdfConvertOptions
     /// <summary>Gets whether the PDF is tagged for accessibility. Defaults to false.</summary>
     public bool Tagged { get; init; }
 
+    /// <summary>Gets whether a DOCX of the document is embedded as the PDF's source, as <see cref="PdfExportOptions.EmbedSource"/> says. Defaults to false.</summary>
+    public bool EmbedSource { get; init; }
+
     /// <summary>
     /// Gets the rest of the export settings (outline, links, layout and save options); null for the defaults.
-    /// <see cref="Conformance"/> and <see cref="Tagged"/> are taken from these options when they are set here.
+    /// <see cref="Conformance"/>, <see cref="Tagged"/> and <see cref="EmbedSource"/> are taken from these options when they are set here.
     /// </summary>
     public PdfExportOptions? Export { get; init; }
 
@@ -78,6 +81,7 @@ public sealed record PdfConvertOptions
         {
             Conformance = Conformance != PdfAConformance.None ? Conformance : export.Conformance,
             Tagged = Tagged || export.Tagged,
+            EmbedSource = EmbedSource || export.EmbedSource,
         };
     }
 }

@@ -57,17 +57,28 @@ Egap.Documents.ParagraphFormat.Frame.get -> Egap.Documents.FramePosition?
 Egap.Documents.ParagraphFormat.Frame.set -> void
 Egap.Documents.ParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel?
 Egap.Documents.ParagraphFormat.Kashida.set -> void
+Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.EmbeddedSource.Ignore = 1 -> Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.EmbeddedSource.Prefer = 0 -> Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.EmbeddedSource.Require = 2 -> Egap.Documents.Pdf.EmbeddedSource
 Egap.Documents.Pdf.PdfCommentMode
 Egap.Documents.Pdf.PdfCommentMode.Annotations = 1 -> Egap.Documents.Pdf.PdfCommentMode
 Egap.Documents.Pdf.PdfCommentMode.None = 0 -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfConvertOptions.EmbedSource.get -> bool
+Egap.Documents.Pdf.PdfConvertOptions.EmbedSource.init -> void
 Egap.Documents.Pdf.PdfExportOptions.Comments.get -> Egap.Documents.Pdf.PdfCommentMode
 Egap.Documents.Pdf.PdfExportOptions.Comments.init -> void
+Egap.Documents.Pdf.PdfExportOptions.EmbedSource.get -> bool
+Egap.Documents.Pdf.PdfExportOptions.EmbedSource.init -> void
 Egap.Documents.Pdf.PdfExportOptions.IncludeResolved.get -> bool
 Egap.Documents.Pdf.PdfExportOptions.IncludeResolved.init -> void
+Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource.get -> Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource.init -> void
 Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.get -> Egap.Pdf.Ocr.PdfOcrOptions!
 Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.init -> void
 Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.get -> Egami.Ocr.IOcrEngine?
 Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.init -> void
+Egap.Documents.Pdf.PdfToDocumentWarningKind.EmbeddedSourceSkipped = 2 -> Egap.Documents.Pdf.PdfToDocumentWarningKind
 Egap.Documents.Pdf.PdfToDocumentWarningKind.OcrFailed = 1 -> Egap.Documents.Pdf.PdfToDocumentWarningKind
 Egap.Documents.Reports.TableBuilder.Floating(Egap.Documents.TablePosition! position) -> Egap.Documents.Reports.TableBuilder!
 Egap.Documents.ResolvedParagraphFormat.Frame.get -> Egap.Documents.FramePosition?
