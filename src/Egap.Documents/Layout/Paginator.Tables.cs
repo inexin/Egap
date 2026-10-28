@@ -456,7 +456,7 @@ internal sealed partial class Paginator
     /// </summary>
     private (List<LayoutBox> Blocks, double Height, (int Block, int Line)? Stop) LayCell(CellPlan cell, double x, double top, double limit, (int Block, int Line) start)
     {
-        return LayBlocksFrom(cell.Cell.Blocks, x, top, Math.Max(1, cell.Width - cell.Margins.Left - cell.Margins.Right), limit, start);
+        return LayBlocksFrom(cell.Cell.Blocks, x, top, Math.Max(1, cell.Width - cell.Margins.Left - cell.Margins.Right), limit, start, splitTables: true);
     }
 
     /// <summary>
