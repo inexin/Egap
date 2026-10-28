@@ -53,7 +53,7 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, text an
 | `--mode <flow|exact>` | From PDF: flow (reflowing text, the default) or exact (every line where it stands). |
 | `--embed-source` | To PDF: embed a DOCX of the document as the PDF's source (a hybrid PDF that converts back to the document); not with PDF/A-1 or 2. |
 | `--ignore-embedded-source` | From PDF: analyse the pages even when the PDF carries an embedded source document Egap can use. |
-| `--comments <none|annotations>` | To PDF: the document's comments left out (none, the default) or written as annotations a PDF viewer shows. |
+| `--comments <none|annotations|margin>` | To PDF: the document's comments left out (none, the default), written as annotations a PDF viewer shows, or printed in a pane beside each page (margin). |
 | `--linearize` | Lay the file out for fast web view; writes the whole file. |
 | `--compress` | Pack objects into compressed object streams; writes the whole file. |
 | `--deterministic` | Derive the file ID from the content, so the same input always gives the same bytes. |
