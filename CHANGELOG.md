@@ -160,6 +160,10 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 
 ## Egap.Documents 2.2.0 (unreleased)
 
+### Fixes
+- A new document saved as DOCX no longer names footnote and endnote separators in its settings when it has no notes; Word
+  reported such files as having unreadable content.
+
 ### Formats
 - `DocumentFormatKind.Epub` and `DocumentFormatKind.Mhtml`: `Document.Identify` tells an EPUB by its first ZIP entry and
   an MHTML archive by its `multipart/related` headers or its `.mht` and `.mhtml` extension, without the add-on.

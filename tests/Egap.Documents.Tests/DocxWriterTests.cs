@@ -108,6 +108,28 @@ public class DocxWriterTests
         Assert.Equal(["b", "shadow", "numForm"], rPr.Elements().Select(e => e.Name.LocalName).ToArray());
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void SettingsNameNoteSeparatorsOnlyWithNotes(bool notes)
+    {
+        Document document = new();
+        Paragraph paragraph = document.AddSection().Body.AddParagraph("x");
+        if (notes)
+        {
+            paragraph.AddFootnote("A note.");
+        }
+
+        using ZipArchive zip = new(new MemoryStream(Save(document)));
+        XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+        XElement settings = XElement.Parse(System.Text.Encoding.UTF8.GetString(ReadEntry(zip.GetEntry("word/settings.xml")!)));
+
+        // Word reports a file unreadable when its settings point at separator notes it does not have.
+        Assert.Equal(notes, zip.GetEntry("word/footnotes.xml") is not null);
+        Assert.Equal(notes ? 2 : 0, settings.Element(w + "footnotePr")?.Elements(w + "footnote").Count() ?? 0);
+        Assert.Null(settings.Element(w + "endnotePr"));
+    }
+
     [Fact]
     public void EmbeddedFontsAreWrittenObfuscated()
     {
