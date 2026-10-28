@@ -14,6 +14,13 @@ public enum PdfCommentMode
     /// place when it is about no text) with its author, date and text in a popup, replies pointing at it.
     /// </summary>
     Annotations,
+
+    /// <summary>
+    /// Comments are printed in a pane on the right of each page, as Word prints markup: the page keeps its paper size, its
+    /// content drawn a third smaller, each comment thread in a balloon beside its line with a line to it; balloons that do not
+    /// fit go to a Comments list at the end, with their page numbers.
+    /// </summary>
+    Margin,
 }
 
 /// <summary>
@@ -60,7 +67,7 @@ internal sealed class CommentExport(DocumentLayout layout, Dictionary<PageLayout
     }
 
     /// <summary>The page and the line rectangles of the text a comment is about, or of its mark when it is about none.</summary>
-    private (PageLayout Page, List<LayoutRect> Rects)? Place(Comment comment)
+    internal (PageLayout Page, List<LayoutRect> Rects)? Place(Comment comment)
     {
         int start = inlines.FindIndex(i => i is CommentRangeStart s && s.CommentId == comment.Id);
         int end = inlines.FindIndex(i => i is CommentRangeEnd e && e.CommentId == comment.Id);
@@ -184,7 +191,7 @@ internal sealed class CommentExport(DocumentLayout layout, Dictionary<PageLayout
         return at == reply ? null : at;
     }
 
-    private static string Contents(Comment comment)
+    internal static string Contents(Comment comment)
     {
         return string.Join("\n", comment.Story.Blocks.OfType<Paragraph>().Select(p => p.GetText().TrimEnd('\r', '\n')));
     }

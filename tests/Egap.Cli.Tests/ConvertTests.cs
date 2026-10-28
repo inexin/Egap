@@ -83,6 +83,9 @@ public sealed class ConvertTests : IDisposable
         Assert.Equal(ExitCodes.Success, _tool.Run("convert", "notes.docx", "-o", "notes.pdf", "--comments", "annotations").Code);
         using PdfDocument pdf = PdfDocument.Open(_tool.PathOf("notes.pdf"));
         Assert.Contains(pdf.Pages[0].Annotations, a => a is PdfHighlightAnnotation { Contents: "Is this right?" });
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "notes.docx", "-o", "printed.pdf", "--comments", "margin").Code);
+        using PdfDocument printed = PdfDocument.Open(_tool.PathOf("printed.pdf"));
+        Assert.Contains("Is this right?", printed.Pages[0].ExtractText(), StringComparison.Ordinal);
     }
 
     [Fact]

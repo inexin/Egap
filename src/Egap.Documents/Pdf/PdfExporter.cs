@@ -13,6 +13,7 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
     private readonly Dictionary<PageLayout, PdfPage> pageOf = [];
     private PdfDocument pdf = null!;
     private PdfTagger? tagger;
+    private MarginComments? margin;
 
     public PdfDocument Export()
     {
@@ -25,14 +26,33 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
                 tagger = new PdfTagger(pdf, document, language);
             }
 
+            if (options.Comments == PdfCommentMode.Margin)
+            {
+                if (options.FormFields)
+                {
+                    throw new ArgumentException("Form fields cannot be written with comments in the margin: the fields would not follow the scaled page.", nameof(options));
+                }
+
+                margin = new MarginComments(layout, options.Layout, tagger, options.IncludeResolved);
+            }
+
             foreach (PageLayout page in layout.Pages)
             {
                 PdfPage pdfPage = pdf.Pages.AddBlank(new PdfRectangle(0, 0, page.Width, page.Height));
                 pages.Add(pdfPage);
                 pageOf[page] = pdfPage;
                 using PdfCanvas canvas = new(pdfPage);
-                page.Draw(canvas, tagger?.ObserverFor(canvas));
+                if (margin is not null)
+                {
+                    margin.DrawPage(page, canvas, tagger?.ObserverFor(canvas));
+                }
+                else
+                {
+                    page.Draw(canvas, tagger?.ObserverFor(canvas));
+                }
             }
+
+            margin?.AddOverflow(pdf);
 
             if (options.FormFields)
             {
@@ -131,7 +151,8 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
         {
             if (box is LineBox line)
             {
-                return PdfDestination.ToPage(pageOf[page], PdfDestinationFit.Xyz) with { Left = line.Bounds.X, Top = page.Height - line.Bounds.Y };
+                LayoutRect at = margin is null ? line.Bounds : MarginComments.Map(page, line.Bounds);
+                return PdfDestination.ToPage(pageOf[page], PdfDestinationFit.Xyz) with { Left = at.X, Top = page.Height - at.Y };
             }
         }
 
@@ -187,7 +208,7 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
 
             PdfPage page = pageOf[rect.Page];
             double height = rect.Page.Height;
-            LayoutRect b = rect.Bounds;
+            LayoutRect b = margin is null ? rect.Bounds : MarginComments.Map(rect.Page, rect.Bounds);
             // Each annotation gets its own action dictionary: a PDF object lives in one container.
             PdfLinkAnnotation annotation = new(new PdfRectangle(b.X, height - b.Bottom, b.Right, height - b.Y), action())
             {

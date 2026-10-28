@@ -50,6 +50,30 @@ internal sealed class PdfTagger
         page.Dictionary["Tabs"] = PdfName.Get("S");
     }
 
+    /// <summary>A comment's margin balloon as a Note element in the element of the paragraph its mark is in.</summary>
+    public PdfStructureElement BalloonElement(Comment comment)
+    {
+        PdfStructureElement parent = comment.Ancestors().OfType<Paragraph>().FirstOrDefault() is { } paragraph ? ElementFor(paragraph) : root;
+        return Note(parent);
+    }
+
+    /// <summary>The Note element the list of comments that did not fit in the margin goes in, after the document's content.</summary>
+    public PdfStructureElement CommentsElement()
+    {
+        return commentsElement ??= Note(root);
+    }
+
+    private PdfStructureElement? commentsElement;
+    private int notes;
+
+    /// <summary>A Note element with the unique ID PDF/UA asks of every note (ISO 14289-1, 7.9).</summary>
+    private PdfStructureElement Note(PdfStructureElement parent)
+    {
+        PdfStructureElement note = parent.Add(PdfStructureType.Note);
+        note.Dictionary["ID"] = PdfString.FromText("note-" + (++notes).ToString(System.Globalization.CultureInfo.InvariantCulture));
+        return note;
+    }
+
     /// <summary>A comment's annotation as an Annot element in the element of the paragraph its mark is in (PDF/UA 7.18.1).</summary>
     public void TagAnnotation(Node node, PdfPage page, PdfAnnotation annotation)
     {
@@ -129,7 +153,7 @@ internal sealed class PdfTagger
         elements[paragraph] = element;
         foreach (Footnote note in paragraph.Descendants<Footnote>())
         {
-            PdfStructureElement noteElement = element.Add(PdfStructureType.Note);
+            PdfStructureElement noteElement = Note(element);
             elements[note] = noteElement;
             AddBlocks(noteElement, note.Story.Blocks);
         }

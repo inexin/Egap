@@ -63,6 +63,7 @@ Egap.Documents.Pdf.EmbeddedSource.Prefer = 0 -> Egap.Documents.Pdf.EmbeddedSourc
 Egap.Documents.Pdf.EmbeddedSource.Require = 2 -> Egap.Documents.Pdf.EmbeddedSource
 Egap.Documents.Pdf.PdfCommentMode
 Egap.Documents.Pdf.PdfCommentMode.Annotations = 1 -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfCommentMode.Margin = 2 -> Egap.Documents.Pdf.PdfCommentMode
 Egap.Documents.Pdf.PdfCommentMode.None = 0 -> Egap.Documents.Pdf.PdfCommentMode
 Egap.Documents.Pdf.PdfConvertOptions.EmbedSource.get -> bool
 Egap.Documents.Pdf.PdfConvertOptions.EmbedSource.init -> void
