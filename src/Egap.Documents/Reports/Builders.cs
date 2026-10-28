@@ -403,6 +403,17 @@ public sealed class TableBuilder
         return this;
     }
 
+    /// <summary>
+    /// Floats the table where <paramref name="position"/> puts it, the text after it wrapping on the side with more room;
+    /// it continues on the next page when it does not fit.
+    /// </summary>
+    public TableBuilder Floating(TablePosition position)
+    {
+        ArgumentNullException.ThrowIfNull(position);
+        table.Format.Position = position;
+        return this;
+    }
+
     /// <summary>A background for the header cells.</summary>
     public TableBuilder HeaderBackground(DocumentColor color)
     {

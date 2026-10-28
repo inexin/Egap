@@ -591,6 +591,21 @@ internal sealed partial class HtmlReader
             format.Shading = Shading.Solid(background);
         }
 
+        // A floated table floats at its side of the column, the text wrapping on the other side, as a browser lays it out.
+        if (style.Keyword("float") is "left" or "right")
+        {
+            format.Position = new TablePosition
+            {
+                HorizontalAnchor = HorizontalAnchor.Column,
+                HorizontalAlignment = style.Keyword("float") == "left" ? FloatingAlignment.Start : FloatingAlignment.End,
+                VerticalAnchor = VerticalAnchor.Paragraph,
+                DistanceLeft = style.Length("margin-left", flow.Width) ?? 0,
+                DistanceRight = style.Length("margin-right", flow.Width) ?? 0,
+                DistanceTop = above,
+                DistanceBottom = style.Length("margin-bottom", flow.Width) ?? 0,
+            };
+        }
+
         // Rows in rendering order: header groups first, then bodies and loose rows, then footers.
         List<(HtmlElement Row, HtmlStyle Style, bool Header)> rows = [];
         List<(HtmlElement Row, HtmlStyle Style, bool Header)> footers = [];

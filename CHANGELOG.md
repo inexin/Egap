@@ -169,6 +169,23 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - PDF exports leave the inserted tatweels out of the text, so copied and searched text is the words as typed.
 - Egap now builds on Egami 1.2.0.
 
+### Floating tables and frames
+- `TableFormat.Position` (`TablePosition`: anchors, alignment or offsets, distances from the text, `AllowOverlap`) makes a
+  floating table: placed like a floating picture, text wrapping on the side with more room, and continuing at the top of
+  the next page's body when it does not fit, header rows repeated and rows splitting between their lines. The text after a
+  table that breaks follows it on the page where it ends, unless `AllowTextAfterFloatingTableBreak`;
+  `DoNotBreakWrappedTables` keeps it whole, and `AllowOverlap = false` moves it below the floating tables before it.
+- `ParagraphFormat.Frame` (`FramePosition`) makes an old-style Word frame: the paragraph, with the ones after it that share
+  the frame, is placed by the same rules and never split. A frame with `DropCap.Drop` or `DropCap.Margin` is a drop cap
+  beside the next paragraph.
+- DOCX reads and writes `w:tblpPr`, `w:tblOverlap` and `w:framePr` through the model; a missing horizontal anchor is the
+  text's, as Word reads it. Floating tables and frames inside cells, headers, footers, notes and text boxes are laid out
+  in the text.
+- HTML reads `float: left` and `float: right` on a table as a floating table and writes it back; the report API's
+  `TableBuilder.Floating` floats a report table.
+- A table nested in a cell now breaks between its rows when the cell breaks across pages, instead of moving whole.
+- Text that wraps around a float now honours a page or column break that ends its paragraph.
+
 ### Word compatibility options
 - `DocumentSettings.WordCompatibility` names the Word compatibility options layout acts on, each a flag that follows
   `CompatibilityMode` unless the file or code sets it: `AllowSpaceOfSameStyleInTable`,

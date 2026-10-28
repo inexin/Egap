@@ -512,7 +512,23 @@ internal sealed partial class HtmlWriter
             css.Add(("width", Points(points.Value)));
         }
 
-        if (format.Alignment == TableAlignment.Center)
+        if (format.Position is { } position)
+        {
+            // A floating table floats to the side it sits on, keeping its distance from the text as a margin.
+            bool right = position.HorizontalAlignment is FloatingAlignment.End or FloatingAlignment.Outside;
+            css.Add(("float", right ? "right" : "left"));
+            double gap = right ? position.DistanceLeft : position.DistanceRight;
+            if (gap > 0)
+            {
+                css.Add((right ? "margin-left" : "margin-right", Points(gap)));
+            }
+
+            if (position.DistanceBottom > 0)
+            {
+                css.Add(("margin-bottom", Points(position.DistanceBottom)));
+            }
+        }
+        else if (format.Alignment == TableAlignment.Center)
         {
             css.Add(("margin-left", "auto"));
             css.Add(("margin-right", "auto"));

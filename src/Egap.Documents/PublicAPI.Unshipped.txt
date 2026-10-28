@@ -62,6 +62,7 @@ Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.init -> void
 Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.get -> Egami.Ocr.IOcrEngine?
 Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.init -> void
 Egap.Documents.Pdf.PdfToDocumentWarningKind.OcrFailed = 1 -> Egap.Documents.Pdf.PdfToDocumentWarningKind
+Egap.Documents.Reports.TableBuilder.Floating(Egap.Documents.TablePosition! position) -> Egap.Documents.Reports.TableBuilder!
 Egap.Documents.ResolvedParagraphFormat.Frame.get -> Egap.Documents.FramePosition?
 Egap.Documents.ResolvedParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel
 Egap.Documents.TableFormat.Position.get -> Egap.Documents.TablePosition?
