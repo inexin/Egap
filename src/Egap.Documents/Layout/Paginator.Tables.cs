@@ -92,7 +92,7 @@ internal sealed partial class Paginator
 
         // Before Word 2013's layout (compatibility mode 15), a left-aligned table's indent is measured to its first cell's
         // text, so the table's edge sits the cell's left margin further left.
-        if (document.Settings.CompatibilityMode < 15 && format.Alignment is null or TableAlignment.Left
+        if (document.Settings.WordCompatibility.TableIndentFromCellText && format.Alignment is null or TableAlignment.Left
             && table.Rows.Count > 0 && table.Rows[0].Cells.Count > 0 && table.Rows[0].Cells[0] is { } firstCell)
         {
             left -= firstCell.GetEffectiveFormat().MarginLeft ?? format.CellMarginLeft ?? 5.4;
@@ -473,7 +473,8 @@ internal sealed partial class Paginator
                         ParagraphContent content = ContentOf(paragraph);
                         ResolvedParagraphFormat format = content.Format;
                         int firstLine = b == start.Block ? start.Line : 0;
-                        double before = firstLine == 0 ? format.SpaceBefore : 0;
+                        (double spaceBefore, double spaceAfter) = Spacing(paragraph, format, b > 0 ? blocks[b - 1] as Paragraph : null, b + 1 < blocks.Count ? blocks[b + 1] as Paragraph : null);
+                        double before = firstLine == 0 ? spaceBefore : 0;
                         if (firstLine == 0 && content.Floats.Count > 0)
                         {
                             PlaceFloats(content, at + before);
@@ -501,7 +502,7 @@ internal sealed partial class Paginator
                         }
 
                         boxes.Add(new ParagraphBox(paragraph, new LayoutRect(x, at, width, lineTop - at), lineBoxes, firstLine > 0, false, InlineObjectBoxes(content, lineBoxes)));
-                        at = lineTop + format.SpaceAfter;
+                        at = lineTop + spaceAfter;
                         break;
                     }
 

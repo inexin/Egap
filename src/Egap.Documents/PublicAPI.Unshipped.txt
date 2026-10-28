@@ -2,16 +2,7 @@
 Egap.Documents.ConversionWarningKind.MediaDropped = 13 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.DocumentFormatKind.Epub = 7 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Mhtml = 8 -> Egap.Documents.DocumentFormatKind
-Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.get -> Egap.Pdf.Ocr.PdfOcrOptions!
-Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.init -> void
-Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.get -> Egami.Ocr.IOcrEngine?
-Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.init -> void
-Egap.Documents.Pdf.PdfToDocumentWarningKind.OcrFailed = 1 -> Egap.Documents.Pdf.PdfToDocumentWarningKind
-static Egap.Documents.Pdf.PdfToDocument.ConvertAsync(Egap.Pdf.PdfDocument! document, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
-static Egap.Documents.Pdf.PdfToDocument.extension(Egap.Documents.Document!).LoadPdfAsync(string! path, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
-static Egap.Documents.Pdf.PdfToDocument.extension(Egap.Documents.Document!).LoadPdfAsync(System.IO.Stream! stream, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
-static Egap.Documents.Pdf.PdfToDocument.LoadPdfAsync(string! path, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
-static Egap.Documents.Pdf.PdfToDocument.LoadPdfAsync(System.IO.Stream! stream, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+Egap.Documents.DocumentSettings.WordCompatibility.get -> Egap.Documents.WordCompatibility!
 Egap.Documents.KashidaLevel
 Egap.Documents.KashidaLevel.High = 3 -> Egap.Documents.KashidaLevel
 Egap.Documents.KashidaLevel.Low = 1 -> Egap.Documents.KashidaLevel
@@ -19,4 +10,33 @@ Egap.Documents.KashidaLevel.Medium = 2 -> Egap.Documents.KashidaLevel
 Egap.Documents.KashidaLevel.None = 0 -> Egap.Documents.KashidaLevel
 Egap.Documents.ParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel?
 Egap.Documents.ParagraphFormat.Kashida.set -> void
+Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.get -> Egap.Pdf.Ocr.PdfOcrOptions!
+Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.init -> void
+Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.get -> Egami.Ocr.IOcrEngine?
+Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.init -> void
+Egap.Documents.Pdf.PdfToDocumentWarningKind.OcrFailed = 1 -> Egap.Documents.Pdf.PdfToDocumentWarningKind
 Egap.Documents.ResolvedParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel
+Egap.Documents.WordCompatibility
+Egap.Documents.WordCompatibility.AllowSpaceOfSameStyleInTable.get -> bool
+Egap.Documents.WordCompatibility.AllowSpaceOfSameStyleInTable.set -> void
+Egap.Documents.WordCompatibility.AllowTextAfterFloatingTableBreak.get -> bool
+Egap.Documents.WordCompatibility.AllowTextAfterFloatingTableBreak.set -> void
+Egap.Documents.WordCompatibility.DoNotBreakWrappedTables.get -> bool
+Egap.Documents.WordCompatibility.DoNotBreakWrappedTables.set -> void
+Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop.get -> bool
+Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop.set -> void
+Egap.Documents.WordCompatibility.EnableOpenTypeFeatures.get -> bool
+Egap.Documents.WordCompatibility.EnableOpenTypeFeatures.set -> void
+Egap.Documents.WordCompatibility.OtherSettings.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Egap.Documents.WordCompatibility.OverrideTableStyleFontSizeAndJustification.get -> bool
+Egap.Documents.WordCompatibility.OverrideTableStyleFontSizeAndJustification.set -> void
+Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark.get -> bool
+Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark.set -> void
+Egap.Documents.WordCompatibility.TableIndentFromCellText.get -> bool
+Egap.Documents.WordCompatibility.TableIndentFromCellText.set -> void
+Egap.Documents.WordCompatibility.UseModeDefaults() -> void
+static Egap.Documents.Pdf.PdfToDocument.ConvertAsync(Egap.Pdf.PdfDocument! document, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.Pdf.PdfToDocument.extension(Egap.Documents.Document!).LoadPdfAsync(string! path, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.Pdf.PdfToDocument.extension(Egap.Documents.Document!).LoadPdfAsync(System.IO.Stream! stream, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.Pdf.PdfToDocument.LoadPdfAsync(string! path, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.Pdf.PdfToDocument.LoadPdfAsync(System.IO.Stream! stream, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!

@@ -2,7 +2,7 @@ namespace Egap.Documents;
 
 /// <summary>
 /// Document-wide settings that change layout and numbering: the default tab stop, odd and even headers, footnote and endnote
-/// numbering, change tracking and Word's compatibility mode. Word's other settings are kept by the DOCX reader as extension
+/// numbering, change tracking and Word's compatibility mode and options. Word's other settings are kept by the DOCX reader as extension
 /// data on the document.
 /// </summary>
 public sealed class DocumentSettings
@@ -22,7 +22,11 @@ public sealed class DocumentSettings
     internal DocumentSettings(Document document)
     {
         this.document = document;
+        WordCompatibility = new WordCompatibility(this, document);
     }
+
+    /// <summary>Word's compatibility options that change layout, each a named flag that follows <see cref="CompatibilityMode"/> unless set.</summary>
+    public WordCompatibility WordCompatibility { get; }
 
     /// <summary>The distance between default tab stops, in points (Word's default 0.5 inch).</summary>
     public double DefaultTabStop
@@ -109,6 +113,7 @@ public sealed class DocumentSettings
         compatibilityMode = source.compatibilityMode;
         mirrorMargins = source.mirrorMargins;
         gutterAtTop = source.gutterAtTop;
+        WordCompatibility.CopyFrom(source.WordCompatibility);
     }
 
     private void Set<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string property = "")

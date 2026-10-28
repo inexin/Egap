@@ -683,17 +683,7 @@ internal sealed partial class Paginator
             NewPage();
         }
 
-        double before = format.SpaceBefore;
-        if (format.ContextualSpacing && previous?.Style == paragraph.Style && previous is not null)
-        {
-            before = 0;
-        }
-
-        double after = format.SpaceAfter;
-        if (format.ContextualSpacing && next?.Style == paragraph.Style && next is not null)
-        {
-            after = 0;
-        }
+        (double before, double after) = Spacing(paragraph, format, previous, next);
 
         // A top or bottom border sits its space away from the text and takes its width: the paragraph is that much taller,
         // unless the neighbour has the same borders and Word draws the two as one box.
@@ -798,21 +788,41 @@ internal sealed partial class Paginator
             }
         }
 
-        y += after;
-
-        // A break that ends the paragraph's text breaks after it; the paragraph mark after it takes no line.
+        // A break that ends the paragraph's text breaks after it; the paragraph mark after it takes no line, unless Word's
+        // splitPgBreakAndParaMark moves the mark after a page break to the next page, where it takes a line of its own.
         int end = lines.Count > 0 ? lines[^1].Line.End : -1;
         if (end >= content.Text.Text.Length && content.Breaks.Any(b => b.Index == end))
         {
             if (content.Breaks.First(b => b.Index == end).Kind == BreakKind.Column)
             {
+                y += after;
                 NextColumn();
             }
             else
             {
                 NewPage();
+                if (document.Settings.WordCompatibility.SplitPageBreakAndParagraphMark)
+                {
+                    y += lines[^1].Height + after;
+                }
             }
+
+            return;
         }
+
+        y += after;
+    }
+
+    /// <summary>
+    /// A paragraph's space before and after: none between paragraphs of one style with contextual spacing, except in table
+    /// cells under Word's allowSpaceOfSameStyleInTable.
+    /// </summary>
+    private (double Before, double After) Spacing(Paragraph paragraph, ResolvedParagraphFormat format, Paragraph? previous, Paragraph? next)
+    {
+        bool contextual = format.ContextualSpacing && !(paragraph.Parent is Cell && document.Settings.WordCompatibility.AllowSpaceOfSameStyleInTable);
+        double before = contextual && previous is not null && previous.Style == paragraph.Style ? 0 : format.SpaceBefore;
+        double after = contextual && next is not null && next.Style == paragraph.Style ? 0 : format.SpaceAfter;
+        return (before, after);
     }
 
     private static bool SameBorders(ResolvedParagraphFormat format, Paragraph? other)

@@ -169,6 +169,19 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - PDF exports leave the inserted tatweels out of the text, so copied and searched text is the words as typed.
 - Egap now builds on Egami 1.2.0.
 
+### Word compatibility options
+- `DocumentSettings.WordCompatibility` names the Word compatibility options layout acts on, each a flag that follows
+  `CompatibilityMode` unless the file or code sets it: `AllowSpaceOfSameStyleInTable`,
+  `DoNotUseIndentAsNumberingTabStop`, `SplitPageBreakAndParagraphMark`, `OverrideTableStyleFontSizeAndJustification`,
+  `EnableOpenTypeFeatures`, `DoNotBreakWrappedTables`, `AllowTextAfterFloatingTableBreak` and `TableIndentFromCellText`.
+  `OtherSettings` lists the options read but not acted on, and `UseModeDefaults` forgets the set values.
+- DOCX reads the flags from `w:compat` and writes the ones set in code, in schema order; options read from a file go back
+  unchanged. A new document writes Word 2013's four compatibility settings.
+- Layout follows the flags: files older than Word 2010 keep the table style's font size and alignment over an 11 or 12
+  point default paragraph style and are shaped without the runs' OpenType features, as Word does. Contextual spacing now
+  applies in table cells and in flex and grid items as in the body, unless `AllowSpaceOfSameStyleInTable` is on in a cell.
+  Floating tables use `DoNotBreakWrappedTables` and `AllowTextAfterFloatingTableBreak` once they are laid out as floats.
+
 ### Scanned pages
 - `Document.LoadPdfAsync` and `PdfToDocument.ConvertAsync` run scanned pages through `PdfToDocumentOptions.OcrEngine`, so
   their text becomes paragraphs instead of a picture; `PdfToDocumentOptions.Ocr` sets the languages, resolution and the
