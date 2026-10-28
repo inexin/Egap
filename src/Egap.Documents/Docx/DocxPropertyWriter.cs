@@ -205,6 +205,11 @@ internal static class DocxPropertyWriter
         OnOff(c, "keepNext", f.KeepWithNext);
         OnOff(c, "keepLines", f.KeepTogether);
         OnOff(c, "pageBreakBefore", f.PageBreakBefore);
+        if (f.Frame is { } frame)
+        {
+            c.Add(DocxPositions.WriteFrame(frame));
+        }
+
         OnOff(c, "widowControl", f.WidowControl);
         if (f.List is not null || f.ListLevel is not null)
         {
@@ -309,6 +314,16 @@ internal static class DocxPropertyWriter
         if (style is not null)
         {
             c.Add(Val("tblStyle", style.Id));
+        }
+
+        if (f.Position is { } position)
+        {
+            (XElement tblpPr, XElement? overlap) = DocxPositions.WriteTable(position);
+            c.Add(tblpPr);
+            if (overlap is not null)
+            {
+                c.Add(overlap);
+            }
         }
 
         OnOff(c, "bidiVisual", f.Bidi);

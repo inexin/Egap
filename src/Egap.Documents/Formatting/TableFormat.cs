@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>Table formatting: width, alignment, layout, default cell margins, borders, shading and style options. Every property is nullable: null means not set here.</summary>
 public sealed partial class TableFormat : FormatBase
 {
-    internal const int Count = 25;
+    internal const int Count = 26;
 
     internal const int WidthId = 0;
     internal const int AlignmentId = 1;
@@ -31,6 +31,7 @@ public sealed partial class TableFormat : FormatBase
     internal const int LookLastColumnId = 22;
     internal const int LookNoRowBandsId = 23;
     internal const int LookNoColumnBandsId = 24;
+    internal const int PositionId = 25;
 
     internal override int PropertyCount => Count;
 
@@ -209,6 +210,13 @@ public sealed partial class TableFormat : FormatBase
         set => SetRaw(24, value);
     }
 
+    /// <summary>Where a floating table sits and how text wraps around it (Word's tblpPr and tblOverlap); null for a table in the text.</summary>
+    public TablePosition? Position
+    {
+        get => GetRef<TablePosition>(25);
+        set => SetRaw(25, value);
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -238,6 +246,7 @@ public sealed partial class TableFormat : FormatBase
             22 => nameof(LookLastColumn),
             23 => nameof(LookNoRowBands),
             24 => nameof(LookNoColumnBands),
+            25 => nameof(Position),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }

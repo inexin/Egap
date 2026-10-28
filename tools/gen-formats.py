@@ -85,7 +85,7 @@ PARA = [
     ("ListLevel", "int", "listlevel", "The paragraph's level in its list, 0 to 8.", ""),
     ("WordBreak", "WordBreak", "enum", "Where lines may break inside words.", ""),
     ("MaxLines", "int", "posint", "The most lines shown; the last ends in an ellipsis where text is cut. Word has no such setting.", ""),
-    ("Kashida", "KashidaLevel", "enum", "How far justified Arabic lines are stretched with tatweels (Word's low, medium and high kashida); None for word spaces only.", ""),
+    ("Kashida", "KashidaLevel", "enum", "How far justified Arabic lines are stretched with tatweels (Word's low, medium and high kashida); None for word spaces only.", ""),    ("Frame", "FramePosition", "ref", "An old-style text frame: the paragraph is placed as a float by the frame's anchors (Word's framePr); null for none.", ""),
 ]
 
 TABLE = [
@@ -113,7 +113,7 @@ TABLE = [
     ("LookFirstColumn", "bool", "bool", "The table style's first column formatting applies.", ""),
     ("LookLastColumn", "bool", "bool", "The table style's last column formatting applies.", ""),
     ("LookNoRowBands", "bool", "bool", "The table style's banded rows do not apply.", ""),
-    ("LookNoColumnBands", "bool", "bool", "The table style's banded columns do not apply.", ""),
+    ("LookNoColumnBands", "bool", "bool", "The table style's banded columns do not apply.", ""),    ("Position", "TablePosition", "ref", "Where a floating table sits and how text wraps around it (Word's tblpPr and tblOverlap); null for a table in the text.", ""),
 ]
 
 ROW = [

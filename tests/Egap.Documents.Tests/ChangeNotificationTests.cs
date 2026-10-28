@@ -403,6 +403,8 @@ public class ChangeNotificationTests
             _ when t == typeof(IReadOnlyList<TextColumn>) => new[] { new TextColumn(200, 10) },
             _ when t == typeof(FontFeatures) => FontFeatures.Parse("tnum"),
             _ when t == typeof(ImageData) => new ImageData(new byte[] { 1 }, "image/png"),
+            _ when t == typeof(TablePosition) => new TablePosition { HorizontalOffset = 10 },
+            _ when t == typeof(FramePosition) => new FramePosition { Width = 100 },
             _ => throw new NotSupportedException(t.Name),
         };
     }

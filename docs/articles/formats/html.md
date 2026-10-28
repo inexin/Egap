@@ -86,7 +86,8 @@ directly in the container an item of its own.
 Pages break between a container's lines and rows, and inside a line or row too tall for the room left, between its
 items' lines of text and table rows, as browsers break them. A block with `border-radius` or `box-shadow` becomes a group
 with a box around its blocks; other blocks keep their
-borders and background as paragraph borders and shading. An absolutely positioned box becomes a text box floating in front
+borders and background as paragraph borders and shading. A table with `float: left` or `float: right` floats at that side of
+the column with the text wrapping beside it, and is written back with the float. An absolutely positioned box becomes a text box floating in front
 of the text (behind it for a negative `z-index`), placed on the first page's body area, or from its positioned parent's
 first line; a fixed box goes in the header, so it shows on every page. `position: sticky`, subgrid, masonry, named grid
 lines and `inline-flex` and `inline-grid` boxes are not laid out as such; the last two read as inline content.

@@ -83,6 +83,17 @@ internal sealed partial class Paginator
         return plan;
     }
 
+    /// <summary>
+    /// Before Word 2013's layout (compatibility mode 15), a left-aligned table's indent is measured to its first cell's text,
+    /// so the table's edge sits the cell's left margin further left: that margin, or 0.
+    /// </summary>
+    private double LegacyIndent(Table table, TableFormat format)
+    {
+        return document.Settings.WordCompatibility.TableIndentFromCellText && format.Alignment is null or TableAlignment.Left
+            && table.Rows.Count > 0 && table.Rows[0].Cells.Count > 0 && table.Rows[0].Cells[0] is { } firstCell
+            ? firstCell.GetEffectiveFormat().MarginLeft ?? format.CellMarginLeft ?? 5.4 : 0;
+    }
+
     private TablePlan MakePlan(Table table, double x, double available)
     {
         TableFormat format = table.GetEffectiveFormat();
@@ -90,13 +101,7 @@ internal sealed partial class Paginator
         double width = grid.Sum();
         double left = x + (format.Indent ?? 0);
 
-        // Before Word 2013's layout (compatibility mode 15), a left-aligned table's indent is measured to its first cell's
-        // text, so the table's edge sits the cell's left margin further left.
-        if (document.Settings.WordCompatibility.TableIndentFromCellText && format.Alignment is null or TableAlignment.Left
-            && table.Rows.Count > 0 && table.Rows[0].Cells.Count > 0 && table.Rows[0].Cells[0] is { } firstCell)
-        {
-            left -= firstCell.GetEffectiveFormat().MarginLeft ?? format.CellMarginLeft ?? 5.4;
-        }
+        left -= LegacyIndent(table, format);
 
         if (format.Alignment == TableAlignment.Center)
         {
@@ -248,6 +253,12 @@ internal sealed partial class Paginator
     /// <summary>Flows a body table down columns and pages, repeating header rows and splitting rows that may split.</summary>
     private void FlowTable(Table table)
     {
+        if (Floats(table, out TablePosition position))
+        {
+            FlowFloatingTable(table, position);
+            return;
+        }
+
         TablePlan plan = Plan(table, Column.X, Column.Width);
         int r = 0;
         (int Block, int Line)[]? resume = null;
@@ -445,7 +456,7 @@ internal sealed partial class Paginator
     /// </summary>
     private (List<LayoutBox> Blocks, double Height, (int Block, int Line)? Stop) LayCell(CellPlan cell, double x, double top, double limit, (int Block, int Line) start)
     {
-        return LayBlocksFrom(cell.Cell.Blocks, x, top, Math.Max(1, cell.Width - cell.Margins.Left - cell.Margins.Right), limit, start);
+        return LayBlocksFrom(cell.Cell.Blocks, x, top, Math.Max(1, cell.Width - cell.Margins.Left - cell.Margins.Right), limit, start, splitTables: true);
     }
 
     /// <summary>

@@ -2,17 +2,20 @@ using Egami.Fonts.Layout;
 
 namespace Egap.Documents.Layout;
 
-/// <summary>A floating object placed on a page, with the room it keeps clear of text.</summary>
-internal sealed record PlacedFloat(FloatingObject Object, LayoutRect Bounds, ObjectBox Box)
+/// <summary>A floating object or table placed on a page, with the room it keeps clear of text.</summary>
+internal sealed record PlacedFloat(FloatingPlacement Placement, LayoutRect Bounds, LayoutBox Box)
 {
-    public WrapMode Wrap => Object.Placement.Wrap;
+    public WrapMode Wrap => Placement.Wrap;
+
+    /// <summary>A floating table's position, for tables that may not overlap one another; null for other floats.</summary>
+    public TablePosition? Table { get; init; }
 
     /// <summary>The area text keeps clear of: the object with its wrap distances.</summary>
     public LayoutRect Exclusion
     {
         get
         {
-            FloatingPlacement p = Object.Placement;
+            FloatingPlacement p = Placement;
             return new LayoutRect(Bounds.X - p.DistanceLeft, Bounds.Y - p.DistanceTop, Bounds.Width + p.DistanceLeft + p.DistanceRight, Bounds.Height + p.DistanceTop + p.DistanceBottom);
         }
     }
@@ -40,18 +43,15 @@ internal sealed partial class Paginator
         foreach (FloatingObject placed in content.Floats)
         {
             FloatingObject floating = FitToText(placed);
-            LayoutRect bounds = FloatBounds(floating, paragraphTop);
+            LayoutRect bounds = FloatBounds(floating.Placement, floating.Width, floating.Height, paragraphTop);
             ObjectBox box = new(floating.Node, bounds, floating: true, ObjectContent(floating.Node, bounds));
-            page!.Floats.Add(new PlacedFloat(floating, bounds, box));
+            page!.Floats.Add(new PlacedFloat(floating.Placement, bounds, box));
         }
     }
 
-    private LayoutRect FloatBounds(FloatingObject floating, double paragraphTop)
+    private LayoutRect FloatBounds(FloatingPlacement p, double width, double height, double paragraphTop)
     {
         Geometry geometry = page!.Geometry;
-        FloatingPlacement p = floating.Placement;
-        double width = floating.Width;
-        double height = floating.Height;
         (double left, double span) = p.HorizontalAnchor switch
         {
             HorizontalAnchor.Page => (0, geometry.PageWidth),
@@ -170,7 +170,7 @@ internal sealed partial class Paginator
             // Square, tight and through: the text takes the larger side (or the side the wrap asks for).
             double leftRoom = r.X - from;
             double rightRoom = to - r.Right;
-            bool takeLeft = f.Object.Placement.WrapSide switch
+            bool takeLeft = f.Placement.WrapSide switch
             {
                 WrapSide.Left => true,
                 WrapSide.Right => false,
@@ -277,6 +277,20 @@ internal sealed partial class Paginator
 
         Flush();
         y = top + after;
+
+        // A break that ends the paragraph's text breaks after it, as in the text's own flow.
+        int end = content.Text.Text.Length;
+        if (content.Breaks.FirstOrDefault(b => b.Index == end) is { Index: > 0 } last)
+        {
+            if (last.Kind == BreakKind.Column)
+            {
+                NextColumn();
+            }
+            else
+            {
+                NewPage();
+            }
+        }
 
         void Flush()
         {

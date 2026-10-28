@@ -185,6 +185,37 @@ builder.InsertField("NUMPAGES");
 builder.MoveToMarginBox(MarginBoxPosition.TopLeft, firstPage: true);   // an empty box: no title on the cover
 ```
 
+A table with a `TableFormat.Position` floats: it sits where its anchors and alignment or offsets put it (the text, the
+margins or the page), text after it wraps on the side with more room, and when it does not fit it goes on at the top of
+the next page's body with its header rows repeated. The text after a table that breaks follows it on the page where it
+ends, unless `WordCompatibility.AllowTextAfterFloatingTableBreak` is on; `DoNotBreakWrappedTables` keeps it on one page,
+and `AllowOverlap = false` moves it down until it clears the floating tables before it. A paragraph with a
+`ParagraphFormat.Frame` is an old-style Word frame: it and the paragraphs after it with the same frame are placed the same
+way and never split, and a frame with a `DropCap` is a large first letter that the next paragraph wraps beside. Floating
+tables and frames in table cells, headers, footers, notes and text boxes are laid out in the text. DOCX reads and writes
+both (`w:tblpPr`, `w:tblOverlap`, `w:framePr`), HTML reads `float: left` and `float: right` on a table as a floating
+table and writes it back, and a report table floats with `Floating`.
+
+```csharp
+using Egap.Documents;
+
+Document doc = new();
+Body body = doc.AddSection().Body;
+Table facts = body.AddTable(3, 2);
+facts.Format.Position = new TablePosition
+{
+    HorizontalAnchor = HorizontalAnchor.Margin,
+    HorizontalAlignment = FloatingAlignment.End,      // against the right margin
+    VerticalAnchor = VerticalAnchor.Paragraph,         // where the text after it starts
+    DistanceLeft = 9,                                   // the text keeps 9 points away
+};
+body.AddParagraph("This text wraps beside the table on the left.");
+
+Paragraph cap = body.AddParagraph("O");
+cap.Format.Frame = new FramePosition { DropCap = DropCap.Drop, DropCapLines = 3 };
+body.AddParagraph("nce upon a time, the first letter of this paragraph sat three lines tall.");
+```
+
 `InsertTableOfContents` writes a TOC field and builds its entries from the headings, each linked to its heading. Layout
 fills in the page numbers, as it does for every PAGEREF field. HTML's `<nav data-toc>` is read as such a field.
 

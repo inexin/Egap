@@ -290,6 +290,9 @@ public sealed class ResolvedParagraphFormat
     /// <summary>How far justified Arabic lines are stretched with tatweels; <see cref="KashidaLevel.None"/> for word spaces only.</summary>
     public KashidaLevel Kashida => Value(ParagraphFormat.KashidaId, KashidaLevel.None);
 
+    /// <summary>The paragraph's text frame, or null for a paragraph in the text.</summary>
+    public FramePosition? Frame => values[ParagraphFormat.FrameId] as FramePosition;
+
     /// <summary>The effective values as a stand-alone <see cref="ParagraphFormat"/>.</summary>
     public ParagraphFormat ToParagraphFormat()
     {
