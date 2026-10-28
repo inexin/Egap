@@ -67,6 +67,25 @@ public sealed class ConvertTests : IDisposable
     }
 
     [Fact]
+    public void CommentsBecomeAnnotations()
+    {
+        Egap.Documents.Document document = new();
+        Egap.Documents.Paragraph paragraph = document.AddSection().Body.AddParagraph("Sales ");
+        Egap.Documents.Comment comment = new(document, "Ann");
+        comment.AddParagraph("Is this right?");
+        paragraph.Inlines.Add(new Egap.Documents.CommentRangeStart(document, comment));
+        paragraph.AddRun("rose");
+        paragraph.Inlines.Add(new Egap.Documents.CommentRangeEnd(document, comment));
+        paragraph.Inlines.Add(comment);
+        Egap.Documents.DocxFormat.Save(document, _tool.PathOf("notes.docx"));
+
+        Assert.Equal(ExitCodes.Usage, _tool.Run("convert", "notes.docx", "-o", "x.pdf", "--comments", "balloons").Code);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "notes.docx", "-o", "notes.pdf", "--comments", "annotations").Code);
+        using PdfDocument pdf = PdfDocument.Open(_tool.PathOf("notes.pdf"));
+        Assert.Contains(pdf.Pages[0].Annotations, a => a is PdfHighlightAnnotation { Contents: "Is this right?" });
+    }
+
+    [Fact]
     public void HybridPdfsConvertBackThroughTheirSource()
     {
         WriteInputs();

@@ -179,7 +179,11 @@ internal sealed record PageShading(PageBox Bounds, int Mcid, string? Artifact);
 /// links the URI or the target page and its displayed top.
 /// </summary>
 internal sealed record PageAnnotation(PdfAnnotation Annotation, PageBox Box, string Subtype, string? Contents, string? Author, string? Uri,
-    int? TargetPage, double? TargetTop);
+    int? TargetPage, double? TargetTop)
+{
+    /// <summary>A text markup annotation's quadrilaterals on the displayed page, one box each; empty for other annotations.</summary>
+    public IReadOnlyList<PageBox> Quads { get; init; } = [];
+}
 
 /// <summary>An outline entry: its title, its depth (0 for top-level entries) and where it goes, if anywhere.</summary>
 internal sealed record OutlineEntry(string Title, int Level, int? Page, double? Top);

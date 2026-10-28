@@ -50,13 +50,14 @@ internal static class ConvertCommand
         Option<string[]> allowPath = new("--allow-path") { Description = "HTML: a further folder resources may come from; give it once per folder.", HelpName = "folder", AllowMultipleArgumentsPerToken = false };
         Option<bool> allowNetwork = new("--allow-network") { Description = "HTML: fetch http and https resources (10 s and 50 MB each at most)." };
         Option<string?> mode = new("--mode") { Description = "From PDF: flow (reflowing text, the default) or exact (every line where it stands).", HelpName = "flow|exact" };
+        Option<string?> comments = new("--comments") { Description = "To PDF: the document's comments left out (none, the default) or written as annotations a PDF viewer shows.", HelpName = "none|annotations" };
         Option<bool> embedSource = new("--embed-source") { Description = "To PDF: embed a DOCX of the document as the PDF's source (a hybrid PDF that converts back to the document); not with PDF/A-1 or 2." };
         Option<bool> ignoreSource = new("--ignore-embedded-source") { Description = "From PDF: analyse the pages even when the PDF carries an embedded source document Egap can use." };
         Command command = new("convert", "Convert between formats by the output's extension: HTML, Markdown, DOCX, text and images to PDF; PDF to DOCX, HTML, Markdown or text; and the flow formats to each other.");
         inputs.AddTo(command);
         output.AddTo(command);
         command.Options.Add(to);
-        foreach (Option option in (Option[])[pageSize, landscape, margins, header, footer, headerHtml, footerHtml, toc, pdfa, tagged, set, baseDir, allowPath, allowNetwork, mode, embedSource, ignoreSource])
+        foreach (Option option in (Option[])[pageSize, landscape, margins, header, footer, headerHtml, footerHtml, toc, pdfa, tagged, set, baseDir, allowPath, allowNetwork, mode, embedSource, ignoreSource, comments])
         {
             command.Options.Add(option);
         }
@@ -85,6 +86,17 @@ internal static class ConvertCommand
                 BaseDirectory = result.GetValue(baseDir) is { } folder ? session.ResolvePath(folder) : null,
                 Export = Export(result.GetValue(set), saveOptions),
             };
+            PdfCommentMode commentMode = result.GetValue(comments) switch
+            {
+                null or "none" => PdfCommentMode.None,
+                "annotations" => PdfCommentMode.Annotations,
+                string other => throw new UsageException($"--comments '{other}' is not none or annotations."),
+            };
+            if (commentMode != PdfCommentMode.None)
+            {
+                options = options with { Export = (options.Export ?? PdfExportOptions.Default) with { Comments = commentMode } };
+            }
+
             if (options.EmbedSource && (options.Conformance != PdfAConformance.None ? options.Conformance : options.Export?.Conformance) is PdfAConformance.PdfA1b or PdfAConformance.PdfA2a or PdfAConformance.PdfA2b or PdfAConformance.PdfA2u)
             {
                 throw new UsageException("--embed-source needs PDF/A-3, PDF/A-4f or no PDF/A: PDF/A-1 and 2 do not allow embedded files.");

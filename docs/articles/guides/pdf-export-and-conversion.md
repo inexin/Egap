@@ -31,6 +31,21 @@ Document form = HtmlFormat.Load("application.html");
 form.SaveAsPdf("application.pdf", new PdfExportOptions { FormFields = true });
 ```
 
+With `Comments = PdfCommentMode.Annotations`, the document's comments become PDF annotations any viewer shows and
+edits, as Acrobat writes them: a highlight over the text each is about (a note icon where it is about no text) with its
+author, date and text in a popup, replies threaded under it, and a resolved comment marked `Completed`.
+`IncludeResolved = false` leaves resolved comments out. The annotations print and have appearances, so PDF/A-2 and later
+hold, and tagged output puts each in an `Annot` element. Reading the PDF back gives the comments again, on the words they
+were about.
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Pdf;
+
+Document draft = Document.Load("draft.docx");
+draft.SaveAsPdf("draft-for-review.pdf", new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolved = false });
+```
+
 ## One-line conversions
 
 `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
