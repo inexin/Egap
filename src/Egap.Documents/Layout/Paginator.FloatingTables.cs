@@ -9,8 +9,8 @@ namespace Egap.Documents.Layout;
 /// </summary>
 internal sealed partial class Paginator
 {
-    /// <summary>The floating tables that go on at the top of the next page: the rows still to place and the x they were planned at.</summary>
-    private readonly List<(Table Table, TablePosition Position, int Row, double PlanX)> carriedTables = [];
+    /// <summary>The floating tables that go on at the top of the next page: the row (and where in it) to go on from and the x they were planned at.</summary>
+    private readonly List<(Table Table, TablePosition Position, int Row, (int Block, int Line)[]? Resume, double PlanX)> carriedTables = [];
 
     /// <summary>Whether <paramref name="table"/> floats: it has a position and sits in a section's body, outside every cell.</summary>
     private bool Floats(Table table, out TablePosition position)
@@ -71,15 +71,17 @@ internal sealed partial class Paginator
     }
 
     /// <summary>
-    /// Places a floating table's rows from <paramref name="first"/> at <paramref name="top"/>, as many whole rows as fit above
-    /// the body's foot when it may split; the rest is carried to the next page. A table placed on the page keeps its first row
-    /// where it is put; one placed by the text moves whole to the next page when not even that fits. Returns whether some
-    /// rows were carried.
+    /// Places a floating table's rows from <paramref name="first"/> (and its part from <paramref name="resume"/>) at
+    /// <paramref name="top"/>, as many as fit above the body's foot when it may split, a row that may split breaking between
+    /// its lines; the rest is carried to the next page. A table placed on the page keeps its first row where it is put; one
+    /// placed by the text moves whole to the next page when not even part of that fits. Returns whether some rows were carried.
     /// </summary>
-    private bool PlaceFloatingRows(Table table, TablePosition position, double planX, double top, int first)
+    private bool PlaceFloatingRows(Table table, TablePosition position, double planX, double top, int first, (int Block, int Line)[]? resume = null)
     {
         TablePlan plan = Plan(table, planX, Column.Width);
         double bottom = page!.Geometry.BodyBottom;
+        bool maySplit = MaySplit(position);
+        bool mayMove = position.VerticalAnchor == VerticalAnchor.Paragraph && top > page.Geometry.BodyTop + 0.01;
         List<LayoutBox> rows = [];
         double at = top;
         if (first > 0)
@@ -93,18 +95,45 @@ internal sealed partial class Paginator
 
         int r = first;
         int placed = 0;
-        for (; r < plan.Rows.Count; r++)
+        while (r < plan.Rows.Count)
         {
             RowPlan row = plan.Rows[r];
-            if (MaySplit(position) && at + row.Height > bottom + 0.01
-                && (placed > 0 || (position.VerticalAnchor == VerticalAnchor.Paragraph && top > page.Geometry.BodyTop + 0.01)))
+            double needed = resume is null ? row.Height : PartHeight(plan, row, resume, double.PositiveInfinity);
+            bool mayBreak = row.Format.CantSplit != true && !row.HasMerges && row.Format.HeightRule != RowHeightRule.Exactly;
+            if (!maySplit || at + needed <= bottom + 0.01 || (placed == 0 && !mayMove && !mayBreak))
             {
-                break;
+                rows.Add(PlaceRow(plan, row, at, needed, resume, out _, repeated: false));
+                at += needed;
+                resume = null;
+                r++;
+                placed++;
+                continue;
             }
 
-            rows.Add(PlaceRow(plan, row, at, row.Height, null, out _, repeated: false));
-            at += row.Height;
-            placed++;
+            if (mayBreak && bottom - at > 0.01)
+            {
+                (int Block, int Line)[] start = resume ?? [.. row.Cells.Select(_ => (0, 0))];
+                RowBox part = PlaceRow(plan, row, at, bottom - at, start, out (int, int)[]? next, repeated: false);
+                if (next is not null && part.Bounds.Height > 0.01 && Progressed(start, next))
+                {
+                    rows.Add(part);
+                    at += part.Bounds.Height;
+                    resume = next;
+                    placed++;
+                }
+            }
+
+            if (placed == 0 && !mayMove)
+            {
+                // Nothing of it fits even at the top of a page: placed whole anyway, so layout moves on.
+                rows.Add(PlaceRow(plan, row, at, needed, resume, out _, repeated: false));
+                at += needed;
+                resume = null;
+                r++;
+                placed++;
+            }
+
+            break;
         }
 
         if (placed > 0)
@@ -115,7 +144,7 @@ internal sealed partial class Paginator
 
         if (r < plan.Rows.Count)
         {
-            carriedTables.Add((table, position, r, planX));
+            carriedTables.Add((table, position, r, resume, planX));
             return true;
         }
 
@@ -140,11 +169,11 @@ internal sealed partial class Paginator
             return;
         }
 
-        List<(Table Table, TablePosition Position, int Row, double PlanX)> carried = [.. carriedTables];
+        List<(Table Table, TablePosition Position, int Row, (int Block, int Line)[]? Resume, double PlanX)> carried = [.. carriedTables];
         carriedTables.Clear();
-        foreach ((Table table, TablePosition position, int row, double planX) in carried)
+        foreach ((Table table, TablePosition position, int row, (int Block, int Line)[]? resume, double planX) in carried)
         {
-            PlaceFloatingRows(table, position, planX, page!.Geometry.BodyTop, row);
+            PlaceFloatingRows(table, position, planX, page!.Geometry.BodyTop, row, resume);
         }
     }
 

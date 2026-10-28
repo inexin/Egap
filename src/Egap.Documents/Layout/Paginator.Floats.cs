@@ -278,6 +278,20 @@ internal sealed partial class Paginator
         Flush();
         y = top + after;
 
+        // A break that ends the paragraph's text breaks after it, as in the text's own flow.
+        int end = content.Text.Text.Length;
+        if (content.Breaks.FirstOrDefault(b => b.Index == end) is { Index: > 0 } last)
+        {
+            if (last.Kind == BreakKind.Column)
+            {
+                NextColumn();
+            }
+            else
+            {
+                NewPage();
+            }
+        }
+
         void Flush()
         {
             if (part.Count == 0)

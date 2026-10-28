@@ -340,6 +340,14 @@ internal sealed partial class Paginator
                 case Paragraph paragraph when breakAfter != SectionBreak.None && i == blocks.Count - 1 && i > 0 && paragraph.Inlines.Count == 0
                     && (breakAfter == SectionBreak.Continuous || !NextFits(paragraph, y + ContentOf(paragraph).Format.SpaceBefore)):
                     break;
+                case Paragraph paragraph when Framed(paragraph, out FramePosition frame):
+                    {
+                        int count = FrameRun(blocks, i, frame);
+                        FlowFrame(blocks, i, count, frame);
+                        i += count - 1;
+                        break;
+                    }
+
                 case Paragraph paragraph:
                     FlowParagraph(paragraph, i + 1 < blocks.Count ? blocks[i + 1] as Paragraph : null, i > 0 ? blocks[i - 1] as Paragraph : null);
                     break;
