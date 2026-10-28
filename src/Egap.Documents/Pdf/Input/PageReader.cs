@@ -477,7 +477,23 @@ internal sealed class PageReader : PdfContentWalker
             }
 
             string? author = (annotation as PdfMarkupAnnotation)?.Author;
-            found.Add(new(annotation, box, annotation.Subtype, annotation.Contents, author, uri, target, top));
+            List<PageBox> quads = [];
+            if (annotation is PdfTextMarkupAnnotation markup && markup.QuadPoints is { Count: >= 4 } points)
+            {
+                for (int q = 0; q + 3 < points.Count; q += 4)
+                {
+                    PageBox quad = PageBox.Empty;
+                    for (int c = q; c < q + 4; c++)
+                    {
+                        PdfPoint p = toDisplayed.Transform(points[c]);
+                        quad = quad.Union(PageBox.Around(p, p));
+                    }
+
+                    quads.Add(quad);
+                }
+            }
+
+            found.Add(new(annotation, box, annotation.Subtype, annotation.Contents, author, uri, target, top) { Quads = quads });
         }
 
         return found;

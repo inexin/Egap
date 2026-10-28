@@ -61,6 +61,103 @@ internal sealed partial class ModelBuilder
         lastTable = null;
     }
 
+    /// <summary>The words a highlight or other text markup covers: the glyphs whose centres lie in its quadrilaterals, in reading order.</summary>
+    private static string Marked(PageContent content, PageAnnotation note)
+    {
+        if (note.Quads.Count == 0)
+        {
+            return "";
+        }
+
+        System.Text.StringBuilder text = new();
+        foreach (PageGlyph glyph in content.Glyphs)
+        {
+            if (!glyph.IsArtifact && note.Quads.Any(q => q.Contains(glyph.Box.CenterX, glyph.Box.CenterY)))
+            {
+                text.Append(glyph.IsSpace ? " " : glyph.Text);
+            }
+        }
+
+        return string.Join(' ', text.ToString().Split(' ', StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    /// <summary>
+    /// Puts the comment's range around <paramref name="marked"/> where it is in the paragraph's runs (spacing aside), splitting
+    /// runs at its ends; false when the words are not found there.
+    /// </summary>
+    private bool MarkRange(Paragraph paragraph, Comment comment, string marked)
+    {
+        if (marked.Length == 0)
+        {
+            return false;
+        }
+
+        // The paragraph's text with runs of white space as one space, each character mapped to its run and offset.
+        List<Run> runs = [.. paragraph.Inlines.OfType<Run>()];
+        System.Text.StringBuilder flat = new();
+        List<(int Run, int Offset)> map = [];
+        for (int r = 0; r < runs.Count; r++)
+        {
+            string text = runs[r].Text;
+            for (int i = 0; i < text.Length; i++)
+            {
+                bool space = char.IsWhiteSpace(text[i]);
+                if (space && (flat.Length == 0 || flat[^1] == ' '))
+                {
+                    continue;
+                }
+
+                flat.Append(space ? ' ' : text[i]);
+                map.Add((r, i));
+            }
+        }
+
+        int at = flat.ToString().IndexOf(marked, StringComparison.Ordinal);
+        if (at < 0)
+        {
+            return false;
+        }
+
+        (int firstRun, int firstOffset) = map[at];
+        (int lastRun, int lastOffset) = map[at + marked.Length - 1];
+        Run first = runs[firstRun];
+        Run last = runs[lastRun];
+
+        // The end first, so the start's offsets still hold when the same run holds both.
+        Run endRun = Split(last, lastOffset + 1).Head;
+        Run startRun = Split(firstRun == lastRun ? endRun : first, firstOffset).Tail;
+        if (firstRun == lastRun)
+        {
+            endRun = startRun;
+        }
+
+        int startIndex = paragraph.Inlines.IndexOf(startRun);
+        paragraph.Inlines.Insert(startIndex, new CommentRangeStart(document, comment));
+        int endIndex = paragraph.Inlines.IndexOf(endRun);
+        paragraph.Inlines.Insert(endIndex + 1, new CommentRangeEnd(document, comment));
+        paragraph.Inlines.Insert(endIndex + 2, comment);
+        return true;
+
+        (Run Head, Run Tail) Split(Run run, int offset)
+        {
+            if (offset <= 0)
+            {
+                return (run, run);
+            }
+
+            if (offset >= run.Text.Length)
+            {
+                return (run, run);
+            }
+
+            Run tail = run.Clone();
+            tail.Text = run.Text[offset..];
+            run.Text = run.Text[..offset];
+            paragraph.Inlines.Insert(paragraph.Inlines.IndexOf(run) + 1, tail);
+            return (run, tail);
+        }
+    }
+
     private ImageData Rendered(PdfPage page, PageBox box)
     {
         double scale = options.FigureResolution / 72;
@@ -91,13 +188,24 @@ internal sealed partial class ModelBuilder
                 continue;
             }
 
-            // Notes first, replies after the note they answer.
+            // Notes first, replies after the note they answer; a review state reply marks its note resolved.
             foreach (PageAnnotation note in page.Content.Annotations.Where(a => NoteKinds.Contains(a.Subtype) && a.Contents is { Length: > 0 })
                 .OrderBy(a => a.Annotation.Dictionary.Get("IRT") is null ? 0 : 1))
             {
                 Comment comment;
                 string author = Clean(note.Author ?? "");
-                if (note.Annotation.Dictionary.Get<PdfDictionary>("IRT") is PdfDictionary parent && comments.TryGetValue(parent, out Comment? to))
+                PdfDictionary? parent = note.Annotation.Dictionary.Get<PdfDictionary>("IRT");
+                if (note.Annotation.Dictionary.GetText("State") is { } state)
+                {
+                    if (parent is not null && comments.TryGetValue(parent, out Comment? stated) && note.Annotation.Dictionary.GetText("StateModel") is null or "Review")
+                    {
+                        stated.Done = state == "Completed";
+                    }
+
+                    continue;
+                }
+
+                if (parent is not null && comments.TryGetValue(parent, out Comment? to))
                 {
                     comment = to.AddReply(author, Clean(note.Contents!), note.Annotation.ModificationDate);
                 }
@@ -106,9 +214,12 @@ internal sealed partial class ModelBuilder
                     comment = new Comment(document, author, note.Annotation.ModificationDate);
                     comment.AddParagraph(Clean(note.Contents!));
                     Paragraph target = Nearest(onPage, note.Box);
-                    target.Inlines.Insert(0, new CommentRangeStart(document, comment));
-                    target.Inlines.Add(new CommentRangeEnd(document, comment));
-                    target.Inlines.Add(comment);
+                    if (!MarkRange(target, comment, Marked(page.Content, note)))
+                    {
+                        target.Inlines.Insert(0, new CommentRangeStart(document, comment));
+                        target.Inlines.Add(new CommentRangeEnd(document, comment));
+                        target.Inlines.Add(comment);
+                    }
                 }
 
                 comments[note.Annotation.Dictionary] = comment;

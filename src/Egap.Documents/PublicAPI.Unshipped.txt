@@ -57,6 +57,13 @@ Egap.Documents.ParagraphFormat.Frame.get -> Egap.Documents.FramePosition?
 Egap.Documents.ParagraphFormat.Frame.set -> void
 Egap.Documents.ParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel?
 Egap.Documents.ParagraphFormat.Kashida.set -> void
+Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfCommentMode.Annotations = 1 -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfCommentMode.None = 0 -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfExportOptions.Comments.get -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfExportOptions.Comments.init -> void
+Egap.Documents.Pdf.PdfExportOptions.IncludeResolved.get -> bool
+Egap.Documents.Pdf.PdfExportOptions.IncludeResolved.init -> void
 Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.get -> Egap.Pdf.Ocr.PdfOcrOptions!
 Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.init -> void
 Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.get -> Egami.Ocr.IOcrEngine?

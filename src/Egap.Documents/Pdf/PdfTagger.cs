@@ -50,6 +50,16 @@ internal sealed class PdfTagger
         page.Dictionary["Tabs"] = PdfName.Get("S");
     }
 
+    /// <summary>A comment's annotation as an Annot element in the element of the paragraph its mark is in (PDF/UA 7.18.1).</summary>
+    public void TagAnnotation(Node node, PdfPage page, PdfAnnotation annotation)
+    {
+        PdfStructureElement parent = node.Ancestors().OfType<Paragraph>().FirstOrDefault() is { } paragraph ? ElementFor(paragraph) : root;
+        PdfStructureElement element = parent.Add(PdfStructureType.Annot);
+        element.AlternateText = annotation.Contents;
+        element.AddAnnotation(page, annotation);
+        page.Dictionary["Tabs"] = PdfName.Get("S");
+    }
+
     private void AddBlocks(PdfStructureElement parent, IEnumerable<Block> blocks)
     {
         PdfStructureElement? list = null;

@@ -58,6 +58,15 @@ public sealed record PdfExportOptions
     /// <summary>The document's language (a BCP 47 tag such as "en-US"); the default text language of its styles when <see langword="null"/>.</summary>
     public string? Language { get; init; }
 
+    /// <summary>
+    /// How the document's comments go into the PDF: left out by default, or as annotations any PDF viewer shows, with
+    /// replies and resolved state; <see cref="PdfToDocument"/> reads them back as comments.
+    /// </summary>
+    public PdfCommentMode Comments { get; init; }
+
+    /// <summary>Whether resolved comments are written too (marked <c>Completed</c>); on by default.</summary>
+    public bool IncludeResolved { get; init; } = true;
+
     /// <summary>How the PDF is saved by <see cref="PdfExport.SaveAsPdf(Egap.Documents.Document, string, PdfExportOptions?)"/>.</summary>
     public PdfSaveOptions? Save { get; init; }
 

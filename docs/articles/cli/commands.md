@@ -51,6 +51,7 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, text an
 | `--allow-path <folder>` | HTML: a further folder resources may come from; give it once per folder. |
 | `--allow-network` | HTML: fetch http and https resources (10 s and 50 MB each at most). |
 | `--mode <flow|exact>` | From PDF: flow (reflowing text, the default) or exact (every line where it stands). |
+| `--comments <none|annotations>` | To PDF: the document's comments left out (none, the default) or written as annotations a PDF viewer shows. |
 | `--linearize` | Lay the file out for fast web view; writes the whole file. |
 | `--compress` | Pack objects into compressed object streams; writes the whole file. |
 | `--deterministic` | Derive the file ID from the content, so the same input always gives the same bytes. |

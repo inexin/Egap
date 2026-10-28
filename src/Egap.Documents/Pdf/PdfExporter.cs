@@ -54,6 +54,11 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
                 AddLinks(bookmarks);
             }
 
+            if (options.Comments == PdfCommentMode.Annotations)
+            {
+                new CommentExport(layout, pageOf, tagger, options.IncludeResolved).Write();
+            }
+
             switch (options.Outline)
             {
                 case OutlineFrom.Headings:
