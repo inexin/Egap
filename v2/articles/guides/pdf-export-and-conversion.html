@@ -121,7 +121,14 @@ using Egap.Documents.Pdf;
 
 Document draft = Document.Load(&quot;draft.docx&quot;);
 draft.SaveAsPdf(&quot;draft-for-review.pdf&quot;, new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolved = false });
+draft.SaveAsPdf(&quot;draft-printed.pdf&quot;, new PdfExportOptions { Comments = PdfCommentMode.Margin });
 </code></pre>
+<p><code>PdfCommentMode.Margin</code> prints the comments instead, as Word prints a document showing markup: each page keeps its paper
+size, its content is drawn a third smaller on the left, and a pane on the right holds a balloon per comment thread, beside
+the line it is about or pushed down below the one above, with a line to the commented text. Balloons that do not fit on
+their page go to a Comments list at the end of the document, each with its page number. Links and bookmarks follow the
+smaller page; form fields cannot be written with this mode. In tagged output each balloon is a <code>Note</code> beside the
+paragraph its comment is in. Tracked changes are not printed in the margin.</p>
 <h2 id="one-line-conversions">One-line conversions</h2>
 <p><code>PdfConvert</code> turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
 input's own. Converting a file reads its images from the file's own folder; HTML or Markdown given as text reads them only

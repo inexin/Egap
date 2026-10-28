@@ -16217,6 +16217,12 @@ references:
   commentId: F:Egap.Documents.Pdf.PdfCommentMode.Annotations
   fullName: Egap.Documents.Pdf.PdfCommentMode.Annotations
   nameWithType: PdfCommentMode.Annotations
+- uid: Egap.Documents.Pdf.PdfCommentMode.Margin
+  name: Margin
+  href: api/Egap.Documents.Pdf.PdfCommentMode.html#Egap_Documents_Pdf_PdfCommentMode_Margin
+  commentId: F:Egap.Documents.Pdf.PdfCommentMode.Margin
+  fullName: Egap.Documents.Pdf.PdfCommentMode.Margin
+  nameWithType: PdfCommentMode.Margin
 - uid: Egap.Documents.Pdf.PdfCommentMode.None
   name: None
   href: api/Egap.Documents.Pdf.PdfCommentMode.html#Egap_Documents_Pdf_PdfCommentMode_None
