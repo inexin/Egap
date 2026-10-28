@@ -10,7 +10,7 @@ namespace Egap.Documents.Pdf;
 
 /// <summary>
 /// Comments printed in the margin, as Word's "show markup" print does: each page keeps its paper size, its content drawn at
-/// 76 % on the left, and a grey pane on the right holds a balloon per comment, its replies in balloons under it, in the
+/// 76 % on the left, and a pane on the right holds a balloon per comment, its replies in balloons under it, in the
 /// order of their anchors, each as near its anchor's line as the others let it, with a line to its anchor. Balloons that
 /// do not fit on their page go to a Comments list at the end of the document, each with its page number.
 /// </summary>
@@ -23,7 +23,6 @@ internal sealed class MarginComments
     private const double Padding = 4;
     private const double ReplyGap = 2;
     private const double FontSize = 8;
-    private static readonly Rgba8 Pane = new(240, 240, 240, 255);
 
     /// <summary>One colour per author, in the order authors first comment: the balloon's and the shading's fill, and the line's.</summary>
     private static readonly (Rgba8 Fill, Rgba8 Line)[] Palette =
@@ -114,11 +113,10 @@ internal sealed class MarginComments
             return;
         }
 
-        // The pane: a grey band beside the shrunk page, as tall as the page drawn, as Word prints it.
+        // The pane beside the shrunk page, as tall as the page drawn, as Word prints it.
         double offset = page.Height * (1 - ContentShare) / 2;
         double paneTop = offset;
         double paneBottom = offset + (page.Height * ContentShare);
-        Decoration(canvas, () => canvas.FillRect(new RectF((float)(page.Width * ContentShare), (float)paneTop, (float)(page.Width * (1 - ContentShare)), (float)(paneBottom - paneTop)), Pane));
 
         double paneX = (page.Width * ContentShare) + Gap;
         double paneWidth = (page.Width * (1 - ContentShare)) - (2 * Gap);
