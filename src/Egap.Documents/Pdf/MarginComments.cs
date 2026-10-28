@@ -9,26 +9,37 @@ using Egap.Pdf;
 namespace Egap.Documents.Pdf;
 
 /// <summary>
-/// Comments printed in the margin, as Word's "show markup" print does: each page keeps its paper size, its content drawn a
-/// third smaller on the left, and a pane on the right holds a balloon per comment thread, in the order of their anchors,
-/// each beside its anchor's line or pushed down below the one above, with a line to its anchor. Balloons that do not fit
-/// on their page go to a Comments list at the end of the document, each with its page number.
+/// Comments printed in the margin, as Word's "show markup" print does: each page keeps its paper size, its content drawn at
+/// 76 % on the left, and a pane on the right holds a balloon per comment, its replies in balloons under it, in the
+/// order of their anchors, each as near its anchor's line as the others let it, with a line to its anchor. Balloons that
+/// do not fit on their page go to a Comments list at the end of the document, each with its page number.
 /// </summary>
 internal sealed class MarginComments
 {
-    /// <summary>The share of the page width the content keeps; the rest is the pane.</summary>
-    public const double ContentShare = 2.0 / 3;
+    /// <summary>The share of the page's size the content keeps, as Word shrinks it; the rest of the width is the pane.</summary>
+    public const double ContentShare = 0.76;
 
     private const double Gap = 6;
     private const double Padding = 4;
+    private const double ReplyGap = 2;
     private const double FontSize = 8;
-    private static readonly Rgba8 Border = new(204, 51, 51, 255);
-    private static readonly Rgba8 Fill = new(253, 236, 236, 255);
+
+    /// <summary>One colour per author, in the order authors first comment: the balloon's and the shading's fill, and the line's.</summary>
+    private static readonly (Rgba8 Fill, Rgba8 Line)[] Palette =
+    [
+        (new(214, 233, 252, 255), new(45, 110, 190, 255)),
+        (new(236, 245, 196, 255), new(110, 150, 30, 255)),
+        (new(250, 214, 250, 255), new(160, 60, 160, 255)),
+        (new(255, 226, 196, 255), new(200, 110, 30, 255)),
+        (new(210, 240, 232, 255), new(40, 140, 120, 255)),
+        (new(240, 220, 214, 255), new(160, 80, 60, 255)),
+    ];
 
     private readonly DocumentLayout layout;
     private readonly LayoutOptions? layoutOptions;
     private readonly PdfTagger? tagger;
-    private readonly Dictionary<PageLayout, List<(Comment Comment, double AnchorX, double AnchorY)>> threads = [];
+    private readonly Dictionary<PageLayout, List<Thread>> threads = [];
+    private readonly Dictionary<string, int> authors = new(StringComparer.Ordinal);
     private readonly List<(string Page, Comment Comment)> overflow = [];
 
     public MarginComments(DocumentLayout layout, LayoutOptions? layoutOptions, PdfTagger? tagger, bool includeResolved)
@@ -46,15 +57,15 @@ internal sealed class MarginComments
 
             if (places.Place(comment) is { } placed)
             {
-                // The connector starts at the foot of the range's last line, where it ends.
-                LayoutRect last = placed.Rects[^1];
-                if (!threads.TryGetValue(placed.Page, out List<(Comment, double, double)>? list))
+                if (!threads.TryGetValue(placed.Page, out List<Thread>? list))
                 {
                     list = [];
                     threads[placed.Page] = list;
                 }
 
-                list.Add((comment, last.Right, last.Bottom - 1));
+                // The line starts below the first commented character, as LibreOffice and Word point at a comment.
+                LayoutRect first = placed.Rects[0];
+                list.Add(new Thread(comment, first.X, first.Bottom, placed.Rects, ColourOf(comment.Author)));
             }
         }
     }
@@ -73,61 +84,167 @@ internal sealed class MarginComments
         return new LayoutRect(at.X, at.Y, r.Width * ContentShare, r.Height * ContentShare);
     }
 
-    /// <summary>Draws a page's content scaled to the left of the pane, then its balloons.</summary>
+    /// <summary>
+    /// Draws a page's content scaled to the left of the pane, the commented words shaded behind it, then its balloons: each as
+    /// near its anchor's line as the ones above and below let it, its replies in balloons of their own under it, with a line
+    /// from an arrow under the comment's first character, along under its text line and then straight to the balloon.
+    /// </summary>
     public void DrawPage(PageLayout page, PdfCanvas canvas, LayoutDrawObserver? observer)
     {
+        List<Thread> list = threads.TryGetValue(page, out List<Thread>? found) ? found : [];
         canvas.Save();
         canvas.Translate(0, (float)(page.Height * (1 - ContentShare) / 2));
         canvas.Scale((float)ContentShare);
+        foreach (Thread thread in list)
+        {
+            Decoration(canvas, () =>
+            {
+                foreach (LayoutRect line in thread.Lines.Where(l => l.Width > 0))
+                {
+                    canvas.FillRect(new RectF((float)line.X, (float)line.Y, (float)line.Width, (float)line.Height), thread.Colour.Fill);
+                }
+            });
+        }
+
         page.Draw(canvas, observer);
         canvas.Restore();
-
-        if (!threads.TryGetValue(page, out List<(Comment Comment, double AnchorX, double AnchorY)>? list))
+        if (list.Count == 0)
         {
             return;
         }
 
+        // The pane beside the shrunk page, as tall as the page drawn, as Word prints it.
+        double offset = page.Height * (1 - ContentShare) / 2;
+        double paneTop = offset;
+        double paneBottom = offset + (page.Height * ContentShare);
+
         double paneX = (page.Width * ContentShare) + Gap;
         double paneWidth = (page.Width * (1 - ContentShare)) - (2 * Gap);
-        double bottom = page.Height - Gap;
-        double next = Gap;
-        bool full = false;
-        foreach ((Comment comment, double anchorX, double anchorY) in list.OrderBy(t => t.AnchorY).ThenBy(t => t.AnchorX))
+
+        // One group per thread: the comment's balloon, then a balloon of its own for each reply, kept together.
+        List<(Thread Thread, List<(Comment Comment, PageLayout Text, double Height)> Boxes, double Height, double Want)> groups = [];
+        foreach (Thread thread in list.OrderBy(t => t.AnchorY).ThenBy(t => t.AnchorX))
         {
-            Vector2 anchor = Map(page, anchorX, anchorY);
-            (PageLayout balloon, double height) = Balloon(comment, paneWidth - (2 * Padding));
-            double top = Math.Max(anchor.Y - 10, next);
-            if (full || top + height + (2 * Padding) > bottom)
+            List<(Comment, PageLayout, double)> boxes = [];
+            foreach (Comment comment in (IEnumerable<Comment>)[thread.Comment, .. Replies(thread.Comment)])
             {
-                // Once the pane is full, the rest of the page's comments follow in the list, in their order.
-                full = true;
-                overflow.Add((page.Number, comment));
-                continue;
+                (PageLayout text, double height) = Balloon(comment, paneWidth - (2 * Padding));
+                boxes.Add((comment, text, height + (2 * Padding)));
             }
 
-            RectF box = new((float)paneX, (float)top, (float)paneWidth, (float)(height + (2 * Padding)));
-            Begin(canvas, comment);
-            canvas.FillRect(box, Fill);
-            Stroke stroke = new(0.75f);
-            canvas.DrawLine(new Vector2(box.Left, box.Top), new Vector2(box.Right, box.Top), stroke, Border);
-            canvas.DrawLine(new Vector2(box.Right, box.Top), new Vector2(box.Right, box.Bottom), stroke, Border);
-            canvas.DrawLine(new Vector2(box.Right, box.Bottom), new Vector2(box.Left, box.Bottom), stroke, Border);
-            canvas.DrawLine(new Vector2(box.Left, box.Bottom), new Vector2(box.Left, box.Top), stroke, Border);
-            // The line runs along the anchor's line to the pane, then to the balloon, as Word draws it.
-            Vector2 edge = new((float)(paneX - (Gap / 2)), anchor.Y);
-            canvas.DrawLine(anchor, edge, new Stroke(0.5f), Border);
-            canvas.DrawLine(edge, new Vector2(box.Left, box.Top + 6), new Stroke(0.5f), Border);
-            canvas.Save();
-            canvas.Translate((float)(paneX + Padding), (float)(top + Padding));
-            balloon.Draw(canvas);
-            canvas.Restore();
-            if (tagger is not null)
-            {
-                canvas.EndTag();
-            }
-
-            next = box.Bottom + Gap;
+            double total = boxes.Sum(b => b.Item3) + (ReplyGap * (boxes.Count - 1));
+            double first = boxes[0].Item3;
+            groups.Add((thread, boxes, total, Map(page, thread.AnchorX, thread.AnchorY).Y - (first / 2)));
         }
+
+        // As many as fit in the pane stay; the rest of the page's comments go to the list, in their order.
+        double room = paneBottom - paneTop - (2 * Gap);
+        int kept = 0;
+        double used = 0;
+        while (kept < groups.Count && used + groups[kept].Height + (kept > 0 ? Gap : 0) <= room)
+        {
+            used += groups[kept].Height + (kept > 0 ? Gap : 0);
+            kept++;
+        }
+
+        foreach ((Thread thread, _, _, _) in groups.Skip(kept))
+        {
+            overflow.Add((page.Number, thread.Comment));
+        }
+
+        double[] tops = Stack([.. groups.Take(kept).Select(g => (g.Height, g.Want))], paneTop + Gap, paneBottom - Gap);
+        Stroke dashed = new(0.6f) { Dash = new DashPattern([2.5f, 1.5f], 0) };
+
+        // The lines break at the right edge of the text, so they cross the page's margin to their balloons instead of
+        // running down the pane's edge together.
+        float textRight = (float)(((page.Width - (page.Section.PageSetup.MarginRight ?? 72)) * ContentShare) + 4);
+        for (int i = 0; i < kept; i++)
+        {
+            (Thread thread, List<(Comment Comment, PageLayout Text, double Height)> boxes, _, _) = groups[i];
+            Vector2 anchor = Map(page, thread.AnchorX, thread.AnchorY);
+            Rgba8 line = thread.Colour.Line;
+            float firstTop = (float)tops[i];
+            Decoration(canvas, () =>
+            {
+                // An arrow pointing up at the comment's first character, then the line along under the text to the text's
+                // right edge, where it breaks and runs straight to the balloon's first line, as LibreOffice draws it.
+                canvas.FillPath(Egami.Drawing.Path.Polygon([anchor, anchor + new Vector2(-2.5f, 3.5f), anchor + new Vector2(2.5f, 3.5f)], close: true), line);
+                Vector2 bend = new(textRight, anchor.Y + 0.5f);
+                canvas.DrawLine(anchor + new Vector2(0, 0.5f), bend, dashed, line);
+                canvas.DrawLine(bend, new Vector2((float)paneX, firstTop + 7), dashed, line);
+            });
+
+            double at = tops[i];
+            foreach ((Comment comment, PageLayout text, double height) in boxes)
+            {
+                (Rgba8 fill, Rgba8 edge) = comment == thread.Comment ? thread.Colour : ColourOf(comment.Author);
+                RectF box = new((float)paneX, (float)at, (float)paneWidth, (float)height);
+                Begin(canvas, comment);
+                canvas.FillRect(box, fill);
+                canvas.DrawLine(new Vector2(box.Left, box.Top), new Vector2(box.Left, box.Bottom), new Stroke(1.5f), edge);
+                canvas.Save();
+                canvas.Translate((float)(paneX + Padding), (float)(at + Padding));
+                text.Draw(canvas);
+                canvas.Restore();
+                if (tagger is not null)
+                {
+                    canvas.EndTag();
+                }
+
+                at += height + ReplyGap;
+            }
+        }
+    }
+
+    /// <summary>
+    /// The tops of boxes of the given heights, each as near its wanted top as it can be without overlapping the others,
+    /// within <paramref name="top"/> and <paramref name="bottom"/>: pushed down below the box above, then pulled up where
+    /// the boxes would run past the bottom. The boxes are known to fit together.
+    /// </summary>
+    internal static double[] Stack(IReadOnlyList<(double Height, double Want)> boxes, double top, double bottom)
+    {
+        double[] tops = new double[boxes.Count];
+        double next = top;
+        for (int i = 0; i < boxes.Count; i++)
+        {
+            tops[i] = Math.Max(boxes[i].Want, next);
+            next = tops[i] + boxes[i].Height + Gap;
+        }
+
+        double limit = bottom;
+        for (int i = boxes.Count - 1; i >= 0; i--)
+        {
+            tops[i] = Math.Max(top, Math.Min(tops[i], limit - boxes[i].Height));
+            limit = tops[i] - Gap;
+        }
+
+        return tops;
+    }
+
+    /// <summary>Draws what is only a mark (shading, lines, arrows) as an artifact in tagged output.</summary>
+    private void Decoration(PdfCanvas canvas, Action draw)
+    {
+        if (tagger is not null)
+        {
+            canvas.BeginArtifact();
+        }
+
+        draw();
+        if (tagger is not null)
+        {
+            canvas.EndTag();
+        }
+    }
+
+    private (Rgba8 Fill, Rgba8 Line) ColourOf(string author)
+    {
+        if (!authors.TryGetValue(author, out int index))
+        {
+            index = authors.Count;
+            authors[author] = index;
+        }
+
+        return Palette[index % Palette.Length];
     }
 
     /// <summary>Adds pages listing the comments that did not fit beside their page, after the document's last page.</summary>
@@ -176,7 +293,7 @@ internal sealed class MarginComments
         }
     }
 
-    /// <summary>A thread's balloon laid out at <paramref name="width"/>: its first page and the height its text takes.</summary>
+    /// <summary>One comment's balloon text laid out at <paramref name="width"/>: its page and the height the text takes.</summary>
     private (PageLayout Page, double Height) Balloon(Comment comment, double width)
     {
         Document text = new();
@@ -184,7 +301,7 @@ internal sealed class MarginComments
         section.PageSetup.PageWidth = Math.Max(24, width);
         section.PageSetup.PageHeight = 4000;
         section.PageSetup.MarginTop = section.PageSetup.MarginBottom = section.PageSetup.MarginLeft = section.PageSetup.MarginRight = 0;
-        AddThread(section.Body.AddParagraph(), comment, section.Body);
+        Write(section.Body.AddParagraph(), comment, section.Body);
         PageLayout page = text.Layout(layoutOptions).Pages[0];
         double height = page.Boxes.Count == 0 ? 0 : page.Boxes.Max(b => b.Bounds.Bottom) - page.Boxes.Min(b => b.Bounds.Y);
         return (page, Math.Max(height, FontSize * 1.2));
@@ -193,24 +310,29 @@ internal sealed class MarginComments
     /// <summary>A comment's author and text in <paramref name="first"/>, then each reply on a paragraph of its own.</summary>
     private static void AddThread(Paragraph first, Comment comment, Body body)
     {
-        Write(first, comment);
+        Write(first, comment, body);
         foreach (Comment reply in Replies(comment))
         {
             Paragraph paragraph = body.AddParagraph();
             paragraph.Format.LeftIndent = 6;
             paragraph.Format.SpaceBefore = 2;
-            Write(paragraph, reply);
+            Write(paragraph, reply, body);
         }
     }
 
-    private static void Write(Paragraph paragraph, Comment comment)
+    /// <summary>A comment's text, then its author and date in small grey type under it, as LibreOffice and Word show them.</summary>
+    private static void Write(Paragraph paragraph, Comment comment, Body body)
     {
         paragraph.Format.SpaceAfter = 0;
-        Run author = paragraph.AddRun(comment.Author + (comment.Done ? " (resolved)" : "") + ": ");
-        author.Format.Bold = true;
-        author.Format.Size = FontSize;
-        Run body = paragraph.AddRun(CommentExport.Contents(comment).Replace('\n', ' '));
-        body.Format.Size = FontSize;
+        Run text = paragraph.AddRun(CommentExport.Contents(comment).Replace('\n', ' '));
+        text.Format.Size = FontSize;
+        Paragraph by = body.AddParagraph();
+        by.Format.LeftIndent = paragraph.Format.LeftIndent;
+        by.Format.SpaceAfter = 0;
+        string when = comment.Date is { } date ? "  " + date.ToString("d MMM yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture) : "";
+        Run author = by.AddRun(comment.Author + (comment.Done ? " (resolved)" : "") + when);
+        author.Format.Size = FontSize - 1.5;
+        author.Format.Color = DocumentColor.FromHex("666666");
     }
 
     /// <summary>Every reply in the thread, in document order.</summary>
@@ -228,6 +350,9 @@ internal sealed class MarginComments
             }
         }
     }
+
+    /// <summary>A thread on its page: the comment, where its range starts (the foot of its first line), its lines and its colour.</summary>
+    private sealed record Thread(Comment Comment, double AnchorX, double AnchorY, List<LayoutRect> Lines, (Rgba8 Fill, Rgba8 Line) Colour);
 
     private void Begin(PdfCanvas canvas, Comment comment)
     {

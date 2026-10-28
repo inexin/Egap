@@ -48,8 +48,10 @@ draft.SaveAsPdf("draft-printed.pdf", new PdfExportOptions { Comments = PdfCommen
 ```
 
 `PdfCommentMode.Margin` prints the comments instead, as Word prints a document showing markup: each page keeps its paper
-size, its content is drawn a third smaller on the left, and a pane on the right holds a balloon per comment thread, beside
-the line it is about or pushed down below the one above, with a line to the commented text. Balloons that do not fit on
+size, its content is drawn at 76 % on the left, and a pane on the right holds a balloon per comment, replies under it, beside
+the line it is about, moved up or down only as far as the balloons around it need. The commented words are shaded in their
+author's colour, the balloon shows the text with the author and date under it, and a dashed line runs from an arrow under
+the comment's first character to its balloon. Balloons that do not fit on
 their page go to a Comments list at the end of the document, each with its page number. Links and bookmarks follow the
 smaller page; form fields cannot be written with this mode. In tagged output each balloon is a `Note` beside the
 paragraph its comment is in. Tracked changes are not printed in the margin.
