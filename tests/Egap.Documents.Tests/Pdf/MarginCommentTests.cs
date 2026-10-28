@@ -91,6 +91,18 @@ public sealed class MarginCommentTests
     }
 
     [Fact]
+    public void BalloonsStackNearTheirLinesAndMoveUpWhenCrowded()
+    {
+        // Room for all three: each where it wants to be unless the one above is in the way.
+        double[] free = MarginComments.Stack([(20, 100), (20, 105), (20, 300)], 6, 400);
+        Assert.Equal([100, 126, 300], free);
+
+        // Near the foot: the last boxes are pulled up so they stay on the page, pushing the ones above up too.
+        double[] crowded = MarginComments.Stack([(50, 300), (50, 320), (50, 340)], 6, 400);
+        Assert.Equal([238, 294, 350], crowded);
+    }
+
+    [Fact]
     public void FormFieldsAndMarginCommentsDoNotMix()
     {
         Assert.Throws<ArgumentException>(() => Export(Commented(1), new PdfExportOptions { Comments = PdfCommentMode.Margin, FormFields = true }));
