@@ -117,6 +117,7 @@ internal static class DocxProperties
             switch (e.Name.LocalName)
             {
                 case "keepNext": format.KeepWithNext = DocxUnits.OnOff(e); break;
+                case "framePr": format.Frame = DocxPositions.ReadFrame(e); break;
                 case "keepLines": format.KeepTogether = DocxUnits.OnOff(e); break;
                 case "pageBreakBefore": format.PageBreakBefore = DocxUnits.OnOff(e); break;
                 case "widowControl": format.WidowControl = DocxUnits.OnOff(e); break;
@@ -307,6 +308,11 @@ internal static class DocxProperties
                     ReadLook(e, format);
                     break;
                 case "tblStyle":
+                    break;
+                case "tblpPr":
+                    format.Position = DocxPositions.ReadTable(e, tblPr.Element(Ns.W + "tblOverlap"));
+                    break;
+                case "tblOverlap" when tblPr.Element(Ns.W + "tblpPr") is not null:
                     break;
                 default:
                     unknown?.Invoke(e);

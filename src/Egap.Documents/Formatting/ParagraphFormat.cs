@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>Paragraph formatting: alignment, indents, spacing, keep rules, tabs, borders and shading (Word's paragraph properties). Every property is nullable: null means not set here.</summary>
 public sealed partial class ParagraphFormat : FormatBase
 {
-    internal const int Count = 34;
+    internal const int Count = 35;
 
     internal const int AlignmentId = 0;
     internal const int LeftIndentId = 1;
@@ -40,6 +40,7 @@ public sealed partial class ParagraphFormat : FormatBase
     internal const int WordBreakId = 31;
     internal const int MaxLinesId = 32;
     internal const int KashidaId = 33;
+    internal const int FrameId = 34;
 
     internal override int PropertyCount => Count;
 
@@ -281,6 +282,13 @@ public sealed partial class ParagraphFormat : FormatBase
         set => SetEnum(33, value);
     }
 
+    /// <summary>An old-style text frame: the paragraph is placed as a float by the frame's anchors (Word's framePr); null for none.</summary>
+    public FramePosition? Frame
+    {
+        get => GetRef<FramePosition>(34);
+        set => SetRaw(34, value);
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -319,6 +327,7 @@ public sealed partial class ParagraphFormat : FormatBase
             31 => nameof(WordBreak),
             32 => nameof(MaxLines),
             33 => nameof(Kashida),
+            34 => nameof(Frame),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }

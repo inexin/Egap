@@ -206,6 +206,7 @@ internal sealed partial class Paginator
         insetLeft = 0;
         insetRight = 0;
         pages.Clear();
+        carriedTables.Clear();
         page = null;
         section = null;
         pageNumber = 0;
@@ -216,6 +217,12 @@ internal sealed partial class Paginator
             SectionBreak breakAfter = s + 1 == document.Sections.Count ? SectionBreak.None
                 : document.Sections[s + 1].PageSetup.SectionStart == SectionStart.Continuous ? SectionBreak.Continuous : SectionBreak.NewPage;
             FlowBlocks(next.Body.Blocks, breakAfter);
+        }
+
+        // A floating table that broke at the end of the text goes on on pages of its own.
+        while (carriedTables.Count > 0)
+        {
+            NewPage();
         }
 
         FlowEndnotes();
@@ -290,6 +297,7 @@ internal sealed partial class Paginator
 
         y = page.ColumnTop(0);
         ResumeBoxes();
+        PlaceCarriedTables();
     }
 
     /// <summary>The next column, or the next page when this was the last.</summary>

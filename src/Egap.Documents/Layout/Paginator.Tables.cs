@@ -248,6 +248,12 @@ internal sealed partial class Paginator
     /// <summary>Flows a body table down columns and pages, repeating header rows and splitting rows that may split.</summary>
     private void FlowTable(Table table)
     {
+        if (Floats(table, out TablePosition position))
+        {
+            FlowFloatingTable(table, position);
+            return;
+        }
+
         TablePlan plan = Plan(table, Column.X, Column.Width);
         int r = 0;
         (int Block, int Line)[]? resume = null;
