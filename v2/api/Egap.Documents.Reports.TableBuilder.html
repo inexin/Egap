@@ -154,7 +154,7 @@ Class TableBuilder  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="Egap_Documents_Reports_TableBuilder_Cell_System_Int32_" data-uid="Egap.Documents.Reports.TableBuilder.Cell(System.Int32)">
   Cell(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L456"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L467"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The next cell, spanning <code class="paramref">columnSpan</code> columns; a row is started when the last one is full.</p>
@@ -298,11 +298,49 @@ Class TableBuilder  <a class="header-action link-secondary" title="View source" 
 
 
 
+  <a id="Egap_Documents_Reports_TableBuilder_Floating_" data-uid="Egap.Documents.Reports.TableBuilder.Floating*"></a>
+
+  <h3 id="Egap_Documents_Reports_TableBuilder_Floating_Egap_Documents_TablePosition_" data-uid="Egap.Documents.Reports.TableBuilder.Floating(Egap.Documents.TablePosition)">
+  Floating(TablePosition)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L410"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Floats the table where <code class="paramref">position</code> puts it, the text after it wrapping on the side with more room;
+it continues on the next page when it does not fit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TableBuilder Floating(TablePosition position)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>position</code> <a class="xref" href="Egap.Documents.TablePosition.html">TablePosition</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Reports.TableBuilder.html">TableBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Reports_TableBuilder_Footer_" data-uid="Egap.Documents.Reports.TableBuilder.Footer*"></a>
 
   <h3 id="Egap_Documents_Reports_TableBuilder_Footer_System_Action_Egap_Documents_Reports_TableBuilder__" data-uid="Egap.Documents.Reports.TableBuilder.Footer(System.Action{Egap.Documents.Reports.TableBuilder})">
   Footer(Action&lt;TableBuilder&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L433"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L444"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Footer rows, filled by <code class="paramref">cells</code>, repeated at the foot of every page the table goes on from.</p>
@@ -339,7 +377,7 @@ Class TableBuilder  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="Egap_Documents_Reports_TableBuilder_Header_System_Action_Egap_Documents_Reports_TableBuilder__" data-uid="Egap.Documents.Reports.TableBuilder.Header(System.Action{Egap.Documents.Reports.TableBuilder})">
   Header(Action&lt;TableBuilder&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L426"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L437"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Header rows, filled by <code class="paramref">cells</code>, repeated on every page the table runs onto.</p>
@@ -376,7 +414,7 @@ Class TableBuilder  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="Egap_Documents_Reports_TableBuilder_Header_System_String___" data-uid="Egap.Documents.Reports.TableBuilder.Header(System.String[])">
   Header(params string[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L414"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L425"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A header row of bold text, repeated on every page the table runs onto.</p>
@@ -413,7 +451,7 @@ Class TableBuilder  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="Egap_Documents_Reports_TableBuilder_HeaderBackground_Egap_Documents_DocumentColor_" data-uid="Egap.Documents.Reports.TableBuilder.HeaderBackground(Egap.Documents.DocumentColor)">
   HeaderBackground(DocumentColor)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L407"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L418"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A background for the header cells.</p>
@@ -489,7 +527,7 @@ Class TableBuilder  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="Egap_Documents_Reports_TableBuilder_Rows__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Object____" data-uid="Egap.Documents.Reports.TableBuilder.Rows``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Object[]})">
   Rows&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, object?[]&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L440"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Reports/Builders.cs/#L451"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A row of text for each item, its cells from <code class="paramref">cells</code>.</p>

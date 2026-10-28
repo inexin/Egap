@@ -419,6 +419,13 @@ reports each change to its document; a format made with <code>new</code> stands 
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.FramePosition.html">FramePosition</a></dt>
+      <dd><p>An old-style text frame (Word's <code>w:framePr</code>): the paragraph, with the paragraphs after it that have the same frame,
+is placed as a float by its anchors and alignment, and is never split across pages. A frame with a <a class="xref" href="Egap.Documents.FramePosition.html#Egap_Documents_FramePosition_DropCap">DropCap</a>
+is a drop cap: its text sits at the start of the next paragraph, which wraps beside it. Immutable.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.GridContainer.html">GridContainer</a></dt>
       <dd><p>A grid container (CSS grid): items placed in cells of column and row tracks, by line, by named area or automatically, and
 spanning several. The page flow breaks between rows; DOCX writes the container as a borderless table.</p>
@@ -727,6 +734,13 @@ cells and widths come with the table format in Build Plan task 3.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.TablePosition.html">TablePosition</a></dt>
+      <dd><p>Where a floating table sits and how text keeps clear of it (Word's <code>w:tblpPr</code> and <code>w:tblOverlap</code>). A table with
+a position is laid out as a float that text wraps around on the side with more room, and continues on the next page when
+it does not fit. Immutable; set a new one to move the table.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.TableStyle.html">TableStyle</a></dt>
       <dd><p>A table style: formatting for the whole table and, apart, for its first and last rows and columns, bands and corners.</p>
 </dd>
@@ -887,6 +901,11 @@ Enums
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.DropCap.html">DropCap</a></dt>
+      <dd><p>A paragraph frame's drop cap kind (Word's <code>w:dropCap</code>).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.EpubSplit.html">EpubSplit</a></dt>
       <dd><p>Where the EPUB writer starts a new chapter file.</p>
 </dd>
@@ -910,6 +929,11 @@ stored result (Phase 6 design Q8).</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.FloatingAlignment.html">FloatingAlignment</a></dt>
       <dd><p>Where a floating object lines up within what it is measured from, instead of an offset.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.FrameWrap.html">FrameWrap</a></dt>
+      <dd><p>How text wraps around a paragraph frame (Word's <code>w:framePr w:wrap</code>).</p>
 </dd>
     </dl>
     <dl class="jumplist">

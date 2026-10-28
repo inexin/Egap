@@ -727,6 +727,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.DropCap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.DropCap.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.DropCap",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DropCap.yml\" sourcestartlinenumber=\"1\">A paragraph frame's drop cap kind (Word's <code>w:dropCap</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.EmbeddedFont.yml",
       "output": {
         ".html": {
@@ -1046,6 +1060,34 @@
       "IsMRef": true,
       "Title": "Egap.Documents.FormatRevision",
       "Summary": "<p sourcefile=\"api/Egap.Documents.FormatRevision.yml\" sourcestartlinenumber=\"1\">A tracked formatting change: who changed the formatting, when, and what it was before.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.FramePosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.FramePosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.FramePosition",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.FramePosition.yml\" sourcestartlinenumber=\"1\">An old-style text frame (Word's <code>w:framePr</code>): the paragraph, with the paragraphs after it that have the same frame,\nis placed as a float by its anchors and alignment, and is never split across pages. A frame with a <xref href=\"Egap.Documents.FramePosition.DropCap\" data-throw-if-not-resolved=\"false\"></xref>\nis a drop cap: its text sits at the start of the next paragraph, which wraps beside it. Immutable.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.FrameWrap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.FrameWrap.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.FrameWrap",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.FrameWrap.yml\" sourcestartlinenumber=\"1\">How text wraps around a paragraph frame (Word's <code>w:framePr w:wrap</code>).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3370,6 +3412,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.TableLayoutKind",
       "Summary": "<p sourcefile=\"api/Egap.Documents.TableLayoutKind.yml\" sourcestartlinenumber=\"1\">How a table's column widths are found.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.TablePosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.TablePosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.TablePosition",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.TablePosition.yml\" sourcestartlinenumber=\"1\">Where a floating table sits and how text keeps clear of it (Word's <code>w:tblpPr</code> and <code>w:tblOverlap</code>). A table with\na position is laid out as a float that text wraps around on the side with more room, and continues on the next page when\nit does not fit. Immutable; set a new one to move the table.</p>\n"
     },
     {
       "type": "ManagedReference",

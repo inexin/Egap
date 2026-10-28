@@ -238,6 +238,34 @@ builder.Write(&quot; of &quot;);
 builder.InsertField(&quot;NUMPAGES&quot;);
 builder.MoveToMarginBox(MarginBoxPosition.TopLeft, firstPage: true);   // an empty box: no title on the cover
 </code></pre>
+<p>A table with a <code>TableFormat.Position</code> floats: it sits where its anchors and alignment or offsets put it (the text, the
+margins or the page), text after it wraps on the side with more room, and when it does not fit it goes on at the top of
+the next page's body with its header rows repeated. The text after a table that breaks follows it on the page where it
+ends, unless <code>WordCompatibility.AllowTextAfterFloatingTableBreak</code> is on; <code>DoNotBreakWrappedTables</code> keeps it on one page,
+and <code>AllowOverlap = false</code> moves it down until it clears the floating tables before it. A paragraph with a
+<code>ParagraphFormat.Frame</code> is an old-style Word frame: it and the paragraphs after it with the same frame are placed the same
+way and never split, and a frame with a <code>DropCap</code> is a large first letter that the next paragraph wraps beside. Floating
+tables and frames in table cells, headers, footers, notes and text boxes are laid out in the text. DOCX reads and writes
+both (<code>w:tblpPr</code>, <code>w:tblOverlap</code>, <code>w:framePr</code>), HTML reads <code>float: left</code> and <code>float: right</code> on a table as a floating
+table and writes it back, and a report table floats with <code>Floating</code>.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document doc = new();
+Body body = doc.AddSection().Body;
+Table facts = body.AddTable(3, 2);
+facts.Format.Position = new TablePosition
+{
+    HorizontalAnchor = HorizontalAnchor.Margin,
+    HorizontalAlignment = FloatingAlignment.End,      // against the right margin
+    VerticalAnchor = VerticalAnchor.Paragraph,         // where the text after it starts
+    DistanceLeft = 9,                                   // the text keeps 9 points away
+};
+body.AddParagraph(&quot;This text wraps beside the table on the left.&quot;);
+
+Paragraph cap = body.AddParagraph(&quot;O&quot;);
+cap.Format.Frame = new FramePosition { DropCap = DropCap.Drop, DropCapLines = 3 };
+body.AddParagraph(&quot;nce upon a time, the first letter of this paragraph sat three lines tall.&quot;);
+</code></pre>
 <p><code>InsertTableOfContents</code> writes a TOC field and builds its entries from the headings, each linked to its heading. Layout
 fills in the page numbers, as it does for every PAGEREF field. HTML's <code>&lt;nav data-toc&gt;</code> is read as such a field.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
