@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Enum EmbeddedSource | Egap </title>
+      <title>Enum EmbeddedSourceMode | Egap </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Enum EmbeddedSource | Egap ">
+      <meta name="title" content="Enum EmbeddedSourceMode | Egap ">
       
       <meta name="description" content="When  uses a DOCX copy of the document that a hybrid PDF carries.">
       <link rel="icon" href="../images/favicon.ico">
@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Pdf_EmbeddedSource.md&amp;value=---%0Auid%3A%20Egap.Documents.Pdf.EmbeddedSource%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Pdf_EmbeddedSourceMode.md&amp;value=---%0Auid%3A%20Egap.Documents.Pdf.EmbeddedSourceMode%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -84,13 +84,13 @@
           <nav id="breadcrumb"></nav>
         </div>
 
-        <article data-uid="Egap.Documents.Pdf.EmbeddedSource">
+        <article data-uid="Egap.Documents.Pdf.EmbeddedSourceMode">
 
 
 
 
-  <h1 id="Egap_Documents_Pdf_EmbeddedSource" data-uid="Egap.Documents.Pdf.EmbeddedSource" class="text-break">
-Enum EmbeddedSource  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/HybridPdf.cs/#L7"><i class="bi bi-code-slash"></i></a>
+  <h1 id="Egap_Documents_Pdf_EmbeddedSourceMode" data-uid="Egap.Documents.Pdf.EmbeddedSourceMode" class="text-break">
+Enum EmbeddedSourceMode  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/HybridPdf.cs/#L7"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -103,7 +103,7 @@ Enum EmbeddedSource  <a class="header-action link-secondary" title="View source"
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public enum EmbeddedSource</code></pre>
+    <pre><code class="lang-csharp hljs">public enum EmbeddedSourceMode</code></pre>
   </div>
 
 
@@ -117,16 +117,16 @@ Enum EmbeddedSource  <a class="header-action link-secondary" title="View source"
   <h2 id="fields">Fields
 </h2>
   <dl class="parameters">
-    <dt id="Egap_Documents_Pdf_EmbeddedSource_Ignore"><code>Ignore = 1</code></dt>
+    <dt id="Egap_Documents_Pdf_EmbeddedSourceMode_Ignore"><code>Ignore = 1</code></dt>
   
   <dd><p>The pages are always analysed; a copy is left alone.</p>
 </dd>
-    <dt id="Egap_Documents_Pdf_EmbeddedSource_Prefer"><code>Prefer = 0</code></dt>
+    <dt id="Egap_Documents_Pdf_EmbeddedSourceMode_Prefer"><code>Prefer = 0</code></dt>
   
   <dd><p>The default: the copy is used when it can be trusted (marked as the source, a DOCX, written by Egap and not followed by
 any later change to the PDF); otherwise the pages are analysed, with a warning saying why the copy was not used.</p>
 </dd>
-    <dt id="Egap_Documents_Pdf_EmbeddedSource_Require"><code>Require = 2</code></dt>
+    <dt id="Egap_Documents_Pdf_EmbeddedSourceMode_Require"><code>Require = 2</code></dt>
   
   <dd><p>The copy must be used: a PDF without a trusted one throws.</p>
 </dd>

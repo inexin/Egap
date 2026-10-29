@@ -14734,30 +14734,30 @@ references:
   commentId: N:Egap.Documents.Pdf
   fullName: Egap.Documents.Pdf
   nameWithType: Egap.Documents.Pdf
-- uid: Egap.Documents.Pdf.EmbeddedSource
-  name: EmbeddedSource
-  href: api/Egap.Documents.Pdf.EmbeddedSource.html
-  commentId: T:Egap.Documents.Pdf.EmbeddedSource
-  fullName: Egap.Documents.Pdf.EmbeddedSource
-  nameWithType: EmbeddedSource
-- uid: Egap.Documents.Pdf.EmbeddedSource.Ignore
+- uid: Egap.Documents.Pdf.EmbeddedSourceMode
+  name: EmbeddedSourceMode
+  href: api/Egap.Documents.Pdf.EmbeddedSourceMode.html
+  commentId: T:Egap.Documents.Pdf.EmbeddedSourceMode
+  fullName: Egap.Documents.Pdf.EmbeddedSourceMode
+  nameWithType: EmbeddedSourceMode
+- uid: Egap.Documents.Pdf.EmbeddedSourceMode.Ignore
   name: Ignore
-  href: api/Egap.Documents.Pdf.EmbeddedSource.html#Egap_Documents_Pdf_EmbeddedSource_Ignore
-  commentId: F:Egap.Documents.Pdf.EmbeddedSource.Ignore
-  fullName: Egap.Documents.Pdf.EmbeddedSource.Ignore
-  nameWithType: EmbeddedSource.Ignore
-- uid: Egap.Documents.Pdf.EmbeddedSource.Prefer
+  href: api/Egap.Documents.Pdf.EmbeddedSourceMode.html#Egap_Documents_Pdf_EmbeddedSourceMode_Ignore
+  commentId: F:Egap.Documents.Pdf.EmbeddedSourceMode.Ignore
+  fullName: Egap.Documents.Pdf.EmbeddedSourceMode.Ignore
+  nameWithType: EmbeddedSourceMode.Ignore
+- uid: Egap.Documents.Pdf.EmbeddedSourceMode.Prefer
   name: Prefer
-  href: api/Egap.Documents.Pdf.EmbeddedSource.html#Egap_Documents_Pdf_EmbeddedSource_Prefer
-  commentId: F:Egap.Documents.Pdf.EmbeddedSource.Prefer
-  fullName: Egap.Documents.Pdf.EmbeddedSource.Prefer
-  nameWithType: EmbeddedSource.Prefer
-- uid: Egap.Documents.Pdf.EmbeddedSource.Require
+  href: api/Egap.Documents.Pdf.EmbeddedSourceMode.html#Egap_Documents_Pdf_EmbeddedSourceMode_Prefer
+  commentId: F:Egap.Documents.Pdf.EmbeddedSourceMode.Prefer
+  fullName: Egap.Documents.Pdf.EmbeddedSourceMode.Prefer
+  nameWithType: EmbeddedSourceMode.Prefer
+- uid: Egap.Documents.Pdf.EmbeddedSourceMode.Require
   name: Require
-  href: api/Egap.Documents.Pdf.EmbeddedSource.html#Egap_Documents_Pdf_EmbeddedSource_Require
-  commentId: F:Egap.Documents.Pdf.EmbeddedSource.Require
-  fullName: Egap.Documents.Pdf.EmbeddedSource.Require
-  nameWithType: EmbeddedSource.Require
+  href: api/Egap.Documents.Pdf.EmbeddedSourceMode.html#Egap_Documents_Pdf_EmbeddedSourceMode_Require
+  commentId: F:Egap.Documents.Pdf.EmbeddedSourceMode.Require
+  fullName: Egap.Documents.Pdf.EmbeddedSourceMode.Require
+  nameWithType: EmbeddedSourceMode.Require
 - uid: Egap.Documents.Pdf.HtmlStamp
   name: HtmlStamp
   href: api/Egap.Documents.Pdf.HtmlStamp.html
@@ -16552,19 +16552,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Pdf.PdfExportOptions.FormFields
   nameWithType: PdfExportOptions.FormFields
-- uid: Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
-  name: IncludeResolved
-  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_IncludeResolved
-  commentId: P:Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
-  fullName: Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
-  nameWithType: PdfExportOptions.IncludeResolved
-- uid: Egap.Documents.Pdf.PdfExportOptions.IncludeResolved*
-  name: IncludeResolved
-  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_IncludeResolved_
-  commentId: Overload:Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
+- uid: Egap.Documents.Pdf.PdfExportOptions.IncludeResolvedComments
+  name: IncludeResolvedComments
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_IncludeResolvedComments
+  commentId: P:Egap.Documents.Pdf.PdfExportOptions.IncludeResolvedComments
+  fullName: Egap.Documents.Pdf.PdfExportOptions.IncludeResolvedComments
+  nameWithType: PdfExportOptions.IncludeResolvedComments
+- uid: Egap.Documents.Pdf.PdfExportOptions.IncludeResolvedComments*
+  name: IncludeResolvedComments
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_IncludeResolvedComments_
+  commentId: Overload:Egap.Documents.Pdf.PdfExportOptions.IncludeResolvedComments
   isSpec: "True"
-  fullName: Egap.Documents.Pdf.PdfExportOptions.IncludeResolved
-  nameWithType: PdfExportOptions.IncludeResolved
+  fullName: Egap.Documents.Pdf.PdfExportOptions.IncludeResolvedComments
+  nameWithType: PdfExportOptions.IncludeResolvedComments
 - uid: Egap.Documents.Pdf.PdfExportOptions.Language
   name: Language
   href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_Language
@@ -25033,6 +25033,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.WordCompatibility.OverrideTableStyleFontSizeAndJustification
   nameWithType: WordCompatibility.OverrideTableStyleFontSizeAndJustification
+- uid: Egap.Documents.WordCompatibility.ResetToModeDefaults
+  name: ResetToModeDefaults()
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_ResetToModeDefaults
+  commentId: M:Egap.Documents.WordCompatibility.ResetToModeDefaults
+  fullName: Egap.Documents.WordCompatibility.ResetToModeDefaults()
+  nameWithType: WordCompatibility.ResetToModeDefaults()
+- uid: Egap.Documents.WordCompatibility.ResetToModeDefaults*
+  name: ResetToModeDefaults
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_ResetToModeDefaults_
+  commentId: Overload:Egap.Documents.WordCompatibility.ResetToModeDefaults
+  isSpec: "True"
+  fullName: Egap.Documents.WordCompatibility.ResetToModeDefaults
+  nameWithType: WordCompatibility.ResetToModeDefaults
 - uid: Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark
   name: SplitPageBreakAndParagraphMark
   href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_SplitPageBreakAndParagraphMark
@@ -25059,19 +25072,6 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.WordCompatibility.TableIndentFromCellText
   nameWithType: WordCompatibility.TableIndentFromCellText
-- uid: Egap.Documents.WordCompatibility.UseModeDefaults
-  name: UseModeDefaults()
-  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_UseModeDefaults
-  commentId: M:Egap.Documents.WordCompatibility.UseModeDefaults
-  fullName: Egap.Documents.WordCompatibility.UseModeDefaults()
-  nameWithType: WordCompatibility.UseModeDefaults()
-- uid: Egap.Documents.WordCompatibility.UseModeDefaults*
-  name: UseModeDefaults
-  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_UseModeDefaults_
-  commentId: Overload:Egap.Documents.WordCompatibility.UseModeDefaults
-  isSpec: "True"
-  fullName: Egap.Documents.WordCompatibility.UseModeDefaults
-  nameWithType: WordCompatibility.UseModeDefaults
 - uid: Egap.Documents.WrapMode
   name: WrapMode
   href: api/Egap.Documents.WrapMode.html

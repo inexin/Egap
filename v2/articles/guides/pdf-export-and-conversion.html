@@ -113,14 +113,14 @@ form.SaveAsPdf(&quot;application.pdf&quot;, new PdfExportOptions { FormFields = 
 <p>With <code>Comments = PdfCommentMode.Annotations</code>, the document's comments become PDF annotations any viewer shows and
 edits, as Acrobat writes them: a highlight over the text each is about (a note icon where it is about no text) with its
 author, date and text in a popup, replies threaded under it, and a resolved comment marked <code>Completed</code>.
-<code>IncludeResolved = false</code> leaves resolved comments out. The annotations print and have appearances, so PDF/A-2 and later
+<code>IncludeResolvedComments = false</code> leaves resolved comments out. The annotations print and have appearances, so PDF/A-2 and later
 hold, and tagged output puts each in an <code>Annot</code> element. Reading the PDF back gives the comments again, on the words they
 were about.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Documents.Pdf;
 
 Document draft = Document.Load(&quot;draft.docx&quot;);
-draft.SaveAsPdf(&quot;draft-for-review.pdf&quot;, new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolved = false });
+draft.SaveAsPdf(&quot;draft-for-review.pdf&quot;, new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolvedComments = false });
 draft.SaveAsPdf(&quot;draft-printed.pdf&quot;, new PdfExportOptions { Comments = PdfCommentMode.Margin });
 </code></pre>
 <p><code>PdfCommentMode.Margin</code> prints the comments instead, as Word prints a document showing markup: each page keeps its paper
@@ -205,7 +205,7 @@ Document report = Document.LoadDocx(&quot;report.docx&quot;);
 report.SaveAsPdf(&quot;report.pdf&quot;, new PdfExportOptions { EmbedSource = true, Conformance = PdfAConformance.PdfA3b });
 
 Document again = Document.LoadPdf(&quot;report.pdf&quot;);                 // the DOCX inside, not an analysis of the pages
-Document pages = Document.LoadPdf(&quot;report.pdf&quot;, new PdfToDocumentOptions { EmbeddedSource = EmbeddedSource.Ignore });
+Document pages = Document.LoadPdf(&quot;report.pdf&quot;, new PdfToDocumentOptions { EmbeddedSource = EmbeddedSourceMode.Ignore });
 </code></pre>
 <p>The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV. A scanned
 page stays a picture unless you load with <code>Document.LoadPdfAsync</code> and an OCR engine (see

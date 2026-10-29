@@ -2267,17 +2267,17 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Documents.Pdf.EmbeddedSource.yml",
+      "source_relative_path": "api/Egap.Documents.Pdf.EmbeddedSourceMode.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Egap.Documents.Pdf.EmbeddedSource.html"
+          "relative_path": "api/Egap.Documents.Pdf.EmbeddedSourceMode.html"
         }
       },
       "version": "",
       "Uid": null,
       "IsMRef": true,
-      "Title": "Egap.Documents.Pdf.EmbeddedSource",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.Pdf.EmbeddedSource.yml\" sourcestartlinenumber=\"1\">When <xref href=\"Egap.Documents.Pdf.PdfToDocument\" data-throw-if-not-resolved=\"false\"></xref> uses a DOCX copy of the document that a hybrid PDF carries.</p>\n"
+      "Title": "Egap.Documents.Pdf.EmbeddedSourceMode",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Pdf.EmbeddedSourceMode.yml\" sourcestartlinenumber=\"1\">When <xref href=\"Egap.Documents.Pdf.PdfToDocument\" data-throw-if-not-resolved=\"false\"></xref> uses a DOCX copy of the document that a hybrid PDF carries.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7477,11 +7477,11 @@
       "type": "Toc",
       "source_relative_path": "api/toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "api/toc.html"
-        },
         ".json": {
           "relative_path": "api/toc.json"
+        },
+        ".html": {
+          "relative_path": "api/toc.html"
         }
       },
       "version": ""
@@ -7750,11 +7750,11 @@
       "type": "Toc",
       "source_relative_path": "articles/toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "articles/toc.html"
-        },
         ".json": {
           "relative_path": "articles/toc.json"
+        },
+        ".html": {
+          "relative_path": "articles/toc.html"
         }
       },
       "version": ""
@@ -7793,11 +7793,11 @@
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "toc.html"
-        },
         ".json": {
           "relative_path": "toc.json"
+        },
+        ".html": {
+          "relative_path": "toc.html"
         }
       },
       "version": ""

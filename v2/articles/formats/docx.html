@@ -161,7 +161,7 @@ string? ulTrailSpace = compat.OtherSettings.GetValueOrDefault(&quot;ulTrailSpace
 
 compat.EnableOpenTypeFeatures = true;          // shape with the runs' ligatures and number forms
 old.Settings.CompatibilityMode = 15;           // the flags nobody set follow Word 2013's rules
-compat.UseModeDefaults();                      // forget the file's values too
+compat.ResetToModeDefaults();                  // forget the file's values too
 </code></pre>
 <h2 id="writing">Writing</h2>
 <p>DOCX to DOCX is lossless: parts and paragraphs you did not edit are written as they were read. Saving to a path takes the
