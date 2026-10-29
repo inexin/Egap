@@ -50,7 +50,7 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - `PdfOcr.MakeSearchableAsync` makes scanned PDFs searchable through any `IOcrEngine` from Egami.Ocr (Egami 1.2.0), such as
   `CommandOcrEngine` running Tesseract: the engine's words go over each page as invisible text, along each word's own
   baseline and scaled to its width. A page that is one scanned image is read as its own pixels; other pages are rendered.
-- `PdfOcrOptions`: `Skip`, `Redo` and `Force` modes, a page range, languages, render resolution, a confidence floor,
+- `PdfOcrOptions`: `Skip`, `Redo` and `Force` modes, a page range (`PdfPageRange`), languages, render resolution, a confidence floor,
   deskew of the engine's copy, page rotation from the engine, parallel pages with progress, PDF/A in the same pass, and
   page and pixel limits. A signed document is refused unless `AllowInvalidatingSignatures`. `PdfOcrReport` says per page
   what was done, the words added, their mean confidence and the engine's time.
@@ -184,7 +184,7 @@ No changes of its own: it moves to 2.2.0 with the other Egap packages and builds
 ### Comments in PDF
 - `PdfExportOptions.Comments = PdfCommentMode.Annotations` writes each comment as a markup annotation: a Highlight over the
   commented text's lines (a Text note where its range is empty) with author, date, text and a popup; replies as Text
-  annotations with `/IRT`; resolved comments with a `Completed` review state, or left out with `IncludeResolved = false`.
+  annotations with `/IRT`; resolved comments with a `Completed` review state, or left out with `IncludeResolvedComments = false`.
   Every annotation prints and has an appearance (PDF/A-2b and later hold), and tagged output nests each, popups too, in an
   `Annot` element (PDF/UA-1 holds).
 - PDF import reads a highlight's comment onto the words it covers, keeps reply chains and reads the `Completed` state as
@@ -230,7 +230,7 @@ No changes of its own: it moves to 2.2.0 with the other Egap packages and builds
   `CompatibilityMode` unless the file or code sets it: `AllowSpaceOfSameStyleInTable`,
   `DoNotUseIndentAsNumberingTabStop`, `SplitPageBreakAndParagraphMark`, `OverrideTableStyleFontSizeAndJustification`,
   `EnableOpenTypeFeatures`, `DoNotBreakWrappedTables`, `AllowTextAfterFloatingTableBreak` and `TableIndentFromCellText`.
-  `OtherSettings` lists the options read but not acted on, and `UseModeDefaults` forgets the set values.
+  `OtherSettings` lists the options read but not acted on, and `ResetToModeDefaults` forgets the set values.
 - DOCX reads the flags from `w:compat` and writes the ones set in code, in schema order; options read from a file go back
   unchanged. A new document writes Word 2013's four compatibility settings.
 - Layout follows the flags: files older than Word 2010 keep the table style's font size and alignment over an 11 or 12

@@ -50,7 +50,7 @@ public class WordCompatibilityTests
         settings.CompatibilityMode = 12;
         Assert.False(compat.TableIndentFromCellText);
 
-        compat.UseModeDefaults();
+        compat.ResetToModeDefaults();
         Assert.True(compat.TableIndentFromCellText);
         Assert.False(compat.EnableOpenTypeFeatures);
         Assert.Contains("Settings.WordCompatibility.TableIndentFromCellText", changes);

@@ -34,7 +34,7 @@ form.SaveAsPdf("application.pdf", new PdfExportOptions { FormFields = true });
 With `Comments = PdfCommentMode.Annotations`, the document's comments become PDF annotations any viewer shows and
 edits, as Acrobat writes them: a highlight over the text each is about (a note icon where it is about no text) with its
 author, date and text in a popup, replies threaded under it, and a resolved comment marked `Completed`.
-`IncludeResolved = false` leaves resolved comments out. The annotations print and have appearances, so PDF/A-2 and later
+`IncludeResolvedComments = false` leaves resolved comments out. The annotations print and have appearances, so PDF/A-2 and later
 hold, and tagged output puts each in an `Annot` element. Reading the PDF back gives the comments again, on the words they
 were about.
 
@@ -43,7 +43,7 @@ using Egap.Documents;
 using Egap.Documents.Pdf;
 
 Document draft = Document.Load("draft.docx");
-draft.SaveAsPdf("draft-for-review.pdf", new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolved = false });
+draft.SaveAsPdf("draft-for-review.pdf", new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolvedComments = false });
 draft.SaveAsPdf("draft-printed.pdf", new PdfExportOptions { Comments = PdfCommentMode.Margin });
 ```
 
@@ -149,7 +149,7 @@ Document report = Document.LoadDocx("report.docx");
 report.SaveAsPdf("report.pdf", new PdfExportOptions { EmbedSource = true, Conformance = PdfAConformance.PdfA3b });
 
 Document again = Document.LoadPdf("report.pdf");                 // the DOCX inside, not an analysis of the pages
-Document pages = Document.LoadPdf("report.pdf", new PdfToDocumentOptions { EmbeddedSource = EmbeddedSource.Ignore });
+Document pages = Document.LoadPdf("report.pdf", new PdfToDocumentOptions { EmbeddedSource = EmbeddedSourceMode.Ignore });
 ```
 
 The same analysis can tag an untagged PDF, write its layout as DoclingDocument JSON, or export its tables as CSV. A scanned

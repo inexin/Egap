@@ -3245,7 +3245,7 @@ Egap.Pdf.Ocr.PdfOcrOptions.MinConfidence.get -> double
 Egap.Pdf.Ocr.PdfOcrOptions.MinConfidence.init -> void
 Egap.Pdf.Ocr.PdfOcrOptions.Mode.get -> Egap.Pdf.Ocr.PdfOcrMode
 Egap.Pdf.Ocr.PdfOcrOptions.Mode.init -> void
-Egap.Pdf.Ocr.PdfOcrOptions.Pages.get -> System.Collections.Generic.IReadOnlyList<int>?
+Egap.Pdf.Ocr.PdfOcrOptions.Pages.get -> Egap.Pdf.PdfPageRange?
 Egap.Pdf.Ocr.PdfOcrOptions.Pages.init -> void
 Egap.Pdf.Ocr.PdfOcrOptions.PdfA.get -> Egap.Pdf.PdfAConformance?
 Egap.Pdf.Ocr.PdfOcrOptions.PdfA.init -> void

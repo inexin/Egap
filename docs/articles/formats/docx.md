@@ -53,7 +53,7 @@ string? ulTrailSpace = compat.OtherSettings.GetValueOrDefault("ulTrailSpace");  
 
 compat.EnableOpenTypeFeatures = true;          // shape with the runs' ligatures and number forms
 old.Settings.CompatibilityMode = 15;           // the flags nobody set follow Word 2013's rules
-compat.UseModeDefaults();                      // forget the file's values too
+compat.ResetToModeDefaults();                  // forget the file's values too
 ```
 
 ## Writing

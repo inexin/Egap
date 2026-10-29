@@ -85,7 +85,7 @@ public static class PdfOcr
     private static List<int> Pages(PdfDocument document, PdfOcrOptions options)
     {
         int count = document.Pages.Count;
-        List<int> pages = options.Pages is { } chosen ? [.. chosen.Distinct().Order()] : [.. Enumerable.Range(0, count)];
+        List<int> pages = options.Pages is { } chosen ? [.. chosen.Resolve(count).Distinct().Order()] : [.. Enumerable.Range(0, count)];
         if (pages.Count > 0 && (pages[0] < 0 || pages[^1] >= count))
         {
             throw new ArgumentOutOfRangeException(nameof(options), $"The document has {count} pages; page indices run from 0 to {count - 1}.");

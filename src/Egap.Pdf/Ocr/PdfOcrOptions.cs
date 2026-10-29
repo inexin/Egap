@@ -25,8 +25,8 @@ public sealed record PdfOcrOptions
     /// <summary>Which pages get OCR. <see cref="PdfOcrMode.Skip"/> by default.</summary>
     public PdfOcrMode Mode { get; init; } = PdfOcrMode.Skip;
 
-    /// <summary>The pages to look at, as indices from 0, or <see langword="null"/> (the default) for every page.</summary>
-    public IReadOnlyList<int>? Pages { get; init; }
+    /// <summary>The pages to look at, such as <c>PdfPageRange.Parse("1-3,7")</c>, or <see langword="null"/> (the default) for every page.</summary>
+    public PdfPageRange? Pages { get; init; }
 
     /// <summary>The languages the engine reads, as it names them (such as "eng" and "nor"), most likely first; empty for its default.</summary>
     public IReadOnlyList<string> Languages { get; init; } = [];

@@ -87,7 +87,7 @@ public sealed class CommentExportTests
     [Fact]
     public void ResolvedCommentsCanBeLeftOut()
     {
-        using PdfDocument pdf = PdfDocument.Open(Export(Sample(), new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolved = false }));
+        using PdfDocument pdf = PdfDocument.Open(Export(Sample(), new PdfExportOptions { Comments = PdfCommentMode.Annotations, IncludeResolvedComments = false }));
 
         Assert.DoesNotContain(pdf.Pages[0].Annotations, a => a.Contents is "Source?" or "Completed");
         Assert.Contains(pdf.Pages[0].Annotations, a => a.Contents == "Is this right?");

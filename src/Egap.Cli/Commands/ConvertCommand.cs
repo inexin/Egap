@@ -103,7 +103,7 @@ internal static class ConvertCommand
                 throw new UsageException("--embed-source needs PDF/A-3, PDF/A-4f or no PDF/A: PDF/A-1 and 2 do not allow embedded files.");
             }
 
-            EmbeddedSource embedded = result.GetValue(ignoreSource) ? EmbeddedSource.Ignore : EmbeddedSource.Prefer;
+            EmbeddedSourceMode embedded = result.GetValue(ignoreSource) ? EmbeddedSourceMode.Ignore : EmbeddedSourceMode.Prefer;
             string[] allowed = [.. (result.GetValue(allowPath) ?? []).Select(session.ResolvePath)];
             bool network = result.GetValue(allowNetwork);
             if ((allowed.Length > 0 || network) && (options.Header is not null || options.Footer is not null || options.TableOfContents != TableOfContentsMode.None))
@@ -171,7 +171,7 @@ internal static class ConvertCommand
     }
 
     /// <summary>A PDF read through layout analysis; an encrypted one is opened with its password and decrypted first.</summary>
-    private static Document FromPdf(EgapSession session, InputFile file, string? password, PdfToDocumentMode mode, EmbeddedSource embedded)
+    private static Document FromPdf(EgapSession session, InputFile file, string? password, PdfToDocumentMode mode, EmbeddedSourceMode embedded)
     {
         PdfToDocumentOptions options = new()
         {
