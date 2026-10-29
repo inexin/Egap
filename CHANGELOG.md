@@ -3,7 +3,7 @@
 What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Cli 2.2.0 (unreleased)
+## Egap.Cli 2.2.0 (2026-10-29)
 
 A new package: the `egap` command, a .NET tool on Egap's public API, on the Egap release train. It shares egami's
 conventions and command host (Egami.Cli.Host): globs, output templates, batches, exit codes 0 to 3 and an MCP server.
@@ -44,7 +44,7 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
   `--allow-sign`; `ocr`, which runs a program the call names, never.
 - `egap <name>` runs `egap-<name>` from the PATH, so `egap preview` starts egap-preview.
 
-## Egap.Pdf 2.2.0 (unreleased)
+## Egap.Pdf 2.2.0 (2026-10-29)
 
 ### OCR
 - `PdfOcr.MakeSearchableAsync` makes scanned PDFs searchable through any `IOcrEngine` from Egami.Ocr (Egami 1.2.0), such as
@@ -117,13 +117,13 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - A resource named `AA`, such as a font, is no longer removed as if it were additional actions. Conversion removed it
   and then refused the file, which it had already changed.
 
-## Egap.Preview 2.2.0 (unreleased)
+## Egap.Preview 2.2.0 (2026-10-29)
 
 ### Package icon
 
 - The tool has its own icon on NuGet: an eye on a deep olive tile.
 
-## Egap.Documents.Html 2.2.0 (unreleased)
+## Egap.Documents.Html 2.2.0 (2026-10-29)
 
 ### Kashida
 - `HtmlLoadOptions.Kashida` turns on kashida for `text-align: justify` paragraphs, at a level you choose. CSS has no
@@ -158,7 +158,11 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - A paragraph whose first bookmark is not at its start no longer writes that bookmark twice, as the paragraph's id and as
   an anchor, which gave the page two elements with one id.
 
-## Egap.Documents 2.2.0 (unreleased)
+## Egap.Documents.Markdown 2.2.0 (2026-10-29)
+
+No changes of its own: it moves to 2.2.0 with the other Egap packages and builds on Egami 1.2.0.
+
+## Egap.Documents 2.2.0 (2026-10-29)
 
 ### Fixes
 - A new document saved as DOCX no longer names footnote and endnote separators in its settings when it has no notes; Word

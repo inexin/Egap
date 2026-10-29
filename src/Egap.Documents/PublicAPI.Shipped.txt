@@ -3037,3 +3037,150 @@ virtual Egap.Documents.Node.Clone(bool deep = true) -> Egap.Documents.Node!
 ~override Egap.Documents.Pdf.PageMargins.ToString() -> string
 ~override Egap.Documents.TableWidth.Equals(object obj) -> bool
 ~override Egap.Documents.TableWidth.ToString() -> string
+Egap.Documents.ConversionWarningKind.MediaDropped = 13 -> Egap.Documents.ConversionWarningKind
+Egap.Documents.DocumentFormatKind.Epub = 7 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Mhtml = 8 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentSettings.WordCompatibility.get -> Egap.Documents.WordCompatibility!
+Egap.Documents.DropCap
+Egap.Documents.DropCap.Drop = 1 -> Egap.Documents.DropCap
+Egap.Documents.DropCap.Margin = 2 -> Egap.Documents.DropCap
+Egap.Documents.DropCap.None = 0 -> Egap.Documents.DropCap
+Egap.Documents.FramePosition
+Egap.Documents.FramePosition.<Clone>$() -> Egap.Documents.FramePosition!
+Egap.Documents.FramePosition.AnchorLock.get -> bool
+Egap.Documents.FramePosition.AnchorLock.init -> void
+Egap.Documents.FramePosition.DistanceHorizontal.get -> double
+Egap.Documents.FramePosition.DistanceHorizontal.init -> void
+Egap.Documents.FramePosition.DistanceVertical.get -> double
+Egap.Documents.FramePosition.DistanceVertical.init -> void
+Egap.Documents.FramePosition.DropCap.get -> Egap.Documents.DropCap
+Egap.Documents.FramePosition.DropCap.init -> void
+Egap.Documents.FramePosition.DropCapLines.get -> int
+Egap.Documents.FramePosition.DropCapLines.init -> void
+Egap.Documents.FramePosition.Equals(Egap.Documents.FramePosition? other) -> bool
+Egap.Documents.FramePosition.FramePosition() -> void
+Egap.Documents.FramePosition.Height.get -> double?
+Egap.Documents.FramePosition.Height.init -> void
+Egap.Documents.FramePosition.HeightRule.get -> Egap.Documents.RowHeightRule
+Egap.Documents.FramePosition.HeightRule.init -> void
+Egap.Documents.FramePosition.HorizontalAlignment.get -> Egap.Documents.FloatingAlignment
+Egap.Documents.FramePosition.HorizontalAlignment.init -> void
+Egap.Documents.FramePosition.HorizontalAnchor.get -> Egap.Documents.HorizontalAnchor
+Egap.Documents.FramePosition.HorizontalAnchor.init -> void
+Egap.Documents.FramePosition.HorizontalOffset.get -> double
+Egap.Documents.FramePosition.HorizontalOffset.init -> void
+Egap.Documents.FramePosition.VerticalAlignment.get -> Egap.Documents.FloatingAlignment
+Egap.Documents.FramePosition.VerticalAlignment.init -> void
+Egap.Documents.FramePosition.VerticalAnchor.get -> Egap.Documents.VerticalAnchor
+Egap.Documents.FramePosition.VerticalAnchor.init -> void
+Egap.Documents.FramePosition.VerticalOffset.get -> double
+Egap.Documents.FramePosition.VerticalOffset.init -> void
+Egap.Documents.FramePosition.Width.get -> double?
+Egap.Documents.FramePosition.Width.init -> void
+Egap.Documents.FramePosition.Wrap.get -> Egap.Documents.FrameWrap
+Egap.Documents.FramePosition.Wrap.init -> void
+Egap.Documents.FrameWrap
+Egap.Documents.FrameWrap.Around = 1 -> Egap.Documents.FrameWrap
+Egap.Documents.FrameWrap.Auto = 0 -> Egap.Documents.FrameWrap
+Egap.Documents.FrameWrap.None = 3 -> Egap.Documents.FrameWrap
+Egap.Documents.FrameWrap.NotBeside = 2 -> Egap.Documents.FrameWrap
+Egap.Documents.FrameWrap.Through = 5 -> Egap.Documents.FrameWrap
+Egap.Documents.FrameWrap.Tight = 4 -> Egap.Documents.FrameWrap
+Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.High = 3 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.Low = 1 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.Medium = 2 -> Egap.Documents.KashidaLevel
+Egap.Documents.KashidaLevel.None = 0 -> Egap.Documents.KashidaLevel
+Egap.Documents.ParagraphFormat.Frame.get -> Egap.Documents.FramePosition?
+Egap.Documents.ParagraphFormat.Frame.set -> void
+Egap.Documents.ParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel?
+Egap.Documents.ParagraphFormat.Kashida.set -> void
+Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.EmbeddedSource.Ignore = 1 -> Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.EmbeddedSource.Prefer = 0 -> Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.EmbeddedSource.Require = 2 -> Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfCommentMode.Annotations = 1 -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfCommentMode.Margin = 2 -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfCommentMode.None = 0 -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfConvertOptions.EmbedSource.get -> bool
+Egap.Documents.Pdf.PdfConvertOptions.EmbedSource.init -> void
+Egap.Documents.Pdf.PdfExportOptions.Comments.get -> Egap.Documents.Pdf.PdfCommentMode
+Egap.Documents.Pdf.PdfExportOptions.Comments.init -> void
+Egap.Documents.Pdf.PdfExportOptions.EmbedSource.get -> bool
+Egap.Documents.Pdf.PdfExportOptions.EmbedSource.init -> void
+Egap.Documents.Pdf.PdfExportOptions.IncludeResolved.get -> bool
+Egap.Documents.Pdf.PdfExportOptions.IncludeResolved.init -> void
+Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource.get -> Egap.Documents.Pdf.EmbeddedSource
+Egap.Documents.Pdf.PdfToDocumentOptions.EmbeddedSource.init -> void
+Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.get -> Egap.Pdf.Ocr.PdfOcrOptions!
+Egap.Documents.Pdf.PdfToDocumentOptions.Ocr.init -> void
+Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.get -> Egami.Ocr.IOcrEngine?
+Egap.Documents.Pdf.PdfToDocumentOptions.OcrEngine.init -> void
+Egap.Documents.Pdf.PdfToDocumentWarningKind.EmbeddedSourceSkipped = 2 -> Egap.Documents.Pdf.PdfToDocumentWarningKind
+Egap.Documents.Pdf.PdfToDocumentWarningKind.OcrFailed = 1 -> Egap.Documents.Pdf.PdfToDocumentWarningKind
+Egap.Documents.Reports.TableBuilder.Floating(Egap.Documents.TablePosition! position) -> Egap.Documents.Reports.TableBuilder!
+Egap.Documents.ResolvedParagraphFormat.Frame.get -> Egap.Documents.FramePosition?
+Egap.Documents.ResolvedParagraphFormat.Kashida.get -> Egap.Documents.KashidaLevel
+Egap.Documents.TableFormat.Position.get -> Egap.Documents.TablePosition?
+Egap.Documents.TableFormat.Position.set -> void
+Egap.Documents.TablePosition
+Egap.Documents.TablePosition.<Clone>$() -> Egap.Documents.TablePosition!
+Egap.Documents.TablePosition.AllowOverlap.get -> bool
+Egap.Documents.TablePosition.AllowOverlap.init -> void
+Egap.Documents.TablePosition.DistanceBottom.get -> double
+Egap.Documents.TablePosition.DistanceBottom.init -> void
+Egap.Documents.TablePosition.DistanceLeft.get -> double
+Egap.Documents.TablePosition.DistanceLeft.init -> void
+Egap.Documents.TablePosition.DistanceRight.get -> double
+Egap.Documents.TablePosition.DistanceRight.init -> void
+Egap.Documents.TablePosition.DistanceTop.get -> double
+Egap.Documents.TablePosition.DistanceTop.init -> void
+Egap.Documents.TablePosition.Equals(Egap.Documents.TablePosition? other) -> bool
+Egap.Documents.TablePosition.HorizontalAlignment.get -> Egap.Documents.FloatingAlignment
+Egap.Documents.TablePosition.HorizontalAlignment.init -> void
+Egap.Documents.TablePosition.HorizontalAnchor.get -> Egap.Documents.HorizontalAnchor
+Egap.Documents.TablePosition.HorizontalAnchor.init -> void
+Egap.Documents.TablePosition.HorizontalOffset.get -> double
+Egap.Documents.TablePosition.HorizontalOffset.init -> void
+Egap.Documents.TablePosition.TablePosition() -> void
+Egap.Documents.TablePosition.VerticalAlignment.get -> Egap.Documents.FloatingAlignment
+Egap.Documents.TablePosition.VerticalAlignment.init -> void
+Egap.Documents.TablePosition.VerticalAnchor.get -> Egap.Documents.VerticalAnchor
+Egap.Documents.TablePosition.VerticalAnchor.init -> void
+Egap.Documents.TablePosition.VerticalOffset.get -> double
+Egap.Documents.TablePosition.VerticalOffset.init -> void
+Egap.Documents.WordCompatibility
+Egap.Documents.WordCompatibility.AllowSpaceOfSameStyleInTable.get -> bool
+Egap.Documents.WordCompatibility.AllowSpaceOfSameStyleInTable.set -> void
+Egap.Documents.WordCompatibility.AllowTextAfterFloatingTableBreak.get -> bool
+Egap.Documents.WordCompatibility.AllowTextAfterFloatingTableBreak.set -> void
+Egap.Documents.WordCompatibility.DoNotBreakWrappedTables.get -> bool
+Egap.Documents.WordCompatibility.DoNotBreakWrappedTables.set -> void
+Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop.get -> bool
+Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop.set -> void
+Egap.Documents.WordCompatibility.EnableOpenTypeFeatures.get -> bool
+Egap.Documents.WordCompatibility.EnableOpenTypeFeatures.set -> void
+Egap.Documents.WordCompatibility.OtherSettings.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Egap.Documents.WordCompatibility.OverrideTableStyleFontSizeAndJustification.get -> bool
+Egap.Documents.WordCompatibility.OverrideTableStyleFontSizeAndJustification.set -> void
+Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark.get -> bool
+Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark.set -> void
+Egap.Documents.WordCompatibility.TableIndentFromCellText.get -> bool
+Egap.Documents.WordCompatibility.TableIndentFromCellText.set -> void
+Egap.Documents.WordCompatibility.UseModeDefaults() -> void
+override Egap.Documents.FramePosition.Equals(object? obj) -> bool
+override Egap.Documents.FramePosition.GetHashCode() -> int
+override Egap.Documents.FramePosition.ToString() -> string!
+override Egap.Documents.TablePosition.Equals(object? obj) -> bool
+override Egap.Documents.TablePosition.GetHashCode() -> int
+override Egap.Documents.TablePosition.ToString() -> string!
+static Egap.Documents.FramePosition.operator !=(Egap.Documents.FramePosition? left, Egap.Documents.FramePosition? right) -> bool
+static Egap.Documents.FramePosition.operator ==(Egap.Documents.FramePosition? left, Egap.Documents.FramePosition? right) -> bool
+static Egap.Documents.Pdf.PdfToDocument.ConvertAsync(Egap.Pdf.PdfDocument! document, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.Pdf.PdfToDocument.extension(Egap.Documents.Document!).LoadPdfAsync(string! path, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.Pdf.PdfToDocument.extension(Egap.Documents.Document!).LoadPdfAsync(System.IO.Stream! stream, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.Pdf.PdfToDocument.LoadPdfAsync(string! path, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.Pdf.PdfToDocument.LoadPdfAsync(System.IO.Stream! stream, Egap.Documents.Pdf.PdfToDocumentOptions? options = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Egap.Documents.Document!>!
+static Egap.Documents.TablePosition.operator !=(Egap.Documents.TablePosition? left, Egap.Documents.TablePosition? right) -> bool
+static Egap.Documents.TablePosition.operator ==(Egap.Documents.TablePosition? left, Egap.Documents.TablePosition? right) -> bool

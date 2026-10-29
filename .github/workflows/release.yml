@@ -1,7 +1,7 @@
 name: Release
 
-# A tag v<version>, the shared Egap version (EgapVersion in Directory.Build.props), publishes the five packages: Egap.Pdf,
-# Egap.Documents, Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview, all at that version; a package whose
+# A tag v<version>, the shared Egap version (EgapVersion in Directory.Build.props), publishes the six packages: Egap.Pdf,
+# Egap.Documents, Egap.Documents.Html, Egap.Documents.Markdown, Egap.Preview and Egap.Cli, all at that version; a package whose
 # version is already on nuget.org is skipped. Egap.Pdf.Conversion is retired (its code is in Egap.Documents) and is never
 # published again. A tag <package>-v<version>, for example Egap.Pdf-v2.1.0, publishes that one package, which must be at
 # that version.
@@ -37,7 +37,7 @@ jobs:
       - name: Pick the packages from the tag
         run: |
           case "$GITHUB_REF_NAME" in
-            v*) project=Egap.Documents; packages="Egap.Pdf Egap.Documents Egap.Documents.Html Egap.Documents.Markdown Egap.Preview"; tag_version=${GITHUB_REF_NAME#v} ;;
+            v*) project=Egap.Documents; packages="Egap.Pdf Egap.Documents Egap.Documents.Html Egap.Documents.Markdown Egap.Preview Egap.Cli"; tag_version=${GITHUB_REF_NAME#v} ;;
             *-v*) project=${GITHUB_REF_NAME%-v*}; packages=$project; tag_version=${GITHUB_REF_NAME##*-v} ;;
           esac
           if [ ! -f "src/$project/$project.csproj" ]; then
