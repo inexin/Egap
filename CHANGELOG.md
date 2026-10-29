@@ -3,7 +3,7 @@
 What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Cli 2.2.0 (unreleased)
+## Egap.Cli 2.2.0 (2026-10-29)
 
 A new package: the `egap` command, a .NET tool on Egap's public API, on the Egap release train. It shares egami's
 conventions and command host (Egami.Cli.Host): globs, output templates, batches, exit codes 0 to 3 and an MCP server.
@@ -44,13 +44,13 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
   `--allow-sign`; `ocr`, which runs a program the call names, never.
 - `egap <name>` runs `egap-<name>` from the PATH, so `egap preview` starts egap-preview.
 
-## Egap.Pdf 2.2.0 (unreleased)
+## Egap.Pdf 2.2.0 (2026-10-29)
 
 ### OCR
 - `PdfOcr.MakeSearchableAsync` makes scanned PDFs searchable through any `IOcrEngine` from Egami.Ocr (Egami 1.2.0), such as
   `CommandOcrEngine` running Tesseract: the engine's words go over each page as invisible text, along each word's own
   baseline and scaled to its width. A page that is one scanned image is read as its own pixels; other pages are rendered.
-- `PdfOcrOptions`: `Skip`, `Redo` and `Force` modes, a page range, languages, render resolution, a confidence floor,
+- `PdfOcrOptions`: `Skip`, `Redo` and `Force` modes, a page range (`PdfPageRange`), languages, render resolution, a confidence floor,
   deskew of the engine's copy, page rotation from the engine, parallel pages with progress, PDF/A in the same pass, and
   page and pixel limits. A signed document is refused unless `AllowInvalidatingSignatures`. `PdfOcrReport` says per page
   what was done, the words added, their mean confidence and the engine's time.
@@ -117,13 +117,13 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - A resource named `AA`, such as a font, is no longer removed as if it were additional actions. Conversion removed it
   and then refused the file, which it had already changed.
 
-## Egap.Preview 2.2.0 (unreleased)
+## Egap.Preview 2.2.0 (2026-10-29)
 
 ### Package icon
 
 - The tool has its own icon on NuGet: an eye on a deep olive tile.
 
-## Egap.Documents.Html 2.2.0 (unreleased)
+## Egap.Documents.Html 2.2.0 (2026-10-29)
 
 ### Kashida
 - `HtmlLoadOptions.Kashida` turns on kashida for `text-align: justify` paragraphs, at a level you choose. CSS has no
@@ -158,7 +158,11 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 - A paragraph whose first bookmark is not at its start no longer writes that bookmark twice, as the paragraph's id and as
   an anchor, which gave the page two elements with one id.
 
-## Egap.Documents 2.2.0 (unreleased)
+## Egap.Documents.Markdown 2.2.0 (2026-10-29)
+
+No changes of its own: it moves to 2.2.0 with the other Egap packages and builds on Egami 1.2.0.
+
+## Egap.Documents 2.2.0 (2026-10-29)
 
 ### Fixes
 - A new document saved as DOCX no longer names footnote and endnote separators in its settings when it has no notes; Word
@@ -180,7 +184,7 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
 ### Comments in PDF
 - `PdfExportOptions.Comments = PdfCommentMode.Annotations` writes each comment as a markup annotation: a Highlight over the
   commented text's lines (a Text note where its range is empty) with author, date, text and a popup; replies as Text
-  annotations with `/IRT`; resolved comments with a `Completed` review state, or left out with `IncludeResolved = false`.
+  annotations with `/IRT`; resolved comments with a `Completed` review state, or left out with `IncludeResolvedComments = false`.
   Every annotation prints and has an appearance (PDF/A-2b and later hold), and tagged output nests each, popups too, in an
   `Annot` element (PDF/UA-1 holds).
 - PDF import reads a highlight's comment onto the words it covers, keeps reply chains and reads the `Completed` state as
@@ -226,7 +230,7 @@ conventions and command host (Egami.Cli.Host): globs, output templates, batches,
   `CompatibilityMode` unless the file or code sets it: `AllowSpaceOfSameStyleInTable`,
   `DoNotUseIndentAsNumberingTabStop`, `SplitPageBreakAndParagraphMark`, `OverrideTableStyleFontSizeAndJustification`,
   `EnableOpenTypeFeatures`, `DoNotBreakWrappedTables`, `AllowTextAfterFloatingTableBreak` and `TableIndentFromCellText`.
-  `OtherSettings` lists the options read but not acted on, and `UseModeDefaults` forgets the set values.
+  `OtherSettings` lists the options read but not acted on, and `ResetToModeDefaults` forgets the set values.
 - DOCX reads the flags from `w:compat` and writes the ones set in code, in schema order; options read from a file go back
   unchanged. A new document writes Word 2013's four compatibility settings.
 - Layout follows the flags: files older than Word 2010 keep the table style's font size and alignment over an 11 or 12

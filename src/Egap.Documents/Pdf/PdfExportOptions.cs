@@ -65,7 +65,7 @@ public sealed record PdfExportOptions
     public PdfCommentMode Comments { get; init; }
 
     /// <summary>Whether resolved comments are written too (marked <c>Completed</c>); on by default.</summary>
-    public bool IncludeResolved { get; init; } = true;
+    public bool IncludeResolvedComments { get; init; } = true;
 
     /// <summary>
     /// Whether a DOCX of the document is embedded as the PDF's source (an associated file at the catalog's <c>/AF</c> with

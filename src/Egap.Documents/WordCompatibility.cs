@@ -136,7 +136,7 @@ public sealed class WordCompatibility
     public IReadOnlyDictionary<string, string> OtherSettings => other;
 
     /// <summary>Forgets every flag value the file or code set, so each flag follows <see cref="DocumentSettings.CompatibilityMode"/>.</summary>
-    public void UseModeDefaults()
+    public void ResetToModeDefaults()
     {
         if (Array.Exists(explicitValues, v => v is not null))
         {

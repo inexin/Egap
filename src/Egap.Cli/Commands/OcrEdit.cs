@@ -101,9 +101,15 @@ internal sealed class OcrEdit : Edit
         PdfPageRange? range = _pages.Range(result);
         return (document, context) =>
         {
+            if (range is not null)
+            {
+                // Names a page the document does not have as a usage error, before the engine starts.
+                _ = PageOption.Indices(document, range);
+            }
+
             PdfOcrOptions run = options with
             {
-                Pages = range is null ? null : PageOption.Indices(document, range),
+                Pages = range,
                 AllowInvalidatingSignatures = context.AllowInvalidatingSignatures,
             };
             PdfOcrReport report = PdfOcr.MakeSearchableAsync(document, engine, run, session.Cancellation).GetAwaiter().GetResult();

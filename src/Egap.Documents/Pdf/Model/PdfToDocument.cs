@@ -66,7 +66,8 @@ public static partial class PdfToDocument
         using MemoryStream bytes = new();
         document.Save(bytes, new PdfSaveOptions { AllowInvalidatingSignatures = true });
         using PdfDocument copy = PdfDocument.Open(bytes.ToArray(), document.Options);
-        PdfOcrOptions ocr = options.Ocr with { Mode = PdfOcrMode.Skip, Pages = scans, PdfA = null, AllowInvalidatingSignatures = true };
+        PdfPageRange scanned = PdfPageRange.Parse(string.Join(",", scans.Select(index => index + 1)));
+        PdfOcrOptions ocr = options.Ocr with { Mode = PdfOcrMode.Skip, Pages = scanned, PdfA = null, AllowInvalidatingSignatures = true };
         PdfOcrReport report = await PdfOcr.MakeSearchableAsync(copy, engine, ocr, cancellationToken).ConfigureAwait(false);
         HashSet<int> read = [.. report.Pages.Where(p => p.Words > 0).Select(p => p.PageIndex)];
         foreach (PdfOcrPageReport failed in report.Pages.Where(p => p.Status == PdfOcrPageStatus.Failed))
@@ -155,9 +156,9 @@ public sealed record PdfToDocumentOptions
 
     /// <summary>
     /// Whether a hybrid PDF's embedded DOCX (see <see cref="PdfExportOptions.EmbedSource"/>) is read instead of its pages:
-    /// <see cref="Documents.Pdf.EmbeddedSource.Prefer"/> by default.
+    /// <see cref="Documents.Pdf.EmbeddedSourceMode.Prefer"/> by default.
     /// </summary>
-    public EmbeddedSource EmbeddedSource { get; init; }
+    public EmbeddedSourceMode EmbeddedSource { get; init; }
 }
 
 /// <summary>How <see cref="PdfToDocument"/> turns pages into a document (design Q8).</summary>

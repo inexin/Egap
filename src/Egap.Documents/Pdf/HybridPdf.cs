@@ -4,7 +4,7 @@ using Egap.Pdf;
 namespace Egap.Documents.Pdf;
 
 /// <summary>When <see cref="PdfToDocument"/> uses a DOCX copy of the document that a hybrid PDF carries.</summary>
-public enum EmbeddedSource
+public enum EmbeddedSourceMode
 {
     /// <summary>
     /// The default: the copy is used when it can be trusted (marked as the source, a DOCX, written by Egap and not followed by
@@ -50,10 +50,10 @@ internal static class HybridPdf
     /// The document from <paramref name="pdf"/>'s embedded DOCX when <paramref name="mode"/> lets it be used and it can be
     /// trusted; null otherwise, with <paramref name="skipped"/> saying why a copy that was there was not used.
     /// </summary>
-    public static Document? Open(PdfDocument pdf, EmbeddedSource mode, out string? skipped)
+    public static Document? Open(PdfDocument pdf, EmbeddedSourceMode mode, out string? skipped)
     {
         skipped = null;
-        if (mode == EmbeddedSource.Ignore)
+        if (mode == EmbeddedSourceMode.Ignore)
         {
             return null;
         }
@@ -63,7 +63,7 @@ internal static class HybridPdf
             return source;
         }
 
-        if (mode == EmbeddedSource.Require)
+        if (mode == EmbeddedSourceMode.Require)
         {
             throw new DocumentException(why ?? "The PDF has no embedded source document.");
         }

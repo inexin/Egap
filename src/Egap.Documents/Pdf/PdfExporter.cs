@@ -33,7 +33,7 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
                     throw new ArgumentException("Form fields cannot be written with comments in the margin: the fields would not follow the scaled page.", nameof(options));
                 }
 
-                margin = new MarginComments(layout, options.Layout, tagger, options.IncludeResolved);
+                margin = new MarginComments(layout, options.Layout, tagger, options.IncludeResolvedComments);
             }
 
             foreach (PageLayout page in layout.Pages)
@@ -81,7 +81,7 @@ internal sealed class PdfExporter(DocumentLayout layout, PdfExportOptions option
 
             if (options.Comments == PdfCommentMode.Annotations)
             {
-                new CommentExport(layout, pageOf, tagger, options.IncludeResolved).Write();
+                new CommentExport(layout, pageOf, tagger, options.IncludeResolvedComments).Write();
             }
 
             switch (options.Outline)

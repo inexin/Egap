@@ -154,7 +154,7 @@ public sealed class PdfOcrTests
         pdf.Pages[0].Dictionary["Resources"] = resources;
         pdf.Pages[1].Dictionary["Resources"] = resources;
 
-        PdfOcrReport report = await PdfOcr.MakeSearchableAsync(pdf, new FakeEngine(TwoWords), new PdfOcrOptions { Pages = [0] }, Cancel);
+        PdfOcrReport report = await PdfOcr.MakeSearchableAsync(pdf, new FakeEngine(TwoWords), new PdfOcrOptions { Pages = PdfPageRange.Parse("1") }, Cancel);
 
         Assert.Equal(2, report.Words);
         Assert.Empty(((PdfDictionary)shared["Font"]!.Resolve()).Entries);
@@ -328,10 +328,10 @@ public sealed class PdfOcrTests
     public async Task PageRangesLimitsCancellationAndSignatures()
     {
         using PdfDocument pdf = Scans(3);
-        PdfOcrReport report = await PdfOcr.MakeSearchableAsync(pdf, new FakeEngine(TwoWords), new PdfOcrOptions { Pages = [2, 0] }, Cancel);
+        PdfOcrReport report = await PdfOcr.MakeSearchableAsync(pdf, new FakeEngine(TwoWords), new PdfOcrOptions { Pages = PdfPageRange.Parse("3,1") }, Cancel);
         Assert.Equal([0, 2], report.Pages.Select(p => p.PageIndex));
 
-        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => PdfOcr.MakeSearchableAsync(pdf, new FakeEngine(TwoWords), new PdfOcrOptions { Pages = [3] }, Cancel));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => PdfOcr.MakeSearchableAsync(pdf, new FakeEngine(TwoWords), new PdfOcrOptions { Pages = PdfPageRange.Parse("4") }, Cancel));
         await Assert.ThrowsAsync<PdfLimitException>(() => PdfOcr.MakeSearchableAsync(pdf, new FakeEngine(TwoWords), new PdfOcrOptions { MaxPages = 2 }, Cancel));
 
         using CancellationTokenSource cancelled = new();

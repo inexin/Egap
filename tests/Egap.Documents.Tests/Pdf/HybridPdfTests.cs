@@ -58,7 +58,7 @@ public sealed class HybridPdfTests
     [Fact]
     public void IgnoreAnalysesThePages()
     {
-        Document back = Document.LoadPdf(new MemoryStream(Export(Sample(), new PdfExportOptions { EmbedSource = true })), new PdfToDocumentOptions { EmbeddedSource = EmbeddedSource.Ignore });
+        Document back = Document.LoadPdf(new MemoryStream(Export(Sample(), new PdfExportOptions { EmbedSource = true })), new PdfToDocumentOptions { EmbeddedSource = EmbeddedSourceMode.Ignore });
 
         Assert.Contains("Sales rose", string.Concat(back.Descendants<Run>().Select(r => r.Text)), StringComparison.Ordinal);
         Assert.Null(back.Properties.GetCustom("Origin"));
@@ -81,7 +81,7 @@ public sealed class HybridPdfTests
         PdfToDocumentWarning warning = Assert.Single(warnings, w => w.Kind == PdfToDocumentWarningKind.EmbeddedSourceSkipped);
         Assert.Contains("changed or signed", warning.Message, StringComparison.Ordinal);
         Assert.Null(back.Properties.GetCustom("Origin"));
-        Assert.Throws<DocumentException>(() => Document.LoadPdf(new MemoryStream(edited.ToArray()), new PdfToDocumentOptions { EmbeddedSource = EmbeddedSource.Require }));
+        Assert.Throws<DocumentException>(() => Document.LoadPdf(new MemoryStream(edited.ToArray()), new PdfToDocumentOptions { EmbeddedSource = EmbeddedSourceMode.Require }));
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public sealed class HybridPdfTests
     [Fact]
     public void RequireThrowsWithoutASource()
     {
-        Assert.Throws<DocumentException>(() => Document.LoadPdf(new MemoryStream(Export(Sample(), new PdfExportOptions())), new PdfToDocumentOptions { EmbeddedSource = EmbeddedSource.Require }));
+        Assert.Throws<DocumentException>(() => Document.LoadPdf(new MemoryStream(Export(Sample(), new PdfExportOptions())), new PdfToDocumentOptions { EmbeddedSource = EmbeddedSourceMode.Require }));
     }
 
     [Theory]

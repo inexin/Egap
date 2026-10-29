@@ -60,3 +60,69 @@ static Egap.Documents.HtmlFormat.ToHtml(this Egap.Documents.Document! document, 
 static Egap.Documents.HtmlFormat.ToHtml(this Egap.Documents.Document! document, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlSaveOptions? options = null) -> string!
 static Egap.Documents.Pdf.HtmlStamp.extension(Egap.Pdf.PdfStamp!).Html(string! html, Egap.Pdf.Length width, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> Egap.Pdf.PdfStamp!
 static Egap.Documents.Pdf.HtmlStamp.Html(string! html, Egap.Pdf.Length width, Egap.Documents.Pdf.PdfConvertOptions? options = null) -> Egap.Pdf.PdfStamp!
+Egap.Documents.EpubFormat
+Egap.Documents.EpubFormat.extension(Egap.Documents.Document!)
+Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).SaveAsEpub(string! path, Egap.Documents.EpubSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).SaveAsEpub(System.IO.Stream! stream, Egap.Documents.EpubSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).ToEpub(Egap.Documents.EpubSaveOptions? options = null) -> byte[]!
+Egap.Documents.EpubLoadOptions
+Egap.Documents.EpubLoadOptions.EpubLoadOptions() -> void
+Egap.Documents.EpubLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
+Egap.Documents.EpubLoadOptions.Limits.init -> void
+Egap.Documents.EpubLoadOptions.Media.get -> string!
+Egap.Documents.EpubLoadOptions.Media.init -> void
+Egap.Documents.EpubLoadOptions.ResourceResolver.get -> System.Func<System.Uri!, byte[]?>?
+Egap.Documents.EpubLoadOptions.ResourceResolver.init -> void
+Egap.Documents.EpubLoadOptions.UserStyleSheets.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Documents.EpubLoadOptions.UserStyleSheets.init -> void
+Egap.Documents.EpubSaveOptions
+Egap.Documents.EpubSaveOptions.AccessibilitySummary.get -> string?
+Egap.Documents.EpubSaveOptions.AccessibilitySummary.init -> void
+Egap.Documents.EpubSaveOptions.CoverImage.get -> Egap.Documents.ImageData?
+Egap.Documents.EpubSaveOptions.CoverImage.init -> void
+Egap.Documents.EpubSaveOptions.EmbedFonts.get -> bool
+Egap.Documents.EpubSaveOptions.EmbedFonts.init -> void
+Egap.Documents.EpubSaveOptions.EpubSaveOptions() -> void
+Egap.Documents.EpubSaveOptions.Identifier.get -> string?
+Egap.Documents.EpubSaveOptions.Identifier.init -> void
+Egap.Documents.EpubSaveOptions.Modified.get -> System.DateTimeOffset?
+Egap.Documents.EpubSaveOptions.Modified.init -> void
+Egap.Documents.EpubSaveOptions.NavigationDepth.get -> int
+Egap.Documents.EpubSaveOptions.NavigationDepth.init -> void
+Egap.Documents.EpubSaveOptions.SplitAt.get -> Egap.Documents.EpubSplit
+Egap.Documents.EpubSaveOptions.SplitAt.init -> void
+Egap.Documents.EpubSplit
+Egap.Documents.EpubSplit.HeadingLevel1 = 2 -> Egap.Documents.EpubSplit
+Egap.Documents.EpubSplit.None = 0 -> Egap.Documents.EpubSplit
+Egap.Documents.EpubSplit.SectionBreak = 1 -> Egap.Documents.EpubSplit
+Egap.Documents.HtmlFormat.extension(Egap.Documents.Document!).SaveAsMhtml(string! path, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+Egap.Documents.HtmlFormat.extension(Egap.Documents.Document!).SaveAsMhtml(System.IO.Stream! stream, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+Egap.Documents.HtmlFormat.extension(Egap.Documents.Document!).ToMhtml(Egap.Documents.HtmlSaveOptions? options = null) -> string!
+Egap.Documents.HtmlFormat.extension(Egap.Documents.Document!).ToMhtml(out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlSaveOptions? options = null) -> string!
+Egap.Documents.HtmlLoadOptions.Kashida.get -> Egap.Documents.KashidaLevel
+Egap.Documents.HtmlLoadOptions.Kashida.init -> void
+static Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).LoadEpub(string! path, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).LoadEpub(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.extension(Egap.Documents.Document!).LoadEpub(System.IO.Stream! stream, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.Load(string! path, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.Load(System.IO.Stream! stream, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.Load(System.IO.Stream! stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.LoadEpub(string! path, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.LoadEpub(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.LoadEpub(System.IO.Stream! stream, Egap.Documents.EpubLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.EpubFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.EpubSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.EpubFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.EpubSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.EpubFormat.SaveAsEpub(this Egap.Documents.Document! document, string! path, Egap.Documents.EpubSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.EpubFormat.SaveAsEpub(this Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.EpubSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.EpubFormat.ToEpub(this Egap.Documents.Document! document, Egap.Documents.EpubSaveOptions? options = null) -> byte[]!
+static Egap.Documents.HtmlFormat.LoadMhtml(string! path, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.HtmlFormat.LoadMhtml(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.HtmlFormat.LoadMhtml(System.IO.Stream! stream, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.HtmlFormat.LoadMhtml(System.ReadOnlySpan<byte> mhtml, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.HtmlFormat.SaveAsMhtml(this Egap.Documents.Document! document, string! path, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.HtmlFormat.SaveAsMhtml(this Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document! document, string! path, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.HtmlFormat.ToMhtml(this Egap.Documents.Document! document, Egap.Documents.HtmlSaveOptions? options = null) -> string!
+static Egap.Documents.HtmlFormat.ToMhtml(this Egap.Documents.Document! document, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlSaveOptions? options = null) -> string!
