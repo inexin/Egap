@@ -1665,6 +1665,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Layout.LayoutWarning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Layout.LayoutWarning.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Layout.LayoutWarning",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.LayoutWarning.yml\" sourcestartlinenumber=\"1\">Something a layout laid out differently from what the document asks for, with the node and page it is on.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Layout.LayoutWarningKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Layout.LayoutWarningKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Layout.LayoutWarningKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.LayoutWarningKind.yml\" sourcestartlinenumber=\"1\">What a layout laid out differently from what the document asks for.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Layout.LineBox.yml",
       "output": {
         ".html": {

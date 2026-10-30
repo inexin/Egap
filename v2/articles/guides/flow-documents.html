@@ -294,6 +294,25 @@ catch (LayoutException e)
     Console.WriteLine($&quot;{e.Problem} on page {e.PageIndex + 1}: {e.Message}&quot;);
 }
 </code></pre>
+<p>A layout's <code>Warnings</code> list what it laid out differently from what the document asks for, each with the node and its
+page. A floating table or a framed paragraph floats only in a section's body; one in a table cell, header, footer, note
+or text box is laid out in the text there, with a <code>FloatLaidOutInline</code> warning. Saving as PDF keeps no layout, so give
+<code>LayoutOptions.OnWarning</code> to hear of them; <code>egap convert</code> prints them as warnings.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Layout;
+using Egap.Documents.Pdf;
+
+Document letter = Document.Load(&quot;letter.docx&quot;);
+foreach (LayoutWarning warning in letter.Layout().Warnings)
+{
+    Console.WriteLine(warning);
+}
+
+letter.SaveAsPdf(&quot;letter.pdf&quot;, new PdfExportOptions
+{
+    Layout = new LayoutOptions { OnWarning = warning =&gt; Console.WriteLine($&quot;{warning.Kind} on page {warning.PageIndex + 1}&quot;) },
+});
+</code></pre>
 <h2 id="flex-and-grid-layout">Flex and grid layout</h2>
 <p>A <code>FlexContainer</code> lays its items out in a row or a column, as CSS flexbox does: each item starts from its basis or its
 content's width, takes a share of the space left by its grow factor or gives some up by its shrink factor, and lines up

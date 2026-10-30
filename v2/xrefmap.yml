@@ -10305,6 +10305,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.DocumentLayout.Pages
   nameWithType: DocumentLayout.Pages
+- uid: Egap.Documents.Layout.DocumentLayout.Warnings
+  name: Warnings
+  href: api/Egap.Documents.Layout.DocumentLayout.html#Egap_Documents_Layout_DocumentLayout_Warnings
+  commentId: P:Egap.Documents.Layout.DocumentLayout.Warnings
+  fullName: Egap.Documents.Layout.DocumentLayout.Warnings
+  nameWithType: DocumentLayout.Warnings
+- uid: Egap.Documents.Layout.DocumentLayout.Warnings*
+  name: Warnings
+  href: api/Egap.Documents.Layout.DocumentLayout.html#Egap_Documents_Layout_DocumentLayout_Warnings_
+  commentId: Overload:Egap.Documents.Layout.DocumentLayout.Warnings
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.DocumentLayout.Warnings
+  nameWithType: DocumentLayout.Warnings
 - uid: Egap.Documents.Layout.DocumentPosition
   name: DocumentPosition
   href: api/Egap.Documents.Layout.DocumentPosition.html
@@ -10805,6 +10818,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.LayoutOptions.Fonts
   nameWithType: LayoutOptions.Fonts
+- uid: Egap.Documents.Layout.LayoutOptions.OnWarning
+  name: OnWarning
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_OnWarning
+  commentId: P:Egap.Documents.Layout.LayoutOptions.OnWarning
+  fullName: Egap.Documents.Layout.LayoutOptions.OnWarning
+  nameWithType: LayoutOptions.OnWarning
+- uid: Egap.Documents.Layout.LayoutOptions.OnWarning*
+  name: OnWarning
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_OnWarning_
+  commentId: Overload:Egap.Documents.Layout.LayoutOptions.OnWarning
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutOptions.OnWarning
+  nameWithType: LayoutOptions.OnWarning
 - uid: Egap.Documents.Layout.LayoutOptions.Strict
   name: Strict
   href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_Strict
@@ -10967,6 +10993,108 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.LayoutRect.Y
   nameWithType: LayoutRect.Y
+- uid: Egap.Documents.Layout.LayoutWarning
+  name: LayoutWarning
+  href: api/Egap.Documents.Layout.LayoutWarning.html
+  commentId: T:Egap.Documents.Layout.LayoutWarning
+  fullName: Egap.Documents.Layout.LayoutWarning
+  nameWithType: LayoutWarning
+- uid: Egap.Documents.Layout.LayoutWarning.#ctor(Egap.Documents.Layout.LayoutWarningKind,System.String,Egap.Documents.Node,System.Int32)
+  name: LayoutWarning(LayoutWarningKind, string, Node, int)
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning__ctor_Egap_Documents_Layout_LayoutWarningKind_System_String_Egap_Documents_Node_System_Int32_
+  commentId: M:Egap.Documents.Layout.LayoutWarning.#ctor(Egap.Documents.Layout.LayoutWarningKind,System.String,Egap.Documents.Node,System.Int32)
+  name.vb: New(LayoutWarningKind, String, Node, Integer)
+  fullName: Egap.Documents.Layout.LayoutWarning.LayoutWarning(Egap.Documents.Layout.LayoutWarningKind, string, Egap.Documents.Node, int)
+  fullName.vb: Egap.Documents.Layout.LayoutWarning.New(Egap.Documents.Layout.LayoutWarningKind, String, Egap.Documents.Node, Integer)
+  nameWithType: LayoutWarning.LayoutWarning(LayoutWarningKind, string, Node, int)
+  nameWithType.vb: LayoutWarning.New(LayoutWarningKind, String, Node, Integer)
+- uid: Egap.Documents.Layout.LayoutWarning.#ctor*
+  name: LayoutWarning
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning__ctor_
+  commentId: Overload:Egap.Documents.Layout.LayoutWarning.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Documents.Layout.LayoutWarning.LayoutWarning
+  fullName.vb: Egap.Documents.Layout.LayoutWarning.New
+  nameWithType: LayoutWarning.LayoutWarning
+  nameWithType.vb: LayoutWarning.New
+- uid: Egap.Documents.Layout.LayoutWarning.Kind
+  name: Kind
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_Kind
+  commentId: P:Egap.Documents.Layout.LayoutWarning.Kind
+  fullName: Egap.Documents.Layout.LayoutWarning.Kind
+  nameWithType: LayoutWarning.Kind
+- uid: Egap.Documents.Layout.LayoutWarning.Kind*
+  name: Kind
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_Kind_
+  commentId: Overload:Egap.Documents.Layout.LayoutWarning.Kind
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutWarning.Kind
+  nameWithType: LayoutWarning.Kind
+- uid: Egap.Documents.Layout.LayoutWarning.Message
+  name: Message
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_Message
+  commentId: P:Egap.Documents.Layout.LayoutWarning.Message
+  fullName: Egap.Documents.Layout.LayoutWarning.Message
+  nameWithType: LayoutWarning.Message
+- uid: Egap.Documents.Layout.LayoutWarning.Message*
+  name: Message
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_Message_
+  commentId: Overload:Egap.Documents.Layout.LayoutWarning.Message
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutWarning.Message
+  nameWithType: LayoutWarning.Message
+- uid: Egap.Documents.Layout.LayoutWarning.Node
+  name: Node
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_Node
+  commentId: P:Egap.Documents.Layout.LayoutWarning.Node
+  fullName: Egap.Documents.Layout.LayoutWarning.Node
+  nameWithType: LayoutWarning.Node
+- uid: Egap.Documents.Layout.LayoutWarning.Node*
+  name: Node
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_Node_
+  commentId: Overload:Egap.Documents.Layout.LayoutWarning.Node
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutWarning.Node
+  nameWithType: LayoutWarning.Node
+- uid: Egap.Documents.Layout.LayoutWarning.PageIndex
+  name: PageIndex
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_PageIndex
+  commentId: P:Egap.Documents.Layout.LayoutWarning.PageIndex
+  fullName: Egap.Documents.Layout.LayoutWarning.PageIndex
+  nameWithType: LayoutWarning.PageIndex
+- uid: Egap.Documents.Layout.LayoutWarning.PageIndex*
+  name: PageIndex
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_PageIndex_
+  commentId: Overload:Egap.Documents.Layout.LayoutWarning.PageIndex
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutWarning.PageIndex
+  nameWithType: LayoutWarning.PageIndex
+- uid: Egap.Documents.Layout.LayoutWarning.ToString
+  name: ToString()
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_ToString
+  commentId: M:Egap.Documents.Layout.LayoutWarning.ToString
+  fullName: Egap.Documents.Layout.LayoutWarning.ToString()
+  nameWithType: LayoutWarning.ToString()
+- uid: Egap.Documents.Layout.LayoutWarning.ToString*
+  name: ToString
+  href: api/Egap.Documents.Layout.LayoutWarning.html#Egap_Documents_Layout_LayoutWarning_ToString_
+  commentId: Overload:Egap.Documents.Layout.LayoutWarning.ToString
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutWarning.ToString
+  nameWithType: LayoutWarning.ToString
+- uid: Egap.Documents.Layout.LayoutWarningKind
+  name: LayoutWarningKind
+  href: api/Egap.Documents.Layout.LayoutWarningKind.html
+  commentId: T:Egap.Documents.Layout.LayoutWarningKind
+  fullName: Egap.Documents.Layout.LayoutWarningKind
+  nameWithType: LayoutWarningKind
+- uid: Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline
+  name: FloatLaidOutInline
+  href: api/Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_FloatLaidOutInline
+  commentId: F:Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline
+  fullName: Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline
+  nameWithType: LayoutWarningKind.FloatLaidOutInline
 - uid: Egap.Documents.Layout.LineBox
   name: LineBox
   href: api/Egap.Documents.Layout.LineBox.html
