@@ -5,6 +5,7 @@ using System.Text.Json;
 
 using Egap.Cli.Host;
 using Egap.Documents;
+using Egap.Documents.Layout;
 using Egap.Documents.Pdf;
 using Egap.Pdf;
 
@@ -95,7 +96,7 @@ internal static class MergeDataCommand
     {
         if (extension == "pdf")
         {
-            using PdfDocument pdf = document.ToPdf(PdfExportOptions.Default with { Save = save });
+            using PdfDocument pdf = document.ToPdf(PdfExportOptions.Default with { Save = save, Layout = new LayoutOptions { OnWarning = warning => session.Warn($"{path}: {warning}") } });
             SaveOptions.Save(session, pdf, path, save);
         }
         else

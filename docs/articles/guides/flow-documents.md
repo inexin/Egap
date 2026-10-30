@@ -250,6 +250,28 @@ catch (LayoutException e)
 }
 ```
 
+A layout's `Warnings` list what it laid out differently from what the document asks for, each with the node and its
+page. A floating table or a framed paragraph floats only in a section's body; one in a table cell, header, footer, note
+or text box is laid out in the text there, with a `FloatLaidOutInline` warning. Saving as PDF keeps no layout, so give
+`LayoutOptions.OnWarning` to hear of them; `egap convert` prints them as warnings.
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Layout;
+using Egap.Documents.Pdf;
+
+Document letter = Document.Load("letter.docx");
+foreach (LayoutWarning warning in letter.Layout().Warnings)
+{
+    Console.WriteLine(warning);
+}
+
+letter.SaveAsPdf("letter.pdf", new PdfExportOptions
+{
+    Layout = new LayoutOptions { OnWarning = warning => Console.WriteLine($"{warning.Kind} on page {warning.PageIndex + 1}") },
+});
+```
+
 ## Flex and grid layout
 
 A `FlexContainer` lays its items out in a row or a column, as CSS flexbox does: each item starts from its basis or its

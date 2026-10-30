@@ -97,6 +97,11 @@ internal sealed partial class Paginator
     private TablePlan MakePlan(Table table, double x, double available)
     {
         TableFormat format = table.GetEffectiveFormat();
+        if (format.Position is not null && !MayFloat(table))
+        {
+            NoteInlineFloat(table);
+        }
+
         double[] grid = GridWidths(table, format, available);
         double width = grid.Sum();
         double left = x + (format.Indent ?? 0);

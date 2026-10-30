@@ -16,11 +16,18 @@ internal sealed partial class Paginator
     private bool Floats(Table table, out TablePosition position)
     {
         position = null!;
-        if (measuring > 0 || page is null || table.GetEffectiveFormat().Position is not { } p)
+        if (measuring > 0 || page is null || table.GetEffectiveFormat().Position is not { } p || !MayFloat(table))
         {
             return false;
         }
 
+        position = p;
+        return true;
+    }
+
+    /// <summary>Whether a table with a position may float where it sits: in a section's body, outside every cell.</summary>
+    private static bool MayFloat(Table table)
+    {
         for (Node? node = table.Parent; node is not null; node = node.Parent)
         {
             if (node is Cell)
@@ -30,12 +37,71 @@ internal sealed partial class Paginator
 
             if (node is Story)
             {
-                position = p;
                 return node is Body;
             }
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Keeps <paramref name="block"/>, a floating table or framed paragraph that is laid out in the text where it sits, for
+    /// the layout's warnings.
+    /// </summary>
+    private void NoteInlineFloat(Block block)
+    {
+        if (inlineFloatsSeen.Add(block))
+        {
+            inlineFloats.Add(block);
+        }
+    }
+
+    /// <summary>A warning for each floating table and framed paragraph laid out in the text, in page order.</summary>
+    private List<LayoutWarning> Warnings(DocumentLayout layout)
+    {
+        List<LayoutWarning> warnings = [];
+        foreach (Block block in inlineFloats)
+        {
+            // Only what the pages show: a header measured for a page it is not on is not laid out.
+            if (layout.PageOf(block) is { } shown)
+            {
+                string what = block is Table ? "A floating table" : "A framed paragraph";
+                warnings.Add(new LayoutWarning(LayoutWarningKind.FloatLaidOutInline, $"{what} in {PlaceOf(block)} is laid out in the text, not floating: only those in a section's body float.", block, shown.Index));
+            }
+        }
+
+        return [.. warnings.OrderBy(w => w.PageIndex)];
+    }
+
+    /// <summary>Where a block that cannot float sits, in words: the nearest cell or story around it.</summary>
+    private static string PlaceOf(Block block)
+    {
+        for (Node? node = block.Parent; node is not null; node = node.Parent)
+        {
+            switch (node)
+            {
+                case Cell:
+                    return "a table cell";
+                case HeaderFooter story:
+                    return story.IsHeader ? "a header" : "a footer";
+                case NoteStory:
+                    return "a note";
+                case TextBoxStory:
+                    return "a text box";
+                case MarginBox:
+                    return "a margin box";
+                case FlexItem:
+                    return "a flex item";
+                case GridItem:
+                    return "a grid item";
+                case ContentControl:
+                    return "a content control";
+                case BlockIsland:
+                    return "a kept island";
+            }
+        }
+
+        return "the document";
     }
 
     private void FlowFloatingTable(Table table, TablePosition position)

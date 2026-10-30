@@ -4,6 +4,7 @@ using System.Net;
 
 using Egap.Cli.Host;
 using Egap.Documents;
+using Egap.Documents.Layout;
 using Egap.Documents.Pdf;
 using Egap.Pdf;
 
@@ -134,7 +135,8 @@ internal static class ConvertCommand
                         throw new UsageException($"{file.Display} is a PDF already; egap convert writes PDF from HTML, Markdown, DOCX, text and images.");
                     }
 
-                    using PdfDocument pdf = allowed.Length > 0 || network ? FromHtml(session, file.Path, options, allowed, network) : PdfConvert.FromFile(file.Path, options);
+                    PdfConvertOptions told = WithLayoutWarnings(session, options, file.Display);
+                    using PdfDocument pdf = allowed.Length > 0 || network ? FromHtml(session, file.Path, told, allowed, network) : PdfConvert.FromFile(file.Path, told);
                     SaveOptions.Save(session, pdf, path, saveOptions);
                     return [path];
                 }
@@ -151,6 +153,20 @@ internal static class ConvertCommand
             });
         });
         return command;
+    }
+
+    /// <summary>The options with the layout's warnings (a float laid out in the text, say) written as warnings for <paramref name="input"/>.</summary>
+    private static PdfConvertOptions WithLayoutWarnings(EgapSession session, PdfConvertOptions options, string input)
+    {
+        PdfExportOptions export = options.Export ?? PdfExportOptions.Default;
+        LayoutOptions layout = export.Layout ?? new LayoutOptions();
+        return options with
+        {
+            Export = export with
+            {
+                Layout = new LayoutOptions { Fonts = layout.Fonts, Strict = layout.Strict, OnWarning = warning => session.Warn($"{input}: {warning}") },
+            },
+        };
     }
 
     /// <summary>The format to write: <c>--to</c>, else the output's extension.</summary>

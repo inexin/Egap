@@ -1,1 +1,24 @@
 #nullable enable
+Egap.Documents.Layout.DocumentLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutWarning!>!
+Egap.Documents.Layout.LayoutOptions.OnWarning.get -> System.Action<Egap.Documents.Layout.LayoutWarning!>?
+Egap.Documents.Layout.LayoutOptions.OnWarning.init -> void
+Egap.Documents.Layout.LayoutWarning
+Egap.Documents.Layout.LayoutWarning.<Clone>$() -> Egap.Documents.Layout.LayoutWarning!
+Egap.Documents.Layout.LayoutWarning.Deconstruct(out Egap.Documents.Layout.LayoutWarningKind Kind, out string! Message, out Egap.Documents.Node! Node, out int PageIndex) -> void
+Egap.Documents.Layout.LayoutWarning.Equals(Egap.Documents.Layout.LayoutWarning? other) -> bool
+Egap.Documents.Layout.LayoutWarning.Kind.get -> Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.Layout.LayoutWarning.Kind.init -> void
+Egap.Documents.Layout.LayoutWarning.LayoutWarning(Egap.Documents.Layout.LayoutWarningKind Kind, string! Message, Egap.Documents.Node! Node, int PageIndex) -> void
+Egap.Documents.Layout.LayoutWarning.Message.get -> string!
+Egap.Documents.Layout.LayoutWarning.Message.init -> void
+Egap.Documents.Layout.LayoutWarning.Node.get -> Egap.Documents.Node!
+Egap.Documents.Layout.LayoutWarning.Node.init -> void
+Egap.Documents.Layout.LayoutWarning.PageIndex.get -> int
+Egap.Documents.Layout.LayoutWarning.PageIndex.init -> void
+Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline = 0 -> Egap.Documents.Layout.LayoutWarningKind
+override Egap.Documents.Layout.LayoutWarning.Equals(object? obj) -> bool
+override Egap.Documents.Layout.LayoutWarning.GetHashCode() -> int
+override Egap.Documents.Layout.LayoutWarning.ToString() -> string!
+static Egap.Documents.Layout.LayoutWarning.operator !=(Egap.Documents.Layout.LayoutWarning? left, Egap.Documents.Layout.LayoutWarning? right) -> bool
+static Egap.Documents.Layout.LayoutWarning.operator ==(Egap.Documents.Layout.LayoutWarning? left, Egap.Documents.Layout.LayoutWarning? right) -> bool

@@ -3,6 +3,18 @@
 What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Cli 2.3.0 (unreleased)
+
+- `convert` and `merge-data` print the layout's warnings, such as a floating table in a table cell laid out in the text,
+  when they write PDF.
+
+## Egap.Documents 2.3.0 (unreleased)
+
+- Layout warnings: `DocumentLayout.Warnings` lists what a layout laid out differently from what the document asks for,
+  as `LayoutWarning` records with the kind, a message, the node and its page, and `LayoutOptions.OnWarning` hears each
+  one, also when a document is saved as PDF. The first kind, `FloatLaidOutInline`, is a floating table or framed
+  paragraph in a table cell, header, footer, note or text box, which is laid out in the text instead of floating.
+
 ## Egap.Cli 2.2.0 (2026-10-29)
 
 A new package: the `egap` command, a .NET tool on Egap's public API, on the Egap release train. It shares egami's

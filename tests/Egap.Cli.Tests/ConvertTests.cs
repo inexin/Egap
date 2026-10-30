@@ -132,6 +132,22 @@ public sealed class ConvertTests : IDisposable
         Assert.Equal(PdfAConformance.PdfA2b, pdf.Conformance);
     }
 
+    [Fact]
+    public void LayoutWarningsAreWarnings()
+    {
+        Egap.Documents.Document document = new();
+        Egap.Documents.Table outer = document.AddSection().Body.AddTable(1, 1);
+        Egap.Documents.Paragraph framed = outer.Rows[0].Cells[0].Paragraphs.Single();
+        framed.AddRun("framed in a cell");
+        framed.Format.Frame = new Egap.Documents.FramePosition { Width = 120 };
+        Egap.Documents.DocxFormat.Save(document, _tool.PathOf("framed.docx"));
+
+        ToolRun run = _tool.Run("convert", "framed.docx", "-o", "framed.pdf");
+
+        Assert.Equal(ExitCodes.Success, run.Code);
+        Assert.Contains("framed.docx: FloatLaidOutInline: A framed paragraph in a table cell", run.Error, StringComparison.Ordinal);
+    }
+
     private void WriteInputs()
     {
         _tool.Write("report.html", Encoding.UTF8.GetBytes(Html));

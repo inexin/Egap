@@ -206,6 +206,60 @@ public class FloatingTableTests
         DocumentLayout layout = document.Layout(Isolated);
 
         Assert.True(layout.FindBoxes(inner).Single().Box.Bounds.Y < 200);
+        LayoutWarning warning = Assert.Single(layout.Warnings);
+        Assert.Equal(LayoutWarningKind.FloatLaidOutInline, warning.Kind);
+        Assert.Same(inner, warning.Node);
+        Assert.Equal(0, warning.PageIndex);
+        Assert.Contains("table cell", warning.Message, StringComparison.Ordinal);
+
+        // A second layout reuses the paragraphs it laid out before and still warns.
+        Assert.Single(document.Layout(Isolated).Warnings);
+    }
+
+    [Fact]
+    public void AFrameInAHeaderWarnsOnceThroughOnWarning()
+    {
+        Document document = new();
+        Body(document).AddParagraph("Body text");
+        Paragraph framed = document.Sections[0].HeadersFooters.GetOrAdd(HeaderFooterKind.HeaderPrimary).AddParagraph("Letterhead");
+        framed.Format.Frame = new FramePosition { Width = 120, HorizontalAnchor = HorizontalAnchor.Page, HorizontalOffset = 400, VerticalAnchor = VerticalAnchor.Page, VerticalOffset = 30 };
+        List<LayoutWarning> heard = [];
+
+        DocumentLayout layout = document.Layout(new LayoutOptions { Fonts = Isolated.Fonts, OnWarning = heard.Add });
+
+        LayoutWarning warning = Assert.Single(layout.Warnings);
+        Assert.Same(framed, warning.Node);
+        Assert.Contains("header", warning.Message, StringComparison.Ordinal);
+        Assert.Equal([warning], heard);
+    }
+
+    [Fact]
+    public void FloatsInTheBodyDoNotWarn()
+    {
+        Document document = new();
+        Body body = Body(document);
+        body.AddParagraph("Letterhead").Format.Frame = new FramePosition { Width = 120, HorizontalAnchor = HorizontalAnchor.Page, HorizontalOffset = 400, VerticalAnchor = VerticalAnchor.Page, VerticalOffset = 30 };
+        body.AddTable(1, 1).Format.Position = new TablePosition { HorizontalAlignment = FloatingAlignment.End };
+        body.AddParagraph("Body text");
+
+        Assert.Empty(document.Layout(Isolated).Warnings);
+    }
+
+    [Fact]
+    public void PdfExportTellsTheLayoutWarnings()
+    {
+        Document document = new();
+        Table outer = Body(document).AddTable(1, 1);
+        Paragraph framed = outer.Rows[0].Cells[0].Paragraphs.Single();
+        framed.AddRun("framed in a cell");
+        framed.Format.Frame = new FramePosition { Width = 120, HorizontalAnchor = HorizontalAnchor.Page, VerticalAnchor = VerticalAnchor.Page };
+        List<LayoutWarning> heard = [];
+
+        using MemoryStream pdf = new();
+        document.SaveAsPdf(pdf, new PdfExportOptions { Layout = new LayoutOptions { Fonts = Isolated.Fonts, OnWarning = heard.Add } });
+
+        Assert.Same(framed, Assert.Single(heard).Node);
+        Assert.True(pdf.Length > 0);
     }
 
     [Fact]
