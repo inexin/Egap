@@ -151,6 +151,17 @@ egap convert report.docx -o report.pdf --embed-source        # a hybrid PDF: con
 egap convert notes.md -o notes.html
 egap convert page.html -o page.pdf --allow-network
 </code></pre>
+<p><code>--set key=value</code> passes a setting to the writer of the format being written; give it once per setting. A setting the
+writer does not take stops the run with a usage error. PDF takes <code>language</code>, <code>links</code>, <code>named-destinations</code>, <code>outline</code>,
+<code>form-fields</code>, <code>ua</code>, <code>resolved-comments</code> and <code>strict</code>; HTML takes <code>embed-images</code> and <code>page-setup</code>; Markdown takes <code>images</code>
+(files, data-uris, placeholders or omit), <code>images-folder</code>, <code>figure-dpi</code>, <code>svg-figures</code>, <code>min-image-size</code>,
+<code>background-images</code>, <code>html-figures</code> and <code>front-matter</code>; text takes <code>headers-footers</code>, <code>notes</code> and <code>newline</code> (lf or crlf).
+DOCX takes none. Markdown images go to a folder named after the output, such as <code>report.images</code> for <code>report.md</code>.</p>
+<pre><code class="lang-sh">egap convert report.docx -o report.pdf --set outline=bookmarks --set language=en-GB
+egap convert report.docx -o report.md --set images=data-uris --set front-matter=true
+egap convert report.docx -o report.txt --set newline=crlf --set headers-footers=true
+egap convert notes.md -o notes.html --set page-setup=false
+</code></pre>
 <h2 id="pages">Pages</h2>
 <pre><code class="lang-sh">egap merge a.pdf b.pdf#2-z c.pdf#1,3 -o all.pdf
 egap split book.pdf -o chapters/ --range 1-12 --range 13-40 --range 41-z
