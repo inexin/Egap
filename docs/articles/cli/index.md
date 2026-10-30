@@ -75,6 +75,20 @@ egap convert notes.md -o notes.html
 egap convert page.html -o page.pdf --allow-network
 ```
 
+`--set key=value` passes a setting to the writer of the format being written; give it once per setting. A setting the
+writer does not take stops the run with a usage error. PDF takes `language`, `links`, `named-destinations`, `outline`,
+`form-fields`, `ua`, `resolved-comments` and `strict`; HTML takes `embed-images` and `page-setup`; Markdown takes `images`
+(files, data-uris, placeholders or omit), `images-folder`, `figure-dpi`, `svg-figures`, `min-image-size`,
+`background-images`, `html-figures` and `front-matter`; text takes `headers-footers`, `notes` and `newline` (lf or crlf).
+DOCX takes none. Markdown images go to a folder named after the output, such as `report.images` for `report.md`.
+
+```sh
+egap convert report.docx -o report.pdf --set outline=bookmarks --set language=en-GB
+egap convert report.docx -o report.md --set images=data-uris --set front-matter=true
+egap convert report.docx -o report.txt --set newline=crlf --set headers-footers=true
+egap convert notes.md -o notes.html --set page-setup=false
+```
+
 ## Pages
 
 ```sh

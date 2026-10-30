@@ -43,7 +43,7 @@ internal static class ConvertCommand
         Option<bool> tagged = new("--tagged") { Description = "To PDF: write a tagged PDF with a structure tree, for accessibility." };
         Option<string[]> set = new("--set")
         {
-            Description = "To PDF, any export setting as key=value: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua.",
+            Description = "A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf).",
             HelpName = "key=value",
             AllowMultipleArgumentsPerToken = false,
         };
@@ -74,6 +74,7 @@ internal static class ConvertCommand
             string target = Target(result.GetValue(to), template);
             string? secret = password.Read(session, result);
             PdfSaveOptions saveOptions = save.Build(result);
+            Dictionary<string, string> settings = Settings(result.GetValue(set), target);
             PdfConvertOptions options = new()
             {
                 PageSize = PageSize(result.GetValue(pageSize), result.GetValue(landscape)),
@@ -85,7 +86,7 @@ internal static class ConvertCommand
                 Tagged = result.GetValue(tagged),
                 EmbedSource = result.GetValue(embedSource),
                 BaseDirectory = result.GetValue(baseDir) is { } folder ? session.ResolvePath(folder) : null,
-                Export = Export(result.GetValue(set), saveOptions),
+                Export = Export(settings, saveOptions),
             };
             PdfCommentMode commentMode = result.GetValue(comments) switch
             {
@@ -144,7 +145,7 @@ internal static class ConvertCommand
                 Document document = isPdf ? FromPdf(session, file, secret, fromPdf, embedded) : Document.Load(file.Path, out IReadOnlyList<ConversionWarning> warnings);
                 SaveOptions.WriteFile(session, path, target, temporary =>
                 {
-                    foreach (ConversionWarning warning in document.Save(temporary))
+                    foreach (ConversionWarning warning in Write(document, temporary, path, target, settings))
                     {
                         session.Warn($"{file.Display}: {warning.Message}");
                     }
@@ -428,9 +429,20 @@ internal static class ConvertCommand
             : throw new UsageException($"--pdfa '{text}' is not one of 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4 and 4f.");
     }
 
-    private static PdfExportOptions Export(string[]? settings, PdfSaveOptions save)
+    /// <summary>The settings each format convert writes takes through <c>--set</c>.</summary>
+    private static readonly Dictionary<string, string[]> SettingKeys = new()
     {
-        PdfExportOptions export = PdfExportOptions.Default with { Save = save };
+        ["pdf"] = ["language", "links", "named-destinations", "outline", "form-fields", "ua", "resolved-comments", "strict"],
+        ["docx"] = [],
+        ["html"] = ["embed-images", "page-setup"],
+        ["md"] = ["images", "images-folder", "figure-dpi", "svg-figures", "min-image-size", "background-images", "html-figures", "front-matter"],
+        ["txt"] = ["headers-footers", "notes", "newline"],
+    };
+
+    /// <summary>The <c>--set</c> settings by key, the last of a key winning; a key the format written does not take is a usage error.</summary>
+    private static Dictionary<string, string> Settings(string[]? settings, string target)
+    {
+        Dictionary<string, string> found = [];
         foreach (string text in settings ?? [])
         {
             int equals = text.IndexOf('=', StringComparison.Ordinal);
@@ -440,6 +452,26 @@ internal static class ConvertCommand
             }
 
             string key = text[..equals].Trim().ToLowerInvariant(), value = text[(equals + 1)..].Trim();
+            string[] keys = SettingKeys[target];
+            if (!keys.Contains(key))
+            {
+                string? other = SettingKeys.FirstOrDefault(f => f.Value.Contains(key)).Key;
+                throw new UsageException(other is not null ? $"--set {key} is a {other} setting; this writes {target}."
+                    : keys.Length == 0 ? $"--set: {target} output takes no settings."
+                    : $"--set: unknown {target} setting '{key}'; {target} settings are {string.Join(", ", keys)}.");
+            }
+
+            found[key] = value;
+        }
+
+        return found;
+    }
+
+    private static PdfExportOptions Export(Dictionary<string, string> settings, PdfSaveOptions save)
+    {
+        PdfExportOptions export = PdfExportOptions.Default with { Save = save };
+        foreach ((string key, string value) in settings)
+        {
             export = key switch
             {
                 "language" => export with { Language = value },
@@ -447,6 +479,8 @@ internal static class ConvertCommand
                 "named-destinations" => export with { NamedDestinations = Bool(key, value) },
                 "form-fields" => export with { FormFields = Bool(key, value) },
                 "ua" => export with { UniversalAccessibility = Bool(key, value) },
+                "resolved-comments" => export with { IncludeResolvedComments = Bool(key, value) },
+                "strict" => export with { Layout = new LayoutOptions { Strict = Bool(key, value) } },
                 "outline" => export with
                 {
                     Outline = value switch
@@ -457,11 +491,82 @@ internal static class ConvertCommand
                         _ => throw new UsageException($"--set outline='{value}' is not none, headings or bookmarks."),
                     },
                 },
-                _ => throw new UsageException($"--set: unknown setting '{key}'; settings are language, links, named-destinations, outline, form-fields and ua."),
+                _ => export,
             };
         }
 
         return export;
+    }
+
+    /// <summary>
+    /// Writes a flow format to <paramref name="temporary"/> with the <c>--set</c> settings. <paramref name="path"/> is where
+    /// the file lands, so a Markdown file's images folder is named after it and not after the temporary file.
+    /// </summary>
+    private static IReadOnlyList<ConversionWarning> Write(Document document, string temporary, string path, string target, Dictionary<string, string> settings)
+    {
+        switch (target)
+        {
+            case "html":
+                return HtmlFormat.Save(document, temporary, new HtmlSaveOptions
+                {
+                    EmbedImages = Flag(settings, "embed-images", true),
+                    WritePageSetup = Flag(settings, "page-setup", true),
+                });
+            case "md":
+                MarkdownSaveOptions defaults = new();
+                return MarkdownFormat.Save(document, temporary, new MarkdownSaveOptions
+                {
+                    Images = settings.GetValueOrDefault("images") switch
+                    {
+                        null => defaults.Images,
+                        "files" => MarkdownImageMode.Files,
+                        "data-uris" => MarkdownImageMode.DataUris,
+                        "placeholders" => MarkdownImageMode.Placeholders,
+                        "omit" => MarkdownImageMode.Omit,
+                        string other => throw new UsageException($"--set images='{other}' is not files, data-uris, placeholders or omit."),
+                    },
+                    ImagesFolder = settings.GetValueOrDefault("images-folder") ?? (path == "-" ? null : Path.GetFileNameWithoutExtension(path) + ".images"),
+                    FigureResolution = Number(settings, "figure-dpi", defaults.FigureResolution, positive: true),
+                    VectorFiguresAsSvg = Flag(settings, "svg-figures", defaults.VectorFiguresAsSvg),
+                    MinImageSize = Number(settings, "min-image-size", defaults.MinImageSize, positive: false),
+                    KeepBackgroundImages = Flag(settings, "background-images", defaults.KeepBackgroundImages),
+                    CaptionsAsFigures = Flag(settings, "html-figures", defaults.CaptionsAsFigures),
+                    WriteFrontMatter = Flag(settings, "front-matter", defaults.WriteFrontMatter),
+                });
+            case "txt":
+                TextSaveOptions text = new();
+                return TextFormat.Save(document, temporary, new TextSaveOptions
+                {
+                    IncludeHeadersAndFooters = Flag(settings, "headers-footers", text.IncludeHeadersAndFooters),
+                    IncludeNotes = Flag(settings, "notes", text.IncludeNotes),
+                    NewLine = settings.GetValueOrDefault("newline") switch
+                    {
+                        null => text.NewLine,
+                        "lf" => "\n",
+                        "crlf" => "\r\n",
+                        string other => throw new UsageException($"--set newline='{other}' is not lf or crlf."),
+                    },
+                });
+            default:
+                return document.Save(temporary);
+        }
+    }
+
+    private static bool Flag(Dictionary<string, string> settings, string key, bool fallback)
+    {
+        return settings.TryGetValue(key, out string? value) ? Bool(key, value) : fallback;
+    }
+
+    private static double Number(Dictionary<string, string> settings, string key, double fallback, bool positive)
+    {
+        if (!settings.TryGetValue(key, out string? value))
+        {
+            return fallback;
+        }
+
+        return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) && double.IsFinite(number) && (positive ? number > 0 : number >= 0)
+            ? number
+            : throw new UsageException($"--set {key}='{value}' is not a {(positive ? "positive" : "non-negative")} number.");
     }
 
     private static bool Bool(string key, string value)
