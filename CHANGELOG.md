@@ -7,6 +7,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - `convert` and `merge-data` print the layout's warnings, such as a floating table in a table cell laid out in the text,
   when they write PDF.
+- `convert --set key=value` reaches every writer, not only PDF: HTML (`embed-images`, `page-setup`), Markdown (`images`,
+  `images-folder`, `figure-dpi`, `svg-figures`, `min-image-size`, `background-images`, `html-figures`, `front-matter`)
+  and text (`headers-footers`, `notes`, `newline`). PDF adds `resolved-comments` and `strict`. A setting the format
+  written does not take is now a usage error; before, PDF settings were ignored for other formats.
+- `convert` to Markdown writes images to a folder named after the output (`report.images` for `report.md`), not after
+  the temporary file it writes first.
 
 ## Egap.Documents 2.3.0 (unreleased)
 

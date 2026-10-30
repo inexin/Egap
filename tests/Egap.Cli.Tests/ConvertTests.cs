@@ -148,6 +148,55 @@ public sealed class ConvertTests : IDisposable
         Assert.Contains("framed.docx: FloatLaidOutInline: A framed paragraph in a table cell", run.Error, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void SetTakesTheWritersSettings()
+    {
+        WriteInputs();
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "report.md", "-o", "report.txt", "--set", "newline=crlf").Code);
+        Assert.Contains("Quarterly report\r\n", File.ReadAllText(_tool.PathOf("report.txt")), StringComparison.Ordinal);
+
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "report.md", "-o", "page.html", "--set", "page-setup=false").Code);
+        Assert.DoesNotContain("@page", File.ReadAllText(_tool.PathOf("page.html")), StringComparison.Ordinal);
+
+        WritePictureDocx();
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "picture.docx", "-o", "inline.md", "--set", "images=data-uris").Code);
+        Assert.Contains("](data:image/png;base64,", File.ReadAllText(_tool.PathOf("inline.md")), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownImagesGoBesideTheOutputByItsName()
+    {
+        WritePictureDocx();
+
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "picture.docx", "-o", "pages.md").Code);
+
+        Assert.Contains("](pages.images/", File.ReadAllText(_tool.PathOf("pages.md")), StringComparison.Ordinal);
+        Assert.NotEmpty(Directory.GetFiles(_tool.PathOf("pages.images")));
+        Assert.Empty(Directory.GetDirectories(_tool.Folder, ".egap-*"));
+    }
+
+    [Theory]
+    [InlineData("report.pdf", "embed-images=false", "embed-images is a html setting; this writes pdf")]
+    [InlineData("report.txt", "nope=1", "unknown txt setting 'nope'; txt settings are headers-footers, notes, newline")]
+    [InlineData("report.docx", "links=false", "links is a pdf setting; this writes docx")]
+    [InlineData("out.md", "images=everywhere", "images='everywhere' is not files, data-uris, placeholders or omit")]
+    public void ASettingTheWriterDoesNotTakeIsAUsageError(string output, string setting, string expected)
+    {
+        WriteInputs();
+        ToolRun run = _tool.Run("convert", "report.md", "-o", output, "--set", setting);
+        Assert.Equal(ExitCodes.Usage, run.Code);
+        Assert.Contains(expected, run.Error, StringComparison.Ordinal);
+    }
+
+    /// <summary>A DOCX with an embedded 40 by 30 point picture, which has no address of its own.</summary>
+    private void WritePictureDocx()
+    {
+        Egap.Documents.Document document = new();
+        Egap.Documents.Paragraph paragraph = document.AddSection().Body.AddParagraph("A picture:");
+        paragraph.AddPicture(new Egap.Documents.ImageData(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="), "image/png"), 40, 30);
+        Egap.Documents.DocxFormat.Save(document, _tool.PathOf("picture.docx"));
+    }
+
     private void WriteInputs()
     {
         _tool.Write("report.html", Encoding.UTF8.GetBytes(Html));
