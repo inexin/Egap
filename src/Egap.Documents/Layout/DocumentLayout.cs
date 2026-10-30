@@ -13,6 +13,12 @@ public sealed class LayoutOptions
     /// else's file never fails on its content.
     /// </summary>
     public bool Strict { get; init; }
+
+    /// <summary>
+    /// Called once for each <see cref="LayoutWarning"/> when the layout is done, as <see cref="DocumentLayout.Warnings"/>
+    /// lists them: the way to hear of them when the layout is not kept, as when a document is saved as PDF.
+    /// </summary>
+    public Action<LayoutWarning>? OnWarning { get; init; }
 }
 
 /// <summary>
@@ -28,6 +34,7 @@ public sealed class DocumentLayout
         Document = document;
         Pages = pages;
         FontSubstitutions = substitutions;
+        Warnings = [];
     }
 
     /// <summary>The document laid out.</summary>
@@ -38,6 +45,9 @@ public sealed class DocumentLayout
 
     /// <summary>The fonts used in place of the ones the document asked for, each once.</summary>
     public IReadOnlyList<FontSubstitution> FontSubstitutions { get; }
+
+    /// <summary>What was laid out differently from what the document asks for, in page order; empty when nothing was.</summary>
+    public IReadOnlyList<LayoutWarning> Warnings { get; internal set; }
 
     /// <summary>The boxes that show <paramref name="node"/>, with their pages, in page order; empty when it is not laid out.</summary>
     public IReadOnlyList<(PageLayout Page, LayoutBox Box)> FindBoxes(Node node)

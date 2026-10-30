@@ -51,6 +51,11 @@ internal sealed partial class Paginator
     private int pageNumber;
     private int measuring;
     private readonly bool strict;
+    private readonly Action<LayoutWarning>? onWarning;
+
+    /// <summary>The floating tables and framed paragraphs met where they cannot float, in the order met, each once.</summary>
+    private readonly List<Block> inlineFloats = [];
+    private readonly HashSet<Block> inlineFloatsSeen = [];
 
     /// <summary>The heights the columns of a section's page are held to, by section and page within it, to balance them.</summary>
     private readonly Dictionary<(Section Section, int Page), double> balance = [];
@@ -69,6 +74,7 @@ internal sealed partial class Paginator
         fonts = cache.Fonts;
         bridge = cache.Bridge;
         strict = options?.Strict ?? false;
+        onWarning = options?.OnWarning;
         this.cache = cache;
         pageFieldText = PageFieldText;
     }
@@ -122,6 +128,12 @@ internal sealed partial class Paginator
         Balance();
         List<PageLayout> built = [.. pages.Select((p, i) => p.Build(i, this))];
         DocumentLayout layout = new(document, built, fonts.Substitutions);
+        layout.Warnings = Warnings(layout);
+        foreach (LayoutWarning warning in layout.Warnings)
+        {
+            onWarning?.Invoke(warning);
+        }
+
         if (strict)
         {
             StrictLayout.Check(layout, fonts);
@@ -508,6 +520,17 @@ internal sealed partial class Paginator
 
     /// <summary>The content for a paragraph, cached by its version unless it shows page fields.</summary>
     private ParagraphContent ContentOf(Paragraph paragraph, Func<Field, string?>? pageField = null)
+    {
+        ParagraphContent content = BuildContent(paragraph, pageField);
+        if (content.Format.Frame is not null && paragraph.Parent is not Body)
+        {
+            NoteInlineFloat(paragraph);
+        }
+
+        return content;
+    }
+
+    private ParagraphContent BuildContent(Paragraph paragraph, Func<Field, string?>? pageField)
     {
         if (notePrefix is { } note && note.Story.Blocks.Count > 0 && note.Story.Blocks[0] == paragraph)
         {
