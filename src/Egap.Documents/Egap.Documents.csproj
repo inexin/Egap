@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Egami.Css" />
     <PackageReference Include="Egami.Drawing" />
     <PackageReference Include="Egami.Barcodes" />
     <PackageReference Include="Egami.Metafiles" />
