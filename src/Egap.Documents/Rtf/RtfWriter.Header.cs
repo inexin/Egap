@@ -6,6 +6,7 @@ internal sealed partial class RtfWriter
     private readonly Dictionary<Style, int> styleIndexes = [];
     private readonly Dictionary<string, int> authors = new(StringComparer.Ordinal) { ["Unknown"] = 0 };
     private readonly List<string> authorList = ["Unknown"];
+    private bool authorsUsed;
 
     /// <summary>
     /// A style's number in the style sheet: the default paragraph style is 0 (<c>\s0</c>, Normal), the others count up in the
@@ -37,6 +38,7 @@ internal sealed partial class RtfWriter
     /// <summary>A revision author's index in the revision table, added when new; the table starts with "Unknown".</summary>
     private int Author(string name)
     {
+        authorsUsed = true;
         if (!authors.TryGetValue(name, out int index))
         {
             index = authorList.Count;
@@ -111,10 +113,13 @@ internal sealed partial class RtfWriter
             || name.Equals("Webdings", StringComparison.OrdinalIgnoreCase) || name.Equals("Marlett", StringComparison.OrdinalIgnoreCase);
     }
 
-    /// <summary>A name in a table, where a semicolon ends the entry: semicolons in the name are left out.</summary>
+    /// <summary>
+    /// A name in a table, where a semicolon ends the entry: semicolons in the name are left out, and so are tabs, which a
+    /// reader drops from names.
+    /// </summary>
     private void Name(string name)
     {
-        Text(name.Contains(';', StringComparison.Ordinal) ? name.Replace(";", "", StringComparison.Ordinal) : name);
+        Text(name.AsSpan().IndexOfAny(';', '\t') >= 0 ? name.Replace(";", "", StringComparison.Ordinal).Replace("\t", "", StringComparison.Ordinal) : name);
     }
 
     private void WriteColorTable()
@@ -486,11 +491,12 @@ internal sealed partial class RtfWriter
 
     private void WriteRevisionTable()
     {
-        if (authorList.Count <= 1)
+        if (!authorsUsed)
         {
             return;
         }
 
+        // Written even when "Unknown" is the only author: a reader without the table has no name for index 0.
         Destination("revtbl");
         foreach (string author in authorList)
         {

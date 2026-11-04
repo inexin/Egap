@@ -127,11 +127,12 @@ internal sealed class RtfTokenizer
 
     /// <summary>
     /// Skips the rest of the current group, through its closing brace, and returns where that brace was (the file's length
-    /// when the group does not close). <c>\bin</c> data is skipped as data.
+    /// when the group does not close, <see cref="Unclosed"/> then counting the groups left open). <c>\bin</c> data is skipped as data.
     /// </summary>
     public int SkipGroup()
     {
         int depth = 1;
+        Unclosed = 0;
         while (position < data.Length)
         {
             switch (data[position])
@@ -161,8 +162,12 @@ internal sealed class RtfTokenizer
             }
         }
 
+        Unclosed = depth;
         return data.Length;
     }
+
+    /// <summary>How many groups the last <see cref="SkipGroup"/> left open at the end of the file.</summary>
+    public int Unclosed { get; private set; }
 
     /// <summary>
     /// The largest parameter kept, about a billion: far past any real twips, size or count, and small enough that the sum or

@@ -74,6 +74,11 @@ internal sealed partial class RtfWriter
                     Open();
                     Word("fldrslt");
                     openFields[^1].Separated = true;
+                    if (openFields[^1].Paragraph != paragraphSerial && current is not null)
+                    {
+                        // The instruction's group took a paragraph's properties set inside it along when it closed.
+                        ParagraphProperties(current, currentLevel);
+                    }
                 }
 
                 break;

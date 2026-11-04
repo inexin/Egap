@@ -224,7 +224,16 @@ internal sealed partial class RtfWriter
 
     private static bool HasContent(Paragraph paragraph)
     {
-        return paragraph.Inlines.Count > 0 || paragraph.Extensions.Get<RtfExtension>(RtfExtension.Format)?.Inline is { Count: > 0 };
+        // Field characters alone may write nothing (an end whose field a section break closed), so they do not count.
+        foreach (Inline inline in paragraph.Inlines)
+        {
+            if (inline is not (FieldStart or FieldSeparator or FieldEnd))
+            {
+                return true;
+            }
+        }
+
+        return paragraph.Extensions.Get<RtfExtension>(RtfExtension.Format)?.Inline is { Count: > 0 };
     }
 
     // ---- Paragraphs ----

@@ -89,6 +89,7 @@ something out:
 - A theme colour or theme font is written as the colour or font it is in the document's theme.
 - A shape in the text is anchored to its line, as RTF shapes float.
 - Islands from other formats (HTML and DOCX ones) are written as their picture, or their text.
+- Semicolons and tabs in font, style, list and author names are left out: a semicolon ends a table entry.
 
 ## Limits
 

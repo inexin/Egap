@@ -74,17 +74,8 @@ internal sealed partial class RtfWriter
 
         if (blocks.Count == 0 || blocks[^1] is not Paragraph)
         {
-            // A cell ends at a paragraph mark: after a nested table, one that adds no paragraph.
-            Word("pard");
-            Word("plain");
-            Word("intbl");
-            if (level > 1)
-            {
-                Word("itap", level);
-            }
-
-            Word(end);
-            output.AppendLine();
+            // A cell ends at a paragraph mark, and a reader makes an empty paragraph of the one after a nested table.
+            WriteParagraph(new Paragraph(document), level, end);
         }
 
         fieldFloor = outerFloor;
@@ -218,6 +209,12 @@ internal sealed partial class RtfWriter
 
             column += span;
             CellWords(cell.Format);
+            if (cell.Format.Width is null)
+            {
+                // A reader takes the width from the cell's edges, so the width it will find is written too.
+                WidthWords("clftsWidth", "clwWidth", new TableWidth(WidthUnit.Points, CellWidth(cell, table, textWidth, cells.Count)));
+            }
+
             Word("cellx", right);
         }
     }

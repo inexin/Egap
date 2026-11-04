@@ -32,6 +32,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `ConversionWarning`s. RTF to model to RTF gives the same model, and the same file.
 - The RTF reader keeps only what differs from the styles as direct formatting, as the DOCX reader does: RTF repeats a
   style's formatting on every paragraph and run. A cell that ends with a nested table gets the empty paragraph Word gives it.
+  A `\*` group that names no destination word is kept whole, without its text also reaching the document; a `\*` later
+  in a group marks nothing; and a kept group cut off by the end of the file is closed.
 - Layout warnings: `DocumentLayout.Warnings` lists what a layout laid out differently from what the document asks for,
   as `LayoutWarning` records with the kind, a message, the node and its page, and `LayoutOptions.OnWarning` hears each
   one, also when a document is saved as PDF. The first kind, `FloatLaidOutInline`, is a floating table or framed

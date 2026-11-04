@@ -160,6 +160,25 @@ public class RtfWriterTests
         Assert.Equal(Dump(read), Dump(Reread(read)));
     }
 
+    /// <summary>Inputs the fuzzer found whose RTF, read and written again, came out different.</summary>
+    [Theory]
+    [InlineData(@"{\rtf1 A{\*\~n\pnlvlbody x}B\par}")]
+    [InlineData(@"{\rtf1 A{\*{x}\pard y}B\par}")]
+    [InlineData(@"{\rtf1 A{\fo.\p\*\ts11 x}B\par}")]
+    [InlineData(@"{\rtf1 A\par{\*\unknownword {x\")]
+    [InlineData(@"{\rtf1{\fonttbl{\f0 Times\tab New;}}{\stylesheet{\s1 Head\tab ing;}}\f0 A\par}")]
+    [InlineData(@"{\rtf\field\sect")]
+    [InlineData(@"{\rtf{\revtbl{Unknown}}t\revdttm0")]
+    [InlineData(@"{\rtf\intbl\par")]
+    [InlineData(@"{\rtf1\trowd\cellx2000\pard\intbl A\par\itap2 B\nestcell{\*\nesttableprops\trowd\cellx1000\nestrow}\pard\intbl\cell\row}")]
+    [InlineData(@"{\rtf\field{\qr{\par\fldrslt}}\par")]
+    public void OddInputsRewriteTheSame(string rtf)
+    {
+        byte[] first = Save(RtfFormat.Parse(rtf));
+        byte[] second = Save(RtfFormat.Parse(Encoding.Latin1.GetString(first)));
+        Assert.Equal(Encoding.Latin1.GetString(first), Encoding.Latin1.GetString(second));
+    }
+
     [Fact]
     public void EmptyDocumentRoundTrips()
     {

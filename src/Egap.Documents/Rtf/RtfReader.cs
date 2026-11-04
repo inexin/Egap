@@ -142,6 +142,25 @@ internal sealed partial class RtfReader
                 continue;
             }
 
+            if (state.Ignorable && (kind is RtfTokenKind.Text or RtfTokenKind.Hex or RtfTokenKind.GroupStart || kind == RtfTokenKind.ControlSymbol && tokens.Symbol != '*'))
+            {
+                // \* names no destination word here, so the group is one the reader does not know: kept whole, and none of
+                // its text leaks into the document.
+                state.Ignorable = false;
+                if (kind == RtfTokenKind.GroupStart)
+                {
+                    _ = tokens.SkipGroup();
+                }
+
+                SkipDestination(keep: true);
+                if (depth < groupDepth)
+                {
+                    return;
+                }
+
+                continue;
+            }
+
             switch (kind)
             {
                 case RtfTokenKind.End:
@@ -253,10 +272,30 @@ internal sealed partial class RtfReader
         int end = tokens.SkipGroup();
         if (keep && start >= 0)
         {
-            Keep(Encoding.Latin1.GetString(tokens.Data, start, Math.Min(end + 1, tokens.Data.Length) - start));
+            string markup = Encoding.Latin1.GetString(tokens.Data, start, Math.Min(end + 1, tokens.Data.Length) - start);
+            if (tokens.Unclosed > 0)
+            {
+                // A group cut off by the end of the file is closed, so that writing it back cannot swallow what follows.
+                markup = markup.TrimEnd('\\') + new string('}', tokens.Unclosed);
+            }
+
+            Keep(markup);
         }
 
         Pop();
+    }
+
+    /// <summary>Whether the control symbol just read follows its group's brace with nothing but line breaks between.</summary>
+    private bool AtGroupStart()
+    {
+        int start = state.GroupStart;
+        int symbol = tokens.Position - 2;
+        if (start < 0 || symbol <= start)
+        {
+            return false;
+        }
+
+        return !tokens.Data.AsSpan(start + 1, symbol - start - 1).ContainsAnyExcept((byte)'\r', (byte)'\n');
     }
 
     /// <summary>Skips the rest of a group whose first token after the brace was <paramref name="first"/>.</summary>
@@ -285,7 +324,8 @@ internal sealed partial class RtfReader
         switch (symbol)
         {
             case '*':
-                state.Ignorable = true;
+                // \* marks the group it opens; one later in a group marks nothing.
+                state.Ignorable = AtGroupStart();
                 break;
             case '\\' or '{' or '}':
                 AppendChar(symbol);
