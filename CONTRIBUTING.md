@@ -19,7 +19,9 @@ Comparisons with other PDF libraries (output, speed, conformance) do not belong 
 
 ## Building and testing
 
-You need the .NET 10 SDK. Egap draws, decodes images and reads fonts through [Egami](https://github.com/inexin/Egami),
+You need the .NET 10 SDK, version 10.0.403 or later (`global.json` sets the minimum). Older SDKs bring a .NET runtime
+and Native AOT compiler with known security advisories, and restore fails on them (NU1903) because warnings are errors.
+Egap draws, decodes images and reads fonts through [Egami](https://github.com/inexin/Egami),
 whose packages come from nuget.org.
 
 ```
