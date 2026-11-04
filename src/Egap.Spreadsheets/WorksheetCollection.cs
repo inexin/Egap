@@ -59,6 +59,7 @@ public sealed class WorksheetCollection : IReadOnlyList<Worksheet>
             return false;
         }
 
+        workbook.Names.RemoveLocalTo(sheet);
         sheet.Detach();
         return true;
     }

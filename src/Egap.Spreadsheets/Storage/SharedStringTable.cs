@@ -8,6 +8,7 @@ internal sealed class SharedStringTable
 {
     private readonly List<string> strings = [];
     private readonly Dictionary<string, int> indexes = new(StringComparer.Ordinal);
+    private Dictionary<int, System.Xml.Linq.XElement>? rich;
 
     /// <summary>How many strings the table holds.</summary>
     public int Count => strings.Count;
@@ -27,4 +28,28 @@ internal sealed class SharedStringTable
 
         return index;
     }
+
+    /// <summary>
+    /// Adds a string read from a file at the next index, so the file's indexes stay. <paramref name="raw"/> is the file's
+    /// <c>si</c> element for text with runs of formatting or phonetic guides, written back as it was; plain text is shared
+    /// with later adds.
+    /// </summary>
+    public int AddRead(string text, System.Xml.Linq.XElement? raw)
+    {
+        int index = strings.Count;
+        strings.Add(text);
+        if (raw is null)
+        {
+            indexes.TryAdd(text, index);
+        }
+        else
+        {
+            (rich ??= [])[index] = raw;
+        }
+
+        return index;
+    }
+
+    /// <summary>The file's <c>si</c> element for a string with formatting runs, or null for plain text.</summary>
+    public System.Xml.Linq.XElement? Rich(int index) => rich?.GetValueOrDefault(index);
 }

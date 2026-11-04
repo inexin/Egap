@@ -47,7 +47,9 @@ public sealed class Cell : IEquatable<Cell>
     /// <summary>
     /// The cell's formula in Excel's stored form, English function names and commas, without the leading <c>=</c>; null
     /// when the cell holds none. A leading <c>=</c> given is dropped. Setting a formula keeps the cell's style; its result
-    /// is empty until the workbook is calculated. Setting null or an empty string removes the formula and its result.
+    /// is empty until the workbook is calculated. Setting null or an empty string removes the formula and its result. A cell
+    /// that shares the formula of another cell (a shared formula in an XLSX file) gives null here but has
+    /// <see cref="HasFormula"/> set; its formula and result are kept and saved.
     /// </summary>
     /// <exception cref="ArgumentException">The formula is longer than 8,192 characters.</exception>
     public string? Formula
@@ -57,7 +59,7 @@ public sealed class Cell : IEquatable<Cell>
     }
 
     /// <summary>Whether the cell holds a formula.</summary>
-    public bool HasFormula => sheet.GetFormula(Row, Column) is not null;
+    public bool HasFormula => sheet.HasFormula(Row, Column);
 
     /// <summary>Whether the cell holds no value and no formula; it may still have a style.</summary>
     public bool IsEmpty => sheet.GetKind(Row, Column) == CellValueKind.Empty && !HasFormula;

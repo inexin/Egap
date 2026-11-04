@@ -257,6 +257,77 @@ Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Baseline = 0 -> Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Subscript = 2 -> Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Superscript = 1 -> Egap.Spreadsheets.CellVerticalTextPosition
+Egap.Spreadsheets.DefinedName
+Egap.Spreadsheets.DefinedName.Comment.get -> string?
+Egap.Spreadsheets.DefinedName.Comment.set -> void
+Egap.Spreadsheets.DefinedName.Formula.get -> string!
+Egap.Spreadsheets.DefinedName.Formula.set -> void
+Egap.Spreadsheets.DefinedName.Hidden.get -> bool
+Egap.Spreadsheets.DefinedName.Hidden.set -> void
+Egap.Spreadsheets.DefinedName.Name.get -> string!
+Egap.Spreadsheets.DefinedName.Sheet.get -> Egap.Spreadsheets.Worksheet?
+Egap.Spreadsheets.DefinedNameCollection
+Egap.Spreadsheets.DefinedNameCollection.Add(string! name, string! formula, Egap.Spreadsheets.Worksheet? sheet = null) -> Egap.Spreadsheets.DefinedName!
+Egap.Spreadsheets.DefinedNameCollection.Count.get -> int
+Egap.Spreadsheets.DefinedNameCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.DefinedName!>!
+Egap.Spreadsheets.DefinedNameCollection.Remove(Egap.Spreadsheets.DefinedName! name) -> bool
+Egap.Spreadsheets.DefinedNameCollection.this[string! name].get -> Egap.Spreadsheets.DefinedName!
+Egap.Spreadsheets.DefinedNameCollection.TryGet(string! name, Egap.Spreadsheets.Worksheet? sheet, out Egap.Spreadsheets.DefinedName? found) -> bool
+Egap.Spreadsheets.MergedCellCollection
+Egap.Spreadsheets.MergedCellCollection.Add(Egap.Spreadsheets.RangeAddress range) -> void
+Egap.Spreadsheets.MergedCellCollection.Clear() -> void
+Egap.Spreadsheets.MergedCellCollection.Count.get -> int
+Egap.Spreadsheets.MergedCellCollection.Find(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.RangeAddress?
+Egap.Spreadsheets.MergedCellCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.RangeAddress>!
+Egap.Spreadsheets.MergedCellCollection.Remove(Egap.Spreadsheets.RangeAddress range) -> bool
+Egap.Spreadsheets.PageSetup
+Egap.Spreadsheets.PageSetup.BottomMargin.get -> double
+Egap.Spreadsheets.PageSetup.BottomMargin.set -> void
+Egap.Spreadsheets.PageSetup.CenterHorizontally.get -> bool
+Egap.Spreadsheets.PageSetup.CenterHorizontally.set -> void
+Egap.Spreadsheets.PageSetup.CenterVertically.get -> bool
+Egap.Spreadsheets.PageSetup.CenterVertically.set -> void
+Egap.Spreadsheets.PageSetup.FirstPageNumber.get -> int?
+Egap.Spreadsheets.PageSetup.FirstPageNumber.set -> void
+Egap.Spreadsheets.PageSetup.FitToHeight.get -> int
+Egap.Spreadsheets.PageSetup.FitToHeight.set -> void
+Egap.Spreadsheets.PageSetup.FitToPage.get -> bool
+Egap.Spreadsheets.PageSetup.FitToPage.set -> void
+Egap.Spreadsheets.PageSetup.FitToWidth.get -> int
+Egap.Spreadsheets.PageSetup.FitToWidth.set -> void
+Egap.Spreadsheets.PageSetup.Footer.get -> string?
+Egap.Spreadsheets.PageSetup.Footer.set -> void
+Egap.Spreadsheets.PageSetup.FooterMargin.get -> double
+Egap.Spreadsheets.PageSetup.FooterMargin.set -> void
+Egap.Spreadsheets.PageSetup.Header.get -> string?
+Egap.Spreadsheets.PageSetup.Header.set -> void
+Egap.Spreadsheets.PageSetup.HeaderMargin.get -> double
+Egap.Spreadsheets.PageSetup.HeaderMargin.set -> void
+Egap.Spreadsheets.PageSetup.LeftMargin.get -> double
+Egap.Spreadsheets.PageSetup.LeftMargin.set -> void
+Egap.Spreadsheets.PageSetup.Orientation.get -> Egap.Spreadsheets.PrintOrientation
+Egap.Spreadsheets.PageSetup.Orientation.set -> void
+Egap.Spreadsheets.PageSetup.PageOrder.get -> Egap.Spreadsheets.PrintPageOrder
+Egap.Spreadsheets.PageSetup.PageOrder.set -> void
+Egap.Spreadsheets.PageSetup.PaperSize.get -> int?
+Egap.Spreadsheets.PageSetup.PaperSize.set -> void
+Egap.Spreadsheets.PageSetup.PrintGridLines.get -> bool
+Egap.Spreadsheets.PageSetup.PrintGridLines.set -> void
+Egap.Spreadsheets.PageSetup.PrintHeadings.get -> bool
+Egap.Spreadsheets.PageSetup.PrintHeadings.set -> void
+Egap.Spreadsheets.PageSetup.RightMargin.get -> double
+Egap.Spreadsheets.PageSetup.RightMargin.set -> void
+Egap.Spreadsheets.PageSetup.Scale.get -> int?
+Egap.Spreadsheets.PageSetup.Scale.set -> void
+Egap.Spreadsheets.PageSetup.TopMargin.get -> double
+Egap.Spreadsheets.PageSetup.TopMargin.set -> void
+Egap.Spreadsheets.PrintOrientation
+Egap.Spreadsheets.PrintOrientation.Default = 0 -> Egap.Spreadsheets.PrintOrientation
+Egap.Spreadsheets.PrintOrientation.Landscape = 2 -> Egap.Spreadsheets.PrintOrientation
+Egap.Spreadsheets.PrintOrientation.Portrait = 1 -> Egap.Spreadsheets.PrintOrientation
+Egap.Spreadsheets.PrintPageOrder
+Egap.Spreadsheets.PrintPageOrder.DownThenOver = 0 -> Egap.Spreadsheets.PrintPageOrder
+Egap.Spreadsheets.PrintPageOrder.OverThenDown = 1 -> Egap.Spreadsheets.PrintPageOrder
 Egap.Spreadsheets.RangeAddress
 Egap.Spreadsheets.RangeAddress.CellCount.get -> long
 Egap.Spreadsheets.RangeAddress.ColumnCount.get -> int
@@ -274,20 +345,107 @@ Egap.Spreadsheets.RangeAddress.RangeAddress(int firstRow, int firstColumn, int l
 Egap.Spreadsheets.RangeAddress.RowCount.get -> int
 Egap.Spreadsheets.RangeAddress.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
 Egap.Spreadsheets.RangeAddress.TryFormat(System.Span<char> destination, out int charsWritten, System.ReadOnlySpan<char> format, System.IFormatProvider? provider) -> bool
+Egap.Spreadsheets.SheetColumn
+Egap.Spreadsheets.SheetColumn.Collapsed.get -> bool
+Egap.Spreadsheets.SheetColumn.Collapsed.set -> void
+Egap.Spreadsheets.SheetColumn.Hidden.get -> bool
+Egap.Spreadsheets.SheetColumn.Hidden.set -> void
+Egap.Spreadsheets.SheetColumn.Index.get -> int
+Egap.Spreadsheets.SheetColumn.Name.get -> string!
+Egap.Spreadsheets.SheetColumn.OutlineLevel.get -> int
+Egap.Spreadsheets.SheetColumn.OutlineLevel.set -> void
+Egap.Spreadsheets.SheetColumn.Style.get -> Egap.Spreadsheets.CellStyle?
+Egap.Spreadsheets.SheetColumn.Style.set -> void
+Egap.Spreadsheets.SheetColumn.Width.get -> double?
+Egap.Spreadsheets.SheetColumn.Width.set -> void
+Egap.Spreadsheets.SheetColumnCollection
+Egap.Spreadsheets.SheetColumnCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.SheetColumn!>!
+Egap.Spreadsheets.SheetColumnCollection.this[int index].get -> Egap.Spreadsheets.SheetColumn!
+Egap.Spreadsheets.SheetColumnCollection.this[string! name].get -> Egap.Spreadsheets.SheetColumn!
+Egap.Spreadsheets.SheetRow
+Egap.Spreadsheets.SheetRow.Collapsed.get -> bool
+Egap.Spreadsheets.SheetRow.Collapsed.set -> void
+Egap.Spreadsheets.SheetRow.Height.get -> double?
+Egap.Spreadsheets.SheetRow.Height.set -> void
+Egap.Spreadsheets.SheetRow.Hidden.get -> bool
+Egap.Spreadsheets.SheetRow.Hidden.set -> void
+Egap.Spreadsheets.SheetRow.Index.get -> int
+Egap.Spreadsheets.SheetRow.OutlineLevel.get -> int
+Egap.Spreadsheets.SheetRow.OutlineLevel.set -> void
+Egap.Spreadsheets.SheetRow.Style.get -> Egap.Spreadsheets.CellStyle?
+Egap.Spreadsheets.SheetRow.Style.set -> void
+Egap.Spreadsheets.SheetRowCollection
+Egap.Spreadsheets.SheetRowCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.SheetRow!>!
+Egap.Spreadsheets.SheetRowCollection.this[int index].get -> Egap.Spreadsheets.SheetRow!
+Egap.Spreadsheets.SheetView
+Egap.Spreadsheets.SheetView.FreezePanes(Egap.Spreadsheets.CellAddress topLeftScrolling) -> void
+Egap.Spreadsheets.SheetView.FrozenColumns.get -> int
+Egap.Spreadsheets.SheetView.FrozenColumns.set -> void
+Egap.Spreadsheets.SheetView.FrozenRows.get -> int
+Egap.Spreadsheets.SheetView.FrozenRows.set -> void
+Egap.Spreadsheets.SheetView.RightToLeft.get -> bool
+Egap.Spreadsheets.SheetView.RightToLeft.set -> void
+Egap.Spreadsheets.SheetView.Selected.get -> bool
+Egap.Spreadsheets.SheetView.Selected.set -> void
+Egap.Spreadsheets.SheetView.ShowGridLines.get -> bool
+Egap.Spreadsheets.SheetView.ShowGridLines.set -> void
+Egap.Spreadsheets.SheetView.ShowHeadings.get -> bool
+Egap.Spreadsheets.SheetView.ShowHeadings.set -> void
+Egap.Spreadsheets.SheetView.ShowZeros.get -> bool
+Egap.Spreadsheets.SheetView.ShowZeros.set -> void
+Egap.Spreadsheets.SheetView.ZoomScale.get -> int
+Egap.Spreadsheets.SheetView.ZoomScale.set -> void
+Egap.Spreadsheets.SheetVisibility
+Egap.Spreadsheets.SheetVisibility.Hidden = 1 -> Egap.Spreadsheets.SheetVisibility
+Egap.Spreadsheets.SheetVisibility.VeryHidden = 2 -> Egap.Spreadsheets.SheetVisibility
+Egap.Spreadsheets.SheetVisibility.Visible = 0 -> Egap.Spreadsheets.SheetVisibility
 Egap.Spreadsheets.Workbook
+Egap.Spreadsheets.Workbook.Date1904.get -> bool
+Egap.Spreadsheets.Workbook.Date1904.set -> void
+Egap.Spreadsheets.Workbook.Format.get -> Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.Workbook.Format.set -> void
+Egap.Spreadsheets.Workbook.Names.get -> Egap.Spreadsheets.DefinedNameCollection!
+Egap.Spreadsheets.Workbook.Save(string! path, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
+Egap.Spreadsheets.Workbook.Save(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
 Egap.Spreadsheets.Workbook.Worksheets.get -> Egap.Spreadsheets.WorksheetCollection!
+Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.WorkbookFormat.Xlsm = 1 -> Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.WorkbookFormat.Xlsx = 0 -> Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.WorkbookFormat.Xltm = 3 -> Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.WorkbookFormat.Xltx = 2 -> Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.WorkbookLoadOptions
+Egap.Spreadsheets.WorkbookLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
+Egap.Spreadsheets.WorkbookLoadOptions.Limits.init -> void
+Egap.Spreadsheets.WorkbookLoadOptions.WorkbookLoadOptions() -> void
+Egap.Spreadsheets.WorkbookSaveOptions
+Egap.Spreadsheets.WorkbookSaveOptions.Format.get -> Egap.Spreadsheets.WorkbookFormat?
+Egap.Spreadsheets.WorkbookSaveOptions.Format.init -> void
+Egap.Spreadsheets.WorkbookSaveOptions.WorkbookSaveOptions() -> void
 Egap.Spreadsheets.Worksheet
 Egap.Spreadsheets.Worksheet.Cells.get -> Egap.Spreadsheets.WorksheetCells!
+Egap.Spreadsheets.Worksheet.Columns.get -> Egap.Spreadsheets.SheetColumnCollection!
+Egap.Spreadsheets.Worksheet.DefaultColumnWidth.get -> double?
+Egap.Spreadsheets.Worksheet.DefaultColumnWidth.set -> void
+Egap.Spreadsheets.Worksheet.DefaultRowHeight.get -> double?
+Egap.Spreadsheets.Worksheet.DefaultRowHeight.set -> void
 Egap.Spreadsheets.Worksheet.Index.get -> int
+Egap.Spreadsheets.Worksheet.MergedCells.get -> Egap.Spreadsheets.MergedCellCollection!
 Egap.Spreadsheets.Worksheet.Name.get -> string!
 Egap.Spreadsheets.Worksheet.Name.set -> void
+Egap.Spreadsheets.Worksheet.PageSetup.get -> Egap.Spreadsheets.PageSetup!
 Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress address) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Range(int firstRow, int firstColumn, int lastRow, int lastColumn) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Range(string! address) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Worksheet.Rows.get -> Egap.Spreadsheets.SheetRowCollection!
+Egap.Spreadsheets.Worksheet.TabColor.get -> Egap.Spreadsheets.CellColor?
+Egap.Spreadsheets.Worksheet.TabColor.set -> void
 Egap.Spreadsheets.Worksheet.this[Egap.Spreadsheets.CellAddress address].get -> Egap.Spreadsheets.Cell!
 Egap.Spreadsheets.Worksheet.this[int row, int column].get -> Egap.Spreadsheets.Cell!
 Egap.Spreadsheets.Worksheet.this[string! address].get -> Egap.Spreadsheets.Cell!
 Egap.Spreadsheets.Worksheet.UsedRange.get -> Egap.Spreadsheets.CellRange?
+Egap.Spreadsheets.Worksheet.View.get -> Egap.Spreadsheets.SheetView!
+Egap.Spreadsheets.Worksheet.Visibility.get -> Egap.Spreadsheets.SheetVisibility
+Egap.Spreadsheets.Worksheet.Visibility.set -> void
 Egap.Spreadsheets.Worksheet.Workbook.get -> Egap.Spreadsheets.Workbook!
 Egap.Spreadsheets.WorksheetCells
 Egap.Spreadsheets.WorksheetCells.Count.get -> long
@@ -340,6 +498,7 @@ override Egap.Spreadsheets.CellStyle.ToString() -> string!
 override Egap.Spreadsheets.CellValue.Equals(object? obj) -> bool
 override Egap.Spreadsheets.CellValue.GetHashCode() -> int
 override Egap.Spreadsheets.CellValue.ToString() -> string!
+override Egap.Spreadsheets.DefinedName.ToString() -> string!
 override Egap.Spreadsheets.RangeAddress.GetHashCode() -> int
 override Egap.Spreadsheets.RangeAddress.ToString() -> string!
 override Egap.Spreadsheets.Worksheet.ToString() -> string!
@@ -409,6 +568,8 @@ static Egap.Spreadsheets.RangeAddress.TryParse(string? text, out Egap.Spreadshee
 static Egap.Spreadsheets.RangeAddress.TryParse(System.ReadOnlySpan<char> text, out Egap.Spreadsheets.RangeAddress range) -> bool
 static Egap.Spreadsheets.Workbook.Create() -> Egap.Spreadsheets.Workbook!
 static Egap.Spreadsheets.Workbook.CreateEmpty() -> Egap.Spreadsheets.Workbook!
+static Egap.Spreadsheets.Workbook.Load(string! path, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.Workbook!
+static Egap.Spreadsheets.Workbook.Load(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.Workbook!
 ~override Egap.Spreadsheets.CellAddress.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.CellBorder.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.CellBorder.ToString() -> string
