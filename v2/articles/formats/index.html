@@ -88,7 +88,8 @@
 <h1 id="document-formats">Document formats</h1>
 
 <p>Egap.Documents reads each format below into one document model and writes the model back out, so any format it reads can
-be saved as any format it writes. DOCX, RTF, PDF, plain text and Docling JSON are built in. HTML, MHTML and EPUB come from the
+be saved as any format it writes. DOCX, RTF, OpenDocument Text (read only for now), PDF, plain text and Docling JSON are
+built in. HTML, MHTML and EPUB come from the
 add-on package Egap.Documents.Html, and Markdown from Egap.Documents.Markdown.</p>
 <p>Each format has its own page with its options and what it keeps. This page covers what they share: loading and saving
 without naming the format, how a file's format is found, warnings and limits.</p>
@@ -134,6 +135,12 @@ without naming the format, how a file's format is found, warnings and limits.</p
 <td>One-file web archives in Chromium's shape</td>
 </tr>
 <tr>
+<td><a href="odt.html">OpenDocument Text</a></td>
+<td>Egap.Documents</td>
+<td>ODT, OTT and flat FODT from ODF 1.2 to 1.4, with styles, lists, tables, page styles, notes, fields and tracked changes</td>
+<td>Not yet</td>
+</tr>
+<tr>
 <td><a href="rtf.html">RTF</a></td>
 <td>Egap.Documents</td>
 <td>RTF as Word 2007 and later write it, with tables, lists, notes, comments, tracked changes and pictures</td>
@@ -162,7 +169,7 @@ without naming the format, how a file's format is found, warnings and limits.</p
 <p>PDF in and out is covered in <a href="../guides/pdf-export-and-conversion.html">PDF export and conversion</a>.</p>
 <h2 id="loading-and-saving">Loading and saving</h2>
 <p><code>Document.Load</code> and <code>Document.Save</code> work out the format by themselves. <code>Load</code> looks at the file's first bytes and, for
-text, at its extension; <code>Save</code> goes by the extension. DOCX, RTF, PDF, plain text and Docling JSON need nothing more. HTML,
+text, at its extension; <code>Save</code> goes by the extension. DOCX, RTF, ODT, PDF, plain text and Docling JSON need nothing more. HTML,
 MHTML, EPUB and Markdown join them once you register their add-on at startup; until then, loading such a file throws a
 <code>NotSupportedException</code> that names the package and the call to make. <code>Document.Identify</code> tells which format a file is in
 without loading it and without any add-on, so a program can say what a file needs.</p>
@@ -170,12 +177,14 @@ without loading it and without any add-on, so a program can say what a file need
 
 HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
 MarkdownFormat.Register();
-DocumentFormatKind kind = Document.Identify(&quot;upload.bin&quot;);        // Pdf, Docx, Encrypted, Rtf, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
+DocumentFormatKind kind = Document.Identify(&quot;upload.bin&quot;);        // Pdf, Docx, Encrypted, Rtf, Odt, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
 Document notes = TextFormat.Load(&quot;notes.txt&quot;);                    // one paragraph per line
 </code></pre>
 <p><code>Identify</code> decides in this order:</p>
 <ol>
 <li>A ZIP package whose first entry is EPUB's <code>mimetype</code> is <code>Epub</code>.</li>
+<li>A ZIP package whose first entry is an OpenDocument Text or template <code>mimetype</code>, or whose extension is <code>.odt</code>, <code>.ott</code> or
+<code>.fodt</code>, is <code>Odt</code>.</li>
 <li>Another ZIP package, or an old binary Word file, is <code>Docx</code>. Reading an old binary Word file fails with an error that
 says so. A password-protected Word file is <code>Encrypted</code>; it loads with its password (see
 <a href="docx.html#passwords">DOCX passwords</a>).</li>
@@ -185,21 +194,22 @@ says so. A password-protected Word file is <code>Encrypted</code>; it loads with
 <code>.mdown</code>, <code>.mkd</code>) or plain text (<code>.txt</code>, <code>.text</code>) is that format.</li>
 <li>Text that starts with MIME header lines naming <code>multipart/related</code> is <code>Mhtml</code>.</li>
 <li>A JSON object that names the <code>DoclingDocument</code> schema is <code>DoclingJson</code>.</li>
+<li>XML whose root is an OpenDocument Text <code>office:document</code> is <code>Odt</code>.</li>
 <li>Text that starts with a tag is <code>Html</code>, and other text is <code>Markdown</code>.</li>
 <li>Binary data no format knows is <code>Unknown</code>.</li>
 </ol>
 <p><code>Save</code> writes <code>.docx</code>, <code>.dotx</code>, <code>.docm</code> and <code>.dotm</code> as Word's, <code>.rtf</code> as RTF, <code>.pdf</code> as PDF, <code>.txt</code> as plain text, and,
 once their add-on is registered, <code>.html</code> and <code>.htm</code> as HTML, <code>.mht</code> and <code>.mhtml</code> as MHTML, <code>.epub</code> as EPUB and <code>.md</code> and
 <code>.markdown</code> as Markdown. Any other extension throws an <code>ArgumentException</code>.</p>
-<p>Each format also has its own class (<code>DocxFormat</code>, <code>RtfFormat</code>, <code>HtmlFormat</code>, <code>EpubFormat</code>, <code>MarkdownFormat</code>, <code>TextFormat</code>, <code>DoclingJson</code>) with its
+<p>Each format also has its own class (<code>DocxFormat</code>, <code>RtfFormat</code>, <code>OdtFormat</code>, <code>HtmlFormat</code>, <code>EpubFormat</code>, <code>MarkdownFormat</code>, <code>TextFormat</code>, <code>DoclingJson</code>) with its
 own options, and members on <code>Document</code> that forward to it, such as <code>Document.LoadDocx</code>, <code>ToHtml</code> and <code>SaveAsMarkdown</code>.
 Calling a format directly needs no <code>Register()</code>.</p>
 <h2 id="warnings">Warnings</h2>
 <p>Each <code>Load</code> has a form with an <code>out</code> list of <code>ConversionWarning</code>s for what could not be read as it was, and each <code>Save</code>
 returns a list of what the format could not hold, so a program can log it or show it.</p>
 <h2 id="limits">Limits</h2>
-<p>DOCX, RTF, HTML, MHTML and EPUB files are read under <code>DocumentLimits</code>, so an untrusted file cannot exhaust memory. Pass your own
-in the format's load options (<code>DocxLoadOptions.Limits</code>, <code>RtfLoadOptions.Limits</code>, <code>HtmlLoadOptions.Limits</code>, <code>EpubLoadOptions.Limits</code>); a file past a limit throws a
+<p>DOCX, RTF, ODT, HTML, MHTML and EPUB files are read under <code>DocumentLimits</code>, so an untrusted file cannot exhaust memory. Pass your own
+in the format's load options (<code>DocxLoadOptions.Limits</code>, <code>RtfLoadOptions.Limits</code>, <code>OdtLoadOptions.Limits</code>, <code>HtmlLoadOptions.Limits</code>, <code>EpubLoadOptions.Limits</code>); a file past a limit throws a
 <code>DocumentLimitException</code>.</p>
 <table>
 <thead>

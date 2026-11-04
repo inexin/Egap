@@ -4502,6 +4502,12 @@ references:
   commentId: F:Egap.Documents.DocumentFormatKind.Mhtml
   fullName: Egap.Documents.DocumentFormatKind.Mhtml
   nameWithType: DocumentFormatKind.Mhtml
+- uid: Egap.Documents.DocumentFormatKind.Odt
+  name: Odt
+  href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Odt
+  commentId: F:Egap.Documents.DocumentFormatKind.Odt
+  fullName: Egap.Documents.DocumentFormatKind.Odt
+  nameWithType: DocumentFormatKind.Odt
 - uid: Egap.Documents.DocumentFormatKind.Pdf
   name: Pdf
   href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Pdf
@@ -13814,6 +13820,74 @@ references:
   commentId: F:Egap.Documents.NumberStyle.UpperRoman
   fullName: Egap.Documents.NumberStyle.UpperRoman
   nameWithType: NumberStyle.UpperRoman
+- uid: Egap.Documents.OdtFormat
+  name: OdtFormat
+  href: api/Egap.Documents.OdtFormat.html
+  commentId: T:Egap.Documents.OdtFormat
+  fullName: Egap.Documents.OdtFormat
+  nameWithType: OdtFormat
+- uid: Egap.Documents.OdtFormat.Load(System.IO.Stream,Egap.Documents.OdtLoadOptions)
+  name: Load(Stream, OdtLoadOptions?)
+  href: api/Egap.Documents.OdtFormat.html#Egap_Documents_OdtFormat_Load_System_IO_Stream_Egap_Documents_OdtLoadOptions_
+  commentId: M:Egap.Documents.OdtFormat.Load(System.IO.Stream,Egap.Documents.OdtLoadOptions)
+  name.vb: Load(Stream, OdtLoadOptions)
+  fullName: Egap.Documents.OdtFormat.Load(System.IO.Stream, Egap.Documents.OdtLoadOptions?)
+  fullName.vb: Egap.Documents.OdtFormat.Load(System.IO.Stream, Egap.Documents.OdtLoadOptions)
+  nameWithType: OdtFormat.Load(Stream, OdtLoadOptions?)
+  nameWithType.vb: OdtFormat.Load(Stream, OdtLoadOptions)
+- uid: Egap.Documents.OdtFormat.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.OdtLoadOptions)
+  name: Load(Stream, out IReadOnlyList<ConversionWarning>, OdtLoadOptions?)
+  href: api/Egap.Documents.OdtFormat.html#Egap_Documents_OdtFormat_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_OdtLoadOptions_
+  commentId: M:Egap.Documents.OdtFormat.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.OdtLoadOptions)
+  name.vb: Load(Stream, IReadOnlyList(Of ConversionWarning), OdtLoadOptions)
+  fullName: Egap.Documents.OdtFormat.Load(System.IO.Stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.OdtLoadOptions?)
+  fullName.vb: Egap.Documents.OdtFormat.Load(System.IO.Stream, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.OdtLoadOptions)
+  nameWithType: OdtFormat.Load(Stream, out IReadOnlyList<ConversionWarning>, OdtLoadOptions?)
+  nameWithType.vb: OdtFormat.Load(Stream, IReadOnlyList(Of ConversionWarning), OdtLoadOptions)
+- uid: Egap.Documents.OdtFormat.Load(System.String,Egap.Documents.OdtLoadOptions)
+  name: Load(string, OdtLoadOptions?)
+  href: api/Egap.Documents.OdtFormat.html#Egap_Documents_OdtFormat_Load_System_String_Egap_Documents_OdtLoadOptions_
+  commentId: M:Egap.Documents.OdtFormat.Load(System.String,Egap.Documents.OdtLoadOptions)
+  name.vb: Load(String, OdtLoadOptions)
+  fullName: Egap.Documents.OdtFormat.Load(string, Egap.Documents.OdtLoadOptions?)
+  fullName.vb: Egap.Documents.OdtFormat.Load(String, Egap.Documents.OdtLoadOptions)
+  nameWithType: OdtFormat.Load(string, OdtLoadOptions?)
+  nameWithType.vb: OdtFormat.Load(String, OdtLoadOptions)
+- uid: Egap.Documents.OdtFormat.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.OdtLoadOptions)
+  name: Load(string, out IReadOnlyList<ConversionWarning>, OdtLoadOptions?)
+  href: api/Egap.Documents.OdtFormat.html#Egap_Documents_OdtFormat_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_OdtLoadOptions_
+  commentId: M:Egap.Documents.OdtFormat.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.OdtLoadOptions)
+  name.vb: Load(String, IReadOnlyList(Of ConversionWarning), OdtLoadOptions)
+  fullName: Egap.Documents.OdtFormat.Load(string, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.OdtLoadOptions?)
+  fullName.vb: Egap.Documents.OdtFormat.Load(String, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.OdtLoadOptions)
+  nameWithType: OdtFormat.Load(string, out IReadOnlyList<ConversionWarning>, OdtLoadOptions?)
+  nameWithType.vb: OdtFormat.Load(String, IReadOnlyList(Of ConversionWarning), OdtLoadOptions)
+- uid: Egap.Documents.OdtFormat.Load*
+  name: Load
+  href: api/Egap.Documents.OdtFormat.html#Egap_Documents_OdtFormat_Load_
+  commentId: Overload:Egap.Documents.OdtFormat.Load
+  isSpec: "True"
+  fullName: Egap.Documents.OdtFormat.Load
+  nameWithType: OdtFormat.Load
+- uid: Egap.Documents.OdtLoadOptions
+  name: OdtLoadOptions
+  href: api/Egap.Documents.OdtLoadOptions.html
+  commentId: T:Egap.Documents.OdtLoadOptions
+  fullName: Egap.Documents.OdtLoadOptions
+  nameWithType: OdtLoadOptions
+- uid: Egap.Documents.OdtLoadOptions.Limits
+  name: Limits
+  href: api/Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_Limits
+  commentId: P:Egap.Documents.OdtLoadOptions.Limits
+  fullName: Egap.Documents.OdtLoadOptions.Limits
+  nameWithType: OdtLoadOptions.Limits
+- uid: Egap.Documents.OdtLoadOptions.Limits*
+  name: Limits
+  href: api/Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_Limits_
+  commentId: Overload:Egap.Documents.OdtLoadOptions.Limits
+  isSpec: "True"
+  fullName: Egap.Documents.OdtLoadOptions.Limits
+  nameWithType: OdtLoadOptions.Limits
 - uid: Egap.Documents.PageOrientation
   name: PageOrientation
   href: api/Egap.Documents.PageOrientation.html

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>OpenDocument Text | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="OpenDocument Text | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/formats/odt.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="opendocument-text">OpenDocument Text</h1>
+
+<p>Egap.Documents reads OpenDocument Text, the format LibreOffice and OpenOffice write and Word opens: ODT documents, OTT
+templates and flat FODT files, from ODF 1.2 to 1.4. It needs no add-on package. Writing ODT is not there yet; save a
+document read from ODT as DOCX, RTF, PDF or any other format Egap writes.</p>
+<h2 id="reading">Reading</h2>
+<p><code>OdtFormat.Load</code> reads a file or a stream. <code>Document.Load</code> and <code>Document.Identify</code> know ODT and OTT by the <code>mimetype</code>
+entry an OpenDocument package starts with, and FODT by its root element, so a file is found whatever its extension.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document minutes = OdtFormat.Load(&quot;minutes.odt&quot;, out IReadOnlyList&lt;ConversionWarning&gt; warnings);
+Document same = Document.Load(&quot;minutes.odt&quot;);                     // found by its mimetype entry
+Document flat = OdtFormat.Load(&quot;minutes.fodt&quot;);                   // one XML file, pictures inline
+minutes.SaveAsDocx(&quot;minutes.docx&quot;);
+</code></pre>
+<p>The reader follows the OpenDocument 1.3 specification and what LibreOffice writes. It reads:</p>
+<ul>
+<li>The package: the <code>mimetype</code> entry, the manifest, the content, styles, meta and settings parts and the pictures, and
+the same parts in one flat XML file. Document information and custom properties come from the meta part.</li>
+<li>Common styles as the model's styles, with their base and next style. A style LibreOffice names after one of Word's
+built-in styles gets Word's style id, such as <code>Heading1</code> for &quot;Heading 1&quot; and <code>Normal</code> for &quot;Default Paragraph Style&quot;.
+Automatic styles become direct formatting, and default styles the document defaults.</li>
+<li>Character and paragraph formatting: fonts, sizes, colours, highlighting, underlines and strikes, raised and lowered
+text, spacing, scaling, caps, hidden text, languages, alignment, indents, spacing, line height, borders, shading,
+tab stops, keeping together and with the next paragraph, widows and orphans, and page and column breaks.</li>
+<li>Lists from list styles, with each level's numbering, labels and indents; a new list restarts its numbers, and a list
+that continues another (<code>text:continue-numbering</code>, <code>text:continue-list</code>) goes on counting. Headings are numbered by
+the outline style.</li>
+<li>Tables with their columns, header rows, cells spanning columns and rows, nested tables, borders, shading, padding
+and alignment.</li>
+<li>Page styles as sections: each master page's size, orientation, margins, columns and page numbering, its headers and
+footers, and a different first page or left page. Sections with columns become continuous sections.</li>
+<li>Footnotes and endnotes, comments with their ranges, authors, dates and whether they are resolved, bookmarks, and links.</li>
+<li>Fields as Word's fields: page numbers and counts, dates and times, document information, file names, chapters,
+sequences, references to bookmarks, sequences and notes, custom properties and mail merge columns. A table of contents
+or other index is a <code>TOC</code> field holding its entries. Fields Word has nothing like, such as variables, keep their text.</li>
+<li>Tracked insertions and deletions with their authors and dates, a deletion that spans paragraphs too. Tracked
+formatting changes are read as accepted, with a warning.</li>
+<li>Frames: pictures (stored in the package or, in a flat file, inline), text boxes, rectangles, ellipses and lines,
+inline or floating, placed and wrapped as the frame says. A frame holding only a table, as LibreOffice writes Word's
+floating tables, is a floating table.</li>
+</ul>
+<p>Charts, formulas and other embedded objects come in as islands that keep their markup and draw the picture the file
+holds for them; other drawing shapes and groups are islands too. Each of those is reported as a <code>ConversionWarning</code>,
+and so is a picture the package does not hold. Markup the reader does not know is kept in the document's extension data
+under the format name <code>odt</code>.</p>
+<p>A password-protected OpenDocument file throws a <code>DocumentException</code> that says so: Egap does not read ODF encryption yet.</p>
+<h2 id="limits">Limits</h2>
+<p>An ODT package is read under <code>DocumentLimits</code> like DOCX: the number of entries, the size of each part and of all of them,
+the compression ratio and the nesting depth. Pass your own in <code>OdtLoadOptions.Limits</code>, or in <code>DocumentLoadOptions.Limits</code>
+with <code>Document.Load</code>; a file past a limit throws a <code>DocumentLimitException</code>.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document upload = OdtFormat.Load(&quot;upload.odt&quot;, new OdtLoadOptions
+{
+    Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 },
+});
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/formats/odt.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

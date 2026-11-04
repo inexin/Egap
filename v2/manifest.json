@@ -2239,6 +2239,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.OdtFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.OdtFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.OdtFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.OdtFormat.yml\" sourcestartlinenumber=\"1\">OpenDocument Text (ODF 1.2 to 1.4) read into the model: ODT documents, OTT templates and flat FODT files, with their\nstyles, lists, tables, frames, sections, page styles, headers and footers, notes, comments, fields, bookmarks, links and\ntracked changes. Charts, formulas and other embedded objects are kept as islands drawn as their stored picture.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.OdtLoadOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.OdtLoadOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.OdtLoadOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.OdtLoadOptions.yml\" sourcestartlinenumber=\"1\">Options for reading OpenDocument Text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.PageOrientation.yml",
       "output": {
         ".html": {
@@ -7670,6 +7698,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/formats/mhtml.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/formats/odt.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/formats/odt.html"
         }
       },
       "version": ""
