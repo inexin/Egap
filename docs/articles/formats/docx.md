@@ -52,6 +52,39 @@ static string? AskUser(string prompt) => null;                    // your progra
 A password protects the file, not the document: a document loaded with a password saves without one unless
 `DocxSaveOptions.Password` is set again.
 
+## Editing restrictions
+
+Word's *Restrict Editing* keeps a document read only, or lets readers only add comments, only make tracked changes or
+only fill in forms. `Document.Protection` holds the restriction: its `Kind`, whether it `IsEnforced`, and the hash of the
+password that lifts it. `Protect(kind, password)` sets one, hashed as Word hashes it (SHA-512 with a random salt and
+100,000 spins), `Unprotect()` removes it, and `Verify(password)` says whether a password lifts it. Without a password,
+anyone may switch the restriction off.
+
+Editable ranges are the exceptions: an `EditableRangeStart` and an `EditableRangeEnd` with the same `Id` mark text that
+stays editable, for everyone or a group (`EditorGroup`), or for one person (`Editor`, such as `DOMAIN\user` or an e-mail
+address). `DocumentBuilder.StartEditableRange` and `EndEditableRange` write them.
+
+```csharp
+using Egap.Documents;
+
+Document form = new();
+DocumentBuilder builder = new(form);
+builder.Writeln("Terms and conditions, not to be changed.");
+builder.Write("Your name: ");
+EditableRangeStart answer = builder.StartEditableRange(EditorGroup.Everyone);
+builder.Write("(type here)");
+builder.EndEditableRange(answer);
+form.Protection.Protect(ProtectionKind.ReadOnly, "owner password");
+form.SaveAsDocx("form.docx");
+
+Document loaded = Document.Load("form.docx");
+bool canLift = loaded.Protection.Verify("owner password");      // true
+```
+
+Egap does not enforce the restriction: code can change any part of a protected document. It reads it, writes it back
+and keeps it through conversion between DOCX and RTF, so that Word enforces it when the file is opened. The hash is read
+from Word's attributes and from ECMA-376's newer ones (`algorithmName`, `hashValue`), and written back as it came.
+
 ## Word compatibility
 
 Word lays a file out by the rules of the Word version that made it: `DocumentSettings.CompatibilityMode` says which (15

@@ -77,7 +77,7 @@ internal static class McpCommand
         HashSet<string> excluded = [.. McpToolSet.DefaultExcluded, "--strict"];
 
         // Secrets come only by environment variable name (Q16): never as text in a call, nor from a file the call names.
-        foreach (string secret in (string[])["password", "user-password", "owner-password", "cert-password", "new-password"])
+        foreach (string secret in (string[])["password", "save-password", "user-password", "owner-password", "cert-password", "new-password"])
         {
             excluded.Add("--" + secret);
             excluded.Add("--" + secret + "-file");

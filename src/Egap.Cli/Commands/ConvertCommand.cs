@@ -29,7 +29,8 @@ internal static class ConvertCommand
         InputOptions inputs = new("HTML, Markdown, DOCX, RTF, text, image or PDF files, globs (*, ?, **), or folders with --recursive.");
         OutputOptions output = new(inPlace: false);
         SaveOptions save = new();
-        SecretOptions password = new("password", "password that opens encrypted PDF inputs");
+        SecretOptions password = new("password", "password that opens encrypted PDF and DOCX inputs");
+        SecretOptions savePassword = new("save-password", "password that encrypts DOCX outputs");
         Option<string?> to = new("--to") { Description = $"The output format when -o does not say: {string.Join(", ", Targets)}.", HelpName = "format" };
         Option<string?> pageSize = new("--page-size") { Description = "To PDF: the page size, A3, A4, A5, Letter, Legal, Tabloid or WxH such as 210mmx297mm.", HelpName = "size" };
         Option<bool> landscape = new("--landscape") { Description = "To PDF: turn the page size to landscape." };
@@ -65,6 +66,7 @@ internal static class ConvertCommand
 
         save.AddTo(command, edits: false);
         password.AddTo(command);
+        savePassword.AddTo(command);
         command.SetAction(result =>
         {
             Cli.RegisterFormats();
@@ -73,6 +75,12 @@ internal static class ConvertCommand
             OutputTemplate template = output.Template(session, result, files)!;
             string target = Target(result.GetValue(to), template);
             string? secret = password.Read(session, result);
+            string? saveSecret = savePassword.Read(session, result);
+            if (saveSecret is not null && target != "docx")
+            {
+                throw new UsageException("--save-password encrypts DOCX outputs; this writes " + target + ".");
+            }
+
             PdfSaveOptions saveOptions = save.Build(result);
             Dictionary<string, string> settings = Settings(result.GetValue(set), target);
             PdfConvertOptions options = new()
@@ -87,6 +95,7 @@ internal static class ConvertCommand
                 EmbedSource = result.GetValue(embedSource),
                 BaseDirectory = result.GetValue(baseDir) is { } folder ? session.ResolvePath(folder) : null,
                 Export = Export(settings, saveOptions),
+                Password = secret,
             };
             PdfCommentMode commentMode = result.GetValue(comments) switch
             {
@@ -142,10 +151,10 @@ internal static class ConvertCommand
                     return [path];
                 }
 
-                Document document = isPdf ? FromPdf(session, file, secret, fromPdf, embedded) : Document.Load(file.Path, out IReadOnlyList<ConversionWarning> warnings);
+                Document document = isPdf ? FromPdf(session, file, secret, fromPdf, embedded) : Document.Load(file.Path, out IReadOnlyList<ConversionWarning> warnings, new DocumentLoadOptions { Password = secret });
                 SaveOptions.WriteFile(session, path, target, temporary =>
                 {
-                    foreach (ConversionWarning warning in Write(document, temporary, path, target, settings))
+                    foreach (ConversionWarning warning in Write(document, temporary, path, target, settings, saveSecret))
                     {
                         session.Warn($"{file.Display}: {warning.Message}");
                     }
@@ -501,9 +510,10 @@ internal static class ConvertCommand
 
     /// <summary>
     /// Writes a flow format to <paramref name="temporary"/> with the <c>--set</c> settings. <paramref name="path"/> is where
-    /// the file lands, so a Markdown file's images folder is named after it and not after the temporary file.
+    /// the file lands, so a Markdown file's images folder is named after it and not after the temporary file. A DOCX is
+    /// encrypted with <paramref name="savePassword"/> when one is given.
     /// </summary>
-    private static IReadOnlyList<ConversionWarning> Write(Document document, string temporary, string path, string target, Dictionary<string, string> settings)
+    private static IReadOnlyList<ConversionWarning> Write(Document document, string temporary, string path, string target, Dictionary<string, string> settings, string? savePassword)
     {
         switch (target)
         {
@@ -550,6 +560,8 @@ internal static class ConvertCommand
                         string other => throw new UsageException($"--set newline='{other}' is not lf or crlf."),
                     },
                 });
+            case "docx" when savePassword is not null:
+                return DocxFormat.Save(document, temporary, new DocxSaveOptions { Password = savePassword });
             default:
                 return document.Save(temporary);
         }

@@ -53,6 +53,7 @@ internal sealed partial class DocxWriter
 
         DocumentSettings settings = document.Settings;
         DocumentSettings? read = null;
+        DocumentProtection? readProtection = null;
         if (original is not null || data is not null)
         {
             // What the reader found (a file without settings reads as the defaults), so only changes are written.
@@ -61,7 +62,10 @@ internal sealed partial class DocxWriter
             if (original is not null)
             {
                 ReadSettingsInto(root, read);
+                DocxProtection.Read(root, scratch.Protection);
             }
+
+            readProtection = scratch.Protection;
         }
 
         bool changed = data is null;
@@ -122,6 +126,22 @@ internal sealed partial class DocxWriter
                 }
 
                 mode.SetAttributeValue(Ns.W + "val", settings.CompatibilityMode);
+            }
+
+            changed = true;
+        }
+
+        if (readProtection is null ? document.Protection.Kind != ProtectionKind.None || document.Protection.IsEnforced || document.Protection.HasPassword
+            : !readProtection.SameAs(document.Protection))
+        {
+            XElement? existing = root.Element(Ns.W + "documentProtection");
+            if (DocxProtection.Element(document.Protection, existing) is { } protection)
+            {
+                Set(root, protection);
+            }
+            else
+            {
+                existing?.Remove();
             }
 
             changed = true;

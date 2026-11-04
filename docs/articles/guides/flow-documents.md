@@ -41,6 +41,26 @@ Document scanned = Document.LoadPdf("scanned.pdf");               // as PdfToDoc
 their add-on package is registered. Each format has its own page under [Document formats](../formats/index.md), with its
 options and what it keeps.
 
+## Restricting editing
+
+A document can ask the program that opens it to keep it read only, or to allow only comments, tracked changes or form
+filling, with editable ranges as exceptions and a password that lifts it. Word enforces this; Egap reads and writes it.
+
+```csharp
+using Egap.Documents;
+
+Document contract = Document.Load("contract.docx");
+contract.Protection.Protect(ProtectionKind.TrackedChanges, "legal");   // every change is tracked
+contract.Save("contract-for-review.docx");
+
+if (contract.Protection.Verify("legal"))
+{
+    contract.Protection.Unprotect();
+}
+```
+
+The [DOCX page](../formats/docx.md#editing-restrictions) has the details and the editable ranges.
+
 ## Text options
 
 Besides fonts, sizes and colours, runs take word spacing, an overline and any OpenType feature, such as ligatures,

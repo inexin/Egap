@@ -41,6 +41,9 @@ public sealed record PdfConvertOptions
     /// </summary>
     public string? BaseDirectory { get; init; }
 
+    /// <summary>Gets the password of an encrypted DOCX file to convert; null (the default) for a file that is not encrypted.</summary>
+    public string? Password { get; init; }
+
     /// <summary>
     /// Gets the header put in the top margin of every page, in place of the input's own headers and top margin boxes;
     /// null (the default) to keep those.
@@ -129,7 +132,7 @@ public static partial class PdfConvert
                 document = DocumentFormatRegistry.FolderReaderFor(DocumentFormatKind.Markdown)!(path, options.BaseDirectory ?? folder);
                 break;
             case ".DOCX" or ".DOTX" or ".DOCM" or ".DOTM":
-                document = DocxFormat.Load(path);
+                document = DocxFormat.Load(path, new DocxLoadOptions { Password = options.Password });
                 break;
             default:
                 byte[] bytes = File.ReadAllBytes(path);
@@ -138,7 +141,7 @@ public static partial class PdfConvert
                     return FromImages([bytes], options);
                 }
 
-                document = Document.Load(path);
+                document = Document.Load(path, new DocumentLoadOptions { Password = options.Password });
                 break;
         }
 

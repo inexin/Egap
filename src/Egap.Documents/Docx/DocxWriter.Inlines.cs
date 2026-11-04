@@ -112,6 +112,12 @@ internal sealed partial class DocxWriter
             case CommentRangeEnd rangeEnd:
                 target.Add(new XElement(Ns.W + "commentRangeEnd", new XAttribute(Ns.W + "id", rangeEnd.CommentId)));
                 break;
+            case EditableRangeStart rangeStart:
+                target.Add(DocxProtection.StartElement(rangeStart));
+                break;
+            case EditableRangeEnd rangeEnd:
+                target.Add(new XElement(Ns.W + "permEnd", new XAttribute(Ns.W + "id", rangeEnd.Id)));
+                break;
             case Hyperlink link:
                 WriteHyperlink(link, kept, target);
                 break;

@@ -151,6 +151,15 @@ internal sealed partial class RtfReader
                     return true;
                 }
 
+            case "protusertbl":
+                ReadProtectionUsers();
+                return true;
+            case "protstart" or "protend":
+                ReadProtectionRange(word == "protstart");
+                return true;
+            case "passwordhash":
+                ReadPasswordHash();
+                return true;
             case "bkmkstart" or "bkmkend":
                 {
                     string name = ReadText();

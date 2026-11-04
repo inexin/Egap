@@ -1241,6 +1241,9 @@ internal sealed partial class RtfReader
                         case "printim":
                             properties.Printed = ReadInfoDate();
                             break;
+                        case "passwordhash":
+                            ReadPasswordHash();
+                            break;
                         default:
                             SkipDestination(keep: star);
                             break;

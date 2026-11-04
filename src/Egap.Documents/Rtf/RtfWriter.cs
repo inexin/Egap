@@ -60,6 +60,7 @@ internal sealed partial class RtfWriter
         WriteStyleSheet();
         WriteLists();
         WriteRevisionTable();
+        WriteProtectionUsers();
         WriteInfo();
         WriteDocumentSettings();
         WriteKeptGroups();

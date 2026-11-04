@@ -54,7 +54,7 @@ internal sealed partial class RtfReader
             FlushText();
         }
 
-        if (CharacterWord(word, has, p) || ParagraphWord(word, has, p) || TableWord(word, has, p) || SectionWord(word, has, p) || DocumentWord(word, has, p))
+        if (CharacterWord(word, has, p) || ParagraphWord(word, has, p) || TableWord(word, has, p) || SectionWord(word, has, p) || DocumentWord(word, has, p) || ProtectionWord(word, has, p))
         {
             return false;
         }

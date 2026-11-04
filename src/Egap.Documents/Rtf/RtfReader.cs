@@ -89,6 +89,7 @@ internal sealed partial class RtfReader
 
         FinishSection();
         FinishHeader();
+        FinishProtection();
         if (document.Sections.Count > 1 && document.Sections[^1].Body.Blocks.Count == 0)
         {
             // A last \sect with nothing after it closes the document's last section; it adds no empty one.

@@ -101,6 +101,12 @@ internal sealed partial class RtfWriter
             case CommentRangeEnd end:
                 TextDestination("atrfend", end.CommentId.ToString(CultureInfo.InvariantCulture));
                 break;
+            case EditableRangeStart rangeStart:
+                WriteEditableRange(rangeStart.Id, rangeStart);
+                break;
+            case EditableRangeEnd rangeEnd:
+                WriteEditableRange(rangeEnd.Id, null);
+                break;
             case Comment comment:
                 WriteComment(comment);
                 break;
