@@ -28,6 +28,7 @@ internal sealed partial class RtfReader
 
     private int depth;
     private int nesting;
+    private RtfStyleFormats.Cache? given;
     private readonly List<Run> surrogateRuns = [];
     /// <summary>
     /// The fallback characters still to skip after a <c>\uN</c>. A group's start or end ends the fallback, so
@@ -384,6 +385,7 @@ internal sealed partial class RtfReader
 
     private Run NewRun(string value)
     {
+        FinishHeader();
         Run run = new(document, value);
         if (value.AsSpan().ContainsAnyInRange('\uD800', '\uDFFF'))
         {
@@ -399,6 +401,9 @@ internal sealed partial class RtfReader
         {
             run.Style = style;
         }
+
+        // The run repeats what its styles give (RTF has no inheritance in the text); only what differs is its own.
+        RtfStyleFormats.Subtract(run.Format, Given.Run(ParagraphStyleAt(state.ParagraphStyle), run.Style));
 
         if (state.CharChange is { } change)
         {
@@ -455,6 +460,9 @@ internal sealed partial class RtfReader
 
         return new string(chars);
     }
+
+    /// <summary>What the styles give, once the header (and so every style) is read.</summary>
+    private RtfStyleFormats.Cache Given => given ??= new RtfStyleFormats.Cache(document);
 
     /// <summary>Adds an inline to the paragraph being read, starting one when there is none.</summary>
     private T AddInline<T>(T inline)
@@ -523,6 +531,10 @@ internal sealed partial class RtfReader
             paragraph.MarkFormat.CopyRaw(state.Char);
         }
 
+        // The paragraph repeats what its style and list give; only what differs is its own.
+        FinishHeader();
+        RtfStyleFormats.Subtract(paragraph.Format, Given.Paragraph(paragraph.Style, paragraph.Format));
+        RtfStyleFormats.Subtract(paragraph.MarkFormat, Given.Run(paragraph.Style, null, mark: true));
         if (RevisionOf(state) is { } revision)
         {
             paragraph.MarkRevision = revision;

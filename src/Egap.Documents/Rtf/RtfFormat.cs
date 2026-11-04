@@ -14,6 +14,16 @@ public sealed class RtfLoadOptions
     public DocumentLimits Limits { get; init; } = new();
 }
 
+/// <summary>How <see cref="RtfFormat"/> writes a file.</summary>
+public sealed class RtfSaveOptions
+{
+    /// <summary>
+    /// Whether groups the reader kept as it read them (Word's theme, data store and latent styles, say) are written back
+    /// where they sat; true by default. Turn it off for a smaller file that only says what the model holds.
+    /// </summary>
+    public bool KeepUnknownGroups { get; init; } = true;
+}
+
 /// <summary>
 /// Rich Text Format, as Word 2007 and later, WordPad, LibreOffice, TextEdit and Outlook write it (RTF 1.9.1): text and its
 /// formatting, fonts, colours, styles, lists, tables, sections, headers and footers, notes, fields, bookmarks, comments,
@@ -79,6 +89,28 @@ public static class RtfFormat
         // RTF is 7-bit text, so each character stands for a byte; one past U+00FF can only be text typed into the string, and
         // goes in as a \uN escape.
         return Read(ToBytes(rtf), out warnings, options);
+    }
+
+    /// <summary>
+    /// Writes <paramref name="document"/> as RTF to <paramref name="path"/>. Text outside ASCII is written as Unicode escapes,
+    /// pictures as PNG, JPEG, EMF or WMF (other images are converted to PNG), and what the reader kept is written back.
+    /// </summary>
+    /// <returns>What RTF could not hold, such as margin boxes, content controls and SVG pictures.</returns>
+    public static IReadOnlyList<ConversionWarning> Save(Document document, string path, RtfSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        using FileStream stream = File.Create(path);
+        return Save(document, stream, options);
+    }
+
+    /// <summary>Writes <paramref name="document"/> as RTF to <paramref name="stream"/>, which is left open.</summary>
+    /// <returns>What RTF could not hold, such as margin boxes, content controls and SVG pictures.</returns>
+    public static IReadOnlyList<ConversionWarning> Save(Document document, Stream stream, RtfSaveOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(stream);
+        return RtfWriter.Write(document, stream, options ?? new RtfSaveOptions());
     }
 
     /// <summary>Reads RTF from bytes, for <see cref="Document.Load(string)"/>.</summary>

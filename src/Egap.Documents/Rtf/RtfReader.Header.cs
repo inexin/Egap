@@ -11,6 +11,7 @@ internal sealed partial class RtfReader
     private readonly Dictionary<int, Encoding> encodings = [];
     private readonly List<DocumentColor> colors = [];
     private readonly Dictionary<int, Style> styles = [];
+    private readonly Dictionary<int, StyleEntry> madeFrom = [];
     private readonly List<StyleEntry> styleEntries = [];
     private readonly Dictionary<int, ListDefinition> listDefinitions = [];
     private readonly Dictionary<int, List> lists = [];
@@ -503,6 +504,8 @@ internal sealed partial class RtfReader
                 continue;
             }
 
+            madeFrom[entry.Index] = entry;
+
             string id = StyleId(entry.Name, ids);
             Style style = entry.Type switch
             {
@@ -582,6 +585,48 @@ internal sealed partial class RtfReader
                 character.Linked = linkedParagraph;
             }
         }
+    }
+
+    /// <summary>
+    /// A style repeats what it inherits, as Word writes it; the style keeps only what differs from its base, or, with no
+    /// base, a paragraph style what differs from the document defaults (their fonts known once the header ends). Table
+    /// styles keep what they say.
+    /// </summary>
+    private void SubtractInherited()
+    {
+        foreach ((int index, StyleEntry entry) in madeFrom)
+        {
+            Style style = styles[index];
+            if (style is TableStyle)
+            {
+                continue;
+            }
+
+            (ParagraphFormat Para, RunFormat Char)? inherited = BaseEntry(style, entry) is { } parent ? (parent.Para, parent.Char)
+                : style is ParagraphStyle ? (document.Styles.DefaultParagraphFormat, document.Styles.DefaultRunFormat) : null;
+            if (inherited is not { } from)
+            {
+                continue;
+            }
+
+            if (style is ParagraphStyle paragraph)
+            {
+                RtfStyleFormats.Subtract(paragraph.ParagraphFormat, from.Para);
+                RtfStyleFormats.Subtract(paragraph.RunFormat, from.Char);
+            }
+            else if (style is CharacterStyle character)
+            {
+                RtfStyleFormats.Subtract(character.RunFormat, from.Char);
+            }
+        }
+    }
+
+    /// <summary>The style sheet entry <paramref name="style"/>'s base was made from, or null when it has no base.</summary>
+    private StyleEntry? BaseEntry(Style style, StyleEntry entry)
+    {
+        return style.BasedOn is { } parent && madeFrom.TryGetValue(entry.BasedOn, out StyleEntry? parentEntry) && styles[entry.BasedOn] == parent
+            ? parentEntry
+            : null;
     }
 
     /// <summary>A style id from a style's name: Word's own id for a built-in style, else the name without spaces, unique.</summary>
@@ -1328,6 +1373,7 @@ internal sealed partial class RtfReader
         defaults.FontHighAnsi ??= FontName(defaultFonts[1]) ?? FontName(defaultFont);
         defaults.FontEastAsia ??= FontName(defaultFonts[2]) ?? FontName(defaultFont);
         defaults.FontComplexScript ??= FontName(defaultFonts[3]) ?? FontName(defaultFont);
+        SubtractInherited();
         if (document.Styles.DefaultParagraphStyle is null)
         {
             ParagraphStyle normal = document.Styles[BuiltInStyles.Id(BuiltInStyle.Normal)] as ParagraphStyle
@@ -1338,13 +1384,17 @@ internal sealed partial class RtfReader
             styles.TryAdd(0, normal);
         }
 
-        foreach (StyleEntry entry in styleEntries)
+        foreach ((int index, StyleEntry entry) in madeFrom)
         {
-            if (entry.ListOverride > 0 && styles.GetValueOrDefault(entry.Index) is ParagraphStyle style && lists.TryGetValue(entry.ListOverride, out List? list))
+            // A list the style inherits is its base's, not its own.
+            if (entry.ListOverride <= 0 || styles[index] is not ParagraphStyle style || !lists.TryGetValue(entry.ListOverride, out List? list)
+                || (BaseEntry(style, entry) is { } parent && (parent.ListOverride, parent.ListLevel) == (entry.ListOverride, entry.ListLevel)))
             {
-                style.ParagraphFormat.List = list;
-                style.ParagraphFormat.ListLevel = entry.ListLevel;
+                continue;
             }
+
+            style.ParagraphFormat.List = list;
+            style.ParagraphFormat.ListLevel = entry.ListLevel;
         }
     }
 }

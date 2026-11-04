@@ -23,6 +23,10 @@ Egap.Documents.RtfLoadOptions
 Egap.Documents.RtfLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
 Egap.Documents.RtfLoadOptions.Limits.init -> void
 Egap.Documents.RtfLoadOptions.RtfLoadOptions() -> void
+Egap.Documents.RtfSaveOptions
+Egap.Documents.RtfSaveOptions.KeepUnknownGroups.get -> bool
+Egap.Documents.RtfSaveOptions.KeepUnknownGroups.init -> void
+Egap.Documents.RtfSaveOptions.RtfSaveOptions() -> void
 override Egap.Documents.Layout.LayoutWarning.Equals(object? obj) -> bool
 override Egap.Documents.Layout.LayoutWarning.GetHashCode() -> int
 override Egap.Documents.Layout.LayoutWarning.ToString() -> string!
@@ -34,3 +38,5 @@ static Egap.Documents.RtfFormat.Load(System.IO.Stream! stream, Egap.Documents.Rt
 static Egap.Documents.RtfFormat.Load(System.IO.Stream! stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.RtfFormat.Parse(string! rtf, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.RtfFormat.Parse(string! rtf, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.RtfFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.RtfSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.RtfFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.RtfSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
