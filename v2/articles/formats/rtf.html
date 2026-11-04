@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>RTF | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="RTF | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/formats/rtf.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="rtf">RTF</h1>
+
+<p>Egap.Documents reads RTF, the Rich Text Format that Word, WordPad, TextEdit and many other programs write. It needs no
+add-on package. Writing RTF is not supported yet.</p>
+<h2 id="reading">Reading</h2>
+<p><code>RtfFormat.Load</code> reads a file or a stream, and <code>RtfFormat.Parse</code> reads RTF held in a string. <code>Document.Load</code> and
+<code>Document.Identify</code> recognize RTF by its first bytes (<code>{\rtf</code>, after a byte order mark or white space), so an RTF file is
+found whatever its extension.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document letter = RtfFormat.Load(&quot;letter.rtf&quot;, out IReadOnlyList&lt;ConversionWarning&gt; warnings);
+Document same = Document.Load(&quot;letter.rtf&quot;);                      // found by its first bytes
+Document note = RtfFormat.Parse(@&quot;{\rtf1\ansi Hello, {\b world}.\par}&quot;);
+letter.SaveAsDocx(&quot;letter.docx&quot;);
+</code></pre>
+<p>The reader follows the RTF 1.9.1 specification and what Word 2007 and later write. It reads:</p>
+<ul>
+<li>Character and paragraph formatting, fonts, colours, borders, shading, tab stops and frames.</li>
+<li>The style sheet, with each style's base, next and linked style. A style named as a Word built-in style gets Word's
+style id, such as <code>Heading1</code> for &quot;heading 1&quot;.</li>
+<li>Lists from the list and list override tables, and the older <code>\pn</code> paragraph numbering, which becomes a list of its own.</li>
+<li>Text in any code page: <code>\ansicpg</code>, each font's <code>\fcharset</code> and <code>\cpg</code>, Unicode characters (<code>\u</code> with <code>\uc</code>) and
+binary data (<code>\bin</code>).</li>
+<li>Tables, nested tables (<code>\itap</code>) and cells merged across (<code>\clmgf</code>, <code>\clmrg</code>) and down (<code>\clvmgf</code>, <code>\clvmrg</code>). The grid
+comes from the cells' edges.</li>
+<li>Sections with their page setup, columns and page numbering; headers and footers, first-page and even-page ones too.</li>
+<li>Footnotes and endnotes, with their own marks.</li>
+<li>Fields as Word writes them (<code>\fldinst</code> and <code>\fldrslt</code>), bookmarks and hyperlinks, which are <code>HYPERLINK</code> fields.</li>
+<li>Comments with their ranges, authors, initials, dates and replies, and tracked insertions, deletions and formatting
+changes with their authors and dates.</li>
+<li>Pictures in PNG, JPEG, EMF, WMF and device-independent bitmaps, with their size, scale and cropping.</li>
+<li>Text boxes, rectangles, ellipses and other simple shapes, and floating pictures (<code>\shp</code>), placed as Word places them.</li>
+<li>Document information (<code>\info</code>) and custom properties (<code>\userprops</code>).</li>
+</ul>
+<p>What the model cannot hold comes in as an island: equations (<code>\mmath</code>) keep their RTF and their plain text, and other
+drawing shapes and embedded objects (<code>\object</code>) keep their RTF and draw the picture the file holds for them. Each of
+those is reported as a <code>ConversionWarning</code>, and so is a picture in a format Egap does not read (old Macintosh PICT and
+Windows bitmap pictures). Groups marked <code>\*</code> that the reader does not know, such as Word's theme and data store, are kept
+in the document's extension data under the format name <code>rtf</code>.</p>
+<h2 id="limits">Limits</h2>
+<p><code>RtfLoadOptions.Limits</code> keeps an untrusted file in bounds: <code>MaxDepth</code> caps how deep groups nest, and <code>MaxPartSize</code> caps
+each picture and each block of binary data. A file past a limit throws a <code>DocumentLimitException</code>; a file that does not
+start with <code>{\rtf</code> throws a <code>DocumentException</code>.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+RtfLoadOptions options = new() { Limits = new DocumentLimits { MaxDepth = 64, MaxPartSize = 16 * 1024 * 1024 } };
+Document upload = RtfFormat.Load(&quot;upload.rtf&quot;, options);
+</code></pre>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/formats/rtf.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

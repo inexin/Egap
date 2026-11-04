@@ -877,7 +877,7 @@ formats and the text it puts before and after a value (<code>\b</code>, <code>\f
 
   <div class="markdown level1 summary"><p>Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
 whose first entry is an EPUB <code>mimetype</code> is EPUB, another ZIP package or an old compound file is Word's, a MIME
-message of <code>multipart/related</code> parts is MHTML, <code>%PDF-</code> is PDF, a JSON object naming the <code>DoclingDocument</code> schema is
+message of <code>multipart/related</code> parts is MHTML, <code>%PDF-</code> is PDF, <code>{\rtf</code> is RTF, a JSON object naming the <code>DoclingDocument</code> schema is
 Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
 so. It needs no add-on package, so a program can tell its user which package a file needs.</p>
 </div>
@@ -1183,7 +1183,7 @@ See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_L
   </h3>
 
   <div class="markdown level1 summary"><p>Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
-<a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>). DOCX, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
+<a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>). DOCX, RTF, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
 Markdown need their add-on package and its <code>Register()</code> call, such as <code>MarkdownFormat.Register()</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>

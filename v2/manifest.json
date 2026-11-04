@@ -3191,6 +3191,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.RtfFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.RtfFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.RtfFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.RtfFormat.yml\" sourcestartlinenumber=\"1\">Rich Text Format, as Word 2007 and later, WordPad, LibreOffice, TextEdit and Outlook write it (RTF 1.9.1): text and its\nformatting, fonts, colours, styles, lists, tables, sections, headers and footers, notes, fields, bookmarks, comments,\ntracked changes and pictures read into the model. Text boxes become shapes, math is kept as an island, and other\ndrawings and embedded objects come in as the picture the file saved for them, with a warning. Groups the reader does\nnot know are kept as extension data.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.RtfLoadOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.RtfLoadOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.RtfLoadOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.RtfLoadOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Documents.RtfFormat\" data-throw-if-not-resolved=\"false\"></xref> reads a file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Run.yml",
       "output": {
         ".html": {
@@ -7600,6 +7628,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/formats/mhtml.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/formats/rtf.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/formats/rtf.html"
         }
       },
       "version": ""

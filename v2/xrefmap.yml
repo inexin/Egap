@@ -4466,6 +4466,12 @@ references:
   commentId: F:Egap.Documents.DocumentFormatKind.Pdf
   fullName: Egap.Documents.DocumentFormatKind.Pdf
   nameWithType: DocumentFormatKind.Pdf
+- uid: Egap.Documents.DocumentFormatKind.Rtf
+  name: Rtf
+  href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Rtf
+  commentId: F:Egap.Documents.DocumentFormatKind.Rtf
+  fullName: Egap.Documents.DocumentFormatKind.Rtf
+  nameWithType: DocumentFormatKind.Rtf
 - uid: Egap.Documents.DocumentFormatKind.Text
   name: Text
   href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Text
@@ -20966,6 +20972,99 @@ references:
   commentId: F:Egap.Documents.RowHeightRule.Exactly
   fullName: Egap.Documents.RowHeightRule.Exactly
   nameWithType: RowHeightRule.Exactly
+- uid: Egap.Documents.RtfFormat
+  name: RtfFormat
+  href: api/Egap.Documents.RtfFormat.html
+  commentId: T:Egap.Documents.RtfFormat
+  fullName: Egap.Documents.RtfFormat
+  nameWithType: RtfFormat
+- uid: Egap.Documents.RtfFormat.Load(System.IO.Stream,Egap.Documents.RtfLoadOptions)
+  name: Load(Stream, RtfLoadOptions?)
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Load_System_IO_Stream_Egap_Documents_RtfLoadOptions_
+  commentId: M:Egap.Documents.RtfFormat.Load(System.IO.Stream,Egap.Documents.RtfLoadOptions)
+  name.vb: Load(Stream, RtfLoadOptions)
+  fullName: Egap.Documents.RtfFormat.Load(System.IO.Stream, Egap.Documents.RtfLoadOptions?)
+  fullName.vb: Egap.Documents.RtfFormat.Load(System.IO.Stream, Egap.Documents.RtfLoadOptions)
+  nameWithType: RtfFormat.Load(Stream, RtfLoadOptions?)
+  nameWithType.vb: RtfFormat.Load(Stream, RtfLoadOptions)
+- uid: Egap.Documents.RtfFormat.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.RtfLoadOptions)
+  name: Load(Stream, out IReadOnlyList<ConversionWarning>, RtfLoadOptions?)
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_RtfLoadOptions_
+  commentId: M:Egap.Documents.RtfFormat.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.RtfLoadOptions)
+  name.vb: Load(Stream, IReadOnlyList(Of ConversionWarning), RtfLoadOptions)
+  fullName: Egap.Documents.RtfFormat.Load(System.IO.Stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.RtfLoadOptions?)
+  fullName.vb: Egap.Documents.RtfFormat.Load(System.IO.Stream, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.RtfLoadOptions)
+  nameWithType: RtfFormat.Load(Stream, out IReadOnlyList<ConversionWarning>, RtfLoadOptions?)
+  nameWithType.vb: RtfFormat.Load(Stream, IReadOnlyList(Of ConversionWarning), RtfLoadOptions)
+- uid: Egap.Documents.RtfFormat.Load(System.String,Egap.Documents.RtfLoadOptions)
+  name: Load(string, RtfLoadOptions?)
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Load_System_String_Egap_Documents_RtfLoadOptions_
+  commentId: M:Egap.Documents.RtfFormat.Load(System.String,Egap.Documents.RtfLoadOptions)
+  name.vb: Load(String, RtfLoadOptions)
+  fullName: Egap.Documents.RtfFormat.Load(string, Egap.Documents.RtfLoadOptions?)
+  fullName.vb: Egap.Documents.RtfFormat.Load(String, Egap.Documents.RtfLoadOptions)
+  nameWithType: RtfFormat.Load(string, RtfLoadOptions?)
+  nameWithType.vb: RtfFormat.Load(String, RtfLoadOptions)
+- uid: Egap.Documents.RtfFormat.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.RtfLoadOptions)
+  name: Load(string, out IReadOnlyList<ConversionWarning>, RtfLoadOptions?)
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_RtfLoadOptions_
+  commentId: M:Egap.Documents.RtfFormat.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.RtfLoadOptions)
+  name.vb: Load(String, IReadOnlyList(Of ConversionWarning), RtfLoadOptions)
+  fullName: Egap.Documents.RtfFormat.Load(string, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.RtfLoadOptions?)
+  fullName.vb: Egap.Documents.RtfFormat.Load(String, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.RtfLoadOptions)
+  nameWithType: RtfFormat.Load(string, out IReadOnlyList<ConversionWarning>, RtfLoadOptions?)
+  nameWithType.vb: RtfFormat.Load(String, IReadOnlyList(Of ConversionWarning), RtfLoadOptions)
+- uid: Egap.Documents.RtfFormat.Load*
+  name: Load
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Load_
+  commentId: Overload:Egap.Documents.RtfFormat.Load
+  isSpec: "True"
+  fullName: Egap.Documents.RtfFormat.Load
+  nameWithType: RtfFormat.Load
+- uid: Egap.Documents.RtfFormat.Parse(System.String,Egap.Documents.RtfLoadOptions)
+  name: Parse(string, RtfLoadOptions?)
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Parse_System_String_Egap_Documents_RtfLoadOptions_
+  commentId: M:Egap.Documents.RtfFormat.Parse(System.String,Egap.Documents.RtfLoadOptions)
+  name.vb: Parse(String, RtfLoadOptions)
+  fullName: Egap.Documents.RtfFormat.Parse(string, Egap.Documents.RtfLoadOptions?)
+  fullName.vb: Egap.Documents.RtfFormat.Parse(String, Egap.Documents.RtfLoadOptions)
+  nameWithType: RtfFormat.Parse(string, RtfLoadOptions?)
+  nameWithType.vb: RtfFormat.Parse(String, RtfLoadOptions)
+- uid: Egap.Documents.RtfFormat.Parse(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.RtfLoadOptions)
+  name: Parse(string, out IReadOnlyList<ConversionWarning>, RtfLoadOptions?)
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Parse_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_RtfLoadOptions_
+  commentId: M:Egap.Documents.RtfFormat.Parse(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.RtfLoadOptions)
+  name.vb: Parse(String, IReadOnlyList(Of ConversionWarning), RtfLoadOptions)
+  fullName: Egap.Documents.RtfFormat.Parse(string, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.RtfLoadOptions?)
+  fullName.vb: Egap.Documents.RtfFormat.Parse(String, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.RtfLoadOptions)
+  nameWithType: RtfFormat.Parse(string, out IReadOnlyList<ConversionWarning>, RtfLoadOptions?)
+  nameWithType.vb: RtfFormat.Parse(String, IReadOnlyList(Of ConversionWarning), RtfLoadOptions)
+- uid: Egap.Documents.RtfFormat.Parse*
+  name: Parse
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Parse_
+  commentId: Overload:Egap.Documents.RtfFormat.Parse
+  isSpec: "True"
+  fullName: Egap.Documents.RtfFormat.Parse
+  nameWithType: RtfFormat.Parse
+- uid: Egap.Documents.RtfLoadOptions
+  name: RtfLoadOptions
+  href: api/Egap.Documents.RtfLoadOptions.html
+  commentId: T:Egap.Documents.RtfLoadOptions
+  fullName: Egap.Documents.RtfLoadOptions
+  nameWithType: RtfLoadOptions
+- uid: Egap.Documents.RtfLoadOptions.Limits
+  name: Limits
+  href: api/Egap.Documents.RtfLoadOptions.html#Egap_Documents_RtfLoadOptions_Limits
+  commentId: P:Egap.Documents.RtfLoadOptions.Limits
+  fullName: Egap.Documents.RtfLoadOptions.Limits
+  nameWithType: RtfLoadOptions.Limits
+- uid: Egap.Documents.RtfLoadOptions.Limits*
+  name: Limits
+  href: api/Egap.Documents.RtfLoadOptions.html#Egap_Documents_RtfLoadOptions_Limits_
+  commentId: Overload:Egap.Documents.RtfLoadOptions.Limits
+  isSpec: "True"
+  fullName: Egap.Documents.RtfLoadOptions.Limits
+  nameWithType: RtfLoadOptions.Limits
 - uid: Egap.Documents.Run
   name: Run
   href: api/Egap.Documents.Run.html
