@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace Egap.Spreadsheets | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace Egap.Spreadsheets | Egap ">
+      
+      
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Spreadsheets">
+
+  <h1 id="Egap_Spreadsheets" data-uid="Egap.Spreadsheets" class="text-break">Namespace Egap.Spreadsheets</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.Cell.html">Cell</a></dt>
+      <dd><p>A cell of a sheet: a small handle that reads and writes the sheet's store, made by <code>sheet[&quot;B4&quot;]</code> or
+<code>sheet.Cells[row, column]</code>. The sheet keeps no handles; a cell with no value and the default style takes no room.
+Two handles for the same cell are equal. For bulk work, <a class="xref" href="Egap.Spreadsheets.WorksheetCells.html#Egap_Spreadsheets_WorksheetCells_GetValue_System_Int32_System_Int32_">GetValue(int, int)</a> and
+<a class="xref" href="Egap.Spreadsheets.WorksheetCells.html#Egap_Spreadsheets_WorksheetCells_SetValue_System_Int32_System_Int32_Egap_Spreadsheets_CellValue_">SetValue(int, int, CellValue)</a> read and write values without a handle.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellAlignment.html">CellAlignment</a></dt>
+      <dd><p>The alignment, wrapping, indent and rotation of a cell's text.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellBorders.html">CellBorders</a></dt>
+      <dd><p>A cell's borders: four edges and the diagonals.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellFill.html">CellFill</a></dt>
+      <dd><p>The fill behind a cell: a pattern in a foreground colour over a background colour.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellFont.html">CellFont</a></dt>
+      <dd><p>A cell's font.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellProtection.html">CellProtection</a></dt>
+      <dd><p>What sheet protection does to a cell.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellStyle.html">CellStyle</a></dt>
+      <dd><p>How a cell looks: its font, fill, borders, alignment, protection and number format. A style is an immutable value; change
+one with <code>with</code>, as in <code>cell.Style = cell.Style with { Font = cell.Style.Font with { Bold = true } }</code>, or for
+many cells at once with <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_UpdateStyle_System_Func_Egap_Spreadsheets_CellStyle_Egap_Spreadsheets_CellStyle__">UpdateStyle(Func&lt;CellStyle, CellStyle&gt;)</a>. A workbook keeps each distinct style once, as Excel's cell
+formats table does, however many cells use it.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a></dt>
+      <dd><p>A spreadsheet workbook: its worksheets and the text and styles they share. A workbook is not safe to change from more
+than one thread at a time.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.Worksheet.html">Worksheet</a></dt>
+      <dd><p>One sheet of a workbook: up to 1,048,576 rows by 16,384 columns of cells, stored only where cells hold a value or a
+style. Reach a cell by its A1 address, <code>sheet[&quot;B4&quot;]</code>, or by zero-based row and column, <code>sheet.Cells[3, 1]</code>,
+and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.WorksheetCells.html">WorksheetCells</a></dt>
+      <dd><p>A sheet's cells: any cell by zero-based row and column, and, when enumerated, the cells that hold a value, a formula or a
+style, row by row and left to right.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.WorksheetCollection.html">WorksheetCollection</a></dt>
+      <dd><p>A workbook's worksheets in tab order; names are unique, case ignored, as in Excel.</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellAddress.html">CellAddress</a></dt>
+      <dd><p>Where a cell is on a sheet: a zero-based row and column, written in A1 style as Excel shows it (<code>B4</code> is row 3,
+column 1). Rows go up to 1,048,575 and columns up to 16,383 (<code>XFD</code>), the size of an Excel sheet.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellBorder.html">CellBorder</a></dt>
+      <dd><p>One edge of a cell's borders.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellColor.html">CellColor</a></dt>
+      <dd><p>A colour as spreadsheets give it: automatic, a fixed ARGB colour, a theme colour with a tint, or a legacy palette index.
+The default value is automatic.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellRange.html">CellRange</a></dt>
+      <dd><p>A rectangle of cells on a sheet, such as <code>sheet.Range(&quot;A1:D20&quot;)</code>: a cheap value that reads and writes the sheet's
+cells. Enumerating it gives every cell in it, empty ones too, row by row; <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_UsedCells">UsedCells</a> gives only the cells
+that hold something.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellValue.html">CellValue</a></dt>
+      <dd><p>A cell's value: empty, a number, text, TRUE or FALSE, or an error. Numbers, text, booleans and errors convert to it
+implicitly, so <code>cell.Value = 42</code> and <code>cell.Value = &quot;Total&quot;</code> work.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.RangeAddress.html">RangeAddress</a></dt>
+      <dd><p>A rectangle of cells on a sheet, from its top-left cell to its bottom-right cell, written in A1 style as <code>A1:D20</code>.
+A single cell is written as <code>B4</code>, whole columns as <code>A:C</code> and whole rows as <code>2:5</code>.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellBorderStyle.html">CellBorderStyle</a></dt>
+      <dd><p>The line style of a cell border.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellColorKind.html">CellColorKind</a></dt>
+      <dd><p>How a <a class="xref" href="Egap.Spreadsheets.CellColor.html">CellColor</a> is given.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellError.html">CellError</a></dt>
+      <dd><p>The error values a cell can hold, as Excel shows them.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellFillPattern.html">CellFillPattern</a></dt>
+      <dd><p>The pattern of a cell's fill.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellFontScheme.html">CellFontScheme</a></dt>
+      <dd><p>Which of the theme's fonts a cell font follows.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellHorizontalAlignment.html">CellHorizontalAlignment</a></dt>
+      <dd><p>How a cell's text sits across the cell.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellReadingOrder.html">CellReadingOrder</a></dt>
+      <dd><p>The direction of a cell's text.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellUnderline.html">CellUnderline</a></dt>
+      <dd><p>How text is underlined in a cell.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellValueKind.html">CellValueKind</a></dt>
+      <dd><p>What kind of value a cell holds.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellVerticalAlignment.html">CellVerticalAlignment</a></dt>
+      <dd><p>How a cell's text sits up and down in the cell.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellVerticalTextPosition.html">CellVerticalTextPosition</a></dt>
+      <dd><p>Superscript or subscript text.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

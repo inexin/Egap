@@ -7600,6 +7600,412 @@
       "Summary": null
     },
     {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.Cell.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.Cell.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.Cell",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Cell.yml\" sourcestartlinenumber=\"1\">A cell of a sheet: a small handle that reads and writes the sheet's store, made by <code>sheet[&quot;B4&quot;]</code> or\n<code>sheet.Cells[row, column]</code>. The sheet keeps no handles; a cell with no value and the default style takes no room.\nTwo handles for the same cell are equal. For bulk work, <xref href=\"Egap.Spreadsheets.WorksheetCells.GetValue(System.Int32%2cSystem.Int32)\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Egap.Spreadsheets.WorksheetCells.SetValue(System.Int32%2cSystem.Int32%2cEgap.Spreadsheets.CellValue)\" data-throw-if-not-resolved=\"false\"></xref> read and write values without a handle.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellAddress.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellAddress.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellAddress",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellAddress.yml\" sourcestartlinenumber=\"1\">Where a cell is on a sheet: a zero-based row and column, written in A1 style as Excel shows it (<code>B4</code> is row 3,\ncolumn 1). Rows go up to 1,048,575 and columns up to 16,383 (<code>XFD</code>), the size of an Excel sheet.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellAlignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellAlignment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellAlignment",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellAlignment.yml\" sourcestartlinenumber=\"1\">The alignment, wrapping, indent and rotation of a cell's text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellBorder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellBorder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellBorder",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellBorder.yml\" sourcestartlinenumber=\"1\">One edge of a cell's borders.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellBorderStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellBorderStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellBorderStyle",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellBorderStyle.yml\" sourcestartlinenumber=\"1\">The line style of a cell border.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellBorders.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellBorders.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellBorders",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellBorders.yml\" sourcestartlinenumber=\"1\">A cell's borders: four edges and the diagonals.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellColor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellColor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellColor",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellColor.yml\" sourcestartlinenumber=\"1\">A colour as spreadsheets give it: automatic, a fixed ARGB colour, a theme colour with a tint, or a legacy palette index.\nThe default value is automatic.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellColorKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellColorKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellColorKind",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellColorKind.yml\" sourcestartlinenumber=\"1\">How a <xref href=\"Egap.Spreadsheets.CellColor\" data-throw-if-not-resolved=\"false\"></xref> is given.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellError",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellError.yml\" sourcestartlinenumber=\"1\">The error values a cell can hold, as Excel shows them.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellFill.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellFill.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellFill",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellFill.yml\" sourcestartlinenumber=\"1\">The fill behind a cell: a pattern in a foreground colour over a background colour.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellFillPattern.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellFillPattern.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellFillPattern",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellFillPattern.yml\" sourcestartlinenumber=\"1\">The pattern of a cell's fill.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellFont.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellFont.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellFont",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellFont.yml\" sourcestartlinenumber=\"1\">A cell's font.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellFontScheme.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellFontScheme.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellFontScheme",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellFontScheme.yml\" sourcestartlinenumber=\"1\">Which of the theme's fonts a cell font follows.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellHorizontalAlignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellHorizontalAlignment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellHorizontalAlignment",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellHorizontalAlignment.yml\" sourcestartlinenumber=\"1\">How a cell's text sits across the cell.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellProtection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellProtection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellProtection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellProtection.yml\" sourcestartlinenumber=\"1\">What sheet protection does to a cell.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellRange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellRange.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellRange",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellRange.yml\" sourcestartlinenumber=\"1\">A rectangle of cells on a sheet, such as <code>sheet.Range(&quot;A1:D20&quot;)</code>: a cheap value that reads and writes the sheet's\ncells. Enumerating it gives every cell in it, empty ones too, row by row; <xref href=\"Egap.Spreadsheets.CellRange.UsedCells\" data-throw-if-not-resolved=\"false\"></xref> gives only the cells\nthat hold something.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellReadingOrder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellReadingOrder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellReadingOrder",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellReadingOrder.yml\" sourcestartlinenumber=\"1\">The direction of a cell's text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellStyle",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellStyle.yml\" sourcestartlinenumber=\"1\">How a cell looks: its font, fill, borders, alignment, protection and number format. A style is an immutable value; change\none with <code>with</code>, as in <code>cell.Style = cell.Style with { Font = cell.Style.Font with { Bold = true } }</code>, or for\nmany cells at once with <xref href=\"Egap.Spreadsheets.CellRange.UpdateStyle(System.Func%7bEgap.Spreadsheets.CellStyle%2cEgap.Spreadsheets.CellStyle%7d)\" data-throw-if-not-resolved=\"false\"></xref>. A workbook keeps each distinct style once, as Excel's cell\nformats table does, however many cells use it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellUnderline.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellUnderline.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellUnderline",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellUnderline.yml\" sourcestartlinenumber=\"1\">How text is underlined in a cell.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellValue.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellValue",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellValue.yml\" sourcestartlinenumber=\"1\">A cell's value: empty, a number, text, TRUE or FALSE, or an error. Numbers, text, booleans and errors convert to it\nimplicitly, so <code>cell.Value = 42</code> and <code>cell.Value = &quot;Total&quot;</code> work.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellValueKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellValueKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellValueKind",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellValueKind.yml\" sourcestartlinenumber=\"1\">What kind of value a cell holds.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellVerticalAlignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellVerticalAlignment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellVerticalAlignment",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellVerticalAlignment.yml\" sourcestartlinenumber=\"1\">How a cell's text sits up and down in the cell.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellVerticalTextPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellVerticalTextPosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellVerticalTextPosition",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellVerticalTextPosition.yml\" sourcestartlinenumber=\"1\">Superscript or subscript text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.RangeAddress.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.RangeAddress.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.RangeAddress",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.RangeAddress.yml\" sourcestartlinenumber=\"1\">A rectangle of cells on a sheet, from its top-left cell to its bottom-right cell, written in A1 style as <code>A1:D20</code>.\nA single cell is written as <code>B4</code>, whole columns as <code>A:C</code> and whole rows as <code>2:5</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.Workbook.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.Workbook.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.Workbook",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Workbook.yml\" sourcestartlinenumber=\"1\">A spreadsheet workbook: its worksheets and the text and styles they share. A workbook is not safe to change from more\nthan one thread at a time.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.Worksheet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.Worksheet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.Worksheet",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Worksheet.yml\" sourcestartlinenumber=\"1\">One sheet of a workbook: up to 1,048,576 rows by 16,384 columns of cells, stored only where cells hold a value or a\nstyle. Reach a cell by its A1 address, <code>sheet[&quot;B4&quot;]</code>, or by zero-based row and column, <code>sheet.Cells[3, 1]</code>,\nand a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.WorksheetCells.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.WorksheetCells.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.WorksheetCells",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorksheetCells.yml\" sourcestartlinenumber=\"1\">A sheet's cells: any cell by zero-based row and column, and, when enumerated, the cells that hold a value, a formula or a\nstyle, row by row and left to right.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.WorksheetCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.WorksheetCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.WorksheetCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorksheetCollection.yml\" sourcestartlinenumber=\"1\">A workbook's worksheets in tab order; names are unique, case ignored, as in Excel.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets",
+      "Summary": null
+    },
+    {
       "type": "Toc",
       "source_relative_path": "api/toc.yml",
       "output": {
@@ -7868,6 +8274,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/guides/signatures.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/guides/spreadsheets.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/spreadsheets.html"
         }
       },
       "version": ""

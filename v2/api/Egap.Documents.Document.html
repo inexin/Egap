@@ -872,11 +872,12 @@ formats and the text it puts before and after a value (<code>\b</code>, <code>\f
 
   <h3 id="Egap_Documents_Document_Identify_System_IO_Stream_System_String_" data-uid="Egap.Documents.Document.Identify(System.IO.Stream,System.String)">
   Identify(Stream, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L138"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
-whose first entry is an EPUB <code>mimetype</code> is EPUB, another ZIP package or an old compound file is Word's (and a
+whose first entry is an EPUB <code>mimetype</code> is EPUB, one with a part under <code>xl/</code> or named .xlsx, .xlsm, .xltx or
+.xltm is an Excel workbook, another ZIP package or an old compound file is Word's (and a
 compound file that holds an encrypted package is <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a>), a MIME
 message of <code>multipart/related</code> parts is MHTML, <code>%PDF-</code> is PDF, <code>{\rtf</code> is RTF, a JSON object naming the <code>DoclingDocument</code> schema is
 Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
@@ -919,7 +920,7 @@ so. It needs no add-on package, so a program can tell its user which package a f
 
   <h3 id="Egap_Documents_Document_Identify_System_String_" data-uid="Egap.Documents.Document.Identify(System.String)">
   Identify(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L164"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L165"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tells which format the file at <code class="paramref">path</code> is in without loading it. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>.</p>

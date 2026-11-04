@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Spreadsheets | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Spreadsheets | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/spreadsheets.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="spreadsheets">Spreadsheets</h1>
+
+<p>Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas and
+cell styles, as Excel keeps them. The types are in <code>Egap.Spreadsheets</code>.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();                   // one empty sheet, Sheet1
+Worksheet sheet = book.Worksheets[0];
+sheet.Name = &quot;Sales&quot;;
+
+sheet[&quot;A1&quot;].Value = &quot;Region&quot;;
+sheet[&quot;B1&quot;].Value = &quot;Amount&quot;;
+sheet[&quot;A2&quot;].Value = &quot;North&quot;;
+sheet[&quot;B2&quot;].Value = 1250.5;
+sheet[&quot;A3&quot;].Value = &quot;South&quot;;
+sheet[&quot;B3&quot;].Value = 980;
+sheet[&quot;B4&quot;].Formula = &quot;SUM(B2:B3)&quot;;
+
+sheet.Range(&quot;A1:B1&quot;).UpdateStyle(s =&gt; s with { Font = s.Font with { Bold = true } });
+sheet.Range(&quot;B2:B4&quot;).UpdateStyle(s =&gt; s with { NumberFormat = &quot;#,##0.00&quot; });
+</code></pre>
+<h2 id="workbooks-and-sheets">Workbooks and sheets</h2>
+<p><code>Workbook.Create()</code> starts a workbook with one empty sheet named <code>Sheet1</code>, as Excel does; <code>Workbook.CreateEmpty()</code> starts
+one with none. <code>book.Worksheets</code> holds the sheets in tab order: <code>Add</code> and <code>Insert</code> make a sheet (named <code>SheetN</code> when you
+give no name), <code>Remove</code> takes one out, <code>Move</code> changes its position, and the indexers find a sheet by position or by name.</p>
+<p>Sheet names follow Excel's rules: 1 to 31 characters, none of <code>: \ / ? * [ ]</code>, no apostrophe at the start or end, and no
+two sheets with the same name, case ignored. A name that breaks a rule throws an <code>ArgumentException</code>.</p>
+<h2 id="cells">Cells</h2>
+<p>A sheet has 1,048,576 rows and 16,384 columns (A to XFD). Reach a cell by its A1 address or by zero-based row and column:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+Cell b4 = sheet[&quot;B4&quot;];
+Cell same = sheet.Cells[3, 1];                       // row 3, column 1: also B4
+CellAddress address = CellAddress.Parse(&quot;$C$10&quot;);    // row 9, column 2
+string column = CellAddress.ColumnName(27);          // &quot;AB&quot;
+</code></pre>
+<p><code>cell.Value</code> is a <code>CellValue</code>: a number, text, <code>true</code> or <code>false</code>, an error such as <code>CellError.DivisionByZero</code>, or empty.
+Numbers, strings, booleans and errors convert to it, so <code>cell.Value = 42</code> and <code>cell.Value = &quot;Total&quot;</code> work. Dates are
+numbers that a date number format shows as dates. Excel's limits hold: numbers are finite, and text is at most 32,767
+characters.</p>
+<p><code>cell.Formula</code> holds a formula in Excel's stored form, with English function names and commas, without the <code>=</code> (a
+leading <code>=</code> you give is dropped). A formula's result is empty until the workbook is calculated. Setting <code>Value</code> removes a
+formula; setting <code>Formula</code> to null removes it and its result.</p>
+<p><code>cell.Clear()</code> removes the value, formula and style. <code>sheet.Cells</code> enumerates the cells that hold something, row by row,
+and <code>sheet.UsedRange</code> is the smallest range that holds them all.</p>
+<p>For many cells at once, <code>sheet.Cells.GetValue(row, column)</code> and <code>sheet.Cells.SetValue(row, column, value)</code> read and write
+values without making a <code>Cell</code> for each.</p>
+<h2 id="ranges">Ranges</h2>
+<p><code>sheet.Range(&quot;A1:D20&quot;)</code> is a <code>CellRange</code>, a cheap value for a rectangle of cells. Whole columns (<code>&quot;A:C&quot;</code>) and whole rows
+(<code>&quot;2:5&quot;</code>) work too.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+CellRange table = sheet.Range(&quot;A1:C2&quot;);
+table.SetValues(new CellValue[,] { { &quot;Item&quot;, &quot;Qty&quot;, &quot;Price&quot; }, { &quot;Paper&quot;, 2, 40 } });
+CellValue[,] values = table.GetValues();
+table.SetStyle(CellStyle.Default with { Borders = CellBorders.Box(CellBorder.Thin) });
+foreach (Cell cell in sheet.Range(&quot;A:C&quot;).UsedCells)
+{
+    Console.WriteLine(cell);                         // A1: Item, B1: Qty, ...
+}
+</code></pre>
+<p>Enumerating a range gives every cell in it, empty ones too; <code>UsedCells</code> gives only the cells that hold something.
+<code>Clear</code> removes values, formulas and styles, and <code>ClearContents</code> keeps the styles.</p>
+<h2 id="styles">Styles</h2>
+<p>A <code>CellStyle</code> is an immutable value with a <code>Font</code>, <code>Fill</code>, <code>Borders</code>, <code>Alignment</code>, <code>Protection</code> and <code>NumberFormat</code>. New
+cells use <code>CellStyle.Default</code>: Calibri 11 in the theme's text colour, no fill or borders, general alignment, locked, and
+the <code>General</code> number format. Change a style with <code>with</code>, for one cell or for a range:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet[&quot;A1&quot;].Style = CellStyle.Default with
+{
+    Font = CellFont.Default with { Bold = true, Color = CellColor.FromRgb(0x1F, 0x4E, 0x79) },
+    Fill = CellFill.Solid(CellColor.FromTheme(4, 0.8)),
+    Alignment = CellAlignment.Default with { Horizontal = CellHorizontalAlignment.Center, WrapText = true },
+};
+sheet[&quot;B1&quot;].NumberFormat = &quot;yyyy-mm-dd&quot;;
+sheet.Range(&quot;A2:A100&quot;).UpdateStyle(s =&gt; s with { Font = s.Font with { Italic = true } });
+</code></pre>
+<p><code>UpdateStyle</code> calls its function once for each distinct style in the range, so a large range of a few styles is quick.</p>
+<p>A workbook keeps each distinct style once, however many cells use it, and its fonts, fills, borders and number formats
+once each, as Excel's style table does. Text values are kept once per workbook too, in a shared string table. Colours are
+automatic, ARGB (<code>CellColor.FromRgb</code>, <code>FromArgb</code>), a theme colour with a tint (<code>FromTheme</code>) or a legacy palette entry
+(<code>FromIndex</code>).</p>
+<h2 id="memory">Memory</h2>
+<p>Sheets store cells in blocks of 32 rows by 32 columns, made only where cells are: a sheet with values in A1 and
+XFD1048576 holds two blocks. A cell takes 16 bytes, and a block makes its rows of 32 cells as cells arrive, so a full block
+is about 16 KB and a lone cell far from the others a few KB at most. A cell with no value and the default style takes no
+room, and a block goes again when its last cell is cleared.</p>
+<p>A workbook is not safe to change from more than one thread at a time.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/spreadsheets.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -177,7 +177,7 @@ without loading it and without any add-on, so a program can say what a file need
 
 HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
 MarkdownFormat.Register();
-DocumentFormatKind kind = Document.Identify(&quot;upload.bin&quot;);        // Pdf, Docx, Encrypted, Rtf, Odt, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
+DocumentFormatKind kind = Document.Identify(&quot;upload.bin&quot;);        // Pdf, Docx, Xlsx, Encrypted, Rtf, Odt, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
 Document notes = TextFormat.Load(&quot;notes.txt&quot;);                    // one paragraph per line
 </code></pre>
 <p><code>Identify</code> decides in this order:</p>
@@ -185,6 +185,8 @@ Document notes = TextFormat.Load(&quot;notes.txt&quot;);                    // o
 <li>A ZIP package whose first entry is EPUB's <code>mimetype</code> is <code>Epub</code>.</li>
 <li>A ZIP package whose first entry is an OpenDocument Text or template <code>mimetype</code>, or whose extension is <code>.odt</code>, <code>.ott</code> or
 <code>.fodt</code>, is <code>Odt</code>.</li>
+<li>A ZIP package with a part under <code>xl/</code>, or whose extension is <code>.xlsx</code>, <code>.xlsm</code>, <code>.xltx</code> or <code>.xltm</code>, is <code>Xlsx</code>: an Excel
+workbook, which Egap.Documents does not load as a document.</li>
 <li>Another ZIP package, or an old binary Word file, is <code>Docx</code>. Reading an old binary Word file fails with an error that
 says so. A password-protected Word file is <code>Encrypted</code>; it loads with its password (see
 <a href="docx.html#passwords">DOCX passwords</a>).</li>
