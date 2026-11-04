@@ -29,4 +29,7 @@ public enum DocumentFormatKind
 
     /// <summary>An MHTML web archive (.mht, .mhtml); reading and writing it needs the Egap.Documents.Html package.</summary>
     Mhtml,
+
+    /// <summary>An RTF file (Rich Text Format, as Word and WordPad write it).</summary>
+    Rtf,
 }

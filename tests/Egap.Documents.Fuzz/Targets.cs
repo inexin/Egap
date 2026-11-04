@@ -2,7 +2,7 @@ namespace Egap.Documents.Fuzz;
 
 /// <summary>
 /// The fuzz targets for Egap.Documents' readers. Markdown has no invalid input, so its reader must never throw; the DOCX
-/// readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). HTML has no
+/// and RTF readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). HTML has no
 /// invalid input either. Anything else is a crash, and AFL++ reports hangs.
 /// </summary>
 internal static class Targets
@@ -12,6 +12,7 @@ internal static class Targets
         ["markdown"] = Markdown,
         ["package"] = Package,
         ["docx"] = DocxFile,
+        ["rtf"] = RtfFile,
         ["html"] = Html,
         ["layout"] = LayoutTarget,
         ["pagemedia"] = PageMedia,
@@ -318,6 +319,59 @@ internal static class Targets
             written.Position = 0;
             _ = Egap.Documents.DocxFormat.Load(written).GetText();
         }
+    }
+
+    /// <summary>
+    /// Any bytes read as RTF; may throw only <see cref="DocumentException"/>. The model must answer its text, list labels and
+    /// effective formats and clone, and the DOCX writer must write it as DOCX that reads again.
+    /// </summary>
+    private static void RtfFile(Stream input)
+    {
+        Document document;
+        try
+        {
+            document = RtfFormat.Load(input, new RtfLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 } });
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+
+        _ = document.GetText();
+        foreach (Node node in document.Descendants())
+        {
+            switch (node)
+            {
+                case Paragraph paragraph:
+                    _ = paragraph.ListLabel;
+                    _ = paragraph.GetEffectiveFormat();
+                    break;
+                case Run run:
+                    _ = run.GetEffectiveFormat();
+                    break;
+                case Footnote note:
+                    _ = note.Mark;
+                    break;
+                case Table table:
+                    _ = table.GetEffectiveFormat();
+                    break;
+                case Cell cell:
+                    _ = cell.GetEffectiveFormat();
+                    break;
+            }
+        }
+
+        foreach (Field field in document.GetFields())
+        {
+            _ = field.Code;
+            _ = field.Result;
+        }
+
+        _ = document.Clone();
+        using MemoryStream written = new();
+        Egap.Documents.Docx.DocxWriter.Write(document, written, true);
+        written.Position = 0;
+        _ = Egap.Documents.DocxFormat.Load(written).GetText();
     }
 
     /// <summary>Any bytes read as a MIME message; may throw only <see cref="DocumentException"/>. Every part answers its headers.</summary>

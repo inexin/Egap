@@ -5,6 +5,8 @@ that draws onto any [Egami](https://www.nuget.org/packages/Egami) canvas, PDF ex
 back into documents. Fully managed and MIT-licensed.
 
 - DOCX, DOTX and DOCM read and written; what the model does not name is kept, so DOCX to DOCX is lossless.
+- RTF read as Word writes it: styles, lists, tables, sections, headers and footers, notes, fields, comments, tracked
+  changes and pictures.
 - Styles, lists numbered as Word numbers them, tables, fields, comments, tracked changes; find, replace and a builder.
 - Page layout with floats, columns, headers and footers, footnotes, and flex and grid containers, rendered to images, SVG
   or PDF.
@@ -20,7 +22,7 @@ using Egap.Documents;
 using Egap.Documents.Layout;
 using Egap.Documents.Pdf;
 
-Document doc = Document.Load("report.docx");                     // DOCX, PDF or plain text, told apart by content
+Document doc = Document.Load("report.docx");                     // DOCX, RTF, PDF or plain text, told apart by content
 DocumentBuilder builder = new(doc);
 builder.Writeln("Added at the end.");
 doc.Replace("colour", "color");
