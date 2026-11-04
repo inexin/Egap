@@ -136,6 +136,16 @@ public class RtfReaderTests
     }
 
     [Fact]
+    public void RepeatedStyleSheetsAndClashingNamesGetUniqueIds()
+    {
+        // Found by fuzzing: a second style sheet, and a character style named as the paragraph default.
+        Document document = Read(@"\pard\s1 A\par", @"{\stylesheet{\s1 heading 1;}{\*\cs2 Normal;}}{\stylesheet{\s3 heading 1;}}");
+        Assert.Equal("Heading1", Paragraphs(document)[0].Style!.Id);
+        Assert.IsType<ParagraphStyle>(document.Styles.DefaultParagraphStyle);
+        Assert.Equal(document.Styles.Count, document.Styles.Select(s => s.Id).Distinct().Count());
+    }
+
+    [Fact]
     public void ListTablesNumberParagraphs()
     {
         const string lists = """

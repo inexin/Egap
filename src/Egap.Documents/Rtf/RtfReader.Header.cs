@@ -493,7 +493,7 @@ internal sealed partial class RtfReader
     /// <summary>Makes the styles the style sheet named, with their links.</summary>
     private void MakeStyles()
     {
-        HashSet<string> ids = new(StringComparer.OrdinalIgnoreCase);
+        HashSet<string> ids = new(document.Styles.Select(s => s.Id), StringComparer.OrdinalIgnoreCase);
         foreach (StyleEntry entry in styleEntries)
         {
             if (styles.ContainsKey(entry.Index))
@@ -1325,7 +1325,9 @@ internal sealed partial class RtfReader
         if (document.Styles.DefaultParagraphStyle is null)
         {
             ParagraphStyle normal = document.Styles[BuiltInStyles.Id(BuiltInStyle.Normal)] as ParagraphStyle
-                ?? document.Styles.AddParagraphStyle(BuiltInStyles.Id(BuiltInStyle.Normal), BuiltInStyles.Name(BuiltInStyle.Normal));
+                ?? document.Styles.AddParagraphStyle(
+                    StyleId(BuiltInStyles.Name(BuiltInStyle.Normal), new(document.Styles.Select(s => s.Id), StringComparer.OrdinalIgnoreCase)),
+                    BuiltInStyles.Name(BuiltInStyle.Normal));
             document.Styles.SetDefault(normal);
             styles.TryAdd(0, normal);
         }
