@@ -557,6 +557,75 @@ public class RtfReaderTests
         AssertOnlyItsOwnErrors(@"{\rtf1{\shp{\*\shpinst\shpleft0\shpright-2147483648\shptop2147483647\shpbottom-2147483648}}}");
     }
 
+    /// <summary>Hostile inputs of about 1-2 MB, one per pattern that could cost more than linear time or make unbounded objects.</summary>
+    public static TheoryData<string> HostilePatterns() =>
+    [
+        "LongFontName", "ManyFonts", "ManyColours", "ManyStyles", "SameNamedStyles", "ManyLists", "ManyListOverrides",
+        "LongLevelNumbers", "ManyPnLists", "ManyTabStops", "ManyBookmarks", "ManyComments", "ManyFootnotes", "ManyCells",
+        "ManyCellDefinitions", "ManyRows", "ManySections", "ManyRuns", "ManyAuthors", "ManyUserProperties", "LongTitle",
+        "ManyFields", "ManyShapes", "ManyKeptGroups", "ManyUnicodeFallbacks",
+    ];
+
+    [Theory]
+    [Trait("Category", "Slow")]
+    [MemberData(nameof(HostilePatterns))]
+    public void HostileInputsReadInLinearTime(string pattern)
+    {
+        string rtf = Hostile(pattern, 1_500_000);
+        System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            _ = RtfFormat.Parse(rtf);
+        }
+        catch (DocumentLimitException)
+        {
+        }
+
+        // Linear work on 1.5 MB takes well under a second; a quadratic pattern takes minutes.
+        Assert.True(watch.Elapsed < TimeSpan.FromSeconds(10), $"{pattern} took {watch.Elapsed}.");
+    }
+
+    private static string Hostile(string pattern, int size)
+    {
+        (string head, Func<int, string> item, string tail) = pattern switch
+        {
+            "LongFontName" => (@"{\rtf1{\fonttbl{\f0 ", (Func<int, string>)(_ => @"\'41"), ";}}x}"),
+            "ManyFonts" => (@"{\rtf1{\fonttbl", i => $@"{{\f{i} F{i};}}", "}x}"),
+            "ManyColours" => (@"{\rtf1{\colortbl;", i => $@"\red{i % 256}\green0\blue0;", "}x}"),
+            "ManyStyles" => (@"{\rtf1{\stylesheet", i => $@"{{\s{i} Style {i};}}", "}x}"),
+            "SameNamedStyles" => (@"{\rtf1{\stylesheet", i => $@"{{\s{i} Same;}}{{\*\cs{i + 1_000_000} Same;}}", "}x}"),
+            "ManyLists" => (@"{\rtf1{\*\listtable", i => $@"{{\list{{\listlevel{{\leveltext\'02\'00.;}}{{\levelnumbers\'01;}}}}\listid{i}}}", "}x}"),
+            "ManyListOverrides" => (@"{\rtf1{\*\listtable{\list{\listlevel{\leveltext\'02\'00.;}{\levelnumbers\'01;}}\listid1}}{\*\listoverridetable",
+                i => $@"{{\listoverride\listid1\ls{i + 1}}}", @"}\pard\ls5 x\par}"),
+            "LongLevelNumbers" => (@"{\rtf1{\*\listtable{\list{\listlevel{\leveltext\'ff" + new string('a', 255) + @";}{\levelnumbers", _ => @"\'01", @";}}\listid1}}x}"),
+            "ManyPnLists" => (@"{\rtf1", i => $@"{{\pntext 1}}\pard{{\*\pn\pnlvlbody\pndec\pnstart{i}}}x\par", "}"),
+            "ManyTabStops" => (@"{\rtf1\pard", i => $@"\tx{i}", " x}"),
+            "ManyBookmarks" => (@"{\rtf1\pard", i => $@"{{\*\bkmkstart b{i}}}x{{\*\bkmkend b{i}}}", "}"),
+            "ManyComments" => (@"{\rtf1\pard", i => $@"{{\*\atnid A}}{{\*\atnauthor A}}\chatn{{\*\annotation{{\*\atnref {i}}} c}}", "}"),
+            "ManyFootnotes" => (@"{\rtf1\pard", _ => @"x{\footnote n}", "}"),
+            "ManyCells" => (@"{\rtf1\trowd\cellx100\pard\intbl", _ => @"a\cell", @"\row}"),
+            "ManyCellDefinitions" => (@"{\rtf1\trowd", i => $@"\cellx{i + 1}", @"\pard\intbl a\cell\row}"),
+            "ManyRows" => (@"{\rtf1", _ => @"\trowd\cellx100\pard\intbl a\cell\row", "}"),
+            "ManySections" => (@"{\rtf1", _ => @"x\sect", "}"),
+            "ManyRuns" => (@"{\rtf1\pard", i => i % 2 == 0 ? @"\b x" : @"\b0 x", "}"),
+            "ManyAuthors" => (@"{\rtf1{\*\revtbl", i => $@"{{A{i};}}", "}x}"),
+            "ManyUserProperties" => (@"{\rtf1{\*\userprops", i => $@"{{\propname P{i}}}\proptype30{{\staticval v}}", "}x}"),
+            "LongTitle" => (@"{\rtf1{\info{\title ", _ => @"\u1055{}", "}}x}"),
+            "ManyFields" => (@"{\rtf1\pard", _ => @"{\field{\*\fldinst PAGE}{\fldrslt 1}}", "}"),
+            "ManyShapes" => (@"{\rtf1\pard", _ => @"{\shp{\*\shpinst\shpleft0\shpright100{\sp{\sn fillColor}{\sv 255}}}}", "}"),
+            "ManyKeptGroups" => (@"{\rtf1\pard", _ => @"{\*\unknown x}", "}"),
+            "ManyUnicodeFallbacks" => (@"{\rtf1\uc5\pard", _ => @"\u1055 abcde", "}"),
+            _ => throw new ArgumentOutOfRangeException(nameof(pattern)),
+        };
+        StringBuilder text = new(head);
+        for (int i = 0; text.Length < size; i++)
+        {
+            text.Append(item(i));
+        }
+
+        return text.Append(tail).ToString();
+    }
+
     /// <summary>Reads the RTF; the only failure allowed is the reader's own, not another exception it wrapped.</summary>
     private static void AssertOnlyItsOwnErrors(string rtf)
     {
@@ -568,6 +637,25 @@ public class RtfReaderTests
         {
             Assert.Null(e.InnerException);
         }
+    }
+
+    [Fact]
+    public void UnicodeInDestinationTextIsKeptWhole()
+    {
+        // Parse writes each character past U+00FF as \uN{}: the empty group ends its fallback, in every destination.
+        const string russian = "Привет";
+        const string chinese = "你好世界";
+        string rtf = @"{\rtf1{\fonttbl{\f0 " + chinese + @";}}{\stylesheet{\s0 Normal;}{\s1 " + russian + @";}}{\info{\title " + russian + chinese + "}}"
+            + @"\pard\s1\f0{\*\bkmkstart " + russian + @"}x{\*\bkmkend " + russian + "}"
+            + @"{\*\atnid A}{\*\atnauthor " + chinese + @"}\chatn{\*\annotation " + russian + @"}\par}";
+        Document document = RtfFormat.Parse(rtf);
+        Assert.Equal(russian + chinese, document.Properties.Title);
+        Assert.Equal(russian, Paragraphs(document)[0].Style!.Name);
+        Assert.Equal(chinese, Runs(document)[0].Format.FontAscii);
+        Assert.Equal(russian, document.Descendants<BookmarkStart>().Single().Name);
+        Comment comment = document.Descendants<Comment>().Single();
+        Assert.Equal(chinese, comment.Author);
+        Assert.Equal(russian, comment.Story.GetText().Trim());
     }
 
     [Fact]

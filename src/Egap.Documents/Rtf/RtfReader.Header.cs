@@ -15,6 +15,8 @@ internal sealed partial class RtfReader
     private readonly Dictionary<int, ListDefinition> listDefinitions = [];
     private readonly Dictionary<int, List> lists = [];
     private readonly Dictionary<PnState, List> pnLists = [];
+    private readonly Dictionary<string, int> styleIdSuffixes = new(StringComparer.OrdinalIgnoreCase);
+    private int nextPnListId = 1;
     private readonly List<string> authors = [];
     private readonly int[] defaultFonts = [-1, -1, -1, -1];
     private int ansiCodePage = 1252;
@@ -235,7 +237,8 @@ internal sealed partial class RtfReader
             if (number >= 0)
             {
                 name.Encoding = EncodingFor(codePage > 0 ? codePage : CodePageOf(charset) ?? ansiCodePage);
-                if (name.Add(kind) && name.Text().Contains(';'))
+                // The name ends at a semicolon; looking for it in the token, not the name so far, keeps a long name linear.
+                if (name.Add(kind) && kind == RtfTokenKind.Text && tokens.Text.Contains((byte)';'))
                 {
                     Finish();
                 }
@@ -247,7 +250,10 @@ internal sealed partial class RtfReader
             if (number >= 0)
             {
                 string value = name.Text(toSemicolon: true);
-                fonts[number] = new FontEntry(value, charset, codePage, alt, family);
+                if (fonts.Count < MaxEntries || fonts.ContainsKey(number))
+                {
+                    fonts[number] = new FontEntry(value, charset, codePage, alt, family);
+                }
                 if (value.Length > 0)
                 {
                     document.FontHints[value] = (alt, family);
@@ -307,7 +313,7 @@ internal sealed partial class RtfReader
                 case RtfTokenKind.Text:
                     foreach (byte b in tokens.Text)
                     {
-                        if (b != (byte)';')
+                        if (b != (byte)';' || colors.Count >= MaxEntries)
                         {
                             continue;
                         }
@@ -378,7 +384,7 @@ internal sealed partial class RtfReader
                     entry.Para = state.Para;
                     entry.ListOverride = state.ListOverride;
                     entry.ListLevel = state.ListLevel;
-                    if (!section && entry.Name.Length > 0 && styleEntries.Count < 10_000)
+                    if (!section && entry.Name.Length > 0 && styleEntries.Count < MaxEntries)
                     {
                         styleEntries.Add(entry);
                     }
@@ -579,7 +585,7 @@ internal sealed partial class RtfReader
     }
 
     /// <summary>A style id from a style's name: Word's own id for a built-in style, else the name without spaces, unique.</summary>
-    private static string StyleId(string name, HashSet<string> used)
+    private string StyleId(string name, HashSet<string> used)
     {
         string id = "";
         foreach (BuiltInStyle builtIn in Enum.GetValues<BuiltInStyle>())
@@ -611,12 +617,16 @@ internal sealed partial class RtfReader
             id = text.Length > 0 ? text.ToString() : "Style";
         }
 
+        // Many styles with one name try each suffix once: the next one to try is kept per id.
         string unique = id;
-        for (int n = 1; !used.Add(unique); n++)
+        int n = styleIdSuffixes.GetValueOrDefault(id, 1);
+        while (!used.Add(unique))
         {
             unique = id + n.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            n++;
         }
 
+        styleIdSuffixes[id] = n;
         return unique;
     }
 
@@ -711,7 +721,7 @@ internal sealed partial class RtfReader
                     Pop();
                     if (depth < listDepth)
                     {
-                        if (!listDefinitions.ContainsKey(id) && listDefinitions.Count < 10_000)
+                        if (!listDefinitions.ContainsKey(id) && listDefinitions.Count < MaxEntries)
                         {
                             ListDefinition definition = document.Lists.AddDefinition(listDefinitions.Count + 1);
                             definition.Kind = kind;
@@ -754,7 +764,7 @@ internal sealed partial class RtfReader
         state.ResetParagraph();
         LevelEntry level = new();
         string levelText = "";
-        List<int> numbers = [];
+        HashSet<int> numbers = [];
         bool newStyle = false;
         while (true)
         {
@@ -772,7 +782,7 @@ internal sealed partial class RtfReader
                     }
                     else if (first == RtfTokenKind.ControlWord && tokens.Word == "levelnumbers")
                     {
-                        numbers.AddRange(ReadText(trim: false).Where(c => c is > '\0' and < ';').Select(c => (int)c));
+                        numbers.UnionWith(ReadText(trim: false).Where(c => c is > '\0' and < ';').Select(c => (int)c));
                     }
                     else
                     {
@@ -837,7 +847,7 @@ internal sealed partial class RtfReader
     /// Turns <c>\leveltext</c> (a length, then the text with level numbers as bytes 0 to 8 at the places
     /// <c>\levelnumbers</c> names) into Word's "%1." form.
     /// </summary>
-    private static string LevelText(string text, List<int> numbers)
+    private static string LevelText(string text, HashSet<int> numbers)
     {
         if (text.Length == 0)
         {
@@ -957,7 +967,7 @@ internal sealed partial class RtfReader
                     Pop();
                     if (depth < overrideDepth)
                     {
-                        if (ls > 0 && !lists.ContainsKey(ls) && listDefinitions.TryGetValue(listId, out ListDefinition? definition))
+                        if (ls > 0 && lists.Count < MaxEntries && !lists.ContainsKey(ls) && listDefinitions.TryGetValue(listId, out ListDefinition? definition))
                         {
                             List list = document.Lists.Add(ls, definition);
                             for (int i = 0; i < levels.Count; i++)
@@ -1044,10 +1054,15 @@ internal sealed partial class RtfReader
     }
 
     /// <summary>The list an old-style <c>\pn</c> paragraph number makes: one single-level list per distinct number format.</summary>
-    private (List List, int Level) ListOf(PnState pn)
+    private List? ListOf(PnState pn)
     {
         if (!pnLists.TryGetValue(pn, out List? list))
         {
+            if (pnLists.Count >= MaxEntries)
+            {
+                return null;
+            }
+
             ListDefinition definition = document.Lists.AddDefinition(listDefinitions.Count + pnLists.Count + 1);
             definition.Kind = ListKind.SingleLevel;
             ListLevel level = definition.Levels[0];
@@ -1060,17 +1075,17 @@ internal sealed partial class RtfReader
                 level.RunFormat.FontHighAnsi = font;
             }
 
-            int id = 1;
-            while (document.Lists[id] is not null)
+            // The next id no \ls list holds; ids only grow, so finding them all costs one pass.
+            while (lists.ContainsKey(nextPnListId))
             {
-                id++;
+                nextPnListId++;
             }
 
-            list = document.Lists.Add(id, definition);
+            list = document.Lists.Add(nextPnListId++, definition);
             pnLists[pn] = list;
         }
 
-        return (list, 0);
+        return list;
     }
 
     // ---- Revision authors, information and defaults ----
@@ -1091,7 +1106,7 @@ internal sealed partial class RtfReader
                     name.Clear();
                     break;
                 case RtfTokenKind.GroupEnd:
-                    if (depth == groupDepth + 1 && authors.Count < 10_000)
+                    if (depth == groupDepth + 1 && authors.Count < MaxEntries)
                     {
                         authors.Add(name.Text(toSemicolon: true));
                     }

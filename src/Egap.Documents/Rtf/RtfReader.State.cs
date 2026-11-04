@@ -226,7 +226,6 @@ internal sealed partial class RtfReader
     {
         private readonly StringBuilder value = new();
         private readonly List<byte> pending = [];
-        private int skip;
 
         /// <summary>The encoding of the bytes, when not the current font's: a font name in the font's own character set.</summary>
         public Encoding? Encoding { get; set; }
@@ -235,17 +234,17 @@ internal sealed partial class RtfReader
         public bool Add(RtfTokenKind kind)
         {
             RtfTokenizer tokens = reader.tokens;
-            if (skip > 0 && kind is RtfTokenKind.Text or RtfTokenKind.Hex or RtfTokenKind.ControlSymbol or RtfTokenKind.ControlWord)
+            if (reader.skip > 0 && kind is RtfTokenKind.Text or RtfTokenKind.Hex or RtfTokenKind.ControlSymbol or RtfTokenKind.ControlWord)
             {
-                if (kind == RtfTokenKind.Text && tokens.Text.Length > skip)
+                if (kind == RtfTokenKind.Text && tokens.Text.Length > reader.skip)
                 {
-                    int count = skip;
-                    skip = 0;
+                    int count = reader.skip;
+                    reader.skip = 0;
                     pending.AddRange(tokens.Text[count..]);
                     return true;
                 }
 
-                skip = Math.Max(0, kind == RtfTokenKind.Text ? skip - tokens.Text.Length : skip - 1);
+                reader.skip = Math.Max(0, kind == RtfTokenKind.Text ? reader.skip - tokens.Text.Length : reader.skip - 1);
                 return true;
             }
 
@@ -262,7 +261,7 @@ internal sealed partial class RtfReader
                     return true;
                 case RtfTokenKind.ControlWord when tokens.Word == "u" && tokens.HasParameter:
                     Append((char)(ushort)(short)tokens.Parameter);
-                    skip = reader.state.UnicodeSkip;
+                    reader.skip = reader.state.UnicodeSkip;
                     return true;
                 case RtfTokenKind.ControlWord when SpecialCharacter(tokens.Word) is char special:
                     Append(special);
@@ -295,7 +294,6 @@ internal sealed partial class RtfReader
         {
             pending.Clear();
             value.Clear();
-            skip = 0;
         }
 
         private void Flush()

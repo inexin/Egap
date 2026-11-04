@@ -626,9 +626,17 @@ internal sealed partial class RtfReader
         }
     }
 
+    private const int MaxTabStops = 64;
+
     private void AddTabStop(TabStop stop)
     {
+        // Word keeps at most 64 tab stops a paragraph; more would make each 	x copy a longer list.
         ParagraphFormat format = state.MutablePara();
+        if (format.TabStops is { Count: >= MaxTabStops } stops && !stops.Any(t => t.Position == stop.Position))
+        {
+            return;
+        }
+
         format.TabStops = [.. (format.TabStops ?? []).Where(t => t.Position != stop.Position), stop];
         state.TabAlignment = TabAlignment.Left;
         state.TabLeader = TabLeader.None;

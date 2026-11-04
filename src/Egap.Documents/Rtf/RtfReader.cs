@@ -20,8 +20,18 @@ internal sealed partial class RtfReader
     private readonly StringBuilder text = new();
     private byte[] bytes = new byte[64];
     private int byteCount;
+    /// <summary>
+    /// The most entries the reader takes into any one table or collection it builds (styles, lists, fonts, colours,
+    /// authors, bookmarks, comments): far more than any real file has, and few enough that a hostile file stays fast.
+    /// </summary>
+    private const int MaxEntries = 10_000;
+
     private int depth;
     private int nesting;
+    /// <summary>
+    /// The fallback characters still to skip after a <c>\uN</c>. A group's start or end ends the fallback, so
+    /// <see cref="Push"/> and <see cref="Pop"/> clear it, whichever loop is reading the group.
+    /// </summary>
     private int skip;
     private State state = null!;
     private StoryContext story = null!;
@@ -146,12 +156,10 @@ internal sealed partial class RtfReader
                     return;
                 case RtfTokenKind.GroupStart:
                     FlushText();
-                    skip = 0;
                     Push(tokens.Position - 1);
                     break;
                 case RtfTokenKind.GroupEnd:
                     FlushText();
-                    skip = 0;
                     if (finish is not null && depth == groupDepth)
                     {
                         FinishStory(finish);
@@ -207,6 +215,7 @@ internal sealed partial class RtfReader
             throw new DocumentLimitException($"RTF groups nest deeper than {options.Limits.MaxDepth}.");
         }
 
+        skip = 0;
         depth++;
         if (states.Count <= depth)
         {
@@ -222,6 +231,7 @@ internal sealed partial class RtfReader
     /// <summary>Closes a group, going back to the enclosing state.</summary>
     private void Pop()
     {
+        skip = 0;
         if (depth > 0)
         {
             depth--;
@@ -447,11 +457,10 @@ internal sealed partial class RtfReader
             paragraph.Format.List = list;
             paragraph.Format.ListLevel = Math.Clamp(state.ListLevel, 0, 8);
         }
-        else if (state.ListOverride == 0 && state.Pn is { } pn && !pn.Ignored)
+        else if (state.ListOverride == 0 && state.Pn is { } pn && !pn.Ignored && ListOf(pn) is { } pnList)
         {
-            (List pnList, int pnLevel) = ListOf(pn);
             paragraph.Format.List = pnList;
-            paragraph.Format.ListLevel = pnLevel;
+            paragraph.Format.ListLevel = 0;
         }
 
         if (!state.Char.IsEmpty)
