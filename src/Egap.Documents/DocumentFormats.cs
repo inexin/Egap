@@ -10,7 +10,7 @@ public sealed partial class Document
 
     /// <summary>
     /// Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
-    /// <see cref="Identify(Stream, string?)"/>). DOCX, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
+    /// <see cref="Identify(Stream, string?)"/>). DOCX, RTF, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
     /// Markdown need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>.
     /// </summary>
     /// <exception cref="DocumentException">The file is not one Egap can read.</exception>
@@ -77,7 +77,7 @@ public sealed partial class Document
     /// <summary>
     /// Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
     /// whose first entry is an EPUB <c>mimetype</c> is EPUB, another ZIP package or an old compound file is Word's, a MIME
-    /// message of <c>multipart/related</c> parts is MHTML, <c>%PDF-</c> is PDF, a JSON object naming the <c>DoclingDocument</c> schema is
+    /// message of <c>multipart/related</c> parts is MHTML, <c>%PDF-</c> is PDF, <c>{\rtf</c> is RTF, a JSON object naming the <c>DoclingDocument</c> schema is
     /// Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
     /// so. It needs no add-on package, so a program can tell its user which package a file needs.
     /// </summary>
@@ -139,6 +139,11 @@ public sealed partial class Document
             return DocumentFormatKind.Pdf;
         }
 
+        if (IsRtf(head))
+        {
+            return DocumentFormatKind.Rtf;
+        }
+
         DocumentFormatKind named = KindOfExtension(extension);
         if (named is DocumentFormatKind.Html or DocumentFormatKind.Markdown or DocumentFormatKind.Text or DocumentFormatKind.Mhtml)
         {
@@ -174,8 +179,20 @@ public sealed partial class Document
         ".JSON" => DocumentFormatKind.DoclingJson,
         ".EPUB" => DocumentFormatKind.Epub,
         ".MHT" or ".MHTML" => DocumentFormatKind.Mhtml,
+        ".RTF" => DocumentFormatKind.Rtf,
         _ => DocumentFormatKind.Unknown,
     };
+
+    /// <summary>Whether the bytes start with <c>{\rtf</c>, after a byte order mark or white space as Word allows.</summary>
+    private static bool IsRtf(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes is [0xEF, 0xBB, 0xBF, ..])
+        {
+            bytes = bytes[3..];
+        }
+
+        return bytes.TrimStart(" \t\r\n"u8).StartsWith("{\\rtf"u8);
+    }
 
     /// <summary>Whether the text is a JSON object whose <c>schema_name</c> is Docling's, as Docling writes it.</summary>
     private static bool IsDoclingJson(ReadOnlySpan<byte> bytes)

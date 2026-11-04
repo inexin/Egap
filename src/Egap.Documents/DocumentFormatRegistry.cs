@@ -37,6 +37,7 @@ internal static class DocumentFormatRegistry
         [DocumentFormatKind.Docx] = new(DocumentFormatKind.Docx, ReadDocx, (document, path) => DocxFormat.Save(document, path)),
         [DocumentFormatKind.Text] = new(DocumentFormatKind.Text, ReadText, (document, path) => TextFormat.Save(document, path)),
         [DocumentFormatKind.Pdf] = new(DocumentFormatKind.Pdf, ReadPdf, SavePdf),
+        [DocumentFormatKind.Rtf] = new(DocumentFormatKind.Rtf, ReadRtf, null),
 
         // Docling JSON holds page layouts, which a document is read from; a document is not written back as one.
         [DocumentFormatKind.DoclingJson] = new(DocumentFormatKind.DoclingJson, ReadDocling, null),
@@ -93,6 +94,11 @@ internal static class DocumentFormatRegistry
         return DocxFormat.Load(stream, out warnings);
     }
 
+    private static Document ReadRtf(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
+    {
+        return RtfFormat.Read(bytes, out warnings, null);
+    }
+
     private static Document ReadText(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
     {
         warnings = [];
@@ -129,6 +135,7 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.DoclingJson => "Docling JSON",
         DocumentFormatKind.Epub => "EPUB",
         DocumentFormatKind.Mhtml => "MHTML",
+        DocumentFormatKind.Rtf => "RTF",
         _ => "this file",
     };
 
