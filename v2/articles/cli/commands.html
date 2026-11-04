@@ -141,7 +141,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </table>
 <h2 id="egap-convert">egap convert</h2>
 <p><code>egap convert &lt;inputs&gt;... [options]</code></p>
-<p>Convert between formats by the output's extension: HTML, Markdown, DOCX, text and images to PDF; PDF to DOCX, HTML, Markdown or text; and the flow formats to each other.</p>
+<p>Convert between formats by the output's extension: HTML, Markdown, DOCX, RTF, text and images to PDF; PDF to DOCX, RTF, HTML, Markdown or text; and the flow formats to each other.</p>
 <table>
 <thead>
 <tr>
@@ -152,7 +152,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 <tbody>
 <tr>
 <td><code>&lt;inputs&gt;</code></td>
-<td>HTML, Markdown, DOCX, text, image or PDF files, globs (*, ?, **), or folders with --recursive.</td>
+<td>HTML, Markdown, DOCX, RTF, text, image or PDF files, globs (*, ?, **), or folders with --recursive.</td>
 </tr>
 <tr>
 <td><code>--recursive</code>, <code>-r</code></td>
@@ -172,7 +172,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 <tr>
 <td><code>--to &lt;format&gt;</code></td>
-<td>The output format when -o does not say: pdf, docx, html, md, txt.</td>
+<td>The output format when -o does not say: pdf, docx, rtf, html, md, txt.</td>
 </tr>
 <tr>
 <td><code>--page-size &lt;size&gt;</code></td>
@@ -216,7 +216,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 <tr>
 <td><code>--set &lt;key=value&gt;</code></td>
-<td>A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf).</td>
+<td>A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. RTF: unknown-groups. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf).</td>
 </tr>
 <tr>
 <td><code>--base-dir &lt;folder&gt;</code></td>

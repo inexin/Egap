@@ -167,6 +167,54 @@ DOCX gives them.</li>
 <li>Islands from other formats (HTML and DOCX ones) are written as their picture, or their text.</li>
 <li>Semicolons and tabs in font, style, list and author names are left out: a semicolon ends a table entry.</li>
 </ul>
+<h2 id="rtf-inside-docx">RTF inside DOCX</h2>
+<p>A DOCX file can hold another document as an embedded part, placed with a <code>w:altChunk</code> element; Word imports the part when
+it opens the file. When the part is RTF (content type <code>application/rtf</code> or <code>text/rtf</code>), <code>DocxFormat.Load</code> does the same:
+it reads the part with the RTF reader and puts its blocks where the chunk was, in the body, a table cell, a header or a
+note. Styles the document already has by the same id are the document's, as when Word merges the chunk; the chunk's other
+styles and its lists come along. The chunk's own sections, headers and footers are not taken, and notes and comments in a
+chunk inside a header, note, comment or text box, which cannot hold them, are left out with a warning.</p>
+<p>Saving writes the imported blocks as ordinary content, so the saved file has no altChunk. An RTF chunk that cannot be read
+stays as it was, a <code>BlockIsland</code> that keeps the element and its part, and <code>DocxFormat.Load</code> reports it as a
+<code>ResourceNotLoaded</code> warning. Chunks in other formats (HTML, MHT, plain text, DOCX) stay block islands too.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document merged = DocxFormat.Load(&quot;with-chunk.docx&quot;, out IReadOnlyList&lt;ConversionWarning&gt; warnings);
+foreach (ConversionWarning warning in warnings)
+{
+    Console.WriteLine(warning);                                  // an RTF chunk that could not be read
+}
+</code></pre>
+<h2 id="from-the-command-line">From the command line</h2>
+<p><code>egap convert</code> reads and writes RTF in every direction it supports: RTF to PDF, DOCX, HTML, Markdown or text, and any of
+those, and PDF, to RTF. <code>--set unknown-groups=false</code> leaves out the unknown <code>\*</code> groups an RTF input kept.</p>
+<pre><code class="lang-sh">egap convert letter.rtf -o letter.pdf
+egap convert report.docx -o report.rtf
+egap convert old.rtf -o clean.rtf --set unknown-groups=false
+</code></pre>
+<h2 id="known-limits">Known limits</h2>
+<p>Reading:</p>
+<ul>
+<li>Old Macintosh PICT pictures and Windows bitmap (<code>\wbitmap</code>) pictures are left out with a warning.</li>
+<li>Equations, shape groups, other drawing shapes and embedded objects are islands: they draw their picture, and their
+content is not in the model.</li>
+<li>Line numbering (<code>\linemod</code>) is not read: the model has none.</li>
+<li>A style keeps only what it changes from its base chain; a value it repeats from further up is dropped, which leaves
+the formatting in effect as it was. Picture sizes are whole twips.</li>
+</ul>
+<p>Writing:</p>
+<ul>
+<li>Theme colours and fonts are written as what they are in the theme, and a hyperlink as a <code>HYPERLINK</code> field.</li>
+<li>Two top-level tables in a row become one table when read back, as RTF has nothing between rows to part them.</li>
+<li>Formatting a table style gives conditionally (a bold first row) is written as each cell's own formatting, and every
+cell's width is written.</li>
+<li>Shapes in the text become floating shapes anchored to their line; a picture's source address and an SVG picture's
+original are not written (the SVG is drawn as a PNG).</li>
+<li>Move revisions are written as insertions and deletions, and revisions of field characters are not written.</li>
+<li>Not written: a paragraph's &quot;no list&quot; override, a row's footer and hidden flags, a table style's band sizes, overline,
+word spacing, OpenType features and a comment's Done flag.</li>
+</ul>
+<p>The Word checks wait for a Word install: the RTF round trips and reopen checks so far use LibreOffice's RTF, not Word's.</p>
 <h2 id="limits">Limits</h2>
 <p><code>RtfLoadOptions.Limits</code> keeps an untrusted file in bounds: <code>MaxDepth</code> caps how deep groups nest, and <code>MaxPartSize</code> caps
 each picture and each block of binary data. A file past a limit throws a <code>DocumentLimitException</code>; a file that does not
