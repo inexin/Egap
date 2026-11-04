@@ -112,8 +112,8 @@ internal sealed partial class RtfReader
     private void EndCell(int level)
     {
         FlushText();
-        // A cell ends with a paragraph, as in Word: the cell mark after a nested table is an empty one.
-        EndParagraph(level, force: story.Paragraph is not null || LevelAt(level).Current is not { Blocks: [.., Paragraph] });
+        // \cell is the last paragraph's mark, as in Word: after a \par or a nested table it ends an empty paragraph.
+        EndParagraph(level);
         TableLevel table = LevelAt(level);
         if (table.Current is not null)
         {

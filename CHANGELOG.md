@@ -13,6 +13,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   written does not take is now a usage error; before, PDF settings were ignored for other formats.
 - `convert` to Markdown writes images to a folder named after the output (`report.images` for `report.md`), not after
   the temporary file it writes first.
+- `convert` reads and writes RTF: `.rtf` to PDF, DOCX, HTML, Markdown or text, any of those (and PDF) to `.rtf`, and
+  `--to rtf`. RTF takes `--set unknown-groups=false` to leave out the unknown `\*` groups an RTF input kept.
 
 ## Egap.Documents 2.3.0 (unreleased)
 
@@ -34,6 +36,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   style's formatting on every paragraph and run. A cell that ends with a nested table gets the empty paragraph Word gives it.
   A `\*` group that names no destination word is kept whole, without its text also reaching the document; a `\*` later
   in a group marks nothing; and a kept group cut off by the end of the file is closed.
+- DOCX altChunks with RTF content: an embedded part (`w:altChunk`) whose content type is `application/rtf` or
+  `text/rtf` is read with the RTF reader, and its blocks take the chunk's place, as Word imports it when it opens the
+  file; saving writes them as ordinary content. Other altChunks (HTML, MHT, text, DOCX) stay block islands as before. An
+  RTF chunk that cannot be read stays an island, and `DocxFormat.Load` reports it as a `ResourceNotLoaded` warning.
 - Layout warnings: `DocumentLayout.Warnings` lists what a layout laid out differently from what the document asks for,
   as `LayoutWarning` records with the kind, a message, the node and its page, and `LayoutOptions.OnWarning` hears each
   one, also when a document is saved as PDF. The first kind, `FloatLaidOutInline`, is a floating table or framed

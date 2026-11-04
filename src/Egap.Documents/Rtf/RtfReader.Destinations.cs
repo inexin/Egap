@@ -338,6 +338,10 @@ internal sealed partial class RtfReader
         }
 
         AddInline(note);
+
+        // A tracked change around the note is the mark's; the note's text says its own.
+        state.Inserted = null;
+        state.Deleted = null;
         Footnote? outer = currentNote;
         currentNote = note;
         noteDepth++;

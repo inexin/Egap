@@ -156,6 +156,63 @@ internal static class RtfStyleFormats
         }
     }
 
+    /// <summary>
+    /// Clears, without notifying, each property of <paramref name="style"/>'s own formatting that has the value its base
+    /// chain (and, for a paragraph style, the document defaults) gives it, so the style keeps only what it changes. Its
+    /// formatting in effect stays as it was. Tab stops are left alone: a style's own stops are changes already.
+    /// </summary>
+    public static void DropRedundant(Style style)
+    {
+        (ParagraphFormat paragraph, RunFormat run) = Inherited(style);
+        switch (style)
+        {
+            case ParagraphStyle p:
+                DropRedundant(p.ParagraphFormat, paragraph);
+                DropRedundant(p.RunFormat, run);
+                break;
+            case CharacterStyle c:
+                DropRedundant(c.RunFormat, run);
+                break;
+        }
+    }
+
+    /// <summary>How many styles <paramref name="style"/>'s chain holds, itself included: a base before the styles on it.</summary>
+    public static int Depth(Style style)
+    {
+        return ChainOf(style).Count;
+    }
+
+    private static void DropRedundant(FormatBase direct, FormatBase given)
+    {
+        if (direct.IsEmpty)
+        {
+            return;
+        }
+
+        for (int i = 0; i < direct.PropertyCount; i++)
+        {
+            if (direct.GetRaw(i) is not { } value || (direct is ParagraphFormat && i == ParagraphFormat.TabStopsId))
+            {
+                continue;
+            }
+
+            if (direct is RunFormat && IsFontSlot(i))
+            {
+                // A font slot's name and theme font go together: both match or both stay.
+                int name = RunFormat.FontAsciiId + ((i - RunFormat.FontAsciiId) % 4), theme = RunFormat.ThemeFontAsciiId + ((i - RunFormat.FontAsciiId) % 4);
+                if (Equals(direct.GetRaw(name), given.GetRaw(name)) && Equals(direct.GetRaw(theme), given.GetRaw(theme)))
+                {
+                    direct.SetRawSilently(name, null);
+                    direct.SetRawSilently(theme, null);
+                }
+            }
+            else if (Equals(value, given.GetRaw(i)))
+            {
+                direct.SetRawSilently(i, null);
+            }
+        }
+    }
+
     /// <summary>The tab stops after <paramref name="added"/> changes <paramref name="stops"/>, by position.</summary>
     public static TabStop[] AddTabs(IReadOnlyList<TabStop>? stops, IReadOnlyList<TabStop> added)
     {

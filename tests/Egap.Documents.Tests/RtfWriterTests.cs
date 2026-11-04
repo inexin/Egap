@@ -349,6 +349,25 @@ public class RtfWriterTests
     }
 
     [Fact]
+    public void TrackedBookmarksAndNotesKeepTheirChange()
+    {
+        Document document = new();
+        Paragraph paragraph = Body(document).AddParagraph("Text");
+        paragraph.Inlines.Add(new BookmarkStart(document, "moved") { Revision = new Revision(RevisionKind.Deletion, "Ann") });
+        paragraph.AddRun("gone").Revision = new Revision(RevisionKind.Deletion, "Ann");
+        paragraph.Inlines.Add(new BookmarkEnd(document, "moved") { Revision = new Revision(RevisionKind.Deletion, "Ann") });
+        paragraph.AddFootnote("The note.").Revision = new Revision(RevisionKind.Insertion, "Bob");
+
+        Document back = Reread(document);
+        Assert.Equal(RevisionKind.Deletion, back.Descendants<BookmarkStart>().Single().Revision!.Kind);
+        Assert.Equal(RevisionKind.Deletion, back.Descendants<BookmarkEnd>().Single().Revision!.Kind);
+        Footnote read = back.Descendants<Footnote>().Single();
+        Assert.Equal(RevisionKind.Insertion, read.Revision!.Kind);
+        Assert.Equal("Bob", read.Revision.Author);
+        Assert.All(read.Story.Blocks.OfType<Paragraph>().SelectMany(p => p.Runs), r => Assert.Null(r.Revision));
+    }
+
+    [Fact]
     public void FieldAcrossParagraphsKeepsEachParagraphsFormatting()
     {
         Document document = new();
