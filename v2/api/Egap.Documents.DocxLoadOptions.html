@@ -182,6 +182,71 @@ Class DocxLoadOptions  <a class="header-action link-secondary" title="View sourc
 
 
 
+  <a id="Egap_Documents_DocxLoadOptions_Password_" data-uid="Egap.Documents.DocxLoadOptions.Password*"></a>
+
+  <h3 id="Egap_Documents_DocxLoadOptions_Password" data-uid="Egap.Documents.DocxLoadOptions.Password">
+  Password
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The password of an encrypted file; null when the file is not encrypted, or to ask <a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_PasswordCallback">PasswordCallback</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Password { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocxLoadOptions_PasswordCallback_" data-uid="Egap.Documents.DocxLoadOptions.PasswordCallback*"></a>
+
+  <h3 id="Egap_Documents_DocxLoadOptions_PasswordCallback" data-uid="Egap.Documents.DocxLoadOptions.PasswordCallback">
+  PasswordCallback
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asked for a password when the file is encrypted and <a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password">Password</a> is missing or wrong. It gets the attempt's
+number, from 1, and gives a password to try, or null to give up, which throws <a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;int, string?&gt;? PasswordCallback { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 

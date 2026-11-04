@@ -872,11 +872,12 @@ formats and the text it puts before and after a value (<code>\b</code>, <code>\f
 
   <h3 id="Egap_Documents_Document_Identify_System_IO_Stream_System_String_" data-uid="Egap.Documents.Document.Identify(System.IO.Stream,System.String)">
   Identify(Stream, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
-whose first entry is an EPUB <code>mimetype</code> is EPUB, another ZIP package or an old compound file is Word's, a MIME
+whose first entry is an EPUB <code>mimetype</code> is EPUB, another ZIP package or an old compound file is Word's (and a
+compound file that holds an encrypted package is <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a>), a MIME
 message of <code>multipart/related</code> parts is MHTML, <code>%PDF-</code> is PDF, <code>{\rtf</code> is RTF, a JSON object naming the <code>DoclingDocument</code> schema is
 Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
 so. It needs no add-on package, so a program can tell its user which package a file needs.</p>
@@ -918,7 +919,7 @@ so. It needs no add-on package, so a program can tell its user which package a f
 
   <h3 id="Egap_Documents_Document_Identify_System_String_" data-uid="Egap.Documents.Document.Identify(System.String)">
   Identify(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L164"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tells which format the file at <code class="paramref">path</code> is in without loading it. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>.</p>
@@ -1084,7 +1085,7 @@ an edit needs a new layout. Paragraphs that did not change since the last layout
 
   <h3 id="Egap_Documents_Document_Load_System_IO_Stream_" data-uid="Egap.Documents.Document.Load(System.IO.Stream)">
   Load(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads a file in any format Egap reads from a stream, which is left open. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a>.</p>
@@ -1128,9 +1129,61 @@ an edit needs a new layout. Paragraphs that did not change since the last layout
 
   <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
 
+  <h3 id="Egap_Documents_Document_Load_System_IO_Stream_Egap_Documents_DocumentLoadOptions_" data-uid="Egap.Documents.Document.Load(System.IO.Stream,Egap.Documents.DocumentLoadOptions)">
+  Load(Stream, DocumentLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a file in any format Egap reads from a stream, which is left open, with a password for an encrypted file and
+limits for untrusted ones. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document Load(Stream stream, DocumentLoadOptions? options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.DocumentLoadOptions.html">DocumentLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The stream is not a file Egap can read.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+    <dd><p>The file is encrypted and no password, or no right one, was given.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The file's format needs a package that is not registered; the message names it.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
+
   <h3 id="Egap_Documents_Document_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___" data-uid="Egap.Documents.Document.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)">
   Load(Stream, out IReadOnlyList&lt;ConversionWarning&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L74"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads a file in any format Egap reads from a stream, which is left open, reporting what could not be read as it was.
@@ -1177,14 +1230,69 @@ See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_L
 
   <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
 
+  <h3 id="Egap_Documents_Document_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_DocumentLoadOptions_" data-uid="Egap.Documents.Document.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.DocumentLoadOptions)">
+  Load(Stream, out IReadOnlyList&lt;ConversionWarning&gt;, DocumentLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a file in any format Egap reads from a stream, which is left open, with a password for an encrypted file and
+limits for untrusted ones, reporting what could not be read as it was. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document Load(Stream stream, out IReadOnlyList&lt;ConversionWarning&gt; warnings, DocumentLoadOptions? options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>warnings</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.DocumentLoadOptions.html">DocumentLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The stream is not a file Egap can read.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+    <dd><p>The file is encrypted and no password, or no right one, was given.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The file's format needs a package that is not registered; the message names it.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
+
   <h3 id="Egap_Documents_Document_Load_System_String_" data-uid="Egap.Documents.Document.Load(System.String)">
   Load(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L19"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
 <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>). DOCX, RTF, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
-Markdown need their add-on package and its <code>Register()</code> call, such as <code>MarkdownFormat.Register()</code>.</p>
+Markdown need their add-on package and its <code>Register()</code> call, such as <code>MarkdownFormat.Register()</code>. An
+encrypted Word file needs its password: see <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_Egap_Documents_DocumentLoadOptions_">Load(string, DocumentLoadOptions?)</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1225,9 +1333,61 @@ Markdown need their add-on package and its <code>Register()</code> call, such as
 
   <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
 
+  <h3 id="Egap_Documents_Document_Load_System_String_Egap_Documents_DocumentLoadOptions_" data-uid="Egap.Documents.Document.Load(System.String,Egap.Documents.DocumentLoadOptions)">
+  Load(string, DocumentLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a file in any format Egap reads, with a password for an encrypted file and limits for untrusted ones. See
+<a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document Load(string path, DocumentLoadOptions? options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.DocumentLoadOptions.html">DocumentLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file is not one Egap can read.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+    <dd><p>The file is encrypted and no password, or no right one, was given.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The file's format needs a package that is not registered; the message names it.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
+
   <h3 id="Egap_Documents_Document_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___" data-uid="Egap.Documents.Document.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)">
   Load(string, out IReadOnlyList&lt;ConversionWarning&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads a file in any format Egap reads, reporting what could not be read as it was. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a>.</p>
@@ -1263,6 +1423,60 @@ Markdown need their add-on package and its <code>Register()</code> call, such as
   <dl class="parameters">
     <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
     <dd><p>The file is not one Egap can read.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>The file's format needs a package that is not registered; the message names it.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Document_Load_" data-uid="Egap.Documents.Document.Load*"></a>
+
+  <h3 id="Egap_Documents_Document_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_DocumentLoadOptions_" data-uid="Egap.Documents.Document.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.DocumentLoadOptions)">
+  Load(string, out IReadOnlyList&lt;ConversionWarning&gt;, DocumentLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a file in any format Egap reads, with a password for an encrypted file and limits for untrusted ones, reporting
+what could not be read as it was. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Document Load(string path, out IReadOnlyList&lt;ConversionWarning&gt; warnings, DocumentLoadOptions? options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>warnings</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Documents.DocumentLoadOptions.html">DocumentLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file is not one Egap can read.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+    <dd><p>The file is encrypted and no password, or no right one, was given.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
     <dd><p>The file's format needs a package that is not registered; the message names it.</p>
@@ -1372,7 +1586,7 @@ as the sequence is read; the template itself is not changed.</p>
 
   <h3 id="Egap_Documents_Document_Save_System_String_" data-uid="Egap.Documents.Document.Save(System.String)">
   Save(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L114"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the document in the format its file extension names: .docx, .dotx, .docm and .dotm as Word's, .pdf as PDF (as

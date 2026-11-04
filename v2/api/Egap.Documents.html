@@ -269,6 +269,18 @@ reading stopped instead of using unbounded memory or time. The limits are in the
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.DocumentLoadOptions.html">DocumentLoadOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_Egap_Documents_DocumentLoadOptions_">Load(string, DocumentLoadOptions?)</a> reads a file whose format it finds itself.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+      <dd><p>A file is encrypted and could not be opened: no password was given, or none of those given was right. The load options
+take the password (<a class="xref" href="Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password">Password</a>, <a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password">Password</a>) and a callback that
+asks for another one.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.DocumentPreview.html">DocumentPreview</a></dt>
       <dd><p>Sends a document's pages to the egap-preview tool (<code>dotnet tool install -g Egap.Preview</code>), which shows them on a
 local web page and shows them again each time new pages arrive: run the code under <code>dotnet watch</code> and the page
@@ -298,7 +310,9 @@ cannot overflow the stack.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.DocxFormat.html">DocxFormat</a></dt>
       <dd><p>Word's DOCX format, with its DOTX and DOCM variants (Phase 6 design Q9 and Q10): strict and transitional files read
-into the model, with what the model does not name kept as extension data so a DOCX round trip keeps it.</p>
+into the model, with what the model does not name kept as extension data so a DOCX round trip keeps it. Files encrypted
+with a password to open them are read with <a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password">Password</a> and written with
+<a class="xref" href="Egap.Documents.DocxSaveOptions.html#Egap_Documents_DocxSaveOptions_Password">Password</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist">

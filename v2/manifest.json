@@ -615,6 +615,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.DocumentLoadOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.DocumentLoadOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.DocumentLoadOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentLoadOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Documents.Document.Load(System.String%2cEgap.Documents.DocumentLoadOptions)\" data-throw-if-not-resolved=\"false\"></xref> reads a file whose format it finds itself.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.DocumentPasswordException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.DocumentPasswordException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.DocumentPasswordException",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentPasswordException.yml\" sourcestartlinenumber=\"1\">A file is encrypted and could not be opened: no password was given, or none of those given was right. The load options\ntake the password (<xref href=\"Egap.Documents.DocumentLoadOptions.Password\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Egap.Documents.DocxLoadOptions.Password\" data-throw-if-not-resolved=\"false\"></xref>) and a callback that\nasks for another one.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.DocumentPreview.yml",
       "output": {
         ".html": {
@@ -681,7 +709,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.DocxFormat",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.DocxFormat.yml\" sourcestartlinenumber=\"1\">Word's DOCX format, with its DOTX and DOCM variants (Phase 6 design Q9 and Q10): strict and transitional files read\ninto the model, with what the model does not name kept as extension data so a DOCX round trip keeps it.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DocxFormat.yml\" sourcestartlinenumber=\"1\">Word's DOCX format, with its DOTX and DOCM variants (Phase 6 design Q9 and Q10): strict and transitional files read\ninto the model, with what the model does not name kept as extension data so a DOCX round trip keeps it. Files encrypted\nwith a password to open them are read with <xref href=\"Egap.Documents.DocxLoadOptions.Password\" data-throw-if-not-resolved=\"false\"></xref> and written with\n<xref href=\"Egap.Documents.DocxSaveOptions.Password\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",

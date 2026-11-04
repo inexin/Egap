@@ -3406,6 +3406,15 @@ references:
   commentId: M:Egap.Documents.Document.Load(System.IO.Stream)
   fullName: Egap.Documents.Document.Load(System.IO.Stream)
   nameWithType: Document.Load(Stream)
+- uid: Egap.Documents.Document.Load(System.IO.Stream,Egap.Documents.DocumentLoadOptions)
+  name: Load(Stream, DocumentLoadOptions?)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_Load_System_IO_Stream_Egap_Documents_DocumentLoadOptions_
+  commentId: M:Egap.Documents.Document.Load(System.IO.Stream,Egap.Documents.DocumentLoadOptions)
+  name.vb: Load(Stream, DocumentLoadOptions)
+  fullName: Egap.Documents.Document.Load(System.IO.Stream, Egap.Documents.DocumentLoadOptions?)
+  fullName.vb: Egap.Documents.Document.Load(System.IO.Stream, Egap.Documents.DocumentLoadOptions)
+  nameWithType: Document.Load(Stream, DocumentLoadOptions?)
+  nameWithType.vb: Document.Load(Stream, DocumentLoadOptions)
 - uid: Egap.Documents.Document.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)
   name: Load(Stream, out IReadOnlyList<ConversionWarning>)
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___
@@ -3415,6 +3424,15 @@ references:
   fullName.vb: Egap.Documents.Document.Load(System.IO.Stream, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning))
   nameWithType: Document.Load(Stream, out IReadOnlyList<ConversionWarning>)
   nameWithType.vb: Document.Load(Stream, IReadOnlyList(Of ConversionWarning))
+- uid: Egap.Documents.Document.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.DocumentLoadOptions)
+  name: Load(Stream, out IReadOnlyList<ConversionWarning>, DocumentLoadOptions?)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_Load_System_IO_Stream_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_DocumentLoadOptions_
+  commentId: M:Egap.Documents.Document.Load(System.IO.Stream,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.DocumentLoadOptions)
+  name.vb: Load(Stream, IReadOnlyList(Of ConversionWarning), DocumentLoadOptions)
+  fullName: Egap.Documents.Document.Load(System.IO.Stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.DocumentLoadOptions?)
+  fullName.vb: Egap.Documents.Document.Load(System.IO.Stream, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.DocumentLoadOptions)
+  nameWithType: Document.Load(Stream, out IReadOnlyList<ConversionWarning>, DocumentLoadOptions?)
+  nameWithType.vb: Document.Load(Stream, IReadOnlyList(Of ConversionWarning), DocumentLoadOptions)
 - uid: Egap.Documents.Document.Load(System.String)
   name: Load(string)
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_
@@ -3424,6 +3442,15 @@ references:
   fullName.vb: Egap.Documents.Document.Load(String)
   nameWithType: Document.Load(string)
   nameWithType.vb: Document.Load(String)
+- uid: Egap.Documents.Document.Load(System.String,Egap.Documents.DocumentLoadOptions)
+  name: Load(string, DocumentLoadOptions?)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_Egap_Documents_DocumentLoadOptions_
+  commentId: M:Egap.Documents.Document.Load(System.String,Egap.Documents.DocumentLoadOptions)
+  name.vb: Load(String, DocumentLoadOptions)
+  fullName: Egap.Documents.Document.Load(string, Egap.Documents.DocumentLoadOptions?)
+  fullName.vb: Egap.Documents.Document.Load(String, Egap.Documents.DocumentLoadOptions)
+  nameWithType: Document.Load(string, DocumentLoadOptions?)
+  nameWithType.vb: Document.Load(String, DocumentLoadOptions)
 - uid: Egap.Documents.Document.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)
   name: Load(string, out IReadOnlyList<ConversionWarning>)
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___
@@ -3433,6 +3460,15 @@ references:
   fullName.vb: Egap.Documents.Document.Load(String, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning))
   nameWithType: Document.Load(string, out IReadOnlyList<ConversionWarning>)
   nameWithType.vb: Document.Load(String, IReadOnlyList(Of ConversionWarning))
+- uid: Egap.Documents.Document.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.DocumentLoadOptions)
+  name: Load(string, out IReadOnlyList<ConversionWarning>, DocumentLoadOptions?)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___Egap_Documents_DocumentLoadOptions_
+  commentId: M:Egap.Documents.Document.Load(System.String,System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@,Egap.Documents.DocumentLoadOptions)
+  name.vb: Load(String, IReadOnlyList(Of ConversionWarning), DocumentLoadOptions)
+  fullName: Egap.Documents.Document.Load(string, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>, Egap.Documents.DocumentLoadOptions?)
+  fullName.vb: Egap.Documents.Document.Load(String, System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning), Egap.Documents.DocumentLoadOptions)
+  nameWithType: Document.Load(string, out IReadOnlyList<ConversionWarning>, DocumentLoadOptions?)
+  nameWithType.vb: Document.Load(String, IReadOnlyList(Of ConversionWarning), DocumentLoadOptions)
 - uid: Egap.Documents.Document.Load*
   name: Load
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_Load_
@@ -4436,6 +4472,12 @@ references:
   commentId: F:Egap.Documents.DocumentFormatKind.Docx
   fullName: Egap.Documents.DocumentFormatKind.Docx
   nameWithType: DocumentFormatKind.Docx
+- uid: Egap.Documents.DocumentFormatKind.Encrypted
+  name: Encrypted
+  href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted
+  commentId: F:Egap.Documents.DocumentFormatKind.Encrypted
+  fullName: Egap.Documents.DocumentFormatKind.Encrypted
+  nameWithType: DocumentFormatKind.Encrypted
 - uid: Egap.Documents.DocumentFormatKind.Epub
   name: Epub
   href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Epub
@@ -4580,6 +4622,89 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentLimits.MaxTotalSize
   nameWithType: DocumentLimits.MaxTotalSize
+- uid: Egap.Documents.DocumentLoadOptions
+  name: DocumentLoadOptions
+  href: api/Egap.Documents.DocumentLoadOptions.html
+  commentId: T:Egap.Documents.DocumentLoadOptions
+  fullName: Egap.Documents.DocumentLoadOptions
+  nameWithType: DocumentLoadOptions
+- uid: Egap.Documents.DocumentLoadOptions.Limits
+  name: Limits
+  href: api/Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Limits
+  commentId: P:Egap.Documents.DocumentLoadOptions.Limits
+  fullName: Egap.Documents.DocumentLoadOptions.Limits
+  nameWithType: DocumentLoadOptions.Limits
+- uid: Egap.Documents.DocumentLoadOptions.Limits*
+  name: Limits
+  href: api/Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Limits_
+  commentId: Overload:Egap.Documents.DocumentLoadOptions.Limits
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentLoadOptions.Limits
+  nameWithType: DocumentLoadOptions.Limits
+- uid: Egap.Documents.DocumentLoadOptions.Password
+  name: Password
+  href: api/Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password
+  commentId: P:Egap.Documents.DocumentLoadOptions.Password
+  fullName: Egap.Documents.DocumentLoadOptions.Password
+  nameWithType: DocumentLoadOptions.Password
+- uid: Egap.Documents.DocumentLoadOptions.Password*
+  name: Password
+  href: api/Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password_
+  commentId: Overload:Egap.Documents.DocumentLoadOptions.Password
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentLoadOptions.Password
+  nameWithType: DocumentLoadOptions.Password
+- uid: Egap.Documents.DocumentLoadOptions.PasswordCallback
+  name: PasswordCallback
+  href: api/Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_PasswordCallback
+  commentId: P:Egap.Documents.DocumentLoadOptions.PasswordCallback
+  fullName: Egap.Documents.DocumentLoadOptions.PasswordCallback
+  nameWithType: DocumentLoadOptions.PasswordCallback
+- uid: Egap.Documents.DocumentLoadOptions.PasswordCallback*
+  name: PasswordCallback
+  href: api/Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_PasswordCallback_
+  commentId: Overload:Egap.Documents.DocumentLoadOptions.PasswordCallback
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentLoadOptions.PasswordCallback
+  nameWithType: DocumentLoadOptions.PasswordCallback
+- uid: Egap.Documents.DocumentPasswordException
+  name: DocumentPasswordException
+  href: api/Egap.Documents.DocumentPasswordException.html
+  commentId: T:Egap.Documents.DocumentPasswordException
+  fullName: Egap.Documents.DocumentPasswordException
+  nameWithType: DocumentPasswordException
+- uid: Egap.Documents.DocumentPasswordException.#ctor(System.String,System.Boolean)
+  name: DocumentPasswordException(string, bool)
+  href: api/Egap.Documents.DocumentPasswordException.html#Egap_Documents_DocumentPasswordException__ctor_System_String_System_Boolean_
+  commentId: M:Egap.Documents.DocumentPasswordException.#ctor(System.String,System.Boolean)
+  name.vb: New(String, Boolean)
+  fullName: Egap.Documents.DocumentPasswordException.DocumentPasswordException(string, bool)
+  fullName.vb: Egap.Documents.DocumentPasswordException.New(String, Boolean)
+  nameWithType: DocumentPasswordException.DocumentPasswordException(string, bool)
+  nameWithType.vb: DocumentPasswordException.New(String, Boolean)
+- uid: Egap.Documents.DocumentPasswordException.#ctor*
+  name: DocumentPasswordException
+  href: api/Egap.Documents.DocumentPasswordException.html#Egap_Documents_DocumentPasswordException__ctor_
+  commentId: Overload:Egap.Documents.DocumentPasswordException.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Documents.DocumentPasswordException.DocumentPasswordException
+  fullName.vb: Egap.Documents.DocumentPasswordException.New
+  nameWithType: DocumentPasswordException.DocumentPasswordException
+  nameWithType.vb: DocumentPasswordException.New
+- uid: Egap.Documents.DocumentPasswordException.WrongPassword
+  name: WrongPassword
+  href: api/Egap.Documents.DocumentPasswordException.html#Egap_Documents_DocumentPasswordException_WrongPassword
+  commentId: P:Egap.Documents.DocumentPasswordException.WrongPassword
+  fullName: Egap.Documents.DocumentPasswordException.WrongPassword
+  nameWithType: DocumentPasswordException.WrongPassword
+- uid: Egap.Documents.DocumentPasswordException.WrongPassword*
+  name: WrongPassword
+  href: api/Egap.Documents.DocumentPasswordException.html#Egap_Documents_DocumentPasswordException_WrongPassword_
+  commentId: Overload:Egap.Documents.DocumentPasswordException.WrongPassword
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentPasswordException.WrongPassword
+  nameWithType: DocumentPasswordException.WrongPassword
 - uid: Egap.Documents.DocumentPreview
   name: DocumentPreview
   href: api/Egap.Documents.DocumentPreview.html
@@ -5707,6 +5832,32 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocxLoadOptions.Limits
   nameWithType: DocxLoadOptions.Limits
+- uid: Egap.Documents.DocxLoadOptions.Password
+  name: Password
+  href: api/Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password
+  commentId: P:Egap.Documents.DocxLoadOptions.Password
+  fullName: Egap.Documents.DocxLoadOptions.Password
+  nameWithType: DocxLoadOptions.Password
+- uid: Egap.Documents.DocxLoadOptions.Password*
+  name: Password
+  href: api/Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password_
+  commentId: Overload:Egap.Documents.DocxLoadOptions.Password
+  isSpec: "True"
+  fullName: Egap.Documents.DocxLoadOptions.Password
+  nameWithType: DocxLoadOptions.Password
+- uid: Egap.Documents.DocxLoadOptions.PasswordCallback
+  name: PasswordCallback
+  href: api/Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_PasswordCallback
+  commentId: P:Egap.Documents.DocxLoadOptions.PasswordCallback
+  fullName: Egap.Documents.DocxLoadOptions.PasswordCallback
+  nameWithType: DocxLoadOptions.PasswordCallback
+- uid: Egap.Documents.DocxLoadOptions.PasswordCallback*
+  name: PasswordCallback
+  href: api/Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_PasswordCallback_
+  commentId: Overload:Egap.Documents.DocxLoadOptions.PasswordCallback
+  isSpec: "True"
+  fullName: Egap.Documents.DocxLoadOptions.PasswordCallback
+  nameWithType: DocxLoadOptions.PasswordCallback
 - uid: Egap.Documents.DocxSaveOptions
   name: DocxSaveOptions
   href: api/Egap.Documents.DocxSaveOptions.html
@@ -5726,6 +5877,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocxSaveOptions.Kind
   nameWithType: DocxSaveOptions.Kind
+- uid: Egap.Documents.DocxSaveOptions.Password
+  name: Password
+  href: api/Egap.Documents.DocxSaveOptions.html#Egap_Documents_DocxSaveOptions_Password
+  commentId: P:Egap.Documents.DocxSaveOptions.Password
+  fullName: Egap.Documents.DocxSaveOptions.Password
+  nameWithType: DocxSaveOptions.Password
+- uid: Egap.Documents.DocxSaveOptions.Password*
+  name: Password
+  href: api/Egap.Documents.DocxSaveOptions.html#Egap_Documents_DocxSaveOptions_Password_
+  commentId: Overload:Egap.Documents.DocxSaveOptions.Password
+  isSpec: "True"
+  fullName: Egap.Documents.DocxSaveOptions.Password
+  nameWithType: DocxSaveOptions.Password
 - uid: Egap.Documents.DropCap
   name: DropCap
   href: api/Egap.Documents.DropCap.html

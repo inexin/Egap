@@ -123,7 +123,13 @@ Enum DocumentFormatKind  <a class="header-action link-secondary" title="View sou
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Docx"><code>Docx = 2</code></dt>
   
-  <dd><p>A Word file: DOCX, DOTX, DOCM or DOTM, or an old binary Word file (which reading refuses with a clear error).</p>
+  <dd><p>A Word file: DOCX, DOTX, DOCM or DOTM, or an old binary Word file (which reading refuses with a clear error). An
+encrypted Word file is <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a>.</p>
+</dd>
+    <dt id="Egap_Documents_DocumentFormatKind_Encrypted"><code>Encrypted = 10</code></dt>
+  
+  <dd><p>An encrypted Office file: a password-protected Word document (or another Office package) in a compound file. Loading
+it needs its password, in <a class="xref" href="Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password">Password</a> or <a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password">Password</a>.</p>
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Epub"><code>Epub = 7</code></dt>
   

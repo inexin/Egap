@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_DocxSaveOptions" data-uid="Egap.Documents.DocxSaveOptions" class="text-break">
-Class DocxSaveOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L29"><i class="bi bi-code-slash"></i></a>
+Class DocxSaveOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -154,7 +154,7 @@ Class DocxSaveOptions  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="Egap_Documents_DocxSaveOptions_Kind" data-uid="Egap.Documents.DocxSaveOptions.Kind">
   Kind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The kind to write; null keeps the kind the document was read as (a new document is a .docx), or, saving to a path,
@@ -183,11 +183,45 @@ takes it from the file's extension. A kind that holds no macros drops the macros
 
 
 
+  <a id="Egap_Documents_DocxSaveOptions_Password_" data-uid="Egap.Documents.DocxSaveOptions.Password*"></a>
+
+  <h3 id="Egap_Documents_DocxSaveOptions_Password" data-uid="Egap.Documents.DocxSaveOptions.Password">
+  Password
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The password to encrypt the file with, as Word does when a document is saved with a password to open it (agile
+encryption: AES-256 with SHA-512 and 100,000 key spins); null or empty writes the file unencrypted. At most 255
+characters, as in Word.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Password { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L29" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Docx/DocxFormat.cs/#L38" class="edit-link">Edit this page</a>
         </div>
 
 
