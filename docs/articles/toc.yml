@@ -56,6 +56,8 @@
       href: formats/markdown.md
     - name: MHTML
       href: formats/mhtml.md
+    - name: OpenDocument Text
+      href: formats/odt.md
     - name: Plain text
       href: formats/text.md
     - name: RTF

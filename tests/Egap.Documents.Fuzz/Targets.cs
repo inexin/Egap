@@ -2,7 +2,7 @@ namespace Egap.Documents.Fuzz;
 
 /// <summary>
 /// The fuzz targets for Egap.Documents' readers. Markdown has no invalid input, so its reader must never throw; the DOCX
-/// and RTF readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). HTML has no
+/// RTF and ODT readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). HTML has no
 /// invalid input either. Anything else is a crash, and AFL++ reports hangs.
 /// </summary>
 internal static class Targets
@@ -13,6 +13,7 @@ internal static class Targets
         ["package"] = Package,
         ["docx"] = DocxFile,
         ["rtf"] = RtfFile,
+        ["odt"] = OdtFile,
         ["cfb"] = CompoundFileTarget,
         ["html"] = Html,
         ["layout"] = LayoutTarget,
@@ -375,6 +376,55 @@ internal static class Targets
             return;
         }
 
+        Exercise(document);
+        _ = document.Clone();
+        using MemoryStream written = new();
+        Egap.Documents.Docx.DocxWriter.Write(document, written, true);
+        written.Position = 0;
+        _ = Egap.Documents.DocxFormat.Load(written).GetText();
+
+        byte[] rtf = SaveRtf(document);
+        byte[] again = SaveRtf(RtfFormat.Load(new MemoryStream(rtf), new RtfLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 } }));
+        if (!rtf.AsSpan().SequenceEqual(again))
+        {
+            throw new InvalidOperationException("RTF written, read and written again is not the same RTF.");
+        }
+
+        static byte[] SaveRtf(Document document)
+        {
+            using MemoryStream stream = new();
+            RtfFormat.Save(document, stream);
+            return stream.ToArray();
+        }
+    }
+
+    /// <summary>
+    /// Any bytes read as OpenDocument Text, packaged or flat; may throw only <see cref="DocumentException"/>. The model must
+    /// answer its text, list labels and effective formats and clone, and the DOCX writer must write it as DOCX that reads again.
+    /// </summary>
+    private static void OdtFile(Stream input)
+    {
+        Document document;
+        try
+        {
+            document = OdtFormat.Load(input, new OdtLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 } });
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+
+        Exercise(document);
+        _ = document.Clone();
+        using MemoryStream written = new();
+        Egap.Documents.Docx.DocxWriter.Write(document, written, true);
+        written.Position = 0;
+        _ = Egap.Documents.DocxFormat.Load(written).GetText();
+    }
+
+    /// <summary>Reads back a document's text, list labels, fields and every node's effective formatting.</summary>
+    private static void Exercise(Document document)
+    {
         _ = document.GetText();
         foreach (Node node in document.Descendants())
         {
@@ -403,26 +453,6 @@ internal static class Targets
         {
             _ = field.Code;
             _ = field.Result;
-        }
-
-        _ = document.Clone();
-        using MemoryStream written = new();
-        Egap.Documents.Docx.DocxWriter.Write(document, written, true);
-        written.Position = 0;
-        _ = Egap.Documents.DocxFormat.Load(written).GetText();
-
-        byte[] rtf = SaveRtf(document);
-        byte[] again = SaveRtf(RtfFormat.Load(new MemoryStream(rtf), new RtfLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 } }));
-        if (!rtf.AsSpan().SequenceEqual(again))
-        {
-            throw new InvalidOperationException("RTF written, read and written again is not the same RTF.");
-        }
-
-        static byte[] SaveRtf(Document document)
-        {
-            using MemoryStream stream = new();
-            RtfFormat.Save(document, stream);
-            return stream.ToArray();
         }
     }
 

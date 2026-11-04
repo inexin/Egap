@@ -1,5 +1,6 @@
 #nullable enable
 Egap.Documents.DocumentFormatKind.Encrypted = 10 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Odt = 11 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Rtf = 9 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentLoadOptions
 Egap.Documents.DocumentLoadOptions.DocumentLoadOptions() -> void
@@ -36,6 +37,11 @@ Egap.Documents.Layout.LayoutWarning.PageIndex.get -> int
 Egap.Documents.Layout.LayoutWarning.PageIndex.init -> void
 Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline = 0 -> Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.OdtFormat
+Egap.Documents.OdtLoadOptions
+Egap.Documents.OdtLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
+Egap.Documents.OdtLoadOptions.Limits.init -> void
+Egap.Documents.OdtLoadOptions.OdtLoadOptions() -> void
 Egap.Documents.RtfFormat
 Egap.Documents.RtfLoadOptions
 Egap.Documents.RtfLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
@@ -54,6 +60,10 @@ static Egap.Documents.Document.Load(System.IO.Stream! stream, Egap.Documents.Doc
 static Egap.Documents.Document.Load(System.IO.Stream! stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
 static Egap.Documents.Layout.LayoutWarning.operator !=(Egap.Documents.Layout.LayoutWarning? left, Egap.Documents.Layout.LayoutWarning? right) -> bool
 static Egap.Documents.Layout.LayoutWarning.operator ==(Egap.Documents.Layout.LayoutWarning? left, Egap.Documents.Layout.LayoutWarning? right) -> bool
+static Egap.Documents.OdtFormat.Load(string! path, Egap.Documents.OdtLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.OdtFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.OdtLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.OdtFormat.Load(System.IO.Stream! stream, Egap.Documents.OdtLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.OdtFormat.Load(System.IO.Stream! stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.OdtLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.RtfFormat.Load(string! path, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.RtfFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.RtfFormat.Load(System.IO.Stream! stream, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!

@@ -23,7 +23,7 @@ Reading, editing, rendering and saving PDF files.
 
 ## Egap.Documents
 
-One document model for DOCX, RTF, HTML, Markdown and plain text, its page layout, and conversions to and from PDF.
+One document model for DOCX, RTF, OpenDocument Text, HTML, Markdown and plain text, its page layout, and conversions to and from PDF.
 
 - [Flow documents](flow-documents.md): the document model, editing, text options, barcodes, mail merge and page layout.
 - [Moving to Egap.Documents 2.0](migrating-to-2.0.md): the new packages and namespaces, and what else changed.
@@ -43,5 +43,6 @@ per format, with its options:
 - [HTML](../formats/html.md), in the Egap.Documents.Html package
 - [Markdown](../formats/markdown.md), in the Egap.Documents.Markdown package
 - [MHTML](../formats/mhtml.md), in the Egap.Documents.Html package
+- [OpenDocument Text](../formats/odt.md)
 - [Plain text](../formats/text.md)
 - [RTF](../formats/rtf.md)
