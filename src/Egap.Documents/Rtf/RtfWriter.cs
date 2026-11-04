@@ -307,7 +307,6 @@ internal sealed partial class RtfWriter
                 Word("prdate", date);
             }
 
-            Open();
             Destination("oldpprops");
             ParagraphWords(old);
             Close();

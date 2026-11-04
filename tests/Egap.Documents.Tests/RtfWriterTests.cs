@@ -19,7 +19,39 @@ public class RtfWriterTests
     {
         using MemoryStream stream = new();
         warnings = RtfFormat.Save(document, stream, options);
-        return stream.ToArray();
+        byte[] bytes = stream.ToArray();
+        AssertBalanced(bytes);
+        if (Environment.GetEnvironmentVariable("EGAP_RTF_OUTPUT") is { Length: > 0 } folder)
+        {
+            // For opening every file the tests write in other applications.
+            File.WriteAllBytes(Path.Combine(folder, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes))[..16] + ".rtf"), bytes);
+        }
+
+        return bytes;
+    }
+
+    /// <summary>Every group the file opens it closes, and none closes before the file's own: other readers give up on less.</summary>
+    private static void AssertBalanced(byte[] rtf)
+    {
+        int depth = 0;
+        for (int i = 0; i < rtf.Length; i++)
+        {
+            switch (rtf[i])
+            {
+                case (byte)'\\':
+                    i++;
+                    break;
+                case (byte)'{':
+                    depth++;
+                    break;
+                case (byte)'}':
+                    depth--;
+                    Assert.True(depth > 0 || i == rtf.Length - 1 || rtf.AsSpan(i + 1).IndexOfAnyExcept("\r\n"u8) < 0, $"The file's group closes at {i} of {rtf.Length}.");
+                    break;
+            }
+        }
+
+        Assert.Equal(0, depth);
     }
 
     private static byte[] Save(Document document, RtfSaveOptions? options = null) => Save(document, out _, options);
@@ -100,6 +132,32 @@ public class RtfWriterTests
         Assert.Equal(2, paragraphs.Count);
         Assert.Equal(text, paragraphs[0].GetText());
         Assert.Equal("lone \uFFFD high and \uFFFD low", paragraphs[1].GetText());
+    }
+
+    [Fact]
+    public void HostileNamesAreEscaped()
+    {
+        Document document = new();
+        ParagraphStyle style = document.Styles.AddParagraphStyle("Odd", "Odd;name {with} \\braces");
+        Paragraph paragraph = Body(document).AddParagraph();
+        paragraph.Style = style;
+        Run run = paragraph.AddRun("text");
+        run.Format.FontAscii = "Font;with {braces} \\ and;more";
+        run.Revision = new Revision(RevisionKind.Insertion, "Author {\\} ;");
+        paragraph.Inlines.Add(new BookmarkStart(document, "mark{\\}"));
+        paragraph.Inlines.Add(new BookmarkEnd(document, "mark{\\}"));
+        document.Properties.Title = "Title {\\} with ;";
+
+        Document read = Reread(document, out IReadOnlyList<ConversionWarning> warnings);
+        Assert.Empty(warnings);
+        Paragraph back = read.Sections[0].Body.Blocks.OfType<Paragraph>().Single();
+        Assert.Equal("Oddname {with} \\braces", back.Style!.Name);
+        Assert.Equal("Fontwith {braces} \\ andmore", back.Runs.Single().GetEffectiveFormat().FontAscii);
+        // A semicolon ends a name in RTF's tables, so names lose theirs.
+        Assert.Equal("Author {\\}", back.Runs.Single().Revision!.Author);
+        Assert.Equal("mark{\\}", back.Inlines.OfType<BookmarkStart>().Single().Name);
+        Assert.Equal("Title {\\} with ;", read.Properties.Title);
+        Assert.Equal(Dump(read), Dump(Reread(read)));
     }
 
     [Fact]

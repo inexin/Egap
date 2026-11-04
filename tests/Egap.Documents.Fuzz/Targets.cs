@@ -323,7 +323,8 @@ internal static class Targets
 
     /// <summary>
     /// Any bytes read as RTF; may throw only <see cref="DocumentException"/>. The model must answer its text, list labels and
-    /// effective formats and clone, and the DOCX writer must write it as DOCX that reads again.
+    /// effective formats and clone, the DOCX writer must write it as DOCX that reads again, and the RTF writer must write RTF
+    /// that reads again and writes the same RTF.
     /// </summary>
     private static void RtfFile(Stream input)
     {
@@ -372,6 +373,20 @@ internal static class Targets
         Egap.Documents.Docx.DocxWriter.Write(document, written, true);
         written.Position = 0;
         _ = Egap.Documents.DocxFormat.Load(written).GetText();
+
+        byte[] rtf = SaveRtf(document);
+        byte[] again = SaveRtf(RtfFormat.Load(new MemoryStream(rtf), new RtfLoadOptions { Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 } }));
+        if (!rtf.AsSpan().SequenceEqual(again))
+        {
+            throw new InvalidOperationException("RTF written, read and written again is not the same RTF.");
+        }
+
+        static byte[] SaveRtf(Document document)
+        {
+            using MemoryStream stream = new();
+            RtfFormat.Save(document, stream);
+            return stream.ToArray();
+        }
     }
 
     /// <summary>Any bytes read as a MIME message; may throw only <see cref="DocumentException"/>. Every part answers its headers.</summary>

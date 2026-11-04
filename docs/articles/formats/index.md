@@ -16,7 +16,7 @@ without naming the format, how a file's format is found, warnings and limits.
 | [HTML](html.md) | Egap.Documents.Html | HTML and XHTML, parsed as browsers parse it and styled through the CSS cascade | HTML (UTF-8), with the page setup as `@page` rules |
 | [Markdown](markdown.md) | Egap.Documents.Markdown | CommonMark with GitHub's extensions and YAML front matter | GitHub Flavored Markdown (UTF-8) |
 | [MHTML](mhtml.md) | Egap.Documents.Html | Web archives as Chromium, Edge and Word save them | One-file web archives in Chromium's shape |
-| [RTF](rtf.md) | Egap.Documents | RTF as Word 2007 and later write it, with tables, lists, notes, comments, tracked changes and pictures | Not yet |
+| [RTF](rtf.md) | Egap.Documents | RTF as Word 2007 and later write it, with tables, lists, notes, comments, tracked changes and pictures | RTF 1.9.1 as Word writes it, 7-bit with Unicode escapes |
 | [Plain text](text.md) | Egap.Documents | One paragraph per line | The text in reading order, for search and indexing |
 | [Docling JSON](docling-json.md) | Egap.Documents | DoclingDocument JSON, from Docling or from Egap | Page layouts of a PDF, through `DoclingJson.Write` |
 | PDF | Egap.Documents | Pages analysed into blocks, headings, lists, tables and figures | Tagged PDF and PDF/A |
@@ -54,10 +54,9 @@ Document notes = TextFormat.Load("notes.txt");                    // one paragra
 8. Text that starts with a tag is `Html`, and other text is `Markdown`.
 9. Binary data no format knows is `Unknown`.
 
-`Save` writes `.docx`, `.dotx`, `.docm` and `.dotm` as Word's, `.pdf` as PDF, `.txt` as plain text, and, once their
-add-on is registered, `.html` and `.htm` as HTML, `.mht` and `.mhtml` as MHTML, `.epub` as EPUB and `.md` and `.markdown`
-as Markdown. `.rtf` throws a `NotSupportedException`, since RTF is read but not yet written. Any other extension throws an
-`ArgumentException`.
+`Save` writes `.docx`, `.dotx`, `.docm` and `.dotm` as Word's, `.rtf` as RTF, `.pdf` as PDF, `.txt` as plain text, and,
+once their add-on is registered, `.html` and `.htm` as HTML, `.mht` and `.mhtml` as MHTML, `.epub` as EPUB and `.md` and
+`.markdown` as Markdown. Any other extension throws an `ArgumentException`.
 
 Each format also has its own class (`DocxFormat`, `RtfFormat`, `HtmlFormat`, `EpubFormat`, `MarkdownFormat`, `TextFormat`, `DoclingJson`) with its
 own options, and members on `Document` that forward to it, such as `Document.LoadDocx`, `ToHtml` and `SaveAsMarkdown`.

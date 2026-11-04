@@ -18,11 +18,20 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - RTF reading, built in: `RtfFormat.Load` and `RtfFormat.Parse` read RTF as Word 2007 and later write it, with
   `RtfLoadOptions` for the limits. Character and paragraph formatting, the style sheet, lists (and old `\pn`
-  numbering), code pages, Unicode and `in` data, tables with nested and merged cells, sections, columns and page
+  numbering), code pages, Unicode and `\bin` data, tables with nested and merged cells, sections, columns and page
   setup, headers and footers, footnotes and endnotes, fields, bookmarks and links, comments, tracked changes, pictures
   (PNG, JPEG, EMF, WMF and bitmaps), text boxes and floating pictures. Equations, other shapes and embedded objects
   come in as islands that keep their RTF and draw their result picture. `Document.Load` and `Document.Identify` know
-  RTF by its first bytes (`DocumentFormatKind.Rtf`). Writing RTF comes in a later change.
+  RTF by its first bytes (`DocumentFormatKind.Rtf`).
+- RTF writing: `RtfFormat.Save` writes a document to a path or a stream as RTF 1.9.1, as Word writes it, with
+  `RtfSaveOptions`, and `Document.Save("x.rtf")` writes RTF. Fonts, colours, the style sheet with based-on, next and
+  linked styles, lists, sections, columns and page setup, headers and footers, tables (nested and merged too), fields,
+  bookmarks, links, footnotes and endnotes, comments, tracked changes, pictures (PNG, JPEG, EMF and WMF as they are,
+  other images as PNG), text boxes and shapes. Text is 7-bit, with `\uN` escapes for everything else. What the reader kept
+  (islands and unknown `\*` groups) is written back where it was. Saving reports what RTF cannot hold as
+  `ConversionWarning`s. RTF to model to RTF gives the same model, and the same file.
+- The RTF reader keeps only what differs from the styles as direct formatting, as the DOCX reader does: RTF repeats a
+  style's formatting on every paragraph and run. A cell that ends with a nested table gets the empty paragraph Word gives it.
 - Layout warnings: `DocumentLayout.Warnings` lists what a layout laid out differently from what the document asks for,
   as `LayoutWarning` records with the kind, a message, the node and its page, and `LayoutOptions.OnWarning` hears each
   one, also when a document is saved as PDF. The first kind, `FloatLaidOutInline`, is a floating table or framed
