@@ -58,3 +58,5 @@
       href: formats/mhtml.md
     - name: Plain text
       href: formats/text.md
+    - name: RTF
+      href: formats/rtf.md
