@@ -148,12 +148,14 @@ internal sealed partial class RtfReader
                 // \* names no destination word here, so the group is one the reader does not know: kept whole, and none of
                 // its text leaks into the document.
                 state.Ignorable = false;
+                int unclosedInside = 0;
                 if (kind == RtfTokenKind.GroupStart)
                 {
                     _ = tokens.SkipGroup();
+                    unclosedInside = tokens.Unclosed;
                 }
 
-                SkipDestination(keep: true);
+                SkipDestination(keep: true, unclosedInside);
                 if (depth < groupDepth)
                 {
                     return;
@@ -265,9 +267,10 @@ internal sealed partial class RtfReader
 
     /// <summary>
     /// Skips the rest of the current group and closes it. A group that was marked <c>\*</c> and is not one the reader knows
-    /// is kept, raw, as extension data where it sat.
+    /// is kept, raw, as extension data where it sat; <paramref name="unclosedInside"/> counts the groups inside it, already
+    /// skipped, that the end of the file left open.
     /// </summary>
-    private void SkipDestination(bool keep = false)
+    private void SkipDestination(bool keep = false, int unclosedInside = 0)
     {
         int start = state.GroupStart;
         int end = tokens.SkipGroup();
@@ -277,7 +280,7 @@ internal sealed partial class RtfReader
             if (tokens.Unclosed > 0)
             {
                 // A group cut off by the end of the file is closed, so that writing it back cannot swallow what follows.
-                markup = markup.TrimEnd('\\') + new string('}', tokens.Unclosed);
+                markup = markup.TrimEnd('\\') + new string('}', tokens.Unclosed + unclosedInside);
             }
 
             Keep(markup);

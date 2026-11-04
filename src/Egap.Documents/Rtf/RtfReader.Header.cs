@@ -1245,7 +1245,13 @@ internal sealed partial class RtfReader
                             ReadPasswordHash();
                             break;
                         default:
-                            SkipDestination(keep: star);
+                            // A destination the body knows (a broken file can leave the whole body inside the info group) is read
+                            // as the body reads it: kept as markup, it would be written outside the group and read differently.
+                            if (!(star && Destination(tokens.Word, ignorable: true)))
+                            {
+                                SkipDestination(keep: star);
+                            }
+
                             break;
                     }
 
