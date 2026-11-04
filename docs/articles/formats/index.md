@@ -38,7 +38,7 @@ using Egap.Documents;
 
 HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
 MarkdownFormat.Register();
-DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Encrypted, Rtf, Odt, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
+DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Xlsx, Encrypted, Rtf, Odt, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
 Document notes = TextFormat.Load("notes.txt");                    // one paragraph per line
 ```
 
@@ -47,18 +47,20 @@ Document notes = TextFormat.Load("notes.txt");                    // one paragra
 1. A ZIP package whose first entry is EPUB's `mimetype` is `Epub`.
 2. A ZIP package whose first entry is an OpenDocument Text or template `mimetype`, or whose extension is `.odt`, `.ott` or
    `.fodt`, is `Odt`.
-3. Another ZIP package, or an old binary Word file, is `Docx`. Reading an old binary Word file fails with an error that
+3. A ZIP package with a part under `xl/`, or whose extension is `.xlsx`, `.xlsm`, `.xltx` or `.xltm`, is `Xlsx`: an Excel
+   workbook, which Egap.Documents does not load as a document.
+4. Another ZIP package, or an old binary Word file, is `Docx`. Reading an old binary Word file fails with an error that
    says so. A password-protected Word file is `Encrypted`; it loads with its password (see
    [DOCX passwords](docx.md#passwords)).
-4. `%PDF-` in the first 1024 bytes is `Pdf`.
-5. `{\rtf` at the start, after a byte order mark or white space, is `Rtf`.
-6. Text whose extension names HTML (`.html`, `.htm`, `.xhtml`), MHTML (`.mht`, `.mhtml`), Markdown (`.md`, `.markdown`,
+5. `%PDF-` in the first 1024 bytes is `Pdf`.
+6. `{\rtf` at the start, after a byte order mark or white space, is `Rtf`.
+7. Text whose extension names HTML (`.html`, `.htm`, `.xhtml`), MHTML (`.mht`, `.mhtml`), Markdown (`.md`, `.markdown`,
    `.mdown`, `.mkd`) or plain text (`.txt`, `.text`) is that format.
-7. Text that starts with MIME header lines naming `multipart/related` is `Mhtml`.
-8. A JSON object that names the `DoclingDocument` schema is `DoclingJson`.
-9. XML whose root is an OpenDocument Text `office:document` is `Odt`.
-10. Text that starts with a tag is `Html`, and other text is `Markdown`.
-11. Binary data no format knows is `Unknown`.
+8. Text that starts with MIME header lines naming `multipart/related` is `Mhtml`.
+9. A JSON object that names the `DoclingDocument` schema is `DoclingJson`.
+10. XML whose root is an OpenDocument Text `office:document` is `Odt`.
+11. Text that starts with a tag is `Html`, and other text is `Markdown`.
+12. Binary data no format knows is `Unknown`.
 
 `Save` writes `.docx`, `.dotx`, `.docm` and `.dotm` as Word's, `.rtf` as RTF, `.pdf` as PDF, `.txt` as plain text, and,
 once their add-on is registered, `.html` and `.htm` as HTML, `.mht` and `.mhtml` as MHTML, `.epub` as EPUB and `.md` and
