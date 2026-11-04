@@ -8,7 +8,8 @@ Egap.Documents reads and writes Word's files: documents (`.docx`), templates (`.
 A Word file reads into the model with Word's style model, lists numbered as Word numbers them, tables, fields, comments
 and tracked changes; the [flow documents guide](../guides/flow-documents.md) shows what you can do with them. What the model
 does not name travels along in each node's extension data. Macros are kept and never run. An old binary Word file (`.doc`)
-is recognized and refused with an error that says so. `DocxLoadOptions.Limits` keeps untrusted files in bounds (see
+is recognized and refused with an error that says so; a file encrypted with a password opens with it (see
+[Passwords](#passwords)). `DocxLoadOptions.Limits` keeps untrusted files in bounds (see
 [Limits](index.md#limits)).
 
 ```csharp
@@ -19,6 +20,37 @@ DocxKind? kind = DocxFormat.KindOf(report);                       // Document, T
 report.SaveAsDocx("report-copy.docx");                            // what the model does not name is kept
 DocxFormat.Save(report, "report.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
 ```
+
+## Passwords
+
+A Word file saved with a password to open it is encrypted: its package sits, encrypted, in a compound file.
+`Document.Identify` calls it `Encrypted`, so a program can ask for the password before it loads the file. Give the password
+in `DocxLoadOptions.Password`, or in `DocumentLoadOptions.Password` for `Document.Load`; `PasswordCallback` is asked when
+the password is missing or wrong, with the attempt's number, until it gives the right one or null. Without the right
+password, loading throws `DocumentPasswordException`, whose `WrongPassword` says whether a password was given.
+
+Egap reads the encryption Word 2010 and later write (agile encryption, AES with SHA-1 to SHA-512, its integrity check
+included) and Word 2007's (standard encryption, AES with SHA-1), which LibreOffice also writes. `DocxSaveOptions.Password`
+encrypts the file as Word 2013 and later do: AES-256 with SHA-512 and 100,000 key spins. Files protected with rights
+management (IRM), which needs a rights server, or encrypted for a certificate are refused with an error that says so.
+
+```csharp
+using Egap.Documents;
+
+if (Document.Identify("contract.docx") == DocumentFormatKind.Encrypted)
+{
+    Document contract = Document.Load("contract.docx", new DocumentLoadOptions
+    {
+        PasswordCallback = attempt => attempt <= 3 ? AskUser($"Password for contract.docx (try {attempt} of 3)") : null,
+    });
+    contract.SaveAsDocx("contract-copy.docx", new DocxSaveOptions { Password = "new password" });
+}
+
+static string? AskUser(string prompt) => null;                    // your program's own password prompt
+```
+
+A password protects the file, not the document: a document loaded with a password saves without one unless
+`DocxSaveOptions.Password` is set again.
 
 ## Word compatibility
 

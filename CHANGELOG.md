@@ -19,6 +19,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- Password-protected Word files: `DocxLoadOptions.Password` and `DocumentLoadOptions.Password` open a DOCX that Word
+  encrypted with a password to open it (agile encryption from Word 2010 on, with its integrity check, and Word 2007's
+  standard encryption, which LibreOffice also writes), and `PasswordCallback` asks for another password when it is missing
+  or wrong. `DocxSaveOptions.Password` saves one encrypted as Word 2013 and later do (AES-256, SHA-512, 100,000 key
+  spins). A missing or wrong password throws the new `DocumentPasswordException`. `Document.Identify` reports an encrypted
+  file as `DocumentFormatKind.Encrypted`, and `Document.Load` takes a `DocumentLoadOptions` with the password and limits.
 - RTF reading, built in: `RtfFormat.Load` and `RtfFormat.Parse` read RTF as Word 2007 and later write it, with
   `RtfLoadOptions` for the limits. Character and paragraph formatting, the style sheet, lists (and old `\pn`
   numbering), code pages, Unicode and `\bin` data, tables with nested and merged cells, sections, columns and page

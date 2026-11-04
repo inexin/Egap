@@ -13,6 +13,7 @@ internal static class Targets
         ["package"] = Package,
         ["docx"] = DocxFile,
         ["rtf"] = RtfFile,
+        ["cfb"] = CompoundFileTarget,
         ["html"] = Html,
         ["layout"] = LayoutTarget,
         ["pagemedia"] = PageMedia,
@@ -247,6 +248,42 @@ internal static class Targets
                     }
                 }
             }
+        }
+        catch (DocumentException)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Any bytes as a compound file ([MS-CFB]): the directory and every stream read; then as an encrypted DOCX opened with
+    /// the password "pw", which the seeds use with a spin count of 1. May throw only <see cref="DocumentException"/>.
+    /// </summary>
+    private static void CompoundFileTarget(Stream input)
+    {
+        using MemoryStream bytes = new();
+        input.CopyTo(bytes);
+        byte[] data = bytes.ToArray();
+        DocumentLimits limits = new() { MaxPartSize = 64 * 1024 * 1024, MaxTotalSize = 256 * 1024 * 1024 };
+        try
+        {
+            Egap.Documents.Office.CompoundFile file = Egap.Documents.Office.CompoundFile.Read(data, limits);
+            foreach (Egap.Documents.Office.CompoundFileEntry entry in file.Entries)
+            {
+                if (entry.Type == Egap.Documents.Office.CompoundFileEntryType.Stream)
+                {
+                    _ = file.ReadStream(entry);
+                }
+            }
+
+            _ = Egap.Documents.Office.OfficeEncryption.IsEncryptedPackage(file);
+        }
+        catch (DocumentException)
+        {
+        }
+
+        try
+        {
+            _ = Egap.Documents.DocxFormat.Load(new MemoryStream(data), new Egap.Documents.DocxLoadOptions { Limits = limits, Password = "pw" }).GetText();
         }
         catch (DocumentException)
         {

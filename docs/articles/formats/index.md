@@ -36,7 +36,7 @@ using Egap.Documents;
 
 HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
 MarkdownFormat.Register();
-DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Rtf, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
+DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Encrypted, Rtf, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
 Document notes = TextFormat.Load("notes.txt");                    // one paragraph per line
 ```
 
@@ -44,7 +44,8 @@ Document notes = TextFormat.Load("notes.txt");                    // one paragra
 
 1. A ZIP package whose first entry is EPUB's `mimetype` is `Epub`.
 2. Another ZIP package, or an old binary Word file, is `Docx`. Reading an old binary Word file fails with an error that
-   says so.
+   says so. A password-protected Word file is `Encrypted`; it loads with its password (see
+   [DOCX passwords](docx.md#passwords)).
 3. `%PDF-` in the first 1024 bytes is `Pdf`.
 4. `{\rtf` at the start, after a byte order mark or white space, is `Rtf`.
 5. Text whose extension names HTML (`.html`, `.htm`, `.xhtml`), MHTML (`.mht`, `.mhtml`), Markdown (`.md`, `.markdown`,

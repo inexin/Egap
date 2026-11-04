@@ -17,3 +17,8 @@
 | `aes-256-object-streams.pdf` | AES-256, object streams | `--object-streams=generate --encrypt user owner 256` |
 
 The user password is `user` and the owner password `owner` unless the table says otherwise.
+
+`libreoffice-standard.docx` is a short document of Egap's own text (a line of Latin, Norwegian and Japanese, then
+"Paragraph 0" to "Paragraph 399") that LibreOffice (Windows, November 2026) saved as Word 2007-365 with the password `Lo pässwörd`, through UNO
+with the `Password` property. LibreOffice writes Office 2007's standard encryption (AES-128 with SHA-1), so the file checks
+the standard decryption against a writer that is not Egap's.

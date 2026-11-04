@@ -29,6 +29,24 @@ public sealed class DocumentLimitException : DocumentException
     }
 }
 
+/// <summary>
+/// A file is encrypted and could not be opened: no password was given, or none of those given was right. The load options
+/// take the password (<see cref="DocumentLoadOptions.Password"/>, <see cref="DocxLoadOptions.Password"/>) and a callback that
+/// asks for another one.
+/// </summary>
+public sealed class DocumentPasswordException : DocumentException
+{
+    /// <summary>A password error with a message, saying whether a password was given and was wrong.</summary>
+    public DocumentPasswordException(string message, bool wrongPassword)
+        : base(message)
+    {
+        WrongPassword = wrongPassword;
+    }
+
+    /// <summary>True when a password was given and was wrong; false when the file needs one and none was given.</summary>
+    public bool WrongPassword { get; }
+}
+
 /// <summary>The limits a reader keeps to on untrusted files; the defaults suit any real document.</summary>
 public sealed class DocumentLimits
 {

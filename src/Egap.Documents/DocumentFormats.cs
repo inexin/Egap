@@ -11,7 +11,8 @@ public sealed partial class Document
     /// <summary>
     /// Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
     /// <see cref="Identify(Stream, string?)"/>). DOCX, RTF, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
-    /// Markdown need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>.
+    /// Markdown need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>. An
+    /// encrypted Word file needs its password: see <see cref="Load(string, DocumentLoadOptions?)"/>.
     /// </summary>
     /// <exception cref="DocumentException">The file is not one Egap can read.</exception>
     /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
@@ -25,9 +26,33 @@ public sealed partial class Document
     /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
     public static Document Load(string path, out IReadOnlyList<ConversionWarning> warnings)
     {
+        return Load(path, out warnings, null);
+    }
+
+    /// <summary>
+    /// Reads a file in any format Egap reads, with a password for an encrypted file and limits for untrusted ones. See
+    /// <see cref="Load(string)"/>.
+    /// </summary>
+    /// <exception cref="DocumentException">The file is not one Egap can read.</exception>
+    /// <exception cref="DocumentPasswordException">The file is encrypted and no password, or no right one, was given.</exception>
+    /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
+    public static Document Load(string path, DocumentLoadOptions? options)
+    {
+        return Load(path, out _, options);
+    }
+
+    /// <summary>
+    /// Reads a file in any format Egap reads, with a password for an encrypted file and limits for untrusted ones, reporting
+    /// what could not be read as it was. See <see cref="Load(string)"/>.
+    /// </summary>
+    /// <exception cref="DocumentException">The file is not one Egap can read.</exception>
+    /// <exception cref="DocumentPasswordException">The file is encrypted and no password, or no right one, was given.</exception>
+    /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
+    public static Document Load(string path, out IReadOnlyList<ConversionWarning> warnings, DocumentLoadOptions? options)
+    {
         ArgumentException.ThrowIfNullOrEmpty(path);
         byte[] bytes = File.ReadAllBytes(path);
-        Document document = Load(bytes, Path.GetExtension(path), out warnings);
+        Document document = Load(bytes, Path.GetExtension(path), out warnings, options);
         document.FileName = path;
         return document;
     }
@@ -48,10 +73,34 @@ public sealed partial class Document
     /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
     public static Document Load(Stream stream, out IReadOnlyList<ConversionWarning> warnings)
     {
+        return Load(stream, out warnings, null);
+    }
+
+    /// <summary>
+    /// Reads a file in any format Egap reads from a stream, which is left open, with a password for an encrypted file and
+    /// limits for untrusted ones. See <see cref="Load(string)"/>.
+    /// </summary>
+    /// <exception cref="DocumentException">The stream is not a file Egap can read.</exception>
+    /// <exception cref="DocumentPasswordException">The file is encrypted and no password, or no right one, was given.</exception>
+    /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
+    public static Document Load(Stream stream, DocumentLoadOptions? options)
+    {
+        return Load(stream, out _, options);
+    }
+
+    /// <summary>
+    /// Reads a file in any format Egap reads from a stream, which is left open, with a password for an encrypted file and
+    /// limits for untrusted ones, reporting what could not be read as it was. See <see cref="Load(string)"/>.
+    /// </summary>
+    /// <exception cref="DocumentException">The stream is not a file Egap can read.</exception>
+    /// <exception cref="DocumentPasswordException">The file is encrypted and no password, or no right one, was given.</exception>
+    /// <exception cref="NotSupportedException">The file's format needs a package that is not registered; the message names it.</exception>
+    public static Document Load(Stream stream, out IReadOnlyList<ConversionWarning> warnings, DocumentLoadOptions? options)
+    {
         ArgumentNullException.ThrowIfNull(stream);
         using MemoryStream copy = new();
         stream.CopyTo(copy);
-        return Load(copy.ToArray(), null, out warnings);
+        return Load(copy.ToArray(), null, out warnings, options);
     }
 
     /// <summary>
@@ -76,7 +125,8 @@ public sealed partial class Document
 
     /// <summary>
     /// Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
-    /// whose first entry is an EPUB <c>mimetype</c> is EPUB, another ZIP package or an old compound file is Word's, a MIME
+    /// whose first entry is an EPUB <c>mimetype</c> is EPUB, another ZIP package or an old compound file is Word's (and a
+    /// compound file that holds an encrypted package is <see cref="DocumentFormatKind.Encrypted"/>), a MIME
     /// message of <c>multipart/related</c> parts is MHTML, <c>%PDF-</c> is PDF, <c>{\rtf</c> is RTF, a JSON object naming the <c>DoclingDocument</c> schema is
     /// Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
     /// so. It needs no add-on package, so a program can tell its user which package a file needs.
@@ -96,7 +146,17 @@ public sealed partial class Document
         }
 
         string? extension = fileName is null ? null : Path.GetExtension(fileName) is { Length: > 0 } e ? e : fileName;
-        return Identify(head.AsSpan(0, length), extension);
+        DocumentFormatKind kind = Identify(head.AsSpan(0, length), extension);
+
+        // A compound file is encrypted when its directory names the encrypted package; a stream that cannot seek is judged
+        // by the directory sectors among its first bytes.
+        if (kind == DocumentFormatKind.Docx && Office.CompoundFile.IsCompoundFile(head.AsSpan(0, length))
+            && Office.OfficeEncryption.IsEncryptedPackage(stream.CanSeek ? stream : new MemoryStream(head, 0, length, writable: false)))
+        {
+            return DocumentFormatKind.Encrypted;
+        }
+
+        return kind;
     }
 
     /// <summary>Tells which format the file at <paramref name="path"/> is in without loading it. See <see cref="Identify(Stream, string?)"/>.</summary>
@@ -108,12 +168,29 @@ public sealed partial class Document
         return Identify(stream, path);
     }
 
-    private static Document Load(byte[] bytes, string? extension, out IReadOnlyList<ConversionWarning> warnings)
+    private static Document Load(byte[] bytes, string? extension, out IReadOnlyList<ConversionWarning> warnings, DocumentLoadOptions? options)
     {
         DocumentFormatKind kind = Identify(bytes.AsSpan(0, Math.Min(bytes.Length, HeadLength)), extension);
         if (kind == DocumentFormatKind.Unknown)
         {
             throw new DocumentException("The file is not one Egap can read.");
+        }
+
+        // DOCX, encrypted packages included, and RTF take the options' password and limits.
+        if (kind == DocumentFormatKind.Docx && options is not null)
+        {
+            using MemoryStream stream = new(bytes, writable: false);
+            return DocxFormat.Load(stream, out warnings, new DocxLoadOptions
+            {
+                Limits = options.Limits,
+                Password = options.Password,
+                PasswordCallback = options.PasswordCallback,
+            });
+        }
+
+        if (kind == DocumentFormatKind.Rtf && options is not null)
+        {
+            return RtfFormat.Read(bytes, out warnings, new RtfLoadOptions { Limits = options.Limits });
         }
 
         return DocumentFormatRegistry.ReaderFor(kind)(bytes, out warnings);

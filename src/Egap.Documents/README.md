@@ -4,7 +4,8 @@ Flow documents for .NET 10: one editable document model with DOCX and plain-text
 that draws onto any [Egami](https://www.nuget.org/packages/Egami) canvas, PDF export, and PDF pages analysed and converted
 back into documents. Fully managed and MIT-licensed.
 
-- DOCX, DOTX and DOCM read and written; what the model does not name is kept, so DOCX to DOCX is lossless.
+- DOCX, DOTX and DOCM read and written; what the model does not name is kept, so DOCX to DOCX is lossless. Files
+  encrypted with a password open with it and save with one.
 - RTF read and written as Word writes it: styles, lists, tables, sections, headers and footers, notes, fields, comments,
   tracked changes and pictures.
 - Styles, lists numbered as Word numbers them, tables, fields, comments, tracked changes; find, replace and a builder.
