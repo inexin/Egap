@@ -519,7 +519,7 @@ internal sealed partial class RtfReader
             }
         }
 
-        string markup = start >= 0 ? Encoding.Latin1.GetString(tokens.Data, start, Math.Min(tokens.Position, tokens.Data.Length) - start) : "";
+        string markup = start >= 0 ? Markup(start, tokens.Position) : "";
         double width = Bounded(Math.Abs((long)info.Right - info.Left) / 20.0);
         double height = Bounded(Math.Abs((long)info.Bottom - info.Top) / 20.0);
         FloatingPlacement placement = PlacementOf(info);
@@ -953,7 +953,7 @@ internal sealed partial class RtfReader
             }
         }
 
-        string markup = start >= 0 ? Encoding.Latin1.GetString(tokens.Data, start, Math.Min(tokens.Position, tokens.Data.Length) - start) : "";
+        string markup = start >= 0 ? Markup(start, tokens.Position) : "";
         Warn(ConversionWarningKind.DrawingDropped, "An embedded RTF object was kept as an island that draws its result picture.");
         AddInline(new Island(document, IslandKind.OleObject, RtfExtension.Format, markup)
         {
@@ -969,7 +969,7 @@ internal sealed partial class RtfReader
         FlushText();
         int start = state.GroupStart;
         string text = ReadText(trim: false, skipIgnorable: false);
-        string markup = start >= 0 ? Encoding.Latin1.GetString(tokens.Data, start, Math.Min(tokens.Position, tokens.Data.Length) - start) : "";
+        string markup = start >= 0 ? Markup(start, tokens.Position) : "";
         AddInline(new Island(document, IslandKind.Math, RtfExtension.Format, markup) { Text = text });
     }
 }

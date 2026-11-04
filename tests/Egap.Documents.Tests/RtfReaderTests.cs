@@ -768,6 +768,8 @@ public class RtfReaderTests
     [Theory]
     [InlineData(@"{\rtf1\ansi{\info{\*\passwordhash 00}{\*\atnauthor A}" + "\n" + @"Locked.\par {\*\protstart ffff010059540000}Open.{\*\protend ffff010059540000}\par}")]
     [InlineData(@"{\rtf1\ansi Text.\par {\*{\rtf1{\fonttbl{\f0 Arial;}}{\*\protusertbl{EX}")]
+    [InlineData(@"{\rtf1\ansi Object:{\object\objemb\objw2000\objh1000{\*\objclass Excel.Sheet.12}{\*\objdata 01050000")]
+    [InlineData(@"{\rtf1\ansi Data:{\*\unknown\bin3 {}}")]
     public void BrokenGroupsWriteRtfThatReadsTheSame(string rtf)
     {
         byte[] once = Write(RtfFormat.Parse(rtf));
