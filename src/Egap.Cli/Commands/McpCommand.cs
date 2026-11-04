@@ -88,7 +88,7 @@ internal static class McpCommand
             Name = "egap",
             Title = "Egap",
             WebsiteUrl = "https://github.com/inexin/Egap",
-            Instructions = "egap turns HTML, Markdown, DOCX and images into PDF, and inspects, merges, splits, stamps, redacts, fills and checks PDFs on this computer with Egap, a fully managed .NET PDF library. "
+            Instructions = "egap turns HTML, Markdown, DOCX, RTF and images into PDF, and inspects, merges, splits, stamps, redacts, fills and checks PDFs on this computer with Egap, a fully managed .NET PDF library. "
                 + "Every tool is an egap command; paths are files, globs or folders inside the folders the user allowed, and outputs never replace inputs unless in_place is true. "
                 + "Start with info; run takes any chain of edit steps as a workflow object and needs a save step at the end (list_steps lists them). "
                 + "Pages are written as 1-3,z (z is the last page). Passwords come only from environment variables named with the *_env arguments. "

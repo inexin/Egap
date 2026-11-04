@@ -172,6 +172,36 @@ public class RtfReaderTests
     }
 
     [Fact]
+    public void AStyleKeepsOnlyWhatItChangesFromItsWholeChain()
+    {
+        // LibreOffice writes what each style changes, and may repeat a value a style inherits from further up its chain:
+        // here List repeats Normal's space after, which Text body does not mention.
+        const string sheet = """
+            {\stylesheet{\sa200\fs24 Normal;}{\s1\fi360\sbasedon0\snext1 Text body;}{\s2\sa200\qc\sbasedon1\snext2 List;}}
+            """;
+        Document document = Read(@"\pard\plain\s2\sa200\qc Item\par", sheet);
+        ParagraphStyle list = Assert.IsType<ParagraphStyle>(Paragraphs(document)[0].Style);
+        Assert.Null(list.ParagraphFormat.SpaceAfter);
+        Assert.Equal(ParagraphAlignment.Center, list.ParagraphFormat.Alignment);
+
+        // Written in full and read again, the style is the same.
+        using MemoryStream stream = new();
+        RtfFormat.Save(document, stream);
+        ParagraphStyle again = Assert.IsType<ParagraphStyle>(Paragraphs(RtfFormat.Load(new MemoryStream(stream.ToArray())))[0].Style);
+        Assert.Null(again.ParagraphFormat.SpaceAfter);
+        Assert.Equal(ParagraphAlignment.Center, again.ParagraphFormat.Alignment);
+    }
+
+    [Fact]
+    public void ACellMarkAfterAParagraphMarkEndsAnEmptyParagraph()
+    {
+        Document document = Read(@"\trowd\cellx2000\cellx4000\pard\intbl A\par\cell\pard\intbl B\cell\row");
+        Table table = Assert.IsType<Table>(document.Sections[0].Body.Blocks[0]);
+        Assert.Equal(["A", ""], table.Rows[0].Cells[0].Blocks.OfType<Paragraph>().Select(p => p.GetText().TrimEnd('\r')));
+        Assert.Single(table.Rows[0].Cells[1].Blocks);
+    }
+
+    [Fact]
     public void RepeatedStyleSheetsAndClashingNamesGetUniqueIds()
     {
         // Found by fuzzing: a second style sheet, and a character style named as the paragraph default.

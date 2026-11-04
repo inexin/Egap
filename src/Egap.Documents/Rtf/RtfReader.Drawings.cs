@@ -239,8 +239,9 @@ internal sealed partial class RtfReader
         }
 
         (double Left, double Top, double Right, double Bottom) crop = (Fraction(cropl, width), Fraction(cropt, height), Fraction(cropr, width), Fraction(cropb, height));
-        double shown = Math.Max(0, width - cropl - cropr) * Math.Max(0, scalex) / 100.0 / 20.0;
-        double shownHeight = Math.Max(0, height - cropt - cropb) * Math.Max(0, scaley) / 100.0 / 20.0;
+        // In whole twips, RTF's unit, so the size written back is the size read.
+        double shown = Math.Round(Math.Max(0, width - cropl - cropr) * Math.Max(0, scalex) / 100.0) / 20.0;
+        double shownHeight = Math.Round(Math.Max(0, height - cropt - cropb) * Math.Max(0, scaley) / 100.0) / 20.0;
         Picture picture = new(document, ImageData.FromBytes(bytes), Bounded(shown), Bounded(shownHeight))
         {
             Title = title,

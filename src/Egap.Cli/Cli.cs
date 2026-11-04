@@ -126,7 +126,7 @@ internal static class Cli
     /// </summary>
     public static Command CreateRoot(EgapSession session, string? only = null)
     {
-        Command root = new("egap", "Turn HTML, Markdown, DOCX and images into PDF, and inspect, merge, split, encrypt and edit PDFs with Egap, a fully managed PDF library.");
+        Command root = new("egap", "Turn HTML, Markdown, DOCX, RTF and images into PDF, and inspect, merge, split, encrypt and edit PDFs with Egap, a fully managed PDF library.");
         root.Options.Add(new System.CommandLine.Help.HelpOption());
         root.Options.Add(new VersionOption());
         GlobalOptions.AddTo(root, session);

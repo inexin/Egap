@@ -90,10 +90,10 @@ internal sealed partial class RtfWriter
 
                 break;
             case BookmarkStart start:
-                TextDestination("bkmkstart", start.Name);
+                Marked(inline, () => TextDestination("bkmkstart", start.Name));
                 break;
             case BookmarkEnd end:
-                TextDestination("bkmkend", end.Name);
+                Marked(inline, () => TextDestination("bkmkend", end.Name));
                 break;
             case CommentRangeStart start:
                 TextDestination("atrfstart", start.CommentId.ToString(CultureInfo.InvariantCulture));
@@ -105,7 +105,7 @@ internal sealed partial class RtfWriter
                 WriteComment(comment);
                 break;
             case Footnote note:
-                WriteNote(note);
+                Marked(inline, () => WriteNote(note));
                 break;
             case Hyperlink link:
                 WriteHyperlink(link);

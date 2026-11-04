@@ -1,6 +1,6 @@
 # Egap.Cli
 
-The `egap` command: turn HTML, Markdown, DOCX and images into PDF, and inspect, merge, split, stamp, redact, fill, sign and
+The `egap` command: turn HTML, Markdown, DOCX, RTF and images into PDF, and inspect, merge, split, stamp, redact, fill, sign and
 check PDFs from a shell, a build script or an AI assistant, with [Egap](https://github.com/inexin/Egap), a fully managed PDF
 and document library for .NET.
 
@@ -12,7 +12,7 @@ egap merge cover.pdf body.pdf#2-z -o book.pdf
 egap run scan.pdf clean --deskew + stamp --page-numbers + save out.pdf
 ```
 
-- Converts HTML, Markdown, DOCX and images to PDF, and PDF back to DOCX, HTML, Markdown or text.
+- Converts HTML, Markdown, DOCX, RTF and images to PDF, PDF back to DOCX, RTF, HTML, Markdown or text, and the flow formats to each other.
 - Merges, splits, imposes, stamps, optimizes, encrypts, redacts and sanitizes; fills forms; embeds files and e-invoices.
 - Signs (PAdES B-B to B-LTA) and verifies; checks and converts PDF/A and PDF/X; preflights for print, with ink separations.
 - `run` chains steps over each file, and JSON workflow files keep a recipe; every command takes many files and globs.

@@ -49,17 +49,18 @@ internal sealed partial class DocxReader
     private NodeCollection<Inline>? paragraphInlines;
     private DocxExtension? paragraphExtension;
 
-    private DocxReader(OpcPackage package, OpcPart main)
+    private DocxReader(OpcPackage package, OpcPart main, DocumentLimits limits)
     {
         this.package = package;
         this.main = main;
+        this.limits = limits;
         currentPart = main;
         document = new Document(blank: true);
         data = new DocxPackageData { Package = package, MainPartName = main.Name, MainContentType = main.ContentType };
         document.Extensions.Set(DocxExtension.Format, data);
     }
 
-    public static Document Read(OpcPackage package)
+    public static Document Read(OpcPackage package, DocumentLimits limits, out IReadOnlyList<ConversionWarning> warnings)
     {
         OpcPart? main = package.GetRelatedPart(package.Relationships, OpcRelationshipTypes.OfficeDocument);
         if (main is null || !MainContentTypes.Contains(main.ContentType))
@@ -69,8 +70,9 @@ internal sealed partial class DocxReader
                 : $"The package's main part is {main.ContentType}, not a Word document.");
         }
 
-        DocxReader reader = new(package, main);
+        DocxReader reader = new(package, main, limits);
         reader.ReadAll();
+        warnings = reader.Warnings();
         return reader.document;
     }
 
@@ -326,6 +328,8 @@ internal sealed partial class DocxReader
                 pendingRaw.Add(element);
                 break;
             case "sectPr" or "tblGrid" or "tblPr" or "trPr" or "tcPr" or "sdtPr" or "sdtEndPr":
+                break;
+            case "altChunk" when ReadAltChunk(element, blocks):
                 break;
             default:
                 AddBlockIsland(element, blocks);

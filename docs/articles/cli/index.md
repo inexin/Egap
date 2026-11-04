@@ -1,6 +1,6 @@
 # The egap command
 
-`egap` turns HTML, Markdown, DOCX and images into PDF, and inspects, merges, splits, stamps, redacts, fills, signs and
+`egap` turns HTML, Markdown, DOCX, RTF and images into PDF, and inspects, merges, splits, stamps, redacts, fills, signs and
 checks PDFs from a shell, a build script or an AI assistant. It is a .NET tool built on Egap's public API, so it does what
 the library does, with the same defaults. Every command is listed with its options in the
 [command reference](commands.md).
@@ -72,6 +72,8 @@ egap convert draft.docx -o review.pdf --comments annotations   # comments as PDF
 egap convert draft.docx -o printed.pdf --comments margin        # comments in balloons beside each page
 egap convert report.docx -o report.pdf --embed-source        # a hybrid PDF: converts back to the DOCX
 egap convert notes.md -o notes.html
+egap convert letter.rtf -o letter.docx
+egap convert report.docx -o report.rtf
 egap convert page.html -o page.pdf --allow-network
 ```
 
@@ -79,14 +81,16 @@ egap convert page.html -o page.pdf --allow-network
 writer does not take stops the run with a usage error. PDF takes `language`, `links`, `named-destinations`, `outline`,
 `form-fields`, `ua`, `resolved-comments` and `strict`; HTML takes `embed-images` and `page-setup`; Markdown takes `images`
 (files, data-uris, placeholders or omit), `images-folder`, `figure-dpi`, `svg-figures`, `min-image-size`,
-`background-images`, `html-figures` and `front-matter`; text takes `headers-footers`, `notes` and `newline` (lf or crlf).
-DOCX takes none. Markdown images go to a folder named after the output, such as `report.images` for `report.md`.
+`background-images`, `html-figures` and `front-matter`; text takes `headers-footers`, `notes` and `newline` (lf or crlf);
+RTF takes `unknown-groups` (false leaves out the unknown `\*` groups an RTF input kept). DOCX takes none. Markdown
+images go to a folder named after the output, such as `report.images` for `report.md`.
 
 ```sh
 egap convert report.docx -o report.pdf --set outline=bookmarks --set language=en-GB
 egap convert report.docx -o report.md --set images=data-uris --set front-matter=true
 egap convert report.docx -o report.txt --set newline=crlf --set headers-footers=true
 egap convert notes.md -o notes.html --set page-setup=false
+egap convert old.rtf -o clean.rtf --set unknown-groups=false
 ```
 
 ## Pages

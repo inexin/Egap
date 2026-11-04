@@ -87,9 +87,9 @@ public static partial class DocxFormat
 
         OpcPackage package = OpcPackage.Read(source, options.Limits);
 
-        // What the model does not name is kept as extension data, not lost, so reading has nothing to report yet.
-        warnings = [];
-        return DocxReader.Read(package);
+        // What the model does not name is kept as extension data, not lost; what is reported is an embedded part (an RTF
+        // altChunk) that could not be read in.
+        return DocxReader.Read(package, options.Limits, out warnings);
     }
 
     /// <summary>

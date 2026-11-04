@@ -619,6 +619,14 @@ internal sealed partial class RtfReader
                 RtfStyleFormats.Subtract(character.RunFormat, from.Char);
             }
         }
+
+        // A writer that writes only what a style changes (LibreOffice) may still repeat a value the style inherits from
+        // further up its chain; dropping it, bases first, leaves the formatting in effect as it was and reads such a style
+        // as one written in full does.
+        foreach (Style style in madeFrom.Keys.Select(i => styles[i]).Where(s => s is not TableStyle).OrderBy(RtfStyleFormats.Depth))
+        {
+            RtfStyleFormats.DropRedundant(style);
+        }
     }
 
     /// <summary>The style sheet entry <paramref name="style"/>'s base was made from, or null when it has no base.</summary>

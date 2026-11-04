@@ -91,6 +91,65 @@ something out:
 - Islands from other formats (HTML and DOCX ones) are written as their picture, or their text.
 - Semicolons and tabs in font, style, list and author names are left out: a semicolon ends a table entry.
 
+## RTF inside DOCX
+
+A DOCX file can hold another document as an embedded part, placed with a `w:altChunk` element; Word imports the part when
+it opens the file. When the part is RTF (content type `application/rtf` or `text/rtf`), `DocxFormat.Load` does the same:
+it reads the part with the RTF reader and puts its blocks where the chunk was, in the body, a table cell, a header or a
+note. Styles the document already has by the same id are the document's, as when Word merges the chunk; the chunk's other
+styles and its lists come along. The chunk's own sections, headers and footers are not taken, and notes and comments in a
+chunk inside a header, note, comment or text box, which cannot hold them, are left out with a warning.
+
+Saving writes the imported blocks as ordinary content, so the saved file has no altChunk. An RTF chunk that cannot be read
+stays as it was, a `BlockIsland` that keeps the element and its part, and `DocxFormat.Load` reports it as a
+`ResourceNotLoaded` warning. Chunks in other formats (HTML, MHT, plain text, DOCX) stay block islands too.
+
+```csharp
+using Egap.Documents;
+
+Document merged = DocxFormat.Load("with-chunk.docx", out IReadOnlyList<ConversionWarning> warnings);
+foreach (ConversionWarning warning in warnings)
+{
+    Console.WriteLine(warning);                                  // an RTF chunk that could not be read
+}
+```
+
+## From the command line
+
+`egap convert` reads and writes RTF in every direction it supports: RTF to PDF, DOCX, HTML, Markdown or text, and any of
+those, and PDF, to RTF. `--set unknown-groups=false` leaves out the unknown `\*` groups an RTF input kept.
+
+```sh
+egap convert letter.rtf -o letter.pdf
+egap convert report.docx -o report.rtf
+egap convert old.rtf -o clean.rtf --set unknown-groups=false
+```
+
+## Known limits
+
+Reading:
+
+- Old Macintosh PICT pictures and Windows bitmap (`\wbitmap`) pictures are left out with a warning.
+- Equations, shape groups, other drawing shapes and embedded objects are islands: they draw their picture, and their
+  content is not in the model.
+- Line numbering (`\linemod`) is not read: the model has none.
+- A style keeps only what it changes from its base chain; a value it repeats from further up is dropped, which leaves
+  the formatting in effect as it was. Picture sizes are whole twips.
+
+Writing:
+
+- Theme colours and fonts are written as what they are in the theme, and a hyperlink as a `HYPERLINK` field.
+- Two top-level tables in a row become one table when read back, as RTF has nothing between rows to part them.
+- Formatting a table style gives conditionally (a bold first row) is written as each cell's own formatting, and every
+  cell's width is written.
+- Shapes in the text become floating shapes anchored to their line; a picture's source address and an SVG picture's
+  original are not written (the SVG is drawn as a PNG).
+- Move revisions are written as insertions and deletions, and revisions of field characters are not written.
+- Not written: a paragraph's "no list" override, a row's footer and hidden flags, a table style's band sizes, overline,
+  word spacing, OpenType features and a comment's Done flag.
+
+The Word checks wait for a Word install: the RTF round trips and reopen checks so far use LibreOffice's RTF, not Word's.
+
 ## Limits
 
 `RtfLoadOptions.Limits` keeps an untrusted file in bounds: `MaxDepth` caps how deep groups nest, and `MaxPartSize` caps
