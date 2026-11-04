@@ -18,6 +18,9 @@ public sealed class ResolvedRunFormat
         this.theme = theme;
     }
 
+    /// <summary>The value property <paramref name="id"/> resolved to, or null where nothing set it.</summary>
+    internal object? GetRaw(int id) => values[id];
+
     /// <summary>Bold (Latin and East Asian scripts).</summary>
     public bool Bold => Flag(RunFormat.BoldId);
 
@@ -187,6 +190,9 @@ public sealed class ResolvedParagraphFormat
     {
         this.values = values;
     }
+
+    /// <summary>The value property <paramref name="id"/> resolved to, or null where nothing set it.</summary>
+    internal object? GetRaw(int id) => values[id];
 
     /// <summary>How lines line up.</summary>
     public ParagraphAlignment Alignment => Value(ParagraphFormat.AlignmentId, ParagraphAlignment.Left);

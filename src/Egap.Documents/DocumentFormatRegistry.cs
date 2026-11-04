@@ -37,7 +37,7 @@ internal static class DocumentFormatRegistry
         [DocumentFormatKind.Docx] = new(DocumentFormatKind.Docx, ReadDocx, (document, path) => DocxFormat.Save(document, path)),
         [DocumentFormatKind.Text] = new(DocumentFormatKind.Text, ReadText, (document, path) => TextFormat.Save(document, path)),
         [DocumentFormatKind.Pdf] = new(DocumentFormatKind.Pdf, ReadPdf, SavePdf),
-        [DocumentFormatKind.Rtf] = new(DocumentFormatKind.Rtf, ReadRtf, null),
+        [DocumentFormatKind.Rtf] = new(DocumentFormatKind.Rtf, ReadRtf, (document, path) => RtfFormat.Save(document, path)),
 
         // Docling JSON holds page layouts, which a document is read from; a document is not written back as one.
         [DocumentFormatKind.DoclingJson] = new(DocumentFormatKind.DoclingJson, ReadDocling, null),

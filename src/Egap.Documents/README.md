@@ -5,8 +5,8 @@ that draws onto any [Egami](https://www.nuget.org/packages/Egami) canvas, PDF ex
 back into documents. Fully managed and MIT-licensed.
 
 - DOCX, DOTX and DOCM read and written; what the model does not name is kept, so DOCX to DOCX is lossless.
-- RTF read as Word writes it: styles, lists, tables, sections, headers and footers, notes, fields, comments, tracked
-  changes and pictures.
+- RTF read and written as Word writes it: styles, lists, tables, sections, headers and footers, notes, fields, comments,
+  tracked changes and pictures.
 - Styles, lists numbered as Word numbers them, tables, fields, comments, tracked changes; find, replace and a builder.
 - Page layout with floats, columns, headers and footers, footnotes, and flex and grid containers, rendered to images, SVG
   or PDF.

@@ -630,7 +630,7 @@ internal sealed partial class RtfReader
 
     private void AddTabStop(TabStop stop)
     {
-        // Word keeps at most 64 tab stops a paragraph; more would make each 	x copy a longer list.
+        // Word keeps at most 64 tab stops a paragraph; more would make each \tx copy a longer list.
         ParagraphFormat format = state.MutablePara();
         if (format.TabStops is { Count: >= MaxTabStops } stops && !stops.Any(t => t.Position == stop.Position))
         {
@@ -665,7 +665,7 @@ internal sealed partial class RtfReader
             case "phcol":
                 next = f with { HorizontalAnchor = HorizontalAnchor.Column };
                 break;
-            case "posx" when has:
+            case "posx" or "posnegx" when has:
                 next = f with { HorizontalOffset = Twips(p), HorizontalAlignment = FloatingAlignment.None };
                 break;
             case "posxl":
@@ -692,7 +692,7 @@ internal sealed partial class RtfReader
             case "pvpara":
                 next = f with { VerticalAnchor = VerticalAnchor.Paragraph };
                 break;
-            case "posy" when has:
+            case "posy" or "posnegy" when has:
                 next = f with { VerticalOffset = Twips(p), VerticalAlignment = FloatingAlignment.None };
                 break;
             case "posyt":
