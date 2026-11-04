@@ -21046,6 +21046,31 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RtfFormat.Parse
   nameWithType: RtfFormat.Parse
+- uid: Egap.Documents.RtfFormat.Save(Egap.Documents.Document,System.IO.Stream,Egap.Documents.RtfSaveOptions)
+  name: Save(Document, Stream, RtfSaveOptions?)
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Save_Egap_Documents_Document_System_IO_Stream_Egap_Documents_RtfSaveOptions_
+  commentId: M:Egap.Documents.RtfFormat.Save(Egap.Documents.Document,System.IO.Stream,Egap.Documents.RtfSaveOptions)
+  name.vb: Save(Document, Stream, RtfSaveOptions)
+  fullName: Egap.Documents.RtfFormat.Save(Egap.Documents.Document, System.IO.Stream, Egap.Documents.RtfSaveOptions?)
+  fullName.vb: Egap.Documents.RtfFormat.Save(Egap.Documents.Document, System.IO.Stream, Egap.Documents.RtfSaveOptions)
+  nameWithType: RtfFormat.Save(Document, Stream, RtfSaveOptions?)
+  nameWithType.vb: RtfFormat.Save(Document, Stream, RtfSaveOptions)
+- uid: Egap.Documents.RtfFormat.Save(Egap.Documents.Document,System.String,Egap.Documents.RtfSaveOptions)
+  name: Save(Document, string, RtfSaveOptions?)
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Save_Egap_Documents_Document_System_String_Egap_Documents_RtfSaveOptions_
+  commentId: M:Egap.Documents.RtfFormat.Save(Egap.Documents.Document,System.String,Egap.Documents.RtfSaveOptions)
+  name.vb: Save(Document, String, RtfSaveOptions)
+  fullName: Egap.Documents.RtfFormat.Save(Egap.Documents.Document, string, Egap.Documents.RtfSaveOptions?)
+  fullName.vb: Egap.Documents.RtfFormat.Save(Egap.Documents.Document, String, Egap.Documents.RtfSaveOptions)
+  nameWithType: RtfFormat.Save(Document, string, RtfSaveOptions?)
+  nameWithType.vb: RtfFormat.Save(Document, String, RtfSaveOptions)
+- uid: Egap.Documents.RtfFormat.Save*
+  name: Save
+  href: api/Egap.Documents.RtfFormat.html#Egap_Documents_RtfFormat_Save_
+  commentId: Overload:Egap.Documents.RtfFormat.Save
+  isSpec: "True"
+  fullName: Egap.Documents.RtfFormat.Save
+  nameWithType: RtfFormat.Save
 - uid: Egap.Documents.RtfLoadOptions
   name: RtfLoadOptions
   href: api/Egap.Documents.RtfLoadOptions.html
@@ -21065,6 +21090,25 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RtfLoadOptions.Limits
   nameWithType: RtfLoadOptions.Limits
+- uid: Egap.Documents.RtfSaveOptions
+  name: RtfSaveOptions
+  href: api/Egap.Documents.RtfSaveOptions.html
+  commentId: T:Egap.Documents.RtfSaveOptions
+  fullName: Egap.Documents.RtfSaveOptions
+  nameWithType: RtfSaveOptions
+- uid: Egap.Documents.RtfSaveOptions.KeepUnknownGroups
+  name: KeepUnknownGroups
+  href: api/Egap.Documents.RtfSaveOptions.html#Egap_Documents_RtfSaveOptions_KeepUnknownGroups
+  commentId: P:Egap.Documents.RtfSaveOptions.KeepUnknownGroups
+  fullName: Egap.Documents.RtfSaveOptions.KeepUnknownGroups
+  nameWithType: RtfSaveOptions.KeepUnknownGroups
+- uid: Egap.Documents.RtfSaveOptions.KeepUnknownGroups*
+  name: KeepUnknownGroups
+  href: api/Egap.Documents.RtfSaveOptions.html#Egap_Documents_RtfSaveOptions_KeepUnknownGroups_
+  commentId: Overload:Egap.Documents.RtfSaveOptions.KeepUnknownGroups
+  isSpec: "True"
+  fullName: Egap.Documents.RtfSaveOptions.KeepUnknownGroups
+  nameWithType: RtfSaveOptions.KeepUnknownGroups
 - uid: Egap.Documents.Run
   name: Run
   href: api/Egap.Documents.Run.html

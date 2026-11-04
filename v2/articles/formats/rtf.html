@@ -87,8 +87,8 @@
         <article data-uid="">
 <h1 id="rtf">RTF</h1>
 
-<p>Egap.Documents reads RTF, the Rich Text Format that Word, WordPad, TextEdit and many other programs write. It needs no
-add-on package. Writing RTF is not supported yet.</p>
+<p>Egap.Documents reads and writes RTF, the Rich Text Format that Word, WordPad, TextEdit and many other programs write. It
+needs no add-on package.</p>
 <h2 id="reading">Reading</h2>
 <p><code>RtfFormat.Load</code> reads a file or a stream, and <code>RtfFormat.Parse</code> reads RTF held in a string. <code>Document.Load</code> and
 <code>Document.Identify</code> recognize RTF by its first bytes (<code>{\rtf</code>, after a byte order mark or white space), so an RTF file is
@@ -124,6 +124,49 @@ drawing shapes and embedded objects (<code>\object</code>) keep their RTF and dr
 those is reported as a <code>ConversionWarning</code>, and so is a picture in a format Egap does not read (old Macintosh PICT and
 Windows bitmap pictures). Groups marked <code>\*</code> that the reader does not know, such as Word's theme and data store, are kept
 in the document's extension data under the format name <code>rtf</code>.</p>
+<h2 id="writing">Writing</h2>
+<p><code>RtfFormat.Save</code> writes a document to a path or a stream, and <code>Document.Save</code> writes RTF for a path ending in <code>.rtf</code>. Both
+return the <code>ConversionWarning</code>s for what RTF could not hold.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document report = Document.Load(&quot;report.docx&quot;);
+IReadOnlyList&lt;ConversionWarning&gt; warnings = RtfFormat.Save(report, &quot;report.rtf&quot;);
+report.Save(&quot;copy.rtf&quot;);                                          // RTF by its extension
+
+using MemoryStream stream = new();
+RtfFormat.Save(report, stream, new RtfSaveOptions { KeepUnknownGroups = false });
+</code></pre>
+<p>The writer writes RTF 1.9.1 as Word 2007 and later write it, so Word, LibreOffice and WordPad open it as they open
+Word's own files:</p>
+<ul>
+<li>The header: <code>\ansi\ansicpg1252</code>, the default fonts, the font table with each font's family and character set, the
+colour table, the document defaults, the style sheet with each style's base, next and linked style, the list and list
+override tables, the revision authors, document information and custom properties, and the page setup.</li>
+<li>Sections with their page setup and columns, and their headers and footers.</li>
+<li>Paragraphs and runs with all their formatting, tabs, borders, shading and frames. RTF text carries its whole
+formatting: each paragraph and run says what its styles give as well as its own formatting, as Word writes it. In a
+table with a table style, the text also says what the style's conditional formatting (a bold first row, banded
+shading) gives it, which RTF has no place for.</li>
+<li>Tables with merged cells, nested tables (<code>\itap</code>, <code>\nesttableprops</code>), borders, shading, widths and margins.</li>
+<li>Fields (<code>\fldinst</code> and <code>\fldrslt</code>), bookmarks, hyperlinks as <code>HYPERLINK</code> fields, footnotes and endnotes, comments
+with their ranges and replies, and tracked insertions, deletions and formatting changes with the revision table.</li>
+<li>Pictures: PNG, JPEG and EMF as they are, WMF without its placeable header, and other images (GIF, BMP, TIFF, WebP...)
+converted to PNG; an SVG picture is drawn as a PNG. Floating pictures, text boxes and simple shapes are <code>\shp</code> groups.</li>
+</ul>
+<p>Text is 7-bit: a character outside printable ASCII is a <code>\uN</code> escape with a one-character fallback for readers without
+Unicode (<code>\uc1</code>), and a character past U+FFFF is its two surrogates. A document read from RTF writes back what the
+reader kept as it was: equations, shape groups and embedded objects (islands), and unknown <code>\*</code> groups where they sat.
+<code>RtfSaveOptions.KeepUnknownGroups = false</code> leaves the unknown groups out.</p>
+<p>RTF has no place for some of what the model holds; saving writes what comes closest, with a warning where it leaves
+something out:</p>
+<ul>
+<li>Margin boxes are left out; content controls give their content, and flex and grid containers the borderless tables
+DOCX gives them.</li>
+<li>A theme colour or theme font is written as the colour or font it is in the document's theme.</li>
+<li>A shape in the text is anchored to its line, as RTF shapes float.</li>
+<li>Islands from other formats (HTML and DOCX ones) are written as their picture, or their text.</li>
+<li>Semicolons and tabs in font, style, list and author names are left out: a semicolon ends a table entry.</li>
+</ul>
 <h2 id="limits">Limits</h2>
 <p><code>RtfLoadOptions.Limits</code> keeps an untrusted file in bounds: <code>MaxDepth</code> caps how deep groups nest, and <code>MaxPartSize</code> caps
 each picture and each block of binary data. A file past a limit throws a <code>DocumentLimitException</code>; a file that does not

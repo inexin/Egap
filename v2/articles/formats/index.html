@@ -137,7 +137,7 @@ without naming the format, how a file's format is found, warnings and limits.</p
 <td><a href="rtf.html">RTF</a></td>
 <td>Egap.Documents</td>
 <td>RTF as Word 2007 and later write it, with tables, lists, notes, comments, tracked changes and pictures</td>
-<td>Not yet</td>
+<td>RTF 1.9.1 as Word writes it, 7-bit with Unicode escapes</td>
 </tr>
 <tr>
 <td><a href="text.html">Plain text</a></td>
@@ -187,10 +187,9 @@ says so.</li>
 <li>Text that starts with a tag is <code>Html</code>, and other text is <code>Markdown</code>.</li>
 <li>Binary data no format knows is <code>Unknown</code>.</li>
 </ol>
-<p><code>Save</code> writes <code>.docx</code>, <code>.dotx</code>, <code>.docm</code> and <code>.dotm</code> as Word's, <code>.pdf</code> as PDF, <code>.txt</code> as plain text, and, once their
-add-on is registered, <code>.html</code> and <code>.htm</code> as HTML, <code>.mht</code> and <code>.mhtml</code> as MHTML, <code>.epub</code> as EPUB and <code>.md</code> and <code>.markdown</code>
-as Markdown. <code>.rtf</code> throws a <code>NotSupportedException</code>, since RTF is read but not yet written. Any other extension throws an
-<code>ArgumentException</code>.</p>
+<p><code>Save</code> writes <code>.docx</code>, <code>.dotx</code>, <code>.docm</code> and <code>.dotm</code> as Word's, <code>.rtf</code> as RTF, <code>.pdf</code> as PDF, <code>.txt</code> as plain text, and,
+once their add-on is registered, <code>.html</code> and <code>.htm</code> as HTML, <code>.mht</code> and <code>.mhtml</code> as MHTML, <code>.epub</code> as EPUB and <code>.md</code> and
+<code>.markdown</code> as Markdown. Any other extension throws an <code>ArgumentException</code>.</p>
 <p>Each format also has its own class (<code>DocxFormat</code>, <code>RtfFormat</code>, <code>HtmlFormat</code>, <code>EpubFormat</code>, <code>MarkdownFormat</code>, <code>TextFormat</code>, <code>DoclingJson</code>) with its
 own options, and members on <code>Document</code> that forward to it, such as <code>Document.LoadDocx</code>, <code>ToHtml</code> and <code>SaveAsMarkdown</code>.
 Calling a format directly needs no <code>Register()</code>.</p>

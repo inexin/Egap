@@ -3219,6 +3219,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.RtfSaveOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.RtfSaveOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.RtfSaveOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.RtfSaveOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Documents.RtfFormat\" data-throw-if-not-resolved=\"false\"></xref> writes a file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Run.yml",
       "output": {
         ".html": {
