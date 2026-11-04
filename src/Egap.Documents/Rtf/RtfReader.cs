@@ -208,6 +208,27 @@ internal sealed partial class RtfReader
         Pop();
     }
 
+    /// <summary>Skips the rest of a group whose first token after the brace was <paramref name="first"/>.</summary>
+    private void SkipRest(RtfTokenKind first)
+    {
+        switch (first)
+        {
+            case RtfTokenKind.GroupEnd:
+                Pop();
+                return;
+            case RtfTokenKind.GroupStart:
+                Push(tokens.Position - 1);
+                SkipDestination();
+                SkipDestination();
+                return;
+            case RtfTokenKind.End:
+                return;
+            default:
+                SkipDestination();
+                return;
+        }
+    }
+
     private void Symbol(char symbol)
     {
         switch (symbol)

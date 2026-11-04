@@ -190,7 +190,7 @@ internal sealed partial class RtfReader
                 }
                 else if (right > left)
                 {
-                    cell.Format.Width = TableWidth.Points(Twips(right - left));
+                    cell.Format.Width = TableWidth.Points(((long)right - left) / 20.0);
                 }
             }
 
@@ -285,7 +285,8 @@ internal sealed partial class RtfReader
             double[] widths = new double[grid.Length - 1];
             for (int i = 0; i < widths.Length; i++)
             {
-                widths[i] = Twips(grid[i + 1] - grid[i]);
+                // In long: edges far apart, such as a huge negative \trleft, overflow an int.
+                widths[i] = ((long)grid[i + 1] - grid[i]) / 20.0;
             }
 
             table.Grid = widths;

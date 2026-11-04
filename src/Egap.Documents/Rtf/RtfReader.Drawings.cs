@@ -387,27 +387,6 @@ internal sealed partial class RtfReader
         return result;
     }
 
-    /// <summary>Skips the rest of a group whose first token after the brace was <paramref name="first"/>.</summary>
-    private void SkipRest(RtfTokenKind first)
-    {
-        switch (first)
-        {
-            case RtfTokenKind.GroupEnd:
-                Pop();
-                return;
-            case RtfTokenKind.GroupStart:
-                Push(tokens.Position - 1);
-                SkipDestination();
-                SkipDestination();
-                return;
-            case RtfTokenKind.End:
-                return;
-            default:
-                SkipDestination();
-                return;
-        }
-    }
-
     /// <summary>Finds the first picture in the rest of the current group, reading it, and closes the group.</summary>
     private Picture? FindPicture()
     {

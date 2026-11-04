@@ -179,13 +179,9 @@ internal sealed partial class RtfReader
                     {
                         alt = ReadText();
                     }
-                    else if (first == RtfTokenKind.GroupEnd)
-                    {
-                        Pop();
-                    }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(first);
                     }
                 }
 
@@ -658,13 +654,14 @@ internal sealed partial class RtfReader
                     return;
                 case RtfTokenKind.GroupStart:
                     Push(tokens.Position - 1);
-                    if (tokens.Next() == RtfTokenKind.ControlWord && tokens.Word == "list")
+                    RtfTokenKind head = tokens.Next();
+                    if (head == RtfTokenKind.ControlWord && tokens.Word == "list")
                     {
                         ReadList();
                     }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(head);
                     }
 
                     break;
@@ -704,13 +701,9 @@ internal sealed partial class RtfReader
                     {
                         name = ReadText(toSemicolon: true);
                     }
-                    else if (first == RtfTokenKind.GroupEnd)
-                    {
-                        Pop();
-                    }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(first);
                     }
 
                     break;
@@ -781,13 +774,9 @@ internal sealed partial class RtfReader
                     {
                         numbers.AddRange(ReadText(trim: false).Where(c => c is > '\0' and < ';').Select(c => (int)c));
                     }
-                    else if (first == RtfTokenKind.GroupEnd)
-                    {
-                        Pop();
-                    }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(first);
                     }
 
                     break;
@@ -916,13 +905,14 @@ internal sealed partial class RtfReader
                     return;
                 case RtfTokenKind.GroupStart:
                     Push(tokens.Position - 1);
-                    if (tokens.Next() == RtfTokenKind.ControlWord && tokens.Word == "listoverride")
+                    RtfTokenKind head = tokens.Next();
+                    if (head == RtfTokenKind.ControlWord && tokens.Word == "listoverride")
                     {
                         ReadListOverride();
                     }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(head);
                     }
 
                     break;
@@ -952,13 +942,14 @@ internal sealed partial class RtfReader
                     return;
                 case RtfTokenKind.GroupStart:
                     Push(tokens.Position - 1);
-                    if (tokens.Next() == RtfTokenKind.ControlWord && tokens.Word == "lfolevel" && levels.Count < 9)
+                    RtfTokenKind head = tokens.Next();
+                    if (head == RtfTokenKind.ControlWord && tokens.Word == "lfolevel" && levels.Count < 9)
                     {
                         levels.Add(ReadOverrideLevel());
                     }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(head);
                     }
 
                     break;
@@ -1018,13 +1009,14 @@ internal sealed partial class RtfReader
                     return (start, level);
                 case RtfTokenKind.GroupStart:
                     Push(tokens.Position - 1);
-                    if (tokens.Next() == RtfTokenKind.ControlWord && tokens.Word == "listlevel")
+                    RtfTokenKind head = tokens.Next();
+                    if (head == RtfTokenKind.ControlWord && tokens.Word == "listlevel")
                     {
                         level = ReadListLevel();
                     }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(head);
                     }
 
                     break;
@@ -1139,14 +1131,7 @@ internal sealed partial class RtfReader
 
                     if (first != RtfTokenKind.ControlWord)
                     {
-                        if (first == RtfTokenKind.GroupEnd)
-                        {
-                            Pop();
-                        }
-                        else
-                        {
-                            SkipDestination();
-                        }
+                        SkipRest(first);
 
                         break;
                     }
@@ -1273,7 +1258,8 @@ internal sealed partial class RtfReader
                     return;
                 case RtfTokenKind.GroupStart:
                     Push(tokens.Position - 1);
-                    if (tokens.Next() == RtfTokenKind.ControlWord && tokens.Word is "propname" or "staticval")
+                    RtfTokenKind head = tokens.Next();
+                    if (head == RtfTokenKind.ControlWord && tokens.Word is "propname" or "staticval")
                     {
                         bool isName = tokens.Word == "propname";
                         string value = ReadText();
@@ -1289,7 +1275,7 @@ internal sealed partial class RtfReader
                     }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(head);
                     }
 
                     break;

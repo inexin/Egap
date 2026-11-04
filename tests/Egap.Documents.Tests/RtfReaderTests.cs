@@ -472,6 +472,44 @@ public class RtfReaderTests
     }
 
     [Fact]
+    public void BrokenHexEscapesDoNotRecurse()
+    {
+        Document document = RtfFormat.Parse(@"{\rtf1 " + string.Concat(Enumerable.Repeat(@"\'", 50_000)) + @" end\par}");
+        Assert.EndsWith("end", document.GetText().Trim());
+        document = Read(@"{\*\foo \'}after\par");
+        Assert.Equal("after", document.GetText().Trim());
+        document = Read(@"{\*\foo \'{}x}after\par");
+        Assert.Equal("after", document.GetText().Trim());
+    }
+
+    [Fact]
+    public void FarApartCellEdgesMakeAFiniteGrid()
+    {
+        Document document = Read(@"\trowd\trleft-10000000000\cellx-2000000000\cellx2000000000\pard\intbl A\cell B\cell\row");
+        Table table = document.Descendants<Table>().Single();
+        Assert.All(table.Grid!, width => Assert.True(width >= 0 && double.IsFinite(width)));
+        Assert.All(table.Descendants<Cell>(), cell => Assert.True(cell.Format.Width!.Value.Value > 0));
+    }
+
+    [Fact]
+    public void EmptyAndNestedGroupsInHeaderTablesAreSkipped()
+    {
+        const string lists = """
+            {\*\listtable{}{{\foo x}y}{\list\listtemplateid1{}{{\foo}}{\listlevel\levelnfc0{}{{\foo}}{\leveltext\'02\'00.;}{\levelnumbers\'01;}\li720}\listid100}}
+            {\*\listoverridetable{}{{\foo}}{\listoverride\listid100\listoverridecount0{}{{\foo}}\ls1}}
+            """;
+        Document document = Read(@"\pard\ls1\ilvl0 One\par After\par", lists);
+        List<Paragraph> paragraphs = Paragraphs(document);
+        Assert.Equal("%1.", paragraphs[0].Format.List!.Definition.Levels[0].LevelText);
+        Assert.Equal("After", paragraphs[1].GetText().Trim());
+
+        document = Read("Body\\par", @"{\info{}{{\foo}}{\title The Title}}{\*\userprops{}{{\foo}}{\propname Project}{\staticval Egap}}");
+        Assert.Equal("The Title", document.Properties.Title);
+        Assert.Equal("Egap", document.Properties.GetCustom("Project"));
+        Assert.Equal("Body", document.GetText().Trim());
+    }
+
+    [Fact]
     public void DeepNestingIsRefused()
     {
         string rtf = @"{\rtf1 " + new string('{', 1000) + new string('}', 1000) + "}";

@@ -440,7 +440,8 @@ internal sealed partial class RtfReader
                     return;
                 case RtfTokenKind.GroupStart:
                     Push(tokens.Position - 1);
-                    if (tokens.Next() == RtfTokenKind.ControlWord && tokens.Word is "pntxtb" or "pntxta")
+                    RtfTokenKind head = tokens.Next();
+                    if (head == RtfTokenKind.ControlWord && tokens.Word is "pntxtb" or "pntxta")
                     {
                         bool before = tokens.Word == "pntxtb";
                         string value = ReadText(trim: false);
@@ -448,7 +449,7 @@ internal sealed partial class RtfReader
                     }
                     else
                     {
-                        SkipDestination();
+                        SkipRest(head);
                     }
 
                     break;

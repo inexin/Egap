@@ -99,7 +99,12 @@ internal sealed class RtfTokenizer
                     position++;
                     return RtfTokenKind.GroupEnd;
                 case (byte)'\\':
-                    return ReadControl();
+                    if (ReadControl() is RtfTokenKind control)
+                    {
+                        return control;
+                    }
+
+                    continue;
                 case (byte)'\r' or (byte)'\n' or 0:
                     position++;
                     continue;
@@ -172,7 +177,8 @@ internal sealed class RtfTokenizer
         return RtfTokenKind.Text;
     }
 
-    private RtfTokenKind ReadControl()
+    /// <summary>Reads a control word or symbol, or returns null for a broken <c>\'</c> escape, after which the caller reads on.</summary>
+    private RtfTokenKind? ReadControl()
     {
         position++;
         if (position >= data.Length)
@@ -194,8 +200,8 @@ internal sealed class RtfTokenizer
                         return RtfTokenKind.Hex;
                     }
 
-                    // A broken escape: what follows is read as text.
-                    return Next();
+                    // A broken escape: the caller reads what follows, braces included, so nothing recurses.
+                    return null;
                 case (byte)'\r' or (byte)'\n':
                     Word = "par";
                     HasParameter = false;
