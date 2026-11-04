@@ -47,6 +47,17 @@ internal sealed class RtfTokenizer
     {
         this.data = data;
         lookup = interned.GetAlternateLookup<ReadOnlySpan<char>>();
+
+        // A UTF-8 byte order mark and white space before the first brace, which Word lets through.
+        if (data is [0xEF, 0xBB, 0xBF, ..])
+        {
+            position = 3;
+        }
+
+        while (position < data.Length && data[position] is (byte)' ' or (byte)'\t' or (byte)'\r' or (byte)'\n')
+        {
+            position++;
+        }
     }
 
     /// <summary>Where the next token starts, as an offset in the file.</summary>

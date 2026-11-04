@@ -48,6 +48,41 @@ public class RtfReaderTests
     }
 
     [Fact]
+    public void ByteOrderMarkAndWhiteSpaceBeforeTheGroupAreAllowed()
+    {
+        byte[] bytes = [0xEF, 0xBB, 0xBF, (byte)'\n', (byte)' ', (byte)'\t', .. @"{\rtf1 x}"u8.ToArray()];
+        Assert.Equal("x", RtfFormat.Load(new MemoryStream(bytes)).GetText().Trim());
+        string path = Path.Combine(Path.GetTempPath(), $"egap-rtf-{Guid.NewGuid():N}.rtf");
+        File.WriteAllBytes(path, bytes);
+        try
+        {
+            Assert.Equal("x", Document.Load(path).GetText().Trim());
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public void LastParagraphWithoutParKeepsItsFormatting()
+    {
+        Document document = RtfFormat.Parse(@"{\rtf1\ansi\pard\qc Hello}");
+        Assert.Equal(ParagraphAlignment.Center, Paragraphs(document)[0].Format.Alignment);
+
+        const string sheet = @"{\stylesheet{\s0 Normal;}{\s1 heading 1;}{\s2 footnote text;}}";
+        document = Read(@"\pard\s1 Title{\super\chftn{\footnote\pard\plain\s2\qr Note}}\par", sheet);
+        Paragraph note = (Paragraph)document.Descendants<Footnote>().Single().Story.Blocks[0];
+        Assert.Equal("footnote text", note.Style!.Name);
+        Assert.Equal(ParagraphAlignment.Right, note.Format.Alignment);
+        Assert.Equal("heading 1", Paragraphs(document)[0].Style!.Name);
+        document = Read(@"\pard\s1\qc Title{\*\atnid JD}{\*\atnauthor Jane}\chatn{\*\annotation\pard\plain A remark.}\par", sheet);
+        Paragraph remark = (Paragraph)document.Descendants<Comment>().Single().Story.Blocks[0];
+        Assert.NotEqual("heading 1", remark.Style?.Name);
+        Assert.NotEqual(ParagraphAlignment.Center, remark.Format.Alignment);
+    }
+
+    [Fact]
     public void NotRtfIsRefused()
     {
         Assert.Throws<DocumentException>(() => RtfFormat.Parse("hello"));

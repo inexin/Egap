@@ -57,8 +57,12 @@ internal sealed partial class RtfReader
         depth = 0;
         state = states[0];
         Push(0);
-        ReadGroup(1);
-        FinishStory(main);
+        ReadGroup(1, main);
+        if (!main.Finished)
+        {
+            FinishStory(main);
+        }
+
         FinishSection();
         FinishHeader();
         if (document.Sections.Count > 1 && document.Sections[^1].Body.Blocks.Count == 0)
@@ -72,7 +76,11 @@ internal sealed partial class RtfReader
     /// Reads tokens until the group opened at <paramref name="groupDepth"/> closes (or the file ends), handling nested groups
     /// and the destinations they start.
     /// </summary>
-    private void ReadGroup(int groupDepth)
+    /// <remarks>
+    /// When <paramref name="finish"/> is given, that story is finished before the group's closing brace, while the group's
+    /// state still holds its last paragraph's formatting.
+    /// </remarks>
+    private void ReadGroup(int groupDepth, StoryContext? finish = null)
     {
         while (true)
         {
@@ -101,6 +109,11 @@ internal sealed partial class RtfReader
             {
                 case RtfTokenKind.End:
                     FlushText();
+                    if (finish is not null)
+                    {
+                        FinishStory(finish);
+                    }
+
                     while (depth >= groupDepth)
                     {
                         Pop();
@@ -115,6 +128,11 @@ internal sealed partial class RtfReader
                 case RtfTokenKind.GroupEnd:
                     FlushText();
                     skip = 0;
+                    if (finish is not null && depth == groupDepth)
+                    {
+                        FinishStory(finish);
+                    }
+
                     Pop();
                     if (depth < groupDepth)
                     {
@@ -404,6 +422,7 @@ internal sealed partial class RtfReader
 
         context.Paragraph = null;
         CloseTablesAbove(0);
+        context.Finished = true;
         if (context.Blocks.Count == 0 && !context.IsMain)
         {
             Paragraph empty = new(document);
@@ -424,8 +443,12 @@ internal sealed partial class RtfReader
             // A story starts with the default paragraph and character formatting, whatever surrounds its reference.
             state.ResetParagraph();
             state.ResetCharacter();
-            ReadGroup(groupDepth);
-            FinishStory(story);
+            ReadGroup(groupDepth, story);
+            if (!story.Finished)
+            {
+                // A destination word in the middle of the group read the rest of it.
+                FinishStory(story);
+            }
         }
         finally
         {
@@ -486,6 +509,9 @@ internal sealed partial class RtfReader
 
         /// <summary>The paragraph being read, until its paragraph mark.</summary>
         public Paragraph? Paragraph { get; set; }
+
+        /// <summary>Whether the story's last paragraph and tables are done.</summary>
+        public bool Finished { get; set; }
 
         /// <summary>The tables being built, by nesting level from 1.</summary>
         public List<TableLevel> Tables { get; } = [];
