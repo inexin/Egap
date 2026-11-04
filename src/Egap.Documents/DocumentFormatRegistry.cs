@@ -42,6 +42,9 @@ internal static class DocumentFormatRegistry
         // An encrypted package is read as DOCX once decrypted; without a password that throws DocumentPasswordException.
         [DocumentFormatKind.Encrypted] = new(DocumentFormatKind.Encrypted, ReadDocx, null),
 
+        // OpenDocument Text is read; writing it is still to come.
+        [DocumentFormatKind.Odt] = new(DocumentFormatKind.Odt, ReadOdt, null),
+
         // Docling JSON holds page layouts, which a document is read from; a document is not written back as one.
         [DocumentFormatKind.DoclingJson] = new(DocumentFormatKind.DoclingJson, ReadDocling, null),
     };
@@ -102,6 +105,11 @@ internal static class DocumentFormatRegistry
         return RtfFormat.Read(bytes, out warnings, null);
     }
 
+    private static Document ReadOdt(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
+    {
+        return OdtFormat.Read(bytes, out warnings, null);
+    }
+
     private static Document ReadText(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
     {
         warnings = [];
@@ -140,6 +148,7 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.Mhtml => "MHTML",
         DocumentFormatKind.Rtf => "RTF",
         DocumentFormatKind.Encrypted => "encrypted Office files",
+        DocumentFormatKind.Odt => "ODT",
         _ => "this file",
     };
 

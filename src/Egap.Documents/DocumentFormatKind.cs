@@ -41,4 +41,10 @@ public enum DocumentFormatKind
     /// it needs its password, in <see cref="DocumentLoadOptions.Password"/> or <see cref="DocxLoadOptions.Password"/>.
     /// </summary>
     Encrypted,
+
+    /// <summary>
+    /// OpenDocument Text: an ODT document or OTT template (a ZIP package whose stored first entry is its <c>mimetype</c>), or a
+    /// flat FODT file (one XML document).
+    /// </summary>
+    Odt,
 }

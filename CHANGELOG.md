@@ -47,6 +47,18 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `text/rtf` is read with the RTF reader, and its blocks take the chunk's place, as Word imports it when it opens the
   file; saving writes them as ordinary content. Other altChunks (HTML, MHT, text, DOCX) stay block islands as before. An
   RTF chunk that cannot be read stays an island, and `DocxFormat.Load` reports it as a `ResourceNotLoaded` warning.
+- OpenDocument Text reading, built in: `OdtFormat.Load` reads ODT documents, OTT templates and flat FODT files (ODF 1.2
+  to 1.4), with `OdtLoadOptions` for the limits. Common styles become the model's styles (LibreOffice's names mapped to
+  Word's built-in ones) and automatic styles direct formatting; list styles become lists that restart and continue as
+  ODF says, headings are numbered by the outline style; tables with spans and nested tables, page styles as sections
+  with their headers and footers, sections with columns, footnotes and endnotes, comments, bookmarks, links, fields as
+  Word's fields, indexes as `TOC` fields, tracked insertions and deletions, pictures, text boxes and simple shapes. A
+  frame holding only a table is a floating table. Charts, formulas and other objects are islands that draw their stored
+  picture; unknown markup is kept as extension data. `Document.Load` and `Document.Identify` know ODT by its `mimetype`
+  entry and FODT by its root (`DocumentFormatKind.Odt`). A password-protected OpenDocument file throws a
+  `DocumentException`.
+- Faster loading of documents with many lists: checking that a list belongs to the document no longer scans every list,
+  which made a document of thousands of lists slow to read.
 - Layout warnings: `DocumentLayout.Warnings` lists what a layout laid out differently from what the document asks for,
   as `LayoutWarning` records with the kind, a message, the node and its page, and `LayoutOptions.OnWarning` hears each
   one, also when a document is saved as PDF. The first kind, `FloatLaidOutInline`, is a floating table or framed

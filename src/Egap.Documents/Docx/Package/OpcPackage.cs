@@ -212,7 +212,7 @@ internal sealed class OpcPackage
         CloseInput = true,
     };
 
-    private static byte[] ReadEntry(ZipArchiveEntry entry, DocumentLimits limits)
+    internal static byte[] ReadEntry(ZipArchiveEntry entry, DocumentLimits limits)
     {
         using Stream input = entry.Open();
         if (entry.Length is > 0 and <= int.MaxValue && entry.Length <= limits.MaxPartSize)

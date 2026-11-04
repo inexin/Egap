@@ -193,6 +193,11 @@ public sealed partial class Document
             return RtfFormat.Read(bytes, out warnings, new RtfLoadOptions { Limits = options.Limits });
         }
 
+        if (kind == DocumentFormatKind.Odt && options is not null)
+        {
+            return OdtFormat.Read(bytes, out warnings, new OdtLoadOptions { Limits = options.Limits });
+        }
+
         return DocumentFormatRegistry.ReaderFor(kind)(bytes, out warnings);
     }
 
@@ -203,6 +208,14 @@ public sealed partial class Document
             && head[38..58].SequenceEqual("application/epub+zip"u8))
         {
             return DocumentFormatKind.Epub;
+        }
+
+        // An OpenDocument package's first entry is its stored mimetype too (ODF 1.3 Part 2, 3.3); a ZIP package named .odt,
+        // .ott or .fodt is taken as one when a writer put the mimetype elsewhere.
+        if (Odf.OdfNames.IsText(Odf.OdfPackage.MediaTypeOfZip(head))
+            || (head is [0x50, 0x4B, 0x03, 0x04, ..] && KindOfExtension(extension) == DocumentFormatKind.Odt))
+        {
+            return DocumentFormatKind.Odt;
         }
 
         // A ZIP package, or an old compound file (whose error names it), is Word's.
@@ -237,6 +250,11 @@ public sealed partial class Document
             return DocumentFormatKind.DoclingJson;
         }
 
+        if (Odf.OdfPackage.IsFlatText(head))
+        {
+            return DocumentFormatKind.Odt;
+        }
+
         if (StartsWithMarkup(head))
         {
             return DocumentFormatKind.Html;
@@ -257,6 +275,7 @@ public sealed partial class Document
         ".EPUB" => DocumentFormatKind.Epub,
         ".MHT" or ".MHTML" => DocumentFormatKind.Mhtml,
         ".RTF" => DocumentFormatKind.Rtf,
+        ".ODT" or ".OTT" or ".FODT" => DocumentFormatKind.Odt,
         _ => DocumentFormatKind.Unknown,
     };
 

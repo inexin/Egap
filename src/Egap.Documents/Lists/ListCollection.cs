@@ -12,6 +12,10 @@ public sealed class ListCollection : IReadOnlyCollection<List>
     private readonly List<ListDefinition> definitions = [];
     private readonly List<List> lists = [];
 
+    // Membership, asked whenever a paragraph takes a list or a list changes: a scan of the lists made that quadratic.
+    private readonly HashSet<ListDefinition> definitionSet = [];
+    private readonly HashSet<List> listSet = [];
+
     internal ListCollection(Document document)
     {
         this.document = document;
@@ -37,6 +41,7 @@ public sealed class ListCollection : IReadOnlyCollection<List>
     {
         ListDefinition definition = new(document, NextDefinitionId());
         definitions.Add(definition);
+        definitionSet.Add(definition);
         document.NotifyFormattingChanged($"ListDefinitions.{definition.Id}.Added");
         return definition;
     }
@@ -52,6 +57,7 @@ public sealed class ListCollection : IReadOnlyCollection<List>
 
         List list = new(document, NextListId(), definition);
         lists.Add(list);
+        listSet.Add(list);
         document.NotifyFormattingChanged($"Lists.{list.Id}.Added");
         return list;
     }
@@ -103,13 +109,13 @@ public sealed class ListCollection : IReadOnlyCollection<List>
     /// <summary>Whether <paramref name="list"/> is in this document's lists.</summary>
     public bool Contains(List list)
     {
-        return list is not null && lists.Contains(list);
+        return list is not null && listSet.Contains(list);
     }
 
     /// <summary>Whether <paramref name="definition"/> is in this document's definitions.</summary>
     public bool Contains(ListDefinition definition)
     {
-        return definition is not null && definitions.Contains(definition);
+        return definition is not null && definitionSet.Contains(definition);
     }
 
     /// <summary>The lists in the order they were added.</summary>
@@ -128,6 +134,7 @@ public sealed class ListCollection : IReadOnlyCollection<List>
     {
         ListDefinition definition = new(document, id);
         definitions.Add(definition);
+        definitionSet.Add(definition);
         return definition;
     }
 
@@ -136,6 +143,7 @@ public sealed class ListCollection : IReadOnlyCollection<List>
     {
         List list = new(document, id, definition);
         lists.Add(list);
+        listSet.Add(list);
         return list;
     }
 
