@@ -18,6 +18,10 @@
         {
           "src": "../src/Egap.Documents.Markdown",
           "files": [ "Egap.Documents.Markdown.csproj" ]
+        },
+        {
+          "src": "../src/Egap.Spreadsheets",
+          "files": [ "Egap.Spreadsheets.csproj" ]
         }
       ],
       "dest": "api",

@@ -94,6 +94,33 @@ public sealed class DocumentFormatsTests : IDisposable
     }
 
     [Fact]
+    public void IdentifyKnowsExcelWorkbooksAndLoadingOneSaysItIsASpreadsheet()
+    {
+        using MemoryStream workbook = new();
+        using (System.IO.Compression.ZipArchive zip = new(workbook, System.IO.Compression.ZipArchiveMode.Create, leaveOpen: true))
+        {
+            foreach (string part in new[] { "[Content_Types].xml", "_rels/.rels", "xl/workbook.xml" })
+            {
+                using StreamWriter writer = new(zip.CreateEntry(part).Open());
+                writer.Write("<x/>");
+            }
+        }
+
+        workbook.Position = 0;
+        Assert.Equal(DocumentFormatKind.Xlsx, Document.Identify(workbook));
+        Assert.Equal(DocumentFormatKind.Xlsx, Document.Identify(workbook, "book.xlsx"));
+        Assert.Equal(DocumentFormatKind.Xlsx, Document.Identify(workbook, "book.docx"));
+        NotSupportedException error = Assert.Throws<NotSupportedException>(() => Document.Load(workbook));
+        Assert.Contains("spreadsheet", error.Message, StringComparison.Ordinal);
+
+        using MemoryStream docx = new();
+        DocxFormat.Save(Sample(), docx);
+        docx.Position = 0;
+        Assert.Equal(DocumentFormatKind.Docx, Document.Identify(docx));
+        Assert.Equal(DocumentFormatKind.Xlsx, Document.Identify(docx, "renamed.xlsm"));
+    }
+
+    [Fact]
     public void IdentifyPutsTheStreamBackAndNeedsNoAddOn()
     {
         using MemoryStream docx = new();

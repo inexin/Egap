@@ -149,6 +149,7 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.Rtf => "RTF",
         DocumentFormatKind.Encrypted => "encrypted Office files",
         DocumentFormatKind.Odt => "ODT",
+        DocumentFormatKind.Xlsx => "XLSX",
         _ => "this file",
     };
 
@@ -157,6 +158,7 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.Html or DocumentFormatKind.Epub or DocumentFormatKind.Mhtml => "needs the Egap.Documents.Html package: add it and call HtmlFormat.Register() once at startup.",
         DocumentFormatKind.Markdown => "needs the Egap.Documents.Markdown package: add it and call MarkdownFormat.Register() once at startup.",
         DocumentFormatKind.DoclingJson => "is not supported: Docling JSON holds page layouts, which DoclingJson.Write writes from PdfLayoutAnalyzer's.",
+        DocumentFormatKind.Xlsx => "is not supported: an Excel workbook is a spreadsheet, not a document.",
         _ => "is not supported.",
     };
 }

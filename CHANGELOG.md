@@ -19,6 +19,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- `Document.Identify` reports Excel workbooks (XLSX, XLSM, XLTX and XLTM) as the new `DocumentFormatKind.Xlsx`, by a
+  package part under `xl/` or by the file's extension, where it said DOCX before. Loading one as a document throws a
+  `NotSupportedException` that says it is a spreadsheet.
+
 - Password-protected Word files: `DocxLoadOptions.Password` and `DocumentLoadOptions.Password` open a DOCX that Word
   encrypted with a password to open it (agile encryption from Word 2010 on, with its integrity check, and Word 2007's
   standard encryption, which LibreOffice also writes), and `PasswordCallback` asks for another password when it is missing
@@ -74,6 +78,20 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - Built on Markdig 1.5.1, which fixes tabs after block quote markers and in fenced code, a thematic break inside a list
   item closing the list, and autolink schemes of 2 to 32 characters.
+
+## Egap.Spreadsheets 2.3.0 (unreleased)
+
+- New package: workbooks built and edited from code. `Workbook.Create` starts a workbook; `Worksheets` adds, inserts,
+  moves, finds and removes sheets with Excel's naming rules. Cells are reached as `sheet["B4"]` or
+  `sheet.Cells[row, column]` and hold numbers, text, booleans, errors and formulas (kept as text, calculated later), with
+  `Cells.GetValue` and `Cells.SetValue` for bulk work.
+- `CellRange` (`sheet.Range("A1:D20")`, whole columns and rows too) sets and gets values as arrays, sets and updates
+  styles, clears, and enumerates its cells; `UsedRange` and `UsedCells` give the cells in use.
+- Cell styles as immutable values: font, fill, borders, alignment, protection and number format, kept once per workbook
+  with their fonts, fills, borders and number formats in their own tables, as Excel's style part has them. Text values
+  are kept once per workbook in a shared string table.
+- Sheets store cells in blocks of 32 by 32, made only where cells are, 16 bytes a cell, up to 1,048,576 rows by 16,384
+  columns. `CellAddress` and `RangeAddress` read and write A1 references.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 

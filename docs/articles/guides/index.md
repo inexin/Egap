@@ -32,6 +32,12 @@ One document model for DOCX, RTF, OpenDocument Text, HTML, Markdown and plain te
 - [Reports in code](reports.md): the fluent report API, with rows, tables, grids, styles, components and paging, and the
   live preview tool.
 
+## Egap.Spreadsheets
+
+Workbooks built and edited from code.
+
+- [Spreadsheets](spreadsheets.md): workbooks, sheets, cells, ranges, formulas and cell styles.
+
 ## Document formats
 
 The [overview](../formats/index.md) says what each format reads and writes, and how a file's format is found; then one page
