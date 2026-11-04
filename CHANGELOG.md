@@ -15,6 +15,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   the temporary file it writes first.
 - `convert` reads and writes RTF: `.rtf` to PDF, DOCX, HTML, Markdown or text, any of those (and PDF) to `.rtf`, and
   `--to rtf`. RTF takes `--set unknown-groups=false` to leave out the unknown `\*` groups an RTF input kept.
+- Built on System.CommandLine 2.0.14 and Egami.Cli.Host 1.4.0.
 
 ## Egap.Documents 2.3.0 (unreleased)
 
@@ -44,6 +45,21 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   as `LayoutWarning` records with the kind, a message, the node and its page, and `LayoutOptions.OnWarning` hears each
   one, also when a document is saved as PDF. The first kind, `FloatLaidOutInline`, is a floating table or framed
   paragraph in a table cell, header, footer, note or text box, which is laid out in the text instead of floating.
+- Built on Egami 1.4.0, Egami.Metafiles 1.0.2 and Egami.Barcodes 1.0.1.
+
+## Egap.Documents.Html 2.3.0 (unreleased)
+
+- Built on AngleSharp 1.9.1. AngleSharp's new nesting limit is turned off, so deeply nested tables still read in full;
+  Egap's own guard keeps hostile nesting bounded as before.
+
+## Egap.Documents.Markdown 2.3.0 (unreleased)
+
+- Built on Markdig 1.5.1, which fixes tabs after block quote markers and in fenced code, a thematic break inside a list
+  item closing the list, and autolink schemes of 2 to 32 characters.
+
+## Egap.Pdf 2.3.0 (unreleased)
+
+- Built on Egami 1.4.0, Egami.Barcodes 1.0.1 and System.Security.Cryptography.Pkcs 10.0.14.
 
 ## Egap.Cli 2.2.0 (2026-10-29)
 

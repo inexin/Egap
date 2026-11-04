@@ -7,9 +7,9 @@ full test run.
 
 | Package | Licence | Minimum version | Used by |
 | --- | --- | --- | --- |
-| [AngleSharp](https://github.com/AngleSharp/AngleSharp) | MIT | 1.8.5 | Egap.Documents.Html (HTML parsing) |
-| [Markdig](https://github.com/xoofx/markdig) | BSD-2-Clause | 1.4.1 | Egap.Documents.Markdown (Markdown parsing) |
-| [System.CommandLine](https://github.com/dotnet/command-line-api) | MIT | 2.0.13 | Egap.Cli (the egap command line, as in egami) |
+| [AngleSharp](https://github.com/AngleSharp/AngleSharp) | MIT | 1.9.1 | Egap.Documents.Html (HTML parsing) |
+| [Markdig](https://github.com/xoofx/markdig) | BSD-2-Clause | 1.5.1 | Egap.Documents.Markdown (Markdown parsing) |
+| [System.CommandLine](https://github.com/dotnet/command-line-api) | MIT | 2.0.14 | Egap.Cli (the egap command line, as in egami) |
 | [ModelContextProtocol.Core](https://github.com/modelcontextprotocol/csharp-sdk) | MIT | 2.3.0 | Egap.Cli (egap mcp, as in egami mcp) |
 
 Egap.Cli, the egap tool, is the one package with references outside the family besides the add-ons; it also compiles in
