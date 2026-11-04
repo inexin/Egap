@@ -39,6 +39,9 @@ internal static class DocumentFormatRegistry
         [DocumentFormatKind.Pdf] = new(DocumentFormatKind.Pdf, ReadPdf, SavePdf),
         [DocumentFormatKind.Rtf] = new(DocumentFormatKind.Rtf, ReadRtf, (document, path) => RtfFormat.Save(document, path)),
 
+        // An encrypted package is read as DOCX once decrypted; without a password that throws DocumentPasswordException.
+        [DocumentFormatKind.Encrypted] = new(DocumentFormatKind.Encrypted, ReadDocx, null),
+
         // Docling JSON holds page layouts, which a document is read from; a document is not written back as one.
         [DocumentFormatKind.DoclingJson] = new(DocumentFormatKind.DoclingJson, ReadDocling, null),
     };
@@ -136,6 +139,7 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.Epub => "EPUB",
         DocumentFormatKind.Mhtml => "MHTML",
         DocumentFormatKind.Rtf => "RTF",
+        DocumentFormatKind.Encrypted => "encrypted Office files",
         _ => "this file",
     };
 

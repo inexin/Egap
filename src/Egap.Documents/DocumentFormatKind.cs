@@ -9,7 +9,10 @@ public enum DocumentFormatKind
     /// <summary>A PDF file.</summary>
     Pdf,
 
-    /// <summary>A Word file: DOCX, DOTX, DOCM or DOTM, or an old binary Word file (which reading refuses with a clear error).</summary>
+    /// <summary>
+    /// A Word file: DOCX, DOTX, DOCM or DOTM, or an old binary Word file (which reading refuses with a clear error). An
+    /// encrypted Word file is <see cref="Encrypted"/>.
+    /// </summary>
     Docx,
 
     /// <summary>An HTML or XHTML page; reading it needs the Egap.Documents.Html package.</summary>
@@ -32,4 +35,10 @@ public enum DocumentFormatKind
 
     /// <summary>An RTF file (Rich Text Format, as Word and WordPad write it).</summary>
     Rtf,
+
+    /// <summary>
+    /// An encrypted Office file: a password-protected Word document (or another Office package) in a compound file. Loading
+    /// it needs its password, in <see cref="DocumentLoadOptions.Password"/> or <see cref="DocxLoadOptions.Password"/>.
+    /// </summary>
+    Encrypted,
 }
