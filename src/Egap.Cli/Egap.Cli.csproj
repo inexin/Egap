@@ -12,7 +12,7 @@
     <ToolCommandName>egap</ToolCommandName>
     <!-- Also listed as an MCP server on NuGet, with .mcp/server.json (CLI design Q16). -->
     <PackageType>McpServer</PackageType>
-    <Description>The egap command: turn HTML, Markdown, DOCX and images into PDF, and merge, split, inspect, encrypt and edit PDFs from a shell, a build script or an AI agent, with Egap, a fully managed PDF and document library.</Description>
+    <Description>The egap command: turn HTML, Markdown, DOCX, RTF and images into PDF, and merge, split, inspect, encrypt and edit PDFs from a shell, a build script or an AI agent, with Egap, a fully managed PDF and document library.</Description>
     <PackageTags>egap;pdf;cli;tool;convert;merge;split;html-to-pdf</PackageTags>
     <InvariantGlobalization>true</InvariantGlobalization>
     <!-- AOT-clean from the start: the trimming and AOT analyzers run in every build, and warnings are errors. The tool ships as

@@ -57,6 +57,7 @@ public sealed class ConvertTests : IDisposable
     [InlineData("md", "Quarterly report")]
     [InlineData("txt", "Sales rose by a tenth.")]
     [InlineData("html", "Quarterly report")]
+    [InlineData("rtf", "Quarterly report")]
     public void FromPdfToFlowFormats(string format, string expected)
     {
         WriteInputs();
@@ -115,12 +116,44 @@ public sealed class ConvertTests : IDisposable
     }
 
     [Fact]
+    public void RtfInEveryDirection()
+    {
+        WriteInputs();
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "report.md", "-o", "report.rtf").Code);
+        Assert.StartsWith("{\\rtf1", File.ReadAllText(_tool.PathOf("report.rtf")), StringComparison.Ordinal);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "report.rtf", "-o", "report.docx").Code);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "report.docx", "-o", "again.rtf").Code);
+        Assert.Contains("Sales rose by a tenth.", Egap.Documents.RtfFormat.Load(_tool.PathOf("again.rtf")).GetText(), StringComparison.Ordinal);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "report.rtf", "-o", "report.pdf").Code);
+        using (PdfDocument pdf = PdfDocument.Open(_tool.PathOf("report.pdf")))
+        {
+            Assert.Contains("Quarterly report", pdf.Pages[0].ExtractText(), StringComparison.Ordinal);
+        }
+
+        ToolRun markdown = _tool.Run("convert", "report.rtf", "--to", "md", "-o", "-");
+        Assert.Equal(ExitCodes.Success, markdown.Code);
+        Assert.Contains("Quarterly report", Encoding.UTF8.GetString(markdown.Bytes), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RtfTakesTheUnknownGroupsSetting()
+    {
+        File.WriteAllText(_tool.PathOf("kept.rtf"), "{\\rtf1\\ansi Text{\\*\\myword data}\\par}");
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "kept.rtf", "-o", "kept-out.rtf").Code);
+        Assert.Contains("\\myword", File.ReadAllText(_tool.PathOf("kept-out.rtf")), StringComparison.Ordinal);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "kept.rtf", "-o", "plain.rtf", "--set", "unknown-groups=false").Code);
+        Assert.DoesNotContain("myword", File.ReadAllText(_tool.PathOf("plain.rtf")), StringComparison.Ordinal);
+        Assert.Equal(ExitCodes.Usage, _tool.Run("convert", "kept.rtf", "-o", "x.rtf", "--set", "images=omit").Code);
+        Assert.Equal(ExitCodes.Usage, _tool.Run("convert", "kept.rtf", "-o", "x.rtf", "--set", "unknown-groups=maybe").Code);
+    }
+
+    [Fact]
     public void AnUnknownTargetIsAUsageError()
     {
         WriteInputs();
         ToolRun run = _tool.Run("convert", "report.md", "-o", "report.xyz");
         Assert.Equal(ExitCodes.Usage, run.Code);
-        Assert.Contains("pdf, docx, html, md, txt", run.Error, StringComparison.Ordinal);
+        Assert.Contains("pdf, docx, rtf, html, md, txt", run.Error, StringComparison.Ordinal);
     }
 
     [Fact]

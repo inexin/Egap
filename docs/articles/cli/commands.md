@@ -26,16 +26,16 @@ Show what PDFs are: version, pages and sizes, encryption, signatures, PDF/A clai
 
 `egap convert <inputs>... [options]`
 
-Convert between formats by the output's extension: HTML, Markdown, DOCX, text and images to PDF; PDF to DOCX, HTML, Markdown or text; and the flow formats to each other.
+Convert between formats by the output's extension: HTML, Markdown, DOCX, RTF, text and images to PDF; PDF to DOCX, RTF, HTML, Markdown or text; and the flow formats to each other.
 
 | Argument or option | What it does |
 | --- | --- |
-| `<inputs>` | HTML, Markdown, DOCX, text, image or PDF files, globs (\*, ?, \*\*), or folders with --recursive. |
+| `<inputs>` | HTML, Markdown, DOCX, RTF, text, image or PDF files, globs (\*, ?, \*\*), or folders with --recursive. |
 | `--recursive`, `-r` | Take every file egap reads in folders given as inputs, at any depth. |
 | `--jobs <count>`, `-j` | How many files to work on at once; 0 (the default) for one per processor. |
 | `--fail-fast` | Stop at the first file that fails. |
 | `--output <path>`, `-o` | Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output. |
-| `--to <format>` | The output format when -o does not say: pdf, docx, html, md, txt. |
+| `--to <format>` | The output format when -o does not say: pdf, docx, rtf, html, md, txt. |
 | `--page-size <size>` | To PDF: the page size, A3, A4, A5, Letter, Legal, Tabloid or WxH such as 210mmx297mm. |
 | `--landscape` | To PDF: turn the page size to landscape. |
 | `--margins <lengths>` | To PDF: page margins, one length for all sides, two (top and bottom, then the sides) or four (top, right, bottom, left), such as 2cm or 20mm,15mm. |
@@ -46,7 +46,7 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, text an
 | `--toc <pages|no-pages>` | To PDF: a table of contents at the start, with page numbers (pages) or without (no-pages). |
 | `--pdfa <level>` | To PDF: write PDF/A, one of 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4 and 4f. |
 | `--tagged` | To PDF: write a tagged PDF with a structure tree, for accessibility. |
-| `--set <key=value>` | A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf). |
+| `--set <key=value>` | A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. RTF: unknown-groups. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf). |
 | `--base-dir <folder>` | HTML and Markdown: the folder images and style sheets are read from; the input's folder by default. |
 | `--allow-path <folder>` | HTML: a further folder resources may come from; give it once per folder. |
 | `--allow-network` | HTML: fetch http and https resources (10 s and 50 MB each at most). |
