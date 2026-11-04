@@ -384,6 +384,53 @@ public sealed class XlsxTests
     }
 
     [Fact]
+    public void ADataTableFormulaKeepsItsAttributes()
+    {
+        Dictionary<string, string> seed = XlsxSeed.Features();
+        seed["xl/worksheets/sheet2.xml"] = seed["xl/worksheets/sheet2.xml"].Replace(
+            "<row r=\"1\"><c r=\"A1\" t=\"s\"><v>8</v></c></row>",
+            "<row r=\"1\"><c r=\"A1\" t=\"s\"><v>8</v></c></row><row r=\"2\"><c r=\"B2\"><f t=\"dataTable\" ref=\"B2:B3\" dt2D=\"0\" dtr=\"0\" r1=\"A1\"/><v>4</v></c></row>",
+            StringComparison.Ordinal);
+        Workbook book = Workbook.Load(XlsxSeed.Package(seed));
+        Assert.True(book.Worksheets["Hidden"]["B2"].HasFormula);
+
+        (Workbook loaded, MemoryStream package) = XlsxSeed.RoundTrip(book);
+
+        XElement f = XlsxSeed.Xml(XlsxSeed.Parts(package), "xl/worksheets/sheet2.xml").Root!.Descendants(Ns + "f").Single();
+        Assert.Equal("dataTable", (string?)f.Attribute("t"));
+        Assert.Equal("A1", (string?)f.Attribute("r1"));
+        Assert.Equal(4, loaded.Worksheets["Hidden"]["B2"].Value);
+    }
+
+    [Fact]
+    public void AFooterAddedToAHeaderComesAfterIt()
+    {
+        Dictionary<string, string> seed = XlsxSeed.Features();
+        seed["xl/worksheets/sheet2.xml"] = seed["xl/worksheets/sheet2.xml"].Replace(
+            "</worksheet>", "<headerFooter><oddHeader>Top</oddHeader><evenHeader>Even</evenHeader></headerFooter></worksheet>", StringComparison.Ordinal);
+        Workbook book = Workbook.Load(XlsxSeed.Package(seed));
+        book.Worksheets["Hidden"].PageSetup.Footer = "Bottom";
+
+        (_, MemoryStream package) = XlsxSeed.RoundTrip(book);
+
+        XElement headerFooter = XlsxSeed.Xml(XlsxSeed.Parts(package), "xl/worksheets/sheet2.xml").Root!.Element(Ns + "headerFooter")!;
+        Assert.Equal(["oddHeader", "oddFooter", "evenHeader"], headerFooter.Elements().Select(e => e.Name.LocalName));
+    }
+
+    [Fact]
+    public void AStylePartWithoutTablesLoadsWithTheDefaultStyle()
+    {
+        Dictionary<string, string> seed = XlsxSeed.Features();
+        seed["xl/styles.xml"] = $"<styleSheet xmlns=\"{XlsxSeed.Main}\"/>";
+
+        Workbook book = Workbook.Load(XlsxSeed.Package(seed));
+
+        Assert.Equal(CellStyle.Default, book.Worksheets["Data"]["A1"].Style);
+        (Workbook loaded, _) = XlsxSeed.RoundTrip(book);
+        Assert.Equal("Item", loaded.Worksheets["Data"]["A1"].Value);
+    }
+
+    [Fact]
     public void DatesUseTheWorkbooksDateSystem()
     {
         Dictionary<string, string> seed = XlsxSeed.Features();

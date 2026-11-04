@@ -697,11 +697,15 @@ internal static class SheetWriter
         add("pageSetup", setup.HasAttributes ? setup : null);
 
         XElement headerFooter = Patch(page.SourceHeaderFooter, "headerFooter");
-        SetChild(headerFooter, "oddFooter", page.Footer);
         SetChild(headerFooter, "oddHeader", page.Header);
+        SetChild(headerFooter, "oddFooter", page.Footer);
         add("headerFooter", headerFooter.HasAttributes || headerFooter.HasElements ? headerFooter : null);
     }
 
+    /// <summary>The children of headerFooter in CT_HeaderFooter's order (ECMA-376 Part 1, 18.3.1.46).</summary>
+    private static readonly string[] HeaderFooterOrder = ["oddHeader", "oddFooter", "evenHeader", "evenFooter", "firstHeader", "firstFooter"];
+
+    /// <summary>Sets, adds in its schema place, or removes a child of headerFooter.</summary>
     private static void SetChild(XElement parent, string name, string? value)
     {
         XElement? child = parent.Element(Ns + name);
@@ -715,7 +719,17 @@ internal static class SheetWriter
         }
         else
         {
-            parent.AddFirst(new XElement(Ns + name, value));
+            int rank = Array.IndexOf(HeaderFooterOrder, name);
+            XElement added = new(Ns + name, value);
+            XElement? next = parent.Elements().FirstOrDefault(e => e.Name.Namespace == Ns && Array.IndexOf(HeaderFooterOrder, e.Name.LocalName) > rank);
+            if (next is null)
+            {
+                parent.Add(added);
+            }
+            else
+            {
+                next.AddBeforeSelf(added);
+            }
         }
     }
 
@@ -868,7 +882,7 @@ internal static class SheetWriter
         }
 
         FormulaEntry? formula = record.Kind == CellKind.Formula ? sheet.Formulas[(int)record.Payload] : null;
-        if (formula is not null && formula.Text.Length == 0 && (formula.Attributes is not { } shared || !IsShared(shared) || Attribute(shared, "si") is not { } si || !masters.Contains(si)))
+        if (formula is { Text.Length: 0, Attributes: { } shared } && IsShared(shared) && (Attribute(shared, "si") is not { } si || !masters.Contains(si)))
         {
             // A cell that shares a formula whose first cell no longer holds it: its result is all that is left.
             formula = new FormulaEntry("", formula.Result) { Attributes = null };

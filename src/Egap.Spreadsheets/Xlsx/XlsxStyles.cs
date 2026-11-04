@@ -67,6 +67,7 @@ internal static class XlsxStyles
         {
             // A style part without the tables every cell format points into cannot be kept; the model writes its own.
             table.Source = null;
+            table.AddDefaults();
             return;
         }
 
