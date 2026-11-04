@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Egap.Documents.Rtf;
@@ -20,6 +21,7 @@ internal sealed partial class RtfReader
     private byte[] bytes = new byte[64];
     private int byteCount;
     private int depth;
+    private int nesting;
     private int skip;
     private State state = null!;
     private StoryContext story = null!;
@@ -40,7 +42,16 @@ internal sealed partial class RtfReader
     public static Document Read(byte[] data, RtfLoadOptions options, out IReadOnlyList<ConversionWarning> warnings)
     {
         RtfReader reader = new(data, options);
-        reader.ReadDocument();
+        try
+        {
+            reader.ReadDocument();
+        }
+        catch (Exception e) when (e is not (DocumentException or OutOfMemoryException))
+        {
+            // Malformed input must not escape as an arbitrary exception: callers catch DocumentException for a bad file.
+            throw new DocumentException("The RTF file is malformed: " + e.Message, e);
+        }
+
         warnings = [.. reader.warnings.Select(w => new ConversionWarning(w.Key.Kind, w.Key.Message, w.Value))];
         return reader.document;
     }
@@ -81,6 +92,19 @@ internal sealed partial class RtfReader
     /// state still holds its last paragraph's formatting.
     /// </remarks>
     private void ReadGroup(int groupDepth, StoryContext? finish = null)
+    {
+        Enter();
+        try
+        {
+            ReadGroupTokens(groupDepth, finish);
+        }
+        finally
+        {
+            nesting--;
+        }
+    }
+
+    private void ReadGroupTokens(int groupDepth, StoryContext? finish)
     {
         while (true)
         {
@@ -161,10 +185,24 @@ internal sealed partial class RtfReader
         }
     }
 
+    /// <summary>
+    /// Counts one more level of reading that can recurse, a nested group read or a destination, which need not open a group
+    /// of its own (<c>\fldinst\fldinst...</c>). Past <see cref="DocumentLimits.MaxDepth"/>, or near the end of the stack,
+    /// the file is refused rather than overflowing the stack.
+    /// </summary>
+    private void Enter()
+    {
+        if (++nesting > options.Limits.MaxDepth || !RuntimeHelpers.TryEnsureSufficientExecutionStack())
+        {
+            nesting--;
+            throw new DocumentLimitException($"RTF destinations nest deeper than {options.Limits.MaxDepth}.");
+        }
+    }
+
     /// <summary>Opens a group: its state starts as a copy of the enclosing one.</summary>
     private void Push(int start)
     {
-        if (depth + 1 > options.Limits.MaxDepth)
+        if (depth + 1 > options.Limits.MaxDepth || !RuntimeHelpers.TryEnsureSufficientExecutionStack())
         {
             throw new DocumentLimitException($"RTF groups nest deeper than {options.Limits.MaxDepth}.");
         }

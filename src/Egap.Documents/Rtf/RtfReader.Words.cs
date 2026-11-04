@@ -12,6 +12,20 @@ internal sealed partial class RtfReader
     private bool sectionPageRestart;
     private bool pendingNoteMark;
 
+    /// <summary>Reads a destination, counted against the nesting limit: a destination can hold another one.</summary>
+    private bool NestedDestination(string word, bool ignorable)
+    {
+        Enter();
+        try
+        {
+            return Destination(word, ignorable);
+        }
+        finally
+        {
+            nesting--;
+        }
+    }
+
     /// <summary>
     /// Handles a control word. Returns true when it was a destination that read its whole group (the group is closed then).
     /// </summary>
@@ -21,7 +35,7 @@ internal sealed partial class RtfReader
         {
             // The word after \* names the destination; one the reader does not know is kept as it is.
             state.Ignorable = false;
-            if (!Destination(word, ignorable: true))
+            if (!NestedDestination(word, ignorable: true))
             {
                 SkipDestination(keep: !DroppedDestinations.Contains(word));
             }
@@ -29,7 +43,7 @@ internal sealed partial class RtfReader
             return true;
         }
 
-        if (Destination(word, ignorable: false))
+        if (NestedDestination(word, ignorable: false))
         {
             return true;
         }

@@ -164,6 +164,12 @@ internal sealed class RtfTokenizer
         return data.Length;
     }
 
+    /// <summary>
+    /// The largest parameter kept, about a billion: far past any real twips, size or count, and small enough that the sum or
+    /// difference of two parameters, and <see cref="Math.Abs(int)"/> of one, cannot overflow an int.
+    /// </summary>
+    private const int MaxParameter = (1 << 30) - 1;
+
     private RtfTokenKind ReadText()
     {
         int start = position;
@@ -243,7 +249,7 @@ internal sealed class RtfTokenizer
             if (at > digitsStart)
             {
                 HasParameter = true;
-                Parameter = (int)Math.Clamp(negative ? -value : value, int.MinValue, int.MaxValue);
+                Parameter = (int)Math.Clamp(negative ? -value : value, -MaxParameter, MaxParameter);
                 position = at;
             }
         }

@@ -519,8 +519,8 @@ internal sealed partial class RtfReader
         }
 
         string markup = start >= 0 ? Encoding.Latin1.GetString(tokens.Data, start, Math.Min(tokens.Position, tokens.Data.Length) - start) : "";
-        double width = Bounded(Twips(Math.Abs(info.Right - info.Left)));
-        double height = Bounded(Twips(Math.Abs(info.Bottom - info.Top)));
+        double width = Bounded(Math.Abs((long)info.Right - info.Left) / 20.0);
+        double height = Bounded(Math.Abs((long)info.Bottom - info.Top) / 20.0);
         FloatingPlacement placement = PlacementOf(info);
         int shapeType = int.TryParse(info.Properties.GetValueOrDefault("shapeType"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int t) ? t : 0;
         string? name = info.Properties.GetValueOrDefault("wzName");

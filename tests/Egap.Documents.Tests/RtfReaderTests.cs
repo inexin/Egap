@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 
 using Egap.Documents.Rtf;
 
@@ -485,7 +486,7 @@ public class RtfReaderTests
     [Fact]
     public void FarApartCellEdgesMakeAFiniteGrid()
     {
-        Document document = Read(@"\trowd\trleft-10000000000\cellx-2000000000\cellx2000000000\pard\intbl A\cell B\cell\row");
+        Document document = Read(@"\trowd\trleft-10000000000\cellx-1000000000\cellx1000000000\pard\intbl A\cell B\cell\row");
         Table table = document.Descendants<Table>().Single();
         Assert.All(table.Grid!, width => Assert.True(width >= 0 && double.IsFinite(width)));
         Assert.All(table.Descendants<Cell>(), cell => Assert.True(cell.Format.Width!.Value.Value > 0));
@@ -507,6 +508,66 @@ public class RtfReaderTests
         Assert.Equal("The Title", document.Properties.Title);
         Assert.Equal("Egap", document.Properties.GetCustom("Project"));
         Assert.Equal("Body", document.GetText().Trim());
+    }
+
+    /// <summary>Every destination the reader knows, and the groups read inside shapes, objects, lists and notes.</summary>
+    public static TheoryData<string> DestinationWords() =>
+    [
+        "fonttbl", "colortbl", "stylesheet", "listtable", "listoverridetable", "revtbl", "info", "userprops", "defchp", "defpap",
+        "field", "fldinst", "fldrslt", "footnote", "header", "footerf", "annotation", "atnid", "atnauthor", "atnref", "atnparent",
+        "atrfstart", "bkmkstart", "pn", "pntxtb", "upr", "ud", "oldcprops", "oldpprops", "nesttableprops", "do", "pict", "shppict",
+        "nonshppict", "shp", "shpgrp", "shpinst", "shptxt", "shprslt", "sp", "sn", "sv", "object", "objdata", "result", "mmath",
+        "moMathPara", "list", "listlevel", "leveltext", "listoverride", "lfolevel", "listtext", "pntext", "title", "falt", "unknownword",
+    ];
+
+    [Theory]
+    [MemberData(nameof(DestinationWords))]
+    public void RepeatedDestinationsAreBoundedNotOverflowed(string word)
+    {
+        const int count = 100_000;
+        string repeated = string.Concat(Enumerable.Repeat($@"\{word} ", count));
+        string starred = string.Concat(Enumerable.Repeat($@"\*\{word} ", count));
+        string opened = string.Concat(Enumerable.Repeat($@"{{\{word} ", count));
+        foreach (string rtf in (string[])[$@"{{\rtf1{{\{word} {repeated}}}}}", $@"{{\rtf1{{\*\{word} {starred}}}}}", @"{\rtf1" + opened,
+            $@"{{\rtf1{{\shp{{\*\shpinst{{\sp{{\sn a}}{{\sv {repeated}}}}}}}}}}}", $@"{{\rtf1{{\*\listtable{{\list{{\listlevel {repeated}}}}}}}}}"])
+        {
+            AssertOnlyItsOwnErrors(rtf);
+        }
+    }
+
+    [Fact]
+    public void ExtremeParametersAreNotCrashes()
+    {
+        // Each numeric parameter of every seed file, set in turn to extremes and to values just past them.
+        string[] extremes = ["-2147483648", "2147483647", "-99999999999", "99999999999", "0", "-1"];
+        foreach (string path in Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "files", "rtf"), "*.rtf"))
+        {
+            string seed = Encoding.Latin1.GetString(File.ReadAllBytes(path));
+            foreach (Match match in Regex.Matches(seed, @"\\[a-z]+(-?[0-9]+)"))
+            {
+                Group number = match.Groups[1];
+                foreach (string value in extremes)
+                {
+                    AssertOnlyItsOwnErrors(seed[..number.Index] + value + seed[(number.Index + number.Length)..]);
+                }
+            }
+        }
+
+        AssertOnlyItsOwnErrors(@"{\rtf1\trowd\trrh-2147483648\cellx100 a\cell\row}");
+        AssertOnlyItsOwnErrors(@"{\rtf1{\shp{\*\shpinst\shpleft0\shpright-2147483648\shptop2147483647\shpbottom-2147483648}}}");
+    }
+
+    /// <summary>Reads the RTF; the only failure allowed is the reader's own, not another exception it wrapped.</summary>
+    private static void AssertOnlyItsOwnErrors(string rtf)
+    {
+        try
+        {
+            _ = RtfFormat.Parse(rtf);
+        }
+        catch (DocumentException e)
+        {
+            Assert.Null(e.InnerException);
+        }
     }
 
     [Fact]
