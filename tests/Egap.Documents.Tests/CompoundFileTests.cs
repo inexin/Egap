@@ -175,6 +175,41 @@ public sealed class CompoundFileTests
     }
 
     [Fact]
+    public void AHeaderClaimingAHugeMiniFatIsStoppedOrCutToTheFile()
+    {
+        byte[] file = Write(("Small", Bytes(100, 12)));
+
+        // 0x00FFFFFF mini FAT sectors would be 8 GB: past the part size limit.
+        byte[] huge = (byte[])file.Clone();
+        BinaryPrimitives.WriteUInt32LittleEndian(huge.AsSpan(0x40), 0x00FFFFFF);
+        CompoundFile read = CompoundFile.Read(huge, new DocumentLimits());
+        Assert.Throws<DocumentLimitException>(() => read.ReadStream("Small"));
+
+        // 500,000 sectors (256 MB) is under the limit, but the file holds a few KB: the read is cut to the file, not allocated.
+        byte[] large = (byte[])file.Clone();
+        BinaryPrimitives.WriteUInt32LittleEndian(large.AsSpan(0x40), 500_000);
+        read = CompoundFile.Read(large, new DocumentLimits());
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        Assert.Equal(Bytes(100, 12), read.ReadStream("Small"));
+        Assert.True(GC.GetAllocatedBytesForCurrentThread() - before < 1_000_000);
+        Assert.Contains(read.Problems, p => p.Contains("the mini FAT", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void AMiniStreamLargerThanTheFileIsCutBeforeItIsAllocated()
+    {
+        byte[] file = Write(("Small", Bytes(100, 13)));
+        int directoryStart = BinaryPrimitives.ReadInt32LittleEndian(file.AsSpan(0x30));
+        BinaryPrimitives.WriteUInt32LittleEndian(file.AsSpan(512 + (directoryStart * 512) + 0x78), 400_000_000);
+
+        CompoundFile read = CompoundFile.Read(file, new DocumentLimits());
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        Assert.Equal(Bytes(100, 13), read.ReadStream("Small"));
+        Assert.True(GC.GetAllocatedBytesForCurrentThread() - before < 1_000_000);
+        Assert.Contains(read.Problems, p => p.Contains("the mini stream", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void AStreamLargerThanTheFileIsCut()
     {
         byte[] file = Write(("Large", Bytes(10_000, 11)));

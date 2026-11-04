@@ -177,13 +177,16 @@ internal sealed class CompoundFile
         if (entry.Type == CompoundFileEntryType.Stream && entry.Size < MiniStreamCutoff)
         {
             byte[] mini = MiniStream();
-            return Chain(MiniFat(), entry.StartSector, entry.Size, MiniSectorSize, (sector, into) => CopyMini(mini, sector, into), entry.Path);
+            return Chain(MiniFat(), entry.StartSector, entry.Size, MiniSectorSize, mini.Length, (sector, into) => CopyMini(mini, sector, into), entry.Path);
         }
 
-        return Chain(fat, entry.StartSector, entry.Size, SectorSize, ReadSector, entry.Path);
+        return Chain(fat, entry.StartSector, entry.Size, SectorSize, BytesInSectors, ReadSector, entry.Path);
     }
 
     private long SectorOffset(uint sector) => ((long)sector + 1) * SectorSize;
+
+    // The bytes the file's sectors after the header hold: no chain of them can be longer.
+    private long BytesInSectors => (length - HeaderSize + SectorSize - 1) / SectorSize * SectorSize;
 
     private void ReadAt(long offset, Span<byte> into)
     {
@@ -217,10 +220,12 @@ internal sealed class CompoundFile
     private delegate bool SectorReader(uint sector, Span<byte> into);
 
     // Follows a chain of (mini) sectors for size bytes; cuts it where a sector is missing, out of the table or seen before.
-    private byte[] Chain(uint[] table, uint start, long size, int sectorSize, SectorReader read, string what)
+    // capacity is what the sectors behind the table hold (the file's sectors, or the mini stream), so a header or directory
+    // entry that claims more cannot make the reader allocate more than the file can fill.
+    private byte[] Chain(uint[] table, uint start, long size, int sectorSize, long capacity, SectorReader read, string what)
     {
-        // A stream cannot hold more than every sector its table can name.
-        long most = (long)table.Length * sectorSize;
+        // A stream cannot hold more than every sector its table can name, nor more than the sectors there are.
+        long most = Math.Min((long)table.Length * sectorSize, capacity);
         if (size > most)
         {
             problems.Add($"Stream \"{what}\" says it is {size} bytes, more than the file holds; it is cut to {most}.");
@@ -324,7 +329,13 @@ internal sealed class CompoundFile
             return miniFat = [];
         }
 
-        byte[] bytes = Chain(fat, miniFatStart, Math.Min((long)miniFatCount * SectorSize, (long)fat.Length * SectorSize), SectorSize, ReadSector, "the mini FAT");
+        long size = (long)miniFatCount * SectorSize;
+        if (size > limits.MaxPartSize)
+        {
+            throw new DocumentLimitException($"The compound file's mini FAT is {size} bytes, more than the limit of {limits.MaxPartSize}.");
+        }
+
+        byte[] bytes = Chain(fat, miniFatStart, size, SectorSize, BytesInSectors, ReadSector, "the mini FAT");
         uint[] table = new uint[bytes.Length / 4];
         for (int i = 0; i < table.Length; i++)
         {
@@ -351,7 +362,7 @@ internal sealed class CompoundFile
             throw new DocumentLimitException($"The compound file's mini stream is {root.Size} bytes, more than the limit of {limits.MaxPartSize}.");
         }
 
-        return miniStream = Chain(fat, root.StartSector, root.Size, SectorSize, ReadSector, "the mini stream");
+        return miniStream = Chain(fat, root.StartSector, root.Size, SectorSize, BytesInSectors, ReadSector, "the mini stream");
     }
 
     // The directory: 128-byte entries in a chain of sectors; each storage's children are a red-black tree of siblings under
