@@ -6,6 +6,7 @@
 | Egap.Documents | One document model with DOCX, plain text and Docling JSON, page layout onto any Egami canvas, PDF export, and PDF pages analysed and converted back into documents | Egap.Pdf, Egami.Drawing, Egami.Barcodes, Egami.Svg, Egami.Metafiles, Egami.Fonts.Substitutes |
 | Egap.Documents.Html | HTML and XHTML read and written through the CSS cascade, with `@page` rules and margin boxes, HTML to PDF, HTML stamps and page bands | Egap.Documents, Egami.Css, AngleSharp |
 | Egap.Documents.Markdown | CommonMark and GitHub Markdown read and written, with front matter and images, and Markdown to PDF | Egap.Documents, Markdig |
+| Egap.Spreadsheets | Workbooks built and edited from code: sparse sheets of up to 1,048,576 rows by 16,384 columns, values, formulas, cell styles, shared strings ([guide](guides/spreadsheets.md)) | Egap.Documents |
 | Egap.Preview | The `egap-preview` dotnet tool: a live preview of documents on a local web page | Egap.Documents |
 | Egap.Cli | The `egap` dotnet tool: convert, inspect, merge, split, stamp, redact, fill, sign and check PDFs from a shell, in pipelines and batches, and as an MCP server ([guide](cli/index.md)) | Egap.Pdf, Egap.Documents, the HTML and Markdown add-ons, System.CommandLine, ModelContextProtocol.Core |
 

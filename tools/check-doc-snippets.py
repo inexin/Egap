@@ -21,13 +21,16 @@ TYPE = re.compile(r"(?:(?:public|internal|sealed|static|abstract|partial|file)\s
 
 
 def main() -> int:
-    usings: set[str] = set()
-    methods: list[str] = []
-    types: list[str] = []
+    # Pages that use Egap.Spreadsheets build in a file of their own: its Cell would clash with Egap.Documents' Cell in a file
+    # that imports both namespaces.
+    groups: dict[str, tuple[set[str], list[str], list[str]]] = {}
     for page in sorted((ROOT / "docs").rglob("*.md")):
         if "_site" in page.parts:
             continue
-        for index, block in enumerate(re.findall(r"```csharp\n(.*?)```", page.read_text(encoding="utf-8"), re.S)):
+        blocks = re.findall(r"```csharp\n(.*?)```", page.read_text(encoding="utf-8"), re.S)
+        group = "Spreadsheets" if any("using Egap.Spreadsheets;" in block for block in blocks) else "Snippets"
+        usings, methods, types = groups.setdefault(group, (set(), [], []))
+        for index, block in enumerate(blocks):
             body = []
             lines = block.splitlines()
             first_type = next((i for i, line in enumerate(lines) if TYPE.match(line)), len(lines))
@@ -43,11 +46,14 @@ def main() -> int:
             methods.append(f"    // {page.relative_to(ROOT)}, block {index + 1}\n    static async Task {name}()\n    {{\n"
                            "        await Task.Yield();\n" + "\n".join(body) + "\n    }\n")
 
-    source = "\n".join(sorted(usings)) + "\n\n#pragma warning disable CS0168, CS0219, CS1998\ninternal static class Snippets\n{\n"
-    source += "\n".join(methods) + "}\n\n" + "\n".join(types) + "\n"
+    sources: dict[str, str] = {}
+    for group, (usings, methods, types) in groups.items():
+        source = "\n".join(sorted(usings)) + "\n\n#pragma warning disable CS0168, CS0219, CS1998\ninternal static partial class Snippets\n{\n"
+        sources[group] = source + "\n".join(methods) + "}\n\n" + "\n".join(types) + "\n"
     with tempfile.TemporaryDirectory() as folder:
         work = pathlib.Path(folder)
-        (work / "Snippets.cs").write_text(source, encoding="utf-8")
+        for group, source in sources.items():
+            (work / f"{group}.cs").write_text(source, encoding="utf-8")
         (work / "Directory.Build.props").write_text("<Project />\n", encoding="utf-8")
         (work / "Directory.Packages.props").write_text("<Project />\n", encoding="utf-8")
         (work / "Snippets.csproj").write_text(
@@ -61,25 +67,26 @@ def main() -> int:
             f'    <ProjectReference Include="{ROOT / "src" / "Egap.Documents" / "Egap.Documents.csproj"}" />\n'
             f'    <ProjectReference Include="{ROOT / "src" / "Egap.Documents.Markdown" / "Egap.Documents.Markdown.csproj"}" />\n'
             f'    <ProjectReference Include="{ROOT / "src" / "Egap.Documents.Html" / "Egap.Documents.Html.csproj"}" />\n'
+            f'    <ProjectReference Include="{ROOT / "src" / "Egap.Spreadsheets" / "Egap.Spreadsheets.csproj"}" />\n'
             "  </ItemGroup>\n"
             "</Project>\n", encoding="utf-8")
         result = subprocess.run(["dotnet", "build", str(work / "Snippets.csproj"), "-nologo", "-v", "q"],
                                 capture_output=True, text=True)
         errors = sorted({line for line in result.stdout.splitlines() if ": error " in line})
         if result.returncode != 0:
-            lines = source.splitlines()
             for error in errors:
-                match = re.search(r"Snippets\.cs\((\d+),", error)
+                match = re.search(r"(\w+)\.cs\((\d+),", error)
                 where = ""
-                if match:
-                    number = int(match.group(1))
+                if match and match.group(1) in sources:
+                    lines = sources[match.group(1)].splitlines()
+                    number = int(match.group(2))
                     where = next((l.strip() for l in reversed(lines[:number]) if l.strip().startswith("// docs")), "")
                 print(f"{where}: {error.split(': error ', 1)[1].rsplit(' [', 1)[0]}")
             if not errors:
                 print(result.stdout + result.stderr)
             return 1
 
-    print(f"{len(methods)} blocks build.")
+    print(f"{sum(len(methods) for _, methods, _ in groups.values())} blocks build.")
     return 0
 
 

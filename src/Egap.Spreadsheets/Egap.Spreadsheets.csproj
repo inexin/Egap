@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Egap.Spreadsheets</RootNamespace>
+    <PackageId>Egap.Spreadsheets</PackageId>
+    <VersionPrefix>$(EgapVersion)</VersionPrefix>
+    <Description>Spreadsheets for .NET: workbooks you create and edit from code, with sparse sheets of up to 1,048,576 rows by 16,384 columns, shared strings and interned cell styles as Excel keeps them.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
+  <!-- Build-time analyzer only; ships nothing. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Builds on Egap.Documents: its OPC package, DrawingML and themes for XLSX, and its layout and PDF export for printing. -->
+  <ItemGroup>
+    <ProjectReference Include="../Egap.Documents/Egap.Documents.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Egap.Spreadsheets.Tests" />
+    <InternalsVisibleTo Include="Egap.Spreadsheets.Benchmarks" />
+    <InternalsVisibleTo Include="Compare" />
+    <InternalsVisibleTo Include="Compare.Tests" />
+    <InternalsVisibleTo Include="Compare.Benchmarks" />
+  </ItemGroup>
+
+</Project>

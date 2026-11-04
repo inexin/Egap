@@ -1,0 +1,416 @@
+#nullable enable
+const Egap.Spreadsheets.CellAddress.MaxColumns = 16384 -> int
+const Egap.Spreadsheets.CellAddress.MaxRows = 1048576 -> int
+const Egap.Spreadsheets.CellValue.MaxTextLength = 32767 -> int
+Egap.Spreadsheets.Cell
+Egap.Spreadsheets.Cell.Address.get -> Egap.Spreadsheets.CellAddress
+Egap.Spreadsheets.Cell.Clear() -> void
+Egap.Spreadsheets.Cell.Column.get -> int
+Egap.Spreadsheets.Cell.Equals(Egap.Spreadsheets.Cell? other) -> bool
+Egap.Spreadsheets.Cell.Formula.get -> string?
+Egap.Spreadsheets.Cell.Formula.set -> void
+Egap.Spreadsheets.Cell.HasFormula.get -> bool
+Egap.Spreadsheets.Cell.IsEmpty.get -> bool
+Egap.Spreadsheets.Cell.NumberFormat.get -> string!
+Egap.Spreadsheets.Cell.NumberFormat.set -> void
+Egap.Spreadsheets.Cell.Row.get -> int
+Egap.Spreadsheets.Cell.SetNumber(double number) -> void
+Egap.Spreadsheets.Cell.Style.get -> Egap.Spreadsheets.CellStyle!
+Egap.Spreadsheets.Cell.Style.set -> void
+Egap.Spreadsheets.Cell.UpdateStyle(System.Func<Egap.Spreadsheets.CellStyle!, Egap.Spreadsheets.CellStyle!>! change) -> void
+Egap.Spreadsheets.Cell.Value.get -> Egap.Spreadsheets.CellValue
+Egap.Spreadsheets.Cell.Value.set -> void
+Egap.Spreadsheets.Cell.ValueKind.get -> Egap.Spreadsheets.CellValueKind
+Egap.Spreadsheets.Cell.Worksheet.get -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.CellAddress
+Egap.Spreadsheets.CellAddress.CellAddress() -> void
+Egap.Spreadsheets.CellAddress.CellAddress(int row, int column) -> void
+Egap.Spreadsheets.CellAddress.Column.get -> int
+Egap.Spreadsheets.CellAddress.Equals(Egap.Spreadsheets.CellAddress other) -> bool
+Egap.Spreadsheets.CellAddress.Row.get -> int
+Egap.Spreadsheets.CellAddress.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
+Egap.Spreadsheets.CellAddress.TryFormat(System.Span<char> destination, out int charsWritten, System.ReadOnlySpan<char> format, System.IFormatProvider? provider) -> bool
+Egap.Spreadsheets.CellAlignment
+Egap.Spreadsheets.CellAlignment.<Clone>$() -> Egap.Spreadsheets.CellAlignment!
+Egap.Spreadsheets.CellAlignment.CellAlignment() -> void
+Egap.Spreadsheets.CellAlignment.Equals(Egap.Spreadsheets.CellAlignment? other) -> bool
+Egap.Spreadsheets.CellAlignment.Horizontal.get -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellAlignment.Horizontal.init -> void
+Egap.Spreadsheets.CellAlignment.Indent.get -> int
+Egap.Spreadsheets.CellAlignment.Indent.init -> void
+Egap.Spreadsheets.CellAlignment.ReadingOrder.get -> Egap.Spreadsheets.CellReadingOrder
+Egap.Spreadsheets.CellAlignment.ReadingOrder.init -> void
+Egap.Spreadsheets.CellAlignment.ShrinkToFit.get -> bool
+Egap.Spreadsheets.CellAlignment.ShrinkToFit.init -> void
+Egap.Spreadsheets.CellAlignment.TextRotation.get -> int
+Egap.Spreadsheets.CellAlignment.TextRotation.init -> void
+Egap.Spreadsheets.CellAlignment.Vertical.get -> Egap.Spreadsheets.CellVerticalAlignment
+Egap.Spreadsheets.CellAlignment.Vertical.init -> void
+Egap.Spreadsheets.CellAlignment.WrapText.get -> bool
+Egap.Spreadsheets.CellAlignment.WrapText.init -> void
+Egap.Spreadsheets.CellBorder
+Egap.Spreadsheets.CellBorder.CellBorder() -> void
+Egap.Spreadsheets.CellBorder.CellBorder(Egap.Spreadsheets.CellBorderStyle Style, Egap.Spreadsheets.CellColor Color = default(Egap.Spreadsheets.CellColor)) -> void
+Egap.Spreadsheets.CellBorder.Color.get -> Egap.Spreadsheets.CellColor
+Egap.Spreadsheets.CellBorder.Color.init -> void
+Egap.Spreadsheets.CellBorder.Deconstruct(out Egap.Spreadsheets.CellBorderStyle Style, out Egap.Spreadsheets.CellColor Color) -> void
+Egap.Spreadsheets.CellBorder.Equals(Egap.Spreadsheets.CellBorder other) -> bool
+Egap.Spreadsheets.CellBorder.Style.get -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorder.Style.init -> void
+Egap.Spreadsheets.CellBorders
+Egap.Spreadsheets.CellBorders.<Clone>$() -> Egap.Spreadsheets.CellBorders!
+Egap.Spreadsheets.CellBorders.Bottom.get -> Egap.Spreadsheets.CellBorder
+Egap.Spreadsheets.CellBorders.Bottom.init -> void
+Egap.Spreadsheets.CellBorders.CellBorders() -> void
+Egap.Spreadsheets.CellBorders.Diagonal.get -> Egap.Spreadsheets.CellBorder
+Egap.Spreadsheets.CellBorders.Diagonal.init -> void
+Egap.Spreadsheets.CellBorders.DiagonalDown.get -> bool
+Egap.Spreadsheets.CellBorders.DiagonalDown.init -> void
+Egap.Spreadsheets.CellBorders.DiagonalUp.get -> bool
+Egap.Spreadsheets.CellBorders.DiagonalUp.init -> void
+Egap.Spreadsheets.CellBorders.Equals(Egap.Spreadsheets.CellBorders? other) -> bool
+Egap.Spreadsheets.CellBorders.Left.get -> Egap.Spreadsheets.CellBorder
+Egap.Spreadsheets.CellBorders.Left.init -> void
+Egap.Spreadsheets.CellBorders.Right.get -> Egap.Spreadsheets.CellBorder
+Egap.Spreadsheets.CellBorders.Right.init -> void
+Egap.Spreadsheets.CellBorders.Top.get -> Egap.Spreadsheets.CellBorder
+Egap.Spreadsheets.CellBorders.Top.init -> void
+Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.DashDot = 9 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.DashDotDot = 11 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.Dashed = 3 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.Dotted = 4 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.Double = 6 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.Hair = 7 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.Medium = 2 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.MediumDashDot = 10 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.MediumDashDotDot = 12 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.MediumDashed = 8 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.None = 0 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.SlantDashDot = 13 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.Thick = 5 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellBorderStyle.Thin = 1 -> Egap.Spreadsheets.CellBorderStyle
+Egap.Spreadsheets.CellColor
+Egap.Spreadsheets.CellColor.CellColor() -> void
+Egap.Spreadsheets.CellColor.Equals(Egap.Spreadsheets.CellColor other) -> bool
+Egap.Spreadsheets.CellColor.Kind.get -> Egap.Spreadsheets.CellColorKind
+Egap.Spreadsheets.CellColor.Tint.get -> double
+Egap.Spreadsheets.CellColor.Value.get -> uint
+Egap.Spreadsheets.CellColorKind
+Egap.Spreadsheets.CellColorKind.Auto = 0 -> Egap.Spreadsheets.CellColorKind
+Egap.Spreadsheets.CellColorKind.Indexed = 3 -> Egap.Spreadsheets.CellColorKind
+Egap.Spreadsheets.CellColorKind.Rgb = 1 -> Egap.Spreadsheets.CellColorKind
+Egap.Spreadsheets.CellColorKind.Theme = 2 -> Egap.Spreadsheets.CellColorKind
+Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.Calc = 9 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.DivisionByZero = 1 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.GettingData = 7 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.Name = 4 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.NotAvailable = 6 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.Null = 0 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.Number = 5 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.Reference = 3 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.Spill = 8 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellError.Value = 2 -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellFill
+Egap.Spreadsheets.CellFill.<Clone>$() -> Egap.Spreadsheets.CellFill!
+Egap.Spreadsheets.CellFill.Background.get -> Egap.Spreadsheets.CellColor
+Egap.Spreadsheets.CellFill.Background.init -> void
+Egap.Spreadsheets.CellFill.CellFill() -> void
+Egap.Spreadsheets.CellFill.Equals(Egap.Spreadsheets.CellFill? other) -> bool
+Egap.Spreadsheets.CellFill.Foreground.get -> Egap.Spreadsheets.CellColor
+Egap.Spreadsheets.CellFill.Foreground.init -> void
+Egap.Spreadsheets.CellFill.Pattern.get -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFill.Pattern.init -> void
+Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.DarkDown = 7 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.DarkGray = 3 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.DarkGrid = 9 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.DarkHorizontal = 5 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.DarkTrellis = 10 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.DarkUp = 8 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.DarkVertical = 6 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.Gray0625 = 18 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.Gray125 = 17 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.LightDown = 13 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.LightGray = 4 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.LightGrid = 15 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.LightHorizontal = 11 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.LightTrellis = 16 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.LightUp = 14 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.LightVertical = 12 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.MediumGray = 2 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.None = 0 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFillPattern.Solid = 1 -> Egap.Spreadsheets.CellFillPattern
+Egap.Spreadsheets.CellFont
+Egap.Spreadsheets.CellFont.<Clone>$() -> Egap.Spreadsheets.CellFont!
+Egap.Spreadsheets.CellFont.Bold.get -> bool
+Egap.Spreadsheets.CellFont.Bold.init -> void
+Egap.Spreadsheets.CellFont.CellFont() -> void
+Egap.Spreadsheets.CellFont.CharacterSet.get -> int?
+Egap.Spreadsheets.CellFont.CharacterSet.init -> void
+Egap.Spreadsheets.CellFont.Color.get -> Egap.Spreadsheets.CellColor
+Egap.Spreadsheets.CellFont.Color.init -> void
+Egap.Spreadsheets.CellFont.Equals(Egap.Spreadsheets.CellFont? other) -> bool
+Egap.Spreadsheets.CellFont.Family.get -> int
+Egap.Spreadsheets.CellFont.Family.init -> void
+Egap.Spreadsheets.CellFont.Italic.get -> bool
+Egap.Spreadsheets.CellFont.Italic.init -> void
+Egap.Spreadsheets.CellFont.Name.get -> string!
+Egap.Spreadsheets.CellFont.Name.init -> void
+Egap.Spreadsheets.CellFont.Scheme.get -> Egap.Spreadsheets.CellFontScheme
+Egap.Spreadsheets.CellFont.Scheme.init -> void
+Egap.Spreadsheets.CellFont.Size.get -> double
+Egap.Spreadsheets.CellFont.Size.init -> void
+Egap.Spreadsheets.CellFont.Strikethrough.get -> bool
+Egap.Spreadsheets.CellFont.Strikethrough.init -> void
+Egap.Spreadsheets.CellFont.Underline.get -> Egap.Spreadsheets.CellUnderline
+Egap.Spreadsheets.CellFont.Underline.init -> void
+Egap.Spreadsheets.CellFont.VerticalPosition.get -> Egap.Spreadsheets.CellVerticalTextPosition
+Egap.Spreadsheets.CellFont.VerticalPosition.init -> void
+Egap.Spreadsheets.CellFontScheme
+Egap.Spreadsheets.CellFontScheme.Major = 1 -> Egap.Spreadsheets.CellFontScheme
+Egap.Spreadsheets.CellFontScheme.Minor = 2 -> Egap.Spreadsheets.CellFontScheme
+Egap.Spreadsheets.CellFontScheme.None = 0 -> Egap.Spreadsheets.CellFontScheme
+Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellHorizontalAlignment.Center = 2 -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellHorizontalAlignment.CenterContinuous = 6 -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellHorizontalAlignment.Distributed = 7 -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellHorizontalAlignment.Fill = 4 -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellHorizontalAlignment.General = 0 -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellHorizontalAlignment.Justify = 5 -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellHorizontalAlignment.Left = 1 -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellHorizontalAlignment.Right = 3 -> Egap.Spreadsheets.CellHorizontalAlignment
+Egap.Spreadsheets.CellProtection
+Egap.Spreadsheets.CellProtection.<Clone>$() -> Egap.Spreadsheets.CellProtection!
+Egap.Spreadsheets.CellProtection.CellProtection() -> void
+Egap.Spreadsheets.CellProtection.Equals(Egap.Spreadsheets.CellProtection? other) -> bool
+Egap.Spreadsheets.CellProtection.Hidden.get -> bool
+Egap.Spreadsheets.CellProtection.Hidden.init -> void
+Egap.Spreadsheets.CellProtection.Locked.get -> bool
+Egap.Spreadsheets.CellProtection.Locked.init -> void
+Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.CellRange.Address.get -> Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.CellRange.CellRange() -> void
+Egap.Spreadsheets.CellRange.Clear() -> void
+Egap.Spreadsheets.CellRange.ClearContents() -> void
+Egap.Spreadsheets.CellRange.ColumnCount.get -> int
+Egap.Spreadsheets.CellRange.Equals(Egap.Spreadsheets.CellRange other) -> bool
+Egap.Spreadsheets.CellRange.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.Cell!>!
+Egap.Spreadsheets.CellRange.GetValues() -> Egap.Spreadsheets.CellValue[,]!
+Egap.Spreadsheets.CellRange.RowCount.get -> int
+Egap.Spreadsheets.CellRange.SetStyle(Egap.Spreadsheets.CellStyle! style) -> void
+Egap.Spreadsheets.CellRange.SetValue(Egap.Spreadsheets.CellValue value) -> void
+Egap.Spreadsheets.CellRange.SetValues(Egap.Spreadsheets.CellValue[,]! values) -> void
+Egap.Spreadsheets.CellRange.this[int row, int column].get -> Egap.Spreadsheets.Cell!
+Egap.Spreadsheets.CellRange.UpdateStyle(System.Func<Egap.Spreadsheets.CellStyle!, Egap.Spreadsheets.CellStyle!>! change) -> void
+Egap.Spreadsheets.CellRange.UsedCells.get -> System.Collections.Generic.IEnumerable<Egap.Spreadsheets.Cell!>!
+Egap.Spreadsheets.CellRange.Worksheet.get -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.CellReadingOrder
+Egap.Spreadsheets.CellReadingOrder.Context = 0 -> Egap.Spreadsheets.CellReadingOrder
+Egap.Spreadsheets.CellReadingOrder.LeftToRight = 1 -> Egap.Spreadsheets.CellReadingOrder
+Egap.Spreadsheets.CellReadingOrder.RightToLeft = 2 -> Egap.Spreadsheets.CellReadingOrder
+Egap.Spreadsheets.CellStyle
+Egap.Spreadsheets.CellStyle.<Clone>$() -> Egap.Spreadsheets.CellStyle!
+Egap.Spreadsheets.CellStyle.Alignment.get -> Egap.Spreadsheets.CellAlignment!
+Egap.Spreadsheets.CellStyle.Alignment.init -> void
+Egap.Spreadsheets.CellStyle.Borders.get -> Egap.Spreadsheets.CellBorders!
+Egap.Spreadsheets.CellStyle.Borders.init -> void
+Egap.Spreadsheets.CellStyle.CellStyle() -> void
+Egap.Spreadsheets.CellStyle.Equals(Egap.Spreadsheets.CellStyle? other) -> bool
+Egap.Spreadsheets.CellStyle.Fill.get -> Egap.Spreadsheets.CellFill!
+Egap.Spreadsheets.CellStyle.Fill.init -> void
+Egap.Spreadsheets.CellStyle.Font.get -> Egap.Spreadsheets.CellFont!
+Egap.Spreadsheets.CellStyle.Font.init -> void
+Egap.Spreadsheets.CellStyle.NumberFormat.get -> string!
+Egap.Spreadsheets.CellStyle.NumberFormat.init -> void
+Egap.Spreadsheets.CellStyle.Protection.get -> Egap.Spreadsheets.CellProtection!
+Egap.Spreadsheets.CellStyle.Protection.init -> void
+Egap.Spreadsheets.CellUnderline
+Egap.Spreadsheets.CellUnderline.Double = 2 -> Egap.Spreadsheets.CellUnderline
+Egap.Spreadsheets.CellUnderline.DoubleAccounting = 4 -> Egap.Spreadsheets.CellUnderline
+Egap.Spreadsheets.CellUnderline.None = 0 -> Egap.Spreadsheets.CellUnderline
+Egap.Spreadsheets.CellUnderline.Single = 1 -> Egap.Spreadsheets.CellUnderline
+Egap.Spreadsheets.CellUnderline.SingleAccounting = 3 -> Egap.Spreadsheets.CellUnderline
+Egap.Spreadsheets.CellValue
+Egap.Spreadsheets.CellValue.Boolean.get -> bool
+Egap.Spreadsheets.CellValue.CellValue() -> void
+Egap.Spreadsheets.CellValue.Equals(Egap.Spreadsheets.CellValue other) -> bool
+Egap.Spreadsheets.CellValue.Error.get -> Egap.Spreadsheets.CellError
+Egap.Spreadsheets.CellValue.IsEmpty.get -> bool
+Egap.Spreadsheets.CellValue.Kind.get -> Egap.Spreadsheets.CellValueKind
+Egap.Spreadsheets.CellValue.Number.get -> double
+Egap.Spreadsheets.CellValue.Text.get -> string!
+Egap.Spreadsheets.CellValueKind
+Egap.Spreadsheets.CellValueKind.Boolean = 3 -> Egap.Spreadsheets.CellValueKind
+Egap.Spreadsheets.CellValueKind.Empty = 0 -> Egap.Spreadsheets.CellValueKind
+Egap.Spreadsheets.CellValueKind.Error = 4 -> Egap.Spreadsheets.CellValueKind
+Egap.Spreadsheets.CellValueKind.Number = 1 -> Egap.Spreadsheets.CellValueKind
+Egap.Spreadsheets.CellValueKind.Text = 2 -> Egap.Spreadsheets.CellValueKind
+Egap.Spreadsheets.CellVerticalAlignment
+Egap.Spreadsheets.CellVerticalAlignment.Bottom = 0 -> Egap.Spreadsheets.CellVerticalAlignment
+Egap.Spreadsheets.CellVerticalAlignment.Center = 2 -> Egap.Spreadsheets.CellVerticalAlignment
+Egap.Spreadsheets.CellVerticalAlignment.Distributed = 4 -> Egap.Spreadsheets.CellVerticalAlignment
+Egap.Spreadsheets.CellVerticalAlignment.Justify = 3 -> Egap.Spreadsheets.CellVerticalAlignment
+Egap.Spreadsheets.CellVerticalAlignment.Top = 1 -> Egap.Spreadsheets.CellVerticalAlignment
+Egap.Spreadsheets.CellVerticalTextPosition
+Egap.Spreadsheets.CellVerticalTextPosition.Baseline = 0 -> Egap.Spreadsheets.CellVerticalTextPosition
+Egap.Spreadsheets.CellVerticalTextPosition.Subscript = 2 -> Egap.Spreadsheets.CellVerticalTextPosition
+Egap.Spreadsheets.CellVerticalTextPosition.Superscript = 1 -> Egap.Spreadsheets.CellVerticalTextPosition
+Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.RangeAddress.CellCount.get -> long
+Egap.Spreadsheets.RangeAddress.ColumnCount.get -> int
+Egap.Spreadsheets.RangeAddress.Contains(Egap.Spreadsheets.CellAddress address) -> bool
+Egap.Spreadsheets.RangeAddress.Contains(Egap.Spreadsheets.RangeAddress other) -> bool
+Egap.Spreadsheets.RangeAddress.Equals(Egap.Spreadsheets.RangeAddress other) -> bool
+Egap.Spreadsheets.RangeAddress.First.get -> Egap.Spreadsheets.CellAddress
+Egap.Spreadsheets.RangeAddress.Intersects(Egap.Spreadsheets.RangeAddress other) -> bool
+Egap.Spreadsheets.RangeAddress.IsWholeColumns.get -> bool
+Egap.Spreadsheets.RangeAddress.IsWholeRows.get -> bool
+Egap.Spreadsheets.RangeAddress.Last.get -> Egap.Spreadsheets.CellAddress
+Egap.Spreadsheets.RangeAddress.RangeAddress() -> void
+Egap.Spreadsheets.RangeAddress.RangeAddress(Egap.Spreadsheets.CellAddress first, Egap.Spreadsheets.CellAddress last) -> void
+Egap.Spreadsheets.RangeAddress.RangeAddress(int firstRow, int firstColumn, int lastRow, int lastColumn) -> void
+Egap.Spreadsheets.RangeAddress.RowCount.get -> int
+Egap.Spreadsheets.RangeAddress.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
+Egap.Spreadsheets.RangeAddress.TryFormat(System.Span<char> destination, out int charsWritten, System.ReadOnlySpan<char> format, System.IFormatProvider? provider) -> bool
+Egap.Spreadsheets.Workbook
+Egap.Spreadsheets.Workbook.Worksheets.get -> Egap.Spreadsheets.WorksheetCollection!
+Egap.Spreadsheets.Worksheet
+Egap.Spreadsheets.Worksheet.Cells.get -> Egap.Spreadsheets.WorksheetCells!
+Egap.Spreadsheets.Worksheet.Index.get -> int
+Egap.Spreadsheets.Worksheet.Name.get -> string!
+Egap.Spreadsheets.Worksheet.Name.set -> void
+Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress address) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Worksheet.Range(int firstRow, int firstColumn, int lastRow, int lastColumn) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Worksheet.Range(string! address) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Worksheet.this[Egap.Spreadsheets.CellAddress address].get -> Egap.Spreadsheets.Cell!
+Egap.Spreadsheets.Worksheet.this[int row, int column].get -> Egap.Spreadsheets.Cell!
+Egap.Spreadsheets.Worksheet.this[string! address].get -> Egap.Spreadsheets.Cell!
+Egap.Spreadsheets.Worksheet.UsedRange.get -> Egap.Spreadsheets.CellRange?
+Egap.Spreadsheets.Worksheet.Workbook.get -> Egap.Spreadsheets.Workbook!
+Egap.Spreadsheets.WorksheetCells
+Egap.Spreadsheets.WorksheetCells.Count.get -> long
+Egap.Spreadsheets.WorksheetCells.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.Cell!>!
+Egap.Spreadsheets.WorksheetCells.GetValue(int row, int column) -> Egap.Spreadsheets.CellValue
+Egap.Spreadsheets.WorksheetCells.SetValue(int row, int column, Egap.Spreadsheets.CellValue value) -> void
+Egap.Spreadsheets.WorksheetCells.this[Egap.Spreadsheets.CellAddress address].get -> Egap.Spreadsheets.Cell!
+Egap.Spreadsheets.WorksheetCells.this[int row, int column].get -> Egap.Spreadsheets.Cell!
+Egap.Spreadsheets.WorksheetCollection
+Egap.Spreadsheets.WorksheetCollection.Add(string? name = null) -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.WorksheetCollection.Contains(string! name) -> bool
+Egap.Spreadsheets.WorksheetCollection.Count.get -> int
+Egap.Spreadsheets.WorksheetCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.Worksheet!>!
+Egap.Spreadsheets.WorksheetCollection.IndexOf(Egap.Spreadsheets.Worksheet! sheet) -> int
+Egap.Spreadsheets.WorksheetCollection.Insert(int index, string? name = null) -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.WorksheetCollection.Move(Egap.Spreadsheets.Worksheet! sheet, int index) -> void
+Egap.Spreadsheets.WorksheetCollection.Remove(Egap.Spreadsheets.Worksheet! sheet) -> bool
+Egap.Spreadsheets.WorksheetCollection.this[int index].get -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.WorksheetCollection.this[string! name].get -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.WorksheetCollection.TryGet(string! name, out Egap.Spreadsheets.Worksheet? sheet) -> bool
+override Egap.Spreadsheets.Cell.Equals(object? obj) -> bool
+override Egap.Spreadsheets.Cell.GetHashCode() -> int
+override Egap.Spreadsheets.Cell.ToString() -> string!
+override Egap.Spreadsheets.CellAddress.GetHashCode() -> int
+override Egap.Spreadsheets.CellAddress.ToString() -> string!
+override Egap.Spreadsheets.CellAlignment.Equals(object? obj) -> bool
+override Egap.Spreadsheets.CellAlignment.GetHashCode() -> int
+override Egap.Spreadsheets.CellAlignment.ToString() -> string!
+override Egap.Spreadsheets.CellBorder.GetHashCode() -> int
+override Egap.Spreadsheets.CellBorders.Equals(object? obj) -> bool
+override Egap.Spreadsheets.CellBorders.GetHashCode() -> int
+override Egap.Spreadsheets.CellBorders.ToString() -> string!
+override Egap.Spreadsheets.CellColor.GetHashCode() -> int
+override Egap.Spreadsheets.CellColor.ToString() -> string!
+override Egap.Spreadsheets.CellFill.Equals(object? obj) -> bool
+override Egap.Spreadsheets.CellFill.GetHashCode() -> int
+override Egap.Spreadsheets.CellFill.ToString() -> string!
+override Egap.Spreadsheets.CellFont.Equals(object? obj) -> bool
+override Egap.Spreadsheets.CellFont.GetHashCode() -> int
+override Egap.Spreadsheets.CellFont.ToString() -> string!
+override Egap.Spreadsheets.CellProtection.Equals(object? obj) -> bool
+override Egap.Spreadsheets.CellProtection.GetHashCode() -> int
+override Egap.Spreadsheets.CellProtection.ToString() -> string!
+override Egap.Spreadsheets.CellRange.Equals(object? obj) -> bool
+override Egap.Spreadsheets.CellRange.GetHashCode() -> int
+override Egap.Spreadsheets.CellRange.ToString() -> string!
+override Egap.Spreadsheets.CellStyle.Equals(object? obj) -> bool
+override Egap.Spreadsheets.CellStyle.GetHashCode() -> int
+override Egap.Spreadsheets.CellStyle.ToString() -> string!
+override Egap.Spreadsheets.CellValue.Equals(object? obj) -> bool
+override Egap.Spreadsheets.CellValue.GetHashCode() -> int
+override Egap.Spreadsheets.CellValue.ToString() -> string!
+override Egap.Spreadsheets.RangeAddress.GetHashCode() -> int
+override Egap.Spreadsheets.RangeAddress.ToString() -> string!
+override Egap.Spreadsheets.Worksheet.ToString() -> string!
+static Egap.Spreadsheets.Cell.operator !=(Egap.Spreadsheets.Cell? left, Egap.Spreadsheets.Cell? right) -> bool
+static Egap.Spreadsheets.Cell.operator ==(Egap.Spreadsheets.Cell? left, Egap.Spreadsheets.Cell? right) -> bool
+static Egap.Spreadsheets.CellAddress.ColumnIndex(System.ReadOnlySpan<char> name) -> int
+static Egap.Spreadsheets.CellAddress.ColumnName(int column) -> string!
+static Egap.Spreadsheets.CellAddress.operator !=(Egap.Spreadsheets.CellAddress left, Egap.Spreadsheets.CellAddress right) -> bool
+static Egap.Spreadsheets.CellAddress.operator ==(Egap.Spreadsheets.CellAddress left, Egap.Spreadsheets.CellAddress right) -> bool
+static Egap.Spreadsheets.CellAddress.Parse(string! text) -> Egap.Spreadsheets.CellAddress
+static Egap.Spreadsheets.CellAddress.Parse(System.ReadOnlySpan<char> text) -> Egap.Spreadsheets.CellAddress
+static Egap.Spreadsheets.CellAddress.TryParse(string? text, out Egap.Spreadsheets.CellAddress address) -> bool
+static Egap.Spreadsheets.CellAddress.TryParse(System.ReadOnlySpan<char> text, out Egap.Spreadsheets.CellAddress address) -> bool
+static Egap.Spreadsheets.CellAlignment.Default.get -> Egap.Spreadsheets.CellAlignment!
+static Egap.Spreadsheets.CellAlignment.operator !=(Egap.Spreadsheets.CellAlignment? left, Egap.Spreadsheets.CellAlignment? right) -> bool
+static Egap.Spreadsheets.CellAlignment.operator ==(Egap.Spreadsheets.CellAlignment? left, Egap.Spreadsheets.CellAlignment? right) -> bool
+static Egap.Spreadsheets.CellBorder.None.get -> Egap.Spreadsheets.CellBorder
+static Egap.Spreadsheets.CellBorder.operator !=(Egap.Spreadsheets.CellBorder left, Egap.Spreadsheets.CellBorder right) -> bool
+static Egap.Spreadsheets.CellBorder.operator ==(Egap.Spreadsheets.CellBorder left, Egap.Spreadsheets.CellBorder right) -> bool
+static Egap.Spreadsheets.CellBorder.Thin.get -> Egap.Spreadsheets.CellBorder
+static Egap.Spreadsheets.CellBorders.Box(Egap.Spreadsheets.CellBorder edge) -> Egap.Spreadsheets.CellBorders!
+static Egap.Spreadsheets.CellBorders.None.get -> Egap.Spreadsheets.CellBorders!
+static Egap.Spreadsheets.CellBorders.operator !=(Egap.Spreadsheets.CellBorders? left, Egap.Spreadsheets.CellBorders? right) -> bool
+static Egap.Spreadsheets.CellBorders.operator ==(Egap.Spreadsheets.CellBorders? left, Egap.Spreadsheets.CellBorders? right) -> bool
+static Egap.Spreadsheets.CellColor.Auto.get -> Egap.Spreadsheets.CellColor
+static Egap.Spreadsheets.CellColor.Black.get -> Egap.Spreadsheets.CellColor
+static Egap.Spreadsheets.CellColor.FromArgb(uint argb, double tint = 0) -> Egap.Spreadsheets.CellColor
+static Egap.Spreadsheets.CellColor.FromIndex(int index, double tint = 0) -> Egap.Spreadsheets.CellColor
+static Egap.Spreadsheets.CellColor.FromRgb(byte red, byte green, byte blue) -> Egap.Spreadsheets.CellColor
+static Egap.Spreadsheets.CellColor.FromTheme(int index, double tint = 0) -> Egap.Spreadsheets.CellColor
+static Egap.Spreadsheets.CellColor.operator !=(Egap.Spreadsheets.CellColor left, Egap.Spreadsheets.CellColor right) -> bool
+static Egap.Spreadsheets.CellColor.operator ==(Egap.Spreadsheets.CellColor left, Egap.Spreadsheets.CellColor right) -> bool
+static Egap.Spreadsheets.CellColor.White.get -> Egap.Spreadsheets.CellColor
+static Egap.Spreadsheets.CellFill.None.get -> Egap.Spreadsheets.CellFill!
+static Egap.Spreadsheets.CellFill.operator !=(Egap.Spreadsheets.CellFill? left, Egap.Spreadsheets.CellFill? right) -> bool
+static Egap.Spreadsheets.CellFill.operator ==(Egap.Spreadsheets.CellFill? left, Egap.Spreadsheets.CellFill? right) -> bool
+static Egap.Spreadsheets.CellFill.Solid(Egap.Spreadsheets.CellColor color) -> Egap.Spreadsheets.CellFill!
+static Egap.Spreadsheets.CellFont.Default.get -> Egap.Spreadsheets.CellFont!
+static Egap.Spreadsheets.CellFont.operator !=(Egap.Spreadsheets.CellFont? left, Egap.Spreadsheets.CellFont? right) -> bool
+static Egap.Spreadsheets.CellFont.operator ==(Egap.Spreadsheets.CellFont? left, Egap.Spreadsheets.CellFont? right) -> bool
+static Egap.Spreadsheets.CellProtection.Default.get -> Egap.Spreadsheets.CellProtection!
+static Egap.Spreadsheets.CellProtection.operator !=(Egap.Spreadsheets.CellProtection? left, Egap.Spreadsheets.CellProtection? right) -> bool
+static Egap.Spreadsheets.CellProtection.operator ==(Egap.Spreadsheets.CellProtection? left, Egap.Spreadsheets.CellProtection? right) -> bool
+static Egap.Spreadsheets.CellRange.operator !=(Egap.Spreadsheets.CellRange left, Egap.Spreadsheets.CellRange right) -> bool
+static Egap.Spreadsheets.CellRange.operator ==(Egap.Spreadsheets.CellRange left, Egap.Spreadsheets.CellRange right) -> bool
+static Egap.Spreadsheets.CellStyle.Default.get -> Egap.Spreadsheets.CellStyle!
+static Egap.Spreadsheets.CellStyle.operator !=(Egap.Spreadsheets.CellStyle? left, Egap.Spreadsheets.CellStyle? right) -> bool
+static Egap.Spreadsheets.CellStyle.operator ==(Egap.Spreadsheets.CellStyle? left, Egap.Spreadsheets.CellStyle? right) -> bool
+static Egap.Spreadsheets.CellValue.Empty.get -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.ErrorText(Egap.Spreadsheets.CellError error) -> string!
+static Egap.Spreadsheets.CellValue.FromBoolean(bool value) -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.FromError(Egap.Spreadsheets.CellError error) -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.FromNumber(double number) -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.FromText(string? text) -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.implicit operator Egap.Spreadsheets.CellValue(bool value) -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.implicit operator Egap.Spreadsheets.CellValue(double number) -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.implicit operator Egap.Spreadsheets.CellValue(Egap.Spreadsheets.CellError error) -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.implicit operator Egap.Spreadsheets.CellValue(string? text) -> Egap.Spreadsheets.CellValue
+static Egap.Spreadsheets.CellValue.operator !=(Egap.Spreadsheets.CellValue left, Egap.Spreadsheets.CellValue right) -> bool
+static Egap.Spreadsheets.CellValue.operator ==(Egap.Spreadsheets.CellValue left, Egap.Spreadsheets.CellValue right) -> bool
+static Egap.Spreadsheets.CellValue.TryParseError(System.ReadOnlySpan<char> text, out Egap.Spreadsheets.CellError error) -> bool
+static Egap.Spreadsheets.RangeAddress.operator !=(Egap.Spreadsheets.RangeAddress left, Egap.Spreadsheets.RangeAddress right) -> bool
+static Egap.Spreadsheets.RangeAddress.operator ==(Egap.Spreadsheets.RangeAddress left, Egap.Spreadsheets.RangeAddress right) -> bool
+static Egap.Spreadsheets.RangeAddress.Parse(string! text) -> Egap.Spreadsheets.RangeAddress
+static Egap.Spreadsheets.RangeAddress.Parse(System.ReadOnlySpan<char> text) -> Egap.Spreadsheets.RangeAddress
+static Egap.Spreadsheets.RangeAddress.TryParse(string? text, out Egap.Spreadsheets.RangeAddress range) -> bool
+static Egap.Spreadsheets.RangeAddress.TryParse(System.ReadOnlySpan<char> text, out Egap.Spreadsheets.RangeAddress range) -> bool
+static Egap.Spreadsheets.Workbook.Create() -> Egap.Spreadsheets.Workbook!
+static Egap.Spreadsheets.Workbook.CreateEmpty() -> Egap.Spreadsheets.Workbook!
+~override Egap.Spreadsheets.CellAddress.Equals(object obj) -> bool
+~override Egap.Spreadsheets.CellBorder.Equals(object obj) -> bool
+~override Egap.Spreadsheets.CellBorder.ToString() -> string
+~override Egap.Spreadsheets.CellColor.Equals(object obj) -> bool
+~override Egap.Spreadsheets.RangeAddress.Equals(object obj) -> bool

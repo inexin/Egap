@@ -2,6 +2,7 @@
 Egap.Documents.DocumentFormatKind.Encrypted = 10 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Odt = 11 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Rtf = 9 -> Egap.Documents.DocumentFormatKind
+Egap.Documents.DocumentFormatKind.Xlsx = 12 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentLoadOptions
 Egap.Documents.DocumentLoadOptions.DocumentLoadOptions() -> void
 Egap.Documents.DocumentLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!

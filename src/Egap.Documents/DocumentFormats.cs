@@ -125,7 +125,8 @@ public sealed partial class Document
 
     /// <summary>
     /// Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
-    /// whose first entry is an EPUB <c>mimetype</c> is EPUB, another ZIP package or an old compound file is Word's (and a
+    /// whose first entry is an EPUB <c>mimetype</c> is EPUB, one with a part under <c>xl/</c> or named .xlsx, .xlsm, .xltx or
+    /// .xltm is an Excel workbook, another ZIP package or an old compound file is Word's (and a
     /// compound file that holds an encrypted package is <see cref="DocumentFormatKind.Encrypted"/>), a MIME
     /// message of <c>multipart/related</c> parts is MHTML, <c>%PDF-</c> is PDF, <c>{\rtf</c> is RTF, a JSON object naming the <c>DoclingDocument</c> schema is
     /// Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
@@ -218,7 +219,13 @@ public sealed partial class Document
             return DocumentFormatKind.Odt;
         }
 
-        // A ZIP package, or an old compound file (whose error names it), is Word's.
+        // A ZIP package with a part under xl/, or one named as a workbook, is Excel's.
+        if (head is [0x50, 0x4B, 0x03, 0x04, ..] && (HasWorkbookPart(head) || KindOfExtension(extension) == DocumentFormatKind.Xlsx))
+        {
+            return DocumentFormatKind.Xlsx;
+        }
+
+        // Another ZIP package, or an old compound file (whose error names it), is Word's.
         if (head is [0x50, 0x4B, 0x03, 0x04, ..] or [0xD0, 0xCF, 0x11, 0xE0, ..])
         {
             return DocumentFormatKind.Docx;
@@ -276,8 +283,49 @@ public sealed partial class Document
         ".MHT" or ".MHTML" => DocumentFormatKind.Mhtml,
         ".RTF" => DocumentFormatKind.Rtf,
         ".ODT" or ".OTT" or ".FODT" => DocumentFormatKind.Odt,
+        ".XLSX" or ".XLSM" or ".XLTX" or ".XLTM" => DocumentFormatKind.Xlsx,
         _ => DocumentFormatKind.Unknown,
     };
+
+    /// <summary>
+    /// Whether a ZIP file's local headers among its first bytes name a part under <c>xl/</c>, as every SpreadsheetML package
+    /// has (ECMA-376 Part 1, 12.3). The walk stops at an entry whose size its header does not give.
+    /// </summary>
+    private static bool HasWorkbookPart(ReadOnlySpan<byte> head)
+    {
+        int at = 0;
+        while (at + 30 <= head.Length && head[at..] is [0x50, 0x4B, 0x03, 0x04, ..])
+        {
+            int flags = head[at + 6] | (head[at + 7] << 8);
+            long size = (uint)(head[at + 18] | (head[at + 19] << 8) | (head[at + 20] << 16) | (head[at + 21] << 24));
+            int nameLength = head[at + 26] | (head[at + 27] << 8);
+            int extra = head[at + 28] | (head[at + 29] << 8);
+            if (at + 30 + nameLength > head.Length)
+            {
+                return false;
+            }
+
+            if (head.Slice(at + 30, nameLength).StartsWith("xl/"u8))
+            {
+                return true;
+            }
+
+            if ((flags & 8) != 0)
+            {
+                return false;
+            }
+
+            long next = at + 30L + nameLength + extra + size;
+            if (next >= head.Length)
+            {
+                return false;
+            }
+
+            at = (int)next;
+        }
+
+        return false;
+    }
 
     /// <summary>Whether the bytes start with <c>{\rtf</c>, after a byte order mark or white space as Word allows.</summary>
     private static bool IsRtf(ReadOnlySpan<byte> bytes)

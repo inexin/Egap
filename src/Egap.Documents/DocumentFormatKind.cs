@@ -47,4 +47,10 @@ public enum DocumentFormatKind
     /// flat FODT file (one XML document).
     /// </summary>
     Odt,
+
+    /// <summary>
+    /// An Excel workbook: XLSX, XLSM, XLTX or XLTM, known by a package part under <c>xl/</c> or by its extension. It is a
+    /// spreadsheet, which Egap.Documents does not load as a document.
+    /// </summary>
+    Xlsx,
 }
