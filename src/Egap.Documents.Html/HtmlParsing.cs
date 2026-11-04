@@ -23,7 +23,9 @@ internal static class HtmlParsing
     // A parser context per default encoding: the default is what bytes without a byte order mark or a meta charset are read as.
     private static readonly ConcurrentDictionary<string, IBrowsingContext> Contexts = new(StringComparer.OrdinalIgnoreCase);
 
-    private static readonly HtmlParserOptions Options = new() { IsScripting = false, DisableElementPositionTracking = true };
+    // No AngleSharp depth limit: past it (512 by default) AngleSharp attaches deeper elements as siblings, and the reader lost
+    // the text of deeply nested tables. HtmlNestingGuard already bounds the depth, and Copy walks the tree with its own stack.
+    private static readonly HtmlParserOptions Options = new() { IsScripting = false, DisableElementPositionTracking = true, MaximumDepth = int.MaxValue };
 
     /// <summary>Parses HTML text.</summary>
     public static HtmlDocument Parse(string html)
