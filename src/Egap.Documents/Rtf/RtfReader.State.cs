@@ -263,6 +263,10 @@ internal sealed partial class RtfReader
                     Append((char)(ushort)(short)tokens.Parameter);
                     reader.skip = reader.state.UnicodeSkip;
                     return true;
+                case RtfTokenKind.ControlWord when tokens.Word == "uc" && tokens.HasParameter:
+                    // The header tables read names through here alone, so \uc must count here too.
+                    reader.state.UnicodeSkip = Math.Clamp(tokens.Parameter, 0, 16);
+                    return true;
                 case RtfTokenKind.ControlWord when SpecialCharacter(tokens.Word) is char special:
                     Append(special);
                     return true;
@@ -287,6 +291,7 @@ internal sealed partial class RtfReader
                 result = result[..at];
             }
 
+            result = WithoutLoneSurrogates(result);
             return trim ? result.Trim() : result;
         }
 

@@ -658,6 +658,61 @@ public class RtfReaderTests
         Assert.Equal(russian, comment.Story.GetText().Trim());
     }
 
+    /// <summary>The ways a character past U+FFFF comes in: as Parse escapes it, bare under \uc0, and as Word writes it.</summary>
+    public static TheoryData<string> AstralForms() =>
+    [
+        "😀",
+        @"\u-10179{}\u-8704{}",
+        @"\uc0\u-10179\u-8704",
+        @"\uc1\u-10179?\u-8704?",
+        @"\uc2\u-10179\'3f\'3f\u-8704\'3f\'3f",
+    ];
+
+    [Theory]
+    [MemberData(nameof(AstralForms))]
+    public void CharactersPastTheBasicPlaneStayWhole(string emoji)
+    {
+        const string gothic = "𐍈";
+        string rtf = @"{\rtf1{\fonttbl{\f0 F" + emoji + @";}}{\*\revtbl{Unknown;}{Zhang" + emoji + @";}}{\info{\title T" + emoji + gothic + @"}}"
+            + @"\pard\f0 a" + emoji + @"b{\b " + gothic + @"}{\i " + emoji + @"}" + gothic
+            + @"{\*\atnid A}{\*\atnauthor W" + emoji + @"}\chatn{\*\annotation c" + emoji + @"}"
+            + @"{\deleted\revauthdel1 x}\par}";
+        Document document = RtfFormat.Parse(rtf);
+        string pair = char.ConvertFromUtf32(0x1F600);
+        Assert.Equal("T" + pair + gothic, document.Properties.Title);
+        Assert.Equal("F" + pair, Runs(document)[0].Format.FontAscii);
+        Assert.StartsWith("a" + pair + "b" + gothic + pair + gothic, Paragraphs(document)[0].GetText(), StringComparison.Ordinal);
+        Comment comment = document.Descendants<Comment>().Single();
+        Assert.Equal("W" + pair, comment.Author);
+        Assert.Equal("c" + pair, comment.Story.GetText().Trim());
+        Assert.Equal("Zhang" + pair, document.Descendants<Run>().Single(r => r.Text == "x").Revision!.Author);
+        Assert.All(document.Descendants<Run>(), run => AssertWholePairs(run.Text));
+    }
+
+    [Fact]
+    public void LoneSurrogatesBecomeReplacementCharacters()
+    {
+        Document document = RtfFormat.Parse(@"{\rtf1{\info{\title a\u-10179{}b}}\pard x\u-10179{}{\b y}\u-8704{}z{\b \u-10179{}}\par}");
+        Assert.Equal("a\uFFFDb", document.Properties.Title);
+        Assert.Equal("x\uFFFDy\uFFFDz\uFFFD", Paragraphs(document)[0].GetText().TrimEnd());
+        Assert.All(document.Descendants<Run>(), run => AssertWholePairs(run.Text));
+    }
+
+    private static void AssertWholePairs(string text)
+    {
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (char.IsHighSurrogate(text[i]) && i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+            {
+                i++;
+            }
+            else
+            {
+                Assert.False(char.IsSurrogate(text[i]), $"A lone surrogate at {i} in \"{text}\".");
+            }
+        }
+    }
+
     [Fact]
     public void DeepNestingIsRefused()
     {

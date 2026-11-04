@@ -28,6 +28,7 @@ internal sealed partial class RtfReader
 
     private int depth;
     private int nesting;
+    private readonly List<Run> surrogateRuns = [];
     /// <summary>
     /// The fallback characters still to skip after a <c>\uN</c>. A group's start or end ends the fallback, so
     /// <see cref="Push"/> and <see cref="Pop"/> clear it, whichever loop is reading the group.
@@ -79,6 +80,7 @@ internal sealed partial class RtfReader
         state = states[0];
         Push(0);
         ReadGroup(1, main);
+        JoinSurrogates();
         if (!main.Finished)
         {
             FinishStory(main);
@@ -383,6 +385,11 @@ internal sealed partial class RtfReader
     private Run NewRun(string value)
     {
         Run run = new(document, value);
+        if (value.AsSpan().ContainsAnyInRange('\uD800', '\uDFFF'))
+        {
+            surrogateRuns.Add(run);
+        }
+
         if (!state.Char.IsEmpty)
         {
             run.Format.CopyRaw(state.Char);
@@ -399,6 +406,54 @@ internal sealed partial class RtfReader
         }
 
         return run;
+    }
+
+    /// <summary>
+    /// Joins surrogate pairs that a brace split over two runs (<c>\uN{}\uM{}</c>, as <see cref="RtfFormat"/>.Parse
+    /// writes a character past U+FFFF), and replaces a surrogate that has no partner with U+FFFD, so no run holds half a
+    /// character.
+    /// </summary>
+    private void JoinSurrogates()
+    {
+        foreach (Run run in surrogateRuns)
+        {
+            if (run.Text is [.., char high] && char.IsHighSurrogate(high) && run.NextSibling is Run { Text: [char low, ..] } next
+                && char.IsLowSurrogate(low))
+            {
+                run.Text += low;
+                next.Text = next.Text[1..];
+                if (next.Text.Length == 0)
+                {
+                    next.Remove();
+                }
+            }
+
+            run.Text = WithoutLoneSurrogates(run.Text);
+        }
+    }
+
+    /// <summary>The text with each surrogate that is not half of a pair replaced by U+FFFD.</summary>
+    private static string WithoutLoneSurrogates(string value)
+    {
+        if (!value.AsSpan().ContainsAnyInRange('\uD800', '\uDFFF'))
+        {
+            return value;
+        }
+
+        char[] chars = value.ToCharArray();
+        for (int i = 0; i < chars.Length; i++)
+        {
+            if (char.IsHighSurrogate(chars[i]) && i + 1 < chars.Length && char.IsLowSurrogate(chars[i + 1]))
+            {
+                i++;
+            }
+            else if (char.IsSurrogate(chars[i]))
+            {
+                chars[i] = '\uFFFD';
+            }
+        }
+
+        return new string(chars);
     }
 
     /// <summary>Adds an inline to the paragraph being read, starting one when there is none.</summary>

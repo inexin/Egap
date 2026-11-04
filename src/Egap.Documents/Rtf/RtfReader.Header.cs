@@ -1103,7 +1103,12 @@ internal sealed partial class RtfReader
                     return;
                 case RtfTokenKind.GroupStart:
                     Push(tokens.Position - 1);
-                    name.Clear();
+                    if (depth == groupDepth + 1)
+                    {
+                        // An author's own group starts a new name; a group inside it, such as the {} after a \uN, does not.
+                        name.Clear();
+                    }
+
                     break;
                 case RtfTokenKind.GroupEnd:
                     if (depth == groupDepth + 1 && authors.Count < MaxEntries)
