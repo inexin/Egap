@@ -4,17 +4,19 @@ using System.Text;
 using Egap.Documents;
 using Egap.Pdf.Fuzz;
 using Egap.Spreadsheets;
+using Egap.Spreadsheets.Formulas;
 
 using SharpFuzz;
 
-// Fuzz targets for Egap.Spreadsheets: number format codes, CSV and XLSX. A format code never makes Parse or Format throw;
-// CSV may refuse its input only with an InvalidDataException, and XLSX only with a DocumentException (a
-// DocumentLimitException among them). Anything else is a finding.
+// Fuzz targets for Egap.Spreadsheets: number format codes, CSV, XLSX and formulas. A format code never makes Parse or
+// Format throw; CSV may refuse its input only with an InvalidDataException, XLSX only with a DocumentException (a
+// DocumentLimitException among them), and a formula only with a FormulaException. Anything else is a finding.
 Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
 {
     ["numberformat"] = NumberFormat,
     ["csv"] = Csv,
     ["xlsx"] = Xlsx,
+    ["formula"] = Formula,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -167,4 +169,67 @@ static void Xlsx(Stream input)
     catch (DocumentException)
     {
     }
+}
+
+// The input is a formula: parsed in A1 and R1C1 style for a cell taken from its length. What parses must print back exactly
+// as written; its A1 form must parse again to the same A1 form, and its R1C1 form must parse; and evaluating it on a small
+// workbook with sheets, names and a table must give a value, never throw.
+static void Formula(Stream input)
+{
+    string text = Encoding.UTF8.GetString(Bytes(input));
+    if (text.Length > 8192)
+    {
+        text = text[..8192];
+    }
+
+    CellAddress cell = new(text.Length % 40, text.Length % 7);
+    foreach (bool r1c1 in (bool[])[false, true])
+    {
+        ParsedFormula? parsed = FormulaParser.TryParse(text, r1c1, cell);
+        if (parsed is null)
+        {
+            continue;
+        }
+
+        if (FormulaPrinter.Print(parsed, ReferenceStyle.Written) != text)
+        {
+            throw new InvalidOperationException("The formula does not print as written.");
+        }
+
+        string a1 = FormulaPrinter.Print(parsed, ReferenceStyle.A1, cell);
+        ParsedFormula again = FormulaParser.Parse(a1, r1c1: false, cell);
+        if (FormulaPrinter.Print(again, ReferenceStyle.A1, cell) != a1)
+        {
+            throw new InvalidOperationException("The A1 form does not read back to itself.");
+        }
+
+        FormulaParser.Parse(FormulaPrinter.Print(again, ReferenceStyle.R1C1), r1c1: true, cell);
+        _ = FormulaEvaluator.Evaluate(FormulaCompiler.Compile(parsed), new EvalContext(FormulaBook.Book.Value.Worksheets[0], cell.Row, cell.Column));
+    }
+}
+
+static class FormulaBook
+{
+    // Built once: the formula target only reads it.
+    public static readonly Lazy<Workbook> Book = new(() =>
+    {
+        Workbook book = Workbook.Create();
+        Worksheet data = book.Worksheets[0];
+        data.Name = "Data";
+        for (int row = 0; row < 8; row++)
+        {
+            data.Cells[row, 0].Value = row == 0 ? "Name" : $"Item {row}";
+            data.Cells[row, 1].Value = row == 0 ? "Amount" : row * 1.5;
+            data.Cells[row, 2].Value = row % 2 == 0;
+        }
+
+        data["D1"].Value = CellError.NotAvailable;
+        data.Tables.Add("A1:B8", "Sales");
+        Worksheet other = book.Worksheets.Add("Sheet 2");
+        other["A1"].Value = 42;
+        book.Names.Add("Rate", "Data!$B$2");
+        book.Names.Add("Self", "Self+1");
+        book.Names.Add("Up", "Data!A1048576");
+        return book;
+    });
 }

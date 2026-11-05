@@ -1,0 +1,1 @@
+Rate*Up+Self+_xlfn.XLOOKUP(1,A:A,B:B)+_xlfn.SINGLE(A1:A9)+_xlfn.ANCHORARRAY(A1)

@@ -87,8 +87,9 @@ numbers that a date number format shows as dates. Excel's limits hold: numbers a
 characters.
 
 `cell.Formula` holds a formula in Excel's stored form, with English function names and commas, without the `=` (a
-leading `=` you give is dropped). A formula's result is empty until the workbook is calculated. Setting `Value` removes a
-formula; setting `Formula` to null removes it and its result.
+leading `=` you give is dropped). A formula that does not follow Excel's grammar throws a `FormulaException` that says
+where the problem is. A formula's result is empty until the workbook is calculated. Setting `Value` removes a formula;
+setting `Formula` to null removes it and its result. [Formulas](#formulas) has more.
 
 `cell.Clear()` removes the value, formula and style. `sheet.Cells` enumerates the cells that hold something, row by row,
 and `sheet.UsedRange` is the smallest range that holds them all.
@@ -190,6 +191,58 @@ sheet.PageSetup.Footer = "&RPage &P of &N";
 Excel's print area and print titles are names local to their sheet: `_xlnm.Print_Area` and `_xlnm.Print_Titles`.
 `sheet.PageSetup` holds the rest of what Excel's Page Setup dialog sets: paper, orientation, scale or fit, margins in
 inches, centring, gridlines, headings, page order and the header and footer in Excel's header codes.
+
+## Formulas
+
+Formulas follow Excel's grammar: A1 references with `$` (`$B$4`, `A:C`, `2:5`), sheet, 3D and external references
+(`'Q 1'!A1`, `Jan:Mar!B2`, `[1]Prices!A1`), structured references to tables (`Sales[Amount]`, `Sales[[#Headers],[Region]]`,
+`[@Amount]`), array constants (`{1,2;3,4}`), the reference operators (`:`, a space for an intersection, a comma in
+parentheses for a union), `@` and the spill operator `#`. `cell.FormulaR1C1` gives and takes the same formula with R1C1
+references, relative ones counted from the cell:
+
+```csharp
+using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet["B4"].Formula = "SUM($A$1:B3)";
+string r1c1 = sheet["B4"].FormulaR1C1!;              // "SUM(R1C1:R[-1]C)"
+sheet["C4"].FormulaR1C1 = "R[-1]C*2";                // C4's formula is "C3*2"
+
+try
+{
+    sheet["D4"].Formula = "SUM(A1";
+}
+catch (FormulaException e)
+{
+    Console.WriteLine(e.Position);                   // 6, where the ) should be
+}
+```
+
+`sheet.Evaluate` evaluates a formula as if it were in a cell of the sheet and gives the value that cell would show, with
+Excel's rules: errors are values that flow through (`#DIV/0!`, `#N/A`), text meets arithmetic as a number when it reads as
+one, a range meets the formula's row or column where one value is needed (implicit intersection), and arrays combine
+element by element:
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet["A1"].Value = 10;
+sheet["A2"].Value = 20;
+sheet["A3"].Value = 30;
+book.Names.Add("Rate", "Sheet1!$A$1");
+
+CellValue total = sheet.Evaluate("SUM(A1:A3)*Rate");                         // 600
+CellValue row = sheet.Evaluate("A1:A3*2", CellAddress.Parse("C2"));          // 40: A2 meets row 2
+CellValue safe = sheet.Evaluate("IFERROR(1/0,\"none\")");                     // "none"
+CellValue date = sheet.Evaluate("DATE(2024,3,15)");                           // 45366
+```
+
+Other cells give the values they hold; a formula cell gives its last result, so `Evaluate` does not recalculate the
+workbook. Dates follow the workbook's date system, 1900 (with the 29 February 1900 Excel keeps) or 1904. A function Egap
+does not know gives `#NAME?`. This release evaluates operators, references, names and tables, and SUM, IF, IFERROR, IFNA,
+AND, OR, NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; recalculating workbooks and the common functions come next.
 
 ## Number formats and cell text
 

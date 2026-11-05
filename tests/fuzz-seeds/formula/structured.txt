@@ -1,0 +1,1 @@
+SUM(Sales[Amount])+Sales[[#Headers],[Name]:[Amount]]&[@Amount]&Sales[@[Amount]]

@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 
+using Egap.Spreadsheets.Formulas;
 using Egap.Spreadsheets.Storage;
 
 namespace Egap.Spreadsheets;
@@ -158,6 +159,27 @@ public sealed class Worksheet
     /// <exception cref="ArgumentOutOfRangeException">A row or column is off the sheet.</exception>
     public CellRange Range(int firstRow, int firstColumn, int lastRow, int lastColumn) =>
         new(this, new RangeAddress(firstRow, firstColumn, lastRow, lastColumn));
+
+    /// <summary>
+    /// Evaluates a formula as if it were the formula of a cell of this sheet, and gives the value that cell would show. Other
+    /// cells give the values they hold now; formula cells give their last results, which this does not recalculate.
+    /// </summary>
+    /// <param name="formula">The formula in Excel's stored form, with or without the leading <c>=</c>, such as <c>SUM(A1:A3)*2</c>.</param>
+    /// <param name="cell">
+    /// The cell to evaluate it for, A1 when null: a range meets this cell's row or column where a single value is needed
+    /// (implicit intersection), and ROW() gives its row.
+    /// </param>
+    /// <exception cref="ArgumentNullException">The formula is null.</exception>
+    /// <exception cref="FormulaException">The formula does not follow Excel's grammar.</exception>
+    public CellValue Evaluate(string formula, CellAddress? cell = null)
+    {
+        ArgumentNullException.ThrowIfNull(formula);
+        CellAddress at = cell ?? default;
+        string text = formula.StartsWith('=') ? formula[1..] : formula;
+        ParsedFormula parsed = FormulaParser.Parse(text, r1c1: false, at);
+        EvalContext context = new(this, at.Row, at.Column);
+        return FormulaEvaluator.Evaluate(FormulaCompiler.Compile(parsed), context);
+    }
 
     /// <summary>The sheet's name.</summary>
     public override string ToString() => Name;
