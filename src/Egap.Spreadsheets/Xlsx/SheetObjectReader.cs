@@ -170,32 +170,17 @@ internal static class SheetObjectReader
             return;
         }
 
-        DataValidationType type = (string?)element.Attribute("type") switch
-        {
-            "whole" => DataValidationType.WholeNumber,
-            "decimal" => DataValidationType.DecimalNumber,
-            "list" => DataValidationType.List,
-            "date" => DataValidationType.Date,
-            "time" => DataValidationType.Time,
-            "textLength" => DataValidationType.TextLength,
-            "custom" => DataValidationType.Custom,
-            _ => DataValidationType.Any,
-        };
+        DataValidationType type = ValidationType((string?)element.Attribute("type"));
         sheet.DataValidations.AddRead(new DataValidation(ranges, type)
         {
-            Operator = Operator((string?)element.Attribute("operator")) ?? ComparisonOperator.Between,
+            Operator = Operator((string?)element.Attribute("operator")),
             Formula1 = (string?)element.Element(ns + "formula1"),
             Formula2 = (string?)element.Element(ns + "formula2"),
             AllowBlank = XlsxNames.Bool((string?)element.Attribute("allowBlank"), false),
             ShowDropDown = !XlsxNames.Bool((string?)element.Attribute("showDropDown"), false),
             ShowInputMessage = XlsxNames.Bool((string?)element.Attribute("showInputMessage"), false),
             ShowErrorMessage = XlsxNames.Bool((string?)element.Attribute("showErrorMessage"), false),
-            ErrorStyle = (string?)element.Attribute("errorStyle") switch
-            {
-                "warning" => DataValidationErrorStyle.Warning,
-                "information" => DataValidationErrorStyle.Information,
-                _ => DataValidationErrorStyle.Stop,
-            },
+            ErrorStyle = ErrorStyle((string?)element.Attribute("errorStyle")),
             PromptTitle = (string?)element.Attribute("promptTitle"),
             Prompt = (string?)element.Attribute("prompt"),
             ErrorTitle = (string?)element.Attribute("errorTitle"),
@@ -204,9 +189,12 @@ internal static class SheetObjectReader
         });
     }
 
-    internal static ComparisonOperator? Operator(string? value) => value switch
+    // The enum values an attribute reads as. A value the model does not know reads as the default; the writer keeps the
+    // file's attribute while the model's value is still the one read, so such values are written back as they were.
+
+    /// <summary>A comparison operator (ST_DataValidationOperator, ST_ConditionalFormattingOperator); between for others.</summary>
+    internal static ComparisonOperator Operator(string? value) => value switch
     {
-        "between" => ComparisonOperator.Between,
         "notBetween" => ComparisonOperator.NotBetween,
         "equal" => ComparisonOperator.Equal,
         "notEqual" => ComparisonOperator.NotEqual,
@@ -214,7 +202,40 @@ internal static class SheetObjectReader
         "lessThanOrEqual" => ComparisonOperator.LessThanOrEqual,
         "greaterThan" => ComparisonOperator.GreaterThan,
         "greaterThanOrEqual" => ComparisonOperator.GreaterThanOrEqual,
-        _ => null,
+        _ => ComparisonOperator.Between,
+    };
+
+    internal static DataValidationType ValidationType(string? value) => value switch
+    {
+        "whole" => DataValidationType.WholeNumber,
+        "decimal" => DataValidationType.DecimalNumber,
+        "list" => DataValidationType.List,
+        "date" => DataValidationType.Date,
+        "time" => DataValidationType.Time,
+        "textLength" => DataValidationType.TextLength,
+        "custom" => DataValidationType.Custom,
+        _ => DataValidationType.Any,
+    };
+
+    internal static DataValidationErrorStyle ErrorStyle(string? value) => value switch
+    {
+        "warning" => DataValidationErrorStyle.Warning,
+        "information" => DataValidationErrorStyle.Information,
+        _ => DataValidationErrorStyle.Stop,
+    };
+
+    internal static TableTotalsFunction TotalsFunction(string? value) => value switch
+    {
+        "sum" => TableTotalsFunction.Sum,
+        "min" => TableTotalsFunction.Min,
+        "max" => TableTotalsFunction.Max,
+        "average" => TableTotalsFunction.Average,
+        "count" => TableTotalsFunction.Count,
+        "countNums" => TableTotalsFunction.CountNumbers,
+        "stdDev" => TableTotalsFunction.StandardDeviation,
+        "var" => TableTotalsFunction.Variance,
+        "custom" => TableTotalsFunction.Custom,
+        _ => TableTotalsFunction.None,
     };
 
     internal static readonly (ConditionalFormatType Type, string Name)[] RuleTypes =
@@ -238,14 +259,11 @@ internal static class SheetObjectReader
         {
             string type = (string?)rule.Attribute("type") ?? "";
             int found = Array.FindIndex(RuleTypes, t => t.Name == type);
-            if (found < 0)
-            {
-                continue;
-            }
 
-            ConditionalFormatRule read = new(RuleTypes[found].Type)
+            // A type the model does not know reads as an expression; the writer keeps the file's type while the rule has one.
+            ConditionalFormatRule read = new(found < 0 ? ConditionalFormatType.Expression : RuleTypes[found].Type)
             {
-                Operator = Operator((string?)rule.Attribute("operator")) ?? ComparisonOperator.Between,
+                Operator = Operator((string?)rule.Attribute("operator")),
                 Text = (string?)rule.Attribute("text"),
                 Priority = XlsxNames.Int((string?)rule.Attribute("priority"), 0),
                 StopIfTrue = XlsxNames.Bool((string?)rule.Attribute("stopIfTrue"), false),
@@ -300,19 +318,7 @@ internal static class SheetObjectReader
         {
             table.Columns.Add(new SheetTableColumn(XlsxNames.Decode((string?)column.Attribute("name") ?? ""))
             {
-                TotalsRowFunction = (string?)column.Attribute("totalsRowFunction") switch
-                {
-                    "sum" => TableTotalsFunction.Sum,
-                    "min" => TableTotalsFunction.Min,
-                    "max" => TableTotalsFunction.Max,
-                    "average" => TableTotalsFunction.Average,
-                    "count" => TableTotalsFunction.Count,
-                    "countNums" => TableTotalsFunction.CountNumbers,
-                    "stdDev" => TableTotalsFunction.StandardDeviation,
-                    "var" => TableTotalsFunction.Variance,
-                    "custom" => TableTotalsFunction.Custom,
-                    _ => TableTotalsFunction.None,
-                },
+                TotalsRowFunction = TotalsFunction((string?)column.Attribute("totalsRowFunction")),
                 TotalsRowLabel = (string?)column.Attribute("totalsRowLabel"),
                 TotalsRowFormula = (string?)column.Element(ns + "totalsRowFormula"),
                 CalculatedFormula = (string?)column.Element(ns + "calculatedColumnFormula"),

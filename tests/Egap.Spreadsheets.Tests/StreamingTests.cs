@@ -93,6 +93,30 @@ public sealed class StreamingTests
     }
 
     [Fact]
+    public void PhoneticRunsAreLeftOutAsTheWorkbookLeavesThemOut()
+    {
+        Dictionary<string, string> parts = XlsxSeed.Features();
+        parts["xl/sharedStrings.xml"] = parts["xl/sharedStrings.xml"]
+            .Replace("<si><t>Item</t></si>", "<si><t>東京</t><rPh sb=\"0\" eb=\"2\"><t>トウキョウ</t></rPh><phoneticPr fontId=\"1\"/></si>", StringComparison.Ordinal)
+            .Replace("<si><t>Price</t></si>", "<si><r><t>大</t></r><rPh sb=\"0\" eb=\"1\"><t>オオ</t></rPh><r><rPr><b/></rPr><t>阪</t></r><rPh sb=\"1\" eb=\"2\"><t>サカ</t></rPh><phoneticPr fontId=\"1\" type=\"Hiragana\"/></si>", StringComparison.Ordinal);
+        parts["xl/worksheets/sheet1.xml"] = parts["xl/worksheets/sheet1.xml"].Replace("<c r=\"D1\" s=\"1\" t=\"inlineStr\"><is><t>Total</t></is></c>", "<c r=\"D1\" s=\"1\" t=\"inlineStr\"><is><t>京都</t><rPh sb=\"0\" eb=\"2\"><t>キョウト</t></rPh><phoneticPr fontId=\"1\"/></is></c>", StringComparison.Ordinal);
+        Workbook book = Workbook.Load(XlsxSeed.Package(parts));
+        Worksheet data = book.Worksheets["Data"];
+
+        using SheetReader reader = SheetReader.Open(XlsxSeed.Package(parts));
+        Assert.True(reader.Read());
+        Assert.Equal(["東京", "大阪", "Qty", "京都", "When"], Enumerable.Range(0, 5).Select(c => reader[c].Text));
+        Assert.Equal(["東京", "大阪", "Qty", "京都", "When"], Enumerable.Range(0, 5).Select(c => data[0, c].Value.Text));
+        while (reader.Read())
+        {
+            for (int column = 0; column < reader.ColumnCount; column++)
+            {
+                Assert.Equal(data.Cells.GetValue(reader.Row, column), reader[column]);
+            }
+        }
+    }
+
+    [Fact]
     public void CsvStreamsBothWays()
     {
         MemoryStream text = new();

@@ -177,6 +177,21 @@ internal static class SheetObjectWriter
 
     private static XElement Patch(XElement? source, XName name) => source is null ? new XElement(name) : new XElement(source);
 
+    /// <summary>
+    /// Sets an attribute that holds an enum value, unless the model's value is still the one the file's attribute reads as:
+    /// then the element, a copy of the file's, keeps the attribute as written, values the model does not know among them.
+    /// </summary>
+    private static void SetUnlessRead<T>(XElement element, XElement? source, string name, T value, Func<string?, T> read, string? written)
+        where T : struct, Enum
+    {
+        if (source is not null && EqualityComparer<T>.Default.Equals(read((string?)source.Attribute(name)), value))
+        {
+            return;
+        }
+
+        element.SetAttributeValue(name, written);
+    }
+
     private static string Sqref(IEnumerable<RangeAddress> ranges) => string.Join(' ', ranges.Select(r => r.ToString()));
 
     private static string Operator(ComparisonOperator value)
@@ -231,12 +246,17 @@ internal static class SheetObjectWriter
     private static XElement Rule(ConditionalFormatRule rule, int priority, SheetObjectState state)
     {
         XElement element = Patch(rule.Source, Ns + "cfRule");
-        string type = Array.Find(SheetObjectReader.RuleTypes, t => t.Type == rule.Type).Name;
-        element.SetAttributeValue("type", type);
+        if (rule.Source is null)
+        {
+            // A rule's type cannot change, so a file's rule keeps the type it was written with.
+            element.SetAttributeValue("type", Array.Find(SheetObjectReader.RuleTypes, t => t.Type == rule.Type).Name);
+        }
+
         element.SetAttributeValue("priority", Attr(priority));
         element.SetAttributeValue("stopIfTrue", rule.StopIfTrue ? "1" : null);
         element.SetAttributeValue("dxfId", rule.Style is null ? null : Attr(state.Differential(rule)));
-        element.SetAttributeValue("operator", rule.Type == ConditionalFormatType.CellIs || rule.Source?.Attribute("operator") is not null ? Operator(rule.Operator) : null);
+        SetUnlessRead(element, rule.Source, "operator", rule.Operator, SheetObjectReader.Operator,
+            rule.Type == ConditionalFormatType.CellIs || rule.Operator != ComparisonOperator.Between ? Operator(rule.Operator) : null);
         element.SetAttributeValue("text", rule.Text);
         XNamespace ns = element.Name.Namespace;
         element.Elements(ns + "formula").Remove();
@@ -274,7 +294,7 @@ internal static class SheetObjectWriter
         {
             XElement item = Patch(rule.Source, Ns + "dataValidation");
             XNamespace ns = item.Name.Namespace;
-            item.SetAttributeValue("type", rule.Type switch
+            SetUnlessRead(item, rule.Source, "type", rule.Type, SheetObjectReader.ValidationType, rule.Type switch
             {
                 DataValidationType.WholeNumber => "whole",
                 DataValidationType.DecimalNumber => "decimal",
@@ -285,13 +305,13 @@ internal static class SheetObjectWriter
                 DataValidationType.Custom => "custom",
                 _ => null,
             });
-            item.SetAttributeValue("errorStyle", rule.ErrorStyle switch
+            SetUnlessRead(item, rule.Source, "errorStyle", rule.ErrorStyle, SheetObjectReader.ErrorStyle, rule.ErrorStyle switch
             {
                 DataValidationErrorStyle.Warning => "warning",
                 DataValidationErrorStyle.Information => "information",
                 _ => null,
             });
-            item.SetAttributeValue("operator", rule.Operator == ComparisonOperator.Between ? null : Operator(rule.Operator));
+            SetUnlessRead(item, rule.Source, "operator", rule.Operator, SheetObjectReader.Operator, rule.Operator == ComparisonOperator.Between ? null : Operator(rule.Operator));
             item.SetAttributeValue("allowBlank", rule.AllowBlank ? "1" : null);
             item.SetAttributeValue("showDropDown", rule.ShowDropDown ? null : "1");
             item.SetAttributeValue("showInputMessage", rule.ShowInputMessage ? "1" : null);
@@ -441,7 +461,7 @@ internal static class SheetObjectWriter
 
             item.SetAttributeValue("id", Attr(columnId));
             item.SetAttributeValue("name", XlsxNames.Encode(column.Name));
-            item.SetAttributeValue("totalsRowFunction", column.TotalsRowFunction switch
+            SetUnlessRead(item, column.Source, "totalsRowFunction", column.TotalsRowFunction, SheetObjectReader.TotalsFunction, column.TotalsRowFunction switch
             {
                 TableTotalsFunction.None => null,
                 TableTotalsFunction.CountNumbers => "countNums",
@@ -701,6 +721,9 @@ internal static class SheetObjectWriter
 
             root.Add(Anchor(drawing, imageId, shapeId++));
         }
+
+        // What the drawing held besides the anchors the model reads (anchors in markup-compatibility blocks, extensions) stays.
+        root.Add(oldRoot?.Elements().Where(e => !(e.Name.Namespace == Xdr && e.Name.LocalName is "twoCellAnchor" or "oneCellAnchor" or "absoluteAnchor")).Select(e => new XElement(e)));
 
         // Relationships no anchor names any more (a removed chart's, a replaced image's) are dropped.
         HashSet<string> named = [.. root.Descendants().Attributes().Where(a => a.Name.Namespace == XlsxNames.R || XlsxNames.IsRelationships(a.Name.NamespaceName)).Select(a => a.Value)];

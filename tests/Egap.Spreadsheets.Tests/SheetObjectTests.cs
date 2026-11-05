@@ -238,6 +238,71 @@ public sealed class SheetObjectTests
         Assert.Equal(["Name", "Points"], loaded.Worksheets["Table"].Tables[0].Columns.Select(c => c.Name));
     }
 
+    [Theory]
+    [InlineData("<cfRule type=\"expression\" dxfId=\"0\" priority=\"1\"><formula>$A1&gt;1</formula></cfRule>")]
+    [InlineData("<cfRule type=\"cellIs\" dxfId=\"0\" priority=\"1\" operator=\"notBetween\"><formula>1</formula><formula>5</formula></cfRule>")]
+    [InlineData("<cfRule type=\"colorScale\" priority=\"1\"><colorScale><cfvo type=\"min\"/><cfvo type=\"max\"/><color rgb=\"FFF8696B\"/><color rgb=\"FF63BE7B\"/></colorScale></cfRule>")]
+    [InlineData("<cfRule type=\"dataBar\" priority=\"1\"><dataBar><cfvo type=\"min\"/><cfvo type=\"max\"/><color rgb=\"FF638EC6\"/></dataBar></cfRule>")]
+    [InlineData("<cfRule type=\"iconSet\" priority=\"1\"><iconSet iconSet=\"3Arrows\"><cfvo type=\"percent\" val=\"0\"/><cfvo type=\"percent\" val=\"33\"/><cfvo type=\"percent\" val=\"67\"/></iconSet></cfRule>")]
+    [InlineData("<cfRule type=\"top10\" dxfId=\"0\" priority=\"1\" percent=\"1\" bottom=\"1\" rank=\"10\"/>")]
+    [InlineData("<cfRule type=\"uniqueValues\" dxfId=\"0\" priority=\"1\"/>")]
+    [InlineData("<cfRule type=\"duplicateValues\" dxfId=\"0\" priority=\"1\"/>")]
+    [InlineData("<cfRule type=\"containsText\" dxfId=\"0\" priority=\"1\" operator=\"containsText\" text=\"ab\"><formula>NOT(ISERROR(SEARCH(\"ab\",A1)))</formula></cfRule>")]
+    [InlineData("<cfRule type=\"notContainsText\" dxfId=\"0\" priority=\"1\" operator=\"notContains\" text=\"ab\"><formula>ISERROR(SEARCH(\"ab\",A1))</formula></cfRule>")]
+    [InlineData("<cfRule type=\"beginsWith\" dxfId=\"0\" priority=\"1\" operator=\"beginsWith\" text=\"ab\"><formula>LEFT(A1,LEN(\"ab\"))=\"ab\"</formula></cfRule>")]
+    [InlineData("<cfRule type=\"endsWith\" dxfId=\"0\" priority=\"1\" operator=\"endsWith\" text=\"ab\"><formula>RIGHT(A1,LEN(\"ab\"))=\"ab\"</formula></cfRule>")]
+    [InlineData("<cfRule type=\"containsBlanks\" dxfId=\"0\" priority=\"1\"><formula>LEN(TRIM(A1))=0</formula></cfRule>")]
+    [InlineData("<cfRule type=\"notContainsBlanks\" dxfId=\"0\" priority=\"1\"><formula>LEN(TRIM(A1))&gt;0</formula></cfRule>")]
+    [InlineData("<cfRule type=\"containsErrors\" dxfId=\"0\" priority=\"1\"><formula>ISERROR(A1)</formula></cfRule>")]
+    [InlineData("<cfRule type=\"notContainsErrors\" dxfId=\"0\" priority=\"1\"><formula>NOT(ISERROR(A1))</formula></cfRule>")]
+    [InlineData("<cfRule type=\"timePeriod\" dxfId=\"0\" priority=\"1\" timePeriod=\"lastWeek\"><formula>FLOOR(A1,1)=TODAY()-7</formula></cfRule>")]
+    [InlineData("<cfRule type=\"aboveAverage\" dxfId=\"0\" priority=\"1\" aboveAverage=\"0\" equalAverage=\"1\" stdDev=\"1\"/>")]
+    [InlineData("<cfRule type=\"futureType\" dxfId=\"0\" priority=\"1\" operator=\"futureOperator\"><formula>A1</formula></cfRule>")]
+    public void EveryRuleTypeSavesAsItWasRead(string rule)
+    {
+        XElement read = XElement.Parse(rule);
+        foreach (XElement element in read.DescendantsAndSelf())
+        {
+            element.Name = Ns + element.Name.LocalName;
+        }
+
+        Dictionary<string, string> seed = XlsxSeed.Features();
+        seed["xl/styles.xml"] = seed["xl/styles.xml"].Replace("<dxfs count=\"0\"/>", "<dxfs count=\"1\"><dxf><font><b/></font></dxf></dxfs>", StringComparison.Ordinal);
+        seed["xl/worksheets/sheet1.xml"] = seed["xl/worksheets/sheet1.xml"].Replace("<conditionalFormatting sqref=\"B2:B6\"><cfRule type=\"dataBar\" priority=\"1\"><dataBar><cfvo type=\"min\"/><cfvo type=\"max\"/><color rgb=\"FF638EC6\"/></dataBar></cfRule></conditionalFormatting>", $"<conditionalFormatting sqref=\"A1:A9\">{rule}</conditionalFormatting>", StringComparison.Ordinal);
+        Workbook book = Workbook.Load(XlsxSeed.Package(seed));
+        book.Worksheets["Data"]["A1"].Value = "changed";
+
+        (_, MemoryStream package) = XlsxSeed.RoundTrip(book);
+
+        XElement written = XlsxSeed.Xml(XlsxSeed.Parts(package), "xl/worksheets/sheet1.xml").Root!.Element(Ns + "conditionalFormatting")!.Elements().Single();
+        Assert.True(XNode.DeepEquals(read, written), written.ToString());
+    }
+
+    [Fact]
+    public void ValuesTheModelDoesNotKnowSaveAsTheyWere()
+    {
+        Dictionary<string, string> seed = XlsxSeed.Features();
+        seed["xl/worksheets/sheet1.xml"] = seed["xl/worksheets/sheet1.xml"].Replace("<dataValidation type=\"whole\"", "<dataValidation type=\"future\" operator=\"someday\" errorStyle=\"gentle\"", StringComparison.Ordinal);
+        seed["xl/tables/table1.xml"] = seed["xl/tables/table1.xml"].Replace("<tableColumn id=\"2\" name=\"Score\"/>", "<tableColumn id=\"2\" name=\"Score\" totalsRowFunction=\"median\"/>", StringComparison.Ordinal);
+        Workbook book = Workbook.Load(XlsxSeed.Package(seed));
+        Assert.Equal(DataValidationType.Any, book.Worksheets["Data"].DataValidations[0].Type);
+        book.Worksheets["Table"].Tables[0].ShowRowStripes = false;
+        book.Worksheets["Data"]["A1"].Value = "changed";
+
+        (_, MemoryStream package) = XlsxSeed.RoundTrip(book);
+        Dictionary<string, byte[]> parts = XlsxSeed.Parts(package);
+
+        XElement validation = XlsxSeed.Xml(parts, "xl/worksheets/sheet1.xml").Root!.Element(Ns + "dataValidations")!.Elements().Single();
+        Assert.Equal(("future", "someday", "gentle"), ((string?)validation.Attribute("type"), (string?)validation.Attribute("operator"), (string?)validation.Attribute("errorStyle")));
+        XElement column = XlsxSeed.Xml(parts, "xl/tables/table1.xml").Root!.Descendants(Ns + "tableColumn").Last();
+        Assert.Equal("median", (string?)column.Attribute("totalsRowFunction"));
+
+        book.Worksheets["Data"].DataValidations[0].Operator = ComparisonOperator.LessThan;
+        (_, package) = XlsxSeed.RoundTrip(book);
+        validation = XlsxSeed.Xml(XlsxSeed.Parts(package), "xl/worksheets/sheet1.xml").Root!.Element(Ns + "dataValidations")!.Elements().Single();
+        Assert.Equal("lessThan", (string?)validation.Attribute("operator"));
+    }
+
     [Fact]
     public void TableNamesFollowExcelsRules()
     {

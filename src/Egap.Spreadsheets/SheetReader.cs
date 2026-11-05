@@ -318,48 +318,35 @@ public sealed class SheetReader : IDisposable
         using Stream stream = entry.Open();
         using XmlReader reader = XmlReader.Create(stream, Settings());
         long total = 0;
-        StringBuilder text = new();
-        while (reader.Read())
+        reader.Read();
+        while (!reader.EOF)
         {
             if (reader.NodeType != XmlNodeType.Element || reader.LocalName != "si")
             {
+                reader.Read();
                 continue;
             }
 
-            text.Clear();
-            if (!reader.IsEmptyElement)
-            {
-                int depth = reader.Depth;
-                bool inPhonetic = false;
-                while (reader.Read() && reader.Depth > depth)
-                {
-                    if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "rPh")
-                    {
-                        inPhonetic = !reader.IsEmptyElement;
-                    }
-                    else if (reader.NodeType == XmlNodeType.EndElement && reader.LocalName == "rPh")
-                    {
-                        inPhonetic = false;
-                    }
-                    else if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "t" && !inPhonetic && !reader.IsEmptyElement)
-                    {
-                        text.Append(reader.ReadElementContentAsString());
-                        if (reader.Depth <= depth)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
+            // ReadFrom leaves the reader on the node after the item, which the loop handles next without reading past it.
+            string text = PlainText((XElement)XNode.ReadFrom(reader));
             total += text.Length;
             if (total > limits.MaxPartSize)
             {
                 throw new DocumentLimitException($"The shared strings add up to more than the limit of {limits.MaxPartSize} characters.");
             }
 
-            sharedStrings.Add(XlsxNames.Decode(text.ToString()));
+            sharedStrings.Add(text);
         }
+    }
+
+    /// <summary>
+    /// The text of a string item or inline string as the workbook reads it: its own <c>t</c> and its runs' <c>t</c>, without
+    /// the phonetic runs (<c>rPh</c>) and properties.
+    /// </summary>
+    private static string PlainText(XElement item)
+    {
+        XNamespace ns = item.Name.Namespace;
+        return XlsxNames.Decode(string.Concat(item.Elements(ns + "t").Concat(item.Elements(ns + "r").Elements(ns + "t")).Select(t => t.Value)));
     }
 
     private bool ReadXlsx()
@@ -423,25 +410,24 @@ public sealed class SheetReader : IDisposable
             if (!reader.IsEmptyElement)
             {
                 int cellDepth = reader.Depth;
-                while (reader.Read() && reader.Depth > cellDepth)
+                reader.Read();
+                while (!reader.EOF && reader.Depth > cellDepth)
                 {
                     if (reader.NodeType != XmlNodeType.Element)
                     {
-                        continue;
+                        reader.Read();
                     }
-
-                    if (reader.LocalName == "v")
+                    else if (reader.LocalName == "v")
                     {
                         value = reader.ReadElementContentAsString();
                     }
                     else if (reader.LocalName == "is")
                     {
-                        inline = InlineText(reader);
+                        inline = PlainText((XElement)XNode.ReadFrom(reader));
                     }
-
-                    if (reader.Depth <= cellDepth)
+                    else
                     {
-                        break;
+                        reader.Skip();
                     }
                 }
             }
@@ -460,39 +446,6 @@ public sealed class SheetReader : IDisposable
 
             column = Math.Min(column + 1, CellAddress.MaxColumns - 1);
         }
-    }
-
-    private static string InlineText(XmlReader reader)
-    {
-        StringBuilder text = new();
-        if (reader.IsEmptyElement)
-        {
-            return "";
-        }
-
-        int depth = reader.Depth;
-        while (reader.Read() && reader.Depth > depth)
-        {
-            if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "rPh" && !reader.IsEmptyElement)
-            {
-                reader.Skip();
-                if (reader.Depth <= depth)
-                {
-                    break;
-                }
-            }
-
-            if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "t" && !reader.IsEmptyElement)
-            {
-                text.Append(reader.ReadElementContentAsString());
-                if (reader.Depth <= depth)
-                {
-                    break;
-                }
-            }
-        }
-
-        return XlsxNames.Decode(text.ToString());
     }
 
     private CellValue Value(string? type, string? value, string? inline)
