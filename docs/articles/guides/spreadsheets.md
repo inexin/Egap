@@ -1,7 +1,8 @@
 # Spreadsheets
 
-Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas and
-cell styles, as Excel keeps them. The types are in `Egap.Spreadsheets`.
+Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas,
+cell styles, rows and columns, names and print settings, as Excel keeps them. It loads and saves Excel's XLSX, XLSM, XLTX and
+XLTM files. The types are in `Egap.Spreadsheets`.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -22,6 +23,38 @@ sheet.Range("A1:B1").UpdateStyle(s => s with { Font = s.Font with { Bold = true 
 sheet.Range("B2:B4").UpdateStyle(s => s with { NumberFormat = "#,##0.00" });
 ```
 
+## Loading and saving
+
+`Workbook.Load` reads an Excel workbook or template, with or without macros, from a path or a stream. `Save` writes one; a
+path's extension (`.xlsx`, `.xlsm`, `.xltx` or `.xltm`) says which kind, and `WorkbookSaveOptions.Format` names it for a
+stream or another extension.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("sales.xlsx");
+Worksheet sheet = book.Worksheets["Sales"];
+sheet["C2"].Value = 1300;
+book.Save("sales.xlsx");
+
+using MemoryStream stream = new();
+book.Save(stream, new WorkbookSaveOptions { Format = WorkbookFormat.Xltx });
+```
+
+A loaded workbook saves with what it held: the parts and settings this package does not model, such as charts, pictures,
+comments, tables, conditional formats, data validation, hyperlinks, themes, document properties and macros, are written
+back as they were, and so are the parts of a cell style the model does not hold. Shared formulas stay shared, rich text
+keeps its runs, and chart sheets keep their place among the worksheets. A removed sheet takes its own parts with it.
+
+What Egap cannot keep up to date is left for Excel: when cells changed and the workbook has formulas, the file asks Excel
+to calculate on open, and the calculation chain is left out for Excel to build again. A cell that shared the formula of a
+cell you changed keeps its last result as a value. Saving a workbook with macros as `.xlsx` or `.xltx` leaves the macros
+out, as Excel does.
+
+`Workbook.Format` is the kind of file a workbook came from. `WorkbookLoadOptions.Limits` bounds what a file may hold (part
+count, part and total size, compression ratio, XML depth) so a hostile file cannot use up memory; a file that goes past a
+limit throws a `DocumentLimitException`, and one that is not a workbook a `DocumentException`, both from Egap.Documents.
+
 ## Workbooks and sheets
 
 `Workbook.Create()` starts a workbook with one empty sheet named `Sheet1`, as Excel does; `Workbook.CreateEmpty()` starts
@@ -30,6 +63,9 @@ give no name), `Remove` takes one out, `Move` changes its position, and the inde
 
 Sheet names follow Excel's rules: 1 to 31 characters, none of `: \ / ? * [ ]`, no apostrophe at the start or end, and no
 two sheets with the same name, case ignored. A name that breaks a rule throws an `ArgumentException`.
+
+`sheet.Visibility` hides a sheet's tab (`Hidden`) or hides it so that only code can show it again (`VeryHidden`), and
+`sheet.TabColor` colours the tab. `book.Date1904` says whether dates count from 1904, as old Mac workbooks do.
 
 ## Cells
 
@@ -108,6 +144,52 @@ A workbook keeps each distinct style once, however many cells use it, and its fo
 once each, as Excel's style table does. Text values are kept once per workbook too, in a shared string table. Colours are
 automatic, ARGB (`CellColor.FromRgb`, `FromArgb`), a theme colour with a tint (`FromTheme`) or a legacy palette entry
 (`FromIndex`).
+
+## Rows, columns and layout
+
+`sheet.Rows[index]` and `sheet.Columns[index]` (or `sheet.Columns["C"]`) set heights and widths, hide rows and columns,
+group them with outline levels and give their empty cells a style. Heights are in points and widths in characters of the
+default font, as Excel shows them; null means the sheet's default, which `DefaultRowHeight` and `DefaultColumnWidth` set.
+Enumerating `Rows` or `Columns` gives those that have any of these settings.
+
+```csharp
+using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet.Columns["A"].Width = 24;
+sheet.Columns["D"].Hidden = true;
+sheet.Rows[0].Height = 30;
+sheet.Rows[5].OutlineLevel = 1;
+sheet.MergedCells.Add(RangeAddress.Parse("A1:C1"));
+sheet.View.FreezePanes(CellAddress.Parse("B2"));    // row 1 and column A stay in place
+sheet.View.ZoomScale = 125;
+```
+
+`sheet.MergedCells` holds the merged ranges; adding one that overlaps another throws. `sheet.View` holds what the sheet
+shows on screen: gridlines, headings, zeros, direction, zoom, frozen rows and columns, and whether its tab is selected.
+
+## Names and printing
+
+`book.Names` holds the defined names. A name belongs to the workbook, or to one sheet when you give one:
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+book.Names.Add("TaxRate", "Sheet1!$B$1");
+book.Names.Add("_xlnm.Print_Area", "Sheet1!$A$1:$F$40", sheet);
+sheet.PageSetup.Orientation = PrintOrientation.Landscape;
+sheet.PageSetup.PaperSize = 9;                       // A4
+sheet.PageSetup.FitToPage = true;
+sheet.PageSetup.FitToHeight = 0;                     // one page wide, as many tall as it needs
+sheet.PageSetup.Header = "&CQuarterly report";
+sheet.PageSetup.Footer = "&RPage &P of &N";
+```
+
+Excel's print area and print titles are names local to their sheet: `_xlnm.Print_Area` and `_xlnm.Print_Titles`.
+`sheet.PageSetup` holds the rest of what Excel's Page Setup dialog sets: paper, orientation, scale or fit, margins in
+inches, centring, gridlines, headings, page order and the header and footer in Excel's header codes.
 
 ## Memory
 

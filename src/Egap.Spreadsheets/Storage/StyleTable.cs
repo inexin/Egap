@@ -22,6 +22,22 @@ internal sealed class Interner<T>
 
         return index;
     }
+
+    /// <summary>
+    /// Adds an item read from a file at the next index, so the file's indexes stay; when <paramref name="share"/> is set and
+    /// no equal item came before, later adds of an equal item find this one.
+    /// </summary>
+    public int AddRead(T item, bool share)
+    {
+        int index = items.Count;
+        items.Add(item);
+        if (share)
+        {
+            indexes.TryAdd(item, index);
+        }
+
+        return index;
+    }
 }
 
 /// <summary>A cell format as SpreadsheetML's <c>cellXfs</c> table keeps it: indexes into the font, fill, border and number format tables, with the alignment and protection inline.</summary>
@@ -40,10 +56,53 @@ internal sealed class StyleTable
 
     public StyleTable()
     {
+        AddDefaults();
+    }
+
+    private StyleTable(bool empty)
+    {
+        _ = empty;
+    }
+
+    /// <summary>The style part a loaded workbook came with: its document, and the elements of the tables the file had, written back for the indexes they cover.</summary>
+    public Xlsx.StyleSource? Source { get; set; }
+
+    /// <summary>An empty table that a reader fills in the file's order.</summary>
+    public static StyleTable ForLoading() => new(empty: true);
+
+    /// <summary>Adds the fills Excel wants first and the default style, when the table has no styles.</summary>
+    public void AddDefaults()
+    {
+        if (styles.Count > 0)
+        {
+            return;
+        }
+
         // Excel wants fills 0 and 1 to be none and gray125, whatever the cells use.
-        Fills.Add(CellFill.None);
-        Fills.Add(new CellFill { Pattern = CellFillPattern.Gray125 });
+        if (Fills.Count == 0)
+        {
+            Fills.Add(CellFill.None);
+            Fills.Add(new CellFill { Pattern = CellFillPattern.Gray125 });
+        }
+
         Add(CellStyle.Default);
+    }
+
+    /// <summary>
+    /// Adds a style read from a file at the next index with the table indexes the file gave; <paramref name="share"/> says
+    /// whether the style is all the model holds of the file's, so a style set later can use it.
+    /// </summary>
+    public int AddRead(CellStyle style, CellFormatRecord record, bool share)
+    {
+        int index = styles.Count;
+        styles.Add(style);
+        records.Add(record);
+        if (share)
+        {
+            indexes.TryAdd(style, index);
+        }
+
+        return index;
     }
 
     /// <summary>How many styles the table holds.</summary>
@@ -147,6 +206,16 @@ internal sealed class NumberFormatTable
         return id;
     }
 
-    /// <summary>The code with an id, or null when no code has it.</summary>
-    public string? Code(int id) => BuiltIn(id) ?? customCodes.GetValueOrDefault(id);
+    /// <summary>The code with an id, or null when no code has it; a code the file gave for an id wins over the built-in one.</summary>
+    public string? Code(int id) => customCodes.GetValueOrDefault(id) ?? BuiltIn(id);
+
+    /// <summary>Adds a code a file defines for an id.</summary>
+    public void AddRead(int id, string code)
+    {
+        if (customCodes.TryAdd(id, code))
+        {
+            customIds.TryAdd(code, id);
+            nextId = Math.Max(nextId, id + 1);
+        }
+    }
 }

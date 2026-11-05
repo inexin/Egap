@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using Egap.Spreadsheets.Storage;
 
 namespace Egap.Spreadsheets;
@@ -18,6 +20,8 @@ public sealed class Worksheet
         this.workbook = workbook;
         Name = name;
         Cells = new WorksheetCells(this);
+        Rows = new SheetRowCollection(this);
+        Columns = new SheetColumnCollection(this);
     }
 
     /// <summary>The workbook the sheet is in.</summary>
@@ -44,6 +48,53 @@ public sealed class Worksheet
 
     /// <summary>The cells by zero-based row and column, and every cell that holds a value or a style.</summary>
     public WorksheetCells Cells { get; }
+
+    /// <summary>The rows by zero-based index: height, hidden, outline level and style.</summary>
+    public SheetRowCollection Rows { get; }
+
+    /// <summary>The columns by zero-based index or A1 name: width, hidden, outline level and style.</summary>
+    public SheetColumnCollection Columns { get; }
+
+    /// <summary>The merged ranges.</summary>
+    public MergedCellCollection MergedCells { get; } = new();
+
+    /// <summary>How the sheet shows on screen: gridlines, zoom, frozen panes and so on.</summary>
+    public SheetView View { get; } = new();
+
+    /// <summary>How the sheet prints: paper, orientation, scaling, margins, header and footer.</summary>
+    public PageSetup PageSetup { get; } = new();
+
+    /// <summary>Whether the sheet's tab shows, is hidden, or is hidden so that only code can show it again.</summary>
+    public SheetVisibility Visibility { get; set; }
+
+    /// <summary>The colour of the sheet's tab, or null for none.</summary>
+    public CellColor? TabColor { get; set; }
+
+    /// <summary>The height in points of rows that set none, or null for Excel's default from the default font (15 for Calibri 11).</summary>
+    /// <exception cref="ArgumentOutOfRangeException">The height is outside 0 to 409.</exception>
+    public double? DefaultRowHeight
+    {
+        get;
+        set => field = value is null or (>= 0 and <= 409) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "A row height is from 0 to 409 points.");
+    }
+
+    /// <summary>The width of columns that set none, in characters as <see cref="SheetColumn.Width"/>, or null for Excel's default.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">The width is outside 0 to 255.</exception>
+    public double? DefaultColumnWidth
+    {
+        get;
+        set => field = value is null or (>= 0 and <= 255) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "A column width is from 0 to 255.");
+    }
+
+    internal Dictionary<int, RowRecord> RowRecords { get; } = [];
+
+    internal ColumnSpans ColumnSpans { get; } = new();
+
+    /// <summary>The file's c elements, emptied of what the model holds, for cells with attributes or children it does not; written back while the cell keeps its value.</summary>
+    internal Dictionary<long, XElement> CellExtras { get; } = [];
+
+    /// <summary>What the sheet's part held that the model does not, written back on save; null for a sheet made in code.</summary>
+    internal Xlsx.SheetSource? Source { get; set; }
 
     /// <summary>The cell at an A1 address such as <c>B4</c>.</summary>
     /// <exception cref="FormatException">The text is not a cell reference.</exception>
@@ -110,6 +161,7 @@ public sealed class Worksheet
 
     internal void SetValue(int row, int column, CellValue value)
     {
+        Changed(row, column);
         ref readonly CellRecord old = ref store.Get(row, column);
         CellRecord record = new() { Style = old.Style };
         if (old.Kind == CellKind.Formula)
@@ -143,6 +195,7 @@ public sealed class Worksheet
     /// <summary>Stores a number without the checks <see cref="CellValue"/> makes; the fast path for <see cref="Cell.SetNumber"/>.</summary>
     internal void SetNumber(int row, int column, double number)
     {
+        Changed(row, column);
         ref readonly CellRecord old = ref store.Get(row, column);
         if (old.Kind == CellKind.Formula)
         {
@@ -155,8 +208,10 @@ public sealed class Worksheet
     internal string? GetFormula(int row, int column)
     {
         ref readonly CellRecord record = ref store.Get(row, column);
-        return record.Kind == CellKind.Formula ? formulas[(int)record.Payload].Text : null;
+        return record.Kind == CellKind.Formula && formulas[(int)record.Payload].Text is { Length: > 0 } text ? text : null;
     }
+
+    internal bool HasFormula(int row, int column) => store.Get(row, column).Kind == CellKind.Formula;
 
     internal void SetFormula(int row, int column, string? formula, CellValue result)
     {
@@ -176,12 +231,14 @@ public sealed class Worksheet
             throw new ArgumentException("A formula is at most 8,192 characters.", nameof(formula));
         }
 
+        Changed(row, column);
         ref readonly CellRecord old = ref store.Get(row, column);
         if (old.Kind == CellKind.Formula)
         {
             FormulaEntry entry = formulas[(int)old.Payload];
             entry.Text = text;
             entry.Result = result;
+            entry.Attributes = null;
             return;
         }
 
@@ -203,6 +260,7 @@ public sealed class Worksheet
 
     internal void Clear(int row, int column)
     {
+        Changed(row, column);
         ref readonly CellRecord old = ref store.Get(row, column);
         if (old.Kind == CellKind.Formula)
         {
@@ -210,6 +268,34 @@ public sealed class Worksheet
         }
 
         store.Set(row, column, default);
+    }
+
+    /// <summary>Stores a cell read from a file as it is: its record, with its formula when it has one.</summary>
+    internal void SetRead(int row, int column, CellRecord record, FormulaEntry? formula)
+    {
+        if (formula is not null)
+        {
+            record.Kind = CellKind.Formula;
+            record.Payload = formulas.Add(formula.Text, formula.Result, formula.Attributes);
+        }
+
+        store.Set(row, column, record);
+    }
+
+    internal static long Key(int row, int column) => ((long)row << 14) | (uint)column;
+
+    /// <summary>Notes that a cell's value or formula changes: the workbook needs calculating, and the cell's file extras no longer apply.</summary>
+    private void Changed(int row, int column)
+    {
+        if (workbook is not null)
+        {
+            workbook.ChangeCount++;
+        }
+
+        if (CellExtras.Count != 0)
+        {
+            CellExtras.Remove(Key(row, column));
+        }
     }
 
     internal CellValueKind GetKind(int row, int column)
@@ -225,4 +311,17 @@ public sealed class Worksheet
             _ => CellValueKind.Empty,
         };
     }
+}
+
+/// <summary>Whether a sheet's tab shows.</summary>
+public enum SheetVisibility
+{
+    /// <summary>The tab shows.</summary>
+    Visible,
+
+    /// <summary>The tab is hidden; Excel's Unhide shows it again.</summary>
+    Hidden,
+
+    /// <summary>The tab is hidden and Excel's Unhide does not list it; only code shows it again.</summary>
+    VeryHidden,
 }

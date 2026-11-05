@@ -99,6 +99,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   are kept once per workbook in a shared string table.
 - Sheets store cells in blocks of 32 by 32, made only where cells are, 16 bytes a cell, up to 1,048,576 rows by 16,384
   columns. `CellAddress` and `RangeAddress` read and write A1 references.
+- `Workbook.Load` and `Workbook.Save` read and write XLSX, XLSM, XLTX and XLTM, chosen by extension or by
+  `WorkbookSaveOptions.Format`. A loaded workbook saves losslessly: parts and elements the model does not hold (charts,
+  drawings, comments, tables, conditional formats, data validation, hyperlinks, themes, properties, macros, extensions) are
+  written back as they were, shared formulas stay shared and rich text keeps its runs. Removed sheets take their parts
+  with them; after edits the file asks Excel to calculate on open. Sheet data is streamed; loading or saving 100,000 cells
+  takes about a tenth of a second.
+- Rows and columns (`sheet.Rows`, `sheet.Columns`): height, width, hidden, outline level and style. Merged cells, the sheet
+  view (gridlines, zoom, frozen panes), page setup (paper, orientation, fit, margins, header and footer), tab colour and
+  visibility, defined names (`Workbook.Names`) and the 1904 date system.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 
