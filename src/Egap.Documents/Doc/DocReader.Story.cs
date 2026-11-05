@@ -18,6 +18,7 @@ internal sealed partial class DocReader
         Note,
         Header,
         Comment,
+        TextBox,
     }
 
     /// <summary>A built cell with its left and right edges in twips, for the grid.</summary>
@@ -287,10 +288,29 @@ internal sealed partial class DocReader
 
             if (c < ' ')
             {
-                if (chp.Special && c is '\u0001' or '\u0008')
+                // A 0x01 with fData holds a field's data (a hyperlink's, a form field's), with fOle2 an OLE object's storage
+                // name; neither is a picture. An OLE object shows the picture in its field result.
+                if (chp.Special && c == '\u0001' && !chp.Data && !chp.Ole2 && !(kind == StoryKind.Main && cp >= reader.pictureBullets.Start && cp < reader.pictureBullets.End)
+                    && reader.InlinePicture(chp.PicLocation) is { } picture)
                 {
-                    reader.warnings.Add(c == '\u0001' ? ConversionWarningKind.PictureDropped : ConversionWarningKind.DrawingDropped,
-                        c == '\u0001' ? "A picture of the Word document is left out." : "A drawing of the Word document is left out.");
+                    Flush();
+                    Add(picture, chp);
+                }
+                else if (chp.Special && c == '\u0008')
+                {
+                    // Floating shapes are anchored in the main text and the headers; a text box holds none.
+                    if (kind is StoryKind.Main or StoryKind.Header)
+                    {
+                        Flush();
+                        foreach (Inline drawing in reader.FloatingDrawings(cp, kind == StoryKind.Header))
+                        {
+                            Add(drawing, chp);
+                        }
+                    }
+                    else
+                    {
+                        reader.warnings.Add(ConversionWarningKind.DrawingDropped, "A drawing of the Word document is left out.");
+                    }
                 }
 
                 return;

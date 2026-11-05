@@ -13,6 +13,7 @@ internal enum DocStory
     Headers,
     Comments,
     Endnotes,
+    TextBoxes,
 }
 
 /// <summary>
@@ -24,7 +25,7 @@ internal sealed class DocBuilder
 {
     private const int TextStart = 0x800;
 
-    private readonly StringBuilder[] stories = [new(), new(), new(), new(), new()];
+    private readonly StringBuilder[] stories = [new(), new(), new(), new(), new(), new()];
     private readonly List<(DocStory Story, int Start, int End, byte[] Grpprl)> runs = [];
     private readonly List<(DocStory Story, int Mark, int Istd, byte[] Grpprl)> paragraphs = [];
     private readonly Dictionary<int, (byte[] Data, byte[] Tail)> tables = [];
@@ -63,6 +64,9 @@ internal sealed class DocBuilder
 
     /// <summary>The DOP's bytes; null leaves the document without one.</summary>
     public byte[]? Dop { get; set; }
+
+    /// <summary>The Data stream (pictures), or null for none.</summary>
+    public byte[]? Data { get; set; }
 
     /// <summary>The current CP in <see cref="Story"/>, from that part's start.</summary>
     public int Cp => stories[(int)Story].Length;
@@ -275,6 +279,10 @@ internal sealed class DocBuilder
         if (!Word6)
         {
             streams.Add(("1Table", [.. table]));
+            if (Data is { } data)
+            {
+                streams.Add(("Data", data));
+            }
         }
 
         using MemoryStream output = new();
@@ -546,7 +554,7 @@ internal sealed class DocBuilder
         int lw = at + 2;
         for (int i = 0; i < stories.Length; i++)
         {
-            // ccpText, ccpFtn, ccpHdd, then (after ccpMcr) ccpAtn and ccpEdn.
+            // ccpText, ccpFtn, ccpHdd, then (after ccpMcr) ccpAtn, ccpEdn and ccpTxbx.
             int index = i < 3 ? 3 + i : 4 + i;
             BinaryPrimitives.WriteInt32LittleEndian(fib.AsSpan(lw + (4 * index)), stories[i].Length);
         }

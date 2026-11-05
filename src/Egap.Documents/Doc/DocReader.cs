@@ -109,6 +109,7 @@ internal sealed partial class DocReader
         ReadFields();
         ReadNotes();
         ReadComments();
+        ReadDrawings();
         SortMarkers();
         ReadCommentStories();
         ReadMain(ccpMain);

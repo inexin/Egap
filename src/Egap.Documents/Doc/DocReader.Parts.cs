@@ -87,6 +87,11 @@ internal sealed partial class DocReader
             }
 
             int end = PlcCp(ends, ibkl);
+            if (name == "_PictureBullets")
+            {
+                pictureBullets = (start, end);
+            }
+
             AddRange(start, end, () => new BookmarkStart(document, name), () => new BookmarkEnd(document, name));
         }
     }
