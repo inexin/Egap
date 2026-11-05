@@ -90,6 +90,18 @@ public class DocxReaderTests
     }
 
     [Fact]
+    public void ABookmarkWithAnEmptyNameIsLeftOut()
+    {
+        Document document = Load("""
+            <w:p><w:bookmarkStart w:id="0" w:name=""/><w:r><w:t>Text</w:t></w:r><w:bookmarkEnd w:id="0"/></w:p>
+            """);
+
+        Assert.Empty(document.Descendants<BookmarkStart>());
+        Assert.Empty(document.Descendants<BookmarkEnd>());
+        Assert.Equal("Text", document.Sections[0].Body.Paragraphs.Single().Runs.Single().Text);
+    }
+
+    [Fact]
     public void FieldsBookmarksAndHyperlinks()
     {
         Document document = Load("""

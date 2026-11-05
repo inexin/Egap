@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Text;
 
+using Egap.Documents.Docx;
 using Egap.Documents.Word;
 
 namespace Egap.Documents.Doc;
@@ -76,7 +77,8 @@ internal sealed partial class DocReader
         HashSet<string> seen = new(StringComparer.Ordinal);
         for (int i = 0; i < count; i++)
         {
-            string name = names[i].Text;
+            // Kept to what XML can hold, as the DOCX writer would leave it.
+            string name = OpcPackageWriter.XmlSafe(names[i].Text);
             int start = PlcCp(starts, i);
             int ibkl = BinaryPrimitives.ReadUInt16LittleEndian(PlcData(starts, PlcCount(starts, 4), 4, i));
             if (name.Length == 0 || ibkl >= endCount || !seen.Add(name))

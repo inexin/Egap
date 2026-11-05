@@ -311,6 +311,19 @@ public sealed class DocReaderTests
     }
 
     [Fact]
+    public void BookmarkNamesKeepOnlyWhatXmlCanHold()
+    {
+        DocBuilder builder = new();
+        builder.Run("Some text").Paragraph();
+        builder.Table(21, builder.Sttb(["A\u0001B\uFFFF", "\uFFFF\u0000"])).Table(22, Plc([0, 5, 99], [0, 0, 0, 0], [1, 0, 0, 0])).Table(23, Plc([4, 9, 99]));
+
+        Document document = Read(builder);
+
+        // A name of nothing XML can hold is left out, as the DOCX writer would leave it empty.
+        Assert.Equal("AB", document.Descendants<BookmarkStart>().Single().Name);
+    }
+
+    [Fact]
     public void SectionsHavePageSetupAndHeaders()
     {
         const ushort pageWidth = 0xB01F;
