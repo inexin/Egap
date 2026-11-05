@@ -68,9 +68,23 @@ internal static partial class FormulaFunctions
 
     public static bool IsBuiltIn(string name) => BuiltIn.ContainsKey(name);
 
-    public static void AddUser(FormulaFunction function) => UserFunctions[function.Name] = function;
+    private static int userVersion;
 
-    public static bool RemoveUser(string name) => UserFunctions.TryRemove(name, out _);
+    /// <summary>Counts changes to the added functions, so a workbook's calculation compiles its formulas again after one.</summary>
+    public static int UserVersion => Volatile.Read(ref userVersion);
+
+    public static void AddUser(FormulaFunction function)
+    {
+        UserFunctions[function.Name] = function;
+        Interlocked.Increment(ref userVersion);
+    }
+
+    public static bool RemoveUser(string name)
+    {
+        bool removed = UserFunctions.TryRemove(name, out _);
+        Interlocked.Increment(ref userVersion);
+        return removed;
+    }
 
     private static FrozenDictionary<string, FormulaFunction> Build()
     {

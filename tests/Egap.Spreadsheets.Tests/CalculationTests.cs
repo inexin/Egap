@@ -76,10 +76,10 @@ public class CalculationTests
     [Fact]
     public void VolatileFormulasAreCalculatedEveryTime()
     {
-        // RAND and NOW are volatile whether or not this version calculates them: their formulas and those reading them run again.
+        // RAND and NOW are volatile: their formulas and those reading them run again.
         Worksheet sheet = Sheet();
         sheet["A1"].Formula = "RAND()";
-        sheet["B1"].Formula = "IFERROR(A1*0,1)";
+        sheet["B1"].Formula = "A1*0+1";
         sheet["C1"].Formula = "5";
         sheet["E1"].Formula = "IFERROR(NOW()>0,TRUE)";
         sheet.Workbook.Calculate();

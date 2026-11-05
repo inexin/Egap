@@ -72,6 +72,26 @@ public sealed class FunctionRegistryTests
     }
 
     [Fact]
+    public void CalculationSeesFunctionsAddedLater()
+    {
+        Worksheet sheet = Sheet();
+        sheet["B1"].Formula = "TEST.LATER(A2)";
+        sheet.Workbook.Calculate();
+        Assert.Equal(CellError.Name, sheet["B1"].Value.Error);
+
+        FunctionRegistry.Add("TEST.LATER", 1, 1, arguments => arguments[0].Value.Number + 40);
+        try
+        {
+            sheet.Workbook.Calculate();
+            Assert.Equal(42, sheet["B1"].Value.Number);
+        }
+        finally
+        {
+            FunctionRegistry.Remove("TEST.LATER");
+        }
+    }
+
+    [Fact]
     public void UserDefinedPrefixIsStripped()
     {
         FunctionRegistry.Add("TEST_UDF", 0, 0, _ => 7);
