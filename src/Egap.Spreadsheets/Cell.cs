@@ -86,6 +86,13 @@ public sealed class Cell : IEquatable<Cell>
         set => Style = Style with { NumberFormat = value };
     }
 
+    /// <summary>
+    /// The value as Excel shows it in the cell, through the cell's number format and the workbook's
+    /// <see cref="Workbook.Culture"/>, and dates in its <see cref="Workbook.Date1904"/> system: <c>1,234.50</c> for 1234.5 with <c>#,##0.00</c>, <c>2024-03-15</c> for a date. A formula
+    /// shows its last calculated value. The text is not cut to the column's width, as Excel's <c>###</c> is.
+    /// </summary>
+    public string Text => NumberFormatCode.Get(NumberFormat).Format(Value, sheet.Workbook.Culture, sheet.Workbook.Date1904);
+
     /// <summary>Sets the cell's value to a number; the same as setting <see cref="Value"/>, without building a <see cref="CellValue"/>.</summary>
     /// <exception cref="ArgumentOutOfRangeException">The number is NaN or infinite.</exception>
     public void SetNumber(double number)

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Fuzzing harness for Egap.Spreadsheets' parsers: SharpFuzz with AFL++, or the managed mutator. See README.md. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Egap.Spreadsheets.Fuzz</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Egap.Spreadsheets\Egap.Spreadsheets.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpFuzz" />
+  </ItemGroup>
+
+  <!-- The PDF harness's mutator, shared rather than copied. -->
+  <ItemGroup>
+    <Compile Include="..\Egap.Pdf.Fuzz\Mutator.cs" Link="Mutator.cs" />
+  </ItemGroup>
+
+</Project>

@@ -16,11 +16,14 @@ sheet["B2"].Value = 1250.5;
 sheet["B3"].Formula = "SUM(B2:B2)";
 sheet.Range("A1:B1").UpdateStyle(s => s with { Font = s.Font with { Bold = true } });
 sheet["B2"].NumberFormat = "#,##0.00";
+string shown = sheet["B2"].Text;                     // "1,250.50", as Excel shows it
 book.Save("sales.xlsx");
+sheet.SaveCsv("sales.csv");
 
 Workbook loaded = Workbook.Load("sales.xlsx");
 ```
 
-A loaded workbook saves its charts, pictures, comments, tables, conditional formats, macros and the rest as they were. CSV,
-number format display and the formula engine come in the next releases. Source, guide and
+A loaded workbook saves its charts, pictures, comments, tables, conditional formats, macros and the rest as they were.
+Number format codes show values as Excel does (`cell.Text`, `NumberFormatCode`), in any culture, and CSV and TSV are
+read and written with type detection. The formula engine comes in the next releases. Source, guide and
 changelog: [github.com/inexin/Egap](https://github.com/inexin/Egap).

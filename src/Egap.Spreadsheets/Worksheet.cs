@@ -143,6 +143,23 @@ public sealed class Worksheet
     /// <summary>The sheet's name.</summary>
     public override string ToString() => Name;
 
+    /// <summary>
+    /// Writes the sheet as comma- or tab-separated text, from A1 to the last used cell: a tab for a <c>.tsv</c> or
+    /// <c>.tab</c> path, otherwise a comma, unless the options name one. Values are written as their cells show them; see
+    /// <see cref="CsvOptions"/>.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">The path is null.</exception>
+    public void SaveCsv(string path, CsvOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        using FileStream stream = File.Create(path);
+        Csv.CsvWriter.Write(this, stream, path, options);
+    }
+
+    /// <summary>Writes the sheet as comma- or tab-separated text to a stream, a comma unless the options name another separator.</summary>
+    /// <exception cref="ArgumentNullException">The stream is null.</exception>
+    public void SaveCsv(Stream stream, CsvOptions? options = null) => Csv.CsvWriter.Write(this, stream, null, options);
+
     internal void Detach() => workbook = null;
 
     internal CellValue GetValue(int row, int column)
