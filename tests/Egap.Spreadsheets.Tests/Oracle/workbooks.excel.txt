@@ -1,0 +1,1 @@
+functions.xlsx and calculation.xlsx saved by Excel 16.0 build 20527, locale nb-NO, with tools/excel-workbook-oracle.ps1

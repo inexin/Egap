@@ -241,8 +241,7 @@ CellValue date = sheet.Evaluate("DATE(2024,3,15)");                           //
 
 Other cells give the values they hold; a formula cell gives its last result, so `Evaluate` does not recalculate the
 workbook. Dates follow the workbook's date system, 1900 (with the 29 February 1900 Excel keeps) or 1904. A function Egap
-does not know gives `#NAME?`. This release evaluates operators, references, names and tables, and SUM, IF, IFERROR, IFNA,
-AND, OR, NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; the common functions come next.
+does not know gives `#NAME?`.
 
 ### Calculating a workbook
 
@@ -297,6 +296,47 @@ sheet["B1"].Formula = "A1/2";
 CalculationResult result = book.Calculate();         // A1 near 2, B1 near 1
 bool settled = result.Converged;                     // true
 ```
+
+### Functions
+
+About 210 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference,
+information and the core statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (`">20"`,
+`"a*"`, `"<>"`). `FunctionRegistry.BuiltInFunctions` lists them. Each follows Microsoft's function reference and is
+checked against what Excel calculates: `tools/excel-function-oracle.ps1` runs the cases in
+`tests/Egap.Spreadsheets.Tests/Oracle/functions.txt` through Excel, and the tests compare Egap with its answers;
+`tools/excel-workbook-oracle.ps1` has Excel build, calculate and save whole workbooks, which the tests calculate again
+with `CalculateFull` and compare cell by cell. Text that depends on the culture, such as FIXED, DOLLAR, dates read from
+text and numbers joined into text, follows `book.Culture`.
+
+`FunctionRegistry.Add` adds a function of your own, as a user-defined function in Excel; files that call one (stored as
+`_xludf.NAME`) then calculate too. The function gets its arguments as given: `Value` reads one value, `Values` the cells
+of a range, and an exception gives `#VALUE!` in the cell:
+
+```csharp
+using Egap.Spreadsheets;
+
+FunctionRegistry.Add("HYPOT", 2, 2, arguments =>
+    Math.Sqrt(Math.Pow(arguments[0].Value.Number, 2) + Math.Pow(arguments[1].Value.Number, 2)));
+FunctionRegistry.Add("COUNTWORDS", 1, 1, arguments =>
+{
+    int words = 0;
+    foreach (CellValue value in arguments[0].Values)
+    {
+        words += value.Kind == CellValueKind.Text ? value.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length : 0;
+    }
+
+    return words;
+});
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet["A1"].Value = "one two";
+sheet["A2"].Value = "three";
+CellValue length = sheet.Evaluate("HYPOT(3,4)");            // 5
+CellValue words = sheet.Evaluate("COUNTWORDS(A1:A2)");      // 3
+```
+
+The registry is shared by the whole process: a function added is known to every workbook until `FunctionRegistry.Remove`
+takes it away. Built-in functions cannot be replaced.
 
 ## Number formats and cell text
 

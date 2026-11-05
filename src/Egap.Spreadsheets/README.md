@@ -30,5 +30,6 @@ Number format codes show values as Excel does (`cell.Text`, `NumberFormatCode`),
 read and written with type detection. Formulas are read and checked against Excel's grammar, in A1 or R1C1 style
 (`cell.FormulaR1C1`), `sheet.Evaluate` evaluates one with Excel's rules for values, errors, references and dates, and
 `book.Calculate()` recalculates what changed through a dependency graph, with shared and array formulas, circular
-references and iteration; the common functions come in the next releases. Source, guide and
+references and iteration. About 210 of Excel's functions are built in and checked against Excel itself;
+`FunctionRegistry` adds functions of your own. Source, guide and
 changelog: [github.com/inexin/Egap](https://github.com/inexin/Egap).

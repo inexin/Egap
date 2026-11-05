@@ -54,6 +54,25 @@ internal sealed class EvalContext
     /// <summary>Compiled defined names, shared by the contexts of one evaluation.</summary>
     public Dictionary<DefinedName, CompiledFormula?> Names { get; private init; } = [];
 
+    /// <summary>This context in array mode, for an array argument; itself when it is in array mode already.</summary>
+    public EvalContext InArrayMode() => ArrayMode ? this : new EvalContext(Sheet, Row, Column)
+    {
+        ArrayMode = true,
+        RowDelta = RowDelta,
+        ColumnDelta = ColumnDelta,
+        Wrap = Wrap,
+        NameDepth = NameDepth,
+        Names = Names,
+    };
+
+    /// <summary>
+    /// The context for a reference written as text, as INDIRECT reads one: references are where they say, counted from the
+    /// formula's own cell, not moved; null when references made from text nest too deeply.
+    /// </summary>
+    public EvalContext? ForText() => NameDepth >= MaxNameDepth
+        ? null
+        : new EvalContext(Sheet, Row, Column) { ArrayMode = ArrayMode, NameDepth = NameDepth + 1, Names = Names };
+
     /// <summary>
     /// The context for a cell's formula whose text was written for another cell, as a shared formula's cells share the text
     /// of its first: relative references move by the distance between the two. Compiled names come from
@@ -119,6 +138,8 @@ internal static class FormulaEvaluator
         Instruction[] code = formula.Code;
         EvalValue[] stack = new EvalValue[formula.MaxStack + 2];
         List<int>? pending = null;
+        List<EvalContext>? outer = null;
+        EvalContext? arrayContext = null;
         int sp = 0;
         for (int pc = 0; pc < code.Length; pc++)
         {
@@ -219,6 +240,14 @@ internal static class FormulaEvaluator
                         break;
                     }
 
+                case OpCode.ArrayBegin:
+                    (outer ??= []).Add(context);
+                    context = context.ArrayMode ? context : arrayContext ??= context.InArrayMode();
+                    break;
+                case OpCode.ArrayEnd:
+                    context = outer![^1];
+                    outer.RemoveAt(outer.Count - 1);
+                    break;
                 case OpCode.ErrorEnd:
                     if (pending is { Count: > 0 } && pending[^1] == instruction.A)
                     {
@@ -696,7 +725,7 @@ internal static class FormulaEvaluator
     {
         if (op == BinaryOperator.Concatenate)
         {
-            if (!ExcelValues.TryText(a, out string x, out EvalValue error) || !ExcelValues.TryText(b, out string y, out error))
+            if (!ExcelValues.TryText(a, context.Culture, out string x, out EvalValue error) || !ExcelValues.TryText(b, context.Culture, out string y, out error))
             {
                 return error;
             }
@@ -756,17 +785,7 @@ internal static class FormulaEvaluator
             case BinaryOperator.Divide:
                 return right == 0 ? EvalValue.FromError(CellError.DivisionByZero) : EvalValue.FromNumber(left / right);
             default:
-                if (left == 0 && right == 0)
-                {
-                    return EvalValue.FromError(CellError.Number);
-                }
-
-                if (left == 0 && right < 0)
-                {
-                    return EvalValue.FromError(CellError.DivisionByZero);
-                }
-
-                return EvalValue.FromNumber(Math.Pow(left, right));
+                return FormulaFunctions.Power(left, right);
         }
     }
 

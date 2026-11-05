@@ -50,6 +50,12 @@ internal enum OpCode : byte
 
     /// <summary>The end of the IFERROR at <c>A</c>: for an array value, replace its errors with the other value's elements.</summary>
     ErrorEnd,
+
+    /// <summary>Work out what follows in array mode, up to the matching <see cref="ArrayEnd"/>: an array argument.</summary>
+    ArrayBegin,
+
+    /// <summary>Back to the mode before the matching <see cref="ArrayBegin"/>.</summary>
+    ArrayEnd,
 }
 
 /// <summary>One step of a compiled formula.</summary>
@@ -90,7 +96,10 @@ internal sealed class FormulaCompiler
         return new CompiledFormula([.. compiler.code], [.. compiler.constants], [.. compiler.operands], Math.Max(1, compiler.maxDepth));
     }
 
-    /// <summary>A function's name without the <c>_xlfn.</c> and <c>_xlws.</c> prefixes Excel stores newer functions with, upper case.</summary>
+    /// <summary>
+    /// A function's name without the <c>_xlfn.</c> and <c>_xlws.</c> prefixes Excel stores newer functions with and the
+    /// <c>_xludf.</c> it stores user-defined ones with, upper case.
+    /// </summary>
     public static string FunctionName(string name)
     {
         ReadOnlySpan<char> plain = name;
@@ -99,6 +108,12 @@ internal sealed class FormulaCompiler
             if (plain.StartsWith("_xlfn.", StringComparison.OrdinalIgnoreCase) || plain.StartsWith("_xlws.", StringComparison.OrdinalIgnoreCase))
             {
                 plain = plain[6..];
+                continue;
+            }
+
+            if (plain.StartsWith("_xludf.", StringComparison.OrdinalIgnoreCase))
+            {
+                plain = plain[7..];
                 continue;
             }
 
@@ -237,9 +252,20 @@ internal sealed class FormulaCompiler
             return;
         }
 
-        foreach (Argument argument in arguments)
+        for (int i = 0; i < arguments.Length; i++)
         {
-            Emit(argument.Node);
+            // A bare reference is passed as it is either way; only an expression over ranges needs array mode.
+            bool array = info.TakesArray(i) && arguments[i].Node is not (ReferenceNode or MissingNode);
+            if (array)
+            {
+                code.Add(new Instruction(OpCode.ArrayBegin));
+            }
+
+            Emit(arguments[i].Node);
+            if (array)
+            {
+                code.Add(new Instruction(OpCode.ArrayEnd));
+            }
         }
 
         code.Add(new Instruction(OpCode.Call, Operand(new FunctionCall(info, arguments.Length))));

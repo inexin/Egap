@@ -96,6 +96,7 @@ internal sealed class Calculator
     private string Signature()
     {
         StringBuilder text = new();
+        text.Append(FormulaFunctions.UserVersion).Append('|');
         foreach (Worksheet sheet in book.Worksheets)
         {
             text.Append(sheet.GetHashCode()).Append(':').Append(sheet.Name).Append('|');

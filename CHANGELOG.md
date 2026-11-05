@@ -157,8 +157,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `Cell.FormulaR1C1` reads and writes a formula with R1C1 references.
 - `Worksheet.Evaluate` evaluates a formula as if in a cell of the sheet: a compiler and evaluator with Excel's values,
   errors as values, text read as numbers and dates, comparisons to 15 significant digits, implicit intersection, array
-  arithmetic, defined names, tables, and the 1900 and 1904 date systems. Functions so far: SUM, IF, IFERROR, IFNA, AND, OR,
-  NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; others give `#NAME?`.
+  arithmetic, defined names, tables, and the 1900 and 1904 date systems. A function Egap does not know gives `#NAME?`.
 - `Workbook.Calculate` and `Workbook.CalculateFull` calculate a workbook through a dependency graph of what each formula
   reads (references, names, tables, other sheets): only what a change reaches, plus volatile functions, in dependency
   order, with large independent sets in parallel. Circular references are reported in `CalculationResult`, and iterated
@@ -167,6 +166,19 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Shared formulas are calculated, and `Cell.Formula` gives each cell sharing one the formula moved to it; changing the
   first cell leaves the others their formulas, as Excel does (they were kept as values before). `CellRange.SetArrayFormula`
   makes an array formula whose result fills its range; `Cell.ArrayRange` gives the range a cell belongs to.
+- About 210 worksheet functions: math and trigonometry (rounding on the decimal value, as Excel rounds), logic (IFS,
+  SWITCH, XOR), text (FIND, SEARCH with wildcards, SUBSTITUTE, TEXT through the number formats, TEXTJOIN), date and time
+  (WEEKDAY, WEEKNUM, EDATE, EOMONTH, DATEDIF, YEARFRAC, NETWORKDAYS and WORKDAY with their .INTL forms), lookup and
+  reference (VLOOKUP, HLOOKUP, LOOKUP, MATCH, INDEX, OFFSET, INDIRECT, ADDRESS), information (ISBLANK, TYPE, ERROR.TYPE)
+  and statistics (COUNTIF, SUMIF, AVERAGEIF and their IFS forms with Excel's criteria, MEDIAN, STDEV, PERCENTILE, RANK,
+  CORREL, FORECAST and more), plus SUBTOTAL. Array arguments, as SUMPRODUCT's and INDEX's, take range expressions whole.
+  The functions are checked against Excel 16.0 on 700 cases (`tools/excel-function-oracle.ps1`), with LibreOffice's
+  answers alongside (`tools/libreoffice-function-oracle.py`), and workbooks Excel calculated and saved are calculated
+  again and compared cell by cell (`tools/excel-workbook-oracle.ps1`).
+- A number joined into text (`&`, CONCATENATE, TEXTJOIN and the text functions) takes the workbook culture's decimal
+  separator, as Excel's does: `=1.5&""` is `1,5` where the decimal separator is a comma.
+- `FunctionRegistry` lists the built-in functions and adds functions of your own for formulas to call, as user-defined
+  functions in Excel; `FunctionArgument` gives a call's arguments as values or as the cells of a range.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 

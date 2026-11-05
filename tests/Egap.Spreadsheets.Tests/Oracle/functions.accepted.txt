@@ -1,0 +1,6 @@
+# Cases where Egap knowingly differs from Excel: the formula as in functions.txt, a tab, and why.
+TEXT(1234.567,"#,##0.00")	Excel reads TEXT's format code in the PC's locale (nb-NO: space for thousands, comma for decimals); Egap reads the code in the invariant form files store.
+TEXT(44927,"yyyy-mm-dd")	Excel reads TEXT's format code in the PC's locale (nb-NO writes the year as åååå); Egap reads the code in the invariant form files store.
+TEXT(0.5,"h:mm AM/PM")	Excel reads TEXT's format code in the PC's locale (nb-NO writes the hour as t); Egap reads the code in the invariant form files store.
+TEXT(1234.5,"$#,##0")	Excel reads TEXT's format code in the PC's locale (nb-NO: comma is the decimal separator); Egap reads the code in the invariant form files store.
+INDEX(TRANSPOSE(A1:A3),1,2)	Egap works out all of INDEX's array argument in array mode, so TRANSPOSE inside it sees the whole range; Excel meets TRANSPOSE's range with the cell even there.
