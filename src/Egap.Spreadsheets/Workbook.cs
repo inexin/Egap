@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using Egap.Documents;
 using Egap.Spreadsheets.Storage;
 using Egap.Spreadsheets.Xlsx;
@@ -52,6 +54,17 @@ public sealed class Workbook
     /// <summary>How many times a cell's value or formula changed since the workbook was made or loaded.</summary>
     internal long ChangeCount { get; set; }
 
+    /// <summary>
+    /// The culture <see cref="Cell.Text"/> shows numbers and dates in: its decimal and group separators, month and day names
+    /// and short date. The invariant culture, the default, shows them as Excel in English does. Formulas are always English.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">The culture set is null.</exception>
+    public CultureInfo Culture
+    {
+        get;
+        set => field = value ?? throw new ArgumentNullException(nameof(value));
+    } = CultureInfo.InvariantCulture;
+
     /// <summary>A new workbook with one empty sheet, <c>Sheet1</c>, as Excel starts one.</summary>
     public static Workbook Create()
     {
@@ -59,6 +72,25 @@ public sealed class Workbook
         book.Worksheets.Add();
         return book;
     }
+
+    /// <summary>
+    /// Reads comma- or tab-separated text into a new workbook with one sheet. The separator comes from the options, a
+    /// <c>sep=</c> line, the <c>.tsv</c> or <c>.tab</c> extension or the first line; see <see cref="CsvOptions"/> for the
+    /// encoding, culture and type detection.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">The path is null.</exception>
+    /// <exception cref="InvalidDataException">The text has more rows or fields than a sheet holds, or a field longer than a cell holds.</exception>
+    public static Workbook LoadCsv(string path, CsvOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        using FileStream stream = File.OpenRead(path);
+        return Csv.CsvReader.Read(stream, path, options);
+    }
+
+    /// <summary>Reads comma- or tab-separated text from a stream into a new workbook with one sheet.</summary>
+    /// <exception cref="ArgumentNullException">The stream is null.</exception>
+    /// <exception cref="InvalidDataException">The text has more rows or fields than a sheet holds, or a field longer than a cell holds.</exception>
+    public static Workbook LoadCsv(Stream stream, CsvOptions? options = null) => Csv.CsvReader.Read(stream, null, options);
 
     /// <summary>A new workbook with no sheets; add one before saving, as a workbook file needs at least one.</summary>
     public static Workbook CreateEmpty() => new(new StyleTable());

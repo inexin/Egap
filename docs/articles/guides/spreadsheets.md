@@ -191,6 +191,72 @@ Excel's print area and print titles are names local to their sheet: `_xlnm.Print
 `sheet.PageSetup` holds the rest of what Excel's Page Setup dialog sets: paper, orientation, scale or fit, margins in
 inches, centring, gridlines, headings, page order and the header and footer in Excel's header codes.
 
+## Number formats and cell text
+
+`cell.Text` is the value as Excel shows it in the cell, through the cell's number format: `1,234.50` for 1234.5 with
+`#,##0.00`, `2024-03-15` for the date serial 45366 with `yyyy-mm-dd`, `TRUE` for a boolean and `#DIV/0!` for an error. A
+formula shows its last calculated value. The text is not cut to the column's width, as Excel's `###` is.
+
+```csharp
+using System.Globalization;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Cell cell = book.Worksheets[0]["A1"];
+cell.Value = 1234.5;
+cell.NumberFormat = "#,##0.00;[Red]-#,##0.00";
+string english = cell.Text;                          // "1,234.50"
+book.Culture = CultureInfo.GetCultureInfo("de-DE");
+string german = cell.Text;                           // "1.234,50"
+
+NumberFormatCode code = NumberFormatCode.Parse("[h]:mm");
+string elapsed = code.Format(1.5);                   // "36:00"
+```
+
+`NumberFormatCode` reads every part of Excel's format codes: up to four sections (positive, negative, zero, text),
+conditions such as `[>=100]`, colours (`GetColor` tells which), digit placeholders `0`, `#` and `?`, thousands separators
+and scaling by 1,000 with trailing commas, percent, scientific notation, fractions such as `# ?/?` and `# ?/8`, dates and
+times with month and day names, AM/PM, elapsed times such as `[h]:mm`, fractions of a second, text with `@`, literal text,
+padding with `_` and locale tags such as `[$-414]`. Numbers are rounded half away from zero after the 15 significant
+digits Excel keeps, so `2.675` with `0.00` shows `2.68`, as in Excel.
+
+`Workbook.Culture` gives the decimal and group separators, month and day names and the short date that the built-in
+formats `mm-dd-yy` and `m/d/yy h:mm` follow, as Excel's follow the system's. The invariant culture, the default, shows
+them as Excel in English does: `3/15/2024`. A locale tag in a code overrides the culture for that section. Dates follow
+Excel's 1900 date system, 29 February 1900 included, and a negative date shows as `#` signs.
+
+## CSV and TSV
+
+`Workbook.LoadCsv` reads comma- or tab-separated text (RFC 4180) into a new workbook with one sheet, and
+`Worksheet.SaveCsv` writes a sheet as text, from A1 to the last used cell. Quoted fields hold separators, doubled quotes
+and line breaks.
+
+```csharp
+using System.Globalization;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.LoadCsv("prices.csv");      // separator, types and dates detected
+Worksheet sheet = book.Worksheets[0];
+sheet.SaveCsv("prices.tsv");                         // a tab for .tsv
+
+CsvOptions german = new() { Culture = CultureInfo.GetCultureInfo("de-DE") };
+Workbook local = Workbook.LoadCsv("preise.csv", german);   // 1.234,5 and 15.03.2024
+local.Worksheets[0].SaveCsv("preise-kopie.csv", german);   // semicolons, as Excel in German
+```
+
+Reading picks the separator from `CsvOptions.Separator`, a `sep=` first line, the `.tsv` or `.tab` extension, or
+whichever of comma, semicolon and tab the first line holds most of. It reads UTF-8 unless a byte order mark or
+`CsvOptions.Encoding` says otherwise. With `DetectTypes`, the default, fields become numbers (in the options' culture,
+with thousands separators and exponents), percentages, `TRUE` and `FALSE`, errors such as `#N/A`, ISO dates and times,
+the culture's short dates and times of day, each with a number format that shows it as written. A number with a leading
+zero, such as `007`, stays text, and so does a field that starts with `=`: reading never makes formulas. A text with more
+rows or fields than a sheet holds, or a field longer than 32,767 characters, throws an `InvalidDataException`.
+
+Writing shows each value as its cell does (`cell.Text`), as Excel saves CSV; set `WriteFormattedText` to false to write
+numbers in full and dates as serial numbers. It writes UTF-8 with a byte order mark, so Excel reads it as UTF-8, uses the
+culture's list separator unless you name one (a semicolon where the comma is the decimal separator), ends rows with
+`\r\n` and pads every row to the same number of fields. `WriteSeparatorHint` adds a `sep=` line for Excel.
+
 ## Memory
 
 Sheets store cells in blocks of 32 rows by 32 columns, made only where cells are: a sheet with values in A1 and

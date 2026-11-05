@@ -108,6 +108,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Rows and columns (`sheet.Rows`, `sheet.Columns`): height, width, hidden, outline level and style. Merged cells, the sheet
   view (gridlines, zoom, frozen panes), page setup (paper, orientation, fit, margins, header and footer), tab colour and
   visibility, defined names (`Workbook.Names`) and the 1904 date system.
+- Number formats: `NumberFormatCode` parses Excel's format codes (sections, conditions, colours, digit placeholders,
+  grouping and scaling, percent, scientific, fractions, dates and times, elapsed times, text and locale tags) and shows
+  values through them as Excel does. `Cell.Text` gives a cell's value as Excel shows it, in `Workbook.Culture`.
+- CSV and TSV: `Workbook.LoadCsv` and `Worksheet.SaveCsv`, with `CsvOptions` for the separator (detected when not given),
+  encoding, culture, type detection and formatted output.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 
