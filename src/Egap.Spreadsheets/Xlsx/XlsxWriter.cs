@@ -94,6 +94,9 @@ internal static class XlsxWriter
         // Worksheets.
         StringMap strings = new(book.SharedStrings);
         Dictionary<Worksheet, string> sheetIds = [];
+        SheetObjectState objectState = new(book);
+        SheetObjectParts objectParts = new(parts.ContainsKey, (name, type, data, rels) => Add(new OutPart(name, type, data, rels)));
+        int sheetNumber = 0;
         foreach (Worksheet sheet in book.Worksheets)
         {
             string name;
@@ -113,11 +116,12 @@ internal static class XlsxWriter
             }
 
             sheetIds[sheet] = id;
-            Add(new OutPart(name, XlsxNames.WorksheetType, SheetWriter.Write(sheet, strings), rels));
+            List<(string Name, XElement Element)> objects = SheetObjectWriter.Write(sheet, ++sheetNumber, name, rels, objectParts, objectState);
+            Add(new OutPart(name, XlsxNames.WorksheetType, WorksheetPartWriter.Write(sheet, strings, objects), rels));
             workbookRels.Add(new OpcRelationship(id, XlsxNames.WorksheetRelationship, RelativeTarget(workbookName, name), false, name));
         }
 
-        Add(new OutPart(stylesName, XlsxNames.StylesType, OpcPackageWriter.Serialize(XlsxStyles.Write(book.Styles)), []));
+        Add(new OutPart(stylesName, XlsxNames.StylesType, OpcPackageWriter.Serialize(XlsxStyles.Write(book.Styles, objectState.NewDifferentials)), []));
         workbookRels.Add(new OpcRelationship(NextId(), XlsxNames.StylesRelationship, RelativeTarget(workbookName, stylesName), false, stylesName));
         if (strings.Count > 0)
         {
@@ -363,7 +367,7 @@ internal static class XlsxWriter
 /// </summary>
 internal sealed class StringMap(SharedStringTable table)
 {
-    private readonly int[] map = new int[table.Count];
+    private int[] map = new int[table.Count];
     private readonly List<int> used = [];
     private int references;
 
@@ -373,6 +377,12 @@ internal sealed class StringMap(SharedStringTable table)
     public int Map(int index)
     {
         references++;
+        if (index >= map.Length)
+        {
+            // A string added while saving, such as a table's header written from its column name.
+            Array.Resize(ref map, Math.Max(index + 1, table.Count));
+        }
+
         int mapped = map[index] - 1;
         if (mapped < 0)
         {
@@ -387,7 +397,7 @@ internal sealed class StringMap(SharedStringTable table)
     public byte[] Write()
     {
         using MemoryStream output = new();
-        using (XmlWriter writer = XmlWriter.Create(output, SheetWriter.Settings))
+        using (XmlWriter writer = XmlWriter.Create(output, WorksheetPartWriter.Settings))
         {
             writer.WriteStartDocument(standalone: true);
             writer.WriteStartElement("sst", XlsxNames.MainUri);
@@ -402,7 +412,7 @@ internal sealed class StringMap(SharedStringTable table)
                 }
 
                 writer.WriteStartElement("si", XlsxNames.MainUri);
-                SheetWriter.WriteText(writer, "t", table[index]);
+                WorksheetPartWriter.WriteText(writer, "t", table[index]);
                 writer.WriteEndElement();
             }
 
@@ -417,13 +427,13 @@ internal sealed class StringMap(SharedStringTable table)
 /// Writes a worksheet part (18.3.1.99): the elements the model holds, from the file's own where it had them, the file's other
 /// elements in their places, and the cells streamed row by row.
 /// </summary>
-internal static class SheetWriter
+internal static class WorksheetPartWriter
 {
     public static readonly XmlWriterSettings Settings = new() { Encoding = new UTF8Encoding(false), Indent = false, NewLineHandling = NewLineHandling.Entitize };
 
     private static readonly XNamespace Ns = XlsxNames.Main;
 
-    public static byte[] Write(Worksheet sheet, StringMap strings)
+    public static byte[] Write(Worksheet sheet, StringMap strings, List<(string Name, XElement Element)>? objects = null)
     {
         SheetSource? source = sheet.Source;
         List<(double Rank, XElement? Element)> elements = [];
@@ -448,9 +458,17 @@ internal static class SheetWriter
         }
 
         PageSetupElements(sheet.PageSetup, Add);
+        foreach ((string name, XElement element) in objects ?? [])
+        {
+            Add(name, element);
+        }
+
         if (source is not null)
         {
-            elements.AddRange(source.Kept.Select(k => (k.Rank, (XElement?)k.Element)));
+            // A kept element the objects write again (a drawing the reader could not read, when a picture is added) gives way.
+            HashSet<string> written = [.. (objects ?? []).Select(o => o.Name)];
+            elements.AddRange(source.Kept.Where(k => !(XlsxNames.IsMain(k.Element.Name.NamespaceName) && written.Contains(k.Element.Name.LocalName)))
+                .Select(k => (k.Rank, (XElement?)k.Element)));
         }
 
         using MemoryStream output = new();

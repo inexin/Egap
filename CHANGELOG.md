@@ -124,6 +124,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   values through them as Excel does. `Cell.Text` gives a cell's value as Excel shows it, in `Workbook.Culture`.
 - CSV and TSV: `Workbook.LoadCsv` and `Worksheet.SaveCsv`, with `CsvOptions` for the separator (detected when not given),
   encoding, culture, type detection and formatted output.
+- Tables (`sheet.Tables`), data validation (`sheet.DataValidations`), conditional formatting (`sheet.ConditionalFormats`,
+  with cell, expression, colour scale, data bar and icon set rules and their differential styles), notes
+  (`sheet.Comments`), hyperlinks (`sheet.Hyperlinks`) and the drawing layer (`sheet.Drawings`: pictures added, moved and
+  replaced; shapes, charts and groups moved and renamed) are read, edited and written. Table, notes and drawing parts
+  nothing changed in keep their bytes; charts, pivot tables, slicers and macros stay as they were.
+- `SheetReader` and `SheetWriter` stream rows through XLSX and CSV without a workbook, in constant memory, with column
+  widths and number formats, frozen top rows and row styles.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 

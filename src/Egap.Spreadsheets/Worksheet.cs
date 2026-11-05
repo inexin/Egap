@@ -22,6 +22,7 @@ public sealed class Worksheet
         Cells = new WorksheetCells(this);
         Rows = new SheetRowCollection(this);
         Columns = new SheetColumnCollection(this);
+        Tables = new SheetTableCollection(this);
     }
 
     /// <summary>The workbook the sheet is in.</summary>
@@ -57,6 +58,24 @@ public sealed class Worksheet
 
     /// <summary>The merged ranges.</summary>
     public MergedCellCollection MergedCells { get; } = new();
+
+    /// <summary>The hyperlinks on cells and ranges.</summary>
+    public HyperlinkCollection Hyperlinks { get; } = new();
+
+    /// <summary>The data validation rules: what cells allow, drop-down lists and input messages.</summary>
+    public DataValidationCollection DataValidations { get; } = new();
+
+    /// <summary>The conditional formatting.</summary>
+    public ConditionalFormatCollection ConditionalFormats { get; } = new();
+
+    /// <summary>The Excel tables on the sheet.</summary>
+    public SheetTableCollection Tables { get; }
+
+    /// <summary>The notes on cells.</summary>
+    public CellCommentCollection Comments { get; } = new();
+
+    /// <summary>The pictures, shapes, charts and other objects on the sheet's drawing layer.</summary>
+    public SheetDrawingCollection Drawings { get; } = new();
 
     /// <summary>How the sheet shows on screen: gridlines, zoom, frozen panes and so on.</summary>
     public SheetView View { get; } = new();

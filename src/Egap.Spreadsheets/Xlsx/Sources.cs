@@ -52,6 +52,22 @@ internal sealed class SheetSource(OpcPart part, string relationshipId, int sheet
     public XElement? SheetFormat { get; set; }
 
     public XElement? SheetViews { get; set; }
+
+    /// <summary>The drawing element and its part, written back as they were while no object changes.</summary>
+    public (XElement Element, OpcPart Part)? Drawing { get; set; }
+
+    /// <summary>The legacyDrawing element and the comments part, written back as they were while no note changes.</summary>
+    public XElement? LegacyDrawing { get; set; }
+
+    public OpcPart? CommentsPart { get; set; }
+
+    public OpcPart? VmlPart { get; set; }
+
+    /// <summary>The tableParts element's own attributes.</summary>
+    public XElement? TableParts { get; set; }
+
+    /// <summary>The hyperlinks element's own attributes.</summary>
+    public XElement? Hyperlinks { get; set; }
 }
 
 /// <summary>A loaded workbook's style part: the document, and the elements of the tables the model writes again.</summary>

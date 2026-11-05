@@ -1,17 +1,20 @@
 using System.Globalization;
 using System.Text;
 
+using Egap.Documents;
 using Egap.Pdf.Fuzz;
 using Egap.Spreadsheets;
 
 using SharpFuzz;
 
-// Fuzz targets for Egap.Spreadsheets: number format codes and CSV. A format code never makes Parse or Format throw; CSV
-// may refuse its input only with an InvalidDataException. Anything else is a finding.
+// Fuzz targets for Egap.Spreadsheets: number format codes, CSV and XLSX. A format code never makes Parse or Format throw;
+// CSV may refuse its input only with an InvalidDataException, and XLSX only with a DocumentException (a
+// DocumentLimitException among them). Anything else is a finding.
 Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
 {
     ["numberformat"] = NumberFormat,
     ["csv"] = Csv,
+    ["xlsx"] = Xlsx,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -88,4 +91,80 @@ static void Csv(Stream input)
     book.Worksheets[0].SaveCsv(output);
     output.Position = 0;
     Workbook.LoadCsv(output);
+
+    input.Position = 0;
+    using SheetReader reader = SheetReader.OpenCsv(input);
+    while (reader.Read())
+    {
+        for (int column = 0; column < reader.ColumnCount; column++)
+        {
+            _ = reader.GetText(column);
+        }
+    }
+}
+
+// The input is an XLSX package: loaded, saved and loaded again, and every sheet streamed through SheetReader.
+static void Xlsx(Stream input)
+{
+    DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };
+    byte[] bytes = Bytes(input);
+    try
+    {
+        Workbook book = Workbook.Load(new MemoryStream(bytes, writable: false), new WorkbookLoadOptions { Limits = limits });
+        foreach (Worksheet sheet in book.Worksheets)
+        {
+            if (sheet.UsedRange?.Address is { } used)
+            {
+                for (int row = used.First.Row; row <= Math.Min(used.Last.Row, used.First.Row + 200); row++)
+                {
+                    for (int column = used.First.Column; column <= Math.Min(used.Last.Column, used.First.Column + 50); column++)
+                    {
+                        _ = sheet[row, column].Text;
+                    }
+                }
+            }
+
+            foreach (SheetTable table in sheet.Tables)
+            {
+                table.Name = table.Name;
+            }
+
+            CellAddress last = new(CellAddress.MaxRows - 1, 0);
+            if (sheet.Comments[last] is null)
+            {
+                sheet.Comments.Add(last, "fuzz");
+            }
+        }
+
+        MemoryStream saved = new();
+        book.Save(saved);
+        saved.Position = 0;
+        Workbook.Load(saved);
+    }
+    catch (DocumentException)
+    {
+    }
+    catch (InvalidOperationException e) when (e.Message.Contains("sheet", StringComparison.Ordinal))
+    {
+        // A workbook with no worksheets cannot be saved.
+    }
+
+    try
+    {
+        using SheetReader reader = SheetReader.Open(new MemoryStream(bytes, writable: false), new WorkbookLoadOptions { Limits = limits });
+        for (int sheet = 0; sheet < reader.SheetNames.Count; sheet++)
+        {
+            reader.SelectSheet(sheet);
+            while (reader.Read())
+            {
+                for (int column = 0; column < Math.Min(reader.ColumnCount, 64); column++)
+                {
+                    _ = reader.GetText(column);
+                }
+            }
+        }
+    }
+    catch (DocumentException)
+    {
+    }
 }
