@@ -346,6 +346,14 @@ internal static class XlsxReader
             case "pageSetup":
                 ReadPageSetup(page, element);
                 return true;
+            case "rowBreaks":
+                page.SourceRowBreaks = element;
+                ReadBreaks(page.RowBreaks, element, CellAddress.MaxRows);
+                return true;
+            case "colBreaks":
+                page.SourceColumnBreaks = element;
+                ReadBreaks(page.ColumnBreaks, element, CellAddress.MaxColumns);
+                return true;
             case "headerFooter":
                 page.SourceHeaderFooter = element;
                 page.Header = (string?)element.Element(ns + "oddHeader");
@@ -353,6 +361,19 @@ internal static class XlsxReader
                 return true;
             default:
                 return SheetObjectReader.Read(book, sheet, element);
+        }
+    }
+
+    /// <summary>The manual breaks of rowBreaks or colBreaks: each brk's id is the row or column the break comes before.</summary>
+    private static void ReadBreaks(PageBreakCollection breaks, XElement element, int limit)
+    {
+        foreach (XElement brk in element.Elements(element.Name.Namespace + "brk"))
+        {
+            int id = XlsxNames.Int((string?)brk.Attribute("id"), 0);
+            if (XlsxNames.Bool((string?)brk.Attribute("man"), false) && id > 0 && id < limit)
+            {
+                breaks.Add(id);
+            }
         }
     }
 

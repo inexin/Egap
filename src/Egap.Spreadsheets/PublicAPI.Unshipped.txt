@@ -498,6 +498,14 @@ Egap.Spreadsheets.NumberFormatCode.Code.get -> string!
 Egap.Spreadsheets.NumberFormatCode.Format(Egap.Spreadsheets.CellValue value, System.Globalization.CultureInfo? culture = null, bool date1904 = false) -> string!
 Egap.Spreadsheets.NumberFormatCode.GetColor(Egap.Spreadsheets.CellValue value) -> Egap.Spreadsheets.CellColor?
 Egap.Spreadsheets.NumberFormatCode.IsDateTime.get -> bool
+Egap.Spreadsheets.PageBreakCollection
+Egap.Spreadsheets.PageBreakCollection.Add(int item) -> void
+Egap.Spreadsheets.PageBreakCollection.Clear() -> void
+Egap.Spreadsheets.PageBreakCollection.Contains(int item) -> bool
+Egap.Spreadsheets.PageBreakCollection.CopyTo(int[]! array, int arrayIndex) -> void
+Egap.Spreadsheets.PageBreakCollection.Count.get -> int
+Egap.Spreadsheets.PageBreakCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<int>!
+Egap.Spreadsheets.PageBreakCollection.Remove(int item) -> bool
 Egap.Spreadsheets.PageSetup
 Egap.Spreadsheets.PageSetup.BottomMargin.get -> double
 Egap.Spreadsheets.PageSetup.BottomMargin.set -> void
@@ -505,6 +513,7 @@ Egap.Spreadsheets.PageSetup.CenterHorizontally.get -> bool
 Egap.Spreadsheets.PageSetup.CenterHorizontally.set -> void
 Egap.Spreadsheets.PageSetup.CenterVertically.get -> bool
 Egap.Spreadsheets.PageSetup.CenterVertically.set -> void
+Egap.Spreadsheets.PageSetup.ColumnBreaks.get -> Egap.Spreadsheets.PageBreakCollection!
 Egap.Spreadsheets.PageSetup.FirstPageNumber.get -> int?
 Egap.Spreadsheets.PageSetup.FirstPageNumber.set -> void
 Egap.Spreadsheets.PageSetup.FitToHeight.get -> int
@@ -529,12 +538,19 @@ Egap.Spreadsheets.PageSetup.PageOrder.get -> Egap.Spreadsheets.PrintPageOrder
 Egap.Spreadsheets.PageSetup.PageOrder.set -> void
 Egap.Spreadsheets.PageSetup.PaperSize.get -> int?
 Egap.Spreadsheets.PageSetup.PaperSize.set -> void
+Egap.Spreadsheets.PageSetup.PrintArea.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.RangeAddress>!
+Egap.Spreadsheets.PageSetup.PrintArea.set -> void
 Egap.Spreadsheets.PageSetup.PrintGridLines.get -> bool
 Egap.Spreadsheets.PageSetup.PrintGridLines.set -> void
 Egap.Spreadsheets.PageSetup.PrintHeadings.get -> bool
 Egap.Spreadsheets.PageSetup.PrintHeadings.set -> void
+Egap.Spreadsheets.PageSetup.PrintTitleColumns.get -> Egap.Spreadsheets.RangeAddress?
+Egap.Spreadsheets.PageSetup.PrintTitleColumns.set -> void
+Egap.Spreadsheets.PageSetup.PrintTitleRows.get -> Egap.Spreadsheets.RangeAddress?
+Egap.Spreadsheets.PageSetup.PrintTitleRows.set -> void
 Egap.Spreadsheets.PageSetup.RightMargin.get -> double
 Egap.Spreadsheets.PageSetup.RightMargin.set -> void
+Egap.Spreadsheets.PageSetup.RowBreaks.get -> Egap.Spreadsheets.PageBreakCollection!
 Egap.Spreadsheets.PageSetup.Scale.get -> int?
 Egap.Spreadsheets.PageSetup.Scale.set -> void
 Egap.Spreadsheets.PageSetup.TopMargin.get -> double
@@ -617,6 +633,49 @@ Egap.Spreadsheets.SheetDrawingKind.Group = 3 -> Egap.Spreadsheets.SheetDrawingKi
 Egap.Spreadsheets.SheetDrawingKind.Other = 4 -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetDrawingKind.Picture = 0 -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetDrawingKind.Shape = 1 -> Egap.Spreadsheets.SheetDrawingKind
+Egap.Spreadsheets.SheetPage
+Egap.Spreadsheets.SheetPage.Cells.get -> Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.SheetPage.Draw(Egami.Drawing.Canvas! canvas) -> void
+Egap.Spreadsheets.SheetPage.Height.get -> double
+Egap.Spreadsheets.SheetPage.Index.get -> int
+Egap.Spreadsheets.SheetPage.Number.get -> int
+Egap.Spreadsheets.SheetPage.PageCount.get -> int
+Egap.Spreadsheets.SheetPage.Render(double dpi = 96) -> Egami.Raster<Egami.Pixels.Rgba8>!
+Egap.Spreadsheets.SheetPage.Scale.get -> double
+Egap.Spreadsheets.SheetPage.Width.get -> double
+Egap.Spreadsheets.SheetPage.Worksheet.get -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.SheetPdfOptions
+Egap.Spreadsheets.SheetPdfOptions.<Clone>$() -> Egap.Spreadsheets.SheetPdfOptions!
+Egap.Spreadsheets.SheetPdfOptions.Conformance.get -> Egap.Pdf.PdfAConformance
+Egap.Spreadsheets.SheetPdfOptions.Conformance.init -> void
+Egap.Spreadsheets.SheetPdfOptions.Equals(Egap.Spreadsheets.SheetPdfOptions? other) -> bool
+Egap.Spreadsheets.SheetPdfOptions.IsTagged.get -> bool
+Egap.Spreadsheets.SheetPdfOptions.Language.get -> string?
+Egap.Spreadsheets.SheetPdfOptions.Language.init -> void
+Egap.Spreadsheets.SheetPdfOptions.Print.get -> Egap.Spreadsheets.SheetPrintOptions?
+Egap.Spreadsheets.SheetPdfOptions.Print.init -> void
+Egap.Spreadsheets.SheetPdfOptions.SheetPdfOptions() -> void
+Egap.Spreadsheets.SheetPdfOptions.Tagged.get -> bool
+Egap.Spreadsheets.SheetPdfOptions.Tagged.init -> void
+Egap.Spreadsheets.SheetPdfOptions.Title.get -> string?
+Egap.Spreadsheets.SheetPdfOptions.Title.init -> void
+Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility.get -> bool
+Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility.init -> void
+Egap.Spreadsheets.SheetPrintLayout
+Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.FontSubstitution!>!
+Egap.Spreadsheets.SheetPrintLayout.Pages.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.SheetPage!>!
+Egap.Spreadsheets.SheetPrintOptions
+Egap.Spreadsheets.SheetPrintOptions.<Clone>$() -> Egap.Spreadsheets.SheetPrintOptions!
+Egap.Spreadsheets.SheetPrintOptions.Equals(Egap.Spreadsheets.SheetPrintOptions? other) -> bool
+Egap.Spreadsheets.SheetPrintOptions.FilePath.get -> string?
+Egap.Spreadsheets.SheetPrintOptions.FilePath.init -> void
+Egap.Spreadsheets.SheetPrintOptions.Fonts.get -> Egap.Documents.Layout.FontSettings?
+Egap.Spreadsheets.SheetPrintOptions.Fonts.init -> void
+Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas.get -> bool
+Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas.init -> void
+Egap.Spreadsheets.SheetPrintOptions.PrintTime.get -> System.DateTime?
+Egap.Spreadsheets.SheetPrintOptions.PrintTime.init -> void
+Egap.Spreadsheets.SheetPrintOptions.SheetPrintOptions() -> void
 Egap.Spreadsheets.SheetReader
 Egap.Spreadsheets.SheetReader.Cells.get -> System.Collections.Generic.IEnumerable<(int Column, Egap.Spreadsheets.CellValue Value)>!
 Egap.Spreadsheets.SheetReader.ColumnCount.get -> int
@@ -747,8 +806,11 @@ Egap.Spreadsheets.Workbook.Date1904.set -> void
 Egap.Spreadsheets.Workbook.Format.get -> Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.Workbook.Format.set -> void
 Egap.Spreadsheets.Workbook.Names.get -> Egap.Spreadsheets.DefinedNameCollection!
+Egap.Spreadsheets.Workbook.Paginate(Egap.Spreadsheets.SheetPrintOptions? options = null) -> Egap.Spreadsheets.SheetPrintLayout!
 Egap.Spreadsheets.Workbook.Save(string! path, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
 Egap.Spreadsheets.Workbook.Save(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
+Egap.Spreadsheets.Workbook.SaveAsPdf(string! path, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
+Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream! stream, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
 Egap.Spreadsheets.Workbook.Worksheets.get -> Egap.Spreadsheets.WorksheetCollection!
 Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookFormat.Xlsm = 1 -> Egap.Spreadsheets.WorkbookFormat
@@ -785,10 +847,13 @@ Egap.Spreadsheets.Worksheet.MergedCells.get -> Egap.Spreadsheets.MergedCellColle
 Egap.Spreadsheets.Worksheet.Name.get -> string!
 Egap.Spreadsheets.Worksheet.Name.set -> void
 Egap.Spreadsheets.Worksheet.PageSetup.get -> Egap.Spreadsheets.PageSetup!
+Egap.Spreadsheets.Worksheet.Paginate(Egap.Spreadsheets.SheetPrintOptions? options = null) -> Egap.Spreadsheets.SheetPrintLayout!
 Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress address) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Range(int firstRow, int firstColumn, int lastRow, int lastColumn) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Range(string! address) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Rows.get -> Egap.Spreadsheets.SheetRowCollection!
+Egap.Spreadsheets.Worksheet.SaveAsPdf(string! path, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
+Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream! stream, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
 Egap.Spreadsheets.Worksheet.SaveCsv(string! path, Egap.Spreadsheets.CsvOptions? options = null) -> void
 Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> void
 Egap.Spreadsheets.Worksheet.TabColor.get -> Egap.Spreadsheets.CellColor?
@@ -858,6 +923,12 @@ override Egap.Spreadsheets.DrawingPosition.GetHashCode() -> int
 override Egap.Spreadsheets.NumberFormatCode.ToString() -> string!
 override Egap.Spreadsheets.RangeAddress.GetHashCode() -> int
 override Egap.Spreadsheets.RangeAddress.ToString() -> string!
+override Egap.Spreadsheets.SheetPdfOptions.Equals(object? obj) -> bool
+override Egap.Spreadsheets.SheetPdfOptions.GetHashCode() -> int
+override Egap.Spreadsheets.SheetPdfOptions.ToString() -> string!
+override Egap.Spreadsheets.SheetPrintOptions.Equals(object? obj) -> bool
+override Egap.Spreadsheets.SheetPrintOptions.GetHashCode() -> int
+override Egap.Spreadsheets.SheetPrintOptions.ToString() -> string!
 override Egap.Spreadsheets.Worksheet.ToString() -> string!
 static Egap.Spreadsheets.Cell.operator !=(Egap.Spreadsheets.Cell? left, Egap.Spreadsheets.Cell? right) -> bool
 static Egap.Spreadsheets.Cell.operator ==(Egap.Spreadsheets.Cell? left, Egap.Spreadsheets.Cell? right) -> bool
@@ -938,6 +1009,12 @@ static Egap.Spreadsheets.RangeAddress.Parse(string! text) -> Egap.Spreadsheets.R
 static Egap.Spreadsheets.RangeAddress.Parse(System.ReadOnlySpan<char> text) -> Egap.Spreadsheets.RangeAddress
 static Egap.Spreadsheets.RangeAddress.TryParse(string? text, out Egap.Spreadsheets.RangeAddress range) -> bool
 static Egap.Spreadsheets.RangeAddress.TryParse(System.ReadOnlySpan<char> text, out Egap.Spreadsheets.RangeAddress range) -> bool
+static Egap.Spreadsheets.SheetPdfOptions.Default.get -> Egap.Spreadsheets.SheetPdfOptions!
+static Egap.Spreadsheets.SheetPdfOptions.operator !=(Egap.Spreadsheets.SheetPdfOptions? left, Egap.Spreadsheets.SheetPdfOptions? right) -> bool
+static Egap.Spreadsheets.SheetPdfOptions.operator ==(Egap.Spreadsheets.SheetPdfOptions? left, Egap.Spreadsheets.SheetPdfOptions? right) -> bool
+static Egap.Spreadsheets.SheetPrintOptions.Default.get -> Egap.Spreadsheets.SheetPrintOptions!
+static Egap.Spreadsheets.SheetPrintOptions.operator !=(Egap.Spreadsheets.SheetPrintOptions? left, Egap.Spreadsheets.SheetPrintOptions? right) -> bool
+static Egap.Spreadsheets.SheetPrintOptions.operator ==(Egap.Spreadsheets.SheetPrintOptions? left, Egap.Spreadsheets.SheetPrintOptions? right) -> bool
 static Egap.Spreadsheets.SheetReader.Open(string! path, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.SheetReader!
 static Egap.Spreadsheets.SheetReader.Open(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.SheetReader!
 static Egap.Spreadsheets.SheetReader.OpenCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.SheetReader!

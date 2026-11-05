@@ -2,21 +2,25 @@ using System.Globalization;
 using System.Text;
 
 using Egap.Documents;
+using Egap.Documents.Layout;
 using Egap.Pdf.Fuzz;
 using Egap.Spreadsheets;
 using Egap.Spreadsheets.Formulas;
+using Egap.Spreadsheets.Printing;
 
 using SharpFuzz;
 
-// Fuzz targets for Egap.Spreadsheets: number format codes, CSV, XLSX and formulas. A format code never makes Parse or
-// Format throw; CSV may refuse its input only with an InvalidDataException, XLSX only with a DocumentException (a
-// DocumentLimitException among them), and a formula only with a FormulaException. Anything else is a finding.
+// Fuzz targets for Egap.Spreadsheets: number format codes, CSV, XLSX, formulas and header and footer codes. A format code
+// or a header and footer code never throws; CSV may refuse its input only with an InvalidDataException, XLSX only with a
+// DocumentException (a DocumentLimitException among them), and a formula only with a FormulaException. Anything else is a
+// finding.
 Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
 {
     ["numberformat"] = NumberFormat,
     ["csv"] = Csv,
     ["xlsx"] = Xlsx,
     ["formula"] = Formula,
+    ["headerfooter"] = HeaderFooter,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -100,6 +104,24 @@ static void NumberFormat(Stream input)
 
         _ = code.Format("text", culture);
     }
+}
+
+// The input is a header or footer code (ECMA-376 Part 1, 18.3.1.46): parsed, then printed to PDF as a sheet's header, footer
+// and first-page header, with page numbers, dates and the file name filled in; must never throw.
+static void HeaderFooter(Stream input)
+{
+    string text = Encoding.UTF8.GetString(Bytes(input));
+    HeaderFooterCode code = HeaderFooterCode.Parse(text);
+    _ = code.Sections.Sum(s => s.Count);
+    Workbook book = Workbook.Create();
+    Worksheet sheet = book.Worksheets[0];
+    sheet["A1"].Value = 1;
+    sheet["C40"].Value = "x";
+    sheet.PageSetup.Header = text;
+    sheet.PageSetup.Footer = text.Length > 1 ? text[(text.Length / 2)..] : text;
+    SheetPrintOptions print = new() { Fonts = FontSettings.Portable, PrintTime = new DateTime(2026, 11, 5, 12, 0, 0), FilePath = @"C:\dataook.xlsx" };
+    using MemoryStream pdf = new();
+    sheet.SaveAsPdf(pdf, new SheetPdfOptions { Print = print, Tagged = false });
 }
 
 // The input is CSV text: read with type detection, written back, and read again.

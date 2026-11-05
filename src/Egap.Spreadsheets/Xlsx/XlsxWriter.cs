@@ -754,6 +754,38 @@ internal static class WorksheetPartWriter
         SetChild(headerFooter, "oddHeader", page.Header);
         SetChild(headerFooter, "oddFooter", page.Footer);
         add("headerFooter", headerFooter.HasAttributes || headerFooter.HasElements ? headerFooter : null);
+        add("rowBreaks", Breaks("rowBreaks", page.RowBreaks, page.SourceRowBreaks, CellAddress.MaxColumns - 1));
+        add("colBreaks", Breaks("colBreaks", page.ColumnBreaks, page.SourceColumnBreaks, CellAddress.MaxRows - 1));
+    }
+
+    /// <summary>
+    /// rowBreaks or colBreaks for the manual breaks: the file's element as it was while its manual breaks are the same, else
+    /// one brk per break reaching across the sheet (ECMA-376 Part 1, 18.3.1.73 and 18.3.1.14).
+    /// </summary>
+    private static XElement? Breaks(string name, PageBreakCollection breaks, XElement? source, int max)
+    {
+        if (source is not null)
+        {
+            IEnumerable<int> read = source.Elements(Ns + "brk")
+                .Where(b => XlsxNames.Bool((string?)b.Attribute("man"), false))
+                .Select(b => XlsxNames.Int((string?)b.Attribute("id"), 0))
+                .Where(id => id > 0)
+                .Distinct()
+                .Order();
+            if (read.SequenceEqual(breaks))
+            {
+                return source;
+            }
+        }
+
+        if (breaks.Count == 0)
+        {
+            return null;
+        }
+
+        string count = XlsxNames.Integer(breaks.Count);
+        return new XElement(Ns + name, new XAttribute("count", count), new XAttribute("manualBreakCount", count),
+            breaks.Select(id => new XElement(Ns + "brk", new XAttribute("id", XlsxNames.Integer(id)), new XAttribute("max", XlsxNames.Integer(max)), new XAttribute("man", "1"))));
     }
 
     /// <summary>The children of headerFooter in CT_HeaderFooter's order (ECMA-376 Part 1, 18.3.1.46).</summary>

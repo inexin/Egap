@@ -75,6 +75,38 @@ public sealed class NumberFormatCode
     /// <param name="date1904">Whether dates count from 1904-01-01 rather than 1900-01-01.</param>
     public string Format(CellValue value, CultureInfo? culture = null, bool date1904 = false)
     {
+        string text = FormatWithFill(value, culture, date1904);
+        int mark = text.IndexOf(FillMark, StringComparison.Ordinal);
+        if (mark < 0)
+        {
+            return text;
+        }
+
+        StringBuilder plain = new(text.Length);
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (text[i] == FillMark)
+            {
+                i++;
+            }
+            else
+            {
+                plain.Append(text[i]);
+            }
+        }
+
+        return plain.ToString();
+    }
+
+    /// <summary>
+    /// Marks where a <c>*</c> fill goes in <see cref="FormatWithFill"/>'s text: the mark, then the character that repeats to
+    /// fill the cell's width.
+    /// </summary>
+    internal const char FillMark = '\u0001';
+
+    /// <summary>The value as <see cref="Format"/> shows it, with each <c>*</c> fill left in as <see cref="FillMark"/> and its character.</summary>
+    internal string FormatWithFill(CellValue value, CultureInfo? culture, bool date1904)
+    {
         culture ??= CultureInfo.InvariantCulture;
         switch (value.Kind)
         {
@@ -157,6 +189,9 @@ public sealed class NumberFormatCode
                     break;
                 case TokenKind.Space:
                     output.Append(' ');
+                    break;
+                case TokenKind.Fill:
+                    output.Append(FillMark).Append(token.Text.Length > 0 ? token.Text[0] : ' ');
                     break;
                 case TokenKind.General:
                     output.Append(text);

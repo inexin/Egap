@@ -196,6 +196,9 @@ internal static class NumberFormatter
             case TokenKind.Space:
                 output.Append(' ');
                 break;
+            case TokenKind.Fill:
+                output.Append(NumberFormatCode.FillMark).Append(token.Text.Length > 0 ? token.Text[0] : ' ');
+                break;
             case TokenKind.General when general is not null:
                 output.Append(general());
                 break;

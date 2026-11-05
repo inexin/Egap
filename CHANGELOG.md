@@ -188,6 +188,19 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   separator, as Excel's does: `=1.5&""` is `1,5` where the decimal separator is a comma.
 - `FunctionRegistry` lists the built-in functions and adds functions of your own for formulas to call, as user-defined
   functions in Excel; `FunctionArgument` gives a call's arguments as values or as the cells of a range.
+- Printing: `Worksheet.SaveAsPdf` and `Workbook.SaveAsPdf` print sheets as Excel prints them, and `Paginate` lays the
+  pages out (`SheetPrintLayout`, `SheetPage`) to draw on an Egami canvas or render to a raster. Pages follow the print
+  area or the cells in use from A1, page order, manual breaks, scale and fit to pages, print titles, gridlines and
+  headings, margins and centring, at Excel's printed sizes (columns in the printer's digit width at 600 dpi, rows 1.6 %
+  taller); on 16 test sheets every page starts on the cell Excel's own PDF starts it on
+  (`tools/excel-print-oracle.ps1`). Headers and footers take Excel's codes with their fields, fonts and colours, first and
+  even pages and scaling with the document. Cells draw with fills and patterns, borders, fonts, alignment, indent,
+  wrapping, rotation, stacked text, shrink to fit, fill characters, `###` for numbers that do not fit, overflow into empty
+  neighbours, colour scales, data bars, icon sets and pictures. Theme colours with a tint come out as Excel shows them, to
+  the last digit on 40 theme and tint pairs. `SheetPdfOptions` makes a tagged PDF (a table per print area, header cells
+  for the titles, figures for pictures), PDF/A or PDF/UA.
+- `PageSetup.PrintArea`, `PrintTitleRows` and `PrintTitleColumns` read and write the sheet's print names, and `RowBreaks`
+  and `ColumnBreaks` (`PageBreakCollection`) hold its manual page breaks, read from and saved to XLSX.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 

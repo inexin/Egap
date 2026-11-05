@@ -183,6 +183,30 @@ public sealed class Workbook
         XlsxWriter.Write(this, stream, options?.Format ?? Format);
     }
 
+    /// <summary>
+    /// The visible sheets laid out on pages as Excel prints the entire workbook, sheet after sheet; see
+    /// <see cref="Worksheet.Paginate(SheetPrintOptions?)"/>.
+    /// </summary>
+    public SheetPrintLayout Paginate(SheetPrintOptions? options = null) => SheetPrintLayout.Create(this, VisibleSheets, options);
+
+    /// <summary>Writes the visible sheets' printed pages to a PDF file, as Excel's export of the entire workbook does.</summary>
+    /// <exception cref="ArgumentException">The path is null or empty.</exception>
+    public void SaveAsPdf(string path, SheetPdfOptions? options = null)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        Printing.SheetPdf.Save(this, VisibleSheets, path, null, options);
+    }
+
+    /// <summary>Writes the visible sheets' printed pages as a PDF to a stream, which is left open.</summary>
+    /// <exception cref="ArgumentNullException">The stream is null.</exception>
+    public void SaveAsPdf(Stream stream, SheetPdfOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        Printing.SheetPdf.Save(this, VisibleSheets, null, stream, options);
+    }
+
+    private IEnumerable<Worksheet> VisibleSheets => Worksheets.Where(s => s.Visibility == SheetVisibility.Visible);
+
     internal static bool IsCsv(string path) => Path.GetExtension(path).ToUpperInvariant() is ".CSV" or ".TSV" or ".TAB";
 
     private static WorkbookFormat? FormatOfExtension(string extension) => extension.ToUpperInvariant() switch
