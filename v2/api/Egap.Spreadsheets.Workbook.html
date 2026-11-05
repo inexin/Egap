@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Workbook | Egap ">
       
-      <meta name="description" content="A spreadsheet workbook: its worksheets and the text and styles they share. A workbook is not safe to change from more than one thread at a time.">
+      <meta name="description" content="A spreadsheet workbook: its worksheets, defined names, and the text and styles the sheets share. Create one in code, or load an XLSX, XLSM, XLTX or XLTM file and save it again with what it holds kept, the parts this model does not cover included. A workbook is not safe to change from more than one thread at a time.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Spreadsheets_Workbook" data-uid="Egap.Spreadsheets.Workbook" class="text-break">
-Class Workbook  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L17"><i class="bi bi-code-slash"></i></a>
+Class Workbook  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,8 +97,9 @@ Class Workbook  <a class="header-action link-secondary" title="View source" href
   <dl><dt>Assembly</dt><dd>Egap.Spreadsheets.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>A spreadsheet workbook: its worksheets and the text and styles they share. A workbook is not safe to change from more
-than one thread at a time.</p>
+  <div class="markdown summary"><p>A spreadsheet workbook: its worksheets, defined names, and the text and styles the sheets share. Create one in code, or
+load an XLSX, XLSM, XLTX or XLTM file and save it again with what it holds kept, the parts this model does not cover
+included. A workbook is not safe to change from more than one thread at a time.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -157,11 +158,108 @@ sheet["B1"].Value = 42;</code></pre>
 </h2>
 
 
+  <a id="Egap_Spreadsheets_Workbook_Date1904_" data-uid="Egap.Spreadsheets.Workbook.Date1904*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Date1904" data-uid="Egap.Spreadsheets.Workbook.Date1904">
+  Date1904
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether dates count days from 1904-01-01, as old Mac workbooks do, rather than from 1900-01-01. Changing it changes the
+date every date cell shows; the numbers stay.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Date1904 { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_Format_" data-uid="Egap.Spreadsheets.Workbook.Format*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Format" data-uid="Egap.Spreadsheets.Workbook.Format">
+  Format
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The kind of file the workbook was loaded from, and the kind a save to a stream writes when the options name none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WorkbookFormat Format { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.WorkbookFormat.html">WorkbookFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_Names_" data-uid="Egap.Spreadsheets.Workbook.Names*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Names" data-uid="Egap.Spreadsheets.Workbook.Names">
+  Names
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The defined names, the print areas and print titles among them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DefinedNameCollection Names { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.DefinedNameCollection.html">DefinedNameCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_Workbook_Worksheets_" data-uid="Egap.Spreadsheets.Workbook.Worksheets*"></a>
 
   <h3 id="Egap_Spreadsheets_Workbook_Worksheets" data-uid="Egap.Spreadsheets.Workbook.Worksheets">
   Worksheets
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The worksheets, in tab order.</p>
@@ -197,7 +295,7 @@ sheet["B1"].Value = 42;</code></pre>
 
   <h3 id="Egap_Spreadsheets_Workbook_Create" data-uid="Egap.Spreadsheets.Workbook.Create">
   Create()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A new workbook with one empty sheet, <code>Sheet1</code>, as Excel starts one.</p>
@@ -229,7 +327,7 @@ sheet["B1"].Value = 42;</code></pre>
 
   <h3 id="Egap_Spreadsheets_Workbook_CreateEmpty" data-uid="Egap.Spreadsheets.Workbook.CreateEmpty">
   CreateEmpty()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A new workbook with no sheets; add one before saving, as a workbook file needs at least one.</p>
@@ -257,11 +355,191 @@ sheet["B1"].Value = 42;</code></pre>
 
 
 
+  <a id="Egap_Spreadsheets_Workbook_Load_" data-uid="Egap.Spreadsheets.Workbook.Load*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Load_System_IO_Stream_Egap_Spreadsheets_WorkbookLoadOptions_" data-uid="Egap.Spreadsheets.Workbook.Load(System.IO.Stream,Egap.Spreadsheets.WorkbookLoadOptions)">
+  Load(Stream, WorkbookLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads an XLSX, XLSM, XLTX or XLTM file from a stream, which is left open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Workbook Load(Stream stream, WorkbookLoadOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html">WorkbookLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file is not a workbook Egap can read.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentLimitException.html">DocumentLimitException</a></dt>
+    <dd><p>The file goes past one of <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Limits">Limits</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_Load_" data-uid="Egap.Spreadsheets.Workbook.Load*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Load_System_String_Egap_Spreadsheets_WorkbookLoadOptions_" data-uid="Egap.Spreadsheets.Workbook.Load(System.String,Egap.Spreadsheets.WorkbookLoadOptions)">
+  Load(string, WorkbookLoadOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads an XLSX, XLSM, XLTX or XLTM file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Workbook Load(string path, WorkbookLoadOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html">WorkbookLoadOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file is not a workbook Egap can read.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentLimitException.html">DocumentLimitException</a></dt>
+    <dd><p>The file goes past one of <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Limits">Limits</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_Save_" data-uid="Egap.Spreadsheets.Workbook.Save*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Save_System_IO_Stream_Egap_Spreadsheets_WorkbookSaveOptions_" data-uid="Egap.Spreadsheets.Workbook.Save(System.IO.Stream,Egap.Spreadsheets.WorkbookSaveOptions)">
+  Save(Stream, WorkbookSaveOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Saves the workbook to a stream, which is left open, as <a class="xref" href="Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Format">Format</a> or else <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Format">Format</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Save(Stream stream, WorkbookSaveOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.WorkbookSaveOptions.html">WorkbookSaveOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The workbook has no worksheets.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_Save_" data-uid="Egap.Spreadsheets.Workbook.Save*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Save_System_String_Egap_Spreadsheets_WorkbookSaveOptions_" data-uid="Egap.Spreadsheets.Workbook.Save(System.String,Egap.Spreadsheets.WorkbookSaveOptions)">
+  Save(string, WorkbookSaveOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Saves the workbook to a file as the kind its extension names (.xlsx, .xlsm, .xltx or .xltm), unless
+<a class="xref" href="Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Format">Format</a> names one. A workbook with macros saved as .xlsx or .xltx leaves the macros out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Save(string path, WorkbookSaveOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.WorkbookSaveOptions.html">WorkbookSaveOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The workbook has no worksheets.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The extension names no workbook kind and the options name none.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L17" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L20" class="edit-link">Edit this page</a>
         </div>
 
 

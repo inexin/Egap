@@ -87,8 +87,9 @@
         <article data-uid="">
 <h1 id="spreadsheets">Spreadsheets</h1>
 
-<p>Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas and
-cell styles, as Excel keeps them. The types are in <code>Egap.Spreadsheets</code>.</p>
+<p>Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas,
+cell styles, rows and columns, names and print settings, as Excel keeps them. It loads and saves Excel's XLSX, XLSM, XLTX and
+XLTM files. The types are in <code>Egap.Spreadsheets</code>.</p>
 <pre><code class="lang-csharp">using Egap.Spreadsheets;
 
 Workbook book = Workbook.Create();                   // one empty sheet, Sheet1
@@ -106,12 +107,39 @@ sheet[&quot;B4&quot;].Formula = &quot;SUM(B2:B3)&quot;;
 sheet.Range(&quot;A1:B1&quot;).UpdateStyle(s =&gt; s with { Font = s.Font with { Bold = true } });
 sheet.Range(&quot;B2:B4&quot;).UpdateStyle(s =&gt; s with { NumberFormat = &quot;#,##0.00&quot; });
 </code></pre>
+<h2 id="loading-and-saving">Loading and saving</h2>
+<p><code>Workbook.Load</code> reads an Excel workbook or template, with or without macros, from a path or a stream. <code>Save</code> writes one; a
+path's extension (<code>.xlsx</code>, <code>.xlsm</code>, <code>.xltx</code> or <code>.xltm</code>) says which kind, and <code>WorkbookSaveOptions.Format</code> names it for a
+stream or another extension.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+Worksheet sheet = book.Worksheets[&quot;Sales&quot;];
+sheet[&quot;C2&quot;].Value = 1300;
+book.Save(&quot;sales.xlsx&quot;);
+
+using MemoryStream stream = new();
+book.Save(stream, new WorkbookSaveOptions { Format = WorkbookFormat.Xltx });
+</code></pre>
+<p>A loaded workbook saves with what it held: the parts and settings this package does not model, such as charts, pictures,
+comments, tables, conditional formats, data validation, hyperlinks, themes, document properties and macros, are written
+back as they were, and so are the parts of a cell style the model does not hold. Shared formulas stay shared, rich text
+keeps its runs, and chart sheets keep their place among the worksheets. A removed sheet takes its own parts with it.</p>
+<p>What Egap cannot keep up to date is left for Excel: when cells changed and the workbook has formulas, the file asks Excel
+to calculate on open, and the calculation chain is left out for Excel to build again. A cell that shared the formula of a
+cell you changed keeps its last result as a value. Saving a workbook with macros as <code>.xlsx</code> or <code>.xltx</code> leaves the macros
+out, as Excel does.</p>
+<p><code>Workbook.Format</code> is the kind of file a workbook came from. <code>WorkbookLoadOptions.Limits</code> bounds what a file may hold (part
+count, part and total size, compression ratio, XML depth) so a hostile file cannot use up memory; a file that goes past a
+limit throws a <code>DocumentLimitException</code>, and one that is not a workbook a <code>DocumentException</code>, both from Egap.Documents.</p>
 <h2 id="workbooks-and-sheets">Workbooks and sheets</h2>
 <p><code>Workbook.Create()</code> starts a workbook with one empty sheet named <code>Sheet1</code>, as Excel does; <code>Workbook.CreateEmpty()</code> starts
 one with none. <code>book.Worksheets</code> holds the sheets in tab order: <code>Add</code> and <code>Insert</code> make a sheet (named <code>SheetN</code> when you
 give no name), <code>Remove</code> takes one out, <code>Move</code> changes its position, and the indexers find a sheet by position or by name.</p>
 <p>Sheet names follow Excel's rules: 1 to 31 characters, none of <code>: \ / ? * [ ]</code>, no apostrophe at the start or end, and no
 two sheets with the same name, case ignored. A name that breaks a rule throws an <code>ArgumentException</code>.</p>
+<p><code>sheet.Visibility</code> hides a sheet's tab (<code>Hidden</code>) or hides it so that only code can show it again (<code>VeryHidden</code>), and
+<code>sheet.TabColor</code> colours the tab. <code>book.Date1904</code> says whether dates count from 1904, as old Mac workbooks do.</p>
 <h2 id="cells">Cells</h2>
 <p>A sheet has 1,048,576 rows and 16,384 columns (A to XFD). Reach a cell by its A1 address or by zero-based row and column:</p>
 <pre><code class="lang-csharp">using Egap.Spreadsheets;
@@ -171,6 +199,42 @@ sheet.Range(&quot;A2:A100&quot;).UpdateStyle(s =&gt; s with { Font = s.Font with
 once each, as Excel's style table does. Text values are kept once per workbook too, in a shared string table. Colours are
 automatic, ARGB (<code>CellColor.FromRgb</code>, <code>FromArgb</code>), a theme colour with a tint (<code>FromTheme</code>) or a legacy palette entry
 (<code>FromIndex</code>).</p>
+<h2 id="rows-columns-and-layout">Rows, columns and layout</h2>
+<p><code>sheet.Rows[index]</code> and <code>sheet.Columns[index]</code> (or <code>sheet.Columns[&quot;C&quot;]</code>) set heights and widths, hide rows and columns,
+group them with outline levels and give their empty cells a style. Heights are in points and widths in characters of the
+default font, as Excel shows them; null means the sheet's default, which <code>DefaultRowHeight</code> and <code>DefaultColumnWidth</code> set.
+Enumerating <code>Rows</code> or <code>Columns</code> gives those that have any of these settings.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet.Columns[&quot;A&quot;].Width = 24;
+sheet.Columns[&quot;D&quot;].Hidden = true;
+sheet.Rows[0].Height = 30;
+sheet.Rows[5].OutlineLevel = 1;
+sheet.MergedCells.Add(RangeAddress.Parse(&quot;A1:C1&quot;));
+sheet.View.FreezePanes(CellAddress.Parse(&quot;B2&quot;));    // row 1 and column A stay in place
+sheet.View.ZoomScale = 125;
+</code></pre>
+<p><code>sheet.MergedCells</code> holds the merged ranges; adding one that overlaps another throws. <code>sheet.View</code> holds what the sheet
+shows on screen: gridlines, headings, zeros, direction, zoom, frozen rows and columns, and whether its tab is selected.</p>
+<h2 id="names-and-printing">Names and printing</h2>
+<p><code>book.Names</code> holds the defined names. A name belongs to the workbook, or to one sheet when you give one:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+book.Names.Add(&quot;TaxRate&quot;, &quot;Sheet1!$B$1&quot;);
+book.Names.Add(&quot;_xlnm.Print_Area&quot;, &quot;Sheet1!$A$1:$F$40&quot;, sheet);
+sheet.PageSetup.Orientation = PrintOrientation.Landscape;
+sheet.PageSetup.PaperSize = 9;                       // A4
+sheet.PageSetup.FitToPage = true;
+sheet.PageSetup.FitToHeight = 0;                     // one page wide, as many tall as it needs
+sheet.PageSetup.Header = &quot;&amp;CQuarterly report&quot;;
+sheet.PageSetup.Footer = &quot;&amp;RPage &amp;P of &amp;N&quot;;
+</code></pre>
+<p>Excel's print area and print titles are names local to their sheet: <code>_xlnm.Print_Area</code> and <code>_xlnm.Print_Titles</code>.
+<code>sheet.PageSetup</code> holds the rest of what Excel's Page Setup dialog sets: paper, orientation, scale or fit, margins in
+inches, centring, gridlines, headings, page order and the header and footer in Excel's header codes.</p>
 <h2 id="memory">Memory</h2>
 <p>Sheets store cells in blocks of 32 rows by 32 columns, made only where cells are: a sheet with values in A1 and
 XFD1048576 holds two blocks. A cell takes 16 bytes, and a block makes its rows of 32 cells as cells arrive, so a full block

@@ -7923,6 +7923,90 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DefinedName.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DefinedName.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DefinedName",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DefinedName.yml\" sourcestartlinenumber=\"1\">A defined name: a name for a cell, a range, a constant or a formula, such as <code>TaxRate</code> for <code>Sheet1!$B$1</code>. A name\nbelongs to the workbook, or to one sheet when it is local to that sheet. Excel's own names start with <code>_xlnm.</code>, such\nas <code>_xlnm.Print_Area</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DefinedNameCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DefinedNameCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DefinedNameCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DefinedNameCollection.yml\" sourcestartlinenumber=\"1\">A workbook's defined names. A name is unique among the workbook's names, or among one sheet's, case ignored.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.MergedCellCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.MergedCellCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.MergedCellCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.MergedCellCollection.yml\" sourcestartlinenumber=\"1\">A sheet's merged cells: ranges shown as one cell, with the value and style of their top-left cell. Merged ranges do not\noverlap.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PageSetup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PageSetup.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PageSetup",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PageSetup.yml\" sourcestartlinenumber=\"1\">How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order and the header and\nfooter. The print area and the rows and columns repeated on each page are defined names, <code>_xlnm.Print_Area</code> and\n<code>_xlnm.Print_Titles</code>, in <xref href=\"Egap.Spreadsheets.Workbook.Names\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PrintOrientation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PrintOrientation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PrintOrientation",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PrintOrientation.yml\" sourcestartlinenumber=\"1\">Which way a sheet prints on the paper.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PrintPageOrder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PrintPageOrder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PrintPageOrder",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PrintPageOrder.yml\" sourcestartlinenumber=\"1\">The order in which a sheet too big for one page prints its pages.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.RangeAddress.yml",
       "output": {
         ".html": {
@@ -7937,6 +8021,90 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetColumn.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetColumn.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetColumn",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetColumn.yml\" sourcestartlinenumber=\"1\">One column of a sheet: its width, whether it is hidden, its outline level and the style of its empty cells.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetColumnCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetColumnCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetColumnCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetColumnCollection.yml\" sourcestartlinenumber=\"1\">A sheet's columns by zero-based index, and, when enumerated, the columns that have a width, are hidden, outlined or styled.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetRow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetRow.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetRow",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetRow.yml\" sourcestartlinenumber=\"1\">One row of a sheet: its height, whether it is hidden, its outline level and the style of its empty cells.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetRowCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetRowCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetRowCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetRowCollection.yml\" sourcestartlinenumber=\"1\">A sheet's rows by zero-based index, and, when enumerated, the rows that have a height, are hidden, outlined or styled.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetView.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetView",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetView.yml\" sourcestartlinenumber=\"1\">How a sheet shows on screen: gridlines, headings, zoom, direction, frozen panes and whether its tab is selected.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetVisibility.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetVisibility.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetVisibility",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetVisibility.yml\" sourcestartlinenumber=\"1\">Whether a sheet's tab shows.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.Workbook.yml",
       "output": {
         ".html": {
@@ -7947,7 +8115,49 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.Workbook",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Workbook.yml\" sourcestartlinenumber=\"1\">A spreadsheet workbook: its worksheets and the text and styles they share. A workbook is not safe to change from more\nthan one thread at a time.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Workbook.yml\" sourcestartlinenumber=\"1\">A spreadsheet workbook: its worksheets, defined names, and the text and styles the sheets share. Create one in code, or\nload an XLSX, XLSM, XLTX or XLTM file and save it again with what it holds kept, the parts this model does not cover\nincluded. A workbook is not safe to change from more than one thread at a time.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.WorkbookFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.WorkbookFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.WorkbookFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorkbookFormat.yml\" sourcestartlinenumber=\"1\">The kinds of Excel workbook file: workbook or template, with or without macros.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.WorkbookLoadOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.WorkbookLoadOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.WorkbookLoadOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorkbookLoadOptions.yml\" sourcestartlinenumber=\"1\">How a workbook is loaded.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.WorkbookSaveOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.WorkbookSaveOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.WorkbookSaveOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorkbookSaveOptions.yml\" sourcestartlinenumber=\"1\">How a workbook is saved.</p>\n"
     },
     {
       "type": "ManagedReference",
