@@ -152,6 +152,48 @@ public sealed class XlsxTests
     }
 
     [Fact]
+    public void CalculationSettingsAreReadAndWritten()
+    {
+        Workbook book = XlsxSeed.LoadFeatures();
+        Assert.Equal(CalculationMode.Automatic, book.Calculation.Mode);
+        Assert.False(book.Calculation.Iterate);
+        Assert.Equal(100, book.Calculation.MaxIterations);
+
+        // Defaults leave calcPr as the file had it.
+        (_, MemoryStream unchanged) = XlsxSeed.RoundTrip(book);
+        Assert.Equal(["calcId"], XlsxSeed.Xml(XlsxSeed.Parts(unchanged), "xl/workbook.xml").Root!.Element(Ns + "calcPr")!.Attributes().Select(a => a.Name.LocalName));
+
+        book.Calculation.Mode = CalculationMode.Manual;
+        book.Calculation.Iterate = true;
+        book.Calculation.MaxIterations = 250;
+        book.Calculation.MaxChange = 0.5;
+        book.Calculation.Concurrent = false;
+        (Workbook loaded, MemoryStream package) = XlsxSeed.RoundTrip(book);
+        XElement calcPr = XlsxSeed.Xml(XlsxSeed.Parts(package), "xl/workbook.xml").Root!.Element(Ns + "calcPr")!;
+
+        Assert.Equal("manual", (string?)calcPr.Attribute("calcMode"));
+        Assert.Equal("250", (string?)calcPr.Attribute("iterateCount"));
+        Assert.Null(calcPr.Attribute("fullPrecision"));
+        Assert.Equal(CalculationMode.Manual, loaded.Calculation.Mode);
+        Assert.True(loaded.Calculation.Iterate);
+        Assert.Equal(250, loaded.Calculation.MaxIterations);
+        Assert.Equal(0.5, loaded.Calculation.MaxChange);
+        Assert.False(loaded.Calculation.Concurrent);
+        Assert.True(loaded.Calculation.FullPrecision);
+
+        // A new workbook writes calcPr only when a setting needs it.
+        Workbook created = Workbook.Create();
+        created.Calculation.Mode = CalculationMode.AutomaticExceptTables;
+        (Workbook again, _) = XlsxSeed.RoundTrip(created);
+        Assert.Equal(CalculationMode.AutomaticExceptTables, again.Calculation.Mode);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => book.Calculation.MaxIterations = 0);
+        Assert.Throws<ArgumentOutOfRangeException>(() => book.Calculation.MaxIterations = 32_768);
+        Assert.Throws<ArgumentOutOfRangeException>(() => book.Calculation.MaxChange = -1);
+        Assert.Throws<ArgumentOutOfRangeException>(() => book.Calculation.MaxChange = double.NaN);
+    }
+
+    [Fact]
     public void AnUnchangedWorkbookSavesWithEveryPartAndElementKept()
     {
         Workbook book = XlsxSeed.LoadFeatures();

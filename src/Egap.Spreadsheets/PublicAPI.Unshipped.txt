@@ -1,7 +1,26 @@
 #nullable enable
+const Egap.Spreadsheets.CalculationSettings.IterationLimit = 32767 -> int
 const Egap.Spreadsheets.CellAddress.MaxColumns = 16384 -> int
 const Egap.Spreadsheets.CellAddress.MaxRows = 1048576 -> int
 const Egap.Spreadsheets.CellValue.MaxTextLength = 32767 -> int
+Egap.Spreadsheets.CalculationMode
+Egap.Spreadsheets.CalculationMode.Automatic = 0 -> Egap.Spreadsheets.CalculationMode
+Egap.Spreadsheets.CalculationMode.AutomaticExceptTables = 1 -> Egap.Spreadsheets.CalculationMode
+Egap.Spreadsheets.CalculationMode.Manual = 2 -> Egap.Spreadsheets.CalculationMode
+Egap.Spreadsheets.CalculationSettings
+Egap.Spreadsheets.CalculationSettings.CalculationSettings() -> void
+Egap.Spreadsheets.CalculationSettings.Concurrent.get -> bool
+Egap.Spreadsheets.CalculationSettings.Concurrent.set -> void
+Egap.Spreadsheets.CalculationSettings.FullPrecision.get -> bool
+Egap.Spreadsheets.CalculationSettings.FullPrecision.set -> void
+Egap.Spreadsheets.CalculationSettings.Iterate.get -> bool
+Egap.Spreadsheets.CalculationSettings.Iterate.set -> void
+Egap.Spreadsheets.CalculationSettings.MaxChange.get -> double
+Egap.Spreadsheets.CalculationSettings.MaxChange.set -> void
+Egap.Spreadsheets.CalculationSettings.MaxIterations.get -> int
+Egap.Spreadsheets.CalculationSettings.MaxIterations.set -> void
+Egap.Spreadsheets.CalculationSettings.Mode.get -> Egap.Spreadsheets.CalculationMode
+Egap.Spreadsheets.CalculationSettings.Mode.set -> void
 Egap.Spreadsheets.Cell
 Egap.Spreadsheets.Cell.Address.get -> Egap.Spreadsheets.CellAddress
 Egap.Spreadsheets.Cell.Clear() -> void
@@ -705,6 +724,7 @@ Egap.Spreadsheets.TableTotalsFunction.StandardDeviation = 7 -> Egap.Spreadsheets
 Egap.Spreadsheets.TableTotalsFunction.Sum = 1 -> Egap.Spreadsheets.TableTotalsFunction
 Egap.Spreadsheets.TableTotalsFunction.Variance = 8 -> Egap.Spreadsheets.TableTotalsFunction
 Egap.Spreadsheets.Workbook
+Egap.Spreadsheets.Workbook.Calculation.get -> Egap.Spreadsheets.CalculationSettings!
 Egap.Spreadsheets.Workbook.Culture.get -> System.Globalization.CultureInfo!
 Egap.Spreadsheets.Workbook.Culture.set -> void
 Egap.Spreadsheets.Workbook.Date1904.get -> bool

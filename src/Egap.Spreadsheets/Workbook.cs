@@ -39,6 +39,9 @@ public sealed class Workbook
     /// </summary>
     public bool Date1904 { get; set; }
 
+    /// <summary>How the workbook calculates: when, whether circular references iterate, and whether in parallel.</summary>
+    public CalculationSettings Calculation { get; } = new();
+
     /// <summary>The kind of file the workbook was loaded from, and the kind a save to a stream writes when the options name none.</summary>
     public WorkbookFormat Format { get; set; }
 

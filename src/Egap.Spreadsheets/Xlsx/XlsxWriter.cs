@@ -341,21 +341,57 @@ internal static class XlsxWriter
             }
         }
 
-        // Changed formulas or values make the results Excel saved stale: it calculates again on open.
-        bool formulas = book.Worksheets.Any(s => s.Formulas.Count > 0);
-        if (formulas && book.ChangeCount > 0)
-        {
-            XElement? calcPr = root.Element(ns + "calcPr");
-            if (calcPr is null)
-            {
-                calcPr = new XElement(ns + "calcPr");
-                WorkbookOrder.Place(root, calcPr);
-            }
-
-            calcPr.SetAttributeValue("fullCalcOnLoad", "1");
-        }
+        WriteCalculation(book, root);
 
         return new XDocument(root);
+    }
+
+    /// <summary>
+    /// The calculation settings into <c>calcPr</c>: an attribute is written when its value differs from the default or the
+    /// file had it. Changed formulas or values make the results Excel saved stale, so it is told to calculate again on open.
+    /// </summary>
+    private static void WriteCalculation(Workbook book, XElement root)
+    {
+        XNamespace ns = XlsxNames.Main;
+        CalculationSettings settings = book.Calculation;
+        XElement? calcPr = root.Element(ns + "calcPr");
+        bool stale = book.ChangeCount > 0 && book.Worksheets.Any(s => s.Formulas.Count > 0);
+        bool custom = settings.Mode != CalculationMode.Automatic || settings.Iterate || settings.MaxIterations != 100
+            || settings.MaxChange != 0.001 || !settings.FullPrecision || !settings.Concurrent;
+        if (calcPr is null)
+        {
+            if (!stale && !custom)
+            {
+                return;
+            }
+
+            calcPr = new XElement(ns + "calcPr");
+            WorkbookOrder.Place(root, calcPr);
+        }
+
+        void Set(string name, string? value, bool isDefault)
+        {
+            if (!isDefault || calcPr.Attribute(name) is not null)
+            {
+                calcPr.SetAttributeValue(name, value);
+            }
+        }
+
+        Set("calcMode", settings.Mode switch
+        {
+            CalculationMode.Manual => "manual",
+            CalculationMode.AutomaticExceptTables => "autoNoTable",
+            _ => "auto",
+        }, settings.Mode == CalculationMode.Automatic);
+        Set("iterate", settings.Iterate ? "1" : "0", !settings.Iterate);
+        Set("iterateCount", XlsxNames.Integer(settings.MaxIterations), settings.MaxIterations == 100);
+        Set("iterateDelta", XlsxNames.Number(settings.MaxChange), settings.MaxChange == 0.001);
+        Set("fullPrecision", settings.FullPrecision ? "1" : "0", settings.FullPrecision);
+        Set("concurrentCalc", settings.Concurrent ? "1" : "0", settings.Concurrent);
+        if (stale)
+        {
+            calcPr.SetAttributeValue("fullCalcOnLoad", "1");
+        }
     }
 
     /// <summary>A part to write: its name, content type, bytes and relationships (targets as written).</summary>
