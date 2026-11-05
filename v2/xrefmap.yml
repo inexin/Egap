@@ -57050,6 +57050,115 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.NumberFormatCode.ToString
   nameWithType: NumberFormatCode.ToString
+- uid: Egap.Spreadsheets.PageBreakCollection
+  name: PageBreakCollection
+  href: api/Egap.Spreadsheets.PageBreakCollection.html
+  commentId: T:Egap.Spreadsheets.PageBreakCollection
+  fullName: Egap.Spreadsheets.PageBreakCollection
+  nameWithType: PageBreakCollection
+- uid: Egap.Spreadsheets.PageBreakCollection.Add(System.Int32)
+  name: Add(int)
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Add_System_Int32_
+  commentId: M:Egap.Spreadsheets.PageBreakCollection.Add(System.Int32)
+  name.vb: Add(Integer)
+  fullName: Egap.Spreadsheets.PageBreakCollection.Add(int)
+  fullName.vb: Egap.Spreadsheets.PageBreakCollection.Add(Integer)
+  nameWithType: PageBreakCollection.Add(int)
+  nameWithType.vb: PageBreakCollection.Add(Integer)
+- uid: Egap.Spreadsheets.PageBreakCollection.Add*
+  name: Add
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Add_
+  commentId: Overload:Egap.Spreadsheets.PageBreakCollection.Add
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageBreakCollection.Add
+  nameWithType: PageBreakCollection.Add
+- uid: Egap.Spreadsheets.PageBreakCollection.Clear
+  name: Clear()
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Clear
+  commentId: M:Egap.Spreadsheets.PageBreakCollection.Clear
+  fullName: Egap.Spreadsheets.PageBreakCollection.Clear()
+  nameWithType: PageBreakCollection.Clear()
+- uid: Egap.Spreadsheets.PageBreakCollection.Clear*
+  name: Clear
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Clear_
+  commentId: Overload:Egap.Spreadsheets.PageBreakCollection.Clear
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageBreakCollection.Clear
+  nameWithType: PageBreakCollection.Clear
+- uid: Egap.Spreadsheets.PageBreakCollection.Contains(System.Int32)
+  name: Contains(int)
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Contains_System_Int32_
+  commentId: M:Egap.Spreadsheets.PageBreakCollection.Contains(System.Int32)
+  name.vb: Contains(Integer)
+  fullName: Egap.Spreadsheets.PageBreakCollection.Contains(int)
+  fullName.vb: Egap.Spreadsheets.PageBreakCollection.Contains(Integer)
+  nameWithType: PageBreakCollection.Contains(int)
+  nameWithType.vb: PageBreakCollection.Contains(Integer)
+- uid: Egap.Spreadsheets.PageBreakCollection.Contains*
+  name: Contains
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Contains_
+  commentId: Overload:Egap.Spreadsheets.PageBreakCollection.Contains
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageBreakCollection.Contains
+  nameWithType: PageBreakCollection.Contains
+- uid: Egap.Spreadsheets.PageBreakCollection.CopyTo(System.Int32[],System.Int32)
+  name: CopyTo(int[], int)
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_CopyTo_System_Int32___System_Int32_
+  commentId: M:Egap.Spreadsheets.PageBreakCollection.CopyTo(System.Int32[],System.Int32)
+  name.vb: CopyTo(Integer(), Integer)
+  fullName: Egap.Spreadsheets.PageBreakCollection.CopyTo(int[], int)
+  fullName.vb: Egap.Spreadsheets.PageBreakCollection.CopyTo(Integer(), Integer)
+  nameWithType: PageBreakCollection.CopyTo(int[], int)
+  nameWithType.vb: PageBreakCollection.CopyTo(Integer(), Integer)
+- uid: Egap.Spreadsheets.PageBreakCollection.CopyTo*
+  name: CopyTo
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_CopyTo_
+  commentId: Overload:Egap.Spreadsheets.PageBreakCollection.CopyTo
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageBreakCollection.CopyTo
+  nameWithType: PageBreakCollection.CopyTo
+- uid: Egap.Spreadsheets.PageBreakCollection.Count
+  name: Count
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Count
+  commentId: P:Egap.Spreadsheets.PageBreakCollection.Count
+  fullName: Egap.Spreadsheets.PageBreakCollection.Count
+  nameWithType: PageBreakCollection.Count
+- uid: Egap.Spreadsheets.PageBreakCollection.Count*
+  name: Count
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Count_
+  commentId: Overload:Egap.Spreadsheets.PageBreakCollection.Count
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageBreakCollection.Count
+  nameWithType: PageBreakCollection.Count
+- uid: Egap.Spreadsheets.PageBreakCollection.GetEnumerator
+  name: GetEnumerator()
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_GetEnumerator
+  commentId: M:Egap.Spreadsheets.PageBreakCollection.GetEnumerator
+  fullName: Egap.Spreadsheets.PageBreakCollection.GetEnumerator()
+  nameWithType: PageBreakCollection.GetEnumerator()
+- uid: Egap.Spreadsheets.PageBreakCollection.GetEnumerator*
+  name: GetEnumerator
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_GetEnumerator_
+  commentId: Overload:Egap.Spreadsheets.PageBreakCollection.GetEnumerator
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageBreakCollection.GetEnumerator
+  nameWithType: PageBreakCollection.GetEnumerator
+- uid: Egap.Spreadsheets.PageBreakCollection.Remove(System.Int32)
+  name: Remove(int)
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Remove_System_Int32_
+  commentId: M:Egap.Spreadsheets.PageBreakCollection.Remove(System.Int32)
+  name.vb: Remove(Integer)
+  fullName: Egap.Spreadsheets.PageBreakCollection.Remove(int)
+  fullName.vb: Egap.Spreadsheets.PageBreakCollection.Remove(Integer)
+  nameWithType: PageBreakCollection.Remove(int)
+  nameWithType.vb: PageBreakCollection.Remove(Integer)
+- uid: Egap.Spreadsheets.PageBreakCollection.Remove*
+  name: Remove
+  href: api/Egap.Spreadsheets.PageBreakCollection.html#Egap_Spreadsheets_PageBreakCollection_Remove_
+  commentId: Overload:Egap.Spreadsheets.PageBreakCollection.Remove
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageBreakCollection.Remove
+  nameWithType: PageBreakCollection.Remove
 - uid: Egap.Spreadsheets.PageSetup
   name: PageSetup
   href: api/Egap.Spreadsheets.PageSetup.html
@@ -57095,6 +57204,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.PageSetup.CenterVertically
   nameWithType: PageSetup.CenterVertically
+- uid: Egap.Spreadsheets.PageSetup.ColumnBreaks
+  name: ColumnBreaks
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_ColumnBreaks
+  commentId: P:Egap.Spreadsheets.PageSetup.ColumnBreaks
+  fullName: Egap.Spreadsheets.PageSetup.ColumnBreaks
+  nameWithType: PageSetup.ColumnBreaks
+- uid: Egap.Spreadsheets.PageSetup.ColumnBreaks*
+  name: ColumnBreaks
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_ColumnBreaks_
+  commentId: Overload:Egap.Spreadsheets.PageSetup.ColumnBreaks
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageSetup.ColumnBreaks
+  nameWithType: PageSetup.ColumnBreaks
 - uid: Egap.Spreadsheets.PageSetup.FirstPageNumber
   name: FirstPageNumber
   href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_FirstPageNumber
@@ -57251,6 +57373,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.PageSetup.PaperSize
   nameWithType: PageSetup.PaperSize
+- uid: Egap.Spreadsheets.PageSetup.PrintArea
+  name: PrintArea
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_PrintArea
+  commentId: P:Egap.Spreadsheets.PageSetup.PrintArea
+  fullName: Egap.Spreadsheets.PageSetup.PrintArea
+  nameWithType: PageSetup.PrintArea
+- uid: Egap.Spreadsheets.PageSetup.PrintArea*
+  name: PrintArea
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_PrintArea_
+  commentId: Overload:Egap.Spreadsheets.PageSetup.PrintArea
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageSetup.PrintArea
+  nameWithType: PageSetup.PrintArea
 - uid: Egap.Spreadsheets.PageSetup.PrintGridLines
   name: PrintGridLines
   href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_PrintGridLines
@@ -57277,6 +57412,32 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.PageSetup.PrintHeadings
   nameWithType: PageSetup.PrintHeadings
+- uid: Egap.Spreadsheets.PageSetup.PrintTitleColumns
+  name: PrintTitleColumns
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_PrintTitleColumns
+  commentId: P:Egap.Spreadsheets.PageSetup.PrintTitleColumns
+  fullName: Egap.Spreadsheets.PageSetup.PrintTitleColumns
+  nameWithType: PageSetup.PrintTitleColumns
+- uid: Egap.Spreadsheets.PageSetup.PrintTitleColumns*
+  name: PrintTitleColumns
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_PrintTitleColumns_
+  commentId: Overload:Egap.Spreadsheets.PageSetup.PrintTitleColumns
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageSetup.PrintTitleColumns
+  nameWithType: PageSetup.PrintTitleColumns
+- uid: Egap.Spreadsheets.PageSetup.PrintTitleRows
+  name: PrintTitleRows
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_PrintTitleRows
+  commentId: P:Egap.Spreadsheets.PageSetup.PrintTitleRows
+  fullName: Egap.Spreadsheets.PageSetup.PrintTitleRows
+  nameWithType: PageSetup.PrintTitleRows
+- uid: Egap.Spreadsheets.PageSetup.PrintTitleRows*
+  name: PrintTitleRows
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_PrintTitleRows_
+  commentId: Overload:Egap.Spreadsheets.PageSetup.PrintTitleRows
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageSetup.PrintTitleRows
+  nameWithType: PageSetup.PrintTitleRows
 - uid: Egap.Spreadsheets.PageSetup.RightMargin
   name: RightMargin
   href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_RightMargin
@@ -57290,6 +57451,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.PageSetup.RightMargin
   nameWithType: PageSetup.RightMargin
+- uid: Egap.Spreadsheets.PageSetup.RowBreaks
+  name: RowBreaks
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_RowBreaks
+  commentId: P:Egap.Spreadsheets.PageSetup.RowBreaks
+  fullName: Egap.Spreadsheets.PageSetup.RowBreaks
+  nameWithType: PageSetup.RowBreaks
+- uid: Egap.Spreadsheets.PageSetup.RowBreaks*
+  name: RowBreaks
+  href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_RowBreaks_
+  commentId: Overload:Egap.Spreadsheets.PageSetup.RowBreaks
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PageSetup.RowBreaks
+  nameWithType: PageSetup.RowBreaks
 - uid: Egap.Spreadsheets.PageSetup.Scale
   name: Scale
   href: api/Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_Scale
@@ -58047,6 +58221,358 @@ references:
   commentId: F:Egap.Spreadsheets.SheetDrawingKind.Shape
   fullName: Egap.Spreadsheets.SheetDrawingKind.Shape
   nameWithType: SheetDrawingKind.Shape
+- uid: Egap.Spreadsheets.SheetPage
+  name: SheetPage
+  href: api/Egap.Spreadsheets.SheetPage.html
+  commentId: T:Egap.Spreadsheets.SheetPage
+  fullName: Egap.Spreadsheets.SheetPage
+  nameWithType: SheetPage
+- uid: Egap.Spreadsheets.SheetPage.Cells
+  name: Cells
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Cells
+  commentId: P:Egap.Spreadsheets.SheetPage.Cells
+  fullName: Egap.Spreadsheets.SheetPage.Cells
+  nameWithType: SheetPage.Cells
+- uid: Egap.Spreadsheets.SheetPage.Cells*
+  name: Cells
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Cells_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Cells
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Cells
+  nameWithType: SheetPage.Cells
+- uid: Egap.Spreadsheets.SheetPage.Draw(Egami.Drawing.Canvas)
+  name: Draw(Canvas)
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Draw_Egami_Drawing_Canvas_
+  commentId: M:Egap.Spreadsheets.SheetPage.Draw(Egami.Drawing.Canvas)
+  fullName: Egap.Spreadsheets.SheetPage.Draw(Egami.Drawing.Canvas)
+  nameWithType: SheetPage.Draw(Canvas)
+- uid: Egap.Spreadsheets.SheetPage.Draw*
+  name: Draw
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Draw_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Draw
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Draw
+  nameWithType: SheetPage.Draw
+- uid: Egap.Spreadsheets.SheetPage.Height
+  name: Height
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Height
+  commentId: P:Egap.Spreadsheets.SheetPage.Height
+  fullName: Egap.Spreadsheets.SheetPage.Height
+  nameWithType: SheetPage.Height
+- uid: Egap.Spreadsheets.SheetPage.Height*
+  name: Height
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Height_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Height
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Height
+  nameWithType: SheetPage.Height
+- uid: Egap.Spreadsheets.SheetPage.Index
+  name: Index
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Index
+  commentId: P:Egap.Spreadsheets.SheetPage.Index
+  fullName: Egap.Spreadsheets.SheetPage.Index
+  nameWithType: SheetPage.Index
+- uid: Egap.Spreadsheets.SheetPage.Index*
+  name: Index
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Index_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Index
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Index
+  nameWithType: SheetPage.Index
+- uid: Egap.Spreadsheets.SheetPage.Number
+  name: Number
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Number
+  commentId: P:Egap.Spreadsheets.SheetPage.Number
+  fullName: Egap.Spreadsheets.SheetPage.Number
+  nameWithType: SheetPage.Number
+- uid: Egap.Spreadsheets.SheetPage.Number*
+  name: Number
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Number_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Number
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Number
+  nameWithType: SheetPage.Number
+- uid: Egap.Spreadsheets.SheetPage.PageCount
+  name: PageCount
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_PageCount
+  commentId: P:Egap.Spreadsheets.SheetPage.PageCount
+  fullName: Egap.Spreadsheets.SheetPage.PageCount
+  nameWithType: SheetPage.PageCount
+- uid: Egap.Spreadsheets.SheetPage.PageCount*
+  name: PageCount
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_PageCount_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.PageCount
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.PageCount
+  nameWithType: SheetPage.PageCount
+- uid: Egap.Spreadsheets.SheetPage.Render(System.Double)
+  name: Render(double)
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Render_System_Double_
+  commentId: M:Egap.Spreadsheets.SheetPage.Render(System.Double)
+  name.vb: Render(Double)
+  fullName: Egap.Spreadsheets.SheetPage.Render(double)
+  fullName.vb: Egap.Spreadsheets.SheetPage.Render(Double)
+  nameWithType: SheetPage.Render(double)
+  nameWithType.vb: SheetPage.Render(Double)
+- uid: Egap.Spreadsheets.SheetPage.Render*
+  name: Render
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Render_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Render
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Render
+  nameWithType: SheetPage.Render
+- uid: Egap.Spreadsheets.SheetPage.Scale
+  name: Scale
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Scale
+  commentId: P:Egap.Spreadsheets.SheetPage.Scale
+  fullName: Egap.Spreadsheets.SheetPage.Scale
+  nameWithType: SheetPage.Scale
+- uid: Egap.Spreadsheets.SheetPage.Scale*
+  name: Scale
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Scale_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Scale
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Scale
+  nameWithType: SheetPage.Scale
+- uid: Egap.Spreadsheets.SheetPage.Width
+  name: Width
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Width
+  commentId: P:Egap.Spreadsheets.SheetPage.Width
+  fullName: Egap.Spreadsheets.SheetPage.Width
+  nameWithType: SheetPage.Width
+- uid: Egap.Spreadsheets.SheetPage.Width*
+  name: Width
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Width_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Width
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Width
+  nameWithType: SheetPage.Width
+- uid: Egap.Spreadsheets.SheetPage.Worksheet
+  name: Worksheet
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Worksheet
+  commentId: P:Egap.Spreadsheets.SheetPage.Worksheet
+  fullName: Egap.Spreadsheets.SheetPage.Worksheet
+  nameWithType: SheetPage.Worksheet
+- uid: Egap.Spreadsheets.SheetPage.Worksheet*
+  name: Worksheet
+  href: api/Egap.Spreadsheets.SheetPage.html#Egap_Spreadsheets_SheetPage_Worksheet_
+  commentId: Overload:Egap.Spreadsheets.SheetPage.Worksheet
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPage.Worksheet
+  nameWithType: SheetPage.Worksheet
+- uid: Egap.Spreadsheets.SheetPdfOptions
+  name: SheetPdfOptions
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html
+  commentId: T:Egap.Spreadsheets.SheetPdfOptions
+  fullName: Egap.Spreadsheets.SheetPdfOptions
+  nameWithType: SheetPdfOptions
+- uid: Egap.Spreadsheets.SheetPdfOptions.Conformance
+  name: Conformance
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Conformance
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.Conformance
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Conformance
+  nameWithType: SheetPdfOptions.Conformance
+- uid: Egap.Spreadsheets.SheetPdfOptions.Conformance*
+  name: Conformance
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Conformance_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.Conformance
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Conformance
+  nameWithType: SheetPdfOptions.Conformance
+- uid: Egap.Spreadsheets.SheetPdfOptions.Default
+  name: Default
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Default
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.Default
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Default
+  nameWithType: SheetPdfOptions.Default
+- uid: Egap.Spreadsheets.SheetPdfOptions.Default*
+  name: Default
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Default_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.Default
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Default
+  nameWithType: SheetPdfOptions.Default
+- uid: Egap.Spreadsheets.SheetPdfOptions.IsTagged
+  name: IsTagged
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_IsTagged
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.IsTagged
+  fullName: Egap.Spreadsheets.SheetPdfOptions.IsTagged
+  nameWithType: SheetPdfOptions.IsTagged
+- uid: Egap.Spreadsheets.SheetPdfOptions.IsTagged*
+  name: IsTagged
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_IsTagged_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.IsTagged
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.IsTagged
+  nameWithType: SheetPdfOptions.IsTagged
+- uid: Egap.Spreadsheets.SheetPdfOptions.Language
+  name: Language
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Language
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.Language
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Language
+  nameWithType: SheetPdfOptions.Language
+- uid: Egap.Spreadsheets.SheetPdfOptions.Language*
+  name: Language
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Language_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.Language
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Language
+  nameWithType: SheetPdfOptions.Language
+- uid: Egap.Spreadsheets.SheetPdfOptions.Print
+  name: Print
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Print
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.Print
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Print
+  nameWithType: SheetPdfOptions.Print
+- uid: Egap.Spreadsheets.SheetPdfOptions.Print*
+  name: Print
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Print_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.Print
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Print
+  nameWithType: SheetPdfOptions.Print
+- uid: Egap.Spreadsheets.SheetPdfOptions.Tagged
+  name: Tagged
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Tagged
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.Tagged
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Tagged
+  nameWithType: SheetPdfOptions.Tagged
+- uid: Egap.Spreadsheets.SheetPdfOptions.Tagged*
+  name: Tagged
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Tagged_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.Tagged
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Tagged
+  nameWithType: SheetPdfOptions.Tagged
+- uid: Egap.Spreadsheets.SheetPdfOptions.Title
+  name: Title
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Title
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.Title
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Title
+  nameWithType: SheetPdfOptions.Title
+- uid: Egap.Spreadsheets.SheetPdfOptions.Title*
+  name: Title
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Title_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.Title
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Title
+  nameWithType: SheetPdfOptions.Title
+- uid: Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility
+  name: UniversalAccessibility
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_UniversalAccessibility
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility
+  fullName: Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility
+  nameWithType: SheetPdfOptions.UniversalAccessibility
+- uid: Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility*
+  name: UniversalAccessibility
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_UniversalAccessibility_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility
+  nameWithType: SheetPdfOptions.UniversalAccessibility
+- uid: Egap.Spreadsheets.SheetPrintLayout
+  name: SheetPrintLayout
+  href: api/Egap.Spreadsheets.SheetPrintLayout.html
+  commentId: T:Egap.Spreadsheets.SheetPrintLayout
+  fullName: Egap.Spreadsheets.SheetPrintLayout
+  nameWithType: SheetPrintLayout
+- uid: Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions
+  name: FontSubstitutions
+  href: api/Egap.Spreadsheets.SheetPrintLayout.html#Egap_Spreadsheets_SheetPrintLayout_FontSubstitutions
+  commentId: P:Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions
+  fullName: Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions
+  nameWithType: SheetPrintLayout.FontSubstitutions
+- uid: Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions*
+  name: FontSubstitutions
+  href: api/Egap.Spreadsheets.SheetPrintLayout.html#Egap_Spreadsheets_SheetPrintLayout_FontSubstitutions_
+  commentId: Overload:Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions
+  nameWithType: SheetPrintLayout.FontSubstitutions
+- uid: Egap.Spreadsheets.SheetPrintLayout.Pages
+  name: Pages
+  href: api/Egap.Spreadsheets.SheetPrintLayout.html#Egap_Spreadsheets_SheetPrintLayout_Pages
+  commentId: P:Egap.Spreadsheets.SheetPrintLayout.Pages
+  fullName: Egap.Spreadsheets.SheetPrintLayout.Pages
+  nameWithType: SheetPrintLayout.Pages
+- uid: Egap.Spreadsheets.SheetPrintLayout.Pages*
+  name: Pages
+  href: api/Egap.Spreadsheets.SheetPrintLayout.html#Egap_Spreadsheets_SheetPrintLayout_Pages_
+  commentId: Overload:Egap.Spreadsheets.SheetPrintLayout.Pages
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPrintLayout.Pages
+  nameWithType: SheetPrintLayout.Pages
+- uid: Egap.Spreadsheets.SheetPrintOptions
+  name: SheetPrintOptions
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html
+  commentId: T:Egap.Spreadsheets.SheetPrintOptions
+  fullName: Egap.Spreadsheets.SheetPrintOptions
+  nameWithType: SheetPrintOptions
+- uid: Egap.Spreadsheets.SheetPrintOptions.Default
+  name: Default
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_Default
+  commentId: P:Egap.Spreadsheets.SheetPrintOptions.Default
+  fullName: Egap.Spreadsheets.SheetPrintOptions.Default
+  nameWithType: SheetPrintOptions.Default
+- uid: Egap.Spreadsheets.SheetPrintOptions.Default*
+  name: Default
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_Default_
+  commentId: Overload:Egap.Spreadsheets.SheetPrintOptions.Default
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPrintOptions.Default
+  nameWithType: SheetPrintOptions.Default
+- uid: Egap.Spreadsheets.SheetPrintOptions.FilePath
+  name: FilePath
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_FilePath
+  commentId: P:Egap.Spreadsheets.SheetPrintOptions.FilePath
+  fullName: Egap.Spreadsheets.SheetPrintOptions.FilePath
+  nameWithType: SheetPrintOptions.FilePath
+- uid: Egap.Spreadsheets.SheetPrintOptions.FilePath*
+  name: FilePath
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_FilePath_
+  commentId: Overload:Egap.Spreadsheets.SheetPrintOptions.FilePath
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPrintOptions.FilePath
+  nameWithType: SheetPrintOptions.FilePath
+- uid: Egap.Spreadsheets.SheetPrintOptions.Fonts
+  name: Fonts
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_Fonts
+  commentId: P:Egap.Spreadsheets.SheetPrintOptions.Fonts
+  fullName: Egap.Spreadsheets.SheetPrintOptions.Fonts
+  nameWithType: SheetPrintOptions.Fonts
+- uid: Egap.Spreadsheets.SheetPrintOptions.Fonts*
+  name: Fonts
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_Fonts_
+  commentId: Overload:Egap.Spreadsheets.SheetPrintOptions.Fonts
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPrintOptions.Fonts
+  nameWithType: SheetPrintOptions.Fonts
+- uid: Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas
+  name: IgnorePrintAreas
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_IgnorePrintAreas
+  commentId: P:Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas
+  fullName: Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas
+  nameWithType: SheetPrintOptions.IgnorePrintAreas
+- uid: Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas*
+  name: IgnorePrintAreas
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_IgnorePrintAreas_
+  commentId: Overload:Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas
+  nameWithType: SheetPrintOptions.IgnorePrintAreas
+- uid: Egap.Spreadsheets.SheetPrintOptions.PrintTime
+  name: PrintTime
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_PrintTime
+  commentId: P:Egap.Spreadsheets.SheetPrintOptions.PrintTime
+  fullName: Egap.Spreadsheets.SheetPrintOptions.PrintTime
+  nameWithType: SheetPrintOptions.PrintTime
+- uid: Egap.Spreadsheets.SheetPrintOptions.PrintTime*
+  name: PrintTime
+  href: api/Egap.Spreadsheets.SheetPrintOptions.html#Egap_Spreadsheets_SheetPrintOptions_PrintTime_
+  commentId: Overload:Egap.Spreadsheets.SheetPrintOptions.PrintTime
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPrintOptions.PrintTime
+  nameWithType: SheetPrintOptions.PrintTime
 - uid: Egap.Spreadsheets.SheetReader
   name: SheetReader
   href: api/Egap.Spreadsheets.SheetReader.html
@@ -59327,6 +59853,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.Names
   nameWithType: Workbook.Names
+- uid: Egap.Spreadsheets.Workbook.Paginate(Egap.Spreadsheets.SheetPrintOptions)
+  name: Paginate(SheetPrintOptions?)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Paginate_Egap_Spreadsheets_SheetPrintOptions_
+  commentId: M:Egap.Spreadsheets.Workbook.Paginate(Egap.Spreadsheets.SheetPrintOptions)
+  name.vb: Paginate(SheetPrintOptions)
+  fullName: Egap.Spreadsheets.Workbook.Paginate(Egap.Spreadsheets.SheetPrintOptions?)
+  fullName.vb: Egap.Spreadsheets.Workbook.Paginate(Egap.Spreadsheets.SheetPrintOptions)
+  nameWithType: Workbook.Paginate(SheetPrintOptions?)
+  nameWithType.vb: Workbook.Paginate(SheetPrintOptions)
+- uid: Egap.Spreadsheets.Workbook.Paginate*
+  name: Paginate
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Paginate_
+  commentId: Overload:Egap.Spreadsheets.Workbook.Paginate
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Workbook.Paginate
+  nameWithType: Workbook.Paginate
 - uid: Egap.Spreadsheets.Workbook.Save(System.IO.Stream,Egap.Spreadsheets.WorkbookSaveOptions)
   name: Save(Stream, WorkbookSaveOptions?)
   href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Save_System_IO_Stream_Egap_Spreadsheets_WorkbookSaveOptions_
@@ -59352,6 +59894,31 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.Save
   nameWithType: Workbook.Save
+- uid: Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)
+  name: SaveAsPdf(Stream, SheetPdfOptions?)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_SaveAsPdf_System_IO_Stream_Egap_Spreadsheets_SheetPdfOptions_
+  commentId: M:Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)
+  name.vb: SaveAsPdf(Stream, SheetPdfOptions)
+  fullName: Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream, Egap.Spreadsheets.SheetPdfOptions?)
+  fullName.vb: Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream, Egap.Spreadsheets.SheetPdfOptions)
+  nameWithType: Workbook.SaveAsPdf(Stream, SheetPdfOptions?)
+  nameWithType.vb: Workbook.SaveAsPdf(Stream, SheetPdfOptions)
+- uid: Egap.Spreadsheets.Workbook.SaveAsPdf(System.String,Egap.Spreadsheets.SheetPdfOptions)
+  name: SaveAsPdf(string, SheetPdfOptions?)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_SaveAsPdf_System_String_Egap_Spreadsheets_SheetPdfOptions_
+  commentId: M:Egap.Spreadsheets.Workbook.SaveAsPdf(System.String,Egap.Spreadsheets.SheetPdfOptions)
+  name.vb: SaveAsPdf(String, SheetPdfOptions)
+  fullName: Egap.Spreadsheets.Workbook.SaveAsPdf(string, Egap.Spreadsheets.SheetPdfOptions?)
+  fullName.vb: Egap.Spreadsheets.Workbook.SaveAsPdf(String, Egap.Spreadsheets.SheetPdfOptions)
+  nameWithType: Workbook.SaveAsPdf(string, SheetPdfOptions?)
+  nameWithType.vb: Workbook.SaveAsPdf(String, SheetPdfOptions)
+- uid: Egap.Spreadsheets.Workbook.SaveAsPdf*
+  name: SaveAsPdf
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_SaveAsPdf_
+  commentId: Overload:Egap.Spreadsheets.Workbook.SaveAsPdf
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Workbook.SaveAsPdf
+  nameWithType: Workbook.SaveAsPdf
 - uid: Egap.Spreadsheets.Workbook.Worksheets
   name: Worksheets
   href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Worksheets
@@ -59687,6 +60254,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.PageSetup
   nameWithType: Worksheet.PageSetup
+- uid: Egap.Spreadsheets.Worksheet.Paginate(Egap.Spreadsheets.SheetPrintOptions)
+  name: Paginate(SheetPrintOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Paginate_Egap_Spreadsheets_SheetPrintOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.Paginate(Egap.Spreadsheets.SheetPrintOptions)
+  name.vb: Paginate(SheetPrintOptions)
+  fullName: Egap.Spreadsheets.Worksheet.Paginate(Egap.Spreadsheets.SheetPrintOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.Paginate(Egap.Spreadsheets.SheetPrintOptions)
+  nameWithType: Worksheet.Paginate(SheetPrintOptions?)
+  nameWithType.vb: Worksheet.Paginate(SheetPrintOptions)
+- uid: Egap.Spreadsheets.Worksheet.Paginate*
+  name: Paginate
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Paginate_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.Paginate
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.Paginate
+  nameWithType: Worksheet.Paginate
 - uid: Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress)
   name: Range(RangeAddress)
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Range_Egap_Spreadsheets_RangeAddress_
@@ -59731,6 +60314,31 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Rows
   nameWithType: Worksheet.Rows
+- uid: Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)
+  name: SaveAsPdf(Stream, SheetPdfOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveAsPdf_System_IO_Stream_Egap_Spreadsheets_SheetPdfOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)
+  name.vb: SaveAsPdf(Stream, SheetPdfOptions)
+  fullName: Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream, Egap.Spreadsheets.SheetPdfOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream, Egap.Spreadsheets.SheetPdfOptions)
+  nameWithType: Worksheet.SaveAsPdf(Stream, SheetPdfOptions?)
+  nameWithType.vb: Worksheet.SaveAsPdf(Stream, SheetPdfOptions)
+- uid: Egap.Spreadsheets.Worksheet.SaveAsPdf(System.String,Egap.Spreadsheets.SheetPdfOptions)
+  name: SaveAsPdf(string, SheetPdfOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveAsPdf_System_String_Egap_Spreadsheets_SheetPdfOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.SaveAsPdf(System.String,Egap.Spreadsheets.SheetPdfOptions)
+  name.vb: SaveAsPdf(String, SheetPdfOptions)
+  fullName: Egap.Spreadsheets.Worksheet.SaveAsPdf(string, Egap.Spreadsheets.SheetPdfOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.SaveAsPdf(String, Egap.Spreadsheets.SheetPdfOptions)
+  nameWithType: Worksheet.SaveAsPdf(string, SheetPdfOptions?)
+  nameWithType.vb: Worksheet.SaveAsPdf(String, SheetPdfOptions)
+- uid: Egap.Spreadsheets.Worksheet.SaveAsPdf*
+  name: SaveAsPdf
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveAsPdf_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.SaveAsPdf
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.SaveAsPdf
+  nameWithType: Worksheet.SaveAsPdf
 - uid: Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
   name: SaveCsv(Stream, CsvOptions?)
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_

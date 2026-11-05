@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PageSetup | Egap ">
       
-      <meta name="description" content="How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order and the header and footer. The print area and the rows and columns repeated on each page are defined names, _xlnm.Print_Area and _xlnm.Print_Titles, in .">
+      <meta name="description" content="How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order, the header and footer, the print area, the rows and columns repeated on each page and the manual page breaks. The print area and the titles are kept as Excel keeps them, as the sheet&#39;s defined names _xlnm.Print_Area and _xlnm.Print_Titles in .">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Spreadsheets_PageSetup" data-uid="Egap.Spreadsheets.PageSetup" class="text-break">
-Class PageSetup  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L33"><i class="bi bi-code-slash"></i></a>
+Class PageSetup  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,9 +97,10 @@ Class PageSetup  <a class="header-action link-secondary" title="View source" hre
   <dl><dt>Assembly</dt><dd>Egap.Spreadsheets.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order and the header and
-footer. The print area and the rows and columns repeated on each page are defined names, <code>_xlnm.Print_Area</code> and
-<code>_xlnm.Print_Titles</code>, in <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Names">Names</a>.</p>
+  <div class="markdown summary"><p>How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order, the header and
+footer, the print area, the rows and columns repeated on each page and the manual page breaks. The print area and the
+titles are kept as Excel keeps them, as the sheet's defined names <code>_xlnm.Print_Area</code> and <code>_xlnm.Print_Titles</code> in
+<a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Names">Names</a>.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -156,7 +157,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_BottomMargin" data-uid="Egap.Spreadsheets.PageSetup.BottomMargin">
   BottomMargin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L173"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The bottom margin in inches; Excel's default is 0.75.</p>
@@ -188,7 +189,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_CenterHorizontally" data-uid="Egap.Spreadsheets.PageSetup.CenterHorizontally">
   CenterHorizontally
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L182"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the sheet is centred across the page.</p>
@@ -220,7 +221,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_CenterVertically" data-uid="Egap.Spreadsheets.PageSetup.CenterVertically">
   CenterVertically
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L185"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the sheet is centred down the page.</p>
@@ -248,11 +249,43 @@ footer. The print area and the rows and columns repeated on each page are define
 
 
 
+  <a id="Egap_Spreadsheets_PageSetup_ColumnBreaks_" data-uid="Egap.Spreadsheets.PageSetup.ColumnBreaks*"></a>
+
+  <h3 id="Egap_Spreadsheets_PageSetup_ColumnBreaks" data-uid="Egap.Spreadsheets.PageSetup.ColumnBreaks">
+  ColumnBreaks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The manual page breaks between columns: each is the index of the column that starts a new page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PageBreakCollection ColumnBreaks { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.PageBreakCollection.html">PageBreakCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_PageSetup_FirstPageNumber_" data-uid="Egap.Spreadsheets.PageSetup.FirstPageNumber*"></a>
 
   <h3 id="Egap_Spreadsheets_PageSetup_FirstPageNumber" data-uid="Egap.Spreadsheets.PageSetup.FirstPageNumber">
   FirstPageNumber
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L158"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The number of the first page, or null to start at 1.</p>
@@ -284,7 +317,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_FitToHeight" data-uid="Egap.Spreadsheets.PageSetup.FitToHeight">
   FitToHeight
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L151"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How many pages tall the sheet fits when <a class="xref" href="Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_FitToPage">FitToPage</a> is set; 0 for as many as it needs. 1 by default.</p>
@@ -322,7 +355,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_FitToPage" data-uid="Egap.Spreadsheets.PageSetup.FitToPage">
   FitToPage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L139"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the sheet is scaled to fit <a class="xref" href="Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_FitToWidth">FitToWidth</a> pages across and <a class="xref" href="Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_FitToHeight">FitToHeight</a> down.</p>
@@ -354,7 +387,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_FitToWidth" data-uid="Egap.Spreadsheets.PageSetup.FitToWidth">
   FitToWidth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L143"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How many pages wide the sheet fits when <a class="xref" href="Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_FitToPage">FitToPage</a> is set; 0 for as many as it needs. 1 by default.</p>
@@ -392,7 +425,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_Footer" data-uid="Egap.Spreadsheets.PageSetup.Footer">
   Footer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L200"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The footer on each page in Excel's header code, or null for none.</p>
@@ -424,7 +457,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_FooterMargin" data-uid="Egap.Spreadsheets.PageSetup.FooterMargin">
   FooterMargin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L179"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The footer's distance from the bottom edge in inches; Excel's default is 0.3.</p>
@@ -456,7 +489,7 @@ footer. The print area and the rows and columns repeated on each page are define
 
   <h3 id="Egap_Spreadsheets_PageSetup_Header" data-uid="Egap.Spreadsheets.PageSetup.Header">
   Header
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L197"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The header on each page in Excel's header code, such as <code>&amp;L&amp;D&amp;CReport&amp;RPage &amp;P of &amp;N</code>, or
@@ -489,7 +522,7 @@ null for none.</p>
 
   <h3 id="Egap_Spreadsheets_PageSetup_HeaderMargin" data-uid="Egap.Spreadsheets.PageSetup.HeaderMargin">
   HeaderMargin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L176"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The header's distance from the top edge in inches; Excel's default is 0.3.</p>
@@ -521,7 +554,7 @@ null for none.</p>
 
   <h3 id="Egap_Spreadsheets_PageSetup_LeftMargin" data-uid="Egap.Spreadsheets.PageSetup.LeftMargin">
   LeftMargin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L164"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The left margin in inches; Excel's default is 0.7.</p>
@@ -553,7 +586,7 @@ null for none.</p>
 
   <h3 id="Egap_Spreadsheets_PageSetup_Orientation" data-uid="Egap.Spreadsheets.PageSetup.Orientation">
   Orientation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L125"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Which way the sheet prints.</p>
@@ -585,7 +618,7 @@ null for none.</p>
 
   <h3 id="Egap_Spreadsheets_PageSetup_PageOrder" data-uid="Egap.Spreadsheets.PageSetup.PageOrder">
   PageOrder
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L161"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The order pages print in.</p>
@@ -617,7 +650,7 @@ null for none.</p>
 
   <h3 id="Egap_Spreadsheets_PageSetup_PaperSize" data-uid="Egap.Spreadsheets.PageSetup.PaperSize">
   PaperSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The paper size as SpreadsheetML numbers them (1 Letter, 9 A4, 5 Legal and so on), or null for the default.</p>
@@ -645,11 +678,44 @@ null for none.</p>
 
 
 
+  <a id="Egap_Spreadsheets_PageSetup_PrintArea_" data-uid="Egap.Spreadsheets.PageSetup.PrintArea*"></a>
+
+  <h3 id="Egap_Spreadsheets_PageSetup_PrintArea" data-uid="Egap.Spreadsheets.PageSetup.PrintArea">
+  PrintArea
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The ranges that print, each starting on a new page, or empty to print the sheet's used cells. Set an empty list to
+clear it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;RangeAddress&gt; PrintArea { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Spreadsheets.RangeAddress.html">RangeAddress</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_PageSetup_PrintGridLines_" data-uid="Egap.Spreadsheets.PageSetup.PrintGridLines*"></a>
 
   <h3 id="Egap_Spreadsheets_PageSetup_PrintGridLines" data-uid="Egap.Spreadsheets.PageSetup.PrintGridLines">
   PrintGridLines
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L188"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether gridlines print.</p>
@@ -681,7 +747,7 @@ null for none.</p>
 
   <h3 id="Egap_Spreadsheets_PageSetup_PrintHeadings" data-uid="Egap.Spreadsheets.PageSetup.PrintHeadings">
   PrintHeadings
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L191"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether row and column headings print.</p>
@@ -709,11 +775,87 @@ null for none.</p>
 
 
 
+  <a id="Egap_Spreadsheets_PageSetup_PrintTitleColumns_" data-uid="Egap.Spreadsheets.PageSetup.PrintTitleColumns*"></a>
+
+  <h3 id="Egap_Spreadsheets_PageSetup_PrintTitleColumns" data-uid="Egap.Spreadsheets.PageSetup.PrintTitleColumns">
+  PrintTitleColumns
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The columns printed at the left of every page, such as <code>A:B</code>, or null for none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RangeAddress? PrintTitleColumns { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.RangeAddress.html">RangeAddress</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The range is not whole columns.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_PageSetup_PrintTitleRows_" data-uid="Egap.Spreadsheets.PageSetup.PrintTitleRows*"></a>
+
+  <h3 id="Egap_Spreadsheets_PageSetup_PrintTitleRows" data-uid="Egap.Spreadsheets.PageSetup.PrintTitleRows">
+  PrintTitleRows
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The rows printed at the top of every page, such as <code>1:2</code>, or null for none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RangeAddress? PrintTitleRows { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.RangeAddress.html">RangeAddress</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The range is not whole rows.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Spreadsheets_PageSetup_RightMargin_" data-uid="Egap.Spreadsheets.PageSetup.RightMargin*"></a>
 
   <h3 id="Egap_Spreadsheets_PageSetup_RightMargin" data-uid="Egap.Spreadsheets.PageSetup.RightMargin">
   RightMargin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L167"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The right margin in inches; Excel's default is 0.7.</p>
@@ -741,11 +883,43 @@ null for none.</p>
 
 
 
+  <a id="Egap_Spreadsheets_PageSetup_RowBreaks_" data-uid="Egap.Spreadsheets.PageSetup.RowBreaks*"></a>
+
+  <h3 id="Egap_Spreadsheets_PageSetup_RowBreaks" data-uid="Egap.Spreadsheets.PageSetup.RowBreaks">
+  RowBreaks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The manual page breaks between rows: each is the index of the row that starts a new page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PageBreakCollection RowBreaks { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.PageBreakCollection.html">PageBreakCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_PageSetup_Scale_" data-uid="Egap.Spreadsheets.PageSetup.Scale*"></a>
 
   <h3 id="Egap_Spreadsheets_PageSetup_Scale" data-uid="Egap.Spreadsheets.PageSetup.Scale">
   Scale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L132"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The print scale in per cent, from 10 to 400, or null for 100; not used when <a class="xref" href="Egap.Spreadsheets.PageSetup.html#Egap_Spreadsheets_PageSetup_FitToPage">FitToPage</a> is set.</p>
@@ -783,7 +957,7 @@ null for none.</p>
 
   <h3 id="Egap_Spreadsheets_PageSetup_TopMargin" data-uid="Egap.Spreadsheets.PageSetup.TopMargin">
   TopMargin
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L170"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The top margin in inches; Excel's default is 0.75.</p>
@@ -815,7 +989,7 @@ null for none.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L33" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PageSetup.cs/#L36" class="edit-link">Edit this page</a>
         </div>
 
 

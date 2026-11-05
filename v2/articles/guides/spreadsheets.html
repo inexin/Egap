@@ -234,8 +234,50 @@ sheet.PageSetup.Header = &quot;&amp;CQuarterly report&quot;;
 sheet.PageSetup.Footer = &quot;&amp;RPage &amp;P of &amp;N&quot;;
 </code></pre>
 <p>Excel's print area and print titles are names local to their sheet: <code>_xlnm.Print_Area</code> and <code>_xlnm.Print_Titles</code>.
-<code>sheet.PageSetup</code> holds the rest of what Excel's Page Setup dialog sets: paper, orientation, scale or fit, margins in
-inches, centring, gridlines, headings, page order and the header and footer in Excel's header codes.</p>
+<code>PageSetup.PrintArea</code>, <code>PrintTitleRows</code> and <code>PrintTitleColumns</code> read and write those names for you, and <code>RowBreaks</code> and
+<code>ColumnBreaks</code> hold the manual page breaks. <code>sheet.PageSetup</code> holds the rest of what Excel's Page Setup dialog sets:
+paper, orientation, scale or fit, margins in inches, centring, gridlines, headings, page order and the header and footer
+in Excel's header codes.</p>
+<h3 id="printing-to-pdf-and-images">Printing to PDF and images</h3>
+<p><code>SaveAsPdf</code> prints a sheet, or every visible sheet of a workbook, as Excel prints it: the print area (or the cells in use,
+from A1), page order, manual breaks, scale or fit to pages, print titles on every page, gridlines and headings, and the
+header and footer with their fields filled in. Cells draw with their fills, borders, fonts, alignment, wrapping,
+rotation, shrinking and overflow into empty neighbours, number formats (<code>###</code> where a number does not fit), colour
+scales, data bars, icon sets and pictures.</p>
+<pre><code class="lang-csharp">using Egami;
+using Egami.Pixels;
+using Egap.Pdf;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+for (int row = 0; row &lt; 200; row++)
+{
+    sheet[row, 0].Value = $&quot;Item {row + 1}&quot;;
+    sheet[row, 1].Value = row * 1.5;
+}
+
+sheet.PageSetup.PrintTitleRows = RangeAddress.Parse(&quot;1:1&quot;);
+sheet.PageSetup.RowBreaks.Add(100);                  // row 101 starts a page
+sheet.PageSetup.Footer = &quot;&amp;CPage &amp;P of &amp;N&quot;;
+
+SheetPrintLayout layout = sheet.Paginate();
+int pages = layout.Pages.Count;                      // 6 on Letter: rows 1-44, 45-87, 88-100, 101-143, ...
+sheet.SaveAsPdf(&quot;items.pdf&quot;);
+sheet.SaveAsPdf(&quot;items-a.pdf&quot;, new SheetPdfOptions { Conformance = PdfAConformance.PdfA2a, Language = &quot;en-US&quot; });
+Raster&lt;Rgba8&gt; firstPage = layout.Pages[0].Render(150);
+</code></pre>
+<p><code>Paginate</code> lays the pages out without drawing them: each <code>SheetPage</code> tells the cells it prints, its size in points and
+its scale, and draws itself on any Egami canvas (<code>Draw</code>) or renders to a raster (<code>Render</code>). <code>book.SaveAsPdf</code> prints every
+visible sheet in tab order, with page numbers counted per sheet.</p>
+<p>Excel lays a print out for its printer, and Egap follows its PDF export at 600 dpi: a column prints in whole dots of the
+normal font's digit width (Calibri 11: 47 dots, so a default column is 51.6 points on paper against 48 on screen) and
+rows print 1.6 % taller than their height. Page breaks then fall where Excel's fall.</p>
+<p><code>SheetPdfOptions.Tagged</code> tags the PDF for accessibility: a table per print area, a row per sheet row,
+header cells for the print titles, merged cells spanning, pictures as figures, and gridlines, fills and repeated titles
+as artifacts. <code>Conformance</code> makes a PDF/A file (the a levels are tagged) and <code>UniversalAccessibility</code> a PDF/UA one. Fonts come through
+Egap.Documents' font chain; <code>SheetPrintOptions.Fonts</code> chooses it, and <code>layout.FontSubstitutions</code> lists the fonts used in
+place of ones a sheet asks for, such as Carlito for Calibri.</p>
 <h2 id="formulas">Formulas</h2>
 <p>Formulas follow Excel's grammar: A1 references with <code>$</code> (<code>$B$4</code>, <code>A:C</code>, <code>2:5</code>), sheet, 3D and external references
 (<code>'Q 1'!A1</code>, <code>Jan:Mar!B2</code>, <code>[1]Prices!A1</code>), structured references to tables (<code>Sales[Amount]</code>, <code>Sales[[#Headers],[Region]]</code>,

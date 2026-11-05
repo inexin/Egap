@@ -245,10 +245,16 @@ shows it in a cell, for a given culture; <a class="xref" href="Egap.Spreadsheets
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.PageBreakCollection.html">PageBreakCollection</a></dt>
+      <dd><p>A sheet's manual page breaks in one direction, in order: each is the index of the row or column that starts a new page.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.PageSetup.html">PageSetup</a></dt>
-      <dd><p>How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order and the header and
-footer. The print area and the rows and columns repeated on each page are defined names, <code>_xlnm.Print_Area</code> and
-<code>_xlnm.Print_Titles</code>, in <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Names">Names</a>.</p>
+      <dd><p>How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order, the header and
+footer, the print area, the rows and columns repeated on each page and the manual page breaks. The print area and the
+titles are kept as Excel keeps them, as the sheet's defined names <code>_xlnm.Print_Area</code> and <code>_xlnm.Print_Titles</code> in
+<a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Names">Names</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -270,6 +276,27 @@ text can be changed, and a picture's image replaced; everything else about it is
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.SheetDrawingCollection.html">SheetDrawingCollection</a></dt>
       <dd><p>A sheet's drawing objects, back to front.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetPage.html">SheetPage</a></dt>
+      <dd><p>A printed page of a sheet: its size, the cells on it, and drawing it.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetPdfOptions.html">SheetPdfOptions</a></dt>
+      <dd><p>How sheets export to PDF.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetPrintLayout.html">SheetPrintLayout</a></dt>
+      <dd><p>One or more sheets laid out on pages as Excel prints them (Build Plan task 17): the print area, the scale or fit to pages,
+the page breaks, the repeated titles and the page order give the pages; each draws on any Egami canvas.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetPrintOptions.html">SheetPrintOptions</a></dt>
+      <dd><p>How sheets lay out on pages to print, export to PDF or render as images.</p>
 </dd>
     </dl>
     <dl class="jumplist">

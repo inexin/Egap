@@ -8413,6 +8413,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PageBreakCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PageBreakCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PageBreakCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PageBreakCollection.yml\" sourcestartlinenumber=\"1\">A sheet's manual page breaks in one direction, in order: each is the index of the row or column that starts a new page.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.PageSetup.yml",
       "output": {
         ".html": {
@@ -8423,7 +8437,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.PageSetup",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PageSetup.yml\" sourcestartlinenumber=\"1\">How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order and the header and\nfooter. The print area and the rows and columns repeated on each page are defined names, <code>_xlnm.Print_Area</code> and\n<code>_xlnm.Print_Titles</code>, in <xref href=\"Egap.Spreadsheets.Workbook.Names\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PageSetup.yml\" sourcestartlinenumber=\"1\">How a sheet prints: paper, orientation, scaling, margins, centring, gridlines, headings, page order, the header and\nfooter, the print area, the rows and columns repeated on each page and the manual page breaks. The print area and the\ntitles are kept as Excel keeps them, as the sheet's defined names <code>_xlnm.Print_Area</code> and <code>_xlnm.Print_Titles</code> in\n<xref href=\"Egap.Spreadsheets.Workbook.Names\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8536,6 +8550,62 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.SheetDrawingKind",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetDrawingKind.yml\" sourcestartlinenumber=\"1\">What a drawing object on a sheet is.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetPage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetPage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetPage",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetPage.yml\" sourcestartlinenumber=\"1\">A printed page of a sheet: its size, the cells on it, and drawing it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetPdfOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetPdfOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetPdfOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetPdfOptions.yml\" sourcestartlinenumber=\"1\">How sheets export to PDF.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetPrintLayout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetPrintLayout.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetPrintLayout",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetPrintLayout.yml\" sourcestartlinenumber=\"1\">One or more sheets laid out on pages as Excel prints them (Build Plan task 17): the print area, the scale or fit to pages,\nthe page breaks, the repeated titles and the page order give the pages; each draws on any Egami canvas.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetPrintOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetPrintOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetPrintOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetPrintOptions.yml\" sourcestartlinenumber=\"1\">How sheets lay out on pages to print, export to PDF or render as images.</p>\n"
     },
     {
       "type": "ManagedReference",

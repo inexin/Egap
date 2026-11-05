@@ -695,6 +695,44 @@ encoding, culture and type detection.</p>
 
 
 
+  <a id="Egap_Spreadsheets_Workbook_Paginate_" data-uid="Egap.Spreadsheets.Workbook.Paginate*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Paginate_Egap_Spreadsheets_SheetPrintOptions_" data-uid="Egap.Spreadsheets.Workbook.Paginate(Egap.Spreadsheets.SheetPrintOptions)">
+  Paginate(SheetPrintOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L190"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The visible sheets laid out on pages as Excel prints the entire workbook, sheet after sheet; see
+<a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Paginate_Egap_Spreadsheets_SheetPrintOptions_">Paginate(SheetPrintOptions?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SheetPrintLayout Paginate(SheetPrintOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.SheetPrintOptions.html">SheetPrintOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.SheetPrintLayout.html">SheetPrintLayout</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_Workbook_Save_" data-uid="Egap.Spreadsheets.Workbook.Save*"></a>
 
   <h3 id="Egap_Spreadsheets_Workbook_Save_System_IO_Stream_Egap_Spreadsheets_WorkbookSaveOptions_" data-uid="Egap.Spreadsheets.Workbook.Save(System.IO.Stream,Egap.Spreadsheets.WorkbookSaveOptions)">
@@ -776,6 +814,86 @@ A <code>.csv</code>, <code>.tsv</code> or <code>.tab</code> path writes the firs
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
     <dd><p>The extension names no workbook kind and the options name none.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_SaveAsPdf_" data-uid="Egap.Spreadsheets.Workbook.SaveAsPdf*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_SaveAsPdf_System_IO_Stream_Egap_Spreadsheets_SheetPdfOptions_" data-uid="Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)">
+  SaveAsPdf(Stream, SheetPdfOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the visible sheets' printed pages as a PDF to a stream, which is left open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SaveAsPdf(Stream stream, SheetPdfOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.SheetPdfOptions.html">SheetPdfOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The stream is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_SaveAsPdf_" data-uid="Egap.Spreadsheets.Workbook.SaveAsPdf*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_SaveAsPdf_System_String_Egap_Spreadsheets_SheetPdfOptions_" data-uid="Egap.Spreadsheets.Workbook.SaveAsPdf(System.String,Egap.Spreadsheets.SheetPdfOptions)">
+  SaveAsPdf(string, SheetPdfOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L194"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the visible sheets' printed pages to a PDF file, as Excel's export of the entire workbook does.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SaveAsPdf(string path, SheetPdfOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.SheetPdfOptions.html">SheetPdfOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The path is null or empty.</p>
 </dd>
   </dl>
 
