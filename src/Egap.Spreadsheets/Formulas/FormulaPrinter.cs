@@ -63,7 +63,8 @@ internal static class FormulaPrinter
                     Reference(reference);
                     break;
                 case NameNode name:
-                    output.Append(name.Prefix?.Text).Append(name.Name);
+                    Prefix(name.Prefix);
+                    output.Append(name.Name);
                     break;
                 case StructuredNode structured:
                     output.Append(structured.Text);
@@ -87,11 +88,81 @@ internal static class FormulaPrinter
                     output.Append(postfix.OperatorLead).Append(postfix.Operator);
                     break;
                 case BinaryNode binary:
-                    Node(binary.Left);
+                    if (style != ReferenceStyle.Written && binary.Operator == BinaryOperator.Range && Rightmost(binary.Left) is NameNode or NumberNode)
+                    {
+                        // A name or number before ':' would join what follows into one reference once references are
+                        // written afresh (a name a before a column S reads as the columns A:S), so it is kept apart.
+                        output.Append('(');
+                        Node(binary.Left);
+                        output.Append(')');
+                    }
+                    else
+                    {
+                        Node(binary.Left);
+                    }
+
                     output.Append(binary.OperatorLead).Append(binary.OperatorText);
                     Node(binary.Right);
                     break;
             }
+        }
+
+        /// <summary>The last token a node writes.</summary>
+        private static FormulaNode Rightmost(FormulaNode node) => node switch
+        {
+            BinaryNode binary => Rightmost(binary.Right),
+            UnaryNode unary => Rightmost(unary.Operand),
+            _ => node,
+        };
+
+        /// <summary>
+        /// A sheet prefix: as written in <see cref="ReferenceStyle.Written"/>, otherwise made again and quoted when a
+        /// sheet name would not read back unquoted in either style (a name such as <c>R</c> or <c>C2</c> is a reference).
+        /// </summary>
+        private void Prefix(SheetPrefix? prefix)
+        {
+            if (prefix is null)
+            {
+                return;
+            }
+
+            if (style == ReferenceStyle.Written || prefix.FirstSheet is null)
+            {
+                output.Append(prefix.Text);
+                return;
+            }
+
+            string sheets = prefix.LastSheet is { } last && last != prefix.FirstSheet ? $"{prefix.FirstSheet}:{last}" : prefix.FirstSheet;
+            string book = prefix.Book is null ? "" : $"[{prefix.Book}]";
+            if (Plain(prefix.FirstSheet) && Plain(prefix.LastSheet ?? prefix.FirstSheet) && (prefix.Book ?? "").All(c => char.IsLetterOrDigit(c) || c is '_' or '.'))
+            {
+                output.Append(book).Append(sheets).Append('!');
+                return;
+            }
+
+            output.Append('\'').Append((book + sheets).Replace("'", "''", StringComparison.Ordinal)).Append("'!");
+        }
+
+        /// <summary>Whether a sheet name reads back unquoted: a word that is no reference in either style.</summary>
+        private static bool Plain(string name)
+        {
+            if (name.Length == 0 || !(char.IsLetter(name[0]) || name[0] == '_'))
+            {
+                return false;
+            }
+
+            foreach (char c in name)
+            {
+                if (!(char.IsLetterOrDigit(c) || c is '_' or '.'))
+                {
+                    return false;
+                }
+            }
+
+            return !FormulaParser.LooksLikeR1C1(name)
+                && !FormulaParser.TryCell(name, out _, out _, out _, out _)
+                && !name.Equals("TRUE", StringComparison.OrdinalIgnoreCase)
+                && !name.Equals("FALSE", StringComparison.OrdinalIgnoreCase);
         }
 
         private void List(Argument[] items)
@@ -110,7 +181,7 @@ internal static class FormulaPrinter
 
         private void Reference(ReferenceNode reference)
         {
-            output.Append(reference.Prefix?.Text);
+            Prefix(reference.Prefix);
             if (style == ReferenceStyle.Written)
             {
                 output.Append(reference.Text);

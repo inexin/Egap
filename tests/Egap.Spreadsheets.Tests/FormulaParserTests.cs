@@ -34,8 +34,9 @@ public sealed class FormulaParserTests
     [InlineData("_xlfn.XLOOKUP(A1,B:B,C:C)+_xlfn._xlws.SORT(D1:D9)")]
     [InlineData("A1:INDEX(B:B,3)")]
     [InlineData("Rate*Sheet1!Local+Total.2023+\\Path+_under")]
-    [InlineData("LOG10(100)+R1C1")]
+    [InlineData("LOG10(100)+R1C1x+Rate2")]
     [InlineData("1<=2>=3<4>5=6&7")]
+    [InlineData("[1]!Rate+[1]!MyFunction(A1)")]
     public void FormulasPrintAsWritten(string formula)
     {
         ParsedFormula parsed = FormulaParser.Parse(formula, r1c1: false, default);
@@ -59,6 +60,9 @@ public sealed class FormulaParserTests
     [InlineData("Table[[A],[B]]", 10)]
     [InlineData("1e999", 0)]
     [InlineData("$Name", 0)]
+    [InlineData("1+R1C1", 2)]
+    [InlineData("Sheet1!rc", 7)]
+    [InlineData("C2[Amount]", 0)]
     public void BrokenFormulasAreRefusedWithAPosition(string formula, int position)
     {
         FormulaException error = Assert.Throws<FormulaException>(() => FormulaParser.Parse(formula, r1c1: false, default));
@@ -108,6 +112,9 @@ public sealed class FormulaParserTests
         ReferenceNode threeD = Assert.IsType<ReferenceNode>(FormulaParser.Parse("[1]Jan:Mar!A1:C$9", r1c1: false, default).Root);
         Assert.Equal(("1", "Jan", "Mar"), (threeD.Prefix!.Book, threeD.Prefix.FirstSheet, threeD.Prefix.LastSheet));
         Assert.Equal(new Area(AreaKind.Range, 0, 0, 8, 2, AreaFlags.LastRowAbsolute), threeD.Area);
+
+        // A word shaped like a cell starts a range, not a 3D prefix.
+        Assert.Equal(BinaryOperator.Range, Assert.IsType<BinaryNode>(FormulaParser.Parse("A1:Data!B2", r1c1: false, default).Root).Operator);
 
         Assert.Equal(AreaKind.Columns, Assert.IsType<ReferenceNode>(FormulaParser.Parse("$A:C", r1c1: false, default).Root).Area.Kind);
         Assert.Equal(AreaKind.Rows, Assert.IsType<ReferenceNode>(FormulaParser.Parse("Sheet1!$1:3", r1c1: false, default).Root).Area.Kind);
@@ -167,6 +174,19 @@ public sealed class FormulaParserTests
 
         Assert.Throws<FormulaException>(() => cell.FormulaR1C1 = "R0C1");
         Assert.Throws<FormulaException>(() => cell.FormulaR1C1 = "R1C16385");
+    }
+
+    [Fact]
+    public void RewrittenFormulasReadBackInEitherStyle()
+    {
+        // A sheet named like a reference is quoted, and a name before ':' is kept apart from what follows.
+        ParsedFormula a1 = FormulaParser.Parse("R!A1+'C2:Data'!B2+(1:A1)", r1c1: false, default);
+        Assert.Equal("'R'!RC+'C2:Data'!R[1]C[1]+((1):RC)", FormulaPrinter.Print(a1, ReferenceStyle.R1C1));
+
+        ParsedFormula r1c1 = FormulaParser.Parse("a:S+1:R2", r1c1: true, default);
+        string written = FormulaPrinter.Print(r1c1, ReferenceStyle.A1);
+        Assert.Equal("(a):S+(1):$2:$2", written);
+        Assert.Equal(written, FormulaPrinter.Print(FormulaParser.Parse(written, r1c1: false, default), ReferenceStyle.A1));
     }
 
     [Fact]

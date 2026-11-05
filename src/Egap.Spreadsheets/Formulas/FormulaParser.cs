@@ -884,7 +884,8 @@ internal sealed class FormulaParser
             case '!':
                 pos++;
                 return AfterPrefix(new SheetPrefix(text[start..pos], null, word, word));
-            case ':':
+            case ':' when !word.Contains('$', StringComparison.Ordinal) && !LooksLikeR1C1(word) && !TryCell(word, out _, out _, out _, out _):
+                // Sheet1:Sheet3! is a 3D prefix; A1:Sheet2!B2 is a range from a cell, as a sheet named like a cell needs quotes.
                 int save = pos;
                 pos++;
                 int second = pos;
@@ -906,6 +907,12 @@ internal sealed class FormulaParser
                 return Function(word, start);
             case '[':
                 CheckName(word, start, "table");
+                if (LooksLikeR1C1(word) || TryCell(word, out _, out _, out _, out _))
+                {
+                    pos = start;
+                    throw Error($"'{word}' is a cell reference, not a table.");
+                }
+
                 return Structured(word, start);
         }
 
@@ -919,18 +926,33 @@ internal sealed class FormulaParser
             return new BooleanNode(word, word.Length == 4);
         }
 
-        if (r1c1 && LooksLikeR1C1(word))
-        {
-            pos = start;
-            throw Error($"'{word}' is not a cell on the sheet.");
-        }
-
+        CheckNameNotReference(word, start);
         CheckName(word, start, "name");
         return new NameNode(null, word);
     }
 
-    /// <summary>Whether a word has the shape of an R1C1 reference (<c>R0C1</c>, <c>C99999</c>) that is off the sheet.</summary>
-    private static bool LooksLikeR1C1(string word)
+    /// <summary>
+    /// Refuses a name that has the shape of a reference: an R1C1 one (<c>RC</c>, <c>R0C1</c>) in either style, and an A1
+    /// cell in R1C1 style. Excel allows no such names, and one would read as a reference once the formula is written in
+    /// the other style.
+    /// </summary>
+    private void CheckNameNotReference(string word, int start)
+    {
+        if (LooksLikeR1C1(word))
+        {
+            pos = start;
+            throw Error(r1c1 ? $"'{word}' is not a cell on the sheet." : $"'{word}' is an R1C1 reference, not a name.");
+        }
+
+        if (r1c1 && TryCell(word, out _, out _, out _, out _))
+        {
+            pos = start;
+            throw Error($"'{word}' is an A1 reference, not a name.");
+        }
+    }
+
+    /// <summary>Whether a word has the shape of an R1C1 reference (<c>RC</c>, <c>R0C1</c>, <c>C99999</c>).</summary>
+    internal static bool LooksLikeR1C1(ReadOnlySpan<char> word)
     {
         int i = 0;
         bool any = false;
@@ -1059,9 +1081,10 @@ internal sealed class FormulaParser
         if (Peek() == '(' && prefix.Book is not null && prefix.FirstSheet is null)
         {
             CheckName(word, start, "function");
-            return Function(word, start);
+            return Function(prefix.Text + word, start);
         }
 
+        CheckNameNotReference(word, start);
         CheckName(word, start, "name");
         return new NameNode(prefix, word);
     }

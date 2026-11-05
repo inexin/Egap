@@ -24,6 +24,32 @@ if (args is ["mutate", string mutateTarget, string seconds, string seeds, string
     return Mutator.Run(targets[mutateTarget], TimeSpan.FromSeconds(double.Parse(seconds, CultureInfo.InvariantCulture)), seeds, findings);
 }
 
+if (args is ["replay", string replayTarget, string folder])
+{
+    // Runs every finding in a folder and prints each distinct failure once, with its first input.
+    Dictionary<string, string> seen = [];
+    foreach (string path in Directory.EnumerateFiles(folder).Order(StringComparer.Ordinal))
+    {
+        try
+        {
+            using FileStream input = File.OpenRead(path);
+            targets[replayTarget](input);
+        }
+        catch (Exception error)
+        {
+            string key = $"{error.GetType().Name}: {error.Message}";
+            key = key.Length > 160 ? key[..160] : key;
+            if (seen.TryAdd(key, path))
+            {
+                Console.WriteLine($"{key} ({Path.GetFileName(path)})");
+            }
+        }
+    }
+
+    Console.WriteLine($"{seen.Count} distinct failures.");
+    return 0;
+}
+
 if (args is [string target, string file])
 {
     using FileStream input = File.OpenRead(file);
@@ -37,7 +63,7 @@ if (args is [string stdinTarget])
     return 0;
 }
 
-Console.Error.WriteLine($"Usage: Egap.Spreadsheets.Fuzz <target> [file] | mutate <target> <seconds> <seeds> <findings>. Targets: {string.Join(", ", targets.Keys)}.");
+Console.Error.WriteLine($"Usage: Egap.Spreadsheets.Fuzz <target> [file] | mutate <target> <seconds> <seeds> <findings> | replay <target> <folder>. Targets: {string.Join(", ", targets.Keys)}.");
 return 2;
 
 static byte[] Bytes(Stream input)
@@ -197,13 +223,16 @@ static void Formula(Stream input)
         }
 
         string a1 = FormulaPrinter.Print(parsed, ReferenceStyle.A1, cell);
-        ParsedFormula again = FormulaParser.Parse(a1, r1c1: false, cell);
+        ParsedFormula again = FormulaParser.TryParse(a1, r1c1: false, cell)
+            ?? throw new InvalidOperationException($"The A1 form does not parse: {a1}");
         if (FormulaPrinter.Print(again, ReferenceStyle.A1, cell) != a1)
         {
-            throw new InvalidOperationException("The A1 form does not read back to itself.");
+            throw new InvalidOperationException($"The A1 form does not read back to itself: {a1}");
         }
 
-        FormulaParser.Parse(FormulaPrinter.Print(again, ReferenceStyle.R1C1), r1c1: true, cell);
+        string r1c1Form = FormulaPrinter.Print(again, ReferenceStyle.R1C1);
+        _ = FormulaParser.TryParse(r1c1Form, r1c1: true, cell)
+            ?? throw new InvalidOperationException($"The R1C1 form does not parse: {r1c1Form}");
         _ = FormulaEvaluator.Evaluate(FormulaCompiler.Compile(parsed), new EvalContext(FormulaBook.Book.Value.Worksheets[0], cell.Row, cell.Column));
     }
 }
