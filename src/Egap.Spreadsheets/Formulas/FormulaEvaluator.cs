@@ -55,6 +55,20 @@ internal sealed class EvalContext
     public Dictionary<DefinedName, CompiledFormula?> Names { get; private init; } = [];
 
     /// <summary>
+    /// The context for a cell's formula whose text was written for another cell, as a shared formula's cells share the text
+    /// of its first: relative references move by the distance between the two. Compiled names come from
+    /// <paramref name="names"/>, so contexts calculating at the same time can share them when every name is in it already.
+    /// </summary>
+    public static EvalContext ForCell(Worksheet sheet, int row, int column, CellAddress origin, Dictionary<DefinedName, CompiledFormula?> names, bool arrayMode) =>
+        new(sheet, row, column)
+        {
+            RowDelta = row - origin.Row,
+            ColumnDelta = column - origin.Column,
+            Names = names,
+            ArrayMode = arrayMode,
+        };
+
+    /// <summary>
     /// The context for a defined name's formula: relative references in a name count from A1, so they move by the
     /// formula's cell and wrap around the sheet.
     /// </summary>
@@ -380,7 +394,7 @@ internal static class FormulaEvaluator
     }
 
     /// <summary>A reference resolved against the context: sheets found by name, relative coordinates moved by its delta.</summary>
-    private static EvalValue Reference(ReferenceNode node, EvalContext context)
+    internal static EvalValue Reference(ReferenceNode node, EvalContext context)
     {
         Area area = node.Area;
         if (area.Kind == AreaKind.Error)
@@ -527,7 +541,7 @@ internal static class FormulaEvaluator
         return null;
     }
 
-    private static EvalValue Structured(StructuredNode node, EvalContext context)
+    internal static EvalValue Structured(StructuredNode node, EvalContext context)
     {
         SheetTable? table = node.Table is null
             ? context.Sheet.Tables.Find(new CellAddress(context.Row, context.Column))

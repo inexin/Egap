@@ -16,6 +16,9 @@ public sealed class Worksheet
     private readonly FormulaTable formulas = new();
     private Workbook? workbook;
 
+    // The first cells of the sheet's shared formulas by shared index, found when first asked for; null when stale.
+    private Dictionary<string, (CellAddress Cell, string Text)>? sharedMasters;
+
     internal Worksheet(Workbook workbook, string name)
     {
         this.workbook = workbook;
@@ -224,6 +227,7 @@ public sealed class Worksheet
         CellRecord record = new() { Style = old.Style };
         if (old.Kind == CellKind.Formula)
         {
+            Unshare(row, column, (int)old.Payload);
             formulas.Remove((int)old.Payload);
         }
 
@@ -257,6 +261,7 @@ public sealed class Worksheet
         ref readonly CellRecord old = ref store.Get(row, column);
         if (old.Kind == CellKind.Formula)
         {
+            Unshare(row, column, (int)old.Payload);
             formulas.Remove((int)old.Payload);
         }
 
@@ -266,12 +271,18 @@ public sealed class Worksheet
     internal string? GetFormula(int row, int column)
     {
         ref readonly CellRecord record = ref store.Get(row, column);
-        return record.Kind == CellKind.Formula && formulas[(int)record.Payload].Text is { Length: > 0 } text ? text : null;
+        if (record.Kind != CellKind.Formula)
+        {
+            return null;
+        }
+
+        FormulaEntry entry = formulas[(int)record.Payload];
+        return entry.Text.Length > 0 ? entry.Text : SharedText(row, column, entry);
     }
 
     internal bool HasFormula(int row, int column) => store.Get(row, column).Kind == CellKind.Formula;
 
-    internal void SetFormula(int row, int column, string? formula, CellValue result)
+    internal void SetFormula(int row, int column, string? formula, CellValue result, XAttribute[]? attributes = null)
     {
         if (string.IsNullOrEmpty(formula) || formula == "=")
         {
@@ -293,15 +304,163 @@ public sealed class Worksheet
         ref readonly CellRecord old = ref store.Get(row, column);
         if (old.Kind == CellKind.Formula)
         {
+            Unshare(row, column, (int)old.Payload);
             FormulaEntry entry = formulas[(int)old.Payload];
             entry.Text = text;
             entry.Result = result;
-            entry.Attributes = null;
+            entry.Attributes = attributes;
             return;
         }
 
         int style = old.Style;
-        store.Set(row, column, new CellRecord { Kind = CellKind.Formula, Payload = formulas.Add(text, result), Style = style });
+        store.Set(row, column, new CellRecord { Kind = CellKind.Formula, Payload = formulas.Add(text, result, attributes), Style = style });
+    }
+
+    /// <summary>
+    /// Stores a value a calculation gave a cell of an array formula's range, without noting a change: the formula owns the
+    /// value. A cell holding a formula of its own keeps it.
+    /// </summary>
+    internal void SetCalculated(int row, int column, CellValue value)
+    {
+        ref readonly CellRecord old = ref store.Get(row, column);
+        if (old.Kind == CellKind.Formula)
+        {
+            return;
+        }
+
+        CellRecord record = new() { Style = old.Style };
+        switch (value.Kind)
+        {
+            case CellValueKind.Number:
+                record.Kind = CellKind.Number;
+                record.Payload = BitConverter.DoubleToInt64Bits(value.Number);
+                break;
+            case CellValueKind.Text:
+                record.Kind = CellKind.SharedString;
+                record.Payload = Workbook.SharedStrings.Add(value.Text);
+                break;
+            case CellValueKind.Boolean:
+                record.Kind = CellKind.Boolean;
+                record.Payload = value.Boolean ? 1 : 0;
+                break;
+            case CellValueKind.Error:
+                record.Kind = CellKind.Error;
+                record.Payload = (long)value.Error;
+                break;
+        }
+
+        store.Set(row, column, record);
+    }
+
+    /// <summary>
+    /// The first cell and text of the shared formula with a shared index, the cell that holds the text the others share; null
+    /// when no cell holds it any more. Found once and kept until a cell changes.
+    /// </summary>
+    internal (CellAddress Cell, string Text)? SharedMaster(string sharedIndex)
+    {
+        if (sharedMasters is null)
+        {
+            Dictionary<string, (CellAddress, string)> found = [];
+            foreach ((int index, FormulaEntry entry) in formulas.Indexed())
+            {
+                if (entry.Text.Length > 0 && entry.SharedIndex is { } si && !found.ContainsKey(si) && FindFormula(index, entry) is { } cell)
+                {
+                    found[si] = (cell, entry.Text);
+                }
+            }
+
+            sharedMasters = found;
+        }
+
+        return sharedMasters.TryGetValue(sharedIndex, out (CellAddress Cell, string Text) master) ? master : null;
+    }
+
+    /// <summary>The cell holding a formula, looked for within its range, where the first cell of a shared formula is.</summary>
+    private CellAddress? FindFormula(int index, FormulaEntry entry)
+    {
+        RangeAddress? range = RangeAddress.TryParse(entry.Attribute("ref"), out RangeAddress area) ? area : store.Bounds();
+        if (range is null)
+        {
+            return null;
+        }
+
+        foreach ((int row, int column) in store.Occupied(range.Value))
+        {
+            ref readonly CellRecord record = ref store.Get(row, column);
+            if (record.Kind == CellKind.Formula && record.Payload == index)
+            {
+                return new CellAddress(row, column);
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>The text a cell sharing another's formula has: the first cell's text with its relative references moved here.</summary>
+    private string? SharedText(int row, int column, FormulaEntry entry)
+    {
+        if (entry.SharedIndex is not { } si || SharedMaster(si) is not { } master)
+        {
+            return null;
+        }
+
+        return FormulaParser.TryParse(master.Text, r1c1: false, master.Cell) is { } parsed
+            ? FormulaPrinter.Print(parsed, ReferenceStyle.A1, new CellAddress(row, column))
+            : null;
+    }
+
+    /// <summary>
+    /// Before the first cell of a shared formula changes, each cell sharing it gets the formula as its own, moved to it, so
+    /// the others keep their formulas as Excel does.
+    /// </summary>
+    private void Unshare(int row, int column, int index)
+    {
+        FormulaEntry master = formulas[index];
+        if (master.Text.Length == 0 || master.SharedIndex is not { } si
+            || FormulaParser.TryParse(master.Text, r1c1: false, new CellAddress(row, column)) is not { } parsed)
+        {
+            return;
+        }
+
+        RangeAddress? range = RangeAddress.TryParse(master.Attribute("ref"), out RangeAddress area) ? area : store.Bounds();
+        if (range is null)
+        {
+            return;
+        }
+
+        foreach ((int r, int c) in store.Occupied(range.Value))
+        {
+            ref readonly CellRecord record = ref store.Get(r, c);
+            if (record.Kind == CellKind.Formula && record.Payload != index && formulas[(int)record.Payload] is { Text.Length: 0 } follower
+                && follower.SharedIndex == si)
+            {
+                follower.Text = FormulaPrinter.Print(parsed, ReferenceStyle.A1, new CellAddress(r, c));
+                follower.Attributes = null;
+            }
+        }
+
+        sharedMasters = null;
+    }
+
+    /// <summary>The range of the array formula a cell is part of, or null.</summary>
+    internal RangeAddress? ArrayRangeAt(int row, int column)
+    {
+        ref readonly CellRecord own = ref store.Get(row, column);
+        if (own.Kind == CellKind.Formula && formulas[(int)own.Payload].ArrayRange is { } range)
+        {
+            return range;
+        }
+
+        CellAddress cell = new(row, column);
+        foreach (FormulaEntry entry in formulas.Entries)
+        {
+            if (entry.ArrayRange is { } other && other.Contains(cell))
+            {
+                return other;
+            }
+        }
+
+        return null;
     }
 
     internal int GetStyleIndex(int row, int column) => store.Get(row, column).Style;
@@ -322,6 +481,7 @@ public sealed class Worksheet
         ref readonly CellRecord old = ref store.Get(row, column);
         if (old.Kind == CellKind.Formula)
         {
+            Unshare(row, column, (int)old.Payload);
             formulas.Remove((int)old.Payload);
         }
 
@@ -348,7 +508,10 @@ public sealed class Worksheet
         if (workbook is not null)
         {
             workbook.ChangeCount++;
+            workbook.Calculator?.Noted(this, row, column);
         }
+
+        sharedMasters = null;
 
         if (CellExtras.Count != 0)
         {

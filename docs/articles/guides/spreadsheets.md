@@ -48,7 +48,7 @@ keeps its runs, and chart sheets keep their place among the worksheets. A remove
 
 What Egap cannot keep up to date is left for Excel: when cells changed and the workbook has formulas, the file asks Excel
 to calculate on open, and the calculation chain is left out for Excel to build again. A cell that shared the formula of a
-cell you changed keeps its last result as a value. Saving a workbook with macros as `.xlsx` or `.xltx` leaves the macros
+cell you changed gets the formula as its own, as in Excel. Saving a workbook with macros as `.xlsx` or `.xltx` leaves the macros
 out, as Excel does.
 
 `Workbook.Format` is the kind of file a workbook came from. `WorkbookLoadOptions.Limits` bounds what a file may hold (part
@@ -88,7 +88,7 @@ characters.
 
 `cell.Formula` holds a formula in Excel's stored form, with English function names and commas, without the `=` (a
 leading `=` you give is dropped). A formula that does not follow Excel's grammar throws a `FormulaException` that says
-where the problem is. A formula's result is empty until the workbook is calculated. Setting `Value` removes a formula;
+where the problem is. A formula's result is empty until the workbook is calculated (`book.Calculate()`). Setting `Value` removes a formula;
 setting `Formula` to null removes it and its result. [Formulas](#formulas) has more.
 
 `cell.Clear()` removes the value, formula and style. `sheet.Cells` enumerates the cells that hold something, row by row,
@@ -242,7 +242,61 @@ CellValue date = sheet.Evaluate("DATE(2024,3,15)");                           //
 Other cells give the values they hold; a formula cell gives its last result, so `Evaluate` does not recalculate the
 workbook. Dates follow the workbook's date system, 1900 (with the 29 February 1900 Excel keeps) or 1904. A function Egap
 does not know gives `#NAME?`. This release evaluates operators, references, names and tables, and SUM, IF, IFERROR, IFNA,
-AND, OR, NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; recalculating workbooks and the common functions come next.
+AND, OR, NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; the common functions come next.
+
+### Calculating a workbook
+
+`book.Calculate()` calculates the formulas whose results are out of date, as Excel does when you press F9: those reading a
+cell changed since the last calculation, those reading their results, and the volatile ones (`NOW`, `TODAY`, `RAND`,
+`OFFSET`, `INDIRECT` and the like) every time. `book.CalculateFull()` calculates every formula. Egap keeps a dependency
+graph of what each formula reads, through references, names, tables and other sheets, and calculates a formula after
+the formulas it reads; large sets of formulas that read none of each other are spread over threads. A workbook as
+loaded keeps the results saved with it until something changes, and a change to the sheets, names or tables makes the
+next calculation a full one.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet["A1"].Value = 2;
+sheet["B1"].Formula = "A1*3";
+sheet["C1"].Formula = "B1+1";
+book.Calculate();                                    // B1 is 6, C1 is 7
+
+sheet["A1"].Value = 5;
+CalculationResult result = book.Calculate();         // only B1 and C1 again
+long count = result.Calculated;                      // 2
+
+sheet.Range("D1:D3").SetArrayFormula("A1*{1;2;3}");  // D1:D3 are 5, 10, 15 after Calculate
+CellRange? array = sheet["D2"].ArrayRange;           // D1:D3
+```
+
+`range.SetArrayFormula` makes an array formula, as Ctrl+Shift+Enter does: one formula, kept in the range's first cell,
+whose result fills the range; a single row or column is repeated across it and cells past the result's end get `#N/A`.
+Cells sharing a formula in an XLSX file are calculated from the first cell's formula, and `cell.Formula` gives each the
+formula moved to it.
+
+Formulas that read each other in a ring are circular references. With `book.Calculation.Iterate` off, as Excel starts,
+`result.CircularReferences` lists them and their cells keep their values. With it on, each ring is calculated over and
+over until no value moves by more than `Calculation.MaxChange` or `Calculation.MaxIterations` passes have run;
+`result.Converged` says which. `book.Calculation` also holds the calculation mode and the other settings of the file's
+`calcPr`, read and written with it:
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+book.Calculation.Iterate = true;
+book.Calculation.MaxIterations = 100;
+book.Calculation.MaxChange = 0.0001;
+sheet["A1"].Formula = "B1+1";
+sheet["B1"].Formula = "A1/2";
+
+CalculationResult result = book.Calculate();         // A1 near 2, B1 near 1
+bool settled = result.Converged;                     // true
+```
 
 ## Number formats and cell text
 

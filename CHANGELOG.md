@@ -159,6 +159,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   errors as values, text read as numbers and dates, comparisons to 15 significant digits, implicit intersection, array
   arithmetic, defined names, tables, and the 1900 and 1904 date systems. Functions so far: SUM, IF, IFERROR, IFNA, AND, OR,
   NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; others give `#NAME?`.
+- `Workbook.Calculate` and `Workbook.CalculateFull` calculate a workbook through a dependency graph of what each formula
+  reads (references, names, tables, other sheets): only what a change reaches, plus volatile functions, in dependency
+  order, with large independent sets in parallel. Circular references are reported in `CalculationResult`, and iterated
+  when `Workbook.Calculation.Iterate` is on, up to `MaxIterations` passes or `MaxChange`. `Workbook.Calculation` reads and
+  writes the file's calculation settings (`calcPr`).
+- Shared formulas are calculated, and `Cell.Formula` gives each cell sharing one the formula moved to it; changing the
+  first cell leaves the others their formulas, as Excel does (they were kept as values before). `CellRange.SetArrayFormula`
+  makes an array formula whose result fills its range; `Cell.ArrayRange` gives the range a cell belongs to.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 

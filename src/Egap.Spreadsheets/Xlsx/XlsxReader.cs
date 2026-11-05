@@ -32,6 +32,7 @@ internal static class XlsxReader
         book.Source = source;
         book.Format = format;
         book.Date1904 = XlsxNames.Bool((string?)root.Element(ns + "workbookPr")?.Attribute("date1904"), false);
+        ReadCalculation(book.Calculation, root.Element(ns + "calcPr"));
 
         XlsxStyles.Read(book.Styles, package.GetRelatedPart(workbookPart.Relationships, XlsxNames.StylesRelationship)?.LoadXml());
         if (package.GetRelatedPart(workbookPart.Relationships, XlsxNames.SharedStringsRelationship) is { } strings)
@@ -76,6 +77,32 @@ internal static class XlsxReader
         {
             ReadName(book, element, positions);
         }
+    }
+
+    /// <summary>The calculation settings of <c>calcPr</c> (ECMA-376 Part 1, 18.2.2); values out of range keep their defaults.</summary>
+    private static void ReadCalculation(CalculationSettings settings, XElement? calcPr)
+    {
+        if (calcPr is null)
+        {
+            return;
+        }
+
+        settings.Mode = (string?)calcPr.Attribute("calcMode") switch
+        {
+            "manual" => CalculationMode.Manual,
+            "autoNoTable" => CalculationMode.AutomaticExceptTables,
+            _ => CalculationMode.Automatic,
+        };
+        settings.Iterate = XlsxNames.Bool((string?)calcPr.Attribute("iterate"), false);
+        settings.MaxIterations = Math.Clamp(XlsxNames.Int((string?)calcPr.Attribute("iterateCount"), 100), 1, CalculationSettings.IterationLimit);
+        if (double.TryParse((string?)calcPr.Attribute("iterateDelta"), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double delta)
+            && double.IsFinite(delta) && delta >= 0)
+        {
+            settings.MaxChange = delta;
+        }
+
+        settings.FullPrecision = XlsxNames.Bool((string?)calcPr.Attribute("fullPrecision"), true);
+        settings.Concurrent = XlsxNames.Bool((string?)calcPr.Attribute("concurrentCalc"), true);
     }
 
     private static Worksheet AddSheet(Workbook book, string? name)
