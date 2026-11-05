@@ -189,8 +189,57 @@ sheet.PageSetup.Footer = "&RPage &P of &N";
 ```
 
 Excel's print area and print titles are names local to their sheet: `_xlnm.Print_Area` and `_xlnm.Print_Titles`.
-`sheet.PageSetup` holds the rest of what Excel's Page Setup dialog sets: paper, orientation, scale or fit, margins in
-inches, centring, gridlines, headings, page order and the header and footer in Excel's header codes.
+`PageSetup.PrintArea`, `PrintTitleRows` and `PrintTitleColumns` read and write those names for you, and `RowBreaks` and
+`ColumnBreaks` hold the manual page breaks. `sheet.PageSetup` holds the rest of what Excel's Page Setup dialog sets:
+paper, orientation, scale or fit, margins in inches, centring, gridlines, headings, page order and the header and footer
+in Excel's header codes.
+
+### Printing to PDF and images
+
+`SaveAsPdf` prints a sheet, or every visible sheet of a workbook, as Excel prints it: the print area (or the cells in use,
+from A1), page order, manual breaks, scale or fit to pages, print titles on every page, gridlines and headings, and the
+header and footer with their fields filled in. Cells draw with their fills, borders, fonts, alignment, wrapping,
+rotation, shrinking and overflow into empty neighbours, number formats (`###` where a number does not fit), colour
+scales, data bars, icon sets and pictures.
+
+```csharp
+using Egami;
+using Egami.Pixels;
+using Egap.Pdf;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+for (int row = 0; row < 200; row++)
+{
+    sheet[row, 0].Value = $"Item {row + 1}";
+    sheet[row, 1].Value = row * 1.5;
+}
+
+sheet.PageSetup.PrintTitleRows = RangeAddress.Parse("1:1");
+sheet.PageSetup.RowBreaks.Add(100);                  // row 101 starts a page
+sheet.PageSetup.Footer = "&CPage &P of &N";
+
+SheetPrintLayout layout = sheet.Paginate();
+int pages = layout.Pages.Count;                      // 6 on Letter: rows 1-44, 45-87, 88-100, 101-143, ...
+sheet.SaveAsPdf("items.pdf");
+sheet.SaveAsPdf("items-a.pdf", new SheetPdfOptions { Conformance = PdfAConformance.PdfA2a, Language = "en-US" });
+Raster<Rgba8> firstPage = layout.Pages[0].Render(150);
+```
+
+`Paginate` lays the pages out without drawing them: each `SheetPage` tells the cells it prints, its size in points and
+its scale, and draws itself on any Egami canvas (`Draw`) or renders to a raster (`Render`). `book.SaveAsPdf` prints every
+visible sheet in tab order, with page numbers counted per sheet.
+
+Excel lays a print out for its printer, and Egap follows its PDF export at 600 dpi: a column prints in whole dots of the
+normal font's digit width (Calibri 11: 47 dots, so a default column is 51.6 points on paper against 48 on screen) and
+rows print 1.6 % taller than their height. Page breaks then fall where Excel's fall.
+
+`SheetPdfOptions.Tagged` tags the PDF for accessibility: a table per print area, a row per sheet row,
+header cells for the print titles, merged cells spanning, pictures as figures, and gridlines, fills and repeated titles
+as artifacts. `Conformance` makes a PDF/A file (the a levels are tagged) and `UniversalAccessibility` a PDF/UA one. Fonts come through
+Egap.Documents' font chain; `SheetPrintOptions.Fonts` chooses it, and `layout.FontSubstitutions` lists the fonts used in
+place of ones a sheet asks for, such as Carlito for Calibri.
 
 ## Formulas
 

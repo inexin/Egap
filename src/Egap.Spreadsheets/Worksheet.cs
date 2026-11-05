@@ -27,6 +27,7 @@ public sealed class Worksheet
         Rows = new SheetRowCollection(this);
         Columns = new SheetColumnCollection(this);
         Tables = new SheetTableCollection(this);
+        PageSetup = new PageSetup(this);
     }
 
     /// <summary>The workbook the sheet is in.</summary>
@@ -85,7 +86,7 @@ public sealed class Worksheet
     public SheetView View { get; } = new();
 
     /// <summary>How the sheet prints: paper, orientation, scaling, margins, header and footer.</summary>
-    public PageSetup PageSetup { get; } = new();
+    public PageSetup PageSetup { get; }
 
     /// <summary>Whether the sheet's tab shows, is hidden, or is hidden so that only code can show it again.</summary>
     public SheetVisibility Visibility { get; set; }
@@ -203,6 +204,28 @@ public sealed class Worksheet
     /// <summary>Writes the sheet as comma- or tab-separated text to a stream, a comma unless the options name another separator.</summary>
     /// <exception cref="ArgumentNullException">The stream is null.</exception>
     public void SaveCsv(Stream stream, CsvOptions? options = null) => Csv.CsvWriter.Write(this, stream, null, options);
+
+    /// <summary>
+    /// The sheet laid out on pages as Excel prints it: its print area or used cells, at its scale or fitted to its pages,
+    /// broken at its page breaks, with its titles, headings, gridlines, header and footer as its <see cref="PageSetup"/> says.
+    /// </summary>
+    public SheetPrintLayout Paginate(SheetPrintOptions? options = null) => SheetPrintLayout.Create(Workbook, [this], options);
+
+    /// <summary>Writes the sheet's printed pages to a PDF file.</summary>
+    /// <exception cref="ArgumentException">The path is null or empty.</exception>
+    public void SaveAsPdf(string path, SheetPdfOptions? options = null)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        Printing.SheetPdf.Save(Workbook, [this], path, null, options);
+    }
+
+    /// <summary>Writes the sheet's printed pages as a PDF to a stream, which is left open.</summary>
+    /// <exception cref="ArgumentNullException">The stream is null.</exception>
+    public void SaveAsPdf(Stream stream, SheetPdfOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        Printing.SheetPdf.Save(Workbook, [this], null, stream, options);
+    }
 
     internal void Detach() => workbook = null;
 
