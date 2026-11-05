@@ -6,7 +6,8 @@ namespace Egap.Spreadsheets.Benchmarks;
 
 /// <summary>
 /// The formula engine's baselines: parsing a mix of typical formulas, printing them in R1C1 style, compiling them, and
-/// evaluating compiled formulas over a sheet of 1,000 rows (a SUM of a column, cell arithmetic, an IF chain).
+/// evaluating compiled formulas over a sheet of 1,000 rows (a SUM of a column, cell arithmetic, an IF chain), and the
+/// functions that walk ranges: an exact VLOOKUP, COUNTIF with a condition, and SUMPRODUCT of two columns.
 /// </summary>
 [MemoryDiagnoser]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "BenchmarkDotNet runs instance methods.")]
@@ -30,6 +31,9 @@ public class FormulaBenchmarks
     private CompiledFormula sum = null!;
     private CompiledFormula arithmetic = null!;
     private CompiledFormula conditional = null!;
+    private CompiledFormula lookup = null!;
+    private CompiledFormula countIf = null!;
+    private CompiledFormula sumProduct = null!;
     private Worksheet sheet = null!;
 
     [GlobalSetup]
@@ -47,6 +51,9 @@ public class FormulaBenchmarks
         sum = Compile("SUM(B2:B1001)");
         arithmetic = Compile("A2*B2+C2/2-1");
         conditional = Compile("IF(B2>500,\"high\",IF(B2>100,\"mid\",\"low\"))");
+        lookup = Compile("VLOOKUP(990,A2:C1001,3,FALSE)");
+        countIf = Compile("COUNTIF(B2:B1001,\">500\")");
+        sumProduct = Compile("SUMPRODUCT((C2:C1001>3)*B2:B1001)");
     }
 
     private static CompiledFormula Compile(string formula) => FormulaCompiler.Compile(FormulaParser.Parse(formula, r1c1: false, default));
@@ -113,4 +120,13 @@ public class FormulaBenchmarks
 
         return length;
     }
+
+    [Benchmark(Description = "Evaluate VLOOKUP exact in 1,000 rows")]
+    public double EvaluateLookup() => FormulaEvaluator.Evaluate(lookup, new EvalContext(sheet, 0, 5)).Number;
+
+    [Benchmark(Description = "Evaluate COUNTIF over 1,000 cells")]
+    public double EvaluateCountIf() => FormulaEvaluator.Evaluate(countIf, new EvalContext(sheet, 0, 5)).Number;
+
+    [Benchmark(Description = "Evaluate SUMPRODUCT of 1,000 rows")]
+    public double EvaluateSumProduct() => FormulaEvaluator.Evaluate(sumProduct, new EvalContext(sheet, 0, 5)).Number;
 }
