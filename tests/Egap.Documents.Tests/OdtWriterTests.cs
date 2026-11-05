@@ -473,6 +473,24 @@ public sealed class OdtWriterTests
             read.Descendants<FieldStart>().Select(f => f.GetField()!.Code));
     }
 
+    [Theory]
+    [InlineData("TIME \\@ \"h:mm AM/PM\"", null)]
+    [InlineData("TIME \\@ \"h:mm:ss a/p\"", "TIME \\@ \"h:mm:ss AM/PM\"")]
+    [InlineData("TIME \\@ \"'Day' HH:mm\"", null)]
+    public void TwelveHourAndQuotedTimePicturesAreTimeStyles(string code, string? reread)
+    {
+        // ODF has one AM/PM marker, so Word's A/P comes back as AM/PM.
+        Document document = NewDocument(out Body body);
+        body.AddParagraph("Now ").AddField(code, "7:34 AM");
+
+        XElement content = Content(document, out _);
+        XNamespace number = "urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0";
+        Assert.NotNull(Body(content).Descendants(Text + "time").SingleOrDefault());
+        Assert.NotNull(content.Descendants(number + "time-style").SingleOrDefault());
+        Assert.Empty(content.Descendants(number + "date-style"));
+        Assert.Equal(reread ?? code, Reread(document).Descendants<FieldStart>().Single().GetField()!.Code);
+    }
+
     [Fact]
     public void NotesAndNoteReferencesRoundTrip()
     {

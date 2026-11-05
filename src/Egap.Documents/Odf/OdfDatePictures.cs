@@ -12,8 +12,49 @@ internal static class OdfDatePictures
 {
     private const char Quote = (char)39;
 
-    /// <summary>Whether a picture shows only the time of day: hours, minutes or seconds and no day, month or year.</summary>
-    public static bool IsTime(string? picture) => picture is { Length: > 0 } && !picture.AsSpan().ContainsAny("dMy") && picture.AsSpan().ContainsAny("Hhms");
+    /// <summary>
+    /// Whether a picture shows only the time of day: hours, minutes or seconds and no day, month or year. Quoted text and the
+    /// AM/PM and A/P markers are not letters of the picture (the M of AM/PM is no month).
+    /// </summary>
+    public static bool IsTime(string? picture)
+    {
+        if (picture is not { Length: > 0 })
+        {
+            return false;
+        }
+
+        bool time = false;
+        int i = 0;
+        while (i < picture.Length)
+        {
+            char c = picture[i];
+            if (c == Quote)
+            {
+                int end = picture.IndexOf(Quote, i + 1);
+                i = end < 0 ? picture.Length : end + 1;
+                continue;
+            }
+
+            if (Match(picture, i, "AM/PM") || Match(picture, i, "A/P"))
+            {
+                i += Match(picture, i, "AM/PM") ? 5 : 3;
+                continue;
+            }
+
+            if (c is 'd' or 'M' or 'y')
+            {
+                return false;
+            }
+
+            time |= c is 'H' or 'h' or 'm' or 's';
+            i++;
+        }
+
+        return time;
+    }
+
+    private static bool Match(string text, int at, string token) =>
+        at + token.Length <= text.Length && string.Compare(text, at, token, 0, token.Length, StringComparison.OrdinalIgnoreCase) == 0;
 
     /// <summary>A date style, or a time style when the picture shows only the time, with an empty name; null for an empty picture.</summary>
     public static XElement? Style(string picture)
@@ -95,8 +136,6 @@ internal static class OdfDatePictures
         static XElement Part(string name, bool isLong, params object[] attributes) =>
             new(NumberNs + name, isLong ? new XAttribute(NumberNs + "style", "long") : null, attributes);
 
-        static bool Match(string text, int at, string token) =>
-            at + token.Length <= text.Length && string.Compare(text, at, token, 0, token.Length, StringComparison.OrdinalIgnoreCase) == 0;
     }
 
     /// <summary>Word's picture for a date or time style; null when it shows nothing Word can.</summary>
