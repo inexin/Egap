@@ -1,19 +1,12 @@
 using System.Text;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Rtf;
 
 /// <summary>The state RTF scopes to groups, and the small records it holds.</summary>
 internal sealed partial class RtfReader
 {
-    /// <summary>Which of a run's fonts <c>\af</c> sets, after <c>\loch</c>, <c>\hich</c> or <c>\dbch</c>.</summary>
-    private enum FontSlot
-    {
-        ComplexScript,
-        Ascii,
-        HighAnsi,
-        EastAsia,
-    }
-
     /// <summary>What the border control words that follow (<c>\brdrs</c>, <c>\brdrw</c>, ...) describe.</summary>
     private enum BorderTarget
     {
@@ -92,7 +85,7 @@ internal sealed partial class RtfReader
 
         public int Font { get; set; } = -1;
 
-        public FontSlot Slot { get; set; }
+        public WordFontSlot Slot { get; set; }
 
         public bool InTable { get; set; }
 
@@ -163,7 +156,7 @@ internal sealed partial class RtfReader
             characterShared = false;
             CharacterStyle = -1;
             Font = -1;
-            Slot = FontSlot.ComplexScript;
+            Slot = WordFontSlot.ComplexScript;
             CharChange = null;
         }
 

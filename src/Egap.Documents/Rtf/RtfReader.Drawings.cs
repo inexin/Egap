@@ -3,6 +3,8 @@ using System.Buffers.Binary;
 using System.Globalization;
 using System.Text;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Rtf;
 
 /// <summary>
@@ -825,8 +827,8 @@ internal sealed partial class RtfReader
             VerticalAnchor = verticalAnchor,
             HorizontalAlignment = horizontal,
             VerticalAlignment = vertical,
-            HorizontalOffset = Twips(Math.Min(info.Left, info.Right)),
-            VerticalOffset = Twips(Math.Min(info.Top, info.Bottom)),
+            HorizontalOffset = WordProperties.Twips(Math.Min(info.Left, info.Right)),
+            VerticalOffset = WordProperties.Twips(Math.Min(info.Top, info.Bottom)),
             Wrap = wrap,
             WrapSide = info.WrapSide switch { 1 => WrapSide.Left, 2 => WrapSide.Right, 3 => WrapSide.Largest, _ => WrapSide.Both },
             DistanceLeft = Emu(properties, "dxWrapDistLeft", 9),
@@ -958,8 +960,8 @@ internal sealed partial class RtfReader
         AddInline(new Island(document, IslandKind.OleObject, RtfExtension.Format, markup)
         {
             Fallback = result?.Image,
-            Width = result?.Width ?? Bounded(Twips(Math.Max(0, width))),
-            Height = result?.Height ?? Bounded(Twips(Math.Max(0, height))),
+            Width = result?.Width ?? Bounded(WordProperties.Twips(Math.Max(0, width))),
+            Height = result?.Height ?? Bounded(WordProperties.Twips(Math.Max(0, height))),
             Text = objectClass ?? "",
         });
     }

@@ -1,5 +1,7 @@
 using System.Globalization;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Rtf;
 
 /// <summary>The control words of the body: character, paragraph and section formatting, special characters and destinations.</summary>
@@ -146,14 +148,14 @@ internal sealed partial class RtfReader
             case "fldlock":
                 if (fields.Count > 0)
                 {
-                    fields.Peek().Start.IsLocked = true;
+                    WordProperties.Set(fields.Peek().Start, WordFieldProperty.Locked, 1);
                 }
 
                 break;
             case "flddirty":
                 if (fields.Count > 0)
                 {
-                    fields.Peek().Start.IsDirty = true;
+                    WordProperties.Set(fields.Peek().Start, WordFieldProperty.Dirty, 1);
                 }
 
                 break;
@@ -188,62 +190,63 @@ internal sealed partial class RtfReader
     private bool CharacterWord(string word, bool has, int p)
     {
         bool on = !has || p != 0;
+        int toggle = on ? 1 : 0;
         switch (word)
         {
             case "plain":
                 state.ResetCharacter();
                 return true;
             case "b":
-                state.MutableChar().Bold = on;
+                Run(WordRunProperty.Bold, toggle);
                 return true;
             case "i":
-                state.MutableChar().Italic = on;
+                Run(WordRunProperty.Italic, toggle);
                 return true;
             case "ab":
-                state.MutableChar().BoldComplexScript = on;
+                Run(WordRunProperty.BoldComplexScript, toggle);
                 return true;
             case "ai":
-                state.MutableChar().ItalicComplexScript = on;
+                Run(WordRunProperty.ItalicComplexScript, toggle);
                 return true;
             case "strike":
-                state.MutableChar().Strikethrough = on;
+                Run(WordRunProperty.Strikethrough, toggle);
                 return true;
             case "striked":
-                state.MutableChar().DoubleStrikethrough = on;
+                Run(WordRunProperty.DoubleStrikethrough, toggle);
                 return true;
             case "caps":
-                state.MutableChar().AllCaps = on;
+                Run(WordRunProperty.AllCaps, toggle);
                 return true;
             case "scaps":
-                state.MutableChar().SmallCaps = on;
+                Run(WordRunProperty.SmallCaps, toggle);
                 return true;
             case "v":
-                state.MutableChar().Hidden = on;
+                Run(WordRunProperty.Hidden, toggle);
                 return true;
             case "outl":
-                state.MutableChar().Outline = on;
+                Run(WordRunProperty.Outline, toggle);
                 return true;
             case "shad":
-                state.MutableChar().Shadow = on;
+                Run(WordRunProperty.Shadow, toggle);
                 return true;
             case "embo":
-                state.MutableChar().Emboss = on;
+                Run(WordRunProperty.Emboss, toggle);
                 return true;
             case "impr":
-                state.MutableChar().Imprint = on;
+                Run(WordRunProperty.Imprint, toggle);
                 return true;
             case "noproof":
-                state.MutableChar().NoProof = on;
+                Run(WordRunProperty.NoProof, toggle);
                 return true;
             case "ul":
-                state.MutableChar().Underline = on ? UnderlineStyle.Single : UnderlineStyle.None;
+                Run(WordRunProperty.Underline, (int)(on ? UnderlineStyle.Single : UnderlineStyle.None));
                 return true;
             case "ulnone":
-                state.MutableChar().Underline = UnderlineStyle.None;
+                Run(WordRunProperty.Underline, (int)UnderlineStyle.None);
                 return true;
             case "uld" or "uldash" or "uldashd" or "uldashdd" or "uldb" or "ulhwave" or "ulldash" or "ulth" or "ulthd" or "ulthdash"
                 or "ulthdashd" or "ulthdashdd" or "ulthldash" or "ululdbwave" or "ulw" or "ulwave":
-                state.MutableChar().Underline = !on ? UnderlineStyle.None : word switch
+                Run(WordRunProperty.Underline, (int)(!on ? UnderlineStyle.None : word switch
                 {
                     "uld" => UnderlineStyle.Dotted,
                     "uldash" => UnderlineStyle.Dash,
@@ -261,123 +264,106 @@ internal sealed partial class RtfReader
                     "ululdbwave" => UnderlineStyle.WavyDouble,
                     "ulw" => UnderlineStyle.Words,
                     _ => UnderlineStyle.Wave,
-                };
+                }));
                 return true;
             case "ulc" when has:
-                state.MutableChar().UnderlineColor = Color(p);
+                WordProperties.Set(state.MutableChar(), WordRunColor.UnderlineColor, Color(p));
                 return true;
             case "fs" when has && p > 0:
-                state.MutableChar().Size = Math.Min(p, 3276) / 2.0;
+                Run(WordRunProperty.Size, p);
                 return true;
             case "afs" when has && p > 0:
-                state.MutableChar().SizeComplexScript = Math.Min(p, 3276) / 2.0;
+                Run(WordRunProperty.SizeComplexScript, p);
                 return true;
             case "f" when has:
                 state.Font = p;
                 if (FontName(p) is { } name)
                 {
-                    RunFormat run = state.MutableChar();
-                    run.FontAscii = name;
-                    run.FontHighAnsi = name;
+                    WordProperties.SetFont(state.MutableChar(), WordFontSlot.Latin, name);
                 }
 
                 return true;
             case "af" when has:
                 if (FontName(p) is { } associated)
                 {
-                    RunFormat run = state.MutableChar();
-                    switch (state.Slot)
-                    {
-                        case FontSlot.Ascii:
-                            run.FontAscii = associated;
-                            break;
-                        case FontSlot.HighAnsi:
-                            run.FontHighAnsi = associated;
-                            break;
-                        case FontSlot.EastAsia:
-                            run.FontEastAsia = associated;
-                            break;
-                        default:
-                            run.FontComplexScript = associated;
-                            break;
-                    }
+                    WordProperties.SetFont(state.MutableChar(), state.Slot, associated);
                 }
 
                 return true;
             case "loch":
-                state.Slot = FontSlot.Ascii;
+                state.Slot = WordFontSlot.Ascii;
                 return true;
             case "hich":
-                state.Slot = FontSlot.HighAnsi;
+                state.Slot = WordFontSlot.HighAnsi;
                 return true;
             case "dbch":
-                state.Slot = FontSlot.EastAsia;
+                state.Slot = WordFontSlot.EastAsia;
                 return true;
             case "rtlch":
-                state.Slot = FontSlot.ComplexScript;
-                state.MutableChar().RightToLeft = true;
+                state.Slot = WordFontSlot.ComplexScript;
+                Run(WordRunProperty.RightToLeft, 1);
                 return true;
             case "ltrch":
-                state.Slot = FontSlot.ComplexScript;
+                state.Slot = WordFontSlot.ComplexScript;
                 if (state.Char.RightToLeft is not null)
                 {
-                    state.MutableChar().RightToLeft = null;
+                    Run(WordRunProperty.RightToLeft, 0);
                 }
 
                 return true;
             case "cf" when has:
-                state.MutableChar().Color = Color(p);
+                WordProperties.Set(state.MutableChar(), WordRunColor.Color, Color(p));
                 return true;
             case "cb" when has:
                 state.MutableChar().Shading = p > 0 ? new Shading(ShadingPattern.Clear, Color(p)) : null;
                 return true;
             case "chcbpat" when has:
-                state.MutableChar().Shading = UpdateShading(state.Char.Shading, fill: Color(p));
+                state.MutableChar().Shading = WordProperties.Shade(state.Char.Shading, fill: Color(p));
                 return true;
             case "chcfpat" when has:
-                state.MutableChar().Shading = UpdateShading(state.Char.Shading, patternColor: Color(p));
+                state.MutableChar().Shading = WordProperties.Shade(state.Char.Shading, patternColor: Color(p));
                 return true;
             case "chshdng" when has:
-                state.MutableChar().Shading = UpdateShading(state.Char.Shading, percent: p);
+                state.MutableChar().Shading = WordProperties.Shade(state.Char.Shading, percent: p);
                 return true;
             case "highlight" when has:
-                state.MutableChar().Highlight = HighlightOf(p);
+                Run(WordRunProperty.Highlight, (int)HighlightOf(p));
                 return true;
             case "up":
-                state.MutableChar().Position = (has ? p : 6) / 2.0;
+                Run(WordRunProperty.Position, has ? p : 6);
                 return true;
             case "dn":
-                state.MutableChar().Position = -(has ? p : 6) / 2.0;
+                Run(WordRunProperty.Position, -(has ? p : 6));
                 return true;
             case "super":
-                state.MutableChar().VerticalPosition = VerticalTextPosition.Superscript;
+                Run(WordRunProperty.VerticalPosition, (int)VerticalTextPosition.Superscript);
                 return true;
             case "sub":
-                state.MutableChar().VerticalPosition = VerticalTextPosition.Subscript;
+                Run(WordRunProperty.VerticalPosition, (int)VerticalTextPosition.Subscript);
                 return true;
             case "nosupersub":
-                state.MutableChar().VerticalPosition = VerticalTextPosition.Baseline;
+                Run(WordRunProperty.VerticalPosition, (int)VerticalTextPosition.Baseline);
                 return true;
             case "expnd" when has:
-                state.MutableChar().Spacing = p / 4.0;
+                Run(WordRunProperty.SpacingQuarterPoints, p);
                 return true;
             case "expndtw" when has:
-                state.MutableChar().Spacing = p / 20.0;
+                Run(WordRunProperty.Spacing, p);
                 return true;
             case "charscalex" when has && p > 0:
-                state.MutableChar().Scale = Math.Min(p, 600);
+                Run(WordRunProperty.Scale, p);
                 return true;
             case "kerning" when has:
-                state.MutableChar().Kerning = Math.Max(0, p) / 2.0;
+                Run(WordRunProperty.Kerning, p);
                 return true;
             case "lang" when has:
-                state.MutableChar().Language = LanguageOf(p);
+                Run(WordRunProperty.Language, p);
                 return true;
             case "langfe" when has:
-                state.MutableChar().LanguageEastAsia = LanguageOf(p);
+                Run(WordRunProperty.LanguageEastAsia, p);
                 return true;
             case "alang" when has:
-                state.MutableChar().LanguageBidi = LanguageOf(p);
+                Run(WordRunProperty.LanguageBidi, p);
                 return true;
             case "cs" when has:
                 state.CharacterStyle = p;
@@ -407,7 +393,7 @@ internal sealed partial class RtfReader
                 state.CharChange = (state.CharChange ?? new FormatChange<RunFormat>(0, null, null)) with { Author = p };
                 return true;
             case "crdate" when has:
-                state.CharChange = (state.CharChange ?? new FormatChange<RunFormat>(0, null, null)) with { Date = DateOf(p) };
+                state.CharChange = (state.CharChange ?? new FormatChange<RunFormat>(0, null, null)) with { Date = WordProperties.Date(p) };
                 return true;
             default:
                 return BorderWord(word, has, p) || ShadingPatternWord(word);
@@ -419,6 +405,7 @@ internal sealed partial class RtfReader
     private bool ParagraphWord(string word, bool has, int p)
     {
         bool on = !has || p != 0;
+        int toggle = on ? 1 : 0;
         switch (word)
         {
             case "pard":
@@ -428,44 +415,44 @@ internal sealed partial class RtfReader
                 state.ParagraphStyle = p;
                 return true;
             case "ql":
-                state.MutablePara().Alignment = ParagraphAlignment.Left;
+                Para(WordParagraphProperty.Alignment, (int)ParagraphAlignment.Left);
                 return true;
             case "qc":
-                state.MutablePara().Alignment = ParagraphAlignment.Center;
+                Para(WordParagraphProperty.Alignment, (int)ParagraphAlignment.Center);
                 return true;
             case "qr":
-                state.MutablePara().Alignment = ParagraphAlignment.Right;
+                Para(WordParagraphProperty.Alignment, (int)ParagraphAlignment.Right);
                 return true;
             case "qj":
-                state.MutablePara().Alignment = ParagraphAlignment.Justify;
+                Para(WordParagraphProperty.Alignment, (int)ParagraphAlignment.Justify);
                 return true;
             case "qd" or "qt":
-                state.MutablePara().Alignment = ParagraphAlignment.Distribute;
+                Para(WordParagraphProperty.Alignment, (int)ParagraphAlignment.Distribute);
                 return true;
             case "qk" when has:
-                state.MutablePara().Alignment = ParagraphAlignment.Justify;
-                state.MutablePara().Kashida = p switch { 0 => KashidaLevel.Low, 10 => KashidaLevel.Medium, _ => KashidaLevel.High };
+                Para(WordParagraphProperty.Alignment, (int)ParagraphAlignment.Justify);
+                Para(WordParagraphProperty.Kashida, (int)(p switch { 0 => KashidaLevel.Low, 10 => KashidaLevel.Medium, _ => KashidaLevel.High }));
                 return true;
             case "li" or "lin" when has:
-                state.MutablePara().LeftIndent = Twips(p);
+                Para(WordParagraphProperty.LeftIndent, p);
                 return true;
             case "ri" or "rin" when has:
-                state.MutablePara().RightIndent = Twips(p);
+                Para(WordParagraphProperty.RightIndent, p);
                 return true;
             case "fi" when has:
-                state.MutablePara().FirstLineIndent = Twips(p);
+                Para(WordParagraphProperty.FirstLineIndent, p);
                 return true;
             case "sb" when has:
-                state.MutablePara().SpaceBefore = Math.Max(0, Twips(p));
+                Para(WordParagraphProperty.SpaceBefore, p);
                 return true;
             case "sa" when has:
-                state.MutablePara().SpaceAfter = Math.Max(0, Twips(p));
+                Para(WordParagraphProperty.SpaceAfter, p);
                 return true;
             case "sbauto":
-                state.MutablePara().SpaceBeforeAuto = on;
+                Para(WordParagraphProperty.SpaceBeforeAuto, toggle);
                 return true;
             case "saauto":
-                state.MutablePara().SpaceAfterAuto = on;
+                Para(WordParagraphProperty.SpaceAfterAuto, toggle);
                 return true;
             case "sl" when has:
                 state.LineSpacing = p;
@@ -476,47 +463,47 @@ internal sealed partial class RtfReader
                 ApplyLineSpacing();
                 return true;
             case "keep":
-                state.MutablePara().KeepTogether = on;
+                Para(WordParagraphProperty.KeepTogether, toggle);
                 return true;
             case "keepn":
-                state.MutablePara().KeepWithNext = on;
+                Para(WordParagraphProperty.KeepWithNext, toggle);
                 return true;
             case "pagebb":
-                state.MutablePara().PageBreakBefore = on;
+                Para(WordParagraphProperty.PageBreakBefore, toggle);
                 return true;
             case "widctlpar":
-                state.MutablePara().WidowControl = true;
+                Para(WordParagraphProperty.WidowControl, 1);
                 return true;
             case "nowidctlpar":
-                state.MutablePara().WidowControl = false;
+                Para(WordParagraphProperty.WidowControl, 0);
                 return true;
             case "outlinelevel" when has:
-                state.MutablePara().OutlineLevel = Math.Clamp(p, 0, 9);
+                Para(WordParagraphProperty.OutlineLevel, p);
                 return true;
             case "contextualspace":
-                state.MutablePara().ContextualSpacing = on;
+                Para(WordParagraphProperty.ContextualSpacing, toggle);
                 return true;
             case "rtlpar":
-                state.MutablePara().Bidi = true;
+                Para(WordParagraphProperty.Bidi, 1);
                 return true;
             case "ltrpar":
                 if (state.Para.Bidi is not null)
                 {
-                    state.MutablePara().Bidi = null;
+                    Para(WordParagraphProperty.Bidi, 0);
                 }
 
                 return true;
             case "noline":
-                state.MutablePara().SuppressLineNumbers = true;
+                Para(WordParagraphProperty.SuppressLineNumbers, 1);
                 return true;
             case "hyphpar":
-                state.MutablePara().SuppressAutoHyphens = !on;
+                Para(WordParagraphProperty.SuppressAutoHyphens, 1 - toggle);
                 return true;
             case "nosnaplinegrid":
-                state.MutablePara().SnapToGrid = false;
+                Para(WordParagraphProperty.SnapToGrid, 0);
                 return true;
             case "indmirror":
-                state.MutablePara().MirrorIndents = on;
+                Para(WordParagraphProperty.MirrorIndents, toggle);
                 return true;
             case "intbl":
                 state.InTable = true;
@@ -559,10 +546,10 @@ internal sealed partial class RtfReader
                 state.TabLeader = TabLeader.None;
                 return true;
             case "tx" when has:
-                AddTabStop(new TabStop(Math.Max(0, Twips(p)), state.TabAlignment, state.TabLeader));
+                AddTabStop(new TabStop(Math.Max(0, WordProperties.Twips(p)), state.TabAlignment, state.TabLeader));
                 return true;
             case "tb" when has:
-                AddTabStop(new TabStop(Math.Max(0, Twips(p)), TabAlignment.Bar));
+                AddTabStop(new TabStop(Math.Max(0, WordProperties.Twips(p)), TabAlignment.Bar));
                 return true;
             case "brdrt":
                 state.Border = BorderTarget.ParagraphTop;
@@ -586,19 +573,19 @@ internal sealed partial class RtfReader
                 state.Border = BorderTarget.ParagraphBox;
                 return true;
             case "shading" when has:
-                state.MutablePara().Shading = UpdateShading(state.Para.Shading, percent: p);
+                state.MutablePara().Shading = WordProperties.Shade(state.Para.Shading, percent: p);
                 return true;
             case "cbpat" when has:
-                state.MutablePara().Shading = UpdateShading(state.Para.Shading, fill: Color(p));
+                state.MutablePara().Shading = WordProperties.Shade(state.Para.Shading, fill: Color(p));
                 return true;
             case "cfpat" when has:
-                state.MutablePara().Shading = UpdateShading(state.Para.Shading, patternColor: Color(p));
+                state.MutablePara().Shading = WordProperties.Shade(state.Para.Shading, patternColor: Color(p));
                 return true;
             case "prauth" when has:
                 state.ParaChange = (state.ParaChange ?? new FormatChange<ParagraphFormat>(0, null, null)) with { Author = p };
                 return true;
             case "prdate" when has:
-                state.ParaChange = (state.ParaChange ?? new FormatChange<ParagraphFormat>(0, null, null)) with { Date = DateOf(p) };
+                state.ParaChange = (state.ParaChange ?? new FormatChange<ParagraphFormat>(0, null, null)) with { Date = WordProperties.Date(p) };
                 return true;
             default:
                 return FrameWord(word, has, p);
@@ -607,144 +594,63 @@ internal sealed partial class RtfReader
 
     private void ApplyLineSpacing()
     {
-        ParagraphFormat format = state.MutablePara();
-        int value = state.LineSpacing;
-        if (value == 0)
-        {
-            format.LineSpacing = null;
-            format.LineSpacingRule = null;
-        }
-        else if (state.LineMultiple && value > 0)
-        {
-            format.LineSpacing = value / 240.0;
-            format.LineSpacingRule = LineSpacingRule.Multiple;
-        }
-        else
-        {
-            format.LineSpacing = Math.Abs(Twips(value));
-            format.LineSpacingRule = value < 0 ? LineSpacingRule.Exactly : LineSpacingRule.AtLeast;
-        }
+        WordProperties.SetLineSpacing(state.MutablePara(), state.LineSpacing, state.LineMultiple);
     }
-
-    private const int MaxTabStops = 64;
 
     private void AddTabStop(TabStop stop)
     {
-        // Word keeps at most 64 tab stops a paragraph; more would make each \tx copy a longer list.
-        ParagraphFormat format = state.MutablePara();
-        if (format.TabStops is { Count: >= MaxTabStops } stops && !stops.Any(t => t.Position == stop.Position))
-        {
-            return;
-        }
-
-        format.TabStops = [.. (format.TabStops ?? []).Where(t => t.Position != stop.Position), stop];
+        WordProperties.AddTabStop(state.MutablePara(), stop);
         state.TabAlignment = TabAlignment.Left;
         state.TabLeader = TabLeader.None;
     }
 
+    private void Run(WordRunProperty property, int value) => WordProperties.Set(state.MutableChar(), property, value);
+
+    private void Para(WordParagraphProperty property, int value) => WordProperties.Set(state.MutablePara(), property, value);
+
     /// <summary>A positioned frame's words (<c>\absw</c>, <c>\posx</c>, ...), which make the paragraph a frame.</summary>
     private bool FrameWord(string word, bool has, int p)
     {
-        FramePosition? frame = state.Para.Frame;
-        FramePosition next;
-        FramePosition f = frame ?? new FramePosition();
-        switch (word)
+        (WordFrameProperty Property, int Value)? change = word switch
         {
-            case "absw" when has:
-                next = f with { Width = p > 0 ? Twips(p) : null };
-                break;
-            case "absh" when has:
-                next = f with { Height = p == 0 ? null : Math.Abs(Twips(p)), HeightRule = p < 0 ? RowHeightRule.Exactly : p > 0 ? RowHeightRule.AtLeast : RowHeightRule.Auto };
-                break;
-            case "phmrg":
-                next = f with { HorizontalAnchor = HorizontalAnchor.Margin };
-                break;
-            case "phpg":
-                next = f with { HorizontalAnchor = HorizontalAnchor.Page };
-                break;
-            case "phcol":
-                next = f with { HorizontalAnchor = HorizontalAnchor.Column };
-                break;
-            case "posx" or "posnegx" when has:
-                next = f with { HorizontalOffset = Twips(p), HorizontalAlignment = FloatingAlignment.None };
-                break;
-            case "posxl":
-                next = f with { HorizontalAlignment = FloatingAlignment.Start };
-                break;
-            case "posxc":
-                next = f with { HorizontalAlignment = FloatingAlignment.Center };
-                break;
-            case "posxr":
-                next = f with { HorizontalAlignment = FloatingAlignment.End };
-                break;
-            case "posxi":
-                next = f with { HorizontalAlignment = FloatingAlignment.Inside };
-                break;
-            case "posxo":
-                next = f with { HorizontalAlignment = FloatingAlignment.Outside };
-                break;
-            case "pvmrg":
-                next = f with { VerticalAnchor = VerticalAnchor.Margin };
-                break;
-            case "pvpg":
-                next = f with { VerticalAnchor = VerticalAnchor.Page };
-                break;
-            case "pvpara":
-                next = f with { VerticalAnchor = VerticalAnchor.Paragraph };
-                break;
-            case "posy" or "posnegy" when has:
-                next = f with { VerticalOffset = Twips(p), VerticalAlignment = FloatingAlignment.None };
-                break;
-            case "posyt":
-                next = f with { VerticalAlignment = FloatingAlignment.Start };
-                break;
-            case "posyc":
-                next = f with { VerticalAlignment = FloatingAlignment.Center };
-                break;
-            case "posyb":
-                next = f with { VerticalAlignment = FloatingAlignment.End };
-                break;
-            case "posyin":
-                next = f with { VerticalAlignment = FloatingAlignment.Inside };
-                break;
-            case "posyout":
-                next = f with { VerticalAlignment = FloatingAlignment.Outside };
-                break;
-            case "dxfrtext" when has:
-                next = f with { DistanceHorizontal = Twips(p), DistanceVertical = Twips(p) };
-                break;
-            case "dfrmtxtx" when has:
-                next = f with { DistanceHorizontal = Twips(p) };
-                break;
-            case "dfrmtxty" when has:
-                next = f with { DistanceVertical = Twips(p) };
-                break;
-            case "nowrap":
-                next = f with { Wrap = FrameWrap.NotBeside };
-                break;
-            case "wraparound":
-                next = f with { Wrap = FrameWrap.Around };
-                break;
-            case "wraptight":
-                next = f with { Wrap = FrameWrap.Tight };
-                break;
-            case "wrapthrough":
-                next = f with { Wrap = FrameWrap.Through };
-                break;
-            case "dropcapli" when has:
-                next = f with { DropCapLines = Math.Clamp(p, 1, 10) };
-                break;
-            case "dropcapt" when has:
-                next = f with { DropCap = p == 2 ? DropCap.Margin : DropCap.Drop };
-                break;
-            case "abslock":
-                next = f with { AnchorLock = true };
-                break;
-            default:
-                return false;
+            "absw" when has => (WordFrameProperty.Width, p),
+            "absh" when has => (WordFrameProperty.Height, p),
+            "phmrg" => (WordFrameProperty.HorizontalAnchor, (int)HorizontalAnchor.Margin),
+            "phpg" => (WordFrameProperty.HorizontalAnchor, (int)HorizontalAnchor.Page),
+            "phcol" => (WordFrameProperty.HorizontalAnchor, (int)HorizontalAnchor.Column),
+            "posx" or "posnegx" when has => (WordFrameProperty.HorizontalOffset, p),
+            "posxl" => (WordFrameProperty.HorizontalAlignment, (int)FloatingAlignment.Start),
+            "posxc" => (WordFrameProperty.HorizontalAlignment, (int)FloatingAlignment.Center),
+            "posxr" => (WordFrameProperty.HorizontalAlignment, (int)FloatingAlignment.End),
+            "posxi" => (WordFrameProperty.HorizontalAlignment, (int)FloatingAlignment.Inside),
+            "posxo" => (WordFrameProperty.HorizontalAlignment, (int)FloatingAlignment.Outside),
+            "pvmrg" => (WordFrameProperty.VerticalAnchor, (int)VerticalAnchor.Margin),
+            "pvpg" => (WordFrameProperty.VerticalAnchor, (int)VerticalAnchor.Page),
+            "pvpara" => (WordFrameProperty.VerticalAnchor, (int)VerticalAnchor.Paragraph),
+            "posy" or "posnegy" when has => (WordFrameProperty.VerticalOffset, p),
+            "posyt" => (WordFrameProperty.VerticalAlignment, (int)FloatingAlignment.Start),
+            "posyc" => (WordFrameProperty.VerticalAlignment, (int)FloatingAlignment.Center),
+            "posyb" => (WordFrameProperty.VerticalAlignment, (int)FloatingAlignment.End),
+            "posyin" => (WordFrameProperty.VerticalAlignment, (int)FloatingAlignment.Inside),
+            "posyout" => (WordFrameProperty.VerticalAlignment, (int)FloatingAlignment.Outside),
+            "dxfrtext" when has => (WordFrameProperty.Distance, p),
+            "dfrmtxtx" when has => (WordFrameProperty.DistanceHorizontal, p),
+            "dfrmtxty" when has => (WordFrameProperty.DistanceVertical, p),
+            "nowrap" => (WordFrameProperty.Wrap, (int)FrameWrap.NotBeside),
+            "wraparound" => (WordFrameProperty.Wrap, (int)FrameWrap.Around),
+            "wraptight" => (WordFrameProperty.Wrap, (int)FrameWrap.Tight),
+            "wrapthrough" => (WordFrameProperty.Wrap, (int)FrameWrap.Through),
+            "dropcapli" when has => (WordFrameProperty.DropCapLines, p),
+            "dropcapt" when has => (WordFrameProperty.DropCap, (int)(p == 2 ? DropCap.Margin : DropCap.Drop)),
+            "abslock" => (WordFrameProperty.AnchorLock, 1),
+            _ => null,
+        };
+        if (change is not { } c)
+        {
+            return false;
         }
 
-        state.MutablePara().Frame = next;
+        state.MutablePara().Frame = WordProperties.Set(state.Para.Frame ?? new FramePosition(), c.Property, c.Value);
         return true;
     }
 
@@ -797,7 +703,7 @@ internal sealed partial class RtfReader
                 UpdateBorder(b => b with { Color = Color(p) });
                 return true;
             case "brsp" when has:
-                UpdateBorder(b => b with { Space = Math.Clamp(Twips(p), 0, 31) });
+                UpdateBorder(b => b with { Space = Math.Clamp(WordProperties.Twips(p), 0, 31) });
                 return true;
             case "brdrsh":
                 UpdateBorder(b => b with { Shadow = true });
@@ -881,48 +787,18 @@ internal sealed partial class RtfReader
 
         if (word.StartsWith("ch", StringComparison.Ordinal))
         {
-            state.MutableChar().Shading = UpdateShading(state.Char.Shading, pattern: kind);
+            state.MutableChar().Shading = WordProperties.Shade(state.Char.Shading, pattern: kind);
         }
         else if (word.StartsWith("cl", StringComparison.Ordinal))
         {
-            UpdateCellShading(s => UpdateShading(s, pattern: kind));
+            UpdateCellShading(s => WordProperties.Shade(s, pattern: kind));
         }
         else
         {
-            state.MutablePara().Shading = UpdateShading(state.Para.Shading, pattern: kind);
+            state.MutablePara().Shading = WordProperties.Shade(state.Para.Shading, pattern: kind);
         }
 
         return true;
-    }
-
-    /// <summary>A shading with one part changed: a percentage of pattern colour (0 to 10000), a fill, a pattern colour or a pattern.</summary>
-    private static Shading UpdateShading(Shading? shading, int? percent = null, DocumentColor? fill = null, DocumentColor? patternColor = null, ShadingPattern? pattern = null)
-    {
-        Shading s = shading ?? new Shading(ShadingPattern.Clear);
-        if (percent is int value)
-        {
-            double share = Math.Clamp(value, 0, 10000) / 100.0;
-            s = s.Pattern is ShadingPattern.Clear or ShadingPattern.Percent or ShadingPattern.Solid
-                ? s with { Pattern = share <= 0 ? ShadingPattern.Clear : share >= 100 ? ShadingPattern.Solid : ShadingPattern.Percent, Percent = share }
-                : s with { Percent = share };
-        }
-
-        if (fill is { } f)
-        {
-            s = s with { Fill = f };
-        }
-
-        if (patternColor is { } c)
-        {
-            s = s with { PatternColor = c };
-        }
-
-        if (pattern is { } kind)
-        {
-            s = s with { Pattern = kind };
-        }
-
-        return s;
     }
 
     // ---- Sections and the document ----
@@ -957,70 +833,70 @@ internal sealed partial class RtfReader
                 sectionPageRestart = false;
                 return true;
             case "sbknone":
-                s.SectionStart = SectionStart.Continuous;
+                Sect(WordSectionProperty.Start, (int)SectionStart.Continuous);
                 return true;
             case "sbkcol":
-                s.SectionStart = SectionStart.NewColumn;
+                Sect(WordSectionProperty.Start, (int)SectionStart.NewColumn);
                 return true;
             case "sbkpage":
-                s.SectionStart = SectionStart.NewPage;
+                Sect(WordSectionProperty.Start, (int)SectionStart.NewPage);
                 return true;
             case "sbkeven":
-                s.SectionStart = SectionStart.EvenPage;
+                Sect(WordSectionProperty.Start, (int)SectionStart.EvenPage);
                 return true;
             case "sbkodd":
-                s.SectionStart = SectionStart.OddPage;
+                Sect(WordSectionProperty.Start, (int)SectionStart.OddPage);
                 return true;
             case "pgwsxn" when has && p > 0:
-                s.PageWidth = Twips(p);
+                Sect(WordSectionProperty.PageWidth, p);
                 return true;
             case "pghsxn" when has && p > 0:
-                s.PageHeight = Twips(p);
+                Sect(WordSectionProperty.PageHeight, p);
                 return true;
             case "marglsxn" when has:
-                s.MarginLeft = Math.Max(0, Twips(p));
+                Sect(WordSectionProperty.MarginLeft, p);
                 return true;
             case "margrsxn" when has:
-                s.MarginRight = Math.Max(0, Twips(p));
+                Sect(WordSectionProperty.MarginRight, p);
                 return true;
             case "margtsxn" when has:
-                s.MarginTop = Twips(p);
+                Sect(WordSectionProperty.MarginTop, p);
                 return true;
             case "margbsxn" when has:
-                s.MarginBottom = Twips(p);
+                Sect(WordSectionProperty.MarginBottom, p);
                 return true;
             case "guttersxn" when has:
-                s.Gutter = Math.Max(0, Twips(p));
+                Sect(WordSectionProperty.Gutter, p);
                 return true;
             case "headery" when has:
-                s.HeaderDistance = Math.Max(0, Twips(p));
+                Sect(WordSectionProperty.HeaderDistance, p);
                 return true;
             case "footery" when has:
-                s.FooterDistance = Math.Max(0, Twips(p));
+                Sect(WordSectionProperty.FooterDistance, p);
                 return true;
             case "lndscpsxn":
-                s.Orientation = PageOrientation.Landscape;
+                Sect(WordSectionProperty.Orientation, (int)PageOrientation.Landscape);
                 return true;
             case "titlepg":
-                s.DifferentFirstPage = true;
+                Sect(WordSectionProperty.TitlePage, 1);
                 return true;
             case "cols" when has:
-                s.ColumnCount = Math.Clamp(p, 1, 45);
+                Sect(WordSectionProperty.ColumnCount, p);
                 return true;
             case "colsx" when has:
-                s.ColumnSpacing = Math.Max(0, Twips(p));
+                Sect(WordSectionProperty.ColumnSpacing, p);
                 return true;
             case "colno" when has:
                 sectionColumn = Math.Clamp(p, 1, 45) - 1;
                 return true;
             case "colw" when has:
-                SetColumn(c => c with { Width = Math.Max(0, Twips(p)) });
+                SetColumn(c => c with { Width = Math.Max(0, WordProperties.Twips(p)) });
                 return true;
             case "colsr" when has:
-                SetColumn(c => c with { SpaceAfter = Math.Max(0, Twips(p)) });
+                SetColumn(c => c with { SpaceAfter = Math.Max(0, WordProperties.Twips(p)) });
                 return true;
             case "linebetcol":
-                s.ColumnSeparator = true;
+                Sect(WordSectionProperty.ColumnSeparator, 1);
                 return true;
             case "pgnstarts" when has:
                 sectionPageStart = Math.Max(0, p);
@@ -1029,34 +905,34 @@ internal sealed partial class RtfReader
                 sectionPageRestart = true;
                 return true;
             case "pgndec":
-                s.PageNumberStyle = NumberStyle.Decimal;
+                Sect(WordSectionProperty.PageNumberStyle, (int)NumberStyle.Decimal);
                 return true;
             case "pgnucrm":
-                s.PageNumberStyle = NumberStyle.UpperRoman;
+                Sect(WordSectionProperty.PageNumberStyle, (int)NumberStyle.UpperRoman);
                 return true;
             case "pgnlcrm":
-                s.PageNumberStyle = NumberStyle.LowerRoman;
+                Sect(WordSectionProperty.PageNumberStyle, (int)NumberStyle.LowerRoman);
                 return true;
             case "pgnucltr":
-                s.PageNumberStyle = NumberStyle.UpperLetter;
+                Sect(WordSectionProperty.PageNumberStyle, (int)NumberStyle.UpperLetter);
                 return true;
             case "pgnlcltr":
-                s.PageNumberStyle = NumberStyle.LowerLetter;
+                Sect(WordSectionProperty.PageNumberStyle, (int)NumberStyle.LowerLetter);
                 return true;
             case "vertalt":
-                s.VerticalAlignment = VerticalAlignment.Top;
+                Sect(WordSectionProperty.VerticalAlignment, (int)VerticalAlignment.Top);
                 return true;
             case "vertalc":
-                s.VerticalAlignment = VerticalAlignment.Center;
+                Sect(WordSectionProperty.VerticalAlignment, (int)VerticalAlignment.Center);
                 return true;
             case "vertalb":
-                s.VerticalAlignment = VerticalAlignment.Bottom;
+                Sect(WordSectionProperty.VerticalAlignment, (int)VerticalAlignment.Bottom);
                 return true;
             case "vertalj":
-                s.VerticalAlignment = VerticalAlignment.Justify;
+                Sect(WordSectionProperty.VerticalAlignment, (int)VerticalAlignment.Justify);
                 return true;
             case "rtlsect":
-                s.Bidi = true;
+                Sect(WordSectionProperty.Bidi, 1);
                 return true;
             case "pgbrdrt" or "pgbrdrb" or "pgbrdrl" or "pgbrdrr":
                 state.Border = BorderTarget.Page;
@@ -1064,37 +940,39 @@ internal sealed partial class RtfReader
 
             // Document-wide page setup, which every \sectd starts from.
             case "paperw" when has && p > 0:
-                SetBoth(x => x.PageWidth = Twips(p));
+                Both(WordSectionProperty.PageWidth, p);
                 return true;
             case "paperh" when has && p > 0:
-                SetBoth(x => x.PageHeight = Twips(p));
+                Both(WordSectionProperty.PageHeight, p);
                 return true;
             case "margl" when has:
-                SetBoth(x => x.MarginLeft = Math.Max(0, Twips(p)));
+                Both(WordSectionProperty.MarginLeft, p);
                 return true;
             case "margr" when has:
-                SetBoth(x => x.MarginRight = Math.Max(0, Twips(p)));
+                Both(WordSectionProperty.MarginRight, p);
                 return true;
             case "margt" when has:
-                SetBoth(x => x.MarginTop = Twips(p));
+                Both(WordSectionProperty.MarginTop, p);
                 return true;
             case "margb" when has:
-                SetBoth(x => x.MarginBottom = Twips(p));
+                Both(WordSectionProperty.MarginBottom, p);
                 return true;
             case "gutter" when has:
-                SetBoth(x => x.Gutter = Math.Max(0, Twips(p)));
+                Both(WordSectionProperty.Gutter, p);
                 return true;
             case "landscape":
-                SetBoth(x => x.Orientation = PageOrientation.Landscape);
+                Both(WordSectionProperty.Orientation, (int)PageOrientation.Landscape);
                 return true;
             default:
                 return false;
         }
 
-        void SetBoth(Action<PageSetup> set)
+        void Sect(WordSectionProperty property, int value) => WordProperties.Set(s, property, value);
+
+        void Both(WordSectionProperty property, int value)
         {
-            set(documentSetup);
-            set(sectionSetup);
+            WordProperties.Set(documentSetup, property, value);
+            WordProperties.Set(sectionSetup, property, value);
         }
     }
 
@@ -1147,13 +1025,13 @@ internal sealed partial class RtfReader
                 defaultFonts[3] = p;
                 return true;
             case "deflang" when has:
-                document.Styles.DefaultRunFormat.Language ??= LanguageOf(p);
+                document.Styles.DefaultRunFormat.Language ??= WordProperties.Language(p);
                 return true;
             case "deflangfe" when has:
-                document.Styles.DefaultRunFormat.LanguageEastAsia ??= LanguageOf(p);
+                document.Styles.DefaultRunFormat.LanguageEastAsia ??= WordProperties.Language(p);
                 return true;
             case "deftab" when has && p > 0:
-                settings.DefaultTabStop = Twips(p);
+                settings.DefaultTabStop = WordProperties.Twips(p);
                 return true;
             case "facingp":
                 settings.EvenAndOddHeaders = true;
@@ -1168,16 +1046,16 @@ internal sealed partial class RtfReader
                 settings.TrackRevisions = true;
                 return true;
             case "ftnstart" when has && p >= 1:
-                settings.FootnoteStartAt = p;
+                WordProperties.Set(settings, WordNoteProperty.FootnoteStart, p);
                 return true;
             case "aftnstart" when has && p >= 1:
-                settings.EndnoteStartAt = p;
+                WordProperties.Set(settings, WordNoteProperty.EndnoteStart, p);
                 return true;
             case "ftnnar" or "ftnnalc" or "ftnnauc" or "ftnnrlc" or "ftnnruc":
-                settings.FootnoteNumberStyle = NoteNumberStyle(word[4..]);
+                WordProperties.Set(settings, WordNoteProperty.FootnoteNumberStyle, (int)NoteNumberStyle(word[4..]));
                 return true;
             case "aftnnar" or "aftnnalc" or "aftnnauc" or "aftnnrlc" or "aftnnruc":
-                settings.EndnoteNumberStyle = NoteNumberStyle(word[5..]);
+                WordProperties.Set(settings, WordNoteProperty.EndnoteNumberStyle, (int)NoteNumberStyle(word[5..]));
                 return true;
             case "nobrkwrptbl":
                 settings.WordCompatibility.DoNotBreakWrappedTables = true;
@@ -1203,43 +1081,6 @@ internal sealed partial class RtfReader
     }
 
     // ---- Values ----
-
-    private static double Twips(int value) => value / 20.0;
-
-    private static DateTimeOffset? DateOf(int dttm)
-    {
-        // Word's DTTM: minutes, hours, day, month and years since 1900 packed into 32 bits.
-        uint value = (uint)dttm;
-        int minute = (int)(value & 0x3F);
-        int hour = (int)((value >> 6) & 0x1F);
-        int day = (int)((value >> 11) & 0x1F);
-        int month = (int)((value >> 16) & 0xF);
-        int year = 1900 + (int)((value >> 20) & 0x1FF);
-        if (value == 0 || month is < 1 or > 12 || day < 1 || day > DateTime.DaysInMonth(year, month) || hour > 23 || minute > 59)
-        {
-            return null;
-        }
-
-        return new DateTimeOffset(year, month, day, hour, minute, 0, TimeSpan.Zero);
-    }
-
-    private static string? LanguageOf(int lcid)
-    {
-        if (lcid is <= 0 or 1024 or 0x0400 or 0x7F or >= 0x10000)
-        {
-            return null;
-        }
-
-        try
-        {
-            string name = CultureInfo.GetCultureInfo(lcid).Name;
-            return name.Length == 0 ? null : name;
-        }
-        catch (CultureNotFoundException)
-        {
-            return null;
-        }
-    }
 
     private static readonly (HighlightColor Color, uint Rgb)[] Highlights =
     [

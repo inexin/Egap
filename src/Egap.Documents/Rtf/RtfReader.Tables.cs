@@ -1,3 +1,5 @@
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Rtf;
 
 /// <summary>
@@ -10,55 +12,13 @@ internal sealed partial class RtfReader
 {
     private bool inNestTableProps;
 
-    /// <summary>A row definition: the row and table formatting and the cells, each up to its <c>\cellx</c>.</summary>
-    private sealed class RowDefinition
-    {
-        public RowFormat Row { get; } = new();
-
-        public TableFormat Table { get; } = new();
-
-        public List<CellDefinition> Cells { get; } = [];
-
-        public CellDefinition Pending { get; set; } = new();
-
-        public int Left { get; set; }
-
-        public int? Gap { get; set; }
-
-        public bool AutoFit { get; set; }
-
-        public int WidthUnit { get; set; }
-
-        public int Width { get; set; }
-
-        public int Style { get; set; } = -1;
-
-        public TablePosition? Position { get; set; }
-    }
-
-    /// <summary>A cell definition: its formatting, its right edge in twips, and how it merges.</summary>
-    private sealed class CellDefinition
-    {
-        public CellFormat Format { get; } = new();
-
-        public int Right { get; set; }
-
-        public bool MergeFirst { get; set; }
-
-        public bool Merged { get; set; }
-
-        public int WidthUnit { get; set; }
-
-        public int Width { get; set; }
-    }
-
     /// <summary>A built cell with its left and right edges in twips, for the grid.</summary>
     private readonly record struct PlacedCell(Cell Cell, int Left, int Right);
 
     /// <summary>The table being built at one nesting level of a story.</summary>
     private sealed class TableLevel
     {
-        public RowDefinition Definition { get; set; } = new();
+        public WordRowDefinition Definition { get; set; } = new();
 
         public Table? Table { get; set; }
 
@@ -82,7 +42,7 @@ internal sealed partial class RtfReader
     /// <summary>The level the row definition words that follow describe.</summary>
     private int DefinitionLevel => inNestTableProps ? Math.Max(2, state.Itap) : 1;
 
-    private RowDefinition Definition => LevelAt(DefinitionLevel).Definition;
+    private WordRowDefinition Definition => LevelAt(DefinitionLevel).Definition;
 
     /// <summary>Where blocks at table level <paramref name="level"/> go: the story, or the current cell of that level's table.</summary>
     private NodeCollection<Block> Container(int level)
@@ -158,7 +118,7 @@ internal sealed partial class RtfReader
     private void AddRow(TableLevel level)
     {
         Table table = level.Table!;
-        RowDefinition definition = level.Definition;
+        WordRowDefinition definition = level.Definition;
         if (table.Rows.Count == 0)
         {
             ApplyTableFormat(table, definition);
@@ -171,7 +131,7 @@ internal sealed partial class RtfReader
         for (int i = 0; i < level.Cells.Count; i++)
         {
             Cell cell = level.Cells[i];
-            CellDefinition? cellDefinition = i < definition.Cells.Count ? definition.Cells[i] : null;
+            WordCellDefinition? cellDefinition = i < definition.Cells.Count ? definition.Cells[i] : null;
             int right = cellDefinition?.Right ?? left;
             if (cellDefinition is { Merged: true } && placed.Count > 0)
             {
@@ -187,7 +147,7 @@ internal sealed partial class RtfReader
                 cell.Format.CopyRaw(cellDefinition.Format);
                 if (cellDefinition.WidthUnit is 2 or 3 && cellDefinition.Width > 0)
                 {
-                    cell.Format.Width = cellDefinition.WidthUnit == 2 ? TableWidth.Percent(cellDefinition.Width / 50.0) : TableWidth.Points(Twips(cellDefinition.Width));
+                    cell.Format.Width = cellDefinition.WidthUnit == 2 ? TableWidth.Percent(cellDefinition.Width / 50.0) : TableWidth.Points(WordProperties.Twips(cellDefinition.Width));
                 }
                 else if (right > left)
                 {
@@ -204,20 +164,20 @@ internal sealed partial class RtfReader
         level.Cells.Clear();
     }
 
-    private void ApplyTableFormat(Table table, RowDefinition definition)
+    private void ApplyTableFormat(Table table, WordRowDefinition definition)
     {
         table.Format.CopyRaw(definition.Table);
         table.Format.Layout = definition.AutoFit ? TableLayoutKind.Autofit : TableLayoutKind.Fixed;
-        table.Format.Indent ??= Twips(definition.Left + (definition.Gap ?? 0));
+        table.Format.Indent ??= WordProperties.Twips(definition.Left + (definition.Gap ?? 0));
         if (definition.Gap is int gap)
         {
-            table.Format.CellMarginLeft ??= Math.Max(0, Twips(gap));
-            table.Format.CellMarginRight ??= Math.Max(0, Twips(gap));
+            table.Format.CellMarginLeft ??= Math.Max(0, WordProperties.Twips(gap));
+            table.Format.CellMarginRight ??= Math.Max(0, WordProperties.Twips(gap));
         }
 
         if (definition.WidthUnit is 2 or 3 && definition.Width > 0)
         {
-            table.Format.Width = definition.WidthUnit == 2 ? TableWidth.Percent(definition.Width / 50.0) : TableWidth.Points(Twips(definition.Width));
+            table.Format.Width = definition.WidthUnit == 2 ? TableWidth.Percent(definition.Width / 50.0) : TableWidth.Points(WordProperties.Twips(definition.Width));
         }
 
         if (definition.Position is { } position)
@@ -321,55 +281,52 @@ internal sealed partial class RtfReader
 
         if (word == "trowd")
         {
-            LevelAt(DefinitionLevel).Definition = new RowDefinition();
+            LevelAt(DefinitionLevel).Definition = new WordRowDefinition();
             state.Border = BorderTarget.None;
             return true;
         }
 
-        RowDefinition definition = Definition;
-        CellDefinition cell = definition.Pending;
+        WordRowDefinition definition = Definition;
+        WordCellDefinition cell = definition.Pending;
         bool on = !has || p != 0;
+        int toggle = on ? 1 : 0;
         switch (word)
         {
             case "trgaph" when has:
-                definition.Gap = p;
+                Table(WordTableProperty.Gap, p);
                 return true;
             case "trleft" when has:
-                definition.Left = p;
+                Table(WordTableProperty.Left, p);
                 return true;
             case "trrh" when has:
-                definition.Row.Height = p == 0 ? null : Twips(Math.Abs(p));
-                definition.Row.HeightRule = p == 0 ? RowHeightRule.Auto : p > 0 ? RowHeightRule.AtLeast : RowHeightRule.Exactly;
+                Table(WordTableProperty.RowHeight, p);
                 return true;
             case "trhdr":
-                definition.Row.IsHeader = on;
+                Table(WordTableProperty.HeaderRow, toggle);
                 return true;
             case "trkeep":
-                definition.Row.CantSplit = on;
+                Table(WordTableProperty.CantSplit, toggle);
                 return true;
             case "trql" or "trqc" or "trqr":
-                TableAlignment alignment = word switch { "trqc" => TableAlignment.Center, "trqr" => TableAlignment.Right, _ => TableAlignment.Left };
-                definition.Row.Alignment = alignment;
-                definition.Table.Alignment = alignment;
+                Table(WordTableProperty.Alignment, (int)(word switch { "trqc" => TableAlignment.Center, "trqr" => TableAlignment.Right, _ => TableAlignment.Left }));
                 return true;
             case "trautofit":
-                definition.AutoFit = on;
+                Table(WordTableProperty.AutoFit, toggle);
                 return true;
             case "trftsWidth" when has:
-                definition.WidthUnit = p;
+                Table(WordTableProperty.WidthUnit, p);
                 return true;
             case "trwWidth" when has:
-                definition.Width = p;
+                Table(WordTableProperty.Width, p);
                 return true;
             case "trpaddl" or "trpaddr" or "trpaddt" or "trpaddb" when has:
-                SetCellMargin(definition.Table, word[^1], p);
+                Table(MarginOf(word[^1]), p);
                 return true;
             case "trspdl" when has && p > 0:
-                definition.Table.CellSpacing = Twips(p);
-                definition.Row.CellSpacing = Twips(p);
+                Table(WordTableProperty.CellSpacing, p);
                 return true;
             case "tblind" when has:
-                definition.Table.Indent = Twips(p);
+                Table(WordTableProperty.Indent, p);
                 return true;
             case "trbrdrt":
                 state.Border = BorderTarget.TableTop;
@@ -390,106 +347,97 @@ internal sealed partial class RtfReader
                 state.Border = BorderTarget.TableInsideVertical;
                 return true;
             case "trcbpat" when has:
-                definition.Table.Shading = UpdateShading(definition.Table.Shading, fill: Color(p));
+                definition.Table.Shading = WordProperties.Shade(definition.Table.Shading, fill: Color(p));
                 return true;
             case "trcfpat" when has:
-                definition.Table.Shading = UpdateShading(definition.Table.Shading, patternColor: Color(p));
+                definition.Table.Shading = WordProperties.Shade(definition.Table.Shading, patternColor: Color(p));
                 return true;
             case "trshdng" when has:
-                definition.Table.Shading = UpdateShading(definition.Table.Shading, percent: p);
+                definition.Table.Shading = WordProperties.Shade(definition.Table.Shading, percent: p);
                 return true;
             case "ts" when has:
-                definition.Style = p;
+                Table(WordTableProperty.Style, p);
                 return true;
             case "rtlrow":
-                definition.Table.Bidi = true;
+                Table(WordTableProperty.Bidi, 1);
                 return true;
             case "ltrrow":
-                definition.Table.Bidi = null;
+                Table(WordTableProperty.Bidi, 0);
                 return true;
             case "tbllkhdrrows":
-                definition.Table.LookFirstRow = on;
+                Table(WordTableProperty.LookFirstRow, toggle);
                 return true;
             case "tbllklastrow":
-                definition.Table.LookLastRow = on;
+                Table(WordTableProperty.LookLastRow, toggle);
                 return true;
             case "tbllkhdrcols":
-                definition.Table.LookFirstColumn = on;
+                Table(WordTableProperty.LookFirstColumn, toggle);
                 return true;
             case "tbllklastcol":
-                definition.Table.LookLastColumn = on;
+                Table(WordTableProperty.LookLastColumn, toggle);
                 return true;
             case "tbllknorowband":
-                definition.Table.LookNoRowBands = on;
+                Table(WordTableProperty.LookNoRowBands, toggle);
                 return true;
             case "tbllknocolband":
-                definition.Table.LookNoColumnBands = on;
+                Table(WordTableProperty.LookNoColumnBands, toggle);
                 return true;
 
             // Floating tables.
             case "tphcol" or "tphmrg" or "tphpg":
-                definition.Position = (definition.Position ?? new TablePosition()) with
-                {
-                    HorizontalAnchor = word switch { "tphpg" => HorizontalAnchor.Page, "tphmrg" => HorizontalAnchor.Margin, _ => HorizontalAnchor.Column },
-                };
+                Table(WordTableProperty.HorizontalAnchor, (int)(word switch { "tphpg" => HorizontalAnchor.Page, "tphmrg" => HorizontalAnchor.Margin, _ => HorizontalAnchor.Column }));
                 return true;
             case "tpvpara" or "tpvmrg" or "tpvpg":
-                definition.Position = (definition.Position ?? new TablePosition()) with
-                {
-                    VerticalAnchor = word switch { "tpvpg" => VerticalAnchor.Page, "tpvmrg" => VerticalAnchor.Margin, _ => VerticalAnchor.Paragraph },
-                };
+                Table(WordTableProperty.VerticalAnchor, (int)(word switch { "tpvpg" => VerticalAnchor.Page, "tpvmrg" => VerticalAnchor.Margin, _ => VerticalAnchor.Paragraph }));
                 return true;
             case "tposx" or "tposnegx" when has:
-                definition.Position = (definition.Position ?? new TablePosition()) with { HorizontalOffset = Twips(p), HorizontalAlignment = FloatingAlignment.None };
+                Table(WordTableProperty.HorizontalOffset, p);
                 return true;
             case "tposy" or "tposnegy" when has:
-                definition.Position = (definition.Position ?? new TablePosition()) with { VerticalOffset = Twips(p), VerticalAlignment = FloatingAlignment.None };
+                Table(WordTableProperty.VerticalOffset, p);
                 return true;
             case "tposxl" or "tposxc" or "tposxr" or "tposxi" or "tposxo":
-                definition.Position = (definition.Position ?? new TablePosition()) with { HorizontalAlignment = FloatingAlignmentOf(word[^1]) };
+                Table(WordTableProperty.HorizontalAlignment, (int)FloatingAlignmentOf(word[^1]));
                 return true;
             case "tposyt" or "tposyc" or "tposyb" or "tposyin" or "tposyout" or "tposyil":
-                definition.Position = (definition.Position ?? new TablePosition()) with
+                Table(WordTableProperty.VerticalAlignment, (int)(word switch
                 {
-                    VerticalAlignment = word switch
-                    {
-                        "tposyt" => FloatingAlignment.Start,
-                        "tposyc" => FloatingAlignment.Center,
-                        "tposyb" => FloatingAlignment.End,
-                        "tposyin" => FloatingAlignment.Inside,
-                        "tposyout" => FloatingAlignment.Outside,
-                        _ => FloatingAlignment.None,
-                    },
-                };
+                    "tposyt" => FloatingAlignment.Start,
+                    "tposyc" => FloatingAlignment.Center,
+                    "tposyb" => FloatingAlignment.End,
+                    "tposyin" => FloatingAlignment.Inside,
+                    "tposyout" => FloatingAlignment.Outside,
+                    _ => FloatingAlignment.None,
+                }));
                 return true;
             case "tdfrmtxtLeft" when has:
-                definition.Position = (definition.Position ?? new TablePosition()) with { DistanceLeft = Twips(p) };
+                Table(WordTableProperty.DistanceLeft, p);
                 return true;
             case "tdfrmtxtRight" when has:
-                definition.Position = (definition.Position ?? new TablePosition()) with { DistanceRight = Twips(p) };
+                Table(WordTableProperty.DistanceRight, p);
                 return true;
             case "tdfrmtxtTop" when has:
-                definition.Position = (definition.Position ?? new TablePosition()) with { DistanceTop = Twips(p) };
+                Table(WordTableProperty.DistanceTop, p);
                 return true;
             case "tdfrmtxtBottom" when has:
-                definition.Position = (definition.Position ?? new TablePosition()) with { DistanceBottom = Twips(p) };
+                Table(WordTableProperty.DistanceBottom, p);
                 return true;
 
             // Cells.
             case "clmgf":
-                cell.MergeFirst = true;
+                Table(WordTableProperty.CellMergeFirst, 1);
                 return true;
             case "clmrg":
-                cell.Merged = true;
+                Table(WordTableProperty.CellMerged, 1);
                 return true;
             case "clvmgf":
-                cell.Format.VerticalMerge = VerticalMerge.Restart;
+                Table(WordTableProperty.CellVerticalMerge, (int)VerticalMerge.Restart);
                 return true;
             case "clvmrg":
-                cell.Format.VerticalMerge = VerticalMerge.Continue;
+                Table(WordTableProperty.CellVerticalMerge, (int)VerticalMerge.Continue);
                 return true;
             case "clvertalt" or "clvertalc" or "clvertalb":
-                cell.Format.VerticalAlignment = word switch { "clvertalc" => VerticalAlignment.Center, "clvertalb" => VerticalAlignment.Bottom, _ => VerticalAlignment.Top };
+                Table(WordTableProperty.CellVerticalAlignment, (int)(word switch { "clvertalc" => VerticalAlignment.Center, "clvertalb" => VerticalAlignment.Bottom, _ => VerticalAlignment.Top }));
                 return true;
             case "clbrdrt":
                 state.Border = BorderTarget.CellTop;
@@ -510,60 +458,54 @@ internal sealed partial class RtfReader
                 state.Border = BorderTarget.CellDiagonalDown;
                 return true;
             case "clcbpat" when has:
-                cell.Format.Shading = UpdateShading(cell.Format.Shading, fill: Color(p));
+                cell.Format.Shading = WordProperties.Shade(cell.Format.Shading, fill: Color(p));
                 return true;
             case "clcfpat" when has:
-                cell.Format.Shading = UpdateShading(cell.Format.Shading, patternColor: Color(p));
+                cell.Format.Shading = WordProperties.Shade(cell.Format.Shading, patternColor: Color(p));
                 return true;
             case "clshdng" when has:
-                cell.Format.Shading = UpdateShading(cell.Format.Shading, percent: p);
+                cell.Format.Shading = WordProperties.Shade(cell.Format.Shading, percent: p);
                 return true;
             case "clftsWidth" when has:
-                cell.WidthUnit = p;
+                Table(WordTableProperty.CellWidthUnit, p);
                 return true;
             case "clwWidth" when has:
-                cell.Width = p;
+                Table(WordTableProperty.CellWidth, p);
                 return true;
 
             // Word writes the left margin as \clpadt and the top as \clpadl, against the specification's names.
             case "clpadl" when has:
-                cell.Format.MarginTop = Twips(Math.Max(0, p));
+                Table(WordTableProperty.CellMarginTop, p);
                 return true;
             case "clpadt" when has:
-                cell.Format.MarginLeft = Twips(Math.Max(0, p));
+                Table(WordTableProperty.CellMarginLeft, p);
                 return true;
             case "clpadr" when has:
-                cell.Format.MarginRight = Twips(Math.Max(0, p));
+                Table(WordTableProperty.CellMarginRight, p);
                 return true;
             case "clpadb" when has:
-                cell.Format.MarginBottom = Twips(Math.Max(0, p));
+                Table(WordTableProperty.CellMarginBottom, p);
                 return true;
             case "clNoWrap":
-                cell.Format.NoWrap = on;
+                Table(WordTableProperty.CellNoWrap, toggle);
                 return true;
             case "clFitText":
-                cell.Format.FitText = on;
+                Table(WordTableProperty.CellFitText, toggle);
                 return true;
             case "clhidemark":
-                cell.Format.HideMark = on;
+                Table(WordTableProperty.CellHideMark, toggle);
                 return true;
             case "cltxlrtb":
-                cell.Format.TextDirection = TextDirection.Horizontal;
+                Table(WordTableProperty.CellTextDirection, (int)TextDirection.Horizontal);
                 return true;
             case "cltxtbrl" or "cltxtbrlv":
-                cell.Format.TextDirection = TextDirection.TopToBottom;
+                Table(WordTableProperty.CellTextDirection, (int)TextDirection.TopToBottom);
                 return true;
             case "cltxbtlr":
-                cell.Format.TextDirection = TextDirection.BottomToTop;
+                Table(WordTableProperty.CellTextDirection, (int)TextDirection.BottomToTop);
                 return true;
             case "cellx" when has:
-                cell.Right = p;
-                if (definition.Cells.Count < 63)
-                {
-                    definition.Cells.Add(cell);
-                }
-
-                definition.Pending = new CellDefinition();
+                Table(WordTableProperty.CellRight, p);
                 if (state.Border is >= BorderTarget.CellTop and <= BorderTarget.CellDiagonalUp)
                 {
                     state.Border = BorderTarget.None;
@@ -576,6 +518,8 @@ internal sealed partial class RtfReader
         return word.StartsWith("tr", StringComparison.Ordinal) || word.StartsWith("cl", StringComparison.Ordinal)
             || word.StartsWith("tbl", StringComparison.Ordinal) || word.StartsWith("tpos", StringComparison.Ordinal)
             || word.StartsWith("tdfrmtxt", StringComparison.Ordinal);
+
+        void Table(WordTableProperty property, int value) => WordProperties.Set(definition, property, value);
     }
 
     private static FloatingAlignment FloatingAlignmentOf(char c) => c switch
@@ -588,10 +532,19 @@ internal sealed partial class RtfReader
         _ => FloatingAlignment.None,
     };
 
+    /// <summary>The default cell margin that <c>\trpadd</c> and a side letter set.</summary>
+    private static WordTableProperty MarginOf(char side) => side switch
+    {
+        'l' => WordTableProperty.DefaultMarginLeft,
+        'r' => WordTableProperty.DefaultMarginRight,
+        't' => WordTableProperty.DefaultMarginTop,
+        _ => WordTableProperty.DefaultMarginBottom,
+    };
+
     private void UpdateTableBorder(BorderTarget target, Func<Border, Border> change)
     {
         static Border Start(Border? border) => border ?? new Border(BorderStyle.Single);
-        RowDefinition definition = Definition;
+        WordRowDefinition definition = Definition;
         TableFormat table = definition.Table;
         CellFormat cell = definition.Pending.Format;
         switch (target)

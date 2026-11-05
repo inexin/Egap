@@ -2,6 +2,8 @@ using System.Text;
 
 using Egami.Pixels;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Rtf;
 
 /// <summary>The header's tables: fonts, colours, styles, lists and list overrides, revision authors and document information.</summary>
@@ -11,8 +13,8 @@ internal sealed partial class RtfReader
     private readonly Dictionary<int, Encoding> encodings = [];
     private readonly List<DocumentColor> colors = [];
     private readonly Dictionary<int, Style> styles = [];
-    private readonly Dictionary<int, StyleEntry> madeFrom = [];
-    private readonly List<StyleEntry> styleEntries = [];
+    private readonly Dictionary<int, WordStyleDefinition> madeFrom = [];
+    private readonly List<WordStyleDefinition> styleEntries = [];
     private readonly Dictionary<int, ListDefinition> listDefinitions = [];
     private readonly Dictionary<int, List> lists = [];
     private readonly Dictionary<PnState, List> pnLists = [];
@@ -26,38 +28,6 @@ internal sealed partial class RtfReader
 
     /// <summary>A font table entry: the name, the character set its text is in, and Word's hints for substituting it.</summary>
     private sealed record FontEntry(string Name, int Charset, int CodePage, string? AltName, string? Family);
-
-    /// <summary>A style sheet entry, read before the styles are made so that every link can be resolved.</summary>
-    private sealed class StyleEntry
-    {
-        public StyleType Type { get; set; } = StyleType.Paragraph;
-
-        public int Index { get; set; }
-
-        public string Name { get; set; } = "";
-
-        public RunFormat Char { get; set; } = new();
-
-        public ParagraphFormat Para { get; set; } = new();
-
-        public TableFormat Table { get; } = new();
-
-        public int BasedOn { get; set; } = -1;
-
-        public int Next { get; set; } = -1;
-
-        public int Link { get; set; } = -1;
-
-        public bool Hidden { get; set; }
-
-        public bool Primary { get; set; }
-
-        public int? Priority { get; set; }
-
-        public int ListOverride { get; set; }
-
-        public int ListLevel { get; set; }
-    }
 
     /// <summary>The text encoding of font <paramref name="index"/>'s character set; the document's code page for -1.</summary>
     private Encoding EncodingOf(int index)
@@ -365,7 +335,7 @@ internal sealed partial class RtfReader
         int entryDepth = depth;
         state.ResetCharacter();
         state.ResetParagraph();
-        StyleEntry entry = new();
+        WordStyleDefinition entry = new();
         TextCollector name = new(this);
         bool section = false;
         while (true)
@@ -406,43 +376,40 @@ internal sealed partial class RtfReader
                     switch (word)
                     {
                         case "s" when has:
-                            entry.Type = StyleType.Paragraph;
-                            entry.Index = p;
+                            WordProperties.Set(entry, WordStyleProperty.ParagraphIndex, p);
                             continue;
                         case "cs" when has:
-                            entry.Type = StyleType.Character;
-                            entry.Index = p;
+                            WordProperties.Set(entry, WordStyleProperty.CharacterIndex, p);
                             continue;
                         case "ts" when has:
-                            entry.Type = StyleType.Table;
-                            entry.Index = p;
+                            WordProperties.Set(entry, WordStyleProperty.TableIndex, p);
                             continue;
                         case "ds" when has:
                             section = true;
                             continue;
                         case "sbasedon" when has:
-                            entry.BasedOn = p;
+                            WordProperties.Set(entry, WordStyleProperty.BasedOn, p);
                             continue;
                         case "snext" when has:
-                            entry.Next = p;
+                            WordProperties.Set(entry, WordStyleProperty.Next, p);
                             continue;
                         case "slink" when has:
-                            entry.Link = p;
+                            WordProperties.Set(entry, WordStyleProperty.Link, p);
                             continue;
                         case "shidden" or "ssemihidden":
-                            entry.Hidden = !has || p != 0;
+                            WordProperties.Set(entry, WordStyleProperty.Hidden, !has || p != 0 ? 1 : 0);
                             continue;
                         case "sqformat":
-                            entry.Primary = true;
+                            WordProperties.Set(entry, WordStyleProperty.Primary, 1);
                             continue;
                         case "spriority" when has:
-                            entry.Priority = p;
+                            WordProperties.Set(entry, WordStyleProperty.Priority, p);
                             continue;
                         case "trpaddl" or "trpaddr" or "trpaddt" or "trpaddb" when has:
-                            SetCellMargin(entry.Table, word[^1], p);
+                            WordProperties.Set(entry.Table, MarginOf(word[^1]), p);
                             continue;
                         case "tblind" when has:
-                            entry.Table.Indent = Twips(p);
+                            WordProperties.Set(entry.Table, WordTableProperty.Indent, p);
                             continue;
                     }
 
@@ -473,31 +440,11 @@ internal sealed partial class RtfReader
         }
     }
 
-    private static void SetCellMargin(TableFormat format, char side, int twips)
-    {
-        double value = Math.Max(0, Twips(twips));
-        switch (side)
-        {
-            case 'l':
-                format.CellMarginLeft = value;
-                break;
-            case 'r':
-                format.CellMarginRight = value;
-                break;
-            case 't':
-                format.CellMarginTop = value;
-                break;
-            default:
-                format.CellMarginBottom = value;
-                break;
-        }
-    }
-
     /// <summary>Makes the styles the style sheet named, with their links.</summary>
     private void MakeStyles()
     {
         HashSet<string> ids = new(document.Styles.Select(s => s.Id), StringComparer.OrdinalIgnoreCase);
-        foreach (StyleEntry entry in styleEntries)
+        foreach (WordStyleDefinition entry in styleEntries)
         {
             if (styles.ContainsKey(entry.Index))
             {
@@ -549,7 +496,7 @@ internal sealed partial class RtfReader
             }
         }
 
-        foreach (StyleEntry entry in styleEntries)
+        foreach (WordStyleDefinition entry in styleEntries)
         {
             if (!styles.TryGetValue(entry.Index, out Style? style))
             {
@@ -594,7 +541,7 @@ internal sealed partial class RtfReader
     /// </summary>
     private void SubtractInherited()
     {
-        foreach ((int index, StyleEntry entry) in madeFrom)
+        foreach ((int index, WordStyleDefinition entry) in madeFrom)
         {
             Style style = styles[index];
             if (style is TableStyle)
@@ -630,9 +577,9 @@ internal sealed partial class RtfReader
     }
 
     /// <summary>The style sheet entry <paramref name="style"/>'s base was made from, or null when it has no base.</summary>
-    private StyleEntry? BaseEntry(Style style, StyleEntry entry)
+    private WordStyleDefinition? BaseEntry(Style style, WordStyleDefinition entry)
     {
-        return style.BasedOn is { } parent && madeFrom.TryGetValue(entry.BasedOn, out StyleEntry? parentEntry) && styles[entry.BasedOn] == parent
+        return style.BasedOn is { } parent && madeFrom.TryGetValue(entry.BasedOn, out WordStyleDefinition? parentEntry) && styles[entry.BasedOn] == parent
             ? parentEntry
             : null;
     }
@@ -685,27 +632,6 @@ internal sealed partial class RtfReader
 
     // ---- Lists ----
 
-    private sealed class LevelEntry
-    {
-        public NumberStyle Style { get; set; }
-
-        public ParagraphAlignment Alignment { get; set; }
-
-        public ListLabelSuffix Suffix { get; set; }
-
-        public int Start { get; set; } = 1;
-
-        public string Text { get; set; } = "";
-
-        public bool Legal { get; set; }
-
-        public bool NoRestart { get; set; }
-
-        public RunFormat Char { get; set; } = new();
-
-        public ParagraphFormat Para { get; set; } = new();
-    }
-
     private void ReadListTable()
     {
         int groupDepth = depth;
@@ -743,7 +669,7 @@ internal sealed partial class RtfReader
     private void ReadList()
     {
         int listDepth = depth;
-        List<LevelEntry> levels = [];
+        List<WordListLevel> levels = [];
         int id = 0;
         ListKind kind = ListKind.Multilevel;
         string? name = null;
@@ -781,7 +707,7 @@ internal sealed partial class RtfReader
                             definition.Name = string.IsNullOrEmpty(name) ? null : name;
                             for (int i = 0; i < levels.Count; i++)
                             {
-                                FillLevel(definition.Levels[i], levels[i]);
+                                levels[i].FillLevel(definition.Levels[i]);
                             }
 
                             listDefinitions[id] = definition;
@@ -810,12 +736,12 @@ internal sealed partial class RtfReader
         }
     }
 
-    private LevelEntry ReadListLevel()
+    private WordListLevel ReadListLevel()
     {
         int levelDepth = depth;
         state.ResetCharacter();
         state.ResetParagraph();
-        LevelEntry level = new();
+        WordListLevel level = new();
         string levelText = "";
         HashSet<int> numbers = [];
         bool newStyle = false;
@@ -861,26 +787,26 @@ internal sealed partial class RtfReader
                     switch (word)
                     {
                         case "levelnfc" when has && !newStyle:
-                            level.Style = NumberStyleOf(p);
+                            WordProperties.Set(level, WordListLevelProperty.NumberFormat, p);
                             break;
                         case "levelnfcn" when has:
-                            level.Style = NumberStyleOf(p);
+                            WordProperties.Set(level, WordListLevelProperty.NumberFormat, p);
                             newStyle = true;
                             break;
                         case "leveljc" or "leveljcn" when has:
-                            level.Alignment = p switch { 1 => ParagraphAlignment.Center, 2 => ParagraphAlignment.Right, _ => ParagraphAlignment.Left };
+                            WordProperties.Set(level, WordListLevelProperty.Alignment, p);
                             break;
                         case "levelfollow" when has:
-                            level.Suffix = p switch { 1 => ListLabelSuffix.Space, 2 => ListLabelSuffix.Nothing, _ => ListLabelSuffix.Tab };
+                            WordProperties.Set(level, WordListLevelProperty.Follow, p);
                             break;
                         case "levelstartat" when has:
-                            level.Start = Math.Max(0, p);
+                            WordProperties.Set(level, WordListLevelProperty.StartAt, p);
                             break;
                         case "levellegal":
-                            level.Legal = !has || p != 0;
+                            WordProperties.Set(level, WordListLevelProperty.Legal, !has || p != 0 ? 1 : 0);
                             break;
                         case "levelnorestart":
-                            level.NoRestart = !has || p != 0;
+                            WordProperties.Set(level, WordListLevelProperty.NoRestart, !has || p != 0 ? 1 : 0);
                             break;
                         default:
                             if (!word.StartsWith("level", StringComparison.Ordinal) && word is not ("pard" or "plain"))
@@ -925,38 +851,6 @@ internal sealed partial class RtfReader
         return result.ToString();
     }
 
-    private static NumberStyle NumberStyleOf(int code) => code switch
-    {
-        1 => NumberStyle.UpperRoman,
-        2 => NumberStyle.LowerRoman,
-        3 => NumberStyle.UpperLetter,
-        4 => NumberStyle.LowerLetter,
-        5 => NumberStyle.Ordinal,
-        6 => NumberStyle.CardinalText,
-        7 => NumberStyle.OrdinalText,
-        22 => NumberStyle.DecimalZero,
-        23 => NumberStyle.Bullet,
-        255 => NumberStyle.None,
-        _ => NumberStyle.Decimal,
-    };
-
-    private static void FillLevel(ListLevel target, LevelEntry level)
-    {
-        target.NumberStyle = level.Style;
-        target.Alignment = level.Alignment;
-        target.Suffix = level.Suffix;
-        target.StartAt = level.Start;
-        target.LevelText = level.Text;
-        target.IsLegal = level.Legal;
-        if (level.NoRestart)
-        {
-            target.RestartAfterLevel = 0;
-        }
-
-        target.ParagraphFormat.CopyRaw(level.Para);
-        target.RunFormat.CopyRaw(level.Char);
-    }
-
     private void ReadListOverrideTable()
     {
         int groupDepth = depth;
@@ -996,7 +890,7 @@ internal sealed partial class RtfReader
         int overrideDepth = depth;
         int listId = 0;
         int ls = 0;
-        List<(int? Start, LevelEntry? Level)> levels = [];
+        List<(int? Start, WordListLevel? Level)> levels = [];
         while (true)
         {
             switch (tokens.Next())
@@ -1032,7 +926,7 @@ internal sealed partial class RtfReader
 
                                 if (levels[i].Level is { } level)
                                 {
-                                    FillLevel(list.Overrides[i].CreateLevel(), level);
+                                    level.FillLevel(list.Overrides[i].CreateLevel());
                                 }
                             }
 
@@ -1058,12 +952,12 @@ internal sealed partial class RtfReader
         }
     }
 
-    private (int? Start, LevelEntry? Level) ReadOverrideLevel()
+    private (int? Start, WordListLevel? Level) ReadOverrideLevel()
     {
         int levelDepth = depth;
         bool startOverride = false;
         int? start = null;
-        LevelEntry? level = null;
+        WordListLevel? level = null;
         while (true)
         {
             switch (tokens.Next())
@@ -1401,7 +1295,7 @@ internal sealed partial class RtfReader
             styles.TryAdd(0, normal);
         }
 
-        foreach ((int index, StyleEntry entry) in madeFrom)
+        foreach ((int index, WordStyleDefinition entry) in madeFrom)
         {
             // A list the style inherits is its base's, not its own.
             if (entry.ListOverride <= 0 || styles[index] is not ParagraphStyle style || !lists.TryGetValue(entry.ListOverride, out List? list)
