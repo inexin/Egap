@@ -6,6 +6,8 @@ back into documents. Fully managed and MIT-licensed.
 
 - DOCX, DOTX and DOCM read and written; what the model does not name is kept, so DOCX to DOCX is lossless. Files
   encrypted with a password open with it and save with one.
+- Word's binary DOC files read (Word 97 to 2003, Word 6 and Word 95): formatting, lists, tables, sections, notes,
+  comments, fields, tracked changes, pictures, shapes and text boxes; password-protected ones open with their password.
 - RTF read and written as Word writes it: styles, lists, tables, sections, headers and footers, notes, fields, comments,
   tracked changes and pictures.
 - OpenDocument Text (ODT, OTT, flat FODT and FOTT) read as LibreOffice writes it and written as ODF 1.3 (1.2 and 1.4 as
@@ -26,7 +28,7 @@ using Egap.Documents;
 using Egap.Documents.Layout;
 using Egap.Documents.Pdf;
 
-Document doc = Document.Load("report.docx");                     // DOCX, RTF, ODT, PDF or plain text, told apart by content
+Document doc = Document.Load("report.docx");                     // DOCX, DOC, RTF, ODT, PDF or plain text, told apart by content
 DocumentBuilder builder = new(doc);
 builder.Writeln("Added at the end.");
 doc.Replace("colour", "color");

@@ -216,4 +216,29 @@ public sealed class DocEncryptionTests
         byte[] unknown = Builder([9, 0, 9, 0, .. new byte[48]], Md5Keys(Password)).Build();
         Assert.Contains("version 9.9", Assert.Throws<DocumentException>(() => Read(unknown, Password)).Message, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void DocumentLoadAndIdentifyKnowBinaryWordFiles()
+    {
+        DocBuilder plain = new();
+        plain.Run("Plain text").Paragraph();
+        byte[] file = plain.Build();
+        byte[] encrypted = Builder(CryptoApiHeader(Password, 128), Sha1Keys(Password, 128)).Build();
+
+        Assert.Equal(DocumentFormatKind.Doc, Document.Identify(new MemoryStream(file)));
+        Assert.Equal(DocumentFormatKind.Doc, Document.Identify(new OneWayStream(file), "letter.doc"));
+        Assert.Equal(DocumentFormatKind.Encrypted, Document.Identify(new MemoryStream(encrypted)));
+        Assert.Equal("Plain text", Text(Document.Load(new MemoryStream(file))));
+        Assert.Equal("Plain text", Text(Document.Load(new MemoryStream(file), new DocumentLoadOptions { Limits = new DocumentLimits() })));
+
+        Assert.False(Assert.Throws<DocumentPasswordException>(() => Document.Load(new MemoryStream(encrypted))).WrongPassword);
+        Document document = Document.Load(new MemoryStream(encrypted), new DocumentLoadOptions { PasswordCallback = _ => Password });
+        Assert.StartsWith("Secret", Text(document), StringComparison.Ordinal);
+        Assert.Throws<NotSupportedException>(() => document.Save(Path.Combine(Path.GetTempPath(), "egap-never-written.doc")));
+    }
+
+    private sealed class OneWayStream(byte[] bytes) : MemoryStream(bytes)
+    {
+        public override bool CanSeek => false;
+    }
 }

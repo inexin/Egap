@@ -13,7 +13,7 @@ internal sealed class EgapSession : CliHostSession
     /// <summary>The extensions egap reads: PDFs and everything <c>convert</c> takes.</summary>
     private static readonly HashSet<string> Readable = new(StringComparer.OrdinalIgnoreCase)
     {
-        "pdf", "html", "htm", "xhtml", "md", "markdown", "docx", "txt", "png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "webp",
+        "pdf", "html", "htm", "xhtml", "md", "markdown", "docx", "doc", "dot", "txt", "png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "webp",
     };
 
     public EgapSession(CliConsole console, string workingDirectory, Func<string, string?> environment)

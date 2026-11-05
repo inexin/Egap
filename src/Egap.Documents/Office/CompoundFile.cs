@@ -183,6 +183,29 @@ internal sealed class CompoundFile
         return Chain(fat, entry.StartSector, entry.Size, SectorSize, BytesInSectors, ReadSector, entry.Path);
     }
 
+    /// <summary>
+    /// The first bytes of a stream, at most <paramref name="count"/> and 64: a stream in sectors has only its first sector
+    /// read; a small one comes from the mini stream. Fewer bytes come back when the stream is shorter or its first sector
+    /// lies past the file.
+    /// </summary>
+    public byte[] ReadStreamStart(CompoundFileEntry entry, int count)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        count = (int)Math.Min(Math.Min(count, entry.Size), MiniSectorSize);
+        if (count <= 0)
+        {
+            return [];
+        }
+
+        if (entry.Type == CompoundFileEntryType.Stream && entry.Size < MiniStreamCutoff)
+        {
+            return ReadStream(entry)[..count];
+        }
+
+        byte[] sector = new byte[SectorSize];
+        return entry.StartSector < fat.Length && ReadSector(entry.StartSector, sector) ? sector[..count] : [];
+    }
+
     private long SectorOffset(uint sector) => ((long)sector + 1) * SectorSize;
 
     // The bytes the file's sectors after the header hold: no chain of them can be longer.

@@ -12,7 +12,7 @@ namespace Egap.Cli.Commands;
 
 /// <summary>
 /// <c>egap convert</c>: every direction Egap.Documents supports, chosen by the output's extension (CLI design Q6). HTML,
-/// Markdown, DOCX, RTF, text and images become PDF through <see cref="PdfConvert"/>, with its options as flags; PDF
+/// Markdown, DOCX, DOC, RTF, text and images become PDF through <see cref="PdfConvert"/>, with its options as flags; PDF
 /// becomes DOCX, RTF, HTML, Markdown or text through layout analysis; and the flow formats convert to each other. HTML reads its images
 /// and style sheets from its own folder only, unless <c>--allow-path</c> or <c>--allow-network</c> says otherwise (Q7).
 /// </summary>
@@ -26,10 +26,10 @@ internal static class ConvertCommand
 
     public static Command Create(EgapSession session)
     {
-        InputOptions inputs = new("HTML, Markdown, DOCX, RTF, text, image or PDF files, globs (*, ?, **), or folders with --recursive.");
+        InputOptions inputs = new("HTML, Markdown, DOCX, DOC, RTF, text, image or PDF files, globs (*, ?, **), or folders with --recursive.");
         OutputOptions output = new(inPlace: false);
         SaveOptions save = new();
-        SecretOptions password = new("password", "password that opens encrypted PDF, DOCX and ODT inputs");
+        SecretOptions password = new("password", "password that opens encrypted PDF, DOCX, DOC and ODT inputs");
         SecretOptions savePassword = new("save-password", "password that encrypts DOCX, ODT and OTT outputs");
         Option<string?> to = new("--to") { Description = $"The output format when -o does not say: {string.Join(", ", Targets)}.", HelpName = "format" };
         Option<string?> pageSize = new("--page-size") { Description = "To PDF: the page size, A3, A4, A5, Letter, Legal, Tabloid or WxH such as 210mmx297mm.", HelpName = "size" };
@@ -55,7 +55,7 @@ internal static class ConvertCommand
         Option<string?> comments = new("--comments") { Description = "To PDF: the document's comments left out (none, the default), written as annotations a PDF viewer shows, or printed in a pane beside each page (margin).", HelpName = "none|annotations|margin" };
         Option<bool> embedSource = new("--embed-source") { Description = "To PDF: embed a DOCX of the document as the PDF's source (a hybrid PDF that converts back to the document); not with PDF/A-1 or 2." };
         Option<bool> ignoreSource = new("--ignore-embedded-source") { Description = "From PDF: analyse the pages even when the PDF carries an embedded source document Egap can use." };
-        Command command = new("convert", "Convert between formats by the output's extension: HTML, Markdown, DOCX, RTF, text and images to PDF; PDF to DOCX, RTF, HTML, Markdown or text; and the flow formats to each other.");
+        Command command = new("convert", "Convert between formats by the output's extension: HTML, Markdown, DOCX, DOC, RTF, text and images to PDF; PDF to DOCX, RTF, HTML, Markdown or text; and the flow formats to each other.");
         inputs.AddTo(command);
         output.AddTo(command);
         command.Options.Add(to);
@@ -142,7 +142,7 @@ internal static class ConvertCommand
                 {
                     if (isPdf)
                     {
-                        throw new UsageException($"{file.Display} is a PDF already; egap convert writes PDF from HTML, Markdown, DOCX, RTF, text and images.");
+                        throw new UsageException($"{file.Display} is a PDF already; egap convert writes PDF from HTML, Markdown, DOCX, DOC, RTF, text and images.");
                     }
 
                     PdfConvertOptions told = WithLayoutWarnings(session, options, file.Display);
