@@ -9,6 +9,8 @@ Egap.Spreadsheets.Cell.Column.get -> int
 Egap.Spreadsheets.Cell.Equals(Egap.Spreadsheets.Cell? other) -> bool
 Egap.Spreadsheets.Cell.Formula.get -> string?
 Egap.Spreadsheets.Cell.Formula.set -> void
+Egap.Spreadsheets.Cell.FormulaR1C1.get -> string?
+Egap.Spreadsheets.Cell.FormulaR1C1.set -> void
 Egap.Spreadsheets.Cell.HasFormula.get -> bool
 Egap.Spreadsheets.Cell.IsEmpty.get -> bool
 Egap.Spreadsheets.Cell.NumberFormat.get -> string!
@@ -425,6 +427,12 @@ Egap.Spreadsheets.DrawingPosition.OffsetX.get -> long
 Egap.Spreadsheets.DrawingPosition.OffsetX.init -> void
 Egap.Spreadsheets.DrawingPosition.OffsetY.get -> long
 Egap.Spreadsheets.DrawingPosition.OffsetY.init -> void
+Egap.Spreadsheets.FormulaException
+Egap.Spreadsheets.FormulaException.Formula.get -> string!
+Egap.Spreadsheets.FormulaException.FormulaException(string! message) -> void
+Egap.Spreadsheets.FormulaException.FormulaException(string! message, string! formula, int position) -> void
+Egap.Spreadsheets.FormulaException.FormulaException(string! message, System.Exception! innerException) -> void
+Egap.Spreadsheets.FormulaException.Position.get -> int
 Egap.Spreadsheets.Hyperlink
 Egap.Spreadsheets.Hyperlink.Address.get -> string?
 Egap.Spreadsheets.Hyperlink.Address.set -> void
@@ -735,6 +743,7 @@ Egap.Spreadsheets.Worksheet.DefaultColumnWidth.set -> void
 Egap.Spreadsheets.Worksheet.DefaultRowHeight.get -> double?
 Egap.Spreadsheets.Worksheet.DefaultRowHeight.set -> void
 Egap.Spreadsheets.Worksheet.Drawings.get -> Egap.Spreadsheets.SheetDrawingCollection!
+Egap.Spreadsheets.Worksheet.Evaluate(string! formula, Egap.Spreadsheets.CellAddress? cell = null) -> Egap.Spreadsheets.CellValue
 Egap.Spreadsheets.Worksheet.Hyperlinks.get -> Egap.Spreadsheets.HyperlinkCollection!
 Egap.Spreadsheets.Worksheet.Index.get -> int
 Egap.Spreadsheets.Worksheet.MergedCells.get -> Egap.Spreadsheets.MergedCellCollection!

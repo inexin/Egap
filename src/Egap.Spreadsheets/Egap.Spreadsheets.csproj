@@ -23,6 +23,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Egap.Spreadsheets.Tests" />
     <InternalsVisibleTo Include="Egap.Spreadsheets.Benchmarks" />
+    <InternalsVisibleTo Include="Egap.Spreadsheets.Fuzz" />
     <InternalsVisibleTo Include="Compare" />
     <InternalsVisibleTo Include="Compare.Tests" />
     <InternalsVisibleTo Include="Compare.Benchmarks" />

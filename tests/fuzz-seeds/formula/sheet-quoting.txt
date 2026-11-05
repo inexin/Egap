@@ -1,0 +1,1 @@
+SUM($A$1:B3,Data!C:C,'Sheet 2'!1:1,2:C2!A1)+A1:A3 A2:C2

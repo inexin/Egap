@@ -27,5 +27,7 @@ Tables, data validation, conditional formatting, notes, hyperlinks and pictures 
 loaded workbook saves its charts, pivot tables, macros and the rest as they were. `SheetReader` and `SheetWriter` stream
 rows through XLSX and CSV in constant memory.
 Number format codes show values as Excel does (`cell.Text`, `NumberFormatCode`), in any culture, and CSV and TSV are
-read and written with type detection. The formula engine comes in the next releases. Source, guide and
+read and written with type detection. Formulas are read and checked against Excel's grammar, in A1 or R1C1 style
+(`cell.FormulaR1C1`), and `sheet.Evaluate` evaluates one with Excel's rules for values, errors, references and dates;
+recalculation and the common functions come in the next releases. Source, guide and
 changelog: [github.com/inexin/Egap](https://github.com/inexin/Egap).

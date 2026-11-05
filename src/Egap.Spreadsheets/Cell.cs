@@ -1,3 +1,5 @@
+using Egap.Spreadsheets.Formulas;
+
 namespace Egap.Spreadsheets;
 
 /// <summary>
@@ -52,10 +54,63 @@ public sealed class Cell : IEquatable<Cell>
     /// <see cref="HasFormula"/> set; its formula and result are kept and saved.
     /// </summary>
     /// <exception cref="ArgumentException">The formula is longer than 8,192 characters.</exception>
+    /// <exception cref="FormulaException">The formula does not follow Excel's grammar.</exception>
     public string? Formula
     {
         get => sheet.GetFormula(Row, Column);
-        set => sheet.SetFormula(Row, Column, value, CellValue.Empty);
+        set
+        {
+            if (!string.IsNullOrEmpty(value) && value != "=")
+            {
+                string text = value[0] == '=' ? value[1..] : value;
+                if (text.Length <= 8192)
+                {
+                    FormulaParser.Parse(text, r1c1: false, Address);
+                }
+            }
+
+            sheet.SetFormula(Row, Column, value, CellValue.Empty);
+        }
+    }
+
+    /// <summary>
+    /// The cell's formula with its references in R1C1 style, relative ones counted from this cell: <c>SUM(R1C1:R[-1]C)</c>
+    /// for <c>SUM($A$1:B3)</c> in B4. Null when the cell holds no formula; a stored formula Egap cannot read is given as
+    /// stored. Setting one stores it in A1 style, as <see cref="Formula"/> does.
+    /// </summary>
+    /// <exception cref="ArgumentException">The formula is longer than 8,192 characters.</exception>
+    /// <exception cref="FormulaException">The formula does not follow Excel's grammar in R1C1 style.</exception>
+    public string? FormulaR1C1
+    {
+        get
+        {
+            if (Formula is not { } formula)
+            {
+                return null;
+            }
+
+            return FormulaParser.TryParse(formula, r1c1: false, Address) is { } parsed
+                ? FormulaPrinter.Print(parsed, ReferenceStyle.R1C1)
+                : formula;
+        }
+
+        set
+        {
+            if (string.IsNullOrEmpty(value) || value == "=")
+            {
+                sheet.SetFormula(Row, Column, null, CellValue.Empty);
+                return;
+            }
+
+            string text = value[0] == '=' ? value[1..] : value;
+            if (text.Length > 8192)
+            {
+                throw new ArgumentException("A formula is at most 8,192 characters.", nameof(value));
+            }
+
+            ParsedFormula parsed = FormulaParser.Parse(text, r1c1: true, Address);
+            sheet.SetFormula(Row, Column, FormulaPrinter.Print(parsed, ReferenceStyle.A1, Address), CellValue.Empty);
+        }
     }
 
     /// <summary>Whether the cell holds a formula.</summary>

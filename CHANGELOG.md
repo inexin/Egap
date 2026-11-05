@@ -145,6 +145,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   nothing changed in keep their bytes; charts, pivot tables, slicers and macros stay as they were.
 - `SheetReader` and `SheetWriter` stream rows through XLSX and CSV without a workbook, in constant memory, with column
   widths and number formats, frozen top rows and row styles.
+- Formulas: a parser for Excel's grammar in its stored form, A1 and R1C1 references, sheet, 3D and external references,
+  structured references, array constants, union, intersection, `@` and the spill operator, keeping a formula's text as
+  written. Setting `Cell.Formula` to text that is not a formula throws a `FormulaException` with the position; the new
+  `Cell.FormulaR1C1` reads and writes a formula with R1C1 references.
+- `Worksheet.Evaluate` evaluates a formula as if in a cell of the sheet: a compiler and evaluator with Excel's values,
+  errors as values, text read as numbers and dates, comparisons to 15 significant digits, implicit intersection, array
+  arithmetic, defined names, tables, and the 1900 and 1904 date systems. Functions so far: SUM, IF, IFERROR, IFNA, AND, OR,
+  NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; others give `#NAME?`.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 
