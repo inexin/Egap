@@ -210,6 +210,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - An empty branch of `IF`, `IFERROR` or `IFNA`, or an empty choice of `CHOOSE`, is a blank as in Excel: 0 in a cell or a sum,
   empty text beside text; `CONCATENATE(IF(A1=0,,"x"),"y")` no longer gives `0y`. `COUNT` counts an empty argument.
   `ADDRESS` with its third or fourth argument empty takes the default: `ADDRESS(2,3,,)` is `$C$2`, no longer `#VALUE!`.
+- `VLOOKUP`, `HLOOKUP`, `LOOKUP`, `INDEX`, `SWITCH` and `IFS` hand back a blank cell as a blank, as in Excel: the cell shows 0,
+  `VLOOKUP(...)=""` is TRUE and `ISBLANK` of it is TRUE. They gave the number 0 before.
+- Formulas read the values a workbook keeps for its linked workbooks, as Excel does when links aren't updated: `[1]Sheet!A1`,
+  `[1]!Name`, and through `INDIRECT` and `OFFSET`. A cell the book doesn't keep is blank, or `#REF!` if the sheet's refresh
+  failed; a sheet or name it doesn't keep is `#REF!`. The link parts still save as they were.
 - Formulas read linked workbooks' kept values, as Excel does when links aren't updated: `[1]Prices!A1`, ranges, and the book's
   names (`[1]!Rate`). A cell with no kept value is blank, or `#REF!` on a sheet Excel marked as failing to refresh. The link parts save as they were.
 

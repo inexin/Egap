@@ -23,6 +23,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["headerfooter"] = HeaderFooter,
     ["document"] = AsDocument,
     ["tables"] = FromTables,
+    ["links"] = Links,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -107,6 +108,33 @@ static void FromTables(Stream input)
     }
 
     Workbook.FromTables(book.ToDocument());
+}
+
+// An XLSX package whose formulas read a linked book's kept values; only loading it may refuse it, with a DocumentException.
+static void Links(Stream input)
+{
+    Workbook book;
+    try
+    {
+        book = Workbook.Load(input);
+    }
+    catch (DocumentException)
+    {
+        return;
+    }
+
+    if (book.Worksheets.Count == 0)
+    {
+        return;
+    }
+
+    Worksheet sheet = book.Worksheets[0];
+    sheet["XFC1"].Formula = "[1]Prices!A1";
+    sheet["XFC2"].Formula = "SUM([1]Prices!A1:B3)";
+    sheet["XFC3"].Formula = "[1]!Rate";
+    sheet["XFC4"].Formula = "VLOOKUP(7,[1]!Table,1,FALSE)";
+    sheet["XFC5"].Formula = "INDIRECT(\"[1]Prices!A2\")";
+    book.CalculateFull();
 }
 
 static byte[] Bytes(Stream input)
