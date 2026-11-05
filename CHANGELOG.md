@@ -59,8 +59,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   Word's fields, indexes as `TOC` fields, tracked insertions and deletions, pictures, text boxes and simple shapes. A
   frame holding only a table is a floating table. Charts, formulas and other objects are islands that draw their stored
   picture; unknown markup is kept as extension data. `Document.Load` and `Document.Identify` know ODT by its `mimetype`
-  entry and FODT by its root (`DocumentFormatKind.Odt`). A password-protected OpenDocument file throws a
-  `DocumentException`.
+  entry and FODT by its root (`DocumentFormatKind.Odt`).
+- Password-protected OpenDocument Text: `OdtLoadOptions.Password` and `PasswordCallback`, and the same in
+  `DocumentLoadOptions` with `Document.Load`, open an encrypted ODT or OTT. All three of LibreOffice's encryptions are
+  read: AES-256 in CBC mode with PBKDF2 (ODF 1.2 to 1.4), Blowfish with PBKDF2 (ODF 1.0 and 1.1, OpenOffice.org), and
+  the whole package in AES-256 GCM with an Argon2id key, LibreOffice's default since 24.2. Blowfish, BLAKE2b and
+  Argon2id are Egap's own managed code, written from their published descriptions and RFC 9106 and checked against their
+  test vectors. A missing or wrong password throws `DocumentPasswordException`, and `Document.Identify` reports an
+  encrypted ODT as `DocumentFormatKind.Encrypted`. Key derivations past a sane cost (PBKDF2 iterations, Argon2id memory
+  and passes) throw a `DocumentLimitException` rather than run for minutes.
 - Faster loading of documents with many lists: checking that a list belongs to the document no longer scans every list,
   which made a document of thousands of lists slow to read.
 - Layout warnings: `DocumentLayout.Warnings` lists what a layout laid out differently from what the document asks for,

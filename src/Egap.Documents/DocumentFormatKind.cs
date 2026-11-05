@@ -37,14 +37,15 @@ public enum DocumentFormatKind
     Rtf,
 
     /// <summary>
-    /// An encrypted Office file: a password-protected Word document (or another Office package) in a compound file. Loading
-    /// it needs its password, in <see cref="DocumentLoadOptions.Password"/> or <see cref="DocxLoadOptions.Password"/>.
+    /// An encrypted file: a password-protected Word document (or another Office package) in a compound file, or a
+    /// password-protected OpenDocument text package. Loading it needs its password, in <see cref="DocumentLoadOptions.Password"/>,
+    /// <see cref="DocxLoadOptions.Password"/> or <see cref="OdtLoadOptions.Password"/>.
     /// </summary>
     Encrypted,
 
     /// <summary>
     /// OpenDocument Text: an ODT document or OTT template (a ZIP package whose stored first entry is its <c>mimetype</c>), or a
-    /// flat FODT file (one XML document).
+    /// flat FODT file (one XML document). A password-protected one is <see cref="Encrypted"/>.
     /// </summary>
     Odt,
 

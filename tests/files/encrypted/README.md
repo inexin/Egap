@@ -22,3 +22,13 @@ The user password is `user` and the owner password `owner` unless the table says
 "Paragraph 0" to "Paragraph 399") that LibreOffice (Windows, November 2026) saved as Word 2007-365 with the password `Lo pässwörd`, through UNO
 with the `Password` property. LibreOffice writes Office 2007's standard encryption (AES-128 with SHA-1), so the file checks
 the standard decryption against a writer that is not Egap's.
+
+The three ODT files are `tests/fuzz-seeds/odt/own-features.fodt`, Egap's own document, that LibreOffice 26.8 (Windows,
+November 2026) saved as ODT with the password `pw`, through UNO with the `Password` property and the ODF version option
+set before each save:
+
+| File | ODF version option | Encryption |
+| --- | --- | --- |
+| `libreoffice-blowfish.odt` | ODF 1.0/1.1 | Each file with Blowfish in 64-bit CFB mode, PBKDF2 from a SHA-1 start key, SHA-1/1K checksums |
+| `libreoffice-aes-cbc.odt` | ODF 1.3 | Each file with AES-256 in CBC mode, PBKDF2 from a SHA-256 start key, SHA-256/1K checksums |
+| `libreoffice-aes-gcm.odt` | ODF 1.4 Extended (LibreOffice's default) | The whole package in `encrypted-package` with AES-256 in GCM mode, Argon2id from a SHA-256 start key |

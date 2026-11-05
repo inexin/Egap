@@ -43,6 +43,10 @@ Egap.Documents.OdtLoadOptions
 Egap.Documents.OdtLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
 Egap.Documents.OdtLoadOptions.Limits.init -> void
 Egap.Documents.OdtLoadOptions.OdtLoadOptions() -> void
+Egap.Documents.OdtLoadOptions.Password.get -> string?
+Egap.Documents.OdtLoadOptions.Password.init -> void
+Egap.Documents.OdtLoadOptions.PasswordCallback.get -> System.Func<int, string?>?
+Egap.Documents.OdtLoadOptions.PasswordCallback.init -> void
 Egap.Documents.RtfFormat
 Egap.Documents.RtfLoadOptions
 Egap.Documents.RtfLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!

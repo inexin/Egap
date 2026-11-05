@@ -7,6 +7,15 @@ public sealed class OdtLoadOptions
 {
     /// <summary>Limits that stop a hostile file from using too much memory or time.</summary>
     public DocumentLimits Limits { get; init; } = new();
+
+    /// <summary>The password of an encrypted file; null when the file is not encrypted, or to ask <see cref="PasswordCallback"/>.</summary>
+    public string? Password { get; init; }
+
+    /// <summary>
+    /// Asked for a password when the file is encrypted and <see cref="Password"/> is missing or wrong. It gets the attempt's
+    /// number, from 1, and gives a password to try, or null to give up, which throws <see cref="DocumentPasswordException"/>.
+    /// </summary>
+    public Func<int, string?>? PasswordCallback { get; init; }
 }
 
 /// <summary>

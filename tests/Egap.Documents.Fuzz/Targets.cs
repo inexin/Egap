@@ -14,6 +14,7 @@ internal static class Targets
         ["docx"] = DocxFile,
         ["rtf"] = RtfFile,
         ["odt"] = OdtFile,
+        ["odfcrypt"] = EncryptedOdtFile,
         ["cfb"] = CompoundFileTarget,
         ["html"] = Html,
         ["layout"] = LayoutTarget,
@@ -420,6 +421,25 @@ internal static class Targets
         Egap.Documents.Docx.DocxWriter.Write(document, written, true);
         written.Position = 0;
         _ = Egap.Documents.DocxFormat.Load(written).GetText();
+    }
+
+    /// <summary>
+    /// Any bytes read as an encrypted ODT with the password "pw" (the seeds are LibreOffice's three encryptions with it); may
+    /// throw only <see cref="DocumentException"/>. A file that decrypts must read as any other ODT does.
+    /// </summary>
+    private static void EncryptedOdtFile(Stream input)
+    {
+        Document document;
+        try
+        {
+            document = OdtFormat.Load(input, new OdtLoadOptions { Password = "pw", Limits = new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 } });
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+
+        Exercise(document);
     }
 
     /// <summary>Reads back a document's text, list labels, fields and every node's effective formatting.</summary>

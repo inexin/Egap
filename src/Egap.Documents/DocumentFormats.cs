@@ -127,7 +127,8 @@ public sealed partial class Document
     /// Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
     /// whose first entry is an EPUB <c>mimetype</c> is EPUB, one with a part under <c>xl/</c> or named .xlsx, .xlsm, .xltx or
     /// .xltm is an Excel workbook, another ZIP package or an old compound file is Word's (and a
-    /// compound file that holds an encrypted package is <see cref="DocumentFormatKind.Encrypted"/>), a MIME
+    /// compound file that holds an encrypted package is <see cref="DocumentFormatKind.Encrypted"/>), an OpenDocument text
+    /// package is ODT (and <see cref="DocumentFormatKind.Encrypted"/> when its manifest says it is encrypted), a MIME
     /// message of <c>multipart/related</c> parts is MHTML, <c>%PDF-</c> is PDF, <c>{\rtf</c> is RTF, a JSON object naming the <c>DoclingDocument</c> schema is
     /// Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
     /// so. It needs no add-on package, so a program can tell its user which package a file needs.
@@ -155,6 +156,18 @@ public sealed partial class Document
             && Office.OfficeEncryption.IsEncryptedPackage(stream.CanSeek ? stream : new MemoryStream(head, 0, length, writable: false)))
         {
             return DocumentFormatKind.Encrypted;
+        }
+
+        // An encrypted OpenDocument package says so in its manifest, which a stream that cannot seek may hold too late to read.
+        if (kind == DocumentFormatKind.Odt && stream.CanSeek && head is [0x50, 0x4B, 0x03, 0x04, ..] && Odf.OdfPackage.IsEncryptedZip(stream))
+        {
+            stream.Position = start;
+            return DocumentFormatKind.Encrypted;
+        }
+
+        if (stream.CanSeek)
+        {
+            stream.Position = start;
         }
 
         return kind;
@@ -196,7 +209,12 @@ public sealed partial class Document
 
         if (kind == DocumentFormatKind.Odt && options is not null)
         {
-            return OdtFormat.Read(bytes, out warnings, new OdtLoadOptions { Limits = options.Limits });
+            return OdtFormat.Read(bytes, out warnings, new OdtLoadOptions
+            {
+                Limits = options.Limits,
+                Password = options.Password,
+                PasswordCallback = options.PasswordCallback,
+            });
         }
 
         return DocumentFormatRegistry.ReaderFor(kind)(bytes, out warnings);
