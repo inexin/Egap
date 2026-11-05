@@ -292,6 +292,107 @@ culture's list separator unless you name one (a semicolon where the comma is the
 <code>\r\n</code> and pads every row to the same number of fields. <code>WriteSeparatorHint</code> adds a <code>sep=</code> line for Excel.</p>
 <p><code>Workbook.Load</code> and <code>Workbook.Save</code> take <code>.csv</code>, <code>.tsv</code> and <code>.tab</code> paths too, with <code>WorkbookLoadOptions.Csv</code> and
 <code>WorkbookSaveOptions.Csv</code> for the options; saving writes the first visible sheet.</p>
+<h2 id="tables-validation-and-conditional-formatting">Tables, validation and conditional formatting</h2>
+<p><code>sheet.Tables</code> holds Excel tables: a named range with a header row, filter buttons, a style and an optional totals row,
+which formulas can name, as in <code>SUM(Sales[Amount])</code>. <code>Add</code> names empty header cells <code>Column1</code>, <code>Column2</code> and so on and
+turns other values into text, as Excel does; saving keeps the header cells and the column names the same.
+<code>sheet.DataValidations</code> says what cells take and shows drop-down lists and input messages, and
+<code>sheet.ConditionalFormats</code> holds rules that style cells by their values or draw bars, colour scales and icons in them.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet[&quot;A1&quot;].Value = &quot;Region&quot;;
+sheet[&quot;B1&quot;].Value = &quot;Amount&quot;;
+sheet[&quot;A2&quot;].Value = &quot;North&quot;;
+sheet[&quot;B2&quot;].Value = 1250.5;
+sheet[&quot;A3&quot;].Value = &quot;South&quot;;
+sheet[&quot;B3&quot;].Value = 980;
+
+SheetTable sales = sheet.Tables.Add(&quot;A1:B4&quot;, &quot;Sales&quot;);     // the header row, two rows of data and a totals row
+sales.ShowTotalsRow = true;
+sales.Columns[1].TotalsRowFunction = TableTotalsFunction.Sum;
+sales.StyleName = &quot;TableStyleMedium9&quot;;
+
+DataValidation region = sheet.DataValidations.AddList(RangeAddress.Parse(&quot;A2:A3&quot;), [&quot;North&quot;, &quot;South&quot;, &quot;East&quot;, &quot;West&quot;]);
+region.Prompt = &quot;Pick a region&quot;;
+sheet.DataValidations.Add(RangeAddress.Parse(&quot;B2:B3&quot;), DataValidationType.DecimalNumber, &quot;0&quot;).Operator = ComparisonOperator.GreaterThanOrEqual;
+
+CellStyle high = CellStyle.Default with { Font = CellFont.Default with { Bold = true }, Fill = CellFill.Solid(CellColor.FromRgb(198, 239, 206)) };
+sheet.ConditionalFormats.Add(&quot;B2:B3&quot;,
+    ConditionalFormatRule.CellIs(ComparisonOperator.GreaterThan, &quot;1000&quot;, high),
+    ConditionalFormatRule.DataBar(CellColor.FromRgb(99, 142, 198)));
+book.Save(&quot;sales.xlsx&quot;);
+</code></pre>
+<p>A rule's <code>Style</code> applies only what differs from <code>CellStyle.Default</code>: the font's colour, bold, italic, underline and
+strikethrough, the fill, the borders and the number format, as Excel's differential formats hold. Rules Excel made that
+the model does not describe in full, such as an icon set's thresholds, data bars' extensions or a table's filter
+criteria, are written back as they were. Rules without a <code>Priority</code> get the places after the sheet's other rules.</p>
+<h2 id="notes-hyperlinks-and-pictures">Notes, hyperlinks and pictures</h2>
+<p><code>sheet.Comments</code> holds notes (Excel's classic comments), <code>sheet.Hyperlinks</code> links to web addresses, files and places in
+the workbook, and <code>sheet.Drawings</code> the pictures, shapes and charts on the sheet. Pictures can be added and moved, and a
+picture's image replaced; shapes, charts, groups and other objects keep everything but their place, name and alternative
+text as the file had them.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;report.xlsx&quot;);
+Worksheet sheet = book.Worksheets[0];
+
+sheet.Comments.Add(&quot;B2&quot;, &quot;Checked against the ledger&quot;, author: &quot;Ann&quot;).Visible = true;
+sheet.Hyperlinks.Add(&quot;A10&quot;, &quot;https://example.com/report&quot;).Display = &quot;Full report&quot;;
+sheet.Hyperlinks.AddInternal(RangeAddress.Parse(&quot;A11&quot;), &quot;'Data'!A1&quot;);
+
+byte[] logo = File.ReadAllBytes(&quot;logo.png&quot;);
+SheetDrawing picture = sheet.Drawings.AddPicture(logo, CellAddress.Parse(&quot;E2&quot;), width: 120, height: 40);
+picture.Description = &quot;Company logo&quot;;
+
+foreach (SheetDrawing drawing in sheet.Drawings)
+{
+    Console.WriteLine($&quot;{drawing.Kind} {drawing.Name} at {drawing.From.Cell}&quot;);
+}
+
+book.Save(&quot;report.xlsx&quot;);
+</code></pre>
+<p>Parts nothing changed in are saved byte for byte: a table, the notes or the drawing layer are written again only when
+something in them changed. Charts, pivot tables, slicers, macros and other parts the model does not hold are always
+kept as they were.</p>
+<h2 id="streaming-large-files">Streaming large files</h2>
+<p><code>SheetReader</code> and <code>SheetWriter</code> stream rows through XLSX files and CSV text without building a workbook, so memory stays
+the same however many rows there are. Use them for exports and imports of more rows than fit comfortably in memory; use
+<code>Workbook</code> to edit a file.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+using (SheetWriter writer = SheetWriter.Create(&quot;orders.xlsx&quot;))      // .csv, .tsv and .tab write text
+{
+    writer.StartSheet(&quot;Orders&quot;);
+    writer.SetColumnWidth(0, 14);
+    writer.SetColumnFormat(1, &quot;yyyy-mm-dd&quot;);
+    writer.FreezeTopRows(1);
+    writer.WriteRow(CellStyle.Default with { Font = CellFont.Default with { Bold = true } }, &quot;Order&quot;, &quot;Date&quot;, &quot;Amount&quot;);
+    for (int i = 0; i &lt; 1_000_000; i++)
+    {
+        writer.WriteRow($&quot;A-{i}&quot;, 45000 + i % 365, i * 0.25);
+    }
+}
+
+using SheetReader reader = SheetReader.Open(&quot;orders.xlsx&quot;);
+double total = 0;
+while (reader.Read())
+{
+    if (reader.Row &gt; 0 &amp;&amp; reader[2].Kind == CellValueKind.Number)
+    {
+        total += reader[2].Number;
+    }
+}
+
+Console.WriteLine($&quot;{reader.SheetName}: {total} ({reader.GetText(1)} was the last date)&quot;);
+</code></pre>
+<p>The writer writes each row as it comes, and the workbook's own parts when it is disposed: dispose it to finish the file.
+Text goes into the cells rather than a shared string table, column widths and frozen rows come before a sheet's first
+row, and <code>SetColumnFormat</code> and a row's style set the cells' number formats and looks. The reader reads an XLSX file's
+shared strings and styles first, then each row of the sheet as it reads it; <code>GetText</code> shows a cell through its number
+format, and <code>SelectSheet</code> moves to another sheet. A stream that cannot seek is copied into memory first, as a ZIP file
+is read from its end.</p>
 <h2 id="memory">Memory</h2>
 <p>Sheets store cells in blocks of 32 rows by 32 columns, made only where cells are: a sheet with values in A1 and
 XFD1048576 holds two blocks. A cell takes 16 bytes, and a block makes its rows of 32 cells as cells arrive, so a full block

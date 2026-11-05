@@ -113,6 +113,16 @@ Two handles for the same cell are equal. For bulk work, <a class="xref" href="Eg
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellComment.html">CellComment</a></dt>
+      <dd><p>A note on a cell (Excel's classic comment): its author and text.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CellCommentCollection.html">CellCommentCollection</a></dt>
+      <dd><p>A sheet's notes, at most one a cell.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.CellFill.html">CellFill</a></dt>
       <dd><p>The fill behind a cell: a pattern in a foreground colour over a background colour.</p>
 </dd>
@@ -136,9 +146,36 @@ formats table does, however many cells use it.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.ConditionalFormat.html">ConditionalFormat</a></dt>
+      <dd><p>Conditional formatting on one or more ranges: the rules that apply to them.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.ConditionalFormatCollection.html">ConditionalFormatCollection</a></dt>
+      <dd><p>A sheet's conditional formatting.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.ConditionalFormatRule.html">ConditionalFormatRule</a></dt>
+      <dd><p>One conditional formatting rule: its kind, formulas and the style it applies. Rules made in Excel that the model does
+not describe in full, such as an icon set's thresholds, keep those parts and write them back.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
       <dd><p>How <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_LoadCsv_System_String_Egap_Spreadsheets_CsvOptions_">LoadCsv(string, CsvOptions?)</a> reads and <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_System_String_Egap_Spreadsheets_CsvOptions_">SaveCsv(string, CsvOptions?)</a>
 writes comma- and tab-separated text (RFC 4180): the separator, encoding, culture and type detection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.DataValidation.html">DataValidation</a></dt>
+      <dd><p>A data validation rule: what its cells allow, the drop-down list and the messages Excel shows. Formulas are written
+without the leading <code>=</code>, in English, as in a cell's formula.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.DataValidationCollection.html">DataValidationCollection</a></dt>
+      <dd><p>A sheet's data validation rules.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -151,6 +188,18 @@ as <code>_xlnm.Print_Area</code>.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.DefinedNameCollection.html">DefinedNameCollection</a></dt>
       <dd><p>A workbook's defined names. A name is unique among the workbook's names, or among one sheet's, case ignored.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.Hyperlink.html">Hyperlink</a></dt>
+      <dd><p>A hyperlink on a cell or range: to a web address or file (<a class="xref" href="Egap.Spreadsheets.Hyperlink.html#Egap_Spreadsheets_Hyperlink_Address">Address</a>), or to a place in the workbook such as
+<code>Sheet2!A1</code> or a defined name (<a class="xref" href="Egap.Spreadsheets.Hyperlink.html#Egap_Spreadsheets_Hyperlink_Location">Location</a>). The cell keeps its own value; Excel shows it as the link's
+text.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.HyperlinkCollection.html">HyperlinkCollection</a></dt>
+      <dd><p>A sheet's hyperlinks, in the order the file or code gave them.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -185,6 +234,24 @@ footer. The print area and the rows and columns repeated on each page are define
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetDrawing.html">SheetDrawing</a></dt>
+      <dd><p>A picture, shape, chart or other object on a sheet's drawing layer. Its place and size and its name and alternative
+text can be changed, and a picture's image replaced; everything else about it is kept as the file had it.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetDrawingCollection.html">SheetDrawingCollection</a></dt>
+      <dd><p>A sheet's drawing objects, back to front.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetReader.html">SheetReader</a></dt>
+      <dd><p>Reads a sheet's rows one at a time from an XLSX file or CSV text, without building a <a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a>: memory stays
+the same however many rows there are. An XLSX file's shared strings and styles are read first, as every cell may use
+them; the rows are then read from the sheet's part as they come.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.SheetRow.html">SheetRow</a></dt>
       <dd><p>One row of a sheet: its height, whether it is hidden, its outline level and the style of its empty cells.</p>
 </dd>
@@ -195,8 +262,31 @@ footer. The print area and the rows and columns repeated on each page are define
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetTable.html">SheetTable</a></dt>
+      <dd><p>An Excel table: a named range with a header row, optional totals row, filter buttons and a table style. Formulas can
+refer to it by name, as in <code>SUM(Sales[Amount])</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetTableCollection.html">SheetTableCollection</a></dt>
+      <dd><p>A sheet's tables.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetTableColumn.html">SheetTableColumn</a></dt>
+      <dd><p>A column of a <a class="xref" href="Egap.Spreadsheets.SheetTable.html">SheetTable</a>: its name, which the header cell shows, and its totals.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.SheetView.html">SheetView</a></dt>
       <dd><p>How a sheet shows on screen: gridlines, headings, zoom, direction, frozen panes and whether its tab is selected.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetWriter.html">SheetWriter</a></dt>
+      <dd><p>Writes rows one at a time to an XLSX file or CSV text, without building a <a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a>: memory stays the same
+however many rows there are. Each row goes straight to the file; the workbook's own parts are written when the writer is
+disposed. Text is written in the cells (inline strings), so no table of strings grows with the file.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -268,6 +358,11 @@ implicitly, so <code>cell.Value = 42</code> and <code>cell.Value = &quot;Total&q
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.DrawingPosition.html">DrawingPosition</a></dt>
+      <dd><p>A place on a sheet: a cell's top-left corner and an offset from it in EMUs (914,400 an inch, 9,525 a pixel at 96 dpi).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.RangeAddress.html">RangeAddress</a></dt>
       <dd><p>A rectangle of cells on a sheet, from its top-left cell to its bottom-right cell, written in A1 style as <code>A1:D20</code>.
 A single cell is written as <code>B4</code>, whole columns as <code>A:C</code> and whole rows as <code>2:5</code>.</p>
@@ -332,6 +427,31 @@ Enums
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.ComparisonOperator.html">ComparisonOperator</a></dt>
+      <dd><p>How a value is compared with a rule's formulas.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.ConditionalFormatType.html">ConditionalFormatType</a></dt>
+      <dd><p>The kinds of conditional formatting rule (ECMA-376 Part 1, 18.18.12, ST_CfType).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.DataValidationErrorStyle.html">DataValidationErrorStyle</a></dt>
+      <dd><p>What Excel does with a value a rule does not allow.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.DataValidationType.html">DataValidationType</a></dt>
+      <dd><p>What a data validation rule allows in its cells.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.DrawingAnchorKind.html">DrawingAnchorKind</a></dt>
+      <dd><p>How a drawing object is fixed to the sheet.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.PrintOrientation.html">PrintOrientation</a></dt>
       <dd><p>Which way a sheet prints on the paper.</p>
 </dd>
@@ -342,8 +462,18 @@ Enums
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetDrawingKind.html">SheetDrawingKind</a></dt>
+      <dd><p>What a drawing object on a sheet is.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.SheetVisibility.html">SheetVisibility</a></dt>
       <dd><p>Whether a sheet's tab shows.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.TableTotalsFunction.html">TableTotalsFunction</a></dt>
+      <dd><p>The function a table's totals row shows for a column.</p>
 </dd>
     </dl>
     <dl class="jumplist">

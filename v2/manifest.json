@@ -7783,6 +7783,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellComment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellComment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellComment",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellComment.yml\" sourcestartlinenumber=\"1\">A note on a cell (Excel's classic comment): its author and text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CellCommentCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CellCommentCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CellCommentCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CellCommentCollection.yml\" sourcestartlinenumber=\"1\">A sheet's notes, at most one a cell.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.CellError.yml",
       "output": {
         ".html": {
@@ -7993,6 +8021,76 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ComparisonOperator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ComparisonOperator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ComparisonOperator",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ComparisonOperator.yml\" sourcestartlinenumber=\"1\">How a value is compared with a rule's formulas.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ConditionalFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ConditionalFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ConditionalFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalFormat.yml\" sourcestartlinenumber=\"1\">Conditional formatting on one or more ranges: the rules that apply to them.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ConditionalFormatCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ConditionalFormatCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ConditionalFormatCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalFormatCollection.yml\" sourcestartlinenumber=\"1\">A sheet's conditional formatting.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ConditionalFormatRule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ConditionalFormatRule.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ConditionalFormatRule",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalFormatRule.yml\" sourcestartlinenumber=\"1\">One conditional formatting rule: its kind, formulas and the style it applies. Rules made in Excel that the model does\nnot describe in full, such as an icon set's thresholds, keep those parts and write them back.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ConditionalFormatType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ConditionalFormatType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ConditionalFormatType",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalFormatType.yml\" sourcestartlinenumber=\"1\">The kinds of conditional formatting rule (ECMA-376 Part 1, 18.18.12, ST_CfType).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.CsvOptions.yml",
       "output": {
         ".html": {
@@ -8004,6 +8102,62 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.CsvOptions",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CsvOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.Workbook.LoadCsv(System.String%2cEgap.Spreadsheets.CsvOptions)\" data-throw-if-not-resolved=\"false\"></xref> reads and <xref href=\"Egap.Spreadsheets.Worksheet.SaveCsv(System.String%2cEgap.Spreadsheets.CsvOptions)\" data-throw-if-not-resolved=\"false\"></xref>\nwrites comma- and tab-separated text (RFC 4180): the separator, encoding, culture and type detection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DataValidation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DataValidation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DataValidation",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DataValidation.yml\" sourcestartlinenumber=\"1\">A data validation rule: what its cells allow, the drop-down list and the messages Excel shows. Formulas are written\nwithout the leading <code>=</code>, in English, as in a cell's formula.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DataValidationCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DataValidationCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DataValidationCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DataValidationCollection.yml\" sourcestartlinenumber=\"1\">A sheet's data validation rules.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DataValidationErrorStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DataValidationErrorStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DataValidationErrorStyle",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DataValidationErrorStyle.yml\" sourcestartlinenumber=\"1\">What Excel does with a value a rule does not allow.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DataValidationType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DataValidationType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DataValidationType",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DataValidationType.yml\" sourcestartlinenumber=\"1\">What a data validation rule allows in its cells.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8032,6 +8186,62 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.DefinedNameCollection",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DefinedNameCollection.yml\" sourcestartlinenumber=\"1\">A workbook's defined names. A name is unique among the workbook's names, or among one sheet's, case ignored.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DrawingAnchorKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DrawingAnchorKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DrawingAnchorKind",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DrawingAnchorKind.yml\" sourcestartlinenumber=\"1\">How a drawing object is fixed to the sheet.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DrawingPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DrawingPosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DrawingPosition",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DrawingPosition.yml\" sourcestartlinenumber=\"1\">A place on a sheet: a cell's top-left corner and an offset from it in EMUs (914,400 an inch, 9,525 a pixel at 96 dpi).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.Hyperlink.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.Hyperlink.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.Hyperlink",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Hyperlink.yml\" sourcestartlinenumber=\"1\">A hyperlink on a cell or range: to a web address or file (<xref href=\"Egap.Spreadsheets.Hyperlink.Address\" data-throw-if-not-resolved=\"false\"></xref>), or to a place in the workbook such as\n<code>Sheet2!A1</code> or a defined name (<xref href=\"Egap.Spreadsheets.Hyperlink.Location\" data-throw-if-not-resolved=\"false\"></xref>). The cell keeps its own value; Excel shows it as the link's\ntext.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.HyperlinkCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.HyperlinkCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.HyperlinkCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.HyperlinkCollection.yml\" sourcestartlinenumber=\"1\">A sheet's hyperlinks, in the order the file or code gave them.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8147,6 +8357,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetDrawing.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetDrawing.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetDrawing",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetDrawing.yml\" sourcestartlinenumber=\"1\">A picture, shape, chart or other object on a sheet's drawing layer. Its place and size and its name and alternative\ntext can be changed, and a picture's image replaced; everything else about it is kept as the file had it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetDrawingCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetDrawingCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetDrawingCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetDrawingCollection.yml\" sourcestartlinenumber=\"1\">A sheet's drawing objects, back to front.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetDrawingKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetDrawingKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetDrawingKind",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetDrawingKind.yml\" sourcestartlinenumber=\"1\">What a drawing object on a sheet is.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetReader.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetReader",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetReader.yml\" sourcestartlinenumber=\"1\">Reads a sheet's rows one at a time from an XLSX file or CSV text, without building a <xref href=\"Egap.Spreadsheets.Workbook\" data-throw-if-not-resolved=\"false\"></xref>: memory stays\nthe same however many rows there are. An XLSX file's shared strings and styles are read first, as every cell may use\nthem; the rows are then read from the sheet's part as they come.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.SheetRow.yml",
       "output": {
         ".html": {
@@ -8175,6 +8441,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetTable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetTable.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetTable",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetTable.yml\" sourcestartlinenumber=\"1\">An Excel table: a named range with a header row, optional totals row, filter buttons and a table style. Formulas can\nrefer to it by name, as in <code>SUM(Sales[Amount])</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetTableCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetTableCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetTableCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetTableCollection.yml\" sourcestartlinenumber=\"1\">A sheet's tables.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetTableColumn.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetTableColumn.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetTableColumn",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetTableColumn.yml\" sourcestartlinenumber=\"1\">A column of a <xref href=\"Egap.Spreadsheets.SheetTable\" data-throw-if-not-resolved=\"false\"></xref>: its name, which the header cell shows, and its totals.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.SheetView.yml",
       "output": {
         ".html": {
@@ -8200,6 +8508,34 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.SheetVisibility",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetVisibility.yml\" sourcestartlinenumber=\"1\">Whether a sheet's tab shows.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetWriter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetWriter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetWriter",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetWriter.yml\" sourcestartlinenumber=\"1\">Writes rows one at a time to an XLSX file or CSV text, without building a <xref href=\"Egap.Spreadsheets.Workbook\" data-throw-if-not-resolved=\"false\"></xref>: memory stays the same\nhowever many rows there are. Each row goes straight to the file; the workbook's own parts are written when the writer is\ndisposed. Text is written in the cells (inline strings), so no table of strings grows with the file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.TableTotalsFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.TableTotalsFunction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.TableTotalsFunction",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.TableTotalsFunction.yml\" sourcestartlinenumber=\"1\">The function a table's totals row shows for a column.</p>\n"
     },
     {
       "type": "ManagedReference",

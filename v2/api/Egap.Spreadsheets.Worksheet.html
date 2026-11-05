@@ -153,7 +153,7 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Cells" data-uid="Egap.Spreadsheets.Worksheet.Cells">
   Cells
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L51"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cells by zero-based row and column, and every cell that holds a value or a style.</p>
@@ -185,7 +185,7 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Columns" data-uid="Egap.Spreadsheets.Worksheet.Columns">
   Columns
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The columns by zero-based index or A1 name: width, hidden, outline level and style.</p>
@@ -213,11 +213,107 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
 
 
+  <a id="Egap_Spreadsheets_Worksheet_Comments_" data-uid="Egap.Spreadsheets.Worksheet.Comments*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_Comments" data-uid="Egap.Spreadsheets.Worksheet.Comments">
+  Comments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The notes on cells.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CellCommentCollection Comments { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.CellCommentCollection.html">CellCommentCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_Worksheet_ConditionalFormats_" data-uid="Egap.Spreadsheets.Worksheet.ConditionalFormats*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_ConditionalFormats" data-uid="Egap.Spreadsheets.Worksheet.ConditionalFormats">
+  ConditionalFormats
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The conditional formatting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConditionalFormatCollection ConditionalFormats { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.ConditionalFormatCollection.html">ConditionalFormatCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_Worksheet_DataValidations_" data-uid="Egap.Spreadsheets.Worksheet.DataValidations*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_DataValidations" data-uid="Egap.Spreadsheets.Worksheet.DataValidations">
+  DataValidations
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The data validation rules: what cells allow, drop-down lists and input messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DataValidationCollection DataValidations { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.DataValidationCollection.html">DataValidationCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_Worksheet_DefaultColumnWidth_" data-uid="Egap.Spreadsheets.Worksheet.DefaultColumnWidth*"></a>
 
   <h3 id="Egap_Spreadsheets_Worksheet_DefaultColumnWidth" data-uid="Egap.Spreadsheets.Worksheet.DefaultColumnWidth">
   DefaultColumnWidth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The width of columns that set none, in characters as <a class="xref" href="Egap.Spreadsheets.SheetColumn.html#Egap_Spreadsheets_SheetColumn_Width">Width</a>, or null for Excel's default.</p>
@@ -255,7 +351,7 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_DefaultRowHeight" data-uid="Egap.Spreadsheets.Worksheet.DefaultRowHeight">
   DefaultRowHeight
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The height in points of rows that set none, or null for Excel's default from the default font (15 for Calibri 11).</p>
@@ -289,11 +385,75 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
 
 
+  <a id="Egap_Spreadsheets_Worksheet_Drawings_" data-uid="Egap.Spreadsheets.Worksheet.Drawings*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_Drawings" data-uid="Egap.Spreadsheets.Worksheet.Drawings">
+  Drawings
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The pictures, shapes, charts and other objects on the sheet's drawing layer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SheetDrawingCollection Drawings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.SheetDrawingCollection.html">SheetDrawingCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_Worksheet_Hyperlinks_" data-uid="Egap.Spreadsheets.Worksheet.Hyperlinks*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_Hyperlinks" data-uid="Egap.Spreadsheets.Worksheet.Hyperlinks">
+  Hyperlinks
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The hyperlinks on cells and ranges.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HyperlinkCollection Hyperlinks { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.HyperlinkCollection.html">HyperlinkCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_Worksheet_Index_" data-uid="Egap.Spreadsheets.Worksheet.Index*"></a>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Index" data-uid="Egap.Spreadsheets.Worksheet.Index">
   Index
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L48"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet's tab position in its workbook.</p>
@@ -325,7 +485,7 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Item_Egap_Spreadsheets_CellAddress_" data-uid="Egap.Spreadsheets.Worksheet.Item(Egap.Spreadsheets.CellAddress)">
   this[CellAddress]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L123"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cell at an address.</p>
@@ -362,7 +522,7 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Item_System_Int32_System_Int32_" data-uid="Egap.Spreadsheets.Worksheet.Item(System.Int32,System.Int32)">
   this[int, int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L127"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cell at a zero-based row and column.</p>
@@ -407,7 +567,7 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Item_System_String_" data-uid="Egap.Spreadsheets.Worksheet.Item(System.String)">
   this[string]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cell at an A1 address such as <code>B4</code>.</p>
@@ -450,7 +610,7 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_MergedCells" data-uid="Egap.Spreadsheets.Worksheet.MergedCells">
   MergedCells
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L60"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The merged ranges.</p>
@@ -482,7 +642,7 @@ and a rectangle of cells with <code>sheet.Range(&quot;A1:D20&quot;)</code>.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Name" data-uid="Egap.Spreadsheets.Worksheet.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet's name on its tab: 1 to 31 characters, none of <code>: \ / ? * [ ]</code>, no apostrophe at either end, and unique
@@ -521,7 +681,7 @@ in the workbook, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_PageSetup" data-uid="Egap.Spreadsheets.Worksheet.PageSetup">
   PageSetup
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L84"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the sheet prints: paper, orientation, scaling, margins, header and footer.</p>
@@ -553,7 +713,7 @@ in the workbook, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Rows" data-uid="Egap.Spreadsheets.Worksheet.Rows">
   Rows
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L54"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The rows by zero-based index: height, hidden, outline level and style.</p>
@@ -585,7 +745,7 @@ in the workbook, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_TabColor" data-uid="Egap.Spreadsheets.Worksheet.TabColor">
   TabColor
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L90"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The colour of the sheet's tab, or null for none.</p>
@@ -613,11 +773,43 @@ in the workbook, case ignored.</p>
 
 
 
+  <a id="Egap_Spreadsheets_Worksheet_Tables_" data-uid="Egap.Spreadsheets.Worksheet.Tables*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_Tables" data-uid="Egap.Spreadsheets.Worksheet.Tables">
+  Tables
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The Excel tables on the sheet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SheetTableCollection Tables { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.SheetTableCollection.html">SheetTableCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_Worksheet_UsedRange_" data-uid="Egap.Spreadsheets.Worksheet.UsedRange*"></a>
 
   <h3 id="Egap_Spreadsheets_Worksheet_UsedRange" data-uid="Egap.Spreadsheets.Worksheet.UsedRange">
   UsedRange
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L141"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The smallest range that holds every cell with a value, a formula or a style, as SpreadsheetML's sheet dimension; null
@@ -650,7 +842,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_View" data-uid="Egap.Spreadsheets.Worksheet.View">
   View
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L81"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the sheet shows on screen: gridlines, zoom, frozen panes and so on.</p>
@@ -682,7 +874,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Visibility" data-uid="Egap.Spreadsheets.Worksheet.Visibility">
   Visibility
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L68"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the sheet's tab shows, is hidden, or is hidden so that only code can show it again.</p>
@@ -714,7 +906,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Workbook" data-uid="Egap.Spreadsheets.Worksheet.Workbook">
   Workbook
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L29"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The workbook the sheet is in.</p>
@@ -756,7 +948,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Range_Egap_Spreadsheets_RangeAddress_" data-uid="Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress)">
   Range(RangeAddress)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L155"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A range from its address.</p>
@@ -793,7 +985,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Range_System_Int32_System_Int32_System_Int32_System_Int32_" data-uid="Egap.Spreadsheets.Worksheet.Range(System.Int32,System.Int32,System.Int32,System.Int32)">
   Range(int, int, int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L159"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A range from zero-based corner rows and columns, in any order.</p>
@@ -842,7 +1034,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Range_System_String_" data-uid="Egap.Spreadsheets.Worksheet.Range(System.String)">
   Range(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L152"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A range from an A1 reference such as <code>A1:D20</code>, <code>B4</code>, <code>A:C</code> or <code>2:5</code>.</p>
@@ -885,7 +1077,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_SaveCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)">
   SaveCsv(Stream, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L180"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the sheet as comma- or tab-separated text to a stream, a comma unless the options name another separator.</p>
@@ -925,7 +1117,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_SaveCsv_System_String_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveCsv(System.String,Egap.Spreadsheets.CsvOptions)">
   SaveCsv(string, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L171"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the sheet as comma- or tab-separated text, from A1 to the last used cell: a tab for a <code>.tsv</code> or
@@ -967,7 +1159,7 @@ when the sheet has none. It is worked out from the cells each time.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_ToString" data-uid="Egap.Spreadsheets.Worksheet.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L163"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet's name.</p>
