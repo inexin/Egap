@@ -116,6 +116,9 @@ internal sealed class StyleTable
 
     public NumberFormatTable NumberFormats { get; } = new();
 
+    /// <summary>The style part's differential formats (dxfs) as conditional formatting reads them; null for one the model cannot describe.</summary>
+    public List<CellStyle?> DifferentialStyles { get; } = [];
+
     /// <summary>The style at an index.</summary>
     public CellStyle this[int index] => styles[index];
 

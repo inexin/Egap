@@ -63,6 +63,11 @@ internal static class XlsxStyles
             source.Borders.Add(border);
         }
 
+        foreach (XElement dxf in Children(root, "dxfs", "dxf"))
+        {
+            table.DifferentialStyles.Add(ReadDifferential(dxf));
+        }
+
         if (table.Fonts.Count == 0 || table.Fills.Count == 0 || table.Borders.Count == 0)
         {
             // A style part without the tables every cell format points into cannot be kept; the model writes its own.
@@ -99,7 +104,7 @@ internal static class XlsxStyles
         table.AddDefaults();
     }
 
-    public static XDocument Write(StyleTable table)
+    public static XDocument Write(StyleTable table, IReadOnlyList<XElement>? newDifferentials = null)
     {
         StyleSource? source = table.Source;
         XElement root = source?.Document.Root is { } kept ? new XElement(kept) : NewStyleSheet();
@@ -132,12 +137,140 @@ internal static class XlsxStyles
             XElement styles = Container(root, "cellStyles");
             styles.Add(new XElement(Ns + "cellStyle", new XAttribute("name", "Normal"), Attr("xfId", 0), Attr("builtinId", 0)));
             SetCount(styles);
-            SetCount(Container(root, "dxfs"));
             XElement tableStyles = Container(root, "tableStyles");
             tableStyles.Add(Attr("count", 0), new XAttribute("defaultTableStyle", "TableStyleMedium2"), new XAttribute("defaultPivotStyle", "PivotStyleLight16"));
         }
 
+        if (source is null || newDifferentials is { Count: > 0 })
+        {
+            XElement dxfs = Container(root, "dxfs");
+            dxfs.Add(newDifferentials ?? []);
+            SetCount(dxfs);
+        }
+
         return new XDocument(root);
+    }
+
+    /// <summary>
+    /// A differential format (18.8.14) as a style: the font's bold, italic, underline, strikethrough and colour, the
+    /// number format, the fill and the borders; what else it sets is left to the file's element.
+    /// </summary>
+    internal static CellStyle ReadDifferential(XElement dxf)
+    {
+        CellStyle style = CellStyle.Default;
+        if (dxf.Element(Ns + "font") is { } font)
+        {
+            bool Flag(string name) => font.Element(Ns + name) is { } flag && XlsxNames.Bool((string?)flag.Attribute("val"), true);
+            CellUnderline underline = CellUnderline.None;
+            if (font.Element(Ns + "u") is { } u && !TryEnum((string?)u.Attribute("val") ?? "single", out underline))
+            {
+                underline = CellUnderline.Single;
+            }
+
+            style = style with
+            {
+                Font = CellFont.Default with
+                {
+                    Bold = Flag("b"),
+                    Italic = Flag("i"),
+                    Strikethrough = Flag("strike"),
+                    Underline = underline,
+                    Color = font.Element(Ns + "color") is { } color ? ReadColor(color).Color : CellFont.Default.Color,
+                },
+            };
+        }
+
+        if ((string?)dxf.Element(Ns + "numFmt")?.Attribute("formatCode") is { Length: > 0 and <= 255 } code)
+        {
+            style = style with { NumberFormat = code };
+        }
+
+        if (dxf.Element(Ns + "fill")?.Element(Ns + "patternFill") is { } pattern)
+        {
+            // A differential fill's solid colour is its background colour.
+            string? type = (string?)pattern.Attribute("patternType");
+            CellColor background = ReadColor(pattern.Element(Ns + "bgColor")).Color;
+            CellColor foreground = ReadColor(pattern.Element(Ns + "fgColor")).Color;
+            style = style with
+            {
+                Fill = type is null or "solid"
+                    ? CellFill.Solid(pattern.Element(Ns + "bgColor") is null ? foreground : background)
+                    : TryEnum(type, out CellFillPattern kind) ? new CellFill { Pattern = kind, Foreground = foreground, Background = background } : CellFill.None,
+            };
+        }
+
+        if (dxf.Element(Ns + "border") is { } border)
+        {
+            style = style with { Borders = ReadBorders(border).Borders };
+        }
+
+        return style;
+    }
+
+    /// <summary>A style as a differential format: what differs from <see cref="CellStyle.Default"/> in the parts a dxf holds.</summary>
+    internal static XElement WriteDifferential(CellStyle style, StyleTable table)
+    {
+        XElement dxf = new(Ns + "dxf");
+        CellFont font = style.Font;
+        CellFont normal = CellFont.Default;
+        XElement fontElement = new(Ns + "font");
+        if (font.Bold)
+        {
+            fontElement.Add(new XElement(Ns + "b"));
+        }
+
+        if (font.Italic)
+        {
+            fontElement.Add(new XElement(Ns + "i"));
+        }
+
+        if (font.Strikethrough)
+        {
+            fontElement.Add(new XElement(Ns + "strike"));
+        }
+
+        if (font.Underline != CellUnderline.None)
+        {
+            fontElement.Add(font.Underline == CellUnderline.Single ? new XElement(Ns + "u") : new XElement(Ns + "u", new XAttribute("val", Camel(font.Underline))));
+        }
+
+        if (font.Color != normal.Color)
+        {
+            fontElement.Add(WriteColor("color", font.Color));
+        }
+
+        if (fontElement.HasElements)
+        {
+            dxf.Add(fontElement);
+        }
+
+        if (style.NumberFormat != "General")
+        {
+            int id = table.NumberFormats.Add(style.NumberFormat);
+            dxf.Add(new XElement(Ns + "numFmt", Attr("numFmtId", id), new XAttribute("formatCode", style.NumberFormat)));
+        }
+
+        if (style.Fill != CellFill.None)
+        {
+            XElement pattern = new(Ns + "patternFill");
+            if (style.Fill.Pattern == CellFillPattern.Solid)
+            {
+                pattern.Add(WriteColor("bgColor", style.Fill.Foreground));
+            }
+            else
+            {
+                pattern.Add(new XAttribute("patternType", Camel(style.Fill.Pattern)), WriteColor("fgColor", style.Fill.Foreground), WriteColor("bgColor", style.Fill.Background));
+            }
+
+            dxf.Add(new XElement(Ns + "fill", pattern));
+        }
+
+        if (style.Borders != CellBorders.None)
+        {
+            dxf.Add(WriteBorders(style.Borders));
+        }
+
+        return dxf;
     }
 
     private static XElement NewStyleSheet() => new(Ns + "styleSheet");

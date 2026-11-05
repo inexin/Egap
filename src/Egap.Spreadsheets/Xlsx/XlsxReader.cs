@@ -238,6 +238,8 @@ internal static class XlsxReader
         {
             throw new DocumentException($"Part {part.Name} is not well-formed XML: {e.Message}", e);
         }
+
+        SheetObjectReader.ReadComments(sheet);
     }
 
     /// <summary>Reads an element the model holds; false for one it keeps as it is.</summary>
@@ -323,7 +325,7 @@ internal static class XlsxReader
                 page.Footer = (string?)element.Element(ns + "oddFooter");
                 return true;
             default:
-                return false;
+                return SheetObjectReader.Read(book, sheet, element);
         }
     }
 
