@@ -20,7 +20,7 @@ internal static partial class FormulaFunctions
         new("ROWS", 1, 1, Kinds.Array, (a, c) => Dimension(a[0], rows: true)),
         new("COLUMNS", 1, 1, Kinds.Array, (a, c) => Dimension(a[0], rows: false)),
         new("TRANSPOSE", 1, 1, Kinds.Any, Transpose),
-        new("HYPERLINK", 1, 2, Kinds.Value, static (a, _) => Result(a.Length > 1 ? a[1] : a[0])),
+        new("HYPERLINK", 1, 2, Kinds.Value, static (a, _) => ZeroIfBlank(a.Length > 1 ? a[1] : a[0])),
         new("FORMULATEXT", 1, 1, Kinds.Any, FormulaText),
     ];
 
@@ -515,7 +515,7 @@ internal static partial class FormulaFunctions
 
         if (value.Kind != EvalKind.Array)
         {
-            return Result(value);
+            return ZeroIfBlank(value);
         }
 
         EvalArray array = value.Array;
@@ -524,7 +524,7 @@ internal static partial class FormulaFunctions
         {
             for (int c = 0; c < array.Columns; c++)
             {
-                items[(c * array.Rows) + r] = Result(array[r, c]);
+                items[(c * array.Rows) + r] = ZeroIfBlank(array[r, c]);
             }
         }
 
