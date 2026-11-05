@@ -8329,6 +8329,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.FunctionArgument.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.FunctionArgument.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.FunctionArgument",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FunctionArgument.yml\" sourcestartlinenumber=\"1\">An argument given to a function added with <xref href=\"Egap.Spreadsheets.FunctionRegistry.Add(System.String%2cSystem.Int32%2cSystem.Int32%2cSystem.Func%7bSystem.Collections.Generic.IReadOnlyList%7bEgap.Spreadsheets.FunctionArgument%7d%2cEgap.Spreadsheets.CellValue%7d)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.FunctionRegistry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.FunctionRegistry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.FunctionRegistry",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FunctionRegistry.yml\" sourcestartlinenumber=\"1\">The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a\nuser-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read\nit when they are next calculated or evaluated.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.Hyperlink.yml",
       "output": {
         ".html": {

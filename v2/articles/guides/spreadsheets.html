@@ -278,8 +278,7 @@ CellValue date = sheet.Evaluate(&quot;DATE(2024,3,15)&quot;);                   
 </code></pre>
 <p>Other cells give the values they hold; a formula cell gives its last result, so <code>Evaluate</code> does not recalculate the
 workbook. Dates follow the workbook's date system, 1900 (with the 29 February 1900 Excel keeps) or 1904. A function Egap
-does not know gives <code>#NAME?</code>. This release evaluates operators, references, names and tables, and SUM, IF, IFERROR, IFNA,
-AND, OR, NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; the common functions come next.</p>
+does not know gives <code>#NAME?</code>.</p>
 <h3 id="calculating-a-workbook">Calculating a workbook</h3>
 <p><code>book.Calculate()</code> calculates the formulas whose results are out of date, as Excel does when you press F9: those reading a
 cell changed since the last calculation, those reading their results, and the volatile ones (<code>NOW</code>, <code>TODAY</code>, <code>RAND</code>,
@@ -326,6 +325,41 @@ sheet[&quot;B1&quot;].Formula = &quot;A1/2&quot;;
 CalculationResult result = book.Calculate();         // A1 near 2, B1 near 1
 bool settled = result.Converged;                     // true
 </code></pre>
+<h3 id="functions">Functions</h3>
+<p>About 210 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference,
+information and the core statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (<code>&quot;&gt;20&quot;</code>,
+<code>&quot;a*&quot;</code>, <code>&quot;&lt;&gt;&quot;</code>). <code>FunctionRegistry.BuiltInFunctions</code> lists them. Each follows Microsoft's function reference and is
+checked against what Excel calculates: <code>tools/excel-function-oracle.ps1</code> runs the cases in
+<code>tests/Egap.Spreadsheets.Tests/Oracle/functions.txt</code> through Excel, and the tests compare Egap with its answers;
+<code>tools/excel-workbook-oracle.ps1</code> has Excel build, calculate and save whole workbooks, which the tests calculate again
+with <code>CalculateFull</code> and compare cell by cell. Text that depends on the culture, such as FIXED, DOLLAR, dates read from
+text and numbers joined into text, follows <code>book.Culture</code>.</p>
+<p><code>FunctionRegistry.Add</code> adds a function of your own, as a user-defined function in Excel; files that call one (stored as
+<code>_xludf.NAME</code>) then calculate too. The function gets its arguments as given: <code>Value</code> reads one value, <code>Values</code> the cells
+of a range, and an exception gives <code>#VALUE!</code> in the cell:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+FunctionRegistry.Add(&quot;HYPOT&quot;, 2, 2, arguments =&gt;
+    Math.Sqrt(Math.Pow(arguments[0].Value.Number, 2) + Math.Pow(arguments[1].Value.Number, 2)));
+FunctionRegistry.Add(&quot;COUNTWORDS&quot;, 1, 1, arguments =&gt;
+{
+    int words = 0;
+    foreach (CellValue value in arguments[0].Values)
+    {
+        words += value.Kind == CellValueKind.Text ? value.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length : 0;
+    }
+
+    return words;
+});
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet[&quot;A1&quot;].Value = &quot;one two&quot;;
+sheet[&quot;A2&quot;].Value = &quot;three&quot;;
+CellValue length = sheet.Evaluate(&quot;HYPOT(3,4)&quot;);            // 5
+CellValue words = sheet.Evaluate(&quot;COUNTWORDS(A1:A2)&quot;);      // 3
+</code></pre>
+<p>The registry is shared by the whole process: a function added is known to every workbook until <code>FunctionRegistry.Remove</code>
+takes it away. Built-in functions cannot be replaced.</p>
 <h2 id="number-formats-and-cell-text">Number formats and cell text</h2>
 <p><code>cell.Text</code> is the value as Excel shows it in the cell, through the cell's number format: <code>1,234.50</code> for 1234.5 with
 <code>#,##0.00</code>, <code>2024-03-15</code> for the date serial 45366 with <code>yyyy-mm-dd</code>, <code>TRUE</code> for a boolean and <code>#DIV/0!</code> for an error. A
