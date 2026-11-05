@@ -78,16 +78,7 @@ internal sealed partial class OdtWriter
                 new XElement(OfficeNs + "automatic-styles", masterStyles.Elements, contentStyles.Elements),
                 new XElement(OfficeNs + "master-styles", masterPages), new XElement(OfficeNs + "body", text));
             root.SetAttributeValue(OfficeNs + "mimetype", MediaType);
-            foreach (XElement image in root.Descendants(DrawNs + "image"))
-            {
-                // A flat file holds its pictures in the XML, as base64 (ODF 1.3 Part 3, 10.4.2).
-                if (image.Attr(XLinkNs, "href") is { } href && files.TryGetValue(href, out (byte[] Data, string) file))
-                {
-                    image.RemoveAttributes();
-                    image.Add(new XElement(OfficeNs + "binary-data", Convert.ToBase64String(file.Data)));
-                }
-            }
-
+            InlinePackageFiles(root);
             Save(root, stream);
             return;
         }
@@ -108,6 +99,87 @@ internal sealed partial class OdtWriter
         using MemoryStream plain = new();
         WritePackage(plain, content, styles, metaRoot, settingsRoot);
         OdfEncryption.Encrypt(plain.ToArray(), options.Password, options.Encryption == OdtEncryption.AesGcm ? OdfEncryptionMethod.AesGcmArgon2id : OdfEncryptionMethod.AesCbc, stream);
+    }
+
+    /// <summary>The elements that may hold their file as <c>office:binary-data</c> instead of a link (ODF 1.3 Part 3, 19.4.3).</summary>
+    private static readonly HashSet<XName> BinaryHolders =
+        [DrawNs + "image", DrawNs + "fill-image", DrawNs + "object-ole", StyleNs + "background-image", TextNs + "list-level-style-image"];
+
+    /// <summary>
+    /// A flat file has no package, so the files its elements link to go into the XML: pictures and OLE objects as base64
+    /// (<c>office:binary-data</c>) and embedded documents (charts, formulas) as the <c>draw:object</c>'s own child (ODF 1.3
+    /// Part 3, 10.4.6.2). An object whose document is not in the package is left out; its frame keeps its picture.
+    /// </summary>
+    private void InlinePackageFiles(XElement root)
+    {
+        foreach (XElement element in root.Descendants().Where(e => e.Attribute(XLinkNs + "href") is not null).ToList())
+        {
+            string href = element.Attr(XLinkNs, "href")!;
+            if (href.Length == 0 || href[0] == '#' || href.Contains(':', StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            string path = OdfPackage.NormalizePath(href);
+            if (BinaryHolders.Contains(element.Name) && files.TryGetValue(path, out (byte[] Data, string) file))
+            {
+                RemoveLink(element);
+                element.Add(new XElement(OfficeNs + "binary-data", Convert.ToBase64String(file.Data)));
+            }
+            else if (element.Name == DrawNs + "object" && EmbeddedDocument(path) is { } embedded)
+            {
+                RemoveLink(element);
+                element.Add(embedded);
+            }
+            else if (element.Name == DrawNs + "object" || element.Name == DrawNs + "object-ole")
+            {
+                warnings.Add(ConversionWarningKind.DrawingDropped, "An embedded object whose document is not in the package was written as its picture.");
+                element.Remove();
+            }
+        }
+
+        static void RemoveLink(XElement element)
+        {
+            foreach (string name in (string[])["href", "type", "show", "actuate"])
+            {
+                element.Attribute(XLinkNs + name)?.Remove();
+            }
+        }
+    }
+
+    /// <summary>A sub-document of the package as one element: its content as an <c>office:document</c>, or a formula's MathML.</summary>
+    private XElement? EmbeddedDocument(string path)
+    {
+        if (!files.TryGetValue(path + "/content.xml", out (byte[] Data, string) content) || ParseFile(content.Data) is not { } root)
+        {
+            return null;
+        }
+
+        if (root.Name != OfficeNs + "document-content")
+        {
+            return root;
+        }
+
+        XElement document = new(OfficeNs + "document", root.Attributes().Where(a => a.IsNamespaceDeclaration));
+        document.Add(new XAttribute(OfficeNs + "version", version));
+        document.Add(new XAttribute(OfficeNs + "mimetype", directories.GetValueOrDefault(path) ?? "application/vnd.oasis.opendocument.chart"));
+        XElement? styles = files.TryGetValue(path + "/styles.xml", out (byte[] Data, string) part) ? ParseFile(part.Data) : null;
+        document.Add(root.Element(OfficeNs + "font-face-decls"), styles?.Element(OfficeNs + "styles"), root.Element(OfficeNs + "automatic-styles"),
+            root.Element(OfficeNs + "body"));
+        return document;
+    }
+
+    private static XElement? ParseFile(byte[] data)
+    {
+        try
+        {
+            using XmlReader reader = XmlReader.Create(new MemoryStream(data), new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null });
+            return XElement.Load(reader);
+        }
+        catch (XmlException)
+        {
+            return null;
+        }
     }
 
     private XElement Root(string name, params object?[] content)

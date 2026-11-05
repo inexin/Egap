@@ -735,6 +735,56 @@ public sealed class OdtWriterTests
     }
 
     [Fact]
+    public void AFlatFileHoldsTheObjectsAndPicturesItLinksTo()
+    {
+        const string Ns = """xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0" """;
+        byte[] png = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==");
+        Dictionary<string, string> parts = new()
+        {
+            ["content.xml"] = $"""<office:document-content {Ns}office:version="1.3"><office:body><office:text><text:p>Chart <draw:frame text:anchor-type="as-char" svg:width="1in" svg:height="1in"><draw:object xlink:href="./Object 1" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/><draw:image xlink:href="./ObjectReplacements/Object 1" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p></office:text></office:body></office:document-content>""",
+            ["styles.xml"] = $"""<office:document-styles {Ns}office:version="1.3"/>""",
+            ["Object 1/content.xml"] = $"""<office:document-content {Ns}office:version="1.3"><office:body><office:chart><chart:chart chart:class="chart:bar" svg:width="1in" svg:height="1in"><chart:plot-area/></chart:chart></office:chart></office:body></office:document-content>""",
+            ["META-INF/manifest.xml"] = """<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.3"><manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.text"/><manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/><manifest:file-entry manifest:full-path="styles.xml" manifest:media-type="text/xml"/><manifest:file-entry manifest:full-path="Object 1/" manifest:media-type="application/vnd.oasis.opendocument.chart"/><manifest:file-entry manifest:full-path="Object 1/content.xml" manifest:media-type="text/xml"/><manifest:file-entry manifest:full-path="ObjectReplacements/Object 1" manifest:media-type="image/png"/></manifest:manifest>""",
+        };
+        using MemoryStream package = new();
+        using (ZipArchive zip = new(package, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            using (StreamWriter mimetype = new(zip.CreateEntry("mimetype", CompressionLevel.NoCompression).Open()))
+            {
+                mimetype.Write("application/vnd.oasis.opendocument.text");
+            }
+
+            foreach ((string name, string xml) in parts)
+            {
+                using StreamWriter writer = new(zip.CreateEntry(name).Open());
+                writer.Write(xml);
+            }
+
+            using Stream picture = zip.CreateEntry("ObjectReplacements/Object 1").Open();
+            picture.Write(png);
+        }
+
+        Document document = OdtFormat.Load(new MemoryStream(package.ToArray()));
+        XElement flat = XElement.Load(new MemoryStream(Save(document, new OdtSaveOptions { Kind = OdtKind.FlatDocument })));
+
+        // Nothing links to a package file the flat file does not have: the chart and its picture are in the XML.
+        XNamespace xlink = "http://www.w3.org/1999/xlink";
+        Assert.DoesNotContain(flat.Descendants(), e => e.Attribute(xlink + "href")?.Value is { } href && !href.StartsWith('#') && !href.Contains(':'));
+        XElement frame = flat.Descendants(Draw + "frame").Single();
+        Assert.Equal("chart", frame.Element(Draw + "object")!.Element(Office + "document")!.Element(Office + "body")!.Elements().Single().Name.LocalName);
+        Assert.Equal("application/vnd.oasis.opendocument.chart", frame.Element(Draw + "object")!.Element(Office + "document")!.Attribute(Office + "mimetype")?.Value);
+        Assert.Equal(png, Convert.FromBase64String(frame.Element(Draw + "image")!.Element(Office + "binary-data")!.Value));
+
+        // A package keeps the chart's folder too, and both read back with the object.
+        using (ZipArchive zip = new(new MemoryStream(Save(document))))
+        {
+            Assert.NotNull(zip.GetEntry("Object 1/content.xml"));
+        }
+
+        Assert.Single(OdtFormat.Load(new MemoryStream(Save(document, new OdtSaveOptions { Kind = OdtKind.FlatDocument }))).Descendants<Island>());
+    }
+
+    [Fact]
     public void DocumentSaveWritesOdt()
     {
         Document document = NewDocument(out Body body);

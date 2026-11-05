@@ -517,7 +517,9 @@ internal sealed partial class OdtWriter
             return;
         }
 
-        if (source.Manifest.TryGetValue(path + "/", out string? type))
+        // A sub-document is a folder: the manifest names it (its key loses the trailing slash) and files lie under it.
+        if ((source.Manifest.TryGetValue(path, out string? type) || source.Manifest.TryGetValue(path + "/", out type))
+            && source.FileNames.Any(f => f.StartsWith(path + "/", StringComparison.Ordinal)))
         {
             directories[path] = type;
             foreach (string name in source.FileNames.Where(f => f.StartsWith(path + "/", StringComparison.Ordinal)).ToList())
