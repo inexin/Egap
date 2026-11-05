@@ -233,7 +233,14 @@ static void Formula(Stream input)
         string r1c1Form = FormulaPrinter.Print(again, ReferenceStyle.R1C1);
         _ = FormulaParser.TryParse(r1c1Form, r1c1: true, cell)
             ?? throw new InvalidOperationException($"The R1C1 form does not parse: {r1c1Form}");
-        _ = FormulaEvaluator.Evaluate(FormulaCompiler.Compile(parsed), new EvalContext(FormulaBook.Book.Value.Worksheets[0], cell.Row, cell.Column));
+        try
+        {
+            _ = FormulaEvaluator.Evaluate(FormulaCompiler.Compile(parsed), new EvalContext(FormulaBook.Book.Value.Worksheets[0], cell.Row, cell.Column));
+        }
+        catch (IndexOutOfRangeException error)
+        {
+            throw new InvalidOperationException("The evaluator's stack overflowed the depth the compiler gave it.", error);
+        }
     }
 }
 

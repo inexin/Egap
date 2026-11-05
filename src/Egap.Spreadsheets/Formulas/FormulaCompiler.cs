@@ -259,17 +259,23 @@ internal sealed class FormulaCompiler
         Emit(node);
     }
 
+    /// <summary>
+    /// IF as jumps. With an array condition both branches run: the condition stays on the stack while the TRUE branch runs,
+    /// and the condition and the TRUE result while the FALSE branch runs, so each branch is compiled with those slots held
+    /// and nested IFs add theirs on top.
+    /// </summary>
     private void If(Argument[] arguments)
     {
         Emit(arguments[0].Node);
         int test = code.Count;
         code.Add(default);
-        depth--;
+        int start = depth - 1;
+        depth = start + 1;
         Branch(arguments[1].Node);
         int jump = code.Count;
         code.Add(default);
-        depth--;
         int otherwise = code.Count;
+        depth = start + 2;
         if (arguments.Length == 3)
         {
             Branch(arguments[2].Node);
@@ -283,21 +289,21 @@ internal sealed class FormulaCompiler
         code.Add(new Instruction(OpCode.IfEnd, test));
         code[test] = new Instruction(OpCode.IfTest, otherwise, end);
         code[jump] = new Instruction(OpCode.IfJump, end, test);
-
-        // The array path keeps the condition and both branches on the stack.
-        maxDepth = Math.Max(maxDepth, depth + 2);
+        depth = start + 1;
     }
 
+    /// <summary>IFERROR and IFNA as jumps; an array value stays on the stack while the alternative runs.</summary>
     private void IfError(Argument[] arguments, bool onlyNotAvailable)
     {
         Branch(arguments[0].Node);
         int test = code.Count;
         code.Add(default);
-        depth--;
+        int start = depth - 1;
+        depth = start + 1;
         Branch(arguments[1].Node);
         int end = code.Count;
         code.Add(new Instruction(OpCode.ErrorEnd, test));
         code[test] = new Instruction(OpCode.ErrorTest, end, onlyNotAvailable ? 1 : 0);
-        maxDepth = Math.Max(maxDepth, depth + 1);
+        depth = start + 1;
     }
 }

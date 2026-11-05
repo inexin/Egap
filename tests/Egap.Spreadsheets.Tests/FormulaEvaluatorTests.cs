@@ -129,6 +129,25 @@ public sealed class FormulaEvaluatorTests
         Assert.Equal(CellValue.FromBoolean(expected), Eval(formula));
     }
 
+    [Theory]
+    [InlineData("SUM(IF({1,0},1,IF({1,0},2,1+(2+3))))", 7)]
+    [InlineData("SUM(IF({1,0},IF({0,1},1+(2+3),4),IF({1,0},2,1+(2+3))))", 10)]
+    [InlineData("SUM(IFERROR({1,#N/A},IFERROR({#N/A,2},1+(2+3))))", 3)]
+    [InlineData("SUM(IFNA({#N/A,1},IF({1,0},2,3)))", 3)]
+    [InlineData("SUM(IF({1,0},IFERROR({#N/A,1},1+(2+3)),1))", 7)]
+    public void ArrayConditionsRunBothBranches(string formula, double expected) => Assert.Equal(expected, Eval(formula).Number);
+
+    [Fact]
+    public void DeeplyNestedArrayConditionsFitTheirStack()
+    {
+        const int Depth = 60;
+        string ifs = string.Concat(Enumerable.Repeat("IF({1,0},1,", Depth)) + "1+(2+(3+4))" + new string(')', Depth);
+        Assert.Equal(11, Eval($"SUM({ifs})").Number);
+
+        string errors = string.Concat(Enumerable.Repeat("IFERROR({#N/A,1},", Depth)) + "1+(2+{3,4})" + new string(')', Depth);
+        Assert.Equal(7, Eval($"SUM({errors})").Number);
+    }
+
     [Fact]
     public void TextComesOutAsInExcel()
     {
