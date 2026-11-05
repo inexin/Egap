@@ -99,6 +99,13 @@ internal sealed class DependencyGraph
     /// <summary>Notes that every formula is stale, as for a full calculation.</summary>
     public void ChangedAll() => all = true;
 
+    /// <summary>Forgets the changes noted so far: the formulas' results are up to date. Volatile formulas stay stale.</summary>
+    public void ForgetChanges()
+    {
+        changed.Clear();
+        all = false;
+    }
+
     /// <summary>Whether anything was noted since the last plan.</summary>
     public bool HasChanges => all || changed.Count > 0 || volatiles.Count > 0;
 

@@ -28,6 +28,7 @@ Egap.Spreadsheets.CalculationSettings.Mode.get -> Egap.Spreadsheets.CalculationM
 Egap.Spreadsheets.CalculationSettings.Mode.set -> void
 Egap.Spreadsheets.Cell
 Egap.Spreadsheets.Cell.Address.get -> Egap.Spreadsheets.CellAddress
+Egap.Spreadsheets.Cell.ArrayRange.get -> Egap.Spreadsheets.CellRange?
 Egap.Spreadsheets.Cell.Clear() -> void
 Egap.Spreadsheets.Cell.Column.get -> int
 Egap.Spreadsheets.Cell.Equals(Egap.Spreadsheets.Cell? other) -> bool
@@ -242,6 +243,7 @@ Egap.Spreadsheets.CellRange.Equals(Egap.Spreadsheets.CellRange other) -> bool
 Egap.Spreadsheets.CellRange.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.Cell!>!
 Egap.Spreadsheets.CellRange.GetValues() -> Egap.Spreadsheets.CellValue[,]!
 Egap.Spreadsheets.CellRange.RowCount.get -> int
+Egap.Spreadsheets.CellRange.SetArrayFormula(string! formula) -> void
 Egap.Spreadsheets.CellRange.SetStyle(Egap.Spreadsheets.CellStyle! style) -> void
 Egap.Spreadsheets.CellRange.SetValue(Egap.Spreadsheets.CellValue value) -> void
 Egap.Spreadsheets.CellRange.SetValues(Egap.Spreadsheets.CellValue[,]! values) -> void
@@ -944,5 +946,3 @@ static Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream! stream, Egap.Spreads
 ~override Egap.Spreadsheets.DrawingPosition.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.DrawingPosition.ToString() -> string
 ~override Egap.Spreadsheets.RangeAddress.Equals(object obj) -> bool
-Egap.Spreadsheets.Cell.ArrayRange.get -> Egap.Spreadsheets.CellRange?
-Egap.Spreadsheets.CellRange.SetArrayFormula(string! formula) -> void

@@ -28,6 +28,7 @@ loaded workbook saves its charts, pivot tables, macros and the rest as they were
 rows through XLSX and CSV in constant memory.
 Number format codes show values as Excel does (`cell.Text`, `NumberFormatCode`), in any culture, and CSV and TSV are
 read and written with type detection. Formulas are read and checked against Excel's grammar, in A1 or R1C1 style
-(`cell.FormulaR1C1`), and `sheet.Evaluate` evaluates one with Excel's rules for values, errors, references and dates;
-recalculation and the common functions come in the next releases. Source, guide and
+(`cell.FormulaR1C1`), `sheet.Evaluate` evaluates one with Excel's rules for values, errors, references and dates, and
+`book.Calculate()` recalculates what changed through a dependency graph, with shared and array formulas, circular
+references and iteration; the common functions come in the next releases. Source, guide and
 changelog: [github.com/inexin/Egap](https://github.com/inexin/Egap).

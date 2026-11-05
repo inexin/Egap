@@ -113,7 +113,7 @@ public sealed class XlsxTests
         Assert.Equal(1.25, data["B2"].Value);
         Assert.Equal("B2*C2", data["D2"].Formula);
         Assert.Equal(12.5, data["D2"].Value);
-        Assert.Null(data["D3"].Formula);
+        Assert.Equal("B3*C3", data["D3"].Formula);
         Assert.True(data["D3"].HasFormula);
         Assert.Equal(22.5, data["D3"].Value);
         Assert.Equal(45000.5, data["E3"].Value);
@@ -305,7 +305,7 @@ public sealed class XlsxTests
     }
 
     [Fact]
-    public void CellsSharingAFormulaWhoseFirstCellChangedKeepTheirValues()
+    public void CellsSharingAFormulaWhoseFirstCellChangedKeepTheirFormulas()
     {
         Workbook book = XlsxSeed.LoadFeatures();
         book.Worksheets["Data"]["D2"].Value = 1;
@@ -313,7 +313,7 @@ public sealed class XlsxTests
         (Workbook loaded, MemoryStream package) = XlsxSeed.RoundTrip(book);
 
         Cell d3 = loaded.Worksheets["Data"]["D3"];
-        Assert.False(d3.HasFormula);
+        Assert.Equal("B3*C3", d3.Formula);
         Assert.Equal(22.5, d3.Value);
         Assert.DoesNotContain("si=\"0\"", Encoding.UTF8.GetString(XlsxSeed.Parts(package)["xl/worksheets/sheet1.xml"]), StringComparison.Ordinal);
     }

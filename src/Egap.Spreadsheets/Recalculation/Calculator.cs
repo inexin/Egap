@@ -18,6 +18,9 @@ internal sealed class Calculator
     private static readonly HashSet<string> VolatileFunctions =
         new(["NOW", "TODAY", "RAND", "RANDBETWEEN", "RANDARRAY", "OFFSET", "INDIRECT", "CELL", "INFO", "ANCHORARRAY"], StringComparer.Ordinal);
 
+    /// <summary>The most cells an array formula's range may have to be calculated: 4,194,304.</summary>
+    private const long MaxArrayCells = 1 << 22;
+
     private readonly Workbook book;
     private readonly DependencyGraph graph = new();
     private readonly Dictionary<long, FormulaCell> cells = [];
@@ -59,6 +62,11 @@ internal sealed class Calculator
             if (!first || book.ChangeCount > 0)
             {
                 full = true;
+            }
+            else
+            {
+                // A workbook as loaded: its formulas hold the results saved with it.
+                graph.ForgetChanges();
             }
         }
         else
@@ -215,6 +223,12 @@ internal sealed class Calculator
         }
 
         RangeAddress? output = entry.ArrayRange is { } range && range.First == at && range.CellCount > 1 ? range : null;
+        if (output is { CellCount: > MaxArrayCells })
+        {
+            // A range this large is not something Excel fills either; the cells keep what they hold.
+            return null;
+        }
+
         return new FormulaCell(sheet, row, column, entry, compiled, parsed, at, ArrayMode: kind == "array", output);
     }
 
