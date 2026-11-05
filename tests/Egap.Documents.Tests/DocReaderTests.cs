@@ -215,6 +215,21 @@ public sealed class DocReaderTests
     }
 
     [Fact]
+    public void ImpossiblyDeepTablesStopAtTheDepthKept()
+    {
+        // A fuzzed sprmPItap of a billion levels once made a billion table levels; deeper levels now go to the deepest kept.
+        const ushort itap = 0x6649;
+        const ushort innerRowEnd = 0x244C;
+        DocBuilder builder = new();
+        builder.Run("deep").End('\r', 0, Sprm(InTable, 1), Sprm32(itap, 1_000_000_000));
+        builder.End('\r', 0, Sprm(InTable, 1), Sprm32(itap, 1_000_000_000), Sprm(innerRowEnd, 1), DefineTable(0, 1000));
+
+        Document document = Read(builder);
+
+        Assert.Contains("deep", document.Sections[0].Body.GetText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void FootnotesAndEndnotesCarryTheirStories()
     {
         DocBuilder builder = new();
@@ -437,14 +452,18 @@ public sealed class DocReaderTests
     }
 
     [Fact]
-    public void PasswordProtectedDocumentsAreRefused()
+    public void PasswordProtectedWord6AndDamagedEncryptionHeadersAreRefused()
     {
-        DocBuilder builder = new() { Flags = 0x0100 };
-        builder.Run("secret").Paragraph();
+        DocBuilder word6 = new() { Word6 = true, Flags = 0x0100 };
+        word6.Run("secret").Paragraph();
+        DocBuilder noHeader = new() { Flags = 0x0100 };
+        noHeader.Run("secret").Paragraph();
 
-        DocumentException e = Assert.Throws<DocumentException>(() => Read(builder.Build(), out _));
+        DocumentException e = Assert.Throws<DocumentException>(() => Read(word6.Build(), out _));
+        DocumentException damaged = Assert.Throws<DocumentException>(() => Read(noHeader.Build(), out _));
 
-        Assert.Contains("password", e.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("password-protected", e.Message, StringComparison.Ordinal);
+        Assert.IsNotType<DocumentPasswordException>(damaged);
     }
 
     [Fact]

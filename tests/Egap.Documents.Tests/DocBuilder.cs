@@ -68,6 +68,15 @@ internal sealed class DocBuilder
     /// <summary>The Data stream (pictures), or null for none.</summary>
     public byte[]? Data { get; set; }
 
+    /// <summary>Bytes at the start of the table stream before the tables (an encryption header), and the FIB's lKey.</summary>
+    public byte[] TableHeader { get; init; } = [];
+
+    /// <summary>The FIB's lKey: an XOR password verifier or the size of the encryption header.</summary>
+    public uint LKey { get; init; }
+
+    /// <summary>Changes the finished WordDocument, table and Data streams (encrypts them) before they go in the file.</summary>
+    public Action<byte[], byte[], byte[]?>? Transform { get; init; }
+
     /// <summary>The current CP in <see cref="Story"/>, from that part's start.</summary>
     public int Cp => stories[(int)Story].Length;
 
@@ -237,7 +246,7 @@ internal sealed class DocBuilder
         byte[] papBte = Pages(word, paragraphRuns, paragraphs: true);
 
         // The tables: Word 97's in the table stream, Word 6's after the pages in the WordDocument stream.
-        List<byte> table = Word6 ? word : [];
+        List<byte> table = Word6 ? word : [.. TableHeader];
         Dictionary<int, (long Fc, long Lcb)> pairs = [];
         void Put(int index, byte[] data)
         {
@@ -275,13 +284,18 @@ internal sealed class DocBuilder
             word[i] = fib[i];
         }
 
-        List<(string, byte[])> streams = [("WordDocument", [.. word])];
+        BinaryPrimitives.WriteUInt32LittleEndian(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(word)[0x0E..], LKey);
+        byte[] wordStream = [.. word];
+        byte[] tableStream = [.. table];
+        byte[]? dataStream = Data is { } dataBytes ? [.. dataBytes] : null;
+        Transform?.Invoke(wordStream, tableStream, dataStream);
+        List<(string, byte[])> streams = [("WordDocument", wordStream)];
         if (!Word6)
         {
-            streams.Add(("1Table", [.. table]));
-            if (Data is { } data)
+            streams.Add(("1Table", tableStream));
+            if (dataStream is not null)
             {
-                streams.Add(("Data", data));
+                streams.Add(("Data", dataStream));
             }
         }
 

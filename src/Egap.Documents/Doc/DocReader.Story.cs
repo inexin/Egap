@@ -86,6 +86,9 @@ internal sealed partial class DocReader
         {
             (DocPap pap, DocRow row) = reader.ParagraphProperties(mark);
             int level = pap.Itap > 0 ? pap.Itap : pap.InTable ? 1 : 0;
+
+            // Deeper nesting than the model keeps goes into the deepest table kept, as Container does.
+            level = Math.Min(level, MaxLevel);
             char last = reader.text.Chars[mark];
             bool rowEnd = level == 1 ? pap.Ttp : level > 1 && pap.InnerTtp;
             if (rowEnd)
@@ -378,6 +381,8 @@ internal sealed partial class DocReader
 
         // ---- Tables ----
 
+        private int MaxLevel => Math.Max(1, reader.limits.MaxDepth / 4);
+
         private TableLevel LevelAt(int level)
         {
             while (tables.Count < level)
@@ -391,7 +396,7 @@ internal sealed partial class DocReader
         /// <summary>Where blocks at table level <paramref name="level"/> go: the story, or the current cell of that level's table.</summary>
         private NodeCollection<Block> Container(int level)
         {
-            level = Math.Min(level, Math.Max(1, reader.limits.MaxDepth / 4));
+            level = Math.Min(level, MaxLevel);
             CloseTablesAbove(level);
             if (level == 0)
             {
@@ -411,7 +416,7 @@ internal sealed partial class DocReader
 
         private void EndCell(int level)
         {
-            level = Math.Min(level, Math.Max(1, reader.limits.MaxDepth / 4));
+            level = Math.Min(level, MaxLevel);
             TableLevel table = LevelAt(level);
             if (table.Current is not null)
             {
@@ -422,7 +427,7 @@ internal sealed partial class DocReader
 
         private void EndRow(int level)
         {
-            level = Math.Min(level, Math.Max(1, reader.limits.MaxDepth / 4));
+            level = Math.Min(level, MaxLevel);
             CloseTablesAbove(level);
             TableLevel table = LevelAt(level);
             if (table.Current is { } current)

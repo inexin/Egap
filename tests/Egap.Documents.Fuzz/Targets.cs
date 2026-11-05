@@ -411,7 +411,7 @@ internal static class Targets
         Document document;
         try
         {
-            document = Egap.Documents.Doc.DocReader.Read(bytes.ToArray(), new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 }, out _);
+            document = Egap.Documents.Doc.DocReader.Read(bytes.ToArray(), new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 }, "pw", null, out _);
         }
         catch (DocumentException)
         {

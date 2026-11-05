@@ -43,24 +43,36 @@ internal sealed partial class DocReader
     }
 
     /// <summary>Reads a DOC file's bytes.</summary>
-    /// <exception cref="DocumentException">The file is not a Word document, is password-protected or is malformed.</exception>
-    public static Document Read(byte[] bytes, DocumentLimits limits, out IReadOnlyList<ConversionWarning> warnings)
+    /// <exception cref="DocumentPasswordException">The file is password-protected and no right password was given.</exception>
+    /// <exception cref="DocumentException">The file is not a Word document or is malformed.</exception>
+    public static Document Read(byte[] bytes, DocumentLimits limits, out IReadOnlyList<ConversionWarning> warnings) =>
+        Read(bytes, limits, null, null, out warnings);
+
+    /// <summary>Reads a DOC file's bytes, decrypting a password-protected one with the password or those the callback gives.</summary>
+    /// <exception cref="DocumentPasswordException">The file is password-protected and no right password was given.</exception>
+    /// <exception cref="DocumentException">The file is not a Word document or is malformed.</exception>
+    public static Document Read(byte[] bytes, DocumentLimits limits, string? password, Func<int, string?>? callback, out IReadOnlyList<ConversionWarning> warnings)
     {
         try
         {
             CompoundFile file = CompoundFile.Read(bytes, limits);
             byte[] word = file.ReadStream("WordDocument") ?? throw new DocumentException("The compound file has no WordDocument stream: it is not a Word document.");
             DocFib fib = DocFib.Read(word);
-            if (fib.IsEncrypted)
+            if (fib.IsEncrypted && fib.IsWord6)
             {
-                throw new DocumentException(fib.IsObfuscated
-                    ? "The Word document is password-protected (XOR obfuscation), which Egap does not read yet."
-                    : "The Word document is password-protected (RC4 encryption), which Egap does not read yet.");
+                throw new DocumentException("The Word 6 or Word 95 document is password-protected, which Egap does not read.");
             }
 
             byte[] table = fib.IsWord6 ? word : file.ReadStream(fib.TableStreamName)
                 ?? throw new DocumentException($"The Word document has no {fib.TableStreamName} stream, which its FIB names.");
             byte[]? data = fib.IsWord6 ? null : file.ReadStream("Data");
+            if (fib.IsEncrypted)
+            {
+                // The FIB past FibBase is encrypted too: read it again once the streams are clear.
+                DocEncryption.Decrypt(word, table, data, password, callback);
+                fib = DocFib.Read(word);
+            }
+
             DocReader reader = new(word, table, data, fib, limits);
             reader.ReadDocument();
             warnings = reader.warnings.ToList();

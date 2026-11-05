@@ -500,7 +500,7 @@ internal static class DocProperties
                 pap.Itap = Math.Max(0, BinaryPrimitives.ReadInt32LittleEndian(operand));
                 break;
             case 0x664A:
-                pap.Itap = Math.Max(0, pap.Itap + BinaryPrimitives.ReadInt32LittleEndian(operand));
+                pap.Itap = (int)Math.Clamp((long)pap.Itap + BinaryPrimitives.ReadInt32LittleEndian(operand), 0, int.MaxValue);
                 break;
             case 0x244B:
                 pap.InnerCell = On(operand);

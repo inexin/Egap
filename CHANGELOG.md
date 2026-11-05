@@ -36,7 +36,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   merged cells, sections and page setup, headers and footers, footnotes and endnotes, comments, fields, bookmarks, and
   tracked insertions and deletions; pictures in the line and floating, shapes Egap has a kind for, text boxes, and the
   members of shape groups. Other drawing shapes are left out with a warning, as are the headers and footers and the
-  drawings of Word 6 and Word 95 files; password-protected files are refused.
+  drawings of Word 6 and Word 95 files. Password-protected files open with their password (RC4, RC4 CryptoAPI and XOR
+  obfuscation); those of Word 6 and Word 95 are refused.
 - An RTF straight connector (shape type 32) reads as a line instead of an island.
 - A DOCX list level whose `w:lvlRestart` is 9 no longer stops loading with an `ArgumentOutOfRangeException`.
 - `Document.Identify` reports Excel workbooks (XLSX, XLSM, XLTX and XLTM) as the new `DocumentFormatKind.Xlsx`, by a
