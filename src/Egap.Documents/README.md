@@ -8,8 +8,9 @@ back into documents. Fully managed and MIT-licensed.
   encrypted with a password open with it and save with one.
 - RTF read and written as Word writes it: styles, lists, tables, sections, headers and footers, notes, fields, comments,
   tracked changes and pictures.
-- OpenDocument Text (ODT, OTT and flat FODT) read as LibreOffice writes it: styles, lists, tables, page styles, notes,
-  fields, comments, tracked changes and pictures.
+- OpenDocument Text (ODT, OTT, flat FODT and FOTT) read as LibreOffice writes it and written as ODF 1.3 (1.2 and 1.4 as
+  options): styles, lists, tables, page styles, notes, fields, comments, tracked changes and pictures. Files encrypted with
+  a password open with it and save with one; ODT to ODT keeps what the model does not name.
 - Styles, lists numbered as Word numbers them, tables, fields, comments, tracked changes; find, replace and a builder.
 - Page layout with floats, columns, headers and footers, footnotes, and flex and grid containers, rendered to images, SVG
   or PDF.
