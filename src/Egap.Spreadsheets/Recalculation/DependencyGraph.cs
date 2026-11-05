@@ -35,12 +35,15 @@ internal sealed class DependencyGraph
     private const int MaxTiles = 16;
 
     private readonly Dictionary<long, Node> nodes = [];
-    private readonly Dictionary<long, List<Node>> cellReaders = [];
-    private readonly Dictionary<long, List<Node>> tileReaders = [];
+
+    // A cell or tile read by one formula holds the node itself; read by more, a List<Node>.
+    private readonly Dictionary<long, object> cellReaders = [];
+    private readonly Dictionary<long, object> tileReaders = [];
     private readonly Dictionary<int, List<Node>> wideReaders = [];
     private readonly HashSet<long> changed = [];
     private readonly HashSet<Node> volatiles = [];
     private bool all;
+    private int stamp;
 
     /// <summary>How many formula cells the graph holds.</summary>
     public int Count => nodes.Count;
@@ -69,8 +72,6 @@ internal sealed class DependencyGraph
         {
             volatiles.Add(node);
         }
-
-        changed.Add(cell.Packed);
     }
 
     /// <summary>Forgets the formula at <paramref name="cell"/>, if there is one, and notes the cell as changed.</summary>
@@ -116,57 +117,74 @@ internal sealed class DependencyGraph
     /// </summary>
     public CalculationPlan Plan()
     {
-        List<Node> stale = Stale();
+        Walk walk = Stale();
         changed.Clear();
         all = false;
-        return Order(stale);
+        return Order(walk);
     }
 
-    private List<Node> Stale()
+    /// <summary>
+    /// The stale formulas, numbered in the order found, and for each the stale formulas that read it: breadth first from the
+    /// changed cells and the volatile formulas, where each stale formula's own cell counts as changed.
+    /// </summary>
+    private Walk Stale()
     {
-        if (all)
-        {
-            return [.. nodes.Values];
-        }
-
-        // Breadth first from the changed cells and the volatile formulas: each stale formula's own cell is changed too.
-        List<Node> stale = [];
-        HashSet<Node> seen = [];
-        Queue<CellKey> queue = new();
-        foreach (long packed in changed)
-        {
-            queue.Enqueue(CellKey.Unpack(packed));
-            if (nodes.TryGetValue(packed, out Node? node) && seen.Add(node))
-            {
-                stale.Add(node);
-            }
-        }
-
-        foreach (Node node in volatiles)
-        {
-            if (seen.Add(node))
-            {
-                stale.Add(node);
-                queue.Enqueue(node.Key);
-            }
-        }
-
+        int current = ++stamp;
+        Walk walk = new();
         List<Node> found = [];
-        while (queue.TryDequeue(out CellKey cell))
+
+        // Formulas reached from a changed cell that holds no formula: stale, with no edge to record.
+        void Seed(long packed)
         {
+            if (nodes.TryGetValue(packed, out Node? node))
+            {
+                walk.Add(node, current);
+                return;
+            }
+
             found.Clear();
-            Readers(cell, found);
+            Readers(CellKey.Unpack(packed), found);
             foreach (Node reader in found)
             {
-                if (seen.Add(reader))
-                {
-                    stale.Add(reader);
-                    queue.Enqueue(reader.Key);
-                }
+                walk.Add(reader, current);
             }
         }
 
-        return stale;
+        if (all)
+        {
+            foreach (Node node in nodes.Values)
+            {
+                walk.Add(node, current);
+            }
+        }
+        else
+        {
+            foreach (long packed in changed)
+            {
+                Seed(packed);
+            }
+
+            foreach (Node node in volatiles)
+            {
+                walk.Add(node, current);
+            }
+        }
+
+        // Each stale formula once, in the order numbered: its readers become stale and are its edges.
+        for (int i = 0; i < walk.Nodes.Count; i++)
+        {
+            found.Clear();
+            Readers(walk.Nodes[i].Key, found);
+            walk.EdgeStart.Add(walk.Edges.Count);
+            foreach (Node reader in found)
+            {
+                walk.Edges.Add(walk.Add(reader, current));
+            }
+
+            walk.EdgeEnd.Add(walk.Edges.Count);
+        }
+
+        return walk;
     }
 
     /// <summary>
@@ -174,69 +192,53 @@ internal sealed class DependencyGraph
     /// so a chain of a million cells does not overflow the stack), then each component's step is one more than the latest
     /// step of a component it reads.
     /// </summary>
-    private CalculationPlan Order(List<Node> stale)
+    private static CalculationPlan Order(Walk walk)
     {
-        int count = stale.Count;
-        Dictionary<Node, int> number = new(count);
-        for (int i = 0; i < count; i++)
+        int count = walk.Nodes.Count;
+        if (count == 0)
         {
-            number[stale[i]] = i;
+            return new CalculationPlan([]);
         }
 
-        // Edges from each formula to the stale formulas that read it.
-        int[] edgeStart = new int[count + 1];
-        List<int> edges = [];
-        List<Node> found = [];
-        bool[] selfLoop = new bool[count];
-        for (int i = 0; i < count; i++)
+        ReadOnlySpan<int> edges = CollectionsMarshal.AsSpan(walk.Edges);
+        ReadOnlySpan<int> edgeStart = CollectionsMarshal.AsSpan(walk.EdgeStart);
+        ReadOnlySpan<int> edgeEnd = CollectionsMarshal.AsSpan(walk.EdgeEnd);
+        int[] component = Components(count, edgeStart, edgeEnd, edges, out int components);
+
+        // The nodes grouped by component, by counting.
+        int[] first = new int[components + 1];
+        foreach (int c in component)
         {
-            edgeStart[i] = edges.Count;
-            found.Clear();
-            Readers(stale[i].Key, found);
-            foreach (Node reader in found)
-            {
-                if (number.TryGetValue(reader, out int j))
-                {
-                    edges.Add(j);
-                    selfLoop[i] |= j == i;
-                }
-            }
+            first[c + 1]++;
         }
 
-        edgeStart[count] = edges.Count;
-        int[] component = Components(count, edgeStart, CollectionsMarshal.AsSpan(edges), out int components);
+        for (int c = 0; c < components; c++)
+        {
+            first[c + 1] += first[c];
+        }
+
+        int[] members = new int[count];
+        int[] fill = first[..components];
+        for (int i = 0; i < count; i++)
+        {
+            members[fill[component[i]]++] = i;
+        }
 
         // Tarjan numbers components in reverse topological order: a component is numbered after every component it
         // reaches, so readers come first. Steps go from the highest number down.
-        int[] size = new int[components];
-        foreach (int c in component)
-        {
-            size[c]++;
-        }
-
         int[] level = new int[components];
-        List<int>[] members = new List<int>[components];
-        for (int c = 0; c < components; c++)
-        {
-            members[c] = [];
-        }
-
-        for (int i = 0; i < count; i++)
-        {
-            members[component[i]].Add(i);
-        }
-
         int maxLevel = 0;
         for (int c = components - 1; c >= 0; c--)
         {
-            foreach (int i in members[c])
+            for (int m = first[c]; m < first[c + 1]; m++)
             {
-                for (int e = edgeStart[i]; e < edgeStart[i + 1]; e++)
+                int i = members[m];
+                for (int e = edgeStart[i]; e < edgeEnd[i]; e++)
                 {
                     int target = component[edges[e]];
-                    if (target != c)
+                    if (target != c && level[target] <= level[c])
                     {
-                        level[target] = Math.Max(level[target], level[c] + 1);
+                        level[target] = level[c] + 1;
                     }
                 }
             }
@@ -245,33 +247,55 @@ internal sealed class DependencyGraph
         }
 
         // Within a level, plain formulas form one parallel step; each cycle is a step of its own after them.
-        List<CellKey>[] plain = new List<CellKey>[maxLevel + 1];
-        List<List<CellKey>>[] cycles = new List<List<CellKey>>[maxLevel + 1];
-        for (int c = components - 1; c >= 0; c--)
+        int[] plainCount = new int[maxLevel + 1];
+        bool[] cycle = new bool[components];
+        for (int c = 0; c < components; c++)
         {
-            int l = level[c];
-            bool cycle = size[c] > 1 || selfLoop[members[c][0]];
-            if (cycle)
+            int size = first[c + 1] - first[c];
+            int i = members[first[c]];
+            cycle[c] = size > 1 || edges[edgeStart[i]..edgeEnd[i]].Contains(i);
+            if (!cycle[c])
             {
-                (cycles[l] ??= []).Add([.. members[c].Select(i => stale[i].Key)]);
-            }
-            else
-            {
-                (plain[l] ??= []).Add(stale[members[c][0]].Key);
+                plainCount[level[c]]++;
             }
         }
 
+        CellKey[][] plain = new CellKey[maxLevel + 1][];
+        int[] plainFill = new int[maxLevel + 1];
+        List<(int Level, CellKey[] Cells)> rings = [];
+        for (int c = components - 1; c >= 0; c--)
+        {
+            int l = level[c];
+            if (cycle[c])
+            {
+                CellKey[] ring = new CellKey[first[c + 1] - first[c]];
+                for (int m = first[c]; m < first[c + 1]; m++)
+                {
+                    ring[m - first[c]] = walk.Nodes[members[m]].Key;
+                }
+
+                rings.Add((l, ring));
+            }
+            else
+            {
+                plain[l] ??= new CellKey[plainCount[l]];
+                plain[l][plainFill[l]++] = walk.Nodes[members[first[c]]].Key;
+            }
+        }
+
+        rings.Sort((a, b) => a.Level.CompareTo(b.Level));
         List<CalculationStep> steps = [];
+        int r = 0;
         for (int l = 0; l <= maxLevel; l++)
         {
             if (plain[l] is { } cells)
             {
-                steps.Add(new CalculationStep([.. cells], Cycle: false));
+                steps.Add(new CalculationStep(cells, Cycle: false));
             }
 
-            foreach (List<CellKey> ring in cycles[l] ?? [])
+            for (; r < rings.Count && rings[r].Level == l; r++)
             {
-                steps.Add(new CalculationStep([.. ring], Cycle: true));
+                steps.Add(new CalculationStep(rings[r].Cells, Cycle: true));
             }
         }
 
@@ -279,7 +303,7 @@ internal sealed class DependencyGraph
     }
 
     /// <summary>Tarjan's algorithm without recursion: each node's component number, in reverse topological order.</summary>
-    private static int[] Components(int count, int[] edgeStart, ReadOnlySpan<int> edges, out int components)
+    private static int[] Components(int count, ReadOnlySpan<int> edgeStart, ReadOnlySpan<int> edgeEnd, ReadOnlySpan<int> edges, out int components)
     {
         int[] index = new int[count];
         int[] low = new int[count];
@@ -306,7 +330,7 @@ internal sealed class DependencyGraph
                 int v = frame.Node;
                 int e = frame.Edge;
                 bool descended = false;
-                while (e < edgeStart[v + 1])
+                while (e < edgeEnd[v])
                 {
                     int w = edges[e++];
                     if (index[w] < 0)
@@ -358,19 +382,29 @@ internal sealed class DependencyGraph
     private void Readers(CellKey cell, List<Node> found)
     {
         int start = found.Count;
-        if (cellReaders.TryGetValue(cell.Packed, out List<Node>? direct))
+        if (cellReaders.TryGetValue(cell.Packed, out object? direct))
         {
-            found.AddRange(direct);
+            Append(direct, found);
         }
 
         CellAddress address = new(cell.Row, cell.Column);
-        if (tileReaders.TryGetValue(TileKey(cell.Sheet, cell.Row >> TileShift, cell.Column >> TileShift), out List<Node>? tiled))
+        if (tileReaders.TryGetValue(TileKey(cell.Sheet, cell.Row >> TileShift, cell.Column >> TileShift), out object? tiled))
         {
-            foreach (Node node in tiled)
+            if (tiled is Node one)
             {
-                if (node.Reads(cell.Sheet, address))
+                if (one.Reads(cell.Sheet, address))
                 {
-                    found.Add(node);
+                    found.Add(one);
+                }
+            }
+            else
+            {
+                foreach (Node node in (List<Node>)tiled)
+                {
+                    if (node.Reads(cell.Sheet, address))
+                    {
+                        found.Add(node);
+                    }
                 }
             }
         }
@@ -403,6 +437,18 @@ internal sealed class DependencyGraph
         }
     }
 
+    private static void Append(object readers, List<Node> found)
+    {
+        if (readers is Node one)
+        {
+            found.Add(one);
+        }
+        else
+        {
+            found.AddRange((List<Node>)readers);
+        }
+    }
+
     private void Index(Node node, Precedent precedent, bool add)
     {
         RangeAddress range = precedent.Range;
@@ -416,7 +462,20 @@ internal sealed class DependencyGraph
         int firstColumn = range.First.Column >> TileShift, lastColumn = range.Last.Column >> TileShift;
         if ((long)(lastRow - firstRow + 1) * (lastColumn - firstColumn + 1) > MaxTiles)
         {
-            Update(wideReaders, precedent.Sheet, node, add);
+            ref List<Node>? wide = ref CollectionsMarshal.GetValueRefOrAddDefault(wideReaders, precedent.Sheet, out _);
+            wide ??= [];
+            if (add)
+            {
+                if (wide.Count == 0 || wide[^1] != node)
+                {
+                    wide.Add(node);
+                }
+            }
+            else
+            {
+                wide.RemoveAll(n => n == node);
+            }
+
             return;
         }
 
@@ -429,32 +488,88 @@ internal sealed class DependencyGraph
         }
     }
 
-    private static void Update<TKey>(Dictionary<TKey, List<Node>> index, TKey key, Node node, bool add)
-        where TKey : notnull
+    /// <summary>Adds a reader to an index entry, or removes it; the entry is the node alone until a second one comes.</summary>
+    private static void Update(Dictionary<long, object> index, long key, Node node, bool add)
     {
         if (add)
         {
-            ref List<Node>? list = ref CollectionsMarshal.GetValueRefOrAddDefault(index, key, out _);
-            list ??= [];
-            if (list.Count == 0 || list[^1] != node)
+            ref object? entry = ref CollectionsMarshal.GetValueRefOrAddDefault(index, key, out bool exists);
+            if (!exists || entry is null)
             {
-                list.Add(node);
+                entry = node;
+            }
+            else if (entry is Node one)
+            {
+                if (one != node)
+                {
+                    entry = new List<Node>(2) { one, node };
+                }
+            }
+            else
+            {
+                List<Node> list = (List<Node>)entry;
+                if (list[^1] != node)
+                {
+                    list.Add(node);
+                }
             }
 
             return;
         }
 
-        if (index.TryGetValue(key, out List<Node>? readers))
+        if (!index.TryGetValue(key, out object? current))
         {
-            readers.RemoveAll(n => n == node);
-            if (readers.Count == 0)
+            return;
+        }
+
+        if (current is Node single)
+        {
+            if (single == node)
             {
                 index.Remove(key);
             }
+
+            return;
+        }
+
+        List<Node> readers = (List<Node>)current;
+        readers.RemoveAll(n => n == node);
+        if (readers.Count == 0)
+        {
+            index.Remove(key);
+        }
+        else if (readers.Count == 1)
+        {
+            index[key] = readers[0];
         }
     }
 
     private static long TileKey(int sheet, int row, int column) => ((long)sheet << 32) | ((long)row << 16) | (uint)column;
+
+    /// <summary>The stale formulas of a plan being made, numbered, and the edges from each to the formulas that read it.</summary>
+    private sealed class Walk
+    {
+        public List<Node> Nodes { get; } = [];
+
+        public List<int> Edges { get; } = [];
+
+        public List<int> EdgeStart { get; } = [];
+
+        public List<int> EdgeEnd { get; } = [];
+
+        /// <summary>The node's number in this walk, numbering it if it has none yet.</summary>
+        public int Add(Node node, int stamp)
+        {
+            if (node.Stamp != stamp)
+            {
+                node.Stamp = stamp;
+                node.Number = Nodes.Count;
+                Nodes.Add(node);
+            }
+
+            return node.Number;
+        }
+    }
 
     /// <summary>A formula cell and the ranges it reads.</summary>
     private sealed class Node(CellKey key, Precedent[] precedents)
@@ -462,6 +577,11 @@ internal sealed class DependencyGraph
         public CellKey Key { get; } = key;
 
         public Precedent[] Precedents { get; } = precedents;
+
+        /// <summary>The plan this node was last numbered in, and its number there.</summary>
+        public int Stamp { get; set; }
+
+        public int Number { get; set; }
 
         public bool Reads(int sheet, CellAddress cell)
         {
