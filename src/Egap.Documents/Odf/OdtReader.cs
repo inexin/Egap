@@ -136,6 +136,14 @@ internal sealed partial class OdtReader
 
         BlockContext main = new(section.Body.Blocks, main: true);
         ReadBlocks(body, main, null);
+        if (document.Sections.Count > 1 && section.Body.Blocks.Count == 0 && pending.Inlines.Count == 0 && pending.Before is null)
+        {
+            // Nothing after a last section with columns: the text ends in that section, not in an empty one after it.
+            section.Remove();
+            section = document.Sections[document.Sections.Count - 1];
+            main.Blocks = section.Body.Blocks;
+        }
+
         FinishStory(main);
         CloseComments();
 

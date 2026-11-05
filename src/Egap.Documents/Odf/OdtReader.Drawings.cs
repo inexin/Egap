@@ -385,7 +385,15 @@ internal sealed partial class OdtReader
 
         if (element.Attr(DrawNs, "transform") is { } transform && Translation(transform) is { } moved)
         {
+            // The translation places the turned shape's corner; the model places the unturned box, turned about its centre.
             (x, y) = moved;
+            if (Rotation(transform) is { } degrees && degrees != 0)
+            {
+                double r = -degrees * Math.PI / 180;
+                double cx = (OdfUnits.Length(element.Attr(SvgNs, "width")) ?? 0) / 2, cy = (OdfUnits.Length(element.Attr(SvgNs, "height")) ?? 0) / 2;
+                x += (cx * Math.Cos(r)) + (cy * Math.Sin(r)) - cx;
+                y += (-cx * Math.Sin(r)) + (cy * Math.Cos(r)) - cy;
+            }
         }
 
         string wrap = Graphic(StyleNs, "wrap") ?? "none";

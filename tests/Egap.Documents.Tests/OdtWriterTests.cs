@@ -399,6 +399,26 @@ public sealed class OdtWriterTests
         Assert.Null(read[2].Format.List);
     }
 
+    [Fact]
+    public void ListsCountFromZeroAndShareTheirDefinitionsCounters()
+    {
+        Document document = NewDocument(out Body body);
+        List first = document.Lists.AddNumbered();
+        first.Definition.Levels[0].StartAt = 0;
+        List second = document.Lists.Add(first.Definition);
+        second.Overrides[0].StartAt = 0;
+        foreach ((string text, List list) in (ReadOnlySpan<(string, List)>)[("a", first), ("b", first), ("c", second), ("d", first)])
+        {
+            Paragraph item = body.AddParagraph(text);
+            item.Format.List = list;
+            item.Format.ListLevel = 0;
+        }
+
+        Assert.Equal(["0.", "1.", "0.", "1."], document.Descendants<Paragraph>().Select(p => p.ListLabel!.Text));
+        Document read = Reread(document);
+        Assert.Equal(["0.", "1.", "0.", "1."], read.Descendants<Paragraph>().Select(p => p.ListLabel!.Text));
+    }
+
     // ---- Fields, notes, comments and changes ----
 
     [Fact]
@@ -562,6 +582,21 @@ public sealed class OdtWriterTests
         Assert.Equal("Two", read.Sections[1].Body.GetText().Trim());
     }
 
+    [Fact]
+    public void NegativeWordMarginsAreWrittenAsTheirSize()
+    {
+        Document document = new();
+        Section section = document.AddSection();
+        section.PageSetup.MarginTop = -72;
+        section.PageSetup.HeaderDistance = 36;
+        section.HeadersFooters.GetOrAdd(HeaderFooterKind.HeaderPrimary).AddParagraph("Header");
+        section.Body.AddParagraph("Body");
+
+        Document read = OdtFormat.Load(new MemoryStream(Save(document)));
+        Assert.Equal(72, read.Sections[0].PageSetup.MarginTop!.Value, 1);
+        Assert.Equal(36, read.Sections[0].PageSetup.HeaderDistance!.Value, 1);
+    }
+
     [Theory]
     [InlineData(OdfVersion.Odf12)]
     [InlineData(OdfVersion.Odf13)]
@@ -637,6 +672,37 @@ public sealed class OdtWriterTests
         Assert.Equal(270, read[3].Floating!.HorizontalOffset, 1);
         Assert.Equal(527, read[3].Floating!.VerticalOffset, 1);
         Assert.Equal(170, read[3].Height, 1);
+    }
+
+    [Fact]
+    public void ARotatedShapeKeepsItsPlace()
+    {
+        Document document = NewDocument(out Body body);
+        body.AddParagraph("Turned").Inlines.Add(new Shape(document, ShapeKind.Rectangle, 150, 100)
+        {
+            Rotation = 30,
+            Floating = new FloatingPlacement { HorizontalAnchor = HorizontalAnchor.Page, HorizontalOffset = 80, VerticalAnchor = VerticalAnchor.Page, VerticalOffset = 160 },
+        });
+
+        Shape read = Reread(Reread(document)).Descendants<Shape>().Single();
+        Assert.Equal(30, read.Rotation, 1);
+        Assert.Equal(80, read.Floating!.HorizontalOffset, 1);
+        Assert.Equal(160, read.Floating!.VerticalOffset, 1);
+    }
+
+    [Fact]
+    public void TextEndingInAColumnSectionGetsNoSectionAfterIt()
+    {
+        Document document = new();
+        document.AddSection().Body.AddParagraph("One column");
+        Section columns = document.AddSection();
+        columns.PageSetup.SectionStart = SectionStart.Continuous;
+        columns.PageSetup.ColumnCount = 2;
+        columns.Body.AddParagraph("Two columns");
+
+        Document read = Reread(Reread(document));
+        Assert.Equal(2, read.Sections.Count);
+        Assert.Equal(2, read.Sections[1].PageSetup.ColumnCount);
     }
 
     // ---- Kept markup ----

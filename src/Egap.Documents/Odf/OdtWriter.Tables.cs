@@ -254,10 +254,10 @@ internal sealed partial class OdtWriter
         Border? left = cell.BorderLeft ?? (column == 0 ? table.BorderLeft : table.BorderInsideVertical);
         Border? right = cell.BorderRight ?? (column + span >= columns ? table.BorderRight : table.BorderInsideVertical);
         Borders(props, top ?? Border.None, bottom ?? Border.None, left ?? Border.None, right ?? Border.None, padding: false);
-        props.Add(new XAttribute(FoNs + "padding-top", Pt(cell.MarginTop ?? table.CellMarginTop ?? 0)),
-            new XAttribute(FoNs + "padding-bottom", Pt(cell.MarginBottom ?? table.CellMarginBottom ?? 0)),
-            new XAttribute(FoNs + "padding-left", Pt(cell.MarginLeft ?? table.CellMarginLeft ?? 5.4)),
-            new XAttribute(FoNs + "padding-right", Pt(cell.MarginRight ?? table.CellMarginRight ?? 5.4)));
+        props.Add(new XAttribute(FoNs + "padding-top", Pt(Math.Max(0, cell.MarginTop ?? table.CellMarginTop ?? 0))),
+            new XAttribute(FoNs + "padding-bottom", Pt(Math.Max(0, cell.MarginBottom ?? table.CellMarginBottom ?? 0))),
+            new XAttribute(FoNs + "padding-left", Pt(Math.Max(0, cell.MarginLeft ?? table.CellMarginLeft ?? 5.4))),
+            new XAttribute(FoNs + "padding-right", Pt(Math.Max(0, cell.MarginRight ?? table.CellMarginRight ?? 5.4))));
         if (cell.VerticalAlignment is { } vertical)
         {
             props.Add(new XAttribute(StyleNs + "vertical-align", vertical switch

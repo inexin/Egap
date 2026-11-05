@@ -14,8 +14,8 @@ internal sealed partial class OdtWriter
 {
     private readonly List<XElement> masterPages = [];
     private readonly List<string> sectionMasters = [];
-    private readonly Dictionary<List, string> listElementIds = [];
-    private readonly HashSet<ListDefinition> definitionsUsed = [];
+    private readonly HashSet<List> listsSeen = [];
+    private readonly Dictionary<ListDefinition, string> lastListElement = [];
     private readonly HashSet<(List, int)> levelsStarted = [];
     private int listElementCount;
     private int sectionCount;
@@ -170,8 +170,9 @@ internal sealed partial class OdtWriter
     /// </summary>
     private string PageLayout(PageSetup setup, bool header, bool footer)
     {
-        double top = setup.MarginTop ?? 72;
-        double bottom = setup.MarginBottom ?? 72;
+        // Word's negative top and bottom margins are kept clear of a header or footer that grows; the size is the same.
+        double top = Math.Abs(setup.MarginTop ?? 72);
+        double bottom = Math.Abs(setup.MarginBottom ?? 72);
         double headerDistance = Math.Clamp(setup.HeaderDistance ?? 36, 0, top);
         double footerDistance = Math.Clamp(setup.FooterDistance ?? 36, 0, bottom);
         XElement props = new(StyleNs + "page-layout-properties",
@@ -622,17 +623,15 @@ internal sealed partial class OdtWriter
             CloseLists(target);
             string id = "list" + Int(++listElementCount);
             XElement element = new(TextNs + "list", new XAttribute(XmlNs + "id", id), new XAttribute(TextNs + "style-name", ListStyleName(list.Definition)));
-            if (listElementIds.TryGetValue(list, out string? previous))
+            // Lists that share a definition share its counters, as Word's do; a list's start override restarts them where the
+            // list first appears. So a list continues the last list element of its definition, unless it starts over here.
+            if (lastListElement.TryGetValue(list.Definition, out string? previous) && (listsSeen.Contains(list) || !Restarts(list)))
             {
                 element.Add(new XAttribute(TextNs + "continue-list", previous));
             }
-            else if (definitionsUsed.Contains(list.Definition) && !Restarts(list))
-            {
-                element.Add(new XAttribute(TextNs + "continue-numbering", "true"));
-            }
 
-            definitionsUsed.Add(list.Definition);
-            listElementIds[list] = id;
+            listsSeen.Add(list);
+            lastListElement[list.Definition] = id;
             target.Container.Add(element);
             target.Lists.Add(element);
             target.List = list;
@@ -653,9 +652,17 @@ internal sealed partial class OdtWriter
         }
 
         XElement item = new(TextNs + "list-item");
-        if (levelsStarted.Add((list, level)) && list.Overrides[level].StartAt is { } start && start != list.Definition.Levels[level].StartAt)
+        bool first = levelsStarted.Add((list, level));
+        int? overridden = list.Overrides[level].StartAt;
+        if (first && overridden is { } start && start != list.Definition.Levels[level].StartAt)
         {
             item.Add(new XAttribute(TextNs + "start-value", Int(Math.Max(0, start))));
+        }
+        else if (version != "1.4" && (overridden ?? list.Definition.Levels[level].StartAt) == 0
+            && !target.Lists[^1].Elements(TextNs + "list-item").Any() && (level > 0 || target.Lists[0].Attribute(TextNs + "continue-list") is null))
+        {
+            // A level that counts from 0, which its style cannot say before ODF 1.4: each run of it starts at 0 itself.
+            item.Add(new XAttribute(TextNs + "start-value", "0"));
         }
 
         target.Lists[^1].Add(item);
