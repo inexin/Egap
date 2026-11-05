@@ -11,7 +11,7 @@ namespace Egap.Spreadsheets.Xlsx;
 /// <summary>
 /// The values a workbook keeps for a linked workbook (ECMA-376 Part 1, 18.14), which is what Excel calculates from when links
 /// are not updated: <c>[1]Sheet!A1</c> reads the first book's cached sheet. Read when a formula first asks, read-only; the
-/// part itself stays in the package and saves as it was. A part that can't be read holds nothing, so what reads it shows
+/// part itself stays in the package and saves as it was. A book keeps no blanks, so a cell it doesn't hold reads as blank. A part that can't be read holds nothing, so what reads it shows
 /// #REF!, and the workbook still loads.
 /// </summary>
 internal sealed class ExternalBook(Workbook book, OpcPart? part)
@@ -61,7 +61,7 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
         List<Worksheet> sheets = [];
         foreach (XElement sheetName in external.Element(ns + "sheetNames")?.Elements(ns + "sheetName") ?? [])
         {
-            Worksheet sheet = new(book, (string?)sheetName.Attribute("val") ?? "");
+            Worksheet sheet = new(book, (string?)sheetName.Attribute("val") ?? "", linked: true);
             sheets.Add(sheet);
             contents.Sheets.TryAdd(sheet.Name, sheet);
         }
@@ -73,6 +73,7 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
                 continue;
             }
 
+            sheets[id].LinkRefreshFailed = XlsxNames.Bool((string?)data.Attribute("refreshError"), false);
             foreach (XElement cell in data.Elements(ns + "row").Elements(ns + "cell"))
             {
                 if (CellAddress.TryParse((string?)cell.Attribute("r"), out CellAddress address) && Value(cell, ns) is { } value)

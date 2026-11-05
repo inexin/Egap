@@ -211,7 +211,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   empty text beside text; `CONCATENATE(IF(A1=0,,"x"),"y")` no longer gives `0y`. `COUNT` counts an empty argument.
   `ADDRESS` with its third or fourth argument empty takes the default: `ADDRESS(2,3,,)` is `$C$2`, no longer `#VALUE!`.
 - Formulas read linked workbooks' kept values, as Excel does when links aren't updated: `[1]Prices!A1`, ranges, and the book's
-  names (`[1]!Rate`). A single cell with no kept value is `#REF!`. The link parts save as they were.
+  names (`[1]!Rate`). A cell with no kept value is blank, or `#REF!` on a sheet Excel marked as failing to refresh. The link parts save as they were.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 

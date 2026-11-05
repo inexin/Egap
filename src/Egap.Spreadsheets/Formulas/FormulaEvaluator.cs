@@ -446,8 +446,8 @@ internal static class FormulaEvaluator
             return EvalValue.FromError(CellError.Reference);
         }
 
-        // One cell of a linked book that holds no kept value is #REF!, as in Excel.
-        if (node.Prefix?.Book is not (null or "0") && range.First == range.Last && sheets[0].GetKind(range.First.Row, range.First.Column) == CellValueKind.Empty)
+        // A linked book keeps no blanks, so a cell it doesn't hold is blank, unless Excel could not refresh the sheet at all.
+        if (sheets[0].LinkRefreshFailed && range.First == range.Last && sheets[0].GetKind(range.First.Row, range.First.Column) == CellValueKind.Empty)
         {
             return EvalValue.FromError(CellError.Reference);
         }

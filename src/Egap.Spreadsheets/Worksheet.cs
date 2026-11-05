@@ -19,10 +19,12 @@ public sealed class Worksheet
     // The first cells of the sheet's shared formulas by shared index, found when first asked for; null when stale.
     private Dictionary<string, (CellAddress Cell, string Text)>? sharedMasters;
 
-    internal Worksheet(Workbook workbook, string name)
+    /// <summary>A sheet of the workbook, or with <paramref name="linked"/> one holding a linked book's kept values, which is not on a tab and may have any name.</summary>
+    internal Worksheet(Workbook workbook, string name, bool linked = false)
     {
-        this.workbook = workbook;
+        this.workbook = linked ? null : workbook;
         Name = name;
+        this.workbook = workbook;
         Cells = new WorksheetCells(this);
         Rows = new SheetRowCollection(this);
         Columns = new SheetColumnCollection(this);
@@ -109,6 +111,9 @@ public sealed class Worksheet
         get;
         set => field = value is null or (>= 0 and <= 255) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "A column width is from 0 to 255.");
     }
+
+    /// <summary>For a linked book's sheet: Excel could not refresh it, so a cell it doesn't hold is #REF!, not blank.</summary>
+    internal bool LinkRefreshFailed { get; set; }
 
     internal Dictionary<int, RowRecord> RowRecords { get; } = [];
 

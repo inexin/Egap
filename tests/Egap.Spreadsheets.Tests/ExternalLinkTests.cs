@@ -52,6 +52,7 @@ public sealed class ExternalLinkTests
     [InlineData("VLOOKUP(7,[1]Prices!A1:B3,1,FALSE)", 7)]
     [InlineData("INDEX([1]Prices!A1:B3,3,1)", 9)]
     [InlineData("[1]!Rate", 2.5)]
+    [InlineData("[1]Prices!C9", 0)]
     [InlineData("SUM([1]!Table)", 18.5)]
     [InlineData("INDIRECT(\"[1]Prices!A2\")", 7)]
     [InlineData("OFFSET([1]Prices!A1,1,0)", 7)]
@@ -69,7 +70,6 @@ public sealed class ExternalLinkTests
     }
 
     [Theory]
-    [InlineData("[1]Prices!C9")]
     [InlineData("[1]Other Sheet!A1")]
     [InlineData("[1]Nowhere!A1")]
     [InlineData("[2]Prices!A1")]
@@ -79,6 +79,15 @@ public sealed class ExternalLinkTests
     {
         string written = formula.Contains(' ', StringComparison.Ordinal) ? "'" + formula.Replace("!", "'!", StringComparison.Ordinal) : formula;
         Assert.Equal(CellError.Reference, Calculated(written).Error);
+    }
+
+    [Theory]
+    [InlineData("Sheet1")]
+    [InlineData("A name far longer than the thirty-one characters of a tab")]
+    public void ALinkedSheetMayHaveANameATabCouldNot(string name)
+    {
+        string link = Link.Replace("Prices", name, StringComparison.Ordinal);
+        Assert.Equal(2.5, Calculated($"'[1]{name}'!A1", link).Number);
     }
 
     [Fact]
