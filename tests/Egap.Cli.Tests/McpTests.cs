@@ -149,7 +149,10 @@ public sealed class McpTests : IAsyncDisposable
         StringWriter error = new();
         CliConsole console = new(() => serverIn, () => serverOut, TextWriter.Null, TextWriter.Synchronized(error));
         Task<int> server = Task.Run(() => Cli.Run(["mcp", "--allow", _tool.Folder, .. options], console, _tool.Folder, _ => null), Token);
-        McpClient client = await McpClient.CreateAsync(new StreamClientTransport(toServer, fromServer), cancellationToken: Token);
+        // The SDK's client gives server/discover 5 seconds before it falls back to initialize, which a server that already
+        // answered discover refuses. A busy CI machine can take longer than that to start the server, so wait for discover.
+        McpClientOptions clientOptions = new() { DiscoverProbeTimeout = Timeout.InfiniteTimeSpan };
+        McpClient client = await McpClient.CreateAsync(new StreamClientTransport(toServer, fromServer), clientOptions, cancellationToken: Token);
         _servers.Add(new Server(client, server, [toServer, fromServer, serverIn, serverOut]));
         return client;
     }
