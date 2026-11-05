@@ -408,6 +408,8 @@ internal static class Targets
     {
         using MemoryStream bytes = new();
         input.CopyTo(bytes);
+        bytes.Position = 0;
+        _ = Document.Identify(bytes);
         Document document;
         try
         {
