@@ -13894,6 +13894,32 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.OdtLoadOptions.Limits
   nameWithType: OdtLoadOptions.Limits
+- uid: Egap.Documents.OdtLoadOptions.Password
+  name: Password
+  href: api/Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_Password
+  commentId: P:Egap.Documents.OdtLoadOptions.Password
+  fullName: Egap.Documents.OdtLoadOptions.Password
+  nameWithType: OdtLoadOptions.Password
+- uid: Egap.Documents.OdtLoadOptions.Password*
+  name: Password
+  href: api/Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_Password_
+  commentId: Overload:Egap.Documents.OdtLoadOptions.Password
+  isSpec: "True"
+  fullName: Egap.Documents.OdtLoadOptions.Password
+  nameWithType: OdtLoadOptions.Password
+- uid: Egap.Documents.OdtLoadOptions.PasswordCallback
+  name: PasswordCallback
+  href: api/Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_PasswordCallback
+  commentId: P:Egap.Documents.OdtLoadOptions.PasswordCallback
+  fullName: Egap.Documents.OdtLoadOptions.PasswordCallback
+  nameWithType: OdtLoadOptions.PasswordCallback
+- uid: Egap.Documents.OdtLoadOptions.PasswordCallback*
+  name: PasswordCallback
+  href: api/Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_PasswordCallback_
+  commentId: Overload:Egap.Documents.OdtLoadOptions.PasswordCallback
+  isSpec: "True"
+  fullName: Egap.Documents.OdtLoadOptions.PasswordCallback
+  nameWithType: OdtLoadOptions.PasswordCallback
 - uid: Egap.Documents.PageOrientation
   name: PageOrientation
   href: api/Egap.Documents.PageOrientation.html

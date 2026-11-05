@@ -128,8 +128,9 @@ encrypted Word file is <a class="xref" href="Egap.Documents.DocumentFormatKind.h
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Encrypted"><code>Encrypted = 10</code></dt>
   
-  <dd><p>An encrypted Office file: a password-protected Word document (or another Office package) in a compound file. Loading
-it needs its password, in <a class="xref" href="Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password">Password</a> or <a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password">Password</a>.</p>
+  <dd><p>An encrypted file: a password-protected Word document (or another Office package) in a compound file, or a
+password-protected OpenDocument text package. Loading it needs its password, in <a class="xref" href="Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password">Password</a>,
+<a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password">Password</a> or <a class="xref" href="Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_Password">Password</a>.</p>
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Epub"><code>Epub = 7</code></dt>
   
@@ -150,7 +151,7 @@ it needs its password, in <a class="xref" href="Egap.Documents.DocumentLoadOptio
     <dt id="Egap_Documents_DocumentFormatKind_Odt"><code>Odt = 11</code></dt>
   
   <dd><p>OpenDocument Text: an ODT document or OTT template (a ZIP package whose stored first entry is its <code>mimetype</code>), or a
-flat FODT file (one XML document).</p>
+flat FODT file (one XML document). A password-protected one is <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a>.</p>
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Pdf"><code>Pdf = 1</code></dt>
   
