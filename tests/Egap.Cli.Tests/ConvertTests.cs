@@ -68,6 +68,34 @@ public sealed class ConvertTests : IDisposable
     }
 
     [Fact]
+    public void BinaryWordInputsConvertAndOpenWithTheirPassword()
+    {
+        // The DOC fuzz seeds the binary Word tests build: a plain one and one encrypted with RC4 CryptoAPI and the password "pw".
+        string seeds = Path.Combine(RepositoryRoot(), "tests", "fuzz-seeds", "doc");
+        File.Copy(Path.Combine(seeds, "own-reads-paragraphs-of-unicode-text.doc"), _tool.PathOf("plain.doc"));
+        File.Copy(Path.Combine(seeds, "own-cryptoapi-encrypted.doc"), _tool.PathOf("locked.doc"));
+        _tool.Environment["OPEN"] = "pw";
+
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "plain.doc", "-o", "plain.docx").Code);
+        Assert.Equal(Egap.Documents.DocumentFormatKind.Docx, Egap.Documents.Document.Identify(_tool.PathOf("plain.docx")));
+        Assert.NotEqual(ExitCodes.Success, _tool.Run("convert", "locked.doc", "-o", "back.txt").Code);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "locked.doc", "-o", "back.txt", "--password-env", "OPEN").Code);
+        Assert.StartsWith("Secret", File.ReadAllText(_tool.PathOf("back.txt")), StringComparison.Ordinal);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "locked.doc", "-o", "back.pdf", "--password-env", "OPEN").Code);
+    }
+
+    private static string RepositoryRoot()
+    {
+        DirectoryInfo? directory = new(AppContext.BaseDirectory);
+        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Egap.slnx")))
+        {
+            directory = directory.Parent;
+        }
+
+        return directory?.FullName ?? throw new InvalidOperationException("The tests run outside the repository.");
+    }
+
+    [Fact]
     public void SavePasswordEncryptsADocxThatPasswordOpens()
     {
         Egap.Documents.Document document = new();

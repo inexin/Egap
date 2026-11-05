@@ -41,7 +41,7 @@ internal sealed class OpcPackage
             stream.Position = start;
             if (read >= 8 && head.SequenceEqual((ReadOnlySpan<byte>)[0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]))
             {
-                throw new DocumentException("The file is a compound file: an encrypted document or an old binary .doc, which Egap does not read.");
+                throw new DocumentException("The file is a compound file, not a DOCX package: a binary Word file (DOC) loads with Document.Load, and Egap does not read other compound files as DOCX.");
             }
         }
 

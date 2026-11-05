@@ -10,8 +10,8 @@ public enum DocumentFormatKind
     Pdf,
 
     /// <summary>
-    /// A Word file: DOCX, DOTX, DOCM or DOTM, or an old binary Word file (which reading refuses with a clear error). An
-    /// encrypted Word file is <see cref="Encrypted"/>.
+    /// A Word file: DOCX, DOTX, DOCM or DOTM (a binary Word file is <see cref="Doc"/>), or another compound file Egap does
+    /// not read, whose error names it. An encrypted Word file is <see cref="Encrypted"/>.
     /// </summary>
     Docx,
 
@@ -37,8 +37,8 @@ public enum DocumentFormatKind
     Rtf,
 
     /// <summary>
-    /// An encrypted file: a password-protected Word document (or another Office package) in a compound file, or a
-    /// password-protected OpenDocument text package. Loading it needs its password, in <see cref="DocumentLoadOptions.Password"/>,
+    /// An encrypted file: a password-protected Word document (an encrypted Office package or a password-protected binary
+    /// Word file) in a compound file, or a password-protected OpenDocument text package. Loading it needs its password, in <see cref="DocumentLoadOptions.Password"/>,
     /// <see cref="DocxLoadOptions.Password"/> or <see cref="OdtLoadOptions.Password"/>.
     /// </summary>
     Encrypted,
@@ -54,4 +54,10 @@ public enum DocumentFormatKind
     /// spreadsheet, which Egap.Documents does not load as a document.
     /// </summary>
     Xlsx,
+
+    /// <summary>
+    /// A binary Word document or template (DOC or DOT): Word 97 to 2003, and Word 6 and Word 95, a compound file with a
+    /// <c>WordDocument</c> stream. Egap reads it and does not write it. A password-protected one is <see cref="Encrypted"/>.
+    /// </summary>
+    Doc,
 }

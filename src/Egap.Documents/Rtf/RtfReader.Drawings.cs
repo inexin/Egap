@@ -221,10 +221,10 @@ internal sealed partial class RtfReader
             case "png" or "jpeg" or "emf":
                 break;
             case "wmf":
-                bytes = WithPlaceableHeader(bytes, picw, pich, goalw, goalh);
+                bytes = WordPictures.WithPlaceableHeader(bytes, picw, pich, goalw, goalh);
                 break;
             case "dib":
-                bytes = WithBitmapFileHeader(bytes);
+                bytes = WordPictures.WithBitmapFileHeader(bytes);
                 break;
             default:
                 Warn(ConversionWarningKind.PictureDropped, $"An RTF picture in a format Egap does not read ({type ?? "none"}) was dropped.");
@@ -268,127 +268,6 @@ internal sealed partial class RtfReader
         >= (byte)'A' and <= (byte)'F' => b - 'A' + 10,
         _ => -1,
     };
-
-    /// <summary>
-    /// A Windows metafile as RTF holds it (no placeable header) with the placeable header the WMF readers want: the bounds from
-    /// the metafile's own window origin and extent, scaled so the picture has the size RTF gives it.
-    /// </summary>
-    private static byte[] WithPlaceableHeader(byte[] wmf, int picw, int pich, int goalw, int goalh)
-    {
-        if (wmf.Length >= 4 && BinaryPrimitives.ReadUInt32LittleEndian(wmf) == 0x9AC6CDD7)
-        {
-            return wmf;
-        }
-
-        int left = 0;
-        int top = 0;
-        int right = 0;
-        int bottom = 0;
-        if (wmf.Length >= 18)
-        {
-            int at = BinaryPrimitives.ReadUInt16LittleEndian(wmf.AsSpan(2)) * 2;
-            for (int records = 0; at + 6 <= wmf.Length && records < 10_000; records++)
-            {
-                long size = BinaryPrimitives.ReadUInt32LittleEndian(wmf.AsSpan(at)) * 2L;
-                int function = BinaryPrimitives.ReadUInt16LittleEndian(wmf.AsSpan(at + 4));
-                if (size < 6 || at + size > wmf.Length || function == 0)
-                {
-                    break;
-                }
-
-                if (size >= 10 && function is 0x020B or 0x020C)
-                {
-                    short y = BinaryPrimitives.ReadInt16LittleEndian(wmf.AsSpan(at + 6));
-                    short x = BinaryPrimitives.ReadInt16LittleEndian(wmf.AsSpan(at + 8));
-                    if (function == 0x020B)
-                    {
-                        left = x;
-                        top = y;
-                    }
-                    else
-                    {
-                        right = x;
-                        bottom = y;
-                    }
-                }
-
-                at += (int)size;
-            }
-        }
-
-        int extentX = Math.Abs(right);
-        int extentY = Math.Abs(bottom);
-        double twipsWide = goalw > 0 ? goalw : picw * 1440.0 / 2540;
-        if (extentX == 0 || extentY == 0)
-        {
-            // No window extent: the bounds are the picture's size in HIMETRIC.
-            left = 0;
-            top = 0;
-            extentX = Math.Clamp(picw > 0 ? picw : 2540, 1, short.MaxValue);
-            extentY = Math.Clamp(pich > 0 ? pich : 2540, 1, short.MaxValue);
-            twipsWide = picw > 0 ? picw * 1440.0 / 2540 : 1440;
-        }
-
-        int inch = twipsWide > 0 ? (int)Math.Clamp(Math.Round(extentX * 1440.0 / twipsWide), 1, ushort.MaxValue) : 1440;
-        byte[] result = new byte[22 + wmf.Length];
-        Span<byte> header = result;
-        BinaryPrimitives.WriteUInt32LittleEndian(header, 0x9AC6CDD7);
-        BinaryPrimitives.WriteInt16LittleEndian(header[6..], (short)left);
-        BinaryPrimitives.WriteInt16LittleEndian(header[8..], (short)top);
-        BinaryPrimitives.WriteInt16LittleEndian(header[10..], (short)Math.Clamp(left + extentX, short.MinValue, short.MaxValue));
-        BinaryPrimitives.WriteInt16LittleEndian(header[12..], (short)Math.Clamp(top + extentY, short.MinValue, short.MaxValue));
-        BinaryPrimitives.WriteUInt16LittleEndian(header[14..], (ushort)inch);
-        ushort checksum = 0;
-        for (int i = 0; i < 20; i += 2)
-        {
-            checksum ^= BinaryPrimitives.ReadUInt16LittleEndian(header[i..]);
-        }
-
-        BinaryPrimitives.WriteUInt16LittleEndian(header[20..], checksum);
-        wmf.CopyTo(result, 22);
-        _ = goalh;
-        return result;
-    }
-
-    /// <summary>A device-independent bitmap with the BMP file header in front, so it reads as a BMP file.</summary>
-    private static byte[] WithBitmapFileHeader(byte[] dib)
-    {
-        if (dib.Length < 12)
-        {
-            return dib;
-        }
-
-        int headerSize = (int)Math.Min(BinaryPrimitives.ReadUInt32LittleEndian(dib), (uint)dib.Length);
-        long palette;
-        if (headerSize == 12)
-        {
-            int bits = BinaryPrimitives.ReadUInt16LittleEndian(dib.AsSpan(10));
-            palette = bits <= 8 ? (1L << bits) * 3 : 0;
-        }
-        else if (dib.Length >= 36)
-        {
-            int bits = BinaryPrimitives.ReadUInt16LittleEndian(dib.AsSpan(14));
-            uint compression = BinaryPrimitives.ReadUInt32LittleEndian(dib.AsSpan(16));
-            uint used = BinaryPrimitives.ReadUInt32LittleEndian(dib.AsSpan(32));
-            palette = (used > 0 ? Math.Min(used, 256u) : bits <= 8 ? 1L << bits : 0) * 4;
-            if (compression == 3 && headerSize == 40)
-            {
-                palette += 12;
-            }
-        }
-        else
-        {
-            palette = 0;
-        }
-
-        byte[] result = new byte[14 + dib.Length];
-        result[0] = (byte)'B';
-        result[1] = (byte)'M';
-        BinaryPrimitives.WriteUInt32LittleEndian(result.AsSpan(2), (uint)result.Length);
-        BinaryPrimitives.WriteUInt32LittleEndian(result.AsSpan(10), (uint)Math.Min(14 + headerSize + palette, result.Length));
-        dib.CopyTo(result, 14);
-        return result;
-    }
 
     /// <summary>Finds the first picture in the rest of the current group, reading it, and closes the group.</summary>
     private Picture? FindPicture()
@@ -524,7 +403,7 @@ internal sealed partial class RtfReader
         string markup = start >= 0 ? Markup(start, tokens.Position) : "";
         double width = Bounded(Math.Abs((long)info.Right - info.Left) / 20.0);
         double height = Bounded(Math.Abs((long)info.Bottom - info.Top) / 20.0);
-        FloatingPlacement placement = PlacementOf(info);
+        FloatingPlacement placement = WordShapes.Placement(new WordShapeAnchor(info.Left, info.Top, info.Right, info.Bottom, info.HorizontalAnchor, info.VerticalAnchor, info.Wrap, info.WrapSide, info.Behind, info.ZOrder), info.Properties);
         int shapeType = int.TryParse(info.Properties.GetValueOrDefault("shapeType"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int t) ? t : 0;
         string? name = info.Properties.GetValueOrDefault("wzName");
         string? description = info.Properties.GetValueOrDefault("wzDescription");
@@ -539,16 +418,7 @@ internal sealed partial class RtfReader
             return;
         }
 
-        ShapeKind? simple = shapeType switch
-        {
-            1 or 202 => ShapeKind.Rectangle,
-            2 => ShapeKind.RoundedRectangle,
-            3 => ShapeKind.Ellipse,
-            5 => ShapeKind.Triangle,
-            13 => ShapeKind.RightArrow,
-            20 => ShapeKind.Line,
-            _ => null,
-        };
+        ShapeKind? simple = WordShapes.Kind(shapeType);
         if (!isGroup && (info.TextBoxShape is not null || simple is not null))
         {
             Shape shape = info.TextBoxShape ?? new Shape(document, simple!.Value, width, height);
@@ -558,7 +428,7 @@ internal sealed partial class RtfReader
             shape.Floating = placement;
             shape.Description = NullIfEmpty(description);
             shape.Title = NullIfEmpty(info.Properties.GetValueOrDefault("wzTitle"));
-            ApplyShapeLook(shape, info.Properties);
+            WordShapes.ApplyLook(shape, info.Properties);
             AddInline(shape);
             return;
         }
@@ -774,113 +644,6 @@ internal sealed partial class RtfReader
                     break;
             }
         }
-    }
-
-    private static FloatingPlacement PlacementOf(ShapeInfo info)
-    {
-        Dictionary<string, string> properties = info.Properties;
-        HorizontalAnchor horizontalAnchor = Number(properties, "posrelh") switch
-        {
-            0 => HorizontalAnchor.Margin,
-            1 => HorizontalAnchor.Page,
-            2 => HorizontalAnchor.Column,
-            3 => HorizontalAnchor.Character,
-            _ => info.HorizontalAnchor,
-        };
-        VerticalAnchor verticalAnchor = Number(properties, "posrelv") switch
-        {
-            0 => VerticalAnchor.Margin,
-            1 => VerticalAnchor.Page,
-            2 => VerticalAnchor.Paragraph,
-            3 => VerticalAnchor.Line,
-            _ => info.VerticalAnchor,
-        };
-        FloatingAlignment horizontal = Number(properties, "posh") switch
-        {
-            1 => FloatingAlignment.Start,
-            2 => FloatingAlignment.Center,
-            3 => FloatingAlignment.End,
-            4 => FloatingAlignment.Inside,
-            5 => FloatingAlignment.Outside,
-            _ => FloatingAlignment.None,
-        };
-        FloatingAlignment vertical = Number(properties, "posv") switch
-        {
-            1 => FloatingAlignment.Start,
-            2 => FloatingAlignment.Center,
-            3 => FloatingAlignment.End,
-            4 => FloatingAlignment.Inside,
-            5 => FloatingAlignment.Outside,
-            _ => FloatingAlignment.None,
-        };
-        WrapMode wrap = info.Wrap switch
-        {
-            1 => WrapMode.TopAndBottom,
-            2 => WrapMode.Square,
-            4 => WrapMode.Tight,
-            5 => WrapMode.Through,
-            _ => info.Behind || Number(properties, "fBehindDocument") == 1 ? WrapMode.BehindText : WrapMode.InFrontOfText,
-        };
-        return new FloatingPlacement
-        {
-            HorizontalAnchor = horizontalAnchor,
-            VerticalAnchor = verticalAnchor,
-            HorizontalAlignment = horizontal,
-            VerticalAlignment = vertical,
-            HorizontalOffset = WordProperties.Twips(Math.Min(info.Left, info.Right)),
-            VerticalOffset = WordProperties.Twips(Math.Min(info.Top, info.Bottom)),
-            Wrap = wrap,
-            WrapSide = info.WrapSide switch { 1 => WrapSide.Left, 2 => WrapSide.Right, 3 => WrapSide.Largest, _ => WrapSide.Both },
-            DistanceLeft = Emu(properties, "dxWrapDistLeft", 9),
-            DistanceRight = Emu(properties, "dxWrapDistRight", 9),
-            DistanceTop = Emu(properties, "dyWrapDistTop", 0),
-            DistanceBottom = Emu(properties, "dyWrapDistBottom", 0),
-            ZOrder = info.ZOrder,
-            AllowOverlap = Number(properties, "fAllowOverlap") != 0,
-            LayoutInCell = Number(properties, "fLayoutInCell") != 0,
-        };
-    }
-
-    /// <summary>A shape's fill, line and text box insets from its properties; RTF's defaults are a white fill and a black line.</summary>
-    private static void ApplyShapeLook(Shape shape, Dictionary<string, string> properties)
-    {
-        if (Number(properties, "fFilled") != 0)
-        {
-            shape.Fill = ColorOf(properties, "fillColor") ?? DocumentColor.FromRgb(new Egami.Pixels.Rgba8(255, 255, 255, 255));
-        }
-
-        if (Number(properties, "fLine") != 0)
-        {
-            double width = Emu(properties, "lineWidth", 0.75);
-            shape.Outline = new Border(BorderStyle.Single, width, ColorOf(properties, "lineColor") ?? DocumentColor.FromRgb(new Egami.Pixels.Rgba8(0, 0, 0, 255)));
-        }
-
-        if (shape.TextBox is not null)
-        {
-            shape.TextInsets = (Emu(properties, "dxTextLeft", 7.2), Emu(properties, "dyTextTop", 3.6), Emu(properties, "dxTextRight", 7.2), Emu(properties, "dyTextBottom", 3.6));
-            shape.FitToText = Number(properties, "fFitShapeToText") == 1;
-        }
-    }
-
-    private static int? Number(Dictionary<string, string> properties, string name)
-    {
-        return properties.TryGetValue(name, out string? value) && int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int number) ? number : null;
-    }
-
-    private static double Emu(Dictionary<string, string> properties, string name, double fallback)
-    {
-        return Number(properties, name) is int emu ? Math.Clamp(emu / 12700.0, 0, 1584) : fallback;
-    }
-
-    /// <summary>A shape colour property: BGR in the low three bytes; system and scheme colours (high byte set) are left out.</summary>
-    private static DocumentColor? ColorOf(Dictionary<string, string> properties, string name)
-    {
-        if (Number(properties, name) is not int value || (value & unchecked((int)0xFF000000)) != 0)
-        {
-            return null;
-        }
-
-        return DocumentColor.FromRgb(new Egami.Pixels.Rgba8((byte)(value & 0xFF), (byte)((value >> 8) & 0xFF), (byte)((value >> 16) & 0xFF), 255));
     }
 
     // ---- OLE objects and math ----

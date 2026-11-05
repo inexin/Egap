@@ -85,7 +85,7 @@ public class PackageTests
     {
         Assert.Throws<DocumentException>(() => OpcPackage.Read(new MemoryStream(Encoding.ASCII.GetBytes("hello, not a zip")), new DocumentLimits()));
         DocumentException doc = Assert.Throws<DocumentException>(() => OpcPackage.Read(new MemoryStream([0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1, 0, 0]), new DocumentLimits()));
-        Assert.Contains(".doc", doc.Message, StringComparison.Ordinal);
+        Assert.Contains("DOC", doc.Message, StringComparison.Ordinal);
         using MemoryStream noTypes = Zip(("word/document.xml", "<a/>"));
         Assert.Throws<DocumentException>(() => OpcPackage.Read(noTypes, new DocumentLimits()));
     }

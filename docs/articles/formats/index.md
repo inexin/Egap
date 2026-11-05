@@ -1,7 +1,7 @@
 # Document formats
 
 Egap.Documents reads each format below into one document model and writes the model back out, so any format it reads can
-be saved as any format it writes. DOCX, RTF, OpenDocument Text, PDF, plain text and Docling JSON are
+be saved as any format it writes. DOCX, DOC (read only), RTF, OpenDocument Text, PDF, plain text and Docling JSON are
 built in. HTML, MHTML and EPUB come from the
 add-on package Egap.Documents.Html, and Markdown from Egap.Documents.Markdown.
 
@@ -12,6 +12,7 @@ without naming the format, how a file's format is found, warnings and limits.
 
 | Format | Package | Reads | Writes |
 | --- | --- | --- | --- |
+| [DOC](doc.md) | Egap.Documents | Word 97 to 2003, Word 6 and Word 95 binary documents and templates, password-protected ones too | Not written: save as DOCX |
 | [DOCX](docx.md) | Egap.Documents | DOCX, DOTX, DOCM and DOTM, strict and transitional | The same four kinds; DOCX to DOCX keeps what the model does not name |
 | [EPUB](epub.md) | Egap.Documents.Html | EPUB 2 and 3 books, a section per chapter, the table of contents as the outline; books under DRM refused | EPUB 3.3 with a navigation document, a toc.ncx and accessibility metadata |
 | [HTML](html.md) | Egap.Documents.Html | HTML and XHTML, parsed as browsers parse it and styled through the CSS cascade | HTML (UTF-8), with the page setup as `@page` rules |
@@ -28,7 +29,7 @@ PDF in and out is covered in [PDF export and conversion](../guides/pdf-export-an
 ## Loading and saving
 
 `Document.Load` and `Document.Save` work out the format by themselves. `Load` looks at the file's first bytes and, for
-text, at its extension; `Save` goes by the extension. DOCX, RTF, ODT, PDF, plain text and Docling JSON need nothing more. HTML,
+text, at its extension; `Save` goes by the extension. DOCX, DOC, RTF, ODT, PDF, plain text and Docling JSON need nothing more. HTML,
 MHTML, EPUB and Markdown join them once you register their add-on at startup; until then, loading such a file throws a
 `NotSupportedException` that names the package and the call to make. `Document.Identify` tells which format a file is in
 without loading it and without any add-on, so a program can say what a file needs.
@@ -38,7 +39,7 @@ using Egap.Documents;
 
 HtmlFormat.Register();                                            // once at startup: Load and Save now read and write HTML
 MarkdownFormat.Register();
-DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Xlsx, Encrypted, Rtf, Odt, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
+DocumentFormatKind kind = Document.Identify("upload.bin");        // Pdf, Docx, Doc, Xlsx, Encrypted, Rtf, Odt, Epub, Html, Mhtml, Markdown, Text, DoclingJson or Unknown
 Document notes = TextFormat.Load("notes.txt");                    // one paragraph per line
 ```
 
@@ -49,9 +50,10 @@ Document notes = TextFormat.Load("notes.txt");                    // one paragra
    `.fodt`, is `Odt`.
 3. A ZIP package with a part under `xl/`, or whose extension is `.xlsx`, `.xlsm`, `.xltx` or `.xltm`, is `Xlsx`: an Excel
    workbook, which Egap.Documents does not load as a document.
-4. Another ZIP package, or an old binary Word file, is `Docx`. Reading an old binary Word file fails with an error that
-   says so. A password-protected Word file is `Encrypted`; it loads with its password (see
-   [DOCX passwords](docx.md#passwords)).
+4. Another ZIP package is `Docx`. A compound file with a `WordDocument` stream is `Doc`, a binary Word file (see
+   [DOC](doc.md)). A password-protected Word file, DOCX or DOC, is `Encrypted`; it loads with its password (see
+   [DOCX passwords](docx.md#passwords) and [DOC passwords](doc.md#passwords)). Another compound file is `Docx`, and
+   reading it fails with an error that says so.
 5. `%PDF-` in the first 1024 bytes is `Pdf`.
 6. `{\rtf` at the start, after a byte order mark or white space, is `Rtf`.
 7. Text whose extension names HTML (`.html`, `.htm`, `.xhtml`), MHTML (`.mht`, `.mhtml`), Markdown (`.md`, `.markdown`,

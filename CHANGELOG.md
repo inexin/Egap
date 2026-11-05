@@ -31,11 +31,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - The DOCX reader sets Word's properties through the same layer, with the same result on every file we test with. Values
   past Word's own limits are now held to them as in RTF: text sizes up to 1638 points, kerning from 0, at most 64 tab
   stops a paragraph and drop caps up to 10 lines.
-- A reader for Word's binary DOC files (Word 97 to 2003, Word 6 and Word 95), not yet reachable from `Document.Load`:
-  text, character and paragraph formatting, styles, fonts, lists (and Word 6 paragraph numbers), tables with nested and
-  merged cells, sections and page setup, headers and footers, footnotes and endnotes, comments, fields, bookmarks, and
-  tracked insertions and deletions. For now pictures, drawings and text boxes are left out with a warning, as are the
-  headers and footers of Word 6 and Word 95 files; password-protected files are refused.
+- Word's binary DOC files (Word 97 to 2003, Word 6 and Word 95) load: `Document.Load` reads them, `Document.Identify`
+  reports the new `DocumentFormatKind.Doc` (and `Encrypted` for a password-protected one), and `egap convert` takes
+  them as inputs. The reader takes in text, character and paragraph formatting, styles, fonts, lists (and Word 6
+  paragraph numbers), tables with nested and merged cells, sections and page setup, headers and footers, footnotes and
+  endnotes, comments, fields, bookmarks, and tracked insertions and deletions; pictures in the line and floating,
+  shapes Egap has a kind for, text boxes, and the members of shape groups. Other drawing shapes are left out with a
+  warning, as are the headers and footers and the drawings of Word 6 and Word 95 files. Password-protected files open
+  with their password (RC4, RC4 CryptoAPI and XOR obfuscation); those of Word 6 and Word 95 are refused.
+- An RTF straight connector (shape type 32) reads as a line instead of an island.
 - A DOCX list level whose `w:lvlRestart` is 9 no longer stops loading with an `ArgumentOutOfRangeException`.
 - `Document.Identify` reports Excel workbooks (XLSX, XLSM, XLTX and XLTM) as the new `DocumentFormatKind.Xlsx`, by a
   package part under `xl/` or by the file's extension, where it said DOCX before. Loading one as a document throws a

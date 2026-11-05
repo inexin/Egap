@@ -10,7 +10,7 @@ public sealed partial class Document
 
     /// <summary>
     /// Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
-    /// <see cref="Identify(Stream, string?)"/>). DOCX, RTF, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
+    /// <see cref="Identify(Stream, string?)"/>). DOCX, DOC, RTF, ODT, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
     /// Markdown need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>. An
     /// encrypted Word file needs its password: see <see cref="Load(string, DocumentLoadOptions?)"/>.
     /// </summary>
@@ -127,8 +127,9 @@ public sealed partial class Document
     /// <summary>
     /// Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
     /// whose first entry is an EPUB <c>mimetype</c> is EPUB, one with a part under <c>xl/</c> or named .xlsx, .xlsm, .xltx or
-    /// .xltm is an Excel workbook, another ZIP package or an old compound file is Word's (and a
-    /// compound file that holds an encrypted package is <see cref="DocumentFormatKind.Encrypted"/>), an OpenDocument text
+    /// .xltm is an Excel workbook, another ZIP package is Word's, a compound file with a <c>WordDocument</c> stream is a
+    /// binary Word file (DOC), a compound file that holds an encrypted package or a password-protected DOC is
+    /// <see cref="DocumentFormatKind.Encrypted"/>, and another compound file is taken as Word's, an OpenDocument text
     /// package is ODT (and <see cref="DocumentFormatKind.Encrypted"/> when its manifest says it is encrypted), a MIME
     /// message of <c>multipart/related</c> parts is MHTML, <c>%PDF-</c> is PDF, <c>{\rtf</c> is RTF, a JSON object naming the <c>DoclingDocument</c> schema is
     /// Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
@@ -151,12 +152,11 @@ public sealed partial class Document
         string? extension = fileName is null ? null : Path.GetExtension(fileName) is { Length: > 0 } e ? e : fileName;
         DocumentFormatKind kind = Identify(head.AsSpan(0, length), extension);
 
-        // A compound file is encrypted when its directory names the encrypted package; a stream that cannot seek is judged
-        // by the directory sectors among its first bytes.
-        if (kind == DocumentFormatKind.Docx && Office.CompoundFile.IsCompoundFile(head.AsSpan(0, length))
-            && Office.OfficeEncryption.IsEncryptedPackage(stream.CanSeek ? stream : new MemoryStream(head, 0, length, writable: false)))
+        // A compound file is encrypted when its directory names the encrypted package, and a binary Word file when it has a
+        // WordDocument stream; a stream that cannot seek is judged by the sectors among its first bytes.
+        if (kind == DocumentFormatKind.Docx && Office.CompoundFile.IsCompoundFile(head.AsSpan(0, length)))
         {
-            return DocumentFormatKind.Encrypted;
+            kind = CompoundKind(stream.CanSeek ? stream : new MemoryStream(head, 0, length, writable: false), out _);
         }
 
         // An encrypted OpenDocument package says so in its manifest, which a stream that cannot seek may hold too late to read.
@@ -183,12 +183,50 @@ public sealed partial class Document
         return Identify(stream, path);
     }
 
+    /// <summary>Which Word file a compound file is: a binary one (DOC), an encrypted one, or else DOCX, whose reader names it.</summary>
+    private static DocumentFormatKind CompoundKind(Stream source, out bool binaryWord)
+    {
+        long start = source.Position;
+        binaryWord = false;
+        try
+        {
+            Office.CompoundFile file = Office.CompoundFile.Read(source, new DocumentLimits());
+            if (Office.OfficeEncryption.IsEncryptedPackage(file))
+            {
+                return DocumentFormatKind.Encrypted;
+            }
+
+            DocumentFormatKind? word = Doc.DocReader.KindOf(file);
+            binaryWord = word is not null;
+            return word ?? DocumentFormatKind.Docx;
+        }
+        catch (Exception e) when (e is DocumentException or IOException or ArgumentException or InvalidOperationException)
+        {
+            return DocumentFormatKind.Docx;
+        }
+        finally
+        {
+            source.Position = start;
+        }
+    }
+
     private static Document Load(byte[] bytes, string? extension, out IReadOnlyList<ConversionWarning> warnings, DocumentLoadOptions? options)
     {
         DocumentFormatKind kind = Identify(bytes.AsSpan(0, Math.Min(bytes.Length, HeadLength)), extension);
         if (kind == DocumentFormatKind.Unknown)
         {
             throw new DocumentException("The file is not one Egap can read.");
+        }
+
+        // A binary Word file, password-protected or not, takes the options' password and limits.
+        if (kind == DocumentFormatKind.Docx && Office.CompoundFile.IsCompoundFile(bytes))
+        {
+            CompoundKind(new MemoryStream(bytes, writable: false), out bool binaryWord);
+            if (binaryWord)
+            {
+                options ??= new DocumentLoadOptions();
+                return Doc.DocReader.Read(bytes, options.Limits, options.Password, options.PasswordCallback, out warnings);
+            }
         }
 
         // DOCX, encrypted packages included, and RTF take the options' password and limits.
@@ -301,6 +339,7 @@ public sealed partial class Document
         ".EPUB" => DocumentFormatKind.Epub,
         ".MHT" or ".MHTML" => DocumentFormatKind.Mhtml,
         ".RTF" => DocumentFormatKind.Rtf,
+        ".DOC" or ".DOT" => DocumentFormatKind.Doc,
         ".ODT" or ".OTT" or ".FODT" or ".FOTT" => DocumentFormatKind.Odt,
         ".XLSX" or ".XLSM" or ".XLTX" or ".XLTM" => DocumentFormatKind.Xlsx,
         _ => DocumentFormatKind.Unknown,

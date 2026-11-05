@@ -140,7 +140,7 @@ public sealed class OfficeEncryptionTests : IDisposable
         Assert.Equal(DocumentFormatKind.Docx, Document.Identify(new MemoryStream(file)));
         DocumentException error = Assert.Throws<DocumentException>(() => DocxFormat.Load(new MemoryStream(file)));
         Assert.IsNotType<DocumentPasswordException>(error);
-        Assert.Contains(".doc", error.Message, StringComparison.Ordinal);
+        Assert.Contains("DOC", error.Message, StringComparison.Ordinal);
     }
 
     [Fact]

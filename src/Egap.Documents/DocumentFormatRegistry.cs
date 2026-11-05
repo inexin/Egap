@@ -44,6 +44,9 @@ internal static class DocumentFormatRegistry
 
         [DocumentFormatKind.Odt] = new(DocumentFormatKind.Odt, ReadOdt, (document, path) => OdtFormat.Save(document, path)),
 
+        // Binary Word files are read, not written.
+        [DocumentFormatKind.Doc] = new(DocumentFormatKind.Doc, ReadDoc, null),
+
         // Docling JSON holds page layouts, which a document is read from; a document is not written back as one.
         [DocumentFormatKind.DoclingJson] = new(DocumentFormatKind.DoclingJson, ReadDocling, null),
     };
@@ -104,6 +107,11 @@ internal static class DocumentFormatRegistry
         return RtfFormat.Read(bytes, out warnings, null);
     }
 
+    private static Document ReadDoc(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
+    {
+        return Doc.DocReader.Read(bytes, new DocumentLimits(), out warnings);
+    }
+
     private static Document ReadOdt(byte[] bytes, out IReadOnlyList<ConversionWarning> warnings)
     {
         return OdtFormat.Read(bytes, out warnings, null);
@@ -148,6 +156,7 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.Rtf => "RTF",
         DocumentFormatKind.Encrypted => "encrypted Office files",
         DocumentFormatKind.Odt => "ODT",
+        DocumentFormatKind.Doc => "DOC",
         DocumentFormatKind.Xlsx => "XLSX",
         _ => "this file",
     };
@@ -158,6 +167,7 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.Markdown => "needs the Egap.Documents.Markdown package: add it and call MarkdownFormat.Register() once at startup.",
         DocumentFormatKind.DoclingJson => "is not supported: Docling JSON holds page layouts, which DoclingJson.Write writes from PdfLayoutAnalyzer's.",
         DocumentFormatKind.Xlsx => "is not supported: an Excel workbook is a spreadsheet, not a document.",
+        DocumentFormatKind.Doc => "is not supported: Egap reads binary Word files but writes Word's DOCX; save as .docx.",
         _ => "is not supported.",
     };
 }

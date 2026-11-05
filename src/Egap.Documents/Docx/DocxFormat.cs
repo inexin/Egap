@@ -107,7 +107,7 @@ public static partial class DocxFormat
             source = copy;
         }
 
-        // A compound file is an encrypted package (or an old binary .doc, which the package reader refuses by name).
+        // A compound file is an encrypted package (or a binary .doc, which the package reader sends to Document.Load).
         if (source.CanSeek && Office.OfficeEncryption.IsEncryptedPackage(source))
         {
             Office.CompoundFile file = Office.CompoundFile.Read(source, options.Limits);

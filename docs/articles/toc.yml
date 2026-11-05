@@ -50,6 +50,8 @@
       href: formats/index.md
     - name: Docling JSON
       href: formats/docling-json.md
+    - name: DOC
+      href: formats/doc.md
     - name: DOCX
       href: formats/docx.md
     - name: EPUB

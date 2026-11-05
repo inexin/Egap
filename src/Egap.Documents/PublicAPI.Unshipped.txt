@@ -5,6 +5,7 @@ Egap.Documents.Document.Protection.get -> Egap.Documents.DocumentProtection!
 Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart! start) -> Egap.Documents.EditableRangeEnd!
 Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup group = Egap.Documents.EditorGroup.Everyone) -> Egap.Documents.EditableRangeStart!
 Egap.Documents.DocumentBuilder.StartEditableRange(string! editor) -> Egap.Documents.EditableRangeStart!
+Egap.Documents.DocumentFormatKind.Doc = 13 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Encrypted = 10 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Odt = 11 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Rtf = 9 -> Egap.Documents.DocumentFormatKind
