@@ -4508,6 +4508,12 @@ references:
   commentId: T:Egap.Documents.DocumentFormatKind
   fullName: Egap.Documents.DocumentFormatKind
   nameWithType: DocumentFormatKind
+- uid: Egap.Documents.DocumentFormatKind.Doc
+  name: Doc
+  href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Doc
+  commentId: F:Egap.Documents.DocumentFormatKind.Doc
+  fullName: Egap.Documents.DocumentFormatKind.Doc
+  nameWithType: DocumentFormatKind.Doc
 - uid: Egap.Documents.DocumentFormatKind.DoclingJson
   name: DoclingJson
   href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_DoclingJson

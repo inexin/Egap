@@ -8824,6 +8824,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/formats/doc.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/formats/doc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/formats/docling-json.md",
       "output": {
         ".html": {

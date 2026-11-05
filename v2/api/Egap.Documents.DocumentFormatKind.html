@@ -117,19 +117,24 @@ Enum DocumentFormatKind  <a class="header-action link-secondary" title="View sou
   <h2 id="fields">Fields
 </h2>
   <dl class="parameters">
+    <dt id="Egap_Documents_DocumentFormatKind_Doc"><code>Doc = 13</code></dt>
+  
+  <dd><p>A binary Word document or template (DOC or DOT): Word 97 to 2003, and Word 6 and Word 95, a compound file with a
+<code>WordDocument</code> stream. Egap reads it and does not write it. A password-protected one is <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a>.</p>
+</dd>
     <dt id="Egap_Documents_DocumentFormatKind_DoclingJson"><code>DoclingJson = 6</code></dt>
   
   <dd><p>A Docling JSON document.</p>
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Docx"><code>Docx = 2</code></dt>
   
-  <dd><p>A Word file: DOCX, DOTX, DOCM or DOTM, or an old binary Word file (which reading refuses with a clear error). An
-encrypted Word file is <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a>.</p>
+  <dd><p>A Word file: DOCX, DOTX, DOCM or DOTM (a binary Word file is <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Doc">Doc</a>), or another compound file Egap does
+not read, whose error names it. An encrypted Word file is <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a>.</p>
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Encrypted"><code>Encrypted = 10</code></dt>
   
-  <dd><p>An encrypted file: a password-protected Word document (or another Office package) in a compound file, or a
-password-protected OpenDocument text package. Loading it needs its password, in <a class="xref" href="Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password">Password</a>,
+  <dd><p>An encrypted file: a password-protected Word document (an encrypted Office package or a password-protected binary
+Word file) in a compound file, or a password-protected OpenDocument text package. Loading it needs its password, in <a class="xref" href="Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password">Password</a>,
 <a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password">Password</a> or <a class="xref" href="Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_Password">Password</a>.</p>
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Epub"><code>Epub = 7</code></dt>

@@ -141,7 +141,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </table>
 <h2 id="egap-convert">egap convert</h2>
 <p><code>egap convert &lt;inputs&gt;... [options]</code></p>
-<p>Convert between formats by the output's extension: HTML, Markdown, DOCX, RTF, text and images to PDF; PDF to DOCX, RTF, HTML, Markdown or text; and the flow formats to each other.</p>
+<p>Convert between formats by the output's extension: HTML, Markdown, DOCX, DOC, RTF, text and images to PDF; PDF to DOCX, RTF, HTML, Markdown or text; and the flow formats to each other.</p>
 <table>
 <thead>
 <tr>
@@ -152,7 +152,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 <tbody>
 <tr>
 <td><code>&lt;inputs&gt;</code></td>
-<td>HTML, Markdown, DOCX, RTF, text, image or PDF files, globs (*, ?, **), or folders with --recursive.</td>
+<td>HTML, Markdown, DOCX, DOC, RTF, text, image or PDF files, globs (*, ?, **), or folders with --recursive.</td>
 </tr>
 <tr>
 <td><code>--recursive</code>, <code>-r</code></td>
@@ -260,15 +260,15 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 <tr>
 <td><code>--password &lt;text&gt;</code></td>
-<td>The password that opens encrypted PDF, DOCX and ODT inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+<td>The password that opens encrypted PDF, DOCX, DOC and ODT inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
 </tr>
 <tr>
 <td><code>--password-env &lt;NAME&gt;</code></td>
-<td>Read the password that opens encrypted PDF, DOCX and ODT inputs from this environment variable.</td>
+<td>Read the password that opens encrypted PDF, DOCX, DOC and ODT inputs from this environment variable.</td>
 </tr>
 <tr>
 <td><code>--password-file &lt;path&gt;</code></td>
-<td>Read the password that opens encrypted PDF, DOCX and ODT inputs from the first line of this file.</td>
+<td>Read the password that opens encrypted PDF, DOCX, DOC and ODT inputs from the first line of this file.</td>
 </tr>
 <tr>
 <td><code>--save-password &lt;text&gt;</code></td>
