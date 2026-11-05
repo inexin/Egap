@@ -42,8 +42,7 @@ internal static class DocumentFormatRegistry
         // An encrypted package is read as DOCX once decrypted; without a password that throws DocumentPasswordException.
         [DocumentFormatKind.Encrypted] = new(DocumentFormatKind.Encrypted, ReadDocx, null),
 
-        // OpenDocument Text is read; writing it is still to come.
-        [DocumentFormatKind.Odt] = new(DocumentFormatKind.Odt, ReadOdt, null),
+        [DocumentFormatKind.Odt] = new(DocumentFormatKind.Odt, ReadOdt, (document, path) => OdtFormat.Save(document, path)),
 
         // Docling JSON holds page layouts, which a document is read from; a document is not written back as one.
         [DocumentFormatKind.DoclingJson] = new(DocumentFormatKind.DoclingJson, ReadDocling, null),

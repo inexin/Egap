@@ -376,9 +376,24 @@ internal sealed partial class OdtReader
         string verticalPos = Graphic(StyleNs, "vertical-pos") ?? "from-top";
         double x = OdfUnits.Length(element.Attr(SvgNs, "x")) ?? 0;
         double y = OdfUnits.Length(element.Attr(SvgNs, "y")) ?? 0;
+        if (element.Name == DrawNs + "line")
+        {
+            // A line has its two ends, not a position: it sits at their top left corner.
+            x = Math.Min(OdfUnits.Length(element.Attr(SvgNs, "x1")) ?? 0, OdfUnits.Length(element.Attr(SvgNs, "x2")) ?? 0);
+            y = Math.Min(OdfUnits.Length(element.Attr(SvgNs, "y1")) ?? 0, OdfUnits.Length(element.Attr(SvgNs, "y2")) ?? 0);
+        }
+
         if (element.Attr(DrawNs, "transform") is { } transform && Translation(transform) is { } moved)
         {
+            // The translation places the turned shape's corner; the model places the unturned box, turned about its centre.
             (x, y) = moved;
+            if (Rotation(transform) is { } degrees && degrees != 0)
+            {
+                double r = -degrees * Math.PI / 180;
+                double cx = (OdfUnits.Length(element.Attr(SvgNs, "width")) ?? 0) / 2, cy = (OdfUnits.Length(element.Attr(SvgNs, "height")) ?? 0) / 2;
+                x += (cx * Math.Cos(r)) + (cy * Math.Sin(r)) - cx;
+                y += (-cx * Math.Sin(r)) + (cy * Math.Cos(r)) - cy;
+            }
         }
 
         string wrap = Graphic(StyleNs, "wrap") ?? "none";

@@ -1,7 +1,7 @@
 # Document formats
 
 Egap.Documents reads each format below into one document model and writes the model back out, so any format it reads can
-be saved as any format it writes. DOCX, RTF, OpenDocument Text (read only for now), PDF, plain text and Docling JSON are
+be saved as any format it writes. DOCX, RTF, OpenDocument Text, PDF, plain text and Docling JSON are
 built in. HTML, MHTML and EPUB come from the
 add-on package Egap.Documents.Html, and Markdown from Egap.Documents.Markdown.
 
@@ -17,7 +17,7 @@ without naming the format, how a file's format is found, warnings and limits.
 | [HTML](html.md) | Egap.Documents.Html | HTML and XHTML, parsed as browsers parse it and styled through the CSS cascade | HTML (UTF-8), with the page setup as `@page` rules |
 | [Markdown](markdown.md) | Egap.Documents.Markdown | CommonMark with GitHub's extensions and YAML front matter | GitHub Flavored Markdown (UTF-8) |
 | [MHTML](mhtml.md) | Egap.Documents.Html | Web archives as Chromium, Edge and Word save them | One-file web archives in Chromium's shape |
-| [OpenDocument Text](odt.md) | Egap.Documents | ODT, OTT and flat FODT from ODF 1.2 to 1.4, with styles, lists, tables, page styles, notes, fields and tracked changes | Not yet |
+| [OpenDocument Text](odt.md) | Egap.Documents | ODT, OTT and flat FODT from ODF 1.2 to 1.4, with styles, lists, tables, page styles, notes, fields and tracked changes | ODF 1.3 (1.2 and 1.4 as options) as ODT, OTT, FODT and FOTT, encrypted with a password if asked; ODT to ODT keeps what the model does not name |
 | [RTF](rtf.md) | Egap.Documents | RTF as Word 2007 and later write it, with tables, lists, notes, comments, tracked changes and pictures | RTF 1.9.1 as Word writes it, 7-bit with Unicode escapes |
 | [Plain text](text.md) | Egap.Documents | One paragraph per line | The text in reading order, for search and indexing |
 | [Docling JSON](docling-json.md) | Egap.Documents | DoclingDocument JSON, from Docling or from Egap | Page layouts of a PDF, through `DoclingJson.Write` |
@@ -62,9 +62,9 @@ Document notes = TextFormat.Load("notes.txt");                    // one paragra
 11. Text that starts with a tag is `Html`, and other text is `Markdown`.
 12. Binary data no format knows is `Unknown`.
 
-`Save` writes `.docx`, `.dotx`, `.docm` and `.dotm` as Word's, `.rtf` as RTF, `.pdf` as PDF, `.txt` as plain text, and,
-once their add-on is registered, `.html` and `.htm` as HTML, `.mht` and `.mhtml` as MHTML, `.epub` as EPUB and `.md` and
-`.markdown` as Markdown. Any other extension throws an `ArgumentException`.
+`Save` writes `.docx`, `.dotx`, `.docm` and `.dotm` as Word's, `.rtf` as RTF, `.odt`, `.ott`, `.fodt` and `.fott` as
+OpenDocument Text, `.pdf` as PDF, `.txt` as plain text, and, once their add-on is registered, `.html` and `.htm` as HTML,
+`.mht` and `.mhtml` as MHTML, `.epub` as EPUB and `.md` and `.markdown` as Markdown. Any other extension throws an `ArgumentException`.
 
 Each format also has its own class (`DocxFormat`, `RtfFormat`, `OdtFormat`, `HtmlFormat`, `EpubFormat`, `MarkdownFormat`, `TextFormat`, `DoclingJson`) with its
 own options, and members on `Document` that forward to it, such as `Document.LoadDocx`, `ToHtml` and `SaveAsMarkdown`.

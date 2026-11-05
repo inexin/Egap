@@ -76,6 +76,10 @@ internal sealed partial class OdtReader
                 {
                     Add(commonStyles, element, automatic: false);
                 }
+                else if (element.Name.Namespace == NumberNs && element.Attr(StyleNs, "name") is { } data)
+                {
+                    commonStyles.TryAdd((DataFamily, data), new OdfStyle(element, data, DataFamily, automatic: false));
+                }
                 else if (element.Name == StyleNs + "default-style" && element.Attr(StyleNs, "family") is { } family)
                 {
                     defaultStyles.TryAdd(family, element);
@@ -135,6 +139,10 @@ internal sealed partial class OdtReader
             {
                 Add(styles, element, automatic: true);
             }
+            else if (element.Name.Namespace == NumberNs && element.Attr(StyleNs, "name") is { } data)
+            {
+                styles.TryAdd((DataFamily, data), new OdfStyle(element, data, DataFamily, automatic: true));
+            }
             else if (element.Name == TextNs + "list-style" && element.Attr(StyleNs, "name") is { } list)
             {
                 lists.TryAdd(list, element);
@@ -145,6 +153,9 @@ internal sealed partial class OdtReader
             }
         }
     }
+
+    /// <summary>The family data styles (number, date and time styles) are kept under, which no style:style has.</summary>
+    private const string DataFamily = "#data";
 
     private static void Add(Dictionary<(string, string), OdfStyle> styles, XElement element, bool automatic)
     {
@@ -1081,8 +1092,12 @@ internal sealed partial class OdtReader
         }
         else if (headerFootersSeen.Contains(primary))
         {
-            // An empty one, so the section does not show the previous section's.
+            // An empty one, so the section does not show the previous section's; on left pages too.
             section.HeadersFooters.GetOrAdd(primary).Blocks.AddTrusted(new Paragraph(document));
+            if (document.Settings.EvenAndOddHeaders && Shown(master.Element(StyleNs + what + "-left")) is null)
+            {
+                section.HeadersFooters.GetOrAdd(even).Blocks.AddTrusted(new Paragraph(document));
+            }
         }
 
         if (Shown(master.Element(StyleNs + what + "-left")) is { } left)
@@ -1237,13 +1252,56 @@ internal sealed partial class OdtReader
             return;
         }
 
-        foreach (XElement item in settings.Descendants(ConfigNs + "config-item"))
+        bool readOnly = false, forms = false;
+        foreach (XElement item in settings.Elements(ConfigNs + "config-item-set").Where(s => s.Attr(ConfigNs, "name") == "ooo:configuration-settings")
+            .Elements(ConfigNs + "config-item"))
         {
-            if (item.Attr(ConfigNs, "name") == "TabsRelativeToIndent" && OdfUnits.Bool(item.Value) is { } relative)
+            switch (item.Attr(ConfigNs, "name"))
             {
-                tabsRelativeToIndent = relative;
+                case "TabsRelativeToIndent" when OdfUnits.Bool(item.Value) is { } relative:
+                    tabsRelativeToIndent = relative;
+                    break;
+                case "LoadReadonly":
+                    readOnly = OdfUnits.Bool(item.Value) == true;
+                    break;
+                case "ProtectForm":
+                    forms = OdfUnits.Bool(item.Value) == true;
+                    break;
+            }
+        }
+
+        // Word's editing restriction: Egap's own settings when it wrote the file, else what LibreOffice keeps of it.
+        if (settings.Elements(ConfigNs + "config-item-set").FirstOrDefault(s => s.Attr(ConfigNs, "name") == OdtWriter.ProtectionSet) is { } protection)
+        {
+            string? Item(string name) => protection.Elements(ConfigNs + "config-item").FirstOrDefault(i => i.Attr(ConfigNs, "name") == name)?.Value;
+            if (Enum.TryParse(Item("Kind"), out ProtectionKind kind) && Enum.IsDefined(kind))
+            {
+                document.Protection.Set(kind, OdfUnits.Bool(Item("Enforced")) == true, Item("HashAlgorithm"), Base64(Item("Hash")), Base64(Item("Salt")),
+                    Math.Clamp(OdfUnits.Int(Item("SpinCount")) ?? 0, 0, DocumentProtection.MaxSpinCount));
                 return;
             }
+        }
+
+        if (readOnly || forms)
+        {
+            document.Protection.Set(forms ? ProtectionKind.Forms : ProtectionKind.ReadOnly, true, null, null, null, 0);
+        }
+    }
+
+    private static byte[]? Base64(string? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return Convert.FromBase64String(value);
+        }
+        catch (FormatException)
+        {
+            return null;
         }
     }
 

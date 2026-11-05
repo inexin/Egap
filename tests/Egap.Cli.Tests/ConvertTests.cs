@@ -92,6 +92,27 @@ public sealed class ConvertTests : IDisposable
     }
 
     [Fact]
+    public void ConvertWritesOdtKindsVersionsAndPasswords()
+    {
+        Egap.Documents.Document document = new();
+        document.AddSection().Body.AddParagraph("Open text.");
+        Egap.Documents.DocxFormat.Save(document, _tool.PathOf("plain.docx"));
+        _tool.Environment["SAVE"] = "open sesame";
+
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "plain.docx", "-o", "out.odt", "--set", "version=1.2").Code);
+        Assert.Contains("Open text.", Egap.Documents.OdtFormat.Load(_tool.PathOf("out.odt")).GetText(), StringComparison.Ordinal);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "plain.docx", "-o", "out.fodt").Code);
+        Assert.StartsWith("<?xml", File.ReadAllText(_tool.PathOf("out.fodt")), StringComparison.Ordinal);
+        Assert.Equal(ExitCodes.Usage, _tool.Run("convert", "plain.docx", "-o", "bad.odt", "--set", "version=2.0").Code);
+        Assert.Equal(ExitCodes.Usage, _tool.Run("convert", "plain.docx", "-o", "locked.fodt", "--save-password-env", "SAVE").Code);
+
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "plain.docx", "-o", "locked.odt", "--save-password-env", "SAVE", "--set", "encryption=aes-gcm").Code);
+        Assert.NotEqual(ExitCodes.Success, _tool.Run("convert", "locked.odt", "-o", "back.txt").Code);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "locked.odt", "-o", "back.txt", "--password-env", "SAVE").Code);
+        Assert.Contains("Open text.", File.ReadAllText(_tool.PathOf("back.txt")), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void CommentsBecomeAnnotations()
     {
         Egap.Documents.Document document = new();
@@ -177,7 +198,7 @@ public sealed class ConvertTests : IDisposable
         WriteInputs();
         ToolRun run = _tool.Run("convert", "report.md", "-o", "report.xyz");
         Assert.Equal(ExitCodes.Usage, run.Code);
-        Assert.Contains("pdf, docx, rtf, html, md, txt", run.Error, StringComparison.Ordinal);
+        Assert.Contains("pdf, docx, odt, ott, fodt, fott, rtf, html, md, txt", run.Error, StringComparison.Ordinal);
     }
 
     [Fact]

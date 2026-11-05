@@ -19,7 +19,7 @@ namespace Egap.Cli.Commands;
 internal static class ConvertCommand
 {
     /// <summary>The formats convert writes, by extension.</summary>
-    private static readonly string[] Targets = ["pdf", "docx", "rtf", "html", "md", "txt"];
+    private static readonly string[] Targets = ["pdf", "docx", "odt", "ott", "fodt", "fott", "rtf", "html", "md", "txt"];
 
     /// <summary>The most one remote resource may be (Q7).</summary>
     private const int MaxRemoteBytes = 50 << 20;
@@ -29,8 +29,8 @@ internal static class ConvertCommand
         InputOptions inputs = new("HTML, Markdown, DOCX, RTF, text, image or PDF files, globs (*, ?, **), or folders with --recursive.");
         OutputOptions output = new(inPlace: false);
         SaveOptions save = new();
-        SecretOptions password = new("password", "password that opens encrypted PDF and DOCX inputs");
-        SecretOptions savePassword = new("save-password", "password that encrypts DOCX outputs");
+        SecretOptions password = new("password", "password that opens encrypted PDF, DOCX and ODT inputs");
+        SecretOptions savePassword = new("save-password", "password that encrypts DOCX, ODT and OTT outputs");
         Option<string?> to = new("--to") { Description = $"The output format when -o does not say: {string.Join(", ", Targets)}.", HelpName = "format" };
         Option<string?> pageSize = new("--page-size") { Description = "To PDF: the page size, A3, A4, A5, Letter, Legal, Tabloid or WxH such as 210mmx297mm.", HelpName = "size" };
         Option<bool> landscape = new("--landscape") { Description = "To PDF: turn the page size to landscape." };
@@ -44,7 +44,7 @@ internal static class ConvertCommand
         Option<bool> tagged = new("--tagged") { Description = "To PDF: write a tagged PDF with a structure tree, for accessibility." };
         Option<string[]> set = new("--set")
         {
-            Description = "A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. RTF: unknown-groups. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf).",
+            Description = "A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. ODT, OTT, FODT and FOTT: version (1.2, 1.3, 1.4), encryption (aes-cbc, aes-gcm), unknown-markup. RTF: unknown-groups. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf).",
             HelpName = "key=value",
             AllowMultipleArgumentsPerToken = false,
         };
@@ -76,9 +76,9 @@ internal static class ConvertCommand
             string target = Target(result.GetValue(to), template);
             string? secret = password.Read(session, result);
             string? saveSecret = savePassword.Read(session, result);
-            if (saveSecret is not null && target != "docx")
+            if (saveSecret is not null && target is not ("docx" or "odt" or "ott"))
             {
-                throw new UsageException("--save-password encrypts DOCX outputs; this writes " + target + ".");
+                throw new UsageException("--save-password encrypts DOCX, ODT and OTT outputs; this writes " + target + ".");
             }
 
             PdfSaveOptions saveOptions = save.Build(result);
@@ -438,11 +438,17 @@ internal static class ConvertCommand
             : throw new UsageException($"--pdfa '{text}' is not one of 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4 and 4f.");
     }
 
+    private static readonly string[] OdtKeys = ["version", "encryption", "unknown-markup"];
+
     /// <summary>The settings each format convert writes takes through <c>--set</c>.</summary>
     private static readonly Dictionary<string, string[]> SettingKeys = new()
     {
         ["pdf"] = ["language", "links", "named-destinations", "outline", "form-fields", "ua", "resolved-comments", "strict"],
         ["docx"] = [],
+        ["odt"] = OdtKeys,
+        ["ott"] = OdtKeys,
+        ["fodt"] = OdtKeys,
+        ["fott"] = OdtKeys,
         ["rtf"] = ["unknown-groups"],
         ["html"] = ["embed-images", "page-setup"],
         ["md"] = ["images", "images-folder", "figure-dpi", "svg-figures", "min-image-size", "background-images", "html-figures", "front-matter"],
@@ -559,6 +565,32 @@ internal static class ConvertCommand
                         "crlf" => "\r\n",
                         string other => throw new UsageException($"--set newline='{other}' is not lf or crlf."),
                     },
+                });
+            case "odt" or "ott" or "fodt" or "fott":
+                return OdtFormat.Save(document, temporary, new OdtSaveOptions
+                {
+                    Kind = target switch
+                    {
+                        "ott" => OdtKind.Template,
+                        "fodt" => OdtKind.FlatDocument,
+                        "fott" => OdtKind.FlatTemplate,
+                        _ => OdtKind.Document,
+                    },
+                    Version = settings.GetValueOrDefault("version") switch
+                    {
+                        null or "1.3" => OdfVersion.Odf13,
+                        "1.2" => OdfVersion.Odf12,
+                        "1.4" => OdfVersion.Odf14,
+                        string other => throw new UsageException($"--set version='{other}' is not 1.2, 1.3 or 1.4."),
+                    },
+                    Password = savePassword,
+                    Encryption = settings.GetValueOrDefault("encryption") switch
+                    {
+                        null or "aes-cbc" => OdtEncryption.AesCbc,
+                        "aes-gcm" => OdtEncryption.AesGcm,
+                        string other => throw new UsageException($"--set encryption='{other}' is not aes-cbc or aes-gcm."),
+                    },
+                    KeepUnknownMarkup = Flag(settings, "unknown-markup", true),
                 });
             case "docx" when savePassword is not null:
                 return DocxFormat.Save(document, temporary, new DocxSaveOptions { Password = savePassword });

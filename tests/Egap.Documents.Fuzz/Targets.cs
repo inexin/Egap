@@ -401,7 +401,8 @@ internal static class Targets
 
     /// <summary>
     /// Any bytes read as OpenDocument Text, packaged or flat; may throw only <see cref="DocumentException"/>. The model must
-    /// answer its text, list labels and effective formats and clone, and the DOCX writer must write it as DOCX that reads again.
+    /// answer its text, list labels and effective formats and clone, the DOCX writer must write it as DOCX that reads again,
+    /// and the ODT writer must write it as an ODT package and a flat file that read again and write again.
     /// </summary>
     private static void OdtFile(Stream input)
     {
@@ -421,6 +422,17 @@ internal static class Targets
         Egap.Documents.Docx.DocxWriter.Write(document, written, true);
         written.Position = 0;
         _ = Egap.Documents.DocxFormat.Load(written).GetText();
+
+        foreach (OdtKind kind in (OdtKind[])[OdtKind.Document, OdtKind.FlatDocument])
+        {
+            using MemoryStream odt = new();
+            OdtFormat.Save(document, odt, new OdtSaveOptions { Kind = kind });
+            odt.Position = 0;
+            Document again = OdtFormat.Load(odt, new OdtLoadOptions { Limits = new DocumentLimits { MaxPartSize = 256 * 1024 * 1024 } });
+            Exercise(again);
+            using MemoryStream twice = new();
+            OdtFormat.Save(again, twice, new OdtSaveOptions { Kind = kind });
+        }
     }
 
     /// <summary>

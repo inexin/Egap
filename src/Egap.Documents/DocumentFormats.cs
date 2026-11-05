@@ -105,8 +105,9 @@ public sealed partial class Document
 
     /// <summary>
     /// Saves the document in the format its file extension names: .docx, .dotx, .docm and .dotm as Word's, .pdf as PDF (as
-    /// <see cref="PdfExport.SaveAsPdf(Document, string, PdfExportOptions?)"/> writes it), .txt as plain text, and, once their
-    /// add-on is registered, .html and .htm as HTML, .mht and .mhtml as MHTML, .epub as EPUB and .md and .markdown as Markdown.
+    /// <see cref="PdfExport.SaveAsPdf(Document, string, PdfExportOptions?)"/> writes it), .rtf as RTF, .odt, .ott, .fodt and
+    /// .fott as OpenDocument Text (ODF 1.3), .txt as plain text, and, once their add-on is registered, .html and .htm as HTML,
+    /// .mht and .mhtml as MHTML, .epub as EPUB and .md and .markdown as Markdown.
     /// </summary>
     /// <returns>What the format could not hold.</returns>
     /// <exception cref="ArgumentException">The extension names no format Egap.Documents writes.</exception>
@@ -300,7 +301,7 @@ public sealed partial class Document
         ".EPUB" => DocumentFormatKind.Epub,
         ".MHT" or ".MHTML" => DocumentFormatKind.Mhtml,
         ".RTF" => DocumentFormatKind.Rtf,
-        ".ODT" or ".OTT" or ".FODT" => DocumentFormatKind.Odt,
+        ".ODT" or ".OTT" or ".FODT" or ".FOTT" => DocumentFormatKind.Odt,
         ".XLSX" or ".XLSM" or ".XLTX" or ".XLTM" => DocumentFormatKind.Xlsx,
         _ => DocumentFormatKind.Unknown,
     };

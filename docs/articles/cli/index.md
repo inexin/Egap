@@ -1,8 +1,8 @@
 # The egap command
 
-`egap` turns HTML, Markdown, DOCX, RTF and images into PDF, and inspects, merges, splits, stamps, redacts, fills, signs and
-checks PDFs from a shell, a build script or an AI assistant. It is a .NET tool built on Egap's public API, so it does what
-the library does, with the same defaults. Every command is listed with its options in the
+`egap` turns HTML, Markdown, DOCX, RTF, ODT and images into PDF, and inspects, merges, splits, stamps, redacts, fills,
+signs and checks PDFs from a shell, a build script or an AI assistant. It is a .NET tool built on Egap's public API, so it
+does what the library does, with the same defaults. Every command is listed with its options in the
 [command reference](commands.md).
 
 ```sh
@@ -74,21 +74,27 @@ egap convert report.docx -o report.pdf --embed-source        # a hybrid PDF: con
 egap convert notes.md -o notes.html
 egap convert letter.rtf -o letter.docx
 egap convert report.docx -o report.rtf
+egap convert report.docx -o report.odt
+egap convert minutes.odt -o minutes.pdf
 egap convert page.html -o page.pdf --allow-network
 egap convert locked.docx -o open.rtf --password-env DOCX_PASSWORD          # an encrypted DOCX, opened
 egap convert report.docx -o locked.docx --save-password-env DOCX_PASSWORD  # saved encrypted
+egap convert report.docx -o locked.odt --save-password-env ODT_PASSWORD    # an encrypted ODT
 ```
 
-`--password` opens encrypted PDF and DOCX inputs, and `--save-password` encrypts a DOCX output as Word 2013 and later
-do. Both come as `-env` and `-file` too, like every password. A document's editing restriction (read only, comments,
-tracked changes or forms) and its editable ranges carry through every conversion between DOCX and RTF.
+`--password` opens encrypted PDF, DOCX and ODT inputs, and `--save-password` encrypts a DOCX output as Word 2013 and
+later do, and an ODT or OTT output with AES-256. Both come as `-env` and `-file` too, like every password. A document's
+editing restriction (read only, comments, tracked changes or forms) and its editable ranges carry through every
+conversion between DOCX, RTF and ODT.
 
 `--set key=value` passes a setting to the writer of the format being written; give it once per setting. A setting the
 writer does not take stops the run with a usage error. PDF takes `language`, `links`, `named-destinations`, `outline`,
 `form-fields`, `ua`, `resolved-comments` and `strict`; HTML takes `embed-images` and `page-setup`; Markdown takes `images`
 (files, data-uris, placeholders or omit), `images-folder`, `figure-dpi`, `svg-figures`, `min-image-size`,
 `background-images`, `html-figures` and `front-matter`; text takes `headers-footers`, `notes` and `newline` (lf or crlf);
-RTF takes `unknown-groups` (false leaves out the unknown `\*` groups an RTF input kept). DOCX takes none. Markdown
+RTF takes `unknown-groups` (false leaves out the unknown `\*` groups an RTF input kept); ODT, OTT, FODT and FOTT take
+`version` (1.2, 1.3 or 1.4), `encryption` (aes-cbc or aes-gcm, with `--save-password`) and `unknown-markup` (false
+leaves out the markup an ODT input kept). DOCX takes none. Markdown
 images go to a folder named after the output, such as `report.images` for `report.md`.
 
 ```sh
@@ -97,6 +103,7 @@ egap convert report.docx -o report.md --set images=data-uris --set front-matter=
 egap convert report.docx -o report.txt --set newline=crlf --set headers-footers=true
 egap convert notes.md -o notes.html --set page-setup=false
 egap convert old.rtf -o clean.rtf --set unknown-groups=false
+egap convert report.docx -o report.odt --set version=1.2
 ```
 
 ## Pages

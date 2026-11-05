@@ -136,6 +136,14 @@ internal sealed partial class OdtReader
 
         BlockContext main = new(section.Body.Blocks, main: true);
         ReadBlocks(body, main, null);
+        if (document.Sections.Count > 1 && section.Body.Blocks.Count == 0 && pending.Inlines.Count == 0 && pending.Before is null)
+        {
+            // Nothing after a last section with columns: the text ends in that section, not in an empty one after it.
+            section.Remove();
+            section = document.Sections[document.Sections.Count - 1];
+            main.Blocks = section.Body.Blocks;
+        }
+
         FinishStory(main);
         CloseComments();
 
@@ -290,7 +298,8 @@ internal sealed partial class OdtReader
     {
         if (pending.Inlines.Count > 0 || pending.Before is not null || context.Blocks.Count == 0 || context.Blocks[^1] is not Paragraph)
         {
-            Paragraph paragraph = new(document);
+            // The paragraph a story ends with, as Word needs one: in the default style, as a paragraph without one is written.
+            Paragraph paragraph = new(document) { Style = document.Styles.DefaultParagraphStyle };
             AddBlock(context, paragraph);
             foreach (Inline inline in pending.Inlines)
             {
@@ -754,14 +763,14 @@ internal sealed partial class OdtReader
                 case "bookmark-start" or "reference-mark-start":
                     if (element.Attr(TextNs, "name") is { } start)
                     {
-                        AddInline(context, new BookmarkStart(document, start), null, null);
+                        AddInline<Inline>(context, Permission(start) is { } range ? EditableStart(range) : new BookmarkStart(document, start), null, null);
                     }
 
                     return;
                 case "bookmark-end" or "reference-mark-end":
                     if (element.Attr(TextNs, "name") is { } end)
                     {
-                        AddInline(context, new BookmarkEnd(document, end), null, null);
+                        AddInline<Inline>(context, Permission(end) is { } range ? new EditableRangeEnd(document, range.Id) : new BookmarkEnd(document, end), null, null);
                     }
 
                     return;
@@ -835,8 +844,9 @@ internal sealed partial class OdtReader
             return;
         }
 
-        // Markup the reader does not know: its text is read; empty markup is kept for the writer.
-        if (element.Nodes().Any())
+        // Markup the reader does not know: its text is read; markup without text (LibreOffice's field marks with their
+        // parameters, say) is kept whole for the writer.
+        if (element.DescendantNodes().Any(n => n is XText || (n is XElement e && e.Name.Namespace == TextNs)))
         {
             ReadInlines(element, context, format, characterStyle, size);
         }
@@ -844,6 +854,33 @@ internal sealed partial class OdtReader
         {
             KeepInline(context, element);
         }
+    }
+
+    /// <summary>
+    /// A bookmark LibreOffice writes for a range Word lets someone edit in a protected document: "permission-for-group:id:group"
+    /// or "permission-for-user:id:user"; null for other bookmarks.
+    /// </summary>
+    private static (int Id, EditorGroup Group, string? Editor)? Permission(string name)
+    {
+        string[] parts = name.Split(':', 3);
+        if (parts.Length != 3 || !int.TryParse(parts[1], System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out int id))
+        {
+            return null;
+        }
+
+        if (parts[0] == "permission-for-user" && parts[2].Length > 0)
+        {
+            return (id, EditorGroup.None, parts[2]);
+        }
+
+        return parts[0] == "permission-for-group" && Enum.TryParse(parts[2], ignoreCase: true, out EditorGroup group) && Enum.IsDefined(group) && group != EditorGroup.None
+            ? (id, group, null)
+            : null;
+    }
+
+    private EditableRangeStart EditableStart((int Id, EditorGroup Group, string? Editor) range)
+    {
+        return range.Editor is { } editor ? new EditableRangeStart(document, range.Id, editor) : new EditableRangeStart(document, range.Id, range.Group);
     }
 
     private void KeepInline(InlineContext context, XElement element)

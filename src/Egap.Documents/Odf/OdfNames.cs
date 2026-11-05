@@ -17,6 +17,7 @@ internal static class OdfNames
     public static readonly XNamespace NumberNs = "urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0";
     public static readonly XNamespace SvgNs = "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0";
     public static readonly XNamespace ConfigNs = "urn:oasis:names:tc:opendocument:xmlns:config:1.0";
+    public static readonly XNamespace FormNs = "urn:oasis:names:tc:opendocument:xmlns:form:1.0";
     public static readonly XNamespace ManifestNs = "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0";
     public static readonly XNamespace XmlNs = XNamespace.Xml;
     public static readonly XNamespace MathMLNs = "http://www.w3.org/1998/Math/MathML";
