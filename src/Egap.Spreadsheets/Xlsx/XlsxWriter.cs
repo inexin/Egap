@@ -367,7 +367,7 @@ internal static class XlsxWriter
 /// </summary>
 internal sealed class StringMap(SharedStringTable table)
 {
-    private readonly int[] map = new int[table.Count];
+    private int[] map = new int[table.Count];
     private readonly List<int> used = [];
     private int references;
 
@@ -377,6 +377,12 @@ internal sealed class StringMap(SharedStringTable table)
     public int Map(int index)
     {
         references++;
+        if (index >= map.Length)
+        {
+            // A string added while saving, such as a table's header written from its column name.
+            Array.Resize(ref map, Math.Max(index + 1, table.Count));
+        }
+
         int mapped = map[index] - 1;
         if (mapped < 0)
         {

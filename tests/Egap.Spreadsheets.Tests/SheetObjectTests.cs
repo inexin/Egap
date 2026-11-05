@@ -225,6 +225,20 @@ public sealed class SheetObjectTests
     }
 
     [Fact]
+    public void AHeaderCellTheSaveWritesIsANewString()
+    {
+        Workbook book = XlsxSeed.LoadFeatures();
+        Worksheet sheet = book.Worksheets["Table"];
+        sheet["B1"].Value = 7;
+        sheet.Tables[0].Columns[1].Name = "Points";
+
+        (Workbook loaded, _) = XlsxSeed.RoundTrip(book);
+
+        Assert.Equal("Points", loaded.Worksheets["Table"]["B1"].Value);
+        Assert.Equal(["Name", "Points"], loaded.Worksheets["Table"].Tables[0].Columns.Select(c => c.Name));
+    }
+
+    [Fact]
     public void TableNamesFollowExcelsRules()
     {
         Workbook book = Workbook.Create();

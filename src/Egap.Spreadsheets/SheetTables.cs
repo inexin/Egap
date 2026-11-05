@@ -92,6 +92,11 @@ public sealed class SheetTable
         get => name;
         set
         {
+            if (value == name)
+            {
+                return;
+            }
+
             SheetTableCollection.CheckName(Worksheet.Workbook, value, this);
             name = value;
         }

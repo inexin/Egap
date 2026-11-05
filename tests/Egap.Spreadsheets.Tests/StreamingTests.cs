@@ -166,7 +166,20 @@ public sealed class StreamingTests
         Assert.Throws<DocumentException>(() => SheetReader.Open(new MemoryStream([1, 2, 3, 4])));
         Dictionary<string, string> parts = XlsxSeed.Features();
         parts["xl/worksheets/sheet1.xml"] = parts["xl/worksheets/sheet1.xml"].Replace("</sheetData>", "", StringComparison.Ordinal);
-        using SheetReader reader = SheetReader.Open(XlsxSeed.Package(parts));
+        MemoryStream broken = XlsxSeed.Package(parts);
+        // A sheet entry whose compressed bytes are damaged is refused as a broken file, not a ZIP library error.
+        byte[] whole = XlsxSeed.Package(XlsxSeed.Features()).ToArray();
+        int at = whole.AsSpan().IndexOf("xl/worksheets/sheet1.xml"u8) + 40;
+        whole.AsSpan(at, 64).Fill(0xFF);
+        Assert.Throws<DocumentException>(() =>
+        {
+            using SheetReader damaged = SheetReader.Open(new MemoryStream(whole));
+            while (damaged.Read())
+            {
+            }
+        });
+
+        using SheetReader reader = SheetReader.Open(broken);
         Assert.Throws<DocumentException>(() =>
         {
             while (reader.Read())

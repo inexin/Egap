@@ -169,10 +169,10 @@ public sealed class SheetReader : IDisposable
         if (Entry(sheets[index].Part) is { } entry)
         {
             CheckEntry(entry);
-            sheetStream = entry.Open();
-            xml = XmlReader.Create(sheetStream, Settings());
             Guard(() =>
             {
+                sheetStream = entry.Open();
+                xml = XmlReader.Create(sheetStream, Settings());
                 xml.MoveToContent();
                 while (xml.Read())
                 {
