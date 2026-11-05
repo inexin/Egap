@@ -96,7 +96,7 @@ internal sealed partial class OdtReader
         OdtReader reader;
         try
         {
-            reader = new OdtReader(OdfPackage.Read(bytes, options.Limits), options);
+            reader = new OdtReader(OdfPackage.Read(bytes, options.Limits, options.Password, options.PasswordCallback), options);
             reader.ReadDocument();
         }
         catch (Exception e) when (e is not (DocumentException or OutOfMemoryException))

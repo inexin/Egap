@@ -50,7 +50,38 @@ holds for them; other drawing shapes and groups are islands too. Each of those i
 and so is a picture the package does not hold. Markup the reader does not know is kept in the document's extension data
 under the format name `odt`.
 
-A password-protected OpenDocument file throws a `DocumentException` that says so: Egap does not read ODF encryption yet.
+## Password-protected files
+
+Give the password in `OdtLoadOptions.Password`, or in `DocumentLoadOptions.Password` with `Document.Load`. A missing or
+wrong password throws a `DocumentPasswordException`, whose `WrongPassword` tells the two apart; `PasswordCallback` is
+asked for another password, with the attempt's number, until it gives a right one or null. `Document.Identify` reports
+an encrypted ODT as `DocumentFormatKind.Encrypted`, so a program can ask for the password first.
+
+```csharp
+using Egap.Documents;
+
+if (Document.Identify("report.odt") == DocumentFormatKind.Encrypted)
+{
+    Document report = Document.Load("report.odt", new DocumentLoadOptions { Password = "s3cret" });
+}
+
+Document asked = OdtFormat.Load("report.odt", new OdtLoadOptions
+{
+    PasswordCallback = attempt => attempt <= 3 ? Console.ReadLine() : null,
+});
+```
+
+Egap reads every encryption LibreOffice writes:
+
+| Written by | Encryption |
+| --- | --- |
+| LibreOffice 24.2 and later, by default | The whole package in one file, AES-256 in GCM mode, the key from Argon2id |
+| LibreOffice for ODF 1.2 to 1.4, other ODF writers | Each file with AES-256 in CBC mode, the key from PBKDF2 |
+| OpenOffice.org, LibreOffice for ODF 1.0 and 1.1 | Each file with Blowfish, the key from PBKDF2 |
+
+A file whose key derivation asks for more work than any writer uses (more than 10,000,000 PBKDF2 iterations for one
+file or 20,000,000 for all, or Argon2id over more than 256 MiB) throws a `DocumentLimitException` instead of running for
+minutes.
 
 ## Limits
 

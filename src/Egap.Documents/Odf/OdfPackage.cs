@@ -52,16 +52,20 @@ internal sealed class OdfPackage
     /// <summary>The paths of the package's files, in no particular order.</summary>
     public IEnumerable<string> FileNames => files.Keys;
 
-    /// <summary>Reads an ODT, OTT or FODT file.</summary>
-    /// <exception cref="DocumentException">Not an OpenDocument text file, or encrypted.</exception>
+    /// <summary>Whether the package was encrypted.</summary>
+    public bool WasEncrypted { get; private set; }
+
+    /// <summary>Reads an ODT, OTT or FODT file, decrypting an encrypted one with <paramref name="password"/> or the passwords <paramref name="callback"/> gives.</summary>
+    /// <exception cref="DocumentException">Not an OpenDocument text file.</exception>
+    /// <exception cref="DocumentPasswordException">Encrypted, and no password or no right one was given.</exception>
     /// <exception cref="DocumentLimitException">Past a limit.</exception>
-    public static OdfPackage Read(byte[] bytes, DocumentLimits limits)
+    public static OdfPackage Read(byte[] bytes, DocumentLimits limits, string? password = null, Func<int, string?>? callback = null)
     {
         ArgumentNullException.ThrowIfNull(bytes);
         OdfPackage package = new();
         if (bytes is [0x50, 0x4B, 0x03, 0x04, ..])
         {
-            package.ReadZip(bytes, limits);
+            package.ReadZip(bytes, limits, password, callback, inner: false);
         }
         else
         {
@@ -147,7 +151,36 @@ internal sealed class OdfPackage
         return string.Join('/', parts);
     }
 
-    private void ReadZip(byte[] bytes, DocumentLimits limits)
+    /// <summary>Whether a ZIP package's manifest says some of its files are encrypted.</summary>
+    public static bool IsEncryptedZip(Stream stream)
+    {
+        try
+        {
+            using ZipArchive zip = new(stream, ZipArchiveMode.Read, leaveOpen: true);
+            if (zip.GetEntry("META-INF/manifest.xml") is not { Length: < 16 * 1024 * 1024 } entry)
+            {
+                return false;
+            }
+
+            using Stream manifest = entry.Open();
+            using XmlReader reader = XmlReader.Create(manifest, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null });
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "encryption-data" && reader.NamespaceURI == ManifestNs.NamespaceName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        catch (Exception e) when (e is InvalidDataException or XmlException or IOException)
+        {
+            return false;
+        }
+    }
+
+    private void ReadZip(byte[] bytes, DocumentLimits limits, string? password, Func<int, string?>? callback, bool inner)
     {
         try
         {
@@ -189,7 +222,29 @@ internal sealed class OdfPackage
             throw new DocumentException("The file is not a valid ZIP package: " + e.Message, e);
         }
 
-        ReadManifest(limits);
+        XElement? manifestRoot = GetXml("META-INF/manifest.xml", limits);
+        if (manifestRoot is not null && OdfEncryption.IsEncrypted(manifestRoot))
+        {
+            if (inner)
+            {
+                throw new DocumentException("The encrypted OpenDocument package holds another encrypted package.");
+            }
+
+            OdfEncryption.Decrypt(files, manifestRoot, password, callback, limits);
+            WasEncrypted = true;
+
+            // LibreOffice's whole-package encryption holds the real package, with its own manifest, in one file.
+            if (files.TryGetValue(OdfEncryption.EncryptedPackage, out byte[]? package))
+            {
+                files.Clear();
+                ReadZip(package, limits, null, null, inner: true);
+                return;
+            }
+
+            DropEncryptionData(manifestRoot);
+        }
+
+        ReadManifest(manifestRoot);
         if (files.TryGetValue("mimetype", out byte[]? mimetype))
         {
             MediaType = Encoding.ASCII.GetString(mimetype).Trim();
@@ -213,11 +268,20 @@ internal sealed class OdfPackage
         Version = Content.Attr(OfficeNs, "version");
     }
 
-    private void ReadManifest(DocumentLimits limits)
+    /// <summary>Puts the decrypted package's manifest back without its encryption data, as a plain package's would read.</summary>
+    private void DropEncryptionData(XElement manifest)
+    {
+        manifest.Descendants(ManifestNs + "encryption-data").Remove();
+        using MemoryStream stream = new();
+        manifest.Save(stream, SaveOptions.DisableFormatting);
+        files["META-INF/manifest.xml"] = stream.ToArray();
+    }
+
+    private void ReadManifest(XElement? root)
     {
         Dictionary<string, string> manifest = new(StringComparer.Ordinal);
         Manifest = manifest;
-        if (GetXml("META-INF/manifest.xml", limits) is not { } root)
+        if (root is null)
         {
             return;
         }
@@ -228,13 +292,6 @@ internal sealed class OdfPackage
             if (path is null)
             {
                 continue;
-            }
-
-            // Encrypted files carry encryption data in the manifest (ODF 1.3 Part 2, 4.8); the content cannot be read
-            // without the password.
-            if (entry.Element(OdfNames.ManifestNs + "encryption-data") is not null)
-            {
-                throw new DocumentException("The OpenDocument file is password-protected, which Egap does not read yet.");
             }
 
             manifest[path == "/" ? "" : NormalizePath(path)] = entry.Attr(OdfNames.ManifestNs, "media-type") ?? "";
