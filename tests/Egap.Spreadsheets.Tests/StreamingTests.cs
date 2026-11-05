@@ -117,6 +117,26 @@ public sealed class StreamingTests
     }
 
     [Fact]
+    public void AnEntityBombInTheSharedStringsIsRefused()
+    {
+        Dictionary<string, string> parts = XlsxSeed.Features();
+        parts["xl/sharedStrings.xml"] = SheetObjectTests.Bomb("sst") + parts["xl/sharedStrings.xml"].Replace("<t>", "<t>&g;", StringComparison.Ordinal);
+        MemoryStream input = XlsxSeed.Package(parts);
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        Assert.Throws<DocumentException>(() =>
+        {
+            using SheetReader reader = SheetReader.Open(input);
+            while (reader.Read())
+            {
+            }
+        });
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.True(allocated < 4_000_000, $"{allocated:N0} bytes allocated");
+    }
+
+    [Fact]
     public void CsvStreamsBothWays()
     {
         MemoryStream text = new();

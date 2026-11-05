@@ -125,7 +125,7 @@ internal static class XlsxReader
     private static XmlReader OpenXml(OpcPart part, OpcPackage package)
     {
         // A file in strict SpreadsheetML is read through the package's namespace mapping; a transitional one is streamed.
-        XmlReader reader = XmlReader.Create(new MemoryStream(part.Data, writable: false), package.XmlSettings);
+        XmlReader reader = SafeXml.Open(part.Data, package.Limits);
         reader.MoveToContent();
         if (reader.NamespaceURI == XlsxNames.StrictMainUri)
         {

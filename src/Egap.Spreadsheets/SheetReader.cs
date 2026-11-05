@@ -172,7 +172,7 @@ public sealed class SheetReader : IDisposable
             Guard(() =>
             {
                 sheetStream = entry.Open();
-                xml = XmlReader.Create(sheetStream, Settings());
+                xml = SafeXml.Open(sheetStream, limits);
                 xml.MoveToContent();
                 while (xml.Read())
                 {
@@ -316,7 +316,7 @@ public sealed class SheetReader : IDisposable
     {
         CheckEntry(entry);
         using Stream stream = entry.Open();
-        using XmlReader reader = XmlReader.Create(stream, Settings());
+        using XmlReader reader = SafeXml.Open(stream, limits);
         long total = 0;
         reader.Read();
         while (!reader.EOF)
@@ -564,16 +564,6 @@ public sealed class SheetReader : IDisposable
         sheetStream = null;
     }
 
-    private XmlReaderSettings Settings() => new()
-    {
-        DtdProcessing = DtdProcessing.Prohibit,
-        XmlResolver = null,
-        MaxCharactersFromEntities = 0,
-        MaxCharactersInDocument = limits.MaxPartSize,
-        IgnoreWhitespace = false,
-        CloseInput = false,
-    };
-
     private T Guard<T>(Func<T> read)
     {
         try
@@ -624,8 +614,7 @@ public sealed class SheetReader : IDisposable
 
         CheckEntry(entry);
         byte[] data = OpcPackage.ReadEntry(entry, limits);
-        using XmlReader reader = XmlReader.Create(new MemoryStream(data, writable: false), Settings());
-        return XDocument.Load(reader);
+        return SafeXml.Load(data, limits);
     }
 
     private List<(string Id, string Type, string Target)> Relationships(string relsName, string sourceName)

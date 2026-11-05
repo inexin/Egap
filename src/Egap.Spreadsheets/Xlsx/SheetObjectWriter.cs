@@ -558,19 +558,8 @@ internal static class SheetObjectWriter
         }
 
         // The VML drawing: the file's other shapes (form controls) stay, its note shapes are written again.
-        XDocument? vml = null;
-        if (source?.VmlPart is { } oldVml)
-        {
-            try
-            {
-                vml = XDocument.Load(new MemoryStream(oldVml.Data, writable: false));
-                vml.Root?.Elements(V + "shape").Where(IsNote).Remove();
-            }
-            catch (XmlException)
-            {
-                vml = null;
-            }
-        }
+        XDocument? vml = source?.VmlPart is { } oldVml ? SafeXml.TryLoad(oldVml) : null;
+        vml?.Root?.Elements(V + "shape").Where(IsNote).Remove();
 
         bool otherShapes = vml?.Root?.Elements(V + "shape").Any() == true;
         if (comments.Count == 0 && !otherShapes)

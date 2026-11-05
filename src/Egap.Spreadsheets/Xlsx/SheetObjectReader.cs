@@ -445,23 +445,21 @@ internal static class SheetObjectReader
             return visible;
         }
 
-        try
+        // Excel's VML is not always well-formed XML; the notes then read as hidden.
+        if (SafeXml.TryLoad(vml) is not { } document)
         {
-            XNamespace x = "urn:schemas-microsoft-com:office:excel";
-            XDocument document = XDocument.Load(new MemoryStream(vml.Data, writable: false));
-            foreach (XElement data in document.Descendants(x + "ClientData"))
-            {
-                if ((string?)data.Attribute("ObjectType") == "Note" && data.Element(x + "Visible") is not null
-                    && int.TryParse((string?)data.Element(x + "Row"), out int row) && int.TryParse((string?)data.Element(x + "Column"), out int column)
-                    && row is >= 0 and < CellAddress.MaxRows && column is >= 0 and < CellAddress.MaxColumns)
-                {
-                    visible.Add(new CellAddress(row, column));
-                }
-            }
+            return visible;
         }
-        catch (System.Xml.XmlException)
+
+        XNamespace x = "urn:schemas-microsoft-com:office:excel";
+        foreach (XElement data in document.Descendants(x + "ClientData"))
         {
-            // Excel's VML is not always well-formed XML; the notes then read as hidden.
+            if ((string?)data.Attribute("ObjectType") == "Note" && data.Element(x + "Visible") is not null
+                && int.TryParse((string?)data.Element(x + "Row"), out int row) && int.TryParse((string?)data.Element(x + "Column"), out int column)
+                && row is >= 0 and < CellAddress.MaxRows && column is >= 0 and < CellAddress.MaxColumns)
+            {
+                visible.Add(new CellAddress(row, column));
+            }
         }
 
         return visible;

@@ -1,6 +1,8 @@
 using System.Text;
 using System.Xml.Linq;
 
+using Egap.Documents;
+
 namespace Egap.Spreadsheets.Tests;
 
 /// <summary>Hyperlinks, data validation, conditional formatting, tables, notes and pictures: made, read, edited and kept.</summary>
@@ -236,6 +238,48 @@ public sealed class SheetObjectTests
 
         Assert.Equal("Points", loaded.Worksheets["Table"]["B1"].Value);
         Assert.Equal(["Name", "Points"], loaded.Worksheets["Table"].Tables[0].Columns.Select(c => c.Name));
+    }
+
+    [Fact]
+    public void AnEntityBombInTheVmlIsNotExpanded()
+    {
+        Dictionary<string, string> seed = XlsxSeed.Features();
+        seed["xl/drawings/vmlDrawing1.vml"] = Bomb("xml") + """<xml xmlns:v="urn:schemas-microsoft-com:vml" xmlns:x="urn:schemas-microsoft-com:office:excel"><x:ClientData ObjectType="Note"><x:Visible/><x:Row>1</x:Row><x:Column>2</x:Column><x:Anchor>&g;</x:Anchor></x:ClientData></xml>""";
+        MemoryStream input = XlsxSeed.Package(seed);
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        Workbook book = Workbook.Load(input);
+        bool visible = book.Worksheets["Data"].Comments.Single().Visible;
+        book.Worksheets["Data"].Comments.Add("A9", "New");
+        (_, MemoryStream package) = XlsxSeed.RoundTrip(book);
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.True(allocated < 4_000_000, $"{allocated:N0} bytes allocated");
+        Assert.False(visible);
+        string vml = Encoding.UTF8.GetString(XlsxSeed.Parts(package)["xl/drawings/vmlDrawing1.vml"]);
+        Assert.DoesNotContain("ENTITY", vml, StringComparison.Ordinal);
+        Assert.Contains("<x:Row>8</x:Row>", vml, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AnEntityBombInTheNotesIsRefused()
+    {
+        Dictionary<string, string> seed = XlsxSeed.Features();
+        seed["xl/comments1.xml"] = Bomb("comments") + seed["xl/comments1.xml"].Replace("<t>", "<t>&g;", StringComparison.Ordinal);
+        MemoryStream input = XlsxSeed.Package(seed);
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        Assert.Throws<DocumentException>(() => Workbook.Load(input));
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.True(allocated < 4_000_000, $"{allocated:N0} bytes allocated");
+    }
+
+    /// <summary>A DTD whose entity <c>&amp;g;</c> expands to 5,000,000 characters, under .NET's default entity cap.</summary>
+    internal static string Bomb(string root)
+    {
+        static string Ten(string name) => string.Concat(Enumerable.Repeat($"&{name};", 10));
+        return $"""<!DOCTYPE {root} [<!ENTITY a "aaaaaaaaaa"><!ENTITY b "{Ten("a")}"><!ENTITY c "{Ten("b")}"><!ENTITY d "{Ten("c")}"><!ENTITY e "{Ten("d")}"><!ENTITY f "{Ten("e")}"><!ENTITY g "{string.Concat(Enumerable.Repeat("&f;", 5))}">]>""";
     }
 
     [Theory]
