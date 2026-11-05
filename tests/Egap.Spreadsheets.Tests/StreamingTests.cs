@@ -231,50 +231,76 @@ public sealed class StreamingTests
             }
         });
     }
+}
+
+/// <summary>Runs its tests alone, after the others: they measure the process's live heap, which tests running beside them would change.</summary>
+[CollectionDefinition(DisableParallelization = true)]
+public sealed class MemoryMeasurements;
+
+/// <summary>SheetReader and SheetWriter hold what they need for a row, not for the sheet.</summary>
+[Collection(typeof(MemoryMeasurements))]
+public sealed class StreamingMemoryTests(ITestOutputHelper output)
+{
+    /// <summary>The live heap after a full, blocking, compacting collection: what is still held, without garbage waiting to be collected.</summary>
+    private static long Live()
+    {
+        GC.Collect(2, GCCollectionMode.Forced, blocking: true, compacting: true);
+        GC.WaitForPendingFinalizers();
+        GC.Collect(2, GCCollectionMode.Forced, blocking: true, compacting: true);
+        return GC.GetTotalMemory(forceFullCollection: false);
+    }
+
+    /// <summary>The most live heap held above the start while rows stream through a writer and a reader, and the bytes this thread allocated.</summary>
+    private static (long Peak, long Allocated) Stream(string path, int rows)
+    {
+        int every = rows / 4;
+        long start = Live();
+        long allocated = GC.GetAllocatedBytesForCurrentThread();
+        long peak = 0;
+        using (SheetWriter writer = SheetWriter.Create(path))
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                writer.WriteRow(i, "row text", i * 0.5);
+                if (i % every == every - 1)
+                {
+                    peak = Math.Max(peak, Live() - start);
+                }
+            }
+        }
+
+        using (SheetReader reader = SheetReader.Open(path))
+        {
+            while (reader.Read())
+            {
+                if (reader.Row % every == every - 1)
+                {
+                    peak = Math.Max(peak, Live() - start);
+                }
+            }
+        }
+
+        return (peak, GC.GetAllocatedBytesForCurrentThread() - allocated);
+    }
 
     [Fact]
     [Trait("Category", "Slow")]
     public void MemoryStaysFlatAsRowsGrow()
     {
         string path = Path.Combine(Directory.CreateTempSubdirectory("egap-stream").FullName, "rows.xlsx");
-        long Peak(int rows)
-        {
-            GC.Collect();
-            long start = GC.GetTotalMemory(true);
-            long peak = 0;
-            using (SheetWriter writer = SheetWriter.Create(path))
-            {
-                for (int i = 0; i < rows; i++)
-                {
-                    writer.WriteRow(i, "row text", i * 0.5);
-                    if (i % 5_000 == 0)
-                    {
-                        peak = Math.Max(peak, GC.GetTotalMemory(false) - start);
-                    }
-                }
-            }
-
-            using (SheetReader reader = SheetReader.Open(path))
-            {
-                while (reader.Read())
-                {
-                    if (reader.Row % 5_000 == 0)
-                    {
-                        peak = Math.Max(peak, GC.GetTotalMemory(false) - start);
-                    }
-                }
-            }
-
-            return peak;
-        }
-
         try
         {
-            Peak(20_000);
-            long small = Peak(20_000);
-            long large = Peak(400_000);
-            // Twenty times the rows; what the writer and reader hold stays within the garbage collector's slack.
-            Assert.True(large < small + (32L * 1024 * 1024), $"{small} bytes for 20,000 rows, {large} for 400,000");
+            Stream(path, 20_000);
+            (long small, long smallAllocated) = Stream(path, 20_000);
+            (long large, long largeAllocated) = Stream(path, 400_000);
+            output.WriteLine($"Held: {small:N0} bytes for 20,000 rows, {large:N0} for 400,000. Allocated: {smallAllocated:N0} and {largeAllocated:N0}.");
+
+            // Twenty times the rows: what the writer and reader hold stays the same, give or take buffers that grow once.
+            Assert.True(large < small + (4L * 1024 * 1024), $"{small} bytes held for 20,000 rows, {large} for 400,000");
+
+            // And each row costs what it did: nothing allocated grows with the rows already streamed.
+            double perSmallRow = smallAllocated / 20_000.0, perLargeRow = largeAllocated / 400_000.0;
+            Assert.True(perLargeRow < perSmallRow * 1.25, $"{perSmallRow:F0} bytes allocated per row for 20,000 rows, {perLargeRow:F0} for 400,000");
         }
         finally
         {
