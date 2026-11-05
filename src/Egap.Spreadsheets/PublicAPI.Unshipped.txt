@@ -459,6 +459,12 @@ Egap.Spreadsheets.FormulaException.FormulaException(string! message) -> void
 Egap.Spreadsheets.FormulaException.FormulaException(string! message, string! formula, int position) -> void
 Egap.Spreadsheets.FormulaException.FormulaException(string! message, System.Exception! innerException) -> void
 Egap.Spreadsheets.FormulaException.Position.get -> int
+Egap.Spreadsheets.FunctionArgument
+Egap.Spreadsheets.FunctionArgument.IsMissing.get -> bool
+Egap.Spreadsheets.FunctionArgument.IsReference.get -> bool
+Egap.Spreadsheets.FunctionArgument.Value.get -> Egap.Spreadsheets.CellValue
+Egap.Spreadsheets.FunctionArgument.Values.get -> Egap.Spreadsheets.CellValue[,]!
+Egap.Spreadsheets.FunctionRegistry
 Egap.Spreadsheets.Hyperlink
 Egap.Spreadsheets.Hyperlink.Address.get -> string?
 Egap.Spreadsheets.Hyperlink.Address.set -> void
@@ -919,6 +925,11 @@ static Egap.Spreadsheets.ConditionalFormatRule.Expression(string! formula, Egap.
 static Egap.Spreadsheets.ConditionalFormatRule.IconSet(string! iconSet = "3TrafficLights1") -> Egap.Spreadsheets.ConditionalFormatRule!
 static Egap.Spreadsheets.DrawingPosition.operator !=(Egap.Spreadsheets.DrawingPosition left, Egap.Spreadsheets.DrawingPosition right) -> bool
 static Egap.Spreadsheets.DrawingPosition.operator ==(Egap.Spreadsheets.DrawingPosition left, Egap.Spreadsheets.DrawingPosition right) -> bool
+static Egap.Spreadsheets.FunctionRegistry.Add(string! name, int minArguments, int maxArguments, System.Func<System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.FunctionArgument!>!, Egap.Spreadsheets.CellValue>! function) -> void
+static Egap.Spreadsheets.FunctionRegistry.AddedFunctions.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static Egap.Spreadsheets.FunctionRegistry.BuiltInFunctions.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static Egap.Spreadsheets.FunctionRegistry.Contains(string! name) -> bool
+static Egap.Spreadsheets.FunctionRegistry.Remove(string! name) -> bool
 static Egap.Spreadsheets.NumberFormatCode.General.get -> Egap.Spreadsheets.NumberFormatCode!
 static Egap.Spreadsheets.NumberFormatCode.Parse(string! code) -> Egap.Spreadsheets.NumberFormatCode!
 static Egap.Spreadsheets.RangeAddress.operator !=(Egap.Spreadsheets.RangeAddress left, Egap.Spreadsheets.RangeAddress right) -> bool

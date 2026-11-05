@@ -20,4 +20,8 @@
     <ProjectReference Include="..\..\src\Egap.Spreadsheets\Egap.Spreadsheets.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Oracle/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
