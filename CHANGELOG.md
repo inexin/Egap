@@ -21,6 +21,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- RTF loading allocates about 7 % less, at the same speed and with the same result: the reader now sets Word's
+  properties through one internal layer that the DOC and DOCX readers will share.
 - `Document.Identify` reports Excel workbooks (XLSX, XLSM, XLTX and XLTM) as the new `DocumentFormatKind.Xlsx`, by a
   package part under `xl/` or by the file's extension, where it said DOCX before. Loading one as a document throws a
   `NotSupportedException` that says it is a spreadsheet.
