@@ -19,7 +19,7 @@ namespace Egap.Spreadsheets;
 /// sheet["B1"].Value = 42;
 /// </code>
 /// </example>
-public sealed class Workbook
+public sealed partial class Workbook
 {
     private Workbook(StyleTable styles)
     {
@@ -205,7 +205,7 @@ public sealed class Workbook
         Printing.SheetPdf.Save(this, VisibleSheets, null, stream, options);
     }
 
-    private IEnumerable<Worksheet> VisibleSheets => Worksheets.Where(s => s.Visibility == SheetVisibility.Visible);
+    internal IEnumerable<Worksheet> VisibleSheets => Worksheets.Where(s => s.Visibility == SheetVisibility.Visible);
 
     internal static bool IsCsv(string path) => Path.GetExtension(path).ToUpperInvariant() is ".CSV" or ".TSV" or ".TAB";
 

@@ -21,6 +21,8 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["xlsx"] = Xlsx,
     ["formula"] = Formula,
     ["headerfooter"] = HeaderFooter,
+    ["document"] = AsDocument,
+    ["tables"] = FromTables,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -69,6 +71,43 @@ if (args is [string stdinTarget])
 
 Console.Error.WriteLine($"Usage: Egap.Spreadsheets.Fuzz <target> [file] | mutate <target> <seconds> <seeds> <findings> | replay <target> <folder>. Targets: {string.Join(", ", targets.Keys)}.");
 return 2;
+
+// An XLSX package read as a document: Document.Load refuses it only with a DocumentException, or for a format that isn't registered, a NotSupportedException.
+static void AsDocument(Stream input)
+{
+    SpreadsheetFormat.Register();
+    byte[] bytes = Bytes(input);
+    using MemoryStream stream = new(bytes, writable: false);
+    Document document;
+    try
+    {
+        document = Document.Load(stream);
+    }
+    catch (Exception error) when (error is DocumentException or NotSupportedException)
+    {
+        // What isn't a package reads as a format this harness has not registered.
+        return;
+    }
+
+    _ = document.Sections.Sum(section => section.Body.Tables.Sum(table => table.Rows.Count));
+    Workbook.FromTables(document);
+}
+
+// Any bytes read as CSV, shown as a document and put back on sheets; nothing but CSV's own refusal may throw.
+static void FromTables(Stream input)
+{
+    Workbook book;
+    try
+    {
+        book = Workbook.LoadCsv(input);
+    }
+    catch (InvalidDataException)
+    {
+        return;
+    }
+
+    Workbook.FromTables(book.ToDocument());
+}
 
 static byte[] Bytes(Stream input)
 {

@@ -22,13 +22,15 @@ TYPE = re.compile(r"(?:(?:public|internal|sealed|static|abstract|partial|file)\s
 
 def main() -> int:
     # Pages that use Egap.Spreadsheets build in a file of their own: its Cell would clash with Egap.Documents' Cell in a file
-    # that imports both namespaces.
+    # that imports both namespaces. A page about both uses neither Cell, and gets a file of its own too.
     groups: dict[str, tuple[set[str], list[str], list[str]]] = {}
     for page in sorted((ROOT / "docs").rglob("*.md")):
         if "_site" in page.parts:
             continue
         blocks = re.findall(r"```csharp\n(.*?)```", page.read_text(encoding="utf-8"), re.S)
         group = "Spreadsheets" if any("using Egap.Spreadsheets;" in block for block in blocks) else "Snippets"
+        if group == "Spreadsheets" and any("using Egap.Documents;" in block for block in blocks):
+            group = "SpreadsheetsAndDocuments"
         usings, methods, types = groups.setdefault(group, (set(), [], []))
         for index, block in enumerate(blocks):
             body = []

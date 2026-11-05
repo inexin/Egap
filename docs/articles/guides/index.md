@@ -37,6 +37,7 @@ One document model for DOCX, DOC, RTF, OpenDocument Text, HTML, Markdown and pla
 Workbooks built and edited from code.
 
 - [Spreadsheets](spreadsheets.md): workbooks, sheets, cells, ranges, formulas and cell styles.
+- [Spreadsheets and documents](spreadsheets-and-documents.md): XLSX and CSV as documents, and the tables of documents and PDFs as sheets.
 
 ## Document formats
 

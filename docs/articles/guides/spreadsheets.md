@@ -457,6 +457,11 @@ culture's list separator unless you name one (a semicolon where the comma is the
 `Workbook.Load` and `Workbook.Save` take `.csv`, `.tsv` and `.tab` paths too, with `WorkbookLoadOptions.Csv` and
 `WorkbookSaveOptions.Csv` for the options; saving writes the first visible sheet.
 
+## Spreadsheets as documents
+
+`Document.Load` reads XLSX and CSV, and `Workbook.FromTables` puts the tables of a document or a PDF on sheets: see
+[Spreadsheets and documents](spreadsheets-and-documents.md).
+
 ## Tables, validation and conditional formatting
 
 `sheet.Tables` holds Excel tables: a named range with a header row, filter buttons, a style and an optional totals row,

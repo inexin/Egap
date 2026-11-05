@@ -11,7 +11,8 @@ public sealed partial class Document
     /// <summary>
     /// Reads a file in any format Egap reads, telling them apart by their bytes and, for text, by the file's extension (see
     /// <see cref="Identify(Stream, string?)"/>). DOCX, DOC, RTF, ODT, PDF, plain text and Docling JSON are built in; HTML, MHTML, EPUB and
-    /// Markdown need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>. An
+    /// Markdown need their add-on package and its <c>Register()</c> call, such as <c>MarkdownFormat.Register()</c>, and XLSX and
+    /// CSV need Egap.Spreadsheets and <c>SpreadsheetFormat.Register()</c>. An
     /// encrypted Word file needs its password: see <see cref="Load(string, DocumentLoadOptions?)"/>.
     /// </summary>
     /// <exception cref="DocumentException">The file is not one Egap can read.</exception>
@@ -256,6 +257,11 @@ public sealed partial class Document
             });
         }
 
+        if (options is not null && DocumentFormatRegistry.OptionsReaderFor(kind) is { } withOptions)
+        {
+            return withOptions(bytes, options, out warnings);
+        }
+
         return DocumentFormatRegistry.ReaderFor(kind)(bytes, out warnings);
     }
 
@@ -299,7 +305,7 @@ public sealed partial class Document
         }
 
         DocumentFormatKind named = KindOfExtension(extension);
-        if (named is DocumentFormatKind.Html or DocumentFormatKind.Markdown or DocumentFormatKind.Text or DocumentFormatKind.Mhtml)
+        if (named is DocumentFormatKind.Html or DocumentFormatKind.Markdown or DocumentFormatKind.Text or DocumentFormatKind.Mhtml or DocumentFormatKind.Csv)
         {
             return named;
         }
@@ -342,6 +348,7 @@ public sealed partial class Document
         ".DOC" or ".DOT" => DocumentFormatKind.Doc,
         ".ODT" or ".OTT" or ".FODT" or ".FOTT" => DocumentFormatKind.Odt,
         ".XLSX" or ".XLSM" or ".XLTX" or ".XLTM" => DocumentFormatKind.Xlsx,
+        ".CSV" or ".TSV" or ".TAB" => DocumentFormatKind.Csv,
         _ => DocumentFormatKind.Unknown,
     };
 

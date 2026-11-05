@@ -26,6 +26,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- `Document.Identify` knows CSV (`DocumentFormatKind.Csv`) by its `.csv`, `.tsv` or `.tab` extension. Loading it or an Excel
+  workbook now needs `SpreadsheetFormat.Register()` from Egap.Spreadsheets; without it the error names the package.
 - RTF loading allocates about 7 % less, at the same speed and with the same result: the reader now sets Word's
   properties through one internal layer that the DOC and DOCX readers will share.
 - The DOCX reader sets Word's properties through the same layer, with the same result on every file we test with. Values
@@ -201,6 +203,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   for the titles, figures for pictures), PDF/A or PDF/UA.
 - `PageSetup.PrintArea`, `PrintTitleRows` and `PrintTitleColumns` read and write the sheet's print names, and `RowBreaks`
   and `ColumnBreaks` (`PageBreakCollection`) hold its manual page breaks, read from and saved to XLSX.
+- `SpreadsheetFormat.Register()` lets `Document.Load` read XLSX and CSV: a section per visible sheet with its name as a
+  heading and a table of its values as displayed. `book.ToDocument()` does the same for a workbook in hand.
+- `Workbook.FromTables` puts the tables of a document, or those `PdfLayoutAnalyzer` finds in a PDF, on sheets, with numbers
+  and dates typed by `TableImportOptions`; a PDF table that runs on across pages is one sheet.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 
