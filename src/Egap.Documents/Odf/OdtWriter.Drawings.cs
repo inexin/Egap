@@ -310,6 +310,7 @@ internal sealed partial class OdtWriter
         if (shape.TextBox is { } text)
         {
             WriteStory(text.Blocks, element);
+            ParagraphsOnly(element);
         }
 
         if (name == "custom-shape")
@@ -356,6 +357,22 @@ internal sealed partial class OdtWriter
         return frame;
     }
 
+    /// <summary>
+    /// Headings as paragraphs in a shape's or comment's text, which holds paragraphs and lists only (ODF 1.3 Part 3, 10.3.2
+    /// and 14.1); the heading's style still names it.
+    /// </summary>
+    private static void ParagraphsOnly(XElement container)
+    {
+        foreach (XElement heading in container.Descendants(TextNs + "h").Where(h => !h.Ancestors().Any(a => a.Name == DrawNs + "text-box" && a != container)).ToList())
+        {
+            heading.Name = TextNs + "p";
+            foreach (string attribute in (string[])["outline-level", "is-list-header", "restart-numbering", "start-value"])
+            {
+                heading.Attribute(TextNs + attribute)?.Remove();
+            }
+        }
+    }
+
     // ---- Kept markup ----
 
     /// <summary>
@@ -377,6 +394,48 @@ internal sealed partial class OdtWriter
                 && source.Content.GetPrefixOfNamespace(ns) is { } prefix)
             {
                 copy.Add(new XAttribute(XNamespace.Xmlns + prefix, ns.NamespaceName));
+            }
+        }
+
+        // Prefixes in values too: a form control's "ooo:com.sun.star.form.component.Form" is a QName.
+        foreach (XAttribute attribute in copy.DescendantsAndSelf().SelectMany(e => e.Attributes()).Where(a => !a.IsNamespaceDeclaration).ToList())
+        {
+            int colon = attribute.Value.IndexOf(':', StringComparison.Ordinal);
+            string prefix = colon > 0 ? attribute.Value[..colon] : "";
+            if (prefix.Length > 0 && XmlConvert.IsStartNCNameChar(prefix[0]) && prefix.All(XmlConvert.IsNCNameChar)
+                && copy.GetNamespaceOfPrefix(prefix) is null && source.Content.GetNamespaceOfPrefix(prefix) is { } valueNs
+                && !Declared.Contains(valueNs.NamespaceName))
+            {
+                copy.SetAttributeValue(XNamespace.Xmlns + prefix, valueNs.NamespaceName);
+            }
+        }
+
+        // An embedded document says the version of the file it goes in; ODF 1.4's handle positions go below 1.4.
+        foreach (XElement e in copy.DescendantsAndSelf())
+        {
+            if (e.Name.Namespace == OfficeNs && e.Name.LocalName.StartsWith("document", StringComparison.Ordinal) && e.Attribute(OfficeNs + "version") is { } inner)
+            {
+                inner.Value = version;
+            }
+
+            if (version != "1.4" && e.Name == DrawNs + "handle")
+            {
+                e.Attribute(DrawNs + "handle-position-x")?.Remove();
+                e.Attribute(DrawNs + "handle-position-y")?.Remove();
+            }
+
+            if (version != "1.4")
+            {
+                e.Attribute(FormNs + "input-required")?.Remove();
+            }
+        }
+
+        // ODF 1.4 lets a shape's text hold headings; before it, they are paragraphs.
+        if (version != "1.4")
+        {
+            foreach (XElement shape in copy.DescendantsAndSelf().Where(e => e.Name.Namespace == DrawNs && e.Name != DrawNs + "text-box" && e.Elements(TextNs + "h").Any()).ToList())
+            {
+                ParagraphsOnly(shape);
             }
         }
 

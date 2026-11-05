@@ -29,9 +29,11 @@ internal sealed partial class OdtWriter
                 return name;
             }
 
-            int count = counts.GetValueOrDefault(family) + 1;
-            counts[family] = count;
-            name = prefix + FamilyPrefix(family) + count.ToString(CultureInfo.InvariantCulture);
+            // Counted by prefix: date, time and number styles share theirs.
+            string start = FamilyPrefix(family);
+            int count = counts.GetValueOrDefault(start) + 1;
+            counts[start] = count;
+            name = prefix + start + count.ToString(CultureInfo.InvariantCulture);
             style.SetAttributeValue(StyleNs + "name", name);
             Elements.Add(style);
             byKey[key] = name;
@@ -412,7 +414,8 @@ internal sealed partial class OdtWriter
 
             if (level.StartAt != 1)
             {
-                element.Add(new XAttribute(TextNs + "start-value", Int(Math.Max(0, level.StartAt))));
+                // A level that counts from 0 needs ODF 1.4; before it, levels count from 1 at the least.
+                element.Add(new XAttribute(TextNs + "start-value", Int(Math.Max(version == "1.4" ? 0 : 1, level.StartAt))));
             }
         }
 

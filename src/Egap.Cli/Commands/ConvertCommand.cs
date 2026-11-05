@@ -29,7 +29,7 @@ internal static class ConvertCommand
         InputOptions inputs = new("HTML, Markdown, DOCX, RTF, text, image or PDF files, globs (*, ?, **), or folders with --recursive.");
         OutputOptions output = new(inPlace: false);
         SaveOptions save = new();
-        SecretOptions password = new("password", "password that opens encrypted PDF and DOCX inputs");
+        SecretOptions password = new("password", "password that opens encrypted PDF, DOCX and ODT inputs");
         SecretOptions savePassword = new("save-password", "password that encrypts DOCX, ODT and OTT outputs");
         Option<string?> to = new("--to") { Description = $"The output format when -o does not say: {string.Join(", ", Targets)}.", HelpName = "format" };
         Option<string?> pageSize = new("--page-size") { Description = "To PDF: the page size, A3, A4, A5, Letter, Legal, Tabloid or WxH such as 210mmx297mm.", HelpName = "size" };

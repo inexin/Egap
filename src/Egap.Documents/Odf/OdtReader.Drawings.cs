@@ -376,6 +376,13 @@ internal sealed partial class OdtReader
         string verticalPos = Graphic(StyleNs, "vertical-pos") ?? "from-top";
         double x = OdfUnits.Length(element.Attr(SvgNs, "x")) ?? 0;
         double y = OdfUnits.Length(element.Attr(SvgNs, "y")) ?? 0;
+        if (element.Name == DrawNs + "line")
+        {
+            // A line has its two ends, not a position: it sits at their top left corner.
+            x = Math.Min(OdfUnits.Length(element.Attr(SvgNs, "x1")) ?? 0, OdfUnits.Length(element.Attr(SvgNs, "x2")) ?? 0);
+            y = Math.Min(OdfUnits.Length(element.Attr(SvgNs, "y1")) ?? 0, OdfUnits.Length(element.Attr(SvgNs, "y2")) ?? 0);
+        }
+
         if (element.Attr(DrawNs, "transform") is { } transform && Translation(transform) is { } moved)
         {
             (x, y) = moved;

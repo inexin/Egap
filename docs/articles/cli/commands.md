@@ -35,7 +35,7 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, RTF, te
 | `--jobs <count>`, `-j` | How many files to work on at once; 0 (the default) for one per processor. |
 | `--fail-fast` | Stop at the first file that fails. |
 | `--output <path>`, `-o` | Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output. |
-| `--to <format>` | The output format when -o does not say: pdf, docx, rtf, html, md, txt. |
+| `--to <format>` | The output format when -o does not say: pdf, docx, odt, ott, fodt, fott, rtf, html, md, txt. |
 | `--page-size <size>` | To PDF: the page size, A3, A4, A5, Letter, Legal, Tabloid or WxH such as 210mmx297mm. |
 | `--landscape` | To PDF: turn the page size to landscape. |
 | `--margins <lengths>` | To PDF: page margins, one length for all sides, two (top and bottom, then the sides) or four (top, right, bottom, left), such as 2cm or 20mm,15mm. |
@@ -46,7 +46,7 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, RTF, te
 | `--toc <pages|no-pages>` | To PDF: a table of contents at the start, with page numbers (pages) or without (no-pages). |
 | `--pdfa <level>` | To PDF: write PDF/A, one of 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4 and 4f. |
 | `--tagged` | To PDF: write a tagged PDF with a structure tree, for accessibility. |
-| `--set <key=value>` | A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. RTF: unknown-groups. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf). |
+| `--set <key=value>` | A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. ODT, OTT, FODT and FOTT: version (1.2, 1.3, 1.4), encryption (aes-cbc, aes-gcm), unknown-markup. RTF: unknown-groups. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf). |
 | `--base-dir <folder>` | HTML and Markdown: the folder images and style sheets are read from; the input's folder by default. |
 | `--allow-path <folder>` | HTML: a further folder resources may come from; give it once per folder. |
 | `--allow-network` | HTML: fetch http and https resources (10 s and 50 MB each at most). |
@@ -60,9 +60,9 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, RTF, te
 | `--password <text>` | The password that opens encrypted PDF and DOCX inputs. Prefer --password-env or --password-file: a value here lands in shell history. |
 | `--password-env <NAME>` | Read the password that opens encrypted PDF and DOCX inputs from this environment variable. |
 | `--password-file <path>` | Read the password that opens encrypted PDF and DOCX inputs from the first line of this file. |
-| `--save-password <text>` | The password that encrypts DOCX outputs. Prefer --save-password-env or --save-password-file: a value here lands in shell history. |
-| `--save-password-env <NAME>` | Read the password that encrypts DOCX outputs from this environment variable. |
-| `--save-password-file <path>` | Read the password that encrypts DOCX outputs from the first line of this file. |
+| `--save-password <text>` | The password that encrypts DOCX, ODT and OTT outputs. Prefer --save-password-env or --save-password-file: a value here lands in shell history. |
+| `--save-password-env <NAME>` | Read the password that encrypts DOCX, ODT and OTT outputs from this environment variable. |
+| `--save-password-file <path>` | Read the password that encrypts DOCX, ODT and OTT outputs from the first line of this file. |
 
 ## egap text
 

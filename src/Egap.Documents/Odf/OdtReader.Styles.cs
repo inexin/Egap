@@ -76,6 +76,10 @@ internal sealed partial class OdtReader
                 {
                     Add(commonStyles, element, automatic: false);
                 }
+                else if (element.Name.Namespace == NumberNs && element.Attr(StyleNs, "name") is { } data)
+                {
+                    commonStyles.TryAdd((DataFamily, data), new OdfStyle(element, data, DataFamily, automatic: false));
+                }
                 else if (element.Name == StyleNs + "default-style" && element.Attr(StyleNs, "family") is { } family)
                 {
                     defaultStyles.TryAdd(family, element);
@@ -135,6 +139,10 @@ internal sealed partial class OdtReader
             {
                 Add(styles, element, automatic: true);
             }
+            else if (element.Name.Namespace == NumberNs && element.Attr(StyleNs, "name") is { } data)
+            {
+                styles.TryAdd((DataFamily, data), new OdfStyle(element, data, DataFamily, automatic: true));
+            }
             else if (element.Name == TextNs + "list-style" && element.Attr(StyleNs, "name") is { } list)
             {
                 lists.TryAdd(list, element);
@@ -145,6 +153,9 @@ internal sealed partial class OdtReader
             }
         }
     }
+
+    /// <summary>The family data styles (number, date and time styles) are kept under, which no style:style has.</summary>
+    private const string DataFamily = "#data";
 
     private static void Add(Dictionary<(string, string), OdfStyle> styles, XElement element, bool automatic)
     {

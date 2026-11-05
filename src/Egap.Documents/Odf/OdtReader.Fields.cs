@@ -173,6 +173,14 @@ internal sealed partial class OdtReader
             return false;
         }
 
+        if (name is "date" or "time" or "creation-date" or "creation-time" or "modification-date" or "print-date"
+            && Find(DataFamily, element.Attr(StyleNs, "data-style-name")) is { } data && OdfDatePictures.Picture(data.Element) is { } picture)
+        {
+            // The data style's picture, in place of the one a time field otherwise gets.
+            int at = code.IndexOf(" \\@", StringComparison.Ordinal);
+            code = (at < 0 ? code : code[..at]) + " \\@ " + '"' + picture + '"';
+        }
+
         string? bookmark = name == "sequence" ? element.Attr(TextNs, "ref-name") : null;
         if (bookmark is not null)
         {

@@ -298,9 +298,11 @@ internal sealed partial class OdtWriter
         {
             LeaveDeletion();
             PopTo(0);
-            if (Element.DescendantNodes().LastOrDefault() is XText { Value: [.., ' '] } last && last.Parent?.Name != TextNs + "s")
+            if (Element.DescendantNodes().LastOrDefault() is XText { Value: [.., ' '] } last
+                && last.Ancestors().TakeWhile(a => a != Element).All(a => a.Name == TextNs + "span" || a.Name == TextNs + "a"))
             {
-                // A space at the end of a paragraph is white space ODF drops; text:s keeps it.
+                // A space at the end of a paragraph is white space ODF drops; text:s keeps it. Fields and kept markup hold
+                // text only, so a space at the end of theirs stays.
                 last.Value = last.Value[..^1];
                 last.AddAfterSelf(new XElement(TextNs + "s"));
                 if (last.Value.Length == 0)
@@ -622,6 +624,7 @@ internal sealed partial class OdtWriter
 
         bool saved = allowChanges;
         WriteStory(comment.Story.Blocks, annotation);
+        ParagraphsOnly(annotation);
         allowChanges = saved;
         return annotation;
     }
@@ -783,15 +786,16 @@ internal sealed partial class OdtWriter
             _ => null,
         };
         string? argument = code.Arguments.FirstOrDefault();
+        string? picture = code.Switch("\\@");
         XElement? element = code.Instruction switch
         {
             "PAGE" => Field("page-number", new XAttribute(TextNs + "select-page", "current"), NumFormatAttribute(number)),
             "NUMPAGES" => Field("page-count", NumFormatAttribute(number)),
-            "DATE" => Field("date"),
-            "TIME" => Field("time"),
-            "CREATEDATE" => Field(IsTime(code.Switch("\\@")) ? "creation-time" : "creation-date"),
-            "SAVEDATE" => Field("modification-date"),
-            "PRINTDATE" => Field("print-date"),
+            "DATE" => Field(OdfDatePictures.IsTime(picture) ? "time" : "date", DataStyle(picture)),
+            "TIME" => Field("time", DataStyle(picture)),
+            "CREATEDATE" => Field(OdfDatePictures.IsTime(picture) ? "creation-time" : "creation-date", DataStyle(picture)),
+            "SAVEDATE" => Field("modification-date", DataStyle(picture)),
+            "PRINTDATE" => Field("print-date", DataStyle(picture)),
             "TITLE" => Field("title"),
             "SUBJECT" => Field("subject"),
             "COMMENTS" => Field("description"),
@@ -827,8 +831,14 @@ internal sealed partial class OdtWriter
         static XElement Field(string name, params object?[] attributes) => new(TextNs + name, attributes);
 
         static XAttribute? NumFormatAttribute(string? number) => number is null ? null : new XAttribute(StyleNs + "num-format", number);
+    }
 
-        static bool IsTime(string? picture) => picture is { Length: > 0 } && !picture.AsSpan().ContainsAny("dMy") && picture.AsSpan().ContainsAny("Hhms");
+    /// <summary>The data style attribute for a date or time picture, its style written once; null without a picture.</summary>
+    private XAttribute? DataStyle(string? picture)
+    {
+        return picture is { Length: > 0 } && OdfDatePictures.Style(picture) is { } style
+            ? new XAttribute(StyleNs + "data-style-name", scope.Add(style, style.Name.LocalName))
+            : null;
     }
 
     /// <summary>A reference to a bookmark, or to a note when the bookmark is the one around its reference.</summary>

@@ -836,8 +836,9 @@ internal sealed partial class OdtReader
             return;
         }
 
-        // Markup the reader does not know: its text is read; empty markup is kept for the writer.
-        if (element.Nodes().Any())
+        // Markup the reader does not know: its text is read; markup without text (LibreOffice's field marks with their
+        // parameters, say) is kept whole for the writer.
+        if (element.DescendantNodes().Any(n => n is XText || (n is XElement e && e.Name.Namespace == TextNs)))
         {
             ReadInlines(element, context, format, characterStyle, size);
         }

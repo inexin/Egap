@@ -17,6 +17,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   PDF, and `convert --save-password` encrypts a DOCX output. A document's editing restriction comes through.
 - `convert` reads and writes RTF: `.rtf` to PDF, DOCX, HTML, Markdown or text, any of those (and PDF) to `.rtf`, and
   `--to rtf`. RTF takes `--set unknown-groups=false` to leave out the unknown `\*` groups an RTF input kept.
+- `convert` writes OpenDocument Text: `.odt`, `.ott`, `.fodt` and `.fott`, from any input it reads. ODT takes
+  `--set version=1.2|1.3|1.4`, `--set encryption=aes-cbc|aes-gcm` and `--set unknown-markup=false`, and
+  `--save-password` encrypts an ODT or OTT output.
 - Built on System.CommandLine 2.0.14 and Egami.Cli.Host 1.4.0.
 
 ## Egap.Documents 2.3.0 (unreleased)
@@ -70,6 +73,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   test vectors. A missing or wrong password throws `DocumentPasswordException`, and `Document.Identify` reports an
   encrypted ODT as `DocumentFormatKind.Encrypted`. Key derivations past a sane cost (PBKDF2 iterations, Argon2id memory
   and passes) throw a `DocumentLimitException` rather than run for minutes.
+- OpenDocument Text writing, built in: `OdtFormat.Save` writes a document to ODT, OTT, FODT or FOTT, ODF 1.3 by default,
+  1.2 or 1.4 with `OdtSaveOptions.Version`, and `Document.Save` writes the four extensions. Styles, lists, headings,
+  sections as master pages with their headers and footers, tables with spans, notes, comments, bookmarks, links, fields,
+  tracked insertions and deletions, pictures, text boxes and shapes are written as the reader reads them. A document read
+  from ODT writes its unknown markup, embedded objects and settings back (`KeepUnknownMarkup`). `OdtSaveOptions.Password`
+  encrypts the package with AES-256 in CBC mode, or in GCM mode as LibreOffice 24.2 and later write it.
+- A document's protection in ODT: read-only and form protection read from and written to LibreOffice's `LoadReadonly`
+  and `ProtectForm` settings, form protection's protected section, and the editable ranges as LibreOffice's permission
+  bookmarks. Egap keeps the protection's password hash in a settings entry of its own, so it survives a round trip.
 - Editing restrictions: `Document.Protection` reads and writes Word's *Restrict Editing* (read only, comments, tracked
   changes, forms) with its password hash, in DOCX and RTF. `Protect(kind, password)` hashes the password as Word does
   (SHA-512, a random salt, 100,000 spins), `Unprotect()` removes the restriction and `Verify(password)` checks a password,
