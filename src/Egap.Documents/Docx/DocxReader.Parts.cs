@@ -392,6 +392,7 @@ internal sealed partial class DocxReader
         }
 
         DocxCompatibility.Read(root, settings);
+        DocxProtection.Read(root, document.Protection);
     }
 
     private void ReadProperties()

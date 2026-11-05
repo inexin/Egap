@@ -525,6 +525,7 @@ internal sealed partial class RtfWriter
         InfoDate("creatim", properties.Created);
         InfoDate("revtim", properties.Saved);
         InfoDate("printim", properties.Printed);
+        WritePasswordHash();
         Close();
         if (properties.CustomNames.Count > 0)
         {
@@ -643,6 +644,7 @@ internal sealed partial class RtfWriter
             Word("noindnmbrts");
         }
 
+        WriteProtectionWords();
         output.AppendLine();
 
         static string NoteNumbers(NumberStyle style) => style switch

@@ -313,7 +313,7 @@ internal sealed partial class DocxReader
                 }
 
                 break;
-            case "bookmarkStart" or "bookmarkEnd" or "commentRangeStart" or "commentRangeEnd":
+            case "bookmarkStart" or "bookmarkEnd" or "commentRangeStart" or "commentRangeEnd" or "permStart" or "permEnd":
                 if (ReadMark(element) is { } mark)
                 {
                     DocxExtension.Of(mark).Hoisted = true;
@@ -322,7 +322,7 @@ internal sealed partial class DocxReader
 
                 pendingRaw.Add(element);
                 break;
-            case "proofErr" or "permStart" or "permEnd" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
+            case "proofErr" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
                 or "customXmlInsRangeStart" or "customXmlInsRangeEnd" or "customXmlDelRangeStart" or "customXmlDelRangeEnd"
                 or "customXmlMoveFromRangeStart" or "customXmlMoveFromRangeEnd" or "customXmlMoveToRangeStart" or "customXmlMoveToRangeEnd":
                 pendingRaw.Add(element);
@@ -766,7 +766,7 @@ internal sealed partial class DocxReader
                 }
 
                 break;
-            case "bookmarkStart" or "bookmarkEnd" or "commentRangeStart" or "commentRangeEnd":
+            case "bookmarkStart" or "bookmarkEnd" or "commentRangeStart" or "commentRangeEnd" or "permStart" or "permEnd":
                 if (ReadMark(element) is { } mark)
                 {
                     Add(inlines, mark, state, null);
@@ -775,7 +775,7 @@ internal sealed partial class DocxReader
                 break;
             case "pPr" or "tbl":
                 break;
-            case "proofErr" or "permStart" or "permEnd" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
+            case "proofErr" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
                 or "customXmlInsRangeStart" or "customXmlInsRangeEnd" or "customXmlDelRangeStart" or "customXmlDelRangeEnd"
                 or "customXmlMoveFromRangeStart" or "customXmlMoveFromRangeEnd" or "customXmlMoveToRangeStart" or "customXmlMoveToRangeEnd":
                 // Range markup directly in the paragraph is kept with its place, for a paragraph written from the model.
@@ -877,6 +877,10 @@ internal sealed partial class DocxReader
                 return DocxUnits.Int(id) is int startId ? new CommentRangeStart(document, startId) : null;
             case "commentRangeEnd":
                 return DocxUnits.Int(id) is int endId ? new CommentRangeEnd(document, endId) : null;
+            case "permStart":
+                return DocxProtection.ReadStart(document, element);
+            case "permEnd":
+                return DocxUnits.Int(id) is int permId ? new EditableRangeEnd(document, permId) : null;
             default:
                 return null;
         }

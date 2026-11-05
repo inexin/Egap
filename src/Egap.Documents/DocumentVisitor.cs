@@ -164,6 +164,18 @@ public abstract class DocumentVisitor
         return VisitorAction.Continue;
     }
 
+    /// <summary>The start of an editable range.</summary>
+    public virtual VisitorAction VisitEditableRangeStart(EditableRangeStart rangeStart)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>The end of an editable range.</summary>
+    public virtual VisitorAction VisitEditableRangeEnd(EditableRangeEnd rangeEnd)
+    {
+        return VisitorAction.Continue;
+    }
+
     /// <summary>Entering a hyperlink.</summary>
     public virtual VisitorAction VisitHyperlinkStart(Hyperlink hyperlink)
     {

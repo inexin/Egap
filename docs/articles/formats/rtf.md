@@ -91,6 +91,14 @@ something out:
 - Islands from other formats (HTML and DOCX ones) are written as their picture, or their text.
 - Semicolons and tabs in font, style, list and author names are left out: a semicolon ends a table entry.
 
+## Editing restrictions
+
+An RTF file keeps Word's editing restriction too (`\readprot`, `\annotprot`, `\revprot` and `\formprot`, with the
+password hash in `{\*\passwordhash}`), and its editable ranges (`{\*\protstart}` and `{\*\protend}`, with the people they
+name in `{\*\protusertbl}`). Both read into `Document.Protection` and the editable range marks and are written back as
+Word writes them, so a restriction and its password survive RTF to DOCX and back. The
+[DOCX page](docx.md#editing-restrictions) shows the API.
+
 ## RTF inside DOCX
 
 A DOCX file can hold another document as an embedded part, placed with a `w:altChunk` element; Word imports the part when

@@ -230,6 +230,28 @@ public sealed partial class DocumentBuilder
         return Put(new BookmarkEnd(Document, name));
     }
 
+    /// <summary>
+    /// Writes the start of a range that stays editable for <paramref name="group"/> while the document is protected, with an
+    /// id no other editable range in the document has; end it with <see cref="EndEditableRange"/>.
+    /// </summary>
+    public EditableRangeStart StartEditableRange(EditorGroup group = EditorGroup.Everyone)
+    {
+        return Put(new EditableRangeStart(Document, NextEditableRangeId(), group));
+    }
+
+    /// <summary>Writes the start of a range that stays editable for the person named <paramref name="editor"/>.</summary>
+    public EditableRangeStart StartEditableRange(string editor)
+    {
+        return Put(new EditableRangeStart(Document, NextEditableRangeId(), editor));
+    }
+
+    /// <summary>Writes the end of the editable range <paramref name="start"/> began.</summary>
+    public EditableRangeEnd EndEditableRange(EditableRangeStart start)
+    {
+        ArgumentNullException.ThrowIfNull(start);
+        return Put(new EditableRangeEnd(Document, start.Id));
+    }
+
     /// <summary>Writes a footnote (or endnote) holding <paramref name="text"/>.</summary>
     public Footnote InsertFootnote(string text, NoteKind kind = NoteKind.Footnote)
     {
@@ -496,5 +518,16 @@ public sealed partial class DocumentBuilder
         public Inline? Before { get; } = before;
 
         public Row? Row { get; set; }
+    }
+
+    private int NextEditableRangeId()
+    {
+        int id = 1;
+        foreach (EditableRangeStart range in Document.Descendants<EditableRangeStart>())
+        {
+            id = Math.Max(id, range.Id + 1);
+        }
+
+        return id;
     }
 }

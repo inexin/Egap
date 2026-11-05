@@ -75,7 +75,13 @@ egap convert notes.md -o notes.html
 egap convert letter.rtf -o letter.docx
 egap convert report.docx -o report.rtf
 egap convert page.html -o page.pdf --allow-network
+egap convert locked.docx -o open.rtf --password-env DOCX_PASSWORD          # an encrypted DOCX, opened
+egap convert report.docx -o locked.docx --save-password-env DOCX_PASSWORD  # saved encrypted
 ```
+
+`--password` opens encrypted PDF and DOCX inputs, and `--save-password` encrypts a DOCX output as Word 2013 and later
+do. Both come as `-env` and `-file` too, like every password. A document's editing restriction (read only, comments,
+tracked changes or forms) and its editable ranges carry through every conversion between DOCX and RTF.
 
 `--set key=value` passes a setting to the writer of the format being written; give it once per setting. A setting the
 writer does not take stops the run with a usage error. PDF takes `language`, `links`, `named-destinations`, `outline`,

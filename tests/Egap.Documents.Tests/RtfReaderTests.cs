@@ -765,6 +765,25 @@ public class RtfReaderTests
         Assert.Contains("B", document.Sections[0].Body.GetText());
     }
 
+    [Theory]
+    [InlineData(@"{\rtf1\ansi{\info{\*\passwordhash 00}{\*\atnauthor A}" + "\n" + @"Locked.\par {\*\protstart ffff010059540000}Open.{\*\protend ffff010059540000}\par}")]
+    [InlineData(@"{\rtf1\ansi Text.\par {\*{\rtf1{\fonttbl{\f0 Arial;}}{\*\protusertbl{EX}")]
+    [InlineData(@"{\rtf1\ansi Object:{\object\objemb\objw2000\objh1000{\*\objclass Excel.Sheet.12}{\*\objdata 01050000")]
+    [InlineData(@"{\rtf1\ansi Data:{\*\unknown\bin3 {}}")]
+    public void BrokenGroupsWriteRtfThatReadsTheSame(string rtf)
+    {
+        byte[] once = Write(RtfFormat.Parse(rtf));
+        byte[] twice = Write(RtfFormat.Load(new MemoryStream(once)));
+        Assert.Equal(Encoding.Latin1.GetString(once), Encoding.Latin1.GetString(twice));
+
+        static byte[] Write(Document document)
+        {
+            using MemoryStream stream = new();
+            RtfFormat.Save(document, stream);
+            return stream.ToArray();
+        }
+    }
+
     [Fact]
     public void SeedFilesRead()
     {

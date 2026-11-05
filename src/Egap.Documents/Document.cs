@@ -25,6 +25,7 @@ public sealed partial class Document : Node
         Lists = new ListCollection(this);
         Properties = new DocumentProperties(this);
         Settings = new DocumentSettings(this);
+        Protection = new DocumentProtection(this);
         Revisions = new TrackedChangeCollection(this);
         if (!blank)
         {
@@ -52,6 +53,9 @@ public sealed partial class Document : Node
 
     /// <summary>Document-wide settings: default tab stop, odd and even headers, note numbering, compatibility mode.</summary>
     public DocumentSettings Settings { get; }
+
+    /// <summary>The editing restriction and its password hash; editors enforce it, Egap keeps it.</summary>
+    public DocumentProtection Protection { get; }
 
     /// <summary>The font table's hints by font name: the alternative name and the kind Word substitutes a missing font by.</summary>
     internal Dictionary<string, (string? AltName, string? Kind)> FontHints { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -164,6 +168,7 @@ public sealed partial class Document : Node
         copy.Theme.CopyFrom(Theme);
         copy.Properties.CopyFrom(Properties);
         copy.Settings.CopyFrom(Settings);
+        copy.Protection.CopyFrom(Protection);
         foreach ((string name, (string? AltName, string? Kind) hint) in FontHints)
         {
             copy.FontHints[name] = hint;

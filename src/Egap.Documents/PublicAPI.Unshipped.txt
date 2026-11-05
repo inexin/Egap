@@ -1,4 +1,10 @@
 #nullable enable
+const Egap.Documents.DocumentProtection.DefaultSpinCount = 100000 -> int
+const Egap.Documents.DocumentProtection.MaxSpinCount = 10000000 -> int
+Egap.Documents.Document.Protection.get -> Egap.Documents.DocumentProtection!
+Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart! start) -> Egap.Documents.EditableRangeEnd!
+Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup group = Egap.Documents.EditorGroup.Everyone) -> Egap.Documents.EditableRangeStart!
+Egap.Documents.DocumentBuilder.StartEditableRange(string! editor) -> Egap.Documents.EditableRangeStart!
 Egap.Documents.DocumentFormatKind.Encrypted = 10 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Odt = 11 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Rtf = 9 -> Egap.Documents.DocumentFormatKind
@@ -14,12 +20,48 @@ Egap.Documents.DocumentLoadOptions.PasswordCallback.init -> void
 Egap.Documents.DocumentPasswordException
 Egap.Documents.DocumentPasswordException.DocumentPasswordException(string! message, bool wrongPassword) -> void
 Egap.Documents.DocumentPasswordException.WrongPassword.get -> bool
+Egap.Documents.DocumentProtection
+Egap.Documents.DocumentProtection.Hash.get -> System.ReadOnlyMemory<byte>
+Egap.Documents.DocumentProtection.HashAlgorithm.get -> string?
+Egap.Documents.DocumentProtection.HasPassword.get -> bool
+Egap.Documents.DocumentProtection.IsEnforced.get -> bool
+Egap.Documents.DocumentProtection.Kind.get -> Egap.Documents.ProtectionKind
+Egap.Documents.DocumentProtection.Protect(Egap.Documents.ProtectionKind kind, string? password = null) -> void
+Egap.Documents.DocumentProtection.Salt.get -> System.ReadOnlyMemory<byte>
+Egap.Documents.DocumentProtection.SpinCount.get -> int
+Egap.Documents.DocumentProtection.Unprotect() -> void
+Egap.Documents.DocumentProtection.Verify(string? password) -> bool
 Egap.Documents.DocxLoadOptions.Password.get -> string?
 Egap.Documents.DocxLoadOptions.Password.init -> void
 Egap.Documents.DocxLoadOptions.PasswordCallback.get -> System.Func<int, string?>?
 Egap.Documents.DocxLoadOptions.PasswordCallback.init -> void
 Egap.Documents.DocxSaveOptions.Password.get -> string?
 Egap.Documents.DocxSaveOptions.Password.init -> void
+Egap.Documents.EditableRangeEnd
+Egap.Documents.EditableRangeEnd.EditableRangeEnd(Egap.Documents.Document! document, int id) -> void
+Egap.Documents.EditableRangeEnd.Id.get -> int
+Egap.Documents.EditableRangeEnd.Id.set -> void
+Egap.Documents.EditableRangeStart
+Egap.Documents.EditableRangeStart.EditableRangeStart(Egap.Documents.Document! document, int id, Egap.Documents.EditorGroup group) -> void
+Egap.Documents.EditableRangeStart.EditableRangeStart(Egap.Documents.Document! document, int id, string! editor) -> void
+Egap.Documents.EditableRangeStart.Editor.get -> string?
+Egap.Documents.EditableRangeStart.Editor.set -> void
+Egap.Documents.EditableRangeStart.FirstColumn.get -> int?
+Egap.Documents.EditableRangeStart.FirstColumn.set -> void
+Egap.Documents.EditableRangeStart.Group.get -> Egap.Documents.EditorGroup
+Egap.Documents.EditableRangeStart.Group.set -> void
+Egap.Documents.EditableRangeStart.Id.get -> int
+Egap.Documents.EditableRangeStart.Id.set -> void
+Egap.Documents.EditableRangeStart.LastColumn.get -> int?
+Egap.Documents.EditableRangeStart.LastColumn.set -> void
+Egap.Documents.EditorGroup
+Egap.Documents.EditorGroup.Administrators = 2 -> Egap.Documents.EditorGroup
+Egap.Documents.EditorGroup.Contributors = 3 -> Egap.Documents.EditorGroup
+Egap.Documents.EditorGroup.Current = 6 -> Egap.Documents.EditorGroup
+Egap.Documents.EditorGroup.Editors = 4 -> Egap.Documents.EditorGroup
+Egap.Documents.EditorGroup.Everyone = 1 -> Egap.Documents.EditorGroup
+Egap.Documents.EditorGroup.None = 0 -> Egap.Documents.EditorGroup
+Egap.Documents.EditorGroup.Owners = 5 -> Egap.Documents.EditorGroup
 Egap.Documents.Layout.DocumentLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutWarning!>!
 Egap.Documents.Layout.LayoutOptions.OnWarning.get -> System.Action<Egap.Documents.Layout.LayoutWarning!>?
 Egap.Documents.Layout.LayoutOptions.OnWarning.init -> void
@@ -47,6 +89,14 @@ Egap.Documents.OdtLoadOptions.Password.get -> string?
 Egap.Documents.OdtLoadOptions.Password.init -> void
 Egap.Documents.OdtLoadOptions.PasswordCallback.get -> System.Func<int, string?>?
 Egap.Documents.OdtLoadOptions.PasswordCallback.init -> void
+Egap.Documents.Pdf.PdfConvertOptions.Password.get -> string?
+Egap.Documents.Pdf.PdfConvertOptions.Password.init -> void
+Egap.Documents.ProtectionKind
+Egap.Documents.ProtectionKind.Comments = 2 -> Egap.Documents.ProtectionKind
+Egap.Documents.ProtectionKind.Forms = 4 -> Egap.Documents.ProtectionKind
+Egap.Documents.ProtectionKind.None = 0 -> Egap.Documents.ProtectionKind
+Egap.Documents.ProtectionKind.ReadOnly = 1 -> Egap.Documents.ProtectionKind
+Egap.Documents.ProtectionKind.TrackedChanges = 3 -> Egap.Documents.ProtectionKind
 Egap.Documents.RtfFormat
 Egap.Documents.RtfLoadOptions
 Egap.Documents.RtfLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
@@ -56,6 +106,8 @@ Egap.Documents.RtfSaveOptions
 Egap.Documents.RtfSaveOptions.KeepUnknownGroups.get -> bool
 Egap.Documents.RtfSaveOptions.KeepUnknownGroups.init -> void
 Egap.Documents.RtfSaveOptions.RtfSaveOptions() -> void
+override Egap.Documents.EditableRangeEnd.Clone(bool deep = true) -> Egap.Documents.EditableRangeEnd!
+override Egap.Documents.EditableRangeStart.Clone(bool deep = true) -> Egap.Documents.EditableRangeStart!
 override Egap.Documents.Layout.LayoutWarning.Equals(object? obj) -> bool
 override Egap.Documents.Layout.LayoutWarning.GetHashCode() -> int
 override Egap.Documents.Layout.LayoutWarning.ToString() -> string!
@@ -77,3 +129,5 @@ static Egap.Documents.RtfFormat.Parse(string! rtf, Egap.Documents.RtfLoadOptions
 static Egap.Documents.RtfFormat.Parse(string! rtf, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.RtfFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.RtfSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 static Egap.Documents.RtfFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.RtfSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+virtual Egap.Documents.DocumentVisitor.VisitEditableRangeEnd(Egap.Documents.EditableRangeEnd! rangeEnd) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitEditableRangeStart(Egap.Documents.EditableRangeStart! rangeStart) -> Egap.Documents.VisitorAction

@@ -89,6 +89,7 @@ internal sealed partial class RtfReader
 
         FinishSection();
         FinishHeader();
+        FinishProtection();
         if (document.Sections.Count > 1 && document.Sections[^1].Body.Blocks.Count == 0)
         {
             // A last \sect with nothing after it closes the document's last section; it adds no empty one.
@@ -272,17 +273,82 @@ internal sealed partial class RtfReader
         int end = tokens.SkipGroup();
         if (keep && start >= 0)
         {
-            string markup = Encoding.Latin1.GetString(tokens.Data, start, Math.Min(end + 1, tokens.Data.Length) - start);
-            if (tokens.Unclosed > 0)
-            {
-                // A group cut off by the end of the file is closed, so that writing it back cannot swallow what follows.
-                markup = markup.TrimEnd('\\') + new string('}', tokens.Unclosed);
-            }
-
-            Keep(markup);
+            Keep(Markup(start, end + 1));
         }
 
         Pop();
+    }
+
+    /// <summary>
+    /// The file's markup from <paramref name="start"/> up to <paramref name="end"/>, to keep as it is. Groups that the end of
+    /// the file cut off are closed, so that writing the markup back cannot swallow what follows it.
+    /// </summary>
+    private string Markup(int start, int end)
+    {
+        ReadOnlySpan<byte> data = tokens.Data.AsSpan(start, Math.Min(end, tokens.Data.Length) - start);
+        string markup = Encoding.Latin1.GetString(data);
+        int open = 0;
+        int i = 0;
+        while (i < data.Length)
+        {
+            switch (data[i])
+            {
+                case (byte)'{':
+                    open++;
+                    i++;
+                    break;
+                case (byte)'}':
+                    open--;
+                    i++;
+                    break;
+                case (byte)'\\':
+                    i = PastControl(data, i + 1);
+                    break;
+                default:
+                    i++;
+                    break;
+            }
+        }
+
+        return open > 0 ? markup.TrimEnd('\\') + new string('}', open) : markup;
+
+        // Past a control word or symbol, and past \bin's data.
+        static int PastControl(ReadOnlySpan<byte> data, int i)
+        {
+            int word = i;
+            while (i < data.Length && char.IsAsciiLetter((char)data[i]))
+            {
+                i++;
+            }
+
+            if (i == word)
+            {
+                return i + 1;
+            }
+
+            bool bin = data[word..i].SequenceEqual("bin"u8);
+            bool negative = i < data.Length && data[i] == '-';
+            if (negative)
+            {
+                i++;
+            }
+
+            int digits = i;
+            long count = 0;
+            while (i < data.Length && char.IsAsciiDigit((char)data[i]))
+            {
+                count = Math.Min((count * 10) + (data[i] - '0'), int.MaxValue);
+                i++;
+            }
+
+            bool hasCount = i > digits;
+            if (i < data.Length && data[i] == ' ')
+            {
+                i++;
+            }
+
+            return bin && !negative && hasCount ? (int)Math.Min(i + count, data.Length) : i;
+        }
     }
 
     /// <summary>Whether the control symbol just read follows its group's brace with nothing but line breaks between.</summary>

@@ -68,6 +68,30 @@ public sealed class ConvertTests : IDisposable
     }
 
     [Fact]
+    public void SavePasswordEncryptsADocxThatPasswordOpens()
+    {
+        Egap.Documents.Document document = new();
+        document.AddSection().Body.AddParagraph("Kept secret.");
+        document.Protection.Protect(Egap.Documents.ProtectionKind.ReadOnly, "edit");
+        Egap.Documents.DocxFormat.Save(document, _tool.PathOf("plain.docx"));
+        _tool.Environment["SAVE"] = "open sesame";
+
+        Assert.Equal(ExitCodes.Usage, _tool.Run("convert", "plain.docx", "-o", "locked.rtf", "--save-password-env", "SAVE").Code);
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "plain.docx", "-o", "locked.docx", "--save-password-env", "SAVE").Code);
+        Assert.Equal(Egap.Documents.DocumentFormatKind.Encrypted, Egap.Documents.Document.Identify(_tool.PathOf("locked.docx")));
+        Assert.NotEqual(ExitCodes.Success, _tool.Run("convert", "locked.docx", "-o", "back.rtf").Code);
+
+        // The input's password opens it, to a flow format and to PDF; the editing restriction comes through.
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "locked.docx", "-o", "back.rtf", "--password-env", "SAVE").Code);
+        Egap.Documents.Document back = Egap.Documents.RtfFormat.Load(_tool.PathOf("back.rtf"));
+        Assert.Contains("Kept secret.", back.GetText(), StringComparison.Ordinal);
+        Assert.True(back.Protection.Verify("edit"));
+        Assert.Equal(ExitCodes.Success, _tool.Run("convert", "locked.docx", "-o", "back.pdf", "--password-env", "SAVE").Code);
+        using PdfDocument pdf = PdfDocument.Open(_tool.PathOf("back.pdf"));
+        Assert.Contains("Kept secret.", pdf.Pages[0].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void CommentsBecomeAnnotations()
     {
         Egap.Documents.Document document = new();
