@@ -38,7 +38,7 @@ public sealed class WordPropertiesTests
         WordProperties.Set(run, WordRunProperty.RightToLeft, 1);
         Assert.True(run.RightToLeft);
         WordProperties.Set(run, WordRunProperty.RightToLeft, 0);
-        Assert.Null(run.RightToLeft);
+        Assert.False(run.RightToLeft);
     }
 
     [Fact]
@@ -170,6 +170,83 @@ public sealed class WordPropertiesTests
         FieldStart field = new(document);
         WordProperties.Set(field, WordFieldProperty.Locked, 1);
         Assert.True(field.IsLocked);
+    }
+
+    [Fact]
+    public void ClearTakesAPropertyOffAndDirectionIsAToggle()
+    {
+        RunFormat run = new();
+        WordProperties.Set(run, WordRunProperty.RightToLeft, 0);
+        Assert.False(run.RightToLeft);
+        WordProperties.Clear(run, WordRunProperty.RightToLeft);
+        Assert.Null(run.RightToLeft);
+
+        // Fractional twips and half-points, as DOCX may give them.
+        WordProperties.Set(run, WordRunProperty.Size, 23.5);
+        Assert.Equal(11.75, run.Size);
+        WordProperties.Clear(run, WordRunProperty.Size);
+        Assert.Null(run.Size);
+        WordProperties.Set(run, WordRunProperty.Scale, 0);
+        Assert.Equal(1, run.Scale);
+    }
+
+    [Theory]
+    [InlineData(LineSpacingRule.Multiple, 360, 1.5)]
+    [InlineData(LineSpacingRule.Multiple, -480, 2.0)]
+    [InlineData(LineSpacingRule.Exactly, -280, 14.0)]
+    [InlineData(LineSpacingRule.AtLeast, 0, 0.0)]
+    public void LineSpacingWithItsRuleGivenApart(LineSpacingRule rule, double value, double spacing)
+    {
+        ParagraphFormat paragraph = new();
+        WordProperties.SetLineSpacing(paragraph, rule, value);
+        Assert.Equal((spacing, rule), (paragraph.LineSpacing, paragraph.LineSpacingRule));
+    }
+
+    [Fact]
+    public void RowsAndCellsTakeTheirOwnFormats()
+    {
+        RowFormat row = new();
+        WordProperties.Set(row, WordTableProperty.RowHeightAuto, 400);
+        Assert.Equal((20.0, RowHeightRule.Auto), (row.Height, row.HeightRule));
+        WordProperties.Set(row, WordTableProperty.RowHeight, -300);
+        Assert.Equal((15.0, RowHeightRule.Exactly), (row.Height, row.HeightRule));
+        WordProperties.Set(row, WordTableProperty.RowHidden, 1);
+        WordProperties.Set(row, WordTableProperty.RowAlignment, (int)TableAlignment.Right);
+        Assert.True(row.Hidden);
+        Assert.Equal(TableAlignment.Right, row.Alignment);
+
+        CellFormat cell = new();
+        WordProperties.Set(cell, WordTableProperty.CellGridSpan, 1);
+        Assert.Null(cell.GridSpan);
+        WordProperties.Set(cell, WordTableProperty.CellGridSpan, 3);
+        WordProperties.Set(cell, WordTableProperty.CellMarginLeft, -40);
+        Assert.Equal((3, 0.0), (cell.GridSpan, cell.MarginLeft));
+
+        TableFormat table = new();
+        WordProperties.Set(table, WordTableProperty.RowBandSize, 0);
+        WordProperties.Set(table, WordTableProperty.ColumnBandSize, 2);
+        WordProperties.Set(table, WordTableProperty.Layout, (int)TableLayoutKind.Fixed);
+        Assert.Equal((null, 2, TableLayoutKind.Fixed), (table.RowBandSize, table.ColumnBandSize, table.Layout));
+    }
+
+    [Fact]
+    public void ListLevelsStylesAndFramesOnTheModel()
+    {
+        ListLevel level = new Document().Lists.AddDefinition().Levels[0];
+        WordProperties.Set(level, WordListLevelProperty.NumberStyle, (int)NumberStyle.UpperRoman);
+        WordProperties.Set(level, WordListLevelProperty.Follow, 2);
+        WordProperties.Set(level, WordListLevelProperty.RestartAfter, 12);
+        Assert.Equal((NumberStyle.UpperRoman, ListLabelSuffix.Nothing, 8), (level.NumberStyle, level.Suffix, level.RestartAfterLevel));
+
+        Document document = new();
+        Style style = document.Styles.AddParagraphStyle("Quote", "Quote");
+        WordProperties.Set(style, WordStyleProperty.Priority, 29);
+        WordProperties.Set(style, WordStyleProperty.Primary, 1);
+        Assert.Equal((29, true), (style.Priority, style.IsPrimary));
+
+        FramePosition frame = WordProperties.Set(new FramePosition(), WordFrameProperty.Height, 400);
+        frame = WordProperties.Set(frame, WordFrameProperty.HeightRule, (int)RowHeightRule.Auto);
+        Assert.Equal((20.0, RowHeightRule.Auto), (frame.Height, frame.HeightRule));
     }
 
     [Theory]

@@ -76,6 +76,25 @@ internal static class DocxUnits
         return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) && double.IsFinite(number) ? number / Math.Round(1 / unit) : null;
     }
 
+    /// <summary>
+    /// A measure in the file's own unit (twips by default, or half-points), as the Word property stream takes it; one
+    /// with units (pt, in, cm, mm, pc, pi) is converted to it. Null when it is not a number.
+    /// </summary>
+    public static double? Raw(string? value, double unit = Twip)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double number))
+        {
+            return double.IsFinite(number) ? number : null;
+        }
+
+        return Points(value, unit) is double points ? points * Math.Round(1 / unit) : null;
+    }
+
     /// <summary>An integer attribute, or null.</summary>
     public static int? Int(string? value)
     {

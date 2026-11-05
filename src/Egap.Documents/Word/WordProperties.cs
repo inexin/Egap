@@ -15,7 +15,7 @@ internal static class WordProperties
 {
     // ---- Characters ----
 
-    public static void Set(RunFormat run, WordRunProperty property, int value)
+    public static void Set(RunFormat run, WordRunProperty property, double value)
     {
         bool on = value != 0;
         switch (property)
@@ -62,23 +62,29 @@ internal static class WordProperties
             case WordRunProperty.NoProof:
                 run.NoProof = on;
                 break;
+            case WordRunProperty.SpecialHidden:
+                run.SpecialHidden = on;
+                break;
+            case WordRunProperty.ComplexScript:
+                run.ComplexScript = on;
+                break;
             case WordRunProperty.RightToLeft:
-                run.RightToLeft = on ? true : null;
+                run.RightToLeft = on;
                 break;
             case WordRunProperty.Underline:
-                run.Underline = (UnderlineStyle)value;
+                run.Underline = (UnderlineStyle)(int)value;
                 break;
             case WordRunProperty.Size:
-                run.Size = Math.Min(value, 3276) / 2.0;
+                run.Size = Math.Clamp(value, 0, 3276) / 2.0;
                 break;
             case WordRunProperty.SizeComplexScript:
-                run.SizeComplexScript = Math.Min(value, 3276) / 2.0;
+                run.SizeComplexScript = Math.Clamp(value, 0, 3276) / 2.0;
                 break;
             case WordRunProperty.Position:
                 run.Position = value / 2.0;
                 break;
             case WordRunProperty.VerticalPosition:
-                run.VerticalPosition = (VerticalTextPosition)value;
+                run.VerticalPosition = (VerticalTextPosition)(int)value;
                 break;
             case WordRunProperty.Spacing:
                 run.Spacing = value / 20.0;
@@ -87,22 +93,77 @@ internal static class WordProperties
                 run.Spacing = value / 4.0;
                 break;
             case WordRunProperty.Scale:
-                run.Scale = Math.Min(value, 600);
+                run.Scale = Math.Clamp(value, 1, 600);
                 break;
             case WordRunProperty.Kerning:
                 run.Kerning = Math.Max(0, value) / 2.0;
                 break;
             case WordRunProperty.Language:
-                run.Language = Language(value);
+                run.Language = Language((int)value);
                 break;
             case WordRunProperty.LanguageEastAsia:
-                run.LanguageEastAsia = Language(value);
+                run.LanguageEastAsia = Language((int)value);
                 break;
             case WordRunProperty.LanguageBidi:
-                run.LanguageBidi = Language(value);
+                run.LanguageBidi = Language((int)value);
                 break;
             case WordRunProperty.Highlight:
-                run.Highlight = (HighlightColor)value;
+                run.Highlight = (HighlightColor)(int)value;
+                break;
+        }
+    }
+
+    /// <summary>A language as a tag (<c>w:lang</c>), or null for none.</summary>
+    public static void SetLanguage(RunFormat run, WordRunProperty property, string? tag)
+    {
+        switch (property)
+        {
+            case WordRunProperty.LanguageEastAsia:
+                run.LanguageEastAsia = tag;
+                break;
+            case WordRunProperty.LanguageBidi:
+                run.LanguageBidi = tag;
+                break;
+            default:
+                run.Language = tag;
+                break;
+        }
+    }
+
+    /// <summary>Sets a paragraph's tab stops, as many as Word keeps.</summary>
+    public static void SetTabStops(ParagraphFormat paragraph, IEnumerable<TabStop> stops)
+    {
+        paragraph.TabStops = [.. stops.Take(MaxTabStops)];
+    }
+
+    /// <summary>Takes a property off a run, as a value Word does not know does.</summary>
+    public static void Clear(RunFormat run, WordRunProperty property)
+    {
+        switch (property)
+        {
+            case WordRunProperty.RightToLeft:
+                run.RightToLeft = null;
+                break;
+            case WordRunProperty.Size:
+                run.Size = null;
+                break;
+            case WordRunProperty.SizeComplexScript:
+                run.SizeComplexScript = null;
+                break;
+            case WordRunProperty.Position:
+                run.Position = null;
+                break;
+            case WordRunProperty.Spacing or WordRunProperty.SpacingQuarterPoints:
+                run.Spacing = null;
+                break;
+            case WordRunProperty.Scale:
+                run.Scale = null;
+                break;
+            case WordRunProperty.Kerning:
+                run.Kerning = null;
+                break;
+            case WordRunProperty.Highlight:
+                run.Highlight = null;
                 break;
         }
     }
@@ -144,16 +205,16 @@ internal static class WordProperties
 
     // ---- Paragraphs ----
 
-    public static void Set(ParagraphFormat paragraph, WordParagraphProperty property, int value)
+    public static void Set(ParagraphFormat paragraph, WordParagraphProperty property, double value)
     {
         bool on = value != 0;
         switch (property)
         {
             case WordParagraphProperty.Alignment:
-                paragraph.Alignment = (ParagraphAlignment)value;
+                paragraph.Alignment = (ParagraphAlignment)(int)value;
                 break;
             case WordParagraphProperty.Kashida:
-                paragraph.Kashida = (KashidaLevel)value;
+                paragraph.Kashida = (KashidaLevel)(int)value;
                 break;
             case WordParagraphProperty.LeftIndent:
                 paragraph.LeftIndent = Twips(value);
@@ -204,12 +265,54 @@ internal static class WordProperties
                 paragraph.MirrorIndents = on;
                 break;
             case WordParagraphProperty.Bidi:
-                paragraph.Bidi = on ? true : null;
+                paragraph.Bidi = on;
                 break;
             case WordParagraphProperty.OutlineLevel:
-                paragraph.OutlineLevel = Math.Clamp(value, 0, 9);
+                paragraph.OutlineLevel = (int)Math.Clamp(value, 0, 9);
                 break;
         }
+    }
+
+    /// <summary>Takes a property off a paragraph, as a value Word does not know does.</summary>
+    public static void Clear(ParagraphFormat paragraph, WordParagraphProperty property)
+    {
+        switch (property)
+        {
+            case WordParagraphProperty.Alignment:
+                paragraph.Alignment = null;
+                break;
+            case WordParagraphProperty.Kashida:
+                paragraph.Kashida = null;
+                break;
+            case WordParagraphProperty.LeftIndent:
+                paragraph.LeftIndent = null;
+                break;
+            case WordParagraphProperty.RightIndent:
+                paragraph.RightIndent = null;
+                break;
+            case WordParagraphProperty.FirstLineIndent:
+                paragraph.FirstLineIndent = null;
+                break;
+            case WordParagraphProperty.SpaceBefore:
+                paragraph.SpaceBefore = null;
+                break;
+            case WordParagraphProperty.SpaceAfter:
+                paragraph.SpaceAfter = null;
+                break;
+            case WordParagraphProperty.Bidi:
+                paragraph.Bidi = null;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Line spacing with its rule given apart (<c>w:spacing</c>): for <see cref="LineSpacingRule.Multiple"/> in 240ths of
+    /// a line, otherwise in twips. Its size counts, not its sign.
+    /// </summary>
+    public static void SetLineSpacing(ParagraphFormat paragraph, LineSpacingRule rule, double value)
+    {
+        paragraph.LineSpacingRule = rule;
+        paragraph.LineSpacing = rule == LineSpacingRule.Multiple ? Math.Abs(value / 240) : Math.Abs(Twips(value));
     }
 
     /// <summary>
@@ -223,15 +326,9 @@ internal static class WordProperties
             paragraph.LineSpacing = null;
             paragraph.LineSpacingRule = null;
         }
-        else if (multiple && value > 0)
-        {
-            paragraph.LineSpacing = value / 240.0;
-            paragraph.LineSpacingRule = LineSpacingRule.Multiple;
-        }
         else
         {
-            paragraph.LineSpacing = Math.Abs(Twips(value));
-            paragraph.LineSpacingRule = value < 0 ? LineSpacingRule.Exactly : LineSpacingRule.AtLeast;
+            SetLineSpacing(paragraph, multiple && value > 0 ? LineSpacingRule.Multiple : value < 0 ? LineSpacingRule.Exactly : LineSpacingRule.AtLeast, value);
         }
     }
 
@@ -250,7 +347,7 @@ internal static class WordProperties
     }
 
     /// <summary>A positioned frame with one property changed.</summary>
-    public static FramePosition Set(FramePosition frame, WordFrameProperty property, int value)
+    public static FramePosition Set(FramePosition frame, WordFrameProperty property, double value)
     {
         return property switch
         {
@@ -260,18 +357,19 @@ internal static class WordProperties
                 Height = value == 0 ? null : Math.Abs(Twips(value)),
                 HeightRule = value < 0 ? RowHeightRule.Exactly : value > 0 ? RowHeightRule.AtLeast : RowHeightRule.Auto,
             },
-            WordFrameProperty.HorizontalAnchor => frame with { HorizontalAnchor = (HorizontalAnchor)value },
-            WordFrameProperty.VerticalAnchor => frame with { VerticalAnchor = (VerticalAnchor)value },
+            WordFrameProperty.HeightRule => frame with { HeightRule = (RowHeightRule)(int)value },
+            WordFrameProperty.HorizontalAnchor => frame with { HorizontalAnchor = (HorizontalAnchor)(int)value },
+            WordFrameProperty.VerticalAnchor => frame with { VerticalAnchor = (VerticalAnchor)(int)value },
             WordFrameProperty.HorizontalOffset => frame with { HorizontalOffset = Twips(value), HorizontalAlignment = FloatingAlignment.None },
             WordFrameProperty.VerticalOffset => frame with { VerticalOffset = Twips(value), VerticalAlignment = FloatingAlignment.None },
-            WordFrameProperty.HorizontalAlignment => frame with { HorizontalAlignment = (FloatingAlignment)value },
-            WordFrameProperty.VerticalAlignment => frame with { VerticalAlignment = (FloatingAlignment)value },
+            WordFrameProperty.HorizontalAlignment => frame with { HorizontalAlignment = (FloatingAlignment)(int)value },
+            WordFrameProperty.VerticalAlignment => frame with { VerticalAlignment = (FloatingAlignment)(int)value },
             WordFrameProperty.Distance => frame with { DistanceHorizontal = Twips(value), DistanceVertical = Twips(value) },
             WordFrameProperty.DistanceHorizontal => frame with { DistanceHorizontal = Twips(value) },
             WordFrameProperty.DistanceVertical => frame with { DistanceVertical = Twips(value) },
-            WordFrameProperty.Wrap => frame with { Wrap = (FrameWrap)value },
-            WordFrameProperty.DropCapLines => frame with { DropCapLines = Math.Clamp(value, 1, 10) },
-            WordFrameProperty.DropCap => frame with { DropCap = (DropCap)value },
+            WordFrameProperty.Wrap => frame with { Wrap = (FrameWrap)(int)value },
+            WordFrameProperty.DropCapLines => frame with { DropCapLines = (int)Math.Clamp(value, 1, 10) },
+            WordFrameProperty.DropCap => frame with { DropCap = (DropCap)(int)value },
             WordFrameProperty.AnchorLock => frame with { AnchorLock = value != 0 },
             _ => frame,
         };
@@ -279,18 +377,18 @@ internal static class WordProperties
 
     // ---- Sections ----
 
-    public static void Set(PageSetup setup, WordSectionProperty property, int value)
+    public static void Set(PageSetup setup, WordSectionProperty property, double value)
     {
         switch (property)
         {
             case WordSectionProperty.Start:
-                setup.SectionStart = (SectionStart)value;
+                setup.SectionStart = (SectionStart)(int)value;
                 break;
             case WordSectionProperty.PageWidth:
-                setup.PageWidth = Twips(value);
+                setup.PageWidth = Math.Max(0, Twips(value));
                 break;
             case WordSectionProperty.PageHeight:
-                setup.PageHeight = Twips(value);
+                setup.PageHeight = Math.Max(0, Twips(value));
                 break;
             case WordSectionProperty.MarginLeft:
                 setup.MarginLeft = Math.Max(0, Twips(value));
@@ -314,13 +412,13 @@ internal static class WordProperties
                 setup.FooterDistance = Math.Max(0, Twips(value));
                 break;
             case WordSectionProperty.Orientation:
-                setup.Orientation = (PageOrientation)value;
+                setup.Orientation = (PageOrientation)(int)value;
                 break;
             case WordSectionProperty.TitlePage:
                 setup.DifferentFirstPage = value != 0;
                 break;
             case WordSectionProperty.ColumnCount:
-                setup.ColumnCount = Math.Clamp(value, 1, 45);
+                setup.ColumnCount = (int)Math.Clamp(value, 1, 45);
                 break;
             case WordSectionProperty.ColumnSpacing:
                 setup.ColumnSpacing = Math.Max(0, Twips(value));
@@ -329,25 +427,93 @@ internal static class WordProperties
                 setup.ColumnSeparator = value != 0;
                 break;
             case WordSectionProperty.PageNumberStyle:
-                setup.PageNumberStyle = (NumberStyle)value;
+                setup.PageNumberStyle = (NumberStyle)(int)value;
                 break;
             case WordSectionProperty.VerticalAlignment:
-                setup.VerticalAlignment = (VerticalAlignment)value;
+                setup.VerticalAlignment = (VerticalAlignment)(int)value;
                 break;
             case WordSectionProperty.Bidi:
                 setup.Bidi = value != 0;
+                break;
+            case WordSectionProperty.TextDirection:
+                setup.TextDirection = (TextDirection)(int)value;
+                break;
+            case WordSectionProperty.PageNumberStart:
+                setup.PageNumberStart = (int)value;
+                break;
+            case WordSectionProperty.EqualColumnWidths:
+                setup.EqualColumnWidths = value != 0;
+                break;
+        }
+    }
+
+    /// <summary>Takes a property off a section, as a value Word does not know does.</summary>
+    public static void Clear(PageSetup setup, WordSectionProperty property)
+    {
+        switch (property)
+        {
+            case WordSectionProperty.PageWidth:
+                setup.PageWidth = null;
+                break;
+            case WordSectionProperty.PageHeight:
+                setup.PageHeight = null;
+                break;
+            case WordSectionProperty.MarginLeft:
+                setup.MarginLeft = null;
+                break;
+            case WordSectionProperty.MarginRight:
+                setup.MarginRight = null;
+                break;
+            case WordSectionProperty.MarginTop:
+                setup.MarginTop = null;
+                break;
+            case WordSectionProperty.MarginBottom:
+                setup.MarginBottom = null;
+                break;
+            case WordSectionProperty.Gutter:
+                setup.Gutter = null;
+                break;
+            case WordSectionProperty.HeaderDistance:
+                setup.HeaderDistance = null;
+                break;
+            case WordSectionProperty.FooterDistance:
+                setup.FooterDistance = null;
+                break;
+            case WordSectionProperty.ColumnSpacing:
+                setup.ColumnSpacing = null;
+                break;
+            case WordSectionProperty.PageNumberStyle:
+                setup.PageNumberStyle = null;
+                break;
+            case WordSectionProperty.PageNumberStart:
+                setup.PageNumberStart = null;
                 break;
         }
     }
 
     // ---- Tables ----
 
-    /// <summary>A table-wide property: indent, default cell margins, direction and the look.</summary>
-    public static void Set(TableFormat table, WordTableProperty property, int value)
+    /// <summary>A table-wide property: alignment, layout, indent, default cell margins, direction and the look.</summary>
+    public static void Set(TableFormat table, WordTableProperty property, double value)
     {
         bool on = value != 0;
         switch (property)
         {
+            case WordTableProperty.Alignment or WordTableProperty.TableAlignment:
+                table.Alignment = (TableAlignment)(int)value;
+                break;
+            case WordTableProperty.CellSpacing or WordTableProperty.TableCellSpacing:
+                table.CellSpacing = Twips(value);
+                break;
+            case WordTableProperty.Layout:
+                table.Layout = (TableLayoutKind)(int)value;
+                break;
+            case WordTableProperty.RowBandSize:
+                table.RowBandSize = value >= 1 ? (int)value : null;
+                break;
+            case WordTableProperty.ColumnBandSize:
+                table.ColumnBandSize = value >= 1 ? (int)value : null;
+                break;
             case WordTableProperty.Indent:
                 table.Indent = Twips(value);
                 break;
@@ -364,7 +530,7 @@ internal static class WordProperties
                 table.CellMarginBottom = Math.Max(0, Twips(value));
                 break;
             case WordTableProperty.Bidi:
-                table.Bidi = on ? true : null;
+                table.Bidi = on;
                 break;
             case WordTableProperty.LookFirstRow:
                 table.LookFirstRow = on;
@@ -387,6 +553,181 @@ internal static class WordProperties
         }
     }
 
+    /// <summary>Takes a property off a table, as a value Word does not know does.</summary>
+    public static void Clear(TableFormat table, WordTableProperty property)
+    {
+        switch (property)
+        {
+            case WordTableProperty.Alignment or WordTableProperty.TableAlignment:
+                table.Alignment = null;
+                break;
+            case WordTableProperty.CellSpacing or WordTableProperty.TableCellSpacing:
+                table.CellSpacing = null;
+                break;
+            case WordTableProperty.Indent:
+                table.Indent = null;
+                break;
+            case WordTableProperty.DefaultMarginLeft:
+                table.CellMarginLeft = null;
+                break;
+            case WordTableProperty.DefaultMarginTop:
+                table.CellMarginTop = null;
+                break;
+            case WordTableProperty.DefaultMarginRight:
+                table.CellMarginRight = null;
+                break;
+            case WordTableProperty.DefaultMarginBottom:
+                table.CellMarginBottom = null;
+                break;
+            case WordTableProperty.Bidi:
+                table.Bidi = null;
+                break;
+            case WordTableProperty.LookFirstRow:
+                table.LookFirstRow = null;
+                break;
+            case WordTableProperty.LookLastRow:
+                table.LookLastRow = null;
+                break;
+            case WordTableProperty.LookFirstColumn:
+                table.LookFirstColumn = null;
+                break;
+            case WordTableProperty.LookLastColumn:
+                table.LookLastColumn = null;
+                break;
+            case WordTableProperty.LookNoRowBands:
+                table.LookNoRowBands = null;
+                break;
+            case WordTableProperty.LookNoColumnBands:
+                table.LookNoColumnBands = null;
+                break;
+        }
+    }
+
+    /// <summary>A row's property: its height, toggles, alignment and cell spacing.</summary>
+    public static void Set(RowFormat row, WordTableProperty property, double value)
+    {
+        bool on = value != 0;
+        switch (property)
+        {
+            case WordTableProperty.RowHeight:
+                row.Height = value == 0 ? null : Math.Abs(Twips(value));
+                row.HeightRule = value == 0 ? RowHeightRule.Auto : value > 0 ? RowHeightRule.AtLeast : RowHeightRule.Exactly;
+                break;
+            case WordTableProperty.RowHeightExactly:
+                row.Height = Math.Max(0, Twips(value));
+                row.HeightRule = RowHeightRule.Exactly;
+                break;
+            case WordTableProperty.RowHeightAtLeast:
+                row.Height = Math.Max(0, Twips(value));
+                row.HeightRule = RowHeightRule.AtLeast;
+                break;
+            case WordTableProperty.RowHeightAuto:
+                row.Height = Math.Max(0, Twips(value));
+                row.HeightRule = RowHeightRule.Auto;
+                break;
+            case WordTableProperty.HeaderRow:
+                row.IsHeader = on;
+                break;
+            case WordTableProperty.CantSplit:
+                row.CantSplit = on;
+                break;
+            case WordTableProperty.RowHidden:
+                row.Hidden = on;
+                break;
+            case WordTableProperty.Alignment or WordTableProperty.RowAlignment:
+                row.Alignment = (TableAlignment)(int)value;
+                break;
+            case WordTableProperty.CellSpacing or WordTableProperty.RowCellSpacing:
+                row.CellSpacing = Twips(value);
+                break;
+        }
+    }
+
+    /// <summary>Takes a property off a row, as a value Word does not know does.</summary>
+    public static void Clear(RowFormat row, WordTableProperty property)
+    {
+        switch (property)
+        {
+            case WordTableProperty.RowHeight or WordTableProperty.RowHeightExactly or WordTableProperty.RowHeightAtLeast or WordTableProperty.RowHeightAuto:
+                row.Height = null;
+                break;
+            case WordTableProperty.Alignment or WordTableProperty.RowAlignment:
+                row.Alignment = null;
+                break;
+            case WordTableProperty.CellSpacing or WordTableProperty.RowCellSpacing:
+                row.CellSpacing = null;
+                break;
+        }
+    }
+
+    /// <summary>A cell's property: merging, alignment, margins, toggles and text direction.</summary>
+    public static void Set(CellFormat cell, WordTableProperty property, double value)
+    {
+        bool on = value != 0;
+        switch (property)
+        {
+            case WordTableProperty.CellVerticalMerge:
+                cell.VerticalMerge = (VerticalMerge)(int)value;
+                break;
+            case WordTableProperty.CellGridSpan:
+                cell.GridSpan = value > 1 ? (int)value : null;
+                break;
+            case WordTableProperty.CellVerticalAlignment:
+                cell.VerticalAlignment = (VerticalAlignment)(int)value;
+                break;
+            case WordTableProperty.CellMarginLeft:
+                cell.MarginLeft = Twips(Math.Max(0, value));
+                break;
+            case WordTableProperty.CellMarginTop:
+                cell.MarginTop = Twips(Math.Max(0, value));
+                break;
+            case WordTableProperty.CellMarginRight:
+                cell.MarginRight = Twips(Math.Max(0, value));
+                break;
+            case WordTableProperty.CellMarginBottom:
+                cell.MarginBottom = Twips(Math.Max(0, value));
+                break;
+            case WordTableProperty.CellNoWrap:
+                cell.NoWrap = on;
+                break;
+            case WordTableProperty.CellFitText:
+                cell.FitText = on;
+                break;
+            case WordTableProperty.CellHideMark:
+                cell.HideMark = on;
+                break;
+            case WordTableProperty.CellTextDirection:
+                cell.TextDirection = (TextDirection)(int)value;
+                break;
+        }
+    }
+
+    /// <summary>Takes a property off a cell, as a value Word does not know does.</summary>
+    public static void Clear(CellFormat cell, WordTableProperty property)
+    {
+        switch (property)
+        {
+            case WordTableProperty.CellVerticalAlignment:
+                cell.VerticalAlignment = null;
+                break;
+            case WordTableProperty.CellMarginLeft:
+                cell.MarginLeft = null;
+                break;
+            case WordTableProperty.CellMarginTop:
+                cell.MarginTop = null;
+                break;
+            case WordTableProperty.CellMarginRight:
+                cell.MarginRight = null;
+                break;
+            case WordTableProperty.CellMarginBottom:
+                cell.MarginBottom = null;
+                break;
+            case WordTableProperty.CellTextDirection:
+                cell.TextDirection = null;
+                break;
+        }
+    }
+
     /// <summary>A property of a row definition: of its row, its table, its position or its pending cell.</summary>
     public static void Set(WordRowDefinition definition, WordTableProperty property, int value)
     {
@@ -400,19 +741,14 @@ internal static class WordProperties
             case WordTableProperty.Left:
                 definition.Left = value;
                 break;
-            case WordTableProperty.RowHeight:
-                definition.Row.Height = value == 0 ? null : Twips(Math.Abs(value));
-                definition.Row.HeightRule = value == 0 ? RowHeightRule.Auto : value > 0 ? RowHeightRule.AtLeast : RowHeightRule.Exactly;
+            case WordTableProperty.RowHeight or WordTableProperty.RowHeightExactly or WordTableProperty.RowHeightAtLeast or WordTableProperty.RowHeightAuto
+                or WordTableProperty.HeaderRow or WordTableProperty.CantSplit or WordTableProperty.RowHidden or WordTableProperty.RowAlignment
+                or WordTableProperty.RowCellSpacing:
+                Set(definition.Row, property, value);
                 break;
-            case WordTableProperty.HeaderRow:
-                definition.Row.IsHeader = on;
-                break;
-            case WordTableProperty.CantSplit:
-                definition.Row.CantSplit = on;
-                break;
-            case WordTableProperty.Alignment:
-                definition.Row.Alignment = (TableAlignment)value;
-                definition.Table.Alignment = (TableAlignment)value;
+            case WordTableProperty.Alignment or WordTableProperty.CellSpacing:
+                Set(definition.Row, property, value);
+                Set(definition.Table, property, value);
                 break;
             case WordTableProperty.AutoFit:
                 definition.AutoFit = on;
@@ -423,18 +759,14 @@ internal static class WordProperties
             case WordTableProperty.Width:
                 definition.Width = value;
                 break;
-            case WordTableProperty.CellSpacing:
-                definition.Table.CellSpacing = Twips(value);
-                definition.Row.CellSpacing = Twips(value);
-                break;
             case WordTableProperty.Style:
                 definition.Style = value;
                 break;
             case WordTableProperty.HorizontalAnchor:
-                definition.Position = (definition.Position ?? new TablePosition()) with { HorizontalAnchor = (HorizontalAnchor)value };
+                definition.Position = (definition.Position ?? new TablePosition()) with { HorizontalAnchor = (HorizontalAnchor)(int)value };
                 break;
             case WordTableProperty.VerticalAnchor:
-                definition.Position = (definition.Position ?? new TablePosition()) with { VerticalAnchor = (VerticalAnchor)value };
+                definition.Position = (definition.Position ?? new TablePosition()) with { VerticalAnchor = (VerticalAnchor)(int)value };
                 break;
             case WordTableProperty.HorizontalOffset:
                 definition.Position = (definition.Position ?? new TablePosition()) with { HorizontalOffset = Twips(value), HorizontalAlignment = FloatingAlignment.None };
@@ -443,10 +775,10 @@ internal static class WordProperties
                 definition.Position = (definition.Position ?? new TablePosition()) with { VerticalOffset = Twips(value), VerticalAlignment = FloatingAlignment.None };
                 break;
             case WordTableProperty.HorizontalAlignment:
-                definition.Position = (definition.Position ?? new TablePosition()) with { HorizontalAlignment = (FloatingAlignment)value };
+                definition.Position = (definition.Position ?? new TablePosition()) with { HorizontalAlignment = (FloatingAlignment)(int)value };
                 break;
             case WordTableProperty.VerticalAlignment:
-                definition.Position = (definition.Position ?? new TablePosition()) with { VerticalAlignment = (FloatingAlignment)value };
+                definition.Position = (definition.Position ?? new TablePosition()) with { VerticalAlignment = (FloatingAlignment)(int)value };
                 break;
             case WordTableProperty.DistanceLeft:
                 definition.Position = (definition.Position ?? new TablePosition()) with { DistanceLeft = Twips(value) };
@@ -466,41 +798,17 @@ internal static class WordProperties
             case WordTableProperty.CellMerged:
                 cell.Merged = on;
                 break;
-            case WordTableProperty.CellVerticalMerge:
-                cell.Format.VerticalMerge = (VerticalMerge)value;
-                break;
-            case WordTableProperty.CellVerticalAlignment:
-                cell.Format.VerticalAlignment = (VerticalAlignment)value;
-                break;
             case WordTableProperty.CellWidthUnit:
                 cell.WidthUnit = value;
                 break;
             case WordTableProperty.CellWidth:
                 cell.Width = value;
                 break;
-            case WordTableProperty.CellMarginLeft:
-                cell.Format.MarginLeft = Twips(Math.Max(0, value));
-                break;
-            case WordTableProperty.CellMarginTop:
-                cell.Format.MarginTop = Twips(Math.Max(0, value));
-                break;
-            case WordTableProperty.CellMarginRight:
-                cell.Format.MarginRight = Twips(Math.Max(0, value));
-                break;
-            case WordTableProperty.CellMarginBottom:
-                cell.Format.MarginBottom = Twips(Math.Max(0, value));
-                break;
-            case WordTableProperty.CellNoWrap:
-                cell.Format.NoWrap = on;
-                break;
-            case WordTableProperty.CellFitText:
-                cell.Format.FitText = on;
-                break;
-            case WordTableProperty.CellHideMark:
-                cell.Format.HideMark = on;
-                break;
-            case WordTableProperty.CellTextDirection:
-                cell.Format.TextDirection = (TextDirection)value;
+            case WordTableProperty.CellVerticalMerge or WordTableProperty.CellGridSpan or WordTableProperty.CellVerticalAlignment
+                or WordTableProperty.CellMarginLeft or WordTableProperty.CellMarginTop or WordTableProperty.CellMarginRight
+                or WordTableProperty.CellMarginBottom or WordTableProperty.CellNoWrap or WordTableProperty.CellFitText
+                or WordTableProperty.CellHideMark or WordTableProperty.CellTextDirection:
+                Set(cell.Format, property, value);
                 break;
             case WordTableProperty.CellRight:
                 cell.Right = value;
@@ -543,6 +851,59 @@ internal static class WordProperties
                 break;
             case WordListLevelProperty.NoRestart:
                 level.NoRestart = value != 0;
+                break;
+        }
+    }
+
+    /// <summary>A list level's property, on a list definition's level.</summary>
+    public static void Set(ListLevel level, WordListLevelProperty property, int value)
+    {
+        switch (property)
+        {
+            case WordListLevelProperty.NumberFormat:
+                level.NumberStyle = NumberStyleOf(value);
+                break;
+            case WordListLevelProperty.NumberStyle:
+                level.NumberStyle = (NumberStyle)value;
+                break;
+            case WordListLevelProperty.Alignment:
+                level.Alignment = value switch { 1 => ParagraphAlignment.Center, 2 => ParagraphAlignment.Right, _ => ParagraphAlignment.Left };
+                break;
+            case WordListLevelProperty.Follow:
+                level.Suffix = value switch { 1 => ListLabelSuffix.Space, 2 => ListLabelSuffix.Nothing, _ => ListLabelSuffix.Tab };
+                break;
+            case WordListLevelProperty.StartAt:
+                level.StartAt = Math.Max(0, value);
+                break;
+            case WordListLevelProperty.Legal:
+                level.IsLegal = value != 0;
+                break;
+            case WordListLevelProperty.NoRestart:
+                if (value != 0)
+                {
+                    level.RestartAfterLevel = 0;
+                }
+
+                break;
+            case WordListLevelProperty.RestartAfter:
+                level.RestartAfterLevel = Math.Clamp(value, 0, 8);
+                break;
+        }
+    }
+
+    /// <summary>A style's own setting: hidden, in the gallery, or its sort priority.</summary>
+    public static void Set(Style style, WordStyleProperty property, int value)
+    {
+        switch (property)
+        {
+            case WordStyleProperty.Hidden:
+                style.Hidden = value != 0;
+                break;
+            case WordStyleProperty.Primary:
+                style.IsPrimary = value != 0;
+                break;
+            case WordStyleProperty.Priority:
+                style.Priority = value;
                 break;
         }
     }
@@ -595,10 +956,10 @@ internal static class WordProperties
                 settings.EndnoteStartAt = value;
                 break;
             case WordNoteProperty.FootnoteNumberStyle:
-                settings.FootnoteNumberStyle = (NumberStyle)value;
+                settings.FootnoteNumberStyle = (NumberStyle)(int)value;
                 break;
             case WordNoteProperty.EndnoteNumberStyle:
-                settings.EndnoteNumberStyle = (NumberStyle)value;
+                settings.EndnoteNumberStyle = (NumberStyle)(int)value;
                 break;
         }
     }
@@ -618,7 +979,7 @@ internal static class WordProperties
     // ---- Values ----
 
     /// <summary>Twips (twentieths of a point) in points.</summary>
-    public static double Twips(int value) => value / 20.0;
+    public static double Twips(double value) => value / 20.0;
 
     /// <summary>
     /// A shading with one part changed: a percentage of pattern colour in hundredths (0 to 10000, as <c>\shading</c> and

@@ -362,7 +362,7 @@ internal sealed partial class RtfReader
                 Table(WordTableProperty.Bidi, 1);
                 return true;
             case "ltrrow":
-                Table(WordTableProperty.Bidi, 0);
+                WordProperties.Clear(definition.Table, WordTableProperty.Bidi);
                 return true;
             case "tbllkhdrrows":
                 Table(WordTableProperty.LookFirstRow, toggle);
