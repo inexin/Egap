@@ -22,6 +22,7 @@
     <None Include="../files/encrypted/*.odt" LinkBase="files/encrypted" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../files/fuzz/layout-*" LinkBase="files/fuzz" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/rtf/*.rtf" LinkBase="files/rtf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../fuzz-seeds/odt/*" LinkBase="files/odt" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/docx/*.xml" LinkBase="files/docx-xml" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/package/*.docx" LinkBase="files/docx-package" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

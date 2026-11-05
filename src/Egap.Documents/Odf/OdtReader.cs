@@ -290,7 +290,8 @@ internal sealed partial class OdtReader
     {
         if (pending.Inlines.Count > 0 || pending.Before is not null || context.Blocks.Count == 0 || context.Blocks[^1] is not Paragraph)
         {
-            Paragraph paragraph = new(document);
+            // The paragraph a story ends with, as Word needs one: in the default style, as a paragraph without one is written.
+            Paragraph paragraph = new(document) { Style = document.Styles.DefaultParagraphStyle };
             AddBlock(context, paragraph);
             foreach (Inline inline in pending.Inlines)
             {
@@ -754,14 +755,14 @@ internal sealed partial class OdtReader
                 case "bookmark-start" or "reference-mark-start":
                     if (element.Attr(TextNs, "name") is { } start)
                     {
-                        AddInline(context, new BookmarkStart(document, start), null, null);
+                        AddInline<Inline>(context, Permission(start) is { } range ? EditableStart(range) : new BookmarkStart(document, start), null, null);
                     }
 
                     return;
                 case "bookmark-end" or "reference-mark-end":
                     if (element.Attr(TextNs, "name") is { } end)
                     {
-                        AddInline(context, new BookmarkEnd(document, end), null, null);
+                        AddInline<Inline>(context, Permission(end) is { } range ? new EditableRangeEnd(document, range.Id) : new BookmarkEnd(document, end), null, null);
                     }
 
                     return;
@@ -844,6 +845,33 @@ internal sealed partial class OdtReader
         {
             KeepInline(context, element);
         }
+    }
+
+    /// <summary>
+    /// A bookmark LibreOffice writes for a range Word lets someone edit in a protected document: "permission-for-group:id:group"
+    /// or "permission-for-user:id:user"; null for other bookmarks.
+    /// </summary>
+    private static (int Id, EditorGroup Group, string? Editor)? Permission(string name)
+    {
+        string[] parts = name.Split(':', 3);
+        if (parts.Length != 3 || !int.TryParse(parts[1], System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out int id))
+        {
+            return null;
+        }
+
+        if (parts[0] == "permission-for-user" && parts[2].Length > 0)
+        {
+            return (id, EditorGroup.None, parts[2]);
+        }
+
+        return parts[0] == "permission-for-group" && Enum.TryParse(parts[2], ignoreCase: true, out EditorGroup group) && Enum.IsDefined(group) && group != EditorGroup.None
+            ? (id, group, null)
+            : null;
+    }
+
+    private EditableRangeStart EditableStart((int Id, EditorGroup Group, string? Editor) range)
+    {
+        return range.Editor is { } editor ? new EditableRangeStart(document, range.Id, editor) : new EditableRangeStart(document, range.Id, range.Group);
     }
 
     private void KeepInline(InlineContext context, XElement element)

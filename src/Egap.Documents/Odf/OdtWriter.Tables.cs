@@ -74,6 +74,7 @@ internal sealed partial class OdtWriter
 
         // Vertical merges: how many rows each restarting cell spans, by its row and grid column.
         List<List<(Cell Cell, int Column, int Span)>> layout = [.. table.Rows.Select(Positions)];
+        HashSet<Cell> continued = Continued(layout);
         XElement? header = null;
         bool headerDone = false;
         for (int r = 0; r < table.Rows.Count; r++)
@@ -106,7 +107,7 @@ internal sealed partial class OdtWriter
                 }
 
                 CellFormat cellFormat = cell.GetEffectiveFormat();
-                if (cellFormat.VerticalMerge == VerticalMerge.Continue && r > 0)
+                if (continued.Contains(cell))
                 {
                     for (int i = 0; i < span; i++)
                     {
@@ -119,7 +120,12 @@ internal sealed partial class OdtWriter
 
                 XElement cellElement = new(TableNs + "table-cell", new XAttribute(TableNs + "style-name", CellStyle(cellFormat, format, r, table.Rows.Count, start, span, grid.Count)),
                     new XAttribute(OfficeNs + "value-type", "string"));
-                int rows = cellFormat.VerticalMerge == VerticalMerge.Restart ? RowsSpanned(layout, r, start) : 1;
+                int rows = 1;
+                while (r + rows < layout.Count && layout[r + rows].Any(c => c.Column == start && continued.Contains(c.Cell)))
+                {
+                    rows++;
+                }
+
                 if (rows > 1)
                 {
                     cellElement.Add(new XAttribute(TableNs + "number-rows-spanned", Int(rows)));
@@ -184,20 +190,27 @@ internal sealed partial class OdtWriter
         return cells;
     }
 
-    private static int RowsSpanned(List<List<(Cell Cell, int Column, int Span)>> layout, int row, int column)
+    /// <summary>
+    /// The cells that continue a vertical merge from the cell above: same grid column and span as a cell above that starts or
+    /// continues one. Others marked to continue start a cell of their own, as ODF's covered cells must lie under a spanning cell.
+    /// </summary>
+    private static HashSet<Cell> Continued(List<List<(Cell Cell, int Column, int Span)>> layout)
     {
-        int rows = 1;
-        for (int r = row + 1; r < layout.Count; r++)
+        HashSet<Cell> continued = [];
+        for (int r = 1; r < layout.Count; r++)
         {
-            if (!layout[r].Any(c => c.Column == column && c.Cell.GetEffectiveFormat().VerticalMerge == VerticalMerge.Continue))
+            foreach ((Cell cell, int column, int span) in layout[r])
             {
-                break;
+                if (cell.GetEffectiveFormat().VerticalMerge == VerticalMerge.Continue
+                    && layout[r - 1].Any(a => a.Column == column && a.Span == span
+                        && (continued.Contains(a.Cell) || a.Cell.GetEffectiveFormat().VerticalMerge == VerticalMerge.Restart)))
+                {
+                    continued.Add(cell);
+                }
             }
-
-            rows++;
         }
 
-        return rows;
+        return continued;
     }
 
     /// <summary>The table's column widths: its grid, else its first row's cell widths, else the text width shared out.</summary>

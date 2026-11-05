@@ -13,6 +13,10 @@ namespace Egap.Documents.Odf;
 /// </summary>
 internal sealed partial class OdtWriter
 {
+    private static readonly HashSet<string> Declared = [OfficeNs.NamespaceName, StyleNs.NamespaceName, TextNs.NamespaceName, TableNs.NamespaceName, DrawNs.NamespaceName,
+        FoNs.NamespaceName, XLinkNs.NamespaceName, DcNs.NamespaceName, MetaNs.NamespaceName, NumberNs.NamespaceName, SvgNs.NamespaceName, ConfigNs.NamespaceName,
+        LoExtNs.NamespaceName];
+
     private readonly Dictionary<(AutoStyles, string), string> keptStyles = [];
     private int frameCount;
 
@@ -21,20 +25,20 @@ internal sealed partial class OdtWriter
         switch (inline)
         {
             case Picture picture:
-                writer.Add(PictureFrame(picture.Image, picture.Fallback, picture.Width, picture.Height, picture.Floating, picture.Title, picture.Description, picture.Crop));
+                writer.Add(PictureFrame(picture.Image, picture.Fallback, picture.Width, picture.Height, picture.Floating, picture.Title, picture.Description, picture.Crop), content: true);
                 break;
             case Shape shape:
-                writer.Add(ShapeElement(shape));
+                writer.Add(ShapeElement(shape), content: true);
                 break;
             case Island island:
                 if (island.Format == OdtExtension.Format && options.KeepUnknownMarkup && Parse(island.Markup) is { } kept)
                 {
-                    writer.Add(Keep(kept));
+                    writer.Add(Keep(kept), content: true);
                 }
                 else if (island.Fallback is { } fallback)
                 {
                     warnings.Add(ConversionWarningKind.DrawingDropped, "Equations, charts and objects from another format were written as their pictures.");
-                    writer.Add(PictureFrame(fallback, null, island.Width, island.Height, island.Floating, null, null, default));
+                    writer.Add(PictureFrame(fallback, null, island.Width, island.Height, island.Floating, null, null, default), content: true);
                 }
                 else
                 {
@@ -364,6 +368,16 @@ internal sealed partial class OdtWriter
         if (source is null)
         {
             return copy;
+        }
+
+        // The namespaces it uses keep the prefixes the source gave them.
+        foreach (XNamespace ns in copy.DescendantsAndSelf().SelectMany(e => e.Attributes().Where(a => !a.IsNamespaceDeclaration).Select(a => a.Name.Namespace).Append(e.Name.Namespace)).Distinct())
+        {
+            if (ns != XNamespace.None && ns != XmlNs && !Declared.Contains(ns.NamespaceName) && copy.GetPrefixOfNamespace(ns) is null
+                && source.Content.GetPrefixOfNamespace(ns) is { } prefix)
+            {
+                copy.Add(new XAttribute(XNamespace.Xmlns + prefix, ns.NamespaceName));
+            }
         }
 
         foreach (XElement e in copy.DescendantsAndSelf())

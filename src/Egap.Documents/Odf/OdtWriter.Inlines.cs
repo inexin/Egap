@@ -1,7 +1,6 @@
 using System.Text;
 using System.Xml.Linq;
 
-
 using static Egap.Documents.Odf.OdfNames;
 
 namespace Egap.Documents.Odf;
@@ -55,6 +54,9 @@ internal sealed partial class OdtWriter
 
         public Paragraph? Paragraph { get; set; }
 
+        /// <summary>A break written as the paragraph's break after, not in its text.</summary>
+        public Inline? Skip { get; init; }
+
         /// <summary>Where content goes outside a deletion.</summary>
         public XElement Live => wrappers.Count > 0 ? wrappers[^1] : Element;
 
@@ -90,14 +92,15 @@ internal sealed partial class OdtWriter
             }
         }
 
-        public void Add(XNode node)
+        /// <summary>Adds an element; <paramref name="content"/> when it shows something, so that a space after it is kept.</summary>
+        public void Add(XNode node, bool content = false)
         {
             Target.Add(node);
             lastSpan = null;
-            if (node is XElement e && e.Name != TextNs + "bookmark-start" && e.Name != TextNs + "bookmark-end" && e.Name != TextNs + "bookmark")
+            if (content)
             {
                 lastSpace = false;
-                spaceOwner = Target;
+                spaceOwner = deletion?.Paragraph ?? Element;
             }
         }
 
@@ -220,11 +223,12 @@ internal sealed partial class OdtWriter
                 return;
             }
 
-            if (!Element.Nodes().Any() && Element.Parent is { } parent)
+            if (wrappers.Count == 0 && Element.Parent is not null && Element.Nodes().All(IsMarker))
             {
-                // A break at the start: the paragraph itself starts with it.
+                // A break at the start, after bookmarks at most: the paragraph itself starts with it.
                 XElement replacement = make(kind, true);
                 replacement.Remove();
+                replacement.Add(Element.Nodes());
                 Element.ReplaceWith(replacement);
                 Element = replacement;
                 return;
@@ -249,6 +253,11 @@ internal sealed partial class OdtWriter
             {
                 owner.story.LastTarget = Live;
             }
+        }
+
+        private static bool IsMarker(XNode node)
+        {
+            return node is XElement e && e.Name.Namespace == TextNs && e.Name.LocalName is "bookmark-start" or "bookmark-end" or "bookmark" or "change-start" or "change-end";
         }
 
         public void EnterDeletion(Revision revision)
@@ -418,6 +427,8 @@ internal sealed partial class OdtWriter
             case Break { Kind: BreakKind.Line }:
                 writer.LineBreak();
                 break;
+            case Break brk when brk == writer.Skip:
+                break;
             case Break brk:
                 writer.Break(brk.Kind == BreakKind.Page ? "page" : "column");
                 break;
@@ -438,6 +449,9 @@ internal sealed partial class OdtWriter
                     WriteInline(child, writer, revision);
                 }
 
+                break;
+            case BookmarkStart or BookmarkEnd when NoteNames().Count > 0 && noteNameSet!.Contains(inline is BookmarkStart b ? b.Name : ((BookmarkEnd)inline).Name)
+                && IsNoteBracket(inline):
                 break;
             case BookmarkStart start:
                 writer.Add(new XElement(TextNs + "bookmark-start", new XAttribute(TextNs + "name", Clean(start.Name))));
@@ -631,7 +645,7 @@ internal sealed partial class OdtWriter
         XElement body = new(TextNs + "note-body");
         XElement element = new(TextNs + "note", new XAttribute(TextNs + "id", Clean(id)),
             new XAttribute(TextNs + "note-class", note.Kind == NoteKind.Endnote ? "endnote" : "footnote"), citation, body);
-        writer.Add(element);
+        writer.Add(element, content: true);
         StoryState saved = story;
         WriteStory(note.Story.Blocks, body, inNote: true);
         story = saved;
@@ -647,6 +661,17 @@ internal sealed partial class OdtWriter
 
         noteNames = [];
         noteNameSet = new(StringComparer.Ordinal);
+
+        // Only bookmarks fields refer to: a note reference names the note, and the reader makes the bookmark from it again.
+        HashSet<string> referenced = new(StringComparer.Ordinal);
+        foreach (FieldStart field in document.Descendants<FieldStart>())
+        {
+            if (field.GetField() is { } f && FieldCode.Parse(f.Code) is { Instruction: "REF" or "NOTEREF" or "PAGEREF", Arguments: [var target, ..] })
+            {
+                referenced.Add(target);
+            }
+        }
+
         foreach (Footnote note in document.Descendants<Footnote>())
         {
             if (note.Parent is not CompositeInline and not Paragraph)
@@ -657,13 +682,27 @@ internal sealed partial class OdtWriter
             NodeCollection<Inline> inlines = note.Parent is Paragraph p ? p.Inlines : ((CompositeInline)note.Parent).Inlines;
             int index = inlines.IndexOf(note);
             if (index > 0 && index + 1 < inlines.Count && inlines[index - 1] is BookmarkStart start && inlines[index + 1] is BookmarkEnd end
-                && start.Name == end.Name && noteNameSet.Add(start.Name))
+                && start.Name == end.Name && referenced.Contains(start.Name) && noteNameSet.Add(start.Name))
             {
                 noteNames[note] = start.Name;
             }
         }
 
         return noteNames;
+    }
+
+    /// <summary>Whether a bookmark start or end is right next to a footnote that takes the bookmark's name.</summary>
+    private bool IsNoteBracket(Inline mark)
+    {
+        NodeCollection<Inline>? inlines = mark.Parent switch
+        {
+            Paragraph p => p.Inlines,
+            CompositeInline c => c.Inlines,
+            _ => null,
+        };
+        int index = inlines?.IndexOf(mark) ?? -1;
+        int at = mark is BookmarkStart ? index + 1 : index - 1;
+        return inlines is not null && index >= 0 && at >= 0 && at < inlines.Count && inlines[at] is Footnote note && noteNames!.ContainsKey(note);
     }
 
     // ---- Fields ----
@@ -707,7 +746,7 @@ internal sealed partial class OdtWriter
                 element.SetAttributeValue(TextNs + "fixed", "true");
             }
 
-            writer.Add(style is null ? element : new XElement(TextNs + "span", new XAttribute(TextNs + "style-name", style), element));
+            writer.Add(style is null ? element : new XElement(TextNs + "span", new XAttribute(TextNs + "style-name", style), element), content: true);
             story.SkipUntil = field.End;
             return;
         }
@@ -746,8 +785,8 @@ internal sealed partial class OdtWriter
         string? argument = code.Arguments.FirstOrDefault();
         XElement? element = code.Instruction switch
         {
-            "PAGE" => Field("page-number", new XAttribute(TextNs + "select-page", "current"), new XAttribute(StyleNs + "num-format", number ?? "1")),
-            "NUMPAGES" => Field("page-count", new XAttribute(StyleNs + "num-format", number ?? "1")),
+            "PAGE" => Field("page-number", new XAttribute(TextNs + "select-page", "current"), NumFormatAttribute(number)),
+            "NUMPAGES" => Field("page-count", NumFormatAttribute(number)),
             "DATE" => Field("date"),
             "TIME" => Field("time"),
             "CREATEDATE" => Field(IsTime(code.Switch("\\@")) ? "creation-time" : "creation-date"),
@@ -759,15 +798,15 @@ internal sealed partial class OdtWriter
             "KEYWORDS" => Field("keywords"),
             "AUTHOR" => Field("initial-creator"),
             "FILENAME" => Field("file-name", new XAttribute(TextNs + "display", code.Has("\\P") ? "full" : "name-and-extension")),
-            "NUMWORDS" => Field("word-count", new XAttribute(StyleNs + "num-format", "1")),
-            "NUMCHARS" => Field("character-count", new XAttribute(StyleNs + "num-format", "1")),
+            "NUMWORDS" => Field("word-count", NumFormatAttribute(number)),
+            "NUMCHARS" => Field("character-count", NumFormatAttribute(number)),
             "STYLEREF" when int.TryParse(argument, out int level) && level is >= 1 and <= 9 =>
                 Field("chapter", new XAttribute(TextNs + "display", code.Has("\\N") ? "number" : "name"), new XAttribute(TextNs + "outline-level", Int(level))),
             "SEQ" when argument is { Length: > 0 } && Encode(argument) == argument =>
                 Field("sequence", new XAttribute(TextNs + "name", argument), new XAttribute(TextNs + "formula", "ooow:" + argument + "+1"),
-                    new XAttribute(StyleNs + "num-format", number ?? "1")),
+                    NumFormatAttribute(number)),
             "REF" when argument is { Length: > 0 } => Reference(argument, code.Has("\\P") ? "direction" : code.Has("\\R") || code.Has("\\N") || code.Has("\\W") ? "number" : "text"),
-            "PAGEREF" when argument is { Length: > 0 } => Field("bookmark-ref", new XAttribute(TextNs + "reference-format", "page"), new XAttribute(TextNs + "ref-name", Clean(argument))),
+            "PAGEREF" when argument is { Length: > 0 } => Reference(argument, "page"),
             "NOTEREF" when argument is { Length: > 0 } => Reference(argument, "note"),
             "DOCPROPERTY" when argument is { Length: > 0 } => argument.ToUpperInvariant() switch
             {
@@ -785,7 +824,9 @@ internal sealed partial class OdtWriter
         element?.Add(Clean(result));
         return element;
 
-        static XElement Field(string name, params object[] attributes) => new(TextNs + name, attributes);
+        static XElement Field(string name, params object?[] attributes) => new(TextNs + name, attributes);
+
+        static XAttribute? NumFormatAttribute(string? number) => number is null ? null : new XAttribute(StyleNs + "num-format", number);
 
         static bool IsTime(string? picture) => picture is { Length: > 0 } && !picture.AsSpan().ContainsAny("dMy") && picture.AsSpan().ContainsAny("Hhms");
     }
@@ -798,7 +839,7 @@ internal sealed partial class OdtWriter
         {
             Footnote note = noteNames!.First(n => n.Value == name).Key;
             return new XElement(TextNs + "note-ref", new XAttribute(TextNs + "note-class", note.Kind == NoteKind.Endnote ? "endnote" : "footnote"),
-                new XAttribute(TextNs + "reference-format", "text"), new XAttribute(TextNs + "ref-name", Clean(name)));
+                new XAttribute(TextNs + "reference-format", format == "page" ? "page" : "text"), new XAttribute(TextNs + "ref-name", Clean(name)));
         }
 
         return new XElement(TextNs + "bookmark-ref", new XAttribute(TextNs + "reference-format", format == "note" ? "number" : format),

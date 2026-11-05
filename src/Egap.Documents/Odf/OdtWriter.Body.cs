@@ -288,7 +288,7 @@ internal sealed partial class OdtWriter
                         props.Add(new XAttribute(TextNs + "dont-balance-text-columns", "true"));
                     }
 
-                    columns.AddFirst(new XAttribute(TextNs + "style-name", Auto("section", null, null, props)));
+                    columns.Add(new XAttribute(TextNs + "style-name", Auto("section", null, null, props)));
                     container.Add(columns);
                     target = new BlockTarget(columns, main: true);
                 }
@@ -487,8 +487,19 @@ internal sealed partial class OdtWriter
         }
 
         bool empty = !group.Any(p => p.Inlines.Any(i => i is not (BookmarkStart or BookmarkEnd)));
+
+        // A page or column break that ends the paragraph is a break after it.
+        Break? trailing = group[^1].Inlines.LastOrDefault(i => i is not (BookmarkStart or BookmarkEnd or CommentRangeStart or CommentRangeEnd
+            or EditableRangeStart or EditableRangeEnd)) as Break;
+        if (trailing is not { Kind: not BreakKind.Line, Revision: null })
+        {
+            trailing = null;
+        }
+
+        (string? Before, bool WithMaster) made = (null, true);
         XElement Make(string? breakBefore, bool withMaster)
         {
+            made = (breakBefore, withMaster);
             XElement element = new(TextNs + (heading ? "h" : "p"));
             string style = ParagraphAuto(paragraph, withMaster ? master?.Master : null, withMaster ? master?.PageNumber : null, breakBefore, null, empty);
             element.Add(new XAttribute(TextNs + "style-name", style));
@@ -505,7 +516,7 @@ internal sealed partial class OdtWriter
             return element;
         }
 
-        ParagraphWriter writer = new(this, Make(null, withMaster: true), Make);
+        ParagraphWriter writer = new(this, Make(null, withMaster: true), Make) { Skip = trailing };
         for (int g = 0; g < group.Count; g++)
         {
             writer.Paragraph = group[g];
@@ -515,6 +526,12 @@ internal sealed partial class OdtWriter
                 // The deleted paragraph mark: two paragraphs in the deletion are the break between them (ODF 1.3 Part 3, 5.5.4).
                 writer.DeleteMark(group[g].MarkRevision!);
             }
+        }
+
+        if (trailing is not null)
+        {
+            writer.Element.SetAttributeValue(TextNs + "style-name", ParagraphAuto(paragraph, made.WithMaster ? master?.Master : null,
+                made.WithMaster ? master?.PageNumber : null, made.Before, trailing.Kind == BreakKind.Page ? "page" : "column", empty));
         }
 
         Paragraph lastParagraph = group[^1];

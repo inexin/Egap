@@ -254,9 +254,7 @@ internal sealed partial class OdtWriter
     /// </summary>
     private XElement WriteSettings()
     {
-        XElement settings = source?.Settings?.Element(OfficeNs + "settings") is { } kept && !source.IsFlat
-            ? new XElement(kept)
-            : source?.Settings?.Element(OfficeNs + "settings") is { } flat ? new XElement(flat) : new XElement(OfficeNs + "settings");
+        XElement settings = source?.Settings?.Element(OfficeNs + "settings") is { } kept ? new XElement(kept) : new XElement(OfficeNs + "settings");
         settings.Elements(ConfigNs + "config-item-set").Where(s => s.Attr(ConfigNs, "name") == ProtectionSet).Remove();
         XElement? configuration = settings.Elements(ConfigNs + "config-item-set").FirstOrDefault(s => s.Attr(ConfigNs, "name") == "ooo:configuration-settings");
         if (configuration is null)
