@@ -148,7 +148,7 @@ internal sealed class OpcPackageWriter
     }
 
     /// <summary>Text with the characters XML 1.0 cannot hold left out; surrogate pairs are kept.</summary>
-    private static string XmlSafe(string text)
+    internal static string XmlSafe(string text)
     {
         StringBuilder clean = new(text.Length);
         for (int i = 0; i < text.Length; i++)

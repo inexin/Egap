@@ -857,7 +857,7 @@ internal sealed partial class DocxReader
         switch (element.Name.LocalName)
         {
             case "bookmarkStart":
-                if (element.W("name") is not { } name || id is null)
+                if (element.W("name") is not { Length: > 0 } name || id is null)
                 {
                     return null;
                 }

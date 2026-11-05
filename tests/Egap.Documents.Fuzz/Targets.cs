@@ -2,7 +2,7 @@ namespace Egap.Documents.Fuzz;
 
 /// <summary>
 /// The fuzz targets for Egap.Documents' readers. Markdown has no invalid input, so its reader must never throw; the DOCX
-/// RTF and ODT readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). HTML has no
+/// RTF, DOC and ODT readers may throw only <see cref="DocumentException"/> (a <see cref="DocumentLimitException"/> included). HTML has no
 /// invalid input either. Anything else is a crash, and AFL++ reports hangs.
 /// </summary>
 internal static class Targets
@@ -13,6 +13,7 @@ internal static class Targets
         ["package"] = Package,
         ["docx"] = DocxFile,
         ["rtf"] = RtfFile,
+        ["doc"] = DocFile,
         ["odt"] = OdtFile,
         ["odfcrypt"] = EncryptedOdtFile,
         ["cfb"] = CompoundFileTarget,
@@ -397,6 +398,32 @@ internal static class Targets
             RtfFormat.Save(document, stream);
             return stream.ToArray();
         }
+    }
+
+    /// <summary>
+    /// Any bytes read as a binary Word document; may throw only <see cref="DocumentException"/>. The model must answer its
+    /// text, list labels and effective formats and clone, and the DOCX writer must write it as DOCX that reads again.
+    /// </summary>
+    private static void DocFile(Stream input)
+    {
+        using MemoryStream bytes = new();
+        input.CopyTo(bytes);
+        Document document;
+        try
+        {
+            document = Egap.Documents.Doc.DocReader.Read(bytes.ToArray(), new DocumentLimits { MaxPartSize = 64 * 1024 * 1024 }, out _);
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+
+        Exercise(document);
+        _ = document.Clone();
+        using MemoryStream written = new();
+        Egap.Documents.Docx.DocxWriter.Write(document, written, true);
+        written.Position = 0;
+        _ = Egap.Documents.DocxFormat.Load(written).GetText();
     }
 
     /// <summary>
