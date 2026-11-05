@@ -56,12 +56,13 @@ internal sealed class DependencyGraph
 
     /// <summary>
     /// Records the formula at <paramref name="cell"/>, replacing what it read before, and notes it as changed. A volatile
-    /// formula (one calling NOW, RAND or INDIRECT, say) is calculated in every plan.
+    /// formula (one calling NOW, RAND or INDIRECT, say) is calculated in every plan. An array formula gives values to the
+    /// cells of <paramref name="output"/> as well as its own, so the formulas reading those cells come after it.
     /// </summary>
-    public void Set(CellKey cell, ReadOnlySpan<Precedent> precedents, bool isVolatile)
+    public void Set(CellKey cell, ReadOnlySpan<Precedent> precedents, bool isVolatile, RangeAddress? output = null)
     {
         Remove(cell);
-        Node node = new(cell, precedents.ToArray());
+        Node node = new(cell, precedents.ToArray(), output);
         nodes.Add(cell.Packed, node);
         foreach (Precedent precedent in node.Precedents)
         {
@@ -101,11 +102,18 @@ internal sealed class DependencyGraph
     /// <summary>Whether anything was noted since the last plan.</summary>
     public bool HasChanges => all || changed.Count > 0 || volatiles.Count > 0;
 
-    /// <summary>The formula cells that read <paramref name="cell"/>.</summary>
+    /// <summary>The formula cells that read <paramref name="cell"/>, or the range of the array formula it holds.</summary>
     public IEnumerable<CellKey> Dependents(CellKey cell)
     {
         List<Node> found = [];
         Readers(cell, found);
+        if (nodes.TryGetValue(cell.Packed, out Node? node) && node.Output is { } output)
+        {
+            OutputReaders(cell, output, found);
+            HashSet<Node> once = [];
+            found.RemoveAll(n => !once.Add(n));
+        }
+
         return found.Select(n => n.Key);
     }
 
@@ -174,7 +182,13 @@ internal sealed class DependencyGraph
         for (int i = 0; i < walk.Nodes.Count; i++)
         {
             found.Clear();
-            Readers(walk.Nodes[i].Key, found);
+            Node source = walk.Nodes[i];
+            Readers(source.Key, found);
+            if (source.Output is { } output)
+            {
+                OutputReaders(source.Key, output, found);
+            }
+
             walk.EdgeStart.Add(walk.Edges.Count);
             foreach (Node reader in found)
             {
@@ -437,6 +451,28 @@ internal sealed class DependencyGraph
         }
     }
 
+    /// <summary>Adds the formulas reading any cell of an array formula's range but its own, each once.</summary>
+    private void OutputReaders(CellKey anchor, RangeAddress output, List<Node> found)
+    {
+        int start = found.Count;
+        for (int row = output.First.Row; row <= output.Last.Row; row++)
+        {
+            for (int column = output.First.Column; column <= output.Last.Column; column++)
+            {
+                if (row != anchor.Row || column != anchor.Column)
+                {
+                    Readers(new CellKey(anchor.Sheet, row, column), found);
+                }
+            }
+        }
+
+        if (found.Count - start > 1)
+        {
+            HashSet<Node> once = [];
+            found.RemoveAll(n => !once.Add(n));
+        }
+    }
+
     private static void Append(object readers, List<Node> found)
     {
         if (readers is Node one)
@@ -572,11 +608,14 @@ internal sealed class DependencyGraph
     }
 
     /// <summary>A formula cell and the ranges it reads.</summary>
-    private sealed class Node(CellKey key, Precedent[] precedents)
+    private sealed class Node(CellKey key, Precedent[] precedents, RangeAddress? output)
     {
         public CellKey Key { get; } = key;
 
         public Precedent[] Precedents { get; } = precedents;
+
+        /// <summary>The range an array formula fills, its own cell included; null for an ordinary formula.</summary>
+        public RangeAddress? Output { get; } = output;
 
         /// <summary>The plan this node was last numbered in, and its number there.</summary>
         public int Stamp { get; set; }

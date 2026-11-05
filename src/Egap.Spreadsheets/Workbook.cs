@@ -42,6 +42,24 @@ public sealed class Workbook
     /// <summary>How the workbook calculates: when, whether circular references iterate, and whether in parallel.</summary>
     public CalculationSettings Calculation { get; } = new();
 
+    /// <summary>
+    /// Calculates the formulas that need it, as Excel's F9 does: those reading a cell whose value or formula changed since
+    /// the last calculation, the volatile ones (NOW, RAND, INDIRECT and the like), and the formulas reading their results,
+    /// each after what it reads. A loaded workbook keeps the results Excel saved until its cells change; one changed since it
+    /// was loaded or made has every formula calculated the first time. Independent formulas are calculated in parallel when
+    /// <see cref="CalculationSettings.Concurrent"/> is on, and circular references iterate when
+    /// <see cref="CalculationSettings.Iterate"/> is. A function Egap does not have gives #NAME?.
+    /// </summary>
+    /// <returns>How many formulas were calculated, and the circular references met.</returns>
+    public CalculationResult Calculate() => (Calculator ??= new Recalculation.Calculator(this)).Calculate(full: false);
+
+    /// <summary>Calculates every formula in the workbook, as Excel's Ctrl+Alt+F9 does, whatever changed.</summary>
+    /// <returns>How many formulas were calculated, and the circular references met.</returns>
+    public CalculationResult CalculateFull() => (Calculator ??= new Recalculation.Calculator(this)).Calculate(full: true);
+
+    /// <summary>The workbook's calculation once one has run: compiled formulas and their dependency graph, kept up to date.</summary>
+    internal Recalculation.Calculator? Calculator { get; private set; }
+
     /// <summary>The kind of file the workbook was loaded from, and the kind a save to a stream writes when the options name none.</summary>
     public WorkbookFormat Format { get; set; }
 

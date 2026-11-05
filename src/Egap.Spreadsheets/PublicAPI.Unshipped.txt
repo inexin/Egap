@@ -7,6 +7,11 @@ Egap.Spreadsheets.CalculationMode
 Egap.Spreadsheets.CalculationMode.Automatic = 0 -> Egap.Spreadsheets.CalculationMode
 Egap.Spreadsheets.CalculationMode.AutomaticExceptTables = 1 -> Egap.Spreadsheets.CalculationMode
 Egap.Spreadsheets.CalculationMode.Manual = 2 -> Egap.Spreadsheets.CalculationMode
+Egap.Spreadsheets.CalculationResult
+Egap.Spreadsheets.CalculationResult.Calculated.get -> long
+Egap.Spreadsheets.CalculationResult.CircularReferences.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!>!
+Egap.Spreadsheets.CalculationResult.Converged.get -> bool
+Egap.Spreadsheets.CalculationResult.Iterations.get -> int
 Egap.Spreadsheets.CalculationSettings
 Egap.Spreadsheets.CalculationSettings.CalculationSettings() -> void
 Egap.Spreadsheets.CalculationSettings.Concurrent.get -> bool
@@ -724,6 +729,8 @@ Egap.Spreadsheets.TableTotalsFunction.StandardDeviation = 7 -> Egap.Spreadsheets
 Egap.Spreadsheets.TableTotalsFunction.Sum = 1 -> Egap.Spreadsheets.TableTotalsFunction
 Egap.Spreadsheets.TableTotalsFunction.Variance = 8 -> Egap.Spreadsheets.TableTotalsFunction
 Egap.Spreadsheets.Workbook
+Egap.Spreadsheets.Workbook.Calculate() -> Egap.Spreadsheets.CalculationResult!
+Egap.Spreadsheets.Workbook.CalculateFull() -> Egap.Spreadsheets.CalculationResult!
 Egap.Spreadsheets.Workbook.Calculation.get -> Egap.Spreadsheets.CalculationSettings!
 Egap.Spreadsheets.Workbook.Culture.get -> System.Globalization.CultureInfo!
 Egap.Spreadsheets.Workbook.Culture.set -> void
@@ -937,3 +944,5 @@ static Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream! stream, Egap.Spreads
 ~override Egap.Spreadsheets.DrawingPosition.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.DrawingPosition.ToString() -> string
 ~override Egap.Spreadsheets.RangeAddress.Equals(object obj) -> bool
+Egap.Spreadsheets.Cell.ArrayRange.get -> Egap.Spreadsheets.CellRange?
+Egap.Spreadsheets.CellRange.SetArrayFormula(string! formula) -> void

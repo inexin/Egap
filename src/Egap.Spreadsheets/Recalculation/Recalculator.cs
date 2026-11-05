@@ -19,12 +19,13 @@ internal static class Recalculator
     /// <summary>
     /// Calculates the plan's formulas through <paramref name="calculate"/>. Formulas of a step that is not a cycle read none of
     /// each other, so with <paramref name="parallel"/> on, a large step is spread over threads; <paramref name="calculate"/>
-    /// must then be safe to call from several threads for different cells. A cycle is calculated in cell order, over and over
+    /// must then be safe to call from several threads for different cells, except for the cells <paramref name="serial"/>
+    /// names (array formulas that write other cells, say), whose steps run on the calling thread. A cycle is calculated in cell order, over and over
     /// up to <see cref="CalculationSettings.MaxIterations"/> times until no value moves by more than
     /// <see cref="CalculationSettings.MaxChange"/>, when <see cref="CalculationSettings.Iterate"/> is on, and left as it was
     /// when it is off.
     /// </summary>
-    public static CalculationOutcome Run(CalculationPlan plan, CellCalculation calculate, CalculationSettings settings, bool parallel)
+    public static CalculationOutcome Run(CalculationPlan plan, CellCalculation calculate, CalculationSettings settings, bool parallel, Func<CellKey, bool>? serial = null)
     {
         long calculated = 0;
         int iterations = 0;
@@ -62,7 +63,7 @@ internal static class Recalculator
             }
 
             CellKey[] cells = step.Cells;
-            if (parallel && cells.Length >= ParallelThreshold)
+            if (parallel && cells.Length >= ParallelThreshold && (serial is null || !cells.Any(serial)))
             {
                 Parallel.ForEach(System.Collections.Concurrent.Partitioner.Create(0, cells.Length, ParallelThreshold / 4), range =>
                 {

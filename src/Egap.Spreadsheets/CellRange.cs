@@ -51,6 +51,39 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
         }
     }
 
+    /// <summary>
+    /// Makes the range an array formula, as Ctrl+Shift+Enter does in Excel: one formula, stored in the range's first cell,
+    /// that works on arrays and gives each cell of the range one element of its result. A result smaller than the range
+    /// gives #N/A past its end, and a single row or column is repeated across it. The cells' values are cleared until the
+    /// workbook is calculated; their styles stay. Setting another formula or value in the first cell ends the array formula.
+    /// </summary>
+    /// <param name="formula">The formula, in Excel's stored form; a leading <c>=</c> is dropped.</param>
+    /// <exception cref="ArgumentNullException">The formula is null.</exception>
+    /// <exception cref="ArgumentException">The formula is empty or longer than 8,192 characters.</exception>
+    /// <exception cref="FormulaException">The formula does not follow Excel's grammar.</exception>
+    /// <example>
+    /// <code>
+    /// sheet.Range("C1:C3").SetArrayFormula("A1:A3*B1:B3");
+    /// </code>
+    /// </example>
+    public void SetArrayFormula(string formula)
+    {
+        ArgumentNullException.ThrowIfNull(formula);
+        string text = formula.StartsWith('=') ? formula[1..] : formula;
+        ArgumentException.ThrowIfNullOrEmpty(text, nameof(formula));
+        if (text.Length > 8192)
+        {
+            throw new ArgumentException("A formula is at most 8,192 characters.", nameof(formula));
+        }
+
+        CellAddress first = Address.First;
+        Formulas.FormulaParser.Parse(text, r1c1: false, first);
+        Worksheet owner = sheet;
+        ForEach((row, column) => owner.SetValue(row, column, CellValue.Empty), occupiedOnly: true);
+        owner.SetFormula(first.Row, first.Column, text, CellValue.Empty,
+            [new System.Xml.Linq.XAttribute("t", "array"), new System.Xml.Linq.XAttribute("ref", Address.ToString())]);
+    }
+
     /// <summary>Sets every cell in the range to one value, keeping their styles.</summary>
     public void SetValue(CellValue value)
     {
