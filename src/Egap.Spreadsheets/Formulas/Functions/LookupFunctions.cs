@@ -404,7 +404,7 @@ internal static partial class FormulaFunctions
     /// <summary>INDIRECT: the reference written in text, in A1 or R1C1 style, or a defined name; #REF! for anything else.</summary>
     private static EvalValue Indirect(EvalValue[] arguments, EvalContext context)
     {
-        if (!Str(arguments[0], out string text, out EvalValue error) || !OptionalFlag(arguments, 1, true, out bool a1, out error))
+        if (!Str(arguments[0], context, out string text, out EvalValue error) || !OptionalFlag(arguments, 1, true, out bool a1, out error))
         {
             return error;
         }
@@ -442,7 +442,7 @@ internal static partial class FormulaFunctions
         string? sheet = null;
         if (arguments.Length > 4 && arguments[4].Kind != EvalKind.Missing)
         {
-            if (!Str(arguments[4], out string name, out error))
+            if (!Str(arguments[4], context, out string name, out error))
             {
                 return error;
             }

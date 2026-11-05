@@ -46,12 +46,12 @@ internal static partial class FormulaFunctions
         new("FIXED", 1, 3, Kinds.Value, Fixed),
         new("DOLLAR", 1, 2, Kinds.Value, Dollar),
         new("CONCATENATE", 1, 255, Kinds.Value, Concatenate),
-        new("CONCAT", 1, 254, Kinds.Any, (a, c) => Join(a, 0, "", ignoreEmpty: false)),
+        new("CONCAT", 1, 254, Kinds.Any, (a, c) => Join(a, 0, "", ignoreEmpty: false, c)),
         new("TEXTJOIN", 3, 252, [ArgumentKind.Any, ArgumentKind.Value, ArgumentKind.Any], TextJoin),
     ];
 
     private static FormulaFunction Text1(string name, Func<string, EvalContext, EvalValue> function) =>
-        new(name, 1, 1, Kinds.Value, (a, c) => Str(a[0], out string s, out EvalValue e) ? function(s, c) : e);
+        new(name, 1, 1, Kinds.Value, (a, c) => Str(a[0], c, out string s, out EvalValue e) ? function(s, c) : e);
 
     private static string Proper(string text, CultureInfo culture)
     {
@@ -135,7 +135,7 @@ internal static partial class FormulaFunctions
 
     private static EvalValue Side(EvalValue[] arguments, EvalContext context, bool left)
     {
-        if (!Str(arguments[0], out string text, out EvalValue error) || !Optional(arguments, 1, 1, context, out double count, out error))
+        if (!Str(arguments[0], context, out string text, out EvalValue error) || !Optional(arguments, 1, 1, context, out double count, out error))
         {
             return error;
         }
@@ -151,7 +151,7 @@ internal static partial class FormulaFunctions
 
     private static EvalValue Mid(EvalValue[] arguments, EvalContext context)
     {
-        if (!Str(arguments[0], out string text, out EvalValue error)
+        if (!Str(arguments[0], context, out string text, out EvalValue error)
             || !Num(arguments[1], context, out double start, out error)
             || !Num(arguments[2], context, out double count, out error))
         {
@@ -170,10 +170,10 @@ internal static partial class FormulaFunctions
 
     private static EvalValue Replace(EvalValue[] arguments, EvalContext context)
     {
-        if (!Str(arguments[0], out string text, out EvalValue error)
+        if (!Str(arguments[0], context, out string text, out EvalValue error)
             || !Num(arguments[1], context, out double start, out error)
             || !Num(arguments[2], context, out double count, out error)
-            || !Str(arguments[3], out string with, out error))
+            || !Str(arguments[3], context, out string with, out error))
         {
             return error;
         }
@@ -190,7 +190,7 @@ internal static partial class FormulaFunctions
 
     private static EvalValue Repeat(EvalValue[] arguments, EvalContext context)
     {
-        if (!Str(arguments[0], out string text, out EvalValue error) || !Num(arguments[1], context, out double times, out error))
+        if (!Str(arguments[0], context, out string text, out EvalValue error) || !Num(arguments[1], context, out double times, out error))
         {
             return error;
         }
@@ -205,9 +205,9 @@ internal static partial class FormulaFunctions
 
     private static EvalValue Substitute(EvalValue[] arguments, EvalContext context)
     {
-        if (!Str(arguments[0], out string text, out EvalValue error)
-            || !Str(arguments[1], out string old, out error)
-            || !Str(arguments[2], out string with, out error))
+        if (!Str(arguments[0], context, out string text, out EvalValue error)
+            || !Str(arguments[1], context, out string old, out error)
+            || !Str(arguments[2], context, out string with, out error))
         {
             return error;
         }
@@ -248,8 +248,8 @@ internal static partial class FormulaFunctions
     /// <summary>FIND (case kept, no wildcards) and SEARCH (case ignored, wildcards): the 1-based position, or #VALUE!.</summary>
     private static EvalValue Find(EvalValue[] arguments, EvalContext context, bool search)
     {
-        if (!Str(arguments[0], out string find, out EvalValue error)
-            || !Str(arguments[1], out string within, out error)
+        if (!Str(arguments[0], context, out string find, out EvalValue error)
+            || !Str(arguments[1], context, out string within, out error)
             || !Optional(arguments, 2, 1, context, out double start, out error))
         {
             return error;
@@ -286,7 +286,7 @@ internal static partial class FormulaFunctions
 
     private static EvalValue Exact(EvalValue[] arguments, EvalContext context)
     {
-        if (!Str(arguments[0], out string a, out EvalValue error) || !Str(arguments[1], out string b, out error))
+        if (!Str(arguments[0], context, out string a, out EvalValue error) || !Str(arguments[1], context, out string b, out error))
         {
             return error;
         }
@@ -312,14 +312,14 @@ internal static partial class FormulaFunctions
     {
         string decimalSeparator = context.Culture.NumberFormat.NumberDecimalSeparator;
         string groupSeparator = context.Culture.NumberFormat.NumberGroupSeparator;
-        if (!Str(arguments[0], out string text, out EvalValue error))
+        if (!Str(arguments[0], context, out string text, out EvalValue error))
         {
             return error;
         }
 
         if (arguments.Length > 1)
         {
-            if (!Str(arguments[1], out decimalSeparator, out error))
+            if (!Str(arguments[1], context, out decimalSeparator, out error))
             {
                 return error;
             }
@@ -329,7 +329,7 @@ internal static partial class FormulaFunctions
 
         if (arguments.Length > 2)
         {
-            if (!Str(arguments[2], out groupSeparator, out error))
+            if (!Str(arguments[2], context, out groupSeparator, out error))
             {
                 return error;
             }
@@ -390,7 +390,7 @@ internal static partial class FormulaFunctions
             return value;
         }
 
-        if (!Str(arguments[1], out string code, out EvalValue error))
+        if (!Str(arguments[1], context, out string code, out EvalValue error))
         {
             return error;
         }
@@ -472,7 +472,7 @@ internal static partial class FormulaFunctions
         StringBuilder result = new();
         foreach (EvalValue argument in arguments)
         {
-            if (!Str(argument, out string text, out EvalValue error))
+            if (!Str(argument, context, out string text, out EvalValue error))
             {
                 return error;
             }
@@ -492,7 +492,7 @@ internal static partial class FormulaFunctions
         List<string> delimiters = [];
         foreach ((EvalValue value, bool _) in Scalars(arguments[0]))
         {
-            if (!Str(value, out string text, out EvalValue error))
+            if (!Str(value, context, out string text, out EvalValue error))
             {
                 return error;
             }
@@ -505,13 +505,14 @@ internal static partial class FormulaFunctions
             return flagError;
         }
 
-        return Join(arguments, 2, delimiters.Count == 0 ? [""] : [.. delimiters], ignoreEmpty);
+        return Join(arguments, 2, delimiters.Count == 0 ? [""] : [.. delimiters], ignoreEmpty, context);
     }
 
-    private static EvalValue Join(EvalValue[] arguments, int first, string delimiter, bool ignoreEmpty) => Join(arguments, first, [delimiter], ignoreEmpty);
+    private static EvalValue Join(EvalValue[] arguments, int first, string delimiter, bool ignoreEmpty, EvalContext context) =>
+        Join(arguments, first, [delimiter], ignoreEmpty, context);
 
     /// <summary>CONCAT and TEXTJOIN: every value of the arguments, references and arrays cell by cell, joined.</summary>
-    private static EvalValue Join(EvalValue[] arguments, int first, string[] delimiters, bool ignoreEmpty)
+    private static EvalValue Join(EvalValue[] arguments, int first, string[] delimiters, bool ignoreEmpty, EvalContext context)
     {
         StringBuilder result = new();
         int count = 0;
@@ -519,7 +520,7 @@ internal static partial class FormulaFunctions
         {
             foreach (EvalValue value in Cells(arguments[i]))
             {
-                if (!Str(value, out string text, out EvalValue error))
+                if (!Str(value, context, out string text, out EvalValue error))
                 {
                     return error;
                 }

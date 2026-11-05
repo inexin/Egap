@@ -60,6 +60,51 @@ public sealed class FunctionOracleTests
         Assert.True(failures.Length == 0, failures.ToString());
     }
 
+    /// <summary>
+    /// Whole workbooks Excel built, calculated and saved (<c>tools/excel-workbook-oracle.ps1</c>): loaded, calculated again
+    /// in full by <see cref="Workbook.CalculateFull"/>, and every formula cell compared with the result Excel saved.
+    /// </summary>
+    [Theory]
+    [InlineData("functions.xlsx")]
+    [InlineData("calculation.xlsx")]
+    public void WorkbooksCalculateAsExcel(string file)
+    {
+        Workbook book = Workbook.Load(Path.Combine(Folder, file));
+        book.Culture = Culture(File.ReadAllLines(Path.Combine(Folder, "functions.excel.tsv"))[0]);
+        List<(Cell Cell, CellValue Saved)> formulas = [];
+        foreach (Worksheet sheet in book.Worksheets)
+        {
+            if (sheet.UsedRange is { } used)
+            {
+                formulas.AddRange(used.UsedCells.Where(c => c.Formula is not null || c.ArrayRange is not null).Select(c => (c, c.Value)));
+            }
+        }
+
+        CalculationResult result = book.CalculateFull();
+        Assert.Empty(result.CircularReferences);
+        Dictionary<string, string> accepted = Accepted();
+        StringBuilder failures = new();
+        foreach ((Cell cell, CellValue saved) in formulas)
+        {
+            string formula = (cell.Formula ?? cell.Worksheet[cell.ArrayRange!.Value.Address.First.ToString()].Formula ?? "").Replace("_xlfn.", "", StringComparison.Ordinal);
+            if (!Same(cell.Value, saved) && !accepted.ContainsKey(formula))
+            {
+                failures.AppendLine(CultureInfo.InvariantCulture, $"{cell.Worksheet.Name}!{cell.Address} {formula}: Excel {saved.Kind} {saved}, Egap {cell.Value.Kind} {cell.Value}");
+            }
+        }
+
+        Assert.True(formulas.Count > 50, $"only {formulas.Count} formulas");
+        Assert.True(failures.Length == 0, failures.ToString());
+    }
+
+    private static bool Same(CellValue actual, CellValue saved) => saved.Kind switch
+    {
+        CellValueKind.Number => actual.Kind == CellValueKind.Number && Close(actual.Number, saved.Number),
+        CellValueKind.Empty => actual.IsEmpty || (actual.Kind == CellValueKind.Number && actual.Number == 0)
+            || (actual.Kind == CellValueKind.Text && actual.Text.Length == 0),
+        _ => actual == saved,
+    };
+
     /// <summary>The culture Excel ran in, with the separators it used, which the PC's settings can change.</summary>
     private static CultureInfo Culture(string header)
     {

@@ -312,7 +312,7 @@ internal static partial class FormulaFunctions
     {
         if (!Day(arguments[0], context, out double start, out EvalValue error)
             || !Day(arguments[1], context, out double end, out error)
-            || !Str(arguments[2], out string unit, out error))
+            || !Str(arguments[2], context, out string unit, out error))
         {
             return error;
         }

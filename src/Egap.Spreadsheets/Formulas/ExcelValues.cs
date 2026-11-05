@@ -53,8 +53,11 @@ internal static class ExcelValues
         }
     }
 
-    /// <summary>A scalar as text: numbers with up to 15 significant digits, TRUE or FALSE, blank as empty text.</summary>
-    public static bool TryText(in EvalValue value, out string text, out EvalValue error)
+    /// <summary>
+    /// A scalar as text: numbers with up to 15 significant digits and the culture's decimal separator, TRUE or FALSE,
+    /// blank as empty text.
+    /// </summary>
+    public static bool TryText(in EvalValue value, CultureInfo culture, out string text, out EvalValue error)
     {
         error = default;
         switch (value.Kind)
@@ -63,7 +66,7 @@ internal static class ExcelValues
                 text = value.Text;
                 return true;
             case EvalKind.Number:
-                text = NumberText(value.Number);
+                text = NumberText(value.Number, culture);
                 return true;
             case EvalKind.Boolean:
                 text = value.Boolean ? "TRUE" : "FALSE";
@@ -114,8 +117,16 @@ internal static class ExcelValues
         }
     }
 
-    /// <summary>A number as Excel writes it into text: up to 15 significant digits, in E notation when it is very large or small.</summary>
-    public static string NumberText(double number) => number.ToString("G15", CultureInfo.InvariantCulture);
+    /// <summary>
+    /// A number as Excel writes it into text: up to 15 significant digits, in E notation when it is very large or small,
+    /// with the culture's decimal separator (<c>=1.5&amp;""</c> is <c>1,5</c> where the decimal separator is a comma).
+    /// </summary>
+    public static string NumberText(double number, CultureInfo culture)
+    {
+        string text = number.ToString("G15", CultureInfo.InvariantCulture);
+        string separator = culture.NumberFormat.NumberDecimalSeparator;
+        return separator == "." ? text : text.Replace(".", separator, StringComparison.Ordinal);
+    }
 
     /// <summary>
     /// Reads text as a number the way Excel does when text meets arithmetic: a number in the workbook's culture with

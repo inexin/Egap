@@ -726,7 +726,7 @@ internal static class FormulaEvaluator
     {
         if (op == BinaryOperator.Concatenate)
         {
-            if (!ExcelValues.TryText(a, out string x, out EvalValue error) || !ExcelValues.TryText(b, out string y, out error))
+            if (!ExcelValues.TryText(a, context.Culture, out string x, out EvalValue error) || !ExcelValues.TryText(b, context.Culture, out string y, out error))
             {
                 return error;
             }

@@ -173,7 +173,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   and statistics (COUNTIF, SUMIF, AVERAGEIF and their IFS forms with Excel's criteria, MEDIAN, STDEV, PERCENTILE, RANK,
   CORREL, FORECAST and more), plus SUBTOTAL. Array arguments, as SUMPRODUCT's and INDEX's, take range expressions whole.
   The functions are checked against Excel 16.0 on 700 cases (`tools/excel-function-oracle.ps1`), with LibreOffice's
-  answers alongside (`tools/libreoffice-function-oracle.py`).
+  answers alongside (`tools/libreoffice-function-oracle.py`), and workbooks Excel calculated and saved are calculated
+  again and compared cell by cell (`tools/excel-workbook-oracle.ps1`).
+- A number joined into text (`&`, CONCATENATE, TEXTJOIN and the text functions) takes the workbook culture's decimal
+  separator, as Excel's does: `=1.5&""` is `1,5` where the decimal separator is a comma.
 - `FunctionRegistry` lists the built-in functions and adds functions of your own for formulas to call, as user-defined
   functions in Excel; `FunctionArgument` gives a call's arguments as values or as the cells of a range.
 

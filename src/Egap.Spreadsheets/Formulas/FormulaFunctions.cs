@@ -183,7 +183,8 @@ internal static partial class FormulaFunctions
         return ExcelValues.TryBoolean(arguments[index], out flag, out error);
     }
 
-    private static bool Str(in EvalValue value, out string text, out EvalValue error) => ExcelValues.TryText(value, out text, out error);
+    private static bool Str(in EvalValue value, EvalContext context, out string text, out EvalValue error) =>
+        ExcelValues.TryText(value, context.Culture, out text, out error);
 
     /// <summary>
     /// Every scalar an argument holds, as an aggregate sees it: the cells of a reference that hold a value, an array's
