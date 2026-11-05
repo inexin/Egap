@@ -117,7 +117,7 @@ internal static class XlsxWriter
 
             sheetIds[sheet] = id;
             List<(string Name, XElement Element)> objects = SheetObjectWriter.Write(sheet, ++sheetNumber, name, rels, objectParts, objectState);
-            Add(new OutPart(name, XlsxNames.WorksheetType, SheetWriter.Write(sheet, strings, objects), rels));
+            Add(new OutPart(name, XlsxNames.WorksheetType, WorksheetPartWriter.Write(sheet, strings, objects), rels));
             workbookRels.Add(new OpcRelationship(id, XlsxNames.WorksheetRelationship, RelativeTarget(workbookName, name), false, name));
         }
 
@@ -391,7 +391,7 @@ internal sealed class StringMap(SharedStringTable table)
     public byte[] Write()
     {
         using MemoryStream output = new();
-        using (XmlWriter writer = XmlWriter.Create(output, SheetWriter.Settings))
+        using (XmlWriter writer = XmlWriter.Create(output, WorksheetPartWriter.Settings))
         {
             writer.WriteStartDocument(standalone: true);
             writer.WriteStartElement("sst", XlsxNames.MainUri);
@@ -406,7 +406,7 @@ internal sealed class StringMap(SharedStringTable table)
                 }
 
                 writer.WriteStartElement("si", XlsxNames.MainUri);
-                SheetWriter.WriteText(writer, "t", table[index]);
+                WorksheetPartWriter.WriteText(writer, "t", table[index]);
                 writer.WriteEndElement();
             }
 
@@ -421,7 +421,7 @@ internal sealed class StringMap(SharedStringTable table)
 /// Writes a worksheet part (18.3.1.99): the elements the model holds, from the file's own where it had them, the file's other
 /// elements in their places, and the cells streamed row by row.
 /// </summary>
-internal static class SheetWriter
+internal static class WorksheetPartWriter
 {
     public static readonly XmlWriterSettings Settings = new() { Encoding = new UTF8Encoding(false), Indent = false, NewLineHandling = NewLineHandling.Entitize };
 

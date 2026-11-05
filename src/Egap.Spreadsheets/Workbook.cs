@@ -162,7 +162,7 @@ public sealed class Workbook
         XlsxWriter.Write(this, stream, options?.Format ?? Format);
     }
 
-    private static bool IsCsv(string path) => Path.GetExtension(path).ToUpperInvariant() is ".CSV" or ".TSV" or ".TAB";
+    internal static bool IsCsv(string path) => Path.GetExtension(path).ToUpperInvariant() is ".CSV" or ".TSV" or ".TAB";
 
     private static WorkbookFormat? FormatOfExtension(string extension) => extension.ToUpperInvariant() switch
     {

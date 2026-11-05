@@ -577,6 +577,22 @@ Egap.Spreadsheets.SheetDrawingKind.Group = 3 -> Egap.Spreadsheets.SheetDrawingKi
 Egap.Spreadsheets.SheetDrawingKind.Other = 4 -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetDrawingKind.Picture = 0 -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetDrawingKind.Shape = 1 -> Egap.Spreadsheets.SheetDrawingKind
+Egap.Spreadsheets.SheetReader
+Egap.Spreadsheets.SheetReader.Cells.get -> System.Collections.Generic.IEnumerable<(int Column, Egap.Spreadsheets.CellValue Value)>!
+Egap.Spreadsheets.SheetReader.ColumnCount.get -> int
+Egap.Spreadsheets.SheetReader.Culture.get -> System.Globalization.CultureInfo!
+Egap.Spreadsheets.SheetReader.Culture.set -> void
+Egap.Spreadsheets.SheetReader.Date1904.get -> bool
+Egap.Spreadsheets.SheetReader.Dispose() -> void
+Egap.Spreadsheets.SheetReader.GetNumberFormat(int column) -> string!
+Egap.Spreadsheets.SheetReader.GetText(int column) -> string!
+Egap.Spreadsheets.SheetReader.Read() -> bool
+Egap.Spreadsheets.SheetReader.Row.get -> int
+Egap.Spreadsheets.SheetReader.SelectSheet(int index) -> void
+Egap.Spreadsheets.SheetReader.SelectSheet(string! name) -> void
+Egap.Spreadsheets.SheetReader.SheetName.get -> string!
+Egap.Spreadsheets.SheetReader.SheetNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Spreadsheets.SheetReader.this[int column].get -> Egap.Spreadsheets.CellValue
 Egap.Spreadsheets.SheetRow
 Egap.Spreadsheets.SheetRow.Collapsed.get -> bool
 Egap.Spreadsheets.SheetRow.Collapsed.set -> void
@@ -657,6 +673,18 @@ Egap.Spreadsheets.SheetVisibility
 Egap.Spreadsheets.SheetVisibility.Hidden = 1 -> Egap.Spreadsheets.SheetVisibility
 Egap.Spreadsheets.SheetVisibility.VeryHidden = 2 -> Egap.Spreadsheets.SheetVisibility
 Egap.Spreadsheets.SheetVisibility.Visible = 0 -> Egap.Spreadsheets.SheetVisibility
+Egap.Spreadsheets.SheetWriter
+Egap.Spreadsheets.SheetWriter.Date1904.get -> bool
+Egap.Spreadsheets.SheetWriter.Date1904.set -> void
+Egap.Spreadsheets.SheetWriter.Dispose() -> void
+Egap.Spreadsheets.SheetWriter.FreezeTopRows(int rows) -> void
+Egap.Spreadsheets.SheetWriter.Row.get -> int
+Egap.Spreadsheets.SheetWriter.SetColumnFormat(int column, string! numberFormat) -> void
+Egap.Spreadsheets.SheetWriter.SetColumnWidth(int column, double width) -> void
+Egap.Spreadsheets.SheetWriter.SkipRows(int count) -> void
+Egap.Spreadsheets.SheetWriter.StartSheet(string! name) -> void
+Egap.Spreadsheets.SheetWriter.WriteRow(Egap.Spreadsheets.CellStyle? style, params System.ReadOnlySpan<Egap.Spreadsheets.CellValue> values) -> void
+Egap.Spreadsheets.SheetWriter.WriteRow(params System.ReadOnlySpan<Egap.Spreadsheets.CellValue> values) -> void
 Egap.Spreadsheets.TableTotalsFunction
 Egap.Spreadsheets.TableTotalsFunction.Average = 4 -> Egap.Spreadsheets.TableTotalsFunction
 Egap.Spreadsheets.TableTotalsFunction.Count = 5 -> Egap.Spreadsheets.TableTotalsFunction
@@ -861,6 +889,12 @@ static Egap.Spreadsheets.RangeAddress.Parse(string! text) -> Egap.Spreadsheets.R
 static Egap.Spreadsheets.RangeAddress.Parse(System.ReadOnlySpan<char> text) -> Egap.Spreadsheets.RangeAddress
 static Egap.Spreadsheets.RangeAddress.TryParse(string? text, out Egap.Spreadsheets.RangeAddress range) -> bool
 static Egap.Spreadsheets.RangeAddress.TryParse(System.ReadOnlySpan<char> text, out Egap.Spreadsheets.RangeAddress range) -> bool
+static Egap.Spreadsheets.SheetReader.Open(string! path, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.SheetReader!
+static Egap.Spreadsheets.SheetReader.Open(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.SheetReader!
+static Egap.Spreadsheets.SheetReader.OpenCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.SheetReader!
+static Egap.Spreadsheets.SheetWriter.Create(string! path, Egap.Spreadsheets.CsvOptions? csvOptions = null) -> Egap.Spreadsheets.SheetWriter!
+static Egap.Spreadsheets.SheetWriter.Create(System.IO.Stream! stream) -> Egap.Spreadsheets.SheetWriter!
+static Egap.Spreadsheets.SheetWriter.CreateCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.SheetWriter!
 static Egap.Spreadsheets.Workbook.Create() -> Egap.Spreadsheets.Workbook!
 static Egap.Spreadsheets.Workbook.CreateEmpty() -> Egap.Spreadsheets.Workbook!
 static Egap.Spreadsheets.Workbook.Load(string! path, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.Workbook!

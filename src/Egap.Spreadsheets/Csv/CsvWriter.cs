@@ -91,7 +91,7 @@ internal static class CsvWriter
     }
 
     /// <summary>Writes a field, quoted when it holds the separator, a quote or a line break, or starts or ends with a space.</summary>
-    private static void WriteField(StreamWriter writer, string text, char separator)
+    internal static void WriteField(TextWriter writer, string text, char separator)
     {
         bool quote = text.Length > 0 && (text[0] == ' ' || text[^1] == ' ' || text.AsSpan().IndexOfAny(separator, '"', '\n') >= 0 || text.Contains('\r', StringComparison.Ordinal));
         if (!quote)
