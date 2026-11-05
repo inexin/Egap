@@ -153,7 +153,9 @@ internal static class SignCommand
             if (extension is ".pfx" or ".p12")
             {
                 string? secret = password() ?? SecretOptions.Prompt(session, $"Password for {cert}");
-                X509Certificate2Collection all = X509CertificateLoader.LoadPkcs12CollectionFromFile(path, secret, X509KeyStorageFlags.EphemeralKeySet);
+                // macOS cannot keep a PFX key in memory only (EphemeralKeySet throws there); its default puts the key in a temporary keychain.
+                X509KeyStorageFlags storage = OperatingSystem.IsMacOS() ? X509KeyStorageFlags.DefaultKeySet : X509KeyStorageFlags.EphemeralKeySet;
+                X509Certificate2Collection all = X509CertificateLoader.LoadPkcs12CollectionFromFile(path, secret, storage);
                 certificate = all.FirstOrDefault(c => c.HasPrivateKey) ?? throw new UsageException($"{cert} holds no certificate with a private key.");
                 chain.AddRange(all.Where(c => !ReferenceEquals(c, certificate)));
             }

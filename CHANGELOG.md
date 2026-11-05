@@ -20,6 +20,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `convert` writes OpenDocument Text: `.odt`, `.ott`, `.fodt` and `.fott`, from any input it reads. ODT takes
   `--set version=1.2|1.3|1.4`, `--set encryption=aes-cbc|aes-gcm` and `--set unknown-markup=false`, and
   `--save-password` encrypts an ODT or OTT output.
+- `sign --cert` with a PFX or P12 file works on macOS; before, it failed there because macOS cannot hold the key in
+  memory only.
 - Built on System.CommandLine 2.0.14 and Egami.Cli.Host 1.4.0.
 
 ## Egap.Documents 2.3.0 (unreleased)
