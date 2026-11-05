@@ -258,6 +258,24 @@ Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Baseline = 0 -> Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Subscript = 2 -> Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Superscript = 1 -> Egap.Spreadsheets.CellVerticalTextPosition
+Egap.Spreadsheets.CsvOptions
+Egap.Spreadsheets.CsvOptions.CsvOptions() -> void
+Egap.Spreadsheets.CsvOptions.Culture.get -> System.Globalization.CultureInfo!
+Egap.Spreadsheets.CsvOptions.Culture.set -> void
+Egap.Spreadsheets.CsvOptions.DetectTypes.get -> bool
+Egap.Spreadsheets.CsvOptions.DetectTypes.set -> void
+Egap.Spreadsheets.CsvOptions.Encoding.get -> System.Text.Encoding?
+Egap.Spreadsheets.CsvOptions.Encoding.set -> void
+Egap.Spreadsheets.CsvOptions.NewLine.get -> string!
+Egap.Spreadsheets.CsvOptions.NewLine.set -> void
+Egap.Spreadsheets.CsvOptions.Separator.get -> char?
+Egap.Spreadsheets.CsvOptions.Separator.set -> void
+Egap.Spreadsheets.CsvOptions.SheetName.get -> string!
+Egap.Spreadsheets.CsvOptions.SheetName.set -> void
+Egap.Spreadsheets.CsvOptions.WriteFormattedText.get -> bool
+Egap.Spreadsheets.CsvOptions.WriteFormattedText.set -> void
+Egap.Spreadsheets.CsvOptions.WriteSeparatorHint.get -> bool
+Egap.Spreadsheets.CsvOptions.WriteSeparatorHint.set -> void
 Egap.Spreadsheets.DefinedName
 Egap.Spreadsheets.DefinedName.Comment.get -> string?
 Egap.Spreadsheets.DefinedName.Comment.set -> void
@@ -281,6 +299,11 @@ Egap.Spreadsheets.MergedCellCollection.Count.get -> int
 Egap.Spreadsheets.MergedCellCollection.Find(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.RangeAddress?
 Egap.Spreadsheets.MergedCellCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.RangeAddress>!
 Egap.Spreadsheets.MergedCellCollection.Remove(Egap.Spreadsheets.RangeAddress range) -> bool
+Egap.Spreadsheets.NumberFormatCode
+Egap.Spreadsheets.NumberFormatCode.Code.get -> string!
+Egap.Spreadsheets.NumberFormatCode.Format(Egap.Spreadsheets.CellValue value, System.Globalization.CultureInfo? culture = null, bool date1904 = false) -> string!
+Egap.Spreadsheets.NumberFormatCode.GetColor(Egap.Spreadsheets.CellValue value) -> Egap.Spreadsheets.CellColor?
+Egap.Spreadsheets.NumberFormatCode.IsDateTime.get -> bool
 Egap.Spreadsheets.PageSetup
 Egap.Spreadsheets.PageSetup.BottomMargin.get -> double
 Egap.Spreadsheets.PageSetup.BottomMargin.set -> void
@@ -329,29 +352,6 @@ Egap.Spreadsheets.PrintOrientation.Portrait = 1 -> Egap.Spreadsheets.PrintOrient
 Egap.Spreadsheets.PrintPageOrder
 Egap.Spreadsheets.PrintPageOrder.DownThenOver = 0 -> Egap.Spreadsheets.PrintPageOrder
 Egap.Spreadsheets.PrintPageOrder.OverThenDown = 1 -> Egap.Spreadsheets.PrintPageOrder
-Egap.Spreadsheets.CsvOptions
-Egap.Spreadsheets.CsvOptions.CsvOptions() -> void
-Egap.Spreadsheets.CsvOptions.Culture.get -> System.Globalization.CultureInfo!
-Egap.Spreadsheets.CsvOptions.Culture.set -> void
-Egap.Spreadsheets.CsvOptions.DetectTypes.get -> bool
-Egap.Spreadsheets.CsvOptions.DetectTypes.set -> void
-Egap.Spreadsheets.CsvOptions.Encoding.get -> System.Text.Encoding?
-Egap.Spreadsheets.CsvOptions.Encoding.set -> void
-Egap.Spreadsheets.CsvOptions.NewLine.get -> string!
-Egap.Spreadsheets.CsvOptions.NewLine.set -> void
-Egap.Spreadsheets.CsvOptions.Separator.get -> char?
-Egap.Spreadsheets.CsvOptions.Separator.set -> void
-Egap.Spreadsheets.CsvOptions.SheetName.get -> string!
-Egap.Spreadsheets.CsvOptions.SheetName.set -> void
-Egap.Spreadsheets.CsvOptions.WriteFormattedText.get -> bool
-Egap.Spreadsheets.CsvOptions.WriteFormattedText.set -> void
-Egap.Spreadsheets.CsvOptions.WriteSeparatorHint.get -> bool
-Egap.Spreadsheets.CsvOptions.WriteSeparatorHint.set -> void
-Egap.Spreadsheets.NumberFormatCode
-Egap.Spreadsheets.NumberFormatCode.Code.get -> string!
-Egap.Spreadsheets.NumberFormatCode.Format(Egap.Spreadsheets.CellValue value, System.Globalization.CultureInfo? culture = null, bool date1904 = false) -> string!
-Egap.Spreadsheets.NumberFormatCode.GetColor(Egap.Spreadsheets.CellValue value) -> Egap.Spreadsheets.CellColor?
-Egap.Spreadsheets.NumberFormatCode.IsDateTime.get -> bool
 Egap.Spreadsheets.RangeAddress
 Egap.Spreadsheets.RangeAddress.CellCount.get -> long
 Egap.Spreadsheets.RangeAddress.ColumnCount.get -> int
@@ -424,6 +424,8 @@ Egap.Spreadsheets.SheetVisibility.Hidden = 1 -> Egap.Spreadsheets.SheetVisibilit
 Egap.Spreadsheets.SheetVisibility.VeryHidden = 2 -> Egap.Spreadsheets.SheetVisibility
 Egap.Spreadsheets.SheetVisibility.Visible = 0 -> Egap.Spreadsheets.SheetVisibility
 Egap.Spreadsheets.Workbook
+Egap.Spreadsheets.Workbook.Culture.get -> System.Globalization.CultureInfo!
+Egap.Spreadsheets.Workbook.Culture.set -> void
 Egap.Spreadsheets.Workbook.Date1904.get -> bool
 Egap.Spreadsheets.Workbook.Date1904.set -> void
 Egap.Spreadsheets.Workbook.Format.get -> Egap.Spreadsheets.WorkbookFormat
@@ -431,8 +433,6 @@ Egap.Spreadsheets.Workbook.Format.set -> void
 Egap.Spreadsheets.Workbook.Names.get -> Egap.Spreadsheets.DefinedNameCollection!
 Egap.Spreadsheets.Workbook.Save(string! path, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
 Egap.Spreadsheets.Workbook.Save(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
-Egap.Spreadsheets.Workbook.Culture.get -> System.Globalization.CultureInfo!
-Egap.Spreadsheets.Workbook.Culture.set -> void
 Egap.Spreadsheets.Workbook.Worksheets.get -> Egap.Spreadsheets.WorksheetCollection!
 Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookFormat.Xlsm = 1 -> Egap.Spreadsheets.WorkbookFormat
@@ -440,10 +440,14 @@ Egap.Spreadsheets.WorkbookFormat.Xlsx = 0 -> Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookFormat.Xltm = 3 -> Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookFormat.Xltx = 2 -> Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookLoadOptions
+Egap.Spreadsheets.WorkbookLoadOptions.Csv.get -> Egap.Spreadsheets.CsvOptions?
+Egap.Spreadsheets.WorkbookLoadOptions.Csv.init -> void
 Egap.Spreadsheets.WorkbookLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
 Egap.Spreadsheets.WorkbookLoadOptions.Limits.init -> void
 Egap.Spreadsheets.WorkbookLoadOptions.WorkbookLoadOptions() -> void
 Egap.Spreadsheets.WorkbookSaveOptions
+Egap.Spreadsheets.WorkbookSaveOptions.Csv.get -> Egap.Spreadsheets.CsvOptions?
+Egap.Spreadsheets.WorkbookSaveOptions.Csv.init -> void
 Egap.Spreadsheets.WorkbookSaveOptions.Format.get -> Egap.Spreadsheets.WorkbookFormat?
 Egap.Spreadsheets.WorkbookSaveOptions.Format.init -> void
 Egap.Spreadsheets.WorkbookSaveOptions.WorkbookSaveOptions() -> void
@@ -463,10 +467,10 @@ Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress address) -> Ega
 Egap.Spreadsheets.Worksheet.Range(int firstRow, int firstColumn, int lastRow, int lastColumn) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Range(string! address) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Rows.get -> Egap.Spreadsheets.SheetRowCollection!
-Egap.Spreadsheets.Worksheet.TabColor.get -> Egap.Spreadsheets.CellColor?
-Egap.Spreadsheets.Worksheet.TabColor.set -> void
 Egap.Spreadsheets.Worksheet.SaveCsv(string! path, Egap.Spreadsheets.CsvOptions? options = null) -> void
 Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> void
+Egap.Spreadsheets.Worksheet.TabColor.get -> Egap.Spreadsheets.CellColor?
+Egap.Spreadsheets.Worksheet.TabColor.set -> void
 Egap.Spreadsheets.Worksheet.this[Egap.Spreadsheets.CellAddress address].get -> Egap.Spreadsheets.Cell!
 Egap.Spreadsheets.Worksheet.this[int row, int column].get -> Egap.Spreadsheets.Cell!
 Egap.Spreadsheets.Worksheet.this[string! address].get -> Egap.Spreadsheets.Cell!

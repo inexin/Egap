@@ -223,7 +223,8 @@ digits Excel keeps, so `2.675` with `0.00` shows `2.68`, as in Excel.
 `Workbook.Culture` gives the decimal and group separators, month and day names and the short date that the built-in
 formats `mm-dd-yy` and `m/d/yy h:mm` follow, as Excel's follow the system's. The invariant culture, the default, shows
 them as Excel in English does: `3/15/2024`. A locale tag in a code overrides the culture for that section. Dates follow
-Excel's 1900 date system, 29 February 1900 included, and a negative date shows as `#` signs.
+Excel's 1900 date system, 29 February 1900 included, or the 1904 system when `book.Date1904` is set; a date before the
+system's start or after 9999-12-31 shows as `#` signs.
 
 ## CSV and TSV
 
@@ -256,6 +257,9 @@ Writing shows each value as its cell does (`cell.Text`), as Excel saves CSV; set
 numbers in full and dates as serial numbers. It writes UTF-8 with a byte order mark, so Excel reads it as UTF-8, uses the
 culture's list separator unless you name one (a semicolon where the comma is the decimal separator), ends rows with
 `\r\n` and pads every row to the same number of fields. `WriteSeparatorHint` adds a `sep=` line for Excel.
+
+`Workbook.Load` and `Workbook.Save` take `.csv`, `.tsv` and `.tab` paths too, with `WorkbookLoadOptions.Csv` and
+`WorkbookSaveOptions.Csv` for the options; saving writes the first visible sheet.
 
 ## Memory
 

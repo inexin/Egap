@@ -35,6 +35,7 @@ internal static class CsvWriter
         RangeAddress all = new(new CellAddress(0, 0), bounds.Last);
         int row = 0;
         int column = 0;
+        bool date1904 = sheet.Workbook.Date1904;
         NumberFormatCode? lastCode = null;
         int lastStyle = -1;
         foreach ((int r, int c) in sheet.Store.Occupied(all))
@@ -61,7 +62,7 @@ internal static class CsvWriter
                     lastStyle = style;
                 }
 
-                text = lastCode!.Format(value, culture);
+                text = lastCode!.Format(value, culture, date1904);
             }
             else
             {

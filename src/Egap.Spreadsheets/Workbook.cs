@@ -95,12 +95,21 @@ public sealed class Workbook
     /// <summary>A new workbook with no sheets; add one before saving, as a workbook file needs at least one.</summary>
     public static Workbook CreateEmpty() => new(new StyleTable());
 
-    /// <summary>Loads an XLSX, XLSM, XLTX or XLTM file.</summary>
+    /// <summary>
+    /// Loads an XLSX, XLSM, XLTX or XLTM file, or a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> file as
+    /// <see cref="LoadCsv(string, CsvOptions?)"/> does, with <see cref="WorkbookLoadOptions.Csv"/>.
+    /// </summary>
     /// <exception cref="DocumentException">The file is not a workbook Egap can read.</exception>
     /// <exception cref="DocumentLimitException">The file goes past one of <see cref="WorkbookLoadOptions.Limits"/>.</exception>
+    /// <exception cref="InvalidDataException">A CSV file has more rows or fields than a sheet holds, or a field longer than a cell holds.</exception>
     public static Workbook Load(string path, WorkbookLoadOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
+        if (IsCsv(path))
+        {
+            return LoadCsv(path, options?.Csv);
+        }
+
         using FileStream stream = File.OpenRead(path);
         return Load(stream, options);
     }
@@ -120,12 +129,22 @@ public sealed class Workbook
     /// <summary>
     /// Saves the workbook to a file as the kind its extension names (.xlsx, .xlsm, .xltx or .xltm), unless
     /// <see cref="WorkbookSaveOptions.Format"/> names one. A workbook with macros saved as .xlsx or .xltx leaves the macros out.
+    /// A <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> path writes the first visible sheet as text, as
+    /// <see cref="Worksheet.SaveCsv(string, CsvOptions?)"/> does, with <see cref="WorkbookSaveOptions.Csv"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">The workbook has no worksheets.</exception>
+    /// <exception cref="InvalidOperationException">The workbook has no worksheets, or no visible one for CSV.</exception>
     /// <exception cref="ArgumentException">The extension names no workbook kind and the options name none.</exception>
     public void Save(string path, WorkbookSaveOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
+        if (options?.Format is null && IsCsv(path))
+        {
+            Worksheet sheet = Worksheets.FirstOrDefault(s => s.Visibility == SheetVisibility.Visible)
+                ?? throw new InvalidOperationException("The workbook has no visible sheet to save as CSV.");
+            sheet.SaveCsv(path, options?.Csv);
+            return;
+        }
+
         WorkbookFormat format = options?.Format ?? FormatOfExtension(Path.GetExtension(path))
             ?? throw new ArgumentException($"No workbook kind has the extension \"{Path.GetExtension(path)}\"; name one in the options.", nameof(path));
         using MemoryStream buffer = new();
@@ -142,6 +161,8 @@ public sealed class Workbook
         ArgumentNullException.ThrowIfNull(stream);
         XlsxWriter.Write(this, stream, options?.Format ?? Format);
     }
+
+    private static bool IsCsv(string path) => Path.GetExtension(path).ToUpperInvariant() is ".CSV" or ".TSV" or ".TAB";
 
     private static WorkbookFormat? FormatOfExtension(string extension) => extension.ToUpperInvariant() switch
     {
@@ -174,6 +195,9 @@ public sealed class WorkbookLoadOptions
 {
     /// <summary>The limits the reader keeps to, against files made to use up memory; the defaults suit any real workbook.</summary>
     public DocumentLimits Limits { get; init; } = new();
+
+    /// <summary>How a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> path is read, or null for the defaults.</summary>
+    public CsvOptions? Csv { get; init; }
 }
 
 /// <summary>How a workbook is saved.</summary>
@@ -181,4 +205,7 @@ public sealed class WorkbookSaveOptions
 {
     /// <summary>The kind of file to write, or null to go by the file's extension (or <see cref="Workbook.Format"/> for a stream).</summary>
     public WorkbookFormat? Format { get; init; }
+
+    /// <summary>How a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> path is written, or null for the defaults.</summary>
+    public CsvOptions? Csv { get; init; }
 }

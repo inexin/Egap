@@ -124,6 +124,55 @@ public sealed class CsvTests
     }
 
     [Fact]
+    public void LoadAndSaveGoByTheExtension()
+    {
+        string folder = Path.Combine(Path.GetTempPath(), $"egap-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(folder);
+        try
+        {
+            Workbook book = Workbook.Create();
+            book.Worksheets[0].Visibility = SheetVisibility.Hidden;
+            Worksheet shown = book.Worksheets.Add("Shown");
+            shown["A1"].Value = "a";
+            shown["B1"].Value = 45366;
+            shown["B1"].NumberFormat = "yyyy-mm-dd";
+
+            book.Save(Path.Combine(folder, "out.csv"));
+            book.Save(Path.Combine(folder, "out.tsv"), new WorkbookSaveOptions { Csv = new CsvOptions { WriteSeparatorHint = true } });
+            book.Save(Path.Combine(folder, "out.xlsx"));
+
+            Assert.Equal("a,2024-03-15\r\n", File.ReadAllText(Path.Combine(folder, "out.csv")));
+            Assert.Equal("sep=\t\r\na\t2024-03-15\r\n", File.ReadAllText(Path.Combine(folder, "out.tsv")));
+            Workbook csv = Workbook.Load(Path.Combine(folder, "out.csv"), new WorkbookLoadOptions { Csv = new CsvOptions { SheetName = "Data" } });
+            Assert.Equal("Data", csv.Worksheets[0].Name);
+            Assert.Equal(45366, csv.Worksheets[0]["B1"].Value);
+            Assert.Equal(45366, Workbook.Load(Path.Combine(folder, "out.tsv")).Worksheets[0]["B1"].Value);
+            Assert.Equal(2, Workbook.Load(Path.Combine(folder, "out.xlsx")).Worksheets.Count);
+
+            Workbook hidden = Workbook.Create();
+            hidden.Worksheets[0].Visibility = SheetVisibility.Hidden;
+            Assert.Throws<InvalidOperationException>(() => hidden.Save(Path.Combine(folder, "none.csv")));
+        }
+        finally
+        {
+            Directory.Delete(folder, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void WritingUsesTheWorkbooksDateSystem()
+    {
+        Workbook book = Workbook.Create();
+        book.Date1904 = true;
+        Worksheet sheet = book.Worksheets[0];
+        sheet["A1"].Value = 0;
+        sheet["A1"].NumberFormat = "yyyy-mm-dd";
+
+        Assert.Equal("1904-01-01", sheet["A1"].Text);
+        Assert.Equal("1904-01-01\r\n", Save(sheet));
+    }
+
+    [Fact]
     public void WritingQuotesWhatNeedsItAndPadsRows()
     {
         Workbook book = Workbook.Create();
