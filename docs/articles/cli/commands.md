@@ -57,9 +57,9 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, RTF, te
 | `--linearize` | Lay the file out for fast web view; writes the whole file. |
 | `--compress` | Pack objects into compressed object streams; writes the whole file. |
 | `--deterministic` | Derive the file ID from the content, so the same input always gives the same bytes. |
-| `--password <text>` | The password that opens encrypted PDF and DOCX inputs. Prefer --password-env or --password-file: a value here lands in shell history. |
-| `--password-env <NAME>` | Read the password that opens encrypted PDF and DOCX inputs from this environment variable. |
-| `--password-file <path>` | Read the password that opens encrypted PDF and DOCX inputs from the first line of this file. |
+| `--password <text>` | The password that opens encrypted PDF, DOCX and ODT inputs. Prefer --password-env or --password-file: a value here lands in shell history. |
+| `--password-env <NAME>` | Read the password that opens encrypted PDF, DOCX and ODT inputs from this environment variable. |
+| `--password-file <path>` | Read the password that opens encrypted PDF, DOCX and ODT inputs from the first line of this file. |
 | `--save-password <text>` | The password that encrypts DOCX, ODT and OTT outputs. Prefer --save-password-env or --save-password-file: a value here lands in shell history. |
 | `--save-password-env <NAME>` | Read the password that encrypts DOCX, ODT and OTT outputs from this environment variable. |
 | `--save-password-file <path>` | Read the password that encrypts DOCX, ODT and OTT outputs from the first line of this file. |
