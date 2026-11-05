@@ -7,7 +7,7 @@ Reads a cases file (tests/Egap.Spreadsheets.Tests/Oracle/functions.txt): lines "
 that is not blank or a "#" comment is a formula. Each formula goes into column L, row 20 * i + 1 for the i-th formula
 (from 0), as an ordinary formula (Range.Formula, not Formula2): ranges meet the cell by implicit intersection and nothing
 spills, as in a cell saved without dynamic arrays and as Worksheet.Evaluate works. The output is a tab-separated file: a
-header with Excel's version, build, locale and the decimal and thousands separators it uses, then one line per formula:
+header with Excel's version, build, locale, the decimal and thousands separators and the currency format it uses, then one line per formula:
 index, kind (number, text, boolean, error, blank or invalid), value, formula.
 
 Needs Excel on the PC. Run it as:
@@ -70,7 +70,7 @@ try {
 
     $excel.CalculateFull()
     $lines = New-Object System.Collections.Generic.List[string]
-    $lines.Add("# Excel $($excel.Version) build $($excel.Build), locale $([System.Globalization.CultureInfo]::CurrentCulture.Name), decimal '$($excel.International(3))', thousands '$($excel.International(4))', written by tools/excel-function-oracle.ps1")
+    $lines.Add("# Excel $($excel.Version) build $($excel.Build), locale $([System.Globalization.CultureInfo]::CurrentCulture.Name), decimal '$($excel.International(3))', thousands '$($excel.International(4))', currency '$($excel.International(25))', currency-before '$($excel.International(37))', currency-space '$($excel.International(36))', currency-negative '$($excel.International(28))', written by tools/excel-function-oracle.ps1")
     for ($i = 0; $i -lt $formulas.Count; $i++) {
         if ($invalid.ContainsKey($i)) { $kind = 'invalid'; $text = '' }
         else {

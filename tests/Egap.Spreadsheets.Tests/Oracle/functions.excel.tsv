@@ -1,4 +1,4 @@
-# Excel 16.0 build 20527, locale nb-NO, decimal ',', thousands ' ', written by tools/excel-function-oracle.ps1
+# Excel 16.0 build 20527, locale nb-NO, decimal ',', thousands ' ', currency 'kr', currency-before 'True', currency-space 'True', currency-negative '1', written by tools/excel-function-oracle.ps1
 0	boolean	TRUE	AND(TRUE,1,A1)
 1	boolean	FALSE	AND(A1:A10)
 2	boolean	TRUE	AND(D1:D3)

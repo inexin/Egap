@@ -51,13 +51,11 @@ internal sealed class EvalContext
 
     public int NameDepth { get; private init; }
 
-    private EvalContext? arrayContext;
-
     /// <summary>Compiled defined names, shared by the contexts of one evaluation.</summary>
     public Dictionary<DefinedName, CompiledFormula?> Names { get; private init; } = [];
 
     /// <summary>This context in array mode, for an array argument; itself when it is in array mode already.</summary>
-    public EvalContext InArrayMode() => ArrayMode ? this : arrayContext ??= new EvalContext(Sheet, Row, Column)
+    public EvalContext InArrayMode() => ArrayMode ? this : new EvalContext(Sheet, Row, Column)
     {
         ArrayMode = true,
         RowDelta = RowDelta,
@@ -141,6 +139,7 @@ internal static class FormulaEvaluator
         EvalValue[] stack = new EvalValue[formula.MaxStack + 2];
         List<int>? pending = null;
         List<EvalContext>? outer = null;
+        EvalContext? arrayContext = null;
         int sp = 0;
         for (int pc = 0; pc < code.Length; pc++)
         {
@@ -243,7 +242,7 @@ internal static class FormulaEvaluator
 
                 case OpCode.ArrayBegin:
                     (outer ??= []).Add(context);
-                    context = context.InArrayMode();
+                    context = context.ArrayMode ? context : arrayContext ??= context.InArrayMode();
                     break;
                 case OpCode.ArrayEnd:
                     context = outer![^1];

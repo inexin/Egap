@@ -97,6 +97,30 @@ public sealed class FunctionOracleTests
         Assert.True(failures.Length == 0, failures.ToString());
     }
 
+    /// <summary>
+    /// DOLLAR writes what the culture says, whichever platform's data it came from: the krone before the amount, as Windows
+    /// has nb-NO, or after it, as ICU on Linux has it.
+    /// </summary>
+    [Theory]
+    [InlineData(2, 9, "kr 1 234,57", "-kr 5,00")]
+    [InlineData(3, 8, "1 234,57 kr", "-5,00 kr")]
+    public void DollarFollowsTheCulturesCurrencyPatterns(int positive, int negative, string expected, string expectedNegative)
+    {
+        CultureInfo culture = (CultureInfo)CultureInfo.GetCultureInfo("nb-NO").Clone();
+        NumberFormatInfo numbers = culture.NumberFormat;
+        numbers.CurrencySymbol = "kr";
+        numbers.CurrencyDecimalSeparator = ",";
+        numbers.CurrencyGroupSeparator = " ";
+        numbers.CurrencyPositivePattern = positive;
+        numbers.CurrencyNegativePattern = negative;
+        Workbook book = Workbook.Create();
+        book.Culture = culture;
+        Worksheet sheet = book.Worksheets[0];
+
+        Assert.Equal(expected, sheet.Evaluate("DOLLAR(1234.567)").Text);
+        Assert.Equal(expectedNegative, sheet.Evaluate("DOLLAR(-5)").Text);
+    }
+
     private static bool Same(CellValue actual, CellValue saved) => saved.Kind switch
     {
         CellValueKind.Number => actual.Kind == CellValueKind.Number && Close(actual.Number, saved.Number),
@@ -105,7 +129,11 @@ public sealed class FunctionOracleTests
         _ => actual == saved,
     };
 
-    /// <summary>The culture Excel ran in, with the separators it used, which the PC's settings can change.</summary>
+    /// <summary>
+    /// The culture Excel ran in, with the separators and currency format it used. Excel takes them from the PC's regional
+    /// settings, and .NET's data for the same culture name differs between platforms (ICU on Linux puts the krone after
+    /// the amount), so they are set from what Excel recorded rather than taken from .NET.
+    /// </summary>
     private static CultureInfo Culture(string header)
     {
         CultureInfo culture = (CultureInfo)CultureInfo.GetCultureInfo(Field(header, "locale ", ",")).Clone();
@@ -114,6 +142,27 @@ public sealed class FunctionOracleTests
         NumberFormatInfo numbers = culture.NumberFormat;
         numbers.NumberDecimalSeparator = numbers.CurrencyDecimalSeparator = decimalSeparator;
         numbers.NumberGroupSeparator = numbers.CurrencyGroupSeparator = thousands;
+        numbers.CurrencySymbol = Field(header, "currency '", "'");
+        bool before = bool.Parse(Field(header, "currency-before '", "'"));
+        bool space = bool.Parse(Field(header, "currency-space '", "'"));
+        int negative = int.Parse(Field(header, "currency-negative '", "'"), CultureInfo.InvariantCulture);
+        numbers.CurrencyPositivePattern = (before, space) switch
+        {
+            (true, false) => 0,     // $n
+            (false, false) => 1,    // n$
+            (true, true) => 2,      // $ n
+            (false, true) => 3,     // n $
+        };
+
+        // Excel's negative forms, 0 to 3: (sx), -sx, s-x and sx-, with the symbol where the positive form has it.
+        int[] negatives = (before, space) switch
+        {
+            (true, false) => [0, 1, 2, 3],
+            (false, false) => [4, 5, 6, 7],
+            (true, true) => [14, 9, 12, 11],
+            (false, true) => [15, 8, 13, 10],
+        };
+        numbers.CurrencyNegativePattern = negatives[negative];
         return culture;
     }
 

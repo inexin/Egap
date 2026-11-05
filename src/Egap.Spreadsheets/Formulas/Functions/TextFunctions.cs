@@ -427,7 +427,11 @@ internal static partial class FormulaFunctions
         return EvalValue.FromText(rounded.ToString((noCommas ? "F" : "N") + shown.ToString(CultureInfo.InvariantCulture), Plain(context.Culture)));
     }
 
-    /// <summary>DOLLAR: a number rounded and written as currency in the culture, a negative one with a minus in front.</summary>
+    /// <summary>
+    /// DOLLAR: a number rounded and written as currency with the culture's symbol and its positive and negative patterns,
+    /// as Excel takes them from the regional settings. The culture alone decides: .NET's data for one culture name can
+    /// differ between platforms (ICU versions), so a workbook that must match one PC sets those patterns on its culture.
+    /// </summary>
     private static EvalValue Dollar(EvalValue[] arguments, EvalContext context)
     {
         if (!Num(arguments[0], context, out double number, out EvalValue error) || !Optional(arguments, 1, 2, context, out double places, out error))
@@ -442,15 +446,7 @@ internal static partial class FormulaFunctions
         }
 
         double rounded = Round(number, places, Rounding.Nearest);
-        NumberFormatInfo format = (NumberFormatInfo)Plain(context.Culture).Clone();
-        format.CurrencyNegativePattern = format.CurrencyPositivePattern switch
-        {
-            0 => 1,     // -$n
-            1 => 5,     // -n$
-            2 => 9,     // -$ n
-            _ => 8,     // -n $
-        };
-        return EvalValue.FromText(rounded.ToString("C" + ((int)Math.Clamp(places, 0, 127)).ToString(CultureInfo.InvariantCulture), format));
+        return EvalValue.FromText(rounded.ToString("C" + ((int)Math.Clamp(places, 0, 127)).ToString(CultureInfo.InvariantCulture), Plain(context.Culture)));
     }
 
     /// <summary>The culture's number format with a plain hyphen for minus, as Excel writes it, not a Unicode minus sign.</summary>
