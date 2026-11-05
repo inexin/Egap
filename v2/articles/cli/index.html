@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="the-egap-command">The egap command</h1>
 
-<p><code>egap</code> turns HTML, Markdown, DOCX, RTF and images into PDF, and inspects, merges, splits, stamps, redacts, fills, signs and
-checks PDFs from a shell, a build script or an AI assistant. It is a .NET tool built on Egap's public API, so it does what
-the library does, with the same defaults. Every command is listed with its options in the
+<p><code>egap</code> turns HTML, Markdown, DOCX, RTF, ODT and images into PDF, and inspects, merges, splits, stamps, redacts, fills,
+signs and checks PDFs from a shell, a build script or an AI assistant. It is a .NET tool built on Egap's public API, so it
+does what the library does, with the same defaults. Every command is listed with its options in the
 <a href="commands.html">command reference</a>.</p>
 <pre><code class="lang-sh">dotnet tool install --global Egap.Cli
 egap info report.pdf
@@ -151,25 +151,32 @@ egap convert report.docx -o report.pdf --embed-source        # a hybrid PDF: con
 egap convert notes.md -o notes.html
 egap convert letter.rtf -o letter.docx
 egap convert report.docx -o report.rtf
+egap convert report.docx -o report.odt
+egap convert minutes.odt -o minutes.pdf
 egap convert page.html -o page.pdf --allow-network
 egap convert locked.docx -o open.rtf --password-env DOCX_PASSWORD          # an encrypted DOCX, opened
 egap convert report.docx -o locked.docx --save-password-env DOCX_PASSWORD  # saved encrypted
+egap convert report.docx -o locked.odt --save-password-env ODT_PASSWORD    # an encrypted ODT
 </code></pre>
-<p><code>--password</code> opens encrypted PDF and DOCX inputs, and <code>--save-password</code> encrypts a DOCX output as Word 2013 and later
-do. Both come as <code>-env</code> and <code>-file</code> too, like every password. A document's editing restriction (read only, comments,
-tracked changes or forms) and its editable ranges carry through every conversion between DOCX and RTF.</p>
+<p><code>--password</code> opens encrypted PDF, DOCX and ODT inputs, and <code>--save-password</code> encrypts a DOCX output as Word 2013 and
+later do, and an ODT or OTT output with AES-256. Both come as <code>-env</code> and <code>-file</code> too, like every password. A document's
+editing restriction (read only, comments, tracked changes or forms) and its editable ranges carry through every
+conversion between DOCX, RTF and ODT.</p>
 <p><code>--set key=value</code> passes a setting to the writer of the format being written; give it once per setting. A setting the
 writer does not take stops the run with a usage error. PDF takes <code>language</code>, <code>links</code>, <code>named-destinations</code>, <code>outline</code>,
 <code>form-fields</code>, <code>ua</code>, <code>resolved-comments</code> and <code>strict</code>; HTML takes <code>embed-images</code> and <code>page-setup</code>; Markdown takes <code>images</code>
 (files, data-uris, placeholders or omit), <code>images-folder</code>, <code>figure-dpi</code>, <code>svg-figures</code>, <code>min-image-size</code>,
 <code>background-images</code>, <code>html-figures</code> and <code>front-matter</code>; text takes <code>headers-footers</code>, <code>notes</code> and <code>newline</code> (lf or crlf);
-RTF takes <code>unknown-groups</code> (false leaves out the unknown <code>\*</code> groups an RTF input kept). DOCX takes none. Markdown
+RTF takes <code>unknown-groups</code> (false leaves out the unknown <code>\*</code> groups an RTF input kept); ODT, OTT, FODT and FOTT take
+<code>version</code> (1.2, 1.3 or 1.4), <code>encryption</code> (aes-cbc or aes-gcm, with <code>--save-password</code>) and <code>unknown-markup</code> (false
+leaves out the markup an ODT input kept). DOCX takes none. Markdown
 images go to a folder named after the output, such as <code>report.images</code> for <code>report.md</code>.</p>
 <pre><code class="lang-sh">egap convert report.docx -o report.pdf --set outline=bookmarks --set language=en-GB
 egap convert report.docx -o report.md --set images=data-uris --set front-matter=true
 egap convert report.docx -o report.txt --set newline=crlf --set headers-footers=true
 egap convert notes.md -o notes.html --set page-setup=false
 egap convert old.rtf -o clean.rtf --set unknown-groups=false
+egap convert report.docx -o report.odt --set version=1.2
 </code></pre>
 <h2 id="pages">Pages</h2>
 <pre><code class="lang-sh">egap merge a.pdf b.pdf#2-z c.pdf#1,3 -o all.pdf

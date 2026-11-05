@@ -172,7 +172,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 <tr>
 <td><code>--to &lt;format&gt;</code></td>
-<td>The output format when -o does not say: pdf, docx, rtf, html, md, txt.</td>
+<td>The output format when -o does not say: pdf, docx, odt, ott, fodt, fott, rtf, html, md, txt.</td>
 </tr>
 <tr>
 <td><code>--page-size &lt;size&gt;</code></td>
@@ -216,7 +216,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 <tr>
 <td><code>--set &lt;key=value&gt;</code></td>
-<td>A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. RTF: unknown-groups. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf).</td>
+<td>A setting of the format written, as key=value; give it once per setting. PDF: language, links, named-destinations, outline (none, headings, bookmarks), form-fields, ua, resolved-comments, strict. ODT, OTT, FODT and FOTT: version (1.2, 1.3, 1.4), encryption (aes-cbc, aes-gcm), unknown-markup. RTF: unknown-groups. HTML: embed-images, page-setup. Markdown: images (files, data-uris, placeholders, omit), images-folder, figure-dpi, svg-figures, min-image-size, background-images, html-figures, front-matter. Text: headers-footers, notes, newline (lf, crlf).</td>
 </tr>
 <tr>
 <td><code>--base-dir &lt;folder&gt;</code></td>
@@ -260,27 +260,27 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 <tr>
 <td><code>--password &lt;text&gt;</code></td>
-<td>The password that opens encrypted PDF and DOCX inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+<td>The password that opens encrypted PDF, DOCX and ODT inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
 </tr>
 <tr>
 <td><code>--password-env &lt;NAME&gt;</code></td>
-<td>Read the password that opens encrypted PDF and DOCX inputs from this environment variable.</td>
+<td>Read the password that opens encrypted PDF, DOCX and ODT inputs from this environment variable.</td>
 </tr>
 <tr>
 <td><code>--password-file &lt;path&gt;</code></td>
-<td>Read the password that opens encrypted PDF and DOCX inputs from the first line of this file.</td>
+<td>Read the password that opens encrypted PDF, DOCX and ODT inputs from the first line of this file.</td>
 </tr>
 <tr>
 <td><code>--save-password &lt;text&gt;</code></td>
-<td>The password that encrypts DOCX outputs. Prefer --save-password-env or --save-password-file: a value here lands in shell history.</td>
+<td>The password that encrypts DOCX, ODT and OTT outputs. Prefer --save-password-env or --save-password-file: a value here lands in shell history.</td>
 </tr>
 <tr>
 <td><code>--save-password-env &lt;NAME&gt;</code></td>
-<td>Read the password that encrypts DOCX outputs from this environment variable.</td>
+<td>Read the password that encrypts DOCX, ODT and OTT outputs from this environment variable.</td>
 </tr>
 <tr>
 <td><code>--save-password-file &lt;path&gt;</code></td>
-<td>Read the password that encrypts DOCX outputs from the first line of this file.</td>
+<td>Read the password that encrypts DOCX, ODT and OTT outputs from the first line of this file.</td>
 </tr>
 </tbody>
 </table>

@@ -14271,6 +14271,48 @@ references:
   commentId: F:Egap.Documents.NumberStyle.UpperRoman
   fullName: Egap.Documents.NumberStyle.UpperRoman
   nameWithType: NumberStyle.UpperRoman
+- uid: Egap.Documents.OdfVersion
+  name: OdfVersion
+  href: api/Egap.Documents.OdfVersion.html
+  commentId: T:Egap.Documents.OdfVersion
+  fullName: Egap.Documents.OdfVersion
+  nameWithType: OdfVersion
+- uid: Egap.Documents.OdfVersion.Odf12
+  name: Odf12
+  href: api/Egap.Documents.OdfVersion.html#Egap_Documents_OdfVersion_Odf12
+  commentId: F:Egap.Documents.OdfVersion.Odf12
+  fullName: Egap.Documents.OdfVersion.Odf12
+  nameWithType: OdfVersion.Odf12
+- uid: Egap.Documents.OdfVersion.Odf13
+  name: Odf13
+  href: api/Egap.Documents.OdfVersion.html#Egap_Documents_OdfVersion_Odf13
+  commentId: F:Egap.Documents.OdfVersion.Odf13
+  fullName: Egap.Documents.OdfVersion.Odf13
+  nameWithType: OdfVersion.Odf13
+- uid: Egap.Documents.OdfVersion.Odf14
+  name: Odf14
+  href: api/Egap.Documents.OdfVersion.html#Egap_Documents_OdfVersion_Odf14
+  commentId: F:Egap.Documents.OdfVersion.Odf14
+  fullName: Egap.Documents.OdfVersion.Odf14
+  nameWithType: OdfVersion.Odf14
+- uid: Egap.Documents.OdtEncryption
+  name: OdtEncryption
+  href: api/Egap.Documents.OdtEncryption.html
+  commentId: T:Egap.Documents.OdtEncryption
+  fullName: Egap.Documents.OdtEncryption
+  nameWithType: OdtEncryption
+- uid: Egap.Documents.OdtEncryption.AesCbc
+  name: AesCbc
+  href: api/Egap.Documents.OdtEncryption.html#Egap_Documents_OdtEncryption_AesCbc
+  commentId: F:Egap.Documents.OdtEncryption.AesCbc
+  fullName: Egap.Documents.OdtEncryption.AesCbc
+  nameWithType: OdtEncryption.AesCbc
+- uid: Egap.Documents.OdtEncryption.AesGcm
+  name: AesGcm
+  href: api/Egap.Documents.OdtEncryption.html#Egap_Documents_OdtEncryption_AesGcm
+  commentId: F:Egap.Documents.OdtEncryption.AesGcm
+  fullName: Egap.Documents.OdtEncryption.AesGcm
+  nameWithType: OdtEncryption.AesGcm
 - uid: Egap.Documents.OdtFormat
   name: OdtFormat
   href: api/Egap.Documents.OdtFormat.html
@@ -14320,6 +14362,61 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.OdtFormat.Load
   nameWithType: OdtFormat.Load
+- uid: Egap.Documents.OdtFormat.Save(Egap.Documents.Document,System.IO.Stream,Egap.Documents.OdtSaveOptions)
+  name: Save(Document, Stream, OdtSaveOptions?)
+  href: api/Egap.Documents.OdtFormat.html#Egap_Documents_OdtFormat_Save_Egap_Documents_Document_System_IO_Stream_Egap_Documents_OdtSaveOptions_
+  commentId: M:Egap.Documents.OdtFormat.Save(Egap.Documents.Document,System.IO.Stream,Egap.Documents.OdtSaveOptions)
+  name.vb: Save(Document, Stream, OdtSaveOptions)
+  fullName: Egap.Documents.OdtFormat.Save(Egap.Documents.Document, System.IO.Stream, Egap.Documents.OdtSaveOptions?)
+  fullName.vb: Egap.Documents.OdtFormat.Save(Egap.Documents.Document, System.IO.Stream, Egap.Documents.OdtSaveOptions)
+  nameWithType: OdtFormat.Save(Document, Stream, OdtSaveOptions?)
+  nameWithType.vb: OdtFormat.Save(Document, Stream, OdtSaveOptions)
+- uid: Egap.Documents.OdtFormat.Save(Egap.Documents.Document,System.String,Egap.Documents.OdtSaveOptions)
+  name: Save(Document, string, OdtSaveOptions?)
+  href: api/Egap.Documents.OdtFormat.html#Egap_Documents_OdtFormat_Save_Egap_Documents_Document_System_String_Egap_Documents_OdtSaveOptions_
+  commentId: M:Egap.Documents.OdtFormat.Save(Egap.Documents.Document,System.String,Egap.Documents.OdtSaveOptions)
+  name.vb: Save(Document, String, OdtSaveOptions)
+  fullName: Egap.Documents.OdtFormat.Save(Egap.Documents.Document, string, Egap.Documents.OdtSaveOptions?)
+  fullName.vb: Egap.Documents.OdtFormat.Save(Egap.Documents.Document, String, Egap.Documents.OdtSaveOptions)
+  nameWithType: OdtFormat.Save(Document, string, OdtSaveOptions?)
+  nameWithType.vb: OdtFormat.Save(Document, String, OdtSaveOptions)
+- uid: Egap.Documents.OdtFormat.Save*
+  name: Save
+  href: api/Egap.Documents.OdtFormat.html#Egap_Documents_OdtFormat_Save_
+  commentId: Overload:Egap.Documents.OdtFormat.Save
+  isSpec: "True"
+  fullName: Egap.Documents.OdtFormat.Save
+  nameWithType: OdtFormat.Save
+- uid: Egap.Documents.OdtKind
+  name: OdtKind
+  href: api/Egap.Documents.OdtKind.html
+  commentId: T:Egap.Documents.OdtKind
+  fullName: Egap.Documents.OdtKind
+  nameWithType: OdtKind
+- uid: Egap.Documents.OdtKind.Document
+  name: Document
+  href: api/Egap.Documents.OdtKind.html#Egap_Documents_OdtKind_Document
+  commentId: F:Egap.Documents.OdtKind.Document
+  fullName: Egap.Documents.OdtKind.Document
+  nameWithType: OdtKind.Document
+- uid: Egap.Documents.OdtKind.FlatDocument
+  name: FlatDocument
+  href: api/Egap.Documents.OdtKind.html#Egap_Documents_OdtKind_FlatDocument
+  commentId: F:Egap.Documents.OdtKind.FlatDocument
+  fullName: Egap.Documents.OdtKind.FlatDocument
+  nameWithType: OdtKind.FlatDocument
+- uid: Egap.Documents.OdtKind.FlatTemplate
+  name: FlatTemplate
+  href: api/Egap.Documents.OdtKind.html#Egap_Documents_OdtKind_FlatTemplate
+  commentId: F:Egap.Documents.OdtKind.FlatTemplate
+  fullName: Egap.Documents.OdtKind.FlatTemplate
+  nameWithType: OdtKind.FlatTemplate
+- uid: Egap.Documents.OdtKind.Template
+  name: Template
+  href: api/Egap.Documents.OdtKind.html#Egap_Documents_OdtKind_Template
+  commentId: F:Egap.Documents.OdtKind.Template
+  fullName: Egap.Documents.OdtKind.Template
+  nameWithType: OdtKind.Template
 - uid: Egap.Documents.OdtLoadOptions
   name: OdtLoadOptions
   href: api/Egap.Documents.OdtLoadOptions.html
@@ -14365,6 +14462,77 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.OdtLoadOptions.PasswordCallback
   nameWithType: OdtLoadOptions.PasswordCallback
+- uid: Egap.Documents.OdtSaveOptions
+  name: OdtSaveOptions
+  href: api/Egap.Documents.OdtSaveOptions.html
+  commentId: T:Egap.Documents.OdtSaveOptions
+  fullName: Egap.Documents.OdtSaveOptions
+  nameWithType: OdtSaveOptions
+- uid: Egap.Documents.OdtSaveOptions.Encryption
+  name: Encryption
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_Encryption
+  commentId: P:Egap.Documents.OdtSaveOptions.Encryption
+  fullName: Egap.Documents.OdtSaveOptions.Encryption
+  nameWithType: OdtSaveOptions.Encryption
+- uid: Egap.Documents.OdtSaveOptions.Encryption*
+  name: Encryption
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_Encryption_
+  commentId: Overload:Egap.Documents.OdtSaveOptions.Encryption
+  isSpec: "True"
+  fullName: Egap.Documents.OdtSaveOptions.Encryption
+  nameWithType: OdtSaveOptions.Encryption
+- uid: Egap.Documents.OdtSaveOptions.KeepUnknownMarkup
+  name: KeepUnknownMarkup
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_KeepUnknownMarkup
+  commentId: P:Egap.Documents.OdtSaveOptions.KeepUnknownMarkup
+  fullName: Egap.Documents.OdtSaveOptions.KeepUnknownMarkup
+  nameWithType: OdtSaveOptions.KeepUnknownMarkup
+- uid: Egap.Documents.OdtSaveOptions.KeepUnknownMarkup*
+  name: KeepUnknownMarkup
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_KeepUnknownMarkup_
+  commentId: Overload:Egap.Documents.OdtSaveOptions.KeepUnknownMarkup
+  isSpec: "True"
+  fullName: Egap.Documents.OdtSaveOptions.KeepUnknownMarkup
+  nameWithType: OdtSaveOptions.KeepUnknownMarkup
+- uid: Egap.Documents.OdtSaveOptions.Kind
+  name: Kind
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_Kind
+  commentId: P:Egap.Documents.OdtSaveOptions.Kind
+  fullName: Egap.Documents.OdtSaveOptions.Kind
+  nameWithType: OdtSaveOptions.Kind
+- uid: Egap.Documents.OdtSaveOptions.Kind*
+  name: Kind
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_Kind_
+  commentId: Overload:Egap.Documents.OdtSaveOptions.Kind
+  isSpec: "True"
+  fullName: Egap.Documents.OdtSaveOptions.Kind
+  nameWithType: OdtSaveOptions.Kind
+- uid: Egap.Documents.OdtSaveOptions.Password
+  name: Password
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_Password
+  commentId: P:Egap.Documents.OdtSaveOptions.Password
+  fullName: Egap.Documents.OdtSaveOptions.Password
+  nameWithType: OdtSaveOptions.Password
+- uid: Egap.Documents.OdtSaveOptions.Password*
+  name: Password
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_Password_
+  commentId: Overload:Egap.Documents.OdtSaveOptions.Password
+  isSpec: "True"
+  fullName: Egap.Documents.OdtSaveOptions.Password
+  nameWithType: OdtSaveOptions.Password
+- uid: Egap.Documents.OdtSaveOptions.Version
+  name: Version
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_Version
+  commentId: P:Egap.Documents.OdtSaveOptions.Version
+  fullName: Egap.Documents.OdtSaveOptions.Version
+  nameWithType: OdtSaveOptions.Version
+- uid: Egap.Documents.OdtSaveOptions.Version*
+  name: Version
+  href: api/Egap.Documents.OdtSaveOptions.html#Egap_Documents_OdtSaveOptions_Version_
+  commentId: Overload:Egap.Documents.OdtSaveOptions.Version
+  isSpec: "True"
+  fullName: Egap.Documents.OdtSaveOptions.Version
+  nameWithType: OdtSaveOptions.Version
 - uid: Egap.Documents.PageOrientation
   name: PageOrientation
   href: api/Egap.Documents.PageOrientation.html

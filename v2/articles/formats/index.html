@@ -88,7 +88,7 @@
 <h1 id="document-formats">Document formats</h1>
 
 <p>Egap.Documents reads each format below into one document model and writes the model back out, so any format it reads can
-be saved as any format it writes. DOCX, RTF, OpenDocument Text (read only for now), PDF, plain text and Docling JSON are
+be saved as any format it writes. DOCX, RTF, OpenDocument Text, PDF, plain text and Docling JSON are
 built in. HTML, MHTML and EPUB come from the
 add-on package Egap.Documents.Html, and Markdown from Egap.Documents.Markdown.</p>
 <p>Each format has its own page with its options and what it keeps. This page covers what they share: loading and saving
@@ -138,7 +138,7 @@ without naming the format, how a file's format is found, warnings and limits.</p
 <td><a href="odt.html">OpenDocument Text</a></td>
 <td>Egap.Documents</td>
 <td>ODT, OTT and flat FODT from ODF 1.2 to 1.4, with styles, lists, tables, page styles, notes, fields and tracked changes</td>
-<td>Not yet</td>
+<td>ODF 1.3 (1.2 and 1.4 as options) as ODT, OTT, FODT and FOTT, encrypted with a password if asked; ODT to ODT keeps what the model does not name</td>
 </tr>
 <tr>
 <td><a href="rtf.html">RTF</a></td>
@@ -200,9 +200,9 @@ says so. A password-protected Word file is <code>Encrypted</code>; it loads with
 <li>Text that starts with a tag is <code>Html</code>, and other text is <code>Markdown</code>.</li>
 <li>Binary data no format knows is <code>Unknown</code>.</li>
 </ol>
-<p><code>Save</code> writes <code>.docx</code>, <code>.dotx</code>, <code>.docm</code> and <code>.dotm</code> as Word's, <code>.rtf</code> as RTF, <code>.pdf</code> as PDF, <code>.txt</code> as plain text, and,
-once their add-on is registered, <code>.html</code> and <code>.htm</code> as HTML, <code>.mht</code> and <code>.mhtml</code> as MHTML, <code>.epub</code> as EPUB and <code>.md</code> and
-<code>.markdown</code> as Markdown. Any other extension throws an <code>ArgumentException</code>.</p>
+<p><code>Save</code> writes <code>.docx</code>, <code>.dotx</code>, <code>.docm</code> and <code>.dotm</code> as Word's, <code>.rtf</code> as RTF, <code>.odt</code>, <code>.ott</code>, <code>.fodt</code> and <code>.fott</code> as
+OpenDocument Text, <code>.pdf</code> as PDF, <code>.txt</code> as plain text, and, once their add-on is registered, <code>.html</code> and <code>.htm</code> as HTML,
+<code>.mht</code> and <code>.mhtml</code> as MHTML, <code>.epub</code> as EPUB and <code>.md</code> and <code>.markdown</code> as Markdown. Any other extension throws an <code>ArgumentException</code>.</p>
 <p>Each format also has its own class (<code>DocxFormat</code>, <code>RtfFormat</code>, <code>OdtFormat</code>, <code>HtmlFormat</code>, <code>EpubFormat</code>, <code>MarkdownFormat</code>, <code>TextFormat</code>, <code>DoclingJson</code>) with its
 own options, and members on <code>Document</code> that forward to it, such as <code>Document.LoadDocx</code>, <code>ToHtml</code> and <code>SaveAsMarkdown</code>.
 Calling a format directly needs no <code>Register()</code>.</p>

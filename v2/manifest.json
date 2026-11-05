@@ -2295,6 +2295,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.OdfVersion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.OdfVersion.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.OdfVersion",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.OdfVersion.yml\" sourcestartlinenumber=\"1\">The version of OpenDocument a file is written in.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.OdtEncryption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.OdtEncryption.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.OdtEncryption",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.OdtEncryption.yml\" sourcestartlinenumber=\"1\">How a password-protected OpenDocument file is encrypted.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.OdtFormat.yml",
       "output": {
         ".html": {
@@ -2305,7 +2333,21 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.OdtFormat",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.OdtFormat.yml\" sourcestartlinenumber=\"1\">OpenDocument Text (ODF 1.2 to 1.4) read into the model: ODT documents, OTT templates and flat FODT files, with their\nstyles, lists, tables, frames, sections, page styles, headers and footers, notes, comments, fields, bookmarks, links and\ntracked changes. Charts, formulas and other embedded objects are kept as islands drawn as their stored picture.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.OdtFormat.yml\" sourcestartlinenumber=\"1\">OpenDocument Text (ODF 1.2 to 1.4) read into the model: ODT documents, OTT templates and flat FODT files, with their\nstyles, lists, tables, frames, sections, page styles, headers and footers, notes, comments, fields, bookmarks, links and\ntracked changes. Charts, formulas and other embedded objects are kept as islands drawn as their stored picture. The model\nis written back as ODF 1.3 (1.2 and 1.4 as options), and ODT to ODT keeps what the model does not name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.OdtKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.OdtKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.OdtKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.OdtKind.yml\" sourcestartlinenumber=\"1\">Which kind of OpenDocument Text file a package is.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2320,6 +2362,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.OdtLoadOptions",
       "Summary": "<p sourcefile=\"api/Egap.Documents.OdtLoadOptions.yml\" sourcestartlinenumber=\"1\">Options for reading OpenDocument Text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.OdtSaveOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.OdtSaveOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.OdtSaveOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.OdtSaveOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Documents.OdtFormat\" data-throw-if-not-resolved=\"false\"></xref> writes a file.</p>\n"
     },
     {
       "type": "ManagedReference",
