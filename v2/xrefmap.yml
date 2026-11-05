@@ -52436,6 +52436,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Cell.Formula
   nameWithType: Cell.Formula
+- uid: Egap.Spreadsheets.Cell.FormulaR1C1
+  name: FormulaR1C1
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_FormulaR1C1
+  commentId: P:Egap.Spreadsheets.Cell.FormulaR1C1
+  fullName: Egap.Spreadsheets.Cell.FormulaR1C1
+  nameWithType: Cell.FormulaR1C1
+- uid: Egap.Spreadsheets.Cell.FormulaR1C1*
+  name: FormulaR1C1
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_FormulaR1C1_
+  commentId: Overload:Egap.Spreadsheets.Cell.FormulaR1C1
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Cell.FormulaR1C1
+  nameWithType: Cell.FormulaR1C1
 - uid: Egap.Spreadsheets.Cell.GetHashCode
   name: GetHashCode()
   href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_GetHashCode
@@ -56234,6 +56247,75 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.DrawingPosition.OffsetY
   nameWithType: DrawingPosition.OffsetY
+- uid: Egap.Spreadsheets.FormulaException
+  name: FormulaException
+  href: api/Egap.Spreadsheets.FormulaException.html
+  commentId: T:Egap.Spreadsheets.FormulaException
+  fullName: Egap.Spreadsheets.FormulaException
+  nameWithType: FormulaException
+- uid: Egap.Spreadsheets.FormulaException.#ctor(System.String)
+  name: FormulaException(string)
+  href: api/Egap.Spreadsheets.FormulaException.html#Egap_Spreadsheets_FormulaException__ctor_System_String_
+  commentId: M:Egap.Spreadsheets.FormulaException.#ctor(System.String)
+  name.vb: New(String)
+  fullName: Egap.Spreadsheets.FormulaException.FormulaException(string)
+  fullName.vb: Egap.Spreadsheets.FormulaException.New(String)
+  nameWithType: FormulaException.FormulaException(string)
+  nameWithType.vb: FormulaException.New(String)
+- uid: Egap.Spreadsheets.FormulaException.#ctor(System.String,System.Exception)
+  name: FormulaException(string, Exception)
+  href: api/Egap.Spreadsheets.FormulaException.html#Egap_Spreadsheets_FormulaException__ctor_System_String_System_Exception_
+  commentId: M:Egap.Spreadsheets.FormulaException.#ctor(System.String,System.Exception)
+  name.vb: New(String, Exception)
+  fullName: Egap.Spreadsheets.FormulaException.FormulaException(string, System.Exception)
+  fullName.vb: Egap.Spreadsheets.FormulaException.New(String, System.Exception)
+  nameWithType: FormulaException.FormulaException(string, Exception)
+  nameWithType.vb: FormulaException.New(String, Exception)
+- uid: Egap.Spreadsheets.FormulaException.#ctor(System.String,System.String,System.Int32)
+  name: FormulaException(string, string, int)
+  href: api/Egap.Spreadsheets.FormulaException.html#Egap_Spreadsheets_FormulaException__ctor_System_String_System_String_System_Int32_
+  commentId: M:Egap.Spreadsheets.FormulaException.#ctor(System.String,System.String,System.Int32)
+  name.vb: New(String, String, Integer)
+  fullName: Egap.Spreadsheets.FormulaException.FormulaException(string, string, int)
+  fullName.vb: Egap.Spreadsheets.FormulaException.New(String, String, Integer)
+  nameWithType: FormulaException.FormulaException(string, string, int)
+  nameWithType.vb: FormulaException.New(String, String, Integer)
+- uid: Egap.Spreadsheets.FormulaException.#ctor*
+  name: FormulaException
+  href: api/Egap.Spreadsheets.FormulaException.html#Egap_Spreadsheets_FormulaException__ctor_
+  commentId: Overload:Egap.Spreadsheets.FormulaException.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Spreadsheets.FormulaException.FormulaException
+  fullName.vb: Egap.Spreadsheets.FormulaException.New
+  nameWithType: FormulaException.FormulaException
+  nameWithType.vb: FormulaException.New
+- uid: Egap.Spreadsheets.FormulaException.Formula
+  name: Formula
+  href: api/Egap.Spreadsheets.FormulaException.html#Egap_Spreadsheets_FormulaException_Formula
+  commentId: P:Egap.Spreadsheets.FormulaException.Formula
+  fullName: Egap.Spreadsheets.FormulaException.Formula
+  nameWithType: FormulaException.Formula
+- uid: Egap.Spreadsheets.FormulaException.Formula*
+  name: Formula
+  href: api/Egap.Spreadsheets.FormulaException.html#Egap_Spreadsheets_FormulaException_Formula_
+  commentId: Overload:Egap.Spreadsheets.FormulaException.Formula
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.FormulaException.Formula
+  nameWithType: FormulaException.Formula
+- uid: Egap.Spreadsheets.FormulaException.Position
+  name: Position
+  href: api/Egap.Spreadsheets.FormulaException.html#Egap_Spreadsheets_FormulaException_Position
+  commentId: P:Egap.Spreadsheets.FormulaException.Position
+  fullName: Egap.Spreadsheets.FormulaException.Position
+  nameWithType: FormulaException.Position
+- uid: Egap.Spreadsheets.FormulaException.Position*
+  name: Position
+  href: api/Egap.Spreadsheets.FormulaException.html#Egap_Spreadsheets_FormulaException_Position_
+  commentId: Overload:Egap.Spreadsheets.FormulaException.Position
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.FormulaException.Position
+  nameWithType: FormulaException.Position
 - uid: Egap.Spreadsheets.Hyperlink
   name: Hyperlink
   href: api/Egap.Spreadsheets.Hyperlink.html
@@ -59103,6 +59185,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Drawings
   nameWithType: Worksheet.Drawings
+- uid: Egap.Spreadsheets.Worksheet.Evaluate(System.String,System.Nullable{Egap.Spreadsheets.CellAddress})
+  name: Evaluate(string, CellAddress?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Evaluate_System_String_System_Nullable_Egap_Spreadsheets_CellAddress__
+  commentId: M:Egap.Spreadsheets.Worksheet.Evaluate(System.String,System.Nullable{Egap.Spreadsheets.CellAddress})
+  name.vb: Evaluate(String, CellAddress?)
+  fullName: Egap.Spreadsheets.Worksheet.Evaluate(string, Egap.Spreadsheets.CellAddress?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.Evaluate(String, Egap.Spreadsheets.CellAddress?)
+  nameWithType: Worksheet.Evaluate(string, CellAddress?)
+  nameWithType.vb: Worksheet.Evaluate(String, CellAddress?)
+- uid: Egap.Spreadsheets.Worksheet.Evaluate*
+  name: Evaluate
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Evaluate_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.Evaluate
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.Evaluate
+  nameWithType: Worksheet.Evaluate
 - uid: Egap.Spreadsheets.Worksheet.Hyperlinks
   name: Hyperlinks
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Hyperlinks

@@ -155,8 +155,9 @@ Numbers, strings, booleans and errors convert to it, so <code>cell.Value = 42</c
 numbers that a date number format shows as dates. Excel's limits hold: numbers are finite, and text is at most 32,767
 characters.</p>
 <p><code>cell.Formula</code> holds a formula in Excel's stored form, with English function names and commas, without the <code>=</code> (a
-leading <code>=</code> you give is dropped). A formula's result is empty until the workbook is calculated. Setting <code>Value</code> removes a
-formula; setting <code>Formula</code> to null removes it and its result.</p>
+leading <code>=</code> you give is dropped). A formula that does not follow Excel's grammar throws a <code>FormulaException</code> that says
+where the problem is. A formula's result is empty until the workbook is calculated. Setting <code>Value</code> removes a formula;
+setting <code>Formula</code> to null removes it and its result. <a href="#formulas">Formulas</a> has more.</p>
 <p><code>cell.Clear()</code> removes the value, formula and style. <code>sheet.Cells</code> enumerates the cells that hold something, row by row,
 and <code>sheet.UsedRange</code> is the smallest range that holds them all.</p>
 <p>For many cells at once, <code>sheet.Cells.GetValue(row, column)</code> and <code>sheet.Cells.SetValue(row, column, value)</code> read and write
@@ -235,6 +236,50 @@ sheet.PageSetup.Footer = &quot;&amp;RPage &amp;P of &amp;N&quot;;
 <p>Excel's print area and print titles are names local to their sheet: <code>_xlnm.Print_Area</code> and <code>_xlnm.Print_Titles</code>.
 <code>sheet.PageSetup</code> holds the rest of what Excel's Page Setup dialog sets: paper, orientation, scale or fit, margins in
 inches, centring, gridlines, headings, page order and the header and footer in Excel's header codes.</p>
+<h2 id="formulas">Formulas</h2>
+<p>Formulas follow Excel's grammar: A1 references with <code>$</code> (<code>$B$4</code>, <code>A:C</code>, <code>2:5</code>), sheet, 3D and external references
+(<code>'Q 1'!A1</code>, <code>Jan:Mar!B2</code>, <code>[1]Prices!A1</code>), structured references to tables (<code>Sales[Amount]</code>, <code>Sales[[#Headers],[Region]]</code>,
+<code>[@Amount]</code>), array constants (<code>{1,2;3,4}</code>), the reference operators (<code>:</code>, a space for an intersection, a comma in
+parentheses for a union), <code>@</code> and the spill operator <code>#</code>. <code>cell.FormulaR1C1</code> gives and takes the same formula with R1C1
+references, relative ones counted from the cell:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet[&quot;B4&quot;].Formula = &quot;SUM($A$1:B3)&quot;;
+string r1c1 = sheet[&quot;B4&quot;].FormulaR1C1!;              // &quot;SUM(R1C1:R[-1]C)&quot;
+sheet[&quot;C4&quot;].FormulaR1C1 = &quot;R[-1]C*2&quot;;                // C4's formula is &quot;C3*2&quot;
+
+try
+{
+    sheet[&quot;D4&quot;].Formula = &quot;SUM(A1&quot;;
+}
+catch (FormulaException e)
+{
+    Console.WriteLine(e.Position);                   // 6, where the ) should be
+}
+</code></pre>
+<p><code>sheet.Evaluate</code> evaluates a formula as if it were in a cell of the sheet and gives the value that cell would show, with
+Excel's rules: errors are values that flow through (<code>#DIV/0!</code>, <code>#N/A</code>), text meets arithmetic as a number when it reads as
+one, a range meets the formula's row or column where one value is needed (implicit intersection), and arrays combine
+element by element:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet[&quot;A1&quot;].Value = 10;
+sheet[&quot;A2&quot;].Value = 20;
+sheet[&quot;A3&quot;].Value = 30;
+book.Names.Add(&quot;Rate&quot;, &quot;Sheet1!$A$1&quot;);
+
+CellValue total = sheet.Evaluate(&quot;SUM(A1:A3)*Rate&quot;);                         // 600
+CellValue row = sheet.Evaluate(&quot;A1:A3*2&quot;, CellAddress.Parse(&quot;C2&quot;));          // 40: A2 meets row 2
+CellValue safe = sheet.Evaluate(&quot;IFERROR(1/0,\&quot;none\&quot;)&quot;);                     // &quot;none&quot;
+CellValue date = sheet.Evaluate(&quot;DATE(2024,3,15)&quot;);                           // 45366
+</code></pre>
+<p>Other cells give the values they hold; a formula cell gives its last result, so <code>Evaluate</code> does not recalculate the
+workbook. Dates follow the workbook's date system, 1900 (with the 29 February 1900 Excel keeps) or 1904. A function Egap
+does not know gives <code>#NAME?</code>. This release evaluates operators, references, names and tables, and SUM, IF, IFERROR, IFNA,
+AND, OR, NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; recalculating workbooks and the common functions come next.</p>
 <h2 id="number-formats-and-cell-text">Number formats and cell text</h2>
 <p><code>cell.Text</code> is the value as Excel shows it in the cell, through the cell's number format: <code>1,234.50</code> for 1234.5 with
 <code>#,##0.00</code>, <code>2024-03-15</code> for the date serial 45366 with <code>yyyy-mm-dd</code>, <code>TRUE</code> for a boolean and <code>#DIV/0!</code> for an error. A

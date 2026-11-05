@@ -8273,6 +8273,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.FormulaException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.FormulaException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.FormulaException",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FormulaException.yml\" sourcestartlinenumber=\"1\">A formula that does not follow Excel's grammar, with where in its text the problem is.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.Hyperlink.yml",
       "output": {
         ".html": {
