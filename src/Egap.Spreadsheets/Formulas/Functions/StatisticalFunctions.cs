@@ -79,7 +79,7 @@ internal static partial class FormulaFunctions
             foreach ((EvalValue value, bool direct) in Scalars(argument))
             {
                 if (value.Kind == EvalKind.Number
-                    || (direct && value.Kind == EvalKind.Boolean)
+                    || (direct && value.Kind is EvalKind.Boolean or EvalKind.Blank or EvalKind.Missing)
                     || (direct && value.Kind == EvalKind.Text && ExcelValues.TryParse(value.Text, context, out _)))
                 {
                     count++;

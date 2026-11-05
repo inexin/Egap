@@ -277,8 +277,8 @@ internal sealed class FormulaCompiler
     {
         if (node is MissingNode)
         {
-            // IF(TRUE,,1) gives 0.
-            Constant(EvalValue.FromNumber(0));
+            // IF(TRUE,,1) gives a blank as Excel does: 0 in a cell or a sum, empty text beside text.
+            Constant(EvalValue.Blank);
             return;
         }
 

@@ -367,7 +367,7 @@ internal static partial class FormulaFunctions
         }
 
         EvalValue value = arguments[chosen];
-        return value.Kind == EvalKind.Missing ? Number(0) : value;
+        return value.Kind == EvalKind.Missing ? EvalValue.Blank : value;
     }
 
     /// <summary>ROW and COLUMN: of the reference's first cell, or of the formula's cell when none is given.</summary>

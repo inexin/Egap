@@ -207,6 +207,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   heading and a table of its values as displayed. `book.ToDocument()` does the same for a workbook in hand.
 - `Workbook.FromTables` puts the tables of a document, or those `PdfLayoutAnalyzer` finds in a PDF, on sheets, with numbers
   and dates typed by `TableImportOptions`; a PDF table that runs on across pages is one sheet.
+- An empty branch of `IF`, `IFERROR` or `IFNA`, or an empty choice of `CHOOSE`, is a blank as in Excel: 0 in a cell or a sum,
+  empty text beside text; `CONCATENATE(IF(A1=0,,"x"),"y")` no longer gives `0y`. `COUNT` counts an empty argument.
+  `ADDRESS` with its third or fourth argument empty takes the default: `ADDRESS(2,3,,)` is `$C$2`, no longer `#VALUE!`.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 

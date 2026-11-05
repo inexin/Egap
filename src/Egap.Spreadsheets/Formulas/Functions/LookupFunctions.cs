@@ -432,9 +432,16 @@ internal static partial class FormulaFunctions
     private static EvalValue Address(EvalValue[] arguments, EvalContext context)
     {
         if (!Num(arguments[0], context, out double rowValue, out EvalValue error)
-            || !Num(arguments[1], context, out double columnValue, out error)
-            || !Optional(arguments, 2, 1, context, out double absolute, out error)
-            || !OptionalFlag(arguments, 3, true, out bool a1, out error))
+            || !Num(arguments[1], context, out double columnValue, out error))
+        {
+            return error;
+        }
+
+        // Unlike most functions' optional arguments, these two take their defaults when empty too: ADDRESS(1,1,,) is $A$1.
+        double absolute = 1;
+        bool a1 = true;
+        if ((arguments.Length > 2 && arguments[2].Kind != EvalKind.Missing && !Num(arguments[2], context, out absolute, out error))
+            || (arguments.Length > 3 && arguments[3].Kind != EvalKind.Missing && !ExcelValues.TryBoolean(arguments[3], out a1, out error)))
         {
             return error;
         }
