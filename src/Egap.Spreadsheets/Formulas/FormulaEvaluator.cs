@@ -446,6 +446,12 @@ internal static class FormulaEvaluator
             return EvalValue.FromError(CellError.Reference);
         }
 
+        // One cell of a linked book that holds no kept value is #REF!, as in Excel.
+        if (node.Prefix?.Book is not (null or "0") && range.First == range.Last && sheets[0].GetKind(range.First.Row, range.First.Column) == CellValueKind.Empty)
+        {
+            return EvalValue.FromError(CellError.Reference);
+        }
+
         SheetArea[] areas = new SheetArea[sheets.Count];
         for (int i = 0; i < areas.Length; i++)
         {
@@ -472,6 +478,13 @@ internal static class FormulaEvaluator
     }
 
     /// <summary>The sheets a prefix names: one, or every sheet from the first to the last for a 3D reference; null when one is missing.</summary>
+    private static Xlsx.ExternalBook? ExternalBook(SheetPrefix prefix, EvalContext context)
+    {
+        return int.TryParse(prefix.Book, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int number) && number >= 1 && number <= context.Book.ExternalBooks.Count
+            ? context.Book.ExternalBooks[number - 1]
+            : null;
+    }
+
     private static List<Worksheet>? Sheets(SheetPrefix? prefix, EvalContext context)
     {
         if (prefix is null)
@@ -479,8 +492,14 @@ internal static class FormulaEvaluator
             return [context.Sheet];
         }
 
-        // An external book's values are not evaluated in this stage; [0] is the workbook itself.
-        if (prefix.Book is not (null or "0") || prefix.FirstSheet is null)
+        // A linked book's sheet is the values the file keeps for it; [0] is the workbook itself.
+        if (prefix.Book is not (null or "0"))
+        {
+            return prefix.FirstSheet is not null && (prefix.LastSheet is null || string.Equals(prefix.LastSheet, prefix.FirstSheet, StringComparison.OrdinalIgnoreCase))
+                && ExternalBook(prefix, context)?.Sheet(prefix.FirstSheet) is { } cached ? [cached] : null;
+        }
+
+        if (prefix.FirstSheet is null)
         {
             return null;
         }
@@ -517,7 +536,9 @@ internal static class FormulaEvaluator
         SheetPrefix? prefix = node.Prefix;
         if (prefix is not null && prefix.Book is not (null or "0"))
         {
-            return EvalValue.FromError(CellError.Reference);
+            return ExternalBook(prefix, context)?.Name(node.Name) is { Prefix: { } target } reference
+                ? Reference(new ReferenceNode(target with { Book = prefix.Book }, reference.Text, reference.Area), context)
+                : EvalValue.FromError(CellError.Reference);
         }
 
         Worksheet? scope = context.Sheet;
