@@ -3,6 +3,8 @@ using System.Xml.Linq;
 
 using Egami.Pixels;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Docx;
 
 /// <summary>
@@ -34,53 +36,53 @@ internal static class DocxProperties
 
             switch (e.Name.LocalName)
             {
-                case "b": format.Bold = DocxUnits.OnOff(e); break;
-                case "bCs": format.BoldComplexScript = DocxUnits.OnOff(e); break;
-                case "i": format.Italic = DocxUnits.OnOff(e); break;
-                case "iCs": format.ItalicComplexScript = DocxUnits.OnOff(e); break;
-                case "caps": format.AllCaps = DocxUnits.OnOff(e); break;
-                case "smallCaps": format.SmallCaps = DocxUnits.OnOff(e); break;
-                case "strike": format.Strikethrough = DocxUnits.OnOff(e); break;
-                case "dstrike": format.DoubleStrikethrough = DocxUnits.OnOff(e); break;
-                case "outline": format.Outline = DocxUnits.OnOff(e); break;
-                case "shadow": format.Shadow = DocxUnits.OnOff(e); break;
-                case "emboss": format.Emboss = DocxUnits.OnOff(e); break;
-                case "imprint": format.Imprint = DocxUnits.OnOff(e); break;
-                case "noProof": format.NoProof = DocxUnits.OnOff(e); break;
-                case "vanish": format.Hidden = DocxUnits.OnOff(e); break;
-                case "specVanish": format.SpecialHidden = DocxUnits.OnOff(e); break;
-                case "rtl": format.RightToLeft = DocxUnits.OnOff(e); break;
-                case "cs": format.ComplexScript = DocxUnits.OnOff(e); break;
-                case "color": format.Color = Color(e, "val", "themeColor", "themeTint", "themeShade"); break;
-                case "spacing": format.Spacing = DocxUnits.Points(e.Val()); break;
-                case "w": format.Scale = PercentOrNull(e.Val()); break;
-                case "kern": format.Kerning = DocxUnits.Points(e.Val(), DocxUnits.HalfPoint); break;
-                case "position": format.Position = DocxUnits.Points(e.Val(), DocxUnits.HalfPoint); break;
-                case "sz": format.Size = Positive(DocxUnits.Points(e.Val(), DocxUnits.HalfPoint)); break;
-                case "szCs": format.SizeComplexScript = Positive(DocxUnits.Points(e.Val(), DocxUnits.HalfPoint)); break;
-                case "highlight": format.Highlight = Highlight(e.Val()); break;
+                case "b": Toggle(format, WordRunProperty.Bold, e); break;
+                case "bCs": Toggle(format, WordRunProperty.BoldComplexScript, e); break;
+                case "i": Toggle(format, WordRunProperty.Italic, e); break;
+                case "iCs": Toggle(format, WordRunProperty.ItalicComplexScript, e); break;
+                case "caps": Toggle(format, WordRunProperty.AllCaps, e); break;
+                case "smallCaps": Toggle(format, WordRunProperty.SmallCaps, e); break;
+                case "strike": Toggle(format, WordRunProperty.Strikethrough, e); break;
+                case "dstrike": Toggle(format, WordRunProperty.DoubleStrikethrough, e); break;
+                case "outline": Toggle(format, WordRunProperty.Outline, e); break;
+                case "shadow": Toggle(format, WordRunProperty.Shadow, e); break;
+                case "emboss": Toggle(format, WordRunProperty.Emboss, e); break;
+                case "imprint": Toggle(format, WordRunProperty.Imprint, e); break;
+                case "noProof": Toggle(format, WordRunProperty.NoProof, e); break;
+                case "vanish": Toggle(format, WordRunProperty.Hidden, e); break;
+                case "specVanish": Toggle(format, WordRunProperty.SpecialHidden, e); break;
+                case "rtl": Toggle(format, WordRunProperty.RightToLeft, e); break;
+                case "cs": Toggle(format, WordRunProperty.ComplexScript, e); break;
+                case "color": WordProperties.Set(format, WordRunColor.Color, Color(e, "val", "themeColor", "themeTint", "themeShade")); break;
+                case "spacing": Measure(format, WordRunProperty.Spacing, DocxUnits.Raw(e.Val())); break;
+                case "w": Measure(format, WordRunProperty.Scale, Percent(e.Val())); break;
+                case "kern": Measure(format, WordRunProperty.Kerning, DocxUnits.Raw(e.Val(), DocxUnits.HalfPoint)); break;
+                case "position": Measure(format, WordRunProperty.Position, DocxUnits.Raw(e.Val(), DocxUnits.HalfPoint)); break;
+                case "sz": Measure(format, WordRunProperty.Size, DocxUnits.Raw(e.Val(), DocxUnits.HalfPoint)); break;
+                case "szCs": Measure(format, WordRunProperty.SizeComplexScript, DocxUnits.Raw(e.Val(), DocxUnits.HalfPoint)); break;
+                case "highlight": Measure(format, WordRunProperty.Highlight, (int?)Highlight(e.Val())); break;
                 case "u":
-                    format.Underline = Underline(e.Val());
+                    WordProperties.Set(format, WordRunProperty.Underline, (int)(Underline(e.Val()) ?? UnderlineStyle.Single));
                     if (e.Attribute(Ns.W + "color") is not null || e.Attribute(Ns.W + "themeColor") is not null)
                     {
-                        format.UnderlineColor = Color(e, "color", "themeColor", "themeTint", "themeShade");
+                        WordProperties.Set(format, WordRunColor.UnderlineColor, Color(e, "color", "themeColor", "themeTint", "themeShade"));
                     }
 
                     break;
                 case "bdr": format.Border = Border(e); break;
                 case "shd": format.Shading = Shading(e); break;
                 case "vertAlign":
-                    format.VerticalPosition = e.Val() switch
+                    WordProperties.Set(format, WordRunProperty.VerticalPosition, (int)(e.Val() switch
                     {
                         "superscript" => VerticalTextPosition.Superscript,
                         "subscript" => VerticalTextPosition.Subscript,
                         _ => VerticalTextPosition.Baseline,
-                    };
+                    }));
                     break;
                 case "lang":
-                    format.Language = e.Val();
-                    format.LanguageEastAsia = e.W("eastAsia");
-                    format.LanguageBidi = e.W("bidi");
+                    WordProperties.SetLanguage(format, WordRunProperty.Language, e.Val());
+                    WordProperties.SetLanguage(format, WordRunProperty.LanguageEastAsia, e.W("eastAsia"));
+                    WordProperties.SetLanguage(format, WordRunProperty.LanguageBidi, e.W("bidi"));
                     break;
                 case "rFonts":
                     ReadFonts(e, format);
@@ -95,6 +97,20 @@ internal static class DocxProperties
                 default:
                     unknown?.Invoke(e);
                     break;
+            }
+        }
+
+        static void Toggle(RunFormat format, WordRunProperty property, XElement e) => WordProperties.Set(format, property, DocxUnits.OnOff(e) ? 1 : 0);
+
+        static void Measure(RunFormat format, WordRunProperty property, double? value)
+        {
+            if (value is double v)
+            {
+                WordProperties.Set(format, property, v);
+            }
+            else
+            {
+                WordProperties.Clear(format, property);
             }
         }
     }
@@ -116,75 +132,66 @@ internal static class DocxProperties
 
             switch (e.Name.LocalName)
             {
-                case "keepNext": format.KeepWithNext = DocxUnits.OnOff(e); break;
+                case "keepNext": Toggle(format, WordParagraphProperty.KeepWithNext, e); break;
                 case "framePr": format.Frame = DocxPositions.ReadFrame(e); break;
-                case "keepLines": format.KeepTogether = DocxUnits.OnOff(e); break;
-                case "pageBreakBefore": format.PageBreakBefore = DocxUnits.OnOff(e); break;
-                case "widowControl": format.WidowControl = DocxUnits.OnOff(e); break;
-                case "suppressLineNumbers": format.SuppressLineNumbers = DocxUnits.OnOff(e); break;
-                case "suppressAutoHyphens": format.SuppressAutoHyphens = DocxUnits.OnOff(e); break;
-                case "bidi": format.Bidi = DocxUnits.OnOff(e); break;
-                case "snapToGrid": format.SnapToGrid = DocxUnits.OnOff(e); break;
-                case "contextualSpacing": format.ContextualSpacing = DocxUnits.OnOff(e); break;
-                case "mirrorIndents": format.MirrorIndents = DocxUnits.OnOff(e); break;
+                case "keepLines": Toggle(format, WordParagraphProperty.KeepTogether, e); break;
+                case "pageBreakBefore": Toggle(format, WordParagraphProperty.PageBreakBefore, e); break;
+                case "widowControl": Toggle(format, WordParagraphProperty.WidowControl, e); break;
+                case "suppressLineNumbers": Toggle(format, WordParagraphProperty.SuppressLineNumbers, e); break;
+                case "suppressAutoHyphens": Toggle(format, WordParagraphProperty.SuppressAutoHyphens, e); break;
+                case "bidi": Toggle(format, WordParagraphProperty.Bidi, e); break;
+                case "snapToGrid": Toggle(format, WordParagraphProperty.SnapToGrid, e); break;
+                case "contextualSpacing": Toggle(format, WordParagraphProperty.ContextualSpacing, e); break;
+                case "mirrorIndents": Toggle(format, WordParagraphProperty.MirrorIndents, e); break;
                 case "outlineLvl":
                     if (DocxUnits.Int(e.Val()) is int level && level is >= 0 and <= 9)
                     {
-                        format.OutlineLevel = level;
+                        WordProperties.Set(format, WordParagraphProperty.OutlineLevel, level);
                     }
 
                     break;
                 case "jc":
-                    format.Alignment = e.Val() switch
+                    Measure(format, WordParagraphProperty.Alignment, (int?)(e.Val() switch
                     {
                         "left" or "start" => ParagraphAlignment.Left,
                         "center" => ParagraphAlignment.Center,
                         "right" or "end" => ParagraphAlignment.Right,
                         "both" or "lowKashida" or "mediumKashida" or "highKashida" or "thaiDistribute" => ParagraphAlignment.Justify,
                         "distribute" => ParagraphAlignment.Distribute,
-                        _ => null,
-                    };
+                        _ => (ParagraphAlignment?)null,
+                    }));
 
                     // Kashida is a kind of justification: a plain jc of both turns off a style's kashida.
-                    format.Kashida = e.Val() switch
+                    Measure(format, WordParagraphProperty.Kashida, (int?)(e.Val() switch
                     {
                         "lowKashida" => KashidaLevel.Low,
                         "mediumKashida" => KashidaLevel.Medium,
                         "highKashida" => KashidaLevel.High,
                         "both" or "thaiDistribute" => KashidaLevel.None,
-                        _ => null,
-                    };
+                        _ => (KashidaLevel?)null,
+                    }));
                     break;
                 case "spacing":
-                    format.SpaceBefore = Positive(DocxUnits.Points(e.W("before")));
-                    format.SpaceAfter = Positive(DocxUnits.Points(e.W("after")));
+                    Measure(format, WordParagraphProperty.SpaceBefore, DocxUnits.Raw(e.W("before")));
+                    Measure(format, WordParagraphProperty.SpaceAfter, DocxUnits.Raw(e.W("after")));
                     if (e.Attribute(Ns.W + "beforeAutospacing") is { } beforeAuto)
                     {
-                        format.SpaceBeforeAuto = beforeAuto.Value is "1" or "true" or "on";
+                        WordProperties.Set(format, WordParagraphProperty.SpaceBeforeAuto, beforeAuto.Value is "1" or "true" or "on" ? 1 : 0);
                     }
 
                     if (e.Attribute(Ns.W + "afterAutospacing") is { } afterAuto)
                     {
-                        format.SpaceAfterAuto = afterAuto.Value is "1" or "true" or "on";
+                        WordProperties.Set(format, WordParagraphProperty.SpaceAfterAuto, afterAuto.Value is "1" or "true" or "on" ? 1 : 0);
                     }
 
-                    if (DocxUnits.Points(e.W("line")) is double line)
+                    if (DocxUnits.Raw(e.W("line")) is double line)
                     {
-                        switch (e.W("lineRule"))
+                        WordProperties.SetLineSpacing(format, e.W("lineRule") switch
                         {
-                            case "exact":
-                                format.LineSpacingRule = LineSpacingRule.Exactly;
-                                format.LineSpacing = Math.Abs(line);
-                                break;
-                            case "atLeast":
-                                format.LineSpacingRule = LineSpacingRule.AtLeast;
-                                format.LineSpacing = Math.Abs(line);
-                                break;
-                            default:
-                                format.LineSpacingRule = LineSpacingRule.Multiple;
-                                format.LineSpacing = Math.Abs(line * 20 / 240);
-                                break;
-                        }
+                            "exact" => LineSpacingRule.Exactly,
+                            "atLeast" => LineSpacingRule.AtLeast,
+                            _ => LineSpacingRule.Multiple,
+                        }, line);
                     }
 
                     if (e.Attribute(Ns.W + "beforeLines") is not null || e.Attribute(Ns.W + "afterLines") is not null)
@@ -194,15 +201,15 @@ internal static class DocxProperties
 
                     break;
                 case "ind":
-                    format.LeftIndent = DocxUnits.Points(e.W("start") ?? e.W("left"));
-                    format.RightIndent = DocxUnits.Points(e.W("end") ?? e.W("right"));
-                    if (DocxUnits.Points(e.W("hanging")) is double hanging)
+                    Measure(format, WordParagraphProperty.LeftIndent, DocxUnits.Raw(e.W("start") ?? e.W("left")));
+                    Measure(format, WordParagraphProperty.RightIndent, DocxUnits.Raw(e.W("end") ?? e.W("right")));
+                    if (DocxUnits.Raw(e.W("hanging")) is double hanging)
                     {
-                        format.FirstLineIndent = hanging == 0 ? 0 : -hanging;
+                        WordProperties.Set(format, WordParagraphProperty.FirstLineIndent, hanging == 0 ? 0 : -hanging);
                     }
-                    else if (DocxUnits.Points(e.W("firstLine")) is double first)
+                    else if (DocxUnits.Raw(e.W("firstLine")) is double first)
                     {
-                        format.FirstLineIndent = first;
+                        WordProperties.Set(format, WordParagraphProperty.FirstLineIndent, first);
                     }
 
                     if (e.Attributes().Any(a => a.Name.LocalName.EndsWith("Chars", StringComparison.Ordinal)))
@@ -212,7 +219,7 @@ internal static class DocxProperties
 
                     break;
                 case "tabs":
-                    format.TabStops = [.. e.Elements(Ns.W + "tab").Select(Tab).OfType<TabStop>()];
+                    WordProperties.SetTabStops(format, e.Elements(Ns.W + "tab").Select(Tab).OfType<TabStop>());
                     break;
                 case "pBdr":
                     foreach (XElement side in e.Elements())
@@ -238,6 +245,20 @@ internal static class DocxProperties
                     break;
             }
         }
+
+        static void Toggle(ParagraphFormat format, WordParagraphProperty property, XElement e) => WordProperties.Set(format, property, DocxUnits.OnOff(e) ? 1 : 0);
+
+        static void Measure(ParagraphFormat format, WordParagraphProperty property, double? value)
+        {
+            if (value is double v)
+            {
+                WordProperties.Set(format, property, v);
+            }
+            else
+            {
+                WordProperties.Clear(format, property);
+            }
+        }
     }
 
     public static void ReadTable(XElement? tblPr, TableFormat format, Action<XElement>? unknown = null)
@@ -258,32 +279,30 @@ internal static class DocxProperties
             switch (e.Name.LocalName)
             {
                 case "tblW": format.Width = Width(e); break;
-                case "jc":
-                    format.Alignment = e.Val() switch
-                    {
-                        "center" => TableAlignment.Center,
-                        "right" or "end" => TableAlignment.Right,
-                        "left" or "start" => TableAlignment.Left,
-                        _ => null,
-                    };
+                case "jc": Measure(format, WordTableProperty.TableAlignment, (int?)TableAlignmentOf(e.Val())); break;
+                case "tblInd": Measure(format, WordTableProperty.Indent, WidthTwips(e)); break;
+                case "tblLayout":
+                    WordProperties.Set(format, WordTableProperty.Layout, (int)(e.W("type") == "fixed" ? TableLayoutKind.Fixed : TableLayoutKind.Autofit));
                     break;
-                case "tblInd": format.Indent = Width(e)?.Unit == WidthUnit.Points ? Width(e)!.Value.Value : null; break;
-                case "tblLayout": format.Layout = e.W("type") == "fixed" ? TableLayoutKind.Fixed : TableLayoutKind.Autofit; break;
-                case "tblCellSpacing": format.CellSpacing = Width(e)?.Unit == WidthUnit.Points ? Width(e)!.Value.Value : null; break;
-                case "bidiVisual": format.Bidi = DocxUnits.OnOff(e); break;
-                case "tblStyleRowBandSize": format.RowBandSize = DocxUnits.Int(e.Val()) is int r && r > 0 ? r : null; break;
-                case "tblStyleColBandSize": format.ColumnBandSize = DocxUnits.Int(e.Val()) is int c && c > 0 ? c : null; break;
+                case "tblCellSpacing": Measure(format, WordTableProperty.TableCellSpacing, WidthTwips(e)); break;
+                case "bidiVisual": WordProperties.Set(format, WordTableProperty.Bidi, DocxUnits.OnOff(e) ? 1 : 0); break;
+                case "tblStyleRowBandSize": WordProperties.Set(format, WordTableProperty.RowBandSize, DocxUnits.Int(e.Val()) ?? 0); break;
+                case "tblStyleColBandSize": WordProperties.Set(format, WordTableProperty.ColumnBandSize, DocxUnits.Int(e.Val()) ?? 0); break;
                 case "shd": format.Shading = Shading(e); break;
                 case "tblCellMar":
                     foreach (XElement side in e.Elements())
                     {
-                        double? value = Width(side)?.Unit == WidthUnit.Points ? Width(side)!.Value.Value : null;
-                        switch (side.Name.LocalName)
+                        WordTableProperty? margin = side.Name.LocalName switch
                         {
-                            case "top": format.CellMarginTop = value; break;
-                            case "bottom": format.CellMarginBottom = value; break;
-                            case "left" or "start": format.CellMarginLeft = value; break;
-                            case "right" or "end": format.CellMarginRight = value; break;
+                            "top" => WordTableProperty.DefaultMarginTop,
+                            "bottom" => WordTableProperty.DefaultMarginBottom,
+                            "left" or "start" => WordTableProperty.DefaultMarginLeft,
+                            "right" or "end" => WordTableProperty.DefaultMarginRight,
+                            _ => null,
+                        };
+                        if (margin is WordTableProperty property)
+                        {
+                            Measure(format, property, WidthTwips(side));
                         }
                     }
 
@@ -319,6 +338,18 @@ internal static class DocxProperties
                     break;
             }
         }
+
+        static void Measure(TableFormat format, WordTableProperty property, double? value)
+        {
+            if (value is double v)
+            {
+                WordProperties.Set(format, property, v);
+            }
+            else
+            {
+                WordProperties.Clear(format, property);
+            }
+        }
     }
 
     public static void ReadRow(XElement? trPr, RowFormat format, Action<XElement>? unknown = null)
@@ -339,32 +370,41 @@ internal static class DocxProperties
             switch (e.Name.LocalName)
             {
                 case "trHeight":
-                    format.Height = Positive(DocxUnits.Points(e.Val()));
-                    format.HeightRule = e.W("hRule") switch
+                    WordTableProperty rule = e.W("hRule") switch
                     {
-                        "exact" => RowHeightRule.Exactly,
-                        "auto" => RowHeightRule.Auto,
-                        _ => RowHeightRule.AtLeast,
+                        "exact" => WordTableProperty.RowHeightExactly,
+                        "auto" => WordTableProperty.RowHeightAuto,
+                        _ => WordTableProperty.RowHeightAtLeast,
                     };
-                    break;
-                case "tblHeader": format.IsHeader = DocxUnits.OnOff(e); break;
-                case "cantSplit": format.CantSplit = DocxUnits.OnOff(e); break;
-                case "hidden": format.Hidden = DocxUnits.OnOff(e); break;
-                case "jc":
-                    format.Alignment = e.Val() switch
+                    WordProperties.Set(format, rule, DocxUnits.Raw(e.Val()) ?? 0);
+                    if (DocxUnits.Raw(e.Val()) is null)
                     {
-                        "center" => TableAlignment.Center,
-                        "right" or "end" => TableAlignment.Right,
-                        "left" or "start" => TableAlignment.Left,
-                        _ => null,
-                    };
+                        WordProperties.Clear(format, rule);
+                    }
+
                     break;
-                case "tblCellSpacing": format.CellSpacing = Width(e)?.Unit == WidthUnit.Points ? Width(e)!.Value.Value : null; break;
+                case "tblHeader": WordProperties.Set(format, WordTableProperty.HeaderRow, DocxUnits.OnOff(e) ? 1 : 0); break;
+                case "cantSplit": WordProperties.Set(format, WordTableProperty.CantSplit, DocxUnits.OnOff(e) ? 1 : 0); break;
+                case "hidden": WordProperties.Set(format, WordTableProperty.RowHidden, DocxUnits.OnOff(e) ? 1 : 0); break;
+                case "jc": Measure(format, WordTableProperty.RowAlignment, (int?)TableAlignmentOf(e.Val())); break;
+                case "tblCellSpacing": Measure(format, WordTableProperty.RowCellSpacing, WidthTwips(e)); break;
                 case "ins" or "del":
                     break;
                 default:
                     unknown?.Invoke(e);
                     break;
+            }
+        }
+
+        static void Measure(RowFormat format, WordTableProperty property, double? value)
+        {
+            if (value is double v)
+            {
+                WordProperties.Set(format, property, v);
+            }
+            else
+            {
+                WordProperties.Clear(format, property);
             }
         }
     }
@@ -387,40 +427,46 @@ internal static class DocxProperties
             switch (e.Name.LocalName)
             {
                 case "tcW": format.Width = Width(e); break;
-                case "gridSpan": format.GridSpan = DocxUnits.Int(e.Val()) is int span && span > 1 ? span : null; break;
-                case "vMerge": format.VerticalMerge = e.Val() == "restart" ? VerticalMerge.Restart : VerticalMerge.Continue; break;
+                case "gridSpan": WordProperties.Set(format, WordTableProperty.CellGridSpan, DocxUnits.Int(e.Val()) ?? 0); break;
+                case "vMerge":
+                    WordProperties.Set(format, WordTableProperty.CellVerticalMerge, (int)(e.Val() == "restart" ? VerticalMerge.Restart : VerticalMerge.Continue));
+                    break;
                 case "vAlign":
-                    format.VerticalAlignment = e.Val() switch
+                    Measure(format, WordTableProperty.CellVerticalAlignment, (int?)(e.Val() switch
                     {
                         "center" => VerticalAlignment.Center,
                         "bottom" => VerticalAlignment.Bottom,
                         "top" => VerticalAlignment.Top,
-                        _ => null,
-                    };
+                        _ => (VerticalAlignment?)null,
+                    }));
                     break;
-                case "noWrap": format.NoWrap = DocxUnits.OnOff(e); break;
-                case "tcFitText": format.FitText = DocxUnits.OnOff(e); break;
-                case "hideMark": format.HideMark = DocxUnits.OnOff(e); break;
+                case "noWrap": WordProperties.Set(format, WordTableProperty.CellNoWrap, DocxUnits.OnOff(e) ? 1 : 0); break;
+                case "tcFitText": WordProperties.Set(format, WordTableProperty.CellFitText, DocxUnits.OnOff(e) ? 1 : 0); break;
+                case "hideMark": WordProperties.Set(format, WordTableProperty.CellHideMark, DocxUnits.OnOff(e) ? 1 : 0); break;
                 case "shd": format.Shading = Shading(e); break;
                 case "textDirection":
-                    format.TextDirection = e.Val() switch
+                    Measure(format, WordTableProperty.CellTextDirection, (int?)(e.Val() switch
                     {
                         "tbRl" or "tbRlV" => TextDirection.TopToBottom,
                         "btLr" => TextDirection.BottomToTop,
                         "lrTb" => TextDirection.Horizontal,
-                        _ => null,
-                    };
+                        _ => (TextDirection?)null,
+                    }));
                     break;
                 case "tcMar":
                     foreach (XElement side in e.Elements())
                     {
-                        double? value = Width(side)?.Unit == WidthUnit.Points ? Width(side)!.Value.Value : null;
-                        switch (side.Name.LocalName)
+                        WordTableProperty? margin = side.Name.LocalName switch
                         {
-                            case "top": format.MarginTop = value; break;
-                            case "bottom": format.MarginBottom = value; break;
-                            case "left" or "start": format.MarginLeft = value; break;
-                            case "right" or "end": format.MarginRight = value; break;
+                            "top" => WordTableProperty.CellMarginTop,
+                            "bottom" => WordTableProperty.CellMarginBottom,
+                            "left" or "start" => WordTableProperty.CellMarginLeft,
+                            "right" or "end" => WordTableProperty.CellMarginRight,
+                            _ => null,
+                        };
+                        if (margin is WordTableProperty property)
+                        {
+                            Measure(format, property, WidthTwips(side));
                         }
                     }
 
@@ -447,6 +493,18 @@ internal static class DocxProperties
                     break;
             }
         }
+
+        static void Measure(CellFormat format, WordTableProperty property, double? value)
+        {
+            if (value is double v)
+            {
+                WordProperties.Set(format, property, v);
+            }
+            else
+            {
+                WordProperties.Clear(format, property);
+            }
+        }
     }
 
     public static void ReadSection(XElement? sectPr, PageSetup setup, Action<XElement>? unknown = null)
@@ -467,55 +525,55 @@ internal static class DocxProperties
             switch (e.Name.LocalName)
             {
                 case "pgSz":
-                    setup.PageWidth = Positive(DocxUnits.Points(e.W("w")));
-                    setup.PageHeight = Positive(DocxUnits.Points(e.W("h")));
+                    Measure(setup, WordSectionProperty.PageWidth, DocxUnits.Raw(e.W("w")));
+                    Measure(setup, WordSectionProperty.PageHeight, DocxUnits.Raw(e.W("h")));
                     if (e.W("orient") is { } orient)
                     {
-                        setup.Orientation = orient == "landscape" ? PageOrientation.Landscape : PageOrientation.Portrait;
+                        WordProperties.Set(setup, WordSectionProperty.Orientation, (int)(orient == "landscape" ? PageOrientation.Landscape : PageOrientation.Portrait));
                     }
 
                     break;
                 case "pgMar":
-                    setup.MarginTop = DocxUnits.Points(e.W("top"));
-                    setup.MarginBottom = DocxUnits.Points(e.W("bottom"));
-                    setup.MarginLeft = Positive(DocxUnits.Points(e.W("left") ?? e.W("start")));
-                    setup.MarginRight = Positive(DocxUnits.Points(e.W("right") ?? e.W("end")));
-                    setup.HeaderDistance = Positive(DocxUnits.Points(e.W("header")));
-                    setup.FooterDistance = Positive(DocxUnits.Points(e.W("footer")));
-                    setup.Gutter = Positive(DocxUnits.Points(e.W("gutter")));
+                    Measure(setup, WordSectionProperty.MarginTop, DocxUnits.Raw(e.W("top")));
+                    Measure(setup, WordSectionProperty.MarginBottom, DocxUnits.Raw(e.W("bottom")));
+                    Measure(setup, WordSectionProperty.MarginLeft, DocxUnits.Raw(e.W("left") ?? e.W("start")));
+                    Measure(setup, WordSectionProperty.MarginRight, DocxUnits.Raw(e.W("right") ?? e.W("end")));
+                    Measure(setup, WordSectionProperty.HeaderDistance, DocxUnits.Raw(e.W("header")));
+                    Measure(setup, WordSectionProperty.FooterDistance, DocxUnits.Raw(e.W("footer")));
+                    Measure(setup, WordSectionProperty.Gutter, DocxUnits.Raw(e.W("gutter")));
                     break;
                 case "type":
-                    setup.SectionStart = e.Val() switch
+                    WordProperties.Set(setup, WordSectionProperty.Start, (int)(e.Val() switch
                     {
                         "continuous" => SectionStart.Continuous,
                         "oddPage" => SectionStart.OddPage,
                         "evenPage" => SectionStart.EvenPage,
                         "nextColumn" => SectionStart.NewColumn,
                         _ => SectionStart.NewPage,
-                    };
+                    }));
                     break;
-                case "titlePg": setup.DifferentFirstPage = DocxUnits.OnOff(e); break;
-                case "bidi": setup.Bidi = DocxUnits.OnOff(e); break;
+                case "titlePg": WordProperties.Set(setup, WordSectionProperty.TitlePage, DocxUnits.OnOff(e) ? 1 : 0); break;
+                case "bidi": WordProperties.Set(setup, WordSectionProperty.Bidi, DocxUnits.OnOff(e) ? 1 : 0); break;
                 case "vAlign":
-                    setup.VerticalAlignment = e.Val() switch
+                    WordProperties.Set(setup, WordSectionProperty.VerticalAlignment, (int)(e.Val() switch
                     {
                         "center" => VerticalAlignment.Center,
                         "bottom" => VerticalAlignment.Bottom,
                         "both" => VerticalAlignment.Justify,
                         _ => VerticalAlignment.Top,
-                    };
+                    }));
                     break;
                 case "textDirection":
-                    setup.TextDirection = e.Val() switch
+                    WordProperties.Set(setup, WordSectionProperty.TextDirection, (int)(e.Val() switch
                     {
                         "tbRl" or "tbRlV" => TextDirection.TopToBottom,
                         "btLr" => TextDirection.BottomToTop,
                         _ => TextDirection.Horizontal,
-                    };
+                    }));
                     break;
                 case "pgNumType":
-                    setup.PageNumberStart = DocxUnits.Int(e.W("start"));
-                    setup.PageNumberStyle = e.W("fmt") is { } fmt ? NumberFormat(fmt) : null;
+                    Measure(setup, WordSectionProperty.PageNumberStart, DocxUnits.Int(e.W("start")));
+                    Measure(setup, WordSectionProperty.PageNumberStyle, e.W("fmt") is { } fmt ? (int)NumberFormat(fmt) : null);
                     if (e.Attributes().Any(a => a.Name.LocalName is "chapStyle" or "chapSep"))
                     {
                         unknown?.Invoke(new XElement(e.Name, e.Attributes().Where(a => a.Name.LocalName is "chapStyle" or "chapSep")));
@@ -525,18 +583,18 @@ internal static class DocxProperties
                 case "cols":
                     if (DocxUnits.Int(e.W("num")) is int count && count > 0)
                     {
-                        setup.ColumnCount = Math.Min(count, 45);
+                        WordProperties.Set(setup, WordSectionProperty.ColumnCount, count);
                     }
 
-                    setup.ColumnSpacing = Positive(DocxUnits.Points(e.W("space")));
+                    Measure(setup, WordSectionProperty.ColumnSpacing, DocxUnits.Raw(e.W("space")));
                     if (e.Attribute(Ns.W + "equalWidth") is { } equal)
                     {
-                        setup.EqualColumnWidths = equal.Value is "1" or "true" or "on";
+                        WordProperties.Set(setup, WordSectionProperty.EqualColumnWidths, equal.Value is "1" or "true" or "on" ? 1 : 0);
                     }
 
                     if (e.Attribute(Ns.W + "sep") is { } separator)
                     {
-                        setup.ColumnSeparator = separator.Value is "1" or "true" or "on";
+                        WordProperties.Set(setup, WordSectionProperty.ColumnSeparator, separator.Value is "1" or "true" or "on" ? 1 : 0);
                     }
 
                     List<TextColumn> columns = [.. e.Elements(Ns.W + "col").Select(c => new TextColumn(Math.Max(0, DocxUnits.Points(c.W("w")) ?? 0), Math.Max(0, DocxUnits.Points(c.W("space")) ?? 0)))];
@@ -551,6 +609,18 @@ internal static class DocxProperties
                 default:
                     unknown?.Invoke(e);
                     break;
+            }
+        }
+
+        static void Measure(PageSetup setup, WordSectionProperty property, double? value)
+        {
+            if (value is double v)
+            {
+                WordProperties.Set(setup, property, v);
+            }
+            else
+            {
+                WordProperties.Clear(setup, property);
             }
         }
     }
@@ -734,14 +804,22 @@ internal static class DocxProperties
 
     private static void ReadFonts(XElement e, RunFormat format)
     {
-        format.FontAscii = e.W("ascii") ?? format.FontAscii;
-        format.FontHighAnsi = e.W("hAnsi") ?? format.FontHighAnsi;
-        format.FontEastAsia = e.W("eastAsia") ?? format.FontEastAsia;
-        format.FontComplexScript = e.W("cs") ?? format.FontComplexScript;
+        Font(format, WordFontSlot.Ascii, e.W("ascii"));
+        Font(format, WordFontSlot.HighAnsi, e.W("hAnsi"));
+        Font(format, WordFontSlot.EastAsia, e.W("eastAsia"));
+        Font(format, WordFontSlot.ComplexScript, e.W("cs"));
         format.ThemeFontAscii = ThemeFontOf(e.W("asciiTheme")) ?? format.ThemeFontAscii;
         format.ThemeFontHighAnsi = ThemeFontOf(e.W("hAnsiTheme")) ?? format.ThemeFontHighAnsi;
         format.ThemeFontEastAsia = ThemeFontOf(e.W("eastAsiaTheme")) ?? format.ThemeFontEastAsia;
         format.ThemeFontComplexScript = ThemeFontOf(e.W("cstheme")) ?? format.ThemeFontComplexScript;
+
+        static void Font(RunFormat format, WordFontSlot slot, string? name)
+        {
+            if (name is not null)
+            {
+                WordProperties.SetFont(format, slot, name);
+            }
+        }
     }
 
     public static ThemeFont? ThemeFontOf(string? name)
@@ -763,26 +841,34 @@ internal static class DocxProperties
         // Word 2010+ writes the look as attributes; older files as a hex bit mask in w:val.
         if (e.W("firstRow") is not null || e.W("lastRow") is not null || e.W("noHBand") is not null)
         {
-            format.LookFirstRow = Flag(e.W("firstRow"));
-            format.LookLastRow = Flag(e.W("lastRow"));
-            format.LookFirstColumn = Flag(e.W("firstColumn"));
-            format.LookLastColumn = Flag(e.W("lastColumn"));
-            format.LookNoRowBands = Flag(e.W("noHBand"));
-            format.LookNoColumnBands = Flag(e.W("noVBand"));
+            Flag(format, WordTableProperty.LookFirstRow, e.W("firstRow"));
+            Flag(format, WordTableProperty.LookLastRow, e.W("lastRow"));
+            Flag(format, WordTableProperty.LookFirstColumn, e.W("firstColumn"));
+            Flag(format, WordTableProperty.LookLastColumn, e.W("lastColumn"));
+            Flag(format, WordTableProperty.LookNoRowBands, e.W("noHBand"));
+            Flag(format, WordTableProperty.LookNoColumnBands, e.W("noVBand"));
         }
         else if (e.Val() is { } hex && int.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int mask))
         {
-            format.LookFirstRow = (mask & 0x0020) != 0;
-            format.LookLastRow = (mask & 0x0040) != 0;
-            format.LookFirstColumn = (mask & 0x0080) != 0;
-            format.LookLastColumn = (mask & 0x0100) != 0;
-            format.LookNoRowBands = (mask & 0x0200) != 0;
-            format.LookNoColumnBands = (mask & 0x0400) != 0;
+            // Word's TLP flags ([MS-DOC] 2.9.328), as DOC stores them too.
+            WordProperties.Set(format, WordTableProperty.LookFirstRow, mask & 0x0020);
+            WordProperties.Set(format, WordTableProperty.LookLastRow, mask & 0x0040);
+            WordProperties.Set(format, WordTableProperty.LookFirstColumn, mask & 0x0080);
+            WordProperties.Set(format, WordTableProperty.LookLastColumn, mask & 0x0100);
+            WordProperties.Set(format, WordTableProperty.LookNoRowBands, mask & 0x0200);
+            WordProperties.Set(format, WordTableProperty.LookNoColumnBands, mask & 0x0400);
         }
 
-        static bool? Flag(string? value)
+        static void Flag(TableFormat format, WordTableProperty property, string? value)
         {
-            return value is null ? null : value is "1" or "true" or "on";
+            if (value is null)
+            {
+                WordProperties.Clear(format, property);
+            }
+            else
+            {
+                WordProperties.Set(format, property, value is "1" or "true" or "on" ? 1 : 0);
+            }
         }
     }
 
@@ -842,9 +928,31 @@ internal static class DocxProperties
         return value is double v ? Math.Max(0, v) : null;
     }
 
-    private static double? PercentOrNull(string? value)
+    private static double? Percent(string? value)
     {
         string? text = value?.TrimEnd('%');
-        return text is not null && double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) && double.IsFinite(percent) ? Math.Clamp(percent, 1, 600) : null;
+        return text is not null && double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) && double.IsFinite(percent) ? percent : null;
+    }
+
+    private static TableAlignment? TableAlignmentOf(string? value)
+    {
+        return value switch
+        {
+            "center" => TableAlignment.Center,
+            "right" or "end" => TableAlignment.Right,
+            "left" or "start" => TableAlignment.Left,
+            _ => null,
+        };
+    }
+
+    /// <summary>A width given in twips (or nil, for 0), never below 0; null for an automatic or percentage width.</summary>
+    private static double? WidthTwips(XElement e)
+    {
+        return e.W("type") switch
+        {
+            "auto" or "pct" => null,
+            "nil" => 0,
+            _ => DocxUnits.Raw(e.W("w")) is double twips ? Math.Max(0, twips) : null,
+        };
     }
 }

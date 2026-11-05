@@ -1,5 +1,7 @@
 using System.Xml.Linq;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Docx;
 
 /// <summary>
@@ -45,25 +47,51 @@ internal static class DocxPositions
 
     public static FramePosition ReadFrame(XElement framePr)
     {
-        return new FramePosition
+        // Only the attributes given change the frame; the others keep FramePosition's defaults, which are Word's, except
+        // the vertical anchor: a missing one is the page's.
+        FramePosition frame = WordProperties.Set(new FramePosition(), WordFrameProperty.VerticalAnchor, (int)Vertical(framePr.W("vAnchor")));
+        if (DocxUnits.Raw(framePr.W("w")) is double w)
         {
-            Width = DocxUnits.Points(framePr.W("w")) is double w && w > 0 ? w : null,
-            Height = DocxUnits.Points(framePr.W("h")) is double h && h > 0 ? h : null,
-            HeightRule = framePr.W("hRule") switch
+            frame = WordProperties.Set(frame, WordFrameProperty.Width, w);
+        }
+
+        if (DocxUnits.Raw(framePr.W("h")) is double h)
+        {
+            frame = WordProperties.Set(frame, WordFrameProperty.Height, Math.Max(0, h));
+        }
+
+        if (framePr.W("hRule") is not null || frame.Height is not null)
+        {
+            frame = WordProperties.Set(frame, WordFrameProperty.HeightRule, (int)(framePr.W("hRule") switch
             {
                 "atLeast" => RowHeightRule.AtLeast,
                 "exact" => RowHeightRule.Exactly,
                 _ => RowHeightRule.Auto,
-            },
-            HorizontalAnchor = Horizontal(framePr.W("hAnchor")),
-            HorizontalAlignment = Alignment(framePr.W("xAlign")),
-            HorizontalOffset = DocxUnits.Points(framePr.W("x")) ?? 0,
-            VerticalAnchor = Vertical(framePr.W("vAnchor")),
-            VerticalAlignment = framePr.W("vAnchor") == "text" ? FloatingAlignment.None : Alignment(framePr.W("yAlign")),
-            VerticalOffset = DocxUnits.Points(framePr.W("y")) ?? 0,
-            DistanceHorizontal = DocxUnits.Points(framePr.W("hSpace")) ?? 0,
-            DistanceVertical = DocxUnits.Points(framePr.W("vSpace")) ?? 0,
-            Wrap = framePr.W("wrap") switch
+            }));
+        }
+
+        if (framePr.W("hAnchor") is { } hAnchor)
+        {
+            frame = WordProperties.Set(frame, WordFrameProperty.HorizontalAnchor, (int)Horizontal(hAnchor));
+        }
+
+        frame = Measure(frame, WordFrameProperty.HorizontalOffset, framePr.W("x"));
+        if (framePr.W("xAlign") is { } xAlign)
+        {
+            frame = WordProperties.Set(frame, WordFrameProperty.HorizontalAlignment, (int)Alignment(xAlign));
+        }
+
+        frame = Measure(frame, WordFrameProperty.VerticalOffset, framePr.W("y"));
+        if (framePr.W("vAnchor") != "text" && framePr.W("yAlign") is { } yAlign)
+        {
+            frame = WordProperties.Set(frame, WordFrameProperty.VerticalAlignment, (int)Alignment(yAlign));
+        }
+
+        frame = Measure(frame, WordFrameProperty.DistanceHorizontal, framePr.W("hSpace"));
+        frame = Measure(frame, WordFrameProperty.DistanceVertical, framePr.W("vSpace"));
+        if (framePr.W("wrap") is { } wrap)
+        {
+            frame = WordProperties.Set(frame, WordFrameProperty.Wrap, (int)(wrap switch
             {
                 "around" => FrameWrap.Around,
                 "notBeside" => FrameWrap.NotBeside,
@@ -71,16 +99,30 @@ internal static class DocxPositions
                 "tight" => FrameWrap.Tight,
                 "through" => FrameWrap.Through,
                 _ => FrameWrap.Auto,
-            },
-            DropCap = framePr.W("dropCap") switch
+            }));
+        }
+
+        if (framePr.W("dropCap") is { } dropCap)
+        {
+            frame = WordProperties.Set(frame, WordFrameProperty.DropCap, (int)(dropCap switch
             {
                 "drop" => DropCap.Drop,
                 "margin" => DropCap.Margin,
                 _ => DropCap.None,
-            },
-            DropCapLines = DocxUnits.Int(framePr.W("lines")) is int lines && lines >= 1 ? lines : 1,
-            AnchorLock = framePr.W("anchorLock") is "1" or "true" or "on",
-        };
+            }));
+        }
+
+        if (DocxUnits.Int(framePr.W("lines")) is int lines)
+        {
+            frame = WordProperties.Set(frame, WordFrameProperty.DropCapLines, lines);
+        }
+
+        return framePr.W("anchorLock") is "1" or "true" or "on" ? WordProperties.Set(frame, WordFrameProperty.AnchorLock, 1) : frame;
+
+        static FramePosition Measure(FramePosition frame, WordFrameProperty property, string? value)
+        {
+            return DocxUnits.Raw(value) is double twips ? WordProperties.Set(frame, property, twips) : frame;
+        }
     }
 
     public static XElement WriteFrame(FramePosition f)

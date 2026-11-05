@@ -4,7 +4,7 @@ namespace Egap.Documents.Word;
 // DOCX's elements (ECMA-376 Part 1, 17.3 to 17.9) all say these, in Word's own units. Each reader turns its syntax into
 // these and WordProperties puts them on the model, so the three readers agree on what a property means.
 
-/// <summary>A character property and its operand (<see cref="WordProperties.Set(RunFormat, WordRunProperty, int)"/>).</summary>
+/// <summary>A character property and its operand (<see cref="WordProperties.Set(RunFormat, WordRunProperty, double)"/>).</summary>
 internal enum WordRunProperty : byte
 {
     /// <summary>Bold; operand 0 or 1. The toggles that follow work the same.</summary>
@@ -22,14 +22,18 @@ internal enum WordRunProperty : byte
     Emboss,
     Imprint,
     NoProof,
+    SpecialHidden,
 
-    /// <summary>Right to left; 1 sets it, 0 clears it (no value).</summary>
+    /// <summary>The run's text is complex script (sprmCFComplexScripts, <c>w:cs</c>).</summary>
+    ComplexScript,
+
+    /// <summary>Right to left; operand 0 or 1.</summary>
     RightToLeft,
 
     /// <summary>An <see cref="UnderlineStyle"/>.</summary>
     Underline,
 
-    /// <summary>Size in half-points (sprmCHps, <c>\fs</c>, <c>w:sz</c>); at most 3276.</summary>
+    /// <summary>Size in half-points (sprmCHps, <c>\fs</c>, <c>w:sz</c>), 0 to 3276.</summary>
     Size,
 
     /// <summary>The complex-script size in half-points.</summary>
@@ -47,7 +51,7 @@ internal enum WordRunProperty : byte
     /// <summary>Letter spacing in quarter points (<c>\expnd</c>).</summary>
     SpacingQuarterPoints,
 
-    /// <summary>Width scale in percent, at most 600.</summary>
+    /// <summary>Width scale in percent, 1 to 600.</summary>
     Scale,
 
     /// <summary>The smallest size kerned, in half-points.</summary>
@@ -81,7 +85,7 @@ internal enum WordFontSlot : byte
     Latin,
 }
 
-/// <summary>A paragraph property and its operand (<see cref="WordProperties.Set(ParagraphFormat, WordParagraphProperty, int)"/>).</summary>
+/// <summary>A paragraph property and its operand (<see cref="WordProperties.Set(ParagraphFormat, WordParagraphProperty, double)"/>).</summary>
 internal enum WordParagraphProperty : byte
 {
     /// <summary>A <see cref="ParagraphAlignment"/>.</summary>
@@ -112,14 +116,14 @@ internal enum WordParagraphProperty : byte
     SnapToGrid,
     MirrorIndents,
 
-    /// <summary>Right to left; 1 sets it, 0 clears it (no value).</summary>
+    /// <summary>Right to left; operand 0 or 1.</summary>
     Bidi,
 
     /// <summary>The outline level, 0 to 9 (9 is body text).</summary>
     OutlineLevel,
 }
 
-/// <summary>A positioned frame's property (<see cref="WordProperties.Set(FramePosition, WordFrameProperty, int)"/>).</summary>
+/// <summary>A positioned frame's property (<see cref="WordProperties.Set(FramePosition, WordFrameProperty, double)"/>).</summary>
 internal enum WordFrameProperty : byte
 {
     /// <summary>Width in twips, 0 for automatic.</summary>
@@ -127,6 +131,9 @@ internal enum WordFrameProperty : byte
 
     /// <summary>Height in twips: negative is exact, positive at least, 0 automatic.</summary>
     Height,
+
+    /// <summary>A <see cref="RowHeightRule"/> for the height, given apart from it (<c>w:framePr</c>'s hRule).</summary>
+    HeightRule,
 
     /// <summary>A <see cref="HorizontalAnchor"/>; vertical the same.</summary>
     HorizontalAnchor,
@@ -158,7 +165,7 @@ internal enum WordFrameProperty : byte
     AnchorLock,
 }
 
-/// <summary>A section property (<see cref="WordProperties.Set(PageSetup, WordSectionProperty, int)"/>).</summary>
+/// <summary>A section property (<see cref="WordProperties.Set(PageSetup, WordSectionProperty, double)"/>).</summary>
 internal enum WordSectionProperty : byte
 {
     /// <summary>A <see cref="SectionStart"/>.</summary>
@@ -204,6 +211,15 @@ internal enum WordSectionProperty : byte
 
     /// <summary>Right to left.</summary>
     Bidi,
+
+    /// <summary>A <see cref="TextDirection"/> of the text on the page.</summary>
+    TextDirection,
+
+    /// <summary>The first page number.</summary>
+    PageNumberStart,
+
+    /// <summary>Columns of equal width; operand 0 or 1.</summary>
+    EqualColumnWidths,
 }
 
 /// <summary>A table, row or cell property (<see cref="WordProperties.Set(WordRowDefinition, WordTableProperty, int)"/>).</summary>
@@ -218,12 +234,22 @@ internal enum WordTableProperty : byte
     /// <summary>Row height in twips: negative is exact, positive at least, 0 automatic.</summary>
     RowHeight,
 
+    /// <summary>Row height in twips with its rule given apart (<c>w:trHeight</c>): exactly, at least and automatic.</summary>
+    RowHeightExactly,
+    RowHeightAtLeast,
+    RowHeightAuto,
+
     /// <summary>Toggles of the row: header row, can't split.</summary>
     HeaderRow,
     CantSplit,
 
-    /// <summary>A <see cref="TableAlignment"/> for the row and its table.</summary>
+    /// <summary>The row is hidden.</summary>
+    RowHidden,
+
+    /// <summary>A <see cref="TableAlignment"/> for the row and its table; the next two for the table or the row alone.</summary>
     Alignment,
+    TableAlignment,
+    RowAlignment,
 
     /// <summary>The table fits its contents.</summary>
     AutoFit,
@@ -232,8 +258,17 @@ internal enum WordTableProperty : byte
     WidthUnit,
     Width,
 
-    /// <summary>Space between cells in twips, applied when above 0.</summary>
+    /// <summary>Space between cells in twips, for the row and its table; the next two for the table or the row alone.</summary>
     CellSpacing,
+    TableCellSpacing,
+    RowCellSpacing,
+
+    /// <summary>A <see cref="TableLayoutKind"/>.</summary>
+    Layout,
+
+    /// <summary>Rows and columns in a style band, above 0.</summary>
+    RowBandSize,
+    ColumnBandSize,
 
     /// <summary>Table indent in twips.</summary>
     Indent,
@@ -247,7 +282,7 @@ internal enum WordTableProperty : byte
     /// <summary>The table style's index.</summary>
     Style,
 
-    /// <summary>Right to left; 1 sets it, 0 clears it.</summary>
+    /// <summary>Right to left; operand 0 or 1.</summary>
     Bidi,
 
     /// <summary>The table style options Word calls the look.</summary>
@@ -284,6 +319,9 @@ internal enum WordTableProperty : byte
 
     /// <summary>A <see cref="VerticalMerge"/>.</summary>
     CellVerticalMerge,
+
+    /// <summary>Grid columns the cell spans; above 1 to span.</summary>
+    CellGridSpan,
 
     /// <summary>A <see cref="VerticalAlignment"/>.</summary>
     CellVerticalAlignment,
@@ -328,9 +366,18 @@ internal enum WordListLevelProperty : byte
     /// <summary>Legal numbering, and no restart after a higher level.</summary>
     Legal,
     NoRestart,
+
+    /// <summary>A <see cref="Documents.NumberStyle"/>, for formats that name more styles than nfc codes.</summary>
+    NumberStyle,
+
+    /// <summary>The level after which numbering restarts, 0 to 8.</summary>
+    RestartAfter,
 }
 
-/// <summary>A style sheet entry's property (<see cref="WordProperties.Set(WordStyleDefinition, WordStyleProperty, int)"/>).</summary>
+/// <summary>
+/// A style's property (<see cref="WordProperties.Set(WordStyleDefinition, WordStyleProperty, int)"/>, or
+/// <see cref="WordProperties.Set(Style, WordStyleProperty, int)"/> for a style that exists already).
+/// </summary>
 internal enum WordStyleProperty : byte
 {
     /// <summary>The style's index, as a paragraph, character or table style.</summary>

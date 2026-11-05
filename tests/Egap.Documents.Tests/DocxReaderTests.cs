@@ -165,6 +165,26 @@ public class DocxReaderTests
     }
 
     [Fact]
+    public void ARestartPastTheLastLevelStopsAtIt()
+    {
+        // Word's lvlRestart goes up to 9, past the model's last level; it used to throw out of the loader.
+        const string numbering = """
+            <w:numbering NS><w:abstractNum w:abstractNumId="1">
+              <w:lvl w:ilvl="1"><w:start w:val="1"/><w:numFmt w:val="decimal"/><w:lvlRestart w:val="9"/><w:lvlText w:val="%2."/></w:lvl></w:abstractNum>
+              <w:num w:numId="1"><w:abstractNumId w:val="1"/></w:num>
+            </w:numbering>
+            """;
+        Document document = Load("""
+            <w:p><w:pPr><w:numPr><w:ilvl w:val="1"/><w:numId w:val="1"/></w:numPr></w:pPr><w:r><w:t>item</w:t></w:r></w:p>
+            """, parts:
+            [
+                ("word/numbering.xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml", numbering.Replace("NS", Namespaces, StringComparison.Ordinal), "numbering", "rIdN"),
+            ]);
+
+        Assert.Equal(8, document.Lists[1]!.GetLevel(1).RestartAfterLevel);
+    }
+
+    [Fact]
     public void NotesCommentsAndRevisions()
     {
         const string footnotes = """

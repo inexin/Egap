@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Linq;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Docx;
 
 /// <summary>
@@ -841,8 +843,8 @@ internal sealed partial class DocxReader
     private void ReadSimpleField(XElement element, NodeCollection<Inline> inlines, InlineState state)
     {
         FieldStart start = Add(inlines, new FieldStart(document), state, element);
-        start.IsLocked = element.W("fldLock") is "1" or "true" or "on";
-        start.IsDirty = element.W("dirty") is "1" or "true" or "on";
+        WordProperties.Set(start, WordFieldProperty.Locked, element.W("fldLock") is "1" or "true" or "on" ? 1 : 0);
+        WordProperties.Set(start, WordFieldProperty.Dirty, element.W("dirty") is "1" or "true" or "on" ? 1 : 0);
         Add(inlines, new Run(document, element.W("instr") ?? ""), state, null);
         Add(inlines, new FieldSeparator(document), state, null);
         ReadInlines(element, inlines, state);
@@ -1107,8 +1109,8 @@ internal sealed partial class DocxReader
             {
                 case "begin":
                     FieldStart start = Add(inlines, new FieldStart(document), state, child);
-                    start.IsLocked = child.W("fldLock") is "1" or "true" or "on";
-                    start.IsDirty = child.W("dirty") is "1" or "true" or "on";
+                    WordProperties.Set(start, WordFieldProperty.Locked, child.W("fldLock") is "1" or "true" or "on" ? 1 : 0);
+                    WordProperties.Set(start, WordFieldProperty.Dirty, child.W("dirty") is "1" or "true" or "on" ? 1 : 0);
                     break;
                 case "separate":
                     Add(inlines, new FieldSeparator(document), state, null);

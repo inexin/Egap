@@ -307,7 +307,7 @@ internal sealed partial class RtfReader
                 state.Slot = WordFontSlot.ComplexScript;
                 if (state.Char.RightToLeft is not null)
                 {
-                    Run(WordRunProperty.RightToLeft, 0);
+                    WordProperties.Clear(state.MutableChar(), WordRunProperty.RightToLeft);
                 }
 
                 return true;
@@ -489,7 +489,7 @@ internal sealed partial class RtfReader
             case "ltrpar":
                 if (state.Para.Bidi is not null)
                 {
-                    Para(WordParagraphProperty.Bidi, 0);
+                    WordProperties.Clear(state.MutablePara(), WordParagraphProperty.Bidi);
                 }
 
                 return true;

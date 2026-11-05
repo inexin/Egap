@@ -3,6 +3,8 @@ using System.Xml.Linq;
 
 using Egami.Pixels;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Docx;
 
 /// <summary>The parts around the body: theme, styles, numbering, settings, properties, fonts, notes and comments.</summary>
@@ -132,9 +134,18 @@ internal sealed partial class DocxReader
             }
         }
 
-        style.Hidden = element.Element(Ns.W + "hidden") is { } hidden ? DocxUnits.OnOff(hidden) : element.Element(Ns.W + "semiHidden") is { } semi && DocxUnits.OnOff(semi);
-        style.Priority = DocxUnits.Int(element.Element(Ns.W + "uiPriority").Val());
-        style.IsPrimary = element.Element(Ns.W + "qFormat") is { } primary && DocxUnits.OnOff(primary);
+        bool hiddenStyle = element.Element(Ns.W + "hidden") is { } hidden ? DocxUnits.OnOff(hidden) : element.Element(Ns.W + "semiHidden") is { } semi && DocxUnits.OnOff(semi);
+        WordProperties.Set(style, WordStyleProperty.Hidden, hiddenStyle ? 1 : 0);
+        if (DocxUnits.Int(element.Element(Ns.W + "uiPriority").Val()) is int priority)
+        {
+            WordProperties.Set(style, WordStyleProperty.Priority, priority);
+        }
+        else
+        {
+            style.Priority = null;
+        }
+
+        WordProperties.Set(style, WordStyleProperty.Primary, element.Element(Ns.W + "qFormat") is { } primary && DocxUnits.OnOff(primary) ? 1 : 0);
         if (element.W("default") is "1" or "true" or "on")
         {
             document.Styles.SetDefault(style);
@@ -308,12 +319,12 @@ internal sealed partial class DocxReader
     {
         if (DocxUnits.Int(lvl.Element(Ns.W + "start").Val()) is int start)
         {
-            level.StartAt = Math.Max(0, start);
+            WordProperties.Set(level, WordListLevelProperty.StartAt, start);
         }
 
         if (lvl.Element(Ns.W + "numFmt").Val() is { } format)
         {
-            level.NumberStyle = DocxProperties.NumberFormat(format);
+            WordProperties.Set(level, WordListLevelProperty.NumberStyle, (int)DocxProperties.NumberFormat(format));
         }
 
         if (lvl.Element(Ns.W + "lvlText") is { } text)
@@ -321,24 +332,32 @@ internal sealed partial class DocxReader
             level.LevelText = text.Val() ?? "";
         }
 
-        level.Alignment = lvl.Element(Ns.W + "lvlJc").Val() switch
+        // Word's justification and follow codes, as DOC and RTF give them.
+        WordProperties.Set(level, WordListLevelProperty.Alignment, lvl.Element(Ns.W + "lvlJc").Val() switch
         {
-            "center" => ParagraphAlignment.Center,
-            "right" or "end" => ParagraphAlignment.Right,
-            _ => ParagraphAlignment.Left,
-        };
-        level.Suffix = lvl.Element(Ns.W + "suff").Val() switch
+            "center" => 1,
+            "right" or "end" => 2,
+            _ => 0,
+        });
+        WordProperties.Set(level, WordListLevelProperty.Follow, lvl.Element(Ns.W + "suff").Val() switch
         {
-            "space" => ListLabelSuffix.Space,
-            "nothing" => ListLabelSuffix.Nothing,
-            _ => ListLabelSuffix.Tab,
-        };
+            "space" => 1,
+            "nothing" => 2,
+            _ => 0,
+        });
         if (lvl.Element(Ns.W + "lvlRestart") is { } restart)
         {
-            level.RestartAfterLevel = DocxUnits.Int(restart.Val()) is int after ? Math.Clamp(after, 0, 9) : null;
+            if (DocxUnits.Int(restart.Val()) is int after)
+            {
+                WordProperties.Set(level, WordListLevelProperty.RestartAfter, after);
+            }
+            else
+            {
+                level.RestartAfterLevel = null;
+            }
         }
 
-        level.IsLegal = lvl.Element(Ns.W + "isLgl") is { } legal && DocxUnits.OnOff(legal);
+        WordProperties.Set(level, WordListLevelProperty.Legal, lvl.Element(Ns.W + "isLgl") is { } legal && DocxUnits.OnOff(legal) ? 1 : 0);
         if (lvl.Element(Ns.W + "pStyle").Val() is { } styleId && document.Styles[styleId] is ParagraphStyle style)
         {
             level.LinkedStyle = style;
@@ -369,12 +388,12 @@ internal sealed partial class DocxReader
         {
             if (footnotePr.Element(Ns.W + "numFmt").Val() is { } format)
             {
-                settings.FootnoteNumberStyle = DocxProperties.NumberFormat(format);
+                WordProperties.Set(settings, WordNoteProperty.FootnoteNumberStyle, (int)DocxProperties.NumberFormat(format));
             }
 
             if (DocxUnits.Int(footnotePr.Element(Ns.W + "numStart").Val()) is int start && start >= 1)
             {
-                settings.FootnoteStartAt = start;
+                WordProperties.Set(settings, WordNoteProperty.FootnoteStart, start);
             }
         }
 
@@ -382,12 +401,12 @@ internal sealed partial class DocxReader
         {
             if (endnotePr.Element(Ns.W + "numFmt").Val() is { } format)
             {
-                settings.EndnoteNumberStyle = DocxProperties.NumberFormat(format);
+                WordProperties.Set(settings, WordNoteProperty.EndnoteNumberStyle, (int)DocxProperties.NumberFormat(format));
             }
 
             if (DocxUnits.Int(endnotePr.Element(Ns.W + "numStart").Val()) is int start && start >= 1)
             {
-                settings.EndnoteStartAt = start;
+                WordProperties.Set(settings, WordNoteProperty.EndnoteStart, start);
             }
         }
 

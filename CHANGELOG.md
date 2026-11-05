@@ -26,6 +26,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - RTF loading allocates about 7 % less, at the same speed and with the same result: the reader now sets Word's
   properties through one internal layer that the DOC and DOCX readers will share.
+- The DOCX reader sets Word's properties through the same layer, with the same result on every file we test with. Values
+  past Word's own limits are now held to them as in RTF: text sizes up to 1638 points, kerning from 0, at most 64 tab
+  stops a paragraph and drop caps up to 10 lines.
+- A DOCX list level whose `w:lvlRestart` is 9 no longer stops loading with an `ArgumentOutOfRangeException`.
 - `Document.Identify` reports Excel workbooks (XLSX, XLSM, XLTX and XLTM) as the new `DocumentFormatKind.Xlsx`, by a
   package part under `xl/` or by the file's extension, where it said DOCX before. Loading one as a document throws a
   `NotSupportedException` that says it is a spreadsheet.
