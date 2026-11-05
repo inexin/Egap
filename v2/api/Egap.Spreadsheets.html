@@ -95,6 +95,17 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CalculationResult.html">CalculationResult</a></dt>
+      <dd><p>What a calculation of a workbook did: how many formulas it calculated and which circular references it met.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CalculationSettings.html">CalculationSettings</a></dt>
+      <dd><p>How a workbook calculates: when, whether circular references iterate, and whether chains of formulas may be calculated in
+parallel. These are the workbook's own settings, saved with it (the <code>calcPr</code> element, ECMA-376 Part 1, 18.2.2).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.Cell.html">Cell</a></dt>
       <dd><p>A cell of a sheet: a small handle that reads and writes the sheet's store, made by <code>sheet[&quot;B4&quot;]</code> or
 <code>sheet.Cells[row, column]</code>. The sheet keeps no handles; a cell with no value and the default style takes no room.
@@ -376,6 +387,11 @@ A single cell is written as <code>B4</code>, whole columns as <code>A:C</code> a
     <h3 id="enums">
 Enums
 </h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CalculationMode.html">CalculationMode</a></dt>
+      <dd><p>When a workbook's formulas are calculated again after a change.</p>
+</dd>
+    </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.CellBorderStyle.html">CellBorderStyle</a></dt>
       <dd><p>The line style of a cell border.</p>

@@ -357,7 +357,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Clear" data-uid="Egap.Spreadsheets.CellRange.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L165"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes the values, formulas and styles of every cell in the range.</p>
@@ -384,7 +384,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_ClearContents" data-uid="Egap.Spreadsheets.CellRange.ClearContents">
   ClearContents()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L175"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes the values and formulas of every cell in the range, keeping their styles.</p>
@@ -411,7 +411,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Equals_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.Equals(Egap.Spreadsheets.CellRange)">
   Equals(CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L199"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both ranges are the same cells of the same sheet.</p>
@@ -448,7 +448,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Equals_System_Object_" data-uid="Egap.Spreadsheets.CellRange.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L169"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L202"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
@@ -487,7 +487,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetEnumerator" data-uid="Egap.Spreadsheets.CellRange.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L185"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Every cell in the range, empty ones too, row by row and left to right.</p>
@@ -519,7 +519,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetHashCode" data-uid="Egap.Spreadsheets.CellRange.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L172"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L205"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
@@ -552,7 +552,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetValues" data-uid="Egap.Spreadsheets.CellRange.GetValues">
   GetValues()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The values of the range, row by row, as a <code>[row, column]</code> array; formula cells give their last results.</p>
@@ -586,11 +586,62 @@ that hold something.</p>
 
 
 
+  <a id="Egap_Spreadsheets_CellRange_SetArrayFormula_" data-uid="Egap.Spreadsheets.CellRange.SetArrayFormula*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_SetArrayFormula_System_String_" data-uid="Egap.Spreadsheets.CellRange.SetArrayFormula(System.String)">
+  SetArrayFormula(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Makes the range an array formula, as Ctrl+Shift+Enter does in Excel: one formula, stored in the range's first cell,
+that works on arrays and gives each cell of the range one element of its result. A result smaller than the range
+gives #N/A past its end, and a single row or column is repeated across it. The cells' values are cleared until the
+workbook is calculated; their styles stay. Setting another formula or value in the first cell ends the array formula.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetArrayFormula(string formula)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>formula</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The formula, in Excel's stored form; a leading <code>=</code> is dropped.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_SetArrayFormula_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">sheet.Range("C1:C3").SetArrayFormula("A1:A3*B1:B3");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The formula is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The formula is empty or longer than 8,192 characters.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Spreadsheets.FormulaException.html">FormulaException</a></dt>
+    <dd><p>The formula does not follow Excel's grammar.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Spreadsheets_CellRange_SetStyle_" data-uid="Egap.Spreadsheets.CellRange.SetStyle*"></a>
 
   <h3 id="Egap_Spreadsheets_CellRange_SetStyle_Egap_Spreadsheets_CellStyle_" data-uid="Egap.Spreadsheets.CellRange.SetStyle(Egap.Spreadsheets.CellStyle)">
   SetStyle(CellStyle)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L133"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gives every cell in the range one style, keeping their values.</p>
@@ -622,7 +673,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_SetValue_Egap_Spreadsheets_CellValue_" data-uid="Egap.Spreadsheets.CellRange.SetValue(Egap.Spreadsheets.CellValue)">
   SetValue(CellValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets every cell in the range to one value, keeping their styles.</p>
@@ -654,7 +705,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_SetValues_Egap_Spreadsheets_CellValue_0__0___" data-uid="Egap.Spreadsheets.CellRange.SetValues(Egap.Spreadsheets.CellValue[0:,0:])">
   SetValues(CellValue[,])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets the cells from a <code>[row, column]</code> array, starting at the range's top-left cell; the array may be smaller than
@@ -693,7 +744,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_ToString" data-uid="Egap.Spreadsheets.CellRange.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L214"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet's name and the range's address, such as <code>Sheet1!A1:D20</code>.</p>
@@ -725,7 +776,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_UpdateStyle_System_Func_Egap_Spreadsheets_CellStyle_Egap_Spreadsheets_CellStyle__" data-uid="Egap.Spreadsheets.CellRange.UpdateStyle(System.Func{Egap.Spreadsheets.CellStyle,Egap.Spreadsheets.CellStyle})">
   UpdateStyle(Func&lt;CellStyle, CellStyle&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L145"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Changes the style of every cell in the range with a function of the style it has, such as
@@ -762,7 +813,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_op_Equality_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.op_Equality(Egap.Spreadsheets.CellRange,Egap.Spreadsheets.CellRange)">
   operator ==(CellRange, CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L175"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L208"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both ranges are the same cells.</p>
@@ -801,7 +852,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_op_Inequality_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.op_Inequality(Egap.Spreadsheets.CellRange,Egap.Spreadsheets.CellRange)">
   operator !=(CellRange, CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L178"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L211"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the ranges differ.</p>

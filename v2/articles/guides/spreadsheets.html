@@ -127,7 +127,7 @@ back as they were, and so are the parts of a cell style the model does not hold.
 keeps its runs, and chart sheets keep their place among the worksheets. A removed sheet takes its own parts with it.</p>
 <p>What Egap cannot keep up to date is left for Excel: when cells changed and the workbook has formulas, the file asks Excel
 to calculate on open, and the calculation chain is left out for Excel to build again. A cell that shared the formula of a
-cell you changed keeps its last result as a value. Saving a workbook with macros as <code>.xlsx</code> or <code>.xltx</code> leaves the macros
+cell you changed gets the formula as its own, as in Excel. Saving a workbook with macros as <code>.xlsx</code> or <code>.xltx</code> leaves the macros
 out, as Excel does.</p>
 <p><code>Workbook.Format</code> is the kind of file a workbook came from. <code>WorkbookLoadOptions.Limits</code> bounds what a file may hold (part
 count, part and total size, compression ratio, XML depth) so a hostile file cannot use up memory; a file that goes past a
@@ -156,7 +156,7 @@ numbers that a date number format shows as dates. Excel's limits hold: numbers a
 characters.</p>
 <p><code>cell.Formula</code> holds a formula in Excel's stored form, with English function names and commas, without the <code>=</code> (a
 leading <code>=</code> you give is dropped). A formula that does not follow Excel's grammar throws a <code>FormulaException</code> that says
-where the problem is. A formula's result is empty until the workbook is calculated. Setting <code>Value</code> removes a formula;
+where the problem is. A formula's result is empty until the workbook is calculated (<code>book.Calculate()</code>). Setting <code>Value</code> removes a formula;
 setting <code>Formula</code> to null removes it and its result. <a href="#formulas">Formulas</a> has more.</p>
 <p><code>cell.Clear()</code> removes the value, formula and style. <code>sheet.Cells</code> enumerates the cells that hold something, row by row,
 and <code>sheet.UsedRange</code> is the smallest range that holds them all.</p>
@@ -279,7 +279,53 @@ CellValue date = sheet.Evaluate(&quot;DATE(2024,3,15)&quot;);                   
 <p>Other cells give the values they hold; a formula cell gives its last result, so <code>Evaluate</code> does not recalculate the
 workbook. Dates follow the workbook's date system, 1900 (with the 29 February 1900 Excel keeps) or 1904. A function Egap
 does not know gives <code>#NAME?</code>. This release evaluates operators, references, names and tables, and SUM, IF, IFERROR, IFNA,
-AND, OR, NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; recalculating workbooks and the common functions come next.</p>
+AND, OR, NOT, CHOOSE, ROW, COLUMN, DATE, TRUE, FALSE and NA; the common functions come next.</p>
+<h3 id="calculating-a-workbook">Calculating a workbook</h3>
+<p><code>book.Calculate()</code> calculates the formulas whose results are out of date, as Excel does when you press F9: those reading a
+cell changed since the last calculation, those reading their results, and the volatile ones (<code>NOW</code>, <code>TODAY</code>, <code>RAND</code>,
+<code>OFFSET</code>, <code>INDIRECT</code> and the like) every time. <code>book.CalculateFull()</code> calculates every formula. Egap keeps a dependency
+graph of what each formula reads, through references, names, tables and other sheets, and calculates a formula after
+the formulas it reads; large sets of formulas that read none of each other are spread over threads. A workbook as
+loaded keeps the results saved with it until something changes, and a change to the sheets, names or tables makes the
+next calculation a full one.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet[&quot;A1&quot;].Value = 2;
+sheet[&quot;B1&quot;].Formula = &quot;A1*3&quot;;
+sheet[&quot;C1&quot;].Formula = &quot;B1+1&quot;;
+book.Calculate();                                    // B1 is 6, C1 is 7
+
+sheet[&quot;A1&quot;].Value = 5;
+CalculationResult result = book.Calculate();         // only B1 and C1 again
+long count = result.Calculated;                      // 2
+
+sheet.Range(&quot;D1:D3&quot;).SetArrayFormula(&quot;A1*{1;2;3}&quot;);  // D1:D3 are 5, 10, 15 after Calculate
+CellRange? array = sheet[&quot;D2&quot;].ArrayRange;           // D1:D3
+</code></pre>
+<p><code>range.SetArrayFormula</code> makes an array formula, as Ctrl+Shift+Enter does: one formula, kept in the range's first cell,
+whose result fills the range; a single row or column is repeated across it and cells past the result's end get <code>#N/A</code>.
+Cells sharing a formula in an XLSX file are calculated from the first cell's formula, and <code>cell.Formula</code> gives each the
+formula moved to it.</p>
+<p>Formulas that read each other in a ring are circular references. With <code>book.Calculation.Iterate</code> off, as Excel starts,
+<code>result.CircularReferences</code> lists them and their cells keep their values. With it on, each ring is calculated over and
+over until no value moves by more than <code>Calculation.MaxChange</code> or <code>Calculation.MaxIterations</code> passes have run;
+<code>result.Converged</code> says which. <code>book.Calculation</code> also holds the calculation mode and the other settings of the file's
+<code>calcPr</code>, read and written with it:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+book.Calculation.Iterate = true;
+book.Calculation.MaxIterations = 100;
+book.Calculation.MaxChange = 0.0001;
+sheet[&quot;A1&quot;].Formula = &quot;B1+1&quot;;
+sheet[&quot;B1&quot;].Formula = &quot;A1/2&quot;;
+
+CalculationResult result = book.Calculate();         // A1 near 2, B1 near 1
+bool settled = result.Converged;                     // true
+</code></pre>
 <h2 id="number-formats-and-cell-text">Number formats and cell text</h2>
 <p><code>cell.Text</code> is the value as Excel shows it in the cell, through the cell's number format: <code>1,234.50</code> for 1234.5 with
 <code>#,##0.00</code>, <code>2024-03-15</code> for the date serial 45366 with <code>yyyy-mm-dd</code>, <code>TRUE</code> for a boolean and <code>#DIV/0!</code> for an error. A

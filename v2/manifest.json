@@ -7727,6 +7727,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CalculationMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CalculationMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CalculationMode",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CalculationMode.yml\" sourcestartlinenumber=\"1\">When a workbook's formulas are calculated again after a change.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CalculationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CalculationResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CalculationResult",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CalculationResult.yml\" sourcestartlinenumber=\"1\">What a calculation of a workbook did: how many formulas it calculated and which circular references it met.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.CalculationSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.CalculationSettings.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.CalculationSettings",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CalculationSettings.yml\" sourcestartlinenumber=\"1\">How a workbook calculates: when, whether circular references iterate, and whether chains of formulas may be calculated in\nparallel. These are the workbook's own settings, saved with it (the <code>calcPr</code> element, ECMA-376 Part 1, 18.2.2).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.Cell.yml",
       "output": {
         ".html": {
