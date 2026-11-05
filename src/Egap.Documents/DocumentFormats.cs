@@ -300,7 +300,7 @@ public sealed partial class Document
         ".EPUB" => DocumentFormatKind.Epub,
         ".MHT" or ".MHTML" => DocumentFormatKind.Mhtml,
         ".RTF" => DocumentFormatKind.Rtf,
-        ".ODT" or ".OTT" or ".FODT" => DocumentFormatKind.Odt,
+        ".ODT" or ".OTT" or ".FODT" or ".FOTT" => DocumentFormatKind.Odt,
         ".XLSX" or ".XLSM" or ".XLTX" or ".XLTM" => DocumentFormatKind.Xlsx,
         _ => DocumentFormatKind.Unknown,
     };

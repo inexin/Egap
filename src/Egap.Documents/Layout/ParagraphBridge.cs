@@ -621,7 +621,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         };
     }
 
-    private static Rgba8 HighlightRgb(HighlightColor color)
+    internal static Rgba8 HighlightRgb(HighlightColor color)
     {
         return color switch
         {

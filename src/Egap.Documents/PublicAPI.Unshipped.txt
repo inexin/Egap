@@ -80,7 +80,19 @@ Egap.Documents.Layout.LayoutWarning.PageIndex.get -> int
 Egap.Documents.Layout.LayoutWarning.PageIndex.init -> void
 Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline = 0 -> Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.OdfVersion
+Egap.Documents.OdfVersion.Odf12 = 0 -> Egap.Documents.OdfVersion
+Egap.Documents.OdfVersion.Odf13 = 1 -> Egap.Documents.OdfVersion
+Egap.Documents.OdfVersion.Odf14 = 2 -> Egap.Documents.OdfVersion
+Egap.Documents.OdtEncryption
+Egap.Documents.OdtEncryption.AesCbc = 0 -> Egap.Documents.OdtEncryption
+Egap.Documents.OdtEncryption.AesGcm = 1 -> Egap.Documents.OdtEncryption
 Egap.Documents.OdtFormat
+Egap.Documents.OdtKind
+Egap.Documents.OdtKind.Document = 0 -> Egap.Documents.OdtKind
+Egap.Documents.OdtKind.FlatDocument = 2 -> Egap.Documents.OdtKind
+Egap.Documents.OdtKind.FlatTemplate = 3 -> Egap.Documents.OdtKind
+Egap.Documents.OdtKind.Template = 1 -> Egap.Documents.OdtKind
 Egap.Documents.OdtLoadOptions
 Egap.Documents.OdtLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
 Egap.Documents.OdtLoadOptions.Limits.init -> void
@@ -89,6 +101,18 @@ Egap.Documents.OdtLoadOptions.Password.get -> string?
 Egap.Documents.OdtLoadOptions.Password.init -> void
 Egap.Documents.OdtLoadOptions.PasswordCallback.get -> System.Func<int, string?>?
 Egap.Documents.OdtLoadOptions.PasswordCallback.init -> void
+Egap.Documents.OdtSaveOptions
+Egap.Documents.OdtSaveOptions.Encryption.get -> Egap.Documents.OdtEncryption
+Egap.Documents.OdtSaveOptions.Encryption.init -> void
+Egap.Documents.OdtSaveOptions.KeepUnknownMarkup.get -> bool
+Egap.Documents.OdtSaveOptions.KeepUnknownMarkup.init -> void
+Egap.Documents.OdtSaveOptions.Kind.get -> Egap.Documents.OdtKind?
+Egap.Documents.OdtSaveOptions.Kind.init -> void
+Egap.Documents.OdtSaveOptions.OdtSaveOptions() -> void
+Egap.Documents.OdtSaveOptions.Password.get -> string?
+Egap.Documents.OdtSaveOptions.Password.init -> void
+Egap.Documents.OdtSaveOptions.Version.get -> Egap.Documents.OdfVersion
+Egap.Documents.OdtSaveOptions.Version.init -> void
 Egap.Documents.Pdf.PdfConvertOptions.Password.get -> string?
 Egap.Documents.Pdf.PdfConvertOptions.Password.init -> void
 Egap.Documents.ProtectionKind
@@ -121,6 +145,8 @@ static Egap.Documents.OdtFormat.Load(string! path, Egap.Documents.OdtLoadOptions
 static Egap.Documents.OdtFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.OdtLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.OdtFormat.Load(System.IO.Stream! stream, Egap.Documents.OdtLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.OdtFormat.Load(System.IO.Stream! stream, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.OdtLoadOptions? options = null) -> Egap.Documents.Document!
+static Egap.Documents.OdtFormat.Save(Egap.Documents.Document! document, string! path, Egap.Documents.OdtSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
+static Egap.Documents.OdtFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.OdtSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 static Egap.Documents.RtfFormat.Load(string! path, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.RtfFormat.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
 static Egap.Documents.RtfFormat.Load(System.IO.Stream! stream, Egap.Documents.RtfLoadOptions? options = null) -> Egap.Documents.Document!
