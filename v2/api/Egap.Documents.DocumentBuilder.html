@@ -447,11 +447,48 @@ paragraph when <a class="xref" href="Egap.Documents.DocumentBuilder.html#Egap_Do
 
 
 
+  <a id="Egap_Documents_DocumentBuilder_EndEditableRange_" data-uid="Egap.Documents.DocumentBuilder.EndEditableRange*"></a>
+
+  <h3 id="Egap_Documents_DocumentBuilder_EndEditableRange_Egap_Documents_EditableRangeStart_" data-uid="Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart)">
+  EndEditableRange(EditableRangeStart)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L249"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the end of the editable range <code class="paramref">start</code> began.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EditableRangeEnd EndEditableRange(EditableRangeStart start)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <a class="xref" href="Egap.Documents.EditableRangeStart.html">EditableRangeStart</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.EditableRangeEnd.html">EditableRangeEnd</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_DocumentBuilder_EndGroup_" data-uid="Egap.Documents.DocumentBuilder.EndGroup*"></a>
 
   <h3 id="Egap_Documents_DocumentBuilder_EndGroup" data-uid="Egap.Documents.DocumentBuilder.EndGroup">
   EndGroup()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L338"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L360"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Ends the innermost group and moves the cursor back to the paragraph after it.</p>
@@ -489,7 +526,7 @@ paragraph when <a class="xref" href="Egap.Documents.DocumentBuilder.html#Egap_Do
 
   <h3 id="Egap_Documents_DocumentBuilder_EndRow" data-uid="Egap.Documents.DocumentBuilder.EndRow">
   EndRow()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L281"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L303"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Ends the current row; the next cell starts a new one.</p>
@@ -521,7 +558,7 @@ paragraph when <a class="xref" href="Egap.Documents.DocumentBuilder.html#Egap_Do
 
   <h3 id="Egap_Documents_DocumentBuilder_EndTable" data-uid="Egap.Documents.DocumentBuilder.EndTable">
   EndTable()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L290"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L312"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Ends the table and moves the cursor back to the paragraph after it.</p>
@@ -643,7 +680,7 @@ layout and PDF export draw as vectors, with a PNG stand-in at 300 pixels per inc
 
   <h3 id="Egap_Documents_DocumentBuilder_InsertCell" data-uid="Egap.Documents.DocumentBuilder.InsertCell">
   InsertCell()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L265"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L287"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a cell to the current row (starting a row when needed) and moves the cursor into its paragraph.</p>
@@ -714,7 +751,7 @@ layout and PDF export draw as vectors, with a PNG stand-in at 300 pixels per inc
 
   <h3 id="Egap_Documents_DocumentBuilder_InsertFootnote_System_String_Egap_Documents_NoteKind_" data-uid="Egap.Documents.DocumentBuilder.InsertFootnote(System.String,Egap.Documents.NoteKind)">
   InsertFootnote(string, NoteKind)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L256"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes a footnote (or endnote) holding <code class="paramref">text</code>.</p>
@@ -977,7 +1014,7 @@ to it, with its page number filled in by layout.</p>
 
   <h3 id="Egap_Documents_DocumentBuilder_MoveTo_Egap_Documents_Node_" data-uid="Egap.Documents.DocumentBuilder.MoveTo(Egap.Documents.Node)">
   MoveTo(Node)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L367"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L389"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Moves the cursor to <code class="paramref">target</code>: before an inline, or to the end of a paragraph.</p>
@@ -1009,7 +1046,7 @@ to it, with its page number filled in by layout.</p>
 
   <h3 id="Egap_Documents_DocumentBuilder_MoveToBookmark_System_String_" data-uid="Egap.Documents.DocumentBuilder.MoveToBookmark(System.String)">
   MoveToBookmark(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L424"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L446"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Moves the cursor to the end of bookmark <code class="paramref">name</code> (or its start when it has no end).</p>
@@ -1047,7 +1084,7 @@ to it, with its page number filled in by layout.</p>
 
   <h3 id="Egap_Documents_DocumentBuilder_MoveToDocumentEnd" data-uid="Egap.Documents.DocumentBuilder.MoveToDocumentEnd">
   MoveToDocumentEnd()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L351"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L373"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Moves the cursor to the end of the document's last body paragraph, adding a section or paragraph when missing.</p>
@@ -1074,7 +1111,7 @@ to it, with its page number filled in by layout.</p>
 
   <h3 id="Egap_Documents_DocumentBuilder_MoveToDocumentStart" data-uid="Egap.Documents.DocumentBuilder.MoveToDocumentStart">
   MoveToDocumentStart()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L359"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L381"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Moves the cursor to the start of the document's first body paragraph.</p>
@@ -1101,7 +1138,7 @@ to it, with its page number filled in by layout.</p>
 
   <h3 id="Egap_Documents_DocumentBuilder_MoveToHeaderFooter_Egap_Documents_HeaderFooterKind_" data-uid="Egap.Documents.DocumentBuilder.MoveToHeaderFooter(Egap.Documents.HeaderFooterKind)">
   MoveToHeaderFooter(HeaderFooterKind)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L391"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L413"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Moves the cursor to the end of the first section's header or footer of <code class="paramref">kind</code>, adding it when missing.</p>
@@ -1133,7 +1170,7 @@ to it, with its page number filled in by layout.</p>
 
   <h3 id="Egap_Documents_DocumentBuilder_MoveToMarginBox_Egap_Documents_MarginBoxPosition_System_Boolean_" data-uid="Egap.Documents.DocumentBuilder.MoveToMarginBox(Egap.Documents.MarginBoxPosition,System.Boolean)">
   MoveToMarginBox(MarginBoxPosition, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L404"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L426"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Moves the cursor to the end of the current section's margin box at <code class="paramref">position</code>, adding it when missing.</p>
@@ -1202,11 +1239,86 @@ to it, with its page number filled in by layout.</p>
 
 
 
+  <a id="Egap_Documents_DocumentBuilder_StartEditableRange_" data-uid="Egap.Documents.DocumentBuilder.StartEditableRange*"></a>
+
+  <h3 id="Egap_Documents_DocumentBuilder_StartEditableRange_Egap_Documents_EditorGroup_" data-uid="Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup)">
+  StartEditableRange(EditorGroup)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L237"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the start of a range that stays editable for <code class="paramref">group</code> while the document is protected, with an
+id no other editable range in the document has; end it with <a class="xref" href="Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_EndEditableRange_Egap_Documents_EditableRangeStart_">EndEditableRange(EditableRangeStart)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EditableRangeStart StartEditableRange(EditorGroup group = EditorGroup.Everyone)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>group</code> <a class="xref" href="Egap.Documents.EditorGroup.html">EditorGroup</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.EditableRangeStart.html">EditableRangeStart</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentBuilder_StartEditableRange_" data-uid="Egap.Documents.DocumentBuilder.StartEditableRange*"></a>
+
+  <h3 id="Egap_Documents_DocumentBuilder_StartEditableRange_System_String_" data-uid="Egap.Documents.DocumentBuilder.StartEditableRange(System.String)">
+  StartEditableRange(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L243"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the start of a range that stays editable for the person named <code class="paramref">editor</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EditableRangeStart StartEditableRange(string editor)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>editor</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.EditableRangeStart.html">EditableRangeStart</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_DocumentBuilder_StartGroup_" data-uid="Egap.Documents.DocumentBuilder.StartGroup*"></a>
 
   <h3 id="Egap_Documents_DocumentBuilder_StartGroup" data-uid="Egap.Documents.DocumentBuilder.StartGroup">
   StartGroup()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L313"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L335"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Starts a group of blocks before the cursor's paragraph and moves the cursor into it: what is written until
@@ -1247,7 +1359,7 @@ builder.EndGroup();</code></pre>
 
   <h3 id="Egap_Documents_DocumentBuilder_StartTable" data-uid="Egap.Documents.DocumentBuilder.StartTable">
   StartTable()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L245"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Editing/DocumentBuilder.cs/#L267"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Starts a table before the cursor's paragraph; <a class="xref" href="Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_InsertCell">InsertCell()</a> adds cells, <a class="xref" href="Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_EndRow">EndRow()</a> ends rows and

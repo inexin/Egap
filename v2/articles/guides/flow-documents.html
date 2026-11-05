@@ -120,6 +120,21 @@ Document scanned = Document.LoadPdf(&quot;scanned.pdf&quot;);               // a
 <p><code>Document.Load</code> and <code>Save</code> know DOCX, PDF, plain text and Docling JSON by themselves; HTML and Markdown join them once
 their add-on package is registered. Each format has its own page under <a href="../formats/index.html">Document formats</a>, with its
 options and what it keeps.</p>
+<h2 id="restricting-editing">Restricting editing</h2>
+<p>A document can ask the program that opens it to keep it read only, or to allow only comments, tracked changes or form
+filling, with editable ranges as exceptions and a password that lifts it. Word enforces this; Egap reads and writes it.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document contract = Document.Load(&quot;contract.docx&quot;);
+contract.Protection.Protect(ProtectionKind.TrackedChanges, &quot;legal&quot;);   // every change is tracked
+contract.Save(&quot;contract-for-review.docx&quot;);
+
+if (contract.Protection.Verify(&quot;legal&quot;))
+{
+    contract.Protection.Unprotect();
+}
+</code></pre>
+<p>The <a href="../formats/docx.html#editing-restrictions">DOCX page</a> has the details and the editable ranges.</p>
 <h2 id="text-options">Text options</h2>
 <p>Besides fonts, sizes and colours, runs take word spacing, an overline and any OpenType feature, such as ligatures,
 tabular or old-style figures and stylistic sets. Paragraphs choose where lines may break inside words. HTML's

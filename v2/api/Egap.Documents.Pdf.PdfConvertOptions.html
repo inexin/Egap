@@ -194,7 +194,7 @@ are read, and nothing from the network.</p>
 
   <h3 id="Egap_Documents_Pdf_PdfConvertOptions_Conformance" data-uid="Egap.Documents.Pdf.PdfConvertOptions.Conformance">
   Conformance
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the PDF/A level to write; <a class="xref" href="Egap.Pdf.PdfAConformance.html#Egap_Pdf_PdfAConformance_None">None</a> (the default) for none.</p>
@@ -258,7 +258,7 @@ are read, and nothing from the network.</p>
 
   <h3 id="Egap_Documents_Pdf_PdfConvertOptions_EmbedSource" data-uid="Egap.Documents.Pdf.PdfConvertOptions.EmbedSource">
   EmbedSource
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets whether a DOCX of the document is embedded as the PDF's source, as <a class="xref" href="Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_EmbedSource">EmbedSource</a> says. Defaults to false.</p>
@@ -290,7 +290,7 @@ are read, and nothing from the network.</p>
 
   <h3 id="Egap_Documents_Pdf_PdfConvertOptions_Export" data-uid="Egap.Documents.Pdf.PdfConvertOptions.Export">
   Export
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the rest of the export settings (outline, links, layout and save options); null for the defaults.
@@ -323,7 +323,7 @@ are read, and nothing from the network.</p>
 
   <h3 id="Egap_Documents_Pdf_PdfConvertOptions_Footer" data-uid="Egap.Documents.Pdf.PdfConvertOptions.Footer">
   Footer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L57"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the footer put in the bottom margin of every page, in place of the input's own footers and bottom margin boxes;
@@ -356,7 +356,7 @@ null (the default) to keep those.</p>
 
   <h3 id="Egap_Documents_Pdf_PdfConvertOptions_Header" data-uid="Egap.Documents.Pdf.PdfConvertOptions.Header">
   Header
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L51"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the header put in the top margin of every page, in place of the input's own headers and top margin boxes;
@@ -450,11 +450,43 @@ null (the default) to keep those.</p>
 
 
 
+  <a id="Egap_Documents_Pdf_PdfConvertOptions_Password_" data-uid="Egap.Documents.Pdf.PdfConvertOptions.Password*"></a>
+
+  <h3 id="Egap_Documents_Pdf_PdfConvertOptions_Password" data-uid="Egap.Documents.Pdf.PdfConvertOptions.Password">
+  Password
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the password of an encrypted DOCX file to convert; null (the default) for a file that is not encrypted.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? Password { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Pdf_PdfConvertOptions_TableOfContents_" data-uid="Egap.Documents.Pdf.PdfConvertOptions.TableOfContents*"></a>
 
   <h3 id="Egap_Documents_Pdf_PdfConvertOptions_TableOfContents" data-uid="Egap.Documents.Pdf.PdfConvertOptions.TableOfContents">
   TableOfContents
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L63"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets whether the PDF gets a table of contents built from the headings, at HTML's <code>&lt;nav data-toc&gt;</code>, a
@@ -487,7 +519,7 @@ Markdown <code>[TOC]</code> paragraph or the start; <a class="xref" href="Egap.D
 
   <h3 id="Egap_Documents_Pdf_PdfConvertOptions_Tagged" data-uid="Egap.Documents.Pdf.PdfConvertOptions.Tagged">
   Tagged
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Pdf/PdfConvert.cs/#L69"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets whether the PDF is tagged for accessibility. Defaults to false.</p>

@@ -260,15 +260,27 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 <tr>
 <td><code>--password &lt;text&gt;</code></td>
-<td>The password that opens encrypted PDF inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
+<td>The password that opens encrypted PDF and DOCX inputs. Prefer --password-env or --password-file: a value here lands in shell history.</td>
 </tr>
 <tr>
 <td><code>--password-env &lt;NAME&gt;</code></td>
-<td>Read the password that opens encrypted PDF inputs from this environment variable.</td>
+<td>Read the password that opens encrypted PDF and DOCX inputs from this environment variable.</td>
 </tr>
 <tr>
 <td><code>--password-file &lt;path&gt;</code></td>
-<td>Read the password that opens encrypted PDF inputs from the first line of this file.</td>
+<td>Read the password that opens encrypted PDF and DOCX inputs from the first line of this file.</td>
+</tr>
+<tr>
+<td><code>--save-password &lt;text&gt;</code></td>
+<td>The password that encrypts DOCX outputs. Prefer --save-password-env or --save-password-file: a value here lands in shell history.</td>
+</tr>
+<tr>
+<td><code>--save-password-env &lt;NAME&gt;</code></td>
+<td>Read the password that encrypts DOCX outputs from this environment variable.</td>
+</tr>
+<tr>
+<td><code>--save-password-file &lt;path&gt;</code></td>
+<td>Read the password that encrypts DOCX outputs from the first line of this file.</td>
 </tr>
 </tbody>
 </table>

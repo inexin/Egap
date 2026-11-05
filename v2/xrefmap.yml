@@ -3521,6 +3521,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Document.Properties
   nameWithType: Document.Properties
+- uid: Egap.Documents.Document.Protection
+  name: Protection
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_Protection
+  commentId: P:Egap.Documents.Document.Protection
+  fullName: Egap.Documents.Document.Protection
+  nameWithType: Document.Protection
+- uid: Egap.Documents.Document.Protection*
+  name: Protection
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_Protection_
+  commentId: Overload:Egap.Documents.Document.Protection
+  isSpec: "True"
+  fullName: Egap.Documents.Document.Protection
+  nameWithType: Document.Protection
 - uid: Egap.Documents.Document.Revisions
   name: Revisions
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_Revisions
@@ -3721,6 +3734,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentBuilder.EndBookmark
   nameWithType: DocumentBuilder.EndBookmark
+- uid: Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart)
+  name: EndEditableRange(EditableRangeStart)
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_EndEditableRange_Egap_Documents_EditableRangeStart_
+  commentId: M:Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart)
+  fullName: Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart)
+  nameWithType: DocumentBuilder.EndEditableRange(EditableRangeStart)
+- uid: Egap.Documents.DocumentBuilder.EndEditableRange*
+  name: EndEditableRange
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_EndEditableRange_
+  commentId: Overload:Egap.Documents.DocumentBuilder.EndEditableRange
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentBuilder.EndEditableRange
+  nameWithType: DocumentBuilder.EndEditableRange
 - uid: Egap.Documents.DocumentBuilder.EndGroup
   name: EndGroup()
   href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_EndGroup
@@ -4060,6 +4086,28 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentBuilder.StartBookmark
   nameWithType: DocumentBuilder.StartBookmark
+- uid: Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup)
+  name: StartEditableRange(EditorGroup)
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_StartEditableRange_Egap_Documents_EditorGroup_
+  commentId: M:Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup)
+  fullName: Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup)
+  nameWithType: DocumentBuilder.StartEditableRange(EditorGroup)
+- uid: Egap.Documents.DocumentBuilder.StartEditableRange(System.String)
+  name: StartEditableRange(string)
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_StartEditableRange_System_String_
+  commentId: M:Egap.Documents.DocumentBuilder.StartEditableRange(System.String)
+  name.vb: StartEditableRange(String)
+  fullName: Egap.Documents.DocumentBuilder.StartEditableRange(string)
+  fullName.vb: Egap.Documents.DocumentBuilder.StartEditableRange(String)
+  nameWithType: DocumentBuilder.StartEditableRange(string)
+  nameWithType.vb: DocumentBuilder.StartEditableRange(String)
+- uid: Egap.Documents.DocumentBuilder.StartEditableRange*
+  name: StartEditableRange
+  href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_StartEditableRange_
+  commentId: Overload:Egap.Documents.DocumentBuilder.StartEditableRange
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentBuilder.StartEditableRange
+  nameWithType: DocumentBuilder.StartEditableRange
 - uid: Egap.Documents.DocumentBuilder.StartGroup
   name: StartGroup()
   href: api/Egap.Documents.DocumentBuilder.html#Egap_Documents_DocumentBuilder_StartGroup
@@ -4942,6 +4990,160 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentProperties.Title
   nameWithType: DocumentProperties.Title
+- uid: Egap.Documents.DocumentProtection
+  name: DocumentProtection
+  href: api/Egap.Documents.DocumentProtection.html
+  commentId: T:Egap.Documents.DocumentProtection
+  fullName: Egap.Documents.DocumentProtection
+  nameWithType: DocumentProtection
+- uid: Egap.Documents.DocumentProtection.DefaultSpinCount
+  name: DefaultSpinCount
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_DefaultSpinCount
+  commentId: F:Egap.Documents.DocumentProtection.DefaultSpinCount
+  fullName: Egap.Documents.DocumentProtection.DefaultSpinCount
+  nameWithType: DocumentProtection.DefaultSpinCount
+- uid: Egap.Documents.DocumentProtection.HasPassword
+  name: HasPassword
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_HasPassword
+  commentId: P:Egap.Documents.DocumentProtection.HasPassword
+  fullName: Egap.Documents.DocumentProtection.HasPassword
+  nameWithType: DocumentProtection.HasPassword
+- uid: Egap.Documents.DocumentProtection.HasPassword*
+  name: HasPassword
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_HasPassword_
+  commentId: Overload:Egap.Documents.DocumentProtection.HasPassword
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.HasPassword
+  nameWithType: DocumentProtection.HasPassword
+- uid: Egap.Documents.DocumentProtection.Hash
+  name: Hash
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Hash
+  commentId: P:Egap.Documents.DocumentProtection.Hash
+  fullName: Egap.Documents.DocumentProtection.Hash
+  nameWithType: DocumentProtection.Hash
+- uid: Egap.Documents.DocumentProtection.Hash*
+  name: Hash
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Hash_
+  commentId: Overload:Egap.Documents.DocumentProtection.Hash
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.Hash
+  nameWithType: DocumentProtection.Hash
+- uid: Egap.Documents.DocumentProtection.HashAlgorithm
+  name: HashAlgorithm
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_HashAlgorithm
+  commentId: P:Egap.Documents.DocumentProtection.HashAlgorithm
+  fullName: Egap.Documents.DocumentProtection.HashAlgorithm
+  nameWithType: DocumentProtection.HashAlgorithm
+- uid: Egap.Documents.DocumentProtection.HashAlgorithm*
+  name: HashAlgorithm
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_HashAlgorithm_
+  commentId: Overload:Egap.Documents.DocumentProtection.HashAlgorithm
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.HashAlgorithm
+  nameWithType: DocumentProtection.HashAlgorithm
+- uid: Egap.Documents.DocumentProtection.IsEnforced
+  name: IsEnforced
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_IsEnforced
+  commentId: P:Egap.Documents.DocumentProtection.IsEnforced
+  fullName: Egap.Documents.DocumentProtection.IsEnforced
+  nameWithType: DocumentProtection.IsEnforced
+- uid: Egap.Documents.DocumentProtection.IsEnforced*
+  name: IsEnforced
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_IsEnforced_
+  commentId: Overload:Egap.Documents.DocumentProtection.IsEnforced
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.IsEnforced
+  nameWithType: DocumentProtection.IsEnforced
+- uid: Egap.Documents.DocumentProtection.Kind
+  name: Kind
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Kind
+  commentId: P:Egap.Documents.DocumentProtection.Kind
+  fullName: Egap.Documents.DocumentProtection.Kind
+  nameWithType: DocumentProtection.Kind
+- uid: Egap.Documents.DocumentProtection.Kind*
+  name: Kind
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Kind_
+  commentId: Overload:Egap.Documents.DocumentProtection.Kind
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.Kind
+  nameWithType: DocumentProtection.Kind
+- uid: Egap.Documents.DocumentProtection.MaxSpinCount
+  name: MaxSpinCount
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_MaxSpinCount
+  commentId: F:Egap.Documents.DocumentProtection.MaxSpinCount
+  fullName: Egap.Documents.DocumentProtection.MaxSpinCount
+  nameWithType: DocumentProtection.MaxSpinCount
+- uid: Egap.Documents.DocumentProtection.Protect(Egap.Documents.ProtectionKind,System.String)
+  name: Protect(ProtectionKind, string?)
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Protect_Egap_Documents_ProtectionKind_System_String_
+  commentId: M:Egap.Documents.DocumentProtection.Protect(Egap.Documents.ProtectionKind,System.String)
+  name.vb: Protect(ProtectionKind, String)
+  fullName: Egap.Documents.DocumentProtection.Protect(Egap.Documents.ProtectionKind, string?)
+  fullName.vb: Egap.Documents.DocumentProtection.Protect(Egap.Documents.ProtectionKind, String)
+  nameWithType: DocumentProtection.Protect(ProtectionKind, string?)
+  nameWithType.vb: DocumentProtection.Protect(ProtectionKind, String)
+- uid: Egap.Documents.DocumentProtection.Protect*
+  name: Protect
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Protect_
+  commentId: Overload:Egap.Documents.DocumentProtection.Protect
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.Protect
+  nameWithType: DocumentProtection.Protect
+- uid: Egap.Documents.DocumentProtection.Salt
+  name: Salt
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Salt
+  commentId: P:Egap.Documents.DocumentProtection.Salt
+  fullName: Egap.Documents.DocumentProtection.Salt
+  nameWithType: DocumentProtection.Salt
+- uid: Egap.Documents.DocumentProtection.Salt*
+  name: Salt
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Salt_
+  commentId: Overload:Egap.Documents.DocumentProtection.Salt
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.Salt
+  nameWithType: DocumentProtection.Salt
+- uid: Egap.Documents.DocumentProtection.SpinCount
+  name: SpinCount
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_SpinCount
+  commentId: P:Egap.Documents.DocumentProtection.SpinCount
+  fullName: Egap.Documents.DocumentProtection.SpinCount
+  nameWithType: DocumentProtection.SpinCount
+- uid: Egap.Documents.DocumentProtection.SpinCount*
+  name: SpinCount
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_SpinCount_
+  commentId: Overload:Egap.Documents.DocumentProtection.SpinCount
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.SpinCount
+  nameWithType: DocumentProtection.SpinCount
+- uid: Egap.Documents.DocumentProtection.Unprotect
+  name: Unprotect()
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Unprotect
+  commentId: M:Egap.Documents.DocumentProtection.Unprotect
+  fullName: Egap.Documents.DocumentProtection.Unprotect()
+  nameWithType: DocumentProtection.Unprotect()
+- uid: Egap.Documents.DocumentProtection.Unprotect*
+  name: Unprotect
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Unprotect_
+  commentId: Overload:Egap.Documents.DocumentProtection.Unprotect
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.Unprotect
+  nameWithType: DocumentProtection.Unprotect
+- uid: Egap.Documents.DocumentProtection.Verify(System.String)
+  name: Verify(string?)
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Verify_System_String_
+  commentId: M:Egap.Documents.DocumentProtection.Verify(System.String)
+  name.vb: Verify(String)
+  fullName: Egap.Documents.DocumentProtection.Verify(string?)
+  fullName.vb: Egap.Documents.DocumentProtection.Verify(String)
+  nameWithType: DocumentProtection.Verify(string?)
+  nameWithType.vb: DocumentProtection.Verify(String)
+- uid: Egap.Documents.DocumentProtection.Verify*
+  name: Verify
+  href: api/Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Verify_
+  commentId: Overload:Egap.Documents.DocumentProtection.Verify
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentProtection.Verify
+  nameWithType: DocumentProtection.Verify
 - uid: Egap.Documents.DocumentSettings
   name: DocumentSettings
   href: api/Egap.Documents.DocumentSettings.html
@@ -5279,6 +5481,32 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentVisitor.VisitDocumentStart
   nameWithType: DocumentVisitor.VisitDocumentStart
+- uid: Egap.Documents.DocumentVisitor.VisitEditableRangeEnd(Egap.Documents.EditableRangeEnd)
+  name: VisitEditableRangeEnd(EditableRangeEnd)
+  href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitEditableRangeEnd_Egap_Documents_EditableRangeEnd_
+  commentId: M:Egap.Documents.DocumentVisitor.VisitEditableRangeEnd(Egap.Documents.EditableRangeEnd)
+  fullName: Egap.Documents.DocumentVisitor.VisitEditableRangeEnd(Egap.Documents.EditableRangeEnd)
+  nameWithType: DocumentVisitor.VisitEditableRangeEnd(EditableRangeEnd)
+- uid: Egap.Documents.DocumentVisitor.VisitEditableRangeEnd*
+  name: VisitEditableRangeEnd
+  href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitEditableRangeEnd_
+  commentId: Overload:Egap.Documents.DocumentVisitor.VisitEditableRangeEnd
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentVisitor.VisitEditableRangeEnd
+  nameWithType: DocumentVisitor.VisitEditableRangeEnd
+- uid: Egap.Documents.DocumentVisitor.VisitEditableRangeStart(Egap.Documents.EditableRangeStart)
+  name: VisitEditableRangeStart(EditableRangeStart)
+  href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitEditableRangeStart_Egap_Documents_EditableRangeStart_
+  commentId: M:Egap.Documents.DocumentVisitor.VisitEditableRangeStart(Egap.Documents.EditableRangeStart)
+  fullName: Egap.Documents.DocumentVisitor.VisitEditableRangeStart(Egap.Documents.EditableRangeStart)
+  nameWithType: DocumentVisitor.VisitEditableRangeStart(EditableRangeStart)
+- uid: Egap.Documents.DocumentVisitor.VisitEditableRangeStart*
+  name: VisitEditableRangeStart
+  href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitEditableRangeStart_
+  commentId: Overload:Egap.Documents.DocumentVisitor.VisitEditableRangeStart
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentVisitor.VisitEditableRangeStart
+  nameWithType: DocumentVisitor.VisitEditableRangeStart
 - uid: Egap.Documents.DocumentVisitor.VisitFieldEnd(Egap.Documents.FieldEnd)
   name: VisitFieldEnd(FieldEnd)
   href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitFieldEnd_Egap_Documents_FieldEnd_
@@ -5926,6 +6154,223 @@ references:
   commentId: F:Egap.Documents.DropCap.None
   fullName: Egap.Documents.DropCap.None
   nameWithType: DropCap.None
+- uid: Egap.Documents.EditableRangeEnd
+  name: EditableRangeEnd
+  href: api/Egap.Documents.EditableRangeEnd.html
+  commentId: T:Egap.Documents.EditableRangeEnd
+  fullName: Egap.Documents.EditableRangeEnd
+  nameWithType: EditableRangeEnd
+- uid: Egap.Documents.EditableRangeEnd.#ctor(Egap.Documents.Document,System.Int32)
+  name: EditableRangeEnd(Document, int)
+  href: api/Egap.Documents.EditableRangeEnd.html#Egap_Documents_EditableRangeEnd__ctor_Egap_Documents_Document_System_Int32_
+  commentId: M:Egap.Documents.EditableRangeEnd.#ctor(Egap.Documents.Document,System.Int32)
+  name.vb: New(Document, Integer)
+  fullName: Egap.Documents.EditableRangeEnd.EditableRangeEnd(Egap.Documents.Document, int)
+  fullName.vb: Egap.Documents.EditableRangeEnd.New(Egap.Documents.Document, Integer)
+  nameWithType: EditableRangeEnd.EditableRangeEnd(Document, int)
+  nameWithType.vb: EditableRangeEnd.New(Document, Integer)
+- uid: Egap.Documents.EditableRangeEnd.#ctor*
+  name: EditableRangeEnd
+  href: api/Egap.Documents.EditableRangeEnd.html#Egap_Documents_EditableRangeEnd__ctor_
+  commentId: Overload:Egap.Documents.EditableRangeEnd.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Documents.EditableRangeEnd.EditableRangeEnd
+  fullName.vb: Egap.Documents.EditableRangeEnd.New
+  nameWithType: EditableRangeEnd.EditableRangeEnd
+  nameWithType.vb: EditableRangeEnd.New
+- uid: Egap.Documents.EditableRangeEnd.Clone(System.Boolean)
+  name: Clone(bool)
+  href: api/Egap.Documents.EditableRangeEnd.html#Egap_Documents_EditableRangeEnd_Clone_System_Boolean_
+  commentId: M:Egap.Documents.EditableRangeEnd.Clone(System.Boolean)
+  name.vb: Clone(Boolean)
+  fullName: Egap.Documents.EditableRangeEnd.Clone(bool)
+  fullName.vb: Egap.Documents.EditableRangeEnd.Clone(Boolean)
+  nameWithType: EditableRangeEnd.Clone(bool)
+  nameWithType.vb: EditableRangeEnd.Clone(Boolean)
+- uid: Egap.Documents.EditableRangeEnd.Clone*
+  name: Clone
+  href: api/Egap.Documents.EditableRangeEnd.html#Egap_Documents_EditableRangeEnd_Clone_
+  commentId: Overload:Egap.Documents.EditableRangeEnd.Clone
+  isSpec: "True"
+  fullName: Egap.Documents.EditableRangeEnd.Clone
+  nameWithType: EditableRangeEnd.Clone
+- uid: Egap.Documents.EditableRangeEnd.Id
+  name: Id
+  href: api/Egap.Documents.EditableRangeEnd.html#Egap_Documents_EditableRangeEnd_Id
+  commentId: P:Egap.Documents.EditableRangeEnd.Id
+  fullName: Egap.Documents.EditableRangeEnd.Id
+  nameWithType: EditableRangeEnd.Id
+- uid: Egap.Documents.EditableRangeEnd.Id*
+  name: Id
+  href: api/Egap.Documents.EditableRangeEnd.html#Egap_Documents_EditableRangeEnd_Id_
+  commentId: Overload:Egap.Documents.EditableRangeEnd.Id
+  isSpec: "True"
+  fullName: Egap.Documents.EditableRangeEnd.Id
+  nameWithType: EditableRangeEnd.Id
+- uid: Egap.Documents.EditableRangeStart
+  name: EditableRangeStart
+  href: api/Egap.Documents.EditableRangeStart.html
+  commentId: T:Egap.Documents.EditableRangeStart
+  fullName: Egap.Documents.EditableRangeStart
+  nameWithType: EditableRangeStart
+- uid: Egap.Documents.EditableRangeStart.#ctor(Egap.Documents.Document,System.Int32,Egap.Documents.EditorGroup)
+  name: EditableRangeStart(Document, int, EditorGroup)
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart__ctor_Egap_Documents_Document_System_Int32_Egap_Documents_EditorGroup_
+  commentId: M:Egap.Documents.EditableRangeStart.#ctor(Egap.Documents.Document,System.Int32,Egap.Documents.EditorGroup)
+  name.vb: New(Document, Integer, EditorGroup)
+  fullName: Egap.Documents.EditableRangeStart.EditableRangeStart(Egap.Documents.Document, int, Egap.Documents.EditorGroup)
+  fullName.vb: Egap.Documents.EditableRangeStart.New(Egap.Documents.Document, Integer, Egap.Documents.EditorGroup)
+  nameWithType: EditableRangeStart.EditableRangeStart(Document, int, EditorGroup)
+  nameWithType.vb: EditableRangeStart.New(Document, Integer, EditorGroup)
+- uid: Egap.Documents.EditableRangeStart.#ctor(Egap.Documents.Document,System.Int32,System.String)
+  name: EditableRangeStart(Document, int, string)
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart__ctor_Egap_Documents_Document_System_Int32_System_String_
+  commentId: M:Egap.Documents.EditableRangeStart.#ctor(Egap.Documents.Document,System.Int32,System.String)
+  name.vb: New(Document, Integer, String)
+  fullName: Egap.Documents.EditableRangeStart.EditableRangeStart(Egap.Documents.Document, int, string)
+  fullName.vb: Egap.Documents.EditableRangeStart.New(Egap.Documents.Document, Integer, String)
+  nameWithType: EditableRangeStart.EditableRangeStart(Document, int, string)
+  nameWithType.vb: EditableRangeStart.New(Document, Integer, String)
+- uid: Egap.Documents.EditableRangeStart.#ctor*
+  name: EditableRangeStart
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart__ctor_
+  commentId: Overload:Egap.Documents.EditableRangeStart.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Documents.EditableRangeStart.EditableRangeStart
+  fullName.vb: Egap.Documents.EditableRangeStart.New
+  nameWithType: EditableRangeStart.EditableRangeStart
+  nameWithType.vb: EditableRangeStart.New
+- uid: Egap.Documents.EditableRangeStart.Clone(System.Boolean)
+  name: Clone(bool)
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Clone_System_Boolean_
+  commentId: M:Egap.Documents.EditableRangeStart.Clone(System.Boolean)
+  name.vb: Clone(Boolean)
+  fullName: Egap.Documents.EditableRangeStart.Clone(bool)
+  fullName.vb: Egap.Documents.EditableRangeStart.Clone(Boolean)
+  nameWithType: EditableRangeStart.Clone(bool)
+  nameWithType.vb: EditableRangeStart.Clone(Boolean)
+- uid: Egap.Documents.EditableRangeStart.Clone*
+  name: Clone
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Clone_
+  commentId: Overload:Egap.Documents.EditableRangeStart.Clone
+  isSpec: "True"
+  fullName: Egap.Documents.EditableRangeStart.Clone
+  nameWithType: EditableRangeStart.Clone
+- uid: Egap.Documents.EditableRangeStart.Editor
+  name: Editor
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Editor
+  commentId: P:Egap.Documents.EditableRangeStart.Editor
+  fullName: Egap.Documents.EditableRangeStart.Editor
+  nameWithType: EditableRangeStart.Editor
+- uid: Egap.Documents.EditableRangeStart.Editor*
+  name: Editor
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Editor_
+  commentId: Overload:Egap.Documents.EditableRangeStart.Editor
+  isSpec: "True"
+  fullName: Egap.Documents.EditableRangeStart.Editor
+  nameWithType: EditableRangeStart.Editor
+- uid: Egap.Documents.EditableRangeStart.FirstColumn
+  name: FirstColumn
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_FirstColumn
+  commentId: P:Egap.Documents.EditableRangeStart.FirstColumn
+  fullName: Egap.Documents.EditableRangeStart.FirstColumn
+  nameWithType: EditableRangeStart.FirstColumn
+- uid: Egap.Documents.EditableRangeStart.FirstColumn*
+  name: FirstColumn
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_FirstColumn_
+  commentId: Overload:Egap.Documents.EditableRangeStart.FirstColumn
+  isSpec: "True"
+  fullName: Egap.Documents.EditableRangeStart.FirstColumn
+  nameWithType: EditableRangeStart.FirstColumn
+- uid: Egap.Documents.EditableRangeStart.Group
+  name: Group
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Group
+  commentId: P:Egap.Documents.EditableRangeStart.Group
+  fullName: Egap.Documents.EditableRangeStart.Group
+  nameWithType: EditableRangeStart.Group
+- uid: Egap.Documents.EditableRangeStart.Group*
+  name: Group
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Group_
+  commentId: Overload:Egap.Documents.EditableRangeStart.Group
+  isSpec: "True"
+  fullName: Egap.Documents.EditableRangeStart.Group
+  nameWithType: EditableRangeStart.Group
+- uid: Egap.Documents.EditableRangeStart.Id
+  name: Id
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Id
+  commentId: P:Egap.Documents.EditableRangeStart.Id
+  fullName: Egap.Documents.EditableRangeStart.Id
+  nameWithType: EditableRangeStart.Id
+- uid: Egap.Documents.EditableRangeStart.Id*
+  name: Id
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Id_
+  commentId: Overload:Egap.Documents.EditableRangeStart.Id
+  isSpec: "True"
+  fullName: Egap.Documents.EditableRangeStart.Id
+  nameWithType: EditableRangeStart.Id
+- uid: Egap.Documents.EditableRangeStart.LastColumn
+  name: LastColumn
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_LastColumn
+  commentId: P:Egap.Documents.EditableRangeStart.LastColumn
+  fullName: Egap.Documents.EditableRangeStart.LastColumn
+  nameWithType: EditableRangeStart.LastColumn
+- uid: Egap.Documents.EditableRangeStart.LastColumn*
+  name: LastColumn
+  href: api/Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_LastColumn_
+  commentId: Overload:Egap.Documents.EditableRangeStart.LastColumn
+  isSpec: "True"
+  fullName: Egap.Documents.EditableRangeStart.LastColumn
+  nameWithType: EditableRangeStart.LastColumn
+- uid: Egap.Documents.EditorGroup
+  name: EditorGroup
+  href: api/Egap.Documents.EditorGroup.html
+  commentId: T:Egap.Documents.EditorGroup
+  fullName: Egap.Documents.EditorGroup
+  nameWithType: EditorGroup
+- uid: Egap.Documents.EditorGroup.Administrators
+  name: Administrators
+  href: api/Egap.Documents.EditorGroup.html#Egap_Documents_EditorGroup_Administrators
+  commentId: F:Egap.Documents.EditorGroup.Administrators
+  fullName: Egap.Documents.EditorGroup.Administrators
+  nameWithType: EditorGroup.Administrators
+- uid: Egap.Documents.EditorGroup.Contributors
+  name: Contributors
+  href: api/Egap.Documents.EditorGroup.html#Egap_Documents_EditorGroup_Contributors
+  commentId: F:Egap.Documents.EditorGroup.Contributors
+  fullName: Egap.Documents.EditorGroup.Contributors
+  nameWithType: EditorGroup.Contributors
+- uid: Egap.Documents.EditorGroup.Current
+  name: Current
+  href: api/Egap.Documents.EditorGroup.html#Egap_Documents_EditorGroup_Current
+  commentId: F:Egap.Documents.EditorGroup.Current
+  fullName: Egap.Documents.EditorGroup.Current
+  nameWithType: EditorGroup.Current
+- uid: Egap.Documents.EditorGroup.Editors
+  name: Editors
+  href: api/Egap.Documents.EditorGroup.html#Egap_Documents_EditorGroup_Editors
+  commentId: F:Egap.Documents.EditorGroup.Editors
+  fullName: Egap.Documents.EditorGroup.Editors
+  nameWithType: EditorGroup.Editors
+- uid: Egap.Documents.EditorGroup.Everyone
+  name: Everyone
+  href: api/Egap.Documents.EditorGroup.html#Egap_Documents_EditorGroup_Everyone
+  commentId: F:Egap.Documents.EditorGroup.Everyone
+  fullName: Egap.Documents.EditorGroup.Everyone
+  nameWithType: EditorGroup.Everyone
+- uid: Egap.Documents.EditorGroup.None
+  name: None
+  href: api/Egap.Documents.EditorGroup.html#Egap_Documents_EditorGroup_None
+  commentId: F:Egap.Documents.EditorGroup.None
+  fullName: Egap.Documents.EditorGroup.None
+  nameWithType: EditorGroup.None
+- uid: Egap.Documents.EditorGroup.Owners
+  name: Owners
+  href: api/Egap.Documents.EditorGroup.html#Egap_Documents_EditorGroup_Owners
+  commentId: F:Egap.Documents.EditorGroup.Owners
+  fullName: Egap.Documents.EditorGroup.Owners
+  nameWithType: EditorGroup.Owners
 - uid: Egap.Documents.EmbeddedFont
   name: EmbeddedFont
   href: api/Egap.Documents.EmbeddedFont.html
@@ -16803,6 +17248,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Pdf.PdfConvertOptions.PageSize
   nameWithType: PdfConvertOptions.PageSize
+- uid: Egap.Documents.Pdf.PdfConvertOptions.Password
+  name: Password
+  href: api/Egap.Documents.Pdf.PdfConvertOptions.html#Egap_Documents_Pdf_PdfConvertOptions_Password
+  commentId: P:Egap.Documents.Pdf.PdfConvertOptions.Password
+  fullName: Egap.Documents.Pdf.PdfConvertOptions.Password
+  nameWithType: PdfConvertOptions.Password
+- uid: Egap.Documents.Pdf.PdfConvertOptions.Password*
+  name: Password
+  href: api/Egap.Documents.Pdf.PdfConvertOptions.html#Egap_Documents_Pdf_PdfConvertOptions_Password_
+  commentId: Overload:Egap.Documents.Pdf.PdfConvertOptions.Password
+  isSpec: "True"
+  fullName: Egap.Documents.Pdf.PdfConvertOptions.Password
+  nameWithType: PdfConvertOptions.Password
 - uid: Egap.Documents.Pdf.PdfConvertOptions.TableOfContents
   name: TableOfContents
   href: api/Egap.Documents.Pdf.PdfConvertOptions.html#Egap_Documents_Pdf_PdfConvertOptions_TableOfContents
@@ -18067,6 +18525,42 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.PreviewOptions.Port
   nameWithType: PreviewOptions.Port
+- uid: Egap.Documents.ProtectionKind
+  name: ProtectionKind
+  href: api/Egap.Documents.ProtectionKind.html
+  commentId: T:Egap.Documents.ProtectionKind
+  fullName: Egap.Documents.ProtectionKind
+  nameWithType: ProtectionKind
+- uid: Egap.Documents.ProtectionKind.Comments
+  name: Comments
+  href: api/Egap.Documents.ProtectionKind.html#Egap_Documents_ProtectionKind_Comments
+  commentId: F:Egap.Documents.ProtectionKind.Comments
+  fullName: Egap.Documents.ProtectionKind.Comments
+  nameWithType: ProtectionKind.Comments
+- uid: Egap.Documents.ProtectionKind.Forms
+  name: Forms
+  href: api/Egap.Documents.ProtectionKind.html#Egap_Documents_ProtectionKind_Forms
+  commentId: F:Egap.Documents.ProtectionKind.Forms
+  fullName: Egap.Documents.ProtectionKind.Forms
+  nameWithType: ProtectionKind.Forms
+- uid: Egap.Documents.ProtectionKind.None
+  name: None
+  href: api/Egap.Documents.ProtectionKind.html#Egap_Documents_ProtectionKind_None
+  commentId: F:Egap.Documents.ProtectionKind.None
+  fullName: Egap.Documents.ProtectionKind.None
+  nameWithType: ProtectionKind.None
+- uid: Egap.Documents.ProtectionKind.ReadOnly
+  name: ReadOnly
+  href: api/Egap.Documents.ProtectionKind.html#Egap_Documents_ProtectionKind_ReadOnly
+  commentId: F:Egap.Documents.ProtectionKind.ReadOnly
+  fullName: Egap.Documents.ProtectionKind.ReadOnly
+  nameWithType: ProtectionKind.ReadOnly
+- uid: Egap.Documents.ProtectionKind.TrackedChanges
+  name: TrackedChanges
+  href: api/Egap.Documents.ProtectionKind.html#Egap_Documents_ProtectionKind_TrackedChanges
+  commentId: F:Egap.Documents.ProtectionKind.TrackedChanges
+  fullName: Egap.Documents.ProtectionKind.TrackedChanges
+  nameWithType: ProtectionKind.TrackedChanges
 - uid: Egap.Documents.Reports
   name: Egap.Documents.Reports
   href: api/Egap.Documents.Reports.html

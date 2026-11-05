@@ -671,6 +671,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.DocumentProtection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.DocumentProtection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.DocumentProtection",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentProtection.yml\" sourcestartlinenumber=\"1\">The document's editing restriction: what may change and the hash of the password that lifts it. Egap does not enforce the\nrestriction; it reads, writes and keeps it through conversion, so that Word and other editors enforce it, and\n<xref href=\"Egap.Documents.DocumentProtection.Verify(System.String)\" data-throw-if-not-resolved=\"false\"></xref> checks a password against the hash.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.DocumentSettings.yml",
       "output": {
         ".html": {
@@ -766,6 +780,48 @@
       "IsMRef": true,
       "Title": "Egap.Documents.DropCap",
       "Summary": "<p sourcefile=\"api/Egap.Documents.DropCap.yml\" sourcestartlinenumber=\"1\">A paragraph frame's drop cap kind (Word's <code>w:dropCap</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.EditableRangeEnd.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.EditableRangeEnd.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.EditableRangeEnd",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.EditableRangeEnd.yml\" sourcestartlinenumber=\"1\">The end of an editable range; it pairs with the <xref href=\"Egap.Documents.EditableRangeStart\" data-throw-if-not-resolved=\"false\"></xref> of the same <xref href=\"Egap.Documents.EditableRangeEnd.Id\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.EditableRangeStart.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.EditableRangeStart.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.EditableRangeStart",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.EditableRangeStart.yml\" sourcestartlinenumber=\"1\">The start of a range that stays editable while the document is protected (<xref href=\"Egap.Documents.Document.Protection\" data-throw-if-not-resolved=\"false\"></xref>); it pairs\nwith the <xref href=\"Egap.Documents.EditableRangeEnd\" data-throw-if-not-resolved=\"false\"></xref> of the same <xref href=\"Egap.Documents.EditableRangeStart.Id\" data-throw-if-not-resolved=\"false\"></xref>. The range is open to an <xref href=\"Egap.Documents.EditorGroup\" data-throw-if-not-resolved=\"false\"></xref> or\nto one named <xref href=\"Egap.Documents.EditableRangeStart.Editor\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.EditorGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.EditorGroup.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.EditorGroup",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.EditorGroup.yml\" sourcestartlinenumber=\"1\">A group of people an editable range is open to (ECMA-376 Part 1, 17.18.18).</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2950,6 +3006,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.PreviewOptions",
       "Summary": "<p sourcefile=\"api/Egap.Documents.PreviewOptions.yml\" sourcestartlinenumber=\"1\">Where <xref href=\"Egap.Documents.DocumentPreview.ShowPreview(Egap.Documents.Document%2cEgap.Documents.PreviewOptions)\" data-throw-if-not-resolved=\"false\"></xref> sends a document's pages, and how sharp they are drawn.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.ProtectionKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.ProtectionKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.ProtectionKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.ProtectionKind.yml\" sourcestartlinenumber=\"1\">What a protected document lets a reader change.</p>\n"
     },
     {
       "type": "ManagedReference",

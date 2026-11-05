@@ -294,6 +294,13 @@ such as TITLE, AUTHOR and DOCPROPERTY show.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.DocumentProtection.html">DocumentProtection</a></dt>
+      <dd><p>The document's editing restriction: what may change and the hash of the password that lifts it. Egap does not enforce the
+restriction; it reads, writes and keeps it through conversion, so that Word and other editors enforce it, and
+<a class="xref" href="Egap.Documents.DocumentProtection.html#Egap_Documents_DocumentProtection_Verify_System_String_">Verify(string?)</a> checks a password against the hash.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.DocumentSettings.html">DocumentSettings</a></dt>
       <dd><p>Document-wide settings that change layout and numbering: the default tab stop, odd and even headers, footnote and endnote
 numbering, change tracking and Word's compatibility mode and options. Word's other settings are kept by the DOCX reader as extension
@@ -323,6 +330,18 @@ with a password to open them are read with <a class="xref" href="Egap.Documents.
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.DocxSaveOptions.html">DocxSaveOptions</a></dt>
       <dd><p>How <a class="xref" href="Egap.Documents.DocxFormat.html">DocxFormat</a> writes a file.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.EditableRangeEnd.html">EditableRangeEnd</a></dt>
+      <dd><p>The end of an editable range; it pairs with the <a class="xref" href="Egap.Documents.EditableRangeStart.html">EditableRangeStart</a> of the same <a class="xref" href="Egap.Documents.EditableRangeEnd.html#Egap_Documents_EditableRangeEnd_Id">Id</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.EditableRangeStart.html">EditableRangeStart</a></dt>
+      <dd><p>The start of a range that stays editable while the document is protected (<a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Protection">Protection</a>); it pairs
+with the <a class="xref" href="Egap.Documents.EditableRangeEnd.html">EditableRangeEnd</a> of the same <a class="xref" href="Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Id">Id</a>. The range is open to an <a class="xref" href="Egap.Documents.EditorGroup.html">EditorGroup</a> or
+to one named <a class="xref" href="Egap.Documents.EditableRangeStart.html#Egap_Documents_EditableRangeStart_Editor">Editor</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -951,6 +970,11 @@ Enums
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.EditorGroup.html">EditorGroup</a></dt>
+      <dd><p>A group of people an editable range is open to (ECMA-376 Part 1, 17.18.18).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.EpubSplit.html">EpubSplit</a></dt>
       <dd><p>Where the EPUB writer starts a new chapter file.</p>
 </dd>
@@ -1072,6 +1096,11 @@ and one in each corner.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Documents.ParagraphAlignment.html">ParagraphAlignment</a></dt>
       <dd><p>How a paragraph's lines line up between its indents.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Documents.ProtectionKind.html">ProtectionKind</a></dt>
+      <dd><p>What a protected document lets a reader change.</p>
 </dd>
     </dl>
     <dl class="jumplist">

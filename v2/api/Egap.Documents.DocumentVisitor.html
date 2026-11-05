@@ -159,7 +159,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitBlockIsland_Egap_Documents_BlockIsland_" data-uid="Egap.Documents.DocumentVisitor.VisitBlockIsland(Egap.Documents.BlockIsland)">
   VisitBlockIsland(BlockIsland)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L252"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L264"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A kept block island.</p>
@@ -381,7 +381,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitCommentEnd_Egap_Documents_Comment_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentEnd(Egap.Documents.Comment)">
   VisitCommentEnd(Comment)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L234"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a comment.</p>
@@ -492,7 +492,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitCommentStart_Egap_Documents_Comment_" data-uid="Egap.Documents.DocumentVisitor.VisitCommentStart(Egap.Documents.Comment)">
   VisitCommentStart(Comment)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L216"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L228"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a comment; its story follows.</p>
@@ -529,7 +529,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitContentControlEnd_Egap_Documents_ContentControl_" data-uid="Egap.Documents.DocumentVisitor.VisitContentControlEnd(Egap.Documents.ContentControl)">
   VisitContentControlEnd(ContentControl)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L198"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L210"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a block content control.</p>
@@ -566,7 +566,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitContentControlStart_Egap_Documents_ContentControl_" data-uid="Egap.Documents.DocumentVisitor.VisitContentControlStart(Egap.Documents.ContentControl)">
   VisitContentControlStart(ContentControl)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L192"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L204"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a block content control.</p>
@@ -654,6 +654,80 @@ cannot overflow the stack.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>document</code> <a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitEditableRangeEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitEditableRangeEnd*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitEditableRangeEnd_Egap_Documents_EditableRangeEnd_" data-uid="Egap.Documents.DocumentVisitor.VisitEditableRangeEnd(Egap.Documents.EditableRangeEnd)">
+  VisitEditableRangeEnd(EditableRangeEnd)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The end of an editable range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitEditableRangeEnd(EditableRangeEnd rangeEnd)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rangeEnd</code> <a class="xref" href="Egap.Documents.EditableRangeEnd.html">EditableRangeEnd</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.VisitorAction.html">VisitorAction</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_DocumentVisitor_VisitEditableRangeStart_" data-uid="Egap.Documents.DocumentVisitor.VisitEditableRangeStart*"></a>
+
+  <h3 id="Egap_Documents_DocumentVisitor_VisitEditableRangeStart_Egap_Documents_EditableRangeStart_" data-uid="Egap.Documents.DocumentVisitor.VisitEditableRangeStart(Egap.Documents.EditableRangeStart)">
+  VisitEditableRangeStart(EditableRangeStart)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The start of an editable range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual VisitorAction VisitEditableRangeStart(EditableRangeStart rangeStart)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rangeStart</code> <a class="xref" href="Egap.Documents.EditableRangeStart.html">EditableRangeStart</a></dt>
     <dd></dd>
   </dl>
 
@@ -788,7 +862,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitFlexContainerEnd_Egap_Documents_FlexContainer_" data-uid="Egap.Documents.DocumentVisitor.VisitFlexContainerEnd(Egap.Documents.FlexContainer)">
   VisitFlexContainerEnd(FlexContainer)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L264"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L276"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a flex container.</p>
@@ -825,7 +899,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitFlexContainerStart_Egap_Documents_FlexContainer_" data-uid="Egap.Documents.DocumentVisitor.VisitFlexContainerStart(Egap.Documents.FlexContainer)">
   VisitFlexContainerStart(FlexContainer)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L270"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a flex container; its items follow.</p>
@@ -862,7 +936,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitFlexItemEnd_Egap_Documents_FlexItem_" data-uid="Egap.Documents.DocumentVisitor.VisitFlexItemEnd(Egap.Documents.FlexItem)">
   VisitFlexItemEnd(FlexItem)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L276"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L288"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a flex item.</p>
@@ -899,7 +973,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitFlexItemStart_Egap_Documents_FlexItem_" data-uid="Egap.Documents.DocumentVisitor.VisitFlexItemStart(Egap.Documents.FlexItem)">
   VisitFlexItemStart(FlexItem)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L282"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a flex item; its blocks follow.</p>
@@ -936,7 +1010,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitFootnoteEnd_Egap_Documents_Footnote_" data-uid="Egap.Documents.DocumentVisitor.VisitFootnoteEnd(Egap.Documents.Footnote)">
   VisitFootnoteEnd(Footnote)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L222"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a footnote or endnote.</p>
@@ -973,7 +1047,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitFootnoteStart_Egap_Documents_Footnote_" data-uid="Egap.Documents.DocumentVisitor.VisitFootnoteStart(Egap.Documents.Footnote)">
   VisitFootnoteStart(Footnote)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L216"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a footnote or endnote; its story follows.</p>
@@ -1010,7 +1084,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitGridContainerEnd_Egap_Documents_GridContainer_" data-uid="Egap.Documents.DocumentVisitor.VisitGridContainerEnd(Egap.Documents.GridContainer)">
   VisitGridContainerEnd(GridContainer)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L288"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L300"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a grid container.</p>
@@ -1047,7 +1121,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitGridContainerStart_Egap_Documents_GridContainer_" data-uid="Egap.Documents.DocumentVisitor.VisitGridContainerStart(Egap.Documents.GridContainer)">
   VisitGridContainerStart(GridContainer)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L282"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L294"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a grid container; its items follow.</p>
@@ -1084,7 +1158,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitGridItemEnd_Egap_Documents_GridItem_" data-uid="Egap.Documents.DocumentVisitor.VisitGridItemEnd(Egap.Documents.GridItem)">
   VisitGridItemEnd(GridItem)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L300"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L312"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a grid item.</p>
@@ -1121,7 +1195,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitGridItemStart_Egap_Documents_GridItem_" data-uid="Egap.Documents.DocumentVisitor.VisitGridItemStart(Egap.Documents.GridItem)">
   VisitGridItemStart(GridItem)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L294"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L306"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a grid item; its blocks follow.</p>
@@ -1158,7 +1232,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitHyperlinkEnd_Egap_Documents_Hyperlink_" data-uid="Egap.Documents.DocumentVisitor.VisitHyperlinkEnd(Egap.Documents.Hyperlink)">
   VisitHyperlinkEnd(Hyperlink)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L186"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a hyperlink.</p>
@@ -1195,7 +1269,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitHyperlinkStart_Egap_Documents_Hyperlink_" data-uid="Egap.Documents.DocumentVisitor.VisitHyperlinkStart(Egap.Documents.Hyperlink)">
   VisitHyperlinkStart(Hyperlink)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L168"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L180"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a hyperlink.</p>
@@ -1232,7 +1306,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitInlineContentControlEnd_Egap_Documents_InlineContentControl_" data-uid="Egap.Documents.DocumentVisitor.VisitInlineContentControlEnd(Egap.Documents.InlineContentControl)">
   VisitInlineContentControlEnd(InlineContentControl)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L186"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L198"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving an inline content control.</p>
@@ -1269,7 +1343,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitInlineContentControlStart_Egap_Documents_InlineContentControl_" data-uid="Egap.Documents.DocumentVisitor.VisitInlineContentControlStart(Egap.Documents.InlineContentControl)">
   VisitInlineContentControlStart(InlineContentControl)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L192"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering an inline content control.</p>
@@ -1306,7 +1380,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitIsland_Egap_Documents_Island_" data-uid="Egap.Documents.DocumentVisitor.VisitIsland(Egap.Documents.Island)">
   VisitIsland(Island)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L246"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L258"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A kept island.</p>
@@ -1417,7 +1491,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitPicture_Egap_Documents_Picture_" data-uid="Egap.Documents.DocumentVisitor.VisitPicture(Egap.Documents.Picture)">
   VisitPicture(Picture)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L240"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A picture.</p>
@@ -1639,7 +1713,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitShapeEnd_Egap_Documents_Shape_" data-uid="Egap.Documents.DocumentVisitor.VisitShapeEnd(Egap.Documents.Shape)">
   VisitShapeEnd(Shape)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L240"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L252"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaving a shape.</p>
@@ -1676,7 +1750,7 @@ cannot overflow the stack.</p>
 
   <h3 id="Egap_Documents_DocumentVisitor_VisitShapeStart_Egap_Documents_Shape_" data-uid="Egap.Documents.DocumentVisitor.VisitShapeStart(Egap.Documents.Shape)">
   VisitShapeStart(Shape)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentVisitor.cs/#L246"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Entering a shape; its text box story follows, if any.</p>

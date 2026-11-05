@@ -128,6 +128,33 @@ static string? AskUser(string prompt) =&gt; null;                    // your pro
 </code></pre>
 <p>A password protects the file, not the document: a document loaded with a password saves without one unless
 <code>DocxSaveOptions.Password</code> is set again.</p>
+<h2 id="editing-restrictions">Editing restrictions</h2>
+<p>Word's <em>Restrict Editing</em> keeps a document read only, or lets readers only add comments, only make tracked changes or
+only fill in forms. <code>Document.Protection</code> holds the restriction: its <code>Kind</code>, whether it <code>IsEnforced</code>, and the hash of the
+password that lifts it. <code>Protect(kind, password)</code> sets one, hashed as Word hashes it (SHA-512 with a random salt and
+100,000 spins), <code>Unprotect()</code> removes it, and <code>Verify(password)</code> says whether a password lifts it. Without a password,
+anyone may switch the restriction off.</p>
+<p>Editable ranges are the exceptions: an <code>EditableRangeStart</code> and an <code>EditableRangeEnd</code> with the same <code>Id</code> mark text that
+stays editable, for everyone or a group (<code>EditorGroup</code>), or for one person (<code>Editor</code>, such as <code>DOMAIN\user</code> or an e-mail
+address). <code>DocumentBuilder.StartEditableRange</code> and <code>EndEditableRange</code> write them.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document form = new();
+DocumentBuilder builder = new(form);
+builder.Writeln(&quot;Terms and conditions, not to be changed.&quot;);
+builder.Write(&quot;Your name: &quot;);
+EditableRangeStart answer = builder.StartEditableRange(EditorGroup.Everyone);
+builder.Write(&quot;(type here)&quot;);
+builder.EndEditableRange(answer);
+form.Protection.Protect(ProtectionKind.ReadOnly, &quot;owner password&quot;);
+form.SaveAsDocx(&quot;form.docx&quot;);
+
+Document loaded = Document.Load(&quot;form.docx&quot;);
+bool canLift = loaded.Protection.Verify(&quot;owner password&quot;);      // true
+</code></pre>
+<p>Egap does not enforce the restriction: code can change any part of a protected document. It reads it, writes it back
+and keeps it through conversion between DOCX and RTF, so that Word enforces it when the file is opened. The hash is read
+from Word's attributes and from ECMA-376's newer ones (<code>algorithmName</code>, <code>hashValue</code>), and written back as it came.</p>
 <h2 id="word-compatibility">Word compatibility</h2>
 <p>Word lays a file out by the rules of the Word version that made it: <code>DocumentSettings.CompatibilityMode</code> says which (15
 for Word 2013 and later, 14 for 2010, 12 for 2007, 11 and below for older files), and the settings part's compatibility
