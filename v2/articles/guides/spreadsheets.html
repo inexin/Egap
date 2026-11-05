@@ -235,6 +235,63 @@ sheet.PageSetup.Footer = &quot;&amp;RPage &amp;P of &amp;N&quot;;
 <p>Excel's print area and print titles are names local to their sheet: <code>_xlnm.Print_Area</code> and <code>_xlnm.Print_Titles</code>.
 <code>sheet.PageSetup</code> holds the rest of what Excel's Page Setup dialog sets: paper, orientation, scale or fit, margins in
 inches, centring, gridlines, headings, page order and the header and footer in Excel's header codes.</p>
+<h2 id="number-formats-and-cell-text">Number formats and cell text</h2>
+<p><code>cell.Text</code> is the value as Excel shows it in the cell, through the cell's number format: <code>1,234.50</code> for 1234.5 with
+<code>#,##0.00</code>, <code>2024-03-15</code> for the date serial 45366 with <code>yyyy-mm-dd</code>, <code>TRUE</code> for a boolean and <code>#DIV/0!</code> for an error. A
+formula shows its last calculated value. The text is not cut to the column's width, as Excel's <code>###</code> is.</p>
+<pre><code class="lang-csharp">using System.Globalization;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Cell cell = book.Worksheets[0][&quot;A1&quot;];
+cell.Value = 1234.5;
+cell.NumberFormat = &quot;#,##0.00;[Red]-#,##0.00&quot;;
+string english = cell.Text;                          // &quot;1,234.50&quot;
+book.Culture = CultureInfo.GetCultureInfo(&quot;de-DE&quot;);
+string german = cell.Text;                           // &quot;1.234,50&quot;
+
+NumberFormatCode code = NumberFormatCode.Parse(&quot;[h]:mm&quot;);
+string elapsed = code.Format(1.5);                   // &quot;36:00&quot;
+</code></pre>
+<p><code>NumberFormatCode</code> reads every part of Excel's format codes: up to four sections (positive, negative, zero, text),
+conditions such as <code>[&gt;=100]</code>, colours (<code>GetColor</code> tells which), digit placeholders <code>0</code>, <code>#</code> and <code>?</code>, thousands separators
+and scaling by 1,000 with trailing commas, percent, scientific notation, fractions such as <code># ?/?</code> and <code># ?/8</code>, dates and
+times with month and day names, AM/PM, elapsed times such as <code>[h]:mm</code>, fractions of a second, text with <code>@</code>, literal text,
+padding with <code>_</code> and locale tags such as <code>[$-414]</code>. Numbers are rounded half away from zero after the 15 significant
+digits Excel keeps, so <code>2.675</code> with <code>0.00</code> shows <code>2.68</code>, as in Excel.</p>
+<p><code>Workbook.Culture</code> gives the decimal and group separators, month and day names and the short date that the built-in
+formats <code>mm-dd-yy</code> and <code>m/d/yy h:mm</code> follow, as Excel's follow the system's. The invariant culture, the default, shows
+them as Excel in English does: <code>3/15/2024</code>. A locale tag in a code overrides the culture for that section. Dates follow
+Excel's 1900 date system, 29 February 1900 included, or the 1904 system when <code>book.Date1904</code> is set; a date before the
+system's start or after 9999-12-31 shows as <code>#</code> signs.</p>
+<h2 id="csv-and-tsv">CSV and TSV</h2>
+<p><code>Workbook.LoadCsv</code> reads comma- or tab-separated text (RFC 4180) into a new workbook with one sheet, and
+<code>Worksheet.SaveCsv</code> writes a sheet as text, from A1 to the last used cell. Quoted fields hold separators, doubled quotes
+and line breaks.</p>
+<pre><code class="lang-csharp">using System.Globalization;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.LoadCsv(&quot;prices.csv&quot;);      // separator, types and dates detected
+Worksheet sheet = book.Worksheets[0];
+sheet.SaveCsv(&quot;prices.tsv&quot;);                         // a tab for .tsv
+
+CsvOptions german = new() { Culture = CultureInfo.GetCultureInfo(&quot;de-DE&quot;) };
+Workbook local = Workbook.LoadCsv(&quot;preise.csv&quot;, german);   // 1.234,5 and 15.03.2024
+local.Worksheets[0].SaveCsv(&quot;preise-kopie.csv&quot;, german);   // semicolons, as Excel in German
+</code></pre>
+<p>Reading picks the separator from <code>CsvOptions.Separator</code>, a <code>sep=</code> first line, the <code>.tsv</code> or <code>.tab</code> extension, or
+whichever of comma, semicolon and tab the first line holds most of. It reads UTF-8 unless a byte order mark or
+<code>CsvOptions.Encoding</code> says otherwise. With <code>DetectTypes</code>, the default, fields become numbers (in the options' culture,
+with thousands separators and exponents), percentages, <code>TRUE</code> and <code>FALSE</code>, errors such as <code>#N/A</code>, ISO dates and times,
+the culture's short dates and times of day, each with a number format that shows it as written. A number with a leading
+zero, such as <code>007</code>, stays text, and so does a field that starts with <code>=</code>: reading never makes formulas. A text with more
+rows or fields than a sheet holds, or a field longer than 32,767 characters, throws an <code>InvalidDataException</code>.</p>
+<p>Writing shows each value as its cell does (<code>cell.Text</code>), as Excel saves CSV; set <code>WriteFormattedText</code> to false to write
+numbers in full and dates as serial numbers. It writes UTF-8 with a byte order mark, so Excel reads it as UTF-8, uses the
+culture's list separator unless you name one (a semicolon where the comma is the decimal separator), ends rows with
+<code>\r\n</code> and pads every row to the same number of fields. <code>WriteSeparatorHint</code> adds a <code>sep=</code> line for Excel.</p>
+<p><code>Workbook.Load</code> and <code>Workbook.Save</code> take <code>.csv</code>, <code>.tsv</code> and <code>.tab</code> paths too, with <code>WorkbookLoadOptions.Csv</code> and
+<code>WorkbookSaveOptions.Csv</code> for the options; saving writes the first visible sheet.</p>
 <h2 id="memory">Memory</h2>
 <p>Sheets store cells in blocks of 32 rows by 32 columns, made only where cells are: a sheet with values in A1 and
 XFD1048576 holds two blocks. A cell takes 16 bytes, and a block makes its rows of 32 cells as cells arrive, so a full block

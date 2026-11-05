@@ -136,6 +136,12 @@ formats table does, however many cells use it.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_LoadCsv_System_String_Egap_Spreadsheets_CsvOptions_">LoadCsv(string, CsvOptions?)</a> reads and <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_System_String_Egap_Spreadsheets_CsvOptions_">SaveCsv(string, CsvOptions?)</a>
+writes comma- and tab-separated text (RFC 4180): the separator, encoding, culture and type detection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.DefinedName.html">DefinedName</a></dt>
       <dd><p>A defined name: a name for a cell, a range, a constant or a formula, such as <code>TaxRate</code> for <code>Sheet1!$B$1</code>. A name
 belongs to the workbook, or to one sheet when it is local to that sheet. Excel's own names start with <code>_xlnm.</code>, such
@@ -151,6 +157,14 @@ as <code>_xlnm.Print_Area</code>.</p>
       <dt><a class="xref" href="Egap.Spreadsheets.MergedCellCollection.html">MergedCellCollection</a></dt>
       <dd><p>A sheet's merged cells: ranges shown as one cell, with the value and style of their top-left cell. Merged ranges do not
 overlap.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.NumberFormatCode.html">NumberFormatCode</a></dt>
+      <dd><p>An Excel number format code, parsed: up to four sections (positive, negative, zero, text) with colours, conditions,
+digit placeholders, thousands separators and scaling, percent, scientific notation, fractions, dates and times, elapsed
+times, text and literal characters, and locale tags such as <code>[$-414]</code>. <a class="xref" href="Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_Format_Egap_Spreadsheets_CellValue_System_Globalization_CultureInfo_System_Boolean_">Format(CellValue, CultureInfo?, bool)</a> shows a value as Excel
+shows it in a cell, for a given culture; <a class="xref" href="Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_Text">Text</a> uses it.</p>
 </dd>
     </dl>
     <dl class="jumplist">

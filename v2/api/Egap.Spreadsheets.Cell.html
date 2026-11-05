@@ -423,6 +423,40 @@ Setting it changes only the number format of the cell's style.</p>
 
 
 
+  <a id="Egap_Spreadsheets_Cell_Text_" data-uid="Egap.Spreadsheets.Cell.Text*"></a>
+
+  <h3 id="Egap_Spreadsheets_Cell_Text" data-uid="Egap.Spreadsheets.Cell.Text">
+  Text
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The value as Excel shows it in the cell, through the cell's number format and the workbook's
+<a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Culture">Culture</a>, and dates in its <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Date1904">Date1904</a> system: <code>1,234.50</code> for 1234.5 with <code>#,##0.00</code>, <code>2024-03-15</code> for a date. A formula
+shows its last calculated value. The text is not cut to the column's width, as Excel's <code>###</code> is.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Text { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_Cell_Value_" data-uid="Egap.Spreadsheets.Cell.Value*"></a>
 
   <h3 id="Egap_Spreadsheets_Cell_Value" data-uid="Egap.Spreadsheets.Cell.Value">
@@ -537,7 +571,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_Clear" data-uid="Egap.Spreadsheets.Cell.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L116"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes the cell's value, formula and style, so it takes no room.</p>
@@ -564,7 +598,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_Equals_Egap_Spreadsheets_Cell_" data-uid="Egap.Spreadsheets.Cell.Equals(Egap.Spreadsheets.Cell)">
   Equals(Cell?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L119"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both handles are for the same cell of the same sheet.</p>
@@ -601,7 +635,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_Equals_System_Object_" data-uid="Egap.Spreadsheets.Cell.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L122"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Determines whether the specified object is equal to the current object.</p>
@@ -640,7 +674,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_GetHashCode" data-uid="Egap.Spreadsheets.Cell.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L125"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Serves as the default hash function.</p>
@@ -673,7 +707,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_SetNumber_System_Double_" data-uid="Egap.Spreadsheets.Cell.SetNumber(System.Double)">
   SetNumber(double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets the cell's value to a number; the same as setting <a class="xref" href="Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_Value">Value</a>, without building a <a class="xref" href="Egap.Spreadsheets.CellValue.html">CellValue</a>.</p>
@@ -711,7 +745,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_ToString" data-uid="Egap.Spreadsheets.Cell.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L127"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L134"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cell's address and value, such as <code>B4: 42</code>.</p>
@@ -743,7 +777,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_UpdateStyle_System_Func_Egap_Spreadsheets_CellStyle_Egap_Spreadsheets_CellStyle__" data-uid="Egap.Spreadsheets.Cell.UpdateStyle(System.Func{Egap.Spreadsheets.CellStyle,Egap.Spreadsheets.CellStyle})">
   UpdateStyle(Func&lt;CellStyle, CellStyle&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L109"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Changes the cell's style with a function of the style it has, such as <code>s =&gt; s with { NumberFormat = &quot;0.00&quot; }</code>.</p>
@@ -779,7 +813,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_op_Equality_Egap_Spreadsheets_Cell_Egap_Spreadsheets_Cell_" data-uid="Egap.Spreadsheets.Cell.op_Equality(Egap.Spreadsheets.Cell,Egap.Spreadsheets.Cell)">
   operator ==(Cell?, Cell?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both handles are for the same cell.</p>
@@ -818,7 +852,7 @@ Setting a value replaces any formula and keeps the cell's style.</p>
 
   <h3 id="Egap_Spreadsheets_Cell_op_Inequality_Egap_Spreadsheets_Cell_Egap_Spreadsheets_Cell_" data-uid="Egap.Spreadsheets.Cell.op_Inequality(Egap.Spreadsheets.Cell,Egap.Spreadsheets.Cell)">
   operator !=(Cell?, Cell?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Cell.cs/#L131"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the handles are for different cells.</p>

@@ -52362,6 +52362,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Cell.Style
   nameWithType: Cell.Style
+- uid: Egap.Spreadsheets.Cell.Text
+  name: Text
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_Text
+  commentId: P:Egap.Spreadsheets.Cell.Text
+  fullName: Egap.Spreadsheets.Cell.Text
+  nameWithType: Cell.Text
+- uid: Egap.Spreadsheets.Cell.Text*
+  name: Text
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_Text_
+  commentId: Overload:Egap.Spreadsheets.Cell.Text
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Cell.Text
+  nameWithType: Cell.Text
 - uid: Egap.Spreadsheets.Cell.ToString
   name: ToString()
   href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_ToString
@@ -54648,6 +54661,116 @@ references:
   commentId: F:Egap.Spreadsheets.CellVerticalTextPosition.Superscript
   fullName: Egap.Spreadsheets.CellVerticalTextPosition.Superscript
   nameWithType: CellVerticalTextPosition.Superscript
+- uid: Egap.Spreadsheets.CsvOptions
+  name: CsvOptions
+  href: api/Egap.Spreadsheets.CsvOptions.html
+  commentId: T:Egap.Spreadsheets.CsvOptions
+  fullName: Egap.Spreadsheets.CsvOptions
+  nameWithType: CsvOptions
+- uid: Egap.Spreadsheets.CsvOptions.Culture
+  name: Culture
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_Culture
+  commentId: P:Egap.Spreadsheets.CsvOptions.Culture
+  fullName: Egap.Spreadsheets.CsvOptions.Culture
+  nameWithType: CsvOptions.Culture
+- uid: Egap.Spreadsheets.CsvOptions.Culture*
+  name: Culture
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_Culture_
+  commentId: Overload:Egap.Spreadsheets.CsvOptions.Culture
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CsvOptions.Culture
+  nameWithType: CsvOptions.Culture
+- uid: Egap.Spreadsheets.CsvOptions.DetectTypes
+  name: DetectTypes
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_DetectTypes
+  commentId: P:Egap.Spreadsheets.CsvOptions.DetectTypes
+  fullName: Egap.Spreadsheets.CsvOptions.DetectTypes
+  nameWithType: CsvOptions.DetectTypes
+- uid: Egap.Spreadsheets.CsvOptions.DetectTypes*
+  name: DetectTypes
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_DetectTypes_
+  commentId: Overload:Egap.Spreadsheets.CsvOptions.DetectTypes
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CsvOptions.DetectTypes
+  nameWithType: CsvOptions.DetectTypes
+- uid: Egap.Spreadsheets.CsvOptions.Encoding
+  name: Encoding
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_Encoding
+  commentId: P:Egap.Spreadsheets.CsvOptions.Encoding
+  fullName: Egap.Spreadsheets.CsvOptions.Encoding
+  nameWithType: CsvOptions.Encoding
+- uid: Egap.Spreadsheets.CsvOptions.Encoding*
+  name: Encoding
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_Encoding_
+  commentId: Overload:Egap.Spreadsheets.CsvOptions.Encoding
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CsvOptions.Encoding
+  nameWithType: CsvOptions.Encoding
+- uid: Egap.Spreadsheets.CsvOptions.NewLine
+  name: NewLine
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_NewLine
+  commentId: P:Egap.Spreadsheets.CsvOptions.NewLine
+  fullName: Egap.Spreadsheets.CsvOptions.NewLine
+  nameWithType: CsvOptions.NewLine
+- uid: Egap.Spreadsheets.CsvOptions.NewLine*
+  name: NewLine
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_NewLine_
+  commentId: Overload:Egap.Spreadsheets.CsvOptions.NewLine
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CsvOptions.NewLine
+  nameWithType: CsvOptions.NewLine
+- uid: Egap.Spreadsheets.CsvOptions.Separator
+  name: Separator
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_Separator
+  commentId: P:Egap.Spreadsheets.CsvOptions.Separator
+  fullName: Egap.Spreadsheets.CsvOptions.Separator
+  nameWithType: CsvOptions.Separator
+- uid: Egap.Spreadsheets.CsvOptions.Separator*
+  name: Separator
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_Separator_
+  commentId: Overload:Egap.Spreadsheets.CsvOptions.Separator
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CsvOptions.Separator
+  nameWithType: CsvOptions.Separator
+- uid: Egap.Spreadsheets.CsvOptions.SheetName
+  name: SheetName
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_SheetName
+  commentId: P:Egap.Spreadsheets.CsvOptions.SheetName
+  fullName: Egap.Spreadsheets.CsvOptions.SheetName
+  nameWithType: CsvOptions.SheetName
+- uid: Egap.Spreadsheets.CsvOptions.SheetName*
+  name: SheetName
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_SheetName_
+  commentId: Overload:Egap.Spreadsheets.CsvOptions.SheetName
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CsvOptions.SheetName
+  nameWithType: CsvOptions.SheetName
+- uid: Egap.Spreadsheets.CsvOptions.WriteFormattedText
+  name: WriteFormattedText
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_WriteFormattedText
+  commentId: P:Egap.Spreadsheets.CsvOptions.WriteFormattedText
+  fullName: Egap.Spreadsheets.CsvOptions.WriteFormattedText
+  nameWithType: CsvOptions.WriteFormattedText
+- uid: Egap.Spreadsheets.CsvOptions.WriteFormattedText*
+  name: WriteFormattedText
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_WriteFormattedText_
+  commentId: Overload:Egap.Spreadsheets.CsvOptions.WriteFormattedText
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CsvOptions.WriteFormattedText
+  nameWithType: CsvOptions.WriteFormattedText
+- uid: Egap.Spreadsheets.CsvOptions.WriteSeparatorHint
+  name: WriteSeparatorHint
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_WriteSeparatorHint
+  commentId: P:Egap.Spreadsheets.CsvOptions.WriteSeparatorHint
+  fullName: Egap.Spreadsheets.CsvOptions.WriteSeparatorHint
+  nameWithType: CsvOptions.WriteSeparatorHint
+- uid: Egap.Spreadsheets.CsvOptions.WriteSeparatorHint*
+  name: WriteSeparatorHint
+  href: api/Egap.Spreadsheets.CsvOptions.html#Egap_Spreadsheets_CsvOptions_WriteSeparatorHint_
+  commentId: Overload:Egap.Spreadsheets.CsvOptions.WriteSeparatorHint
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CsvOptions.WriteSeparatorHint
+  nameWithType: CsvOptions.WriteSeparatorHint
 - uid: Egap.Spreadsheets.DefinedName
   name: DefinedName
   href: api/Egap.Spreadsheets.DefinedName.html
@@ -54912,6 +55035,109 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.MergedCellCollection.Remove
   nameWithType: MergedCellCollection.Remove
+- uid: Egap.Spreadsheets.NumberFormatCode
+  name: NumberFormatCode
+  href: api/Egap.Spreadsheets.NumberFormatCode.html
+  commentId: T:Egap.Spreadsheets.NumberFormatCode
+  fullName: Egap.Spreadsheets.NumberFormatCode
+  nameWithType: NumberFormatCode
+- uid: Egap.Spreadsheets.NumberFormatCode.Code
+  name: Code
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_Code
+  commentId: P:Egap.Spreadsheets.NumberFormatCode.Code
+  fullName: Egap.Spreadsheets.NumberFormatCode.Code
+  nameWithType: NumberFormatCode.Code
+- uid: Egap.Spreadsheets.NumberFormatCode.Code*
+  name: Code
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_Code_
+  commentId: Overload:Egap.Spreadsheets.NumberFormatCode.Code
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.NumberFormatCode.Code
+  nameWithType: NumberFormatCode.Code
+- uid: Egap.Spreadsheets.NumberFormatCode.Format(Egap.Spreadsheets.CellValue,System.Globalization.CultureInfo,System.Boolean)
+  name: Format(CellValue, CultureInfo?, bool)
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_Format_Egap_Spreadsheets_CellValue_System_Globalization_CultureInfo_System_Boolean_
+  commentId: M:Egap.Spreadsheets.NumberFormatCode.Format(Egap.Spreadsheets.CellValue,System.Globalization.CultureInfo,System.Boolean)
+  name.vb: Format(CellValue, CultureInfo, Boolean)
+  fullName: Egap.Spreadsheets.NumberFormatCode.Format(Egap.Spreadsheets.CellValue, System.Globalization.CultureInfo?, bool)
+  fullName.vb: Egap.Spreadsheets.NumberFormatCode.Format(Egap.Spreadsheets.CellValue, System.Globalization.CultureInfo, Boolean)
+  nameWithType: NumberFormatCode.Format(CellValue, CultureInfo?, bool)
+  nameWithType.vb: NumberFormatCode.Format(CellValue, CultureInfo, Boolean)
+- uid: Egap.Spreadsheets.NumberFormatCode.Format*
+  name: Format
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_Format_
+  commentId: Overload:Egap.Spreadsheets.NumberFormatCode.Format
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.NumberFormatCode.Format
+  nameWithType: NumberFormatCode.Format
+- uid: Egap.Spreadsheets.NumberFormatCode.General
+  name: General
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_General
+  commentId: P:Egap.Spreadsheets.NumberFormatCode.General
+  fullName: Egap.Spreadsheets.NumberFormatCode.General
+  nameWithType: NumberFormatCode.General
+- uid: Egap.Spreadsheets.NumberFormatCode.General*
+  name: General
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_General_
+  commentId: Overload:Egap.Spreadsheets.NumberFormatCode.General
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.NumberFormatCode.General
+  nameWithType: NumberFormatCode.General
+- uid: Egap.Spreadsheets.NumberFormatCode.GetColor(Egap.Spreadsheets.CellValue)
+  name: GetColor(CellValue)
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_GetColor_Egap_Spreadsheets_CellValue_
+  commentId: M:Egap.Spreadsheets.NumberFormatCode.GetColor(Egap.Spreadsheets.CellValue)
+  fullName: Egap.Spreadsheets.NumberFormatCode.GetColor(Egap.Spreadsheets.CellValue)
+  nameWithType: NumberFormatCode.GetColor(CellValue)
+- uid: Egap.Spreadsheets.NumberFormatCode.GetColor*
+  name: GetColor
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_GetColor_
+  commentId: Overload:Egap.Spreadsheets.NumberFormatCode.GetColor
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.NumberFormatCode.GetColor
+  nameWithType: NumberFormatCode.GetColor
+- uid: Egap.Spreadsheets.NumberFormatCode.IsDateTime
+  name: IsDateTime
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_IsDateTime
+  commentId: P:Egap.Spreadsheets.NumberFormatCode.IsDateTime
+  fullName: Egap.Spreadsheets.NumberFormatCode.IsDateTime
+  nameWithType: NumberFormatCode.IsDateTime
+- uid: Egap.Spreadsheets.NumberFormatCode.IsDateTime*
+  name: IsDateTime
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_IsDateTime_
+  commentId: Overload:Egap.Spreadsheets.NumberFormatCode.IsDateTime
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.NumberFormatCode.IsDateTime
+  nameWithType: NumberFormatCode.IsDateTime
+- uid: Egap.Spreadsheets.NumberFormatCode.Parse(System.String)
+  name: Parse(string)
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_Parse_System_String_
+  commentId: M:Egap.Spreadsheets.NumberFormatCode.Parse(System.String)
+  name.vb: Parse(String)
+  fullName: Egap.Spreadsheets.NumberFormatCode.Parse(string)
+  fullName.vb: Egap.Spreadsheets.NumberFormatCode.Parse(String)
+  nameWithType: NumberFormatCode.Parse(string)
+  nameWithType.vb: NumberFormatCode.Parse(String)
+- uid: Egap.Spreadsheets.NumberFormatCode.Parse*
+  name: Parse
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_Parse_
+  commentId: Overload:Egap.Spreadsheets.NumberFormatCode.Parse
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.NumberFormatCode.Parse
+  nameWithType: NumberFormatCode.Parse
+- uid: Egap.Spreadsheets.NumberFormatCode.ToString
+  name: ToString()
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_ToString
+  commentId: M:Egap.Spreadsheets.NumberFormatCode.ToString
+  fullName: Egap.Spreadsheets.NumberFormatCode.ToString()
+  nameWithType: NumberFormatCode.ToString()
+- uid: Egap.Spreadsheets.NumberFormatCode.ToString*
+  name: ToString
+  href: api/Egap.Spreadsheets.NumberFormatCode.html#Egap_Spreadsheets_NumberFormatCode_ToString_
+  commentId: Overload:Egap.Spreadsheets.NumberFormatCode.ToString
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.NumberFormatCode.ToString
+  nameWithType: NumberFormatCode.ToString
 - uid: Egap.Spreadsheets.PageSetup
   name: PageSetup
   href: api/Egap.Spreadsheets.PageSetup.html
@@ -55910,6 +56136,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.CreateEmpty
   nameWithType: Workbook.CreateEmpty
+- uid: Egap.Spreadsheets.Workbook.Culture
+  name: Culture
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Culture
+  commentId: P:Egap.Spreadsheets.Workbook.Culture
+  fullName: Egap.Spreadsheets.Workbook.Culture
+  nameWithType: Workbook.Culture
+- uid: Egap.Spreadsheets.Workbook.Culture*
+  name: Culture
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Culture_
+  commentId: Overload:Egap.Spreadsheets.Workbook.Culture
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Workbook.Culture
+  nameWithType: Workbook.Culture
 - uid: Egap.Spreadsheets.Workbook.Date1904
   name: Date1904
   href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Date1904
@@ -55961,6 +56200,31 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.Load
   nameWithType: Workbook.Load
+- uid: Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
+  name: LoadCsv(Stream, CsvOptions?)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_LoadCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_
+  commentId: M:Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
+  name.vb: LoadCsv(Stream, CsvOptions)
+  fullName: Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions?)
+  fullName.vb: Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions)
+  nameWithType: Workbook.LoadCsv(Stream, CsvOptions?)
+  nameWithType.vb: Workbook.LoadCsv(Stream, CsvOptions)
+- uid: Egap.Spreadsheets.Workbook.LoadCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name: LoadCsv(string, CsvOptions?)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_LoadCsv_System_String_Egap_Spreadsheets_CsvOptions_
+  commentId: M:Egap.Spreadsheets.Workbook.LoadCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name.vb: LoadCsv(String, CsvOptions)
+  fullName: Egap.Spreadsheets.Workbook.LoadCsv(string, Egap.Spreadsheets.CsvOptions?)
+  fullName.vb: Egap.Spreadsheets.Workbook.LoadCsv(String, Egap.Spreadsheets.CsvOptions)
+  nameWithType: Workbook.LoadCsv(string, CsvOptions?)
+  nameWithType.vb: Workbook.LoadCsv(String, CsvOptions)
+- uid: Egap.Spreadsheets.Workbook.LoadCsv*
+  name: LoadCsv
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_LoadCsv_
+  commentId: Overload:Egap.Spreadsheets.Workbook.LoadCsv
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Workbook.LoadCsv
+  nameWithType: Workbook.LoadCsv
 - uid: Egap.Spreadsheets.Workbook.Names
   name: Names
   href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Names
@@ -56048,6 +56312,19 @@ references:
   commentId: T:Egap.Spreadsheets.WorkbookLoadOptions
   fullName: Egap.Spreadsheets.WorkbookLoadOptions
   nameWithType: WorkbookLoadOptions
+- uid: Egap.Spreadsheets.WorkbookLoadOptions.Csv
+  name: Csv
+  href: api/Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Csv
+  commentId: P:Egap.Spreadsheets.WorkbookLoadOptions.Csv
+  fullName: Egap.Spreadsheets.WorkbookLoadOptions.Csv
+  nameWithType: WorkbookLoadOptions.Csv
+- uid: Egap.Spreadsheets.WorkbookLoadOptions.Csv*
+  name: Csv
+  href: api/Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Csv_
+  commentId: Overload:Egap.Spreadsheets.WorkbookLoadOptions.Csv
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookLoadOptions.Csv
+  nameWithType: WorkbookLoadOptions.Csv
 - uid: Egap.Spreadsheets.WorkbookLoadOptions.Limits
   name: Limits
   href: api/Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Limits
@@ -56067,6 +56344,19 @@ references:
   commentId: T:Egap.Spreadsheets.WorkbookSaveOptions
   fullName: Egap.Spreadsheets.WorkbookSaveOptions
   nameWithType: WorkbookSaveOptions
+- uid: Egap.Spreadsheets.WorkbookSaveOptions.Csv
+  name: Csv
+  href: api/Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Csv
+  commentId: P:Egap.Spreadsheets.WorkbookSaveOptions.Csv
+  fullName: Egap.Spreadsheets.WorkbookSaveOptions.Csv
+  nameWithType: WorkbookSaveOptions.Csv
+- uid: Egap.Spreadsheets.WorkbookSaveOptions.Csv*
+  name: Csv
+  href: api/Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Csv_
+  commentId: Overload:Egap.Spreadsheets.WorkbookSaveOptions.Csv
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookSaveOptions.Csv
+  nameWithType: WorkbookSaveOptions.Csv
 - uid: Egap.Spreadsheets.WorkbookSaveOptions.Format
   name: Format
   href: api/Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Format
@@ -56271,6 +56561,31 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Rows
   nameWithType: Worksheet.Rows
+- uid: Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
+  name: SaveCsv(Stream, CsvOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
+  name.vb: SaveCsv(Stream, CsvOptions)
+  fullName: Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions)
+  nameWithType: Worksheet.SaveCsv(Stream, CsvOptions?)
+  nameWithType.vb: Worksheet.SaveCsv(Stream, CsvOptions)
+- uid: Egap.Spreadsheets.Worksheet.SaveCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name: SaveCsv(string, CsvOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_System_String_Egap_Spreadsheets_CsvOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.SaveCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name.vb: SaveCsv(String, CsvOptions)
+  fullName: Egap.Spreadsheets.Worksheet.SaveCsv(string, Egap.Spreadsheets.CsvOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.SaveCsv(String, Egap.Spreadsheets.CsvOptions)
+  nameWithType: Worksheet.SaveCsv(string, CsvOptions?)
+  nameWithType.vb: Worksheet.SaveCsv(String, CsvOptions)
+- uid: Egap.Spreadsheets.Worksheet.SaveCsv*
+  name: SaveCsv
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.SaveCsv
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.SaveCsv
+  nameWithType: Worksheet.SaveCsv
 - uid: Egap.Spreadsheets.Worksheet.TabColor
   name: TabColor
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_TabColor
