@@ -271,6 +271,22 @@ public sealed class DocReaderTests
     }
 
     [Fact]
+    public void ACommentReferencedFromItsOwnTextIsLeftOut()
+    {
+        // A damaged file's only reference to the comment is inside the comment's text, which once put the comment inside itself.
+        DocBuilder builder = new();
+        builder.Run("Look here").Paragraph();
+        builder.Story = DocStory.Comments;
+        builder.Run("\u0005Check \u0005 this.").Paragraph();
+        builder.Table(4, Plc([17, 99], new byte[30])).Table(5, Plc([0, 16]));
+
+        Document document = Read(builder);
+
+        Assert.Empty(document.Descendants<Comment>());
+        Assert.Equal("Look here", Paragraphs(document)[0].GetText().TrimEnd());
+    }
+
+    [Fact]
     public void BookmarksAndFieldsMarkTheText()
     {
         DocBuilder builder = new();

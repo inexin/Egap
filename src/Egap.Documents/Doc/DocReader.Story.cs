@@ -45,6 +45,8 @@ internal sealed partial class DocReader
     private readonly Dictionary<int, (bool Locked, bool Dirty)> fieldEnds = [];
     private readonly Dictionary<int, (NoteKind Kind, int Start, int End)> notes = [];
     private readonly Dictionary<int, Comment> comments = [];
+    private readonly HashSet<int> notesRead = [];
+    private readonly HashSet<int> commentsPlaced = [];
 
     private sealed class StoryBuilder(DocReader reader, NodeCollection<Block> blocks, StoryKind kind)
     {
@@ -256,7 +258,8 @@ internal sealed partial class DocReader
                     return;
             }
 
-            if (reader.notes.TryGetValue(cp, out (NoteKind Kind, int Start, int End) note))
+            // Each reference is read once: a damaged file's note may name itself, or another note may name it again.
+            if (reader.notes.TryGetValue(cp, out (NoteKind Kind, int Start, int End) note) && reader.notesRead.Add(cp))
             {
                 Flush();
                 Footnote footnote = new(document, note.Kind);
@@ -274,7 +277,8 @@ internal sealed partial class DocReader
                 return;
             }
 
-            if (c == '\u0005' && reader.comments.TryGetValue(cp, out Comment? comment))
+            // A comment's story holds no comments: a damaged file's comment could otherwise end up inside itself.
+            if (c == '\u0005' && kind != StoryKind.Comment && reader.comments.TryGetValue(cp, out Comment? comment) && reader.commentsPlaced.Add(cp))
             {
                 Flush();
                 Add(comment);

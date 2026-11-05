@@ -144,10 +144,13 @@ internal sealed partial class DocReader
     {
         int count = PlcCount(references, 2);
         int textCount = texts.Length >= 8 ? (texts.Length / 4) - 1 : 0;
+        // A damaged PLC's CPs may go back; each text starts no earlier than the one before ends, so no text is read twice.
+        int floor = 0;
         for (int i = 0; i < count && i < textCount && notes.Count < limits.MaxEntries; i++)
         {
-            int start = Math.Clamp(PlcCp(texts, i), 0, length);
+            int start = Math.Clamp(PlcCp(texts, i), floor, length);
             int end = Math.Clamp(PlcCp(texts, i + 1), start, length);
+            floor = end;
             notes.TryAdd(PlcCp(references, i), (kind, at + start, at + end));
         }
     }
@@ -169,6 +172,7 @@ internal sealed partial class DocReader
         List<string> owners = Owners(Table(DocTable.GrpXstAtnOwners));
         ReadOnlySpan<byte> texts = Table(DocTable.PlcfandTxt);
         int textCount = texts.Length >= 8 ? (texts.Length / 4) - 1 : 0;
+        int textFloor = 0;
         Dictionary<int, (int Start, int End)> ranges = fib.IsWord6 ? [] : CommentRanges();
         ReadOnlySpan<byte> extra = Table(DocTable.AtrdExtra);
         if (extra.Length != 18 * count)
@@ -223,8 +227,10 @@ internal sealed partial class DocReader
 
             if (i < textCount)
             {
-                int start = Math.Clamp(PlcCp(texts, i), 0, fib.CcpAtn);
+                // As for notes: a damaged PLC's texts may overlap, and each is read from where the one before ended.
+                int start = Math.Clamp(PlcCp(texts, i), textFloor, fib.CcpAtn);
                 int end = Math.Clamp(PlcCp(texts, i + 1), start, fib.CcpAtn);
+                textFloor = end;
                 pendingComments.Add((comment, CommentBase + start, CommentBase + end));
             }
         }
@@ -321,7 +327,8 @@ internal sealed partial class DocReader
         int[] cps = new int[count];
         for (int i = 0; i < count; i++)
         {
-            cps[i] = Math.Clamp(PlcCp(plc, i), 0, fib.CcpHdd);
+            // Kept ascending, so that no story of a damaged PLC overlaps another.
+            cps[i] = Math.Clamp(PlcCp(plc, i), i > 0 ? cps[i - 1] : 0, fib.CcpHdd);
         }
 
         if (fib.IsWord6 && count > 0)
