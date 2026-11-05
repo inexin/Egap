@@ -1,5 +1,7 @@
 using System.Globalization;
 
+using Egap.Documents.Word;
+
 namespace Egap.Documents.Rtf;
 
 /// <summary>
@@ -131,7 +133,7 @@ internal sealed partial class RtfReader
                                 comment.Parent = value;
                                 break;
                             default:
-                                comment.Date = long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long dttm) ? DateOf((int)dttm) : null;
+                                comment.Date = long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long dttm) ? WordProperties.Date((int)dttm) : null;
                                 break;
                         }
                     }
@@ -494,7 +496,7 @@ internal sealed partial class RtfReader
                         "pnordt" => pn with { Style = NumberStyle.OrdinalText },
                         "pnstart" when has => pn with { Start = Math.Max(0, p) },
                         "pnf" when has => pn with { Font = p },
-                        "pnindent" when has => pn with { Indent = Twips(p) },
+                        "pnindent" when has => pn with { Indent = WordProperties.Twips(p) },
                         _ => pn,
                     };
                     break;
@@ -557,12 +559,12 @@ internal sealed partial class RtfReader
     {
         if (current.Deleted is { } deleted)
         {
-            return new Revision(RevisionKind.Deletion, Author(deleted.Author), DateOf(deleted.Date));
+            return new Revision(RevisionKind.Deletion, Author(deleted.Author), WordProperties.Date(deleted.Date));
         }
 
         if (current.Inserted is { } inserted)
         {
-            return new Revision(RevisionKind.Insertion, Author(inserted.Author), DateOf(inserted.Date));
+            return new Revision(RevisionKind.Insertion, Author(inserted.Author), WordProperties.Date(inserted.Date));
         }
 
         return null;
