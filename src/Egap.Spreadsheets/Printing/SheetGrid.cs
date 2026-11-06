@@ -12,6 +12,7 @@ internal sealed class SheetGrid
     private readonly Worksheet sheet;
     private readonly int[] columns;
     private readonly int defaultRow;
+    private readonly Dictionary<int, int>? fittedRows;
     private int[]? specialRows;
     private readonly double rowDotsPerPixel;
 
@@ -48,6 +49,44 @@ internal sealed class SheetGrid
         {
             defaultRow = (int)((pixels * rowDotsPerPixel) + 0.2);
         }
+
+        fittedRows = row is { } usual ? FittedRows(sheet, usual.Pixels) : null;
+    }
+
+    /// <summary>
+    /// The rows with no height in the file that hold a larger font than the normal one, in dots: Excel fits such a row as it
+    /// opens the file. Null when no style has such a font, as the file's own rows mostly say their height.
+    /// </summary>
+    private Dictionary<int, int>? FittedRows(Worksheet sheet, int usual)
+    {
+        var styles = sheet.Workbook.Styles;
+        int[] pixels = new int[styles.Count];
+        bool any = false;
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            CellFont font = styles[i].Font;
+            pixels[i] = PrintedRows.Find(font.Name, font.Size) is { } row ? row.Pixels : 0;
+            any |= pixels[i] > usual;
+        }
+
+        if (!any || sheet.Store.Bounds() is not { } bounds)
+        {
+            return null;
+        }
+
+        Dictionary<int, int> rows = [];
+        foreach ((int row, int column) in sheet.Store.Occupied(bounds))
+        {
+            int style = sheet.Store.Get(row, column).Style;
+            if (style < pixels.Length && pixels[style] > usual
+                && (!sheet.RowRecords.TryGetValue(row, out RowRecord? record) || (double.IsNaN(record.Height) && double.IsNaN(record.FittedHeight))))
+            {
+                int dots = Math.Max(defaultRow, (int)((pixels[style] * rowDotsPerPixel) + 0.2));
+                rows[row] = rows.TryGetValue(row, out int known) ? Math.Max(known, dots) : dots;
+            }
+        }
+
+        return rows;
     }
 
     /// <summary>
@@ -94,6 +133,11 @@ internal sealed class SheetGrid
     /// <summary>The height of row <paramref name="row"/> in points; zero when hidden.</summary>
     public double Row(int row)
     {
+        if (fittedRows is not null && fittedRows.TryGetValue(row, out int fitted) && !(sheet.RowRecords.TryGetValue(row, out RowRecord? own) && own.Hidden))
+        {
+            return Points(fitted);
+        }
+
         if (!sheet.RowRecords.TryGetValue(row, out RowRecord? record))
         {
             return Points(defaultRow);
@@ -157,7 +201,7 @@ internal sealed class SheetGrid
         }
 
         // A long run: the default height times the rows, corrected for the rows that have their own.
-        specialRows ??= [.. sheet.RowRecords.Keys.Order()];
+        specialRows ??= [.. sheet.RowRecords.Keys.Union(fittedRows?.Keys ?? Enumerable.Empty<int>()).Order()];
         double row = Points(defaultRow);
         double total = (last - first + 1) * row;
         int start = Array.BinarySearch(specialRows, first);

@@ -345,6 +345,20 @@ public sealed class PrintTests
     }
 
     [Fact]
+    public void ARowWithNoHeightFitsALargerFont()
+    {
+        Worksheet sheet = Grid(3, 1);
+        sheet[1, 0].Style = CellStyle.Default with { Font = CellStyle.Default.Font with { Size = 14 } };
+        sheet.Rows[2].Height = 10;
+        sheet[2, 0].Style = sheet[1, 0].Style;
+
+        SheetGrid grid = new(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable));
+        Assert.True(grid.Row(1) > grid.Row(0));
+        Assert.True(grid.Row(2) < grid.Row(0));
+        Assert.Equal(grid.Row(0) + grid.Row(1) + grid.Row(2), grid.Rows(0, 2), 6);
+    }
+
+    [Fact]
     public void TextRunsOnOntoTheNextPage()
     {
         Worksheet sheet = Grid(1, 1);
