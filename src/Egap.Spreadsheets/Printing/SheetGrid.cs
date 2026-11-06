@@ -130,6 +130,9 @@ internal sealed class SheetGrid
     /// <summary>The width of column <paramref name="column"/> in points; zero when hidden.</summary>
     public double Column(int column) => Points(columns[column]);
 
+    /// <summary>The height of every row in points when no row has its own, as on most sheets made by a program; otherwise -1.</summary>
+    public double EveryRow => fittedRows is null && sheet.RowRecords.Count == 0 ? Points(defaultRow) : -1;
+
     /// <summary>The height of row <paramref name="row"/> in points; zero when hidden.</summary>
     public double Row(int row)
     {

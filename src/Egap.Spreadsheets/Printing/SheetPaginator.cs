@@ -5,7 +5,17 @@ using Egap.Spreadsheets.Storage;
 namespace Egap.Spreadsheets.Printing;
 
 /// <summary>A run of rows or columns that prints on one page, first to last.</summary>
-internal readonly record struct Band(int First, int Last, double Offset = 0, double Size = 0);
+internal readonly record struct Band(int First, int Last, WidePart? Part = null)
+{
+    /// <summary>How much of the first column earlier pages hold.</summary>
+    public double Offset => Part?.Offset ?? 0;
+
+    /// <summary>The width the band takes when it holds part of a column; 0 otherwise.</summary>
+    public double Size => Part?.Size ?? 0;
+}
+
+/// <summary>The part of a column wider than the page that a band of columns starts with.</summary>
+internal sealed record WidePart(double Offset, double Size);
 
 /// <summary>What one page of a sheet prints: a band of rows by a band of columns of one print range, and the titles with them.</summary>
 internal sealed record PagePlan(RangeAddress Area, Band Rows, Band Columns, bool TitleRows, bool TitleColumns);
@@ -150,6 +160,11 @@ internal sealed class SheetPaginator
         // cells that hold text matter. Each row's entry is its last cell's column plus one, 0 when a number ends the row and there
         // is nothing to measure, and -1 until found.
         int reach = used.Last.Column;
+        if (sheet.Store.OnlyNumbers(used.First.Row, used.Last.Row, reach))
+        {
+            return reach;
+        }
+
         int rows = used.Last.Row - used.First.Row + 1;
         int[]? lastInRow = null;
         int missing = 0;
@@ -400,6 +415,7 @@ internal sealed class SheetPaginator
                 count--;
             }
 
+            pages.EnsureCapacity(pages.Count + count);
             for (int page = 0; page < count; page++)
             {
                 pages.Add(Plan(area, RowOf(page), ColumnOf(page)));
@@ -480,7 +496,7 @@ internal sealed class SheetPaginator
 
     private List<Band> RowBands(RangeAddress area, double scale, bool useBreaks) =>
         Bands(area.First.Row, area.Last.Row, ((PrintableHeight - PageBottomSlack) / scale) - HeadingHeight, Grid.Row, TitleRowsHeight,
-            useBreaks ? Sheet.PageSetup.RowBreaks : null);
+            useBreaks ? Sheet.PageSetup.RowBreaks : null, every: Grid.EveryRow);
 
     private List<Band> ColumnBands(RangeAddress area, double scale, bool useBreaks, double slack = 0) =>
         Bands(area.First.Column, area.Last.Column, ((PrintableWidth - slack) / scale) - HeadingWidth, Grid.Column, TitleColumnsWidth,
@@ -490,7 +506,7 @@ internal sealed class SheetPaginator
     /// The runs of <paramref name="first"/> to <paramref name="last"/> that fit <paramref name="available"/> points each, less
     /// the titles a run starting there repeats; each run holds at least one row or column, and a manual break starts a new one.
     /// </summary>
-    private static List<Band> Bands(int first, int last, double available, Func<int, double> size, Func<int, double> titles, PageBreakCollection? breaks, bool splitWide = false)
+    private static List<Band> Bands(int first, int last, double available, Func<int, double> size, Func<int, double> titles, PageBreakCollection? breaks, bool splitWide = false, double every = -1)
     {
         List<Band> bands = [];
         int start = first;
@@ -507,7 +523,7 @@ internal sealed class SheetPaginator
                     break;
                 }
 
-                double next = i == start ? size(i) - skip : size(i);
+                double next = every >= 0 ? every : i == start ? size(i) - skip : size(i);
                 if (used > 0 && used + next > room + Epsilon)
                 {
                     break;
@@ -525,13 +541,13 @@ internal sealed class SheetPaginator
             else if (splitWide && i - 1 == start && used > room + Epsilon && room > 0)
             {
                 // A column wider than the page fills it and goes on over: its last part shares a page with the next columns.
-                bands.Add(new Band(start, start, skip, room));
+                bands.Add(new Band(start, start, new WidePart(skip, room)));
                 skip += room;
                 continue;
             }
             else
             {
-                bands.Add(new Band(start, i - 1, skip, skip > 0 ? used : 0));
+                bands.Add(new Band(start, i - 1, skip > 0 ? new WidePart(skip, used) : null));
             }
 
             skip = 0;
