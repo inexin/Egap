@@ -154,7 +154,7 @@ Class SheetView  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_SheetView_FrozenColumns" data-uid="Egap.Spreadsheets.SheetView.FrozenColumns">
   FrozenColumns
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How many columns at the left stay in place while the sheet scrolls; 0 for none.</p>
@@ -192,7 +192,7 @@ Class SheetView  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_SheetView_FrozenRows" data-uid="Egap.Spreadsheets.SheetView.FrozenRows">
   FrozenRows
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L35"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How many rows at the top stay in place while the sheet scrolls; 0 for none.</p>
@@ -230,7 +230,7 @@ Class SheetView  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_SheetView_RightToLeft" data-uid="Egap.Spreadsheets.SheetView.RightToLeft">
   RightToLeft
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L23"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the sheet runs right to left, column A at the right.</p>
@@ -262,7 +262,7 @@ Class SheetView  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_SheetView_Selected" data-uid="Egap.Spreadsheets.SheetView.Selected">
   Selected
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L23"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the sheet's tab is selected.</p>
@@ -271,6 +271,38 @@ Class SheetView  <a class="header-action link-secondary" title="View source" hre
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public bool Selected { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_SheetView_ShowFormulas_" data-uid="Egap.Spreadsheets.SheetView.ShowFormulas*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetView_ShowFormulas" data-uid="Egap.Spreadsheets.SheetView.ShowFormulas">
+  ShowFormulas
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether cells show their formulas rather than their results, and values unformatted, in columns of twice the width; it prints so too.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ShowFormulas { get; set; }</code></pre>
   </div>
 
 
@@ -390,7 +422,7 @@ Class SheetView  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_SheetView_ZoomScale" data-uid="Egap.Spreadsheets.SheetView.ZoomScale">
   ZoomScale
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The zoom in per cent, from 10 to 400; 100 by default.</p>
@@ -432,7 +464,7 @@ Class SheetView  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_SheetView_FreezePanes_Egap_Spreadsheets_CellAddress_" data-uid="Egap.Spreadsheets.SheetView.FreezePanes(Egap.Spreadsheets.CellAddress)">
   FreezePanes(CellAddress)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetView.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Freezes the rows above and the columns left of a cell, as Excel's Freeze Panes does with that cell selected.</p>

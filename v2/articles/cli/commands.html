@@ -172,7 +172,11 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </tr>
 <tr>
 <td><code>--to &lt;format&gt;</code></td>
-<td>The output format when -o does not say: pdf, docx, odt, ott, fodt, fott, rtf, html, md, txt.</td>
+<td>The output format when -o does not say: pdf, docx, odt, ott, fodt, fott, rtf, html, md, txt, xlsx, csv, png, jpg, webp, tif.</td>
+</tr>
+<tr>
+<td><code>--dpi &lt;dpi&gt;</code></td>
+<td>A workbook to images: dots per inch; 150 by default.</td>
 </tr>
 <tr>
 <td><code>--page-size &lt;size&gt;</code></td>
@@ -281,6 +285,96 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 <tr>
 <td><code>--save-password-file &lt;path&gt;</code></td>
 <td>Read the password that encrypts DOCX, ODT and OTT outputs from the first line of this file.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-calc">egap calc</h2>
+<p><code>egap calc &lt;inputs&gt;... [options]</code></p>
+<p>Calculate every formula of workbooks again and save them with the results. Warns of circular references and of cells that show errors.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>XLSX, XLSM, XLTX or XLTM files, globs (*, ?, **), or folders with --recursive.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--output &lt;path&gt;</code>, <code>-o</code></td>
+<td>Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output.</td>
+</tr>
+<tr>
+<td><code>--in-place</code></td>
+<td>Write each output over its input.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="egap-cells">egap cells</h2>
+<p><code>egap cells &lt;inputs&gt;... [options]</code></p>
+<p>Read a range of cells from workbooks, as tab-separated text or JSON. Nothing is written.</p>
+<table>
+<thead>
+<tr>
+<th>Argument or option</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;inputs&gt;</code></td>
+<td>XLSX, XLSM, XLTX, XLTM, CSV or TSV files, globs (*, ?, **), or folders with --recursive.</td>
+</tr>
+<tr>
+<td><code>--recursive</code>, <code>-r</code></td>
+<td>Take every file egap reads in folders given as inputs, at any depth.</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code>, <code>-j</code></td>
+<td>How many files to work on at once; 0 (the default) for one per processor.</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>Stop at the first file that fails.</td>
+</tr>
+<tr>
+<td><code>--range &lt;range&gt;</code>, <code>-r</code></td>
+<td>The cells, such as A1:C10, 'Sheet 2'!A1:C10 or Sheet2; the first visible sheet's used range by default.</td>
+</tr>
+<tr>
+<td><code>--formulas</code></td>
+<td>Also give each cell's formula.</td>
+</tr>
+<tr>
+<td><code>--shown</code></td>
+<td>Give values as the cells show them, formatted, instead of as they are.</td>
+</tr>
+<tr>
+<td><code>--calculate</code></td>
+<td>Calculate every formula first, instead of reading the values the file saved.</td>
+</tr>
+<tr>
+<td><code>--max-cells &lt;count&gt;</code></td>
+<td>The most cells to give for one file; 10000 by default. Whole rows past it are left out, and the JSON says truncated.</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Write JSON (schema 1, docs/schemas/egap-cells-1.json) instead of tab-separated text.</td>
 </tr>
 </tbody>
 </table>

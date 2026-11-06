@@ -136,6 +136,16 @@ egap metadata show report.pdf --xmp --outline
 egap form list application.pdf --json
 egap attach list invoice.pdf
 </code></pre>
+<h2 id="workbooks">Workbooks</h2>
+<pre><code>egap info budget.xlsx
+egap cells budget.xlsx --range &quot;Totals!A1:C10&quot; --json
+egap calc budget.xlsx -o calculated.xlsx
+egap convert budget.xlsx -o budget.pdf
+egap convert budget.xlsx -o pages/{name}-{page}.png --dpi 150
+egap convert budget.xlsx -o budget.csv     # one CSV per visible sheet
+</code></pre>
+<p><code>calc</code> calculates every formula and saves the results, and warns of circular references and of cells that show errors.
+<code>convert</code> prints a workbook with its own page setup. <code>egap mcp</code> has a read-only <code>cells</code> tool that reads a range as JSON.</p>
 <h2 id="converting">Converting</h2>
 <p><code>convert</code> picks the direction from the output's extension. HTML reads its images and style sheets from its own folder
 only, unless <code>--allow-path</code> or <code>--allow-network</code> says otherwise.</p>

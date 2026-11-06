@@ -59356,6 +59356,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetView.Selected
   nameWithType: SheetView.Selected
+- uid: Egap.Spreadsheets.SheetView.ShowFormulas
+  name: ShowFormulas
+  href: api/Egap.Spreadsheets.SheetView.html#Egap_Spreadsheets_SheetView_ShowFormulas
+  commentId: P:Egap.Spreadsheets.SheetView.ShowFormulas
+  fullName: Egap.Spreadsheets.SheetView.ShowFormulas
+  nameWithType: SheetView.ShowFormulas
+- uid: Egap.Spreadsheets.SheetView.ShowFormulas*
+  name: ShowFormulas
+  href: api/Egap.Spreadsheets.SheetView.html#Egap_Spreadsheets_SheetView_ShowFormulas_
+  commentId: Overload:Egap.Spreadsheets.SheetView.ShowFormulas
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetView.ShowFormulas
+  nameWithType: SheetView.ShowFormulas
 - uid: Egap.Spreadsheets.SheetView.ShowGridLines
   name: ShowGridLines
   href: api/Egap.Spreadsheets.SheetView.html#Egap_Spreadsheets_SheetView_ShowGridLines
