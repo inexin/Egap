@@ -213,7 +213,7 @@ internal sealed class SheetPaginator
             // characters.
             string text = value.Text[..Math.Min(value.Text.Length, 1024)].Replace("\r", "", StringComparison.Ordinal).Replace("\n", "", StringComparison.Ordinal);
             ParagraphStyle paragraph = new() { DefaultStyle = grid.Fonts.TextStyle(style.Font, default), Fallback = grid.Fonts.Fallback };
-            double width = Paragraph.Create(text, paragraph).Layout(1e6f).LongestLine + (2 * TextPadding);
+            double width = Paragraph.Create(text, paragraph).Layout(1e6f).LongestLine + TextPadding;
             if (alignment.Horizontal is CellHorizontalAlignment.Center or CellHorizontalAlignment.CenterContinuous)
             {
                 width = (width + grid.Column(column)) / 2;
