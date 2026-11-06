@@ -143,6 +143,18 @@ public sealed class PrintTests
     }
 
     [Fact]
+    public void OnlyCellsThatShowExtendThePrint()
+    {
+        Worksheet sheet = Grid(3, 2);
+        sheet["A300"].Style = CellStyle.Default with { Alignment = sheet["A1"].Style.Alignment with { WrapText = true } };
+        sheet["Z1"].Style = sheet["A300"].Style;
+        Assert.Equal(RangeAddress.Parse("A1:B3"), sheet.Paginate(Portable).Pages.Single().Cells);
+
+        sheet["D5"].Style = CellStyle.Default with { Fill = CellFill.Solid(CellColor.FromTheme(4)) };
+        Assert.Equal(RangeAddress.Parse("A1:D5"), sheet.Paginate(Portable).Pages.Single().Cells);
+    }
+
+    [Fact]
     public void PrintAreasPrintEachRangeOnItsOwnPages()
     {
         Worksheet sheet = Grid(100, 25);

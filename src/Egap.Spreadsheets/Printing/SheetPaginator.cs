@@ -137,32 +137,59 @@ internal sealed class SheetPaginator
 
         StyleTable styles = sheet.Workbook.Styles;
         Dictionary<int, bool> showing = [];
+
+        // Most sheets show something in their last row and last column, and then no other cell can change the answer.
+        RangeAddress lastRow = new(bounds.Last.Row, bounds.First.Column, bounds.Last.Row, bounds.Last.Column);
+        RangeAddress lastColumn = new(bounds.First.Row, bounds.Last.Column, bounds.Last.Row, bounds.Last.Column);
+        if (AnyShows(lastRow) && AnyShows(lastColumn))
+        {
+            return bounds;
+        }
+
         int top = int.MaxValue, left = int.MaxValue, bottom = -1, right = -1;
         foreach ((int row, int column) in sheet.Store.Occupied(bounds))
         {
-            ref readonly CellRecord record = ref sheet.Store.Get(row, column);
-            if (record.Kind == CellKind.Empty)
+            if (Shows(row, column))
             {
-                if (!showing.TryGetValue(record.Style, out bool shows))
-                {
-                    CellStyle style = record.Style < styles.Count ? styles[record.Style] : CellStyle.Default;
-                    shows = style.Fill != CellFill.None || style.Borders != CellBorders.None;
-                    showing[record.Style] = shows;
-                }
-
-                if (!shows)
-                {
-                    continue;
-                }
+                top = Math.Min(top, row);
+                left = Math.Min(left, column);
+                bottom = Math.Max(bottom, row);
+                right = Math.Max(right, column);
             }
-
-            top = Math.Min(top, row);
-            left = Math.Min(left, column);
-            bottom = Math.Max(bottom, row);
-            right = Math.Max(right, column);
         }
 
         return bottom < 0 ? null : new RangeAddress(top, left, bottom, right);
+
+        bool AnyShows(RangeAddress range)
+        {
+            foreach ((int row, int column) in sheet.Store.Occupied(range))
+            {
+                if (Shows(row, column))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        bool Shows(int row, int column)
+        {
+            ref readonly CellRecord record = ref sheet.Store.Get(row, column);
+            if (record.Kind != CellKind.Empty)
+            {
+                return true;
+            }
+
+            if (!showing.TryGetValue(record.Style, out bool shows))
+            {
+                CellStyle style = record.Style < styles.Count ? styles[record.Style] : CellStyle.Default;
+                shows = style.Fill != CellFill.None || style.Borders != CellBorders.None;
+                showing[record.Style] = shows;
+            }
+
+            return shows;
+        }
     }
 
     /// <summary>A whole-row or whole-column print area cut to the cells in use, as Excel prints it.</summary>
