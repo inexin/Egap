@@ -23,6 +23,9 @@ internal sealed class SheetPaginator
     /// <summary>Rows stop this far above the bottom margin, in points: half a point keeps the last row of Excel's PDF export on the next page.</summary>
     private const double PageBottomSlack = 0.5;
 
+    /// <summary>The points of the page's width Excel keeps free when it fits a sheet to pages wide, as its PDFs measure.</summary>
+    private const double FitSlack = 1.2;
+
     /// <summary>The room Excel leaves between a cell's edge and its text, in points.</summary>
     private const double TextPadding = 1.5;
 
@@ -367,7 +370,7 @@ internal sealed class SheetPaginator
             Grid.Scale = scale;
             foreach (RangeAddress area in Areas)
             {
-                if ((wide > 0 && ColumnBands(area, scale, useBreaks: false).Count > wide) || (tall > 0 && RowBands(area, scale, useBreaks: false).Count > tall))
+                if ((wide > 0 && ColumnBands(area, scale, useBreaks: false, FitSlack).Count > wide) || (tall > 0 && RowBands(area, scale, useBreaks: false).Count > tall))
                 {
                     return false;
                 }
@@ -454,8 +457,8 @@ internal sealed class SheetPaginator
         Bands(area.First.Row, area.Last.Row, ((PrintableHeight - PageBottomSlack) / scale) - HeadingHeight, Grid.Row, TitleRowsHeight,
             useBreaks ? Sheet.PageSetup.RowBreaks : null);
 
-    private List<Band> ColumnBands(RangeAddress area, double scale, bool useBreaks) =>
-        Bands(area.First.Column, area.Last.Column, (PrintableWidth / scale) - HeadingWidth, Grid.Column, TitleColumnsWidth,
+    private List<Band> ColumnBands(RangeAddress area, double scale, bool useBreaks, double slack = 0) =>
+        Bands(area.First.Column, area.Last.Column, ((PrintableWidth - slack) / scale) - HeadingWidth, Grid.Column, TitleColumnsWidth,
             useBreaks ? Sheet.PageSetup.ColumnBreaks : null);
 
     /// <summary>
