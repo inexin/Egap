@@ -39,7 +39,7 @@ public static class FunctionRegistry
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(function);
         string key = Key(name);
-        if (FormulaFunctions.IsBuiltIn(key) || key is "IF" or "IFERROR" or "IFNA" or "SINGLE" or "ANCHORARRAY")
+        if (FormulaFunctions.IsBuiltIn(key) || key is "SINGLE" or "ANCHORARRAY")
         {
             throw new ArgumentException($"{key} is a built-in function.", nameof(name));
         }
@@ -65,7 +65,7 @@ public static class FunctionRegistry
     {
         ArgumentNullException.ThrowIfNull(name);
         return FormulaFunctions.TryGet(FormulaCompiler.FunctionName(name), out _)
-            || FormulaCompiler.FunctionName(name) is "IF" or "IFERROR" or "IFNA" or "SINGLE" or "ANCHORARRAY";
+            || FormulaCompiler.FunctionName(name) is "SINGLE" or "ANCHORARRAY";
     }
 
     private static string Key(string name)

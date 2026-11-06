@@ -287,6 +287,8 @@ internal sealed class Calculator
         return found;
     }
 
+    private readonly HashSet<DefinedName> analyzedNames = [];
+
     /// <summary>
     /// Adds what a formula reads: the areas its references, names and structured references stand for, as the evaluator
     /// resolves them at the formula's cell, and the box spanned by a range built with ':'. A volatile function or a spill
@@ -306,8 +308,23 @@ internal sealed class Calculator
                 AnalyzeName(name, context, precedents, ref isVolatile);
                 break;
             case FunctionNode function:
-                isVolatile |= VolatileFunctions.Contains(FormulaCompiler.FunctionName(function.Name));
+                string called = FormulaCompiler.FunctionName(function.Name);
+                isVolatile |= VolatileFunctions.Contains(called);
+                if (!FormulaFunctions.IsBuiltIn(called))
+                {
+                    // A name that stands for a LAMBDA: what its formula reads, this formula reads.
+                    AnalyzeName(new NameNode(null, function.Name), context, precedents, ref isVolatile);
+                }
+
                 foreach (Argument argument in function.Arguments)
+                {
+                    Analyze(argument.Node, context, precedents, ref isVolatile);
+                }
+
+                break;
+            case InvokeNode invoke:
+                Analyze(invoke.Callee, context, precedents, ref isVolatile);
+                foreach (Argument argument in invoke.Arguments)
                 {
                     Analyze(argument.Node, context, precedents, ref isVolatile);
                 }
@@ -357,9 +374,14 @@ internal sealed class Calculator
 
         if (book.Names.TryGet(node.Name, scope, out DefinedName? name) || (prefix?.FirstSheet is null && book.Names.TryGet(node.Name, null, out name)))
         {
-            if (context.ForName(name.Sheet) is { } inner && parsedNames.GetValueOrDefault(name) is { } parsed)
+            // Once for a formula: a LAMBDA in a name may call itself, or names may call each other many times over.
+            if (context.ForName(name.Sheet) is { } inner && parsedNames.GetValueOrDefault(name) is { } parsed && analyzedNames.Add(name))
             {
                 Analyze(parsed.Root, inner, precedents, ref isVolatile);
+                if (context.NameDepth == 0)
+                {
+                    analyzedNames.Clear();
+                }
             }
 
             return;

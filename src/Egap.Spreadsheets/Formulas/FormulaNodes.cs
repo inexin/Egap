@@ -159,6 +159,14 @@ internal sealed class StructuredNode(string text, string? table, TableItems item
     public string? LastColumn { get; } = lastColumn;
 }
 
+/// <summary>A call of what an expression gives, as in <c>LAMBDA(x,x+1)(2)</c>.</summary>
+internal sealed class InvokeNode(FormulaNode callee, Argument[] arguments) : FormulaNode
+{
+    public FormulaNode Callee { get; } = callee;
+
+    public Argument[] Arguments { get; } = arguments;
+}
+
 /// <summary>An expression and the white space written after it, before the next comma or the closing parenthesis.</summary>
 internal readonly record struct Argument(FormulaNode Node, string Trail);
 

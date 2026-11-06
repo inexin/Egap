@@ -10,12 +10,16 @@ spills, as in a cell saved without dynamic arrays and as Worksheet.Evaluate work
 header with Excel's version, build, locale, the decimal and thousands separators and the currency format it uses, then one line per formula:
 index, kind (number, text, boolean, error, blank or invalid), value, formula.
 
+With -Dynamic the formulas go in as they are typed (Range.Formula2), so ranges stay whole and arrays spill. A line
+"@name NAME =formula" defines a name, for the sets that need one.
+
 Needs Excel on the PC. Run it as:
   powershell -NoProfile -ExecutionPolicy Bypass -File tools/excel-function-oracle.ps1 <cases.txt> <out.tsv>
 #>
 param(
     [Parameter(Mandatory = $true)][string]$Cases,
-    [Parameter(Mandatory = $true)][string]$Output
+    [Parameter(Mandatory = $true)][string]$Output,
+    [switch]$Dynamic
 )
 
 $ErrorActionPreference = 'Stop'
@@ -27,11 +31,16 @@ $errorFormulas = @{ '#NULL!' = '=A1 B1'; '#DIV/0!' = '=1/0'; '#VALUE!' = '="a"+1
 $invariant = [System.Globalization.CultureInfo]::InvariantCulture
 
 $inputs = @()
+$names = @()
 $formulas = @()
 foreach ($line in [System.IO.File]::ReadAllLines((Resolve-Path $Cases))) {
     $text = $line.Trim()
     if ($text.Length -eq 0 -or $text.StartsWith('#')) { continue }
-    if ($text.StartsWith('@')) {
+    if ($text.StartsWith('@name ')) {
+        $space = $text.IndexOf(' ', 6)
+        $names += , @($text.Substring(6, $space - 6), $text.Substring($space + 1))
+    }
+    elseif ($text.StartsWith('@')) {
         $space = $text.IndexOf(' ')
         $inputs += , @($text.Substring(1, $space - 1), $text.Substring($space + 1))
     }
@@ -63,9 +72,18 @@ try {
         else { $cell.Value2 = [double]::Parse($value, $invariant) }
     }
 
+    # Names.Add reads the formula with the separators of the PC's language.
+    $separator = $excel.International(5)
+    foreach ($pair in $names) {
+        [void]$book.Names.Add($pair[0], $pair[1].Replace(',', $separator))
+    }
+
     $invalid = @{}
     for ($i = 0; $i -lt $formulas.Count; $i++) {
-        try { $sheet.Range("L$(20 * $i + 1)").Formula = '=' + $formulas[$i] }
+        try {
+            $target = $sheet.Range("L$(20 * $i + 1)")
+            if ($Dynamic) { $target.Formula2 = '=' + $formulas[$i] } else { $target.Formula = '=' + $formulas[$i] }
+        }
         catch { $invalid[$i] = $true }
     }
 

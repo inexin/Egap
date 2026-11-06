@@ -19,6 +19,9 @@ internal enum EvalKind : byte
 
     /// <summary>A rectangle of scalar values.</summary>
     Array,
+
+    /// <summary>A LAMBDA, or a function named as a value: something to call, which shows as #CALC! in a cell.</summary>
+    Lambda,
 }
 
 /// <summary>A rectangle of cells on one sheet.</summary>
@@ -59,6 +62,8 @@ internal readonly struct EvalValue
 
     public EvalArray Array => (EvalArray)item!;
 
+    public LambdaValue Lambda => (LambdaValue)item!;
+
     public bool IsError => Kind == EvalKind.Error;
 
     public bool IsScalar => Kind is not (EvalKind.Reference or EvalKind.Array);
@@ -79,6 +84,8 @@ internal readonly struct EvalValue
 
     public static EvalValue FromArray(EvalArray array) => new(EvalKind.Array, 0, array);
 
+    public static EvalValue FromLambda(LambdaValue lambda) => new(EvalKind.Lambda, 0, lambda);
+
     public static EvalValue FromCell(CellValue value) => value.Kind switch
     {
         CellValueKind.Number => new(EvalKind.Number, value.Number, null),
@@ -95,6 +102,7 @@ internal readonly struct EvalValue
         EvalKind.Text => CellValue.TextUnchecked(Text),
         EvalKind.Boolean => CellValue.FromBoolean(Boolean),
         EvalKind.Error => CellValue.FromError(Error),
+        EvalKind.Lambda => CellValue.FromError(CellError.Calc),
         _ => CellValue.NumberUnchecked(0),
     };
 
