@@ -29,12 +29,13 @@
     <PackageReference Include="Egami.Cli.Host" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- All four Egap packages (Q3). -->
+  <!-- All the Egap packages (Q3). -->
   <ItemGroup>
     <ProjectReference Include="../Egap.Pdf/Egap.Pdf.csproj" />
     <ProjectReference Include="../Egap.Documents/Egap.Documents.csproj" />
     <ProjectReference Include="../Egap.Documents.Html/Egap.Documents.Html.csproj" />
     <ProjectReference Include="../Egap.Documents.Markdown/Egap.Documents.Markdown.csproj" />
+    <ProjectReference Include="../Egap.Spreadsheets/Egap.Spreadsheets.csproj" />
   </ItemGroup>
 
   <!-- egap mcp's run tool takes a workflow object with the published schema. -->

@@ -75,6 +75,24 @@ public sealed class McpTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task CellsReadARangeAsJsonAndWriteNothing()
+    {
+        Egap.Spreadsheets.Workbook book = Egap.Spreadsheets.Workbook.Create();
+        book.Worksheets[0]["A1"].Value = 7;
+        book.Worksheets[0]["B1"].Value = "seven";
+        book.Save(_tool.PathOf("book.xlsx"));
+        byte[] before = File.ReadAllBytes(_tool.PathOf("book.xlsx"));
+
+        McpClient client = await Connect();
+        CallToolResult result = await client.CallToolAsync("cells", new Dictionary<string, object?> { ["inputs"] = (string[])["book.xlsx"], ["range"] = "A1:B1" }, cancellationToken: Token);
+        Assert.NotEqual(true, result.IsError);
+        JsonElement row = result.StructuredContent!.Value.GetProperty("output").GetProperty("files")[0].GetProperty("rows")[0];
+        Assert.Equal(7, row[0].GetDouble());
+        Assert.Equal("seven", row[1].GetString());
+        Assert.Equal(before, File.ReadAllBytes(_tool.PathOf("book.xlsx")));
+    }
+
+    [Fact]
     public async Task APasswordComesFromTheEnvironmentOnly()
     {
         _tool.Copy("encrypted/aes-256.pdf");

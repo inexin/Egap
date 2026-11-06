@@ -5,6 +5,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Cli 2.3.0 (unreleased)
 
+- Workbooks: `convert` reads XLSX, XLSM, XLTX, XLTM, CSV and TSV, and writes them as PDF (Excel's page setup decides the
+  pages), images (one per page, `--dpi`), HTML, Markdown, or CSV per visible sheet. It also writes XLSX, from a workbook or
+  from the tables of a document or PDF. `calc` calculates every formula and saves the results, warning of circular
+  references and of cells that show errors. `info` lists a workbook's sheets, sizes and formula errors. `cells` reads a
+  range as tab-separated text or JSON (schema `docs/schemas/egap-cells-1.json`), also as the MCP tool `cells`, which is
+  read-only.
 - `convert` and `merge-data` print the layout's warnings, such as a floating table in a table cell laid out in the text,
   when they write PDF.
 - `convert --set key=value` reaches every writer, not only PDF: HTML (`embed-images`, `page-setup`), Markdown (`images`,

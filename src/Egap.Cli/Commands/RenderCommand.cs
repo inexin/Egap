@@ -116,7 +116,7 @@ internal static class RenderCommand
     /// The path for one page: a folder gets <c>{name}-{page}</c>; a template without <c>{page}</c> gets
     /// <c>-{page}</c> before its extension, as <see cref="PdfDocument.RenderPagesToFiles"/> does.
     /// </summary>
-    private static string PagePath(EgapSession session, OutputTemplate template, InputFile file, string extension, int page)
+    internal static string PagePath(EgapSession session, OutputTemplate template, InputFile file, string extension, int page)
     {
         string text = template.Text;
         if (text.EndsWith('/') || text.EndsWith('\\') || (!template.HasPlaceholders && Directory.Exists(session.ResolvePath(text))))
