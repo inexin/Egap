@@ -310,6 +310,7 @@ internal static class XlsxReader
                 if (XlsxNames.TryNumber((string?)element.Attribute("defaultRowHeight"), out double height) && height is >= 0 and <= 409)
                 {
                     sheet.DefaultRowHeight = height;
+                    sheet.DefaultRowFollowsFont = !XlsxNames.Bool((string?)element.Attribute("customHeight"), false);
                 }
 
                 if (XlsxNames.TryNumber((string?)element.Attribute("defaultColWidth"), out double width) && width is >= 0 and <= 255)

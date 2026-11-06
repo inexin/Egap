@@ -104,7 +104,7 @@ public sealed class StyleTests
         Assert.Equal("Calibri", style.Font.Name);
         Assert.Equal(11, style.Font.Size);
         Assert.Equal(CellColor.FromTheme(1), style.Font.Color);
-        Assert.Equal(CellFontScheme.Minor, style.Font.Scheme);
+        Assert.Equal(CellFontScheme.None, style.Font.Scheme);
         Assert.True(style.Protection.Locked);
         Assert.Equal("General", style.NumberFormat);
     }

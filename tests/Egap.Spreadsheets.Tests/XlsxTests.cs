@@ -422,7 +422,7 @@ public sealed class XlsxTests
         string? b12 = (string?)sheet.Descendants(Ns + "c").Single(c => (string?)c.Attribute("r") == "B12").Attribute("s");
         Assert.Equal("7", b12);
         Assert.DoesNotContain(sheet.Descendants(Ns + "c"), c => (string?)c.Attribute("r") == "H1");
-        Assert.Equal(CellStyle.Default, loaded.Worksheets["Data"]["H1"].Style);
+        Assert.Equal(CellStyle.Default with { Font = CellFont.Default with { Scheme = CellFontScheme.Minor } }, loaded.Worksheets["Data"]["H1"].Style);
     }
 
     [Fact]

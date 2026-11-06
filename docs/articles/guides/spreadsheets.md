@@ -232,8 +232,10 @@ its scale, and draws itself on any Egami canvas (`Draw`) or renders to a raster 
 visible sheet in tab order, with page numbers counted per sheet.
 
 Excel lays a print out for its printer, and Egap follows its PDF export at 600 dpi: a column prints in whole dots of the
-normal font's digit width (Calibri 11: 47 dots, so a default column is 51.6 points on paper against 48 on screen) and
-rows print 1.6 % taller than their height. Page breaks then fall where Excel's fall.
+normal font's digit width (Calibri 11: 47 dots, so a default column is 51.6 points on paper against 48 on screen), and a
+row's height scales by the normal font's printed row height over its height on screen, which Excel measures per font
+and size (a 15 point row prints 14.52 points in Calibri 11 or Arial 10, 15.24 in Aptos Narrow 11). Page breaks then fall
+where Excel's fall.
 
 `SheetPdfOptions.Tagged` tags the PDF for accessibility: a table per print area, a row per sheet row,
 header cells for the print titles, merged cells spanning, pictures as figures, and gridlines, fills and repeated titles

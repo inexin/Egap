@@ -2,9 +2,9 @@ namespace Egap.Spreadsheets.Printing;
 
 /// <summary>
 /// A sheet's row heights and column widths in points as it prints: column widths through the normal font's maximum digit
-/// width at 96 dpi, row heights as set or the sheet's default, hidden rows and columns zero. Excel prints both a little
-/// larger than they show: a column's pixels count in the printer's digit width, rounded to whole dots, and rows grow by
-/// <see cref="RowScale"/>, as Excel's own PDFs measure. Each row and column prints a whole number of printer dots at the
+/// width at 96 dpi, row heights as set or the sheet's default, hidden rows and columns zero. Excel prints neither at the
+/// size it shows: a column's pixels count in the printer's digit width, rounded to whole dots, and a row's in the normal
+/// font's printed row height over its row height on screen (<see cref="PrintedRows"/>), as Excel's own PDFs measure. Each row and column prints a whole number of printer dots at the
 /// print's <see cref="Scale"/>, so a scaled sheet fits as many rows as Excel fits.
 /// </summary>
 internal sealed class SheetGrid
@@ -13,9 +13,7 @@ internal sealed class SheetGrid
     private readonly int[] columns;
     private readonly int defaultRow;
     private int[]? specialRows;
-
-    /// <summary>How much taller a row prints than its height, measured on Excel's PDF export at 600 dpi.</summary>
-    public const double RowScale = 1.016;
+    private readonly double rowDotsPerPixel;
 
     public SheetGrid(Worksheet sheet, SheetFonts fonts)
     {
@@ -33,7 +31,11 @@ internal sealed class SheetGrid
             }
         }
 
-        defaultRow = RowDots(sheet.DefaultRowHeight ?? 15);
+        PrintedRow? row = PrintedRows.Find(fonts.NormalFont.Name, fonts.NormalFont.Size);
+        rowDotsPerPixel = row is { } known ? (double)known.Dots / known.Pixels : PrintedRows.UsualDotsPerPixel;
+        defaultRow = row is { } normal && (sheet.DefaultRowHeight is null || sheet.DefaultRowFollowsFont)
+            ? normal.Dots
+            : RowDots(sheet.DefaultRowHeight ?? 15);
     }
 
     /// <summary>The printed height of a row of the sheet's default height, in points at 100 %.</summary>
@@ -158,8 +160,8 @@ internal sealed class SheetGrid
     private static int Printed(int pixels, SheetFonts fonts) =>
         (int)Math.Round((double)pixels * fonts.PrinterDigitWidth / fonts.MaxDigitWidth);
 
-    /// <summary>A row of <paramref name="height"/> points in printer dots.</summary>
-    private static int RowDots(double height) => (int)Math.Round(height * RowScale * SheetFonts.PrinterDpi / 72);
+    /// <summary>A row of <paramref name="height"/> points in printer dots; Excel drops the fraction, all but the last fifth.</summary>
+    private int RowDots(double height) => (int)((height / SheetFonts.PointsPerPixel * rowDotsPerPixel) + 0.2);
 
     /// <summary>Printer dots in sheet points at <see cref="Scale"/>: whole dots on paper, divided back by the scale.</summary>
     private double Points(int dots) => dots == 0 ? 0 : Math.Round(dots * Scale) * 72 / SheetFonts.PrinterDpi / Scale;

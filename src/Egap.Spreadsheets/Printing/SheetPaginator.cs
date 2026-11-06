@@ -1,3 +1,5 @@
+using Egap.Spreadsheets.Storage;
+
 namespace Egap.Spreadsheets.Printing;
 
 /// <summary>A run of rows or columns that prints on one page, first to last.</summary>
@@ -15,6 +17,9 @@ internal sealed record PagePlan(RangeAddress Area, Band Rows, Band Columns, bool
 internal sealed class SheetPaginator
 {
     private const double Epsilon = 1e-6;
+
+    /// <summary>Rows stop this far above the bottom margin, in points: half a point keeps the last row of Excel's PDF export on the next page.</summary>
+    private const double PageBottomSlack = 0.5;
 
     public SheetPaginator(Worksheet sheet, SheetGrid grid, bool ignorePrintAreas)
     {
@@ -98,8 +103,8 @@ internal sealed class SheetPaginator
     public double TitleColumnsWidth(int first) => TitleColumns is { } t && first > t.Last ? Grid.Columns(t.First, t.Last) : 0;
 
     /// <summary>
-    /// What prints when there is no print area: the cells that hold something, with the merged ranges and drawings, from
-    /// their top-left to their bottom-right.
+    /// What prints when there is no print area: the cells that hold a value or show a fill or a border, with the merged
+    /// ranges and drawings, from their top-left to their bottom-right. A cell with only a font or an alignment prints nothing.
     /// </summary>
     private static List<RangeAddress> PrintRanges(Worksheet sheet, SheetGrid grid, bool ignorePrintAreas)
     {
@@ -108,7 +113,7 @@ internal sealed class SheetPaginator
             return [.. areas.Select(a => Clip(a, sheet))];
         }
 
-        RangeAddress? used = sheet.Store.Bounds();
+        RangeAddress? used = ShowingCells(sheet);
         foreach (RangeAddress merged in sheet.MergedCells)
         {
             used = Union(used, merged);
@@ -121,6 +126,43 @@ internal sealed class SheetPaginator
 
         // Excel prints from A1, however far down and right the cells in use start.
         return used is { } range ? [new RangeAddress(0, 0, range.Last.Row, range.Last.Column)] : [];
+    }
+
+    private static RangeAddress? ShowingCells(Worksheet sheet)
+    {
+        if (sheet.Store.Bounds() is not { } bounds)
+        {
+            return null;
+        }
+
+        StyleTable styles = sheet.Workbook.Styles;
+        Dictionary<int, bool> showing = [];
+        int top = int.MaxValue, left = int.MaxValue, bottom = -1, right = -1;
+        foreach ((int row, int column) in sheet.Store.Occupied(bounds))
+        {
+            ref readonly CellRecord record = ref sheet.Store.Get(row, column);
+            if (record.Kind == CellKind.Empty)
+            {
+                if (!showing.TryGetValue(record.Style, out bool shows))
+                {
+                    CellStyle style = record.Style < styles.Count ? styles[record.Style] : CellStyle.Default;
+                    shows = style.Fill != CellFill.None || style.Borders != CellBorders.None;
+                    showing[record.Style] = shows;
+                }
+
+                if (!shows)
+                {
+                    continue;
+                }
+            }
+
+            top = Math.Min(top, row);
+            left = Math.Min(left, column);
+            bottom = Math.Max(bottom, row);
+            right = Math.Max(right, column);
+        }
+
+        return bottom < 0 ? null : new RangeAddress(top, left, bottom, right);
     }
 
     /// <summary>A whole-row or whole-column print area cut to the cells in use, as Excel prints it.</summary>
@@ -217,7 +259,7 @@ internal sealed class SheetPaginator
         new(area, rows, columns, TitleRows is { } r && rows.First > r.Last, TitleColumns is { } c && columns.First > c.Last);
 
     private List<Band> RowBands(RangeAddress area, double scale, bool useBreaks) =>
-        Bands(area.First.Row, area.Last.Row, (PrintableHeight / scale) - HeadingHeight, Grid.Row, TitleRowsHeight,
+        Bands(area.First.Row, area.Last.Row, ((PrintableHeight - PageBottomSlack) / scale) - HeadingHeight, Grid.Row, TitleRowsHeight,
             useBreaks ? Sheet.PageSetup.RowBreaks : null);
 
     private List<Band> ColumnBands(RangeAddress area, double scale, bool useBreaks) =>

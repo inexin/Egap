@@ -136,6 +136,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- New fonts name their font and follow no theme font (`CellFont.Scheme` is `None` for new cells): a workbook made here
+  has no theme part, and Excel took a scheme font from its own default theme, Aptos Narrow.
 - New package: workbooks built and edited from code. `Workbook.Create` starts a workbook; `Worksheets` adds, inserts,
   moves, finds and removes sheets with Excel's naming rules. Cells are reached as `sheet["B4"]` or
   `sheet.Cells[row, column]` and hold numbers, text, booleans, errors and formulas (kept as text, calculated later), with
@@ -199,8 +201,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Printing: `Worksheet.SaveAsPdf` and `Workbook.SaveAsPdf` print sheets as Excel prints them, and `Paginate` lays the
   pages out (`SheetPrintLayout`, `SheetPage`) to draw on an Egami canvas or render to a raster. Pages follow the print
   area or the cells in use from A1, page order, manual breaks, scale and fit to pages, print titles, gridlines and
-  headings, margins and centring, at Excel's printed sizes (columns in the printer's digit width at 600 dpi, rows 1.6 %
-  taller); on 16 test sheets every page starts on the cell Excel's own PDF starts it on
+  headings, margins and centring, at Excel's printed sizes (columns in the printer's digit width at 600 dpi, rows by the
+  normal font's printed row height, measured from Excel per font and size); only cells with a value, a fill or a border
+  extend the print, and a file's default row height not marked custom gives way to the font's; on 16 test sheets every page starts on the cell Excel's own PDF starts it on
   (`tools/excel-print-oracle.ps1`). Headers and footers take Excel's codes with their fields, fonts and colours, first and
   even pages and scaling with the document. Cells draw with fills and patterns, borders, fonts, alignment, indent,
   wrapping, rotation, stacked text, shrink to fit, fill characters, `###` for numbers that do not fit, overflow into empty

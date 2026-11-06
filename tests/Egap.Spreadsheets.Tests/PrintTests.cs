@@ -51,18 +51,17 @@ public sealed class PrintTests
     public void PagesBreakWhereTheNextColumnOrRowDoesNotFit()
     {
         // A4 inside 0.7" side margins is 494.5 points: nine columns, which print 51.6 points wide (64 pixels in Calibri's
-        // 47-dot digits at 600 dpi). Inside 0.75" top and bottom it is 733.9: 48 rows, which print 15.24 points tall.
+        // 47-dot digits at 600 dpi). Inside 0.75" top and bottom it is 733.9: 50 rows, which print 14.52 points tall.
         Worksheet sheet = Grid(100, 25);
         SheetPrintLayout layout = sheet.Paginate(Portable);
 
-        Assert.Equal(9, layout.Pages.Count);
-        Assert.Equal(RangeAddress.Parse("A1:I48"), layout.Pages[0].Cells);
-        Assert.Equal(RangeAddress.Parse("A49:I96"), layout.Pages[1].Cells);
-        Assert.Equal(RangeAddress.Parse("A97:I100"), layout.Pages[2].Cells);
-        Assert.Equal(RangeAddress.Parse("J1:R48"), layout.Pages[3].Cells);
-        Assert.Equal(RangeAddress.Parse("S97:Y100"), layout.Pages[8].Cells);
+        Assert.Equal(6, layout.Pages.Count);
+        Assert.Equal(RangeAddress.Parse("A1:I50"), layout.Pages[0].Cells);
+        Assert.Equal(RangeAddress.Parse("A51:I100"), layout.Pages[1].Cells);
+        Assert.Equal(RangeAddress.Parse("J1:R50"), layout.Pages[2].Cells);
+        Assert.Equal(RangeAddress.Parse("S51:Y100"), layout.Pages[5].Cells);
         Assert.All(layout.Pages, p => Assert.Equal(595.28, p.Width, 0.01));
-        Assert.Equal(Enumerable.Range(1, 9), layout.Pages.Select(p => p.Number));
+        Assert.Equal(Enumerable.Range(1, 6), layout.Pages.Select(p => p.Number));
     }
 
     [Fact]
@@ -73,8 +72,8 @@ public sealed class PrintTests
 
         IReadOnlyList<SheetPage> pages = sheet.Paginate(Portable).Pages;
 
-        Assert.Equal(RangeAddress.Parse("J1:R48"), pages[1].Cells);
-        Assert.Equal(RangeAddress.Parse("A49:I96"), pages[3].Cells);
+        Assert.Equal(RangeAddress.Parse("J1:R50"), pages[1].Cells);
+        Assert.Equal(RangeAddress.Parse("A51:I100"), pages[3].Cells);
     }
 
     [Fact]
@@ -86,7 +85,7 @@ public sealed class PrintTests
         IReadOnlyList<SheetPage> pages = sheet.Paginate(Portable).Pages;
 
         Assert.Equal(841.89, pages[0].Width, 0.01);
-        Assert.Equal(RangeAddress.Parse("A1:N31"), pages[0].Cells);
+        Assert.Equal(RangeAddress.Parse("A1:N33"), pages[0].Cells);
     }
 
     [Fact]
@@ -126,7 +125,7 @@ public sealed class PrintTests
 
         IReadOnlyList<SheetPage> pages = sheet.Paginate(Portable).Pages;
 
-        Assert.Equal(RangeAddress.Parse("A1:S95"), pages[0].Cells);
+        Assert.Equal(RangeAddress.Parse("A1:S100"), pages[0].Cells);
     }
 
     [Fact]
@@ -137,8 +136,8 @@ public sealed class PrintTests
 
         IReadOnlyList<SheetPage> pages = sheet.Paginate(Portable).Pages;
 
-        Assert.Equal(RangeAddress.Parse("A1:E48"), pages[0].Cells);
-        Assert.Equal(RangeAddress.Parse("A49:E94"), pages[1].Cells);
+        Assert.Equal(RangeAddress.Parse("A1:E50"), pages[0].Cells);
+        Assert.Equal(RangeAddress.Parse("A51:E98"), pages[1].Cells);
         Assert.False(pages[0].Plan.TitleRows);
         Assert.True(pages[1].Plan.TitleRows);
     }
@@ -153,7 +152,7 @@ public sealed class PrintTests
 
         Assert.Equal(["B2:D5", "F10:G12"], pages.Select(p => p.Cells.ToString()));
         Assert.Equal("Sheet1!$B$2:$D$5,Sheet1!$F$10:$G$12", sheet.Workbook.Names.Single(n => n.Name == "_xlnm.Print_Area").Formula);
-        Assert.Equal(25, sheet.Paginate(Portable with { IgnorePrintAreas = true }).Pages.Sum(p => p.Cells.ColumnCount) / 3);
+        Assert.Equal(25, sheet.Paginate(Portable with { IgnorePrintAreas = true }).Pages.Sum(p => p.Cells.ColumnCount) / 2);
     }
 
     [Fact]
@@ -263,9 +262,9 @@ public sealed class PrintTests
         sheet.SaveAsPdf(stream, new SheetPdfOptions { Print = Portable });
 
         using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
-        Assert.Equal(3, pdf.Pages.Count);
+        Assert.Equal(2, pdf.Pages.Count);
         string text = pdf.Pages[1].ExtractText();
-        Assert.Contains("Page 2 of 3", text, StringComparison.Ordinal);
+        Assert.Contains("Page 2 of 2", text, StringComparison.Ordinal);
         Assert.Contains("Sheet1", text, StringComparison.Ordinal);
     }
 
@@ -379,8 +378,8 @@ public sealed class PrintTests
             sheet.SaveAsPdf(Path.Combine(folder, "items-a.pdf"), new SheetPdfOptions { Print = Portable, Conformance = PdfAConformance.PdfA2a, Language = "en-US" });
             Raster<Rgba8> firstPage = layout.Pages[0].Render(150);
 
-            // Letter paper: 44 rows, then 43 below the repeated title row, and row 101 starts a page.
-            Assert.Equal(["A1:B44", "A45:B87", "A88:B100", "A101:B143", "A144:B186", "A187:B200"], layout.Pages.Select(p => p.Cells.ToString()));
+            // Letter paper: 47 rows, then 46 below the repeated title row, and row 101 starts a page.
+            Assert.Equal(["A1:B47", "A48:B93", "A94:B100", "A101:B146", "A147:B192", "A193:B200"], layout.Pages.Select(p => p.Cells.ToString()));
             Assert.Equal(1275, firstPage.Width); // 8.5 inches at 150 dpi
             Assert.Equal(6, PdfDocument.Open(File.ReadAllBytes(Path.Combine(folder, "items-a.pdf"))).Pages.Count);
         }
