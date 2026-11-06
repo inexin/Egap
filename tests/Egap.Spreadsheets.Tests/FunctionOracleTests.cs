@@ -203,6 +203,10 @@ public sealed class FunctionOracleTests
             {
                 cell.Value = text == "TRUE";
             }
+            else if (text.StartsWith('='))
+            {
+                cell.Formula = text;
+            }
             else if (CellValue.TryParseError(text, out CellError error))
             {
                 cell.Value = error;
@@ -213,6 +217,7 @@ public sealed class FunctionOracleTests
             }
         }
 
+        book.CalculateFull();
         return sheet;
     }
 

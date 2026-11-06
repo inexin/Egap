@@ -59,6 +59,7 @@ try {
         }
         elseif ($value -eq 'TRUE' -or $value -eq 'FALSE') { $cell.Formula = $value }
         elseif ($value.StartsWith('#')) { $cell.Formula = $errorFormulas[$value] }
+        elseif ($value.StartsWith('=')) { $cell.Formula = $value }
         else { $cell.Value2 = [double]::Parse($value, $invariant) }
     }
 

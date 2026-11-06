@@ -1,0 +1,5 @@
+BESSELI	2e-06	Excel's I is a low-accuracy approximation, off from about the 6th digit; Egap sums the power series. Beyond this: accepted cases.
+BESSELJ	3.5e-05	Excel's J is a low-accuracy approximation, off from the 5th digit at worst, around x = 8 to 12; Egap uses Miller's method and Hankel's expansion.
+BESSELK	1.7e-07	Excel's K is a low-accuracy approximation, off from about the 7th digit; Egap integrates by the trapezoid rule.
+BESSELY	8.5e-08	Excel's Y is a low-accuracy approximation, off from about the 8th digit; Egap uses Neumann's and Hankel's expansions.
+MULTINOMIAL	2.4e-13	Excel's last digits drift, MULTINOMIAL(170) being 1.0000000000001974 for 1; Egap multiplies whole steps.
