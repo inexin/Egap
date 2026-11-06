@@ -369,8 +369,33 @@ sheet[&quot;B1&quot;].Formula = &quot;A1/2&quot;;
 CalculationResult result = book.Calculate();         // A1 near 2, B1 near 1
 bool settled = result.Converged;                     // true
 </code></pre>
+<h3 id="dynamic-arrays">Dynamic arrays</h3>
+<p>A formula set through <code>cell.Formula</code> means what it means typed in Excel today: one that can give more than one value is a
+dynamic array formula, and when the workbook is calculated its result spills over the cells beside and below it.
+<code>cell.SpillRange</code> is the range it fills, and <code>A1#</code> stands for that range in another formula:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet[&quot;A1&quot;].Value = &quot;pear&quot;;
+sheet[&quot;A2&quot;].Value = &quot;apple&quot;;
+sheet[&quot;A3&quot;].Value = &quot;pear&quot;;
+
+sheet[&quot;C1&quot;].Formula = &quot;=SORT(UNIQUE(A1:A3))&quot;;
+sheet[&quot;E1&quot;].Formula = &quot;=COUNTA(C1#)&quot;;
+book.Calculate();
+
+string first = sheet[&quot;C1&quot;].Value.Text;                      // apple
+string second = sheet[&quot;C2&quot;].Value.Text;                     // pear
+string filled = sheet[&quot;C1&quot;].SpillRange!.Value.Address.ToString(); // C1:C2
+double count = sheet[&quot;E1&quot;].Value.Number;                    // 2
+</code></pre>
+<p>Something in the way, a merged cell or a table gives <code>#SPILL!</code> in the formula's cell until there is room; writing over a
+spilled cell does the same. <code>=@A1:A3</code> meets the formula's cell by implicit intersection, as every formula in Excel before
+dynamic arrays did. Formulas read from a file stay what the file made them: Excel marks the dynamic ones, and the others
+keep implicit intersection.</p>
 <h3 id="functions">Functions</h3>
-<p>Over 440 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
+<p>Over 460 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (<code>&quot;&gt;20&quot;</code>,
 <code>&quot;a*&quot;</code>, <code>&quot;&lt;&gt;&quot;</code>). <code>FunctionRegistry.BuiltInFunctions</code> lists them. Each follows Microsoft's function reference and is
 checked against what Excel calculates: <code>tools/excel-function-oracle.ps1</code> runs the cases in

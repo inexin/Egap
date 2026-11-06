@@ -52727,6 +52727,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Cell.SetNumber
   nameWithType: Cell.SetNumber
+- uid: Egap.Spreadsheets.Cell.SpillRange
+  name: SpillRange
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_SpillRange
+  commentId: P:Egap.Spreadsheets.Cell.SpillRange
+  fullName: Egap.Spreadsheets.Cell.SpillRange
+  nameWithType: Cell.SpillRange
+- uid: Egap.Spreadsheets.Cell.SpillRange*
+  name: SpillRange
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_SpillRange_
+  commentId: Overload:Egap.Spreadsheets.Cell.SpillRange
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Cell.SpillRange
+  nameWithType: Cell.SpillRange
 - uid: Egap.Spreadsheets.Cell.Style
   name: Style
   href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_Style
