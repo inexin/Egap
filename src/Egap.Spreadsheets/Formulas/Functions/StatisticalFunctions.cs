@@ -140,11 +140,14 @@ internal static partial class FormulaFunctions
             return Error(CellError.DivisionByZero);
         }
 
-        double total = 0;
+        double total = 0, before = 0;
         foreach (double n in numbers)
         {
+            before = total;
             total += n;
         }
+
+        total = ExcelValues.AddDroppingNoise(before, numbers[^1]);
 
         return Number(total / numbers.Count);
     }
@@ -511,6 +514,13 @@ internal static partial class FormulaFunctions
                 return Error(CellError.Value);
             }
 
+            // The conditional functions read only open sheets: a closed linked book's range is #VALUE!, kept values or not,
+            // and so is a DDE item's value, which is no range.
+            if (range.IsLinked || arguments[i].Kind is not (EvalKind.Reference or EvalKind.Array))
+            {
+                return Error(CellError.Value);
+            }
+
             if (conditions.Count > 0 && (range.Rows != conditions[0].Range.Rows || range.Columns != conditions[0].Range.Columns))
             {
                 return Error(CellError.Value);
@@ -528,7 +538,7 @@ internal static partial class FormulaFunctions
             }
 
             target = Grid.Of(arguments[0]);
-            if (target is not { } t || t.Rows != conditions[0].Range.Rows || t.Columns != conditions[0].Range.Columns)
+            if (target is not { } t || t.IsLinked || t.Rows != conditions[0].Range.Rows || t.Columns != conditions[0].Range.Columns)
             {
                 return Error(CellError.Value);
             }
@@ -544,7 +554,7 @@ internal static partial class FormulaFunctions
                 }
 
                 target = Grid.Of(arguments[2])?.Resize(first.Rows, first.Columns);
-                if (target is null)
+                if (target is not { IsLinked: false })
                 {
                     return Error(CellError.Value);
                 }

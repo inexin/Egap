@@ -174,7 +174,7 @@ internal static class FormulaEvaluator
                     break;
                 case OpCode.Binary:
                     sp--;
-                    stack[sp - 1] = Binary((BinaryOperator)instruction.A, stack[sp - 1], stack[sp], context, last: pc == code.Length - 1);
+                    stack[sp - 1] = Binary((BinaryOperator)instruction.A, stack[sp - 1], stack[sp], context, last: instruction.B == 1);
                     break;
                 case OpCode.Union:
                     sp -= instruction.A - 1;
@@ -536,9 +536,19 @@ internal static class FormulaEvaluator
         SheetPrefix? prefix = node.Prefix;
         if (prefix is not null && prefix.Book is not (null or "0"))
         {
-            return ExternalBook(prefix, context)?.Name(node.Name) is { Prefix: { } target } reference
+            if (ExternalBook(prefix, context) is not { } linked)
+            {
+                return EvalValue.FromError(CellError.Reference);
+            }
+
+            if (linked.DdeItem(node.Name) is { } item)
+            {
+                return EvalValue.FromCell(item);
+            }
+
+            return linked.Name(node.Name) is { Prefix: { } target } reference
                 ? Reference(new ReferenceNode(target with { Book = prefix.Book }, reference.Text, reference.Area), context)
-                : EvalValue.FromError(CellError.Reference);
+                : EvalValue.FromError(linked.MissingName(node.Name));
         }
 
         Worksheet? scope = context.Sheet;
@@ -792,15 +802,8 @@ internal static class FormulaEvaluator
         {
             case BinaryOperator.Add:
             case BinaryOperator.Subtract:
-                double sum = op == BinaryOperator.Add ? left + right : left - right;
-
-                // Excel gives 0 when the last operation of a formula leaves only rounding noise of its operands.
-                if (last && sum != 0 && Math.Abs(sum) <= Math.Max(Math.Abs(left), Math.Abs(right)) * 1e-15)
-                {
-                    sum = 0;
-                }
-
-                return EvalValue.FromNumber(sum);
+                double addend = op == BinaryOperator.Add ? right : -right;
+                return EvalValue.FromNumber(last ? ExcelValues.AddDroppingNoise(left, addend) : left + addend);
             case BinaryOperator.Multiply:
                 return EvalValue.FromNumber(left * right);
             case BinaryOperator.Divide:

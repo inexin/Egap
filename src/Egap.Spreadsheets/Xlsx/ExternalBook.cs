@@ -10,7 +10,7 @@ namespace Egap.Spreadsheets.Xlsx;
 
 /// <summary>
 /// The values a workbook keeps for a linked workbook (ECMA-376 Part 1, 18.14), which is what Excel calculates from when links
-/// are not updated: <c>[1]Sheet!A1</c> reads the first book's cached sheet. Read when a formula first asks, read-only; the
+/// are not updated: <c>[1]Sheet!A1</c> reads the first book's cached sheet, and <c>[1]!Item</c> a name of the book or an item of a DDE link. Read when a formula first asks, read-only; the
 /// part itself stays in the package and saves as it was. A book keeps no blanks, so a cell it doesn't hold reads as blank. A part that can't be read holds nothing, so what reads it shows
 /// #REF!, and the workbook still loads.
 /// </summary>
@@ -24,6 +24,19 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
     /// <summary>What a defined name of the linked book refers to, a reference within it, or null.</summary>
     public ReferenceNode? Name(string name) => contents.Value.Names.GetValueOrDefault(name);
 
+    /// <summary>The value kept for an item of a DDE link, its first if it keeps several, or null.</summary>
+    public CellValue? DdeItem(string name)
+    {
+        string item = name.StartsWith('\'') ? name[1..^1].Replace("''", "'", StringComparison.Ordinal) : name;
+        return contents.Value.DdeItems.TryGetValue(item, out CellValue value) ? value : default(CellValue?);
+    }
+
+    /// <summary>
+    /// What a name that <see cref="Name"/> and <see cref="DdeItem"/> don't have gives: #NAME? for one the book doesn't define
+    /// a reference for, #REF! for one defined as something else, and for a DDE link or a part that can't be read.
+    /// </summary>
+    public CellError MissingName(string name) => contents.Value.IsBook && !contents.Value.OtherNames.Contains(name) ? CellError.Name : CellError.Reference;
+
     private static Contents Read(Workbook book, OpcPart? part)
     {
         Contents contents = new();
@@ -35,16 +48,34 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
         try
         {
             XNamespace ns = XlsxNames.Main;
-            if (part.LoadXml().Root?.Element(ns + "externalBook") is { } external)
+            XElement? root = part.LoadXml().Root;
+            if (root?.Element(ns + "externalBook") is { } external)
             {
+                contents.IsBook = true;
                 ReadSheets(book, external, ns, contents);
                 foreach (XElement name in external.Element(ns + "definedNames")?.Elements(ns + "definedName") ?? [])
                 {
-                    if ((string?)name.Attribute("name") is { } key && (string?)name.Attribute("refersTo") is { } refersTo
-                        && FormulaParser.TryParse(refersTo.TrimStart('='), r1c1: false, default)?.Root is ReferenceNode { Prefix.FirstSheet: not null } reference)
+                    if ((string?)name.Attribute("name") is not { } key || (string?)name.Attribute("refersTo") is not { } refersTo)
+                    {
+                        continue;
+                    }
+
+                    if (FormulaParser.TryParse(refersTo.TrimStart('='), r1c1: false, default)?.Root is ReferenceNode { Prefix.FirstSheet: not null } reference)
                     {
                         contents.Names.TryAdd(key, reference);
                     }
+                    else
+                    {
+                        contents.OtherNames.Add(key);
+                    }
+                }
+            }
+
+            foreach (XElement item in root?.Element(ns + "ddeLink")?.Element(ns + "ddeItems")?.Elements(ns + "ddeItem") ?? [])
+            {
+                if ((string?)item.Attribute("name") is { } key && item.Element(ns + "values")?.Element(ns + "value") is { } first && Value(first, ns + "val") is { } value)
+                {
+                    contents.DdeItems.TryAdd(key, value);
                 }
             }
         }
@@ -76,7 +107,7 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
             sheets[id].LinkRefreshFailed = XlsxNames.Bool((string?)data.Attribute("refreshError"), false);
             foreach (XElement cell in data.Elements(ns + "row").Elements(ns + "cell"))
             {
-                if (CellAddress.TryParse((string?)cell.Attribute("r"), out CellAddress address) && Value(cell, ns) is { } value)
+                if (CellAddress.TryParse((string?)cell.Attribute("r"), out CellAddress address) && Value(cell, ns + "v") is { } value)
                 {
                     sheets[id].SetValue(address.Row, address.Column, value);
                 }
@@ -84,9 +115,9 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
         }
     }
 
-    private static CellValue? Value(XElement cell, XNamespace ns)
+    private static CellValue? Value(XElement cell, XName holder)
     {
-        if ((string?)cell.Element(ns + "v") is not { } text)
+        if ((string?)cell.Element(holder) is not { } text)
         {
             return null;
         }
@@ -108,6 +139,12 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
     {
         public Dictionary<string, Worksheet> Sheets { get; } = new(StringComparer.OrdinalIgnoreCase);
 
+        public bool IsBook { get; set; }
+
         public Dictionary<string, ReferenceNode> Names { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public HashSet<string> OtherNames { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public Dictionary<string, CellValue> DdeItems { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 }

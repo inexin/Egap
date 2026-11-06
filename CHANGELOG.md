@@ -217,6 +217,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   failed; a sheet or name it doesn't keep is `#REF!`. The link parts still save as they were.
 - Formulas read linked workbooks' kept values, as Excel does when links aren't updated: `[1]Prices!A1`, ranges, and the book's
   names (`[1]!Rate`). A cell with no kept value is blank, or `#REF!` on a sheet Excel marked as failing to refresh. The link parts save as they were.
+- Calculation closer to Excel, checked against Excel: VLOOKUP and HLOOKUP search before they look at the index, so a key not
+  found is #N/A whatever the index says. A formula's last unparenthesized + or -, and the last addition of SUM and AVERAGE,
+  give 0 when less than 8 units in the last place of the larger operand remain. DDE links give the values the file keeps for
+  their items, also written `[1]!'A b'`. A linked book's name without a reference is #NAME?. The conditional functions and
+  OFFSET give #VALUE! on a linked book's kept values, INDIRECT #REF!. A call through an add-in's link, `[1]!Name(...)`,
+  reaches a function added with `FunctionRegistry`; without one it is #NAME? once calculated, and shows its saved value until then. `SUBTOTAL` leaves out rows a filter hides
+  whatever its code: on a sheet whose filter has criteria, every hidden row counts as filtered.
 
 ## Egap.Pdf 2.3.0 (unreleased)
 

@@ -68,6 +68,14 @@ internal static partial class FormulaFunctions
 
     public static bool IsBuiltIn(string name) => BuiltIn.ContainsKey(name);
 
+    /// <summary>What a call through an add-in's link, <c>[1]!NAME(...)</c>, reaches: only a function added with <see cref="FunctionRegistry"/>, never a built-in.</summary>
+    public static bool TryGetAddIn(string name, [NotNullWhen(true)] out FormulaFunction? function)
+    {
+        int bang = name.LastIndexOf('!');
+        function = null;
+        return bang >= 0 && UserFunctions.TryGetValue(name[(bang + 1)..], out function);
+    }
+
     private static int userVersion;
 
     /// <summary>Counts changes to the added functions, so a workbook's calculation compiles its formulas again after one.</summary>
@@ -268,7 +276,7 @@ internal static partial class FormulaFunctions
     /// <summary>SUM: numbers in references and arrays; numbers, booleans and text that reads as a number typed as arguments.</summary>
     private static EvalValue Sum(EvalValue[] arguments, EvalContext context)
     {
-        double total = 0;
+        double total = 0, before = 0, added = 0;
         foreach (EvalValue argument in arguments)
         {
             foreach ((EvalValue value, bool direct) in Scalars(argument))
@@ -278,10 +286,10 @@ internal static partial class FormulaFunctions
                     case EvalKind.Error:
                         return value;
                     case EvalKind.Number:
-                        total += value.Number;
-                        break;
                     case EvalKind.Boolean when direct:
-                        total += value.Number;
+                        before = total;
+                        added = value.Number;
+                        total += added;
                         break;
                     case EvalKind.Text when direct:
                         if (!Num(value, context, out double number, out EvalValue error))
@@ -289,13 +297,16 @@ internal static partial class FormulaFunctions
                             return error;
                         }
 
-                        total += number;
+                        before = total;
+                        added = number;
+                        total += added;
                         break;
                 }
             }
         }
 
-        return Number(total);
+        // Excel treats SUM's last addition as it does a formula's last + or -.
+        return Number(ExcelValues.AddDroppingNoise(before, added));
     }
 
     private enum Logic

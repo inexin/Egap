@@ -54,8 +54,6 @@ public sealed class ExternalLinkTests
     [InlineData("[1]!Rate", 2.5)]
     [InlineData("[1]Prices!C9", 0)]
     [InlineData("SUM([1]!Table)", 18.5)]
-    [InlineData("INDIRECT(\"[1]Prices!A2\")", 7)]
-    [InlineData("OFFSET([1]Prices!A1,1,0)", 7)]
     public void FormulasReadTheKeptNumbers(string formula, double expected)
     {
         Assert.Equal(expected, Calculated(formula).Number);
@@ -73,8 +71,8 @@ public sealed class ExternalLinkTests
     [InlineData("[1]Other Sheet!A1")]
     [InlineData("[1]Nowhere!A1")]
     [InlineData("[2]Prices!A1")]
-    [InlineData("[1]!Unknown")]
     [InlineData("[1]!Gone")]
+    [InlineData("INDIRECT(\"[1]Prices!A2\")")]
     public void WhatIsNotKeptIsARefError(string formula)
     {
         string written = formula.Contains(' ', StringComparison.Ordinal) ? "'" + formula.Replace("!", "'!", StringComparison.Ordinal) : formula;

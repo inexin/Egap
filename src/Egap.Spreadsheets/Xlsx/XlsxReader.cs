@@ -362,6 +362,9 @@ internal static class XlsxReader
                 page.SourceColumnBreaks = element;
                 ReadBreaks(page.ColumnBreaks, element, CellAddress.MaxColumns);
                 return true;
+            case "autoFilter":
+                sheet.HasFilterCriteria = element.Element(ns + "filterColumn") is not null;
+                return false;
             case "headerFooter":
                 page.SourceHeaderFooter = element;
                 page.Header = (string?)element.Element(ns + "oddHeader");

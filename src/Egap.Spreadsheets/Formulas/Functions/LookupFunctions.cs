@@ -131,6 +131,20 @@ internal static partial class FormulaFunctions
         int index = (int)Math.Truncate(Math.Clamp(indexValue, -1, 1 << 20));
         int lines = vertical ? table.Rows : table.Columns;
         int width = vertical ? table.Columns : table.Rows;
+        if (wanted.Kind is EvalKind.Blank or EvalKind.Missing)
+        {
+            wanted = Number(0);
+        }
+
+        Func<int, EvalValue> key = vertical ? i => table[i, 0] : i => table[0, i];
+        int found = sorted ? SortedIndex(key, LimitLines(table, lines, vertical), wanted, false, context) : ExactIndex(key, LimitLines(table, lines, vertical), wanted);
+
+        // Excel searches first: a key it doesn't find is #N/A whatever the index says.
+        if (found < 0)
+        {
+            return Error(CellError.NotAvailable);
+        }
+
         if (index < 1)
         {
             return Error(CellError.Value);
@@ -139,18 +153,6 @@ internal static partial class FormulaFunctions
         if (index > width)
         {
             return Error(CellError.Reference);
-        }
-
-        if (wanted.Kind is EvalKind.Blank or EvalKind.Missing)
-        {
-            wanted = Number(0);
-        }
-
-        Func<int, EvalValue> key = vertical ? i => table[i, 0] : i => table[0, i];
-        int found = sorted ? SortedIndex(key, LimitLines(table, lines, vertical), wanted, false, context) : ExactIndex(key, LimitLines(table, lines, vertical), wanted);
-        if (found < 0)
-        {
-            return Error(CellError.NotAvailable);
         }
 
         return Result(vertical ? table[found, index - 1] : table[index - 1, found]);
@@ -368,7 +370,8 @@ internal static partial class FormulaFunctions
             return source;
         }
 
-        if (source.Kind != EvalKind.Reference || source.Areas.Length != 1)
+        // OFFSET works on open sheets only, not on a linked book's kept values.
+        if (source.Kind != EvalKind.Reference || source.Areas.Length != 1 || source.Areas[0].Sheet.IsLinked)
         {
             return Error(CellError.Value);
         }
@@ -417,7 +420,9 @@ internal static partial class FormulaFunctions
         }
 
         EvalValue result = FormulaEvaluator.Run(FormulaCompiler.Compile(parsed), inner);
-        return result.Kind == EvalKind.Reference ? result : Error(CellError.Reference);
+
+        // Text can't reach a linked book that isn't open.
+        return result.Kind == EvalKind.Reference && !result.Areas.Any(area => area.Sheet.IsLinked) ? result : Error(CellError.Reference);
     }
 
     /// <summary>Whether a parsed formula is only references: a cell or range, a name or a table's area, and ranges built of them.</summary>
