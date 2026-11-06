@@ -16,6 +16,9 @@ public sealed class SheetView
     /// <summary>Whether zero values show as 0 rather than blank; true by default.</summary>
     public bool ShowZeros { get; set; } = true;
 
+    /// <summary>Whether cells show their formulas rather than their results, and values unformatted, in columns of twice the width; it prints so too.</summary>
+    public bool ShowFormulas { get; set; }
+
     /// <summary>Whether the sheet runs right to left, column A at the right.</summary>
     public bool RightToLeft { get; set; }
 

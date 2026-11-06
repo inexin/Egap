@@ -760,6 +760,8 @@ Egap.Spreadsheets.SheetView.RightToLeft.get -> bool
 Egap.Spreadsheets.SheetView.RightToLeft.set -> void
 Egap.Spreadsheets.SheetView.Selected.get -> bool
 Egap.Spreadsheets.SheetView.Selected.set -> void
+Egap.Spreadsheets.SheetView.ShowFormulas.get -> bool
+Egap.Spreadsheets.SheetView.ShowFormulas.set -> void
 Egap.Spreadsheets.SheetView.ShowGridLines.get -> bool
 Egap.Spreadsheets.SheetView.ShowGridLines.set -> void
 Egap.Spreadsheets.SheetView.ShowHeadings.get -> bool

@@ -35,7 +35,8 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, DOC, RT
 | `--jobs <count>`, `-j` | How many files to work on at once; 0 (the default) for one per processor. |
 | `--fail-fast` | Stop at the first file that fails. |
 | `--output <path>`, `-o` | Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output. |
-| `--to <format>` | The output format when -o does not say: pdf, docx, odt, ott, fodt, fott, rtf, html, md, txt. |
+| `--to <format>` | The output format when -o does not say: pdf, docx, odt, ott, fodt, fott, rtf, html, md, txt, xlsx, csv, png, jpg, webp, tif. |
+| `--dpi <dpi>` | A workbook to images: dots per inch; 150 by default. |
 | `--page-size <size>` | To PDF: the page size, A3, A4, A5, Letter, Legal, Tabloid or WxH such as 210mmx297mm. |
 | `--landscape` | To PDF: turn the page size to landscape. |
 | `--margins <lengths>` | To PDF: page margins, one length for all sides, two (top and bottom, then the sides) or four (top, right, bottom, left), such as 2cm or 20mm,15mm. |
@@ -63,6 +64,40 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, DOC, RT
 | `--save-password <text>` | The password that encrypts DOCX, ODT and OTT outputs. Prefer --save-password-env or --save-password-file: a value here lands in shell history. |
 | `--save-password-env <NAME>` | Read the password that encrypts DOCX, ODT and OTT outputs from this environment variable. |
 | `--save-password-file <path>` | Read the password that encrypts DOCX, ODT and OTT outputs from the first line of this file. |
+
+## egap calc
+
+`egap calc <inputs>... [options]`
+
+Calculate every formula of workbooks again and save them with the results. Warns of circular references and of cells that show errors.
+
+| Argument or option | What it does |
+| --- | --- |
+| `<inputs>` | XLSX, XLSM, XLTX or XLTM files, globs (\*, ?, \*\*), or folders with --recursive. |
+| `--recursive`, `-r` | Take every file egap reads in folders given as inputs, at any depth. |
+| `--jobs <count>`, `-j` | How many files to work on at once; 0 (the default) for one per processor. |
+| `--fail-fast` | Stop at the first file that fails. |
+| `--output <path>`, `-o` | Where to write: a file, a folder, a template with {name}, {ext}, {dir}, {index} and {format}, or - for standard output. |
+| `--in-place` | Write each output over its input. |
+
+## egap cells
+
+`egap cells <inputs>... [options]`
+
+Read a range of cells from workbooks, as tab-separated text or JSON. Nothing is written.
+
+| Argument or option | What it does |
+| --- | --- |
+| `<inputs>` | XLSX, XLSM, XLTX, XLTM, CSV or TSV files, globs (\*, ?, \*\*), or folders with --recursive. |
+| `--recursive`, `-r` | Take every file egap reads in folders given as inputs, at any depth. |
+| `--jobs <count>`, `-j` | How many files to work on at once; 0 (the default) for one per processor. |
+| `--fail-fast` | Stop at the first file that fails. |
+| `--range <range>`, `-r` | The cells, such as A1:C10, 'Sheet 2'!A1:C10 or Sheet2; the first visible sheet's used range by default. |
+| `--formulas` | Also give each cell's formula. |
+| `--shown` | Give values as the cells show them, formatted, instead of as they are. |
+| `--calculate` | Calculate every formula first, instead of reading the values the file saved. |
+| `--max-cells <count>` | The most cells to give for one file; 10000 by default. Whole rows past it are left out, and the JSON says truncated. |
+| `--json` | Write JSON (schema 1, docs/schemas/egap-cells-1.json) instead of tab-separated text. |
 
 ## egap text
 

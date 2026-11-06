@@ -19,7 +19,7 @@ namespace Egap.Cli.Commands;
 internal static class ConvertCommand
 {
     /// <summary>The formats convert writes, by extension.</summary>
-    private static readonly string[] Targets = ["pdf", "docx", "odt", "ott", "fodt", "fott", "rtf", "html", "md", "txt"];
+    private static readonly string[] Targets = ["pdf", "docx", "odt", "ott", "fodt", "fott", "rtf", "html", "md", "txt", "xlsx", "csv", .. WorkbookConvert.Images];
 
     /// <summary>The most one remote resource may be (Q7).</summary>
     private const int MaxRemoteBytes = 50 << 20;
@@ -54,12 +54,13 @@ internal static class ConvertCommand
         Option<string?> mode = new("--mode") { Description = "From PDF: flow (reflowing text, the default) or exact (every line where it stands).", HelpName = "flow|exact" };
         Option<string?> comments = new("--comments") { Description = "To PDF: the document's comments left out (none, the default), written as annotations a PDF viewer shows, or printed in a pane beside each page (margin).", HelpName = "none|annotations|margin" };
         Option<bool> embedSource = new("--embed-source") { Description = "To PDF: embed a DOCX of the document as the PDF's source (a hybrid PDF that converts back to the document); not with PDF/A-1 or 2." };
+        Option<double> dpi = new("--dpi") { Description = "A workbook to images: dots per inch; 150 by default.", HelpName = "dpi", DefaultValueFactory = _ => 150 };
         Option<bool> ignoreSource = new("--ignore-embedded-source") { Description = "From PDF: analyse the pages even when the PDF carries an embedded source document Egap can use." };
         Command command = new("convert", "Convert between formats by the output's extension: HTML, Markdown, DOCX, DOC, RTF, text and images to PDF; PDF to DOCX, RTF, HTML, Markdown or text; and the flow formats to each other.");
         inputs.AddTo(command);
         output.AddTo(command);
         command.Options.Add(to);
-        foreach (Option option in (Option[])[pageSize, landscape, margins, header, footer, headerHtml, footerHtml, toc, pdfa, tagged, set, baseDir, allowPath, allowNetwork, mode, embedSource, ignoreSource, comments])
+        foreach (Option option in (Option[])[dpi, pageSize, landscape, margins, header, footer, headerHtml, footerHtml, toc, pdfa, tagged, set, baseDir, allowPath, allowNetwork, mode, embedSource, ignoreSource, comments])
         {
             command.Options.Add(option);
         }
@@ -138,6 +139,39 @@ internal static class ConvertCommand
 
                 string path = OutputOptions.PathFor(session, template, file, target);
                 bool isPdf = Document.Identify(file.Path) == DocumentFormatKind.Pdf;
+                bool isWorkbook = WorkbookFiles.IsWorkbook(file.Path);
+                if (WorkbookConvert.Images.Contains(target))
+                {
+                    if (!isWorkbook)
+                    {
+                        throw new UsageException($"{file.Display} is not a workbook; convert writes images from workbooks, and egap render writes them from PDFs.");
+                    }
+
+                    return WorkbookConvert.ToImages(session, file, template, target, result.GetValue(dpi));
+                }
+
+                if (target == "csv")
+                {
+                    return WorkbookConvert.ToCsv(session, file, path, secret);
+                }
+
+                if (target == "xlsx")
+                {
+                    WorkbookConvert.ToXlsx(session, file, path, secret);
+                    return [path];
+                }
+
+                if (target == "pdf" && isWorkbook)
+                {
+                    if (options.PageSize is not null || options.Margins is not null || options.Header is not null || options.Footer is not null || options.TableOfContents != TableOfContentsMode.None)
+                    {
+                        session.Warn($"{file.Display}: a workbook prints with its own page setup; --page-size, --margins, --header, --footer and --toc apply to documents.");
+                    }
+
+                    WorkbookConvert.ToPdf(session, file, path, options.Tagged, options.Conformance);
+                    return [path];
+                }
+
                 if (target == "pdf")
                 {
                     if (isPdf)
@@ -453,6 +487,12 @@ internal static class ConvertCommand
         ["html"] = ["embed-images", "page-setup"],
         ["md"] = ["images", "images-folder", "figure-dpi", "svg-figures", "min-image-size", "background-images", "html-figures", "front-matter"],
         ["txt"] = ["headers-footers", "notes", "newline"],
+        ["xlsx"] = [],
+        ["csv"] = [],
+        ["png"] = [],
+        ["jpg"] = [],
+        ["webp"] = [],
+        ["tif"] = [],
     };
 
     /// <summary>The <c>--set</c> settings by key, the last of a key winning; a key the format written does not take is a usage error.</summary>

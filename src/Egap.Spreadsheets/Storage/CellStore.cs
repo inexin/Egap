@@ -35,6 +35,30 @@ internal sealed class CellStore
         return ref cells[column & CellBlock.Mask];
     }
 
+    /// <summary>Whether every cell of a stretch of one column holds a number or a boolean, read a block at a time.</summary>
+    public bool OnlyNumbers(int firstRow, int lastRow, int column)
+    {
+        int place = column & CellBlock.Mask;
+        for (int row = firstRow; row <= lastRow; row = (row | CellBlock.Mask) + 1)
+        {
+            if (BlockAt(row, column) is not { } block)
+            {
+                return false;
+            }
+
+            int end = Math.Min(lastRow, row | CellBlock.Mask);
+            for (int r = row; r <= end; r++)
+            {
+                if (block.Rows[r & CellBlock.Mask] is not { } cells || cells[place].Kind is not (CellKind.Number or CellKind.Boolean))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     /// <summary>Stores a record at a cell; a vacant record removes the cell, and its block when it was the block's last.</summary>
     public void Set(int row, int column, in CellRecord record)
     {

@@ -5,6 +5,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Cli 2.3.0 (unreleased)
 
+- Workbooks: `convert` reads XLSX, XLSM, XLTX, XLTM, CSV and TSV, and writes them as PDF (Excel's page setup decides the
+  pages), images (one per page, `--dpi`), HTML, Markdown, or CSV per visible sheet. It also writes XLSX, from a workbook or
+  from the tables of a document or PDF. `calc` calculates every formula and saves the results, warning of circular
+  references and of cells that show errors. `info` lists a workbook's sheets, sizes and formula errors. `cells` reads a
+  range as tab-separated text or JSON (schema `docs/schemas/egap-cells-1.json`), also as the MCP tool `cells`, which is
+  read-only.
 - `convert` and `merge-data` print the layout's warnings, such as a floating table in a table cell laid out in the text,
   when they write PDF.
 - `convert --set key=value` reaches every writer, not only PDF: HTML (`embed-images`, `page-setup`), Markdown (`images`,
@@ -130,6 +136,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- New fonts name their font and follow no theme font (`CellFont.Scheme` is `None` for new cells): a workbook made here
+  has no theme part, and Excel took a scheme font from its own default theme, Aptos Narrow.
 - The remaining worksheet functions: financial (55), engineering, database and the rest of math (95), and the
   probability distributions, tests, regression and remaining statistics (80), each checked against Excel
   (`Oracle/functions-financial.txt`, `functions-engineering.txt`, `functions-statistics.txt`). `FORECAST.ETS` and its three companions are not built yet.
@@ -198,8 +206,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Printing: `Worksheet.SaveAsPdf` and `Workbook.SaveAsPdf` print sheets as Excel prints them, and `Paginate` lays the
   pages out (`SheetPrintLayout`, `SheetPage`) to draw on an Egami canvas or render to a raster. Pages follow the print
   area or the cells in use from A1, page order, manual breaks, scale and fit to pages, print titles, gridlines and
-  headings, margins and centring, at Excel's printed sizes (columns in the printer's digit width at 600 dpi, rows 1.6 %
-  taller); on 16 test sheets every page starts on the cell Excel's own PDF starts it on
+  headings, margins and centring, at Excel's printed sizes (columns in the printer's digit width at 600 dpi, rows by the
+  normal font's printed row height, measured from Excel per font and size); only cells with a value, a fill or a border
+  extend the print, and a file's default row height not marked custom gives way to the font's; a row's saved height prints,
+  a column wider than the page goes on over pages, its last part sharing a page with the next columns,
+  text past the last column in use takes its columns along and runs on onto the next page, and empty pages at the end of a
+  sheet stay out, as in Excel; `SheetView.ShowFormulas` prints the formulas in columns of twice the width, and a sheet with no
+  paper size that is fitted to pages takes the printer's paper; on 16 test sheets every page starts on the cell Excel's own PDF starts it on
   (`tools/excel-print-oracle.ps1`). Headers and footers take Excel's codes with their fields, fonts and colours, first and
   even pages and scaling with the document. Cells draw with fills and patterns, borders, fonts, alignment, indent,
   wrapping, rotation, stacked text, shrink to fit, fill characters, `###` for numbers that do not fit, overflow into empty

@@ -17,19 +17,20 @@ internal sealed partial class SheetPageRenderer
         RectF segment = Rect(columnSegment.Start, rowSegment.Start, columnSegment.Size, rowSegment.Size);
         ForEachCell(rowSegment, columnSegment, (r, c, rect, merged) =>
         {
-            CellValue value = sheet.GetValue(r, c);
+            bool showFormulas = sheet.View.ShowFormulas;
+            CellValue value = showFormulas && sheet.GetFormula(r, c) is { } formula ? CellValue.FromText("=" + formula) : sheet.GetValue(r, c);
             if (value.IsEmpty)
             {
                 return;
             }
 
             CellStyle style = StyleAt(r, c);
-            if (sheet.ConditionalFormats.Count > 0 && !Conditional().ShowsValue(r, c))
+            if (!showFormulas && sheet.ConditionalFormats.Count > 0 && !Conditional().ShowsValue(r, c))
             {
                 return;
             }
 
-            NumberFormatCode format = NumberFormatCode.Get(style.NumberFormat);
+            NumberFormatCode format = showFormulas ? NumberFormatCode.General : NumberFormatCode.Get(style.NumberFormat);
             string text = format.FormatWithFill(value, book.Culture, book.Date1904);
             if (!sheet.View.ShowZeros && value.Kind == CellValueKind.Number && value.Number == 0)
             {
@@ -46,6 +47,52 @@ internal sealed partial class SheetPageRenderer
             DrawCellText(r, c, rect, merged, value, text, style, color, segment, columnSegment);
             End();
         });
+
+        DrawRunningText(rowSegment, columnSegment, segment);
+    }
+
+    /// <summary>The text of cells on the pages to the left that runs on over the empty cells at the start of this one.</summary>
+    private void DrawRunningText(Segment rowSegment, Segment columnSegment, RectF segment)
+    {
+        double y = rowSegment.Start;
+        for (int r = rowSegment.First; r <= rowSegment.Last; r++)
+        {
+            double height = grid.Row(r);
+            if (height > 0 && IsFree(r, columnSegment.First) && LastBefore(r, columnSegment.First) is var c and >= 0 && grid.Column(c) > 0)
+            {
+                CellValue value = sheet.GetValue(r, c);
+                CellStyle style = StyleAt(r, c);
+                if (value.Kind == CellValueKind.Text && !style.Alignment.WrapText && (sheet.ConditionalFormats.Count == 0 || Conditional().ShowsValue(r, c)))
+                {
+                    NumberFormatCode format = NumberFormatCode.Get(style.NumberFormat);
+                    string text = format.FormatWithFill(value, book.Culture, book.Date1904);
+                    Rgba8 color = format.GetColor(value) is { } formatColor ? colors.Resolve(formatColor, Black) : colors.Resolve(style.Font.Color, Black);
+                    double before = grid.Columns(c, columnSegment.First - 1);
+                    Begin(null);
+                    DrawCellText(r, c, Rect(columnSegment.Start - columnSegment.Skip - before, y, grid.Column(c), height), null, value, text, style, color, segment, columnSegment);
+                    End();
+                }
+            }
+
+            y += Math.Max(0, height);
+        }
+    }
+
+    private bool IsFree(int row, int column) =>
+        sheet.GetValue(row, column).IsEmpty && !sheet.HasFormula(row, column) && (merges.Count == 0 || MergeAt(row, column) is null);
+
+    /// <summary>The nearest cell left of a column with something in it, or -1 when there is none or it is a merge.</summary>
+    private int LastBefore(int row, int column)
+    {
+        for (int c = column - 1; c >= 0; c--)
+        {
+            if (!IsFree(row, c))
+            {
+                return merges.Count > 0 && MergeAt(row, c) is not null ? -1 : c;
+            }
+        }
+
+        return -1;
     }
 
     private void DrawCellText(int row, int column, RectF cell, RangeAddress? merged, CellValue value, string text, CellStyle style, Rgba8 color, RectF segment, Segment columnSegment)
@@ -173,7 +220,7 @@ internal sealed partial class SheetPageRenderer
     private double Overflow(int row, int column, int step, double edge, double needed, Segment columnSegment)
     {
         int c = column + step;
-        while (c >= columnSegment.First && c <= columnSegment.Last && (step > 0 ? edge < needed : edge > needed))
+        while ((step > 0 ? c <= columnSegment.Last && edge < needed : c >= columnSegment.First && edge > needed))
         {
             if (!sheet.GetValue(row, c).IsEmpty || sheet.HasFormula(row, c) || (merges.Count > 0 && MergeAt(row, c) is not null))
             {

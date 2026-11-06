@@ -7,7 +7,7 @@ using Egap.Pdf;
 
 namespace Egap.Cli.Commands;
 
-/// <summary><c>egap info</c>: what PDFs are, without rendering them (CLI design Q11).</summary>
+/// <summary><c>egap info</c>: what PDFs and workbooks are, without rendering them (CLI design Q11).</summary>
 internal static class InfoCommand
 {
     /// <summary>The version of the <c>info --json</c> schema, docs/schemas/egap-info-1.json.</summary>
@@ -31,8 +31,15 @@ internal static class InfoCommand
             string? secret = password.Read(session, result);
             bool everything = result.GetValue(all), asJson = result.GetValue(json);
             Report?[] found = new Report?[files.Count];
+            WorkbookInfo.Report?[] workbooks = new WorkbookInfo.Report?[files.Count];
             int code = Batch.Run(session, files, batch, file =>
             {
+                if (file.Path is { } path && WorkbookFiles.IsWorkbook(path))
+                {
+                    workbooks[file.Index] = WorkbookInfo.Read(file);
+                    return [];
+                }
+
                 using PdfDocument document = PdfInput.Open(session, file, secret);
                 found[file.Index] = Read(file, document, everything);
                 return [];
@@ -45,11 +52,15 @@ internal static class InfoCommand
                     writer.WriteStartObject();
                     writer.WriteNumber("schema", Schema);
                     writer.WriteStartArray("files");
-                    foreach (Report? report in found)
+                    for (int i = 0; i < found.Length; i++)
                     {
-                        if (report is not null)
+                        if (found[i] is { } report)
                         {
                             WriteJson(writer, report, everything);
+                        }
+                        else if (workbooks[i] is { } workbook)
+                        {
+                            WorkbookInfo.WriteJson(writer, workbook);
                         }
                     }
 
@@ -59,11 +70,15 @@ internal static class InfoCommand
             }
             else
             {
-                foreach (Report? report in found)
+                for (int i = 0; i < found.Length; i++)
                 {
-                    if (report is not null)
+                    if (found[i] is { } report)
                     {
                         WriteText(session.Console.Text, report, everything);
+                    }
+                    else if (workbooks[i] is { } workbook)
+                    {
+                        WorkbookInfo.WriteText(session.Console.Text, workbook);
                     }
                 }
             }

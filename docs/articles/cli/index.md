@@ -56,6 +56,20 @@ egap form list application.pdf --json
 egap attach list invoice.pdf
 ```
 
+## Workbooks
+
+```
+egap info budget.xlsx
+egap cells budget.xlsx --range "Totals!A1:C10" --json
+egap calc budget.xlsx -o calculated.xlsx
+egap convert budget.xlsx -o budget.pdf
+egap convert budget.xlsx -o pages/{name}-{page}.png --dpi 150
+egap convert budget.xlsx -o budget.csv     # one CSV per visible sheet
+```
+
+`calc` calculates every formula and saves the results, and warns of circular references and of cells that show errors.
+`convert` prints a workbook with its own page setup. `egap mcp` has a read-only `cells` tool that reads a range as JSON.
+
 ## Converting
 
 `convert` picks the direction from the output's extension. HTML reads its images and style sheets from its own folder

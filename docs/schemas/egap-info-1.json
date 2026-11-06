@@ -8,9 +8,38 @@
   "additionalProperties": false,
   "properties": {
     "schema": { "description": "The schema's version.", "const": 1 },
-    "files": { "type": "array", "items": { "$ref": "#/$defs/file" } }
+    "files": { "type": "array", "items": { "anyOf": [ { "$ref": "#/$defs/file" }, { "$ref": "#/$defs/workbook" } ] } }
   },
   "$defs": {
+    "workbook": {
+      "description": "A workbook: its sheets, their sizes and the formula errors it saved.",
+      "type": "object",
+      "required": [ "path", "format", "definedNames", "sheets" ],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "description": "The file as the command line named it, or as a glob found it.", "type": "string" },
+        "format": { "description": "The file's extension, such as xlsx or csv.", "type": "string" },
+        "definedNames": { "type": "integer", "minimum": 0 },
+        "sheets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "name", "visibility", "usedRange", "rows", "columns", "formulas", "tables", "formulaErrors" ],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "visibility": { "enum": [ "visible", "hidden", "veryhidden" ] },
+              "usedRange": { "description": "The cells in use, such as A1:C10; null for an empty sheet.", "type": [ "string", "null" ] },
+              "rows": { "type": "integer", "minimum": 0 },
+              "columns": { "type": "integer", "minimum": 0 },
+              "formulas": { "type": "integer", "minimum": 0 },
+              "tables": { "type": "integer", "minimum": 0 },
+              "formulaErrors": { "description": "How many formula cells saved each error, such as #N/A.", "type": "object", "additionalProperties": { "type": "integer", "minimum": 1 } }
+            }
+          }
+        }
+      }
+    },
     "file": {
       "type": "object",
       "required": [ "path", "version", "pages", "pageSizes", "encrypted", "encryption", "permissions", "linearized", "tagged", "pdfa", "formFields", "layers", "warnings", "signatures", "attachments" ],

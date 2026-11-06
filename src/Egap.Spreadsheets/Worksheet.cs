@@ -105,8 +105,18 @@ public sealed class Worksheet
     public double? DefaultRowHeight
     {
         get;
-        set => field = value is null or (>= 0 and <= 409) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "A row height is from 0 to 409 points.");
+        set
+        {
+            field = value is null or (>= 0 and <= 409) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "A row height is from 0 to 409 points.");
+            DefaultRowFollowsFont = false;
+        }
     }
+
+    /// <summary>
+    /// Whether the file gave <see cref="DefaultRowHeight"/> without marking it custom: Excel then takes the default from the
+    /// normal font, whatever the file says.
+    /// </summary>
+    internal bool DefaultRowFollowsFont { get; set; }
 
     /// <summary>The width of columns that set none, in characters as <see cref="SheetColumn.Width"/>, or null for Excel's default.</summary>
     /// <exception cref="ArgumentOutOfRangeException">The width is outside 0 to 255.</exception>

@@ -4,7 +4,7 @@ namespace Egap.Cli.Tests;
 
 /// <summary>
 /// Checks JSON against the published schemas in docs/schemas: the parts of JSON Schema they use (type, const, enum,
-/// required, properties, additionalProperties: false, items, minimum and $ref into $defs), so a report and its schema can't drift.
+/// required, properties, additionalProperties: false, items, minimum, anyOf and $ref into $defs), so a report and its schema can't drift.
 /// </summary>
 internal static class Schema
 {
@@ -25,6 +25,28 @@ internal static class Schema
         {
             string path = reference.GetString()!;
             schema = root.GetProperty("$defs").GetProperty(path["#/$defs/".Length..]);
+        }
+
+        if (schema.TryGetProperty("anyOf", out JsonElement choices))
+        {
+            List<List<string>> tried = [];
+            foreach (JsonElement choice in choices.EnumerateArray())
+            {
+                List<string> found = [];
+                Check(root, choice, value, at, found);
+                if (found.Count == 0)
+                {
+                    tried.Clear();
+                    break;
+                }
+
+                tried.Add(found);
+            }
+
+            if (tried.Count > 0)
+            {
+                problems.Add($"{at}: fits none of anyOf: {string.Join(" / ", tried.Select(t => t[0]))}");
+            }
         }
 
         if (schema.TryGetProperty("const", out JsonElement constant) && !JsonElement.DeepEquals(constant, value))
