@@ -172,13 +172,13 @@ internal sealed class SheetPaginator
         for (int i = 0; i < lastInRow.Length; i++)
         {
             int row = bounds.First.Row + i, column = lastInRow[i];
-            if (column < 0 || grid.Column(column) <= 0 || grid.Row(row) <= 0)
+            if (column < 0)
             {
                 continue;
             }
 
             CellValue value = sheet.GetValue(row, column);
-            if (value.Kind != CellValueKind.Text || value.Text.Length == 0)
+            if (value.Kind != CellValueKind.Text || value.Text.Length == 0 || grid.Column(column) <= 0 || grid.Row(row) <= 0)
             {
                 continue;
             }
