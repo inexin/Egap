@@ -285,6 +285,39 @@ public sealed class PrintTests
     }
 
     [Fact]
+    public void AnEmptyRowFollowsTheFontOfAllTheColumns()
+    {
+        Worksheet sheet = Grid(1, 1);
+        double normal = new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Row(5);
+
+        CellStyle small = CellStyle.Default with { Font = CellStyle.Default.Font with { Size = 8 } };
+        int style = sheet.Workbook.Styles.Add(small);
+        sheet.ColumnSpans.AddRead(new ColumnSpan { First = 0, Last = 9, Style = style });
+        Assert.Equal(normal, new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Row(5));
+
+        sheet.ColumnSpans.AddRead(new ColumnSpan { First = 10, Last = CellAddress.MaxColumns - 1, Style = style });
+        Assert.True(new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Row(5) < normal);
+    }
+
+    [Fact]
+    public void ASheetFittedToPagesWithNoPaperFitsThePrinters()
+    {
+        Worksheet sheet = Grid(2, 2);
+        sheet.PageSetup.PaperSize = null;
+        sheet.PageSetup.Orientation = PrintOrientation.Landscape;
+        using MemoryStream plain = new();
+        sheet.Workbook.Save(plain);
+        plain.Position = 0;
+        Assert.Equal(1, Workbook.Load(plain).Worksheets[0].PageSetup.PaperSize);
+
+        sheet.PageSetup.FitToPage = true;
+        using MemoryStream fitted = new();
+        sheet.Workbook.Save(fitted);
+        fitted.Position = 0;
+        Assert.Null(Workbook.Load(fitted).Worksheets[0].PageSetup.PaperSize);
+    }
+
+    [Fact]
     public void TextRunsOnOntoTheNextPage()
     {
         Worksheet sheet = Grid(1, 1);

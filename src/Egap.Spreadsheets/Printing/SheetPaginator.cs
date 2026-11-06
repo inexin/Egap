@@ -159,8 +159,6 @@ internal sealed class SheetPaginator
             }
         }
 
-        // A character is at least a fifth of its font's size wide, so most text is seen not to reach without measuring it.
-        const double NarrowestCharacter = 0.2;
         int reach = used.Last.Column;
         double reachEdge = grid.Columns(0, reach);
         Workbook book = sheet.Workbook;
@@ -168,7 +166,7 @@ internal sealed class SheetPaginator
         for (int i = 0; i < lastInRow.Length; i++)
         {
             int row = bounds.First.Row + i, column = lastInRow[i];
-            if (column < 0)
+            if (column < 0 || grid.Column(column) <= 0 || grid.Row(row) <= 0)
             {
                 continue;
             }
@@ -182,14 +180,15 @@ internal sealed class SheetPaginator
             CellStyle style = sheet.Store.Get(row, column).Style is var s && s < styles.Count ? styles[s] : CellStyle.Default;
             CellAlignment alignment = style.Alignment;
             double start = grid.Columns(0, column - 1);
-            if (value.Text.Length * style.Font.Size * NarrowestCharacter <= grid.Column(column) || alignment.WrapText || alignment.ShrinkToFit || alignment.TextRotation != 0
+            if (value.Text.Length * style.Font.Size <= grid.Column(column) || alignment.WrapText || alignment.ShrinkToFit || alignment.TextRotation != 0
                 || alignment.Horizontal is not (CellHorizontalAlignment.General or CellHorizontalAlignment.Left or CellHorizontalAlignment.Center or CellHorizontalAlignment.CenterContinuous)
                 || alignment.Vertical is CellVerticalAlignment.Justify or CellVerticalAlignment.Distributed || InMerge(sheet, row, column))
             {
                 continue;
             }
 
-            // A cell shows its first 1,024 characters.
+            // A character is at most its font's size wide, so text that fits by that isn't measured. A cell shows its first 1,024
+            // characters.
             string text = value.Text[..Math.Min(value.Text.Length, 1024)].Replace("\r", "", StringComparison.Ordinal).Replace("\n", "", StringComparison.Ordinal);
             ParagraphStyle paragraph = new() { DefaultStyle = grid.Fonts.TextStyle(style.Font, default), Fallback = grid.Fonts.Fallback };
             double width = Paragraph.Create(text, paragraph).Layout(1e6f).LongestLine + (2 * TextPadding);
@@ -392,7 +391,7 @@ internal sealed class SheetPaginator
         RangeAddress page = new(rows.First, columns.First, rows.Last, columns.Last);
         foreach ((int row, int column) in Sheet.Store.Occupied(page))
         {
-            if (Shows(Sheet, row, column, showing))
+            if (Grid.Column(column) > 0 && Grid.Row(row) > 0 && Shows(Sheet, row, column, showing))
             {
                 return true;
             }

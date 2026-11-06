@@ -36,6 +36,38 @@ internal sealed class SheetGrid
         defaultRow = row is { } normal && (sheet.DefaultRowHeight is null || sheet.DefaultRowFollowsFont)
             ? normal.Dots
             : RowDots(sheet.DefaultRowHeight ?? 15);
+        if (row is { } own && StyledColumnsRow(sheet) is { } pixels && pixels < own.Pixels)
+        {
+            defaultRow = (int)((pixels * rowDotsPerPixel) + 0.2);
+        }
+    }
+
+    /// <summary>
+    /// The row in pixels that the columns' font calls for when every column of the sheet has one, or null: Excel fits an empty
+    /// row to the font of its cells, so a smaller font on all the columns makes for lower rows than the normal font's.
+    /// </summary>
+    private static int? StyledColumnsRow(Worksheet sheet)
+    {
+        var styles = sheet.Workbook.Styles;
+        int next = 0, tallest = 0;
+        foreach (ColumnSpan span in sheet.ColumnSpans.Spans)
+        {
+            if (span.First != next || span.Style < 0 || span.Style >= styles.Count)
+            {
+                return null;
+            }
+
+            CellFont font = styles[span.Style].Font;
+            if (PrintedRows.Find(font.Name, font.Size) is not { } row)
+            {
+                return null;
+            }
+
+            tallest = Math.Max(tallest, row.Pixels);
+            next = span.Last + 1;
+        }
+
+        return next == CellAddress.MaxColumns ? tallest : null;
     }
 
     /// <summary>The printed height of a row of the sheet's default height, in points at 100 %.</summary>

@@ -453,7 +453,9 @@ internal static class XlsxReader
     {
         page.SourcePageSetup = element;
         // The attribute's default is Letter, while a sheet with no page setup, or paper 0, prints on the printer's paper.
-        int paper = XlsxNames.Int((string?)element.Attribute("paperSize"), 1);
+
+        // No paperSize is Letter by the standard, but a sheet fitted to pages fits the printer's paper, as Excel's PDFs measure.
+        int paper = XlsxNames.Int((string?)element.Attribute("paperSize"), page.FitToPage ? 0 : 1);
         page.PaperSize = paper == 0 ? null : paper;
 
         int scale = XlsxNames.Int((string?)element.Attribute("scale"), 100);
