@@ -413,7 +413,9 @@ internal sealed partial class DocxWriter
 
     private void WriteIsland(Island island, DocxExtension? kept, XElement target)
     {
-        if (island.NewChart || (island.IsChartCopy && island.LoadedChart is { IsChanged: true }))
+        // A copy can share its part only while nobody changed it, and only with an island of this file.
+        if (island.NewChart
+            || (island.IsChartCopy && (island.LoadedChart is { IsChanged: true } || editedChartParts.Contains(island.ChartPart!) || data?.Package.GetPart(island.ChartPart!.Name) != island.ChartPart)))
         {
             target.Add(RunWith(kept, WriteNewChart(island)));
             return;
@@ -436,6 +438,9 @@ internal sealed partial class DocxWriter
         content = Rebase(content, kept?.PartName, copy: false);
         target.Add(runLevel ? RunWith(kept, content) : content);
     }
+
+    /// <summary>The chart parts this save replaced because their island's chart was edited.</summary>
+    private readonly HashSet<OpcPart> editedChartParts = [];
 
     private XElement WriteNewChart(Island island)
     {

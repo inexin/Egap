@@ -77,7 +77,7 @@ internal static class ChartCells
 
     private static void FillTitle(ChartTitle title, string reference, List<List<(CellValue Value, string Text, string Format)>> cells)
     {
-        // A title's reference keeps no text of its own in this model's writing; the first cell's goes in its cache.
+        // Setting the reference keeps this text in the title's cache.
         title.Text = string.Join(' ', cells.SelectMany(a => a).Where(c => !c.Value.IsEmpty).Select(c => c.Text));
         title.Reference = reference;
     }

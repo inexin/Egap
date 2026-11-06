@@ -272,7 +272,10 @@ public sealed class ChartTitle
             XElement title = node.Ensure();
             ChartOrder.Insert(title, extended
                 ? new XElement(ChartNs.Cx + "tx", new XElement(ChartNs.Cx + "txData", new XElement(ChartNs.Cx + "f", value), text is null ? null : new XElement(ChartNs.Cx + "v", text)))
-                : new XElement(ChartNs.C + "tx", new XElement(ChartNs.C + "strRef", new XElement(ChartNs.C + "f", value))));
+                : new XElement(ChartNs.C + "tx", new XElement(
+                    ChartNs.C + "strRef",
+                    new XElement(ChartNs.C + "f", value),
+                    text is null ? null : new XElement(ChartNs.C + "strCache", new XElement(ChartNs.C + "ptCount", new XAttribute("val", 1)), new XElement(ChartNs.C + "pt", new XAttribute("idx", 0), new XElement(ChartNs.C + "v", text))))));
         }
     }
 

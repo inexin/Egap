@@ -232,6 +232,24 @@ public sealed class ChartTests
     }
 
     [Fact]
+    public void ACellLinkedTitleIsReadFromItsCellAndSaved()
+    {
+        Workbook book = Sample();
+        Worksheet sheet = book.Worksheets[0];
+        sheet["A6"].Value = "Title cell";
+        sheet["A7"].Value = "Axis cell";
+        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:B4"));
+        drawing.Chart!.Title.Reference = "Sheet1!$A$6";
+        drawing.Chart.Axes[0].Title.Reference = "Sheet1!$A$7";
+
+        Chart back = Reloaded(book).Worksheets[0].Drawings[0].Chart!;
+        Assert.Equal("Title cell", back.Title.Text);
+        Assert.Equal("Sheet1!$A$6", back.Title.Reference);
+        Assert.Equal("Axis cell", back.Axes[0].Title.Text);
+        Assert.Equal("Sheet1!$A$7", back.Axes[0].Title.Reference);
+    }
+
+    [Fact]
     public void ALoopOfNamesEnds()
     {
         Workbook book = Sample();

@@ -267,6 +267,67 @@ public sealed class ChartModelTests
     }
 
     [Fact]
+    public void EditingAReadChartAfterCopyingItLeavesTheCopy()
+    {
+        Document document = new();
+        document.AddSection().Body.AddParagraph("").Inlines.Add(new Island(document, Made(), 360, 216));
+        Document back = Reloaded(document);
+        Island first = back.Descendants<Island>().First();
+        Island copy = (Island)first.Clone();
+        back.Sections[0].Body.AddParagraph("").Inlines.Add(copy);
+        first.Chart!.Title.Text = "New";
+
+        List<Island> saved = [.. Reloaded(back).Descendants<Island>()];
+        Assert.Equal(2, saved.Count);
+        Assert.Equal("New", saved[0].Chart!.Title.Text);
+        Assert.False(saved[1].Chart!.HasTitle);
+    }
+
+    [Fact]
+    public void ACopyNobodyEditedStillSharesThePart()
+    {
+        Document document = new();
+        document.AddSection().Body.AddParagraph("").Inlines.Add(new Island(document, Made(), 360, 216));
+        Document back = Reloaded(document);
+        back.Sections[0].Body.AddParagraph("").Inlines.Add((Island)back.Descendants<Island>().First().Clone());
+
+        using MemoryStream saved = new();
+        DocxFormat.Save(back, saved);
+        saved.Position = 0;
+        using System.IO.Compression.ZipArchive zip = new(saved);
+        Assert.Single(zip.Entries, e => e.FullName.StartsWith("word/charts/chart", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void AReadChartImportedIntoAnotherDocumentComesAlong()
+    {
+        Document document = new();
+        document.AddSection().Body.AddParagraph("").Inlines.Add(new Island(document, Made(), 360, 216));
+        Document back = Reloaded(document);
+
+        Document other = new();
+        other.AddSection().Body.AddParagraph("").Inlines.Add(other.Import(back.Descendants<Island>().First()));
+        Assert.Equal("North", Assert.Single(Reloaded(other).Descendants<Island>()).Chart!.Series[0].Name);
+    }
+
+    [Fact]
+    public void ACellLinkedTitleKeepsItsText()
+    {
+        Chart chart = Made();
+        chart.Title.Text = "From the cell";
+        chart.Title.Reference = "Sheet1!$A$1";
+        ChartAxis axis = chart.Axes[0];
+        axis.Title.Text = "Axis cell";
+        axis.Title.Reference = "Sheet1!$B$1";
+
+        Chart back = RoundTrip(chart);
+        Assert.Equal("From the cell", back.Title.Text);
+        Assert.Equal("Sheet1!$A$1", back.Title.Reference);
+        Assert.Equal("Axis cell", back.Axes[0].Title.Text);
+        Assert.Equal("Sheet1!$B$1", back.Axes[0].Title.Reference);
+    }
+
+    [Fact]
     public void ACopyGoingToAnotherDocumentDropsWhatItCannotTake()
     {
         Chart chart = Made();

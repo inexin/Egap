@@ -112,6 +112,7 @@ internal sealed partial class DocxWriter
             if (!island.NewChart && !island.IsChartCopy && island.LoadedChart is { IsChanged: true } edited && island.ChartPart is { } chartPart)
             {
                 package.AddPart(chartPart.Name, chartPart.ContentType, edited.ToBytes());
+                editedChartParts.Add(chartPart);
             }
         }
     }
