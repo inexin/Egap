@@ -150,12 +150,18 @@ internal sealed class SheetPaginator
 
         int[] lastInRow = new int[bounds.Last.Row - bounds.First.Row + 1];
         Array.Fill(lastInRow, -1);
-        foreach ((int row, int column) in sheet.Store.Occupied(bounds))
+        // From the right, one column at a time: on most sheets the last columns find every row's last cell.
+        int missing = lastInRow.Length;
+        for (int column = bounds.Last.Column; column >= bounds.First.Column && missing > 0; column--)
         {
-            int index = row - bounds.First.Row;
-            if (column > lastInRow[index] && sheet.Store.Get(row, column).Kind != CellKind.Empty)
+            foreach ((int row, int found) in sheet.Store.Occupied(new RangeAddress(bounds.First.Row, column, bounds.Last.Row, column)))
             {
-                lastInRow[index] = column;
+                int index = row - bounds.First.Row;
+                if (lastInRow[index] < 0 && sheet.Store.Get(row, found).Kind != CellKind.Empty)
+                {
+                    lastInRow[index] = found;
+                    missing--;
+                }
             }
         }
 
