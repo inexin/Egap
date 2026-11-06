@@ -138,6 +138,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - New fonts name their font and follow no theme font (`CellFont.Scheme` is `None` for new cells): a workbook made here
   has no theme part, and Excel took a scheme font from its own default theme, Aptos Narrow.
+- The remaining worksheet functions: financial (55), engineering, database and the rest of math (95), and the
+  probability distributions, tests, regression and remaining statistics (80), each checked against Excel
+  (`Oracle/functions-financial.txt`, `functions-engineering.txt`, `functions-statistics.txt`). `FORECAST.ETS` and its three companions are not built yet.
+- `COMBIN`, `PERMUT`, `PERMUTATIONA` and the binomial and hypergeometric functions give `#NUM!` past Excel's limit of 2147483646, and
+  huge arguments to the functions that count or search end soon instead of running for hours or throwing (`Oracle/functions-extreme.txt`).
 - New package: workbooks built and edited from code. `Workbook.Create` starts a workbook; `Worksheets` adds, inserts,
   moves, finds and removes sheets with Excel's naming rules. Cells are reached as `sheet["B4"]` or
   `sheet.Cells[row, column]` and hold numbers, text, booleans, errors and formulas (kept as text, calculated later), with

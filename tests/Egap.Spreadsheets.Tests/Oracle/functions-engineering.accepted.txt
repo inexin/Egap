@@ -1,0 +1,50 @@
+BESSELI(50,2)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(100,2)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(100,3)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(500,2)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(500,3)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(500,5)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(500,10)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(500,1000)	Excel gives 0 for a true value near 4.7E-144, which Egap gives.
+BESSELI(700,2)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(700,3)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(700,5)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+BESSELI(700,10)	Excel's value for an order of 2 and up at large x is far from true, up to half out at BESSELI(700,3), as an upward recurrence would be; Egap sums the power series.
+IMCOT("0,001+0,002i")	The divisor cancels nearly to nothing at so small a number, leaving noise from about the 10th digit that differs between Excel's 80 bits and doubles.
+IMCSC("0,001+0,002i")	The divisor cancels nearly to nothing at so small a number, leaving noise from about the 10th digit that differs between Excel's 80 bits and doubles.
+IMCSC("1E-5+1E-5i")	The divisor cancels nearly to nothing at so small a number, leaving noise from about the 10th digit that differs between Excel's 80 bits and doubles.
+IMCSCH("0,001+0,002i")	The divisor cancels nearly to nothing at so small a number, leaving noise from about the 10th digit that differs between Excel's 80 bits and doubles.
+IMCSCH("1E-5+1E-5i")	The divisor cancels nearly to nothing at so small a number, leaving noise from about the 10th digit that differs between Excel's 80 bits and doubles.
+IMLOG2(1E20)	The last digit of the text only; Excel calculates in its floating-point unit's 80 bits, and this is not reproduced with doubles.
+IMPOWER("1+i",1000)	Noise in the 14th and 15th digits at so high a power; Excel calculates in its floating-point unit's 80 bits, and this is not reproduced with doubles.
+IMPOWER("1E100",1.5)	Excel's fractional power of a size near 1E100 is out in the 14th digit; Egap's is within the last digit of the true value.
+IMPOWER("1E100",1/3)	Excel's fractional power of a size near 1E100 is out in the 14th digit; Egap's is within the last digit of the true value.
+IMPOWER("1E100",I103)	Excel's fractional power of a size near 1E100 is out in the 14th digit; Egap's is within the last digit of the true value.
+MUNIT(5000)	Egap's arrays stop at 4 million cells, and 5000 by 5000 is 25 million; #VALUE! rather than the whole array.
+ROWS(MUNIT(5000))	Egap's arrays stop at 4 million cells, and 5000 by 5000 is 25 million; #VALUE! rather than the whole array.
+COLUMNS(MUNIT(5000))	Egap's arrays stop at 4 million cells, and 5000 by 5000 is 25 million; #VALUE! rather than the whole array.
+INDEX(MUNIT(5000),1,1)	Egap's arrays stop at 4 million cells, and 5000 by 5000 is 25 million; #VALUE! rather than the whole array.
+INDEX(MUNIT(5000),1,2)	Egap's arrays stop at 4 million cells, and 5000 by 5000 is 25 million; #VALUE! rather than the whole array.
+INDEX(MUNIT(5000),2,2)	Egap's arrays stop at 4 million cells, and 5000 by 5000 is 25 million; #VALUE! rather than the whole array.
+SUM(MUNIT(5000))	Egap's arrays stop at 4 million cells, and 5000 by 5000 is 25 million; #VALUE! rather than the whole array.
+MUNIT(65536)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+ROWS(MUNIT(65536))	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+COLUMNS(MUNIT(65536))	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(MUNIT(65536),1,1)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(MUNIT(65536),1,2)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(MUNIT(65536),2,2)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+SUM(MUNIT(65536))	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+MUNIT(1E10)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+ROWS(MUNIT(1E10))	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+COLUMNS(MUNIT(1E10))	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(MUNIT(1E10),1,1)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(MUNIT(1E10),1,2)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(MUNIT(1E10),2,2)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+SUM(MUNIT(1E10))	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+SEQUENCE(100000,100000)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+ROWS(SEQUENCE(100000,100000))	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+COLUMNS(SEQUENCE(100000,100000))	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(SEQUENCE(100000,100000),1,1)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(SEQUENCE(100000,100000),2,1)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(SEQUENCE(100000,100000),2,2)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.
+INDEX(SEQUENCE(100000,100000),3,2)	Past what it can hold Excel gives an array that reads as 0 and has 0 rows; Egap gives #VALUE!, which says what happened.

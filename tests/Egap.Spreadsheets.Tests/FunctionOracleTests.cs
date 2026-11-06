@@ -1,24 +1,32 @@
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Egap.Spreadsheets.Tests;
 
 /// <summary>
 /// The built-in functions against Excel: every case in <c>Oracle/functions.txt</c> evaluated here and compared with what
 /// Excel calculated for it (<c>Oracle/functions.excel.tsv</c>, written by <c>tools/excel-function-oracle.ps1</c>). A case
-/// where Egap knowingly differs is listed with its reason in <c>Oracle/functions.accepted.txt</c>.
+/// where Egap knowingly differs is listed with its reason in <c>Oracle/functions.accepted.txt</c>. Each further set of cases,
+/// <c>Oracle/functions-NAME.txt</c>, has the same files, and <c>functions-NAME.tolerance.txt</c> may give a function that
+/// iterates or approximates a wider tolerance, as name, a tab, relative tolerance, a tab, and why.
 /// </summary>
-public sealed class FunctionOracleTests
+public sealed partial class FunctionOracleTests
 {
     private static string Folder => Path.Combine(AppContext.BaseDirectory, "Oracle");
 
-    [Fact]
-    public void FunctionsMatchExcel()
+    public static TheoryData<string> CaseSets => new(Directory.GetFiles(Folder, "functions*.excel.tsv")
+        .Select(f => Path.GetFileName(f)[..^".excel.tsv".Length]).Order(StringComparer.Ordinal));
+
+    [Theory]
+    [MemberData(nameof(CaseSets))]
+    public void FunctionsMatchExcel(string set)
     {
-        string[] expected = File.ReadAllLines(Path.Combine(Folder, "functions.excel.tsv"));
+        string[] expected = File.ReadAllLines(Path.Combine(Folder, set + ".excel.tsv"));
         CultureInfo culture = Culture(expected[0]);
-        Worksheet sheet = Sheet(culture);
-        Dictionary<string, string> accepted = Accepted();
+        Worksheet sheet = Sheet(culture, set);
+        Dictionary<string, string> accepted = Accepted(set);
+        Dictionary<string, double> tolerances = Tolerances(set);
         StringBuilder failures = new();
         HashSet<string> seen = [];
         int compared = 0;
@@ -36,11 +44,14 @@ public sealed class FunctionOracleTests
 
             CellValue actual = sheet.Evaluate(formula, new CellAddress(20 * index, 11));
             compared++;
-            bool same = Same(actual, kind, value);
+            double tolerance = Tolerance(formula, tolerances);
+            bool same = Same(actual, kind, value, tolerance);
             if (accepted.ContainsKey(formula))
             {
                 seen.Add(formula);
-                if (same)
+
+                // Only well inside the tolerance: an accepted gap near its edge may close on one platform's math library alone.
+                if (Same(actual, kind, value, tolerance / 4))
                 {
                     failures.AppendLine(CultureInfo.InvariantCulture, $"{formula}: now matches Excel; take it off the accepted list");
                 }
@@ -56,7 +67,7 @@ public sealed class FunctionOracleTests
             failures.AppendLine(CultureInfo.InvariantCulture, $"{formula}: accepted but not a case");
         }
 
-        Assert.True(compared > 500, $"only {compared} cases");
+        Assert.True(compared > 40, $"only {compared} cases");
         Assert.True(failures.Length == 0, failures.ToString());
     }
 
@@ -82,7 +93,7 @@ public sealed class FunctionOracleTests
 
         CalculationResult result = book.CalculateFull();
         Assert.Empty(result.CircularReferences);
-        Dictionary<string, string> accepted = Accepted();
+        Dictionary<string, string> accepted = Accepted("functions");
         StringBuilder failures = new();
         foreach ((Cell cell, CellValue saved) in formulas)
         {
@@ -172,12 +183,12 @@ public sealed class FunctionOracleTests
         return header[start..header.IndexOf(end, start, StringComparison.Ordinal)];
     }
 
-    private static Worksheet Sheet(CultureInfo culture)
+    private static Worksheet Sheet(CultureInfo culture, string set)
     {
         Workbook book = Workbook.Create();
         book.Culture = culture;
         Worksheet sheet = book.Worksheets[0];
-        foreach (string raw in File.ReadAllLines(Path.Combine(Folder, "functions.txt")))
+        foreach (string raw in File.ReadAllLines(Path.Combine(Folder, set + ".txt")))
         {
             string line = raw.Trim();
             if (!line.StartsWith('@'))
@@ -196,6 +207,10 @@ public sealed class FunctionOracleTests
             {
                 cell.Value = text == "TRUE";
             }
+            else if (text.StartsWith('='))
+            {
+                cell.Formula = text;
+            }
             else if (CellValue.TryParseError(text, out CellError error))
             {
                 cell.Value = error;
@@ -206,13 +221,68 @@ public sealed class FunctionOracleTests
             }
         }
 
+        book.CalculateFull();
         return sheet;
     }
 
-    private static Dictionary<string, string> Accepted()
+    /// <summary>The wider tolerances a set gives its functions, by function name.</summary>
+    private static Dictionary<string, double> Tolerances(string set)
+    {
+        Dictionary<string, double> tolerances = new(StringComparer.Ordinal);
+        string path = Path.Combine(Folder, set + ".tolerance.txt");
+        if (File.Exists(path))
+        {
+            foreach (string line in File.ReadAllLines(path).Where(l => l.Length > 0 && !l.StartsWith('#')))
+            {
+                string[] fields = line.Split('\t');
+                Assert.True(fields.Length == 3 && fields[2].Length > 0, $"tolerance line without a reason: {line}");
+                tolerances.Add(fields[0], double.Parse(fields[1], CultureInfo.InvariantCulture) + MathLibrarySpread);
+            }
+        }
+
+        return tolerances;
+    }
+
+    /// <summary>The tolerance for a formula: the widest of the functions it calls that have one.</summary>
+    private static double Tolerance(string formula, Dictionary<string, double> tolerances)
+    {
+        double tolerance = Standard;
+        foreach ((string name, double wider) in tolerances)
+        {
+            if (wider > tolerance && Calls(formula, name))
+            {
+                tolerance = wider;
+            }
+        }
+
+        return tolerance;
+    }
+
+    /// <summary>Whether the formula calls the function by its whole name: MIRR is no call of IRR.</summary>
+    private static bool Calls(string formula, string name)
+    {
+        string call = name + "(";
+        for (int at = formula.IndexOf(call, StringComparison.Ordinal); at >= 0; at = formula.IndexOf(call, at + 1, StringComparison.Ordinal))
+        {
+            if (at == 0 || !(char.IsLetterOrDigit(formula[at - 1]) || formula[at - 1] is '.' or '_'))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static Dictionary<string, string> Accepted(string set)
     {
         Dictionary<string, string> accepted = new(StringComparer.Ordinal);
-        foreach (string line in File.ReadAllLines(Path.Combine(Folder, "functions.accepted.txt")))
+        string path = Path.Combine(Folder, set + ".accepted.txt");
+        if (!File.Exists(path))
+        {
+            return accepted;
+        }
+
+        foreach (string line in File.ReadAllLines(path))
         {
             if (line.Length == 0 || line.StartsWith('#'))
             {
@@ -227,19 +297,54 @@ public sealed class FunctionOracleTests
         return accepted;
     }
 
-    private static bool Same(CellValue actual, string kind, string value) => kind switch
+    private static bool Same(CellValue actual, string kind, string value, double tolerance) => kind switch
     {
-        "number" => actual.Kind == CellValueKind.Number && Close(actual.Number, double.Parse(value, CultureInfo.InvariantCulture)),
-        "text" => actual.Kind == CellValueKind.Text && actual.Text == value,
+        "number" => actual.Kind == CellValueKind.Number && Close(actual.Number, double.Parse(value, CultureInfo.InvariantCulture), tolerance),
+        "text" => actual.Kind == CellValueKind.Text && (actual.Text == value || SameComplex(actual.Text, value, tolerance)),
         "boolean" => actual.Kind == CellValueKind.Boolean && actual.Boolean == (value == "TRUE"),
         "error" => actual.Kind == CellValueKind.Error && CellValue.ErrorText(actual.Error) == value,
         "blank" => actual.Kind == CellValueKind.Empty || (actual.Kind == CellValueKind.Number && actual.Number == 0),
         _ => false,
     };
 
+    /// <summary>
+    /// Two complex numbers as text, part by part to the same tolerance as a number. Their text holds 15 digits, so a result that
+    /// falls near a rounding point shows another last digit with the last bit of the platform's sine or exponential.
+    /// </summary>
+    private static bool SameComplex(string actual, string expected, double tolerance)
+    {
+        return Parts(actual) is { } a && Parts(expected) is { } b && Close(a.Real, b.Real, tolerance) && Close(a.Imaginary, b.Imaginary, tolerance);
+
+        static (double Real, double Imaginary)? Parts(string text)
+        {
+            Match match = ComplexText().Match(text);
+            if (!match.Success)
+            {
+                return null;
+            }
+
+            string imaginary = match.Groups[2].Value;
+            return (Read(match.Groups[1].Value), imaginary is "+" or "" ? 1 : imaginary == "-" ? -1 : Read(imaginary));
+
+            static double Read(string part) => part.Length == 0 ? 0 : double.Parse(part.Replace(',', '.'), CultureInfo.InvariantCulture);
+        }
+    }
+
+    [GeneratedRegex(@"^([-+]?[\d.,]+(?:E[-+]?\d+)?)?([-+]?(?:[\d.,]+(?:E[-+]?\d+)?)?)[ij]$")]
+    private static partial Regex ComplexText();
+
     /// <summary>Equal to 15 significant digits, as Excel shows and compares them.</summary>
-    private static bool Close(double actual, double expected) =>
-        actual == expected || Math.Abs(actual - expected) <= 1e-14 * Math.Max(Math.Abs(actual), Math.Abs(expected));
+    private static bool Close(double actual, double expected, double tolerance = Standard) =>
+        actual == expected || Math.Abs(actual - expected) <= tolerance * Math.Max(Math.Abs(actual), Math.Abs(expected));
+
+    private const double Standard = 1e-14;
+
+    /// <summary>
+    /// What a listed tolerance gets on top. A list holds the widest gap measured on Windows; .NET's Math.Exp, Log, Pow, Sinh and
+    /// the like come from the platform's C library, whose results differ in the last bit or two, so a result from several
+    /// such calls moves by some units in the last place (2.2e-16 each) from platform to platform.
+    /// </summary>
+    private const double MathLibrarySpread = 2e-15;
 
     private static string Unescape(string text) =>
         text.Replace("\t", "\t", StringComparison.Ordinal).Replace("\r", "\r", StringComparison.Ordinal)

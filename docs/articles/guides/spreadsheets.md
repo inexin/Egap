@@ -350,11 +350,11 @@ bool settled = result.Converged;                     // true
 
 ### Functions
 
-About 210 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference,
-information and the core statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (`">20"`,
+Over 440 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
+information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (`">20"`,
 `"a*"`, `"<>"`). `FunctionRegistry.BuiltInFunctions` lists them. Each follows Microsoft's function reference and is
 checked against what Excel calculates: `tools/excel-function-oracle.ps1` runs the cases in
-`tests/Egap.Spreadsheets.Tests/Oracle/functions.txt` through Excel, and the tests compare Egap with its answers;
+`tests/Egap.Spreadsheets.Tests/Oracle/functions*.txt` through Excel, and the tests compare Egap with its answers;
 `tools/excel-workbook-oracle.ps1` has Excel build, calculate and save whole workbooks, which the tests calculate again
 with `CalculateFull` and compare cell by cell. Text that depends on the culture, such as FIXED, DOLLAR, dates read from
 text and numbers joined into text, follows `book.Culture`.

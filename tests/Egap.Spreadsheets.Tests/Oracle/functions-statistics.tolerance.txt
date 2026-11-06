@@ -1,0 +1,46 @@
+# name	relative tolerance	why
+BETA.DIST	7.5e-14	Excel off at far tails with large shapes; exact fractions side with Egap (BETA.DIST(0.25,1000,500,FALSE))
+BETA.INV	3.3e-14	Inherits BETA.DIST rounding
+BETADIST	1.2e-13	As BETA.DIST
+BETAINV	3.3e-14	As BETA.INV
+CHIDIST	5.7e-14	As CHISQ.DIST.RT
+CHIINV	1.6e-14	As CHISQ.INV.RT
+CHISQ.DIST	4.3e-14	Far lower tail with df 100; rounding on either side
+CHISQ.DIST.RT	5.7e-14	Far tail, x=1000; rounding on either side
+CHISQ.INV.RT	1.6e-14	p near 1; rounding of the inverse
+CONFIDENCE	3.3e-13	As CONFIDENCE.NORM
+CONFIDENCE.NORM	3.3e-13	Excel's inverse normal at alpha 1E-5
+F.DIST	4.4e-14	Density with d2=1000; rounding of the power terms
+F.DIST.RT	4.8e-14	Far tails with d2=1000; rounding on either side
+F.INV	5.6e-14	Inherits F.DIST rounding
+F.INV.RT	5.6e-14	Inherits F.DIST.RT rounding
+FDIST	4.8e-14	As F.DIST.RT
+FINV	5.6e-14	As F.INV.RT
+GAMMA.DIST	6.9e-14	Excel off at far tails; exact GAMMA.DIST(1,100,1,FALSE) sides with Egap
+GAMMA.INV	1.2e-13	Small shapes: x^(1/a) magnifies rounding by 1/a
+GAMMADIST	6.9e-14	As GAMMA.DIST
+GAMMAINV	1.2e-13	As GAMMA.INV
+HYPGEOM.DIST	4.5e-14	Huge populations; rounding of the log gamma terms
+HYPGEOMDIST	4.5e-14	As HYPGEOM.DIST
+KURT	1.1e-14	Fourth powers of 1E100 values
+LINEST	1.1e-10	Near-collinear probes (8.00001 against 8): condition number near 1E6 squares the rounding
+LOGEST	4.0e-14	Logs and exponentials on top of the fit
+LOGNORM.DIST	2.7e-14	Far tail through Excel's normal
+LOGNORMDIST	1.9e-14	As LOGNORM.DIST
+NORM.DIST	1.2e-13	Excel off at Phi(-37): the tail series in 40 digits sides with Egap
+NORM.S.DIST	1.2e-13	As NORM.DIST
+NORMDIST	1.2e-13	As NORM.DIST
+NORMSDIST	1.2e-13	As NORM.DIST
+POISSON	9.1e-14	As POISSON.DIST
+POISSON.DIST	9.1e-14	Excel off at far tails: exact POISSON(100,1000,FALSE) sides with Egap
+T.DIST	5.5e-14	Far tail, T.DIST(-60,100,TRUE); rounding on either side
+T.DIST.2T	5.5e-14	As T.DIST
+T.DIST.RT	5.5e-14	As T.DIST
+T.INV	1.1e-11	Excel off at df=100000: the exact finite sum gives P=0.25-2.2e-12 at its T.INV(0.25,100000), 0.25-6e-17 at Egap's
+T.INV.2T	5.3e-10	p near 1: 1-p=1E-7 has only 9 clean digits
+T.TEST	5.3e-14	Through T.DIST rounding
+TDIST	5.5e-14	As T.DIST
+TINV	5.3e-10	As T.INV.2T
+TTEST	5.3e-14	As T.TEST
+WEIBULL	2.4e-14	As WEIBULL.DIST
+WEIBULL.DIST	2.4e-14	Powers with alpha 20
