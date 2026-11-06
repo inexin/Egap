@@ -32,6 +32,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- A package part whose XML declaration trips .NET's XML reader now gives a `DocumentException`, as other malformed XML does,
+  and no longer an `ArgumentOutOfRangeException`.
 - `Document.Identify` knows CSV (`DocumentFormatKind.Csv`) by its `.csv`, `.tsv` or `.tab` extension. Loading it or an Excel
   workbook now needs `SpreadsheetFormat.Register()` from Egap.Spreadsheets; without it the error names the package.
 - RTF loading allocates about 7 % less, at the same speed and with the same result: the reader now sets Word's

@@ -60,6 +60,28 @@ public class PackageTests
     }
 
     [Fact]
+    public void ADeclarationThatBreaksTheXmlReaderIsRefused()
+    {
+        // Bytes a fuzz run found: .NET's XML reader throws ArgumentOutOfRangeException on them, not XmlException.
+        byte[] xml = [.. "<?xml version=\"1.0U"u8, 0xEC, .. "F-8\" standalone=\"yes\"?>"u8];
+        MemoryStream stream = new();
+        using (ZipArchive zip = new(stream, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            using (StreamWriter types = new(zip.CreateEntry("[Content_Types].xml").Open()))
+            {
+                types.Write("<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\"><Default Extension=\"xml\" ContentType=\"application/xml\"/></Types>");
+            }
+
+            using Stream part = zip.CreateEntry("word/document.xml").Open();
+            part.Write(xml);
+        }
+
+        stream.Position = 0;
+        OpcPackage package = OpcPackage.Read(stream, new DocumentLimits());
+        Assert.Throws<DocumentException>(() => package.GetPart("/word/document.xml")!.LoadXml());
+    }
+
+    [Fact]
     public void DtdsAndExternalEntitiesAreRefused()
     {
         OpcPackage package = Package(("word/document.xml", "<!DOCTYPE d [<!ENTITY x SYSTEM \"file:///c:/windows/win.ini\">]><d>&x;</d>"));
