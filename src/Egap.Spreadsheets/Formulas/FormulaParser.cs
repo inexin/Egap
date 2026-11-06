@@ -1055,6 +1055,24 @@ internal sealed class FormulaParser
             throw Error("Only #REF! may follow a sheet name.");
         }
 
+        // A DDE item can be any text, so it is quoted: [1]!'A b'. It stays as written, quotes and all.
+        if (c == '\'' && prefix.Book is not null && prefix.FirstSheet is null)
+        {
+            pos++;
+            while (pos < text.Length && (text[pos] != '\'' || (pos + 1 < text.Length && text[pos + 1] == '\'')))
+            {
+                pos += text[pos] == '\'' ? 2 : 1;
+            }
+
+            if (pos >= text.Length)
+            {
+                throw Error("A quoted name must end with a quote.");
+            }
+
+            pos++;
+            return new NameNode(prefix, text[start..pos]);
+        }
+
         if (r1c1)
         {
             if (R1C1Reference(prefix) is { } reference)

@@ -116,6 +116,9 @@ public sealed class Worksheet
         set => field = value is null or (>= 0 and <= 255) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "A column width is from 0 to 255.");
     }
 
+    /// <summary>Whether this sheet holds a linked book's kept values.</summary>
+    internal bool IsLinked => linked;
+
     /// <summary>For a linked book's sheet: Excel could not refresh it, so a cell it doesn't hold is #REF!, not blank.</summary>
     internal bool LinkRefreshFailed { get; set; }
 

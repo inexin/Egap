@@ -70,6 +70,9 @@ internal readonly struct Grid
         }
     }
 
+    /// <summary>Whether this is a range of a linked book's kept values.</summary>
+    public bool IsLinked => isArea && area.Sheet.IsLinked;
+
     /// <summary>The same first cell, stretched or cut to a size, as SUMIF lines its sum range up with the criteria range.</summary>
     public Grid Resize(int rows, int columns)
     {

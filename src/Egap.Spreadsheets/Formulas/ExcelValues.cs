@@ -9,6 +9,19 @@ namespace Egap.Spreadsheets.Formulas;
 /// </summary>
 internal static class ExcelValues
 {
+    /// <summary>
+    /// A sum as Excel gives it for a formula's last + or - and SUM's last addition: 0 when less than 8 units in the last place
+    /// of the larger operand remain, which is rounding noise. Found with Excel; see <c>Oracle/functions.txt</c>.
+    /// </summary>
+    public static double AddDroppingNoise(double left, double right)
+    {
+        double sum = left + right;
+        double larger = Math.Max(Math.Abs(left), Math.Abs(right));
+
+        // 2^-48 of the larger operand is at least the limit, so nearly every sum stops at the first test.
+        return Math.Abs(sum) < larger * (1.0 / (1L << 48)) && Math.Abs(sum) < Math.ScaleB(1.0, Math.ILogB(larger) - 49) ? 0 : sum;
+    }
+
     private static readonly DateTime Base1900 = new(1899, 12, 31);
     private static readonly DateTime Base1904 = new(1904, 1, 1);
     private static readonly DateTime First1900 = new(1900, 1, 1);

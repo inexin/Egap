@@ -27,7 +27,7 @@ internal enum OpCode : byte
     /// <summary>The spill range of the cell on top (<c>#</c>).</summary>
     Spill,
 
-    /// <summary>Apply the binary operator <c>(BinaryOperator)A</c> to the two top values.</summary>
+    /// <summary>Apply the binary operator <c>(BinaryOperator)A</c> to the two top values; <c>B</c> is 1 for a + or - that is the whole formula, where Excel drops rounding noise.</summary>
     Binary,
 
     /// <summary>The union of the <c>A</c> references on top.</summary>
@@ -93,6 +93,11 @@ internal sealed class FormulaCompiler
     {
         FormulaCompiler compiler = new();
         compiler.Emit(formula.Root);
+        if (formula.Root is BinaryNode { Operator: BinaryOperator.Add or BinaryOperator.Subtract })
+        {
+            compiler.code[^1] = compiler.code[^1] with { B = 1 };
+        }
+
         return new CompiledFormula([.. compiler.code], [.. compiler.constants], [.. compiler.operands], Math.Max(1, compiler.maxDepth));
     }
 

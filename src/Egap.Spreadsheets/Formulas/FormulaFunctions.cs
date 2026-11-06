@@ -268,7 +268,7 @@ internal static partial class FormulaFunctions
     /// <summary>SUM: numbers in references and arrays; numbers, booleans and text that reads as a number typed as arguments.</summary>
     private static EvalValue Sum(EvalValue[] arguments, EvalContext context)
     {
-        double total = 0;
+        double total = 0, before = 0, added = 0;
         foreach (EvalValue argument in arguments)
         {
             foreach ((EvalValue value, bool direct) in Scalars(argument))
@@ -278,10 +278,10 @@ internal static partial class FormulaFunctions
                     case EvalKind.Error:
                         return value;
                     case EvalKind.Number:
-                        total += value.Number;
-                        break;
                     case EvalKind.Boolean when direct:
-                        total += value.Number;
+                        before = total;
+                        added = value.Number;
+                        total += added;
                         break;
                     case EvalKind.Text when direct:
                         if (!Num(value, context, out double number, out EvalValue error))
@@ -289,13 +289,16 @@ internal static partial class FormulaFunctions
                             return error;
                         }
 
-                        total += number;
+                        before = total;
+                        added = number;
+                        total += added;
                         break;
                 }
             }
         }
 
-        return Number(total);
+        // Excel treats SUM's last addition as it does a formula's last + or -.
+        return Number(ExcelValues.AddDroppingNoise(before, added));
     }
 
     private enum Logic
