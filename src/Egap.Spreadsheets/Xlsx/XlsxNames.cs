@@ -24,12 +24,21 @@ internal static class XlsxNames
     public const string ExternalLinkRelationship = Office + "externalLink";
     public const string SharedStringsRelationship = Office + "sharedStrings";
     public const string StylesRelationship = Office + "styles";
+    /// <summary>
+    /// An error as a cell stores it. Excel will not open a file with #SPILL! or #CALC! as a value: it stores #VALUE! with a rich
+    /// value that tells which, and works them out again when it calculates.
+    /// </summary>
+    public static string StoredError(CellError error) =>
+        error is CellError.Spill or CellError.Calc ? CellValue.ErrorText(CellError.Value) : CellValue.ErrorText(error);
+
     public const string CalcChainRelationship = Office + "calcChain";
+    public const string SheetMetadataRelationship = Office + "sheetMetadata";
 
     private const string Ml = "application/vnd.openxmlformats-officedocument.spreadsheetml.";
     public const string WorksheetType = Ml + "worksheet+xml";
     public const string SharedStringsType = Ml + "sharedStrings+xml";
     public const string StylesType = Ml + "styles+xml";
+    public const string SheetMetadataType = Ml + "sheetMetadata+xml";
 
     /// <summary>The content type of the workbook part for each kind of file.</summary>
     public static string WorkbookType(WorkbookFormat format) => format switch

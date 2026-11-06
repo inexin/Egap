@@ -109,6 +109,15 @@ internal sealed class DependencyGraph
     /// <summary>Whether anything was noted since the last plan.</summary>
     public bool HasChanges => all || changed.Count > 0 || volatiles.Count > 0;
 
+    /// <summary>Tells the graph of the range a dynamic array formula now fills.</summary>
+    public void SetOutput(CellKey cell, RangeAddress output)
+    {
+        if (nodes.TryGetValue(cell.Packed, out Node? node))
+        {
+            node.Output = output;
+        }
+    }
+
     /// <summary>The formula cells that read <paramref name="cell"/>, or the range of the array formula it holds.</summary>
     public IEnumerable<CellKey> Dependents(CellKey cell)
     {
@@ -622,7 +631,7 @@ internal sealed class DependencyGraph
         public Precedent[] Precedents { get; } = precedents;
 
         /// <summary>The range an array formula fills, its own cell included; null for an ordinary formula.</summary>
-        public RangeAddress? Output { get; } = output;
+        public RangeAddress? Output { get; set; } = output;
 
         /// <summary>The plan this node was last numbered in, and its number there.</summary>
         public int Stamp { get; set; }

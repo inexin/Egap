@@ -41,6 +41,9 @@ internal sealed class FormulaTable
     private readonly List<FormulaEntry?> entries = [];
     private readonly Stack<int> free = [];
 
+    // A bit for each slot, so that a formula's entry stays as small as it can be: there can be millions.
+    private ulong[] read = [];
+
     /// <summary>How many formulas the table holds.</summary>
     public int Count => entries.Count - free.Count;
 
@@ -74,9 +77,30 @@ internal sealed class FormulaTable
         }
     }
 
+    /// <summary>Whether a formula's text came from a file, which holds Excel's stored form, and not through the API, as a person types it.</summary>
+    public bool IsRead(int index) => index >> 6 < read.Length && (read[index >> 6] >> index & 1) != 0;
+
+    /// <summary>Says where a formula's text came from; see <see cref="IsRead"/>.</summary>
+    public void SetRead(int index, bool value)
+    {
+        int word = index >> 6;
+        if (word >= read.Length)
+        {
+            if (!value)
+            {
+                return;
+            }
+
+            Array.Resize(ref read, Math.Max(word + 1, read.Length * 2));
+        }
+
+        read[word] = value ? read[word] | 1UL << index : read[word] & ~(1UL << index);
+    }
+
     public void Remove(int index)
     {
         entries[index] = null;
+        SetRead(index, false);
         free.Push(index);
     }
 }

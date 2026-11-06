@@ -29,13 +29,38 @@ internal static class FormulaPrinter
     public static string Print(ParsedFormula formula, ReferenceStyle style, CellAddress target = default)
     {
         StringBuilder output = new();
-        Writer writer = new(output, style, formula.Origin, target.Row - formula.Origin.Row, target.Column - formula.Origin.Column);
+        Writer writer = new(output, style, formula.Origin, target.Row - formula.Origin.Row, target.Column - formula.Origin.Column, Stored.No);
         writer.Node(formula.Root);
         output.Append(formula.Trail);
         return output.ToString();
     }
 
-    private readonly struct Writer(StringBuilder output, ReferenceStyle style, CellAddress origin, int rowDelta, int columnDelta)
+    /// <summary>
+    /// A formula as a person types it, as a file stores it: newer functions with their prefixes, <c>#</c> and, in a dynamic
+    /// array formula, <c>@</c> as the functions that stand for them. An ordinary formula has no <c>@</c>: it is what it means.
+    /// A formula that does not parse is stored as it is.
+    /// </summary>
+    public static string StoredForm(string text, CellAddress cell, bool dynamic)
+    {
+        if (!FutureFunctions.MayNeedStoring(text) || FormulaParser.TryParse(text, r1c1: false, cell) is not { } formula)
+        {
+            return text;
+        }
+
+        StringBuilder output = new(text.Length + 16);
+        new Writer(output, ReferenceStyle.Written, formula.Origin, 0, 0, dynamic ? Stored.Dynamic : Stored.Ordinary).Node(formula.Root);
+        output.Append(formula.Trail);
+        return output.ToString();
+    }
+
+    private enum Stored : byte
+    {
+        No,
+        Ordinary,
+        Dynamic,
+    }
+
+    private readonly struct Writer(StringBuilder output, ReferenceStyle style, CellAddress origin, int rowDelta, int columnDelta, Stored stored)
     {
         public void Node(FormulaNode node)
         {
@@ -70,7 +95,7 @@ internal static class FormulaPrinter
                     output.Append(structured.Text);
                     break;
                 case FunctionNode function:
-                    output.Append(function.Name).Append('(');
+                    output.Append(stored == Stored.No ? function.Name : FutureFunctions.StoredName(function.Name)).Append('(');
                     List(function.Arguments);
                     output.Append(')');
                     break;
@@ -79,9 +104,22 @@ internal static class FormulaPrinter
                     List(parentheses.Items);
                     output.Append(')');
                     break;
+                case UnaryNode { Operator: '@' } single when stored == Stored.Ordinary:
+                    Node(single.Operand);
+                    break;
+                case UnaryNode { Operator: '@' } single when stored == Stored.Dynamic:
+                    output.Append("_xlfn.SINGLE(");
+                    Node(single.Operand);
+                    output.Append(')');
+                    break;
                 case UnaryNode unary:
                     output.Append(unary.Operator);
                     Node(unary.Operand);
+                    break;
+                case PostfixNode { Operator: '#' } spill when stored != Stored.No:
+                    output.Append("_xlfn.ANCHORARRAY(");
+                    Node(spill.Operand);
+                    output.Append(')');
                     break;
                 case PostfixNode postfix:
                     Node(postfix.Operand);

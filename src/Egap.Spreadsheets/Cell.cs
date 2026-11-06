@@ -52,7 +52,8 @@ public sealed class Cell : IEquatable<Cell>
     /// is empty until the workbook is calculated (see <see cref="Workbook.Calculate"/>). Setting null or an empty string removes
     /// the formula and its result. A cell that shares the formula of another cell (a shared formula in an XLSX file) gives
     /// that formula with its relative references moved to this cell, as Excel shows it; changing the first cell of a shared
-    /// formula leaves the others their formulas.
+    /// formula leaves the others their formulas. A formula set here means what it means typed in Excel: one that can give more
+    /// than one value spills (see <see cref="SpillRange"/>), and <c>@</c> asks for the old implicit intersection.
     /// </summary>
     /// <exception cref="ArgumentException">The formula is longer than 8,192 characters.</exception>
     /// <exception cref="FormulaException">The formula does not follow Excel's grammar.</exception>
@@ -61,16 +62,17 @@ public sealed class Cell : IEquatable<Cell>
         get => sheet.GetFormula(Row, Column);
         set
         {
+            bool dynamic = false;
             if (!string.IsNullOrEmpty(value) && value != "=")
             {
                 string text = value[0] == '=' ? value[1..] : value;
                 if (text.Length <= 8192)
                 {
-                    FormulaParser.Parse(text, r1c1: false, Address);
+                    dynamic = ArrayAnalysis.Spills(FormulaParser.Parse(text, r1c1: false, Address));
                 }
             }
 
-            sheet.SetFormula(Row, Column, value, CellValue.Empty);
+            sheet.SetFormula(Row, Column, value, CellValue.Empty, dynamic: dynamic);
         }
     }
 
@@ -110,7 +112,7 @@ public sealed class Cell : IEquatable<Cell>
             }
 
             ParsedFormula parsed = FormulaParser.Parse(text, r1c1: true, Address);
-            sheet.SetFormula(Row, Column, FormulaPrinter.Print(parsed, ReferenceStyle.A1, Address), CellValue.Empty);
+            sheet.SetFormula(Row, Column, FormulaPrinter.Print(parsed, ReferenceStyle.A1, Address), CellValue.Empty, dynamic: ArrayAnalysis.Spills(parsed));
         }
     }
 
@@ -122,6 +124,13 @@ public sealed class Cell : IEquatable<Cell>
     /// <see cref="Formula"/> of the range's first cell; see <see cref="CellRange.SetArrayFormula"/>.
     /// </summary>
     public CellRange? ArrayRange => sheet.ArrayRangeAt(Row, Column) is { } range ? new CellRange(sheet, range) : null;
+
+    /// <summary>
+    /// The range this cell's dynamic array formula fills, as last calculated, what <c>A1#</c> stands for in a formula; null
+    /// when the cell does not hold one. A formula set through <see cref="Formula"/> is one when, as typed in Excel, it can
+    /// give more than one value.
+    /// </summary>
+    public CellRange? SpillRange => sheet.SpillRangeAt(Row, Column) is { } range ? new CellRange(sheet, range) : null;
 
     /// <summary>Whether the cell holds no value and no formula; it may still have a style.</summary>
     public bool IsEmpty => sheet.GetKind(Row, Column) == CellValueKind.Empty && !HasFormula;

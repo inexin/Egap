@@ -42,6 +42,7 @@ Egap.Spreadsheets.Cell.NumberFormat.get -> string!
 Egap.Spreadsheets.Cell.NumberFormat.set -> void
 Egap.Spreadsheets.Cell.Row.get -> int
 Egap.Spreadsheets.Cell.SetNumber(double number) -> void
+Egap.Spreadsheets.Cell.SpillRange.get -> Egap.Spreadsheets.CellRange?
 Egap.Spreadsheets.Cell.Style.get -> Egap.Spreadsheets.CellStyle!
 Egap.Spreadsheets.Cell.Style.set -> void
 Egap.Spreadsheets.Cell.Text.get -> string!
