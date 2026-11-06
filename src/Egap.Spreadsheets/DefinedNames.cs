@@ -21,7 +21,10 @@ public sealed class DefinedName
     /// <summary>The name.</summary>
     public string Name { get; }
 
-    /// <summary>What the name stands for, as a formula in Excel's stored form without the <c>=</c>, such as <c>Sheet1!$B$1</c>.</summary>
+    /// <summary>
+    /// What the name stands for, as a formula without the <c>=</c>, such as <c>Sheet1!$B$1</c> or <c>LAMBDA(x,x*2)</c>. A
+    /// formula set here is written to a file in Excel's stored form; one read from a file stays as it was.
+    /// </summary>
     /// <exception cref="ArgumentException">The formula is empty.</exception>
     public string Formula
     {
@@ -30,8 +33,12 @@ public sealed class DefinedName
         {
             ArgumentException.ThrowIfNullOrEmpty(value);
             field = value[0] == '=' && value.Length > 1 ? value[1..] : value;
+            Typed = true;
         }
     }
+
+    /// <summary>Whether <see cref="Formula"/> was set through the API rather than read from a file.</summary>
+    internal bool Typed { get; set; }
 
     /// <summary>The sheet the name is local to, or null for a name of the whole workbook.</summary>
     public Worksheet? Sheet { get; internal set; }
@@ -107,7 +114,11 @@ public sealed class DefinedNameCollection : IReadOnlyCollection<DefinedName>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    internal void AddRead(DefinedName name) => names.Add(name);
+    internal void AddRead(DefinedName name)
+    {
+        name.Typed = false;
+        names.Add(name);
+    }
 
     /// <summary>Takes out the names local to a sheet that is being removed.</summary>
     internal void RemoveLocalTo(Worksheet sheet) => names.RemoveAll(n => n.Sheet == sheet);

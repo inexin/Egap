@@ -275,6 +275,11 @@ internal sealed class FormulaParser
     private FormulaNode Spill()
     {
         FormulaNode node = Primary();
+        while (Peek() == '(' && node is FunctionNode or ParenthesesNode or InvokeNode)
+        {
+            node = new InvokeNode(node, Function("", pos).Arguments);
+        }
+
         if (Peek() == '#' && node is ReferenceNode or NameNode or FunctionNode or StructuredNode or ParenthesesNode)
         {
             pos++;
@@ -721,7 +726,7 @@ internal sealed class FormulaParser
             return more == TableItems.None ? (TableItems.ThisRow, first, last) : throw ErrorAt(at, "'@' takes only columns.");
         }
 
-        if (inner[0] == '[')
+        if (inner.AsSpan().TrimStart(' ') is ['[', ..])
         {
             return ItemList(inner, at);
         }
@@ -757,13 +762,11 @@ internal sealed class FormulaParser
             (string item, i) = Item(list, i, at);
             if (item.StartsWith('#'))
             {
-                TableItems special = SpecialItem(item, itemStart + 1);
-                if ((items & special) != 0)
+                items |= SpecialItem(item, itemStart + 1);
+                if (items is not (TableItems.All or TableItems.Data or TableItems.Headers or TableItems.Totals or TableItems.ThisRow or (TableItems.Headers | TableItems.Data) or (TableItems.Data | TableItems.Totals)))
                 {
-                    throw ErrorAt(itemStart, "A table item is named twice.");
+                    throw ErrorAt(itemStart, "These table items do not go together.");
                 }
-
-                items |= special;
             }
             else
             {
@@ -904,7 +907,7 @@ internal sealed class FormulaParser
                 break;
             case '(':
                 CheckName(word, start, "function");
-                return Function(word, start);
+                return Scoped(Function(word, start), start);
             case '[':
                 CheckName(word, start, "table");
                 if (LooksLikeR1C1(word) || TryCell(word, out _, out _, out _, out _))
@@ -938,7 +941,8 @@ internal sealed class FormulaParser
     /// </summary>
     private void CheckNameNotReference(string word, int start)
     {
-        if (LooksLikeR1C1(word))
+        // A lone R or C means nothing in A1 style, and LET and LAMBDA may name one.
+        if (LooksLikeR1C1(word) && (r1c1 || word.Length > 1))
         {
             pos = start;
             throw Error(r1c1 ? $"'{word}' is not a cell on the sheet." : $"'{word}' is an R1C1 reference, not a name.");
@@ -949,6 +953,40 @@ internal sealed class FormulaParser
             pos = start;
             throw Error($"'{word}' is an A1 reference, not a name.");
         }
+    }
+
+    /// <summary>Refuses a LET or LAMBDA whose names are not names, as Excel does when one is typed.</summary>
+    private FunctionNode Scoped(FunctionNode call, int start)
+    {
+        bool let = call.Name.EndsWith("LET", StringComparison.OrdinalIgnoreCase) && FormulaCompiler.FunctionName(call.Name) == "LET";
+        bool lambda = !let && call.Name.EndsWith("LAMBDA", StringComparison.OrdinalIgnoreCase) && FormulaCompiler.FunctionName(call.Name) == "LAMBDA";
+        if (!let && !lambda)
+        {
+            return call;
+        }
+
+        Argument[] arguments = call.Arguments;
+        if (arguments.Length == 0 || (let && (arguments.Length < 3 || arguments.Length % 2 == 0)))
+        {
+            pos = start;
+            throw Error(let ? "LET takes names with values and then what it calculates." : "LAMBDA takes names and then what it calculates.");
+        }
+
+        HashSet<string> names = new(StringComparer.Ordinal);
+        bool optional = false;
+        for (int i = 0; i < arguments.Length - 1; i += let ? 2 : 1)
+        {
+            (string? name, bool isOptional) = FormulaCompiler.LocalName(arguments[i].Node);
+            if (name is null || !names.Add(name) || (let && isOptional) || (optional && !isOptional))
+            {
+                pos = start;
+                throw Error($"Argument {i + 1} of {(let ? "LET" : "LAMBDA")} is not a new name.");
+            }
+
+            optional = isOptional;
+        }
+
+        return call;
     }
 
     /// <summary>Whether a word has the shape of an R1C1 reference (<c>RC</c>, <c>R0C1</c>, <c>C99999</c>).</summary>
@@ -1100,6 +1138,15 @@ internal sealed class FormulaParser
         {
             CheckName(word, start, "function");
             return Function(prefix.Text + word, start);
+        }
+
+        // A table belongs to the workbook, so Excel takes any sheet before it and drops it.
+        if (Peek() == '[' && prefix.Book is null)
+        {
+            CheckNameNotReference(word, start);
+            CheckName(word, start, "table");
+            StructuredNode structured = Structured(word, start);
+            return new StructuredNode(prefix.Text + structured.Text, structured.Table, structured.Items, structured.FirstColumn, structured.LastColumn);
         }
 
         CheckNameNotReference(word, start);

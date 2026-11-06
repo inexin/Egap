@@ -330,7 +330,7 @@ internal static class XlsxWriter
                 element.Add(name.Extra);
             }
 
-            element.Add(new XText(name.Formula));
+            element.Add(new XText(name.Typed ? FormulaPrinter.StoredForm(name.Formula, default, dynamic: true, book) : name.Formula));
             names.Add(element);
         }
 
@@ -1033,7 +1033,7 @@ internal static class WorksheetPartWriter
                 writer.WriteAttributeString(attribute.Name.LocalName, attribute.Name.NamespaceName, attribute.Value);
             }
 
-            writer.WriteString(typed ? FormulaPrinter.StoredForm(formula.Text, new CellAddress(row, column), sheet.IsDynamic(formula) || formula.Attribute("t") == "array") : formula.Text);
+            writer.WriteString(typed ? FormulaPrinter.StoredForm(formula.Text, new CellAddress(row, column), sheet.IsDynamic(formula) || formula.Attribute("t") == "array", sheet.Workbook, sheet) : formula.Text);
             writer.WriteEndElement();
         }
 

@@ -38,20 +38,34 @@ internal static class FormulaPrinter
     /// <summary>
     /// A formula as a person types it, as a file stores it: newer functions with their prefixes, <c>#</c> and, in a dynamic
     /// array formula, <c>@</c> as the functions that stand for them. An ordinary formula has no <c>@</c>: it is what it means.
-    /// A formula that does not parse is stored as it is.
+    /// The names of LET and LAMBDA get their prefixes, and a function's name used as a value too, unless <paramref name="book"/>
+    /// has it as a name. A structured reference has its table named, and its parts in full. A formula that does not parse is
+    /// stored as it is.
     /// </summary>
-    public static string StoredForm(string text, CellAddress cell, bool dynamic)
+    /// <param name="text">The formula as typed.</param>
+    /// <param name="cell">Its cell.</param>
+    /// <param name="dynamic">Whether it is a dynamic array formula.</param>
+    /// <param name="book">The workbook, for its names and tables.</param>
+    /// <param name="sheet">The formula's sheet, for the table a reference without one is in.</param>
+    public static string StoredForm(string text, CellAddress cell, bool dynamic, Workbook? book = null, Worksheet? sheet = null)
     {
-        if (!FutureFunctions.MayNeedStoring(text) || FormulaParser.TryParse(text, r1c1: false, cell) is not { } formula)
+        bool mayNameTable = book is not null && book.Worksheets.Any(s => s.Tables.Count > 0);
+        if ((!mayNameTable && !FutureFunctions.MayNeedStoring(text)) || FormulaParser.TryParse(text, r1c1: false, cell) is not { } formula)
         {
             return text;
         }
 
         StringBuilder output = new(text.Length + 16);
-        new Writer(output, ReferenceStyle.Written, formula.Origin, 0, 0, dynamic ? Stored.Dynamic : Stored.Ordinary).Node(formula.Root);
+        new Writer(output, ReferenceStyle.Written, formula.Origin, 0, 0, dynamic ? Stored.Dynamic : Stored.Ordinary, new Locals(book, sheet, cell)).Node(formula.Root);
         output.Append(formula.Trail);
         return output.ToString();
     }
+
+    /// <summary>A structured reference's items, in the order a file has them.</summary>
+    private static readonly (TableItems Item, string Text)[] Items =
+    [
+        (TableItems.All, "#All"), (TableItems.Headers, "#Headers"), (TableItems.Data, "#Data"), (TableItems.Totals, "#Totals"), (TableItems.ThisRow, "#This Row"),
+    ];
 
     private enum Stored : byte
     {
@@ -60,7 +74,40 @@ internal static class FormulaPrinter
         Dynamic,
     }
 
-    private readonly struct Writer(StringBuilder output, ReferenceStyle style, CellAddress origin, int rowDelta, int columnDelta, Stored stored)
+    /// <summary>The names of the LETs and LAMBDAs around where a stored formula has got to.</summary>
+    private sealed class Locals(Workbook? book, Worksheet? sheet, CellAddress cell)
+    {
+        private readonly List<string> known = [];
+
+        public int Count => known.Count;
+
+        public void Add(string name) => known.Add(name);
+
+        public void Back(int count) => known.RemoveRange(count, known.Count - count);
+
+        public bool Has(string name) => known.Contains(name);
+
+        /// <summary>Whether a word that is no local stands for the function of that name.</summary>
+        public bool IsFunction(string word)
+        {
+            string name = FormulaCompiler.FunctionName(word);
+            return !word.Contains('.', StringComparison.Ordinal) && FormulaFunctions.IsBuiltIn(name)
+                && (book is null || !book.Names.Any(n => string.Equals(n.Name, word, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>The table of this name, or the one around the cell when it is null.</summary>
+        public SheetTable? Table(string? name)
+        {
+            if (name is null)
+            {
+                return sheet?.Tables.Find(cell);
+            }
+
+            return book is null ? null : FormulaEvaluator.FindTable(book, name);
+        }
+    }
+
+    private readonly struct Writer(StringBuilder output, ReferenceStyle style, CellAddress origin, int rowDelta, int columnDelta, Stored stored, Locals? locals = null)
     {
         public void Node(FormulaNode node)
         {
@@ -84,15 +131,44 @@ internal static class FormulaPrinter
                     break;
                 case MissingNode:
                     break;
+                case ReferenceNode reference when IsLocal(reference):
+                    output.Append("_xlpm.").Append(reference.Text);
+                    break;
                 case ReferenceNode reference:
                     Reference(reference);
+                    break;
+                case NameNode name when !IsLocal(name) && locals?.Table(name.Name) is { } table && !name.Name.Contains('!', StringComparison.Ordinal):
+                    output.Append(table.Name).Append("[]");
+                    break;
+                case NameNode name when IsLocal(name):
+                    output.Append(name.Name.StartsWith("_xl", StringComparison.OrdinalIgnoreCase) ? "" : "_xlpm.").Append(name.Name);
+                    break;
+                case NameNode { Prefix: null } name when locals?.IsFunction(name.Name) == true:
+                    output.Append("_xleta.").Append(name.Name.ToUpperInvariant());
                     break;
                 case NameNode name:
                     Prefix(name.Prefix);
                     output.Append(name.Name);
                     break;
+                case StructuredNode structured when locals?.Table(structured.Table) is { } table:
+                    Structured(structured, table);
+                    break;
                 case StructuredNode structured:
                     output.Append(structured.Text);
+                    break;
+                case InvokeNode invoke:
+                    Node(invoke.Callee);
+                    output.Append('(');
+                    List(invoke.Arguments);
+                    output.Append(')');
+                    break;
+                case FunctionNode function when locals is not null && FormulaCompiler.FunctionName(function.Name) is "LET" or "LAMBDA":
+                    Scoped(function);
+                    break;
+                case FunctionNode function when locals is not null && !FormulaFunctions.IsBuiltIn(FormulaCompiler.FunctionName(function.Name)) && locals.Has(FormulaCompiler.FunctionName(function.Name)):
+                    output.Append(function.Name.StartsWith("_xl", StringComparison.OrdinalIgnoreCase) ? "" : "_xlpm.").Append(function.Name).Append('(');
+                    List(function.Arguments);
+                    output.Append(')');
                     break;
                 case FunctionNode function:
                     output.Append(stored == Stored.No ? function.Name : FutureFunctions.StoredName(function.Name)).Append('(');
@@ -143,6 +219,122 @@ internal static class FormulaPrinter
                     Node(binary.Right);
                     break;
             }
+        }
+
+        /// <summary>
+        /// A structured reference as a file stores it: <c>Sales[]</c>, <c>Sales[#All]</c>, <c>Sales[Qty]</c>,
+        /// <c>Sales[[Qty]:[Price]]</c> or <c>Sales[[#This Row],[Qty]]</c>, with the names as the table has them.
+        /// </summary>
+        private void Structured(StructuredNode node, SheetTable table)
+        {
+            output.Append(table.Name);
+            bool hasColumn = node.FirstColumn is not null;
+            List<string> items = [];
+            foreach ((TableItems item, string text) in Items)
+            {
+                if (node.Items.HasFlag(item))
+                {
+                    items.Add(text);
+                }
+            }
+
+            if (items.Count + (hasColumn ? 1 : 0) == 0)
+            {
+                output.Append("[]");
+            }
+            else if (items.Count == 1 && !hasColumn)
+            {
+                output.Append('[').Append(items[0]).Append(']');
+            }
+            else if (items.Count == 0 && node.LastColumn is null)
+            {
+                output.Append('[').Append(ColumnName(table, node.FirstColumn!)).Append(']');
+            }
+            else
+            {
+                output.Append('[');
+                for (int i = 0; i < items.Count; i++)
+                {
+                    output.Append(i > 0 ? "," : "").Append('[').Append(items[i]).Append(']');
+                }
+
+                if (hasColumn)
+                {
+                    output.Append(items.Count > 0 ? "," : "").Append('[').Append(ColumnName(table, node.FirstColumn!)).Append(']');
+                    if (node.LastColumn is { } last)
+                    {
+                        output.Append(":[").Append(ColumnName(table, last)).Append(']');
+                    }
+                }
+
+                output.Append(']');
+            }
+        }
+
+        /// <summary>A column's name as the table writes it, with what brackets give a meaning to escaped.</summary>
+        private static string ColumnName(SheetTable table, string name)
+        {
+            string written = table.Columns.Find(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase))?.Name ?? name;
+            StringBuilder escaped = new(written.Length);
+            foreach (char c in written)
+            {
+                if (c is '[' or ']' or '#' or '\'')
+                {
+                    escaped.Append('\'');
+                }
+
+                escaped.Append(c);
+            }
+
+            return escaped.ToString();
+        }
+
+        private bool IsLocal(FormulaNode word) => locals is not null && FormulaCompiler.LocalName(word).Name is { } name && locals.Has(name);
+
+        /// <summary>A LET or LAMBDA as a file stores it, its names with their prefixes; a LET's value sees only the names before it.</summary>
+        private void Scoped(FunctionNode function)
+        {
+            bool let = FormulaCompiler.FunctionName(function.Name) == "LET";
+            int outer = locals!.Count;
+            int last = function.Arguments.Length - 1;
+            output.Append(FutureFunctions.StoredName(function.Name)).Append('(');
+            for (int i = 0; i <= last; i++)
+            {
+                Argument argument = function.Arguments[i];
+                bool isName = i < last && (!let || i % 2 == 0);
+                if (i > 0)
+                {
+                    output.Append(',');
+                }
+
+                if (isName && FormulaCompiler.LocalName(argument.Node) is { Name: { } name } local)
+                {
+                    output.Append(argument.Node.Lead).Append(local.Optional ? "_xlop." : "_xlpm.").Append(argument.Node switch
+                    {
+                        StructuredNode { FirstColumn: { } column } => column,
+                        ReferenceNode reference => reference.Text,
+                        NameNode written => written.Name.StartsWith("_xl", StringComparison.OrdinalIgnoreCase) ? written.Name[6..] : written.Name,
+                        _ => name,
+                    });
+                    if (!let)
+                    {
+                        locals.Add(name);
+                    }
+                }
+                else
+                {
+                    Node(argument.Node);
+                    if (let && i < last)
+                    {
+                        locals.Add(FormulaCompiler.LocalName(function.Arguments[i - 1].Node).Name!);
+                    }
+                }
+
+                output.Append(argument.Trail);
+            }
+
+            output.Append(')');
+            locals.Back(outer);
         }
 
         /// <summary>The last token a node writes.</summary>

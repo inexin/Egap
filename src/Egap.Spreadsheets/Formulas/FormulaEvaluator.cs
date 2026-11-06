@@ -54,6 +54,19 @@ internal sealed class EvalContext
     /// <summary>Compiled defined names, shared by the contexts of one evaluation.</summary>
     public Dictionary<DefinedName, CompiledFormula?> Names { get; private init; } = [];
 
+    /// <summary>
+    /// The context a LAMBDA's body runs in: where it was written, in array mode as a formula that calls one is. The count of
+    /// names starts again: a LAMBDA in a name may call itself, which only <see cref="Lambdas"/> limits.
+    /// </summary>
+    public EvalContext ForLambda() => ArrayMode && NameDepth == 0 ? this : new EvalContext(Sheet, Row, Column)
+    {
+        ArrayMode = true,
+        RowDelta = RowDelta,
+        ColumnDelta = ColumnDelta,
+        Wrap = Wrap,
+        Names = Names,
+    };
+
     /// <summary>This context in array mode, for an array argument; itself when it is in array mode already.</summary>
     public EvalContext InArrayMode() => ArrayMode ? this : new EvalContext(Sheet, Row, Column)
     {
@@ -141,9 +154,17 @@ internal static class FormulaEvaluator
     }
 
     /// <summary>Runs the formula; the result may be a reference or an array.</summary>
-    public static EvalValue Run(CompiledFormula formula, EvalContext context)
+    /// <param name="formula">The formula.</param>
+    /// <param name="context">Where and how it runs.</param>
+    /// <param name="locals">For a LAMBDA's body, its parameters and what it keeps.</param>
+    public static EvalValue Run(CompiledFormula formula, EvalContext context, EvalValue[]? locals = null)
     {
         Instruction[] code = formula.Code;
+        if (locals is null && formula.LocalCount > 0)
+        {
+            locals = new EvalValue[formula.LocalCount];
+        }
+
         EvalValue[] stack = new EvalValue[formula.MaxStack + 2];
         List<int>? pending = null;
         List<EvalContext>? outer = null;
@@ -268,6 +289,19 @@ internal static class FormulaEvaluator
                     }
 
                     break;
+                case OpCode.LocalGet:
+                    stack[sp++] = locals![instruction.A];
+                    break;
+                case OpCode.LocalSet:
+                    locals![instruction.A] = stack[--sp];
+                    break;
+                case OpCode.MakeLambda:
+                    stack[sp++] = Lambdas.Make((LambdaCode)formula.Operands[instruction.A], locals, context);
+                    break;
+                case OpCode.Invoke:
+                    sp -= instruction.A;
+                    stack[sp - 1] = Lambdas.Apply(stack[sp - 1], stack.AsSpan(sp, instruction.A), context);
+                    break;
             }
         }
 
@@ -289,6 +323,8 @@ internal static class FormulaEvaluator
                 return context.ArrayMode ? ToArray(value) : Deref(IntersectReference(value, context));
             case EvalKind.Missing:
                 return EvalValue.Blank;
+            case EvalKind.Lambda:
+                return EvalValue.FromError(CellError.Value);
             default:
                 return value;
         }
@@ -585,15 +621,19 @@ internal static class FormulaEvaluator
             return compiled is null ? EvalValue.FromError(CellError.Name) : Run(compiled, inner);
         }
 
-        if (prefix is null && FindTable(context.Book, node.Name) is { } table)
+        if (prefix?.Book is null && FindTable(context.Book, node.Name) is { } table)
         {
             return TableArea(table, TableItems.None, null, null, context);
         }
 
-        return EvalValue.FromError(CellError.Name);
+        // A function's name as a value, as in BYROW(A1:B3,SUM); a file stores it with _xleta.
+        string word = node.Name.StartsWith("_xleta.", StringComparison.OrdinalIgnoreCase) ? node.Name[7..] : node.Name;
+        return prefix is null && FormulaFunctions.TryGet(FormulaCompiler.FunctionName(word), out FormulaFunction? function)
+            ? EvalValue.FromLambda(new LambdaValue(function))
+            : EvalValue.FromError(CellError.Name);
     }
 
-    private static SheetTable? FindTable(Workbook book, string name)
+    internal static SheetTable? FindTable(Workbook book, string name)
     {
         foreach (Worksheet sheet in book.Worksheets)
         {
@@ -646,7 +686,7 @@ internal static class FormulaEvaluator
         }
         else if (items == TableItems.ThisRow)
         {
-            if (!ReferenceEquals(table.Worksheet, context.Sheet) || context.Row < dataFirst || context.Row > dataLast)
+            if (context.Row < dataFirst || context.Row > dataLast)
             {
                 return EvalValue.FromError(CellError.Value);
             }
@@ -914,13 +954,23 @@ internal static class FormulaEvaluator
     /// Calls a function. Value arguments are taken as operands; when one of them is an array, the function runs for each
     /// element and the results make an array.
     /// </summary>
-    private static EvalValue Call(FormulaFunction function, ReadOnlySpan<EvalValue> given, EvalContext context)
+    internal static EvalValue Call(FormulaFunction function, ReadOnlySpan<EvalValue> given, EvalContext context)
     {
         EvalValue[] arguments = given.ToArray();
         int rows = 1, columns = 1;
         bool lift = false;
         for (int i = 0; i < arguments.Length; i++)
         {
+            if (arguments[i].Kind == EvalKind.Lambda)
+            {
+                if (function.TakesFunctions)
+                {
+                    continue;
+                }
+
+                return Lambdas.GivenToOther(function);
+            }
+
             if (function.TakesValue(i))
             {
                 arguments[i] = arguments[i].Kind == EvalKind.Missing ? arguments[i] : Operand(arguments[i], context);

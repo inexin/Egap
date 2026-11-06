@@ -198,6 +198,13 @@ public sealed partial class FunctionOracleTests
 
             int space = line.IndexOf(' ', StringComparison.Ordinal);
             string text = line[(space + 1)..];
+            if (line[1..space] == "name")
+            {
+                int formula = text.IndexOf(' ', StringComparison.Ordinal);
+                book.Names.Add(text[..formula], text[(formula + 1)..]);
+                continue;
+            }
+
             Cell cell = sheet[line[1..space]];
             if (text.StartsWith('"'))
             {

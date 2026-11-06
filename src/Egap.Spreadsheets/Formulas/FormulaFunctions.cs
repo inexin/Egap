@@ -24,7 +24,7 @@ internal enum ArgumentKind : byte
 internal delegate EvalValue FunctionBody(EvalValue[] arguments, EvalContext context);
 
 /// <summary>A worksheet function: its name, how many arguments it takes and how.</summary>
-internal sealed class FormulaFunction(string name, int minArguments, int maxArguments, ArgumentKind[] kinds, FunctionBody body)
+internal sealed class FormulaFunction(string name, int minArguments, int maxArguments, ArgumentKind[] kinds, FunctionBody body, bool takesFunctions = false)
 {
     public string Name { get; } = name;
 
@@ -33,6 +33,9 @@ internal sealed class FormulaFunction(string name, int minArguments, int maxArgu
     public int MaxArguments { get; } = maxArguments;
 
     public FunctionBody Body { get; } = body;
+
+    /// <summary>Whether a LAMBDA is an argument it knows what to do with.</summary>
+    public bool TakesFunctions { get; } = takesFunctions;
 
     /// <summary>Whether argument <paramref name="index"/> is a value argument; the last kind given repeats.</summary>
     public bool TakesValue(int index) => Kind(index) == ArgumentKind.Value;
@@ -98,7 +101,7 @@ internal static partial class FormulaFunctions
     {
         List<FormulaFunction> all = [.. Core(), .. MathFunctions(), .. TextFunctions(), .. DateFunctions(), .. LookupFunctions(),
             .. StatisticalFunctions(), .. InformationFunctions(), .. FinancialFunctions(), .. EngineeringFunctions(), .. DatabaseFunctions(),
-            .. MatrixFunctions(), .. DistributionFunctions(), .. DynamicArrayFunctions()];
+            .. MatrixFunctions(), .. DistributionFunctions(), .. DynamicArrayFunctions(), .. LambdaFunctions()];
         return all.ToFrozenDictionary(f => f.Name, StringComparer.Ordinal);
     }
 
@@ -112,12 +115,26 @@ internal static partial class FormulaFunctions
         new("TRUE", 0, 0, Kinds.Value, static (_, _) => EvalValue.True),
         new("FALSE", 0, 0, Kinds.Value, static (_, _) => EvalValue.False),
         new("NA", 0, 0, Kinds.Value, static (_, _) => Error(CellError.NotAvailable)),
-        new("CHOOSE", 2, 255, Kinds.ValueThenAny, Choose),
+        new("CHOOSE", 2, 255, Kinds.ValueThenAny, Choose, takesFunctions: true),
         new("ROW", 0, 1, Kinds.Any, (a, c) => Position(a, c, row: true)),
         new("COLUMN", 0, 1, Kinds.Any, (a, c) => Position(a, c, row: false)),
-        new("IFS", 2, 254, Kinds.Value, Ifs),
-        new("SWITCH", 3, 254, Kinds.Value, Switch),
+        new("IF", 2, 3, Kinds.ValueThenAny, If),
+        new("IFERROR", 2, 2, Kinds.Any, static (a, _) => a[0].Kind == EvalKind.Error ? a[1] : a[0]),
+        new("IFNA", 2, 2, Kinds.Any, static (a, _) => a[0] is { Kind: EvalKind.Error, Error: CellError.NotAvailable } ? a[1] : a[0]),
+        new("IFS", 2, 254, Kinds.Value, Ifs, takesFunctions: true),
+        new("SWITCH", 3, 254, Kinds.Value, Switch, takesFunctions: true),
     ];
+
+    /// <summary>IF when it is called as a value, as in <c>LET(f,IF,f(TRUE,1))</c>; a formula's own IF is compiled to jumps.</summary>
+    private static EvalValue If(EvalValue[] a, EvalContext _)
+    {
+        if (!ExcelValues.TryBoolean(a[0], out bool test, out EvalValue error))
+        {
+            return error;
+        }
+
+        return test ? a[1] : a.Length > 2 ? a[2] : EvalValue.False;
+    }
 
     /// <summary>The argument kinds most functions use, kept apart so they exist before any function list is made.</summary>
     private static class Kinds

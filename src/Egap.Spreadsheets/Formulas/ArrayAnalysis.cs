@@ -18,6 +18,7 @@ internal static class ArrayAnalysis
     private static readonly HashSet<string> ArrayResults = new(
     [
         "CHOOSECOLS", "CHOOSEROWS", "DROP", "EXPAND", "FILTER", "FREQUENCY", "GROWTH", "HSTACK", "INDIRECT", "LINEST", "LOGEST",
+        "BYCOL", "BYROW", "MAKEARRAY", "MAP", "REDUCE", "SCAN",
         "MINVERSE", "MMULT", "MUNIT", "OFFSET", "RANDARRAY", "SEQUENCE", "SORT", "SORTBY", "TAKE", "TEXTSPLIT", "TOCOL", "TOROW", "TRANSPOSE",
         "TREND", "UNIQUE", "VSTACK", "WRAPCOLS", "WRAPROWS", "XLOOKUP",
     ], StringComparer.Ordinal);
@@ -32,24 +33,33 @@ internal static class ArrayAnalysis
         return Walk(formula.Root, ref lifted, arrayArgument: false) != Shape.Scalar || lifted;
     }
 
-    private static Shape Walk(FormulaNode node, ref bool lifted, bool arrayArgument)
+    private static Shape Walk(FormulaNode node, ref bool lifted, bool arrayArgument, Dictionary<string, Shape>? locals = null)
     {
         switch (node)
         {
             case ArrayNode array:
                 return array.Rows * array.Columns > 1 ? Shape.Array : Shape.Scalar;
+            case ReferenceNode reference when locals is not null && FormulaCompiler.LocalName(reference).Name is { } cellName && locals.TryGetValue(cellName, out Shape cellLocal):
+                return cellLocal;
             case ReferenceNode reference:
                 return reference.Area.Kind is AreaKind.Cell or AreaKind.Error ? Shape.Scalar : Shape.Range;
+            case NameNode word when locals is not null && FormulaCompiler.LocalName(word).Name is { } localName && locals.TryGetValue(localName, out Shape local):
+                return local;
             case NameNode:
                 return Shape.Range;
+            case InvokeNode invoke:
+                Walk(invoke.Callee, ref lifted, arrayArgument, locals);
+                return Shape.Array;
             case StructuredNode structured:
-                return structured.Text.Contains('@', StringComparison.Ordinal) ? Shape.Scalar : Shape.Range;
+                return structured.FirstColumn is not null && structured.LastColumn is null && structured.Items is TableItems.ThisRow or TableItems.Headers or TableItems.Totals
+                    ? Shape.Scalar
+                    : Shape.Range;
             case ParenthesesNode parentheses:
                 {
                     Shape shape = Shape.Scalar;
                     foreach (Argument item in parentheses.Items)
                     {
-                        shape = Max(shape, Walk(item.Node, ref lifted, arrayArgument));
+                        shape = Max(shape, Walk(item.Node, ref lifted, arrayArgument, locals));
                     }
 
                     return parentheses.Items.Length > 1 ? Shape.Range : shape;
@@ -57,19 +67,19 @@ internal static class ArrayAnalysis
 
             case UnaryNode unary:
                 {
-                    Shape shape = Walk(unary.Operand, ref lifted, arrayArgument);
+                    Shape shape = Walk(unary.Operand, ref lifted, arrayArgument, locals);
                     return unary.Operator == '@' ? Shape.Scalar : Operated(shape, ref lifted, arrayArgument);
                 }
 
             case PostfixNode postfix:
                 {
-                    Shape shape = Walk(postfix.Operand, ref lifted, arrayArgument);
+                    Shape shape = Walk(postfix.Operand, ref lifted, arrayArgument, locals);
                     return postfix.Operator == '#' ? Shape.Range : Operated(shape, ref lifted, arrayArgument);
                 }
 
             case BinaryNode binary:
                 {
-                    Shape left = Walk(binary.Left, ref lifted, arrayArgument), right = Walk(binary.Right, ref lifted, arrayArgument);
+                    Shape left = Walk(binary.Left, ref lifted, arrayArgument, locals), right = Walk(binary.Right, ref lifted, arrayArgument, locals);
                     return binary.Operator switch
                     {
                         BinaryOperator.Range => Shape.Range,
@@ -79,13 +89,13 @@ internal static class ArrayAnalysis
                 }
 
             case FunctionNode function:
-                return Call(function, ref lifted, arrayArgument);
+                return Call(function, ref lifted, arrayArgument, locals);
             default:
                 return Shape.Scalar;
         }
     }
 
-    private static Shape Call(FunctionNode function, ref bool lifted, bool arrayArgument)
+    private static Shape Call(FunctionNode function, ref bool lifted, bool arrayArgument, Dictionary<string, Shape>? locals = null)
     {
         string name = FormulaCompiler.FunctionName(function.Name);
         if (name == "SINGLE")
@@ -98,13 +108,51 @@ internal static class ArrayAnalysis
             return Shape.Range;
         }
 
+        if (name == "LET" && function.Arguments.Length % 2 == 1)
+        {
+            Dictionary<string, Shape> inner = locals is null ? new(StringComparer.Ordinal) : new(locals, StringComparer.Ordinal);
+            for (int i = 0; i + 1 < function.Arguments.Length; i += 2)
+            {
+                Shape value = Walk(function.Arguments[i + 1].Node, ref lifted, arrayArgument, inner);
+                if (FormulaCompiler.LocalName(function.Arguments[i].Node).Name is { } local)
+                {
+                    inner[local] = value;
+                }
+            }
+
+            return Walk(function.Arguments[^1].Node, ref lifted, arrayArgument, inner);
+        }
+
+        // A LAMBDA is one value, and its parameters may be given ranges: an operator on one makes the formula dynamic.
+        if (name == "LAMBDA")
+        {
+            Dictionary<string, Shape> inner = locals is null ? new(StringComparer.Ordinal) : new(locals, StringComparer.Ordinal);
+            for (int i = 0; i + 1 < function.Arguments.Length; i++)
+            {
+                if (FormulaCompiler.LocalName(function.Arguments[i].Node).Name is { } parameter)
+                {
+                    inner[parameter] = Shape.Range;
+                }
+            }
+
+            if (function.Arguments.Length > 0)
+            {
+                Walk(function.Arguments[^1].Node, ref lifted, arrayArgument: false, inner);
+            }
+
+            return Shape.Scalar;
+        }
+
         bool known = FormulaFunctions.TryGet(name, out FormulaFunction? body);
+
+        // A name may stand for a LAMBDA, so Excel treats what it does not know as able to give an array.
+        Shape unknown = known || FormulaFunctions.TryGetAddIn(name, out _) ? Shape.Scalar : Shape.Array;
         bool chooser = Choosers.Contains(name);
-        Shape result = ArrayResults.Contains(name) ? Shape.Array : Shape.Scalar;
+        Shape result = ArrayResults.Contains(name) ? Shape.Array : unknown;
         for (int i = 0; i < function.Arguments.Length; i++)
         {
             bool takesArray = known && body!.TakesArray(i);
-            Shape shape = Walk(function.Arguments[i].Node, ref lifted, arrayArgument || takesArray);
+            Shape shape = Walk(function.Arguments[i].Node, ref lifted, arrayArgument || takesArray, locals);
             if (chooser)
             {
                 // The condition of IF decides per element; the rest are handed on.

@@ -56,6 +56,18 @@ internal enum OpCode : byte
 
     /// <summary>Back to the mode before the matching <see cref="ArrayBegin"/>.</summary>
     ArrayEnd,
+
+    /// <summary>Push local <c>A</c>: a name of LET or a parameter of LAMBDA.</summary>
+    LocalGet,
+
+    /// <summary>Pop the top value into local <c>A</c>.</summary>
+    LocalSet,
+
+    /// <summary>Push the LAMBDA <c>Operands[A]</c> (a <see cref="LambdaCode"/>), with what it keeps from the locals.</summary>
+    MakeLambda,
+
+    /// <summary>Call the value below the <c>A</c> arguments on top.</summary>
+    Invoke,
 }
 
 /// <summary>One step of a compiled formula.</summary>
@@ -68,7 +80,7 @@ internal sealed record FunctionCall(FormulaFunction Function, int Count);
 /// A formula compiled to a list of instructions for a stack machine: operands are pushed, operators and functions pop
 /// theirs and push the result. IF, IFERROR and IFNA jump, so only the branch taken is evaluated.
 /// </summary>
-internal sealed class CompiledFormula(Instruction[] code, EvalValue[] constants, object[] operands, int maxStack)
+internal sealed class CompiledFormula(Instruction[] code, EvalValue[] constants, object[] operands, int maxStack, int localCount = 0)
 {
     public Instruction[] Code { get; } = code;
 
@@ -78,6 +90,9 @@ internal sealed class CompiledFormula(Instruction[] code, EvalValue[] constants,
 
     /// <summary>The most values the stack holds at once.</summary>
     public int MaxStack { get; } = maxStack;
+
+    /// <summary>How many locals it has: the names of its LETs, and for a LAMBDA's body its parameters and what it keeps.</summary>
+    public int LocalCount { get; } = localCount;
 }
 
 /// <summary>Compiles a <see cref="ParsedFormula"/> into a <see cref="CompiledFormula"/>.</summary>
@@ -88,6 +103,44 @@ internal sealed class FormulaCompiler
     private readonly List<object> operands = [];
     private int depth;
     private int maxDepth;
+    private Frame? frame;
+
+    /// <summary>The names one formula or one LAMBDA's body knows, each a local; a name from around a LAMBDA becomes one it keeps.</summary>
+    private sealed class Frame(Frame? parent)
+    {
+        public List<Dictionary<string, int>> Scopes { get; } = [new(StringComparer.Ordinal)];
+
+        public List<(int Outer, int Inner)> Captures { get; } = [];
+
+        public int Count { get; set; }
+
+        public int Add(string name)
+        {
+            Scopes[^1][name] = Count;
+            return Count++;
+        }
+
+        public int Find(string name)
+        {
+            for (int i = Scopes.Count - 1; i >= 0; i--)
+            {
+                if (Scopes[i].TryGetValue(name, out int slot))
+                {
+                    return slot;
+                }
+            }
+
+            if (parent?.Find(name) is not (>= 0 and int outer))
+            {
+                return -1;
+            }
+
+            int inner = Count++;
+            Scopes[0][name] = inner;
+            Captures.Add((outer, inner));
+            return inner;
+        }
+    }
 
     public static CompiledFormula Compile(ParsedFormula formula)
     {
@@ -98,7 +151,29 @@ internal sealed class FormulaCompiler
             compiler.code[^1] = compiler.code[^1] with { B = 1 };
         }
 
-        return new CompiledFormula([.. compiler.code], [.. compiler.constants], [.. compiler.operands], Math.Max(1, compiler.maxDepth));
+        return new CompiledFormula([.. compiler.code], [.. compiler.constants], [.. compiler.operands], Math.Max(1, compiler.maxDepth), compiler.frame?.Count ?? 0);
+    }
+
+    /// <summary>
+    /// The name a LET or LAMBDA gives an argument, in upper case, and whether it is optional: a word, also one with the shape of
+    /// a cell such as <c>A1</c>, as stored with <c>_xlpm.</c> or, optional, <c>_xlop.</c>, or typed in brackets. Null when it
+    /// is not a name.
+    /// </summary>
+    public static (string? Name, bool Optional) LocalName(FormulaNode node)
+    {
+        switch (node)
+        {
+            case NameNode { Prefix: null } name:
+                bool optional = name.Name.StartsWith("_xlop.", StringComparison.OrdinalIgnoreCase);
+                string plain = optional || name.Name.StartsWith("_xlpm.", StringComparison.OrdinalIgnoreCase) ? name.Name[6..] : name.Name;
+                return (plain.Length == 0 || plain.Contains('.', StringComparison.Ordinal) ? null : plain.ToUpperInvariant(), optional);
+            case ReferenceNode { Prefix: null, Area.Kind: AreaKind.Cell } reference when !reference.Text.Contains('$', StringComparison.Ordinal) && !FormulaParser.LooksLikeR1C1(reference.Text):
+                return (reference.Text.ToUpperInvariant(), false);
+            case StructuredNode { Table: null, Items: TableItems.None, FirstColumn: { } column, LastColumn: null } when column.All(c => char.IsLetterOrDigit(c) || c == '_'):
+                return (column.ToUpperInvariant(), true);
+            default:
+                return (null, false);
+        }
     }
 
     /// <summary>
@@ -111,6 +186,12 @@ internal sealed class FormulaCompiler
         while (true)
         {
             if (plain.StartsWith("_xlfn.", StringComparison.OrdinalIgnoreCase) || plain.StartsWith("_xlws.", StringComparison.OrdinalIgnoreCase))
+            {
+                plain = plain[6..];
+                continue;
+            }
+
+            if (plain.StartsWith("_xlpm.", StringComparison.OrdinalIgnoreCase))
             {
                 plain = plain[6..];
                 continue;
@@ -167,11 +248,21 @@ internal sealed class FormulaCompiler
             case MissingNode:
                 Constant(EvalValue.Missing);
                 break;
-            case ReferenceNode:
+            case ReferenceNode reference:
+                if (frame is not null && Local(reference))
+                {
+                    break;
+                }
+
                 code.Add(new Instruction(OpCode.Reference, Operand(node)));
                 Push();
                 break;
-            case NameNode:
+            case NameNode name:
+                if (frame is not null && Local(name))
+                {
+                    break;
+                }
+
                 code.Add(new Instruction(OpCode.Name, Operand(node)));
                 Push();
                 break;
@@ -213,7 +304,71 @@ internal sealed class FormulaCompiler
             case FunctionNode function:
                 Function(function);
                 break;
+            case InvokeNode invoke:
+                Emit(invoke.Callee);
+                Invoke(invoke.Arguments);
+                break;
         }
+    }
+
+    /// <summary>Pushes the local a word names, if it names one.</summary>
+    private bool Local(FormulaNode word)
+    {
+        if (LocalName(word).Name is not { } name || frame!.Find(name) is not (>= 0 and int slot))
+        {
+            return false;
+        }
+
+        code.Add(new Instruction(OpCode.LocalGet, slot));
+        Push();
+        return true;
+    }
+
+    /// <summary>The arguments of a call of the value on top, which stay as they are: references, or left out.</summary>
+    private void Invoke(Argument[] arguments)
+    {
+        foreach (Argument argument in arguments)
+        {
+            Emit(argument.Node);
+        }
+
+        code.Add(new Instruction(OpCode.Invoke, arguments.Length));
+        depth -= arguments.Length;
+    }
+
+    /// <summary>LET: each value is worked out once, in turn, and can read the names before it.</summary>
+    private void Let(Argument[] arguments)
+    {
+        frame ??= new Frame(null);
+        frame.Scopes.Add(new Dictionary<string, int>(StringComparer.Ordinal));
+        for (int i = 0; i < arguments.Length - 1; i += 2)
+        {
+            Emit(arguments[i + 1].Node);
+            code.Add(new Instruction(OpCode.LocalSet, frame.Add(LocalName(arguments[i].Node).Name!)));
+            depth--;
+        }
+
+        Branch(arguments[^1].Node);
+        frame.Scopes.RemoveAt(frame.Scopes.Count - 1);
+    }
+
+    /// <summary>LAMBDA: its body is a formula of its own, whose first locals are the parameters.</summary>
+    private void Lambda(Argument[] arguments)
+    {
+        Frame inner = new(frame);
+        int required = 0;
+        for (int i = 0; i < arguments.Length - 1; i++)
+        {
+            (string? name, bool optional) = LocalName(arguments[i].Node);
+            inner.Add(name!);
+            required += optional ? 0 : 1;
+        }
+
+        FormulaCompiler body = new() { frame = inner };
+        body.Branch(arguments[^1].Node);
+        CompiledFormula compiled = new([.. body.code], [.. body.constants], [.. body.operands], Math.Max(1, body.maxDepth), inner.Count);
+        code.Add(new Instruction(OpCode.MakeLambda, Operand(new LambdaCode(compiled, required, arguments.Length - 1, [.. inner.Captures]))));
+        Push();
     }
 
     private void Function(FunctionNode function)
@@ -242,12 +397,39 @@ internal sealed class FormulaCompiler
             case "IFNA" when arguments.Length == 2:
                 IfError(arguments, name == "IFNA");
                 return;
+            case "LET" when arguments.Length >= 3 && arguments.Length % 2 == 1:
+                Let(arguments);
+                return;
+            case "LAMBDA" when arguments.Length >= 1:
+                Lambda(arguments);
+                return;
         }
 
         if (!FormulaFunctions.TryGet(name, out FormulaFunction? info) && !FormulaFunctions.TryGetAddIn(name, out info))
         {
-            // A function nobody knows (or one stage B does not have yet) gives #NAME? without its arguments evaluated.
-            Constant(EvalValue.FromError(CellError.Name));
+            // Not a function: a name in the formula or the workbook may stand for a LAMBDA, and anything else gives what
+            // calling it gives, #NAME? for a name nobody knows.
+            if (frame?.Find(name) is >= 0 and int slot)
+            {
+                code.Add(new Instruction(OpCode.LocalGet, slot));
+            }
+            else if (name.Contains('!', StringComparison.Ordinal))
+            {
+                Constant(EvalValue.FromError(CellError.Name));
+                return;
+            }
+            else if (FormulaParser.TryCell(name, out _, out _, out _, out _))
+            {
+                Constant(EvalValue.FromError(CellError.Reference));
+                return;
+            }
+            else
+            {
+                code.Add(new Instruction(OpCode.Name, Operand(new NameNode(null, name))));
+            }
+
+            Push();
+            Invoke(arguments);
             return;
         }
 
