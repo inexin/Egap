@@ -231,6 +231,50 @@ public sealed class ChartTests
         Assert.True(values.Values.Count <= 1 << 20);
     }
 
+    [Theory]
+    [InlineData("Q1", "'Q1'")]
+    [InlineData("FY2024", "'FY2024'")]
+    [InlineData("AB12", "'AB12'")]
+    [InlineData("R1C1", "'R1C1'")]
+    [InlineData("RC", "'RC'")]
+    [InlineData("TRUE", "'TRUE'")]
+    [InlineData("My sheet", "'My sheet'")]
+    [InlineData("It's", "'It''s'")]
+    [InlineData("2024", "'2024'")]
+    [InlineData("AB", "AB")]
+    [InlineData("Sheet1", "Sheet1")]
+    [InlineData("Sales_2024", "Sales_2024")]
+    public void AChartQuotesASheetNameThatNeedsIt(string name, string written)
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        sheet.Name = name;
+        sheet["A1"].Value = "Month";
+        sheet["B1"].Value = "North";
+        sheet["A2"].Value = "Jan";
+        sheet["B2"].Value = 5;
+        sheet["A3"].Value = "Feb";
+        sheet["B3"].Value = 7;
+        sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:B3"));
+
+        ChartSeries series = Reloaded(book).Worksheets[0].Drawings[0].Chart!.Series[0];
+        Assert.Equal(written + "!$B$2:$B$3", series.Values.Reference);
+        Assert.Equal([5.0, 7.0], series.Values.Numbers);
+    }
+
+    [Theory]
+    [InlineData("R1C1", "'R1C1'")]
+    [InlineData("AB", "AB")]
+    public void APrintAreaQuotesASheetNameLikeAChartDoes(string name, string written)
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        sheet.Name = name;
+        sheet.PageSetup.PrintArea = [RangeAddress.Parse("A1:B2")];
+        Assert.Equal(written + "!$A$1:$B$2", book.Names.Single(n => n.Name == "_xlnm.Print_Area").Formula);
+        Assert.Equal([RangeAddress.Parse("A1:B2")], Reloaded(book).Worksheets[0].PageSetup.PrintArea);
+    }
+
     [Fact]
     public void ACellLinkedTitleIsReadFromItsCellAndSaved()
     {

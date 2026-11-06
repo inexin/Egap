@@ -61,9 +61,7 @@ internal static class ChartCells
     /// <summary>The references of a range as a chart writes them, such as <c>'My sheet'!$A$1:$B$2</c>.</summary>
     public static string Reference(Worksheet sheet, RangeAddress range)
     {
-        string name = sheet.Name.All(c => char.IsLetterOrDigit(c) || c is '_') && !char.IsDigit(sheet.Name[0])
-            ? sheet.Name
-            : "'" + sheet.Name.Replace("'", "''", StringComparison.Ordinal) + "'";
+        string name = SheetNames.Quoted(sheet.Name);
         string first = Absolute(range.First);
         return range.First == range.Last ? name + "!" + first : name + "!" + first + ":" + Absolute(range.Last);
     }
