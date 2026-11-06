@@ -28,7 +28,7 @@ internal interface IPageTagger
 }
 
 /// <summary>A run of rows or columns on a page: its sheet indexes and where it starts, in sheet points from the content's corner.</summary>
-internal readonly record struct Segment(int First, int Last, double Start, double Size);
+internal readonly record struct Segment(int First, int Last, double Start, double Size, double Skip = 0);
 
 /// <summary>
 /// Draws one page of a sheet (Build Plan task 18): gridlines, fills, colour scales, borders, data bars and icon sets, then the
@@ -82,7 +82,17 @@ internal sealed partial class SheetPageRenderer
             x = Add(columns, titleColumns.First, titleColumns.Last, x, grid.Columns);
         }
 
-        x = Add(columns, plan.Columns.First, plan.Columns.Last, x, grid.Columns);
+        if (plan.Columns.Size > 0)
+        {
+            // A later part of a column wider than the page.
+            columns.Add(new Segment(plan.Columns.First, plan.Columns.Last, x, plan.Columns.Size, plan.Columns.Offset));
+            x += plan.Columns.Size;
+        }
+        else
+        {
+            x = Add(columns, plan.Columns.First, plan.Columns.Last, x, grid.Columns);
+        }
+
         ContentWidth = x;
         ContentHeight = y;
         foreach (RangeAddress merged in sheet.MergedCells)
@@ -183,7 +193,7 @@ internal sealed partial class SheetPageRenderer
     private static RectF Rect(double x, double y, double width, double height) => new((float)x, (float)y, (float)width, (float)height);
 
     /// <summary>Where column <paramref name="column"/> starts in <paramref name="segment"/>, in sheet points; it may lie outside it.</summary>
-    private double X(Segment segment, int column) => segment.Start + grid.Columns(segment.First, column - 1);
+    private double X(Segment segment, int column) => segment.Start - segment.Skip + grid.Columns(segment.First, column - 1);
 
     private double Y(Segment segment, int row) => segment.Start + grid.Rows(segment.First, row - 1);
 
@@ -233,7 +243,7 @@ internal sealed partial class SheetPageRenderer
                 continue;
             }
 
-            double x = columnSegment.Start;
+            double x = columnSegment.Start - columnSegment.Skip;
             for (int c = columnSegment.First; c <= columnSegment.Last; c++)
             {
                 double width = grid.Column(c);
@@ -313,7 +323,7 @@ internal sealed partial class SheetPageRenderer
             canvas.DrawLine(new Vector2(left, (float)y), new Vector2(right, (float)y), stroke, color);
         }
 
-        double x = columnSegment.Start;
+        double x = columnSegment.Start - columnSegment.Skip;
         canvas.DrawLine(new Vector2(left, top), new Vector2(left, bottom), stroke, color);
         for (int c = columnSegment.First; c <= columnSegment.Last; c++)
         {
@@ -500,7 +510,7 @@ internal sealed partial class SheetPageRenderer
             {
                 foreach (Segment column in columns)
                 {
-                    double left = column.Start + x - grid.Columns(0, column.First - 1);
+                    double left = column.Start - column.Skip + x - grid.Columns(0, column.First - 1);
                     double top = row.Start + y - grid.Rows(0, row.First - 1);
                     if (left >= column.Start + column.Size || left + width <= column.Start || top >= row.Start + row.Size || top + height <= row.Start)
                     {

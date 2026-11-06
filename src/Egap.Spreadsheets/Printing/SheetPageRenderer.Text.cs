@@ -69,7 +69,7 @@ internal sealed partial class SheetPageRenderer
                     Rgba8 color = format.GetColor(value) is { } formatColor ? colors.Resolve(formatColor, Black) : colors.Resolve(style.Font.Color, Black);
                     double before = grid.Columns(c, columnSegment.First - 1);
                     Begin(null);
-                    DrawCellText(r, c, Rect(columnSegment.Start - before, y, grid.Column(c), height), null, value, text, style, color, segment, columnSegment);
+                    DrawCellText(r, c, Rect(columnSegment.Start - columnSegment.Skip - before, y, grid.Column(c), height), null, value, text, style, color, segment, columnSegment);
                     End();
                 }
             }

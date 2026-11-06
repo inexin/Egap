@@ -5,7 +5,7 @@ using Egap.Spreadsheets.Storage;
 namespace Egap.Spreadsheets.Printing;
 
 /// <summary>A run of rows or columns that prints on one page, first to last.</summary>
-internal readonly record struct Band(int First, int Last);
+internal readonly record struct Band(int First, int Last, double Offset = 0, double Size = 0);
 
 /// <summary>What one page of a sheet prints: a band of rows by a band of columns of one print range, and the titles with them.</summary>
 internal sealed record PagePlan(RangeAddress Area, Band Rows, Band Columns, bool TitleRows, bool TitleColumns);
@@ -214,9 +214,7 @@ internal sealed class SheetPaginator
 
             // A character is at most its font's size wide, so text that fits by that isn't measured. A cell shows its first 1,024
             // characters.
-            string text = value.Text[..Math.Min(value.Text.Length, 1024)].Replace("\r", "", StringComparison.Ordinal).Replace("\n", "", StringComparison.Ordinal);
-            ParagraphStyle paragraph = new() { DefaultStyle = grid.Fonts.TextStyle(style.Font, default), Fallback = grid.Fonts.Fallback };
-            double width = Paragraph.Create(text, paragraph).Layout(1e6f).LongestLine + TextPadding;
+            double width = TextWidth(grid, value.Text, style) + TextPadding;
             if (alignment.Horizontal is CellHorizontalAlignment.Center or CellHorizontalAlignment.CenterContinuous)
             {
                 width = (width + grid.Column(column)) / 2;
@@ -411,12 +409,39 @@ internal sealed class SheetPaginator
         return pages;
     }
 
+    /// <summary>Whether a cell shows past a point in its own column, on a later page of a column wider than the page.</summary>
+    private bool ReachesOffset(int row, int column, double offset)
+    {
+        CellValue value = Sheet.GetValue(row, column);
+        StyleTable styles = Sheet.Workbook.Styles;
+        CellStyle style = Sheet.Store.Get(row, column).Style is var s && s < styles.Count ? styles[s] : CellStyle.Default;
+        if (value.Kind == CellValueKind.Empty || style.Alignment.WrapText || style.Alignment.Horizontal is CellHorizontalAlignment.Justify or CellHorizontalAlignment.Distributed)
+        {
+            return false;
+        }
+
+        if (value.Kind != CellValueKind.Text || style.Alignment.Horizontal is not (CellHorizontalAlignment.General or CellHorizontalAlignment.Left))
+        {
+            return true;
+        }
+
+        return TextWidth(Grid, value.Text, style) + TextPadding > offset;
+    }
+
+    /// <summary>The width of a cell's text on one line: a cell shows its first 1,024 characters.</summary>
+    private static double TextWidth(SheetGrid grid, string value, CellStyle style)
+    {
+        string text = value[..Math.Min(value.Length, 1024)].Replace("\r", "", StringComparison.Ordinal).Replace("\n", "", StringComparison.Ordinal);
+        ParagraphStyle paragraph = new() { DefaultStyle = grid.Fonts.TextStyle(style.Font, default), Fallback = grid.Fonts.Fallback };
+        return Paragraph.Create(text, paragraph).Layout(1e6f).LongestLine;
+    }
+
     private bool HasContent(Band rows, Band columns)
     {
         RangeAddress page = new(rows.First, columns.First, rows.Last, columns.Last);
         foreach ((int row, int column) in Sheet.Store.Occupied(page))
         {
-            if (Grid.Column(column) > 0 && Grid.Row(row) > 0 && Shows(Sheet, row, column, showing))
+            if (Grid.Column(column) > 0 && Grid.Row(row) > 0 && Shows(Sheet, row, column, showing) && (columns.Offset == 0 || column != columns.First || ReachesOffset(row, column, columns.Offset)))
             {
                 return true;
             }
@@ -424,7 +449,7 @@ internal sealed class SheetPaginator
 
         foreach (RangeAddress merged in Sheet.MergedCells)
         {
-            if (merged.Intersects(page))
+            if (merged.Intersects(page) && (columns.Offset == 0 || merged.Last.Column > columns.First))
             {
                 return true;
             }
@@ -459,16 +484,17 @@ internal sealed class SheetPaginator
 
     private List<Band> ColumnBands(RangeAddress area, double scale, bool useBreaks, double slack = 0) =>
         Bands(area.First.Column, area.Last.Column, ((PrintableWidth - slack) / scale) - HeadingWidth, Grid.Column, TitleColumnsWidth,
-            useBreaks ? Sheet.PageSetup.ColumnBreaks : null);
+            useBreaks ? Sheet.PageSetup.ColumnBreaks : null, splitWide: true);
 
     /// <summary>
     /// The runs of <paramref name="first"/> to <paramref name="last"/> that fit <paramref name="available"/> points each, less
     /// the titles a run starting there repeats; each run holds at least one row or column, and a manual break starts a new one.
     /// </summary>
-    private static List<Band> Bands(int first, int last, double available, Func<int, double> size, Func<int, double> titles, PageBreakCollection? breaks)
+    private static List<Band> Bands(int first, int last, double available, Func<int, double> size, Func<int, double> titles, PageBreakCollection? breaks, bool splitWide = false)
     {
         List<Band> bands = [];
         int start = first;
+        double skip = 0;
         while (start <= last)
         {
             double room = available - titles(start);
@@ -481,7 +507,7 @@ internal sealed class SheetPaginator
                     break;
                 }
 
-                double next = size(i);
+                double next = i == start ? size(i) - skip : size(i);
                 if (used > 0 && used + next > room + Epsilon)
                 {
                     break;
@@ -496,11 +522,19 @@ internal sealed class SheetPaginator
                 // Hidden rows or columns at the end belong to the page before.
                 bands[^1] = bands[^1] with { Last = i - 1 };
             }
+            else if (splitWide && i - 1 == start && used > room + Epsilon && room > 0)
+            {
+                // A column wider than the page fills it and goes on over: its last part shares a page with the next columns.
+                bands.Add(new Band(start, start, skip, room));
+                skip += room;
+                continue;
+            }
             else
             {
-                bands.Add(new Band(start, i - 1));
+                bands.Add(new Band(start, i - 1, skip, skip > 0 ? used : 0));
             }
 
+            skip = 0;
             start = i;
         }
 

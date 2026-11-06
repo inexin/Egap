@@ -359,6 +359,44 @@ public sealed class PrintTests
     }
 
     [Fact]
+    public void AColumnWiderThanThePageGoesOnOverPages()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet.Columns[0].Width = 200;
+        sheet[0, 0].Value = "Short";
+        Assert.Single(sheet.Paginate(Portable).Pages);
+
+        // A text past the page edge calls for the next part, and a fill for all of them.
+        sheet[0, 0].Value = "Long text " + new string('x', 200);
+        using MemoryStream stream = new();
+        sheet.SaveAsPdf(stream, new SheetPdfOptions { Print = Portable });
+        using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
+        Assert.True(pdf.Pages.Count >= 2);
+        Assert.Contains("xxx", pdf.Pages[1].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheLastPartOfAWideColumnSharesAPageWithTheNextColumns()
+    {
+        Worksheet sheet = Grid(1, 2);
+        sheet.Columns[0].Width = 110;
+        sheet.Columns[1].Width = 8;
+        sheet[0, 0].Value = new string('x', 200);
+        sheet[0, 1].Value = "Next";
+        Assert.Equal(2, sheet.Paginate(Portable).Pages.Count);
+    }
+
+    [Fact]
+    public void WrappedTextAndFillCallForNoFurtherPartOfAWideColumn()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet.Columns[0].Width = 200;
+        sheet[0, 0].Value = new string('x', 200);
+        sheet[0, 0].Style = CellStyle.Default with { Alignment = sheet[0, 0].Style.Alignment with { WrapText = true }, Fill = CellFill.Solid(CellColor.FromTheme(4)) };
+        Assert.Single(sheet.Paginate(Portable).Pages);
+    }
+
+    [Fact]
     public void TextRunsOnOntoTheNextPage()
     {
         Worksheet sheet = Grid(1, 1);

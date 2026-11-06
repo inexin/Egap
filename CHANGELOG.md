@@ -209,6 +209,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   headings, margins and centring, at Excel's printed sizes (columns in the printer's digit width at 600 dpi, rows by the
   normal font's printed row height, measured from Excel per font and size); only cells with a value, a fill or a border
   extend the print, and a file's default row height not marked custom gives way to the font's; a row's saved height prints,
+  a column wider than the page goes on over pages, its last part sharing a page with the next columns,
   text past the last column in use takes its columns along and runs on onto the next page, and empty pages at the end of a
   sheet stay out, as in Excel; `SheetView.ShowFormulas` prints the formulas in columns of twice the width, and a sheet with no
   paper size that is fitted to pages takes the printer's paper; on 16 test sheets every page starts on the cell Excel's own PDF starts it on
