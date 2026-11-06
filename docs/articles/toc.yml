@@ -36,14 +36,14 @@
       href: guides/reports.md
 - name: Egap.Spreadsheets
   items:
+    - name: Charts
+      href: guides/charts.md
     - name: Spreadsheets
       href: guides/spreadsheets.md
     - name: Spreadsheet functions
       href: guides/spreadsheet-functions.md
     - name: Spreadsheets and documents
       href: guides/spreadsheets-and-documents.md
-    - name: Charts
-      href: guides/charts.md
 - name: The egap command
   items:
     - name: Guide

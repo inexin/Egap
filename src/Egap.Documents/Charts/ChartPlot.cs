@@ -254,7 +254,7 @@ public sealed class ChartPlot
     /// </summary>
     public int? GapWidth
     {
-        get => chart.IsExtended ? (int?)Math.Round((Scaling?.DoubleAttribute("gapWidth") ?? double.NaN) * 100) is { } gap && gap >= 0 ? gap : null : node.Int("gapWidth");
+        get => chart.IsExtended ? Scaling?.DoubleAttribute("gapWidth") is { } gap && gap >= 0 ? (int)Math.Round(gap * 100) : null : node.Int("gapWidth");
         set
         {
             if (chart.IsExtended)

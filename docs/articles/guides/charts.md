@@ -80,6 +80,9 @@ chart.Plots[0].Series.Add("Sheet1!$D$2:$D$7", "Sheet1!$A$2:$A$7", "Sheet1!$D$1")
 book.Save("edited.xlsx");
 ```
 
+Labels in levels, taken from more than one column, must keep their reference, because a chart part has no way to write
+levels without one. Setting `Reference` to null on them throws; call `SetText` first to write one level.
+
 ## Making a chart
 
 `AddChart` reads a range: a first row of text gives the names, leading text columns the categories and each other column a

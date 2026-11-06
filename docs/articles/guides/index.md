@@ -36,6 +36,7 @@ One document model for DOCX, DOC, RTF, OpenDocument Text, HTML, Markdown and pla
 
 Workbooks built and edited from code.
 
+- [Charts](charts.md): one chart model for workbooks and Word documents: reading, editing, creating and saving.
 - [Spreadsheets](spreadsheets.md): workbooks, sheets, cells, ranges, formulas and cell styles.
 - [Spreadsheets and documents](spreadsheets-and-documents.md): XLSX and CSV as documents, and the tables of documents and PDFs as sheets.
 

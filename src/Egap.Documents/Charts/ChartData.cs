@@ -26,6 +26,10 @@ public sealed class ChartData
     }
 
     /// <summary>The reference to the cells, or null when the values are written in the chart.</summary>
+    /// <exception cref="InvalidOperationException">
+    /// Set to null on labels in levels: a chart can write labels without a reference only in one level. Write them with
+    /// <see cref="SetText"/> first.
+    /// </exception>
     public string? Reference
     {
         get => extended ? (string?)holder.Find()?.Element(ChartNs.Cx + "f") : (string?)Form()?.Element(ChartNs.C + "f");
@@ -42,6 +46,12 @@ public sealed class ChartData
             {
                 if (form is not null)
                 {
+                    // CT_AxDataSource has c:multiLvlStrRef but no literal form with levels.
+                    if (form.Name.LocalName == "multiLvlStrRef")
+                    {
+                        throw new InvalidOperationException("Labels in levels need their reference; write them with SetText before removing it.");
+                    }
+
                     bool numeric = form.Name.LocalName is "numRef" or "numLit";
                     form.Element(ChartNs.C + "f")?.Remove();
                     ChartText.Rename(form, ChartNs.C + (numeric ? "numLit" : "strLit"));

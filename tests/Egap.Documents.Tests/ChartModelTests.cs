@@ -327,6 +327,50 @@ public sealed class ChartModelTests
         Assert.Equal("Sheet1!$B$1", back.Axes[0].Title.Reference);
     }
 
+    [Theory]
+    [InlineData(ChartType.Treemap)]
+    [InlineData(ChartType.Sunburst)]
+    [InlineData(ChartType.RegionMap)]
+    public void AnExtendedChartWithoutACategoryAxisHasNoGapWidth(ChartType type)
+    {
+        Assert.Null(Chart.Create(type).Plots[0].GapWidth);
+    }
+
+    [Theory]
+    [InlineData("<cx:catScaling/>", null)]
+    [InlineData("<cx:catScaling gapWidth=\"auto\"/>", null)]
+    [InlineData("<cx:catScaling gapWidth=\"-1\"/>", null)]
+    [InlineData("<cx:catScaling gapWidth=\"0\"/>", 0)]
+    [InlineData("<cx:catScaling gapWidth=\"0.5\"/>", 50)]
+    public void AnExtendedChartReadsItsGapWidthAsAPercentage(string scaling, int? expected)
+    {
+        string xml = $"""
+            <cx:chartSpace xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex"><cx:chart><cx:plotArea><cx:plotAreaRegion><cx:series layoutId="waterfall"/></cx:plotAreaRegion>
+            <cx:axis id="0">{scaling}</cx:axis></cx:plotArea></cx:chart></cx:chartSpace>
+            """;
+        using MemoryStream stream = new(System.Text.Encoding.UTF8.GetBytes(xml));
+        Assert.Equal(expected, Chart.Load(stream).Plots[0].GapWidth);
+    }
+
+    [Fact]
+    public void LabelsInLevelsCannotLoseTheirReference()
+    {
+        Chart chart = Made();
+        ChartData categories = chart.Series[0].Categories;
+        categories.Reference = "Sheet1!$A$2:$B$3";
+        categories.SetTextLevels([["Jan", "Feb"], ["Q1", null]]);
+
+        Assert.Throws<InvalidOperationException>(() => categories.Reference = null);
+        Assert.Equal("Sheet1!$A$2:$B$3", categories.Reference);
+        Assert.Equal(2, categories.TextLevels.Count);
+
+        categories.SetText(categories.Text);
+        categories.Reference = null;
+        ChartData back = RoundTrip(chart).Series[0].Categories;
+        Assert.Null(back.Reference);
+        Assert.Equal(["Jan", "Feb"], back.Text);
+    }
+
     [Fact]
     public void ACopyGoingToAnotherDocumentDropsWhatItCannotTake()
     {
