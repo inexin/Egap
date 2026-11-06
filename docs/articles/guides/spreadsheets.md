@@ -378,9 +378,48 @@ spilled cell does the same. `=@A1:A3` meets the formula's cell by implicit inter
 dynamic arrays did. Formulas read from a file stay what the file made them: Excel marks the dynamic ones, and the others
 keep implicit intersection.
 
+### LET and LAMBDA
+
+`LET` names values for one formula, and each is worked out once. `LAMBDA` makes a function, which you call where you write
+it or keep in a defined name; `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL` and `MAKEARRAY` call one for each part of an array,
+and take a function's own name too:
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet["A1"].Value = 1;
+sheet["A2"].Value = 2;
+sheet["A3"].Value = 3;
+book.Names.Add("TAX", "=LAMBDA(amount,[rate],amount*IF(ISOMITTED(rate),0.25,rate))");
+sheet["C1"].Formula = "=LET(total,SUM(A1:A3),total*total)";     // 36
+sheet["C2"].Formula = "=LAMBDA(x,x+1)(2)";                      // 3
+sheet["C3"].Formula = "=TAX(100)+TAX(100,0.1)";                 // 35
+sheet["E1"].Formula = "=MAP(A1:A3,LAMBDA(v,v*10))";             // spills 10, 20, 30
+sheet["F1"].Formula = "=BYROW(A1:A3,SUM)";                      // spills 1, 2, 3
+book.Calculate();
+```
+
+A LAMBDA in a name may call itself. Excel's limit on how deep that goes depends on the formula, as its stack is what runs out,
+at 5,000 to 9,000 calls in what we measured; here calls end with `#NUM!` at 8,192 deep, and at 5,000,000 calls from one call
+at the top. A LAMBDA left in a cell shows `#CALC!`. Files store these with prefixes on names (`_xlpm.x`), which Egap reads and
+writes as Excel does.
+
+### Structured references
+
+A table's name and its parts work in formulas as in Excel: `Sales` or `Sales[]` for its data, `Sales[Qty]`,
+`Sales[[Qty]:[Price]]`, `Sales[#All]`, `Sales[#Headers]`, `Sales[#Data]`, `Sales[#Totals]`,
+`Sales[[#Headers],[#Data],[Qty]]` and `Sales[[#Totals],[Qty]]`. `Sales[@Qty]` is the column's cell in the formula's own row,
+from any sheet, and gives `#VALUE!` in a row the table's data does not reach. In a cell of the table the table's name can go:
+`[@Qty]*2`, `[Qty]`. Inside a name, escape `[`, `]`, `#` and `'` with `'`, as in `Sales[a'#b]`. Saved, each has the form Excel
+stores, such as `Sales[[#This Row],[Qty]]*2`. A column or table that does not exist gives `#REF!`, where Excel refuses the
+formula when it is typed.
+
 ### Functions
 
-Over 460 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
+Over 470 of Excel's functions are built in, and [Spreadsheet functions](spreadsheet-functions.md) lists them and those that
+are not: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (`">20"`,
 `"a*"`, `"<>"`). `FunctionRegistry.BuiltInFunctions` lists them. Each follows Microsoft's function reference and is
 checked against what Excel calculates: `tools/excel-function-oracle.ps1` runs the cases in

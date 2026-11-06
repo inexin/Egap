@@ -30,7 +30,7 @@ Number format codes show values as Excel does (`cell.Text`, `NumberFormatCode`),
 read and written with type detection. Formulas are read and checked against Excel's grammar, in A1 or R1C1 style
 (`cell.FormulaR1C1`), `sheet.Evaluate` evaluates one with Excel's rules for values, errors, references and dates, and
 `book.Calculate()` recalculates what changed through a dependency graph, with shared and array formulas, circular
-references and iteration, and dynamic arrays that spill. Over 460 of Excel's functions are built in and checked against Excel itself;
+references and iteration, dynamic arrays that spill, LET, LAMBDA and structured references. Over 470 of Excel's functions are built in and checked against Excel itself;
 `FunctionRegistry` adds functions of your own. `sheet.SaveAsPdf` and `book.SaveAsPdf` print as Excel prints, with its page
 breaks, print titles, fit to pages, headers and footers, cell formatting, conditional colours and pictures, to PDF (tagged,
 PDF/A or PDF/UA when asked), and `Paginate` lays the pages out to draw on any Egami canvas or render to images.

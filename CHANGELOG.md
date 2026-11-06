@@ -136,6 +136,16 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- LET and LAMBDA: names for one formula, functions you call where you write them or keep in a defined name, with optional
+  parameters, ISOMITTED and recursion, a function's name as a value (`BYROW(A1:B3,SUM)`), and MAP, REDUCE, SCAN, BYROW, BYCOL
+  and MAKEARRAY. Calls end with `#NUM!` at 8,192 deep, where Excel's own limit depends on the formula.
+- Structured references in full: every combination of `#All`, `#Data`, `#Headers`, `#Totals` and `#This Row` Excel takes, a
+  sheet before a table's name, `#This Row` from another sheet, and what is typed is saved in the form Excel stores, so
+  `[@Qty]` is saved as `Sales[[#This Row],[Qty]]`. Before, it was saved as typed, which Excel does not read.
+- A defined name's formula set through the API is saved in the form Excel stores.
+- IF, IFERROR and IFNA are listed in `FunctionRegistry.BuiltInFunctions`.
+- [Spreadsheet functions](docs/articles/guides/spreadsheet-functions.md) reports which of Excel's functions are built in
+  and which are not planned yet.
 - New fonts name their font and follow no theme font (`CellFont.Scheme` is `None` for new cells): a workbook made here
   has no theme part, and Excel took a scheme font from its own default theme, Aptos Narrow.
 - Dynamic arrays: a formula that can give more than one value spills over the cells beside and below it when the workbook
