@@ -50,6 +50,17 @@ internal static partial class FormulaFunctions
                     charge *= (12 - month) / 12;
                 }
 
+                // Once the charges no longer change the total, every period up to a last short one is the same.
+                if (total + charge == total || double.IsInfinity(total))
+                {
+                    if (period <= life)
+                    {
+                        break;
+                    }
+
+                    p = Math.Max(p, period - 1);
+                }
+
                 total += charge;
             }
 
@@ -80,6 +91,8 @@ internal static partial class FormulaFunctions
             return Math.Max(Math.Min(after, before - salvage), 0);
         }
 
+        private const double MaxVariablePeriods = 1e8;
+
         /// <summary>VDB: declining balance over a span of periods, parts of periods pro rata, moving to straight line when that gives more.</summary>
         public static EvalValue Variable(EvalValue[] a, EvalContext c)
         {
@@ -104,6 +117,12 @@ internal static partial class FormulaFunctions
             }
 
             if (cost < 0 || salvage < 0 || life < 0 || start < 0 || end < start || end > life || factor < 0)
+            {
+                return Error(CellError.Number);
+            }
+
+            // Excel goes through the periods one by one too, and takes minutes past this.
+            if (end > MaxVariablePeriods)
             {
                 return Error(CellError.Number);
             }
@@ -180,7 +199,7 @@ internal static partial class FormulaFunctions
             period = Math.Truncate(period);
             bought = Math.Truncate(buy);
             firstEnd = Math.Truncate(end);
-            if (cost <= 0 || salvage < 0 || salvage > cost || period < 0 || rate <= 0 || bought > firstEnd || basis is < 0 or > 4 or 2)
+            if (cost <= 0 || salvage < 0 || salvage > cost || period < 0 || rate <= 0 || bought < 0 || bought > firstEnd || firstEnd > LastSerial(c) || basis is < 0 or > 4 or 2)
             {
                 error = Error(CellError.Number);
                 return false;
@@ -206,9 +225,17 @@ internal static partial class FormulaFunctions
             }
 
             left -= first;
-            for (double p = 1; p < period && left > 0; p++)
+            if (period > 1e6)
             {
-                left -= full;
+                // A charge too small to count would keep a loop going for ever.
+                left -= (period - 1) * full;
+            }
+            else
+            {
+                for (double p = 1; p < period && left > 0; p++)
+                {
+                    left -= full;
+                }
             }
 
             return Number(Math.Max(Math.Min(full, left), 0));
@@ -269,10 +296,25 @@ internal static partial class FormulaFunctions
                 return Number(first);
             }
 
+            if (period >= periods)
+            {
+                return Number(0);
+            }
+
             double value = cost - first;
             left -= first;
             double half = 0;
-            for (int p = 1; p < periods; p++)
+            int from = 1;
+            if (period > 1e6)
+            {
+                // A long life: straight to the period asked for, or to the last two that share.
+                from = (int)Math.Min(period, periods - 2);
+                double kept = Math.Pow(1 - declining, from - 1);
+                left -= value * (1 - kept);
+                value *= kept;
+            }
+
+            for (int p = from; p < periods; p++)
             {
                 if (left < 0)
                 {

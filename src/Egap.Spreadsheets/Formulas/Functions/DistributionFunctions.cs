@@ -179,7 +179,8 @@ internal static partial class FormulaFunctions
 
     private static double DistBetaInverse(double p, double a, double b, double low, double high)
     {
-        if (a <= 0 || b <= 0 || p <= 0 || p >= 1 || low >= high)
+        // Past 1E+17 the tails take too long to search, and Excel doesn't answer within minutes.
+        if (a <= 0 || b <= 0 || a > 1e17 || b > 1e17 || p <= 0 || p >= 1 || low >= high)
         {
             return double.NaN;
         }
@@ -196,7 +197,7 @@ internal static partial class FormulaFunctions
 
         k = Math.Truncate(k);
         n = Math.Truncate(n);
-        if (n < 0 || k > n || p < 0 || p > 1)
+        if (n < 0 || n > MaxCount || k > n || p < 0 || p > 1)
         {
             return double.NaN;
         }
@@ -213,7 +214,7 @@ internal static partial class FormulaFunctions
     private static double DistBinomialRange(double[] a)
     {
         double n = Math.Truncate(a[0]), p = a[1], first = Math.Truncate(a[2]), last = Math.Truncate(DistOr(a, 3, first));
-        if (n < 0 || p < 0 || p > 1 || first < 0 || first > n || last < first || last > n)
+        if (n < 0 || n > MaxCount || p < 0 || p > 1 || first < 0 || first > n || last < first || last > n)
         {
             return double.NaN;
         }
@@ -234,6 +235,11 @@ internal static partial class FormulaFunctions
             return last == n ? 1 : 0;
         }
 
+        if (last - first > 1e6)
+        {
+            return DistBinomial(last, n, p, true) - (first > 0 ? DistBinomial(first - 1, n, p, true) : 0);
+        }
+
         double total = 0;
         for (double k = first; k <= last; k++)
         {
@@ -246,7 +252,7 @@ internal static partial class FormulaFunctions
     private static double DistBinomialInverse(double n, double p, double alpha)
     {
         n = Math.Truncate(n);
-        if (n < 0 || p <= 0 || p >= 1 || alpha <= 0 || alpha >= 1)
+        if (n < 0 || n > MaxCount || p <= 0 || p >= 1 || alpha <= 0 || alpha >= 1)
         {
             return double.NaN;
         }
@@ -422,7 +428,7 @@ internal static partial class FormulaFunctions
         }
 
         double size = Math.Truncate(a[2]);
-        if (a[0] <= 0 || a[0] >= 1 || a[1] <= 0 || size < 1)
+        if (a[0] <= 0 || a[0] >= 1 || a[1] <= 0 || size < 1 || size - 1 > 1e10)
         {
             return Error(CellError.Number);
         }
@@ -584,7 +590,7 @@ internal static partial class FormulaFunctions
         k = Math.Truncate(k);
         total = Math.Truncate(total);
         double lowest = Math.Max(0, n - total + k), highest = Math.Min(n, k);
-        if (s < 0 || n < 0 || k < 0 || total < 0 || n > total || k > total || total == 0)
+        if (s < 0 || n < 0 || k < 0 || total < 0 || total > MaxCount || n > total || k > total || total == 0)
         {
             return double.NaN;
         }
@@ -803,7 +809,7 @@ internal static partial class FormulaFunctions
     private static double DistPermutationA(double n, double k)
     {
         k = Math.Truncate(k);
-        return n < 0 || k < 0 ? double.NaN : Math.Pow(Math.Truncate(n), k);
+        return n < 0 || k < 0 || Math.Truncate(n) > MaxCount ? double.NaN : Math.Pow(Math.Truncate(n), k);
     }
 
     private static double DistPoisson(double x, double mean, bool cumulative)

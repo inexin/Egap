@@ -15,6 +15,12 @@ internal static class DistMath
     private const double Tiny = 1e-300;
     private const double Epsilon = 1e-17;
     private const int MaxIterations = 20_000_000;
+    private const double UniformGammaFrom = 1e12;
+    private const long MaxInverseWork = 300_000_000;
+
+    /// <summary>The series steps taken on this thread since it was last reset: an inverse gives up when its tails cost too much.</summary>
+    [ThreadStatic]
+    private static long work;
 
     /// <summary>ln(1 + x), accurate for small x (Kahan's form).</summary>
     public static double Log1P(double x)
@@ -422,7 +428,7 @@ internal static class DistMath
             return 0;
         }
 
-        return double.IsInfinity(x) ? 1 : GammaBySeries(a, x) ? GammaSeries(a, x) : 1 - GammaFraction(a, x);
+        return double.IsInfinity(x) ? 1 : a >= UniformGammaFrom ? 1 - GammaUniform(a, x) : GammaBySeries(a, x) ? GammaSeries(a, x) : 1 - GammaFraction(a, x);
     }
 
     /// <summary>The regularised upper incomplete gamma function Q(a, x).</summary>
@@ -433,11 +439,26 @@ internal static class DistMath
             return 1;
         }
 
-        return double.IsInfinity(x) ? 0 : GammaBySeries(a, x) ? 1 - GammaSeries(a, x) : GammaFraction(a, x);
+        return double.IsInfinity(x) ? 0 : a >= UniformGammaFrom ? GammaUniform(a, x) : GammaBySeries(a, x) ? 1 - GammaSeries(a, x) : GammaFraction(a, x);
     }
 
     /// <summary>The series has only positive terms, so it keeps its accuracy up to where the upper tail is small; the fraction takes over past that.</summary>
     private static bool GammaBySeries(double a, double x) => x < a + 1 + (1.5 * Math.Sqrt(a));
+
+    /// <summary>
+    /// Q(a, x) for a so large that the series would need too many steps: the first terms of Temme's uniform expansion (DLMF
+    /// 8.12.3 to 8.12.10), which leave an error of order 1 / a times the second term.
+    /// </summary>
+    private static double GammaUniform(double a, double x)
+    {
+        double mu = (x - a) / a;
+        double half = Math.Abs(mu) < 1e-2
+            ? mu * mu * ((1.0 / 2) - (mu * ((1.0 / 3) - (mu * ((1.0 / 4) - (mu * ((1.0 / 5) - (mu * ((1.0 / 6) - (mu / 7))))))))))
+            : mu - Log1P(mu);
+        double eta = Math.Sign(mu) * Math.Sqrt(2 * half);
+        double c0 = Math.Abs(eta) < 1e-3 ? (-1.0 / 3) + (eta / 12) - (2 * eta * eta / 135) : (1 / mu) - (1 / eta);
+        return NormalUpper(eta * Math.Sqrt(a)) + (Math.Exp(-a * half) / Math.Sqrt(2 * Math.PI * a) * c0);
+    }
 
     private static double GammaSeries(double a, double x)
     {
@@ -454,6 +475,7 @@ internal static class DistMath
             // Well past where a term rounds away: with a large a so many follow that they still add up.
             if (term < 1e-21 * total)
             {
+                work += i;
                 break;
             }
         }
@@ -467,17 +489,25 @@ internal static class DistMath
         // must go; working back from there keeps the rounding of thousands of steps from adding up.
         double denominator = x + 1 - a, front = 1 / Tiny, back = 1 / Guard(denominator);
         int depth = 1;
+        double last = 0;
         for (; depth < MaxIterations; depth++)
         {
             double numerator = -depth * (depth - a);
             denominator += 2;
             back = 1 / Guard(denominator + (numerator * back));
             front = Guard(denominator + (numerator / front));
-            if (Math.Abs((front * back) - 1) < Epsilon)
+
+            // With a huge x the product can stay a rounding error away from 1 for good.
+            double change = front * back;
+            if (Math.Abs(change - 1) < Epsilon || (change == last && Math.Abs(change - 1) < 1e-15))
             {
                 break;
             }
+
+            last = change;
         }
+
+        work += 3L * depth;
 
         // Each step's change can round to nothing while many such steps still add up, so go on a good way further.
         depth = (depth * 2) + 20;
@@ -548,10 +578,12 @@ internal static class DistMath
             moment += (k + 1) * term;
             if (term < 1e-21 * total)
             {
+                work += k;
                 return total + (xError * moment);
             }
         }
 
+        work += 4_000_000;
         return double.NaN;
     }
 
@@ -576,6 +608,8 @@ internal static class DistMath
                 break;
             }
         }
+
+        work += 3L * depth;
 
         // Each step's change can round to nothing while many such steps still add up, so go on a good way further.
         depth = (depth * 2) + 20;
@@ -742,8 +776,15 @@ internal static class DistMath
         }
 
         double best = x;
+        work = 0;
         for (int i = 0; i < 400; i++)
         {
+            // With huge parameters every tail takes millions of steps. NaN: Excel's answers there aren't reachable this way.
+            if (work > MaxInverseWork)
+            {
+                return double.NaN;
+            }
+
             double t = tail(x);
             best = x;
             if (t == target)

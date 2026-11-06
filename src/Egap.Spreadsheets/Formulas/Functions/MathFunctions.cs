@@ -343,41 +343,46 @@ internal static partial class FormulaFunctions
         return Number((up ? Math.Ceiling(steps) : Math.Floor(steps)) * significance);
     }
 
+    /// <summary>The largest count Excel takes in COMBIN, PERMUT and the counting distributions: one below 2^31 - 1, as measured.</summary>
+    private const double MaxCount = 2147483646;
+
     private static EvalValue Combin(double n, double k)
     {
         n = Math.Truncate(n);
         k = Math.Truncate(k);
-        if (n < 0 || k < 0 || n < k)
+        if (n < 0 || k < 0 || n < k || n > MaxCount)
         {
             return Error(CellError.Number);
         }
 
         k = Math.Min(k, n - k);
+        // A huge k ends early: past about a thousand steps the result has overflowed.
         double result = 1;
-        for (int i = 1; i <= k; i++)
+        for (double i = 1; i <= k && !double.IsInfinity(result); i++)
         {
             result = result * (n - k + i) / i;
         }
 
-        return Number(result < 9007199254740992 ? Math.Round(result) : result);
+        return double.IsInfinity(result) ? Error(CellError.Number) : Number(result < 9007199254740992 ? Math.Round(result) : result);
     }
 
     private static EvalValue Permut(double n, double k)
     {
         n = Math.Truncate(n);
         k = Math.Truncate(k);
-        if (n <= 0 || k < 0 || n < k)
+        if (n <= 0 || k < 0 || n < k || n > MaxCount)
         {
             return Error(CellError.Number);
         }
 
+        // The product overflows within a few hundred steps of a large n.
         double result = 1;
-        for (double i = n - k + 1; i <= n; i++)
+        for (double i = 0; i < k && !double.IsInfinity(result); i++)
         {
-            result *= i;
+            result *= n - i;
         }
 
-        return Number(result);
+        return double.IsInfinity(result) ? Error(CellError.Number) : Number(result);
     }
 
     private static EvalValue Divisors(EvalValue[] arguments, EvalContext context, bool lcm)

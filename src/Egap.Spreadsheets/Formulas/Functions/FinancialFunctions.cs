@@ -250,7 +250,10 @@ internal static partial class FormulaFunctions
                 return 0;
             }
 
-            double balance = Future(rate, period - 1, payment, present, due);
+            // Over very many periods the growth swamps the balance, which stays small, so it is taken from the end instead.
+            double balance = future == 0 && Math.Pow(1 + rate, period - 1) > 1e6
+                ? -present * (1 - Math.Pow(1 + rate, period - 1 - periods)) / (1 - Math.Pow(1 + rate, -periods))
+                : Future(rate, period - 1, payment, present, due);
             return due != 0 ? balance * rate / (1 + rate) : balance * rate;
         }
 
@@ -276,6 +279,12 @@ internal static partial class FormulaFunctions
         {
             double rate = v[0], periods = v[1], present = v[2], first = v[3], last = v[4], type = v[5];
             if (rate <= 0 || periods <= 0 || present <= 0 || first < 1 || last < first || last > periods || type is not (0 or 1))
+            {
+                return Error(CellError.Number);
+            }
+
+            // One period at a time, as Excel seems to: past this, minutes.
+            if (last - first > 1e7)
             {
                 return Error(CellError.Number);
             }

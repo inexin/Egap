@@ -571,7 +571,7 @@ internal static partial class FormulaFunctions
 
             double issue = Math.Truncate(v[0]), first = Math.Truncate(v[1]), settlement = Math.Truncate(v[2]);
             double rate = v[3], par = v[4], frequency = v[5];
-            if (issue < 0 || first < 0 || settlement < 0 || issue >= settlement || rate <= 0 || par <= 0 || !ValidFrequency(ref frequency) || !ValidBasis(v[6], out int basis))
+            if (issue < 0 || first < 0 || settlement < 0 || Math.Max(issue, Math.Max(first, settlement)) > LastSerial(c) || issue >= settlement || rate <= 0 || par <= 0 || !ValidFrequency(ref frequency) || !ValidBasis(v[6], out int basis))
             {
                 return Error(CellError.Number);
             }
@@ -610,8 +610,13 @@ internal static partial class FormulaFunctions
                 }
 
                 double current = Math.Max(issue, before);
-                for (int k = 0; Coupon(k) < settlement; k++)
+                for (int k = 0; Month(y, m, k * step).Year > 9999 || Coupon(k) < settlement; k++)
                 {
+                    if (Month(y, m, k * step).Year > 9999)
+                    {
+                        return Error(CellError.Number);
+                    }
+
                     total += OddPart(current, Coupon(k - 1), Coupon(k), frequency, basis, c);
                     current = Coupon(k);
                 }
