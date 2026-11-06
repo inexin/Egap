@@ -208,7 +208,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   area or the cells in use from A1, page order, manual breaks, scale and fit to pages, print titles, gridlines and
   headings, margins and centring, at Excel's printed sizes (columns in the printer's digit width at 600 dpi, rows by the
   normal font's printed row height, measured from Excel per font and size); only cells with a value, a fill or a border
-  extend the print, and a file's default row height not marked custom gives way to the font's; on 16 test sheets every page starts on the cell Excel's own PDF starts it on
+  extend the print, and a file's default row height not marked custom gives way to the font's; a row's saved height prints,
+  text past the last column in use takes its columns along and runs on onto the next page, and empty pages at the end of a
+  sheet stay out, as in Excel; on 16 test sheets every page starts on the cell Excel's own PDF starts it on
   (`tools/excel-print-oracle.ps1`). Headers and footers take Excel's codes with their fields, fonts and colours, first and
   even pages and scaling with the document. Cells draw with fills and patterns, borders, fonts, alignment, indent,
   wrapping, rotation, stacked text, shrink to fit, fill characters, `###` for numbers that do not fit, overflow into empty

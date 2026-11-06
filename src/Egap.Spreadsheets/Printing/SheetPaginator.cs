@@ -26,6 +26,10 @@ internal sealed class SheetPaginator
     /// <summary>The room Excel leaves between a cell's edge and its text, in points.</summary>
     private const double TextPadding = 1.5;
 
+    private readonly Dictionary<int, bool> showing = [];
+    private readonly List<(int Row, int First, int Last)> runningText = [];
+    private List<RangeAddress>? drawingCells;
+
     public SheetPaginator(Worksheet sheet, SheetGrid grid, bool ignorePrintAreas)
     {
         Sheet = sheet;
@@ -41,7 +45,7 @@ internal sealed class SheetPaginator
         PageHeight = height;
         PrintableWidth = Math.Max(1, width - ((setup.LeftMargin + setup.RightMargin) * 72));
         PrintableHeight = Math.Max(1, height - ((setup.TopMargin + setup.BottomMargin) * 72));
-        Areas = PrintRanges(sheet, grid, ignorePrintAreas);
+        Areas = PrintRanges(sheet, grid, ignorePrintAreas, runningText);
         TitleRows = setup.PrintTitleRows is { } rows ? new Band(rows.First.Row, rows.Last.Row) : null;
         TitleColumns = setup.PrintTitleColumns is { } columns ? new Band(columns.First.Column, columns.Last.Column) : null;
         if (setup.PrintHeadings)
@@ -111,7 +115,7 @@ internal sealed class SheetPaginator
     /// What prints when there is no print area: the cells that hold a value or show a fill or a border, with the merged
     /// ranges and drawings, from their top-left to their bottom-right. A cell with only a font or an alignment prints nothing.
     /// </summary>
-    private static List<RangeAddress> PrintRanges(Worksheet sheet, SheetGrid grid, bool ignorePrintAreas)
+    private static List<RangeAddress> PrintRanges(Worksheet sheet, SheetGrid grid, bool ignorePrintAreas, List<(int Row, int First, int Last)> runningText)
     {
         if (!ignorePrintAreas && sheet.PageSetup.PrintArea is { Count: > 0 } areas)
         {
@@ -130,14 +134,14 @@ internal sealed class SheetPaginator
         }
 
         // Excel prints from A1, however far down and right the cells in use start.
-        return used is { } range ? [new RangeAddress(0, 0, range.Last.Row, TextReach(sheet, grid, range))] : [];
+        return used is { } range ? [new RangeAddress(0, 0, range.Last.Row, TextReach(sheet, grid, range, runningText))] : [];
     }
 
     /// <summary>
     /// The last column that prints: the cells in use may end before the text of a row's last cell, which runs on over the empty
     /// cells beside it, and Excel prints those columns too.
     /// </summary>
-    private static int TextReach(Worksheet sheet, SheetGrid grid, RangeAddress used)
+    private static int TextReach(Worksheet sheet, SheetGrid grid, RangeAddress used, List<(int Row, int First, int Last)> runningText)
     {
         if (sheet.Store.Bounds() is not { } bounds)
         {
@@ -178,8 +182,7 @@ internal sealed class SheetPaginator
             CellStyle style = sheet.Store.Get(row, column).Style is var s && s < styles.Count ? styles[s] : CellStyle.Default;
             CellAlignment alignment = style.Alignment;
             double start = grid.Columns(0, column - 1);
-            double room = reachEdge - start;
-            if (value.Text.Length * style.Font.Size * NarrowestCharacter <= room || alignment.WrapText || alignment.ShrinkToFit || alignment.TextRotation != 0
+            if (value.Text.Length * style.Font.Size * NarrowestCharacter <= grid.Column(column) || alignment.WrapText || alignment.ShrinkToFit || alignment.TextRotation != 0
                 || alignment.Horizontal is not (CellHorizontalAlignment.General or CellHorizontalAlignment.Left or CellHorizontalAlignment.Center or CellHorizontalAlignment.CenterContinuous)
                 || alignment.Vertical is CellVerticalAlignment.Justify or CellVerticalAlignment.Distributed || InMerge(sheet, row, column))
             {
@@ -200,6 +203,17 @@ internal sealed class SheetPaginator
             {
                 reach++;
                 reachEdge += grid.Column(reach);
+            }
+
+            int end = column;
+            for (double x = start + grid.Column(column); x < edge && end < CellAddress.MaxColumns - 1; end++)
+            {
+                x += grid.Column(end + 1);
+            }
+
+            if (end > column)
+            {
+                runningText.Add((row, column, end));
             }
         }
 
@@ -226,7 +240,6 @@ internal sealed class SheetPaginator
             return null;
         }
 
-        StyleTable styles = sheet.Workbook.Styles;
         Dictionary<int, bool> showing = [];
 
         // Most sheets show something in their last row and last column, and then no other cell can change the answer.
@@ -240,7 +253,7 @@ internal sealed class SheetPaginator
         int top = int.MaxValue, left = int.MaxValue, bottom = -1, right = -1;
         foreach ((int row, int column) in sheet.Store.Occupied(bounds))
         {
-            if (Shows(row, column))
+            if (Shows(sheet, row, column, showing))
             {
                 top = Math.Min(top, row);
                 left = Math.Min(left, column);
@@ -255,7 +268,7 @@ internal sealed class SheetPaginator
         {
             foreach ((int row, int column) in sheet.Store.Occupied(range))
             {
-                if (Shows(row, column))
+                if (Shows(sheet, row, column, showing))
                 {
                     return true;
                 }
@@ -264,23 +277,26 @@ internal sealed class SheetPaginator
             return false;
         }
 
-        bool Shows(int row, int column)
+    }
+
+    /// <summary>Whether a cell puts something on paper: a value, a fill or a border. <paramref name="showing"/> holds the answer by style.</summary>
+    private static bool Shows(Worksheet sheet, int row, int column, Dictionary<int, bool> showing)
+    {
+        ref readonly CellRecord record = ref sheet.Store.Get(row, column);
+        if (record.Kind != CellKind.Empty)
         {
-            ref readonly CellRecord record = ref sheet.Store.Get(row, column);
-            if (record.Kind != CellKind.Empty)
-            {
-                return true;
-            }
-
-            if (!showing.TryGetValue(record.Style, out bool shows))
-            {
-                CellStyle style = record.Style < styles.Count ? styles[record.Style] : CellStyle.Default;
-                shows = style.Fill != CellFill.None || style.Borders != CellBorders.None;
-                showing[record.Style] = shows;
-            }
-
-            return shows;
+            return true;
         }
+
+        if (!showing.TryGetValue(record.Style, out bool shows))
+        {
+            StyleTable styles = sheet.Workbook.Styles;
+            CellStyle style = record.Style < styles.Count ? styles[record.Style] : CellStyle.Default;
+            shows = style.Fill != CellFill.None || style.Borders != CellBorders.None;
+            showing[record.Style] = shows;
+        }
+
+        return shows;
     }
 
     /// <summary>A whole-row or whole-column print area cut to the cells in use, as Excel prints it.</summary>
@@ -343,34 +359,71 @@ internal sealed class SheetPaginator
     private List<PagePlan> Paginate(double scale, bool useBreaks)
     {
         List<PagePlan> pages = [];
-        bool overThenDown = Sheet.PageSetup.PageOrder == PrintPageOrder.OverThenDown;
+        PageSetup setup = Sheet.PageSetup;
+        bool overThenDown = setup.PageOrder == PrintPageOrder.OverThenDown;
+
+        // Excel leaves out the empty pages at the end, while empty pages before the last with something on it print. A print
+        // area, gridlines and headings print every page.
+        bool keepAll = setup.PrintArea.Count > 0 || setup.PrintGridLines || setup.PrintHeadings;
         foreach (RangeAddress area in Areas)
         {
             List<Band> rows = RowBands(area, scale, useBreaks);
             List<Band> columns = ColumnBands(area, scale, useBreaks);
-            if (overThenDown)
+            Band RowOf(int page) => overThenDown ? rows[page / columns.Count] : rows[page % rows.Count];
+            Band ColumnOf(int page) => overThenDown ? columns[page % columns.Count] : columns[page / rows.Count];
+
+            int count = rows.Count * columns.Count;
+            while (!keepAll && count > 1 && !HasContent(RowOf(count - 1), ColumnOf(count - 1)))
             {
-                foreach (Band row in rows)
-                {
-                    foreach (Band column in columns)
-                    {
-                        pages.Add(Plan(area, row, column));
-                    }
-                }
+                count--;
             }
-            else
+
+            for (int page = 0; page < count; page++)
             {
-                foreach (Band column in columns)
-                {
-                    foreach (Band row in rows)
-                    {
-                        pages.Add(Plan(area, row, column));
-                    }
-                }
+                pages.Add(Plan(area, RowOf(page), ColumnOf(page)));
             }
         }
 
         return pages;
+    }
+
+    private bool HasContent(Band rows, Band columns)
+    {
+        RangeAddress page = new(rows.First, columns.First, rows.Last, columns.Last);
+        foreach ((int row, int column) in Sheet.Store.Occupied(page))
+        {
+            if (Shows(Sheet, row, column, showing))
+            {
+                return true;
+            }
+        }
+
+        foreach (RangeAddress merged in Sheet.MergedCells)
+        {
+            if (merged.Intersects(page))
+            {
+                return true;
+            }
+        }
+
+        drawingCells ??= [.. Sheet.Drawings.Select(Grid.Cells)];
+        foreach (RangeAddress cells in drawingCells)
+        {
+            if (cells.Intersects(page))
+            {
+                return true;
+            }
+        }
+
+        foreach ((int row, int first, int last) in runningText)
+        {
+            if (row >= rows.First && row <= rows.Last && first <= columns.Last && last >= columns.First)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private PagePlan Plan(RangeAddress area, Band rows, Band columns) =>

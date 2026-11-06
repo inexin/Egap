@@ -265,6 +265,40 @@ public sealed class PrintTests
     }
 
     [Fact]
+    public void EmptyPagesPrintUpToTheLastWithSomethingOnIt()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet[199, 0].Value = 1;
+        int down = sheet.Paginate(Portable).Pages.Count;
+        Assert.True(down >= 3);
+
+        // The second column of pages holds one cell on its first page: its later pages are empty and at the end.
+        sheet[0, 12].Value = 2;
+        Assert.Equal(down + 1, sheet.Paginate(Portable).Pages.Count);
+
+        // A cell on its last page keeps the empty ones before it, and gridlines keep them all.
+        sheet[199, 12].Value = 3;
+        Assert.Equal(2 * down, sheet.Paginate(Portable).Pages.Count);
+        sheet[199, 12].Value = CellValue.Empty;
+        sheet.PageSetup.PrintGridLines = true;
+        Assert.Equal(2 * down, sheet.Paginate(Portable).Pages.Count);
+    }
+
+    [Fact]
+    public void TextRunsOnOntoTheNextPage()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet[0, 0].Value = "1";
+        sheet[1, 7].Value = "The start of a long text " + new string('x', 60);
+        using MemoryStream stream = new();
+        sheet.SaveAsPdf(stream, new SheetPdfOptions { Print = Portable });
+
+        using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
+        Assert.Equal(2, pdf.Pages.Count);
+        Assert.Contains("The start", pdf.Pages[1].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void HeadersAndFootersShowTheirFields()
     {
         Worksheet sheet = Grid(100, 2);
