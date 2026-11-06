@@ -143,35 +143,51 @@ internal sealed class SheetPaginator
     /// </summary>
     private static int TextReach(Worksheet sheet, SheetGrid grid, RangeAddress used, List<(int Row, int First, int Last)> runningText)
     {
-        if (sheet.Store.Bounds() is not { } bounds)
+        // From the right, one column at a time: on most sheets the last column finds every row's last cell, and only the last
+        // cells that hold text matter. Each row's entry is its last cell's column plus one, 0 when a number ends the row and there
+        // is nothing to measure, and -1 until found.
+        int reach = used.Last.Column;
+        int rows = used.Last.Row - used.First.Row + 1;
+        int[]? lastInRow = null;
+        int missing = 0;
+        int lastColumn = used.Last.Column;
+        for (int i = 0; i < rows; i++)
         {
-            return used.Last.Column;
+            CellKind kind = sheet.Store.Get(used.First.Row + i, lastColumn).Kind;
+            if (kind is CellKind.Number or CellKind.Boolean)
+            {
+                continue;
+            }
+
+            lastInRow ??= new int[rows];
+            lastInRow[i] = kind == CellKind.Empty ? -1 : lastColumn + 1;
+            missing += kind == CellKind.Empty ? 1 : 0;
         }
 
-        int[] lastInRow = new int[bounds.Last.Row - bounds.First.Row + 1];
-        Array.Fill(lastInRow, -1);
-        // From the right, one column at a time: on most sheets the last columns find every row's last cell.
-        int missing = lastInRow.Length;
-        for (int column = bounds.Last.Column; column >= bounds.First.Column && missing > 0; column--)
+        if (lastInRow is null)
         {
-            foreach ((int row, int found) in sheet.Store.Occupied(new RangeAddress(bounds.First.Row, column, bounds.Last.Row, column)))
+            return reach;
+        }
+
+        for (int column = lastColumn - 1; column >= used.First.Column && missing > 0; column--)
+        {
+            foreach ((int row, int found) in sheet.Store.Occupied(new RangeAddress(used.First.Row, column, used.Last.Row, column)))
             {
-                int index = row - bounds.First.Row;
-                if (lastInRow[index] < 0 && sheet.Store.Get(row, found).Kind != CellKind.Empty)
+                int index = row - used.First.Row;
+                if (lastInRow[index] == -1 && sheet.Store.Get(row, found).Kind != CellKind.Empty)
                 {
-                    lastInRow[index] = found;
+                    lastInRow[index] = found + 1;
                     missing--;
                 }
             }
         }
 
-        int reach = used.Last.Column;
         double reachEdge = grid.Columns(0, reach);
         Workbook book = sheet.Workbook;
         StyleTable styles = book.Styles;
         for (int i = 0; i < lastInRow.Length; i++)
         {
-            int row = bounds.First.Row + i, column = lastInRow[i];
+            int row = used.First.Row + i, column = lastInRow[i] - 1;
             if (column < 0)
             {
                 continue;

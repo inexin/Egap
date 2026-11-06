@@ -573,7 +573,7 @@ internal static class SheetDataReader
         reader.MoveToElement();
         if (height is not null)
         {
-            if (customHeight && XlsxNames.TryNumber(height, out double points) && points is >= 0 and <= 409)
+            if (customHeight && XlsxNames.TryNumber(height, out double points) && points is >= 0 and <= 409.5)
             {
                 record.Height = points;
             }
@@ -581,7 +581,7 @@ internal static class SheetDataReader
             {
                 // A height Excel worked out from the row's text: kept as it was, for Excel to work out again.
                 (extra ??= []).Add(new XAttribute("ht", height));
-                if (!customHeight && XlsxNames.TryNumber(height, out double fitted) && fitted is >= 0 and <= 409)
+                if (!customHeight && XlsxNames.TryNumber(height, out double fitted) && fitted is >= 0 and <= 409.5)
                 {
                     record.FittedHeight = fitted;
                 }
