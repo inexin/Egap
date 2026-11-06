@@ -87,6 +87,14 @@ internal sealed class EvalContext
             ArrayMode = arrayMode,
         };
 
+    /// <summary>The context for a formula that stays in its cell while its relative references move down, as a database criterion's do.</summary>
+    public static EvalContext ForMovedDown(Worksheet sheet, int row, int column, int rows, Dictionary<DefinedName, CompiledFormula?> names) =>
+        new(sheet, row, column)
+        {
+            RowDelta = rows,
+            Names = names,
+        };
+
     /// <summary>
     /// The context for a defined name's formula: relative references in a name count from A1, so they move by the
     /// formula's cell and wrap around the sheet.
