@@ -8735,6 +8735,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SpreadsheetFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SpreadsheetFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SpreadsheetFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SpreadsheetFormat.yml\" sourcestartlinenumber=\"1\">Connects spreadsheets to <xref href=\"Egap.Documents.Document.Load(System.String)\" data-throw-if-not-resolved=\"false\"></xref>: after <xref href=\"Egap.Spreadsheets.SpreadsheetFormat.Register\" data-throw-if-not-resolved=\"false\"></xref>, XLSX and CSV files load as\ndocuments, one section per visible sheet with its table of displayed values, so that HTML, Markdown, DOCX, text and RAG\nchunks work on them. <xref href=\"Egap.Spreadsheets.Workbook.ToDocument\" data-throw-if-not-resolved=\"false\"></xref> does the same for a workbook already in hand.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.TableImportOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.TableImportOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.TableImportOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.TableImportOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.Workbook.FromTables(Egap.Documents.Document%2cEgap.Spreadsheets.TableImportOptions)\" data-throw-if-not-resolved=\"false\"></xref> reads tables' text into cells.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.TableTotalsFunction.yml",
       "output": {
         ".html": {
@@ -8759,7 +8787,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.Workbook",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Workbook.yml\" sourcestartlinenumber=\"1\">A spreadsheet workbook: its worksheets, defined names, and the text and styles the sheets share. Create one in code, or\nload an XLSX, XLSM, XLTX or XLTM file and save it again with what it holds kept, the parts this model does not cover\nincluded. A workbook is not safe to change from more than one thread at a time.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Workbook.yml\" sourcestartlinenumber=\"1\">The bridge between workbooks, documents and tables.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9138,6 +9166,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/guides/signatures.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/guides/spreadsheets-and-documents.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/spreadsheets-and-documents.html"
         }
       },
       "version": ""

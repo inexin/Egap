@@ -459,6 +459,9 @@ culture's list separator unless you name one (a semicolon where the comma is the
 <code>\r\n</code> and pads every row to the same number of fields. <code>WriteSeparatorHint</code> adds a <code>sep=</code> line for Excel.</p>
 <p><code>Workbook.Load</code> and <code>Workbook.Save</code> take <code>.csv</code>, <code>.tsv</code> and <code>.tab</code> paths too, with <code>WorkbookLoadOptions.Csv</code> and
 <code>WorkbookSaveOptions.Csv</code> for the options; saving writes the first visible sheet.</p>
+<h2 id="spreadsheets-as-documents">Spreadsheets as documents</h2>
+<p><code>Document.Load</code> reads XLSX and CSV, and <code>Workbook.FromTables</code> puts the tables of a document or a PDF on sheets: see
+<a href="spreadsheets-and-documents.html">Spreadsheets and documents</a>.</p>
 <h2 id="tables-validation-and-conditional-formatting">Tables, validation and conditional formatting</h2>
 <p><code>sheet.Tables</code> holds Excel tables: a named range with a header row, filter buttons, a style and an optional totals row,
 which formulas can name, as in <code>SUM(Sales[Amount])</code>. <code>Add</code> names empty header cells <code>Column1</code>, <code>Column2</code> and so on and

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Workbook | Egap ">
       
-      <meta name="description" content="A spreadsheet workbook: its worksheets, defined names, and the text and styles the sheets share. Create one in code, or load an XLSX, XLSM, XLTX or XLTM file and save it again with what it holds kept, the parts this model does not cover included. A workbook is not safe to change from more than one thread at a time.">
+      <meta name="description" content="The bridge between workbooks, documents and tables.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,9 +97,7 @@ Class Workbook  <a class="header-action link-secondary" title="View source" href
   <dl><dt>Assembly</dt><dd>Egap.Spreadsheets.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>A spreadsheet workbook: its worksheets, defined names, and the text and styles the sheets share. Create one in code, or
-load an XLSX, XLSM, XLTX or XLTM file and save it again with what it holds kept, the parts this model does not cover
-included. A workbook is not safe to change from more than one thread at a time.</p>
+  <div class="markdown summary"><p>The bridge between workbooks, documents and tables.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -494,6 +492,145 @@ was loaded or made has every formula calculated the first time. Independent form
 
 
 
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_FromTables_" data-uid="Egap.Spreadsheets.Workbook.FromTables*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_FromTables_Egap_Documents_Document_Egap_Spreadsheets_TableImportOptions_" data-uid="Egap.Spreadsheets.Workbook.FromTables(Egap.Documents.Document,Egap.Spreadsheets.TableImportOptions)">
+  FromTables(Document, TableImportOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Bridge/Workbook.Bridge.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A workbook of one sheet per table in <code class="paramref">document</code>'s section bodies, named <code>Table 1</code>, <code>Table 2</code>
+and so on, in document order with nested tables after the table holding them. Header rows turn bold, merged cells stay
+merged, and a cell's paragraphs become lines of one wrapped cell. A document with no tables gives one empty sheet.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Workbook FromTables(Document document, TableImportOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>document</code> <a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.TableImportOptions.html">TableImportOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">document</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_FromTables_" data-uid="Egap.Spreadsheets.Workbook.FromTables*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_FromTables_Egap_Pdf_PdfDocument_Egap_Spreadsheets_TableImportOptions_" data-uid="Egap.Spreadsheets.Workbook.FromTables(Egap.Pdf.PdfDocument,Egap.Spreadsheets.TableImportOptions)">
+  FromTables(PdfDocument, TableImportOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Bridge/Workbook.Bridge.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A workbook of one sheet per table <a class="xref" href="Egap.Documents.Pdf.PdfLayoutAnalyzer.html">PdfLayoutAnalyzer</a> finds in <code class="paramref">pdf</code>, read as
+<a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_FromTables_System_Collections_Generic_IEnumerable_Egap_Documents_Pdf_PdfPageLayout__Egap_Spreadsheets_TableImportOptions_">FromTables(IEnumerable&lt;PdfPageLayout&gt;, TableImportOptions?)</a> does.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Workbook FromTables(PdfDocument pdf, TableImportOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pdf</code> <a class="xref" href="Egap.Pdf.PdfDocument.html">PdfDocument</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.TableImportOptions.html">TableImportOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">pdf</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_FromTables_" data-uid="Egap.Spreadsheets.Workbook.FromTables*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_FromTables_System_Collections_Generic_IEnumerable_Egap_Documents_Pdf_PdfPageLayout__Egap_Spreadsheets_TableImportOptions_" data-uid="Egap.Spreadsheets.Workbook.FromTables(System.Collections.Generic.IEnumerable{Egap.Documents.Pdf.PdfPageLayout},Egap.Spreadsheets.TableImportOptions)">
+  FromTables(IEnumerable&lt;PdfPageLayout&gt;, TableImportOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Bridge/Workbook.Bridge.cs/#L44"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A workbook of one sheet per table on the analysed pages; a table carried on from the page before joins the sheet it
+carries on, without its repeated header. Sheets are named as in <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_FromTables_Egap_Documents_Document_Egap_Spreadsheets_TableImportOptions_">FromTables(Document, TableImportOptions?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Workbook FromTables(IEnumerable&lt;PdfPageLayout&gt; pages, TableImportOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pages</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Documents.Pdf.PdfPageLayout.html">PdfPageLayout</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.TableImportOptions.html">TableImportOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">pages</code> is null.</p>
+</dd>
+  </dl>
 
 
 
@@ -896,6 +1033,78 @@ A <code>.csv</code>, <code>.tsv</code> or <code>.tab</code> path writes the firs
     <dd><p>The path is null or empty.</p>
 </dd>
   </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_ToDocument_" data-uid="Egap.Spreadsheets.Workbook.ToDocument*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_ToDocument" data-uid="Egap.Spreadsheets.Workbook.ToDocument">
+  ToDocument()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Bridge/Workbook.Bridge.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The workbook as a document: a section per visible sheet, with the sheet's name as a heading and a table of its values as
+displayed. Formulas show the value they hold now; hidden rows and columns, and rows and columns that show nothing, are
+left out, and the layout finds column widths from the text. Merged cells stay merged; bold, italic, alignment and links
+carry over. A sheet is cut off at two million table cells, with a warning.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Document ToDocument()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_Workbook_ToDocument_" data-uid="Egap.Spreadsheets.Workbook.ToDocument*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_ToDocument_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___" data-uid="Egap.Spreadsheets.Workbook.ToDocument(System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)">
+  ToDocument(out IReadOnlyList&lt;ConversionWarning&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Bridge/Workbook.Bridge.cs/#L18"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The workbook as a document, reporting what it could not hold. See <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_ToDocument">ToDocument()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Document ToDocument(out IReadOnlyList&lt;ConversionWarning&gt; warnings)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>warnings</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.ConversionWarning.html">ConversionWarning</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Document.html">Document</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 
 

@@ -345,10 +345,20 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SpreadsheetFormat.html">SpreadsheetFormat</a></dt>
+      <dd><p>Connects spreadsheets to <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a>: after <a class="xref" href="Egap.Spreadsheets.SpreadsheetFormat.html#Egap_Spreadsheets_SpreadsheetFormat_Register">Register()</a>, XLSX and CSV files load as
+documents, one section per visible sheet with its table of displayed values, so that HTML, Markdown, DOCX, text and RAG
+chunks work on them. <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_ToDocument">ToDocument()</a> does the same for a workbook already in hand.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.TableImportOptions.html">TableImportOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_FromTables_Egap_Documents_Document_Egap_Spreadsheets_TableImportOptions_">FromTables(Document, TableImportOptions?)</a> reads tables' text into cells.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a></dt>
-      <dd><p>A spreadsheet workbook: its worksheets, defined names, and the text and styles the sheets share. Create one in code, or
-load an XLSX, XLSM, XLTX or XLTM file and save it again with what it holds kept, the parts this model does not cover
-included. A workbook is not safe to change from more than one thread at a time.</p>
+      <dd><p>The bridge between workbooks, documents and tables.</p>
 </dd>
     </dl>
     <dl class="jumplist">

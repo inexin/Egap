@@ -117,6 +117,11 @@ Enum DocumentFormatKind  <a class="header-action link-secondary" title="View sou
   <h2 id="fields">Fields
 </h2>
   <dl class="parameters">
+    <dt id="Egap_Documents_DocumentFormatKind_Csv"><code>Csv = 14</code></dt>
+  
+  <dd><p>Comma- or tab-separated text, known by a <code>.csv</code>, <code>.tsv</code> or <code>.tab</code> extension. Loading it as a document needs
+the Egap.Spreadsheets package and <code>SpreadsheetFormat.Register()</code>.</p>
+</dd>
     <dt id="Egap_Documents_DocumentFormatKind_Doc"><code>Doc = 13</code></dt>
   
   <dd><p>A binary Word document or template (DOC or DOT): Word 97 to 2003, and Word 6 and Word 95, a compound file with a
@@ -176,8 +181,8 @@ flat FODT file (one XML document). A password-protected one is <a class="xref" h
 </dd>
     <dt id="Egap_Documents_DocumentFormatKind_Xlsx"><code>Xlsx = 12</code></dt>
   
-  <dd><p>An Excel workbook: XLSX, XLSM, XLTX or XLTM, known by a package part under <code>xl/</code> or by its extension. It is a
-spreadsheet, which Egap.Documents does not load as a document.</p>
+  <dd><p>An Excel workbook: XLSX, XLSM, XLTX or XLTM, known by a package part under <code>xl/</code> or by its extension. Loading one
+as a document needs the Egap.Spreadsheets package and <code>SpreadsheetFormat.Register()</code>.</p>
 </dd>
   </dl>
 

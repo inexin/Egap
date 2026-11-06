@@ -4508,6 +4508,12 @@ references:
   commentId: T:Egap.Documents.DocumentFormatKind
   fullName: Egap.Documents.DocumentFormatKind
   nameWithType: DocumentFormatKind
+- uid: Egap.Documents.DocumentFormatKind.Csv
+  name: Csv
+  href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Csv
+  commentId: F:Egap.Documents.DocumentFormatKind.Csv
+  fullName: Egap.Documents.DocumentFormatKind.Csv
+  nameWithType: DocumentFormatKind.Csv
 - uid: Egap.Documents.DocumentFormatKind.Doc
   name: Doc
   href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Doc
@@ -59614,6 +59620,57 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetWriter.WriteRow
   nameWithType: SheetWriter.WriteRow
+- uid: Egap.Spreadsheets.SpreadsheetFormat
+  name: SpreadsheetFormat
+  href: api/Egap.Spreadsheets.SpreadsheetFormat.html
+  commentId: T:Egap.Spreadsheets.SpreadsheetFormat
+  fullName: Egap.Spreadsheets.SpreadsheetFormat
+  nameWithType: SpreadsheetFormat
+- uid: Egap.Spreadsheets.SpreadsheetFormat.Register
+  name: Register()
+  href: api/Egap.Spreadsheets.SpreadsheetFormat.html#Egap_Spreadsheets_SpreadsheetFormat_Register
+  commentId: M:Egap.Spreadsheets.SpreadsheetFormat.Register
+  fullName: Egap.Spreadsheets.SpreadsheetFormat.Register()
+  nameWithType: SpreadsheetFormat.Register()
+- uid: Egap.Spreadsheets.SpreadsheetFormat.Register*
+  name: Register
+  href: api/Egap.Spreadsheets.SpreadsheetFormat.html#Egap_Spreadsheets_SpreadsheetFormat_Register_
+  commentId: Overload:Egap.Spreadsheets.SpreadsheetFormat.Register
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SpreadsheetFormat.Register
+  nameWithType: SpreadsheetFormat.Register
+- uid: Egap.Spreadsheets.TableImportOptions
+  name: TableImportOptions
+  href: api/Egap.Spreadsheets.TableImportOptions.html
+  commentId: T:Egap.Spreadsheets.TableImportOptions
+  fullName: Egap.Spreadsheets.TableImportOptions
+  nameWithType: TableImportOptions
+- uid: Egap.Spreadsheets.TableImportOptions.Culture
+  name: Culture
+  href: api/Egap.Spreadsheets.TableImportOptions.html#Egap_Spreadsheets_TableImportOptions_Culture
+  commentId: P:Egap.Spreadsheets.TableImportOptions.Culture
+  fullName: Egap.Spreadsheets.TableImportOptions.Culture
+  nameWithType: TableImportOptions.Culture
+- uid: Egap.Spreadsheets.TableImportOptions.Culture*
+  name: Culture
+  href: api/Egap.Spreadsheets.TableImportOptions.html#Egap_Spreadsheets_TableImportOptions_Culture_
+  commentId: Overload:Egap.Spreadsheets.TableImportOptions.Culture
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.TableImportOptions.Culture
+  nameWithType: TableImportOptions.Culture
+- uid: Egap.Spreadsheets.TableImportOptions.DetectTypes
+  name: DetectTypes
+  href: api/Egap.Spreadsheets.TableImportOptions.html#Egap_Spreadsheets_TableImportOptions_DetectTypes
+  commentId: P:Egap.Spreadsheets.TableImportOptions.DetectTypes
+  fullName: Egap.Spreadsheets.TableImportOptions.DetectTypes
+  nameWithType: TableImportOptions.DetectTypes
+- uid: Egap.Spreadsheets.TableImportOptions.DetectTypes*
+  name: DetectTypes
+  href: api/Egap.Spreadsheets.TableImportOptions.html#Egap_Spreadsheets_TableImportOptions_DetectTypes_
+  commentId: Overload:Egap.Spreadsheets.TableImportOptions.DetectTypes
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.TableImportOptions.DetectTypes
+  nameWithType: TableImportOptions.DetectTypes
 - uid: Egap.Spreadsheets.TableTotalsFunction
   name: TableTotalsFunction
   href: api/Egap.Spreadsheets.TableTotalsFunction.html
@@ -59790,6 +59847,40 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.Format
   nameWithType: Workbook.Format
+- uid: Egap.Spreadsheets.Workbook.FromTables(Egap.Documents.Document,Egap.Spreadsheets.TableImportOptions)
+  name: FromTables(Document, TableImportOptions?)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_FromTables_Egap_Documents_Document_Egap_Spreadsheets_TableImportOptions_
+  commentId: M:Egap.Spreadsheets.Workbook.FromTables(Egap.Documents.Document,Egap.Spreadsheets.TableImportOptions)
+  name.vb: FromTables(Document, TableImportOptions)
+  fullName: Egap.Spreadsheets.Workbook.FromTables(Egap.Documents.Document, Egap.Spreadsheets.TableImportOptions?)
+  fullName.vb: Egap.Spreadsheets.Workbook.FromTables(Egap.Documents.Document, Egap.Spreadsheets.TableImportOptions)
+  nameWithType: Workbook.FromTables(Document, TableImportOptions?)
+  nameWithType.vb: Workbook.FromTables(Document, TableImportOptions)
+- uid: Egap.Spreadsheets.Workbook.FromTables(Egap.Pdf.PdfDocument,Egap.Spreadsheets.TableImportOptions)
+  name: FromTables(PdfDocument, TableImportOptions?)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_FromTables_Egap_Pdf_PdfDocument_Egap_Spreadsheets_TableImportOptions_
+  commentId: M:Egap.Spreadsheets.Workbook.FromTables(Egap.Pdf.PdfDocument,Egap.Spreadsheets.TableImportOptions)
+  name.vb: FromTables(PdfDocument, TableImportOptions)
+  fullName: Egap.Spreadsheets.Workbook.FromTables(Egap.Pdf.PdfDocument, Egap.Spreadsheets.TableImportOptions?)
+  fullName.vb: Egap.Spreadsheets.Workbook.FromTables(Egap.Pdf.PdfDocument, Egap.Spreadsheets.TableImportOptions)
+  nameWithType: Workbook.FromTables(PdfDocument, TableImportOptions?)
+  nameWithType.vb: Workbook.FromTables(PdfDocument, TableImportOptions)
+- uid: Egap.Spreadsheets.Workbook.FromTables(System.Collections.Generic.IEnumerable{Egap.Documents.Pdf.PdfPageLayout},Egap.Spreadsheets.TableImportOptions)
+  name: FromTables(IEnumerable<PdfPageLayout>, TableImportOptions?)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_FromTables_System_Collections_Generic_IEnumerable_Egap_Documents_Pdf_PdfPageLayout__Egap_Spreadsheets_TableImportOptions_
+  commentId: M:Egap.Spreadsheets.Workbook.FromTables(System.Collections.Generic.IEnumerable{Egap.Documents.Pdf.PdfPageLayout},Egap.Spreadsheets.TableImportOptions)
+  name.vb: FromTables(IEnumerable(Of PdfPageLayout), TableImportOptions)
+  fullName: Egap.Spreadsheets.Workbook.FromTables(System.Collections.Generic.IEnumerable<Egap.Documents.Pdf.PdfPageLayout>, Egap.Spreadsheets.TableImportOptions?)
+  fullName.vb: Egap.Spreadsheets.Workbook.FromTables(System.Collections.Generic.IEnumerable(Of Egap.Documents.Pdf.PdfPageLayout), Egap.Spreadsheets.TableImportOptions)
+  nameWithType: Workbook.FromTables(IEnumerable<PdfPageLayout>, TableImportOptions?)
+  nameWithType.vb: Workbook.FromTables(IEnumerable(Of PdfPageLayout), TableImportOptions)
+- uid: Egap.Spreadsheets.Workbook.FromTables*
+  name: FromTables
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_FromTables_
+  commentId: Overload:Egap.Spreadsheets.Workbook.FromTables
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Workbook.FromTables
+  nameWithType: Workbook.FromTables
 - uid: Egap.Spreadsheets.Workbook.Load(System.IO.Stream,Egap.Spreadsheets.WorkbookLoadOptions)
   name: Load(Stream, WorkbookLoadOptions?)
   href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Load_System_IO_Stream_Egap_Spreadsheets_WorkbookLoadOptions_
@@ -59919,6 +60010,28 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.SaveAsPdf
   nameWithType: Workbook.SaveAsPdf
+- uid: Egap.Spreadsheets.Workbook.ToDocument
+  name: ToDocument()
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_ToDocument
+  commentId: M:Egap.Spreadsheets.Workbook.ToDocument
+  fullName: Egap.Spreadsheets.Workbook.ToDocument()
+  nameWithType: Workbook.ToDocument()
+- uid: Egap.Spreadsheets.Workbook.ToDocument(System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)
+  name: ToDocument(out IReadOnlyList<ConversionWarning>)
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_ToDocument_System_Collections_Generic_IReadOnlyList_Egap_Documents_ConversionWarning___
+  commentId: M:Egap.Spreadsheets.Workbook.ToDocument(System.Collections.Generic.IReadOnlyList{Egap.Documents.ConversionWarning}@)
+  name.vb: ToDocument(IReadOnlyList(Of ConversionWarning))
+  fullName: Egap.Spreadsheets.Workbook.ToDocument(out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning>)
+  fullName.vb: Egap.Spreadsheets.Workbook.ToDocument(System.Collections.Generic.IReadOnlyList(Of Egap.Documents.ConversionWarning))
+  nameWithType: Workbook.ToDocument(out IReadOnlyList<ConversionWarning>)
+  nameWithType.vb: Workbook.ToDocument(IReadOnlyList(Of ConversionWarning))
+- uid: Egap.Spreadsheets.Workbook.ToDocument*
+  name: ToDocument
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_ToDocument_
+  commentId: Overload:Egap.Spreadsheets.Workbook.ToDocument
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Workbook.ToDocument
+  nameWithType: Workbook.ToDocument
 - uid: Egap.Spreadsheets.Workbook.Worksheets
   name: Worksheets
   href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Worksheets
