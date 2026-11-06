@@ -1,0 +1,4 @@
+VDB	2e-9	sums millions of periods, so the rounding of the sum shows
+HYPGEOM.DIST	1e-13	sums millions of terms
+F.DIST	1e-13	the incomplete beta function with parameters of 1E+10
+CUMIPMT	1e-13	the last digits of the balance after billions of periods

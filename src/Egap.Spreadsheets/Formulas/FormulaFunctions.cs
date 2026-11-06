@@ -97,7 +97,8 @@ internal static partial class FormulaFunctions
     private static FrozenDictionary<string, FormulaFunction> Build()
     {
         List<FormulaFunction> all = [.. Core(), .. MathFunctions(), .. TextFunctions(), .. DateFunctions(), .. LookupFunctions(),
-            .. StatisticalFunctions(), .. InformationFunctions()];
+            .. StatisticalFunctions(), .. InformationFunctions(), .. FinancialFunctions(), .. EngineeringFunctions(), .. DatabaseFunctions(),
+            .. MatrixFunctions(), .. DistributionFunctions()];
         return all.ToFrozenDictionary(f => f.Name, StringComparer.Ordinal);
     }
 

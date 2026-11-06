@@ -1,0 +1,8 @@
+GAMMA.INV(0.5,1E+14,1)	Excel gives 1.00027E+14; the median of this distribution is a - 1/3, which Egap gives
+GAMMA.INV(0.5,1E+16,1)	Excel gives 1.00027E+16; the median is a - 1/3, which Egap gives
+T.INV(0.3,1E+10)	with so many degrees of freedom this is the normal quantile, -0.5244005127, which Egap gives; Excel is off by 3E-7
+CONFIDENCE.T(0.05,0.5,10000000001)	Excel's T.INV is off the same way: 2E-7 relative
+BETA.DIST(0.5,1E+14,1E+14,TRUE)	exactly 0.5 by symmetry; Egap's incomplete beta function is off by 3E-9 with parameters this large
+BETA.DIST(0.5,1E+16,1E+16,TRUE)	exactly 0.5 by symmetry; Egap is off by 8E-6 with parameters this large
+NEGBINOM.DIST(1E+15,1E+15,0.5,TRUE)	the incomplete beta function again: Egap is off by 3E-8 with parameters this large
+CUMPRINC(0.01,1E+7,1000,1,1E+6,0)	the rounding of a million payments of 10 and their interest: Excel gets 0, Egap 3E-8

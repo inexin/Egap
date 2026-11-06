@@ -1,0 +1,5 @@
+IRR	2.9e-11	Newton's method, Excel stops earlier and its digits depend on the path
+ODDFYIELD	5.6e-09	root-finding, closed in on further than Excel's stopping point
+RATE	7.8e-11	Newton's method, Excel stops earlier and its digits depend on the path
+XIRR	2.1e-08	Excel halves down to about 1e-8, its digits depend on the path
+YIELD	2.0e-09	root-finding, closed in on further than Excel's stopping point
