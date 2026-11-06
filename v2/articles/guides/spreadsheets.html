@@ -368,11 +368,11 @@ CalculationResult result = book.Calculate();         // A1 near 2, B1 near 1
 bool settled = result.Converged;                     // true
 </code></pre>
 <h3 id="functions">Functions</h3>
-<p>About 210 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference,
-information and the core statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (<code>&quot;&gt;20&quot;</code>,
+<p>Over 440 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
+information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (<code>&quot;&gt;20&quot;</code>,
 <code>&quot;a*&quot;</code>, <code>&quot;&lt;&gt;&quot;</code>). <code>FunctionRegistry.BuiltInFunctions</code> lists them. Each follows Microsoft's function reference and is
 checked against what Excel calculates: <code>tools/excel-function-oracle.ps1</code> runs the cases in
-<code>tests/Egap.Spreadsheets.Tests/Oracle/functions.txt</code> through Excel, and the tests compare Egap with its answers;
+<code>tests/Egap.Spreadsheets.Tests/Oracle/functions*.txt</code> through Excel, and the tests compare Egap with its answers;
 <code>tools/excel-workbook-oracle.ps1</code> has Excel build, calculate and save whole workbooks, which the tests calculate again
 with <code>CalculateFull</code> and compare cell by cell. Text that depends on the culture, such as FIXED, DOLLAR, dates read from
 text and numbers joined into text, follows <code>book.Culture</code>.</p>
