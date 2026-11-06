@@ -9172,6 +9172,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/guides/spreadsheet-functions.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/spreadsheet-functions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/guides/spreadsheets-and-documents.md",
       "output": {
         ".html": {

@@ -394,8 +394,40 @@ double count = sheet[&quot;E1&quot;].Value.Number;                    // 2
 spilled cell does the same. <code>=@A1:A3</code> meets the formula's cell by implicit intersection, as every formula in Excel before
 dynamic arrays did. Formulas read from a file stay what the file made them: Excel marks the dynamic ones, and the others
 keep implicit intersection.</p>
+<h3 id="let-and-lambda">LET and LAMBDA</h3>
+<p><code>LET</code> names values for one formula, and each is worked out once. <code>LAMBDA</code> makes a function, which you call where you write
+it or keep in a defined name; <code>MAP</code>, <code>REDUCE</code>, <code>SCAN</code>, <code>BYROW</code>, <code>BYCOL</code> and <code>MAKEARRAY</code> call one for each part of an array,
+and take a function's own name too:</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet[&quot;A1&quot;].Value = 1;
+sheet[&quot;A2&quot;].Value = 2;
+sheet[&quot;A3&quot;].Value = 3;
+book.Names.Add(&quot;TAX&quot;, &quot;=LAMBDA(amount,[rate],amount*IF(ISOMITTED(rate),0.25,rate))&quot;);
+sheet[&quot;C1&quot;].Formula = &quot;=LET(total,SUM(A1:A3),total*total)&quot;;     // 36
+sheet[&quot;C2&quot;].Formula = &quot;=LAMBDA(x,x+1)(2)&quot;;                      // 3
+sheet[&quot;C3&quot;].Formula = &quot;=TAX(100)+TAX(100,0.1)&quot;;                 // 35
+sheet[&quot;E1&quot;].Formula = &quot;=MAP(A1:A3,LAMBDA(v,v*10))&quot;;             // spills 10, 20, 30
+sheet[&quot;F1&quot;].Formula = &quot;=BYROW(A1:A3,SUM)&quot;;                      // spills 1, 2, 3
+book.Calculate();
+</code></pre>
+<p>A LAMBDA in a name may call itself. Excel's limit on how deep that goes depends on the formula, as its stack is what runs out,
+at 5,000 to 9,000 calls in what we measured; here calls end with <code>#NUM!</code> at 8,192 deep, and a recursion that branches ends
+with <code>#NUM!</code> after about 5,000,000 calls, fewer the deeper they are. A LAMBDA left in a cell shows <code>#CALC!</code>. Files store these with prefixes on names (<code>_xlpm.x</code>), which Egap reads and
+writes as Excel does.</p>
+<h3 id="structured-references">Structured references</h3>
+<p>A table's name and its parts work in formulas as in Excel: <code>Sales</code> or <code>Sales[]</code> for its data, <code>Sales[Qty]</code>,
+<code>Sales[[Qty]:[Price]]</code>, <code>Sales[#All]</code>, <code>Sales[#Headers]</code>, <code>Sales[#Data]</code>, <code>Sales[#Totals]</code>,
+<code>Sales[[#Headers],[#Data],[Qty]]</code> and <code>Sales[[#Totals],[Qty]]</code>. <code>Sales[@Qty]</code> is the column's cell in the formula's own row,
+from any sheet, and gives <code>#VALUE!</code> in a row the table's data does not reach. In a cell of the table the table's name can go:
+<code>[@Qty]*2</code>, <code>[Qty]</code>. Inside a name, escape <code>[</code>, <code>]</code>, <code>#</code> and <code>'</code> with <code>'</code>, as in <code>Sales[a'#b]</code>. Saved, each has the form Excel
+stores, such as <code>Sales[[#This Row],[Qty]]*2</code>. A column or table that does not exist gives <code>#REF!</code>, where Excel refuses the
+formula when it is typed.</p>
 <h3 id="functions">Functions</h3>
-<p>Over 460 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
+<p>Over 470 of Excel's functions are built in, and <a href="spreadsheet-functions.html">Spreadsheet functions</a> lists them and those that
+are not: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (<code>&quot;&gt;20&quot;</code>,
 <code>&quot;a*&quot;</code>, <code>&quot;&lt;&gt;&quot;</code>). <code>FunctionRegistry.BuiltInFunctions</code> lists them. Each follows Microsoft's function reference and is
 checked against what Excel calculates: <code>tools/excel-function-oracle.ps1</code> runs the cases in
