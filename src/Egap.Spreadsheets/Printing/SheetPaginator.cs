@@ -1,3 +1,4 @@
+using Egami.Fonts.Layout;
 using Egap.Spreadsheets.Storage;
 
 namespace Egap.Spreadsheets.Printing;
@@ -20,6 +21,9 @@ internal sealed class SheetPaginator
 
     /// <summary>Rows stop this far above the bottom margin, in points: half a point keeps the last row of Excel's PDF export on the next page.</summary>
     private const double PageBottomSlack = 0.5;
+
+    /// <summary>The room Excel leaves between a cell's edge and its text, in points.</summary>
+    private const double TextPadding = 1.5;
 
     public SheetPaginator(Worksheet sheet, SheetGrid grid, bool ignorePrintAreas)
     {
@@ -125,7 +129,93 @@ internal sealed class SheetPaginator
         }
 
         // Excel prints from A1, however far down and right the cells in use start.
-        return used is { } range ? [new RangeAddress(0, 0, range.Last.Row, range.Last.Column)] : [];
+        return used is { } range ? [new RangeAddress(0, 0, range.Last.Row, TextReach(sheet, grid, range))] : [];
+    }
+
+    /// <summary>
+    /// The last column that prints: the cells in use may end before the text of a row's last cell, which runs on over the empty
+    /// cells beside it, and Excel prints those columns too.
+    /// </summary>
+    private static int TextReach(Worksheet sheet, SheetGrid grid, RangeAddress used)
+    {
+        if (sheet.Store.Bounds() is not { } bounds)
+        {
+            return used.Last.Column;
+        }
+
+        int[] lastInRow = new int[bounds.Last.Row - bounds.First.Row + 1];
+        Array.Fill(lastInRow, -1);
+        foreach ((int row, int column) in sheet.Store.Occupied(bounds))
+        {
+            int index = row - bounds.First.Row;
+            if (column > lastInRow[index] && sheet.Store.Get(row, column).Kind != CellKind.Empty)
+            {
+                lastInRow[index] = column;
+            }
+        }
+
+        // A character is at least a fifth of its font's size wide, so most text is seen not to reach without measuring it.
+        const double NarrowestCharacter = 0.2;
+        int reach = used.Last.Column;
+        double reachEdge = grid.Columns(0, reach);
+        Workbook book = sheet.Workbook;
+        StyleTable styles = book.Styles;
+        for (int i = 0; i < lastInRow.Length; i++)
+        {
+            int row = bounds.First.Row + i, column = lastInRow[i];
+            if (column < 0)
+            {
+                continue;
+            }
+
+            CellValue value = sheet.GetValue(row, column);
+            if (value.Kind != CellValueKind.Text || value.Text.Length == 0)
+            {
+                continue;
+            }
+
+            CellStyle style = sheet.Store.Get(row, column).Style is var s && s < styles.Count ? styles[s] : CellStyle.Default;
+            CellAlignment alignment = style.Alignment;
+            double start = grid.Columns(0, column - 1);
+            double room = reachEdge - start;
+            if (value.Text.Length * style.Font.Size * NarrowestCharacter <= room || alignment.WrapText || alignment.ShrinkToFit || alignment.TextRotation != 0
+                || alignment.Horizontal is not (CellHorizontalAlignment.General or CellHorizontalAlignment.Left or CellHorizontalAlignment.Center or CellHorizontalAlignment.CenterContinuous)
+                || alignment.Vertical is CellVerticalAlignment.Justify or CellVerticalAlignment.Distributed || InMerge(sheet, row, column))
+            {
+                continue;
+            }
+
+            // A cell shows its first 1,024 characters.
+            string text = value.Text[..Math.Min(value.Text.Length, 1024)].Replace("\r", "", StringComparison.Ordinal).Replace("\n", "", StringComparison.Ordinal);
+            ParagraphStyle paragraph = new() { DefaultStyle = grid.Fonts.TextStyle(style.Font, default), Fallback = grid.Fonts.Fallback };
+            double width = Paragraph.Create(text, paragraph).Layout(1e6f).LongestLine + (2 * TextPadding);
+            if (alignment.Horizontal is CellHorizontalAlignment.Center or CellHorizontalAlignment.CenterContinuous)
+            {
+                width = (width + grid.Column(column)) / 2;
+            }
+
+            double edge = start + width;
+            while (reachEdge < edge && reach < CellAddress.MaxColumns - 1)
+            {
+                reach++;
+                reachEdge += grid.Column(reach);
+            }
+        }
+
+        return reach;
+    }
+
+    private static bool InMerge(Worksheet sheet, int row, int column)
+    {
+        foreach (RangeAddress merged in sheet.MergedCells)
+        {
+            if (merged.Contains(new CellAddress(row, column)))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static RangeAddress? ShowingCells(Worksheet sheet)

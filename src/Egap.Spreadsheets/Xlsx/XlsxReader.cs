@@ -452,10 +452,9 @@ internal static class XlsxReader
     private static void ReadPageSetup(PageSetup page, XElement element)
     {
         page.SourcePageSetup = element;
-        if ((string?)element.Attribute("paperSize") is { } paper)
-        {
-            page.PaperSize = XlsxNames.Int(paper, 1);
-        }
+        // The attribute's default is Letter, while a sheet with no page setup, or paper 0, prints on the printer's paper.
+        int paper = XlsxNames.Int((string?)element.Attribute("paperSize"), 1);
+        page.PaperSize = paper == 0 ? null : paper;
 
         int scale = XlsxNames.Int((string?)element.Attribute("scale"), 100);
         page.Scale = scale is >= 10 and <= 400 && element.Attribute("scale") is not null ? scale : null;
@@ -579,6 +578,11 @@ internal static class SheetDataReader
             {
                 // A height Excel worked out from the row's text: kept as it was, for Excel to work out again.
                 (extra ??= []).Add(new XAttribute("ht", height));
+                if (!customHeight && XlsxNames.TryNumber(height, out double fitted) && fitted is >= 0 and <= 409)
+                {
+                    record.FittedHeight = fitted;
+                }
+
                 if (customHeight)
                 {
                     extra.Add(new XAttribute("customHeight", "1"));

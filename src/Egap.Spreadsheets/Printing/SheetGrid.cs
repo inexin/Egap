@@ -59,7 +59,13 @@ internal sealed class SheetGrid
             return Points(defaultRow);
         }
 
-        return record.Hidden ? 0 : Points(double.IsNaN(record.Height) ? defaultRow : RowDots(record.Height));
+        if (record.Hidden)
+        {
+            return 0;
+        }
+
+        double height = double.IsNaN(record.Height) ? record.FittedHeight : record.Height;
+        return Points(double.IsNaN(height) ? defaultRow : RowDots(height));
     }
 
     /// <summary>The width of columns <paramref name="first"/> to <paramref name="last"/> together; negative when last comes first.</summary>

@@ -8,6 +8,10 @@ internal sealed class RowRecord
 {
     /// <summary>The height in points, or NaN for the sheet's default.</summary>
     public double Height = double.NaN;
+
+    /// <summary>The height Excel worked out from the row's text and saved, or NaN: what the row prints at unless it has its own.</summary>
+    public double FittedHeight = double.NaN;
+
     public bool Hidden;
     public int OutlineLevel;
     public bool Collapsed;
