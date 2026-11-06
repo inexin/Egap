@@ -47,7 +47,10 @@ internal static class Lambdas
     /// </summary>
     private const int MaxDepth = 8192;
 
-    /// <summary>How many calls one call at the top may lead to before it gives #NUM!, so a recursion that branches ends.</summary>
+    /// <summary>
+    /// How much work one call at the top may lead to before it gives #NUM!, so a recursion that branches ends: a call counts
+    /// for more the deeper it is, as the garbage collector walks the whole stack each time it runs.
+    /// </summary>
     private const long MaxCalls = 5_000_000;
 
     /// <summary>The stack for calls that go deeper than the thread's own stack allows.</summary>
@@ -58,6 +61,9 @@ internal static class Lambdas
 
     [ThreadStatic]
     private static long calls;
+
+    [ThreadStatic]
+    private static bool onLargeStack;
 
     /// <summary>The value of a LAMBDA where it is written: it keeps the values it reads from around it.</summary>
     public static EvalValue Make(LambdaCode code, EvalValue[]? locals, EvalContext context)
@@ -115,20 +121,24 @@ internal static class Lambdas
 
         if (depth == 0)
         {
-            calls = 0;
+            return AtTheTop(code.Body, lambda.Context!, locals);
         }
 
-        if (depth >= MaxDepth || ++calls > MaxCalls)
+        calls += 1 + (depth >> 6);
+        if (depth >= MaxDepth || calls > MaxCalls)
         {
             return EvalValue.FromError(CellError.Number);
+        }
+
+        if (!RuntimeHelpers.TryEnsureSufficientExecutionStack())
+        {
+            return onLargeStack ? EvalValue.FromError(CellError.Number) : throw StackRunOut.Instance;
         }
 
         depth++;
         try
         {
-            return RuntimeHelpers.TryEnsureSufficientExecutionStack()
-                ? FormulaEvaluator.Run(code.Body, lambda.Context!, locals)
-                : OnLargerStack(code.Body, lambda.Context!, locals);
+            return FormulaEvaluator.Run(code.Body, lambda.Context!, locals);
         }
         finally
         {
@@ -136,19 +146,43 @@ internal static class Lambdas
         }
     }
 
-    private static EvalValue OnLargerStack(CompiledFormula body, EvalContext context, EvalValue[] locals)
+    /// <summary>
+    /// A call from outside any LAMBDA. Should the calls under it run out of stack, it starts again on a thread with room for
+    /// all of them: formulas have no side effects, and a recursion that goes up and down at the edge of the stack would
+    /// otherwise pay for a thread at each crossing.
+    /// </summary>
+    private static EvalValue AtTheTop(CompiledFormula body, EvalContext context, EvalValue[] locals)
+    {
+        (depth, calls) = (1, 1);
+        try
+        {
+            if (RuntimeHelpers.TryEnsureSufficientExecutionStack())
+            {
+                return FormulaEvaluator.Run(body, context, locals);
+            }
+        }
+        catch (StackRunOut)
+        {
+        }
+        finally
+        {
+            depth = 0;
+        }
+
+        return OnLargeStack(body, context, locals);
+    }
+
+    private static EvalValue OnLargeStack(CompiledFormula body, EvalContext context, EvalValue[] locals)
     {
         EvalValue result = default;
         ExceptionDispatchInfo? failure = null;
-        (int depthNow, long callsNow) = (depth, calls);
         Thread thread = new(
             () =>
             {
-                (depth, calls) = (depthNow, callsNow);
+                (depth, calls, onLargeStack) = (1, 1, true);
                 try
                 {
                     result = FormulaEvaluator.Run(body, context, locals);
-                    callsNow = calls;
                 }
                 catch (Exception exception)
                 {
@@ -158,9 +192,14 @@ internal static class Lambdas
             LargeStack);
         thread.Start();
         thread.Join();
-        calls = callsNow;
         failure?.Throw();
         return result;
+    }
+
+    /// <summary>Takes a call that ran out of stack back to the top. It is one object, as it may be thrown when little stack is left.</summary>
+    private sealed class StackRunOut : Exception
+    {
+        public static readonly StackRunOut Instance = new();
     }
 
     /// <summary>What a function that takes no LAMBDA makes of one: most give #VALUE!, and these are what Excel gives.</summary>

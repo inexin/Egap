@@ -402,8 +402,8 @@ book.Calculate();
 ```
 
 A LAMBDA in a name may call itself. Excel's limit on how deep that goes depends on the formula, as its stack is what runs out,
-at 5,000 to 9,000 calls in what we measured; here calls end with `#NUM!` at 8,192 deep, and at 5,000,000 calls from one call
-at the top. A LAMBDA left in a cell shows `#CALC!`. Files store these with prefixes on names (`_xlpm.x`), which Egap reads and
+at 5,000 to 9,000 calls in what we measured; here calls end with `#NUM!` at 8,192 deep, and a recursion that branches ends
+with `#NUM!` after about 5,000,000 calls, fewer the deeper they are. A LAMBDA left in a cell shows `#CALC!`. Files store these with prefixes on names (`_xlpm.x`), which Egap reads and
 writes as Excel does.
 
 ### Structured references

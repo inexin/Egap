@@ -100,7 +100,7 @@ internal sealed class FormulaCompiler
 {
     private readonly List<Instruction> code = [];
     private readonly List<EvalValue> constants = [];
-    private readonly List<object> operands = [];
+    private readonly List<object> operands = new(2);
     private int depth;
     private int maxDepth;
     private Frame? frame;
