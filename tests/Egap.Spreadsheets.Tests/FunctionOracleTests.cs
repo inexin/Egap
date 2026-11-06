@@ -6,19 +6,26 @@ namespace Egap.Spreadsheets.Tests;
 /// <summary>
 /// The built-in functions against Excel: every case in <c>Oracle/functions.txt</c> evaluated here and compared with what
 /// Excel calculated for it (<c>Oracle/functions.excel.tsv</c>, written by <c>tools/excel-function-oracle.ps1</c>). A case
-/// where Egap knowingly differs is listed with its reason in <c>Oracle/functions.accepted.txt</c>.
+/// where Egap knowingly differs is listed with its reason in <c>Oracle/functions.accepted.txt</c>. Each further set of cases,
+/// <c>Oracle/functions-NAME.txt</c>, has the same files, and <c>functions-NAME.tolerance.txt</c> may give a function that
+/// iterates or approximates a wider tolerance, as name, a tab, relative tolerance, a tab, and why.
 /// </summary>
 public sealed class FunctionOracleTests
 {
     private static string Folder => Path.Combine(AppContext.BaseDirectory, "Oracle");
 
-    [Fact]
-    public void FunctionsMatchExcel()
+    public static TheoryData<string> CaseSets => new(Directory.GetFiles(Folder, "functions*.excel.tsv")
+        .Select(f => Path.GetFileName(f)[..^".excel.tsv".Length]).Order(StringComparer.Ordinal));
+
+    [Theory]
+    [MemberData(nameof(CaseSets))]
+    public void FunctionsMatchExcel(string set)
     {
-        string[] expected = File.ReadAllLines(Path.Combine(Folder, "functions.excel.tsv"));
+        string[] expected = File.ReadAllLines(Path.Combine(Folder, set + ".excel.tsv"));
         CultureInfo culture = Culture(expected[0]);
-        Worksheet sheet = Sheet(culture);
-        Dictionary<string, string> accepted = Accepted();
+        Worksheet sheet = Sheet(culture, set);
+        Dictionary<string, string> accepted = Accepted(set);
+        Dictionary<string, double> tolerances = Tolerances(set);
         StringBuilder failures = new();
         HashSet<string> seen = [];
         int compared = 0;
@@ -36,7 +43,7 @@ public sealed class FunctionOracleTests
 
             CellValue actual = sheet.Evaluate(formula, new CellAddress(20 * index, 11));
             compared++;
-            bool same = Same(actual, kind, value);
+            bool same = Same(actual, kind, value, Tolerance(formula, tolerances));
             if (accepted.ContainsKey(formula))
             {
                 seen.Add(formula);
@@ -56,7 +63,7 @@ public sealed class FunctionOracleTests
             failures.AppendLine(CultureInfo.InvariantCulture, $"{formula}: accepted but not a case");
         }
 
-        Assert.True(compared > 500, $"only {compared} cases");
+        Assert.True(compared > 40, $"only {compared} cases");
         Assert.True(failures.Length == 0, failures.ToString());
     }
 
@@ -82,7 +89,7 @@ public sealed class FunctionOracleTests
 
         CalculationResult result = book.CalculateFull();
         Assert.Empty(result.CircularReferences);
-        Dictionary<string, string> accepted = Accepted();
+        Dictionary<string, string> accepted = Accepted("functions");
         StringBuilder failures = new();
         foreach ((Cell cell, CellValue saved) in formulas)
         {
@@ -172,12 +179,12 @@ public sealed class FunctionOracleTests
         return header[start..header.IndexOf(end, start, StringComparison.Ordinal)];
     }
 
-    private static Worksheet Sheet(CultureInfo culture)
+    private static Worksheet Sheet(CultureInfo culture, string set)
     {
         Workbook book = Workbook.Create();
         book.Culture = culture;
         Worksheet sheet = book.Worksheets[0];
-        foreach (string raw in File.ReadAllLines(Path.Combine(Folder, "functions.txt")))
+        foreach (string raw in File.ReadAllLines(Path.Combine(Folder, set + ".txt")))
         {
             string line = raw.Trim();
             if (!line.StartsWith('@'))
@@ -209,10 +216,49 @@ public sealed class FunctionOracleTests
         return sheet;
     }
 
-    private static Dictionary<string, string> Accepted()
+    /// <summary>The wider tolerances a set gives its functions, by function name.</summary>
+    private static Dictionary<string, double> Tolerances(string set)
+    {
+        Dictionary<string, double> tolerances = new(StringComparer.Ordinal);
+        string path = Path.Combine(Folder, set + ".tolerance.txt");
+        if (File.Exists(path))
+        {
+            foreach (string line in File.ReadAllLines(path).Where(l => l.Length > 0 && !l.StartsWith('#')))
+            {
+                string[] fields = line.Split('\t');
+                Assert.True(fields.Length == 3 && fields[2].Length > 0, $"tolerance line without a reason: {line}");
+                tolerances.Add(fields[0], double.Parse(fields[1], CultureInfo.InvariantCulture));
+            }
+        }
+
+        return tolerances;
+    }
+
+    /// <summary>The tolerance for a formula: the widest of the functions it calls that have one.</summary>
+    private static double Tolerance(string formula, Dictionary<string, double> tolerances)
+    {
+        double tolerance = Standard;
+        foreach ((string name, double wider) in tolerances)
+        {
+            if (wider > tolerance && formula.Contains(name + "(", StringComparison.Ordinal))
+            {
+                tolerance = wider;
+            }
+        }
+
+        return tolerance;
+    }
+
+    private static Dictionary<string, string> Accepted(string set)
     {
         Dictionary<string, string> accepted = new(StringComparer.Ordinal);
-        foreach (string line in File.ReadAllLines(Path.Combine(Folder, "functions.accepted.txt")))
+        string path = Path.Combine(Folder, set + ".accepted.txt");
+        if (!File.Exists(path))
+        {
+            return accepted;
+        }
+
+        foreach (string line in File.ReadAllLines(path))
         {
             if (line.Length == 0 || line.StartsWith('#'))
             {
@@ -227,9 +273,9 @@ public sealed class FunctionOracleTests
         return accepted;
     }
 
-    private static bool Same(CellValue actual, string kind, string value) => kind switch
+    private static bool Same(CellValue actual, string kind, string value, double tolerance) => kind switch
     {
-        "number" => actual.Kind == CellValueKind.Number && Close(actual.Number, double.Parse(value, CultureInfo.InvariantCulture)),
+        "number" => actual.Kind == CellValueKind.Number && Close(actual.Number, double.Parse(value, CultureInfo.InvariantCulture), tolerance),
         "text" => actual.Kind == CellValueKind.Text && actual.Text == value,
         "boolean" => actual.Kind == CellValueKind.Boolean && actual.Boolean == (value == "TRUE"),
         "error" => actual.Kind == CellValueKind.Error && CellValue.ErrorText(actual.Error) == value,
@@ -238,8 +284,10 @@ public sealed class FunctionOracleTests
     };
 
     /// <summary>Equal to 15 significant digits, as Excel shows and compares them.</summary>
-    private static bool Close(double actual, double expected) =>
-        actual == expected || Math.Abs(actual - expected) <= 1e-14 * Math.Max(Math.Abs(actual), Math.Abs(expected));
+    private static bool Close(double actual, double expected, double tolerance = Standard) =>
+        actual == expected || Math.Abs(actual - expected) <= tolerance * Math.Max(Math.Abs(actual), Math.Abs(expected));
+
+    private const double Standard = 1e-14;
 
     private static string Unescape(string text) =>
         text.Replace("\t", "\t", StringComparison.Ordinal).Replace("\r", "\r", StringComparison.Ordinal)
