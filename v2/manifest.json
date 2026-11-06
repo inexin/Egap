@@ -8353,7 +8353,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.FunctionRegistry",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FunctionRegistry.yml\" sourcestartlinenumber=\"1\">The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a\nuser-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read\nit when they are next calculated or evaluated.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FunctionRegistry.yml\" sourcestartlinenumber=\"1\">The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a\nuser-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read\nit when they are next calculated or evaluated. It also answers a call written through an add-in's link,\n<code>[1]!DOUBLE(21)</code>, which otherwise gives <code>#NAME?</code>: a workbook keeps no code for an add-in's functions.</p>\n"
     },
     {
       "type": "ManagedReference",

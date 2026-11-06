@@ -215,7 +215,8 @@ as <code>_xlnm.Print_Area</code>.</p>
       <dt><a class="xref" href="Egap.Spreadsheets.FunctionRegistry.html">FunctionRegistry</a></dt>
       <dd><p>The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a
 user-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read
-it when they are next calculated or evaluated.</p>
+it when they are next calculated or evaluated. It also answers a call written through an add-in's link,
+<code>[1]!DOUBLE(21)</code>, which otherwise gives <code>#NAME?</code>: a workbook keeps no code for an add-in's functions.</p>
 </dd>
     </dl>
     <dl class="jumplist">

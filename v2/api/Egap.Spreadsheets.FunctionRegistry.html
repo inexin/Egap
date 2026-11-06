@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FunctionRegistry | Egap ">
       
-      <meta name="description" content="The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a user-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read it when they are next calculated or evaluated.">
+      <meta name="description" content="The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a user-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read it when they are next calculated or evaluated. It also answers a call written through an add-in&#39;s link, [1]!DOUBLE(21), which otherwise gives #NAME?: a workbook keeps no code for an add-in&#39;s functions.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Spreadsheets_FunctionRegistry" data-uid="Egap.Spreadsheets.FunctionRegistry" class="text-break">
-Class FunctionRegistry  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L16"><i class="bi bi-code-slash"></i></a>
+Class FunctionRegistry  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -99,7 +99,8 @@ Class FunctionRegistry  <a class="header-action link-secondary" title="View sour
 
   <div class="markdown summary"><p>The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a
 user-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read
-it when they are next calculated or evaluated.</p>
+it when they are next calculated or evaluated. It also answers a call written through an add-in's link,
+<code>[1]!DOUBLE(21)</code>, which otherwise gives <code>#NAME?</code>: a workbook keeps no code for an add-in's functions.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -163,7 +164,7 @@ CellValue result = sheet.Evaluate("DOUBLE(21)");     // 42</code></pre>
 
   <h3 id="Egap_Spreadsheets_FunctionRegistry_AddedFunctions" data-uid="Egap.Spreadsheets.FunctionRegistry.AddedFunctions">
   AddedFunctions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L23"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The names of the functions added with <a class="xref" href="Egap.Spreadsheets.FunctionRegistry.html#Egap_Spreadsheets_FunctionRegistry_Add_System_String_System_Int32_System_Int32_System_Func_System_Collections_Generic_IReadOnlyList_Egap_Spreadsheets_FunctionArgument__Egap_Spreadsheets_CellValue__">Add(string, int, int, Func&lt;IReadOnlyList&lt;FunctionArgument&gt;, CellValue&gt;)</a>, in alphabetical order.</p>
@@ -195,7 +196,7 @@ CellValue result = sheet.Evaluate("DOUBLE(21)");     // 42</code></pre>
 
   <h3 id="Egap_Spreadsheets_FunctionRegistry_BuiltInFunctions" data-uid="Egap.Spreadsheets.FunctionRegistry.BuiltInFunctions">
   BuiltInFunctions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L20"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The names of the built-in functions, in alphabetical order.</p>
@@ -231,7 +232,7 @@ CellValue result = sheet.Evaluate("DOUBLE(21)");     // 42</code></pre>
 
   <h3 id="Egap_Spreadsheets_FunctionRegistry_Add_System_String_System_Int32_System_Int32_System_Func_System_Collections_Generic_IReadOnlyList_Egap_Spreadsheets_FunctionArgument__Egap_Spreadsheets_CellValue__" data-uid="Egap.Spreadsheets.FunctionRegistry.Add(System.String,System.Int32,System.Int32,System.Func{System.Collections.Generic.IReadOnlyList{Egap.Spreadsheets.FunctionArgument},Egap.Spreadsheets.CellValue})">
   Add(string, int, int, Func&lt;IReadOnlyList&lt;FunctionArgument&gt;, CellValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L37"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a function, or replaces one added before under the same name. Its arguments come as given: a range stays a range,
@@ -287,7 +288,7 @@ in the cell, as an error in a user-defined function does in Excel.</p>
 
   <h3 id="Egap_Spreadsheets_FunctionRegistry_Contains_System_String_" data-uid="Egap.Spreadsheets.FunctionRegistry.Contains(System.String)">
   Contains(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether formulas can call a function by this name, built in or added.</p>
@@ -330,7 +331,7 @@ in the cell, as an error in a user-defined function does in Excel.</p>
 
   <h3 id="Egap_Spreadsheets_FunctionRegistry_Remove_System_String_" data-uid="Egap.Spreadsheets.FunctionRegistry.Remove(System.String)">
   Remove(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L55"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L56"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes a function added with <a class="xref" href="Egap.Spreadsheets.FunctionRegistry.html#Egap_Spreadsheets_FunctionRegistry_Add_System_String_System_Int32_System_Int32_System_Func_System_Collections_Generic_IReadOnlyList_Egap_Spreadsheets_FunctionArgument__Egap_Spreadsheets_CellValue__">Add(string, int, int, Func&lt;IReadOnlyList&lt;FunctionArgument&gt;, CellValue&gt;)</a>; false when there is none by that name.</p>
@@ -373,7 +374,7 @@ in the cell, as an error in a user-defined function does in Excel.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L16" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/FunctionRegistry.cs/#L17" class="edit-link">Edit this page</a>
         </div>
 
 
