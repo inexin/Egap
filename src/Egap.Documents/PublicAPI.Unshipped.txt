@@ -1,6 +1,542 @@
 #nullable enable
 const Egap.Documents.DocumentProtection.DefaultSpinCount = 100000 -> int
 const Egap.Documents.DocumentProtection.MaxSpinCount = 10000000 -> int
+Egap.Documents.Charts.Chart
+Egap.Documents.Charts.Chart.AddPlot(Egap.Documents.Charts.ChartType type, bool secondaryAxis = false) -> Egap.Documents.Charts.ChartPlot!
+Egap.Documents.Charts.Chart.Axes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartAxis!>!
+Egap.Documents.Charts.Chart.Clone() -> Egap.Documents.Charts.Chart!
+Egap.Documents.Charts.Chart.DisplayBlanksAs.get -> Egap.Documents.Charts.ChartBlanks?
+Egap.Documents.Charts.Chart.DisplayBlanksAs.set -> void
+Egap.Documents.Charts.Chart.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.Chart.HasLegend.get -> bool
+Egap.Documents.Charts.Chart.HasLegend.set -> void
+Egap.Documents.Charts.Chart.HasTitle.get -> bool
+Egap.Documents.Charts.Chart.HasTitle.set -> void
+Egap.Documents.Charts.Chart.IsExtended.get -> bool
+Egap.Documents.Charts.Chart.Legend.get -> Egap.Documents.Charts.ChartLegend!
+Egap.Documents.Charts.Chart.PlotAreaFormat.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.Chart.PlotAreaLayout.get -> Egap.Documents.Charts.ChartLayout!
+Egap.Documents.Charts.Chart.Plots.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartPlot!>!
+Egap.Documents.Charts.Chart.PlotVisibleOnly.get -> bool?
+Egap.Documents.Charts.Chart.PlotVisibleOnly.set -> void
+Egap.Documents.Charts.Chart.RoundedCorners.get -> bool?
+Egap.Documents.Charts.Chart.RoundedCorners.set -> void
+Egap.Documents.Charts.Chart.Save(System.IO.Stream! stream) -> void
+Egap.Documents.Charts.Chart.Series.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartSeries!>!
+Egap.Documents.Charts.Chart.Style.get -> int?
+Egap.Documents.Charts.Chart.Style.set -> void
+Egap.Documents.Charts.Chart.TextFormat.get -> Egap.Documents.Charts.ChartTextFormat!
+Egap.Documents.Charts.Chart.Title.get -> Egap.Documents.Charts.ChartTitle!
+Egap.Documents.Charts.Chart.Type.get -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.Chart.View3D.get -> Egap.Documents.Charts.ChartView3D!
+Egap.Documents.Charts.ChartAxis
+Egap.Documents.Charts.ChartAxis.BaseTimeUnit.get -> Egap.Documents.Charts.ChartTimeUnit?
+Egap.Documents.Charts.ChartAxis.BaseTimeUnit.set -> void
+Egap.Documents.Charts.ChartAxis.CrossAxis.get -> Egap.Documents.Charts.ChartAxis?
+Egap.Documents.Charts.ChartAxis.Crosses.get -> Egap.Documents.Charts.ChartCrosses?
+Egap.Documents.Charts.ChartAxis.Crosses.set -> void
+Egap.Documents.Charts.ChartAxis.CrossesAt.get -> double?
+Egap.Documents.Charts.ChartAxis.CrossesAt.set -> void
+Egap.Documents.Charts.ChartAxis.CrossesBetweenCategories.get -> bool?
+Egap.Documents.Charts.ChartAxis.CrossesBetweenCategories.set -> void
+Egap.Documents.Charts.ChartAxis.DisplayUnit.get -> string?
+Egap.Documents.Charts.ChartAxis.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartAxis.HasMajorGridlines.get -> bool
+Egap.Documents.Charts.ChartAxis.HasMajorGridlines.set -> void
+Egap.Documents.Charts.ChartAxis.HasMinorGridlines.get -> bool
+Egap.Documents.Charts.ChartAxis.HasMinorGridlines.set -> void
+Egap.Documents.Charts.ChartAxis.HasTitle.get -> bool
+Egap.Documents.Charts.ChartAxis.HasTitle.set -> void
+Egap.Documents.Charts.ChartAxis.Hidden.get -> bool
+Egap.Documents.Charts.ChartAxis.Hidden.set -> void
+Egap.Documents.Charts.ChartAxis.Id.get -> long
+Egap.Documents.Charts.ChartAxis.Kind.get -> Egap.Documents.Charts.ChartAxisKind
+Egap.Documents.Charts.ChartAxis.LogBase.get -> double?
+Egap.Documents.Charts.ChartAxis.LogBase.set -> void
+Egap.Documents.Charts.ChartAxis.MajorGridlines.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartAxis.MajorTickMark.get -> Egap.Documents.Charts.ChartTickMark?
+Egap.Documents.Charts.ChartAxis.MajorTickMark.set -> void
+Egap.Documents.Charts.ChartAxis.MajorTimeUnit.get -> Egap.Documents.Charts.ChartTimeUnit?
+Egap.Documents.Charts.ChartAxis.MajorTimeUnit.set -> void
+Egap.Documents.Charts.ChartAxis.MajorUnit.get -> double?
+Egap.Documents.Charts.ChartAxis.MajorUnit.set -> void
+Egap.Documents.Charts.ChartAxis.Maximum.get -> double?
+Egap.Documents.Charts.ChartAxis.Maximum.set -> void
+Egap.Documents.Charts.ChartAxis.Minimum.get -> double?
+Egap.Documents.Charts.ChartAxis.Minimum.set -> void
+Egap.Documents.Charts.ChartAxis.MinorGridlines.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartAxis.MinorTickMark.get -> Egap.Documents.Charts.ChartTickMark?
+Egap.Documents.Charts.ChartAxis.MinorTickMark.set -> void
+Egap.Documents.Charts.ChartAxis.MinorTimeUnit.get -> Egap.Documents.Charts.ChartTimeUnit?
+Egap.Documents.Charts.ChartAxis.MinorTimeUnit.set -> void
+Egap.Documents.Charts.ChartAxis.MinorUnit.get -> double?
+Egap.Documents.Charts.ChartAxis.MinorUnit.set -> void
+Egap.Documents.Charts.ChartAxis.NoMultiLevelLabels.get -> bool?
+Egap.Documents.Charts.ChartAxis.NoMultiLevelLabels.set -> void
+Egap.Documents.Charts.ChartAxis.NumberFormat.get -> string?
+Egap.Documents.Charts.ChartAxis.NumberFormat.set -> void
+Egap.Documents.Charts.ChartAxis.Position.get -> Egap.Documents.Charts.ChartAxisPosition?
+Egap.Documents.Charts.ChartAxis.Position.set -> void
+Egap.Documents.Charts.ChartAxis.Reversed.get -> bool
+Egap.Documents.Charts.ChartAxis.Reversed.set -> void
+Egap.Documents.Charts.ChartAxis.TextFormat.get -> Egap.Documents.Charts.ChartTextFormat!
+Egap.Documents.Charts.ChartAxis.TickLabelPosition.get -> Egap.Documents.Charts.ChartTickLabelPosition?
+Egap.Documents.Charts.ChartAxis.TickLabelPosition.set -> void
+Egap.Documents.Charts.ChartAxis.TickLabelSkip.get -> int?
+Egap.Documents.Charts.ChartAxis.TickLabelSkip.set -> void
+Egap.Documents.Charts.ChartAxis.TickMarkSkip.get -> int?
+Egap.Documents.Charts.ChartAxis.TickMarkSkip.set -> void
+Egap.Documents.Charts.ChartAxis.Title.get -> Egap.Documents.Charts.ChartTitle!
+Egap.Documents.Charts.ChartAxisKind
+Egap.Documents.Charts.ChartAxisKind.Category = 0 -> Egap.Documents.Charts.ChartAxisKind
+Egap.Documents.Charts.ChartAxisKind.Date = 2 -> Egap.Documents.Charts.ChartAxisKind
+Egap.Documents.Charts.ChartAxisKind.Series = 3 -> Egap.Documents.Charts.ChartAxisKind
+Egap.Documents.Charts.ChartAxisKind.Value = 1 -> Egap.Documents.Charts.ChartAxisKind
+Egap.Documents.Charts.ChartAxisPosition
+Egap.Documents.Charts.ChartAxisPosition.Bottom = 0 -> Egap.Documents.Charts.ChartAxisPosition
+Egap.Documents.Charts.ChartAxisPosition.Left = 1 -> Egap.Documents.Charts.ChartAxisPosition
+Egap.Documents.Charts.ChartAxisPosition.Right = 2 -> Egap.Documents.Charts.ChartAxisPosition
+Egap.Documents.Charts.ChartAxisPosition.Top = 3 -> Egap.Documents.Charts.ChartAxisPosition
+Egap.Documents.Charts.ChartBarShape
+Egap.Documents.Charts.ChartBarShape.Box = 0 -> Egap.Documents.Charts.ChartBarShape
+Egap.Documents.Charts.ChartBarShape.Cone = 1 -> Egap.Documents.Charts.ChartBarShape
+Egap.Documents.Charts.ChartBarShape.ConeToMax = 2 -> Egap.Documents.Charts.ChartBarShape
+Egap.Documents.Charts.ChartBarShape.Cylinder = 3 -> Egap.Documents.Charts.ChartBarShape
+Egap.Documents.Charts.ChartBarShape.Pyramid = 4 -> Egap.Documents.Charts.ChartBarShape
+Egap.Documents.Charts.ChartBarShape.PyramidToMax = 5 -> Egap.Documents.Charts.ChartBarShape
+Egap.Documents.Charts.ChartBinning
+Egap.Documents.Charts.ChartBinning.BinCount.get -> int?
+Egap.Documents.Charts.ChartBinning.BinCount.set -> void
+Egap.Documents.Charts.ChartBinning.BinSize.get -> double?
+Egap.Documents.Charts.ChartBinning.BinSize.set -> void
+Egap.Documents.Charts.ChartBinning.ClosedOnRight.get -> bool?
+Egap.Documents.Charts.ChartBinning.ClosedOnRight.set -> void
+Egap.Documents.Charts.ChartBinning.Overflow.get -> double?
+Egap.Documents.Charts.ChartBinning.Overflow.set -> void
+Egap.Documents.Charts.ChartBinning.Underflow.get -> double?
+Egap.Documents.Charts.ChartBinning.Underflow.set -> void
+Egap.Documents.Charts.ChartBlanks
+Egap.Documents.Charts.ChartBlanks.Gap = 0 -> Egap.Documents.Charts.ChartBlanks
+Egap.Documents.Charts.ChartBlanks.Span = 2 -> Egap.Documents.Charts.ChartBlanks
+Egap.Documents.Charts.ChartBlanks.Zero = 1 -> Egap.Documents.Charts.ChartBlanks
+Egap.Documents.Charts.ChartColor
+Egap.Documents.Charts.ChartColor.Changes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartColorChange>!
+Egap.Documents.Charts.ChartColor.Equals(Egap.Documents.Charts.ChartColor? other) -> bool
+Egap.Documents.Charts.ChartColor.Kind.get -> Egap.Documents.Charts.ChartColorKind
+Egap.Documents.Charts.ChartColor.Name.get -> string!
+Egap.Documents.Charts.ChartColor.Rgb.get -> Egami.Pixels.Rgba8
+Egap.Documents.Charts.ChartColorChange
+Egap.Documents.Charts.ChartColorChange.ChartColorChange() -> void
+Egap.Documents.Charts.ChartColorChange.ChartColorChange(string! Name, double Value) -> void
+Egap.Documents.Charts.ChartColorChange.Deconstruct(out string! Name, out double Value) -> void
+Egap.Documents.Charts.ChartColorChange.Equals(Egap.Documents.Charts.ChartColorChange other) -> bool
+Egap.Documents.Charts.ChartColorChange.Name.get -> string!
+Egap.Documents.Charts.ChartColorChange.Name.init -> void
+Egap.Documents.Charts.ChartColorChange.Value.get -> double
+Egap.Documents.Charts.ChartColorChange.Value.init -> void
+Egap.Documents.Charts.ChartColorKind
+Egap.Documents.Charts.ChartColorKind.Named = 2 -> Egap.Documents.Charts.ChartColorKind
+Egap.Documents.Charts.ChartColorKind.Rgb = 0 -> Egap.Documents.Charts.ChartColorKind
+Egap.Documents.Charts.ChartColorKind.Theme = 1 -> Egap.Documents.Charts.ChartColorKind
+Egap.Documents.Charts.ChartCrosses
+Egap.Documents.Charts.ChartCrosses.AutoZero = 0 -> Egap.Documents.Charts.ChartCrosses
+Egap.Documents.Charts.ChartCrosses.Maximum = 2 -> Egap.Documents.Charts.ChartCrosses
+Egap.Documents.Charts.ChartCrosses.Minimum = 1 -> Egap.Documents.Charts.ChartCrosses
+Egap.Documents.Charts.ChartData
+Egap.Documents.Charts.ChartData.Count.get -> int
+Egap.Documents.Charts.ChartData.FormatCode.get -> string?
+Egap.Documents.Charts.ChartData.IsNumeric.get -> bool
+Egap.Documents.Charts.ChartData.Numbers.get -> System.Collections.Generic.IReadOnlyList<double?>!
+Egap.Documents.Charts.ChartData.Reference.get -> string?
+Egap.Documents.Charts.ChartData.Reference.set -> void
+Egap.Documents.Charts.ChartData.SetNumbers(System.Collections.Generic.IEnumerable<double?>! values, string? formatCode = null) -> void
+Egap.Documents.Charts.ChartData.SetText(System.Collections.Generic.IEnumerable<string?>! values) -> void
+Egap.Documents.Charts.ChartData.SetTextLevels(System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<string?>!>! levels) -> void
+Egap.Documents.Charts.ChartData.Text.get -> System.Collections.Generic.IReadOnlyList<string?>!
+Egap.Documents.Charts.ChartData.TextLevels.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<string?>!>!
+Egap.Documents.Charts.ChartDataLabels
+Egap.Documents.Charts.ChartDataLabels.Deleted.get -> bool
+Egap.Documents.Charts.ChartDataLabels.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartDataLabels.NumberFormat.get -> string?
+Egap.Documents.Charts.ChartDataLabels.NumberFormat.set -> void
+Egap.Documents.Charts.ChartDataLabels.Position.get -> Egap.Documents.Charts.ChartLabelPosition?
+Egap.Documents.Charts.ChartDataLabels.Position.set -> void
+Egap.Documents.Charts.ChartDataLabels.Separator.get -> string?
+Egap.Documents.Charts.ChartDataLabels.Separator.set -> void
+Egap.Documents.Charts.ChartDataLabels.ShowBubbleSize.get -> bool
+Egap.Documents.Charts.ChartDataLabels.ShowBubbleSize.set -> void
+Egap.Documents.Charts.ChartDataLabels.ShowCategoryName.get -> bool
+Egap.Documents.Charts.ChartDataLabels.ShowCategoryName.set -> void
+Egap.Documents.Charts.ChartDataLabels.ShowLegendKey.get -> bool
+Egap.Documents.Charts.ChartDataLabels.ShowLegendKey.set -> void
+Egap.Documents.Charts.ChartDataLabels.ShowPercent.get -> bool
+Egap.Documents.Charts.ChartDataLabels.ShowPercent.set -> void
+Egap.Documents.Charts.ChartDataLabels.ShowSeriesName.get -> bool
+Egap.Documents.Charts.ChartDataLabels.ShowSeriesName.set -> void
+Egap.Documents.Charts.ChartDataLabels.ShowValue.get -> bool
+Egap.Documents.Charts.ChartDataLabels.ShowValue.set -> void
+Egap.Documents.Charts.ChartDataLabels.TextFormat.get -> Egap.Documents.Charts.ChartTextFormat!
+Egap.Documents.Charts.ChartErrorBarDirection
+Egap.Documents.Charts.ChartErrorBarDirection.X = 0 -> Egap.Documents.Charts.ChartErrorBarDirection
+Egap.Documents.Charts.ChartErrorBarDirection.Y = 1 -> Egap.Documents.Charts.ChartErrorBarDirection
+Egap.Documents.Charts.ChartErrorBars
+Egap.Documents.Charts.ChartErrorBars.Direction.get -> Egap.Documents.Charts.ChartErrorBarDirection?
+Egap.Documents.Charts.ChartErrorBars.Direction.set -> void
+Egap.Documents.Charts.ChartErrorBars.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartErrorBars.Minus.get -> Egap.Documents.Charts.ChartData!
+Egap.Documents.Charts.ChartErrorBars.NoEndCap.get -> bool
+Egap.Documents.Charts.ChartErrorBars.NoEndCap.set -> void
+Egap.Documents.Charts.ChartErrorBars.Plus.get -> Egap.Documents.Charts.ChartData!
+Egap.Documents.Charts.ChartErrorBars.Sides.get -> Egap.Documents.Charts.ChartErrorBarSides?
+Egap.Documents.Charts.ChartErrorBars.Sides.set -> void
+Egap.Documents.Charts.ChartErrorBars.Value.get -> double?
+Egap.Documents.Charts.ChartErrorBars.Value.set -> void
+Egap.Documents.Charts.ChartErrorBars.ValueType.get -> Egap.Documents.Charts.ChartErrorBarValue?
+Egap.Documents.Charts.ChartErrorBars.ValueType.set -> void
+Egap.Documents.Charts.ChartErrorBarSides
+Egap.Documents.Charts.ChartErrorBarSides.Both = 0 -> Egap.Documents.Charts.ChartErrorBarSides
+Egap.Documents.Charts.ChartErrorBarSides.Minus = 1 -> Egap.Documents.Charts.ChartErrorBarSides
+Egap.Documents.Charts.ChartErrorBarSides.Plus = 2 -> Egap.Documents.Charts.ChartErrorBarSides
+Egap.Documents.Charts.ChartErrorBarValue
+Egap.Documents.Charts.ChartErrorBarValue.Custom = 0 -> Egap.Documents.Charts.ChartErrorBarValue
+Egap.Documents.Charts.ChartErrorBarValue.FixedValue = 1 -> Egap.Documents.Charts.ChartErrorBarValue
+Egap.Documents.Charts.ChartErrorBarValue.Percentage = 2 -> Egap.Documents.Charts.ChartErrorBarValue
+Egap.Documents.Charts.ChartErrorBarValue.StandardDeviation = 3 -> Egap.Documents.Charts.ChartErrorBarValue
+Egap.Documents.Charts.ChartErrorBarValue.StandardError = 4 -> Egap.Documents.Charts.ChartErrorBarValue
+Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFillKind.Automatic = 0 -> Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFillKind.Gradient = 3 -> Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFillKind.Group = 6 -> Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFillKind.None = 1 -> Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFillKind.Pattern = 4 -> Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFillKind.Picture = 5 -> Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFillKind.Solid = 2 -> Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFormat
+Egap.Documents.Charts.ChartFormat.FillColor.get -> Egap.Documents.Charts.ChartColor?
+Egap.Documents.Charts.ChartFormat.FillColor.set -> void
+Egap.Documents.Charts.ChartFormat.FillKind.get -> Egap.Documents.Charts.ChartFillKind
+Egap.Documents.Charts.ChartFormat.FillKind.set -> void
+Egap.Documents.Charts.ChartFormat.GradientAngle.get -> double?
+Egap.Documents.Charts.ChartFormat.GradientStops.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartGradientStop>!
+Egap.Documents.Charts.ChartFormat.LineColor.get -> Egap.Documents.Charts.ChartColor?
+Egap.Documents.Charts.ChartFormat.LineColor.set -> void
+Egap.Documents.Charts.ChartFormat.LineDash.get -> Egap.Documents.Charts.ChartLineDash?
+Egap.Documents.Charts.ChartFormat.LineDash.set -> void
+Egap.Documents.Charts.ChartFormat.LineKind.get -> Egap.Documents.Charts.ChartLineKind
+Egap.Documents.Charts.ChartFormat.LineKind.set -> void
+Egap.Documents.Charts.ChartFormat.LineWidth.get -> double?
+Egap.Documents.Charts.ChartFormat.LineWidth.set -> void
+Egap.Documents.Charts.ChartFormat.PatternBackground.get -> Egap.Documents.Charts.ChartColor?
+Egap.Documents.Charts.ChartFormat.PatternForeground.get -> Egap.Documents.Charts.ChartColor?
+Egap.Documents.Charts.ChartFormat.PatternName.get -> string?
+Egap.Documents.Charts.ChartGradientStop
+Egap.Documents.Charts.ChartGradientStop.ChartGradientStop() -> void
+Egap.Documents.Charts.ChartGradientStop.ChartGradientStop(double Position, Egap.Documents.Charts.ChartColor? Color) -> void
+Egap.Documents.Charts.ChartGradientStop.Color.get -> Egap.Documents.Charts.ChartColor?
+Egap.Documents.Charts.ChartGradientStop.Color.init -> void
+Egap.Documents.Charts.ChartGradientStop.Deconstruct(out double Position, out Egap.Documents.Charts.ChartColor? Color) -> void
+Egap.Documents.Charts.ChartGradientStop.Equals(Egap.Documents.Charts.ChartGradientStop other) -> bool
+Egap.Documents.Charts.ChartGradientStop.Position.get -> double
+Egap.Documents.Charts.ChartGradientStop.Position.init -> void
+Egap.Documents.Charts.ChartGrouping
+Egap.Documents.Charts.ChartGrouping.Clustered = 1 -> Egap.Documents.Charts.ChartGrouping
+Egap.Documents.Charts.ChartGrouping.PercentStacked = 3 -> Egap.Documents.Charts.ChartGrouping
+Egap.Documents.Charts.ChartGrouping.Stacked = 2 -> Egap.Documents.Charts.ChartGrouping
+Egap.Documents.Charts.ChartGrouping.Standard = 0 -> Egap.Documents.Charts.ChartGrouping
+Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.BestFit = 0 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.Bottom = 1 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.Center = 2 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.InsideBase = 3 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.InsideEnd = 4 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.Left = 5 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.OutsideEnd = 6 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.Right = 7 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLabelPosition.Top = 8 -> Egap.Documents.Charts.ChartLabelPosition
+Egap.Documents.Charts.ChartLayout
+Egap.Documents.Charts.ChartLayout.Height.get -> double?
+Egap.Documents.Charts.ChartLayout.Height.set -> void
+Egap.Documents.Charts.ChartLayout.InnerPlot.get -> bool?
+Egap.Documents.Charts.ChartLayout.InnerPlot.set -> void
+Egap.Documents.Charts.ChartLayout.Width.get -> double?
+Egap.Documents.Charts.ChartLayout.Width.set -> void
+Egap.Documents.Charts.ChartLayout.X.get -> double?
+Egap.Documents.Charts.ChartLayout.X.set -> void
+Egap.Documents.Charts.ChartLayout.XMode.get -> Egap.Documents.Charts.ChartLayoutMode?
+Egap.Documents.Charts.ChartLayout.XMode.set -> void
+Egap.Documents.Charts.ChartLayout.Y.get -> double?
+Egap.Documents.Charts.ChartLayout.Y.set -> void
+Egap.Documents.Charts.ChartLayout.YMode.get -> Egap.Documents.Charts.ChartLayoutMode?
+Egap.Documents.Charts.ChartLayout.YMode.set -> void
+Egap.Documents.Charts.ChartLayoutMode
+Egap.Documents.Charts.ChartLayoutMode.Edge = 0 -> Egap.Documents.Charts.ChartLayoutMode
+Egap.Documents.Charts.ChartLayoutMode.Factor = 1 -> Egap.Documents.Charts.ChartLayoutMode
+Egap.Documents.Charts.ChartLegend
+Egap.Documents.Charts.ChartLegend.DeletedEntries.get -> System.Collections.Generic.IReadOnlyList<int>!
+Egap.Documents.Charts.ChartLegend.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartLegend.Layout.get -> Egap.Documents.Charts.ChartLayout!
+Egap.Documents.Charts.ChartLegend.Overlay.get -> bool?
+Egap.Documents.Charts.ChartLegend.Overlay.set -> void
+Egap.Documents.Charts.ChartLegend.Position.get -> Egap.Documents.Charts.ChartLegendPosition?
+Egap.Documents.Charts.ChartLegend.Position.set -> void
+Egap.Documents.Charts.ChartLegend.TextFormat.get -> Egap.Documents.Charts.ChartTextFormat!
+Egap.Documents.Charts.ChartLegendPosition
+Egap.Documents.Charts.ChartLegendPosition.Bottom = 0 -> Egap.Documents.Charts.ChartLegendPosition
+Egap.Documents.Charts.ChartLegendPosition.Left = 1 -> Egap.Documents.Charts.ChartLegendPosition
+Egap.Documents.Charts.ChartLegendPosition.Right = 2 -> Egap.Documents.Charts.ChartLegendPosition
+Egap.Documents.Charts.ChartLegendPosition.Top = 3 -> Egap.Documents.Charts.ChartLegendPosition
+Egap.Documents.Charts.ChartLegendPosition.TopRight = 4 -> Egap.Documents.Charts.ChartLegendPosition
+Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.Dash = 2 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.DashDot = 4 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.Dot = 1 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.LargeDash = 3 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.LargeDashDot = 5 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.LargeDashDotDot = 6 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.Solid = 0 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.SystemDash = 7 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.SystemDashDot = 9 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.SystemDashDotDot = 10 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineDash.SystemDot = 8 -> Egap.Documents.Charts.ChartLineDash
+Egap.Documents.Charts.ChartLineKind
+Egap.Documents.Charts.ChartLineKind.Automatic = 0 -> Egap.Documents.Charts.ChartLineKind
+Egap.Documents.Charts.ChartLineKind.Gradient = 3 -> Egap.Documents.Charts.ChartLineKind
+Egap.Documents.Charts.ChartLineKind.None = 1 -> Egap.Documents.Charts.ChartLineKind
+Egap.Documents.Charts.ChartLineKind.Pattern = 4 -> Egap.Documents.Charts.ChartLineKind
+Egap.Documents.Charts.ChartLineKind.Solid = 2 -> Egap.Documents.Charts.ChartLineKind
+Egap.Documents.Charts.ChartMarker
+Egap.Documents.Charts.ChartMarker.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartMarker.Size.get -> int?
+Egap.Documents.Charts.ChartMarker.Size.set -> void
+Egap.Documents.Charts.ChartMarker.Symbol.get -> Egap.Documents.Charts.ChartMarkerSymbol?
+Egap.Documents.Charts.ChartMarker.Symbol.set -> void
+Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Automatic = 11 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Circle = 1 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Dash = 2 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Diamond = 3 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Dot = 4 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.None = 0 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Picture = 5 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Plus = 6 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Square = 7 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Star = 8 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.Triangle = 9 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartMarkerSymbol.X = 10 -> Egap.Documents.Charts.ChartMarkerSymbol
+Egap.Documents.Charts.ChartParentLabels
+Egap.Documents.Charts.ChartParentLabels.Banner = 1 -> Egap.Documents.Charts.ChartParentLabels
+Egap.Documents.Charts.ChartParentLabels.None = 0 -> Egap.Documents.Charts.ChartParentLabels
+Egap.Documents.Charts.ChartParentLabels.Overlapping = 2 -> Egap.Documents.Charts.ChartParentLabels
+Egap.Documents.Charts.ChartPlot
+Egap.Documents.Charts.ChartPlot.Axes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartAxis!>!
+Egap.Documents.Charts.ChartPlot.BarShape.get -> Egap.Documents.Charts.ChartBarShape?
+Egap.Documents.Charts.ChartPlot.BarShape.set -> void
+Egap.Documents.Charts.ChartPlot.BubbleScale.get -> int?
+Egap.Documents.Charts.ChartPlot.BubbleScale.set -> void
+Egap.Documents.Charts.ChartPlot.BubbleSizeIsWidth.get -> bool?
+Egap.Documents.Charts.ChartPlot.BubbleSizeIsWidth.set -> void
+Egap.Documents.Charts.ChartPlot.DataLabels.get -> Egap.Documents.Charts.ChartDataLabels!
+Egap.Documents.Charts.ChartPlot.FirstSliceAngle.get -> int?
+Egap.Documents.Charts.ChartPlot.FirstSliceAngle.set -> void
+Egap.Documents.Charts.ChartPlot.GapDepth.get -> int?
+Egap.Documents.Charts.ChartPlot.GapDepth.set -> void
+Egap.Documents.Charts.ChartPlot.GapWidth.get -> int?
+Egap.Documents.Charts.ChartPlot.GapWidth.set -> void
+Egap.Documents.Charts.ChartPlot.Grouping.get -> Egap.Documents.Charts.ChartGrouping?
+Egap.Documents.Charts.ChartPlot.Grouping.set -> void
+Egap.Documents.Charts.ChartPlot.HasDropLines.get -> bool
+Egap.Documents.Charts.ChartPlot.HasHighLowLines.get -> bool
+Egap.Documents.Charts.ChartPlot.HasUpDownBars.get -> bool
+Egap.Documents.Charts.ChartPlot.HoleSize.get -> int?
+Egap.Documents.Charts.ChartPlot.HoleSize.set -> void
+Egap.Documents.Charts.ChartPlot.Is3D.get -> bool
+Egap.Documents.Charts.ChartPlot.Overlap.get -> int?
+Egap.Documents.Charts.ChartPlot.Overlap.set -> void
+Egap.Documents.Charts.ChartPlot.RadarStyle.get -> Egap.Documents.Charts.ChartRadarStyle?
+Egap.Documents.Charts.ChartPlot.RadarStyle.set -> void
+Egap.Documents.Charts.ChartPlot.ScatterStyle.get -> Egap.Documents.Charts.ChartScatterStyle?
+Egap.Documents.Charts.ChartPlot.ScatterStyle.set -> void
+Egap.Documents.Charts.ChartPlot.Series.get -> Egap.Documents.Charts.ChartSeriesCollection!
+Egap.Documents.Charts.ChartPlot.ShowMarkers.get -> bool?
+Egap.Documents.Charts.ChartPlot.ShowMarkers.set -> void
+Egap.Documents.Charts.ChartPlot.ShowNegativeBubbles.get -> bool?
+Egap.Documents.Charts.ChartPlot.ShowNegativeBubbles.set -> void
+Egap.Documents.Charts.ChartPlot.Type.get -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartPlot.VaryColors.get -> bool?
+Egap.Documents.Charts.ChartPlot.VaryColors.set -> void
+Egap.Documents.Charts.ChartPlot.Wireframe.get -> bool?
+Egap.Documents.Charts.ChartPlot.Wireframe.set -> void
+Egap.Documents.Charts.ChartPoint
+Egap.Documents.Charts.ChartPoint.Explosion.get -> int?
+Egap.Documents.Charts.ChartPoint.Explosion.set -> void
+Egap.Documents.Charts.ChartPoint.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartPoint.Index.get -> int
+Egap.Documents.Charts.ChartPoint.InvertIfNegative.get -> bool?
+Egap.Documents.Charts.ChartPoint.InvertIfNegative.set -> void
+Egap.Documents.Charts.ChartPoint.Marker.get -> Egap.Documents.Charts.ChartMarker!
+Egap.Documents.Charts.ChartRadarStyle
+Egap.Documents.Charts.ChartRadarStyle.Filled = 2 -> Egap.Documents.Charts.ChartRadarStyle
+Egap.Documents.Charts.ChartRadarStyle.Marker = 1 -> Egap.Documents.Charts.ChartRadarStyle
+Egap.Documents.Charts.ChartRadarStyle.Standard = 0 -> Egap.Documents.Charts.ChartRadarStyle
+Egap.Documents.Charts.ChartScatterStyle
+Egap.Documents.Charts.ChartScatterStyle.Line = 1 -> Egap.Documents.Charts.ChartScatterStyle
+Egap.Documents.Charts.ChartScatterStyle.LineMarker = 0 -> Egap.Documents.Charts.ChartScatterStyle
+Egap.Documents.Charts.ChartScatterStyle.Marker = 2 -> Egap.Documents.Charts.ChartScatterStyle
+Egap.Documents.Charts.ChartScatterStyle.None = 5 -> Egap.Documents.Charts.ChartScatterStyle
+Egap.Documents.Charts.ChartScatterStyle.Smooth = 3 -> Egap.Documents.Charts.ChartScatterStyle
+Egap.Documents.Charts.ChartScatterStyle.SmoothMarker = 4 -> Egap.Documents.Charts.ChartScatterStyle
+Egap.Documents.Charts.ChartSeries
+Egap.Documents.Charts.ChartSeries.Binning.get -> Egap.Documents.Charts.ChartBinning!
+Egap.Documents.Charts.ChartSeries.Bubble3D.get -> bool?
+Egap.Documents.Charts.ChartSeries.Bubble3D.set -> void
+Egap.Documents.Charts.ChartSeries.BubbleSizes.get -> Egap.Documents.Charts.ChartData!
+Egap.Documents.Charts.ChartSeries.Categories.get -> Egap.Documents.Charts.ChartData!
+Egap.Documents.Charts.ChartSeries.DataLabels.get -> Egap.Documents.Charts.ChartDataLabels!
+Egap.Documents.Charts.ChartSeries.ErrorBars.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartErrorBars!>!
+Egap.Documents.Charts.ChartSeries.Explosion.get -> int?
+Egap.Documents.Charts.ChartSeries.Explosion.set -> void
+Egap.Documents.Charts.ChartSeries.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartSeries.HasDataLabels.get -> bool
+Egap.Documents.Charts.ChartSeries.HasDataLabels.set -> void
+Egap.Documents.Charts.ChartSeries.Index.get -> int
+Egap.Documents.Charts.ChartSeries.InvertIfNegative.get -> bool?
+Egap.Documents.Charts.ChartSeries.InvertIfNegative.set -> void
+Egap.Documents.Charts.ChartSeries.Marker.get -> Egap.Documents.Charts.ChartMarker!
+Egap.Documents.Charts.ChartSeries.Name.get -> string?
+Egap.Documents.Charts.ChartSeries.Name.set -> void
+Egap.Documents.Charts.ChartSeries.NameReference.get -> string?
+Egap.Documents.Charts.ChartSeries.NameReference.set -> void
+Egap.Documents.Charts.ChartSeries.Order.get -> int
+Egap.Documents.Charts.ChartSeries.Order.set -> void
+Egap.Documents.Charts.ChartSeries.ParentLabels.get -> Egap.Documents.Charts.ChartParentLabels?
+Egap.Documents.Charts.ChartSeries.ParentLabels.set -> void
+Egap.Documents.Charts.ChartSeries.PointLabels.get -> System.Collections.Generic.IReadOnlyDictionary<int, Egap.Documents.Charts.ChartDataLabels!>!
+Egap.Documents.Charts.ChartSeries.Points.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartPoint!>!
+Egap.Documents.Charts.ChartSeries.QuartileMethod.get -> string?
+Egap.Documents.Charts.ChartSeries.QuartileMethod.set -> void
+Egap.Documents.Charts.ChartSeries.ShowConnectorLines.get -> bool?
+Egap.Documents.Charts.ChartSeries.ShowConnectorLines.set -> void
+Egap.Documents.Charts.ChartSeries.ShowInnerPoints.get -> bool?
+Egap.Documents.Charts.ChartSeries.ShowInnerPoints.set -> void
+Egap.Documents.Charts.ChartSeries.ShowMeanLine.get -> bool?
+Egap.Documents.Charts.ChartSeries.ShowMeanLine.set -> void
+Egap.Documents.Charts.ChartSeries.ShowMeanMarker.get -> bool?
+Egap.Documents.Charts.ChartSeries.ShowMeanMarker.set -> void
+Egap.Documents.Charts.ChartSeries.ShowOutliers.get -> bool?
+Egap.Documents.Charts.ChartSeries.ShowOutliers.set -> void
+Egap.Documents.Charts.ChartSeries.Smooth.get -> bool?
+Egap.Documents.Charts.ChartSeries.Smooth.set -> void
+Egap.Documents.Charts.ChartSeries.Subtotals.get -> System.Collections.Generic.IReadOnlyList<int>!
+Egap.Documents.Charts.ChartSeries.Subtotals.set -> void
+Egap.Documents.Charts.ChartSeries.Trendlines.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartTrendline!>!
+Egap.Documents.Charts.ChartSeries.Values.get -> Egap.Documents.Charts.ChartData!
+Egap.Documents.Charts.ChartSeriesCollection
+Egap.Documents.Charts.ChartSeriesCollection.Add(string! values, string? categories = null, string? name = null, string? bubbleSizes = null) -> Egap.Documents.Charts.ChartSeries!
+Egap.Documents.Charts.ChartSeriesCollection.Add(string? name, System.Collections.Generic.IEnumerable<string?>? categories, System.Collections.Generic.IEnumerable<double?>! values) -> Egap.Documents.Charts.ChartSeries!
+Egap.Documents.Charts.ChartSeriesCollection.Count.get -> int
+Egap.Documents.Charts.ChartSeriesCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Documents.Charts.ChartSeries!>!
+Egap.Documents.Charts.ChartSeriesCollection.Remove(Egap.Documents.Charts.ChartSeries! series) -> bool
+Egap.Documents.Charts.ChartSeriesCollection.this[int index].get -> Egap.Documents.Charts.ChartSeries!
+Egap.Documents.Charts.ChartTextFormat
+Egap.Documents.Charts.ChartTextFormat.Bold.get -> bool?
+Egap.Documents.Charts.ChartTextFormat.Bold.set -> void
+Egap.Documents.Charts.ChartTextFormat.Color.get -> Egap.Documents.Charts.ChartColor?
+Egap.Documents.Charts.ChartTextFormat.Color.set -> void
+Egap.Documents.Charts.ChartTextFormat.FontName.get -> string?
+Egap.Documents.Charts.ChartTextFormat.FontName.set -> void
+Egap.Documents.Charts.ChartTextFormat.Italic.get -> bool?
+Egap.Documents.Charts.ChartTextFormat.Italic.set -> void
+Egap.Documents.Charts.ChartTextFormat.Rotation.get -> double?
+Egap.Documents.Charts.ChartTextFormat.Rotation.set -> void
+Egap.Documents.Charts.ChartTextFormat.Size.get -> double?
+Egap.Documents.Charts.ChartTextFormat.Size.set -> void
+Egap.Documents.Charts.ChartTickLabelPosition
+Egap.Documents.Charts.ChartTickLabelPosition.High = 2 -> Egap.Documents.Charts.ChartTickLabelPosition
+Egap.Documents.Charts.ChartTickLabelPosition.Low = 3 -> Egap.Documents.Charts.ChartTickLabelPosition
+Egap.Documents.Charts.ChartTickLabelPosition.NextToAxis = 1 -> Egap.Documents.Charts.ChartTickLabelPosition
+Egap.Documents.Charts.ChartTickLabelPosition.None = 0 -> Egap.Documents.Charts.ChartTickLabelPosition
+Egap.Documents.Charts.ChartTickMark
+Egap.Documents.Charts.ChartTickMark.Cross = 3 -> Egap.Documents.Charts.ChartTickMark
+Egap.Documents.Charts.ChartTickMark.Inside = 1 -> Egap.Documents.Charts.ChartTickMark
+Egap.Documents.Charts.ChartTickMark.None = 0 -> Egap.Documents.Charts.ChartTickMark
+Egap.Documents.Charts.ChartTickMark.Outside = 2 -> Egap.Documents.Charts.ChartTickMark
+Egap.Documents.Charts.ChartTimeUnit
+Egap.Documents.Charts.ChartTimeUnit.Days = 0 -> Egap.Documents.Charts.ChartTimeUnit
+Egap.Documents.Charts.ChartTimeUnit.Months = 1 -> Egap.Documents.Charts.ChartTimeUnit
+Egap.Documents.Charts.ChartTimeUnit.Years = 2 -> Egap.Documents.Charts.ChartTimeUnit
+Egap.Documents.Charts.ChartTitle
+Egap.Documents.Charts.ChartTitle.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartTitle.Layout.get -> Egap.Documents.Charts.ChartLayout!
+Egap.Documents.Charts.ChartTitle.Overlay.get -> bool?
+Egap.Documents.Charts.ChartTitle.Overlay.set -> void
+Egap.Documents.Charts.ChartTitle.Reference.get -> string?
+Egap.Documents.Charts.ChartTitle.Reference.set -> void
+Egap.Documents.Charts.ChartTitle.Text.get -> string?
+Egap.Documents.Charts.ChartTitle.Text.set -> void
+Egap.Documents.Charts.ChartTitle.TextFormat.get -> Egap.Documents.Charts.ChartTextFormat!
+Egap.Documents.Charts.ChartTrendline
+Egap.Documents.Charts.ChartTrendline.Backward.get -> double?
+Egap.Documents.Charts.ChartTrendline.Backward.set -> void
+Egap.Documents.Charts.ChartTrendline.Format.get -> Egap.Documents.Charts.ChartFormat!
+Egap.Documents.Charts.ChartTrendline.Forward.get -> double?
+Egap.Documents.Charts.ChartTrendline.Forward.set -> void
+Egap.Documents.Charts.ChartTrendline.Intercept.get -> double?
+Egap.Documents.Charts.ChartTrendline.Intercept.set -> void
+Egap.Documents.Charts.ChartTrendline.Name.get -> string?
+Egap.Documents.Charts.ChartTrendline.Name.set -> void
+Egap.Documents.Charts.ChartTrendline.Order.get -> int?
+Egap.Documents.Charts.ChartTrendline.Order.set -> void
+Egap.Documents.Charts.ChartTrendline.Period.get -> int?
+Egap.Documents.Charts.ChartTrendline.Period.set -> void
+Egap.Documents.Charts.ChartTrendline.ShowEquation.get -> bool
+Egap.Documents.Charts.ChartTrendline.ShowEquation.set -> void
+Egap.Documents.Charts.ChartTrendline.ShowRSquared.get -> bool
+Egap.Documents.Charts.ChartTrendline.ShowRSquared.set -> void
+Egap.Documents.Charts.ChartTrendline.Type.get -> Egap.Documents.Charts.ChartTrendlineType?
+Egap.Documents.Charts.ChartTrendline.Type.set -> void
+Egap.Documents.Charts.ChartTrendlineType
+Egap.Documents.Charts.ChartTrendlineType.Exponential = 0 -> Egap.Documents.Charts.ChartTrendlineType
+Egap.Documents.Charts.ChartTrendlineType.Linear = 1 -> Egap.Documents.Charts.ChartTrendlineType
+Egap.Documents.Charts.ChartTrendlineType.Logarithmic = 2 -> Egap.Documents.Charts.ChartTrendlineType
+Egap.Documents.Charts.ChartTrendlineType.MovingAverage = 3 -> Egap.Documents.Charts.ChartTrendlineType
+Egap.Documents.Charts.ChartTrendlineType.Polynomial = 4 -> Egap.Documents.Charts.ChartTrendlineType
+Egap.Documents.Charts.ChartTrendlineType.Power = 5 -> Egap.Documents.Charts.ChartTrendlineType
+Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Area = 3 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Bar = 1 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.BarOfPie = 6 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.BoxWhisker = 16 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Bubble = 9 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Column = 0 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Doughnut = 7 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Funnel = 19 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Histogram = 14 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Line = 2 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Pareto = 15 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Pie = 4 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.PieOfPie = 5 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Radar = 10 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.RegionMap = 20 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Scatter = 8 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Stock = 11 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Sunburst = 18 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Surface = 12 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Treemap = 17 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Unknown = 21 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Waterfall = 13 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartView3D
+Egap.Documents.Charts.ChartView3D.DepthPercent.get -> int?
+Egap.Documents.Charts.ChartView3D.DepthPercent.set -> void
+Egap.Documents.Charts.ChartView3D.HeightPercent.get -> int?
+Egap.Documents.Charts.ChartView3D.HeightPercent.set -> void
+Egap.Documents.Charts.ChartView3D.Perspective.get -> int?
+Egap.Documents.Charts.ChartView3D.Perspective.set -> void
+Egap.Documents.Charts.ChartView3D.RightAngleAxes.get -> bool?
+Egap.Documents.Charts.ChartView3D.RightAngleAxes.set -> void
+Egap.Documents.Charts.ChartView3D.RotationX.get -> int?
+Egap.Documents.Charts.ChartView3D.RotationX.set -> void
+Egap.Documents.Charts.ChartView3D.RotationY.get -> int?
+Egap.Documents.Charts.ChartView3D.RotationY.set -> void
 Egap.Documents.Document.Protection.get -> Egap.Documents.DocumentProtection!
 Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart! start) -> Egap.Documents.EditableRangeEnd!
 Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup group = Egap.Documents.EditorGroup.Everyone) -> Egap.Documents.EditableRangeStart!
@@ -64,6 +600,8 @@ Egap.Documents.EditorGroup.Editors = 4 -> Egap.Documents.EditorGroup
 Egap.Documents.EditorGroup.Everyone = 1 -> Egap.Documents.EditorGroup
 Egap.Documents.EditorGroup.None = 0 -> Egap.Documents.EditorGroup
 Egap.Documents.EditorGroup.Owners = 5 -> Egap.Documents.EditorGroup
+Egap.Documents.Island.Chart.get -> Egap.Documents.Charts.Chart?
+Egap.Documents.Island.Island(Egap.Documents.Document! document, Egap.Documents.Charts.Chart! chart, double width, double height) -> void
 Egap.Documents.Layout.DocumentLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutWarning!>!
 Egap.Documents.Layout.LayoutOptions.OnWarning.get -> System.Action<Egap.Documents.Layout.LayoutWarning!>?
 Egap.Documents.Layout.LayoutOptions.OnWarning.init -> void
@@ -132,11 +670,25 @@ Egap.Documents.RtfSaveOptions
 Egap.Documents.RtfSaveOptions.KeepUnknownGroups.get -> bool
 Egap.Documents.RtfSaveOptions.KeepUnknownGroups.init -> void
 Egap.Documents.RtfSaveOptions.RtfSaveOptions() -> void
+override Egap.Documents.Charts.ChartColor.Equals(object? obj) -> bool
+override Egap.Documents.Charts.ChartColor.GetHashCode() -> int
+override Egap.Documents.Charts.ChartColor.ToString() -> string!
+override Egap.Documents.Charts.ChartColorChange.GetHashCode() -> int
+override Egap.Documents.Charts.ChartGradientStop.GetHashCode() -> int
 override Egap.Documents.EditableRangeEnd.Clone(bool deep = true) -> Egap.Documents.EditableRangeEnd!
 override Egap.Documents.EditableRangeStart.Clone(bool deep = true) -> Egap.Documents.EditableRangeStart!
 override Egap.Documents.Layout.LayoutWarning.Equals(object? obj) -> bool
 override Egap.Documents.Layout.LayoutWarning.GetHashCode() -> int
 override Egap.Documents.Layout.LayoutWarning.ToString() -> string!
+static Egap.Documents.Charts.Chart.Create(Egap.Documents.Charts.ChartType type, bool threeD = false) -> Egap.Documents.Charts.Chart!
+static Egap.Documents.Charts.Chart.Load(System.IO.Stream! stream, Egap.Documents.DocumentLimits? limits = null) -> Egap.Documents.Charts.Chart!
+static Egap.Documents.Charts.ChartColor.FromHex(string! hex) -> Egap.Documents.Charts.ChartColor!
+static Egap.Documents.Charts.ChartColor.FromRgb(Egami.Pixels.Rgba8 rgb) -> Egap.Documents.Charts.ChartColor!
+static Egap.Documents.Charts.ChartColor.FromTheme(Egap.Documents.ThemeColor theme, double? lumMod = null, double? lumOff = null) -> Egap.Documents.Charts.ChartColor!
+static Egap.Documents.Charts.ChartColorChange.operator !=(Egap.Documents.Charts.ChartColorChange left, Egap.Documents.Charts.ChartColorChange right) -> bool
+static Egap.Documents.Charts.ChartColorChange.operator ==(Egap.Documents.Charts.ChartColorChange left, Egap.Documents.Charts.ChartColorChange right) -> bool
+static Egap.Documents.Charts.ChartGradientStop.operator !=(Egap.Documents.Charts.ChartGradientStop left, Egap.Documents.Charts.ChartGradientStop right) -> bool
+static Egap.Documents.Charts.ChartGradientStop.operator ==(Egap.Documents.Charts.ChartGradientStop left, Egap.Documents.Charts.ChartGradientStop right) -> bool
 static Egap.Documents.Document.Load(string! path, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
 static Egap.Documents.Document.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
 static Egap.Documents.Document.Load(System.IO.Stream! stream, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
@@ -159,3 +711,7 @@ static Egap.Documents.RtfFormat.Save(Egap.Documents.Document! document, string! 
 static Egap.Documents.RtfFormat.Save(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.RtfSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 virtual Egap.Documents.DocumentVisitor.VisitEditableRangeEnd(Egap.Documents.EditableRangeEnd! rangeEnd) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitEditableRangeStart(Egap.Documents.EditableRangeStart! rangeStart) -> Egap.Documents.VisitorAction
+~override Egap.Documents.Charts.ChartColorChange.Equals(object obj) -> bool
+~override Egap.Documents.Charts.ChartColorChange.ToString() -> string
+~override Egap.Documents.Charts.ChartGradientStop.Equals(object obj) -> bool
+~override Egap.Documents.Charts.ChartGradientStop.ToString() -> string

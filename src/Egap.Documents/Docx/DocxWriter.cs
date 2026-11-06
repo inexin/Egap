@@ -105,6 +105,15 @@ internal sealed partial class DocxWriter
                 package.AddRelationship(part.Name, relationship.Id, relationship.Type, relationship.Target, relationship.External);
             }
         }
+
+        // Here and not with the island: a paragraph nobody changed goes back as it came, its island unwritten.
+        foreach (Island island in document.Descendants<Island>())
+        {
+            if (!island.NewChart && !island.IsChartCopy && island.LoadedChart is { IsChanged: true } edited && island.ChartPart is { } chartPart)
+            {
+                package.AddPart(chartPart.Name, chartPart.ContentType, edited.ToBytes());
+            }
+        }
     }
 
     /// <summary>Note ids kept from the file where they are free, so unchanged paragraphs that name them stay right.</summary>

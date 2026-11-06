@@ -24,6 +24,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["document"] = AsDocument,
     ["tables"] = FromTables,
     ["links"] = Links,
+    ["sheetcharts"] = SheetCharts,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -221,6 +222,48 @@ static void Csv(Stream input)
 }
 
 // The input is an XLSX package: loaded, saved and loaded again, and every sheet streamed through SheetReader.
+// A workbook's charts: read, filled from the cells, edited and saved. Only a DocumentException may come out.
+static void SheetCharts(Stream input)
+{
+    try
+    {
+        Workbook book = Workbook.Load(new MemoryStream(Bytes(input), writable: false), new WorkbookLoadOptions { Limits = new DocumentLimits { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 } });
+        foreach (ChartSheet page in book.ChartSheets)
+        {
+            if (page.Chart is not null)
+            {
+                page.RefreshChart();
+                page.Chart.Title.Text = "Edited";
+            }
+        }
+
+        foreach (Worksheet sheet in book.Worksheets)
+        {
+            foreach (SheetDrawing drawing in sheet.Drawings)
+            {
+                if (drawing.Chart is { } chart)
+                {
+                    drawing.RefreshChart();
+                    foreach (Egap.Documents.Charts.ChartSeries series in chart.Series)
+                    {
+                        _ = series.Name;
+                        _ = series.Values.Numbers.Count;
+                        _ = series.Categories.TextLevels.Count;
+                    }
+
+                    chart.Title.Text = "Edited";
+                }
+            }
+        }
+
+        using MemoryStream saved = new();
+        book.Save(saved);
+    }
+    catch (DocumentException)
+    {
+    }
+}
+
 static void Xlsx(Stream input)
 {
     DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };

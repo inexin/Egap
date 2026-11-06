@@ -3,6 +3,8 @@ using System.Xml.Linq;
 
 using Egami.Pixels;
 
+using Egap.Documents.Charts;
+
 namespace Egap.Documents.Docx;
 
 /// <summary>Drawings: DrawingML pictures and shapes, VML pictures and text boxes, OLE objects, and islands for the rest.</summary>
@@ -95,8 +97,16 @@ internal sealed partial class DocxReader
                 Height = h,
                 Floating = placement,
                 Text = IslandText(element),
+                ChartPart = kind == IslandKind.Chart ? ChartPartOf(element) : null,
             }, state, element);
         }
+    }
+
+    private OpcPart? ChartPartOf(XElement drawing)
+    {
+        string? id = (string?)drawing.Descendants(ChartNs.C + "chart").FirstOrDefault()?.Attribute(Ns.R + "id");
+        OpcRelationship? relationship = id is null ? null : currentPart.GetRelationship(id);
+        return relationship is { External: false } ? package.GetPart(relationship.TargetName) : null;
     }
 
     /// <summary>The text an island holds: its Word text (text boxes in groups), else its DrawingML text (charts, diagrams).</summary>

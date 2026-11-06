@@ -1,0 +1,1047 @@
+My data!Column	seriesCount	3
+My data!Column	series1.name	North
+My data!Column	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Column	series1.type	51
+My data!Column	series1.axisGroup	1
+My data!Column	series1.values	12;18;9;22;16;25
+My data!Column	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Column	series1.hasDataLabels	False
+My data!Column	series1.trendlines	0
+My data!Column	series1.hasErrorBars	False
+My data!Column	series1.marker	-4142
+My data!Column	series2.name	South
+My data!Column	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Column	series2.type	51
+My data!Column	series2.axisGroup	1
+My data!Column	series2.values	7;9;14;11;13;8
+My data!Column	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Column	series2.hasDataLabels	False
+My data!Column	series2.trendlines	0
+My data!Column	series2.hasErrorBars	False
+My data!Column	series2.marker	-4142
+My data!Column	series3.name	East
+My data!Column	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Column	series3.type	51
+My data!Column	series3.axisGroup	1
+My data!Column	series3.values	15;21;17;26;19;28
+My data!Column	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Column	series3.hasDataLabels	False
+My data!Column	series3.trendlines	0
+My data!Column	series3.hasErrorBars	False
+My data!Column	series3.marker	-4142
+My data!Column	category.hasTitle	False
+My data!Column	category.reversed	False
+My data!Column	category.majorGridlines	False
+My data!Column	category.minorGridlines	False
+My data!Column	category.tickLabelPosition	4
+My data!Column	category.majorTick	3
+My data!Column	category.minorTick	-4142
+My data!Column	category.numberFormat	General
+My data!Column	category.min	
+My data!Column	category.max	
+My data!Column	category.majorUnit	
+My data!Column	value.hasTitle	False
+My data!Column	value.reversed	False
+My data!Column	value.majorGridlines	True
+My data!Column	value.minorGridlines	False
+My data!Column	value.tickLabelPosition	4
+My data!Column	value.majorTick	3
+My data!Column	value.minorTick	-4142
+My data!Column	value.numberFormat	General
+My data!ColumnStacked	seriesCount	3
+My data!ColumnStacked	series1.name	North
+My data!ColumnStacked	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!ColumnStacked	series1.type	52
+My data!ColumnStacked	series1.axisGroup	1
+My data!ColumnStacked	series1.values	12;18;9;22;16;25
+My data!ColumnStacked	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!ColumnStacked	series1.hasDataLabels	False
+My data!ColumnStacked	series1.trendlines	0
+My data!ColumnStacked	series1.hasErrorBars	False
+My data!ColumnStacked	series1.marker	-4142
+My data!ColumnStacked	series2.name	South
+My data!ColumnStacked	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!ColumnStacked	series2.type	52
+My data!ColumnStacked	series2.axisGroup	1
+My data!ColumnStacked	series2.values	7;9;14;11;13;8
+My data!ColumnStacked	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!ColumnStacked	series2.hasDataLabels	False
+My data!ColumnStacked	series2.trendlines	0
+My data!ColumnStacked	series2.hasErrorBars	False
+My data!ColumnStacked	series2.marker	-4142
+My data!ColumnStacked	series3.name	East
+My data!ColumnStacked	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!ColumnStacked	series3.type	52
+My data!ColumnStacked	series3.axisGroup	1
+My data!ColumnStacked	series3.values	15;21;17;26;19;28
+My data!ColumnStacked	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!ColumnStacked	series3.hasDataLabels	False
+My data!ColumnStacked	series3.trendlines	0
+My data!ColumnStacked	series3.hasErrorBars	False
+My data!ColumnStacked	series3.marker	-4142
+My data!ColumnStacked	category.hasTitle	False
+My data!ColumnStacked	category.reversed	False
+My data!ColumnStacked	category.majorGridlines	False
+My data!ColumnStacked	category.minorGridlines	False
+My data!ColumnStacked	category.tickLabelPosition	4
+My data!ColumnStacked	category.majorTick	3
+My data!ColumnStacked	category.minorTick	-4142
+My data!ColumnStacked	category.numberFormat	General
+My data!ColumnStacked	category.min	
+My data!ColumnStacked	category.max	
+My data!ColumnStacked	category.majorUnit	
+My data!ColumnStacked	value.hasTitle	False
+My data!ColumnStacked	value.reversed	False
+My data!ColumnStacked	value.majorGridlines	True
+My data!ColumnStacked	value.minorGridlines	False
+My data!ColumnStacked	value.tickLabelPosition	4
+My data!ColumnStacked	value.majorTick	3
+My data!ColumnStacked	value.minorTick	-4142
+My data!ColumnStacked	value.numberFormat	General
+My data!Column3D	seriesCount	3
+My data!Column3D	series1.name	North
+My data!Column3D	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Column3D	series1.type	54
+My data!Column3D	series1.axisGroup	1
+My data!Column3D	series1.values	12;18;9;22;16;25
+My data!Column3D	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Column3D	series1.hasDataLabels	False
+My data!Column3D	series1.trendlines	0
+My data!Column3D	series1.hasErrorBars	False
+My data!Column3D	series1.marker	-4142
+My data!Column3D	series2.name	South
+My data!Column3D	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Column3D	series2.type	54
+My data!Column3D	series2.axisGroup	1
+My data!Column3D	series2.values	7;9;14;11;13;8
+My data!Column3D	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Column3D	series2.hasDataLabels	False
+My data!Column3D	series2.trendlines	0
+My data!Column3D	series2.hasErrorBars	False
+My data!Column3D	series2.marker	-4142
+My data!Column3D	series3.name	East
+My data!Column3D	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Column3D	series3.type	54
+My data!Column3D	series3.axisGroup	1
+My data!Column3D	series3.values	15;21;17;26;19;28
+My data!Column3D	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Column3D	series3.hasDataLabels	False
+My data!Column3D	series3.trendlines	0
+My data!Column3D	series3.hasErrorBars	False
+My data!Column3D	series3.marker	-4142
+My data!Column3D	category.hasTitle	False
+My data!Column3D	category.reversed	False
+My data!Column3D	category.majorGridlines	False
+My data!Column3D	category.minorGridlines	False
+My data!Column3D	category.tickLabelPosition	4
+My data!Column3D	category.majorTick	3
+My data!Column3D	category.minorTick	-4142
+My data!Column3D	category.numberFormat	General
+My data!Column3D	category.min	
+My data!Column3D	category.max	
+My data!Column3D	category.majorUnit	
+My data!Column3D	value.hasTitle	False
+My data!Column3D	value.reversed	False
+My data!Column3D	value.majorGridlines	True
+My data!Column3D	value.minorGridlines	False
+My data!Column3D	value.tickLabelPosition	4
+My data!Column3D	value.majorTick	3
+My data!Column3D	value.minorTick	-4142
+My data!Column3D	value.numberFormat	General
+My data!Bar	seriesCount	3
+My data!Bar	series1.name	North
+My data!Bar	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Bar	series1.type	57
+My data!Bar	series1.axisGroup	1
+My data!Bar	series1.values	12;18;9;22;16;25
+My data!Bar	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Bar	series1.hasDataLabels	False
+My data!Bar	series1.trendlines	0
+My data!Bar	series1.hasErrorBars	False
+My data!Bar	series1.marker	-4142
+My data!Bar	series2.name	South
+My data!Bar	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Bar	series2.type	57
+My data!Bar	series2.axisGroup	1
+My data!Bar	series2.values	7;9;14;11;13;8
+My data!Bar	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Bar	series2.hasDataLabels	False
+My data!Bar	series2.trendlines	0
+My data!Bar	series2.hasErrorBars	False
+My data!Bar	series2.marker	-4142
+My data!Bar	series3.name	East
+My data!Bar	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Bar	series3.type	57
+My data!Bar	series3.axisGroup	1
+My data!Bar	series3.values	15;21;17;26;19;28
+My data!Bar	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Bar	series3.hasDataLabels	False
+My data!Bar	series3.trendlines	0
+My data!Bar	series3.hasErrorBars	False
+My data!Bar	series3.marker	-4142
+My data!Bar	category.hasTitle	False
+My data!Bar	category.reversed	False
+My data!Bar	category.majorGridlines	False
+My data!Bar	category.minorGridlines	False
+My data!Bar	category.tickLabelPosition	4
+My data!Bar	category.majorTick	3
+My data!Bar	category.minorTick	-4142
+My data!Bar	category.numberFormat	General
+My data!Bar	category.min	
+My data!Bar	category.max	
+My data!Bar	category.majorUnit	
+My data!Bar	value.hasTitle	False
+My data!Bar	value.reversed	False
+My data!Bar	value.majorGridlines	False
+My data!Bar	value.minorGridlines	False
+My data!Bar	value.tickLabelPosition	4
+My data!Bar	value.majorTick	3
+My data!Bar	value.minorTick	-4142
+My data!Bar	value.numberFormat	General
+My data!Bar3D	seriesCount	3
+My data!Bar3D	series1.name	North
+My data!Bar3D	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Bar3D	series1.type	60
+My data!Bar3D	series1.axisGroup	1
+My data!Bar3D	series1.values	12;18;9;22;16;25
+My data!Bar3D	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Bar3D	series1.hasDataLabels	False
+My data!Bar3D	series1.trendlines	0
+My data!Bar3D	series1.hasErrorBars	False
+My data!Bar3D	series1.marker	-4142
+My data!Bar3D	series2.name	South
+My data!Bar3D	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Bar3D	series2.type	60
+My data!Bar3D	series2.axisGroup	1
+My data!Bar3D	series2.values	7;9;14;11;13;8
+My data!Bar3D	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Bar3D	series2.hasDataLabels	False
+My data!Bar3D	series2.trendlines	0
+My data!Bar3D	series2.hasErrorBars	False
+My data!Bar3D	series2.marker	-4142
+My data!Bar3D	series3.name	East
+My data!Bar3D	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Bar3D	series3.type	60
+My data!Bar3D	series3.axisGroup	1
+My data!Bar3D	series3.values	15;21;17;26;19;28
+My data!Bar3D	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Bar3D	series3.hasDataLabels	False
+My data!Bar3D	series3.trendlines	0
+My data!Bar3D	series3.hasErrorBars	False
+My data!Bar3D	series3.marker	-4142
+My data!Bar3D	category.hasTitle	False
+My data!Bar3D	category.reversed	False
+My data!Bar3D	category.majorGridlines	False
+My data!Bar3D	category.minorGridlines	False
+My data!Bar3D	category.tickLabelPosition	4
+My data!Bar3D	category.majorTick	3
+My data!Bar3D	category.minorTick	-4142
+My data!Bar3D	category.numberFormat	General
+My data!Bar3D	category.min	
+My data!Bar3D	category.max	
+My data!Bar3D	category.majorUnit	
+My data!Bar3D	value.hasTitle	False
+My data!Bar3D	value.reversed	False
+My data!Bar3D	value.majorGridlines	False
+My data!Bar3D	value.minorGridlines	False
+My data!Bar3D	value.tickLabelPosition	4
+My data!Bar3D	value.majorTick	3
+My data!Bar3D	value.minorTick	-4142
+My data!Bar3D	value.numberFormat	General
+My data!Line	seriesCount	3
+My data!Line	series1.name	North
+My data!Line	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Line	series1.type	65
+My data!Line	series1.axisGroup	1
+My data!Line	series1.values	12;18;9;22;16;25
+My data!Line	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Line	series1.hasDataLabels	False
+My data!Line	series1.trendlines	0
+My data!Line	series1.hasErrorBars	False
+My data!Line	series1.smooth	False
+My data!Line	series1.marker	-4105
+My data!Line	series2.name	South
+My data!Line	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Line	series2.type	65
+My data!Line	series2.axisGroup	1
+My data!Line	series2.values	7;9;14;11;13;8
+My data!Line	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Line	series2.hasDataLabels	False
+My data!Line	series2.trendlines	0
+My data!Line	series2.hasErrorBars	False
+My data!Line	series2.smooth	False
+My data!Line	series2.marker	-4105
+My data!Line	series3.name	East
+My data!Line	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Line	series3.type	65
+My data!Line	series3.axisGroup	1
+My data!Line	series3.values	15;21;17;26;19;28
+My data!Line	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Line	series3.hasDataLabels	False
+My data!Line	series3.trendlines	0
+My data!Line	series3.hasErrorBars	False
+My data!Line	series3.smooth	False
+My data!Line	series3.marker	-4105
+My data!Line	category.hasTitle	False
+My data!Line	category.reversed	False
+My data!Line	category.majorGridlines	False
+My data!Line	category.minorGridlines	False
+My data!Line	category.tickLabelPosition	4
+My data!Line	category.majorTick	3
+My data!Line	category.minorTick	-4142
+My data!Line	category.numberFormat	General
+My data!Line	category.min	
+My data!Line	category.max	
+My data!Line	category.majorUnit	
+My data!Line	value.hasTitle	False
+My data!Line	value.reversed	False
+My data!Line	value.majorGridlines	True
+My data!Line	value.minorGridlines	False
+My data!Line	value.tickLabelPosition	4
+My data!Line	value.majorTick	3
+My data!Line	value.minorTick	-4142
+My data!Line	value.numberFormat	General
+My data!Line3D	seriesCount	3
+My data!Line3D	series1.name	North
+My data!Line3D	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Line3D	series1.type	-4101
+My data!Line3D	series1.axisGroup	1
+My data!Line3D	series1.values	12;18;9;22;16;25
+My data!Line3D	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Line3D	series1.hasDataLabels	False
+My data!Line3D	series1.trendlines	0
+My data!Line3D	series1.hasErrorBars	False
+My data!Line3D	series1.smooth	True
+My data!Line3D	series1.marker	-4142
+My data!Line3D	series2.name	South
+My data!Line3D	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Line3D	series2.type	-4101
+My data!Line3D	series2.axisGroup	1
+My data!Line3D	series2.values	7;9;14;11;13;8
+My data!Line3D	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Line3D	series2.hasDataLabels	False
+My data!Line3D	series2.trendlines	0
+My data!Line3D	series2.hasErrorBars	False
+My data!Line3D	series2.smooth	True
+My data!Line3D	series2.marker	-4142
+My data!Line3D	series3.name	East
+My data!Line3D	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Line3D	series3.type	-4101
+My data!Line3D	series3.axisGroup	1
+My data!Line3D	series3.values	15;21;17;26;19;28
+My data!Line3D	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Line3D	series3.hasDataLabels	False
+My data!Line3D	series3.trendlines	0
+My data!Line3D	series3.hasErrorBars	False
+My data!Line3D	series3.smooth	True
+My data!Line3D	series3.marker	-4142
+My data!Line3D	category.hasTitle	False
+My data!Line3D	category.reversed	False
+My data!Line3D	category.majorGridlines	False
+My data!Line3D	category.minorGridlines	False
+My data!Line3D	category.tickLabelPosition	4
+My data!Line3D	category.majorTick	3
+My data!Line3D	category.minorTick	-4142
+My data!Line3D	category.numberFormat	General
+My data!Line3D	category.min	
+My data!Line3D	category.max	
+My data!Line3D	category.majorUnit	
+My data!Line3D	value.hasTitle	False
+My data!Line3D	value.reversed	False
+My data!Line3D	value.majorGridlines	True
+My data!Line3D	value.minorGridlines	False
+My data!Line3D	value.tickLabelPosition	4
+My data!Line3D	value.majorTick	3
+My data!Line3D	value.minorTick	-4142
+My data!Line3D	value.numberFormat	General
+My data!Area	seriesCount	3
+My data!Area	series1.name	North
+My data!Area	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Area	series1.type	1
+My data!Area	series1.axisGroup	1
+My data!Area	series1.values	12;18;9;22;16;25
+My data!Area	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Area	series1.hasDataLabels	False
+My data!Area	series1.trendlines	0
+My data!Area	series1.hasErrorBars	False
+My data!Area	series1.smooth	True
+My data!Area	series1.marker	-4142
+My data!Area	series2.name	South
+My data!Area	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Area	series2.type	1
+My data!Area	series2.axisGroup	1
+My data!Area	series2.values	7;9;14;11;13;8
+My data!Area	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Area	series2.hasDataLabels	False
+My data!Area	series2.trendlines	0
+My data!Area	series2.hasErrorBars	False
+My data!Area	series2.smooth	True
+My data!Area	series2.marker	-4142
+My data!Area	series3.name	East
+My data!Area	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Area	series3.type	1
+My data!Area	series3.axisGroup	1
+My data!Area	series3.values	15;21;17;26;19;28
+My data!Area	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Area	series3.hasDataLabels	False
+My data!Area	series3.trendlines	0
+My data!Area	series3.hasErrorBars	False
+My data!Area	series3.smooth	True
+My data!Area	series3.marker	-4142
+My data!Area	category.hasTitle	False
+My data!Area	category.reversed	False
+My data!Area	category.majorGridlines	False
+My data!Area	category.minorGridlines	False
+My data!Area	category.tickLabelPosition	4
+My data!Area	category.majorTick	3
+My data!Area	category.minorTick	-4142
+My data!Area	category.numberFormat	General
+My data!Area	category.min	
+My data!Area	category.max	
+My data!Area	category.majorUnit	
+My data!Area	value.hasTitle	False
+My data!Area	value.reversed	False
+My data!Area	value.majorGridlines	True
+My data!Area	value.minorGridlines	False
+My data!Area	value.tickLabelPosition	4
+My data!Area	value.majorTick	3
+My data!Area	value.minorTick	-4142
+My data!Area	value.numberFormat	General
+My data!Area3D	seriesCount	3
+My data!Area3D	series1.name	North
+My data!Area3D	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Area3D	series1.type	-4098
+My data!Area3D	series1.axisGroup	1
+My data!Area3D	series1.values	12;18;9;22;16;25
+My data!Area3D	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Area3D	series1.hasDataLabels	False
+My data!Area3D	series1.trendlines	0
+My data!Area3D	series1.hasErrorBars	False
+My data!Area3D	series1.smooth	True
+My data!Area3D	series1.marker	-4142
+My data!Area3D	series2.name	South
+My data!Area3D	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Area3D	series2.type	-4098
+My data!Area3D	series2.axisGroup	1
+My data!Area3D	series2.values	7;9;14;11;13;8
+My data!Area3D	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Area3D	series2.hasDataLabels	False
+My data!Area3D	series2.trendlines	0
+My data!Area3D	series2.hasErrorBars	False
+My data!Area3D	series2.smooth	True
+My data!Area3D	series2.marker	-4142
+My data!Area3D	series3.name	East
+My data!Area3D	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Area3D	series3.type	-4098
+My data!Area3D	series3.axisGroup	1
+My data!Area3D	series3.values	15;21;17;26;19;28
+My data!Area3D	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Area3D	series3.hasDataLabels	False
+My data!Area3D	series3.trendlines	0
+My data!Area3D	series3.hasErrorBars	False
+My data!Area3D	series3.smooth	True
+My data!Area3D	series3.marker	-4142
+My data!Area3D	category.hasTitle	False
+My data!Area3D	category.reversed	False
+My data!Area3D	category.majorGridlines	False
+My data!Area3D	category.minorGridlines	False
+My data!Area3D	category.tickLabelPosition	4
+My data!Area3D	category.majorTick	3
+My data!Area3D	category.minorTick	-4142
+My data!Area3D	category.numberFormat	General
+My data!Area3D	category.min	
+My data!Area3D	category.max	
+My data!Area3D	category.majorUnit	
+My data!Area3D	value.hasTitle	False
+My data!Area3D	value.reversed	False
+My data!Area3D	value.majorGridlines	True
+My data!Area3D	value.minorGridlines	False
+My data!Area3D	value.tickLabelPosition	4
+My data!Area3D	value.majorTick	3
+My data!Area3D	value.minorTick	-4142
+My data!Area3D	value.numberFormat	General
+My data!Pie	seriesCount	1
+My data!Pie	series1.name	North
+My data!Pie	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Pie	series1.type	5
+My data!Pie	series1.axisGroup	1
+My data!Pie	series1.values	12;18;9;22;16;25
+My data!Pie	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Pie	series1.hasDataLabels	False
+My data!Pie	series1.trendlines	0
+My data!Pie	series1.hasErrorBars	False
+My data!Pie	series1.marker	-4142
+My data!Pie3D	seriesCount	1
+My data!Pie3D	series1.name	North
+My data!Pie3D	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Pie3D	series1.type	-4102
+My data!Pie3D	series1.axisGroup	1
+My data!Pie3D	series1.values	12;18;9;22;16;25
+My data!Pie3D	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Pie3D	series1.hasDataLabels	False
+My data!Pie3D	series1.trendlines	0
+My data!Pie3D	series1.hasErrorBars	False
+My data!Pie3D	series1.marker	-4142
+My data!PieOfPie	seriesCount	1
+My data!PieOfPie	series1.name	North
+My data!PieOfPie	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!PieOfPie	series1.type	68
+My data!PieOfPie	series1.axisGroup	1
+My data!PieOfPie	series1.values	12;18;9;22;16;25;41
+My data!PieOfPie	series1.categories	Jan;Feb;Mar;Apr;May;Jun;
+My data!PieOfPie	series1.hasDataLabels	False
+My data!PieOfPie	series1.trendlines	0
+My data!PieOfPie	series1.hasErrorBars	False
+My data!PieOfPie	series1.marker	-4142
+My data!BarOfPie	seriesCount	1
+My data!BarOfPie	series1.name	North
+My data!BarOfPie	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!BarOfPie	series1.type	71
+My data!BarOfPie	series1.axisGroup	1
+My data!BarOfPie	series1.values	12;18;9;22;16;25;41
+My data!BarOfPie	series1.categories	Jan;Feb;Mar;Apr;May;Jun;
+My data!BarOfPie	series1.hasDataLabels	False
+My data!BarOfPie	series1.trendlines	0
+My data!BarOfPie	series1.hasErrorBars	False
+My data!BarOfPie	series1.marker	-4142
+My data!Doughnut	seriesCount	1
+My data!Doughnut	series1.name	North
+My data!Doughnut	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Doughnut	series1.type	-4120
+My data!Doughnut	series1.axisGroup	1
+My data!Doughnut	series1.values	12;18;9;22;16;25
+My data!Doughnut	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Doughnut	series1.hasDataLabels	False
+My data!Doughnut	series1.trendlines	0
+My data!Doughnut	series1.hasErrorBars	False
+My data!Doughnut	series1.marker	-4142
+My data!Scatter	seriesCount	2
+My data!Scatter	series1.name	South
+My data!Scatter	series1.formula	=SERIES('My data'!$C$1,'My data'!$B$2:$B$7,'My data'!$C$2:$C$7,1)
+My data!Scatter	series1.type	74
+My data!Scatter	series1.axisGroup	1
+My data!Scatter	series1.values	7;9;14;11;13;8
+My data!Scatter	series1.categories	12;18;9;22;16;25
+My data!Scatter	series1.hasDataLabels	False
+My data!Scatter	series1.trendlines	0
+My data!Scatter	series1.hasErrorBars	False
+My data!Scatter	series1.smooth	False
+My data!Scatter	series1.marker	-4105
+My data!Scatter	series2.name	East
+My data!Scatter	series2.formula	=SERIES('My data'!$D$1,'My data'!$B$2:$B$7,'My data'!$D$2:$D$7,2)
+My data!Scatter	series2.type	74
+My data!Scatter	series2.axisGroup	1
+My data!Scatter	series2.values	15;21;17;26;19;28
+My data!Scatter	series2.categories	12;18;9;22;16;25
+My data!Scatter	series2.hasDataLabels	False
+My data!Scatter	series2.trendlines	0
+My data!Scatter	series2.hasErrorBars	False
+My data!Scatter	series2.smooth	False
+My data!Scatter	series2.marker	-4105
+My data!Scatter	category.hasTitle	False
+My data!Scatter	category.reversed	False
+My data!Scatter	category.majorGridlines	False
+My data!Scatter	category.minorGridlines	False
+My data!Scatter	category.tickLabelPosition	4
+My data!Scatter	category.majorTick	3
+My data!Scatter	category.minorTick	-4142
+My data!Scatter	category.numberFormat	General
+My data!Scatter	value.hasTitle	False
+My data!Scatter	value.reversed	False
+My data!Scatter	value.majorGridlines	False
+My data!Scatter	value.minorGridlines	False
+My data!Scatter	value.tickLabelPosition	4
+My data!Scatter	value.majorTick	3
+My data!Scatter	value.minorTick	-4142
+My data!Scatter	value.numberFormat	General
+My data!Bubble	seriesCount	1
+My data!Bubble	series1.name	South
+My data!Bubble	series1.formula	=SERIES('My data'!$C$1,'My data'!$B$2:$B$7,'My data'!$C$2:$C$7,1,'My data'!$D$2:$D$7)
+My data!Bubble	series1.type	15
+My data!Bubble	series1.axisGroup	1
+My data!Bubble	series1.values	7;9;14;11;13;8
+My data!Bubble	series1.categories	12;18;9;22;16;25
+My data!Bubble	series1.hasDataLabels	False
+My data!Bubble	series1.trendlines	0
+My data!Bubble	series1.hasErrorBars	False
+My data!Bubble	series1.smooth	True
+My data!Bubble	series1.marker	-4142
+My data!Bubble	category.hasTitle	False
+My data!Bubble	category.reversed	False
+My data!Bubble	category.majorGridlines	False
+My data!Bubble	category.minorGridlines	False
+My data!Bubble	category.tickLabelPosition	4
+My data!Bubble	category.majorTick	3
+My data!Bubble	category.minorTick	-4142
+My data!Bubble	category.numberFormat	General
+My data!Bubble	value.hasTitle	False
+My data!Bubble	value.reversed	False
+My data!Bubble	value.majorGridlines	False
+My data!Bubble	value.minorGridlines	False
+My data!Bubble	value.tickLabelPosition	4
+My data!Bubble	value.majorTick	3
+My data!Bubble	value.minorTick	-4142
+My data!Bubble	value.numberFormat	General
+My data!Radar	seriesCount	3
+My data!Radar	series1.name	North
+My data!Radar	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Radar	series1.type	81
+My data!Radar	series1.axisGroup	1
+My data!Radar	series1.values	12;18;9;22;16;25
+My data!Radar	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Radar	series1.hasDataLabels	False
+My data!Radar	series1.trendlines	0
+My data!Radar	series1.hasErrorBars	False
+My data!Radar	series1.marker	-4105
+My data!Radar	series2.name	South
+My data!Radar	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Radar	series2.type	81
+My data!Radar	series2.axisGroup	1
+My data!Radar	series2.values	7;9;14;11;13;8
+My data!Radar	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Radar	series2.hasDataLabels	False
+My data!Radar	series2.trendlines	0
+My data!Radar	series2.hasErrorBars	False
+My data!Radar	series2.marker	-4105
+My data!Radar	series3.name	East
+My data!Radar	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Radar	series3.type	81
+My data!Radar	series3.axisGroup	1
+My data!Radar	series3.values	15;21;17;26;19;28
+My data!Radar	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Radar	series3.hasDataLabels	False
+My data!Radar	series3.trendlines	0
+My data!Radar	series3.hasErrorBars	False
+My data!Radar	series3.marker	-4105
+My data!Radar	value.hasTitle	False
+My data!Radar	value.reversed	False
+My data!Radar	value.majorGridlines	True
+My data!Radar	value.minorGridlines	False
+My data!Radar	value.tickLabelPosition	4
+My data!Radar	value.majorTick	3
+My data!Radar	value.minorTick	-4142
+My data!Radar	value.numberFormat	General
+My data!Stock	seriesCount	3
+My data!Stock	series1.name	North
+My data!Stock	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Stock	series1.type	88
+My data!Stock	series1.axisGroup	1
+My data!Stock	series1.values	12;18;9;22;16;25
+My data!Stock	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Stock	series1.hasDataLabels	False
+My data!Stock	series1.trendlines	0
+My data!Stock	series1.hasErrorBars	False
+My data!Stock	series1.smooth	False
+My data!Stock	series1.marker	-4105
+My data!Stock	series2.name	South
+My data!Stock	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Stock	series2.type	88
+My data!Stock	series2.axisGroup	1
+My data!Stock	series2.values	7;9;14;11;13;8
+My data!Stock	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Stock	series2.hasDataLabels	False
+My data!Stock	series2.trendlines	0
+My data!Stock	series2.hasErrorBars	False
+My data!Stock	series2.smooth	False
+My data!Stock	series2.marker	-4105
+My data!Stock	series3.name	East
+My data!Stock	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Stock	series3.type	88
+My data!Stock	series3.axisGroup	1
+My data!Stock	series3.values	15;21;17;26;19;28
+My data!Stock	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Stock	series3.hasDataLabels	False
+My data!Stock	series3.trendlines	0
+My data!Stock	series3.hasErrorBars	False
+My data!Stock	series3.smooth	False
+My data!Stock	series3.marker	-4105
+My data!Stock	category.hasTitle	False
+My data!Stock	category.reversed	False
+My data!Stock	category.majorGridlines	False
+My data!Stock	category.minorGridlines	False
+My data!Stock	category.tickLabelPosition	4
+My data!Stock	category.majorTick	3
+My data!Stock	category.minorTick	-4142
+My data!Stock	category.numberFormat	General
+My data!Stock	category.min	
+My data!Stock	category.max	
+My data!Stock	category.majorUnit	
+My data!Stock	value.hasTitle	False
+My data!Stock	value.reversed	False
+My data!Stock	value.majorGridlines	True
+My data!Stock	value.minorGridlines	False
+My data!Stock	value.tickLabelPosition	4
+My data!Stock	value.majorTick	3
+My data!Stock	value.minorTick	-4142
+My data!Stock	value.numberFormat	General
+My data!Surface	seriesCount	3
+My data!Surface	series1.name	North
+My data!Surface	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Surface	series1.type	85
+My data!Surface	series1.axisGroup	1
+My data!Surface	series1.values	12;18;9;22;16;25
+My data!Surface	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Surface	series1.trendlines	0
+My data!Surface	series1.hasErrorBars	False
+My data!Surface	series1.marker	-4142
+My data!Surface	series2.name	South
+My data!Surface	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Surface	series2.type	85
+My data!Surface	series2.axisGroup	1
+My data!Surface	series2.values	7;9;14;11;13;8
+My data!Surface	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Surface	series2.trendlines	0
+My data!Surface	series2.hasErrorBars	False
+My data!Surface	series2.marker	-4142
+My data!Surface	series3.name	East
+My data!Surface	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Surface	series3.type	85
+My data!Surface	series3.axisGroup	1
+My data!Surface	series3.values	15;21;17;26;19;28
+My data!Surface	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Surface	series3.trendlines	0
+My data!Surface	series3.hasErrorBars	False
+My data!Surface	series3.marker	-4142
+My data!Surface	category.hasTitle	False
+My data!Surface	category.reversed	False
+My data!Surface	category.majorGridlines	False
+My data!Surface	category.minorGridlines	False
+My data!Surface	category.tickLabelPosition	4
+My data!Surface	category.majorTick	3
+My data!Surface	category.minorTick	-4142
+My data!Surface	category.numberFormat	General
+My data!Surface	category.min	
+My data!Surface	category.max	
+My data!Surface	category.majorUnit	
+My data!Surface	value.hasTitle	False
+My data!Surface	value.reversed	False
+My data!Surface	value.majorGridlines	True
+My data!Surface	value.minorGridlines	False
+My data!Surface	value.tickLabelPosition	4
+My data!Surface	value.majorTick	3
+My data!Surface	value.minorTick	-4142
+My data!Surface	value.numberFormat	General
+My data!Surface3D	seriesCount	3
+My data!Surface3D	series1.name	North
+My data!Surface3D	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Surface3D	series1.type	83
+My data!Surface3D	series1.axisGroup	1
+My data!Surface3D	series1.values	12;18;9;22;16;25
+My data!Surface3D	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Surface3D	series1.trendlines	0
+My data!Surface3D	series1.hasErrorBars	False
+My data!Surface3D	series1.marker	-4142
+My data!Surface3D	series2.name	South
+My data!Surface3D	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Surface3D	series2.type	83
+My data!Surface3D	series2.axisGroup	1
+My data!Surface3D	series2.values	7;9;14;11;13;8
+My data!Surface3D	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Surface3D	series2.trendlines	0
+My data!Surface3D	series2.hasErrorBars	False
+My data!Surface3D	series2.marker	-4142
+My data!Surface3D	series3.name	East
+My data!Surface3D	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Surface3D	series3.type	83
+My data!Surface3D	series3.axisGroup	1
+My data!Surface3D	series3.values	15;21;17;26;19;28
+My data!Surface3D	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Surface3D	series3.trendlines	0
+My data!Surface3D	series3.hasErrorBars	False
+My data!Surface3D	series3.marker	-4142
+My data!Surface3D	category.hasTitle	False
+My data!Surface3D	category.reversed	False
+My data!Surface3D	category.majorGridlines	False
+My data!Surface3D	category.minorGridlines	False
+My data!Surface3D	category.tickLabelPosition	4
+My data!Surface3D	category.majorTick	3
+My data!Surface3D	category.minorTick	-4142
+My data!Surface3D	category.numberFormat	General
+My data!Surface3D	category.min	
+My data!Surface3D	category.max	
+My data!Surface3D	category.majorUnit	
+My data!Surface3D	value.hasTitle	False
+My data!Surface3D	value.reversed	False
+My data!Surface3D	value.majorGridlines	True
+My data!Surface3D	value.minorGridlines	False
+My data!Surface3D	value.tickLabelPosition	4
+My data!Surface3D	value.majorTick	3
+My data!Surface3D	value.minorTick	-4142
+My data!Surface3D	value.numberFormat	General
+My data!Waterfall	seriesCount	1
+My data!Waterfall	series1.name	North
+My data!Waterfall	series1.type	119
+My data!Waterfall	series1.values	
+My data!Waterfall	series1.categories	
+My data!Waterfall	series1.hasDataLabels	False
+My data!Waterfall	series1.smooth	False
+My data!Waterfall	category.hasTitle	False
+My data!Waterfall	category.majorGridlines	False
+My data!Waterfall	category.minorGridlines	False
+My data!Waterfall	category.majorTick	-4142
+My data!Waterfall	category.minorTick	-4142
+My data!Waterfall	category.min	
+My data!Waterfall	category.max	
+My data!Waterfall	category.majorUnit	
+My data!Waterfall	value.hasTitle	False
+My data!Waterfall	value.majorGridlines	True
+My data!Waterfall	value.minorGridlines	False
+My data!Waterfall	value.majorTick	-4142
+My data!Waterfall	value.minorTick	-4142
+My data!Waterfall	value.majorUnit	
+My data!Histogram	seriesCount	1
+My data!Histogram	series1.name	North
+My data!Histogram	series1.type	118
+My data!Histogram	series1.values	
+My data!Histogram	series1.categories	
+My data!Histogram	series1.hasDataLabels	False
+My data!Histogram	series1.smooth	False
+My data!Histogram	category.hasTitle	False
+My data!Histogram	category.majorGridlines	False
+My data!Histogram	category.minorGridlines	False
+My data!Histogram	category.majorTick	-4142
+My data!Histogram	category.minorTick	-4142
+My data!Histogram	category.min	
+My data!Histogram	category.max	
+My data!Histogram	category.majorUnit	
+My data!Histogram	value.hasTitle	False
+My data!Histogram	value.majorGridlines	True
+My data!Histogram	value.minorGridlines	False
+My data!Histogram	value.majorTick	-4142
+My data!Histogram	value.minorTick	-4142
+My data!Histogram	value.majorUnit	
+My data!Pareto	seriesCount	1
+My data!Pareto	series1.name	North
+My data!Pareto	series1.type	122
+My data!Pareto	series1.values	
+My data!Pareto	series1.categories	
+My data!Pareto	series1.hasDataLabels	False
+My data!Pareto	series1.smooth	False
+My data!Pareto	category.hasTitle	False
+My data!Pareto	category.majorGridlines	False
+My data!Pareto	category.minorGridlines	False
+My data!Pareto	category.majorTick	-4142
+My data!Pareto	category.minorTick	-4142
+My data!Pareto	category.min	
+My data!Pareto	category.max	
+My data!Pareto	category.majorUnit	
+My data!Pareto	value.hasTitle	False
+My data!Pareto	value.majorGridlines	True
+My data!Pareto	value.minorGridlines	False
+My data!Pareto	value.majorTick	-4142
+My data!Pareto	value.minorTick	-4142
+My data!Pareto	value.majorUnit	
+My data!Pareto	value2.hasTitle	False
+My data!Pareto	value2.majorGridlines	False
+My data!Pareto	value2.minorGridlines	False
+My data!Pareto	value2.majorTick	-4142
+My data!Pareto	value2.minorTick	-4142
+My data!Pareto	value2.min	0
+My data!Pareto	value2.max	1
+My data!Pareto	value2.majorUnit	
+My data!BoxWhisker	seriesCount	1
+My data!BoxWhisker	series1.name	North
+My data!BoxWhisker	series1.type	121
+My data!BoxWhisker	series1.values	
+My data!BoxWhisker	series1.categories	
+My data!BoxWhisker	series1.hasDataLabels	False
+My data!BoxWhisker	series1.smooth	False
+My data!BoxWhisker	category.hasTitle	False
+My data!BoxWhisker	category.majorGridlines	False
+My data!BoxWhisker	category.minorGridlines	False
+My data!BoxWhisker	category.majorTick	-4142
+My data!BoxWhisker	category.minorTick	-4142
+My data!BoxWhisker	category.min	
+My data!BoxWhisker	category.max	
+My data!BoxWhisker	category.majorUnit	
+My data!BoxWhisker	value.hasTitle	False
+My data!BoxWhisker	value.majorGridlines	True
+My data!BoxWhisker	value.minorGridlines	False
+My data!BoxWhisker	value.majorTick	-4142
+My data!BoxWhisker	value.minorTick	-4142
+My data!BoxWhisker	value.majorUnit	
+My data!Treemap	seriesCount	1
+My data!Treemap	series1.name	North
+My data!Treemap	series1.type	117
+My data!Treemap	series1.values	
+My data!Treemap	series1.categories	
+My data!Treemap	series1.hasDataLabels	False
+My data!Treemap	series1.smooth	False
+My data!Sunburst	seriesCount	1
+My data!Sunburst	series1.name	North
+My data!Sunburst	series1.type	120
+My data!Sunburst	series1.values	
+My data!Sunburst	series1.categories	
+My data!Sunburst	series1.hasDataLabels	False
+My data!Sunburst	series1.smooth	False
+My data!Funnel	seriesCount	1
+My data!Funnel	series1.name	North
+My data!Funnel	series1.type	123
+My data!Funnel	series1.values	
+My data!Funnel	series1.categories	
+My data!Funnel	series1.hasDataLabels	False
+My data!Funnel	series1.smooth	False
+My data!Funnel	category.hasTitle	False
+My data!Funnel	category.majorGridlines	False
+My data!Funnel	category.minorGridlines	False
+My data!Funnel	category.majorTick	-4142
+My data!Funnel	category.minorTick	-4142
+My data!Funnel	category.min	
+My data!Funnel	category.max	
+My data!Funnel	category.majorUnit	
+My data!Dressed	seriesCount	3
+My data!Dressed	series1.name	North
+My data!Dressed	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Dressed	series1.type	51
+My data!Dressed	series1.axisGroup	1
+My data!Dressed	series1.values	12;18;9;22;16;25
+My data!Dressed	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Dressed	series1.hasDataLabels	True
+My data!Dressed	series1.trendlines	0
+My data!Dressed	series1.hasErrorBars	False
+My data!Dressed	series1.marker	-4142
+My data!Dressed	series2.name	South
+My data!Dressed	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Dressed	series2.type	51
+My data!Dressed	series2.axisGroup	1
+My data!Dressed	series2.values	7;9;14;11;13;8
+My data!Dressed	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Dressed	series2.hasDataLabels	False
+My data!Dressed	series2.trendlines	0
+My data!Dressed	series2.hasErrorBars	False
+My data!Dressed	series2.marker	-4142
+My data!Dressed	series3.name	East
+My data!Dressed	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Dressed	series3.type	51
+My data!Dressed	series3.axisGroup	1
+My data!Dressed	series3.values	15;21;17;26;19;28
+My data!Dressed	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Dressed	series3.hasDataLabels	False
+My data!Dressed	series3.trendlines	0
+My data!Dressed	series3.hasErrorBars	False
+My data!Dressed	series3.marker	-4142
+My data!Dressed	category.hasTitle	True
+My data!Dressed	category.title	Month
+My data!Dressed	category.reversed	True
+My data!Dressed	category.majorGridlines	False
+My data!Dressed	category.minorGridlines	False
+My data!Dressed	category.tickLabelPosition	4
+My data!Dressed	category.majorTick	3
+My data!Dressed	category.minorTick	-4142
+My data!Dressed	category.numberFormat	General
+My data!Dressed	category.min	
+My data!Dressed	category.max	
+My data!Dressed	category.majorUnit	
+My data!Dressed	value.hasTitle	True
+My data!Dressed	value.title	Units
+My data!Dressed	value.reversed	False
+My data!Dressed	value.majorGridlines	True
+My data!Dressed	value.minorGridlines	True
+My data!Dressed	value.tickLabelPosition	4
+My data!Dressed	value.majorTick	3
+My data!Dressed	value.minorTick	-4142
+My data!Dressed	value.numberFormat	0,0
+My data!Dressed	value.min	0
+My data!Dressed	value.max	40
+My data!Dressed	value.majorUnit	5
+My data!Combo	seriesCount	3
+My data!Combo	series1.name	North
+My data!Combo	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!Combo	series1.type	51
+My data!Combo	series1.axisGroup	1
+My data!Combo	series1.values	12;18;9;22;16;25
+My data!Combo	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Combo	series1.hasDataLabels	False
+My data!Combo	series1.trendlines	0
+My data!Combo	series1.hasErrorBars	False
+My data!Combo	series1.marker	-4142
+My data!Combo	series2.name	South
+My data!Combo	series2.formula	=SERIES('My data'!$C$1,'My data'!$A$2:$A$7,'My data'!$C$2:$C$7,2)
+My data!Combo	series2.type	51
+My data!Combo	series2.axisGroup	1
+My data!Combo	series2.values	7;9;14;11;13;8
+My data!Combo	series2.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Combo	series2.hasDataLabels	False
+My data!Combo	series2.trendlines	0
+My data!Combo	series2.hasErrorBars	False
+My data!Combo	series2.marker	-4142
+My data!Combo	series3.name	East
+My data!Combo	series3.formula	=SERIES('My data'!$D$1,'My data'!$A$2:$A$7,'My data'!$D$2:$D$7,3)
+My data!Combo	series3.type	65
+My data!Combo	series3.axisGroup	2
+My data!Combo	series3.values	15;21;17;26;19;28
+My data!Combo	series3.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!Combo	series3.hasDataLabels	False
+My data!Combo	series3.trendlines	0
+My data!Combo	series3.hasErrorBars	False
+My data!Combo	series3.smooth	False
+My data!Combo	series3.marker	-4105
+My data!Combo	category.hasTitle	False
+My data!Combo	category.reversed	False
+My data!Combo	category.majorGridlines	False
+My data!Combo	category.minorGridlines	False
+My data!Combo	category.tickLabelPosition	4
+My data!Combo	category.majorTick	3
+My data!Combo	category.minorTick	-4142
+My data!Combo	category.numberFormat	General
+My data!Combo	category.min	
+My data!Combo	category.max	
+My data!Combo	category.majorUnit	
+My data!Combo	value.hasTitle	False
+My data!Combo	value.reversed	False
+My data!Combo	value.majorGridlines	True
+My data!Combo	value.minorGridlines	False
+My data!Combo	value.tickLabelPosition	4
+My data!Combo	value.majorTick	3
+My data!Combo	value.minorTick	-4142
+My data!Combo	value.numberFormat	General
+My data!Combo	value2.hasTitle	False
+My data!Combo	value2.reversed	False
+My data!Combo	value2.majorGridlines	False
+My data!Combo	value2.minorGridlines	False
+My data!Combo	value2.tickLabelPosition	4
+My data!Combo	value2.majorTick	3
+My data!Combo	value2.minorTick	-4142
+My data!Combo	value2.numberFormat	General
+My data!LogAxis	seriesCount	1
+My data!LogAxis	series1.name	North
+My data!LogAxis	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!LogAxis	series1.type	51
+My data!LogAxis	series1.axisGroup	1
+My data!LogAxis	series1.values	12;18;9;22;16;25
+My data!LogAxis	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!LogAxis	series1.hasDataLabels	False
+My data!LogAxis	series1.trendlines	0
+My data!LogAxis	series1.hasErrorBars	False
+My data!LogAxis	series1.marker	-4142
+My data!LogAxis	category.hasTitle	False
+My data!LogAxis	category.reversed	False
+My data!LogAxis	category.majorGridlines	False
+My data!LogAxis	category.minorGridlines	False
+My data!LogAxis	category.tickLabelPosition	4
+My data!LogAxis	category.majorTick	3
+My data!LogAxis	category.minorTick	-4142
+My data!LogAxis	category.numberFormat	General
+My data!LogAxis	category.min	
+My data!LogAxis	category.max	
+My data!LogAxis	category.majorUnit	
+My data!LogAxis	value.hasTitle	False
+My data!LogAxis	value.reversed	False
+My data!LogAxis	value.majorGridlines	True
+My data!LogAxis	value.minorGridlines	False
+My data!LogAxis	value.tickLabelPosition	4
+My data!LogAxis	value.majorTick	3
+My data!LogAxis	value.minorTick	-4142
+My data!LogAxis	value.numberFormat	General
+My data!LogAxis	value.logBase	10
+My data!DoughnutHole	seriesCount	1
+My data!DoughnutHole	series1.name	North
+My data!DoughnutHole	series1.formula	=SERIES('My data'!$B$1,'My data'!$A$2:$A$7,'My data'!$B$2:$B$7,1)
+My data!DoughnutHole	series1.type	-4120
+My data!DoughnutHole	series1.axisGroup	1
+My data!DoughnutHole	series1.values	12;18;9;22;16;25
+My data!DoughnutHole	series1.categories	Jan;Feb;Mar;Apr;May;Jun
+My data!DoughnutHole	series1.hasDataLabels	False
+My data!DoughnutHole	series1.trendlines	0
+My data!DoughnutHole	series1.hasErrorBars	False
+My data!DoughnutHole	series1.marker	-4142

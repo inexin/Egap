@@ -1,3 +1,6 @@
+using Egap.Documents.Charts;
+using Egap.Documents.Docx;
+
 namespace Egap.Documents;
 
 /// <summary>An inline that holds other inlines: a hyperlink or an inline content control.</summary>
@@ -451,6 +454,9 @@ public enum IslandKind
 /// </summary>
 public sealed class Island : Inline
 {
+    private Chart? chartModel;
+    private bool chartRead;
+
     /// <summary>An island holding <paramref name="markup"/> in <paramref name="format"/>, not yet in a paragraph.</summary>
     public Island(Document document, IslandKind kind, string format, string markup)
         : base(document)
@@ -462,8 +468,64 @@ public sealed class Island : Inline
         Markup = markup;
     }
 
+    /// <summary>A chart for a Word document, sitting in the line, of a size in points. One of the newer cx: types cannot be added this way yet.</summary>
+    /// <exception cref="ArgumentException">The chart is one of the newer types.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A size is not positive.</exception>
+    public Island(Document document, Chart chart, double width, double height)
+        : base(document)
+    {
+        ArgumentNullException.ThrowIfNull(chart);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(height);
+        if (chart.IsExtended)
+        {
+            throw new ArgumentException("A chart of the newer types cannot be added to a Word document yet.", nameof(chart));
+        }
+
+        Kind = IslandKind.Chart;
+        Format = DocxExtension.Format;
+        Markup = "";
+        Width = width;
+        Height = height;
+        Text = "";
+        chartModel = chart;
+        chartRead = true;
+        NewChart = true;
+    }
+
     /// <summary>What the island holds.</summary>
     public IslandKind Kind { get; }
+
+    /// <summary>
+    /// The chart, for a chart read from a Word document or made in code; null for other islands, for a chart whose part
+    /// cannot be read, and for one of the newer types, which Word's files hold with a picture and which come in as that picture.
+    /// A chart you edit is saved with the document.
+    /// </summary>
+    public Chart? Chart
+    {
+        get
+        {
+            if (!chartRead)
+            {
+                chartRead = true;
+                chartModel = ChartPart is { } part ? Chart.Read(part) : null;
+            }
+
+            return chartModel;
+        }
+    }
+
+    /// <summary>The part a file's chart is kept in.</summary>
+    internal OpcPart? ChartPart { get; init; }
+
+    /// <summary>Whether the chart was made in code and needs a part and a drawing written for it.</summary>
+    internal bool NewChart { get; }
+
+    /// <summary>Whether this is a copy reading another island's part: if edited, it needs a part of its own.</summary>
+    internal bool IsChartCopy { get; init; }
+
+    /// <summary>The chart as it was read, if anyone has asked for it.</summary>
+    internal Chart? LoadedChart => chartRead ? chartModel : null;
 
     /// <summary>The format the markup is in, such as "docx".</summary>
     public string Format { get; }
@@ -499,6 +561,17 @@ public sealed class Island : Inline
 
     private protected override Node CloneShallow(CloneContext context)
     {
+        // A copy with changes of its own needs its own part. Otherwise it reads the same part as this island does.
+        if (LoadedChart is { } chart && (NewChart || chart.IsChanged))
+        {
+            return CopyInline(new Island(context.Target, chart.Clone(), Width > 0 ? Width : 360, Height > 0 ? Height : 216)
+            {
+                Fallback = Fallback,
+                Floating = Floating,
+                ChartPart = ChartPart,
+            });
+        }
+
         return CopyInline(new Island(context.Target, Kind, Format, Markup)
         {
             Fallback = Fallback,
@@ -506,6 +579,8 @@ public sealed class Island : Inline
             Height = Height,
             Text = Text,
             Floating = Floating,
+            ChartPart = ChartPart,
+            IsChartCopy = ChartPart is not null,
         });
     }
 }

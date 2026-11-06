@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Text;
 using System.Xml.Linq;
 
+using Egap.Documents.Charts;
+
 namespace Egap.Documents.Docx;
 
 /// <summary>Inlines: runs, field characters, marks, hyperlinks, content controls, notes, comments, drawings and islands.</summary>
@@ -411,6 +413,12 @@ internal sealed partial class DocxWriter
 
     private void WriteIsland(Island island, DocxExtension? kept, XElement target)
     {
+        if (island.NewChart || (island.IsChartCopy && island.LoadedChart is { IsChanged: true }))
+        {
+            target.Add(RunWith(kept, WriteNewChart(island)));
+            return;
+        }
+
         if (island.Format != DocxExtension.Format || Parse(island.Markup) is not { } markup)
         {
             if (island.Text.Length > 0)
@@ -427,6 +435,39 @@ internal sealed partial class DocxWriter
         XElement content = kept?.Original is { } original && MarkupCompatibility.IsAlternateContent(original) ? new XElement(original) : markup;
         content = Rebase(content, kept?.PartName, copy: false);
         target.Add(runLevel ? RunWith(kept, content) : content);
+    }
+
+    private XElement WriteNewChart(Island island)
+    {
+        string partName = UniquePartName("/word/charts/chart", ".xml");
+
+        // A copy of a chart in this file keeps the parts its own part points at, such as its workbook; in another file it cannot.
+        Chart chart = island.Chart!;
+        if (island.ChartPart is { } from && data?.Package.GetPart(from.Name) == from)
+        {
+            foreach (OpcRelationship related in from.Relationships)
+            {
+                package.AddRelationship(partName, related.Id, related.Type, related.Target, related.External);
+            }
+        }
+        else
+        {
+            chart = chart.WithoutRelatedParts();
+        }
+
+        package.AddPart(partName, Chart.ContentType, chart.ToBytes());
+        string relationship = package.NextRelationshipId(currentPart);
+        package.AddRelationship(currentPart, relationship, Chart.Relationship, RelationshipTarget(currentPart, partName));
+        long cx = (long)Math.Round(island.Width * 12700);
+        long cy = (long)Math.Round(island.Height * 12700);
+        int id = nextDrawingId++;
+        XElement graphic = new(
+            Ns.A + "graphic",
+            new XElement(
+                Ns.A + "graphicData",
+                new XAttribute("uri", ChartNs.ChartUri),
+                new XElement(ChartNs.C + "chart", new XAttribute(XNamespace.Xmlns + "c", ChartNs.ChartUri), new XAttribute(XNamespace.Xmlns + "r", ChartNs.R.NamespaceName), new XAttribute(Ns.R + "id", relationship))));
+        return new XElement(Ns.W + "drawing", Frame(island.Floating, cx, cy, id, "Chart " + id, null, null, graphic));
     }
 
     private XElement WritePicture(Picture picture, DocxExtension? kept)

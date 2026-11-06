@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Xml.Linq;
 
+using Egap.Documents.Charts;
+using Egap.Documents.Docx;
+using Egap.Spreadsheets.Xlsx;
+
 namespace Egap.Spreadsheets;
 
 /// <summary>What a drawing object on a sheet is.</summary>
@@ -12,7 +16,7 @@ public enum SheetDrawingKind
     /// <summary>A shape or text box.</summary>
     Shape,
 
-    /// <summary>A chart, kept as Excel saved it.</summary>
+    /// <summary>A chart; see <see cref="SheetDrawing.Chart"/>.</summary>
     Chart,
 
     /// <summary>A group of objects.</summary>
@@ -43,11 +47,13 @@ public readonly record struct DrawingPosition(CellAddress Cell, long OffsetX = 0
 
 /// <summary>
 /// A picture, shape, chart or other object on a sheet's drawing layer. Its place and size and its name and alternative
-/// text can be changed, and a picture's image replaced; everything else about it is kept as the file had it.
+/// text can be changed, a picture's image replaced and a chart edited; everything else about it is kept as the file had it.
 /// </summary>
 public sealed class SheetDrawing
 {
     private byte[]? imageData;
+    private Chart? chart;
+    private bool chartRead;
 
     internal SheetDrawing(SheetDrawingKind kind)
     {
@@ -108,6 +114,45 @@ public sealed class SheetDrawing
     /// <summary>The image's content type, such as <c>image/png</c>; null for other objects.</summary>
     public string? ImageContentType { get; private set; }
 
+    /// <summary>The chart, for a chart object; null for other objects, and for a chart whose part cannot be read, which stays as it was.</summary>
+    public Chart? Chart
+    {
+        get
+        {
+            if (!chartRead)
+            {
+                chartRead = true;
+                chart = ChartPart is { } part ? Chart.Read(part) : null;
+            }
+
+            return chart;
+        }
+    }
+
+    /// <summary>The chart as it was read, if anyone has asked for it, so a chart nobody touched is not even parsed at save time.</summary>
+    internal Chart? LoadedChart => chartRead ? chart : null;
+
+    /// <summary>The part a file's chart is kept in.</summary>
+    internal OpcPart? ChartPart { get; set; }
+
+    /// <summary>The sheet the object is on.</summary>
+    internal Worksheet? Sheet { get; set; }
+
+    /// <summary>
+    /// Reads the cells a chart's references name into the values the chart keeps. Saving does this for a chart that changed;
+    /// call it when cells changed and you read <see cref="Chart"/>'s values yourself.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The object is not a chart, or is no longer on a sheet.</exception>
+    public void RefreshChart()
+    {
+        if (Chart is not { } own || Sheet is null)
+        {
+            throw new InvalidOperationException("Only a chart on a sheet reads cells.");
+        }
+
+        ChartCells.Fill(own, Sheet.Workbook);
+    }
+
     /// <summary>The file's anchor element, for everything the model does not hold; null for a picture made in code.</summary>
     internal XElement? Source { get; set; }
 
@@ -118,6 +163,13 @@ public sealed class SheetDrawing
 
     /// <summary>What the model held when the file was read, to tell whether the part can be written back as it was.</summary>
     internal string? ReadState { get; set; }
+
+    /// <summary>Makes this a new chart.</summary>
+    internal void SetChart(Chart made)
+    {
+        chart = made;
+        chartRead = true;
+    }
 
     /// <summary>Sets the image a file's picture showed, as it was.</summary>
     internal void SetImageRead(byte[] data, string contentType)
@@ -131,9 +183,11 @@ public sealed class SheetDrawing
 public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
 {
     private readonly List<SheetDrawing> drawings = [];
+    private readonly Worksheet sheet;
 
-    internal SheetDrawingCollection()
+    internal SheetDrawingCollection(Worksheet sheet)
     {
+        this.sheet = sheet;
     }
 
     /// <summary>How many objects there are.</summary>
@@ -174,6 +228,106 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
         return picture;
     }
 
+    /// <summary>
+    /// Adds a chart with no series that fills a range of cells and moves and sizes with them. Add series through
+    /// <see cref="SheetDrawing.Chart"/>'s plots.
+    /// </summary>
+    /// <param name="type">What the chart draws.</param>
+    /// <param name="cells">The cells it covers.</param>
+    /// <param name="threeD">Draws it in 3D: column, bar, line, area, pie and surface charts.</param>
+    /// <exception cref="ArgumentException">The type has no such form.</exception>
+    public SheetDrawing AddChart(ChartType type, RangeAddress cells, bool threeD = false)
+    {
+        SheetDrawing drawing = new(SheetDrawingKind.Chart)
+        {
+            AnchorKind = DrawingAnchorKind.TwoCell,
+            From = new DrawingPosition(cells.First),
+            To = new DrawingPosition(new CellAddress(cells.Last.Row + 1, cells.Last.Column + 1)),
+            Name = "Chart " + (drawings.Count + 1),
+            Sheet = sheet,
+        };
+        drawing.SetChart(Chart.Create(type, threeD));
+        drawings.Add(drawing);
+        Changed = true;
+        return drawing;
+    }
+
+    /// <summary>
+    /// Adds a chart of the cells of <paramref name="data"/>, with a series to each column. A first row of text gives the names;
+    /// the first columns, while they hold text, give the categories, and a scatter or bubble chart takes its X values from the
+    /// first column whatever it holds. A bubble chart reads its columns in threes: X, Y and size.
+    /// </summary>
+    /// <param name="type">What the chart draws.</param>
+    /// <param name="cells">The cells it covers.</param>
+    /// <param name="data">The cells it reads, on this sheet.</param>
+    /// <param name="threeD">Draws it in 3D: column, bar, line, area, pie and surface charts.</param>
+    /// <exception cref="ArgumentException">The type has no such form.</exception>
+    public SheetDrawing AddChart(ChartType type, RangeAddress cells, RangeAddress data, bool threeD = false)
+    {
+        SheetDrawing drawing = AddChart(type, cells, threeD);
+        Chart chart = drawing.Chart!;
+        int firstRow = data.First.Row;
+        bool names = Enumerable.Range(data.First.Column, data.ColumnCount).Any(c => sheet[firstRow, c].ValueKind == CellValueKind.Text);
+        if (names)
+        {
+            firstRow++;
+        }
+
+        if (firstRow > data.Last.Row)
+        {
+            firstRow = data.First.Row;
+            names = false;
+        }
+
+        int labels = 0;
+        if (type is ChartType.Scatter or ChartType.Bubble)
+        {
+            labels = data.ColumnCount > 1 ? 1 : 0;
+        }
+        else
+        {
+            while (labels < data.ColumnCount - 1 && sheet[firstRow, data.First.Column + labels].ValueKind is CellValueKind.Text or CellValueKind.Empty)
+            {
+                labels++;
+            }
+        }
+
+        string? categories = labels == 0 ? null : ChartCells.Reference(sheet, new RangeAddress(firstRow, data.First.Column, data.Last.Row, data.First.Column + labels - 1));
+        string Column(int column) => ChartCells.Reference(sheet, new RangeAddress(firstRow, column, data.Last.Row, column));
+        ChartPlot plot = chart.Plots[0];
+        bool single = type is ChartType.Histogram or ChartType.Pareto or ChartType.Treemap or ChartType.Sunburst or ChartType.Waterfall or ChartType.Funnel or ChartType.Pie or ChartType.PieOfPie or ChartType.BarOfPie;
+        int step = type == ChartType.Bubble ? 2 : 1;
+        int added = 0;
+        for (int column = data.First.Column + labels; column + (step - 1) <= data.Last.Column; column += step)
+        {
+            string? name = names ? ChartCells.Reference(sheet, new RangeAddress(data.First.Row, column, data.First.Row, column)) : null;
+            ChartSeries series = added == 0 && chart.IsExtended ? plot.Series[0] : plot.Series.Add(Column(column), categories, name, step == 2 ? Column(column + 1) : null);
+            if (added == 0 && chart.IsExtended)
+            {
+                if (name is not null)
+                {
+                    series.NameReference = name;
+                }
+
+                if (categories is not null)
+                {
+                    series.Categories.Reference = categories;
+                }
+
+                series.Values.Reference = Column(column);
+            }
+
+            added++;
+            if (single)
+            {
+                break;
+            }
+        }
+
+        ChartCells.Fill(chart, sheet.Workbook);
+        return drawing;
+    }
+
     /// <summary>Removes an object.</summary>
     /// <returns>Whether it was on the sheet.</returns>
     public bool Remove(SheetDrawing drawing)
@@ -188,7 +342,11 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    internal void AddRead(SheetDrawing drawing) => drawings.Add(drawing);
+    internal void AddRead(SheetDrawing drawing)
+    {
+        drawing.Sheet = sheet;
+        drawings.Add(drawing);
+    }
 
     /// <summary>The content type of an image file by its signature.</summary>
     /// <exception cref="ArgumentException">The data is not an image Excel shows.</exception>
