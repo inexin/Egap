@@ -113,6 +113,20 @@ FORMULAS = [
     ('SUM(Away)', 107),
     ('INDEX(Away,2)', 108),
     ('SUMIF((Away),">3",[1]Prices!A1)', 109),
+    ('SUBTOTAL(9,Manual!A1:A5)', None),
+    ('SUBTOTAL(109,Manual!A1:A5)', None),
+    ('SUBTOTAL(2,Manual!A1:A5)', None),
+    ('SUBTOTAL(102,Manual!A1:A5)', None),
+    ('SUBTOTAL(9,Filtered!A1:A5)', None),
+    ('SUBTOTAL(109,Filtered!A1:A5)', None),
+    ('SUBTOTAL(2,Filtered!A1:A5)', None),
+    ('SUBTOTAL(9,Filtered!A2:A3)', None),
+    ('SUBTOTAL(9,Filtered!C1:C5)', None),
+    ('SUBTOTAL(9,Filtered!A7:A9)', None),
+    ('SUM(Filtered!A1:A5)', None),
+    ('SUBTOTAL(9,NoCriteria!A1:A5)', None),
+    ('SUBTOTAL(109,NoCriteria!A1:A5)', None),
+    ('SUBTOTAL(9,FilterOff!A1:A5)', None),
     ('SUMIF(Local,">1",[1]Prices!A1)', 42),
     ('SUMIF(Local,">1",[1]Prices!A1:A3)', 43),
     ('SUMIF(Local,A2&"",[2]Data!A1)/2', 44),
@@ -147,6 +161,19 @@ LINK = f'''<externalLink xmlns="{MAIN}" xmlns:r="{REL}"><externalBook r:id="rId1
 </sheetDataSet></externalBook></externalLink>'''
 
 
+def hidden_rows(filter_xml, extra=''):
+    """Rows 1 to 5 with 1, 10, 100, 1000, 10000; rows 2 and 4 hidden; rows 7 to 9 and column C for cells outside a filter."""
+    rows = ''
+    for r in range(1, 10):
+        if r == 6:
+            continue
+        hidden = ' hidden="1"' if r in (2, 4, 8) else ''
+        rows += f'<row r="{r}"{hidden}><c r="A{r}"><v>{10 ** (r - 1)}</v></c><c r="C{r}"><v>{r}</v></c></row>'
+    return f'<worksheet xmlns="{MAIN}"><sheetData>{rows}</sheetData>{filter_xml}{extra}</worksheet>'
+
+
+CRITERIA = '<autoFilter ref="A1:A5"><filterColumn colId="0"><filters><filter val="1"/><filter val="100"/><filter val="10000"/></filters></filterColumn></autoFilter>'
+
 def sheet():
     rows = ['<row r="1"><c r="A1"><v>1</v></c><c r="E1" t="e"><v>#REF!</v></c><c r="F1"><v>100</v></c></row>',
             '<row r="2"><c r="A2"><v>2</v></c><c r="E2"><v>5</v></c><c r="F2"><v>200</v></c></row>',
@@ -176,11 +203,15 @@ LINK2 = f'''<externalLink xmlns="{MAIN}" xmlns:r="{REL}"><externalBook r:id="rId
 </externalBook></externalLink>'''
 
 PARTS = {
-    '[Content_Types].xml': f'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="{ML}sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="{ML}worksheet+xml"/><Override PartName="/xl/externalLinks/externalLink1.xml" ContentType="{ML}externalLink+xml"/><Override PartName="/xl/externalLinks/externalLink2.xml" ContentType="{ML}externalLink+xml"/><Override PartName="/xl/externalLinks/externalLink3.xml" ContentType="{ML}externalLink+xml"/></Types>',
+    '[Content_Types].xml': f'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="{ML}sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="{ML}worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="{ML}worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="{ML}worksheet+xml"/><Override PartName="/xl/worksheets/sheet4.xml" ContentType="{ML}worksheet+xml"/><Override PartName="/xl/worksheets/sheet5.xml" ContentType="{ML}worksheet+xml"/><Override PartName="/xl/externalLinks/externalLink1.xml" ContentType="{ML}externalLink+xml"/><Override PartName="/xl/externalLinks/externalLink2.xml" ContentType="{ML}externalLink+xml"/><Override PartName="/xl/externalLinks/externalLink3.xml" ContentType="{ML}externalLink+xml"/></Types>',
     '_rels/.rels': f'<Relationships xmlns="{PKG}"><Relationship Id="rId1" Type="{REL}/officeDocument" Target="xl/workbook.xml"/></Relationships>',
-    'xl/_rels/workbook.xml.rels': f'<Relationships xmlns="{PKG}"><Relationship Id="rId1" Type="{REL}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="{REL}/externalLink" Target="externalLinks/externalLink1.xml"/><Relationship Id="rId3" Type="{REL}/externalLink" Target="externalLinks/externalLink2.xml"/><Relationship Id="rId4" Type="{REL}/externalLink" Target="externalLinks/externalLink3.xml"/></Relationships>',
-    'xl/workbook.xml': f'<workbook xmlns="{MAIN}" xmlns:r="{REL}"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets><externalReferences><externalReference r:id="rId2"/><externalReference r:id="rId3"/><externalReference r:id="rId4"/></externalReferences><definedNames><definedName name="Away">[1]Prices!$A$1:$A$3</definedName><definedName name="Local">Sheet1!$A$1:$A$3</definedName></definedNames></workbook>',
+    'xl/_rels/workbook.xml.rels': f'<Relationships xmlns="{PKG}"><Relationship Id="rId1" Type="{REL}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId11" Type="{REL}/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId12" Type="{REL}/worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rId13" Type="{REL}/worksheet" Target="worksheets/sheet4.xml"/><Relationship Id="rId14" Type="{REL}/worksheet" Target="worksheets/sheet5.xml"/><Relationship Id="rId2" Type="{REL}/externalLink" Target="externalLinks/externalLink1.xml"/><Relationship Id="rId3" Type="{REL}/externalLink" Target="externalLinks/externalLink2.xml"/><Relationship Id="rId4" Type="{REL}/externalLink" Target="externalLinks/externalLink3.xml"/></Relationships>',
+    'xl/workbook.xml': f'<workbook xmlns="{MAIN}" xmlns:r="{REL}"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/><sheet name="Manual" sheetId="2" r:id="rId11"/><sheet name="Filtered" sheetId="3" r:id="rId12"/><sheet name="NoCriteria" sheetId="4" r:id="rId13"/><sheet name="FilterOff" sheetId="5" r:id="rId14"/></sheets><externalReferences><externalReference r:id="rId2"/><externalReference r:id="rId3"/><externalReference r:id="rId4"/></externalReferences><definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="4" hidden="1">FilterOff!$A$1:$A$5</definedName><definedName name="Away">[1]Prices!$A$1:$A$3</definedName><definedName name="Local">Sheet1!$A$1:$A$3</definedName></definedNames></workbook>',
     'xl/worksheets/sheet1.xml': sheet(),
+    'xl/worksheets/sheet2.xml': hidden_rows(''),
+    'xl/worksheets/sheet3.xml': hidden_rows(CRITERIA),
+    'xl/worksheets/sheet4.xml': hidden_rows('<autoFilter ref="A1:A5"/>'),
+    'xl/worksheets/sheet5.xml': hidden_rows(''),
     'xl/externalLinks/externalLink1.xml': LINK,
     'xl/externalLinks/externalLink2.xml': LINK2,
     'xl/externalLinks/externalLink3.xml': LINK3,

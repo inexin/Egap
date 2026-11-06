@@ -561,7 +561,8 @@ internal static partial class FormulaFunctions
             {
                 foreach ((int row, int column) in area.Sheet.Store.Occupied(area.Range))
                 {
-                    if (skipHidden && area.Sheet.Rows[row].Hidden)
+                    // Codes above 100 leave out every hidden row, the others only rows a filter hides.
+                    if ((skipHidden || area.Sheet.HasFilterCriteria) && area.Sheet.Rows[row].Hidden)
                     {
                         continue;
                     }

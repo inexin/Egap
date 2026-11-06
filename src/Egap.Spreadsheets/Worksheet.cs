@@ -116,6 +116,9 @@ public sealed class Worksheet
         set => field = value is null or (>= 0 and <= 255) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "A column width is from 0 to 255.");
     }
 
+    /// <summary>Whether the file's filter on this sheet has criteria: Excel then treats every hidden row as filtered out.</summary>
+    internal bool HasFilterCriteria { get; set; }
+
     /// <summary>Whether this sheet holds a linked book's kept values.</summary>
     internal bool IsLinked => linked;
 
