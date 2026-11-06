@@ -14,6 +14,7 @@ public sealed class Worksheet
 {
     private readonly CellStore store = new();
     private readonly FormulaTable formulas = new();
+    private readonly bool linked;
     private Workbook? workbook;
 
     // The first cells of the sheet's shared formulas by shared index, found when first asked for; null when stale.
@@ -22,9 +23,9 @@ public sealed class Worksheet
     /// <summary>A sheet of the workbook, or with <paramref name="linked"/> one holding a linked book's kept values, which is not on a tab and may have any name.</summary>
     internal Worksheet(Workbook workbook, string name, bool linked = false)
     {
-        this.workbook = linked ? null : workbook;
-        Name = name;
+        this.linked = linked;
         this.workbook = workbook;
+        Name = name;
         Cells = new WorksheetCells(this);
         Rows = new SheetRowCollection(this);
         Columns = new SheetColumnCollection(this);
@@ -46,7 +47,10 @@ public sealed class Worksheet
         get;
         set
         {
-            workbook?.Worksheets.CheckName(value, this);
+            if (!linked)
+            {
+                workbook?.Worksheets.CheckName(value, this);
+            }
             field = value;
         }
     }
@@ -533,7 +537,7 @@ public sealed class Worksheet
     /// <summary>Notes that a cell's value or formula changes: the workbook needs calculating, and the cell's file extras no longer apply.</summary>
     private void Changed(int row, int column)
     {
-        if (workbook is not null)
+        if (workbook is not null && !linked)
         {
             workbook.ChangeCount++;
             workbook.Calculator?.Noted(this, row, column);

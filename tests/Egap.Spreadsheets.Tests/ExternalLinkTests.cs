@@ -105,6 +105,24 @@ public sealed class ExternalLinkTests
     }
 
     [Fact]
+    public void ReadingALinkedBookIsNoChangeToTheWorkbook()
+    {
+        Workbook book = Workbook.Load(XlsxSeed.Package(Parts(Link)));
+        Assert.Equal(0, book.ChangeCount);
+        Worksheet sheet = book.Worksheets[0];
+        sheet["D1"].Formula = "[1]Prices!A1";
+        sheet["D2"].Formula = "D1*2";
+        long before = book.ChangeCount;
+
+        // The first calculation reads the part, in the middle of the calculation.
+        book.Calculate();
+
+        Assert.Equal(before, book.ChangeCount);
+        Assert.Equal(5, sheet["D2"].Value.Number);
+        Assert.Equal(0, book.Calculate().Calculated);
+    }
+
+    [Fact]
     public void TheLinkPartSavesAsItWas()
     {
         Workbook book = Workbook.Load(XlsxSeed.Package(Parts(Link)));

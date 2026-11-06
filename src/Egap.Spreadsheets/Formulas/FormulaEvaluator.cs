@@ -477,7 +477,6 @@ internal static class FormulaEvaluator
         return moved >= 0 && moved < count ? moved : -1;
     }
 
-    /// <summary>The sheets a prefix names: one, or every sheet from the first to the last for a 3D reference; null when one is missing.</summary>
     private static Xlsx.ExternalBook? ExternalBook(SheetPrefix prefix, EvalContext context)
     {
         return int.TryParse(prefix.Book, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int number) && number >= 1 && number <= context.Book.ExternalBooks.Count
@@ -485,6 +484,7 @@ internal static class FormulaEvaluator
             : null;
     }
 
+    /// <summary>The sheets a prefix names: one, or every sheet from the first to the last for a 3D reference; null when one is missing.</summary>
     private static List<Worksheet>? Sheets(SheetPrefix? prefix, EvalContext context)
     {
         if (prefix is null)
