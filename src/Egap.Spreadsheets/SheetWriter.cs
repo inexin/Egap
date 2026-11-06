@@ -372,7 +372,7 @@ public sealed class SheetWriter : IDisposable
                     break;
                 case CellValueKind.Error:
                     writer.WriteAttributeString("t", "e");
-                    writer.WriteElementString("v", XlsxNames.MainUri, CellValue.ErrorText(value.Error));
+                    writer.WriteElementString("v", XlsxNames.MainUri, XlsxNames.StoredError(value.Error));
                     break;
             }
 

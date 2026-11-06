@@ -721,10 +721,13 @@ internal static class SheetDataReader
         CellRecord record = new() { Style = (uint)style < (uint)book.Styles.Count ? style : 0 };
         CellValue result = Value(book, type, value, inline, formula is not null, ref record);
         FormulaEntry? entry = null;
+        bool dynamic = false;
         if (formula is not null)
         {
             source.HadFormulas = true;
             entry = new FormulaEntry(formula, result) { Attributes = formulaAttributes };
+            dynamic = extra is not null && extra.OfType<XAttribute>().Any(a => a.Name.LocalName == "cm") && formulaAttributes is not null
+                && Array.Exists(formulaAttributes, a => a.Name.LocalName == "t" && a.Value == "array");
             record = new CellRecord { Style = record.Style };
         }
 
@@ -733,7 +736,7 @@ internal static class SheetDataReader
             return column;
         }
 
-        sheet.SetRead(row, column, record, entry);
+        sheet.SetRead(row, column, record, entry, dynamic);
         if (extra is not null)
         {
             sheet.CellExtras[Worksheet.Key(row, column)] = new XElement(XlsxNames.Main + "c", extra);

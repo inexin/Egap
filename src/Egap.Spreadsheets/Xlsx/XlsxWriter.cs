@@ -3,6 +3,7 @@ using System.Xml;
 using System.Xml.Linq;
 
 using Egap.Documents.Docx;
+using Egap.Spreadsheets.Formulas;
 using Egap.Spreadsheets.Storage;
 
 namespace Egap.Spreadsheets.Xlsx;
@@ -91,6 +92,20 @@ internal static class XlsxWriter
             }
         }
 
+        // A dynamic array formula set through the API is marked with cell metadata that says so.
+        int spillMark = 0;
+        if (book.Worksheets.Any(s => s.HasTypedSpill))
+        {
+            string metadataName = RelatedName(source, XlsxNames.SheetMetadataRelationship) ?? FreeName(parts, "/xl/metadata.xml");
+            bool known = parts.TryGetValue(metadataName, out OutPart? oldMetadata);
+            (byte[] metadata, spillMark) = SpillMetadata.Mark(oldMetadata?.Data);
+            Add(new OutPart(metadataName, XlsxNames.SheetMetadataType, metadata, oldMetadata?.Relationships ?? []));
+            if (!known)
+            {
+                workbookRels.Add(new OpcRelationship(NextId(), XlsxNames.SheetMetadataRelationship, RelativeTarget(workbookName, metadataName), false, metadataName));
+            }
+        }
+
         // Worksheets.
         StringMap strings = new(book.SharedStrings);
         Dictionary<Worksheet, string> sheetIds = [];
@@ -117,7 +132,7 @@ internal static class XlsxWriter
 
             sheetIds[sheet] = id;
             List<(string Name, XElement Element)> objects = SheetObjectWriter.Write(sheet, ++sheetNumber, name, rels, objectParts, objectState);
-            Add(new OutPart(name, XlsxNames.WorksheetType, WorksheetPartWriter.Write(sheet, strings, objects), rels));
+            Add(new OutPart(name, XlsxNames.WorksheetType, WorksheetPartWriter.Write(sheet, strings, objects, spillMark), rels));
             workbookRels.Add(new OpcRelationship(id, XlsxNames.WorksheetRelationship, RelativeTarget(workbookName, name), false, name));
         }
 
@@ -469,7 +484,7 @@ internal static class WorksheetPartWriter
 
     private static readonly XNamespace Ns = XlsxNames.Main;
 
-    public static byte[] Write(Worksheet sheet, StringMap strings, List<(string Name, XElement Element)>? objects = null)
+    public static byte[] Write(Worksheet sheet, StringMap strings, List<(string Name, XElement Element)>? objects = null, int spillMark = 0)
     {
         SheetSource? source = sheet.Source;
         List<(double Rank, XElement? Element)> elements = [];
@@ -538,7 +553,7 @@ internal static class WorksheetPartWriter
             {
                 if (element is null)
                 {
-                    WriteSheetData(writer, sheet, strings);
+                    WriteSheetData(writer, sheet, strings, spillMark);
                 }
                 else
                 {
@@ -819,7 +834,7 @@ internal static class WorksheetPartWriter
         }
     }
 
-    private static void WriteSheetData(XmlWriter writer, Worksheet sheet, StringMap strings)
+    private static void WriteSheetData(XmlWriter writer, Worksheet sheet, StringMap strings, int spillMark)
     {
         writer.WriteStartElement("sheetData", XlsxNames.MainUri);
         HashSet<string> masters = SharedMasters(sheet);
@@ -853,7 +868,7 @@ internal static class WorksheetPartWriter
                     openRow = row;
                 }
 
-                WriteCell(writer, sheet, row, column, strings, masters, reference);
+                WriteCell(writer, sheet, row, column, strings, masters, reference, spillMark);
             }
         }
 
@@ -953,7 +968,7 @@ internal static class WorksheetPartWriter
         }
     }
 
-    private static void WriteCell(XmlWriter writer, Worksheet sheet, int row, int column, StringMap strings, HashSet<string> masters, char[] reference)
+    private static void WriteCell(XmlWriter writer, Worksheet sheet, int row, int column, StringMap strings, HashSet<string> masters, char[] reference, int spillMark)
     {
         ref readonly CellRecord record = ref sheet.Store.Get(row, column);
         writer.WriteStartElement("c", XlsxNames.MainUri);
@@ -1003,6 +1018,12 @@ internal static class WorksheetPartWriter
         }
 
         WriteExtras(writer, sheet, row, column, attributes: true);
+        bool typed = formula is not null && record.Kind == CellKind.Formula && !sheet.Formulas.IsRead((int)record.Payload);
+        if (typed && spillMark > 0 && sheet.IsDynamic(formula!))
+        {
+            writer.WriteAttributeString("cm", XlsxNames.Integer(spillMark));
+        }
+
         if (formula is { Text.Length: > 0 } || formula?.Attributes is not null)
         {
             writer.WriteStartElement("f", XlsxNames.MainUri);
@@ -1011,7 +1032,7 @@ internal static class WorksheetPartWriter
                 writer.WriteAttributeString(attribute.Name.LocalName, attribute.Name.NamespaceName, attribute.Value);
             }
 
-            writer.WriteString(formula.Text);
+            writer.WriteString(typed ? FormulaPrinter.StoredForm(formula.Text, new CellAddress(row, column), sheet.IsDynamic(formula) || formula.Attribute("t") == "array") : formula.Text);
             writer.WriteEndElement();
         }
 
@@ -1027,7 +1048,7 @@ internal static class WorksheetPartWriter
                 writer.WriteElementString("v", XlsxNames.MainUri, record.Payload != 0 ? "1" : "0");
                 break;
             case CellKind.Error:
-                writer.WriteElementString("v", XlsxNames.MainUri, CellValue.ErrorText((CellError)record.Payload));
+                writer.WriteElementString("v", XlsxNames.MainUri, XlsxNames.StoredError((CellError)record.Payload));
                 break;
             case CellKind.Formula:
                 switch (value.Kind)
@@ -1042,7 +1063,7 @@ internal static class WorksheetPartWriter
                         writer.WriteElementString("v", XlsxNames.MainUri, value.Boolean ? "1" : "0");
                         break;
                     case CellValueKind.Error:
-                        writer.WriteElementString("v", XlsxNames.MainUri, CellValue.ErrorText(value.Error));
+                        writer.WriteElementString("v", XlsxNames.MainUri, XlsxNames.StoredError(value.Error));
                         break;
                 }
 

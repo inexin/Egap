@@ -132,6 +132,15 @@ public sealed class Worksheet
     /// <summary>The file's c elements, emptied of what the model holds, for cells with attributes or children it does not; written back while the cell keeps its value.</summary>
     internal Dictionary<long, XElement> CellExtras { get; } = [];
 
+    /// <summary>The sheet's dynamic array formulas, for finding the one a written cell is part of.</summary>
+    private readonly HashSet<FormulaEntry> spills = [];
+
+    /// <summary>Whether a formula of this sheet is a dynamic array formula: it spills, and its array range is where to, as last calculated.</summary>
+    internal bool IsDynamic(FormulaEntry entry) => spills.Count > 0 && spills.Contains(entry);
+
+    /// <summary>Whether the sheet has a dynamic array formula that came through the API and so needs its cell marked in the file.</summary>
+    internal bool HasTypedSpill => spills.Count > 0 && formulas.Indexed().Any(f => spills.Contains(f.Entry) && !formulas.IsRead(f.Index));
+
     /// <summary>What the sheet's part held that the model does not, written back on save; null for a sheet made in code.</summary>
     internal Xlsx.SheetSource? Source { get; set; }
 
@@ -260,6 +269,7 @@ public sealed class Worksheet
 
     internal void SetValue(int row, int column, CellValue value)
     {
+        SpillOverwritten(row, column);
         Changed(row, column);
         ref readonly CellRecord old = ref store.Get(row, column);
         CellRecord record = new() { Style = old.Style };
@@ -320,7 +330,7 @@ public sealed class Worksheet
 
     internal bool HasFormula(int row, int column) => store.Get(row, column).Kind == CellKind.Formula;
 
-    internal void SetFormula(int row, int column, string? formula, CellValue result, XAttribute[]? attributes = null)
+    internal void SetFormula(int row, int column, string? formula, CellValue result, XAttribute[]? attributes = null, bool dynamic = false)
     {
         if (string.IsNullOrEmpty(formula) || formula == "=")
         {
@@ -338,7 +348,13 @@ public sealed class Worksheet
             throw new ArgumentException("A formula is at most 8,192 characters.", nameof(formula));
         }
 
+        SpillOverwritten(row, column);
         Changed(row, column);
+        if (dynamic)
+        {
+            attributes = [new XAttribute("t", "array"), new XAttribute("ref", new RangeAddress(row, column, row, column).ToString())];
+        }
+
         ref readonly CellRecord old = ref store.Get(row, column);
         if (old.Kind == CellKind.Formula)
         {
@@ -347,11 +363,27 @@ public sealed class Worksheet
             entry.Text = text;
             entry.Result = result;
             entry.Attributes = attributes;
+            formulas.SetRead((int)old.Payload, false);
+            if (dynamic)
+            {
+                spills.Add(entry);
+            }
+            else
+            {
+                spills.Remove(entry);
+            }
+
             return;
         }
 
         int style = old.Style;
-        store.Set(row, column, new CellRecord { Kind = CellKind.Formula, Payload = formulas.Add(text, result, attributes), Style = style });
+        int index = formulas.Add(text, result, attributes);
+        if (dynamic)
+        {
+            spills.Add(formulas[index]);
+        }
+
+        store.Set(row, column, new CellRecord { Kind = CellKind.Formula, Payload = index, Style = style });
     }
 
     /// <summary>
@@ -480,6 +512,58 @@ public sealed class Worksheet
         sharedMasters = null;
     }
 
+    /// <summary>
+    /// A person's write to a cell in the way of a dynamic array formula. Its first cell written over takes the spill away with
+    /// it; another cell of the spill ends the spill, so that the next calculation finds the cell in the way and gives #SPILL!,
+    /// or spills again when what was written is nothing. The cell's own new value is written by the caller.
+    /// </summary>
+    private void SpillOverwritten(int row, int column)
+    {
+        if (spills.Count == 0)
+        {
+            return;
+        }
+
+        CellAddress cell = new(row, column);
+        foreach (FormulaEntry entry in spills)
+        {
+            if (entry.ArrayRange is not { } range || !range.Contains(cell))
+            {
+                continue;
+            }
+
+            bool first = range.First == cell;
+            for (int r = range.First.Row; r <= range.Last.Row; r++)
+            {
+                for (int c = range.First.Column; c <= range.Last.Column; c++)
+                {
+                    if (r != range.First.Row || c != range.First.Column)
+                    {
+                        SetCalculated(r, c, CellValue.Empty);
+                        Changed(r, c);
+                    }
+                }
+            }
+
+            if (first)
+            {
+                spills.Remove(entry);
+            }
+            else
+            {
+                entry.Attributes = [new XAttribute("t", "array"), new XAttribute("ref", new RangeAddress(range.First.Row, range.First.Column, range.First.Row, range.First.Column).ToString())];
+                workbook?.Calculator?.Noted(this, range.First.Row, range.First.Column);
+            }
+        }
+    }
+
+    /// <summary>The range the dynamic array formula in a cell fills, or null.</summary>
+    internal RangeAddress? SpillRangeAt(int row, int column)
+    {
+        ref readonly CellRecord own = ref store.Get(row, column);
+        return own.Kind == CellKind.Formula && formulas[(int)own.Payload] is { ArrayRange: { } range } entry && IsDynamic(entry) ? range : null;
+    }
+
     /// <summary>The range of the array formula a cell is part of, or null.</summary>
     internal RangeAddress? ArrayRangeAt(int row, int column)
     {
@@ -527,12 +611,17 @@ public sealed class Worksheet
     }
 
     /// <summary>Stores a cell read from a file as it is: its record, with its formula when it has one.</summary>
-    internal void SetRead(int row, int column, CellRecord record, FormulaEntry? formula)
+    internal void SetRead(int row, int column, CellRecord record, FormulaEntry? formula, bool dynamic = false)
     {
         if (formula is not null)
         {
             record.Kind = CellKind.Formula;
             record.Payload = formulas.Add(formula.Text, formula.Result, formula.Attributes);
+            formulas.SetRead((int)record.Payload, true);
+            if (dynamic)
+            {
+                spills.Add(formulas[(int)record.Payload]);
+            }
         }
 
         store.Set(row, column, record);

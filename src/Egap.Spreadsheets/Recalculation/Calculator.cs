@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Xml.Linq;
 
 using Egap.Spreadsheets.Formulas;
 using Egap.Spreadsheets.Storage;
@@ -14,6 +15,12 @@ namespace Egap.Spreadsheets.Recalculation;
 /// </summary>
 internal sealed class Calculator
 {
+    /// <summary>How many times over a calculation goes on for spills that keep moving each other.</summary>
+    private const int MaxSpillPasses = 16;
+
+    private readonly HashSet<long> blockedSpills = [];
+    private readonly List<CellKey> spillsMoved = [];
+
     /// <summary>Functions whose result can change with nothing they read changing, or whose references are worked out as they run.</summary>
     private static readonly HashSet<string> VolatileFunctions =
         new(["NOW", "TODAY", "RAND", "RANDBETWEEN", "RANDARRAY", "OFFSET", "INDIRECT", "CELL", "INFO", "ANCHORARRAY"], StringComparer.Ordinal);
@@ -85,11 +92,39 @@ internal sealed class Calculator
             graph.ChangedAll();
         }
 
-        CalculationPlan plan = graph.Plan();
         CalculationSettings settings = book.Calculation;
-        CalculationOutcome outcome = Recalculator.Run(plan, Calculate, settings, settings.Concurrent, key => cells[key.Packed].Output is not null);
+        long calculated = 0;
+        CalculationOutcome outcome;
+        int pass = 0;
+        while (true)
+        {
+            // A formula with no room may find room once anything has changed.
+            if (graph.HasChanges)
+            {
+                foreach (long packed in blockedSpills)
+                {
+                    graph.Changed(CellKey.Unpack(packed));
+                }
+            }
+
+            spillsMoved.Clear();
+            outcome = Recalculator.Run(graph.Plan(), Calculate, settings, settings.Concurrent, key => cells[key.Packed].Output is not null);
+            calculated += outcome.Calculated;
+
+            // A spill that moved has new cells, and what reads them may have run before it: they are calculated again.
+            if (spillsMoved.Count == 0 || ++pass == MaxSpillPasses)
+            {
+                break;
+            }
+
+            foreach (CellKey moved in spillsMoved)
+            {
+                graph.Changed(moved);
+            }
+        }
+
         List<IReadOnlyList<Cell>> circular = [.. outcome.Circular.Select(ring => (IReadOnlyList<Cell>)[.. ring.Select(k => sheets[k.Sheet][k.Row, k.Column])])];
-        return new CalculationResult(outcome.Calculated, circular, outcome.Iterations, outcome.Settled);
+        return new CalculationResult(calculated, circular, outcome.Iterations, outcome.Settled);
     }
 
     /// <summary>What a formula can read besides cells: the sheets in order, the names and their formulas, and the tables.</summary>
@@ -129,6 +164,7 @@ internal sealed class Calculator
         }
 
         cells.Clear();
+        blockedSpills.Clear();
         ids.Clear();
         sheets.Clear();
         shared.Clear();
@@ -223,7 +259,7 @@ internal sealed class Calculator
             shared[(sheet, index)] = (compiled, parsed, at);
         }
 
-        RangeAddress? output = entry.ArrayRange is { } range && range.First == at && range.CellCount > 1 ? range : null;
+        RangeAddress? output = entry.ArrayRange is { } range && range.First == at && (range.CellCount > 1 || sheet.IsDynamic(entry)) ? range : null;
         if (output is { CellCount: > MaxArrayCells })
         {
             // A range this large is not something Excel fills either; the cells keep what they hold.
@@ -385,7 +421,12 @@ internal sealed class Calculator
             return Move(ref cell.Entry.Result, result);
         }
 
-        // An array formula fills its range: a single row or column stretches across it, and #N/A goes past the array's end.
+        return cell.Sheet.IsDynamic(cell.Entry) ? Spill(key, cell, context, output) : FillArray(cell, context, output);
+    }
+
+    /// <summary>Calculates an array formula, which fills its range: a single row or column stretches across it, and #N/A goes past the array's end.</summary>
+    private static double FillArray(FormulaCell cell, EvalContext context, RangeAddress output)
+    {
         EvalValue value = FormulaEvaluator.Run(cell.Compiled, context);
         if (value.Kind == EvalKind.Reference)
         {
@@ -413,6 +454,131 @@ internal sealed class Calculator
         }
 
         return change;
+    }
+
+    /// <summary>
+    /// Calculates a dynamic array formula: its result fills as many cells as it has, unless a cell in the way, a merged cell or
+    /// a table stops it, when the formula's own cell gives #SPILL!. Cells it filled before and does not fill now are emptied.
+    /// </summary>
+    private double Spill(CellKey key, FormulaCell cell, EvalContext context, RangeAddress old)
+    {
+        EvalValue value = FormulaEvaluator.Run(cell.Compiled, context);
+        if (value.Kind == EvalKind.Reference)
+        {
+            value = FormulaEvaluator.ToArray(value);
+        }
+
+        (int rows, int columns) = FormulaEvaluator.Size(value);
+        RangeAddress own = new(cell.Row, cell.Column, cell.Row, cell.Column);
+        RangeAddress target = own;
+        bool blocked = false;
+        if (rows > 1 || columns > 1)
+        {
+            long lastRow = (long)cell.Row + rows - 1, lastColumn = (long)cell.Column + columns - 1;
+            blocked = lastRow >= CellAddress.MaxRows || lastColumn >= CellAddress.MaxColumns;
+            if (!blocked)
+            {
+                target = new RangeAddress(cell.Row, cell.Column, (int)lastRow, (int)lastColumn);
+                blocked = InTheWay(cell.Sheet, target, old, own);
+            }
+        }
+
+        if (blocked)
+        {
+            target = own;
+            value = EvalValue.FromError(CellError.Spill);
+            (rows, columns) = (1, 1);
+            blockedSpills.Add(key.Packed);
+        }
+        else
+        {
+            blockedSpills.Remove(key.Packed);
+        }
+
+        double change = 0;
+        if (old != target)
+        {
+            foreach ((int row, int column) in Cells(old))
+            {
+                if (!target.Contains(new CellAddress(row, column)))
+                {
+                    cell.Sheet.SetCalculated(row, column, CellValue.Empty);
+                    spillsMoved.Add(new CellKey(key.Sheet, row, column));
+                }
+            }
+
+            foreach ((int row, int column) in Cells(target))
+            {
+                if (!old.Contains(new CellAddress(row, column)))
+                {
+                    spillsMoved.Add(new CellKey(key.Sheet, row, column));
+                }
+            }
+
+            cell.Entry.Attributes = [new XAttribute("t", "array"), new XAttribute("ref", target.ToString())];
+            cells[key.Packed] = cell with { Output = target };
+            graph.SetOutput(key, target);
+            change = double.PositiveInfinity;
+        }
+
+        foreach ((int row, int column) in Cells(target))
+        {
+            CellValue item = FormulaEvaluator.Element(value, rows, columns, row - target.First.Row, column - target.First.Column).ToCell();
+            if (row == cell.Row && column == cell.Column)
+            {
+                change = Math.Max(change, Move(ref cell.Entry.Result, item));
+            }
+            else
+            {
+                CellValue before = cell.Sheet.GetValue(row, column);
+                cell.Sheet.SetCalculated(row, column, item);
+                change = Math.Max(change, Distance(before, item));
+            }
+        }
+
+        return change;
+    }
+
+    /// <summary>Whether a spill cannot go over a range: a cell it does not hold from before has something in it, or a merged cell or table is there.</summary>
+    private static bool InTheWay(Worksheet sheet, RangeAddress target, RangeAddress old, RangeAddress own)
+    {
+        foreach (RangeAddress merged in sheet.MergedCells)
+        {
+            if (merged.Intersects(target))
+            {
+                return true;
+            }
+        }
+
+        foreach (SheetTable table in sheet.Tables)
+        {
+            if (table.Range.Intersects(target))
+            {
+                return true;
+            }
+        }
+
+        foreach ((int row, int column) in sheet.Store.Occupied(target))
+        {
+            CellAddress at = new(row, column);
+            if (at != own.First && !old.Contains(at) && (sheet.HasFormula(row, column) || sheet.GetKind(row, column) != CellValueKind.Empty))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static IEnumerable<(int Row, int Column)> Cells(RangeAddress range)
+    {
+        for (int row = range.First.Row; row <= range.Last.Row; row++)
+        {
+            for (int column = range.First.Column; column <= range.Last.Column; column++)
+            {
+                yield return (row, column);
+            }
+        }
     }
 
     private static double Move(ref CellValue slot, CellValue value)

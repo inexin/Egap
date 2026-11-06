@@ -346,9 +346,39 @@ CalculationResult result = book.Calculate();         // A1 near 2, B1 near 1
 bool settled = result.Converged;                     // true
 ```
 
+### Dynamic arrays
+
+A formula set through `cell.Formula` means what it means typed in Excel today: one that can give more than one value is a
+dynamic array formula, and when the workbook is calculated its result spills over the cells beside and below it.
+`cell.SpillRange` is the range it fills, and `A1#` stands for that range in another formula:
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet["A1"].Value = "pear";
+sheet["A2"].Value = "apple";
+sheet["A3"].Value = "pear";
+
+sheet["C1"].Formula = "=SORT(UNIQUE(A1:A3))";
+sheet["E1"].Formula = "=COUNTA(C1#)";
+book.Calculate();
+
+string first = sheet["C1"].Value.Text;                      // apple
+string second = sheet["C2"].Value.Text;                     // pear
+string filled = sheet["C1"].SpillRange!.Value.Address.ToString(); // C1:C2
+double count = sheet["E1"].Value.Number;                    // 2
+```
+
+Something in the way, a merged cell or a table gives `#SPILL!` in the formula's cell until there is room; writing over a
+spilled cell does the same. `=@A1:A3` meets the formula's cell by implicit intersection, as every formula in Excel before
+dynamic arrays did. Formulas read from a file stay what the file made them: Excel marks the dynamic ones, and the others
+keep implicit intersection.
+
 ### Functions
 
-Over 440 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
+Over 460 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (`">20"`,
 `"a*"`, `"<>"`). `FunctionRegistry.BuiltInFunctions` lists them. Each follows Microsoft's function reference and is
 checked against what Excel calculates: `tools/excel-function-oracle.ps1` runs the cases in

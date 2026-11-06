@@ -130,6 +130,16 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- Dynamic arrays: a formula that can give more than one value spills over the cells beside and below it when the workbook
+  is calculated, as typed in Excel today. `cell.SpillRange` and `A1#` give the range it fills, a cell in the way, a merged cell
+  or a table gives `#SPILL!`, and `@` meets the formula's cell. **A formula set through `cell.Formula` that a range would
+  have met by implicit intersection, such as `=A1:A3*2`, now spills.** Files keep what they hold: only formulas Excel saved as
+  dynamic spill, and a saved dynamic formula has the `cm` mark and metadata part Excel reads.
+- The functions for them: `FILTER`, `SORT`, `SORTBY`, `UNIQUE`, `XLOOKUP`, `XMATCH`, `TEXTSPLIT`, `TEXTBEFORE`, `TEXTAFTER`,
+  `VSTACK`, `HSTACK`, `TOCOL`, `TOROW`, `WRAPROWS`, `WRAPCOLS`, `TAKE`, `DROP`, `EXPAND`, `CHOOSECOLS`, `CHOOSEROWS`,
+  `ARRAYTOTEXT`, `VALUETOTEXT` and `TRIMRANGE`, checked against Excel (`Oracle/functions-dynamic.txt`).
+- Fixed: a formula set through the API with a function newer than the file format, such as `STDEV.S`, was saved without its
+  `_xlfn.` prefix and showed `#NAME?` in Excel; a cell holding `#SPILL!` or `#CALC!` made Excel refuse the file.
 - The remaining worksheet functions: financial (55), engineering, database and the rest of math (95), and the
   probability distributions, tests, regression and remaining statistics (80), each checked against Excel
   (`Oracle/functions-financial.txt`, `functions-engineering.txt`, `functions-statistics.txt`). `FORECAST.ETS` and its three companions are not built yet.
