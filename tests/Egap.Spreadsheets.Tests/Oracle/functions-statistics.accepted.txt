@@ -1,0 +1,32 @@
+# formula	reason
+BETA.INV(1E-300,2,3)	Excel's search stops short; the leading term of the series gives Egap's value (I_x(2,3)=6x^2, I_x(100,2)=101x^100)
+BETAINV(1E-300,2,3)	Excel's search stops short; the leading term of the series gives Egap's value (I_x(2,3)=6x^2, I_x(100,2)=101x^100)
+CHISQ.INV.RT(1e-10,1)	Excel stops 1.6e-7 short: erfc(sqrt(x/2)) gives 1.00000000000e-10 at Egap's value, 1.00000008e-10 at Excel's
+CHIINV(1e-10,1)	Excel stops 1.6e-7 short: erfc(sqrt(x/2)) gives 1.00000000000e-10 at Egap's value, 1.00000008e-10 at Excel's
+CHISQ.INV.RT(1E-300,1)	Excel gives up with #NUM! this far out though the root exists: erfc(sqrt(x/2)) at Egap's value returns p; Egap gives the number
+CHIINV(1E-300,1)	Excel gives up with #NUM! this far out though the root exists: erfc(sqrt(x/2)) at Egap's value returns p; Egap gives the number
+CONFIDENCE.T(0.05,1,1E10)	Excel's search is unconverged at 1E10 degrees of freedom (off by 3.7e-7); the normal quantile plus its 1/df term gives Egap's value
+F.DIST.RT(15.2,2,1000)	Excel off by 1.6e-11: the exact closed form for d1=2 is (1+2x/d2)^(-d2/2) and gives Egap's value (3.14105103043784E-07)
+FDIST(15.2,2,1000)	Excel off by 1.6e-11: the exact closed form for d1=2 is (1+2x/d2)^(-d2/2) and gives Egap's value (3.14105103043784E-07)
+F.INV(0.5,10000000000,1)	Excel's search is unconverged at 1E10 degrees of freedom (off by 7.3e-7), the same as its T and chi-squared inverses
+F.INV.RT(0.5,1,10000000000)	Excel's search is unconverged at 1E10 degrees of freedom (off by 7.3e-7), the same as its T and chi-squared inverses
+FINV(0.5,1,10000000000)	Excel's search is unconverged at 1E10 degrees of freedom (off by 7.3e-7), the same as its T and chi-squared inverses
+INDEX(LOGEST(C40:C44,A40:A44,TRUE,TRUE),2,1)	Perfect fit: the true value is 0 or infinite; both sides hold only rounding noise, so no digits can agree
+INDEX(LOGEST(C40:C44,A40:A44,TRUE,TRUE),2,2)	Perfect fit: the true value is 0 or infinite; both sides hold only rounding noise, so no digits can agree
+INDEX(LOGEST(C40:C44,A40:A44,TRUE,TRUE),3,2)	Perfect fit: the true value is 0 or infinite; both sides hold only rounding noise, so no digits can agree
+INDEX(LOGEST(C40:C44,A40:A44,TRUE,TRUE),4,1)	Perfect fit: the true value is 0 or infinite; both sides hold only rounding noise, so no digits can agree
+INDEX(LOGEST(C40:C44,A40:A44,TRUE,TRUE),5,2)	Perfect fit: the true value is 0 or infinite; both sides hold only rounding noise, so no digits can agree
+NORM.S.INV(0.9999999999999999)	Excel loses the tail: 1-p is 1.1e-16, the true answer is z=8.2095 (checked by the tail series); Excel gives 7.94
+NORMSINV(0.9999999999999999)	Excel loses the tail: 1-p is 1.1e-16, the true answer is z=8.2095 (checked by the tail series); Excel gives 7.94
+NORM.INV(0.9999999999999999,40,1.5)	Excel loses the tail: 1-p is 1.1e-16, the true answer is z=8.2095 (checked by the tail series); Excel gives 7.94
+NORMINV(0.9999999999999999,40,1.5)	Excel loses the tail: 1-p is 1.1e-16, the true answer is z=8.2095 (checked by the tail series); Excel gives 7.94
+T.INV.2T(0.5,10000000000)	Excel's search is unconverged at 1E10 degrees of freedom (off by 3.7e-7); the normal quantile plus its 1/df term gives Egap's value
+TINV(0.5,10000000000)	Excel's search is unconverged at 1E10 degrees of freedom (off by 3.7e-7); the normal quantile plus its 1/df term gives Egap's value
+CHISQ.INV.RT(0.5,1E11)	Excel's search does not converge past 1E10 degrees of freedom (off by 2.7e-4); the true median is near df-2/3
+CHISQ.INV.RT(0.5,1E99)	Excel's search does not converge past 1E10 degrees of freedom (off by 2.7e-4); the true median is near df-2/3
+CHISQ.INV.RT(1E-20,1)	Excel gives up with #NUM! this far out though the root exists: erfc(sqrt(x/2)) at Egap's value returns p; Egap gives the number
+CHISQ.INV.RT(1E-100,1)	Excel gives up with #NUM! this far out though the root exists: erfc(sqrt(x/2)) at Egap's value returns p; Egap gives the number
+CHISQ.INV.RT(1E-100,10)	Excel gives up with #NUM! this far out though the root exists: erfc(sqrt(x/2)) at Egap's value returns p; Egap gives the number
+BETA.INV(1E-100,100,2)	Excel's search stops short; the leading term of the series gives Egap's value (I_x(2,3)=6x^2, I_x(100,2)=101x^100)
+INDEX(LINEST({1;2;4;8;16;32;64},{0.1;0.1;0.1;0.1;0.1;0.1;0.1},TRUE,TRUE),3,1)	Constant x column: the true value is 0; both sides hold only rounding noise
+INDEX(LINEST({1;2;4;8;16;32;64},{0.1;0.1;0.1;0.1;0.1;0.1;0.1},TRUE,TRUE),5,1)	Constant x column: the true value is 0; both sides hold only rounding noise
