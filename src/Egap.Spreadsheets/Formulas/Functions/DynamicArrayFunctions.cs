@@ -984,7 +984,7 @@ internal static partial class FormulaFunctions
             return error;
         }
 
-        int r = Math.Min(Math.Abs(rows), array.Rows), c = Math.Min(Math.Abs(columns), array.Columns);
+        int r = (int)Math.Min(Math.Abs((long)rows), array.Rows), c = (int)Math.Min(Math.Abs((long)columns), array.Columns);
         return Part(array, rows < 0 ? array.Rows - r : 0, r, columns < 0 ? array.Columns - c : 0, c);
     }
 

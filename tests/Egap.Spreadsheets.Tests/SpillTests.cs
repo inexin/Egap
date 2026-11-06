@@ -16,6 +16,17 @@ public sealed class SpillTests
     }
 
     [Fact]
+    public void TakingAHugeNegativeCountTakesEverything()
+    {
+        Worksheet sheet = Sheet();
+        Numbers(sheet, "A", 1, 2, 3);
+        sheet["C1"].Formula = "=TAKE(A1:A3,-1E+308)";
+        sheet.Workbook.Calculate();
+        Assert.Equal("C1:C3", sheet["C1"].SpillRange!.Value.Address.ToString());
+        Assert.Equal(3, sheet["C3"].Value.Number);
+    }
+
+    [Fact]
     public void AnArrayResultFillsTheCellsBelowAndBeside()
     {
         Worksheet sheet = Sheet();
