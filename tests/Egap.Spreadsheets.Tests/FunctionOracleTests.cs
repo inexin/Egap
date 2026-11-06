@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Egap.Spreadsheets.Tests;
 
@@ -10,7 +11,7 @@ namespace Egap.Spreadsheets.Tests;
 /// <c>Oracle/functions-NAME.txt</c>, has the same files, and <c>functions-NAME.tolerance.txt</c> may give a function that
 /// iterates or approximates a wider tolerance, as name, a tab, relative tolerance, a tab, and why.
 /// </summary>
-public sealed class FunctionOracleTests
+public sealed partial class FunctionOracleTests
 {
     private static string Folder => Path.Combine(AppContext.BaseDirectory, "Oracle");
 
@@ -43,11 +44,14 @@ public sealed class FunctionOracleTests
 
             CellValue actual = sheet.Evaluate(formula, new CellAddress(20 * index, 11));
             compared++;
-            bool same = Same(actual, kind, value, Tolerance(formula, tolerances));
+            double tolerance = Tolerance(formula, tolerances);
+            bool same = Same(actual, kind, value, tolerance);
             if (accepted.ContainsKey(formula))
             {
                 seen.Add(formula);
-                if (same)
+
+                // Only well inside the tolerance: an accepted gap near its edge may close on one platform's math library alone.
+                if (Same(actual, kind, value, tolerance / 4))
                 {
                     failures.AppendLine(CultureInfo.InvariantCulture, $"{formula}: now matches Excel; take it off the accepted list");
                 }
@@ -232,7 +236,7 @@ public sealed class FunctionOracleTests
             {
                 string[] fields = line.Split('\t');
                 Assert.True(fields.Length == 3 && fields[2].Length > 0, $"tolerance line without a reason: {line}");
-                tolerances.Add(fields[0], double.Parse(fields[1], CultureInfo.InvariantCulture));
+                tolerances.Add(fields[0], double.Parse(fields[1], CultureInfo.InvariantCulture) + MathLibrarySpread);
             }
         }
 
@@ -296,18 +300,51 @@ public sealed class FunctionOracleTests
     private static bool Same(CellValue actual, string kind, string value, double tolerance) => kind switch
     {
         "number" => actual.Kind == CellValueKind.Number && Close(actual.Number, double.Parse(value, CultureInfo.InvariantCulture), tolerance),
-        "text" => actual.Kind == CellValueKind.Text && actual.Text == value,
+        "text" => actual.Kind == CellValueKind.Text && (actual.Text == value || SameComplex(actual.Text, value, tolerance)),
         "boolean" => actual.Kind == CellValueKind.Boolean && actual.Boolean == (value == "TRUE"),
         "error" => actual.Kind == CellValueKind.Error && CellValue.ErrorText(actual.Error) == value,
         "blank" => actual.Kind == CellValueKind.Empty || (actual.Kind == CellValueKind.Number && actual.Number == 0),
         _ => false,
     };
 
+    /// <summary>
+    /// Two complex numbers as text, part by part to the same tolerance as a number. Their text holds 15 digits, so a result that
+    /// falls near a rounding point shows another last digit with the last bit of the platform's sine or exponential.
+    /// </summary>
+    private static bool SameComplex(string actual, string expected, double tolerance)
+    {
+        return Parts(actual) is { } a && Parts(expected) is { } b && Close(a.Real, b.Real, tolerance) && Close(a.Imaginary, b.Imaginary, tolerance);
+
+        static (double Real, double Imaginary)? Parts(string text)
+        {
+            Match match = ComplexText().Match(text);
+            if (!match.Success)
+            {
+                return null;
+            }
+
+            string imaginary = match.Groups[2].Value;
+            return (Read(match.Groups[1].Value), imaginary is "+" or "" ? 1 : imaginary == "-" ? -1 : Read(imaginary));
+
+            static double Read(string part) => part.Length == 0 ? 0 : double.Parse(part.Replace(',', '.'), CultureInfo.InvariantCulture);
+        }
+    }
+
+    [GeneratedRegex(@"^([-+]?[\d.,]+(?:E[-+]?\d+)?)?([-+]?(?:[\d.,]+(?:E[-+]?\d+)?)?)[ij]$")]
+    private static partial Regex ComplexText();
+
     /// <summary>Equal to 15 significant digits, as Excel shows and compares them.</summary>
     private static bool Close(double actual, double expected, double tolerance = Standard) =>
         actual == expected || Math.Abs(actual - expected) <= tolerance * Math.Max(Math.Abs(actual), Math.Abs(expected));
 
     private const double Standard = 1e-14;
+
+    /// <summary>
+    /// What a listed tolerance gets on top. A list holds the widest gap measured on Windows; .NET's Math.Exp, Log, Pow, Sinh and
+    /// the like come from the platform's C library, whose results differ in the last bit or two, so a result from several
+    /// such calls moves by some units in the last place (2.2e-16 each) from platform to platform.
+    /// </summary>
+    private const double MathLibrarySpread = 2e-15;
 
     private static string Unescape(string text) =>
         text.Replace("\t", "\t", StringComparison.Ordinal).Replace("\r", "\r", StringComparison.Ordinal)

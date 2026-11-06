@@ -68,7 +68,8 @@ internal static class DistMath
 
     private static double StirlingStep(double t)
     {
-        if (t > 0.2)
+        // The series is plain arithmetic, so it gives the same bits everywhere; only below x = 0.5 is it too slow.
+        if (t > 0.5)
         {
             return (Math.Atanh(t) / t) - 1;
         }
