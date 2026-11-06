@@ -13,6 +13,7 @@ egap run scan.pdf clean --deskew + stamp --page-numbers + save out.pdf
 ```
 
 - Converts HTML, Markdown, DOCX, RTF and images to PDF, PDF back to DOCX, RTF, HTML, Markdown or text, and the flow formats to each other.
+- Workbooks: prints XLSX to PDF or images, converts to HTML, Markdown and CSV per sheet, calculates formulas with `calc`, and reads ranges with `cells`.
 - Merges, splits, imposes, stamps, optimizes, encrypts, redacts and sanitizes; fills forms; embeds files and e-invoices.
 - Signs (PAdES B-B to B-LTA) and verifies; checks and converts PDF/A and PDF/X; preflights for print, with ink separations.
 - `run` chains steps over each file, and JSON workflow files keep a recipe; every command takes many files and globs.

@@ -88,7 +88,7 @@ public enum CellFontScheme
 /// <summary>A cell's font.</summary>
 public sealed record CellFont
 {
-    /// <summary>Excel's default font: Calibri 11 in the theme's text colour, following the theme's body font.</summary>
+    /// <summary>Excel's default font: Calibri 11 in the theme's text colour. It names its font and follows no theme font: a workbook made here has no theme part, and Excel would take the font from its own default theme.</summary>
     public static CellFont Default { get; } = new();
 
     /// <summary>The font name.</summary>
@@ -131,8 +131,8 @@ public sealed record CellFont
     /// <summary>The character set the font is meant for, or null when not given.</summary>
     public int? CharacterSet { get; init; }
 
-    /// <summary>Which theme font this font follows; <see cref="CellFontScheme.Minor"/> for new cells.</summary>
-    public CellFontScheme Scheme { get; init; } = CellFontScheme.Minor;
+    /// <summary>Which theme font this font follows; <see cref="CellFontScheme.None"/> for new cells.</summary>
+    public CellFontScheme Scheme { get; init; }
 }
 
 /// <summary>The pattern of a cell's fill.</summary>

@@ -88,6 +88,8 @@ internal static class Cli
     [
         ("info", InfoCommand.Create),
         ("convert", ConvertCommand.Create),
+        ("calc", CalcCommand.Create),
+        ("cells", CellsCommand.Create),
         ("text", TextCommand.Create),
         ("render", RenderCommand.Create),
         ("merge", MergeCommand.Create),
@@ -147,5 +149,6 @@ internal static class Cli
     {
         Documents.HtmlFormat.Register();
         Documents.MarkdownFormat.Register();
+        Spreadsheets.SpreadsheetFormat.Register();
     }
 }

@@ -627,6 +627,7 @@ internal static class WorksheetPartWriter
         Set(view, "showGridLines", Flag(model.ShowGridLines, true));
         Set(view, "showRowColHeaders", Flag(model.ShowHeadings, true));
         Set(view, "showZeros", Flag(model.ShowZeros, true));
+        Set(view, "showFormulas", Flag(model.ShowFormulas, false));
         Set(view, "rightToLeft", Flag(model.RightToLeft, false));
         Set(view, "tabSelected", Flag(model.Selected, false));
         Set(view, "zoomScale", model.ZoomScale == 100 ? null : XlsxNames.Integer(model.ZoomScale));

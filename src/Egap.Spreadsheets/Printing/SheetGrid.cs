@@ -2,9 +2,9 @@ namespace Egap.Spreadsheets.Printing;
 
 /// <summary>
 /// A sheet's row heights and column widths in points as it prints: column widths through the normal font's maximum digit
-/// width at 96 dpi, row heights as set or the sheet's default, hidden rows and columns zero. Excel prints both a little
-/// larger than they show: a column's pixels count in the printer's digit width, rounded to whole dots, and rows grow by
-/// <see cref="RowScale"/>, as Excel's own PDFs measure. Each row and column prints a whole number of printer dots at the
+/// width at 96 dpi, row heights as set or the sheet's default, hidden rows and columns zero. Excel prints neither at the
+/// size it shows: a column's pixels count in the printer's digit width, rounded to whole dots, and a row's in the normal
+/// font's printed row height over its row height on screen (<see cref="PrintedRows"/>), as Excel's own PDFs measure. Each row and column prints a whole number of printer dots at the
 /// print's <see cref="Scale"/>, so a scaled sheet fits as many rows as Excel fits.
 /// </summary>
 internal sealed class SheetGrid
@@ -12,10 +12,9 @@ internal sealed class SheetGrid
     private readonly Worksheet sheet;
     private readonly int[] columns;
     private readonly int defaultRow;
+    private readonly Dictionary<int, int>? fittedRows;
     private int[]? specialRows;
-
-    /// <summary>How much taller a row prints than its height, measured on Excel's PDF export at 600 dpi.</summary>
-    public const double RowScale = 1.016;
+    private readonly double rowDotsPerPixel;
 
     public SheetGrid(Worksheet sheet, SheetFonts fonts)
     {
@@ -33,7 +32,89 @@ internal sealed class SheetGrid
             }
         }
 
-        defaultRow = RowDots(sheet.DefaultRowHeight ?? 15);
+        if (sheet.View.ShowFormulas)
+        {
+            for (int c = 0; c < columns.Length; c++)
+            {
+                columns[c] *= 2;
+            }
+        }
+
+        PrintedRow? row = PrintedRows.Find(fonts.NormalFont.Name, fonts.NormalFont.Size);
+        rowDotsPerPixel = row is { } known ? (double)known.Dots / known.Pixels : PrintedRows.UsualDotsPerPixel;
+        defaultRow = row is { } normal && (sheet.DefaultRowHeight is null || sheet.DefaultRowFollowsFont)
+            ? normal.Dots
+            : RowDots(sheet.DefaultRowHeight ?? 15);
+        if (row is { } own && StyledColumnsRow(sheet) is { } pixels && pixels < own.Pixels)
+        {
+            defaultRow = (int)((pixels * rowDotsPerPixel) + 0.2);
+        }
+
+        fittedRows = row is { } usual ? FittedRows(sheet, usual.Pixels) : null;
+    }
+
+    /// <summary>
+    /// The rows with no height in the file that hold a larger font than the normal one, in dots: Excel fits such a row as it
+    /// opens the file. Null when no style has such a font, as the file's own rows mostly say their height.
+    /// </summary>
+    private Dictionary<int, int>? FittedRows(Worksheet sheet, int usual)
+    {
+        var styles = sheet.Workbook.Styles;
+        int[] pixels = new int[styles.Count];
+        bool any = false;
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            CellFont font = styles[i].Font;
+            pixels[i] = PrintedRows.Find(font.Name, font.Size) is { } row ? row.Pixels : 0;
+            any |= pixels[i] > usual;
+        }
+
+        if (!any || sheet.Store.Bounds() is not { } bounds)
+        {
+            return null;
+        }
+
+        Dictionary<int, int> rows = [];
+        foreach ((int row, int column) in sheet.Store.Occupied(bounds))
+        {
+            int style = sheet.Store.Get(row, column).Style;
+            if (style < pixels.Length && pixels[style] > usual
+                && (!sheet.RowRecords.TryGetValue(row, out RowRecord? record) || (double.IsNaN(record.Height) && double.IsNaN(record.FittedHeight))))
+            {
+                int dots = Math.Max(defaultRow, (int)((pixels[style] * rowDotsPerPixel) + 0.2));
+                rows[row] = rows.TryGetValue(row, out int known) ? Math.Max(known, dots) : dots;
+            }
+        }
+
+        return rows;
+    }
+
+    /// <summary>
+    /// The row in pixels that the columns' font calls for when every column of the sheet has one, or null: Excel fits an empty
+    /// row to the font of its cells, so a smaller font on all the columns makes for lower rows than the normal font's.
+    /// </summary>
+    private static int? StyledColumnsRow(Worksheet sheet)
+    {
+        var styles = sheet.Workbook.Styles;
+        int next = 0, tallest = 0;
+        foreach (ColumnSpan span in sheet.ColumnSpans.Spans)
+        {
+            if (span.First != next || span.Style < 0 || span.Style >= styles.Count)
+            {
+                return null;
+            }
+
+            CellFont font = styles[span.Style].Font;
+            if (PrintedRows.Find(font.Name, font.Size) is not { } row)
+            {
+                return null;
+            }
+
+            tallest = Math.Max(tallest, row.Pixels);
+            next = span.Last + 1;
+        }
+
+        return next == CellAddress.MaxColumns ? tallest : null;
     }
 
     /// <summary>The printed height of a row of the sheet's default height, in points at 100 %.</summary>
@@ -49,15 +130,29 @@ internal sealed class SheetGrid
     /// <summary>The width of column <paramref name="column"/> in points; zero when hidden.</summary>
     public double Column(int column) => Points(columns[column]);
 
+    /// <summary>The height of every row in points when no row has its own, as on most sheets made by a program; otherwise -1.</summary>
+    public double EveryRow => fittedRows is null && sheet.RowRecords.Count == 0 ? Points(defaultRow) : -1;
+
     /// <summary>The height of row <paramref name="row"/> in points; zero when hidden.</summary>
     public double Row(int row)
     {
+        if (fittedRows is not null && fittedRows.TryGetValue(row, out int fitted) && !(sheet.RowRecords.TryGetValue(row, out RowRecord? own) && own.Hidden))
+        {
+            return Points(fitted);
+        }
+
         if (!sheet.RowRecords.TryGetValue(row, out RowRecord? record))
         {
             return Points(defaultRow);
         }
 
-        return record.Hidden ? 0 : Points(double.IsNaN(record.Height) ? defaultRow : RowDots(record.Height));
+        if (record.Hidden)
+        {
+            return 0;
+        }
+
+        double height = double.IsNaN(record.Height) ? record.FittedHeight : record.Height;
+        return Points(double.IsNaN(height) ? defaultRow : RowDots(height));
     }
 
     /// <summary>The width of columns <paramref name="first"/> to <paramref name="last"/> together; negative when last comes first.</summary>
@@ -109,7 +204,7 @@ internal sealed class SheetGrid
         }
 
         // A long run: the default height times the rows, corrected for the rows that have their own.
-        specialRows ??= [.. sheet.RowRecords.Keys.Order()];
+        specialRows ??= [.. sheet.RowRecords.Keys.Union(fittedRows?.Keys ?? Enumerable.Empty<int>()).Order()];
         double row = Points(defaultRow);
         double total = (last - first + 1) * row;
         int start = Array.BinarySearch(specialRows, first);
@@ -158,8 +253,8 @@ internal sealed class SheetGrid
     private static int Printed(int pixels, SheetFonts fonts) =>
         (int)Math.Round((double)pixels * fonts.PrinterDigitWidth / fonts.MaxDigitWidth);
 
-    /// <summary>A row of <paramref name="height"/> points in printer dots.</summary>
-    private static int RowDots(double height) => (int)Math.Round(height * RowScale * SheetFonts.PrinterDpi / 72);
+    /// <summary>A row of <paramref name="height"/> points in printer dots; Excel drops the fraction, all but the last fifth.</summary>
+    private int RowDots(double height) => (int)((height / SheetFonts.PointsPerPixel * rowDotsPerPixel) + 0.2);
 
     /// <summary>Printer dots in sheet points at <see cref="Scale"/>: whole dots on paper, divided back by the scale.</summary>
     private double Points(int dots) => dots == 0 ? 0 : Math.Round(dots * Scale) * 72 / SheetFonts.PrinterDpi / Scale;

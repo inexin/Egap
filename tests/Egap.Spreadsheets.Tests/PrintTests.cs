@@ -51,18 +51,17 @@ public sealed class PrintTests
     public void PagesBreakWhereTheNextColumnOrRowDoesNotFit()
     {
         // A4 inside 0.7" side margins is 494.5 points: nine columns, which print 51.6 points wide (64 pixels in Calibri's
-        // 47-dot digits at 600 dpi). Inside 0.75" top and bottom it is 733.9: 48 rows, which print 15.24 points tall.
+        // 47-dot digits at 600 dpi). Inside 0.75" top and bottom it is 733.9: 50 rows, which print 14.52 points tall.
         Worksheet sheet = Grid(100, 25);
         SheetPrintLayout layout = sheet.Paginate(Portable);
 
-        Assert.Equal(9, layout.Pages.Count);
-        Assert.Equal(RangeAddress.Parse("A1:I48"), layout.Pages[0].Cells);
-        Assert.Equal(RangeAddress.Parse("A49:I96"), layout.Pages[1].Cells);
-        Assert.Equal(RangeAddress.Parse("A97:I100"), layout.Pages[2].Cells);
-        Assert.Equal(RangeAddress.Parse("J1:R48"), layout.Pages[3].Cells);
-        Assert.Equal(RangeAddress.Parse("S97:Y100"), layout.Pages[8].Cells);
+        Assert.Equal(6, layout.Pages.Count);
+        Assert.Equal(RangeAddress.Parse("A1:I50"), layout.Pages[0].Cells);
+        Assert.Equal(RangeAddress.Parse("A51:I100"), layout.Pages[1].Cells);
+        Assert.Equal(RangeAddress.Parse("J1:R50"), layout.Pages[2].Cells);
+        Assert.Equal(RangeAddress.Parse("S51:Y100"), layout.Pages[5].Cells);
         Assert.All(layout.Pages, p => Assert.Equal(595.28, p.Width, 0.01));
-        Assert.Equal(Enumerable.Range(1, 9), layout.Pages.Select(p => p.Number));
+        Assert.Equal(Enumerable.Range(1, 6), layout.Pages.Select(p => p.Number));
     }
 
     [Fact]
@@ -73,8 +72,8 @@ public sealed class PrintTests
 
         IReadOnlyList<SheetPage> pages = sheet.Paginate(Portable).Pages;
 
-        Assert.Equal(RangeAddress.Parse("J1:R48"), pages[1].Cells);
-        Assert.Equal(RangeAddress.Parse("A49:I96"), pages[3].Cells);
+        Assert.Equal(RangeAddress.Parse("J1:R50"), pages[1].Cells);
+        Assert.Equal(RangeAddress.Parse("A51:I100"), pages[3].Cells);
     }
 
     [Fact]
@@ -86,7 +85,7 @@ public sealed class PrintTests
         IReadOnlyList<SheetPage> pages = sheet.Paginate(Portable).Pages;
 
         Assert.Equal(841.89, pages[0].Width, 0.01);
-        Assert.Equal(RangeAddress.Parse("A1:N31"), pages[0].Cells);
+        Assert.Equal(RangeAddress.Parse("A1:N33"), pages[0].Cells);
     }
 
     [Fact]
@@ -126,7 +125,7 @@ public sealed class PrintTests
 
         IReadOnlyList<SheetPage> pages = sheet.Paginate(Portable).Pages;
 
-        Assert.Equal(RangeAddress.Parse("A1:S95"), pages[0].Cells);
+        Assert.Equal(RangeAddress.Parse("A1:S100"), pages[0].Cells);
     }
 
     [Fact]
@@ -137,10 +136,22 @@ public sealed class PrintTests
 
         IReadOnlyList<SheetPage> pages = sheet.Paginate(Portable).Pages;
 
-        Assert.Equal(RangeAddress.Parse("A1:E48"), pages[0].Cells);
-        Assert.Equal(RangeAddress.Parse("A49:E94"), pages[1].Cells);
+        Assert.Equal(RangeAddress.Parse("A1:E50"), pages[0].Cells);
+        Assert.Equal(RangeAddress.Parse("A51:E98"), pages[1].Cells);
         Assert.False(pages[0].Plan.TitleRows);
         Assert.True(pages[1].Plan.TitleRows);
+    }
+
+    [Fact]
+    public void OnlyCellsThatShowExtendThePrint()
+    {
+        Worksheet sheet = Grid(3, 2);
+        sheet["A300"].Style = CellStyle.Default with { Alignment = sheet["A1"].Style.Alignment with { WrapText = true } };
+        sheet["Z1"].Style = sheet["A300"].Style;
+        Assert.Equal(RangeAddress.Parse("A1:B3"), sheet.Paginate(Portable).Pages.Single().Cells);
+
+        sheet["D5"].Style = CellStyle.Default with { Fill = CellFill.Solid(CellColor.FromTheme(4)) };
+        Assert.Equal(RangeAddress.Parse("A1:D5"), sheet.Paginate(Portable).Pages.Single().Cells);
     }
 
     [Fact]
@@ -153,7 +164,7 @@ public sealed class PrintTests
 
         Assert.Equal(["B2:D5", "F10:G12"], pages.Select(p => p.Cells.ToString()));
         Assert.Equal("Sheet1!$B$2:$D$5,Sheet1!$F$10:$G$12", sheet.Workbook.Names.Single(n => n.Name == "_xlnm.Print_Area").Formula);
-        Assert.Equal(25, sheet.Paginate(Portable with { IgnorePrintAreas = true }).Pages.Sum(p => p.Cells.ColumnCount) / 3);
+        Assert.Equal(25, sheet.Paginate(Portable with { IgnorePrintAreas = true }).Pages.Sum(p => p.Cells.ColumnCount) / 2);
     }
 
     [Fact]
@@ -254,6 +265,152 @@ public sealed class PrintTests
     }
 
     [Fact]
+    public void EmptyPagesPrintUpToTheLastWithSomethingOnIt()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet[199, 0].Value = 1;
+        int down = sheet.Paginate(Portable).Pages.Count;
+        Assert.True(down >= 3);
+
+        // The second column of pages holds one cell on its first page: its later pages are empty and at the end.
+        sheet[0, 12].Value = 2;
+        Assert.Equal(down + 1, sheet.Paginate(Portable).Pages.Count);
+
+        // A cell on its last page keeps the empty ones before it, and gridlines keep them all.
+        sheet[199, 12].Value = 3;
+        Assert.Equal(2 * down, sheet.Paginate(Portable).Pages.Count);
+        sheet[199, 12].Value = CellValue.Empty;
+        sheet.PageSetup.PrintGridLines = true;
+        Assert.Equal(2 * down, sheet.Paginate(Portable).Pages.Count);
+    }
+
+    [Fact]
+    public void AnEmptyRowFollowsTheFontOfAllTheColumns()
+    {
+        Worksheet sheet = Grid(1, 1);
+        double normal = new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Row(5);
+
+        CellStyle small = CellStyle.Default with { Font = CellStyle.Default.Font with { Size = 8 } };
+        int style = sheet.Workbook.Styles.Add(small);
+        sheet.ColumnSpans.AddRead(new ColumnSpan { First = 0, Last = 9, Style = style });
+        Assert.Equal(normal, new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Row(5));
+
+        sheet.ColumnSpans.AddRead(new ColumnSpan { First = 10, Last = CellAddress.MaxColumns - 1, Style = style });
+        Assert.True(new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Row(5) < normal);
+    }
+
+    [Fact]
+    public void ASheetFittedToPagesWithNoPaperFitsThePrinters()
+    {
+        Worksheet sheet = Grid(2, 2);
+        sheet.PageSetup.PaperSize = null;
+        sheet.PageSetup.Orientation = PrintOrientation.Landscape;
+        using MemoryStream plain = new();
+        sheet.Workbook.Save(plain);
+        plain.Position = 0;
+        Assert.Equal(1, Workbook.Load(plain).Worksheets[0].PageSetup.PaperSize);
+
+        sheet.PageSetup.FitToPage = true;
+        using MemoryStream fitted = new();
+        sheet.Workbook.Save(fitted);
+        fitted.Position = 0;
+        Assert.Null(Workbook.Load(fitted).Worksheets[0].PageSetup.PaperSize);
+    }
+
+    [Fact]
+    public void ShowFormulasPrintsFormulasInColumnsOfTwiceTheWidth()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet["A1"].Value = 1.5;
+        sheet["A1"].Style = sheet["A1"].Style with { NumberFormat = "0.00" };
+        sheet["B1"].Formula = "A1*2";
+        sheet.Workbook.Calculate();
+        double width = new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Column(0);
+
+        sheet.View.ShowFormulas = true;
+        Assert.Equal(2 * width, new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Column(0));
+        using MemoryStream stream = new();
+        sheet.SaveAsPdf(stream, new SheetPdfOptions { Print = Portable });
+
+        using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
+        string text = pdf.Pages[0].ExtractText();
+        Assert.Contains("=A1*2", text, StringComparison.Ordinal);
+        Assert.Contains("1.5", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("1.50", text, StringComparison.Ordinal);
+
+        using MemoryStream saved = new();
+        sheet.Workbook.Save(saved);
+        saved.Position = 0;
+        Assert.True(Workbook.Load(saved).Worksheets[0].View.ShowFormulas);
+    }
+
+    [Fact]
+    public void ARowWithNoHeightFitsALargerFont()
+    {
+        Worksheet sheet = Grid(3, 1);
+        sheet[1, 0].Style = CellStyle.Default with { Font = CellStyle.Default.Font with { Size = 14 } };
+        sheet.Rows[2].Height = 10;
+        sheet[2, 0].Style = sheet[1, 0].Style;
+
+        SheetGrid grid = new(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable));
+        Assert.True(grid.Row(1) > grid.Row(0));
+        Assert.True(grid.Row(2) < grid.Row(0));
+        Assert.Equal(grid.Row(0) + grid.Row(1) + grid.Row(2), grid.Rows(0, 2), 6);
+    }
+
+    [Fact]
+    public void AColumnWiderThanThePageGoesOnOverPages()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet.Columns[0].Width = 200;
+        sheet[0, 0].Value = "Short";
+        Assert.Single(sheet.Paginate(Portable).Pages);
+
+        // A text past the page edge calls for the next part, and a fill for all of them.
+        sheet[0, 0].Value = "Long text " + new string('x', 200);
+        using MemoryStream stream = new();
+        sheet.SaveAsPdf(stream, new SheetPdfOptions { Print = Portable });
+        using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
+        Assert.True(pdf.Pages.Count >= 2);
+        Assert.Contains("xxx", pdf.Pages[1].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheLastPartOfAWideColumnSharesAPageWithTheNextColumns()
+    {
+        Worksheet sheet = Grid(1, 2);
+        sheet.Columns[0].Width = 110;
+        sheet.Columns[1].Width = 8;
+        sheet[0, 0].Value = new string('x', 200);
+        sheet[0, 1].Value = "Next";
+        Assert.Equal(2, sheet.Paginate(Portable).Pages.Count);
+    }
+
+    [Fact]
+    public void WrappedTextAndFillCallForNoFurtherPartOfAWideColumn()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet.Columns[0].Width = 200;
+        sheet[0, 0].Value = new string('x', 200);
+        sheet[0, 0].Style = CellStyle.Default with { Alignment = sheet[0, 0].Style.Alignment with { WrapText = true }, Fill = CellFill.Solid(CellColor.FromTheme(4)) };
+        Assert.Single(sheet.Paginate(Portable).Pages);
+    }
+
+    [Fact]
+    public void TextRunsOnOntoTheNextPage()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet[0, 0].Value = "1";
+        sheet[1, 7].Value = "The start of a long text " + new string('x', 60);
+        using MemoryStream stream = new();
+        sheet.SaveAsPdf(stream, new SheetPdfOptions { Print = Portable });
+
+        using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
+        Assert.Equal(2, pdf.Pages.Count);
+        Assert.Contains("The start", pdf.Pages[1].ExtractText(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void HeadersAndFootersShowTheirFields()
     {
         Worksheet sheet = Grid(100, 2);
@@ -263,9 +420,9 @@ public sealed class PrintTests
         sheet.SaveAsPdf(stream, new SheetPdfOptions { Print = Portable });
 
         using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
-        Assert.Equal(3, pdf.Pages.Count);
+        Assert.Equal(2, pdf.Pages.Count);
         string text = pdf.Pages[1].ExtractText();
-        Assert.Contains("Page 2 of 3", text, StringComparison.Ordinal);
+        Assert.Contains("Page 2 of 2", text, StringComparison.Ordinal);
         Assert.Contains("Sheet1", text, StringComparison.Ordinal);
     }
 
@@ -379,8 +536,8 @@ public sealed class PrintTests
             sheet.SaveAsPdf(Path.Combine(folder, "items-a.pdf"), new SheetPdfOptions { Print = Portable, Conformance = PdfAConformance.PdfA2a, Language = "en-US" });
             Raster<Rgba8> firstPage = layout.Pages[0].Render(150);
 
-            // Letter paper: 44 rows, then 43 below the repeated title row, and row 101 starts a page.
-            Assert.Equal(["A1:B44", "A45:B87", "A88:B100", "A101:B143", "A144:B186", "A187:B200"], layout.Pages.Select(p => p.Cells.ToString()));
+            // Letter paper: 47 rows, then 46 below the repeated title row, and row 101 starts a page.
+            Assert.Equal(["A1:B47", "A48:B93", "A94:B100", "A101:B146", "A147:B192", "A193:B200"], layout.Pages.Select(p => p.Cells.ToString()));
             Assert.Equal(1275, firstPage.Width); // 8.5 inches at 150 dpi
             Assert.Equal(6, PdfDocument.Open(File.ReadAllBytes(Path.Combine(folder, "items-a.pdf"))).Pages.Count);
         }

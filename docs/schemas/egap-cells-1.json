@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-cells-1.json",
+  "title": "egap cells",
+  "description": "What 'egap cells --json' writes: one object per file that could be read, with the cells row by row.",
+  "type": "object",
+  "required": [ "schema", "files" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "files": { "type": "array", "items": { "$ref": "#/$defs/file" } }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "required": [ "path", "sheet", "range", "truncated", "rows" ],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "description": "The file as the command line named it, or as a glob found it.", "type": "string" },
+        "sheet": { "type": "string" },
+        "range": { "description": "The cells given, such as A1:C10; null for an empty sheet.", "type": [ "string", "null" ] },
+        "truncated": { "description": "Whether rows were left out to keep to --max-cells.", "type": "boolean" },
+        "rows": { "type": "array", "items": { "type": "array", "items": { "$ref": "#/$defs/value" } } },
+        "formulas": { "description": "With --formulas: each cell's formula, or null.", "type": "array", "items": { "type": "array", "items": { "type": [ "string", "null" ] } } }
+      }
+    },
+    "value": {
+      "description": "A number, text, a logical value, null for an empty cell, or an object naming an error.",
+      "anyOf": [
+        { "type": [ "number", "string", "boolean", "null" ] },
+        {
+          "type": "object",
+          "required": [ "error" ],
+          "additionalProperties": false,
+          "properties": { "error": { "type": "string" } }
+        }
+      ]
+    }
+  }
+}
