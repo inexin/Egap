@@ -784,6 +784,13 @@ Egap.Spreadsheets.SheetWriter.SkipRows(int count) -> void
 Egap.Spreadsheets.SheetWriter.StartSheet(string! name) -> void
 Egap.Spreadsheets.SheetWriter.WriteRow(Egap.Spreadsheets.CellStyle? style, params System.ReadOnlySpan<Egap.Spreadsheets.CellValue> values) -> void
 Egap.Spreadsheets.SheetWriter.WriteRow(params System.ReadOnlySpan<Egap.Spreadsheets.CellValue> values) -> void
+Egap.Spreadsheets.SpreadsheetFormat
+Egap.Spreadsheets.TableImportOptions
+Egap.Spreadsheets.TableImportOptions.Culture.get -> System.Globalization.CultureInfo!
+Egap.Spreadsheets.TableImportOptions.Culture.init -> void
+Egap.Spreadsheets.TableImportOptions.DetectTypes.get -> bool
+Egap.Spreadsheets.TableImportOptions.DetectTypes.init -> void
+Egap.Spreadsheets.TableImportOptions.TableImportOptions() -> void
 Egap.Spreadsheets.TableTotalsFunction
 Egap.Spreadsheets.TableTotalsFunction.Average = 4 -> Egap.Spreadsheets.TableTotalsFunction
 Egap.Spreadsheets.TableTotalsFunction.Count = 5 -> Egap.Spreadsheets.TableTotalsFunction
@@ -811,6 +818,8 @@ Egap.Spreadsheets.Workbook.Save(string! path, Egap.Spreadsheets.WorkbookSaveOpti
 Egap.Spreadsheets.Workbook.Save(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
 Egap.Spreadsheets.Workbook.SaveAsPdf(string! path, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
 Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream! stream, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
+Egap.Spreadsheets.Workbook.ToDocument() -> Egap.Documents.Document!
+Egap.Spreadsheets.Workbook.ToDocument(out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings) -> Egap.Documents.Document!
 Egap.Spreadsheets.Workbook.Worksheets.get -> Egap.Spreadsheets.WorksheetCollection!
 Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookFormat.Xlsm = 1 -> Egap.Spreadsheets.WorkbookFormat
@@ -1021,8 +1030,12 @@ static Egap.Spreadsheets.SheetReader.OpenCsv(System.IO.Stream! stream, Egap.Spre
 static Egap.Spreadsheets.SheetWriter.Create(string! path, Egap.Spreadsheets.CsvOptions? csvOptions = null) -> Egap.Spreadsheets.SheetWriter!
 static Egap.Spreadsheets.SheetWriter.Create(System.IO.Stream! stream) -> Egap.Spreadsheets.SheetWriter!
 static Egap.Spreadsheets.SheetWriter.CreateCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.SheetWriter!
+static Egap.Spreadsheets.SpreadsheetFormat.Register() -> void
 static Egap.Spreadsheets.Workbook.Create() -> Egap.Spreadsheets.Workbook!
 static Egap.Spreadsheets.Workbook.CreateEmpty() -> Egap.Spreadsheets.Workbook!
+static Egap.Spreadsheets.Workbook.FromTables(Egap.Documents.Document! document, Egap.Spreadsheets.TableImportOptions? options = null) -> Egap.Spreadsheets.Workbook!
+static Egap.Spreadsheets.Workbook.FromTables(Egap.Pdf.PdfDocument! pdf, Egap.Spreadsheets.TableImportOptions? options = null) -> Egap.Spreadsheets.Workbook!
+static Egap.Spreadsheets.Workbook.FromTables(System.Collections.Generic.IEnumerable<Egap.Documents.Pdf.PdfPageLayout!>! pages, Egap.Spreadsheets.TableImportOptions? options = null) -> Egap.Spreadsheets.Workbook!
 static Egap.Spreadsheets.Workbook.Load(string! path, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.Workbook!
 static Egap.Spreadsheets.Workbook.Load(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.Workbook!
 static Egap.Spreadsheets.Workbook.LoadCsv(string! path, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.Workbook!

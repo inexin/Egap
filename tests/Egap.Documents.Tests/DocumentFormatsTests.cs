@@ -85,6 +85,8 @@ public sealed class DocumentFormatsTests : IDisposable
     [InlineData("# Title", null, DocumentFormatKind.Markdown)]
     [InlineData("# Title", "notes.txt", DocumentFormatKind.Text)]
     [InlineData("plain", ".TXT", DocumentFormatKind.Text)]
+    [InlineData("a,b", "prices.csv", DocumentFormatKind.Csv)]
+    [InlineData("a,b", "prices.TSV", DocumentFormatKind.Csv)]
     [InlineData("a\0b", null, DocumentFormatKind.Unknown)]
     public void IdentifyTellsFormatsApartWithoutLoading(string content, string? fileName, DocumentFormatKind expected)
     {
@@ -94,7 +96,7 @@ public sealed class DocumentFormatsTests : IDisposable
     }
 
     [Fact]
-    public void IdentifyKnowsExcelWorkbooksAndLoadingOneSaysItIsASpreadsheet()
+    public void IdentifyKnowsExcelWorkbooksAndLoadingOneNamesThePackage()
     {
         using MemoryStream workbook = new();
         using (System.IO.Compression.ZipArchive zip = new(workbook, System.IO.Compression.ZipArchiveMode.Create, leaveOpen: true))
@@ -111,7 +113,7 @@ public sealed class DocumentFormatsTests : IDisposable
         Assert.Equal(DocumentFormatKind.Xlsx, Document.Identify(workbook, "book.xlsx"));
         Assert.Equal(DocumentFormatKind.Xlsx, Document.Identify(workbook, "book.docx"));
         NotSupportedException error = Assert.Throws<NotSupportedException>(() => Document.Load(workbook));
-        Assert.Contains("spreadsheet", error.Message, StringComparison.Ordinal);
+        Assert.Contains("Egap.Spreadsheets", error.Message, StringComparison.Ordinal);
 
         using MemoryStream docx = new();
         DocxFormat.Save(Sample(), docx);

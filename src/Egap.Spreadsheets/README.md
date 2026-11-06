@@ -34,4 +34,7 @@ references and iteration. About 210 of Excel's functions are built in and checke
 `FunctionRegistry` adds functions of your own. `sheet.SaveAsPdf` and `book.SaveAsPdf` print as Excel prints, with its page
 breaks, print titles, fit to pages, headers and footers, cell formatting, conditional colours and pictures, to PDF (tagged,
 PDF/A or PDF/UA when asked), and `Paginate` lays the pages out to draw on any Egami canvas or render to images.
+`SpreadsheetFormat.Register()` lets `Document.Load` read XLSX and CSV, a section per sheet with its table of displayed values,
+so HTML, Markdown, DOCX, text and RAG chunks work on them, and `Workbook.FromTables` puts the tables of a document or a PDF on
+sheets.
 Source, guide and changelog: [github.com/inexin/Egap](https://github.com/inexin/Egap).

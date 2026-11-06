@@ -50,8 +50,8 @@ public enum DocumentFormatKind
     Odt,
 
     /// <summary>
-    /// An Excel workbook: XLSX, XLSM, XLTX or XLTM, known by a package part under <c>xl/</c> or by its extension. It is a
-    /// spreadsheet, which Egap.Documents does not load as a document.
+    /// An Excel workbook: XLSX, XLSM, XLTX or XLTM, known by a package part under <c>xl/</c> or by its extension. Loading one
+    /// as a document needs the Egap.Spreadsheets package and <c>SpreadsheetFormat.Register()</c>.
     /// </summary>
     Xlsx,
 
@@ -60,4 +60,10 @@ public enum DocumentFormatKind
     /// <c>WordDocument</c> stream. Egap reads it and does not write it. A password-protected one is <see cref="Encrypted"/>.
     /// </summary>
     Doc,
+
+    /// <summary>
+    /// Comma- or tab-separated text, known by a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> extension. Loading it as a document needs
+    /// the Egap.Spreadsheets package and <c>SpreadsheetFormat.Register()</c>.
+    /// </summary>
+    Csv,
 }
