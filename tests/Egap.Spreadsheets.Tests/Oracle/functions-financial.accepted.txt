@@ -1,0 +1,43 @@
+IPMT(0.03,36,36,8000,,1)	the last digits: no form of the payment tried gives Excel's
+CUMIPMT(0.09/12,360,125000,360,360,1)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.09/12,360,125000,13,24,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.09/12,360,125000,1,1,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.09/12,360,125000,13,24,1)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.09/12,360.9,125000,13.9,24.9,0)	the last digits: no way of summing the period parts tried gives Excel's
+IRR({1,-1})	the true rate is 0: only rounding noise is left
+RATE(10,-100,1000)	the true rate is 0: only rounding noise is left on either side
+RATE(10,-100,1000,0,2)	the true rate is 0: only rounding noise is left on either side
+RATE(10,-100,1000,0,0.5)	the true rate is 0: only rounding noise is left on either side
+RATE(10,100,-1000)	the true rate is 0: only rounding noise is left on either side
+RATE(3,-100,300)	the true rate is 0: only rounding noise is left on either side
+RATE(3,-100,300,0,1)	the true rate is 0: only rounding noise is left on either side
+RATE(10,0,100)	the true rate is 0: only rounding noise is left on either side
+RATE("10",-100,1000)	the true rate is 0: only rounding noise is left on either side
+RATE(5,-200,1000)	the true rate is 0: only rounding noise is left on either side
+RATE(0.5,-100,50)	the true rate is 0: only rounding noise is left on either side
+EFFECT(0.1,365)	the last digits: no form of the power tried gives Excel's
+CUMPRINC(0.0075,360,125000,14,24,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.0075,360.9,125000,14,24,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.0075,360,125000,13.9,24,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.0075,360,125000,13,24.9,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.0075,360,125000,13.1,24.1,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.0075,360.9,125000,13,24,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.0075,360,125000,13.5,24.5,0)	the last digits: no way of summing the period parts tried gives Excel's
+CUMPRINC(0.0075,360,125000,1,1.5,0)	the last digits: no way of summing the period parts tried gives Excel's
+PRICEDISC(DATE(2009,9,29),DATE(2029,6,30),0.05,100,2)	the last digits, of a difference near nothing
+YIELDMAT(DATE(2015,1,18),DATE(2015,1,31),DATE(2010,4,6),0.06,99,1)	the last digits
+ACCRINT(DATE(2021,11,30),DATE(2022,8,28),DATE(2022,11,28),0.08,1000,4,2)	basis 2: Excel divides this one broken period by 92 days, for no rule found; 90 everywhere else
+ACCRINT(DATE(2021,11,30),DATE(2022,8,28),DATE(2022,11,28),0.08,1000,4,2,FALSE)	basis 2: Excel divides this one broken period by 92 days, for no rule found; 90 everywhere else
+ODDFYIELD(DATE(2026,2,23),DATE(2027,2,28),DATE(2024,2,29),DATE(2026,2,28),0.0625,98.5,100,1,0)	Excel's answer isn't a root of its own ODDFPRICE, which gives 70.86 there; Egap's gives back the price
+ODDFPRICE(DATE(2022,5,30),DATE(2035,8,31),DATE(2021,8,30),DATE(2022,8,31),0.0625,0.05,100,2,4)	basis 4, issued on a 30th before a coupon shortened by February: Excel counts two days more, for no rule found
+ODDFYIELD(DATE(2022,5,30),DATE(2035,8,31),DATE(2021,8,30),DATE(2022,8,31),0.0625,98.5,100,2,4)	basis 4, issued on a 30th before a coupon shortened by February: Excel counts two days more, for no rule found
+ODDFPRICE(DATE(2018,9,15),DATE(2027,11,30),DATE(2018,8,30),DATE(2021,11,30),0.0625,0.05,100,4,4)	basis 4, issued on a 30th before a coupon shortened by February: Excel counts two days more, for no rule found
+ODDFYIELD(DATE(2018,9,15),DATE(2027,11,30),DATE(2018,8,30),DATE(2021,11,30),0.0625,98.5,100,4,4)	basis 4, issued on a 30th before a coupon shortened by February: Excel counts two days more, for no rule found
+ODDLPRICE(DATE(2014,9,3),DATE(2016,1,3),DATE(2013,8,30),0.0625,0.05,100,2,0)	basis 0, a coupon period starting at February's end after the first: Excel's parts of a coupon differ slightly, for no rule found
+ODDLYIELD(DATE(2014,9,3),DATE(2016,1,3),DATE(2013,8,30),0.0625,98.5,100,2,0)	basis 0, a coupon period starting at February's end after the first: Excel's parts of a coupon differ slightly, for no rule found
+ODDLPRICE(DATE(2019,11,18),DATE(2021,6,30),DATE(2018,11,29),0.0625,0.05,100,4,0)	basis 0, a coupon period starting at February's end after the first: Excel's parts of a coupon differ slightly, for no rule found
+ODDLYIELD(DATE(2019,11,18),DATE(2021,6,30),DATE(2018,11,29),0.0625,98.5,100,4,0)	basis 0, a coupon period starting at February's end after the first: Excel's parts of a coupon differ slightly, for no rule found
+ODDLPRICE(DATE(2025,7,12),DATE(2026,3,31),DATE(2024,8,31),0.0625,0.05,100,4,0)	basis 0, a coupon period starting at February's end after the first: Excel's parts of a coupon differ slightly, for no rule found
+ODDLYIELD(DATE(2025,7,12),DATE(2026,3,31),DATE(2024,8,31),0.0625,98.5,100,4,0)	basis 0, a coupon period starting at February's end after the first: Excel's parts of a coupon differ slightly, for no rule found
+ODDLPRICE(DATE(2023,8,25),DATE(2023,12,8),DATE(2022,8,31),0.0625,0.05,100,2,0)	basis 0, a coupon period starting at February's end after the first: Excel's parts of a coupon differ slightly, for no rule found
+ODDLYIELD(DATE(2023,8,25),DATE(2023,12,8),DATE(2022,8,31),0.0625,98.5,100,2,0)	basis 0, a coupon period starting at February's end after the first: Excel's parts of a coupon differ slightly, for no rule found
