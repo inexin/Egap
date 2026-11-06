@@ -210,7 +210,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   normal font's printed row height, measured from Excel per font and size); only cells with a value, a fill or a border
   extend the print, and a file's default row height not marked custom gives way to the font's; a row's saved height prints,
   text past the last column in use takes its columns along and runs on onto the next page, and empty pages at the end of a
-  sheet stay out, as in Excel; on 16 test sheets every page starts on the cell Excel's own PDF starts it on
+  sheet stay out, as in Excel; `SheetView.ShowFormulas` prints the formulas in columns of twice the width, and a sheet with no
+  paper size that is fitted to pages takes the printer's paper; on 16 test sheets every page starts on the cell Excel's own PDF starts it on
   (`tools/excel-print-oracle.ps1`). Headers and footers take Excel's codes with their fields, fonts and colours, first and
   even pages and scaling with the document. Cells draw with fills and patterns, borders, fonts, alignment, indent,
   wrapping, rotation, stacked text, shrink to fit, fill characters, `###` for numbers that do not fit, overflow into empty

@@ -31,6 +31,14 @@ internal sealed class SheetGrid
             }
         }
 
+        if (sheet.View.ShowFormulas)
+        {
+            for (int c = 0; c < columns.Length; c++)
+            {
+                columns[c] *= 2;
+            }
+        }
+
         PrintedRow? row = PrintedRows.Find(fonts.NormalFont.Name, fonts.NormalFont.Size);
         rowDotsPerPixel = row is { } known ? (double)known.Dots / known.Pixels : PrintedRows.UsualDotsPerPixel;
         defaultRow = row is { } normal && (sheet.DefaultRowHeight is null || sheet.DefaultRowFollowsFont)

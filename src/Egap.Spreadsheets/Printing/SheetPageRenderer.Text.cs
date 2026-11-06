@@ -17,19 +17,20 @@ internal sealed partial class SheetPageRenderer
         RectF segment = Rect(columnSegment.Start, rowSegment.Start, columnSegment.Size, rowSegment.Size);
         ForEachCell(rowSegment, columnSegment, (r, c, rect, merged) =>
         {
-            CellValue value = sheet.GetValue(r, c);
+            bool showFormulas = sheet.View.ShowFormulas;
+            CellValue value = showFormulas && sheet.GetFormula(r, c) is { } formula ? CellValue.FromText("=" + formula) : sheet.GetValue(r, c);
             if (value.IsEmpty)
             {
                 return;
             }
 
             CellStyle style = StyleAt(r, c);
-            if (sheet.ConditionalFormats.Count > 0 && !Conditional().ShowsValue(r, c))
+            if (!showFormulas && sheet.ConditionalFormats.Count > 0 && !Conditional().ShowsValue(r, c))
             {
                 return;
             }
 
-            NumberFormatCode format = NumberFormatCode.Get(style.NumberFormat);
+            NumberFormatCode format = showFormulas ? NumberFormatCode.General : NumberFormatCode.Get(style.NumberFormat);
             string text = format.FormatWithFill(value, book.Culture, book.Date1904);
             if (!sheet.View.ShowZeros && value.Kind == CellValueKind.Number && value.Number == 0)
             {

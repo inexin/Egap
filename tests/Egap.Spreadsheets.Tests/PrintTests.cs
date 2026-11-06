@@ -318,6 +318,33 @@ public sealed class PrintTests
     }
 
     [Fact]
+    public void ShowFormulasPrintsFormulasInColumnsOfTwiceTheWidth()
+    {
+        Worksheet sheet = Grid(1, 1);
+        sheet["A1"].Value = 1.5;
+        sheet["A1"].Style = sheet["A1"].Style with { NumberFormat = "0.00" };
+        sheet["B1"].Formula = "A1*2";
+        sheet.Workbook.Calculate();
+        double width = new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Column(0);
+
+        sheet.View.ShowFormulas = true;
+        Assert.Equal(2 * width, new SheetGrid(sheet, new SheetFonts(sheet.Workbook, FontSettings.Portable)).Column(0));
+        using MemoryStream stream = new();
+        sheet.SaveAsPdf(stream, new SheetPdfOptions { Print = Portable });
+
+        using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
+        string text = pdf.Pages[0].ExtractText();
+        Assert.Contains("=A1*2", text, StringComparison.Ordinal);
+        Assert.Contains("1.5", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("1.50", text, StringComparison.Ordinal);
+
+        using MemoryStream saved = new();
+        sheet.Workbook.Save(saved);
+        saved.Position = 0;
+        Assert.True(Workbook.Load(saved).Worksheets[0].View.ShowFormulas);
+    }
+
+    [Fact]
     public void TextRunsOnOntoTheNextPage()
     {
         Worksheet sheet = Grid(1, 1);

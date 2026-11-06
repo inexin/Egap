@@ -402,6 +402,7 @@ internal static class XlsxReader
         view.ShowGridLines = XlsxNames.Bool((string?)element.Attribute("showGridLines"), true);
         view.ShowHeadings = XlsxNames.Bool((string?)element.Attribute("showRowColHeaders"), true);
         view.ShowZeros = XlsxNames.Bool((string?)element.Attribute("showZeros"), true);
+        view.ShowFormulas = XlsxNames.Bool((string?)element.Attribute("showFormulas"), false);
         view.RightToLeft = XlsxNames.Bool((string?)element.Attribute("rightToLeft"), false);
         view.Selected = XlsxNames.Bool((string?)element.Attribute("tabSelected"), false);
         int zoom = XlsxNames.Int((string?)element.Attribute("zoomScale"), 100);
