@@ -348,7 +348,7 @@ bool settled = result.Converged;                     // true
 
 ### Functions
 
-About 210 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference,
+Over 440 of Excel's functions are built in: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and the core statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (`">20"`,
 `"a*"`, `"<>"`). `FunctionRegistry.BuiltInFunctions` lists them. Each follows Microsoft's function reference and is
 checked against what Excel calculates: `tools/excel-function-oracle.ps1` runs the cases in

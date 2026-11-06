@@ -245,13 +245,28 @@ public sealed class FunctionOracleTests
         double tolerance = Standard;
         foreach ((string name, double wider) in tolerances)
         {
-            if (wider > tolerance && formula.Contains(name + "(", StringComparison.Ordinal))
+            if (wider > tolerance && Calls(formula, name))
             {
                 tolerance = wider;
             }
         }
 
         return tolerance;
+    }
+
+    /// <summary>Whether the formula calls the function by its whole name: MIRR is no call of IRR.</summary>
+    private static bool Calls(string formula, string name)
+    {
+        string call = name + "(";
+        for (int at = formula.IndexOf(call, StringComparison.Ordinal); at >= 0; at = formula.IndexOf(call, at + 1, StringComparison.Ordinal))
+        {
+            if (at == 0 || !(char.IsLetterOrDigit(formula[at - 1]) || formula[at - 1] is '.' or '_'))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static Dictionary<string, string> Accepted(string set)

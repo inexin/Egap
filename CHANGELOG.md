@@ -130,6 +130,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- The remaining worksheet functions: financial (55), engineering, database and the rest of math (95), and the
+  probability distributions, tests, regression and remaining statistics (80), each checked against Excel
+  (`Oracle/functions-financial.txt`, `functions-engineering.txt`, `functions-statistics.txt`). `FORECAST.ETS` and its three companions are not built yet.
 - New package: workbooks built and edited from code. `Workbook.Create` starts a workbook; `Worksheets` adds, inserts,
   moves, finds and removes sheets with Excel's naming rules. Cells are reached as `sheet["B4"]` or
   `sheet.Cells[row, column]` and hold numbers, text, booleans, errors and formulas (kept as text, calculated later), with
