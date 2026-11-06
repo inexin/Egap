@@ -6,6 +6,40 @@ namespace Egap.Spreadsheets.Tests;
 [Collection(typeof(FunctionRegistration))]
 public sealed class FunctionRegistryTests
 {
+    private static Cell AddInCall(Workbook book) =>
+        book.Worksheets[0].UsedRange!.Value.UsedCells.First(cell => cell.Formula == "[2]!Undeclared(1)");
+
+    [Fact]
+    public void AnAddInCallShowsItsSavedValueOnLoadAndNameErrorOnceCalculated()
+    {
+        Workbook book = Workbook.Load(Path.Combine(AppContext.BaseDirectory, "Oracle", "links.xlsx"));
+        Assert.Equal(37, AddInCall(book).Value.Number);
+        book.CalculateFull();
+        Assert.Equal(CellError.Name, AddInCall(book).Value.Error);
+    }
+
+    [Fact]
+    public void AnAddedFunctionAnswersACallThroughAnAddInLink()
+    {
+        FunctionRegistry.Add("UNDECLARED", 1, 1, arguments => arguments[0].Value.Number * 2);
+        try
+        {
+            Workbook book = Workbook.Load(Path.Combine(AppContext.BaseDirectory, "Oracle", "links.xlsx"));
+            book.CalculateFull();
+            Assert.Equal(2, AddInCall(book).Value.Number);
+        }
+        finally
+        {
+            FunctionRegistry.Remove("UNDECLARED");
+        }
+    }
+
+    [Fact]
+    public void AnAddInLinkDoesNotReachABuiltInFunction()
+    {
+        Assert.Equal(CellError.Name, Sheet().Evaluate("[1]!SUM(1,2)").Error);
+    }
+
     private static Worksheet Sheet()
     {
         Workbook book = Workbook.Create();

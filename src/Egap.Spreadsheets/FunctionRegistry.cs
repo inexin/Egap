@@ -5,7 +5,8 @@ namespace Egap.Spreadsheets;
 /// <summary>
 /// The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a
 /// user-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read
-/// it when they are next calculated or evaluated.
+/// it when they are next calculated or evaluated. It also answers a call written through an add-in's link,
+/// <c>[1]!DOUBLE(21)</c>, which otherwise gives <c>#NAME?</c>: a workbook keeps no code for an add-in's functions.
 /// </summary>
 /// <example>
 /// <code>

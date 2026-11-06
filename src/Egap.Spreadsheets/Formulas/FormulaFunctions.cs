@@ -68,6 +68,14 @@ internal static partial class FormulaFunctions
 
     public static bool IsBuiltIn(string name) => BuiltIn.ContainsKey(name);
 
+    /// <summary>What a call through an add-in's link, <c>[1]!NAME(...)</c>, reaches: only a function added with <see cref="FunctionRegistry"/>, never a built-in.</summary>
+    public static bool TryGetAddIn(string name, [NotNullWhen(true)] out FormulaFunction? function)
+    {
+        int bang = name.LastIndexOf('!');
+        function = null;
+        return bang >= 0 && UserFunctions.TryGetValue(name[(bang + 1)..], out function);
+    }
+
     private static int userVersion;
 
     /// <summary>Counts changes to the added functions, so a workbook's calculation compiles its formulas again after one.</summary>

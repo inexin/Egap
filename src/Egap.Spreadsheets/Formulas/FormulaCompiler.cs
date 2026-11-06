@@ -244,7 +244,7 @@ internal sealed class FormulaCompiler
                 return;
         }
 
-        if (!FormulaFunctions.TryGet(name, out FormulaFunction? info))
+        if (!FormulaFunctions.TryGet(name, out FormulaFunction? info) && !FormulaFunctions.TryGetAddIn(name, out info))
         {
             // A function nobody knows (or one stage B does not have yet) gives #NAME? without its arguments evaluated.
             Constant(EvalValue.FromError(CellError.Name));
