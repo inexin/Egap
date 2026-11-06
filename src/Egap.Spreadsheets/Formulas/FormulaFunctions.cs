@@ -367,7 +367,7 @@ internal static partial class FormulaFunctions
         }
 
         EvalValue value = arguments[chosen];
-        return value.Kind == EvalKind.Missing ? Number(0) : value;
+        return value.Kind == EvalKind.Missing ? EvalValue.Blank : value;
     }
 
     /// <summary>ROW and COLUMN: of the reference's first cell, or of the formula's cell when none is given.</summary>
@@ -444,8 +444,14 @@ internal static partial class FormulaFunctions
         return arguments.Length % 2 == 0 ? Result(arguments[^1]) : Error(CellError.NotAvailable);
     }
 
-    /// <summary>A value a function hands back as its result: a blank becomes 0.</summary>
-    private static EvalValue Result(in EvalValue value) => value.Kind is EvalKind.Blank or EvalKind.Missing ? Number(0) : value;
+    /// <summary>
+    /// A cell a function hands back as its result: a blank stays blank, as with VLOOKUP, INDEX or SWITCH in Excel, so it equals ""
+    /// as well as 0 and ISBLANK is TRUE, and the cell itself shows 0. An argument left empty is 0.
+    /// </summary>
+    private static EvalValue Result(in EvalValue value) => value.Kind == EvalKind.Missing ? Number(0) : value;
+
+    /// <summary>A value for a function that doesn't hand back blanks, HYPERLINK and an array's elements: a blank becomes 0.</summary>
+    private static EvalValue ZeroIfBlank(in EvalValue value) => value.Kind is EvalKind.Blank or EvalKind.Missing ? Number(0) : value;
 
     /// <summary>Whether two scalars are equal as <c>=</c> finds them: errors only equal the same error.</summary>
     private static bool Same(in EvalValue a, in EvalValue b, EvalContext context)

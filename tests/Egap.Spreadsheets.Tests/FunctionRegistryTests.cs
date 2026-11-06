@@ -3,6 +3,7 @@ using System.Globalization;
 namespace Egap.Spreadsheets.Tests;
 
 /// <summary><see cref="FunctionRegistry"/>: the built-in list, and functions added for formulas. Names are unique per test, as the registry is shared.</summary>
+[Collection(typeof(FunctionRegistration))]
 public sealed class FunctionRegistryTests
 {
     private static Worksheet Sheet()
@@ -125,3 +126,7 @@ public sealed class FunctionRegistryTests
         Assert.False(FunctionRegistry.Contains("TEST.COUNTS"));
     }
 }
+
+/// <summary>Registering a function makes every calculation running then recompile its formulas, so these tests run alone.</summary>
+[CollectionDefinition(DisableParallelization = true)]
+public sealed class FunctionRegistration;

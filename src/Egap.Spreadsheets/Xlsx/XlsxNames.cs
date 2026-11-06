@@ -21,6 +21,7 @@ internal static class XlsxNames
 
     private const string Office = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/";
     public const string WorksheetRelationship = Office + "worksheet";
+    public const string ExternalLinkRelationship = Office + "externalLink";
     public const string SharedStringsRelationship = Office + "sharedStrings";
     public const string StylesRelationship = Office + "styles";
     public const string CalcChainRelationship = Office + "calcChain";

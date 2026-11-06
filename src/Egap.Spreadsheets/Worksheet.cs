@@ -14,13 +14,16 @@ public sealed class Worksheet
 {
     private readonly CellStore store = new();
     private readonly FormulaTable formulas = new();
+    private readonly bool linked;
     private Workbook? workbook;
 
     // The first cells of the sheet's shared formulas by shared index, found when first asked for; null when stale.
     private Dictionary<string, (CellAddress Cell, string Text)>? sharedMasters;
 
-    internal Worksheet(Workbook workbook, string name)
+    /// <summary>A sheet of the workbook, or with <paramref name="linked"/> one holding a linked book's kept values, which is not on a tab and may have any name.</summary>
+    internal Worksheet(Workbook workbook, string name, bool linked = false)
     {
+        this.linked = linked;
         this.workbook = workbook;
         Name = name;
         Cells = new WorksheetCells(this);
@@ -44,7 +47,10 @@ public sealed class Worksheet
         get;
         set
         {
-            workbook?.Worksheets.CheckName(value, this);
+            if (!linked)
+            {
+                workbook?.Worksheets.CheckName(value, this);
+            }
             field = value;
         }
     }
@@ -109,6 +115,9 @@ public sealed class Worksheet
         get;
         set => field = value is null or (>= 0 and <= 255) ? value : throw new ArgumentOutOfRangeException(nameof(value), value, "A column width is from 0 to 255.");
     }
+
+    /// <summary>For a linked book's sheet: Excel could not refresh it, so a cell it doesn't hold is #REF!, not blank.</summary>
+    internal bool LinkRefreshFailed { get; set; }
 
     internal Dictionary<int, RowRecord> RowRecords { get; } = [];
 
@@ -528,7 +537,7 @@ public sealed class Worksheet
     /// <summary>Notes that a cell's value or formula changes: the workbook needs calculating, and the cell's file extras no longer apply.</summary>
     private void Changed(int row, int column)
     {
-        if (workbook is not null)
+        if (workbook is not null && !linked)
         {
             workbook.ChangeCount++;
             workbook.Calculator?.Noted(this, row, column);

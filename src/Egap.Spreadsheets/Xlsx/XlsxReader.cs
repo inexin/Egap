@@ -77,6 +77,14 @@ internal static class XlsxReader
         {
             ReadName(book, element, positions);
         }
+
+        // Formulas number the linked books from 1, in this order.
+        foreach (XElement link in root.Element(ns + "externalReferences")?.Elements(ns + "externalReference") ?? [])
+        {
+            OpcRelationship? relationship = workbookPart.GetRelationship((string?)link.Attribute(XlsxNames.R + "id") ?? "");
+            bool isLink = relationship is { External: false } && XlsxNames.SameType(relationship.Type, XlsxNames.ExternalLinkRelationship);
+            book.ExternalBooks.Add(new ExternalBook(book, isLink ? package.GetPart(relationship!.TargetName) : null));
+        }
     }
 
     /// <summary>The calculation settings of <c>calcPr</c> (ECMA-376 Part 1, 18.2.2); values out of range keep their defaults.</summary>

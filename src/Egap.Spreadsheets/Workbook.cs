@@ -60,6 +60,9 @@ public sealed partial class Workbook
     /// <summary>The workbook's calculation once one has run: compiled formulas and their dependency graph, kept up to date.</summary>
     internal Recalculation.Calculator? Calculator { get; private set; }
 
+    /// <summary>The values kept for linked workbooks, in the order formulas number them from 1.</summary>
+    internal List<Xlsx.ExternalBook> ExternalBooks { get; } = [];
+
     /// <summary>The kind of file the workbook was loaded from, and the kind a save to a stream writes when the options name none.</summary>
     public WorkbookFormat Format { get; set; }
 
