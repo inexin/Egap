@@ -36,6 +36,8 @@
       href: guides/reports.md
 - name: Egap.Spreadsheets
   items:
+    - name: Charts
+      href: guides/charts.md
     - name: Spreadsheets
       href: guides/spreadsheets.md
     - name: Spreadsheet functions

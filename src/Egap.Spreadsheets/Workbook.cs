@@ -30,6 +30,11 @@ public sealed partial class Workbook
     /// <summary>The worksheets, in tab order.</summary>
     public WorksheetCollection Worksheets { get; }
 
+    /// <summary>The sheets of a loaded workbook that hold one chart and no cells.</summary>
+    public IReadOnlyList<ChartSheet> ChartSheets => ChartSheetList;
+
+    internal List<ChartSheet> ChartSheetList { get; } = [];
+
     /// <summary>The defined names, the print areas and print titles among them.</summary>
     public DefinedNameCollection Names { get; } = new();
 

@@ -578,8 +578,9 @@ criteria, are written back as they were. Rules without a `Priority` get the plac
 
 `sheet.Comments` holds notes (Excel's classic comments), `sheet.Hyperlinks` links to web addresses, files and places in
 the workbook, and `sheet.Drawings` the pictures, shapes and charts on the sheet. Pictures can be added and moved, and a
-picture's image replaced; shapes, charts, groups and other objects keep everything but their place, name and alternative
-text as the file had them.
+picture's image replaced; charts are read, edited and made through `drawing.Chart` and `sheet.Drawings.AddChart`, as
+[Charts](charts.md) shows; shapes, groups and other objects keep everything but their place, name and alternative text as
+the file had them.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -604,8 +605,8 @@ book.Save("report.xlsx");
 ```
 
 Parts nothing changed in are saved byte for byte: a table, the notes or the drawing layer are written again only when
-something in them changed. Charts, pivot tables, slicers, macros and other parts the model does not hold are always
-kept as they were.
+something in them changed, and a chart only when you changed that chart. Pivot tables, slicers, macros and other parts the
+model does not hold are always kept as they were.
 
 ## Streaming large files
 

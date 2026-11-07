@@ -273,10 +273,7 @@ public sealed class PageSetup
     private string Reference(RangeAddress range)
     {
         StringBuilder text = new();
-        string name = sheet.Name;
-        bool plain = name.Length > 0 && (char.IsLetter(name[0]) || name[0] == '_') && name.All(c => char.IsLetterOrDigit(c) || c is '_' or '.')
-            && !CellAddress.TryParse(name, out _) && !RangeAddress.TryParse(name + ":" + name, out _);
-        text.Append(plain ? name : "'" + name.Replace("'", "''", StringComparison.Ordinal) + "'").Append('!');
+        text.Append(SheetNames.Quoted(sheet.Name)).Append('!');
         if (range.IsWholeRows && !range.IsWholeColumns)
         {
             text.Append('$').Append(range.First.Row + 1).Append(":$").Append(range.Last.Row + 1);

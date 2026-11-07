@@ -32,6 +32,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- Charts: `Egap.Documents.Charts` reads, edits, creates and saves chart parts of both kinds, `c:` (column, bar, line, area,
+  pie, doughnut, scatter, bubble, radar, stock, surface and their 3D forms) and `cx:` (waterfall, histogram, Pareto, box and
+  whisker, treemap, sunburst, funnel, region map), through one `Chart` class. What the model has no property for stays in
+  the part. `Island.Chart` is a Word chart, and `new Island(document, chart, width, height)` adds one; `cx:` charts in Word
+  stay the picture Word saves with them. Drawing charts comes next.
 - `Document.Identify` knows CSV (`DocumentFormatKind.Csv`) by its `.csv`, `.tsv` or `.tab` extension. Loading it or an Excel
   workbook now needs `SpreadsheetFormat.Register()` from Egap.Spreadsheets; without it the error names the package.
 - RTF loading allocates about 7 % less, at the same speed and with the same result: the reader now sets Word's
@@ -136,6 +141,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- Charts: `SheetDrawing.Chart` and `Workbook.ChartSheets` give the chart model on sheets and chart sheets, of both kinds,
+  so a chart can be edited. `Drawings.AddChart` makes any type, from a range of cells if you like, and `RefreshChart` fills
+  a chart's values from the cells it names, through Excel's hidden names for `cx:` charts. Saving refreshes each chart
+  that changed, and one nobody changed keeps its bytes. Objects holding a `cx:` chart now report `SheetDrawingKind.Chart`.
 - LET and LAMBDA: names for one formula, functions you call where you write them or keep in a defined name, with optional
   parameters, ISOMITTED and recursion, a function's name as a value (`BYROW(A1:B3,SUM)`), and MAP, REDUCE, SCAN, BYROW, BYCOL
   and MAKEARRAY. Calls end with `#NUM!` at 8,192 deep, where Excel's own limit depends on the formula.

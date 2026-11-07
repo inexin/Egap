@@ -111,6 +111,15 @@ internal static class XlsxWriter
         Dictionary<Worksheet, string> sheetIds = [];
         SheetObjectState objectState = new(book);
         SheetObjectParts objectParts = new(parts.ContainsKey, (name, type, data, rels) => Add(new OutPart(name, type, data, rels)));
+        foreach (ChartSheet page in book.ChartSheets)
+        {
+            if (page.LoadedChart is { IsChanged: true } edited && page.ChartPart is { } chartPart)
+            {
+                ChartCells.Fill(edited, book);
+                Add(new OutPart(chartPart.Name, chartPart.ContentType, edited.ToBytes(), [.. chartPart.Relationships]));
+            }
+        }
+
         int sheetNumber = 0;
         foreach (Worksheet sheet in book.Worksheets)
         {

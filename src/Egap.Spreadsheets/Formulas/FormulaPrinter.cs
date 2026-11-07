@@ -364,35 +364,13 @@ internal static class FormulaPrinter
 
             string sheets = prefix.LastSheet is { } last && last != prefix.FirstSheet ? $"{prefix.FirstSheet}:{last}" : prefix.FirstSheet;
             string book = prefix.Book is null ? "" : $"[{prefix.Book}]";
-            if (Plain(prefix.FirstSheet) && Plain(prefix.LastSheet ?? prefix.FirstSheet) && (prefix.Book ?? "").All(c => char.IsLetterOrDigit(c) || c is '_' or '.'))
+            if (SheetNames.IsPlain(prefix.FirstSheet) && SheetNames.IsPlain(prefix.LastSheet ?? prefix.FirstSheet) && (prefix.Book ?? "").All(c => char.IsLetterOrDigit(c) || c is '_' or '.'))
             {
                 output.Append(book).Append(sheets).Append('!');
                 return;
             }
 
             output.Append('\'').Append((book + sheets).Replace("'", "''", StringComparison.Ordinal)).Append("'!");
-        }
-
-        /// <summary>Whether a sheet name reads back unquoted: a word that is no reference in either style.</summary>
-        private static bool Plain(string name)
-        {
-            if (name.Length == 0 || !(char.IsLetter(name[0]) || name[0] == '_'))
-            {
-                return false;
-            }
-
-            foreach (char c in name)
-            {
-                if (!(char.IsLetterOrDigit(c) || c is '_' or '.'))
-                {
-                    return false;
-                }
-            }
-
-            return !FormulaParser.LooksLikeR1C1(name)
-                && !FormulaParser.TryCell(name, out _, out _, out _, out _)
-                && !name.Equals("TRUE", StringComparison.OrdinalIgnoreCase)
-                && !name.Equals("FALSE", StringComparison.OrdinalIgnoreCase);
         }
 
         private void List(Argument[] items)
