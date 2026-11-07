@@ -224,7 +224,7 @@ public sealed class ChartTitle
             }
 
             string safe = Docx.OpcPackageWriter.XmlSafe(value);
-            XElement title = node.Ensure();
+            XElement title = EnsureBesideThePlot();
             XElement? rich = title.Element(node.Ns + "tx")?.Element(node.Ns + "rich");
             XElement? shared = title.Element(node.Ns + "txPr");
             XElement? first = FirstLook(rich) ?? FirstLook(shared);
@@ -281,7 +281,7 @@ public sealed class ChartTitle
                 return;
             }
 
-            XElement title = node.Ensure();
+            XElement title = EnsureBesideThePlot();
             KeepLook(title);
             node["tx"].Remove();
             ChartOrder.Insert(title, extended
@@ -335,6 +335,19 @@ public sealed class ChartTitle
 
         List<string> paragraphs = [.. body.Elements(ChartNs.A + "p").Select(p => string.Concat(p.Elements().Where(e => e.Name.LocalName is "r" or "fld").Select(r => (string?)r.Element(ChartNs.A + "t"))))];
         return paragraphs.All(p => p.Length == 0) ? null : string.Join('\n', paragraphs);
+    }
+
+    /// <summary>The title's element. A new one says it sits beside the plot, because Word puts a title that doesn't say over it.</summary>
+    private XElement EnsureBesideThePlot()
+    {
+        bool added = node.Find() is null;
+        XElement title = node.Ensure();
+        if (added && !extended)
+        {
+            node.SetBool("overlay", false);
+        }
+
+        return title;
     }
 
     private static XElement? FirstLook(XElement? body) => body?.Element(ChartNs.A + "p")?.Element(ChartNs.A + "pPr");
