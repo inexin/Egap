@@ -10,7 +10,7 @@ namespace Egap.Spreadsheets;
 /// style. Reach a cell by its A1 address, <c>sheet["B4"]</c>, or by zero-based row and column, <c>sheet.Cells[3, 1]</c>,
 /// and a rectangle of cells with <c>sheet.Range("A1:D20")</c>.
 /// </summary>
-public sealed class Worksheet
+public sealed partial class Worksheet
 {
     private readonly CellStore store = new();
     private readonly FormulaTable formulas = new();

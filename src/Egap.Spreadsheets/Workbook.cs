@@ -172,6 +172,114 @@ public sealed partial class Workbook
         Calculator = null;
     }
 
+    /// <summary>
+    /// Moves whatever refers to cells of <paramref name="edited"/> as rows or columns go into or out of it: the formulas of
+    /// every sheet, names, rules, links and charts. Run before the sheet's cells move, as it reads where formulas are.
+    /// </summary>
+    /// <param name="edited">The sheet edited.</param>
+    /// <param name="edit">The edit.</param>
+    /// <param name="lost">The tables the edit takes columns from, as <see cref="Formulas.ReferenceShift.Apply"/> takes them.</param>
+    internal void CellsMoving(Worksheet edited, Formulas.SheetEdit edit, Dictionary<string, HashSet<string>?> lost)
+    {
+        string Shift(string text, CellAddress origin, Worksheet? home) => Formulas.ReferenceShift.Apply(text, origin, home, edited, edit, lost);
+        string? ShiftOrNull(string? text, CellAddress origin, Worksheet? home) => text is null ? null : Shift(text, origin, home);
+
+        // A rule's formula is written for the first cell of its ranges; when the edit takes that cell, it is written for the
+        // cell that comes first after the edit, as if moved there, before its references move.
+        string? Rule(string? text, List<RangeAddress> ranges, Worksheet sheet)
+        {
+            if (text is null || ranges.Count == 0)
+            {
+                return text;
+            }
+
+            CellAddress anchor = ranges[0].First;
+            if (sheet == edited && edit.Moved(anchor) is null && ranges.Select(edit.Moved).FirstOrDefault(r => r is not null) is { } kept)
+            {
+                CellAddress before = edit.Before(kept.First);
+                if (Formulas.FormulaParser.TryParse(text, r1c1: false, anchor) is { } parsed)
+                {
+                    text = Formulas.FormulaPrinter.Print(parsed, Formulas.ReferenceStyle.A1, before);
+                }
+
+                anchor = before;
+            }
+
+            return Shift(text, anchor, sheet);
+        }
+
+        foreach (DefinedName name in Names)
+        {
+            string text = Shift(name.Formula, default, name.Sheet);
+            if (text != name.Formula)
+            {
+                bool typed = name.Typed;
+                name.Formula = text;
+                name.Typed = typed;
+            }
+        }
+
+        foreach (Worksheet sheet in Worksheets)
+        {
+            // Another sheet's formula can name the edited sheet only with a prefix, or its tables.
+            bool other = sheet != edited && lost.Count == 0;
+            sheet.RewriteCellFormulas((text, cell) => other && !text.Contains('!', StringComparison.Ordinal) ? text : Shift(text, cell, sheet));
+
+            foreach (Hyperlink link in sheet.Hyperlinks)
+            {
+                link.Location = ShiftOrNull(link.Location, default, sheet);
+            }
+
+            foreach (DataValidation rule in sheet.DataValidations)
+            {
+                rule.Formula1 = Rule(rule.Formula1, rule.Ranges, sheet);
+                rule.Formula2 = Rule(rule.Formula2, rule.Ranges, sheet);
+            }
+
+            foreach (ConditionalFormat format in sheet.ConditionalFormats)
+            {
+                foreach (ConditionalFormatRule rule in format.Rules)
+                {
+                    for (int i = 0; i < rule.Formulas.Count; i++)
+                    {
+                        rule.Formulas[i] = Rule(rule.Formulas[i], format.Ranges, sheet)!;
+                    }
+                }
+            }
+
+            foreach (SheetTable table in sheet.Tables)
+            {
+                foreach (SheetTableColumn column in table.Columns)
+                {
+                    column.TotalsRowFormula = ShiftOrNull(column.TotalsRowFormula, table.Range.First, sheet);
+                    column.CalculatedFormula = ShiftOrNull(column.CalculatedFormula, table.Range.First, sheet);
+                }
+            }
+
+            foreach (SheetDrawing drawing in sheet.Drawings)
+            {
+                drawing.Chart?.RewriteReferences(text => Shift(text, default, sheet));
+            }
+
+            foreach ((_, System.Xml.Linq.XElement kept) in sheet.Source?.Kept ?? [])
+            {
+                foreach (System.Xml.Linq.XElement formula in kept.DescendantsAndSelf().Where(e => e.Name.LocalName == "f"))
+                {
+                    formula.Value = Shift(formula.Value, default, sheet);
+                }
+            }
+        }
+
+        foreach (ChartSheet page in ChartSheets)
+        {
+            page.Chart?.RewriteReferences(text => Shift(text, default, null));
+        }
+
+        // What it compiled has the old places.
+        Calculator = null;
+        ChangeCount++;
+    }
+
     private static readonly System.Xml.Linq.XNamespace ExcelMain = "http://schemas.microsoft.com/office/excel/2006/main";
 
     /// <summary>A new workbook with one empty sheet, <c>Sheet1</c>, as Excel starts one.</summary>

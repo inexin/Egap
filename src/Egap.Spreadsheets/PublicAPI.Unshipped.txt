@@ -1067,3 +1067,9 @@ static Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream! stream, Egap.Spreads
 ~override Egap.Spreadsheets.DrawingPosition.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.DrawingPosition.ToString() -> string
 ~override Egap.Spreadsheets.RangeAddress.Equals(object obj) -> bool
+Egap.Spreadsheets.Worksheet.DeleteColumns(int column, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.DeleteColumns(string! column, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.DeleteRows(int row, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.InsertColumns(int column, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.InsertColumns(string! column, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.InsertRows(int row, int count = 1) -> void
