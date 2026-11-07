@@ -309,11 +309,11 @@ and the like, with the picture the file stores for it, so it survives a round tr
 
   <h3 id="Egap_Documents_Island_Chart" data-uid="Egap.Documents.Island.Chart">
   Chart
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L504"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L511"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The chart, for a chart read from a Word document or made in code; null for other islands, for a chart whose part
-cannot be read, and for one of the newer types, which Word's files hold with a picture and which come in as that picture.
+cannot be read. The newer types come in as charts too, with the picture Word keeps beside them still in <a class="xref" href="Egap.Documents.Island.html#Egap_Documents_Island_Fallback">Fallback</a>.
 A chart you edit is saved with the document.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -343,7 +343,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Fallback" data-uid="Egap.Documents.Island.Fallback">
   Fallback
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L537"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L544"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The picture to draw in its place, or null; with no picture, layout leaves an empty box of <a class="xref" href="Egap.Documents.Island.html#Egap_Documents_Island_Width">Width</a> by <a class="xref" href="Egap.Documents.Island.html#Egap_Documents_Island_Height">Height</a>.</p>
@@ -375,7 +375,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Floating" data-uid="Egap.Documents.Island.Floating">
   Floating
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L549"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L556"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Where the island floats, for one anchored to the paragraph; null when it sits in the line.</p>
@@ -407,7 +407,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Format" data-uid="Egap.Documents.Island.Format">
   Format
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L531"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L538"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The format the markup is in, such as &quot;docx&quot;.</p>
@@ -439,7 +439,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Height" data-uid="Egap.Documents.Island.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L543"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L550"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The height in points, or 0 when not known.</p>
@@ -471,7 +471,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Kind" data-uid="Egap.Documents.Island.Kind">
   Kind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L497"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L504"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>What the island holds.</p>
@@ -503,7 +503,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Markup" data-uid="Egap.Documents.Island.Markup">
   Markup
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L534"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L541"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The raw markup, as the format's reader found it.</p>
@@ -535,7 +535,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Text" data-uid="Egap.Documents.Island.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L546"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L553"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The text an island stands for, such as an equation's linear form, for text output; empty when unknown.</p>
@@ -567,7 +567,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Width" data-uid="Egap.Documents.Island.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L540"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L547"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The width in points, or 0 when not known.</p>
@@ -603,7 +603,7 @@ A chart you edit is saved with the document.</p>
 
   <h3 id="Egap_Documents_Island_Clone_System_Boolean_" data-uid="Egap.Documents.Island.Clone(System.Boolean)">
   Clone(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L552"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Inlines/Containers.cs/#L559"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A copy of this node in the same document, not yet in the tree. A deep copy includes everything the node holds; a shallow
