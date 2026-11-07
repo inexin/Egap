@@ -788,10 +788,25 @@ internal sealed partial class ChartRenderer
         public List<TreeNode> Children { get; } = [];
     }
 
-    /// <summary>The tree of categories: the outermost level at the top; the values add up towards it. Groups keep the order the file gives them.</summary>
+    /// <summary>
+    /// How many levels of categories a treemap or sunburst uses. Each level is a column of category cells, and a chart with
+    /// more than a handful is unreadable, so no real chart comes near this; a file with tens of thousands of levels would
+    /// otherwise overflow the stack in the walks over the tree, which go one call deeper for each level.
+    /// </summary>
+    private const int MaxTreeLevels = 64;
+
+    /// <summary>
+    /// The tree of categories: the outermost level at the top; the values add up towards it. Groups keep the order the file
+    /// gives them. Past <see cref="MaxTreeLevels"/> levels, the innermost ones are kept.
+    /// </summary>
     private static List<TreeNode> TreeOf(ChartSeries series)
     {
         IReadOnlyList<IReadOnlyList<string?>> levels = series.Categories.TextLevels;
+        if (levels.Count > MaxTreeLevels)
+        {
+            levels = [.. levels.Take(MaxTreeLevels)];
+        }
+
         IReadOnlyList<double?> numbers = series.Values.Numbers;
         List<TreeNode> roots = [];
         for (int i = 0; i < numbers.Count; i++)

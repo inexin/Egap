@@ -71,6 +71,26 @@ public sealed class ChartThreeDTests
     }
 
     [Theory]
+    [InlineData("sunburst")]
+    [InlineData("treemap")]
+    public void ATreeOfTensOfThousandsOfLevelsDraws(string layout)
+    {
+        // Each level is one more call deep in the walks over the tree; this many would overflow the stack.
+        StringBuilder xml = new("<cx:chartSpace xmlns:cx=\"http://schemas.microsoft.com/office/drawing/2014/chartex\"><cx:chartData><cx:data id=\"0\"><cx:strDim type=\"cat\">");
+        for (int i = 0; i < 50_000; i++)
+        {
+            xml.Append("<cx:lvl ptCount=\"1\"><cx:pt idx=\"0\">a</cx:pt></cx:lvl>");
+        }
+
+        xml.Append("</cx:strDim><cx:numDim type=\"size\"><cx:lvl ptCount=\"1\"><cx:pt idx=\"0\">5</cx:pt></cx:lvl></cx:numDim></cx:data></cx:chartData>")
+            .Append("<cx:chart><cx:plotArea><cx:plotAreaRegion><cx:series layoutId=\"").Append(layout).Append("\"><cx:dataId val=\"0\"/></cx:series></cx:plotAreaRegion></cx:plotArea></cx:chart></cx:chartSpace>");
+        using MemoryStream stream = new(Encoding.UTF8.GetBytes(xml.ToString()));
+        Chart chart = Chart.Load(stream, new DocumentLimits { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 16 * 1024 * 1024 });
+        using Raster<Rgba8> raster = Drawn(chart);
+        Assert.True(Ink(raster) > 500, layout);
+    }
+
+    [Theory]
     [InlineData(ChartType.Column)]
     [InlineData(ChartType.Bar)]
     [InlineData(ChartType.Line)]
