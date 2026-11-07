@@ -22,6 +22,9 @@ internal static class Ns
     public static readonly XNamespace Wpg = "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup";
     public static readonly XNamespace Wp14 = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing";
     public static readonly XNamespace C = "http://schemas.openxmlformats.org/drawingml/2006/chart";
+    public static readonly XNamespace Cx1 = "http://schemas.microsoft.com/office/drawing/2015/9/8/chartex";
+    public static readonly XNamespace Cx2 = "http://schemas.microsoft.com/office/drawing/2015/10/21/chartex";
+    public static readonly XNamespace Cx4 = "http://schemas.microsoft.com/office/drawing/2016/5/10/chartex";
     public static readonly XNamespace Dgm = "http://schemas.openxmlformats.org/drawingml/2006/diagram";
     public static readonly XNamespace Cp = "http://schemas.openxmlformats.org/package/2006/metadata/core-properties";
     public static readonly XNamespace Dc = "http://purl.org/dc/elements/1.1/";
@@ -34,7 +37,7 @@ internal static class Ns
     {
         return ns == W.NamespaceName || ns == R.NamespaceName || ns == Wp.NamespaceName || ns == A.NamespaceName || ns == Pic.NamespaceName
             || ns == Wps.NamespaceName || ns == Wp14.NamespaceName || ns == V.NamespaceName || ns == O.NamespaceName || ns == M.NamespaceName
-            || ns == W14.NamespaceName;
+            || ns == W14.NamespaceName || ns == Cx1.NamespaceName || ns == Cx2.NamespaceName || ns == Cx4.NamespaceName;
     }
 }
 

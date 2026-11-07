@@ -213,6 +213,9 @@ public sealed class ChartPlot
         }
     }
 
+    /// <summary>The shape a series's bars say for themselves, or null.</summary>
+    internal static ChartBarShape? ShapeOf(ChartSeries series) => Shapes.Parse((string?)series.Element.Element(ChartNs.C + "shape")?.Attribute("val"));
+
     /// <summary>Whether the plot is drawn in 3D.</summary>
     public bool Is3D => Element.Name.LocalName.Contains("3D", StringComparison.Ordinal);
 

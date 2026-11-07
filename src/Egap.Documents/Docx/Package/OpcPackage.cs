@@ -307,6 +307,9 @@ internal sealed class OpcPart(OpcPackage package, string name, byte[] data)
     /// <summary>This part's relationships (from its .rels part), resolved against its name.</summary>
     public IReadOnlyList<OpcRelationship> Relationships => relationships ??= package.ReadRelationships(OpcPackage.RelationshipsPartName(Name), Name);
 
+    /// <summary>The first part this part relates to with a relationship of <paramref name="type"/>, or null.</summary>
+    public OpcPart? RelatedPart(string type) => package.GetRelatedPart(Relationships, type);
+
     /// <summary>Whether this is a relationships part.</summary>
     public bool IsRelationships => Name.EndsWith(".rels", StringComparison.OrdinalIgnoreCase) && Name.Contains("/_rels/", StringComparison.Ordinal);
 

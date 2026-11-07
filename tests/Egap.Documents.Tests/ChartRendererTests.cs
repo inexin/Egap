@@ -69,13 +69,6 @@ public sealed class ChartRendererTests
         Assert.True(Ink(chart) > 500, type.ToString());
     }
 
-    [Fact]
-    public void ThreeDAndExtendedChartsAreNotDrawnYet()
-    {
-        Assert.False(ChartRenderer.Draws(Chart.Create(ChartType.Column, threeD: true)));
-        Assert.False(ChartRenderer.Draws(Chart.Create(ChartType.Waterfall)));
-    }
-
     [Theory]
     [InlineData(1, 1)]
     [InlineData(24, 16)]

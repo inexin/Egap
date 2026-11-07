@@ -79,7 +79,7 @@ internal sealed partial class DocxReader
                     IslandKind kind = uri switch
                     {
                         GroupUri => IslandKind.ShapeGroup,
-                        ChartUri => IslandKind.Chart,
+                        ChartUri or ChartNs.ExtendedUri => IslandKind.Chart,
                         DiagramUri => IslandKind.SmartArt,
                         InkUri => IslandKind.Ink,
                         _ => IslandKind.Other,
@@ -98,15 +98,23 @@ internal sealed partial class DocxReader
                 Floating = placement,
                 Text = IslandText(element),
                 ChartPart = kind == IslandKind.Chart ? ChartPartOf(element) : null,
+                Fallback = kind == IslandKind.Chart ? ChartPicture(element) : null,
             }, state, element);
         }
     }
 
     private OpcPart? ChartPartOf(XElement drawing)
     {
-        string? id = (string?)drawing.Descendants(ChartNs.C + "chart").FirstOrDefault()?.Attribute(Ns.R + "id");
+        string? id = (string?)(drawing.Descendants(ChartNs.C + "chart").FirstOrDefault() ?? drawing.Descendants(ChartNs.Cx + "chart").FirstOrDefault())?.Attribute(Ns.R + "id");
         OpcRelationship? relationship = id is null ? null : currentPart.GetRelationship(id);
         return relationship is { External: false } ? package.GetPart(relationship.TargetName) : null;
+    }
+
+    /// <summary>The picture saved with a chart of a newer kind, in the other branch of its markup compatibility choice; for a chart that does not draw.</summary>
+    private ImageData? ChartPicture(XElement drawing)
+    {
+        XElement? other = drawing.Ancestors(MarkupCompatibility.Mc + "AlternateContent").FirstOrDefault()?.Element(MarkupCompatibility.Mc + "Fallback");
+        return (string?)other?.Descendants(Ns.A + "blip").FirstOrDefault()?.Attribute(Ns.R + "embed") is { } embed ? ImageOf(embed) : null;
     }
 
     /// <summary>The text an island holds: its Word text (text boxes in groups), else its DrawingML text (charts, diagrams).</summary>

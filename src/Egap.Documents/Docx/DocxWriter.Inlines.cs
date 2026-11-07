@@ -471,7 +471,8 @@ internal sealed partial class DocxWriter
 
     private XElement WriteNewChart(Island island)
     {
-        string partName = UniquePartName("/word/charts/chart", ".xml");
+        bool extended = island.Chart!.IsExtended;
+        string partName = UniquePartName(extended ? "/word/charts/chartEx" : "/word/charts/chart", ".xml");
 
         // A copy of a chart in this file has its own copies of the parts its part points at, such as its workbook, so that
         // editing one chart's data in Word leaves the other's alone; in another file it cannot have them.
@@ -485,9 +486,9 @@ internal sealed partial class DocxWriter
             chart = chart.WithoutRelatedParts();
         }
 
-        package.AddPart(partName, Chart.ContentType, chart.ToBytes());
+        package.AddPart(partName, extended ? Chart.ExtendedContentType : Chart.ContentType, chart.ToBytes());
         string relationship = package.NextRelationshipId(currentPart);
-        package.AddRelationship(currentPart, relationship, Chart.Relationship, RelationshipTarget(currentPart, partName));
+        package.AddRelationship(currentPart, relationship, extended ? Chart.ExtendedRelationship : Chart.Relationship, RelationshipTarget(currentPart, partName));
         long cx = (long)Math.Round(island.Width * 12700);
         long cy = (long)Math.Round(island.Height * 12700);
         int id = nextDrawingId++;
@@ -495,9 +496,23 @@ internal sealed partial class DocxWriter
             Ns.A + "graphic",
             new XElement(
                 Ns.A + "graphicData",
-                new XAttribute("uri", ChartNs.ChartUri),
-                new XElement(ChartNs.C + "chart", new XAttribute(XNamespace.Xmlns + "c", ChartNs.ChartUri), new XAttribute(XNamespace.Xmlns + "r", ChartNs.R.NamespaceName), new XAttribute(Ns.R + "id", relationship))));
-        return new XElement(Ns.W + "drawing", Frame(island.Floating, cx, cy, id, "Chart " + id, null, null, graphic));
+                new XAttribute("uri", extended ? ChartNs.ExtendedUri : ChartNs.ChartUri),
+                extended
+                    ? new XElement(ChartNs.Cx + "chart", new XAttribute(XNamespace.Xmlns + "cx", ChartNs.ExtendedUri), new XAttribute(XNamespace.Xmlns + "r", ChartNs.R.NamespaceName), new XAttribute(Ns.R + "id", relationship))
+                    : new XElement(ChartNs.C + "chart", new XAttribute(XNamespace.Xmlns + "c", ChartNs.ChartUri), new XAttribute(XNamespace.Xmlns + "r", ChartNs.R.NamespaceName), new XAttribute(Ns.R + "id", relationship))));
+        XElement drawing = new(Ns.W + "drawing", Frame(island.Floating, cx, cy, id, "Chart " + id, null, null, graphic));
+
+        // Word reads a chart of a newer kind only behind a markup compatibility choice that names the kind's namespace.
+        return !extended ? drawing : new XElement(
+            MarkupCompatibility.Mc + "AlternateContent",
+            new XAttribute(XNamespace.Xmlns + "mc", MarkupCompatibility.Mc.NamespaceName),
+            new XElement(
+                MarkupCompatibility.Mc + "Choice",
+                new XAttribute(XNamespace.Xmlns + "cx1", Ns.Cx1.NamespaceName),
+                new XAttribute(XNamespace.Xmlns + "cx2", Ns.Cx2.NamespaceName),
+                new XAttribute(XNamespace.Xmlns + "cx4", Ns.Cx4.NamespaceName),
+                new XAttribute("Requires", chart.Type switch { ChartType.Funnel => "cx2", ChartType.RegionMap => "cx4", _ => "cx1" }),
+                drawing));
     }
 
     private XElement WritePicture(Picture picture, DocxExtension? kept)

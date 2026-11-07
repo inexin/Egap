@@ -11,6 +11,8 @@ namespace Egap.Documents.Charts;
 internal sealed partial class ChartRenderer
 {
     private const float RadarLabelLines = 0.824f;
+    private const float RadarTiny = 80;
+    private const float RadarTinyLabelShare = 0.66f;
     private const float RadarLabelShare = 0.33f;
     private const float RadarLabelHeightShare = 0.3f;
     private const float RadarLabelGap = 2.5f;
@@ -755,10 +757,13 @@ internal sealed partial class ChartRenderer
         {
             // Its labels take a quarter of the room at most on a side, wrapping past that.
             spokes.Wrap = radarRoom * RadarLabelShare;
-            w = spokes.Labels.Select(label => Measure(RadarLabel(label, look, spokes.Wrap), look).Width).DefaultIfEmpty(0).Max();
+            w = Math.Min(spokes.Labels.Select(label => Measure(RadarLabel(label, look, spokes.Wrap), look).Width).DefaultIfEmpty(0).Max(), spokes.Wrap);
         }
 
-        float side = Math.Max(Math.Min(r - l - (2 * w), b - t - (2 * RadarLabelLines * h)), 1);
+
+        // In a tiny chart the labels may run into the plot's own margin.
+        float reach = radarRoom < RadarTiny ? w * RadarTinyLabelShare : w;
+        float side = Math.Max(Math.Min(r - l - (2 * reach), b - t - (2 * RadarLabelLines * h)), 1);
         return new RectF(l + ((r - l - side) / 2), t + ((b - t - side) / 2), side, side);
     }
 
