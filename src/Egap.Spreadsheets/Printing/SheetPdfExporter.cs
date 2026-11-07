@@ -153,7 +153,7 @@ internal sealed class SheetPdfExporter : IPageTagger
 
             foreach (SheetDrawing drawing in sheet.Drawings)
             {
-                if (drawing.Kind == SheetDrawingKind.Picture && drawing.ImageData is not null)
+                if ((drawing.Kind == SheetDrawingKind.Picture && drawing.ImageData is not null) || drawing.Chart is not null)
                 {
                     PdfStructureElement figure = section.Add(PdfStructureType.Figure);
                     figure.AlternateText = string.IsNullOrWhiteSpace(drawing.Description) ? (drawing.Name.Length > 0 ? drawing.Name : "Picture") : drawing.Description;

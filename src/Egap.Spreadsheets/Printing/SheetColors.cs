@@ -44,6 +44,9 @@ internal sealed class SheetColors
         this.palette = palette;
     }
 
+    /// <summary>The workbook's theme for its charts; null for the default.</summary>
+    public Theme? ChartTheme { get; private init; }
+
     /// <summary>The colours of the default theme and palette, for a workbook made in code.</summary>
     public static SheetColors Default { get; } = new(OfficeTheme, DefaultPalette);
 
@@ -51,13 +54,20 @@ internal sealed class SheetColors
     public static SheetColors For(Workbook book)
     {
         uint[]? theme = null;
+        Theme? chartTheme = null;
         if (book.Source is { } source)
         {
             try
             {
                 if (source.Package.GetRelatedPart(source.WorkbookPart.Relationships, OpcRelationshipTypes.Theme) is { } part)
                 {
-                    theme = ReadTheme(part.LoadXml());
+                    XDocument document = part.LoadXml();
+                    theme = ReadTheme(document);
+                    if (document.Root is { } root)
+                    {
+                        chartTheme = new Document().Theme;
+                        chartTheme.Read(root);
+                    }
                 }
             }
             catch (Exception e) when (e is System.Xml.XmlException or DocumentException or InvalidDataException)
@@ -67,7 +77,7 @@ internal sealed class SheetColors
         }
 
         uint[]? palette = book.Styles.Source?.Document.Root is { } styles ? ReadPalette(styles) : null;
-        return theme is null && palette is null ? Default : new SheetColors(theme ?? OfficeTheme, palette ?? DefaultPalette);
+        return theme is null && palette is null ? Default : new SheetColors(theme ?? OfficeTheme, palette ?? DefaultPalette) { ChartTheme = chartTheme };
     }
 
     /// <summary>The colour <paramref name="color"/> shows, or <paramref name="automatic"/> for an automatic colour.</summary>

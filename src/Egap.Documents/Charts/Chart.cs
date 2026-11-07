@@ -4,6 +4,8 @@ using System.Xml.Linq;
 
 using Egap.Documents.Docx;
 
+using Egami.Drawing;
+
 namespace Egap.Documents.Charts;
 
 /// <summary>How a chart draws cells with no value.</summary>
@@ -123,6 +125,12 @@ public sealed class Chart
             }
         }
     }
+
+    /// <summary>Whether the file turned off the title a chart of one series would otherwise take from the series's name.</summary>
+    internal bool AutoTitleDeleted => body.Bool("autoTitleDeleted") ?? false;
+
+    /// <summary>Whether the chart's dates count from 1904.</summary>
+    internal bool Date1904 => space.Bool("date1904") ?? false;
 
     /// <summary>The chart's title. Writing to it gives the chart one.</summary>
     public ChartTitle Title => new(body["title"], IsExtended);
@@ -289,6 +297,18 @@ public sealed class Chart
     {
         ArgumentNullException.ThrowIfNull(stream);
         stream.Write(ToBytes());
+    }
+
+    /// <summary>Draws the chart on a canvas: its data, as its part last cached it, into <paramref name="bounds"/>, in the canvas's points.
+    /// Charts of the newer kinds and 3D charts draw from later stages of the renderer: a newer kind draws nothing, and a 3D chart draws as its 2D form.</summary>
+    /// <param name="canvas">The canvas to draw on.</param>
+    /// <param name="bounds">Where the chart goes.</param>
+    /// <param name="options">The theme, fonts and culture; Office's defaults when null.</param>
+    /// <exception cref="ArgumentNullException">The canvas is null.</exception>
+    public void Draw(Canvas canvas, RectF bounds, ChartDrawOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(canvas);
+        new ChartRenderer(this, options).Draw(canvas, bounds);
     }
 
     /// <summary>A copy of the chart that shares nothing with this one.</summary>

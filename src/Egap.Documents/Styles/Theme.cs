@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using Egami.Pixels;
 
 namespace Egap.Documents;
@@ -97,6 +98,58 @@ public sealed class Theme
             _ => throw new ArgumentOutOfRangeException(nameof(font)),
         };
         return value.Length == 0 ? null : value;
+    }
+
+    /// <summary>Takes the colours and fonts of a DrawingML theme part (<c>a:theme</c>), as a Word or Excel file has it.</summary>
+    internal void Read(XElement root)
+    {
+        if ((string?)root.Attribute("name") is { } name)
+        {
+            Name = name;
+        }
+
+        XElement? elements = root.Element(Docx.Ns.A + "themeElements");
+        if (elements?.Element(Docx.Ns.A + "clrScheme") is { } scheme)
+        {
+            (string Name, ThemeColor Color)[] slots =
+            [
+                ("dk1", ThemeColor.Dark1), ("lt1", ThemeColor.Light1), ("dk2", ThemeColor.Dark2), ("lt2", ThemeColor.Light2),
+                ("accent1", ThemeColor.Accent1), ("accent2", ThemeColor.Accent2), ("accent3", ThemeColor.Accent3),
+                ("accent4", ThemeColor.Accent4), ("accent5", ThemeColor.Accent5), ("accent6", ThemeColor.Accent6),
+                ("hlink", ThemeColor.Hyperlink), ("folHlink", ThemeColor.FollowedHyperlink),
+            ];
+            foreach ((string slot, ThemeColor color) in slots)
+            {
+                XElement? value = scheme.Element(Docx.Ns.A + slot)?.Elements().FirstOrDefault();
+                string? hex = value?.Name.LocalName switch
+                {
+                    "srgbClr" => (string?)value.Attribute("val"),
+                    "sysClr" => (string?)value.Attribute("lastClr"),
+                    _ => null,
+                };
+                if (Docx.DocxProperties.ParseHex(hex) is Rgba8 rgb)
+                {
+                    SetColor(color, rgb);
+                }
+            }
+        }
+
+        if (elements?.Element(Docx.Ns.A + "fontScheme") is { } fonts)
+        {
+            XElement? major = fonts.Element(Docx.Ns.A + "majorFont");
+            XElement? minor = fonts.Element(Docx.Ns.A + "minorFont");
+            MajorLatinFont = Typeface(major, "latin") ?? MajorLatinFont;
+            MinorLatinFont = Typeface(minor, "latin") ?? MinorLatinFont;
+            MajorEastAsiaFont = Typeface(major, "ea") ?? MajorEastAsiaFont;
+            MinorEastAsiaFont = Typeface(minor, "ea") ?? MinorEastAsiaFont;
+            MajorComplexScriptFont = Typeface(major, "cs") ?? MajorComplexScriptFont;
+            MinorComplexScriptFont = Typeface(minor, "cs") ?? MinorComplexScriptFont;
+        }
+
+        static string? Typeface(XElement? font, string script)
+        {
+            return (string?)font?.Element(Docx.Ns.A + script)?.Attribute("typeface");
+        }
     }
 
     internal Rgba8 GetColor(ThemeColor color)
