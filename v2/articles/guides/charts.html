@@ -210,6 +210,119 @@ sheet, after the sheets, on a page of its own (<code>SheetPrintLayout.ChartPages
 legend that wraps leaves out the entries past half the chart's height.</p>
 <p>Not all of Excel's look comes through: bevels and shadows from a theme's effects are left out. <code>ChartDrawOptions.Culture</code>
 decides how dates, percents and list separators read; Office uses the machine's locale, so pass the reader's culture to match it.</p>
+<h2 id="what-each-type-holds">What each type holds</h2>
+<p>Setting something a chart type has no place for throws <code>InvalidOperationException</code>, because the file would be invalid and Excel
+refuses some such files outright. Setting null always works. A value read from a file stays as it was.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Plots that have it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Grouping</code></td>
+<td>Column, bar, line, area; line and area are not clustered</td>
+</tr>
+<tr>
+<td><code>VaryColors</code></td>
+<td>All but stock and surface</td>
+</tr>
+<tr>
+<td><code>GapWidth</code></td>
+<td>Column, bar, pie of pie</td>
+</tr>
+<tr>
+<td><code>Overlap</code></td>
+<td>2D column and bar</td>
+</tr>
+<tr>
+<td><code>GapDepth</code></td>
+<td>3D column, bar, line and area</td>
+</tr>
+<tr>
+<td><code>BarShape</code></td>
+<td>3D column and bar</td>
+</tr>
+<tr>
+<td><code>FirstSliceAngle</code></td>
+<td>2D pie, doughnut</td>
+</tr>
+<tr>
+<td><code>HoleSize</code></td>
+<td>Doughnut</td>
+</tr>
+<tr>
+<td><code>ScatterStyle</code></td>
+<td>Scatter</td>
+</tr>
+<tr>
+<td><code>RadarStyle</code></td>
+<td>Radar</td>
+</tr>
+<tr>
+<td><code>BubbleScale</code>, <code>ShowNegativeBubbles</code>, <code>BubbleSizeIsWidth</code></td>
+<td>Bubble</td>
+</tr>
+<tr>
+<td><code>Wireframe</code></td>
+<td>Surface</td>
+</tr>
+<tr>
+<td><code>ShowMarkers</code></td>
+<td>2D line</td>
+</tr>
+<tr>
+<td><code>ChartSeries.Smooth</code></td>
+<td>Line, scatter, stock</td>
+</tr>
+<tr>
+<td><code>ChartSeries.InvertIfNegative</code></td>
+<td>Column, bar, bubble</td>
+</tr>
+<tr>
+<td><code>ChartSeries.Explosion</code></td>
+<td>Pie, pie of pie, doughnut</td>
+</tr>
+<tr>
+<td><code>ChartSeries.Bubble3D</code></td>
+<td>Bubble</td>
+</tr>
+</tbody>
+</table>
+<p><code>ChartDataLabels.Position</code> depends on the type as well:</p>
+<table>
+<thead>
+<tr>
+<th>Chart</th>
+<th>Positions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clustered 2D column and bar</td>
+<td><code>Center</code>, <code>InsideEnd</code>, <code>InsideBase</code>, <code>OutsideEnd</code></td>
+</tr>
+<tr>
+<td>Stacked 2D column and bar</td>
+<td><code>Center</code>, <code>InsideEnd</code>, <code>InsideBase</code></td>
+</tr>
+<tr>
+<td>2D line, scatter, bubble, stock</td>
+<td><code>Top</code>, <code>Bottom</code>, <code>Left</code>, <code>Right</code>, <code>Center</code></td>
+</tr>
+<tr>
+<td>Pie, 3D pie, pie of pie</td>
+<td><code>BestFit</code>, <code>Center</code>, <code>InsideEnd</code>, <code>OutsideEnd</code></td>
+</tr>
+<tr>
+<td>Radar, area, doughnut, surface, other 3D</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>Changing <code>Grouping</code> takes away positions the new grouping does not allow.</p>
 <h2 id="word-documents">Word documents</h2>
 <p>A chart in a Word document is an <code>Island</code> of kind <code>IslandKind.Chart</code>, with the same model in <code>island.Chart</code>. A chart of the
 <code>cx:</code> types comes in as the picture Word saves with it, and cannot be added yet. A chart made here has its values in the part

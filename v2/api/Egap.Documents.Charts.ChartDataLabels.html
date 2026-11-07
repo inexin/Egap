@@ -154,7 +154,7 @@ Class ChartDataLabels  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="Egap_Documents_Charts_ChartDataLabels_Deleted" data-uid="Egap.Documents.Charts.ChartDataLabels.Deleted">
   Deleted
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L693"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L706"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the labels are switched off here, though an outer level has them.</p>
@@ -186,7 +186,7 @@ Class ChartDataLabels  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="Egap_Documents_Charts_ChartDataLabels_Format" data-uid="Egap.Documents.Charts.ChartDataLabels.Format">
   Format
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L712"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L725"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The labels' fill and outline.</p>
@@ -218,7 +218,7 @@ Class ChartDataLabels  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="Egap_Documents_Charts_ChartDataLabels_NumberFormat" data-uid="Egap.Documents.Charts.ChartDataLabels.NumberFormat">
   NumberFormat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L656"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L669"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The number format of the values shown, or null to follow the cells.</p>
@@ -250,10 +250,13 @@ Class ChartDataLabels  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="Egap_Documents_Charts_ChartDataLabels_Position" data-uid="Egap.Documents.Charts.ChartDataLabels.Position">
   Position
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L634"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L642"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Where labels sit against their points, or null for the chart's default.</p>
+  <div class="markdown level1 summary"><p>Where labels sit against their points, or null for the chart's default. Excel refuses a file with a position its chart
+type does not allow: clustered columns and bars take center, inside end, inside base and outside end; stacked ones the
+same without outside end; line, scatter, bubble and stock charts take top, bottom, left, right and center; pies take best
+fit, center, inside end and outside end; and radar, area, doughnut, surface and other 3D charts take none.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -275,6 +278,12 @@ Class ChartDataLabels  <a class="header-action link-secondary" title="View sourc
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The chart's type does not allow the position.</p>
+</dd>
+  </dl>
 
 
 
@@ -282,7 +291,7 @@ Class ChartDataLabels  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="Egap_Documents_Charts_ChartDataLabels_Separator" data-uid="Egap.Documents.Charts.ChartDataLabels.Separator">
   Separator
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L675"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L688"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>What goes between the parts of a label, or null for the default.</p>
@@ -506,7 +515,7 @@ Class ChartDataLabels  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="Egap_Documents_Charts_ChartDataLabels_TextFormat" data-uid="Egap.Documents.Charts.ChartDataLabels.TextFormat">
   TextFormat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L715"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartElements.cs/#L728"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the labels' text looks.</p>
