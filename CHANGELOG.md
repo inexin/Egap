@@ -32,6 +32,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- A package part whose XML declaration trips .NET's XML reader now gives a `DocumentException`, as other malformed XML does,
+  and no longer an `ArgumentOutOfRangeException`.
 - Charts: `Egap.Documents.Charts` reads, edits, creates and saves chart parts of both kinds, `c:` (column, bar, line, area,
   pie, doughnut, scatter, bubble, radar, stock, surface and their 3D forms) and `cx:` (waterfall, histogram, Pareto, box and
   whisker, treemap, sunburst, funnel, region map), through one `Chart` class. What the model has no property for stays in
