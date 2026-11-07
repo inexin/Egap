@@ -11,6 +11,7 @@ Fuzzing harness for Egap.Spreadsheets' parsers, run with SharpFuzz and AFL++ in 
 | `document` | Any bytes read by `Document.Load` after `SpreadsheetFormat.Register()`, an XLSX package most of all: its tables put back on sheets with `Workbook.FromTables`; may throw only `DocumentException`, or `NotSupportedException` for a format the harness has not registered. | `tests/fuzz-seeds/xlsx` |
 | `tables` | Any bytes read as CSV, written as a document and put back on sheets; may throw only `InvalidDataException`. | `tests/fuzz-seeds/csv` |
 | `links` | Any bytes read as an XLSX package, with formulas added that read a linked book's kept values and a full calculation; may throw only `DocumentException`. | `tests/fuzz-seeds/links` |
+| `sheetcharts` | Any bytes read as an XLSX package: each chart read, filled from the cells and edited, then the book saved; may throw only `DocumentException`. | `tests/fuzz-seeds/sheetcharts` |
 | `headerfooter` | Any bytes read as a header and footer code (`&L`, `&P+1`, `&"Arial,Bold"`, `&K` colours and the rest): parsed, then printed to PDF as a sheet's header and footer with every field filled in; must never throw | `tests/fuzz-seeds/headerfooter/*` |
 | `formula` | Any bytes read as a formula in A1 and R1C1 style; what parses must print back exactly as written, its A1 form must read back to itself, its R1C1 form must parse, and evaluating it on a small workbook must give a value; may throw only `FormulaException` | `tests/fuzz-seeds/formula/*` |
 

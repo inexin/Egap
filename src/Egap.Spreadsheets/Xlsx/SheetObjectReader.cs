@@ -22,6 +22,7 @@ internal static class SheetObjectReader
     public static readonly XNamespace Xdr = "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing";
     public static readonly XNamespace A = "http://schemas.openxmlformats.org/drawingml/2006/main";
     public static readonly XNamespace C = "http://schemas.openxmlformats.org/drawingml/2006/chart";
+    public static readonly XNamespace Cx = "http://schemas.microsoft.com/office/drawing/2014/chartex";
     public static readonly XNamespace Mc = "http://schemas.openxmlformats.org/markup-compatibility/2006";
 
     /// <summary>Reads an element the model holds; false for one kept as it is.</summary>
@@ -359,7 +360,7 @@ internal static class SheetObjectReader
                 "pic" => SheetDrawingKind.Picture,
                 "sp" => SheetDrawingKind.Shape,
                 "grpSp" => SheetDrawingKind.Group,
-                "graphicFrame" when content.Descendants(C + "chart").Any() => SheetDrawingKind.Chart,
+                "graphicFrame" when ChartReference(content) is not null => SheetDrawingKind.Chart,
                 _ => SheetDrawingKind.Other,
             };
             SheetDrawing drawing = new(objectKind)
@@ -407,12 +408,20 @@ internal static class SheetObjectReader
                 drawing.SetImageRead(imagePart.Data, imagePart.ContentType);
             }
 
+            if (objectKind == SheetDrawingKind.Chart && (string?)ChartReference(content!)!.Attribute(XlsxNames.R + "id") is { } chartId
+                && part.GetRelationship(chartId) is { External: false } chartRelationship)
+            {
+                drawing.ChartPart = Package(sheet).GetPart(chartRelationship.TargetName);
+            }
+
             drawing.ReadState = SheetObjectWriter.State(drawing);
             sheet.Drawings.AddRead(drawing);
         }
 
         return true;
     }
+
+    private static XElement? ChartReference(XElement frame) => frame.Descendants().FirstOrDefault(e => e.Name == C + "chart" || e.Name == Cx + "chart");
 
     /// <summary>The object an anchor places: its child that is not a position or client data.</summary>
     internal static XElement? ObjectOf(XElement anchor) =>

@@ -3,6 +3,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
+using Egap.Documents.Charts;
+
 using Egap.Documents.Docx;
 using Egap.Spreadsheets.Storage;
 
@@ -651,6 +653,15 @@ internal static class SheetObjectWriter
     {
         SheetSource? source = sheet.Source;
         SheetDrawingCollection drawings = sheet.Drawings;
+        foreach (SheetDrawing edited in drawings)
+        {
+            if (edited.LoadedChart is { IsChanged: true, IsNew: false } chart && edited.ChartPart is { } chartPart)
+            {
+                ChartCells.Fill(chart, sheet.Workbook);
+                parts.Add(chartPart.Name, chartPart.ContentType, chart.ToBytes(), [.. chartPart.Relationships]);
+            }
+        }
+
         bool changed = drawings.Changed || drawings.Any(d => d.ReadState is null || State(d) != d.ReadState);
         if (!changed)
         {
@@ -706,6 +717,27 @@ internal static class SheetObjectWriter
                 parts.Add(media, drawing.ImageContentType!, image, []);
                 imageId = NextImageId();
                 drawingRels.Add(new OpcRelationship(imageId, SheetObjectReader.ImageRelationship, Relative(drawingName, media), false, media));
+            }
+
+            if (drawing.Kind == SheetDrawingKind.Chart && drawing.Source is null && drawing.Chart is { } madeChart)
+            {
+                ChartCells.Fill(madeChart, sheet.Workbook);
+                string chartName = madeChart.IsExtended ? parts.FreeName("/xl/charts/chartEx", "xml") : parts.FreeName("/xl/charts/chart", "xml");
+                List<OpcRelationship> chartRels = [];
+                if (madeChart.IsExtended)
+                {
+                    // Excel opens no workbook with a cx: chart that lacks these.
+                    string styleName = parts.FreeName("/xl/charts/style", "xml");
+                    parts.Add(styleName, Chart.StyleContentType, Chart.ExtendedStylePart(), []);
+                    string colorsName = parts.FreeName("/xl/charts/colors", "xml");
+                    parts.Add(colorsName, Chart.ColorsContentType, Chart.ExtendedColorsPart(), []);
+                    chartRels.Add(new OpcRelationship("rId1", Chart.StyleRelationship, Relative(chartName, styleName), false, styleName));
+                    chartRels.Add(new OpcRelationship("rId2", Chart.ColorsRelationship, Relative(chartName, colorsName), false, colorsName));
+                }
+
+                parts.Add(chartName, madeChart.IsExtended ? Chart.ExtendedContentType : Chart.ContentType, madeChart.ToBytes(), chartRels);
+                imageId = NextImageId();
+                drawingRels.Add(new OpcRelationship(imageId, madeChart.IsExtended ? Chart.ExtendedRelationship : Chart.Relationship, Relative(drawingName, chartName), false, chartName));
             }
 
             root.Add(Anchor(drawing, imageId, shapeId++));
@@ -774,6 +806,10 @@ internal static class SheetObjectWriter
                 blip.SetAttributeValue(XlsxNames.R + "embed", imageId);
             }
         }
+        else if (drawing.Kind == SheetDrawingKind.Chart)
+        {
+            shape = ChartFrame(drawing, imageId, shapeId);
+        }
         else
         {
             shape = new XElement(Xdr + "pic",
@@ -789,6 +825,50 @@ internal static class SheetObjectWriter
         anchor.Add(shape);
         anchor.Add(drawing.Source?.Element(Xdr + "clientData") is { } client ? new XElement(client) : new XElement(Xdr + "clientData"));
         return anchor;
+    }
+
+    /// <summary>A new chart's frame; one of the newer types goes in the markup-compatibility block Excel writes for them.</summary>
+    private static XElement ChartFrame(SheetDrawing drawing, string? chartId, int shapeId)
+    {
+        bool extended = drawing.Chart!.IsExtended;
+        XNamespace chartNs = extended ? SheetObjectReader.Cx : SheetObjectReader.C;
+        XElement frame = new(
+            Xdr + "graphicFrame",
+            new XAttribute("macro", ""),
+            new XElement(
+                Xdr + "nvGraphicFramePr",
+                new XElement(Xdr + "cNvPr", new XAttribute("id", Attr(shapeId)), new XAttribute("name", drawing.Name), drawing.Description is null ? null : new XAttribute("descr", drawing.Description)),
+                new XElement(Xdr + "cNvGraphicFramePr")),
+            new XElement(Xdr + "xfrm", new XElement(A + "off", new XAttribute("x", "0"), new XAttribute("y", "0")), new XElement(A + "ext", new XAttribute("cx", "0"), new XAttribute("cy", "0"))),
+            new XElement(
+                A + "graphic",
+                new XElement(
+                    A + "graphicData",
+                    new XAttribute("uri", chartNs.NamespaceName),
+                    new XElement(chartNs + "chart", new XAttribute(XNamespace.Xmlns + (extended ? "cx" : "c"), chartNs.NamespaceName), new XAttribute(XNamespace.Xmlns + "r", XlsxNames.RUri), new XAttribute(XlsxNames.R + "id", chartId ?? "")))));
+        if (!extended)
+        {
+            return frame;
+        }
+
+        XNamespace cx1 = "http://schemas.microsoft.com/office/drawing/2015/9/8/chartex";
+        return new XElement(
+            SheetObjectReader.Mc + "AlternateContent",
+            new XAttribute(XNamespace.Xmlns + "mc", SheetObjectReader.Mc.NamespaceName),
+            new XElement(SheetObjectReader.Mc + "Choice", new XAttribute(XNamespace.Xmlns + "cx1", cx1.NamespaceName), new XAttribute("Requires", "cx1"), frame),
+            new XElement(
+                SheetObjectReader.Mc + "Fallback",
+                new XElement(
+                    Xdr + "sp",
+                    new XAttribute("macro", ""),
+                    new XAttribute("textlink", ""),
+                    new XElement(Xdr + "nvSpPr", new XElement(Xdr + "cNvPr", new XAttribute("id", "0"), new XAttribute("name", "")), new XElement(Xdr + "cNvSpPr")),
+                    new XElement(Xdr + "spPr", new XElement(A + "prstGeom", new XAttribute("prst", "rect"), new XElement(A + "avLst"))),
+                    new XElement(
+                        Xdr + "txBody",
+                        new XElement(A + "bodyPr"),
+                        new XElement(A + "lstStyle"),
+                        new XElement(A + "p", new XElement(A + "r", new XElement(A + "rPr", new XAttribute("lang", "en-US")), new XElement(A + "t", "This chart isn't available in your version of Excel.")))))));
     }
 
     private static XElement Marker(string name, DrawingPosition position) => new(Xdr + name,

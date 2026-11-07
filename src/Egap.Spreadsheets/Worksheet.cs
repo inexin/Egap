@@ -86,7 +86,7 @@ public sealed class Worksheet
     public CellCommentCollection Comments { get; } = new();
 
     /// <summary>The pictures, shapes, charts and other objects on the sheet's drawing layer.</summary>
-    public SheetDrawingCollection Drawings { get; } = new();
+    public SheetDrawingCollection Drawings => field ??= new(this);
 
     /// <summary>How the sheet shows on screen: gridlines, zoom, frozen panes and so on.</summary>
     public SheetView View { get; } = new();

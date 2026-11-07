@@ -51,6 +51,17 @@ internal static class XlsxReader
             if (part is null || relationship is null || !XlsxNames.SameType(relationship.Type, XlsxNames.WorksheetRelationship))
             {
                 source.KeptSheets.Add(new KeptSheet(new XElement(entry), last));
+                if (part is not null && relationship is not null && XlsxNames.SameType(relationship.Type, XlsxNames.ChartsheetRelationship))
+                {
+                    SheetVisibility visibility = (string?)entry.Attribute("state") switch
+                    {
+                        "hidden" => SheetVisibility.Hidden,
+                        "veryHidden" => SheetVisibility.VeryHidden,
+                        _ => SheetVisibility.Visible,
+                    };
+                    book.ChartSheetList.Add(new ChartSheet(book, (string?)entry.Attribute("name") ?? "", visibility, part, package));
+                }
+
                 positions.Add((null, source.KeptSheets.Count - 1));
                 continue;
             }

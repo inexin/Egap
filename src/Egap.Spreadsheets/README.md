@@ -23,8 +23,8 @@ sheet.SaveCsv("sales.csv");
 Workbook loaded = Workbook.Load("sales.xlsx");
 ```
 
-Tables, data validation, conditional formatting, notes, hyperlinks and pictures are read, edited and written, and a
-loaded workbook saves its charts, pivot tables, macros and the rest as they were. `SheetReader` and `SheetWriter` stream
+Tables, data validation, conditional formatting, notes, hyperlinks, pictures and charts are read, edited and written, and a
+loaded workbook saves its pivot tables, macros and the rest as they were. `SheetReader` and `SheetWriter` stream
 rows through XLSX and CSV in constant memory.
 Number format codes show values as Excel does (`cell.Text`, `NumberFormatCode`), in any culture, and CSV and TSV are
 read and written with type detection. Formulas are read and checked against Excel's grammar, in A1 or R1C1 style

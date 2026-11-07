@@ -27,6 +27,7 @@ internal static class Targets
         ["opf"] = Opf,
         ["nav"] = Nav,
         ["epub"] = Epub,
+        ["chart"] = ChartPart,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -232,6 +233,81 @@ internal static class Targets
     }
 
     /// <summary>Any bytes read as an OPC package: every part's relationships resolved and every XML part loaded.</summary>
+    /// <summary>A chart part: every property read, an edit made and the part saved and read back.</summary>
+    private static void ChartPart(Stream input)
+    {
+        try
+        {
+            Egap.Documents.Charts.Chart chart = Egap.Documents.Charts.Chart.Load(input, new DocumentLimits { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 16 * 1024 * 1024 });
+            Walk(chart, 0, new HashSet<object>(ReferenceEqualityComparer.Instance));
+            chart.Title.Text = "Edited";
+            chart.HasLegend = !chart.HasLegend;
+            foreach (Egap.Documents.Charts.ChartSeries series in chart.Series)
+            {
+                series.Name = "Edited";
+                series.Values.SetNumbers([1, null, 2]);
+                series.Categories.SetText(["a", null, "b"]);
+            }
+
+            foreach (Egap.Documents.Charts.ChartAxis axis in chart.Axes)
+            {
+                axis.Minimum = 1;
+                axis.Title.Text = "Edited";
+            }
+
+            using MemoryStream saved = new();
+            chart.Save(saved);
+            saved.Position = 0;
+            _ = Egap.Documents.Charts.Chart.Load(saved).Series.Count;
+        }
+        catch (DocumentException)
+        {
+        }
+    }
+
+    /// <summary>Reads every public property of the chart model that hangs from an object, a capped number of items of each list.</summary>
+    private static void Walk(object? value, int depth, HashSet<object> seen)
+    {
+        if (value is null or string || value.GetType().IsPrimitive || value.GetType().IsEnum || depth > 8 || !seen.Add(value))
+        {
+            return;
+        }
+
+        if (value is System.Collections.IEnumerable items)
+        {
+            foreach (object? item in items.Cast<object?>().Take(64))
+            {
+                Walk(item, depth + 1, seen);
+            }
+
+            return;
+        }
+
+        if (value.GetType().Namespace != "Egap.Documents.Charts")
+        {
+            return;
+        }
+
+        foreach (System.Reflection.PropertyInfo property in value.GetType().GetProperties())
+        {
+            if (property.GetIndexParameters().Length == 0)
+            {
+                object? read;
+                try
+                {
+                    read = property.GetValue(value);
+                }
+                catch (System.Reflection.TargetInvocationException error) when (error.InnerException is not null)
+                {
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error.InnerException).Throw();
+                    throw;
+                }
+
+                Walk(read, depth + 1, seen);
+            }
+        }
+    }
+
     private static void Package(Stream input)
     {
         try

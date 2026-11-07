@@ -303,6 +303,11 @@ Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Baseline = 0 -> Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Subscript = 2 -> Egap.Spreadsheets.CellVerticalTextPosition
 Egap.Spreadsheets.CellVerticalTextPosition.Superscript = 1 -> Egap.Spreadsheets.CellVerticalTextPosition
+Egap.Spreadsheets.ChartSheet
+Egap.Spreadsheets.ChartSheet.Chart.get -> Egap.Documents.Charts.Chart?
+Egap.Spreadsheets.ChartSheet.Name.get -> string!
+Egap.Spreadsheets.ChartSheet.RefreshChart() -> void
+Egap.Spreadsheets.ChartSheet.Visibility.get -> Egap.Spreadsheets.SheetVisibility
 Egap.Spreadsheets.ComparisonOperator
 Egap.Spreadsheets.ComparisonOperator.Between = 0 -> Egap.Spreadsheets.ComparisonOperator
 Egap.Spreadsheets.ComparisonOperator.Equal = 2 -> Egap.Spreadsheets.ComparisonOperator
@@ -600,6 +605,7 @@ Egap.Spreadsheets.SheetColumnCollection.this[string! name].get -> Egap.Spreadshe
 Egap.Spreadsheets.SheetDrawing
 Egap.Spreadsheets.SheetDrawing.AnchorKind.get -> Egap.Spreadsheets.DrawingAnchorKind
 Egap.Spreadsheets.SheetDrawing.AnchorKind.set -> void
+Egap.Spreadsheets.SheetDrawing.Chart.get -> Egap.Documents.Charts.Chart?
 Egap.Spreadsheets.SheetDrawing.Description.get -> string?
 Egap.Spreadsheets.SheetDrawing.Description.set -> void
 Egap.Spreadsheets.SheetDrawing.From.get -> Egap.Spreadsheets.DrawingPosition
@@ -612,6 +618,7 @@ Egap.Spreadsheets.SheetDrawing.ImageData.set -> void
 Egap.Spreadsheets.SheetDrawing.Kind.get -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetDrawing.Name.get -> string!
 Egap.Spreadsheets.SheetDrawing.Name.set -> void
+Egap.Spreadsheets.SheetDrawing.RefreshChart() -> void
 Egap.Spreadsheets.SheetDrawing.Text.get -> string?
 Egap.Spreadsheets.SheetDrawing.To.get -> Egap.Spreadsheets.DrawingPosition
 Egap.Spreadsheets.SheetDrawing.To.set -> void
@@ -622,6 +629,8 @@ Egap.Spreadsheets.SheetDrawing.X.set -> void
 Egap.Spreadsheets.SheetDrawing.Y.get -> long
 Egap.Spreadsheets.SheetDrawing.Y.set -> void
 Egap.Spreadsheets.SheetDrawingCollection
+Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType type, Egap.Spreadsheets.RangeAddress cells, bool threeD = false) -> Egap.Spreadsheets.SheetDrawing!
+Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType type, Egap.Spreadsheets.RangeAddress cells, Egap.Spreadsheets.RangeAddress data, bool threeD = false) -> Egap.Spreadsheets.SheetDrawing!
 Egap.Spreadsheets.SheetDrawingCollection.AddPicture(byte[]! image, Egap.Spreadsheets.CellAddress cell, int width, int height) -> Egap.Spreadsheets.SheetDrawing!
 Egap.Spreadsheets.SheetDrawingCollection.AddPicture(byte[]! image, Egap.Spreadsheets.RangeAddress cells) -> Egap.Spreadsheets.SheetDrawing!
 Egap.Spreadsheets.SheetDrawingCollection.Count.get -> int
@@ -809,6 +818,7 @@ Egap.Spreadsheets.Workbook
 Egap.Spreadsheets.Workbook.Calculate() -> Egap.Spreadsheets.CalculationResult!
 Egap.Spreadsheets.Workbook.CalculateFull() -> Egap.Spreadsheets.CalculationResult!
 Egap.Spreadsheets.Workbook.Calculation.get -> Egap.Spreadsheets.CalculationSettings!
+Egap.Spreadsheets.Workbook.ChartSheets.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.ChartSheet!>!
 Egap.Spreadsheets.Workbook.Culture.get -> System.Globalization.CultureInfo!
 Egap.Spreadsheets.Workbook.Culture.set -> void
 Egap.Spreadsheets.Workbook.Date1904.get -> bool
