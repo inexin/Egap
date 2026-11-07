@@ -31,6 +31,15 @@ public sealed class ChartSeries
         extended = chart.IsExtended;
     }
 
+    /// <summary>Refuses a value for something the series's plot has no place for; a null only takes it away, and is always fine.</summary>
+    private void Allow(string what, object? value, params string[] plots)
+    {
+        if (value is not null && !extended && Element.Parent is { } plot && !plots.Contains(plot.Name.LocalName))
+        {
+            throw new InvalidOperationException($"A series of a {plot.Name.LocalName} has no {what}.");
+        }
+    }
+
     /// <summary>The series's place in the file's numbering, which picks its automatic colour.</summary>
     public int Index => extended ? chart.AllSeries.IndexOf(this) : node.Int("idx") ?? 0;
 
@@ -118,31 +127,51 @@ public sealed class ChartSeries
     public ChartMarker Marker => new(Classic["marker"]);
 
     /// <summary>Whether the line is smoothed, or null when not said; line and scatter charts.</summary>
+    /// <exception cref="InvalidOperationException">The series's plot is of another type.</exception>
     public bool? Smooth
     {
         get => Classic.Bool("smooth");
-        set => Classic.SetBool("smooth", value);
+        set
+        {
+            Allow("smoothing", value, "lineChart", "line3DChart", "scatterChart", "stockChart");
+            Classic.SetBool("smooth", value);
+        }
     }
 
     /// <summary>Whether a negative bar swaps its colours, or null when not said; bar and bubble charts.</summary>
+    /// <exception cref="InvalidOperationException">The series's plot is of another type.</exception>
     public bool? InvertIfNegative
     {
         get => Classic.Bool("invertIfNegative");
-        set => Classic.SetBool("invertIfNegative", value);
+        set
+        {
+            Allow("colours for negative values", value, "barChart", "bar3DChart", "bubbleChart");
+            Classic.SetBool("invertIfNegative", value);
+        }
     }
 
-    /// <summary>How far a pie's slices are pulled out, as a percentage of the radius, or null.</summary>
+    /// <summary>How far a pie's slices are pulled out, as a percentage of the radius, or null; pie and doughnut charts.</summary>
+    /// <exception cref="InvalidOperationException">The series's plot is of another type.</exception>
     public int? Explosion
     {
         get => Classic.Int("explosion");
-        set => Classic.SetInt("explosion", value);
+        set
+        {
+            Allow("explosion", value, "pieChart", "pie3DChart", "ofPieChart", "doughnutChart");
+            Classic.SetInt("explosion", value);
+        }
     }
 
-    /// <summary>Whether the bubbles have a 3D look, or null when not said.</summary>
+    /// <summary>Whether the bubbles have a 3D look, or null when not said; bubble charts.</summary>
+    /// <exception cref="InvalidOperationException">The series's plot is of another type.</exception>
     public bool? Bubble3D
     {
         get => Classic.Bool("bubble3D");
-        set => Classic.SetBool("bubble3D", value);
+        set
+        {
+            Allow("3D bubbles", value, "bubbleChart");
+            Classic.SetBool("bubble3D", value);
+        }
     }
 
     /// <summary>Whether the series has data labels of its own.</summary>

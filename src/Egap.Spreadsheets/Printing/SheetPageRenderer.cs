@@ -33,7 +33,7 @@ internal interface IPageTagger
 internal readonly record struct Segment(int First, int Last, double Start, double Size, double Skip = 0);
 
 /// <summary>
-/// Draws one page of a sheet (Build Plan task 18): gridlines, fills, colour scales, borders, data bars and icon sets, then the
+/// Draws one page of a sheet: gridlines, fills, colour scales, borders, data bars and icon sets, then the
 /// cells' text with overflow, wrapping, rotation, shrink to fit and indent, then pictures, headings, and the header and footer.
 /// The cells draw in sheet points under the page's scale; the header and footer draw in page points.
 /// </summary>

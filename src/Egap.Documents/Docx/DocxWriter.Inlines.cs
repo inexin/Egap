@@ -442,18 +442,43 @@ internal sealed partial class DocxWriter
     /// <summary>The chart parts this save replaced because their island's chart was edited.</summary>
     private readonly HashSet<OpcPart> editedChartParts = [];
 
+    /// <summary>Gives a new part its own copies of what a part of the read file points at, and of what those point at.</summary>
+    private void CopyRelatedParts(OpcPart from, string to, Dictionary<OpcPart, string> copied)
+    {
+        foreach (OpcRelationship related in from.Relationships)
+        {
+            if (related.External || data?.Package.GetPart(OpcPackage.ResolveTarget(from.Name, related.Target)) is not { } part)
+            {
+                package.AddRelationship(to, related.Id, related.Type, related.Target, related.External);
+                continue;
+            }
+
+            if (!copied.TryGetValue(part, out string? name))
+            {
+                string stem = part.Name;
+                int dot = stem.LastIndexOf('.');
+                string extension = dot > stem.LastIndexOf('/') ? stem[dot..] : "";
+                stem = stem[..^extension.Length].TrimEnd('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+                name = UniquePartName(stem, extension);
+                copied[part] = name;
+                package.AddPart(name, part.ContentType, part.Data);
+                CopyRelatedParts(part, name, copied);
+            }
+
+            package.AddRelationship(to, related.Id, related.Type, RelationshipTarget(to, name), external: false);
+        }
+    }
+
     private XElement WriteNewChart(Island island)
     {
         string partName = UniquePartName("/word/charts/chart", ".xml");
 
-        // A copy of a chart in this file keeps the parts its own part points at, such as its workbook; in another file it cannot.
+        // A copy of a chart in this file has its own copies of the parts its part points at, such as its workbook, so that
+        // editing one chart's data in Word leaves the other's alone; in another file it cannot have them.
         Chart chart = island.Chart!;
         if (island.ChartPart is { } from && data?.Package.GetPart(from.Name) == from)
         {
-            foreach (OpcRelationship related in from.Relationships)
-            {
-                package.AddRelationship(partName, related.Id, related.Type, related.Target, related.External);
-            }
+            CopyRelatedParts(from, partName, []);
         }
         else
         {

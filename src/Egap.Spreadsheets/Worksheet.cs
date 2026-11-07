@@ -39,7 +39,9 @@ public sealed class Worksheet
 
     /// <summary>
     /// The sheet's name on its tab: 1 to 31 characters, none of <c>: \ / ? * [ ]</c>, no apostrophe at either end, and unique
-    /// in the workbook, case ignored.
+    /// in the workbook, case ignored. Setting it renames the sheet as Excel does: the formulas, names, rules, links and charts of
+    /// the workbook that refer to the sheet follow, while text such as <c>INDIRECT("Sheet1!A1")</c> stays. A sheet Egap keeps
+    /// unread and a pivot cache keep the old name.
     /// </summary>
     /// <exception cref="ArgumentException">The name is not one Excel allows, or another sheet has it.</exception>
     public string Name
@@ -51,7 +53,13 @@ public sealed class Worksheet
             {
                 workbook?.Worksheets.CheckName(value, this);
             }
+
+            string? before = field;
             field = value;
+            if (!linked && before is not null && before != value)
+            {
+                workbook?.SheetRenamed(before, value);
+            }
         }
     }
 

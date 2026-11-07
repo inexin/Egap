@@ -65,6 +65,19 @@ public sealed class Chart
         document.Changed += (_, _) => IsChanged = true;
     }
 
+    /// <summary>Rewrites the part's formulas: the references of its series, labels and titles, in any of the namespaces that hold them.</summary>
+    internal void RewriteReferences(Func<string, string> rewrite)
+    {
+        foreach (XElement formula in Root.Descendants().Where(e => e.Name.LocalName == "f" && !e.HasElements))
+        {
+            string text = rewrite(formula.Value);
+            if (text != formula.Value)
+            {
+                formula.Value = text;
+            }
+        }
+    }
+
     /// <summary>Whether this is one of the newer types kept in a <c>cx:</c> part.</summary>
     public bool IsExtended => Root.Name.Namespace == ChartNs.Cx;
 

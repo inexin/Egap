@@ -630,7 +630,15 @@ public sealed class ChartDataLabels
         }
     }
 
-    /// <summary>Where labels sit against their points, or null for the chart's default.</summary>
+    internal static ChartLabelPosition? ParsePosition(string? name) => Positions.Parse(name);
+
+    /// <summary>
+    /// Where labels sit against their points, or null for the chart's default. Excel refuses a file with a position its chart
+    /// type does not allow: clustered columns and bars take center, inside end, inside base and outside end; stacked ones the
+    /// same without outside end; line, scatter, bubble and stock charts take top, bottom, left, right and center; pies take best
+    /// fit, center, inside end and outside end; and radar, area, doughnut, surface and other 3D charts take none.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The chart's type does not allow the position.</exception>
     public ChartLabelPosition? Position
     {
         get => Positions.Parse(extended ? node.Attribute("pos") : node.Value("dLblPos"));
@@ -642,8 +650,13 @@ public sealed class ChartDataLabels
             }
             else
             {
-                if (value is not null)
+                if (value is { } position)
                 {
+                    if (ChartRules.PlotOf(node.Nearest) is { } plot && !ChartRules.LabelPositions(plot).Contains(position))
+                    {
+                        throw new InvalidOperationException($"Labels of this chart type cannot have the position {position}.");
+                    }
+
                     SetAll();
                 }
 
