@@ -169,6 +169,36 @@ sheet.View.ZoomScale = 125;
 `sheet.MergedCells` holds the merged ranges; adding one that overlaps another throws. `sheet.View` holds what the sheet
 shows on screen: gridlines, headings, zeros, direction, zoom, frozen rows and columns, and whether its tab is selected.
 
+### Inserting and deleting rows and columns
+
+`InsertRows`, `DeleteRows`, `InsertColumns` and `DeleteColumns` edit a sheet as Excel's Insert and Delete do. Rows and
+columns are zero-based, as `Cells[row, column]` counts them, and a column can also be given by name. The cells after the
+edit move, and whatever in the workbook refers to them follows: formulas on every sheet, names, data validation,
+conditional formatting, tables, merges, hyperlinks, notes, pictures and charts. A range that the new rows fall inside
+grows; a range that loses rows shrinks; a reference to a cell that is taken out becomes `#REF!`.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet["A1"].Value = 10;
+sheet["A2"].Value = 20;
+sheet["A3"].Formula = "SUM(A1:A2)";
+
+sheet.InsertRows(1);               // a row before row 2: A3 moves to A4, which reads SUM(A1:A3)
+sheet.DeleteRows(0);               // row 1 goes: the sum is in A3 and reads SUM(A1:A2)
+sheet.InsertColumns("A", 2);       // two columns before A: the sum is in C3 and reads SUM(C1:C2)
+sheet.DeleteColumns(2);            // column C goes, with the numbers and the sum; a formula naming them would show #REF!
+```
+
+New rows take the formatting of the row above, and new columns that of the column to the left, as Excel's default does.
+Columns put in inside a table become columns of the table named `Column1`, `Column2` and so on, and a structured reference
+to a table column that is taken out becomes `#REF!`. The edits refuse what Excel refuses: pushing cells with a value or a
+style off the end of the sheet, changing part of an array formula, and taking a table's header row without the rest of it.
+Egap keeps pivot tables as they were read, so an edit that would move or change one is refused too. Sheet protection does not block the edits, as it does not block writing cells: it guards what a person does in Excel. References from other
+workbooks, references across several sheets (`Sheet1:Sheet3!A1`) and the anchors of form controls stay as they were.
+
 ## Names and printing
 
 `book.Names` holds the defined names. A name belongs to the workbook, or to one sheet when you give one:

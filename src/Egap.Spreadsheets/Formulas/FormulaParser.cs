@@ -257,7 +257,9 @@ internal sealed class FormulaParser
     private bool StartsReferenceOperand()
     {
         char c = Peek();
-        return char.IsLetter(c) || c is '_' or '\\' or '$' or '\'' or '(' or '[' || (char.IsAsciiDigit(c) && RowRangeLength(pos) > 0);
+        // #REF! is a reference that is gone, as Excel writes one an edit took out: A1 #REF!.
+        return char.IsLetter(c) || c is '_' or '\\' or '$' or '\'' or '(' or '[' || (char.IsAsciiDigit(c) && RowRangeLength(pos) > 0)
+            || (c == '#' && text.AsSpan(pos).StartsWith("#REF!", StringComparison.OrdinalIgnoreCase));
     }
 
     private FormulaNode RangeOperator()
@@ -280,7 +282,8 @@ internal sealed class FormulaParser
             node = new InvokeNode(node, Function("", pos).Arguments);
         }
 
-        if (Peek() == '#' && node is ReferenceNode or NameNode or FunctionNode or StructuredNode or ParenthesesNode)
+        // #REF!# is the spill of a cell an edit took out, as Excel writes it.
+        if (Peek() == '#' && node is ReferenceNode or NameNode or FunctionNode or StructuredNode or ParenthesesNode or ErrorNode { Error: CellError.Reference })
         {
             pos++;
             node = new PostfixNode(node, '#', "");

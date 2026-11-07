@@ -36,6 +36,19 @@ internal static class FormulaPrinter
     }
 
     /// <summary>
+    /// The formula as written, but for the references <paramref name="moved"/> gives a new area for, which are written
+    /// again in A1 style (<c>#REF!</c> for an area of <see cref="AreaKind.Error"/>) after their prefix as written, and the
+    /// table names and structured references <paramref name="gone"/> says are gone, which are written as <c>#REF!</c>.
+    /// </summary>
+    public static string Print(ParsedFormula formula, Func<ReferenceNode, Area?> moved, Func<FormulaNode, bool>? gone = null)
+    {
+        StringBuilder output = new();
+        new Writer(output, ReferenceStyle.Written, formula.Origin, 0, 0, Stored.No, null, moved, gone).Node(formula.Root);
+        output.Append(formula.Trail);
+        return output.ToString();
+    }
+
+    /// <summary>
     /// A formula as a person types it, as a file stores it: newer functions with their prefixes, <c>#</c> and, in a dynamic
     /// array formula, <c>@</c> as the functions that stand for them. An ordinary formula has no <c>@</c>: it is what it means.
     /// The names of LET and LAMBDA get their prefixes, and a function's name used as a value too, unless <paramref name="book"/>
@@ -107,11 +120,17 @@ internal static class FormulaPrinter
         }
     }
 
-    private readonly struct Writer(StringBuilder output, ReferenceStyle style, CellAddress origin, int rowDelta, int columnDelta, Stored stored, Locals? locals = null)
+    private readonly struct Writer(StringBuilder output, ReferenceStyle style, CellAddress origin, int rowDelta, int columnDelta, Stored stored, Locals? locals = null, Func<ReferenceNode, Area?>? moved = null, Func<FormulaNode, bool>? gone = null)
     {
         public void Node(FormulaNode node)
         {
             output.Append(node.Lead);
+            if (gone is not null && node is StructuredNode or NameNode && gone(node))
+            {
+                output.Append("#REF!");
+                return;
+            }
+
             switch (node)
             {
                 case NumberNode number:
@@ -392,7 +411,22 @@ internal static class FormulaPrinter
             Prefix(reference.Prefix);
             if (style == ReferenceStyle.Written)
             {
-                output.Append(reference.Text);
+                if (moved?.Invoke(reference) is { } to)
+                {
+                    if (to.Kind == AreaKind.Error)
+                    {
+                        output.Append("#REF!");
+                    }
+                    else
+                    {
+                        A1(to);
+                    }
+                }
+                else
+                {
+                    output.Append(reference.Text);
+                }
+
                 return;
             }
 
