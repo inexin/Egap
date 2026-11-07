@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Xml.Linq;
 
 using Egap.Documents.Charts;
@@ -248,6 +249,237 @@ public sealed class ChartModelTests
         Document back = Reloaded(document);
         Island copy = (Island)back.Descendants<Island>().First().Clone();
         Assert.Equal("North", copy.Chart!.Series[0].Name);
+    }
+
+    /// <summary>A document whose one chart has an embedded workbook and a style part, as Word saves them.</summary>
+    private static byte[] WithWorkbook()
+    {
+        Document document = new();
+        document.AddSection().Body.AddParagraph("").Inlines.Add(new Island(document, Made(), 360, 216));
+        MemoryStream made = new();
+        DocxFormat.Save(document, made);
+        using MemoryStream stream = new();
+        stream.Write(made.ToArray());
+        using (ZipArchive zip = new(stream, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            string chart = zip.Entries.First(e => e.FullName.StartsWith("word/charts/chart", StringComparison.Ordinal)).FullName;
+            string name = chart["word/charts/".Length..];
+            Add(zip, "word/embeddings/book1.xlsx", [1, 2, 3]);
+            Add(zip, "word/charts/style1.xml", "<cs:chartStyle xmlns:cs=\"http://schemas.microsoft.com/office/drawing/2012/chartStyle\"/>"u8.ToArray());
+            Add(zip, $"word/charts/_rels/{name}.rels", System.Text.Encoding.UTF8.GetBytes(
+                "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
+                + "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/package\" Target=\"../embeddings/book1.xlsx\"/>"
+                + "<Relationship Id=\"rId2\" Type=\"http://schemas.microsoft.com/office/2011/relationships/chartStyle\" Target=\"style1.xml\"/>"
+                + "<Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target=\"https://example.com/\" TargetMode=\"External\"/>"
+                + "</Relationships>"));
+            ZipArchiveEntry types = zip.GetEntry("[Content_Types].xml")!;
+            string text;
+            using (StreamReader reader = new(types.Open()))
+            {
+                text = reader.ReadToEnd();
+            }
+
+            types.Delete();
+            Add(zip, "[Content_Types].xml", System.Text.Encoding.UTF8.GetBytes(text.Replace(
+                "</Types>",
+                "<Default Extension=\"xlsx\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\"/>"
+                + "<Override PartName=\"/word/charts/style1.xml\" ContentType=\"application/vnd.ms-office.chartstyle+xml\"/></Types>",
+                StringComparison.Ordinal)));
+        }
+
+        return stream.ToArray();
+
+        static void Add(ZipArchive zip, string name, byte[] data)
+        {
+            using Stream entry = zip.CreateEntry(name).Open();
+            entry.Write(data);
+        }
+    }
+
+    [Fact]
+    public void AnEditedCopyHasItsOwnWorkbook()
+    {
+        Document read = DocxFormat.Load(new MemoryStream(WithWorkbook()));
+        Island copy = (Island)read.Descendants<Island>().First().Clone();
+        read.Descendants<Paragraph>().First().Inlines.Add(copy);
+        copy.Chart!.Title.Text = "Copy";
+        MemoryStream saved = new();
+        DocxFormat.Save(read, saved);
+        saved.Position = 0;
+        using ZipArchive zip = new(saved);
+
+        List<string> rels = [.. zip.Entries.Where(e => e.FullName.StartsWith("word/charts/_rels/", StringComparison.Ordinal)).Select(e => e.FullName)];
+        Assert.Equal(2, rels.Count);
+        List<XDocument> documents = [.. rels.Select(r => XDocument.Load(zip.GetEntry(r)!.Open()))];
+        XNamespace ns = "http://schemas.openxmlformats.org/package/2006/relationships";
+        string Target(XDocument d, string id) => (string)d.Root!.Elements(ns + "Relationship").First(e => (string?)e.Attribute("Id") == id).Attribute("Target")!;
+        Assert.NotEqual(Target(documents[0], "rId1"), Target(documents[1], "rId1"));
+        Assert.NotEqual(Target(documents[0], "rId2"), Target(documents[1], "rId2"));
+        Assert.Equal("https://example.com/", Target(documents[1], "rId3"));
+        foreach (string target in documents.SelectMany(d => new[] { Target(d, "rId1"), Target(d, "rId2") }))
+        {
+            string part = OpcPackage.ResolveTarget("/word/charts/chart1.xml", target);
+            Assert.NotNull(zip.GetEntry(part[1..]));
+        }
+
+        // Word opens each workbook by its own part's type.
+        Assert.Contains(".xlsx", zip.Entries.Select(e => e.FullName).First(n => n.StartsWith("word/embeddings/", StringComparison.Ordinal)), StringComparison.Ordinal);
+
+        // The file must still load, with the copy's data.
+        List<Island> back = [.. DocxFormat.Load(new MemoryStream(saved.ToArray())).Descendants<Island>()];
+        Assert.Equal(2, back.Count);
+        Assert.Equal("Copy", back[1].Chart!.Title.Text);
+    }
+
+    /// <summary>The positions Excel takes for each type: its own setter, and files with each position opened in Excel.</summary>
+    [Theory]
+    [InlineData(ChartType.Column, false, ChartGrouping.Clustered, "Center InsideBase InsideEnd OutsideEnd")]
+    [InlineData(ChartType.Column, false, ChartGrouping.Stacked, "Center InsideBase InsideEnd")]
+    [InlineData(ChartType.Column, false, ChartGrouping.PercentStacked, "Center InsideBase InsideEnd")]
+    [InlineData(ChartType.Bar, false, ChartGrouping.Clustered, "Center InsideBase InsideEnd OutsideEnd")]
+    [InlineData(ChartType.Bar, false, ChartGrouping.Stacked, "Center InsideBase InsideEnd")]
+    [InlineData(ChartType.Bar, false, ChartGrouping.PercentStacked, "Center InsideBase InsideEnd")]
+    [InlineData(ChartType.Line, false, ChartGrouping.Standard, "Bottom Center Left Right Top")]
+    [InlineData(ChartType.Line, false, ChartGrouping.Stacked, "Bottom Center Left Right Top")]
+    [InlineData(ChartType.Area, false, ChartGrouping.Standard, "")]
+    [InlineData(ChartType.Pie, false, null, "BestFit Center InsideEnd OutsideEnd")]
+    [InlineData(ChartType.Pie, true, null, "BestFit Center InsideEnd OutsideEnd")]
+    [InlineData(ChartType.PieOfPie, false, null, "BestFit Center InsideEnd OutsideEnd")]
+    [InlineData(ChartType.Doughnut, false, null, "")]
+    [InlineData(ChartType.Scatter, false, null, "Bottom Center Left Right Top")]
+    [InlineData(ChartType.Bubble, false, null, "Bottom Center Left Right Top")]
+    [InlineData(ChartType.Radar, false, null, "")]
+    [InlineData(ChartType.Stock, false, null, "Bottom Center Left Right Top")]
+    [InlineData(ChartType.Column, true, ChartGrouping.Clustered, "")]
+    [InlineData(ChartType.Line, true, ChartGrouping.Standard, "")]
+    [InlineData(ChartType.Area, true, ChartGrouping.Standard, "")]
+    public void ALabelTakesOnlyThePositionsItsTypeAllows(ChartType type, bool threeD, ChartGrouping? grouping, string allowed)
+    {
+        Chart chart = Chart.Create(type, threeD);
+        ChartPlot plot = chart.Plots[0];
+        if (grouping is not null)
+        {
+            plot.Grouping = grouping;
+        }
+
+        ChartSeries series = plot.Series.Add("S", ["A", "B"], [1, 2]);
+        foreach (ChartLabelPosition position in Enum.GetValues<ChartLabelPosition>())
+        {
+            if (allowed.Split(' ').Contains(position.ToString()))
+            {
+                series.DataLabels.Position = position;
+                Assert.Equal(position, series.DataLabels.Position);
+                plot.DataLabels.Position = position;
+                series.DataLabels.Position = null;
+            }
+            else
+            {
+                Assert.Throws<InvalidOperationException>(() => series.DataLabels.Position = position);
+                Assert.Throws<InvalidOperationException>(() => plot.DataLabels.Position = position);
+            }
+        }
+    }
+
+    [Fact]
+    public void GroupingTakesAwayAPositionItNoLongerAllows()
+    {
+        Chart chart = Chart.Create(ChartType.Column);
+        ChartPlot plot = chart.Plots[0];
+        plot.Grouping = ChartGrouping.Clustered;
+        ChartSeries first = plot.Series.Add("S", ["A"], [1]);
+        ChartSeries second = plot.Series.Add("T", ["A"], [1]);
+        first.DataLabels.Position = ChartLabelPosition.OutsideEnd;
+        second.DataLabels.Position = ChartLabelPosition.Center;
+        plot.Grouping = ChartGrouping.Stacked;
+        Assert.Null(first.DataLabels.Position);
+        Assert.Equal(ChartLabelPosition.Center, second.DataLabels.Position);
+    }
+
+    public static TheoryData<string, ChartType, bool> Misplaced() => new()
+    {
+        { "GapWidth", ChartType.Line, false },
+        { "Overlap", ChartType.Pie, false },
+        { "Overlap", ChartType.Column, true },
+        { "GapDepth", ChartType.Column, false },
+        { "BarShape", ChartType.Column, false },
+        { "FirstSliceAngle", ChartType.Column, false },
+        { "HoleSize", ChartType.Pie, false },
+        { "ScatterStyle", ChartType.Line, false },
+        { "RadarStyle", ChartType.Column, false },
+        { "BubbleScale", ChartType.Scatter, false },
+        { "Wireframe", ChartType.Column, false },
+        { "ShowMarkers", ChartType.Scatter, false },
+        { "Grouping", ChartType.Scatter, false },
+        { "Grouping", ChartType.Pie, false },
+        { "GroupingClustered", ChartType.Line, false },
+        { "GroupingClustered", ChartType.Area, false },
+        { "VaryColors", ChartType.Stock, false },
+        { "Smooth", ChartType.Column, false },
+        { "InvertIfNegative", ChartType.Line, false },
+        { "Explosion", ChartType.Column, false },
+        { "Bubble3D", ChartType.Pie, false },
+    };
+
+    private static void Set(string property, ChartPlot plot, bool clear)
+    {
+        ChartSeries series = plot.Series.Count > 0 ? plot.Series[0] : plot.Series.Add("S", ["A"], [1]);
+        switch (property)
+        {
+            case "GapWidth": plot.GapWidth = clear ? null : 50; break;
+            case "Overlap": plot.Overlap = clear ? null : 50; break;
+            case "GapDepth": plot.GapDepth = clear ? null : 50; break;
+            case "BarShape": plot.BarShape = clear ? null : ChartBarShape.Cone; break;
+            case "FirstSliceAngle": plot.FirstSliceAngle = clear ? null : 50; break;
+            case "HoleSize": plot.HoleSize = clear ? null : 50; break;
+            case "ScatterStyle": plot.ScatterStyle = clear ? null : ChartScatterStyle.Line; break;
+            case "RadarStyle": plot.RadarStyle = clear ? null : ChartRadarStyle.Filled; break;
+            case "BubbleScale": plot.BubbleScale = clear ? null : 50; break;
+            case "Wireframe": plot.Wireframe = clear ? null : true; break;
+            case "ShowMarkers": plot.ShowMarkers = clear ? null : true; break;
+            case "Grouping": plot.Grouping = clear ? null : ChartGrouping.Stacked; break;
+            case "GroupingClustered": plot.Grouping = clear ? null : ChartGrouping.Clustered; break;
+            case "VaryColors": plot.VaryColors = clear ? null : true; break;
+            case "Smooth": series.Smooth = clear ? null : true; break;
+            case "InvertIfNegative": series.InvertIfNegative = clear ? null : true; break;
+            case "Explosion": series.Explosion = clear ? null : 10; break;
+            case "Bubble3D": series.Bubble3D = clear ? null : true; break;
+            default: throw new ArgumentException(property);
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(Misplaced))]
+    public void APropertyItsTypeHasNoPlaceForThrows(string property, ChartType type, bool threeD)
+    {
+        ChartPlot plot = Chart.Create(type, threeD).Plots[0];
+        Assert.Throws<InvalidOperationException>(() => Set(property, plot, clear: false));
+        Set(property, plot, clear: true);
+    }
+
+    [Theory]
+    [InlineData("GapWidth", ChartType.Column, false)]
+    [InlineData("GapWidth", ChartType.BarOfPie, false)]
+    [InlineData("Overlap", ChartType.Bar, false)]
+    [InlineData("GapDepth", ChartType.Column, true)]
+    [InlineData("BarShape", ChartType.Bar, true)]
+    [InlineData("FirstSliceAngle", ChartType.Doughnut, false)]
+    [InlineData("HoleSize", ChartType.Doughnut, false)]
+    [InlineData("ScatterStyle", ChartType.Scatter, false)]
+    [InlineData("RadarStyle", ChartType.Radar, false)]
+    [InlineData("BubbleScale", ChartType.Bubble, false)]
+    [InlineData("Wireframe", ChartType.Surface, false)]
+    [InlineData("ShowMarkers", ChartType.Line, false)]
+    [InlineData("Grouping", ChartType.Area, false)]
+    [InlineData("GroupingClustered", ChartType.Column, false)]
+    [InlineData("VaryColors", ChartType.Column, false)]
+    [InlineData("Smooth", ChartType.Scatter, false)]
+    [InlineData("InvertIfNegative", ChartType.Bubble, false)]
+    [InlineData("Explosion", ChartType.Doughnut, false)]
+    [InlineData("Bubble3D", ChartType.Bubble, false)]
+    public void APropertyItsTypeHasIsSet(string property, ChartType type, bool threeD)
+    {
+        ChartPlot plot = Chart.Create(type, threeD).Plots[0];
+        Set(property, plot, clear: false);
     }
 
     [Fact]
@@ -607,7 +839,7 @@ public sealed class ChartModelTests
         switch (what)
         {
             case "position":
-                labels.Position = ChartLabelPosition.Top;
+                labels.Position = ChartLabelPosition.Center;
                 break;
             case "format":
                 labels.NumberFormat = "0";

@@ -21,6 +21,9 @@ internal static class ChartNs
 internal sealed class ChartNode
 {
     private readonly XElement? element;
+
+    /// <summary>The node's element or, if it has none yet, that of the nearest node above it that has.</summary>
+    public XElement? Nearest => element ?? Find() ?? parent?.Nearest;
     private readonly ChartNode? parent;
     private readonly XName? name;
     private readonly XNamespace? ns;

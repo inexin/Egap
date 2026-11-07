@@ -94,6 +94,86 @@ public sealed partial class Workbook
         set => field = value ?? throw new ArgumentNullException(nameof(value));
     } = CultureInfo.InvariantCulture;
 
+    /// <summary>Writes a sheet's new name into whatever refers to the sheet.</summary>
+    internal void SheetRenamed(string from, string to)
+    {
+        string Renamed(string text) => Formulas.SheetRename.Apply(text, from, to);
+        string? RenamedOrNull(string? text) => text is null ? null : Renamed(text);
+        foreach (DefinedName name in Names)
+        {
+            string text = Renamed(name.Formula);
+            if (text != name.Formula)
+            {
+                bool typed = name.Typed;
+                name.Formula = text;
+                name.Typed = typed;
+            }
+        }
+
+        foreach (Worksheet sheet in Worksheets)
+        {
+            foreach (Storage.FormulaEntry entry in sheet.Formulas.Entries)
+            {
+                entry.Text = Renamed(entry.Text);
+            }
+
+            foreach (Hyperlink link in sheet.Hyperlinks)
+            {
+                link.Location = RenamedOrNull(link.Location);
+            }
+
+            foreach (DataValidation rule in sheet.DataValidations)
+            {
+                rule.Formula1 = RenamedOrNull(rule.Formula1);
+                rule.Formula2 = RenamedOrNull(rule.Formula2);
+            }
+
+            foreach (ConditionalFormat format in sheet.ConditionalFormats)
+            {
+                foreach (ConditionalFormatRule rule in format.Rules)
+                {
+                    for (int i = 0; i < rule.Formulas.Count; i++)
+                    {
+                        rule.Formulas[i] = Renamed(rule.Formulas[i]);
+                    }
+                }
+            }
+
+            foreach (SheetTableColumn column in sheet.Tables.SelectMany(t => t.Columns))
+            {
+                column.TotalsRowFormula = RenamedOrNull(column.TotalsRowFormula);
+                column.CalculatedFormula = RenamedOrNull(column.CalculatedFormula);
+            }
+
+            foreach (SheetDrawing drawing in sheet.Drawings)
+            {
+                if (drawing.Chart is { } chart)
+                {
+                    chart.RewriteReferences(Renamed);
+                }
+            }
+
+            // Newer rules and sparklines the model does not read, in the sheet's extension list.
+            foreach ((_, System.Xml.Linq.XElement kept) in sheet.Source?.Kept ?? [])
+            {
+                foreach (System.Xml.Linq.XElement formula in kept.Descendants(ExcelMain + "f"))
+                {
+                    formula.Value = Renamed(formula.Value);
+                }
+            }
+        }
+
+        foreach (ChartSheet page in ChartSheets)
+        {
+            page.Chart?.RewriteReferences(Renamed);
+        }
+
+        // What it compiled names the old sheet.
+        Calculator = null;
+    }
+
+    private static readonly System.Xml.Linq.XNamespace ExcelMain = "http://schemas.microsoft.com/office/excel/2006/main";
+
     /// <summary>A new workbook with one empty sheet, <c>Sheet1</c>, as Excel starts one.</summary>
     public static Workbook Create()
     {

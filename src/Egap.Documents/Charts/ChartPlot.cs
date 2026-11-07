@@ -234,24 +234,47 @@ public sealed class ChartPlot
         }
     }
 
-    /// <summary>How the series sit against each other, or null when the type has no such choice.</summary>
+    /// <summary>
+    /// How the series sit against each other, or null when the type has no such choice. Column, bar, line and area plots have
+    /// it; line and area plots are not clustered. Changing it takes away label positions the new grouping does not allow.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The plot has no such grouping.</exception>
     public ChartGrouping? Grouping
     {
         get => Groupings.Parse(Classic.Value("grouping"));
-        set => Classic.SetValue("grouping", Groupings.Name(value));
+        set
+        {
+            Allow("grouping", value, "barChart", "bar3DChart", "lineChart", "line3DChart", "areaChart", "area3DChart");
+            if (value == ChartGrouping.Clustered && !chart.IsExtended && Element.Name.LocalName is not ("barChart" or "bar3DChart"))
+            {
+                throw new InvalidOperationException($"A {Type} plot cannot be clustered.");
+            }
+
+            Classic.SetValue("grouping", Groupings.Name(value));
+            if (!chart.IsExtended)
+            {
+                ChartRules.RemoveLabelPositionsNotAllowed(Element);
+            }
+        }
     }
 
-    /// <summary>Whether each point gets its own colour, or null when not said.</summary>
+    /// <summary>Whether each point gets its own colour, or null when not said. Stock and surface plots have no such choice.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no such choice.</exception>
     public bool? VaryColors
     {
         get => Classic.Bool("varyColors");
-        set => Classic.SetBool("varyColors", value);
+        set
+        {
+            Allow("colour for each point", value, "barChart", "bar3DChart", "lineChart", "line3DChart", "areaChart", "area3DChart", "pieChart", "pie3DChart", "ofPieChart", "doughnutChart", "scatterChart", "bubbleChart", "radarChart");
+            Classic.SetBool("varyColors", value);
+        }
     }
 
     /// <summary>
     /// The gap between bar clusters, as a percentage of a bar's width, or null when not said. A cx: chart keeps it as a
     /// fraction on its category axis; it reads and writes as a percentage here too.
     /// </summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public int? GapWidth
     {
         get => chart.IsExtended ? Scaling?.DoubleAttribute("gapWidth") is { } gap && gap >= 0 ? (int)Math.Round(gap * 100) : null : Classic.Int("gapWidth");
@@ -263,75 +286,122 @@ public sealed class ChartPlot
             }
             else
             {
+                Allow("gap width", value, "barChart", "bar3DChart", "ofPieChart");
                 Classic.SetInt("gapWidth", value);
             }
         }
     }
 
     /// <summary>How far bars of a cluster overlap, as a percentage from -100 to 100, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public int? Overlap
     {
         get => Classic.Int("overlap");
-        set => Classic.SetInt("overlap", value);
+        set
+        {
+            Allow("overlap", value, "barChart");
+            Classic.SetInt("overlap", value);
+        }
     }
 
     /// <summary>The depth of the gap between bars of a 3D chart, as a percentage, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public int? GapDepth
     {
         get => Classic.Int("gapDepth");
-        set => Classic.SetInt("gapDepth", value);
+        set
+        {
+            Allow("gap depth", value, "bar3DChart", "line3DChart", "area3DChart");
+            Classic.SetInt("gapDepth", value);
+        }
     }
 
     /// <summary>The shape of 3D bars, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public ChartBarShape? BarShape
     {
         get => Shapes.Parse(Classic.Value("shape"));
-        set => Classic.SetValue("shape", Shapes.Name(value));
+        set
+        {
+            Allow("bar shape", value, "bar3DChart");
+            Classic.SetValue("shape", Shapes.Name(value));
+        }
     }
 
     /// <summary>The angle in degrees of a pie's or doughnut's first slice, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public int? FirstSliceAngle
     {
         get => Classic.Int("firstSliceAng");
-        set => Classic.SetInt("firstSliceAng", value);
+        set
+        {
+            Allow("first slice angle", value, "pieChart", "doughnutChart");
+            Classic.SetInt("firstSliceAng", value);
+        }
     }
 
     /// <summary>The size of a doughnut's hole, as a percentage, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public int? HoleSize
     {
         get => Classic.Int("holeSize");
-        set => Classic.SetInt("holeSize", value);
+        set
+        {
+            Allow("hole size", value, "doughnutChart");
+            Classic.SetInt("holeSize", value);
+        }
     }
 
     /// <summary>How a scatter chart draws its series, or null for other types.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public ChartScatterStyle? ScatterStyle
     {
         get => ScatterStyles.Parse(Classic.Value("scatterStyle"));
-        set => Classic.SetValue("scatterStyle", ScatterStyles.Name(value));
+        set
+        {
+            Allow("scatter style", value, "scatterChart");
+            Classic.SetValue("scatterStyle", ScatterStyles.Name(value));
+        }
     }
 
     /// <summary>How a radar chart draws its series, or null for other types.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public ChartRadarStyle? RadarStyle
     {
         get => RadarStyles.Parse(Classic.Value("radarStyle"));
-        set => Classic.SetValue("radarStyle", RadarStyles.Name(value));
+        set
+        {
+            Allow("radar style", value, "radarChart");
+            Classic.SetValue("radarStyle", RadarStyles.Name(value));
+        }
     }
 
     /// <summary>A bubble chart's scale, as a percentage of the default size, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public int? BubbleScale
     {
         get => Classic.Int("bubbleScale");
-        set => Classic.SetInt("bubbleScale", value);
+        set
+        {
+            Allow("bubble scale", value, "bubbleChart");
+            Classic.SetInt("bubbleScale", value);
+        }
     }
 
     /// <summary>Whether a bubble chart shows negative values, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public bool? ShowNegativeBubbles
     {
         get => Classic.Bool("showNegBubbles");
-        set => Classic.SetBool("showNegBubbles", value);
+        set
+        {
+            Allow("choice of negative bubbles", value, "bubbleChart");
+            Classic.SetBool("showNegBubbles", value);
+        }
     }
 
     /// <summary>Whether a bubble's width, not its area, stands for its size; null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public bool? BubbleSizeIsWidth
     {
         get => Classic.Value("sizeRepresents") switch
@@ -340,14 +410,23 @@ public sealed class ChartPlot
             "area" => false,
             _ => null,
         };
-        set => Classic.SetValue("sizeRepresents", value is { } width ? (width ? "w" : "area") : null);
+        set
+        {
+            Allow("bubble size choice", value, "bubbleChart");
+            Classic.SetValue("sizeRepresents", value is { } width ? (width ? "w" : "area") : null);
+        }
     }
 
     /// <summary>Whether a surface chart is a wireframe, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public bool? Wireframe
     {
         get => Classic.Bool("wireframe");
-        set => Classic.SetBool("wireframe", value);
+        set
+        {
+            Allow("wireframe", value, "surfaceChart", "surface3DChart");
+            Classic.SetBool("wireframe", value);
+        }
     }
 
     /// <summary>Whether a line or stock chart has lines from high to low, as a stock chart's are.</summary>
@@ -360,10 +439,15 @@ public sealed class ChartPlot
     public bool HasDropLines => Classic["dropLines"].Exists;
 
     /// <summary>Whether a line chart's series have markers by default, or null when not said.</summary>
+    /// <exception cref="InvalidOperationException">The plot has no place for it: see the charts guide.</exception>
     public bool? ShowMarkers
     {
         get => Classic.Bool("marker");
-        set => Classic.SetBool("marker", value);
+        set
+        {
+            Allow("markers setting", value, "lineChart");
+            Classic.SetBool("marker", value);
+        }
     }
 
     /// <summary>The data labels for all the plot's series that have none of their own; c: charts only.</summary>
@@ -385,6 +469,15 @@ public sealed class ChartPlot
     internal int? UpDownGapWidth => Classic["upDownBars"].Int("gapWidth");
 
     internal XElement Element { get; }
+
+    /// <summary>Refuses a value for something the plot's element has no place for; a null only takes it away, and is always fine.</summary>
+    private void Allow(string what, object? value, params string[] elements)
+    {
+        if (value is not null && !chart.IsExtended && !elements.Contains(Element.Name.LocalName))
+        {
+            throw new InvalidOperationException($"A {(Is3D ? "3D " : "")}{Type} plot has no {what}.");
+        }
+    }
 
     internal IEnumerable<XElement> SeriesElements() => Element.Elements(Element.Name.Namespace + (chart.IsExtended ? "series" : "ser"));
 

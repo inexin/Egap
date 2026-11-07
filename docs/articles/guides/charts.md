@@ -150,6 +150,43 @@ legend that wraps leaves out the entries past half the chart's height.
 Not all of Excel's look comes through: bevels and shadows from a theme's effects are left out. `ChartDrawOptions.Culture`
 decides how dates, percents and list separators read; Office uses the machine's locale, so pass the reader's culture to match it.
 
+## What each type holds
+
+Setting something a chart type has no place for throws `InvalidOperationException`, because the file would be invalid and Excel
+refuses some such files outright. Setting null always works. A value read from a file stays as it was.
+
+| Property | Plots that have it |
+| --- | --- |
+| `Grouping` | Column, bar, line, area; line and area are not clustered |
+| `VaryColors` | All but stock and surface |
+| `GapWidth` | Column, bar, pie of pie |
+| `Overlap` | 2D column and bar |
+| `GapDepth` | 3D column, bar, line and area |
+| `BarShape` | 3D column and bar |
+| `FirstSliceAngle` | 2D pie, doughnut |
+| `HoleSize` | Doughnut |
+| `ScatterStyle` | Scatter |
+| `RadarStyle` | Radar |
+| `BubbleScale`, `ShowNegativeBubbles`, `BubbleSizeIsWidth` | Bubble |
+| `Wireframe` | Surface |
+| `ShowMarkers` | 2D line |
+| `ChartSeries.Smooth` | Line, scatter, stock |
+| `ChartSeries.InvertIfNegative` | Column, bar, bubble |
+| `ChartSeries.Explosion` | Pie, pie of pie, doughnut |
+| `ChartSeries.Bubble3D` | Bubble |
+
+`ChartDataLabels.Position` depends on the type as well:
+
+| Chart | Positions |
+| --- | --- |
+| Clustered 2D column and bar | `Center`, `InsideEnd`, `InsideBase`, `OutsideEnd` |
+| Stacked 2D column and bar | `Center`, `InsideEnd`, `InsideBase` |
+| 2D line, scatter, bubble, stock | `Top`, `Bottom`, `Left`, `Right`, `Center` |
+| Pie, 3D pie, pie of pie | `BestFit`, `Center`, `InsideEnd`, `OutsideEnd` |
+| Radar, area, doughnut, surface, other 3D | None |
+
+Changing `Grouping` takes away positions the new grouping does not allow.
+
 ## Word documents
 
 A chart in a Word document is an `Island` of kind `IslandKind.Chart`, with the same model in `island.Chart`. A chart of the

@@ -37,6 +37,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   now draws through it on pages and in PDFs, where before it showed the picture saved with it, if any. A 3D chart, a surface,
   a pie of pie and the `cx:` kinds keep their picture for now. `ChartDrawOptions.Host` follows Excel's defaults or Word's;
   a Word document's pages use Word's.
+- A chart property or label position its type has no place for now throws `InvalidOperationException`; before, it wrote a file
+  that Excel might refuse. The charts guide lists them, and changing `ChartPlot.Grouping` takes away positions it no longer allows.
+- A copy of a chart, edited and saved in the same file, has its own embedded workbook and style parts. Before, it shared them
+  with the first, so editing one chart's data in Word changed both.
 - A package part whose XML declaration trips .NET's XML reader now gives a `DocumentException`, as other malformed XML does,
   and no longer an `ArgumentOutOfRangeException`.
 - Charts: `Egap.Documents.Charts` reads, edits, creates and saves chart parts of both kinds, `c:` (column, bar, line, area,
@@ -151,6 +155,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Printing draws charts: a sheet's charts on its pages, in its PDFs and images, and each visible chart sheet on a page of its
   own after the sheets when the whole workbook prints (`SheetPrintLayout.ChartPages`, `ChartSheetPage`). A chart made in code
   and not refreshed yet prints from its cells.
+- Setting `Worksheet.Name` renames the sheet as Excel does: formulas, names, data validation, conditional formats, table
+  columns, internal links and charts that refer to it follow. Before, they kept the old name and gave #REF!. Text such as
+  `INDIRECT("Sheet1!A1")`, a sheet Egap keeps unread and a pivot cache keep the old name.
 - Charts: `SheetDrawing.Chart` and `Workbook.ChartSheets` give the chart model on sheets and chart sheets, of both kinds,
   so a chart can be edited. `Drawings.AddChart` makes any type, from a range of cells if you like, and `RefreshChart` fills
   a chart's values from the cells it names, through Excel's hidden names for `cx:` charts. Saving refreshes each chart

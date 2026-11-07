@@ -12,7 +12,7 @@ namespace Egap.Spreadsheets.Printing;
 /// <summary>
 /// The conditional formats that draw rather than restyle (ECMA-376 Part 1, 18.3.1.16, 18.3.1.28 and 18.3.1.49): colour scales
 /// shade a cell's fill, data bars draw a bar by the value's place between the lowest and highest, icon sets draw an icon by
-/// thresholds. The rules that apply a style are evaluated later (Build Plan task 35).
+/// thresholds. The rules that apply a style are evaluated later.
 /// </summary>
 internal sealed class ConditionalDrawing
 {

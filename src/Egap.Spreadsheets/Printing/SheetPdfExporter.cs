@@ -5,7 +5,7 @@ using Egap.Pdf;
 namespace Egap.Spreadsheets.Printing;
 
 /// <summary>
-/// Writes laid-out sheets to a new PDF (Build Plan task 18): a page per printed page, drawn through the PDF canvas, and for a
+/// Writes laid-out sheets to a new PDF: a page per printed page, drawn through the PDF canvas, and for a
 /// tagged PDF a structure tree built before drawing: a section per sheet, a table per print range with a row per printed row
 /// that has text and a cell per cell with text (a header cell in the title rows, spans for merged ranges), and a figure per
 /// picture with its alternative text. What repeats (titles on later pages) and what decorates is an artifact.
