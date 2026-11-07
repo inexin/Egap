@@ -99,12 +99,28 @@ internal static class ReferenceShift
     /// The tables the edit takes columns from, by name, with the names of the columns it takes; a table with null loses all
     /// of itself. Structured references to what is lost become <c>#REF!</c>.
     /// </param>
-    public static string Apply(string formula, CellAddress origin, Worksheet? home, Worksheet edited, SheetEdit edit, Dictionary<string, HashSet<string>?>? lost = null)
+    /// <param name="name">
+    /// Whether the text is a defined name's, which may be a union without parentheses, as print titles are:
+    /// <c>Sheet1!$A:$B,Sheet1!$1:$2</c>.
+    /// </param>
+    public static string Apply(string formula, CellAddress origin, Worksheet? home, Worksheet edited, SheetEdit edit, Dictionary<string, HashSet<string>?>? lost = null, bool name = false)
     {
         bool mayLose = lost is { Count: > 0 };
-        if ((!mayLose && !MayHoldReference(formula)) || FormulaParser.TryParse(formula, r1c1: false, origin) is not { } parsed)
+        if (!mayLose && !MayHoldReference(formula))
         {
             return formula;
+        }
+
+        if (FormulaParser.TryParse(formula, r1c1: false, origin) is not { } parsed)
+        {
+            // A name's union is read in parentheses, and printed back without them.
+            if (!name || !formula.Contains(',', StringComparison.Ordinal) || Apply("(" + formula + ")", origin, home, edited, edit, lost) is not { } wrapped
+                || wrapped.Length < 2 || wrapped[0] != '(' || wrapped[^1] != ')')
+            {
+                return formula;
+            }
+
+            return wrapped == "(" + formula + ")" ? formula : wrapped[1..^1];
         }
 
         bool changed = false;

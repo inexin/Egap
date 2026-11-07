@@ -17,7 +17,8 @@ public sealed partial class Worksheet
     /// <param name="count">How many rows to put in.</param>
     /// <exception cref="ArgumentOutOfRangeException">The row is off the sheet, or the count is below 1 or more than the sheet has room for.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Cells with a value or style would be pushed off the end of the sheet, or the new rows would split an array formula.
+    /// Cells with a value or style would be pushed off the end of the sheet, the new rows would split an array formula, or a
+    /// pivot table would move.
     /// </exception>
     public void InsertRows(int row, int count = 1) => Edit(new SheetEdit(true, row, count, true), nameof(row), nameof(count));
 
@@ -28,7 +29,7 @@ public sealed partial class Worksheet
     /// <param name="row">The zero-based first row to take out.</param>
     /// <param name="count">How many rows to take out.</param>
     /// <exception cref="ArgumentOutOfRangeException">The row is off the sheet, or the count is below 1 or runs past the sheet's end.</exception>
-    /// <exception cref="InvalidOperationException">The rows would take part of an array formula, or a table's header row but not all of the table.</exception>
+    /// <exception cref="InvalidOperationException">The rows would take part of an array formula or a table's header row but not all of the table, or a pivot table would move or change.</exception>
     public void DeleteRows(int row, int count = 1) => Edit(new SheetEdit(true, row, count, false), nameof(row), nameof(count));
 
     /// <summary>
@@ -40,7 +41,8 @@ public sealed partial class Worksheet
     /// <param name="count">How many columns to put in.</param>
     /// <exception cref="ArgumentOutOfRangeException">The column is off the sheet, or the count is below 1 or more than the sheet has room for.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Cells with a value or style would be pushed off the end of the sheet, or the new columns would split an array formula.
+    /// Cells with a value or style would be pushed off the end of the sheet, the new columns would split an array formula,
+    /// or a pivot table would move.
     /// </exception>
     public void InsertColumns(int column, int count = 1) => Edit(new SheetEdit(false, column, count, true), nameof(column), nameof(count));
 
@@ -55,7 +57,7 @@ public sealed partial class Worksheet
     /// <param name="column">The zero-based first column to take out.</param>
     /// <param name="count">How many columns to take out.</param>
     /// <exception cref="ArgumentOutOfRangeException">The column is off the sheet, or the count is below 1 or runs past the sheet's end.</exception>
-    /// <exception cref="InvalidOperationException">The columns would take part of an array formula.</exception>
+    /// <exception cref="InvalidOperationException">The columns would take part of an array formula, or a pivot table would move or change.</exception>
     public void DeleteColumns(int column, int count = 1) => Edit(new SheetEdit(false, column, count, false), nameof(column), nameof(count));
 
     /// <summary>Takes columns out from a column given by its name, such as <c>C</c>; see <see cref="DeleteColumns(int, int)"/>.</summary>
@@ -128,6 +130,16 @@ public sealed partial class Worksheet
                 && RangeAddress.TryParse(entry.Attribute("ref"), out RangeAddress range) && Splits(edit, range))
             {
                 throw new InvalidOperationException("Part of an array formula can't be changed.");
+            }
+        }
+
+        // Egap keeps pivot tables as they were read, so one the edit would move or change would be left in the wrong place.
+        // Excel refuses an edit through a pivot table too.
+        foreach (RangeAddress pivot in Xlsx.SheetObjectReader.PivotTables(this))
+        {
+            if ((edit.Rows ? pivot.Last.Row : pivot.Last.Column) >= edit.At)
+            {
+                throw new InvalidOperationException($"The edit would move or change the pivot table at {pivot}, which Egap does not change.");
             }
         }
 

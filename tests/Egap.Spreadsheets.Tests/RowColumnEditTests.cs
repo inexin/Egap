@@ -299,6 +299,48 @@ public sealed class RowColumnEditTests
     }
 
     [Fact]
+    public void ANameThatIsAUnionFollows()
+    {
+        // Print titles are a union without parentheses, as Excel stores them.
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        book.Names.Add("Titles", "Sheet1!$A:$F,Sheet1!$1:$2");
+        sheet.InsertColumns(1);
+        Assert.Equal("Sheet1!$A:$G,Sheet1!$1:$2", book.Names.Single().Formula);
+        sheet.DeleteRows(0);
+        Assert.Equal("Sheet1!$A:$G,Sheet1!$1:$1", book.Names.Single().Formula);
+    }
+
+    [Fact]
+    public void AnEditThatWouldMoveAPivotTableIsRefused()
+    {
+        Workbook made = Workbook.Create();
+        made.Worksheets[0]["A1"].Value = 1;
+        MemoryStream file = new();
+        made.Save(file);
+        using (System.IO.Compression.ZipArchive zip = new(file, System.IO.Compression.ZipArchiveMode.Update, leaveOpen: true))
+        {
+            Write(zip, "xl/pivotTables/pivotTable1.xml", "<pivotTableDefinition xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" name=\"P\"><location ref=\"D3:E6\" firstHeaderRow=\"1\" firstDataRow=\"1\" firstDataCol=\"1\"/></pivotTableDefinition>");
+            zip.GetEntry("xl/worksheets/_rels/sheet1.xml.rels")?.Delete();
+            Write(zip, "xl/worksheets/_rels/sheet1.xml.rels", "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rIdP\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable\" Target=\"../pivotTables/pivotTable1.xml\"/></Relationships>");
+        }
+
+        file.Position = 0;
+        Worksheet sheet = Workbook.Load(file).Worksheets[0];
+        Assert.Throws<InvalidOperationException>(() => sheet.InsertRows(2));
+        Assert.Throws<InvalidOperationException>(() => sheet.DeleteColumns(4));
+        sheet.InsertRows(6);
+        sheet.DeleteColumns(5);
+        Assert.Equal(1, sheet["A1"].Value.Number);
+
+        static void Write(System.IO.Compression.ZipArchive zip, string name, string xml)
+        {
+            using StreamWriter writer = new(zip.CreateEntry(name).Open());
+            writer.Write(xml);
+        }
+    }
+
+    [Fact]
     public void AChartFollowsItsData()
     {
         Workbook book = Workbook.Create();

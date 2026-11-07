@@ -210,7 +210,7 @@ public sealed partial class Workbook
 
         foreach (DefinedName name in Names)
         {
-            string text = Shift(name.Formula, default, name.Sheet);
+            string text = Formulas.ReferenceShift.Apply(name.Formula, default, name.Sheet, edited, edit, lost, name: true);
             if (text != name.Formula)
             {
                 bool typed = name.Typed;
