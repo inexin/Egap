@@ -31,7 +31,7 @@ internal sealed class ChartBoxes
 }
 
 /// <summary>
-/// Draws a chart on an Egami canvas (Build Plan task 27). Layout follows what Excel reports: the rules and their constants in points come
+/// Draws a chart on an Egami canvas. Layout follows what Excel reports: the rules and their constants in points come
 /// from reading Excel's own positions through tools/excel-chart-layout-oracle.ps1 and are checked against them by ChartLayoutOracleTests.
 /// </summary>
 internal sealed partial class ChartRenderer

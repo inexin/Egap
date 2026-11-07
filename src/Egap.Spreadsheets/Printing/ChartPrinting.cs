@@ -5,7 +5,7 @@ using Egap.Spreadsheets.Xlsx;
 
 namespace Egap.Spreadsheets.Printing;
 
-/// <summary>Draws a sheet's charts on a page (Build Plan task 28).</summary>
+/// <summary>Draws a sheet's charts on a page.</summary>
 internal static class ChartPrinting
 {
     /// <summary>
