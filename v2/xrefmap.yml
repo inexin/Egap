@@ -1933,6 +1933,22 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Charts.Chart.DisplayBlanksAs
   nameWithType: Chart.DisplayBlanksAs
+- uid: Egap.Documents.Charts.Chart.Draw(Egami.Drawing.Canvas,Egami.Drawing.RectF,Egap.Documents.Charts.ChartDrawOptions)
+  name: Draw(Canvas, RectF, ChartDrawOptions?)
+  href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Draw_Egami_Drawing_Canvas_Egami_Drawing_RectF_Egap_Documents_Charts_ChartDrawOptions_
+  commentId: M:Egap.Documents.Charts.Chart.Draw(Egami.Drawing.Canvas,Egami.Drawing.RectF,Egap.Documents.Charts.ChartDrawOptions)
+  name.vb: Draw(Canvas, RectF, ChartDrawOptions)
+  fullName: Egap.Documents.Charts.Chart.Draw(Egami.Drawing.Canvas, Egami.Drawing.RectF, Egap.Documents.Charts.ChartDrawOptions?)
+  fullName.vb: Egap.Documents.Charts.Chart.Draw(Egami.Drawing.Canvas, Egami.Drawing.RectF, Egap.Documents.Charts.ChartDrawOptions)
+  nameWithType: Chart.Draw(Canvas, RectF, ChartDrawOptions?)
+  nameWithType.vb: Chart.Draw(Canvas, RectF, ChartDrawOptions)
+- uid: Egap.Documents.Charts.Chart.Draw*
+  name: Draw
+  href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Draw_
+  commentId: Overload:Egap.Documents.Charts.Chart.Draw
+  isSpec: "True"
+  fullName: Egap.Documents.Charts.Chart.Draw
+  nameWithType: Chart.Draw
 - uid: Egap.Documents.Charts.Chart.Format
   name: Format
   href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Format
@@ -3362,6 +3378,64 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Charts.ChartDataLabels.TextFormat
   nameWithType: ChartDataLabels.TextFormat
+- uid: Egap.Documents.Charts.ChartDrawOptions
+  name: ChartDrawOptions
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html
+  commentId: T:Egap.Documents.Charts.ChartDrawOptions
+  fullName: Egap.Documents.Charts.ChartDrawOptions
+  nameWithType: ChartDrawOptions
+- uid: Egap.Documents.Charts.ChartDrawOptions.Culture
+  name: Culture
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html#Egap_Documents_Charts_ChartDrawOptions_Culture
+  commentId: P:Egap.Documents.Charts.ChartDrawOptions.Culture
+  fullName: Egap.Documents.Charts.ChartDrawOptions.Culture
+  nameWithType: ChartDrawOptions.Culture
+- uid: Egap.Documents.Charts.ChartDrawOptions.Culture*
+  name: Culture
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html#Egap_Documents_Charts_ChartDrawOptions_Culture_
+  commentId: Overload:Egap.Documents.Charts.ChartDrawOptions.Culture
+  isSpec: "True"
+  fullName: Egap.Documents.Charts.ChartDrawOptions.Culture
+  nameWithType: ChartDrawOptions.Culture
+- uid: Egap.Documents.Charts.ChartDrawOptions.Fonts
+  name: Fonts
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html#Egap_Documents_Charts_ChartDrawOptions_Fonts
+  commentId: P:Egap.Documents.Charts.ChartDrawOptions.Fonts
+  fullName: Egap.Documents.Charts.ChartDrawOptions.Fonts
+  nameWithType: ChartDrawOptions.Fonts
+- uid: Egap.Documents.Charts.ChartDrawOptions.Fonts*
+  name: Fonts
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html#Egap_Documents_Charts_ChartDrawOptions_Fonts_
+  commentId: Overload:Egap.Documents.Charts.ChartDrawOptions.Fonts
+  isSpec: "True"
+  fullName: Egap.Documents.Charts.ChartDrawOptions.Fonts
+  nameWithType: ChartDrawOptions.Fonts
+- uid: Egap.Documents.Charts.ChartDrawOptions.Host
+  name: Host
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html#Egap_Documents_Charts_ChartDrawOptions_Host
+  commentId: P:Egap.Documents.Charts.ChartDrawOptions.Host
+  fullName: Egap.Documents.Charts.ChartDrawOptions.Host
+  nameWithType: ChartDrawOptions.Host
+- uid: Egap.Documents.Charts.ChartDrawOptions.Host*
+  name: Host
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html#Egap_Documents_Charts_ChartDrawOptions_Host_
+  commentId: Overload:Egap.Documents.Charts.ChartDrawOptions.Host
+  isSpec: "True"
+  fullName: Egap.Documents.Charts.ChartDrawOptions.Host
+  nameWithType: ChartDrawOptions.Host
+- uid: Egap.Documents.Charts.ChartDrawOptions.Theme
+  name: Theme
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html#Egap_Documents_Charts_ChartDrawOptions_Theme
+  commentId: P:Egap.Documents.Charts.ChartDrawOptions.Theme
+  fullName: Egap.Documents.Charts.ChartDrawOptions.Theme
+  nameWithType: ChartDrawOptions.Theme
+- uid: Egap.Documents.Charts.ChartDrawOptions.Theme*
+  name: Theme
+  href: api/Egap.Documents.Charts.ChartDrawOptions.html#Egap_Documents_Charts_ChartDrawOptions_Theme_
+  commentId: Overload:Egap.Documents.Charts.ChartDrawOptions.Theme
+  isSpec: "True"
+  fullName: Egap.Documents.Charts.ChartDrawOptions.Theme
+  nameWithType: ChartDrawOptions.Theme
 - uid: Egap.Documents.Charts.ChartErrorBarDirection
   name: ChartErrorBarDirection
   href: api/Egap.Documents.Charts.ChartErrorBarDirection.html
@@ -3828,6 +3902,24 @@ references:
   commentId: F:Egap.Documents.Charts.ChartGrouping.Standard
   fullName: Egap.Documents.Charts.ChartGrouping.Standard
   nameWithType: ChartGrouping.Standard
+- uid: Egap.Documents.Charts.ChartHost
+  name: ChartHost
+  href: api/Egap.Documents.Charts.ChartHost.html
+  commentId: T:Egap.Documents.Charts.ChartHost
+  fullName: Egap.Documents.Charts.ChartHost
+  nameWithType: ChartHost
+- uid: Egap.Documents.Charts.ChartHost.Excel
+  name: Excel
+  href: api/Egap.Documents.Charts.ChartHost.html#Egap_Documents_Charts_ChartHost_Excel
+  commentId: F:Egap.Documents.Charts.ChartHost.Excel
+  fullName: Egap.Documents.Charts.ChartHost.Excel
+  nameWithType: ChartHost.Excel
+- uid: Egap.Documents.Charts.ChartHost.Word
+  name: Word
+  href: api/Egap.Documents.Charts.ChartHost.html#Egap_Documents_Charts_ChartHost_Word
+  commentId: F:Egap.Documents.Charts.ChartHost.Word
+  fullName: Egap.Documents.Charts.ChartHost.Word
+  nameWithType: ChartHost.Word
 - uid: Egap.Documents.Charts.ChartLabelPosition
   name: ChartLabelPosition
   href: api/Egap.Documents.Charts.ChartLabelPosition.html
@@ -59389,6 +59481,80 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.ChartSheet.Visibility
   nameWithType: ChartSheet.Visibility
+- uid: Egap.Spreadsheets.ChartSheetPage
+  name: ChartSheetPage
+  href: api/Egap.Spreadsheets.ChartSheetPage.html
+  commentId: T:Egap.Spreadsheets.ChartSheetPage
+  fullName: Egap.Spreadsheets.ChartSheetPage
+  nameWithType: ChartSheetPage
+- uid: Egap.Spreadsheets.ChartSheetPage.Draw(Egami.Drawing.Canvas)
+  name: Draw(Canvas)
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Draw_Egami_Drawing_Canvas_
+  commentId: M:Egap.Spreadsheets.ChartSheetPage.Draw(Egami.Drawing.Canvas)
+  fullName: Egap.Spreadsheets.ChartSheetPage.Draw(Egami.Drawing.Canvas)
+  nameWithType: ChartSheetPage.Draw(Canvas)
+- uid: Egap.Spreadsheets.ChartSheetPage.Draw*
+  name: Draw
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Draw_
+  commentId: Overload:Egap.Spreadsheets.ChartSheetPage.Draw
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ChartSheetPage.Draw
+  nameWithType: ChartSheetPage.Draw
+- uid: Egap.Spreadsheets.ChartSheetPage.Height
+  name: Height
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Height
+  commentId: P:Egap.Spreadsheets.ChartSheetPage.Height
+  fullName: Egap.Spreadsheets.ChartSheetPage.Height
+  nameWithType: ChartSheetPage.Height
+- uid: Egap.Spreadsheets.ChartSheetPage.Height*
+  name: Height
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Height_
+  commentId: Overload:Egap.Spreadsheets.ChartSheetPage.Height
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ChartSheetPage.Height
+  nameWithType: ChartSheetPage.Height
+- uid: Egap.Spreadsheets.ChartSheetPage.Render(System.Double)
+  name: Render(double)
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Render_System_Double_
+  commentId: M:Egap.Spreadsheets.ChartSheetPage.Render(System.Double)
+  name.vb: Render(Double)
+  fullName: Egap.Spreadsheets.ChartSheetPage.Render(double)
+  fullName.vb: Egap.Spreadsheets.ChartSheetPage.Render(Double)
+  nameWithType: ChartSheetPage.Render(double)
+  nameWithType.vb: ChartSheetPage.Render(Double)
+- uid: Egap.Spreadsheets.ChartSheetPage.Render*
+  name: Render
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Render_
+  commentId: Overload:Egap.Spreadsheets.ChartSheetPage.Render
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ChartSheetPage.Render
+  nameWithType: ChartSheetPage.Render
+- uid: Egap.Spreadsheets.ChartSheetPage.Sheet
+  name: Sheet
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Sheet
+  commentId: P:Egap.Spreadsheets.ChartSheetPage.Sheet
+  fullName: Egap.Spreadsheets.ChartSheetPage.Sheet
+  nameWithType: ChartSheetPage.Sheet
+- uid: Egap.Spreadsheets.ChartSheetPage.Sheet*
+  name: Sheet
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Sheet_
+  commentId: Overload:Egap.Spreadsheets.ChartSheetPage.Sheet
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ChartSheetPage.Sheet
+  nameWithType: ChartSheetPage.Sheet
+- uid: Egap.Spreadsheets.ChartSheetPage.Width
+  name: Width
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Width
+  commentId: P:Egap.Spreadsheets.ChartSheetPage.Width
+  fullName: Egap.Spreadsheets.ChartSheetPage.Width
+  nameWithType: ChartSheetPage.Width
+- uid: Egap.Spreadsheets.ChartSheetPage.Width*
+  name: Width
+  href: api/Egap.Spreadsheets.ChartSheetPage.html#Egap_Spreadsheets_ChartSheetPage_Width_
+  commentId: Overload:Egap.Spreadsheets.ChartSheetPage.Width
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ChartSheetPage.Width
+  nameWithType: ChartSheetPage.Width
 - uid: Egap.Spreadsheets.ComparisonOperator
   name: ComparisonOperator
   href: api/Egap.Spreadsheets.ComparisonOperator.html
@@ -62707,6 +62873,19 @@ references:
   commentId: T:Egap.Spreadsheets.SheetPrintLayout
   fullName: Egap.Spreadsheets.SheetPrintLayout
   nameWithType: SheetPrintLayout
+- uid: Egap.Spreadsheets.SheetPrintLayout.ChartPages
+  name: ChartPages
+  href: api/Egap.Spreadsheets.SheetPrintLayout.html#Egap_Spreadsheets_SheetPrintLayout_ChartPages
+  commentId: P:Egap.Spreadsheets.SheetPrintLayout.ChartPages
+  fullName: Egap.Spreadsheets.SheetPrintLayout.ChartPages
+  nameWithType: SheetPrintLayout.ChartPages
+- uid: Egap.Spreadsheets.SheetPrintLayout.ChartPages*
+  name: ChartPages
+  href: api/Egap.Spreadsheets.SheetPrintLayout.html#Egap_Spreadsheets_SheetPrintLayout_ChartPages_
+  commentId: Overload:Egap.Spreadsheets.SheetPrintLayout.ChartPages
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPrintLayout.ChartPages
+  nameWithType: SheetPrintLayout.ChartPages
 - uid: Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions
   name: FontSubstitutions
   href: api/Egap.Spreadsheets.SheetPrintLayout.html#Egap_Spreadsheets_SheetPrintLayout_FontSubstitutions

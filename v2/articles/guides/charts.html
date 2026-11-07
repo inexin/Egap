@@ -182,6 +182,34 @@ ChartPlot line = drawing.Chart.AddPlot(ChartType.Line, secondaryAxis: true);
 line.Series.Add(&quot;Sheet1!$B$2:$B$3&quot;, &quot;Sheet1!$A$2:$A$3&quot;, &quot;Sheet1!$B$1&quot;);
 book.Save(&quot;chart.xlsx&quot;);
 </code></pre>
+<h2 id="drawing">Drawing</h2>
+<p><code>Chart.Draw</code> draws a chart on any Egami canvas, with the layout Excel gives it: the title, the legend, the plot, the axes' steps
+and the labels. <code>ChartDrawOptions.Host</code> picks whose defaults to follow where the file leaves something out: <code>ChartHost.Excel</code>,
+the default, or <code>ChartHost.Word</code>, which a Word document's pages use. They differ in corners, line and marker sizes, the size of a
+title and the spacing of a legend. Column, bar, line, area, pie, doughnut, scatter, bubble, radar, stock and combined charts draw this way. A
+chart of the newer <code>cx:</code> kinds, a 3D chart, a surface and a pie of pie are still to come: a Word document shows the picture
+saved with them, and printing a sheet draws a 3D chart flat.</p>
+<pre><code class="lang-csharp">using Egami;
+using Egami.Drawing;
+using Egami.Pixels;
+using Egap.Documents.Charts;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+Chart chart = book.Worksheets[0].Drawings[0].Chart!;
+
+using Raster&lt;Rgba8&gt; picture = Raster.Create(720, 432, new Rgba8(255, 255, 255, 255));
+using RasterCanvas&lt;Rgba8&gt; canvas = new(picture);
+chart.Draw(canvas, new RectF(0, 0, 720, 432), new ChartDrawOptions { Culture = book.Culture });
+picture.Save(&quot;chart.png&quot;);
+</code></pre>
+<p>A Word document's chart draws in the document's pages and PDFs, and a sheet's in its printed pages, PDFs and images. A chart
+made in code and not refreshed yet prints from its cells. <code>Workbook.Paginate</code> and <code>SaveAsPdf</code> also print each visible chart
+sheet, after the sheets, on a page of its own (<code>SheetPrintLayout.ChartPages</code>), which a single sheet's print leaves out.</p>
+<p>Text that has no room is cut as Office cuts it: a title or a radar's label in a very small chart ends in an ellipsis, and a
+legend that wraps leaves out the entries past half the chart's height.</p>
+<p>Not all of Excel's look comes through: bevels and shadows from a theme's effects are left out. <code>ChartDrawOptions.Culture</code>
+decides how dates, percents and list separators read; Office uses the machine's locale, so pass the reader's culture to match it.</p>
 <h2 id="word-documents">Word documents</h2>
 <p>A chart in a Word document is an <code>Island</code> of kind <code>IslandKind.Chart</code>, with the same model in <code>island.Chart</code>. A chart of the
 <code>cx:</code> types comes in as the picture Word saves with it, and cannot be added yet. A chart made here has its values in the part
