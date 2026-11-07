@@ -196,7 +196,7 @@ New rows take the formatting of the row above, and new columns that of the colum
 Columns put in inside a table become columns of the table named `Column1`, `Column2` and so on, and a structured reference
 to a table column that is taken out becomes `#REF!`. The edits refuse what Excel refuses: pushing cells with a value or a
 style off the end of the sheet, changing part of an array formula, and taking a table's header row without the rest of it.
-Egap keeps pivot tables as they were read, so an edit that would move or change one is refused too. References from other
+Egap keeps pivot tables as they were read, so an edit that would move or change one is refused too. Sheet protection does not block the edits, as it does not block writing cells: it guards what a person does in Excel. References from other
 workbooks, references across several sheets (`Sheet1:Sheet3!A1`) and the anchors of form controls stay as they were.
 
 ## Names and printing

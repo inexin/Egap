@@ -20,6 +20,7 @@ public sealed partial class Worksheet
     /// Cells with a value or style would be pushed off the end of the sheet, the new rows would split an array formula, or a
     /// pivot table would move.
     /// </exception>
+    /// <remarks>Sheet protection does not block the edit: it guards what a person does in Excel, not what code does, as for writing cells.</remarks>
     public void InsertRows(int row, int count = 1) => Edit(new SheetEdit(true, row, count, true), nameof(row), nameof(count));
 
     /// <summary>
@@ -30,6 +31,7 @@ public sealed partial class Worksheet
     /// <param name="count">How many rows to take out.</param>
     /// <exception cref="ArgumentOutOfRangeException">The row is off the sheet, or the count is below 1 or runs past the sheet's end.</exception>
     /// <exception cref="InvalidOperationException">The rows would take part of an array formula or a table's header row but not all of the table, or a pivot table would move or change.</exception>
+    /// <remarks>Sheet protection does not block the edit: it guards what a person does in Excel, not what code does, as for writing cells.</remarks>
     public void DeleteRows(int row, int count = 1) => Edit(new SheetEdit(true, row, count, false), nameof(row), nameof(count));
 
     /// <summary>
@@ -44,6 +46,7 @@ public sealed partial class Worksheet
     /// Cells with a value or style would be pushed off the end of the sheet, the new columns would split an array formula,
     /// or a pivot table would move.
     /// </exception>
+    /// <remarks>Sheet protection does not block the edit: it guards what a person does in Excel, not what code does, as for writing cells.</remarks>
     public void InsertColumns(int column, int count = 1) => Edit(new SheetEdit(false, column, count, true), nameof(column), nameof(count));
 
     /// <summary>Puts empty columns in before a column given by its name, such as <c>C</c>; see <see cref="InsertColumns(int, int)"/>.</summary>
@@ -58,6 +61,7 @@ public sealed partial class Worksheet
     /// <param name="count">How many columns to take out.</param>
     /// <exception cref="ArgumentOutOfRangeException">The column is off the sheet, or the count is below 1 or runs past the sheet's end.</exception>
     /// <exception cref="InvalidOperationException">The columns would take part of an array formula, or a pivot table would move or change.</exception>
+    /// <remarks>Sheet protection does not block the edit: it guards what a person does in Excel, not what code does, as for writing cells.</remarks>
     public void DeleteColumns(int column, int count = 1) => Edit(new SheetEdit(false, column, count, false), nameof(column), nameof(count));
 
     /// <summary>Takes columns out from a column given by its name, such as <c>C</c>; see <see cref="DeleteColumns(int, int)"/>.</summary>
