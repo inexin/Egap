@@ -1,3 +1,6 @@
+using System.IO.Compression;
+using System.Xml.Linq;
+
 using Egap.Documents.Charts;
 
 namespace Egap.Spreadsheets.Tests;
@@ -319,6 +322,117 @@ public sealed class RowColumnEditTests
 
         Assert.Equal([validation, moved], sheet.DataValidations.Select(d => d.Ranges.Single().ToString()));
         Assert.Equal(format, sheet.ConditionalFormats.Single().Ranges.Single().ToString());
+    }
+
+    [Theory]
+    [InlineData("delete B", "A1:C10", "1", "C2:C10")]
+    [InlineData("insert B", "A1:E10", "3", "E2:E10")]
+    [InlineData("delete C", "A1:C10", null, "C2:C10")]
+    [InlineData("delete D", "A1:C10", "2", null)]
+    public void ASheetFilterAndSortFollowColumnEdits(string edit, string range, string? column, string? sorted)
+    {
+        // Excel 16.0, filtering on C and sorting on D of A1:D10: the filter's column is counted from its first column, a
+        // filter or sort on a column taken out goes, and the rest move with their cells.
+        MemoryStream file = Filtered(sheet: true);
+        Worksheet sheet = Workbook.Load(file).Worksheets[0];
+        Edit(sheet, edit);
+        XElement filter = Saved(sheet.Workbook, "xl/worksheets/sheet1.xml").Descendants().Single(e => e.Name.LocalName == "autoFilter");
+        Assert.Equal(range, (string?)filter.Attribute("ref"));
+        Assert.Equal(column, (string?)filter.Descendants().SingleOrDefault(e => e.Name.LocalName == "filterColumn")?.Attribute("colId"));
+        Assert.Equal(sorted, (string?)filter.Descendants().SingleOrDefault(e => e.Name.LocalName == "sortCondition")?.Attribute("ref"));
+    }
+
+    [Theory]
+    [InlineData("insert row", "A2:D11", "2", "A3:D11", "D3:D11")]
+    [InlineData("delete B", "A1:C10", "1", "A2:C10", "C2:C10")]
+    [InlineData("delete C", "A1:C10", null, "A2:C10", "C2:C10")]
+    [InlineData("delete D", "A1:C10", "2", null, null)]
+    public void ATableFilterAndSortFollowEdits(string edit, string range, string? column, string? sortRange, string? sorted)
+    {
+        MemoryStream file = Filtered(sheet: false);
+        Worksheet sheet = Workbook.Load(file).Worksheets[0];
+        Edit(sheet, edit);
+        XElement table = Saved(sheet.Workbook, "xl/tables/table1.xml");
+        Assert.Equal(range, (string?)table.Attribute("ref"));
+        XElement filter = table.Elements().Single(e => e.Name.LocalName == "autoFilter");
+        Assert.Equal(column, (string?)filter.Descendants().SingleOrDefault(e => e.Name.LocalName == "filterColumn")?.Attribute("colId"));
+        XElement? sort = table.Elements().SingleOrDefault(e => e.Name.LocalName == "sortState");
+        Assert.Equal(sortRange, (string?)sort?.Attribute("ref"));
+        Assert.Equal(sorted, (string?)sort?.Elements().SingleOrDefault()?.Attribute("ref"));
+    }
+
+    private static void Edit(Worksheet sheet, string edit)
+    {
+        switch (edit)
+        {
+            case "insert row": sheet.InsertRows(0); break;
+            case "insert B": sheet.InsertColumns("B"); break;
+            case "delete B": sheet.DeleteColumns("B"); break;
+            case "delete C": sheet.DeleteColumns("C"); break;
+            default: sheet.DeleteColumns("D"); break;
+        }
+    }
+
+    /// <summary>A1:D10 filtered on C (greater than 40) and sorted on D, as a sheet's filter or as a table's.</summary>
+    private static MemoryStream Filtered(bool sheet)
+    {
+        const string Main = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+        Workbook made = Workbook.Create();
+        Worksheet first = made.Worksheets[0];
+        for (int r = 0; r < 10; r++)
+        {
+            for (int c = 0; c < 4; c++)
+            {
+                first.Cells[r, c].Value = r == 0 ? "H" + c : r * 10 + c;
+            }
+        }
+
+        if (!sheet)
+        {
+            first.Tables.Add("A1:D10", "T");
+        }
+
+        MemoryStream file = new();
+        made.Save(file);
+        string filter = "<autoFilter xmlns=\"" + Main + "\" ref=\"A1:D10\"><filterColumn colId=\"2\"><customFilters><customFilter operator=\"greaterThan\" val=\"40\"/></customFilters></filterColumn>"
+            + (sheet ? "<sortState ref=\"A2:D10\"><sortCondition ref=\"D2:D10\"/></sortState>" : "") + "</autoFilter>";
+        using (ZipArchive zip = new(file, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            string name = sheet ? "xl/worksheets/sheet1.xml" : "xl/tables/table1.xml";
+            ZipArchiveEntry entry = zip.GetEntry(name)!;
+            XDocument document;
+            using (Stream read = entry.Open())
+            {
+                document = XDocument.Load(read);
+            }
+
+            XElement root = document.Root!;
+            if (sheet)
+            {
+                root.Element(XName.Get("sheetData", Main))!.AddAfterSelf(XElement.Parse(filter));
+            }
+            else
+            {
+                root.Elements().Where(e => e.Name.LocalName is "autoFilter" or "sortState").Remove();
+                root.AddFirst(XElement.Parse(filter), XElement.Parse("<sortState xmlns=\"" + Main + "\" ref=\"A2:D10\"><sortCondition ref=\"D2:D10\"/></sortState>"));
+            }
+
+            entry.Delete();
+            using Stream write = zip.CreateEntry(name).Open();
+            document.Save(write);
+        }
+
+        file.Position = 0;
+        return file;
+    }
+
+    private static XElement Saved(Workbook book, string part)
+    {
+        MemoryStream saved = new();
+        book.Save(saved);
+        using ZipArchive zip = new(saved, ZipArchiveMode.Read);
+        using Stream read = zip.GetEntry(part)!.Open();
+        return XDocument.Load(read).Root!;
     }
 
     [Fact]

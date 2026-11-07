@@ -466,6 +466,23 @@ public sealed partial class Worksheet
                 continue;
             }
 
+            if (table.Source?.Element is { } read)
+            {
+                // The table's filter and sort are written as they were read, so they move here.
+                foreach (XElement filter in read.Elements().Where(e => e.Name.LocalName == "autoFilter"))
+                {
+                    MoveFilterColumns(filter, edit);
+                }
+
+                foreach (XElement sort in read.Elements().Where(e => e.Name.LocalName == "sortState").ToList())
+                {
+                    if (!MoveSort(sort, edit))
+                    {
+                        sort.Remove();
+                    }
+                }
+            }
+
             if (edit.Rows)
             {
                 if (!edit.Insert && table.ShowTotalsRow && range.Last.Row >= edit.At && range.Last.Row <= edit.End)
@@ -571,7 +588,34 @@ public sealed partial class Worksheet
         for (int i = source.Kept.Count - 1; i >= 0; i--)
         {
             XElement kept = source.Kept[i].Element;
-            foreach (XElement element in kept.DescendantsAndSelf().ToList())
+
+            // A filter's columns are counted from its first column, so they move before its range does.
+            foreach (XElement filter in kept.DescendantsAndSelf().Where(e => e.Name.LocalName == "autoFilter"))
+            {
+                MoveFilterColumns(filter, edit);
+            }
+
+            foreach (XElement sort in kept.DescendantsAndSelf().Where(e => e.Name.LocalName == "sortState").ToList())
+            {
+                if (!MoveSort(sort, edit))
+                {
+                    if (sort == kept)
+                    {
+                        source.Kept.RemoveAt(i);
+                    }
+                    else
+                    {
+                        sort.Remove();
+                    }
+                }
+            }
+
+            if (i >= source.Kept.Count || source.Kept[i].Element != kept)
+            {
+                continue;
+            }
+
+            foreach (XElement element in kept.DescendantsAndSelf().Where(e => e.Name.LocalName is not ("sortState" or "sortCondition")).ToList())
             {
                 foreach (XAttribute attribute in element.Attributes().Where(a => a.Name.LocalName is "ref" or "sqref").ToList())
                 {
@@ -605,6 +649,73 @@ public sealed partial class Worksheet
     }
 
     /// <summary>A space-separated list of ranges moved, or null when the edit takes all of them; text that is no range list stays.</summary>
+    /// <summary>
+    /// Moves the columns of a filter, which are counted from the first column of its range: a filter on a column the edit
+    /// takes out goes, as in Excel. Its range itself is moved with the other references.
+    /// </summary>
+    private static void MoveFilterColumns(XElement filter, SheetEdit edit)
+    {
+        if (edit.Rows || !RangeAddress.TryParse((string?)filter.Attribute("ref"), out RangeAddress range) || edit.Moved(range) is not { } moved)
+        {
+            return;
+        }
+
+        foreach (XElement column in filter.Elements().Where(e => e.Name.LocalName == "filterColumn").ToList())
+        {
+            int id = Xlsx.XlsxNames.Int((string?)column.Attribute("colId"), -1);
+            if (id < 0)
+            {
+                continue;
+            }
+
+            int to = edit.Moved(range.First.Column + id);
+            if (to < 0)
+            {
+                column.Remove();
+            }
+            else
+            {
+                column.SetAttributeValue("colId", (to - moved.First.Column).ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Moves a sort's range and its conditions' ranges; a condition on cells the edit takes out goes. False when the sort's
+    /// range is gone or no condition is left, so the sort goes.
+    /// </summary>
+    private static bool MoveSort(XElement sort, SheetEdit edit)
+    {
+        foreach (XElement condition in sort.Elements().Where(e => e.Name.LocalName == "sortCondition").ToList())
+        {
+            if ((string?)condition.Attribute("ref") is not { } text)
+            {
+                continue;
+            }
+
+            if (MovedList(text, edit) is { } moved)
+            {
+                condition.SetAttributeValue("ref", moved);
+            }
+            else
+            {
+                condition.Remove();
+            }
+        }
+
+        if ((string?)sort.Attribute("ref") is { } own)
+        {
+            if (MovedList(own, edit) is not { } moved)
+            {
+                return false;
+            }
+
+            sort.SetAttributeValue("ref", moved);
+        }
+
+        return sort.Elements().Any(e => e.Name.LocalName == "sortCondition");
+    }
+
     private static string? MovedList(string text, SheetEdit edit)
     {
         string[] items = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
