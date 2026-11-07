@@ -382,7 +382,16 @@ static void Edits(Stream input)
 
     book.Calculate();
     MemoryStream saved = new();
-    book.Save(saved);
+    try
+    {
+        book.Save(saved);
+    }
+    catch (DocumentException)
+    {
+        // A part kept as it was read is read again to save it, and may not be well-formed.
+        return;
+    }
+
     saved.Position = 0;
     Workbook.Load(saved);
 }

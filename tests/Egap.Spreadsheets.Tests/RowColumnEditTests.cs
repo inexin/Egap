@@ -96,6 +96,31 @@ public sealed class RowColumnEditTests
         Assert.Equal(answer[1], cell.Text);
     }
 
+    [Fact]
+    public void AGoneIntersectionOrSpillIsWrittenAsExcelWritesIt()
+    {
+        // Excel 16.0: after deleting row 2 these read M2 #REF!, A1:C1 #REF! and #REF!# (stored ANCHORARRAY(#REF!)).
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        sheet["H1"].Formula = "M3 A2";
+        sheet["H3"].Formula = "A1:C1 A2";
+        sheet["H5"].Formula = "SEQUENCE(1)";
+        sheet["H7"].Formula = "A2#";
+        sheet.DeleteRows(1);
+        book.Calculate();
+        MemoryStream saved = new();
+        book.Save(saved);
+        saved.Position = 0;
+        Worksheet reloaded = Workbook.Load(saved).Worksheets[0];
+        foreach (Worksheet each in (Worksheet[])[sheet, reloaded])
+        {
+            Assert.Equal("M2 #REF!", each["H1"].Formula);
+            Assert.Equal("A1:C1 #REF!", each["H2"].Formula);
+            Assert.Equal(each == sheet ? "#REF!#" : "_xlfn.ANCHORARRAY(#REF!)", each["H6"].Formula);
+            Assert.Equal("#REF! #REF! #REF!", $"{each["H1"].Text} {each["H2"].Text} {each["H6"].Text}");
+        }
+    }
+
     [Theory]
     [InlineData(-1, 1)]
     [InlineData(CellAddress.MaxRows, 1)]
