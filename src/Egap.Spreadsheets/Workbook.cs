@@ -280,6 +280,97 @@ public sealed partial class Workbook
         ChangeCount++;
     }
 
+    /// <summary>
+    /// Moves the references of every formula, name, rule, link and chart of the workbook for cells cut and pasted, before
+    /// the cells move: see <see cref="Formulas.ReferenceMove"/>.
+    /// </summary>
+    internal void CellsMovingTo(Formulas.CellMove move)
+    {
+        string Move(string text, CellAddress origin, Worksheet? home, bool relocated = false) => Formulas.ReferenceMove.Apply(text, origin, home, move, relocated);
+        string? MoveOrNull(string? text, CellAddress origin, Worksheet? home) => text is null ? null : Move(text, origin, home);
+
+        foreach (DefinedName name in Names)
+        {
+            string text = Formulas.ReferenceMove.Apply(name.Formula, default, name.Sheet, move, name: true);
+            if (text != name.Formula)
+            {
+                bool typed = name.Typed;
+                name.Formula = text;
+                name.Typed = typed;
+            }
+        }
+
+        foreach (Worksheet sheet in Worksheets)
+        {
+            // A formula without a sheet's name means its own sheet.
+            bool named = sheet != move.From && sheet != move.To;
+            sheet.RewriteCellFormulas((text, cell) => named && !text.Contains('!', StringComparison.Ordinal)
+                ? text
+                : Move(text, cell, sheet, move.Across && sheet == move.From && move.Source.Contains(cell)));
+
+            foreach (Hyperlink link in sheet.Hyperlinks)
+            {
+                link.Location = MoveOrNull(link.Location, default, sheet);
+            }
+
+            foreach (DataValidation rule in sheet.DataValidations)
+            {
+                CellAddress anchor = rule.Ranges.Count > 0 ? rule.Ranges[0].First : default;
+                rule.Formula1 = MoveOrNull(rule.Formula1, anchor, sheet);
+                rule.Formula2 = MoveOrNull(rule.Formula2, anchor, sheet);
+            }
+
+            foreach (ConditionalFormat format in sheet.ConditionalFormats)
+            {
+                CellAddress anchor = format.Ranges.Count > 0 ? format.Ranges[0].First : default;
+                foreach (ConditionalFormatRule rule in format.Rules)
+                {
+                    for (int i = 0; i < rule.Formulas.Count; i++)
+                    {
+                        rule.Formulas[i] = Move(rule.Formulas[i], anchor, sheet);
+                    }
+                }
+            }
+
+            foreach (SheetTable table in sheet.Tables)
+            {
+                foreach (SheetTableColumn column in table.Columns)
+                {
+                    column.TotalsRowFormula = MoveOrNull(column.TotalsRowFormula, table.Range.First, sheet);
+                    column.CalculatedFormula = MoveOrNull(column.CalculatedFormula, table.Range.First, sheet);
+                }
+            }
+
+            foreach (SheetDrawing drawing in sheet.Drawings)
+            {
+                drawing.Chart?.RewriteReferences(text => Move(text, default, sheet));
+            }
+
+            foreach ((_, System.Xml.Linq.XElement kept) in sheet.Source?.Kept ?? [])
+            {
+                foreach (System.Xml.Linq.XElement formula in kept.DescendantsAndSelf().Where(e => e.Name.LocalName == "f"))
+                {
+                    formula.Value = Move(formula.Value, default, sheet);
+                }
+            }
+        }
+
+        foreach (ChartSheet page in ChartSheets)
+        {
+            page.Chart?.RewriteReferences(text => Move(text, default, null));
+        }
+
+        Calculator = null;
+        ChangeCount++;
+    }
+
+    /// <summary>Drops what the calculator compiled, for cells that moved or were written in bulk.</summary>
+    internal void Recompile()
+    {
+        Calculator = null;
+        ChangeCount++;
+    }
+
     private static readonly System.Xml.Linq.XNamespace ExcelMain = "http://schemas.microsoft.com/office/excel/2006/main";
 
     /// <summary>A new workbook with one empty sheet, <c>Sheet1</c>, as Excel starts one.</summary>

@@ -14,6 +14,10 @@ Fuzzing harness for Egap.Spreadsheets' parsers, run with SharpFuzz and AFL++ in 
 | `sheetcharts` | Any bytes read as an XLSX package: each chart read, filled from the cells and edited, then the book saved; may throw only `DocumentException`. | `tests/fuzz-seeds/sheetcharts` |
 | `headerfooter` | Any bytes read as a header and footer code (`&L`, `&P+1`, `&"Arial,Bold"`, `&K` colours and the rest): parsed, then printed to PDF as a sheet's header and footer with every field filled in; must never throw | `tests/fuzz-seeds/headerfooter/*` |
 | `formula` | Any bytes read as a formula in A1 and R1C1 style; what parses must print back exactly as written, its A1 form must read back to itself, its R1C1 form must parse, and evaluating it on a small workbook must give a value; may throw only `FormulaException` | `tests/fuzz-seeds/formula/*` |
+| `edits` | Any bytes read as an XLSX package: rows and columns of each sheet put in and taken out, then calculated, saved and loaded again; may throw only `DocumentException`, or `InvalidOperationException` for an edit Excel refuses | `tests/fuzz-seeds/xlsx/*` |
+| `shift` | Any bytes read as a formula, its references moved for rows and columns put in and taken out; what parses must parse after each edit, and a formula naming no sheet must not change for an edit of another sheet | `tests/fuzz-seeds/formula/*` |
+| `copies` | Any bytes read as an XLSX package: ranges of each sheet copied and moved, on the sheet and to another, then calculated, saved and loaded again; may throw only `DocumentException`, or `InvalidOperationException` for a paste Excel refuses | `tests/fuzz-seeds/xlsx/*` |
+| `move` | Any bytes read as a formula, its references moved for cells cut and pasted; what parses must parse after each move, and a move of cells it does not name must leave it as it was | `tests/fuzz-seeds/formula/*` |
 
 Daytime runs are 10 minutes per target at most. With the managed mutator:
 

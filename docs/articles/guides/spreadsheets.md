@@ -199,6 +199,39 @@ style off the end of the sheet, changing part of an array formula, and taking a 
 Egap keeps pivot tables as they were read, so an edit that would move or change one is refused too. Sheet protection does not block the edits, as it does not block writing cells: it guards what a person does in Excel. References from other
 workbooks, references across several sheets (`Sheet1:Sheet3!A1`) and the anchors of form controls stay as they were.
 
+### Copying and moving ranges
+
+`CopyTo` and `MoveTo` paste a range at a cell of the same workbook, as Excel's Copy, Cut and Paste do. Both take the
+cells' values, formulas and styles, and the merges, notes, hyperlinks, data validation and conditional formats on them;
+what was in the cells written over goes. A copy's formulas move their relative references with them, as filling does: a
+reference that would move off the sheet becomes `#REF!`, and absolute ones stay. The range and the place may overlap.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet["A1"].Value = 10;
+sheet["A2"].Value = 20;
+sheet["B1"].Formula = "A1*2";
+sheet["C1"].Formula = "B1+$A$2";
+
+sheet.Range("B1").CopyTo(sheet["B2"]);         // B2 reads A2*2
+sheet.Range("A1:A2").MoveTo(sheet["E5"]);      // B1 reads E5*2, B2 E6*2 and C1 B1+$E$6
+sheet.Range("C1").MoveTo(book.Worksheets.Add("Totals")["A1"]);  // Totals!A1 reads Sheet1!B1+Sheet1!$E$6
+```
+
+A move keeps the text of the formulas that move, and every formula, name, rule, link and chart of the workbook that
+refers to the cells that move follows them; a reference to a cell written over becomes `#REF!`. Formulas that go to
+another sheet name the sheet they left. A range with only a strip along one edge in the cells that move changes as in
+Excel: moved to another sheet, it loses the strip; moved straight on along the sheet, it stretches to where the strip lands
+when the strip goes away from the rest of the range or onto it, and otherwise stays. A table moves with the cells when all
+of it is in them, on its own sheet.
+
+The pastes refuse what Excel refuses: taking or writing over part of an array formula or a merged cell, and taking part
+of a table. Egap also refuses moving a table to another sheet, and a paste that would change a pivot table. Pictures and
+charts stay where they are.
+
 ## Names and printing
 
 `book.Names` holds the defined names. A name belongs to the workbook, or to one sheet when you give one:

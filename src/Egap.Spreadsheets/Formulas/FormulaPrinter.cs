@@ -49,6 +49,18 @@ internal static class FormulaPrinter
     }
 
     /// <summary>
+    /// As <see cref="Print(ParsedFormula, Func{ReferenceNode, Area?}, Func{FormulaNode, bool}?)"/>, with a new prefix for the
+    /// references <paramref name="prefixed"/> gives one for, such as <c>Sheet2!</c>, written in place of the one they have.
+    /// </summary>
+    public static string Print(ParsedFormula formula, Func<ReferenceNode, Area?> moved, Func<ReferenceNode, string?> prefixed)
+    {
+        StringBuilder output = new();
+        new Writer(output, ReferenceStyle.Written, formula.Origin, 0, 0, Stored.No, null, moved, null, prefixed).Node(formula.Root);
+        output.Append(formula.Trail);
+        return output.ToString();
+    }
+
+    /// <summary>
     /// A formula as a person types it, as a file stores it: newer functions with their prefixes, <c>#</c> and, in a dynamic
     /// array formula, <c>@</c> as the functions that stand for them. An ordinary formula has no <c>@</c>: it is what it means.
     /// The names of LET and LAMBDA get their prefixes, and a function's name used as a value too, unless <paramref name="book"/>
@@ -120,7 +132,7 @@ internal static class FormulaPrinter
         }
     }
 
-    private readonly struct Writer(StringBuilder output, ReferenceStyle style, CellAddress origin, int rowDelta, int columnDelta, Stored stored, Locals? locals = null, Func<ReferenceNode, Area?>? moved = null, Func<FormulaNode, bool>? gone = null)
+    private readonly struct Writer(StringBuilder output, ReferenceStyle style, CellAddress origin, int rowDelta, int columnDelta, Stored stored, Locals? locals = null, Func<ReferenceNode, Area?>? moved = null, Func<FormulaNode, bool>? gone = null, Func<ReferenceNode, string?>? prefixed = null)
     {
         public void Node(FormulaNode node)
         {
@@ -408,7 +420,15 @@ internal static class FormulaPrinter
 
         private void Reference(ReferenceNode reference)
         {
-            Prefix(reference.Prefix);
+            if (prefixed?.Invoke(reference) is { } prefix)
+            {
+                output.Append(prefix);
+            }
+            else
+            {
+                Prefix(reference.Prefix);
+            }
+
             if (style == ReferenceStyle.Written)
             {
                 if (moved?.Invoke(reference) is { } to)
