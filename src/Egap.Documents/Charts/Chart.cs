@@ -2,9 +2,9 @@ using System.Globalization;
 using System.Xml;
 using System.Xml.Linq;
 
-using Egap.Documents.Docx;
-
 using Egami.Drawing;
+
+using Egap.Documents.Docx;
 
 namespace Egap.Documents.Charts;
 

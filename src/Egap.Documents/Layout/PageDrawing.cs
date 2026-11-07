@@ -8,9 +8,9 @@ using Egami.Fonts;
 using Egami.Fonts.Layout;
 using Egami.Pixels;
 
-using EgamiBorderStyle = Egap.Documents.BorderStyle;
-
 using Egap.Documents.Charts;
+
+using EgamiBorderStyle = Egap.Documents.BorderStyle;
 
 namespace Egap.Documents.Layout;
 

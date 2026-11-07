@@ -3,9 +3,9 @@ using System.Text;
 
 using Egami.Drawing;
 
-using Path = System.IO.Path;
-
 using Egap.Documents.Charts;
+
+using Path = System.IO.Path;
 
 namespace Egap.Spreadsheets.Tests;
 
