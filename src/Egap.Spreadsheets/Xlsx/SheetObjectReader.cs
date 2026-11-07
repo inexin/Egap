@@ -110,6 +110,35 @@ internal static class SheetObjectReader
         }
     }
 
+    /// <summary>
+    /// Where the sheet's pivot tables are, from their parts' locations. Egap keeps pivot tables as they were read; a part
+    /// that cannot be read gives no range.
+    /// </summary>
+    public static List<RangeAddress> PivotTables(Worksheet sheet)
+    {
+        List<RangeAddress> found = [];
+        if (sheet.Source is not { } source)
+        {
+            return found;
+        }
+
+        foreach (OpcRelationship relationship in source.Part.Relationships)
+        {
+            if (relationship.External || !relationship.Type.EndsWith("/pivotTable", StringComparison.Ordinal)
+                || Package(sheet).GetPart(relationship.TargetName) is not { } part || SafeXml.TryLoad(part)?.Root is not { } root)
+            {
+                continue;
+            }
+
+            if (RangeAddress.TryParse((string?)root.Element(root.Name.Namespace + "location")?.Attribute("ref"), out RangeAddress range))
+            {
+                found.Add(range);
+            }
+        }
+
+        return found;
+    }
+
     private static OpcPackage Package(Worksheet sheet) => sheet.Workbook.Source!.Package;
 
     private static OpcPart? Related(Worksheet sheet, string? id)
