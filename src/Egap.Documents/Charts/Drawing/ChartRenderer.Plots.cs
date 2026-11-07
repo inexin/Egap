@@ -13,6 +13,8 @@ internal sealed partial class ChartRenderer
     private const float SeriesLineWidth = 3f;
     private const float RadarLabelLines = 0.824f;
     private const int AutomaticMarkerSize = 9;
+    private const float PieLabelWidths = 0.85f;
+    private const float PieLabelLines = 1.33f;
 
     private static readonly ChartMarkerSymbol[] AutomaticMarkers =
     [
@@ -756,9 +758,10 @@ internal sealed partial class ChartRenderer
     }
 
     /// <summary>The room outside a pie for labels that sit outside it.</summary>
-    private float OutsideLabelRoom(float side)
+    private (float Width, float Height) OutsideLabelSize()
     {
-        float room = 0;
+        float widest = 0;
+        float tallest = 0;
         foreach (ChartPlot plot in plots)
         {
             foreach (ChartSeries s in plot.Series.Take(1))
@@ -774,12 +777,13 @@ internal sealed partial class ChartRenderer
                 for (int i = 0; i < count && i < 256; i++)
                 {
                     (float w, float h) = Measure(LabelText(labels, s, plot, i), look);
-                    room = Math.Max(room, Math.Max(w * 0.6f, h) + 4);
+                    widest = Math.Max(widest, w);
+                    tallest = Math.Max(tallest, h);
                 }
             }
         }
 
-        return Math.Min(room, side * 0.25f);
+        return (widest, tallest);
     }
 
     private void DrawPie(ChartPlot plot, RectF area)

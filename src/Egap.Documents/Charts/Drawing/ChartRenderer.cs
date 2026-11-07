@@ -136,7 +136,7 @@ internal sealed partial class ChartRenderer
         if (LegendEntries() is { Count: > 0 } entries && chart.HasLegend)
         {
             ChartLegendPosition position = chart.Legend.Position ?? ChartLegendPosition.Right;
-            bool overlay = chart.Legend.Overlay == true || chart.Legend.Layout.X is not null;
+            bool overlay = chart.Legend.Overlay == true;
             (float w, float h) = LegendSize(entries, position, width, height - titleBottom);
             RectF box = position switch
             {
@@ -146,8 +146,9 @@ internal sealed partial class ChartRenderer
                 ChartLegendPosition.TopRight => new(width - EdgeMargin - w, EdgeMargin, w, h),
                 _ => new(width - EdgeMargin - w, Math.Max(titleBottom, 0) + ((height - titleBottom - h) / 2), w, h),
             };
-            box = Placed(chart.Legend.Layout, box);
-            boxes.Legend = box;
+
+            // A legend moved by hand still leaves the plot the room it would have had where its position says.
+            boxes.Legend = Placed(chart.Legend.Layout, box);
             if (!overlay)
             {
                 legendInline = true;

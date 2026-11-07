@@ -258,6 +258,18 @@ static void SheetCharts(Stream input)
 
         using MemoryStream saved = new();
         book.Save(saved);
+
+        // Every chart prints, on the sheets' pages and on the chart sheets' own.
+        SheetPrintLayout layout = book.Paginate();
+        foreach (SheetPage page in layout.Pages.Take(4))
+        {
+            using Egami.Raster<Egami.Pixels.Rgba8> image = page.Render(36);
+        }
+
+        foreach (ChartSheetPage page in layout.ChartPages.Take(4))
+        {
+            using Egami.Raster<Egami.Pixels.Rgba8> image = page.Render(36);
+        }
     }
     catch (DocumentException)
     {

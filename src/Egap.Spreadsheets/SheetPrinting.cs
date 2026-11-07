@@ -70,21 +70,25 @@ public sealed record SheetPdfOptions
 /// </summary>
 public sealed class SheetPrintLayout
 {
-    internal SheetPrintLayout(IReadOnlyList<SheetPage> pages, SheetFonts fonts)
+    internal SheetPrintLayout(IReadOnlyList<SheetPage> pages, IReadOnlyList<ChartSheetPage> chartPages, SheetFonts fonts)
     {
         Pages = pages;
+        ChartPages = chartPages;
         Fonts = fonts;
     }
 
     /// <summary>The pages, in print order.</summary>
     public IReadOnlyList<SheetPage> Pages { get; }
 
+    /// <summary>The chart sheets' pages, when the whole workbook prints: one each, after <see cref="Pages"/>.</summary>
+    public IReadOnlyList<ChartSheetPage> ChartPages { get; }
+
     /// <summary>The fonts used in place of the ones the cells ask for, each once.</summary>
     public IReadOnlyList<FontSubstitution> FontSubstitutions => Fonts.Substitutions;
 
     internal SheetFonts Fonts { get; }
 
-    internal static SheetPrintLayout Create(Workbook book, IEnumerable<Worksheet> sheets, SheetPrintOptions? options, string? filePath = null)
+    internal static SheetPrintLayout Create(Workbook book, IEnumerable<Worksheet> sheets, SheetPrintOptions? options, string? filePath = null, bool chartSheets = false)
     {
         options ??= SheetPrintOptions.Default;
         SheetFonts fonts = new(book, options.Fonts);
@@ -101,7 +105,64 @@ public sealed class SheetPrintLayout
             }
         }
 
-        return new SheetPrintLayout(pages, fonts);
+        List<ChartSheetPage> chartPages = chartSheets
+            ? [.. book.ChartSheets.Where(s => s.Visibility == SheetVisibility.Visible && s.Chart is not null).Select(s => new ChartSheetPage(s, book, colors, fonts))]
+            : [];
+        return new SheetPrintLayout(pages, chartPages, fonts);
+    }
+}
+
+/// <summary>A chart sheet's printed page: the chart fills the paper inside the sheet's margins.</summary>
+public sealed class ChartSheetPage
+{
+    private readonly Workbook book;
+    private readonly SheetColors colors;
+    private readonly SheetFonts fonts;
+    private readonly (double Left, double Top, double Right, double Bottom) margins;
+
+    internal ChartSheetPage(ChartSheet sheet, Workbook book, SheetColors colors, SheetFonts fonts)
+    {
+        Sheet = sheet;
+        this.book = book;
+        this.colors = colors;
+        this.fonts = fonts;
+        (int? paper, bool portrait, margins) = sheet.ReadPageSetup();
+        (double width, double height) = PaperSizes.Get(paper);
+        Width = portrait ? Math.Min(width, height) : Math.Max(width, height);
+        Height = portrait ? Math.Max(width, height) : Math.Min(width, height);
+    }
+
+    /// <summary>The sheet the page prints.</summary>
+    public ChartSheet Sheet { get; }
+
+    /// <summary>The page's width in points.</summary>
+    public double Width { get; }
+
+    /// <summary>The page's height in points.</summary>
+    public double Height { get; }
+
+    /// <summary>Draws the page onto <paramref name="canvas"/> with its top-left corner at the canvas's origin, one canvas unit to the point.</summary>
+    public void Draw(Canvas canvas)
+    {
+        ArgumentNullException.ThrowIfNull(canvas);
+        if (Sheet.Chart is { } chart)
+        {
+            RectF rect = new((float)margins.Left, (float)margins.Top, (float)Math.Max(Width - margins.Left - margins.Right, 1), (float)Math.Max(Height - margins.Top - margins.Bottom, 1));
+            ChartPrinting.Draw(chart, book, canvas, rect, colors, fonts);
+        }
+    }
+
+    /// <summary>The page drawn on white at <paramref name="dpi"/> dots per inch.</summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="dpi"/> is not positive.</exception>
+    public Raster<Rgba8> Render(double dpi = 96)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(dpi);
+        double scale = dpi / 72;
+        Raster<Rgba8> raster = Raster.Create(Math.Max(1, (int)Math.Ceiling(Width * scale)), Math.Max(1, (int)Math.Ceiling(Height * scale)), new Rgba8(255, 255, 255, 255));
+        using RasterCanvas<Rgba8> canvas = new(raster);
+        canvas.Scale((float)scale, (float)scale);
+        Draw(canvas);
+        return raster;
     }
 }
 

@@ -150,7 +150,8 @@ internal readonly record struct ChartScale(double Minimum, double Maximum, doubl
                 }
 
                 last = major;
-                if (count <= 10 + 1e-9 && fits(new ChartScale(from, to, major, major)))
+                // One step is as far as it goes, however little room there is.
+                if (count <= 10 + 1e-9 && (count <= 1 + 1e-9 || fits(new ChartScale(from, to, major, major))))
                 {
                     return major;
                 }

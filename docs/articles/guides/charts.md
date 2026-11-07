@@ -115,6 +115,36 @@ line.Series.Add("Sheet1!$B$2:$B$3", "Sheet1!$A$2:$A$3", "Sheet1!$B$1");
 book.Save("chart.xlsx");
 ```
 
+## Drawing
+
+`Chart.Draw` draws a chart on any Egami canvas, with the layout Excel gives it: the title, the legend, the plot, the axes' steps
+and the labels. Column, bar, line, area, pie, doughnut, scatter, bubble, radar, stock and combined charts draw this way. A
+chart of the newer `cx:` kinds, a 3D chart, a surface and a pie of pie are still to come: a Word document shows the picture
+saved with them, and printing a sheet draws a 3D chart flat.
+
+```csharp
+using Egami;
+using Egami.Drawing;
+using Egami.Pixels;
+using Egap.Documents.Charts;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("sales.xlsx");
+Chart chart = book.Worksheets[0].Drawings[0].Chart!;
+
+using Raster<Rgba8> picture = Raster.Create(720, 432, new Rgba8(255, 255, 255, 255));
+using RasterCanvas<Rgba8> canvas = new(picture);
+chart.Draw(canvas, new RectF(0, 0, 720, 432), new ChartDrawOptions { Culture = book.Culture });
+picture.Save("chart.png");
+```
+
+A Word document's chart draws in the document's pages and PDFs, and a sheet's in its printed pages, PDFs and images. A chart
+made in code and not refreshed yet prints from its cells. `Workbook.Paginate` and `SaveAsPdf` also print each visible chart
+sheet, after the sheets, on a page of its own (`SheetPrintLayout.ChartPages`), which a single sheet's print leaves out.
+
+Not all of Excel's look comes through: bevels and shadows from a theme's effects are left out, as are a date axis's labels in
+the reader's own locale.
+
 ## Word documents
 
 A chart in a Word document is an `Island` of kind `IslandKind.Chart`, with the same model in `island.Chart`. A chart of the

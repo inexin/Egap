@@ -604,6 +604,9 @@ internal sealed partial class ChartRenderer
     /// <summary>One entry of a legend.</summary>
     private sealed record Entry(string Text, ChartFormat Format, Rgba8 Color, bool IsLine, ChartSeries? Series, bool Markers, bool Round = false);
 
+    /// <summary>The legend's entries in the order they draw.</summary>
+    internal List<string> LegendTexts() => [.. LegendEntries().Select(e => e.Text)];
+
     private List<Entry> LegendEntries()
     {
         List<Entry> entries = [];
@@ -613,6 +616,7 @@ internal sealed partial class ChartRenderer
         }
 
         List<Entry> trends = [];
+        bool perPointLegend = false;
         foreach (ChartPlot plot in plots)
         {
             List<ChartSeries> series = Ordered(plot);
@@ -620,6 +624,7 @@ internal sealed partial class ChartRenderer
                 || plot.VaryColors == true && series.Count == 1;
             if (perPoint && series.Count > 0)
             {
+                perPointLegend = true;
                 ChartSeries s = series[0];
                 int count = Math.Min(Math.Max(s.Values.Count, s.Categories.Count), 512);
                 for (int i = 0; i < count; i++)
@@ -649,10 +654,12 @@ internal sealed partial class ChartRenderer
         IReadOnlyList<int> deleted = chart.HasLegend ? chart.Legend.DeletedEntries : [];
         entries = deleted.Count == 0 ? entries : [.. entries.Where((_, i) => !deleted.Contains(i))];
 
-        // A legend at the side reads as the stack does, top series first, and as a bar chart's series do.
-        if (chart.HasLegend && chart.Legend.Position is null or ChartLegendPosition.Right or ChartLegendPosition.Left or ChartLegendPosition.TopRight
-            && plots.Count == 1 && plots[0].Type is ChartType.Column or ChartType.Bar or ChartType.Line or ChartType.Area
-            && (plots[0].Type == ChartType.Bar || plots[0].Grouping is ChartGrouping.Stacked or ChartGrouping.PercentStacked))
+        // A legend at the side reads as the stack does, top series first; a clustered bar chart's reads as its bars do, wherever it is.
+        bool side = chart.HasLegend && chart.Legend.Position is null or ChartLegendPosition.Right or ChartLegendPosition.Left or ChartLegendPosition.TopRight;
+        bool stacked = plots.Count == 1 && plots[0].Grouping is ChartGrouping.Stacked or ChartGrouping.PercentStacked;
+        if (chart.HasLegend && plots.Count == 1 && !perPointLegend
+            && ((plots[0].Type == ChartType.Bar && (!stacked || side))
+                || (plots[0].Type is ChartType.Column or ChartType.Line or ChartType.Area && stacked && side)))
         {
             entries.Reverse();
         }
@@ -746,6 +753,24 @@ internal sealed partial class ChartRenderer
 
         int across = Math.Max(1, (int)Math.Floor((box.Width + 0.5f) / Math.Max(each, 1)));
         int rows = Math.Max(1, (int)Math.Floor((box.Height + 0.5f) / step));
+
+        // Sized by hand it fills its box: across when the entries fit on the rows it has, and evenly.
+        if (chart.Legend.Layout.Width is > 0 && chart.Legend.Layout.Height is > 0)
+        {
+            flat = across >= entries.Count || rows < entries.Count;
+            if (flat)
+            {
+                int used = Math.Min(across, entries.Count);
+                each = box.Width / used;
+                int needed = (int)Math.Ceiling(entries.Count / (double)used);
+                step = box.Height / needed;
+            }
+            else
+            {
+                step = box.Height / entries.Count;
+            }
+        }
+
         canvas.Save();
         canvas.ClipRect(box);
         float keySize = look.Size * LegendKeyShare;

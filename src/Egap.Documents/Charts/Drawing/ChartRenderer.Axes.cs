@@ -35,6 +35,9 @@ internal sealed class DrawnAxis(ChartAxis model, bool horizontal, bool categorie
     /// <summary>For a date axis, each category's place among the days it spans; empty otherwise.</summary>
     public double[] Places { get; set; } = [];
 
+    /// <summary>How many of a date axis's places one of its labels spans, when its file says.</summary>
+    public int? DateSkip { get; set; }
+
     /// <summary>Show one label in this many.</summary>
     public int Skip { get; set; } = 1;
 
@@ -98,6 +101,8 @@ internal sealed partial class ChartRenderer
     private const float LabelGap = 6.2f;
     private const float SideLabelGap = 8f;
     private const float MinimumLabelSizes = 2.8f;
+    private const float MinimumBarLabelSizes = 2.3f;
+    private const float MinimumBarLabelWidths = 2.35f;
 
     private void BuildAxes(ChartBoxes boxes)
     {
@@ -201,11 +206,9 @@ internal sealed partial class ChartRenderer
             {
                 double low = numbers.Where(n => n is not null).Min()!.Value;
                 double high = numbers.Where(n => n is not null).Max()!.Value;
-                if (high - low < 200000)
+                if (high - low < 200000 && low >= 61 && high < 2000000)
                 {
-                    axis.Places = [.. numbers.Select(n => (n ?? low) - low)];
-                    axis.Count = (int)(high - low) + 1;
-                    axis.Labels = [.. Enumerable.Range(0, axis.Count).Select(i => Number(low + i, code))];
+                    ReadDates(axis, numbers, low, high, code);
                     return;
                 }
             }
@@ -215,6 +218,43 @@ internal sealed partial class ChartRenderer
         }
 
         axis.Labels = [.. categories.Text.Select(t => t ?? "")];
+    }
+
+    /// <summary>A date axis counts in its base unit: the one its file names, or the widest that keeps every two dates apart.</summary>
+    private void ReadDates(DrawnAxis axis, IReadOnlyList<double?> numbers, double low, double high, string? code)
+    {
+        double[] sorted = [.. numbers.OfType<double>().Distinct().Order()];
+        double closest = sorted.Zip(sorted.Skip(1), (a, b) => b - a).DefaultIfEmpty(1).Min();
+        ChartTimeUnit unit = axis.Model.BaseTimeUnit ?? (closest >= 365 ? ChartTimeUnit.Years : closest >= 28 ? ChartTimeUnit.Months : ChartTimeUnit.Days);
+        double shift = chart.Date1904 ? 1462 : 0;
+        DateTime first = DateTime.FromOADate(low + shift);
+        int Place(double serial)
+        {
+            DateTime date = DateTime.FromOADate(serial + shift);
+            return unit switch
+            {
+                ChartTimeUnit.Years => date.Year - first.Year,
+                ChartTimeUnit.Months => ((date.Year - first.Year) * 12) + date.Month - first.Month,
+                _ => (int)(serial - low),
+            };
+        }
+
+        double Serial(int place) => unit switch
+        {
+            ChartTimeUnit.Years => first.AddYears(place).ToOADate() - shift,
+            ChartTimeUnit.Months => first.AddMonths(place).ToOADate() - shift,
+            _ => low + place,
+        };
+
+        axis.Places = [.. numbers.Select(n => (double)Place(n ?? low))];
+        axis.Count = Place(high) + 1;
+        axis.Labels = [.. Enumerable.Range(0, axis.Count).Select(i => Number(Serial(i), code))];
+        if (axis.Model.MajorUnit is > 0 and var major)
+        {
+            ChartTimeUnit majorUnit = axis.Model.MajorTimeUnit ?? unit;
+            double Days(ChartTimeUnit u) => u switch { ChartTimeUnit.Years => 365.25, ChartTimeUnit.Months => 30.4375, _ => 1 };
+            axis.DateSkip = Math.Max((int)Math.Round(major * Days(majorUnit) / Days(unit)), 1);
+        }
     }
 
     private void LayOutPlot(ChartBoxes boxes, float left, float top, float right, float bottom)
@@ -267,8 +307,16 @@ internal sealed partial class ChartRenderer
     private RectF RoundPlot(RectF inner, ChartBoxes boxes)
     {
         float side = Math.Max(Math.Min(inner.Width, inner.Height), 1);
-        float room = plots.Any(p => p.Type is ChartType.Pie or ChartType.PieOfPie or ChartType.BarOfPie) ? OutsideLabelRoom(side) : 0;
-        side = Math.Max(side - (2 * room), 1);
+        if (plots.Any(p => p.Type is ChartType.Pie or ChartType.PieOfPie or ChartType.BarOfPie))
+        {
+            // Labels outside take a line and a third above and below, and most of their width at the sides; a pie stays at least half its room.
+            (float w, float h) = OutsideLabelSize();
+            if (h > 0)
+            {
+                side = Math.Max(Math.Min(inner.Width - (2 * ((w * PieLabelWidths) + 4)), inner.Height - (2 * h * PieLabelLines)), side / 2);
+            }
+        }
+
         _ = boxes;
         return new RectF(inner.X + ((inner.Width - side) / 2), inner.Y + ((inner.Height - side) / 2), side, side);
     }
@@ -523,10 +571,10 @@ internal sealed partial class ChartRenderer
             high = 0;
         }
 
-        // Bubbles reach past their centres, by about an eighth of the data's span on Excel's axes.
+        // Bubbles reach past their centres, by about a fifth of the data's span on Excel's axes.
         if (axis.Plots.Any(p => p.Type == ChartType.Bubble))
         {
-            double reach = (high - low) * 0.12;
+            double reach = (high - low) * 0.2;
             high += reach;
             low -= reach;
         }
@@ -578,11 +626,12 @@ internal sealed partial class ChartRenderer
                 double each = along / (((scale.Maximum - scale.Minimum) / scale.Major) + 1);
                 if (!axis.Horizontal)
                 {
-                    return each >= (radar ? look.Size * 0.85 : percent ? look.Size * 0.9 : (look.Size * 1.07) + 1.2);
+                    return each >= (radar ? look.Size * 0.85 : percent ? look.Size * 1.05 : (look.Size * 1.07) + 1.2);
                 }
 
                 float widest = scale.Ticks().Select(t => Measure(TickText(axis, t, percent), look).Width).DefaultIfEmpty(0).Max();
-                return each >= Math.Max(widest * MinimumLabelWidths, look.Size * MinimumLabelSizes);
+                bool bars = axis.Cross?.IsCategories == true;
+                return each >= Math.Max(widest * (bars ? MinimumBarLabelWidths : MinimumLabelWidths), look.Size * (bars ? MinimumBarLabelSizes : MinimumLabelSizes));
             }
 
             if (percent)
@@ -634,7 +683,7 @@ internal sealed partial class ChartRenderer
 
         double? rotation = axis.Model.TextFormat.Rotation;
         axis.Rotation = (float)(rotation ?? 0);
-        axis.Skip = axis.Model.TickLabelSkip is > 0 ? axis.Model.TickLabelSkip.Value : 1;
+        axis.Skip = axis.Model.TickLabelSkip is > 0 ? axis.Model.TickLabelSkip.Value : axis.DateSkip ?? 1;
         axis.Wrap = 1e5f;
         if (!axis.Horizontal)
         {

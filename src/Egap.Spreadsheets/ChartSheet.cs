@@ -55,6 +55,23 @@ public sealed class ChartSheet
     /// <exception cref="InvalidOperationException">The chart's part cannot be read.</exception>
     public void RefreshChart() => ChartCells.Fill(Chart ?? throw new InvalidOperationException("The sheet's chart cannot be read."), book);
 
+    /// <summary>The paper, orientation and margins in points the sheet's part names; a chart sheet prints landscape unless it says not to.</summary>
+    internal (int? Paper, bool Portrait, (double Left, double Top, double Right, double Bottom) Margins) ReadPageSetup()
+    {
+        XElement? root = SafeXml.TryLoad(part)?.Root;
+        XElement? setup = root?.Elements().FirstOrDefault(e => e.Name.LocalName == "pageSetup");
+        XElement? margins = root?.Elements().FirstOrDefault(e => e.Name.LocalName == "pageMargins");
+        double Margin(string name, double inches)
+        {
+            string? text = (string?)margins?.Attribute(name);
+            double value = double.TryParse(text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double read) && read is >= 0 and < 100 ? read : inches;
+            return value * 72;
+        }
+
+        int? paper = int.TryParse((string?)setup?.Attribute("paperSize"), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out int code) ? code : null;
+        return (paper, (string?)setup?.Attribute("orientation") == "portrait", (Margin("left", 0.7), Margin("top", 0.75), Margin("right", 0.7), Margin("bottom", 0.75)));
+    }
+
     private OpcPart? FindPart()
     {
         if (SafeXml.TryLoad(part)?.Root?.Elements().FirstOrDefault(e => e.Name.LocalName == "drawing") is not { } element
