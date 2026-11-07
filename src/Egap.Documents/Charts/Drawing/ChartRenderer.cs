@@ -132,7 +132,6 @@ internal sealed partial class ChartRenderer
         float left = 0;
         float right = width;
         float bottom = height;
-        bool legendInline = false;
         if (LegendEntries() is { Count: > 0 } entries && chart.HasLegend)
         {
             ChartLegendPosition position = chart.Legend.Position ?? ChartLegendPosition.Right;
@@ -151,7 +150,6 @@ internal sealed partial class ChartRenderer
             boxes.Legend = Placed(chart.Legend.Layout, box);
             if (!overlay)
             {
-                legendInline = true;
                 switch (position)
                 {
                     case ChartLegendPosition.Bottom:
@@ -170,7 +168,6 @@ internal sealed partial class ChartRenderer
             }
         }
 
-        _ = legendInline;
         BuildAxes(boxes);
         LayOutPlot(boxes, left, top, right, bottom);
         return boxes;

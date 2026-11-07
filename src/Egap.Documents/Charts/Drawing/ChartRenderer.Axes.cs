@@ -317,7 +317,6 @@ internal sealed partial class ChartRenderer
             }
         }
 
-        _ = boxes;
         return new RectF(inner.X + ((inner.Width - side) / 2), inner.Y + ((inner.Height - side) / 2), side, side);
     }
 
