@@ -28,6 +28,7 @@ internal static class Targets
         ["nav"] = Nav,
         ["epub"] = Epub,
         ["chart"] = ChartPart,
+        ["chartstyle"] = ChartStylePart,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -233,6 +234,24 @@ internal static class Targets
     }
 
     /// <summary>Any bytes read as an OPC package: every part's relationships resolved and every XML part loaded.</summary>
+    /// <summary>A chart style part, drawn with a waterfall that takes its look from it.</summary>
+    private static void ChartStylePart(Stream input)
+    {
+        try
+        {
+            Egap.Documents.Charts.Chart chart = Egap.Documents.Charts.Chart.Create(Egap.Documents.Charts.ChartType.Waterfall);
+            chart.Plots[0].Series.Add("Series", ["a", "b"], [1, 2]);
+            chart.Title.Text = "Title";
+            chart.UseStylePart(System.Xml.Linq.XDocument.Load(System.Xml.XmlReader.Create(input, new System.Xml.XmlReaderSettings { DtdProcessing = System.Xml.DtdProcessing.Prohibit })).Root);
+            using Egami.Raster<Egami.Pixels.Rgba8> picture = Egami.Raster.Create(240, 150, new Egami.Pixels.Rgba8(255, 255, 255, 255));
+            using Egami.Drawing.RasterCanvas<Egami.Pixels.Rgba8> canvas = new(picture);
+            chart.Draw(canvas, new Egami.Drawing.RectF(0, 0, 240, 150));
+        }
+        catch (System.Xml.XmlException)
+        {
+        }
+    }
+
     /// <summary>A chart part: every property read, an edit made and the part saved and read back.</summary>
     private static void ChartPart(Stream input)
     {

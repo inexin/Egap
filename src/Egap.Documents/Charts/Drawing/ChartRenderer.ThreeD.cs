@@ -204,6 +204,11 @@ internal sealed partial class ChartRenderer
             float right = roomRight - (rightAngle ? (sideways ? BarRight3D : ColumnRight3D) : TurnedRight3D) - seriesRoom;
             float upper = boxes.Plot.Top + (rightAngle ? Top3D : boxes.Title is null ? -TurnedUntitledTop3D : 0);
             RectF room = RectF.FromEdges(left, upper, Math.Max(right, left + 1), Math.Max(boxes.Plot.Bottom - (rightAngle ? Bottom3D : 0) + (across.Rotation != 0 ? TurnedLabelRoom3D : 0), upper + 1));
+            if (!rightAngle && HandPlaced3D() is { } placed)
+            {
+                room = placed;
+            }
+
             float length;
             float height = 100;
             float acrossLength;
@@ -258,6 +263,11 @@ internal sealed partial class ChartRenderer
             {
                 // Excel takes a coarser scale for a surface it tilts further.
                 long3 *= SurfaceTiltedScale;
+            }
+
+            if (HandPlaced3D() is not null)
+            {
+                long3 *= PlacedAxisShare;
             }
 
             Scale(up, new RectF(0, 0, long3, long3));
@@ -324,6 +334,10 @@ internal sealed partial class ChartRenderer
     private const float TurnedUntitledTop3D = 4;
     private const float TurnedLeft3D = 28;
     private const float TurnedRight3D = 20;
+    private const float PlacedAxisShare = 0.5f;
+    private const float TablePlacedLeft = 13;
+    private const float TablePlacedRight = 4;
+    private const float TablePlacedGap = 7;
     private const float TableInset = 11;
     private const float TableRowShare = 1.22f;
     private const float TableKey = 6.5f;
@@ -332,6 +346,10 @@ internal sealed partial class ChartRenderer
     private XElement? DataTableOf() => plots.Select(p => p.Element.Parent?.Element(ChartNs.C + "dTable")).FirstOrDefault(e => e is not null);
 
     /// <summary>How much of the chart's height a 3D chart's data table takes: its rows and the margin under them.</summary>
+    /// <summary>Where the part places a 3D plot's inner box by hand; the box fits in it, and its labels go outside.</summary>
+    private RectF? HandPlaced3D() =>
+        chart.PlotAreaLayout.InnerPlot == true ? ManualPlot(new RectF(0, 0, width, height)) : null;
+
     private float DataTableRoom()
     {
         if (DataTableOf() is null || plots.FirstOrDefault(IsThreeD) is not { } plot)
@@ -362,6 +380,16 @@ internal sealed partial class ChartRenderer
         float bottom = height - TableInset;
         float top = bottom - ((series.Count + 1) * row);
         float first = left + keyRoom;
+        if (HandPlaced3D() is { } placed)
+        {
+            // Under a plot placed by hand the table follows the plot, not the chart's edges.
+            first = placed.X + TablePlacedLeft;
+            left = first - keyRoom;
+            right = placed.Right - TablePlacedRight;
+            top = placed.Bottom + TablePlacedGap;
+            bottom = top + ((series.Count + 1) * row);
+        }
+
         float each = (right - first) / across.Count;
         float capDrop = (row + (look.Size * 0.68f)) / 2;
         (Stroke stroke, Rgba8 ink) = (new Stroke(0.75f), palette.AutomaticLine);

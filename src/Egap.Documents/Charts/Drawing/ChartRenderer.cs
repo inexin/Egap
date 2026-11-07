@@ -63,6 +63,7 @@ internal sealed partial class ChartRenderer
 
     public ChartRenderer(Chart chart, ChartDrawOptions? options)
     {
+        chart = chart.WithStylePartLook();
         this.chart = chart;
         theme = options?.Theme ?? new Document().Theme;
         fonts = options?.Provider ?? new FontProvider(theme.Document, options?.Fonts);

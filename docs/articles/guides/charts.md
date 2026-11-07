@@ -123,7 +123,8 @@ the default, or `ChartHost.Word`, which a Word document's pages use. They differ
 title and the spacing of a legend. Column, bar, line, area, pie, doughnut, scatter, bubble, radar, stock and combined charts draw this way, and so do waterfall,
 histogram, Pareto, box and whisker, treemap, sunburst and funnel charts, 3D charts with the view their part sets (right-angle
 or turned, with perspective), surfaces, and a pie of pie or bar of pie. A region map draws nothing, because its shapes come from a
-map service: a Word document shows the picture saved with it.
+map service: a Word document shows the picture saved with it. A `cx:` chart that sets no look of its own draws with the look of its
+style part.
 
 ```csharp
 using Egami;

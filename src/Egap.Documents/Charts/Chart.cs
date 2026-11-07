@@ -56,6 +56,8 @@ public sealed class Chart
     private readonly ChartNode space;
     private readonly ChartNode body;
 
+    private XElement? stylePart;
+
     private Chart(XDocument document)
     {
         this.document = document;
@@ -379,7 +381,13 @@ public sealed class Chart
     {
         try
         {
-            return Of(part.LoadXml());
+            Chart? chart = Of(part.LoadXml());
+            if (chart is { IsExtended: true } && part.RelatedPart(StyleRelationship) is { } style)
+            {
+                chart.UseStylePart(style);
+            }
+
+            return chart;
         }
         catch (DocumentException)
         {
@@ -560,6 +568,79 @@ public sealed class Chart
             new XAttribute(XNamespace.Xmlns + "r", ChartNs.R.NamespaceName),
             new XElement(ChartNs.C + "roundedCorners", new XAttribute("val", 0)),
             chart));
+    }
+
+    /// <summary>Keeps a style part's look for drawing; a malformed part counts as none, since the chart stands without it.</summary>
+    private void UseStylePart(OpcPart part)
+    {
+        try
+        {
+            UseStylePart(part.LoadXml().Root);
+        }
+        catch (DocumentException)
+        {
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            // .NET's XML reader lets this out when a declaration's encoding cannot be switched to.
+        }
+    }
+
+    internal void UseStylePart(XElement? root) => stylePart = root;
+
+    /// <summary>
+    /// For drawing: this chart with what its style part says written in where a cx: chart says nothing itself, since Excel and
+    /// Word draw such a chart by the part. The chart itself when it has no such part.
+    /// </summary>
+    internal Chart WithStylePartLook()
+    {
+        if (stylePart is null)
+        {
+            return this;
+        }
+
+        Chart copy = new(new XDocument(document));
+        XNamespace cs = StyleUri;
+        void Give(XElement? holder, string name)
+        {
+            if (holder is null || stylePart.Element(cs + name) is not { } entry)
+            {
+                return;
+            }
+
+            if (holder.Element(ChartNs.Cx + "spPr") is null && entry.Element(cs + "spPr") is { } shape)
+            {
+                holder.Add(new XElement(ChartNs.Cx + "spPr", shape.Elements()));
+            }
+
+            if (holder.Element(ChartNs.Cx + "txPr") is null)
+            {
+                XElement run = new(ChartNs.A + "defRPr", entry.Element(cs + "defRPr")?.Attributes().Where(a => a.Name.LocalName is "sz" or "b" or "i"));
+                if (entry.Element(cs + "fontRef")?.Elements().FirstOrDefault() is { } color)
+                {
+                    run.Add(new XElement(ChartNs.A + "solidFill", color));
+                }
+
+                holder.Add(new XElement(ChartNs.Cx + "txPr", new XElement(ChartNs.A + "bodyPr"), new XElement(ChartNs.A + "p", new XElement(ChartNs.A + "pPr", run))));
+            }
+        }
+
+        XElement? chart = copy.Root.Element(ChartNs.Cx + "chart");
+        Give(copy.Root, "chartArea");
+        Give(chart?.Element(ChartNs.Cx + "title"), "title");
+        Give(chart?.Element(ChartNs.Cx + "legend"), "legend");
+        foreach (XElement axis in chart?.Descendants(ChartNs.Cx + "axis") ?? [])
+        {
+            Give(axis, axis.Element(ChartNs.Cx + "catScaling") is null ? "valueAxis" : "categoryAxis");
+            Give(axis.Element(ChartNs.Cx + "majorGridlines"), "gridlineMajor");
+        }
+
+        foreach (XElement labels in chart?.Descendants(ChartNs.Cx + "dataLabels") ?? [])
+        {
+            Give(labels, "dataLabel");
+        }
+
+        return copy;
     }
 
     /// <summary>A copy that points at no other part: for a part that goes where those parts are not.</summary>

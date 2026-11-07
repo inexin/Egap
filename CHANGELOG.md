@@ -50,7 +50,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `Chart.Draw` also draws waterfall, histogram, Pareto, box and whisker, treemap, sunburst and funnel charts, 3D charts with
   Excel's projection (right-angle or turned, with perspective; bars, cones, cylinders, pyramids, lines, areas, pies and the
   data table under the plot), surfaces and pies with a second plot. A DOCX `cx:` chart reads as a chart and draws this way;
-  only a region map keeps its picture.
+  only a region map keeps its picture. A `cx:` chart that sets no look of its own draws with the look of its style part.
 - `Document.Identify` knows CSV (`DocumentFormatKind.Csv`) by its `.csv`, `.tsv` or `.tab` extension. Loading it or an Excel
   workbook now needs `SpreadsheetFormat.Register()` from Egap.Spreadsheets; without it the error names the package.
 - RTF loading allocates about 7 % less, at the same speed and with the same result: the reader now sets Word's

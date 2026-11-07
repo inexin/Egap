@@ -181,7 +181,54 @@ public sealed class ChartThreeDTests
         Assert.NotNull(chart.Title.TextFormat.Color);
     }
 
-    private static MemoryStream WordFileWith(Chart chart, bool wrapped)
+    private const string DarkStyle = "<cs:chartStyle xmlns:cs=\"http://schemas.microsoft.com/office/drawing/2012/chartStyle\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"><cs:chartArea><cs:spPr><a:solidFill><a:srgbClr val=\"202020\"/></a:solidFill></cs:spPr></cs:chartArea><cs:title><cs:fontRef idx=\"minor\"><a:srgbClr val=\"FF0000\"/></cs:fontRef></cs:title></cs:chartStyle>";
+
+    [Fact]
+    public void ANewerChartDrawsWithItsStylePartsLook()
+    {
+        using Raster<Rgba8> raster = Drawn(Assert.Single(Document.Load(WordFileWith(Filled(Chart.Create(ChartType.Waterfall)), true, DarkStyle)).Descendants<Island>()).Chart!);
+        Assert.Equal(0x20, raster.Row(raster.Height / 2)[1].R);
+    }
+
+    [Fact]
+    public void AMalformedStylePartLeavesTheChart()
+    {
+        Island island = Assert.Single(Document.Load(WordFileWith(Filled(Chart.Create(ChartType.Waterfall)), true, "<broken")).Descendants<Island>());
+        Assert.Equal(ChartType.Waterfall, island.Chart!.Type);
+        using Raster<Rgba8> raster = Drawn(island.Chart);
+        Assert.Equal(255, raster.Row(raster.Height / 2)[1].R);
+    }
+
+    [Fact]
+    public void ATurnedBoxAndItsTableGoWhereTheyArePlaced()
+    {
+        const string Table = "<c:dTable><c:showHorzBorder val=\"1\"/><c:showVertBorder val=\"1\"/><c:showOutline val=\"1\"/></c:dTable>";
+        const string Placed = "<c:layout><c:manualLayout><c:layoutTarget val=\"inner\"/><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"0.2\"/><c:y val=\"0.1\"/><c:w val=\"0.6\"/><c:h val=\"0.25\"/></c:manualLayout></c:layout>";
+        string part = $"""
+            <c:chartSpace {Xmlns}><c:chart><c:view3D><c:perspective val="30"/></c:view3D><c:plotArea>{Placed}
+            <c:bar3DChart><c:barDir val="col"/><c:grouping val="clustered"/>
+            <c:ser><c:idx val="0"/><c:order val="0"/><c:tx><c:v>North</c:v></c:tx>
+            <c:cat><c:strLit><c:ptCount val="2"/><c:pt idx="0"><c:v>Jan</c:v></c:pt><c:pt idx="1"><c:v>Feb</c:v></c:pt></c:strLit></c:cat>
+            <c:val><c:numLit><c:ptCount val="2"/><c:pt idx="0"><c:v>1</c:v></c:pt><c:pt idx="1"><c:v>2</c:v></c:pt></c:numLit></c:val></c:ser>
+            <c:axId val="1"/><c:axId val="2"/></c:bar3DChart>
+            <c:catAx><c:axId val="1"/><c:scaling/><c:delete val="1"/><c:axPos val="b"/><c:crossAx val="2"/></c:catAx>
+            <c:valAx><c:axId val="2"/><c:scaling/><c:delete val="1"/><c:axPos val="l"/><c:crossAx val="1"/></c:valAx>
+            {Table}</c:plotArea></c:chart></c:chartSpace>
+            """;
+        using Raster<Rgba8> raster = Drawn(Chart.Load(new MemoryStream(Encoding.UTF8.GetBytes(part))), 400, 300);
+
+        // The table follows the plot, so the chart's bottom stays empty inside its frame.
+        Assert.True(Ink(raster, 110) > 0);
+        for (int y = 240; y < 290; y++)
+        {
+            foreach (Rgba8 pixel in raster.Row(y)[20..380])
+            {
+                Assert.Equal(255, pixel.R);
+            }
+        }
+    }
+
+    private static MemoryStream WordFileWith(Chart chart, bool wrapped, string? stylePart = null)
     {
         const string Graphic = "<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\"><a:graphicData uri=\"http://schemas.microsoft.com/office/drawing/2014/chartex\"><cx:chart xmlns:cx=\"http://schemas.microsoft.com/office/drawing/2014/chartex\" r:id=\"rId9\"/></a:graphicData></a:graphic>";
         string drawing = $"<w:drawing><wp:inline xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\"><wp:extent cx=\"3657600\" cy=\"2743200\"/><wp:docPr id=\"1\" name=\"Chart\"/>{Graphic}</wp:inline></w:drawing>";
@@ -196,6 +243,12 @@ public sealed class ChartThreeDTests
         writer.AddPart("/word/charts/chartEx1.xml", Chart.ExtendedContentType, part.ToArray());
         writer.AddRelationship("/", "rId1", Docx.OpcRelationshipTypes.OfficeDocument, "word/document.xml");
         writer.AddRelationship("/word/document.xml", "rId9", Chart.ExtendedRelationship, "charts/chartEx1.xml");
+        if (stylePart is not null)
+        {
+            writer.AddPart("/word/charts/style1.xml", Chart.StyleContentType, Encoding.UTF8.GetBytes(stylePart));
+            writer.AddRelationship("/word/charts/chartEx1.xml", "rId1", Chart.StyleRelationship, "style1.xml");
+        }
+
         MemoryStream stream = new();
         writer.Save(stream);
         stream.Position = 0;
