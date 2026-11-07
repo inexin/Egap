@@ -311,4 +311,21 @@ public sealed class ChartThreeDTests
         Assert.Equal(ChartType.Funnel, back.Chart!.Type);
         Assert.Equal("Edited", back.Chart.Title.Text);
     }
+
+    [Fact]
+    public void AnEditedNewerChartCanBeCopied()
+    {
+        Document document = Document.Load(WordFileWith(Filled(Chart.Create(ChartType.Waterfall)), true));
+        Island island = Assert.Single(document.Descendants<Island>());
+        island.Chart!.Title.Text = "Edited";
+        document.Sections[0].Body.Blocks.Add(document.Descendants<Paragraph>().First().Clone());
+        Document copy = document.Clone();
+
+        using MemoryStream saved = new();
+        copy.SaveAsDocx(saved);
+        saved.Position = 0;
+        Island[] back = [.. Document.Load(saved).Descendants<Island>()];
+        Assert.Equal(2, back.Length);
+        Assert.All(back, b => Assert.Equal((ChartType.Waterfall, "Edited"), (b.Chart!.Type, b.Chart.Title.Text)));
+    }
 }

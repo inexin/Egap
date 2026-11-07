@@ -472,16 +472,17 @@ public sealed class Island : Inline
     /// <exception cref="ArgumentException">The chart is one of the newer types.</exception>
     /// <exception cref="ArgumentOutOfRangeException">A size is not positive.</exception>
     public Island(Document document, Chart chart, double width, double height)
+        : this(document, NotExtended(chart), width, height, copy: false)
+    {
+    }
+
+    /// <summary>A chart island; a copy of an island may hold one of the newer types, which came from a file.</summary>
+    private Island(Document document, Chart chart, double width, double height, bool copy)
         : base(document)
     {
-        ArgumentNullException.ThrowIfNull(chart);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(height);
-        if (chart.IsExtended)
-        {
-            throw new ArgumentException("A chart of the newer types cannot be added to a Word document yet.", nameof(chart));
-        }
-
+        _ = copy;
         Kind = IslandKind.Chart;
         Format = DocxExtension.Format;
         Markup = "";
@@ -491,6 +492,12 @@ public sealed class Island : Inline
         chartModel = chart;
         chartRead = true;
         NewChart = true;
+    }
+
+    private static Chart NotExtended(Chart chart)
+    {
+        ArgumentNullException.ThrowIfNull(chart);
+        return chart.IsExtended ? throw new ArgumentException("A chart of the newer types cannot be added to a Word document yet.", nameof(chart)) : chart;
     }
 
     /// <summary>What the island holds.</summary>
@@ -564,7 +571,7 @@ public sealed class Island : Inline
         // A copy with changes of its own needs its own part. Otherwise it reads the same part as this island does.
         if (LoadedChart is { } chart && (NewChart || chart.IsChanged))
         {
-            return CopyInline(new Island(context.Target, chart.Clone(), Width > 0 ? Width : 360, Height > 0 ? Height : 216)
+            return CopyInline(new Island(context.Target, chart.Clone(), Width > 0 ? Width : 360, Height > 0 ? Height : 216, copy: true)
             {
                 Fallback = Fallback,
                 Floating = Floating,
