@@ -423,12 +423,25 @@ public sealed partial class Worksheet
         }
     }
 
-    /// <summary>Moves each range of a list, dropping those the edit takes; false when none is left.</summary>
+    /// <summary>
+    /// Moves each range of a validation or conditional format, dropping those the edit takes; false when none is left. As
+    /// in Excel, rows or columns put in just after a range take its rules with the rest of its formatting, so the range
+    /// grows over them.
+    /// </summary>
     private static bool MoveAll(List<RangeAddress> ranges, SheetEdit edit)
     {
         for (int i = ranges.Count - 1; i >= 0; i--)
         {
-            if (edit.Moved(ranges[i]) is { } moved)
+            RangeAddress range = ranges[i];
+            if (edit.Insert && edit.At > 0 && (edit.Rows ? range.Last.Row : range.Last.Column) == edit.At - 1)
+            {
+                // It ends just before the new rows or columns, so the edit does not move it; it only grows.
+                int end = edit.At - 1 + edit.Count;
+                ranges[i] = edit.Rows
+                    ? new RangeAddress(range.First.Row, range.First.Column, end, range.Last.Column)
+                    : new RangeAddress(range.First.Row, range.First.Column, range.Last.Row, end);
+            }
+            else if (edit.Moved(range) is { } moved)
             {
                 ranges[i] = moved;
             }

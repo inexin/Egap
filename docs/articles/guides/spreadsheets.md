@@ -192,7 +192,7 @@ sheet.InsertColumns("A", 2);       // two columns before A: the sum is in C3 and
 sheet.DeleteColumns(2);            // column C goes, with the numbers and the sum; a formula naming them would show #REF!
 ```
 
-New rows take the formatting of the row above, and new columns that of the column to the left, as Excel's default does.
+New rows take the formatting of the row above, and new columns that of the column to the left, as Excel's default does. A data validation or conditional format that ends just before the new rows or columns grows over them, as in Excel.
 Columns put in inside a table become columns of the table named `Column1`, `Column2` and so on, and a structured reference
 to a table column that is taken out becomes `#REF!`. The edits refuse what Excel refuses: pushing cells with a value or a
 style off the end of the sheet, changing part of an array formula, and taking a table's header row without the rest of it.

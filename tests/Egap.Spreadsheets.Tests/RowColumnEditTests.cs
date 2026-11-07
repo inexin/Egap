@@ -298,6 +298,29 @@ public sealed class RowColumnEditTests
         Assert.Equal(("C7:C10", "C7>A$3"), (format.Ranges.Single().ToString(), format.Rules.Single().Formulas.Single()));
     }
 
+    [Theory]
+    [InlineData("column", "A1:B3", "D1:D3", "F5:F8")]
+    [InlineData("row", "A1:A4", "C1:C4", "E6:E9")]
+    [InlineData("row at the start", "A1:A3", "C1:C3", "E6:E9")]
+    public void RulesGrowOverRowsAndColumnsPutInJustAfterThem(string edit, string validation, string format, string moved)
+    {
+        // Excel 16.0: the new cells take the rules of the cells before them, as they take their formatting.
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        sheet.DataValidations.Add(RangeAddress.Parse("A1:A3"), DataValidationType.WholeNumber, "1", "9");
+        sheet.ConditionalFormats.Add("C1:C3", ConditionalFormatRule.Expression("TRUE", new CellStyle()));
+        sheet.DataValidations.Add(RangeAddress.Parse("E5:E8"), DataValidationType.WholeNumber, "1", "9");
+        switch (edit)
+        {
+            case "column": sheet.InsertColumns(1); break;
+            case "row": sheet.InsertRows(3); break;
+            default: sheet.InsertRows(4); break;
+        }
+
+        Assert.Equal([validation, moved], sheet.DataValidations.Select(d => d.Ranges.Single().ToString()));
+        Assert.Equal(format, sheet.ConditionalFormats.Single().Ranges.Single().ToString());
+    }
+
     [Fact]
     public void ANameThatIsAUnionFollows()
     {
