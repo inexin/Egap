@@ -454,6 +454,7 @@ public sealed class ChartTextFormat
         get => (string?)Properties(false)?.Element(ChartNs.A + "latin")?.Attribute("typeface");
         set
         {
+            RunProperties().Elements(ChartNs.A + "latin").Remove();
             if (value is null)
             {
                 Properties(false)?.Element(ChartNs.A + "latin")?.Remove();
@@ -477,6 +478,7 @@ public sealed class ChartTextFormat
         get => ChartColor.Read(Properties(false)?.Element(ChartNs.A + "solidFill"));
         set
         {
+            RunProperties().Elements(ChartNs.A + "solidFill").Remove();
             Properties(false)?.Element(ChartNs.A + "solidFill")?.Remove();
             if (value is not null)
             {
@@ -558,9 +560,12 @@ public sealed class ChartTextFormat
         }
 
         // A run that says otherwise would hide the change.
-        foreach (XElement run in body.Find()?.Elements(ChartNs.A + "p").Elements(ChartNs.A + "r").Elements(ChartNs.A + "rPr") ?? [])
+        foreach (XElement run in RunProperties())
         {
             run.SetAttributeValue(attribute, null);
         }
     }
+
+    /// <summary>What the text's runs say for themselves, which would hide a change to the default.</summary>
+    private IEnumerable<XElement> RunProperties() => body.Find()?.Elements(ChartNs.A + "p").Elements(ChartNs.A + "r").Elements(ChartNs.A + "rPr") ?? [];
 }

@@ -16,13 +16,16 @@ public sealed class ChartData
 
     private readonly ChartNode holder;
     private readonly bool extended;
+    private readonly bool numbersOnly;
 
     /// <param name="holder">In a c: chart, the element that holds the data (<c>c:val</c>, <c>c:cat</c>); in a cx: chart, the dimension itself.</param>
     /// <param name="extended">Whether this is a cx: chart's dimension.</param>
-    internal ChartData(ChartNode holder, bool extended)
+    /// <param name="numbersOnly">Whether the schema takes only numbers here: values, not categories.</param>
+    internal ChartData(ChartNode holder, bool extended, bool numbersOnly = false)
     {
         this.holder = holder;
         this.extended = extended;
+        this.numbersOnly = numbersOnly;
     }
 
     /// <summary>The reference to the cells, or null when the values are written in the chart.</summary>
@@ -32,7 +35,12 @@ public sealed class ChartData
     /// </exception>
     public string? Reference
     {
-        get => extended ? (string?)holder.Find()?.Element(ChartNs.Cx + "f") : (string?)Form()?.Element(ChartNs.C + "f");
+        get
+        {
+            string? reference = extended ? (string?)holder.Find()?.Element(ChartNs.Cx + "f") : (string?)Form()?.Element(ChartNs.C + "f");
+            return reference is { Length: 0 } ? null : reference;
+        }
+
         set
         {
             if (extended)
@@ -54,6 +62,9 @@ public sealed class ChartData
 
                     bool numeric = form.Name.LocalName is "numRef" or "numLit";
                     form.Element(ChartNs.C + "f")?.Remove();
+
+                    // What Excel keeps in these describes the reference.
+                    form.Element(ChartNs.C + "extLst")?.Remove();
                     ChartText.Rename(form, ChartNs.C + (numeric ? "numLit" : "strLit"));
                     if (form.Element(ChartNs.C + (numeric ? "numCache" : "strCache")) is { } cache)
                     {
@@ -81,6 +92,11 @@ public sealed class ChartData
 
             if (form.Element(ChartNs.C + "f") is { } f)
             {
+                if (f.Value != value)
+                {
+                    form.Element(ChartNs.C + "extLst")?.Remove();
+                }
+
                 f.Value = value;
             }
             else
@@ -161,9 +177,11 @@ public sealed class ChartData
     }
 
     /// <summary>Writes text as the values kept, and the data then counts as text. The reference stays.</summary>
+    /// <exception cref="InvalidOperationException">These are a series's values, bubble sizes or error amounts, which must be numbers.</exception>
     public void SetText(IEnumerable<string?> values)
     {
         ArgumentNullException.ThrowIfNull(values);
+        RefuseNumbersOnly();
         List<XElement> points = [];
         int count = 0;
         foreach (string? value in values)
@@ -181,9 +199,11 @@ public sealed class ChartData
 
     /// <summary>Writes labels in levels, innermost first, for categories taken from more than one column. The reference stays.</summary>
     /// <exception cref="ArgumentException">There are no levels.</exception>
+    /// <exception cref="InvalidOperationException">These are a series's values, bubble sizes or error amounts, which must be numbers.</exception>
     public void SetTextLevels(IEnumerable<IEnumerable<string?>> levels)
     {
         ArgumentNullException.ThrowIfNull(levels);
+        RefuseNumbersOnly();
         List<List<XElement>> written = [];
         int count = 0;
         foreach (IEnumerable<string?> level in levels)
@@ -212,6 +232,15 @@ public sealed class ChartData
         Write(numeric: false, levels: true, count, null, written);
     }
 
+    private void RefuseNumbersOnly()
+    {
+        if (numbersOnly)
+        {
+            // Excel will not open a workbook with text here.
+            throw new InvalidOperationException("These values must be numbers.");
+        }
+    }
+
     private XElement Point(int index, string text)
     {
         string safe = Docx.OpcPackageWriter.XmlSafe(text);
@@ -224,6 +253,7 @@ public sealed class ChartData
     {
         string? reference = Reference;
         string count2 = count.ToString(CultureInfo.InvariantCulture);
+        string? oldFormat = formatCode ?? FormatCode;
         if (extended)
         {
             XElement dimension = holder.Ensure();
@@ -234,14 +264,13 @@ public sealed class ChartData
                 dimension.Add(new XElement(
                     ChartNs.Cx + "lvl",
                     new XAttribute("ptCount", count2),
-                    numeric ? new XAttribute("formatCode", formatCode ?? FormatCode ?? "General") : null,
+                    numeric ? new XAttribute("formatCode", oldFormat ?? "General") : null,
                     level));
             }
 
             return;
         }
 
-        string? oldFormat = formatCode ?? FormatCode;
         Form()?.Remove();
         XElement data = holder.Ensure();
         XElement form;

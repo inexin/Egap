@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using Egap.Documents.Charts;
 using Egap.Documents.Docx;
 
@@ -369,6 +371,341 @@ public sealed class ChartModelTests
         ChartData back = RoundTrip(chart).Series[0].Categories;
         Assert.Null(back.Reference);
         Assert.Equal(["Jan", "Feb"], back.Text);
+    }
+
+    private static Chart Parsed(string xml) => Chart.Load(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(xml)));
+
+    private const string RichTitle = """
+        <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><c:chart><c:title><c:tx><c:rich><a:bodyPr/><a:p><a:r><a:rPr lang="en-US" sz="1400" b="1"><a:solidFill><a:srgbClr val="FF0000"/></a:solidFill><a:latin typeface="Arial"/></a:rPr><a:t>Old</a:t></a:r></a:p></c:rich></c:tx></c:title><c:plotArea><c:barChart><c:ser><c:idx val="0"/><c:order val="0"/><c:dLbls><c:delete val="1"/></c:dLbls><c:val><c:numRef><c:f>S!$A$1:$A$2</c:f><c:extLst><c:ext uri="u"/></c:extLst></c:numRef></c:val></c:ser></c:barChart></c:plotArea></c:chart></c:chartSpace>
+        """;
+
+    [Theory]
+    [InlineData(ChartType.Column)]
+    [InlineData(ChartType.Waterfall)]
+    public void WritingNumbersWithoutAFormatKeepsTheOneTheyHad(ChartType type)
+    {
+        Chart chart = Chart.Create(type);
+        ChartSeries series = type == ChartType.Column ? chart.Plots[0].Series.Add("a", null, [1]) : chart.Plots[0].Series[0];
+        series.Values.SetNumbers([1, 2], "0.0%");
+        series.Values.SetNumbers([3, 4]);
+        Assert.Equal("0.0%", RoundTrip(chart).Plots[0].Series[0].Values.FormatCode);
+    }
+
+    [Theory]
+    [InlineData(ChartType.Waterfall)]
+    [InlineData(ChartType.Histogram)]
+    [InlineData(ChartType.Pareto)]
+    [InlineData(ChartType.BoxWhisker)]
+    [InlineData(ChartType.Treemap)]
+    [InlineData(ChartType.Sunburst)]
+    [InlineData(ChartType.Funnel)]
+    [InlineData(ChartType.RegionMap)]
+    public void ReadingAnExtendedChartChangesNothing(ChartType type)
+    {
+        Chart chart = RoundTrip(Chart.Create(type));
+        foreach (ChartSeries series in chart.Series)
+        {
+            _ = (series.Categories.Reference, series.Categories.Count, series.Categories.Text, series.Categories.TextLevels, series.Categories.IsNumeric);
+            _ = (series.Values.Reference, series.Values.Numbers, series.Values.FormatCode, series.BubbleSizes.Reference, series.Subtotals, series.Binning.BinSize);
+        }
+
+        Assert.False(chart.IsChanged);
+    }
+
+    [Fact]
+    public void WhatOnlyAPlainChartHasWritesNothingToAnExtendedOne()
+    {
+        Chart chart = Chart.Create(ChartType.Waterfall);
+        byte[] before = chart.ToBytes();
+        ChartSeries series = chart.Plots[0].Series[0];
+        series.Smooth = true;
+        series.InvertIfNegative = true;
+        series.Explosion = 5;
+        series.Bubble3D = true;
+        series.Marker.Symbol = ChartMarkerSymbol.Circle;
+        series.BubbleSizes.SetNumbers([1]);
+        series.BubbleSizes.Reference = "S!$A$1";
+        ChartPlot plot = chart.Plots[0];
+        plot.Grouping = ChartGrouping.Stacked;
+        plot.VaryColors = true;
+        plot.Overlap = 5;
+        plot.GapDepth = 5;
+        plot.BarShape = ChartBarShape.Cone;
+        plot.FirstSliceAngle = 5;
+        plot.HoleSize = 50;
+        plot.ScatterStyle = ChartScatterStyle.Line;
+        plot.RadarStyle = ChartRadarStyle.Filled;
+        plot.BubbleScale = 50;
+        plot.ShowNegativeBubbles = true;
+        plot.BubbleSizeIsWidth = true;
+        plot.Wireframe = true;
+        plot.ShowMarkers = true;
+        plot.DataLabels.ShowValue = true;
+        chart.View3D.RotationX = 5;
+        chart.Title.Layout.X = 0.5;
+        chart.Legend.Layout.X = 0.5;
+        chart.PlotAreaLayout.X = 0.5;
+        chart.Legend.Position = ChartLegendPosition.TopRight;
+        foreach (ChartAxis axis in chart.Axes)
+        {
+            axis.TickLabelSkip = 2;
+            axis.TickMarkSkip = 2;
+            axis.NoMultiLevelLabels = true;
+            axis.BaseTimeUnit = ChartTimeUnit.Days;
+            axis.MajorTimeUnit = ChartTimeUnit.Days;
+            axis.MinorTimeUnit = ChartTimeUnit.Days;
+        }
+
+        Assert.Equal(before, chart.ToBytes());
+        Assert.Null(series.Smooth);
+        Assert.Null(plot.Overlap);
+        Assert.Null(chart.View3D.RotationX);
+    }
+
+    [Fact]
+    public void APointOfAnExtendedChartTakesOnlyWhatItHas()
+    {
+        Chart chart = Parsed("""
+            <cx:chartSpace xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex"><cx:chart><cx:plotArea><cx:plotAreaRegion><cx:series layoutId="funnel"><cx:dataPt idx="0"/></cx:series></cx:plotAreaRegion></cx:plotArea></cx:chart></cx:chartSpace>
+            """);
+        byte[] before = chart.ToBytes();
+        ChartPoint point = chart.Series[0].Points[0];
+        point.Explosion = 5;
+        point.InvertIfNegative = true;
+        point.Marker.Symbol = ChartMarkerSymbol.Circle;
+        Assert.Equal(before, chart.ToBytes());
+    }
+
+    [Fact]
+    public void WhatOnlyAnExtendedChartHasWritesNothingToAPlainOne()
+    {
+        Chart chart = Made();
+        byte[] before = chart.ToBytes();
+        ChartSeries series = chart.Series[0];
+        series.Subtotals = [1];
+        series.Binning.BinSize = 1;
+        series.Binning.Underflow = 1;
+        series.QuartileMethod = "exclusive";
+        series.ShowMeanLine = true;
+        series.ParentLabels = ChartParentLabels.Banner;
+        Assert.Equal(before, chart.ToBytes());
+        Assert.Empty(series.Subtotals);
+    }
+
+    [Fact]
+    public void ACategoryAxisOfAnExtendedChartKeepsItsOneScale()
+    {
+        Chart chart = Chart.Create(ChartType.Waterfall);
+        ChartAxis category = chart.Axes.First(a => a.Kind == ChartAxisKind.Category);
+        category.Minimum = 1;
+        category.Maximum = 2;
+        category.MajorUnit = 1;
+        category.MinorUnit = 1;
+        Assert.Null(category.Element.Element(ChartNs.Cx + "valScaling"));
+        Assert.Equal(ChartAxisKind.Category, category.Kind);
+
+        ChartAxis value = chart.Axes.First(a => a.Kind == ChartAxisKind.Value);
+        value.Minimum = 1;
+        Assert.Equal(1, RoundTrip(chart).Axes.First(a => a.Kind == ChartAxisKind.Value).Minimum);
+    }
+
+    [Fact]
+    public void ClearingAnExtendedTitlesTextClearsIt()
+    {
+        Chart chart = Chart.Create(ChartType.Waterfall);
+        chart.Title.Text = "Gone";
+        chart.Title.Text = null;
+        Assert.Null(chart.Title.Text);
+        Assert.Null(RoundTrip(chart).Title.Text);
+    }
+
+    [Theory]
+    [InlineData(ChartType.Column)]
+    [InlineData(ChartType.Waterfall)]
+    public void NewTitleTextKeepsTheLookItHad(ChartType type)
+    {
+        Chart chart = Chart.Create(type);
+        chart.Title.Text = "One";
+        chart.Title.TextFormat.Bold = true;
+        chart.Title.Text = "Two";
+        Chart back = RoundTrip(chart);
+        Assert.Equal("Two", back.Title.Text);
+        Assert.True(back.Title.TextFormat.Bold);
+    }
+
+    [Fact]
+    public void NewTitleTextKeepsItsRunsLook()
+    {
+        Chart chart = Parsed(RichTitle);
+        chart.Title.Text = "New";
+        XElement run = chart.Root.Descendants(ChartNs.A + "rPr").Single();
+        Assert.Equal("1400", (string?)run.Attribute("sz"));
+        Assert.Equal("New", chart.Title.Text);
+    }
+
+    [Theory]
+    [InlineData(ChartType.Column)]
+    [InlineData(ChartType.Waterfall)]
+    public void TakingATitlesReferenceAwayKeepsItsText(ChartType type)
+    {
+        Chart chart = Chart.Create(type);
+        chart.Title.Text = "Kept";
+        chart.Title.Reference = "S!$A$1";
+        chart.Title.Reference = null;
+        Chart back = RoundTrip(chart);
+        Assert.Equal("Kept", back.Title.Text);
+        Assert.Null(back.Title.Reference);
+    }
+
+    [Theory]
+    [InlineData(ChartType.Column)]
+    [InlineData(ChartType.Waterfall)]
+    public void ATitleKeepsItsLookWhenItGetsAReference(ChartType type)
+    {
+        Chart chart = Chart.Create(type);
+        chart.Title.Text = "Linked";
+        chart.Title.TextFormat.Bold = true;
+        chart.Title.Reference = "S!$A$1";
+        Chart back = RoundTrip(chart);
+        Assert.True(back.Title.TextFormat.Bold);
+        Assert.Equal("Linked", back.Title.Text);
+
+        back.Title.Text = "Written";
+        Assert.True(back.Title.TextFormat.Bold);
+    }
+
+    [Fact]
+    public void AColourOrFontIsNotHiddenByARunThatSaysOtherwise()
+    {
+        Chart chart = Parsed(RichTitle);
+        chart.Title.TextFormat.Color = ChartColor.FromHex("00FF00");
+        chart.Title.TextFormat.FontName = "Calibri";
+        XElement run = chart.Root.Descendants(ChartNs.A + "rPr").Single();
+        Assert.Null(run.Element(ChartNs.A + "solidFill"));
+        Assert.Null(run.Element(ChartNs.A + "latin"));
+    }
+
+    [Fact]
+    public void DeletedLabelsComeBackWhenAskedFor()
+    {
+        Chart chart = Parsed(RichTitle);
+        ChartSeries series = chart.Series[0];
+        Assert.False(series.HasDataLabels);
+        series.HasDataLabels = true;
+        Assert.True(series.HasDataLabels);
+        Assert.True(series.DataLabels.ShowValue);
+    }
+
+    [Theory]
+    [InlineData("position")]
+    [InlineData("format")]
+    [InlineData("separator")]
+    public void WritingToDeletedLabelsLeavesNoDeleteBesideThem(string what)
+    {
+        ChartSeries series = Parsed(RichTitle).Series[0];
+        ChartDataLabels labels = series.DataLabels;
+        switch (what)
+        {
+            case "position":
+                labels.Position = ChartLabelPosition.Top;
+                break;
+            case "format":
+                labels.NumberFormat = "0";
+                break;
+            default:
+                labels.Separator = ";";
+                break;
+        }
+
+        XElement element = series.Element.Element(ChartNs.C + "dLbls")!;
+        Assert.Null(element.Element(ChartNs.C + "delete"));
+        Assert.NotNull(element.Element(ChartNs.C + "showVal"));
+    }
+
+    [Fact]
+    public void LabelsThatFollowTheirCellsHaveNoFormatOfTheirOwn()
+    {
+        Chart chart = Made();
+        chart.Series[0].DataLabels.NumberFormat = "0";
+        chart.Series[0].Element.Element(ChartNs.C + "dLbls")!.Element(ChartNs.C + "numFmt")!.SetAttributeValue("sourceLinked", "1");
+        Assert.Null(chart.Series[0].DataLabels.NumberFormat);
+    }
+
+    [Theory]
+    [InlineData(ChartType.Column)]
+    [InlineData(ChartType.Bubble)]
+    [InlineData(ChartType.Waterfall)]
+    public void ValuesThatMustBeNumbersRefuseText(ChartType type)
+    {
+        Chart chart = Chart.Create(type);
+        ChartSeries series = type == ChartType.Waterfall ? chart.Plots[0].Series[0] : chart.Plots[0].Series.Add("a", null, [1]);
+        Assert.Throws<InvalidOperationException>(() => series.Values.SetText(["a"]));
+        Assert.Throws<InvalidOperationException>(() => series.Values.SetTextLevels([["a"]]));
+        if (type == ChartType.Bubble)
+        {
+            Assert.Throws<InvalidOperationException>(() => series.BubbleSizes.SetText(["a"]));
+        }
+
+        series.Categories.SetText(["a"]);
+    }
+
+    [Fact]
+    public void LabelsInLevelsWithoutAReferenceReadAsHavingNone()
+    {
+        Chart chart = Made();
+        ChartData categories = chart.Series[0].Categories;
+        categories.SetTextLevels([["Jan", "Feb"], ["Q1", null]]);
+        Assert.Null(categories.Reference);
+        Assert.Null(RoundTrip(chart).Series[0].Categories.Reference);
+    }
+
+    [Fact]
+    public void AReferencesExtensionsGoWithIt()
+    {
+        Chart chart = Parsed(RichTitle);
+        chart.Series[0].Values.Reference = null;
+        Assert.Empty(chart.Root.Descendants(ChartNs.C + "extLst"));
+
+        Chart other = Parsed(RichTitle);
+        other.Series[0].Values.Reference = "S!$B$1:$B$2";
+        Assert.Empty(other.Root.Descendants(ChartNs.C + "extLst"));
+
+        Chart same = Parsed(RichTitle);
+        same.Series[0].Values.Reference = "S!$A$1:$A$2";
+        Assert.Single(same.Root.Descendants(ChartNs.C + "extLst"));
+    }
+
+    [Fact]
+    public void ANewSeriesGetsAnIdNoOtherHasAndGoesBeforeExtensions()
+    {
+        Chart chart = Chart.Create(ChartType.Funnel);
+        ChartSeriesCollection all = chart.Plots[0].Series;
+        ChartSeries second = all.Add("b", null, [1]);
+        all.Add("c", null, [1]);
+        all.Remove(second);
+        all.Add("d", null, [1]);
+        XElement region = chart.Plots[0].Element;
+        List<string?> ids = [.. region.Elements(ChartNs.Cx + "series").Select(e => (string?)e.Attribute("uniqueId"))];
+        Assert.Equal(ids.Count, ids.Distinct().Count());
+
+        region.Add(new XElement(ChartNs.Cx + "extLst"));
+        all.Add("e", null, [1]);
+        Assert.Equal("extLst", region.Elements().Last().Name.LocalName);
+    }
+
+    [Fact]
+    public void AChartEditedInAHeaderIsSaved()
+    {
+        Document document = new();
+        Section section = document.AddSection();
+        section.Body.AddParagraph("Body");
+        section.HeadersFooters.GetOrAdd(HeaderFooterKind.HeaderPrimary).AddParagraph("").Inlines.Add(new Island(document, Made(), 360, 216));
+        Document back = Reloaded(document);
+        Island island = back.Sections[0].HeadersFooters.GetOrAdd(HeaderFooterKind.HeaderPrimary).Descendants<Island>().Single();
+        island.Chart!.Title.Text = "In the header";
+
+        Island read = Reloaded(back).Sections[0].HeadersFooters.GetOrAdd(HeaderFooterKind.HeaderPrimary).Descendants<Island>().Single();
+        Assert.Equal("In the header", read.Chart!.Title.Text);
     }
 
     [Fact]

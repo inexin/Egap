@@ -81,7 +81,11 @@ book.Save("edited.xlsx");
 ```
 
 Labels in levels, taken from more than one column, must keep their reference, because a chart part has no way to write
-levels without one. Setting `Reference` to null on them throws; call `SetText` first to write one level.
+levels without one. Setting `Reference` to null on them throws; call `SetText` first to write one level. A series's values,
+bubble sizes and error amounts must be numbers, so `SetText` throws on them.
+
+A property only one kind of part has reads as null on the other, and setting it there does nothing: a `cx:` chart has no
+markers, plot groupings or manual layouts, and a `c:` chart has no bins or subtotals.
 
 ## Making a chart
 

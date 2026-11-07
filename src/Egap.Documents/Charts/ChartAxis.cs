@@ -183,12 +183,12 @@ public sealed class ChartAxis
     /// <summary>The lowest value shown, or null when the chart decides.</summary>
     public double? Minimum
     {
-        get => extended ? node["valScaling"].DoubleAttribute("min") : node["scaling"].Double("min");
+        get => extended ? ValueScaling.DoubleAttribute("min") : node["scaling"].Double("min");
         set
         {
             if (extended)
             {
-                node["valScaling"].SetDoubleAttribute("min", value);
+                ValueScaling.SetDoubleAttribute("min", value);
             }
             else
             {
@@ -200,12 +200,12 @@ public sealed class ChartAxis
     /// <summary>The highest value shown, or null when the chart decides.</summary>
     public double? Maximum
     {
-        get => extended ? node["valScaling"].DoubleAttribute("max") : node["scaling"].Double("max");
+        get => extended ? ValueScaling.DoubleAttribute("max") : node["scaling"].Double("max");
         set
         {
             if (extended)
             {
-                node["valScaling"].SetDoubleAttribute("max", value);
+                ValueScaling.SetDoubleAttribute("max", value);
             }
             else
             {
@@ -236,12 +236,12 @@ public sealed class ChartAxis
     /// <summary>The distance between major ticks, or null when the chart decides.</summary>
     public double? MajorUnit
     {
-        get => extended ? node["valScaling"].DoubleAttribute("majorUnit") : node.Double("majorUnit");
+        get => extended ? ValueScaling.DoubleAttribute("majorUnit") : node.Double("majorUnit");
         set
         {
             if (extended)
             {
-                node["valScaling"].SetDoubleAttribute("majorUnit", value);
+                ValueScaling.SetDoubleAttribute("majorUnit", value);
             }
             else
             {
@@ -253,12 +253,12 @@ public sealed class ChartAxis
     /// <summary>The distance between minor ticks, or null when the chart decides.</summary>
     public double? MinorUnit
     {
-        get => extended ? node["valScaling"].DoubleAttribute("minorUnit") : node.Double("minorUnit");
+        get => extended ? ValueScaling.DoubleAttribute("minorUnit") : node.Double("minorUnit");
         set
         {
             if (extended)
             {
-                node["valScaling"].SetDoubleAttribute("minorUnit", value);
+                ValueScaling.SetDoubleAttribute("minorUnit", value);
             }
             else
             {
@@ -421,43 +421,43 @@ public sealed class ChartAxis
     /// <summary>For a category axis: how many categories between labels, or null when the chart decides.</summary>
     public int? TickLabelSkip
     {
-        get => node.Int("tickLblSkip");
-        set => node.SetInt("tickLblSkip", value);
+        get => Classic.Int("tickLblSkip");
+        set => Classic.SetInt("tickLblSkip", value);
     }
 
     /// <summary>For a category axis: how many categories between tick marks, or null when the chart decides.</summary>
     public int? TickMarkSkip
     {
-        get => node.Int("tickMarkSkip");
-        set => node.SetInt("tickMarkSkip", value);
+        get => Classic.Int("tickMarkSkip");
+        set => Classic.SetInt("tickMarkSkip", value);
     }
 
     /// <summary>For a category axis: labels of several levels are drawn as one, or null when not said.</summary>
     public bool? NoMultiLevelLabels
     {
-        get => node.Bool("noMultiLvlLbl");
-        set => node.SetBool("noMultiLvlLbl", value);
+        get => Classic.Bool("noMultiLvlLbl");
+        set => Classic.SetBool("noMultiLvlLbl", value);
     }
 
     /// <summary>For a date axis: the unit of its points, or null when the chart decides.</summary>
     public ChartTimeUnit? BaseTimeUnit
     {
-        get => Units.Parse(node.Value("baseTimeUnit"));
-        set => node.SetValue("baseTimeUnit", Units.Name(value));
+        get => Units.Parse(Classic.Value("baseTimeUnit"));
+        set => Classic.SetValue("baseTimeUnit", Units.Name(value));
     }
 
     /// <summary>For a date axis: the unit of <see cref="MajorUnit"/>, or null.</summary>
     public ChartTimeUnit? MajorTimeUnit
     {
-        get => Units.Parse(node.Value("majorTimeUnit"));
-        set => node.SetValue("majorTimeUnit", Units.Name(value));
+        get => Units.Parse(Classic.Value("majorTimeUnit"));
+        set => Classic.SetValue("majorTimeUnit", Units.Name(value));
     }
 
     /// <summary>For a date axis: the unit of <see cref="MinorUnit"/>, or null.</summary>
     public ChartTimeUnit? MinorTimeUnit
     {
-        get => Units.Parse(node.Value("minorTimeUnit"));
-        set => node.SetValue("minorTimeUnit", Units.Name(value));
+        get => Units.Parse(Classic.Value("minorTimeUnit"));
+        set => Classic.SetValue("minorTimeUnit", Units.Name(value));
     }
 
     /// <summary>For a value axis: the unit its labels count in, such as <c>thousands</c> or <c>percentage</c>; null for ones.</summary>
@@ -470,6 +470,12 @@ public sealed class ChartAxis
     public ChartTextFormat TextFormat => new(node["txPr"]);
 
     internal XElement Element { get; }
+
+    /// <summary>What only a c: axis has; on a cx: axis, nowhere.</summary>
+    private ChartNode Classic => extended ? ChartNode.Nowhere(Element.Name) : node;
+
+    /// <summary>A cx: value axis's scale; a category axis has its own, and no other beside it.</summary>
+    private ChartNode ValueScaling => Element.Element(ChartNs.Cx + "catScaling") is null ? node["valScaling"] : ChartNode.Nowhere(ChartNs.Cx + "valScaling");
 
     private bool NumberFormatLinked => node["numFmt"].BoolAttribute("sourceLinked") == true;
 

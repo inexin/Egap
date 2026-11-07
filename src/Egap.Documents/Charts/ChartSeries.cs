@@ -106,43 +106,43 @@ public sealed class ChartSeries
     public ChartData Categories => extended ? Dimension(strings: true) : new ChartData(node[UsesXY ? "xVal" : "cat"], false);
 
     /// <summary>The values, or for a scatter or bubble chart the Y values.</summary>
-    public ChartData Values => extended ? Dimension(strings: false) : new ChartData(node[UsesXY ? "yVal" : "val"], false);
+    public ChartData Values => extended ? Dimension(strings: false) : new ChartData(node[UsesXY ? "yVal" : "val"], false, numbersOnly: true);
 
-    /// <summary>A bubble chart's bubble sizes.</summary>
-    public ChartData BubbleSizes => new(node["bubbleSize"], extended);
+    /// <summary>A bubble chart's bubble sizes; c: charts only.</summary>
+    public ChartData BubbleSizes => new(Classic["bubbleSize"], extended, numbersOnly: true);
 
     /// <summary>The series's fill and outline.</summary>
     public ChartFormat Format => new(node);
 
     /// <summary>The series's marker; line, scatter and radar charts.</summary>
-    public ChartMarker Marker => new(node["marker"]);
+    public ChartMarker Marker => new(Classic["marker"]);
 
     /// <summary>Whether the line is smoothed, or null when not said; line and scatter charts.</summary>
     public bool? Smooth
     {
-        get => node.Bool("smooth");
-        set => node.SetBool("smooth", value);
+        get => Classic.Bool("smooth");
+        set => Classic.SetBool("smooth", value);
     }
 
     /// <summary>Whether a negative bar swaps its colours, or null when not said; bar and bubble charts.</summary>
     public bool? InvertIfNegative
     {
-        get => node.Bool("invertIfNegative");
-        set => node.SetBool("invertIfNegative", value);
+        get => Classic.Bool("invertIfNegative");
+        set => Classic.SetBool("invertIfNegative", value);
     }
 
     /// <summary>How far a pie's slices are pulled out, as a percentage of the radius, or null.</summary>
     public int? Explosion
     {
-        get => node.Int("explosion");
-        set => node.SetInt("explosion", value);
+        get => Classic.Int("explosion");
+        set => Classic.SetInt("explosion", value);
     }
 
     /// <summary>Whether the bubbles have a 3D look, or null when not said.</summary>
     public bool? Bubble3D
     {
-        get => node.Bool("bubble3D");
-        set => node.SetBool("bubble3D", value);
+        get => Classic.Bool("bubble3D");
+        set => Classic.SetBool("bubble3D", value);
     }
 
     /// <summary>Whether the series has data labels of its own.</summary>
@@ -162,7 +162,7 @@ public sealed class ChartSeries
                 return;
             }
 
-            if (!labels.Exists)
+            if (!labels.Exists || new ChartDataLabels(labels, extended).Deleted)
             {
                 ChartDataLabels made = new(labels, extended);
                 made.ShowValue = true;
@@ -300,34 +300,47 @@ public sealed class ChartSeries
         }
     }
 
-    private ChartNode LayoutProperties => node["layoutPr"];
+    /// <summary>What only a c: series has; on a cx: series, nowhere.</summary>
+    private ChartNode Classic => extended ? ChartNode.Nowhere(Element.Name) : node;
+
+    /// <summary>What only a cx: series has; on a c: series, nowhere.</summary>
+    private ChartNode LayoutProperties => extended ? node["layoutPr"] : ChartNode.Nowhere(ChartNs.C + "layoutPr");
 
     private bool UsesXY =>
         Element.Element(ChartNs.C + "xVal") is not null || Element.Element(ChartNs.C + "yVal") is not null
         || Element.Parent?.Name.LocalName is "scatterChart" or "bubbleChart";
 
-    private ChartData Dimension(bool strings)
+    /// <summary>A cx: series's categories or values. Reading makes nothing; a dimension and its data are made when first written.</summary>
+    private ChartData Dimension(bool strings) => new(
+        new ChartNode(ChartNs.Cx, () => FindDimension(chart.FindExtendedData(this), strings), () => EnsureDimension(strings)),
+        true,
+        numbersOnly: !strings);
+
+    private static XElement? FindDimension(XElement? data, bool strings) => strings
+        ? data?.Elements().FirstOrDefault(e => (string?)e.Attribute("type") is "cat" or "colorStr" or "entityId")
+        : data?.Elements().FirstOrDefault(e => e.Name.LocalName == "numDim" && (string?)e.Attribute("type") != "cat");
+
+    private XElement EnsureDimension(bool strings)
     {
         XElement data = chart.ExtendedData(this);
-        XElement? found = strings
-            ? data.Elements().FirstOrDefault(e => (string?)e.Attribute("type") is "cat" or "colorStr" or "entityId")
-            : data.Elements().FirstOrDefault(e => e.Name.LocalName == "numDim" && (string?)e.Attribute("type") != "cat");
-        if (found is null)
+        if (FindDimension(data, strings) is { } found)
         {
-            found = new XElement(
-                ChartNs.Cx + (strings ? "strDim" : "numDim"),
-                new XAttribute("type", strings ? "cat" : ValueDimension));
-            if (strings)
-            {
-                data.AddFirst(found);
-            }
-            else
-            {
-                data.Add(found);
-            }
+            return found;
         }
 
-        return new ChartData(new ChartNode(found), true);
+        XElement made = new(
+            ChartNs.Cx + (strings ? "strDim" : "numDim"),
+            new XAttribute("type", strings ? "cat" : ValueDimension));
+        if (strings)
+        {
+            data.AddFirst(made);
+        }
+        else
+        {
+            ChartOrder.Insert(data, made);
+        }
+
+        return made;
     }
 
     private string ValueDimension => (string?)Element.Attribute("layoutId") is "treemap" or "sunburst" ? "size" : "val";

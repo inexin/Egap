@@ -147,7 +147,7 @@ public enum ChartRadarStyle
 
 /// <summary>
 /// One group of series drawn the same way against the same axes. A plain chart has one plot; a combination chart has more.
-/// Properties a type does not use read as null.
+/// Properties a type does not use read as null. On a cx: chart only the series, axes and gap width apply; setting the rest does nothing.
 /// </summary>
 public sealed class ChartPlot
 {
@@ -184,7 +184,7 @@ public sealed class ChartPlot
             switch (Element.Name.LocalName)
             {
                 case "barChart" or "bar3DChart":
-                    return node.Value("barDir") == "bar" ? ChartType.Bar : ChartType.Column;
+                    return Classic.Value("barDir") == "bar" ? ChartType.Bar : ChartType.Column;
                 case "lineChart" or "line3DChart":
                     return ChartType.Line;
                 case "areaChart" or "area3DChart":
@@ -192,7 +192,7 @@ public sealed class ChartPlot
                 case "pieChart" or "pie3DChart":
                     return ChartType.Pie;
                 case "ofPieChart":
-                    return node.Value("ofPieType") == "bar" ? ChartType.BarOfPie : ChartType.PieOfPie;
+                    return Classic.Value("ofPieType") == "bar" ? ChartType.BarOfPie : ChartType.PieOfPie;
                 case "doughnutChart":
                     return ChartType.Doughnut;
                 case "scatterChart":
@@ -237,15 +237,15 @@ public sealed class ChartPlot
     /// <summary>How the series sit against each other, or null when the type has no such choice.</summary>
     public ChartGrouping? Grouping
     {
-        get => Groupings.Parse(node.Value("grouping"));
-        set => node.SetValue("grouping", Groupings.Name(value));
+        get => Groupings.Parse(Classic.Value("grouping"));
+        set => Classic.SetValue("grouping", Groupings.Name(value));
     }
 
     /// <summary>Whether each point gets its own colour, or null when not said.</summary>
     public bool? VaryColors
     {
-        get => node.Bool("varyColors");
-        set => node.SetBool("varyColors", value);
+        get => Classic.Bool("varyColors");
+        set => Classic.SetBool("varyColors", value);
     }
 
     /// <summary>
@@ -254,7 +254,7 @@ public sealed class ChartPlot
     /// </summary>
     public int? GapWidth
     {
-        get => chart.IsExtended ? Scaling?.DoubleAttribute("gapWidth") is { } gap && gap >= 0 ? (int)Math.Round(gap * 100) : null : node.Int("gapWidth");
+        get => chart.IsExtended ? Scaling?.DoubleAttribute("gapWidth") is { } gap && gap >= 0 ? (int)Math.Round(gap * 100) : null : Classic.Int("gapWidth");
         set
         {
             if (chart.IsExtended)
@@ -263,7 +263,7 @@ public sealed class ChartPlot
             }
             else
             {
-                node.SetInt("gapWidth", value);
+                Classic.SetInt("gapWidth", value);
             }
         }
     }
@@ -271,107 +271,110 @@ public sealed class ChartPlot
     /// <summary>How far bars of a cluster overlap, as a percentage from -100 to 100, or null when not said.</summary>
     public int? Overlap
     {
-        get => node.Int("overlap");
-        set => node.SetInt("overlap", value);
+        get => Classic.Int("overlap");
+        set => Classic.SetInt("overlap", value);
     }
 
     /// <summary>The depth of the gap between bars of a 3D chart, as a percentage, or null when not said.</summary>
     public int? GapDepth
     {
-        get => node.Int("gapDepth");
-        set => node.SetInt("gapDepth", value);
+        get => Classic.Int("gapDepth");
+        set => Classic.SetInt("gapDepth", value);
     }
 
     /// <summary>The shape of 3D bars, or null when not said.</summary>
     public ChartBarShape? BarShape
     {
-        get => Shapes.Parse(node.Value("shape"));
-        set => node.SetValue("shape", Shapes.Name(value));
+        get => Shapes.Parse(Classic.Value("shape"));
+        set => Classic.SetValue("shape", Shapes.Name(value));
     }
 
     /// <summary>The angle in degrees of a pie's or doughnut's first slice, or null when not said.</summary>
     public int? FirstSliceAngle
     {
-        get => node.Int("firstSliceAng");
-        set => node.SetInt("firstSliceAng", value);
+        get => Classic.Int("firstSliceAng");
+        set => Classic.SetInt("firstSliceAng", value);
     }
 
     /// <summary>The size of a doughnut's hole, as a percentage, or null when not said.</summary>
     public int? HoleSize
     {
-        get => node.Int("holeSize");
-        set => node.SetInt("holeSize", value);
+        get => Classic.Int("holeSize");
+        set => Classic.SetInt("holeSize", value);
     }
 
     /// <summary>How a scatter chart draws its series, or null for other types.</summary>
     public ChartScatterStyle? ScatterStyle
     {
-        get => ScatterStyles.Parse(node.Value("scatterStyle"));
-        set => node.SetValue("scatterStyle", ScatterStyles.Name(value));
+        get => ScatterStyles.Parse(Classic.Value("scatterStyle"));
+        set => Classic.SetValue("scatterStyle", ScatterStyles.Name(value));
     }
 
     /// <summary>How a radar chart draws its series, or null for other types.</summary>
     public ChartRadarStyle? RadarStyle
     {
-        get => RadarStyles.Parse(node.Value("radarStyle"));
-        set => node.SetValue("radarStyle", RadarStyles.Name(value));
+        get => RadarStyles.Parse(Classic.Value("radarStyle"));
+        set => Classic.SetValue("radarStyle", RadarStyles.Name(value));
     }
 
     /// <summary>A bubble chart's scale, as a percentage of the default size, or null when not said.</summary>
     public int? BubbleScale
     {
-        get => node.Int("bubbleScale");
-        set => node.SetInt("bubbleScale", value);
+        get => Classic.Int("bubbleScale");
+        set => Classic.SetInt("bubbleScale", value);
     }
 
     /// <summary>Whether a bubble chart shows negative values, or null when not said.</summary>
     public bool? ShowNegativeBubbles
     {
-        get => node.Bool("showNegBubbles");
-        set => node.SetBool("showNegBubbles", value);
+        get => Classic.Bool("showNegBubbles");
+        set => Classic.SetBool("showNegBubbles", value);
     }
 
     /// <summary>Whether a bubble's width, not its area, stands for its size; null when not said.</summary>
     public bool? BubbleSizeIsWidth
     {
-        get => node.Value("sizeRepresents") switch
+        get => Classic.Value("sizeRepresents") switch
         {
             "w" => true,
             "area" => false,
             _ => null,
         };
-        set => node.SetValue("sizeRepresents", value is { } width ? (width ? "w" : "area") : null);
+        set => Classic.SetValue("sizeRepresents", value is { } width ? (width ? "w" : "area") : null);
     }
 
     /// <summary>Whether a surface chart is a wireframe, or null when not said.</summary>
     public bool? Wireframe
     {
-        get => node.Bool("wireframe");
-        set => node.SetBool("wireframe", value);
+        get => Classic.Bool("wireframe");
+        set => Classic.SetBool("wireframe", value);
     }
 
     /// <summary>Whether a line or stock chart has lines from high to low, as a stock chart's are.</summary>
-    public bool HasHighLowLines => node["hiLowLines"].Exists;
+    public bool HasHighLowLines => Classic["hiLowLines"].Exists;
 
     /// <summary>Whether a line or stock chart has bars from its first to its last series, as a stock chart's are.</summary>
-    public bool HasUpDownBars => node["upDownBars"].Exists;
+    public bool HasUpDownBars => Classic["upDownBars"].Exists;
 
     /// <summary>Whether a line or area chart has lines from its points down to the axis.</summary>
-    public bool HasDropLines => node["dropLines"].Exists;
+    public bool HasDropLines => Classic["dropLines"].Exists;
 
     /// <summary>Whether a line chart's series have markers by default, or null when not said.</summary>
     public bool? ShowMarkers
     {
-        get => node.Bool("marker");
-        set => node.SetBool("marker", value);
+        get => Classic.Bool("marker");
+        set => Classic.SetBool("marker", value);
     }
 
     /// <summary>The data labels for all the plot's series that have none of their own; c: charts only.</summary>
-    public ChartDataLabels DataLabels => new(node["dLbls"], false);
+    public ChartDataLabels DataLabels => new(Classic["dLbls"], false);
 
     internal XElement Element { get; }
 
     internal IEnumerable<XElement> SeriesElements() => Element.Elements(Element.Name.Namespace + (chart.IsExtended ? "series" : "ser"));
+
+    /// <summary>What only a c: chart's plot has; on a cx: chart, nowhere.</summary>
+    private ChartNode Classic => chart.IsExtended ? ChartNode.Nowhere(Element.Name) : node;
 
     private ChartNode? Scaling
     {

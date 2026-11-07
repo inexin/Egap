@@ -23,10 +23,21 @@ internal sealed class ChartNode
     private readonly XElement? element;
     private readonly ChartNode? parent;
     private readonly XName? name;
+    private readonly XNamespace? ns;
+    private readonly Func<XElement?>? find;
+    private readonly Func<XElement>? ensure;
 
     public ChartNode(XElement element)
     {
         this.element = element;
+    }
+
+    /// <summary>A place worked out when it is used, for an element that may have to be made elsewhere in the part.</summary>
+    public ChartNode(XNamespace ns, Func<XElement?> find, Func<XElement> ensure)
+    {
+        this.ns = ns;
+        this.find = find;
+        this.ensure = ensure;
     }
 
     private ChartNode(ChartNode parent, XName name)
@@ -35,16 +46,24 @@ internal sealed class ChartNode
         this.name = name;
     }
 
-    public XNamespace Ns => element?.Name.Namespace ?? parent!.Ns;
+    /// <summary>A place outside the part: for what the part's kind of chart cannot hold, so that writing there changes nothing.</summary>
+    public static ChartNode Nowhere(XName name) => new(new XElement(name));
+
+    public XNamespace Ns => ns ?? element?.Name.Namespace ?? parent!.Ns;
 
     public ChartNode this[string localName] => new(this, Ns + localName);
 
     public ChartNode Child(XName childName) => new(this, childName);
 
-    public XElement? Find() => element ?? parent!.Find()?.Element(name!);
+    public XElement? Find() => find is not null ? find() : element ?? parent!.Find()?.Element(name!);
 
     public XElement Ensure()
     {
+        if (ensure is not null)
+        {
+            return ensure();
+        }
+
         if (element is not null)
         {
             return element;
@@ -188,6 +207,9 @@ internal static class ChartOrder
             ["txPr"] = Split("bodyPr lstStyle p"),
             ["rich"] = Split("bodyPr lstStyle p"),
             ["defRPr"] = Split("ln noFill solidFill gradFill blipFill pattFill grpFill effectLst effectDag highlight uLnTx uLn uFillTx uFill latin ea cs sym hlinkClick hlinkMouseOver rtl extLst"),
+            ["chartData"] = Split("externalData data extLst"),
+            ["data"] = Split("strDim numDim extLst"),
+            ["plotAreaRegion"] = Split("plotSurface series extLst"),
             ["series"] = Split("tx spPr valueColors valueColorPositions dataPt dataLabels dataId layoutPr axisId extLst"),
             ["axis"] = Split("catScaling valScaling title units majorGridlines minorGridlines majorTickMarks minorTickMarks tickLabels numFmt spPr txPr extLst"),
             ["dataLabels"] = Split("numFmt spPr txPr visibility separator dataLabel dataLabelHidden extLst"),

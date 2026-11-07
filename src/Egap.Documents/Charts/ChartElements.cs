@@ -211,11 +211,24 @@ public sealed class ChartTitle
             if (value is null)
             {
                 node["tx"].Remove();
+
+                // A cx: title keeps its text here too, and the schema wants a paragraph left.
+                if (extended && node["txPr"].Find() is { } kept)
+                {
+                    XElement? look = FirstLook(kept);
+                    kept.Elements(ChartNs.A + "p").Remove();
+                    kept.Add(new XElement(ChartNs.A + "p", look is null ? null : new XElement(look), new XElement(ChartNs.A + "endParaRPr", new XAttribute("lang", "en-US"))));
+                }
+
                 return;
             }
 
             string safe = Docx.OpcPackageWriter.XmlSafe(value);
             XElement title = node.Ensure();
+            XElement? rich = title.Element(node.Ns + "tx")?.Element(node.Ns + "rich");
+            XElement? shared = title.Element(node.Ns + "txPr");
+            XElement? first = FirstLook(rich) ?? FirstLook(shared);
+            XElement? run = FirstRun(rich) ?? FirstRun(shared);
             if (extended)
             {
                 node["tx"].Remove();
@@ -227,13 +240,11 @@ public sealed class ChartTitle
                     body.AddFirst(new XElement(ChartNs.A + "bodyPr"));
                 }
 
-                body.Add(Paragraphs(safe, null));
+                body.Add(Paragraphs(safe, first, run));
                 return;
             }
 
-            XElement? rich = title.Element(ChartNs.C + "tx")?.Element(ChartNs.C + "rich");
-            XElement? first = rich?.Element(ChartNs.A + "p")?.Element(ChartNs.A + "pPr");
-            XElement? keptBody = rich?.Element(ChartNs.A + "bodyPr");
+            XElement? keptBody = rich?.Element(ChartNs.A + "bodyPr") ?? shared?.Element(ChartNs.A + "bodyPr");
             node["tx"].Remove();
             ChartOrder.Insert(title, new XElement(
                 ChartNs.C + "tx",
@@ -241,7 +252,7 @@ public sealed class ChartTitle
                     ChartNs.C + "rich",
                     keptBody is null ? new XElement(ChartNs.A + "bodyPr") : new XElement(keptBody),
                     new XElement(ChartNs.A + "lstStyle"),
-                    Paragraphs(safe, first))));
+                    Paragraphs(safe, first, run))));
         }
     }
 
@@ -257,19 +268,22 @@ public sealed class ChartTitle
         }
         set
         {
+            string? text = Text;
             if (value is null)
             {
+                // As with a series's name, the text stays, now written in the chart.
                 if (Reference is not null)
                 {
                     node["tx"].Remove();
+                    Text = text;
                 }
 
                 return;
             }
 
-            string? text = Text;
-            node["tx"].Remove();
             XElement title = node.Ensure();
+            KeepLook(title);
+            node["tx"].Remove();
             ChartOrder.Insert(title, extended
                 ? new XElement(ChartNs.Cx + "tx", new XElement(ChartNs.Cx + "txData", new XElement(ChartNs.Cx + "f", value), text is null ? null : new XElement(ChartNs.Cx + "v", text)))
                 : new XElement(ChartNs.C + "tx", new XElement(
@@ -310,7 +324,7 @@ public sealed class ChartTitle
     }
 
     /// <summary>Where the title sits when placed by hand; c: charts only.</summary>
-    public ChartLayout Layout => new(node);
+    public ChartLayout Layout => new(extended ? ChartNode.Nowhere(node.Ns + "title") : node);
 
     internal static string? ParagraphsOf(XElement? body)
     {
@@ -323,11 +337,41 @@ public sealed class ChartTitle
         return paragraphs.All(p => p.Length == 0) ? null : string.Join('\n', paragraphs);
     }
 
-    private static IEnumerable<XElement> Paragraphs(string text, XElement? properties) =>
+    private static XElement? FirstLook(XElement? body) => body?.Element(ChartNs.A + "p")?.Element(ChartNs.A + "pPr");
+
+    private static XElement? FirstRun(XElement? body) => body?.Elements(ChartNs.A + "p").Elements(ChartNs.A + "r").Elements(ChartNs.A + "rPr").FirstOrDefault();
+
+    /// <summary>A reference has no written text to carry a look: what the written text says moves to the title's own text properties.</summary>
+    private void KeepLook(XElement title)
+    {
+        XElement? rich = title.Element(node.Ns + "tx")?.Element(node.Ns + "rich");
+        if (rich is null || title.Element(node.Ns + "txPr") is not null)
+        {
+            return;
+        }
+
+        XElement? look = FirstLook(rich);
+        if (look is null && FirstRun(rich) is { } run && (run.HasElements || run.Attributes().Any(a => a.Name.LocalName is not ("lang" or "dirty" or "err"))))
+        {
+            look = new XElement(ChartNs.A + "pPr", new XElement(ChartNs.A + "defRPr", run.Attributes(), run.Elements()));
+        }
+
+        if (look is not null)
+        {
+            XElement? body = rich.Element(ChartNs.A + "bodyPr");
+            ChartOrder.Insert(title, new XElement(
+                node.Ns + "txPr",
+                body is null ? new XElement(ChartNs.A + "bodyPr") : new XElement(body),
+                new XElement(ChartNs.A + "lstStyle"),
+                new XElement(ChartNs.A + "p", new XElement(look), new XElement(ChartNs.A + "endParaRPr", new XAttribute("lang", "en-US")))));
+        }
+    }
+
+    private static IEnumerable<XElement> Paragraphs(string text, XElement? properties, XElement? run) =>
         text.Split('\n').Select(line => new XElement(
             ChartNs.A + "p",
             properties is null ? null : new XElement(properties),
-            new XElement(ChartNs.A + "r", new XElement(ChartNs.A + "rPr", new XAttribute("lang", "en-US")), new XElement(ChartNs.A + "t", line))));
+            new XElement(ChartNs.A + "r", run is null ? new XElement(ChartNs.A + "rPr", new XAttribute("lang", "en-US")) : new XElement(run), new XElement(ChartNs.A + "t", line))));
 }
 
 /// <summary>A chart's legend.</summary>
@@ -345,7 +389,7 @@ public sealed class ChartLegend
         this.extended = extended;
     }
 
-    /// <summary>Where the legend sits; null when the file does not say, which draws it on the right.</summary>
+    /// <summary>Where the legend sits; null when the file does not say, which draws it on the right. A cx: chart has no top-right; setting it there does nothing.</summary>
     public ChartLegendPosition? Position
     {
         get => Positions.Parse(extended ? node.Attribute("pos") : node.Value("legendPos"));
@@ -353,7 +397,10 @@ public sealed class ChartLegend
         {
             if (extended)
             {
-                node.SetAttribute("pos", Positions.Name(value));
+                if (value != ChartLegendPosition.TopRight)
+                {
+                    node.SetAttribute("pos", Positions.Name(value));
+                }
             }
             else
             {
@@ -392,7 +439,7 @@ public sealed class ChartLegend
     public ChartTextFormat TextFormat => new(node["txPr"]);
 
     /// <summary>Where the legend sits when placed by hand; c: charts only.</summary>
-    public ChartLayout Layout => new(node);
+    public ChartLayout Layout => new(extended ? ChartNode.Nowhere(node.Ns + "legend") : node);
 }
 
 /// <summary>Where an element sits when placed by hand, as fractions of the chart. Null values leave it to the chart.</summary>
@@ -595,6 +642,11 @@ public sealed class ChartDataLabels
             }
             else
             {
+                if (value is not null)
+                {
+                    SetAll();
+                }
+
                 node.SetValue("dLblPos", Positions.Name(value));
             }
         }
@@ -603,7 +655,7 @@ public sealed class ChartDataLabels
     /// <summary>The number format of the values shown, or null to follow the cells.</summary>
     public string? NumberFormat
     {
-        get => node["numFmt"].Attribute("formatCode");
+        get => node["numFmt"].BoolAttribute("sourceLinked") == true ? null : node["numFmt"].Attribute("formatCode");
         set
         {
             if (value is null)
@@ -612,6 +664,7 @@ public sealed class ChartDataLabels
                 return;
             }
 
+            Clean();
             XElement format = node["numFmt"].Ensure();
             format.SetAttributeValue("formatCode", value);
             format.SetAttributeValue("sourceLinked", "0");
@@ -630,6 +683,7 @@ public sealed class ChartDataLabels
             }
             else
             {
+                Clean();
                 node["separator"].Ensure().Value = Docx.OpcPackageWriter.XmlSafe(value);
             }
         }
@@ -657,6 +711,14 @@ public sealed class ChartDataLabels
 
         SetAll();
         node.SetBool(name, value);
+    }
+
+    private void Clean()
+    {
+        if (!extended)
+        {
+            SetAll();
+        }
     }
 
     /// <summary>The schema wants all of a c: element's flags together, and no delete beside them.</summary>
@@ -822,10 +884,10 @@ public sealed class ChartErrorBars
     }
 
     /// <summary>The lengths upwards, for custom bars.</summary>
-    public ChartData Plus => new(node["plus"], false);
+    public ChartData Plus => new(node["plus"], false, numbersOnly: true);
 
     /// <summary>The lengths downwards, for custom bars.</summary>
-    public ChartData Minus => new(node["minus"], false);
+    public ChartData Minus => new(node["minus"], false, numbersOnly: true);
 
     /// <summary>The bars' look.</summary>
     public ChartFormat Format => new(node);
@@ -851,22 +913,24 @@ public sealed class ChartPoint
     /// <summary>The point's fill and outline.</summary>
     public ChartFormat Format => new(node);
 
-    /// <summary>The point's marker.</summary>
-    public ChartMarker Marker => new(node["marker"]);
+    /// <summary>The point's marker; c: charts only.</summary>
+    public ChartMarker Marker => new(Classic["marker"]);
 
-    /// <summary>How far a pie slice is pulled out, as a percentage of the radius, or null.</summary>
+    /// <summary>How far a pie slice is pulled out, as a percentage of the radius, or null; c: charts only.</summary>
     public int? Explosion
     {
-        get => extended ? null : node.Int("explosion");
-        set => node.SetInt("explosion", value);
+        get => Classic.Int("explosion");
+        set => Classic.SetInt("explosion", value);
     }
 
-    /// <summary>Whether a negative bar swaps its colours, or null.</summary>
+    /// <summary>Whether a negative bar swaps its colours, or null; c: charts only.</summary>
     public bool? InvertIfNegative
     {
-        get => extended ? null : node.Bool("invertIfNegative");
-        set => node.SetBool("invertIfNegative", value);
+        get => Classic.Bool("invertIfNegative");
+        set => Classic.SetBool("invertIfNegative", value);
     }
+
+    private ChartNode Classic => extended ? ChartNode.Nowhere(node.Ns + "dataPt") : node;
 }
 
 /// <summary>How a histogram or Pareto chart groups its values into bins.</summary>

@@ -157,7 +157,7 @@ public sealed class Chart
     public ChartFormat PlotAreaFormat => new(PlotArea);
 
     /// <summary>Where the plot sits when placed by hand; c: charts only.</summary>
-    public ChartLayout PlotAreaLayout => new(PlotArea);
+    public ChartLayout PlotAreaLayout => new(IsExtended ? ChartNode.Nowhere(ChartNs.Cx + "plotArea") : PlotArea);
 
     /// <summary>Whether corners are rounded, or null when not said; c: charts only.</summary>
     public bool? RoundedCorners
@@ -223,7 +223,7 @@ public sealed class Chart
     }
 
     /// <summary>The 3D view; c: charts only.</summary>
-    public ChartView3D View3D => new(body["view3D"]);
+    public ChartView3D View3D => new(IsExtended ? ChartNode.Nowhere(ChartNs.Cx + "view3D") : body["view3D"]);
 
     /// <summary>Whether the part has changed since it was read.</summary>
     internal bool IsChanged { get; private set; }
@@ -383,17 +383,20 @@ public sealed class Chart
             List<XElement> all = [.. plot.SeriesElements()];
             string layout = (string?)all.FirstOrDefault()?.Attribute("layoutId") ?? "clusteredColumn";
             XElement? template = all.FirstOrDefault()?.Element(ChartNs.Cx + "layoutPr");
-            int number = all.Count;
+            HashSet<string?> taken = [.. all.Select(s => (string?)s.Attribute("uniqueId"))];
+            string uniqueId = Enumerable.Range(all.Count, all.Count + 1)
+                .Select(number => "{" + number.ToString("X8", CultureInfo.InvariantCulture) + "-0000-4000-8000-000000000000}")
+                .First(id => !taken.Contains(id));
             string dataId = NextDataId();
             XElement data = new(ChartNs.Cx + "data", new XAttribute("id", dataId));
-            space["chartData"].Ensure().Add(data);
+            ChartOrder.Insert(space["chartData"].Ensure(), data);
             XElement made = new(
                 ChartNs.Cx + "series",
                 new XAttribute("layoutId", layout),
-                new XAttribute("uniqueId", "{" + number.ToString("X8", CultureInfo.InvariantCulture) + "-0000-4000-8000-000000000000}"),
+                new XAttribute("uniqueId", uniqueId),
                 new XElement(ChartNs.Cx + "dataId", new XAttribute("val", dataId)),
                 template is null ? null : new XElement(template));
-            plot.Element.Add(made);
+            ChartOrder.Insert(plot.Element, made);
             return SeriesOf(made);
         }
 
@@ -427,22 +430,26 @@ public sealed class Chart
         return added;
     }
 
+    /// <summary>A cx: series's data element, or null if the file has none, as a Pareto chart's line has none.</summary>
+    internal XElement? FindExtendedData(ChartSeries series)
+    {
+        string? id = (string?)series.Element.Element(ChartNs.Cx + "dataId")?.Attribute("val");
+        return id is null ? null : Root.Element(ChartNs.Cx + "chartData")?.Elements(ChartNs.Cx + "data").FirstOrDefault(d => (string?)d.Attribute("id") == id);
+    }
+
     /// <summary>A cx: series's data element, made if the file has none.</summary>
     internal XElement ExtendedData(ChartSeries series)
     {
-        ChartNode node = new(series.Element);
-        string? id = ((string?)series.Element.Element(ChartNs.Cx + "dataId")?.Attribute("val"));
-        XElement holder = space["chartData"].Ensure();
-        XElement? found = holder.Elements(ChartNs.Cx + "data").FirstOrDefault(d => (string?)d.Attribute("id") == id);
-        if (found is null)
+        if (FindExtendedData(series) is { } found)
         {
-            id = NextDataId();
-            found = new XElement(ChartNs.Cx + "data", new XAttribute("id", id));
-            holder.Add(found);
-            node["dataId"].SetAttribute("val", id);
+            return found;
         }
 
-        return found;
+        string id = NextDataId();
+        XElement made = new(ChartNs.Cx + "data", new XAttribute("id", id));
+        ChartOrder.Insert(space["chartData"].Ensure(), made);
+        new ChartNode(series.Element)["dataId"].SetAttribute("val", id);
+        return made;
     }
 
     internal void RemoveExtendedData(ChartSeries series)
