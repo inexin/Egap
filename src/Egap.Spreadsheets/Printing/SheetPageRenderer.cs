@@ -5,6 +5,8 @@ using Egami.Drawing;
 using Egami.Fonts.Layout;
 using Egami.Pixels;
 
+using Egap.Documents.Charts;
+
 
 namespace Egap.Spreadsheets.Printing;
 
@@ -494,7 +496,9 @@ internal sealed partial class SheetPageRenderer
     {
         foreach (SheetDrawing drawing in sheet.Drawings)
         {
-            if (drawing.Kind != SheetDrawingKind.Picture || drawing.ImageData is not { } data)
+            Chart? chart = drawing.Chart;
+            byte[]? data = drawing.Kind == SheetDrawingKind.Picture ? drawing.ImageData : null;
+            if (data is null && chart is null)
             {
                 continue;
             }
@@ -517,9 +521,20 @@ internal sealed partial class SheetPageRenderer
                         continue;
                     }
 
+                    if (chart is not null)
+                    {
+                        canvas.Save();
+                        canvas.ClipRect(Rect(column.Start, row.Start, column.Size, row.Size));
+                        Begin(t => t.BeginFigure(page, drawing));
+                        ChartPrinting.Draw(chart, book, canvas, Rect(left, top, width, height), colors, fonts);
+                        End();
+                        canvas.Restore();
+                        continue;
+                    }
+
                     try
                     {
-                        image ??= EncodedImage.Load(data);
+                        image ??= EncodedImage.Load(data!);
                     }
                     catch (Exception e) when (e is Egami.EgamiException or InvalidDataException or NotSupportedException or ArgumentException)
                     {

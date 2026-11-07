@@ -369,6 +369,21 @@ public sealed class ChartPlot
     /// <summary>The data labels for all the plot's series that have none of their own; c: charts only.</summary>
     public ChartDataLabels DataLabels => new(Classic["dLbls"], false);
 
+    /// <summary>How the high-low lines draw.</summary>
+    internal ChartFormat HighLowFormat => new(Classic["hiLowLines"]);
+
+    /// <summary>How the drop lines draw.</summary>
+    internal ChartFormat DropLinesFormat => new(Classic["dropLines"]);
+
+    /// <summary>How the up bars draw.</summary>
+    internal ChartFormat UpBarsFormat => new(Classic["upDownBars"]["upBars"]);
+
+    /// <summary>How the down bars draw.</summary>
+    internal ChartFormat DownBarsFormat => new(Classic["upDownBars"]["downBars"]);
+
+    /// <summary>The space between up and down bars, as a percentage of a bar's width.</summary>
+    internal int? UpDownGapWidth => Classic["upDownBars"].Int("gapWidth");
+
     internal XElement Element { get; }
 
     internal IEnumerable<XElement> SeriesElements() => Element.Elements(Element.Name.Namespace + (chart.IsExtended ? "series" : "ser"));

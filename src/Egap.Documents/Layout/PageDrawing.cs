@@ -8,6 +8,8 @@ using Egami.Fonts;
 using Egami.Fonts.Layout;
 using Egami.Pixels;
 
+using Egap.Documents.Charts;
+
 using EgamiBorderStyle = Egap.Documents.BorderStyle;
 
 namespace Egap.Documents.Layout;
@@ -25,6 +27,7 @@ internal static class PageDrawing
     // running header is embedded once, not once per page. ImageData compares by its bytes' memory, so pictures that share
     // a file (a DOCX media part used twice) share the entry too.
     private static readonly ConditionalWeakTable<Document, ConcurrentDictionary<ImageData, EncodedImage>> Images = [];
+    private static readonly ConditionalWeakTable<Document, FontProvider> Fonts = [];
 
     public static void Draw(PageLayout page, Canvas canvas, LayoutDrawObserver? observer)
     {
@@ -257,6 +260,9 @@ internal static class PageDrawing
             case Picture picture when picture.Image.Bytes.Length > 0:
                 DrawImage(canvas, picture.Document, picture.Image, rect);
                 break;
+            case Island { Kind: IslandKind.Chart, Chart: { } chart } island when island.Fallback is null || ChartRenderer.Draws(chart):
+                DrawChart(canvas, island, chart, rect);
+                break;
             case Island { Fallback: { } fallback } island:
                 DrawImage(canvas, island.Document, fallback, rect);
                 break;
@@ -418,6 +424,15 @@ internal static class PageDrawing
     }
 
     /// <summary>Draws an image the file stores, decoding it with Egami's codecs; one Egami cannot decode is left out.</summary>
+    /// <summary>The font chain of a document's last layout, for what draws later than it lays out.</summary>
+    internal static void RememberFonts(Document document, FontProvider fonts) => Fonts.AddOrUpdate(document, fonts);
+
+    private static void DrawChart(Canvas canvas, Island island, Chart chart, RectF rect)
+    {
+        Fonts.TryGetValue(island.Document, out FontProvider? fonts);
+        chart.Draw(canvas, rect, new ChartDrawOptions { Theme = island.Document.Theme, Provider = fonts, Host = ChartHost.Word });
+    }
+
     private static void DrawImage(Canvas canvas, Document document, ImageData image, RectF rect)
     {
         try

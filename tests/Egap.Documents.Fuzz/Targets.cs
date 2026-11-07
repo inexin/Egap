@@ -240,6 +240,12 @@ internal static class Targets
         {
             Egap.Documents.Charts.Chart chart = Egap.Documents.Charts.Chart.Load(input, new DocumentLimits { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 16 * 1024 * 1024 });
             Walk(chart, 0, new HashSet<object>(ReferenceEqualityComparer.Instance));
+            using (Egami.Raster<Egami.Pixels.Rgba8> picture = Egami.Raster.Create(240, 150, new Egami.Pixels.Rgba8(255, 255, 255, 255)))
+            using (Egami.Drawing.RasterCanvas<Egami.Pixels.Rgba8> canvas = new(picture))
+            {
+                chart.Draw(canvas, new Egami.Drawing.RectF(0, 0, 240, 150));
+            }
+
             chart.Title.Text = "Edited";
             chart.HasLegend = !chart.HasLegend;
             foreach (Egap.Documents.Charts.ChartSeries series in chart.Series)

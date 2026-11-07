@@ -47,6 +47,9 @@ internal sealed class SheetFonts
     /// <summary>The widest of the digits 0 to 9 in the normal font, in whole pixels at 96 dpi, as Excel measures it.</summary>
     public int MaxDigitWidth { get; }
 
+    /// <summary>The font chain, for charts.</summary>
+    public FontProvider Provider => provider;
+
     /// <summary>The fallback for characters the chosen fonts lack.</summary>
     public FontFallback Fallback => provider.Fallback;
 

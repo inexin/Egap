@@ -16,6 +16,7 @@ internal sealed class SheetPdfExporter : IPageTagger
     private readonly SheetPdfOptions options;
     private readonly Dictionary<(Worksheet Sheet, int Row, int Column), PdfStructureElement> cells = [];
     private readonly HashSet<(Worksheet Sheet, int Row, int Column)> drawn = [];
+    private readonly Dictionary<ChartSheetPage, PdfStructureElement> chartFigures = [];
     private readonly Dictionary<SheetDrawing, PdfStructureElement> figures = [];
     private PdfCanvas? canvas;
 
@@ -54,7 +55,24 @@ internal sealed class SheetPdfExporter : IPageTagger
                 }
             }
 
-            if (layout.Pages.Count == 0)
+            foreach (ChartSheetPage page in layout.ChartPages)
+            {
+                PdfPage pdfPage = pdf.Pages.AddBlank(new PdfRectangle(0, 0, page.Width, page.Height));
+                using PdfCanvas pageCanvas = new(pdfPage);
+                if (options.IsTagged && chartFigures.TryGetValue(page, out PdfStructureElement? figure))
+                {
+                    pageCanvas.BeginTag(figure);
+                    page.Draw(pageCanvas);
+                    pageCanvas.EndTag();
+                    pdfPage.Dictionary["Tabs"] = PdfName.Get("S");
+                }
+                else
+                {
+                    page.Draw(pageCanvas);
+                }
+            }
+
+            if (layout.Pages.Count == 0 && layout.ChartPages.Count == 0)
             {
                 // Nothing to print still makes a valid file: one empty page of the first sheet's paper.
                 (double width, double height) = PaperSizes.Get(book.Worksheets.Count > 0 ? book.Worksheets[0].PageSetup.PaperSize : null);
@@ -153,13 +171,22 @@ internal sealed class SheetPdfExporter : IPageTagger
 
             foreach (SheetDrawing drawing in sheet.Drawings)
             {
-                if (drawing.Kind == SheetDrawingKind.Picture && drawing.ImageData is not null)
+                if ((drawing.Kind == SheetDrawingKind.Picture && drawing.ImageData is not null) || drawing.Chart is not null)
                 {
                     PdfStructureElement figure = section.Add(PdfStructureType.Figure);
                     figure.AlternateText = string.IsNullOrWhiteSpace(drawing.Description) ? (drawing.Name.Length > 0 ? drawing.Name : "Picture") : drawing.Description;
                     figures[drawing] = figure;
                 }
             }
+        }
+
+        foreach (ChartSheetPage page in layout.ChartPages)
+        {
+            PdfStructureElement section = root.Add(PdfStructureType.Sect);
+            section.Dictionary["T"] = PdfString.FromText(page.Sheet.Name);
+            PdfStructureElement figure = section.Add(PdfStructureType.Figure);
+            figure.AlternateText = page.Sheet.Name;
+            chartFigures[page] = figure;
         }
     }
 

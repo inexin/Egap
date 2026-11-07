@@ -32,6 +32,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- `Chart.Draw` draws a chart on any Egami canvas, with `ChartDrawOptions` for the theme, fonts and culture: column, bar, line,
+  area, pie, doughnut, scatter, bubble, radar, stock and combined charts, laid out to the rules read from Excel. A DOCX chart
+  now draws through it on pages and in PDFs, where before it showed the picture saved with it, if any. A 3D chart, a surface,
+  a pie of pie and the `cx:` kinds keep their picture for now. `ChartDrawOptions.Host` follows Excel's defaults or Word's;
+  a Word document's pages use Word's.
 - A package part whose XML declaration trips .NET's XML reader now gives a `DocumentException`, as other malformed XML does,
   and no longer an `ArgumentOutOfRangeException`.
 - Charts: `Egap.Documents.Charts` reads, edits, creates and saves chart parts of both kinds, `c:` (column, bar, line, area,
@@ -143,6 +148,9 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- Printing draws charts: a sheet's charts on its pages, in its PDFs and images, and each visible chart sheet on a page of its
+  own after the sheets when the whole workbook prints (`SheetPrintLayout.ChartPages`, `ChartSheetPage`). A chart made in code
+  and not refreshed yet prints from its cells.
 - Charts: `SheetDrawing.Chart` and `Workbook.ChartSheets` give the chart model on sheets and chart sheets, of both kinds,
   so a chart can be edited. `Drawings.AddChart` makes any type, from a range of cells if you like, and `RefreshChart` fills
   a chart's values from the cells it names, through Excel's hidden names for `cx:` charts. Saving refreshes each chart

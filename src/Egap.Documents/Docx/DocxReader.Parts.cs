@@ -28,54 +28,7 @@ internal sealed partial class DocxReader
             return;
         }
 
-        Theme theme = document.Theme;
-        if ((string?)root.Attribute("name") is { } name)
-        {
-            theme.Name = name;
-        }
-
-        XElement? elements = root.Element(Ns.A + "themeElements");
-        if (elements?.Element(Ns.A + "clrScheme") is { } scheme)
-        {
-            (string Name, ThemeColor Color)[] slots =
-            [
-                ("dk1", ThemeColor.Dark1), ("lt1", ThemeColor.Light1), ("dk2", ThemeColor.Dark2), ("lt2", ThemeColor.Light2),
-                ("accent1", ThemeColor.Accent1), ("accent2", ThemeColor.Accent2), ("accent3", ThemeColor.Accent3),
-                ("accent4", ThemeColor.Accent4), ("accent5", ThemeColor.Accent5), ("accent6", ThemeColor.Accent6),
-                ("hlink", ThemeColor.Hyperlink), ("folHlink", ThemeColor.FollowedHyperlink),
-            ];
-            foreach ((string slot, ThemeColor color) in slots)
-            {
-                XElement? value = scheme.Element(Ns.A + slot)?.Elements().FirstOrDefault();
-                string? hex = value?.Name.LocalName switch
-                {
-                    "srgbClr" => (string?)value.Attribute("val"),
-                    "sysClr" => (string?)value.Attribute("lastClr"),
-                    _ => null,
-                };
-                if (DocxProperties.ParseHex(hex) is Rgba8 rgb)
-                {
-                    theme.SetColor(color, rgb);
-                }
-            }
-        }
-
-        if (elements?.Element(Ns.A + "fontScheme") is { } fonts)
-        {
-            XElement? major = fonts.Element(Ns.A + "majorFont");
-            XElement? minor = fonts.Element(Ns.A + "minorFont");
-            theme.MajorLatinFont = Typeface(major, "latin") ?? theme.MajorLatinFont;
-            theme.MinorLatinFont = Typeface(minor, "latin") ?? theme.MinorLatinFont;
-            theme.MajorEastAsiaFont = Typeface(major, "ea") ?? theme.MajorEastAsiaFont;
-            theme.MinorEastAsiaFont = Typeface(minor, "ea") ?? theme.MinorEastAsiaFont;
-            theme.MajorComplexScriptFont = Typeface(major, "cs") ?? theme.MajorComplexScriptFont;
-            theme.MinorComplexScriptFont = Typeface(minor, "cs") ?? theme.MinorComplexScriptFont;
-        }
-
-        static string? Typeface(XElement? font, string script)
-        {
-            return (string?)font?.Element(Ns.A + script)?.Attribute("typeface");
-        }
+        document.Theme.Read(root);
     }
 
     private void ReadStylesAndNumbering()

@@ -67,6 +67,7 @@ internal sealed partial class Paginator
         if (!Caches.TryGetValue(document, out LayoutCache? cache) || !ReferenceEquals(cache.Settings, options?.Fonts))
         {
             FontProvider provider = new(document, options?.Fonts);
+            PageDrawing.RememberFonts(document, provider);
             cache = new LayoutCache(options?.Fonts, provider, new ParagraphBridge(provider, document));
             Caches.AddOrUpdate(document, cache);
         }

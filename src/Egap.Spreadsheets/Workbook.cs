@@ -195,14 +195,14 @@ public sealed partial class Workbook
     /// The visible sheets laid out on pages as Excel prints the entire workbook, sheet after sheet; see
     /// <see cref="Worksheet.Paginate(SheetPrintOptions?)"/>.
     /// </summary>
-    public SheetPrintLayout Paginate(SheetPrintOptions? options = null) => SheetPrintLayout.Create(this, VisibleSheets, options);
+    public SheetPrintLayout Paginate(SheetPrintOptions? options = null) => SheetPrintLayout.Create(this, VisibleSheets, options, chartSheets: true);
 
     /// <summary>Writes the visible sheets' printed pages to a PDF file, as Excel's export of the entire workbook does.</summary>
     /// <exception cref="ArgumentException">The path is null or empty.</exception>
     public void SaveAsPdf(string path, SheetPdfOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
-        Printing.SheetPdf.Save(this, VisibleSheets, path, null, options);
+        Printing.SheetPdf.Save(this, VisibleSheets, path, null, options, chartSheets: true);
     }
 
     /// <summary>Writes the visible sheets' printed pages as a PDF to a stream, which is left open.</summary>
@@ -210,7 +210,7 @@ public sealed partial class Workbook
     public void SaveAsPdf(Stream stream, SheetPdfOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
-        Printing.SheetPdf.Save(this, VisibleSheets, null, stream, options);
+        Printing.SheetPdf.Save(this, VisibleSheets, null, stream, options, chartSheets: true);
     }
 
     internal IEnumerable<Worksheet> VisibleSheets => Worksheets.Where(s => s.Visibility == SheetVisibility.Visible);

@@ -308,6 +308,12 @@ Egap.Spreadsheets.ChartSheet.Chart.get -> Egap.Documents.Charts.Chart?
 Egap.Spreadsheets.ChartSheet.Name.get -> string!
 Egap.Spreadsheets.ChartSheet.RefreshChart() -> void
 Egap.Spreadsheets.ChartSheet.Visibility.get -> Egap.Spreadsheets.SheetVisibility
+Egap.Spreadsheets.ChartSheetPage
+Egap.Spreadsheets.ChartSheetPage.Draw(Egami.Drawing.Canvas! canvas) -> void
+Egap.Spreadsheets.ChartSheetPage.Height.get -> double
+Egap.Spreadsheets.ChartSheetPage.Render(double dpi = 96) -> Egami.Raster<Egami.Pixels.Rgba8>!
+Egap.Spreadsheets.ChartSheetPage.Sheet.get -> Egap.Spreadsheets.ChartSheet!
+Egap.Spreadsheets.ChartSheetPage.Width.get -> double
 Egap.Spreadsheets.ComparisonOperator
 Egap.Spreadsheets.ComparisonOperator.Between = 0 -> Egap.Spreadsheets.ComparisonOperator
 Egap.Spreadsheets.ComparisonOperator.Equal = 2 -> Egap.Spreadsheets.ComparisonOperator
@@ -672,6 +678,7 @@ Egap.Spreadsheets.SheetPdfOptions.Title.init -> void
 Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility.get -> bool
 Egap.Spreadsheets.SheetPdfOptions.UniversalAccessibility.init -> void
 Egap.Spreadsheets.SheetPrintLayout
+Egap.Spreadsheets.SheetPrintLayout.ChartPages.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.ChartSheetPage!>!
 Egap.Spreadsheets.SheetPrintLayout.FontSubstitutions.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.FontSubstitution!>!
 Egap.Spreadsheets.SheetPrintLayout.Pages.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.SheetPage!>!
 Egap.Spreadsheets.SheetPrintOptions
