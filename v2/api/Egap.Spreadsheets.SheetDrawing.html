@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SheetDrawing | Egap ">
       
-      <meta name="description" content="A picture, shape, chart or other object on a sheet&#39;s drawing layer. Its place and size and its name and alternative text can be changed, and a picture&#39;s image replaced; everything else about it is kept as the file had it.">
+      <meta name="description" content="A picture, shape, chart or other object on a sheet&#39;s drawing layer. Its place and size and its name and alternative text can be changed, a picture&#39;s image replaced and a chart edited; everything else about it is kept as the file had it.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Spreadsheets_SheetDrawing" data-uid="Egap.Spreadsheets.SheetDrawing" class="text-break">
-Class SheetDrawing  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L48"><i class="bi bi-code-slash"></i></a>
+Class SheetDrawing  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -98,7 +98,7 @@ Class SheetDrawing  <a class="header-action link-secondary" title="View source" 
   </div>
 
   <div class="markdown summary"><p>A picture, shape, chart or other object on a sheet's drawing layer. Its place and size and its name and alternative
-text can be changed, and a picture's image replaced; everything else about it is kept as the file had it.</p>
+text can be changed, a picture's image replaced and a chart edited; everything else about it is kept as the file had it.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -155,7 +155,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_AnchorKind" data-uid="Egap.Spreadsheets.SheetDrawing.AnchorKind">
   AnchorKind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L67"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the object is fixed to the sheet.</p>
@@ -183,11 +183,43 @@ text can be changed, and a picture's image replaced; everything else about it is
 
 
 
+  <a id="Egap_Spreadsheets_SheetDrawing_Chart_" data-uid="Egap.Spreadsheets.SheetDrawing.Chart*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetDrawing_Chart" data-uid="Egap.Spreadsheets.SheetDrawing.Chart">
+  Chart
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The chart, for a chart object; null for other objects, and for a chart whose part cannot be read, which stays as it was.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Chart? Chart { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.Chart.html">Chart</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_SheetDrawing_Description_" data-uid="Egap.Spreadsheets.SheetDrawing.Description*"></a>
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_Description" data-uid="Egap.Spreadsheets.SheetDrawing.Description">
   Description
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The alternative text, or null.</p>
@@ -219,7 +251,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_From" data-uid="Egap.Spreadsheets.SheetDrawing.From">
   From
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The top-left corner, for objects fixed to cells.</p>
@@ -251,7 +283,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_Height" data-uid="Egap.Spreadsheets.SheetDrawing.Height">
   Height
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L85"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The height in EMUs, for objects fixed to one cell or placed absolutely.</p>
@@ -283,7 +315,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_ImageContentType" data-uid="Egap.Spreadsheets.SheetDrawing.ImageContentType">
   ImageContentType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The image's content type, such as <code>image/png</code>; null for other objects.</p>
@@ -315,7 +347,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_ImageData" data-uid="Egap.Spreadsheets.SheetDrawing.ImageData">
   ImageData
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A picture's image file: PNG, JPEG, GIF, BMP, TIFF, EMF or WMF; null for other objects.</p>
@@ -353,7 +385,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_Kind" data-uid="Egap.Spreadsheets.SheetDrawing.Kind">
   Kind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>What the object is.</p>
@@ -385,7 +417,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_Name" data-uid="Egap.Spreadsheets.SheetDrawing.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L82"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The object's name, as Excel's selection pane shows it.</p>
@@ -417,7 +449,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_Text" data-uid="Egap.Spreadsheets.SheetDrawing.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A shape's text, or null; read only.</p>
@@ -449,7 +481,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_To" data-uid="Egap.Spreadsheets.SheetDrawing.To">
   To
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L73"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The bottom-right corner, for objects fixed to two cells.</p>
@@ -481,7 +513,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_Width" data-uid="Egap.Spreadsheets.SheetDrawing.Width">
   Width
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L76"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The width in EMUs, for objects fixed to one cell or placed absolutely.</p>
@@ -513,7 +545,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_X" data-uid="Egap.Spreadsheets.SheetDrawing.X">
   X
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L76"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The left edge in EMUs from the sheet's corner, for absolutely placed objects.</p>
@@ -545,7 +577,7 @@ text can be changed, and a picture's image replaced; everything else about it is
 
   <h3 id="Egap_Spreadsheets_SheetDrawing_Y" data-uid="Egap.Spreadsheets.SheetDrawing.Y">
   Y
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L79"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The top edge in EMUs from the sheet's corner, for absolutely placed objects.</p>
@@ -573,11 +605,49 @@ text can be changed, and a picture's image replaced; everything else about it is
 
 
 
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Spreadsheets_SheetDrawing_RefreshChart_" data-uid="Egap.Spreadsheets.SheetDrawing.RefreshChart*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetDrawing_RefreshChart" data-uid="Egap.Spreadsheets.SheetDrawing.RefreshChart">
+  RefreshChart()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L146"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads the cells a chart's references name into the values the chart keeps. Saving does this for a chart that changed;
+call it when cells changed and you read <a class="xref" href="Egap.Spreadsheets.SheetDrawing.html#Egap_Spreadsheets_SheetDrawing_Chart">Chart</a>'s values yourself.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RefreshChart()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The object is not a chart, or is no longer on a sheet.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L48" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetDrawings.cs/#L52" class="edit-link">Edit this page</a>
         </div>
 
 

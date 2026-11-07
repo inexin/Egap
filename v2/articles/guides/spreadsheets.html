@@ -560,8 +560,9 @@ criteria, are written back as they were. Rules without a <code>Priority</code> g
 <h2 id="notes-hyperlinks-and-pictures">Notes, hyperlinks and pictures</h2>
 <p><code>sheet.Comments</code> holds notes (Excel's classic comments), <code>sheet.Hyperlinks</code> links to web addresses, files and places in
 the workbook, and <code>sheet.Drawings</code> the pictures, shapes and charts on the sheet. Pictures can be added and moved, and a
-picture's image replaced; shapes, charts, groups and other objects keep everything but their place, name and alternative
-text as the file had them.</p>
+picture's image replaced; charts are read, edited and made through <code>drawing.Chart</code> and <code>sheet.Drawings.AddChart</code>, as
+<a href="charts.html">Charts</a> shows; shapes, groups and other objects keep everything but their place, name and alternative text as
+the file had them.</p>
 <pre><code class="lang-csharp">using Egap.Spreadsheets;
 
 Workbook book = Workbook.Load(&quot;report.xlsx&quot;);
@@ -583,8 +584,8 @@ foreach (SheetDrawing drawing in sheet.Drawings)
 book.Save(&quot;report.xlsx&quot;);
 </code></pre>
 <p>Parts nothing changed in are saved byte for byte: a table, the notes or the drawing layer are written again only when
-something in them changed. Charts, pivot tables, slicers, macros and other parts the model does not hold are always
-kept as they were.</p>
+something in them changed, and a chart only when you changed that chart. Pivot tables, slicers, macros and other parts the
+model does not hold are always kept as they were.</p>
 <h2 id="streaming-large-files">Streaming large files</h2>
 <p><code>SheetReader</code> and <code>SheetWriter</code> stream rows through XLSX files and CSV text without building a workbook, so memory stays
 the same however many rows there are. Use them for exports and imports of more rows than fit comfortably in memory; use

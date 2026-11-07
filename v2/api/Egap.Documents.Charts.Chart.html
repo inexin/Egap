@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Chart | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Chart | Egap ">
+      
+      <meta name="description" content="A chart, as Excel, Word and PowerPoint keep one in its own part: a DrawingML chart (c:) or one of the newer types (cx:). You can read, change and write what the properties name; everything else in the part stays as the file had it, and a chart you did not change is saved byte for byte. Charts come from a workbook&#39;s drawings, from a Word document&#39;s islands, or from .">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Documents_Charts_Chart.md&amp;value=---%0Auid%3A%20Egap.Documents.Charts.Chart%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Documents.Charts.Chart">
+
+
+
+  <h1 id="Egap_Documents_Charts_Chart" data-uid="Egap.Documents.Charts.Chart" class="text-break">
+Class Chart  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Documents.html">Documents</a>.<a class="xref" href="Egap.Documents.Charts.html">Charts</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Documents.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A chart, as Excel, Word and PowerPoint keep one in its own part: a DrawingML chart (<code>c:</code>) or one of the newer types
+(<code>cx:</code>). You can read, change and write what the properties name; everything else in the part stays as the file had
+it, and a chart you did not change is saved byte for byte. Charts come from a workbook's drawings, from a Word document's
+islands, or from <a class="xref" href="Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Create_Egap_Documents_Charts_ChartType_System_Boolean_">Create(ChartType, bool)</a>.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Chart</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">Chart</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Documents_Charts_Chart_Axes_" data-uid="Egap.Documents.Charts.Chart.Axes*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Axes" data-uid="Egap.Documents.Charts.Chart.Axes">
+  Axes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The chart's axes, in the order the file has them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ChartAxis&gt; Axes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.Charts.ChartAxis.html">ChartAxis</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_DisplayBlanksAs_" data-uid="Egap.Documents.Charts.Chart.DisplayBlanksAs*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_DisplayBlanksAs" data-uid="Egap.Documents.Charts.Chart.DisplayBlanksAs">
+  DisplayBlanksAs
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L189"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How blank cells draw, or null when not said; c: charts only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartBlanks? DisplayBlanksAs { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartBlanks.html">ChartBlanks</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Format_" data-uid="Egap.Documents.Charts.Chart.Format*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Format" data-uid="Egap.Documents.Charts.Chart.Format">
+  Format
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L151"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The look of the chart's background.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartFormat Format { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartFormat.html">ChartFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_HasLegend_" data-uid="Egap.Documents.Charts.Chart.HasLegend*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_HasLegend" data-uid="Egap.Documents.Charts.Chart.HasLegend">
+  HasLegend
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the chart has a legend.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasLegend { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_HasTitle_" data-uid="Egap.Documents.Charts.Chart.HasTitle*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_HasTitle" data-uid="Egap.Documents.Charts.Chart.HasTitle">
+  HasTitle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L103"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the chart has a title.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasTitle { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_IsExtended_" data-uid="Egap.Documents.Charts.Chart.IsExtended*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_IsExtended" data-uid="Egap.Documents.Charts.Chart.IsExtended">
+  IsExtended
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether this is one of the newer types kept in a <code>cx:</code> part.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsExtended { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Legend_" data-uid="Egap.Documents.Charts.Chart.Legend*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Legend" data-uid="Egap.Documents.Charts.Chart.Legend">
+  Legend
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L148"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The chart's legend. Writing to it gives the chart one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartLegend Legend { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartLegend.html">ChartLegend</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_PlotAreaFormat_" data-uid="Egap.Documents.Charts.Chart.PlotAreaFormat*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_PlotAreaFormat" data-uid="Egap.Documents.Charts.Chart.PlotAreaFormat">
+  PlotAreaFormat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L157"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The look of the plot's background.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartFormat PlotAreaFormat { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartFormat.html">ChartFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_PlotAreaLayout_" data-uid="Egap.Documents.Charts.Chart.PlotAreaLayout*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_PlotAreaLayout" data-uid="Egap.Documents.Charts.Chart.PlotAreaLayout">
+  PlotAreaLayout
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Where the plot sits when placed by hand; c: charts only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartLayout PlotAreaLayout { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartLayout.html">ChartLayout</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_PlotVisibleOnly_" data-uid="Egap.Documents.Charts.Chart.PlotVisibleOnly*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_PlotVisibleOnly" data-uid="Egap.Documents.Charts.Chart.PlotVisibleOnly">
+  PlotVisibleOnly
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether cells in hidden rows and columns are left out, or null when not said; c: charts only. Excel's default is true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? PlotVisibleOnly { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Plots_" data-uid="Egap.Documents.Charts.Chart.Plots*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Plots" data-uid="Egap.Documents.Charts.Chart.Plots">
+  Plots
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The chart's plots, in the order the file has them. A combination chart has more than one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ChartPlot&gt; Plots { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.Charts.ChartPlot.html">ChartPlot</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_RoundedCorners_" data-uid="Egap.Documents.Charts.Chart.RoundedCorners*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_RoundedCorners" data-uid="Egap.Documents.Charts.Chart.RoundedCorners">
+  RoundedCorners
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L163"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether corners are rounded, or null when not said; c: charts only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool? RoundedCorners { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Series_" data-uid="Egap.Documents.Charts.Chart.Series*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Series" data-uid="Egap.Documents.Charts.Chart.Series">
+  Series
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L100"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>All the series of all the plots, by their drawing order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ChartSeries&gt; Series { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Documents.Charts.ChartSeries.html">ChartSeries</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Style_" data-uid="Egap.Documents.Charts.Chart.Style*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Style" data-uid="Egap.Documents.Charts.Chart.Style">
+  Style
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of the chart's style, 1 to 48, or null when not said; c: charts only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? Style { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_TextFormat_" data-uid="Egap.Documents.Charts.Chart.TextFormat*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_TextFormat" data-uid="Egap.Documents.Charts.Chart.TextFormat">
+  TextFormat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How the chart's text looks, unless an element says otherwise.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartTextFormat TextFormat { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartTextFormat.html">ChartTextFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Title_" data-uid="Egap.Documents.Charts.Chart.Title*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Title" data-uid="Egap.Documents.Charts.Chart.Title">
+  Title
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The chart's title. Writing to it gives the chart one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartTitle Title { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartTitle.html">ChartTitle</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Type_" data-uid="Egap.Documents.Charts.Chart.Type*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Type" data-uid="Egap.Documents.Charts.Chart.Type">
+  Type
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>What the chart draws: its first plot's type, or <a class="xref" href="Egap.Documents.Charts.ChartType.html#Egap_Documents_Charts_ChartType_Unknown">Unknown</a> with no plot.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartType Type { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartType.html">ChartType</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_View3D_" data-uid="Egap.Documents.Charts.Chart.View3D*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_View3D" data-uid="Egap.Documents.Charts.Chart.View3D">
+  View3D
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L226"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The 3D view; c: charts only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartView3D View3D { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartView3D.html">ChartView3D</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Documents_Charts_Chart_AddPlot_" data-uid="Egap.Documents.Charts.Chart.AddPlot*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_AddPlot_Egap_Documents_Charts_ChartType_System_Boolean_" data-uid="Egap.Documents.Charts.Chart.AddPlot(Egap.Documents.Charts.ChartType,System.Boolean)">
+  AddPlot(ChartType, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L303"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a plot of another type to make a combination chart, on the first plot's axes or, with
+<code class="paramref">secondaryAxis</code>, on a value axis of its own on the right.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChartPlot AddPlot(ChartType type, bool secondaryAxis = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="Egap.Documents.Charts.ChartType.html">ChartType</a></dt>
+    <dd></dd>
+    <dt><code>secondaryAxis</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.ChartPlot.html">ChartPlot</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>This is a cx: chart, which has one plot, or the chart has no axes to share.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The type cannot share axes with others: pie, doughnut, surface, stock and the cx: types.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Clone_" data-uid="Egap.Documents.Charts.Chart.Clone*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Clone" data-uid="Egap.Documents.Charts.Chart.Clone">
+  Clone()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L295"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A copy of the chart that shares nothing with this one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Chart Clone()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.Chart.html">Chart</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Create_" data-uid="Egap.Documents.Charts.Chart.Create*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Create_Egap_Documents_Charts_ChartType_System_Boolean_" data-uid="Egap.Documents.Charts.Chart.Create(Egap.Documents.Charts.ChartType,System.Boolean)">
+  Create(ChartType, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L241"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A new chart of a type, with empty axes where the type has them, a legend where Excel gives it one, and no series.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Chart Create(ChartType type, bool threeD = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <a class="xref" href="Egap.Documents.Charts.ChartType.html">ChartType</a></dt>
+    <dd><p>What the chart draws.</p>
+</dd>
+    <dt><code>threeD</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Draws it in 3D: column, bar, line, area, pie and surface charts.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.Chart.html">Chart</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The type has no 3D form, or it is <a class="xref" href="Egap.Documents.Charts.ChartType.html#Egap_Documents_Charts_ChartType_Unknown">Unknown</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Load_" data-uid="Egap.Documents.Charts.Chart.Load*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Load_System_IO_Stream_Egap_Documents_DocumentLimits_" data-uid="Egap.Documents.Charts.Chart.Load(System.IO.Stream,Egap.Documents.DocumentLimits)">
+  Load(Stream, DocumentLimits?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L259"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a chart part: the XML of a <code>c:chartSpace</code> or <code>cx:chartSpace</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Chart Load(Stream stream, DocumentLimits? limits = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>limits</code> <a class="xref" href="Egap.Documents.DocumentLimits.html">DocumentLimits</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Charts.Chart.html">Chart</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The data is not a chart part.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Documents_Charts_Chart_Save_" data-uid="Egap.Documents.Charts.Chart.Save*"></a>
+
+  <h3 id="Egap_Documents_Charts_Chart_Save_System_IO_Stream_" data-uid="Egap.Documents.Charts.Chart.Save(System.IO.Stream)">
+  Save(Stream)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L288"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the chart part.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Save(Stream stream)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/Chart.cs/#L28" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

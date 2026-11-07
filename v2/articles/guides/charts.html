@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Charts | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Charts | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/charts.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="charts">Charts</h1>
+
+<p><code>Egap.Documents.Charts</code> is one model for the charts in workbooks and Word documents: <code>c:</code> parts (column, bar, line, area,
+pie, doughnut, scatter, bubble, radar, stock, surface and their 3D forms) and <code>cx:</code> parts (waterfall, histogram, Pareto,
+box and whisker, treemap, sunburst, funnel and region map). It reads, edits, creates and saves them. Egap does not draw
+charts yet.</p>
+<p>The model is a view of the part's XML, so what it has no property for stays in the file, and a chart nobody changed is
+saved with the bytes it came with. Excel checks: the tests compare the model with what Excel reports for every type, and
+Excel opens the charts made and edited here without a repair.</p>
+<h2 id="reading">Reading</h2>
+<p><code>SheetDrawing.Chart</code> is the chart of an object on a sheet, and <code>Workbook.ChartSheets</code> lists the sheets that hold only a chart.</p>
+<pre><code class="lang-csharp">using Egap.Documents.Charts;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+foreach (SheetDrawing drawing in book.Worksheets[0].Drawings)
+{
+    if (drawing.Chart is { } chart)
+    {
+        Console.WriteLine($&quot;{drawing.Name}: {chart.Type}, {chart.Series.Count} series&quot;);
+        foreach (ChartSeries series in chart.Series)
+        {
+            Console.WriteLine($&quot;  {series.Name}: {series.Values.Reference}&quot;);
+        }
+    }
+}
+
+foreach (ChartSheet page in book.ChartSheets)
+{
+    Console.WriteLine($&quot;{page.Name}: {page.Chart?.Type}&quot;);
+}
+</code></pre>
+<p>A chart has plots, and each plot has series and axes: a combination chart has more than one plot. <code>chart.Series</code> lists all
+the series in their order. A property a file does not set reads as null, which leaves the choice to whoever draws the chart.</p>
+<p>A series keeps a reference to its cells and the values saved with it. Excel saves no values in a <code>cx:</code> chart, and points its
+references at hidden defined names; <code>RefreshChart</code> follows them and reads the cells.</p>
+<pre><code class="lang-csharp">using Egap.Documents.Charts;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+SheetDrawing drawing = book.Worksheets[0].Drawings[0];
+drawing.RefreshChart();
+IReadOnlyList&lt;double?&gt; values = drawing.Chart!.Series[0].Values.Numbers;
+</code></pre>
+<p>Refreshing follows Excel: a chart skips hidden rows and columns unless <code>PlotVisibleOnly</code> is false. Saving does it for any
+chart that changed.</p>
+<h2 id="editing">Editing</h2>
+<pre><code class="lang-csharp">using Egap.Documents.Charts;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+Chart chart = book.Worksheets[0].Drawings[0].Chart!;
+
+chart.Title.Text = &quot;Sales by month&quot;;
+chart.Legend.Position = ChartLegendPosition.Bottom;
+
+ChartAxis value = chart.Axes.First(a =&gt; a.Kind == ChartAxisKind.Value);
+value.Minimum = 0;
+value.MajorUnit = 10;
+value.Title.Text = &quot;Units&quot;;
+
+ChartSeries first = chart.Series[0];
+first.Format.FillColor = ChartColor.FromHex(&quot;2F5597&quot;);
+first.DataLabels.ShowValue = true;
+
+chart.Plots[0].Series.Add(&quot;Sheet1!$D$2:$D$7&quot;, &quot;Sheet1!$A$2:$A$7&quot;, &quot;Sheet1!$D$1&quot;);
+book.Save(&quot;edited.xlsx&quot;);
+</code></pre>
+<p>Labels in levels, taken from more than one column, must keep their reference, because a chart part has no way to write
+levels without one. Setting <code>Reference</code> to null on them throws; call <code>SetText</code> first to write one level. A series's values,
+bubble sizes and error amounts must be numbers, so <code>SetText</code> throws on them.</p>
+<p>A property only one kind of part has reads as null on the other, and setting it there does nothing: a <code>cx:</code> chart has no
+markers, plot groupings or manual layouts, and a <code>c:</code> chart has no bins or subtotals.</p>
+<h2 id="making-a-chart">Making a chart</h2>
+<p><code>AddChart</code> reads a range: a first row of text gives the names, leading text columns the categories and each other column a
+series. A scatter chart takes its X values from the first column, and a bubble chart reads X, then Y and size for each series.</p>
+<pre><code class="lang-csharp">using Egap.Documents.Charts;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet[&quot;A1&quot;].Value = &quot;Month&quot;;
+sheet[&quot;B1&quot;].Value = &quot;North&quot;;
+sheet[&quot;A2&quot;].Value = &quot;Jan&quot;;
+sheet[&quot;B2&quot;].Value = 12;
+sheet[&quot;A3&quot;].Value = &quot;Feb&quot;;
+sheet[&quot;B3&quot;].Value = 18;
+
+SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse(&quot;D1:J15&quot;), RangeAddress.Parse(&quot;A1:B3&quot;));
+drawing.Name = &quot;Sales&quot;;
+drawing.Chart!.Title.Text = &quot;Sales&quot;;
+
+// Add a line on an axis of its own to the same chart.
+ChartPlot line = drawing.Chart.AddPlot(ChartType.Line, secondaryAxis: true);
+line.Series.Add(&quot;Sheet1!$B$2:$B$3&quot;, &quot;Sheet1!$A$2:$A$3&quot;, &quot;Sheet1!$B$1&quot;);
+book.Save(&quot;chart.xlsx&quot;);
+</code></pre>
+<h2 id="word-documents">Word documents</h2>
+<p>A chart in a Word document is an <code>Island</code> of kind <code>IslandKind.Chart</code>, with the same model in <code>island.Chart</code>. A chart of the
+<code>cx:</code> types comes in as the picture Word saves with it, and cannot be added yet. A chart made here has its values in the part
+and no embedded workbook, so Word shows it but offers no data to edit.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Charts;
+using Egap.Documents.Docx;
+
+Document document = DocxFormat.Load(&quot;report.docx&quot;);
+foreach (Island island in document.Descendants&lt;Island&gt;())
+{
+    if (island.Chart is { } read)
+    {
+        read.Title.Text = &quot;Revised&quot;;
+    }
+}
+
+Chart chart = Chart.Create(ChartType.Pie);
+chart.Plots[0].Series.Add(&quot;Share&quot;, [&quot;North&quot;, &quot;South&quot;], [60, 40]);
+document.Sections[0].Body.AddParagraph(&quot;Share by region: &quot;).Inlines.Add(new Island(document, chart, 360, 216));
+DocxFormat.Save(document, &quot;revised.docx&quot;);
+</code></pre>
+<h2 id="on-its-own">On its own</h2>
+<p><code>Chart.Load</code> and <code>Chart.Save</code> read and write the part itself, the XML of a <code>c:chartSpace</code> or <code>cx:chartSpace</code>. <code>Chart.Create</code>
+makes one of any type, and <code>chart.Clone()</code> copies one. Corrupt input gives a <code>DocumentException</code>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/charts.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

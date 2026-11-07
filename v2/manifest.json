@@ -265,6 +265,664 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.Chart.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.Chart.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.Chart",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.Chart.yml\" sourcestartlinenumber=\"1\">A chart, as Excel, Word and PowerPoint keep one in its own part: a DrawingML chart (<code>c:</code>) or one of the newer types\n(<code>cx:</code>). You can read, change and write what the properties name; everything else in the part stays as the file had\nit, and a chart you did not change is saved byte for byte. Charts come from a workbook's drawings, from a Word document's\nislands, or from <xref href=\"Egap.Documents.Charts.Chart.Create(Egap.Documents.Charts.ChartType%2cSystem.Boolean)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartAxis.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartAxis.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartAxis",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartAxis.yml\" sourcestartlinenumber=\"1\">An axis of a chart.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartAxisKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartAxisKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartAxisKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartAxisKind.yml\" sourcestartlinenumber=\"1\">What an axis measures.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartAxisPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartAxisPosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartAxisPosition",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartAxisPosition.yml\" sourcestartlinenumber=\"1\">Which side of the plot an axis sits on.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartBarShape.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartBarShape.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartBarShape",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartBarShape.yml\" sourcestartlinenumber=\"1\">The shape of a 3D bar.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartBinning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartBinning.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartBinning",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartBinning.yml\" sourcestartlinenumber=\"1\">How a histogram or Pareto chart groups its values into bins.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartBlanks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartBlanks.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartBlanks",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartBlanks.yml\" sourcestartlinenumber=\"1\">How a chart draws cells with no value.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartColor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartColor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartColor",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartColor.yml\" sourcestartlinenumber=\"1\">A colour in a chart: fixed or from the theme, with the changes DrawingML applies to it, in order.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartColorChange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartColorChange.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartColorChange",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartColorChange.yml\" sourcestartlinenumber=\"1\">One change DrawingML applies to a colour, such as <code>lumMod</code> 0.75 or <code>alpha</code> 0.5.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartColorKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartColorKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartColorKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartColorKind.yml\" sourcestartlinenumber=\"1\">How a <xref href=\"Egap.Documents.Charts.ChartColor\" data-throw-if-not-resolved=\"false\"></xref> is given.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartCrosses.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartCrosses.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartCrosses",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartCrosses.yml\" sourcestartlinenumber=\"1\">Where an axis crosses the other one, short of a set value.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartData.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartData",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartData.yml\" sourcestartlinenumber=\"1\">One set of a chart's values: a reference to cells, such as <code>Sheet1!$B$2:$B$5</code>, and the values the file keeps for it,\nwhich is what a chart draws from when the cells are not at hand. Values are read from the file each time, so hold on to\na list you read more than once.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartDataLabels.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartDataLabels.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartDataLabels",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartDataLabels.yml\" sourcestartlinenumber=\"1\">What is shown as data labels, for a series, one point or a whole plot.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartErrorBarDirection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartErrorBarDirection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartErrorBarDirection",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartErrorBarDirection.yml\" sourcestartlinenumber=\"1\">The direction of error bars.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartErrorBarSides.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartErrorBarSides.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartErrorBarSides",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartErrorBarSides.yml\" sourcestartlinenumber=\"1\">Which side of a point error bars show.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartErrorBarValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartErrorBarValue.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartErrorBarValue",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartErrorBarValue.yml\" sourcestartlinenumber=\"1\">What sets the length of error bars.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartErrorBars.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartErrorBars.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartErrorBars",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartErrorBars.yml\" sourcestartlinenumber=\"1\">A series's error bars.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartFillKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartFillKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartFillKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartFillKind.yml\" sourcestartlinenumber=\"1\">What fills a chart element.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartFormat.yml\" sourcestartlinenumber=\"1\">The fill and outline of a chart element. What this does not name, such as shadows, stays as the file had it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartGradientStop.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartGradientStop.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartGradientStop",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartGradientStop.yml\" sourcestartlinenumber=\"1\">One colour of a gradient.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartGrouping.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartGrouping.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartGrouping",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartGrouping.yml\" sourcestartlinenumber=\"1\">How the series of a plot sit against each other.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartLabelPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartLabelPosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartLabelPosition",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartLabelPosition.yml\" sourcestartlinenumber=\"1\">Where a data label sits against its point.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartLayout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartLayout.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartLayout",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartLayout.yml\" sourcestartlinenumber=\"1\">Where an element sits when placed by hand, as fractions of the chart. Null values leave it to the chart.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartLayoutMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartLayoutMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartLayoutMode",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartLayoutMode.yml\" sourcestartlinenumber=\"1\">What a manual layout's left and top measure from.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartLegend.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartLegend.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartLegend",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartLegend.yml\" sourcestartlinenumber=\"1\">A chart's legend.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartLegendPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartLegendPosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartLegendPosition",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartLegendPosition.yml\" sourcestartlinenumber=\"1\">Where a chart's legend sits.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartLineDash.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartLineDash.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartLineDash",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartLineDash.yml\" sourcestartlinenumber=\"1\">A line's dashes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartLineKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartLineKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartLineKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartLineKind.yml\" sourcestartlinenumber=\"1\">What draws a chart element's outline or a line.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartMarker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartMarker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartMarker",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartMarker.yml\" sourcestartlinenumber=\"1\">A series's or point's marker.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartMarkerSymbol.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartMarkerSymbol.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartMarkerSymbol",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartMarkerSymbol.yml\" sourcestartlinenumber=\"1\">A marker's shape.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartParentLabels.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartParentLabels.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartParentLabels",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartParentLabels.yml\" sourcestartlinenumber=\"1\">How a treemap draws the labels of its parent categories.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartPlot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartPlot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartPlot",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartPlot.yml\" sourcestartlinenumber=\"1\">One group of series drawn the same way against the same axes. A plain chart has one plot; a combination chart has more.\nProperties a type does not use read as null. On a cx: chart only the series, axes and gap width apply; setting the rest does nothing.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartPoint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartPoint.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartPoint",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartPoint.yml\" sourcestartlinenumber=\"1\">What one point of a series does differently.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartRadarStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartRadarStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartRadarStyle",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartRadarStyle.yml\" sourcestartlinenumber=\"1\">How a radar chart draws its series.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartScatterStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartScatterStyle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartScatterStyle",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartScatterStyle.yml\" sourcestartlinenumber=\"1\">How a scatter chart draws its series.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartSeries.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartSeries.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartSeries",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartSeries.yml\" sourcestartlinenumber=\"1\">One series of a chart.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartSeriesCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartSeriesCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartSeriesCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartSeriesCollection.yml\" sourcestartlinenumber=\"1\">The series of one plot of a chart.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartTextFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartTextFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartTextFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartTextFormat.yml\" sourcestartlinenumber=\"1\">How a chart element's text looks. What this does not name stays as the file had it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartTickLabelPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartTickLabelPosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartTickLabelPosition",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartTickLabelPosition.yml\" sourcestartlinenumber=\"1\">Where tick labels sit.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartTickMark.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartTickMark.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartTickMark",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartTickMark.yml\" sourcestartlinenumber=\"1\">Where tick marks sit against an axis.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartTimeUnit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartTimeUnit.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartTimeUnit",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartTimeUnit.yml\" sourcestartlinenumber=\"1\">A unit of a date axis.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartTitle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartTitle.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartTitle",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartTitle.yml\" sourcestartlinenumber=\"1\">A chart's title, or an axis's.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartTrendline.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartTrendline.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartTrendline",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartTrendline.yml\" sourcestartlinenumber=\"1\">A series's trendline.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartTrendlineType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartTrendlineType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartTrendlineType",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartTrendlineType.yml\" sourcestartlinenumber=\"1\">The curve a trendline fits.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartType",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartType.yml\" sourcestartlinenumber=\"1\">What a chart or one of its plots draws.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartView3D.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartView3D.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartView3D",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartView3D.yml\" sourcestartlinenumber=\"1\">A 3D chart's view.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Comment.yml",
       "output": {
         ".html": {
@@ -8119,6 +8777,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ChartSheet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ChartSheet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ChartSheet",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ChartSheet.yml\" sourcestartlinenumber=\"1\">A sheet that holds one chart and no cells. Its chart can be read and edited; the sheet itself is kept as the file had it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.ComparisonOperator.yml",
       "output": {
         ".html": {
@@ -8521,7 +9193,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.SheetDrawing",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetDrawing.yml\" sourcestartlinenumber=\"1\">A picture, shape, chart or other object on a sheet's drawing layer. Its place and size and its name and alternative\ntext can be changed, and a picture's image replaced; everything else about it is kept as the file had it.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetDrawing.yml\" sourcestartlinenumber=\"1\">A picture, shape, chart or other object on a sheet's drawing layer. Its place and size and its name and alternative\ntext can be changed, a picture's image replaced and a chart edited; everything else about it is kept as the file had it.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9036,6 +9708,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/getting-started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/guides/charts.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/charts.html"
         }
       },
       "version": ""
