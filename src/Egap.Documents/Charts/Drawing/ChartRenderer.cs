@@ -325,6 +325,13 @@ internal sealed partial class ChartRenderer
             "+mj-lt" or "+mj-ea" or "+mj-cs" => theme.MajorLatinFont,
             _ => font,
         };
+
+        // A file can name no font at all, in the chart or in its theme.
+        if (string.IsNullOrWhiteSpace(font))
+        {
+            font = string.IsNullOrWhiteSpace(theme.MinorLatinFont) ? "Calibri" : theme.MinorLatinFont;
+        }
+
         double? asked = format.Size;
         Rgba8 color = format.Color is { } own ? palette.Resolve(own) : all.Color is { } shared ? palette.Resolve(shared) : palette.IsDarkStyle ? palette.Light : palette.Dark;
         return new Look(

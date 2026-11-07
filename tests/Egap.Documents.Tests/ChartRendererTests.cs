@@ -96,6 +96,14 @@ public sealed class ChartRendererTests
     }
 
     [Fact]
+    public void AnEmptyFontNameDrawsInTheThemesFont()
+    {
+        Chart chart = Made(ChartType.Column);
+        chart.TextFormat.FontName = "";
+        Assert.True(Ink(chart) > 500);
+    }
+
+    [Fact]
     public void ASmallPlotStopsAtOneStep()
     {
         Chart chart = Made(ChartType.Scatter);
