@@ -317,7 +317,17 @@ internal sealed class OpcPart(OpcPackage package, string name, byte[] data)
         try
         {
             using XmlReader reader = XmlReader.Create(new MemoryStream(Data, writable: false), package.XmlSettings);
-            XDocument xml = XDocument.Load(reader, LoadOptions.PreserveWhitespace);
+            XDocument xml;
+            try
+            {
+                xml = XDocument.Load(reader, LoadOptions.PreserveWhitespace);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                // .NET's XML reader lets this out when a declaration's encoding cannot be switched to.
+                throw new DocumentException($"Part {Name} is not well-formed XML: {e.Message}", e);
+            }
+
             StrictNamespaces.ToTransitional(xml, package.Limits.MaxDepth);
             return xml;
         }
