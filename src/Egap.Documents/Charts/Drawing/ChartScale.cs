@@ -73,7 +73,7 @@ internal readonly record struct ChartScale(double Minimum, double Maximum, doubl
         else if (low >= 0)
         {
             bottom = span / high > 1.0 / 6 || span == 0 ? 0 : low - (span / 2);
-            top = high + (headroom * span);
+            top = high + (headroom * (span == 0 ? high : span));
         }
         else if (high <= 0)
         {

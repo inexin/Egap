@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.Numerics;
+using System.Text.RegularExpressions;
 
 using Egami.Drawing;
+using Egami.Fonts.Layout;
 using Egami.Pixels;
 
 namespace Egap.Documents.Charts;
@@ -20,18 +22,130 @@ internal sealed partial class ChartRenderer
     private const float LineKeyLength = 18.4f;
     private const float FlatLineKeyLength = 26;
     private const float LineKeyGap = 1.5f;
+    private const float WordLineKeyExtra = 1.9f;
     private const float KeyMarkerSize = 7;
     private const float FlatLineEntryExtra = 5.1f;
     private const float LegendLines = 1.48f;
+    private const float LegendWidthShare = 0.41f;
+    private const float LabelWidthShare = 0.18f;
+
+    /// <summary>The data labels of the last draw, with their boxes.</summary>
+    internal List<(string Text, RectF Box)> DrawnLabels { get; } = [];
+
+    /// <summary>The ends of the error bars of the last draw.</summary>
+    internal List<(Vector2 A, Vector2 B)> DrawnErrorBars { get; } = [];
+
+    /// <summary>A text broken into lines of at most a width: after spaces and hyphens, and inside a word wider than that, as Office does.</summary>
+    private string Wrapped(string text, Look look, float limit)
+    {
+        if (Measure(text, look).Width <= limit)
+        {
+            return text;
+        }
+
+        List<string> lines = [];
+        string line = "";
+        foreach (Match piece in Pieces().Matches(text))
+        {
+            string candidate = line + piece.Value;
+            if (Measure(candidate.TrimEnd(), look).Width <= limit)
+            {
+                line = candidate;
+                continue;
+            }
+
+            if (line.Length > 0)
+            {
+                lines.Add(line.TrimEnd());
+                line = "";
+            }
+
+            foreach (char c in piece.Value)
+            {
+                if (line.Length > 0 && Measure((line + c).TrimEnd(), look).Width > limit)
+                {
+                    lines.Add(line);
+                    line = "";
+                }
+
+                line += c;
+            }
+        }
+
+        if (line.Trim().Length > 0)
+        {
+            lines.Add(line.TrimEnd());
+        }
+
+        return string.Join('\n', lines);
+    }
+
+    [GeneratedRegex(@"[^ -]*[ -]+|[^ -]+", RegexOptions.CultureInvariant)]
+    private static partial Regex Pieces();
+
+    /// <summary>A wrapped text cut to some lines, the last ending in an ellipsis when something was left out.</summary>
+    private string CutTo(string wrapped, int most, Look look, float limit)
+    {
+        string[] lines = wrapped.Split('\n');
+        if (lines.Length <= most)
+        {
+            return wrapped;
+        }
+
+        string last = lines[most - 1].TrimEnd();
+        while (last.Length > 1 && Measure(last + "\u2026", look).Width > limit)
+        {
+            last = last[..^1].TrimEnd();
+        }
+
+        return string.Join('\n', lines[..(most - 1)].Append(last + "\u2026"));
+    }
+
+    /// <summary>A data label's text: under a fifth of the chart wide, and a little over half of it high, with an ellipsis for what is left out.</summary>
+    private string LabelLines(string text, Look look)
+    {
+        string wrapped = Wrapped(text, look, Math.Max(width * LabelWidthShare, 1));
+        int most = Math.Max((int)(height * 0.55f / Math.Max(Measure("0", look).Height, 1)), 1);
+        string[] lines = wrapped.Split('\n');
+        return lines.Length <= most ? wrapped : string.Join('\n', lines[..most]) + "\u2026";
+    }
+
+    /// <summary>Whether a label fits inside a slice of a pie, as the best fit wants, with room to spare along the slice's arc.</summary>
+    private static bool FitsInSlice(float sweep, float radius, float w, float h) => sweep * radius * 0.7f >= 2 * Math.Max(w, h);
+
+    /// <summary>Text lying centred on its lines from a corner.</summary>
+    private void DrawLines(string text, Look look, Vector2 corner, float w)
+    {
+        if (text.Length > 0)
+        {
+            canvas.DrawTextLayout(Lay(text, look, w + 1, TextAlign.Center), corner);
+        }
+    }
 
     /// <summary>The labels that apply to a series: its own, or its plot's.</summary>
     private static ChartDataLabels LabelsFor(ChartSeries series, ChartPlot plot) => series.HasDataLabels ? series.DataLabels : plot.DataLabels;
 
     private static bool AnyLabelText(ChartDataLabels labels) =>
-        !labels.Deleted && (labels.ShowValue || labels.ShowCategoryName || labels.ShowSeriesName || labels.ShowPercent || labels.ShowBubbleSize);
+        !labels.Deleted && (labels.ShowValue || labels.ShowCategoryName || labels.ShowSeriesName || labels.ShowPercent || labels.ShowBubbleSize || labels.CustomText(_ => null) is not null);
 
     private string LabelText(ChartDataLabels labels, ChartSeries series, ChartPlot plot, int index)
     {
+        // Text of the label's own, with its fields filled in.
+        double? own = index < series.Values.Count ? series.Values.Numbers[index] : null;
+        if (labels.CustomText(field => field switch
+        {
+            "VALUE" or "YVALUE" => own is { } v ? Number(v, labels.NumberFormat ?? series.Values.FormatCode) : "",
+            "PERCENTAGE" => own is { } v && series.Values.Numbers.Sum(n => n is > 0 ? n.Value : 0) is > 0 and var sum ? Number(v / sum, labels.NumberFormat ?? "0%") : "",
+            "SERIESNAME" => SeriesName(series),
+            "CATEGORYNAME" or "XVALUE" => series.Categories.IsNumeric
+                ? (index < series.Categories.Numbers.Count && series.Categories.Numbers[index] is { } c ? Number(c, series.Categories.FormatCode) : "")
+                : index < series.Categories.Text.Count ? series.Categories.Text[index] ?? "" : "",
+            _ => null,
+        }) is { } custom)
+        {
+            return custom;
+        }
+
         List<string> parts = [];
         if (labels.ShowSeriesName)
         {
@@ -68,15 +182,14 @@ internal sealed partial class ChartRenderer
             parts.Add(Number(size, labels.NumberFormat ?? series.BubbleSizes.FormatCode));
         }
 
-        _ = plot;
-        return string.Join(labels.Separator ?? (labels.ShowPercent && plot.Type is ChartType.Pie or ChartType.Doughnut ? "; " : ", "), parts);
+        string separator = culture.Equals(CultureInfo.InvariantCulture) ? ", " : culture.TextInfo.ListSeparator + " ";
+        return string.Join(labels.Separator ?? (labels.ShowPercent && plot.Type is ChartType.Pie or ChartType.Doughnut ? "; " : separator), parts);
     }
 
     private void DrawDataLabels(ChartBoxes boxes)
     {
         foreach (ChartPlot plot in plots)
         {
-            (DrawnAxis Across, DrawnAxis Up)? pair = Pair(boxes, plot);
             foreach (ChartSeries series in Ordered(plot))
             {
                 IReadOnlyDictionary<int, ChartDataLabels> own = series.PointLabels;
@@ -88,8 +201,9 @@ internal sealed partial class ChartRenderer
 
                 for (int i = 0; i < series.Values.Count; i++)
                 {
+                    // Only what the plot drew gets a label: a pie draws one series, and a point past its axis's end draws nothing.
                     ChartDataLabels labels = own.TryGetValue(i, out ChartDataLabels? point) ? point : shared;
-                    if (!AnyLabelText(labels) || i >= series.Values.Numbers.Count || series.Values.Numbers[i] is not { } value || !double.IsFinite(value))
+                    if (!AnyLabelText(labels) || !marks.TryGetValue((series, i), out Mark mark))
                     {
                         continue;
                     }
@@ -101,173 +215,100 @@ internal sealed partial class ChartRenderer
                     }
 
                     Look look = LookOf(labels.TextFormat.Size is null && shared.TextFormat.Size is not null ? shared.TextFormat : labels.TextFormat, baseSize);
+                    text = LabelLines(text, look);
                     (float w, float h) = Measure(text, look);
-                    Vector2? center = plot.Type switch
+                    if (LabelPlace(mark, plot, boxes.Plot, labels.Position, w, h) is { } at)
                     {
-                        ChartType.Pie or ChartType.PieOfPie or ChartType.BarOfPie => PieLabel(plot, series, i, boxes.Plot, labels.Position, w, h),
-                        ChartType.Doughnut => RingLabel(plot, series, i, boxes.Plot),
-                        ChartType.Radar => null,
-                        _ when pair is { } p => CartesianLabel(plot, series, i, value, p.Across, p.Up, boxes.Plot, labels.Position, w, h),
-                        _ => null,
-                    };
-                    if (center is { } at)
-                    {
-                        RectF box = new(at.X - (w / 2), at.Y - (h / 2), w, h);
+                        // A label stays inside the chart.
+                        RectF box = new(Math.Clamp(at.X - (w / 2), 0, Math.Max(width - w, 0)), Math.Clamp(at.Y - (h / 2), 0, Math.Max(height - h, 0)), w, h);
                         if (Fill(labels.Format, box, NoColor) is { } fill)
                         {
                             canvas.FillRect(box, fill);
                         }
 
-                        DrawTextAt(text, look, new Vector2(box.X, box.Y));
+                        DrawLines(text, look, new Vector2(box.X, box.Y), w);
+                        DrawnLabels.Add((text, box));
                     }
                 }
             }
         }
     }
 
-    private static Vector2? CartesianLabel(ChartPlot plot, ChartSeries series, int index, double value, DrawnAxis across, DrawnAxis up, RectF area, ChartLabelPosition? position, float w, float h)
+    /// <summary>The middle of a label on what its plot drew; null when the point lies off the plot.</summary>
+    private static Vector2? LabelPlace(Mark mark, ChartPlot plot, RectF area, ChartLabelPosition? position, float w, float h)
     {
         const float Gap = 3;
-        bool xy = plot.Type is ChartType.Scatter or ChartType.Bubble;
-        IReadOnlyList<double?> xs = xy && series.Categories.IsNumeric ? series.Categories.Numbers : [];
-        double x = index < xs.Count && xs[index] is { } gx ? gx : index + 1;
-        ChartGrouping grouping = plot.Grouping ?? ChartGrouping.Standard;
-        bool stacked = grouping is ChartGrouping.Stacked or ChartGrouping.PercentStacked;
-        double from = 0;
-        double to = value;
-        if (stacked)
+        switch (mark.Kind)
         {
-            double sum = 0;
-            double total = 0;
-            foreach (ChartSeries s in Ordered(plot))
-            {
-                double v = index < s.Values.Count ? Math.Abs(s.Values.Numbers[index] ?? 0) : 0;
-                total += v;
-            }
-
-            foreach (ChartSeries s in Ordered(plot))
-            {
-                if (s.Order >= series.Order)
+            case MarkKind.Slice:
                 {
-                    break;
+                    Vector2 unit = new((float)Math.Cos(mark.Middle), (float)Math.Sin(mark.Middle));
+                    if (position is null or ChartLabelPosition.BestFit && FitsInSlice(mark.Sweep, mark.Radius, w, h))
+                    {
+                        return mark.At + (unit * mark.Radius * 0.65f);
+                    }
+
+                    return position switch
+                    {
+                        ChartLabelPosition.Center => mark.At + (unit * mark.Radius * 0.5f),
+                        ChartLabelPosition.InsideEnd => mark.At + (unit * mark.Radius * 0.8f),
+                        _ => mark.At + (unit * (mark.Radius + 4)) + new Vector2(unit.X * w / 2, unit.Y * h / 2),
+                    };
                 }
 
-                sum += index < s.Values.Count ? s.Values.Numbers[index] ?? 0 : 0;
-            }
+            case MarkKind.Ring:
+                return mark.At + (new Vector2((float)Math.Cos(mark.Middle), (float)Math.Sin(mark.Middle)) * (mark.Inner + mark.Radius) / 2);
+            case MarkKind.Radar:
+                {
+                    // Outward along its spoke.
+                    Vector2 out_ = mark.At - mark.Center;
+                    Vector2 unit = out_.LengthSquared() > 0.01f ? Vector2.Normalize(out_) : new Vector2(0, -1);
+                    return mark.At + new Vector2(unit.X * ((w / 2) + Gap), unit.Y * ((h / 2) + Gap));
+                }
 
-            double scale = grouping == ChartGrouping.PercentStacked && total > 0 ? 1 / total : 1;
-            from = sum * scale;
-            to = (sum + value) * scale;
-        }
+            case MarkKind.Area:
+                {
+                    float middle = (mark.Start + mark.End) / 2;
+                    return mark.Across ? new Vector2(mark.Along, middle) : new Vector2(middle, mark.Along);
+                }
 
-        float along = xy ? across.Value(x, area) : across.Category(index, area);
-        if (plot.Type is ChartType.Column or ChartType.Bar && !stacked)
-        {
-            along += ClusterShift(plot, series, across, area);
-        }
+            case MarkKind.Bar:
+                {
+                    bool stacked = plot.Grouping is ChartGrouping.Stacked or ChartGrouping.PercentStacked;
+                    const float OutsideGap = 5;
+                    float towards = mark.End >= mark.Start ? 1 : -1;
+                    float thick = mark.Across ? h : w;
+                    float where = (position ?? (stacked ? ChartLabelPosition.Center : ChartLabelPosition.OutsideEnd)) switch
+                    {
+                        ChartLabelPosition.Center => (mark.Start + mark.End) / 2,
+                        ChartLabelPosition.InsideEnd => mark.End - (towards * ((thick / 2) + Gap)),
+                        ChartLabelPosition.InsideBase => mark.Start + (towards * ((thick / 2) + Gap)),
+                        ChartLabelPosition.OutsideEnd => mark.End + (towards * ((thick / 2) + OutsideGap)),
+                        _ => mark.End,
+                    };
+                    return mark.Across ? new Vector2(mark.Along, where) : new Vector2(where, mark.Along);
+                }
 
-        float start = up.Value(from, area);
-        float end = up.Value(to, area);
-        bool bars = plot.Type is ChartType.Column or ChartType.Bar;
-        bool area2 = plot.Type == ChartType.Area;
-        ChartLabelPosition place = position ?? (bars ? (stacked ? ChartLabelPosition.Center : ChartLabelPosition.OutsideEnd) : area2 ? ChartLabelPosition.Center : ChartLabelPosition.Right);
-        bool sideways = plot.Type == ChartType.Bar;
-        float towards = end >= start ? 1 : -1;
-        float thick = sideways ? w : h;
-        float where = place switch
-        {
-            ChartLabelPosition.Center => (start + end) / 2,
-            ChartLabelPosition.InsideEnd => end - (towards * ((thick / 2) + Gap)),
-            ChartLabelPosition.InsideBase => start + (towards * ((thick / 2) + Gap)),
-            ChartLabelPosition.OutsideEnd => end + (towards * ((thick / 2) + Gap)),
-            _ => end,
-        };
-        if (!bars)
-        {
-            Vector2 at = across.Horizontal ? new Vector2(along, end) : new Vector2(end, along);
-            return place switch
-            {
-                ChartLabelPosition.Left => at - new Vector2((w / 2) + Gap + 2, 0),
-                ChartLabelPosition.Top => at - new Vector2(0, (h / 2) + Gap),
-                ChartLabelPosition.Bottom => at + new Vector2(0, (h / 2) + Gap),
-                ChartLabelPosition.Center => area2 ? (across.Horizontal ? new Vector2(along, where) : new Vector2(where, along)) : at,
-                _ => at + new Vector2((w / 2) + Gap + 2, 0),
-            };
-        }
-
-        return sideways ? new Vector2(where, along) : new Vector2(along, where);
-    }
-
-    private static float ClusterShift(ChartPlot plot, ChartSeries series, DrawnAxis across, RectF area)
-    {
-        List<ChartSeries> all = Ordered(plot);
-        int slots = all.Count;
-        if (slots <= 1)
-        {
-            return 0;
-        }
-
-        double overlap = Math.Clamp((plot.Overlap ?? 0) / 100.0, -1, 1);
-        double gap = Math.Clamp((plot.GapWidth ?? 150) / 100.0, 0, 5);
-        float bar = (float)(across.Band(area) / (slots - ((slots - 1) * overlap) + gap));
-        float total = (float)(bar * (slots - ((slots - 1) * overlap)));
-        int slot = all.FindIndex(s => s.Order == series.Order);
-        float offset = (float)(slot * bar * (1 - overlap)) + (bar / 2) - (total / 2);
-        return plot.Type == ChartType.Bar != across.Model.Reversed ? -offset : offset;
-    }
-
-    private static Vector2? PieLabel(ChartPlot plot, ChartSeries series, int index, RectF area, ChartLabelPosition? position, float w, float h)
-    {
-        IReadOnlyList<double?> values = series.Values.Numbers;
-        double total = values.Sum(v => v is > 0 ? v.Value : 0);
-        if (!(total > 0) || values[index] is not > 0)
-        {
-            return null;
-        }
-
-        double angle = plot.FirstSliceAngle ?? 0;
-        for (int i = 0; i < index; i++)
-        {
-            angle += values[i] is > 0 ? values[i]!.Value / total * 360 : 0;
-        }
-
-        double middle = (angle + (values[index]!.Value / total * 180) - 90) * Math.PI / 180;
-        Vector2 center = new(area.X + (area.Width / 2), area.Y + (area.Height / 2));
-        float radius = area.Width / 2;
-        Vector2 unit = new((float)Math.Cos(middle), (float)Math.Sin(middle));
-        switch (position)
-        {
-            case ChartLabelPosition.Center:
-                return center + (unit * radius * 0.5f);
-            case ChartLabelPosition.InsideEnd:
-                return center + (unit * radius * 0.8f);
             default:
-                return center + (unit * (radius + 4)) + new Vector2(unit.X * w / 2, unit.Y * h / 2);
-        }
-    }
+                {
+                    if (!OnPlot(mark.At, area))
+                    {
+                        return null;
+                    }
 
-    private static Vector2? RingLabel(ChartPlot plot, ChartSeries series, int index, RectF area)
-    {
-        IReadOnlyList<double?> values = series.Values.Numbers;
-        double total = values.Sum(v => v is > 0 ? v.Value : 0);
-        if (!(total > 0) || values[index] is not > 0)
-        {
-            return null;
+                    // Beside a point, the label stands clear of a marker; a bubble's starts from its edge.
+                    const float Beside = 8;
+                    float r = mark.Radius;
+                    return position switch
+                    {
+                        ChartLabelPosition.Left => mark.At - new Vector2((w / 2) + Beside + r, 0),
+                        ChartLabelPosition.Top => mark.At - new Vector2(0, (h / 2) + Gap + r),
+                        ChartLabelPosition.Bottom => mark.At + new Vector2(0, (h / 2) + Gap + r),
+                        ChartLabelPosition.Center => mark.At,
+                        _ => mark.At + new Vector2((w / 2) + Beside + r, 0),
+                    };
+                }
         }
-
-        double angle = plot.FirstSliceAngle ?? 0;
-        for (int i = 0; i < index; i++)
-        {
-            angle += values[i] is > 0 ? values[i]!.Value / total * 360 : 0;
-        }
-
-        List<ChartSeries> all = Ordered(plot);
-        float outer = area.Width / 2;
-        float hole = outer * Math.Clamp(plot.HoleSize ?? 10, 0, 90) / 100f;
-        float ring = (outer - hole) / all.Count;
-        float radius = hole + ((all.FindIndex(s => s.Order == series.Order) + 0.5f) * ring);
-        double middle = (angle + (values[index]!.Value / total * 180) - 90) * Math.PI / 180;
-        return new Vector2(area.X + outer + ((float)Math.Cos(middle) * radius), area.Y + outer + ((float)Math.Sin(middle) * radius));
     }
 
     private void DrawTrendlines(ChartSeries series, DrawnAxis across, DrawnAxis up, RectF area)
@@ -292,12 +333,13 @@ internal sealed partial class ChartRenderer
         bool xy = !across.IsCategories;
         IReadOnlyList<double?> ys = series.Values.Numbers;
         IReadOnlyList<double?> xs = xy && series.Categories.IsNumeric ? series.Categories.Numbers : [];
+        double[] places = xy ? [] : across.Places;
         List<(double X, double Y)> data = [];
         for (int i = 0; i < ys.Count; i++)
         {
             if (ys[i] is { } y && double.IsFinite(y))
             {
-                double x = i < xs.Count && xs[i] is { } given ? given : i + 1;
+                double x = i < xs.Count && xs[i] is { } given ? given : i < places.Length ? places[i] + 1 : i + 1;
                 if (double.IsFinite(x))
                 {
                     data.Add((x, y));
@@ -480,20 +522,27 @@ internal sealed partial class ChartRenderer
         };
     }
 
-    /// <summary>The ends of a point's Y error bar: nothing when the series has none.</summary>
-    private static IEnumerable<(double Down, double Up)> ErrorRange(ChartSeries series, int index, double value)
+    /// <summary>The ends of a point's error bars along one axis, in the point's own units: nothing when the series has none.</summary>
+    private static IEnumerable<(double Low, double High)> ErrorRange(ChartSeries series, int index, double value, IReadOnlyList<double?> values, bool xy, bool alongX)
     {
         foreach (ChartErrorBars bars in series.ErrorBars)
         {
-            if (bars.Direction == ChartErrorBarDirection.X)
+            if ((xy && bars.Direction == ChartErrorBarDirection.X) == alongX)
             {
-                continue;
+                yield return ErrorEnds(bars, values, index, value);
             }
-
-            (double down, double up) = ErrorAmounts(bars, series.Values.Numbers, index, value);
-            yield return (value - down, value + up);
         }
     }
+
+    /// <summary>The ends of a point's error bar. A standard deviation's stand around the series's mean, the same for every point, as Excel draws them.</summary>
+    private static (double Low, double High) ErrorEnds(ChartErrorBars bars, IReadOnlyList<double?> values, int index, double value)
+    {
+        (double down, double up) = ErrorAmounts(bars, values, index, value);
+        double middle = bars.ValueType == ChartErrorBarValue.StandardDeviation && Finite(values).Count > 0 ? Finite(values).Average() : value;
+        return (middle - down, middle + up);
+    }
+
+    private static List<double> Finite(IReadOnlyList<double?> values) => [.. values.Where(v => v is { } n && double.IsFinite(n)).Select(v => v!.Value)];
 
     private static (double Down, double Up) ErrorAmounts(ChartErrorBars bars, IReadOnlyList<double?> values, int index, double value)
     {
@@ -518,7 +567,7 @@ internal sealed partial class ChartRenderer
 
     private static double Deviation(IReadOnlyList<double?> values)
     {
-        List<double> numbers = [.. values.Where(v => v is not null).Select(v => v!.Value)];
+        List<double> numbers = Finite(values);
         if (numbers.Count < 2)
         {
             return 0;
@@ -530,11 +579,11 @@ internal sealed partial class ChartRenderer
 
     private static double Error(IReadOnlyList<double?> values)
     {
-        int count = values.Count(v => v is not null);
+        int count = Finite(values).Count;
         return count < 2 ? 0 : Deviation(values) / Math.Sqrt(count);
     }
 
-    private void DrawErrorBars(ChartSeries series, DrawnAxis across, DrawnAxis up, RectF area, ChartPlot plot)
+    private void DrawErrorBars(ChartSeries series, DrawnAxis across, DrawnAxis up, RectF area)
     {
         IReadOnlyList<ChartErrorBars> all = series.ErrorBars;
         if (all.Count == 0)
@@ -556,38 +605,33 @@ internal sealed partial class ChartRenderer
             }
 
             bool alongX = bars.Direction == ChartErrorBarDirection.X && xy;
-            IReadOnlyList<double?> source = alongX ? xs : ys;
             for (int i = 0; i < ys.Count; i++)
             {
-                if (ys[i] is not { } y || !double.IsFinite(y))
+                if (ys[i] is not { } y || !double.IsFinite(y) || !marks.TryGetValue((series, i), out Mark mark))
                 {
                     continue;
                 }
 
-                double x = i < xs.Count && xs[i] is { } given ? given : i + 1;
-                float along = xy ? across.Value(x, area) : across.Category(i, area);
-                if (plot.Type is ChartType.Column or ChartType.Bar && (plot.Grouping ?? ChartGrouping.Clustered) == ChartGrouping.Clustered)
-                {
-                    along += ClusterShift(plot, series, across, area);
-                }
-
-                float level = up.Value(y, area);
-                double own = alongX ? x : y;
-                (double down, double upward) = ErrorAmounts(bars, source, i, own);
                 if (alongX)
                 {
-                    Segment(new Vector2(across.Value(x - down, area), level), new Vector2(across.Value(x + upward, area), level), true);
+                    double x = i < xs.Count && xs[i] is { } given ? given : i + 1;
+                    (double from, double to) = ErrorEnds(bars, xs, i, x);
+                    float level = up.Value(mark.Level, area);
+                    Segment(new Vector2(across.Value(from, area), level), new Vector2(across.Value(to, area), level), true);
                 }
                 else
                 {
-                    Vector2 low = across.Horizontal ? new Vector2(along, up.Value(y - down, area)) : new Vector2(up.Value(y - down, area), along);
-                    Vector2 high = across.Horizontal ? new Vector2(along, up.Value(y + upward, area)) : new Vector2(up.Value(y + upward, area), along);
-                    Segment(low, high, !across.Horizontal);
+                    // From the mark's own end: the top of its stack, and as a share where the plot stacks to shares.
+                    (double low, double high) = ErrorEnds(bars, ys, i, y);
+                    float a = up.Value(mark.Level + ((low - y) * mark.Unit), area);
+                    float b = up.Value(mark.Level + ((high - y) * mark.Unit), area);
+                    Segment(Point(across, mark.Along, a), Point(across, mark.Along, b), !across.Horizontal);
                 }
             }
 
             void Segment(Vector2 a, Vector2 b, bool flat)
             {
+                DrawnErrorBars.Add((a, b));
                 canvas.DrawLine(a, b, line.Stroke, line.Color);
                 if (!bars.NoEndCap)
                 {
@@ -654,11 +698,12 @@ internal sealed partial class ChartRenderer
         IReadOnlyList<int> deleted = chart.HasLegend ? chart.Legend.DeletedEntries : [];
         entries = deleted.Count == 0 ? entries : [.. entries.Where((_, i) => !deleted.Contains(i))];
 
-        // A legend at the side reads as the stack does, top series first; a clustered bar chart's reads as its bars do, wherever it is.
+        // A legend at the side reads as the stack does, top series first; a clustered bar chart's reads as its bars do, wherever it is,
+        // and a reversed axis puts the first series on top.
         bool side = chart.HasLegend && chart.Legend.Position is null or ChartLegendPosition.Right or ChartLegendPosition.Left or ChartLegendPosition.TopRight;
         bool stacked = plots.Count == 1 && plots[0].Grouping is ChartGrouping.Stacked or ChartGrouping.PercentStacked;
         if (chart.HasLegend && plots.Count == 1 && !perPointLegend
-            && ((plots[0].Type == ChartType.Bar && (!stacked || side))
+            && ((plots[0].Type == ChartType.Bar && (stacked ? side : !plots[0].Axes.Any(a => a.Kind is ChartAxisKind.Category or ChartAxisKind.Date && a.Reversed)))
                 || (plots[0].Type is ChartType.Column or ChartType.Line or ChartType.Area && stacked && side)))
         {
             entries.Reverse();
@@ -701,6 +746,11 @@ internal sealed partial class ChartRenderer
         float[] widths = [.. entries.Select(e => Measure(e.Text, look).Width + key + LegendPad(key))];
         if (position is ChartLegendPosition.Top or ChartLegendPosition.Bottom)
         {
+            if (word && key <= LegendKey && widths.Sum() <= room - 12)
+            {
+                return (widths.Sum(), step);
+            }
+
             float each = widths.Max() + (key > LegendKey ? FlatLineEntryExtra : FlatEntryExtra);
             int across = Math.Max(1, (int)Math.Floor((room - 12) / Math.Max(each, 1)));
             int rows = (int)Math.Ceiling(entries.Count / (double)Math.Max(across, 1));
@@ -708,10 +758,31 @@ internal sealed partial class ChartRenderer
         }
 
         float full = widths.Max();
-        int perColumn = Math.Max(1, (int)Math.Floor((tall - 12) / step));
+        float most = width * LegendWidthShare;
+        if (full > most)
+        {
+            List<string> wrapped = [.. entries.Select(e => WrappedEntry(e, look, key))];
+            float tallestEntries = 0;
+            foreach (string entry in wrapped)
+            {
+                float next = Measure(entry, look).Height + step - line;
+                if (tallestEntries > 0 && tallestEntries + next > tall)
+                {
+                    break;
+                }
+
+                tallestEntries += next;
+            }
+
+            return (wrapped.Max(t => Measure(t, look).Width) + key + LegendPad(key), tallestEntries);
+        }
+
+        int perColumn = Math.Max(1, (int)Math.Floor((tall - 6) / step));
         int columns = (int)Math.Ceiling(entries.Count / (double)perColumn);
         return (Math.Min(full * columns, room * 0.5f), Math.Min(entries.Count, perColumn) * step);
     }
+
+    private string WrappedEntry(Entry entry, Look look, float key) => Wrapped(entry.Text, look, Math.Max((width * LegendWidthShare) - key - LegendPad(key) - 4, 1));
 
     private static float LegendPad(float key) => key > LegendKey ? 7.4f : 10f;
 
@@ -753,6 +824,16 @@ internal sealed partial class ChartRenderer
 
         int across = Math.Max(1, (int)Math.Floor((box.Width + 0.5f) / Math.Max(each, 1)));
         int rows = Math.Max(1, (int)Math.Floor((box.Height + 0.5f) / step));
+        float[]? own = null;
+        if (word && flat && key <= LegendKey && chart.Legend.Layout.Width is not > 0)
+        {
+            float[] widths = [.. entries.Select(e => Measure(e.Text, look).Width + key + LegendPad(key))];
+            if (widths.Sum() <= box.Width + 0.5f)
+            {
+                own = widths;
+                across = entries.Count;
+            }
+        }
 
         // Sized by hand it fills its box: across when the entries fit on the rows it has, and evenly.
         if (chart.Legend.Layout.Width is > 0 && chart.Legend.Layout.Height is > 0)
@@ -772,17 +853,43 @@ internal sealed partial class ChartRenderer
         }
 
         canvas.Save();
-        canvas.ClipRect(box);
+        float longer = word && !flat && key > LegendKey ? WordLineKeyExtra : 0;
+        canvas.ClipRect(box with { Width = box.Width + longer });
+        bool byHand = chart.Legend.Layout.Width is > 0 && chart.Legend.Layout.Height is > 0;
         float keySize = look.Size * LegendKeyShare;
         float keyGap = look.Size * LegendGapShare;
         float origin = flat ? LegendFlatInset : LegendSideInset;
         bool wide = key > LegendKey;
-        float length = flat ? FlatLineKeyLength : LineKeyLength;
+        float length = (flat ? FlatLineKeyLength : LineKeyLength) + longer;
+        if (!flat && !byHand && each > width * LegendWidthShare)
+        {
+            // Too wide for its share of a narrow chart: each entry wraps, its key on the first line.
+            float down = box.Y;
+            foreach (Entry entry in entries)
+            {
+                string wrapped = WrappedEntry(entry, look, key);
+                if (down > box.Y && down + Measure(wrapped, look).Height + step - line > box.Bottom + 0.5f)
+                {
+                    break;
+                }
+
+                float keyTop = down + ((step - keySize) / 2);
+                float at = box.X + origin;
+                float textAt = wide ? at + LineKeyInset + length + LineKeyGap : at + keyGap + keySize + keyGap;
+                DrawKey(entry, wide ? new RectF(at + LineKeyInset, keyTop, length, keySize) : new RectF(at + keyGap, keyTop, keySize, keySize));
+                DrawTextAt(wrapped, look, new Vector2(textAt, down + ((step - line) / 2)));
+                down += Measure(wrapped, look).Height + step - line;
+            }
+
+            canvas.Restore();
+            return;
+        }
+
         for (int i = 0; i < entries.Count; i++)
         {
             int column = flat ? i % across : i / rows;
             int row = flat ? i / across : i % rows;
-            float x = box.X + origin + (column * each);
+            float x = box.X + origin + (own is null ? column * each : own.Take(column).Sum());
             float y = box.Y + (row * step) + ((step - line) / 2);
             float keyTop = y + ((line - keySize) / 2);
             float textAt;
@@ -828,7 +935,7 @@ internal sealed partial class ChartRenderer
         }
 
         float middle = box.Y + (box.Height / 2);
-        if (LineOf(entry.Format, entry.Color, SeriesLineWidth) is { } line)
+        if (LineOf(entry.Format, entry.Color, entry.Series is null ? 0.75f : SeriesLineWidth) is { } line)
         {
             canvas.DrawLine(new Vector2(box.Left, middle), new Vector2(box.Right, middle), line.Stroke, line.Color);
         }

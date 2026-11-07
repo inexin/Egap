@@ -1,4 +1,6 @@
+using System.Numerics;
 using System.Text;
+using System.Xml.Linq;
 
 using Egami;
 using Egami.Drawing;
@@ -183,6 +185,357 @@ public sealed class ChartRendererTests
         Chart bars = Made(ChartType.Bar);
         bars.Legend.Position = ChartLegendPosition.Bottom;
         Assert.Equal(["East", "South", "North"], new ChartRenderer(bars, null).LegendTexts());
+    }
+
+    private static ChartRenderer Drawn(Chart chart, int width = 360, int height = 216)
+    {
+        using Raster<Rgba8> raster = Raster.Create(width, height, White);
+        using RasterCanvas<Rgba8> canvas = new(raster);
+        ChartRenderer renderer = new(chart, null);
+        renderer.Draw(canvas, new RectF(0, 0, width, height));
+        return renderer;
+    }
+
+    /// <summary>Where a colour runs down one column of a drawn chart.</summary>
+    private static (int Top, int Bottom) RunOf(Chart chart, Rgba8 color, int x, int from, int to)
+    {
+        using Raster<Rgba8> raster = Raster.Create(360, 216, White);
+        using RasterCanvas<Rgba8> canvas = new(raster);
+        chart.Draw(canvas, new RectF(0, 0, 360, 216));
+        int top = -1;
+        int bottom = -1;
+        for (int y = from; y < to; y++)
+        {
+            Rgba8 pixel = raster.Row(y)[x];
+            if (Math.Abs(pixel.R - color.R) < 4 && Math.Abs(pixel.G - color.G) < 4 && Math.Abs(pixel.B - color.B) < 4)
+            {
+                top = top < 0 ? y : top;
+                bottom = y;
+            }
+        }
+
+        return (top, bottom);
+    }
+
+    private static void WithErrorBars(ChartSeries series, string kind, double amount) =>
+        series.Element.Add(new XElement(
+            ChartNs.C + "errBars",
+            new XElement(ChartNs.C + "errValType", new XAttribute("val", kind)),
+            new XElement(ChartNs.C + "val", new XAttribute("val", amount.ToString(System.Globalization.CultureInfo.InvariantCulture)))));
+
+    private static Vector2 Middle(RectF box) => new(box.X + (box.Width / 2), box.Y + (box.Height / 2));
+
+    private static Chart Labelled(ChartType type, ChartGrouping? grouping, params double[][] series)
+    {
+        Chart chart = Chart.Create(type);
+        ChartPlot plot = chart.Plots[0];
+        plot.Grouping = grouping;
+        string[] categories = [.. Enumerable.Range(1, series[0].Length).Select(i => "C" + i.ToString(System.Globalization.CultureInfo.InvariantCulture))];
+        for (int k = 0; k < series.Length; k++)
+        {
+            ChartSeries one = plot.Series.Add("S" + k.ToString(System.Globalization.CultureInfo.InvariantCulture), categories, [.. series[k].Select(v => (double?)v)]);
+            one.DataLabels.ShowValue = true;
+        }
+
+        return chart;
+    }
+
+    [Fact]
+    public void AReversedBarChartPutsItsFirstSeriesOnTop()
+    {
+        // As Excel draws it: the first category and, in each, the first series at the top, with each label beside its own bar.
+        Chart chart = Labelled(ChartType.Bar, ChartGrouping.Clustered, [5, 4], [2, 3]);
+        ChartAxis categories = chart.Plots[0].Axes.First(a => a.Kind == ChartAxisKind.Category);
+        categories.Reversed = true;
+        ChartRenderer renderer = Drawn(chart);
+        RectF five = renderer.DrawnLabels.First(l => l.Text == "5").Box;
+        RectF two = renderer.DrawnLabels.First(l => l.Text == "2").Box;
+        Assert.True(Middle(five).Y < Middle(two).Y);
+        ChartBoxes boxes = renderer.Layout(360, 216);
+        DrawnAxis axis = boxes.Axes.First(a => a.IsCategories);
+        RectF plot = boxes.Plot;
+        Assert.True(Middle(five).Y < axis.Category(0, plot));
+        Assert.True(Middle(two).Y > axis.Category(0, plot));
+
+        // The bars themselves: the first category's upper half is the first series's.
+        Rgba8 first = new ChartPalette(new Document().Theme, 2).Series(0, 2);
+        int x = (int)boxes.Axes.First(a => !a.IsCategories).Value(1, plot);
+        (int top, int bottom) = RunOf(chart, first, x, (int)plot.Top, (int)axis.Category(0, plot));
+        Assert.True(top >= 0 && bottom >= top);
+    }
+
+    [Fact]
+    public void AReversedBarChartsLegendReadsAsItsBarsDo()
+    {
+        Chart chart = Labelled(ChartType.Bar, ChartGrouping.Clustered, [5, 4], [2, 3]);
+        chart.Plots[0].Axes.First(a => a.Kind == ChartAxisKind.Category).Reversed = true;
+        Assert.Equal(["S0", "S1"], new ChartRenderer(chart, null).LegendTexts());
+    }
+
+    [Fact]
+    public void AStackedLabelSitsOnItsOwnPieceOfTheStack()
+    {
+        // 5, -3 and 4 stack positive and negative apart: the 4 spans 5 to 9, not 2 to 6.
+        Chart chart = Labelled(ChartType.Column, ChartGrouping.Stacked, [5], [-3], [4]);
+        ChartRenderer renderer = Drawn(chart);
+        ChartBoxes boxes = renderer.Layout(360, 216);
+        DrawnAxis up = boxes.Axes.First(a => !a.IsCategories);
+        Assert.Equal(up.Value(7, boxes.Plot), Middle(renderer.DrawnLabels.First(l => l.Text == "4").Box).Y, 1f);
+        Assert.Equal(up.Value(-1.5, boxes.Plot), Middle(renderer.DrawnLabels.First(l => l.Text == "-3").Box).Y, 1f);
+    }
+
+    [Fact]
+    public void APercentStackedLabelSitsOnItsOwnPieceOfTheStack()
+    {
+        Chart chart = Labelled(ChartType.Column, ChartGrouping.PercentStacked, [6], [-3], [3]);
+        ChartRenderer renderer = Drawn(chart);
+        ChartBoxes boxes = renderer.Layout(360, 216);
+        DrawnAxis up = boxes.Axes.First(a => !a.IsCategories);
+        Assert.Equal(up.Value(0.625, boxes.Plot), Middle(renderer.DrawnLabels.First(l => l.Text == "3").Box).Y, 1f);
+    }
+
+    [Fact]
+    public void APieLabelsOnlyTheSeriesItDraws()
+    {
+        Chart chart = Labelled(ChartType.Pie, null, [1, 2, 3], [4, 5, 6]);
+        Assert.Equal(["1", "2", "3"], Drawn(chart).DrawnLabels.Select(l => l.Text));
+    }
+
+    [Fact]
+    public void APulledOutSliceTakesItsLabelWithIt()
+    {
+        // Only the first of the two is pulled: the pie shrinks for it, so the other's label comes in with its smaller slice.
+        Chart pulled = Labelled(ChartType.Pie, null, [1, 1]);
+        ChartSeries series = pulled.Plots[0].Series[0];
+        series.DataLabels.Position = ChartLabelPosition.OutsideEnd;
+        series.Element.Add(new XElement(ChartNs.C + "dPt", new XElement(ChartNs.C + "idx", new XAttribute("val", "0")), new XElement(ChartNs.C + "explosion", new XAttribute("val", "100"))));
+        List<(string Text, RectF Box)> labels = Drawn(pulled).DrawnLabels;
+        ChartBoxes boxes = new ChartRenderer(pulled, null).Layout(360, 216);
+        float center = boxes.Plot.X + (boxes.Plot.Width / 2);
+        float reach = boxes.Plot.Width / 2;
+        Assert.True(Middle(labels[1].Box).X > center - (reach * 0.8f));
+        Assert.True(labels[0].Box.Left > center + (reach * 0.9f));
+    }
+
+    [Fact]
+    public void ADoughnutLabelSitsInItsOwnRing()
+    {
+        Chart chart = Labelled(ChartType.Doughnut, null, [1, 1], [1, 1]);
+        ChartBoxes boxes = new ChartRenderer(chart, null).Layout(360, 216);
+        float center = boxes.Plot.X + (boxes.Plot.Width / 2);
+        float outer = boxes.Plot.Width / 2;
+        List<(string Text, RectF Box)> labels = Drawn(chart).DrawnLabels;
+        Assert.Equal(4, labels.Count);
+        float inner = Math.Abs(Middle(labels[0].Box).X - center);
+        float rim = Math.Abs(Middle(labels[2].Box).X - center);
+        Assert.True(inner < rim && rim < outer);
+    }
+
+    [Fact]
+    public void ABubblesLabelGoesPastItsEdge()
+    {
+        Chart chart = Labelled(ChartType.Bubble, null, [2, 5, 3]);
+        ChartSeries series = chart.Plots[0].Series[0];
+        series.BubbleSizes.SetNumbers([9, 4, 16]);
+        ChartRenderer renderer = Drawn(chart);
+        ChartBoxes boxes = renderer.Layout(360, 216);
+        DrawnAxis across = boxes.Axes.First(a => a.Horizontal);
+        float reach = Math.Min(boxes.Plot.Width, boxes.Plot.Height) * 0.125f * 0.75f;
+        Assert.True(renderer.DrawnLabels.First(l => l.Text == "3").Box.Left > across.Value(3, boxes.Plot) + reach);
+    }
+
+    [Fact]
+    public void ARadarLabelsItsPointsOutward()
+    {
+        Chart chart = Labelled(ChartType.Radar, null, [2, 5, 3, 4]);
+        ChartRenderer renderer = Drawn(chart);
+        ChartBoxes boxes = renderer.Layout(360, 216);
+        Assert.Equal(4, renderer.DrawnLabels.Count);
+        float middle = boxes.Plot.Y + (boxes.Plot.Height / 2);
+        DrawnAxis scale = boxes.Axes.First(a => !a.IsCategories);
+        float radius = boxes.Plot.Width / 2;
+        float point = middle - (float)(scale.Scale.Place(2) * radius);
+        Assert.True(renderer.DrawnLabels.First(l => l.Text == "2").Box.Bottom <= point + 1);
+    }
+
+    [Fact]
+    public void APointOffTheAxisHasNoLabel()
+    {
+        Chart chart = Labelled(ChartType.Scatter, null, [2, 7, 3]);
+        chart.Plots[0].Axes.First(a => a.Position is ChartAxisPosition.Left).Maximum = 6;
+        Assert.DoesNotContain(Drawn(chart).DrawnLabels, l => l.Text == "7");
+    }
+
+    [Fact]
+    public void AnErrorBarHangsFromTheTopOfItsStack()
+    {
+        Chart chart = Labelled(ChartType.Column, ChartGrouping.Stacked, [5], [4]);
+        WithErrorBars(chart.Plots[0].Series[1], "fixedVal", 1);
+        ChartRenderer renderer = Drawn(chart);
+        ChartBoxes boxes = renderer.Layout(360, 216);
+        DrawnAxis up = boxes.Axes.First(a => !a.IsCategories);
+        Assert.Equal(12, up.Scale.Maximum);
+        (Vector2 a, Vector2 b) = Assert.Single(renderer.DrawnErrorBars);
+        Assert.Equal(up.Value(8, boxes.Plot), a.Y, 1f);
+        Assert.Equal(up.Value(10, boxes.Plot), b.Y, 1f);
+    }
+
+    [Fact]
+    public void APercentStackedErrorBarIsAShareOfItsStack()
+    {
+        // 10 % of 6, in a stack of 8, is 7.5 % of the axis.
+        Chart chart = Labelled(ChartType.Column, ChartGrouping.PercentStacked, [2], [6]);
+        WithErrorBars(chart.Plots[0].Series[1], "percentage", 10);
+        ChartRenderer renderer = Drawn(chart);
+        ChartBoxes boxes = renderer.Layout(360, 216);
+        DrawnAxis up = boxes.Axes.First(a => !a.IsCategories);
+        (Vector2 a, Vector2 b) = Assert.Single(renderer.DrawnErrorBars);
+        Assert.Equal(up.Value(0.925, boxes.Plot), a.Y, 1f);
+        Assert.Equal(up.Value(1.075, boxes.Plot), b.Y, 1f);
+    }
+
+    [Fact]
+    public void AStandardDeviationBarCentresOnTheSeriesMean()
+    {
+        // Excel's rule: every point's bar is the same, around the mean. 2, 5, 3, 7: mean 4.25, deviation 2.217.
+        Chart chart = Labelled(ChartType.Column, ChartGrouping.Clustered, [2, 5, 3, 7]);
+        WithErrorBars(chart.Plots[0].Series[0], "stdDev", 1);
+        ChartRenderer renderer = Drawn(chart);
+        ChartBoxes boxes = renderer.Layout(360, 216);
+        DrawnAxis up = boxes.Axes.First(a => !a.IsCategories);
+        Assert.Equal(4, renderer.DrawnErrorBars.Count);
+        Assert.All(renderer.DrawnErrorBars, bar =>
+        {
+            Assert.Equal(up.Value(4.25 - 2.217, boxes.Plot), bar.A.Y, 1f);
+            Assert.Equal(up.Value(4.25 + 2.217, boxes.Plot), bar.B.Y, 1f);
+        });
+    }
+
+    [Theory]
+    [InlineData(ChartType.Area)]
+    [InlineData(ChartType.Bubble)]
+    public void AreasAndBubblesDrawErrorBars(ChartType type)
+    {
+        Chart chart = Labelled(type, null, [2, 5, 3]);
+        WithErrorBars(chart.Plots[0].Series[0], "fixedVal", 1);
+        Assert.Equal(3, Drawn(chart).DrawnErrorBars.Count);
+    }
+
+    [Fact]
+    public void AClusteredErrorBarIsOnItsOwnBarInAReversedBarChart()
+    {
+        Chart chart = Labelled(ChartType.Bar, ChartGrouping.Clustered, [5, 4], [2, 3]);
+        chart.Plots[0].Axes.First(a => a.Kind == ChartAxisKind.Category).Reversed = true;
+        WithErrorBars(chart.Plots[0].Series[0], "fixedVal", 1);
+        ChartRenderer renderer = Drawn(chart);
+        Vector2 label = Middle(renderer.DrawnLabels.First(l => l.Text == "5").Box);
+        Assert.Equal(label.Y, renderer.DrawnErrorBars[0].A.Y, 1f);
+    }
+
+    [Fact]
+    public void AnEmptyAxisTitleElementGivesTheAxisItsDefaultTitle()
+    {
+        Chart chart = FromXml("""
+            <c:lineChart><c:grouping val="standard"/>
+              <c:ser><c:idx val="0"/><c:order val="0"/><c:val><c:numLit><c:ptCount val="2"/><c:pt idx="0"><c:v>1</c:v></c:pt><c:pt idx="1"><c:v>2</c:v></c:pt></c:numLit></c:val></c:ser>
+              <c:axId val="1"/><c:axId val="2"/></c:lineChart>
+            <c:catAx><c:axId val="1"/><c:scaling/><c:axPos val="b"/><c:crossAx val="2"/></c:catAx>
+            <c:valAx><c:axId val="2"/><c:scaling/><c:axPos val="l"/><c:majorGridlines/><c:title/><c:crossAx val="1"/></c:valAx>
+            """);
+        ChartBoxes boxes = new ChartRenderer(chart, null).Layout(360, 216);
+        RectF title = boxes.Axes.First(a => !a.IsCategories).TitleBox!.Value;
+        using Raster<Rgba8> raster = Raster.Create(360, 216, White);
+        using RasterCanvas<Rgba8> canvas = new(raster);
+        chart.Draw(canvas, new RectF(0, 0, 360, 216));
+        int ink = 0;
+        for (int y = (int)title.Top; y < (int)title.Bottom; y++)
+        {
+            foreach (Rgba8 pixel in raster.Row(y)[(int)title.Left..(int)title.Right])
+            {
+                ink += pixel.R < 128 ? 1 : 0;
+            }
+        }
+
+        Assert.True(ink > 20, ink.ToString(System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void APlotWhoseSecondAxesAreDeletedGoesByTheFirst()
+    {
+        // As Word draws it: the line lies on the bars' scale, and along their categories however many its own names.
+        Chart chart = FromXml("""
+            <c:barChart><c:barDir val="col"/><c:grouping val="clustered"/>
+              <c:ser><c:idx val="0"/><c:order val="0"/><c:val><c:numLit><c:ptCount val="2"/><c:pt idx="0"><c:v>1000</c:v></c:pt><c:pt idx="1"><c:v>2000</c:v></c:pt></c:numLit></c:val></c:ser>
+              <c:axId val="1"/><c:axId val="2"/></c:barChart>
+            <c:lineChart><c:grouping val="standard"/>
+              <c:ser><c:idx val="1"/><c:order val="1"/><c:cat><c:strLit><c:ptCount val="4"/><c:pt idx="0"><c:v>a</c:v></c:pt></c:strLit></c:cat><c:val><c:numLit><c:ptCount val="2"/><c:pt idx="0"><c:v>5</c:v></c:pt><c:pt idx="1"><c:v>6</c:v></c:pt></c:numLit></c:val></c:ser>
+              <c:axId val="3"/><c:axId val="4"/></c:lineChart>
+            <c:catAx><c:axId val="1"/><c:scaling/><c:delete val="0"/><c:axPos val="b"/><c:crossAx val="2"/></c:catAx>
+            <c:valAx><c:axId val="2"/><c:scaling/><c:delete val="1"/><c:axPos val="l"/><c:crossAx val="1"/></c:valAx>
+            <c:valAx><c:axId val="4"/><c:scaling/><c:delete val="1"/><c:axPos val="r"/><c:crossAx val="3"/><c:crosses val="max"/></c:valAx>
+            <c:catAx><c:axId val="3"/><c:scaling/><c:delete val="1"/><c:axPos val="b"/><c:crossAx val="4"/></c:catAx>
+            """);
+        ChartBoxes boxes = new ChartRenderer(chart, null).Layout(360, 216);
+        DrawnAxis up = Assert.Single(boxes.Axes, a => !a.IsCategories);
+        Assert.Equal(2, up.Plots.Count);
+        Assert.Equal(2, Assert.Single(boxes.Axes, a => a.IsCategories).Count);
+    }
+
+    [Fact]
+    public void ALabelsOwnTextShowsWithItsFieldsFilledIn()
+    {
+        Chart chart = FromXml("""
+            <c:pieChart><c:ser><c:idx val="0"/><c:order val="0"/><c:dLbls>
+              <c:dLbl><c:idx val="0"/><c:tx><c:rich><a:bodyPr/><a:p><a:r><a:t>Mine</a:t></a:r></a:p><a:p><a:fld id="{00000000-0000-0000-0000-000000000000}" type="PERCENTAGE"><a:t>[x]</a:t></a:fld></a:p></c:rich></c:tx><c:showPercent val="1"/></c:dLbl>
+              <c:showPercent val="1"/></c:dLbls>
+              <c:val><c:numLit><c:ptCount val="2"/><c:pt idx="0"><c:v>1</c:v></c:pt><c:pt idx="1"><c:v>3</c:v></c:pt></c:numLit></c:val></c:ser></c:pieChart>
+            """);
+        Assert.Contains(Drawn(chart).DrawnLabels, l => l.Text == "Mine\n25%");
+    }
+
+    [Fact]
+    public void ACultureWritesItsOwnDatesPercentsAndListSeparator()
+    {
+        System.Globalization.CultureInfo norwegian = System.Globalization.CultureInfo.GetCultureInfo("nb-NO");
+        Chart chart = Labelled(ChartType.Pie, null, [1, 3]);
+        ChartDataLabels labels = chart.Plots[0].Series[0].DataLabels;
+        labels.ShowPercent = true;
+        labels.ShowValue = true;
+        using Raster<Rgba8> raster = Raster.Create(360, 216, White);
+        using RasterCanvas<Rgba8> canvas = new(raster);
+        ChartRenderer renderer = new(chart, new ChartDrawOptions { Culture = norwegian });
+        renderer.Draw(canvas, new RectF(0, 0, 360, 216));
+        Assert.Contains(renderer.DrawnLabels, l => l.Text == "1; 25\u00a0%" || l.Text == "1; 25 %");
+    }
+
+    [Fact]
+    public void AWordChartHasSquareCornersUnlessItSaysOtherwise()
+    {
+        Chart chart = Made(ChartType.Column);
+        chart.Format.LineColor = ChartColor.FromRgb(new Rgba8(0, 0, 0, 255));
+        using Raster<Rgba8> raster = Raster.Create(100, 100, White);
+        using RasterCanvas<Rgba8> canvas = new(raster);
+        chart.Draw(canvas, new RectF(0, 0, 100, 100), new ChartDrawOptions { Host = ChartHost.Word });
+        Assert.True(raster.Row(0)[0].R < 128);
+    }
+
+    [Fact]
+    public void ANarrowLegendWrapsAtAHyphenThenInsideAWord()
+    {
+        Chart chart = Made(ChartType.Column);
+        chart.Plots[0].Series[0].Name = "Y-Values and more";
+        ChartBoxes boxes = new ChartRenderer(chart, null).Layout(120, 150);
+        Assert.True(boxes.Legend!.Value.Width < 120 * 0.42f);
+    }
+
+    [Fact]
+    public void ARadarSettlesItsStepByTheWholePlot()
+    {
+        // From Excel: 290 by 288 points takes steps of 1 for data up to 7, 290 by 220 steps of 2.
+        Chart tall = Labelled(ChartType.Radar, null, [2, 5, 3, 7, 4]);
+        tall.HasLegend = false;
+        Assert.Equal(1, new ChartRenderer(tall, null).Layout(290, 288).Axes.First(a => !a.IsCategories).Scale.Major);
+        Assert.Equal(2, new ChartRenderer(tall, null).Layout(290, 176).Axes.First(a => !a.IsCategories).Scale.Major);
     }
 
     [Fact]

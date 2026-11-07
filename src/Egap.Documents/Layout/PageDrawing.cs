@@ -430,7 +430,7 @@ internal static class PageDrawing
     private static void DrawChart(Canvas canvas, Island island, Chart chart, RectF rect)
     {
         Fonts.TryGetValue(island.Document, out FontProvider? fonts);
-        chart.Draw(canvas, rect, new ChartDrawOptions { Theme = island.Document.Theme, Provider = fonts });
+        chart.Draw(canvas, rect, new ChartDrawOptions { Theme = island.Document.Theme, Provider = fonts, Host = ChartHost.Word });
     }
 
     private static void DrawImage(Canvas canvas, Document document, ImageData image, RectF rect)

@@ -130,7 +130,16 @@ internal sealed partial class ChartRenderer
                 continue;
             }
 
+            // With its second axes deleted, a plot goes by the first ones: their scale, which makes room for it, and their categories.
             bool sideways = plot.Type == ChartType.Bar;
+            if (!known.ContainsKey(value.Id) && value.Hidden && first.Hidden && !xy && boxes.Axes.FirstOrDefault(a => !a.IsCategories && a.Horizontal == sideways) is { Cross: { } firstAcross } firstUp)
+            {
+                known[value.Id] = firstUp;
+                known[first.Id] = firstAcross;
+                firstUp.Plots.Add(plot);
+                continue;
+            }
+
             if (!known.TryGetValue(first.Id, out DrawnAxis? across))
             {
                 across = new DrawnAxis(first, !sideways, !xy);
@@ -297,7 +306,7 @@ internal sealed partial class ChartRenderer
             plot = RadarPlot(boxes, left, top, right, bottom);
             foreach (DrawnAxis axis in boxes.Axes.Where(a => !a.IsCategories))
             {
-                Scale(axis, plot with { Height = plot.Height / 2 });
+                Scale(axis, plot with { Height = radarRoom });
             }
         }
 
@@ -309,11 +318,11 @@ internal sealed partial class ChartRenderer
         float side = Math.Max(Math.Min(inner.Width, inner.Height), 1);
         if (plots.Any(p => p.Type is ChartType.Pie or ChartType.PieOfPie or ChartType.BarOfPie))
         {
-            // Labels outside take a line and a third above and below, and most of their width at the sides; a pie stays at least half its room.
-            (float w, float h) = OutsideLabelSize();
+            // Labels leave the pie 86 % of its room, less when those outside are wide; a pie stays at least half its room.
+            (float w, float h) = OutsideLabelSize(side);
             if (h > 0)
             {
-                side = Math.Max(Math.Min(inner.Width - (2 * ((w * PieLabelWidths) + 4)), inner.Height - (2 * h * PieLabelLines)), side / 2);
+                side = Math.Max(Math.Min(inner.Width - (2 * ((w * (plots.Any(p => p.Series.Any(s => LabelsFor(s, p).Position is ChartLabelPosition.OutsideEnd)) ? PieLabelWidths : PieBestFitWidths)) + 4)), side * PieShareWithLabels), side / 2);
             }
         }
 
@@ -348,6 +357,16 @@ internal sealed partial class ChartRenderer
             Look look = AxisLook(axis);
             l = Math.Max(l, left + PlotMargin + (Measure(axis.Labels[0], look).Width / 2));
             r = Math.Min(r, right - PlotMargin - (Measure(axis.Labels[^1], look).Width / 2));
+        }
+
+        // A turned label reaches back from its tick: the plot moves over so the first stays inside the chart.
+        foreach (DrawnAxis axis in boxes.Axes.Where(a => a.Horizontal && a.IsCategories && a.Rotation < 0 && a.Labels.Count > 0 && LabelsShown(a)))
+        {
+            Look look = AxisLook(axis);
+            (float w, float h) = Measure(axis.Labels[0], look);
+            double radians = -axis.Rotation * Math.PI / 180;
+            float reach = (float)((w * Math.Cos(radians)) + (h * Math.Sin(radians) / 2));
+            l = Math.Max(l, left + TurnedLabelMargin + reach - ((r - l) / Math.Max(axis.Between ? axis.Count : axis.Count - 1, 1) / 2));
         }
 
         // A horizontal number axis lets its last label hang half out over the margin.
@@ -444,7 +463,16 @@ internal sealed partial class ChartRenderer
     private (string Text, float Long, float Thick) AxisTitleSize(DrawnAxis axis)
     {
         string text = axis.Model.Title.Text ?? "Axis Title";
-        (float w, float h) = Measure(text, AxisTitleLook(axis));
+        Look look = AxisTitleLook(axis);
+        if (!axis.Horizontal && axis.Model.Title.TextFormat.Rotation == 0)
+        {
+            // Lying flat beside a vertical axis it wraps at under a fifth of the chart.
+            string lines = Wrapped(text, look, width * AxisTitleWidthShare);
+            (float across, float high) = Measure(lines, look);
+            return (lines, high + TextBoxPadding, across + 4);
+        }
+
+        (float w, float h) = Measure(text, look);
         return (text, w + 4, h + TextBoxPadding);
     }
 
@@ -497,7 +525,13 @@ internal sealed partial class ChartRenderer
                     int count = series.Values.Count;
                     for (int i = 0; i < count; i++)
                     {
-                        Include(i < xs.Count && xs[i] is { } x ? x : i + 1);
+                        double x = i < xs.Count && xs[i] is { } given ? given : i + 1;
+                        Include(x);
+                        foreach ((double down, double up) in ErrorRange(series, i, x, xs, true, true))
+                        {
+                            Include(down);
+                            Include(up);
+                        }
                     }
                 }
 
@@ -514,6 +548,7 @@ internal sealed partial class ChartRenderer
                     Include(-1);
                 }
 
+                IncludeStackBars(plot, true);
                 continue;
             }
 
@@ -543,6 +578,7 @@ internal sealed partial class ChartRenderer
                     Include(negative);
                 }
 
+                IncludeStackBars(plot, false);
                 continue;
             }
 
@@ -554,7 +590,7 @@ internal sealed partial class ChartRenderer
                     if (values[i] is { } v)
                     {
                         Include(v);
-                        foreach ((double down, double up) in ErrorRange(series, i, v))
+                        foreach ((double down, double up) in ErrorRange(series, i, v, values, xy, false))
                         {
                             Include(down);
                             Include(up);
@@ -588,6 +624,50 @@ internal sealed partial class ChartRenderer
                 high = Math.Max(high, v);
             }
         }
+
+        // Error bars hang from the top of the stack, as the plots draw it: bars stack each sign apart, lines and areas run on.
+        void IncludeStackBars(ChartPlot plot, bool shares)
+        {
+            if (plot.Series.All(s => s.ErrorBars.Count == 0))
+            {
+                return;
+            }
+
+            bool apart = plot.Type is ChartType.Column or ChartType.Bar;
+            int count = plot.Series.Max(s => s.Values.Count);
+            for (int i = 0; i < count; i++)
+            {
+                double total = plot.Series.Sum(s => i < s.Values.Count && s.Values.Numbers[i] is { } v && double.IsFinite(v) ? Math.Abs(v) : 0);
+                double unit = shares && total > 0 ? 1 / total : 1;
+                double positive = 0;
+                double negative = 0;
+                foreach (ChartSeries series in Ordered(plot))
+                {
+                    if (i >= series.Values.Count || series.Values.Numbers[i] is not { } v || !double.IsFinite(v))
+                    {
+                        continue;
+                    }
+
+                    double top;
+                    if (v >= 0 || !apart)
+                    {
+                        positive += v * unit;
+                        top = positive;
+                    }
+                    else
+                    {
+                        negative += v * unit;
+                        top = negative;
+                    }
+
+                    foreach ((double down, double up) in ErrorRange(series, i, v, series.Values.Numbers, false, false))
+                    {
+                        Include(top + ((down - v) * unit));
+                        Include(top + ((up - v) * unit));
+                    }
+                }
+            }
+        }
     }
 
     private static DrawnAxis? XAxis(DrawnAxis axis) => axis.Horizontal ? axis : axis.Cross;
@@ -607,8 +687,8 @@ internal sealed partial class ChartRenderer
             along = Math.Max(along - Math.Max(cross.LabelRoom - (PlotMargin - LabelMargin), 0), 1);
         }
 
-        // It also counts the other axis's labels as one line, before they wrap.
-        if (axis.Cross is { Horizontal: true, IsCategories: true, Wrap: < 1e4f } wrapped && !axis.Horizontal && !radar)
+        // It also counts the other axis's labels as one line, before they wrap or turn by themselves.
+        if (axis.Cross is { Horizontal: true, IsCategories: true } wrapped && (wrapped.Wrap < 1e4f || (wrapped.Rotation != 0 && wrapped.Model.TextFormat.Rotation is null)) && !axis.Horizontal && !radar)
         {
             along += Math.Max(wrapped.LabelRoom - lineHeight - HorizontalLabelPadding, 0);
         }
@@ -622,10 +702,16 @@ internal sealed partial class ChartRenderer
             // Excel takes the first step whose labels and one more line's room fit: across the axis by the line, along it by the widest label.
             bool Fits(ChartScale scale)
             {
-                double each = along / (((scale.Maximum - scale.Minimum) / scale.Major) + 1);
+                double steps = (scale.Maximum - scale.Minimum) / scale.Major;
+                if (radar)
+                {
+                    return along >= look.Size * ((3 * steps) - 2.3);
+                }
+
+                double each = along / (steps + 1);
                 if (!axis.Horizontal)
                 {
-                    return each >= (radar ? look.Size * 0.85 : percent ? look.Size * 1.05 : (look.Size * 1.07) + 1.2);
+                    return each >= (percent ? look.Size * 1.05 : (look.Size * 1.07) + 1.2);
                 }
 
                 float widest = scale.Ticks().Select(t => Measure(TickText(axis, t, percent), look).Width).DefaultIfEmpty(0).Max();
@@ -637,7 +723,7 @@ internal sealed partial class ChartRenderer
             {
                 low = Math.Min(low, 0);
                 high = Math.Max(high, low < 0 ? 0 : 1);
-                axis.Scale = ChartScale.Automatic(low, high, Fits, model.Minimum ?? (low < 0 ? -1 : 0), model.Maximum ?? 1, model.MajorUnit, model.MinorUnit);
+                axis.Scale = ChartScale.Automatic(low, high, Fits, model.Minimum ?? (low < -1 ? null : low < 0 ? -1 : 0), model.Maximum ?? (high > 1 ? null : 1), model.MajorUnit, model.MinorUnit);
             }
             else
             {
@@ -749,6 +835,8 @@ internal sealed partial class ChartRenderer
     }
 
     private const float MinimumLabelWidths = 2.85f;
+    private const float TurnedLabelMargin = 8;
+    private const float AxisTitleWidthShare = 0.19f;
     private const float VerticalLabelPadding = 10.9f;
     private const float HorizontalLabelPadding = 7.8f;
 
@@ -914,7 +1002,7 @@ internal sealed partial class ChartRenderer
             return;
         }
 
-        string text = axis.Model.Title.Text ?? "Axis Title";
+        string text = AxisTitleSize(axis).Text;
         double? rotation = axis.Model.Title.TextFormat.Rotation;
         DrawTextIn(text, AxisTitleLook(axis), box, rotation ?? (axis.Horizontal ? 0 : -90));
     }

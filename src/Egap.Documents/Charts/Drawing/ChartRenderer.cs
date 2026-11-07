@@ -48,12 +48,15 @@ internal sealed partial class ChartRenderer
     private readonly Theme theme;
     private readonly FontProvider fonts;
     private readonly CultureInfo culture;
+    private readonly bool word;
     private readonly ChartPalette palette;
     private readonly float baseSize;
     private readonly bool baseSizeSet;
     private readonly List<ChartPlot> plots;
     private readonly int seriesCount;
+    private readonly Dictionary<(ChartSeries Series, int Index), Mark> marks = [];
     private Canvas canvas = null!;
+    private float radarRoom;
     private float width;
     private float height;
 
@@ -63,6 +66,7 @@ internal sealed partial class ChartRenderer
         theme = options?.Theme ?? new Document().Theme;
         fonts = options?.Provider ?? new FontProvider(theme.Document, options?.Fonts);
         culture = options?.Culture ?? CultureInfo.InvariantCulture;
+        word = options?.Host == ChartHost.Word;
         int style = chart.Style ?? 2;
         palette = new ChartPalette(theme, style >= 100 ? style - 100 : style);
         baseSizeSet = chart.TextFormat.Size is not null;
@@ -84,6 +88,9 @@ internal sealed partial class ChartRenderer
         }
 
         canvas = target;
+        marks.Clear();
+        DrawnLabels.Clear();
+        DrawnErrorBars.Clear();
         ChartBoxes boxes = Layout(bounds.Width, bounds.Height);
         canvas.Save();
         canvas.ClipRect(bounds);
@@ -118,13 +125,14 @@ internal sealed partial class ChartRenderer
         if (TitleText() is { } title)
         {
             Look look = TitleLook();
-            (float w, float h) = Measure(title, look, width * 0.8f);
+            (float w, float h) = Measure(TitleLines(title, look), look);
             RectF box = new((width - w - 4) / 2, EdgeMargin, w + 4, h + TextBoxPadding);
+            float automaticTitleBottom = box.Bottom;
             box = Placed(chart.Title.Layout, box);
             boxes.Title = box;
-            if (chart.Title.Overlay != true && chart.Title.Layout.X is null)
+            if (chart.Title.Overlay != true)
             {
-                titleBottom = box.Bottom;
+                titleBottom = chart.Title.Layout.X is null ? box.Bottom : automaticTitleBottom;
                 top = titleBottom + PlotMargin;
             }
         }
@@ -205,7 +213,7 @@ internal sealed partial class ChartRenderer
 
         if (chart.HasTitle)
         {
-            return chart.Title.Text is { Length: > 0 } text ? text : seriesCount == 1 ? SeriesName(plots.First(p => p.Series.Count > 0).Series[0]) : "Chart Title";
+            return chart.Title.Text is { Length: > 0 } text ? text : seriesCount == 1 && plots.First(p => p.Series.Count > 0).Series[0].Name is { Length: > 0 } name ? name : "Chart Title";
         }
 
         // With no title element and the flag not set, a chart of one series titles itself with the series's name.
@@ -223,7 +231,7 @@ internal sealed partial class ChartRenderer
     private void DrawChartArea()
     {
         RectF area = new(0, 0, width, height);
-        bool rounded = chart.RoundedCorners ?? true;
+        bool rounded = chart.RoundedCorners ?? !word;
         Path shape = rounded ? Path.RoundRect(new RoundRect(area, 6.5f)) : Path.Rect(area);
         ChartFormat format = chart.Format;
         if (Fill(format, area, palette.IsDarkStyle ? palette.Dark : palette.Light) is { } fill)
@@ -255,6 +263,14 @@ internal sealed partial class ChartRenderer
         bool IsRound() => plots.All(p => p.Type is ChartType.Pie or ChartType.Doughnut or ChartType.PieOfPie or ChartType.BarOfPie);
     }
 
+    /// <summary>A title's lines: four fifths of the chart wide and about a third of it high, with an ellipsis for what is left out.</summary>
+    private string TitleLines(string title, Look look)
+    {
+        float limit = Math.Max(width * TitleWidthShare, 1);
+        int most = Math.Max((int)(height * TitleHeightShare / Math.Max(Measure("0", look).Height, 1)), 1);
+        return CutTo(Wrapped(title, look, limit), most, look, limit);
+    }
+
     private void DrawTitle(ChartBoxes boxes)
     {
         if (boxes.Title is not { } box || TitleText() is not { } text)
@@ -273,7 +289,8 @@ internal sealed partial class ChartRenderer
             canvas.StrokeRect(box, line.Stroke, line.Color);
         }
 
-        DrawTextIn(text, TitleLook(), box, chart.Title.TextFormat.Rotation);
+        Look look = TitleLook();
+        DrawTextIn(TitleLines(text, look), look, box, chart.Title.TextFormat.Rotation);
     }
 
     /// <summary>Text drawn in the middle of a box, turned by <paramref name="rotation"/> degrees clockwise.</summary>
@@ -285,7 +302,7 @@ internal sealed partial class ChartRenderer
         }
 
         float angle = (float)(rotation ?? 0);
-        TextLayout layout = Lay(text, look, angle == 0 ? box.Width + 1 : 1e5f, TextAlign.Center);
+        TextLayout layout = angle == 0 ? Lay(text, look, box.Width + 1, TextAlign.Center) : Lay(text, look, 1e5f, TextAlign.Left);
         if (angle == 0)
         {
             canvas.DrawTextLayout(layout, new Vector2(box.X, box.Y + ((box.Height - layout.Height) / 2)));
@@ -307,10 +324,13 @@ internal sealed partial class ChartRenderer
         }
     }
 
+    private const float TitleWidthShare = 0.8f;
+    private const float TitleHeightShare = 0.35f;
+
     /// <summary>What a piece of chart text looks like.</summary>
     private readonly record struct Look(string Font, float Size, bool Bold, bool Italic, Rgba8 Color);
 
-    private Look TitleLook() => LookOf(chart.Title.TextFormat, baseSizeSet ? baseSize * 1.2f : baseSize * 1.8f, true);
+    private Look TitleLook() => LookOf(chart.Title.TextFormat, baseSizeSet || (word && chart.HasTitle && chart.Title.Text is { Length: > 0 }) ? (baseSizeSet ? baseSize * 1.2f : baseSize) : baseSize * 1.8f, true);
 
     private Look LookOf(ChartTextFormat format, float size, bool bold = false)
     {
@@ -380,7 +400,7 @@ internal sealed partial class ChartRenderer
             return "";
         }
 
-        FormatSection[] sections = Formats.GetOrAdd(string.IsNullOrEmpty(code) ? "General" : code, c =>
+        FormatSection[] sections = Formats.GetOrAdd(string.IsNullOrEmpty(code) ? "General" : LocalCode(code), c =>
         {
             if (Formats.Count > 1024)
             {
@@ -404,6 +424,22 @@ internal sealed partial class ChartRenderer
         }
 
         return text;
+    }
+
+    /// <summary>A format code that stands for the machine's own way of writing it, in the culture's: Excel's short date, and a percent's spacing.</summary>
+    private string LocalCode(string code)
+    {
+        if (culture.Equals(CultureInfo.InvariantCulture))
+        {
+            return code;
+        }
+
+        if (code is "m/d/yyyy" or "mm-dd-yy")
+        {
+            return culture.DateTimeFormat.ShortDatePattern.ToLowerInvariant();
+        }
+
+        return culture.NumberFormat.PercentPositivePattern == 0 && code is "0%" or "0.0%" or "0.00%" ? code[..^1] + "\\ %" : code;
     }
 
     /// <summary>The paint for a fill; null when it draws nothing. Automatic takes <paramref name="automatic"/>, which is empty when automatic is nothing.</summary>

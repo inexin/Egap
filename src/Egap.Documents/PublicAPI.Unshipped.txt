@@ -183,6 +183,8 @@ Egap.Documents.Charts.ChartDrawOptions.Culture.get -> System.Globalization.Cultu
 Egap.Documents.Charts.ChartDrawOptions.Culture.init -> void
 Egap.Documents.Charts.ChartDrawOptions.Fonts.get -> Egap.Documents.Layout.FontSettings?
 Egap.Documents.Charts.ChartDrawOptions.Fonts.init -> void
+Egap.Documents.Charts.ChartDrawOptions.Host.get -> Egap.Documents.Charts.ChartHost
+Egap.Documents.Charts.ChartDrawOptions.Host.init -> void
 Egap.Documents.Charts.ChartDrawOptions.Theme.get -> Egap.Documents.Theme?
 Egap.Documents.Charts.ChartDrawOptions.Theme.init -> void
 Egap.Documents.Charts.ChartErrorBarDirection
@@ -252,6 +254,9 @@ Egap.Documents.Charts.ChartGrouping.Clustered = 1 -> Egap.Documents.Charts.Chart
 Egap.Documents.Charts.ChartGrouping.PercentStacked = 3 -> Egap.Documents.Charts.ChartGrouping
 Egap.Documents.Charts.ChartGrouping.Stacked = 2 -> Egap.Documents.Charts.ChartGrouping
 Egap.Documents.Charts.ChartGrouping.Standard = 0 -> Egap.Documents.Charts.ChartGrouping
+Egap.Documents.Charts.ChartHost
+Egap.Documents.Charts.ChartHost.Excel = 0 -> Egap.Documents.Charts.ChartHost
+Egap.Documents.Charts.ChartHost.Word = 1 -> Egap.Documents.Charts.ChartHost
 Egap.Documents.Charts.ChartLabelPosition
 Egap.Documents.Charts.ChartLabelPosition.BestFit = 0 -> Egap.Documents.Charts.ChartLabelPosition
 Egap.Documents.Charts.ChartLabelPosition.Bottom = 1 -> Egap.Documents.Charts.ChartLabelPosition

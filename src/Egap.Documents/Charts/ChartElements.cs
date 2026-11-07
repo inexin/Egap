@@ -692,6 +692,22 @@ public sealed class ChartDataLabels
     /// <summary>Whether the labels are switched off here, though an outer level has them.</summary>
     public bool Deleted => !extended && node.Bool("delete") == true;
 
+    /// <summary>The label's own text, with each field as <paramref name="field"/> fills it or as the file saved it; null when it has none.</summary>
+    internal string? CustomText(Func<string, string?> field)
+    {
+        XElement? rich = node.Find()?.Element(node.Ns + "tx")?.Element(node.Ns + "rich");
+        if (rich is null)
+        {
+            return null;
+        }
+
+        IEnumerable<string> lines = rich.Elements(ChartNs.A + "p").Select(p => string.Concat(p.Elements().Select(e =>
+            e.Name == ChartNs.A + "r" ? (string?)e.Element(ChartNs.A + "t") ?? ""
+            : e.Name == ChartNs.A + "fld" ? field((string?)e.Attribute("type") ?? "") ?? (string?)e.Element(ChartNs.A + "t") ?? ""
+            : "")));
+        return string.Join('\n', lines);
+    }
+
     /// <summary>The labels' fill and outline.</summary>
     public ChartFormat Format => new(node);
 
