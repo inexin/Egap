@@ -108,25 +108,21 @@ internal static class ReferenceShift
         }
 
         bool changed = false;
-        string text = FormulaPrinter.Print(parsed, reference =>
+        Area? Moved(ReferenceNode reference)
         {
-            if (!Means(reference.Prefix, home, edited) || Shift(reference.Area, edit) is not { } area)
-            {
-                return null;
-            }
-
-            changed = true;
+            Area? area = Means(reference.Prefix, home, edited) ? Shift(reference.Area, edit) : null;
+            changed |= area is not null;
             return area;
-        }, mayLose ? node =>
-        {
-            if (!Lost(node, origin, home, lost!))
-            {
-                return false;
-            }
+        }
 
-            changed = true;
-            return true;
-        } : null);
+        bool Gone(FormulaNode node)
+        {
+            bool gone = Lost(node, origin, home, lost!);
+            changed |= gone;
+            return gone;
+        }
+
+        string text = FormulaPrinter.Print(parsed, Moved, mayLose ? Gone : null);
         return changed ? text : formula;
     }
 

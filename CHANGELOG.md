@@ -156,6 +156,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- `Worksheet.InsertRows`, `DeleteRows`, `InsertColumns` and `DeleteColumns` put rows and columns into a sheet and take
+  them out as Excel does. Whatever refers to the cells that move follows: formulas on every sheet, names, data validation,
+  conditional formatting, tables (columns put in or taken out inside one become or stop being its columns), merges,
+  hyperlinks, notes, drawings, charts, and the filter and sort ranges a loaded sheet keeps. A reference to what is taken
+  out becomes `#REF!`. Shared formulas on the sheet become each cell's own.
 - Printing draws charts: a sheet's charts on its pages, in its PDFs and images, and each visible chart sheet on a page of its
   own after the sheets when the whole workbook prints (`SheetPrintLayout.ChartPages`, `ChartSheetPage`). A chart made in code
   and not refreshed yet prints from its cells.

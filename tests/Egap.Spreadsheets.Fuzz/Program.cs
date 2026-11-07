@@ -25,6 +25,8 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["tables"] = FromTables,
     ["links"] = Links,
     ["sheetcharts"] = SheetCharts,
+    ["edits"] = Edits,
+    ["shift"] = Shift,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -338,6 +340,85 @@ static void Xlsx(Stream input)
     }
     catch (DocumentException)
     {
+    }
+}
+
+// The input is a workbook: each worksheet gets rows and columns put in and taken out, which may be refused only with an
+// InvalidOperationException, and the workbook must save and load again.
+static void Edits(Stream input)
+{
+    DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };
+    Workbook book;
+    try
+    {
+        book = Workbook.Load(new MemoryStream(Bytes(input), writable: false), new WorkbookLoadOptions { Limits = limits });
+    }
+    catch (DocumentException)
+    {
+        return;
+    }
+
+    if (book.Worksheets.Count == 0)
+    {
+        return;
+    }
+
+    foreach (Worksheet sheet in book.Worksheets)
+    {
+        foreach (Action edit in (Action[])[() => sheet.InsertRows(2, 3), () => sheet.DeleteColumns(1), () => sheet.DeleteRows(0, 2), () => sheet.InsertColumns(3), () => sheet.DeleteRows(CellAddress.MaxRows - 1)])
+        {
+            try
+            {
+                edit();
+            }
+            catch (InvalidOperationException)
+            {
+                // Excel refuses it too: cells pushed off the sheet, part of an array formula, a table's header row alone.
+            }
+        }
+
+        _ = sheet.UsedRange;
+    }
+
+    book.Calculate();
+    MemoryStream saved = new();
+    book.Save(saved);
+    saved.Position = 0;
+    Workbook.Load(saved);
+}
+
+// The input is a formula: its references moved for rows and columns put in and taken out. What parses must still parse
+// after each edit, and an edit that moves nothing gives the text back as it was.
+static void Shift(Stream input)
+{
+    string text = Encoding.UTF8.GetString(Bytes(input));
+    if (text.Length > 8192)
+    {
+        text = text[..8192];
+    }
+
+    CellAddress cell = new(text.Length % 40, text.Length % 7);
+    if (FormulaParser.TryParse(text, r1c1: false, cell) is null)
+    {
+        return;
+    }
+
+    Workbook book = Workbook.Create();
+    Worksheet sheet = book.Worksheets[0];
+    Worksheet other = book.Worksheets.Add("Other");
+    SheetEdit[] edits = [new(true, 2, 3, true), new(true, 1, 2, false), new(false, 0, 1, true), new(false, 3, 4, false), new(true, CellAddress.MaxRows - 2, 2, false)];
+    foreach (SheetEdit edit in edits)
+    {
+        string moved = ReferenceShift.Apply(text, cell, sheet, sheet, edit, new(StringComparer.OrdinalIgnoreCase) { ["Table1"] = null });
+        if (FormulaParser.TryParse(moved, r1c1: false, cell) is null)
+        {
+            throw new InvalidOperationException("A moved formula does not parse: " + moved);
+        }
+
+        if (ReferenceShift.Apply(text, cell, other, sheet, edit) is var elsewhere && elsewhere != text && !text.Contains('!', StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("A formula with no sheet named changed on another sheet: " + elsewhere);
+        }
     }
 }
 
