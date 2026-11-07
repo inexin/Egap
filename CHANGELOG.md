@@ -35,7 +35,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `Chart.Draw` draws a chart on any Egami canvas, with `ChartDrawOptions` for the theme, fonts and culture: column, bar, line,
   area, pie, doughnut, scatter, bubble, radar, stock and combined charts, laid out to the rules read from Excel. A DOCX chart
   now draws through it on pages and in PDFs, where before it showed the picture saved with it, if any. A 3D chart, a surface,
-  a pie of pie and the `cx:` kinds keep their picture for now.
+  a pie of pie and the `cx:` kinds keep their picture for now. `ChartDrawOptions.Host` follows Excel's defaults or Word's;
+  a Word document's pages use Word's.
 - A package part whose XML declaration trips .NET's XML reader now gives a `DocumentException`, as other malformed XML does,
   and no longer an `ArgumentOutOfRangeException`.
 - Charts: `Egap.Documents.Charts` reads, edits, creates and saves chart parts of both kinds, `c:` (column, bar, line, area,

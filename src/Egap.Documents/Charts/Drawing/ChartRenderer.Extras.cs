@@ -22,12 +22,13 @@ internal sealed partial class ChartRenderer
     private const float LineKeyLength = 18.4f;
     private const float FlatLineKeyLength = 26;
     private const float LineKeyGap = 1.5f;
+    private const float LegendWrappedHeightShare = 0.5f;
     private const float WordLineKeyExtra = 1.9f;
     private const float KeyMarkerSize = 7;
     private const float FlatLineEntryExtra = 5.1f;
     private const float LegendLines = 1.48f;
     private const float LegendWidthShare = 0.41f;
-    private const float LabelWidthShare = 0.18f;
+    private const float LabelWidthShare = 0.17f;
 
     /// <summary>The data labels of the last draw, with their boxes.</summary>
     internal List<(string Text, RectF Box)> DrawnLabels { get; } = [];
@@ -106,8 +107,7 @@ internal sealed partial class ChartRenderer
     {
         string wrapped = Wrapped(text, look, Math.Max(width * LabelWidthShare, 1));
         int most = Math.Max((int)(height * 0.55f / Math.Max(Measure("0", look).Height, 1)), 1);
-        string[] lines = wrapped.Split('\n');
-        return lines.Length <= most ? wrapped : string.Join('\n', lines[..most]) + "\u2026";
+        return CutTo(wrapped, most, look, Math.Max(width * LabelWidthShare, 1));
     }
 
     /// <summary>Whether a label fits inside a slice of a pie, as the best fit wants, with room to spare along the slice's arc.</summary>
@@ -766,7 +766,7 @@ internal sealed partial class ChartRenderer
             foreach (string entry in wrapped)
             {
                 float next = Measure(entry, look).Height + step - line;
-                if (tallestEntries > 0 && tallestEntries + next > tall)
+                if (tallestEntries > 0 && tallestEntries + next > Math.Min(tall, height * LegendWrappedHeightShare))
                 {
                     break;
                 }

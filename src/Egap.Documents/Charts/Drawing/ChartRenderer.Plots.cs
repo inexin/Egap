@@ -11,9 +11,9 @@ namespace Egap.Documents.Charts;
 internal sealed partial class ChartRenderer
 {
     private const float RadarLabelLines = 0.824f;
-    private const float RadarLabelShare = 0.28f;
-    private const float RadarLabelShareInWord = 0.33f;
+    private const float RadarLabelShare = 0.33f;
     private const float RadarLabelHeightShare = 0.3f;
+    private const float RadarLabelGap = 2.5f;
     private const float PieLabelWidths = 0.85f;
     private const float PieBestFitWidths = 0.65f;
     private const float PieShareWithLabels = 0.86f;
@@ -754,7 +754,7 @@ internal sealed partial class ChartRenderer
         if (spokes is not null && !spokes.Model.Hidden)
         {
             // Its labels take a quarter of the room at most on a side, wrapping past that.
-            spokes.Wrap = radarRoom * (word ? RadarLabelShareInWord : RadarLabelShare);
+            spokes.Wrap = radarRoom * RadarLabelShare;
             w = spokes.Labels.Select(label => Measure(RadarLabel(label, look, spokes.Wrap), look).Width).DefaultIfEmpty(0).Max();
         }
 
@@ -858,13 +858,14 @@ internal sealed partial class ChartRenderer
             Look look = AxisLook(spokes);
             for (int i = 0; i < n && i < spokes.Labels.Count; i++)
             {
-                Vector2 tip = Spoke(i, radius + 4);
+                // Above or below the centre it clears its spoke's end; to the side it lies level with it.
+                Vector2 end = Spoke(i, radius);
                 string label = RadarLabel(spokes.Labels[i], look, spokes.Wrap);
                 (float w, float h) = Measure(label, look);
-                float dx = tip.X - center.X;
-                float dy = tip.Y - center.Y;
-                float x = Math.Abs(dx) < 1 ? tip.X - (w / 2) : dx > 0 ? tip.X : tip.X - w;
-                float y = Math.Abs(dy) < 1 ? tip.Y - (h / 2) : dy > 0 ? tip.Y : tip.Y - h;
+                float dx = end.X - center.X;
+                float dy = end.Y - center.Y;
+                float x = Math.Abs(dx) < 1 ? end.X - (w / 2) : dx > 0 ? end.X + RadarLabelGap : end.X - RadarLabelGap - w;
+                float y = Math.Abs(dx) < 1 ? (dy > 0 ? end.Y + RadarLabelGap : end.Y - RadarLabelGap - h) : end.Y - (h / 2);
                 DrawLines(label, look, new Vector2(x, y), w);
             }
         }

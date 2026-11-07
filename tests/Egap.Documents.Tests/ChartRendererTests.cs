@@ -240,6 +240,118 @@ public sealed class ChartRendererTests
         return chart;
     }
 
+    [Theory]
+    [InlineData(4.3, 5, 0.5)]
+    [InlineData(4.0, 4.5, 0.5)]
+    [InlineData(0.32, 0.35, 0.05)]
+    [InlineData(57, 60, 10)]
+    public void ASingleValueHasTheSameHeadroomAsAnyOther(double value, double maximum, double step)
+    {
+        // As Excel's axis for one column.
+        ChartScale scale = new ChartRenderer(Labelled(ChartType.Column, null, [value]), null).Layout(432, 252).Axes.First(a => !a.IsCategories).Scale;
+        Assert.Equal(maximum, scale.Maximum, 9);
+        Assert.Equal(step, scale.Major, 9);
+        Assert.Equal(0, scale.Minimum, 9);
+    }
+
+    [Fact]
+    public void ATitleInASmallChartKeepsOneLine()
+    {
+        Chart chart = Labelled(ChartType.Column, null, [1, 2]);
+        chart.HasTitle = true;
+        chart.Title.Text = "Chart Title";
+        float wide = new ChartRenderer(chart, null).Layout(432, 252).Title!.Value.Height;
+        RectF small = new ChartRenderer(chart, null).Layout(94, 93).Title!.Value;
+        Assert.Equal(wide, small.Height, 0.01f);
+        Assert.True(small.Width <= 94 * 0.8f + 4, small.Width.ToString(System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void ALongTitleWrapsWhereThereIsRoom()
+    {
+        Chart chart = Labelled(ChartType.Column, null, [1, 2]);
+        chart.HasTitle = true;
+        chart.Title.Text = "Chart Title";
+        float one = new ChartRenderer(chart, null).Layout(432, 252).Title!.Value.Height;
+        chart.Title.Text = string.Join(' ', Enumerable.Repeat("Chart Title", 10));
+        Assert.True(new ChartRenderer(chart, null).Layout(432, 252).Title!.Value.Height > one * 1.5f);
+    }
+
+    [Fact]
+    public void AWrappedLegendLeavesOutWhatDoesNotFit()
+    {
+        static Chart With(int entries)
+        {
+            Chart chart = Chart.Create(ChartType.Column);
+            foreach (int k in Enumerable.Range(0, entries))
+            {
+                chart.Plots[0].Series.Add("Long name", ["A"], [1]);
+            }
+
+            chart.HasLegend = true;
+            chart.Legend.Position = ChartLegendPosition.Right;
+            return chart;
+        }
+
+        // In a chart this small the second entry would take the legend past half the height.
+        float one = new ChartRenderer(With(1), null).Layout(94, 93).Legend!.Value.Height;
+        Assert.Equal(one, new ChartRenderer(With(3), null).Layout(94, 93).Legend!.Value.Height);
+        Assert.True(new ChartRenderer(With(3), null).Layout(300, 300).Legend!.Value.Height > new ChartRenderer(With(1), null).Layout(300, 300).Legend!.Value.Height);
+    }
+
+    [Fact]
+    public void ALevelTitleBesideAVerticalAxisWraps()
+    {
+        Chart chart = Labelled(ChartType.Column, null, [1, 2]);
+        ChartAxis values = chart.Plots[0].Axes.First(a => a.Kind == ChartAxisKind.Value);
+        values.HasTitle = true;
+        values.Title.Text = "Horizontal, long axis title which breaks";
+        values.Title.TextFormat.Rotation = 0;
+        RectF box = new ChartRenderer(chart, null).Layout(432, 252).Axes.First(a => !a.IsCategories).TitleBox!.Value;
+        Assert.True(box.Width <= (432 * 0.19f) + 4, box.Width.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        Assert.True(box.Height > box.Width / 2, box.Height.ToString(System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void LabelsLeaveAPie86PercentOfItsRoom()
+    {
+        // Measured in Excel at three sizes, with and without explosion.
+        Chart bare = Chart.Create(ChartType.Pie);
+        bare.Plots[0].Series.Add("S", ["A", "B"], [1, 1]);
+        float room = new ChartRenderer(bare, null).Layout(265, 192).Plot.Width;
+        Chart labelled = Labelled(ChartType.Pie, null, [1, 1]);
+        Assert.Equal(room * 0.86f, new ChartRenderer(labelled, null).Layout(265, 192).Plot.Width, 0.5f);
+    }
+
+    [Fact]
+    public void AnExplosionDoesNotChangeThePlot()
+    {
+        Chart plain = Labelled(ChartType.Pie, null, [1, 1]);
+        float side = new ChartRenderer(plain, null).Layout(265, 192).Plot.Width;
+        plain.Plots[0].Series[0].Explosion = 25;
+        Assert.Equal(side, new ChartRenderer(plain, null).Layout(265, 192).Plot.Width);
+    }
+
+    [Fact]
+    public void AFlatLegendInWordTakesEachEntrysOwnWidth()
+    {
+        Chart chart = Labelled(ChartType.Pie, null, [1, 1, 1]);
+        chart.HasLegend = true;
+        chart.Legend.Position = ChartLegendPosition.Top;
+        chart.Plots[0].VaryColors = true;
+        float excel = new ChartRenderer(chart, null).Layout(360, 216).Legend!.Value.Width;
+        float word = new ChartRenderer(chart, new ChartDrawOptions { Host = ChartHost.Word }).Layout(360, 216).Legend!.Value.Width;
+        Assert.True(word < excel, $"{word} {excel}");
+    }
+
+    [Fact]
+    public void ARadarWithLongLabelsInASmallChartStillHasAPlot()
+    {
+        Chart chart = Chart.Create(ChartType.Radar);
+        chart.Plots[0].Series.Add("S", ["1/5/2002", "1/6/2002", "1/7/2002", "1/8/2002", "1/9/2002"], [1, 2, 3, 4, 5]);
+        Assert.True(new ChartRenderer(chart, null).Layout(94, 93).Plot.Width >= 4);
+    }
+
     [Fact]
     public void AReversedBarChartPutsItsFirstSeriesOnTop()
     {

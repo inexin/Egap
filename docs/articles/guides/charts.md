@@ -118,7 +118,9 @@ book.Save("chart.xlsx");
 ## Drawing
 
 `Chart.Draw` draws a chart on any Egami canvas, with the layout Excel gives it: the title, the legend, the plot, the axes' steps
-and the labels. Column, bar, line, area, pie, doughnut, scatter, bubble, radar, stock and combined charts draw this way. A
+and the labels. `ChartDrawOptions.Host` picks whose defaults to follow where the file leaves something out: `ChartHost.Excel`,
+the default, or `ChartHost.Word`, which a Word document's pages use. They differ in corners, line and marker sizes, the size of a
+title and the spacing of a legend. Column, bar, line, area, pie, doughnut, scatter, bubble, radar, stock and combined charts draw this way. A
 chart of the newer `cx:` kinds, a 3D chart, a surface and a pie of pie are still to come: a Word document shows the picture
 saved with them, and printing a sheet draws a 3D chart flat.
 
@@ -142,8 +144,11 @@ A Word document's chart draws in the document's pages and PDFs, and a sheet's in
 made in code and not refreshed yet prints from its cells. `Workbook.Paginate` and `SaveAsPdf` also print each visible chart
 sheet, after the sheets, on a page of its own (`SheetPrintLayout.ChartPages`), which a single sheet's print leaves out.
 
-Not all of Excel's look comes through: bevels and shadows from a theme's effects are left out, as are a date axis's labels in
-the reader's own locale.
+Text that has no room is cut as Office cuts it: a title or a radar's label in a very small chart ends in an ellipsis, and a
+legend that wraps leaves out the entries past half the chart's height.
+
+Not all of Excel's look comes through: bevels and shadows from a theme's effects are left out. `ChartDrawOptions.Culture`
+decides how dates, percents and list separators read; Office uses the machine's locale, so pass the reader's culture to match it.
 
 ## Word documents
 
