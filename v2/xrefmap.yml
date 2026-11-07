@@ -64666,6 +64666,47 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.DefaultRowHeight
   nameWithType: Worksheet.DefaultRowHeight
+- uid: Egap.Spreadsheets.Worksheet.DeleteColumns(System.Int32,System.Int32)
+  name: DeleteColumns(int, int)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_DeleteColumns_System_Int32_System_Int32_
+  commentId: M:Egap.Spreadsheets.Worksheet.DeleteColumns(System.Int32,System.Int32)
+  name.vb: DeleteColumns(Integer, Integer)
+  fullName: Egap.Spreadsheets.Worksheet.DeleteColumns(int, int)
+  fullName.vb: Egap.Spreadsheets.Worksheet.DeleteColumns(Integer, Integer)
+  nameWithType: Worksheet.DeleteColumns(int, int)
+  nameWithType.vb: Worksheet.DeleteColumns(Integer, Integer)
+- uid: Egap.Spreadsheets.Worksheet.DeleteColumns(System.String,System.Int32)
+  name: DeleteColumns(string, int)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_DeleteColumns_System_String_System_Int32_
+  commentId: M:Egap.Spreadsheets.Worksheet.DeleteColumns(System.String,System.Int32)
+  name.vb: DeleteColumns(String, Integer)
+  fullName: Egap.Spreadsheets.Worksheet.DeleteColumns(string, int)
+  fullName.vb: Egap.Spreadsheets.Worksheet.DeleteColumns(String, Integer)
+  nameWithType: Worksheet.DeleteColumns(string, int)
+  nameWithType.vb: Worksheet.DeleteColumns(String, Integer)
+- uid: Egap.Spreadsheets.Worksheet.DeleteColumns*
+  name: DeleteColumns
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_DeleteColumns_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.DeleteColumns
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.DeleteColumns
+  nameWithType: Worksheet.DeleteColumns
+- uid: Egap.Spreadsheets.Worksheet.DeleteRows(System.Int32,System.Int32)
+  name: DeleteRows(int, int)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_DeleteRows_System_Int32_System_Int32_
+  commentId: M:Egap.Spreadsheets.Worksheet.DeleteRows(System.Int32,System.Int32)
+  name.vb: DeleteRows(Integer, Integer)
+  fullName: Egap.Spreadsheets.Worksheet.DeleteRows(int, int)
+  fullName.vb: Egap.Spreadsheets.Worksheet.DeleteRows(Integer, Integer)
+  nameWithType: Worksheet.DeleteRows(int, int)
+  nameWithType.vb: Worksheet.DeleteRows(Integer, Integer)
+- uid: Egap.Spreadsheets.Worksheet.DeleteRows*
+  name: DeleteRows
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_DeleteRows_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.DeleteRows
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.DeleteRows
+  nameWithType: Worksheet.DeleteRows
 - uid: Egap.Spreadsheets.Worksheet.Drawings
   name: Drawings
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Drawings
@@ -64721,6 +64762,47 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Index
   nameWithType: Worksheet.Index
+- uid: Egap.Spreadsheets.Worksheet.InsertColumns(System.Int32,System.Int32)
+  name: InsertColumns(int, int)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_InsertColumns_System_Int32_System_Int32_
+  commentId: M:Egap.Spreadsheets.Worksheet.InsertColumns(System.Int32,System.Int32)
+  name.vb: InsertColumns(Integer, Integer)
+  fullName: Egap.Spreadsheets.Worksheet.InsertColumns(int, int)
+  fullName.vb: Egap.Spreadsheets.Worksheet.InsertColumns(Integer, Integer)
+  nameWithType: Worksheet.InsertColumns(int, int)
+  nameWithType.vb: Worksheet.InsertColumns(Integer, Integer)
+- uid: Egap.Spreadsheets.Worksheet.InsertColumns(System.String,System.Int32)
+  name: InsertColumns(string, int)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_InsertColumns_System_String_System_Int32_
+  commentId: M:Egap.Spreadsheets.Worksheet.InsertColumns(System.String,System.Int32)
+  name.vb: InsertColumns(String, Integer)
+  fullName: Egap.Spreadsheets.Worksheet.InsertColumns(string, int)
+  fullName.vb: Egap.Spreadsheets.Worksheet.InsertColumns(String, Integer)
+  nameWithType: Worksheet.InsertColumns(string, int)
+  nameWithType.vb: Worksheet.InsertColumns(String, Integer)
+- uid: Egap.Spreadsheets.Worksheet.InsertColumns*
+  name: InsertColumns
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_InsertColumns_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.InsertColumns
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.InsertColumns
+  nameWithType: Worksheet.InsertColumns
+- uid: Egap.Spreadsheets.Worksheet.InsertRows(System.Int32,System.Int32)
+  name: InsertRows(int, int)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_InsertRows_System_Int32_System_Int32_
+  commentId: M:Egap.Spreadsheets.Worksheet.InsertRows(System.Int32,System.Int32)
+  name.vb: InsertRows(Integer, Integer)
+  fullName: Egap.Spreadsheets.Worksheet.InsertRows(int, int)
+  fullName.vb: Egap.Spreadsheets.Worksheet.InsertRows(Integer, Integer)
+  nameWithType: Worksheet.InsertRows(int, int)
+  nameWithType.vb: Worksheet.InsertRows(Integer, Integer)
+- uid: Egap.Spreadsheets.Worksheet.InsertRows*
+  name: InsertRows
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_InsertRows_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.InsertRows
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.InsertRows
+  nameWithType: Worksheet.InsertRows
 - uid: Egap.Spreadsheets.Worksheet.Item(Egap.Spreadsheets.CellAddress)
   name: this[CellAddress]
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Item_Egap_Spreadsheets_CellAddress_
