@@ -329,6 +329,7 @@ public sealed class RowColumnEditTests
     [InlineData("insert B", "A1:E10", "3", "E2:E10")]
     [InlineData("delete C", "A1:C10", null, "C2:C10")]
     [InlineData("delete D", "A1:C10", "2", null)]
+    [InlineData("insert A, delete C", "B1:D10", "1", "D2:D10")]
     public void ASheetFilterAndSortFollowColumnEdits(string edit, string range, string? column, string? sorted)
     {
         // Excel 16.0, filtering on C and sorting on D of A1:D10: the filter's column is counted from its first column, a
@@ -347,6 +348,8 @@ public sealed class RowColumnEditTests
     [InlineData("delete B", "A1:C10", "1", "A2:C10", "C2:C10")]
     [InlineData("delete C", "A1:C10", null, "A2:C10", "C2:C10")]
     [InlineData("delete D", "A1:C10", "2", null, null)]
+    [InlineData("insert A, delete A", "A1:D10", "2", "A2:D10", "D2:D10")]
+    [InlineData("insert A, delete C", "B1:D10", "1", "B2:D10", "D2:D10")]
     public void ATableFilterAndSortFollowEdits(string edit, string range, string? column, string? sortRange, string? sorted)
     {
         MemoryStream file = Filtered(sheet: false);
@@ -363,10 +366,19 @@ public sealed class RowColumnEditTests
 
     private static void Edit(Worksheet sheet, string edit)
     {
+        if (edit.Split(", ") is [string first, string second])
+        {
+            Edit(sheet, first);
+            Edit(sheet, second);
+            return;
+        }
+
         switch (edit)
         {
             case "insert row": sheet.InsertRows(0); break;
+            case "insert A": sheet.InsertColumns("A"); break;
             case "insert B": sheet.InsertColumns("B"); break;
+            case "delete A": sheet.DeleteColumns("A"); break;
             case "delete B": sheet.DeleteColumns("B"); break;
             case "delete C": sheet.DeleteColumns("C"); break;
             default: sheet.DeleteColumns("D"); break;

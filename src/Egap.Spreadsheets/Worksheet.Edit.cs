@@ -469,9 +469,14 @@ public sealed partial class Worksheet
             if (table.Source?.Element is { } read)
             {
                 // The table's filter and sort are written as they were read, so they move here.
+                // Each edit reads the filter's range, so it moves too, or a second edit would count from the old first column.
                 foreach (XElement filter in read.Elements().Where(e => e.Name.LocalName == "autoFilter"))
                 {
                     MoveFilterColumns(filter, edit);
+                    if ((string?)filter.Attribute("ref") is { } text && MovedList(text, edit) is { } movedFilter)
+                    {
+                        filter.SetAttributeValue("ref", movedFilter);
+                    }
                 }
 
                 foreach (XElement sort in read.Elements().Where(e => e.Name.LocalName == "sortState").ToList())
