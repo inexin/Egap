@@ -34,8 +34,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - `Chart.Draw` draws a chart on any Egami canvas, with `ChartDrawOptions` for the theme, fonts and culture: column, bar, line,
   area, pie, doughnut, scatter, bubble, radar, stock and combined charts, laid out to the rules read from Excel. A DOCX chart
-  now draws through it on pages and in PDFs, where before it showed the picture saved with it, if any. A 3D chart, a surface,
-  a pie of pie and the `cx:` kinds keep their picture for now. `ChartDrawOptions.Host` follows Excel's defaults or Word's;
+  now draws through it on pages and in PDFs, where before it showed the picture saved with it, if any. `ChartDrawOptions.Host` follows Excel's defaults or Word's;
   a Word document's pages use Word's.
 - A chart property or label position its type has no place for now throws `InvalidOperationException`; before, it wrote a file
   that Excel might refuse. The charts guide lists them, and changing `ChartPlot.Grouping` takes away positions it no longer allows.
@@ -46,8 +45,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Charts: `Egap.Documents.Charts` reads, edits, creates and saves chart parts of both kinds, `c:` (column, bar, line, area,
   pie, doughnut, scatter, bubble, radar, stock, surface and their 3D forms) and `cx:` (waterfall, histogram, Pareto, box and
   whisker, treemap, sunburst, funnel, region map), through one `Chart` class. What the model has no property for stays in
-  the part. `Island.Chart` is a Word chart, and `new Island(document, chart, width, height)` adds one; `cx:` charts in Word
-  stay the picture Word saves with them. Drawing charts comes next.
+  the part. `Island.Chart` is a Word chart, also of the `cx:` kinds, and `new Island(document, chart, width, height)` adds a
+  `c:` one.
+- `Chart.Draw` also draws waterfall, histogram, Pareto, box and whisker, treemap, sunburst and funnel charts, 3D charts with
+  Excel's projection (right-angle or turned, with perspective; bars, cones, cylinders, pyramids, lines, areas, pies and the
+  data table under the plot), surfaces and pies with a second plot. A DOCX `cx:` chart reads as a chart and draws this way;
+  only a region map keeps its picture.
 - `Document.Identify` knows CSV (`DocumentFormatKind.Csv`) by its `.csv`, `.tsv` or `.tab` extension. Loading it or an Excel
   workbook now needs `SpreadsheetFormat.Register()` from Egap.Spreadsheets; without it the error names the package.
 - RTF loading allocates about 7 % less, at the same speed and with the same result: the reader now sets Word's

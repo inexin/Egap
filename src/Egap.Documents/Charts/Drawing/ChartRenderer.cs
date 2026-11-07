@@ -57,6 +57,7 @@ internal sealed partial class ChartRenderer
     private readonly Dictionary<(ChartSeries Series, int Index), Mark> marks = [];
     private Canvas canvas = null!;
     private float radarRoom;
+    private DrawnAxis? surfaceAxis;
     private float width;
     private float height;
 
@@ -75,9 +76,11 @@ internal sealed partial class ChartRenderer
         seriesCount = plots.Sum(p => p.Series.Count);
     }
 
-    /// <summary>Whether this stage of the renderer draws <paramref name="chart"/> as itself: not a newer kind, a 3D chart, a surface or a pie with a second plot.</summary>
+    /// <summary>Whether the renderer draws <paramref name="chart"/>: every type but a region map and a plot of no type it knows.</summary>
     public static bool Draws(Chart chart) =>
-        !chart.IsExtended && chart.Plots.All(p => !p.Is3D && p.Type is not (ChartType.Surface or ChartType.PieOfPie or ChartType.BarOfPie or ChartType.Unknown));
+        chart.IsExtended
+            ? chart.Plots.All(p => p.Type is not (ChartType.RegionMap or ChartType.Unknown))
+            : chart.Plots.All(p => p.Type != ChartType.Unknown);
 
     /// <summary>Draws the chart into <paramref name="bounds"/>.</summary>
     public void Draw(Canvas target, RectF bounds)
@@ -91,11 +94,32 @@ internal sealed partial class ChartRenderer
         marks.Clear();
         DrawnLabels.Clear();
         DrawnErrorBars.Clear();
+        if (chart.IsExtended)
+        {
+            width = bounds.Width;
+            height = bounds.Height;
+            canvas.Save();
+            canvas.ClipRect(bounds);
+            canvas.Translate(bounds.X, bounds.Y);
+            DrawExtended();
+            canvas.Restore();
+            return;
+        }
+
         ChartBoxes boxes = Layout(bounds.Width, bounds.Height);
         canvas.Save();
         canvas.ClipRect(bounds);
         canvas.Translate(bounds.X, bounds.Y);
         DrawChartArea();
+        if (plots.Any(IsThreeD) || plots.Any(p => p.Type is ChartType.PieOfPie or ChartType.BarOfPie))
+        {
+            DrawThreeDOrPair(boxes);
+            DrawTitle(boxes);
+            DrawLegend(boxes);
+            canvas.Restore();
+            return;
+        }
+
         DrawPlotBackground(boxes);
         foreach (DrawnAxis axis in boxes.Axes)
         {
@@ -120,6 +144,19 @@ internal sealed partial class ChartRenderer
         width = chartWidth;
         height = chartHeight;
         ChartBoxes boxes = new();
+        surfaceAxis = null;
+        if (plots.Any(p => p.Type == ChartType.Surface))
+        {
+            // A surface's legend lists the bands of its scale, and the legend has to know before the plot's size does.
+            ChartBoxes early = new();
+            BuildAxes(early);
+            if (early.Axes.FirstOrDefault(a => !a.IsCategories) is { } values)
+            {
+                Scale(values, new RectF(0, 0, width, height * SurfaceAxisShare));
+                surfaceAxis = values;
+            }
+        }
+
         float top = PlotMargin;
         float titleBottom = 0;
         if (TitleText() is { } title)
@@ -176,6 +213,7 @@ internal sealed partial class ChartRenderer
             }
         }
 
+        bottom -= DataTableRoom();
         BuildAxes(boxes);
         LayOutPlot(boxes, left, top, right, bottom);
         return boxes;
@@ -290,7 +328,11 @@ internal sealed partial class ChartRenderer
         }
 
         Look look = TitleLook();
-        DrawTextIn(TitleLines(text, look), look, box, chart.Title.TextFormat.Rotation);
+        string lines = TitleLines(text, look);
+
+        // A cut title stays centred as if its ellipsis were not there.
+        float past = lines.EndsWith('…') && (chart.Title.TextFormat.Rotation ?? 0) == 0 ? Measure("…", look).Width / 2 : 0;
+        DrawTextIn(lines, look, new RectF(box.X + past, box.Y, box.Width, box.Height), chart.Title.TextFormat.Rotation);
     }
 
     /// <summary>Text drawn in the middle of a box, turned by <paramref name="rotation"/> degrees clockwise.</summary>
@@ -330,7 +372,7 @@ internal sealed partial class ChartRenderer
     /// <summary>What a piece of chart text looks like.</summary>
     private readonly record struct Look(string Font, float Size, bool Bold, bool Italic, Rgba8 Color);
 
-    private Look TitleLook() => LookOf(chart.Title.TextFormat, baseSizeSet || (word && chart.HasTitle && chart.Title.Text is { Length: > 0 }) ? (baseSizeSet ? baseSize * 1.2f : baseSize) : baseSize * 1.8f, true);
+    private Look TitleLook() => LookOf(chart.Title.TextFormat, baseSizeSet || (word && chart.HasTitle && chart.Title.Text is { Length: > 0 } && !plots.Any(IsThreeD)) ? (baseSizeSet ? baseSize * 1.2f : baseSize) : baseSize * 1.8f, true);
 
     private Look LookOf(ChartTextFormat format, float size, bool bold = false)
     {

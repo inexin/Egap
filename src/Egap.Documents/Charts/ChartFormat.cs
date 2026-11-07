@@ -475,7 +475,7 @@ public sealed class ChartTextFormat
     /// <summary>The colour, or null when it comes from further out.</summary>
     public ChartColor? Color
     {
-        get => ChartColor.Read(Properties(false)?.Element(ChartNs.A + "solidFill"));
+        get => ChartColor.Read(Properties(false)?.Element(ChartNs.A + "solidFill") ?? RunProperties().Elements(ChartNs.A + "solidFill").FirstOrDefault());
         set
         {
             RunProperties().Elements(ChartNs.A + "solidFill").Remove();

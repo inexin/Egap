@@ -120,9 +120,10 @@ book.Save("chart.xlsx");
 `Chart.Draw` draws a chart on any Egami canvas, with the layout Excel gives it: the title, the legend, the plot, the axes' steps
 and the labels. `ChartDrawOptions.Host` picks whose defaults to follow where the file leaves something out: `ChartHost.Excel`,
 the default, or `ChartHost.Word`, which a Word document's pages use. They differ in corners, line and marker sizes, the size of a
-title and the spacing of a legend. Column, bar, line, area, pie, doughnut, scatter, bubble, radar, stock and combined charts draw this way. A
-chart of the newer `cx:` kinds, a 3D chart, a surface and a pie of pie are still to come: a Word document shows the picture
-saved with them, and printing a sheet draws a 3D chart flat.
+title and the spacing of a legend. Column, bar, line, area, pie, doughnut, scatter, bubble, radar, stock and combined charts draw this way, and so do waterfall,
+histogram, Pareto, box and whisker, treemap, sunburst and funnel charts, 3D charts with the view their part sets (right-angle
+or turned, with perspective), surfaces, and a pie of pie or bar of pie. A region map draws nothing, because its shapes come from a
+map service: a Word document shows the picture saved with it.
 
 ```csharp
 using Egami;

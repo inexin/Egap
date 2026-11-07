@@ -5,7 +5,7 @@ namespace Egap.Documents.Charts;
 /// <summary>Turns a chart's colours into pixels: its theme slots and colour changes, and the colours its style number gives what it leaves automatic.</summary>
 internal sealed class ChartPalette(Theme theme, int style)
 {
-    private static readonly ThemeColor[] Accents =
+    internal static readonly ThemeColor[] Accents =
     [
         ThemeColor.Accent1, ThemeColor.Accent2, ThemeColor.Accent3, ThemeColor.Accent4, ThemeColor.Accent5, ThemeColor.Accent6,
     ];
@@ -21,6 +21,9 @@ internal sealed class ChartPalette(Theme theme, int style)
 
     /// <summary>What axes, gridlines and the chart's frame draw with unless they say otherwise: the text colour at three quarters tint.</summary>
     public Rgba8 AutomaticLine => Mix(Dark, Light, 0.4745);
+
+    /// <summary>The thin line round a 3D area with no line of its own: the background's colour.</summary>
+    public Rgba8 AutomaticEdge => Light;
 
     /// <summary>The colour <paramref name="color"/> stands for.</summary>
     public Rgba8 Resolve(ChartColor color)
@@ -45,8 +48,12 @@ internal sealed class ChartPalette(Theme theme, int style)
     /// </summary>
     public Rgba8 Series(int index, int count)
     {
-        index = Math.Max(index, 0);
-        count = Math.Max(count, index + 1);
+        Rgba8 color = Picked(Math.Max(index, 0), Math.Max(count, Math.Max(index, 0) + 1));
+        return style is >= SoftStylesFrom and <= SoftStylesTo ? Mix(color, new Rgba8(255, 255, 255, 255), SoftShare) : color;
+    }
+
+    private Rgba8 Picked(int index, int count)
+    {
         int family = (Math.Clamp(style, 1, 48) - 1) % 8;
         if (family == 1)
         {
@@ -59,6 +66,10 @@ internal sealed class ChartPalette(Theme theme, int style)
         double place = (index + 1.0) / (count + 1.0);
         return place < 0.5 ? Scale(start, 0.5 + place) : Mix(start, new Rgba8(255, 255, 255, 255), (place - 0.5) * 1.2);
     }
+
+    private const int SoftStylesFrom = 17;
+    private const int SoftStylesTo = 24;
+    private const double SoftShare = 0.4;
 
     /// <summary>Blends two colours: none of <paramref name="other"/> at 0, all of it at 1.</summary>
     public static Rgba8 Mix(Rgba8 color, Rgba8 other, double amount) => new(

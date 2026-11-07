@@ -313,7 +313,7 @@ public sealed class Chart
     }
 
     /// <summary>Draws the chart on a canvas: its data, as its part last cached it, into <paramref name="bounds"/>, in the canvas's points.
-    /// Charts of the newer kinds and 3D charts draw from later stages of the renderer: a newer kind draws nothing, and a 3D chart draws as its 2D form.</summary>
+    /// A region map draws nothing: its shapes come from a map service.</summary>
     /// <param name="canvas">The canvas to draw on.</param>
     /// <param name="bounds">Where the chart goes.</param>
     /// <param name="options">The theme, fonts and culture; Office's defaults when null.</param>
@@ -391,6 +391,15 @@ public sealed class Chart
             return null;
         }
     }
+
+    /// <summary>A 3D chart's back wall.</summary>
+    internal ChartFormat BackWallFormat => new(body["backWall"]);
+
+    /// <summary>A 3D chart's side wall.</summary>
+    internal ChartFormat SideWallFormat => new(body["sideWall"]);
+
+    /// <summary>A 3D chart's floor.</summary>
+    internal ChartFormat FloorFormat => new(body["floor"]);
 
     internal byte[] ToBytes() => OpcPackageWriter.Serialize(document);
 

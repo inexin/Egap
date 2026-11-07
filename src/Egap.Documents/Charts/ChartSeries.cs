@@ -247,6 +247,9 @@ public sealed class ChartSeries
     /// <summary>How a histogram or Pareto chart groups its values into bins.</summary>
     public ChartBinning Binning => new(LayoutProperties["binning"]);
 
+    /// <summary>Whether the values go into bins, rather than adding up by category.</summary>
+    internal bool HasBinning => LayoutProperties["binning"].Exists;
+
     /// <summary>A box and whisker chart's way of working out quartiles: <c>exclusive</c>, <c>inclusive</c>, or null when not said.</summary>
     public string? QuartileMethod
     {

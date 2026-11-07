@@ -498,7 +498,7 @@ public sealed class Island : Inline
 
     /// <summary>
     /// The chart, for a chart read from a Word document or made in code; null for other islands, for a chart whose part
-    /// cannot be read, and for one of the newer types, which Word's files hold with a picture and which come in as that picture.
+    /// cannot be read. The newer types come in as charts too, with the picture Word keeps beside them still in <see cref="Fallback"/>.
     /// A chart you edit is saved with the document.
     /// </summary>
     public Chart? Chart

@@ -659,6 +659,22 @@ internal sealed partial class ChartRenderer
             return entries;
         }
 
+        // A surface's legend shows its bands of values.
+        if (plots.FirstOrDefault(p => p.Type == ChartType.Surface) is { } surface)
+        {
+            DrawnAxis? axis = surfaceAxis;
+            if (axis is not null)
+            {
+                List<double> ticks = axis.Scale.Ticks();
+                for (int i = 0; i + 1 < ticks.Count; i++)
+                {
+                    entries.Add(new Entry(TickText(axis, ticks[i], false) + "-" + TickText(axis, ticks[i + 1], false), new ChartFormat(ChartNode.Nowhere(ChartNs.C + "spPr")), BandColor(surface, i, ticks.Count - 1), false, null, false));
+                }
+            }
+
+            return entries;
+        }
+
         List<Entry> trends = [];
         bool perPointLegend = false;
         foreach (ChartPlot plot in plots)
@@ -687,7 +703,7 @@ internal sealed partial class ChartRenderer
             foreach (ChartSeries s in series)
             {
                 bool wide = lines && s.Format.LineKind != ChartLineKind.None && plot.ScatterStyle is not (ChartScatterStyle.Marker or ChartScatterStyle.None);
-                entries.Add(new Entry(SeriesName(s), s.Format, SeriesColor(s), wide, lines ? s : null, MarkersOn(plot), plot.Type == ChartType.Bubble));
+                entries.Add(new Entry(SeriesName(s), s.Format, SeriesColor(s), wide && !plot.Is3D, lines && !plot.Is3D ? s : null, MarkersOn(plot) && !plot.Is3D, plot.Type == ChartType.Bubble));
                 trends.AddRange(s.Trendlines.Select(trend => new Entry(trend.Name ?? TrendName(trend, s), trend.Format, palette.Dark, true, null, false)));
             }
         }

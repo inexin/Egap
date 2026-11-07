@@ -268,6 +268,10 @@ internal sealed partial class ChartRenderer
 
     private void LayOutPlot(ChartBoxes boxes, float left, float top, float right, float bottom)
     {
+        roomLeft = left;
+        roomRight = right;
+        roomTop = top;
+        roomBottom = bottom;
         if (boxes.Axes.Count == 0)
         {
             bool radial = plots.Count > 0;
@@ -277,7 +281,8 @@ internal sealed partial class ChartRenderer
                 inner = RectF.FromEdges(PlotMargin, top, right - PlotMargin, bottom - PlotMargin);
             }
 
-            boxes.Plot = RoundPlot(ManualPlot(inner) ?? inner, boxes);
+            roundRoom = ManualPlot(inner) ?? inner;
+            boxes.Plot = RoundPlot(roundRoom, boxes);
             return;
         }
 
@@ -312,6 +317,13 @@ internal sealed partial class ChartRenderer
 
         boxes.Plot = plot;
     }
+
+    /// <summary>The whole of the room a pie's plot has before it is made square.</summary>
+    private RectF roundRoom;
+    private float roomLeft;
+    private float roomRight;
+    private float roomTop;
+    private float roomBottom;
 
     private RectF RoundPlot(RectF inner, ChartBoxes boxes)
     {
@@ -727,7 +739,7 @@ internal sealed partial class ChartRenderer
             }
             else
             {
-                axis.Scale = ChartScale.Automatic(low, high, Fits, model.Minimum, model.Maximum, model.MajorUnit, model.MinorUnit, axis.Plots.Any(p => p.Type == ChartType.Radar) ? 0 : 0.05);
+                axis.Scale = ChartScale.Automatic(low, high, Fits, model.Minimum, model.Maximum, model.MajorUnit, model.MinorUnit, axis.Plots.Any(p => p.Type == ChartType.Radar || IsThreeD(p)) ? 0 : 0.05);
             }
         }
 
