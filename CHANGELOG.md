@@ -40,6 +40,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   that Excel might refuse. The charts guide lists them, and changing `ChartPlot.Grouping` takes away positions it no longer allows.
 - A copy of a chart, edited and saved in the same file, has its own embedded workbook and style parts. Before, it shared them
   with the first, so editing one chart's data in Word changed both.
+- A title added to a chart now says it sits beside the plot; before, Word drew it over the plot.
 - A package part whose XML declaration trips .NET's XML reader now gives a `DocumentException`, as other malformed XML does,
   and no longer an `ArgumentOutOfRangeException`.
 - Charts: `Egap.Documents.Charts` reads, edits, creates and saves chart parts of both kinds, `c:` (column, bar, line, area,

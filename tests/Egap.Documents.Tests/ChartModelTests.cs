@@ -224,6 +224,15 @@ public sealed class ChartModelTests
     }
 
     [Fact]
+    public void ANewTitleSitsBesideThePlot()
+    {
+        Chart chart = Chart.Create(ChartType.Column);
+        chart.HasTitle = false;
+        chart.Title.Text = "New";
+        Assert.False(chart.Title.Overlay);
+    }
+
+    [Fact]
     public void ACopiedChartSavesAsTwo()
     {
         Document document = new();
