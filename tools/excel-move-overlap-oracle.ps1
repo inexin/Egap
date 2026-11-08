@@ -14,7 +14,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/excel-move-overlap-ora
 param([Parameter(Mandatory = $true)][string]$Output)
 $ErrorActionPreference = 'Stop'
 $formulas = @('SUM(B5:B7)', 'SUM(B6:B9)', 'SUM(B4:B9)', 'SUM(B1:B5)', 'SUM(B3:B5)', 'SUM(B1:B3)', 'SUM(B5:B6)', 'B5', 'B6', 'SUM(B7:B9)',
-    'SUM(B2:B4)', 'SUM(B3:B8)', 'SUM(B1:B20)', 'SUM(B5:C7)', 'SUM(A5:K7)', 'SUM(B8:B12)', 'SUM(B9:B12)', 'SUM(B4:B5)', 'SUM(B3:B4)', 'SUM(B6:B7)', 'SUM(B2:B6)', 'SUM(B6:B12)')
+    'SUM(B2:B4)', 'SUM(B3:B8)', 'SUM(B1:B20)', 'SUM(B5:C7)', 'SUM(A5:K7)', 'SUM(B8:B12)', 'SUM(B9:B12)', 'SUM(B4:B5)', 'SUM(B3:B4)', 'SUM(B6:B7)', 'SUM(B2:B6)', 'SUM(B6:B12)',
+    'SUM(D5:T5)', 'SUM(D5:T6)', 'SUM(D4:T5)', 'SUM(D6:T8)', 'SUM(A6:Q6)', 'SUM(A3:Q3)', 'SUM(D5:T7)')
 $moves = @(@('A2:J4', 'A4'), @('A2:J4', 'A6'), @('A2:J4', 'A10'), @('A2:A4', 'A4'), @('A6:J8', 'A4'), @('A5', 'A6'), @('A2:J4', 'A3'), @('A6:J8', 'A7'), @('B2:B4', 'B4'))
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false

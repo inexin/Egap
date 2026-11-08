@@ -329,6 +329,30 @@ public sealed class RangeCopyTests
         Assert.Equal("G16+1", sheet["H16"].Formula);
     }
 
+    [Theory]
+    [InlineData("C6:C101", "B3", "C6:C101 I6<-7")]
+    [InlineData("C2:C101", "B3", "C2:C101 I2<-7|D4:D7 J4<-7")]
+    [InlineData("C6:C101", "F3", "C6:C101 I6<-7")]
+    [InlineData("D6:D20", "B3", "D6:D20 I6<-7")]
+    public void ACopyOntoItsOwnCellsKeepsTheConditionalFormatsThereAsExcelDoes(string rule, string to, string expected)
+    {
+        // What Excel 16.0 build 20527 left after copying A1:C5 with numbers in A1:I12.
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        for (int row = 0; row < 12; row++)
+        {
+            for (int column = 0; column < 9; column++)
+            {
+                sheet.Cells[row, column].Value = ((row + 1) * 10) + column + 1;
+            }
+        }
+
+        RangeAddress range = RangeAddress.Parse(rule);
+        sheet.ConditionalFormats.Add(range, ConditionalFormatRule.Expression("I" + (range.First.Row + 1) + "<-7", CellStyle.Default));
+        sheet.Range("A1:C5").CopyTo(sheet[to]);
+        Assert.Equal(expected, string.Join("|", sheet.ConditionalFormats.Select(f => string.Join(" ", f.Ranges) + " " + f.Rules[0].Formulas[0]).Order(StringComparer.Ordinal)));
+    }
+
     [Fact]
     public void ACopyOverTheFirstCellOfASharedFormulaLeavesTheOthersTheirFormulas()
     {

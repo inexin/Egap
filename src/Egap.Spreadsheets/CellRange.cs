@@ -185,10 +185,11 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
     /// Copies the range's cells to a place on a sheet of the same workbook, as Excel's Copy and Paste do: values, formulas,
     /// styles, merges, notes, links, validations and conditional formats. A formula's relative references move with it, and
     /// one that would move off the sheet becomes <c>#REF!</c>; absolute ones stay. What was in the cells written over goes,
-    /// though, as in Excel, a copy onto part of itself that takes no links keeps the links of the cells written over. A merge
-    /// the range cuts is copied as the part of it in the range when its first cell is in the range, and a link the range cuts
-    /// as the part of it in the range. On a sheet whose filter hides rows, only the rows that show are copied, one under
-    /// another; when they come in more than one run, formulas are pasted as their results.
+    /// though, as in Excel, a copy onto part of itself keeps the conditional formats of the cells written over and, when it
+    /// takes no links, their links. A merge the range cuts is copied as the part of it in the range when its first cell is
+    /// in the range, and a link the range cuts as the part of it in the range. On a sheet whose filter hides rows, only the
+    /// rows that show are copied, one under another; when they come in more than one run, formulas are pasted as their
+    /// results.
     /// </summary>
     /// <param name="destination">The cell the range's first cell goes to.</param>
     /// <exception cref="ArgumentNullException">The destination is null.</exception>

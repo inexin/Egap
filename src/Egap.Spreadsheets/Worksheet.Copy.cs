@@ -72,7 +72,8 @@ public sealed partial class Worksheet
             to.Hyperlinks.AddRead(Copied(link, lands));
         }
 
-        to.TrimRules(destination);
+        // Excel keeps the conditional formats of the cells written over whole when a copy goes onto its own cells.
+        to.TrimRules(destination, formats: meet is null);
         foreach (DataValidation rule in validations)
         {
             to.DataValidations.AddRead(rule);
@@ -645,9 +646,10 @@ public sealed partial class Worksheet
 
     /// <summary>
     /// Takes an area out of the sheet's validations and conditional formats, as a paste writes over theirs; a rule left with
-    /// no cells goes, and one whose first cell goes has its formulas written for its new first cell.
+    /// no cells goes, and one whose first cell goes has its formulas written for its new first cell. Conditional formats
+    /// are left as they are unless <paramref name="formats"/>.
     /// </summary>
-    private void TrimRules(RangeAddress area)
+    private void TrimRules(RangeAddress area, bool formats = true)
     {
         foreach (DataValidation rule in DataValidations.ToList())
         {
@@ -666,7 +668,7 @@ public sealed partial class Worksheet
             rule.Formula2 = rule.Formula2 is null ? null : Reanchored(rule.Formula2, anchor, rule.Ranges[0].First);
         }
 
-        foreach (ConditionalFormat format in ConditionalFormats.ToList())
+        foreach (ConditionalFormat format in formats ? ConditionalFormats.ToList() : [])
         {
             if (Trimmed(format.Ranges, area) is not { } anchor)
             {

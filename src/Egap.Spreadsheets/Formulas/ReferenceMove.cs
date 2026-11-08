@@ -124,6 +124,15 @@ internal static class ReferenceMove
             return (slid.Gone ? area with { Kind = AreaKind.Error } : With(area, slid.Range), false);
         }
 
+        // A range wider than the band that moves loses a strip the paste writes over, unless the strip's outer edge is the
+        // paste's own edge, as along the move.
+        RangeAddress destination = move.Destination;
+        if (sheet == move.From && !move.Source.Intersects(range) && destination.Intersects(range) && !destination.Contains(range)
+            && !Slides(range, move) && Trimmed(range, destination) is { } kept && !OnEdge(range, kept, destination))
+        {
+            return (With(area, kept), false);
+        }
+
         if (sheet == move.To && move.Overwrites(range))
         {
             return (area with { Kind = AreaKind.Error }, false);
@@ -177,24 +186,36 @@ internal static class ReferenceMove
     private static (RangeAddress Range, bool Gone)? Slid(RangeAddress range, CellMove move)
     {
         RangeAddress source = move.Source;
-        if (move.ColumnOffset == 0 && move.RowOffset != 0
-            && source.First.Column <= range.First.Column && range.Last.Column <= source.Last.Column)
+        if (!Slides(range, move))
+        {
+            return null;
+        }
+
+        if (move.ColumnOffset == 0)
         {
             return Along(range.First.Row, range.Last.Row, source.First.Row, source.Last.Row, move.RowOffset) is { } rows
                 ? (new RangeAddress(rows.First, range.First.Column, rows.Last, range.Last.Column), rows.Gone)
                 : null;
         }
 
-        if (move.RowOffset == 0 && move.ColumnOffset != 0
-            && source.First.Row <= range.First.Row && range.Last.Row <= source.Last.Row)
-        {
-            return Along(range.First.Column, range.Last.Column, source.First.Column, source.Last.Column, move.ColumnOffset) is { } columns
-                ? (new RangeAddress(range.First.Row, columns.First, range.Last.Row, columns.Last), columns.Gone)
-                : null;
-        }
-
-        return null;
+        return Along(range.First.Column, range.Last.Column, source.First.Column, source.Last.Column, move.ColumnOffset) is { } columns
+            ? (new RangeAddress(range.First.Row, columns.First, range.Last.Row, columns.Last), columns.Gone)
+            : null;
     }
+
+    /// <summary>Whether the strip a range lost to <paramref name="kept"/> ends on the same edge of the paste as the range does.</summary>
+    private static bool OnEdge(RangeAddress range, RangeAddress kept, RangeAddress destination) =>
+        (kept.First.Row > range.First.Row && range.First.Row == destination.First.Row)
+        || (kept.Last.Row < range.Last.Row && range.Last.Row == destination.Last.Row)
+        || (kept.First.Column > range.First.Column && range.First.Column == destination.First.Column)
+        || (kept.Last.Column < range.Last.Column && range.Last.Column == destination.Last.Column);
+
+    /// <summary>Whether cells move straight along a range's rows or columns on its sheet, with the range within the band that moves.</summary>
+    private static bool Slides(RangeAddress range, CellMove move) =>
+        !move.Across && ((move.ColumnOffset == 0 && move.RowOffset != 0
+            && move.Source.First.Column <= range.First.Column && range.Last.Column <= move.Source.Last.Column)
+        || (move.RowOffset == 0 && move.ColumnOffset != 0
+            && move.Source.First.Row <= range.First.Row && range.Last.Row <= move.Source.Last.Row));
 
     /// <summary>
     /// Excel's rule along the move for a range <paramref name="first"/> to <paramref name="last"/> when the cut
