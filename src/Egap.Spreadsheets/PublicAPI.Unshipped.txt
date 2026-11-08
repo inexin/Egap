@@ -1075,27 +1075,27 @@ Egap.Spreadsheets.Worksheet.InsertColumns(string! column, int count = 1) -> void
 Egap.Spreadsheets.Worksheet.InsertRows(int row, int count = 1) -> void
 Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell! destination) -> void
 Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell! destination) -> void
-Egap.Spreadsheets.SortKey.Index.get -> int
-Egap.Spreadsheets.SortKey.Descending.get -> bool
-Egap.Spreadsheets.SortKey.Descending.init -> void
-Egap.Spreadsheets.SortKey.Index.init -> void
-Egap.Spreadsheets.SortKey
-Egap.Spreadsheets.SortKey.SortKey() -> void
-~override Egap.Spreadsheets.SortKey.ToString() -> string
-static Egap.Spreadsheets.SortKey.operator !=(Egap.Spreadsheets.SortKey left, Egap.Spreadsheets.SortKey right) -> bool
+Egap.Spreadsheets.SortField.Index.get -> int
+Egap.Spreadsheets.SortField.Descending.get -> bool
+Egap.Spreadsheets.SortField.Descending.init -> void
+Egap.Spreadsheets.SortField.Index.init -> void
+Egap.Spreadsheets.SortField
+Egap.Spreadsheets.SortField.SortField() -> void
+~override Egap.Spreadsheets.SortField.ToString() -> string
+static Egap.Spreadsheets.SortField.operator !=(Egap.Spreadsheets.SortField left, Egap.Spreadsheets.SortField right) -> bool
 Egap.Spreadsheets.SortOptions
-static Egap.Spreadsheets.SortKey.operator ==(Egap.Spreadsheets.SortKey left, Egap.Spreadsheets.SortKey right) -> bool
-override Egap.Spreadsheets.SortKey.GetHashCode() -> int
+static Egap.Spreadsheets.SortField.operator ==(Egap.Spreadsheets.SortField left, Egap.Spreadsheets.SortField right) -> bool
+override Egap.Spreadsheets.SortField.GetHashCode() -> int
 Egap.Spreadsheets.SortOptions.SortOptions() -> void
-~override Egap.Spreadsheets.SortKey.Equals(object obj) -> bool
-Egap.Spreadsheets.SortKey.Equals(Egap.Spreadsheets.SortKey other) -> bool
-Egap.Spreadsheets.SortKey.Deconstruct(out int Index, out bool Descending) -> void
+~override Egap.Spreadsheets.SortField.Equals(object obj) -> bool
+Egap.Spreadsheets.SortField.Equals(Egap.Spreadsheets.SortField other) -> bool
+Egap.Spreadsheets.SortField.Deconstruct(out int Index, out bool Descending) -> void
 Egap.Spreadsheets.SortOrientation
 Egap.Spreadsheets.SortOrientation.Columns = 1 -> Egap.Spreadsheets.SortOrientation
 Egap.Spreadsheets.SortOrientation.Rows = 0 -> Egap.Spreadsheets.SortOrientation
-Egap.Spreadsheets.CellRange.Sort(params Egap.Spreadsheets.SortKey[]! keys) -> void
-Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions! options, params Egap.Spreadsheets.SortKey[]! keys) -> void
-Egap.Spreadsheets.SortKey.SortKey(int Index, bool Descending = false) -> void
+Egap.Spreadsheets.CellRange.Sort(params Egap.Spreadsheets.SortField[]! keys) -> void
+Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions! options, params Egap.Spreadsheets.SortField[]! keys) -> void
+Egap.Spreadsheets.SortField.SortField(int Index, bool Descending = false) -> void
 Egap.Spreadsheets.SortOptions.MatchCase.init -> void
 Egap.Spreadsheets.SortOptions.MatchCase.get -> bool
 Egap.Spreadsheets.SortOptions.Orientation.get -> Egap.Spreadsheets.SortOrientation

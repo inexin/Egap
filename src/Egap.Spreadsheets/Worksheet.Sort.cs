@@ -13,7 +13,7 @@ public sealed partial class Worksheet
     /// notes and links go with it, and its formulas' relative references move as copying moves them. Hidden rows stay where
     /// they are, as in Excel.
     /// </summary>
-    internal void SortRange(RangeAddress range, SortOptions options, SortKey[] keys)
+    internal void SortRange(RangeAddress range, SortOptions options, SortField[] keys)
     {
         bool rows = options.Orientation == SortOrientation.Rows;
         int width = rows ? range.ColumnCount : range.RowCount;
@@ -22,7 +22,7 @@ public sealed partial class Worksheet
             throw new ArgumentException("A sort needs at least one key.", nameof(keys));
         }
 
-        foreach (SortKey key in keys)
+        foreach (SortField key in keys)
         {
             if (key.Index < 0 || key.Index >= width)
             {

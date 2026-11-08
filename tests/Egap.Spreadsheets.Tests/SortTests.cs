@@ -57,7 +57,7 @@ public sealed class SortTests
         }
 
         book.Calculate();
-        SortKey[] keys = [.. options[1].Split(' ').Select(k => new SortKey(int.Parse(k[..^2], CultureInfo.InvariantCulture), k.EndsWith(":d", StringComparison.Ordinal)))];
+        SortField[] keys = [.. options[1].Split(' ').Select(k => new SortField(int.Parse(k[..^2], CultureInfo.InvariantCulture), k.EndsWith(":d", StringComparison.Ordinal)))];
         SortOptions sort = new() { HasHeader = options[2] == "True", MatchCase = options[3] == "True", Orientation = options[4] == "columns" ? SortOrientation.Columns : SortOrientation.Rows };
         CellRange range = sheet.Range(options[0]);
         if (line[3].StartsWith("ERROR", StringComparison.Ordinal))
@@ -87,7 +87,7 @@ public sealed class SortTests
         sheet["A1"].Value = CellValue.FromNumber(2);
         sheet["A3"].Value = CellValue.FromNumber(1);
         sheet["A4"].Value = CellValue.FromError(CellError.NotAvailable);
-        sheet.Range("A1:A4").Sort(new SortKey(0, Descending: true));
+        sheet.Range("A1:A4").Sort(new SortField(0, Descending: true));
         Assert.Equal(CellValue.FromError(CellError.NotAvailable), sheet["A1"].Value);
         Assert.Equal(CellValue.FromNumber(2), sheet["A2"].Value);
         Assert.Equal(CellValue.FromNumber(1), sheet["A3"].Value);
@@ -99,7 +99,7 @@ public sealed class SortTests
     {
         Workbook book = Workbook.CreateEmpty();
         Worksheet sheet = book.Worksheets.Add("S");
-        Assert.Throws<ArgumentOutOfRangeException>(() => sheet.Range("A1:B4").Sort(new SortKey(2)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => sheet.Range("A1:B4").Sort(new SortField(2)));
         Assert.Throws<ArgumentException>(() => sheet.Range("A1:B4").Sort());
     }
 
@@ -118,7 +118,7 @@ public sealed class SortTests
             sheet[i + 1, 1].Value = CellValue.FromNumber(prices[i]);
         }
 
-        sheet.Range("A1:B4").Sort(new SortOptions { HasHeader = true }, new SortKey(1, Descending: true));
+        sheet.Range("A1:B4").Sort(new SortOptions { HasHeader = true }, new SortField(1, Descending: true));
         Assert.Equal(["Fruit", "fig", "pear", "apple"], [.. Enumerable.Range(0, 4).Select(r => sheet[r, 0].Value.Text)]);
     }
 

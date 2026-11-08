@@ -239,7 +239,7 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
 
     /// <summary>
     /// Sorts the range's rows by the values in key columns, smallest first unless a key says otherwise, as Excel's Sort does;
-    /// see <see cref="Sort(SortOptions, SortKey[])"/>.
+    /// see <see cref="Sort(SortOptions, SortField[])"/>.
     /// </summary>
     /// <param name="keys">The keys, most important first.</param>
     /// <exception cref="ArgumentException">No key is given.</exception>
@@ -247,10 +247,10 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
     /// <exception cref="InvalidOperationException">The range has merged cells, part of an array formula or a pivot table.</exception>
     /// <example>
     /// <code>
-    /// sheet.Range("A2:C20").Sort(new SortKey(2, Descending: true), new SortKey(0));
+    /// sheet.Range("A2:C20").Sort(new SortField(2, Descending: true), new SortField(0));
     /// </code>
     /// </example>
-    public void Sort(params SortKey[] keys) => Sort(new SortOptions(), keys);
+    public void Sort(params SortField[] keys) => Sort(new SortOptions(), keys);
 
     /// <summary>
     /// Sorts the range's rows, or its columns, by the values in key columns (or key rows), as Excel's Sort does. Numbers come
@@ -274,10 +274,10 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
     /// <exception cref="InvalidOperationException">The range has merged cells, part of an array formula or a pivot table.</exception>
     /// <example>
     /// <code>
-    /// sheet.Range("A1:D50").Sort(new SortOptions { HasHeader = true }, new SortKey(1));
+    /// sheet.Range("A1:D50").Sort(new SortOptions { HasHeader = true }, new SortField(1));
     /// </code>
     /// </example>
-    public void Sort(SortOptions options, params SortKey[] keys)
+    public void Sort(SortOptions options, params SortField[] keys)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(keys);
