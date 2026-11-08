@@ -407,11 +407,68 @@ that hold something.</p>
 
 
 
+  <a id="Egap_Spreadsheets_CellRange_CopyTo_" data-uid="Egap.Spreadsheets.CellRange.CopyTo*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_CopyTo_Egap_Spreadsheets_Cell_" data-uid="Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell)">
+  CopyTo(Cell)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies the range's cells to a place on a sheet of the same workbook, as Excel's Copy and Paste do: values, formulas,
+styles, merges, notes, links, validations and conditional formats. A formula's relative references move with it, and
+one that would move off the sheet becomes <code>#REF!</code>; absolute ones stay. What was in the cells written over goes,
+though, as in Excel, a copy onto part of itself keeps the conditional formats of the cells written over and, when it
+takes no links, their links. A merge the range cuts is copied as the part of it in the range when its first cell is
+in the range, and a link the range cuts as the part of it in the range. On a sheet whose filter hides rows, only the
+rows that show are copied, one under another; when they come in more than one run, formulas are pasted as their
+results.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CopyTo(Cell destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="Egap.Spreadsheets.Cell.html">Cell</a></dt>
+    <dd><p>The cell the range's first cell goes to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_CopyTo_Egap_Spreadsheets_Cell__examples">Examples</h4>
+  <pre><code class="lang-csharp">sheet.Range("A1:B3").CopyTo(sheet["D1"]);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The destination is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The destination is in another workbook, or the cells would run past the end of the sheet.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The copy would take part of an array formula, write over part of an array formula or merged cell, cut a merge while
+going onto its own cells, or write over a pivot table; or it copies rows a filter shows in more than one run onto its
+own cells.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Spreadsheets_CellRange_Equals_" data-uid="Egap.Spreadsheets.CellRange.Equals*"></a>
 
   <h3 id="Egap_Spreadsheets_CellRange_Equals_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.Equals(Egap.Spreadsheets.CellRange)">
   Equals(CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L255"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both ranges are the same cells of the same sheet.</p>
@@ -448,7 +505,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Equals_System_Object_" data-uid="Egap.Spreadsheets.CellRange.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L258"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
@@ -487,7 +544,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetEnumerator" data-uid="Egap.Spreadsheets.CellRange.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L241"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Every cell in the range, empty ones too, row by row and left to right.</p>
@@ -519,7 +576,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetHashCode" data-uid="Egap.Spreadsheets.CellRange.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L205"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L261"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
@@ -581,6 +638,63 @@ that hold something.</p>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The range has more than 16,777,216 cells.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_CellRange_MoveTo_" data-uid="Egap.Spreadsheets.CellRange.MoveTo*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_MoveTo_Egap_Spreadsheets_Cell_" data-uid="Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell)">
+  MoveTo(Cell)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Moves the range's cells to a place on a sheet of the same workbook, as Excel's Cut and Paste do: everything
+<a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_CopyTo_Egap_Spreadsheets_Cell_">CopyTo(Cell)</a> copies, and tables wholly in the range on the same sheet. Formulas that move keep their text, and
+every reference in the workbook to the cells that move follows them; a reference to a cell written over becomes
+<code>#REF!</code>. A range with only an edge in the cells that move, or in the cells written over, changes as in Excel:
+moved to another sheet, it loses that edge; moved straight along its rows or columns on the sheet, its ends follow the
+cells that move and pull back from the cells written over. Merges the cells land on are unmerged, as in Excel.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void MoveTo(Cell destination)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="Egap.Spreadsheets.Cell.html">Cell</a></dt>
+    <dd><p>The cell the range's first cell goes to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_MoveTo_Egap_Spreadsheets_Cell__examples">Examples</h4>
+  <pre><code class="lang-csharp">sheet.Range("A5:A6").MoveTo(sheet["C40"]);</code></pre>
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_MoveTo_Egap_Spreadsheets_Cell__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Sheet protection does not block the move: it guards what a person does in Excel, not what code does, as for writing cells.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The destination is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The destination is in another workbook, or the cells would run past the end of the sheet.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The move would take or write over part of an array formula, take part of a merged cell or table, take a table to
+another sheet, or change a pivot table.</p>
 </dd>
   </dl>
 
@@ -744,7 +858,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_ToString" data-uid="Egap.Spreadsheets.CellRange.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L214"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L270"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet's name and the range's address, such as <code>Sheet1!A1:D20</code>.</p>
@@ -813,7 +927,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_op_Equality_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.op_Equality(Egap.Spreadsheets.CellRange,Egap.Spreadsheets.CellRange)">
   operator ==(CellRange, CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L264"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both ranges are the same cells.</p>
@@ -852,7 +966,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_op_Inequality_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.op_Inequality(Egap.Spreadsheets.CellRange,Egap.Spreadsheets.CellRange)">
   operator !=(CellRange, CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L267"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the ranges differ.</p>

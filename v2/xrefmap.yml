@@ -58601,6 +58601,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellRange.ColumnCount
   nameWithType: CellRange.ColumnCount
+- uid: Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell)
+  name: CopyTo(Cell)
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_CopyTo_Egap_Spreadsheets_Cell_
+  commentId: M:Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell)
+  fullName: Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell)
+  nameWithType: CellRange.CopyTo(Cell)
+- uid: Egap.Spreadsheets.CellRange.CopyTo*
+  name: CopyTo
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_CopyTo_
+  commentId: Overload:Egap.Spreadsheets.CellRange.CopyTo
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.CopyTo
+  nameWithType: CellRange.CopyTo
 - uid: Egap.Spreadsheets.CellRange.Equals(Egap.Spreadsheets.CellRange)
   name: Equals(CellRange)
   href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Equals_Egap_Spreadsheets_CellRange_
@@ -58681,6 +58694,19 @@ references:
   fullName.vb: Egap.Spreadsheets.CellRange.this[]
   nameWithType: CellRange.this
   nameWithType.vb: CellRange.this[]
+- uid: Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell)
+  name: MoveTo(Cell)
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_MoveTo_Egap_Spreadsheets_Cell_
+  commentId: M:Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell)
+  fullName: Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell)
+  nameWithType: CellRange.MoveTo(Cell)
+- uid: Egap.Spreadsheets.CellRange.MoveTo*
+  name: MoveTo
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_MoveTo_
+  commentId: Overload:Egap.Spreadsheets.CellRange.MoveTo
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.MoveTo
+  nameWithType: CellRange.MoveTo
 - uid: Egap.Spreadsheets.CellRange.RowCount
   name: RowCount
   href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_RowCount
