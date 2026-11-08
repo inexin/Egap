@@ -238,6 +238,12 @@ public sealed partial class Worksheet
             }
             else
             {
+                if (c == '*' && i > 0 && what[i - 1] == '*' && (i < 2 || what[i - 2] != '~'))
+                {
+                    // A run of stars is one star; collapsing them keeps the match from backtracking without end.
+                    continue;
+                }
+
                 pattern.Append(c switch
                 {
                     '*' => ".*",

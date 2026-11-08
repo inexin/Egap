@@ -238,6 +238,61 @@ merged cell or table, a copy that writes over part of a merged cell, a copy onto
 copy onto its own cells of rows a filter shows in more than one run. Egap also refuses moving a table to another sheet,
 and a paste that would change a pivot table. Pictures and charts stay where they are.
 
+### Sorting, filtering and finding
+
+`CellRange.Sort` sorts a range's rows by key columns, or its columns by key rows, as Excel's Sort does. Numbers come
+first, then text, then FALSE and TRUE, then errors; empty cells come last either way, and rows with equal keys keep their
+order. Text follows the word sort Windows gives Excel: spaces and symbols before digits and letters, hyphens and
+apostrophes left out but for breaking a tie, and letters by `Workbook.Culture`, ignoring case unless `MatchCase` is set.
+Each row moves as if copied, with its values, styles, notes and links, and its formulas' relative references move with it;
+formulas elsewhere that refer to the sorted cells don't change. Hidden rows stay where they are. A range with merged cells
+or part of an array formula is refused, as Excel refuses it. Keys sort by formulas' last results, so calculate first when
+they have changed.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("prices.xlsx");
+Worksheet sheet = book.Worksheets[0];
+
+// Header row stays; sort by the second column, largest first, then by the first.
+sheet.Range("A1:C40").Sort(new SortOptions { HasHeader = true }, new SortField(1, Descending: true), new SortField(0));
+```
+
+`Worksheet.AutoFilter` and `SheetTable.AutoFilter` give the filter a file holds. Excel hides a filter's rows only when the
+filter is set or reapplied; `Apply` does the reapplying, hiding the data rows that fail the criteria and showing the rest,
+and `ShowAll` clears the criteria. Value lists match the text a cell shows; custom criteria compare numbers with numbers
+and text with text, with wildcards for text; top and bottom items, above and below average and date periods (counted
+from today) are evaluated too. Colour and icon criteria are not: rows pass them.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("orders.xlsx");
+Worksheet sheet = book.Worksheets[0];
+if (sheet.AutoFilter is { } filter)
+{
+    book.Calculate();
+    int shown = filter.Apply();
+}
+```
+
+`Worksheet.Find` and `CellRange.Find` give the cells whose text matches, and `Replace` changes the matches, as Excel's
+Find All and Replace All do, with `*`, `?` and `~` as Excel's wildcards. `FindOptions` sets match case, whole cell, the
+order, and where to look: in what the formula bar shows (formulas with `=`, in Excel's English form, and values as typed,
+in the workbook's culture), in what cells show, or in notes. Replacing works in the formula bar's text: every match is
+replaced, and the result is entered as if typed, so a formula stays a formula and `12` becomes a number. When a
+replacement makes a formula Excel refuses, the replace stops there, as Excel's does.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("budget.xlsx");
+Worksheet sheet = book.Worksheets[0];
+IReadOnlyList<Cell> totals = sheet.Find("total*", new FindOptions { MatchEntireCell = true, LookIn = FindLookIn.Values });
+int changed = sheet.Replace("Sheet1!", "Budget!");
+```
+
 ## Names and printing
 
 `book.Names` holds the defined names. A name belongs to the workbook, or to one sheet when you give one:
