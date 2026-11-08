@@ -205,9 +205,10 @@ workbooks, references across several sheets (`Sheet1:Sheet3!A1`) and the anchors
 cells' values, formulas and styles, and the merges, notes, hyperlinks, data validation and conditional formats on them;
 what was in the cells written over goes. A copy's formulas move their relative references with them, as filling does: a
 reference that would move off the sheet becomes `#REF!`, and absolute ones stay. The range and the place may overlap; as
-in Excel, a copy onto part of itself keeps the links of the cells written over that it did not copy from. A copy takes the
-part of a merge it cuts as a merge. On a sheet whose filter hides rows, a copy takes only the rows that show and pastes
-them one under another; when they come in more than one run, it pastes the formulas' results, as Excel does.
+in Excel, a copy onto part of itself that takes no links keeps the links of the cells written over. A copy takes the
+part of a link it cuts, and the part of a merge it cuts when the merge's first cell is in the range. On a sheet whose
+filter hides rows, a copy takes only the rows that show and pastes them one under another; when they come in more than
+one run, it pastes the formulas' results, as Excel does.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -232,9 +233,9 @@ the sheet, its ends follow the cells that move and pull back from the cells writ
 unmerged. A table moves with the cells when all of it is in them, on its own sheet.
 
 The pastes refuse what Excel refuses: taking or writing over part of an array formula, a move that takes part of a
-merged cell or table, a copy that writes over part of a merged cell or over a merge it takes part of, and a copy of the
-rows a filter shows onto its own cells. Egap also refuses moving a table to another sheet, and a paste that would change a pivot table. Pictures and
-charts stay where they are.
+merged cell or table, a copy that writes over part of a merged cell, a copy onto its own cells that cuts a merge, and a
+copy onto its own cells of rows a filter shows in more than one run. Egap also refuses moving a table to another sheet,
+and a paste that would change a pivot table. Pictures and charts stay where they are.
 
 ## Names and printing
 

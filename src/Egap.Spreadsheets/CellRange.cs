@@ -185,16 +185,18 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
     /// Copies the range's cells to a place on a sheet of the same workbook, as Excel's Copy and Paste do: values, formulas,
     /// styles, merges, notes, links, validations and conditional formats. A formula's relative references move with it, and
     /// one that would move off the sheet becomes <c>#REF!</c>; absolute ones stay. What was in the cells written over goes,
-    /// though, as in Excel, a copy onto part of itself keeps the links of the cells written over that it did not copy from. A
-    /// merge the range cuts is copied as the part of it in the range. On a sheet whose filter hides rows, only the rows that
-    /// show are copied, one under another; when they come in more than one run, formulas are pasted as their results.
+    /// though, as in Excel, a copy onto part of itself that takes no links keeps the links of the cells written over. A merge
+    /// the range cuts is copied as the part of it in the range when its first cell is in the range, and a link the range cuts
+    /// as the part of it in the range. On a sheet whose filter hides rows, only the rows that show are copied, one under
+    /// another; when they come in more than one run, formulas are pasted as their results.
     /// </summary>
     /// <param name="destination">The cell the range's first cell goes to.</param>
     /// <exception cref="ArgumentNullException">The destination is null.</exception>
     /// <exception cref="ArgumentException">The destination is in another workbook, or the cells would run past the end of the sheet.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The copy would take part of an array formula, write over part of an array formula or merged cell, write over a merge it
-    /// takes part of, or write over a pivot table; or it copies the rows a filter shows onto its own cells.
+    /// The copy would take part of an array formula, write over part of an array formula or merged cell, cut a merge while
+    /// going onto its own cells, or write over a pivot table; or it copies rows a filter shows in more than one run onto its
+    /// own cells.
     /// </exception>
     /// <example>
     /// <code>

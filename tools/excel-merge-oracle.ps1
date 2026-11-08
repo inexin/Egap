@@ -42,7 +42,14 @@ $cases = @(
     @('A5:A10', 'Cut', 'A20:H22', 'A9'),
     @('A5:A10', 'Copy', 'A20:H22', 'A9'),
     @('A5:A10', 'Cut', 'A2:H6', 'A20'),
-    @('A5:A10', 'Cut', 'A5:H6', 'A9')
+    @('A5:A10', 'Cut', 'A5:H6', 'A9'),
+    @('A5:A10', 'Copy', 'A1:C5', 'B3'),
+    @('C1:E1', 'Copy', 'A1:C5', 'B3'),
+    @('C1:E1', 'Copy', 'A1:C5', 'B13'),
+    @('A5:A10', 'Copy', 'A1:C6', 'D2'),
+    @('A1:A5', 'Copy', 'A3:C6', 'F10'),
+    @('A1:D2', 'Copy', 'A2:C6', 'F10'),
+    @('C3:F3', 'Copy', 'A2:D6', 'F10')
 )
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false

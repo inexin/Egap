@@ -20,7 +20,18 @@ $cases = @(
     @('B2=http://b2/ C3=http://c3/', 'Copy', 'A1:C3', 'B3'),
     @('G2=http://g2/', 'Copy', 'A1:C3', 'F1'),
     @('G2=http://g2/', 'Copy', 'H1:J3', 'F1'),
-    @('G2=http://g2/', 'Cut', 'H1:J3', 'F1')
+    @('G2=http://g2/', 'Cut', 'H1:J3', 'F1'),
+    @('B4=http://b4/', 'Copy', 'A1:C5', 'B3'),
+    @('C3=http://c3/', 'Copy', 'A1:C5', 'B3'),
+    @('B4=http://b4/ D6=http://d6/', 'Copy', 'A1:C5', 'B3'),
+    @('A1=http://a1/ D6=http://d6/', 'Copy', 'A1:C5', 'B3'),
+    @('D6=http://d6/', 'Copy', 'A1:C5', 'B3'),
+    @('C5=http://c5/', 'Copy', 'A1:C5', 'B3'),
+    @('B4=http://b4/ B4:B5=http://b45/', 'Copy', 'A1:C5', 'B3'),
+    @('A3:F3=http://a3/', 'Copy', 'A2:C4', 'A20'),
+    @('B4:B5=http://b45/', 'Cut', 'A2:H4', 'A4'),
+    @('B4:B5=http://b45/', 'Cut', 'A2:H4', 'A10'),
+    @('A1=http://a1/ B7=http://b7/', 'Copy', 'A1:C5', 'B3')
 )
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false

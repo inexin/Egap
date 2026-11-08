@@ -28,3 +28,10 @@ A5:A10	Cut	A20:H22>A9	ok
 A5:A10	Copy	A20:H22>A9	refused	A5:A10
 A5:A10	Cut	A2:H6>A20	refused	A5:A10
 A5:A10	Cut	A5:H6>A9	refused	A5:A10
+A5:A10	Copy	A1:C5>B3	refused	A5:A10
+C1:E1	Copy	A1:C5>B3	refused	C1:E1
+C1:E1	Copy	A1:C5>B13	ok	C1:E1
+A5:A10	Copy	A1:C6>D2	ok	A5:A10 D6:D7
+A1:A5	Copy	A3:C6>F10	ok	A1:A5
+A1:D2	Copy	A2:C6>F10	ok	A1:D2
+C3:F3	Copy	A2:D6>F10	ok	C3:F3 H11:I11

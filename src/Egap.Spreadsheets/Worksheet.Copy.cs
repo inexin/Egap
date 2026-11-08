@@ -36,14 +36,19 @@ public sealed partial class Worksheet
         RangeAddress destination = copy.Destination;
 
         // Excel unmerges the cells it writes over first, so a merge there goes even when it is in the range too; a merge the
-        // range cuts is copied as the part of it in the range.
-        List<RangeAddress> merges = [.. MergedCells.Where(m => m.Intersects(range) && (copy.Across || !m.Intersects(destination)))
+        // range cuts is copied as the part of it in the range when its first cell is in the range.
+        List<RangeAddress> merges = [.. MergedCells.Where(m => range.Contains(m.First) && (copy.Across || !m.Intersects(destination)))
             .Select(m => Intersection(m, range)!.Value).Where(m => m.First != m.Last)];
         List<CellComment> notes = [.. Comments.Where(c => range.Contains(c.Cell))];
-        List<Hyperlink> links = [.. Hyperlinks.Where(l => range.Contains(l.Range) && (copy.Across || !l.Range.Intersects(destination)))];
+        // Excel copies the part of a link in the range. A copy onto its own cells leaves the links of the cells written over
+        // when it copies none, and copies none of those where the two meet.
+        RangeAddress? meet = copy.Across ? null : Intersection(range, destination);
+        List<(Hyperlink Link, RangeAddress Lands)> links = [.. Hyperlinks
+            .Where(l => l.Range.Intersects(range) && (meet is not { } both || !l.Range.Intersects(both)))
+            .Select(l => (l, copy.Offset(Intersection(l.Range, range)!.Value)))];
+        bool keepLinks = meet is not null && !Hyperlinks.Any(l => l.Range.Intersects(range));
 
-        // A copy onto its own cells takes away only the links where the two meet, as Excel's does.
-        to.ClearForPaste(destination, !copy.Across && Intersection(range, destination) is { } meet ? meet : destination);
+        to.ClearForPaste(destination, keepLinks);
         to.Put(cells, destination.First);
         foreach (RangeAddress merge in merges)
         {
@@ -57,14 +62,13 @@ public sealed partial class Worksheet
             made.RichText = note.RichText is null ? null : new XElement(note.RichText);
         }
 
-        foreach (Hyperlink link in links)
+        foreach (Hyperlink old in to.Hyperlinks.Where(l => links.Exists(c => c.Lands.Intersects(l.Range))).ToList())
         {
-            RangeAddress lands = copy.Offset(link.Range);
-            foreach (Hyperlink old in to.Hyperlinks.Where(l => l.Range.Intersects(lands)).ToList())
-            {
-                to.Hyperlinks.Remove(old);
-            }
+            to.Hyperlinks.Remove(old);
+        }
 
+        foreach ((Hyperlink link, RangeAddress lands) in links)
+        {
             to.Hyperlinks.AddRead(Copied(link, lands));
         }
 
@@ -129,9 +133,9 @@ public sealed partial class Worksheet
         }
 
         RangeAddress packed = new(at.Row, at.Column, at.Row + height - 1, at.Column + range.Last.Column - range.First.Column);
-        if (to == this && packed.Intersects(range))
+        if (runs.Count > 1 && to == this && packed.Intersects(range))
         {
-            throw new InvalidOperationException("Only the rows a filter shows are copied, so the copy can't go onto the cells it copies.");
+            throw new InvalidOperationException("The rows a filter shows come in more than one run, so the copy can't go onto the cells it copies.");
         }
 
         int row = at.Row;
@@ -187,6 +191,21 @@ public sealed partial class Worksheet
         List<RangeAddress> taken = [.. MergedCells.Where(range.Contains)];
         List<CellComment> notes = [.. Comments.Where(c => range.Contains(c.Cell))];
         List<Hyperlink> links = [.. Hyperlinks.Where(l => range.Contains(l.Range))];
+
+        // A link with only an edge in the cut changes as a reference to its cells does, and keeps clear of the paste.
+        List<Hyperlink> edged = [];
+        foreach (Hyperlink link in Hyperlinks.Where(l => l.Range.Intersects(range) && !range.Contains(l.Range)).ToList())
+        {
+            RangeAddress was = link.Range;
+            (Area? moved, _) = ReferenceMove.Moved(new Area(AreaKind.Range, was.First.Row, was.First.Column, was.Last.Row, was.Last.Column, AreaFlags.None), this, move);
+            if (moved is { Kind: AreaKind.Range } area)
+            {
+                link.Range = new RangeAddress(area.FirstRow, area.FirstColumn, area.LastRow, area.LastColumn);
+                Hyperlinks.Remove(link);
+                edged.Add(link);
+            }
+        }
+
         List<SheetTable> tables = [.. Tables.Where(t => range.Contains(t.Range))];
 
         // Excel unmerges the cells it writes over first, all of each merge they touch, so a merge of the range that the
@@ -237,6 +256,11 @@ public sealed partial class Worksheet
                 Comments.AddRead(note);
                 Comments.Changed = true;
             }
+        }
+
+        foreach (Hyperlink link in edged)
+        {
+            Hyperlinks.AddRead(link);
         }
 
         foreach (Hyperlink link in links)
@@ -296,11 +320,12 @@ public sealed partial class Worksheet
             throw new InvalidOperationException("Part of an array formula can't be changed.");
         }
 
-        // Excel cuts only whole merges, and unmerges what a cut lands on; it copies part of a merge, but writes a copy only over
-        // whole merges, and not over one the copied cells cut.
+        // Excel cuts only whole merges, and unmerges what a cut lands on; it copies part of a merge, but not onto the cells it
+        // copies, and writes a copy only over whole merges, and not over one the copied cells cut.
         if (moving
             ? MergedCells.Any(m => Partly(m, move.Source))
-            : move.To.MergedCells.Any(m => Partly(m, destination) || (!move.Across && m.Intersects(destination) && Partly(m, move.Source))))
+            : move.To.MergedCells.Any(m => Partly(m, destination) || (!move.Across && m.Intersects(destination) && Partly(m, move.Source)))
+                || (!move.Across && move.Source.Intersects(destination) && MergedCells.Any(m => Partly(m, move.Source))))
         {
             throw new InvalidOperationException("Part of a merged cell can't be changed.");
         }
@@ -413,10 +438,10 @@ public sealed partial class Worksheet
     private static XAttribute[]? Clone(XAttribute[]? attributes) => attributes is null ? null : [.. attributes.Select(a => new XAttribute(a))];
 
     /// <summary>
-    /// Empties a range for a paste: its cells, with their formulas and file extras, and the merges and notes in it, and the
-    /// links in <paramref name="links"/>, or in it when that is null.
+    /// Empties a range for a paste: its cells, with their formulas and file extras, and the merges, notes and, unless
+    /// <paramref name="keepLinks"/>, links in it.
     /// </summary>
-    private void ClearForPaste(RangeAddress range, RangeAddress? links = null)
+    private void ClearForPaste(RangeAddress range, bool keepLinks = false)
     {
         foreach ((int row, int column) in store.Occupied(range).ToList())
         {
@@ -442,8 +467,7 @@ public sealed partial class Worksheet
             Comments.Remove(note);
         }
 
-        RangeAddress linked = links ?? range;
-        foreach (Hyperlink link in Hyperlinks.Where(l => linked.Contains(l.Range)).ToList())
+        foreach (Hyperlink link in Hyperlinks.Where(l => !keepLinks && range.Contains(l.Range)).ToList())
         {
             Hyperlinks.Remove(link);
         }

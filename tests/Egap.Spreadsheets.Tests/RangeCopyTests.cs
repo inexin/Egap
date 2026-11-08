@@ -319,10 +319,12 @@ public sealed class RangeCopyTests
         Assert.Equal(501, sheet["H3"].Value.Number);
         Assert.Equal(CellValueKind.Empty, sheet["F4"].ValueKind);
 
-        // One run keeps its formulas; a copy onto itself is refused; a cut takes every row.
+        // One run keeps its formulas, and may go onto itself; more runs may not; a cut takes every row.
         sheet.Range("A4:C6").CopyTo(sheet["J1"]);
         Assert.Equal("K1+1", sheet["L1"].Formula);
         Assert.Throws<InvalidOperationException>(() => sheet.Range("A1:C6").CopyTo(sheet["B3"]));
+        sheet.Range("A2:B3").CopyTo(sheet["B3"]);
+        Assert.Equal(300, sheet["C3"].Value.Number);
         sheet.Range("A1:C6").MoveTo(sheet["F11"]);
         Assert.Equal("G16+1", sheet["H16"].Formula);
     }
