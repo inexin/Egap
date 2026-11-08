@@ -1,0 +1,30 @@
+# Excel 16.0 build 20527
+A5:A10	Cut	A2:H4>A4	ok	
+A5:A10	Cut	A12:H14>A4	ok	
+A5:A10	Copy	A12:H14>A4	refused	A5:A10
+A5:A10	Copy	A2:H4>A4	refused	A5:A10
+A3:A4	Cut	A2:H4>A4	ok	
+A3:A4	Copy	A2:H4>A4	refused	A3:A4
+A3:A4 B3:B4	Copy	A1:C5>B3	ok	A3:A4 B5:B6
+A3:A4 B3:B4	Cut	A1:C5>B3	ok	B5:B6
+A4:A8	Copy	A2:E6>A20	ok	A4:A8 A22:A24
+A4:A8	Cut	A2:E6>A20	refused	A4:A8
+A4:A8	Cut	A2:E6>K2	refused	A4:A8
+A1:C1	Cut	A1:B5>E1	refused	A1:C1
+A1:C1	Copy	A1:B5>E1	ok	A1:C1 E1:F1
+A5:A10	Cut	A2:H4>A6	ok	
+A5:A10	Cut	A6:H8>A5	refused	A5:A10
+A5:A10	Cut	A6:H8>A3	refused	A5:A10
+A5:A10	Copy	A6:H8>A3	refused	A5:A10
+A5:A10	Cut	A2:H4>A3	ok	
+A5:A10	Copy	A2:H4>A3	refused	A5:A10
+A5:B6	Cut	A2:H4>A4	ok	
+A5:B6	Copy	A2:H4>A4	ok	
+A5:B6	Cut	A2:H5>A4	refused	A5:B6
+A5:B6	Copy	A2:H5>A4	refused	A5:B6
+A5:B6	Cut	A6:H8>A4	refused	A5:B6
+A5:B6	Cut	A5:H8>A3	ok	
+A5:A10	Cut	A20:H22>A9	ok	
+A5:A10	Copy	A20:H22>A9	refused	A5:A10
+A5:A10	Cut	A2:H6>A20	refused	A5:A10
+A5:A10	Cut	A5:H6>A9	refused	A5:A10

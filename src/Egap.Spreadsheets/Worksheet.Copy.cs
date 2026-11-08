@@ -14,6 +14,12 @@ public sealed partial class Worksheet
     /// <summary>Copies the cells of a range of this sheet to a sheet of the same book, as Excel's Copy and Paste do.</summary>
     internal void CopyRange(RangeAddress range, Worksheet to, CellAddress at)
     {
+        if (Filtered() && VisibleRuns(range) is { } runs)
+        {
+            CopyVisible(range, to, at, runs);
+            return;
+        }
+
         CellMove copy = new(this, range, to, at.Row - range.First.Row, at.Column - range.First.Column);
         CheckPaste(copy, moving: false);
         if (copy.RowOffset == 0 && copy.ColumnOffset == 0 && !copy.Across)
@@ -21,16 +27,23 @@ public sealed partial class Worksheet
             return;
         }
 
+        // The paste may write over the first cell of a shared formula whose other cells it leaves, so those get their own.
+        to.UnshareAll(false);
         Workbook book = Workbook;
         List<TakenCell> cells = Take(range, copy, moving: false);
         List<DataValidation> validations = RulesFor(copy, moving: false);
         List<ConditionalFormat> formats = FormatsFor(copy, moving: false);
-        List<RangeAddress> merges = [.. MergedCells.Where(range.Contains)];
-        List<CellComment> notes = [.. Comments.Where(c => range.Contains(c.Cell))];
-        List<Hyperlink> links = [.. Hyperlinks.Where(l => range.Contains(l.Range))];
-
         RangeAddress destination = copy.Destination;
-        to.ClearForPaste(destination);
+
+        // Excel unmerges the cells it writes over first, so a merge there goes even when it is in the range too; a merge the
+        // range cuts is copied as the part of it in the range.
+        List<RangeAddress> merges = [.. MergedCells.Where(m => m.Intersects(range) && (copy.Across || !m.Intersects(destination)))
+            .Select(m => Intersection(m, range)!.Value).Where(m => m.First != m.Last)];
+        List<CellComment> notes = [.. Comments.Where(c => range.Contains(c.Cell))];
+        List<Hyperlink> links = [.. Hyperlinks.Where(l => range.Contains(l.Range) && (copy.Across || !l.Range.Intersects(destination)))];
+
+        // A copy onto its own cells takes away only the links where the two meet, as Excel's does.
+        to.ClearForPaste(destination, !copy.Across && Intersection(range, destination) is { } meet ? meet : destination);
         to.Put(cells, destination.First);
         foreach (RangeAddress merge in merges)
         {
@@ -46,7 +59,13 @@ public sealed partial class Worksheet
 
         foreach (Hyperlink link in links)
         {
-            to.Hyperlinks.AddRead(Copied(link, copy.Offset(link.Range)));
+            RangeAddress lands = copy.Offset(link.Range);
+            foreach (Hyperlink old in to.Hyperlinks.Where(l => l.Range.Intersects(lands)).ToList())
+            {
+                to.Hyperlinks.Remove(old);
+            }
+
+            to.Hyperlinks.AddRead(Copied(link, lands));
         }
 
         to.TrimRules(destination);
@@ -60,7 +79,79 @@ public sealed partial class Worksheet
             to.ConditionalFormats.AddRead(format);
         }
 
+        to.sharedMasters = null;
         book.Recompile();
+    }
+
+    /// <summary>Whether a filter of the sheet or of one of its tables hides rows, so that Excel copies only the rows it shows.</summary>
+    private bool Filtered() =>
+        HasFilterCriteria || Tables.Any(t => t.Source?.Element?.Elements().Any(e => e.Name.LocalName == "autoFilter" && e.Elements().Any(c => c.Name.LocalName == "filterColumn")) == true);
+
+    /// <summary>The runs of rows of a range that are not hidden, first and last; null when none is hidden.</summary>
+    private List<(int First, int Last)>? VisibleRuns(RangeAddress range)
+    {
+        List<(int First, int Last)> runs = [];
+        bool hidden = false;
+        for (int row = range.First.Row; row <= range.Last.Row; row++)
+        {
+            if (Rows[row].Hidden)
+            {
+                hidden = true;
+            }
+            else if (runs.Count > 0 && runs[^1].Last == row - 1)
+            {
+                runs[^1] = (runs[^1].First, row);
+            }
+            else
+            {
+                runs.Add((row, row));
+            }
+        }
+
+        return hidden ? runs : null;
+    }
+
+    /// <summary>
+    /// Copies the rows of a filtered range that show, one under another, as Excel does; when they come in more than one run,
+    /// Excel pastes the formulas' results instead of the formulas.
+    /// </summary>
+    private void CopyVisible(RangeAddress range, Worksheet to, CellAddress at, List<(int First, int Last)> runs)
+    {
+        int height = runs.Sum(r => r.Last - r.First + 1);
+        if (height == 0)
+        {
+            return;
+        }
+
+        if (at.Row + height - 1 >= CellAddress.MaxRows || at.Column + range.Last.Column - range.First.Column >= CellAddress.MaxColumns)
+        {
+            throw new ArgumentException("The cells would run past the end of the sheet.");
+        }
+
+        RangeAddress packed = new(at.Row, at.Column, at.Row + height - 1, at.Column + range.Last.Column - range.First.Column);
+        if (to == this && packed.Intersects(range))
+        {
+            throw new InvalidOperationException("Only the rows a filter shows are copied, so the copy can't go onto the cells it copies.");
+        }
+
+        int row = at.Row;
+        foreach ((int first, int last) in runs)
+        {
+            RangeAddress run = new(first, range.First.Column, last, range.Last.Column);
+            CopyRange(run, to, new CellAddress(row, at.Column));
+            if (runs.Count > 1)
+            {
+                foreach ((int r, int c) in store.Occupied(run).ToList())
+                {
+                    if (store.Get(r, c).Kind == CellKind.Formula)
+                    {
+                        to.SetValue(row + r - first, at.Column + c - range.First.Column, GetValue(r, c));
+                    }
+                }
+            }
+
+            row += last - first + 1;
+        }
     }
 
     /// <summary>Moves the cells of a range of this sheet to a sheet of the same book, as Excel's Cut and Paste do.</summary>
@@ -92,14 +183,23 @@ public sealed partial class Worksheet
         book.CellsMovingTo(move);
 
         List<TakenCell> cells = Take(range, move, moving: true);
-        List<RangeAddress> merges = [.. MergedCells.Where(range.Contains)];
+        RangeAddress destination = move.Destination;
+        List<RangeAddress> taken = [.. MergedCells.Where(range.Contains)];
         List<CellComment> notes = [.. Comments.Where(c => range.Contains(c.Cell))];
         List<Hyperlink> links = [.. Hyperlinks.Where(l => range.Contains(l.Range))];
         List<SheetTable> tables = [.. Tables.Where(t => range.Contains(t.Range))];
 
-        foreach (RangeAddress merge in merges)
+        // Excel unmerges the cells it writes over first, all of each merge they touch, so a merge of the range that the
+        // cells land on goes.
+        foreach (RangeAddress merge in taken)
         {
             MergedCells.Remove(merge);
+        }
+
+        List<RangeAddress> merges = [.. taken.Where(m => move.Across || !m.Intersects(destination))];
+        foreach (RangeAddress merge in to.MergedCells.Where(destination.Intersects).ToList())
+        {
+            to.MergedCells.Remove(merge);
         }
 
         foreach (CellComment note in notes)
@@ -115,7 +215,6 @@ public sealed partial class Worksheet
         ClearForPaste(range);
         TrimRules(range);
 
-        RangeAddress destination = move.Destination;
         to.ClearForPaste(destination);
         to.TrimRules(destination);
         to.Put(cells, destination.First);
@@ -197,7 +296,11 @@ public sealed partial class Worksheet
             throw new InvalidOperationException("Part of an array formula can't be changed.");
         }
 
-        if (MergedCells.Any(m => Partly(m, move.Source)) || move.To.MergedCells.Any(m => Partly(m, destination) && !(moving && !move.Across && move.Source.Contains(m))))
+        // Excel cuts only whole merges, and unmerges what a cut lands on; it copies part of a merge, but writes a copy only over
+        // whole merges, and not over one the copied cells cut.
+        if (moving
+            ? MergedCells.Any(m => Partly(m, move.Source))
+            : move.To.MergedCells.Any(m => Partly(m, destination) || (!move.Across && m.Intersects(destination) && Partly(m, move.Source))))
         {
             throw new InvalidOperationException("Part of a merged cell can't be changed.");
         }
@@ -309,8 +412,11 @@ public sealed partial class Worksheet
 
     private static XAttribute[]? Clone(XAttribute[]? attributes) => attributes is null ? null : [.. attributes.Select(a => new XAttribute(a))];
 
-    /// <summary>Empties a range for a paste: its cells, with their formulas and file extras, and the merges, notes and links in it.</summary>
-    private void ClearForPaste(RangeAddress range)
+    /// <summary>
+    /// Empties a range for a paste: its cells, with their formulas and file extras, and the merges and notes in it, and the
+    /// links in <paramref name="links"/>, or in it when that is null.
+    /// </summary>
+    private void ClearForPaste(RangeAddress range, RangeAddress? links = null)
     {
         foreach ((int row, int column) in store.Occupied(range).ToList())
         {
@@ -336,7 +442,8 @@ public sealed partial class Worksheet
             Comments.Remove(note);
         }
 
-        foreach (Hyperlink link in Hyperlinks.Where(l => range.Contains(l.Range)).ToList())
+        RangeAddress linked = links ?? range;
+        foreach (Hyperlink link in Hyperlinks.Where(l => linked.Contains(l.Range)).ToList())
         {
             Hyperlinks.Remove(link);
         }

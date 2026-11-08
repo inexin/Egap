@@ -109,15 +109,19 @@ internal static class ReferenceMove
         }
 
         RangeAddress range = new(area.FirstRow, area.FirstColumn, area.LastRow, area.LastColumn);
-        if (sheet == move.From && move.Source.Intersects(range))
+        if (sheet == move.From && move.Source.Contains(range))
         {
-            RangeAddress source = move.Source;
-            if (source.Contains(range))
-            {
-                return (With(area, move.Offset(range)), move.Across);
-            }
+            return (With(area, move.Offset(range)), move.Across);
+        }
 
-            return (Edge(range, move) is { } moved ? With(area, moved) : null, false);
+        if (sheet == move.From && move.Across)
+        {
+            return (move.Source.Intersects(range) && Trimmed(range, move.Source) is { } rest ? With(area, rest) : null, false);
+        }
+
+        if (sheet == move.From && Slid(range, move) is { } slid)
+        {
+            return (slid.Gone ? area with { Kind = AreaKind.Error } : With(area, slid.Range), false);
         }
 
         if (sheet == move.To && move.Overwrites(range))
@@ -129,73 +133,110 @@ internal static class ReferenceMove
     }
 
     /// <summary>
-    /// Where a range goes that has only a strip along one edge in the cut, all the way across it: as Excel moves it, it loses
-    /// the strip when the cells go to another sheet; on the same sheet, when the strip goes straight on, away from the rest of
-    /// the range or onto it, the range stretches over the rest and the strip where it lands. Null when it stays.
+    /// A range less a strip of the cut along one of its edges, all the way across it, as Excel leaves a range whose cells go
+    /// to another sheet; null when the cut is not such a strip.
     /// </summary>
-    private static RangeAddress? Edge(RangeAddress range, CellMove move)
+    private static RangeAddress? Trimmed(RangeAddress range, RangeAddress source)
     {
-        RangeAddress source = move.Source;
         int firstRow = Math.Max(range.First.Row, source.First.Row);
         int lastRow = Math.Min(range.Last.Row, source.Last.Row);
         int firstColumn = Math.Max(range.First.Column, source.First.Column);
         int lastColumn = Math.Min(range.Last.Column, source.Last.Column);
-        RangeAddress strip = new(firstRow, firstColumn, lastRow, lastColumn);
-
-        bool across = firstColumn == range.First.Column && lastColumn == range.Last.Column;
-        bool down = firstRow == range.First.Row && lastRow == range.Last.Row;
-        RangeAddress rest;
-        bool outward;
-        if (across && (firstRow == range.First.Row || lastRow == range.Last.Row))
+        if (firstColumn == range.First.Column && lastColumn == range.Last.Column)
         {
-            bool top = firstRow == range.First.Row;
-            rest = top
-                ? new RangeAddress(lastRow + 1, range.First.Column, range.Last.Row, range.Last.Column)
-                : new RangeAddress(range.First.Row, range.First.Column, firstRow - 1, range.Last.Column);
-            if (move.Across)
+            if (firstRow == range.First.Row)
             {
-                return rest;
+                return new RangeAddress(lastRow + 1, range.First.Column, range.Last.Row, range.Last.Column);
             }
 
-            if (move.ColumnOffset != 0)
+            if (lastRow == range.Last.Row)
             {
-                return null;
+                return new RangeAddress(range.First.Row, range.First.Column, firstRow - 1, range.Last.Column);
             }
-
-            outward = top ? move.RowOffset < 0 : move.RowOffset > 0;
         }
-        else if (down && (firstColumn == range.First.Column || lastColumn == range.Last.Column))
+        else if (firstRow == range.First.Row && lastRow == range.Last.Row)
         {
-            bool left = firstColumn == range.First.Column;
-            rest = left
-                ? new RangeAddress(range.First.Row, lastColumn + 1, range.Last.Row, range.Last.Column)
-                : new RangeAddress(range.First.Row, range.First.Column, range.Last.Row, firstColumn - 1);
-            if (move.Across)
+            if (firstColumn == range.First.Column)
             {
-                return rest;
+                return new RangeAddress(range.First.Row, lastColumn + 1, range.Last.Row, range.Last.Column);
             }
 
-            if (move.RowOffset != 0)
+            if (lastColumn == range.Last.Column)
             {
-                return null;
+                return new RangeAddress(range.First.Row, range.First.Column, range.Last.Row, firstColumn - 1);
             }
-
-            outward = left ? move.ColumnOffset < 0 : move.ColumnOffset > 0;
         }
-        else
+
+        return null;
+    }
+
+    /// <summary>
+    /// Where a range of the sheet goes when cells move straight along its rows or columns on that sheet and the range lies
+    /// within the moved band across the move; null when it stays or the move is not such a move.
+    /// </summary>
+    private static (RangeAddress Range, bool Gone)? Slid(RangeAddress range, CellMove move)
+    {
+        RangeAddress source = move.Source;
+        if (move.ColumnOffset == 0 && move.RowOffset != 0
+            && source.First.Column <= range.First.Column && range.Last.Column <= source.Last.Column)
+        {
+            return Along(range.First.Row, range.Last.Row, source.First.Row, source.Last.Row, move.RowOffset) is { } rows
+                ? (new RangeAddress(rows.First, range.First.Column, rows.Last, range.Last.Column), rows.Gone)
+                : null;
+        }
+
+        if (move.RowOffset == 0 && move.ColumnOffset != 0
+            && source.First.Row <= range.First.Row && range.Last.Row <= source.Last.Row)
+        {
+            return Along(range.First.Column, range.Last.Column, source.First.Column, source.Last.Column, move.ColumnOffset) is { } columns
+                ? (new RangeAddress(range.First.Row, columns.First, range.Last.Row, columns.Last), columns.Gone)
+                : null;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Excel's rule along the move for a range <paramref name="first"/> to <paramref name="last"/> when the cut
+    /// <paramref name="from"/> to <paramref name="to"/> goes <paramref name="offset"/> on: an end in the cut goes with it, an
+    /// end written over pulls back to the cells left, unless it is the end of what is written over; when that turns the range
+    /// round, or one end goes and the other is written over, the range spans the cells left of it outside the cut and where
+    /// its cut cells land. Null when it stays; Gone when all of it is written over.
+    /// </summary>
+    private static (int First, int Last, bool Gone)? Along(int first, int last, int from, int to, int offset)
+    {
+        int at = from + offset, end = to + offset;
+        bool cut = first <= to && last >= from;
+        if (!cut && at <= first && last <= end)
+        {
+            return (first, last, true);
+        }
+
+        bool firstCut = from <= first && first <= to, lastCut = from <= last && last <= to;
+        bool firstOver = at <= first && first <= end, lastOver = at <= last && last <= end;
+        int newFirst = firstCut ? first + offset : firstOver ? (first == at ? first : end + 1) : first;
+        int newLast = lastCut ? last + offset : lastOver ? (last == end ? last : at - 1) : last;
+        bool mixed = (firstCut && lastOver && !lastCut) || (lastCut && firstOver && !firstCut);
+        if (newFirst <= newLast && !mixed)
+        {
+            return newFirst == first && newLast == last ? null : (newFirst, newLast, false);
+        }
+
+        bool over = first <= end && last >= at;
+        if (!cut)
+        {
+            return over ? (first, last, true) : null;
+        }
+
+        if (!over)
         {
             return null;
         }
 
-        RangeAddress landed = move.Offset(strip);
-        if (!outward && !landed.Intersects(rest))
-        {
-            return null;
-        }
-
-        return new RangeAddress(
-            Math.Min(rest.First.Row, landed.First.Row), Math.Min(rest.First.Column, landed.First.Column),
-            Math.Max(rest.Last.Row, landed.Last.Row), Math.Max(rest.Last.Column, landed.Last.Column));
+        // The cells outside the cut, and where the cut cells land.
+        int low = Math.Min(first < from ? first : to + 1, Math.Max(first, from) + offset);
+        int high = Math.Max(last > to ? last : from - 1, Math.Min(last, to) + offset);
+        return (low, high, false);
     }
 
     private static Area With(Area area, RangeAddress range) =>

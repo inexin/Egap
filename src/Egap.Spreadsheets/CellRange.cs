@@ -184,13 +184,18 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
     /// <summary>
     /// Copies the range's cells to a place on a sheet of the same workbook, as Excel's Copy and Paste do: values, formulas,
     /// styles, merges, notes, links, validations and conditional formats. A formula's relative references move with it, and
-    /// one that would move off the sheet becomes <c>#REF!</c>; absolute ones stay. What was in the cells written over goes.
-    /// The range and the place may overlap.
+    /// one that would move off the sheet becomes <c>#REF!</c>; absolute ones stay. What was in the cells written over goes,
+    /// though, as in Excel, a copy onto part of itself keeps the links of the cells written over that it did not copy from. A
+    /// merge the range cuts is copied as the part of it in the range. On a sheet whose filter hides rows, only the rows that
+    /// show are copied, one under another; when they come in more than one run, formulas are pasted as their results.
     /// </summary>
     /// <param name="destination">The cell the range's first cell goes to.</param>
     /// <exception cref="ArgumentNullException">The destination is null.</exception>
     /// <exception cref="ArgumentException">The destination is in another workbook, or the cells would run past the end of the sheet.</exception>
-    /// <exception cref="InvalidOperationException">The copy would take or write over part of an array formula or merged cell, or write over a pivot table.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The copy would take part of an array formula, write over part of an array formula or merged cell, write over a merge it
+    /// takes part of, or write over a pivot table; or it copies the rows a filter shows onto its own cells.
+    /// </exception>
     /// <example>
     /// <code>
     /// sheet.Range("A1:B3").CopyTo(sheet["D1"]);
@@ -206,15 +211,15 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
     /// Moves the range's cells to a place on a sheet of the same workbook, as Excel's Cut and Paste do: everything
     /// <see cref="CopyTo"/> copies, and tables wholly in the range on the same sheet. Formulas that move keep their text, and
     /// every reference in the workbook to the cells that move follows them; a reference to a cell written over becomes
-    /// <c>#REF!</c>. A range with only an edge in the cells that move changes as in Excel: moved to another sheet, it loses
-    /// that edge; moved straight on along the sheet, it stretches to where the edge lands when the edge goes away from the
-    /// rest or onto it.
+    /// <c>#REF!</c>. A range with only an edge in the cells that move, or in the cells written over, changes as in Excel:
+    /// moved to another sheet, it loses that edge; moved straight along its rows or columns on the sheet, its ends follow the
+    /// cells that move and pull back from the cells written over. Merges the cells land on are unmerged, as in Excel.
     /// </summary>
     /// <param name="destination">The cell the range's first cell goes to.</param>
     /// <exception cref="ArgumentNullException">The destination is null.</exception>
     /// <exception cref="ArgumentException">The destination is in another workbook, or the cells would run past the end of the sheet.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The move would take or write over part of an array formula or merged cell, take part of a table, take a table to
+    /// The move would take or write over part of an array formula, take part of a merged cell or table, take a table to
     /// another sheet, or change a pivot table.
     /// </exception>
     /// <remarks>Sheet protection does not block the move: it guards what a person does in Excel, not what code does, as for writing cells.</remarks>

@@ -159,7 +159,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `CellRange.CopyTo` and `MoveTo` paste a range at a cell of the same workbook, as Excel's Copy, Cut and Paste do:
   values, formulas, styles, merges, notes, hyperlinks, data validation and conditional formats. A copy moves relative
   references as filling does; a move keeps its formulas' text, and every reference in the workbook to the moved cells
-  follows them, with Excel's rules for ranges partly moved and `#REF!` for cells written over.
+  follows them, with Excel's rules for ranges partly moved or written over and `#REF!` for cells written over. Merges,
+  links and filtered rows follow Excel's paste rules.
 - `Worksheet.InsertRows`, `DeleteRows`, `InsertColumns` and `DeleteColumns` put rows and columns into a sheet and take
   them out as Excel does. Whatever refers to the cells that move follows: formulas on every sheet, names, data validation,
   conditional formatting, tables (columns put in or taken out inside one become or stop being its columns), merges,

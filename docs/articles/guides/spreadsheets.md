@@ -204,7 +204,10 @@ workbooks, references across several sheets (`Sheet1:Sheet3!A1`) and the anchors
 `CopyTo` and `MoveTo` paste a range at a cell of the same workbook, as Excel's Copy, Cut and Paste do. Both take the
 cells' values, formulas and styles, and the merges, notes, hyperlinks, data validation and conditional formats on them;
 what was in the cells written over goes. A copy's formulas move their relative references with them, as filling does: a
-reference that would move off the sheet becomes `#REF!`, and absolute ones stay. The range and the place may overlap.
+reference that would move off the sheet becomes `#REF!`, and absolute ones stay. The range and the place may overlap; as
+in Excel, a copy onto part of itself keeps the links of the cells written over that it did not copy from. A copy takes the
+part of a merge it cuts as a merge. On a sheet whose filter hides rows, a copy takes only the rows that show and pastes
+them one under another; when they come in more than one run, it pastes the formulas' results, as Excel does.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -223,13 +226,14 @@ sheet.Range("C1").MoveTo(book.Worksheets.Add("Totals")["A1"]);  // Totals!A1 rea
 
 A move keeps the text of the formulas that move, and every formula, name, rule, link and chart of the workbook that
 refers to the cells that move follows them; a reference to a cell written over becomes `#REF!`. Formulas that go to
-another sheet name the sheet they left. A range with only a strip along one edge in the cells that move changes as in
-Excel: moved to another sheet, it loses the strip; moved straight on along the sheet, it stretches to where the strip lands
-when the strip goes away from the rest of the range or onto it, and otherwise stays. A table moves with the cells when all
-of it is in them, on its own sheet.
+another sheet name the sheet they left. A range with only a strip along one edge in the cells that move, or in the cells
+written over, changes as in Excel: moved to another sheet, it loses the strip; moved straight along its rows or columns on
+the sheet, its ends follow the cells that move and pull back from the cells written over. Merges the cells land on are
+unmerged. A table moves with the cells when all of it is in them, on its own sheet.
 
-The pastes refuse what Excel refuses: taking or writing over part of an array formula or a merged cell, and taking part
-of a table. Egap also refuses moving a table to another sheet, and a paste that would change a pivot table. Pictures and
+The pastes refuse what Excel refuses: taking or writing over part of an array formula, a move that takes part of a
+merged cell or table, a copy that writes over part of a merged cell or over a merge it takes part of, and a copy of the
+rows a filter shows onto its own cells. Egap also refuses moving a table to another sheet, and a paste that would change a pivot table. Pictures and
 charts stay where they are.
 
 ## Names and printing

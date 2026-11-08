@@ -1,0 +1,9 @@
+# Excel 16.0 build 20527
+E5=http://e5/	Copy	A1:C3>D4	
+E5=http://e5/	Cut	A1:C3>D4	
+E5=http://e5/ B2=http://b2/	Copy	A1:C3>D4	B2=http://b2/ E5=http://b2/
+E5=http://e5/ B2=http://b2/	Cut	A1:C3>D4	E5=http://b2/
+B2=http://b2/ C3=http://c3/	Copy	A1:C3>B3	B2=http://b2/ C4=http://b2/
+G2=http://g2/	Copy	A1:C3>F1	
+G2=http://g2/	Copy	H1:J3>F1	G2=http://g2/
+G2=http://g2/	Cut	H1:J3>F1	

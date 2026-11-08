@@ -122,6 +122,224 @@ public sealed class RangeCopyTests
         Check(row[0] == "S" ? s : other, row[2 + Copies.Length + move]);
     }
 
+    /// <summary>
+    /// Each move of <c>tools/excel-move-overlap-oracle.ps1</c> (range&gt;cell), then probe=formula for each probe formula
+    /// as Excel had it after the move.
+    /// </summary>
+    private static readonly string[][] Overlaps = [.. File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Oracle", "move-overlap.excel.tsv")).Skip(1).Select(line => line.Split('	'))];
+
+    public static TheoryData<int, int> OverlapCases()
+    {
+        TheoryData<int, int> cases = [];
+        for (int move = 0; move < Overlaps.Length; move++)
+        {
+            for (int probe = 1; probe < Overlaps[move].Length; probe++)
+            {
+                cases.Add(move, probe);
+            }
+        }
+
+        return cases;
+    }
+
+    [Theory]
+    [MemberData(nameof(OverlapCases))]
+    public void ARangeBesideOrUnderAShortMoveChangesAsInExcel(int move, int probe)
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        for (int row = 0; row < 40; row++)
+        {
+            for (int column = 0; column < 11; column++)
+            {
+                sheet.Cells[row, column].Value = ((row + 1) * 100) + column + 1;
+            }
+        }
+
+        string[] line = Overlaps[move];
+        for (int each = 1; each < line.Length; each++)
+        {
+            sheet.Cells[18 + each, 13].Formula = line[each].Split('=')[0];
+        }
+
+        string[] paste = line[0].Split('>');
+        sheet.Range(paste[0]).MoveTo(sheet[paste[1]]);
+        Assert.Equal(line[probe].Split('=')[1], sheet.Cells[18 + probe, 13].Formula);
+    }
+
+    /// <summary>
+    /// Each case of <c>tools/excel-merge-oracle.ps1</c>: the merges, Copy or Cut, range&gt;cell, whether Excel made the paste
+    /// and the merges after.
+    /// </summary>
+    private static readonly string[][] Merges = [.. File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Oracle", "merge.excel.tsv")).Skip(1).Select(line => line.Split('	'))];
+
+    public static TheoryData<int> MergeCases()
+    {
+        TheoryData<int> cases = [];
+        for (int each = 0; each < Merges.Length; each++)
+        {
+            cases.Add(each);
+        }
+
+        return cases;
+    }
+
+    [Theory]
+    [MemberData(nameof(MergeCases))]
+    public void APasteAroundMergedCellsDoesWhatExcelDoes(int index)
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        for (int row = 0; row < 30; row++)
+        {
+            for (int column = 0; column < 12; column++)
+            {
+                sheet.Cells[row, column].Value = ((row + 1) * 100) + column + 1;
+            }
+        }
+
+        string[] line = Merges[index];
+        foreach (string merge in line[0].Split(' '))
+        {
+            sheet.MergedCells.Add(RangeAddress.Parse(merge));
+        }
+
+        string[] paste = line[2].Split('>');
+        CellRange range = sheet.Range(paste[0]);
+        void Paste()
+        {
+            if (line[1] == "Cut")
+            {
+                range.MoveTo(sheet[paste[1]]);
+            }
+            else
+            {
+                range.CopyTo(sheet[paste[1]]);
+            }
+        }
+
+        if (line[3] == "refused")
+        {
+            Assert.Throws<InvalidOperationException>(Paste);
+        }
+        else
+        {
+            Paste();
+        }
+
+        string[] expected = line.Length > 4 ? line[4].Split(' ', StringSplitOptions.RemoveEmptyEntries) : [];
+        Assert.Equal(expected.Order(StringComparer.Ordinal), sheet.MergedCells.Select(m => m.ToString()).Order(StringComparer.Ordinal));
+    }
+
+    /// <summary>
+    /// Each case of <c>tools/excel-link-oracle.ps1</c>: the links (cell=address), Copy or Cut, range&gt;cell and the links
+    /// after.
+    /// </summary>
+    private static readonly string[][] Links = [.. File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Oracle", "link.excel.tsv")).Skip(1).Select(line => line.Split('	'))];
+
+    public static TheoryData<int> LinkCases()
+    {
+        TheoryData<int> cases = [];
+        for (int each = 0; each < Links.Length; each++)
+        {
+            cases.Add(each);
+        }
+
+        return cases;
+    }
+
+    [Theory]
+    [MemberData(nameof(LinkCases))]
+    public void APasteOverLinksLeavesTheLinksExcelLeaves(int index)
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        for (int row = 0; row < 10; row++)
+        {
+            for (int column = 0; column < 10; column++)
+            {
+                sheet.Cells[row, column].Value = ((row + 1) * 100) + column + 1;
+            }
+        }
+
+        string[] line = Links[index];
+        foreach (string link in line[0].Split(' '))
+        {
+            string[] parts = link.Split('=');
+            sheet.Hyperlinks.Add(parts[0], parts[1]);
+        }
+
+        string[] paste = line[2].Split('>');
+        if (line[1] == "Cut")
+        {
+            sheet.Range(paste[0]).MoveTo(sheet[paste[1]]);
+        }
+        else
+        {
+            sheet.Range(paste[0]).CopyTo(sheet[paste[1]]);
+        }
+
+        string[] expected = line.Length > 3 ? line[3].Split(' ', StringSplitOptions.RemoveEmptyEntries) : [];
+        Assert.Equal(expected.Order(StringComparer.Ordinal), sheet.Hyperlinks.Select(l => l.Range + "=" + l.Address).Order(StringComparer.Ordinal));
+    }
+
+    /// <summary>
+    /// A filtered sheet: k, v and f over rows 2 to 10, k one in the odd rows and zero in the even ones, which the filter
+    /// hides; f is v plus one. The expectations below are what Excel 16.0 build 20527 did with the same sheet.
+    /// </summary>
+    private static (Workbook Book, Worksheet Sheet) Filtered()
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        sheet["A1"].Value = "k";
+        sheet["B1"].Value = "v";
+        sheet["C1"].Value = "f";
+        for (int row = 2; row <= 10; row++)
+        {
+            sheet.Cells[row - 1, 0].Value = row % 2;
+            sheet.Cells[row - 1, 1].Value = row * 100;
+            sheet.Cells[row - 1, 2].Formula = $"B{row}+1";
+            sheet.Rows[row - 1].Hidden = row % 2 == 0;
+        }
+
+        sheet.HasFilterCriteria = true;
+        book.Calculate();
+        return (book, sheet);
+    }
+
+    [Fact]
+    public void ACopyOfAFilteredRangeTakesTheRowsItShowsAsExcelDoes()
+    {
+        (_, Worksheet sheet) = Filtered();
+        sheet.Range("A1:C6").CopyTo(sheet["F1"]);
+        Assert.Equal("k", sheet["F1"].Value.ToString());
+        Assert.Equal(300, sheet["G2"].Value.Number);
+        Assert.Null(sheet["H2"].Formula);
+        Assert.Equal(301, sheet["H2"].Value.Number);
+        Assert.Equal(501, sheet["H3"].Value.Number);
+        Assert.Equal(CellValueKind.Empty, sheet["F4"].ValueKind);
+
+        // One run keeps its formulas; a copy onto itself is refused; a cut takes every row.
+        sheet.Range("A4:C6").CopyTo(sheet["J1"]);
+        Assert.Equal("K1+1", sheet["L1"].Formula);
+        Assert.Throws<InvalidOperationException>(() => sheet.Range("A1:C6").CopyTo(sheet["B3"]));
+        sheet.Range("A1:C6").MoveTo(sheet["F11"]);
+        Assert.Equal("G16+1", sheet["H16"].Formula);
+    }
+
+    [Fact]
+    public void ACopyOverTheFirstCellOfASharedFormulaLeavesTheOthersTheirFormulas()
+    {
+        Workbook book = XlsxSeed.LoadFeatures();
+        Worksheet sheet = book.Worksheets[0];
+        Assert.Equal("B3*C3", sheet["D3"].Formula);
+
+        sheet.Range("F6").CopyTo(sheet["D2"]);
+        Assert.Null(sheet["D2"].Formula);
+        Assert.Equal("B3*C3", sheet["D3"].Formula);
+        Assert.Equal("B3*C3", Saved(book).Worksheets[0]["D3"].Formula);
+    }
+
     private static Workbook Saved(Workbook book)
     {
         MemoryStream stream = new();
