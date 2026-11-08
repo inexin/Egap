@@ -237,6 +237,53 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
         sheet.MoveRange(Address, destination.Worksheet, destination.Address);
     }
 
+    /// <summary>
+    /// Sorts the range's rows by the values in key columns, smallest first unless a key says otherwise, as Excel's Sort does;
+    /// see <see cref="Sort(SortOptions, SortKey[])"/>.
+    /// </summary>
+    /// <param name="keys">The keys, most important first.</param>
+    /// <exception cref="ArgumentException">No key is given.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A key is outside the range.</exception>
+    /// <exception cref="InvalidOperationException">The range has merged cells, part of an array formula or a pivot table.</exception>
+    /// <example>
+    /// <code>
+    /// sheet.Range("A2:C20").Sort(new SortKey(2, Descending: true), new SortKey(0));
+    /// </code>
+    /// </example>
+    public void Sort(params SortKey[] keys) => Sort(new SortOptions(), keys);
+
+    /// <summary>
+    /// Sorts the range's rows, or its columns, by the values in key columns (or key rows), as Excel's Sort does. Numbers come
+    /// first, then text, then FALSE and TRUE, then errors; empty cells come last either way, and rows whose keys are equal
+    /// keep their order. Text sorts by the rules of <see cref="Workbook.Culture"/>, ignoring case unless
+    /// <see cref="SortOptions.MatchCase"/> is set, and leaving out hyphens and apostrophes but for breaking a tie. A formula
+    /// sorts by its last result.
+    /// </summary>
+    /// <remarks>
+    /// Each row moves as Excel moves it: as if copied, with its values, styles, notes and links, and with its formulas'
+    /// relative references moved by as many rows as the formula moves; a reference that would leave the sheet becomes
+    /// <c>#REF!</c>. References from other cells to the sorted cells do not change. Conditional formats and validation rules
+    /// stay on their cells. Hidden rows (hidden columns, when columns are sorted) stay where they are, and the rest sort around
+    /// them.
+    /// </remarks>
+    /// <param name="options">How to sort.</param>
+    /// <param name="keys">The keys, most important first.</param>
+    /// <exception cref="ArgumentNullException">The options are null.</exception>
+    /// <exception cref="ArgumentException">No key is given.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A key is outside the range.</exception>
+    /// <exception cref="InvalidOperationException">The range has merged cells, part of an array formula or a pivot table.</exception>
+    /// <example>
+    /// <code>
+    /// sheet.Range("A1:D50").Sort(new SortOptions { HasHeader = true }, new SortKey(1));
+    /// </code>
+    /// </example>
+    public void Sort(SortOptions options, params SortKey[] keys)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(keys);
+        sheet.SortRange(Address, options, keys);
+    }
+
     /// <summary>Every cell in the range, empty ones too, row by row and left to right.</summary>
     public IEnumerator<Cell> GetEnumerator()
     {
