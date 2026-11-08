@@ -156,6 +156,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- AutoFit: `SheetColumn.AutoFit()` and `CellRange.AutoFitColumns()` fit columns to their text, and `SheetRow.AutoFit()`
+  and `CellRange.AutoFitRows()` fit rows to their fonts, wrapped lines and turned text, as Excel's AutoFit does. Text is
+  measured with the whole-pixel widths Excel gives the characters of the fonts sheets use most; General numbers take
+  the widest digit per digit, as in Excel.
 - `CellRange.CopyTo` and `MoveTo` paste a range at a cell of the same workbook, as Excel's Copy, Cut and Paste do:
   values, formulas, styles, merges, notes, hyperlinks, data validation and conditional formats. A copy moves relative
   references as filling does; a move keeps its formulas' text, and every reference in the workbook to the moved cells

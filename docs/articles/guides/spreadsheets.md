@@ -169,6 +169,31 @@ sheet.View.ZoomScale = 125;
 `sheet.MergedCells` holds the merged ranges; adding one that overlaps another throws. `sheet.View` holds what the sheet
 shows on screen: gridlines, headings, zeros, direction, zoom, frozen rows and columns, and whether its tab is selected.
 
+### AutoFit
+
+`AutoFit` sizes a column to its widest text and a row to its tallest, as Excel's AutoFit does. `SheetColumn.AutoFit()`
+fits a column to all its cells and gives its new width, or null when it has no text and keeps its width;
+`CellRange.AutoFitColumns()` fits each of a range's columns to the cells in the range only. `SheetRow.AutoFit()` and
+`CellRange.AutoFitRows()` fit rows to the fonts, wrapped lines and turned text of their cells; a row of only the normal
+font goes back to the sheet's default height.
+
+```csharp
+using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet["A1"].Value = CellValue.FromText("Quarterly revenue by region");
+sheet["B1"].Value = CellValue.FromNumber(1234567.89);
+sheet.Range("A1:B1").AutoFitColumns();
+double? width = sheet.Columns["A"].AutoFit();      // the same width: A has no other text
+double height = sheet.Rows[0].AutoFit();           // 15 points, the Calibri 11 row
+```
+
+Widths are measured as Excel measures text on screen at 96 dpi. For the fonts and sizes sheets use most, Egap carries the
+width Excel gives each character, hinted to whole pixels; other fonts are measured from the font. Numbers in the General
+format take the widest digit for each digit and the decimal separator, so the column holds any number of that length.
+Merged cells are left out, as Excel leaves them. Text shows as `Workbook.Culture` formats it. Egap measures each
+character to a whole pixel where Excel keeps fractions, so a width can differ from Excel's by a pixel.
+
 ### Inserting and deleting rows and columns
 
 `InsertRows`, `DeleteRows`, `InsertColumns` and `DeleteColumns` edit a sheet as Excel's Insert and Delete do. Rows and

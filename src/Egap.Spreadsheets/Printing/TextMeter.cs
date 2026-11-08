@@ -60,10 +60,38 @@ internal sealed class TextMeter(Workbook book)
     }
 
     /// <summary>
-    /// The pixels a short text takes beyond its own width, which Excel keeps when the text's 29/28 gives less: two for the
-    /// sizes sheets use most, more for larger fonts.
+    /// The width of one line of text as Excel measures it to fit a column, with fractions of a pixel: from the table where
+    /// Excel was measured, and the whole pixels of <see cref="Width"/> widened by <see cref="Scale"/> otherwise.
     /// </summary>
-    public static int Lead(CellFont font) => Math.Max(0, ((int)Math.Round(font.Size * 96 / 72, MidpointRounding.AwayFromZero) - 7) / 3);
+    public double Exact(ReadOnlySpan<char> text, CellFont font, char decimalSeparator = '\0')
+    {
+        CharacterWidths.Widths? table = Table(font);
+        double width = 0;
+        foreach (char c in text)
+        {
+            if (c is '\r' or '\n')
+            {
+                continue;
+            }
+
+            if (decimalSeparator != '\0' && (char.IsAsciiDigit(c) || c == decimalSeparator))
+            {
+                width += table is { } digits && digits.ExactMaxDigit > 0 ? digits.ExactMaxDigit : DigitWidth(font) * Scale;
+                continue;
+            }
+
+            double pixels = table?.Exact(c == '\u2212' ? '-' : c) ?? -1;
+            width += pixels >= 0 ? pixels : Measure(font, c) * Scale;
+        }
+
+        return width;
+    }
+
+    /// <summary>
+    /// The pixels a short text takes beyond its whole pixels, which Excel keeps when its measure gives less: two, and two
+    /// more for each whole four pixels the font's widest digit has over five, as Excel measured from 8 to 20 points.
+    /// </summary>
+    public int Lead(CellFont font) => 2 + (2 * ((Math.Max(5, DigitWidth(font)) - 5) / 4));
 
     /// <summary>The widest digit of <paramref name="font"/> in pixels.</summary>
     public int DigitWidth(CellFont font)
@@ -85,6 +113,11 @@ internal sealed class TextMeter(Workbook book)
     /// <summary>The height of a line of <paramref name="font"/> in pixels: the row Excel gives that font.</summary>
     public int LineHeight(CellFont font)
     {
+        if (CharacterWidths.LineHeight(font.Name, font.Size, font.Bold) is { } pixels)
+        {
+            return pixels;
+        }
+
         if (PrintedRows.Find(font.Name, font.Size) is { } row)
         {
             return row.Pixels;

@@ -43,31 +43,54 @@ public sealed partial class Worksheet
     /// <summary>Fits a row to the tallest text of its cells, as Excel's AutoFit does, and gives its height in points.</summary>
     internal double AutoFitRow(int row, TextMeter meter)
     {
-        int least = meter.LineHeight(Normal);
-        int tallest = least;
+        int normal = meter.LineHeight(Normal);
+        int tallest = EmptyCellsLineHeight(row, meter);
+        bool text = false;
         RangeAddress line = new(row, 0, row, CellAddress.MaxColumns - 1);
         List<RangeAddress> merges = Merges(line);
         foreach ((int r, int column) in store.Occupied(line))
         {
-            if (merges.Count > 0 && merges.Exists(m => m.Contains(new CellAddress(r, column))))
+            int at = merges.Count > 0 ? merges.FindIndex(m => m.Contains(new CellAddress(r, column))) : -1;
+            if (at >= 0)
             {
+                RangeAddress merge = merges[at];
+                // A merge within the row holds it to one line of its font; Excel leaves taller merges out.
+                if (merge.RowCount == 1 && merge.First == new CellAddress(r, column) && !this[r, column].Value.IsEmpty)
+                {
+                    tallest = Math.Max(tallest, meter.LineHeight(this[r, column].Style.Font));
+                    text = true;
+                }
+
                 continue;
             }
 
             if (Fitted(r, column, ColumnPixels(column, meter) - TextMeter.Padding, meter) is { } fitted)
             {
                 tallest = Math.Max(tallest, fitted.Height);
+                text = true;
             }
+        }
+
+        bool customDefault = DefaultRowHeight is not null && !DefaultRowFollowsFont;
+        if (!text)
+        {
+            // A row without text takes the sheet's default height.
+            tallest = normal;
         }
 
         double points = Math.Min(409.5, tallest * 0.75);
         RowRecord record = RowRecords.TryGetValue(row, out RowRecord? known) ? known : RowRecords[row] = new RowRecord();
         record.Height = double.NaN;
         record.Extra = record.Extra?.Where(a => a.Name.Namespace != XNamespace.None || a.Name.LocalName is not ("ht" or "customHeight")).ToArray() is { Length: > 0 } kept ? kept : null;
-        if (tallest == least && DefaultRowHeight is null)
+        if (!text || (tallest == normal && !customDefault))
         {
-            // The normal font's own row: the row follows the sheet's default again, as Excel leaves it.
+            // A row without text, or as high as the normal font's: the row follows the sheet's default again, as Excel
+            // leaves it.
             record.FittedHeight = double.NaN;
+            if (customDefault)
+            {
+                points = DefaultRowHeight!.Value;
+            }
         }
         else
         {
@@ -81,6 +104,31 @@ public sealed partial class Worksheet
         }
 
         return points;
+    }
+
+    /// <summary>
+    /// The line height the row's empty cells hold it to: the font of the row's style, or else the tallest of the columns'
+    /// styles, with the normal font for columns without one.
+    /// </summary>
+    private int EmptyCellsLineHeight(int row, TextMeter meter)
+    {
+        if (RowRecords.TryGetValue(row, out RowRecord? record) && record.Style >= 0)
+        {
+            return meter.LineHeight(Workbook.Styles[record.Style].Font);
+        }
+
+        int tallest = 0;
+        long styled = 0;
+        foreach (ColumnSpan span in ColumnSpans.Spans)
+        {
+            if (span.Style >= 0)
+            {
+                styled += span.Last - span.First + 1;
+                tallest = Math.Max(tallest, meter.LineHeight(Workbook.Styles[span.Style].Font));
+            }
+        }
+
+        return styled < CellAddress.MaxColumns ? Math.Max(tallest, meter.LineHeight(Normal)) : tallest;
     }
 
     private static string XlsxNamesNumber(double value) => Xlsx.XlsxNames.Number(value);
@@ -109,14 +157,24 @@ public sealed partial class Worksheet
         CellStyle style = cell.Style;
         CellFont font = style.Font;
         CellAlignment alignment = style.Alignment;
+
+        // Excel measures text across at the sheet's zoom, its font at the zoomed size, and scales the result back; rows
+        // keep their font's height at any zoom.
         int lineHeight = meter.LineHeight(font);
+        double zoom = View.ZoomScale / 100.0;
+        if (zoom != 1)
+        {
+            font = font with { Size = font.Size * zoom };
+            available = (int)(available * zoom);
+        }
+
         int indent = alignment.Indent * IndentPixels(meter);
-        int widest;
+        int across;
         int lines;
         if (alignment.WrapText)
         {
-            List<int> wrapped = Wrap(text, font, Math.Max(1, available - indent), meter);
-            widest = wrapped.Max();
+            List<string> wrapped = Wrap(text, font, Math.Max(1, available - indent), meter);
+            across = wrapped.Max(l => Across(l, font, '\0', meter)) + indent;
             lines = wrapped.Count;
         }
         else
@@ -124,17 +182,22 @@ public sealed partial class Worksheet
             char separator = cell.Value.Kind == CellValueKind.Number && string.Equals(style.NumberFormat, "General", StringComparison.OrdinalIgnoreCase)
                 ? Workbook.Culture.NumberFormat.NumberDecimalSeparator[0]
                 : '\0';
-            widest = meter.Width(text, font, separator);
+            across = Across(text, font, separator, meter) + indent;
             lines = 1;
         }
 
-        // Excel widens text by 29/28, but never by less than a lead of a few pixels.
-        int across = Math.Max((int)(widest * TextMeter.Scale), widest + TextMeter.Lead(font)) + indent;
         int down = lines * lineHeight;
         int rotation = alignment.TextRotation;
         if (rotation == 0)
         {
-            return (across, down);
+            return Unzoomed(across, down, zoom);
+        }
+
+        // Turned text is measured in whole pixels widened by 29/28, not by Excel's measure of its line.
+        if (!alignment.WrapText)
+        {
+            int whole = meter.Width(text, font);
+            across = Math.Max((int)(whole * TextMeter.Scale), whole + meter.Lead(font)) + indent;
         }
 
         // Turned text fits its row by the box around it, its line taking the padding by the square of the slant: all of it
@@ -142,8 +205,19 @@ public sealed partial class Worksheet
         double angle = (rotation == 255 ? 90 : rotation > 90 ? rotation - 90 : rotation) * Math.PI / 180;
         double cos = Math.Abs(Math.Cos(angle)), sin = Math.Abs(Math.Sin(angle));
         int height = (int)Math.Round((sin * (across + (TextMeter.Padding * sin * sin))) + (cos * down));
-        return ((int)Math.Round((cos * across) + (sin * down * TextMeter.Scale)), height);
+        return Unzoomed((int)Math.Round((cos * across) + (sin * down * TextMeter.Scale)), height, zoom);
     }
+
+    /// <summary>A cell's pixels across at a zoom, without the column's padding, as they come to at 100 %.</summary>
+    private static (int Width, int Height) Unzoomed(int across, int down, double zoom) => zoom == 1
+        ? (across, down)
+        : ((int)((across + TextMeter.Padding) / zoom) - TextMeter.Padding, down);
+
+    /// <summary>
+    /// The pixels a line takes across: Excel's measure of it, but never less than its whole pixels and a lead.
+    /// </summary>
+    private static int Across(string line, CellFont font, char separator, TextMeter meter) =>
+        Math.Max((int)meter.Exact(line, font, separator), meter.Width(line, font, separator) + meter.Lead(font));
 
     /// <summary>The pixels of one step of indent: three spaces of the normal font.</summary>
     private int IndentPixels(TextMeter meter) => 3 * meter.Width(" ", Normal);
@@ -151,31 +225,29 @@ public sealed partial class Worksheet
     /// <summary>The workbook's normal font: the font of the default cell format.</summary>
     private CellFont Normal => Workbook.Styles.Count > 0 ? Workbook.Styles[0].Font : CellFont.Default;
 
-    /// <summary>The widths in pixels of a text's lines, wrapped at spaces to fit <paramref name="available"/> pixels.</summary>
-    private static List<int> Wrap(string text, CellFont font, int available, TextMeter meter)
+    /// <summary>A text's lines, wrapped at spaces to fit <paramref name="available"/> pixels.</summary>
+    private static List<string> Wrap(string text, CellFont font, int available, TextMeter meter)
     {
-        List<int> lines = [];
+        List<string> lines = [];
         foreach (string paragraph in text.Replace("\r", "", StringComparison.Ordinal).Split('\n'))
         {
-            int start = 0, width = 0, lineStart = 0;
+            int start = 0, lineStart = 0, lineEnd = 0;
             while (start <= paragraph.Length)
             {
                 int end = paragraph.IndexOf(' ', start);
                 end = end < 0 ? paragraph.Length : end;
-                int candidate = meter.Width(paragraph.AsSpan(lineStart, end - lineStart), font);
-                if (candidate * TextMeter.Scale > available && start > lineStart)
+                if (meter.Exact(paragraph.AsSpan(lineStart, end - lineStart), font) > available && start > lineStart)
                 {
                     // The word goes onto a new line; the line ends before the space that went before it.
-                    lines.Add(width);
+                    lines.Add(paragraph[lineStart..lineEnd]);
                     lineStart = start;
-                    candidate = meter.Width(paragraph.AsSpan(lineStart, end - lineStart), font);
                 }
 
-                width = candidate;
+                lineEnd = end;
                 start = end + 1;
             }
 
-            lines.Add(width);
+            lines.Add(paragraph[lineStart..lineEnd]);
         }
 
         return lines;

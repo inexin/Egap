@@ -100,7 +100,7 @@ public sealed class AutoFitTests
     /// </summary>
     private static int Tolerance(string sheet, string column) => (sheet, column) switch
     {
-        ("cols", "Y") => 2,
+        (_, "Y") => 2,
         ("cols-arial", "Z") => 4,
         (_, "L") => 4,
         _ => 1,

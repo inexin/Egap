@@ -1,0 +1,989 @@
+# Excel 16.0 build 20527: row height in pixels of one line of text, AutoFit, written by tools/excel-line-height-oracle.ps1
+Arial	6	0	11
+Arial	6	1	11
+Arial	7	0	12
+Arial	7	1	12
+Arial	8	0	15
+Arial	8	1	15
+Arial	9	0	16
+Arial	9	1	16
+Arial	10	0	17
+Arial	10	1	17
+Arial	11	0	19
+Arial	11	1	20
+Arial	12	0	20
+Arial	12	1	21
+Arial	13	0	22
+Arial	13	1	22
+Arial	14	0	24
+Arial	14	1	24
+Arial	15	0	25
+Arial	15	1	26
+Arial	16	0	27
+Arial	16	1	27
+Arial	18	0	31
+Arial	18	1	31
+Arial	20	0	34
+Arial	20	1	35
+Arial	22	0	36
+Arial	22	1	37
+Arial	24	0	40
+Arial	24	1	40
+Arial	26	0	44
+Arial	26	1	45
+Arial	28	0	46
+Arial	28	1	47
+Arial	36	0	59
+Arial	36	1	60
+Arial	48	0	79
+Arial	48	1	80
+Calibri	6	0	11
+Calibri	6	1	11
+Calibri	7	0	12
+Calibri	7	1	12
+Calibri	8	0	15
+Calibri	8	1	15
+Calibri	9	0	16
+Calibri	9	1	16
+Calibri	10	0	17
+Calibri	10	1	17
+Calibri	11	0	20
+Calibri	11	1	20
+Calibri	12	0	21
+Calibri	12	1	21
+Calibri	13	0	23
+Calibri	13	1	23
+Calibri	14	0	25
+Calibri	14	1	25
+Calibri	15	0	26
+Calibri	15	1	26
+Calibri	16	0	28
+Calibri	16	1	28
+Calibri	18	0	31
+Calibri	18	1	31
+Calibri	20	0	35
+Calibri	20	1	35
+Calibri	22	0	38
+Calibri	22	1	38
+Calibri	24	0	42
+Calibri	24	1	42
+Calibri	26	0	45
+Calibri	26	1	45
+Calibri	28	0	48
+Calibri	28	1	48
+Calibri	36	0	62
+Calibri	36	1	62
+Calibri	48	0	82
+Calibri	48	1	82
+Times New Roman	6	0	11
+Times New Roman	6	1	11
+Times New Roman	7	0	12
+Times New Roman	7	1	12
+Times New Roman	8	0	15
+Times New Roman	8	1	14
+Times New Roman	9	0	16
+Times New Roman	9	1	16
+Times New Roman	10	0	17
+Times New Roman	10	1	17
+Times New Roman	11	0	20
+Times New Roman	11	1	19
+Times New Roman	12	0	21
+Times New Roman	12	1	21
+Times New Roman	13	0	22
+Times New Roman	13	1	22
+Times New Roman	14	0	25
+Times New Roman	14	1	25
+Times New Roman	15	0	26
+Times New Roman	15	1	26
+Times New Roman	16	0	27
+Times New Roman	16	1	27
+Times New Roman	18	0	31
+Times New Roman	18	1	30
+Times New Roman	20	0	35
+Times New Roman	20	1	34
+Times New Roman	22	0	37
+Times New Roman	22	1	36
+Times New Roman	24	0	41
+Times New Roman	24	1	40
+Times New Roman	26	0	44
+Times New Roman	26	1	44
+Times New Roman	28	0	47
+Times New Roman	28	1	46
+Times New Roman	36	0	61
+Times New Roman	36	1	60
+Times New Roman	48	0	82
+Times New Roman	48	1	81
+Verdana	6	0	11
+Verdana	6	1	11
+Verdana	7	0	12
+Verdana	7	1	12
+Verdana	8	0	14
+Verdana	8	1	14
+Verdana	9	0	15
+Verdana	9	1	15
+Verdana	10	0	17
+Verdana	10	1	17
+Verdana	11	0	19
+Verdana	11	1	19
+Verdana	12	0	20
+Verdana	12	1	20
+Verdana	13	0	21
+Verdana	13	1	21
+Verdana	14	0	24
+Verdana	14	1	24
+Verdana	15	0	27
+Verdana	15	1	27
+Verdana	16	0	26
+Verdana	16	1	26
+Verdana	18	0	30
+Verdana	18	1	30
+Verdana	20	0	33
+Verdana	20	1	33
+Verdana	22	0	36
+Verdana	22	1	36
+Verdana	24	0	39
+Verdana	24	1	39
+Verdana	26	0	43
+Verdana	26	1	43
+Verdana	28	0	47
+Verdana	28	1	47
+Verdana	36	0	61
+Verdana	36	1	61
+Verdana	48	0	80
+Verdana	48	1	80
+Tahoma	6	0	11
+Tahoma	6	1	11
+Tahoma	7	0	12
+Tahoma	7	1	12
+Tahoma	8	0	14
+Tahoma	8	1	14
+Tahoma	9	0	15
+Tahoma	9	1	15
+Tahoma	10	0	17
+Tahoma	10	1	17
+Tahoma	11	0	19
+Tahoma	11	1	19
+Tahoma	12	0	20
+Tahoma	12	1	20
+Tahoma	13	0	22
+Tahoma	13	1	22
+Tahoma	14	0	24
+Tahoma	14	1	24
+Tahoma	15	0	25
+Tahoma	15	1	25
+Tahoma	16	0	26
+Tahoma	16	1	26
+Tahoma	18	0	30
+Tahoma	18	1	30
+Tahoma	20	0	34
+Tahoma	20	1	34
+Tahoma	22	0	36
+Tahoma	22	1	36
+Tahoma	24	0	40
+Tahoma	24	1	40
+Tahoma	26	0	43
+Tahoma	26	1	43
+Tahoma	28	0	46
+Tahoma	28	1	46
+Tahoma	36	0	59
+Tahoma	36	1	59
+Tahoma	48	0	78
+Tahoma	48	1	78
+Courier New	6	0	11
+Courier New	6	1	11
+Courier New	7	0	12
+Courier New	7	1	12
+Courier New	8	0	15
+Courier New	8	1	15
+Courier New	9	0	16
+Courier New	9	1	17
+Courier New	10	0	18
+Courier New	10	1	18
+Courier New	11	0	20
+Courier New	11	1	21
+Courier New	12	0	21
+Courier New	12	1	22
+Courier New	13	0	23
+Courier New	13	1	23
+Courier New	14	0	25
+Courier New	14	1	26
+Courier New	15	0	26
+Courier New	15	1	27
+Courier New	16	0	28
+Courier New	16	1	28
+Courier New	18	0	32
+Courier New	18	1	32
+Courier New	20	0	35
+Courier New	20	1	36
+Courier New	22	0	38
+Courier New	22	1	39
+Courier New	24	0	42
+Courier New	24	1	43
+Courier New	26	0	46
+Courier New	26	1	47
+Courier New	28	0	48
+Courier New	28	1	49
+Courier New	36	0	62
+Courier New	36	1	63
+Courier New	48	0	83
+Courier New	48	1	84
+Arial Narrow	6	0	11
+Arial Narrow	6	1	11
+Arial Narrow	7	0	12
+Arial Narrow	7	1	12
+Arial Narrow	8	0	17
+Arial Narrow	8	1	17
+Arial Narrow	9	0	18
+Arial Narrow	9	1	18
+Arial Narrow	10	0	17
+Arial Narrow	10	1	17
+Arial Narrow	11	0	22
+Arial Narrow	11	1	22
+Arial Narrow	12	0	21
+Arial Narrow	12	1	21
+Arial Narrow	13	0	23
+Arial Narrow	13	1	23
+Arial Narrow	14	0	24
+Arial Narrow	14	1	24
+Arial Narrow	15	0	26
+Arial Narrow	15	1	26
+Arial Narrow	16	0	27
+Arial Narrow	16	1	27
+Arial Narrow	18	0	31
+Arial Narrow	18	1	31
+Arial Narrow	20	0	34
+Arial Narrow	20	1	34
+Arial Narrow	22	0	36
+Arial Narrow	22	1	36
+Arial Narrow	24	0	40
+Arial Narrow	24	1	40
+Arial Narrow	26	0	45
+Arial Narrow	26	1	45
+Arial Narrow	28	0	47
+Arial Narrow	28	1	47
+Arial Narrow	36	0	61
+Arial Narrow	36	1	61
+Arial Narrow	48	0	80
+Arial Narrow	48	1	80
+MS Sans Serif	6	0	11
+MS Sans Serif	6	1	11
+MS Sans Serif	7	0	12
+MS Sans Serif	7	1	12
+MS Sans Serif	8	0	14
+MS Sans Serif	8	1	14
+MS Sans Serif	9	0	14
+MS Sans Serif	9	1	14
+MS Sans Serif	10	0	17
+MS Sans Serif	10	1	17
+MS Sans Serif	11	0	17
+MS Sans Serif	11	1	17
+MS Sans Serif	12	0	21
+MS Sans Serif	12	1	21
+MS Sans Serif	13	0	21
+MS Sans Serif	13	1	21
+MS Sans Serif	14	0	26
+MS Sans Serif	14	1	26
+MS Sans Serif	15	0	26
+MS Sans Serif	15	1	26
+MS Sans Serif	16	0	26
+MS Sans Serif	16	1	26
+MS Sans Serif	18	0	31
+MS Sans Serif	18	1	31
+MS Sans Serif	20	0	33
+MS Sans Serif	20	1	33
+MS Sans Serif	22	0	33
+MS Sans Serif	22	1	33
+MS Sans Serif	24	0	41
+MS Sans Serif	24	1	41
+MS Sans Serif	26	0	41
+MS Sans Serif	26	1	41
+MS Sans Serif	28	0	51
+MS Sans Serif	28	1	51
+MS Sans Serif	36	0	61
+MS Sans Serif	36	1	61
+MS Sans Serif	48	0	81
+MS Sans Serif	48	1	81
+Cambria	6	0	11
+Cambria	6	1	11
+Cambria	7	0	12
+Cambria	7	1	12
+Cambria	8	0	14
+Cambria	8	1	14
+Cambria	9	0	16
+Cambria	9	1	16
+Cambria	10	0	17
+Cambria	10	1	17
+Cambria	11	0	19
+Cambria	11	1	19
+Cambria	12	0	21
+Cambria	12	1	21
+Cambria	13	0	22
+Cambria	13	1	22
+Cambria	14	0	24
+Cambria	14	1	24
+Cambria	15	0	25
+Cambria	15	1	25
+Cambria	16	0	27
+Cambria	16	1	27
+Cambria	18	0	30
+Cambria	18	1	30
+Cambria	20	0	34
+Cambria	20	1	34
+Cambria	22	0	36
+Cambria	22	1	36
+Cambria	24	0	40
+Cambria	24	1	40
+Cambria	26	0	44
+Cambria	26	1	44
+Cambria	28	0	46
+Cambria	28	1	46
+Cambria	36	0	60
+Cambria	36	1	60
+Cambria	48	0	79
+Cambria	48	1	79
+Segoe UI	6	0	11
+Segoe UI	6	1	11
+Segoe UI	7	0	12
+Segoe UI	7	1	12
+Segoe UI	8	0	14
+Segoe UI	8	1	14
+Segoe UI	9	0	16
+Segoe UI	9	1	16
+Segoe UI	10	0	19
+Segoe UI	10	1	19
+Segoe UI	11	0	22
+Segoe UI	11	1	22
+Segoe UI	12	0	23
+Segoe UI	12	1	23
+Segoe UI	13	0	25
+Segoe UI	13	1	25
+Segoe UI	14	0	27
+Segoe UI	14	1	27
+Segoe UI	15	0	32
+Segoe UI	15	1	32
+Segoe UI	16	0	34
+Segoe UI	16	1	34
+Segoe UI	18	0	35
+Segoe UI	18	1	35
+Segoe UI	20	0	41
+Segoe UI	20	1	41
+Segoe UI	22	0	44
+Segoe UI	22	1	44
+Segoe UI	24	0	50
+Segoe UI	24	1	50
+Segoe UI	26	0	51
+Segoe UI	26	1	51
+Segoe UI	28	0	54
+Segoe UI	28	1	54
+Segoe UI	36	0	70
+Segoe UI	36	1	70
+Segoe UI	48	0	92
+Segoe UI	48	1	92
+Garamond	6	0	11
+Garamond	6	1	11
+Garamond	7	0	12
+Garamond	7	1	12
+Garamond	8	0	15
+Garamond	8	1	15
+Garamond	9	0	16
+Garamond	9	1	16
+Garamond	10	0	17
+Garamond	10	1	17
+Garamond	11	0	20
+Garamond	11	1	20
+Garamond	12	0	21
+Garamond	12	1	21
+Garamond	13	0	22
+Garamond	13	1	22
+Garamond	14	0	25
+Garamond	14	1	25
+Garamond	15	0	26
+Garamond	15	1	26
+Garamond	16	0	28
+Garamond	16	1	28
+Garamond	18	0	31
+Garamond	18	1	31
+Garamond	20	0	35
+Garamond	20	1	35
+Garamond	22	0	38
+Garamond	22	1	38
+Garamond	24	0	41
+Garamond	24	1	41
+Garamond	26	0	45
+Garamond	26	1	45
+Garamond	28	0	48
+Garamond	28	1	48
+Garamond	36	0	62
+Garamond	36	1	62
+Garamond	48	0	82
+Garamond	48	1	82
+Century Gothic	6	0	11
+Century Gothic	6	1	11
+Century Gothic	7	0	12
+Century Gothic	7	1	12
+Century Gothic	8	0	18
+Century Gothic	8	1	17
+Century Gothic	9	0	19
+Century Gothic	9	1	18
+Century Gothic	10	0	18
+Century Gothic	10	1	17
+Century Gothic	11	0	22
+Century Gothic	11	1	19
+Century Gothic	12	0	23
+Century Gothic	12	1	20
+Century Gothic	13	0	22
+Century Gothic	13	1	21
+Century Gothic	14	0	24
+Century Gothic	14	1	24
+Century Gothic	15	0	25
+Century Gothic	15	1	25
+Century Gothic	16	0	26
+Century Gothic	16	1	27
+Century Gothic	18	0	32
+Century Gothic	18	1	30
+Century Gothic	20	0	35
+Century Gothic	20	1	34
+Century Gothic	22	0	38
+Century Gothic	22	1	38
+Century Gothic	24	0	41
+Century Gothic	24	1	39
+Century Gothic	26	0	44
+Century Gothic	26	1	43
+Century Gothic	28	0	46
+Century Gothic	28	1	46
+Century Gothic	36	0	61
+Century Gothic	36	1	58
+Century Gothic	48	0	82
+Century Gothic	48	1	78
+Aptos Narrow	6	0	11
+Aptos Narrow	6	1	11
+Aptos Narrow	7	0	12
+Aptos Narrow	7	1	12
+Aptos Narrow	8	0	15
+Aptos Narrow	8	1	15
+Aptos Narrow	9	0	16
+Aptos Narrow	9	1	16
+Aptos Narrow	10	0	18
+Aptos Narrow	10	1	18
+Aptos Narrow	11	0	20
+Aptos Narrow	11	1	20
+Aptos Narrow	12	0	21
+Aptos Narrow	12	1	21
+Aptos Narrow	13	0	23
+Aptos Narrow	13	1	23
+Aptos Narrow	14	0	25
+Aptos Narrow	14	1	25
+Aptos Narrow	15	0	26
+Aptos Narrow	15	1	26
+Aptos Narrow	16	0	28
+Aptos Narrow	16	1	28
+Aptos Narrow	18	0	32
+Aptos Narrow	18	1	32
+Aptos Narrow	20	0	35
+Aptos Narrow	20	1	35
+Aptos Narrow	22	0	38
+Aptos Narrow	22	1	38
+Aptos Narrow	24	0	42
+Aptos Narrow	24	1	42
+Aptos Narrow	26	0	46
+Aptos Narrow	26	1	46
+Aptos Narrow	28	0	48
+Aptos Narrow	28	1	48
+Aptos Narrow	36	0	62
+Aptos Narrow	36	1	62
+Aptos Narrow	48	0	85
+Aptos Narrow	48	1	85
+Aptos	6	0	11
+Aptos	6	1	11
+Aptos	7	0	12
+Aptos	7	1	12
+Aptos	8	0	15
+Aptos	8	1	15
+Aptos	9	0	16
+Aptos	9	1	16
+Aptos	10	0	18
+Aptos	10	1	18
+Aptos	11	0	20
+Aptos	11	1	20
+Aptos	12	0	21
+Aptos	12	1	21
+Aptos	13	0	23
+Aptos	13	1	23
+Aptos	14	0	25
+Aptos	14	1	25
+Aptos	15	0	26
+Aptos	15	1	26
+Aptos	16	0	28
+Aptos	16	1	28
+Aptos	18	0	32
+Aptos	18	1	32
+Aptos	20	0	35
+Aptos	20	1	35
+Aptos	22	0	38
+Aptos	22	1	38
+Aptos	24	0	42
+Aptos	24	1	42
+Aptos	26	0	46
+Aptos	26	1	46
+Aptos	28	0	48
+Aptos	28	1	48
+Aptos	36	0	62
+Aptos	36	1	62
+Aptos	48	0	85
+Aptos	48	1	85
+Book Antiqua	6	0	11
+Book Antiqua	6	1	11
+Book Antiqua	7	0	12
+Book Antiqua	7	1	12
+Book Antiqua	8	0	17
+Book Antiqua	8	1	18
+Book Antiqua	9	0	18
+Book Antiqua	9	1	19
+Book Antiqua	10	0	18
+Book Antiqua	10	1	20
+Book Antiqua	11	0	22
+Book Antiqua	11	1	20
+Book Antiqua	12	0	21
+Book Antiqua	12	1	22
+Book Antiqua	13	0	23
+Book Antiqua	13	1	23
+Book Antiqua	14	0	25
+Book Antiqua	14	1	25
+Book Antiqua	15	0	26
+Book Antiqua	15	1	26
+Book Antiqua	16	0	28
+Book Antiqua	16	1	27
+Book Antiqua	18	0	31
+Book Antiqua	18	1	31
+Book Antiqua	20	0	35
+Book Antiqua	20	1	35
+Book Antiqua	22	0	38
+Book Antiqua	22	1	37
+Book Antiqua	24	0	42
+Book Antiqua	24	1	41
+Book Antiqua	26	0	45
+Book Antiqua	26	1	45
+Book Antiqua	28	0	48
+Book Antiqua	28	1	47
+Book Antiqua	36	0	62
+Book Antiqua	36	1	61
+Book Antiqua	48	0	83
+Book Antiqua	48	1	82
+Comic Sans MS	6	0	11
+Comic Sans MS	6	1	11
+Comic Sans MS	7	0	12
+Comic Sans MS	7	1	12
+Comic Sans MS	8	0	17
+Comic Sans MS	8	1	19
+Comic Sans MS	9	0	19
+Comic Sans MS	9	1	18
+Comic Sans MS	10	0	20
+Comic Sans MS	10	1	22
+Comic Sans MS	11	0	22
+Comic Sans MS	11	1	24
+Comic Sans MS	12	0	26
+Comic Sans MS	12	1	26
+Comic Sans MS	13	0	27
+Comic Sans MS	13	1	28
+Comic Sans MS	14	0	28
+Comic Sans MS	14	1	30
+Comic Sans MS	15	0	31
+Comic Sans MS	15	1	33
+Comic Sans MS	16	0	32
+Comic Sans MS	16	1	33
+Comic Sans MS	18	0	36
+Comic Sans MS	18	1	39
+Comic Sans MS	20	0	42
+Comic Sans MS	20	1	42
+Comic Sans MS	22	0	44
+Comic Sans MS	22	1	44
+Comic Sans MS	24	0	50
+Comic Sans MS	24	1	50
+Comic Sans MS	26	0	54
+Comic Sans MS	26	1	54
+Comic Sans MS	28	0	57
+Comic Sans MS	28	1	55
+Comic Sans MS	36	0	73
+Comic Sans MS	36	1	73
+Comic Sans MS	48	0	98
+Comic Sans MS	48	1	98
+Helvetica	6	0	11
+Helvetica	6	1	11
+Helvetica	7	0	12
+Helvetica	7	1	12
+Helvetica	8	0	15
+Helvetica	8	1	15
+Helvetica	9	0	16
+Helvetica	9	1	16
+Helvetica	10	0	17
+Helvetica	10	1	17
+Helvetica	11	0	19
+Helvetica	11	1	20
+Helvetica	12	0	20
+Helvetica	12	1	21
+Helvetica	13	0	22
+Helvetica	13	1	22
+Helvetica	14	0	24
+Helvetica	14	1	24
+Helvetica	15	0	25
+Helvetica	15	1	26
+Helvetica	16	0	27
+Helvetica	16	1	27
+Helvetica	18	0	31
+Helvetica	18	1	31
+Helvetica	20	0	34
+Helvetica	20	1	35
+Helvetica	22	0	36
+Helvetica	22	1	37
+Helvetica	24	0	40
+Helvetica	24	1	40
+Helvetica	26	0	44
+Helvetica	26	1	45
+Helvetica	28	0	46
+Helvetica	28	1	47
+Helvetica	36	0	59
+Helvetica	36	1	60
+Helvetica	48	0	79
+Helvetica	48	1	80
+Geneva	6	0	11
+Geneva	6	1	11
+Geneva	7	0	12
+Geneva	7	1	12
+Geneva	8	0	15
+Geneva	8	1	15
+Geneva	9	0	16
+Geneva	9	1	16
+Geneva	10	0	17
+Geneva	10	1	17
+Geneva	11	0	19
+Geneva	11	1	20
+Geneva	12	0	20
+Geneva	12	1	21
+Geneva	13	0	22
+Geneva	13	1	22
+Geneva	14	0	24
+Geneva	14	1	24
+Geneva	15	0	25
+Geneva	15	1	26
+Geneva	16	0	27
+Geneva	16	1	27
+Geneva	18	0	31
+Geneva	18	1	31
+Geneva	20	0	34
+Geneva	20	1	35
+Geneva	22	0	36
+Geneva	22	1	37
+Geneva	24	0	40
+Geneva	24	1	40
+Geneva	26	0	44
+Geneva	26	1	45
+Geneva	28	0	46
+Geneva	28	1	47
+Geneva	36	0	59
+Geneva	36	1	60
+Geneva	48	0	79
+Geneva	48	1	80
+Courier	6	0	11
+Courier	6	1	11
+Courier	7	0	12
+Courier	7	1	12
+Courier	8	0	16
+Courier	8	1	16
+Courier	9	0	16
+Courier	9	1	16
+Courier	10	0	16
+Courier	10	1	16
+Courier	11	0	16
+Courier	11	1	16
+Courier	12	0	20
+Courier	12	1	20
+Courier	13	0	20
+Courier	13	1	20
+Courier	14	0	20
+Courier	14	1	20
+Courier	15	0	25
+Courier	15	1	25
+Courier	16	0	25
+Courier	16	1	25
+Courier	18	0	25
+Courier	18	1	25
+Courier	20	0	31
+Courier	20	1	31
+Courier	22	0	31
+Courier	22	1	31
+Courier	24	0	39
+Courier	24	1	39
+Courier	26	0	39
+Courier	26	1	39
+Courier	28	0	39
+Courier	28	1	39
+Courier	36	0	58
+Courier	36	1	58
+Courier	48	0	77
+Courier	48	1	77
+Arial Black	6	0	11
+Arial Black	6	1	11
+Arial Black	7	0	12
+Arial Black	7	1	12
+Arial Black	8	0	17
+Arial Black	8	1	17
+Arial Black	9	0	19
+Arial Black	9	1	19
+Arial Black	10	0	20
+Arial Black	10	1	20
+Arial Black	11	0	25
+Arial Black	11	1	25
+Arial Black	12	0	26
+Arial Black	12	1	26
+Arial Black	13	0	27
+Arial Black	13	1	27
+Arial Black	14	0	30
+Arial Black	14	1	30
+Arial Black	15	0	31
+Arial Black	15	1	31
+Arial Black	16	0	33
+Arial Black	16	1	33
+Arial Black	18	0	36
+Arial Black	18	1	36
+Arial Black	20	0	42
+Arial Black	20	1	42
+Arial Black	22	0	45
+Arial Black	22	1	45
+Arial Black	24	0	49
+Arial Black	24	1	49
+Arial Black	26	0	55
+Arial Black	26	1	55
+Arial Black	28	0	57
+Arial Black	28	1	57
+Arial Black	36	0	74
+Arial Black	36	1	74
+Arial Black	48	0	97
+Arial Black	48	1	97
+Trebuchet MS	6	0	11
+Trebuchet MS	6	1	11
+Trebuchet MS	7	0	12
+Trebuchet MS	7	1	12
+Trebuchet MS	8	0	18
+Trebuchet MS	8	1	18
+Trebuchet MS	9	0	20
+Trebuchet MS	9	1	20
+Trebuchet MS	10	0	20
+Trebuchet MS	10	1	20
+Trebuchet MS	11	0	22
+Trebuchet MS	11	1	22
+Trebuchet MS	12	0	24
+Trebuchet MS	12	1	24
+Trebuchet MS	13	0	24
+Trebuchet MS	13	1	24
+Trebuchet MS	14	0	25
+Trebuchet MS	14	1	25
+Trebuchet MS	15	0	27
+Trebuchet MS	15	1	27
+Trebuchet MS	16	0	28
+Trebuchet MS	16	1	28
+Trebuchet MS	18	0	31
+Trebuchet MS	18	1	31
+Trebuchet MS	20	0	37
+Trebuchet MS	20	1	37
+Trebuchet MS	22	0	38
+Trebuchet MS	22	1	38
+Trebuchet MS	24	0	41
+Trebuchet MS	24	1	41
+Trebuchet MS	26	0	45
+Trebuchet MS	26	1	45
+Trebuchet MS	28	0	48
+Trebuchet MS	28	1	48
+Trebuchet MS	36	0	62
+Trebuchet MS	36	1	62
+Trebuchet MS	48	0	82
+Trebuchet MS	48	1	82
+Georgia	6	0	11
+Georgia	6	1	11
+Georgia	7	0	12
+Georgia	7	1	12
+Georgia	8	0	15
+Georgia	8	1	15
+Georgia	9	0	16
+Georgia	9	1	16
+Georgia	10	0	17
+Georgia	10	1	17
+Georgia	11	0	19
+Georgia	11	1	19
+Georgia	12	0	20
+Georgia	12	1	20
+Georgia	13	0	22
+Georgia	13	1	22
+Georgia	14	0	24
+Georgia	14	1	24
+Georgia	15	0	26
+Georgia	15	1	26
+Georgia	16	0	27
+Georgia	16	1	27
+Georgia	18	0	31
+Georgia	18	1	31
+Georgia	20	0	34
+Georgia	20	1	34
+Georgia	22	0	36
+Georgia	22	1	36
+Georgia	24	0	40
+Georgia	24	1	40
+Georgia	26	0	44
+Georgia	26	1	44
+Georgia	28	0	46
+Georgia	28	1	46
+Georgia	36	0	60
+Georgia	36	1	60
+Georgia	48	0	79
+Georgia	48	1	79
+Univers	6	0	11
+Univers	6	1	11
+Univers	7	0	12
+Univers	7	1	12
+Univers	8	0	15
+Univers	8	1	15
+Univers	9	0	16
+Univers	9	1	16
+Univers	10	0	17
+Univers	10	1	17
+Univers	11	0	20
+Univers	11	1	20
+Univers	12	0	21
+Univers	12	1	21
+Univers	13	0	22
+Univers	13	1	22
+Univers	14	0	25
+Univers	14	1	25
+Univers	15	0	26
+Univers	15	1	26
+Univers	16	0	27
+Univers	16	1	27
+Univers	18	0	31
+Univers	18	1	31
+Univers	20	0	35
+Univers	20	1	35
+Univers	22	0	37
+Univers	22	1	37
+Univers	24	0	41
+Univers	24	1	41
+Univers	26	0	45
+Univers	26	1	45
+Univers	28	0	47
+Univers	28	1	47
+Univers	36	0	61
+Univers	36	1	61
+Univers	48	0	81
+Univers	48	1	81
+Zurich Cn BT	6	0	11
+Zurich Cn BT	6	1	11
+Zurich Cn BT	7	0	12
+Zurich Cn BT	7	1	12
+Zurich Cn BT	8	0	15
+Zurich Cn BT	8	1	15
+Zurich Cn BT	9	0	16
+Zurich Cn BT	9	1	16
+Zurich Cn BT	10	0	17
+Zurich Cn BT	10	1	17
+Zurich Cn BT	11	0	19
+Zurich Cn BT	11	1	20
+Zurich Cn BT	12	0	20
+Zurich Cn BT	12	1	21
+Zurich Cn BT	13	0	22
+Zurich Cn BT	13	1	22
+Zurich Cn BT	14	0	24
+Zurich Cn BT	14	1	24
+Zurich Cn BT	15	0	25
+Zurich Cn BT	15	1	26
+Zurich Cn BT	16	0	27
+Zurich Cn BT	16	1	27
+Zurich Cn BT	18	0	31
+Zurich Cn BT	18	1	31
+Zurich Cn BT	20	0	34
+Zurich Cn BT	20	1	35
+Zurich Cn BT	22	0	36
+Zurich Cn BT	22	1	37
+Zurich Cn BT	24	0	40
+Zurich Cn BT	24	1	40
+Zurich Cn BT	26	0	44
+Zurich Cn BT	26	1	45
+Zurich Cn BT	28	0	46
+Zurich Cn BT	28	1	47
+Zurich Cn BT	36	0	59
+Zurich Cn BT	36	1	60
+Zurich Cn BT	48	0	79
+Zurich Cn BT	48	1	80
+Lucida Console	6	0	11
+Lucida Console	6	1	11
+Lucida Console	7	0	12
+Lucida Console	7	1	12
+Lucida Console	8	0	14
+Lucida Console	8	1	14
+Lucida Console	9	0	16
+Lucida Console	9	1	16
+Lucida Console	10	0	17
+Lucida Console	10	1	17
+Lucida Console	11	0	19
+Lucida Console	11	1	19
+Lucida Console	12	0	20
+Lucida Console	12	1	20
+Lucida Console	13	0	22
+Lucida Console	13	1	22
+Lucida Console	14	0	24
+Lucida Console	14	1	24
+Lucida Console	15	0	25
+Lucida Console	15	1	25
+Lucida Console	16	0	26
+Lucida Console	16	1	26
+Lucida Console	18	0	30
+Lucida Console	18	1	30
+Lucida Console	20	0	34
+Lucida Console	20	1	34
+Lucida Console	22	0	36
+Lucida Console	22	1	36
+Lucida Console	24	0	40
+Lucida Console	24	1	40
+Lucida Console	26	0	43
+Lucida Console	26	1	43
+Lucida Console	28	0	46
+Lucida Console	28	1	46
+Lucida Console	36	0	59
+Lucida Console	36	1	59
+Lucida Console	48	0	79
+Lucida Console	48	1	79
+Palatino Linotype	6	0	11
+Palatino Linotype	6	1	11
+Palatino Linotype	7	0	12
+Palatino Linotype	7	1	12
+Palatino Linotype	8	0	18
+Palatino Linotype	8	1	18
+Palatino Linotype	9	0	19
+Palatino Linotype	9	1	19
+Palatino Linotype	10	0	20
+Palatino Linotype	10	1	20
+Palatino Linotype	11	0	22
+Palatino Linotype	11	1	23
+Palatino Linotype	12	0	24
+Palatino Linotype	12	1	24
+Palatino Linotype	13	0	25
+Palatino Linotype	13	1	25
+Palatino Linotype	14	0	28
+Palatino Linotype	14	1	28
+Palatino Linotype	15	0	29
+Palatino Linotype	15	1	29
+Palatino Linotype	16	0	30
+Palatino Linotype	16	1	30
+Palatino Linotype	18	0	34
+Palatino Linotype	18	1	34
+Palatino Linotype	20	0	38
+Palatino Linotype	20	1	39
+Palatino Linotype	22	0	40
+Palatino Linotype	22	1	41
+Palatino Linotype	24	0	47
+Palatino Linotype	24	1	47
+Palatino Linotype	26	0	50
+Palatino Linotype	26	1	50
+Palatino Linotype	28	0	53
+Palatino Linotype	28	1	53
+Palatino Linotype	36	0	67
+Palatino Linotype	36	1	68
+Palatino Linotype	48	0	90
+Palatino Linotype	48	1	91
