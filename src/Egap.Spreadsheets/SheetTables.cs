@@ -117,6 +117,15 @@ public sealed class SheetTable
     /// <summary>Whether the header row has filter buttons. Default true.</summary>
     public bool ShowFilterButtons { get; set; } = true;
 
+    /// <summary>
+    /// The table's filter, as its file held it; null when the table has none, or has a header row without filter buttons.
+    /// <see cref="AutoFilter.Apply"/> hides the table's rows that fail its criteria.
+    /// </summary>
+    public AutoFilter? AutoFilter =>
+        ShowHeaderRow && ShowFilterButtons && Source?.Element.Elements().FirstOrDefault(e => e.Name.LocalName == "autoFilter") is { } element
+            ? new AutoFilter(Worksheet, element, this)
+            : null;
+
     /// <summary>The table style, such as <c>TableStyleMedium2</c>, Excel's default; null for none.</summary>
     public string? StyleName { get; set; } = "TableStyleMedium2";
 

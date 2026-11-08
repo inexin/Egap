@@ -1102,3 +1102,10 @@ Egap.Spreadsheets.SortOptions.Orientation.get -> Egap.Spreadsheets.SortOrientati
 Egap.Spreadsheets.SortOptions.HasHeader.init -> void
 Egap.Spreadsheets.SortOptions.HasHeader.get -> bool
 Egap.Spreadsheets.SortOptions.Orientation.init -> void
+Egap.Spreadsheets.AutoFilter
+Egap.Spreadsheets.AutoFilter.Range.get -> Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.AutoFilter.HasCriteria.get -> bool
+Egap.Spreadsheets.AutoFilter.Apply() -> int
+Egap.Spreadsheets.AutoFilter.ShowAll() -> void
+Egap.Spreadsheets.SheetTable.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
+Egap.Spreadsheets.Worksheet.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?

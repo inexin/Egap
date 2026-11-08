@@ -137,6 +137,10 @@ public sealed partial class Worksheet
     /// <summary>Whether the file's filter on this sheet has criteria: Excel then treats every hidden row as filtered out.</summary>
     internal bool HasFilterCriteria { get; set; }
 
+    /// <summary>The sheet's filter, as its file held it; null when it has none. A table's filter is the table's <see cref="SheetTable.AutoFilter"/>.</summary>
+    public AutoFilter? AutoFilter =>
+        Source?.Kept.Select(k => k.Element).FirstOrDefault(e => e.Name.LocalName == "autoFilter") is { } element ? new AutoFilter(this, element) : null;
+
     /// <summary>Whether this sheet holds a linked book's kept values.</summary>
     internal bool IsLinked => linked;
 
