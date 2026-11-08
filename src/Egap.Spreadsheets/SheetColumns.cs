@@ -236,5 +236,18 @@ public sealed class SheetColumn
         }
     }
 
+    /// <summary>
+    /// Fits the column to the widest text of its cells, as Excel's AutoFit does, and gives its new width; null, and the
+    /// width left as it is, when no cell of the column has text. See <see cref="CellRange.AutoFitColumns"/> for how text
+    /// is measured.
+    /// </summary>
+    /// <returns>The new width in characters, as <see cref="Width"/> gives it, or null.</returns>
+    /// <example>
+    /// <code>
+    /// sheet.Columns["B"].AutoFit();
+    /// </code>
+    /// </example>
+    public double? AutoFit() => sheet.AutoFitColumn(Index, 0, CellAddress.MaxRows - 1, new Printing.TextMeter(sheet.Workbook));
+
     private ColumnSpan? Span => sheet.ColumnSpans.Find(Index);
 }

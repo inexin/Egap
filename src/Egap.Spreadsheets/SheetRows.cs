@@ -125,6 +125,19 @@ public sealed class SheetRow
         }
     }
 
+    /// <summary>
+    /// Fits the row to its tallest text, as Excel's AutoFit does, and gives its new height in points. The height is one Excel
+    /// works out from the text, not one set by hand: <see cref="Height"/> stays null, and a row as high as a line of the normal
+    /// font follows the sheet's default again. See <see cref="CellRange.AutoFitRows"/>.
+    /// </summary>
+    /// <returns>The row's height in points.</returns>
+    /// <example>
+    /// <code>
+    /// double points = sheet.Rows[0].AutoFit();
+    /// </code>
+    /// </example>
+    public double AutoFit() => sheet.AutoFitRow(Index, new Printing.TextMeter(sheet.Workbook));
+
     private void Change(Action<RowRecord> change)
     {
         if (!sheet.RowRecords.TryGetValue(Index, out RowRecord? row))
