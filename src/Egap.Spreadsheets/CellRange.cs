@@ -181,6 +181,62 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
         }
     }
 
+    /// <summary>
+    /// Copies the range's cells to a place on a sheet of the same workbook, as Excel's Copy and Paste do: values, formulas,
+    /// styles, merges, notes, links, validations and conditional formats. A formula's relative references move with it, and
+    /// one that would move off the sheet becomes <c>#REF!</c>; absolute ones stay. What was in the cells written over goes,
+    /// though, as in Excel, a copy onto part of itself keeps the conditional formats of the cells written over and, when it
+    /// takes no links, their links. A merge the range cuts is copied as the part of it in the range when its first cell is
+    /// in the range, and a link the range cuts as the part of it in the range. On a sheet whose filter hides rows, only the
+    /// rows that show are copied, one under another; when they come in more than one run, formulas are pasted as their
+    /// results.
+    /// </summary>
+    /// <param name="destination">The cell the range's first cell goes to.</param>
+    /// <exception cref="ArgumentNullException">The destination is null.</exception>
+    /// <exception cref="ArgumentException">The destination is in another workbook, or the cells would run past the end of the sheet.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The copy would take part of an array formula, write over part of an array formula or merged cell, cut a merge while
+    /// going onto its own cells, or write over a pivot table; or it copies rows a filter shows in more than one run onto its
+    /// own cells.
+    /// </exception>
+    /// <example>
+    /// <code>
+    /// sheet.Range("A1:B3").CopyTo(sheet["D1"]);
+    /// </code>
+    /// </example>
+    public void CopyTo(Cell destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        sheet.CopyRange(Address, destination.Worksheet, destination.Address);
+    }
+
+    /// <summary>
+    /// Moves the range's cells to a place on a sheet of the same workbook, as Excel's Cut and Paste do: everything
+    /// <see cref="CopyTo"/> copies, and tables wholly in the range on the same sheet. Formulas that move keep their text, and
+    /// every reference in the workbook to the cells that move follows them; a reference to a cell written over becomes
+    /// <c>#REF!</c>. A range with only an edge in the cells that move, or in the cells written over, changes as in Excel:
+    /// moved to another sheet, it loses that edge; moved straight along its rows or columns on the sheet, its ends follow the
+    /// cells that move and pull back from the cells written over. Merges the cells land on are unmerged, as in Excel.
+    /// </summary>
+    /// <param name="destination">The cell the range's first cell goes to.</param>
+    /// <exception cref="ArgumentNullException">The destination is null.</exception>
+    /// <exception cref="ArgumentException">The destination is in another workbook, or the cells would run past the end of the sheet.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The move would take or write over part of an array formula, take part of a merged cell or table, take a table to
+    /// another sheet, or change a pivot table.
+    /// </exception>
+    /// <remarks>Sheet protection does not block the move: it guards what a person does in Excel, not what code does, as for writing cells.</remarks>
+    /// <example>
+    /// <code>
+    /// sheet.Range("A5:A6").MoveTo(sheet["C40"]);
+    /// </code>
+    /// </example>
+    public void MoveTo(Cell destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        sheet.MoveRange(Address, destination.Worksheet, destination.Address);
+    }
+
     /// <summary>Every cell in the range, empty ones too, row by row and left to right.</summary>
     public IEnumerator<Cell> GetEnumerator()
     {

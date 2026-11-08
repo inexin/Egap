@@ -27,6 +27,8 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["sheetcharts"] = SheetCharts,
     ["edits"] = Edits,
     ["shift"] = Shift,
+    ["copies"] = Copies,
+    ["move"] = Move,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -428,6 +430,107 @@ static void Shift(Stream input)
         {
             throw new InvalidOperationException("A formula with no sheet named changed on another sheet: " + elsewhere);
         }
+    }
+}
+
+// The input is an XLSX package: ranges of each sheet copied and moved, on the sheet and to another, then calculated, saved
+// and loaded again. A copy or move Excel refuses may throw InvalidOperationException.
+static void Copies(Stream input)
+{
+    DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };
+    Workbook book;
+    try
+    {
+        book = Workbook.Load(new MemoryStream(Bytes(input), writable: false), new WorkbookLoadOptions { Limits = limits });
+    }
+    catch (DocumentException)
+    {
+        return;
+    }
+
+    if (book.Worksheets.Count == 0)
+    {
+        return;
+    }
+
+    Worksheet first = book.Worksheets[0];
+    foreach (Worksheet sheet in book.Worksheets.ToList())
+    {
+        foreach (Action paste in (Action[])[
+            () => sheet.Range("A1:C5").CopyTo(sheet["B3"]), () => sheet.Range("B2:D4").MoveTo(sheet["C1"]), () => sheet.Range("A2:B9").MoveTo(first["F20"]),
+            () => sheet.Range("A1:Z40").CopyTo(first["AA1"]), () => sheet.Range("C3").MoveTo(sheet["A1"]), () => sheet.Range(sheet.UsedRange?.Address ?? RangeAddress.Parse("A1")).MoveTo(sheet["B2"])])
+        {
+            try
+            {
+                paste();
+            }
+            catch (InvalidOperationException)
+            {
+                // Excel refuses it too: part of an array formula or merged cell, part of a table, a pivot table.
+            }
+            catch (ArgumentException) when (sheet.UsedRange is not null)
+            {
+                // The used range reaches the end of the sheet, so it can't move on.
+            }
+        }
+    }
+
+    book.Calculate();
+    MemoryStream saved = new();
+    try
+    {
+        book.Save(saved);
+    }
+    catch (DocumentException)
+    {
+        // A part kept as it was read is read again to save it, and may not be well-formed.
+        return;
+    }
+
+    saved.Position = 0;
+    Workbook.Load(saved);
+}
+
+// The input is a formula: its references moved for cells cut and pasted, on the sheet and to another. What parses must
+// still parse after each move, and a move of cells the formula does not name gives the text back as it was.
+static void Move(Stream input)
+{
+    string text = Encoding.UTF8.GetString(Bytes(input));
+    if (text.Length > 8192)
+    {
+        text = text[..8192];
+    }
+
+    CellAddress cell = new(text.Length % 40, text.Length % 7);
+    if (FormulaParser.TryParse(text, r1c1: false, cell) is null)
+    {
+        return;
+    }
+
+    Workbook book = Workbook.Create();
+    Worksheet sheet = book.Worksheets[0];
+    Worksheet other = book.Worksheets.Add("Other");
+    CellMove[] moves =
+    [
+        new(sheet, RangeAddress.Parse("A5:A6"), sheet, 35, 2), new(sheet, RangeAddress.Parse("A1:C9"), sheet, 1, 0), new(sheet, RangeAddress.Parse("B2:D4"), other, -1, 3),
+        new(sheet, RangeAddress.Parse("A7:A8"), sheet, -4, 0), new(sheet, RangeAddress.Parse("E5"), sheet, 0, 1),
+    ];
+    foreach (CellMove move in moves)
+    {
+        foreach (bool relocated in (bool[])[false, true])
+        {
+            string moved = ReferenceMove.Apply(text, cell, sheet, move, relocated && move.Across);
+            if (FormulaParser.TryParse(moved, r1c1: false, cell) is null)
+            {
+                throw new InvalidOperationException("A moved formula does not parse: " + moved);
+            }
+        }
+    }
+
+    CellMove elsewhere = new(other, RangeAddress.Parse("A1:C9"), other, 1, 0);
+    if (!text.Contains('!', StringComparison.Ordinal) && ReferenceMove.Apply(text, cell, sheet, elsewhere) != text)
+    {
+        throw new InvalidOperationException("A formula naming no moved cell changed.");
     }
 }
 

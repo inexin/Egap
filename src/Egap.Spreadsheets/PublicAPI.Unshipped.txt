@@ -1073,3 +1073,5 @@ Egap.Spreadsheets.Worksheet.DeleteRows(int row, int count = 1) -> void
 Egap.Spreadsheets.Worksheet.InsertColumns(int column, int count = 1) -> void
 Egap.Spreadsheets.Worksheet.InsertColumns(string! column, int count = 1) -> void
 Egap.Spreadsheets.Worksheet.InsertRows(int row, int count = 1) -> void
+Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell! destination) -> void
+Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell! destination) -> void

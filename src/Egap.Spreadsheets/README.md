@@ -25,7 +25,7 @@ Workbook loaded = Workbook.Load("sales.xlsx");
 
 Tables, data validation, conditional formatting, notes, hyperlinks, pictures and charts are read, edited and written, and a
 loaded workbook saves its pivot tables, macros and the rest as they were. `InsertRows`, `DeleteRows`, `InsertColumns` and `DeleteColumns`
-edit a sheet as Excel does, with every formula, name, rule, table and chart that refers to the cells following them. Printing, PDF and images draw the charts, chart
+edit a sheet as Excel does, with every formula, name, rule, table and chart that refers to the cells following them. `CellRange.CopyTo` and `MoveTo` copy and move ranges as Excel's Copy, Cut and Paste do. Printing, PDF and images draw the charts, chart
 sheets too. `SheetReader` and `SheetWriter` stream
 rows through XLSX and CSV in constant memory.
 Number format codes show values as Excel does (`cell.Text`, `NumberFormatCode`), in any culture, and CSV and TSV are
