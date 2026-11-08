@@ -34,7 +34,8 @@ public sealed class SortTests
         string[] options = line[1].Split(';');
         Workbook book = Workbook.CreateEmpty();
         book.Culture = Locale;
-        Worksheet sheet = book.Worksheets.Add("S");
+        Worksheet sheet = book.Worksheets.Add("Sheet1");
+        book.Worksheets.Add("Sheet2");
         Fill(sheet, line[2]);
         switch (options[5])
         {
@@ -77,6 +78,36 @@ public sealed class SortTests
         Assert.True(Worksheet.CompareForSort(CellValue.FromText("coop"), CellValue.FromText("co-op"), false, false, compare) < 0);
         Assert.True(Worksheet.CompareForSort(CellValue.FromText("a'c"), CellValue.FromText("a-c"), false, false, compare) < 0);
         Assert.Equal(0, Worksheet.CompareForSort(CellValue.FromText("ab"), CellValue.FromText("AB"), false, false, compare));
+    }
+
+    [Fact]
+    public void LeftOutMarksStillPartLettersAndBreakTiesByPlace()
+    {
+        // As Excel sorted these in GovDocs files: a later hyphen sorts first in a tie; a hyphen between spaces is nothing,
+        // so a space follows; and in Norwegian "a-a" is not the "aa" that sorts as the letter after z.
+        CompareInfo norwegian = CultureInfo.GetCultureInfo("nb-NO").CompareInfo;
+        Assert.True(Worksheet.CompareForSort(CellValue.FromText("CT13-4"), CellValue.FromText("CT1-34"), false, false, norwegian) < 0);
+        Assert.True(Worksheet.CompareForSort(CellValue.FromText("BOW - ELK"), CellValue.FromText("BOW + ARROW"), false, false, norwegian) < 0);
+        Assert.True(Worksheet.CompareForSort(CellValue.FromText("Beta-adrenergic"), CellValue.FromText("Betaderm"), false, false, norwegian) < 0);
+        Assert.True(Worksheet.CompareForSort(CellValue.FromText("Betaa"), CellValue.FromText("Betz"), false, false, norwegian) > 0);
+
+        // Only the first 255 characters count.
+        string start = new('x', 255);
+        Assert.Equal(0, Worksheet.CompareForSort(CellValue.FromText(start + "b"), CellValue.FromText(start + "a"), false, false, norwegian));
+    }
+
+    [Fact]
+    public void AMergeInTheHeaderStaysAndTheRestSorts()
+    {
+        Workbook book = Workbook.CreateEmpty();
+        Worksheet sheet = book.Worksheets.Add("S");
+        sheet["A1"].Value = CellValue.FromText("Title");
+        sheet.MergedCells.Add(RangeAddress.Parse("A1:B1"));
+        sheet["A2"].Value = CellValue.FromNumber(2);
+        sheet["A3"].Value = CellValue.FromNumber(1);
+        sheet.Range("A1:B3").Sort(new SortOptions { HasHeader = true }, new SortField(0));
+        Assert.Equal(1, sheet["A2"].Value.Number);
+        Assert.Throws<InvalidOperationException>(() => sheet.Range("A1:B3").Sort(new SortField(0)));
     }
 
     [Fact]

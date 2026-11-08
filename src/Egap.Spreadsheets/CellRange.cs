@@ -261,8 +261,10 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
     /// </summary>
     /// <remarks>
     /// Each row moves as Excel moves it: as if copied, with its values, styles, notes and links, and with its formulas'
-    /// relative references moved by as many rows as the formula moves; a reference that would leave the sheet becomes
-    /// <c>#REF!</c>. References from other cells to the sorted cells do not change. Conditional formats and validation rules
+    /// relative references without a sheet name moved by as many rows as the formula moves: a cell that would leave the sheet
+    /// becomes <c>#REF!</c>, and a range with one edge off is cut back to the sheet's edge. References with a sheet name, even
+    /// the formula's own sheet, don't move, nor do references from other cells to the sorted cells. Text compares by its first
+    /// 255 characters, as in Excel; a header's merged cells stay where they are. Conditional formats and validation rules
     /// stay on their cells. Hidden rows (hidden columns, when columns are sorted) stay where they are, and the rest sort around
     /// them.
     /// </remarks>

@@ -244,9 +244,10 @@ and a paste that would change a pivot table. Pictures and charts stay where they
 first, then text, then FALSE and TRUE, then errors; empty cells come last either way, and rows with equal keys keep their
 order. Text follows the word sort Windows gives Excel: spaces and symbols before digits and letters, hyphens and
 apostrophes left out but for breaking a tie, and letters by `Workbook.Culture`, ignoring case unless `MatchCase` is set.
-Each row moves as if copied, with its values, styles, notes and links, and its formulas' relative references move with it;
-formulas elsewhere that refer to the sorted cells don't change. Hidden rows stay where they are. A range with merged cells
-or part of an array formula is refused, as Excel refuses it. Keys sort by formulas' last results, so calculate first when
+Each row moves as if copied, with its values, styles, notes and links, and its formulas' relative references move with it,
+except those with a sheet name, which Excel leaves alone; formulas elsewhere that refer to the sorted cells don't change.
+Hidden rows stay where they are. Merged cells below the header, or part of an array formula, are refused, as Excel refuses
+them. Keys sort by formulas' last results, so calculate first when
 they have changed.
 
 ```csharp

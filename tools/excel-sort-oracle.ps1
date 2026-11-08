@@ -86,6 +86,17 @@ function FillGrid($s) {
     $s.Cells.Item(2, 1).Formula = '=A3+1'
 }
 
+function FillEdge($s) {
+    for ($r = 1; $r -le 8; $r++) { $s.Cells.Item($r, 1).Value2 = [double](9 - $r) }
+    $f = @{
+        'B1' = '=A1048570'; 'B2' = '=SUM(A1:A2)'; 'B3' = '=Sheet2!A1'; 'B4' = '=SUM(A$1:A3)'; 'B5' = '=A1'
+        'B6' = '=A4'; 'B7' = '=SUM(A1:A6)'; 'B8' = '=SUM(A6:A7)'; 'C8' = '=A7'; 'C7' = '=Sheet1!A1'; 'C6' = '=SUM(Sheet1!A2:A5)'
+        'C1' = '=SUM(A1:A1048575)'; 'C2' = '=SUM(A2:A1048576)'; 'C5' = '=SUM(Sheet2!A1:A3)'; 'D8' = '=SUM(A:A)'; 'D7' = '=SUM(2:3)'
+        'D6' = '=SUM(1:4)'; 'D1' = '=SUM(1047000:1048575)'
+    }
+    foreach ($k in $f.Keys) { $s.Range($k).Formula = $f[$k] }
+}
+
 # name, fill, area to record, range, keys, header, match case, orientation, hidden rows
 $cases = @(
     @('mixed-asc', 'mixed', 'A1:D32', 'A1:D20', '0:a', $false, $false, 'rows', ''),
@@ -103,13 +114,16 @@ $cases = @(
     @('grid-columns', 'grid', 'A1:F9', 'A8:F9', '0:a', $false, $false, 'columns', ''),
     @('grid-columns-desc', 'grid', 'A1:F9', 'A8:F9', '0:d', $false, $false, 'columns', ''),
     @('grid-merge', 'grid', 'A1:F9', 'A1:D6', '0:a', $false, $false, 'rows', 'merge'),
-    @('grid-array', 'grid', 'A1:F9', 'A1:D6', '0:a', $false, $false, 'rows', 'array')
+    @('grid-array', 'grid', 'A1:F9', 'A1:D6', '0:a', $false, $false, 'rows', 'array'),
+    @('edge-asc', 'edge', 'A1:D8', 'A1:D8', '0:a', $false, $false, 'rows', '')
 )
 try {
     foreach ($case in $cases) {
         $book = $excel.Workbooks.Add()
         $s = $book.Worksheets.Item(1)
-        switch ($case[1]) { 'mixed' { FillMixed $s } 'texts' { FillTexts $s } 'grid' { FillGrid $s } }
+        if ($book.Worksheets.Count -lt 2) { [void]$book.Worksheets.Add([Type]::Missing, $s) }
+        $s.Name = 'Sheet1'; $book.Worksheets.Item(2).Name = 'Sheet2'
+        switch ($case[1]) { 'mixed' { FillMixed $s } 'texts' { FillTexts $s } 'grid' { FillGrid $s } 'edge' { FillEdge $s } }
         $extra = $case[8]
         if ($extra -eq 'merge') { $s.Range('C2:D3').Merge() }
         elseif ($extra -eq 'array') { $s.Range('E2:E3').FormulaArray = '=A2:A3*3'; $s.Range('C2:C3').FormulaArray = '=B2:B3' }

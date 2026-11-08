@@ -376,7 +376,7 @@ public sealed partial class Worksheet
     /// Excel's relative references move with them; for a move, formulas as they are. The cells of a dynamic array formula's
     /// spill are left for the formula to fill again.
     /// </summary>
-    private List<TakenCell> Take(RangeAddress range, CellMove move, bool moving)
+    private List<TakenCell> Take(RangeAddress range, CellMove move, bool moving, bool sorting = false)
     {
         List<RangeAddress> spilled = [];
         foreach (FormulaEntry entry in formulas.Entries)
@@ -417,7 +417,7 @@ public sealed partial class Worksheet
             CellAddress target = move.Offset(cell);
             if (!moving && FormulaParser.TryParse(text, r1c1: false, cell) is { } parsed)
             {
-                text = FormulaPrinter.Print(parsed, ReferenceStyle.A1, target);
+                text = sorting ? Sorted(parsed, move.RowOffset, move.ColumnOffset) : FormulaPrinter.Print(parsed, ReferenceStyle.A1, target);
             }
 
             XAttribute[]? attributes = entry.Attribute("t") == "shared" ? Without(entry.Attributes, "t", "ref", "si") : Clone(entry.Attributes);
