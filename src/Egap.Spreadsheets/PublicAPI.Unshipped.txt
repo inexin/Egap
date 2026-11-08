@@ -1109,3 +1109,24 @@ Egap.Spreadsheets.AutoFilter.Apply() -> int
 Egap.Spreadsheets.AutoFilter.ShowAll() -> void
 Egap.Spreadsheets.SheetTable.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
 Egap.Spreadsheets.Worksheet.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
+Egap.Spreadsheets.FindLookIn.Values = 1 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindLookIn.Notes = 2 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindLookIn.Formulas = 0 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindOrder.ByRows = 0 -> Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOrder.ByColumns = 1 -> Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOptions
+Egap.Spreadsheets.FindOptions.FindOptions() -> void
+Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.CellRange.Find(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
+Egap.Spreadsheets.CellRange.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int
+Egap.Spreadsheets.FindOptions.MatchCase.get -> bool
+Egap.Spreadsheets.FindOptions.MatchCase.init -> void
+Egap.Spreadsheets.FindOptions.MatchEntireCell.get -> bool
+Egap.Spreadsheets.FindOptions.LookIn.get -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindOptions.MatchEntireCell.init -> void
+Egap.Spreadsheets.FindOptions.Order.init -> void
+Egap.Spreadsheets.FindOptions.Order.get -> Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOptions.LookIn.init -> void
+Egap.Spreadsheets.Worksheet.Find(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
+Egap.Spreadsheets.Worksheet.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int

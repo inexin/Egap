@@ -1,0 +1,48 @@
+# Excel 16.0 build 20527 locale nb-NO
+find apple|-4123|2|1|False	A1,A2,C2,B7,A9
+find apple|-4163|2|1|False	A1,A2,C2,B3,B7,A9
+find apple|-4123|1|1|False	A2,C2
+find Apple|-4123|2|1|True	A1
+find apple|-4123|2|2|False	A1,A2,A9,B7,C2
+find SUM|-4123|2|1|False	A4
+find SUM|-4163|2|1|False	
+find 30|-4163|2|1|False	A4
+find 30|-4123|2|1|False	
+find 1234|-4123|2|1|False	A3
+find 1234,5|-4163|1|1|False	A3
+find 1234.5|-4123|1|1|False	
+find a~*b|-4123|1|1|False	A7
+find a*b|-4123|1|1|False	A7,A8
+find a~~b|-4123|1|1|False	A8
+find ?pple|-4123|1|1|False	A2,C2
+find TRUE|-4123|1|1|False	B8
+find TRUE|-4163|1|1|False	A5,B8
+find #N/A|-4163|1|1|False	A6
+find NA|-4123|2|1|False	A6
+find B1|-4123|2|1|False	A4
+find 2020|-4123|2|1|False	B4
+find note|-4144|2|1|False	C1
+find 0,333|-4163|2|1|False	B5
+find 0.1|-4123|1|1|False	
+find *|-4123|1|1|False	A1,B1,A2,B2,C2,A3,B3,A4,B4,A5,B5,A6,B6,A7,B7,A8,B8,A9
+find p*e|-4123|2|1|False	A1,A2,C2,B7,A9
+find x|-4123|2|1|False	B3,A9
+find =|-4123|2|1|False	B3,A4,A5,B5,A6,B7
+find "|-4123|2|1|False	B3,B7
+replace apple|pear|2|False	True	A1=pear pie ; A2=pear ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xpearx ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="pear" ; B8=TRUE ; C2=pear ; C1note=apple note
+replace apple|pear|1|False	True	A1=Apple pie ; A2=pear ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=pear ; C1note=apple note
+replace Apple|Pear|2|True	True	A1=Pear pie ; A2=apple ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace SUM|MAX|2|False	True	A1=Apple pie ; A2=apple ; A3=1234.5 ; A4==MAX(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace 1|9|2|False	True	A1=Apple pie ; A2=apple ; A3=9234.5 ; A4==SUM(B2:B9) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=90 ; B2=20 ; B3==A2&"x" ; B4=44083 ; B5==9/3 ; B6=0.9 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace B1|B9|2|False	True	A1=Apple pie ; A2=apple ; A3=1234.5 ; A4==SUM(B2:B9) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace pie||2|False	True	A1=Apple  ; A2=apple ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace apple|5|1|False	True	A1=Apple pie ; A2=5 ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=5 ; C1note=apple note
+replace B1:B2|B1:(|2|False	True	A1=Apple pie ; A2=apple ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace a*|z|2|False	True	A1=z ; A2=z ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==Nz ; A7=z ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==z ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=z ; C1note=apple note
+replace p?e|Q|2|False	True	A1=ApQ Q ; A2=apQ ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapQx ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apQ" ; B8=TRUE ; C2=apQ ; C1note=apple note
+replace TRUE|FALSE|1|False	True	A1=Apple pie ; A2=apple ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=FALSE ; C2=apple ; C1note=apple note
+replace x|~|2|False	True	A1=Apple pie ; A2=apple ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=~apple~ ; B1=10 ; B2=20 ; B3==A2&"~" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace 1234,5|7|1|False	True	A1=Apple pie ; A2=apple ; A3=7 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace apple|=1+1|1|False	True	A1=Apple pie ; A2==1+1 ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2==1+1 ; C1note=apple note
+replace 2020|1999|2|False	True	A1=Apple pie ; A2=apple ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=a*b ; A8=a~b ; A9=xapplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=36161 ; B5==1/3 ; B6=0.1 ; B7=="apple" ; B8=TRUE ; C2=apple ; C1note=apple note
+replace a|A|2|False	True	A1=Apple pie ; A2=Apple ; A3=1234.5 ; A4==SUM(B1:B2) ; A5==TRUE ; A6==NA() ; A7=A*b ; A8=A~b ; A9=xApplex ; B1=10 ; B2=20 ; B3==A2&"x" ; B4=43831 ; B5==1/3 ; B6=0.1 ; B7=="Apple" ; B8=TRUE ; C2=Apple ; C1note=apple note

@@ -284,6 +284,45 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
         sheet.SortRange(Address, options, keys);
     }
 
+    /// <summary>
+    /// Finds the cells of the range whose text matches, as Excel's Find All does with the range selected; see
+    /// <see cref="Worksheet.Find(string, FindOptions?)"/>.
+    /// </summary>
+    /// <param name="what">The text to find; <c>*</c>, <c>?</c> and <c>~</c> are Excel's wildcards.</param>
+    /// <param name="options">How to match; null for Excel's defaults.</param>
+    /// <returns>The matching cells, in the order <see cref="FindOptions.Order"/> gives.</returns>
+    /// <exception cref="ArgumentException">The text is null or empty.</exception>
+    /// <example>
+    /// <code>
+    /// IReadOnlyList&lt;Cell&gt; found = sheet.Range("A1:D100").Find("apple");
+    /// </code>
+    /// </example>
+    public IReadOnlyList<Cell> Find(string what, FindOptions? options = null) => sheet.FindCells(Address, what, options ?? new FindOptions());
+
+    /// <summary>
+    /// Replaces matching text in the range's formulas and values, as Excel's Replace All does with the range selected, and
+    /// gives how many cells changed. Each match is replaced, left to right, and a <c>*</c> takes as much as it can. A cell
+    /// whose text starts with <c>=</c> afterwards gets that formula; other text is taken as typed, so that <c>12</c> becomes a
+    /// number, unless the cell is formatted as text. Constants are matched as the formula bar shows them (see
+    /// <see cref="FindLookIn.Formulas"/>). Notes are not changed.
+    /// </summary>
+    /// <param name="what">The text to find; <c>*</c>, <c>?</c> and <c>~</c> are Excel's wildcards.</param>
+    /// <param name="replacement">The text to put in its place, taken as it is.</param>
+    /// <param name="options">How to match; null for Excel's defaults. Only <see cref="FindLookIn.Formulas"/> can be replaced.</param>
+    /// <returns>How many cells changed.</returns>
+    /// <exception cref="ArgumentException">The text is null or empty, the replacement is null, or the options look in values or notes.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A replacement makes a formula Excel's grammar refuses, or changes part of an array formula; the cells before it stay
+    /// replaced, as in Excel.
+    /// </exception>
+    /// <remarks>Changed formulas have no result until the workbook is calculated.</remarks>
+    /// <example>
+    /// <code>
+    /// int changed = sheet.Range("A1:A50").Replace("SUM(", "SUBTOTAL(9,");
+    /// </code>
+    /// </example>
+    public int Replace(string what, string replacement, FindOptions? options = null) => sheet.ReplaceCells(Address, what, replacement, options ?? new FindOptions());
+
     /// <summary>Every cell in the range, empty ones too, row by row and left to right.</summary>
     public IEnumerator<Cell> GetEnumerator()
     {
