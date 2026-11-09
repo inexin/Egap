@@ -92,6 +92,44 @@ public sealed class AutoFitTests
         Assert.True(sheet.Columns[0].Width > shortWidth);
     }
 
+    [Fact]
+    public void AMergeDownOneColumnCountsAndOneAcrossDoesNot()
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        sheet["A1"].Value = CellValue.FromText("a text much wider than the column");
+        sheet.MergedCells.Add(RangeAddress.Parse("A1:A3"));
+        sheet["B1"].Value = CellValue.FromText("a text much wider than the column");
+        sheet.MergedCells.Add(RangeAddress.Parse("B1:C1"));
+        Assert.True(sheet.Columns["A"].AutoFit() > 20);
+        Assert.Null(sheet.Columns["B"].AutoFit());
+    }
+
+    [Fact]
+    public void ARowStyledInASmallerFontTakesThatFontsHeight()
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        CellStyle small = sheet["A1"].Style with { Font = sheet["A1"].Style.Font with { Name = "Arial", Size = 8 } };
+        sheet.Rows[0].Style = small;
+        sheet["A1"].Value = CellValue.FromText("small");
+        sheet["A1"].Style = small;
+        Assert.Equal(11.25, sheet.Rows[0].AutoFit());
+    }
+
+    [Fact]
+    public void AZoomedSheetFitsAsExcelMeasuresAtTheZoom()
+    {
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        // Measured on a GovDocs sheet at 75 %: Excel fits a column of years in Arial 10 to 41 pixels, not the 35 it takes at 100 %.
+        sheet["A1"].Value = CellValue.FromNumber(1962);
+        sheet["A1"].Style = sheet["A1"].Style with { Font = sheet["A1"].Style.Font with { Name = "Arial", Size = 10 } };
+        Assert.Equal(35, Math.Round(sheet.Columns["A"].AutoFit()!.Value * 7));
+        sheet.View.ZoomScale = 75;
+        Assert.Equal(41, Math.Round(sheet.Columns["A"].AutoFit()!.Value * 7));
+    }
+
     /// <summary>
     /// The pixels Egap may differ from Excel by. Excel measures each glyph to a fraction of a pixel and Egap to whole pixels,
     /// so one pixel either way. More where Egap measures the font from its outlines, as the table lacks it (Calibri at 36

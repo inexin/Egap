@@ -18,7 +18,8 @@ public sealed partial class Worksheet
         int available = ColumnPixels(column, meter) - TextMeter.Padding;
         foreach ((int row, int c) in store.Occupied(new RangeAddress(firstRow, column, lastRow, column)))
         {
-            if (merges.Count > 0 && merges.Exists(m => m.Contains(new CellAddress(row, c))))
+            // A merge across columns is left out; one down a single column counts by its first cell, as Excel has it.
+            if (merges.Count > 0 && merges.Exists(m => m.Contains(new CellAddress(row, c)) && (m.ColumnCount > 1 || m.First.Row != row)))
             {
                 continue;
             }
@@ -133,7 +134,7 @@ public sealed partial class Worksheet
 
     private static string XlsxNamesNumber(double value) => Xlsx.XlsxNames.Number(value);
 
-    /// <summary>The merges that cover part of a range: AutoFit leaves merged cells out.</summary>
+    /// <summary>The merges that cover part of a range, which AutoFit leaves out or counts by their first cell.</summary>
     private List<RangeAddress> Merges(RangeAddress range) => [.. MergedCells.Where(range.Intersects)];
 
     /// <summary>
