@@ -142,6 +142,11 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
     private readonly List<DataValidation> rules = [];
     private readonly Worksheet sheet;
 
+    /// <summary>While <see cref="FindInvalid"/> runs, the items each list's cells give, so a list is read once, not per cell.</summary>
+    private Dictionary<(Worksheet, RangeAddress), (List<CellValue> Items, bool Blank)>? areaItems;
+
+    private EvalContext? compareContext;
+
     internal DataValidationCollection(Worksheet sheet)
     {
         this.sheet = sheet;
@@ -207,19 +212,27 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
     {
         List<CellAddress> invalid = [];
         HashSet<CellAddress> seen = [];
-        foreach (DataValidation rule in rules)
+        areaItems = [];
+        try
         {
-            foreach (RangeAddress range in rule.Ranges)
+            foreach (DataValidation rule in rules)
             {
-                foreach ((int row, int column) in sheet.Store.Occupied(range))
+                foreach (RangeAddress range in rule.Ranges)
                 {
-                    CellAddress cell = new(row, column);
-                    if (sheet.GetKind(row, column) != CellValueKind.Empty && seen.Add(cell) && Find(cell) == rule && !Check(rule, cell, sheet.GetValue(row, column)))
+                    foreach ((int row, int column) in sheet.Store.Occupied(range))
                     {
-                        invalid.Add(cell);
+                        CellAddress cell = new(row, column);
+                        if (sheet.GetKind(row, column) != CellValueKind.Empty && seen.Add(cell) && Find(cell) == rule && !Check(rule, cell, sheet.GetValue(row, column)))
+                        {
+                            invalid.Add(cell);
+                        }
                     }
                 }
             }
+        }
+        finally
+        {
+            areaItems = null;
         }
 
         invalid.Sort((a, b) => a.Row != b.Row ? a.Row.CompareTo(b.Row) : a.Column.CompareTo(b.Column));
@@ -381,29 +394,40 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
             foreach (SheetArea area in result.Areas)
             {
                 RangeAddress range = area.Range;
+                if (areaItems is not null && areaItems.TryGetValue((area.Sheet, range), out (List<CellValue> Items, bool Blank) known))
+                {
+                    items.AddRange(known.Items);
+                    blankItem |= known.Blank;
+                    continue;
+                }
+
+                int start = items.Count;
+                bool blank = false;
                 if (area.Sheet.UsedRange is not { } used)
                 {
-                    blankItem = true;
-                    continue;
+                    blank = true;
                 }
-
-                RangeAddress box = used.Address;
-                int lastRow = Math.Min(range.Last.Row, box.Last.Row), lastColumn = Math.Min(range.Last.Column, box.Last.Column);
-                blankItem |= lastRow < range.Last.Row || lastColumn < range.Last.Column;
-                if ((long)(lastRow - range.First.Row + 1) * (lastColumn - range.First.Column + 1) > EvalContext.MaxArrayCells)
+                else
                 {
-                    continue;
-                }
-
-                for (int r = range.First.Row; r <= lastRow; r++)
-                {
-                    for (int c = range.First.Column; c <= lastColumn; c++)
+                    RangeAddress box = used.Address;
+                    int lastRow = Math.Min(range.Last.Row, box.Last.Row), lastColumn = Math.Min(range.Last.Column, box.Last.Column);
+                    blank = lastRow < range.Last.Row || lastColumn < range.Last.Column;
+                    if ((long)(lastRow - range.First.Row + 1) * (lastColumn - range.First.Column + 1) <= EvalContext.MaxArrayCells)
                     {
-                        CellValue item = area.Sheet.GetValue(r, c);
-                        blankItem |= item.Kind == CellValueKind.Empty;
-                        items.Add(item);
+                        for (int r = range.First.Row; r <= lastRow; r++)
+                        {
+                            for (int c = range.First.Column; c <= lastColumn; c++)
+                            {
+                                CellValue item = area.Sheet.GetValue(r, c);
+                                blank |= item.Kind == CellValueKind.Empty;
+                                items.Add(item);
+                            }
+                        }
                     }
                 }
+
+                blankItem |= blank;
+                areaItems?.Add((area.Sheet, range), (items[start..], blank));
             }
         }
         else if (result.Kind == EvalKind.Array)
@@ -440,7 +464,7 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
             return false;
         }
 
-        return ExcelValues.Compare(EvalValue.FromCell(item), EvalValue.FromCell(value), new EvalContext(sheet, 0, 0)) == 0;
+        return ExcelValues.Compare(EvalValue.FromCell(item), EvalValue.FromCell(value), compareContext ??= new EvalContext(sheet, 0, 0)) == 0;
     }
 
     /// <summary>A formula of the rule evaluated for a cell, its relative references counted from the top-left cell of all the rule's ranges.</summary>
