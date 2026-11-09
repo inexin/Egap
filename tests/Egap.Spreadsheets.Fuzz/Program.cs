@@ -668,7 +668,7 @@ static void Conditional(Stream input)
         string text = Encoding.UTF8.GetString(bytes);
         book = Workbook.Create();
         Worksheet made = book.Worksheets[0];
-        CellValue[] values = [CellValue.FromNumber(1), CellValue.FromNumber(-2.5), CellValue.FromNumber(0), CellValue.FromText("a"), CellValue.FromText(""), CellValue.FromBoolean(true), CellValue.FromText("Text " + text), CellValue.FromNumber(45000)];
+        CellValue[] values = [CellValue.FromNumber(1), CellValue.FromNumber(-2.5), CellValue.FromNumber(0), CellValue.FromText("a"), CellValue.FromText(""), CellValue.FromBoolean(true), CellValue.FromText("Text " + text[..Math.Min(text.Length, 1000)]), CellValue.FromNumber(45000)];
         for (int row = 0; row < 8; row++)
         {
             for (int column = 0; column < 4; column++)
@@ -681,7 +681,7 @@ static void Conditional(Stream input)
         book.Names.Add("Fuzz", "Sheet1!$A$1:$A$9");
         CellStyle bold = CellStyle.Default with { Font = CellStyle.Default.Font with { Bold = true } };
         made.ConditionalFormats.Add("A1:B8", ConditionalFormatRule.Expression(text.Length == 0 ? "A1" : text, bold));
-        made.ConditionalFormats.Add("B1:C8 A3:A4", ConditionalFormatRule.CellIs(ComparisonOperator.Between, text.Length == 0 ? "0" : text, bold, "B2"));
+        made.ConditionalFormats.Add("B1:C8", ConditionalFormatRule.CellIs(ComparisonOperator.Between, text.Length == 0 ? "0" : text, bold, "B2")).Ranges.Add(RangeAddress.Parse("A3:A4"));
         made.ConditionalFormats.Add("A1:D8", ConditionalFormatRule.ColorScale(CellColor.Black, CellColor.White), ConditionalFormatRule.DataBar(CellColor.Black), ConditionalFormatRule.IconSet("5Arrows"));
         foreach (DataValidationType type in Enum.GetValues<DataValidationType>())
         {

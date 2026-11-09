@@ -249,6 +249,16 @@ public sealed class PrintTests
     }
 
     [Fact]
+    public void AFillAfterLineBreaksPrints()
+    {
+        Worksheet sheet = Workbook.Create().Worksheets[0];
+        sheet["A1"].Value = "a\r\n\r\n\r\nb";
+        sheet["A1"].NumberFormat = "@*-";
+        using Raster<Rgba8> image = sheet.Paginate(Portable).Pages[0].Render(72);
+        Assert.Contains(Pixels(image), p => p.R < 200);
+    }
+
+    [Fact]
     public void TextOverflowsIntoEmptyCellsButNotFullOnes()
     {
         Workbook book = Workbook.Create();
