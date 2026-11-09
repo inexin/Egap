@@ -10,23 +10,23 @@ namespace Egap.Spreadsheets.Printing;
 internal static partial class CharacterWidths
 {
     // Built on first use: the tables are fields of the other part of the class, which may initialize later.
-    private static readonly Lazy<Dictionary<(string Font, double Size, bool Bold), Widths>> Fonts = new(() =>
+    private static readonly Lazy<Dictionary<(string Font, double Size, bool Bold, bool Italic), Widths>> Fonts = new(() =>
     {
-        Dictionary<(string, double, bool), Widths> fonts = new(KeyComparer.Instance);
-        foreach ((string font, double size, bool bold, string widths, string exact) in Table)
+        Dictionary<(string, double, bool, bool), Widths> fonts = new(KeyComparer.Instance);
+        foreach ((string font, double size, bool bold, bool italic, string widths, string exact) in Table)
         {
-            fonts[(font, size, bold)] = new Widths(widths, exact);
+            fonts[(font, size, bold, italic)] = new Widths(widths, exact);
         }
 
         return fonts;
     });
 
-    private static readonly Lazy<Dictionary<(string Font, double Size, bool Bold), int>> LineHeights = new(() =>
+    private static readonly Lazy<Dictionary<(string Font, double Size, bool Bold, bool Italic), int>> LineHeights = new(() =>
     {
-        Dictionary<(string, double, bool), int> heights = new(KeyComparer.Instance);
-        foreach ((string font, double size, bool bold, int pixels) in Lines)
+        Dictionary<(string, double, bool, bool), int> heights = new(KeyComparer.Instance);
+        foreach ((string font, double size, bool bold, bool italic, int pixels) in Lines)
         {
-            heights[(font, size, bold)] = pixels;
+            heights[(font, size, bold, italic)] = pixels;
         }
 
         return heights;
@@ -45,13 +45,13 @@ internal static partial class CharacterWidths
         return places;
     });
 
-    /// <summary>The widths of one font, size and weight, or null when Excel wasn't measured for it.</summary>
-    public static Widths? Find(string font, double size, bool bold) =>
-        Fonts.Value.TryGetValue((font, size, bold), out Widths? widths) ? widths : null;
+    /// <summary>The widths of one font, size and style, or null when Excel wasn't measured for it.</summary>
+    public static Widths? Find(string font, double size, bool bold, bool italic) =>
+        Fonts.Value.TryGetValue((font, size, bold, italic), out Widths? widths) ? widths : null;
 
-    /// <summary>The height in pixels of the row Excel fits to one line of a font, size and weight, or null when it wasn't measured.</summary>
-    public static int? LineHeight(string font, double size, bool bold) =>
-        LineHeights.Value.TryGetValue((font, size, bold), out int pixels) ? pixels : null;
+    /// <summary>The height in pixels of the row Excel fits to one line of a font, size and style, or null when it wasn't measured.</summary>
+    public static int? LineHeight(string font, double size, bool bold, bool italic) =>
+        LineHeights.Value.TryGetValue((font, size, bold, italic), out int pixels) ? pixels : null;
 
     private static int Place(char c)
     {
@@ -101,15 +101,15 @@ internal static partial class CharacterWidths
         public double Exact(char c) => Place(c) is >= 0 and var place ? exact[place] : -1;
     }
 
-    /// <summary>Compares a font's name, ignoring case, size and weight.</summary>
-    internal sealed class KeyComparer : IEqualityComparer<(string Font, double Size, bool Bold)>
+    /// <summary>Compares a font's name, ignoring case, size, weight and slant.</summary>
+    internal sealed class KeyComparer : IEqualityComparer<(string Font, double Size, bool Bold, bool Italic)>
     {
         public static readonly KeyComparer Instance = new();
 
-        public bool Equals((string Font, double Size, bool Bold) x, (string Font, double Size, bool Bold) y) =>
-            string.Equals(x.Font, y.Font, StringComparison.OrdinalIgnoreCase) && x.Size == y.Size && x.Bold == y.Bold;
+        public bool Equals((string Font, double Size, bool Bold, bool Italic) x, (string Font, double Size, bool Bold, bool Italic) y) =>
+            string.Equals(x.Font, y.Font, StringComparison.OrdinalIgnoreCase) && x.Size == y.Size && x.Bold == y.Bold && x.Italic == y.Italic;
 
-        public int GetHashCode((string Font, double Size, bool Bold) key) =>
-            HashCode.Combine(StringComparer.OrdinalIgnoreCase.GetHashCode(key.Font), key.Size, key.Bold);
+        public int GetHashCode((string Font, double Size, bool Bold, bool Italic) key) =>
+            HashCode.Combine(StringComparer.OrdinalIgnoreCase.GetHashCode(key.Font), key.Size, key.Bold, key.Italic);
     }
 }

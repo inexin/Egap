@@ -3,10 +3,10 @@
 tools/excel-character-width-oracle.ps1 has Excel AutoFit runs of 40 copies of each character and records the column widths
 in pixels in tests/Egap.Spreadsheets.Tests/Oracle/character-widths.excel.tsv. Excel AutoFits a column to 29/28 of the text's
 width in whole pixels per character, plus 5 pixels of padding, so each character's pixels are (width - 5) * 28 / 29 / 40,
-rounded. Each font's widths go into the table as one string, a character per width: '0' plus the pixels. Excel's own
+rounded. Each line's style is 0 regular, 1 bold, 2 italic or 3 bold italic. Each font's widths go into the table as one string, a character per width: '0' plus the pixels. Excel's own
 measure keeps fractions of a pixel, so the table also holds each run's width less the padding, in 40ths of a pixel, as three
 hexadecimal digits per character.
-tools/excel-line-height-oracle.ps1 records the row Excel's AutoFit gives a line of each font, size and weight, in
+tools/excel-line-height-oracle.ps1 records the row Excel's AutoFit gives a line of each font, size and style, in
 tests/Egap.Spreadsheets.Tests/Oracle/line-heights.excel.tsv; those go into the table as they are.
 
 Run it as:
@@ -22,6 +22,11 @@ TARGET = os.path.join(ROOT, 'src', 'Egap.Spreadsheets', 'Printing', 'CharacterWi
 REPEAT = 40
 
 
+def flag(style, bit):
+    """The C# bool for one bit of an oracle line's style: 1 bold, 2 italic."""
+    return 'true' if int(style) & bit else 'false'
+
+
 def main():
     with open(SOURCE, encoding='utf-8') as f:
         lines = [line.rstrip('\n') for line in f if line.strip()]
@@ -29,7 +34,7 @@ def main():
     chars = [int(c) for c in header.split('characters ', 1)[1].split(',')]
     rows = []
     for line in lines[1:]:
-        font, size, bold, widths = line.split('\t')
+        font, size, style, widths = line.split('\t')
         pixels = [int(p) for p in widths.split(',')]
         assert len(pixels) == len(chars), font
         text = ''
@@ -39,7 +44,7 @@ def main():
             assert 0 <= width <= 42, (font, size, p)
             text += chr(ord('0') + width)
             exact += '%03X' % (p - 5)
-        rows.append((font, size, bold, text, exact))
+        rows.append((font, size, style, text, exact))
 
     with open(LINES, encoding='utf-8') as f:
         heights = [line.rstrip('\n').split('\t') for line in f if line.strip() and not line.startswith('#')]
@@ -58,17 +63,17 @@ def main():
     out.append("    /// Each font's widths in pixels at 96 dpi, as '0' plus the pixels per character of <see cref=\"Measured\"/>, and Excel's")
     out.append("    /// own measure of each, in 40ths of a pixel as three hexadecimal digits.")
     out.append("    /// </summary>")
-    out.append('    private static readonly (string Font, double Size, bool Bold, string Widths, string Exact)[] Table =')
+    out.append('    private static readonly (string Font, double Size, bool Bold, bool Italic, string Widths, string Exact)[] Table =')
     out.append('    [')
-    for font, size, bold, text, exact in rows:
-        out.append('        ("%s", %s, %s, "%s", "%s"),' % (font, size, 'true' if bold == '1' else 'false', text, exact))
+    for font, size, style, text, exact in rows:
+        out.append('        ("%s", %s, %s, %s, "%s", "%s"),' % (font, size, flag(style, 1), flag(style, 2), text, exact))
     out.append('    ];')
     out.append('')
-    out.append('    /// <summary>The height in pixels at 96 dpi of the row Excel fits to one line of each font, size and weight.</summary>')
-    out.append('    private static readonly (string Font, double Size, bool Bold, int Pixels)[] Lines =')
+    out.append('    /// <summary>The height in pixels at 96 dpi of the row Excel fits to one line of each font, size and style.</summary>')
+    out.append('    private static readonly (string Font, double Size, bool Bold, bool Italic, int Pixels)[] Lines =')
     out.append('    [')
-    for font, size, bold, pixels in heights:
-        out.append('        ("%s", %s, %s, %s),' % (font, size, 'true' if bold == '1' else 'false', pixels))
+    for font, size, style, pixels in heights:
+        out.append('        ("%s", %s, %s, %s, %s),' % (font, size, flag(style, 1), flag(style, 2), pixels))
     out.append('    ];')
     out.append('}')
     with open(TARGET, 'w', encoding='utf-8', newline='\n') as f:

@@ -5,8 +5,8 @@ tools/make-character-widths.py.
 
 .DESCRIPTION
 Builds a workbook per font whose normal font is Arial at 4 points, so no row is held up by the default, puts one cell of text per row
-in each font, size and weight (bold 0 or 1), has Excel AutoFit the rows and reads their heights. Writes one line per font,
-size and weight: its name, size, bold and the row's height in pixels at 96 dpi. Fonts the PC lacks are measured as Excel
+in each font, size and style (0 regular, 1 bold, 2 italic, 3 bold italic), has Excel AutoFit the rows and reads their heights. Writes one line per font,
+size and style: its name, size, style and the row's height in pixels at 96 dpi. Fonts the PC lacks are measured as Excel
 substitutes them; a bitmap font's sizes it lacks are left out.
 
 Needs Excel on the PC. Run it as:
@@ -18,7 +18,7 @@ $inv = [System.Globalization.CultureInfo]::InvariantCulture
 $fonts = @('Arial', 'Calibri', 'Times New Roman', 'Verdana', 'Tahoma', 'Courier New', 'Arial Narrow', 'MS Sans Serif', 'Cambria',
     'Segoe UI', 'Garamond', 'Century Gothic', 'Aptos Narrow', 'Aptos', 'Book Antiqua', 'Comic Sans MS', 'Helvetica', 'Geneva',
     'Courier', 'Arial Black', 'Trebuchet MS', 'Georgia', 'Univers', 'Zurich Cn BT', 'Lucida Console', 'Palatino Linotype',
-    'Bookman Old Style', 'Franklin Gothic Medium Cond', 'Bitstream Vera Sans', 'Arial MT', 'Eras Medium ITC')
+    'Bookman Old Style', 'Franklin Gothic Medium Cond', 'Bitstream Vera Sans', 'Arial MT', 'Eras Medium ITC', 'Helv', 'Univers (WN)', 'Impact')
 $sizes = @(6, 7, 7.5, 8, 8.5, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 36, 48)
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false
@@ -33,12 +33,12 @@ try {
         $book.Styles.Item('Normal').Font.Size = 4
         $sheet = $book.Worksheets.Item(1)
         $cases = [System.Collections.Generic.List[object[]]]::new()
-        foreach ($size in $sizes) { foreach ($bold in 0, 1) { $cases.Add(@($size, $bold)) } }
+        foreach ($size in $sizes) { foreach ($style in 0, 1, 2, 3) { $cases.Add(@($size, $style)) } }
         for ($i = 0; $i -lt $cases.Count; $i++) {
             $cell = $sheet.Cells.Item($i + 1, 1)
             $cell.Value2 = 'Hxg'
             $cell.Font.Name = $font
-            try { $cell.Font.Size = [double]$cases[$i][0]; $cell.Font.Bold = [bool]$cases[$i][1] } catch { $cell.Value2 = $null }   # a bitmap font without that size
+            try { $cell.Font.Size = [double]$cases[$i][0]; $cell.Font.Bold = [bool]($cases[$i][1] -band 1); $cell.Font.Italic = [bool]($cases[$i][1] -band 2) } catch { $cell.Value2 = $null }   # a bitmap font without that size
         }
         [void]$sheet.Range($sheet.Cells.Item(1, 1), $sheet.Cells.Item($cases.Count, 1)).EntireRow.AutoFit()
         for ($i = 0; $i -lt $cases.Count; $i++) {

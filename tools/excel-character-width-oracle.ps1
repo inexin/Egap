@@ -6,7 +6,7 @@ Measures the width Excel gives each character in the fonts AutoFit meets most, f
 For each font, size and weight, fills one row of a workbook with runs of 40 copies of each character, has Excel AutoFit the
 columns and reads the widths it stores. Excel lays text out in whole pixels per character at 96 dpi and AutoFits a column
 to 29/28 of that plus 5 pixels of padding, so the run's width gives the character's pixels. Writes one line per font of
-its name, size, bold (0 or 1) and the columns' widths in pixels, in the order of the header line's characters.
+its name, size, style (0 regular, 1 bold, 2 italic, 3 bold italic) and the columns' widths in pixels, in the order of the header line's characters.
 
 Needs Excel on the PC. Run it as:
   powershell -NoProfile -ExecutionPolicy Bypass -File tools/excel-character-width-oracle.ps1 -Output tests/Egap.Spreadsheets.Tests/Oracle/character-widths.excel.tsv
@@ -17,7 +17,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 $inv = [System.Globalization.CultureInfo]::InvariantCulture
 $chars = @(32..126) + @(160..255) + @(0x2013, 0x2014, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2026, 0x20AC, 0x2122)
 $specs = [System.Collections.Generic.List[string]]::new()
-function Add([string]$font, [double[]]$sizes, [int]$bold) { foreach ($size in $sizes) { $specs.Add("$font,$($size.ToString($inv)),$bold") } }
+function Add([string]$font, [double[]]$sizes, [int]$style) { foreach ($size in $sizes) { $specs.Add("$font,$($size.ToString($inv)),$style") } }
 Add 'Arial' @(7, 8, 9, 10, 11, 12, 14, 16, 18, 20) 0
 Add 'Arial' @(8, 9, 10, 11, 12, 14, 16) 1
 Add 'Calibri' @(8, 9, 10, 11, 12, 14, 16, 18, 20) 0
@@ -65,6 +65,24 @@ Add 'Arial Narrow' @(11, 12) 1
 Add 'Courier New' @(12) 1
 Add 'Eras Medium ITC' @(10, 12) 0
 Add 'Arial Black' @(14) 1
+# Italics, which Excel measures apart from the upright faces, and more of the corpora's fonts.
+Add 'Arial' @(8, 9, 10, 11, 12) 2
+Add 'Arial' @(8, 9, 10, 12, 14) 3
+Add 'Times New Roman' @(10, 12) 2
+Add 'Times New Roman' @(8, 10, 12, 14) 3
+Add 'MS Sans Serif' @(6, 7, 8, 10) 2
+Add 'Arial' @(8.5, 15, 24, 26) 1
+Add 'Arial' @(22, 24) 0
+Add 'Arial Narrow' @(9, 14) 1
+Add 'Courier New' @(10) 1
+Add 'Helv' @(10) 0
+Add 'Helv' @(8, 10) 1
+Add 'Univers (WN)' @(12) 0
+Add 'Univers (WN)' @(12) 1
+Add 'Franklin Gothic Medium Cond' @(12) 0
+Add 'Impact' @(10, 12, 14) 0
+Add 'Verdana' @(8) 1
+Add 'MS Sans Serif' @(14) 1
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false
 $excel.DisplayAlerts = $false
@@ -73,7 +91,7 @@ try {
     $lines.Add("# Excel $($excel.Version) build $($excel.Build), written by tools/excel-character-width-oracle.ps1; characters $([string]::Join(',', $chars))")
     foreach ($spec in $specs) {
         $p = $spec.Split(',')
-        $Font = $p[0]; $Size = [double]$p[1]; $Bold = [int]$p[2]
+        $Font = $p[0]; $Size = [double]$p[1]; $Style = [int]$p[2]
         $book = $excel.Workbooks.Add()
         $book.Styles.Item('Normal').Font.Name = 'Calibri'
         $book.Styles.Item('Normal').Font.Size = 11
@@ -82,7 +100,8 @@ try {
         $range.NumberFormat = '@'
         $range.Font.Name = $Font
         $range.Font.Size = $Size
-        $range.Font.Bold = [bool]$Bold
+        $range.Font.Bold = [bool]($Style -band 1)
+        $range.Font.Italic = [bool]($Style -band 2)
         $values = New-Object 'object[,]' 1, $chars.Count
         for ($i = 0; $i -lt $chars.Count; $i++) { $values[0, $i] = ([string][char]$chars[$i]) * $Repeat }
         $range.Value2 = $values
@@ -97,7 +116,7 @@ try {
         $widths = @{}
         foreach ($col in $xml.worksheet.cols.col) { for ($c = [int]$col.min; $c -le [int]$col.max; $c++) { $widths[$c] = [double]::Parse($col.width, $inv) } }
         $px = for ($i = 0; $i -lt $chars.Count; $i++) { [math]::Truncate(((256 * $widths[$i + 1]) + [math]::Truncate(128 / 7)) / 256 * 7) }
-        $lines.Add("$Font`t$Size`t$Bold`t$([string]::Join(',', $px))")
+        $lines.Add("$Font`t$Size`t$Style`t$([string]::Join(',', $px))")
     }
     [System.IO.File]::WriteAllLines($Output, $lines)
 }

@@ -18,7 +18,7 @@ internal sealed class TextMeter(Workbook book)
     /// <summary>The pixels a column adds to its widest text: two of margin on the left, three on the right.</summary>
     public const int Padding = 5;
 
-    private readonly Dictionary<(string Name, double Size, bool Bold), CharacterWidths.Widths?> tables = new(CharacterWidths.KeyComparer.Instance);
+    private readonly Dictionary<(string Name, double Size, bool Bold, bool Italic), CharacterWidths.Widths?> tables = new(CharacterWidths.KeyComparer.Instance);
     private readonly Dictionary<(string Name, double Size, bool Bold, bool Italic, char C), int> measured = [];
     private readonly Dictionary<(string Name, double Size, bool Bold, bool Italic), EgamiFont> faces = [];
     private SheetFonts? fonts;
@@ -113,7 +113,9 @@ internal sealed class TextMeter(Workbook book)
     /// <summary>The height of a line of <paramref name="font"/> in pixels: the row Excel gives that font.</summary>
     public int LineHeight(CellFont font)
     {
-        if (CharacterWidths.LineHeight(font.Name, font.Size, font.Bold) is { } pixels)
+        // An italic Excel wasn't measured for keeps the upright face's row, which is nearer than its outlines.
+        if ((CharacterWidths.LineHeight(font.Name, font.Size, font.Bold, font.Italic)
+            ?? (font.Italic ? CharacterWidths.LineHeight(font.Name, font.Size, font.Bold, false) : null)) is { } pixels)
         {
             return pixels;
         }
@@ -134,16 +136,17 @@ internal sealed class TextMeter(Workbook book)
 
     private CharacterWidths.Widths? Table(CellFont font)
     {
-        (string, double, bool) key = (font.Name, font.Size, font.Bold);
-        if (font.Italic)
-        {
-            // Excel was measured upright only; Calibri's italic keeps its upright widths, other fonts' italics don't.
-            return string.Equals(font.Name, "Calibri", StringComparison.OrdinalIgnoreCase) ? CharacterWidths.Find(font.Name, font.Size, font.Bold) : null;
-        }
-
+        (string, double, bool, bool) key = (font.Name, font.Size, font.Bold, font.Italic);
         if (!tables.TryGetValue(key, out CharacterWidths.Widths? widths))
         {
-            tables[key] = widths = CharacterWidths.Find(font.Name, font.Size, font.Bold);
+            // An italic Excel wasn't measured for: Calibri's keeps its upright widths, other fonts' italics don't.
+            widths = CharacterWidths.Find(font.Name, font.Size, font.Bold, font.Italic);
+            if (widths is null && font.Italic && string.Equals(font.Name, "Calibri", StringComparison.OrdinalIgnoreCase))
+            {
+                widths = CharacterWidths.Find(font.Name, font.Size, font.Bold, false);
+            }
+
+            tables[key] = widths;
         }
 
         return widths;
