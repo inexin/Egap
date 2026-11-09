@@ -160,7 +160,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   of every type, formulas translated from OpenFormula to Excel's syntax, array formulas, merged cells, styles and number
   formats, column widths, row heights, hidden and grouped rows and columns, sheets, names and print ranges are read,
   what-if tables become Excel data tables, references to other files become linked books with the values the file
-  keeps for them, and the workbook saves as XLSX, links included.
+  keeps for them, and the workbook saves as XLSX too, links included.
+- `Workbook.Save` writes ODS 1.3, OTS and flat FODS (`.ods`, `.ots`, `.fods`, or `WorkbookFormat.Ods`, `Ots` and `Fods`):
+  values with their types, formulas translated to OpenFormula with the function names LibreOffice uses, cell styles,
+  number formats as data styles, merges, array formulas, rows and columns, sheets, names, print ranges, data tables as
+  `MULTIPLE.OPERATIONS` and links to other files with their kept values. A workbook read from ODS saves as ODS unless
+  another format is named. `WorkbookSaveOptions.Password` encrypts an ODS or OTS with AES-256 and PBKDF2, and
+  `WorkbookLoadOptions.Password` opens encrypted ODS, also LibreOffice's AES-256-GCM with Argon2id. LibreOffice opens
+  Egap's encrypted files with the password.
 - `Cell.ImportData` writes a list of objects, a `DataTable` or an `IDataReader` into cells, with a header row, number
   formats for dates and times, and an optional Excel table; `CellRange.ToDataTable` and `CellRange.ToList<T>` read a
   range back as a table with typed columns or as objects and records, matched by header name.
