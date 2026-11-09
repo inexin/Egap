@@ -34,6 +34,16 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
     /// <summary>The cached sheets of a book made in memory, in order.</summary>
     public List<Worksheet> MadeSheets { get; } = [];
 
+    /// <summary>
+    /// The linked file: the target of a book made in memory, or of the link part's <c>externalLinkPath</c> relationship;
+    /// null for a DDE or OLE link, or a part without one.
+    /// </summary>
+    public string? File => Target ?? part?.Relationships.FirstOrDefault(r => r.External
+        && (r.Type.EndsWith("/externalLinkPath", StringComparison.OrdinalIgnoreCase) || r.Type.EndsWith("/xlPathMissing", StringComparison.OrdinalIgnoreCase)))?.Target;
+
+    /// <summary>The cached sheets, in the book's order.</summary>
+    public IReadOnlyList<Worksheet> Sheets => MadeSheets.Count > 0 ? MadeSheets : contents.Value.Order;
+
     /// <summary>The cached sheet called <paramref name="name"/> of a book made in memory, added empty when it has none.</summary>
     public Worksheet MakeSheet(Workbook owner, string name)
     {
@@ -123,7 +133,10 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
         {
             Worksheet sheet = new(book, (string?)sheetName.Attribute("val") ?? "", linked: true);
             sheets.Add(sheet);
-            contents.Sheets.TryAdd(sheet.Name, sheet);
+            if (contents.Sheets.TryAdd(sheet.Name, sheet))
+            {
+                contents.Order.Add(sheet);
+            }
         }
 
         foreach (XElement data in external.Element(ns + "sheetDataSet")?.Elements(ns + "sheetData") ?? [])
@@ -167,6 +180,8 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
     private sealed class Contents
     {
         public Dictionary<string, Worksheet> Sheets { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public List<Worksheet> Order { get; } = [];
 
         public bool IsBook { get; set; }
 

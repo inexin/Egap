@@ -27,12 +27,12 @@ internal static class OdsReader
 
     private static readonly XNamespace CalcExtNs = "urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0";
 
-    public static void Read(Workbook book, byte[] bytes, DocumentLimits limits)
+    public static void Read(Workbook book, byte[] bytes, DocumentLimits limits, string? password = null)
     {
-        OdfPackage package = OdfPackage.Read(bytes, limits, spreadsheet: true);
+        OdfPackage package = OdfPackage.Read(bytes, limits, password, spreadsheet: true);
         XElement spreadsheet = package.Content.Element(OfficeNs + "body")?.Element(OfficeNs + "spreadsheet")
             ?? throw new DocumentException("The OpenDocument spreadsheet has no office:spreadsheet body.");
-        book.Format = WorkbookFormat.Xlsx;
+        book.Format = package.IsFlat ? WorkbookFormat.Fods : package.MediaType == SpreadsheetTemplateMediaType ? WorkbookFormat.Ots : WorkbookFormat.Ods;
 
         DateTime nullDate = new(1899, 12, 30);
         if (spreadsheet.Element(TableNs + "calculation-settings")?.Element(TableNs + "null-date")?.Attr(TableNs, "date-value") is { } nullText
