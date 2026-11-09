@@ -92,6 +92,104 @@ public sealed class ConditionalFormatEvaluationTests
         Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
     }
 
+    [Fact]
+    public void RulesMadeInCodeApply()
+    {
+        Worksheet sheet = Workbook.CreateEmpty().Worksheets.Add("S");
+        for (int row = 0; row < 5; row++)
+        {
+            sheet.Cells[row, 0].Value = CellValue.FromNumber(row * 2);
+        }
+
+        CellStyle red = CellStyle.Default with { Fill = CellFill.Solid(CellColor.FromRgb(255, 0, 0)) };
+        ConditionalFormatRule rule = ConditionalFormatRule.CellIs(ComparisonOperator.GreaterThan, "5", red);
+        sheet.ConditionalFormats.Add("A1:A5", rule);
+        ConditionalFormatEvaluation evaluation = sheet.ConditionalFormats.Evaluate();
+        Assert.Equal(CellFill.None, evaluation["A3"].Style.Fill);
+        Assert.Empty(evaluation["A3"].Rules);
+        Assert.Equal(red.Fill, evaluation["A4"].Style.Fill);
+        Assert.Same(rule, Assert.Single(evaluation["A4"].Rules));
+        Assert.Equal(red.Fill, sheet.ConditionalFormats.Evaluate(CellAddress.Parse("A5")).Style.Fill);
+        Assert.Empty(evaluation["B4"].Rules);
+    }
+
+    [Fact]
+    public void StopIfTrueKeepsLaterRulesOff()
+    {
+        Worksheet sheet = Workbook.CreateEmpty().Worksheets.Add("S");
+        sheet.Cells[0, 0].Value = CellValue.FromNumber(3);
+        CellStyle bold = CellStyle.Default with { Font = CellStyle.Default.Font with { Bold = true } };
+        CellStyle italic = CellStyle.Default with { Font = CellStyle.Default.Font with { Italic = true } };
+        ConditionalFormatRule first = ConditionalFormatRule.Expression("A1>0", bold);
+        ConditionalFormatRule second = ConditionalFormatRule.Expression("A1>1", italic);
+        first.Priority = 1;
+        second.Priority = 2;
+        sheet.ConditionalFormats.Add("A1", first, second);
+        CellStyle both = sheet.ConditionalFormats.Evaluate(CellAddress.Parse("A1")).Style;
+        Assert.True(both.Font.Bold && both.Font.Italic);
+        first.StopIfTrue = true;
+        CellStyle stopped = sheet.ConditionalFormats.Evaluate(CellAddress.Parse("A1")).Style;
+        Assert.True(stopped.Font.Bold);
+        Assert.False(stopped.Font.Italic);
+    }
+
+    [Fact]
+    public void DataBarsAndColorScalesFollowTheValues()
+    {
+        Worksheet sheet = Workbook.CreateEmpty().Worksheets.Add("S");
+        for (int row = 0; row < 3; row++)
+        {
+            sheet.Cells[row, 0].Value = CellValue.FromNumber(row * 5);
+            sheet.Cells[row, 1].Value = CellValue.FromNumber(row * 5);
+        }
+
+        sheet.ConditionalFormats.Add("A1:A3", ConditionalFormatRule.DataBar(CellColor.FromRgb(0, 0, 255)));
+        sheet.ConditionalFormats.Add("B1:B3", ConditionalFormatRule.ColorScale(CellColor.FromRgb(0, 0, 0), CellColor.FromRgb(200, 100, 0)));
+        ConditionalFormatEvaluation evaluation = sheet.ConditionalFormats.Evaluate();
+        Assert.Equal([0, 0.5, 1], [.. Enumerable.Range(0, 3).Select(row => evaluation[row, 0].DataBar!.Value.Fraction)]);
+        Assert.Equal(CellColor.FromRgb(100, 50, 0), evaluation["B2"].Style.Fill.Foreground);
+        Assert.True(evaluation["B2"].ShowsValue);
+    }
+
+    [Fact]
+    public void ValidationFindsTheValuesThatFail()
+    {
+        Worksheet sheet = Workbook.CreateEmpty().Worksheets.Add("S");
+        double[] values = [1, 11, 5.5, 7];
+        for (int row = 0; row < values.Length; row++)
+        {
+            sheet.Cells[row, 0].Value = CellValue.FromNumber(values[row]);
+        }
+
+        sheet.Cells[4, 0].Value = CellValue.FromText("x");
+        sheet.DataValidations.Add(RangeAddress.Parse("A1:A10"), DataValidationType.WholeNumber, "1", "10").Operator = ComparisonOperator.Between;
+        Assert.Equal(["A2", "A3", "A5"], sheet.DataValidations.FindInvalid().Select(cell => cell.ToString()));
+        Assert.True(sheet.DataValidations.IsValid(CellAddress.Parse("A6")));
+        Assert.False(sheet.DataValidations.IsValid(CellAddress.Parse("A6"), CellValue.FromNumber(0)));
+        Assert.True(sheet.DataValidations.IsValid(CellAddress.Parse("B1"), CellValue.FromText("anything")));
+    }
+
+    [Fact]
+    public void ListsOfferTheirItems()
+    {
+        Workbook book = Workbook.CreateEmpty();
+        Worksheet sheet = book.Worksheets.Add("S");
+        sheet.Cells[0, 3].Value = CellValue.FromText("red");
+        sheet.Cells[1, 3].Value = CellValue.FromText("green");
+        sheet.DataValidations.AddList(RangeAddress.Parse("A1:A5"), ["one", "two"]);
+        sheet.DataValidations.Add(RangeAddress.Parse("B1:B5"), DataValidationType.List, "$D$1:$D$2");
+        Assert.Equal(["one", "two"], sheet.DataValidations.ListItems(CellAddress.Parse("A3")).Select(item => item.Text));
+        Assert.Equal(["red", "green"], sheet.DataValidations.ListItems(CellAddress.Parse("B3")).Select(item => item.Text));
+        Assert.Empty(sheet.DataValidations.ListItems(CellAddress.Parse("C3")));
+        Assert.True(sheet.DataValidations.IsValid(CellAddress.Parse("B1"), CellValue.FromText("GREEN")));
+        Assert.False(sheet.DataValidations.IsValid(CellAddress.Parse("A1"), CellValue.FromText("ONE")));
+
+        // A name whose cells include a blank one lets anything through while blanks are ignored, as in Excel.
+        book.Names.Add("Colours", "S!$D$1:$D$3");
+        sheet.DataValidations.Add(RangeAddress.Parse("C1:C5"), DataValidationType.List, "Colours");
+        Assert.True(sheet.DataValidations.IsValid(CellAddress.Parse("C1"), CellValue.FromText("blue")));
+    }
+
     /// <summary>The oracle's workbook, with the dates of the time period rules moved by the days since Excel's today.</summary>
     private static Workbook Load()
     {

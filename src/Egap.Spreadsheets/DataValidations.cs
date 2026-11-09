@@ -231,7 +231,7 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
     /// list rule applies.
     /// </summary>
     public IReadOnlyList<CellValue> ListItems(CellAddress cell) =>
-        Find(cell) is { Type: DataValidationType.List } rule ? Items(rule, cell, out _) : [];
+        Find(cell) is { Type: DataValidationType.List } rule ? Items(rule, cell, out _, out _) : [];
 
     /// <summary>Removes a rule.</summary>
     /// <returns>Whether the rule was on the sheet.</returns>
@@ -266,7 +266,15 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
                     _ => false,
                 };
             case DataValidationType.List:
-                IReadOnlyList<CellValue> items = Items(rule, cell, out bool fixedItems);
+                List<CellValue> items = Items(rule, cell, out bool fixedItems, out bool blankItem);
+                if ((blankItem && rule.AllowBlank && IsName(rule)) || (items.Count == 1 && items[0].Kind == CellValueKind.Error && !fixedItems && !Refers(rule, cell)))
+                {
+                    // Excel lets any value through a list given by a name whose cells include a blank one, when blanks are
+                    // ignored, though the same cells written out as a reference do not; and through a list whose formula
+                    // gives an error, as a name that lost its cells does.
+                    return true;
+                }
+
                 foreach (CellValue item in items)
                 {
                     if (Same(item, value, fixedItems))
@@ -331,9 +339,14 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
         };
     }
 
-    /// <summary>A list rule's items: the quoted list's, split at commas, or the values of the cells its formula refers to.</summary>
-    private List<CellValue> Items(DataValidation rule, CellAddress cell, out bool fixedItems)
+    /// <summary>
+    /// A list rule's items: the quoted list's, split at commas with the spaces around each taken off, or the values of the
+    /// cells its formula refers to, up to the last row and column of their sheet that hold anything.
+    /// <paramref name="blankItem"/> tells whether a cell among them is blank.
+    /// </summary>
+    private List<CellValue> Items(DataValidation rule, CellAddress cell, out bool fixedItems, out bool blankItem)
     {
+        blankItem = false;
         string formula = (rule.Formula1 ?? "").Trim();
         if (formula.StartsWith('='))
         {
@@ -343,7 +356,7 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
         fixedItems = formula.Length >= 2 && formula[0] == '"' && formula[^1] == '"';
         if (fixedItems)
         {
-            return [.. formula[1..^1].Replace("\"\"", "\"", StringComparison.Ordinal).Split(',').Select(item => CellValue.FromText(item))];
+            return [.. formula[1..^1].Replace("\"\"", "\"", StringComparison.Ordinal).Split(',').Select(item => CellValue.FromText(item.Trim(' ')))];
         }
 
         List<CellValue> items = [];
@@ -368,16 +381,27 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
             foreach (SheetArea area in result.Areas)
             {
                 RangeAddress range = area.Range;
-                if ((long)range.RowCount * range.ColumnCount > EvalContext.MaxArrayCells)
+                if (area.Sheet.UsedRange is not { } used)
+                {
+                    blankItem = true;
+                    continue;
+                }
+
+                RangeAddress box = used.Address;
+                int lastRow = Math.Min(range.Last.Row, box.Last.Row), lastColumn = Math.Min(range.Last.Column, box.Last.Column);
+                blankItem |= lastRow < range.Last.Row || lastColumn < range.Last.Column;
+                if ((long)(lastRow - range.First.Row + 1) * (lastColumn - range.First.Column + 1) > EvalContext.MaxArrayCells)
                 {
                     continue;
                 }
 
-                for (int r = range.First.Row; r <= range.Last.Row; r++)
+                for (int r = range.First.Row; r <= lastRow; r++)
                 {
-                    for (int c = range.First.Column; c <= range.Last.Column; c++)
+                    for (int c = range.First.Column; c <= lastColumn; c++)
                     {
-                        items.Add(area.Sheet.GetValue(r, c));
+                        CellValue item = area.Sheet.GetValue(r, c);
+                        blankItem |= item.Kind == CellValueKind.Empty;
+                        items.Add(item);
                     }
                 }
             }
@@ -394,14 +418,20 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
         return items;
     }
 
-    /// <summary>Whether a list item is the value: fixed items as text with case, cells' values as Excel compares them.</summary>
+    /// <summary>
+    /// Whether a list item is the value: a fixed item when the value as the workbook's culture writes it is the item's text,
+    /// with case, so the number 5 is the item 5 but 0.03 is not the item .03; a cell's value as Excel compares them.
+    /// </summary>
     private bool Same(CellValue item, CellValue value, bool fixedItem)
     {
         if (fixedItem)
         {
-            return value.Kind != CellValueKind.Error
-                && ExcelValues.TryText(EvalValue.FromCell(value), sheet.Workbook.Culture, out string text, out _)
-                && value.Kind == CellValueKind.Text
+            if (value.Kind == CellValueKind.Error)
+            {
+                return false;
+            }
+
+            return ExcelValues.TryText(EvalValue.FromCell(value), sheet.Workbook.Culture, out string text, out _)
                 && string.Equals(text, item.Text, StringComparison.Ordinal);
         }
 
@@ -413,7 +443,7 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
         return ExcelValues.Compare(EvalValue.FromCell(item), EvalValue.FromCell(value), new EvalContext(sheet, 0, 0)) == 0;
     }
 
-    /// <summary>A formula of the rule evaluated for a cell, its relative references counted from the top-left cell of the rule's first range.</summary>
+    /// <summary>A formula of the rule evaluated for a cell, its relative references counted from the top-left cell of all the rule's ranges.</summary>
     private CellValue? Evaluate(string? formula, DataValidation rule, CellAddress cell)
     {
         if (string.IsNullOrWhiteSpace(formula) || Parse(formula.StartsWith('=') ? formula[1..] : formula, rule) is not { } compiled)
@@ -432,10 +462,36 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
         }
     }
 
+    /// <summary>Whether the rule's list formula gives cells, rather than a value.</summary>
+    private bool Refers(DataValidation rule, CellAddress cell)
+    {
+        string formula = (rule.Formula1 ?? "").Trim().TrimStart('=');
+        if (formula.Length == 0 || Parse(formula, rule) is not { } compiled)
+        {
+            return false;
+        }
+
+        try
+        {
+            return FormulaEvaluator.Run(compiled, Context(rule, cell)).Kind == EvalKind.Reference;
+        }
+        catch (FormulaException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>Whether the rule's list is given by a name of the workbook or the sheet alone.</summary>
+    private bool IsName(DataValidation rule)
+    {
+        string formula = (rule.Formula1 ?? "").Trim().TrimStart('=');
+        return formula.Length > 0 && (sheet.Workbook.Names.TryGet(formula, sheet, out _) || sheet.Workbook.Names.TryGet(formula, null, out _));
+    }
+
     private EvalContext Context(DataValidation rule, CellAddress cell) =>
         EvalContext.ForCell(sheet, cell.Row, cell.Column, Origin(rule), [], arrayMode: true);
 
-    private static CellAddress Origin(DataValidation rule) => rule.Ranges.Count > 0 ? rule.Ranges[0].First : default;
+    private static CellAddress Origin(DataValidation rule) => ConditionalFormatEvaluation.TopLeft(rule.Ranges);
 
     private static CompiledFormula? Parse(string formula, DataValidation rule)
     {

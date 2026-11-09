@@ -52,6 +52,9 @@ public sealed class ConditionalCellFormat
 
     /// <summary>The style the rules were applied to.</summary>
     internal CellStyle? BaseStyle { get; init; }
+
+    /// <summary>The dataBar element of the rule that draws <see cref="DataBar"/>, for its lengths.</summary>
+    internal XElement? BarElement { get; init; }
 }
 
 /// <summary>
@@ -114,6 +117,7 @@ public sealed class ConditionalFormatEvaluation
         CellBorders borders = style.Borders;
         string numberFormat = style.NumberFormat;
         ConditionalDataBar? bar = null;
+        XElement? barElement = null;
         ConditionalIcon? icon = null;
         bool showsValue = true;
         foreach (RuleState rule in rules)
@@ -142,6 +146,7 @@ public sealed class ConditionalFormatEvaluation
                     if (applies && bar is null)
                     {
                         bar = drawn;
+                        barElement = rule.Drawing;
                         showsValue &= rule.ShowsValue;
                     }
 
@@ -182,6 +187,7 @@ public sealed class ConditionalFormatEvaluation
             : new ConditionalCellFormat(applied, set == Parts.None ? style : style with { Font = font, Fill = fill, Borders = borders, NumberFormat = numberFormat }, bar, icon, showsValue)
             {
                 BaseStyle = style,
+                BarElement = barElement,
             };
         cache[key] = result;
         return result;
@@ -611,6 +617,13 @@ public sealed class ConditionalFormatEvaluation
         };
     }
 
+    /// <summary>
+    /// The cell relative references in a rule's formulas count from: the first row and first column of all its ranges
+    /// together, as Excel takes it, whatever order the ranges are listed in.
+    /// </summary>
+    internal static CellAddress TopLeft(List<RangeAddress> ranges) =>
+        ranges.Count == 0 ? default : new CellAddress(ranges.Min(range => range.First.Row), ranges.Min(range => range.First.Column));
+
     /// <summary>Runs a rule's formula for a cell, as an array formula written for the top-left cell of the rule's ranges.</summary>
     private CellValue Run(CompiledFormula formula, RuleState rule, int row, int column)
     {
@@ -750,7 +763,7 @@ public sealed class ConditionalFormatEvaluation
             Format = format;
             Rule = rule;
             Order = order;
-            Origin = format.Ranges.Count > 0 ? format.Ranges[0].First : default;
+            Origin = TopLeft(format.Ranges);
             string? name = rule.Type switch
             {
                 ConditionalFormatType.ColorScale => "colorScale",
@@ -768,7 +781,7 @@ public sealed class ConditionalFormatEvaluation
 
         public int Order { get; }
 
-        /// <summary>The top-left cell of the first range, which relative references in the rule's formulas count from.</summary>
+        /// <summary>The top-left cell of all the rule's ranges, which relative references in its formulas count from.</summary>
         public CellAddress Origin { get; }
 
         public XElement? Drawing { get; }

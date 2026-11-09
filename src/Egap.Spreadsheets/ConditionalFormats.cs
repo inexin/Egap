@@ -112,7 +112,7 @@ public sealed class ConditionalFormatRule
     /// <summary>The colour scale, data bar or icon set child a rule made in code writes.</summary>
     internal XElement? Drawing { get; set; }
 
-    /// <summary>A rule for cells for which a formula, written for the top-left cell of the range, is true.</summary>
+    /// <summary>A rule for cells for which a formula, written for the top-left cell of the rule's ranges, is true.</summary>
     public static ConditionalFormatRule Expression(string formula, CellStyle style)
     {
         ArgumentException.ThrowIfNullOrEmpty(formula);

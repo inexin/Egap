@@ -1479,6 +1479,126 @@ V	list range	18	0
 V	list range	19	0
 V	list range	20	1
 V	list range	21	0
+V	list spaced	2	1
+V	list spaced	3	0
+V	list spaced	4	0
+V	list spaced	5	1
+V	list spaced	6	1
+V	list spaced	7	0
+V	list spaced	8	0
+V	list spaced	9	0
+V	list spaced	10	0
+V	list spaced	11	1
+V	list spaced	12	0
+V	list spaced	13	0
+V	list spaced	14	1
+V	list spaced	15	0
+V	list spaced	16	0
+V	list spaced	17	0
+V	list spaced	18	0
+V	list spaced	19	0
+V	list spaced	20	0
+V	list spaced	21	0
+V	list range with blank	2	1
+V	list range with blank	3	0
+V	list range with blank	4	0
+V	list range with blank	5	0
+V	list range with blank	6	1
+V	list range with blank	7	0
+V	list range with blank	8	0
+V	list range with blank	9	0
+V	list range with blank	10	0
+V	list range with blank	11	0
+V	list range with blank	12	0
+V	list range with blank	13	0
+V	list range with blank	14	1
+V	list range with blank	15	1
+V	list range with blank	16	0
+V	list range with blank	17	0
+V	list range with blank	18	0
+V	list range with blank	19	0
+V	list range with blank	20	1
+V	list range with blank	21	0
+V	list range with blank no blanks	2	1
+V	list range with blank no blanks	3	0
+V	list range with blank no blanks	4	0
+V	list range with blank no blanks	5	0
+V	list range with blank no blanks	6	0
+V	list range with blank no blanks	7	0
+V	list range with blank no blanks	8	0
+V	list range with blank no blanks	9	0
+V	list range with blank no blanks	10	0
+V	list range with blank no blanks	11	0
+V	list range with blank no blanks	12	0
+V	list range with blank no blanks	13	0
+V	list range with blank no blanks	14	1
+V	list range with blank no blanks	15	1
+V	list range with blank no blanks	16	0
+V	list range with blank no blanks	17	0
+V	list range with blank no blanks	18	0
+V	list range with blank no blanks	19	0
+V	list range with blank no blanks	20	1
+V	list range with blank no blanks	21	0
+V	list name	2	1
+V	list name	3	0
+V	list name	4	0
+V	list name	5	0
+V	list name	6	1
+V	list name	7	0
+V	list name	8	0
+V	list name	9	0
+V	list name	10	0
+V	list name	11	0
+V	list name	12	0
+V	list name	13	0
+V	list name	14	1
+V	list name	15	1
+V	list name	16	0
+V	list name	17	0
+V	list name	18	0
+V	list name	19	0
+V	list name	20	1
+V	list name	21	0
+V	list name with blank	2	1
+V	list name with blank	3	1
+V	list name with blank	4	1
+V	list name with blank	5	1
+V	list name with blank	6	1
+V	list name with blank	7	1
+V	list name with blank	8	1
+V	list name with blank	9	1
+V	list name with blank	10	1
+V	list name with blank	11	1
+V	list name with blank	12	1
+V	list name with blank	13	1
+V	list name with blank	14	1
+V	list name with blank	15	1
+V	list name with blank	16	1
+V	list name with blank	17	1
+V	list name with blank	18	1
+V	list name with blank	19	1
+V	list name with blank	20	1
+V	list name with blank	21	1
+V	list name with blank no blanks	2	1
+V	list name with blank no blanks	3	0
+V	list name with blank no blanks	4	0
+V	list name with blank no blanks	5	0
+V	list name with blank no blanks	6	0
+V	list name with blank no blanks	7	0
+V	list name with blank no blanks	8	0
+V	list name with blank no blanks	9	0
+V	list name with blank no blanks	10	0
+V	list name with blank no blanks	11	0
+V	list name with blank no blanks	12	0
+V	list name with blank no blanks	13	0
+V	list name with blank no blanks	14	1
+V	list name with blank no blanks	15	1
+V	list name with blank no blanks	16	0
+V	list name with blank no blanks	17	0
+V	list name with blank no blanks	18	0
+V	list name with blank no blanks	19	0
+V	list name with blank no blanks	20	1
+V	list name with blank no blanks	21	0
 V	date after	2	0
 V	date after	3	0
 V	date after	4	0

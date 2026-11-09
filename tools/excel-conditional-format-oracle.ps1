@@ -202,6 +202,12 @@ try {
         @('decimal not between 0 and 1', 2, 2, '=0', '=1', $true),
         @('list a b c', 3, 1, '="a,b,c"', $null, $true),
         @('list range', 3, 1, '=$Z$1:$Z$3', $null, $true),
+        @('list spaced', 3, 1, '=" a, 5,abcd"', $null, $true),
+        @('list range with blank', 3, 1, '=$Z$1:$Z$4', $null, $true),
+        @('list range with blank no blanks', 3, 1, '=$Z$1:$Z$4', $null, $false),
+        @('list name', 3, 1, '=ListFull', $null, $true),
+        @('list name with blank', 3, 1, '=ListBlank', $null, $true),
+        @('list name with blank no blanks', 3, 1, '=ListBlank', $null, $false),
         @('date after', 4, 5, '=DATE(2023,1,1)', $null, $true),
         @('time before noon', 5, 6, '=TIME(12,0,0)', $null, $true),
         @('text length at most 3', 6, 8, '=3', $null, $true),
@@ -211,6 +217,9 @@ try {
         @('any value', 0, 1, $null, $null, $true)
     )
     Put $valid.Range('Z1') 'a'; Put $valid.Range('Z2') 5; Put $valid.Range('Z3') 10
+    # A list by a name whose cells include a blank one takes any value when blanks are ignored; by the cells themselves it does not.
+    [void]$book.Names.Add('ListFull', "=Valid!`$Z`$1:`$Z`$3")
+    [void]$book.Names.Add('ListBlank', "=Valid!`$Z`$1:`$Z`$4")
     $column = 1
     foreach ($spec in $dv) {
         $label, $type, $operator, $f1, $f2, $blank = $spec
