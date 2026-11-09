@@ -170,6 +170,28 @@ public sealed class ConditionalFormatEvaluationTests
     }
 
     [Fact]
+    public void CustomRulesCheckTheValueToBeEntered()
+    {
+        Worksheet sheet = Workbook.CreateEmpty().Worksheets.Add("S");
+        sheet.Cells[0, 0].Value = CellValue.FromNumber(1);
+        sheet.Cells[0, 1].Value = CellValue.FromNumber(10);
+        sheet.Cells[1, 0].Formula = "A1*2";
+        sheet.DataValidations.Add(RangeAddress.Parse("A1:B1"), DataValidationType.Custom, "A1>5");
+        CellAddress a1 = CellAddress.Parse("A1"), b1 = CellAddress.Parse("B1");
+
+        Assert.False(sheet.DataValidations.IsValid(a1));
+        Assert.True(sheet.DataValidations.IsValid(a1, CellValue.FromNumber(10)));
+        Assert.True(sheet.DataValidations.IsValid(b1));
+        Assert.False(sheet.DataValidations.IsValid(b1, CellValue.FromNumber(2)));
+        Assert.True(sheet.DataValidations.IsValid(b1, CellValue.FromText("x")));   // text compares above numbers, as in Excel
+
+        // The cells hold what they held, and nothing that depends on them changed.
+        Assert.Equal(CellValue.FromNumber(1), sheet.Cells[0, 0].Value);
+        Assert.Equal(CellValue.FromNumber(10), sheet.Cells[0, 1].Value);
+        Assert.Equal("A1*2", sheet.Cells[1, 0].Formula);
+    }
+
+    [Fact]
     public void ListsOfferTheirItems()
     {
         Workbook book = Workbook.CreateEmpty();

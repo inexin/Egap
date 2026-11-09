@@ -272,12 +272,7 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
             case DataValidationType.Any:
                 return true;
             case DataValidationType.Custom:
-                return Evaluate(rule.Formula1, rule, cell) is { } result && result.Kind switch
-                {
-                    CellValueKind.Boolean => result.Boolean,
-                    CellValueKind.Number => result.Number != 0,
-                    _ => false,
-                };
+                return Custom(rule, cell, value);
             case DataValidationType.List:
                 List<CellValue> items = Items(rule, cell, out bool fixedItems, out bool blankItem);
                 if ((blankItem && rule.AllowBlank && IsName(rule)) || (items.Count == 1 && items[0].Kind == CellValueKind.Error && !fixedItems && !Refers(rule, cell)))
@@ -317,6 +312,38 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
 
                 return Compare(rule, cell, value);
         }
+    }
+
+    /// <summary>
+    /// Whether a custom rule's formula is true for a value, worked out with the value in the cell, as Excel checks a value
+    /// typed in; the cell gets back what it held. Formulas that depend on the cell keep their last results.
+    /// </summary>
+    private bool Custom(DataValidation rule, CellAddress cell, CellValue value)
+    {
+        CellValue? result;
+        if (sheet.GetValue(cell.Row, cell.Column).Equals(value))
+        {
+            result = Evaluate(rule.Formula1, rule, cell);
+        }
+        else
+        {
+            Storage.CellRecord held = sheet.Place(cell.Row, cell.Column, value);
+            try
+            {
+                result = Evaluate(rule.Formula1, rule, cell);
+            }
+            finally
+            {
+                sheet.Restore(cell.Row, cell.Column, held);
+            }
+        }
+
+        return result is { } truth && truth.Kind switch
+        {
+            CellValueKind.Boolean => truth.Boolean,
+            CellValueKind.Number => truth.Number != 0,
+            _ => false,
+        };
     }
 
     /// <summary>Whether a value compares with the rule's formulas as its operator asks; false when a formula gives no value.</summary>
