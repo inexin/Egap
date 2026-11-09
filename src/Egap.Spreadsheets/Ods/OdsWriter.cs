@@ -1109,7 +1109,20 @@ internal sealed class OdsWriter
             Span(xml, range);
         }
 
-        string? shown = Value(xml, value, kind, code);
+        string? shown;
+        if (value.Kind == CellValueKind.Boolean && formula is "of:=TRUE()" or "of:=FALSE()")
+        {
+            // A boolean cell whose formula is TRUE() alone is how office suites write the constant TRUE, so this formula's
+            // result goes as the number its boolean style shows, which keeps the formula a formula when read.
+            xml.WriteAttributeString("office", "value-type", OfficeNs.NamespaceName, "float");
+            xml.WriteAttributeString("office", "value", OfficeNs.NamespaceName, value.Boolean ? "1" : "0");
+            shown = value.Boolean ? "TRUE" : "FALSE";
+        }
+        else
+        {
+            shown = Value(xml, value, kind, code);
+        }
+
         if (shown is not null)
         {
             Paragraphs(xml, shown);

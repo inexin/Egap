@@ -333,7 +333,7 @@ public sealed class OdsTests
 
         // Saved as XLSX, the copy is the linked book's kept values, which Excel and Egap calculate from.
         using MemoryStream saved = new();
-        book.Save(saved);
+        book.Save(saved, new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx });
         using (ZipArchive zip = new(new MemoryStream(saved.ToArray())))
         {
             using StreamReader reader = new(zip.GetEntry("xl/externalLinks/_rels/externalLink1.xml.rels")!.Open());
@@ -404,7 +404,7 @@ public sealed class OdsTests
     {
         Workbook book = Load(Flat(Table("S", Row(Cell("float", "office:value=\"5\""), "<table:table-cell table:formula=\"of:=[.A1]*2\" office:value-type=\"float\" office:value=\"10\"/>"))));
         using MemoryStream saved = new();
-        book.Save(saved);
+        book.Save(saved, new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx });
         saved.Position = 0;
         Workbook again = Workbook.Load(saved);
         Assert.Equal("A1*2", again.Worksheets[0]["B1"].Formula);
@@ -431,7 +431,7 @@ public sealed class OdsTests
         Assert.Equal(10, sheet["E4"].Value.Number);
 
         using MemoryStream saved = new();
-        book.Save(saved);
+        book.Save(saved, new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx });
         using ZipArchive zip = new(new MemoryStream(saved.ToArray()));
         using StreamReader reader = new(zip.GetEntry("xl/worksheets/sheet1.xml")!.Open());
         string xml = reader.ReadToEnd();

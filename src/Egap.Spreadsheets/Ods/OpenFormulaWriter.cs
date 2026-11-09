@@ -29,7 +29,23 @@ internal static class OpenFormulaWriter
         ["NORMSINV"] = "LEGACY.NORMSINV",
         ["TDIST"] = "LEGACY.TDIST",
         ["FORMULATEXT"] = "FORMULA",
+        ["F.DIST"] = "FDIST",
+        ["F.INV"] = "FINV",
+        ["SKEW.P"] = "SKEWP",
+        ["ISO.CEILING"] = "COM.MICROSOFT.ISO.CEILING",
+        ["NETWORKDAYS.INTL"] = "COM.MICROSOFT.NETWORKDAYS.INTL",
+        ["WORKDAY.INTL"] = "COM.MICROSOFT.WORKDAY.INTL",
     }.ToFrozenDictionary(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Excel functions that office suites have no ODF name for, which they keep with Excel's own <c>_xlfn.</c> prefix so that
+    /// the formula still reads in Excel.
+    /// </summary>
+    private static readonly FrozenSet<string> ExcelOnly = new[]
+    {
+        "ARRAYTOTEXT", "BINOM.DIST.RANGE", "BYCOL", "BYROW", "ISOMITTED", "LAMBDA", "MAKEARRAY", "MAP", "REDUCE", "SCAN",
+        "TRIMRANGE", "VALUETOTEXT",
+    }.ToFrozenSet(StringComparer.Ordinal);
 
     /// <summary>
     /// Functions newer than Excel 2007 that OpenFormula has under the same name. The other newer functions are Excel's own,
@@ -106,6 +122,11 @@ internal static class OpenFormulaWriter
         if (Renamed.TryGetValue(upper, out string? renamed))
         {
             return renamed;
+        }
+
+        if (ExcelOnly.Contains(upper))
+        {
+            return "_xlfn." + upper;
         }
 
         return IsNewer(upper) && !OpenFormulaNames.Contains(upper) ? "COM.MICROSOFT." + upper : upper;

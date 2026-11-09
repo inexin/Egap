@@ -19,6 +19,9 @@ internal static class OpenFormula
         ["FORMULA"] = "FORMULATEXT",
         ["ORG.OPENOFFICE.ERRORTYPE"] = "ERROR.TYPE",
         ["ERRORTYPE"] = "ERROR.TYPE",
+        ["FDIST"] = "F.DIST",
+        ["FINV"] = "F.INV",
+        ["SKEWP"] = "SKEW.P",
     };
 
     /// <summary>

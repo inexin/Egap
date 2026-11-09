@@ -370,7 +370,7 @@ public sealed class XlsxTests
     public void SavingNeedsASheetAndAKnownExtension()
     {
         Assert.Throws<InvalidOperationException>(() => Workbook.CreateEmpty().Save(new MemoryStream()));
-        Assert.Throws<ArgumentException>(() => Workbook.Create().Save(Path.Combine(Path.GetTempPath(), "book.ods")));
+        Assert.Throws<ArgumentException>(() => Workbook.Create().Save(Path.Combine(Path.GetTempPath(), "book.numbers")));
     }
 
     [Fact]

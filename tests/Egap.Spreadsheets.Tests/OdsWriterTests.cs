@@ -31,6 +31,11 @@ public sealed class OdsWriterTests
     [InlineData("CEILING(A1,2)", "of:=COM.MICROSOFT.CEILING([.A1];2)")]
     [InlineData("_xlfn.XOR(A1,B1)", "of:=XOR([.A1];[.B1])")]
     [InlineData("_xlfn.FORMULATEXT(A1)", "of:=FORMULA([.A1])")]
+    [InlineData("_xlfn.F.DIST(A1,2,3,TRUE)", "of:=FDIST([.A1];2;3;TRUE())")]
+    [InlineData("FDIST(A1,2,3)", "of:=LEGACY.FDIST([.A1];2;3)")]
+    [InlineData("_xlfn.SKEW.P(A1:A3)", "of:=SKEWP([.A1:.A3])")]
+    [InlineData("NETWORKDAYS.INTL(A1,B1)", "of:=COM.MICROSOFT.NETWORKDAYS.INTL([.A1];[.B1])")]
+    [InlineData("_xlfn.LAMBDA(x,x+1)", "of:=_xlfn.LAMBDA(x;x+1)")]
     [InlineData("SUM((A1:A3,C1:C3))", "of:=SUM(([.A1:.A3]~[.C1:.C3]))")]
     [InlineData("SUM(A1:C3 B2:D4)", "of:=SUM([.A1:.C3]![.B2:.D4])")]
     [InlineData("SUM(A:A)", "of:=SUM([.A:.A])")]
@@ -54,6 +59,9 @@ public sealed class OdsWriterTests
     [InlineData("SUM({1,2;3,4})")]
     [InlineData("_xlfn.IFS(A1>1,1,TRUE,2)")]
     [InlineData("NORMSDIST(1)")]
+    [InlineData("_xlfn.F.DIST(A1,2,3,TRUE)")]
+    [InlineData("FDIST(A1,2,3)")]
+    [InlineData("_xlfn.SKEW.P(A1:A3)")]
     [InlineData("SUM((A1:A3,C1:C3))")]
     [InlineData("SUM(A1:C3 B2:D4)")]
     [InlineData("SUM(A:A)+SUM(2:3)")]
@@ -97,6 +105,7 @@ public sealed class OdsWriterTests
         sheet["F1"].Formula = "IF(C1,\"yes\",\"no\")";
         sheet["G1"].Formula = "C1=TRUE";
         sheet["H1"].Formula = "1/0";
+        sheet["I1"].Formula = "FALSE()";
         sheet["A2"].Value = "Tab\there, line\nbreak";
         sheet["A3"].Value = "  spaced   out  ";
         sheet["B2"].Value = 45000.75;
@@ -128,6 +137,8 @@ public sealed class OdsWriterTests
         Assert.Equal("yes", report["F1"].Value);
         Assert.Equal(true, report["G1"].Value);
         Assert.Equal(CellError.DivisionByZero, report["H1"].Value);
+        Assert.Equal("FALSE()", report["I1"].Formula);
+        Assert.Equal(false, report["I1"].Value);
         Assert.Equal(sheet["A2"].Value, report["A2"].Value);
         Assert.Equal("  spaced   out  ", report["A3"].Value);
         Assert.Equal(45000.75, report["B2"].Value.Number, 9);
