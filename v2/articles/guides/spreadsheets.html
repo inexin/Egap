@@ -688,6 +688,41 @@ book.Save(&quot;sales.xlsx&quot;);
 strikethrough, the fill, the borders and the number format, as Excel's differential formats hold. Rules Excel made that
 the model does not describe in full, such as an icon set's thresholds, data bars' extensions or a table's filter
 criteria, are written back as they were. Rules without a <code>Priority</code> get the places after the sheet's other rules.</p>
+<h3 id="evaluating-rules">Evaluating rules</h3>
+<p><code>ConditionalFormats.Evaluate</code> works the rules out as Excel shows them: for each cell, the rules that apply, the style they
+give it on top of its own, the colour a colour scale gives its fill, the length and colour of a data bar, the icon of an
+icon set, and whether the value still shows. <code>DataValidations.IsValid</code> checks a cell's value, or a value to be entered, as
+Excel's Circle Invalid Data does; <code>FindInvalid</code> lists the cells that fail and <code>ListItems</code> gives a drop-down's items.
+Printing uses the same evaluation, so a page shows what <code>Evaluate</code> reports.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+Worksheet sheet = book.Worksheets[0];
+
+ConditionalFormatEvaluation formats = sheet.ConditionalFormats.Evaluate();   // one evaluation for many cells
+ConditionalCellFormat b2 = formats[&quot;B2&quot;];
+Console.WriteLine($&quot;{b2.Rules.Count} rules, bold {b2.Style.Font.Bold}, fill {b2.Style.Fill.Foreground}&quot;);
+if (b2.DataBar is { } bar)
+{
+    Console.WriteLine($&quot;bar {bar.Fraction:P0} of the way&quot;);
+}
+
+foreach (CellAddress cell in sheet.DataValidations.FindInvalid())
+{
+    Console.WriteLine($&quot;{cell} does not pass its rule&quot;);
+}
+
+bool takes = sheet.DataValidations.IsValid(CellAddress.Parse(&quot;A2&quot;), CellValue.FromText(&quot;Central&quot;));
+IReadOnlyList&lt;CellValue&gt; regions = sheet.DataValidations.ListItems(CellAddress.Parse(&quot;A2&quot;));
+</code></pre>
+<p>Rules follow their priority, and a rule with <code>StopIfTrue</code> keeps later rules off the cells it applies to; a style that
+states a font flag false, as Excel writes <code>&lt;b val=&quot;0&quot;/&gt;</code>, takes it away. Formulas count their relative references from
+the top-left cell of all a rule's ranges. Comparisons, averages, top and bottom ranks, duplicates, text, blanks, errors
+and time periods follow Excel, the time periods by today's date; colour scales, data bars and icon sets take their
+thresholds from the rule's minimum, maximum, number, percent, percentile and formula values. A list validation's fixed
+items match a value's text with case, its cells' values without; as in Excel, a list given by a name whose cells include
+a blank one, or whose formula gives an error, takes any value while blanks are ignored. Rules that Excel keeps only in
+the sheet's extension list are written back but not evaluated.</p>
 <h2 id="notes-hyperlinks-and-pictures">Notes, hyperlinks and pictures</h2>
 <p><code>sheet.Comments</code> holds notes (Excel's classic comments), <code>sheet.Hyperlinks</code> links to web addresses, files and places in
 the workbook, and <code>sheet.Drawings</code> the pictures, shapes and charts on the sheet. Pictures can be added and moved, and a

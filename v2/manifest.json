@@ -8861,6 +8861,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ConditionalCellFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ConditionalCellFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ConditionalCellFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalCellFormat.yml\" sourcestartlinenumber=\"1\">What conditional formatting does to one cell, as Excel shows it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ConditionalDataBar.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ConditionalDataBar.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ConditionalDataBar",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalDataBar.yml\" sourcestartlinenumber=\"1\">A data bar a rule draws in a cell: where the cell's value lies between the bar's lowest and highest.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.ConditionalFormat.yml",
       "output": {
         ".html": {
@@ -8889,6 +8917,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ConditionalFormatEvaluation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ConditionalFormatEvaluation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ConditionalFormatEvaluation",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalFormatEvaluation.yml\" sourcestartlinenumber=\"1\">A sheet's conditional formatting evaluated as Excel evaluates it, over the values the cells hold when this is made:\nwhich rules apply to each cell and what they make of it. Rules that look at the whole of their ranges, such as top 10,\nabove average, duplicates, colour scales, data bars and icon sets, measure their ranges once.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.ConditionalFormatRule.yml",
       "output": {
         ".html": {
@@ -8914,6 +8956,20 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.ConditionalFormatType",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalFormatType.yml\" sourcestartlinenumber=\"1\">The kinds of conditional formatting rule (ECMA-376 Part 1, 18.18.12, ST_CfType).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.ConditionalIcon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.ConditionalIcon.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.ConditionalIcon",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.ConditionalIcon.yml\" sourcestartlinenumber=\"1\">An icon an icon set rule draws in a cell.</p>\n"
     },
     {
       "type": "ManagedReference",

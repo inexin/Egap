@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Spreadsheets_ConditionalFormatCollection" data-uid="Egap.Spreadsheets.ConditionalFormatCollection" class="text-break">
-Class ConditionalFormatCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L219"><i class="bi bi-code-slash"></i></a>
+Class ConditionalFormatCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L222"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -163,7 +163,7 @@ Class ConditionalFormatCollection  <a class="header-action link-secondary" title
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_Count" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L233"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How many formatted ranges there are.</p>
@@ -195,7 +195,7 @@ Class ConditionalFormatCollection  <a class="header-action link-secondary" title
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_Item_System_Int32_" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Item(System.Int32)">
   this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L236"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The conditional formatting at a position.</p>
@@ -236,7 +236,7 @@ Class ConditionalFormatCollection  <a class="header-action link-secondary" title
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_Add_Egap_Spreadsheets_RangeAddress_Egap_Spreadsheets_ConditionalFormatRule___" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Add(Egap.Spreadsheets.RangeAddress,Egap.Spreadsheets.ConditionalFormatRule[])">
   Add(RangeAddress, params ConditionalFormatRule[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L235"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L240"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds rules for a range.</p>
@@ -281,7 +281,7 @@ Class ConditionalFormatCollection  <a class="header-action link-secondary" title
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_Add_System_String_Egap_Spreadsheets_ConditionalFormatRule___" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Add(System.String,Egap.Spreadsheets.ConditionalFormatRule[])">
   Add(string, params ConditionalFormatRule[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L252"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L257"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds rules for a range given in A1 form.</p>
@@ -329,7 +329,7 @@ Class ConditionalFormatCollection  <a class="header-action link-secondary" title
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_Clear" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L259"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L274"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes every rule.</p>
@@ -352,11 +352,82 @@ Class ConditionalFormatCollection  <a class="header-action link-secondary" title
 
 
 
+  <a id="Egap_Spreadsheets_ConditionalFormatCollection_Evaluate_" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Evaluate*"></a>
+
+  <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_Evaluate" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Evaluate">
+  Evaluate()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L264"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The sheet's conditional formatting evaluated as Excel evaluates it, over the values its cells hold now: which rules
+apply to each cell, the style they give it, and the colour scale, data bar or icon it shows. Values set later need a
+new evaluation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConditionalFormatEvaluation Evaluate()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.ConditionalFormatEvaluation.html">ConditionalFormatEvaluation</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_ConditionalFormatCollection_Evaluate_" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Evaluate*"></a>
+
+  <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_Evaluate_Egap_Spreadsheets_CellAddress_" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Evaluate(Egap.Spreadsheets.CellAddress)">
+  Evaluate(CellAddress)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L267"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>What conditional formatting does to one cell, over the values the sheet's cells hold now.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConditionalCellFormat Evaluate(CellAddress cell)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cell</code> <a class="xref" href="Egap.Spreadsheets.CellAddress.html">CellAddress</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.ConditionalCellFormat.html">ConditionalCellFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_ConditionalFormatCollection_GetEnumerator_" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.GetEnumerator*"></a>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_GetEnumerator" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L262"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L277"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
@@ -389,7 +460,7 @@ Class ConditionalFormatCollection  <a class="header-action link-secondary" title
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatCollection_Remove_Egap_Spreadsheets_ConditionalFormat_" data-uid="Egap.Spreadsheets.ConditionalFormatCollection.Remove(Egap.Spreadsheets.ConditionalFormat)">
   Remove(ConditionalFormat)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L256"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L271"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes conditional formatting and its rules.</p>
@@ -427,7 +498,7 @@ Class ConditionalFormatCollection  <a class="header-action link-secondary" title
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L219" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L222" class="edit-link">Edit this page</a>
         </div>
 
 

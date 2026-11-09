@@ -59776,6 +59776,128 @@ references:
   commentId: F:Egap.Spreadsheets.ComparisonOperator.NotEqual
   fullName: Egap.Spreadsheets.ComparisonOperator.NotEqual
   nameWithType: ComparisonOperator.NotEqual
+- uid: Egap.Spreadsheets.ConditionalCellFormat
+  name: ConditionalCellFormat
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html
+  commentId: T:Egap.Spreadsheets.ConditionalCellFormat
+  fullName: Egap.Spreadsheets.ConditionalCellFormat
+  nameWithType: ConditionalCellFormat
+- uid: Egap.Spreadsheets.ConditionalCellFormat.DataBar
+  name: DataBar
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_DataBar
+  commentId: P:Egap.Spreadsheets.ConditionalCellFormat.DataBar
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.DataBar
+  nameWithType: ConditionalCellFormat.DataBar
+- uid: Egap.Spreadsheets.ConditionalCellFormat.DataBar*
+  name: DataBar
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_DataBar_
+  commentId: Overload:Egap.Spreadsheets.ConditionalCellFormat.DataBar
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.DataBar
+  nameWithType: ConditionalCellFormat.DataBar
+- uid: Egap.Spreadsheets.ConditionalCellFormat.Icon
+  name: Icon
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_Icon
+  commentId: P:Egap.Spreadsheets.ConditionalCellFormat.Icon
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.Icon
+  nameWithType: ConditionalCellFormat.Icon
+- uid: Egap.Spreadsheets.ConditionalCellFormat.Icon*
+  name: Icon
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_Icon_
+  commentId: Overload:Egap.Spreadsheets.ConditionalCellFormat.Icon
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.Icon
+  nameWithType: ConditionalCellFormat.Icon
+- uid: Egap.Spreadsheets.ConditionalCellFormat.Rules
+  name: Rules
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_Rules
+  commentId: P:Egap.Spreadsheets.ConditionalCellFormat.Rules
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.Rules
+  nameWithType: ConditionalCellFormat.Rules
+- uid: Egap.Spreadsheets.ConditionalCellFormat.Rules*
+  name: Rules
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_Rules_
+  commentId: Overload:Egap.Spreadsheets.ConditionalCellFormat.Rules
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.Rules
+  nameWithType: ConditionalCellFormat.Rules
+- uid: Egap.Spreadsheets.ConditionalCellFormat.ShowsValue
+  name: ShowsValue
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_ShowsValue
+  commentId: P:Egap.Spreadsheets.ConditionalCellFormat.ShowsValue
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.ShowsValue
+  nameWithType: ConditionalCellFormat.ShowsValue
+- uid: Egap.Spreadsheets.ConditionalCellFormat.ShowsValue*
+  name: ShowsValue
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_ShowsValue_
+  commentId: Overload:Egap.Spreadsheets.ConditionalCellFormat.ShowsValue
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.ShowsValue
+  nameWithType: ConditionalCellFormat.ShowsValue
+- uid: Egap.Spreadsheets.ConditionalCellFormat.Style
+  name: Style
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_Style
+  commentId: P:Egap.Spreadsheets.ConditionalCellFormat.Style
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.Style
+  nameWithType: ConditionalCellFormat.Style
+- uid: Egap.Spreadsheets.ConditionalCellFormat.Style*
+  name: Style
+  href: api/Egap.Spreadsheets.ConditionalCellFormat.html#Egap_Spreadsheets_ConditionalCellFormat_Style_
+  commentId: Overload:Egap.Spreadsheets.ConditionalCellFormat.Style
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalCellFormat.Style
+  nameWithType: ConditionalCellFormat.Style
+- uid: Egap.Spreadsheets.ConditionalDataBar
+  name: ConditionalDataBar
+  href: api/Egap.Spreadsheets.ConditionalDataBar.html
+  commentId: T:Egap.Spreadsheets.ConditionalDataBar
+  fullName: Egap.Spreadsheets.ConditionalDataBar
+  nameWithType: ConditionalDataBar
+- uid: Egap.Spreadsheets.ConditionalDataBar.#ctor(System.Double,Egap.Spreadsheets.CellColor)
+  name: ConditionalDataBar(double, CellColor)
+  href: api/Egap.Spreadsheets.ConditionalDataBar.html#Egap_Spreadsheets_ConditionalDataBar__ctor_System_Double_Egap_Spreadsheets_CellColor_
+  commentId: M:Egap.Spreadsheets.ConditionalDataBar.#ctor(System.Double,Egap.Spreadsheets.CellColor)
+  name.vb: New(Double, CellColor)
+  fullName: Egap.Spreadsheets.ConditionalDataBar.ConditionalDataBar(double, Egap.Spreadsheets.CellColor)
+  fullName.vb: Egap.Spreadsheets.ConditionalDataBar.New(Double, Egap.Spreadsheets.CellColor)
+  nameWithType: ConditionalDataBar.ConditionalDataBar(double, CellColor)
+  nameWithType.vb: ConditionalDataBar.New(Double, CellColor)
+- uid: Egap.Spreadsheets.ConditionalDataBar.#ctor*
+  name: ConditionalDataBar
+  href: api/Egap.Spreadsheets.ConditionalDataBar.html#Egap_Spreadsheets_ConditionalDataBar__ctor_
+  commentId: Overload:Egap.Spreadsheets.ConditionalDataBar.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Spreadsheets.ConditionalDataBar.ConditionalDataBar
+  fullName.vb: Egap.Spreadsheets.ConditionalDataBar.New
+  nameWithType: ConditionalDataBar.ConditionalDataBar
+  nameWithType.vb: ConditionalDataBar.New
+- uid: Egap.Spreadsheets.ConditionalDataBar.Color
+  name: Color
+  href: api/Egap.Spreadsheets.ConditionalDataBar.html#Egap_Spreadsheets_ConditionalDataBar_Color
+  commentId: P:Egap.Spreadsheets.ConditionalDataBar.Color
+  fullName: Egap.Spreadsheets.ConditionalDataBar.Color
+  nameWithType: ConditionalDataBar.Color
+- uid: Egap.Spreadsheets.ConditionalDataBar.Color*
+  name: Color
+  href: api/Egap.Spreadsheets.ConditionalDataBar.html#Egap_Spreadsheets_ConditionalDataBar_Color_
+  commentId: Overload:Egap.Spreadsheets.ConditionalDataBar.Color
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalDataBar.Color
+  nameWithType: ConditionalDataBar.Color
+- uid: Egap.Spreadsheets.ConditionalDataBar.Fraction
+  name: Fraction
+  href: api/Egap.Spreadsheets.ConditionalDataBar.html#Egap_Spreadsheets_ConditionalDataBar_Fraction
+  commentId: P:Egap.Spreadsheets.ConditionalDataBar.Fraction
+  fullName: Egap.Spreadsheets.ConditionalDataBar.Fraction
+  nameWithType: ConditionalDataBar.Fraction
+- uid: Egap.Spreadsheets.ConditionalDataBar.Fraction*
+  name: Fraction
+  href: api/Egap.Spreadsheets.ConditionalDataBar.html#Egap_Spreadsheets_ConditionalDataBar_Fraction_
+  commentId: Overload:Egap.Spreadsheets.ConditionalDataBar.Fraction
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalDataBar.Fraction
+  nameWithType: ConditionalDataBar.Fraction
 - uid: Egap.Spreadsheets.ConditionalFormat
   name: ConditionalFormat
   href: api/Egap.Spreadsheets.ConditionalFormat.html
@@ -59865,6 +59987,25 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.ConditionalFormatCollection.Count
   nameWithType: ConditionalFormatCollection.Count
+- uid: Egap.Spreadsheets.ConditionalFormatCollection.Evaluate
+  name: Evaluate()
+  href: api/Egap.Spreadsheets.ConditionalFormatCollection.html#Egap_Spreadsheets_ConditionalFormatCollection_Evaluate
+  commentId: M:Egap.Spreadsheets.ConditionalFormatCollection.Evaluate
+  fullName: Egap.Spreadsheets.ConditionalFormatCollection.Evaluate()
+  nameWithType: ConditionalFormatCollection.Evaluate()
+- uid: Egap.Spreadsheets.ConditionalFormatCollection.Evaluate(Egap.Spreadsheets.CellAddress)
+  name: Evaluate(CellAddress)
+  href: api/Egap.Spreadsheets.ConditionalFormatCollection.html#Egap_Spreadsheets_ConditionalFormatCollection_Evaluate_Egap_Spreadsheets_CellAddress_
+  commentId: M:Egap.Spreadsheets.ConditionalFormatCollection.Evaluate(Egap.Spreadsheets.CellAddress)
+  fullName: Egap.Spreadsheets.ConditionalFormatCollection.Evaluate(Egap.Spreadsheets.CellAddress)
+  nameWithType: ConditionalFormatCollection.Evaluate(CellAddress)
+- uid: Egap.Spreadsheets.ConditionalFormatCollection.Evaluate*
+  name: Evaluate
+  href: api/Egap.Spreadsheets.ConditionalFormatCollection.html#Egap_Spreadsheets_ConditionalFormatCollection_Evaluate_
+  commentId: Overload:Egap.Spreadsheets.ConditionalFormatCollection.Evaluate
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalFormatCollection.Evaluate
+  nameWithType: ConditionalFormatCollection.Evaluate
 - uid: Egap.Spreadsheets.ConditionalFormatCollection.GetEnumerator
   name: GetEnumerator()
   href: api/Egap.Spreadsheets.ConditionalFormatCollection.html#Egap_Spreadsheets_ConditionalFormatCollection_GetEnumerator
@@ -59910,6 +60051,49 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.ConditionalFormatCollection.Remove
   nameWithType: ConditionalFormatCollection.Remove
+- uid: Egap.Spreadsheets.ConditionalFormatEvaluation
+  name: ConditionalFormatEvaluation
+  href: api/Egap.Spreadsheets.ConditionalFormatEvaluation.html
+  commentId: T:Egap.Spreadsheets.ConditionalFormatEvaluation
+  fullName: Egap.Spreadsheets.ConditionalFormatEvaluation
+  nameWithType: ConditionalFormatEvaluation
+- uid: Egap.Spreadsheets.ConditionalFormatEvaluation.Item(Egap.Spreadsheets.CellAddress)
+  name: this[CellAddress]
+  href: api/Egap.Spreadsheets.ConditionalFormatEvaluation.html#Egap_Spreadsheets_ConditionalFormatEvaluation_Item_Egap_Spreadsheets_CellAddress_
+  commentId: P:Egap.Spreadsheets.ConditionalFormatEvaluation.Item(Egap.Spreadsheets.CellAddress)
+  name.vb: this[](CellAddress)
+  fullName: Egap.Spreadsheets.ConditionalFormatEvaluation.this[Egap.Spreadsheets.CellAddress]
+  fullName.vb: Egap.Spreadsheets.ConditionalFormatEvaluation.this[](Egap.Spreadsheets.CellAddress)
+  nameWithType: ConditionalFormatEvaluation.this[CellAddress]
+  nameWithType.vb: ConditionalFormatEvaluation.this[](CellAddress)
+- uid: Egap.Spreadsheets.ConditionalFormatEvaluation.Item(System.Int32,System.Int32)
+  name: this[int, int]
+  href: api/Egap.Spreadsheets.ConditionalFormatEvaluation.html#Egap_Spreadsheets_ConditionalFormatEvaluation_Item_System_Int32_System_Int32_
+  commentId: P:Egap.Spreadsheets.ConditionalFormatEvaluation.Item(System.Int32,System.Int32)
+  name.vb: this[](Integer, Integer)
+  fullName: Egap.Spreadsheets.ConditionalFormatEvaluation.this[int, int]
+  fullName.vb: Egap.Spreadsheets.ConditionalFormatEvaluation.this[](Integer, Integer)
+  nameWithType: ConditionalFormatEvaluation.this[int, int]
+  nameWithType.vb: ConditionalFormatEvaluation.this[](Integer, Integer)
+- uid: Egap.Spreadsheets.ConditionalFormatEvaluation.Item(System.String)
+  name: this[string]
+  href: api/Egap.Spreadsheets.ConditionalFormatEvaluation.html#Egap_Spreadsheets_ConditionalFormatEvaluation_Item_System_String_
+  commentId: P:Egap.Spreadsheets.ConditionalFormatEvaluation.Item(System.String)
+  name.vb: this[](String)
+  fullName: Egap.Spreadsheets.ConditionalFormatEvaluation.this[string]
+  fullName.vb: Egap.Spreadsheets.ConditionalFormatEvaluation.this[](String)
+  nameWithType: ConditionalFormatEvaluation.this[string]
+  nameWithType.vb: ConditionalFormatEvaluation.this[](String)
+- uid: Egap.Spreadsheets.ConditionalFormatEvaluation.Item*
+  name: this
+  href: api/Egap.Spreadsheets.ConditionalFormatEvaluation.html#Egap_Spreadsheets_ConditionalFormatEvaluation_Item_
+  commentId: Overload:Egap.Spreadsheets.ConditionalFormatEvaluation.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: Egap.Spreadsheets.ConditionalFormatEvaluation.this
+  fullName.vb: Egap.Spreadsheets.ConditionalFormatEvaluation.this[]
+  nameWithType: ConditionalFormatEvaluation.this
+  nameWithType.vb: ConditionalFormatEvaluation.this[]
 - uid: Egap.Spreadsheets.ConditionalFormatRule
   name: ConditionalFormatRule
   href: api/Egap.Spreadsheets.ConditionalFormatRule.html
@@ -60201,6 +60385,57 @@ references:
   commentId: F:Egap.Spreadsheets.ConditionalFormatType.UniqueValues
   fullName: Egap.Spreadsheets.ConditionalFormatType.UniqueValues
   nameWithType: ConditionalFormatType.UniqueValues
+- uid: Egap.Spreadsheets.ConditionalIcon
+  name: ConditionalIcon
+  href: api/Egap.Spreadsheets.ConditionalIcon.html
+  commentId: T:Egap.Spreadsheets.ConditionalIcon
+  fullName: Egap.Spreadsheets.ConditionalIcon
+  nameWithType: ConditionalIcon
+- uid: Egap.Spreadsheets.ConditionalIcon.#ctor(System.String,System.Int32)
+  name: ConditionalIcon(string, int)
+  href: api/Egap.Spreadsheets.ConditionalIcon.html#Egap_Spreadsheets_ConditionalIcon__ctor_System_String_System_Int32_
+  commentId: M:Egap.Spreadsheets.ConditionalIcon.#ctor(System.String,System.Int32)
+  name.vb: New(String, Integer)
+  fullName: Egap.Spreadsheets.ConditionalIcon.ConditionalIcon(string, int)
+  fullName.vb: Egap.Spreadsheets.ConditionalIcon.New(String, Integer)
+  nameWithType: ConditionalIcon.ConditionalIcon(string, int)
+  nameWithType.vb: ConditionalIcon.New(String, Integer)
+- uid: Egap.Spreadsheets.ConditionalIcon.#ctor*
+  name: ConditionalIcon
+  href: api/Egap.Spreadsheets.ConditionalIcon.html#Egap_Spreadsheets_ConditionalIcon__ctor_
+  commentId: Overload:Egap.Spreadsheets.ConditionalIcon.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Spreadsheets.ConditionalIcon.ConditionalIcon
+  fullName.vb: Egap.Spreadsheets.ConditionalIcon.New
+  nameWithType: ConditionalIcon.ConditionalIcon
+  nameWithType.vb: ConditionalIcon.New
+- uid: Egap.Spreadsheets.ConditionalIcon.IconSet
+  name: IconSet
+  href: api/Egap.Spreadsheets.ConditionalIcon.html#Egap_Spreadsheets_ConditionalIcon_IconSet
+  commentId: P:Egap.Spreadsheets.ConditionalIcon.IconSet
+  fullName: Egap.Spreadsheets.ConditionalIcon.IconSet
+  nameWithType: ConditionalIcon.IconSet
+- uid: Egap.Spreadsheets.ConditionalIcon.IconSet*
+  name: IconSet
+  href: api/Egap.Spreadsheets.ConditionalIcon.html#Egap_Spreadsheets_ConditionalIcon_IconSet_
+  commentId: Overload:Egap.Spreadsheets.ConditionalIcon.IconSet
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalIcon.IconSet
+  nameWithType: ConditionalIcon.IconSet
+- uid: Egap.Spreadsheets.ConditionalIcon.Index
+  name: Index
+  href: api/Egap.Spreadsheets.ConditionalIcon.html#Egap_Spreadsheets_ConditionalIcon_Index
+  commentId: P:Egap.Spreadsheets.ConditionalIcon.Index
+  fullName: Egap.Spreadsheets.ConditionalIcon.Index
+  nameWithType: ConditionalIcon.Index
+- uid: Egap.Spreadsheets.ConditionalIcon.Index*
+  name: Index
+  href: api/Egap.Spreadsheets.ConditionalIcon.html#Egap_Spreadsheets_ConditionalIcon_Index_
+  commentId: Overload:Egap.Spreadsheets.ConditionalIcon.Index
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.ConditionalIcon.Index
+  nameWithType: ConditionalIcon.Index
 - uid: Egap.Spreadsheets.CsvOptions
   name: CsvOptions
   href: api/Egap.Spreadsheets.CsvOptions.html
@@ -60576,6 +60811,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.DataValidationCollection.Find
   nameWithType: DataValidationCollection.Find
+- uid: Egap.Spreadsheets.DataValidationCollection.FindInvalid
+  name: FindInvalid()
+  href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_FindInvalid
+  commentId: M:Egap.Spreadsheets.DataValidationCollection.FindInvalid
+  fullName: Egap.Spreadsheets.DataValidationCollection.FindInvalid()
+  nameWithType: DataValidationCollection.FindInvalid()
+- uid: Egap.Spreadsheets.DataValidationCollection.FindInvalid*
+  name: FindInvalid
+  href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_FindInvalid_
+  commentId: Overload:Egap.Spreadsheets.DataValidationCollection.FindInvalid
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataValidationCollection.FindInvalid
+  nameWithType: DataValidationCollection.FindInvalid
 - uid: Egap.Spreadsheets.DataValidationCollection.GetEnumerator
   name: GetEnumerator()
   href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_GetEnumerator
@@ -60589,6 +60837,25 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.DataValidationCollection.GetEnumerator
   nameWithType: DataValidationCollection.GetEnumerator
+- uid: Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress)
+  name: IsValid(CellAddress)
+  href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_IsValid_Egap_Spreadsheets_CellAddress_
+  commentId: M:Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress)
+  fullName: Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress)
+  nameWithType: DataValidationCollection.IsValid(CellAddress)
+- uid: Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress,Egap.Spreadsheets.CellValue)
+  name: IsValid(CellAddress, CellValue)
+  href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_IsValid_Egap_Spreadsheets_CellAddress_Egap_Spreadsheets_CellValue_
+  commentId: M:Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress,Egap.Spreadsheets.CellValue)
+  fullName: Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress, Egap.Spreadsheets.CellValue)
+  nameWithType: DataValidationCollection.IsValid(CellAddress, CellValue)
+- uid: Egap.Spreadsheets.DataValidationCollection.IsValid*
+  name: IsValid
+  href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_IsValid_
+  commentId: Overload:Egap.Spreadsheets.DataValidationCollection.IsValid
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataValidationCollection.IsValid
+  nameWithType: DataValidationCollection.IsValid
 - uid: Egap.Spreadsheets.DataValidationCollection.Item(System.Int32)
   name: this[int]
   href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_Item_System_Int32_
@@ -60608,6 +60875,19 @@ references:
   fullName.vb: Egap.Spreadsheets.DataValidationCollection.this[]
   nameWithType: DataValidationCollection.this
   nameWithType.vb: DataValidationCollection.this[]
+- uid: Egap.Spreadsheets.DataValidationCollection.ListItems(Egap.Spreadsheets.CellAddress)
+  name: ListItems(CellAddress)
+  href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_ListItems_Egap_Spreadsheets_CellAddress_
+  commentId: M:Egap.Spreadsheets.DataValidationCollection.ListItems(Egap.Spreadsheets.CellAddress)
+  fullName: Egap.Spreadsheets.DataValidationCollection.ListItems(Egap.Spreadsheets.CellAddress)
+  nameWithType: DataValidationCollection.ListItems(CellAddress)
+- uid: Egap.Spreadsheets.DataValidationCollection.ListItems*
+  name: ListItems
+  href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_ListItems_
+  commentId: Overload:Egap.Spreadsheets.DataValidationCollection.ListItems
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataValidationCollection.ListItems
+  nameWithType: DataValidationCollection.ListItems
 - uid: Egap.Spreadsheets.DataValidationCollection.Remove(Egap.Spreadsheets.DataValidation)
   name: Remove(DataValidation)
   href: api/Egap.Spreadsheets.DataValidationCollection.html#Egap_Spreadsheets_DataValidationCollection_Remove_Egap_Spreadsheets_DataValidation_
