@@ -36,6 +36,9 @@ public sealed class NumberFormatCode
     /// <summary>Whether the code shows numbers as dates or times: its first section has date or time parts.</summary>
     public bool IsDateTime => sections[0].IsDate;
 
+    /// <summary>Whether the code shows numbers as times only: its first section has time parts and no year, month or day.</summary>
+    internal bool IsTimeOnly => sections[0].IsDate && !sections[0].Tokens.Any(t => t.Kind is TokenKind.Year or TokenKind.Month or TokenKind.Day);
+
     /// <summary>The <c>General</c> format, which shows numbers in up to 11 characters and text as it is.</summary>
     public static NumberFormatCode General { get; } = Parse("General");
 

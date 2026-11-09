@@ -247,6 +247,8 @@ internal static class XlsxWriter
                 new XElement(ns + "bookViews", new XElement(ns + "workbookView")),
                 new XElement(ns + "calcPr", new XAttribute("calcId", "191029")));
 
+        XlsxProtection.WriteWorkbook(book.Protection, root);
+
         // The date system.
         XElement? workbookPr = root.Element(ns + "workbookPr");
         if (book.Date1904 || workbookPr?.Attribute("date1904") is not null)
@@ -511,6 +513,8 @@ internal static class WorksheetPartWriter
         Add("sheetFormatPr", SheetFormat(sheet));
         Add("cols", Columns(sheet));
         elements.Add((WorksheetOrder.Rank("sheetData"), null));
+        Add("sheetProtection", XlsxProtection.WriteSheet(sheet.Protection, Ns));
+        Add("protectedRanges", XlsxProtection.WriteRanges(sheet.Protection, Ns));
         if (sheet.MergedCells.Count > 0)
         {
             Add("mergeCells", new XElement(Ns + "mergeCells", new XAttribute("count", XlsxNames.Integer(sheet.MergedCells.Count)),

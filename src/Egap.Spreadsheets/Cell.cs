@@ -1,3 +1,6 @@
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
+
 using Egap.Spreadsheets.Formulas;
 
 namespace Egap.Spreadsheets;
@@ -182,6 +185,46 @@ public sealed class Cell : IEquatable<Cell>
         ArgumentNullException.ThrowIfNull(change);
         Style = change(Style);
     }
+
+    /// <summary>
+    /// Writes a list of objects into the cells from this one down and to the right: a header row of property names, then one
+    /// row per item with one column per public property, in declaration order. A list of plain values, such as numbers or
+    /// strings, fills one column named <c>Value</c>.
+    /// </summary>
+    /// <remarks>
+    /// Numbers become numbers, <see cref="bool"/> becomes TRUE or FALSE, and strings, characters, enums and GUIDs become text.
+    /// <see cref="DateTime"/>, <see cref="DateOnly"/> and <see cref="DateTimeOffset"/> (its clock time) become date serial
+    /// numbers with <see cref="DataImportOptions.DateFormat"/> or <see cref="DataImportOptions.DateTimeFormat"/>, and
+    /// <see cref="TimeSpan"/> and <see cref="TimeOnly"/> fractions of a day with <see cref="DataImportOptions.TimeFormat"/>.
+    /// Null leaves the cell empty; NaN and infinity become #NUM!. A date before the date system's first day becomes ISO text.
+    /// </remarks>
+    /// <returns>The cells written, header included.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="items"/> is null.</exception>
+    /// <exception cref="ArgumentException">A column in <see cref="DataImportOptions.Columns"/> does not exist, the type has no columns, or they run past the sheet's edge.</exception>
+    /// <example>
+    /// <code>
+    /// CellRange written = sheet["A1"].ImportData(orders, new DataImportOptions { TableName = "Orders" });
+    /// </code>
+    /// </example>
+    public CellRange ImportData<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(IEnumerable<T> items, DataImportOptions? options = null) =>
+        DataTransfer.Import(this, items, options);
+
+    /// <summary>Writes a table's rows into the cells from this one down and to the right, with its column names as the header row.</summary>
+    /// <remarks>Values map as for <see cref="ImportData{T}(IEnumerable{T}, DataImportOptions?)"/>; <see cref="DBNull"/> leaves the cell empty, and deleted rows are left out.</remarks>
+    /// <returns>The cells written, header included.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="table"/> is null.</exception>
+    /// <exception cref="ArgumentException">A column in <see cref="DataImportOptions.Columns"/> does not exist, or the columns run past the sheet's edge.</exception>
+    public CellRange ImportData(DataTable table, DataImportOptions? options = null) => DataTransfer.Import(this, table, options);
+
+    /// <summary>
+    /// Reads every remaining row of a data reader into the cells from this one down and to the right, with its field names as
+    /// the header row. The reader is left at its end and stays open.
+    /// </summary>
+    /// <remarks>Values map as for <see cref="ImportData{T}(IEnumerable{T}, DataImportOptions?)"/>; <see cref="DBNull"/> leaves the cell empty.</remarks>
+    /// <returns>The cells written, header included.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="reader"/> is null.</exception>
+    /// <exception cref="ArgumentException">A column in <see cref="DataImportOptions.Columns"/> does not exist, or the columns run past the sheet's edge.</exception>
+    public CellRange ImportData(IDataReader reader, DataImportOptions? options = null) => DataTransfer.Import(this, reader, options);
 
     /// <summary>Removes the cell's value, formula and style, so it takes no room.</summary>
     public void Clear() => sheet.Clear(Row, Column);

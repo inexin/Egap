@@ -193,6 +193,21 @@ internal static class ExcelValues
         return false;
     }
 
+    /// <summary>The date and time of a serial number, or null when it is not one.</summary>
+    public static DateTime? ToDateTime(double serial, bool date1904)
+    {
+        if (serial < 0 || serial >= 2958466 || double.IsNaN(serial))
+        {
+            return null;
+        }
+
+        double day = Math.Floor(serial);
+        DateTime date = date1904
+            ? new DateTime(1904, 1, 1).AddDays(day)
+            : day < 61 ? new DateTime(1899, 12, 31).AddDays(day == 60 ? 59 : day) : new DateTime(1899, 12, 30).AddDays(day);
+        return date.AddSeconds(Math.Round((serial - day) * 86400));
+    }
+
     /// <summary>The serial number of a date, or null before the first day of the date system.</summary>
     public static double? Serial(DateTime date, bool date1904)
     {

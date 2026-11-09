@@ -44,6 +44,9 @@ public sealed partial class Workbook
     /// </summary>
     public bool Date1904 { get; set; }
 
+    /// <summary>The workbook's protection: whether its structure is locked, and the hash of the password that unlocks it.</summary>
+    public WorkbookProtection Protection { get; } = new();
+
     /// <summary>How the workbook calculates: when, whether circular references iterate, and whether in parallel.</summary>
     public CalculationSettings Calculation { get; } = new();
 

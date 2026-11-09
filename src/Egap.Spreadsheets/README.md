@@ -30,7 +30,9 @@ edit a sheet as Excel does, with every formula, name, rule, table and chart that
 sheets too. `SheetReader` and `SheetWriter` stream
 rows through XLSX and CSV in constant memory.
 Number format codes show values as Excel does (`cell.Text`, `NumberFormatCode`), in any culture, and CSV and TSV are
-read and written with type detection. Formulas are read and checked against Excel's grammar, in A1 or R1C1 style
+read and written with type detection. `Cell.ImportData` writes lists of objects, `DataTable`s and data readers into cells,
+and `ToDataTable` and `ToList<T>` read ranges back. Sheets and workbooks are protected and unlocked with passwords hashed
+as Excel hashes them. Formulas are read and checked against Excel's grammar, in A1 or R1C1 style
 (`cell.FormulaR1C1`), `sheet.Evaluate` evaluates one with Excel's rules for values, errors, references and dates, and
 `book.Calculate()` recalculates what changed through a dependency graph, with shared and array formulas, circular
 references and iteration, dynamic arrays that spill, LET, LAMBDA and structured references. Over 470 of Excel's functions are built in and checked against Excel itself;

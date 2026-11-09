@@ -309,11 +309,37 @@ static void Xlsx(Stream input)
                 table.Name = table.Name;
             }
 
+            // Protection: hashes with few spins are checked, and the editable ranges move with an edit.
+            if (sheet.Protection.Password is not { SpinCount: > 1000 })
+            {
+                _ = sheet.Protection.Verify("fuzz");
+            }
+
+            foreach (EditableRange range in sheet.Protection.EditableRanges)
+            {
+                if (range.Password is not { SpinCount: > 1000 })
+                {
+                    _ = range.Verify("fuzz");
+                }
+            }
+
+            _ = sheet.Protection.CanEdit(new CellAddress(0, 0));
+            if (sheet.UsedRange?.Address is { } box)
+            {
+                RangeAddress part = new(box.First, new CellAddress(Math.Min(box.Last.Row, box.First.Row + 200), Math.Min(box.Last.Column, box.First.Column + 30)));
+                _ = sheet.Range(part).ToDataTable();
+            }
+
             CellAddress last = new(CellAddress.MaxRows - 1, 0);
             if (sheet.Comments[last] is null)
             {
                 sheet.Comments.Add(last, "fuzz");
             }
+        }
+
+        if (book.Protection.Password is not { SpinCount: > 1000 })
+        {
+            _ = book.Protection.Verify("fuzz");
         }
 
         MemoryStream saved = new();

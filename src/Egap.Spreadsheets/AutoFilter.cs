@@ -190,7 +190,7 @@ public sealed class AutoFilter
     /// <summary>Whether a date falls in a date group: the same year, and month, day, hour, minute and second down to its grouping.</summary>
     private static bool InGroup(XElement group, double serial, bool date1904)
     {
-        if (ToDate(serial, date1904) is not { } date)
+        if (ExcelValues.ToDateTime(serial, date1904) is not { } date)
         {
             return false;
         }
@@ -331,7 +331,7 @@ public sealed class AutoFilter
         {
             // Q1 to Q4 and M1 to M12 take that quarter or month of any year.
             bool quarters = type[0] == 'Q';
-            return row => sheet.GetValue(row, column) is { Kind: CellValueKind.Number } value && ToDate(value.Number, date1904) is { } date
+            return row => sheet.GetValue(row, column) is { Kind: CellValueKind.Number } value && ExcelValues.ToDateTime(value.Number, date1904) is { } date
                 && (quarters ? ((date.Month - 1) / 3) + 1 : date.Month) == part;
         }
 
@@ -340,7 +340,7 @@ public sealed class AutoFilter
             return null;
         }
 
-        return row => sheet.GetValue(row, column) is { Kind: CellValueKind.Number } value && ToDate(value.Number, date1904) is { } date
+        return row => sheet.GetValue(row, column) is { Kind: CellValueKind.Number } value && ExcelValues.ToDateTime(value.Number, date1904) is { } date
             && date >= period.First && date < period.End;
     }
 
@@ -370,20 +370,5 @@ public sealed class AutoFilter
         }
 
         return null;
-    }
-
-    /// <summary>The date and time of a serial number, or null when it is not one.</summary>
-    private static DateTime? ToDate(double serial, bool date1904)
-    {
-        if (serial < 0 || serial >= 2958466 || double.IsNaN(serial))
-        {
-            return null;
-        }
-
-        double day = Math.Floor(serial);
-        DateTime date = date1904
-            ? new DateTime(1904, 1, 1).AddDays(day)
-            : day < 61 ? new DateTime(1899, 12, 31).AddDays(day == 60 ? 59 : day) : new DateTime(1899, 12, 30).AddDays(day);
-        return date.AddSeconds(Math.Round((serial - day) * 86400));
     }
 }
