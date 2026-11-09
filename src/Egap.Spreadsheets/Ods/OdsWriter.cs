@@ -973,7 +973,8 @@ internal sealed class OdsWriter
         xml.WriteAttributeString("table", "style-name", TableNs.NamespaceName, RowStyle(record?.Height ?? double.NaN));
         if (record?.Hidden == true)
         {
-            xml.WriteAttributeString("table", "visibility", TableNs.NamespaceName, "collapse");
+            // Under a filter with criteria, hidden rows are the ones it hides, which SUBTOTAL leaves out.
+            xml.WriteAttributeString("table", "visibility", TableNs.NamespaceName, sheet.HasFilterCriteria ? "filter" : "collapse");
         }
 
         if (record is { Style: >= 0 })

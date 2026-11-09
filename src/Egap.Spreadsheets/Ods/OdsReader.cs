@@ -324,7 +324,14 @@ internal static class OdsReader
 
         int last = (int)Math.Min((long)first + count - 1, CellAddress.MaxRows - 1);
         state.Row = last + 1;
-        bool hidden = row.Attr(TableNs, "visibility") is "collapse" or "filter";
+        string? visibility = row.Attr(TableNs, "visibility");
+        bool hidden = visibility is "collapse" or "filter";
+        if (visibility == "filter")
+        {
+            // Rows a filter hides: SUBTOTAL and AGGREGATE leave them out.
+            state.Sheet.HasFilterCriteria = true;
+        }
+
         bool empty = !row.Elements().Any(c => HasContent(c));
         if (empty && count > FillerRun)
         {

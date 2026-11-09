@@ -387,6 +387,22 @@ public sealed class OdsWriterTests
     }
 
     [Fact]
+    public void RowsAFilterHidesStayFilteredForSubtotal()
+    {
+        Workbook book = Workbook.Load(Path.Combine(AppContext.BaseDirectory, "Oracle", "autofilter.xlsx"));
+        Worksheet sheet = book.Worksheets["c1"];
+        sheet["H1"].Formula = "SUBTOTAL(3,A2:A16)";
+        book.CalculateFull();
+        double shown = sheet["H1"].Value.Number;
+        Assert.True(shown < 15);
+        Assert.Contains("table:visibility=\"filter\"", Content(book, WorkbookFormat.Fods), StringComparison.Ordinal);
+
+        Workbook again = RoundTrip(book, WorkbookFormat.Ods);
+        again.CalculateFull();
+        Assert.Equal(shown, again.Worksheets["c1"]["H1"].Value.Number);
+    }
+
+    [Fact]
     public void ChartSheetsBecomeEmptyTablesInTheirPlace()
     {
         Workbook book = Workbook.Load(Path.Combine(AppContext.BaseDirectory, "Oracle", "charts.xlsx"));
