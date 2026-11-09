@@ -268,7 +268,7 @@ public sealed class OdsTests
     }
 
     [Fact]
-    public void LeavesOutCopiesOfOtherFilesSheets()
+    public void ReadsOtherFilesSheetsAsLinkedBooks()
     {
         string copy = """
             <table:table table:name="'file:///c:/other.xlsx'#$Prices" table:print="false">
@@ -276,10 +276,29 @@ public sealed class OdsTests
               <table:table-row><table:table-cell office:value-type="float" office:value="9"/></table:table-row>
             </table:table>
             """;
-        Workbook book = Load(Flat(Table("Main", Row("<table:table-cell table:formula=\"of:=['file:///c:/other.xlsx'#$Prices.A1]\" office:value-type=\"float\" office:value=\"9\"/>")) + copy));
+        Workbook book = Load(Flat(Table("Main", Row(
+            "<table:table-cell table:formula=\"of:=['file:///c:/other.xlsx'#$Prices.A1]*2\" office:value-type=\"float\" office:value=\"18\"/>",
+            "<table:table-cell table:formula=\"of:=SUM(['file:///c:/third.ods'#$'My sheet'.A1:.B2])\" office:value-type=\"float\" office:value=\"0\"/>")) + copy));
         Assert.Equal(["Main"], book.Worksheets.Select(s => s.Name));
-        Assert.Equal("#REF!", book.Worksheets[0]["A1"].Formula);
-        Assert.Equal(9, book.Worksheets[0]["A1"].Value.Number);
+        Assert.Equal("[1]Prices!A1*2", book.Worksheets[0]["A1"].Formula);
+        Assert.Equal("SUM('[2]My sheet'!A1:B2)", book.Worksheets[0]["B1"].Formula);
+        Assert.Equal(18, book.Worksheets[0]["A1"].Value.Number);
+
+        // Saved as XLSX, the copy is the linked book's kept values, which Excel and Egap calculate from.
+        using MemoryStream saved = new();
+        book.Save(saved);
+        using (ZipArchive zip = new(new MemoryStream(saved.ToArray())))
+        {
+            using StreamReader reader = new(zip.GetEntry("xl/externalLinks/_rels/externalLink1.xml.rels")!.Open());
+            Assert.Contains("Target=\"file:///c:/other.xlsx\" TargetMode=\"External\"", reader.ReadToEnd());
+        }
+
+        saved.Position = 0;
+        Workbook again = Workbook.Load(saved);
+        again.Worksheets[0]["A1"].Value = CellValue.Empty;
+        again.Worksheets[0]["A1"].Formula = "[1]Prices!A1*2";
+        again.Calculate();
+        Assert.Equal(18, again.Worksheets[0]["A1"].Value.Number);
     }
 
     [Fact]
@@ -343,6 +362,34 @@ public sealed class OdsTests
         Workbook again = Workbook.Load(saved);
         Assert.Equal("A1*2", again.Worksheets[0]["B1"].Formula);
         Assert.Equal(10, again.Worksheets[0]["B1"].Value.Number);
+    }
+
+    [Fact]
+    public void ReadsWhatIfTablesAsDataTables()
+    {
+        static string Operation(int row, string column, int value) =>
+            $"<table:table-cell table:formula=\"of:=MULTIPLE.OPERATIONS([.$A$2];[.$G$1];[.$A{row}];[.$H$1];[.{column}$2])\" office:value-type=\"float\" office:value=\"{value}\"/>";
+        static string Single(int row, int value) =>
+            $"<table:table-cell table:formula=\"of:=MULTIPLE.OPERATIONS([.$E$2];[.$G$1];[.$D{row}])\" office:value-type=\"float\" office:value=\"{value}\"/>";
+        string empty = "<table:table-cell/>";
+        Workbook book = Load(Flat(Table("S",
+            Row(empty),
+            Row(Cell("float", "office:value=\"1\""), Cell("float", "office:value=\"10\""), Cell("float", "office:value=\"20\""), empty, Cell("float", "office:value=\"5\"")),
+            Row(Cell("float", "office:value=\"1\""), Operation(3, "B", 11), Operation(3, "C", 21), Cell("float", "office:value=\"7\""), Single(3, 8)),
+            Row(Cell("float", "office:value=\"2\""), Operation(4, "B", 12), Operation(4, "C", 22), Cell("float", "office:value=\"9\""), Single(4, 10)))));
+        Worksheet sheet = book.Worksheets[0];
+        Assert.Equal(11, sheet["B3"].Value.Number);
+        Assert.False(sheet["C4"].HasFormula);
+        Assert.Equal(22, sheet["C4"].Value.Number);
+        Assert.Equal(10, sheet["E4"].Value.Number);
+
+        using MemoryStream saved = new();
+        book.Save(saved);
+        using ZipArchive zip = new(new MemoryStream(saved.ToArray()));
+        using StreamReader reader = new(zip.GetEntry("xl/worksheets/sheet1.xml")!.Open());
+        string xml = reader.ReadToEnd();
+        Assert.Contains("<f t=\"dataTable\" ref=\"B3:C4\" dt2D=\"1\" dtr=\"0\" r1=\"H1\" r2=\"G1\"", xml);
+        Assert.Contains("<f t=\"dataTable\" ref=\"E3:E4\" dt2D=\"0\" dtr=\"0\" r1=\"G1\"", xml);
     }
 
     [Fact]

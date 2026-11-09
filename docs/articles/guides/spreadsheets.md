@@ -57,7 +57,10 @@ out, as Excel does.
 templates and flat FODS files, from a path or a stream. The kind is told from the file's first bytes, not its extension.
 Formulas come in OpenFormula, the ODF formula language, and are translated to Excel's: `[.A1:.B2]` becomes `A1:B2`,
 `[$'My sheet'.A1]` becomes `'My sheet'!A1`, semicolons between arguments become commas, and functions take Excel's names.
-A workbook read from ODS saves as XLSX.
+What-if tables, which ODS keeps as `MULTIPLE.OPERATIONS` in each cell, become Excel data tables. A reference to another
+file, `['file:///c:/rates.ods'#$Sheet1.A1]`, becomes Excel's `[1]Sheet1!A1`, and the values the file keeps for that
+file's sheets become the linked book's, which formulas calculate from and which save with the workbook. A workbook read
+from ODS saves as XLSX.
 
 ```csharp
 using Egap.Spreadsheets;

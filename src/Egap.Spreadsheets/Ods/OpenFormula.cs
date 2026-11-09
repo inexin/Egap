@@ -30,7 +30,9 @@ internal static class OpenFormula
     /// another file, or one Excel cannot write.</param>
     /// <param name="sheets">The workbook's sheet names, to tell a name local to a sheet, written <c>Sheet.Name</c>, from a
     /// name with a dot in it.</param>
-    public static string? ToExcel(string formula, out bool exact, IReadOnlySet<string>? sheets = null)
+    /// <param name="books">The number of the linked book for another file and one of its sheets, as Excel's <c>[1]Sheet!A1</c>
+    /// numbers it; without it, such a reference becomes <c>#REF!</c>.</param>
+    public static string? ToExcel(string formula, out bool exact, IReadOnlySet<string>? sheets = null, Func<string, string, int>? books = null)
     {
         exact = true;
         ReadOnlySpan<char> text = formula;
@@ -57,10 +59,10 @@ internal static class OpenFormula
             text = text[1..];
         }
 
-        return excel ? text.ToString() : Translate(text, ref exact, sheets);
+        return excel ? text.ToString() : Translate(text, ref exact, sheets, books);
     }
 
-    private static string Translate(ReadOnlySpan<char> text, ref bool exact, IReadOnlySet<string>? sheets)
+    private static string Translate(ReadOnlySpan<char> text, ref bool exact, IReadOnlySet<string>? sheets, Func<string, string, int>? books)
     {
         StringBuilder output = new(text.Length);
         int arrayDepth = 0;
@@ -87,7 +89,7 @@ internal static class OpenFormula
                 case '[':
                     {
                         int end = ReferenceEnd(text, i);
-                        output.Append(Reference(text[(i + 1)..Math.Max(i + 1, end)], ref exact));
+                        output.Append(Reference(text[(i + 1)..Math.Max(i + 1, end)], ref exact, books));
                         i = end + 1;
                         continue;
                     }
@@ -304,13 +306,26 @@ internal static class OpenFormula
     }
 
     /// <summary>A bracketed reference's inside, such as <c>$Sheet1.A1:.B$2</c>, as Excel writes it.</summary>
-    private static string Reference(ReadOnlySpan<char> inside, ref bool exact)
+    private static string Reference(ReadOnlySpan<char> inside, ref bool exact, Func<string, string, int>? books = null)
     {
         inside = inside.Trim();
-        if (inside.Length > 0 && inside[0] == '\'' && LooksExternal(inside))
+        if (inside.Length > 0 && inside[0] == '\'' && LooksExternal(inside, out int close))
         {
-            exact = false;
-            return "#REF!";
+            // Another file's sheet: 'file:///c:/other.ods'#$Sheet1.A1, which Excel writes [1]Sheet1!A1 for its first linked book.
+            string file = inside[1..close].ToString().Replace("''", "'", StringComparison.Ordinal);
+            ReadOnlySpan<char> rest = inside[(close + 2)..];
+            bool inner = true;
+            string local = Reference(rest, ref inner);
+            int bang = local.LastIndexOf('!');
+            if (books is null || !inner || bang <= 0 || local.IndexOf(':') is int colon && colon >= 0 && colon < bang)
+            {
+                exact = false;
+                return "#REF!";
+            }
+
+            string sheet = local[0] == '\'' ? local[1..(bang - 1)].Replace("''", "'", StringComparison.Ordinal) : local[..bang];
+            string number = "[" + books(file, sheet).ToString(System.Globalization.CultureInfo.InvariantCulture) + "]";
+            return local[0] == '\'' ? "'" + number + local[1..] : number + local;
         }
 
         if (inside.IndexOf("#REF!") >= 0)
@@ -346,7 +361,7 @@ internal static class OpenFormula
     }
 
     /// <summary>Whether a reference that starts with a quote names another file: the quote is followed by <c>#</c>.</summary>
-    private static bool LooksExternal(ReadOnlySpan<char> inside)
+    private static bool LooksExternal(ReadOnlySpan<char> inside, out int close)
     {
         int i = 1;
         while (i < inside.Length && !(inside[i] == '\'' && (i + 1 >= inside.Length || inside[i + 1] != '\'')))
@@ -354,6 +369,7 @@ internal static class OpenFormula
             i += inside[i] == '\'' ? 2 : 1;
         }
 
+        close = i;
         return i + 1 < inside.Length && inside[i + 1] == '#';
     }
 

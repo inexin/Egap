@@ -154,7 +154,22 @@ internal static class XlsxWriter
             workbookRels.Add(new OpcRelationship(NextId(), XlsxNames.SharedStringsRelationship, RelativeTarget(workbookName, stringsName), false, stringsName));
         }
 
-        Add(new OutPart(workbookName, XlsxNames.WorkbookType(format), OpcPackageWriter.Serialize(WorkbookPart(book, sheetIds)), workbookRels));
+        // Linked books made in memory, such as an ODS file's, get parts of their own; a package's own links save as they were.
+        List<string> linkIds = [];
+        if (source is null)
+        {
+            foreach (ExternalBook external in book.ExternalBooks)
+            {
+                string linkName = FreeSheetName(parts, "/xl/externalLinks/externalLink");
+                string linkId = NextId();
+                linkIds.Add(linkId);
+                List<OpcRelationship> linkRels = [new OpcRelationship("rId1", XlsxNames.ExternalLinkPathRelationship, external.Target ?? "", true, external.Target ?? "")];
+                Add(new OutPart(linkName, XlsxNames.ExternalLinkType, OpcPackageWriter.Serialize(ExternalLinkPart(external)), linkRels));
+                workbookRels.Add(new OpcRelationship(linkId, XlsxNames.ExternalLinkRelationship, RelativeTarget(workbookName, linkName), false, linkName));
+            }
+        }
+
+        Add(new OutPart(workbookName, XlsxNames.WorkbookType(format), OpcPackageWriter.Serialize(WorkbookPart(book, sheetIds, linkIds)), workbookRels));
 
         // Everything the package's relationships still reach, in the order the parts came.
         HashSet<string> reached = new(StringComparer.OrdinalIgnoreCase);
@@ -237,7 +252,7 @@ internal static class XlsxWriter
         return to.StartsWith(folder, StringComparison.OrdinalIgnoreCase) ? to[folder.Length..] : to;
     }
 
-    private static XDocument WorkbookPart(Workbook book, Dictionary<Worksheet, string> sheetIds)
+    private static XDocument WorkbookPart(Workbook book, Dictionary<Worksheet, string> sheetIds, List<string> linkIds)
     {
         XNamespace ns = XlsxNames.Main;
         WorkbookSource? source = book.Source;
@@ -307,6 +322,12 @@ internal static class XlsxWriter
 
         AddKept(_ => true);
         WorkbookOrder.Place(root, sheets);
+
+        if (linkIds.Count > 0)
+        {
+            WorkbookOrder.Place(root, new XElement(ns + "externalReferences",
+                linkIds.Select(id => new XElement(ns + "externalReference", new XAttribute(XlsxNames.R + "id", id)))));
+        }
 
         // The defined names, local ones pointing at the sheets' new positions.
         XElement names = new(ns + "definedNames");
@@ -421,6 +442,61 @@ internal static class XlsxWriter
     }
 
     /// <summary>A part to write: its name, content type, bytes and relationships (targets as written).</summary>
+    /// <summary>A linked book's part (ECMA-376 Part 1, 18.14): its sheets' names and the values kept for them.</summary>
+    private static XDocument ExternalLinkPart(ExternalBook external)
+    {
+        XNamespace ns = XlsxNames.Main;
+        XElement names = new(ns + "sheetNames");
+        XElement data = new(ns + "sheetDataSet");
+        for (int index = 0; index < external.MadeSheets.Count; index++)
+        {
+            Worksheet sheet = external.MadeSheets[index];
+            names.Add(new XElement(ns + "sheetName", new XAttribute("val", sheet.Name)));
+            XElement sheetData = new(ns + "sheetData", new XAttribute("sheetId", XlsxNames.Integer(index)));
+            XElement? row = null;
+            if (sheet.Store.Bounds() is { } bounds)
+            {
+                foreach ((int r, int c) in sheet.Store.Occupied(bounds))
+                {
+                    CellValue value = sheet.GetValue(r, c);
+                    (string? type, string text) = value.Kind switch
+                    {
+                        CellValueKind.Number => ((string?)null, value.Number.ToString("R", System.Globalization.CultureInfo.InvariantCulture)),
+                        CellValueKind.Text => ("str", value.Text),
+                        CellValueKind.Boolean => ("b", value.Boolean ? "1" : "0"),
+                        CellValueKind.Error => ("e", value.ToString()),
+                        _ => ("", ""),
+                    };
+                    if (type == "")
+                    {
+                        continue;
+                    }
+
+                    string number = XlsxNames.Integer(r + 1);
+                    if (row is null || (string?)row.Attribute("r") != number)
+                    {
+                        row = new XElement(ns + "row", new XAttribute("r", number));
+                        sheetData.Add(row);
+                    }
+
+                    XElement cell = new(ns + "cell", new XAttribute("r", new CellAddress(r, c).ToString()));
+                    if (type is not null)
+                    {
+                        cell.Add(new XAttribute("t", type));
+                    }
+
+                    cell.Add(new XElement(ns + "v", text));
+                    row.Add(cell);
+                }
+            }
+
+            data.Add(sheetData);
+        }
+
+        return new XDocument(new XElement(ns + "externalLink", new XAttribute(XNamespace.Xmlns + "r", XlsxNames.RUri),
+            new XElement(ns + "externalBook", new XAttribute(XlsxNames.R + "id", "rId1"), names, data)));
+    }
+
     private sealed record OutPart(string Name, string ContentType, byte[] Data, List<OpcRelationship> Relationships);
 }
 

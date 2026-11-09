@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Egap.Documents;
 using Egap.Documents.Odf;
 using Egap.Spreadsheets.Storage;
+using Egap.Spreadsheets.Xlsx;
 
 using static Egap.Documents.Odf.OdfNames;
 
@@ -43,11 +44,41 @@ internal static class OdsReader
 
         OdsStyles styles = new(book, package.Styles, package.IsFlat ? null : package.Content);
         // A copy of another file's sheet that office suites keep for the formulas that refer to it, named for the file and
-        // sheet, is not a sheet of this workbook.
-        List<XElement> tables = [.. spreadsheet.Elements(TableNs + "table").Where(t => !(t.Element(TableNs + "table-source") is not null
-            && t.Attr(TableNs, "name") is ['\'', ..] name && name.Contains("'#", StringComparison.Ordinal)))];
+        // sheet, is not a sheet of this workbook: its values become the linked book's, which Excel numbers in formulas.
+        List<XElement> tables = [];
+        List<(string File, string Sheet, XElement Table)> copies = [];
+        foreach (XElement table in spreadsheet.Elements(TableNs + "table"))
+        {
+            if (table.Element(TableNs + "table-source") is not null && CopyOf(table.Attr(TableNs, "name")) is (string file, string sheet))
+            {
+                copies.Add((file, sheet, table));
+            }
+            else
+            {
+                tables.Add(table);
+            }
+        }
+
         HashSet<string> sheetNames = new(tables.Select(t => t.Attr(TableNs, "name")).OfType<string>(), StringComparer.OrdinalIgnoreCase);
-        Context context = new(book, styles, nullDate, sheetNames);
+        Dictionary<string, int> files = [];
+        int Linked(string file, string sheet)
+        {
+            if (!files.TryGetValue(file, out int number))
+            {
+                book.ExternalBooks.Add(new ExternalBook(book, file));
+                number = files[file] = book.ExternalBooks.Count;
+            }
+
+            book.ExternalBooks[number - 1].MakeSheet(book, sheet);
+            return number;
+        }
+
+        Context context = new(book, styles, nullDate, sheetNames, Linked);
+        foreach ((string file, string sheet, XElement table) in copies)
+        {
+            ReadTable(context, book.ExternalBooks[Linked(file, sheet) - 1].MakeSheet(book, sheet), table);
+        }
+
         List<(Worksheet Sheet, XElement Table)> sheets = [];
         foreach (XElement table in tables)
         {
@@ -61,10 +92,10 @@ internal static class OdsReader
             throw new DocumentException("The OpenDocument spreadsheet has no tables.");
         }
 
-        ReadNames(book, spreadsheet.Element(TableNs + "named-expressions"), null, sheetNames);
+        ReadNames(book, spreadsheet.Element(TableNs + "named-expressions"), null, sheetNames, Linked);
         foreach ((Worksheet sheet, XElement table) in sheets)
         {
-            ReadNames(book, table.Element(TableNs + "named-expressions"), sheet, sheetNames);
+            ReadNames(book, table.Element(TableNs + "named-expressions"), sheet, sheetNames, Linked);
             if (table.Attr(TableNs, "print-ranges") is { Length: > 0 } print && Ranges(print) is { } area
                 && !book.Names.Any(n => n.Name == "_xlnm.Print_Area" && n.Sheet == sheet))
             {
@@ -82,6 +113,34 @@ internal static class OdsReader
     public static bool Sniff(ReadOnlySpan<byte> head) =>
         IsSpreadsheet(OdfPackage.MediaTypeOfZip(head)) || OdfPackage.IsFlatSpreadsheet(head);
 
+    /// <summary>The file and sheet a copied sheet's name gives, as in <c>'file:///c:/other.ods'#$Sheet1</c>; null for another name.</summary>
+    private static (string File, string Sheet)? CopyOf(string? name)
+    {
+        if (name is not ['\'', ..])
+        {
+            return null;
+        }
+
+        int end = name.IndexOf("'#", 1, StringComparison.Ordinal);
+        while (end > 0 && name.AsSpan(1, end - 1).Count('\'') % 2 != 0)
+        {
+            end = name.IndexOf("'#", end + 1, StringComparison.Ordinal);
+        }
+
+        if (end <= 0)
+        {
+            return null;
+        }
+
+        string sheet = name[(end + 2)..].TrimStart('$');
+        if (sheet is ['\'', .., '\''])
+        {
+            sheet = sheet[1..^1].Replace("''", "'", StringComparison.Ordinal);
+        }
+
+        return sheet.Length == 0 ? null : (name[1..end].Replace("''", "'", StringComparison.Ordinal), sheet);
+    }
+
     private static Worksheet AddSheet(Workbook book, string? name)
     {
         try
@@ -95,9 +154,12 @@ internal static class OdsReader
         }
     }
 
-    private sealed class Context(Workbook book, OdsStyles styles, DateTime nullDate, IReadOnlySet<string> sheetNames)
+    private sealed class Context(Workbook book, OdsStyles styles, DateTime nullDate, IReadOnlySet<string> sheetNames, Func<string, string, int> linked)
     {
         public IReadOnlySet<string> SheetNames { get; } = sheetNames;
+
+        /// <summary>The number of the linked book for a file, its sheet added to it.</summary>
+        public Func<string, string, int> Linked { get; } = linked;
 
         public Workbook Book { get; } = book;
 
@@ -117,6 +179,9 @@ internal static class OdsReader
         public int Row;
 
         public int Column;
+
+        /// <summary>The sheet's MULTIPLE.OPERATIONS cells, placed as data tables once the sheet is read.</summary>
+        public Dictionary<(int Row, int Column), OdsDataTables.Operation> Operations { get; } = [];
 
         /// <summary>Each column's default cell style index, for its cells without a style of their own.</summary>
         public List<(int First, int Last, int Style)> ColumnStyles { get; } = [];
@@ -151,6 +216,10 @@ internal static class OdsReader
         TableState state = new(sheet);
         Columns(context, state, table, 0);
         Rows(context, state, table, 0);
+        if (state.Operations.Count > 0)
+        {
+            OdsDataTables.Place(sheet, state.Operations);
+        }
     }
 
     /// <summary>The table's columns, inside their groups and header sections, in order.</summary>
@@ -334,13 +403,19 @@ internal static class OdsReader
             // typed into a cell and a formula of that error alone are both written as the formula, so it stays one, and its
             // result is that error whatever value the file stored with it.
             string? source = cell.Attr(TableNs, "formula");
-            string? excel = source is null ? null : OpenFormula.ToExcel(source, out _, context.SheetNames);
+            string? excel = source is null ? null : OpenFormula.ToExcel(source, out _, context.SheetNames, context.Linked);
             if (excel is ['#', ..] && !source!.Contains('[', StringComparison.Ordinal) && CellValue.TryParseError(excel, out CellError typed))
             {
                 result = CellValue.FromError(typed);
             }
 
-            if (excel is { Length: > 0 } && !(cell.Attr(OfficeNs, "value-type") == "boolean" && excel is "TRUE" or "FALSE"))
+            if (excel is not null && firstRow == lastRow && firstColumn == lastColumn && OdsDataTables.Parse(excel, result) is { } operation)
+            {
+                // A what-if table's cell keeps its value here; the table goes on its first cell once the sheet is read.
+                Store(context.Book, result, text, ref record);
+                state.Operations[(firstRow, firstColumn)] = operation;
+            }
+            else if (excel is { Length: > 0 } && !(cell.Attr(OfficeNs, "value-type") == "boolean" && excel is "TRUE" or "FALSE"))
             {
                 if (excel is "TRUE" or "FALSE")
                 {
@@ -621,7 +696,7 @@ internal static class OdsReader
     }
 
     /// <summary>Named ranges and expressions (ODF 1.3 Part 3, 9.4), global or local to a sheet, as defined names.</summary>
-    private static void ReadNames(Workbook book, XElement? names, Worksheet? sheet, IReadOnlySet<string> sheetNames)
+    private static void ReadNames(Workbook book, XElement? names, Worksheet? sheet, IReadOnlySet<string> sheetNames, Func<string, string, int> linked)
     {
         foreach (XElement element in names?.Elements() ?? [])
         {
@@ -636,7 +711,7 @@ internal static class OdsReader
             string? formula = element.Name.LocalName switch
             {
                 "named-range" => element.Attr(TableNs, "cell-range-address") is { } address ? Ranges(address) : null,
-                "named-expression" => element.Attr(TableNs, "expression") is { } expression ? OpenFormula.ToExcel(expression, out _, sheetNames) : null,
+                "named-expression" => element.Attr(TableNs, "expression") is { } expression ? OpenFormula.ToExcel(expression, out _, sheetNames, linked) : null,
                 _ => null,
             };
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(formula) || book.Names.Any(n => n.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && n.Sheet == sheet))
