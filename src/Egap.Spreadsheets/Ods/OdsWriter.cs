@@ -447,7 +447,12 @@ internal sealed class OdsWriter
         xml.WriteEndElement();
     }
 
-    private double DefaultHeight() => book.Worksheets[0].DefaultRowHeight ?? 15;
+    private double DefaultHeight() => book.Worksheets.Count > 0 ? book.Worksheets[0].DefaultRowHeight ?? 15 : 15;
+
+    /// <summary>The first table's name: the first worksheet, or the first chart sheet of a book that has none.</summary>
+    private string FirstTable() =>
+        book.Worksheets.Count > 0 ? book.Worksheets[0].Name
+        : (string?)book.Source?.KeptSheets.FirstOrDefault()?.Element.Attribute("name") ?? "Sheet1";
 
     private static void TableStyleElement(XmlWriter xml, string name, bool hidden, uint? tab)
     {
@@ -1418,7 +1423,7 @@ internal sealed class OdsWriter
 
             string written = name.Name.StartsWith("_xlnm.", StringComparison.OrdinalIgnoreCase) ? "Excel_BuiltIn_" + name.Name[6..] : name.Name;
             string formula = name.Formula.StartsWith('=') ? name.Formula[1..] : name.Formula;
-            string baseCell = "$" + OpenFormulaWriter.SheetName(scope?.Name ?? book.Worksheets[0].Name) + ".$A$1";
+            string baseCell = "$" + OpenFormulaWriter.SheetName(scope?.Name ?? FirstTable()) + ".$A$1";
             XElement? element = null;
             if (FormulaParser.TryParse(formula, r1c1: false, default)?.Root is ReferenceNode { Prefix: { Book: null, FirstSheet: { } first, LastSheet: var lastSheet }, Area: { Kind: AreaKind.Cell or AreaKind.Range } area }
                 && (lastSheet is null || lastSheet == first))

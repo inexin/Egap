@@ -408,6 +408,14 @@ public sealed class OdsWriterTests
         Workbook book = Workbook.Load(Path.Combine(AppContext.BaseDirectory, "Oracle", "charts.xlsx"));
         Assert.Equal(["ChartPage", "Data", "Charts"], RoundTrip(book, WorkbookFormat.Ods).Worksheets.Select(s => s.Name));
         Assert.Equal(["ChartPage", "Data", "Charts"], RoundTrip(book, WorkbookFormat.Fods).Worksheets.Select(s => s.Name));
+
+        // A book of chart sheets only saves too.
+        foreach (Worksheet sheet in book.Worksheets.ToList())
+        {
+            book.Worksheets.Remove(sheet);
+        }
+
+        Assert.Equal(["ChartPage"], RoundTrip(book, WorkbookFormat.Ods).Worksheets.Select(s => s.Name));
     }
 
     private static Workbook RoundTrip(Workbook book, WorkbookFormat format)
