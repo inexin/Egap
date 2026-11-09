@@ -161,6 +161,50 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
         }, false);
     }
 
+    /// <summary>
+    /// Fits each column of the range to the widest text of its cells in the range, as Excel's <c>Columns.AutoFit</c> on a
+    /// range does: the text as <see cref="Cell.Text"/> shows it, in each cell's font, indent and rotation, wrapped at the
+    /// column's width when the cell wraps. Merged cells are left out, and a column with no text in the range keeps its width.
+    /// </summary>
+    /// <remarks>
+    /// Widths are Excel's on Windows at 96 dpi: characters in the fonts sheets use most (Arial, Calibri, Times New Roman,
+    /// Verdana, Tahoma and others, at their common sizes) take the pixels Excel measured for them; other fonts are measured
+    /// from the font through <c>FontSettings.Default</c>, and may come out a pixel or two from Excel's. Formulas count with
+    /// their last results, so calculate first when they have changed.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// sheet.Range("A1:D20").AutoFitColumns();
+    /// </code>
+    /// </example>
+    public void AutoFitColumns()
+    {
+        Printing.TextMeter meter = new(sheet.Workbook);
+        for (int column = Address.First.Column; column <= Address.Last.Column; column++)
+        {
+            sheet.AutoFitColumn(column, Address.First.Row, Address.Last.Row, meter);
+        }
+    }
+
+    /// <summary>
+    /// Fits each row of the range to its tallest text, as Excel's <c>Rows.AutoFit</c> does: a line of each cell's font, as
+    /// many lines as a wrapping cell takes at its column's width, and the height a rotated text takes; never lower than a
+    /// line of the normal font. Merged cells are left out. See <see cref="SheetRow.AutoFit"/>.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// sheet.Range("A1:A10").AutoFitRows();
+    /// </code>
+    /// </example>
+    public void AutoFitRows()
+    {
+        Printing.TextMeter meter = new(sheet.Workbook);
+        for (int row = Address.First.Row; row <= Address.Last.Row; row++)
+        {
+            sheet.AutoFitRow(row, meter);
+        }
+    }
+
     /// <summary>Removes the values, formulas and styles of every cell in the range.</summary>
     public void Clear()
     {
