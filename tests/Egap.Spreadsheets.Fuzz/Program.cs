@@ -29,6 +29,8 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["shift"] = Shift,
     ["copies"] = Copies,
     ["move"] = Move,
+    ["sorts"] = Sorts,
+    ["find"] = Find,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -489,6 +491,103 @@ static void Copies(Stream input)
 
     saved.Position = 0;
     Workbook.Load(saved);
+}
+
+// The input is an XLSX package: each sheet's used range and part of it sorted, its filter and its tables' filters applied
+// and cleared, and its cells searched and replaced; then calculated, saved and loaded again. May throw only
+// DocumentException, or InvalidOperationException for a sort or replace Excel refuses.
+static void Sorts(Stream input)
+{
+    DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };
+    Workbook book;
+    try
+    {
+        book = Workbook.Load(new MemoryStream(Bytes(input), writable: false), new WorkbookLoadOptions { Limits = limits });
+    }
+    catch (DocumentException)
+    {
+        return;
+    }
+
+    foreach (Worksheet sheet in book.Worksheets.ToList())
+    {
+        RangeAddress used = sheet.UsedRange?.Address ?? RangeAddress.Parse("A1");
+        foreach (Action edit in (Action[])[
+            () => sheet.Range(used).Sort(new SortOptions { HasHeader = true }, new SortField(0)),
+            () => sheet.Range(used).Sort(new SortOptions { MatchCase = true, Orientation = SortOrientation.Columns }, new SortField(0, Descending: true)),
+            () => sheet.Range("A2:D30").Sort(new SortField(3), new SortField(1, Descending: true)),
+            () => sheet.AutoFilter?.Apply(),
+            () => (sheet.Tables.Count > 0 ? sheet.Tables[0].AutoFilter : null)?.Apply(),
+            () => sheet.Find("a*", new Egap.Spreadsheets.FindOptions { LookIn = FindLookIn.Values, Order = FindOrder.ByColumns }),
+            () => sheet.Find("~*?", new Egap.Spreadsheets.FindOptions { LookIn = FindLookIn.Notes, MatchCase = true }),
+            () => sheet.Replace("1", "2"),
+            () => sheet.Replace("A", "=", new Egap.Spreadsheets.FindOptions { MatchEntireCell = true }),
+            () => sheet.AutoFilter?.ShowAll()])
+        {
+            try
+            {
+                edit();
+            }
+            catch (InvalidOperationException)
+            {
+                // Excel refuses it too: merges, part of an array formula, a pivot table, a formula its grammar refuses.
+            }
+        }
+    }
+
+    book.Calculate();
+    MemoryStream saved = new();
+    try
+    {
+        book.Save(saved);
+    }
+    catch (DocumentException)
+    {
+        return;
+    }
+
+    saved.Position = 0;
+    Workbook.Load(saved);
+}
+
+// The input is text to find: searched for on a small sheet in every place and order, and replaced; may throw only
+// ArgumentException for empty text, or InvalidOperationException for a replace that makes a formula Excel refuses.
+static void Find(Stream input)
+{
+    string what = Encoding.UTF8.GetString(Bytes(input));
+    Workbook book = Workbook.Create();
+    Worksheet sheet = book.Worksheets[0];
+    sheet["A1"].Value = "Apple pie * ? ~";
+    sheet["A2"].Formula = "SUM(B1:B2)&\"x~y\"";
+    sheet["B1"].Value = 1234.5;
+    sheet["B2"].Value = 43831;
+    sheet["B2"].NumberFormat = "yyyy-mm-dd";
+    sheet["C3"].Value = new string('a', 200);
+    sheet.Comments.Add("D4", "note " + what);
+    book.Calculate();
+    try
+    {
+        foreach (FindLookIn place in Enum.GetValues<FindLookIn>())
+        {
+            foreach (bool whole in (bool[])[false, true])
+            {
+                _ = sheet.Find(what, new Egap.Spreadsheets.FindOptions { LookIn = place, MatchEntireCell = whole, MatchCase = whole, Order = whole ? FindOrder.ByColumns : FindOrder.ByRows });
+            }
+        }
+
+        try
+        {
+            sheet.Replace(what, what + "1");
+            sheet.Range("A1:C3").Replace(what, "", new Egap.Spreadsheets.FindOptions { MatchEntireCell = true });
+        }
+        catch (InvalidOperationException)
+        {
+            // The replace made a formula Excel refuses.
+        }
+    }
+    catch (ArgumentException) when (what.Length == 0)
+    {
+    }
 }
 
 // The input is a formula: its references moved for cells cut and pasted, on the sheet and to another. What parses must

@@ -237,6 +237,94 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
         sheet.MoveRange(Address, destination.Worksheet, destination.Address);
     }
 
+    /// <summary>
+    /// Sorts the range's rows by the values in key columns, smallest first unless a key says otherwise, as Excel's Sort does;
+    /// see <see cref="Sort(SortOptions, SortField[])"/>.
+    /// </summary>
+    /// <param name="keys">The keys, most important first.</param>
+    /// <exception cref="ArgumentException">No key is given.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A key is outside the range.</exception>
+    /// <exception cref="InvalidOperationException">The range has merged cells, part of an array formula or a pivot table.</exception>
+    /// <example>
+    /// <code>
+    /// sheet.Range("A2:C20").Sort(new SortField(2, Descending: true), new SortField(0));
+    /// </code>
+    /// </example>
+    public void Sort(params SortField[] keys) => Sort(new SortOptions(), keys);
+
+    /// <summary>
+    /// Sorts the range's rows, or its columns, by the values in key columns (or key rows), as Excel's Sort does. Numbers come
+    /// first, then text, then FALSE and TRUE, then errors; empty cells come last either way, and rows whose keys are equal
+    /// keep their order. Text sorts by the rules of <see cref="Workbook.Culture"/>, ignoring case unless
+    /// <see cref="SortOptions.MatchCase"/> is set, and leaving out hyphens and apostrophes but for breaking a tie. A formula
+    /// sorts by its last result.
+    /// </summary>
+    /// <remarks>
+    /// Each row moves as Excel moves it: as if copied, with its values, styles, notes and links, and with its formulas'
+    /// relative references without a sheet name moved by as many rows as the formula moves: a cell that would leave the sheet
+    /// becomes <c>#REF!</c>, and a range with one edge off is cut back to the sheet's edge. References with a sheet name, even
+    /// the formula's own sheet, don't move, nor do references from other cells to the sorted cells. Text compares by its first
+    /// 255 characters, as in Excel; a header's merged cells stay where they are. Conditional formats and validation rules
+    /// stay on their cells. Hidden rows (hidden columns, when columns are sorted) stay where they are, and the rest sort around
+    /// them.
+    /// </remarks>
+    /// <param name="options">How to sort.</param>
+    /// <param name="keys">The keys, most important first.</param>
+    /// <exception cref="ArgumentNullException">The options are null.</exception>
+    /// <exception cref="ArgumentException">No key is given.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A key is outside the range.</exception>
+    /// <exception cref="InvalidOperationException">The range has merged cells, part of an array formula or a pivot table.</exception>
+    /// <example>
+    /// <code>
+    /// sheet.Range("A1:D50").Sort(new SortOptions { HasHeader = true }, new SortField(1));
+    /// </code>
+    /// </example>
+    public void Sort(SortOptions options, params SortField[] keys)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(keys);
+        sheet.SortRange(Address, options, keys);
+    }
+
+    /// <summary>
+    /// Finds the cells of the range whose text matches, as Excel's Find All does with the range selected; see
+    /// <see cref="Worksheet.Find(string, FindOptions?)"/>.
+    /// </summary>
+    /// <param name="what">The text to find; <c>*</c>, <c>?</c> and <c>~</c> are Excel's wildcards.</param>
+    /// <param name="options">How to match; null for Excel's defaults.</param>
+    /// <returns>The matching cells, in the order <see cref="FindOptions.Order"/> gives.</returns>
+    /// <exception cref="ArgumentException">The text is null or empty.</exception>
+    /// <example>
+    /// <code>
+    /// IReadOnlyList&lt;Cell&gt; found = sheet.Range("A1:D100").Find("apple");
+    /// </code>
+    /// </example>
+    public IReadOnlyList<Cell> Find(string what, FindOptions? options = null) => sheet.FindCells(Address, what, options ?? new FindOptions());
+
+    /// <summary>
+    /// Replaces matching text in the range's formulas and values, as Excel's Replace All does with the range selected, and
+    /// gives how many cells changed. Each match is replaced, left to right, and a <c>*</c> takes as much as it can. A cell
+    /// whose text starts with <c>=</c> afterwards gets that formula; other text is taken as typed, so that <c>12</c> becomes a
+    /// number, unless the cell is formatted as text. Constants are matched as the formula bar shows them (see
+    /// <see cref="FindLookIn.Formulas"/>). Notes are not changed.
+    /// </summary>
+    /// <param name="what">The text to find; <c>*</c>, <c>?</c> and <c>~</c> are Excel's wildcards.</param>
+    /// <param name="replacement">The text to put in its place, taken as it is.</param>
+    /// <param name="options">How to match; null for Excel's defaults. Only <see cref="FindLookIn.Formulas"/> can be replaced.</param>
+    /// <returns>How many cells changed.</returns>
+    /// <exception cref="ArgumentException">The text is null or empty, the replacement is null, or the options look in values or notes.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A replacement makes a formula Excel's grammar refuses, or changes part of an array formula; the cells before it stay
+    /// replaced, as in Excel.
+    /// </exception>
+    /// <remarks>Changed formulas have no result until the workbook is calculated.</remarks>
+    /// <example>
+    /// <code>
+    /// int changed = sheet.Range("A1:A50").Replace("SUM(", "SUBTOTAL(9,");
+    /// </code>
+    /// </example>
+    public int Replace(string what, string replacement, FindOptions? options = null) => sheet.ReplaceCells(Address, what, replacement, options ?? new FindOptions());
+
     /// <summary>Every cell in the range, empty ones too, row by row and left to right.</summary>
     public IEnumerator<Cell> GetEnumerator()
     {
