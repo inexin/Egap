@@ -1,15 +1,25 @@
 namespace Egap.Spreadsheets.Printing;
 
 /// <summary>
-/// The widths Excel gives characters on screen, in whole pixels at 96 dpi, for the fonts and sizes sheets use most. Excel
-/// measures text with the font hinted to whole pixels, which no font's outlines give, so the table is what Excel measured
-/// (Oracle/character-widths.excel.tsv in the tests, from tools/excel-character-width-oracle.ps1) and needs no font
-/// installed. Fonts, sizes and characters it lacks are measured from the font itself.
+/// The widths Excel gives characters on screen at 96 dpi, and the height it gives a line, for the fonts and sizes sheets use
+/// most. Excel measures text with the font hinted to whole pixels, which no font's outlines give, so the table is what Excel
+/// measured (Oracle/character-widths.excel.tsv and line-heights.excel.tsv in the tests, from
+/// tools/excel-character-width-oracle.ps1 and tools/excel-line-height-oracle.ps1) and needs no font installed. Fonts,
+/// sizes and characters it lacks are measured from the font itself.
 /// </summary>
 internal static partial class CharacterWidths
 {
-    // Built on first use: the table is a field of the other part of the class, which may initialize later.
-    private static readonly Lazy<Dictionary<(string Font, double Size, bool Bold), (string Widths, string Exact)>> Fonts = new(Build);
+    // Built on first use: the tables are fields of the other part of the class, which may initialize later.
+    private static readonly Lazy<Dictionary<(string Font, double Size, bool Bold), Widths>> Fonts = new(() =>
+    {
+        Dictionary<(string, double, bool), Widths> fonts = new(KeyComparer.Instance);
+        foreach ((string font, double size, bool bold, string widths, string exact) in Table)
+        {
+            fonts[(font, size, bold)] = new Widths(widths, exact);
+        }
+
+        return fonts;
+    });
 
     private static readonly Lazy<Dictionary<(string Font, double Size, bool Bold), int>> LineHeights = new(() =>
     {
@@ -22,79 +32,73 @@ internal static partial class CharacterWidths
         return heights;
     });
 
-    private static readonly Dictionary<char, int> Places = Measured.Select((c, i) => (c, i)).ToDictionary(p => p.c, p => p.i);
+    /// <summary>Each character's place in the table, or -1, for the characters up to the last the table measures.</summary>
+    private static readonly Lazy<short[]> Places = new(() =>
+    {
+        short[] places = new short[Measured.Max() + 1];
+        Array.Fill(places, (short)-1);
+        for (int i = 0; i < Measured.Length; i++)
+        {
+            places[Measured[i]] = (short)i;
+        }
+
+        return places;
+    });
 
     /// <summary>The widths of one font, size and weight, or null when Excel wasn't measured for it.</summary>
     public static Widths? Find(string font, double size, bool bold) =>
-        Fonts.Value.TryGetValue((font, size, bold), out (string Widths, string Exact) widths) ? new Widths(widths.Widths, widths.Exact) : null;
+        Fonts.Value.TryGetValue((font, size, bold), out Widths? widths) ? widths : null;
 
     /// <summary>The height in pixels of the row Excel fits to one line of a font, size and weight, or null when it wasn't measured.</summary>
     public static int? LineHeight(string font, double size, bool bold) =>
         LineHeights.Value.TryGetValue((font, size, bold), out int pixels) ? pixels : null;
 
-    private static Dictionary<(string, double, bool), (string, string)> Build()
+    private static int Place(char c)
     {
-        Dictionary<(string, double, bool), (string, string)> fonts = new(KeyComparer.Instance);
-        foreach ((string font, double size, bool bold, string widths, string exact) in Table)
-        {
-            fonts[(font, size, bold)] = (widths, exact);
-        }
-
-        return fonts;
+        short[] places = Places.Value;
+        return c < places.Length ? places[c] : -1;
     }
 
     /// <summary>One font's measured widths.</summary>
-    internal readonly struct Widths(string widths, string exact)
+    internal sealed class Widths
     {
-        /// <summary>A character's width in whole pixels, or -1 when the table doesn't have the character.</summary>
-        public int Of(char c) => Places.TryGetValue(c, out int place) ? widths[place] - '0' : -1;
+        private readonly byte[] whole;
+        private readonly double[] exact;
 
-        /// <summary>A character's width in pixels as Excel measures it, with fractions, or -1 when the table doesn't have it.</summary>
-        public double Exact(char c)
+        public Widths(string widths, string exact)
         {
-            if (!Places.TryGetValue(c, out int place))
+            whole = new byte[widths.Length];
+            this.exact = new double[widths.Length];
+            for (int place = 0; place < widths.Length; place++)
             {
-                return -1;
+                whole[place] = (byte)(widths[place] - '0');
+                int value = 0;
+                for (int i = place * 3; i < (place * 3) + 3; i++)
+                {
+                    value = (value * 16) + (exact[i] <= '9' ? exact[i] - '0' : exact[i] - 'A' + 10);
+                }
+
+                this.exact[place] = value / 40.0;
             }
 
-            int value = 0;
-            for (int i = place * 3; i < (place * 3) + 3; i++)
+            for (char digit = '0'; digit <= '9'; digit++)
             {
-                value = (value * 16) + (exact[i] <= '9' ? exact[i] - '0' : exact[i] - 'A' + 10);
+                MaxDigit = Math.Max(MaxDigit, Of(digit));
+                ExactMaxDigit = Math.Max(ExactMaxDigit, Exact(digit));
             }
-
-            return value / 40.0;
         }
+
+        /// <summary>The widest of the digits 0 to 9 in whole pixels, which column widths count in.</summary>
+        public int MaxDigit { get; }
 
         /// <summary>The widest of the digits 0 to 9 as Excel measures them.</summary>
-        public double ExactMaxDigit
-        {
-            get
-            {
-                double widest = 0;
-                for (char digit = '0'; digit <= '9'; digit++)
-                {
-                    widest = Math.Max(widest, Exact(digit));
-                }
+        public double ExactMaxDigit { get; }
 
-                return widest;
-            }
-        }
+        /// <summary>A character's width in whole pixels, or -1 when the table doesn't have the character.</summary>
+        public int Of(char c) => Place(c) is >= 0 and var place ? whole[place] : -1;
 
-        /// <summary>The widest of the digits 0 to 9, which column widths count in.</summary>
-        public int MaxDigit
-        {
-            get
-            {
-                int widest = 0;
-                for (char digit = '0'; digit <= '9'; digit++)
-                {
-                    widest = Math.Max(widest, Of(digit));
-                }
-
-                return widest;
-            }
-        }
+        /// <summary>A character's width in pixels as Excel measures it, with fractions, or -1 when the table doesn't have it.</summary>
+        public double Exact(char c) => Place(c) is >= 0 and var place ? exact[place] : -1;
     }
 
     /// <summary>Compares a font's name, ignoring case, size and weight.</summary>
