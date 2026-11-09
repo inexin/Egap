@@ -125,12 +125,14 @@ internal sealed partial class SheetPageRenderer
             return;
         }
 
-        int fill = text.IndexOf(NumberFormatCode.FillMark, StringComparison.Ordinal);
         bool isNumber = value.Kind == CellValueKind.Number;
         if (!wrap)
         {
             text = text.Replace("\r\n", "", StringComparison.Ordinal).Replace("\n", "", StringComparison.Ordinal);
         }
+
+        // The fill mark's place in the text as drawn, after the line breaks are gone.
+        int fill = text.IndexOf(NumberFormatCode.FillMark, StringComparison.Ordinal);
 
         string shown = Strip(text);
         TextLayout layout = Layout(shown, textStyle, wrap ? innerWidth : 1e6, wrap ? Align(horizontal) : TextAlign.Left);

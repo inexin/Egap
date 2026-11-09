@@ -1,5 +1,8 @@
 using System.Collections;
+using System.Globalization;
 using System.Xml.Linq;
+
+using Egap.Spreadsheets.Formulas;
 
 namespace Egap.Spreadsheets;
 
@@ -128,15 +131,25 @@ public sealed class DataValidation
 
     /// <summary>The file's dataValidation element, for the attributes and children the model does not hold.</summary>
     internal XElement? Source { get; set; }
+
+    /// <summary>The rule's formulas compiled, by their text, so checking many cells compiles each once.</summary>
+    internal Dictionary<string, CompiledFormula?>? Compiled { get; set; }
 }
 
 /// <summary>A sheet's data validation rules.</summary>
 public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
 {
     private readonly List<DataValidation> rules = [];
+    private readonly Worksheet sheet;
 
-    internal DataValidationCollection()
+    /// <summary>While <see cref="FindInvalid"/> runs, the items each list's cells give, so a list is read once, not per cell.</summary>
+    private Dictionary<(Worksheet, RangeAddress), (List<CellValue> Items, bool Blank)>? areaItems;
+
+    private EvalContext? compareContext;
+
+    internal DataValidationCollection(Worksheet sheet)
     {
+        this.sheet = sheet;
     }
 
     /// <summary>How many rules there are.</summary>
@@ -179,6 +192,60 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
     /// <summary>The first rule that applies to a cell, or null.</summary>
     public DataValidation? Find(CellAddress cell) => rules.Find(rule => rule.Ranges.Exists(range => range.Contains(cell)));
 
+    /// <summary>
+    /// Whether a cell's value passes the rule that applies to it, as Excel's Circle Invalid Data checks it; true when no rule
+    /// applies. Formula cells are checked by their last results.
+    /// </summary>
+    public bool IsValid(CellAddress cell) => IsValid(cell, sheet.GetValue(cell.Row, cell.Column));
+
+    /// <summary>
+    /// Whether a value would pass the rule that applies to a cell, were it entered there, as Excel checks a value typed in;
+    /// true when no rule applies. Numbers, dates and times pass by comparison with the rule's formulas, a whole number only
+    /// when it has no fraction; a logical compares above every number, as in Excel; text and errors fail them. A list
+    /// rule's fixed items match with case, its cells' values without. Text length counts the value as text. An empty value
+    /// passes when the rule allows blanks.
+    /// </summary>
+    public bool IsValid(CellAddress cell, CellValue value) => Find(cell) is not { } rule || Check(rule, cell, value);
+
+    /// <summary>The cells in the rules' ranges whose values do not pass their rules, as Excel's Circle Invalid Data marks them, by rows.</summary>
+    public IReadOnlyList<CellAddress> FindInvalid()
+    {
+        List<CellAddress> invalid = [];
+        HashSet<CellAddress> seen = [];
+        areaItems = [];
+        try
+        {
+            foreach (DataValidation rule in rules)
+            {
+                foreach (RangeAddress range in rule.Ranges)
+                {
+                    foreach ((int row, int column) in sheet.Store.Occupied(range))
+                    {
+                        CellAddress cell = new(row, column);
+                        if (sheet.GetKind(row, column) != CellValueKind.Empty && seen.Add(cell) && Find(cell) == rule && !Check(rule, cell, sheet.GetValue(row, column)))
+                        {
+                            invalid.Add(cell);
+                        }
+                    }
+                }
+            }
+        }
+        finally
+        {
+            areaItems = null;
+        }
+
+        invalid.Sort((a, b) => a.Row != b.Row ? a.Row.CompareTo(b.Row) : a.Column.CompareTo(b.Column));
+        return invalid;
+    }
+
+    /// <summary>
+    /// The items a list rule offers in a cell's drop-down: its fixed items, or the values of its range's cells; empty when no
+    /// list rule applies.
+    /// </summary>
+    public IReadOnlyList<CellValue> ListItems(CellAddress cell) =>
+        Find(cell) is { Type: DataValidationType.List } rule ? Items(rule, cell, out _, out _) : [];
+
     /// <summary>Removes a rule.</summary>
     /// <returns>Whether the rule was on the sheet.</returns>
     public bool Remove(DataValidation rule) => rules.Remove(rule);
@@ -192,4 +259,310 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     internal void AddRead(DataValidation rule) => rules.Add(rule);
+
+    private bool Check(DataValidation rule, CellAddress cell, CellValue value)
+    {
+        if (value.Kind == CellValueKind.Empty)
+        {
+            return rule.AllowBlank;
+        }
+
+        switch (rule.Type)
+        {
+            case DataValidationType.Any:
+                return true;
+            case DataValidationType.Custom:
+                return Custom(rule, cell, value);
+            case DataValidationType.List:
+                List<CellValue> items = Items(rule, cell, out bool fixedItems, out bool blankItem);
+                if ((blankItem && rule.AllowBlank && IsName(rule)) || (items.Count == 1 && items[0].Kind == CellValueKind.Error && !fixedItems && !Refers(rule, cell)))
+                {
+                    // Excel lets any value through a list given by a name whose cells include a blank one, when blanks are
+                    // ignored, though the same cells written out as a reference do not; and through a list whose formula
+                    // gives an error, as a name that lost its cells does.
+                    return true;
+                }
+
+                foreach (CellValue item in items)
+                {
+                    if (Same(item, value, fixedItems))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            case DataValidationType.TextLength:
+                if (value.Kind == CellValueKind.Error || !ExcelValues.TryText(EvalValue.FromCell(value), sheet.Workbook.Culture, out string text, out _))
+                {
+                    return false;
+                }
+
+                return Compare(rule, cell, CellValue.FromNumber(text.Length));
+            default:
+                if (value.Kind is CellValueKind.Text or CellValueKind.Error)
+                {
+                    return false;
+                }
+
+                if (rule.Type == DataValidationType.WholeNumber && value.Kind == CellValueKind.Number && value.Number != Math.Floor(value.Number))
+                {
+                    return false;
+                }
+
+                return Compare(rule, cell, value);
+        }
+    }
+
+    /// <summary>
+    /// Whether a custom rule's formula is true for a value, worked out with the value in the cell, as Excel checks a value
+    /// typed in; the cell gets back what it held. Formulas that depend on the cell keep their last results.
+    /// </summary>
+    private bool Custom(DataValidation rule, CellAddress cell, CellValue value)
+    {
+        CellValue? result;
+        if (sheet.GetValue(cell.Row, cell.Column).Equals(value))
+        {
+            result = Evaluate(rule.Formula1, rule, cell);
+        }
+        else
+        {
+            Storage.CellRecord held = sheet.Place(cell.Row, cell.Column, value);
+            try
+            {
+                result = Evaluate(rule.Formula1, rule, cell);
+            }
+            finally
+            {
+                sheet.Restore(cell.Row, cell.Column, held);
+            }
+        }
+
+        return result is { } truth && truth.Kind switch
+        {
+            CellValueKind.Boolean => truth.Boolean,
+            CellValueKind.Number => truth.Number != 0,
+            _ => false,
+        };
+    }
+
+    /// <summary>Whether a value compares with the rule's formulas as its operator asks; false when a formula gives no value.</summary>
+    private bool Compare(DataValidation rule, CellAddress cell, CellValue value)
+    {
+        if (Evaluate(rule.Formula1, rule, cell) is not { } one || one.Kind is CellValueKind.Error or CellValueKind.Empty)
+        {
+            return false;
+        }
+
+        EvalContext context = new(sheet, cell.Row, cell.Column);
+        EvalValue checkedValue = EvalValue.FromCell(value);
+        int a = ExcelValues.Compare(checkedValue, EvalValue.FromCell(one), context);
+        if (rule.Operator is ComparisonOperator.Between or ComparisonOperator.NotBetween)
+        {
+            if (Evaluate(rule.Formula2, rule, cell) is not { } two || two.Kind is CellValueKind.Error or CellValueKind.Empty)
+            {
+                return false;
+            }
+
+            int b = ExcelValues.Compare(checkedValue, EvalValue.FromCell(two), context);
+            return (a >= 0 && b <= 0) == (rule.Operator == ComparisonOperator.Between);
+        }
+
+        return rule.Operator switch
+        {
+            ComparisonOperator.Equal => a == 0,
+            ComparisonOperator.NotEqual => a != 0,
+            ComparisonOperator.LessThan => a < 0,
+            ComparisonOperator.LessThanOrEqual => a <= 0,
+            ComparisonOperator.GreaterThan => a > 0,
+            _ => a >= 0,
+        };
+    }
+
+    /// <summary>
+    /// A list rule's items: the quoted list's, split at commas with the spaces around each taken off, or the values of the
+    /// cells its formula refers to, up to the last row and column of their sheet that hold anything.
+    /// <paramref name="blankItem"/> tells whether a cell among them is blank.
+    /// </summary>
+    private List<CellValue> Items(DataValidation rule, CellAddress cell, out bool fixedItems, out bool blankItem)
+    {
+        blankItem = false;
+        string formula = (rule.Formula1 ?? "").Trim();
+        if (formula.StartsWith('='))
+        {
+            formula = formula[1..];
+        }
+
+        fixedItems = formula.Length >= 2 && formula[0] == '"' && formula[^1] == '"';
+        if (fixedItems)
+        {
+            return [.. formula[1..^1].Replace("\"\"", "\"", StringComparison.Ordinal).Split(',').Select(item => CellValue.FromText(item.Trim(' ')))];
+        }
+
+        List<CellValue> items = [];
+        if (formula.Length == 0 || Parse(formula, rule) is not { } compiled)
+        {
+            return items;
+        }
+
+        EvalContext context = Context(rule, cell);
+        EvalValue result;
+        try
+        {
+            result = FormulaEvaluator.Run(compiled, context);
+        }
+        catch (FormulaException)
+        {
+            return items;
+        }
+
+        if (result.Kind == EvalKind.Reference)
+        {
+            foreach (SheetArea area in result.Areas)
+            {
+                RangeAddress range = area.Range;
+                if (areaItems is not null && areaItems.TryGetValue((area.Sheet, range), out (List<CellValue> Items, bool Blank) known))
+                {
+                    items.AddRange(known.Items);
+                    blankItem |= known.Blank;
+                    continue;
+                }
+
+                int start = items.Count;
+                bool blank = false;
+                if (area.Sheet.UsedRange is not { } used)
+                {
+                    blank = true;
+                }
+                else
+                {
+                    RangeAddress box = used.Address;
+                    int lastRow = Math.Min(range.Last.Row, box.Last.Row), lastColumn = Math.Min(range.Last.Column, box.Last.Column);
+                    blank = lastRow < range.Last.Row || lastColumn < range.Last.Column;
+                    if ((long)(lastRow - range.First.Row + 1) * (lastColumn - range.First.Column + 1) <= EvalContext.MaxArrayCells)
+                    {
+                        for (int r = range.First.Row; r <= lastRow; r++)
+                        {
+                            for (int c = range.First.Column; c <= lastColumn; c++)
+                            {
+                                CellValue item = area.Sheet.GetValue(r, c);
+                                blank |= item.Kind == CellValueKind.Empty;
+                                items.Add(item);
+                            }
+                        }
+                    }
+                }
+
+                blankItem |= blank;
+                areaItems?.Add((area.Sheet, range), (items[start..], blank));
+            }
+        }
+        else if (result.Kind == EvalKind.Array)
+        {
+            items.AddRange(result.Array.Items.Select(item => item.ToCell()));
+        }
+        else
+        {
+            items.Add(result.ToCell());
+        }
+
+        return items;
+    }
+
+    /// <summary>
+    /// Whether a list item is the value: a fixed item when the value as the workbook's culture writes it is the item's text,
+    /// with case, so the number 5 is the item 5 but 0.03 is not the item .03; a cell's value as Excel compares them.
+    /// </summary>
+    private bool Same(CellValue item, CellValue value, bool fixedItem)
+    {
+        if (fixedItem)
+        {
+            if (value.Kind == CellValueKind.Error)
+            {
+                return false;
+            }
+
+            return ExcelValues.TryText(EvalValue.FromCell(value), sheet.Workbook.Culture, out string text, out _)
+                && string.Equals(text, item.Text, StringComparison.Ordinal);
+        }
+
+        if (item.Kind != value.Kind || item.Kind is CellValueKind.Empty or CellValueKind.Error)
+        {
+            return false;
+        }
+
+        return ExcelValues.Compare(EvalValue.FromCell(item), EvalValue.FromCell(value), compareContext ??= new EvalContext(sheet, 0, 0)) == 0;
+    }
+
+    /// <summary>A formula of the rule evaluated for a cell, its relative references counted from the top-left cell of all the rule's ranges.</summary>
+    private CellValue? Evaluate(string? formula, DataValidation rule, CellAddress cell)
+    {
+        if (string.IsNullOrWhiteSpace(formula) || Parse(formula.StartsWith('=') ? formula[1..] : formula, rule) is not { } compiled)
+        {
+            return null;
+        }
+
+        EvalContext context = Context(rule, cell);
+        try
+        {
+            return FormulaEvaluator.Result(FormulaEvaluator.Run(compiled, context), context);
+        }
+        catch (FormulaException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Whether the rule's list formula gives cells, rather than a value.</summary>
+    private bool Refers(DataValidation rule, CellAddress cell)
+    {
+        string formula = (rule.Formula1 ?? "").Trim().TrimStart('=');
+        if (formula.Length == 0 || Parse(formula, rule) is not { } compiled)
+        {
+            return false;
+        }
+
+        try
+        {
+            return FormulaEvaluator.Run(compiled, Context(rule, cell)).Kind == EvalKind.Reference;
+        }
+        catch (FormulaException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>Whether the rule's list is given by a name of the workbook or the sheet alone.</summary>
+    private bool IsName(DataValidation rule)
+    {
+        string formula = (rule.Formula1 ?? "").Trim().TrimStart('=');
+        return formula.Length > 0 && (sheet.Workbook.Names.TryGet(formula, sheet, out _) || sheet.Workbook.Names.TryGet(formula, null, out _));
+    }
+
+    private EvalContext Context(DataValidation rule, CellAddress cell) =>
+        EvalContext.ForCell(sheet, cell.Row, cell.Column, Origin(rule), [], arrayMode: true);
+
+    private static CellAddress Origin(DataValidation rule) => ConditionalFormatEvaluation.TopLeft(rule.Ranges);
+
+    private static CompiledFormula? Parse(string formula, DataValidation rule)
+    {
+        rule.Compiled ??= [];
+        if (rule.Compiled.TryGetValue(formula, out CompiledFormula? known))
+        {
+            return known;
+        }
+
+        CompiledFormula? compiled;
+        try
+        {
+            compiled = FormulaCompiler.Compile(FormulaParser.Parse(formula, r1c1: false, Origin(rule)));
+        }
+        catch (FormulaException)
+        {
+            compiled = null;
+        }
+
+        rule.Compiled[formula] = compiled;
+        return compiled;
+    }
 }

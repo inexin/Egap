@@ -1134,3 +1134,47 @@ Egap.Spreadsheets.FindOptions.Order.get -> Egap.Spreadsheets.FindOrder
 Egap.Spreadsheets.FindOptions.LookIn.init -> void
 Egap.Spreadsheets.Worksheet.Find(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
 Egap.Spreadsheets.Worksheet.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int
+Egap.Spreadsheets.ConditionalCellFormat
+Egap.Spreadsheets.ConditionalCellFormat.DataBar.get -> Egap.Spreadsheets.ConditionalDataBar?
+Egap.Spreadsheets.ConditionalCellFormat.Icon.get -> Egap.Spreadsheets.ConditionalIcon?
+Egap.Spreadsheets.ConditionalCellFormat.Rules.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.ConditionalFormatRule!>!
+Egap.Spreadsheets.ConditionalCellFormat.ShowsValue.get -> bool
+Egap.Spreadsheets.ConditionalCellFormat.Style.get -> Egap.Spreadsheets.CellStyle!
+Egap.Spreadsheets.ConditionalDataBar
+Egap.Spreadsheets.ConditionalDataBar.Color.get -> Egap.Spreadsheets.CellColor
+Egap.Spreadsheets.ConditionalDataBar.Color.init -> void
+Egap.Spreadsheets.ConditionalDataBar.ConditionalDataBar() -> void
+Egap.Spreadsheets.ConditionalDataBar.ConditionalDataBar(double Fraction, Egap.Spreadsheets.CellColor Color) -> void
+Egap.Spreadsheets.ConditionalDataBar.Deconstruct(out double Fraction, out Egap.Spreadsheets.CellColor Color) -> void
+Egap.Spreadsheets.ConditionalDataBar.Equals(Egap.Spreadsheets.ConditionalDataBar other) -> bool
+Egap.Spreadsheets.ConditionalDataBar.Fraction.get -> double
+Egap.Spreadsheets.ConditionalDataBar.Fraction.init -> void
+Egap.Spreadsheets.ConditionalFormatCollection.Evaluate() -> Egap.Spreadsheets.ConditionalFormatEvaluation!
+Egap.Spreadsheets.ConditionalFormatCollection.Evaluate(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.ConditionalCellFormat!
+Egap.Spreadsheets.ConditionalFormatEvaluation
+Egap.Spreadsheets.ConditionalFormatEvaluation.this[Egap.Spreadsheets.CellAddress cell].get -> Egap.Spreadsheets.ConditionalCellFormat!
+Egap.Spreadsheets.ConditionalFormatEvaluation.this[int row, int column].get -> Egap.Spreadsheets.ConditionalCellFormat!
+Egap.Spreadsheets.ConditionalFormatEvaluation.this[string! cell].get -> Egap.Spreadsheets.ConditionalCellFormat!
+Egap.Spreadsheets.ConditionalIcon
+Egap.Spreadsheets.ConditionalIcon.ConditionalIcon() -> void
+Egap.Spreadsheets.ConditionalIcon.ConditionalIcon(string! IconSet, int Index) -> void
+Egap.Spreadsheets.ConditionalIcon.Deconstruct(out string! IconSet, out int Index) -> void
+Egap.Spreadsheets.ConditionalIcon.Equals(Egap.Spreadsheets.ConditionalIcon other) -> bool
+Egap.Spreadsheets.ConditionalIcon.IconSet.get -> string!
+Egap.Spreadsheets.ConditionalIcon.IconSet.init -> void
+Egap.Spreadsheets.ConditionalIcon.Index.get -> int
+Egap.Spreadsheets.ConditionalIcon.Index.init -> void
+Egap.Spreadsheets.DataValidationCollection.FindInvalid() -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.CellAddress>!
+Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress cell) -> bool
+Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress cell, Egap.Spreadsheets.CellValue value) -> bool
+Egap.Spreadsheets.DataValidationCollection.ListItems(Egap.Spreadsheets.CellAddress cell) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.CellValue>!
+override Egap.Spreadsheets.ConditionalDataBar.GetHashCode() -> int
+override Egap.Spreadsheets.ConditionalIcon.GetHashCode() -> int
+static Egap.Spreadsheets.ConditionalDataBar.operator !=(Egap.Spreadsheets.ConditionalDataBar left, Egap.Spreadsheets.ConditionalDataBar right) -> bool
+static Egap.Spreadsheets.ConditionalDataBar.operator ==(Egap.Spreadsheets.ConditionalDataBar left, Egap.Spreadsheets.ConditionalDataBar right) -> bool
+static Egap.Spreadsheets.ConditionalIcon.operator !=(Egap.Spreadsheets.ConditionalIcon left, Egap.Spreadsheets.ConditionalIcon right) -> bool
+static Egap.Spreadsheets.ConditionalIcon.operator ==(Egap.Spreadsheets.ConditionalIcon left, Egap.Spreadsheets.ConditionalIcon right) -> bool
+~override Egap.Spreadsheets.ConditionalDataBar.Equals(object obj) -> bool
+~override Egap.Spreadsheets.ConditionalDataBar.ToString() -> string
+~override Egap.Spreadsheets.ConditionalIcon.Equals(object obj) -> bool
+~override Egap.Spreadsheets.ConditionalIcon.ToString() -> string

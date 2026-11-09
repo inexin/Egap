@@ -31,6 +31,8 @@ public sealed partial class Worksheet
         Columns = new SheetColumnCollection(this);
         Tables = new SheetTableCollection(this);
         PageSetup = new PageSetup(this);
+        ConditionalFormats = new ConditionalFormatCollection(this);
+        DataValidations = new DataValidationCollection(this);
     }
 
     /// <summary>The workbook the sheet is in.</summary>
@@ -82,10 +84,10 @@ public sealed partial class Worksheet
     public HyperlinkCollection Hyperlinks { get; } = new();
 
     /// <summary>The data validation rules: what cells allow, drop-down lists and input messages.</summary>
-    public DataValidationCollection DataValidations { get; } = new();
+    public DataValidationCollection DataValidations { get; }
 
     /// <summary>The conditional formatting.</summary>
-    public ConditionalFormatCollection ConditionalFormats { get; } = new();
+    public ConditionalFormatCollection ConditionalFormats { get; }
 
     /// <summary>The Excel tables on the sheet.</summary>
     public SheetTableCollection Tables { get; }
@@ -288,6 +290,41 @@ public sealed partial class Worksheet
             _ => CellValue.Empty,
         };
     }
+
+    /// <summary>
+    /// Puts a value in a cell for a moment, as data validation checks a value not yet entered: only the cell's record
+    /// changes, not its formula, its dependents or what has changed. Returns the record to give back to <see cref="Restore"/>.
+    /// </summary>
+    internal CellRecord Place(int row, int column, CellValue value)
+    {
+        CellRecord held = store.Get(row, column);
+        CellRecord record = new() { Style = held.Style };
+        switch (value.Kind)
+        {
+            case CellValueKind.Number:
+                record.Kind = CellKind.Number;
+                record.Payload = BitConverter.DoubleToInt64Bits(value.Number);
+                break;
+            case CellValueKind.Text:
+                record.Kind = CellKind.SharedString;
+                record.Payload = Workbook.SharedStrings.Add(value.Text);
+                break;
+            case CellValueKind.Boolean:
+                record.Kind = CellKind.Boolean;
+                record.Payload = value.Boolean ? 1 : 0;
+                break;
+            case CellValueKind.Error:
+                record.Kind = CellKind.Error;
+                record.Payload = (long)value.Error;
+                break;
+        }
+
+        store.Set(row, column, record);
+        return held;
+    }
+
+    /// <summary>Gives a cell back the record <see cref="Place"/> took from it.</summary>
+    internal void Restore(int row, int column, in CellRecord held) => store.Set(row, column, held);
 
     internal void SetValue(int row, int column, CellValue value)
     {

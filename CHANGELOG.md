@@ -156,6 +156,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- `ConditionalFormats.Evaluate` works out conditional formatting as Excel shows it: for each cell the rules that apply,
+  in priority order with `StopIfTrue`, the style they give it, colour scale fills, data bar lengths, icon set icons and
+  whether the value shows. Every rule type is evaluated: comparisons, formulas, top and bottom, above and below the
+  average, duplicates and uniques, text, blanks, errors and time periods. Printing draws from the same evaluation, so
+  rules that style cells now print too.
+- `DataValidations.IsValid`, `FindInvalid` and `ListItems` check values against data validation as Excel's Circle
+  Invalid Data does: whole numbers, decimals, dates, times, lists, text length and custom formulas.
 - AutoFit: `SheetColumn.AutoFit()` and `CellRange.AutoFitColumns()` fit columns to their text, and `SheetRow.AutoFit()`
   and `CellRange.AutoFitRows()` fit rows to their fonts, wrapped lines and turned text, as Excel's AutoFit does. Text is
   measured with the widths and line heights Excel gives the fonts sheets use most, upright and italic, at the sheet's

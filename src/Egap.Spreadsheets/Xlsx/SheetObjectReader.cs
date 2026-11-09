@@ -305,6 +305,7 @@ internal static class SheetObjectReader
                 CellStyle? style = index < book.Styles.DifferentialStyles.Count ? book.Styles.DifferentialStyles[index] : null;
                 read.Style = style;
                 read.ReadStyle = (index, style);
+                read.StatedFontFlags = index < book.Styles.DifferentialFontFlags.Count ? book.Styles.DifferentialFontFlags[index] : 0;
             }
 
             format.Rules.Add(read);

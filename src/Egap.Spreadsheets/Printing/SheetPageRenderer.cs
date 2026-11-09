@@ -213,7 +213,7 @@ internal sealed partial class SheetPageRenderer
         return null;
     }
 
-    /// <summary>The style of a cell: its own, else its row's, else its column's.</summary>
+    /// <summary>The style of a cell: its own, else its row's, else its column's, with its conditional formatting on it.</summary>
     private CellStyle StyleAt(int row, int column)
     {
         ref readonly Storage.CellRecord record = ref sheet.Store.Get(row, column);
@@ -230,7 +230,8 @@ internal sealed partial class SheetPageRenderer
             }
         }
 
-        return index >= 0 && index < book.Styles.Count ? book.Styles[index] : CellStyle.Default;
+        CellStyle style = index >= 0 && index < book.Styles.Count ? book.Styles[index] : CellStyle.Default;
+        return sheet.ConditionalFormats.Count > 0 ? Conditional().Style(row, column, style) : style;
     }
 
     /// <summary>Calls <paramref name="draw"/> for each cell of the segments, a merged range once at its first cell there.</summary>
@@ -353,7 +354,7 @@ internal sealed partial class SheetPageRenderer
         ForEachCell(rowSegment, columnSegment, (r, c, rect, _) =>
         {
             CellStyle style = StyleAt(r, c);
-            Rgba8? fill = (sheet.ConditionalFormats.Count > 0 ? Conditional().ScaleColor(r, c) : null) ?? FillColor(style.Fill);
+            Rgba8? fill = FillColor(style.Fill);
             if (fill is { } color)
             {
                 canvas.FillRect(rect, color);

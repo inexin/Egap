@@ -66,6 +66,7 @@ internal static class XlsxStyles
         foreach (XElement dxf in Children(root, "dxfs", "dxf"))
         {
             table.DifferentialStyles.Add(ReadDifferential(dxf));
+            table.DifferentialFontFlags.Add(StatedFontFlags(dxf));
         }
 
         if (table.Fonts.Count == 0 || table.Fills.Count == 0 || table.Borders.Count == 0)
@@ -155,6 +156,17 @@ internal static class XlsxStyles
     /// A differential format (18.8.14) as a style: the font's bold, italic, underline, strikethrough and colour, the
     /// number format, the fill and the borders; what else it sets is left to the file's element.
     /// </summary>
+    internal static int StatedFontFlags(XElement dxf)
+    {
+        if (dxf.Element(Ns + "font") is not { } font)
+        {
+            return 0;
+        }
+
+        return (font.Element(Ns + "b") is null ? 0 : 1) | (font.Element(Ns + "i") is null ? 0 : 2)
+            | (font.Element(Ns + "strike") is null ? 0 : 4) | (font.Element(Ns + "u") is null ? 0 : 8);
+    }
+
     internal static CellStyle ReadDifferential(XElement dxf)
     {
         CellStyle style = CellStyle.Default;
