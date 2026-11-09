@@ -197,6 +197,14 @@ internal static class OpenFormula
                         continue;
                     }
 
+                    if (c == '\'' && i + 1 < text.Length && text[i + 1] == '[' && LinkedSheetName(text, i) is int after)
+                    {
+                        // A name of a linked book's sheet, '[1]My sheet'!Rate, kept as Excel wrote it.
+                        output.Append(text[i..after]);
+                        i = after;
+                        continue;
+                    }
+
                     if (c == '\'' && sheets is not null && QuotedSheetName(text, i, sheets) is ({ } sheet, int nameStart, int nameEnd))
                     {
                         output.Append(SheetNames.Quoted(sheet)).Append('!').Append(text[nameStart..nameEnd]);
@@ -228,6 +236,52 @@ internal static class OpenFormula
         }
 
         return output.ToString();
+    }
+
+    /// <summary>
+    /// Where a quoted linked sheet and its name end, as in <c>'[1]My sheet'!Rate</c>: a book number, the sheet, a quote, an
+    /// exclamation mark and a name; null for anything else.
+    /// </summary>
+    private static int? LinkedSheetName(ReadOnlySpan<char> text, int at)
+    {
+        int i = at + 2;
+        while (i < text.Length && char.IsAsciiDigit(text[i]))
+        {
+            i++;
+        }
+
+        if (i == at + 2 || i >= text.Length || text[i] != ']')
+        {
+            return null;
+        }
+
+        while (++i < text.Length)
+        {
+            if (text[i] == '\'')
+            {
+                if (i + 1 < text.Length && text[i + 1] == '\'')
+                {
+                    i++;
+                    continue;
+                }
+
+                break;
+            }
+        }
+
+        int start = i + 2;
+        if (start >= text.Length || text[i + 1] != '!' || !(char.IsLetter(text[start]) || text[start] == '_'))
+        {
+            return null;
+        }
+
+        int end = start;
+        while (end < text.Length && (char.IsLetterOrDigit(text[end]) || text[end] is '_' or '.'))
+        {
+            end++;
+        }
+
+        return end;
     }
 
     /// <summary>A quoted sheet name followed by a dot and a name, as in <c>'My sheet'.Rate</c>: the sheet and where the name lies.</summary>
