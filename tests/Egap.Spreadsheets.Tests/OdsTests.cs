@@ -226,6 +226,21 @@ public sealed class OdsTests
     }
 
     [Fact]
+    public void LeavesOutCopiesOfOtherFilesSheets()
+    {
+        string copy = """
+            <table:table table:name="'file:///c:/other.xlsx'#$Prices" table:print="false">
+              <table:table-source xlink:type="simple" xlink:href="file:///c:/other.xlsx" table:table-name="Prices" table:mode="copy-results-only" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+              <table:table-row><table:table-cell office:value-type="float" office:value="9"/></table:table-row>
+            </table:table>
+            """;
+        Workbook book = Load(Flat(Table("Main", Row("<table:table-cell table:formula=\"of:=['file:///c:/other.xlsx'#$Prices.A1]\" office:value-type=\"float\" office:value=\"9\"/>")) + copy));
+        Assert.Equal(["Main"], book.Worksheets.Select(s => s.Name));
+        Assert.Equal("#REF!", book.Worksheets[0]["A1"].Formula);
+        Assert.Equal(9, book.Worksheets[0]["A1"].Value.Number);
+    }
+
+    [Fact]
     public void ReadsNames()
     {
         string tables = Table("Data", Row(Cell("float", "office:value=\"1\"")), localNames:
