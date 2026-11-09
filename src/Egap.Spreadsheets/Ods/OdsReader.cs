@@ -69,7 +69,11 @@ internal static class OdsReader
                 number = files[file] = book.ExternalBooks.Count;
             }
 
-            book.ExternalBooks[number - 1].MakeSheet(book, sheet);
+            if (sheet.Length > 0)
+            {
+                book.ExternalBooks[number - 1].MakeSheet(book, sheet);
+            }
+
             return number;
         }
 

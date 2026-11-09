@@ -89,6 +89,20 @@ internal static class OpenFormula
                 case '[':
                     {
                         int end = ReferenceEnd(text, i);
+                        if (end > i + 1 && end + 1 < text.Length && text[end + 1] == '!' && text[(i + 1)..end].IndexOfAnyExceptInRange('0', '9') < 0)
+                        {
+                            // A name in a linked book, [1]!Rate, which office suites keep as Excel wrote it.
+                            int open = i;
+                            i = end + 2;
+                            while (i < text.Length && (char.IsLetterOrDigit(text[i]) || text[i] is '_' or '.' or '\\'))
+                            {
+                                i++;
+                            }
+
+                            output.Append(text[open..i]);
+                            continue;
+                        }
+
                         output.Append(Reference(text[(i + 1)..Math.Max(i + 1, end)], ref exact, books));
                         i = end + 1;
                         continue;
@@ -314,6 +328,22 @@ internal static class OpenFormula
             // Another file's sheet: 'file:///c:/other.ods'#$Sheet1.A1, which Excel writes [1]Sheet1!A1 for its first linked book.
             string file = inside[1..close].ToString().Replace("''", "'", StringComparison.Ordinal);
             ReadOnlySpan<char> rest = inside[(close + 2)..];
+
+            // A name defined in the other file: 'file:///c:/other.ods'#$$'Rates', Excel's [1]!Rates.
+            if (rest is ['$', '$', _, ..] && books is not null)
+            {
+                string name = rest[2..].Trim().ToString();
+                if (name is ['\'', .., '\''])
+                {
+                    name = name[1..^1].Replace("''", "'", StringComparison.Ordinal);
+                }
+
+                if (name.Length > 0 && name.All(c => char.IsLetterOrDigit(c) || c is '_' or '.' or '\\'))
+                {
+                    return "[" + books(file, "").ToString(System.Globalization.CultureInfo.InvariantCulture) + "]!" + name;
+                }
+            }
+
             bool inner = true;
             string local = Reference(rest, ref inner);
             int bang = local.LastIndexOf('!');
@@ -325,7 +355,10 @@ internal static class OpenFormula
 
             string sheet = local[0] == '\'' ? local[1..(bang - 1)].Replace("''", "'", StringComparison.Ordinal) : local[..bang];
             string number = "[" + books(file, sheet).ToString(System.Globalization.CultureInfo.InvariantCulture) + "]";
-            return local[0] == '\'' ? "'" + number + local[1..] : number + local;
+
+            // After the book's number a sheet named like a cell, such as Q1, needs no quotes; other names quote as they do.
+            bool word = sheet.Length > 0 && (char.IsLetter(sheet[0]) || sheet[0] == '_') && sheet.All(c => char.IsLetterOrDigit(c) || c is '_' or '.');
+            return local[0] != '\'' ? number + local : word ? number + sheet + local[bang..] : "'" + number + local[1..];
         }
 
         if (inside.IndexOf("#REF!") >= 0)
