@@ -328,10 +328,18 @@ internal static class OdsReader
         if (content && !covered)
         {
             result = Value(context, cell, out bool text);
-            // LibreOffice writes a TRUE or FALSE typed into a cell as the formula TRUE() or FALSE() of a boolean cell: those
-            // are values. A cell that only shows a number as TRUE or FALSE keeps the formula as it was written.
-            if (cell.Attr(TableNs, "formula") is { } source && OpenFormula.ToExcel(source, out _) is { Length: > 0 } excel
-                && !(cell.Attr(OfficeNs, "value-type") == "boolean" && excel is "TRUE" or "FALSE"))
+            // LibreOffice writes a TRUE or FALSE typed into a cell as the formula TRUE() or FALSE() of a boolean cell, and an
+            // error typed into a cell, such as #REF!, as a formula of that error alone: those are values. A cell that only
+            // shows a number as TRUE or FALSE keeps the formula as it was written.
+            string? source = cell.Attr(TableNs, "formula");
+            string? excel = source is null ? null : OpenFormula.ToExcel(source, out _);
+            if (excel is ['#', ..] && !source!.Contains('[', StringComparison.Ordinal) && CellValue.TryParseError(excel, out CellError typed))
+            {
+                result = CellValue.FromError(typed);
+                excel = null;
+            }
+
+            if (excel is { Length: > 0 } && !(cell.Attr(OfficeNs, "value-type") == "boolean" && excel is "TRUE" or "FALSE"))
             {
                 if (excel is "TRUE" or "FALSE")
                 {
@@ -472,12 +480,73 @@ internal static class OdsReader
     /// <summary>A date value, with or without a time, as days since the file's null date.</summary>
     public static double? Date(string? value, DateTime nullDate)
     {
-        if (value is null || !DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind | DateTimeStyles.AllowWhiteSpaces, out DateTime date))
+        // Dates are read by hand, not with DateTime: office suites write numbers shown as dates far outside its years
+        // 1 to 9999, with a minus sign or five digits, and those are days like any other.
+        if (value is null || DayNumber(value.AsSpan().Trim()) is not double days)
         {
             return null;
         }
 
-        return (date - nullDate).TotalDays;
+        return days - DaysFromCivil(nullDate.Year, nullDate.Month, nullDate.Day);
+    }
+
+    /// <summary>
+    /// A date such as <c>2024-03-01</c>, <c>-0045-01-01</c> or <c>12345-06-07T08:09:10.5</c> (xsd:date or xsd:dateTime, years
+    /// counted astronomically) as days on a proleptic Gregorian scale, with the time of day as a fraction; null when malformed.
+    /// </summary>
+    private static double? DayNumber(ReadOnlySpan<char> text)
+    {
+        bool negative = text is ['-', ..];
+        if (negative)
+        {
+            text = text[1..];
+        }
+
+        int dash = text.IndexOf('-');
+        if (dash < 4 || dash > 9 || text.Length < dash + 6 || text[dash + 3] != '-'
+            || !long.TryParse(text[..dash], NumberStyles.None, CultureInfo.InvariantCulture, out long year)
+            || !int.TryParse(text.Slice(dash + 1, 2), NumberStyles.None, CultureInfo.InvariantCulture, out int month)
+            || !int.TryParse(text.Slice(dash + 4, 2), NumberStyles.None, CultureInfo.InvariantCulture, out int day)
+            || month is < 1 or > 12 || day is < 1 or > 31)
+        {
+            return null;
+        }
+
+        double days = DaysFromCivil(negative ? -year : year, month, day);
+        ReadOnlySpan<char> rest = text[(dash + 6)..];
+        if (rest is ['T', ..])
+        {
+            rest = rest[1..];
+            int zone = rest.IndexOfAny('Z', '+', '-');
+            ReadOnlySpan<char> clock = zone >= 0 ? rest[..zone] : rest;
+            if (clock.Length < 8 || clock[2] != ':' || clock[5] != ':'
+                || !int.TryParse(clock[..2], NumberStyles.None, CultureInfo.InvariantCulture, out int hours)
+                || !int.TryParse(clock.Slice(3, 2), NumberStyles.None, CultureInfo.InvariantCulture, out int minutes)
+                || !double.TryParse(clock[6..], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double seconds)
+                || hours > 24 || minutes > 59 || seconds >= 61)
+            {
+                return null;
+            }
+
+            days += (hours * 3600 + minutes * 60 + seconds) / 86400;
+        }
+        else if (rest.Length > 0 && rest is not (['Z', ..] or ['+', ..] or ['-', ..]))
+        {
+            return null;
+        }
+
+        return days;
+    }
+
+    /// <summary>Days from 1970-01-01 to a proleptic Gregorian date, by the civil calendar's 400-year cycle.</summary>
+    private static double DaysFromCivil(long year, int month, int day)
+    {
+        year -= month <= 2 ? 1 : 0;
+        long era = (year >= 0 ? year : year - 399) / 400;
+        long yearOfEra = year - era * 400;
+        long dayOfYear = (153 * (month + (month > 2 ? -3 : 9)) + 2) / 5 + day - 1;
+        long dayOfEra = yearOfEra * 365 + yearOfEra / 4 - yearOfEra / 100 + dayOfYear;
+        return era * 146097 + dayOfEra - 719468;
     }
 
     /// <summary>A time value, an ISO 8601 duration such as <c>PT12H30M00S</c>, as a fraction of a day.</summary>

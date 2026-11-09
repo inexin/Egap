@@ -85,6 +85,37 @@ public sealed class OdsTests
     }
 
     [Fact]
+    public void ReadsErrorsTypedIntoCellsAsValues()
+    {
+        Workbook book = Load(Flat(Table("S", Row("<table:table-cell table:formula=\"of:=#REF!\" office:value-type=\"float\" office:value=\"0\"/>",
+            "<table:table-cell table:formula=\"of:=#N/A+1\" office:value-type=\"float\" office:value=\"0\" calcext:value-type=\"error\"><text:p>#N/A</text:p></table:table-cell>"))));
+        Worksheet sheet = book.Worksheets[0];
+        Assert.False(sheet["A1"].HasFormula);
+        Assert.Equal(CellError.Reference, sheet["A1"].Value.Error);
+        Assert.Equal("#N/A+1", sheet["B1"].Formula);
+    }
+
+    [Theory]
+    [InlineData("1899-12-30", 0)]
+    [InlineData("1900-03-01", 61)]
+    [InlineData("2024-03-01T18:00:00", 45352.75)]
+    [InlineData("2024-03-01T06:00:00.5Z", 45352.25000578704)]
+    [InlineData("1800-01-01", -36522)]
+    [InlineData("-0001-01-01", -694324)]
+    [InlineData("12345-06-07", 3815117)]
+    public void ReadsDatesOutsideDateTimeYears(string value, double serial)
+    {
+        Assert.Equal(serial, OdsReader.Date(value, new DateTime(1899, 12, 30))!.Value, 9);
+    }
+
+    [Theory]
+    [InlineData("2024-13-01")]
+    [InlineData("24-01-01")]
+    [InlineData("2024-01-01X")]
+    [InlineData("2024-01-01T25")]
+    public void LeavesMalformedDatesOut(string value) => Assert.Null(OdsReader.Date(value, new DateTime(1899, 12, 30)));
+
+    [Fact]
     public void Reads1904Dates()
     {
         Workbook book = Load(Flat(Table("S", Row(Cell("date", "office:date-value=\"1904-01-02\""))),
