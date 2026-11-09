@@ -69,6 +69,7 @@ public sealed class OdsTests
     [InlineData("of:=[1]!_xll.Rate([.A2];1)+[2]!Total", "[1]!_xll.Rate(A2,1)+[2]!Total")]
     [InlineData("of:='[1]My sheet'!Rate*2+'[1]It''s'!Total", "'[1]My sheet'!Rate*2+'[1]It''s'!Total")]
     [InlineData("of:=VLOOKUP([.A1];['file:///c:/b.ods'#$$'Table'];2)", "VLOOKUP(A1,[2]!Table,2)")]
+    [InlineData("of:=VLOOKUP([.A1];'file:///c:/b.ods'#Table;2)", "VLOOKUP(A1,[2]!Table,2)")]
     [InlineData("of:=['file:///c:/a.ods'#$Q1.A1:.B2]", "[1]Q1!A1:B2")]
     [InlineData("of:=['file:///c:/b.ods'#$'My sheet'.A1]+['file:///c:/a.ods'#$'It''s'.$B$2]", "'[2]My sheet'!A1+'[1]It''s'!$B$2")]
     public void TranslatesReferencesToOtherFiles(string formula, string excel)
