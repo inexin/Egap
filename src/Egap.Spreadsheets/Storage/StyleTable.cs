@@ -119,6 +119,12 @@ internal sealed class StyleTable
     /// <summary>The style part's differential formats (dxfs) as conditional formatting reads them; null for one the model cannot describe.</summary>
     public List<CellStyle?> DifferentialStyles { get; } = [];
 
+    /// <summary>
+    /// For each differential format, the font flags it states, true or false: 1 bold, 2 italic, 4 strikethrough, 8
+    /// underline. A rule that states a flag false takes it away from the cell, which a style alone cannot tell.
+    /// </summary>
+    public List<int> DifferentialFontFlags { get; } = [];
+
     /// <summary>The style at an index.</summary>
     public CellStyle this[int index] => styles[index];
 

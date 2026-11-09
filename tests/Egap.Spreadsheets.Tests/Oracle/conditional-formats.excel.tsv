@@ -1,0 +1,1761 @@
+# Excel 16.0 build 20527, nb-NO: conditional formats and data validation, today 46335, written by tools/excel-conditional-format-oracle.ps1
+F	cellIs between 5 and 20	2	255	0	0	0	5
+F	cellIs between 5 and 20	3	255	0	0	0	12
+F	cellIs between 5 and 20	4	16777215	0	0	0	-3
+F	cellIs between 5 and 20	5	255	0	0	0	12
+F	cellIs between 5 and 20	6	16777215	0	0	0	40
+F	cellIs between 5 and 20	7	16777215	0	0	0	apple
+F	cellIs between 5 and 20	8	16777215	0	0	0	Banana
+F	cellIs between 5 and 20	9	16777215	0	0	0	
+F	cellIs between 5 and 20	10	16777215	0	0	0	#N/A
+F	cellIs between 5 and 20	11	255	0	0	0	7,5
+F	cellIs between 5 and 20	12	16777215	0	0	0	0
+F	cellIs between 5 and 20	13	16777215	0	0	0	100
+F	cellIs between 5 and 20	14	16777215	0	0	0	apple pie
+F	cellIs between 5 and 20	15	16777215	0	0	0	33
+F	cellIs between 5 and 20	16	255	0	0	0	12
+F	cellIs between 5 and 20	17	16777215	0	0	0	APPLE
+F	cellIs between 5 and 20	18	16777215	0	0	0	2,5
+F	cellIs between 5 and 20	19	255	0	0	0	18
+F	cellIs between 5 and 20	20	16777215	0	0	0	 
+F	cellIs between 5 and 20	21	16777215	0	0	0	TRUE
+F	cellIs not between 5 and 20	2	16777215	0	0	0	5
+F	cellIs not between 5 and 20	3	16777215	0	0	0	12
+F	cellIs not between 5 and 20	4	255	0	0	0	-3
+F	cellIs not between 5 and 20	5	16777215	0	0	0	12
+F	cellIs not between 5 and 20	6	255	0	0	0	40
+F	cellIs not between 5 and 20	7	255	0	0	0	apple
+F	cellIs not between 5 and 20	8	255	0	0	0	Banana
+F	cellIs not between 5 and 20	9	255	0	0	0	
+F	cellIs not between 5 and 20	10	16777215	0	0	0	#N/A
+F	cellIs not between 5 and 20	11	16777215	0	0	0	7,5
+F	cellIs not between 5 and 20	12	255	0	0	0	0
+F	cellIs not between 5 and 20	13	255	0	0	0	100
+F	cellIs not between 5 and 20	14	255	0	0	0	apple pie
+F	cellIs not between 5 and 20	15	255	0	0	0	33
+F	cellIs not between 5 and 20	16	16777215	0	0	0	12
+F	cellIs not between 5 and 20	17	255	0	0	0	APPLE
+F	cellIs not between 5 and 20	18	255	0	0	0	2,5
+F	cellIs not between 5 and 20	19	16777215	0	0	0	18
+F	cellIs not between 5 and 20	20	255	0	0	0	 
+F	cellIs not between 5 and 20	21	255	0	0	0	TRUE
+F	cellIs equal 12	2	16777215	0	0	0	5
+F	cellIs equal 12	3	255	0	0	0	12
+F	cellIs equal 12	4	16777215	0	0	0	-3
+F	cellIs equal 12	5	255	0	0	0	12
+F	cellIs equal 12	6	16777215	0	0	0	40
+F	cellIs equal 12	7	16777215	0	0	0	apple
+F	cellIs equal 12	8	16777215	0	0	0	Banana
+F	cellIs equal 12	9	16777215	0	0	0	
+F	cellIs equal 12	10	16777215	0	0	0	#N/A
+F	cellIs equal 12	11	16777215	0	0	0	7,5
+F	cellIs equal 12	12	16777215	0	0	0	0
+F	cellIs equal 12	13	16777215	0	0	0	100
+F	cellIs equal 12	14	16777215	0	0	0	apple pie
+F	cellIs equal 12	15	16777215	0	0	0	33
+F	cellIs equal 12	16	255	0	0	0	12
+F	cellIs equal 12	17	16777215	0	0	0	APPLE
+F	cellIs equal 12	18	16777215	0	0	0	2,5
+F	cellIs equal 12	19	16777215	0	0	0	18
+F	cellIs equal 12	20	16777215	0	0	0	 
+F	cellIs equal 12	21	16777215	0	0	0	TRUE
+F	cellIs not equal 12	2	255	0	0	0	5
+F	cellIs not equal 12	3	16777215	0	0	0	12
+F	cellIs not equal 12	4	255	0	0	0	-3
+F	cellIs not equal 12	5	16777215	0	0	0	12
+F	cellIs not equal 12	6	255	0	0	0	40
+F	cellIs not equal 12	7	255	0	0	0	apple
+F	cellIs not equal 12	8	255	0	0	0	Banana
+F	cellIs not equal 12	9	255	0	0	0	
+F	cellIs not equal 12	10	16777215	0	0	0	#N/A
+F	cellIs not equal 12	11	255	0	0	0	7,5
+F	cellIs not equal 12	12	255	0	0	0	0
+F	cellIs not equal 12	13	255	0	0	0	100
+F	cellIs not equal 12	14	255	0	0	0	apple pie
+F	cellIs not equal 12	15	255	0	0	0	33
+F	cellIs not equal 12	16	16777215	0	0	0	12
+F	cellIs not equal 12	17	255	0	0	0	APPLE
+F	cellIs not equal 12	18	255	0	0	0	2,5
+F	cellIs not equal 12	19	255	0	0	0	18
+F	cellIs not equal 12	20	255	0	0	0	 
+F	cellIs not equal 12	21	255	0	0	0	TRUE
+F	cellIs greater than 10	2	16777215	0	0	0	5
+F	cellIs greater than 10	3	255	0	0	0	12
+F	cellIs greater than 10	4	16777215	0	0	0	-3
+F	cellIs greater than 10	5	255	0	0	0	12
+F	cellIs greater than 10	6	255	0	0	0	40
+F	cellIs greater than 10	7	255	0	0	0	apple
+F	cellIs greater than 10	8	255	0	0	0	Banana
+F	cellIs greater than 10	9	16777215	0	0	0	
+F	cellIs greater than 10	10	16777215	0	0	0	#N/A
+F	cellIs greater than 10	11	16777215	0	0	0	7,5
+F	cellIs greater than 10	12	16777215	0	0	0	0
+F	cellIs greater than 10	13	255	0	0	0	100
+F	cellIs greater than 10	14	255	0	0	0	apple pie
+F	cellIs greater than 10	15	255	0	0	0	33
+F	cellIs greater than 10	16	255	0	0	0	12
+F	cellIs greater than 10	17	255	0	0	0	APPLE
+F	cellIs greater than 10	18	16777215	0	0	0	2,5
+F	cellIs greater than 10	19	255	0	0	0	18
+F	cellIs greater than 10	20	255	0	0	0	 
+F	cellIs greater than 10	21	255	0	0	0	TRUE
+F	cellIs less than 10	2	255	0	0	0	5
+F	cellIs less than 10	3	16777215	0	0	0	12
+F	cellIs less than 10	4	255	0	0	0	-3
+F	cellIs less than 10	5	16777215	0	0	0	12
+F	cellIs less than 10	6	16777215	0	0	0	40
+F	cellIs less than 10	7	16777215	0	0	0	apple
+F	cellIs less than 10	8	16777215	0	0	0	Banana
+F	cellIs less than 10	9	255	0	0	0	
+F	cellIs less than 10	10	16777215	0	0	0	#N/A
+F	cellIs less than 10	11	255	0	0	0	7,5
+F	cellIs less than 10	12	255	0	0	0	0
+F	cellIs less than 10	13	16777215	0	0	0	100
+F	cellIs less than 10	14	16777215	0	0	0	apple pie
+F	cellIs less than 10	15	16777215	0	0	0	33
+F	cellIs less than 10	16	16777215	0	0	0	12
+F	cellIs less than 10	17	16777215	0	0	0	APPLE
+F	cellIs less than 10	18	255	0	0	0	2,5
+F	cellIs less than 10	19	16777215	0	0	0	18
+F	cellIs less than 10	20	16777215	0	0	0	 
+F	cellIs less than 10	21	16777215	0	0	0	TRUE
+F	cellIs greater or equal 12	2	16777215	0	0	0	5
+F	cellIs greater or equal 12	3	255	0	0	0	12
+F	cellIs greater or equal 12	4	16777215	0	0	0	-3
+F	cellIs greater or equal 12	5	255	0	0	0	12
+F	cellIs greater or equal 12	6	255	0	0	0	40
+F	cellIs greater or equal 12	7	255	0	0	0	apple
+F	cellIs greater or equal 12	8	255	0	0	0	Banana
+F	cellIs greater or equal 12	9	16777215	0	0	0	
+F	cellIs greater or equal 12	10	16777215	0	0	0	#N/A
+F	cellIs greater or equal 12	11	16777215	0	0	0	7,5
+F	cellIs greater or equal 12	12	16777215	0	0	0	0
+F	cellIs greater or equal 12	13	255	0	0	0	100
+F	cellIs greater or equal 12	14	255	0	0	0	apple pie
+F	cellIs greater or equal 12	15	255	0	0	0	33
+F	cellIs greater or equal 12	16	255	0	0	0	12
+F	cellIs greater or equal 12	17	255	0	0	0	APPLE
+F	cellIs greater or equal 12	18	16777215	0	0	0	2,5
+F	cellIs greater or equal 12	19	255	0	0	0	18
+F	cellIs greater or equal 12	20	255	0	0	0	 
+F	cellIs greater or equal 12	21	255	0	0	0	TRUE
+F	cellIs less or equal 0	2	16777215	0	0	0	5
+F	cellIs less or equal 0	3	16777215	0	0	0	12
+F	cellIs less or equal 0	4	255	0	0	0	-3
+F	cellIs less or equal 0	5	16777215	0	0	0	12
+F	cellIs less or equal 0	6	16777215	0	0	0	40
+F	cellIs less or equal 0	7	16777215	0	0	0	apple
+F	cellIs less or equal 0	8	16777215	0	0	0	Banana
+F	cellIs less or equal 0	9	255	0	0	0	
+F	cellIs less or equal 0	10	16777215	0	0	0	#N/A
+F	cellIs less or equal 0	11	16777215	0	0	0	7,5
+F	cellIs less or equal 0	12	255	0	0	0	0
+F	cellIs less or equal 0	13	16777215	0	0	0	100
+F	cellIs less or equal 0	14	16777215	0	0	0	apple pie
+F	cellIs less or equal 0	15	16777215	0	0	0	33
+F	cellIs less or equal 0	16	16777215	0	0	0	12
+F	cellIs less or equal 0	17	16777215	0	0	0	APPLE
+F	cellIs less or equal 0	18	16777215	0	0	0	2,5
+F	cellIs less or equal 0	19	16777215	0	0	0	18
+F	cellIs less or equal 0	20	16777215	0	0	0	 
+F	cellIs less or equal 0	21	16777215	0	0	0	TRUE
+F	cellIs equal apple	2	16777215	0	0	0	5
+F	cellIs equal apple	3	16777215	0	0	0	12
+F	cellIs equal apple	4	16777215	0	0	0	-3
+F	cellIs equal apple	5	16777215	0	0	0	12
+F	cellIs equal apple	6	16777215	0	0	0	40
+F	cellIs equal apple	7	255	0	0	0	apple
+F	cellIs equal apple	8	16777215	0	0	0	Banana
+F	cellIs equal apple	9	16777215	0	0	0	
+F	cellIs equal apple	10	16777215	0	0	0	#N/A
+F	cellIs equal apple	11	16777215	0	0	0	7,5
+F	cellIs equal apple	12	16777215	0	0	0	0
+F	cellIs equal apple	13	16777215	0	0	0	100
+F	cellIs equal apple	14	16777215	0	0	0	apple pie
+F	cellIs equal apple	15	16777215	0	0	0	33
+F	cellIs equal apple	16	16777215	0	0	0	12
+F	cellIs equal apple	17	255	0	0	0	APPLE
+F	cellIs equal apple	18	16777215	0	0	0	2,5
+F	cellIs equal apple	19	16777215	0	0	0	18
+F	cellIs equal apple	20	16777215	0	0	0	 
+F	cellIs equal apple	21	16777215	0	0	0	TRUE
+F	cellIs greater than b	2	16777215	0	0	0	5
+F	cellIs greater than b	3	16777215	0	0	0	12
+F	cellIs greater than b	4	16777215	0	0	0	-3
+F	cellIs greater than b	5	16777215	0	0	0	12
+F	cellIs greater than b	6	16777215	0	0	0	40
+F	cellIs greater than b	7	16777215	0	0	0	apple
+F	cellIs greater than b	8	255	0	0	0	Banana
+F	cellIs greater than b	9	16777215	0	0	0	
+F	cellIs greater than b	10	16777215	0	0	0	#N/A
+F	cellIs greater than b	11	16777215	0	0	0	7,5
+F	cellIs greater than b	12	16777215	0	0	0	0
+F	cellIs greater than b	13	16777215	0	0	0	100
+F	cellIs greater than b	14	16777215	0	0	0	apple pie
+F	cellIs greater than b	15	16777215	0	0	0	33
+F	cellIs greater than b	16	16777215	0	0	0	12
+F	cellIs greater than b	17	16777215	0	0	0	APPLE
+F	cellIs greater than b	18	16777215	0	0	0	2,5
+F	cellIs greater than b	19	16777215	0	0	0	18
+F	cellIs greater than b	20	16777215	0	0	0	 
+F	cellIs greater than b	21	255	0	0	0	TRUE
+F	cellIs equal blank cell	2	16777215	0	0	0	5
+F	cellIs equal blank cell	3	16777215	0	0	0	12
+F	cellIs equal blank cell	4	16777215	0	0	0	-3
+F	cellIs equal blank cell	5	16777215	0	0	0	12
+F	cellIs equal blank cell	6	16777215	0	0	0	40
+F	cellIs equal blank cell	7	16777215	0	0	0	apple
+F	cellIs equal blank cell	8	16777215	0	0	0	Banana
+F	cellIs equal blank cell	9	16777215	0	0	0	
+F	cellIs equal blank cell	10	16777215	0	0	0	#N/A
+F	cellIs equal blank cell	11	16777215	0	0	0	7,5
+F	cellIs equal blank cell	12	16777215	0	0	0	0
+F	cellIs equal blank cell	13	16777215	0	0	0	100
+F	cellIs equal blank cell	14	16777215	0	0	0	apple pie
+F	cellIs equal blank cell	15	16777215	0	0	0	33
+F	cellIs equal blank cell	16	16777215	0	0	0	12
+F	cellIs equal blank cell	17	16777215	0	0	0	APPLE
+F	cellIs equal blank cell	18	16777215	0	0	0	2,5
+F	cellIs equal blank cell	19	16777215	0	0	0	18
+F	cellIs equal blank cell	20	16777215	0	0	0	 
+F	cellIs equal blank cell	21	16777215	0	0	0	TRUE
+F	expression above median	2	16777215	0	0	0	5
+F	expression above median	3	255	0	0	0	12
+F	expression above median	4	16777215	0	0	0	-3
+F	expression above median	5	255	0	0	0	12
+F	expression above median	6	255	0	0	0	40
+F	expression above median	7	16777215	0	0	0	1
+F	expression above median	8	16777215	0	0	0	8
+F	expression above median	9	16777215	0	0	0	
+F	expression above median	10	255	0	0	0	text
+F	expression above median	11	16777215	0	0	0	7,5
+F	expression above median	12	16777215	0	0	0	0
+F	expression above median	13	255	0	0	0	100
+F	expression above median	14	255	0	0	0	64
+F	expression above median	15	255	0	0	0	33
+F	expression above median	16	255	0	0	0	12
+F	expression above median	17	16777215	0	0	0	-20
+F	expression above median	18	16777215	0	0	0	2,5
+F	expression above median	19	255	0	0	0	18
+F	expression above median	20	255	0	0	0	55
+F	expression above median	21	16777215	0	0	0	9
+F	expression is text	2	16777215	0	0	0	5
+F	expression is text	3	16777215	0	0	0	12
+F	expression is text	4	16777215	0	0	0	-3
+F	expression is text	5	16777215	0	0	0	12
+F	expression is text	6	16777215	0	0	0	40
+F	expression is text	7	255	0	0	0	apple
+F	expression is text	8	255	0	0	0	Banana
+F	expression is text	9	16777215	0	0	0	
+F	expression is text	10	16777215	0	0	0	#N/A
+F	expression is text	11	16777215	0	0	0	7,5
+F	expression is text	12	16777215	0	0	0	0
+F	expression is text	13	16777215	0	0	0	100
+F	expression is text	14	255	0	0	0	apple pie
+F	expression is text	15	16777215	0	0	0	33
+F	expression is text	16	16777215	0	0	0	12
+F	expression is text	17	255	0	0	0	APPLE
+F	expression is text	18	16777215	0	0	0	2,5
+F	expression is text	19	16777215	0	0	0	18
+F	expression is text	20	255	0	0	0	 
+F	expression is text	21	16777215	0	0	0	TRUE
+F	expression every third row	2	16777215	0	0	0	5
+F	expression every third row	3	255	0	0	0	12
+F	expression every third row	4	16777215	0	0	0	-3
+F	expression every third row	5	16777215	0	0	0	12
+F	expression every third row	6	255	0	0	0	40
+F	expression every third row	7	16777215	0	0	0	apple
+F	expression every third row	8	16777215	0	0	0	Banana
+F	expression every third row	9	255	0	0	0	
+F	expression every third row	10	16777215	0	0	0	#N/A
+F	expression every third row	11	16777215	0	0	0	7,5
+F	expression every third row	12	255	0	0	0	0
+F	expression every third row	13	16777215	0	0	0	100
+F	expression every third row	14	16777215	0	0	0	apple pie
+F	expression every third row	15	255	0	0	0	33
+F	expression every third row	16	16777215	0	0	0	12
+F	expression every third row	17	16777215	0	0	0	APPLE
+F	expression every third row	18	255	0	0	0	2,5
+F	expression every third row	19	16777215	0	0	0	18
+F	expression every third row	20	16777215	0	0	0	 
+F	expression every third row	21	255	0	0	0	TRUE
+F	expression range sum	2	16777215	0	0	0	5
+F	expression range sum	3	255	0	0	0	12
+F	expression range sum	4	255	0	0	0	-3
+F	expression range sum	5	255	0	0	0	12
+F	expression range sum	6	255	0	0	0	40
+F	expression range sum	7	16777215	0	0	0	1
+F	expression range sum	8	255	0	0	0	8
+F	expression range sum	9	255	0	0	0	
+F	expression range sum	10	255	0	0	0	text
+F	expression range sum	11	255	0	0	0	7,5
+F	expression range sum	12	255	0	0	0	0
+F	expression range sum	13	255	0	0	0	100
+F	expression range sum	14	255	0	0	0	64
+F	expression range sum	15	255	0	0	0	33
+F	expression range sum	16	16777215	0	0	0	12
+F	expression range sum	17	16777215	0	0	0	-20
+F	expression range sum	18	255	0	0	0	2,5
+F	expression range sum	19	255	0	0	0	18
+F	expression range sum	20	255	0	0	0	55
+F	expression range sum	21	16777215	0	0	0	9
+F	expression number	2	255	0	0	0	5
+F	expression number	3	255	0	0	0	12
+F	expression number	4	255	0	0	0	-3
+F	expression number	5	255	0	0	0	12
+F	expression number	6	255	0	0	0	40
+F	expression number	7	255	0	0	0	1
+F	expression number	8	255	0	0	0	8
+F	expression number	9	16777215	0	0	0	
+F	expression number	10	16777215	0	0	0	text
+F	expression number	11	255	0	0	0	7,5
+F	expression number	12	16777215	0	0	0	0
+F	expression number	13	255	0	0	0	100
+F	expression number	14	255	0	0	0	64
+F	expression number	15	255	0	0	0	33
+F	expression number	16	255	0	0	0	12
+F	expression number	17	255	0	0	0	-20
+F	expression number	18	255	0	0	0	2,5
+F	expression number	19	255	0	0	0	18
+F	expression number	20	255	0	0	0	55
+F	expression number	21	255	0	0	0	9
+F	expression text	2	255	0	0	0	5
+F	expression text	3	255	0	0	0	12
+F	expression text	4	255	0	0	0	-3
+F	expression text	5	255	0	0	0	12
+F	expression text	6	255	0	0	0	40
+F	expression text	7	255	0	0	0	apple
+F	expression text	8	255	0	0	0	Banana
+F	expression text	9	255	0	0	0	
+F	expression text	10	255	0	0	0	#N/A
+F	expression text	11	255	0	0	0	7,5
+F	expression text	12	255	0	0	0	0
+F	expression text	13	255	0	0	0	100
+F	expression text	14	255	0	0	0	apple pie
+F	expression text	15	255	0	0	0	33
+F	expression text	16	255	0	0	0	12
+F	expression text	17	255	0	0	0	APPLE
+F	expression text	18	255	0	0	0	2,5
+F	expression text	19	255	0	0	0	18
+F	expression text	20	255	0	0	0	 
+F	expression text	21	255	0	0	0	TRUE
+F	top 3	2	16777215	0	0	0	5
+F	top 3	3	16777215	0	0	0	12
+F	top 3	4	16777215	0	0	0	-3
+F	top 3	5	16777215	0	0	0	12
+F	top 3	6	16777215	0	0	0	40
+F	top 3	7	16777215	0	0	0	1
+F	top 3	8	16777215	0	0	0	8
+F	top 3	9	16777215	0	0	0	
+F	top 3	10	16777215	0	0	0	text
+F	top 3	11	16777215	0	0	0	7,5
+F	top 3	12	16777215	0	0	0	0
+F	top 3	13	255	0	0	0	100
+F	top 3	14	255	0	0	0	64
+F	top 3	15	16777215	0	0	0	33
+F	top 3	16	16777215	0	0	0	12
+F	top 3	17	16777215	0	0	0	-20
+F	top 3	18	16777215	0	0	0	2,5
+F	top 3	19	16777215	0	0	0	18
+F	top 3	20	255	0	0	0	55
+F	top 3	21	16777215	0	0	0	9
+F	bottom 3	2	16777215	0	0	0	5
+F	bottom 3	3	16777215	0	0	0	12
+F	bottom 3	4	255	0	0	0	-3
+F	bottom 3	5	16777215	0	0	0	12
+F	bottom 3	6	16777215	0	0	0	40
+F	bottom 3	7	16777215	0	0	0	1
+F	bottom 3	8	16777215	0	0	0	8
+F	bottom 3	9	16777215	0	0	0	
+F	bottom 3	10	16777215	0	0	0	text
+F	bottom 3	11	16777215	0	0	0	7,5
+F	bottom 3	12	255	0	0	0	0
+F	bottom 3	13	16777215	0	0	0	100
+F	bottom 3	14	16777215	0	0	0	64
+F	bottom 3	15	16777215	0	0	0	33
+F	bottom 3	16	16777215	0	0	0	12
+F	bottom 3	17	255	0	0	0	-20
+F	bottom 3	18	16777215	0	0	0	2,5
+F	bottom 3	19	16777215	0	0	0	18
+F	bottom 3	20	16777215	0	0	0	55
+F	bottom 3	21	16777215	0	0	0	9
+F	top 25 percent	2	16777215	0	0	0	5
+F	top 25 percent	3	16777215	0	0	0	12
+F	top 25 percent	4	16777215	0	0	0	-3
+F	top 25 percent	5	16777215	0	0	0	12
+F	top 25 percent	6	255	0	0	0	40
+F	top 25 percent	7	16777215	0	0	0	1
+F	top 25 percent	8	16777215	0	0	0	8
+F	top 25 percent	9	16777215	0	0	0	
+F	top 25 percent	10	16777215	0	0	0	text
+F	top 25 percent	11	16777215	0	0	0	7,5
+F	top 25 percent	12	16777215	0	0	0	0
+F	top 25 percent	13	255	0	0	0	100
+F	top 25 percent	14	255	0	0	0	64
+F	top 25 percent	15	16777215	0	0	0	33
+F	top 25 percent	16	16777215	0	0	0	12
+F	top 25 percent	17	16777215	0	0	0	-20
+F	top 25 percent	18	16777215	0	0	0	2,5
+F	top 25 percent	19	16777215	0	0	0	18
+F	top 25 percent	20	255	0	0	0	55
+F	top 25 percent	21	16777215	0	0	0	9
+F	bottom 10 percent	2	16777215	0	0	0	5
+F	bottom 10 percent	3	16777215	0	0	0	12
+F	bottom 10 percent	4	16777215	0	0	0	-3
+F	bottom 10 percent	5	16777215	0	0	0	12
+F	bottom 10 percent	6	16777215	0	0	0	40
+F	bottom 10 percent	7	16777215	0	0	0	1
+F	bottom 10 percent	8	16777215	0	0	0	8
+F	bottom 10 percent	9	16777215	0	0	0	
+F	bottom 10 percent	10	16777215	0	0	0	text
+F	bottom 10 percent	11	16777215	0	0	0	7,5
+F	bottom 10 percent	12	16777215	0	0	0	0
+F	bottom 10 percent	13	16777215	0	0	0	100
+F	bottom 10 percent	14	16777215	0	0	0	64
+F	bottom 10 percent	15	16777215	0	0	0	33
+F	bottom 10 percent	16	16777215	0	0	0	12
+F	bottom 10 percent	17	255	0	0	0	-20
+F	bottom 10 percent	18	16777215	0	0	0	2,5
+F	bottom 10 percent	19	16777215	0	0	0	18
+F	bottom 10 percent	20	16777215	0	0	0	55
+F	bottom 10 percent	21	16777215	0	0	0	9
+F	top 2 mixed	2	16777215	0	0	0	5
+F	top 2 mixed	3	16777215	0	0	0	12
+F	top 2 mixed	4	16777215	0	0	0	-3
+F	top 2 mixed	5	16777215	0	0	0	12
+F	top 2 mixed	6	255	0	0	0	40
+F	top 2 mixed	7	16777215	0	0	0	apple
+F	top 2 mixed	8	16777215	0	0	0	Banana
+F	top 2 mixed	9	16777215	0	0	0	
+F	top 2 mixed	10	16777215	0	0	0	#N/A
+F	top 2 mixed	11	16777215	0	0	0	7,5
+F	top 2 mixed	12	16777215	0	0	0	0
+F	top 2 mixed	13	255	0	0	0	100
+F	top 2 mixed	14	16777215	0	0	0	apple pie
+F	top 2 mixed	15	16777215	0	0	0	33
+F	top 2 mixed	16	16777215	0	0	0	12
+F	top 2 mixed	17	16777215	0	0	0	APPLE
+F	top 2 mixed	18	16777215	0	0	0	2,5
+F	top 2 mixed	19	16777215	0	0	0	18
+F	top 2 mixed	20	16777215	0	0	0	 
+F	top 2 mixed	21	16777215	0	0	0	TRUE
+F	above average	2	16777215	0	0	0	5
+F	above average	3	16777215	0	0	0	12
+F	above average	4	16777215	0	0	0	-3
+F	above average	5	16777215	0	0	0	12
+F	above average	6	255	0	0	0	40
+F	above average	7	16777215	0	0	0	1
+F	above average	8	16777215	0	0	0	8
+F	above average	9	16777215	0	0	0	
+F	above average	10	16777215	0	0	0	text
+F	above average	11	16777215	0	0	0	7,5
+F	above average	12	16777215	0	0	0	0
+F	above average	13	255	0	0	0	100
+F	above average	14	255	0	0	0	64
+F	above average	15	255	0	0	0	33
+F	above average	16	16777215	0	0	0	12
+F	above average	17	16777215	0	0	0	-20
+F	above average	18	16777215	0	0	0	2,5
+F	above average	19	16777215	0	0	0	18
+F	above average	20	255	0	0	0	55
+F	above average	21	16777215	0	0	0	9
+F	below average	2	255	0	0	0	5
+F	below average	3	255	0	0	0	12
+F	below average	4	255	0	0	0	-3
+F	below average	5	255	0	0	0	12
+F	below average	6	16777215	0	0	0	40
+F	below average	7	255	0	0	0	1
+F	below average	8	255	0	0	0	8
+F	below average	9	16777215	0	0	0	
+F	below average	10	16777215	0	0	0	text
+F	below average	11	255	0	0	0	7,5
+F	below average	12	255	0	0	0	0
+F	below average	13	16777215	0	0	0	100
+F	below average	14	16777215	0	0	0	64
+F	below average	15	16777215	0	0	0	33
+F	below average	16	255	0	0	0	12
+F	below average	17	255	0	0	0	-20
+F	below average	18	255	0	0	0	2,5
+F	below average	19	255	0	0	0	18
+F	below average	20	16777215	0	0	0	55
+F	below average	21	255	0	0	0	9
+F	equal or above average	2	16777215	0	0	0	5
+F	equal or above average	3	16777215	0	0	0	12
+F	equal or above average	4	16777215	0	0	0	-3
+F	equal or above average	5	16777215	0	0	0	12
+F	equal or above average	6	255	0	0	0	40
+F	equal or above average	7	16777215	0	0	0	apple
+F	equal or above average	8	16777215	0	0	0	Banana
+F	equal or above average	9	16777215	0	0	0	
+F	equal or above average	10	16777215	0	0	0	#N/A
+F	equal or above average	11	16777215	0	0	0	7,5
+F	equal or above average	12	16777215	0	0	0	0
+F	equal or above average	13	255	0	0	0	100
+F	equal or above average	14	16777215	0	0	0	apple pie
+F	equal or above average	15	255	0	0	0	33
+F	equal or above average	16	16777215	0	0	0	12
+F	equal or above average	17	16777215	0	0	0	APPLE
+F	equal or above average	18	16777215	0	0	0	2,5
+F	equal or above average	19	16777215	0	0	0	18
+F	equal or above average	20	16777215	0	0	0	 
+F	equal or above average	21	16777215	0	0	0	TRUE
+F	equal or below average	2	255	0	0	0	5
+F	equal or below average	3	255	0	0	0	12
+F	equal or below average	4	255	0	0	0	-3
+F	equal or below average	5	255	0	0	0	12
+F	equal or below average	6	16777215	0	0	0	40
+F	equal or below average	7	255	0	0	0	1
+F	equal or below average	8	255	0	0	0	8
+F	equal or below average	9	16777215	0	0	0	
+F	equal or below average	10	16777215	0	0	0	text
+F	equal or below average	11	255	0	0	0	7,5
+F	equal or below average	12	255	0	0	0	0
+F	equal or below average	13	16777215	0	0	0	100
+F	equal or below average	14	16777215	0	0	0	64
+F	equal or below average	15	16777215	0	0	0	33
+F	equal or below average	16	255	0	0	0	12
+F	equal or below average	17	255	0	0	0	-20
+F	equal or below average	18	255	0	0	0	2,5
+F	equal or below average	19	255	0	0	0	18
+F	equal or below average	20	16777215	0	0	0	55
+F	equal or below average	21	255	0	0	0	9
+F	one std dev above	2	16777215	0	0	0	5
+F	one std dev above	3	16777215	0	0	0	12
+F	one std dev above	4	16777215	0	0	0	-3
+F	one std dev above	5	16777215	0	0	0	12
+F	one std dev above	6	16777215	0	0	0	40
+F	one std dev above	7	16777215	0	0	0	1
+F	one std dev above	8	16777215	0	0	0	8
+F	one std dev above	9	16777215	0	0	0	
+F	one std dev above	10	16777215	0	0	0	text
+F	one std dev above	11	16777215	0	0	0	7,5
+F	one std dev above	12	16777215	0	0	0	0
+F	one std dev above	13	255	0	0	0	100
+F	one std dev above	14	255	0	0	0	64
+F	one std dev above	15	16777215	0	0	0	33
+F	one std dev above	16	16777215	0	0	0	12
+F	one std dev above	17	16777215	0	0	0	-20
+F	one std dev above	18	16777215	0	0	0	2,5
+F	one std dev above	19	16777215	0	0	0	18
+F	one std dev above	20	255	0	0	0	55
+F	one std dev above	21	16777215	0	0	0	9
+F	two std dev below	2	16777215	0	0	0	5
+F	two std dev below	3	16777215	0	0	0	12
+F	two std dev below	4	16777215	0	0	0	-3
+F	two std dev below	5	16777215	0	0	0	12
+F	two std dev below	6	16777215	0	0	0	40
+F	two std dev below	7	16777215	0	0	0	1
+F	two std dev below	8	16777215	0	0	0	8
+F	two std dev below	9	16777215	0	0	0	
+F	two std dev below	10	16777215	0	0	0	text
+F	two std dev below	11	16777215	0	0	0	7,5
+F	two std dev below	12	16777215	0	0	0	0
+F	two std dev below	13	16777215	0	0	0	100
+F	two std dev below	14	16777215	0	0	0	64
+F	two std dev below	15	16777215	0	0	0	33
+F	two std dev below	16	16777215	0	0	0	12
+F	two std dev below	17	16777215	0	0	0	-20
+F	two std dev below	18	16777215	0	0	0	2,5
+F	two std dev below	19	16777215	0	0	0	18
+F	two std dev below	20	16777215	0	0	0	55
+F	two std dev below	21	16777215	0	0	0	9
+F	duplicates	2	16777215	0	0	0	5
+F	duplicates	3	255	0	0	0	12
+F	duplicates	4	16777215	0	0	0	-3
+F	duplicates	5	255	0	0	0	12
+F	duplicates	6	16777215	0	0	0	40
+F	duplicates	7	255	0	0	0	apple
+F	duplicates	8	16777215	0	0	0	Banana
+F	duplicates	9	16777215	0	0	0	
+F	duplicates	10	16777215	0	0	0	#N/A
+F	duplicates	11	16777215	0	0	0	7,5
+F	duplicates	12	16777215	0	0	0	0
+F	duplicates	13	16777215	0	0	0	100
+F	duplicates	14	16777215	0	0	0	apple pie
+F	duplicates	15	16777215	0	0	0	33
+F	duplicates	16	255	0	0	0	12
+F	duplicates	17	255	0	0	0	APPLE
+F	duplicates	18	16777215	0	0	0	2,5
+F	duplicates	19	16777215	0	0	0	18
+F	duplicates	20	16777215	0	0	0	 
+F	duplicates	21	16777215	0	0	0	TRUE
+F	uniques	2	255	0	0	0	5
+F	uniques	3	16777215	0	0	0	12
+F	uniques	4	255	0	0	0	-3
+F	uniques	5	16777215	0	0	0	12
+F	uniques	6	255	0	0	0	40
+F	uniques	7	16777215	0	0	0	apple
+F	uniques	8	255	0	0	0	Banana
+F	uniques	9	16777215	0	0	0	
+F	uniques	10	255	0	0	0	#N/A
+F	uniques	11	255	0	0	0	7,5
+F	uniques	12	255	0	0	0	0
+F	uniques	13	255	0	0	0	100
+F	uniques	14	255	0	0	0	apple pie
+F	uniques	15	255	0	0	0	33
+F	uniques	16	16777215	0	0	0	12
+F	uniques	17	16777215	0	0	0	APPLE
+F	uniques	18	255	0	0	0	2,5
+F	uniques	19	255	0	0	0	18
+F	uniques	20	255	0	0	0	 
+F	uniques	21	255	0	0	0	TRUE
+F	contains app	2	16777215	0	0	0	5
+F	contains app	3	16777215	0	0	0	12
+F	contains app	4	16777215	0	0	0	-3
+F	contains app	5	16777215	0	0	0	12
+F	contains app	6	16777215	0	0	0	40
+F	contains app	7	255	0	0	0	apple
+F	contains app	8	16777215	0	0	0	Banana
+F	contains app	9	16777215	0	0	0	
+F	contains app	10	16777215	0	0	0	#N/A
+F	contains app	11	16777215	0	0	0	7,5
+F	contains app	12	16777215	0	0	0	0
+F	contains app	13	16777215	0	0	0	100
+F	contains app	14	255	0	0	0	apple pie
+F	contains app	15	16777215	0	0	0	33
+F	contains app	16	16777215	0	0	0	12
+F	contains app	17	255	0	0	0	APPLE
+F	contains app	18	16777215	0	0	0	2,5
+F	contains app	19	16777215	0	0	0	18
+F	contains app	20	16777215	0	0	0	 
+F	contains app	21	16777215	0	0	0	TRUE
+F	contains 1	2	16777215	0	0	0	5
+F	contains 1	3	255	0	0	0	12
+F	contains 1	4	16777215	0	0	0	-3
+F	contains 1	5	255	0	0	0	12
+F	contains 1	6	16777215	0	0	0	40
+F	contains 1	7	16777215	0	0	0	apple
+F	contains 1	8	16777215	0	0	0	Banana
+F	contains 1	9	16777215	0	0	0	
+F	contains 1	10	16777215	0	0	0	#N/A
+F	contains 1	11	16777215	0	0	0	7,5
+F	contains 1	12	16777215	0	0	0	0
+F	contains 1	13	255	0	0	0	100
+F	contains 1	14	16777215	0	0	0	apple pie
+F	contains 1	15	16777215	0	0	0	33
+F	contains 1	16	255	0	0	0	12
+F	contains 1	17	16777215	0	0	0	APPLE
+F	contains 1	18	16777215	0	0	0	2,5
+F	contains 1	19	255	0	0	0	18
+F	contains 1	20	16777215	0	0	0	 
+F	contains 1	21	16777215	0	0	0	TRUE
+F	not contains app	2	255	0	0	0	5
+F	not contains app	3	255	0	0	0	12
+F	not contains app	4	255	0	0	0	-3
+F	not contains app	5	255	0	0	0	12
+F	not contains app	6	255	0	0	0	40
+F	not contains app	7	16777215	0	0	0	apple
+F	not contains app	8	255	0	0	0	Banana
+F	not contains app	9	255	0	0	0	
+F	not contains app	10	255	0	0	0	#N/A
+F	not contains app	11	255	0	0	0	7,5
+F	not contains app	12	255	0	0	0	0
+F	not contains app	13	255	0	0	0	100
+F	not contains app	14	16777215	0	0	0	apple pie
+F	not contains app	15	255	0	0	0	33
+F	not contains app	16	255	0	0	0	12
+F	not contains app	17	16777215	0	0	0	APPLE
+F	not contains app	18	255	0	0	0	2,5
+F	not contains app	19	255	0	0	0	18
+F	not contains app	20	255	0	0	0	 
+F	not contains app	21	255	0	0	0	TRUE
+F	begins with a	2	16777215	0	0	0	5
+F	begins with a	3	16777215	0	0	0	12
+F	begins with a	4	16777215	0	0	0	-3
+F	begins with a	5	16777215	0	0	0	12
+F	begins with a	6	16777215	0	0	0	40
+F	begins with a	7	255	0	0	0	apple
+F	begins with a	8	16777215	0	0	0	Banana
+F	begins with a	9	16777215	0	0	0	
+F	begins with a	10	16777215	0	0	0	#N/A
+F	begins with a	11	16777215	0	0	0	7,5
+F	begins with a	12	16777215	0	0	0	0
+F	begins with a	13	16777215	0	0	0	100
+F	begins with a	14	255	0	0	0	apple pie
+F	begins with a	15	16777215	0	0	0	33
+F	begins with a	16	16777215	0	0	0	12
+F	begins with a	17	255	0	0	0	APPLE
+F	begins with a	18	16777215	0	0	0	2,5
+F	begins with a	19	16777215	0	0	0	18
+F	begins with a	20	16777215	0	0	0	 
+F	begins with a	21	16777215	0	0	0	TRUE
+F	ends with e	2	16777215	0	0	0	5
+F	ends with e	3	16777215	0	0	0	12
+F	ends with e	4	16777215	0	0	0	-3
+F	ends with e	5	16777215	0	0	0	12
+F	ends with e	6	16777215	0	0	0	40
+F	ends with e	7	255	0	0	0	apple
+F	ends with e	8	16777215	0	0	0	Banana
+F	ends with e	9	16777215	0	0	0	
+F	ends with e	10	16777215	0	0	0	#N/A
+F	ends with e	11	16777215	0	0	0	7,5
+F	ends with e	12	16777215	0	0	0	0
+F	ends with e	13	16777215	0	0	0	100
+F	ends with e	14	255	0	0	0	apple pie
+F	ends with e	15	16777215	0	0	0	33
+F	ends with e	16	16777215	0	0	0	12
+F	ends with e	17	255	0	0	0	APPLE
+F	ends with e	18	16777215	0	0	0	2,5
+F	ends with e	19	16777215	0	0	0	18
+F	ends with e	20	16777215	0	0	0	 
+F	ends with e	21	255	0	0	0	TRUE
+F	blanks	2	16777215	0	0	0	5
+F	blanks	3	16777215	0	0	0	12
+F	blanks	4	16777215	0	0	0	-3
+F	blanks	5	16777215	0	0	0	12
+F	blanks	6	16777215	0	0	0	40
+F	blanks	7	16777215	0	0	0	apple
+F	blanks	8	16777215	0	0	0	Banana
+F	blanks	9	255	0	0	0	
+F	blanks	10	16777215	0	0	0	#N/A
+F	blanks	11	16777215	0	0	0	7,5
+F	blanks	12	16777215	0	0	0	0
+F	blanks	13	16777215	0	0	0	100
+F	blanks	14	16777215	0	0	0	apple pie
+F	blanks	15	16777215	0	0	0	33
+F	blanks	16	16777215	0	0	0	12
+F	blanks	17	16777215	0	0	0	APPLE
+F	blanks	18	16777215	0	0	0	2,5
+F	blanks	19	16777215	0	0	0	18
+F	blanks	20	255	0	0	0	 
+F	blanks	21	16777215	0	0	0	TRUE
+F	no blanks	2	255	0	0	0	5
+F	no blanks	3	255	0	0	0	12
+F	no blanks	4	255	0	0	0	-3
+F	no blanks	5	255	0	0	0	12
+F	no blanks	6	255	0	0	0	40
+F	no blanks	7	255	0	0	0	apple
+F	no blanks	8	255	0	0	0	Banana
+F	no blanks	9	16777215	0	0	0	
+F	no blanks	10	255	0	0	0	#N/A
+F	no blanks	11	255	0	0	0	7,5
+F	no blanks	12	255	0	0	0	0
+F	no blanks	13	255	0	0	0	100
+F	no blanks	14	255	0	0	0	apple pie
+F	no blanks	15	255	0	0	0	33
+F	no blanks	16	255	0	0	0	12
+F	no blanks	17	255	0	0	0	APPLE
+F	no blanks	18	255	0	0	0	2,5
+F	no blanks	19	255	0	0	0	18
+F	no blanks	20	16777215	0	0	0	 
+F	no blanks	21	255	0	0	0	TRUE
+F	errors	2	16777215	0	0	0	5
+F	errors	3	16777215	0	0	0	12
+F	errors	4	16777215	0	0	0	-3
+F	errors	5	16777215	0	0	0	12
+F	errors	6	16777215	0	0	0	40
+F	errors	7	16777215	0	0	0	apple
+F	errors	8	16777215	0	0	0	Banana
+F	errors	9	16777215	0	0	0	
+F	errors	10	255	0	0	0	#N/A
+F	errors	11	16777215	0	0	0	7,5
+F	errors	12	16777215	0	0	0	0
+F	errors	13	16777215	0	0	0	100
+F	errors	14	16777215	0	0	0	apple pie
+F	errors	15	16777215	0	0	0	33
+F	errors	16	16777215	0	0	0	12
+F	errors	17	16777215	0	0	0	APPLE
+F	errors	18	16777215	0	0	0	2,5
+F	errors	19	16777215	0	0	0	18
+F	errors	20	16777215	0	0	0	 
+F	errors	21	16777215	0	0	0	TRUE
+F	no errors	2	255	0	0	0	5
+F	no errors	3	255	0	0	0	12
+F	no errors	4	255	0	0	0	-3
+F	no errors	5	255	0	0	0	12
+F	no errors	6	255	0	0	0	40
+F	no errors	7	255	0	0	0	apple
+F	no errors	8	255	0	0	0	Banana
+F	no errors	9	255	0	0	0	
+F	no errors	10	16777215	0	0	0	#N/A
+F	no errors	11	255	0	0	0	7,5
+F	no errors	12	255	0	0	0	0
+F	no errors	13	255	0	0	0	100
+F	no errors	14	255	0	0	0	apple pie
+F	no errors	15	255	0	0	0	33
+F	no errors	16	255	0	0	0	12
+F	no errors	17	255	0	0	0	APPLE
+F	no errors	18	255	0	0	0	2,5
+F	no errors	19	255	0	0	0	18
+F	no errors	20	255	0	0	0	 
+F	no errors	21	255	0	0	0	TRUE
+F	today	2	16777215	0	0	0	yyyy-09-30
+F	today	3	16777215	0	0	0	yyyy-10-09
+F	today	4	16777215	0	0	0	yyyy-10-30
+F	today	5	16777215	0	0	0	yyyy-11-01
+F	today	6	16777215	0	0	0	yyyy-11-02
+F	today	7	16777215	0	0	0	yyyy-11-03
+F	today	8	16777215	0	0	0	yyyy-11-07
+F	today	9	16777215	0	0	0	yyyy-11-08
+F	today	10	255	0	0	0	yyyy-11-09
+F	today	11	16777215	0	0	0	yyyy-11-10
+F	today	12	16777215	0	0	0	yyyy-11-11
+F	today	13	16777215	0	0	0	yyyy-11-15
+F	today	14	16777215	0	0	0	yyyy-11-16
+F	today	15	16777215	0	0	0	yyyy-11-17
+F	today	16	16777215	0	0	0	yyyy-11-22
+F	today	17	16777215	0	0	0	yyyy-12-04
+F	today	18	16777215	0	0	0	yyyy-12-10
+F	today	19	16777215	0	0	0	yyyy-12-19
+F	today	20	16777215	0	0	0	text
+F	today	21	16777215	0	0	0	
+F	yesterday	2	16777215	0	0	0	yyyy-09-30
+F	yesterday	3	16777215	0	0	0	yyyy-10-09
+F	yesterday	4	16777215	0	0	0	yyyy-10-30
+F	yesterday	5	16777215	0	0	0	yyyy-11-01
+F	yesterday	6	16777215	0	0	0	yyyy-11-02
+F	yesterday	7	16777215	0	0	0	yyyy-11-03
+F	yesterday	8	16777215	0	0	0	yyyy-11-07
+F	yesterday	9	255	0	0	0	yyyy-11-08
+F	yesterday	10	16777215	0	0	0	yyyy-11-09
+F	yesterday	11	16777215	0	0	0	yyyy-11-10
+F	yesterday	12	16777215	0	0	0	yyyy-11-11
+F	yesterday	13	16777215	0	0	0	yyyy-11-15
+F	yesterday	14	16777215	0	0	0	yyyy-11-16
+F	yesterday	15	16777215	0	0	0	yyyy-11-17
+F	yesterday	16	16777215	0	0	0	yyyy-11-22
+F	yesterday	17	16777215	0	0	0	yyyy-12-04
+F	yesterday	18	16777215	0	0	0	yyyy-12-10
+F	yesterday	19	16777215	0	0	0	yyyy-12-19
+F	yesterday	20	16777215	0	0	0	text
+F	yesterday	21	16777215	0	0	0	
+F	last 7 days	2	16777215	0	0	0	yyyy-09-30
+F	last 7 days	3	16777215	0	0	0	yyyy-10-09
+F	last 7 days	4	16777215	0	0	0	yyyy-10-30
+F	last 7 days	5	16777215	0	0	0	yyyy-11-01
+F	last 7 days	6	16777215	0	0	0	yyyy-11-02
+F	last 7 days	7	255	0	0	0	yyyy-11-03
+F	last 7 days	8	255	0	0	0	yyyy-11-07
+F	last 7 days	9	255	0	0	0	yyyy-11-08
+F	last 7 days	10	255	0	0	0	yyyy-11-09
+F	last 7 days	11	16777215	0	0	0	yyyy-11-10
+F	last 7 days	12	16777215	0	0	0	yyyy-11-11
+F	last 7 days	13	16777215	0	0	0	yyyy-11-15
+F	last 7 days	14	16777215	0	0	0	yyyy-11-16
+F	last 7 days	15	16777215	0	0	0	yyyy-11-17
+F	last 7 days	16	16777215	0	0	0	yyyy-11-22
+F	last 7 days	17	16777215	0	0	0	yyyy-12-04
+F	last 7 days	18	16777215	0	0	0	yyyy-12-10
+F	last 7 days	19	16777215	0	0	0	yyyy-12-19
+F	last 7 days	20	16777215	0	0	0	text
+F	last 7 days	21	16777215	0	0	0	
+F	this week	2	16777215	0	0	0	yyyy-09-30
+F	this week	3	16777215	0	0	0	yyyy-10-09
+F	this week	4	16777215	0	0	0	yyyy-10-30
+F	this week	5	16777215	0	0	0	yyyy-11-01
+F	this week	6	16777215	0	0	0	yyyy-11-02
+F	this week	7	16777215	0	0	0	yyyy-11-03
+F	this week	8	16777215	0	0	0	yyyy-11-07
+F	this week	9	255	0	0	0	yyyy-11-08
+F	this week	10	255	0	0	0	yyyy-11-09
+F	this week	11	255	0	0	0	yyyy-11-10
+F	this week	12	255	0	0	0	yyyy-11-11
+F	this week	13	16777215	0	0	0	yyyy-11-15
+F	this week	14	16777215	0	0	0	yyyy-11-16
+F	this week	15	16777215	0	0	0	yyyy-11-17
+F	this week	16	16777215	0	0	0	yyyy-11-22
+F	this week	17	16777215	0	0	0	yyyy-12-04
+F	this week	18	16777215	0	0	0	yyyy-12-10
+F	this week	19	16777215	0	0	0	yyyy-12-19
+F	this week	20	16777215	0	0	0	text
+F	this week	21	16777215	0	0	0	
+F	last week	2	16777215	0	0	0	yyyy-09-30
+F	last week	3	16777215	0	0	0	yyyy-10-09
+F	last week	4	16777215	0	0	0	yyyy-10-30
+F	last week	5	255	0	0	0	yyyy-11-01
+F	last week	6	255	0	0	0	yyyy-11-02
+F	last week	7	255	0	0	0	yyyy-11-03
+F	last week	8	255	0	0	0	yyyy-11-07
+F	last week	9	16777215	0	0	0	yyyy-11-08
+F	last week	10	16777215	0	0	0	yyyy-11-09
+F	last week	11	16777215	0	0	0	yyyy-11-10
+F	last week	12	16777215	0	0	0	yyyy-11-11
+F	last week	13	16777215	0	0	0	yyyy-11-15
+F	last week	14	16777215	0	0	0	yyyy-11-16
+F	last week	15	16777215	0	0	0	yyyy-11-17
+F	last week	16	16777215	0	0	0	yyyy-11-22
+F	last week	17	16777215	0	0	0	yyyy-12-04
+F	last week	18	16777215	0	0	0	yyyy-12-10
+F	last week	19	16777215	0	0	0	yyyy-12-19
+F	last week	20	16777215	0	0	0	text
+F	last week	21	16777215	0	0	0	
+F	last month	2	16777215	0	0	0	yyyy-09-30
+F	last month	3	255	0	0	0	yyyy-10-09
+F	last month	4	255	0	0	0	yyyy-10-30
+F	last month	5	16777215	0	0	0	yyyy-11-01
+F	last month	6	16777215	0	0	0	yyyy-11-02
+F	last month	7	16777215	0	0	0	yyyy-11-03
+F	last month	8	16777215	0	0	0	yyyy-11-07
+F	last month	9	16777215	0	0	0	yyyy-11-08
+F	last month	10	16777215	0	0	0	yyyy-11-09
+F	last month	11	16777215	0	0	0	yyyy-11-10
+F	last month	12	16777215	0	0	0	yyyy-11-11
+F	last month	13	16777215	0	0	0	yyyy-11-15
+F	last month	14	16777215	0	0	0	yyyy-11-16
+F	last month	15	16777215	0	0	0	yyyy-11-17
+F	last month	16	16777215	0	0	0	yyyy-11-22
+F	last month	17	16777215	0	0	0	yyyy-12-04
+F	last month	18	16777215	0	0	0	yyyy-12-10
+F	last month	19	16777215	0	0	0	yyyy-12-19
+F	last month	20	16777215	0	0	0	text
+F	last month	21	16777215	0	0	0	
+F	tomorrow	2	16777215	0	0	0	yyyy-09-30
+F	tomorrow	3	16777215	0	0	0	yyyy-10-09
+F	tomorrow	4	16777215	0	0	0	yyyy-10-30
+F	tomorrow	5	16777215	0	0	0	yyyy-11-01
+F	tomorrow	6	16777215	0	0	0	yyyy-11-02
+F	tomorrow	7	16777215	0	0	0	yyyy-11-03
+F	tomorrow	8	16777215	0	0	0	yyyy-11-07
+F	tomorrow	9	16777215	0	0	0	yyyy-11-08
+F	tomorrow	10	16777215	0	0	0	yyyy-11-09
+F	tomorrow	11	255	0	0	0	yyyy-11-10
+F	tomorrow	12	16777215	0	0	0	yyyy-11-11
+F	tomorrow	13	16777215	0	0	0	yyyy-11-15
+F	tomorrow	14	16777215	0	0	0	yyyy-11-16
+F	tomorrow	15	16777215	0	0	0	yyyy-11-17
+F	tomorrow	16	16777215	0	0	0	yyyy-11-22
+F	tomorrow	17	16777215	0	0	0	yyyy-12-04
+F	tomorrow	18	16777215	0	0	0	yyyy-12-10
+F	tomorrow	19	16777215	0	0	0	yyyy-12-19
+F	tomorrow	20	16777215	0	0	0	text
+F	tomorrow	21	16777215	0	0	0	
+F	next week	2	16777215	0	0	0	yyyy-09-30
+F	next week	3	16777215	0	0	0	yyyy-10-09
+F	next week	4	16777215	0	0	0	yyyy-10-30
+F	next week	5	16777215	0	0	0	yyyy-11-01
+F	next week	6	16777215	0	0	0	yyyy-11-02
+F	next week	7	16777215	0	0	0	yyyy-11-03
+F	next week	8	16777215	0	0	0	yyyy-11-07
+F	next week	9	16777215	0	0	0	yyyy-11-08
+F	next week	10	16777215	0	0	0	yyyy-11-09
+F	next week	11	16777215	0	0	0	yyyy-11-10
+F	next week	12	16777215	0	0	0	yyyy-11-11
+F	next week	13	255	0	0	0	yyyy-11-15
+F	next week	14	255	0	0	0	yyyy-11-16
+F	next week	15	255	0	0	0	yyyy-11-17
+F	next week	16	16777215	0	0	0	yyyy-11-22
+F	next week	17	16777215	0	0	0	yyyy-12-04
+F	next week	18	16777215	0	0	0	yyyy-12-10
+F	next week	19	16777215	0	0	0	yyyy-12-19
+F	next week	20	16777215	0	0	0	text
+F	next week	21	16777215	0	0	0	
+F	next month	2	16777215	0	0	0	yyyy-09-30
+F	next month	3	16777215	0	0	0	yyyy-10-09
+F	next month	4	16777215	0	0	0	yyyy-10-30
+F	next month	5	16777215	0	0	0	yyyy-11-01
+F	next month	6	16777215	0	0	0	yyyy-11-02
+F	next month	7	16777215	0	0	0	yyyy-11-03
+F	next month	8	16777215	0	0	0	yyyy-11-07
+F	next month	9	16777215	0	0	0	yyyy-11-08
+F	next month	10	16777215	0	0	0	yyyy-11-09
+F	next month	11	16777215	0	0	0	yyyy-11-10
+F	next month	12	16777215	0	0	0	yyyy-11-11
+F	next month	13	16777215	0	0	0	yyyy-11-15
+F	next month	14	16777215	0	0	0	yyyy-11-16
+F	next month	15	16777215	0	0	0	yyyy-11-17
+F	next month	16	16777215	0	0	0	yyyy-11-22
+F	next month	17	255	0	0	0	yyyy-12-04
+F	next month	18	255	0	0	0	yyyy-12-10
+F	next month	19	255	0	0	0	yyyy-12-19
+F	next month	20	16777215	0	0	0	text
+F	next month	21	16777215	0	0	0	
+F	this month	2	16777215	0	0	0	yyyy-09-30
+F	this month	3	16777215	0	0	0	yyyy-10-09
+F	this month	4	16777215	0	0	0	yyyy-10-30
+F	this month	5	255	0	0	0	yyyy-11-01
+F	this month	6	255	0	0	0	yyyy-11-02
+F	this month	7	255	0	0	0	yyyy-11-03
+F	this month	8	255	0	0	0	yyyy-11-07
+F	this month	9	255	0	0	0	yyyy-11-08
+F	this month	10	255	0	0	0	yyyy-11-09
+F	this month	11	255	0	0	0	yyyy-11-10
+F	this month	12	255	0	0	0	yyyy-11-11
+F	this month	13	255	0	0	0	yyyy-11-15
+F	this month	14	255	0	0	0	yyyy-11-16
+F	this month	15	255	0	0	0	yyyy-11-17
+F	this month	16	255	0	0	0	yyyy-11-22
+F	this month	17	16777215	0	0	0	yyyy-12-04
+F	this month	18	16777215	0	0	0	yyyy-12-10
+F	this month	19	16777215	0	0	0	yyyy-12-19
+F	this month	20	16777215	0	0	0	text
+F	this month	21	16777215	0	0	0	
+F	scale 2 min max	2	15004383	0	0	0	5
+F	scale 2 min max	3	14479062	0	0	0	12
+F	scale 2 min max	4	15595241	0	0	0	-3
+F	scale 2 min max	5	14479062	0	0	0	12
+F	scale 2 min max	6	12443569	0	0	0	40
+F	scale 2 min max	7	15267044	0	0	0	1
+F	scale 2 min max	8	14807259	0	0	0	8
+F	scale 2 min max	9	16777215	0	0	0	
+F	scale 2 min max	10	16777215	0	0	0	text
+F	scale 2 min max	11	14807516	0	0	0	7,5
+F	scale 2 min max	12	15332837	0	0	0	0
+F	scale 2 min max	13	8109667	0	0	0	100
+F	scale 2 min max	14	10736274	0	0	0	64
+F	scale 2 min max	15	12968891	0	0	0	33
+F	scale 2 min max	16	14479062	0	0	0	12
+F	scale 2 min max	17	16777215	0	0	0	-20
+F	scale 2 min max	18	15201250	0	0	0	2,5
+F	scale 2 min max	19	14085070	0	0	0	18
+F	scale 2 min max	20	11392926	0	0	0	55
+F	scale 2 min max	21	14741722	0	0	0	9
+F	scale 3 default	2	8377341	0	0	0	5
+F	scale 3 default	3	8711165	0	0	0	12
+F	scale 3 default	4	7909883	0	0	0	-3
+F	scale 3 default	5	8711165	0	0	0	12
+F	scale 3 default	6	8576460	0	0	0	40
+F	scale 3 default	7	8176380	0	0	0	1
+F	scale 3 default	8	8511742	0	0	0	8
+F	scale 3 default	9	16777215	0	0	0	
+F	scale 3 default	10	16777215	0	0	0	text
+F	scale 3 default	11	8511230	0	0	0	7,5
+F	scale 3 default	12	8109820	0	0	0	0
+F	scale 3 default	13	8109667	0	0	0	100
+F	scale 3 default	14	8376738	0	0	0	64
+F	scale 3 default	15	8577240	0	0	0	33
+F	scale 3 default	16	8711165	0	0	0	12
+F	scale 3 default	17	7039480	0	0	0	-20
+F	scale 3 default	18	8243453	0	0	0	2,5
+F	scale 3 default	19	8710386	0	0	0	18
+F	scale 3 default	20	8443314	0	0	0	55
+F	scale 3 default	21	8578302	0	0	0	9
+F	scale 3 numbers	2	7842555	0	0	0	5
+F	scale 3 numbers	3	8710648	0	0	0	12
+F	scale 3 numbers	4	7039480	0	0	0	-3
+F	scale 3 numbers	5	8710648	0	0	0	12
+F	scale 3 numbers	6	8309386	0	0	0	40
+F	scale 3 numbers	7	7173880	0	0	0	1
+F	scale 3 numbers	8	8376829	0	0	0	8
+F	scale 3 numbers	9	16777215	0	0	0	
+F	scale 3 numbers	10	16777215	0	0	0	text
+F	scale 3 numbers	11	8243965	0	0	0	7,5
+F	scale 3 numbers	12	7039480	0	0	0	0
+F	scale 3 numbers	13	8109667	0	0	0	100
+F	scale 3 numbers	14	8109667	0	0	0	64
+F	scale 3 numbers	15	8376998	0	0	0	33
+F	scale 3 numbers	16	8710648	0	0	0	12
+F	scale 3 numbers	17	7039480	0	0	0	-20
+F	scale 3 numbers	18	7440889	0	0	0	2,5
+F	scale 3 numbers	19	8643552	0	0	0	18
+F	scale 3 numbers	20	8109667	0	0	0	55
+F	scale 3 numbers	21	8511230	0	0	0	9
+F	scale 3 percent	2	7441657	0	0	0	5
+F	scale 3 percent	3	7708666	0	0	0	12
+F	scale 3 percent	4	7173880	0	0	0	-3
+F	scale 3 percent	5	7708666	0	0	0	12
+F	scale 3 percent	6	8711167	0	0	0	40
+F	scale 3 percent	7	7307769	0	0	0	1
+F	scale 3 percent	8	7574778	0	0	0	8
+F	scale 3 percent	9	16777215	0	0	0	
+F	scale 3 percent	10	16777215	0	0	0	text
+F	scale 3 percent	11	7574266	0	0	0	7,5
+F	scale 3 percent	12	7307001	0	0	0	0
+F	scale 3 percent	13	8109667	0	0	0	100
+F	scale 3 percent	14	8443313	0	0	0	64
+F	scale 3 percent	15	8444157	0	0	0	33
+F	scale 3 percent	16	7708666	0	0	0	12
+F	scale 3 percent	17	7039480	0	0	0	-20
+F	scale 3 percent	18	7374329	0	0	0	2,5
+F	scale 3 percent	19	7909371	0	0	0	18
+F	scale 3 percent	20	8576463	0	0	0	55
+F	scale 3 percent	21	7575546	0	0	0	9
+F	scale 3 percentiles	2	7574522	0	0	0	5
+F	scale 3 percentiles	3	8711167	0	0	0	12
+F	scale 3 percentiles	4	7039480	0	0	0	-3
+F	scale 3 percentiles	5	8711167	0	0	0	12
+F	scale 3 percentiles	6	8109667	0	0	0	40
+F	scale 3 percentiles	7	7039480	0	0	0	1
+F	scale 3 percentiles	8	8043004	0	0	0	8
+F	scale 3 percentiles	9	16777215	0	0	0	
+F	scale 3 percentiles	10	16777215	0	0	0	text
+F	scale 3 percentiles	11	7975675	0	0	0	7,5
+F	scale 3 percentiles	12	7039480	0	0	0	0
+F	scale 3 percentiles	13	8109667	0	0	0	100
+F	scale 3 percentiles	14	8109667	0	0	0	64
+F	scale 3 percentiles	15	8242814	0	0	0	33
+F	scale 3 percentiles	16	8711167	0	0	0	12
+F	scale 3 percentiles	17	7039480	0	0	0	-20
+F	scale 3 percentiles	18	7173368	0	0	0	2,5
+F	scale 3 percentiles	19	8577498	0	0	0	18
+F	scale 3 percentiles	20	8109667	0	0	0	55
+F	scale 3 percentiles	21	8177148	0	0	0	9
+F	scale 2 formula	2	16777215	0	0	0	5
+F	scale 2 formula	3	16777215	0	0	0	12
+F	scale 2 formula	4	16777215	0	0	0	-3
+F	scale 2 formula	5	16777215	0	0	0	12
+F	scale 2 formula	6	16777215	0	0	0	40
+F	scale 2 formula	7	16777215	0	0	0	1
+F	scale 2 formula	8	16777215	0	0	0	8
+F	scale 2 formula	9	16777215	0	0	0	
+F	scale 2 formula	10	16777215	0	0	0	text
+F	scale 2 formula	11	16777215	0	0	0	7,5
+F	scale 2 formula	12	16777215	0	0	0	0
+F	scale 2 formula	13	16777215	0	0	0	100
+F	scale 2 formula	14	16777215	0	0	0	64
+F	scale 2 formula	15	16777215	0	0	0	33
+F	scale 2 formula	16	16777215	0	0	0	12
+F	scale 2 formula	17	16777215	0	0	0	-20
+F	scale 2 formula	18	16777215	0	0	0	2,5
+F	scale 2 formula	19	16777215	0	0	0	18
+F	scale 2 formula	20	16777215	0	0	0	55
+F	scale 2 formula	21	16777215	0	0	0	9
+F	scale 2 mixed	2	3242751	0	0	0	5
+F	scale 2 mixed	3	3703807	0	0	0	12
+F	scale 2 mixed	4	2650623	0	0	0	-3
+F	scale 2 mixed	5	3703807	0	0	0	12
+F	scale 2 mixed	6	5809663	0	0	0	40
+F	scale 2 mixed	7	16777215	0	0	0	apple
+F	scale 2 mixed	8	16777215	0	0	0	Banana
+F	scale 2 mixed	9	16777215	0	0	0	
+F	scale 2 mixed	10	16777215	0	0	0	#N/A
+F	scale 2 mixed	11	3374591	0	0	0	7,5
+F	scale 2 mixed	12	2847999	0	0	0	0
+F	scale 2 mixed	13	10285055	0	0	0	100
+F	scale 2 mixed	14	16777215	0	0	0	apple pie
+F	scale 2 mixed	15	5283327	0	0	0	33
+F	scale 2 mixed	16	3703807	0	0	0	12
+F	scale 2 mixed	17	16777215	0	0	0	APPLE
+F	scale 2 mixed	18	3045375	0	0	0	2,5
+F	scale 2 mixed	19	4164351	0	0	0	18
+F	scale 2 mixed	20	16777215	0	0	0	 
+F	scale 2 mixed	21	16777215	0	0	0	TRUE
+F	icons 3 arrows	2	16777215	0	0	0	5
+F	icons 3 arrows	3	16777215	0	0	0	12
+F	icons 3 arrows	4	16777215	0	0	0	-3
+F	icons 3 arrows	5	16777215	0	0	0	12
+F	icons 3 arrows	6	16777215	0	0	0	40
+F	icons 3 arrows	7	16777215	0	0	0	1
+F	icons 3 arrows	8	16777215	0	0	0	8
+F	icons 3 arrows	9	16777215	0	0	0	
+F	icons 3 arrows	10	16777215	0	0	0	text
+F	icons 3 arrows	11	16777215	0	0	0	7,5
+F	icons 3 arrows	12	16777215	0	0	0	0
+F	icons 3 arrows	13	16777215	0	0	0	100
+F	icons 3 arrows	14	16777215	0	0	0	64
+F	icons 3 arrows	15	16777215	0	0	0	33
+F	icons 3 arrows	16	16777215	0	0	0	12
+F	icons 3 arrows	17	16777215	0	0	0	-20
+F	icons 3 arrows	18	16777215	0	0	0	2,5
+F	icons 3 arrows	19	16777215	0	0	0	18
+F	icons 3 arrows	20	16777215	0	0	0	55
+F	icons 3 arrows	21	16777215	0	0	0	9
+F	icons 3 arrows reversed	2	16777215	0	0	0	5
+F	icons 3 arrows reversed	3	16777215	0	0	0	12
+F	icons 3 arrows reversed	4	16777215	0	0	0	-3
+F	icons 3 arrows reversed	5	16777215	0	0	0	12
+F	icons 3 arrows reversed	6	16777215	0	0	0	40
+F	icons 3 arrows reversed	7	16777215	0	0	0	1
+F	icons 3 arrows reversed	8	16777215	0	0	0	8
+F	icons 3 arrows reversed	9	16777215	0	0	0	
+F	icons 3 arrows reversed	10	16777215	0	0	0	text
+F	icons 3 arrows reversed	11	16777215	0	0	0	7,5
+F	icons 3 arrows reversed	12	16777215	0	0	0	0
+F	icons 3 arrows reversed	13	16777215	0	0	0	100
+F	icons 3 arrows reversed	14	16777215	0	0	0	64
+F	icons 3 arrows reversed	15	16777215	0	0	0	33
+F	icons 3 arrows reversed	16	16777215	0	0	0	12
+F	icons 3 arrows reversed	17	16777215	0	0	0	-20
+F	icons 3 arrows reversed	18	16777215	0	0	0	2,5
+F	icons 3 arrows reversed	19	16777215	0	0	0	18
+F	icons 3 arrows reversed	20	16777215	0	0	0	55
+F	icons 3 arrows reversed	21	16777215	0	0	0	9
+F	icons 4 arrows	2	16777215	0	0	0	5
+F	icons 4 arrows	3	16777215	0	0	0	12
+F	icons 4 arrows	4	16777215	0	0	0	-3
+F	icons 4 arrows	5	16777215	0	0	0	12
+F	icons 4 arrows	6	16777215	0	0	0	40
+F	icons 4 arrows	7	16777215	0	0	0	1
+F	icons 4 arrows	8	16777215	0	0	0	8
+F	icons 4 arrows	9	16777215	0	0	0	
+F	icons 4 arrows	10	16777215	0	0	0	text
+F	icons 4 arrows	11	16777215	0	0	0	7,5
+F	icons 4 arrows	12	16777215	0	0	0	0
+F	icons 4 arrows	13	16777215	0	0	0	100
+F	icons 4 arrows	14	16777215	0	0	0	64
+F	icons 4 arrows	15	16777215	0	0	0	33
+F	icons 4 arrows	16	16777215	0	0	0	12
+F	icons 4 arrows	17	16777215	0	0	0	-20
+F	icons 4 arrows	18	16777215	0	0	0	2,5
+F	icons 4 arrows	19	16777215	0	0	0	18
+F	icons 4 arrows	20	16777215	0	0	0	55
+F	icons 4 arrows	21	16777215	0	0	0	9
+F	icons 5 rating	2	16777215	0	0	0	5
+F	icons 5 rating	3	16777215	0	0	0	12
+F	icons 5 rating	4	16777215	0	0	0	-3
+F	icons 5 rating	5	16777215	0	0	0	12
+F	icons 5 rating	6	16777215	0	0	0	40
+F	icons 5 rating	7	16777215	0	0	0	1
+F	icons 5 rating	8	16777215	0	0	0	8
+F	icons 5 rating	9	16777215	0	0	0	
+F	icons 5 rating	10	16777215	0	0	0	text
+F	icons 5 rating	11	16777215	0	0	0	7,5
+F	icons 5 rating	12	16777215	0	0	0	0
+F	icons 5 rating	13	16777215	0	0	0	100
+F	icons 5 rating	14	16777215	0	0	0	64
+F	icons 5 rating	15	16777215	0	0	0	33
+F	icons 5 rating	16	16777215	0	0	0	12
+F	icons 5 rating	17	16777215	0	0	0	-20
+F	icons 5 rating	18	16777215	0	0	0	2,5
+F	icons 5 rating	19	16777215	0	0	0	18
+F	icons 5 rating	20	16777215	0	0	0	55
+F	icons 5 rating	21	16777215	0	0	0	9
+F	icons 3 numbers	2	16777215	0	0	0	5
+F	icons 3 numbers	3	16777215	0	0	0	12
+F	icons 3 numbers	4	16777215	0	0	0	-3
+F	icons 3 numbers	5	16777215	0	0	0	12
+F	icons 3 numbers	6	16777215	0	0	0	40
+F	icons 3 numbers	7	16777215	0	0	0	1
+F	icons 3 numbers	8	16777215	0	0	0	8
+F	icons 3 numbers	9	16777215	0	0	0	
+F	icons 3 numbers	10	16777215	0	0	0	text
+F	icons 3 numbers	11	16777215	0	0	0	7,5
+F	icons 3 numbers	12	16777215	0	0	0	0
+F	icons 3 numbers	13	16777215	0	0	0	100
+F	icons 3 numbers	14	16777215	0	0	0	64
+F	icons 3 numbers	15	16777215	0	0	0	33
+F	icons 3 numbers	16	16777215	0	0	0	12
+F	icons 3 numbers	17	16777215	0	0	0	-20
+F	icons 3 numbers	18	16777215	0	0	0	2,5
+F	icons 3 numbers	19	16777215	0	0	0	18
+F	icons 3 numbers	20	16777215	0	0	0	55
+F	icons 3 numbers	21	16777215	0	0	0	9
+F	icons 3 percentiles	2	16777215	0	0	0	5
+F	icons 3 percentiles	3	16777215	0	0	0	12
+F	icons 3 percentiles	4	16777215	0	0	0	-3
+F	icons 3 percentiles	5	16777215	0	0	0	12
+F	icons 3 percentiles	6	16777215	0	0	0	40
+F	icons 3 percentiles	7	16777215	0	0	0	1
+F	icons 3 percentiles	8	16777215	0	0	0	8
+F	icons 3 percentiles	9	16777215	0	0	0	
+F	icons 3 percentiles	10	16777215	0	0	0	text
+F	icons 3 percentiles	11	16777215	0	0	0	7,5
+F	icons 3 percentiles	12	16777215	0	0	0	0
+F	icons 3 percentiles	13	16777215	0	0	0	100
+F	icons 3 percentiles	14	16777215	0	0	0	64
+F	icons 3 percentiles	15	16777215	0	0	0	33
+F	icons 3 percentiles	16	16777215	0	0	0	12
+F	icons 3 percentiles	17	16777215	0	0	0	-20
+F	icons 3 percentiles	18	16777215	0	0	0	2,5
+F	icons 3 percentiles	19	16777215	0	0	0	18
+F	icons 3 percentiles	20	16777215	0	0	0	55
+F	icons 3 percentiles	21	16777215	0	0	0	9
+F	icons 3 mixed	2	16777215	0	0	0	5
+F	icons 3 mixed	3	16777215	0	0	0	12
+F	icons 3 mixed	4	16777215	0	0	0	-3
+F	icons 3 mixed	5	16777215	0	0	0	12
+F	icons 3 mixed	6	16777215	0	0	0	40
+F	icons 3 mixed	7	16777215	0	0	0	apple
+F	icons 3 mixed	8	16777215	0	0	0	Banana
+F	icons 3 mixed	9	16777215	0	0	0	
+F	icons 3 mixed	10	16777215	0	0	0	#N/A
+F	icons 3 mixed	11	16777215	0	0	0	7,5
+F	icons 3 mixed	12	16777215	0	0	0	0
+F	icons 3 mixed	13	16777215	0	0	0	100
+F	icons 3 mixed	14	16777215	0	0	0	apple pie
+F	icons 3 mixed	15	16777215	0	0	0	33
+F	icons 3 mixed	16	16777215	0	0	0	12
+F	icons 3 mixed	17	16777215	0	0	0	APPLE
+F	icons 3 mixed	18	16777215	0	0	0	2,5
+F	icons 3 mixed	19	16777215	0	0	0	18
+F	icons 3 mixed	20	16777215	0	0	0	 
+F	icons 3 mixed	21	16777215	0	0	0	TRUE
+F	two rules	2	65280	0	1	0	5
+F	two rules	3	255	0	0	1	12
+F	two rules	4	16777215	0	0	0	-3
+F	two rules	5	255	0	0	1	12
+F	two rules	6	255	0	0	1	40
+F	two rules	7	65280	0	1	0	1
+F	two rules	8	65280	0	1	0	8
+F	two rules	9	16777215	0	0	0	
+F	two rules	10	255	0	0	1	text
+F	two rules	11	65280	0	1	0	7,5
+F	two rules	12	16777215	0	0	0	0
+F	two rules	13	255	0	0	1	100
+F	two rules	14	255	0	0	1	64
+F	two rules	15	255	0	0	1	33
+F	two rules	16	255	0	0	1	12
+F	two rules	17	16777215	0	0	0	-20
+F	two rules	18	65280	0	1	0	2,5
+F	two rules	19	255	0	0	1	18
+F	two rules	20	255	0	0	1	55
+F	two rules	21	65280	0	1	0	9
+F	two rules stop	2	65280	0	1	0	5
+F	two rules stop	3	255	0	0	1	12
+F	two rules stop	4	16777215	0	0	0	-3
+F	two rules stop	5	255	0	0	1	12
+F	two rules stop	6	255	0	0	1	40
+F	two rules stop	7	65280	0	1	0	1
+F	two rules stop	8	65280	0	1	0	8
+F	two rules stop	9	16777215	0	0	0	
+F	two rules stop	10	255	0	0	1	text
+F	two rules stop	11	65280	0	1	0	7,5
+F	two rules stop	12	16777215	0	0	0	0
+F	two rules stop	13	255	0	0	1	100
+F	two rules stop	14	255	0	0	1	64
+F	two rules stop	15	255	0	0	1	33
+F	two rules stop	16	255	0	0	1	12
+F	two rules stop	17	16777215	0	0	0	-20
+F	two rules stop	18	65280	0	1	0	2,5
+F	two rules stop	19	255	0	0	1	18
+F	two rules stop	20	255	0	0	1	55
+F	two rules stop	21	65280	0	1	0	9
+F	number format	2	16777215	0	0	0	5
+F	number format	3	16777215	255	0	0	12,00
+F	number format	4	16777215	0	0	0	-3
+F	number format	5	16777215	255	0	0	12,00
+F	number format	6	16777215	255	0	0	40,00
+F	number format	7	16777215	0	0	0	1
+F	number format	8	16777215	0	0	0	8
+F	number format	9	16777215	0	0	0	
+F	number format	10	16777215	255	0	0	text
+F	number format	11	16777215	0	0	0	7,5
+F	number format	12	16777215	0	0	0	0
+F	number format	13	16777215	255	0	0	100,00
+F	number format	14	16777215	255	0	0	64,00
+F	number format	15	16777215	255	0	0	33,00
+F	number format	16	16777215	255	0	0	12,00
+F	number format	17	16777215	0	0	0	-20
+F	number format	18	16777215	0	0	0	2,5
+F	number format	19	16777215	255	0	0	18,00
+F	number format	20	16777215	255	0	0	55,00
+F	number format	21	16777215	0	0	0	9
+F	two areas	2	16777215	0	0	0	5
+F	two areas	3	16777215	0	0	0	12
+F	two areas	4	16777215	0	0	0	-3
+F	two areas	5	16777215	0	0	0	12
+F	two areas	6	255	0	0	0	40
+F	two areas	7	16777215	0	0	0	1
+F	two areas	8	16777215	0	0	0	8
+F	two areas	9	16777215	0	0	0	
+F	two areas	10	255	0	0	0	text
+F	two areas	11	16777215	0	0	0	7,5
+F	two areas	12	16777215	0	0	0	0
+F	two areas	13	255	0	0	0	100
+F	two areas	14	255	0	0	0	64
+F	two areas	15	255	0	0	0	33
+F	two areas	16	16777215	0	0	0	12
+F	two areas	17	16777215	0	0	0	-20
+F	two areas	18	16777215	0	0	0	2,5
+F	two areas	19	255	0	0	0	18
+F	two areas	20	255	0	0	0	55
+F	two areas	21	16777215	0	0	0	9
+F	two areas 2	2	255	0	0	0	5
+F	two areas 2	3	255	0	0	0	12
+F	two areas 2	4	16777215	0	0	0	-3
+F	two areas 2	5	255	0	0	0	12
+F	two areas 2	6	255	0	0	0	40
+F	two areas 2	7	255	0	0	0	1
+F	two areas 2	8	255	0	0	0	8
+F	two areas 2	9	16777215	0	0	0	
+F	two areas 2	10	255	0	0	0	text
+F	two areas 2	11	255	0	0	0	7,5
+F	two areas 2	12	16777215	0	0	0	0
+F	two areas 2	13	255	0	0	0	100
+F	two areas 2	14	255	0	0	0	64
+F	two areas 2	15	255	0	0	0	33
+F	two areas 2	16	255	0	0	0	12
+F	two areas 2	17	16777215	0	0	0	-20
+F	two areas 2	18	255	0	0	0	2,5
+F	two areas 2	19	255	0	0	0	18
+F	two areas 2	20	255	0	0	0	55
+F	two areas 2	21	255	0	0	0	9
+V	whole between 1 and 10	2	1
+V	whole between 1 and 10	3	0
+V	whole between 1 and 10	4	0
+V	whole between 1 and 10	5	0
+V	whole between 1 and 10	6	1
+V	whole between 1 and 10	7	0
+V	whole between 1 and 10	8	0
+V	whole between 1 and 10	9	0
+V	whole between 1 and 10	10	0
+V	whole between 1 and 10	11	0
+V	whole between 1 and 10	12	0
+V	whole between 1 and 10	13	0
+V	whole between 1 and 10	14	0
+V	whole between 1 and 10	15	0
+V	whole between 1 and 10	16	0
+V	whole between 1 and 10	17	1
+V	whole between 1 and 10	18	0
+V	whole between 1 and 10	19	0
+V	whole between 1 and 10	20	1
+V	whole between 1 and 10	21	0
+V	whole greater than 0 no blanks	2	1
+V	whole greater than 0 no blanks	3	0
+V	whole greater than 0 no blanks	4	1
+V	whole greater than 0 no blanks	5	0
+V	whole greater than 0 no blanks	6	0
+V	whole greater than 0 no blanks	7	1
+V	whole greater than 0 no blanks	8	0
+V	whole greater than 0 no blanks	9	0
+V	whole greater than 0 no blanks	10	0
+V	whole greater than 0 no blanks	11	0
+V	whole greater than 0 no blanks	12	1
+V	whole greater than 0 no blanks	13	0
+V	whole greater than 0 no blanks	14	0
+V	whole greater than 0 no blanks	15	0
+V	whole greater than 0 no blanks	16	0
+V	whole greater than 0 no blanks	17	1
+V	whole greater than 0 no blanks	18	0
+V	whole greater than 0 no blanks	19	0
+V	whole greater than 0 no blanks	20	1
+V	whole greater than 0 no blanks	21	1
+V	decimal at least 2.5	2	1
+V	decimal at least 2.5	3	1
+V	decimal at least 2.5	4	1
+V	decimal at least 2.5	5	0
+V	decimal at least 2.5	6	1
+V	decimal at least 2.5	7	1
+V	decimal at least 2.5	8	0
+V	decimal at least 2.5	9	0
+V	decimal at least 2.5	10	0
+V	decimal at least 2.5	11	0
+V	decimal at least 2.5	12	1
+V	decimal at least 2.5	13	0
+V	decimal at least 2.5	14	0
+V	decimal at least 2.5	15	0
+V	decimal at least 2.5	16	0
+V	decimal at least 2.5	17	0
+V	decimal at least 2.5	18	0
+V	decimal at least 2.5	19	0
+V	decimal at least 2.5	20	1
+V	decimal at least 2.5	21	1
+V	decimal not between 0 and 1	2	1
+V	decimal not between 0 and 1	3	1
+V	decimal not between 0 and 1	4	1
+V	decimal not between 0 and 1	5	0
+V	decimal not between 0 and 1	6	1
+V	decimal not between 0 and 1	7	1
+V	decimal not between 0 and 1	8	0
+V	decimal not between 0 and 1	9	1
+V	decimal not between 0 and 1	10	0
+V	decimal not between 0 and 1	11	0
+V	decimal not between 0 and 1	12	1
+V	decimal not between 0 and 1	13	0
+V	decimal not between 0 and 1	14	0
+V	decimal not between 0 and 1	15	0
+V	decimal not between 0 and 1	16	0
+V	decimal not between 0 and 1	17	0
+V	decimal not between 0 and 1	18	0
+V	decimal not between 0 and 1	19	0
+V	decimal not between 0 and 1	20	1
+V	decimal not between 0 and 1	21	1
+V	list a b c	2	0
+V	list a b c	3	0
+V	list a b c	4	0
+V	list a b c	5	0
+V	list a b c	6	1
+V	list a b c	7	0
+V	list a b c	8	0
+V	list a b c	9	0
+V	list a b c	10	0
+V	list a b c	11	0
+V	list a b c	12	0
+V	list a b c	13	0
+V	list a b c	14	1
+V	list a b c	15	0
+V	list a b c	16	0
+V	list a b c	17	0
+V	list a b c	18	0
+V	list a b c	19	0
+V	list a b c	20	0
+V	list a b c	21	0
+V	list range	2	1
+V	list range	3	0
+V	list range	4	0
+V	list range	5	0
+V	list range	6	1
+V	list range	7	0
+V	list range	8	0
+V	list range	9	0
+V	list range	10	0
+V	list range	11	0
+V	list range	12	0
+V	list range	13	0
+V	list range	14	1
+V	list range	15	1
+V	list range	16	0
+V	list range	17	0
+V	list range	18	0
+V	list range	19	0
+V	list range	20	1
+V	list range	21	0
+V	date after	2	0
+V	date after	3	0
+V	date after	4	0
+V	date after	5	0
+V	date after	6	1
+V	date after	7	1
+V	date after	8	0
+V	date after	9	0
+V	date after	10	0
+V	date after	11	0
+V	date after	12	1
+V	date after	13	0
+V	date after	14	0
+V	date after	15	0
+V	date after	16	0
+V	date after	17	0
+V	date after	18	0
+V	date after	19	0
+V	date after	20	0
+V	date after	21	1
+V	time before noon	2	0
+V	time before noon	3	0
+V	time before noon	4	0
+V	time before noon	5	0
+V	time before noon	6	1
+V	time before noon	7	0
+V	time before noon	8	1
+V	time before noon	9	1
+V	time before noon	10	0
+V	time before noon	11	0
+V	time before noon	12	0
+V	time before noon	13	0
+V	time before noon	14	0
+V	time before noon	15	0
+V	time before noon	16	0
+V	time before noon	17	0
+V	time before noon	18	0
+V	time before noon	19	0
+V	time before noon	20	0
+V	time before noon	21	0
+V	text length at most 3	2	1
+V	text length at most 3	3	1
+V	text length at most 3	4	1
+V	text length at most 3	5	1
+V	text length at most 3	6	1
+V	text length at most 3	7	0
+V	text length at most 3	8	1
+V	text length at most 3	9	1
+V	text length at most 3	10	1
+V	text length at most 3	11	0
+V	text length at most 3	12	0
+V	text length at most 3	13	1
+V	text length at most 3	14	1
+V	text length at most 3	15	1
+V	text length at most 3	16	1
+V	text length at most 3	17	1
+V	text length at most 3	18	0
+V	text length at most 3	19	1
+V	text length at most 3	20	1
+V	text length at most 3	21	0
+V	text length equal 1	2	1
+V	text length equal 1	3	0
+V	text length equal 1	4	0
+V	text length equal 1	5	1
+V	text length equal 1	6	1
+V	text length equal 1	7	0
+V	text length equal 1	8	1
+V	text length equal 1	9	0
+V	text length equal 1	10	0
+V	text length equal 1	11	0
+V	text length equal 1	12	0
+V	text length equal 1	13	0
+V	text length equal 1	14	1
+V	text length equal 1	15	1
+V	text length equal 1	16	1
+V	text length equal 1	17	1
+V	text length equal 1	18	0
+V	text length equal 1	19	1
+V	text length equal 1	20	0
+V	text length equal 1	21	0
+V	custom is number	2	1
+V	custom is number	3	1
+V	custom is number	4	1
+V	custom is number	5	0
+V	custom is number	6	1
+V	custom is number	7	0
+V	custom is number	8	1
+V	custom is number	9	1
+V	custom is number	10	0
+V	custom is number	11	0
+V	custom is number	12	1
+V	custom is number	13	1
+V	custom is number	14	0
+V	custom is number	15	0
+V	custom is number	16	0
+V	custom is number	17	1
+V	custom is number	18	0
+V	custom is number	19	0
+V	custom is number	20	1
+V	custom is number	21	1
+V	custom is text no blanks	2	0
+V	custom is text no blanks	3	0
+V	custom is text no blanks	4	0
+V	custom is text no blanks	5	1
+V	custom is text no blanks	6	0
+V	custom is text no blanks	7	0
+V	custom is text no blanks	8	0
+V	custom is text no blanks	9	0
+V	custom is text no blanks	10	1
+V	custom is text no blanks	11	1
+V	custom is text no blanks	12	0
+V	custom is text no blanks	13	0
+V	custom is text no blanks	14	1
+V	custom is text no blanks	15	1
+V	custom is text no blanks	16	1
+V	custom is text no blanks	17	0
+V	custom is text no blanks	18	0
+V	custom is text no blanks	19	1
+V	custom is text no blanks	20	0
+V	custom is text no blanks	21	0
+V	any value	2	1
+V	any value	3	1
+V	any value	4	1
+V	any value	5	1
+V	any value	6	1
+V	any value	7	1
+V	any value	8	1
+V	any value	9	1
+V	any value	10	1
+V	any value	11	1
+V	any value	12	1
+V	any value	13	1
+V	any value	14	1
+V	any value	15	1
+V	any value	16	1
+V	any value	17	1
+V	any value	18	1
+V	any value	19	1
+V	any value	20	1
+V	any value	21	1
+I	icons 3 arrows	2	1
+I	icons 3 arrows	3	1
+I	icons 3 arrows	4	1
+I	icons 3 arrows	5	1
+I	icons 3 arrows	6	2
+I	icons 3 arrows	7	1
+I	icons 3 arrows	8	1
+I	icons 3 arrows	9	0
+I	icons 3 arrows	10	0
+I	icons 3 arrows	11	1
+I	icons 3 arrows	12	1
+I	icons 3 arrows	13	3
+I	icons 3 arrows	14	3
+I	icons 3 arrows	15	2
+I	icons 3 arrows	16	1
+I	icons 3 arrows	17	1
+I	icons 3 arrows	18	1
+I	icons 3 arrows	19	1
+I	icons 3 arrows	20	2
+I	icons 3 arrows	21	1
+I	icons 3 arrows reversed	2	3
+I	icons 3 arrows reversed	3	3
+I	icons 3 arrows reversed	4	3
+I	icons 3 arrows reversed	5	3
+I	icons 3 arrows reversed	6	2
+I	icons 3 arrows reversed	7	3
+I	icons 3 arrows reversed	8	3
+I	icons 3 arrows reversed	9	0
+I	icons 3 arrows reversed	10	0
+I	icons 3 arrows reversed	11	3
+I	icons 3 arrows reversed	12	3
+I	icons 3 arrows reversed	13	1
+I	icons 3 arrows reversed	14	1
+I	icons 3 arrows reversed	15	2
+I	icons 3 arrows reversed	16	3
+I	icons 3 arrows reversed	17	3
+I	icons 3 arrows reversed	18	3
+I	icons 3 arrows reversed	19	3
+I	icons 3 arrows reversed	20	2
+I	icons 3 arrows reversed	21	3
+I	icons 4 arrows	2	1
+I	icons 4 arrows	3	2
+I	icons 4 arrows	4	1
+I	icons 4 arrows	5	2
+I	icons 4 arrows	6	3
+I	icons 4 arrows	7	1
+I	icons 4 arrows	8	1
+I	icons 4 arrows	9	0
+I	icons 4 arrows	10	0
+I	icons 4 arrows	11	1
+I	icons 4 arrows	12	1
+I	icons 4 arrows	13	4
+I	icons 4 arrows	14	3
+I	icons 4 arrows	15	2
+I	icons 4 arrows	16	2
+I	icons 4 arrows	17	1
+I	icons 4 arrows	18	1
+I	icons 4 arrows	19	2
+I	icons 4 arrows	20	3
+I	icons 4 arrows	21	1
+I	icons 5 rating	2	2
+I	icons 5 rating	3	2
+I	icons 5 rating	4	1
+I	icons 5 rating	5	2
+I	icons 5 rating	6	3
+I	icons 5 rating	7	1
+I	icons 5 rating	8	2
+I	icons 5 rating	9	0
+I	icons 5 rating	10	0
+I	icons 5 rating	11	2
+I	icons 5 rating	12	1
+I	icons 5 rating	13	5
+I	icons 5 rating	14	4
+I	icons 5 rating	15	3
+I	icons 5 rating	16	2
+I	icons 5 rating	17	1
+I	icons 5 rating	18	1
+I	icons 5 rating	19	2
+I	icons 5 rating	20	4
+I	icons 5 rating	21	2
+I	icons 3 numbers	2	1
+I	icons 3 numbers	3	1
+I	icons 3 numbers	4	1
+I	icons 3 numbers	5	1
+I	icons 3 numbers	6	3
+I	icons 3 numbers	7	1
+I	icons 3 numbers	8	1
+I	icons 3 numbers	9	0
+I	icons 3 numbers	10	0
+I	icons 3 numbers	11	1
+I	icons 3 numbers	12	1
+I	icons 3 numbers	13	3
+I	icons 3 numbers	14	3
+I	icons 3 numbers	15	2
+I	icons 3 numbers	16	1
+I	icons 3 numbers	17	1
+I	icons 3 numbers	18	1
+I	icons 3 numbers	19	2
+I	icons 3 numbers	20	3
+I	icons 3 numbers	21	1
+I	icons 3 percentiles	2	1
+I	icons 3 percentiles	3	2
+I	icons 3 percentiles	4	1
+I	icons 3 percentiles	5	2
+I	icons 3 percentiles	6	3
+I	icons 3 percentiles	7	1
+I	icons 3 percentiles	8	2
+I	icons 3 percentiles	9	0
+I	icons 3 percentiles	10	0
+I	icons 3 percentiles	11	2
+I	icons 3 percentiles	12	1
+I	icons 3 percentiles	13	3
+I	icons 3 percentiles	14	3
+I	icons 3 percentiles	15	3
+I	icons 3 percentiles	16	2
+I	icons 3 percentiles	17	1
+I	icons 3 percentiles	18	1
+I	icons 3 percentiles	19	3
+I	icons 3 percentiles	20	3
+I	icons 3 percentiles	21	2
+I	icons 3 mixed	2	1
+I	icons 3 mixed	3	1
+I	icons 3 mixed	4	1
+I	icons 3 mixed	5	1
+I	icons 3 mixed	6	2
+I	icons 3 mixed	7	0
+I	icons 3 mixed	8	0
+I	icons 3 mixed	9	0
+I	icons 3 mixed	10	0
+I	icons 3 mixed	11	1
+I	icons 3 mixed	12	1
+I	icons 3 mixed	13	3
+I	icons 3 mixed	14	0
+I	icons 3 mixed	15	2
+I	icons 3 mixed	16	1
+I	icons 3 mixed	17	0
+I	icons 3 mixed	18	1
+I	icons 3 mixed	19	1
+I	icons 3 mixed	20	0
+I	icons 3 mixed	21	0

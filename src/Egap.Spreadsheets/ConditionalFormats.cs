@@ -106,6 +106,9 @@ public sealed class ConditionalFormatRule
     /// <summary>The style index the file gave and the style it read there, kept while the style is the same.</summary>
     internal (int Index, CellStyle? Style)? ReadStyle { get; set; }
 
+    /// <summary>The font flags the file's differential format states, true or false, as <see cref="Storage.StyleTable.DifferentialFontFlags"/> counts them.</summary>
+    internal int StatedFontFlags { get; set; }
+
     /// <summary>The colour scale, data bar or icon set child a rule made in code writes.</summary>
     internal XElement? Drawing { get; set; }
 
@@ -219,9 +222,11 @@ public sealed class ConditionalFormat
 public sealed class ConditionalFormatCollection : IReadOnlyList<ConditionalFormat>
 {
     private readonly List<ConditionalFormat> formats = [];
+    private readonly Worksheet sheet;
 
-    internal ConditionalFormatCollection()
+    internal ConditionalFormatCollection(Worksheet sheet)
     {
+        this.sheet = sheet;
     }
 
     /// <summary>How many formatted ranges there are.</summary>
@@ -250,6 +255,16 @@ public sealed class ConditionalFormatCollection : IReadOnlyList<ConditionalForma
     /// <exception cref="FormatException">The range is not an A1 reference.</exception>
     /// <exception cref="ArgumentException">No rule is given.</exception>
     public ConditionalFormat Add(string range, params ConditionalFormatRule[] rules) => Add(RangeAddress.Parse(range), rules);
+
+    /// <summary>
+    /// The sheet's conditional formatting evaluated as Excel evaluates it, over the values its cells hold now: which rules
+    /// apply to each cell, the style they give it, and the colour scale, data bar or icon it shows. Values set later need a
+    /// new evaluation.
+    /// </summary>
+    public ConditionalFormatEvaluation Evaluate() => new(sheet);
+
+    /// <summary>What conditional formatting does to one cell, over the values the sheet's cells hold now.</summary>
+    public ConditionalCellFormat Evaluate(CellAddress cell) => Evaluate()[cell];
 
     /// <summary>Removes conditional formatting and its rules.</summary>
     /// <returns>Whether it was on the sheet.</returns>

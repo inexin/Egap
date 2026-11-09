@@ -31,6 +31,8 @@ public sealed partial class Worksheet
         Columns = new SheetColumnCollection(this);
         Tables = new SheetTableCollection(this);
         PageSetup = new PageSetup(this);
+        ConditionalFormats = new ConditionalFormatCollection(this);
+        DataValidations = new DataValidationCollection(this);
     }
 
     /// <summary>The workbook the sheet is in.</summary>
@@ -82,10 +84,10 @@ public sealed partial class Worksheet
     public HyperlinkCollection Hyperlinks { get; } = new();
 
     /// <summary>The data validation rules: what cells allow, drop-down lists and input messages.</summary>
-    public DataValidationCollection DataValidations { get; } = new();
+    public DataValidationCollection DataValidations { get; }
 
     /// <summary>The conditional formatting.</summary>
-    public ConditionalFormatCollection ConditionalFormats { get; } = new();
+    public ConditionalFormatCollection ConditionalFormats { get; }
 
     /// <summary>The Excel tables on the sheet.</summary>
     public SheetTableCollection Tables { get; }
