@@ -219,6 +219,7 @@ internal static class OdsReader
 
         TableState state = new(sheet);
         Columns(context, state, table, 0);
+        state.Column = 0;
         Rows(context, state, table, 0);
         if (state.Operations.Count > 0)
         {
@@ -278,11 +279,6 @@ internal static class OdsReader
                     });
                     break;
             }
-        }
-
-        if (level == 0)
-        {
-            state.Column = 0;
         }
     }
 

@@ -291,6 +291,30 @@ public sealed class OdsTests
     }
 
     [Fact]
+    public void NumbersColumnsAndRowsAfterHeaderColumnsAndRows()
+    {
+        string styles = """
+            <style:style style:name="co1" style:family="table-column"><style:table-column-properties style:column-width="1in"/></style:style>
+            """;
+        string table = """
+            <table:table table:name="S">
+              <table:table-header-columns><table:table-column table:style-name="co1"/></table:table-header-columns>
+              <table:table-column/>
+              <table:table-column table:visibility="collapse"/>
+              <table:table-header-rows><table:table-row><table:table-cell office:value-type="float" office:value="1"/></table:table-row></table:table-header-rows>
+              <table:table-row><table:table-cell/><table:table-cell office:value-type="float" office:value="2"/></table:table-row>
+            </table:table>
+            """;
+        Worksheet sheet = Load(Flat(table, styles: styles)).Worksheets[0];
+        Assert.Equal(13, sheet.Columns[0].Width!.Value, 1);
+        Assert.False(sheet.Columns[0].Hidden);
+        Assert.Null(sheet.Columns[1].Width);
+        Assert.True(sheet.Columns[2].Hidden);
+        Assert.Equal(1, sheet["A1"].Value.Number);
+        Assert.Equal(2, sheet["B2"].Value.Number);
+    }
+
+    [Fact]
     public void ReadsOtherFilesSheetsAsLinkedBooks()
     {
         string copy = """
