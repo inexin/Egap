@@ -353,11 +353,81 @@ that hold something.</p>
 </h2>
 
 
+  <a id="Egap_Spreadsheets_CellRange_AutoFitColumns_" data-uid="Egap.Spreadsheets.CellRange.AutoFitColumns*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_AutoFitColumns" data-uid="Egap.Spreadsheets.CellRange.AutoFitColumns">
+  AutoFitColumns()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fits each column of the range to the widest text of its cells in the range, as Excel's <code>Columns.AutoFit</code> on a
+range does: the text as <a class="xref" href="Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_Text">Text</a> shows it, in each cell's font, indent and rotation, wrapped at the
+column's width when the cell wraps. Merged cells are left out, and a column with no text in the range keeps its width.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AutoFitColumns()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_AutoFitColumns_examples">Examples</h4>
+  <pre><code class="lang-csharp">sheet.Range("A1:D20").AutoFitColumns();</code></pre>
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_AutoFitColumns_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Widths are Excel's on Windows at 96 dpi: characters in the fonts sheets use most (Arial, Calibri, Times New Roman,
+Verdana, Tahoma and others, at their common sizes) take the pixels Excel measured for them; other fonts are measured
+from the font through <code>FontSettings.Default</code>, and may come out a pixel or two from Excel's. Formulas count with
+their last results, so calculate first when they have changed.</p>
+</div>
+
+
+
+
+  <a id="Egap_Spreadsheets_CellRange_AutoFitRows_" data-uid="Egap.Spreadsheets.CellRange.AutoFitRows*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_AutoFitRows" data-uid="Egap.Spreadsheets.CellRange.AutoFitRows">
+  AutoFitRows()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fits each row of the range to its tallest text, as Excel's <code>Rows.AutoFit</code> does: a line of each cell's font, as
+many lines as a wrapping cell takes at its column's width, and the height a rotated text takes; never lower than a
+line of the normal font. Merged cells are left out. See <a class="xref" href="Egap.Spreadsheets.SheetRow.html#Egap_Spreadsheets_SheetRow_AutoFit">AutoFit()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AutoFitRows()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_AutoFitRows_examples">Examples</h4>
+  <pre><code class="lang-csharp">sheet.Range("A1:A10").AutoFitRows();</code></pre>
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_CellRange_Clear_" data-uid="Egap.Spreadsheets.CellRange.Clear*"></a>
 
   <h3 id="Egap_Spreadsheets_CellRange_Clear" data-uid="Egap.Spreadsheets.CellRange.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L209"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes the values, formulas and styles of every cell in the range.</p>
@@ -384,7 +454,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_ClearContents" data-uid="Egap.Spreadsheets.CellRange.ClearContents">
   ClearContents()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L175"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L219"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes the values and formulas of every cell in the range, keeping their styles.</p>
@@ -411,7 +481,7 @@ that hold something.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_CopyTo_Egap_Spreadsheets_Cell_" data-uid="Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell)">
   CopyTo(Cell)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L251"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Copies the range's cells to a place on a sheet of the same workbook, as Excel's Copy and Paste do: values, formulas,
@@ -468,7 +538,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Equals_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.Equals(Egap.Spreadsheets.CellRange)">
   Equals(CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L343"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L387"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both ranges are the same cells of the same sheet.</p>
@@ -505,7 +575,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Equals_System_Object_" data-uid="Egap.Spreadsheets.CellRange.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L346"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L390"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
@@ -544,7 +614,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Find_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.CellRange.Find(System.String,Egap.Spreadsheets.FindOptions)">
   Find(string, FindOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L302"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L346"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Finds the cells of the range whose text matches, as Excel's Find All does with the range selected; see
@@ -596,7 +666,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetEnumerator" data-uid="Egap.Spreadsheets.CellRange.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L329"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L373"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Every cell in the range, empty ones too, row by row and left to right.</p>
@@ -628,7 +698,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetHashCode" data-uid="Egap.Spreadsheets.CellRange.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L349"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L393"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
@@ -699,7 +769,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_MoveTo_Egap_Spreadsheets_Cell_" data-uid="Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell)">
   MoveTo(Cell)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L234"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L278"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Moves the range's cells to a place on a sheet of the same workbook, as Excel's Cut and Paste do: everything
@@ -756,7 +826,7 @@ another sheet, or change a pivot table.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.CellRange.Replace(System.String,System.String,Egap.Spreadsheets.FindOptions)">
   Replace(string, string, FindOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L326"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L370"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Replaces matching text in the range's formulas and values, as Excel's Replace All does with the range selected, and
@@ -975,7 +1045,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortField___" data-uid="Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortField[])">
   Sort(params SortField[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L253"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L297"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sorts the range's rows by the values in key columns, smallest first unless a key says otherwise, as Excel's Sort does;
@@ -1024,7 +1094,7 @@ see <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_Cel
 
   <h3 id="Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortOptions_Egap_Spreadsheets_SortField___" data-uid="Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions,Egap.Spreadsheets.SortField[])">
   Sort(SortOptions, params SortField[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L282"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L326"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sorts the range's rows, or its columns, by the values in key columns (or key rows), as Excel's Sort does. Numbers come
@@ -1091,7 +1161,7 @@ them.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_ToString" data-uid="Egap.Spreadsheets.CellRange.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L358"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L402"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet's name and the range's address, such as <code>Sheet1!A1:D20</code>.</p>
@@ -1160,7 +1230,7 @@ them.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_op_Equality_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.op_Equality(Egap.Spreadsheets.CellRange,Egap.Spreadsheets.CellRange)">
   operator ==(CellRange, CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L352"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L396"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both ranges are the same cells.</p>
@@ -1199,7 +1269,7 @@ them.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_op_Inequality_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.op_Inequality(Egap.Spreadsheets.CellRange,Egap.Spreadsheets.CellRange)">
   operator !=(CellRange, CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L355"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L399"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the ranges differ.</p>

@@ -354,6 +354,48 @@ Class SheetRow  <a class="header-action link-secondary" title="View source" href
 
 
 
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Spreadsheets_SheetRow_AutoFit_" data-uid="Egap.Spreadsheets.SheetRow.AutoFit*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetRow_AutoFit" data-uid="Egap.Spreadsheets.SheetRow.AutoFit">
+  AutoFit()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetRows.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fits the row to its tallest text, as Excel's AutoFit does, and gives its new height in points. The height is one Excel
+works out from the text, not one set by hand: <a class="xref" href="Egap.Spreadsheets.SheetRow.html#Egap_Spreadsheets_SheetRow_Height">Height</a> stays null, and a row as high as a line of the normal
+font follows the sheet's default again. See <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_AutoFitRows">AutoFitRows()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double AutoFit()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>The row's height in points.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_SheetRow_AutoFit_examples">Examples</h4>
+  <pre><code class="lang-csharp">double points = sheet.Rows[0].AutoFit();</code></pre>
+
+
+
+
+
+
 
 </article>
 

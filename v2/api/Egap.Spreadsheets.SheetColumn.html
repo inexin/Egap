@@ -387,6 +387,48 @@ the sheet's default width.</p>
 
 
 
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Spreadsheets_SheetColumn_AutoFit_" data-uid="Egap.Spreadsheets.SheetColumn.AutoFit*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetColumn_AutoFit" data-uid="Egap.Spreadsheets.SheetColumn.AutoFit">
+  AutoFit()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetColumns.cs/#L250"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Fits the column to the widest text of its cells, as Excel's AutoFit does, and gives its new width; null, and the
+width left as it is, when no cell of the column has text. See <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_AutoFitColumns">AutoFitColumns()</a> for how text
+is measured.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double? AutoFit()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</dt>
+    <dd><p>The new width in characters, as <a class="xref" href="Egap.Spreadsheets.SheetColumn.html#Egap_Spreadsheets_SheetColumn_Width">Width</a> gives it, or null.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_SheetColumn_AutoFit_examples">Examples</h4>
+  <pre><code class="lang-csharp">sheet.Columns["B"].AutoFit();</code></pre>
+
+
+
+
+
+
 
 </article>
 

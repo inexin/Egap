@@ -58620,6 +58620,32 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellRange.Address
   nameWithType: CellRange.Address
+- uid: Egap.Spreadsheets.CellRange.AutoFitColumns
+  name: AutoFitColumns()
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_AutoFitColumns
+  commentId: M:Egap.Spreadsheets.CellRange.AutoFitColumns
+  fullName: Egap.Spreadsheets.CellRange.AutoFitColumns()
+  nameWithType: CellRange.AutoFitColumns()
+- uid: Egap.Spreadsheets.CellRange.AutoFitColumns*
+  name: AutoFitColumns
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_AutoFitColumns_
+  commentId: Overload:Egap.Spreadsheets.CellRange.AutoFitColumns
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.AutoFitColumns
+  nameWithType: CellRange.AutoFitColumns
+- uid: Egap.Spreadsheets.CellRange.AutoFitRows
+  name: AutoFitRows()
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_AutoFitRows
+  commentId: M:Egap.Spreadsheets.CellRange.AutoFitRows
+  fullName: Egap.Spreadsheets.CellRange.AutoFitRows()
+  nameWithType: CellRange.AutoFitRows()
+- uid: Egap.Spreadsheets.CellRange.AutoFitRows*
+  name: AutoFitRows
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_AutoFitRows_
+  commentId: Overload:Egap.Spreadsheets.CellRange.AutoFitRows
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.AutoFitRows
+  nameWithType: CellRange.AutoFitRows
 - uid: Egap.Spreadsheets.CellRange.Clear
   name: Clear()
   href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Clear
@@ -62370,6 +62396,19 @@ references:
   commentId: T:Egap.Spreadsheets.SheetColumn
   fullName: Egap.Spreadsheets.SheetColumn
   nameWithType: SheetColumn
+- uid: Egap.Spreadsheets.SheetColumn.AutoFit
+  name: AutoFit()
+  href: api/Egap.Spreadsheets.SheetColumn.html#Egap_Spreadsheets_SheetColumn_AutoFit
+  commentId: M:Egap.Spreadsheets.SheetColumn.AutoFit
+  fullName: Egap.Spreadsheets.SheetColumn.AutoFit()
+  nameWithType: SheetColumn.AutoFit()
+- uid: Egap.Spreadsheets.SheetColumn.AutoFit*
+  name: AutoFit
+  href: api/Egap.Spreadsheets.SheetColumn.html#Egap_Spreadsheets_SheetColumn_AutoFit_
+  commentId: Overload:Egap.Spreadsheets.SheetColumn.AutoFit
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetColumn.AutoFit
+  nameWithType: SheetColumn.AutoFit
 - uid: Egap.Spreadsheets.SheetColumn.Collapsed
   name: Collapsed
   href: api/Egap.Spreadsheets.SheetColumn.html#Egap_Spreadsheets_SheetColumn_Collapsed
@@ -63470,6 +63509,19 @@ references:
   commentId: T:Egap.Spreadsheets.SheetRow
   fullName: Egap.Spreadsheets.SheetRow
   nameWithType: SheetRow
+- uid: Egap.Spreadsheets.SheetRow.AutoFit
+  name: AutoFit()
+  href: api/Egap.Spreadsheets.SheetRow.html#Egap_Spreadsheets_SheetRow_AutoFit
+  commentId: M:Egap.Spreadsheets.SheetRow.AutoFit
+  fullName: Egap.Spreadsheets.SheetRow.AutoFit()
+  nameWithType: SheetRow.AutoFit()
+- uid: Egap.Spreadsheets.SheetRow.AutoFit*
+  name: AutoFit
+  href: api/Egap.Spreadsheets.SheetRow.html#Egap_Spreadsheets_SheetRow_AutoFit_
+  commentId: Overload:Egap.Spreadsheets.SheetRow.AutoFit
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetRow.AutoFit
+  nameWithType: SheetRow.AutoFit
 - uid: Egap.Spreadsheets.SheetRow.Collapsed
   name: Collapsed
   href: api/Egap.Spreadsheets.SheetRow.html#Egap_Spreadsheets_SheetRow_Collapsed

@@ -9655,7 +9655,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.Worksheet",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Worksheet.yml\" sourcestartlinenumber=\"1\">Copying and moving ranges of cells, as Excel's Copy, Cut and Paste do.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Worksheet.yml\" sourcestartlinenumber=\"1\">Fitting columns to their text and rows to their fonts, as Excel's AutoFit does.</p>\n"
     },
     {
       "type": "ManagedReference",
