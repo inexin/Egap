@@ -379,6 +379,20 @@ internal sealed class OdsStyles
             return own;
         }
 
+        // A text style that maps every number to a section is a code whose last section is the text one.
+        if (style.Name.LocalName == "text-style")
+        {
+            if (maps is [(">=0", string whole), ("<0", string negative)])
+            {
+                return whole == negative ? whole + ";" + own : whole + ";" + negative + ";" + whole + ";" + own;
+            }
+
+            if (maps is [(">0", string plus), ("<0", string minus), ("=0", string zero)])
+            {
+                return plus + ";" + minus + ";" + zero + ";" + own;
+            }
+        }
+
         // Excel's own sections: positive or zero, negative, then zero, written without conditions.
         if (maps is [(">=0", string positive)])
         {

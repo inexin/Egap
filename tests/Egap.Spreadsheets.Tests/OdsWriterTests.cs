@@ -184,6 +184,22 @@ public sealed class OdsWriterTests
         Assert.Equal(code, back.Worksheets[0]["A1"].NumberFormat);
     }
 
+    [Theory]
+    [InlineData("0;@", "0")]
+    [InlineData("#,##0;-#,##0;0;@", "#,##0;-#,##0;0")]
+    [InlineData("0.00;-0.00;0;\"Note: \"@", "0.00;-0.00;0;\"Note: \"@")]
+    [InlineData("0;\"Text \"@", "0;\"Text \"@")]
+    public void TextSectionsBecomeTextStyles(string code, string read)
+    {
+        Workbook book = Workbook.Create();
+        book.Worksheets[0]["A1"].Value = 1234.5;
+        book.Worksheets[0]["A1"].NumberFormat = code;
+        XDocument content = XDocument.Parse(Content(book, WorkbookFormat.Fods));
+        XNamespace number = "urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0";
+        Assert.DoesNotContain(content.Descendants(number + "number-style"), s => s.Elements(number + "text-content").Any());
+        Assert.Equal(read, RoundTrip(book, WorkbookFormat.Fods).Worksheets[0]["A1"].NumberFormat);
+    }
+
     [Fact]
     public void RoundTripsStyles()
     {

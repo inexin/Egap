@@ -47,12 +47,41 @@ internal sealed class OdsDataStyles
             ? sections[0].Tokens.Any(t => t.Kind is TokenKind.Year or TokenKind.Month or TokenKind.Day) ? OdsValueKind.Date : OdsValueKind.Time
             : sections[0].Percents > 0 ? OdsValueKind.Percentage : OdsValueKind.Float;
 
-        // Excel's sections without conditions: positive and zero, negative; or positive, negative, zero. The text section
-        // shows text as ODF's text style does, which is the default, so it is written only when it alone is the code.
-        FormatSection[] numeric = sections.Length >= 4 ? sections[..3] : sections;
-        if (sections.Length == 1 && sections[0].HasText && !sections[0].HasDigits && !sections[0].IsDate)
+        // Excel's sections without conditions: positive and zero, negative; or positive, negative, zero. A last section that
+        // shows text (the fourth, or one with @ after one to three number sections) is the text section. A text section of
+        // just @ shows text as ODF does by default and is left out; one with more becomes the main text style, which maps
+        // every number to its section.
+        FormatSection? textSection = sections.Length >= 4 ? sections[3]
+            : sections.Length >= 2 && IsText(sections[^1]) ? sections[^1]
+            : null;
+        FormatSection[] numeric = sections.Length >= 4 ? sections[..3] : textSection is not null ? sections[..^1] : sections;
+        if (sections.Length == 1 && IsText(sections[0]))
         {
             Elements.Add(Section(name, sections[0], OdsValueKind.Float, text: true));
+        }
+        else if (textSection is not null && !textSection.Tokens.All(t => t.Kind == TokenKind.Text)
+            && numeric.All(n => n.Condition is null))
+        {
+            string[] conditions = numeric.Length switch
+            {
+                1 => [">=0", "<0"],
+                2 => [">=0", "<0"],
+                _ => [">0", "<0", "=0"],
+            };
+            XElement own = Section(name, textSection, OdsValueKind.Float, text: true);
+            for (int i = 0; i < conditions.Length; i++)
+            {
+                int section = Math.Min(i, numeric.Length - 1);
+                string part = name + "P" + section.ToString(CultureInfo.InvariantCulture);
+                if (i == section)
+                {
+                    Elements.Add(Section(part, numeric[section], kind, text: false));
+                }
+
+                own.Add(new XElement(StyleNs + "map", new XAttribute(StyleNs + "condition", "value()" + conditions[i]), new XAttribute(StyleNs + "apply-style-name", part)));
+            }
+
+            Elements.Add(own);
         }
         else if (numeric.Length == 1)
         {
@@ -85,6 +114,8 @@ internal sealed class OdsDataStyles
         made[code] = (name, kind);
         return (name, kind);
     }
+
+    private static bool IsText(FormatSection section) => section.HasText && !section.HasDigits && !section.IsDate;
 
     /// <summary>The boolean style that shows a boolean cell as TRUE or FALSE.</summary>
     public string Boolean()
