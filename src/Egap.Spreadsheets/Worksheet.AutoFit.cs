@@ -14,6 +14,7 @@ public sealed partial class Worksheet
     internal double? AutoFitColumn(int column, int firstRow, int lastRow, TextMeter meter)
     {
         List<RangeAddress> merges = Merges(new RangeAddress(firstRow, column, lastRow, column));
+        List<RangeAddress> filters = FilterHeaders(column);
         int widest = -1;
         int available = ColumnPixels(column, meter) - TextMeter.Padding;
         foreach ((int row, int c) in store.Occupied(new RangeAddress(firstRow, column, lastRow, column)))
@@ -26,7 +27,7 @@ public sealed partial class Worksheet
 
             if (Fitted(row, c, available, meter, RowPixels(row, meter)) is { } fitted)
             {
-                widest = Math.Max(widest, fitted.Width);
+                widest = Math.Max(widest, fitted.Width + (filters.Count > 0 ? (int)Math.Round(FilterButtonPixels(row, c, filters) * 100.0 / View.ZoomScale) : 0));
             }
         }
 
@@ -197,7 +198,7 @@ public sealed partial class Worksheet
         double zoom = View.ZoomScale / 100.0;
         if (zoom != 1)
         {
-            font = font with { Size = font.Size * zoom };
+            font = font with { Size = ZoomedSize(font.Size, zoom) };
             available = (int)(available * zoom);
         }
 
@@ -271,10 +272,21 @@ public sealed partial class Worksheet
         return Unzoomed((int)Math.Round((cos * across) + (sin * down * TextMeter.Scale)), height, zoom);
     }
 
+    /// <summary>
+    /// The size of a font Excel measures with at a zoom: the size in half points that gives the font's zoomed height in whole
+    /// pixels, as Excel draws it.
+    /// </summary>
+    private static double ZoomedSize(double size, double zoom)
+    {
+        int pixels = (int)Math.Round(size * 96 / 72 * zoom);
+        double points = Math.Round(pixels * 72 / 96.0 * 2) / 2;
+        return (int)Math.Round(points * 96 / 72) == pixels ? points : points + 0.5;
+    }
+
     /// <summary>A cell's pixels across at a zoom, without the column's padding, as they come to at 100 %.</summary>
     private static (int Width, int Height) Unzoomed(int across, int down, double zoom) => zoom == 1
         ? (across, down)
-        : ((int)((across + TextMeter.Padding) / zoom) - TextMeter.Padding, down);
+        : ((int)Math.Round((across + TextMeter.Padding) / zoom) - TextMeter.Padding, down);
 
     /// <summary>
     /// The pixels a line takes across: Excel's measure of it, but never less than its whole pixels and a lead.
@@ -347,6 +359,51 @@ public sealed partial class Worksheet
 
         bool Fits(string paragraph, int from, int to) => Across(paragraph.AsSpan(from, to - from), font, '\0', meter) <= available;
     }
+
+    /// <summary>The header rows of the sheet's filter and its tables' filters that cross a column, each as a range of one row.</summary>
+    private List<RangeAddress> FilterHeaders(int column)
+    {
+        List<RangeAddress> headers = [];
+        if (AutoFilter is { } filter)
+        {
+            headers.Add(filter.Range);
+        }
+
+        foreach (SheetTable table in Tables)
+        {
+            if (table.ShowHeaderRow && table.ShowFilterButtons)
+            {
+                headers.Add(table.Range);
+            }
+        }
+
+        return headers.Where(h => column >= h.First.Column && column <= h.Last.Column)
+            .Select(h => new RangeAddress(h.First.Row, h.First.Column, h.First.Row, h.Last.Column)).ToList();
+    }
+
+    /// <summary>
+    /// The pixels Excel keeps beside a filter header's text for its button: one button's width beside text that starts at the
+    /// left, one on each side of centred text, none beside text at the right.
+    /// </summary>
+    private int FilterButtonPixels(int row, int column, List<RangeAddress> headers)
+    {
+        if (!headers.Exists(h => h.Contains(new CellAddress(row, column))))
+        {
+            return 0;
+        }
+
+        Cell cell = this[row, column];
+        return cell.Style.Alignment.Horizontal switch
+        {
+            CellHorizontalAlignment.Center or CellHorizontalAlignment.CenterContinuous => 2 * FilterButton,
+            CellHorizontalAlignment.Right => 0,
+            CellHorizontalAlignment.General => cell.Value.Kind == CellValueKind.Text ? FilterButton : 0,
+            _ => FilterButton,
+        };
+    }
+
+    /// <summary>The width in pixels of a filter's button, as Excel draws it at any font and zoom.</summary>
+    private const int FilterButton = 16;
 
     /// <summary>A row's height in pixels on screen: its own height, else the sheet's default, else the normal font's line.</summary>
     private int RowPixels(int row, TextMeter meter)

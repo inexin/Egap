@@ -71,6 +71,8 @@ Add 'Arial' @(8, 9, 10, 12, 14) 3
 Add 'Times New Roman' @(10, 12) 2
 Add 'Times New Roman' @(8, 10, 12, 14) 3
 Add 'MS Sans Serif' @(6, 7, 8, 10) 2
+Add 'Calibri' @(10, 11, 12) 2
+Add 'Calibri' @(11) 3
 Add 'Arial' @(8.5, 15, 24, 26) 1
 Add 'Arial' @(22, 24) 0
 Add 'Arial Narrow' @(9, 14) 1

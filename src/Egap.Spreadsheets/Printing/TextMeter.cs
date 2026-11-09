@@ -89,9 +89,26 @@ internal sealed class TextMeter(Workbook book)
 
     /// <summary>
     /// The pixels a short text takes beyond its whole pixels, which Excel keeps when its measure gives less: two, and two
-    /// more for each whole four pixels the font's widest digit has over five, as Excel measured from 8 to 20 points.
+    /// more for each whole four pixels the font's widest digit has over five, as Excel measured from 8 to 20 points, and the
+    /// font's <see cref="Overhang"/>.
     /// </summary>
-    public int Lead(CellFont font) => 2 + (2 * ((Math.Max(5, DigitWidth(font)) - 5) / 4));
+    public int Lead(CellFont font) => 2 + (2 * ((Math.Max(5, DigitWidth(font)) - 5) / 4)) + Overhang(font);
+
+    /// <summary>
+    /// The pixels a slanted or emboldened face reaches past its last character, which Excel adds to a text: for italics four,
+    /// and two more for each whole eight pixels of the font's height over sixteen, and two for MS Sans Serif drawn bold, as
+    /// Excel measured from 8 to 20 points.
+    /// </summary>
+    public static int Overhang(CellFont font)
+    {
+        if (font.Italic)
+        {
+            int pixels = (int)Math.Round(font.Size * 96 / 72);
+            return 4 + (2 * (Math.Max(0, pixels - 8) / 8));
+        }
+
+        return font.Bold && string.Equals(font.Name, "MS Sans Serif", StringComparison.OrdinalIgnoreCase) ? 2 : 0;
+    }
 
     /// <summary>The widest digit of <paramref name="font"/> in pixels.</summary>
     public int DigitWidth(CellFont font)
