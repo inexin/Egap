@@ -95,6 +95,13 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.AutoFilter.html">AutoFilter</a></dt>
+      <dd><p>The filter of a sheet or table, as a file holds it: its range and the criteria of its columns. <a class="xref" href="Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_Apply">Apply()</a> hides the
+rows that fail the criteria, as Excel's Reapply does; Excel itself only hides rows when a filter is set or reapplied, and
+keeps them as they are when it opens a file.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.CalculationResult.html">CalculationResult</a></dt>
       <dd><p>What a calculation of a workbook did: how many formulas it calculated and which circular references it met.</p>
 </dd>
@@ -209,6 +216,12 @@ as <code>_xlnm.Print_Area</code>.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.DefinedNameCollection.html">DefinedNameCollection</a></dt>
       <dd><p>A workbook's defined names. A name is unique among the workbook's names, or among one sheet's, case ignored.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.FindOptions.html">FindOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_">Find(string, FindOptions?)</a> and <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions_">Replace(string, string, FindOptions?)</a>
+match, as the options of Excel's Find and Replace dialog.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -356,6 +369,11 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SortOptions.html">SortOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortOptions_Egap_Spreadsheets_SortField___">Sort(SortOptions, params SortField[])</a> sorts, as the options of Excel's Sort dialog.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.SpreadsheetFormat.html">SpreadsheetFormat</a></dt>
       <dd><p>Connects spreadsheets to <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Load_System_String_">Load(string)</a>: after <a class="xref" href="Egap.Spreadsheets.SpreadsheetFormat.html#Egap_Spreadsheets_SpreadsheetFormat_Register">Register()</a>, XLSX and CSV files load as
 documents, one section per visible sheet with its table of displayed values, so that HTML, Markdown, DOCX, text and RAG
@@ -440,6 +458,11 @@ implicitly, so <code>cell.Value = 42</code> and <code>cell.Value = &quot;Total&q
       <dt><a class="xref" href="Egap.Spreadsheets.RangeAddress.html">RangeAddress</a></dt>
       <dd><p>A rectangle of cells on a sheet, from its top-left cell to its bottom-right cell, written in A1 style as <code>A1:D20</code>.
 A single cell is written as <code>B4</code>, whole columns as <code>A:C</code> and whole rows as <code>2:5</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SortField.html">SortField</a></dt>
+      <dd><p>One key of a sort: a column of the range (a row, when columns are sorted) and its direction.</p>
 </dd>
     </dl>
     <h3 id="enums">
@@ -531,6 +554,16 @@ Enums
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.FindLookIn.html">FindLookIn</a></dt>
+      <dd><p>What <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_">Find(string, FindOptions?)</a> searches in each cell, as Excel's &quot;Look in&quot;.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.FindOrder.html">FindOrder</a></dt>
+      <dd><p>The order <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_">Find(string, FindOptions?)</a> visits cells in.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.PrintOrientation.html">PrintOrientation</a></dt>
       <dd><p>Which way a sheet prints on the paper.</p>
 </dd>
@@ -548,6 +581,11 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.SheetVisibility.html">SheetVisibility</a></dt>
       <dd><p>Whether a sheet's tab shows.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SortOrientation.html">SortOrientation</a></dt>
+      <dd><p>Which way <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortOptions_Egap_Spreadsheets_SortField___">Sort(SortOptions, params SortField[])</a> reorders a range.</p>
 </dd>
     </dl>
     <dl class="jumplist">

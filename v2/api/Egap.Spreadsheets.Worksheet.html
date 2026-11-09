@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Spreadsheets_Worksheet" data-uid="Egap.Spreadsheets.Worksheet" class="text-break">
-Class Worksheet  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.Edit.cs/#L9"><i class="bi bi-code-slash"></i></a>
+Class Worksheet  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.Sort.cs/#L9"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -145,6 +145,38 @@ Class Worksheet  <a class="header-action link-secondary" title="View source" hre
 
   <h2 class="section" id="properties">Properties
 </h2>
+
+
+  <a id="Egap_Spreadsheets_Worksheet_AutoFilter_" data-uid="Egap.Spreadsheets.Worksheet.AutoFilter*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_AutoFilter" data-uid="Egap.Spreadsheets.Worksheet.AutoFilter">
+  AutoFilter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The sheet's filter, as its file held it; null when it has none. A table's filter is the table's <a class="xref" href="Egap.Spreadsheets.SheetTable.html#Egap_Spreadsheets_SheetTable_AutoFilter">AutoFilter</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AutoFilter? AutoFilter { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.AutoFilter.html">AutoFilter</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
 
 
   <a id="Egap_Spreadsheets_Worksheet_Cells_" data-uid="Egap.Spreadsheets.Worksheet.Cells*"></a>
@@ -483,7 +515,7 @@ Class Worksheet  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_Worksheet_Item_Egap_Spreadsheets_CellAddress_" data-uid="Egap.Spreadsheets.Worksheet.Item(Egap.Spreadsheets.CellAddress)">
   this[CellAddress]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L174"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cell at an address.</p>
@@ -520,7 +552,7 @@ Class Worksheet  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_Worksheet_Item_System_Int32_System_Int32_" data-uid="Egap.Spreadsheets.Worksheet.Item(System.Int32,System.Int32)">
   this[int, int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L178"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cell at a zero-based row and column.</p>
@@ -565,7 +597,7 @@ Class Worksheet  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="Egap_Spreadsheets_Worksheet_Item_System_String_" data-uid="Egap.Spreadsheets.Worksheet.Item(System.String)">
   this[string]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L167"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L171"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cell at an A1 address such as <code>B4</code>.</p>
@@ -809,7 +841,7 @@ unread and a pivot cache keep the old name.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_UsedRange" data-uid="Egap.Spreadsheets.Worksheet.UsedRange">
   UsedRange
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L192"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The smallest range that holds every cell with a value, a formula or a style, as SpreadsheetML's sheet dimension; null
@@ -1086,7 +1118,7 @@ move follows. A reference to a cell that goes becomes <code>#REF!</code>, and a 
 
   <h3 id="Egap_Spreadsheets_Worksheet_Evaluate_System_String_System_Nullable_Egap_Spreadsheets_CellAddress__" data-uid="Egap.Spreadsheets.Worksheet.Evaluate(System.String,System.Nullable{Egap.Spreadsheets.CellAddress})">
   Evaluate(string, CellAddress?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L224"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Evaluates a formula as if it were the formula of a cell of this sheet, and gives the value that cell would show. Other
@@ -1129,6 +1161,59 @@ cells give the values they hold now; formula cells give their last results, whic
 </dd>
     <dt><a class="xref" href="Egap.Spreadsheets.FormulaException.html">FormulaException</a></dt>
     <dd><p>The formula does not follow Excel's grammar.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Worksheet_Find_" data-uid="Egap.Spreadsheets.Worksheet.Find*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.Worksheet.Find(System.String,Egap.Spreadsheets.FindOptions)">
+  Find(string, FindOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.Find.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds the cells of the sheet whose text matches, as Excel's Find All does: <code>*</code> stands for any run of characters,
+<code>?</code> for one, and <code>~</code> before either (or before <code>~</code>) for the character itself. Without
+<a class="xref" href="Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_MatchEntireCell">MatchEntireCell</a> the text may be anywhere in a cell's.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Cell&gt; Find(string what, FindOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>what</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to find.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.FindOptions.html">FindOptions</a></dt>
+    <dd><p>How to match; null for Excel's defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Spreadsheets.Cell.html">Cell</a>&gt;</dt>
+    <dd><p>The matching cells, in the order <a class="xref" href="Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_Order">Order</a> gives.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">IReadOnlyList&lt;Cell&gt; totals = sheet.Find("total*", new FindOptions { MatchEntireCell = true });</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The text is null or empty.</p>
 </dd>
   </dl>
 
@@ -1280,7 +1365,7 @@ pivot table would move.</p>
 
   <h3 id="Egap_Spreadsheets_Worksheet_Paginate_Egap_Spreadsheets_SheetPrintOptions_" data-uid="Egap.Spreadsheets.Worksheet.Paginate(Egap.Spreadsheets.SheetPrintOptions)">
   Paginate(SheetPrintOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L254"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L258"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet laid out on pages as Excel prints it: its print area or used cells, at its scale or fitted to its pages,
@@ -1318,7 +1403,7 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 
   <h3 id="Egap_Spreadsheets_Worksheet_Range_Egap_Spreadsheets_RangeAddress_" data-uid="Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress)">
   Range(RangeAddress)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L202"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L206"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A range from its address.</p>
@@ -1355,7 +1440,7 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 
   <h3 id="Egap_Spreadsheets_Worksheet_Range_System_Int32_System_Int32_System_Int32_System_Int32_" data-uid="Egap.Spreadsheets.Worksheet.Range(System.Int32,System.Int32,System.Int32,System.Int32)">
   Range(int, int, int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L206"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L210"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A range from zero-based corner rows and columns, in any order.</p>
@@ -1404,7 +1489,7 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 
   <h3 id="Egap_Spreadsheets_Worksheet_Range_System_String_" data-uid="Egap.Spreadsheets.Worksheet.Range(System.String)">
   Range(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L199"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L203"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A range from an A1 reference such as <code>A1:D20</code>, <code>B4</code>, <code>A:C</code> or <code>2:5</code>.</p>
@@ -1443,11 +1528,69 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 
 
 
+  <a id="Egap_Spreadsheets_Worksheet_Replace_" data-uid="Egap.Spreadsheets.Worksheet.Replace*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.Worksheet.Replace(System.String,System.String,Egap.Spreadsheets.FindOptions)">
+  Replace(string, string, FindOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.Find.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces matching text in the sheet's formulas and values, as Excel's Replace All does, and gives how many cells
+changed. See <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions_">Replace(string, string, FindOptions?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Replace(string what, string replacement, FindOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>what</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to find.</p>
+</dd>
+    <dt><code>replacement</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to put in its place, taken as it is.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.FindOptions.html">FindOptions</a></dt>
+    <dd><p>How to match; null for Excel's defaults. Only <a class="xref" href="Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Formulas">Formulas</a> can be replaced.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>How many cells changed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_Worksheet_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">int changed = sheet.Replace("Sheet1!", "Data!");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The text is null or empty, the replacement is null, or the options look in values or notes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A replacement makes a formula Excel's grammar refuses; the cells before it stay replaced, as in Excel.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Spreadsheets_Worksheet_SaveAsPdf_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsPdf*"></a>
 
   <h3 id="Egap_Spreadsheets_Worksheet_SaveAsPdf_System_IO_Stream_Egap_Spreadsheets_SheetPdfOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)">
   SaveAsPdf(Stream, SheetPdfOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L266"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L270"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the sheet's printed pages as a PDF to a stream, which is left open.</p>
@@ -1487,7 +1630,7 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 
   <h3 id="Egap_Spreadsheets_Worksheet_SaveAsPdf_System_String_Egap_Spreadsheets_SheetPdfOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsPdf(System.String,Egap.Spreadsheets.SheetPdfOptions)">
   SaveAsPdf(string, SheetPdfOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L262"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the sheet's printed pages to a PDF file.</p>
@@ -1527,7 +1670,7 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 
   <h3 id="Egap_Spreadsheets_Worksheet_SaveCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)">
   SaveCsv(Stream, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L248"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L252"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the sheet as comma- or tab-separated text to a stream, a comma unless the options name another separator.</p>
@@ -1567,7 +1710,7 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 
   <h3 id="Egap_Spreadsheets_Worksheet_SaveCsv_System_String_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveCsv(System.String,Egap.Spreadsheets.CsvOptions)">
   SaveCsv(string, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L239"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L243"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the sheet as comma- or tab-separated text, from A1 to the last used cell: a tab for a <code>.tsv</code> or
@@ -1609,7 +1752,7 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 
   <h3 id="Egap_Spreadsheets_Worksheet_ToString" data-uid="Egap.Spreadsheets.Worksheet.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L235"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet's name.</p>
@@ -1641,7 +1784,7 @@ broken at its page breaks, with its titles, headings, gridlines, header and foot
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.Edit.cs/#L9" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.Sort.cs/#L9" class="edit-link">Edit this page</a>
         </div>
 
 

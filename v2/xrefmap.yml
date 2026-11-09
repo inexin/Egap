@@ -56560,6 +56560,64 @@ references:
   commentId: N:Egap.Spreadsheets
   fullName: Egap.Spreadsheets
   nameWithType: Egap.Spreadsheets
+- uid: Egap.Spreadsheets.AutoFilter
+  name: AutoFilter
+  href: api/Egap.Spreadsheets.AutoFilter.html
+  commentId: T:Egap.Spreadsheets.AutoFilter
+  fullName: Egap.Spreadsheets.AutoFilter
+  nameWithType: AutoFilter
+- uid: Egap.Spreadsheets.AutoFilter.Apply
+  name: Apply()
+  href: api/Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_Apply
+  commentId: M:Egap.Spreadsheets.AutoFilter.Apply
+  fullName: Egap.Spreadsheets.AutoFilter.Apply()
+  nameWithType: AutoFilter.Apply()
+- uid: Egap.Spreadsheets.AutoFilter.Apply*
+  name: Apply
+  href: api/Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_Apply_
+  commentId: Overload:Egap.Spreadsheets.AutoFilter.Apply
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.AutoFilter.Apply
+  nameWithType: AutoFilter.Apply
+- uid: Egap.Spreadsheets.AutoFilter.HasCriteria
+  name: HasCriteria
+  href: api/Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_HasCriteria
+  commentId: P:Egap.Spreadsheets.AutoFilter.HasCriteria
+  fullName: Egap.Spreadsheets.AutoFilter.HasCriteria
+  nameWithType: AutoFilter.HasCriteria
+- uid: Egap.Spreadsheets.AutoFilter.HasCriteria*
+  name: HasCriteria
+  href: api/Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_HasCriteria_
+  commentId: Overload:Egap.Spreadsheets.AutoFilter.HasCriteria
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.AutoFilter.HasCriteria
+  nameWithType: AutoFilter.HasCriteria
+- uid: Egap.Spreadsheets.AutoFilter.Range
+  name: Range
+  href: api/Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_Range
+  commentId: P:Egap.Spreadsheets.AutoFilter.Range
+  fullName: Egap.Spreadsheets.AutoFilter.Range
+  nameWithType: AutoFilter.Range
+- uid: Egap.Spreadsheets.AutoFilter.Range*
+  name: Range
+  href: api/Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_Range_
+  commentId: Overload:Egap.Spreadsheets.AutoFilter.Range
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.AutoFilter.Range
+  nameWithType: AutoFilter.Range
+- uid: Egap.Spreadsheets.AutoFilter.ShowAll
+  name: ShowAll()
+  href: api/Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_ShowAll
+  commentId: M:Egap.Spreadsheets.AutoFilter.ShowAll
+  fullName: Egap.Spreadsheets.AutoFilter.ShowAll()
+  nameWithType: AutoFilter.ShowAll()
+- uid: Egap.Spreadsheets.AutoFilter.ShowAll*
+  name: ShowAll
+  href: api/Egap.Spreadsheets.AutoFilter.html#Egap_Spreadsheets_AutoFilter_ShowAll_
+  commentId: Overload:Egap.Spreadsheets.AutoFilter.ShowAll
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.AutoFilter.ShowAll
+  nameWithType: AutoFilter.ShowAll
 - uid: Egap.Spreadsheets.CalculationMode
   name: CalculationMode
   href: api/Egap.Spreadsheets.CalculationMode.html
@@ -58636,6 +58694,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellRange.Equals
   nameWithType: CellRange.Equals
+- uid: Egap.Spreadsheets.CellRange.Find(System.String,Egap.Spreadsheets.FindOptions)
+  name: Find(string, FindOptions?)
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Find_System_String_Egap_Spreadsheets_FindOptions_
+  commentId: M:Egap.Spreadsheets.CellRange.Find(System.String,Egap.Spreadsheets.FindOptions)
+  name.vb: Find(String, FindOptions)
+  fullName: Egap.Spreadsheets.CellRange.Find(string, Egap.Spreadsheets.FindOptions?)
+  fullName.vb: Egap.Spreadsheets.CellRange.Find(String, Egap.Spreadsheets.FindOptions)
+  nameWithType: CellRange.Find(string, FindOptions?)
+  nameWithType.vb: CellRange.Find(String, FindOptions)
+- uid: Egap.Spreadsheets.CellRange.Find*
+  name: Find
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Find_
+  commentId: Overload:Egap.Spreadsheets.CellRange.Find
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.Find
+  nameWithType: CellRange.Find
 - uid: Egap.Spreadsheets.CellRange.GetEnumerator
   name: GetEnumerator()
   href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_GetEnumerator
@@ -58707,6 +58781,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellRange.MoveTo
   nameWithType: CellRange.MoveTo
+- uid: Egap.Spreadsheets.CellRange.Replace(System.String,System.String,Egap.Spreadsheets.FindOptions)
+  name: Replace(string, string, FindOptions?)
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions_
+  commentId: M:Egap.Spreadsheets.CellRange.Replace(System.String,System.String,Egap.Spreadsheets.FindOptions)
+  name.vb: Replace(String, String, FindOptions)
+  fullName: Egap.Spreadsheets.CellRange.Replace(string, string, Egap.Spreadsheets.FindOptions?)
+  fullName.vb: Egap.Spreadsheets.CellRange.Replace(String, String, Egap.Spreadsheets.FindOptions)
+  nameWithType: CellRange.Replace(string, string, FindOptions?)
+  nameWithType.vb: CellRange.Replace(String, String, FindOptions)
+- uid: Egap.Spreadsheets.CellRange.Replace*
+  name: Replace
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Replace_
+  commentId: Overload:Egap.Spreadsheets.CellRange.Replace
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.Replace
+  nameWithType: CellRange.Replace
 - uid: Egap.Spreadsheets.CellRange.RowCount
   name: RowCount
   href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_RowCount
@@ -58778,6 +58868,31 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellRange.SetValues
   nameWithType: CellRange.SetValues
+- uid: Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortField[])
+  name: Sort(params SortField[])
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortField___
+  commentId: M:Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortField[])
+  name.vb: Sort(ParamArray SortField())
+  fullName: Egap.Spreadsheets.CellRange.Sort(params Egap.Spreadsheets.SortField[])
+  fullName.vb: Egap.Spreadsheets.CellRange.Sort(ParamArray Egap.Spreadsheets.SortField())
+  nameWithType: CellRange.Sort(params SortField[])
+  nameWithType.vb: CellRange.Sort(ParamArray SortField())
+- uid: Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions,Egap.Spreadsheets.SortField[])
+  name: Sort(SortOptions, params SortField[])
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortOptions_Egap_Spreadsheets_SortField___
+  commentId: M:Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions,Egap.Spreadsheets.SortField[])
+  name.vb: Sort(SortOptions, ParamArray SortField())
+  fullName: Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions, params Egap.Spreadsheets.SortField[])
+  fullName.vb: Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions, ParamArray Egap.Spreadsheets.SortField())
+  nameWithType: CellRange.Sort(SortOptions, params SortField[])
+  nameWithType.vb: CellRange.Sort(SortOptions, ParamArray SortField())
+- uid: Egap.Spreadsheets.CellRange.Sort*
+  name: Sort
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Sort_
+  commentId: Overload:Egap.Spreadsheets.CellRange.Sort
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.Sort
+  nameWithType: CellRange.Sort
 - uid: Egap.Spreadsheets.CellRange.ToString
   name: ToString()
   href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_ToString
@@ -60826,6 +60941,106 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.DrawingPosition.OffsetY
   nameWithType: DrawingPosition.OffsetY
+- uid: Egap.Spreadsheets.FindLookIn
+  name: FindLookIn
+  href: api/Egap.Spreadsheets.FindLookIn.html
+  commentId: T:Egap.Spreadsheets.FindLookIn
+  fullName: Egap.Spreadsheets.FindLookIn
+  nameWithType: FindLookIn
+- uid: Egap.Spreadsheets.FindLookIn.Formulas
+  name: Formulas
+  href: api/Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Formulas
+  commentId: F:Egap.Spreadsheets.FindLookIn.Formulas
+  fullName: Egap.Spreadsheets.FindLookIn.Formulas
+  nameWithType: FindLookIn.Formulas
+- uid: Egap.Spreadsheets.FindLookIn.Notes
+  name: Notes
+  href: api/Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Notes
+  commentId: F:Egap.Spreadsheets.FindLookIn.Notes
+  fullName: Egap.Spreadsheets.FindLookIn.Notes
+  nameWithType: FindLookIn.Notes
+- uid: Egap.Spreadsheets.FindLookIn.Values
+  name: Values
+  href: api/Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Values
+  commentId: F:Egap.Spreadsheets.FindLookIn.Values
+  fullName: Egap.Spreadsheets.FindLookIn.Values
+  nameWithType: FindLookIn.Values
+- uid: Egap.Spreadsheets.FindOptions
+  name: FindOptions
+  href: api/Egap.Spreadsheets.FindOptions.html
+  commentId: T:Egap.Spreadsheets.FindOptions
+  fullName: Egap.Spreadsheets.FindOptions
+  nameWithType: FindOptions
+- uid: Egap.Spreadsheets.FindOptions.LookIn
+  name: LookIn
+  href: api/Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_LookIn
+  commentId: P:Egap.Spreadsheets.FindOptions.LookIn
+  fullName: Egap.Spreadsheets.FindOptions.LookIn
+  nameWithType: FindOptions.LookIn
+- uid: Egap.Spreadsheets.FindOptions.LookIn*
+  name: LookIn
+  href: api/Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_LookIn_
+  commentId: Overload:Egap.Spreadsheets.FindOptions.LookIn
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.FindOptions.LookIn
+  nameWithType: FindOptions.LookIn
+- uid: Egap.Spreadsheets.FindOptions.MatchCase
+  name: MatchCase
+  href: api/Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_MatchCase
+  commentId: P:Egap.Spreadsheets.FindOptions.MatchCase
+  fullName: Egap.Spreadsheets.FindOptions.MatchCase
+  nameWithType: FindOptions.MatchCase
+- uid: Egap.Spreadsheets.FindOptions.MatchCase*
+  name: MatchCase
+  href: api/Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_MatchCase_
+  commentId: Overload:Egap.Spreadsheets.FindOptions.MatchCase
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.FindOptions.MatchCase
+  nameWithType: FindOptions.MatchCase
+- uid: Egap.Spreadsheets.FindOptions.MatchEntireCell
+  name: MatchEntireCell
+  href: api/Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_MatchEntireCell
+  commentId: P:Egap.Spreadsheets.FindOptions.MatchEntireCell
+  fullName: Egap.Spreadsheets.FindOptions.MatchEntireCell
+  nameWithType: FindOptions.MatchEntireCell
+- uid: Egap.Spreadsheets.FindOptions.MatchEntireCell*
+  name: MatchEntireCell
+  href: api/Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_MatchEntireCell_
+  commentId: Overload:Egap.Spreadsheets.FindOptions.MatchEntireCell
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.FindOptions.MatchEntireCell
+  nameWithType: FindOptions.MatchEntireCell
+- uid: Egap.Spreadsheets.FindOptions.Order
+  name: Order
+  href: api/Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_Order
+  commentId: P:Egap.Spreadsheets.FindOptions.Order
+  fullName: Egap.Spreadsheets.FindOptions.Order
+  nameWithType: FindOptions.Order
+- uid: Egap.Spreadsheets.FindOptions.Order*
+  name: Order
+  href: api/Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_Order_
+  commentId: Overload:Egap.Spreadsheets.FindOptions.Order
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.FindOptions.Order
+  nameWithType: FindOptions.Order
+- uid: Egap.Spreadsheets.FindOrder
+  name: FindOrder
+  href: api/Egap.Spreadsheets.FindOrder.html
+  commentId: T:Egap.Spreadsheets.FindOrder
+  fullName: Egap.Spreadsheets.FindOrder
+  nameWithType: FindOrder
+- uid: Egap.Spreadsheets.FindOrder.ByColumns
+  name: ByColumns
+  href: api/Egap.Spreadsheets.FindOrder.html#Egap_Spreadsheets_FindOrder_ByColumns
+  commentId: F:Egap.Spreadsheets.FindOrder.ByColumns
+  fullName: Egap.Spreadsheets.FindOrder.ByColumns
+  nameWithType: FindOrder.ByColumns
+- uid: Egap.Spreadsheets.FindOrder.ByRows
+  name: ByRows
+  href: api/Egap.Spreadsheets.FindOrder.html#Egap_Spreadsheets_FindOrder_ByRows
+  commentId: F:Egap.Spreadsheets.FindOrder.ByRows
+  fullName: Egap.Spreadsheets.FindOrder.ByRows
+  nameWithType: FindOrder.ByRows
 - uid: Egap.Spreadsheets.FormulaException
   name: FormulaException
   href: api/Egap.Spreadsheets.FormulaException.html
@@ -63377,6 +63592,19 @@ references:
   commentId: T:Egap.Spreadsheets.SheetTable
   fullName: Egap.Spreadsheets.SheetTable
   nameWithType: SheetTable
+- uid: Egap.Spreadsheets.SheetTable.AutoFilter
+  name: AutoFilter
+  href: api/Egap.Spreadsheets.SheetTable.html#Egap_Spreadsheets_SheetTable_AutoFilter
+  commentId: P:Egap.Spreadsheets.SheetTable.AutoFilter
+  fullName: Egap.Spreadsheets.SheetTable.AutoFilter
+  nameWithType: SheetTable.AutoFilter
+- uid: Egap.Spreadsheets.SheetTable.AutoFilter*
+  name: AutoFilter
+  href: api/Egap.Spreadsheets.SheetTable.html#Egap_Spreadsheets_SheetTable_AutoFilter_
+  commentId: Overload:Egap.Spreadsheets.SheetTable.AutoFilter
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetTable.AutoFilter
+  nameWithType: SheetTable.AutoFilter
 - uid: Egap.Spreadsheets.SheetTable.Columns
   name: Columns
   href: api/Egap.Spreadsheets.SheetTable.html#Egap_Spreadsheets_SheetTable_Columns
@@ -64063,6 +64291,120 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetWriter.WriteRow
   nameWithType: SheetWriter.WriteRow
+- uid: Egap.Spreadsheets.SortField
+  name: SortField
+  href: api/Egap.Spreadsheets.SortField.html
+  commentId: T:Egap.Spreadsheets.SortField
+  fullName: Egap.Spreadsheets.SortField
+  nameWithType: SortField
+- uid: Egap.Spreadsheets.SortField.#ctor(System.Int32,System.Boolean)
+  name: SortField(int, bool)
+  href: api/Egap.Spreadsheets.SortField.html#Egap_Spreadsheets_SortField__ctor_System_Int32_System_Boolean_
+  commentId: M:Egap.Spreadsheets.SortField.#ctor(System.Int32,System.Boolean)
+  name.vb: New(Integer, Boolean)
+  fullName: Egap.Spreadsheets.SortField.SortField(int, bool)
+  fullName.vb: Egap.Spreadsheets.SortField.New(Integer, Boolean)
+  nameWithType: SortField.SortField(int, bool)
+  nameWithType.vb: SortField.New(Integer, Boolean)
+- uid: Egap.Spreadsheets.SortField.#ctor*
+  name: SortField
+  href: api/Egap.Spreadsheets.SortField.html#Egap_Spreadsheets_SortField__ctor_
+  commentId: Overload:Egap.Spreadsheets.SortField.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Spreadsheets.SortField.SortField
+  fullName.vb: Egap.Spreadsheets.SortField.New
+  nameWithType: SortField.SortField
+  nameWithType.vb: SortField.New
+- uid: Egap.Spreadsheets.SortField.Descending
+  name: Descending
+  href: api/Egap.Spreadsheets.SortField.html#Egap_Spreadsheets_SortField_Descending
+  commentId: P:Egap.Spreadsheets.SortField.Descending
+  fullName: Egap.Spreadsheets.SortField.Descending
+  nameWithType: SortField.Descending
+- uid: Egap.Spreadsheets.SortField.Descending*
+  name: Descending
+  href: api/Egap.Spreadsheets.SortField.html#Egap_Spreadsheets_SortField_Descending_
+  commentId: Overload:Egap.Spreadsheets.SortField.Descending
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SortField.Descending
+  nameWithType: SortField.Descending
+- uid: Egap.Spreadsheets.SortField.Index
+  name: Index
+  href: api/Egap.Spreadsheets.SortField.html#Egap_Spreadsheets_SortField_Index
+  commentId: P:Egap.Spreadsheets.SortField.Index
+  fullName: Egap.Spreadsheets.SortField.Index
+  nameWithType: SortField.Index
+- uid: Egap.Spreadsheets.SortField.Index*
+  name: Index
+  href: api/Egap.Spreadsheets.SortField.html#Egap_Spreadsheets_SortField_Index_
+  commentId: Overload:Egap.Spreadsheets.SortField.Index
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SortField.Index
+  nameWithType: SortField.Index
+- uid: Egap.Spreadsheets.SortOptions
+  name: SortOptions
+  href: api/Egap.Spreadsheets.SortOptions.html
+  commentId: T:Egap.Spreadsheets.SortOptions
+  fullName: Egap.Spreadsheets.SortOptions
+  nameWithType: SortOptions
+- uid: Egap.Spreadsheets.SortOptions.HasHeader
+  name: HasHeader
+  href: api/Egap.Spreadsheets.SortOptions.html#Egap_Spreadsheets_SortOptions_HasHeader
+  commentId: P:Egap.Spreadsheets.SortOptions.HasHeader
+  fullName: Egap.Spreadsheets.SortOptions.HasHeader
+  nameWithType: SortOptions.HasHeader
+- uid: Egap.Spreadsheets.SortOptions.HasHeader*
+  name: HasHeader
+  href: api/Egap.Spreadsheets.SortOptions.html#Egap_Spreadsheets_SortOptions_HasHeader_
+  commentId: Overload:Egap.Spreadsheets.SortOptions.HasHeader
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SortOptions.HasHeader
+  nameWithType: SortOptions.HasHeader
+- uid: Egap.Spreadsheets.SortOptions.MatchCase
+  name: MatchCase
+  href: api/Egap.Spreadsheets.SortOptions.html#Egap_Spreadsheets_SortOptions_MatchCase
+  commentId: P:Egap.Spreadsheets.SortOptions.MatchCase
+  fullName: Egap.Spreadsheets.SortOptions.MatchCase
+  nameWithType: SortOptions.MatchCase
+- uid: Egap.Spreadsheets.SortOptions.MatchCase*
+  name: MatchCase
+  href: api/Egap.Spreadsheets.SortOptions.html#Egap_Spreadsheets_SortOptions_MatchCase_
+  commentId: Overload:Egap.Spreadsheets.SortOptions.MatchCase
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SortOptions.MatchCase
+  nameWithType: SortOptions.MatchCase
+- uid: Egap.Spreadsheets.SortOptions.Orientation
+  name: Orientation
+  href: api/Egap.Spreadsheets.SortOptions.html#Egap_Spreadsheets_SortOptions_Orientation
+  commentId: P:Egap.Spreadsheets.SortOptions.Orientation
+  fullName: Egap.Spreadsheets.SortOptions.Orientation
+  nameWithType: SortOptions.Orientation
+- uid: Egap.Spreadsheets.SortOptions.Orientation*
+  name: Orientation
+  href: api/Egap.Spreadsheets.SortOptions.html#Egap_Spreadsheets_SortOptions_Orientation_
+  commentId: Overload:Egap.Spreadsheets.SortOptions.Orientation
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SortOptions.Orientation
+  nameWithType: SortOptions.Orientation
+- uid: Egap.Spreadsheets.SortOrientation
+  name: SortOrientation
+  href: api/Egap.Spreadsheets.SortOrientation.html
+  commentId: T:Egap.Spreadsheets.SortOrientation
+  fullName: Egap.Spreadsheets.SortOrientation
+  nameWithType: SortOrientation
+- uid: Egap.Spreadsheets.SortOrientation.Columns
+  name: Columns
+  href: api/Egap.Spreadsheets.SortOrientation.html#Egap_Spreadsheets_SortOrientation_Columns
+  commentId: F:Egap.Spreadsheets.SortOrientation.Columns
+  fullName: Egap.Spreadsheets.SortOrientation.Columns
+  nameWithType: SortOrientation.Columns
+- uid: Egap.Spreadsheets.SortOrientation.Rows
+  name: Rows
+  href: api/Egap.Spreadsheets.SortOrientation.html#Egap_Spreadsheets_SortOrientation_Rows
+  commentId: F:Egap.Spreadsheets.SortOrientation.Rows
+  fullName: Egap.Spreadsheets.SortOrientation.Rows
+  nameWithType: SortOrientation.Rows
 - uid: Egap.Spreadsheets.SpreadsheetFormat
   name: SpreadsheetFormat
   href: api/Egap.Spreadsheets.SpreadsheetFormat.html
@@ -64601,6 +64943,19 @@ references:
   commentId: T:Egap.Spreadsheets.Worksheet
   fullName: Egap.Spreadsheets.Worksheet
   nameWithType: Worksheet
+- uid: Egap.Spreadsheets.Worksheet.AutoFilter
+  name: AutoFilter
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_AutoFilter
+  commentId: P:Egap.Spreadsheets.Worksheet.AutoFilter
+  fullName: Egap.Spreadsheets.Worksheet.AutoFilter
+  nameWithType: Worksheet.AutoFilter
+- uid: Egap.Spreadsheets.Worksheet.AutoFilter*
+  name: AutoFilter
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_AutoFilter_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.AutoFilter
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.AutoFilter
+  nameWithType: Worksheet.AutoFilter
 - uid: Egap.Spreadsheets.Worksheet.Cells
   name: Cells
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Cells
@@ -64762,6 +65117,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Evaluate
   nameWithType: Worksheet.Evaluate
+- uid: Egap.Spreadsheets.Worksheet.Find(System.String,Egap.Spreadsheets.FindOptions)
+  name: Find(string, FindOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.Find(System.String,Egap.Spreadsheets.FindOptions)
+  name.vb: Find(String, FindOptions)
+  fullName: Egap.Spreadsheets.Worksheet.Find(string, Egap.Spreadsheets.FindOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.Find(String, Egap.Spreadsheets.FindOptions)
+  nameWithType: Worksheet.Find(string, FindOptions?)
+  nameWithType.vb: Worksheet.Find(String, FindOptions)
+- uid: Egap.Spreadsheets.Worksheet.Find*
+  name: Find
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.Find
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.Find
+  nameWithType: Worksheet.Find
 - uid: Egap.Spreadsheets.Worksheet.Hyperlinks
   name: Hyperlinks
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Hyperlinks
@@ -64952,6 +65323,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Range
   nameWithType: Worksheet.Range
+- uid: Egap.Spreadsheets.Worksheet.Replace(System.String,System.String,Egap.Spreadsheets.FindOptions)
+  name: Replace(string, string, FindOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.Replace(System.String,System.String,Egap.Spreadsheets.FindOptions)
+  name.vb: Replace(String, String, FindOptions)
+  fullName: Egap.Spreadsheets.Worksheet.Replace(string, string, Egap.Spreadsheets.FindOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.Replace(String, String, Egap.Spreadsheets.FindOptions)
+  nameWithType: Worksheet.Replace(string, string, FindOptions?)
+  nameWithType.vb: Worksheet.Replace(String, String, FindOptions)
+- uid: Egap.Spreadsheets.Worksheet.Replace*
+  name: Replace
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Replace_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.Replace
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.Replace
+  nameWithType: Worksheet.Replace
 - uid: Egap.Spreadsheets.Worksheet.Rows
   name: Rows
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Rows

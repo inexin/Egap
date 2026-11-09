@@ -8413,6 +8413,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.AutoFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.AutoFilter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.AutoFilter",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.AutoFilter.yml\" sourcestartlinenumber=\"1\">The filter of a sheet or table, as a file holds it: its range and the criteria of its columns. <xref href=\"Egap.Spreadsheets.AutoFilter.Apply\" data-throw-if-not-resolved=\"false\"></xref> hides the\nrows that fail the criteria, as Excel's Reapply does; Excel itself only hides rows when a filter is set or reapplied, and\nkeeps them as they are when it opens a file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.CalculationMode.yml",
       "output": {
         ".html": {
@@ -9029,6 +9043,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.FindLookIn.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.FindLookIn.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.FindLookIn",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindLookIn.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Spreadsheets.Worksheet.Find(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> searches in each cell, as Excel's &quot;Look in&quot;.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.FindOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.FindOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.FindOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.Worksheet.Find(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Egap.Spreadsheets.Worksheet.Replace(System.String%2cSystem.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref>\nmatch, as the options of Excel's Find and Replace dialog.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.FindOrder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.FindOrder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.FindOrder",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindOrder.yml\" sourcestartlinenumber=\"1\">The order <xref href=\"Egap.Spreadsheets.Worksheet.Find(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> visits cells in.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.FormulaException.yml",
       "output": {
         ".html": {
@@ -9446,6 +9502,48 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.SheetWriter",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetWriter.yml\" sourcestartlinenumber=\"1\">Writes rows one at a time to an XLSX file or CSV text, without building a <xref href=\"Egap.Spreadsheets.Workbook\" data-throw-if-not-resolved=\"false\"></xref>: memory stays the same\nhowever many rows there are. Each row goes straight to the file; the workbook's own parts are written when the writer is\ndisposed. Text is written in the cells (inline strings), so no table of strings grows with the file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SortField.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SortField.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SortField",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SortField.yml\" sourcestartlinenumber=\"1\">One key of a sort: a column of the range (a row, when columns are sorted) and its direction.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SortOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SortOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SortOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SortOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions%2cEgap.Spreadsheets.SortField%5b%5d)\" data-throw-if-not-resolved=\"false\"></xref> sorts, as the options of Excel's Sort dialog.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SortOrientation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SortOrientation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SortOrientation",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SortOrientation.yml\" sourcestartlinenumber=\"1\">Which way <xref href=\"Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions%2cEgap.Spreadsheets.SortField%5b%5d)\" data-throw-if-not-resolved=\"false\"></xref> reorders a range.</p>\n"
     },
     {
       "type": "ManagedReference",

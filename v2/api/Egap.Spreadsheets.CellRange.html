@@ -468,7 +468,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Equals_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.Equals(Egap.Spreadsheets.CellRange)">
   Equals(CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L255"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L343"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both ranges are the same cells of the same sheet.</p>
@@ -505,7 +505,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_Equals_System_Object_" data-uid="Egap.Spreadsheets.CellRange.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L258"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L346"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Indicates whether this instance and a specified object are equal.</p>
@@ -540,11 +540,63 @@ own cells.</p>
 
 
 
+  <a id="Egap_Spreadsheets_CellRange_Find_" data-uid="Egap.Spreadsheets.CellRange.Find*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_Find_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.CellRange.Find(System.String,Egap.Spreadsheets.FindOptions)">
+  Find(string, FindOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L302"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds the cells of the range whose text matches, as Excel's Find All does with the range selected; see
+<a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_">Find(string, FindOptions?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Cell&gt; Find(string what, FindOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>what</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to find; <code>*</code>, <code>?</code> and <code>~</code> are Excel's wildcards.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.FindOptions.html">FindOptions</a></dt>
+    <dd><p>How to match; null for Excel's defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Spreadsheets.Cell.html">Cell</a>&gt;</dt>
+    <dd><p>The matching cells, in the order <a class="xref" href="Egap.Spreadsheets.FindOptions.html#Egap_Spreadsheets_FindOptions_Order">Order</a> gives.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_Find_System_String_Egap_Spreadsheets_FindOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">IReadOnlyList&lt;Cell&gt; found = sheet.Range("A1:D100").Find("apple");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The text is null or empty.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Spreadsheets_CellRange_GetEnumerator_" data-uid="Egap.Spreadsheets.CellRange.GetEnumerator*"></a>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetEnumerator" data-uid="Egap.Spreadsheets.CellRange.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L241"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L329"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Every cell in the range, empty ones too, row by row and left to right.</p>
@@ -576,7 +628,7 @@ own cells.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_GetHashCode" data-uid="Egap.Spreadsheets.CellRange.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L261"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L349"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns the hash code for this instance.</p>
@@ -695,6 +747,71 @@ cells that move and pull back from the cells written over. Merges the cells land
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The move would take or write over part of an array formula, take part of a merged cell or table, take a table to
 another sheet, or change a pivot table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_CellRange_Replace_" data-uid="Egap.Spreadsheets.CellRange.Replace*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.CellRange.Replace(System.String,System.String,Egap.Spreadsheets.FindOptions)">
+  Replace(string, string, FindOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L326"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces matching text in the range's formulas and values, as Excel's Replace All does with the range selected, and
+gives how many cells changed. Each match is replaced, left to right, and a <code>*</code> takes as much as it can. A cell
+whose text starts with <code>=</code> afterwards gets that formula; other text is taken as typed, so that <code>12</code> becomes a
+number, unless the cell is formatted as text. Constants are matched as the formula bar shows them (see
+<a class="xref" href="Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Formulas">Formulas</a>). Notes are not changed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Replace(string what, string replacement, FindOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>what</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to find; <code>*</code>, <code>?</code> and <code>~</code> are Excel's wildcards.</p>
+</dd>
+    <dt><code>replacement</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to put in its place, taken as it is.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.FindOptions.html">FindOptions</a></dt>
+    <dd><p>How to match; null for Excel's defaults. Only <a class="xref" href="Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Formulas">Formulas</a> can be replaced.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>How many cells changed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">int changed = sheet.Range("A1:A50").Replace("SUM(", "SUBTOTAL(9,");</code></pre>
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_Replace_System_String_System_String_Egap_Spreadsheets_FindOptions__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Changed formulas have no result until the workbook is calculated.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The text is null or empty, the replacement is null, or the options look in values or notes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>A replacement makes a formula Excel's grammar refuses, or changes part of an array formula; the cells before it stay
+replaced, as in Excel.</p>
 </dd>
   </dl>
 
@@ -854,11 +971,127 @@ the range but not larger.</p>
 
 
 
+  <a id="Egap_Spreadsheets_CellRange_Sort_" data-uid="Egap.Spreadsheets.CellRange.Sort*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortField___" data-uid="Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortField[])">
+  Sort(params SortField[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L253"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sorts the range's rows by the values in key columns, smallest first unless a key says otherwise, as Excel's Sort does;
+see <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortOptions_Egap_Spreadsheets_SortField___">Sort(SortOptions, params SortField[])</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Sort(params SortField[] keys)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>keys</code> <a class="xref" href="Egap.Spreadsheets.SortField.html">SortField</a>[]</dt>
+    <dd><p>The keys, most important first.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortField____examples">Examples</h4>
+  <pre><code class="lang-csharp">sheet.Range("A2:C20").Sort(new SortField(2, Descending: true), new SortField(0));</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>No key is given.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>A key is outside the range.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The range has merged cells, part of an array formula or a pivot table.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_CellRange_Sort_" data-uid="Egap.Spreadsheets.CellRange.Sort*"></a>
+
+  <h3 id="Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortOptions_Egap_Spreadsheets_SortField___" data-uid="Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions,Egap.Spreadsheets.SortField[])">
+  Sort(SortOptions, params SortField[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L282"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sorts the range's rows, or its columns, by the values in key columns (or key rows), as Excel's Sort does. Numbers come
+first, then text, then FALSE and TRUE, then errors; empty cells come last either way, and rows whose keys are equal
+keep their order. Text sorts by the rules of <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Culture">Culture</a>, ignoring case unless
+<a class="xref" href="Egap.Spreadsheets.SortOptions.html#Egap_Spreadsheets_SortOptions_MatchCase">MatchCase</a> is set, and leaving out hyphens and apostrophes but for breaking a tie. A formula
+sorts by its last result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Sort(SortOptions options, params SortField[] keys)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.SortOptions.html">SortOptions</a></dt>
+    <dd><p>How to sort.</p>
+</dd>
+    <dt><code>keys</code> <a class="xref" href="Egap.Spreadsheets.SortField.html">SortField</a>[]</dt>
+    <dd><p>The keys, most important first.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortOptions_Egap_Spreadsheets_SortField____examples">Examples</h4>
+  <pre><code class="lang-csharp">sheet.Range("A1:D50").Sort(new SortOptions { HasHeader = true }, new SortField(1));</code></pre>
+
+
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_Sort_Egap_Spreadsheets_SortOptions_Egap_Spreadsheets_SortField____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Each row moves as Excel moves it: as if copied, with its values, styles, notes and links, and with its formulas'
+relative references without a sheet name moved by as many rows as the formula moves: a cell that would leave the sheet
+becomes <code>#REF!</code>, and a range with one edge off is cut back to the sheet's edge. References with a sheet name, even
+the formula's own sheet, don't move, nor do references from other cells to the sorted cells. Text compares by its first
+255 characters, as in Excel; a header's merged cells stay where they are. Conditional formats and validation rules
+stay on their cells. Hidden rows (hidden columns, when columns are sorted) stay where they are, and the rest sort around
+them.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The options are null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>No key is given.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>A key is outside the range.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The range has merged cells, part of an array formula or a pivot table.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Spreadsheets_CellRange_ToString_" data-uid="Egap.Spreadsheets.CellRange.ToString*"></a>
 
   <h3 id="Egap_Spreadsheets_CellRange_ToString" data-uid="Egap.Spreadsheets.CellRange.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L270"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L358"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet's name and the range's address, such as <code>Sheet1!A1:D20</code>.</p>
@@ -927,7 +1160,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_op_Equality_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.op_Equality(Egap.Spreadsheets.CellRange,Egap.Spreadsheets.CellRange)">
   operator ==(CellRange, CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L264"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L352"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether both ranges are the same cells.</p>
@@ -966,7 +1199,7 @@ the range but not larger.</p>
 
   <h3 id="Egap_Spreadsheets_CellRange_op_Inequality_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_CellRange_" data-uid="Egap.Spreadsheets.CellRange.op_Inequality(Egap.Spreadsheets.CellRange,Egap.Spreadsheets.CellRange)">
   operator !=(CellRange, CellRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L267"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L355"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the ranges differ.</p>

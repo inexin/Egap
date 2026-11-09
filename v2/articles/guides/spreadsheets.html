@@ -276,6 +276,52 @@ that move loses a strip they are written over. Merges the cells land on are unme
 merged cell or table, a copy that writes over part of a merged cell, a copy onto its own cells that cuts a merge, and a
 copy onto its own cells of rows a filter shows in more than one run. Egap also refuses moving a table to another sheet,
 and a paste that would change a pivot table. Pictures and charts stay where they are.</p>
+<h3 id="sorting-filtering-and-finding">Sorting, filtering and finding</h3>
+<p><code>CellRange.Sort</code> sorts a range's rows by key columns, or its columns by key rows, as Excel's Sort does. Numbers come
+first, then text, then FALSE and TRUE, then errors; empty cells come last either way, and rows with equal keys keep their
+order. Text follows the word sort Windows gives Excel: spaces and symbols before digits and letters, hyphens and
+apostrophes left out but for breaking a tie, and letters by <code>Workbook.Culture</code>, ignoring case unless <code>MatchCase</code> is set.
+Each row moves as if copied, with its values, styles, notes and links, and its formulas' relative references move with it,
+except those with a sheet name, which Excel leaves alone; formulas elsewhere that refer to the sorted cells don't change.
+Hidden rows stay where they are. Merged cells below the header, or part of an array formula, are refused, as Excel refuses
+them. Keys sort by formulas' last results, so calculate first when
+they have changed.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;prices.xlsx&quot;);
+Worksheet sheet = book.Worksheets[0];
+
+// Header row stays; sort by the second column, largest first, then by the first.
+sheet.Range(&quot;A1:C40&quot;).Sort(new SortOptions { HasHeader = true }, new SortField(1, Descending: true), new SortField(0));
+</code></pre>
+<p><code>Worksheet.AutoFilter</code> and <code>SheetTable.AutoFilter</code> give the filter a file holds. Excel hides a filter's rows only when the
+filter is set or reapplied; <code>Apply</code> does the reapplying, hiding the data rows that fail the criteria and showing the rest,
+and <code>ShowAll</code> clears the criteria. Value lists match the text a cell shows; custom criteria compare numbers with numbers
+and text with text, with wildcards for text; top and bottom items, above and below average and date periods (counted
+from today) are evaluated too. Colour and icon criteria are not: rows pass them.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;orders.xlsx&quot;);
+Worksheet sheet = book.Worksheets[0];
+if (sheet.AutoFilter is { } filter)
+{
+    book.Calculate();
+    int shown = filter.Apply();
+}
+</code></pre>
+<p><code>Worksheet.Find</code> and <code>CellRange.Find</code> give the cells whose text matches, and <code>Replace</code> changes the matches, as Excel's
+Find All and Replace All do, with <code>*</code>, <code>?</code> and <code>~</code> as Excel's wildcards. <code>FindOptions</code> sets match case, whole cell, the
+order, and where to look: in what the formula bar shows (formulas with <code>=</code>, in Excel's English form, and values as typed,
+in the workbook's culture), in what cells show, or in notes. Replacing works in the formula bar's text: every match is
+replaced, and the result is entered as if typed, so a formula stays a formula and <code>12</code> becomes a number. When a
+replacement makes a formula Excel refuses, the replace stops there, as Excel's does.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;budget.xlsx&quot;);
+Worksheet sheet = book.Worksheets[0];
+IReadOnlyList&lt;Cell&gt; totals = sheet.Find(&quot;total*&quot;, new FindOptions { MatchEntireCell = true, LookIn = FindLookIn.Values });
+int changed = sheet.Replace(&quot;Sheet1!&quot;, &quot;Budget!&quot;);
+</code></pre>
 <h2 id="names-and-printing">Names and printing</h2>
 <p><code>book.Names</code> holds the defined names. A name belongs to the workbook, or to one sheet when you give one:</p>
 <pre><code class="lang-csharp">using Egap.Spreadsheets;
