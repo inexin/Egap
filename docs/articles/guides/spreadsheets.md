@@ -188,11 +188,13 @@ double? width = sheet.Columns["A"].AutoFit();      // the same width: A has no o
 double height = sheet.Rows[0].AutoFit();           // 15 points, the Calibri 11 row
 ```
 
-Widths are measured as Excel measures text on screen at 96 dpi. For the fonts and sizes sheets use most, Egap carries the
-width Excel gives each character, hinted to whole pixels; other fonts are measured from the font. Numbers in the General
-format take the widest digit for each digit and the decimal separator, so the column holds any number of that length.
-Merged cells are left out, as Excel leaves them. Text shows as `Workbook.Culture` formats it. Egap measures each
-character to a whole pixel where Excel keeps fractions, so a width can differ from Excel's by a pixel.
+Widths are measured as Excel measures text on screen at 96 dpi, at the sheet's zoom as Excel does. For the fonts and
+sizes sheets use most, Egap carries the widths Excel gives each character and the height it gives each font's line;
+other fonts are measured from the font, and can come out a few pixels off. Numbers in the General format take the
+widest digit for each digit and the decimal separator, so the column holds any number of that length. Text shows as
+`Workbook.Culture` formats it. A merge across columns is left out of a column's fit and one down a single column counts
+by its first cell; for rows it is the other way round. A row's empty cells hold it to the font of the row's or the
+columns' style. Rich text is measured in the cell's own font, where Excel measures each run in its own.
 
 ### Inserting and deleting rows and columns
 

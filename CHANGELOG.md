@@ -158,8 +158,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - AutoFit: `SheetColumn.AutoFit()` and `CellRange.AutoFitColumns()` fit columns to their text, and `SheetRow.AutoFit()`
   and `CellRange.AutoFitRows()` fit rows to their fonts, wrapped lines and turned text, as Excel's AutoFit does. Text is
-  measured with the whole-pixel widths Excel gives the characters of the fonts sheets use most; General numbers take
-  the widest digit per digit, as in Excel.
+  measured with the widths and line heights Excel gives the fonts sheets use most, at the sheet's zoom; General numbers
+  take the widest digit per digit, as in Excel.
 - `CellRange.Sort` sorts rows or columns by key columns as Excel's Sort does: Excel's order of numbers, text, logicals,
   errors and empty cells, Windows' word sort for text, and rows that move as copies, with their notes and links, and
   references that move as Excel's sort moves them. Hidden rows stay put.

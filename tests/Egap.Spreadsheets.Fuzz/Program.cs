@@ -31,6 +31,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["move"] = Move,
     ["sorts"] = Sorts,
     ["find"] = Find,
+    ["autofit"] = AutoFit,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -496,6 +497,58 @@ static void Copies(Stream input)
 // The input is an XLSX package: each sheet's used range and part of it sorted, its filter and its tables' filters applied
 // and cleared, and its cells searched and replaced; then calculated, saved and loaded again. May throw only
 // DocumentException, or InvalidOperationException for a sort or replace Excel refuses.
+static void AutoFit(Stream input)
+{
+    DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };
+    Workbook book;
+    try
+    {
+        book = Workbook.Load(new MemoryStream(Bytes(input), writable: false), new WorkbookLoadOptions { Limits = limits });
+    }
+    catch (DocumentException)
+    {
+        return;
+    }
+
+    foreach (Worksheet sheet in book.Worksheets.ToList())
+    {
+        RangeAddress used = sheet.UsedRange?.Address ?? RangeAddress.Parse("A1");
+        RangeAddress part = new(used.First.Row, used.First.Column, Math.Min(used.Last.Row, used.First.Row + 199), Math.Min(used.Last.Column, used.First.Column + 39));
+        sheet.Range(part).AutoFitColumns();
+        sheet.Range(part).AutoFitRows();
+        foreach (SheetColumn column in sheet.Columns.ToList())
+        {
+            if (column.Width is { } width && !(width is >= 0 and <= 255))
+            {
+                throw new InvalidOperationException($"Column {column.Index} fitted to {width}.");
+            }
+        }
+
+        foreach (SheetRow row in sheet.Rows.ToList())
+        {
+            double height = row.AutoFit();
+            if (!(height is >= 0 and <= 409.5))
+            {
+                throw new InvalidOperationException($"Row {row.Index} fitted to {height}.");
+            }
+        }
+    }
+
+    MemoryStream saved = new();
+    try
+    {
+        book.Save(saved);
+    }
+    catch (DocumentException)
+    {
+        // A part the load kept unread, such as a drawing's relationships, is read on saving and may be malformed.
+        return;
+    }
+
+    saved.Position = 0;
+    _ = Workbook.Load(saved);
+}
+
 static void Sorts(Stream input)
 {
     DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };

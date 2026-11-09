@@ -17,8 +17,9 @@ $ErrorActionPreference = 'Stop'
 $inv = [System.Globalization.CultureInfo]::InvariantCulture
 $fonts = @('Arial', 'Calibri', 'Times New Roman', 'Verdana', 'Tahoma', 'Courier New', 'Arial Narrow', 'MS Sans Serif', 'Cambria',
     'Segoe UI', 'Garamond', 'Century Gothic', 'Aptos Narrow', 'Aptos', 'Book Antiqua', 'Comic Sans MS', 'Helvetica', 'Geneva',
-    'Courier', 'Arial Black', 'Trebuchet MS', 'Georgia', 'Univers', 'Zurich Cn BT', 'Lucida Console', 'Palatino Linotype')
-$sizes = @(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 36, 48)
+    'Courier', 'Arial Black', 'Trebuchet MS', 'Georgia', 'Univers', 'Zurich Cn BT', 'Lucida Console', 'Palatino Linotype',
+    'Bookman Old Style', 'Franklin Gothic Medium Cond', 'Bitstream Vera Sans', 'Arial MT', 'Eras Medium ITC')
+$sizes = @(6, 7, 7.5, 8, 8.5, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 36, 48)
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false
 $excel.DisplayAlerts = $false

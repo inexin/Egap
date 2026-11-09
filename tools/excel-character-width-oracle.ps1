@@ -39,6 +39,32 @@ Add 'Aptos Narrow' @(11) 1
 Add 'Segoe UI' @(9, 10) 0
 Add 'Garamond' @(10, 11, 12) 0
 Add 'Century Gothic' @(10, 11) 0
+# Fonts and sizes the GovDocs and Enron sheets use beyond those, some of which Excel substitutes on a PC without them.
+Add 'Arial' @(6, 7.5, 8.5) 0
+Add 'Arial' @(6, 7, 18, 20) 1
+Add 'Calibri' @(8, 18, 20) 1
+Add 'Times New Roman' @(7.5, 16, 18, 20) 0
+Add 'Times New Roman' @(7.5, 8, 9, 16, 18, 20) 1
+Add 'MS Sans Serif' @(6, 7, 8.5, 9) 0
+Add 'MS Sans Serif' @(6, 7, 8, 8.5, 9) 1
+Add 'Zurich Cn BT' @(8, 9, 10) 0
+Add 'Zurich Cn BT' @(8, 10) 1
+Add 'Geneva' @(9, 10) 0
+Add 'Geneva' @(9, 10) 1
+Add 'Helvetica' @(10) 0
+Add 'Bookman Old Style' @(10) 0
+Add 'Bookman Old Style' @(10) 1
+Add 'Bitstream Vera Sans' @(10) 0
+Add 'Franklin Gothic Medium Cond' @(8, 9, 10) 0
+Add 'Franklin Gothic Medium Cond' @(10) 1
+Add 'Arial MT' @(12) 0
+Add 'Arial MT' @(12) 1
+Add 'Univers' @(12) 0
+Add 'Univers' @(12) 1
+Add 'Arial Narrow' @(11, 12) 1
+Add 'Courier New' @(12) 1
+Add 'Eras Medium ITC' @(10, 12) 0
+Add 'Arial Black' @(14) 1
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false
 $excel.DisplayAlerts = $false
