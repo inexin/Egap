@@ -160,7 +160,7 @@ sheet["B1"].Value = 42;</code></pre>
 
   <h3 id="Egap_Spreadsheets_Workbook_Calculation" data-uid="Egap.Spreadsheets.Workbook.Calculation">
   Calculation
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L51"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How the workbook calculates: when, whether circular references iterate, and whether in parallel.</p>
@@ -224,7 +224,7 @@ sheet["B1"].Value = 42;</code></pre>
 
   <h3 id="Egap_Spreadsheets_Workbook_Culture" data-uid="Egap.Spreadsheets.Workbook.Culture">
   Culture
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L94"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The culture <a class="xref" href="Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_Text">Text</a> shows numbers and dates in: its decimal and group separators, month and day names
@@ -296,7 +296,7 @@ date every date cell shows; the numbers stay.</p>
 
   <h3 id="Egap_Spreadsheets_Workbook_Format" data-uid="Egap.Spreadsheets.Workbook.Format">
   Format
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The kind of file the workbook was loaded from, and the kind a save to a stream writes when the options name none.</p>
@@ -356,6 +356,38 @@ date every date cell shows; the numbers stay.</p>
 
 
 
+  <a id="Egap_Spreadsheets_Workbook_Protection_" data-uid="Egap.Spreadsheets.Workbook.Protection*"></a>
+
+  <h3 id="Egap_Spreadsheets_Workbook_Protection" data-uid="Egap.Spreadsheets.Workbook.Protection">
+  Protection
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The workbook's protection: whether its structure is locked, and the hash of the password that unlocks it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public WorkbookProtection Protection { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.WorkbookProtection.html">WorkbookProtection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_Workbook_Worksheets_" data-uid="Egap.Spreadsheets.Workbook.Worksheets*"></a>
 
   <h3 id="Egap_Spreadsheets_Workbook_Worksheets" data-uid="Egap.Spreadsheets.Workbook.Worksheets">
@@ -396,7 +428,7 @@ date every date cell shows; the numbers stay.</p>
 
   <h3 id="Egap_Spreadsheets_Workbook_Calculate" data-uid="Egap.Spreadsheets.Workbook.Calculate">
   Calculate()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Calculates the formulas that need it, as Excel's F9 does: those reading a cell whose value or formula changed since
@@ -434,7 +466,7 @@ was loaded or made has every formula calculated the first time. Independent form
 
   <h3 id="Egap_Spreadsheets_Workbook_CalculateFull" data-uid="Egap.Spreadsheets.Workbook.CalculateFull">
   CalculateFull()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L63"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L66"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Calculates every formula in the workbook, as Excel's Ctrl+Alt+F9 does, whatever changed.</p>
@@ -467,7 +499,7 @@ was loaded or made has every formula calculated the first time. Independent form
 
   <h3 id="Egap_Spreadsheets_Workbook_Create" data-uid="Egap.Spreadsheets.Workbook.Create">
   Create()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L377"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L380"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A new workbook with one empty sheet, <code>Sheet1</code>, as Excel starts one.</p>
@@ -499,7 +531,7 @@ was loaded or made has every formula calculated the first time. Independent form
 
   <h3 id="Egap_Spreadsheets_Workbook_CreateEmpty" data-uid="Egap.Spreadsheets.Workbook.CreateEmpty">
   CreateEmpty()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L404"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L407"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A new workbook with no sheets; add one before saving, as a workbook file needs at least one.</p>
@@ -670,7 +702,7 @@ carries on, without its repeated header. Sheets are named as in <a class="xref" 
 
   <h3 id="Egap_Spreadsheets_Workbook_Load_System_IO_Stream_Egap_Spreadsheets_WorkbookLoadOptions_" data-uid="Egap.Spreadsheets.Workbook.Load(System.IO.Stream,Egap.Spreadsheets.WorkbookLoadOptions)">
   Load(Stream, WorkbookLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L428"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L431"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Loads an XLSX, XLSM, XLTX or XLTM file from a stream, which is left open.</p>
@@ -718,7 +750,7 @@ carries on, without its repeated header. Sheets are named as in <a class="xref" 
 
   <h3 id="Egap_Spreadsheets_Workbook_Load_System_String_Egap_Spreadsheets_WorkbookLoadOptions_" data-uid="Egap.Spreadsheets.Workbook.Load(System.String,Egap.Spreadsheets.WorkbookLoadOptions)">
   Load(string, WorkbookLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L413"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L416"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Loads an XLSX, XLSM, XLTX or XLTM file, or a <code>.csv</code>, <code>.tsv</code> or <code>.tab</code> file as
@@ -770,7 +802,7 @@ carries on, without its repeated header. Sheets are named as in <a class="xref" 
 
   <h3 id="Egap_Spreadsheets_Workbook_LoadCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)">
   LoadCsv(Stream, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L401"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L404"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads comma- or tab-separated text from a stream into a new workbook with one sheet.</p>
@@ -818,7 +850,7 @@ carries on, without its repeated header. Sheets are named as in <a class="xref" 
 
   <h3 id="Egap_Spreadsheets_Workbook_LoadCsv_System_String_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Workbook.LoadCsv(System.String,Egap.Spreadsheets.CsvOptions)">
   LoadCsv(string, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L391"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L394"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads comma- or tab-separated text into a new workbook with one sheet. The separator comes from the options, a
@@ -868,7 +900,7 @@ encoding, culture and type detection.</p>
 
   <h3 id="Egap_Spreadsheets_Workbook_Paginate_Egap_Spreadsheets_SheetPrintOptions_" data-uid="Egap.Spreadsheets.Workbook.Paginate(Egap.Spreadsheets.SheetPrintOptions)">
   Paginate(SheetPrintOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L477"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L480"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The visible sheets laid out on pages as Excel prints the entire workbook, sheet after sheet; see
@@ -906,7 +938,7 @@ encoding, culture and type detection.</p>
 
   <h3 id="Egap_Spreadsheets_Workbook_Save_System_IO_Stream_Egap_Spreadsheets_WorkbookSaveOptions_" data-uid="Egap.Spreadsheets.Workbook.Save(System.IO.Stream,Egap.Spreadsheets.WorkbookSaveOptions)">
   Save(Stream, WorkbookSaveOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L467"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L470"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the workbook to a stream, which is left open, as <a class="xref" href="Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Format">Format</a> or else <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Format">Format</a>.</p>
@@ -946,7 +978,7 @@ encoding, culture and type detection.</p>
 
   <h3 id="Egap_Spreadsheets_Workbook_Save_System_String_Egap_Spreadsheets_WorkbookSaveOptions_" data-uid="Egap.Spreadsheets.Workbook.Save(System.String,Egap.Spreadsheets.WorkbookSaveOptions)">
   Save(string, WorkbookSaveOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L445"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L448"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the workbook to a file as the kind its extension names (.xlsx, .xlsm, .xltx or .xltm), unless
@@ -992,7 +1024,7 @@ A <code>.csv</code>, <code>.tsv</code> or <code>.tab</code> path writes the firs
 
   <h3 id="Egap_Spreadsheets_Workbook_SaveAsPdf_System_IO_Stream_Egap_Spreadsheets_SheetPdfOptions_" data-uid="Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)">
   SaveAsPdf(Stream, SheetPdfOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L489"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L492"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the visible sheets' printed pages as a PDF to a stream, which is left open.</p>
@@ -1032,7 +1064,7 @@ A <code>.csv</code>, <code>.tsv</code> or <code>.tab</code> path writes the firs
 
   <h3 id="Egap_Spreadsheets_Workbook_SaveAsPdf_System_String_Egap_Spreadsheets_SheetPdfOptions_" data-uid="Egap.Spreadsheets.Workbook.SaveAsPdf(System.String,Egap.Spreadsheets.SheetPdfOptions)">
   SaveAsPdf(string, SheetPdfOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L481"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L484"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes the visible sheets' printed pages to a PDF file, as Excel's export of the entire workbook does.</p>

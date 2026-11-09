@@ -56925,6 +56925,40 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Cell.HasFormula
   nameWithType: Cell.HasFormula
+- uid: Egap.Spreadsheets.Cell.ImportData(System.Data.DataTable,Egap.Spreadsheets.DataImportOptions)
+  name: ImportData(DataTable, DataImportOptions?)
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_ImportData_System_Data_DataTable_Egap_Spreadsheets_DataImportOptions_
+  commentId: M:Egap.Spreadsheets.Cell.ImportData(System.Data.DataTable,Egap.Spreadsheets.DataImportOptions)
+  name.vb: ImportData(DataTable, DataImportOptions)
+  fullName: Egap.Spreadsheets.Cell.ImportData(System.Data.DataTable, Egap.Spreadsheets.DataImportOptions?)
+  fullName.vb: Egap.Spreadsheets.Cell.ImportData(System.Data.DataTable, Egap.Spreadsheets.DataImportOptions)
+  nameWithType: Cell.ImportData(DataTable, DataImportOptions?)
+  nameWithType.vb: Cell.ImportData(DataTable, DataImportOptions)
+- uid: Egap.Spreadsheets.Cell.ImportData(System.Data.IDataReader,Egap.Spreadsheets.DataImportOptions)
+  name: ImportData(IDataReader, DataImportOptions?)
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_ImportData_System_Data_IDataReader_Egap_Spreadsheets_DataImportOptions_
+  commentId: M:Egap.Spreadsheets.Cell.ImportData(System.Data.IDataReader,Egap.Spreadsheets.DataImportOptions)
+  name.vb: ImportData(IDataReader, DataImportOptions)
+  fullName: Egap.Spreadsheets.Cell.ImportData(System.Data.IDataReader, Egap.Spreadsheets.DataImportOptions?)
+  fullName.vb: Egap.Spreadsheets.Cell.ImportData(System.Data.IDataReader, Egap.Spreadsheets.DataImportOptions)
+  nameWithType: Cell.ImportData(IDataReader, DataImportOptions?)
+  nameWithType.vb: Cell.ImportData(IDataReader, DataImportOptions)
+- uid: Egap.Spreadsheets.Cell.ImportData*
+  name: ImportData
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_ImportData_
+  commentId: Overload:Egap.Spreadsheets.Cell.ImportData
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Cell.ImportData
+  nameWithType: Cell.ImportData
+- uid: Egap.Spreadsheets.Cell.ImportData``1(System.Collections.Generic.IEnumerable{``0},Egap.Spreadsheets.DataImportOptions)
+  name: ImportData<T>(IEnumerable<T>, DataImportOptions?)
+  href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_ImportData__1_System_Collections_Generic_IEnumerable___0__Egap_Spreadsheets_DataImportOptions_
+  commentId: M:Egap.Spreadsheets.Cell.ImportData``1(System.Collections.Generic.IEnumerable{``0},Egap.Spreadsheets.DataImportOptions)
+  name.vb: ImportData(Of T)(IEnumerable(Of T), DataImportOptions)
+  fullName: Egap.Spreadsheets.Cell.ImportData<T>(System.Collections.Generic.IEnumerable<T>, Egap.Spreadsheets.DataImportOptions?)
+  fullName.vb: Egap.Spreadsheets.Cell.ImportData(Of T)(System.Collections.Generic.IEnumerable(Of T), Egap.Spreadsheets.DataImportOptions)
+  nameWithType: Cell.ImportData<T>(IEnumerable<T>, DataImportOptions?)
+  nameWithType.vb: Cell.ImportData(Of T)(IEnumerable(Of T), DataImportOptions)
 - uid: Egap.Spreadsheets.Cell.IsEmpty
   name: IsEmpty
   href: api/Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_IsEmpty
@@ -58919,6 +58953,38 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellRange.Sort
   nameWithType: CellRange.Sort
+- uid: Egap.Spreadsheets.CellRange.ToDataTable(Egap.Spreadsheets.DataExportOptions)
+  name: ToDataTable(DataExportOptions?)
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_ToDataTable_Egap_Spreadsheets_DataExportOptions_
+  commentId: M:Egap.Spreadsheets.CellRange.ToDataTable(Egap.Spreadsheets.DataExportOptions)
+  name.vb: ToDataTable(DataExportOptions)
+  fullName: Egap.Spreadsheets.CellRange.ToDataTable(Egap.Spreadsheets.DataExportOptions?)
+  fullName.vb: Egap.Spreadsheets.CellRange.ToDataTable(Egap.Spreadsheets.DataExportOptions)
+  nameWithType: CellRange.ToDataTable(DataExportOptions?)
+  nameWithType.vb: CellRange.ToDataTable(DataExportOptions)
+- uid: Egap.Spreadsheets.CellRange.ToDataTable*
+  name: ToDataTable
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_ToDataTable_
+  commentId: Overload:Egap.Spreadsheets.CellRange.ToDataTable
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.ToDataTable
+  nameWithType: CellRange.ToDataTable
+- uid: Egap.Spreadsheets.CellRange.ToList*
+  name: ToList
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_ToList_
+  commentId: Overload:Egap.Spreadsheets.CellRange.ToList
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellRange.ToList
+  nameWithType: CellRange.ToList
+- uid: Egap.Spreadsheets.CellRange.ToList``1(Egap.Spreadsheets.DataExportOptions)
+  name: ToList<T>(DataExportOptions?)
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_ToList__1_Egap_Spreadsheets_DataExportOptions_
+  commentId: M:Egap.Spreadsheets.CellRange.ToList``1(Egap.Spreadsheets.DataExportOptions)
+  name.vb: ToList(Of T)(DataExportOptions)
+  fullName: Egap.Spreadsheets.CellRange.ToList<T>(Egap.Spreadsheets.DataExportOptions?)
+  fullName.vb: Egap.Spreadsheets.CellRange.ToList(Of T)(Egap.Spreadsheets.DataExportOptions)
+  nameWithType: CellRange.ToList<T>(DataExportOptions?)
+  nameWithType.vb: CellRange.ToList(Of T)(DataExportOptions)
 - uid: Egap.Spreadsheets.CellRange.ToString
   name: ToString()
   href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_ToString
@@ -60546,6 +60612,122 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CsvOptions.WriteSeparatorHint
   nameWithType: CsvOptions.WriteSeparatorHint
+- uid: Egap.Spreadsheets.DataExportOptions
+  name: DataExportOptions
+  href: api/Egap.Spreadsheets.DataExportOptions.html
+  commentId: T:Egap.Spreadsheets.DataExportOptions
+  fullName: Egap.Spreadsheets.DataExportOptions
+  nameWithType: DataExportOptions
+- uid: Egap.Spreadsheets.DataExportOptions.Header
+  name: Header
+  href: api/Egap.Spreadsheets.DataExportOptions.html#Egap_Spreadsheets_DataExportOptions_Header
+  commentId: P:Egap.Spreadsheets.DataExportOptions.Header
+  fullName: Egap.Spreadsheets.DataExportOptions.Header
+  nameWithType: DataExportOptions.Header
+- uid: Egap.Spreadsheets.DataExportOptions.Header*
+  name: Header
+  href: api/Egap.Spreadsheets.DataExportOptions.html#Egap_Spreadsheets_DataExportOptions_Header_
+  commentId: Overload:Egap.Spreadsheets.DataExportOptions.Header
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataExportOptions.Header
+  nameWithType: DataExportOptions.Header
+- uid: Egap.Spreadsheets.DataExportOptions.SkipEmptyRows
+  name: SkipEmptyRows
+  href: api/Egap.Spreadsheets.DataExportOptions.html#Egap_Spreadsheets_DataExportOptions_SkipEmptyRows
+  commentId: P:Egap.Spreadsheets.DataExportOptions.SkipEmptyRows
+  fullName: Egap.Spreadsheets.DataExportOptions.SkipEmptyRows
+  nameWithType: DataExportOptions.SkipEmptyRows
+- uid: Egap.Spreadsheets.DataExportOptions.SkipEmptyRows*
+  name: SkipEmptyRows
+  href: api/Egap.Spreadsheets.DataExportOptions.html#Egap_Spreadsheets_DataExportOptions_SkipEmptyRows_
+  commentId: Overload:Egap.Spreadsheets.DataExportOptions.SkipEmptyRows
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataExportOptions.SkipEmptyRows
+  nameWithType: DataExportOptions.SkipEmptyRows
+- uid: Egap.Spreadsheets.DataImportOptions
+  name: DataImportOptions
+  href: api/Egap.Spreadsheets.DataImportOptions.html
+  commentId: T:Egap.Spreadsheets.DataImportOptions
+  fullName: Egap.Spreadsheets.DataImportOptions
+  nameWithType: DataImportOptions
+- uid: Egap.Spreadsheets.DataImportOptions.Columns
+  name: Columns
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_Columns
+  commentId: P:Egap.Spreadsheets.DataImportOptions.Columns
+  fullName: Egap.Spreadsheets.DataImportOptions.Columns
+  nameWithType: DataImportOptions.Columns
+- uid: Egap.Spreadsheets.DataImportOptions.Columns*
+  name: Columns
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_Columns_
+  commentId: Overload:Egap.Spreadsheets.DataImportOptions.Columns
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataImportOptions.Columns
+  nameWithType: DataImportOptions.Columns
+- uid: Egap.Spreadsheets.DataImportOptions.DateFormat
+  name: DateFormat
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_DateFormat
+  commentId: P:Egap.Spreadsheets.DataImportOptions.DateFormat
+  fullName: Egap.Spreadsheets.DataImportOptions.DateFormat
+  nameWithType: DataImportOptions.DateFormat
+- uid: Egap.Spreadsheets.DataImportOptions.DateFormat*
+  name: DateFormat
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_DateFormat_
+  commentId: Overload:Egap.Spreadsheets.DataImportOptions.DateFormat
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataImportOptions.DateFormat
+  nameWithType: DataImportOptions.DateFormat
+- uid: Egap.Spreadsheets.DataImportOptions.DateTimeFormat
+  name: DateTimeFormat
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_DateTimeFormat
+  commentId: P:Egap.Spreadsheets.DataImportOptions.DateTimeFormat
+  fullName: Egap.Spreadsheets.DataImportOptions.DateTimeFormat
+  nameWithType: DataImportOptions.DateTimeFormat
+- uid: Egap.Spreadsheets.DataImportOptions.DateTimeFormat*
+  name: DateTimeFormat
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_DateTimeFormat_
+  commentId: Overload:Egap.Spreadsheets.DataImportOptions.DateTimeFormat
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataImportOptions.DateTimeFormat
+  nameWithType: DataImportOptions.DateTimeFormat
+- uid: Egap.Spreadsheets.DataImportOptions.Header
+  name: Header
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_Header
+  commentId: P:Egap.Spreadsheets.DataImportOptions.Header
+  fullName: Egap.Spreadsheets.DataImportOptions.Header
+  nameWithType: DataImportOptions.Header
+- uid: Egap.Spreadsheets.DataImportOptions.Header*
+  name: Header
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_Header_
+  commentId: Overload:Egap.Spreadsheets.DataImportOptions.Header
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataImportOptions.Header
+  nameWithType: DataImportOptions.Header
+- uid: Egap.Spreadsheets.DataImportOptions.TableName
+  name: TableName
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_TableName
+  commentId: P:Egap.Spreadsheets.DataImportOptions.TableName
+  fullName: Egap.Spreadsheets.DataImportOptions.TableName
+  nameWithType: DataImportOptions.TableName
+- uid: Egap.Spreadsheets.DataImportOptions.TableName*
+  name: TableName
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_TableName_
+  commentId: Overload:Egap.Spreadsheets.DataImportOptions.TableName
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataImportOptions.TableName
+  nameWithType: DataImportOptions.TableName
+- uid: Egap.Spreadsheets.DataImportOptions.TimeFormat
+  name: TimeFormat
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_TimeFormat
+  commentId: P:Egap.Spreadsheets.DataImportOptions.TimeFormat
+  fullName: Egap.Spreadsheets.DataImportOptions.TimeFormat
+  nameWithType: DataImportOptions.TimeFormat
+- uid: Egap.Spreadsheets.DataImportOptions.TimeFormat*
+  name: TimeFormat
+  href: api/Egap.Spreadsheets.DataImportOptions.html#Egap_Spreadsheets_DataImportOptions_TimeFormat_
+  commentId: Overload:Egap.Spreadsheets.DataImportOptions.TimeFormat
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.DataImportOptions.TimeFormat
+  nameWithType: DataImportOptions.TimeFormat
 - uid: Egap.Spreadsheets.DataValidation
   name: DataValidation
   href: api/Egap.Spreadsheets.DataValidation.html
@@ -61247,6 +61429,185 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.DrawingPosition.OffsetY
   nameWithType: DrawingPosition.OffsetY
+- uid: Egap.Spreadsheets.EditableRange
+  name: EditableRange
+  href: api/Egap.Spreadsheets.EditableRange.html
+  commentId: T:Egap.Spreadsheets.EditableRange
+  fullName: Egap.Spreadsheets.EditableRange
+  nameWithType: EditableRange
+- uid: Egap.Spreadsheets.EditableRange.HasPassword
+  name: HasPassword
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_HasPassword
+  commentId: P:Egap.Spreadsheets.EditableRange.HasPassword
+  fullName: Egap.Spreadsheets.EditableRange.HasPassword
+  nameWithType: EditableRange.HasPassword
+- uid: Egap.Spreadsheets.EditableRange.HasPassword*
+  name: HasPassword
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_HasPassword_
+  commentId: Overload:Egap.Spreadsheets.EditableRange.HasPassword
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRange.HasPassword
+  nameWithType: EditableRange.HasPassword
+- uid: Egap.Spreadsheets.EditableRange.Name
+  name: Name
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_Name
+  commentId: P:Egap.Spreadsheets.EditableRange.Name
+  fullName: Egap.Spreadsheets.EditableRange.Name
+  nameWithType: EditableRange.Name
+- uid: Egap.Spreadsheets.EditableRange.Name*
+  name: Name
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_Name_
+  commentId: Overload:Egap.Spreadsheets.EditableRange.Name
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRange.Name
+  nameWithType: EditableRange.Name
+- uid: Egap.Spreadsheets.EditableRange.Ranges
+  name: Ranges
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_Ranges
+  commentId: P:Egap.Spreadsheets.EditableRange.Ranges
+  fullName: Egap.Spreadsheets.EditableRange.Ranges
+  nameWithType: EditableRange.Ranges
+- uid: Egap.Spreadsheets.EditableRange.Ranges*
+  name: Ranges
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_Ranges_
+  commentId: Overload:Egap.Spreadsheets.EditableRange.Ranges
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRange.Ranges
+  nameWithType: EditableRange.Ranges
+- uid: Egap.Spreadsheets.EditableRange.SetPassword(System.String)
+  name: SetPassword(string?)
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_SetPassword_System_String_
+  commentId: M:Egap.Spreadsheets.EditableRange.SetPassword(System.String)
+  name.vb: SetPassword(String)
+  fullName: Egap.Spreadsheets.EditableRange.SetPassword(string?)
+  fullName.vb: Egap.Spreadsheets.EditableRange.SetPassword(String)
+  nameWithType: EditableRange.SetPassword(string?)
+  nameWithType.vb: EditableRange.SetPassword(String)
+- uid: Egap.Spreadsheets.EditableRange.SetPassword*
+  name: SetPassword
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_SetPassword_
+  commentId: Overload:Egap.Spreadsheets.EditableRange.SetPassword
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRange.SetPassword
+  nameWithType: EditableRange.SetPassword
+- uid: Egap.Spreadsheets.EditableRange.Verify(System.String)
+  name: Verify(string?)
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_Verify_System_String_
+  commentId: M:Egap.Spreadsheets.EditableRange.Verify(System.String)
+  name.vb: Verify(String)
+  fullName: Egap.Spreadsheets.EditableRange.Verify(string?)
+  fullName.vb: Egap.Spreadsheets.EditableRange.Verify(String)
+  nameWithType: EditableRange.Verify(string?)
+  nameWithType.vb: EditableRange.Verify(String)
+- uid: Egap.Spreadsheets.EditableRange.Verify*
+  name: Verify
+  href: api/Egap.Spreadsheets.EditableRange.html#Egap_Spreadsheets_EditableRange_Verify_
+  commentId: Overload:Egap.Spreadsheets.EditableRange.Verify
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRange.Verify
+  nameWithType: EditableRange.Verify
+- uid: Egap.Spreadsheets.EditableRangeCollection
+  name: EditableRangeCollection
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html
+  commentId: T:Egap.Spreadsheets.EditableRangeCollection
+  fullName: Egap.Spreadsheets.EditableRangeCollection
+  nameWithType: EditableRangeCollection
+- uid: Egap.Spreadsheets.EditableRangeCollection.Add(System.String,Egap.Spreadsheets.RangeAddress,System.String)
+  name: Add(string, RangeAddress, string?)
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Add_System_String_Egap_Spreadsheets_RangeAddress_System_String_
+  commentId: M:Egap.Spreadsheets.EditableRangeCollection.Add(System.String,Egap.Spreadsheets.RangeAddress,System.String)
+  name.vb: Add(String, RangeAddress, String)
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Add(string, Egap.Spreadsheets.RangeAddress, string?)
+  fullName.vb: Egap.Spreadsheets.EditableRangeCollection.Add(String, Egap.Spreadsheets.RangeAddress, String)
+  nameWithType: EditableRangeCollection.Add(string, RangeAddress, string?)
+  nameWithType.vb: EditableRangeCollection.Add(String, RangeAddress, String)
+- uid: Egap.Spreadsheets.EditableRangeCollection.Add(System.String,System.String,System.String)
+  name: Add(string, string, string?)
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Add_System_String_System_String_System_String_
+  commentId: M:Egap.Spreadsheets.EditableRangeCollection.Add(System.String,System.String,System.String)
+  name.vb: Add(String, String, String)
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Add(string, string, string?)
+  fullName.vb: Egap.Spreadsheets.EditableRangeCollection.Add(String, String, String)
+  nameWithType: EditableRangeCollection.Add(string, string, string?)
+  nameWithType.vb: EditableRangeCollection.Add(String, String, String)
+- uid: Egap.Spreadsheets.EditableRangeCollection.Add*
+  name: Add
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Add_
+  commentId: Overload:Egap.Spreadsheets.EditableRangeCollection.Add
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Add
+  nameWithType: EditableRangeCollection.Add
+- uid: Egap.Spreadsheets.EditableRangeCollection.Clear
+  name: Clear()
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Clear
+  commentId: M:Egap.Spreadsheets.EditableRangeCollection.Clear
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Clear()
+  nameWithType: EditableRangeCollection.Clear()
+- uid: Egap.Spreadsheets.EditableRangeCollection.Clear*
+  name: Clear
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Clear_
+  commentId: Overload:Egap.Spreadsheets.EditableRangeCollection.Clear
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Clear
+  nameWithType: EditableRangeCollection.Clear
+- uid: Egap.Spreadsheets.EditableRangeCollection.Count
+  name: Count
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Count
+  commentId: P:Egap.Spreadsheets.EditableRangeCollection.Count
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Count
+  nameWithType: EditableRangeCollection.Count
+- uid: Egap.Spreadsheets.EditableRangeCollection.Count*
+  name: Count
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Count_
+  commentId: Overload:Egap.Spreadsheets.EditableRangeCollection.Count
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Count
+  nameWithType: EditableRangeCollection.Count
+- uid: Egap.Spreadsheets.EditableRangeCollection.GetEnumerator
+  name: GetEnumerator()
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_GetEnumerator
+  commentId: M:Egap.Spreadsheets.EditableRangeCollection.GetEnumerator
+  fullName: Egap.Spreadsheets.EditableRangeCollection.GetEnumerator()
+  nameWithType: EditableRangeCollection.GetEnumerator()
+- uid: Egap.Spreadsheets.EditableRangeCollection.GetEnumerator*
+  name: GetEnumerator
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_GetEnumerator_
+  commentId: Overload:Egap.Spreadsheets.EditableRangeCollection.GetEnumerator
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRangeCollection.GetEnumerator
+  nameWithType: EditableRangeCollection.GetEnumerator
+- uid: Egap.Spreadsheets.EditableRangeCollection.Item(System.Int32)
+  name: this[int]
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Item_System_Int32_
+  commentId: P:Egap.Spreadsheets.EditableRangeCollection.Item(System.Int32)
+  name.vb: this[](Integer)
+  fullName: Egap.Spreadsheets.EditableRangeCollection.this[int]
+  fullName.vb: Egap.Spreadsheets.EditableRangeCollection.this[](Integer)
+  nameWithType: EditableRangeCollection.this[int]
+  nameWithType.vb: EditableRangeCollection.this[](Integer)
+- uid: Egap.Spreadsheets.EditableRangeCollection.Item*
+  name: this
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Item_
+  commentId: Overload:Egap.Spreadsheets.EditableRangeCollection.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: Egap.Spreadsheets.EditableRangeCollection.this
+  fullName.vb: Egap.Spreadsheets.EditableRangeCollection.this[]
+  nameWithType: EditableRangeCollection.this
+  nameWithType.vb: EditableRangeCollection.this[]
+- uid: Egap.Spreadsheets.EditableRangeCollection.Remove(Egap.Spreadsheets.EditableRange)
+  name: Remove(EditableRange)
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Remove_Egap_Spreadsheets_EditableRange_
+  commentId: M:Egap.Spreadsheets.EditableRangeCollection.Remove(Egap.Spreadsheets.EditableRange)
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Remove(Egap.Spreadsheets.EditableRange)
+  nameWithType: EditableRangeCollection.Remove(EditableRange)
+- uid: Egap.Spreadsheets.EditableRangeCollection.Remove*
+  name: Remove
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Remove_
+  commentId: Overload:Egap.Spreadsheets.EditableRangeCollection.Remove
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Remove
+  nameWithType: EditableRangeCollection.Remove
 - uid: Egap.Spreadsheets.FindLookIn
   name: FindLookIn
   href: api/Egap.Spreadsheets.FindLookIn.html
@@ -62670,6 +63031,114 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.RangeAddress.TryParse
   nameWithType: RangeAddress.TryParse
+- uid: Egap.Spreadsheets.SheetActions
+  name: SheetActions
+  href: api/Egap.Spreadsheets.SheetActions.html
+  commentId: T:Egap.Spreadsheets.SheetActions
+  fullName: Egap.Spreadsheets.SheetActions
+  nameWithType: SheetActions
+- uid: Egap.Spreadsheets.SheetActions.AutoFilter
+  name: AutoFilter
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_AutoFilter
+  commentId: F:Egap.Spreadsheets.SheetActions.AutoFilter
+  fullName: Egap.Spreadsheets.SheetActions.AutoFilter
+  nameWithType: SheetActions.AutoFilter
+- uid: Egap.Spreadsheets.SheetActions.Default
+  name: Default
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_Default
+  commentId: F:Egap.Spreadsheets.SheetActions.Default
+  fullName: Egap.Spreadsheets.SheetActions.Default
+  nameWithType: SheetActions.Default
+- uid: Egap.Spreadsheets.SheetActions.DeleteColumns
+  name: DeleteColumns
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_DeleteColumns
+  commentId: F:Egap.Spreadsheets.SheetActions.DeleteColumns
+  fullName: Egap.Spreadsheets.SheetActions.DeleteColumns
+  nameWithType: SheetActions.DeleteColumns
+- uid: Egap.Spreadsheets.SheetActions.DeleteRows
+  name: DeleteRows
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_DeleteRows
+  commentId: F:Egap.Spreadsheets.SheetActions.DeleteRows
+  fullName: Egap.Spreadsheets.SheetActions.DeleteRows
+  nameWithType: SheetActions.DeleteRows
+- uid: Egap.Spreadsheets.SheetActions.EditObjects
+  name: EditObjects
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_EditObjects
+  commentId: F:Egap.Spreadsheets.SheetActions.EditObjects
+  fullName: Egap.Spreadsheets.SheetActions.EditObjects
+  nameWithType: SheetActions.EditObjects
+- uid: Egap.Spreadsheets.SheetActions.EditScenarios
+  name: EditScenarios
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_EditScenarios
+  commentId: F:Egap.Spreadsheets.SheetActions.EditScenarios
+  fullName: Egap.Spreadsheets.SheetActions.EditScenarios
+  nameWithType: SheetActions.EditScenarios
+- uid: Egap.Spreadsheets.SheetActions.FormatCells
+  name: FormatCells
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_FormatCells
+  commentId: F:Egap.Spreadsheets.SheetActions.FormatCells
+  fullName: Egap.Spreadsheets.SheetActions.FormatCells
+  nameWithType: SheetActions.FormatCells
+- uid: Egap.Spreadsheets.SheetActions.FormatColumns
+  name: FormatColumns
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_FormatColumns
+  commentId: F:Egap.Spreadsheets.SheetActions.FormatColumns
+  fullName: Egap.Spreadsheets.SheetActions.FormatColumns
+  nameWithType: SheetActions.FormatColumns
+- uid: Egap.Spreadsheets.SheetActions.FormatRows
+  name: FormatRows
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_FormatRows
+  commentId: F:Egap.Spreadsheets.SheetActions.FormatRows
+  fullName: Egap.Spreadsheets.SheetActions.FormatRows
+  nameWithType: SheetActions.FormatRows
+- uid: Egap.Spreadsheets.SheetActions.InsertColumns
+  name: InsertColumns
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_InsertColumns
+  commentId: F:Egap.Spreadsheets.SheetActions.InsertColumns
+  fullName: Egap.Spreadsheets.SheetActions.InsertColumns
+  nameWithType: SheetActions.InsertColumns
+- uid: Egap.Spreadsheets.SheetActions.InsertHyperlinks
+  name: InsertHyperlinks
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_InsertHyperlinks
+  commentId: F:Egap.Spreadsheets.SheetActions.InsertHyperlinks
+  fullName: Egap.Spreadsheets.SheetActions.InsertHyperlinks
+  nameWithType: SheetActions.InsertHyperlinks
+- uid: Egap.Spreadsheets.SheetActions.InsertRows
+  name: InsertRows
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_InsertRows
+  commentId: F:Egap.Spreadsheets.SheetActions.InsertRows
+  fullName: Egap.Spreadsheets.SheetActions.InsertRows
+  nameWithType: SheetActions.InsertRows
+- uid: Egap.Spreadsheets.SheetActions.None
+  name: None
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_None
+  commentId: F:Egap.Spreadsheets.SheetActions.None
+  fullName: Egap.Spreadsheets.SheetActions.None
+  nameWithType: SheetActions.None
+- uid: Egap.Spreadsheets.SheetActions.PivotTables
+  name: PivotTables
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_PivotTables
+  commentId: F:Egap.Spreadsheets.SheetActions.PivotTables
+  fullName: Egap.Spreadsheets.SheetActions.PivotTables
+  nameWithType: SheetActions.PivotTables
+- uid: Egap.Spreadsheets.SheetActions.SelectLockedCells
+  name: SelectLockedCells
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_SelectLockedCells
+  commentId: F:Egap.Spreadsheets.SheetActions.SelectLockedCells
+  fullName: Egap.Spreadsheets.SheetActions.SelectLockedCells
+  nameWithType: SheetActions.SelectLockedCells
+- uid: Egap.Spreadsheets.SheetActions.SelectUnlockedCells
+  name: SelectUnlockedCells
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_SelectUnlockedCells
+  commentId: F:Egap.Spreadsheets.SheetActions.SelectUnlockedCells
+  fullName: Egap.Spreadsheets.SheetActions.SelectUnlockedCells
+  nameWithType: SheetActions.SelectUnlockedCells
+- uid: Egap.Spreadsheets.SheetActions.Sort
+  name: Sort
+  href: api/Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_Sort
+  commentId: F:Egap.Spreadsheets.SheetActions.Sort
+  fullName: Egap.Spreadsheets.SheetActions.Sort
+  nameWithType: SheetActions.Sort
 - uid: Egap.Spreadsheets.SheetColumn
   name: SheetColumn
   href: api/Egap.Spreadsheets.SheetColumn.html
@@ -63543,6 +64012,125 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetPrintOptions.PrintTime
   nameWithType: SheetPrintOptions.PrintTime
+- uid: Egap.Spreadsheets.SheetProtection
+  name: SheetProtection
+  href: api/Egap.Spreadsheets.SheetProtection.html
+  commentId: T:Egap.Spreadsheets.SheetProtection
+  fullName: Egap.Spreadsheets.SheetProtection
+  nameWithType: SheetProtection
+- uid: Egap.Spreadsheets.SheetProtection.AllowedActions
+  name: AllowedActions
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_AllowedActions
+  commentId: P:Egap.Spreadsheets.SheetProtection.AllowedActions
+  fullName: Egap.Spreadsheets.SheetProtection.AllowedActions
+  nameWithType: SheetProtection.AllowedActions
+- uid: Egap.Spreadsheets.SheetProtection.AllowedActions*
+  name: AllowedActions
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_AllowedActions_
+  commentId: Overload:Egap.Spreadsheets.SheetProtection.AllowedActions
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetProtection.AllowedActions
+  nameWithType: SheetProtection.AllowedActions
+- uid: Egap.Spreadsheets.SheetProtection.CanEdit(Egap.Spreadsheets.CellAddress)
+  name: CanEdit(CellAddress)
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_CanEdit_Egap_Spreadsheets_CellAddress_
+  commentId: M:Egap.Spreadsheets.SheetProtection.CanEdit(Egap.Spreadsheets.CellAddress)
+  fullName: Egap.Spreadsheets.SheetProtection.CanEdit(Egap.Spreadsheets.CellAddress)
+  nameWithType: SheetProtection.CanEdit(CellAddress)
+- uid: Egap.Spreadsheets.SheetProtection.CanEdit*
+  name: CanEdit
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_CanEdit_
+  commentId: Overload:Egap.Spreadsheets.SheetProtection.CanEdit
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetProtection.CanEdit
+  nameWithType: SheetProtection.CanEdit
+- uid: Egap.Spreadsheets.SheetProtection.EditableRanges
+  name: EditableRanges
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_EditableRanges
+  commentId: P:Egap.Spreadsheets.SheetProtection.EditableRanges
+  fullName: Egap.Spreadsheets.SheetProtection.EditableRanges
+  nameWithType: SheetProtection.EditableRanges
+- uid: Egap.Spreadsheets.SheetProtection.EditableRanges*
+  name: EditableRanges
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_EditableRanges_
+  commentId: Overload:Egap.Spreadsheets.SheetProtection.EditableRanges
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetProtection.EditableRanges
+  nameWithType: SheetProtection.EditableRanges
+- uid: Egap.Spreadsheets.SheetProtection.HasPassword
+  name: HasPassword
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_HasPassword
+  commentId: P:Egap.Spreadsheets.SheetProtection.HasPassword
+  fullName: Egap.Spreadsheets.SheetProtection.HasPassword
+  nameWithType: SheetProtection.HasPassword
+- uid: Egap.Spreadsheets.SheetProtection.HasPassword*
+  name: HasPassword
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_HasPassword_
+  commentId: Overload:Egap.Spreadsheets.SheetProtection.HasPassword
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetProtection.HasPassword
+  nameWithType: SheetProtection.HasPassword
+- uid: Egap.Spreadsheets.SheetProtection.IsProtected
+  name: IsProtected
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_IsProtected
+  commentId: P:Egap.Spreadsheets.SheetProtection.IsProtected
+  fullName: Egap.Spreadsheets.SheetProtection.IsProtected
+  nameWithType: SheetProtection.IsProtected
+- uid: Egap.Spreadsheets.SheetProtection.IsProtected*
+  name: IsProtected
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_IsProtected_
+  commentId: Overload:Egap.Spreadsheets.SheetProtection.IsProtected
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetProtection.IsProtected
+  nameWithType: SheetProtection.IsProtected
+- uid: Egap.Spreadsheets.SheetProtection.Protect(System.String,Egap.Spreadsheets.SheetActions)
+  name: Protect(string?, SheetActions)
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_Protect_System_String_Egap_Spreadsheets_SheetActions_
+  commentId: M:Egap.Spreadsheets.SheetProtection.Protect(System.String,Egap.Spreadsheets.SheetActions)
+  name.vb: Protect(String, SheetActions)
+  fullName: Egap.Spreadsheets.SheetProtection.Protect(string?, Egap.Spreadsheets.SheetActions)
+  fullName.vb: Egap.Spreadsheets.SheetProtection.Protect(String, Egap.Spreadsheets.SheetActions)
+  nameWithType: SheetProtection.Protect(string?, SheetActions)
+  nameWithType.vb: SheetProtection.Protect(String, SheetActions)
+- uid: Egap.Spreadsheets.SheetProtection.Protect*
+  name: Protect
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_Protect_
+  commentId: Overload:Egap.Spreadsheets.SheetProtection.Protect
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetProtection.Protect
+  nameWithType: SheetProtection.Protect
+- uid: Egap.Spreadsheets.SheetProtection.Unprotect(System.String)
+  name: Unprotect(string?)
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_Unprotect_System_String_
+  commentId: M:Egap.Spreadsheets.SheetProtection.Unprotect(System.String)
+  name.vb: Unprotect(String)
+  fullName: Egap.Spreadsheets.SheetProtection.Unprotect(string?)
+  fullName.vb: Egap.Spreadsheets.SheetProtection.Unprotect(String)
+  nameWithType: SheetProtection.Unprotect(string?)
+  nameWithType.vb: SheetProtection.Unprotect(String)
+- uid: Egap.Spreadsheets.SheetProtection.Unprotect*
+  name: Unprotect
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_Unprotect_
+  commentId: Overload:Egap.Spreadsheets.SheetProtection.Unprotect
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetProtection.Unprotect
+  nameWithType: SheetProtection.Unprotect
+- uid: Egap.Spreadsheets.SheetProtection.Verify(System.String)
+  name: Verify(string?)
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_Verify_System_String_
+  commentId: M:Egap.Spreadsheets.SheetProtection.Verify(System.String)
+  name.vb: Verify(String)
+  fullName: Egap.Spreadsheets.SheetProtection.Verify(string?)
+  fullName.vb: Egap.Spreadsheets.SheetProtection.Verify(String)
+  nameWithType: SheetProtection.Verify(string?)
+  nameWithType.vb: SheetProtection.Verify(String)
+- uid: Egap.Spreadsheets.SheetProtection.Verify*
+  name: Verify
+  href: api/Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_Verify_
+  commentId: Overload:Egap.Spreadsheets.SheetProtection.Verify
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetProtection.Verify
+  nameWithType: SheetProtection.Verify
 - uid: Egap.Spreadsheets.SheetReader
   name: SheetReader
   href: api/Egap.Spreadsheets.SheetReader.html
@@ -65090,6 +65678,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.Paginate
   nameWithType: Workbook.Paginate
+- uid: Egap.Spreadsheets.Workbook.Protection
+  name: Protection
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Protection
+  commentId: P:Egap.Spreadsheets.Workbook.Protection
+  fullName: Egap.Spreadsheets.Workbook.Protection
+  nameWithType: Workbook.Protection
+- uid: Egap.Spreadsheets.Workbook.Protection*
+  name: Protection
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Protection_
+  commentId: Overload:Egap.Spreadsheets.Workbook.Protection
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Workbook.Protection
+  nameWithType: Workbook.Protection
 - uid: Egap.Spreadsheets.Workbook.Save(System.IO.Stream,Egap.Spreadsheets.WorkbookSaveOptions)
   name: Save(Stream, WorkbookSaveOptions?)
   href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Save_System_IO_Stream_Egap_Spreadsheets_WorkbookSaveOptions_
@@ -65237,6 +65838,112 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.WorkbookLoadOptions.Limits
   nameWithType: WorkbookLoadOptions.Limits
+- uid: Egap.Spreadsheets.WorkbookProtection
+  name: WorkbookProtection
+  href: api/Egap.Spreadsheets.WorkbookProtection.html
+  commentId: T:Egap.Spreadsheets.WorkbookProtection
+  fullName: Egap.Spreadsheets.WorkbookProtection
+  nameWithType: WorkbookProtection
+- uid: Egap.Spreadsheets.WorkbookProtection.HasPassword
+  name: HasPassword
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_HasPassword
+  commentId: P:Egap.Spreadsheets.WorkbookProtection.HasPassword
+  fullName: Egap.Spreadsheets.WorkbookProtection.HasPassword
+  nameWithType: WorkbookProtection.HasPassword
+- uid: Egap.Spreadsheets.WorkbookProtection.HasPassword*
+  name: HasPassword
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_HasPassword_
+  commentId: Overload:Egap.Spreadsheets.WorkbookProtection.HasPassword
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookProtection.HasPassword
+  nameWithType: WorkbookProtection.HasPassword
+- uid: Egap.Spreadsheets.WorkbookProtection.IsProtected
+  name: IsProtected
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_IsProtected
+  commentId: P:Egap.Spreadsheets.WorkbookProtection.IsProtected
+  fullName: Egap.Spreadsheets.WorkbookProtection.IsProtected
+  nameWithType: WorkbookProtection.IsProtected
+- uid: Egap.Spreadsheets.WorkbookProtection.IsProtected*
+  name: IsProtected
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_IsProtected_
+  commentId: Overload:Egap.Spreadsheets.WorkbookProtection.IsProtected
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookProtection.IsProtected
+  nameWithType: WorkbookProtection.IsProtected
+- uid: Egap.Spreadsheets.WorkbookProtection.LockStructure
+  name: LockStructure
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_LockStructure
+  commentId: P:Egap.Spreadsheets.WorkbookProtection.LockStructure
+  fullName: Egap.Spreadsheets.WorkbookProtection.LockStructure
+  nameWithType: WorkbookProtection.LockStructure
+- uid: Egap.Spreadsheets.WorkbookProtection.LockStructure*
+  name: LockStructure
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_LockStructure_
+  commentId: Overload:Egap.Spreadsheets.WorkbookProtection.LockStructure
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookProtection.LockStructure
+  nameWithType: WorkbookProtection.LockStructure
+- uid: Egap.Spreadsheets.WorkbookProtection.LockWindows
+  name: LockWindows
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_LockWindows
+  commentId: P:Egap.Spreadsheets.WorkbookProtection.LockWindows
+  fullName: Egap.Spreadsheets.WorkbookProtection.LockWindows
+  nameWithType: WorkbookProtection.LockWindows
+- uid: Egap.Spreadsheets.WorkbookProtection.LockWindows*
+  name: LockWindows
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_LockWindows_
+  commentId: Overload:Egap.Spreadsheets.WorkbookProtection.LockWindows
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookProtection.LockWindows
+  nameWithType: WorkbookProtection.LockWindows
+- uid: Egap.Spreadsheets.WorkbookProtection.Protect(System.String,System.Boolean,System.Boolean)
+  name: Protect(string?, bool, bool)
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_Protect_System_String_System_Boolean_System_Boolean_
+  commentId: M:Egap.Spreadsheets.WorkbookProtection.Protect(System.String,System.Boolean,System.Boolean)
+  name.vb: Protect(String, Boolean, Boolean)
+  fullName: Egap.Spreadsheets.WorkbookProtection.Protect(string?, bool, bool)
+  fullName.vb: Egap.Spreadsheets.WorkbookProtection.Protect(String, Boolean, Boolean)
+  nameWithType: WorkbookProtection.Protect(string?, bool, bool)
+  nameWithType.vb: WorkbookProtection.Protect(String, Boolean, Boolean)
+- uid: Egap.Spreadsheets.WorkbookProtection.Protect*
+  name: Protect
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_Protect_
+  commentId: Overload:Egap.Spreadsheets.WorkbookProtection.Protect
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookProtection.Protect
+  nameWithType: WorkbookProtection.Protect
+- uid: Egap.Spreadsheets.WorkbookProtection.Unprotect(System.String)
+  name: Unprotect(string?)
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_Unprotect_System_String_
+  commentId: M:Egap.Spreadsheets.WorkbookProtection.Unprotect(System.String)
+  name.vb: Unprotect(String)
+  fullName: Egap.Spreadsheets.WorkbookProtection.Unprotect(string?)
+  fullName.vb: Egap.Spreadsheets.WorkbookProtection.Unprotect(String)
+  nameWithType: WorkbookProtection.Unprotect(string?)
+  nameWithType.vb: WorkbookProtection.Unprotect(String)
+- uid: Egap.Spreadsheets.WorkbookProtection.Unprotect*
+  name: Unprotect
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_Unprotect_
+  commentId: Overload:Egap.Spreadsheets.WorkbookProtection.Unprotect
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookProtection.Unprotect
+  nameWithType: WorkbookProtection.Unprotect
+- uid: Egap.Spreadsheets.WorkbookProtection.Verify(System.String)
+  name: Verify(string?)
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_Verify_System_String_
+  commentId: M:Egap.Spreadsheets.WorkbookProtection.Verify(System.String)
+  name.vb: Verify(String)
+  fullName: Egap.Spreadsheets.WorkbookProtection.Verify(string?)
+  fullName.vb: Egap.Spreadsheets.WorkbookProtection.Verify(String)
+  nameWithType: WorkbookProtection.Verify(string?)
+  nameWithType.vb: WorkbookProtection.Verify(String)
+- uid: Egap.Spreadsheets.WorkbookProtection.Verify*
+  name: Verify
+  href: api/Egap.Spreadsheets.WorkbookProtection.html#Egap_Spreadsheets_WorkbookProtection_Verify_
+  commentId: Overload:Egap.Spreadsheets.WorkbookProtection.Verify
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookProtection.Verify
+  nameWithType: WorkbookProtection.Verify
 - uid: Egap.Spreadsheets.WorkbookSaveOptions
   name: WorkbookSaveOptions
   href: api/Egap.Spreadsheets.WorkbookSaveOptions.html
@@ -65624,6 +66331,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Paginate
   nameWithType: Worksheet.Paginate
+- uid: Egap.Spreadsheets.Worksheet.Protection
+  name: Protection
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Protection
+  commentId: P:Egap.Spreadsheets.Worksheet.Protection
+  fullName: Egap.Spreadsheets.Worksheet.Protection
+  nameWithType: Worksheet.Protection
+- uid: Egap.Spreadsheets.Worksheet.Protection*
+  name: Protection
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Protection_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.Protection
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.Protection
+  nameWithType: Worksheet.Protection
 - uid: Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress)
   name: Range(RangeAddress)
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Range_Egap_Spreadsheets_RangeAddress_

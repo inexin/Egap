@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class SheetProtection | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class SheetProtection | Egap ">
+      
+      <meta name="description" content="A sheet&#39;s protection, as Excel&#39;s Protect Sheet sets it: whether it is on, what users may still do, the hash of the password that lifts it, and the ranges that stay editable. Locked cells (, the default) cannot be changed while it is on, and the formulas of hidden cells () are not shown.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Spreadsheets_SheetProtection.md&amp;value=---%0Auid%3A%20Egap.Spreadsheets.SheetProtection%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Spreadsheets.SheetProtection">
+
+
+
+  <h1 id="Egap_Spreadsheets_SheetProtection" data-uid="Egap.Spreadsheets.SheetProtection" class="text-break">
+Class SheetProtection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Spreadsheets.html">Spreadsheets</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Spreadsheets.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A sheet's protection, as Excel's Protect Sheet sets it: whether it is on, what users may still do, the hash of the
+password that lifts it, and the ranges that stay editable. Locked cells (<a class="xref" href="Egap.Spreadsheets.CellProtection.html#Egap_Spreadsheets_CellProtection_Locked">Locked</a>, the default)
+cannot be changed while it is on, and the formulas of hidden cells (<a class="xref" href="Egap.Spreadsheets.CellProtection.html#Egap_Spreadsheets_CellProtection_Hidden">Hidden</a>) are not shown.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class SheetProtection</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">SheetProtection</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="Egap_Spreadsheets_SheetProtection_examples">Examples</h2>
+  <pre><code class="lang-csharp">sheet.Range("B2:B10").UpdateStyle(s =&gt; s with { Protection = s.Protection with { Locked = false } });
+sheet.Protection.Protect("secret", SheetActions.Default | SheetActions.Sort);
+bool open = sheet.Protection.Unprotect("secret");    // true</code></pre>
+
+
+  <h2 id="Egap_Spreadsheets_SheetProtection_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Egap does not enforce protection: it reads, writes and checks it, so that Excel enforces it. Protection is not
+encryption, and anyone with the file can read every cell. <a class="xref" href="Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_Protect_System_String_Egap_Spreadsheets_SheetActions_">Protect(string?, SheetActions)</a> stores a SHA-512 hash of the password
+with a random salt and 100,000 spins, as Excel does; <a class="xref" href="Egap.Spreadsheets.SheetProtection.html#Egap_Spreadsheets_SheetProtection_Verify_System_String_">Verify(string?)</a> also checks the 16-bit hashes of older files.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Spreadsheets_SheetProtection_AllowedActions_" data-uid="Egap.Spreadsheets.SheetProtection.AllowedActions*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetProtection_AllowedActions" data-uid="Egap.Spreadsheets.SheetProtection.AllowedActions">
+  AllowedActions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>What users may still do while the sheet is protected. Default <a class="xref" href="Egap.Spreadsheets.SheetActions.html#Egap_Spreadsheets_SheetActions_Default">Default</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SheetActions AllowedActions { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.SheetActions.html">SheetActions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_SheetProtection_EditableRanges_" data-uid="Egap.Spreadsheets.SheetProtection.EditableRanges*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetProtection_EditableRanges" data-uid="Egap.Spreadsheets.SheetProtection.EditableRanges">
+  EditableRanges
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The ranges users may edit while the sheet is protected, as Excel's Allow Edit Ranges lists them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EditableRangeCollection EditableRanges { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.EditableRangeCollection.html">EditableRangeCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_SheetProtection_HasPassword_" data-uid="Egap.Spreadsheets.SheetProtection.HasPassword*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetProtection_HasPassword" data-uid="Egap.Spreadsheets.SheetProtection.HasPassword">
+  HasPassword
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a password lifts the protection; without one, anyone may switch it off.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasPassword { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_SheetProtection_IsProtected_" data-uid="Egap.Spreadsheets.SheetProtection.IsProtected*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetProtection_IsProtected" data-uid="Egap.Spreadsheets.SheetProtection.IsProtected">
+  IsProtected
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the sheet is protected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsProtected { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Spreadsheets_SheetProtection_CanEdit_" data-uid="Egap.Spreadsheets.SheetProtection.CanEdit*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetProtection_CanEdit_Egap_Spreadsheets_CellAddress_" data-uid="Egap.Spreadsheets.SheetProtection.CanEdit(Egap.Spreadsheets.CellAddress)">
+  CanEdit(CellAddress)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L147"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a user may change a cell without a password: the sheet is not protected, the cell is not locked, or it is in
+an editable range that needs no password.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanEdit(CellAddress cell)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cell</code> <a class="xref" href="Egap.Spreadsheets.CellAddress.html">CellAddress</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_SheetProtection_Protect_" data-uid="Egap.Spreadsheets.SheetProtection.Protect*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetProtection_Protect_System_String_Egap_Spreadsheets_SheetActions_" data-uid="Egap.Spreadsheets.SheetProtection.Protect(System.String,Egap.Spreadsheets.SheetActions)">
+  Protect(string?, SheetActions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L111"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Protects the sheet, with a hash of <code class="paramref">password</code> made as Excel makes it; a null or empty password lets
+anyone switch it off.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Protect(string? password = null, SheetActions allowed = SheetActions.Default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>allowed</code> <a class="xref" href="Egap.Spreadsheets.SheetActions.html">SheetActions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_SheetProtection_Unprotect_" data-uid="Egap.Spreadsheets.SheetProtection.Unprotect*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetProtection_Unprotect_System_String_" data-uid="Egap.Spreadsheets.SheetProtection.Unprotect(System.String)">
+  Unprotect(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Switches the protection off when <code class="paramref">password</code> is the one that lifts it, or when there is none, and
+removes the password; false, leaving it on, for a wrong password.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Unprotect(string? password = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file's hash uses an algorithm Egap cannot check or more spins than it runs.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_SheetProtection_Verify_" data-uid="Egap.Spreadsheets.SheetProtection.Verify*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetProtection_Verify_System_String_" data-uid="Egap.Spreadsheets.SheetProtection.Verify(System.String)">
+  Verify(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether <code class="paramref">password</code> lifts the protection: true when it matches the hash, or when there is no password.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Verify(string? password)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file's hash uses an algorithm Egap cannot check or more spins than it runs.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L83" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

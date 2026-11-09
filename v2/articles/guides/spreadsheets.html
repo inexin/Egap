@@ -649,6 +649,37 @@ culture's list separator unless you name one (a semicolon where the comma is the
 <code>\r\n</code> and pads every row to the same number of fields. <code>WriteSeparatorHint</code> adds a <code>sep=</code> line for Excel.</p>
 <p><code>Workbook.Load</code> and <code>Workbook.Save</code> take <code>.csv</code>, <code>.tsv</code> and <code>.tab</code> paths too, with <code>WorkbookLoadOptions.Csv</code> and
 <code>WorkbookSaveOptions.Csv</code> for the options; saving writes the first visible sheet.</p>
+<h2 id="importing-and-exporting-data">Importing and exporting data</h2>
+<p><code>Cell.ImportData</code> writes .NET data into a sheet from a cell down and to the right: a list of objects (one column per
+public property, in declaration order), a <code>DataTable</code>, or the rows an <code>IDataReader</code> has left. The first row holds the
+property, column or field names unless <code>DataImportOptions.Header</code> is false, and <code>TableName</code> makes an Excel table over
+the cells written. <code>CellRange.ToDataTable</code> and <code>CellRange.ToList&lt;T&gt;</code> read a range back.</p>
+<pre><code class="lang-csharp">using System.Data;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+List&lt;Shipment&gt; shipments = [new(&quot;Oslo&quot;, 12, new DateTime(2024, 3, 15)), new(&quot;Bergen&quot;, 4, new DateTime(2024, 3, 16))];
+CellRange written = sheet[&quot;A1&quot;].ImportData(shipments, new DataImportOptions { TableName = &quot;Shipments&quot; });
+
+DataTable table = written.ToDataTable();                // City: string, Boxes: double, Sent: DateTime
+List&lt;Shipment&gt; back = sheet.Range(&quot;A:C&quot;).ToList&lt;Shipment&gt;();
+
+public sealed record Shipment(string City, int Boxes, DateTime Sent);
+</code></pre>
+<p>Numbers become numbers, <code>bool</code> becomes <code>TRUE</code> or <code>FALSE</code>, and strings, characters, enums and GUIDs become text. Dates
+(<code>DateTime</code>, <code>DateOnly</code> and the clock time of a <code>DateTimeOffset</code>) become serial numbers with <code>DateFormat</code> or, with a
+time of day, <code>DateTimeFormat</code>; <code>TimeSpan</code> and <code>TimeOnly</code> become fractions of a day with <code>TimeFormat</code>, <code>[h]:mm:ss</code> by
+default, which also shows more than 24 hours. Null and <code>DBNull</code> leave the cell empty, NaN and infinity become <code>#NUM!</code>,
+and a date before the date system's first day becomes ISO text, as Excel keeps such dates. <code>Columns</code> picks columns by
+name and sets their order.</p>
+<p>Reading gives each table column the type its cells share: <code>double</code> for numbers, <code>DateTime</code> for numbers with a date
+format, <code>TimeSpan</code> for a time-only format, <code>bool</code>, or <code>string</code> for text, shown as the cell shows it. A column that mixes
+them is <code>object</code>. <code>ToList&lt;T&gt;</code> fills each property (or a record's constructor parameter) from the column whose header
+has its name, ignoring case, spaces, hyphens and underscores; without a header, columns fill properties in order. Text
+converts in the workbook's culture, a whole-number property takes only whole numbers, and a value that does not
+convert throws a <code>FormatException</code> naming the cell. Empty rows are left out unless <code>SkipEmptyRows</code> is false, and a
+whole-column range reads only as far as the sheet holds anything.</p>
 <h2 id="spreadsheets-as-documents">Spreadsheets as documents</h2>
 <p><code>Document.Load</code> reads XLSX and CSV, and <code>Workbook.FromTables</code> puts the tables of a document or a PDF on sheets: see
 <a href="spreadsheets-and-documents.html">Spreadsheets and documents</a>.</p>
@@ -723,6 +754,31 @@ thresholds from the rule's minimum, maximum, number, percent, percentile and for
 items match a value's text with case, its cells' values without; as in Excel, a list given by a name whose cells include
 a blank one, or whose formula gives an error, takes any value while blanks are ignored. Rules that Excel keeps only in
 the sheet's extension list are written back but not evaluated.</p>
+<h2 id="protection">Protection</h2>
+<p><code>sheet.Protection</code> protects a sheet as Excel's Protect Sheet does: locked cells (<code>CellProtection.Locked</code>, the default)
+cannot be changed, the formulas of hidden cells are not shown, and <code>SheetActions</code> says what users may still do.
+<code>EditableRanges</code> lists ranges that stay editable, each with an optional password of its own, as Excel's Allow Edit
+Ranges does. <code>book.Protection</code> locks the workbook's structure, so sheets cannot be added, removed, renamed, moved,
+hidden or shown.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet.Range(&quot;B2:B10&quot;).UpdateStyle(s =&gt; s with { Protection = s.Protection with { Locked = false } });
+sheet.Protection.EditableRanges.Add(&quot;Prices&quot;, &quot;D2:D10&quot;, &quot;prices-password&quot;);
+sheet.Protection.Protect(&quot;sheet-password&quot;, SheetActions.Default | SheetActions.Sort | SheetActions.AutoFilter);
+book.Protection.Protect(&quot;book-password&quot;);
+book.Save(&quot;protected.xlsx&quot;);
+
+Workbook loaded = Workbook.Load(&quot;protected.xlsx&quot;);
+bool right = loaded.Worksheets[0].Protection.Verify(&quot;sheet-password&quot;);     // true
+bool open = loaded.Worksheets[0].Protection.Unprotect(&quot;wrong&quot;);            // false: still protected
+</code></pre>
+<p>Passwords are stored as Excel stores them: a SHA-512 hash of the password with a random 16-byte salt, hashed again
+100,000 times. <code>Verify</code> and <code>Unprotect</code> also check the SHA-1 and other hashes Excel has written, and the 16-bit hashes
+of files from Excel 2007 and older. Egap does not enforce protection, as Excel does: it reads, writes and checks it, and
+<code>CanEdit</code> says whether a user could change a cell without a password. Protection is not encryption; anyone with the
+file can read every cell.</p>
 <h2 id="notes-hyperlinks-and-pictures">Notes, hyperlinks and pictures</h2>
 <p><code>sheet.Comments</code> holds notes (Excel's classic comments), <code>sheet.Hyperlinks</code> links to web addresses, files and places in
 the workbook, and <code>sheet.Drawings</code> the pictures, shapes and charts on the sheet. Pictures can be added and moved, and a

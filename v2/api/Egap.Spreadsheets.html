@@ -208,6 +208,16 @@ writes comma- and tab-separated text (RFC 4180): the separator, encoding, cultur
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.DataExportOptions.html">DataExportOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_ToDataTable_Egap_Spreadsheets_DataExportOptions_">ToDataTable(DataExportOptions?)</a> and <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_ToList__1_Egap_Spreadsheets_DataExportOptions_">ToList&lt;T&gt;(DataExportOptions?)</a> read cells.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.DataImportOptions.html">DataImportOptions</a></dt>
+      <dd><p>How <a class="xref" href="Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_ImportData__1_System_Collections_Generic_IEnumerable___0__Egap_Spreadsheets_DataImportOptions_">ImportData&lt;T&gt;(IEnumerable&lt;T&gt;, DataImportOptions?)</a> and its overloads write data into cells.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.DataValidation.html">DataValidation</a></dt>
       <dd><p>A data validation rule: what its cells allow, the drop-down list and the messages Excel shows. Formulas are written
 without the leading <code>=</code>, in English, as in a cell's formula.</p>
@@ -228,6 +238,16 @@ as <code>_xlnm.Print_Area</code>.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.DefinedNameCollection.html">DefinedNameCollection</a></dt>
       <dd><p>A workbook's defined names. A name is unique among the workbook's names, or among one sheet's, case ignored.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.EditableRange.html">EditableRange</a></dt>
+      <dd><p>A range users may edit while its sheet is protected, with its own optional password.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.EditableRangeCollection.html">EditableRangeCollection</a></dt>
+      <dd><p>The ranges that stay editable on a protected sheet.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -336,6 +356,13 @@ the page breaks, the repeated titles and the page order give the pages; each dra
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetProtection.html">SheetProtection</a></dt>
+      <dd><p>A sheet's protection, as Excel's Protect Sheet sets it: whether it is on, what users may still do, the hash of the
+password that lifts it, and the ranges that stay editable. Locked cells (<a class="xref" href="Egap.Spreadsheets.CellProtection.html#Egap_Spreadsheets_CellProtection_Locked">Locked</a>, the default)
+cannot be changed while it is on, and the formulas of hidden cells (<a class="xref" href="Egap.Spreadsheets.CellProtection.html#Egap_Spreadsheets_CellProtection_Hidden">Hidden</a>) are not shown.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.SheetReader.html">SheetReader</a></dt>
       <dd><p>Reads a sheet's rows one at a time from an XLSX file or CSV text, without building a <a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a>: memory stays
 the same however many rows there are. An XLSX file's shared strings and styles are read first, as every cell may use
@@ -405,6 +432,12 @@ chunks work on them. <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html">WorkbookLoadOptions</a></dt>
       <dd><p>How a workbook is loaded.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.WorkbookProtection.html">WorkbookProtection</a></dt>
+      <dd><p>A workbook's protection, as Excel's Protect Workbook sets it: the structure (sheets cannot be added, removed, renamed,
+moved, hidden or shown) and, in older Excel versions, the windows, with the hash of the password that lifts it.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -593,6 +626,11 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.PrintPageOrder.html">PrintPageOrder</a></dt>
       <dd><p>The order in which a sheet too big for one page prints its pages.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.SheetActions.html">SheetActions</a></dt>
+      <dd><p>What a protected sheet still lets a user do, as Excel's Protect Sheet dialog lists it.</p>
 </dd>
     </dl>
     <dl class="jumplist">

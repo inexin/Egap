@@ -8987,6 +8987,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DataExportOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DataExportOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DataExportOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DataExportOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.CellRange.ToDataTable(Egap.Spreadsheets.DataExportOptions)\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Egap.Spreadsheets.CellRange.ToList%60%601(Egap.Spreadsheets.DataExportOptions)\" data-throw-if-not-resolved=\"false\"></xref> read cells.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.DataImportOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.DataImportOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.DataImportOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DataImportOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.Cell.ImportData%60%601(System.Collections.Generic.IEnumerable%7b%60%600%7d%2cEgap.Spreadsheets.DataImportOptions)\" data-throw-if-not-resolved=\"false\"></xref> and its overloads write data into cells.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.DataValidation.yml",
       "output": {
         ".html": {
@@ -9096,6 +9124,34 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.DrawingPosition",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.DrawingPosition.yml\" sourcestartlinenumber=\"1\">A place on a sheet: a cell's top-left corner and an offset from it in EMUs (914,400 an inch, 9,525 a pixel at 96 dpi).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.EditableRange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.EditableRange.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.EditableRange",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.EditableRange.yml\" sourcestartlinenumber=\"1\">A range users may edit while its sheet is protected, with its own optional password.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.EditableRangeCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.EditableRangeCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.EditableRangeCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.EditableRangeCollection.yml\" sourcestartlinenumber=\"1\">The ranges that stay editable on a protected sheet.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9309,6 +9365,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetActions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetActions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetActions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetActions.yml\" sourcestartlinenumber=\"1\">What a protected sheet still lets a user do, as Excel's Protect Sheet dialog lists it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.SheetColumn.yml",
       "output": {
         ".html": {
@@ -9432,6 +9502,20 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.SheetPrintOptions",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetPrintOptions.yml\" sourcestartlinenumber=\"1\">How sheets lay out on pages to print, export to PDF or render as images.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetProtection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetProtection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetProtection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetProtection.yml\" sourcestartlinenumber=\"1\">A sheet's protection, as Excel's Protect Sheet sets it: whether it is on, what users may still do, the hash of the\npassword that lifts it, and the ranges that stay editable. Locked cells (<xref href=\"Egap.Spreadsheets.CellProtection.Locked\" data-throw-if-not-resolved=\"false\"></xref>, the default)\ncannot be changed while it is on, and the formulas of hidden cells (<xref href=\"Egap.Spreadsheets.CellProtection.Hidden\" data-throw-if-not-resolved=\"false\"></xref>) are not shown.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9684,6 +9768,20 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.WorkbookLoadOptions",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorkbookLoadOptions.yml\" sourcestartlinenumber=\"1\">How a workbook is loaded.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.WorkbookProtection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.WorkbookProtection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.WorkbookProtection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorkbookProtection.yml\" sourcestartlinenumber=\"1\">A workbook's protection, as Excel's Protect Workbook sets it: the structure (sheets cannot be added, removed, renamed,\nmoved, hidden or shown) and, in older Excel versions, the windows, with the hash of the password that lifts it.</p>\n"
     },
     {
       "type": "ManagedReference",
