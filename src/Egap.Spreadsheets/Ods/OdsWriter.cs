@@ -67,9 +67,9 @@ internal sealed class OdsWriter
 
     public static void Write(Workbook book, Stream stream, WorkbookFormat format, string? password)
     {
-        if (book.Worksheets.Count == 0)
+        if (book.Worksheets.Count == 0 && (book.Source is null || book.Source.KeptSheets.Count == 0))
         {
-            throw new InvalidOperationException("The workbook has no worksheets.");
+            throw new InvalidOperationException("A workbook file needs at least one sheet; add one before saving.");
         }
 
         OdsWriter writer = new(book);
@@ -110,6 +110,13 @@ internal sealed class OdsWriter
     /// <summary>Finds the styles the tables use, so that the automatic styles can come before the body.</summary>
     private void Prepare()
     {
+        foreach (KeptSheet kept in book.Source?.KeptSheets ?? [])
+        {
+            TableStyle(Hidden(kept), null);
+            ColumnStyle(DefaultWidth);
+            RowStyle(double.NaN);
+        }
+
         foreach (Worksheet sheet in book.Worksheets)
         {
             TableStyle(sheet);
@@ -227,10 +234,12 @@ internal sealed class OdsWriter
         return name;
     }
 
-    private string TableStyle(Worksheet sheet)
+    private string TableStyle(Worksheet sheet) =>
+        TableStyle(sheet.Visibility != SheetVisibility.Visible, sheet.TabColor is { } color ? Rgb(colors.Resolve(color, default)) : null);
+
+    private string TableStyle(bool hidden, uint? tab)
     {
-        uint? tab = sheet.TabColor is { } color ? Rgb(colors.Resolve(color, default)) : null;
-        (bool, uint?) key = (sheet.Visibility != SheetVisibility.Visible, tab);
+        (bool, uint?) key = (hidden, tab);
         if (!tableStyles.TryGetValue(key, out string? name))
         {
             name = tableStyles[key] = "ta" + (tableStyles.Count + 1).ToString(CultureInfo.InvariantCulture);
@@ -652,9 +661,13 @@ internal sealed class OdsWriter
             xml.WriteEndElement();
         }
 
+        // Chart sheets and the other sheets the model keeps but has no cells for become empty tables in their place, so the
+        // tab order and the sheet names that formulas and SHEET() see stay the same.
+        KeptTables(xml, null);
         foreach (Worksheet sheet in book.Worksheets)
         {
             Table(xml, sheet);
+            KeptTables(xml, sheet);
         }
 
         for (int i = 0; i < book.ExternalBooks.Count; i++)
@@ -689,6 +702,30 @@ internal sealed class OdsWriter
         Names(xml, sheet);
         xml.WriteEndElement();
     }
+
+    private void KeptTables(XmlWriter xml, Worksheet? after)
+    {
+        foreach (KeptSheet kept in book.Source?.KeptSheets ?? [])
+        {
+            if (kept.After == after && (string?)kept.Element.Attribute("name") is { Length: > 0 } name)
+            {
+                xml.WriteStartElement("table", "table", TableNs.NamespaceName);
+                xml.WriteAttributeString("table", "name", TableNs.NamespaceName, name);
+                xml.WriteAttributeString("table", "style-name", TableNs.NamespaceName, TableStyle(Hidden(kept), null));
+                xml.WriteStartElement("table", "table-column", TableNs.NamespaceName);
+                xml.WriteAttributeString("table", "style-name", TableNs.NamespaceName, ColumnStyle(DefaultWidth));
+                xml.WriteEndElement();
+                xml.WriteStartElement("table", "table-row", TableNs.NamespaceName);
+                xml.WriteAttributeString("table", "style-name", TableNs.NamespaceName, RowStyle(double.NaN));
+                xml.WriteStartElement("table", "table-cell", TableNs.NamespaceName);
+                xml.WriteEndElement();
+                xml.WriteEndElement();
+                xml.WriteEndElement();
+            }
+        }
+    }
+
+    private static bool Hidden(KeptSheet kept) => (string?)kept.Element.Attribute("state") is "hidden" or "veryHidden";
 
     /// <summary>A linked file's sheet, as office suites keep it for the formulas that read it: its values, under the file's name.</summary>
     private void LinkedTable(XmlWriter xml, string file, Worksheet sheet)

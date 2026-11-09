@@ -384,6 +384,14 @@ public sealed class OdsWriterTests
         Assert.Equal("ab", Workbook.Load(new MemoryStream(stream.ToArray())).Worksheets[0]["A1"].Value);
     }
 
+    [Fact]
+    public void ChartSheetsBecomeEmptyTablesInTheirPlace()
+    {
+        Workbook book = Workbook.Load(Path.Combine(AppContext.BaseDirectory, "Oracle", "charts.xlsx"));
+        Assert.Equal(["ChartPage", "Data", "Charts"], RoundTrip(book, WorkbookFormat.Ods).Worksheets.Select(s => s.Name));
+        Assert.Equal(["ChartPage", "Data", "Charts"], RoundTrip(book, WorkbookFormat.Fods).Worksheets.Select(s => s.Name));
+    }
+
     private static Workbook RoundTrip(Workbook book, WorkbookFormat format)
     {
         using MemoryStream stream = new();
