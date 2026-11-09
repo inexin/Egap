@@ -1,0 +1,20 @@
+egap sheet protected	True
+egap objects protected	True
+egap allow sorting	True
+egap allow formatting columns	True
+egap allow formatting cells	False
+egap allow inserting rows	False
+egap C2 locked	False
+egap edit range Inputs	B2:B5
+egap edit range Open	D2:D3
+egap book structure	True
+egap sheet wrong password	refused
+egap sheet right password	unlocked
+egap book wrong password	refused
+egap book right password	unlocked
+legacy sheet protected	True
+legacy sheet wrong password	refused
+legacy sheet right password	unlocked
+legacy book structure	True
+legacy book wrong password	refused
+legacy book right password	unlocked

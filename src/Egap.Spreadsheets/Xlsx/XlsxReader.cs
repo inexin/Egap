@@ -33,6 +33,7 @@ internal static class XlsxReader
         book.Format = format;
         book.Date1904 = XlsxNames.Bool((string?)root.Element(ns + "workbookPr")?.Attribute("date1904"), false);
         ReadCalculation(book.Calculation, root.Element(ns + "calcPr"));
+        XlsxProtection.ReadWorkbook(book.Protection, root.Element(ns + "workbookProtection"));
 
         XlsxStyles.Read(book.Styles, package.GetRelatedPart(workbookPart.Relationships, XlsxNames.StylesRelationship)?.LoadXml());
         if (package.GetRelatedPart(workbookPart.Relationships, XlsxNames.SharedStringsRelationship) is { } strings)
@@ -377,6 +378,12 @@ internal static class XlsxReader
             case "autoFilter":
                 sheet.HasFilterCriteria = element.Element(ns + "filterColumn") is not null;
                 return false;
+            case "sheetProtection":
+                XlsxProtection.ReadSheet(sheet.Protection, element);
+                return true;
+            case "protectedRanges":
+                XlsxProtection.ReadRanges(sheet.Protection, element);
+                return true;
             case "headerFooter":
                 page.SourceHeaderFooter = element;
                 page.Header = (string?)element.Element(ns + "oddHeader");

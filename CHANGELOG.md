@@ -156,6 +156,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- `Cell.ImportData` writes a list of objects, a `DataTable` or an `IDataReader` into cells, with a header row, number
+  formats for dates and times, and an optional Excel table; `CellRange.ToDataTable` and `CellRange.ToList<T>` read a
+  range back as a table with typed columns or as objects and records, matched by header name.
+- `Worksheet.Protection` and `Workbook.Protection` protect sheets and workbooks as Excel does: `Protect` and `Unprotect`
+  with a password, the actions a protected sheet allows (`SheetActions`), ranges that stay editable with their own
+  passwords, and a locked workbook structure. Passwords are hashed with SHA-512, a random salt and 100,000 spins, as
+  Excel hashes them, and the 16-bit hashes of older files are checked too. Excel opens Egap's protected files
+  protected and unlocks them with the password, and Egap unlocks Excel's.
 - `ConditionalFormats.Evaluate` works out conditional formatting as Excel shows it: for each cell the rules that apply,
   in priority order with `StopIfTrue`, the style they give it, colour scale fills, data bar lengths, icon set icons and
   whether the value shows. Every rule type is evaluated: comparisons, formulas, top and bottom, above and below the

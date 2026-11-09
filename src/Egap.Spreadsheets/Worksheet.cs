@@ -89,6 +89,9 @@ public sealed partial class Worksheet
     /// <summary>The conditional formatting.</summary>
     public ConditionalFormatCollection ConditionalFormats { get; }
 
+    /// <summary>The sheet's protection: whether it is on, what users may still do, its password and the ranges that stay editable.</summary>
+    public SheetProtection Protection => field ??= new(this);
+
     /// <summary>The Excel tables on the sheet.</summary>
     public SheetTableCollection Tables { get; }
 

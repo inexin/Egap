@@ -686,6 +686,43 @@ culture's list separator unless you name one (a semicolon where the comma is the
 `Workbook.Load` and `Workbook.Save` take `.csv`, `.tsv` and `.tab` paths too, with `WorkbookLoadOptions.Csv` and
 `WorkbookSaveOptions.Csv` for the options; saving writes the first visible sheet.
 
+## Importing and exporting data
+
+`Cell.ImportData` writes .NET data into a sheet from a cell down and to the right: a list of objects (one column per
+public property, in declaration order), a `DataTable`, or the rows an `IDataReader` has left. The first row holds the
+property, column or field names unless `DataImportOptions.Header` is false, and `TableName` makes an Excel table over
+the cells written. `CellRange.ToDataTable` and `CellRange.ToList<T>` read a range back.
+
+```csharp
+using System.Data;
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+List<Shipment> shipments = [new("Oslo", 12, new DateTime(2024, 3, 15)), new("Bergen", 4, new DateTime(2024, 3, 16))];
+CellRange written = sheet["A1"].ImportData(shipments, new DataImportOptions { TableName = "Shipments" });
+
+DataTable table = written.ToDataTable();                // City: string, Boxes: double, Sent: DateTime
+List<Shipment> back = sheet.Range("A:C").ToList<Shipment>();
+
+public sealed record Shipment(string City, int Boxes, DateTime Sent);
+```
+
+Numbers become numbers, `bool` becomes `TRUE` or `FALSE`, and strings, characters, enums and GUIDs become text. Dates
+(`DateTime`, `DateOnly` and the clock time of a `DateTimeOffset`) become serial numbers with `DateFormat` or, with a
+time of day, `DateTimeFormat`; `TimeSpan` and `TimeOnly` become fractions of a day with `TimeFormat`, `[h]:mm:ss` by
+default, which also shows more than 24 hours. Null and `DBNull` leave the cell empty, NaN and infinity become `#NUM!`,
+and a date before the date system's first day becomes ISO text, as Excel keeps such dates. `Columns` picks columns by
+name and sets their order.
+
+Reading gives each table column the type its cells share: `double` for numbers, `DateTime` for numbers with a date
+format, `TimeSpan` for a time-only format, `bool`, or `string` for text, shown as the cell shows it. A column that mixes
+them is `object`. `ToList<T>` fills each property (or a record's constructor parameter) from the column whose header
+has its name, ignoring case, spaces, hyphens and underscores; without a header, columns fill properties in order. Text
+converts in the workbook's culture, a whole-number property takes only whole numbers, and a value that does not
+convert throws a `FormatException` naming the cell. Empty rows are left out unless `SkipEmptyRows` is false, and a
+whole-column range reads only as far as the sheet holds anything.
+
 ## Spreadsheets as documents
 
 `Document.Load` reads XLSX and CSV, and `Workbook.FromTables` puts the tables of a document or a PDF on sheets: see
@@ -771,6 +808,36 @@ thresholds from the rule's minimum, maximum, number, percent, percentile and for
 items match a value's text with case, its cells' values without; as in Excel, a list given by a name whose cells include
 a blank one, or whose formula gives an error, takes any value while blanks are ignored. Rules that Excel keeps only in
 the sheet's extension list are written back but not evaluated.
+
+## Protection
+
+`sheet.Protection` protects a sheet as Excel's Protect Sheet does: locked cells (`CellProtection.Locked`, the default)
+cannot be changed, the formulas of hidden cells are not shown, and `SheetActions` says what users may still do.
+`EditableRanges` lists ranges that stay editable, each with an optional password of its own, as Excel's Allow Edit
+Ranges does. `book.Protection` locks the workbook's structure, so sheets cannot be added, removed, renamed, moved,
+hidden or shown.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Create();
+Worksheet sheet = book.Worksheets[0];
+sheet.Range("B2:B10").UpdateStyle(s => s with { Protection = s.Protection with { Locked = false } });
+sheet.Protection.EditableRanges.Add("Prices", "D2:D10", "prices-password");
+sheet.Protection.Protect("sheet-password", SheetActions.Default | SheetActions.Sort | SheetActions.AutoFilter);
+book.Protection.Protect("book-password");
+book.Save("protected.xlsx");
+
+Workbook loaded = Workbook.Load("protected.xlsx");
+bool right = loaded.Worksheets[0].Protection.Verify("sheet-password");     // true
+bool open = loaded.Worksheets[0].Protection.Unprotect("wrong");            // false: still protected
+```
+
+Passwords are stored as Excel stores them: a SHA-512 hash of the password with a random 16-byte salt, hashed again
+100,000 times. `Verify` and `Unprotect` also check the SHA-1 and other hashes Excel has written, and the 16-bit hashes
+of files from Excel 2007 and older. Egap does not enforce protection, as Excel does: it reads, writes and checks it, and
+`CanEdit` says whether a user could change a cell without a password. Protection is not encryption; anyone with the
+file can read every cell.
 
 ## Notes, hyperlinks and pictures
 

@@ -1178,3 +1178,83 @@ static Egap.Spreadsheets.ConditionalIcon.operator ==(Egap.Spreadsheets.Condition
 ~override Egap.Spreadsheets.ConditionalDataBar.ToString() -> string
 ~override Egap.Spreadsheets.ConditionalIcon.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.ConditionalIcon.ToString() -> string
+Egap.Spreadsheets.Cell.ImportData(System.Data.DataTable! table, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Cell.ImportData(System.Data.IDataReader! reader, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Cell.ImportData<T>(System.Collections.Generic.IEnumerable<T>! items, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.CellRange.ToDataTable(Egap.Spreadsheets.DataExportOptions? options = null) -> System.Data.DataTable!
+Egap.Spreadsheets.CellRange.ToList<T>(Egap.Spreadsheets.DataExportOptions? options = null) -> System.Collections.Generic.List<T>!
+Egap.Spreadsheets.DataExportOptions
+Egap.Spreadsheets.DataExportOptions.DataExportOptions() -> void
+Egap.Spreadsheets.DataExportOptions.Header.get -> bool
+Egap.Spreadsheets.DataExportOptions.Header.init -> void
+Egap.Spreadsheets.DataExportOptions.SkipEmptyRows.get -> bool
+Egap.Spreadsheets.DataExportOptions.SkipEmptyRows.init -> void
+Egap.Spreadsheets.DataImportOptions
+Egap.Spreadsheets.DataImportOptions.Columns.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Egap.Spreadsheets.DataImportOptions.Columns.init -> void
+Egap.Spreadsheets.DataImportOptions.DataImportOptions() -> void
+Egap.Spreadsheets.DataImportOptions.DateFormat.get -> string!
+Egap.Spreadsheets.DataImportOptions.DateFormat.init -> void
+Egap.Spreadsheets.DataImportOptions.DateTimeFormat.get -> string!
+Egap.Spreadsheets.DataImportOptions.DateTimeFormat.init -> void
+Egap.Spreadsheets.DataImportOptions.Header.get -> bool
+Egap.Spreadsheets.DataImportOptions.Header.init -> void
+Egap.Spreadsheets.DataImportOptions.TableName.get -> string?
+Egap.Spreadsheets.DataImportOptions.TableName.init -> void
+Egap.Spreadsheets.DataImportOptions.TimeFormat.get -> string!
+Egap.Spreadsheets.DataImportOptions.TimeFormat.init -> void
+Egap.Spreadsheets.EditableRange
+Egap.Spreadsheets.EditableRange.HasPassword.get -> bool
+Egap.Spreadsheets.EditableRange.Name.get -> string!
+Egap.Spreadsheets.EditableRange.Name.set -> void
+Egap.Spreadsheets.EditableRange.Ranges.get -> System.Collections.Generic.List<Egap.Spreadsheets.RangeAddress>!
+Egap.Spreadsheets.EditableRange.SetPassword(string? password) -> void
+Egap.Spreadsheets.EditableRange.Verify(string? password) -> bool
+Egap.Spreadsheets.EditableRangeCollection
+Egap.Spreadsheets.EditableRangeCollection.Add(string! name, Egap.Spreadsheets.RangeAddress range, string? password = null) -> Egap.Spreadsheets.EditableRange!
+Egap.Spreadsheets.EditableRangeCollection.Add(string! name, string! range, string? password = null) -> Egap.Spreadsheets.EditableRange!
+Egap.Spreadsheets.EditableRangeCollection.Clear() -> void
+Egap.Spreadsheets.EditableRangeCollection.Count.get -> int
+Egap.Spreadsheets.EditableRangeCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.EditableRange!>!
+Egap.Spreadsheets.EditableRangeCollection.Remove(Egap.Spreadsheets.EditableRange! range) -> bool
+Egap.Spreadsheets.EditableRangeCollection.this[int index].get -> Egap.Spreadsheets.EditableRange!
+Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.AutoFilter = 2048 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.Default = Egap.Spreadsheets.SheetActions.SelectLockedCells | Egap.Spreadsheets.SheetActions.SelectUnlockedCells -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.DeleteColumns = 256 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.DeleteRows = 512 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.EditObjects = 8192 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.EditScenarios = 16384 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.FormatCells = 4 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.FormatColumns = 8 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.FormatRows = 16 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.InsertColumns = 32 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.InsertHyperlinks = 128 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.InsertRows = 64 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.None = 0 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.PivotTables = 4096 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.SelectLockedCells = 1 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.SelectUnlockedCells = 2 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.Sort = 1024 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetProtection
+Egap.Spreadsheets.SheetProtection.AllowedActions.get -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetProtection.AllowedActions.set -> void
+Egap.Spreadsheets.SheetProtection.CanEdit(Egap.Spreadsheets.CellAddress cell) -> bool
+Egap.Spreadsheets.SheetProtection.EditableRanges.get -> Egap.Spreadsheets.EditableRangeCollection!
+Egap.Spreadsheets.SheetProtection.HasPassword.get -> bool
+Egap.Spreadsheets.SheetProtection.IsProtected.get -> bool
+Egap.Spreadsheets.SheetProtection.Protect(string? password = null, Egap.Spreadsheets.SheetActions allowed = Egap.Spreadsheets.SheetActions.Default) -> void
+Egap.Spreadsheets.SheetProtection.Unprotect(string? password = null) -> bool
+Egap.Spreadsheets.SheetProtection.Verify(string? password) -> bool
+Egap.Spreadsheets.Workbook.Protection.get -> Egap.Spreadsheets.WorkbookProtection!
+Egap.Spreadsheets.WorkbookProtection
+Egap.Spreadsheets.WorkbookProtection.HasPassword.get -> bool
+Egap.Spreadsheets.WorkbookProtection.IsProtected.get -> bool
+Egap.Spreadsheets.WorkbookProtection.LockStructure.get -> bool
+Egap.Spreadsheets.WorkbookProtection.LockStructure.set -> void
+Egap.Spreadsheets.WorkbookProtection.LockWindows.get -> bool
+Egap.Spreadsheets.WorkbookProtection.LockWindows.set -> void
+Egap.Spreadsheets.WorkbookProtection.Protect(string? password = null, bool structure = true, bool windows = false) -> void
+Egap.Spreadsheets.WorkbookProtection.Unprotect(string? password = null) -> bool
+Egap.Spreadsheets.WorkbookProtection.Verify(string? password) -> bool
+Egap.Spreadsheets.Worksheet.Protection.get -> Egap.Spreadsheets.SheetProtection!

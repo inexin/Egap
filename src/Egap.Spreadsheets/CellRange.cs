@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Egap.Spreadsheets;
 
@@ -433,4 +435,43 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
             throw new InvalidOperationException($"The range {Address} has {Address.CellCount:N0} cells, more than an array of values takes.");
         }
     }
+
+    /// <summary>
+    /// Reads the range into a new table: the first row names the columns, and each further row that holds something is a row
+    /// of the table. A whole-column range reads only as far down as the sheet holds anything.
+    /// </summary>
+    /// <remarks>
+    /// Each column takes the type its cells share: <see cref="double"/> for numbers, <see cref="DateTime"/> for numbers with a
+    /// date format, <see cref="TimeSpan"/> for numbers with a time-only format, <see cref="bool"/> for TRUE and FALSE, and
+    /// <see cref="string"/> for text and errors, shown as the cells show them. A column that mixes them is <see cref="object"/>
+    /// and holds each cell's own type. Empty cells are <see cref="DBNull"/>.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// DataTable table = sheet.Range("A1:D100").ToDataTable();
+    /// </code>
+    /// </example>
+    public DataTable ToDataTable(DataExportOptions? options = null) => DataTransfer.ToDataTable(this, options);
+
+    /// <summary>
+    /// Reads the range's rows as objects: each header in the first row picks the property, or the constructor parameter of a
+    /// record, of the same name, ignoring case, spaces, hyphens and underscores. Columns with no matching property are left
+    /// alone, and properties with no column keep their default.
+    /// </summary>
+    /// <remarks>
+    /// Numbers, text in the workbook's culture, and TRUE and FALSE convert to the property's type; date serial numbers to
+    /// <see cref="DateTime"/>, <see cref="DateOnly"/> or <see cref="DateTimeOffset"/>, and day fractions to
+    /// <see cref="TimeSpan"/> or <see cref="TimeOnly"/>. A string property takes the cell's text as shown. An empty cell gives
+    /// null or the default. A whole-number property takes only whole numbers. A list of a plain type, such as
+    /// <see cref="string"/> or <see cref="double"/>, reads the first column.
+    /// </remarks>
+    /// <exception cref="FormatException">A cell's value cannot be its property's type; the message names the cell.</exception>
+    /// <exception cref="InvalidOperationException">The type has neither a constructor without parameters nor one whose parameters are named as its properties.</exception>
+    /// <example>
+    /// <code>
+    /// List&lt;Order&gt; orders = sheet.Range("A1:D100").ToList&lt;Order&gt;();
+    /// </code>
+    /// </example>
+    public List<T> ToList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicConstructors)] T>(DataExportOptions? options = null) =>
+        DataTransfer.ToList<T>(this, options);
 }

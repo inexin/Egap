@@ -397,6 +397,14 @@ public sealed partial class Worksheet
             }
         }
 
+        foreach (EditableRange range in Protection.EditableRanges.ToList())
+        {
+            if (!MoveAll(range.Ranges, edit))
+            {
+                Protection.EditableRanges.Remove(range);
+            }
+        }
+
         PageBreakCollection breaks = edit.Rows ? PageSetup.RowBreaks : PageSetup.ColumnBreaks;
         List<int> old = [.. breaks];
         breaks.Clear();
