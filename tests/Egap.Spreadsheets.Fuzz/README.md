@@ -18,6 +18,8 @@ Fuzzing harness for Egap.Spreadsheets' parsers, run with SharpFuzz and AFL++ in 
 | `shift` | Any bytes read as a formula, its references moved for rows and columns put in and taken out; what parses must parse after each edit, and a formula naming no sheet must not change for an edit of another sheet | `tests/fuzz-seeds/formula/*` |
 | `copies` | Any bytes read as an XLSX package: ranges of each sheet copied and moved, on the sheet and to another, then calculated, saved and loaded again; may throw only `DocumentException`, or `InvalidOperationException` for a paste Excel refuses | `tests/fuzz-seeds/xlsx/*` |
 | `move` | Any bytes read as a formula, its references moved for cells cut and pasted; what parses must parse after each move, and a move of cells it does not name must leave it as it was | `tests/fuzz-seeds/formula/*` |
+| `sorts` | Any bytes read as an XLSX package: each sheet's used range and part of it sorted, its filter and its tables' filters applied and cleared, its cells found and replaced, then calculated, saved and loaded again; may throw only `DocumentException`, or `InvalidOperationException` for a sort or replace Excel refuses | `tests/fuzz-seeds/xlsx/*` |
+| `find` | Any bytes read as text to find, with Excel's wildcards: found in formulas, values and notes, whole and in part, and replaced; may throw only `ArgumentException` for empty text, or `InvalidOperationException` for a replace that makes a formula Excel refuses | `tests/fuzz-seeds/formula/*` |
 
 Daytime runs are 10 minutes per target at most. With the managed mutator:
 

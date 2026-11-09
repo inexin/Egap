@@ -1079,3 +1079,58 @@ Egap.Spreadsheets.CellRange.AutoFitColumns() -> void
 Egap.Spreadsheets.CellRange.AutoFitRows() -> void
 Egap.Spreadsheets.SheetColumn.AutoFit() -> double?
 Egap.Spreadsheets.SheetRow.AutoFit() -> double
+Egap.Spreadsheets.SortField.Index.get -> int
+Egap.Spreadsheets.SortField.Descending.get -> bool
+Egap.Spreadsheets.SortField.Descending.init -> void
+Egap.Spreadsheets.SortField.Index.init -> void
+Egap.Spreadsheets.SortField
+Egap.Spreadsheets.SortField.SortField() -> void
+~override Egap.Spreadsheets.SortField.ToString() -> string
+static Egap.Spreadsheets.SortField.operator !=(Egap.Spreadsheets.SortField left, Egap.Spreadsheets.SortField right) -> bool
+Egap.Spreadsheets.SortOptions
+static Egap.Spreadsheets.SortField.operator ==(Egap.Spreadsheets.SortField left, Egap.Spreadsheets.SortField right) -> bool
+override Egap.Spreadsheets.SortField.GetHashCode() -> int
+Egap.Spreadsheets.SortOptions.SortOptions() -> void
+~override Egap.Spreadsheets.SortField.Equals(object obj) -> bool
+Egap.Spreadsheets.SortField.Equals(Egap.Spreadsheets.SortField other) -> bool
+Egap.Spreadsheets.SortField.Deconstruct(out int Index, out bool Descending) -> void
+Egap.Spreadsheets.SortOrientation
+Egap.Spreadsheets.SortOrientation.Columns = 1 -> Egap.Spreadsheets.SortOrientation
+Egap.Spreadsheets.SortOrientation.Rows = 0 -> Egap.Spreadsheets.SortOrientation
+Egap.Spreadsheets.CellRange.Sort(params Egap.Spreadsheets.SortField[]! keys) -> void
+Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions! options, params Egap.Spreadsheets.SortField[]! keys) -> void
+Egap.Spreadsheets.SortField.SortField(int Index, bool Descending = false) -> void
+Egap.Spreadsheets.SortOptions.MatchCase.init -> void
+Egap.Spreadsheets.SortOptions.MatchCase.get -> bool
+Egap.Spreadsheets.SortOptions.Orientation.get -> Egap.Spreadsheets.SortOrientation
+Egap.Spreadsheets.SortOptions.HasHeader.init -> void
+Egap.Spreadsheets.SortOptions.HasHeader.get -> bool
+Egap.Spreadsheets.SortOptions.Orientation.init -> void
+Egap.Spreadsheets.AutoFilter
+Egap.Spreadsheets.AutoFilter.Range.get -> Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.AutoFilter.HasCriteria.get -> bool
+Egap.Spreadsheets.AutoFilter.Apply() -> int
+Egap.Spreadsheets.AutoFilter.ShowAll() -> void
+Egap.Spreadsheets.SheetTable.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
+Egap.Spreadsheets.Worksheet.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
+Egap.Spreadsheets.FindLookIn.Values = 1 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindLookIn.Notes = 2 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindLookIn.Formulas = 0 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindOrder.ByRows = 0 -> Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOrder.ByColumns = 1 -> Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOptions
+Egap.Spreadsheets.FindOptions.FindOptions() -> void
+Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.CellRange.Find(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
+Egap.Spreadsheets.CellRange.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int
+Egap.Spreadsheets.FindOptions.MatchCase.get -> bool
+Egap.Spreadsheets.FindOptions.MatchCase.init -> void
+Egap.Spreadsheets.FindOptions.MatchEntireCell.get -> bool
+Egap.Spreadsheets.FindOptions.LookIn.get -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindOptions.MatchEntireCell.init -> void
+Egap.Spreadsheets.FindOptions.Order.init -> void
+Egap.Spreadsheets.FindOptions.Order.get -> Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOptions.LookIn.init -> void
+Egap.Spreadsheets.Worksheet.Find(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
+Egap.Spreadsheets.Worksheet.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int

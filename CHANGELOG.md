@@ -160,6 +160,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   and `CellRange.AutoFitRows()` fit rows to their fonts, wrapped lines and turned text, as Excel's AutoFit does. Text is
   measured with the whole-pixel widths Excel gives the characters of the fonts sheets use most; General numbers take
   the widest digit per digit, as in Excel.
+- `CellRange.Sort` sorts rows or columns by key columns as Excel's Sort does: Excel's order of numbers, text, logicals,
+  errors and empty cells, Windows' word sort for text, and rows that move as copies, with their notes and links, and
+  references that move as Excel's sort moves them. Hidden rows stay put.
+- `Worksheet.AutoFilter` and `SheetTable.AutoFilter` give a file's filter; `Apply` hides the rows that fail its value
+  lists, custom criteria, top and bottom items, averages and date periods, as Excel's Reapply does, and `ShowAll` clears it.
+- `Worksheet.Find`, `Worksheet.Replace`, `CellRange.Find` and `CellRange.Replace` find and replace as Excel does, with its
+  wildcards and options, in formulas, shown values or notes.
 - `CellRange.CopyTo` and `MoveTo` paste a range at a cell of the same workbook, as Excel's Copy, Cut and Paste do:
   values, formulas, styles, merges, notes, hyperlinks, data validation and conditional formats. A copy moves relative
   references as filling does; a move keeps its formulas' text, and every reference in the workbook to the moved cells
