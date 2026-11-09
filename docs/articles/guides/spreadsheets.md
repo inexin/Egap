@@ -2,7 +2,7 @@
 
 Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas,
 cell styles, rows and columns, names and print settings, as Excel keeps them. It loads and saves Excel's XLSX, XLSM, XLTX and
-XLTM files. The types are in `Egap.Spreadsheets`.
+XLTM files, and loads OpenDocument spreadsheets (ODS). The types are in `Egap.Spreadsheets`.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -50,6 +50,29 @@ What Egap cannot keep up to date is left for Excel: when cells changed and the w
 to calculate on open, and the calculation chain is left out for Excel to build again. A cell that shared the formula of a
 cell you changed gets the formula as its own, as in Excel. Saving a workbook with macros as `.xlsx` or `.xltx` leaves the macros
 out, as Excel does.
+
+### OpenDocument spreadsheets
+
+`Workbook.Load` also reads OpenDocument spreadsheets, as LibreOffice Calc and other office suites save them: ODS, OTS
+templates and flat FODS files, from a path or a stream. The kind is told from the file's first bytes, not its extension.
+Formulas come in OpenFormula, the ODF formula language, and are translated to Excel's: `[.A1:.B2]` becomes `A1:B2`,
+`[$'My sheet'.A1]` becomes `'My sheet'!A1`, semicolons between arguments become commas, and functions take Excel's names.
+A workbook read from ODS saves as XLSX.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("budget.ods");
+Worksheet sheet = book.Worksheets[0];
+string? formula = sheet["B10"].Formula;              // "SUM(B2:B9)", as Excel writes it
+book.Save("budget.xlsx");
+```
+
+Cell values of every type, formulas with their last results, array formulas, merged cells, cell styles and number formats,
+column widths, row heights, hidden and grouped rows and columns, hidden sheets and tab colours, named ranges and
+expressions, and print ranges are read. A reference to another file becomes `#REF!`. Charts, pictures, notes, conditional
+formats, data validation and sheet protection are not read yet; ODF hashes its passwords differently from Excel, so a
+protected ODS sheet loads unprotected.
 
 `Workbook.Format` is the kind of file a workbook came from. `WorkbookLoadOptions.Limits` bounds what a file may hold (part
 count, part and total size, compression ratio, XML depth) so a hostile file cannot use up memory; a file that goes past a

@@ -17,6 +17,7 @@ namespace Egap.Documents.Odf;
 internal sealed class OdfPackage
 {
     private readonly Dictionary<string, byte[]> files = new(StringComparer.Ordinal);
+    private bool spreadsheet;
 
     private OdfPackage()
     {
@@ -55,14 +56,17 @@ internal sealed class OdfPackage
     /// <summary>Whether the package was encrypted.</summary>
     public bool WasEncrypted { get; private set; }
 
-    /// <summary>Reads an ODT, OTT or FODT file, decrypting an encrypted one with <paramref name="password"/> or the passwords <paramref name="callback"/> gives.</summary>
-    /// <exception cref="DocumentException">Not an OpenDocument text file.</exception>
+    /// <summary>
+    /// Reads an ODT, OTT or FODT file, or with <paramref name="spreadsheet"/> an ODS, OTS or FODS file, decrypting an
+    /// encrypted one with <paramref name="password"/> or the passwords <paramref name="callback"/> gives.
+    /// </summary>
+    /// <exception cref="DocumentException">Not an OpenDocument file of the kind asked for.</exception>
     /// <exception cref="DocumentPasswordException">Encrypted, and no password or no right one was given.</exception>
     /// <exception cref="DocumentLimitException">Past a limit.</exception>
-    public static OdfPackage Read(byte[] bytes, DocumentLimits limits, string? password = null, Func<int, string?>? callback = null)
+    public static OdfPackage Read(byte[] bytes, DocumentLimits limits, string? password = null, Func<int, string?>? callback = null, bool spreadsheet = false)
     {
         ArgumentNullException.ThrowIfNull(bytes);
-        OdfPackage package = new();
+        OdfPackage package = new() { spreadsheet = spreadsheet };
         if (bytes is [0x50, 0x4B, 0x03, 0x04, ..])
         {
             package.ReadZip(bytes, limits, password, callback, inner: false);
@@ -98,7 +102,12 @@ internal sealed class OdfPackage
     }
 
     /// <summary>Whether the bytes start a flat ODF text document: XML whose root is <c>office:document</c> of a text type.</summary>
-    public static bool IsFlatText(ReadOnlySpan<byte> head)
+    public static bool IsFlatText(ReadOnlySpan<byte> head) => IsFlatOf(head, "\"application/vnd.oasis.opendocument.text"u8);
+
+    /// <summary>Whether the bytes start a flat ODF spreadsheet: XML whose root is <c>office:document</c> of a spreadsheet type.</summary>
+    public static bool IsFlatSpreadsheet(ReadOnlySpan<byte> head) => IsFlatOf(head, "\"application/vnd.oasis.opendocument.spreadsheet"u8);
+
+    private static bool IsFlatOf(ReadOnlySpan<byte> head, ReadOnlySpan<byte> mediaType)
     {
         if (head is [0xEF, 0xBB, 0xBF, ..])
         {
@@ -108,7 +117,7 @@ internal sealed class OdfPackage
         head = head.TrimStart(" \t\r\n"u8);
         return head.StartsWith("<"u8) && head.IndexOf("office:document"u8) >= 0
             && head.IndexOf("urn:oasis:names:tc:opendocument:xmlns:office:1.0"u8) >= 0
-            && head.IndexOf("\"application/vnd.oasis.opendocument.text"u8) >= 0;
+            && head.IndexOf(mediaType) >= 0;
     }
 
     /// <summary>The file at <paramref name="path"/> in the package (relative to its root, "./" and a leading "/" allowed), or null.</summary>
@@ -254,11 +263,11 @@ internal sealed class OdfPackage
             MediaType = root;
         }
 
-        if (!IsText(MediaType))
+        if (!Accepts(MediaType))
         {
             throw new DocumentException(MediaType is null
                 ? "The file is not an OpenDocument package: it has no mimetype."
-                : $"The file is an OpenDocument package of type {MediaType}, not a text document.");
+                : $"The file is an OpenDocument package of type {MediaType}, not a {Kind}.");
         }
 
         Content = GetXml("content.xml", limits) ?? throw new DocumentException("The OpenDocument package has no content.xml.");
@@ -307,9 +316,9 @@ internal sealed class OdfPackage
         }
 
         MediaType = root.Attr(OfficeNs, "mimetype");
-        if (!IsText(MediaType))
+        if (!Accepts(MediaType))
         {
-            throw new DocumentException($"The flat OpenDocument file is of type {MediaType ?? "(none)"}, not a text document.");
+            throw new DocumentException($"The flat OpenDocument file is of type {MediaType ?? "(none)"}, not a {Kind}.");
         }
 
         IsFlat = true;
@@ -319,6 +328,10 @@ internal sealed class OdfPackage
         Settings = root;
         Version = root.Attr(OfficeNs, "version");
     }
+
+    private bool Accepts(string? mediaType) => spreadsheet ? IsSpreadsheet(mediaType) : IsText(mediaType);
+
+    private string Kind => spreadsheet ? "spreadsheet" : "text document";
 
     private static XElement LoadXml(byte[] data, string name, DocumentLimits limits)
     {

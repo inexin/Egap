@@ -22,6 +22,7 @@ Fuzzing harness for Egap.Spreadsheets' parsers, run with SharpFuzz and AFL++ in 
 | `autofit` | Any bytes read as an XLSX package: each sheet's used range fitted, columns and rows, and every row it has fitted again, then saved and loaded again; every width must stay in 0 to 255 and every height in 0 to 409.5, and only `DocumentException` may be thrown | `tests/fuzz-seeds/xlsx/*` |
 | `find` | Any bytes read as text to find, with Excel's wildcards: found in formulas, values and notes, whole and in part, and replaced; may throw only `ArgumentException` for empty text, or `InvalidOperationException` for a replace that makes a formula Excel refuses | `tests/fuzz-seeds/formula/*` |
 | `conditional` | Any bytes read as an XLSX package, or else as text used for the formulas of conditional formatting and data validation rules of every kind on a small sheet: each cell's conditional format, validity and list items worked out, the invalid cells found and two pages printed; a package may throw only `DocumentException` | `tests/fuzz-seeds/conditional/*` |
+| `ods` | Any bytes read as an OpenDocument spreadsheet, zipped or flat: loaded, cells shown and their formulas, translated from OpenFormula, written in R1C1 style, calculated, saved as XLSX and loaded again; may throw only `DocumentException` | `tests/fuzz-seeds/ods/*` (stored packages and flat FODS) |
 
 Daytime runs are 10 minutes per target at most. With the managed mutator:
 

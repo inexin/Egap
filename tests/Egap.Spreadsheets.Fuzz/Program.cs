@@ -10,7 +10,7 @@ using Egap.Spreadsheets.Printing;
 
 using SharpFuzz;
 
-// Fuzz targets for Egap.Spreadsheets: number format codes, CSV, XLSX, formulas and header and footer codes. A format code
+// Fuzz targets for Egap.Spreadsheets: number format codes, CSV, XLSX, ODS, formulas and header and footer codes. A format code
 // or a header and footer code never throws; CSV may refuse its input only with an InvalidDataException, XLSX only with a
 // DocumentException (a DocumentLimitException among them), and a formula only with a FormulaException. Anything else is a
 // finding.
@@ -33,6 +33,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["find"] = Find,
     ["conditional"] = Conditional,
     ["autofit"] = AutoFit,
+    ["ods"] = Ods,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -278,6 +279,46 @@ static void SheetCharts(Stream input)
         {
             using Egami.Raster<Egami.Pixels.Rgba8> image = page.Render(36);
         }
+    }
+    catch (DocumentException)
+    {
+    }
+}
+
+static void Ods(Stream input)
+{
+    // An OpenDocument spreadsheet, zipped or flat: loaded, cells shown and their translated formulas parsed, calculated,
+    // then saved as XLSX and loaded again.
+    DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };
+    byte[] bytes = Bytes(input);
+    try
+    {
+        Workbook book = Workbook.Load(new MemoryStream(bytes, writable: false), new WorkbookLoadOptions { Limits = limits });
+        foreach (Worksheet sheet in book.Worksheets)
+        {
+            if (sheet.UsedRange?.Address is { } used)
+            {
+                for (int row = used.First.Row; row <= Math.Min(used.Last.Row, used.First.Row + 200); row++)
+                {
+                    for (int column = used.First.Column; column <= Math.Min(used.Last.Column, used.First.Column + 50); column++)
+                    {
+                        Egap.Spreadsheets.Cell cell = sheet[row, column];
+                        _ = cell.Text;
+                        _ = cell.FormulaR1C1;
+                    }
+                }
+            }
+        }
+
+        if (book.Worksheets.Sum(s => (long)s.Cells.Count) < 20_000)
+        {
+            book.Calculate();
+        }
+
+        using MemoryStream saved = new();
+        book.Save(saved);
+        saved.Position = 0;
+        _ = Workbook.Load(saved, new WorkbookLoadOptions { Limits = limits });
     }
     catch (DocumentException)
     {

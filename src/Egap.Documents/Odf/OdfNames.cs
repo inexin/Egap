@@ -34,6 +34,15 @@ internal static class OdfNames
     /// <summary>Whether <paramref name="mediaType"/> is a text document's or a text template's.</summary>
     public static bool IsText(string? mediaType) => mediaType is TextMediaType or TemplateMediaType;
 
+    /// <summary>The media type of a spreadsheet.</summary>
+    public const string SpreadsheetMediaType = "application/vnd.oasis.opendocument.spreadsheet";
+
+    /// <summary>The media type of a spreadsheet template.</summary>
+    public const string SpreadsheetTemplateMediaType = "application/vnd.oasis.opendocument.spreadsheet-template";
+
+    /// <summary>Whether <paramref name="mediaType"/> is a spreadsheet's or a spreadsheet template's.</summary>
+    public static bool IsSpreadsheet(string? mediaType) => mediaType is SpreadsheetMediaType or SpreadsheetTemplateMediaType;
+
     /// <summary>The attribute <paramref name="name"/> in <paramref name="ns"/>, or null.</summary>
     public static string? Attr(this XElement element, XNamespace ns, string name) => element.Attribute(ns + name)?.Value;
 }
