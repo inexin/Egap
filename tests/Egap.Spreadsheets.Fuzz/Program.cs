@@ -31,6 +31,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["move"] = Move,
     ["sorts"] = Sorts,
     ["find"] = Find,
+    ["conditional"] = Conditional,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -587,6 +588,79 @@ static void Find(Stream input)
     }
     catch (ArgumentException) when (what.Length == 0)
     {
+    }
+}
+
+// The input is an XLSX package, or else text used as the formulas of conditional formatting and data validation rules of
+// every kind on a small sheet. Each cell's conditional format and each value's validity is worked out and the first pages
+// print; a package may throw only DocumentException, and a rule's formula that does not parse or gives an error only
+// leaves its cells as they are.
+static void Conditional(Stream input)
+{
+    byte[] bytes = Bytes(input);
+    Workbook book;
+    if (bytes is [(byte)'P', (byte)'K', ..])
+    {
+        try
+        {
+            book = Workbook.Load(new MemoryStream(bytes, writable: false), new WorkbookLoadOptions { Limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 } });
+        }
+        catch (DocumentException)
+        {
+            return;
+        }
+    }
+    else
+    {
+        string text = Encoding.UTF8.GetString(bytes);
+        book = Workbook.Create();
+        Worksheet made = book.Worksheets[0];
+        CellValue[] values = [CellValue.FromNumber(1), CellValue.FromNumber(-2.5), CellValue.FromNumber(0), CellValue.FromText("a"), CellValue.FromText(""), CellValue.FromBoolean(true), CellValue.FromText("Text " + text), CellValue.FromNumber(45000)];
+        for (int row = 0; row < 8; row++)
+        {
+            for (int column = 0; column < 4; column++)
+            {
+                made[row, column].Value = values[(row + column) % values.Length];
+            }
+        }
+
+        made["D2"].Formula = "1/0";
+        book.Names.Add("Fuzz", "Sheet1!$A$1:$A$9");
+        CellStyle bold = CellStyle.Default with { Font = CellStyle.Default.Font with { Bold = true } };
+        made.ConditionalFormats.Add("A1:B8", ConditionalFormatRule.Expression(text.Length == 0 ? "A1" : text, bold));
+        made.ConditionalFormats.Add("B1:C8 A3:A4", ConditionalFormatRule.CellIs(ComparisonOperator.Between, text.Length == 0 ? "0" : text, bold, "B2"));
+        made.ConditionalFormats.Add("A1:D8", ConditionalFormatRule.ColorScale(CellColor.Black, CellColor.White), ConditionalFormatRule.DataBar(CellColor.Black), ConditionalFormatRule.IconSet("5Arrows"));
+        foreach (DataValidationType type in Enum.GetValues<DataValidationType>())
+        {
+            DataValidation rule = made.DataValidations.Add(RangeAddress.Parse("A1:D8"), type, text, text.Length % 2 == 0 ? "Fuzz" : text);
+            rule.Operator = (ComparisonOperator)(text.Length % 8);
+        }
+    }
+
+    foreach (Worksheet sheet in book.Worksheets)
+    {
+        if (sheet.UsedRange?.Address is not { } used)
+        {
+            continue;
+        }
+
+        ConditionalFormatEvaluation evaluation = sheet.ConditionalFormats.Evaluate();
+        for (int row = used.First.Row; row <= Math.Min(used.Last.Row, used.First.Row + 60); row++)
+        {
+            for (int column = used.First.Column; column <= Math.Min(used.Last.Column, used.First.Column + 20); column++)
+            {
+                _ = evaluation[row, column].Style;
+                _ = sheet.DataValidations.IsValid(new CellAddress(row, column));
+                _ = sheet.DataValidations.ListItems(new CellAddress(row, column));
+            }
+        }
+
+        _ = sheet.DataValidations.FindInvalid();
+    }
+
+    foreach (SheetPage page in book.Paginate().Pages.Take(2))
+    {
+        using Egami.Raster<Egami.Pixels.Rgba8> image = page.Render(36);
     }
 }
 
