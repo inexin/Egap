@@ -1,0 +1,1225 @@
+# Excel 16.0 build 20527: wrapped cells, AutoFit, written by tools/excel-wrap-oracle.ps1
+Arial,10,0	33	238	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	47	170	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	61	136	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	75	102	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	89	85	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	103	68	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	117	68	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	131	51	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	145	51	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	166	51	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	187	34	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	215	34	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	250	34	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	285	34	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	320	34	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	355	17	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	425	17	Agencies must NOT alter the format of this worksheet.
+Arial,10,0	33	289	Total number of households receiving assistance during the year
+Arial,10,0	47	204	Total number of households receiving assistance during the year
+Arial,10,0	61	153	Total number of households receiving assistance during the year
+Arial,10,0	75	119	Total number of households receiving assistance during the year
+Arial,10,0	89	102	Total number of households receiving assistance during the year
+Arial,10,0	103	85	Total number of households receiving assistance during the year
+Arial,10,0	117	85	Total number of households receiving assistance during the year
+Arial,10,0	131	68	Total number of households receiving assistance during the year
+Arial,10,0	145	68	Total number of households receiving assistance during the year
+Arial,10,0	166	51	Total number of households receiving assistance during the year
+Arial,10,0	187	51	Total number of households receiving assistance during the year
+Arial,10,0	215	51	Total number of households receiving assistance during the year
+Arial,10,0	250	34	Total number of households receiving assistance during the year
+Arial,10,0	285	34	Total number of households receiving assistance during the year
+Arial,10,0	320	34	Total number of households receiving assistance during the year
+Arial,10,0	355	34	Total number of households receiving assistance during the year
+Arial,10,0	425	17	Total number of households receiving assistance during the year
+Arial,10,0	33	255	State-by-state estimates of long-term care expenditures
+Arial,10,0	47	170	State-by-state estimates of long-term care expenditures
+Arial,10,0	61	136	State-by-state estimates of long-term care expenditures
+Arial,10,0	75	119	State-by-state estimates of long-term care expenditures
+Arial,10,0	89	85	State-by-state estimates of long-term care expenditures
+Arial,10,0	103	68	State-by-state estimates of long-term care expenditures
+Arial,10,0	117	68	State-by-state estimates of long-term care expenditures
+Arial,10,0	131	68	State-by-state estimates of long-term care expenditures
+Arial,10,0	145	51	State-by-state estimates of long-term care expenditures
+Arial,10,0	166	51	State-by-state estimates of long-term care expenditures
+Arial,10,0	187	34	State-by-state estimates of long-term care expenditures
+Arial,10,0	215	34	State-by-state estimates of long-term care expenditures
+Arial,10,0	250	34	State-by-state estimates of long-term care expenditures
+Arial,10,0	285	34	State-by-state estimates of long-term care expenditures
+Arial,10,0	320	34	State-by-state estimates of long-term care expenditures
+Arial,10,0	355	17	State-by-state estimates of long-term care expenditures
+Arial,10,0	425	17	State-by-state estimates of long-term care expenditures
+Arial,10,0	33	289	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	47	187	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	61	153	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	75	102	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	89	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	103	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	117	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	131	68	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	145	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	166	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	187	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	215	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	250	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	285	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	320	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	355	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	425	17	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,10,0	33	323	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	47	238	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	61	153	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	75	119	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	89	119	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	103	85	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	117	85	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	131	68	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	145	68	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	166	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	187	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	215	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	250	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	285	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	320	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	355	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	425	17	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,10,0	33	255	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	47	170	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	61	119	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	75	102	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	89	68	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	103	68	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	117	68	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	131	51	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	145	51	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	166	34	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	187	34	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	215	34	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	250	34	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	285	34	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	320	34	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	355	17	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	425	17	Supercalifragilisticexpialidocious words break where?
+Arial,10,0	33	391	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	47	289	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	61	204	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	75	136	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	89	136	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	103	136	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	117	85	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	131	85	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	145	68	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	166	68	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	187	51	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	215	51	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	250	51	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	285	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	320	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	355	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	425	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,10,0	33	187	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	47	119	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	61	85	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	75	68	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	89	68	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	103	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	117	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	131	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	145	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	166	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	187	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	215	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	250	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	285	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	320	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	355	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	425	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,10,0	33	153	one  two   three    four (double spaces)
+Arial,10,0	47	136	one  two   three    four (double spaces)
+Arial,10,0	61	85	one  two   three    four (double spaces)
+Arial,10,0	75	68	one  two   three    four (double spaces)
+Arial,10,0	89	68	one  two   three    four (double spaces)
+Arial,10,0	103	51	one  two   three    four (double spaces)
+Arial,10,0	117	51	one  two   three    four (double spaces)
+Arial,10,0	131	34	one  two   three    four (double spaces)
+Arial,10,0	145	34	one  two   three    four (double spaces)
+Arial,10,0	166	34	one  two   three    four (double spaces)
+Arial,10,0	187	34	one  two   three    four (double spaces)
+Arial,10,0	215	34	one  two   three    four (double spaces)
+Arial,10,0	250	17	one  two   three    four (double spaces)
+Arial,10,0	285	17	one  two   three    four (double spaces)
+Arial,10,0	320	17	one  two   three    four (double spaces)
+Arial,10,0	355	17	one  two   three    four (double spaces)
+Arial,10,0	425	17	one  two   three    four (double spaces)
+Arial,10,0	33	238	Reimbursement-eligible non-profit organizations
+Arial,10,0	47	153	Reimbursement-eligible non-profit organizations
+Arial,10,0	61	102	Reimbursement-eligible non-profit organizations
+Arial,10,0	75	102	Reimbursement-eligible non-profit organizations
+Arial,10,0	89	68	Reimbursement-eligible non-profit organizations
+Arial,10,0	103	68	Reimbursement-eligible non-profit organizations
+Arial,10,0	117	51	Reimbursement-eligible non-profit organizations
+Arial,10,0	131	51	Reimbursement-eligible non-profit organizations
+Arial,10,0	145	34	Reimbursement-eligible non-profit organizations
+Arial,10,0	166	34	Reimbursement-eligible non-profit organizations
+Arial,10,0	187	34	Reimbursement-eligible non-profit organizations
+Arial,10,0	215	34	Reimbursement-eligible non-profit organizations
+Arial,10,0	250	34	Reimbursement-eligible non-profit organizations
+Arial,10,0	285	34	Reimbursement-eligible non-profit organizations
+Arial,10,0	320	17	Reimbursement-eligible non-profit organizations
+Arial,10,0	355	17	Reimbursement-eligible non-profit organizations
+Arial,10,0	425	17	Reimbursement-eligible non-profit organizations
+Arial,10,0	33	238	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	47	170	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	61	119	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	75	85	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	89	68	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	103	68	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	117	51	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	131	51	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	145	51	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	166	51	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	187	34	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	215	34	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	250	34	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	285	34	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	320	34	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	355	17	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	425	17	http://www.example.gov/data/statistics/annual-report.xls
+Arial,10,0	33	323	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	47	204	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	61	170	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	75	119	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	89	119	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	103	102	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	117	85	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	131	85	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	145	68	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	166	68	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	187	51	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	215	51	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	250	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	285	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	320	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	355	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,10,0	425	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	33	340	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	47	220	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	61	160	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	75	140	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	89	120	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	103	80	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	117	80	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	131	60	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	145	60	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	166	60	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	187	40	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	215	40	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	250	40	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	285	40	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	320	40	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	355	20	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	425	20	Agencies must NOT alter the format of this worksheet.
+Calibri,11,0	33	400	Total number of households receiving assistance during the year
+Calibri,11,0	47	240	Total number of households receiving assistance during the year
+Calibri,11,0	61	220	Total number of households receiving assistance during the year
+Calibri,11,0	75	140	Total number of households receiving assistance during the year
+Calibri,11,0	89	140	Total number of households receiving assistance during the year
+Calibri,11,0	103	100	Total number of households receiving assistance during the year
+Calibri,11,0	117	100	Total number of households receiving assistance during the year
+Calibri,11,0	131	100	Total number of households receiving assistance during the year
+Calibri,11,0	145	80	Total number of households receiving assistance during the year
+Calibri,11,0	166	80	Total number of households receiving assistance during the year
+Calibri,11,0	187	60	Total number of households receiving assistance during the year
+Calibri,11,0	215	60	Total number of households receiving assistance during the year
+Calibri,11,0	250	40	Total number of households receiving assistance during the year
+Calibri,11,0	285	40	Total number of households receiving assistance during the year
+Calibri,11,0	320	40	Total number of households receiving assistance during the year
+Calibri,11,0	355	40	Total number of households receiving assistance during the year
+Calibri,11,0	425	20	Total number of households receiving assistance during the year
+Calibri,11,0	33	360	State-by-state estimates of long-term care expenditures
+Calibri,11,0	47	240	State-by-state estimates of long-term care expenditures
+Calibri,11,0	61	180	State-by-state estimates of long-term care expenditures
+Calibri,11,0	75	140	State-by-state estimates of long-term care expenditures
+Calibri,11,0	89	140	State-by-state estimates of long-term care expenditures
+Calibri,11,0	103	80	State-by-state estimates of long-term care expenditures
+Calibri,11,0	117	80	State-by-state estimates of long-term care expenditures
+Calibri,11,0	131	80	State-by-state estimates of long-term care expenditures
+Calibri,11,0	145	80	State-by-state estimates of long-term care expenditures
+Calibri,11,0	166	60	State-by-state estimates of long-term care expenditures
+Calibri,11,0	187	60	State-by-state estimates of long-term care expenditures
+Calibri,11,0	215	40	State-by-state estimates of long-term care expenditures
+Calibri,11,0	250	40	State-by-state estimates of long-term care expenditures
+Calibri,11,0	285	40	State-by-state estimates of long-term care expenditures
+Calibri,11,0	320	40	State-by-state estimates of long-term care expenditures
+Calibri,11,0	355	40	State-by-state estimates of long-term care expenditures
+Calibri,11,0	425	20	State-by-state estimates of long-term care expenditures
+Calibri,11,0	33	360	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	47	260	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	61	200	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	75	120	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	89	120	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	103	100	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	117	100	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	131	100	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	145	60	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	166	60	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	187	60	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	215	60	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	250	40	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	285	40	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	320	40	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	355	40	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	425	20	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Calibri,11,0	33	440	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	47	280	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	61	200	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	75	160	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	89	140	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	103	140	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	117	100	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	131	100	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	145	80	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	166	80	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	187	60	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	215	60	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	250	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	285	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	320	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	355	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	425	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Calibri,11,0	33	320	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	47	200	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	61	140	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	75	120	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	89	100	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	103	80	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	117	80	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	131	80	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	145	60	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	166	60	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	187	40	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	215	40	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	250	40	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	285	40	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	320	40	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	355	20	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	425	20	Supercalifragilisticexpialidocious words break where?
+Calibri,11,0	33	520	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	47	340	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	61	280	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	75	220	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	89	160	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	103	160	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	117	140	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	131	100	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	145	80	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	166	80	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	187	80	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	215	60	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	250	60	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	285	40	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	320	40	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	355	40	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	425	40	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Calibri,11,0	33	220	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	47	140	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	61	100	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	75	80	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	89	80	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	103	60	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	117	60	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	131	60	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	145	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	166	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	187	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	215	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	250	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	285	20	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	320	20	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	355	20	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	425	20	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Calibri,11,0	33	200	one  two   three    four (double spaces)
+Calibri,11,0	47	160	one  two   three    four (double spaces)
+Calibri,11,0	61	100	one  two   three    four (double spaces)
+Calibri,11,0	75	100	one  two   three    four (double spaces)
+Calibri,11,0	89	80	one  two   three    four (double spaces)
+Calibri,11,0	103	80	one  two   three    four (double spaces)
+Calibri,11,0	117	60	one  two   three    four (double spaces)
+Calibri,11,0	131	60	one  two   three    four (double spaces)
+Calibri,11,0	145	40	one  two   three    four (double spaces)
+Calibri,11,0	166	40	one  two   three    four (double spaces)
+Calibri,11,0	187	40	one  two   three    four (double spaces)
+Calibri,11,0	215	40	one  two   three    four (double spaces)
+Calibri,11,0	250	20	one  two   three    four (double spaces)
+Calibri,11,0	285	20	one  two   three    four (double spaces)
+Calibri,11,0	320	20	one  two   three    four (double spaces)
+Calibri,11,0	355	20	one  two   three    four (double spaces)
+Calibri,11,0	425	20	one  two   three    four (double spaces)
+Calibri,11,0	33	280	Reimbursement-eligible non-profit organizations
+Calibri,11,0	47	180	Reimbursement-eligible non-profit organizations
+Calibri,11,0	61	140	Reimbursement-eligible non-profit organizations
+Calibri,11,0	75	120	Reimbursement-eligible non-profit organizations
+Calibri,11,0	89	100	Reimbursement-eligible non-profit organizations
+Calibri,11,0	103	80	Reimbursement-eligible non-profit organizations
+Calibri,11,0	117	80	Reimbursement-eligible non-profit organizations
+Calibri,11,0	131	60	Reimbursement-eligible non-profit organizations
+Calibri,11,0	145	60	Reimbursement-eligible non-profit organizations
+Calibri,11,0	166	40	Reimbursement-eligible non-profit organizations
+Calibri,11,0	187	40	Reimbursement-eligible non-profit organizations
+Calibri,11,0	215	40	Reimbursement-eligible non-profit organizations
+Calibri,11,0	250	40	Reimbursement-eligible non-profit organizations
+Calibri,11,0	285	40	Reimbursement-eligible non-profit organizations
+Calibri,11,0	320	20	Reimbursement-eligible non-profit organizations
+Calibri,11,0	355	20	Reimbursement-eligible non-profit organizations
+Calibri,11,0	425	20	Reimbursement-eligible non-profit organizations
+Calibri,11,0	33	340	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	47	200	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	61	160	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	75	120	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	89	100	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	103	80	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	117	80	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	131	80	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	145	60	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	166	60	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	187	60	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	215	40	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	250	40	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	285	40	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	320	40	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	355	40	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	425	20	http://www.example.gov/data/statistics/annual-report.xls
+Calibri,11,0	33	380	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	47	220	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	61	160	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	75	140	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	89	120	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	103	120	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	117	100	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	131	80	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	145	80	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	166	80	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	187	60	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	215	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	250	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	285	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	320	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	355	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Calibri,11,0	425	20	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	33	221	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	47	170	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	61	119	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	75	102	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	89	68	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	103	68	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	117	51	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	131	51	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	145	51	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	166	34	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	187	34	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	215	34	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	250	34	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	285	34	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	320	17	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	355	17	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	425	17	Agencies must NOT alter the format of this worksheet.
+Times New Roman,10,0	33	289	Total number of households receiving assistance during the year
+Times New Roman,10,0	47	204	Total number of households receiving assistance during the year
+Times New Roman,10,0	61	136	Total number of households receiving assistance during the year
+Times New Roman,10,0	75	119	Total number of households receiving assistance during the year
+Times New Roman,10,0	89	85	Total number of households receiving assistance during the year
+Times New Roman,10,0	103	85	Total number of households receiving assistance during the year
+Times New Roman,10,0	117	68	Total number of households receiving assistance during the year
+Times New Roman,10,0	131	68	Total number of households receiving assistance during the year
+Times New Roman,10,0	145	68	Total number of households receiving assistance during the year
+Times New Roman,10,0	166	51	Total number of households receiving assistance during the year
+Times New Roman,10,0	187	51	Total number of households receiving assistance during the year
+Times New Roman,10,0	215	34	Total number of households receiving assistance during the year
+Times New Roman,10,0	250	34	Total number of households receiving assistance during the year
+Times New Roman,10,0	285	34	Total number of households receiving assistance during the year
+Times New Roman,10,0	320	34	Total number of households receiving assistance during the year
+Times New Roman,10,0	355	34	Total number of households receiving assistance during the year
+Times New Roman,10,0	425	17	Total number of households receiving assistance during the year
+Times New Roman,10,0	33	204	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	47	170	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	61	119	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	75	102	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	89	68	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	103	68	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	117	68	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	131	51	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	145	51	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	166	34	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	187	34	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	215	34	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	250	34	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	285	34	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	320	17	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	355	17	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	425	17	State-by-state estimates of long-term care expenditures
+Times New Roman,10,0	33	272	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	47	170	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	61	136	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	75	102	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	89	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	103	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	117	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	131	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	145	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	166	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	187	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	215	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	250	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	285	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	320	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	355	17	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	425	17	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Times New Roman,10,0	33	289	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	47	221	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	61	136	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	75	119	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	89	119	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	103	85	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	117	68	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	131	68	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	145	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	166	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	187	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	215	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	250	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	285	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	320	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	355	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	425	17	Notes: data for 2006 are preliminary; see the technical documentation.
+Times New Roman,10,0	33	238	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	47	136	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	61	119	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	75	85	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	89	68	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	103	68	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	117	51	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	131	51	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	145	51	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	166	34	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	187	34	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	215	34	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	250	34	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	285	34	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	320	17	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	355	17	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	425	17	Supercalifragilisticexpialidocious words break where?
+Times New Roman,10,0	33	357	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	47	255	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	61	204	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	75	136	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	89	136	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	103	119	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	117	85	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	131	68	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	145	68	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	166	68	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	187	51	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	215	51	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	250	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	285	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	320	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	355	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	425	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Times New Roman,10,0	33	170	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	47	102	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	61	85	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	75	68	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	89	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	103	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	117	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	131	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	145	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	166	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	187	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	215	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	250	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	285	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	320	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	355	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	425	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Times New Roman,10,0	33	153	one  two   three    four (double spaces)
+Times New Roman,10,0	47	136	one  two   three    four (double spaces)
+Times New Roman,10,0	61	85	one  two   three    four (double spaces)
+Times New Roman,10,0	75	68	one  two   three    four (double spaces)
+Times New Roman,10,0	89	51	one  two   three    four (double spaces)
+Times New Roman,10,0	103	51	one  two   three    four (double spaces)
+Times New Roman,10,0	117	51	one  two   three    four (double spaces)
+Times New Roman,10,0	131	34	one  two   three    four (double spaces)
+Times New Roman,10,0	145	34	one  two   three    four (double spaces)
+Times New Roman,10,0	166	34	one  two   three    four (double spaces)
+Times New Roman,10,0	187	34	one  two   three    four (double spaces)
+Times New Roman,10,0	215	34	one  two   three    four (double spaces)
+Times New Roman,10,0	250	17	one  two   three    four (double spaces)
+Times New Roman,10,0	285	17	one  two   three    four (double spaces)
+Times New Roman,10,0	320	17	one  two   three    four (double spaces)
+Times New Roman,10,0	355	17	one  two   three    four (double spaces)
+Times New Roman,10,0	425	17	one  two   three    four (double spaces)
+Times New Roman,10,0	33	204	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	47	136	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	61	102	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	75	85	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	89	68	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	103	51	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	117	51	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	131	51	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	145	34	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	166	34	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	187	34	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	215	34	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	250	34	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	285	17	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	320	17	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	355	17	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	425	17	Reimbursement-eligible non-profit organizations
+Times New Roman,10,0	33	221	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	47	153	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	61	102	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	75	85	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	89	68	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	103	68	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	117	51	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	131	51	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	145	51	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	166	34	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	187	34	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	215	34	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	250	34	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	285	34	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	320	17	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	355	17	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	425	17	http://www.example.gov/data/statistics/annual-report.xls
+Times New Roman,10,0	33	323	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	47	204	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	61	153	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	75	119	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	89	102	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	103	102	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	117	85	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	131	68	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	145	68	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	166	68	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	187	51	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	215	51	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	250	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	285	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	320	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	355	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Times New Roman,10,0	425	17	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	33	225	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	47	150	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	61	105	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	75	90	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	89	75	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	103	60	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	117	45	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	131	45	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	145	45	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	166	45	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	187	30	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	215	30	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	250	30	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	285	30	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	320	17	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	355	17	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	425	17	Agencies must NOT alter the format of this worksheet.
+Arial,8,1	33	255	Total number of households receiving assistance during the year
+Arial,8,1	47	180	Total number of households receiving assistance during the year
+Arial,8,1	61	135	Total number of households receiving assistance during the year
+Arial,8,1	75	105	Total number of households receiving assistance during the year
+Arial,8,1	89	90	Total number of households receiving assistance during the year
+Arial,8,1	103	75	Total number of households receiving assistance during the year
+Arial,8,1	117	75	Total number of households receiving assistance during the year
+Arial,8,1	131	60	Total number of households receiving assistance during the year
+Arial,8,1	145	60	Total number of households receiving assistance during the year
+Arial,8,1	166	45	Total number of households receiving assistance during the year
+Arial,8,1	187	45	Total number of households receiving assistance during the year
+Arial,8,1	215	30	Total number of households receiving assistance during the year
+Arial,8,1	250	30	Total number of households receiving assistance during the year
+Arial,8,1	285	30	Total number of households receiving assistance during the year
+Arial,8,1	320	30	Total number of households receiving assistance during the year
+Arial,8,1	355	30	Total number of households receiving assistance during the year
+Arial,8,1	425	17	Total number of households receiving assistance during the year
+Arial,8,1	33	240	State-by-state estimates of long-term care expenditures
+Arial,8,1	47	150	State-by-state estimates of long-term care expenditures
+Arial,8,1	61	105	State-by-state estimates of long-term care expenditures
+Arial,8,1	75	105	State-by-state estimates of long-term care expenditures
+Arial,8,1	89	60	State-by-state estimates of long-term care expenditures
+Arial,8,1	103	60	State-by-state estimates of long-term care expenditures
+Arial,8,1	117	60	State-by-state estimates of long-term care expenditures
+Arial,8,1	131	60	State-by-state estimates of long-term care expenditures
+Arial,8,1	145	45	State-by-state estimates of long-term care expenditures
+Arial,8,1	166	45	State-by-state estimates of long-term care expenditures
+Arial,8,1	187	30	State-by-state estimates of long-term care expenditures
+Arial,8,1	215	30	State-by-state estimates of long-term care expenditures
+Arial,8,1	250	30	State-by-state estimates of long-term care expenditures
+Arial,8,1	285	30	State-by-state estimates of long-term care expenditures
+Arial,8,1	320	30	State-by-state estimates of long-term care expenditures
+Arial,8,1	355	17	State-by-state estimates of long-term care expenditures
+Arial,8,1	425	17	State-by-state estimates of long-term care expenditures
+Arial,8,1	33	255	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	47	165	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	61	120	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	75	90	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	89	75	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	103	75	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	117	75	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	131	45	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	145	45	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	166	45	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	187	45	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	215	30	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	250	30	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	285	30	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	320	30	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	355	17	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	425	17	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,8,1	33	255	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	47	210	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	61	135	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	75	105	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	89	105	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	103	75	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	117	60	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	131	60	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	145	60	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	166	45	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	187	45	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	215	30	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	250	30	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	285	30	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	320	30	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	355	30	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	425	17	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,8,1	33	210	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	47	135	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	61	105	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	75	90	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	89	60	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	103	60	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	117	60	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	131	45	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	145	45	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	166	30	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	187	30	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	215	30	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	250	30	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	285	30	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	320	17	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	355	17	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	425	17	Supercalifragilisticexpialidocious words break where?
+Arial,8,1	33	315	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	47	240	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	61	180	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	75	120	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	89	120	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	103	105	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	117	75	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	131	60	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	145	60	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	166	60	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	187	45	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	215	45	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	250	30	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	285	30	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	320	30	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	355	30	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	425	30	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,8,1	33	150	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	47	105	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	61	75	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	75	60	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	89	45	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	103	45	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	117	45	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	131	30	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	145	30	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	166	30	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	187	30	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	215	30	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	250	30	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	285	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	320	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	355	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	425	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,8,1	33	135	one  two   three    four (double spaces)
+Arial,8,1	47	120	one  two   three    four (double spaces)
+Arial,8,1	61	75	one  two   three    four (double spaces)
+Arial,8,1	75	60	one  two   three    four (double spaces)
+Arial,8,1	89	60	one  two   three    four (double spaces)
+Arial,8,1	103	45	one  two   three    four (double spaces)
+Arial,8,1	117	45	one  two   three    four (double spaces)
+Arial,8,1	131	30	one  two   three    four (double spaces)
+Arial,8,1	145	30	one  two   three    four (double spaces)
+Arial,8,1	166	30	one  two   three    four (double spaces)
+Arial,8,1	187	30	one  two   three    four (double spaces)
+Arial,8,1	215	30	one  two   three    four (double spaces)
+Arial,8,1	250	17	one  two   three    four (double spaces)
+Arial,8,1	285	17	one  two   three    four (double spaces)
+Arial,8,1	320	17	one  two   three    four (double spaces)
+Arial,8,1	355	17	one  two   three    four (double spaces)
+Arial,8,1	425	17	one  two   three    four (double spaces)
+Arial,8,1	33	195	Reimbursement-eligible non-profit organizations
+Arial,8,1	47	120	Reimbursement-eligible non-profit organizations
+Arial,8,1	61	105	Reimbursement-eligible non-profit organizations
+Arial,8,1	75	90	Reimbursement-eligible non-profit organizations
+Arial,8,1	89	60	Reimbursement-eligible non-profit organizations
+Arial,8,1	103	60	Reimbursement-eligible non-profit organizations
+Arial,8,1	117	45	Reimbursement-eligible non-profit organizations
+Arial,8,1	131	45	Reimbursement-eligible non-profit organizations
+Arial,8,1	145	30	Reimbursement-eligible non-profit organizations
+Arial,8,1	166	30	Reimbursement-eligible non-profit organizations
+Arial,8,1	187	30	Reimbursement-eligible non-profit organizations
+Arial,8,1	215	30	Reimbursement-eligible non-profit organizations
+Arial,8,1	250	30	Reimbursement-eligible non-profit organizations
+Arial,8,1	285	17	Reimbursement-eligible non-profit organizations
+Arial,8,1	320	17	Reimbursement-eligible non-profit organizations
+Arial,8,1	355	17	Reimbursement-eligible non-profit organizations
+Arial,8,1	425	17	Reimbursement-eligible non-profit organizations
+Arial,8,1	33	210	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	47	135	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	61	90	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	75	75	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	89	60	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	103	60	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	117	45	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	131	45	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	145	45	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	166	45	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	187	30	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	215	30	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	250	30	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	285	30	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	320	30	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	355	17	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	425	17	http://www.example.gov/data/statistics/annual-report.xls
+Arial,8,1	33	225	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	47	150	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	61	105	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	75	105	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	89	90	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	103	75	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	117	60	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	131	60	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	145	45	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	166	45	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	187	45	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	215	30	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	250	30	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	285	30	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	320	30	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	355	17	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,8,1	425	17	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	33	380	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	47	240	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	61	200	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	75	160	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	89	120	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	103	100	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	117	80	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	131	80	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	145	80	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	166	60	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	187	60	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	215	40	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	250	40	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	285	40	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	320	40	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	355	40	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	425	20	Agencies must NOT alter the format of this worksheet.
+Arial,12,0	33	460	Total number of households receiving assistance during the year
+Arial,12,0	47	260	Total number of households receiving assistance during the year
+Arial,12,0	61	240	Total number of households receiving assistance during the year
+Arial,12,0	75	180	Total number of households receiving assistance during the year
+Arial,12,0	89	140	Total number of households receiving assistance during the year
+Arial,12,0	103	140	Total number of households receiving assistance during the year
+Arial,12,0	117	100	Total number of households receiving assistance during the year
+Arial,12,0	131	100	Total number of households receiving assistance during the year
+Arial,12,0	145	100	Total number of households receiving assistance during the year
+Arial,12,0	166	80	Total number of households receiving assistance during the year
+Arial,12,0	187	80	Total number of households receiving assistance during the year
+Arial,12,0	215	60	Total number of households receiving assistance during the year
+Arial,12,0	250	60	Total number of households receiving assistance during the year
+Arial,12,0	285	40	Total number of households receiving assistance during the year
+Arial,12,0	320	40	Total number of households receiving assistance during the year
+Arial,12,0	355	40	Total number of households receiving assistance during the year
+Arial,12,0	425	40	Total number of households receiving assistance during the year
+Arial,12,0	33	420	State-by-state estimates of long-term care expenditures
+Arial,12,0	47	240	State-by-state estimates of long-term care expenditures
+Arial,12,0	61	200	State-by-state estimates of long-term care expenditures
+Arial,12,0	75	140	State-by-state estimates of long-term care expenditures
+Arial,12,0	89	140	State-by-state estimates of long-term care expenditures
+Arial,12,0	103	120	State-by-state estimates of long-term care expenditures
+Arial,12,0	117	80	State-by-state estimates of long-term care expenditures
+Arial,12,0	131	80	State-by-state estimates of long-term care expenditures
+Arial,12,0	145	80	State-by-state estimates of long-term care expenditures
+Arial,12,0	166	60	State-by-state estimates of long-term care expenditures
+Arial,12,0	187	60	State-by-state estimates of long-term care expenditures
+Arial,12,0	215	40	State-by-state estimates of long-term care expenditures
+Arial,12,0	250	40	State-by-state estimates of long-term care expenditures
+Arial,12,0	285	40	State-by-state estimates of long-term care expenditures
+Arial,12,0	320	40	State-by-state estimates of long-term care expenditures
+Arial,12,0	355	40	State-by-state estimates of long-term care expenditures
+Arial,12,0	425	20	State-by-state estimates of long-term care expenditures
+Arial,12,0	33	460	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	47	300	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	61	200	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	75	180	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	89	120	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	103	120	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	117	100	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	131	100	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	145	100	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	166	80	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	187	60	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	215	60	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	250	60	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	285	40	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	320	40	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	355	40	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	425	40	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Arial,12,0	33	480	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	47	320	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	61	260	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	75	180	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	89	160	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	103	140	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	117	120	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	131	100	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	145	100	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	166	80	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	187	60	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	215	60	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	250	60	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	285	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	320	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	355	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	425	40	Notes: data for 2006 are preliminary; see the technical documentation.
+Arial,12,0	33	380	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	47	260	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	61	160	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	75	140	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	89	120	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	103	100	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	117	80	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	131	80	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	145	80	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	166	60	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	187	60	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	215	40	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	250	40	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	285	40	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	320	40	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	355	40	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	425	20	Supercalifragilisticexpialidocious words break where?
+Arial,12,0	33	546	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	47	380	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	61	300	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	75	240	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	89	160	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	103	160	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	117	160	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	131	140	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	145	100	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	166	80	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	187	80	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	215	80	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	250	60	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	285	60	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	320	40	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	355	40	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	425	40	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Arial,12,0	33	260	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	47	160	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	61	120	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	75	100	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	89	80	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	103	80	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	117	60	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	131	60	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	145	60	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	166	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	187	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	215	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	250	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	285	40	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	320	20	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	355	20	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	425	20	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Arial,12,0	33	260	one  two   three    four (double spaces)
+Arial,12,0	47	160	one  two   three    four (double spaces)
+Arial,12,0	61	140	one  two   three    four (double spaces)
+Arial,12,0	75	100	one  two   three    four (double spaces)
+Arial,12,0	89	80	one  two   three    four (double spaces)
+Arial,12,0	103	80	one  two   three    four (double spaces)
+Arial,12,0	117	60	one  two   three    four (double spaces)
+Arial,12,0	131	60	one  two   three    four (double spaces)
+Arial,12,0	145	60	one  two   three    four (double spaces)
+Arial,12,0	166	40	one  two   three    four (double spaces)
+Arial,12,0	187	40	one  two   three    four (double spaces)
+Arial,12,0	215	40	one  two   three    four (double spaces)
+Arial,12,0	250	40	one  two   three    four (double spaces)
+Arial,12,0	285	20	one  two   three    four (double spaces)
+Arial,12,0	320	20	one  two   three    four (double spaces)
+Arial,12,0	355	20	one  two   three    four (double spaces)
+Arial,12,0	425	20	one  two   three    four (double spaces)
+Arial,12,0	33	340	Reimbursement-eligible non-profit organizations
+Arial,12,0	47	220	Reimbursement-eligible non-profit organizations
+Arial,12,0	61	160	Reimbursement-eligible non-profit organizations
+Arial,12,0	75	120	Reimbursement-eligible non-profit organizations
+Arial,12,0	89	120	Reimbursement-eligible non-profit organizations
+Arial,12,0	103	80	Reimbursement-eligible non-profit organizations
+Arial,12,0	117	80	Reimbursement-eligible non-profit organizations
+Arial,12,0	131	60	Reimbursement-eligible non-profit organizations
+Arial,12,0	145	60	Reimbursement-eligible non-profit organizations
+Arial,12,0	166	60	Reimbursement-eligible non-profit organizations
+Arial,12,0	187	40	Reimbursement-eligible non-profit organizations
+Arial,12,0	215	40	Reimbursement-eligible non-profit organizations
+Arial,12,0	250	40	Reimbursement-eligible non-profit organizations
+Arial,12,0	285	40	Reimbursement-eligible non-profit organizations
+Arial,12,0	320	40	Reimbursement-eligible non-profit organizations
+Arial,12,0	355	20	Reimbursement-eligible non-profit organizations
+Arial,12,0	425	20	Reimbursement-eligible non-profit organizations
+Arial,12,0	33	380	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	47	220	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	61	180	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	75	120	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	89	100	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	103	100	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	117	80	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	131	80	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	145	60	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	166	60	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	187	60	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	215	40	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	250	40	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	285	40	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	320	40	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	355	40	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	425	20	http://www.example.gov/data/statistics/annual-report.xls
+Arial,12,0	33	480	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	47	300	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	61	240	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	75	200	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	89	140	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	103	140	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	117	120	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	131	120	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	145	100	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	166	100	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	187	80	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	215	80	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	250	60	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	285	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	320	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	355	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Arial,12,0	425	40	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	33	306	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	47	187	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	61	153	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	75	119	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	89	102	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	103	85	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	117	68	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	131	68	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	145	51	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	166	51	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	187	51	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	215	34	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	250	34	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	285	34	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	320	34	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	355	34	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	425	17	Agencies must NOT alter the format of this worksheet.
+Verdana,10,0	33	340	Total number of households receiving assistance during the year
+Verdana,10,0	47	204	Total number of households receiving assistance during the year
+Verdana,10,0	61	204	Total number of households receiving assistance during the year
+Verdana,10,0	75	136	Total number of households receiving assistance during the year
+Verdana,10,0	89	119	Total number of households receiving assistance during the year
+Verdana,10,0	103	102	Total number of households receiving assistance during the year
+Verdana,10,0	117	85	Total number of households receiving assistance during the year
+Verdana,10,0	131	85	Total number of households receiving assistance during the year
+Verdana,10,0	145	68	Total number of households receiving assistance during the year
+Verdana,10,0	166	68	Total number of households receiving assistance during the year
+Verdana,10,0	187	51	Total number of households receiving assistance during the year
+Verdana,10,0	215	51	Total number of households receiving assistance during the year
+Verdana,10,0	250	51	Total number of households receiving assistance during the year
+Verdana,10,0	285	34	Total number of households receiving assistance during the year
+Verdana,10,0	320	34	Total number of households receiving assistance during the year
+Verdana,10,0	355	34	Total number of households receiving assistance during the year
+Verdana,10,0	425	34	Total number of households receiving assistance during the year
+Verdana,10,0	33	323	State-by-state estimates of long-term care expenditures
+Verdana,10,0	47	204	State-by-state estimates of long-term care expenditures
+Verdana,10,0	61	170	State-by-state estimates of long-term care expenditures
+Verdana,10,0	75	119	State-by-state estimates of long-term care expenditures
+Verdana,10,0	89	119	State-by-state estimates of long-term care expenditures
+Verdana,10,0	103	102	State-by-state estimates of long-term care expenditures
+Verdana,10,0	117	68	State-by-state estimates of long-term care expenditures
+Verdana,10,0	131	68	State-by-state estimates of long-term care expenditures
+Verdana,10,0	145	68	State-by-state estimates of long-term care expenditures
+Verdana,10,0	166	51	State-by-state estimates of long-term care expenditures
+Verdana,10,0	187	51	State-by-state estimates of long-term care expenditures
+Verdana,10,0	215	34	State-by-state estimates of long-term care expenditures
+Verdana,10,0	250	34	State-by-state estimates of long-term care expenditures
+Verdana,10,0	285	34	State-by-state estimates of long-term care expenditures
+Verdana,10,0	320	34	State-by-state estimates of long-term care expenditures
+Verdana,10,0	355	34	State-by-state estimates of long-term care expenditures
+Verdana,10,0	425	17	State-by-state estimates of long-term care expenditures
+Verdana,10,0	33	306	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	47	221	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	61	170	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	75	136	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	89	102	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	103	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	117	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	131	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	145	85	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	166	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	187	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	215	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	250	51	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	285	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	320	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	355	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	425	34	Fiscal year 2007/2008 appropriations (in thousands of dollars)
+Verdana,10,0	33	374	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	47	255	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	61	187	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	75	153	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	89	119	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	103	119	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	117	85	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	131	85	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	145	85	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	166	68	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	187	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	215	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	250	51	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	285	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	320	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	355	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	425	34	Notes: data for 2006 are preliminary; see the technical documentation.
+Verdana,10,0	33	272	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	47	170	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	61	119	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	75	102	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	89	85	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	103	68	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	117	68	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	131	68	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	145	51	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	166	51	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	187	34	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	215	34	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	250	34	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	285	34	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	320	34	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	355	34	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	425	17	Supercalifragilisticexpialidocious words break where?
+Verdana,10,0	33	459	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	47	289	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	61	255	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	75	204	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	89	136	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	103	136	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	117	136	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	131	85	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	145	85	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	166	68	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	187	68	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	215	51	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	250	51	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	285	51	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	320	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	355	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	425	34	Department of Health and Human Services, Centers for Medicare & Medicaid Services
+Verdana,10,0	33	221	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	47	153	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	61	102	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	75	85	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	89	68	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	103	68	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	117	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	131	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	145	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	166	51	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	187	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	215	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	250	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	285	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	320	34	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	355	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	425	17	a b c d e f g h i j k l m n o p q r s t u v w x y z
+Verdana,10,0	33	187	one  two   three    four (double spaces)
+Verdana,10,0	47	136	one  two   three    four (double spaces)
+Verdana,10,0	61	102	one  two   three    four (double spaces)
+Verdana,10,0	75	85	one  two   three    four (double spaces)
+Verdana,10,0	89	68	one  two   three    four (double spaces)
+Verdana,10,0	103	68	one  two   three    four (double spaces)
+Verdana,10,0	117	51	one  two   three    four (double spaces)
+Verdana,10,0	131	51	one  two   three    four (double spaces)
+Verdana,10,0	145	51	one  two   three    four (double spaces)
+Verdana,10,0	166	34	one  two   three    four (double spaces)
+Verdana,10,0	187	34	one  two   three    four (double spaces)
+Verdana,10,0	215	34	one  two   three    four (double spaces)
+Verdana,10,0	250	34	one  two   three    four (double spaces)
+Verdana,10,0	285	17	one  two   three    four (double spaces)
+Verdana,10,0	320	17	one  two   three    four (double spaces)
+Verdana,10,0	355	17	one  two   three    four (double spaces)
+Verdana,10,0	425	17	one  two   three    four (double spaces)
+Verdana,10,0	33	238	Reimbursement-eligible non-profit organizations
+Verdana,10,0	47	153	Reimbursement-eligible non-profit organizations
+Verdana,10,0	61	119	Reimbursement-eligible non-profit organizations
+Verdana,10,0	75	102	Reimbursement-eligible non-profit organizations
+Verdana,10,0	89	85	Reimbursement-eligible non-profit organizations
+Verdana,10,0	103	68	Reimbursement-eligible non-profit organizations
+Verdana,10,0	117	68	Reimbursement-eligible non-profit organizations
+Verdana,10,0	131	51	Reimbursement-eligible non-profit organizations
+Verdana,10,0	145	51	Reimbursement-eligible non-profit organizations
+Verdana,10,0	166	51	Reimbursement-eligible non-profit organizations
+Verdana,10,0	187	34	Reimbursement-eligible non-profit organizations
+Verdana,10,0	215	34	Reimbursement-eligible non-profit organizations
+Verdana,10,0	250	34	Reimbursement-eligible non-profit organizations
+Verdana,10,0	285	34	Reimbursement-eligible non-profit organizations
+Verdana,10,0	320	34	Reimbursement-eligible non-profit organizations
+Verdana,10,0	355	17	Reimbursement-eligible non-profit organizations
+Verdana,10,0	425	17	Reimbursement-eligible non-profit organizations
+Verdana,10,0	33	289	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	47	187	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	61	153	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	75	102	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	89	85	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	103	85	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	117	68	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	131	68	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	145	51	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	166	51	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	187	51	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	215	34	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	250	34	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	285	34	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	320	34	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	355	34	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	425	17	http://www.example.gov/data/statistics/annual-report.xls
+Verdana,10,0	33	323	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	47	221	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	61	170	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	75	119	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	89	119	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	103	102	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	117	85	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	131	85	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	145	68	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	166	68	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	187	51	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	215	51	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	250	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	285	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	320	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	355	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX
+Verdana,10,0	425	34	PERCENT OF TOTAL ENROLLMENT BY RACE/ETHNICITY AND SEX

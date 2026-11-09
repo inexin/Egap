@@ -1075,6 +1075,10 @@ Egap.Spreadsheets.Worksheet.InsertColumns(string! column, int count = 1) -> void
 Egap.Spreadsheets.Worksheet.InsertRows(int row, int count = 1) -> void
 Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell! destination) -> void
 Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell! destination) -> void
+Egap.Spreadsheets.CellRange.AutoFitColumns() -> void
+Egap.Spreadsheets.CellRange.AutoFitRows() -> void
+Egap.Spreadsheets.SheetColumn.AutoFit() -> double?
+Egap.Spreadsheets.SheetRow.AutoFit() -> double
 Egap.Spreadsheets.SortField.Index.get -> int
 Egap.Spreadsheets.SortField.Descending.get -> bool
 Egap.Spreadsheets.SortField.Descending.init -> void

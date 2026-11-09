@@ -169,6 +169,39 @@ sheet.View.ZoomScale = 125;
 `sheet.MergedCells` holds the merged ranges; adding one that overlaps another throws. `sheet.View` holds what the sheet
 shows on screen: gridlines, headings, zeros, direction, zoom, frozen rows and columns, and whether its tab is selected.
 
+### AutoFit
+
+`AutoFit` sizes a column to its widest text and a row to its tallest, as Excel's AutoFit does. `SheetColumn.AutoFit()`
+fits a column to all its cells and gives its new width, or null when it has no text and keeps its width;
+`CellRange.AutoFitColumns()` fits each of a range's columns to the cells in the range only. `SheetRow.AutoFit()` and
+`CellRange.AutoFitRows()` fit rows to the fonts, wrapped lines and turned text of their cells; a row of only the normal
+font goes back to the sheet's default height.
+
+```csharp
+using Egap.Spreadsheets;
+
+Worksheet sheet = Workbook.Create().Worksheets[0];
+sheet["A1"].Value = CellValue.FromText("Quarterly revenue by region");
+sheet["B1"].Value = CellValue.FromNumber(1234567.89);
+sheet.Range("A1:B1").AutoFitColumns();
+double? width = sheet.Columns["A"].AutoFit();      // the same width: A has no other text
+double height = sheet.Rows[0].AutoFit();           // 15 points, the Calibri 11 row
+```
+
+Widths are measured as Excel measures text on screen at 96 dpi, at the sheet's zoom as Excel does. For the fonts and
+sizes sheets use most, Egap carries the widths Excel gives each character and the height it gives each font's line;
+other fonts are measured from the font, and can come out a few pixels off. Numbers in the General format take the
+widest digit for each digit and the decimal separator, so the column holds any number of that length. Text shows as
+`Workbook.Culture` formats it. A merge across columns is left out of a column's fit and one down a single column counts
+by its first cell; for rows it is the other way round. A row's empty cells hold it to the font of the row's or the
+columns' style, and every cell's font counts, empty or not. A medium, thick or double border between rows adds a pixel
+to the rows beside it, as Excel draws it.
+
+Wrapped text breaks as Excel breaks it: at spaces and after hyphens, with a word too long for the line cut between its
+characters. A wrapped column widens until its text fits the lines its row shows. A header with a filter button, of the
+sheet's filter or of a table, makes room for the button. Italic text takes the pixels its last character leans past
+its width. Rich text is measured in the cell's own font, where Excel measures each run in its own.
+
 ### Inserting and deleting rows and columns
 
 `InsertRows`, `DeleteRows`, `InsertColumns` and `DeleteColumns` edit a sheet as Excel's Insert and Delete do. Rows and

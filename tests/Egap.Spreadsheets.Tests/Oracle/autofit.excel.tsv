@@ -1,0 +1,107 @@
+# Excel 16.0 build 20527, nb-NO locale, written by tools/excel-autofit-oracle.ps1
+cols	A	2	1.29
+cols	B	5.7109375	5
+cols	C	29.7109375	29
+cols	D	19.85546875	19.14
+cols	E	6.7109375	6
+cols	F	11	10.29
+cols	G	12	11.29
+cols	H	5	4.29
+cols	I	12	11.29
+cols	J	10.42578125	9.71
+cols	K	8.85546875	8.14
+cols	L	5	4.29
+cols	M	13.7109375	13
+cols	N	9.28515625	8.57
+cols	O	11.140625	10.43
+cols	P	12.5703125	11.86
+cols	Q	14.28515625	13.57
+cols	R	24	23.29
+cols	S	8.85546875	8.14
+cols	T	8.7109375	8
+cols	U	5.5703125	4.86
+cols	V	21.42578125	20.71
+cols	W	15.28515625	14.57
+cols	X	11.7109375	11
+cols	Y	16.85546875	16.14
+cols	Z	14	13.29
+cols	AA	3.7109375	3
+cols	AB	17.42578125	16.71
+cols	AC	10.7109375	10
+cols	AD	13.85546875	13.14
+cols	AE	6	5.29
+cols	AF		8.43
+cols	AG		8.43
+rows	1		15
+rows	2		15
+rows	3	18.75	18.75
+rows	4	26.25	26.25
+rows	5	46.5	46.5
+rows	6		15
+rows	7	30	30
+rows	8		15
+rows	9	23.25	23.25
+rows	10	60	60
+rows	11	45	45
+rows	12	45	45
+rows	13	69.75	69.75
+rows	14		15
+rows	15	75	75
+rows	16		15
+rows	17	15.75	15.75
+rows	18	45	45
+rows	19	30.75	30.75
+rows	20		15
+cols-arial	A	2	1.29
+cols-arial	B	5.140625	4.43
+cols-arial	C	27.5703125	26.86
+cols-arial	D	19.85546875	19.14
+cols-arial	E	5.28515625	4.57
+cols-arial	F	11	10.29
+cols-arial	G	12	11.29
+cols-arial	H	5	4.29
+cols-arial	I	12.42578125	11.71
+cols-arial	J	10.140625	9.43
+cols-arial	K		8.43
+cols-arial	L	5.28515625	4.57
+cols-arial	M	14	13.29
+cols-arial	N	10.28515625	9.57
+cols-arial	O	11.140625	10.43
+cols-arial	P	12.5703125	11.86
+cols-arial	Q	14.28515625	13.57
+cols-arial	R	22.28515625	21.57
+cols-arial	S	7.85546875	7.14
+cols-arial	T	8.5703125	7.86
+cols-arial	U	5.85546875	5.14
+cols-arial	V	21.42578125	20.71
+cols-arial	W	15.28515625	14.57
+cols-arial	X	11.42578125	10.71
+cols-arial	Y	19.28515625	18.57
+cols-arial	Z	13.42578125	12.71
+cols-arial	AA	3.28515625	2.57
+cols-arial	AB	16.5703125	15.86
+cols-arial	AC	10.5703125	9.86
+cols-arial	AD	13.5703125	12.86
+cols-arial	AE	6	5.29
+cols-arial	AF		8.43
+cols-arial	AG		8.43
+rows-arial	1		12.75
+rows-arial	2		12.75
+rows-arial	3	18	18
+rows-arial	4	25.5	25.5
+rows-arial	5	44.25	44.25
+rows-arial	6		12.75
+rows-arial	7	30	30
+rows-arial	8		12.75
+rows-arial	9	23.25	23.25
+rows-arial	10	51	51
+rows-arial	11	38.25	38.25
+rows-arial	12	38.25	38.25
+rows-arial	13	65.25	65.25
+rows-arial	14		12.75
+rows-arial	15	72	72
+rows-arial	16		12.75
+rows-arial	17	15.75	15.75
+rows-arial	18	38.25	38.25
+rows-arial	19	26.25	26.25
+rows-arial	20	14.25	14.25
