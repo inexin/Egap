@@ -129,12 +129,16 @@ public sealed class SheetProtection
 
         IsProtected = false;
         Password = null;
+        Kept = false;
         return true;
     }
 
     /// <summary>Whether <paramref name="password"/> lifts the protection: true when it matches the hash, or when there is no password.</summary>
     /// <exception cref="DocumentException">The file's hash uses an algorithm Egap cannot check or more spins than it runs.</exception>
     public bool Verify(string? password) => Password?.Verify(password) ?? true;
+
+    /// <summary>Whether the file had a sheetProtection element, written back while the sheet is not unprotected.</summary>
+    internal bool Kept { get; set; }
 
     /// <summary>
     /// Whether a user may change a cell without a password: the sheet is not protected, the cell is not locked, or it is in
@@ -152,6 +156,7 @@ public sealed class SheetProtection
         IsProtected = on;
         AllowedActions = allowed;
         Password = password;
+        Kept = true;
     }
 }
 

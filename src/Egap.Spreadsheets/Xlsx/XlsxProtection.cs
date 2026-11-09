@@ -75,14 +75,14 @@ internal static class XlsxProtection
 
     public static XElement? WriteSheet(SheetProtection protection, XNamespace ns)
     {
-        if (!protection.IsProtected)
+        if (!protection.IsProtected && !protection.Kept)
         {
             return null;
         }
 
         XElement element = new(ns + "sheetProtection");
         AddHash(element, protection.Password, "");
-        element.Add(new XAttribute("sheet", "1"));
+        element.Add(new XAttribute("sheet", protection.IsProtected ? "1" : "0"));
         foreach ((string name, SheetActions action, bool protectedByDefault) in Flags)
         {
             bool isProtected = (protection.AllowedActions & action) == 0;
