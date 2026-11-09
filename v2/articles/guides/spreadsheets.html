@@ -89,7 +89,7 @@
 
 <p>Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas,
 cell styles, rows and columns, names and print settings, as Excel keeps them. It loads and saves Excel's XLSX, XLSM, XLTX and
-XLTM files. The types are in <code>Egap.Spreadsheets</code>.</p>
+XLTM files, and loads OpenDocument spreadsheets (ODS). The types are in <code>Egap.Spreadsheets</code>.</p>
 <pre><code class="lang-csharp">using Egap.Spreadsheets;
 
 Workbook book = Workbook.Create();                   // one empty sheet, Sheet1
@@ -129,6 +129,27 @@ keeps its runs, and chart sheets keep their place among the worksheets. A remove
 to calculate on open, and the calculation chain is left out for Excel to build again. A cell that shared the formula of a
 cell you changed gets the formula as its own, as in Excel. Saving a workbook with macros as <code>.xlsx</code> or <code>.xltx</code> leaves the macros
 out, as Excel does.</p>
+<h3 id="opendocument-spreadsheets">OpenDocument spreadsheets</h3>
+<p><code>Workbook.Load</code> also reads OpenDocument spreadsheets, as LibreOffice Calc and other office suites save them: ODS, OTS
+templates and flat FODS files, from a path or a stream. The kind is told from the file's first bytes, not its extension.
+Formulas come in OpenFormula, the ODF formula language, and are translated to Excel's: <code>[.A1:.B2]</code> becomes <code>A1:B2</code>,
+<code>[$'My sheet'.A1]</code> becomes <code>'My sheet'!A1</code>, semicolons between arguments become commas, and functions take Excel's names.
+What-if tables, which ODS keeps as <code>MULTIPLE.OPERATIONS</code> in each cell, become Excel data tables. A reference to another
+file, <code>['file:///c:/rates.ods'#$Sheet1.A1]</code>, becomes Excel's <code>[1]Sheet1!A1</code>, and the values the file keeps for that
+file's sheets become the linked book's, which formulas calculate from and which save with the workbook. A workbook read
+from ODS saves as XLSX.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;budget.ods&quot;);
+Worksheet sheet = book.Worksheets[0];
+string? formula = sheet[&quot;B10&quot;].Formula;              // &quot;SUM(B2:B9)&quot;, as Excel writes it
+book.Save(&quot;budget.xlsx&quot;);
+</code></pre>
+<p>Cell values of every type, formulas with their last results, array formulas, merged cells, cell styles and number formats,
+column widths, row heights, hidden and grouped rows and columns, hidden sheets and tab colours, named ranges and
+expressions, and print ranges are read. A reference to another file becomes <code>#REF!</code>. Charts, pictures, notes, conditional
+formats, data validation and sheet protection are not read yet; ODF hashes its passwords differently from Excel, so a
+protected ODS sheet loads unprotected.</p>
 <p><code>Workbook.Format</code> is the kind of file a workbook came from. <code>WorkbookLoadOptions.Limits</code> bounds what a file may hold (part
 count, part and total size, compression ratio, XML depth) so a hostile file cannot use up memory; a file that goes past a
 limit throws a <code>DocumentLimitException</code>, and one that is not a workbook a <code>DocumentException</code>, both from Egap.Documents.</p>
