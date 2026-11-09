@@ -10,7 +10,8 @@ namespace Egap.Spreadsheets.Benchmarks;
 
 /// <summary>
 /// Loading an ODS spreadsheet of 10,000 rows by 10 columns (100,000 cells), the same data as <see cref="XlsxBenchmarks"/>:
-/// numbers, text from 1,000 distinct strings, an OpenFormula formula per row and two cell styles.
+/// numbers, text from 1,000 distinct strings, an OpenFormula formula per row and two cell styles; and saving it as ODS,
+/// flat FODS and password-protected ODS.
 /// </summary>
 [MemoryDiagnoser]
 public class OdsBenchmarks
@@ -19,6 +20,7 @@ public class OdsBenchmarks
     private const int Columns = 10;
 
     private byte[] file = [];
+    private Workbook book = null!;
 
     [GlobalSetup]
     public void Setup()
@@ -75,10 +77,27 @@ public class OdsBenchmarks
         }
 
         file = stream.ToArray();
+        book = Workbook.Load(new MemoryStream(file, writable: false));
     }
 
     [Benchmark(Description = "Load ODS, 100k cells")]
     public Workbook Load() => Workbook.Load(new MemoryStream(file, writable: false));
+
+    [Benchmark(Description = "Save ODS, 100k cells")]
+    public long SaveOds() => Save(new WorkbookSaveOptions { Format = WorkbookFormat.Ods });
+
+    [Benchmark(Description = "Save FODS, 100k cells")]
+    public long SaveFods() => Save(new WorkbookSaveOptions { Format = WorkbookFormat.Fods });
+
+    [Benchmark(Description = "Save ODS with a password, 100k cells")]
+    public long SaveEncrypted() => Save(new WorkbookSaveOptions { Format = WorkbookFormat.Ods, Password = "benchmark" });
+
+    private long Save(WorkbookSaveOptions options)
+    {
+        using MemoryStream stream = new();
+        book.Save(stream, options);
+        return stream.Length;
+    }
 
     private static void Write(ZipArchive zip, string name, string text, CompressionLevel level)
     {

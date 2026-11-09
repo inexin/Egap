@@ -10,8 +10,8 @@ namespace Egap.Spreadsheets.Ods;
 /// Translates Excel's formula text into OpenFormula (ODF 1.3 Part 4) as an ODS file stores it: references in brackets
 /// (<c>A1:B2</c> as <c>[.A1:.B2]</c>, <c>'My sheet'!A1</c> as <c>[$'My sheet'.A1]</c>, <c>[1]Rates!A1</c> as
 /// <c>['file:///c:/rates.xlsx'#$Rates.A1]</c>), semicolons between arguments, <c>|</c> between an array's rows, <c>~</c> for
-/// the union and <c>!</c> for the intersection, <c>TRUE()</c> and <c>FALSE()</c>, structured references as the ranges they
-/// name, and function names as ODF names them.
+/// the union and <c>!</c> for the intersection, <c>TRUE()</c> and <c>FALSE()</c> outside arrays, structured references as
+/// the ranges they name, and function names as ODF names them.
 /// </summary>
 internal static class OpenFormulaWriter
 {
@@ -274,7 +274,9 @@ internal static class OpenFormulaWriter
                     }
 
                     string word = text[i..end];
-                    output.Append(word.ToUpperInvariant() is "TRUE" or "FALSE" ? word.ToUpperInvariant() + "()" : word);
+                    // Booleans in an array stay bare, as office suites write them: TRUE() is a function call, which an array may
+                    // not hold.
+                    output.Append(word.ToUpperInvariant() is "TRUE" or "FALSE" ? word.ToUpperInvariant() : word);
                     i = end - 1;
                     continue;
                 }
