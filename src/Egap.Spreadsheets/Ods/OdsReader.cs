@@ -46,6 +46,13 @@ internal static class OdsReader
         List<(Worksheet Sheet, XElement Table)> sheets = [];
         foreach (XElement table in spreadsheet.Elements(TableNs + "table"))
         {
+            // A copy of another file's sheet that office suites keep for the formulas that refer to it, named for the file and
+            // sheet, is not a sheet of this workbook.
+            if (table.Element(TableNs + "table-source") is not null && table.Attr(TableNs, "name") is ['\'', ..] name && name.Contains("'#", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
             Worksheet sheet = AddSheet(book, table.Attr(TableNs, "name"));
             sheets.Add((sheet, table));
             ReadTable(context, sheet, table);

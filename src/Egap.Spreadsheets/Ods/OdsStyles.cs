@@ -204,7 +204,7 @@ internal sealed class OdsStyles
             font = font with { Name = family };
         }
 
-        if (OdfUnits.Length(text.GetValueOrDefault(FoNs + "font-size")) is double size and > 0 and < 410)
+        if (OdfUnits.Length(text.GetValueOrDefault(FoNs + "font-size")) is double size and >= 1 and <= 409)
         {
             font = font with { Size = Math.Round(size * 2) / 2 };
         }

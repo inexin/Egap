@@ -31,8 +31,7 @@ public sealed class OdsTests
     [InlineData("of:=SUM([.A1:.A3]~[.C1:.C3])", "SUM(A1:A3,C1:C3)")]
     [InlineData("of:=SUM([.A1:.C3]![.B2:.D4])", "SUM(A1:C3 B2:D4)")]
     [InlineData("of:=[.A:.A]", "A:A")]
-    [InlineData("of:=SUM([.B3:.B3])", "SUM(B3)")]
-    [InlineData("of:=SUM([$S.$B$3:.$B$3])", "SUM(S!$B$3)")]
+    [InlineData("of:=SUM([.B3:.B3])", "SUM(B3:B3)")]
     [InlineData("of:=SUM([.2:.3])", "SUM(2:3)")]
     [InlineData("of:=1E-3+2.5e+2", "1E-3+2.5e+2")]
     [InlineData("of:=#N/A", "#N/A")]
@@ -184,6 +183,16 @@ public sealed class OdsTests
         string styles = $"""<style:style style:name="ce1" style:family="table-cell"><style:text-properties style:font-name="{new string('F', 40)}"/></style:style>""";
         Workbook book = Load(Flat(Table("S", Row(Cell("float", "office:value=\"1\" table:style-name=\"ce1\""))), styles: styles));
         Assert.Equal(CellStyle.Default.Font.Name, book.Worksheets[0]["A1"].Style.Font.Name);
+    }
+
+    [Theory]
+    [InlineData("0.2pt")]
+    [InlineData("500pt")]
+    public void LeavesFontSizesExcelCannotHoldForTheDefault(string size)
+    {
+        string styles = $"""<style:style style:name="ce1" style:family="table-cell"><style:text-properties fo:font-size="{size}"/></style:style>""";
+        Workbook book = Load(Flat(Table("S", Row(Cell("float", "office:value=\"1\" table:style-name=\"ce1\""))), styles: styles));
+        Assert.Equal(CellStyle.Default.Font.Size, book.Worksheets[0]["A1"].Style.Font.Size);
     }
 
     [Fact]

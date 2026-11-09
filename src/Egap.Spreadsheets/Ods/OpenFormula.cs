@@ -282,9 +282,7 @@ internal static class OpenFormula
                 : SheetNames.Quoted(sheet1) + "!";
         }
 
-        // A range from a cell to itself, as office suites write a single cell they keep as a range, is that cell.
-        bool single = split >= 0 && cell1 == cell2 && (sheet2 is null || sheet2 == sheet1) && cell1.Any(char.IsAsciiDigit) && cell1.Any(char.IsAsciiLetter);
-        return split < 0 || single ? prefix + cell1 : prefix + cell1 + ":" + cell2;
+        return split < 0 ? prefix + cell1 : prefix + cell1 + ":" + cell2;
     }
 
     /// <summary>Whether a reference that starts with a quote names another file: the quote is followed by <c>#</c>.</summary>
