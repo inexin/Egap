@@ -1136,12 +1136,6 @@ internal sealed class OdsWriter
                 xml.WriteAttributeString("table", "number-matrix-rows-spanned", TableNs.NamespaceName, (array.Last.Row - array.First.Row + 1).ToString(CultureInfo.InvariantCulture));
             }
         }
-        else if (record.Kind == CellKind.Error)
-        {
-            // An error typed into a cell is the formula of that error, as office suites keep it.
-            formula = "of:=" + CellValue.ErrorText(value.Error);
-        }
-
         if (formula is not null)
         {
             xml.WriteAttributeString("table", "formula", TableNs.NamespaceName, formula);

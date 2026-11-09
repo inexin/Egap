@@ -134,6 +134,7 @@ public sealed class OdsWriterTests
         Assert.Equal(3.5, report["B1"].Value);
         Assert.Equal(true, report["C1"].Value);
         Assert.Equal(CellError.NotAvailable, report["D1"].Value);
+        Assert.False(report["D1"].HasFormula);
         Assert.Equal("B1*2", report["E1"].Formula);
         Assert.Equal(7.0, report["E1"].Value);
         Assert.Equal("yes", report["F1"].Value);

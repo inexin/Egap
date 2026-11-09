@@ -82,8 +82,8 @@ with functions under the names LibreOffice gives them (`COM.MICROSOFT.` for Exce
 statistics functions); a formula Egap cannot parse is kept in Excel's syntax as `msoxl:`. Values with their types, the
 cached results of formulas, cell styles, number formats as ODF data styles, merged cells, array formulas, column widths and
 row heights, hidden and grouped rows and columns, hidden sheets and tab colours, names, print ranges, data tables (as
-`MULTIPLE.OPERATIONS`) and links to other files with their kept values are written. ODF has no error constant, so a cell
-that holds `#N/A` as a value is written as the formula `=#N/A`. Charts, pictures, notes, conditional formats, data
+`MULTIPLE.OPERATIONS`) and links to other files with their kept values are written; an error typed into a cell, which
+ODF has no value type for, is written as LibreOffice writes it. Charts, pictures, notes, conditional formats, data
 validation, protection and view settings such as frozen panes are not written yet; a chart sheet becomes an empty sheet in
 its place, so the tab order and sheet names stay.
 
