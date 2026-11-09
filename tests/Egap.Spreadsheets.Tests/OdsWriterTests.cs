@@ -45,6 +45,8 @@ public sealed class OdsWriterTests
     [InlineData("A1%+-B1^2&\"x\"", "of:=[.A1]%+-[.B1]^2&\"x\"")]
     [InlineData("Sheet2!Rate*2", "of:=Sheet2.Rate*2")]
     [InlineData("Rate*2", "of:=Rate*2")]
+    [InlineData("[0]!Rate*2", "of:=Rate*2")]
+    [InlineData("[0]Sheet2!A1+[0]Sheet2!Rate", "of:=[$Sheet2.A1]+Sheet2.Rate")]
     [InlineData("SUM( A1 , B1 )", "of:=SUM( [.A1] ; [.B1] )")]
     public void TranslatesToOpenFormula(string excel, string openFormula)
     {

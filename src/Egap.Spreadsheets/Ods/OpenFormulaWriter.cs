@@ -301,7 +301,8 @@ internal static class OpenFormulaWriter
 
             SheetPrefix? prefix = reference.Prefix;
             string? file = null;
-            if (prefix?.Book is { } book)
+            // Excel's book [0] is the workbook itself.
+            if (prefix?.Book is { } book && book != "0")
             {
                 file = files(book);
                 if (file is null || prefix.FirstSheet is null)
@@ -366,7 +367,14 @@ internal static class OpenFormulaWriter
                 return;
             }
 
-            if (prefix.Book is { } book)
+            if (prefix.Book == "0" && prefix.FirstSheet is null)
+            {
+                // [0]!Rates names the workbook's own Rates.
+                output.Append(name.Name);
+                return;
+            }
+
+            if (prefix.Book is { } book && book != "0")
             {
                 // A name of a linked book, [1]!Rates: ODF's 'file'#$$'Rates' when the book's file is known.
                 if (prefix.FirstSheet is null && files(book) is { } file)
