@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" office:version="1.3" office:mimetype="application/vnd.oasis.opendocument.spreadsheet">
+ <office:body>
+  <office:spreadsheet>
+   <table:table table:name="Main">
+    <table:table-row><table:table-cell table:formula="of:=['file:///c:/other.xlsx'#$Prices.A1]*2" office:value-type="float" office:value="18"/><table:table-cell table:formula="of:=Main.Rate+'Main'.Rate" office:value-type="float" office:value="2"/><table:table-cell table:formula="of:=#ref!" office:value-type="float" office:value="0"/><table:table-cell office:value-type="float" office:value="1"/></table:table-row>
+    <table:table-row><table:table-cell office:value-type="float" office:value="1"/><table:table-cell office:value-type="float" office:value="10"/><table:table-cell office:value-type="float" office:value="20"/></table:table-row>
+    <table:table-row><table:table-cell office:value-type="float" office:value="1"/><table:table-cell table:formula="of:=MULTIPLE.OPERATIONS([.$A$2];[.$D$1];[.$A3];[.$C$1];[.B$2])" office:value-type="float" office:value="11"/><table:table-cell table:formula="of:=MULTIPLE.OPERATIONS([.$A$2];[.$D$1];[.$A3];[.$C$1];[.C$2])" office:value-type="float" office:value="21"/></table:table-row>
+    <table:table-row><table:table-cell office:value-type="float" office:value="2"/><table:table-cell table:formula="of:=MULTIPLE.OPERATIONS([.$A$2];[.$D$1];[.$A4];[.$C$1];[.B$2])" office:value-type="float" office:value="12"/><table:table-cell table:formula="of:=MULTIPLE.OPERATIONS([.$A$2];[.$D$1];[.$A4])" office:value-type="float" office:value="22" table:number-columns-spanned="2"/><table:covered-table-cell table:formula="of:=[.A1]" office:value-type="float" office:value="18"/></table:table-row>
+    <table:named-expressions><table:named-expression table:name="Rate" table:base-cell-address="$Main.$A$1" table:expression="of:=1"/></table:named-expressions>
+   </table:table>
+   <table:table table:name="'file:///c:/other.xlsx'#$Prices" table:print="false">
+    <table:table-source xlink:type="simple" xlink:href="file:///c:/other.xlsx" table:table-name="Prices" table:mode="copy-results-only"/>
+    <table:table-row><table:table-cell office:value-type="float" office:value="9"/><table:table-cell office:value-type="string"><text:p>kept</text:p></table:table-cell></table:table-row>
+   </table:table>
+  </office:spreadsheet>
+ </office:body>
+</office:document>

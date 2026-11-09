@@ -18,6 +18,35 @@ internal sealed class ExternalBook(Workbook book, OpcPart? part)
 {
     private readonly Lazy<Contents> contents = new(() => Read(book, part));
 
+    /// <summary>A linked book made in memory, such as one an ODS file refers to, which the workbook writes as a new link.</summary>
+    /// <param name="book">The workbook that links to it.</param>
+    /// <param name="target">The linked file, as the link's target.</param>
+    public ExternalBook(Workbook book, string target)
+        : this(book, (OpcPart?)null)
+    {
+        Target = target;
+        contents.Value.IsBook = true;
+    }
+
+    /// <summary>The linked file of a book made in memory; null for one read from a package, whose part saves as it was.</summary>
+    public string? Target { get; }
+
+    /// <summary>The cached sheets of a book made in memory, in order.</summary>
+    public List<Worksheet> MadeSheets { get; } = [];
+
+    /// <summary>The cached sheet called <paramref name="name"/> of a book made in memory, added empty when it has none.</summary>
+    public Worksheet MakeSheet(Workbook owner, string name)
+    {
+        if (!contents.Value.Sheets.TryGetValue(name, out Worksheet? sheet))
+        {
+            sheet = new Worksheet(owner, name, linked: true);
+            contents.Value.Sheets[name] = sheet;
+            MadeSheets.Add(sheet);
+        }
+
+        return sheet;
+    }
+
     /// <summary>The cached sheet called <paramref name="name"/>, or null.</summary>
     public Worksheet? Sheet(string name) => contents.Value.Sheets.GetValueOrDefault(name);
 

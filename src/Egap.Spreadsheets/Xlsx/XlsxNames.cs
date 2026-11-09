@@ -23,6 +23,7 @@ internal static class XlsxNames
     public const string WorksheetRelationship = Office + "worksheet";
     public const string ChartsheetRelationship = Office + "chartsheet";
     public const string ExternalLinkRelationship = Office + "externalLink";
+    public const string ExternalLinkPathRelationship = Office + "externalLinkPath";
     public const string SharedStringsRelationship = Office + "sharedStrings";
     public const string StylesRelationship = Office + "styles";
     /// <summary>
@@ -40,6 +41,7 @@ internal static class XlsxNames
     public const string SharedStringsType = Ml + "sharedStrings+xml";
     public const string StylesType = Ml + "styles+xml";
     public const string SheetMetadataType = Ml + "sheetMetadata+xml";
+    public const string ExternalLinkType = Ml + "externalLink+xml";
 
     /// <summary>The content type of the workbook part for each kind of file.</summary>
     public static string WorkbookType(WorkbookFormat format) => format switch

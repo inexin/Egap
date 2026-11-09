@@ -156,6 +156,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- `Workbook.Load` reads OpenDocument spreadsheets: ODS, OTS and flat FODS, told apart from XLSX by their first bytes. Cells
+  of every type, formulas translated from OpenFormula to Excel's syntax, array formulas, merged cells, styles and number
+  formats, column widths, row heights, hidden and grouped rows and columns, sheets, names and print ranges are read,
+  what-if tables become Excel data tables, references to other files become linked books with the values the file
+  keeps for them, and the workbook saves as XLSX, links included.
 - `Cell.ImportData` writes a list of objects, a `DataTable` or an `IDataReader` into cells, with a header row, number
   formats for dates and times, and an optional Excel table; `CellRange.ToDataTable` and `CellRange.ToList<T>` read a
   range back as a table with typed columns or as objects and records, matched by header name.

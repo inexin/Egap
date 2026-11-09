@@ -407,8 +407,8 @@ public sealed partial class Workbook
     public static Workbook CreateEmpty() => new(new StyleTable());
 
     /// <summary>
-    /// Loads an XLSX, XLSM, XLTX or XLTM file, or a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> file as
-    /// <see cref="LoadCsv(string, CsvOptions?)"/> does, with <see cref="WorkbookLoadOptions.Csv"/>.
+    /// Loads an XLSX, XLSM, XLTX or XLTM file, an OpenDocument spreadsheet (ODS, OTS or flat FODS), or a <c>.csv</c>,
+    /// <c>.tsv</c> or <c>.tab</c> file as <see cref="LoadCsv(string, CsvOptions?)"/> does, with <see cref="WorkbookLoadOptions.Csv"/>.
     /// </summary>
     /// <exception cref="DocumentException">The file is not a workbook Egap can read.</exception>
     /// <exception cref="DocumentLimitException">The file goes past one of <see cref="WorkbookLoadOptions.Limits"/>.</exception>
@@ -425,16 +425,61 @@ public sealed partial class Workbook
         return Load(stream, options);
     }
 
-    /// <summary>Loads an XLSX, XLSM, XLTX or XLTM file from a stream, which is left open.</summary>
+    /// <summary>
+    /// Loads an XLSX, XLSM, XLTX or XLTM file, or an OpenDocument spreadsheet (ODS, OTS or flat FODS), from a stream, which
+    /// is left open. The kind is told from the file's first bytes. An OpenDocument spreadsheet's formulas are translated from
+    /// OpenFormula to Excel's syntax, and the workbook's <see cref="Format"/> is <see cref="WorkbookFormat.Xlsx"/>.
+    /// </summary>
     /// <exception cref="DocumentException">The file is not a workbook Egap can read.</exception>
     /// <exception cref="DocumentLimitException">The file goes past one of <see cref="WorkbookLoadOptions.Limits"/>.</exception>
     public static Workbook Load(Stream stream, WorkbookLoadOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
+        DocumentLimits limits = options?.Limits ?? new DocumentLimits();
+        if (!stream.CanSeek)
+        {
+            // The kind is told from the first bytes, so a stream that cannot go back is read into memory first, as the ZIP reader would.
+            using MemoryStream copy = new();
+            stream.CopyTo(copy);
+            copy.Position = 0;
+            return Load(copy, options);
+        }
+
         Workbook book = new(StyleTable.ForLoading());
-        XlsxReader.Read(book, stream, options?.Limits ?? new DocumentLimits());
+        if (OdsBytes(stream, limits) is { } ods)
+        {
+            Ods.OdsReader.Read(book, ods, limits);
+        }
+        else
+        {
+            XlsxReader.Read(book, stream, limits);
+        }
+
         book.ChangeCount = 0;
         return book;
+    }
+
+    /// <summary>The whole file when the stream holds an OpenDocument spreadsheet, or null with the stream where it was.</summary>
+    private static byte[]? OdsBytes(Stream stream, DocumentLimits limits)
+    {
+        long start = stream.Position;
+        byte[] head = new byte[8192];
+        int length = stream.ReadAtLeast(head, head.Length, throwOnEndOfStream: false);
+        stream.Position = start;
+        if (!Ods.OdsReader.Sniff(head.AsSpan(0, length)))
+        {
+            return null;
+        }
+
+        long size = stream.Length - start;
+        if (size > limits.MaxTotalSize || size > Array.MaxLength)
+        {
+            throw new DocumentLimitException($"The file is larger than the {limits.MaxTotalSize:N0} bytes the limits allow.");
+        }
+
+        byte[] bytes = new byte[size];
+        stream.ReadExactly(bytes);
+        return bytes;
     }
 
     /// <summary>
