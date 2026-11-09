@@ -194,7 +194,13 @@ other fonts are measured from the font, and can come out a few pixels off. Numbe
 widest digit for each digit and the decimal separator, so the column holds any number of that length. Text shows as
 `Workbook.Culture` formats it. A merge across columns is left out of a column's fit and one down a single column counts
 by its first cell; for rows it is the other way round. A row's empty cells hold it to the font of the row's or the
-columns' style. Rich text is measured in the cell's own font, where Excel measures each run in its own.
+columns' style, and every cell's font counts, empty or not. A medium, thick or double border between rows adds a pixel
+to the rows beside it, as Excel draws it.
+
+Wrapped text breaks as Excel breaks it: at spaces and after hyphens, with a word too long for the line cut between its
+characters. A wrapped column widens until its text fits the lines its row shows. A header with a filter button, of the
+sheet's filter or of a table, makes room for the button. Italic text takes the pixels its last character leans past
+its width. Rich text is measured in the cell's own font, where Excel measures each run in its own.
 
 ### Inserting and deleting rows and columns
 
