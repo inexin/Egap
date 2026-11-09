@@ -21,6 +21,8 @@ public sealed class OdsTests
     [InlineData("of:=[$Sheet2.A1]*2", "Sheet2!A1*2")]
     [InlineData("of:=[$'My sheet'.A1:.C3]", "'My sheet'!A1:C3")]
     [InlineData("of:=SUM([$'It''s'.A1])", "SUM('It''s'!A1)")]
+    [InlineData("of:=[$'Ab cd Ent Sup (2)'.E49]", "'Ab cd Ent Sup (2)'!E49")]
+    [InlineData("of:=#ref!", "#REF!")]
     [InlineData("of:=SUM([$Sheet1.A1:$Sheet3.B2])", "SUM(Sheet1:Sheet3!A1:B2)")]
     [InlineData("of:=IF([.A1]>0;\"yes;no\";\"no\")", "IF(A1>0,\"yes;no\",\"no\")")]
     [InlineData("of:=SUM({1;2|3;4})", "SUM({1,2;3,4})")]
@@ -54,6 +56,14 @@ public sealed class OdsTests
         Assert.False(exact);
     }
 
+    [Theory]
+    [InlineData("of:=Top.Rate*2", "Top!Rate*2")]
+    [InlineData("of:='My sheet'.Rate+'It''s'.Rate", "'My sheet'!Rate+'It''s'!Rate")]
+    [InlineData("of:=my.name+Other.Rate", "my.name+Other.Rate")]
+    [InlineData("of:=COM.MICROSOFT.CONCAT(Top.A)", "_xlfn.CONCAT(Top!A)")]
+    public void TranslatesNamesLocalToSheets(string formula, string excel) =>
+        Assert.Equal(excel, OpenFormula.ToExcel(formula, out _, new HashSet<string>(["Top", "My sheet", "It's"], StringComparer.OrdinalIgnoreCase)));
+
     [Fact]
     public void LeavesOtherSyntaxesOut() => Assert.Null(OpenFormula.ToExcel("foo:=1", out _));
 
@@ -85,12 +95,12 @@ public sealed class OdsTests
     }
 
     [Fact]
-    public void ReadsErrorsTypedIntoCellsAsValues()
+    public void ReadsLoneErrorFormulasWithTheirError()
     {
         Workbook book = Load(Flat(Table("S", Row("<table:table-cell table:formula=\"of:=#REF!\" office:value-type=\"float\" office:value=\"0\"/>",
             "<table:table-cell table:formula=\"of:=#N/A+1\" office:value-type=\"float\" office:value=\"0\" calcext:value-type=\"error\"><text:p>#N/A</text:p></table:table-cell>"))));
         Worksheet sheet = book.Worksheets[0];
-        Assert.False(sheet["A1"].HasFormula);
+        Assert.Equal("#REF!", sheet["A1"].Formula);
         Assert.Equal(CellError.Reference, sheet["A1"].Value.Error);
         Assert.Equal("#N/A+1", sheet["B1"].Formula);
     }
@@ -143,7 +153,7 @@ public sealed class OdsTests
     {
         Workbook book = Load(Flat(Table("S",
             Row("<table:table-cell table:formula=\"of:=SUM([.B1:.C1])\" office:value-type=\"float\" office:value=\"3\" table:number-columns-spanned=\"2\" table:number-rows-spanned=\"1\"/>",
-                "<table:covered-table-cell office:value-type=\"float\" office:value=\"1\"/>", Cell("float", "office:value=\"2\"")),
+                "<table:covered-table-cell table:formula=\"of:=[.C1]-1\" office:value-type=\"float\" office:value=\"1\"/>", Cell("float", "office:value=\"2\"")),
             Row("<table:table-cell table:formula=\"of:={1;2}\" table:number-matrix-columns-spanned=\"2\" table:number-matrix-rows-spanned=\"1\" office:value-type=\"float\" office:value=\"1\"/>",
                 Cell("float", "office:value=\"2\"")),
             Row("<table:table-cell table:formula=\"of:=[.A1]&amp;&quot;x&quot;\" office:value-type=\"string\" office:string-value=\"3x\"><text:p>3x</text:p></table:table-cell>"))));
@@ -151,6 +161,7 @@ public sealed class OdsTests
         Assert.Equal("SUM(B1:C1)", sheet["A1"].Formula);
         Assert.Equal(3, sheet["A1"].Value.Number);
         Assert.Equal(1, sheet["B1"].Value.Number);
+        Assert.Equal("C1-1", sheet["B1"].Formula);
         Assert.Equal([RangeAddress.Parse("A1:B1")], sheet.MergedCells);
         Assert.Equal("A2:B2", sheet["A2"].ArrayRange!.Value.Address.ToString());
         Assert.Equal("{1,2}", sheet["A2"].Formula);

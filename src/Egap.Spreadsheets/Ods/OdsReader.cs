@@ -42,17 +42,15 @@ internal static class OdsReader
         }
 
         OdsStyles styles = new(book, package.Styles, package.IsFlat ? null : package.Content);
-        Context context = new(book, styles, nullDate);
+        // A copy of another file's sheet that office suites keep for the formulas that refer to it, named for the file and
+        // sheet, is not a sheet of this workbook.
+        List<XElement> tables = [.. spreadsheet.Elements(TableNs + "table").Where(t => !(t.Element(TableNs + "table-source") is not null
+            && t.Attr(TableNs, "name") is ['\'', ..] name && name.Contains("'#", StringComparison.Ordinal)))];
+        HashSet<string> sheetNames = new(tables.Select(t => t.Attr(TableNs, "name")).OfType<string>(), StringComparer.OrdinalIgnoreCase);
+        Context context = new(book, styles, nullDate, sheetNames);
         List<(Worksheet Sheet, XElement Table)> sheets = [];
-        foreach (XElement table in spreadsheet.Elements(TableNs + "table"))
+        foreach (XElement table in tables)
         {
-            // A copy of another file's sheet that office suites keep for the formulas that refer to it, named for the file and
-            // sheet, is not a sheet of this workbook.
-            if (table.Element(TableNs + "table-source") is not null && table.Attr(TableNs, "name") is ['\'', ..] name && name.Contains("'#", StringComparison.Ordinal))
-            {
-                continue;
-            }
-
             Worksheet sheet = AddSheet(book, table.Attr(TableNs, "name"));
             sheets.Add((sheet, table));
             ReadTable(context, sheet, table);
@@ -63,10 +61,10 @@ internal static class OdsReader
             throw new DocumentException("The OpenDocument spreadsheet has no tables.");
         }
 
-        ReadNames(book, spreadsheet.Element(TableNs + "named-expressions"), null);
+        ReadNames(book, spreadsheet.Element(TableNs + "named-expressions"), null, sheetNames);
         foreach ((Worksheet sheet, XElement table) in sheets)
         {
-            ReadNames(book, table.Element(TableNs + "named-expressions"), sheet);
+            ReadNames(book, table.Element(TableNs + "named-expressions"), sheet, sheetNames);
             if (table.Attr(TableNs, "print-ranges") is { Length: > 0 } print && Ranges(print) is { } area
                 && !book.Names.Any(n => n.Name == "_xlnm.Print_Area" && n.Sheet == sheet))
             {
@@ -97,8 +95,10 @@ internal static class OdsReader
         }
     }
 
-    private sealed class Context(Workbook book, OdsStyles styles, DateTime nullDate)
+    private sealed class Context(Workbook book, OdsStyles styles, DateTime nullDate, IReadOnlySet<string> sheetNames)
     {
+        public IReadOnlySet<string> SheetNames { get; } = sheetNames;
+
         public Workbook Book { get; } = book;
 
         public OdsStyles Styles { get; } = styles;
@@ -325,18 +325,19 @@ internal static class OdsReader
         CellRecord record = default;
         FormulaEntry? formula = null;
         CellValue result = CellValue.Empty;
-        if (content && !covered)
+        // A covered cell's value and formula are kept, as Excel keeps the cells under a merged range.
+        if (content)
         {
             result = Value(context, cell, out bool text);
-            // LibreOffice writes a TRUE or FALSE typed into a cell as the formula TRUE() or FALSE() of a boolean cell, and an
-            // error typed into a cell, such as #REF!, as a formula of that error alone: those are values. A cell that only
-            // shows a number as TRUE or FALSE keeps the formula as it was written.
+            // LibreOffice writes a TRUE or FALSE typed into a cell as the formula TRUE() or FALSE() of a boolean cell:
+            // those are values. A cell that only shows a number as TRUE or FALSE keeps the formula as it was written. An error
+            // typed into a cell and a formula of that error alone are both written as the formula, so it stays one, and its
+            // result is that error whatever value the file stored with it.
             string? source = cell.Attr(TableNs, "formula");
-            string? excel = source is null ? null : OpenFormula.ToExcel(source, out _);
+            string? excel = source is null ? null : OpenFormula.ToExcel(source, out _, context.SheetNames);
             if (excel is ['#', ..] && !source!.Contains('[', StringComparison.Ordinal) && CellValue.TryParseError(excel, out CellError typed))
             {
                 result = CellValue.FromError(typed);
-                excel = null;
             }
 
             if (excel is { Length: > 0 } && !(cell.Attr(OfficeNs, "value-type") == "boolean" && excel is "TRUE" or "FALSE"))
@@ -364,18 +365,12 @@ internal static class OdsReader
 
             int spanColumns = OdfUnits.Int(cell.Attr(TableNs, "number-columns-spanned")) ?? 1;
             int spanRows = OdfUnits.Int(cell.Attr(TableNs, "number-rows-spanned")) ?? 1;
-            if ((spanColumns > 1 || spanRows > 1) && firstRow == lastRow && firstColumn == lastColumn)
+            if (!covered && (spanColumns > 1 || spanRows > 1) && firstRow == lastRow && firstColumn == lastColumn)
             {
                 state.Sheet.MergedCells.AddRead(new RangeAddress(firstRow, firstColumn,
                     Math.Min(firstRow + Math.Max(1, spanRows) - 1, CellAddress.MaxRows - 1),
                     Math.Min(firstColumn + Math.Max(1, spanColumns) - 1, CellAddress.MaxColumns - 1)));
             }
-        }
-        else if (content && covered)
-        {
-            // A covered cell's value is kept, as Excel keeps the values under a merged range.
-            result = Value(context, cell, out bool text);
-            Store(context.Book, result, text, ref record);
         }
 
         if (record.Kind == CellKind.Empty && formula is null && styleName is null)
@@ -626,7 +621,7 @@ internal static class OdsReader
     }
 
     /// <summary>Named ranges and expressions (ODF 1.3 Part 3, 9.4), global or local to a sheet, as defined names.</summary>
-    private static void ReadNames(Workbook book, XElement? names, Worksheet? sheet)
+    private static void ReadNames(Workbook book, XElement? names, Worksheet? sheet, IReadOnlySet<string> sheetNames)
     {
         foreach (XElement element in names?.Elements() ?? [])
         {
@@ -641,7 +636,7 @@ internal static class OdsReader
             string? formula = element.Name.LocalName switch
             {
                 "named-range" => element.Attr(TableNs, "cell-range-address") is { } address ? Ranges(address) : null,
-                "named-expression" => element.Attr(TableNs, "expression") is { } expression ? OpenFormula.ToExcel(expression, out _) : null,
+                "named-expression" => element.Attr(TableNs, "expression") is { } expression ? OpenFormula.ToExcel(expression, out _, sheetNames) : null,
                 _ => null,
             };
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(formula) || book.Names.Any(n => n.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && n.Sheet == sheet))

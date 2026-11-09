@@ -28,7 +28,9 @@ internal static class OpenFormula
     /// <param name="formula">The formula as the file holds it.</param>
     /// <param name="exact">False when a part had no Excel form and became <c>#REF!</c> or <c>#NAME?</c>: a reference to
     /// another file, or one Excel cannot write.</param>
-    public static string? ToExcel(string formula, out bool exact)
+    /// <param name="sheets">The workbook's sheet names, to tell a name local to a sheet, written <c>Sheet.Name</c>, from a
+    /// name with a dot in it.</param>
+    public static string? ToExcel(string formula, out bool exact, IReadOnlySet<string>? sheets = null)
     {
         exact = true;
         ReadOnlySpan<char> text = formula;
@@ -55,10 +57,10 @@ internal static class OpenFormula
             text = text[1..];
         }
 
-        return excel ? text.ToString() : Translate(text, ref exact);
+        return excel ? text.ToString() : Translate(text, ref exact, sheets);
     }
 
-    private static string Translate(ReadOnlySpan<char> text, ref bool exact)
+    private static string Translate(ReadOnlySpan<char> text, ref bool exact, IReadOnlySet<string>? sheets)
     {
         StringBuilder output = new(text.Length);
         int arrayDepth = 0;
@@ -112,7 +114,8 @@ internal static class OpenFormula
                     break;
                 case '#':
                     {
-                        // An error constant, kept as it is: #N/A, #DIV/0!, #REF! and the rest.
+                        // An error constant: #N/A, #DIV/0!, #REF! and the rest, in capitals as Excel writes them (LibreOffice
+                        // can write #ref!).
                         int end = i + 1;
                         while (end < text.Length && (char.IsAsciiLetterOrDigit(text[end]) || text[end] is '/' or '_'))
                         {
@@ -124,8 +127,11 @@ internal static class OpenFormula
                             end++;
                         }
 
-                        output.Append(text[i..end]);
-                        i = end;
+                        for (; i < end; i++)
+                        {
+                            output.Append(char.ToUpperInvariant(text[i]));
+                        }
+
                         continue;
                     }
 
@@ -160,8 +166,25 @@ internal static class OpenFormula
                             continue;
                         }
 
-                        output.Append(word);
+                        // A name local to a sheet: Sheet.Name in OpenFormula, Sheet!Name in Excel.
+                        int dot = word.IndexOf('.');
+                        if (dot > 0 && dot < word.Length - 1 && sheets is not null && sheets.Contains(word[..dot]))
+                        {
+                            output.Append(SheetNames.Quoted(word[..dot])).Append('!').Append(word, dot + 1, word.Length - dot - 1);
+                        }
+                        else
+                        {
+                            output.Append(word);
+                        }
+
                         i = end;
+                        continue;
+                    }
+
+                    if (c == '\'' && sheets is not null && QuotedSheetName(text, i, sheets) is ({ } sheet, int nameStart, int nameEnd))
+                    {
+                        output.Append(SheetNames.Quoted(sheet)).Append('!').Append(text[nameStart..nameEnd]);
+                        i = nameEnd;
                         continue;
                     }
 
@@ -189,6 +212,43 @@ internal static class OpenFormula
         }
 
         return output.ToString();
+    }
+
+    /// <summary>A quoted sheet name followed by a dot and a name, as in <c>'My sheet'.Rate</c>: the sheet and where the name lies.</summary>
+    private static (string Sheet, int NameStart, int NameEnd)? QuotedSheetName(ReadOnlySpan<char> text, int at, IReadOnlySet<string> sheets)
+    {
+        StringBuilder sheet = new();
+        int i = at + 1;
+        while (i < text.Length)
+        {
+            if (text[i] == '\'')
+            {
+                if (i + 1 < text.Length && text[i + 1] == '\'')
+                {
+                    sheet.Append('\'');
+                    i += 2;
+                    continue;
+                }
+
+                break;
+            }
+
+            sheet.Append(text[i++]);
+        }
+
+        int start = i + 2;
+        if (i + 1 >= text.Length || text[i + 1] != '.' || start >= text.Length || !(char.IsLetter(text[start]) || text[start] == '_'))
+        {
+            return null;
+        }
+
+        int end = start;
+        while (end < text.Length && (char.IsLetterOrDigit(text[end]) || text[end] is '_' or '.'))
+        {
+            end++;
+        }
+
+        return sheets.Contains(sheet.ToString()) ? (sheet.ToString(), start, end) : null;
     }
 
     /// <summary>Excel's name for an ODF function name: without the <c>COM.MICROSOFT.</c> and <c>LEGACY.</c> prefixes, upper case.</summary>
