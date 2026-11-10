@@ -1122,7 +1122,8 @@ internal static class WorksheetPartWriter
                 writer.WriteAttributeString(attribute.Name.LocalName, attribute.Name.NamespaceName, attribute.Value);
             }
 
-            writer.WriteString(typed ? FormulaPrinter.StoredForm(formula.Text, new CellAddress(row, column), sheet.IsDynamic(formula) || formula.Attribute("t") == "array", sheet.Workbook, sheet) : formula.Text);
+            // A formula is an ST_Xstring: characters XML cannot hold go as _xHHHH_ escapes, as in cell text.
+            writer.WriteString(XlsxNames.Encode(typed ? FormulaPrinter.StoredForm(formula.Text, new CellAddress(row, column), sheet.IsDynamic(formula) || formula.Attribute("t") == "array", sheet.Workbook, sheet) : formula.Text));
             writer.WriteEndElement();
         }
 

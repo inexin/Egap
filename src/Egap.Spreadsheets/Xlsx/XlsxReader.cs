@@ -725,7 +725,7 @@ internal static class SheetDataReader
 
                         reader.MoveToElement();
                         formulaAttributes = attributes.Count == 0 ? null : [.. attributes];
-                        formula = reader.ReadElementContentAsString();
+                        formula = XlsxNames.Decode(reader.ReadElementContentAsString());
                         break;
                     case "is" when XlsxNames.IsMain(reader.NamespaceURI):
                         XElement text = (XElement)XNode.ReadFrom(reader);

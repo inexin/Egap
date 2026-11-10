@@ -13,4 +13,8 @@
     <PackageReference Include="BenchmarkDotNet" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\..\tests\Egap.Spreadsheets.Tests\XlsBuilder.cs" Link="XlsBuilder.cs" />
+  </ItemGroup>
+
 </Project>
