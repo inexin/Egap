@@ -169,12 +169,12 @@ internal sealed class XlsObjects(Worksheet sheet)
     /// <summary>An HLINKTOOLTIP record ([MS-XLS] 2.4.141): the tip of the hyperlink on the same cells.</summary>
     public void HyperlinkTip(ReadOnlySpan<byte> body)
     {
-        if (body.Length < 12 || links.Count == 0)
+        if (body.Length < 10 || links.Count == 0)
         {
             return;
         }
 
-        ReadOnlySpan<byte> chars = body[12..];
+        ReadOnlySpan<byte> chars = body[10..];
         string tip = Encoding.Unicode.GetString(chars[..(chars.Length / 2 * 2)]);
         int end = tip.IndexOf('\0', StringComparison.Ordinal);
         links[^1].ToolTip = end >= 0 ? tip[..end] : tip;

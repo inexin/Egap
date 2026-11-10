@@ -669,9 +669,10 @@ internal static class XlsReader
 
         private void Record(BiffStream biff)
         {
-            // OfficeArt records too long for one MSODRAWING, or that come after an OBJ, go on in CONTINUE records.
+            // OfficeArt records too long for one MSODRAWING, or that come after an OBJ or a TXO and its text, go on in
+            // CONTINUE records.
             bool drawing = drawingGoesOn;
-            drawingGoesOn = biff.Type is BiffType.MsoDrawing or BiffType.Obj || (biff.Type == BiffType.Continue && drawing);
+            drawingGoesOn = biff.Type is BiffType.MsoDrawing or BiffType.Obj or BiffType.Txo || (biff.Type == BiffType.Continue && drawing);
             ReadOnlySpan<byte> body = biff.Body;
             switch (biff.Type)
             {

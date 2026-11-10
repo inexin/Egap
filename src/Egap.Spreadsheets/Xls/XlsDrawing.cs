@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Xml.Linq;
 
+using Egap.Documents;
 using Egap.Spreadsheets.Xlsx;
 
 namespace Egap.Spreadsheets.Xls;
@@ -299,6 +300,13 @@ internal static class XlsDrawing
                 continue;
             }
 
+            SheetDrawing? metro = kind is Picture or Chart ? null : FromMetro(sheet, shape, anchor, digit, objects.Texts.GetValueOrDefault(id));
+            if (metro is not null)
+            {
+                sheet.Drawings.AddRead(metro);
+                continue;
+            }
+
             SheetDrawing? made = kind switch
             {
                 Picture => MakePicture(shape, blips),
@@ -320,6 +328,91 @@ internal static class XlsDrawing
         }
 
         _ = Note;
+    }
+
+    /// <summary>
+    /// A shape as Excel 2007 and later saved it in the XLS file too: the metroBlob property (0x03A9, [MS-ODRAW] 2.3.4.44) is
+    /// a small package with the shape's DrawingML anchor, which Excel uses when the down-level anchor beside it still matches
+    /// the XLS anchor, as it does when no older Excel moved the shape. Null when there is none or it no longer matches.
+    /// </summary>
+    private static SheetDrawing? FromMetro(Worksheet sheet, Shape shape, ushort[] anchor, int digit, string? text)
+    {
+                if (!shape.Properties.TryGetValue(0x03A9, out var blob) || blob.Complex is not { Length: > 22 } package)
+        {
+            return null;
+        }
+
+        XElement? drawing;
+        XElement? downLevel;
+        try
+        {
+            using ZipArchive zip = new(new MemoryStream(package, writable: false), ZipArchiveMode.Read);
+            // The shape's part is shapexml.xml, connectorxml.xml or the like, beside downrev.xml.
+            ZipArchiveEntry? main = zip.Entries.FirstOrDefault(e => e.FullName.StartsWith("drs/", StringComparison.Ordinal) && e.FullName.EndsWith(".xml", StringComparison.Ordinal) && e.FullName != "drs/downrev.xml");
+            drawing = main is null ? null : Part(zip, main.FullName);
+            downLevel = Part(zip, "drs/downrev.xml");
+        }
+        catch (Exception e) when (e is InvalidDataException or IOException or System.Xml.XmlException or DocumentException)
+        {
+            return null;
+        }
+
+        XElement? cellAnchor = drawing?.Elements(Xdr + "twoCellAnchor").FirstOrDefault();
+        XElement? from = downLevel?.Element(A + "xlAnchor")?.Element(A + "from");
+        XElement? to = downLevel?.Element(A + "xlAnchor")?.Element(A + "to");
+        if (cellAnchor is null || from is null || to is null
+            || !Same(from, Position(sheet, anchor[1], anchor[2], anchor[3], anchor[4], digit))
+            || !Same(to, Position(sheet, anchor[5], anchor[6], anchor[7], anchor[8], digit))
+            || SheetObjectReader.ObjectOf(cellAnchor) is not { } content
+            || content.Descendants().Any(e => e.Name.LocalName is "pic" or "graphicFrame" || e.Attributes().Any(a => a.Name.Namespace == Xlsx.XlsxNames.R)))
+        {
+            return null;
+        }
+
+        SheetDrawingKind kind = content.Name.LocalName switch
+        {
+            "sp" => SheetDrawingKind.Shape,
+            "grpSp" => SheetDrawingKind.Group,
+            _ => SheetDrawingKind.Other,
+        };
+        XElement? properties = content.Descendants(Xdr + "cNvPr").FirstOrDefault();
+        SheetDrawing made = new(kind)
+        {
+            Name = (string?)properties?.Attribute("name") ?? "",
+            Description = (string?)properties?.Attribute("descr"),
+            Text = kind == SheetDrawingKind.Shape ? text : null,
+            Source = new XElement(cellAnchor),
+        };
+        made.AnchorKind = DrawingAnchorKind.TwoCell;
+        made.From = Marker(cellAnchor.Element(Xdr + "from"));
+        made.To = Marker(cellAnchor.Element(Xdr + "to"));
+        return made;
+    }
+
+    private static XElement? Part(ZipArchive zip, string name)
+    {
+        ZipArchiveEntry? entry = zip.GetEntry(name);
+        if (entry is null || entry.Length > 4 * 1024 * 1024)
+        {
+            return null;
+        }
+
+        using Stream stream = entry.Open();
+        using MemoryStream copy = new();
+        stream.CopyTo(copy);
+        return Xlsx.SafeXml.Load(copy.ToArray(), new DocumentLimits()).Root;
+    }
+
+    private static bool Same(XElement marker, DrawingPosition position) =>
+        (int?)marker.Attribute("row") == position.Cell.Row && (int?)marker.Attribute("col") == position.Cell.Column
+        && (long?)marker.Attribute("rowOffset") == position.OffsetY && (long?)marker.Attribute("colOffset") == position.OffsetX;
+
+    private static DrawingPosition Marker(XElement? marker)
+    {
+        static long Number(XElement? element) => long.TryParse(element?.Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out long value) ? value : 0;
+        int column = (int)Math.Clamp(Number(marker?.Element(Xdr + "col")), 0, CellAddress.MaxColumns - 1);
+        int row = (int)Math.Clamp(Number(marker?.Element(Xdr + "row")), 0, CellAddress.MaxRows - 1);
+        return new DrawingPosition(new CellAddress(row, column), Number(marker?.Element(Xdr + "colOff")), Number(marker?.Element(Xdr + "rowOff")));
     }
 
     // An embedded or linked OLE object's picture is its icon or preview, which Excel keeps with the object, not as a
