@@ -23,8 +23,21 @@ internal static class SheetNames
 
         return !FormulaParser.LooksLikeR1C1(name)
             && !FormulaParser.TryCell(name, out _, out _, out _, out _)
+            && !LettersThenDigits(name)
             && !name.Equals("TRUE", StringComparison.OrdinalIgnoreCase)
             && !name.Equals("FALSE", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>Whether a name is one to three letters and then digits, such as <c>May06</c>: Excel quotes it as it would a cell.</summary>
+    private static bool LettersThenDigits(string name)
+    {
+        int letters = 0;
+        while (letters < name.Length && char.IsAsciiLetter(name[letters]))
+        {
+            letters++;
+        }
+
+        return letters is > 0 and <= 3 && letters < name.Length && name.AsSpan(letters).IndexOfAnyExceptInRange('0', '9') < 0;
     }
 
     /// <summary>The name as a reference writes it, such as <c>Sheet1</c> or <c>'My sheet'</c>.</summary>

@@ -156,6 +156,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- `Workbook.Load` reads Excel 97-2003 workbooks (XLS, BIFF8): cells, shared strings, styles, number formats and the
+  palette, merged cells, rows and columns, sheets, names, print ranges and links to other files with their kept values.
+  Formulas are decoded from their tokens to Excel's syntax, shared and array formulas included, with their cached
+  results. The workbook saves as XLSX, changed as Excel changes an XLS it saves as XLSX. Encrypted and Excel 5.0/95
+  workbooks are refused.
+- A sheet name such as `May06`, letters and then digits, is now quoted in a reference (`'May06'!A1`), as Excel quotes it.
+- XLSX formulas are read and written with SpreadsheetML's `_xHHHH_` escapes, as cell text is: a formula with a character
+  XML cannot hold, such as a control character in a text constant, no longer makes `Save` throw.
+
 - `Worksheet.PivotTables` lists a sheet's pivot tables with their ranges and sources, and `PivotTable.Refresh` and
   `Workbook.RefreshPivotTables` read the source again and lay the tables out as Excel's Refresh does: the cache's items
   and records, row, column and page fields, hidden and sorted items, the default and custom subtotals with every Excel

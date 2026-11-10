@@ -10,7 +10,7 @@ using Egap.Spreadsheets.Printing;
 
 using SharpFuzz;
 
-// Fuzz targets for Egap.Spreadsheets: number format codes, CSV, XLSX, ODS, formulas and header and footer codes. A format code
+// Fuzz targets for Egap.Spreadsheets: number format codes, CSV, XLSX, ODS, XLS, formulas and header and footer codes. A format code
 // or a header and footer code never throws; CSV may refuse its input only with an InvalidDataException, XLSX only with a
 // DocumentException (a DocumentLimitException among them), and a formula only with a FormulaException. Anything else is a
 // finding.
@@ -37,6 +37,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["autofit"] = AutoFit,
     ["ods"] = input => Ods(input, null),
     ["odscrypt"] = input => Ods(input, "fuzz"),
+    ["xls"] = Xls,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -412,6 +413,11 @@ static void Ods(Stream input, string? password)
     {
     }
 }
+
+// An Excel 97-2003 workbook (BIFF8): the compound file, its records and the formulas decoded from their tokens. It goes the
+// same way as an ODS: loaded, cells shown and their formulas written in R1C1 style, calculated, then saved as XLSX and
+// loaded again; only a DocumentException may be thrown.
+static void Xls(Stream input) => Ods(input, null);
 
 static void Xlsx(Stream input)
 {

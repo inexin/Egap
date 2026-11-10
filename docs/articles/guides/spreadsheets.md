@@ -2,7 +2,8 @@
 
 Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas,
 cell styles, rows and columns, names and print settings, as Excel keeps them. It loads and saves Excel's XLSX, XLSM, XLTX and
-XLTM files, and OpenDocument spreadsheets (ODS, OTS and flat FODS). The types are in `Egap.Spreadsheets`.
+XLTM files and OpenDocument spreadsheets (ODS, OTS and flat FODS), and reads Excel 97-2003 workbooks (XLS). The types are in
+`Egap.Spreadsheets`.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -50,6 +51,29 @@ What Egap cannot keep up to date is left for Excel: when cells changed and the w
 to calculate on open, and the calculation chain is left out for Excel to build again. A cell that shared the formula of a
 cell you changed gets the formula as its own, as in Excel. Saving a workbook with macros as `.xlsx` or `.xltx` leaves the macros
 out, as Excel does.
+
+### Excel 97-2003 workbooks
+
+`Workbook.Load` also reads the binary workbooks of Excel 97 to 2003 (`.xls`, BIFF8), told apart by their first bytes. Each
+formula is read from the tokens Excel keeps it as and written in Excel's syntax, the way Excel shows it, shared and array
+formulas included, with the result Excel last calculated. Cell values, shared strings, cell styles and number formats, the
+palette, merged cells, column widths, row heights, hidden and grouped rows and columns, hidden sheets, named ranges, print
+ranges and links to other files with the values the workbook keeps for them are read too. A workbook read from XLS saves
+as XLSX; Egap does not write XLS.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("report.xls");
+string? formula = book.Worksheets[0]["C4"].Formula;  // "SUM(C1:C3)"
+book.Save("report.xlsx");
+```
+
+Some things change on the way as Excel changes them when it saves an XLS as XLSX: a name that starts with a digit, which
+XLSX does not allow, gets `_1_` in front of it, and an Excel 4.0 macro sheet becomes a worksheet with its constants and
+without its macro formulas. Column widths are snapped to whole pixels of the workbook's font. Charts, pictures, notes,
+conditional formats, data validation, sheet protection and VBA projects are not read yet. An encrypted XLS throws a
+`DocumentPasswordException`, and a workbook from Excel 5.0 or 95 (BIFF5) a `DocumentException`.
 
 ### OpenDocument spreadsheets
 
