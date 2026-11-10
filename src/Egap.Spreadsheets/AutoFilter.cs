@@ -335,7 +335,7 @@ public sealed class AutoFilter
                 && (quarters ? ((date.Month - 1) / 3) + 1 : date.Month) == part;
         }
 
-        if (Period(type, DateTime.Today) is not { } period)
+        if (Period(type, Clock.Today) is not { } period)
         {
             return null;
         }
