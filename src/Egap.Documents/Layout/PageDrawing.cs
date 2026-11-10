@@ -9,6 +9,8 @@ using Egami.Fonts.Layout;
 using Egami.Pixels;
 
 using Egap.Documents.Charts;
+using Egap.Documents.Docx;
+using Egap.Documents.DrawingML;
 
 using EgamiBorderStyle = Egap.Documents.BorderStyle;
 
@@ -263,8 +265,14 @@ internal static class PageDrawing
             case Island { Kind: IslandKind.Chart, Chart: { } chart } island when island.Fallback is null || ChartRenderer.Draws(chart):
                 DrawChart(canvas, island, chart, rect);
                 break;
+            case Island { Kind: IslandKind.ShapeGroup } island when DocxDrawings.GroupMarkup(island) is { } group:
+                GroupPainter.Draw(canvas, rect, group, DocxDrawings.Context(island, (c, image, r) => DrawImage(c, island.Document, image, r)));
+                break;
             case Island { Fallback: { } fallback } island:
                 DrawImage(canvas, island.Document, fallback, rect);
+                break;
+            case Shape shape when DocxDrawings.ShapeMarkup(shape) is { } wsp:
+                ShapePainter.Draw(canvas, rect, wsp.Element(Docx.Ns.Wps + "spPr"), wsp.Element(Docx.Ns.Wps + "style"), DocxDrawings.Context(shape, (c, image, r) => DrawImage(c, shape.Document, image, r)));
                 break;
             case Shape shape:
                 {
