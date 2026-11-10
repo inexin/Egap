@@ -272,7 +272,9 @@ catch (LayoutException e)
 
 A layout's `Warnings` list what it laid out differently from what the document asks for, each with the node and its
 page. A floating table or a framed paragraph floats only in a section's body; one in a table cell, header, footer, note
-or text box is laid out in the text there, with a `FloatLaidOutInline` warning. Saving as PDF keeps no layout, so give
+or text box is laid out in the text there, with a `FloatLaidOutInline` warning. A SmartArt diagram draws from the drawing
+Word stores beside it, shapes, text and all; a file that stores none (Word 2007 wrote none) draws the diagram's text as a
+stack of blocks in the theme's accent colours, with a `SmartArtDrawnAsList` warning. Saving as PDF keeps no layout, so give
 `LayoutOptions.OnWarning` to hear of them; `egap convert` prints them as warnings.
 
 ```csharp

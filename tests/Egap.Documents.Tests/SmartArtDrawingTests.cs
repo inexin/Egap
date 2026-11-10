@@ -4,6 +4,8 @@ using Egami.Pixels;
 
 using Egap.Documents.Docx;
 using Egap.Documents.Layout;
+using Egap.Documents.Pdf;
+using Egap.Pdf;
 
 namespace Egap.Documents.Tests;
 
@@ -140,5 +142,17 @@ public sealed class SmartArtDrawingTests
         Island island = DocxFormat.Load(saved).Sections[0].Body.Paragraphs.First().Inlines.OfType<Island>().Single();
         Assert.Equal("Alpha\nBeta\nGamma", island.Text);
         Assert.NotNull(DocxDrawings.DiagramTree(island));
+    }
+
+    [Fact]
+    public void TaggedPdfGivesTheDiagramItsTextAsAlternativeText()
+    {
+        using MemoryStream stream = new();
+        Load(drawing: true).SaveAsPdf(stream, new PdfExportOptions { Tagged = true, Layout = Isolated });
+        using PdfDocument pdf = PdfDocument.Open(stream.ToArray());
+
+        PdfStructureElement root = Assert.IsType<PdfStructureElement>(pdf.Structure.Root);
+        PdfStructureElement figure = root.DescendantsAndSelf().Single(e => e.Type == PdfStructureType.Figure);
+        Assert.Equal("Alpha; Beta; Gamma", figure.AlternateText);
     }
 }

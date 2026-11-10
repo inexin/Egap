@@ -37,6 +37,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   glow and soft edges. Shape groups draw their shapes, pictures and nested groups. Before, a shape other than a rectangle,
   rounded rectangle, ellipse or line drew as a rectangle, and a group drew nothing. A shape changed through the model draws
   from the model, as before.
+- SmartArt diagrams in DOCX files draw on pages and in PDFs from the drawing Word stores beside them: their shapes, fills,
+  lines, effects and text. Before, they drew nothing. A diagram's `Island.Text` now holds its points, one per line, in the
+  diagram's order, and a tagged PDF gives its figure that text as alternative text when the file gives none. A file that
+  stores no drawing (Word 2007 wrote none) draws the text as a stack of blocks in the theme's accent colours, with the new
+  `LayoutWarningKind.SmartArtDrawnAsList` warning.
+- Shapes in shape groups and SmartArt draw their DrawingML text: insets, anchors, vertical text, the stored autofit scale,
+  alignment, indents, spacing, bullets, and the runs' fonts, sizes, styles and colours.
 - `Chart.Draw` draws a chart on any Egami canvas, with `ChartDrawOptions` for the theme, fonts and culture: column, bar, line,
   area, pie, doughnut, scatter, bubble, radar, stock and combined charts, laid out to the rules read from Excel. A DOCX chart
   now draws through it on pages and in PDFs, where before it showed the picture saved with it, if any. `ChartDrawOptions.Host` follows Excel's defaults or Word's;

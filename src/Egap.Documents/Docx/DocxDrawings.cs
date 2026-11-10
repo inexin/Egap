@@ -75,6 +75,31 @@ internal static class DocxDrawings
     public static bool DrawsAsList(Island island) =>
         island is { Kind: IslandKind.SmartArt, Fallback: null, Text.Length: > 0 } && island.Format == DocxExtension.Format && DiagramTree(island) is null;
 
+    /// <summary>
+    /// A SmartArt island's alternative text: the description or title the file gives the drawing, else the diagram's text, its
+    /// points separated by semicolons.
+    /// </summary>
+    public static string? AlternateText(Island island)
+    {
+        if (island.Format == DocxExtension.Format && island.Markup.Length > 0)
+        {
+            try
+            {
+                if (XElement.Parse(island.Markup).Descendants(Ns.Wp + "docPr").FirstOrDefault() is { } docPr
+                    && ((string?)docPr.Attribute("descr") is { Length: > 0 } description ? description : (string?)docPr.Attribute("title")) is { Length: > 0 } given)
+                {
+                    return given;
+                }
+            }
+            catch (System.Xml.XmlException)
+            {
+                // The diagram's text stands in.
+            }
+        }
+
+        return island.Text.Length > 0 ? island.Text.Replace("\n", "; ", StringComparison.Ordinal) : null;
+    }
+
     /// <summary>The paint context for a shape or group read from Word: the theme, and its pictures through <paramref name="drawImage"/>.</summary>
     public static ShapePaintContext Context(Node node, Action<Canvas, ImageData, RectF> drawImage)
     {
