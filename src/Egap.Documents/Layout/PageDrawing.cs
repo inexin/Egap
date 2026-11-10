@@ -262,6 +262,9 @@ internal static class PageDrawing
             case Picture picture when picture.Image.Bytes.Length > 0:
                 DrawImage(canvas, picture.Document, picture.Image, rect);
                 break;
+            case Island { Kind: IslandKind.Math } island when OfficeMath.MathRendering.Box(island) is { } math:
+                math.Draw(canvas, new Vector2(rect.Left, rect.Top + math.Ascent), new SolidPaint(Black));
+                break;
             case Island { Kind: IslandKind.Chart, Chart: { } chart } island when island.Fallback is null || ChartRenderer.Draws(chart):
                 DrawChart(canvas, island, chart, rect);
                 break;

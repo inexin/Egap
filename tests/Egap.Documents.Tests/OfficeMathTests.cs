@@ -47,7 +47,9 @@ public sealed class OfficeMathTests
 
     public static TheoryData<string> Equations() => [.. EquationList];
 
-    private static XElement Zone(string content) => XElement.Parse($"""<m:oMath xmlns:m="{MNs}" xmlns:w="{WNs}">{content}</m:oMath>""");
+    internal static IEnumerable<XElement> EquationZones() => EquationList.Select(Zone);
+
+    internal static XElement Zone(string content) => XElement.Parse($"""<m:oMath xmlns:m="{MNs}" xmlns:w="{WNs}">{content}</m:oMath>""");
 
     /// <summary>The element without namespace declarations, which only say where prefixes are declared.</summary>
     private static XElement Bare(XElement element)
@@ -129,7 +131,7 @@ public sealed class OfficeMathTests
         AssertSame(zone, Omml.Write(Omml.Read(zone)));
     }
 
-    private static Document LoadDocx(string paragraphs, string? mathPr = null)
+    internal static Document LoadDocx(string paragraphs, string? mathPr = null)
     {
         OpcPackageWriter writer = new();
         writer.AddXmlPart("/word/document.xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml",

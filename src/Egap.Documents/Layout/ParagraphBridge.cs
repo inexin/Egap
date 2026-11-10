@@ -106,6 +106,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         int replacing = 0;
         TextStyle? last = null;
         TextStyle? mark = null;
+        bool afterDisplay = false;
 
         int labelLength = 0;
         if (paragraph.ListLabel is { } label && label.Text.Length + 1 is int length)
@@ -251,6 +252,25 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                     case Shape shape when !inCode:
                         AddObject(shape, shape.Floating, shape.Width, shape.Height);
                         break;
+                    case Island { Kind: IslandKind.Math } island when !inCode && OfficeMath.MathRendering.Layout(island, fonts, document, (last ?? Mark()).Size ?? 10) is { } math:
+                        {
+                            // A display equation takes a line of its own; the paginator places it across the line.
+                            bool display = OfficeMath.MathRendering.IsDisplay(island);
+                            if (display && text.Length > labelLength)
+                            {
+                                BreakAfterDisplay();
+                                text.Push(last ?? Mark()).Append("\n").Pop();
+                            }
+
+                            BreakAfterDisplay();
+                            spans.Add(new InlineSpan(text.Length, 1, island, 0));
+                            objects.Add(island);
+                            text.AddPlaceholder(new Placeholder(math.Width, math.Height, PlaceholderAlignment.Baseline, math.Ascent));
+                            maxSize = Math.Max(maxSize, (last ?? Mark()).Size ?? 10);
+                            afterDisplay = display;
+                            break;
+                        }
+
                     case Island island when !inCode:
                         if (island.Width > 0 && island.Height > 0)
                         {
@@ -312,6 +332,8 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                 return;
             }
 
+            BreakAfterDisplay();
+
             // Egami shapes a run past 65536 characters only with a fresh shaping buffer (its limit is the last text's), so
             // very long text goes in pieces that differ by a letter spacing no eye sees, which keeps them separate runs.
             const int Piece = 30_000;
@@ -332,8 +354,18 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             last = style;
         }
 
+        void BreakAfterDisplay()
+        {
+            if (afterDisplay)
+            {
+                afterDisplay = false;
+                text.Push(last ?? Mark()).Append("\n").Pop();
+            }
+        }
+
         void AddObject(Inline node, FloatingPlacement? floating, double width, double height)
         {
+            BreakAfterDisplay();
             if (floating is not null)
             {
                 floats.Add(new FloatingObject(text.Length, node, floating, width, height));
