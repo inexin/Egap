@@ -32,6 +32,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- Word shapes of all 187 DrawingML preset geometries, and custom geometries, draw on pages and in PDFs as Word draws them:
+  the theme's fill, line and effect styles, gradient, pattern and picture fills, dashes, compound lines, arrowheads, shadows,
+  glow and soft edges. Shape groups draw their shapes, pictures and nested groups. Before, a shape other than a rectangle,
+  rounded rectangle, ellipse or line drew as a rectangle, and a group drew nothing. A shape changed through the model draws
+  from the model, as before.
 - `Chart.Draw` draws a chart on any Egami canvas, with `ChartDrawOptions` for the theme, fonts and culture: column, bar, line,
   area, pie, doughnut, scatter, bubble, radar, stock and combined charts, laid out to the rules read from Excel. A DOCX chart
   now draws through it on pages and in PDFs, where before it showed the picture saved with it, if any. `ChartDrawOptions.Host` follows Excel's defaults or Word's;
