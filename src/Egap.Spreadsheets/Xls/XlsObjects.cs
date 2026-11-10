@@ -217,7 +217,7 @@ internal readonly record struct HyperlinkObject(string? Address, string? Locatio
     public static HyperlinkObject? Read(byte[] data)
     {
         int position = 0;
-        bool Need(int count) => position + count <= data.Length;
+        bool Need(int count) => count >= 0 && count <= data.Length - position;
         uint UInt32()
         {
             uint value = BinaryPrimitives.ReadUInt32LittleEndian(data.AsSpan(position));

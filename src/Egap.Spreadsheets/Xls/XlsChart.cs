@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using System.Text;
+
 using Egap.Documents.Charts;
 
 namespace Egap.Spreadsheets.Xls;
@@ -297,8 +298,10 @@ internal static class XlsChart
                 {
                     plots.Add(chart.AddPlot(Kind(other), other.Secondary));
                 }
-                catch (ArgumentException)
+                catch (Exception e) when (e is ArgumentException or InvalidOperationException)
                 {
+                    // A plot that cannot share the chart, such as a pie after a column plot or one beside a plot without
+                    // axes, goes with the first plot.
                     plots.Add(chart.Plots[0]);
                 }
             }
@@ -365,10 +368,11 @@ internal static class XlsChart
         switch (plot.Type)
         {
             case ChartType.Column or ChartType.Bar:
-                plot.Grouping = group.Percent ? ChartGrouping.PercentStacked : group.Stacked ? ChartGrouping.Stacked : group.ThreeD && !group.Cluster ? ChartGrouping.Standard : ChartGrouping.Clustered;
+                plot.Grouping = group.Percent ? ChartGrouping.PercentStacked : group.Stacked ? ChartGrouping.Stacked : plot.Is3D && !group.Cluster ? ChartGrouping.Standard : ChartGrouping.Clustered;
                 plot.GapWidth = Math.Clamp(group.Gap ?? 150, 0, 500);
-                if (!group.ThreeD)
+                if (!plot.Is3D)
                 {
+                    // A 3D plot has no overlap, also when a damaged group that is not 3D shares one.
                     plot.Overlap = Math.Clamp(group.Stacked || group.Percent ? 100 : group.Overlap ?? 0, -100, 100);
                 }
 

@@ -337,7 +337,7 @@ internal static class XlsDrawing
     /// </summary>
     private static SheetDrawing? FromMetro(Worksheet sheet, Shape shape, ushort[] anchor, int digit, string? text)
     {
-                if (!shape.Properties.TryGetValue(0x03A9, out var blob) || blob.Complex is not { Length: > 22 } package)
+        if (!shape.Properties.TryGetValue(0x03A9, out var blob) || blob.Complex is not { Length: > 22 } package)
         {
             return null;
         }

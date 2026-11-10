@@ -58,7 +58,10 @@ internal static class XlsReader
                 : throw new DocumentException("The compound file has no Workbook stream: it is not an Excel workbook."));
         try
         {
-            new State(book, new BiffStream(XlsEncryption.Decrypt(data, password))).Read();
+            byte[] plain = XlsEncryption.Decrypt(data, password);
+            State state = new(book, new BiffStream(plain));
+            state.Read();
+            state.Pivots.Finish(book, file, encrypted: !ReferenceEquals(plain, data), state.NumberFormat);
         }
         catch (InvalidDataException e)
         {
@@ -171,6 +174,12 @@ internal static class XlsReader
 
         private int? maxDigit;
         private readonly List<byte> drawingGroup = [];
+
+        /// <summary>The workbook's number format id for an XLS file's format index, as cells get theirs.</summary>
+        public int NumberFormat(int index) => book.Styles.NumberFormats.Add(styles.FormatCode(index));
+
+        /// <summary>The pivot cache definitions and pivot views met so far.</summary>
+        public Xls.XlsPivots Pivots { get; } = new();
         private List<XlsDrawing.Blip?>? blips;
 
         /// <summary>The width of the normal font's widest digit, in pixels.</summary>
@@ -266,6 +275,13 @@ internal static class XlsReader
                         break;
                     case BiffType.Xct:
                         ReadCachedSheet();
+                        break;
+                    default:
+                        if (XlsPivots.IsGlobalRecord(biff.Type))
+                        {
+                            Pivots.Global(biff.Type, biff.Body);
+                        }
+
                         break;
                 }
             }
@@ -674,6 +690,20 @@ internal static class XlsReader
             bool drawing = drawingGoesOn;
             drawingGoesOn = biff.Type is BiffType.MsoDrawing or BiffType.Obj or BiffType.Txo || (biff.Type == BiffType.Continue && drawing);
             ReadOnlySpan<byte> body = biff.Body;
+            if (XlsPivots.IsViewRecord(biff.Type))
+            {
+                // SxIvd, SXLI and SXPI go on in CONTINUE records, whose data simply follows.
+                int type = biff.Type;
+                List<byte> data = [.. body];
+                while (biff.PeekType() == BiffType.Continue && type is 0x00B4 or 0x00B5 or 0x00B6 && biff.Read())
+                {
+                    data.AddRange(biff.Body);
+                }
+
+                state.Pivots.View(sheet, type, [.. data]);
+                return;
+            }
+
             switch (biff.Type)
             {
                 case BiffType.Continue when drawing:

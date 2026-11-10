@@ -116,6 +116,9 @@ public sealed partial class Workbook
     /// <summary>The pivot tables and caches read from the file, read when first needed.</summary>
     internal PivotModel Pivots => field ??= PivotModel.Load(this);
 
+    /// <summary>An XLS file's pivot tables as .xlsx parts, made when the pivot tables are first needed; null for other files.</summary>
+    internal Func<Xls.PivotParts?>? MadePivots { get; set; }
+
     /// <summary>How many times a cell's value or formula changed since the workbook was made or loaded.</summary>
     internal long ChangeCount { get; set; }
 

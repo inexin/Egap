@@ -47,6 +47,62 @@ public sealed class XlsObjectTests
         Assert.Contains(book.Names, n => n.Name == "Local" && n.Sheet == data);
     }
 
+    [Fact]
+    public void ReadsThePivotTable()
+    {
+        PivotTable excel = Assert.Single(Excel().Worksheets["Pivot"].PivotTables);
+        PivotTable ours = Assert.Single(Workbook.Load(Path("objects.xls")).Worksheets["Pivot"].PivotTables);
+        Assert.Equal("SalesPivot", ours.Name);
+        Assert.Equal((excel.Name, excel.Range, excel.Source, excel.CanRefresh), (ours.Name, ours.Range, ours.Source, ours.CanRefresh));
+        Assert.True(ours.CanRefresh);
+    }
+
+    [Fact]
+    public void RefreshesThePivotTableAsExcelDoes()
+    {
+        Workbook excel = Excel();
+        Workbook ours = Workbook.Load(Path("objects.xls"));
+        excel.Worksheets["Pivot"].PivotTables[0].Refresh();
+        ours.Worksheets["Pivot"].PivotTables[0].Refresh();
+        Assert.Equal(Cells(excel.Worksheets["Pivot"]), Cells(ours.Worksheets["Pivot"]));
+    }
+
+    [Fact]
+    public void SavesThePivotTableToXlsx()
+    {
+        using var stream = new MemoryStream();
+        Workbook.Load(Path("objects.xls")).Save(stream, new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx });
+        stream.Position = 0;
+        Workbook saved = Workbook.Load(stream);
+        PivotTable pivot = Assert.Single(saved.Worksheets["Pivot"].PivotTables);
+        PivotTable excel = Assert.Single(Excel().Worksheets["Pivot"].PivotTables);
+        Assert.Equal((excel.Name, excel.Range, excel.Source, excel.CanRefresh), (pivot.Name, pivot.Range, pivot.Source, pivot.CanRefresh));
+        Workbook reference = Excel();
+        reference.Worksheets["Pivot"].PivotTables[0].Refresh();
+        pivot.Refresh();
+        Assert.Equal(Cells(reference.Worksheets["Pivot"]), Cells(saved.Worksheets["Pivot"]));
+    }
+
+    [Theory]
+    [InlineData("damaged-hyperlink.xls")]
+    [InlineData("damaged-chart.xls")]
+    [InlineData("damaged-chart-3d.xls")]
+    public void ReadsDamagedObjects(string name)
+    {
+        // Fuzzed copies of objects.xls, with a hyperlink string longer than its record, a chart group beside one without
+        // axes and a flat group in a 3D chart: they are read up to a sheet damaged further on, which only a
+        // DocumentException may report.
+        Exception? error = Record.Exception(() =>
+        {
+            using var stream = new MemoryStream();
+            Workbook.Load(Path(name)).Save(stream, new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx });
+        });
+        Assert.True(error is null or Documents.DocumentException, error?.ToString());
+    }
+
+    private static List<(string, string)> Cells(Worksheet sheet) =>
+        [.. sheet.Cells.Where(c => !c.IsEmpty).Select(c => (c.Address.ToString(), c.Value.ToString())).Order()];
+
     private static void AssertSame(Workbook excel, Workbook ours)
     {
         foreach (DefinedName name in excel.Names)

@@ -9,7 +9,7 @@ objects Excel sees in XLSX files.
                                 and saves it as objects.xlsx, and writes its version to objects.txt. Pictures come from
                                 picture.png and picture.jpg, which the script draws first.
   -Mode Count -Folder <folder>  Excel opens each .xlsx file of the folder read-only and writes to counts.tsv, a line to a
-                                sheet: file, sheet, shapes, embedded charts, notes, hyperlinks; and a line to a workbook for
+                                sheet: file, sheet, shapes, embedded charts, notes, hyperlinks, pivot tables; and a line to a workbook for
                                 its chart sheets.
 
 Needs Excel on the PC. Run it as one plain command:
@@ -167,7 +167,7 @@ try {
             try {
                 $book = $excel.Workbooks.Open($file.FullName, 0, $true)
                 foreach ($sheet in $book.Worksheets) {
-                    [void]$lines.Add(($file.Name, $sheet.Name, $sheet.Shapes.Count, $sheet.ChartObjects().Count, $sheet.Comments.Count, $sheet.Hyperlinks.Count) -join "`t")
+                    [void]$lines.Add(($file.Name, $sheet.Name, $sheet.Shapes.Count, $sheet.ChartObjects().Count, $sheet.Comments.Count, $sheet.Hyperlinks.Count, $sheet.PivotTables().Count) -join "`t")
                 }
                 [void]$lines.Add(($file.Name, '(chart sheets)', $book.Charts.Count) -join "`t")
                 $book.Close($false)

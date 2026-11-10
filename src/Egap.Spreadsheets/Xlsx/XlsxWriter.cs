@@ -147,6 +147,9 @@ internal static class XlsxWriter
             workbookRels.Add(new OpcRelationship(pageId, XlsxNames.ChartsheetRelationship, RelativeTarget(workbookName, pageName), false, pageName));
         }
 
+        // Pivot tables made in memory, such as an XLS file's: each cache's definition and records once, then the tables.
+        Dictionary<Pivots.PivotCache, (string Name, int Id)> newCaches = [];
+        List<(int CacheId, string RelationshipId)> pivotCaches = [];
         int sheetNumber = 0;
         foreach (Worksheet sheet in book.Worksheets)
         {
@@ -168,6 +171,37 @@ internal static class XlsxWriter
 
             sheetIds[sheet] = id;
             List<(string Name, XElement Element)> objects = SheetObjectWriter.Write(sheet, ++sheetNumber, name, rels, objectParts, objectState);
+            if (source is null)
+            {
+                foreach (PivotTable table in sheet.PivotTables)
+                {
+                    if (table.Cache is not { } cache)
+                    {
+                        continue;
+                    }
+
+                    if (!newCaches.TryGetValue(cache, out (string Name, int Id) made))
+                    {
+                        made = (WritePivotCache(cache, parts, Add), table.Definition.CacheId);
+                        newCaches[cache] = made;
+                        string cacheRelationship = NextId();
+                        pivotCaches.Add((made.Id, cacheRelationship));
+                        workbookRels.Add(new OpcRelationship(cacheRelationship, PivotCacheRelationship, RelativeTarget(workbookName, made.Name), false, made.Name));
+                    }
+
+                    string tableName = FreeSheetName(parts, "/xl/pivotTables/pivotTable");
+                    Add(new OutPart(tableName, table.Part.ContentType, XmlBytes(table.Definition.Document),
+                        [new OpcRelationship("rId1", PivotCacheRelationship, "../pivotCache/" + made.Name[(made.Name.LastIndexOf('/') + 1)..], false, made.Name)]));
+                    string tableId = "rId" + XlsxNames.Integer(rels.Count + 1);
+                    for (int n = rels.Count + 2; rels.Any(r => r.Id == tableId); n++)
+                    {
+                        tableId = "rId" + XlsxNames.Integer(n);
+                    }
+
+                    rels.Add(new OpcRelationship(tableId, PivotTableRelationship, "../pivotTables/" + tableName[(tableName.LastIndexOf('/') + 1)..], false, tableName));
+                }
+            }
+
             Add(new OutPart(name, XlsxNames.WorksheetType, WorksheetPartWriter.Write(sheet, strings, objects, spillMark), rels));
             workbookRels.Add(new OpcRelationship(id, XlsxNames.WorksheetRelationship, RelativeTarget(workbookName, name), false, name));
         }
@@ -196,7 +230,7 @@ internal static class XlsxWriter
             }
         }
 
-        Add(new OutPart(workbookName, XlsxNames.WorkbookType(format), OpcPackageWriter.Serialize(WorkbookPart(book, sheetIds, linkIds, newChartSheets)), workbookRels));
+        Add(new OutPart(workbookName, XlsxNames.WorkbookType(format), OpcPackageWriter.Serialize(WorkbookPart(book, sheetIds, linkIds, newChartSheets, pivotCaches)), workbookRels));
 
         // Everything the package's relationships still reach, in the order the parts came.
         HashSet<string> reached = new(StringComparer.OrdinalIgnoreCase);
@@ -279,6 +313,32 @@ internal static class XlsxWriter
         return to.StartsWith(folder, StringComparison.OrdinalIgnoreCase) ? to[folder.Length..] : to;
     }
 
+    private const string PivotTableRelationship = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable";
+    private const string PivotCacheRelationship = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition";
+
+    /// <summary>A pivot cache made in memory as new parts: its definition, and its records with the definition's other links.</summary>
+    private static string WritePivotCache(Pivots.PivotCache cache, Dictionary<string, OutPart> parts, Action<OutPart> add)
+    {
+        string name = FreeSheetName(parts, "/xl/pivotCache/pivotCacheDefinition");
+        List<OpcRelationship> rels = [];
+        foreach (OpcRelationship relationship in cache.DefinitionPart.Relationships)
+        {
+            if (relationship.External)
+            {
+                rels.Add(relationship);
+            }
+            else if (cache.RecordsPart is { } records && relationship.TargetName.Equals(records.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                string recordsName = FreeSheetName(parts, "/xl/pivotCache/pivotCacheRecords");
+                add(new OutPart(recordsName, records.ContentType, cache.NewRecords is { } changed ? XmlBytes(changed) : records.Data, []));
+                rels.Add(new OpcRelationship(relationship.Id, relationship.Type, RelativeTarget(name, recordsName), false, recordsName));
+            }
+        }
+
+        add(new OutPart(name, cache.DefinitionPart.ContentType, XmlBytes(cache.Definition), rels));
+        return name;
+    }
+
     private const string ChartsheetType = "application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml";
     private const string ChartSheetDrawingType = "application/vnd.openxmlformats-officedocument.drawing+xml";
 
@@ -311,7 +371,7 @@ internal static class XlsxWriter
                 new XElement(xdr + "clientData"))));
     }
 
-    private static XDocument WorkbookPart(Workbook book, Dictionary<Worksheet, string> sheetIds, List<string> linkIds, Dictionary<ChartSheet, string> newChartSheets)
+    private static XDocument WorkbookPart(Workbook book, Dictionary<Worksheet, string> sheetIds, List<string> linkIds, Dictionary<ChartSheet, string> newChartSheets, List<(int CacheId, string RelationshipId)> pivotCaches)
     {
         XNamespace ns = XlsxNames.Main;
         WorkbookSource? source = book.Source;
@@ -399,6 +459,12 @@ internal static class XlsxWriter
         AddKept(_ => true);
         AddNew(_ => true);
         WorkbookOrder.Place(root, sheets);
+
+        if (pivotCaches.Count > 0)
+        {
+            WorkbookOrder.Place(root, new XElement(ns + "pivotCaches", pivotCaches.Select(p =>
+                new XElement(ns + "pivotCache", new XAttribute("cacheId", XlsxNames.Integer(p.CacheId)), new XAttribute(XlsxNames.R + "id", p.RelationshipId)))));
+        }
 
         if (linkIds.Count > 0)
         {
