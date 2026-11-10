@@ -22,7 +22,7 @@ internal sealed class SheetColors
     ];
 
     /// <summary>The default indexed palette (ECMA-376 Part 1, 18.8.27): 0 to 63, then the system foreground and background.</summary>
-    private static readonly uint[] DefaultPalette =
+    internal static readonly uint[] DefaultPalette =
     [
         0x000000, 0xFFFFFF, 0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF,
         0x000000, 0xFFFFFF, 0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF,
