@@ -12,14 +12,18 @@ namespace Egap.Spreadsheets.Xls;
 /// Reads an Excel 97-2003 workbook (.xls): the BIFF8 workbook stream of a compound file ([MS-XLS], [MS-CFB]). It reads the
 /// sheets, their cells with their values, styles and formulas (shared and array formulas too, with the results Excel kept),
 /// merged cells, row heights and column widths, and the defined names. Charts, drawings, comments, data validation,
-/// conditional formats and encryption are not read yet.
+/// and conditional formats are not read yet. Encrypted workbooks (RC4 and RC4 CryptoAPI) are decrypted, and an encrypted XLSX
+/// file, which is a compound file too, is decrypted and read as XLSX.
 /// </summary>
 internal static class XlsReader
 {
     /// <summary>Whether the bytes start a compound file: an XLS file, or another Office 97-2003 document.</summary>
     public static bool Sniff(ReadOnlySpan<byte> head) => CompoundFile.IsCompoundFile(head);
 
-    public static void Read(Workbook book, Stream stream, DocumentLimits limits)
+    /// <summary>The password Excel encrypts a workbook with when it has none of its own, such as one only write-protected.</summary>
+    internal const string DefaultPassword = "VelvetSweatshop";
+
+    public static void Read(Workbook book, Stream stream, DocumentLimits limits, string? password)
     {
         CompoundFile file;
         try
@@ -33,7 +37,19 @@ internal static class XlsReader
 
         if (file.Find("EncryptedPackage") is not null)
         {
-            throw new DocumentPasswordException("The workbook is an encrypted XLSX file, which Egap does not read yet.", wrongPassword: false);
+            // An encrypted XLSX file. Without a password, Excel's default one is tried first, as Excel does.
+            byte[] package;
+            try
+            {
+                package = OfficeEncryption.Decrypt(file, password ?? DefaultPassword, null, limits);
+            }
+            catch (DocumentPasswordException) when (password is null)
+            {
+                throw new DocumentPasswordException("The workbook is encrypted: give its password in the load options.", wrongPassword: false);
+            }
+
+            XlsxReader.Read(book, new MemoryStream(package, writable: false), limits);
+            return;
         }
 
         byte[] data = file.ReadStream("Workbook")
@@ -42,7 +58,10 @@ internal static class XlsReader
                 : throw new DocumentException("The compound file has no Workbook stream: it is not an Excel workbook."));
         try
         {
-            new State(book, new BiffStream(data)).Read();
+            byte[] plain = XlsEncryption.Decrypt(data, password);
+            State state = new(book, new BiffStream(plain));
+            state.Read();
+            state.Pivots.Finish(book, file, encrypted: !ReferenceEquals(plain, data), state.NumberFormat);
         }
         catch (InvalidDataException e)
         {
@@ -56,7 +75,7 @@ internal static class XlsReader
         private readonly XlsLinks links = new();
         private readonly List<string> sst = [];
         private readonly List<(int Offset, int Type, int State)> boundSheets = [];
-        private readonly List<(string Name, int Sheet, byte[] Tokens, byte[] Extra, bool BuiltIn)> names = [];
+        private readonly List<(string Name, int Sheet, byte[] Tokens, byte[] Extra, bool BuiltIn, bool Hidden)> names = [];
 
         public void Read()
         {
@@ -96,17 +115,78 @@ internal static class XlsReader
 
             styles.Index(book, XlsStyles.DefaultXf);
             AddNames(sheets);
+            Worksheet? after = null;
             for (int i = 0; i < boundSheets.Count; i++)
             {
                 if (sheets[i] is { } sheet)
                 {
                     biff.Seek(boundSheets[i].Offset);
                     new SheetState(this, sheet, boundSheets[i].Type == 1).Read();
+                    after = sheet;
+                }
+                else if (boundSheets[i].Type == 2)
+                {
+                    biff.Seek(boundSheets[i].Offset);
+                    ReadChartSheet(links.SheetNames[i], boundSheets[i].State, after);
                 }
             }
         }
 
+        /// <summary>A chart sheet's substream: its chart, placed after the worksheet before it.</summary>
+        private void ReadChartSheet(string name, int visibility, Worksheet? after)
+        {
+            if (!biff.Read() || biff.Type != BiffType.Bof || string.IsNullOrEmpty(name)
+                || book.Worksheets.Any(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                || book.ChartSheets.Any(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+
+            List<(int Type, byte[] Body)> records = [];
+            int depth = 1;
+            while (depth > 0 && biff.Read())
+            {
+                if (biff.Type == BiffType.Bof)
+                {
+                    depth++;
+                }
+                else if (biff.Type == BiffType.Eof)
+                {
+                    depth--;
+                }
+                else if (depth == 1 && records.Count < 200_000)
+                {
+                    records.Add(((int)biff.Type, biff.Body.ToArray()));
+                }
+            }
+
+            if (XlsChart.Read(records, tokens => XlsFormula.Decode(links, tokens, [], 0, 0, name: true)) is { } chart)
+            {
+                SheetVisibility state = visibility switch
+                {
+                    1 => SheetVisibility.Hidden,
+                    2 => SheetVisibility.VeryHidden,
+                    _ => SheetVisibility.Visible,
+                };
+                book.ChartSheetList.Add(new ChartSheet(book, name, state, chart, after));
+            }
+        }
+
         private int? maxDigit;
+        private readonly List<byte> drawingGroup = [];
+
+        /// <summary>The workbook's number format id for an XLS file's format index, as cells get theirs.</summary>
+        public int NumberFormat(int index) => book.Styles.NumberFormats.Add(styles.FormatCode(index));
+
+        /// <summary>The pivot cache definitions and pivot views met so far.</summary>
+        public Xls.XlsPivots Pivots { get; } = new();
+        private List<XlsDrawing.Blip?>? blips;
+
+        /// <summary>The width of the normal font's widest digit, in pixels.</summary>
+        public int Digit => maxDigit ??= Math.Max(1, new Printing.TextMeter(book).MaxDigitWidth);
+
+        /// <summary>The pictures of the workbook's blip store, read when a sheet first needs them.</summary>
+        public List<XlsDrawing.Blip?> Blips => blips ??= XlsDrawing.ReadBlips([.. drawingGroup]);
 
         private Worksheet AddSheet(string name)
         {
@@ -130,7 +210,19 @@ internal static class XlsReader
                         FinishLinks();
                         return;
                     case BiffType.FilePass:
-                        throw new DocumentPasswordException("The workbook is encrypted, which Egap does not read in XLS files yet.", wrongPassword: false);
+                        // Decrypted before the stream is read.
+                        break;
+                    case BiffType.MsoDrawingGroup:
+                        {
+                            drawingGroup.AddRange(biff.Body);
+                            while (biff.PeekType() == BiffType.Continue && biff.Read())
+                            {
+                                drawingGroup.AddRange(biff.Body);
+                            }
+
+                            break;
+                        }
+
                     case BiffType.DateMode:
                         book.Date1904 = biff.Length >= 2 && BinaryPrimitives.ReadUInt16LittleEndian(biff.Body) == 1;
                         break;
@@ -183,6 +275,13 @@ internal static class XlsReader
                         break;
                     case BiffType.Xct:
                         ReadCachedSheet();
+                        break;
+                    default:
+                        if (XlsPivots.IsGlobalRecord(biff.Type))
+                        {
+                            Pivots.Global(biff.Type, biff.Body);
+                        }
+
                         break;
                 }
             }
@@ -317,7 +416,7 @@ internal static class XlsReader
             links.Names.Add(name);
             byte[] tokens = size > 0 && size <= record.SegmentRemaining ? record.Bytes(size).ToArray() : [];
             byte[] extra = record.SegmentRemaining > 0 ? record.Rest().ToArray() : [];
-            names.Add((name, sheet, tokens, extra, builtIn));
+            names.Add((name, sheet, tokens, extra, builtIn, (options & 0x0001) != 0));
         }
 
         private static string BuiltInName(char code) => code switch
@@ -428,7 +527,7 @@ internal static class XlsReader
 
         private void AddNames(Worksheet?[] sheets)
         {
-            foreach ((string name, int sheetIndex, byte[] tokens, byte[] extra, bool builtIn) in names)
+            foreach ((string name, int sheetIndex, byte[] tokens, byte[] extra, bool builtIn, bool hidden) in names)
             {
                 if (tokens.Length == 0 || XlsFormula.Decode(links, tokens, extra, 0, 0, name: true) is not { Length: > 0 } formula)
                 {
@@ -447,7 +546,7 @@ internal static class XlsReader
                     continue;
                 }
 
-                book.Names.AddRead(new DefinedName(full, formula, sheet));
+                book.Names.AddRead(new DefinedName(full, formula, sheet) { Hidden = hidden });
             }
         }
 
@@ -521,7 +620,12 @@ internal static class XlsReader
         private readonly Dictionary<(int, int), (RangeAddress Range, byte[] Tokens, byte[] Extra)> arrays = [];
         private readonly List<Pending> pending = [];
         private (int Row, int Column, int Style, string? Text, bool Deferred, int Pending)? awaitingString;
+        // A chart has some dozens of records for each series; this keeps a damaged file from holding on to a whole stream.
+        private const int MaxChartRecords = 200_000;
+
         private int baseWidth = 8;
+        private bool drawingGoesOn;
+        private readonly XlsObjects objects = new(sheet);
 
         private sealed class Pending
         {
@@ -541,17 +645,26 @@ internal static class XlsReader
             }
 
             int depth = 1;
+            List<(int Type, byte[] Body)>? chart = null;
             while (depth > 0 && biff.Read())
             {
                 if (biff.Type == BiffType.Bof)
                 {
+                    // An embedded chart's substream follows its OBJ record.
                     depth++;
+                    chart = depth == 2 ? [] : null;
                     continue;
                 }
 
                 if (biff.Type == BiffType.Eof)
                 {
                     depth--;
+                    if (depth == 1 && chart is not null)
+                    {
+                        objects.Chart(chart, tokens => XlsFormula.Decode(state.Links, tokens, [], 0, 0, name: true));
+                        chart = null;
+                    }
+
                     continue;
                 }
 
@@ -559,16 +672,43 @@ internal static class XlsReader
                 {
                     Record(biff);
                 }
+                else if (depth == 2 && chart is not null && chart.Count < MaxChartRecords)
+                {
+                    chart.Add(((int)biff.Type, biff.Body.ToArray()));
+                }
             }
 
             Resolve();
+            objects.Finish();
+            XlsDrawing.Add(sheet, objects, state.Blips, state.Digit);
         }
 
         private void Record(BiffStream biff)
         {
+            // OfficeArt records too long for one MSODRAWING, or that come after an OBJ or a TXO and its text, go on in
+            // CONTINUE records.
+            bool drawing = drawingGoesOn;
+            drawingGoesOn = biff.Type is BiffType.MsoDrawing or BiffType.Obj or BiffType.Txo || (biff.Type == BiffType.Continue && drawing);
             ReadOnlySpan<byte> body = biff.Body;
+            if (XlsPivots.IsViewRecord(biff.Type))
+            {
+                // SxIvd, SXLI and SXPI go on in CONTINUE records, whose data simply follows.
+                int type = biff.Type;
+                List<byte> data = [.. body];
+                while (biff.PeekType() == BiffType.Continue && type is 0x00B4 or 0x00B5 or 0x00B6 && biff.Read())
+                {
+                    data.AddRange(biff.Body);
+                }
+
+                state.Pivots.View(sheet, type, [.. data]);
+                return;
+            }
+
             switch (biff.Type)
             {
+                case BiffType.Continue when drawing:
+                    objects.MsoDrawing(body);
+                    break;
                 case BiffType.Number when body.Length >= 14:
                     Set(body, Number(BinaryPrimitives.ReadDoubleLittleEndian(body[6..])));
                     break;
@@ -714,6 +854,24 @@ internal static class XlsReader
 
                 case BiffType.DefColWidth when body.Length >= 2:
                     baseWidth = Math.Min((int)BinaryPrimitives.ReadUInt16LittleEndian(body), 255);
+                    break;
+                case BiffType.MsoDrawing:
+                    objects.MsoDrawing(body);
+                    break;
+                case BiffType.Obj:
+                    objects.Obj(body);
+                    break;
+                case BiffType.Txo:
+                    objects.Txo(biff);
+                    break;
+                case BiffType.Note:
+                    objects.Note(biff.Continued());
+                    break;
+                case BiffType.HLink:
+                    objects.Hyperlink(body);
+                    break;
+                case BiffType.HLinkTooltip:
+                    objects.HyperlinkTip(body);
                     break;
                 case BiffType.StandardWidth when body.Length >= 2:
                     sheet.DefaultColumnWidth = state.ColumnWidth(BinaryPrimitives.ReadUInt16LittleEndian(body));

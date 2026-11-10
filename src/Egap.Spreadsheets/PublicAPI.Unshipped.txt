@@ -1265,6 +1265,11 @@ Egap.Spreadsheets.WorkbookLoadOptions.Password.get -> string?
 Egap.Spreadsheets.WorkbookLoadOptions.Password.init -> void
 Egap.Spreadsheets.WorkbookSaveOptions.Password.get -> string?
 Egap.Spreadsheets.WorkbookSaveOptions.Password.init -> void
+Egap.Spreadsheets.WorkbookSaveOptions.Encryption.get -> Egap.Spreadsheets.WorkbookEncryption
+Egap.Spreadsheets.WorkbookSaveOptions.Encryption.init -> void
+Egap.Spreadsheets.WorkbookEncryption
+Egap.Spreadsheets.WorkbookEncryption.Agile = 0 -> Egap.Spreadsheets.WorkbookEncryption
+Egap.Spreadsheets.WorkbookEncryption.Standard = 1 -> Egap.Spreadsheets.WorkbookEncryption
 Egap.Spreadsheets.PivotTable
 Egap.Spreadsheets.PivotTable.CanRefresh.get -> bool
 Egap.Spreadsheets.PivotTable.Name.get -> string!

@@ -100,59 +100,72 @@ internal sealed class PivotModel
     public static PivotModel Load(Workbook book)
     {
         PivotModel model = new(book);
-        if (book.Source is not { } source)
-        {
-            return model;
-        }
-
         Dictionary<string, PivotCache?> caches = new(StringComparer.OrdinalIgnoreCase);
-        foreach (Worksheet sheet in book.Worksheets)
+        if (book.Source is { } source)
         {
-            if (sheet.Source is not { } sheetSource)
+            foreach (Worksheet sheet in book.Worksheets)
             {
-                continue;
-            }
-
-            List<PivotTable> list = [];
-            foreach (OpcRelationship relationship in sheetSource.Part.Relationships)
-            {
-                if (relationship.External || !relationship.Type.EndsWith(PivotTableType, StringComparison.Ordinal)
-                    || source.Package.GetPart(relationship.TargetName) is not { } part || Xlsx.SafeXml.TryLoad(part) is not { Root: not null } document)
+                if (sheet.Source is not { } sheetSource)
                 {
                     continue;
                 }
 
-                PivotDefinition definition = new(document);
-                if (definition.Location is null)
+                foreach (OpcRelationship relationship in sheetSource.Part.Relationships)
                 {
-                    continue;
-                }
-
-                PivotCache? cache = null;
-                OpcRelationship? cacheRelationship = part.Relationships.FirstOrDefault(r => !r.External && r.Type.EndsWith(CacheDefinitionType, StringComparison.Ordinal));
-                if (cacheRelationship is not null && !caches.TryGetValue(cacheRelationship.TargetName, out cache))
-                {
-                    if (source.Package.GetPart(cacheRelationship.TargetName) is { } cachePart && Xlsx.SafeXml.TryLoad(cachePart) is { Root: not null } cacheDocument)
+                    if (!relationship.External && relationship.Type.EndsWith(PivotTableType, StringComparison.Ordinal)
+                        && source.Package.GetPart(relationship.TargetName) is { } part)
                     {
-                        cache = new PivotCache(source.Package, cachePart, cacheDocument, book.Date1904);
-                        model.Caches.Add(cache);
+                        model.Add(sheet, source.Package, part, caches);
                     }
-
-                    caches[cacheRelationship.TargetName] = cache;
                 }
-
-                PivotTable table = new(sheet, part, definition, cache);
-                cache?.Tables.Add(table);
-                list.Add(table);
             }
-
-            if (list.Count > 0)
+        }
+        else if (book.MadePivots?.Invoke() is { } made)
+        {
+            // An XLS file's pivot tables, made into the parts an .xlsx file holds them in.
+            foreach ((Worksheet sheet, OpcPart part) in made.Tables)
             {
-                model.tables[sheet] = list;
+                model.Add(sheet, made.Package, part, caches);
             }
         }
 
         return model;
+    }
+
+    private void Add(Worksheet sheet, OpcPackage package, OpcPart part, Dictionary<string, PivotCache?> caches)
+    {
+        if (Xlsx.SafeXml.TryLoad(part) is not { Root: not null } document)
+        {
+            return;
+        }
+
+        PivotDefinition definition = new(document);
+        if (definition.Location is null)
+        {
+            return;
+        }
+
+        PivotCache? cache = null;
+        OpcRelationship? cacheRelationship = part.Relationships.FirstOrDefault(r => !r.External && r.Type.EndsWith(CacheDefinitionType, StringComparison.Ordinal));
+        if (cacheRelationship is not null && !caches.TryGetValue(cacheRelationship.TargetName, out cache))
+        {
+            if (package.GetPart(cacheRelationship.TargetName) is { } cachePart && Xlsx.SafeXml.TryLoad(cachePart) is { Root: not null } cacheDocument)
+            {
+                cache = new PivotCache(package, cachePart, cacheDocument, book.Date1904);
+                Caches.Add(cache);
+            }
+
+            caches[cacheRelationship.TargetName] = cache;
+        }
+
+        PivotTable table = new(sheet, part, definition, cache);
+        cache?.Tables.Add(table);
+        if (!tables.TryGetValue(sheet, out List<PivotTable>? list))
+        {
+            tables[sheet] = list = [];
+        }
+
+        list.Add(table);
     }
 
     public IReadOnlyList<PivotTable> Tables(Worksheet sheet) => tables.TryGetValue(sheet, out List<PivotTable>? list) ? list : [];

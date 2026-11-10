@@ -52,14 +52,31 @@ to calculate on open, and the calculation chain is left out for Excel to build a
 cell you changed gets the formula as its own, as in Excel. Saving a workbook with macros as `.xlsx` or `.xltx` leaves the macros
 out, as Excel does.
 
+### Encrypted workbooks
+
+`WorkbookLoadOptions.Password` opens an encrypted XLSX, XLSM, XLTX or XLTM file, with agile encryption (Excel 2010 and
+later) or standard encryption (Excel 2007), and `WorkbookSaveOptions.Password` encrypts one when saved. Egap writes
+agile encryption, AES-256 with SHA-512 and 100,000 spins as Excel writes it, unless `WorkbookSaveOptions.Encryption`
+asks for `WorkbookEncryption.Standard`. Excel opens Egap's encrypted files with the password.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("salaries.xlsx", new WorkbookLoadOptions { Password = "secret" });
+book.Worksheets[0]["B2"].Value = 52000;
+book.Save("salaries.xlsx", new WorkbookSaveOptions { Password = "secret" });
+book.Save("salaries-2007.xlsx", new WorkbookSaveOptions { Password = "secret", Encryption = WorkbookEncryption.Standard });
+```
+
 ### Excel 97-2003 workbooks
 
 `Workbook.Load` also reads the binary workbooks of Excel 97 to 2003 (`.xls`, BIFF8), told apart by their first bytes. Each
 formula is read from the tokens Excel keeps it as and written in Excel's syntax, the way Excel shows it, shared and array
 formulas included, with the result Excel last calculated. Cell values, shared strings, cell styles and number formats, the
 palette, merged cells, column widths, row heights, hidden and grouped rows and columns, hidden sheets, named ranges, print
-ranges and links to other files with the values the workbook keeps for them are read too. A workbook read from XLS saves
-as XLSX; Egap does not write XLS.
+ranges and links to other files with the values the workbook keeps for them are read too, and so are notes, hyperlinks
+with their tooltips, pictures, shapes and groups, embedded charts, chart sheets and pivot tables. A workbook read from
+XLS saves as XLSX, objects included; Egap does not write XLS.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -71,9 +88,14 @@ book.Save("report.xlsx");
 
 Some things change on the way as Excel changes them when it saves an XLS as XLSX: a name that starts with a digit, which
 XLSX does not allow, gets `_1_` in front of it, and an Excel 4.0 macro sheet becomes a worksheet with its constants and
-without its macro formulas. Column widths are snapped to whole pixels of the workbook's font. Charts, pictures, notes,
-conditional formats, data validation, sheet protection and VBA projects are not read yet. An encrypted XLS throws a
-`DocumentPasswordException`, and a workbook from Excel 5.0 or 95 (BIFF5) a `DocumentException`.
+without its macro formulas. Column widths are snapped to whole pixels of the workbook's font. A pivot table comes with
+its cache and records, so it refreshes as one read from XLSX does; one whose cache has calculated or grouped fields, or
+reads a database or a cube, is left out, and so are the pivot tables of an encrypted XLS. Form controls, OLE
+objects, conditional formats, data validation, sheet protection and VBA projects are not read yet.
+
+An XLS encrypted with RC4 or RC4 CryptoAPI opens with `WorkbookLoadOptions.Password`, or without one when Excel encrypted
+it with its default password, as it does for a workbook protected only against writing. A wrong or missing password
+throws a `DocumentPasswordException`, and a workbook from Excel 5.0 or 95 (BIFF5) a `DocumentException`.
 
 ### OpenDocument spreadsheets
 

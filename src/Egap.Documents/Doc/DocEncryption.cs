@@ -186,31 +186,48 @@ internal static class DocEncryption
             throw new DocumentException("The encrypted Word document's encryption header is damaged.");
         }
 
-        ReadOnlySpan<byte> header = table.AsSpan(0, (int)lKey);
+        return RcKeyMaker(table.AsSpan(0, (int)lKey), BlockLength, "Word document");
+    }
+
+    /// <summary>
+    /// Reads an RC4 or RC4 CryptoAPI encryption header ([MS-OFFCRYPTO] 2.3.6.1 and 2.3.5.1), as a Word or Excel 97-2003 file
+    /// holds it, and gives the decryptor a password makes, or null for a wrong password. Every block of
+    /// <paramref name="blockLength"/> bytes from the stream's start has its own key.
+    /// </summary>
+    /// <param name="header">The header, from its version.</param>
+    /// <param name="blockLength">512 for Word, 1024 for Excel.</param>
+    /// <param name="document">The kind of file the errors name, such as "Word document".</param>
+    internal static Func<string, IDecryptor?> RcKeyMaker(ReadOnlySpan<byte> header, int blockLength, string document)
+    {
+        if (header.Length < 4)
+        {
+            throw new DocumentException($"The encrypted {document}'s encryption header is damaged.");
+        }
+
         int major = BinaryPrimitives.ReadUInt16LittleEndian(header);
         int minor = BinaryPrimitives.ReadUInt16LittleEndian(header[2..]);
         if (major == 1 && minor == 1)
         {
             if (header.Length < 52)
             {
-                throw new DocumentException("The encrypted Word document's RC4 encryption header is damaged.");
+                throw new DocumentException($"The encrypted {document}'s RC4 encryption header is damaged.");
             }
 
             byte[] salt = header.Slice(4, 16).ToArray();
             byte[] verifier = header.Slice(20, 16).ToArray();
             byte[] verifierHash = header.Slice(36, 16).ToArray();
-            return password => Rc4Key(password, salt, verifier, verifierHash);
+            return password => Rc4Key(password, salt, verifier, verifierHash, blockLength);
         }
 
         if (major is >= 2 and <= 4 && minor == 2)
         {
-            return CryptoApiKeyMaker(header);
+            return CryptoApiKeyMaker(header, blockLength, document);
         }
 
-        throw new DocumentException($"The Word document is encrypted with an encryption Egap does not read (version {major}.{minor}).");
+        throw new DocumentException($"The {document} is encrypted with an encryption Egap does not read (version {major}.{minor}).");
     }
 
-    private static Rc4Decryptor? Rc4Key(string password, byte[] salt, byte[] verifier, byte[] verifierHash)
+    private static Rc4Decryptor? Rc4Key(string password, byte[] salt, byte[] verifier, byte[] verifierHash, int blockLength)
     {
         if (password.Length > OfficeEncryption.MaxPasswordLength)
         {
@@ -226,21 +243,21 @@ internal static class DocEncryption
         }
 
         byte[] h1 = MD5.HashData(buffer);
-        Rc4Decryptor decryptor = new(h1[..5], cryptoApi: false, keyBytes: 16);
+        Rc4Decryptor decryptor = new(h1[..5], cryptoApi: false, keyBytes: 16, blockLength);
         return decryptor.Verify(verifier, verifierHash, sha1: false) ? decryptor : null;
     }
 
-    private static Func<string, IDecryptor?> CryptoApiKeyMaker(ReadOnlySpan<byte> header)
+    private static Func<string, IDecryptor?> CryptoApiKeyMaker(ReadOnlySpan<byte> header, int blockLength, string document)
     {
         if (header.Length < 12)
         {
-            throw new DocumentException("The encrypted Word document's RC4 CryptoAPI encryption header is damaged.");
+            throw new DocumentException($"The encrypted {document}'s RC4 CryptoAPI encryption header is damaged.");
         }
 
         uint headerSize = BinaryPrimitives.ReadUInt32LittleEndian(header[8..]);
         if (headerSize < 32 || headerSize > header.Length - 12)
         {
-            throw new DocumentException("The encrypted Word document's RC4 CryptoAPI encryption header is damaged.");
+            throw new DocumentException($"The encrypted {document}'s RC4 CryptoAPI encryption header is damaged.");
         }
 
         ReadOnlySpan<byte> encryption = header.Slice(12, (int)headerSize);
@@ -250,13 +267,13 @@ internal static class DocEncryption
         keySize = keySize == 0 ? 40 : keySize;
         if ((algorithm != 0x6801 && algorithm != 0) || (hash != 0x8004 && hash != 0) || keySize < 40 || keySize > 128 || keySize % 8 != 0)
         {
-            throw new DocumentException("The Word document is encrypted with a CryptoAPI cipher Egap does not read: only RC4 with SHA-1 is defined for DOC.");
+            throw new DocumentException($"The {document} is encrypted with a CryptoAPI cipher Egap does not read: only RC4 with SHA-1 is defined for it.");
         }
 
         ReadOnlySpan<byte> rest = header[(12 + (int)headerSize)..];
         if (rest.Length < 4 + 16 + 16 + 4 + 20 || BinaryPrimitives.ReadUInt32LittleEndian(rest) != 16)
         {
-            throw new DocumentException("The encrypted Word document's password verifier is damaged.");
+            throw new DocumentException($"The encrypted {document}'s password verifier is damaged.");
         }
 
         byte[] salt = rest.Slice(4, 16).ToArray();
@@ -271,12 +288,12 @@ internal static class DocEncryption
             }
 
             byte[] h0 = SHA1.HashData([.. salt, .. Encoding.Unicode.GetBytes(password)]);
-            Rc4Decryptor decryptor = new(h0, cryptoApi: true, keyBytes);
+            Rc4Decryptor decryptor = new(h0, cryptoApi: true, keyBytes, blockLength);
             return decryptor.Verify(verifier, verifierHash, sha1: true) ? decryptor : null;
         };
     }
 
-    private interface IDecryptor
+    internal interface IDecryptor
     {
         /// <summary>Transforms the stream in place from <paramref name="start"/>; offsets count from the stream's start.</summary>
         void Apply(byte[] stream, int start);
@@ -300,7 +317,7 @@ internal static class DocEncryption
         }
     }
 
-    private sealed class Rc4Decryptor(byte[] hash, bool cryptoApi, int keyBytes) : IDecryptor
+    private sealed class Rc4Decryptor(byte[] hash, bool cryptoApi, int keyBytes, int blockLength) : IDecryptor
     {
         /// <summary>The RC4 key of a block: the hash of the password hash and the block number, cut to the key size.</summary>
         private byte[] BlockKey(uint block)
@@ -332,11 +349,11 @@ internal static class DocEncryption
 
         public void Apply(byte[] stream, int start)
         {
-            // Every 512-byte block from the stream's start has its own key; a clear prefix is skipped within its block.
-            for (int block = start / BlockLength; (long)block * BlockLength < stream.Length; block++)
+            // Every block from the stream's start has its own key; a clear prefix is skipped within its block.
+            for (int block = start / blockLength; (long)block * blockLength < stream.Length; block++)
             {
-                int from = block * BlockLength;
-                int to = Math.Min(stream.Length, from + BlockLength);
+                int from = block * blockLength;
+                int to = Math.Min(stream.Length, from + blockLength);
                 Rc4 rc4 = new(BlockKey((uint)block));
                 if (start > from)
                 {
@@ -384,8 +401,11 @@ internal static class DocEncryption
 
         public void Skip(int count)
         {
-            Span<byte> scratch = stackalloc byte[BlockLength];
-            Apply(scratch[..count]);
+            Span<byte> scratch = stackalloc byte[256];
+            for (; count > 0; count -= scratch.Length)
+            {
+                Apply(scratch[..Math.Min(count, scratch.Length)]);
+            }
         }
     }
 }

@@ -164,8 +164,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - `Workbook.Load` reads Excel 97-2003 workbooks (XLS, BIFF8): cells, shared strings, styles, number formats and the
   palette, merged cells, rows and columns, sheets, names, print ranges and links to other files with their kept values.
   Formulas are decoded from their tokens to Excel's syntax, shared and array formulas included, with their cached
-  results. The workbook saves as XLSX, changed as Excel changes an XLS it saves as XLSX. Encrypted and Excel 5.0/95
-  workbooks are refused.
+  results. Notes, hyperlinks with their tooltips, pictures, shapes and groups, embedded charts, chart sheets and pivot
+  tables with their caches and records are read too. The workbook saves as XLSX, objects included, changed as Excel
+  changes an XLS it saves as XLSX. An XLS encrypted with RC4 or RC4 CryptoAPI opens with its password, or with Excel's
+  default one; Excel 5.0/95 workbooks are refused. On the XLS files of a public and an e-mail corpus, the charts, chart
+  sheets, notes, hyperlinks, pictures and pivot tables matched Excel's own XLSX of each file, and Excel opened Egap's
+  XLSX of the 40 files tried, pivot tables included, without repairing them.
+- `WorkbookLoadOptions.Password` opens encrypted XLSX, XLSM, XLTX and XLTM files (agile and standard encryption), and
+  `WorkbookSaveOptions.Password` encrypts them, with agile encryption or, through `WorkbookSaveOptions.Encryption`,
+  standard encryption. Excel opens Egap's encrypted files with the password.
 - A sheet name such as `May06`, letters and then digits, is now quoted in a reference (`'May06'!A1`), as Excel quotes it.
 - XLSX formulas are read and written with SpreadsheetML's `_xHHHH_` escapes, as cell text is: a formula with a character
   XML cannot hold, such as a control character in a text constant, no longer makes `Save` throw.

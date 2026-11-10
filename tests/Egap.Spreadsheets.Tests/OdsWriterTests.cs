@@ -354,7 +354,6 @@ public sealed class OdsWriterTests
     {
         Workbook book = Workbook.Create();
         Assert.Throws<NotSupportedException>(() => book.Save(new MemoryStream(), new WorkbookSaveOptions { Format = WorkbookFormat.Fods, Password = "x" }));
-        Assert.Throws<NotSupportedException>(() => book.Save(new MemoryStream(), new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx, Password = "x" }));
     }
 
     [Theory]

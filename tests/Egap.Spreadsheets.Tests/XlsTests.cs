@@ -303,10 +303,14 @@ public sealed class XlsTests
     }
 
     [Fact]
-    public void TurnsDownEncryptedWorkbooks()
+    public void TurnsDownXorObfuscatedAndUnknownEncryption()
     {
-        byte[] file = new XlsBuilder().Global(0x002F, U16(1), new byte[52]).Sheet("Sheet1").Build();
-        Assert.Throws<DocumentPasswordException>(() => Workbook.Load(new MemoryStream(file)));
+        byte[] xor = new XlsBuilder().Global(0x002F, U16(0), U16(0x1234), U16(0x5678)).Sheet("Sheet1").Build();
+        var error = Assert.Throws<DocumentException>(() => Workbook.Load(new MemoryStream(xor)));
+        Assert.Contains("XOR", error.Message, StringComparison.Ordinal);
+
+        byte[] unknown = new XlsBuilder().Global(0x002F, U16(1), new byte[52]).Sheet("Sheet1").Build();
+        Assert.Throws<DocumentException>(() => Workbook.Load(new MemoryStream(unknown)));
     }
 
     [Fact]

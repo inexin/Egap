@@ -75,6 +75,9 @@ internal static class XlsFormula
         Stack<string> stack = new();
         int at = 0;
         int extraAt = 0;
+
+        // Spaces a PtgAttrSpace puts before the next token: before an operand, or before an operator's sign.
+        string spaces = "";
         while (at < tokens.Length)
         {
             if (stack.Count > MaxDepth)
@@ -92,15 +95,18 @@ internal static class XlsFormula
                 case >= 0x03 and <= 0x11:
                     {
                         string right = stack.Pop(), left = stack.Pop();
-                        stack.Push(left + Operator(kind) + right);
+                        stack.Push(left + spaces + Operator(kind) + right);
+                        spaces = "";
                         break;
                     }
 
                 case 0x12:
-                    stack.Push("+" + stack.Pop());
+                    stack.Push(spaces + "+" + stack.Pop());
+                    spaces = "";
                     break;
                 case 0x13:
-                    stack.Push("-" + stack.Pop());
+                    stack.Push(spaces + "-" + stack.Pop());
+                    spaces = "";
                     break;
                 case 0x14:
                     stack.Push(stack.Pop() + "%");
@@ -135,7 +141,14 @@ internal static class XlsFormula
                             stack.Push("SUM(" + stack.Pop() + ")");
                         }
 
-                        break;
+                        // Spaces before the next token (0) or before the formula (6); line breaks and the spaces about
+                        // parentheses stay out.
+                        if ((options & 0x40) != 0 && (data & 0xFF) is 0 or 6 && spaces.Length < 256)
+                        {
+                            spaces += new string(' ', data >> 8);
+                        }
+
+                        continue;
                     }
 
                 case 0x1C:
@@ -261,6 +274,12 @@ internal static class XlsFormula
 
                 default:
                     return null;
+            }
+
+            if (spaces.Length > 0 && stack.Count > 0)
+            {
+                stack.Push(spaces + stack.Pop());
+                spaces = "";
             }
         }
 

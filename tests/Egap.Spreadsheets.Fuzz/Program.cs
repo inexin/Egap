@@ -25,6 +25,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["tables"] = FromTables,
     ["links"] = Links,
     ["sheetcharts"] = SheetCharts,
+    ["encrypted"] = Encrypted,
     ["pivots"] = Pivots,
     ["pivotparts"] = PivotParts,
     ["edits"] = Edits,
@@ -234,6 +235,30 @@ static void Csv(Stream input)
     }
 }
 
+// An encrypted XLS or XLSX file, opened with the password the seeds were encrypted with: the FILEPASS record or the
+// EncryptionInfo stream, the decryption, and the workbook read from what it gives; may throw only DocumentException.
+static void Encrypted(Stream input)
+{
+    try
+    {
+        Workbook book = Workbook.Load(new MemoryStream(Bytes(input), writable: false), new WorkbookLoadOptions
+        {
+            Password = "Egap p\u00E4ssword 1",
+            Limits = new DocumentLimits { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 },
+        });
+        foreach (Worksheet sheet in book.Worksheets)
+        {
+            _ = sheet.UsedRange;
+        }
+
+        using MemoryStream saved = new();
+        book.Save(saved);
+    }
+    catch (DocumentException)
+    {
+    }
+}
+
 // The input is an XLSX package: loaded, saved and loaded again, and every sheet streamed through SheetReader.
 // A workbook's charts: read, filled from the cells, edited and saved. Only a DocumentException may come out.
 static void Pivots(Stream input)
@@ -394,6 +419,24 @@ static void Ods(Stream input, string? password)
                     }
                 }
             }
+
+            // Pivot tables (an XLS file's are made from its BIFF8 pivot records) are listed and refreshed.
+            foreach (PivotTable pivot in sheet.PivotTables)
+            {
+                _ = pivot.ToString();
+                _ = pivot.Source;
+                if (pivot.CanRefresh)
+                {
+                    try
+                    {
+                        pivot.Refresh();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // A source that lost its header, or a table that would grow over another: refused, nothing changed.
+                    }
+                }
+            }
         }
 
         if (book.Worksheets.Sum(s => (long)s.Cells.Count) < 20_000)
@@ -415,8 +458,8 @@ static void Ods(Stream input, string? password)
 }
 
 // An Excel 97-2003 workbook (BIFF8): the compound file, its records and the formulas decoded from their tokens. It goes the
-// same way as an ODS: loaded, cells shown and their formulas written in R1C1 style, calculated, then saved as XLSX and
-// loaded again; only a DocumentException may be thrown.
+// same way as an ODS: loaded, cells shown and their formulas written in R1C1 style, pivot tables refreshed, calculated,
+// then saved as XLSX and loaded again; only a DocumentException may be thrown.
 static void Xls(Stream input) => Ods(input, null);
 
 static void Xlsx(Stream input)
