@@ -116,6 +116,19 @@ public sealed class XlsObjectTests
         Assert.Equal((Documents.Charts.ChartType.Column, Documents.Charts.ChartGrouping.Stacked, 50, 100), (plot.Type, plot.Grouping, plot.GapWidth, plot.Overlap));
     }
 
+    [Fact]
+    public void ReadsA3DPieWithAFirstSliceAngle()
+    {
+        // A pie group turned by 30 degrees with a Chart3D record: a 3D pie, which has no first slice angle of its own.
+        List<(int, byte[])> records =
+        [
+            (0x1014, new byte[20]), (0x1033, []), (0x1019, [30, 0, 0, 0, 0, 0]), (0x103A, new byte[14]), (0x1034, []),
+        ];
+        Documents.Charts.Chart chart = Assert.IsType<Documents.Charts.Chart>(Xls.XlsChart.Read(records, _ => null));
+        Documents.Charts.ChartPlot plot = Assert.Single(chart.Plots);
+        Assert.Equal((Documents.Charts.ChartType.Pie, true, (int?)null), (plot.Type, plot.Is3D, plot.FirstSliceAngle));
+    }
+
     private static List<(string, string)> Cells(Worksheet sheet) =>
         [.. sheet.Cells.Where(c => !c.IsEmpty).Select(c => (c.Address.ToString(), c.Value.ToString())).Order()];
 

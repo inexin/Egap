@@ -386,7 +386,12 @@ internal static class XlsChart
                 plot.Grouping = group.Percent ? ChartGrouping.PercentStacked : group.Stacked ? ChartGrouping.Stacked : ChartGrouping.Standard;
                 break;
             case ChartType.Pie or ChartType.Doughnut:
-                plot.FirstSliceAngle = group.FirstSlice;
+                if (!plot.Is3D)
+                {
+                    // A 3D pie turns with the chart's 3D rotation and has no first slice angle of its own.
+                    plot.FirstSliceAngle = group.FirstSlice;
+                }
+
                 if (plot.Type == ChartType.Doughnut)
                 {
                     plot.HoleSize = group.Hole;
