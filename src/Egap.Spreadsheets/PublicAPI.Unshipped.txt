@@ -1265,3 +1265,13 @@ Egap.Spreadsheets.WorkbookLoadOptions.Password.get -> string?
 Egap.Spreadsheets.WorkbookLoadOptions.Password.init -> void
 Egap.Spreadsheets.WorkbookSaveOptions.Password.get -> string?
 Egap.Spreadsheets.WorkbookSaveOptions.Password.init -> void
+Egap.Spreadsheets.PivotTable
+Egap.Spreadsheets.PivotTable.CanRefresh.get -> bool
+Egap.Spreadsheets.PivotTable.Name.get -> string!
+Egap.Spreadsheets.PivotTable.Range.get -> Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.PivotTable.Refresh() -> void
+Egap.Spreadsheets.PivotTable.Source.get -> string?
+Egap.Spreadsheets.PivotTable.Worksheet.get -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.Workbook.RefreshPivotTables() -> int
+Egap.Spreadsheets.Worksheet.PivotTables.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.PivotTable!>!
+override Egap.Spreadsheets.PivotTable.ToString() -> string!

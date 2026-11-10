@@ -1,0 +1,5 @@
+# Excel 16.0 build 20527 locale nb-NO
+# pivots-edited.xlsx: rows 61-72 put in (see tools/excel-pivot-oracle.ps1), Kiwis in the other rows made Pears,
+# units in those rows whose new row number is a multiple of 4 doubled, then refreshed.
+# pivots-column.xlsx: then a Channel column put in before Year (Web, Store, Phone by row number mod 3), refreshed.
+# pivots-renamed.xlsx: then the Rep header renamed Seller, refreshed.

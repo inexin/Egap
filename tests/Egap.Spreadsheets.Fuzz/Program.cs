@@ -25,6 +25,8 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["tables"] = FromTables,
     ["links"] = Links,
     ["sheetcharts"] = SheetCharts,
+    ["pivots"] = Pivots,
+    ["pivotparts"] = PivotParts,
     ["edits"] = Edits,
     ["shift"] = Shift,
     ["copies"] = Copies,
@@ -234,6 +236,88 @@ static void Csv(Stream input)
 
 // The input is an XLSX package: loaded, saved and loaded again, and every sheet streamed through SheetReader.
 // A workbook's charts: read, filled from the cells, edited and saved. Only a DocumentException may come out.
+static void Pivots(Stream input)
+{
+    try
+    {
+        Workbook book = Workbook.Load(new MemoryStream(Bytes(input), writable: false), new WorkbookLoadOptions { Limits = new DocumentLimits { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 } });
+        foreach (Worksheet sheet in book.Worksheets)
+        {
+            foreach (PivotTable table in sheet.PivotTables)
+            {
+                _ = table.ToString();
+                _ = table.Source;
+                if (table.CanRefresh)
+                {
+                    try
+                    {
+                        table.Refresh();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // A source that lost its header, or a table that would grow over another: refused, nothing changed.
+                    }
+                }
+            }
+        }
+
+        _ = book.RefreshPivotTables();
+        try
+        {
+            // Rows put in move the sources, which a refresh then reads.
+            if (book.Worksheets.Count > 0)
+            {
+                book.Worksheets[0].InsertRows(1, 2);
+            }
+
+            _ = book.RefreshPivotTables();
+        }
+        catch (InvalidOperationException)
+        {
+            // An edit Excel refuses.
+        }
+
+        using MemoryStream saved = new();
+        book.Save(saved);
+        saved.Position = 0;
+        Workbook again = Workbook.Load(saved);
+        foreach (Worksheet sheet in again.Worksheets)
+        {
+            _ = sheet.PivotTables.Count;
+        }
+
+        _ = again.RefreshPivotTables();
+    }
+    catch (DocumentException)
+    {
+    }
+}
+
+// The first byte picks a pivot part of the template book (two tables' definitions, the cache's definition or its records);
+// the rest replaces that part, and the book then goes through the pivots target.
+static void PivotParts(Stream input)
+{
+    byte[] bytes = Bytes(input);
+    if (bytes.Length == 0)
+    {
+        return;
+    }
+
+    string[] parts = ["xl/pivotTables/pivotTable1.xml", "xl/pivotTables/pivotTable4.xml", "xl/pivotCache/pivotCacheDefinition1.xml", "xl/pivotCache/pivotCacheRecords1.xml"];
+    using MemoryStream package = new();
+    package.Write(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "pivot-template.xlsx")));
+    using (System.IO.Compression.ZipArchive zip = new(package, System.IO.Compression.ZipArchiveMode.Update, leaveOpen: true))
+    {
+        string name = parts[bytes[0] % parts.Length];
+        zip.GetEntry(name)?.Delete();
+        using Stream entry = zip.CreateEntry(name).Open();
+        entry.Write(bytes, 1, bytes.Length - 1);
+    }
+
+    package.Position = 0;
+    Pivots(package);
+}
+
 static void SheetCharts(Stream input)
 {
     try

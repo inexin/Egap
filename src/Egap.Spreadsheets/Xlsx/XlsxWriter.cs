@@ -51,6 +51,12 @@ internal static class XlsxWriter
                 }
             }
 
+            // Pivot tables and caches a refresh or an edit changed.
+            foreach ((OpcPart part, XDocument document) in book.Pivots.ChangedParts())
+            {
+                Add(new OutPart(part.Name, part.ContentType, XmlBytes(document), [.. part.Relationships]));
+            }
+
             packageRels = [.. source.Package.Relationships];
             workbookName = source.WorkbookPart.Name;
             bool macros = format is WorkbookFormat.Xlsm or WorkbookFormat.Xltm;
@@ -495,6 +501,18 @@ internal static class XlsxWriter
 
         return new XDocument(new XElement(ns + "externalLink", new XAttribute(XNamespace.Xmlns + "r", XlsxNames.RUri),
             new XElement(ns + "externalBook", new XAttribute(XlsxNames.R + "id", "rId1"), names, data)));
+    }
+
+    /// <summary>A part's XML as UTF-8 without a byte order mark, as Excel writes its parts.</summary>
+    private static byte[] XmlBytes(XDocument document)
+    {
+        using MemoryStream stream = new();
+        using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(stream, new System.Xml.XmlWriterSettings { Encoding = new System.Text.UTF8Encoding(false) }))
+        {
+            document.Save(writer);
+        }
+
+        return stream.ToArray();
     }
 
     private sealed record OutPart(string Name, string ContentType, byte[] Data, List<OpcRelationship> Relationships);

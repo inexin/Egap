@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Compile Include="..\..\tests\Egap.Spreadsheets.Tests\XlsBuilder.cs" Link="XlsBuilder.cs" />
+    <None Include="..\..\tests\Egap.Spreadsheets.Tests\Oracle\pivots.xlsx" Link="pivots.xlsx" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
