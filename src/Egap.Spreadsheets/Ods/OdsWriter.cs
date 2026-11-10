@@ -120,27 +120,7 @@ internal sealed class OdsWriter
         foreach (Worksheet sheet in book.Worksheets)
         {
             TableStyle(sheet);
-            ColumnStyle(sheet.DefaultColumnWidth ?? DefaultWidth);
-            RowStyle(double.NaN);
-            foreach (ColumnSpan span in sheet.ColumnSpans.Spans)
-            {
-                ColumnStyle(double.IsNaN(span.Width) ? sheet.DefaultColumnWidth ?? DefaultWidth : span.Width);
-                if (span.Style >= 0)
-                {
-                    CellStyle(span.Style);
-                }
-            }
-
-            foreach (RowRecord record in sheet.RowRecords.Values)
-            {
-                RowStyle(record.Height);
-                if (record.Style >= 0)
-                {
-                    CellStyle(record.Style);
-                }
-            }
-
-            PrepareCells(sheet);
+            PrepareSheet(sheet);
         }
 
         foreach (ExternalBook external in book.ExternalBooks)
@@ -149,12 +129,39 @@ internal sealed class OdsWriter
             {
                 foreach (Worksheet sheet in external.Sheets)
                 {
-                    PrepareCells(sheet);
+                    // A linked file's kept sheet is written with its own widths, heights and styles too.
+                    PrepareSheet(sheet);
                 }
             }
         }
 
         CellStyle(0);
+    }
+
+    /// <summary>Finds the column, row and cell styles a sheet's table uses.</summary>
+    private void PrepareSheet(Worksheet sheet)
+    {
+        ColumnStyle(sheet.DefaultColumnWidth ?? DefaultWidth);
+        RowStyle(double.NaN);
+        foreach (ColumnSpan span in sheet.ColumnSpans.Spans)
+        {
+            ColumnStyle(double.IsNaN(span.Width) ? sheet.DefaultColumnWidth ?? DefaultWidth : span.Width);
+            if (span.Style >= 0)
+            {
+                CellStyle(span.Style);
+            }
+        }
+
+        foreach (RowRecord record in sheet.RowRecords.Values)
+        {
+            RowStyle(record.Height);
+            if (record.Style >= 0)
+            {
+                CellStyle(record.Style);
+            }
+        }
+
+        PrepareCells(sheet);
     }
 
     private void PrepareCells(Worksheet sheet)

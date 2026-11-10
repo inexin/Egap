@@ -389,6 +389,37 @@ public sealed class OdsWriterTests
     }
 
     [Fact]
+    public void LinkedSheetsWithTheirOwnWidthsAndHeightsUseDefinedStyles()
+    {
+        Workbook source = Workbook.Load(Fods("""
+            <table:table table:name="S"><table:table-row><table:table-cell table:formula="of:=['file:///C:/data/rates.ods'#$Rates.A1]*2" office:value-type="float" office:value="10"/></table:table-row></table:table>
+            <table:table table:name="'file:///C:/data/rates.ods'#$Rates"><table:table-source xlink:href="file:///C:/data/rates.ods" table:table-name="Rates" table:mode="copy-results-only"/>
+            <table:table-row><table:table-cell office:value-type="float" office:value="5"/></table:table-row></table:table>
+            """));
+        Worksheet linked = source.ExternalBooks[0].Sheets[0];
+        linked.Columns["A"].Width = 33.5;
+        linked.Columns["B"].Width = 7.25;
+        linked.Rows[0].Height = 41.5;
+        linked["B1"].Value = 2.0;
+        linked["B1"].Style = linked["B1"].Style with { Font = linked["B1"].Style.Font with { Bold = true } };
+
+        foreach (Workbook book in (Workbook[])[source, RoundTrip(source, WorkbookFormat.Ods)])
+        {
+            using MemoryStream stream = new();
+            book.Save(stream, new WorkbookSaveOptions { Format = WorkbookFormat.Ods });
+            using ZipArchive zip = new(new MemoryStream(stream.ToArray()));
+            XDocument content = XDocument.Load(zip.GetEntry("content.xml")!.Open());
+            XDocument styles = XDocument.Load(zip.GetEntry("styles.xml")!.Open());
+            XNamespace style = "urn:oasis:names:tc:opendocument:xmlns:style:1.0";
+            XNamespace table = "urn:oasis:names:tc:opendocument:xmlns:table:1.0";
+            HashSet<string> defined = [.. content.Descendants(style + "style").Concat(styles.Descendants(style + "style")).Select(e => (string)e.Attribute(style + "name")!)];
+            string[] used = [.. content.Descendants().Attributes().Where(at => at.Name.LocalName is "style-name" or "default-cell-style-name" && at.Name.Namespace == table).Select(at => at.Value).Distinct()];
+            Assert.NotEmpty(used);
+            Assert.All(used, name => Assert.Contains(name, defined));
+        }
+    }
+
+    [Fact]
     public void WritesValidXmlForEveryPart()
     {
         Workbook book = Workbook.Create();
