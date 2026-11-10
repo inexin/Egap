@@ -156,6 +156,44 @@ public sealed class PivotTableTests
     }
 
     [Fact]
+    public void ATableGrowingIntoCellsAnotherNoLongerTakesKeepsThem()
+    {
+        // The Dates table (written first) at A20 and the Compact table at J1, on one sheet and one cache. Twelve reps widen
+        // the Dates table over columns J and K, which the Compact table leaves once every product is Apples.
+        const string Type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable";
+        byte[] bytes = Rewrite(
+            File.ReadAllBytes(Book),
+            ("xl/worksheets/_rels/sheet11.xml.rels", xml => xml.Replace($"<Relationship Id=\"rId1\" Type=\"{Type}\" Target=\"../pivotTables/pivotTable10.xml\"/>", "", StringComparison.Ordinal)),
+            ("xl/worksheets/_rels/sheet2.xml.rels", xml => xml.Replace("<Relationship Id=\"rId1\"", $"<Relationship Id=\"rId7\" Type=\"{Type}\" Target=\"../pivotTables/pivotTable10.xml\"/><Relationship Id=\"rId1\"", StringComparison.Ordinal)),
+            ("xl/pivotTables/pivotTable10.xml", xml => xml.Replace("<location ref=\"A6:H17\"", "<location ref=\"A20:H31\"", StringComparison.Ordinal)),
+            ("xl/pivotTables/pivotTable1.xml", xml => xml.Replace("<location ref=\"A6:B34\"", "<location ref=\"J1:K29\"", StringComparison.Ordinal)));
+        Workbook book = Workbook.Load(new MemoryStream(bytes));
+        book.Culture = Norwegian;
+        Worksheet sheet = book.Worksheets["Compact"];
+        Assert.Equal(["Dates", "Compact"], sheet.PivotTables.Select(t => t.Name));
+        sheet.Range("A1:B40").ClearContents();
+        ManyRepsOneProduct(book);
+        Assert.Equal(11, book.RefreshPivotTables());
+        PivotTable dates = sheet.PivotTables[0];
+        Assert.Equal(RangeAddress.Parse("A20:N31"), dates.Range);
+        Assert.Equal(RangeAddress.Parse("J1:K12"), sheet.PivotTables[1].Range);
+
+        // The Dates table as it is laid out on its own sheet, with the same data.
+        Workbook alone = Load(Book);
+        ManyRepsOneProduct(alone);
+        alone.RefreshPivotTables();
+        Worksheet reference = alone.Worksheets["Dates"];
+        Assert.Equal(RangeAddress.Parse("A6:N17"), reference.PivotTables[0].Range);
+        for (int row = 0; row < 12; row++)
+        {
+            for (int column = 0; column < 14; column++)
+            {
+                Assert.Equal(reference[5 + row, column].Value, sheet[19 + row, column].Value);
+            }
+        }
+    }
+
+    [Fact]
     public void AnExternalSourceCannotBeRefreshed()
     {
         byte[] bytes = Rewrite(File.ReadAllBytes(Book), "xl/pivotCache/pivotCacheDefinition1.xml",
@@ -244,6 +282,16 @@ public sealed class PivotTableTests
         }
 
         return stream.ToArray();
+    }
+
+    private static void ManyRepsOneProduct(Workbook book)
+    {
+        Worksheet data = book.Worksheets["Data"];
+        for (int r = 1; r <= 60; r++)
+        {
+            data[r, 1].Value = "Rep " + (r % 12).ToString("00", CultureInfo.InvariantCulture);
+            data[r, 2].Value = "Apples";
+        }
     }
 
     /// <summary>The column <c>tools/excel-pivot-oracle.ps1</c> put in before Year.</summary>

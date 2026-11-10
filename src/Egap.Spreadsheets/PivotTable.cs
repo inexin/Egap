@@ -216,14 +216,19 @@ internal sealed class PivotModel
         }
 
         cache.Apply(data, book);
+
+        // Every old area is cleared before any table is written, as one table may grow into cells another no longer takes.
+        foreach ((PivotTable table, _, _) in plans)
+        {
+            foreach (RangeAddress old in Areas(table.Range, PageArea(table.Definition)))
+            {
+                table.Worksheet.Range(old).ClearContents();
+            }
+        }
+
         foreach ((PivotTable table, PivotDefinition definition, PivotLayout layout) in plans)
         {
             Worksheet sheet = table.Worksheet;
-            foreach (RangeAddress old in Areas(table.Range, PageArea(table.Definition)))
-            {
-                sheet.Range(old).ClearContents();
-            }
-
             CellAddress anchor = table.Range.First;
             foreach ((int row, int column, CellValue value, string? format) in layout.Cells)
             {
