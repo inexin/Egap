@@ -214,6 +214,62 @@ internal static class OfficeEncryption
         ]);
     }
 
+    /// <summary>
+    /// Encrypts a package with standard encryption ([MS-OFFCRYPTO] 2.3.4.5): AES-128 in ECB mode with a key made from the
+    /// password's SHA-1 hash spun 50,000 times, as Excel 2007 writes it, and writes the compound file with its data spaces.
+    /// It has no integrity check; agile encryption is stronger and is what Office writes today.
+    /// </summary>
+    [SuppressMessage("Security", "CA5350", Justification = "Standard encryption is defined with SHA-1; it is written only when the caller asks for it, for programs that read nothing newer.")]
+    public static void EncryptStandard(ReadOnlySpan<byte> package, string password, Stream output)
+    {
+        ArgumentNullException.ThrowIfNull(password);
+        const int keyBytes = 16;
+        byte[] salt = RandomNumberGenerator.GetBytes(16);
+        byte[] key = StandardKeyMaker.DeriveKey(salt, password, keyBytes);
+        byte[] verifier = RandomNumberGenerator.GetBytes(16);
+        using Aes aes = Aes.Create();
+        aes.Key = key;
+        byte[] encryptedVerifier = aes.EncryptEcb(verifier, PaddingMode.None);
+        byte[] encryptedVerifierHash = aes.EncryptEcb(Pad(SHA1.HashData(verifier), 16), PaddingMode.None);
+
+        byte[] stream = new byte[8 + (package.Length + 15) / 16 * 16];
+        BinaryPrimitives.WriteUInt64LittleEndian(stream, (ulong)package.Length);
+        package.CopyTo(stream.AsSpan(8));
+        aes.EncryptEcb(stream.AsSpan(8), stream.AsSpan(8), PaddingMode.None);
+
+        // The header: flags (CryptoAPI and AES), no extra size, AES-128, SHA-1, the key size, the AES provider and its name.
+        List<byte> header = [];
+        WriteInt(header, 0x24);
+        WriteInt(header, 0);
+        WriteInt(header, 0x660E);
+        WriteInt(header, 0x8004);
+        WriteInt(header, keyBytes * 8);
+        WriteInt(header, 0x18);
+        WriteInt(header, 0);
+        WriteInt(header, 0);
+        header.AddRange(Encoding.Unicode.GetBytes("Microsoft Enhanced RSA and AES Cryptographic Provider\0"));
+
+        List<byte> info = [4, 0, 2, 0];
+        WriteInt(info, 0x24);
+        WriteInt(info, header.Count);
+        info.AddRange(header);
+        WriteInt(info, salt.Length);
+        info.AddRange(salt);
+        info.AddRange(encryptedVerifier);
+        WriteInt(info, 20);
+        info.AddRange(encryptedVerifierHash);
+
+        CompoundFileWriter.Write(output,
+        [
+            ("\u0006DataSpaces/Version", DataSpaceVersion()),
+            ("\u0006DataSpaces/DataSpaceMap", DataSpaceMap()),
+            ("\u0006DataSpaces/DataSpaceInfo/StrongEncryptionDataSpace", DataSpaceDefinition()),
+            ("\u0006DataSpaces/TransformInfo/StrongEncryptionTransform/\u0006Primary", TransformInfo()),
+            ("EncryptionInfo", [.. info]),
+            ("EncryptedPackage", stream),
+        ]);
+    }
+
     private static IKeyMaker ReadInfo(byte[] info)
     {
         if (info.Length < 8)
@@ -574,7 +630,7 @@ internal static class OfficeEncryption
     }
 
     /// <summary>Standard encryption ([MS-OFFCRYPTO] 2.3.4.5): a binary header and verifier, AES in ECB mode with SHA-1.</summary>
-    [SuppressMessage("Security", "CA5350", Justification = "Standard encryption is defined with SHA-1; this reads files that use it, it never writes them.")]
+    [SuppressMessage("Security", "CA5350", Justification = "Standard encryption is defined with SHA-1; this reads files that use it, and writes them only when asked.")]
     private sealed class StandardKeyMaker : IKeyMaker
     {
         private const int SpinCount = 50_000;
@@ -631,7 +687,17 @@ internal static class OfficeEncryption
 
         public byte[]? KeyFor(string password)
         {
-            // [MS-OFFCRYPTO] 2.3.4.7: the spun hash with block 0, then CryptDeriveKey's two padded hashes.
+            byte[] key = DeriveKey(salt, password, keyBytes);
+            using Aes aes = Aes.Create();
+            aes.Key = key;
+            byte[] plainVerifier = aes.DecryptEcb(verifier, PaddingMode.None);
+            byte[] plainHash = aes.DecryptEcb(verifierHash, PaddingMode.None);
+            return CryptographicOperations.FixedTimeEquals(SHA1.HashData(plainVerifier), plainHash.AsSpan(0, 20)) ? key : null;
+        }
+
+        /// <summary>[MS-OFFCRYPTO] 2.3.4.7: the spun hash with block 0, then CryptDeriveKey's two padded hashes.</summary>
+        public static byte[] DeriveKey(ReadOnlySpan<byte> salt, string password, int keyBytes)
+        {
             byte[] spun = SpinHash(HashAlgorithmName.SHA1, salt, password, SpinCount);
             byte[] final = Hash(HashAlgorithmName.SHA1, spun, [0, 0, 0, 0]);
             byte[] x = new byte[40];
@@ -647,12 +713,7 @@ internal static class OfficeEncryption
                 SHA1.HashData(pad, x.AsSpan(20 * i));
             }
 
-            byte[] key = x[..keyBytes];
-            using Aes aes = Aes.Create();
-            aes.Key = key;
-            byte[] plainVerifier = aes.DecryptEcb(verifier, PaddingMode.None);
-            byte[] plainHash = aes.DecryptEcb(verifierHash, PaddingMode.None);
-            return CryptographicOperations.FixedTimeEquals(SHA1.HashData(plainVerifier), plainHash.AsSpan(0, 20)) ? key : null;
+            return x[..keyBytes];
         }
 
         public void CheckIntegrity(byte[] key, byte[] encryptedPackage)

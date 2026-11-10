@@ -1,0 +1,7 @@
+# Password of every file: "Egap pässword 1" (an a with diaeresis after the p).
+# agile.xlsx     Excel 16.0 build 20527, tools/excel-encrypted-oracle.ps1 -Mode Make: agile encryption (AES-256, SHA-512).
+# cryptoapi.xls  The same script: RC4 CryptoAPI, Microsoft Enhanced Cryptographic Provider v1.0, 128-bit key.
+# rc4.xls        LibreOffice 26.8.1.1, tools/libreoffice-encrypted-oracle.py: Office 97/2000 compatible RC4 (header 1.1),
+#                which Excel 16 no longer writes. Excel 16 opens it with the password.
+# Excel 16 writes agile encryption for XLSX even when asked for standard encryption, so the standard encryption tests use
+# Egap's own files; Excel opens those with the password (tools/excel-encrypted-oracle.ps1 -Mode Open).

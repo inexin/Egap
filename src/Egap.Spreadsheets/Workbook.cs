@@ -452,7 +452,7 @@ public sealed partial class Workbook
         Workbook book = new(StyleTable.ForLoading());
         if (IsCompoundFile(stream))
         {
-            Xls.XlsReader.Read(book, stream, limits);
+            Xls.XlsReader.Read(book, stream, limits, options?.Password);
         }
         else if (OdsBytes(stream, limits) is { } ods)
         {
@@ -524,7 +524,7 @@ public sealed partial class Workbook
         WorkbookFormat format = options?.Format ?? FormatOfExtension(Path.GetExtension(path))
             ?? throw new ArgumentException($"No workbook kind has the extension \"{Path.GetExtension(path)}\"; name one in the options.", nameof(path));
         using MemoryStream buffer = new();
-        Write(buffer, format, options?.Password);
+        Write(buffer, format, options?.Password, options?.Encryption ?? WorkbookEncryption.Agile);
         using FileStream stream = File.Create(path);
         buffer.Position = 0;
         buffer.CopyTo(stream);
@@ -536,20 +536,35 @@ public sealed partial class Workbook
     public void Save(Stream stream, WorkbookSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
-        Write(stream, options?.Format ?? Format, options?.Password);
+        Write(stream, options?.Format ?? Format, options?.Password, options?.Encryption ?? WorkbookEncryption.Agile);
     }
 
-    private void Write(Stream stream, WorkbookFormat format, string? password)
+    private void Write(Stream stream, WorkbookFormat format, string? password, WorkbookEncryption encryption = WorkbookEncryption.Agile)
     {
         bool encrypt = !string.IsNullOrEmpty(password);
-        if (encrypt && format is not (WorkbookFormat.Ods or WorkbookFormat.Ots))
+        if (encrypt && format == WorkbookFormat.Fods)
         {
-            throw new NotSupportedException($"A {format} file cannot be encrypted; save as ODS or OTS to use a password.");
+            throw new NotSupportedException("A flat FODS file cannot be encrypted; save as ODS or OTS to use a password.");
         }
 
         if (format is WorkbookFormat.Ods or WorkbookFormat.Ots or WorkbookFormat.Fods)
         {
             Ods.OdsWriter.Write(this, stream, format, encrypt ? password : null);
+        }
+        else if (encrypt)
+        {
+            // Excel's encrypted files: the package, encrypted, in a compound file.
+            using MemoryStream package = new();
+            XlsxWriter.Write(this, package, format);
+            ReadOnlySpan<byte> bytes = package.GetBuffer().AsSpan(0, (int)package.Length);
+            if (encryption == WorkbookEncryption.Standard)
+            {
+                Egap.Documents.Office.OfficeEncryption.EncryptStandard(bytes, password!, stream);
+            }
+            else
+            {
+                Egap.Documents.Office.OfficeEncryption.Encrypt(bytes, password!, stream);
+            }
         }
         else
         {
@@ -630,7 +645,11 @@ public sealed class WorkbookLoadOptions
     /// <summary>How a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> path is read, or null for the defaults.</summary>
     public CsvOptions? Csv { get; init; }
 
-    /// <summary>The password of an encrypted OpenDocument spreadsheet, or null.</summary>
+    /// <summary>
+    /// The password of an encrypted workbook: an XLSX file Excel encrypted (agile or standard encryption), an XLS file
+    /// encrypted with RC4 or CryptoAPI, or an OpenDocument spreadsheet; or null. Without one, Excel's own default password is
+    /// tried, as Excel does for a workbook it encrypted only to protect it from writing.
+    /// </summary>
     public string? Password { get; init; }
 }
 
@@ -644,9 +663,29 @@ public sealed class WorkbookSaveOptions
     public CsvOptions? Csv { get; init; }
 
     /// <summary>
-    /// A password to encrypt an ODS or OTS file with, as ODF 1.2 and later do: AES-256 in CBC mode, its key made from the
-    /// password's SHA-256 hash with PBKDF2. Null or empty writes the file plain. Excel's formats and flat FODS files cannot be
-    /// encrypted.
+    /// A password to encrypt the file with, or null or empty to write it plain. An XLSX, XLSM, XLTX or XLTM file is encrypted
+    /// as Excel does, the way <see cref="Encryption"/> names, and Excel opens it with the password. An ODS or OTS file is
+    /// encrypted as ODF 1.2 and later do: AES-256 in CBC mode, its key made from the password's SHA-256 hash with PBKDF2. A
+    /// flat FODS file cannot be encrypted.
     /// </summary>
     public string? Password { get; init; }
+
+    /// <summary>How an Excel file saved with a <see cref="Password"/> is encrypted; agile encryption unless set.</summary>
+    public WorkbookEncryption Encryption { get; init; } = WorkbookEncryption.Agile;
+}
+
+/// <summary>How Excel's encrypted files are encrypted ([MS-OFFCRYPTO]).</summary>
+public enum WorkbookEncryption
+{
+    /// <summary>
+    /// Agile encryption, as Excel 2010 and later write it: AES-256 in CBC mode, a key made from the password's SHA-512 hash
+    /// spun 100,000 times, and an HMAC that checks the file has not been changed.
+    /// </summary>
+    Agile,
+
+    /// <summary>
+    /// Standard encryption, as Excel 2007 writes it: AES-128 in ECB mode with a key made from the password's SHA-1 hash spun
+    /// 50,000 times, and no integrity check. Use it only for programs that do not read agile encryption.
+    /// </summary>
+    Standard,
 }

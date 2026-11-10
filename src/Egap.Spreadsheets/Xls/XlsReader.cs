@@ -12,14 +12,18 @@ namespace Egap.Spreadsheets.Xls;
 /// Reads an Excel 97-2003 workbook (.xls): the BIFF8 workbook stream of a compound file ([MS-XLS], [MS-CFB]). It reads the
 /// sheets, their cells with their values, styles and formulas (shared and array formulas too, with the results Excel kept),
 /// merged cells, row heights and column widths, and the defined names. Charts, drawings, comments, data validation,
-/// conditional formats and encryption are not read yet.
+/// and conditional formats are not read yet. Encrypted workbooks (RC4 and RC4 CryptoAPI) are decrypted, and an encrypted XLSX
+/// file, which is a compound file too, is decrypted and read as XLSX.
 /// </summary>
 internal static class XlsReader
 {
     /// <summary>Whether the bytes start a compound file: an XLS file, or another Office 97-2003 document.</summary>
     public static bool Sniff(ReadOnlySpan<byte> head) => CompoundFile.IsCompoundFile(head);
 
-    public static void Read(Workbook book, Stream stream, DocumentLimits limits)
+    /// <summary>The password Excel encrypts a workbook with when it has none of its own, such as one only write-protected.</summary>
+    internal const string DefaultPassword = "VelvetSweatshop";
+
+    public static void Read(Workbook book, Stream stream, DocumentLimits limits, string? password)
     {
         CompoundFile file;
         try
@@ -33,7 +37,19 @@ internal static class XlsReader
 
         if (file.Find("EncryptedPackage") is not null)
         {
-            throw new DocumentPasswordException("The workbook is an encrypted XLSX file, which Egap does not read yet.", wrongPassword: false);
+            // An encrypted XLSX file. Without a password, Excel's default one is tried first, as Excel does.
+            byte[] package;
+            try
+            {
+                package = OfficeEncryption.Decrypt(file, password ?? DefaultPassword, null, limits);
+            }
+            catch (DocumentPasswordException) when (password is null)
+            {
+                throw new DocumentPasswordException("The workbook is encrypted: give its password in the load options.", wrongPassword: false);
+            }
+
+            XlsxReader.Read(book, new MemoryStream(package, writable: false), limits);
+            return;
         }
 
         byte[] data = file.ReadStream("Workbook")
@@ -42,7 +58,7 @@ internal static class XlsReader
                 : throw new DocumentException("The compound file has no Workbook stream: it is not an Excel workbook."));
         try
         {
-            new State(book, new BiffStream(data)).Read();
+            new State(book, new BiffStream(XlsEncryption.Decrypt(data, password))).Read();
         }
         catch (InvalidDataException e)
         {
@@ -130,7 +146,8 @@ internal static class XlsReader
                         FinishLinks();
                         return;
                     case BiffType.FilePass:
-                        throw new DocumentPasswordException("The workbook is encrypted, which Egap does not read in XLS files yet.", wrongPassword: false);
+                        // Decrypted before the stream is read.
+                        break;
                     case BiffType.DateMode:
                         book.Date1904 = biff.Length >= 2 && BinaryPrimitives.ReadUInt16LittleEndian(biff.Body) == 1;
                         break;
