@@ -7,6 +7,7 @@ using Egami.Fonts;
 using Egami.Fonts.Layout;
 using Egami.Pixels;
 
+using Egap.Documents.DrawingML;
 using Egap.Documents.Layout;
 using Egap.Documents.NumberFormats;
 
@@ -508,11 +509,8 @@ internal sealed partial class ChartRenderer
                         return new SolidPaint(stops[0].Color);
                     }
 
-                    double angle = (format.GradientAngle ?? 90) * Math.PI / 180;
-                    Vector2 center = new(box.X + (box.Width / 2), box.Y + (box.Height / 2));
-                    float reach = (float)((Math.Abs(Math.Cos(angle)) * box.Width / 2) + (Math.Abs(Math.Sin(angle)) * box.Height / 2));
-                    Vector2 along = new((float)Math.Cos(angle) * reach, (float)Math.Sin(angle) * reach);
-                    return new LinearGradient(center - along, center + along, stops);
+                    (Vector2 start, Vector2 end) = DrawingFills.LinearEnds(box.X, box.Y, box.Width, box.Height, format.GradientAngle ?? 90);
+                    return new LinearGradient(start, end, stops);
                 }
 
             case ChartFillKind.Pattern:
@@ -520,7 +518,7 @@ internal sealed partial class ChartRenderer
                     // A hatch comes out at a page's size as its two inks' blend, by how much of the pattern is ink.
                     Rgba8 ink = format.PatternForeground is { } foreground ? palette.Resolve(foreground) : palette.Dark;
                     Rgba8 paper = format.PatternBackground is { } background ? palette.Resolve(background) : palette.Light;
-                    return new SolidPaint(ChartPalette.Mix(paper, ink, PatternInk(format.PatternName)));
+                    return new SolidPaint(ChartPalette.Mix(paper, ink, DrawingFills.PatternInk(format.PatternName)));
                 }
 
             case ChartFillKind.Automatic:
@@ -528,16 +526,6 @@ internal sealed partial class ChartRenderer
         }
 
         return automatic.A == 0 ? null : new SolidPaint(automatic);
-    }
-
-    private static double PatternInk(string? name)
-    {
-        if (name is { Length: > 3 } && name.StartsWith("pct", StringComparison.Ordinal) && int.TryParse(name.AsSpan(3), NumberStyles.None, CultureInfo.InvariantCulture, out int percent))
-        {
-            return Math.Clamp(percent / 100.0, 0, 1);
-        }
-
-        return 0.35;
     }
 
     private (Stroke Stroke, Rgba8 Color)? LineOf(ChartFormat format, Rgba8 automatic, float automaticWidth)
@@ -578,21 +566,6 @@ internal sealed partial class ChartRenderer
         return (stroke, color);
     }
 
-    private static DashPattern? Dash(ChartLineDash? dash, float w)
-    {
-        float[]? pattern = dash switch
-        {
-            ChartLineDash.Dot or ChartLineDash.SystemDot => [w, w * (dash == ChartLineDash.Dot ? 3 : 1)],
-            ChartLineDash.Dash => [w * 4, w * 3],
-            ChartLineDash.SystemDash => [w * 3, w],
-            ChartLineDash.LargeDash => [w * 8, w * 3],
-            ChartLineDash.DashDot => [w * 4, w * 3, w, w * 3],
-            ChartLineDash.SystemDashDot => [w * 3, w, w, w],
-            ChartLineDash.LargeDashDot => [w * 8, w * 3, w, w * 3],
-            ChartLineDash.LargeDashDotDot => [w * 8, w * 3, w, w * 3, w, w * 3],
-            ChartLineDash.SystemDashDotDot => [w * 3, w, w, w, w, w],
-            _ => null,
-        };
-        return pattern is null ? null : new DashPattern(pattern, 0);
-    }
+    private static DashPattern? Dash(ChartLineDash? dash, float w) =>
+        DrawingFills.Dash(ChartFormat.DashPreset(dash), w) is { } pattern ? new DashPattern(pattern, 0) : null;
 }
