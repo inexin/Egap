@@ -3,6 +3,8 @@ using System.Xml.Linq;
 
 using Egami.Pixels;
 
+using Egap.Documents.DrawingML;
+
 namespace Egap.Documents.Charts;
 
 /// <summary>How a <see cref="ChartColor"/> is given.</summary>
@@ -97,71 +99,62 @@ public sealed class ChartColor : IEquatable<ChartColor>
     /// <summary>The colour inside a fill, a gradient stop or the like; null when there is none this model knows.</summary>
     internal static ChartColor? Read(XElement? holder)
     {
-        foreach (XElement element in holder?.Elements() ?? [])
+        if (DrawingColors.Find(holder) is not { } found)
         {
-            if (element.Name.Namespace != ChartNs.A)
-            {
-                continue;
-            }
+            return null;
+        }
 
-            string? value = (string?)element.Attribute("val");
-            ChartColor? color = element.Name.LocalName switch
+        List<ChartColorChange> changes = [];
+        foreach (XElement change in found.Element.Elements())
+        {
+            if (DrawingColors.TryChange(change, out string name, out double value))
             {
-                "srgbClr" => new(ChartColorKind.Rgb, Hex(value), "", Changed(element)),
-                "schemeClr" => new(ChartColorKind.Theme, default, value ?? "", Changed(element)),
-                "sysClr" => new(ChartColorKind.Named, Hex((string?)element.Attribute("lastClr")), value ?? "", Changed(element)),
-                "prstClr" => new(ChartColorKind.Named, default, value ?? "", Changed(element)),
-                _ => null,
-            };
-            if (color is not null)
-            {
-                return color;
+                changes.Add(new ChartColorChange(name, value));
             }
         }
 
-        return null;
+        ChartColorKind kind = found.Kind switch
+        {
+            DrawingColorKind.Rgb => ChartColorKind.Rgb,
+            DrawingColorKind.Theme => ChartColorKind.Theme,
+            _ => ChartColorKind.Named,
+        };
+        return new(kind, found.Rgb, found.Name, changes);
     }
 
     internal XElement Write()
     {
-        XElement element = Kind switch
+        DrawingColorKind kind = Kind switch
         {
-            ChartColorKind.Rgb => new XElement(ChartNs.A + "srgbClr", new XAttribute("val", Rgb.ToHex()[1..7])),
-            ChartColorKind.Theme => new XElement(ChartNs.A + "schemeClr", new XAttribute("val", Name)),
-            _ when Rgb.A != 0 => new XElement(ChartNs.A + "sysClr", new XAttribute("val", Name), new XAttribute("lastClr", Rgb.ToHex()[1..7])),
-            _ => new XElement(ChartNs.A + "prstClr", new XAttribute("val", Name)),
+            ChartColorKind.Rgb => DrawingColorKind.Rgb,
+            ChartColorKind.Theme => DrawingColorKind.Theme,
+            _ => DrawingColorKind.Named,
         };
+        XElement element = DrawingColors.Element(kind, Rgb, Name);
         foreach (ChartColorChange change in Changes)
         {
-            element.Add(new XElement(ChartNs.A + change.Name, new XAttribute("val", Math.Round(change.Value * 100000).ToString("0", System.Globalization.CultureInfo.InvariantCulture))));
+            element.Add(DrawingColors.ChangeElement(change.Name, change.Value));
         }
 
         return element;
     }
 
-    private static Rgba8 Hex(string? text)
+    /// <summary>The colour in pixels against <paramref name="theme"/>, after its changes.</summary>
+    internal Rgba8 Resolve(Theme theme)
     {
-        if (text is { Length: 6 } && text.All(char.IsAsciiHexDigit))
+        DrawingColorKind kind = Kind switch
         {
-            return Rgba8.FromHex(text);
+            ChartColorKind.Rgb => DrawingColorKind.Rgb,
+            ChartColorKind.Theme => DrawingColorKind.Theme,
+            _ => DrawingColorKind.Named,
+        };
+        Rgba8 color = DrawingColors.Start(kind, Rgb, Name, theme);
+        foreach (ChartColorChange change in Changes)
+        {
+            color = DrawingColors.Apply(color, change.Name, change.Value);
         }
 
-        return default;
-    }
-
-    private static List<ChartColorChange> Changed(XElement color)
-    {
-        List<ChartColorChange> changes = [];
-        foreach (XElement change in color.Elements())
-        {
-            // Hue and the like are in degrees or flags in the file; those without a percentage are kept as written.
-            if (ChartText.Double((string?)change.Attribute("val")) is { } value)
-            {
-                changes.Add(new ChartColorChange(change.Name.LocalName, value / 100000));
-            }
-        }
-
-        return changes;
+        return color;
     }
 }
 
@@ -254,8 +247,6 @@ public readonly record struct ChartGradientStop(double Position, ChartColor? Col
 /// <summary>The fill and outline of a chart element. What this does not name, such as shadows, stays as the file had it.</summary>
 public sealed class ChartFormat
 {
-    private static readonly string[] Fills = ["noFill", "solidFill", "gradFill", "blipFill", "pattFill", "grpFill"];
-
     private static readonly ChartNames<ChartLineDash> Dashes = new(
         (ChartLineDash.Solid, "solid"), (ChartLineDash.Dot, "dot"), (ChartLineDash.Dash, "dash"), (ChartLineDash.LargeDash, "lgDash"),
         (ChartLineDash.DashDot, "dashDot"), (ChartLineDash.LargeDashDot, "lgDashDot"), (ChartLineDash.LargeDashDotDot, "lgDashDotDot"),
@@ -305,7 +296,7 @@ public sealed class ChartFormat
 
     /// <summary>A linear gradient's angle in degrees clockwise from left to right, or null.</summary>
     public double? GradientAngle =>
-        ChartText.Double((string?)properties.Find()?.Element(ChartNs.A + "gradFill")?.Element(ChartNs.A + "lin")?.Attribute("ang")) / 60000;
+        DrawingFills.Angle(properties.Find()?.Element(ChartNs.A + "gradFill"));
 
     /// <summary>A pattern fill's name in the file, such as <c>pct50</c>, or null for any other fill.</summary>
     public string? PatternName => (string?)properties.Find()?.Element(ChartNs.A + "pattFill")?.Attribute("prst");
@@ -380,25 +371,27 @@ public sealed class ChartFormat
 
     private ChartNode Line => properties.Child(ChartNs.A + "ln");
 
+    /// <summary>The file's name for a preset dash, such as <c>sysDash</c>; null for none.</summary>
+    internal static string? DashPreset(ChartLineDash? dash) => Dashes.Name(dash);
+
     internal static IReadOnlyList<ChartGradientStop> Stops(XElement? gradient)
     {
         List<ChartGradientStop> stops = [];
-        foreach (XElement stop in gradient?.Element(ChartNs.A + "gsLst")?.Elements(ChartNs.A + "gs") ?? [])
+        foreach ((double position, XElement stop) in DrawingFills.Stops(gradient))
         {
-            stops.Add(new ChartGradientStop((ChartText.Double((string?)stop.Attribute("pos")) ?? 0) / 100000, ChartColor.Read(stop)));
+            stops.Add(new ChartGradientStop(position, ChartColor.Read(stop)));
         }
 
         return stops;
     }
 
-    private static string? Fill(XElement? holder) =>
-        holder?.Elements().FirstOrDefault(e => e.Name.Namespace == ChartNs.A && Array.IndexOf(Fills, e.Name.LocalName) >= 0)?.Name.LocalName;
+    private static string? Fill(XElement? holder) => DrawingFills.Kind(holder);
 
     private static void SetFill(ChartNode holder, XElement? fill)
     {
         if (holder.Find() is { } found)
         {
-            found.Elements().Where(e => e.Name.Namespace == ChartNs.A && Array.IndexOf(Fills, e.Name.LocalName) >= 0).Remove();
+            found.Elements().Where(DrawingFills.IsFill).Remove();
         }
 
         if (fill is not null)

@@ -10,7 +10,7 @@ internal static class ChartNs
     public const string ExtendedUri = "http://schemas.microsoft.com/office/drawing/2014/chartex";
     public static readonly XNamespace C = ChartUri;
     public static readonly XNamespace Cx = ExtendedUri;
-    public static readonly XNamespace A = "http://schemas.openxmlformats.org/drawingml/2006/main";
+    public static readonly XNamespace A = DrawingML.DrawingNs.A;
     public static readonly XNamespace R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
 }
 
