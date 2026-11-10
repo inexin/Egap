@@ -684,7 +684,8 @@ internal static class OdsReader
                 switch (child.Name.LocalName)
                 {
                     case "s":
-                        text.Append(' ', Math.Clamp(OdfUnits.Int(child.Attr(TextNs, "c")) ?? 1, 1, 1024));
+                        // Never past the longest text a cell holds, so a huge count cannot use memory.
+                        text.Append(' ', Math.Clamp(OdfUnits.Int(child.Attr(TextNs, "c")) ?? 1, 1, Math.Max(1, CellValue.MaxTextLength + 1 - text.Length)));
                         break;
                     case "tab":
                         text.Append('\t');

@@ -437,6 +437,18 @@ public sealed class OdsWriterTests
         Assert.Equal(["ChartPage"], RoundTrip(book, WorkbookFormat.Ods).Worksheets.Select(s => s.Name));
     }
 
+    [Fact]
+    public void LongRunsOfSpacesKeepTheirLength()
+    {
+        Workbook book = Workbook.Create();
+        string text = "a" + new string(' ', 1500) + "b";
+        book.Worksheets[0]["A1"].Value = text;
+        book.Worksheets[0]["A2"].Value = new string(' ', CellValue.MaxTextLength);
+        Workbook again = RoundTrip(book, WorkbookFormat.Ods);
+        Assert.Equal(text, again.Worksheets[0]["A1"].Value.Text);
+        Assert.Equal(CellValue.MaxTextLength, again.Worksheets[0]["A2"].Value.Text.Length);
+    }
+
     private static Workbook RoundTrip(Workbook book, WorkbookFormat format)
     {
         using MemoryStream stream = new();
