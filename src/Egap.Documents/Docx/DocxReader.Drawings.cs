@@ -85,24 +85,29 @@ internal sealed partial class DocxReader
                         InkUri => IslandKind.Ink,
                         _ => IslandKind.Other,
                     };
-                    Island island = AddIsland(kind, drawing, width, height, floating);
+                    (XElement? diagram, Dictionary<string, ImageData>? images, string text) = kind == IslandKind.SmartArt ? ReadDiagram(drawing) : (null, null, "");
+                    Island island = AddIsland(kind, drawing, width, height, floating, text);
                     if (kind == IslandKind.ShapeGroup)
                     {
                         KeepImages(drawing, island);
+                    }
+                    else if (diagram is not null)
+                    {
+                        DocxDrawings.KeepDiagram(island, diagram, images);
                     }
 
                     break;
                 }
         }
 
-        Island AddIsland(IslandKind kind, XElement element, double w, double h, FloatingPlacement? placement)
+        Island AddIsland(IslandKind kind, XElement element, double w, double h, FloatingPlacement? placement, string text = "")
         {
             return Add(inlines, new Island(document, kind, DocxExtension.Format, element.ToString(SaveOptions.DisableFormatting))
             {
                 Width = w,
                 Height = h,
                 Floating = placement,
-                Text = IslandText(element),
+                Text = text.Length > 0 ? text : IslandText(element),
                 ChartPart = kind == IslandKind.Chart ? ChartPartOf(element) : null,
                 Fallback = kind == IslandKind.Chart ? ChartPicture(element) : null,
             }, state, element);

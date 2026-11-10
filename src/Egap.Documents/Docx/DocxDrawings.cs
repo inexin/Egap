@@ -21,6 +21,18 @@ internal static class DocxDrawings
     /// <summary>Keeps a picture a shape's or group's blip names, by relationship id, for the shape engine to draw.</summary>
     public static void KeepImage(Node node, string id, ImageData image) => Images.GetOrCreateValue(node)[id] = image;
 
+    private static readonly ConditionalWeakTable<Island, XElement> Diagrams = [];
+
+    /// <summary>Keeps a SmartArt island's stored drawing (<c>dsp:drawing</c>) and the pictures it names.</summary>
+    public static void KeepDiagram(Island island, XElement drawing, Dictionary<string, ImageData>? images)
+    {
+        Diagrams.AddOrUpdate(island, drawing);
+        if (images is not null)
+        {
+            Images.AddOrUpdate(island, images);
+        }
+    }
+
     /// <summary>The <c>wps:wsp</c> a shape was read from, while its settings are unchanged; null otherwise.</summary>
     public static XElement? ShapeMarkup(Shape shape)
     {
@@ -52,6 +64,16 @@ internal static class DocxDrawings
             }
         }) is { Name.LocalName: "wgp" } group ? group : null;
     }
+
+    /// <summary>The shape tree of a SmartArt island's stored drawing; null for any other island or one without a drawing.</summary>
+    public static XElement? DiagramTree(Island island) =>
+        island.Kind == IslandKind.SmartArt && Diagrams.TryGetValue(island, out XElement? drawing)
+            ? drawing.Elements().FirstOrDefault(e => e.Name.LocalName == "spTree")
+            : null;
+
+    /// <summary>Whether a SmartArt island draws as a list of its text: it has text but no stored drawing and no picture.</summary>
+    public static bool DrawsAsList(Island island) =>
+        island is { Kind: IslandKind.SmartArt, Fallback: null, Text.Length: > 0 } && island.Format == DocxExtension.Format && DiagramTree(island) is null;
 
     /// <summary>The paint context for a shape or group read from Word: the theme, and its pictures through <paramref name="drawImage"/>.</summary>
     public static ShapePaintContext Context(Node node, Action<Canvas, ImageData, RectF> drawImage)

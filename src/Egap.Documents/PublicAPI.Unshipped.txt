@@ -634,6 +634,7 @@ Egap.Documents.Layout.LayoutWarning.PageIndex.get -> int
 Egap.Documents.Layout.LayoutWarning.PageIndex.init -> void
 Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline = 0 -> Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList = 1 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.OdfVersion
 Egap.Documents.OdfVersion.Odf12 = 0 -> Egap.Documents.OdfVersion
 Egap.Documents.OdfVersion.Odf13 = 1 -> Egap.Documents.OdfVersion
