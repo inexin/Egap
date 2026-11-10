@@ -65886,6 +65886,24 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.Worksheets
   nameWithType: Workbook.Worksheets
+- uid: Egap.Spreadsheets.WorkbookEncryption
+  name: WorkbookEncryption
+  href: api/Egap.Spreadsheets.WorkbookEncryption.html
+  commentId: T:Egap.Spreadsheets.WorkbookEncryption
+  fullName: Egap.Spreadsheets.WorkbookEncryption
+  nameWithType: WorkbookEncryption
+- uid: Egap.Spreadsheets.WorkbookEncryption.Agile
+  name: Agile
+  href: api/Egap.Spreadsheets.WorkbookEncryption.html#Egap_Spreadsheets_WorkbookEncryption_Agile
+  commentId: F:Egap.Spreadsheets.WorkbookEncryption.Agile
+  fullName: Egap.Spreadsheets.WorkbookEncryption.Agile
+  nameWithType: WorkbookEncryption.Agile
+- uid: Egap.Spreadsheets.WorkbookEncryption.Standard
+  name: Standard
+  href: api/Egap.Spreadsheets.WorkbookEncryption.html#Egap_Spreadsheets_WorkbookEncryption_Standard
+  commentId: F:Egap.Spreadsheets.WorkbookEncryption.Standard
+  fullName: Egap.Spreadsheets.WorkbookEncryption.Standard
+  nameWithType: WorkbookEncryption.Standard
 - uid: Egap.Spreadsheets.WorkbookFormat
   name: WorkbookFormat
   href: api/Egap.Spreadsheets.WorkbookFormat.html
@@ -66104,6 +66122,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.WorkbookSaveOptions.Csv
   nameWithType: WorkbookSaveOptions.Csv
+- uid: Egap.Spreadsheets.WorkbookSaveOptions.Encryption
+  name: Encryption
+  href: api/Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Encryption
+  commentId: P:Egap.Spreadsheets.WorkbookSaveOptions.Encryption
+  fullName: Egap.Spreadsheets.WorkbookSaveOptions.Encryption
+  nameWithType: WorkbookSaveOptions.Encryption
+- uid: Egap.Spreadsheets.WorkbookSaveOptions.Encryption*
+  name: Encryption
+  href: api/Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Encryption_
+  commentId: Overload:Egap.Spreadsheets.WorkbookSaveOptions.Encryption
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookSaveOptions.Encryption
+  nameWithType: WorkbookSaveOptions.Encryption
 - uid: Egap.Spreadsheets.WorkbookSaveOptions.Format
   name: Format
   href: api/Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Format

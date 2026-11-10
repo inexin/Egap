@@ -9757,6 +9757,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.WorkbookEncryption.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.WorkbookEncryption.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.WorkbookEncryption",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorkbookEncryption.yml\" sourcestartlinenumber=\"1\">How Excel's encrypted files are encrypted ([MS-OFFCRYPTO]).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.WorkbookFormat.yml",
       "output": {
         ".html": {
