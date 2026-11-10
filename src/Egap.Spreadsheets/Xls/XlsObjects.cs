@@ -12,11 +12,13 @@ internal sealed class XlsObjects(Worksheet sheet)
 {
     // OBJ record kinds ([MS-XLS] 2.5.9, FtCmo.ot).
     public const int ObjectNote = 0x19;
+    public const int ObjectChart = 0x05;
 
     private readonly List<(int Row, int Column, int ObjectId, string Author, bool Visible)> notes = [];
     private readonly Dictionary<int, string> texts = [];
     private readonly List<(int Id, int Kind, bool Embedded)> objects = [];
     private readonly List<Hyperlink> links = [];
+    private readonly Dictionary<int, Documents.Charts.Chart> charts = [];
 
     /// <summary>The OfficeArt records of every MSODRAWING record, in order: one drawing container.</summary>
     public MemoryStream Drawing { get; } = new();
@@ -30,7 +32,19 @@ internal sealed class XlsObjects(Worksheet sheet)
     /// <summary>The text of each object that has a TXO record, by object id.</summary>
     public IReadOnlyDictionary<int, string> Texts => texts;
 
+    /// <summary>The charts of the sheet's chart objects, by object id.</summary>
+    public IReadOnlyDictionary<int, Documents.Charts.Chart> Charts => charts;
+
     public void MsoDrawing(ReadOnlySpan<byte> body) => Drawing.Write(body);
+
+    /// <summary>The chart substream after a chart's OBJ record.</summary>
+    public void Chart(IReadOnlyList<(int Type, byte[] Body)> records, Func<byte[], string?> reference)
+    {
+        if (objects.Count > 0 && objects[^1].Kind == ObjectChart && XlsChart.Read(records, reference) is { } chart)
+        {
+            charts[objects[^1].Id] = chart;
+        }
+    }
 
     /// <summary>An OBJ record: its first subrecord is FtCmo, with the object's kind and id.</summary>
     public void Obj(ReadOnlySpan<byte> body)

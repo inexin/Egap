@@ -38,6 +38,21 @@ internal static class XlsDrawing
         public bool ClientData;
         public bool TopLevel;
         public bool GroupShape;
+
+        /// <summary>The group the shape is in, for a shape in a group.</summary>
+        public Shape? Parent;
+
+        /// <summary>A group's own shape: the shapes in it.</summary>
+        public List<Shape>? Children;
+
+        /// <summary>A shape in a group: its place in the group's coordinates (OfficeArtChildAnchor), left, top, right, bottom.</summary>
+        public int[]? ChildAnchor;
+
+        /// <summary>A group's own shape: the group's coordinates (OfficeArtFSPGR), left, top, right, bottom.</summary>
+        public int[]? GroupRect;
+
+        /// <summary>The OBJ record of a shape with client data: its id, kind and whether it stands for an OLE object.</summary>
+        public (int Id, int Kind, bool Embedded) Object = (-1, -1, false);
     }
 
     /// <summary>The blips of the globals' MSODRAWINGGROUP records: the BStore container's FBSE records, each maybe with its blip.</summary>
@@ -267,19 +282,19 @@ internal static class XlsDrawing
 
         // The n-th shape with client data is the n-th OBJ record.
         int index = 0;
-        int named = 0;
         foreach (Shape shape in shapes)
         {
-            if (!shape.ClientData)
+            if (shape.ClientData)
             {
-                continue;
+                shape.Object = index < objects.Objects.Count ? objects.Objects[index] : (-1, -1, false);
+                index++;
             }
+        }
 
-            (int id, int kind, bool embedded) = index < objects.Objects.Count ? objects.Objects[index] : (-1, -1, false);
-            index++;
-            // An embedded or linked OLE object's picture is its icon or preview, which Excel keeps with the object, not
-            // as a drawing.
-            if (!shape.TopLevel || shape.Anchor is not { } anchor || embedded)
+        foreach (Shape shape in shapes)
+        {
+            (int id, int kind, _) = shape.Object;
+            if (!shape.ClientData || !shape.TopLevel || shape.Anchor is not { } anchor || Skipped(shape))
             {
                 continue;
             }
@@ -289,6 +304,8 @@ internal static class XlsDrawing
                 Picture => MakePicture(shape, blips),
                 // WordArt keeps its text in the shape's own gtextUNICODE property, with no TXO record.
                 Line or Rectangle or Oval or Arc or TextBox or Polygon or OfficeArt => MakeShape(shape, kind, objects.Texts.GetValueOrDefault(id) ?? Text(shape, 0x00C0)),
+                Chart when objects.Charts.TryGetValue(id, out Documents.Charts.Chart? chart) => MakeChart(shape, chart),
+                Group when shape.Children is { Count: > 0 } => MakeGroup(sheet, shape, anchor, objects, blips, digit),
                 _ => null,
             };
             if (made is null)
@@ -296,17 +313,116 @@ internal static class XlsDrawing
                 continue;
             }
 
-            named++;
             made.AnchorKind = DrawingAnchorKind.TwoCell;
             made.From = Position(sheet, anchor[1], anchor[2], anchor[3], anchor[4], digit);
             made.To = Position(sheet, anchor[5], anchor[6], anchor[7], anchor[8], digit);
             sheet.Drawings.AddRead(made);
-            _ = named;
         }
 
-        _ = Chart;
-        _ = Group;
         _ = Note;
+    }
+
+    // An embedded or linked OLE object's picture is its icon or preview, which Excel keeps with the object, not as a
+    // drawing; a hidden shape (fHidden in the group shape's flags, 0x03BF) Excel keeps only in the legacy VML drawing.
+    private static bool Skipped(Shape shape) =>
+        shape.Object.Embedded || (shape.Properties.TryGetValue(0x03BF, out var group) && (group.Value & 0x00020002) == 0x00020002);
+
+    /// <summary>
+    /// A group as DrawingML: an <c>xdr:grpSp</c> whose own coordinates are the group's (OfficeArtFSPGR) and whose shapes keep
+    /// their child anchors, as Excel writes it. A picture in a group takes the drawing's image, so a group keeps one picture.
+    /// </summary>
+    private static SheetDrawing MakeGroup(Worksheet sheet, Shape shape, ushort[] anchor, XlsObjects objects, IReadOnlyList<Blip?> blips, int digit)
+    {
+        SheetDrawing made = new(SheetDrawingKind.Group)
+        {
+            Name = Name(shape) ?? "Group " + (shape.Id & 0x3FF).ToString(System.Globalization.CultureInfo.InvariantCulture),
+            Description = Text(shape, 0x0381),
+        };
+        long left = Offset(sheet, anchor[1], anchor[2], digit, columns: true);
+        long top = Offset(sheet, anchor[3], anchor[4], digit, columns: false);
+        long right = Offset(sheet, anchor[5], anchor[6], digit, columns: true);
+        long bottom = Offset(sheet, anchor[7], anchor[8], digit, columns: false);
+        XElement group = GroupElement(shape, made.Name, made.Description, (left, top, Math.Max(0, right - left), Math.Max(0, bottom - top)), made, objects, blips, 0);
+        made.Source = new XElement(Xdr + "twoCellAnchor", group, new XElement(Xdr + "clientData"));
+        return made;
+    }
+
+    private static XElement GroupElement(Shape shape, string? name, string? description, (long X, long Y, long Width, long Height) box, SheetDrawing made, XlsObjects objects, IReadOnlyList<Blip?> blips, int depth)
+    {
+        int[] rect = shape.GroupRect ?? [0, 0, 0, 0];
+        XElement group = new(Xdr + "grpSp",
+            new XElement(Xdr + "nvGrpSpPr",
+                new XElement(Xdr + "cNvPr", new XAttribute("id", shape.Id & 0xFFFF), new XAttribute("name", name ?? "Group " + (shape.Id & 0x3FF).ToString(System.Globalization.CultureInfo.InvariantCulture)), description is null ? null : new XAttribute("descr", description)),
+                new XElement(Xdr + "cNvGrpSpPr")),
+            new XElement(Xdr + "grpSpPr", new XElement(A + "xfrm",
+                new XElement(A + "off", new XAttribute("x", box.X), new XAttribute("y", box.Y)),
+                new XElement(A + "ext", new XAttribute("cx", box.Width), new XAttribute("cy", box.Height)),
+                new XElement(A + "chOff", new XAttribute("x", rect[0]), new XAttribute("y", rect[1])),
+                new XElement(A + "chExt", new XAttribute("cx", Math.Max(0L, (long)rect[2] - rect[0])), new XAttribute("cy", Math.Max(0L, (long)rect[3] - rect[1]))))));
+        foreach (Shape child in shape.Children ?? [])
+        {
+            if (Skipped(child) || child.ChildAnchor is not { } place)
+            {
+                continue;
+            }
+
+            (long X, long Y, long Width, long Height) at = (place[0], place[1], Math.Max(0L, (long)place[2] - place[0]), Math.Max(0L, (long)place[3] - place[1]));
+            XElement Transform() => new(A + "xfrm", new XElement(A + "off", new XAttribute("x", at.X), new XAttribute("y", at.Y)), new XElement(A + "ext", new XAttribute("cx", at.Width), new XAttribute("cy", at.Height)));
+            (int id, int kind, _) = child.Object;
+            if (child.Children is { Count: > 0 })
+            {
+                if (depth < 16)
+                {
+                    group.Add(GroupElement(child, Name(child), Text(child, 0x0381), at, made, objects, blips, depth + 1));
+                }
+            }
+            else if (kind is Line or Rectangle or Oval or Arc or TextBox or Polygon or OfficeArt)
+            {
+                XElement element = MakeShape(child, kind, objects.Texts.GetValueOrDefault(id) ?? Text(child, 0x00C0)).Source!.Element(Xdr + "sp")!;
+                element.Element(Xdr + "spPr")?.AddFirst(Transform());
+                group.Add(element);
+            }
+            else if (kind == Picture && made.ImageData is null && MakePicture(child, blips) is { ImageData: { } image } picture)
+            {
+                made.SetImageRead(image, picture.ImageContentType!);
+                made.ImageChanged = true;
+                group.Add(new XElement(Xdr + "pic",
+                    new XElement(Xdr + "nvPicPr",
+                        new XElement(Xdr + "cNvPr", new XAttribute("id", child.Id & 0xFFFF), new XAttribute("name", picture.Name), picture.Description is null ? null : new XAttribute("descr", picture.Description)),
+                        new XElement(Xdr + "cNvPicPr", new XElement(A + "picLocks", new XAttribute("noChangeAspect", "1")))),
+                    new XElement(Xdr + "blipFill",
+                        new XElement(A + "blip", new XAttribute(XNamespace.Xmlns + "r", Xlsx.XlsxNames.RUri), new XAttribute(Xlsx.XlsxNames.R + "embed", "")),
+                        new XElement(A + "stretch", new XElement(A + "fillRect"))),
+                    new XElement(Xdr + "spPr", Transform(), new XElement(A + "prstGeom", new XAttribute("prst", "rect"), new XElement(A + "avLst")))));
+            }
+        }
+
+        return group;
+    }
+
+    /// <summary>The distance from the sheet's left or top edge to a place given as a cell and its fraction, in EMUs.</summary>
+    private static long Offset(Worksheet sheet, int cell, int fraction, int digit, bool columns)
+    {
+        long pixels = 0;
+        int last = Math.Min(cell, columns ? CellAddress.MaxColumns - 1 : CellAddress.MaxRows - 1);
+        for (int i = 0; i < last; i++)
+        {
+            pixels += columns ? ColumnPixels(sheet, i, digit) : RowPixels(sheet, i);
+        }
+
+        DrawingPosition at = columns ? Position(sheet, last, fraction, 0, 0, digit) : Position(sheet, 0, 0, last, fraction, digit);
+        return (pixels * EmuPerPixel) + (columns ? at.OffsetX : at.OffsetY);
+    }
+
+    private static SheetDrawing MakeChart(Shape shape, Documents.Charts.Chart chart)
+    {
+        SheetDrawing made = new(SheetDrawingKind.Chart)
+        {
+            Name = Name(shape) ?? "Chart " + (shape.Id & 0x3FF).ToString(System.Globalization.CultureInfo.InvariantCulture),
+            Description = Text(shape, 0x0381),
+        };
+        made.SetChart(chart);
+        return made;
     }
 
     /// <summary>A place given as a cell and its fraction (1/1024 of the column's width, 1/256 of the row's height), in EMUs.</summary>
@@ -480,39 +596,54 @@ internal static class XlsDrawing
     }
 
     /// <summary>The shapes of a group container, in order, the group's own shape first.</summary>
-    private static void Walk(byte[] data, int start, int length, List<Shape> shapes, int depth)
+    private static void Walk(byte[] data, int start, int length, List<Shape> shapes, int depth, Shape? parent = null)
     {
         if (depth > 32)
         {
             return;
         }
 
+        // A container's first shape is its own: the sheet's (with no client data) for the top container, the group's for a
+        // group. The shapes after it are the group's.
+        Shape? owner = null;
         bool first = true;
-        foreach ((int type, int instance, int at, int size) in Records(data, start, length))
+        foreach ((int type, _, int at, int size) in Records(data, start, length))
         {
             switch (type)
             {
                 case 0xF003:
-                    Walk(data, at, size, shapes, depth + 1);
+                    Walk(data, at, size, shapes, depth + 1, depth >= 2 ? owner : null);
                     break;
                 case 0xF004:
                     {
                         Shape shape = ReadShape(data, at, size);
-                        shape.TopLevel = depth == 1;
-                        shape.GroupShape = first && depth > 0;
-                        if (depth > 1 && first)
+                        if (first)
                         {
-                            // A nested group's own shape anchors the group; its children are not top level.
-                            shape.TopLevel = false;
+                            first = false;
+                            shape.GroupShape = true;
+                            shape.TopLevel = depth <= 2;
+                            if (depth >= 2)
+                            {
+                                owner = shape;
+                                shape.Children = [];
+                                shape.Parent = parent;
+                                parent?.Children?.Add(shape);
+                            }
+                        }
+                        else
+                        {
+                            shape.TopLevel = depth == 1;
+                            if (owner is not null)
+                            {
+                                shape.Parent = owner;
+                                owner.Children!.Add(shape);
+                            }
                         }
 
                         shapes.Add(shape);
-                        first = false;
                         break;
                     }
             }
-
-            _ = instance;
         }
     }
 
@@ -542,11 +673,25 @@ internal static class XlsDrawing
                 case 0xF011:
                     shape.ClientData = true;
                     break;
+                case 0xF00F when size >= 16:
+                    shape.ChildAnchor = Rect(data, at);
+                    break;
+                case 0xF009 when size >= 16:
+                    shape.GroupRect = Rect(data, at);
+                    break;
             }
         }
 
         return shape;
     }
+
+    private static int[] Rect(byte[] data, int at) =>
+    [
+        BinaryPrimitives.ReadInt32LittleEndian(data.AsSpan(at)),
+        BinaryPrimitives.ReadInt32LittleEndian(data.AsSpan(at + 4)),
+        BinaryPrimitives.ReadInt32LittleEndian(data.AsSpan(at + 8)),
+        BinaryPrimitives.ReadInt32LittleEndian(data.AsSpan(at + 12)),
+    ];
 
     /// <summary>An FOPT record's properties: 6 bytes each, then the complex ones' data in their order.</summary>
     private static void Properties(ReadOnlySpan<byte> data, int count, Dictionary<int, (uint Value, byte[]? Complex)> properties)

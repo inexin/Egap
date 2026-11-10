@@ -557,7 +557,11 @@ internal static class XlsReader
         private readonly Dictionary<(int, int), (RangeAddress Range, byte[] Tokens, byte[] Extra)> arrays = [];
         private readonly List<Pending> pending = [];
         private (int Row, int Column, int Style, string? Text, bool Deferred, int Pending)? awaitingString;
+        // A chart has some dozens of records for each series; this keeps a damaged file from holding on to a whole stream.
+        private const int MaxChartRecords = 200_000;
+
         private int baseWidth = 8;
+        private bool drawingGoesOn;
         private readonly XlsObjects objects = new(sheet);
 
         private sealed class Pending
@@ -578,23 +582,36 @@ internal static class XlsReader
             }
 
             int depth = 1;
+            List<(int Type, byte[] Body)>? chart = null;
             while (depth > 0 && biff.Read())
             {
                 if (biff.Type == BiffType.Bof)
                 {
+                    // An embedded chart's substream follows its OBJ record.
                     depth++;
+                    chart = depth == 2 ? [] : null;
                     continue;
                 }
 
                 if (biff.Type == BiffType.Eof)
                 {
                     depth--;
+                    if (depth == 1 && chart is not null)
+                    {
+                        objects.Chart(chart, tokens => XlsFormula.Decode(state.Links, tokens, [], 0, 0, name: true));
+                        chart = null;
+                    }
+
                     continue;
                 }
 
                 if (depth == 1)
                 {
                     Record(biff);
+                }
+                else if (depth == 2 && chart is not null && chart.Count < MaxChartRecords)
+                {
+                    chart.Add(((int)biff.Type, biff.Body.ToArray()));
                 }
             }
 
@@ -605,9 +622,15 @@ internal static class XlsReader
 
         private void Record(BiffStream biff)
         {
+            // OfficeArt records too long for one MSODRAWING, or that come after an OBJ, go on in CONTINUE records.
+            bool drawing = drawingGoesOn;
+            drawingGoesOn = biff.Type is BiffType.MsoDrawing or BiffType.Obj || (biff.Type == BiffType.Continue && drawing);
             ReadOnlySpan<byte> body = biff.Body;
             switch (biff.Type)
             {
+                case BiffType.Continue when drawing:
+                    objects.MsoDrawing(body);
+                    break;
                 case BiffType.Number when body.Length >= 14:
                     Set(body, Number(BinaryPrimitives.ReadDoubleLittleEndian(body[6..])));
                     break;

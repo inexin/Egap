@@ -701,7 +701,7 @@ internal static class SheetObjectWriter
         foreach (SheetDrawing drawing in drawings)
         {
             string? imageId = drawing.ImageRelationshipId;
-            if (drawing.Kind == SheetDrawingKind.Picture && (drawing.ImageChanged || imageId is null) && drawing.ImageData is { } image)
+            if (drawing.Kind is SheetDrawingKind.Picture or SheetDrawingKind.Group && (drawing.ImageChanged || imageId is null) && drawing.ImageData is { } image)
             {
                 string extension = drawing.ImageContentType switch
                 {
