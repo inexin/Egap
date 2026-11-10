@@ -29,7 +29,7 @@ internal static class ShapePainter
     /// Draws a shape into <paramref name="box"/>: <paramref name="spPr"/> is its shape properties, <paramref name="style"/> its
     /// <c>style</c> element with the theme references, if any, and <paramref name="groupFill"/> the fill a <c>grpFill</c> takes.
     /// </summary>
-    public static void Draw(Canvas canvas, RectF box, XElement? spPr, XElement? style, ShapePaintContext context, XElement? groupFill = null, XElement? txBody = null, RectF? textBox = null)
+    public static void Draw(Canvas canvas, RectF box, XElement? spPr, XElement? style, ShapePaintContext context, XElement? groupFill = null, XElement? txBody = null, RectF? textBox = null, double textRotation = 0)
     {
         if (box.Width < 0 || box.Height < 0)
         {
@@ -55,21 +55,23 @@ internal static class ShapePainter
 
         if (txBody is not null)
         {
-            DrawText(canvas, box, xfrm, layout.TextRect, txBody, style, context, textBox);
+            DrawText(canvas, box, xfrm, layout.TextRect, txBody, style, context, textBox, textRotation);
         }
     }
 
     /// <summary>
-    /// Draws a shape's text into its geometry's text rectangle (or <paramref name="textBox"/>, in page space, when the file gives
-    /// the text its own box): turned with the shape, but never mirrored, as Office draws it.
+    /// Draws a shape's text into its geometry's text rectangle, turned with the shape but never mirrored, as Office draws it; or,
+    /// when the file gives the text its own box (a SmartArt shape's <c>txXfrm</c>), into <paramref name="textBox"/>, in page
+    /// space, turned by the shape's rotation plus that box's own <paramref name="textRotation"/>, in degrees.
     /// </summary>
-    private static void DrawText(Canvas canvas, RectF box, XElement? xfrm, RectF textRect, XElement txBody, XElement? style, ShapePaintContext context, RectF? textBox)
+    private static void DrawText(Canvas canvas, RectF box, XElement? xfrm, RectF textRect, XElement txBody, XElement? style, ShapePaintContext context, RectF? textBox, double textRotation)
     {
         double rotation = (DrawingNs.Double((string?)xfrm?.Attribute("rot")) ?? 0) / 60000;
         RectF rect;
         if (textBox is { } own)
         {
             rect = own;
+            rotation += textRotation;
         }
         else
         {

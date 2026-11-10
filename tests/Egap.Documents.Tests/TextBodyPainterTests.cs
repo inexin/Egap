@@ -128,4 +128,25 @@ public sealed class TextBodyPainterTests
 
         Assert.Equal("One\ntwo\n3", TextBodyPainter.Text(body));
     }
+
+    [Fact]
+    public void ATextBoxTurnsWithTheShapeAndItsOwnRotation()
+    {
+        // A SmartArt shape turned a quarter, whose text box turns back: the text reads level, across the box.
+        Raster<Rgba8> raster = Raster.Create(200, 200, White);
+        using (RasterCanvas<Rgba8> canvas = new(raster))
+        {
+            Document document = new();
+            XElement spPr = XElement.Parse($"""<a:spPr {Ns}><a:xfrm rot="5400000"/><a:prstGeom prst="rect"/><a:noFill/><a:ln><a:noFill/></a:ln></a:spPr>""");
+            XElement txBody = XElement.Parse($"""<a:txBody {Ns}><a:bodyPr anchor="ctr" wrap="none"/><a:p><a:pPr algn="ctr"/><a:r><a:rPr sz="2000"/><a:t>Level words</a:t></a:r></a:p></a:txBody>""");
+            ShapePaintContext context = new(document.Theme, Fonts: new FontProvider(document, new FontSettings { UseSystemFonts = false }));
+            ShapePainter.Draw(canvas, new RectF(50, 20, 100, 160), spPr, null, context, txBody: txBody, textBox: new RectF(20, 50, 160, 100), textRotation: -90);
+        }
+
+        using (raster)
+        {
+            (int l, int t, int r, int b) = Ink(raster);
+            Assert.True(r - l > 2 * (b - t), $"{l} {t} {r} {b}");
+        }
+    }
 }

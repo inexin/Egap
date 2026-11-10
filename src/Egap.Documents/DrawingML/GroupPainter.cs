@@ -71,7 +71,8 @@ internal static class GroupPainter
                         RectF? textBox = Offset(Child(element, "txXfrm")) is { } text
                             ? new RectF((float)(box.X + ((text.X - child.X) * sx)), (float)(box.Y + ((text.Y - child.Y) * sy)), (float)(text.Width * sx), (float)(text.Height * sy))
                             : null;
-                        ShapePainter.Draw(canvas, rect, spPr, Child(element, "style"), context, fill, Child(element, "txBody"), textBox);
+                        double textRotation = (DrawingNs.Double((string?)Child(element, "txXfrm")?.Attribute("rot")) ?? 0) / 60000;
+                        ShapePainter.Draw(canvas, rect, spPr, Child(element, "style"), context, fill, Child(element, "txBody"), textBox, textRotation);
                         break;
                 }
             }
