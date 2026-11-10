@@ -32,6 +32,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- Word shapes of all 187 DrawingML preset geometries, and custom geometries, draw on pages and in PDFs as Word draws them:
+  the theme's fill, line and effect styles, gradient, pattern and picture fills, dashes, compound lines, arrowheads, shadows,
+  glow and soft edges. Shape groups draw their shapes, pictures and nested groups. Before, a shape other than a rectangle,
+  rounded rectangle, ellipse or line drew as a rectangle, and a group drew nothing. A shape changed through the model draws
+  from the model, as before.
 - `Chart.Draw` draws a chart on any Egami canvas, with `ChartDrawOptions` for the theme, fonts and culture: column, bar, line,
   area, pie, doughnut, scatter, bubble, radar, stock and combined charts, laid out to the rules read from Excel. A DOCX chart
   now draws through it on pages and in PDFs, where before it showed the picture saved with it, if any. `ChartDrawOptions.Host` follows Excel's defaults or Word's;
@@ -164,7 +169,13 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - A sheet name such as `May06`, letters and then digits, is now quoted in a reference (`'May06'!A1`), as Excel quotes it.
 - XLSX formulas are read and written with SpreadsheetML's `_xHHHH_` escapes, as cell text is: a formula with a character
   XML cannot hold, such as a control character in a text constant, no longer makes `Save` throw.
-
+- `Worksheet.PivotTables` lists a sheet's pivot tables with their ranges and sources, and `PivotTable.Refresh` and
+  `Workbook.RefreshPivotTables` read the source again and lay the tables out as Excel's Refresh does: the cache's items
+  and records, row, column and page fields, hidden and sorted items, the default and custom subtotals with every Excel
+  summary function, grand totals, and the compact, outline, tabular and classic layouts with Excel's labels. Sources may
+  be ranges, tables or defined names and follow rows and columns put in or taken out and sheets renamed. A save writes a
+  refreshed table's definition, cache and records again. On the pivot tables of a public and an e-mail corpus, every
+  table Excel could refresh matched Excel's refresh cell for cell.
 - `Workbook.Load` reads OpenDocument spreadsheets: ODS, OTS and flat FODS, told apart from XLSX by their first bytes. Cells
   of every type, formulas translated from OpenFormula to Excel's syntax, array formulas, merged cells, styles and number
   formats, column widths, row heights, hidden and grouped rows and columns, sheets, names and print ranges are read,

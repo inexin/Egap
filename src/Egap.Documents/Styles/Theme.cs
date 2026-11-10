@@ -135,6 +135,9 @@ public sealed class Theme
             }
         }
 
+        // The fill, line and effect styles shapes refer to by number (lnRef, fillRef, effectRef); kept as read, for the shape engine.
+        FormatScheme = elements?.Element(Docx.Ns.A + "fmtScheme") ?? FormatScheme;
+
         if (elements?.Element(Docx.Ns.A + "fontScheme") is { } fonts)
         {
             XElement? major = fonts.Element(Docx.Ns.A + "majorFont");
@@ -152,6 +155,9 @@ public sealed class Theme
             return (string?)font?.Element(Docx.Ns.A + script)?.Attribute("typeface");
         }
     }
+
+    /// <summary>The theme's <c>a:fmtScheme</c> as read, or null when the document has none.</summary>
+    internal XElement? FormatScheme { get; private set; }
 
     internal Rgba8 GetColor(ThemeColor color)
     {

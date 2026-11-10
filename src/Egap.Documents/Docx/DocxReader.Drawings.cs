@@ -68,6 +68,7 @@ internal sealed partial class DocxReader
                     }
 
                     ReadBodyProperties(wsp.Element(Ns.Wps + "bodyPr"), shape);
+                    KeepImages(drawing, shape);
 
                     DocxExtension.Of(shape).Snapshot = ShapeState.Of(shape);
 
@@ -84,14 +85,19 @@ internal sealed partial class DocxReader
                         InkUri => IslandKind.Ink,
                         _ => IslandKind.Other,
                     };
-                    AddIsland(kind, drawing, width, height, floating);
+                    Island island = AddIsland(kind, drawing, width, height, floating);
+                    if (kind == IslandKind.ShapeGroup)
+                    {
+                        KeepImages(drawing, island);
+                    }
+
                     break;
                 }
         }
 
-        void AddIsland(IslandKind kind, XElement element, double w, double h, FloatingPlacement? placement)
+        Island AddIsland(IslandKind kind, XElement element, double w, double h, FloatingPlacement? placement)
         {
-            Add(inlines, new Island(document, kind, DocxExtension.Format, element.ToString(SaveOptions.DisableFormatting))
+            return Add(inlines, new Island(document, kind, DocxExtension.Format, element.ToString(SaveOptions.DisableFormatting))
             {
                 Width = w,
                 Height = h,
@@ -100,6 +106,18 @@ internal sealed partial class DocxReader
                 ChartPart = kind == IslandKind.Chart ? ChartPartOf(element) : null,
                 Fallback = kind == IslandKind.Chart ? ChartPicture(element) : null,
             }, state, element);
+        }
+    }
+
+    /// <summary>Keeps the pictures a shape's or group's blips name (picture fills, pictures in groups) for the shape engine.</summary>
+    private void KeepImages(XElement drawing, Node node)
+    {
+        foreach (XElement blip in drawing.Descendants(Ns.A + "blip"))
+        {
+            if ((string?)blip.Attribute(Ns.R + "embed") is { } id && ImageOf(id) is { } image)
+            {
+                DocxDrawings.KeepImage(node, id, image);
+            }
         }
     }
 

@@ -24,7 +24,7 @@ Workbook loaded = Workbook.Load("sales.xlsx");
 ```
 
 Tables, data validation, conditional formatting, notes, hyperlinks, pictures and charts are read, edited and written, and a
-loaded workbook saves its pivot tables, macros and the rest as they were. `ConditionalFormats.Evaluate` and `DataValidations.IsValid` work out
+loaded workbook saves its pivot tables, macros and the rest as they were. `PivotTable.Refresh` and `Workbook.RefreshPivotTables` read a pivot table's source again and lay it out as Excel's Refresh does. `ConditionalFormats.Evaluate` and `DataValidations.IsValid` work out
 the format each cell shows and whether its value passes, as Excel does. `InsertRows`, `DeleteRows`, `InsertColumns` and `DeleteColumns`
 edit a sheet as Excel does, with every formula, name, rule, table and chart that refers to the cells following them. `CellRange.CopyTo` and `MoveTo` copy and move ranges as Excel's Copy, Cut and Paste do. `CellRange.Sort`, `AutoFilter.Apply` and `Find` and `Replace` sort, filter and search as Excel does. `AutoFitColumns` and `AutoFitRows` fit widths and heights to the text as Excel's AutoFit does. Printing, PDF and images draw the charts, chart
 sheets too. `SheetReader` and `SheetWriter` stream

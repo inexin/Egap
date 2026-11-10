@@ -99,6 +99,29 @@ internal static class DrawingColors
     public static XElement ChangeElement(string name, double value) =>
         new(DrawingNs.A + name, new XAttribute("val", Math.Round(value * 100000).ToString("0", CultureInfo.InvariantCulture)));
 
+    /// <summary>
+    /// The colour inside <paramref name="holder"/> in pixels, after its changes; null when it holds none. A <c>phClr</c> scheme colour
+    /// stands for <paramref name="placeholder"/>, the colour a style reference gives, and is black without one.
+    /// </summary>
+    public static Rgba8? Resolve(XElement? holder, Theme theme, Rgba8? placeholder)
+    {
+        if (Find(holder) is not { } found)
+        {
+            return null;
+        }
+
+        Rgba8 color = found is { Kind: DrawingColorKind.Theme, Name: "phClr" } ? placeholder ?? new Rgba8(0, 0, 0, 255) : Start(found.Kind, found.Rgb, found.Name, theme);
+        foreach (XElement change in found.Element.Elements())
+        {
+            if (TryChange(change, out string name, out double value))
+            {
+                color = Apply(color, name, value);
+            }
+        }
+
+        return color;
+    }
+
     /// <summary>The colour a colour element starts from before its changes: a theme slot, a fixed value or a named colour.</summary>
     public static Rgba8 Start(DrawingColorKind kind, Rgba8 rgb, string name, Theme theme) => kind switch
     {

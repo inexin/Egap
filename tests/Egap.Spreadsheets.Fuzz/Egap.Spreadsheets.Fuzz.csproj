@@ -15,6 +15,11 @@
     <PackageReference Include="SharpFuzz" />
   </ItemGroup>
 
+  <!-- The book the pivotparts target puts its input in: the pivot table oracle. -->
+  <ItemGroup>
+    <None Include="..\Egap.Spreadsheets.Tests\Oracle\pivots.xlsx" Link="pivot-template.xlsx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <!-- The PDF harness's mutator, shared rather than copied. -->
   <ItemGroup>
     <Compile Include="..\Egap.Pdf.Fuzz\Mutator.cs" Link="Mutator.cs" />
