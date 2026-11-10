@@ -1,7 +1,7 @@
 # Egap.Spreadsheets
 
 Spreadsheets for .NET 10: workbooks you create and edit from code, and Excel files (XLSX, XLSM, XLTX, XLTM) loaded and
-saved with what they hold kept. OpenDocument spreadsheets (ODS, FODS) load too, their formulas translated to Excel's. Sheets are sparse, up to 1,048,576 rows by 16,384 columns, and keep text and cell styles once
+saved with what they hold kept. OpenDocument spreadsheets (ODS, OTS, FODS) load and save too, encrypted with a password if asked, their formulas translated between OpenFormula and Excel's. Sheets are sparse, up to 1,048,576 rows by 16,384 columns, and keep text and cell styles once
 per workbook, as Excel does. Fully managed and MIT-licensed; part of [Egap](https://github.com/inexin/Egap).
 
 ```csharp

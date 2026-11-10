@@ -19,6 +19,12 @@ public sealed class ConditionalFormatEvaluationTests
 
     private static readonly string[] Periods = ["today", "yesterday", "last 7 days", "this week", "last week", "last month", "tomorrow", "next week", "next month", "this month"];
 
+    /// <summary>The day Excel made the oracle on: the time period rules are checked with the clock pinned to it.</summary>
+    private static readonly DateTime ExcelToday = ExcelValues.ToDateTime(int.Parse(Lines[0].Split("today ")[1].Split(',')[0], CultureInfo.InvariantCulture), false)!.Value;
+
+    /// <summary>Days around which weeks, months and years turn: a Monday, a Sunday, the 1st, the 31st, a leap day, a new year.</summary>
+    public static TheoryData<string> Days() => ["2026-11-09", "2026-11-15", "2026-11-01", "2026-12-01", "2026-10-31", "2026-12-31", "2027-01-01", "2024-02-29", "2026-03-01"];
+
     public static TheoryData<string> Formats() => [.. Excel.Where(line => line[0] is "F" or "I").Select(line => line[1]).Distinct()];
 
     public static TheoryData<string> Validations() => [.. Excel.Where(line => line[0] == "V").Select(line => line[1]).Distinct()];
@@ -27,6 +33,7 @@ public sealed class ConditionalFormatEvaluationTests
     [MemberData(nameof(Formats))]
     public void FormatsAsExcelDoes(string label)
     {
+        using IDisposable clock = Clock.Pin(ExcelToday);
         Workbook book = Load();
         Worksheet sheet = book.Worksheets["Rules"];
         int column = Column(sheet, label);
@@ -76,6 +83,7 @@ public sealed class ConditionalFormatEvaluationTests
     [MemberData(nameof(Validations))]
     public void ValidatesAsExcelDoes(string label)
     {
+        using IDisposable clock = Clock.Pin(ExcelToday);
         Worksheet sheet = Load().Worksheets["Valid"];
         int column = Column(sheet, label);
         List<string> misses = [];
@@ -212,27 +220,67 @@ public sealed class ConditionalFormatEvaluationTests
         Assert.True(sheet.DataValidations.IsValid(CellAddress.Parse("C1"), CellValue.FromText("blue")));
     }
 
-    /// <summary>The oracle's workbook, with the dates of the time period rules moved by the days since Excel's today.</summary>
-    private static Workbook Load()
+    [Theory]
+    [MemberData(nameof(Days))]
+    public void TimePeriodsFollowTheCalendarOnAnyDay(string day)
     {
-        Workbook book = Workbook.Load(Book);
-        book.Culture = CultureInfo.GetCultureInfo("nb-NO");
-        int today = int.Parse(Lines[0].Split("today ")[1].Split(',')[0], CultureInfo.InvariantCulture);
-        double shift = ExcelValues.Serial(DateTime.Today, false)!.Value - today;
+        DateTime today = DateTime.Parse(day, CultureInfo.InvariantCulture);
+        using IDisposable clock = Clock.Pin(today.AddHours(15));
+        // Weeks start on Sunday, as WEEKDAY counts them.
+        DateTime week = today.AddDays(-(int)today.DayOfWeek);
+        Dictionary<string, Func<DateTime, bool>> expected = new()
+        {
+            ["today"] = date => date == today,
+            ["yesterday"] = date => date == today.AddDays(-1),
+            ["tomorrow"] = date => date == today.AddDays(1),
+            ["last 7 days"] = date => date > today.AddDays(-7) && date <= today,
+            ["this week"] = date => date >= week && date < week.AddDays(7),
+            ["last week"] = date => date >= week.AddDays(-7) && date < week,
+            ["next week"] = date => date >= week.AddDays(7) && date < week.AddDays(14),
+            ["this month"] = date => SameMonth(date, today),
+            ["last month"] = date => SameMonth(date, today.AddMonths(-1)),
+            ["next month"] = date => SameMonth(date, today.AddMonths(1)),
+        };
+        int[] offsets = [-62, -40, -32, -31, -28, -14, -13, -8, -7, -6, -1, 0, 1, 6, 7, 8, 13, 14, 31, 40];
+
+        Workbook book = Load();
         Worksheet sheet = book.Worksheets["Rules"];
         foreach (string period in Periods)
         {
             int column = Column(sheet, period);
-            for (int row = 1; row <= 20; row++)
+            for (int i = 0; i < offsets.Length; i++)
             {
-                CellValue value = sheet.Cells[row, column].Value;
-                if (value.Kind == CellValueKind.Number)
+                sheet.Cells[i + 1, column].Value = CellValue.FromNumber(ExcelValues.Serial(today.AddDays(offsets[i]), false)!.Value);
+            }
+        }
+
+        ConditionalFormatEvaluation evaluation = sheet.ConditionalFormats.Evaluate();
+        List<string> misses = [];
+        foreach (string period in Periods)
+        {
+            int column = Column(sheet, period);
+            for (int i = 0; i < offsets.Length; i++)
+            {
+                ConditionalCellFormat format = evaluation[i + 1, column];
+                bool shown = format.Style.Fill.Pattern == CellFillPattern.Solid && Bgr(format.Style.Fill.Foreground) == "255";
+                DateTime date = today.AddDays(offsets[i]);
+                if (shown != expected[period](date))
                 {
-                    sheet.Cells[row, column].Value = CellValue.FromNumber(value.Number + shift);
+                    misses.Add($"{period}, {date:yyyy-MM-dd}: Egap {(shown ? "shows" : "does not show")} it");
                 }
             }
         }
 
+        Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
+    }
+
+    private static bool SameMonth(DateTime a, DateTime b) => a.Year == b.Year && a.Month == b.Month;
+
+    /// <summary>The oracle's workbook, in Excel's culture.</summary>
+    private static Workbook Load()
+    {
+        Workbook book = Workbook.Load(Book);
+        book.Culture = CultureInfo.GetCultureInfo("nb-NO");
         return book;
     }
 

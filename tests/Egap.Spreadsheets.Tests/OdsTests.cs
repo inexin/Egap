@@ -69,6 +69,7 @@ public sealed class OdsTests
     [InlineData("of:=[1]!_xll.Rate([.A2];1)+[2]!Total", "[1]!_xll.Rate(A2,1)+[2]!Total")]
     [InlineData("of:='[1]My sheet'!Rate*2+'[1]It''s'!Total", "'[1]My sheet'!Rate*2+'[1]It''s'!Total")]
     [InlineData("of:=VLOOKUP([.A1];['file:///c:/b.ods'#$$'Table'];2)", "VLOOKUP(A1,[2]!Table,2)")]
+    [InlineData("of:=VLOOKUP([.A1];'file:///c:/b.ods'#Table;2)", "VLOOKUP(A1,[2]!Table,2)")]
     [InlineData("of:=['file:///c:/a.ods'#$Q1.A1:.B2]", "[1]Q1!A1:B2")]
     [InlineData("of:=['file:///c:/b.ods'#$'My sheet'.A1]+['file:///c:/a.ods'#$'It''s'.$B$2]", "'[2]My sheet'!A1+'[1]It''s'!$B$2")]
     public void TranslatesReferencesToOtherFiles(string formula, string excel)
@@ -333,7 +334,7 @@ public sealed class OdsTests
 
         // Saved as XLSX, the copy is the linked book's kept values, which Excel and Egap calculate from.
         using MemoryStream saved = new();
-        book.Save(saved);
+        book.Save(saved, new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx });
         using (ZipArchive zip = new(new MemoryStream(saved.ToArray())))
         {
             using StreamReader reader = new(zip.GetEntry("xl/externalLinks/_rels/externalLink1.xml.rels")!.Open());
@@ -404,7 +405,7 @@ public sealed class OdsTests
     {
         Workbook book = Load(Flat(Table("S", Row(Cell("float", "office:value=\"5\""), "<table:table-cell table:formula=\"of:=[.A1]*2\" office:value-type=\"float\" office:value=\"10\"/>"))));
         using MemoryStream saved = new();
-        book.Save(saved);
+        book.Save(saved, new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx });
         saved.Position = 0;
         Workbook again = Workbook.Load(saved);
         Assert.Equal("A1*2", again.Worksheets[0]["B1"].Formula);
@@ -431,7 +432,7 @@ public sealed class OdsTests
         Assert.Equal(10, sheet["E4"].Value.Number);
 
         using MemoryStream saved = new();
-        book.Save(saved);
+        book.Save(saved, new WorkbookSaveOptions { Format = WorkbookFormat.Xlsx });
         using ZipArchive zip = new(new MemoryStream(saved.ToArray()));
         using StreamReader reader = new(zip.GetEntry("xl/worksheets/sheet1.xml")!.Open());
         string xml = reader.ReadToEnd();

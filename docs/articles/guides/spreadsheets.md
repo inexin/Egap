@@ -2,7 +2,7 @@
 
 Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas,
 cell styles, rows and columns, names and print settings, as Excel keeps them. It loads and saves Excel's XLSX, XLSM, XLTX and
-XLTM files, and loads OpenDocument spreadsheets (ODS). The types are in `Egap.Spreadsheets`.
+XLTM files, and OpenDocument spreadsheets (ODS, OTS and flat FODS). The types are in `Egap.Spreadsheets`.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -26,7 +26,7 @@ sheet.Range("B2:B4").UpdateStyle(s => s with { NumberFormat = "#,##0.00" });
 ## Loading and saving
 
 `Workbook.Load` reads an Excel workbook or template, with or without macros, from a path or a stream. `Save` writes one; a
-path's extension (`.xlsx`, `.xlsm`, `.xltx` or `.xltm`) says which kind, and `WorkbookSaveOptions.Format` names it for a
+path's extension (`.xlsx`, `.xlsm`, `.xltx`, `.xltm`, `.ods`, `.ots` or `.fods`) says which kind, and `WorkbookSaveOptions.Format` names it for a
 stream or another extension.
 
 ```csharp
@@ -59,8 +59,7 @@ Formulas come in OpenFormula, the ODF formula language, and are translated to Ex
 `[$'My sheet'.A1]` becomes `'My sheet'!A1`, semicolons between arguments become commas, and functions take Excel's names.
 What-if tables, which ODS keeps as `MULTIPLE.OPERATIONS` in each cell, become Excel data tables. A reference to another
 file, `['file:///c:/rates.ods'#$Sheet1.A1]`, becomes Excel's `[1]Sheet1!A1`, and the values the file keeps for that
-file's sheets become the linked book's, which formulas calculate from and which save with the workbook. A workbook read
-from ODS saves as XLSX.
+file's sheets become the linked book's, which formulas calculate from and which save with the workbook.
 
 ```csharp
 using Egap.Spreadsheets;
@@ -73,9 +72,32 @@ book.Save("budget.xlsx");
 
 Cell values of every type, formulas with their last results, array formulas, merged cells, cell styles and number formats,
 column widths, row heights, hidden and grouped rows and columns, hidden sheets and tab colours, named ranges and
-expressions, and print ranges are read. A reference to another file becomes `#REF!`. Charts, pictures, notes, conditional
+expressions, and print ranges are read. Charts, pictures, notes, conditional
 formats, data validation and sheet protection are not read yet; ODF hashes its passwords differently from Excel, so a
 protected ODS sheet loads unprotected.
+
+`Save` writes ODS 1.3 too: `.ods`, `.ots` and `.fods` by extension, or `WorkbookFormat.Ods`, `Ots` and `Fods` for a stream. A
+workbook read from ODS saves as ODS unless you name another format. Formulas are translated the other way, to OpenFormula,
+with functions under the names LibreOffice gives them (`COM.MICROSOFT.` for Excel's newer ones, `LEGACY.` for the old
+statistics functions); a formula Egap cannot parse is kept in Excel's syntax as `msoxl:`. Values with their types, the
+cached results of formulas, cell styles, number formats as ODF data styles, merged cells, array formulas, column widths and
+row heights, hidden and grouped rows and columns, hidden sheets and tab colours, names, print ranges, data tables (as
+`MULTIPLE.OPERATIONS`) and links to other files with their kept values are written; an error typed into a cell, which
+ODF has no value type for, is written as LibreOffice writes it. Charts, pictures, notes, conditional formats, data
+validation, protection and view settings such as frozen panes are not written yet; a chart sheet becomes an empty sheet in
+its place, so the tab order and sheet names stay.
+
+`WorkbookSaveOptions.Password` encrypts an ODS or OTS as ODF 1.2 and later do: AES-256 in CBC mode with a key derived by
+PBKDF2 from the SHA-256 of the password. `WorkbookLoadOptions.Password` opens one, including the AES-256-GCM and Argon2id
+encryption that recent LibreOffice writes; a wrong or missing password throws a `DocumentPasswordException`.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("budget.xlsx");
+book.Save("budget.ods", new WorkbookSaveOptions { Password = "secret" });
+Workbook again = Workbook.Load("budget.ods", new WorkbookLoadOptions { Password = "secret" });
+```
 
 `Workbook.Format` is the kind of file a workbook came from. `WorkbookLoadOptions.Limits` bounds what a file may hold (part
 count, part and total size, compression ratio, XML depth) so a hostile file cannot use up memory; a file that goes past a

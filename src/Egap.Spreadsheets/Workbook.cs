@@ -428,10 +428,13 @@ public sealed partial class Workbook
     /// <summary>
     /// Loads an XLSX, XLSM, XLTX or XLTM file, or an OpenDocument spreadsheet (ODS, OTS or flat FODS), from a stream, which
     /// is left open. The kind is told from the file's first bytes. An OpenDocument spreadsheet's formulas are translated from
-    /// OpenFormula to Excel's syntax, and the workbook's <see cref="Format"/> is <see cref="WorkbookFormat.Xlsx"/>.
+    /// OpenFormula to Excel's syntax, and the workbook's <see cref="Format"/> is <see cref="WorkbookFormat.Ods"/>,
+    /// <see cref="WorkbookFormat.Ots"/> or <see cref="WorkbookFormat.Fods"/>. An encrypted one needs
+    /// <see cref="WorkbookLoadOptions.Password"/>.
     /// </summary>
     /// <exception cref="DocumentException">The file is not a workbook Egap can read.</exception>
     /// <exception cref="DocumentLimitException">The file goes past one of <see cref="WorkbookLoadOptions.Limits"/>.</exception>
+    /// <exception cref="DocumentPasswordException">The file is encrypted, and the options give no password or a wrong one.</exception>
     public static Workbook Load(Stream stream, WorkbookLoadOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
@@ -448,7 +451,7 @@ public sealed partial class Workbook
         Workbook book = new(StyleTable.ForLoading());
         if (OdsBytes(stream, limits) is { } ods)
         {
-            Ods.OdsReader.Read(book, ods, limits);
+            Ods.OdsReader.Read(book, ods, limits, options?.Password);
         }
         else
         {
@@ -483,13 +486,15 @@ public sealed partial class Workbook
     }
 
     /// <summary>
-    /// Saves the workbook to a file as the kind its extension names (.xlsx, .xlsm, .xltx or .xltm), unless
+    /// Saves the workbook to a file as the kind its extension names (.xlsx, .xlsm, .xltx, .xltm, .ods, .ots or .fods), unless
     /// <see cref="WorkbookSaveOptions.Format"/> names one. A workbook with macros saved as .xlsx or .xltx leaves the macros out.
+    /// An OpenDocument spreadsheet gets its formulas in OpenFormula; see <see cref="WorkbookFormat.Ods"/>.
     /// A <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> path writes the first visible sheet as text, as
     /// <see cref="Worksheet.SaveCsv(string, CsvOptions?)"/> does, with <see cref="WorkbookSaveOptions.Csv"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">The workbook has no worksheets, or no visible one for CSV.</exception>
     /// <exception cref="ArgumentException">The extension names no workbook kind and the options name none.</exception>
+    /// <exception cref="NotSupportedException">A password is given for a kind of file that cannot be encrypted.</exception>
     public void Save(string path, WorkbookSaveOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
@@ -504,7 +509,7 @@ public sealed partial class Workbook
         WorkbookFormat format = options?.Format ?? FormatOfExtension(Path.GetExtension(path))
             ?? throw new ArgumentException($"No workbook kind has the extension \"{Path.GetExtension(path)}\"; name one in the options.", nameof(path));
         using MemoryStream buffer = new();
-        XlsxWriter.Write(this, buffer, format);
+        Write(buffer, format, options?.Password);
         using FileStream stream = File.Create(path);
         buffer.Position = 0;
         buffer.CopyTo(stream);
@@ -512,10 +517,29 @@ public sealed partial class Workbook
 
     /// <summary>Saves the workbook to a stream, which is left open, as <see cref="WorkbookSaveOptions.Format"/> or else <see cref="Format"/>.</summary>
     /// <exception cref="InvalidOperationException">The workbook has no worksheets.</exception>
+    /// <exception cref="NotSupportedException">A password is given for a kind of file that cannot be encrypted.</exception>
     public void Save(Stream stream, WorkbookSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
-        XlsxWriter.Write(this, stream, options?.Format ?? Format);
+        Write(stream, options?.Format ?? Format, options?.Password);
+    }
+
+    private void Write(Stream stream, WorkbookFormat format, string? password)
+    {
+        bool encrypt = !string.IsNullOrEmpty(password);
+        if (encrypt && format is not (WorkbookFormat.Ods or WorkbookFormat.Ots))
+        {
+            throw new NotSupportedException($"A {format} file cannot be encrypted; save as ODS or OTS to use a password.");
+        }
+
+        if (format is WorkbookFormat.Ods or WorkbookFormat.Ots or WorkbookFormat.Fods)
+        {
+            Ods.OdsWriter.Write(this, stream, format, encrypt ? password : null);
+        }
+        else
+        {
+            XlsxWriter.Write(this, stream, format);
+        }
     }
 
     /// <summary>
@@ -550,11 +574,14 @@ public sealed partial class Workbook
         ".XLSM" => WorkbookFormat.Xlsm,
         ".XLTX" => WorkbookFormat.Xltx,
         ".XLTM" => WorkbookFormat.Xltm,
+        ".ODS" => WorkbookFormat.Ods,
+        ".OTS" => WorkbookFormat.Ots,
+        ".FODS" => WorkbookFormat.Fods,
         _ => null,
     };
 }
 
-/// <summary>The kinds of Excel workbook file: workbook or template, with or without macros.</summary>
+/// <summary>The kinds of workbook file: Excel's workbooks and templates, with or without macros, and OpenDocument spreadsheets.</summary>
 public enum WorkbookFormat
 {
     /// <summary>An Excel workbook (.xlsx).</summary>
@@ -568,6 +595,15 @@ public enum WorkbookFormat
 
     /// <summary>An Excel template with macros (.xltm).</summary>
     Xltm,
+
+    /// <summary>An OpenDocument spreadsheet (.ods).</summary>
+    Ods,
+
+    /// <summary>An OpenDocument spreadsheet template (.ots).</summary>
+    Ots,
+
+    /// <summary>A flat OpenDocument spreadsheet, one XML file (.fods).</summary>
+    Fods,
 }
 
 /// <summary>How a workbook is loaded.</summary>
@@ -578,6 +614,9 @@ public sealed class WorkbookLoadOptions
 
     /// <summary>How a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> path is read, or null for the defaults.</summary>
     public CsvOptions? Csv { get; init; }
+
+    /// <summary>The password of an encrypted OpenDocument spreadsheet, or null.</summary>
+    public string? Password { get; init; }
 }
 
 /// <summary>How a workbook is saved.</summary>
@@ -588,4 +627,11 @@ public sealed class WorkbookSaveOptions
 
     /// <summary>How a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> path is written, or null for the defaults.</summary>
     public CsvOptions? Csv { get; init; }
+
+    /// <summary>
+    /// A password to encrypt an ODS or OTS file with, as ODF 1.2 and later do: AES-256 in CBC mode, its key made from the
+    /// password's SHA-256 hash with PBKDF2. Null or empty writes the file plain. Excel's formats and flat FODS files cannot be
+    /// encrypted.
+    /// </summary>
+    public string? Password { get; init; }
 }

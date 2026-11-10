@@ -27,12 +27,12 @@ internal static class OdsReader
 
     private static readonly XNamespace CalcExtNs = "urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0";
 
-    public static void Read(Workbook book, byte[] bytes, DocumentLimits limits)
+    public static void Read(Workbook book, byte[] bytes, DocumentLimits limits, string? password = null)
     {
-        OdfPackage package = OdfPackage.Read(bytes, limits, spreadsheet: true);
+        OdfPackage package = OdfPackage.Read(bytes, limits, password, spreadsheet: true);
         XElement spreadsheet = package.Content.Element(OfficeNs + "body")?.Element(OfficeNs + "spreadsheet")
             ?? throw new DocumentException("The OpenDocument spreadsheet has no office:spreadsheet body.");
-        book.Format = WorkbookFormat.Xlsx;
+        book.Format = package.IsFlat ? WorkbookFormat.Fods : package.MediaType == SpreadsheetTemplateMediaType ? WorkbookFormat.Ots : WorkbookFormat.Ods;
 
         DateTime nullDate = new(1899, 12, 30);
         if (spreadsheet.Element(TableNs + "calculation-settings")?.Element(TableNs + "null-date")?.Attr(TableNs, "date-value") is { } nullText
@@ -324,7 +324,14 @@ internal static class OdsReader
 
         int last = (int)Math.Min((long)first + count - 1, CellAddress.MaxRows - 1);
         state.Row = last + 1;
-        bool hidden = row.Attr(TableNs, "visibility") is "collapse" or "filter";
+        string? visibility = row.Attr(TableNs, "visibility");
+        bool hidden = visibility is "collapse" or "filter";
+        if (visibility == "filter")
+        {
+            // Rows a filter hides: SUBTOTAL and AGGREGATE leave them out.
+            state.Sheet.HasFilterCriteria = true;
+        }
+
         bool empty = !row.Elements().Any(c => HasContent(c));
         if (empty && count > FillerRun)
         {
@@ -677,7 +684,8 @@ internal static class OdsReader
                 switch (child.Name.LocalName)
                 {
                     case "s":
-                        text.Append(' ', Math.Clamp(OdfUnits.Int(child.Attr(TextNs, "c")) ?? 1, 1, 1024));
+                        // Never past the longest text a cell holds, so a huge count cannot use memory.
+                        text.Append(' ', Math.Clamp(OdfUnits.Int(child.Attr(TextNs, "c")) ?? 1, 1, Math.Max(1, CellValue.MaxTextLength + 1 - text.Length)));
                         break;
                     case "tab":
                         text.Append('\t');

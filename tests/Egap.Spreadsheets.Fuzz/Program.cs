@@ -33,7 +33,8 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["find"] = Find,
     ["conditional"] = Conditional,
     ["autofit"] = AutoFit,
-    ["ods"] = Ods,
+    ["ods"] = input => Ods(input, null),
+    ["odscrypt"] = input => Ods(input, "fuzz"),
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -285,15 +286,15 @@ static void SheetCharts(Stream input)
     }
 }
 
-static void Ods(Stream input)
+static void Ods(Stream input, string? password)
 {
-    // An OpenDocument spreadsheet, zipped or flat: loaded, cells shown and their translated formulas parsed, calculated,
-    // then saved as XLSX and loaded again.
+    // An OpenDocument spreadsheet, zipped or flat, or a password-protected one: loaded, cells shown and their translated
+    // formulas parsed, calculated, then saved in its own format and as XLSX and loaded again.
     DocumentLimits limits = new() { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 };
     byte[] bytes = Bytes(input);
     try
     {
-        Workbook book = Workbook.Load(new MemoryStream(bytes, writable: false), new WorkbookLoadOptions { Limits = limits });
+        Workbook book = Workbook.Load(new MemoryStream(bytes, writable: false), new WorkbookLoadOptions { Limits = limits, Password = password });
         foreach (Worksheet sheet in book.Worksheets)
         {
             if (sheet.UsedRange?.Address is { } used)
@@ -315,10 +316,13 @@ static void Ods(Stream input)
             book.Calculate();
         }
 
-        using MemoryStream saved = new();
-        book.Save(saved);
-        saved.Position = 0;
-        _ = Workbook.Load(saved, new WorkbookLoadOptions { Limits = limits });
+        foreach (WorkbookFormat format in (WorkbookFormat[])[book.Format, WorkbookFormat.Xlsx])
+        {
+            using MemoryStream saved = new();
+            book.Save(saved, new WorkbookSaveOptions { Format = format, Password = format == WorkbookFormat.Ods ? password : null });
+            saved.Position = 0;
+            _ = Workbook.Load(saved, new WorkbookLoadOptions { Limits = limits, Password = password });
+        }
     }
     catch (DocumentException)
     {

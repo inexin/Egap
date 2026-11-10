@@ -19,6 +19,9 @@ internal static class OpenFormula
         ["FORMULA"] = "FORMULATEXT",
         ["ORG.OPENOFFICE.ERRORTYPE"] = "ERROR.TYPE",
         ["ERRORTYPE"] = "ERROR.TYPE",
+        ["FDIST"] = "F.DIST",
+        ["FINV"] = "F.INV",
+        ["SKEWP"] = "SKEW.P",
     };
 
     /// <summary>
@@ -197,6 +200,14 @@ internal static class OpenFormula
                         continue;
                     }
 
+                    if (c == '\'' && books is not null && ExternalName(text, i) is (string nameFile, string externalName, int externalEnd))
+                    {
+                        // A name in another file as LibreOffice writes it outside brackets, 'file:///c:/rates.ods'#Rate: [1]!Rate.
+                        output.Append('[').Append(books(nameFile, "").ToString(System.Globalization.CultureInfo.InvariantCulture)).Append("]!").Append(externalName);
+                        i = externalEnd;
+                        continue;
+                    }
+
                     if (c == '\'' && i + 1 < text.Length && text[i + 1] == '[' && LinkedSheetName(text, i) is int after)
                     {
                         // A name of a linked book's sheet, '[1]My sheet'!Rate, kept as Excel wrote it.
@@ -371,6 +382,37 @@ internal static class OpenFormula
         }
 
         return Math.Min(i, text.Length);
+    }
+
+    /// <summary>
+    /// A quoted file and a name after <c>#</c> at <paramref name="at"/>, <c>'file'#Name</c>, with the index after the name; null
+    /// when the text there is not one.
+    /// </summary>
+    private static (string File, string Name, int End)? ExternalName(ReadOnlySpan<char> text, int at)
+    {
+        int i = at + 1;
+        while (i < text.Length && !(text[i] == '\'' && (i + 1 >= text.Length || text[i + 1] != '\'')))
+        {
+            i += text[i] == '\'' ? 2 : 1;
+        }
+
+        if (i + 2 >= text.Length || text[i + 1] != '#' || !(char.IsLetter(text[i + 2]) || text[i + 2] == '_'))
+        {
+            return null;
+        }
+
+        int end = i + 2;
+        while (end < text.Length && (char.IsLetterOrDigit(text[end]) || text[end] is '_' or '.' or '\\'))
+        {
+            end++;
+        }
+
+        if (end < text.Length && text[end] is '(' or '!' or '.')
+        {
+            return null;
+        }
+
+        return (text[(at + 1)..i].ToString().Replace("''", "'", StringComparison.Ordinal), text[(i + 2)..end].ToString(), end);
     }
 
     /// <summary>A bracketed reference's inside, such as <c>$Sheet1.A1:.B$2</c>, as Excel writes it.</summary>
