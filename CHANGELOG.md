@@ -164,7 +164,6 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - A sheet name such as `May06`, letters and then digits, is now quoted in a reference (`'May06'!A1`), as Excel quotes it.
 - XLSX formulas are read and written with SpreadsheetML's `_xHHHH_` escapes, as cell text is: a formula with a character
   XML cannot hold, such as a control character in a text constant, no longer makes `Save` throw.
-
 - `Worksheet.PivotTables` lists a sheet's pivot tables with their ranges and sources, and `PivotTable.Refresh` and
   `Workbook.RefreshPivotTables` read the source again and lay the tables out as Excel's Refresh does: the cache's items
   and records, row, column and page fields, hidden and sorted items, the default and custom subtotals with every Excel
