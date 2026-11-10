@@ -353,7 +353,7 @@ internal sealed class ShapeGeometry
                         break;
                     case 'A':
                         Ensure();
-                        current = Arc(builder, current, Value(a[0], values) * sx, Value(a[1], values) * sy, Value(a[2], values), Value(a[3], values));
+                        current = Arc(builder, current, Value(a[0], values) * sx, Value(a[1], values) * sy, Value(a[2], values), Value(a[3], values), Value(a[0], values), Value(a[1], values));
                         break;
                     case 'Z':
                         if (open)
@@ -385,16 +385,16 @@ internal sealed class ShapeGeometry
         /// <paramref name="start"/> at angle <paramref name="startAngle"/>, swept by <paramref name="sweepAngle"/> (both in 60 000ths
         /// of a degree, clockwise with y down), as cubic Béziers of at most a quarter turn; returns where it ends.
         /// </summary>
-        private static Vector2 Arc(PathBuilder builder, Vector2 start, double rx, double ry, double startAngle, double sweepAngle)
+        private static Vector2 Arc(PathBuilder builder, Vector2 start, double rx, double ry, double startAngle, double sweepAngle, double angleRx, double angleRy)
         {
             if (rx <= 0 || ry <= 0 || sweepAngle == 0)
             {
                 return start;
             }
 
-            double from = Parametric(startAngle / 60000 * Math.PI / 180, rx, ry);
+            double from = Parametric(startAngle / 60000 * Math.PI / 180, angleRx, angleRy);
             double sweepRadians = sweepAngle / 60000 * Math.PI / 180;
-            double to = Parametric((startAngle + sweepAngle) / 60000 * Math.PI / 180, rx, ry);
+            double to = Parametric((startAngle + sweepAngle) / 60000 * Math.PI / 180, angleRx, angleRy);
 
             // The angles name points on the ellipse; the parametric sweep goes the way the arc does. A whole turn or more stays as asked.
             double sweep = sweepRadians;

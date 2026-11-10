@@ -83,6 +83,25 @@ public sealed class ShapeGeometryTests
     }
 
     [Fact]
+    public void ArcAnglesAreOnThePathsOwnEllipse()
+    {
+        // A circle in the path's 100 x 100 space, stretched to 200 x 100: the 45-degree point is the circle's, then stretched.
+        XElement spPr = XElement.Parse(
+            """
+            <wps:spPr xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+              <a:custGeom><a:pathLst><a:path w="100" h="100">
+                <a:moveTo><a:pt x="100" y="50"/></a:moveTo><a:arcTo wR="50" hR="50" stAng="0" swAng="2700000"/>
+              </a:path></a:pathLst></a:custGeom>
+            </wps:spPr>
+            """);
+
+        Vector2[] points = ShapeGeometry.Read(spPr)!.Layout(200, 100).Paths[0].Path.Points.ToArray();
+
+        Assert.Equal(100 + (100 * MathF.Cos(MathF.PI / 4)), points[^1].X, 0.01f);
+        Assert.Equal(50 + (50 * MathF.Sin(MathF.PI / 4)), points[^1].Y, 0.01f);
+    }
+
+    [Fact]
     public void ReadsCustomGeometry()
     {
         XElement spPr = XElement.Parse(
