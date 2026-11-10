@@ -11,7 +11,8 @@ namespace Egap.Documents.DrawingML;
 /// <summary>What a shape painter needs besides the shape: the theme, and the pictures its picture fills name.</summary>
 /// <param name="Theme">The document theme, for theme colours and the format scheme's fill, line and effect styles.</param>
 /// <param name="Picture">Draws the picture a relationship id names into a rectangle; null when the shape has no picture fills to draw.</param>
-internal sealed record ShapePaintContext(Theme Theme, Action<Canvas, string, RectF>? Picture = null);
+/// <param name="Fonts">The fonts text bodies are set in; null for the document's own.</param>
+internal sealed record ShapePaintContext(Theme Theme, Action<Canvas, string, RectF>? Picture = null, Layout.FontProvider? Fonts = null);
 
 /// <summary>
 /// Draws a DrawingML shape (<c>p:sp</c>, <c>wps:wsp</c>, <c>dsp:sp</c>) on a canvas from its shape properties and its style:
@@ -28,7 +29,7 @@ internal static class ShapePainter
     /// Draws a shape into <paramref name="box"/>: <paramref name="spPr"/> is its shape properties, <paramref name="style"/> its
     /// <c>style</c> element with the theme references, if any, and <paramref name="groupFill"/> the fill a <c>grpFill</c> takes.
     /// </summary>
-    public static void Draw(Canvas canvas, RectF box, XElement? spPr, XElement? style, ShapePaintContext context, XElement? groupFill = null)
+    public static void Draw(Canvas canvas, RectF box, XElement? spPr, XElement? style, ShapePaintContext context, XElement? groupFill = null, XElement? txBody = null, RectF? textBox = null)
     {
         if (box.Width < 0 || box.Height < 0)
         {
@@ -51,6 +52,42 @@ internal static class ShapePainter
         {
             canvas.RestoreToCount(saved);
         }
+
+        if (txBody is not null)
+        {
+            DrawText(canvas, box, xfrm, layout.TextRect, txBody, style, context, textBox);
+        }
+    }
+
+    /// <summary>
+    /// Draws a shape's text into its geometry's text rectangle (or <paramref name="textBox"/>, in page space, when the file gives
+    /// the text its own box): turned with the shape, but never mirrored, as Office draws it.
+    /// </summary>
+    private static void DrawText(Canvas canvas, RectF box, XElement? xfrm, RectF textRect, XElement txBody, XElement? style, ShapePaintContext context, RectF? textBox)
+    {
+        double rotation = (DrawingNs.Double((string?)xfrm?.Attribute("rot")) ?? 0) / 60000;
+        RectF rect;
+        if (textBox is { } own)
+        {
+            rect = own;
+        }
+        else
+        {
+            float x = Flag(xfrm, "flipH") ? box.Width - textRect.X - textRect.Width : textRect.X;
+            float y = Flag(xfrm, "flipV") ? box.Height - textRect.Y - textRect.Height : textRect.Y;
+            rect = new RectF(box.X + x, box.Y + y, textRect.Width, textRect.Height);
+
+            // The text rectangle turns with the shape about the shape's centre; the text itself about its own.
+            if (rotation != 0)
+            {
+                Vector2 center = new(box.X + (box.Width / 2), box.Y + (box.Height / 2));
+                Vector2 own2 = new(rect.X + (rect.Width / 2), rect.Y + (rect.Height / 2));
+                Vector2 moved = Vector2.Transform(own2 - center, Matrix3x2.CreateRotation((float)(rotation * Math.PI / 180))) + center;
+                rect = new RectF(moved.X - (rect.Width / 2), moved.Y - (rect.Height / 2), rect.Width, rect.Height);
+            }
+        }
+
+        TextBodyPainter.Draw(canvas, rect, rotation, txBody, style, context);
     }
 
     /// <summary>Turns the canvas by the shape's rotation and flips about the box's centre.</summary>

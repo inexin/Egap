@@ -57,12 +57,15 @@ internal static class DocxDrawings
     public static ShapePaintContext Context(Node node, Action<Canvas, ImageData, RectF> drawImage)
     {
         Dictionary<string, ImageData>? images = Images.TryGetValue(node, out Dictionary<string, ImageData>? kept) ? kept : null;
-        return new ShapePaintContext(node.Document.Theme, images is null ? null : (canvas, id, rect) =>
-        {
-            if (images.TryGetValue(id, out ImageData? image))
+        return new ShapePaintContext(
+            node.Document.Theme,
+            images is null ? null : (canvas, id, rect) =>
             {
-                drawImage(canvas, image, rect);
-            }
-        });
+                if (images.TryGetValue(id, out ImageData? image))
+                {
+                    drawImage(canvas, image, rect);
+                }
+            },
+            Layout.PageDrawing.FontsOf(node.Document));
     }
 }

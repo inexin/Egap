@@ -435,6 +435,9 @@ internal static class PageDrawing
     /// <summary>The font chain of a document's last layout, for what draws later than it lays out.</summary>
     internal static void RememberFonts(Document document, FontProvider fonts) => Fonts.AddOrUpdate(document, fonts);
 
+    /// <summary>The fonts the document was laid out with, if it was.</summary>
+    internal static FontProvider? FontsOf(Document document) => Fonts.TryGetValue(document, out FontProvider? fonts) ? fonts : null;
+
     private static void DrawChart(Canvas canvas, Island island, Chart chart, RectF rect)
     {
         Fonts.TryGetValue(island.Document, out FontProvider? fonts);
