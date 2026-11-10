@@ -65782,6 +65782,24 @@ references:
   commentId: T:Egap.Spreadsheets.WorkbookFormat
   fullName: Egap.Spreadsheets.WorkbookFormat
   nameWithType: WorkbookFormat
+- uid: Egap.Spreadsheets.WorkbookFormat.Fods
+  name: Fods
+  href: api/Egap.Spreadsheets.WorkbookFormat.html#Egap_Spreadsheets_WorkbookFormat_Fods
+  commentId: F:Egap.Spreadsheets.WorkbookFormat.Fods
+  fullName: Egap.Spreadsheets.WorkbookFormat.Fods
+  nameWithType: WorkbookFormat.Fods
+- uid: Egap.Spreadsheets.WorkbookFormat.Ods
+  name: Ods
+  href: api/Egap.Spreadsheets.WorkbookFormat.html#Egap_Spreadsheets_WorkbookFormat_Ods
+  commentId: F:Egap.Spreadsheets.WorkbookFormat.Ods
+  fullName: Egap.Spreadsheets.WorkbookFormat.Ods
+  nameWithType: WorkbookFormat.Ods
+- uid: Egap.Spreadsheets.WorkbookFormat.Ots
+  name: Ots
+  href: api/Egap.Spreadsheets.WorkbookFormat.html#Egap_Spreadsheets_WorkbookFormat_Ots
+  commentId: F:Egap.Spreadsheets.WorkbookFormat.Ots
+  fullName: Egap.Spreadsheets.WorkbookFormat.Ots
+  nameWithType: WorkbookFormat.Ots
 - uid: Egap.Spreadsheets.WorkbookFormat.Xlsm
   name: Xlsm
   href: api/Egap.Spreadsheets.WorkbookFormat.html#Egap_Spreadsheets_WorkbookFormat_Xlsm
@@ -65838,6 +65856,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.WorkbookLoadOptions.Limits
   nameWithType: WorkbookLoadOptions.Limits
+- uid: Egap.Spreadsheets.WorkbookLoadOptions.Password
+  name: Password
+  href: api/Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Password
+  commentId: P:Egap.Spreadsheets.WorkbookLoadOptions.Password
+  fullName: Egap.Spreadsheets.WorkbookLoadOptions.Password
+  nameWithType: WorkbookLoadOptions.Password
+- uid: Egap.Spreadsheets.WorkbookLoadOptions.Password*
+  name: Password
+  href: api/Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Password_
+  commentId: Overload:Egap.Spreadsheets.WorkbookLoadOptions.Password
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookLoadOptions.Password
+  nameWithType: WorkbookLoadOptions.Password
 - uid: Egap.Spreadsheets.WorkbookProtection
   name: WorkbookProtection
   href: api/Egap.Spreadsheets.WorkbookProtection.html
@@ -65976,6 +66007,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.WorkbookSaveOptions.Format
   nameWithType: WorkbookSaveOptions.Format
+- uid: Egap.Spreadsheets.WorkbookSaveOptions.Password
+  name: Password
+  href: api/Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Password
+  commentId: P:Egap.Spreadsheets.WorkbookSaveOptions.Password
+  fullName: Egap.Spreadsheets.WorkbookSaveOptions.Password
+  nameWithType: WorkbookSaveOptions.Password
+- uid: Egap.Spreadsheets.WorkbookSaveOptions.Password*
+  name: Password
+  href: api/Egap.Spreadsheets.WorkbookSaveOptions.html#Egap_Spreadsheets_WorkbookSaveOptions_Password_
+  commentId: Overload:Egap.Spreadsheets.WorkbookSaveOptions.Password
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.WorkbookSaveOptions.Password
+  nameWithType: WorkbookSaveOptions.Password
 - uid: Egap.Spreadsheets.Worksheet
   name: Worksheet
   href: api/Egap.Spreadsheets.Worksheet.html

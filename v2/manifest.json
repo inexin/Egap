@@ -9753,7 +9753,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.WorkbookFormat",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorkbookFormat.yml\" sourcestartlinenumber=\"1\">The kinds of Excel workbook file: workbook or template, with or without macros.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.WorkbookFormat.yml\" sourcestartlinenumber=\"1\">The kinds of workbook file: Excel's workbooks and templates, with or without macros, and OpenDocument spreadsheets.</p>\n"
     },
     {
       "type": "ManagedReference",
