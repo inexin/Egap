@@ -112,13 +112,60 @@ internal static class XlsReader
 
             styles.Index(book, XlsStyles.DefaultXf);
             AddNames(sheets);
+            Worksheet? after = null;
             for (int i = 0; i < boundSheets.Count; i++)
             {
                 if (sheets[i] is { } sheet)
                 {
                     biff.Seek(boundSheets[i].Offset);
                     new SheetState(this, sheet, boundSheets[i].Type == 1).Read();
+                    after = sheet;
                 }
+                else if (boundSheets[i].Type == 2)
+                {
+                    biff.Seek(boundSheets[i].Offset);
+                    ReadChartSheet(links.SheetNames[i], boundSheets[i].State, after);
+                }
+            }
+        }
+
+        /// <summary>A chart sheet's substream: its chart, placed after the worksheet before it.</summary>
+        private void ReadChartSheet(string name, int visibility, Worksheet? after)
+        {
+            if (!biff.Read() || biff.Type != BiffType.Bof || string.IsNullOrEmpty(name)
+                || book.Worksheets.Any(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                || book.ChartSheets.Any(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+
+            List<(int Type, byte[] Body)> records = [];
+            int depth = 1;
+            while (depth > 0 && biff.Read())
+            {
+                if (biff.Type == BiffType.Bof)
+                {
+                    depth++;
+                }
+                else if (biff.Type == BiffType.Eof)
+                {
+                    depth--;
+                }
+                else if (depth == 1 && records.Count < 200_000)
+                {
+                    records.Add(((int)biff.Type, biff.Body.ToArray()));
+                }
+            }
+
+            if (XlsChart.Read(records, tokens => XlsFormula.Decode(links, tokens, [], 0, 0, name: true)) is { } chart)
+            {
+                SheetVisibility state = visibility switch
+                {
+                    1 => SheetVisibility.Hidden,
+                    2 => SheetVisibility.VeryHidden,
+                    _ => SheetVisibility.Visible,
+                };
+                book.ChartSheetList.Add(new ChartSheet(book, name, state, chart, after));
             }
         }
 

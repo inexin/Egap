@@ -120,6 +120,27 @@ internal static class XlsxWriter
             }
         }
 
+        // Chart sheets made in memory, such as an XLS file's: a chartsheet part, its drawing and its chart.
+        Dictionary<ChartSheet, string> newChartSheets = [];
+        foreach (ChartSheet page in book.ChartSheets)
+        {
+            if (!page.IsNew || page.LoadedChart is not { } made)
+            {
+                continue;
+            }
+
+            ChartCells.Fill(made, book);
+            string chartName = FreeSheetName(parts, "/xl/charts/chart");
+            Add(new OutPart(chartName, Documents.Charts.Chart.ContentType, made.ToBytes(), []));
+            string drawingName = FreeSheetName(parts, "/xl/drawings/drawing");
+            Add(new OutPart(drawingName, ChartSheetDrawingType, OpcPackageWriter.Serialize(ChartSheetDrawing()), [new OpcRelationship("rId1", Documents.Charts.Chart.Relationship, RelativeTarget(drawingName, chartName), false, chartName)]));
+            string pageName = FreeSheetName(parts, "/xl/chartsheets/sheet");
+            Add(new OutPart(pageName, ChartsheetType, OpcPackageWriter.Serialize(ChartSheetPart()), [new OpcRelationship("rId1", SheetObjectReader.DrawingRelationship, RelativeTarget(pageName, drawingName), false, drawingName)]));
+            string pageId = NextId();
+            newChartSheets[page] = pageId;
+            workbookRels.Add(new OpcRelationship(pageId, XlsxNames.ChartsheetRelationship, RelativeTarget(workbookName, pageName), false, pageName));
+        }
+
         int sheetNumber = 0;
         foreach (Worksheet sheet in book.Worksheets)
         {
@@ -169,7 +190,7 @@ internal static class XlsxWriter
             }
         }
 
-        Add(new OutPart(workbookName, XlsxNames.WorkbookType(format), OpcPackageWriter.Serialize(WorkbookPart(book, sheetIds, linkIds)), workbookRels));
+        Add(new OutPart(workbookName, XlsxNames.WorkbookType(format), OpcPackageWriter.Serialize(WorkbookPart(book, sheetIds, linkIds, newChartSheets)), workbookRels));
 
         // Everything the package's relationships still reach, in the order the parts came.
         HashSet<string> reached = new(StringComparer.OrdinalIgnoreCase);
@@ -252,7 +273,39 @@ internal static class XlsxWriter
         return to.StartsWith(folder, StringComparison.OrdinalIgnoreCase) ? to[folder.Length..] : to;
     }
 
-    private static XDocument WorkbookPart(Workbook book, Dictionary<Worksheet, string> sheetIds, List<string> linkIds)
+    private const string ChartsheetType = "application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml";
+    private const string ChartSheetDrawingType = "application/vnd.openxmlformats-officedocument.drawing+xml";
+
+    /// <summary>A new chart sheet's part: zoomed to fit the window, with Excel's default margins, and its drawing.</summary>
+    private static XDocument ChartSheetPart()
+    {
+        XNamespace ns = XlsxNames.Main;
+        return new XDocument(new XElement(ns + "chartsheet", new XAttribute(XNamespace.Xmlns + "r", XlsxNames.RUri),
+            new XElement(ns + "sheetPr"),
+            new XElement(ns + "sheetViews", new XElement(ns + "sheetView", new XAttribute("zoomScale", "100"), new XAttribute("workbookViewId", "0"), new XAttribute("zoomToFit", "1"))),
+            new XElement(ns + "pageMargins", new XAttribute("left", "0.7"), new XAttribute("right", "0.7"), new XAttribute("top", "0.75"), new XAttribute("bottom", "0.75"), new XAttribute("header", "0.3"), new XAttribute("footer", "0.3")),
+            new XElement(ns + "drawing", new XAttribute(XlsxNames.R + "id", "rId1"))));
+    }
+
+    /// <summary>A new chart sheet's drawing: the chart's frame over the whole sheet.</summary>
+    private static XDocument ChartSheetDrawing()
+    {
+        XNamespace xdr = SheetObjectReader.Xdr, a = SheetObjectReader.A, c = SheetObjectReader.C;
+        return new XDocument(new XElement(xdr + "wsDr", new XAttribute(XNamespace.Xmlns + "xdr", xdr.NamespaceName), new XAttribute(XNamespace.Xmlns + "a", a.NamespaceName),
+            new XElement(xdr + "absoluteAnchor",
+                new XElement(xdr + "pos", new XAttribute("x", "0"), new XAttribute("y", "0")),
+                new XElement(xdr + "ext", new XAttribute("cx", "8667750"), new XAttribute("cy", "6286500")),
+                new XElement(xdr + "graphicFrame", new XAttribute("macro", ""),
+                    new XElement(xdr + "nvGraphicFramePr",
+                        new XElement(xdr + "cNvPr", new XAttribute("id", "2"), new XAttribute("name", "Chart 1")),
+                        new XElement(xdr + "cNvGraphicFramePr", new XElement(a + "graphicFrameLocks", new XAttribute("noGrp", "1")))),
+                    new XElement(xdr + "xfrm", new XElement(a + "off", new XAttribute("x", "0"), new XAttribute("y", "0")), new XElement(a + "ext", new XAttribute("cx", "0"), new XAttribute("cy", "0"))),
+                    new XElement(a + "graphic", new XElement(a + "graphicData", new XAttribute("uri", c.NamespaceName),
+                        new XElement(c + "chart", new XAttribute(XNamespace.Xmlns + "c", c.NamespaceName), new XAttribute(XNamespace.Xmlns + "r", XlsxNames.RUri), new XAttribute(XlsxNames.R + "id", "rId1"))))),
+                new XElement(xdr + "clientData"))));
+    }
+
+    private static XDocument WorkbookPart(Workbook book, Dictionary<Worksheet, string> sheetIds, List<string> linkIds, Dictionary<ChartSheet, string> newChartSheets)
     {
         XNamespace ns = XlsxNames.Main;
         WorkbookSource? source = book.Source;
@@ -298,7 +351,23 @@ internal static class XlsxWriter
             }
         }
 
+        void AddNew(Func<ChartSheet, bool> match)
+        {
+            foreach ((ChartSheet page, string pageId) in newChartSheets)
+            {
+                if (match(page) && !sheets.Elements().Any(e => (string?)e.Attribute(XlsxNames.R + "id") == pageId))
+                {
+                    int id = ++sheetId;
+                    usedSheetIds.Add(id);
+                    sheets.Add(new XElement(ns + "sheet", new XAttribute("name", page.Name), new XAttribute("sheetId", XlsxNames.Integer(id)),
+                        page.Visibility == SheetVisibility.Visible ? null : new XAttribute("state", page.Visibility == SheetVisibility.Hidden ? "hidden" : "veryHidden"),
+                        new XAttribute(XlsxNames.R + "id", pageId)));
+                }
+            }
+        }
+
         AddKept(k => k.After is null);
+        AddNew(page => page.After is null);
         foreach (Worksheet sheet in book.Worksheets)
         {
             int id = sheet.Source?.SheetId ?? 0;
@@ -318,9 +387,11 @@ internal static class XlsxWriter
             element.Add(new XAttribute(XlsxNames.R + "id", sheetIds[sheet]));
             sheets.Add(element);
             AddKept(k => k.After == sheet);
+            AddNew(page => page.After == sheet);
         }
 
         AddKept(_ => true);
+        AddNew(_ => true);
         WorkbookOrder.Place(root, sheets);
 
         if (linkIds.Count > 0)

@@ -10,8 +10,8 @@ namespace Egap.Spreadsheets;
 public sealed class ChartSheet
 {
     private readonly Workbook book;
-    private readonly OpcPart part;
-    private readonly OpcPackage package;
+    private readonly OpcPart? part;
+    private readonly OpcPackage? package;
     private Chart? chart;
     private bool chartRead;
 
@@ -23,6 +23,23 @@ public sealed class ChartSheet
         this.part = part;
         this.package = package;
     }
+
+    /// <summary>A chart sheet read from a file that keeps no parts, such as an XLS file's: its chart is made in memory.</summary>
+    internal ChartSheet(Workbook book, string name, SheetVisibility visibility, Chart chart, Worksheet? after)
+    {
+        this.book = book;
+        Name = name;
+        Visibility = visibility;
+        this.chart = chart;
+        chartRead = true;
+        After = after;
+    }
+
+    /// <summary>For a chart sheet made in memory, the worksheet it comes after in the tabs, or null when it comes first.</summary>
+    internal Worksheet? After { get; }
+
+    /// <summary>Whether the sheet has no parts of its own and is written whole.</summary>
+    internal bool IsNew => part is null;
 
     /// <summary>The sheet's name.</summary>
     public string Name { get; }
@@ -58,7 +75,7 @@ public sealed class ChartSheet
     /// <summary>The paper, orientation and margins in points the sheet's part names; a chart sheet prints landscape unless it says not to.</summary>
     internal (int? Paper, bool Portrait, (double Left, double Top, double Right, double Bottom) Margins) ReadPageSetup()
     {
-        XElement? root = SafeXml.TryLoad(part)?.Root;
+        XElement? root = part is null ? null : SafeXml.TryLoad(part)?.Root;
         XElement? setup = root?.Elements().FirstOrDefault(e => e.Name.LocalName == "pageSetup");
         XElement? margins = root?.Elements().FirstOrDefault(e => e.Name.LocalName == "pageMargins");
         double Margin(string name, double inches)
@@ -74,6 +91,11 @@ public sealed class ChartSheet
 
     private OpcPart? FindPart()
     {
+        if (part is null)
+        {
+            return null;
+        }
+
         if (SafeXml.TryLoad(part)?.Root?.Elements().FirstOrDefault(e => e.Name.LocalName == "drawing") is not { } element
             || Related(part, (string?)element.Attribute(XlsxNames.R + "id")) is not { } drawing
             || SafeXml.TryLoad(drawing)?.Root is not { } root)
@@ -88,6 +110,6 @@ public sealed class ChartSheet
     private OpcPart? Related(OpcPart from, string? id)
     {
         OpcRelationship? relationship = id is null ? null : from.GetRelationship(id);
-        return relationship is { External: false } ? package.GetPart(relationship.TargetName) : null;
+        return relationship is { External: false } ? package?.GetPart(relationship.TargetName) : null;
     }
 }
