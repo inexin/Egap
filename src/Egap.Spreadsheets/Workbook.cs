@@ -68,6 +68,36 @@ public sealed partial class Workbook
     /// <summary>The workbook's calculation once one has run: compiled formulas and their dependency graph, kept up to date.</summary>
     internal Recalculation.Calculator? Calculator { get; private set; }
 
+    /// <summary>
+    /// Refreshes every pivot table that can be refreshed, as Excel's Refresh All does for pivot tables: each cache reads its
+    /// source again and its pivot tables are laid out again. A table that cannot be refreshed (see
+    /// <see cref="PivotTable.CanRefresh"/>), or whose source no longer has the cache's fields, stays as it was.
+    /// </summary>
+    /// <returns>How many pivot tables were refreshed.</returns>
+    public int RefreshPivotTables()
+    {
+        int refreshed = 0;
+        foreach (Pivots.PivotCache cache in Pivots.Caches)
+        {
+            if (cache.Tables.FirstOrDefault(t => Worksheets.Any(s => s == t.Worksheet)) is not { CanRefresh: true })
+            {
+                continue;
+            }
+
+            try
+            {
+                Pivots.Refresh(cache);
+                refreshed += cache.Tables.Count(t => Worksheets.Any(s => s == t.Worksheet));
+            }
+            catch (InvalidOperationException)
+            {
+                // Left as it was, as Excel leaves a table it cannot refresh.
+            }
+        }
+
+        return refreshed;
+    }
+
     /// <summary>The values kept for linked workbooks, in the order formulas number them from 1.</summary>
     internal List<Xlsx.ExternalBook> ExternalBooks { get; } = [];
 
@@ -82,6 +112,9 @@ public sealed partial class Workbook
 
     /// <summary>The package a loaded workbook came from, whose other parts are written back; null for a workbook made in code.</summary>
     internal WorkbookSource? Source { get; set; }
+
+    /// <summary>The pivot tables and caches read from the file, read when first needed.</summary>
+    internal PivotModel Pivots => field ??= PivotModel.Load(this);
 
     /// <summary>How many times a cell's value or formula changed since the workbook was made or loaded.</summary>
     internal long ChangeCount { get; set; }
@@ -101,6 +134,14 @@ public sealed partial class Workbook
     internal void SheetRenamed(string from, string to)
     {
         string Renamed(string text) => Formulas.SheetRename.Apply(text, from, to);
+        if (Source is not null)
+        {
+            foreach (Pivots.PivotCache cache in Pivots.Caches)
+            {
+                cache.SheetRenamed(from, to);
+            }
+        }
+
         string? RenamedOrNull(string? text) => text is null ? null : Renamed(text);
         foreach (DefinedName name in Names)
         {
@@ -185,6 +226,14 @@ public sealed partial class Workbook
     internal void CellsMoving(Worksheet edited, Formulas.SheetEdit edit, Dictionary<string, HashSet<string>?> lost)
     {
         string Shift(string text, CellAddress origin, Worksheet? home) => Formulas.ReferenceShift.Apply(text, origin, home, edited, edit, lost);
+        if (Source is not null)
+        {
+            foreach (Pivots.PivotCache cache in Pivots.Caches)
+            {
+                cache.SheetEdited(edited, edit);
+            }
+        }
+
         string? ShiftOrNull(string? text, CellAddress origin, Worksheet? home) => text is null ? null : Shift(text, origin, home);
 
         // A rule's formula is written for the first cell of its ranges; when the edit takes that cell, it is written for the

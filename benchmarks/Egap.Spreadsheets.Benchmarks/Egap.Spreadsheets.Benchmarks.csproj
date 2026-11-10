@@ -13,4 +13,8 @@
     <PackageReference Include="BenchmarkDotNet" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\tests\Egap.Spreadsheets.Tests\Oracle\pivots.xlsx" Link="pivots.xlsx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
