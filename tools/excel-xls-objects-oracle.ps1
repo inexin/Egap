@@ -150,9 +150,12 @@ try {
 
         $xls = Join-Path $folderPath 'objects.xls'
         $xlsx = Join-Path $folderPath 'objects.xlsx'
+        # Neither file may carry the name of whoever made it: Excel leaves author and last author out of both.
+        $book.RemovePersonalInformation = $true
         $book.SaveAs($xls, 56)
         $book.Close($false)
         $again = $excel.Workbooks.Open($xls)
+        $again.RemovePersonalInformation = $true
         $again.SaveAs($xlsx, 51)
         $again.Close($false)
         Set-Content -Path (Join-Path $folderPath 'objects.txt') -Value ('# Excel ' + $excel.Version + ' build ' + $excel.Build + '; objects.xls made by tools/excel-xls-objects-oracle.ps1, objects.xlsx is Excel''s save of it') -Encoding UTF8

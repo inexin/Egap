@@ -1,0 +1,1 @@
+﻿# Excel 16.0 build 20527; objects.xls made by tools/excel-xls-objects-oracle.ps1, objects.xlsx is Excel's save of it
