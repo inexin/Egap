@@ -15,6 +15,12 @@ internal static class DocxDrawings
 {
     private static readonly ConditionalWeakTable<Island, XElement> Groups = [];
 
+    // Kept beside the nodes rather than on their DocxExtension, which every node read from a file carries.
+    private static readonly ConditionalWeakTable<Node, Dictionary<string, ImageData>> Images = [];
+
+    /// <summary>Keeps a picture a shape's or group's blip names, by relationship id, for the shape engine to draw.</summary>
+    public static void KeepImage(Node node, string id, ImageData image) => Images.GetOrCreateValue(node)[id] = image;
+
     /// <summary>The <c>wps:wsp</c> a shape was read from, while its settings are unchanged; null otherwise.</summary>
     public static XElement? ShapeMarkup(Shape shape)
     {
@@ -50,7 +56,7 @@ internal static class DocxDrawings
     /// <summary>The paint context for a shape or group read from Word: the theme, and its pictures through <paramref name="drawImage"/>.</summary>
     public static ShapePaintContext Context(Node node, Action<Canvas, ImageData, RectF> drawImage)
     {
-        Dictionary<string, ImageData>? images = node.Extensions.Get<DocxExtension>(DocxExtension.Format)?.Images;
+        Dictionary<string, ImageData>? images = Images.TryGetValue(node, out Dictionary<string, ImageData>? kept) ? kept : null;
         return new ShapePaintContext(node.Document.Theme, images is null ? null : (canvas, id, rect) =>
         {
             if (images.TryGetValue(id, out ImageData? image))

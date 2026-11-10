@@ -116,7 +116,7 @@ internal sealed partial class DocxReader
         {
             if ((string?)blip.Attribute(Ns.R + "embed") is { } id && ImageOf(id) is { } image)
             {
-                (DocxExtension.Of(node).Images ??= [])[id] = image;
+                DocxDrawings.KeepImage(node, id, image);
             }
         }
     }
