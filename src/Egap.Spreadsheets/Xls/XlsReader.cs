@@ -72,7 +72,7 @@ internal static class XlsReader
         private readonly XlsLinks links = new();
         private readonly List<string> sst = [];
         private readonly List<(int Offset, int Type, int State)> boundSheets = [];
-        private readonly List<(string Name, int Sheet, byte[] Tokens, byte[] Extra, bool BuiltIn)> names = [];
+        private readonly List<(string Name, int Sheet, byte[] Tokens, byte[] Extra, bool BuiltIn, bool Hidden)> names = [];
 
         public void Read()
         {
@@ -353,7 +353,7 @@ internal static class XlsReader
             links.Names.Add(name);
             byte[] tokens = size > 0 && size <= record.SegmentRemaining ? record.Bytes(size).ToArray() : [];
             byte[] extra = record.SegmentRemaining > 0 ? record.Rest().ToArray() : [];
-            names.Add((name, sheet, tokens, extra, builtIn));
+            names.Add((name, sheet, tokens, extra, builtIn, (options & 0x0001) != 0));
         }
 
         private static string BuiltInName(char code) => code switch
@@ -464,7 +464,7 @@ internal static class XlsReader
 
         private void AddNames(Worksheet?[] sheets)
         {
-            foreach ((string name, int sheetIndex, byte[] tokens, byte[] extra, bool builtIn) in names)
+            foreach ((string name, int sheetIndex, byte[] tokens, byte[] extra, bool builtIn, bool hidden) in names)
             {
                 if (tokens.Length == 0 || XlsFormula.Decode(links, tokens, extra, 0, 0, name: true) is not { Length: > 0 } formula)
                 {
@@ -483,7 +483,7 @@ internal static class XlsReader
                     continue;
                 }
 
-                book.Names.AddRead(new DefinedName(full, formula, sheet));
+                book.Names.AddRead(new DefinedName(full, formula, sheet) { Hidden = hidden });
             }
         }
 
