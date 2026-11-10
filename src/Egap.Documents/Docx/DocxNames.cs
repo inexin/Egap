@@ -178,6 +178,9 @@ internal sealed class DocxExtension
     /// <summary>What the node held when loading ended, where its version cannot tell (a picture's image, a section's setup).</summary>
     public object? Snapshot { get; set; }
 
+    /// <summary>For a DrawingML shape or group: the pictures its blips name, by relationship id, for the shape engine to draw.</summary>
+    public Dictionary<string, ImageData>? Images { get; set; }
+
     /// <summary>The element's attributes the model does not map, such as w14:paraId and the rsids.</summary>
     public List<XAttribute>? Attributes { get; set; }
 
