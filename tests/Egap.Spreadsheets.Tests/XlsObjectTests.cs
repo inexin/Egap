@@ -100,6 +100,22 @@ public sealed class XlsObjectTests
         Assert.True(error is null or Documents.DocumentException, error?.ToString());
     }
 
+    [Fact]
+    public void KeepsTheFirstPlotWhenAGroupCannotShareTheChart()
+    {
+        // A stacked column group with a 50 % gap, then a pie group, which cannot share a chart with it and goes with the
+        // column plot without changing it.
+        static byte[] Format(int order) => [.. new byte[18], (byte)order, 0];
+        List<(int, byte[])> records =
+        [
+            (0x1014, Format(0)), (0x1033, []), (0x1017, [0, 0, 50, 0, 0x02, 0]), (0x1034, []),
+            (0x1014, Format(1)), (0x1033, []), (0x1019, [0, 0, 0, 0, 0, 0]), (0x1034, []),
+        ];
+        Documents.Charts.Chart chart = Assert.IsType<Documents.Charts.Chart>(Xls.XlsChart.Read(records, _ => null));
+        Documents.Charts.ChartPlot plot = Assert.Single(chart.Plots);
+        Assert.Equal((Documents.Charts.ChartType.Column, Documents.Charts.ChartGrouping.Stacked, 50, 100), (plot.Type, plot.Grouping, plot.GapWidth, plot.Overlap));
+    }
+
     private static List<(string, string)> Cells(Worksheet sheet) =>
         [.. sheet.Cells.Where(c => !c.IsEmpty).Select(c => (c.Address.ToString(), c.Value.ToString())).Order()];
 

@@ -313,7 +313,12 @@ internal static class XlsChart
 
         for (int i = 0; i < groups.Count; i++)
         {
-            Apply(plots[i], groups[i]);
+            // A group that fell back to the first plot keeps its series there but not its settings, which are not that
+            // plot's: a pie group's would reset a stacked column plot.
+            if (i == 0 || !ReferenceEquals(plots[i], plots[0]))
+            {
+                Apply(plots[i], groups[i]);
+            }
         }
 
         for (int number = 0; number < series.Count; number++)
