@@ -141,6 +141,9 @@ internal sealed class FontProvider
         return SubstituteFonts.Collection.TryGetFamily(used, out FontFamily standard) ? standard : null;
     }
 
+    /// <summary>Records that <paramref name="requested"/> was missing and <paramref name="used"/> stood in for it.</summary>
+    public void NoteMissing(string requested, FontStyle style, string used) => Note(requested, style, used, FontSubstitutionReason.Missing);
+
     /// <summary>Records that characters of <paramref name="requested"/> came from <paramref name="used"/>.</summary>
     public void NoteGlyphFallback(string requested, FontStyle style, string used)
     {

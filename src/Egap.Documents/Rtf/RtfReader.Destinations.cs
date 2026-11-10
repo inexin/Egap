@@ -52,6 +52,9 @@ internal sealed partial class RtfReader
             case "fonttbl":
                 ReadFontTable();
                 return true;
+            case "mmathPr":
+                ReadMathProperties();
+                return true;
             case "colortbl":
                 ReadColorTable();
                 return true;

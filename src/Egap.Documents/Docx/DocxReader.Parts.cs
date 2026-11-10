@@ -333,6 +333,11 @@ internal sealed partial class DocxReader
             settings.DefaultTabStop = tab;
         }
 
+        if (root.Element(Ns.M + "mathPr") is { } mathPr)
+        {
+            document.MathSettings = OfficeMath.MathSettings.Read(mathPr);
+        }
+
         settings.EvenAndOddHeaders = root.Element(Ns.W + "evenAndOddHeaders") is { } evenOdd && DocxUnits.OnOff(evenOdd);
         settings.TrackRevisions = root.Element(Ns.W + "trackRevisions") is { } track && DocxUnits.OnOff(track);
         settings.MirrorMargins = root.Element(Ns.W + "mirrorMargins") is { } mirror && DocxUnits.OnOff(mirror);

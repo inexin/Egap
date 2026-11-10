@@ -729,6 +729,15 @@ internal sealed partial class RtfReader
         });
     }
 
+    /// <summary>Reads the header's <c>\mmathPr</c> group into the document's math settings.</summary>
+    private void ReadMathProperties()
+    {
+        int start = state.GroupStart;
+        _ = ReadText(trim: false, skipIgnorable: false);
+        string markup = start >= 0 ? Markup(start, tokens.Position) : "";
+        document.MathSettings = OfficeMath.MathSettings.Read(OfficeMath.RtfMath.MathProperties(markup, FontName));
+    }
+
     private void ReadMath()
     {
         FlushText();

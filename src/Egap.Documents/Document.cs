@@ -60,6 +60,9 @@ public sealed partial class Document : Node
     /// <summary>The font table's hints by font name: the alternative name and the kind Word substitutes a missing font by.</summary>
     internal Dictionary<string, (string? AltName, string? Kind)> FontHints { get; } = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>The document's math properties (DOCX <c>m:mathPr</c>, RTF <c>\mmathPr</c>); the defaults when the file has none.</summary>
+    internal OfficeMath.MathSettings MathSettings { get; set; } = OfficeMath.MathSettings.Default;
+
     /// <summary>Fonts the file carries for its text, read from a DOCX's font table and written back with it.</summary>
     public IList<EmbeddedFont> EmbeddedFonts { get; } = new List<EmbeddedFont>();
 
@@ -173,6 +176,8 @@ public sealed partial class Document : Node
         {
             copy.FontHints[name] = hint;
         }
+
+        copy.MathSettings = MathSettings;
 
         copy.fileName = fileName;
         copy.CopyExtensionsFrom(this);
