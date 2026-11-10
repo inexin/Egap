@@ -125,3 +125,15 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
+
+## ECMA-376 preset shape definitions
+
+`src/Egap.Documents/DrawingML/PresetGeometries.g.cs`, compiled into Egap.Documents.dll, holds the 187 preset shape geometries
+(adjust values, guide formulas, paths and text rectangles) of `presetShapeDefinitions.xml`, which ships with ECMA-376 Part 1,
+5th edition (December 2016), *Office Open XML File Formats — Fundamentals and Markup Language Reference*, in
+`OfficeOpenXML-DrawingMLGeometries.zip`. `tools/gen-preset-shapes.py` rewrites each definition in a compact text form; the
+formulas and paths are unchanged. That file lists `upDownArrow` twice and has no `upArrow`; `upArrow` is written by the script
+as `downArrow` turned upside down.
+
+Copyright © Ecma International. Ecma International publishes ECMA-376 free of charge at
+<https://ecma-international.org/publications-and-standards/standards/ecma-376/>.
