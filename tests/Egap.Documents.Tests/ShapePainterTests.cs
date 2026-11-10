@@ -57,6 +57,17 @@ public sealed class ShapePainterTests
     }
 
     [Fact]
+    public void PathGradientFillToRectMissingSidesAreZero()
+    {
+        // Word's corner gradient: a fill-to rectangle with only r and b, so l and t are 0 and the focus is the top left corner.
+        using Raster<Rgba8> raster = Draw(
+            """<a:gradFill><a:gsLst><a:gs pos="0"><a:srgbClr val="000000"/></a:gs><a:gs pos="100000"><a:srgbClr val="FFFFFF"/></a:gs></a:gsLst><a:path path="rect"><a:fillToRect r="100000" b="100000"/></a:path></a:gradFill><a:ln><a:noFill/></a:ln>""");
+
+        Assert.True(At(raster, 11, 11).R < 30, At(raster, 11, 11).ToString());
+        Assert.True(At(raster, 88, 48).R > 200, At(raster, 88, 48).ToString());
+    }
+
+    [Fact]
     public void PathGradientRunsFromTheCentre()
     {
         using Raster<Rgba8> raster = Draw(

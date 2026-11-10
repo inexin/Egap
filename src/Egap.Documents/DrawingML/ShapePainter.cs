@@ -309,12 +309,14 @@ internal static class ShapePainter
 
                     if (fill.Element(A + "path") is { } shade)
                     {
-                        // A path gradient runs from its focus (the fill-to rectangle, the centre by default) out to the shape's edge.
+                        // A path gradient runs from its focus (the fill-to rectangle) out to the shape's edge. Without a fill-to
+                        // rectangle the focus is the centre; within one, each missing side is 0, as for any relative rectangle.
                         XElement? to = shade.Element(A + "fillToRect");
-                        double l = (DrawingNs.Double((string?)to?.Attribute("l")) ?? 50000) / 100000;
-                        double t = (DrawingNs.Double((string?)to?.Attribute("t")) ?? 50000) / 100000;
-                        double r = (DrawingNs.Double((string?)to?.Attribute("r")) ?? 50000) / 100000;
-                        double b = (DrawingNs.Double((string?)to?.Attribute("b")) ?? 50000) / 100000;
+                        double side = to is null ? 50000 : 0;
+                        double l = (DrawingNs.Double((string?)to?.Attribute("l")) ?? side) / 100000;
+                        double t = (DrawingNs.Double((string?)to?.Attribute("t")) ?? side) / 100000;
+                        double r = (DrawingNs.Double((string?)to?.Attribute("r")) ?? side) / 100000;
+                        double b = (DrawingNs.Double((string?)to?.Attribute("b")) ?? side) / 100000;
                         Vector2 focus = new(bounds.X + (float)(bounds.Width * (l + 1 - r) / 2), bounds.Y + (float)(bounds.Height * (t + 1 - b) / 2));
                         float reach = Math.Max(
                             Math.Max(Vector2.Distance(focus, new Vector2(bounds.Left, bounds.Top)), Vector2.Distance(focus, new Vector2(bounds.Right, bounds.Top))),
