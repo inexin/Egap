@@ -62744,6 +62744,103 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.PageSetup.TopMargin
   nameWithType: PageSetup.TopMargin
+- uid: Egap.Spreadsheets.PivotTable
+  name: PivotTable
+  href: api/Egap.Spreadsheets.PivotTable.html
+  commentId: T:Egap.Spreadsheets.PivotTable
+  fullName: Egap.Spreadsheets.PivotTable
+  nameWithType: PivotTable
+- uid: Egap.Spreadsheets.PivotTable.CanRefresh
+  name: CanRefresh
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_CanRefresh
+  commentId: P:Egap.Spreadsheets.PivotTable.CanRefresh
+  fullName: Egap.Spreadsheets.PivotTable.CanRefresh
+  nameWithType: PivotTable.CanRefresh
+- uid: Egap.Spreadsheets.PivotTable.CanRefresh*
+  name: CanRefresh
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_CanRefresh_
+  commentId: Overload:Egap.Spreadsheets.PivotTable.CanRefresh
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTable.CanRefresh
+  nameWithType: PivotTable.CanRefresh
+- uid: Egap.Spreadsheets.PivotTable.Name
+  name: Name
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Name
+  commentId: P:Egap.Spreadsheets.PivotTable.Name
+  fullName: Egap.Spreadsheets.PivotTable.Name
+  nameWithType: PivotTable.Name
+- uid: Egap.Spreadsheets.PivotTable.Name*
+  name: Name
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Name_
+  commentId: Overload:Egap.Spreadsheets.PivotTable.Name
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTable.Name
+  nameWithType: PivotTable.Name
+- uid: Egap.Spreadsheets.PivotTable.Range
+  name: Range
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Range
+  commentId: P:Egap.Spreadsheets.PivotTable.Range
+  fullName: Egap.Spreadsheets.PivotTable.Range
+  nameWithType: PivotTable.Range
+- uid: Egap.Spreadsheets.PivotTable.Range*
+  name: Range
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Range_
+  commentId: Overload:Egap.Spreadsheets.PivotTable.Range
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTable.Range
+  nameWithType: PivotTable.Range
+- uid: Egap.Spreadsheets.PivotTable.Refresh
+  name: Refresh()
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Refresh
+  commentId: M:Egap.Spreadsheets.PivotTable.Refresh
+  fullName: Egap.Spreadsheets.PivotTable.Refresh()
+  nameWithType: PivotTable.Refresh()
+- uid: Egap.Spreadsheets.PivotTable.Refresh*
+  name: Refresh
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Refresh_
+  commentId: Overload:Egap.Spreadsheets.PivotTable.Refresh
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTable.Refresh
+  nameWithType: PivotTable.Refresh
+- uid: Egap.Spreadsheets.PivotTable.Source
+  name: Source
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Source
+  commentId: P:Egap.Spreadsheets.PivotTable.Source
+  fullName: Egap.Spreadsheets.PivotTable.Source
+  nameWithType: PivotTable.Source
+- uid: Egap.Spreadsheets.PivotTable.Source*
+  name: Source
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Source_
+  commentId: Overload:Egap.Spreadsheets.PivotTable.Source
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTable.Source
+  nameWithType: PivotTable.Source
+- uid: Egap.Spreadsheets.PivotTable.ToString
+  name: ToString()
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_ToString
+  commentId: M:Egap.Spreadsheets.PivotTable.ToString
+  fullName: Egap.Spreadsheets.PivotTable.ToString()
+  nameWithType: PivotTable.ToString()
+- uid: Egap.Spreadsheets.PivotTable.ToString*
+  name: ToString
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_ToString_
+  commentId: Overload:Egap.Spreadsheets.PivotTable.ToString
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTable.ToString
+  nameWithType: PivotTable.ToString
+- uid: Egap.Spreadsheets.PivotTable.Worksheet
+  name: Worksheet
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Worksheet
+  commentId: P:Egap.Spreadsheets.PivotTable.Worksheet
+  fullName: Egap.Spreadsheets.PivotTable.Worksheet
+  nameWithType: PivotTable.Worksheet
+- uid: Egap.Spreadsheets.PivotTable.Worksheet*
+  name: Worksheet
+  href: api/Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Worksheet_
+  commentId: Overload:Egap.Spreadsheets.PivotTable.Worksheet
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTable.Worksheet
+  nameWithType: PivotTable.Worksheet
 - uid: Egap.Spreadsheets.PrintOrientation
   name: PrintOrientation
   href: api/Egap.Spreadsheets.PrintOrientation.html
@@ -65691,6 +65788,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Workbook.Protection
   nameWithType: Workbook.Protection
+- uid: Egap.Spreadsheets.Workbook.RefreshPivotTables
+  name: RefreshPivotTables()
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_RefreshPivotTables
+  commentId: M:Egap.Spreadsheets.Workbook.RefreshPivotTables
+  fullName: Egap.Spreadsheets.Workbook.RefreshPivotTables()
+  nameWithType: Workbook.RefreshPivotTables()
+- uid: Egap.Spreadsheets.Workbook.RefreshPivotTables*
+  name: RefreshPivotTables
+  href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_RefreshPivotTables_
+  commentId: Overload:Egap.Spreadsheets.Workbook.RefreshPivotTables
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Workbook.RefreshPivotTables
+  nameWithType: Workbook.RefreshPivotTables
 - uid: Egap.Spreadsheets.Workbook.Save(System.IO.Stream,Egap.Spreadsheets.WorkbookSaveOptions)
   name: Save(Stream, WorkbookSaveOptions?)
   href: api/Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Save_System_IO_Stream_Egap_Spreadsheets_WorkbookSaveOptions_
@@ -66375,6 +66485,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Paginate
   nameWithType: Worksheet.Paginate
+- uid: Egap.Spreadsheets.Worksheet.PivotTables
+  name: PivotTables
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_PivotTables
+  commentId: P:Egap.Spreadsheets.Worksheet.PivotTables
+  fullName: Egap.Spreadsheets.Worksheet.PivotTables
+  nameWithType: Worksheet.PivotTables
+- uid: Egap.Spreadsheets.Worksheet.PivotTables*
+  name: PivotTables
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_PivotTables_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.PivotTables
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.PivotTables
+  nameWithType: Worksheet.PivotTables
 - uid: Egap.Spreadsheets.Worksheet.Protection
   name: Protection
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Protection

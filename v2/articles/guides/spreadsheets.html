@@ -326,7 +326,7 @@ sheet.DeleteColumns(2);            // column C goes, with the numbers and the su
 Columns put in inside a table become columns of the table named <code>Column1</code>, <code>Column2</code> and so on, and a structured reference
 to a table column that is taken out becomes <code>#REF!</code>. The edits refuse what Excel refuses: pushing cells with a value or a
 style off the end of the sheet, changing part of an array formula, and taking a table's header row without the rest of it.
-Egap keeps pivot tables as they were read, so an edit that would move or change one is refused too. Sheet protection does not block the edits, as it does not block writing cells: it guards what a person does in Excel. References from other
+An edit that would move or change a pivot table is refused too, while a pivot table's source follows the edit. Sheet protection does not block the edits, as it does not block writing cells: it guards what a person does in Excel. References from other
 workbooks, references across several sheets (<code>Sheet1:Sheet3!A1</code>) and the anchors of form controls stay as they were.</p>
 <h3 id="copying-and-moving-ranges">Copying and moving ranges</h3>
 <p><code>CopyTo</code> and <code>MoveTo</code> paste a range at a cell of the same workbook, as Excel's Copy, Cut and Paste do. Both take the
@@ -812,6 +812,43 @@ thresholds from the rule's minimum, maximum, number, percent, percentile and for
 items match a value's text with case, its cells' values without; as in Excel, a list given by a name whose cells include
 a blank one, or whose formula gives an error, takes any value while blanks are ignored. Rules that Excel keeps only in
 the sheet's extension list are written back but not evaluated.</p>
+<h3 id="pivot-tables">Pivot tables</h3>
+<p><code>Worksheet.PivotTables</code> lists the pivot tables a sheet holds, with their names, ranges and the source each one reads.
+<code>PivotTable.Refresh</code> reads the source again and lays the table out as Excel's Refresh does, and
+<code>Workbook.RefreshPivotTables</code> refreshes every table that can be. The cache, the table's definition and its cells are
+written again, so Excel opens the file showing the new values.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+Worksheet data = book.Worksheets[&quot;Data&quot;];
+data.InsertRows(60, 2);                     // the pivot tables' source grows with the rows
+data[&quot;A61&quot;].Value = &quot;North&quot;;
+data[&quot;F61&quot;].Value = 12;
+
+foreach (PivotTable table in book.Worksheets[&quot;Summary&quot;].PivotTables)
+{
+    Console.WriteLine($&quot;{table.Name} at {table.Range} reads {table.Source}&quot;);
+    if (table.CanRefresh)
+    {
+        table.Refresh();
+    }
+}
+
+int refreshed = book.RefreshPivotTables();  // or every table at once
+book.Save(&quot;sales.xlsx&quot;);
+</code></pre>
+<p>A refresh follows Excel: new values become new items at the end of a field, or in order when the field is sorted;
+values the source no longer has stay in the cache as missing items; a new item stays hidden when the field already hides
+items and does not show new ones; and a page field whose chosen item is gone shows all items again. Rows and columns,
+page fields, hidden items, subtotals (the default or Sum, Count, Average, Max, Min, Product, Count Numbers, StdDev,
+StdDevP, Var and VarP), grand totals and the compact, outline, tabular and classic layouts are laid out with Excel's
+labels, which name numbers and dates by <code>Workbook.Culture</code>. The source may be a range, an Excel table or a defined name,
+also one given by a formula such as <code>OFFSET</code>; it follows rows and columns put in or taken out and sheets renamed. A source
+column added or taken away adds or takes away its field, matched by header name as Excel does.</p>
+<p><code>Refresh</code> throws <code>InvalidOperationException</code> and changes nothing when the source's header row has a blank cell, or when a
+table would grow over another pivot table or off the sheet; Excel refuses those too. <code>CanRefresh</code> is false for a table
+that reads another workbook or a cube, groups items, has calculated fields or items, or shows values as a share or a
+difference; such a table is kept as it was read.</p>
 <h2 id="protection">Protection</h2>
 <p><code>sheet.Protection</code> protects a sheet as Excel's Protect Sheet does: locked cells (<code>CellProtection.Locked</code>, the default)
 cannot be changed, the formulas of hidden cells are not shown, and <code>SheetActions</code> says what users may still do.
@@ -864,8 +901,8 @@ foreach (SheetDrawing drawing in sheet.Drawings)
 book.Save(&quot;report.xlsx&quot;);
 </code></pre>
 <p>Parts nothing changed in are saved byte for byte: a table, the notes or the drawing layer are written again only when
-something in them changed, and a chart only when you changed that chart. Pivot tables, slicers, macros and other parts the
-model does not hold are always kept as they were.</p>
+something in them changed, a chart only when you changed that chart, and a pivot table and its cache only when they were
+refreshed. Slicers, macros and other parts the model does not hold are always kept as they were.</p>
 <h2 id="streaming-large-files">Streaming large files</h2>
 <p><code>SheetReader</code> and <code>SheetWriter</code> stream rows through XLSX files and CSV text without building a workbook, so memory stays
 the same however many rows there are. Use them for exports and imports of more rows than fit comfortably in memory; use

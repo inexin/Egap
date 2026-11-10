@@ -9323,6 +9323,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PivotTable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PivotTable.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PivotTable",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PivotTable.yml\" sourcestartlinenumber=\"1\">A pivot table of a worksheet, as an .xlsx file holds it: its definition, its cache of the source's values and the cells\nit fills. <xref href=\"Egap.Spreadsheets.PivotTable.Refresh\" data-throw-if-not-resolved=\"false\"></xref> reads the source again and lays the table out as Excel's Refresh does.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.PrintOrientation.yml",
       "output": {
         ".html": {
