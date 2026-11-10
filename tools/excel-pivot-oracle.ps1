@@ -8,7 +8,8 @@ numbers and an error), then makes one pivot table per case on a sheet of its own
 the classic layout with drop zones, values on rows and on columns, every summary function, page fields with an item or
 (All), hidden items, sorting, custom subtotals and no totals. It saves the book as pivots.xlsx. Then it changes the data
 (new rows, a new region, changed numbers, a removed product) and refreshes every pivot table, and saves the book again as
-pivots-edited.xlsx. The test makes the same change and checks that a refresh writes what Excel wrote. The first lines of
+pivots-edited.xlsx; then it puts in a column (pivots-column.xlsx) and renames a header (pivots-renamed.xlsx), each
+refreshed. The test makes the same changes and checks that a refresh writes what Excel wrote. The first lines of
 pivots.txt record Excel's version and the changes.
 
 .EXAMPLE
@@ -194,11 +195,25 @@ try {
 
     $book.PivotCaches().Item(1).Refresh() | Out-Null
     $book.SaveAs((Join-Path $outputPath 'pivots-edited.xlsx'), 51)
+
+    # Then a column put in before Year, which the source takes in as a new field, and a refresh.
+    $data.Columns('D').Insert() | Out-Null
+    $data.Cells.Item(1, 4).Value2 = 'Channel'
+    for ($r = 2; $r -le 73; $r++) { $data.Cells.Item($r, 4).Value2 = @('Web', 'Store', 'Phone')[$r % 3] }
+    $book.PivotCaches().Item(1).Refresh() | Out-Null
+    $book.SaveAs((Join-Path $outputPath 'pivots-column.xlsx'), 51)
+
+    # Then the Rep header renamed: the field goes, with the tables' uses of it, and a new one comes; and a refresh.
+    $data.Cells.Item(1, 2).Value2 = 'Seller'
+    $book.PivotCaches().Item(1).Refresh() | Out-Null
+    $book.SaveAs((Join-Path $outputPath 'pivots-renamed.xlsx'), 51)
     $book.Close($false)
     Set-Content -Path (Join-Path $outputPath 'pivots.txt') -Value @(
         "# Excel $($excel.Version) build $($excel.Build) locale $([System.Globalization.CultureInfo]::CurrentCulture.Name)",
         '# pivots-edited.xlsx: rows 61-72 put in (see tools/excel-pivot-oracle.ps1), Kiwis in the other rows made Pears,',
-        '# units in those rows whose new row number is a multiple of 4 doubled, then refreshed.')
+        '# units in those rows whose new row number is a multiple of 4 doubled, then refreshed.',
+        '# pivots-column.xlsx: then a Channel column put in before Year (Web, Store, Phone by row number mod 3), refreshed.',
+        '# pivots-renamed.xlsx: then the Rep header renamed Seller, refreshed.')
 }
 finally {
     $excel.Quit()

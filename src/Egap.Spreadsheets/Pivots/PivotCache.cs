@@ -247,7 +247,7 @@ internal sealed class PivotCache
 
             // A field found again keeps the name the cache gave it.
             oldOf[c] = oldFields.TryGetValue(name, out int old) ? old : -1;
-            names[c] = old >= 0 ? Fields[old].Name : name;
+            names[c] = oldOf[c] >= 0 ? Fields[oldOf[c]].Name : name;
         }
 
         bool same = columns == Fields.Count && oldOf.Select((old, c) => old == c).All(b => b);

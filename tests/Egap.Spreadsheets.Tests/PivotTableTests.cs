@@ -15,6 +15,8 @@ public sealed class PivotTableTests
 {
     private static readonly string Book = Path.Combine(AppContext.BaseDirectory, "Oracle", "pivots.xlsx");
     private static readonly string Edited = Path.Combine(AppContext.BaseDirectory, "Oracle", "pivots-edited.xlsx");
+    private static readonly string Column = Path.Combine(AppContext.BaseDirectory, "Oracle", "pivots-column.xlsx");
+    private static readonly string Renamed = Path.Combine(AppContext.BaseDirectory, "Oracle", "pivots-renamed.xlsx");
 
     // The oracle ran with Excel in Norwegian, which names subtotals of dates and numbers in its own formats.
     private static readonly CultureInfo Norwegian = CultureInfo.GetCultureInfo("nb-NO");
@@ -41,6 +43,50 @@ public sealed class PivotTableTests
         Worksheet excel = Workbook.Load(Edited).Worksheets[sheet];
         AssertSameCells(excel, saved.Worksheets[sheet]);
         Assert.Equal(excel.PivotTables.Single().Range, saved.Worksheets[sheet].PivotTables.Single().Range);
+    }
+
+    [Theory]
+    [MemberData(nameof(Sheets))]
+    public void RefreshAfterAColumnIsPutInMatchesExcel(string sheet)
+    {
+        Workbook book = Load(Book);
+        Edit(book);
+        book.RefreshPivotTables();
+        AddChannel(book);
+        Assert.Equal(11, book.RefreshPivotTables());
+        Workbook saved = RoundTrip(book);
+        Workbook excel = Workbook.Load(Column);
+        AssertSameCells(excel.Worksheets[sheet], saved.Worksheets[sheet]);
+        Assert.Equal(FieldNames(excel.Worksheets[sheet]), FieldNames(saved.Worksheets[sheet]));
+    }
+
+    [Theory]
+    [MemberData(nameof(Sheets))]
+    public void RefreshAfterAHeaderIsRenamedMatchesExcel(string sheet)
+    {
+        Workbook book = Load(Book);
+        Edit(book);
+        book.RefreshPivotTables();
+        AddChannel(book);
+        book.RefreshPivotTables();
+        book.Worksheets["Data"][0, 1].Value = "Seller";
+        Assert.Equal(11, book.RefreshPivotTables());
+        Workbook saved = RoundTrip(book);
+        Workbook excel = Workbook.Load(Renamed);
+        AssertSameCells(excel.Worksheets[sheet], saved.Worksheets[sheet]);
+        Assert.Equal(FieldNames(excel.Worksheets[sheet]), FieldNames(saved.Worksheets[sheet]));
+    }
+
+    [Fact]
+    public void NewAndRenamedColumnsGetTheirOwnFieldNames()
+    {
+        Workbook book = Load(Book);
+        AddChannel(book);
+        book.Worksheets["Data"][0, 1].Value = "Seller";
+        book.RefreshPivotTables();
+        PivotTable table = RoundTrip(book).Worksheets["Compact"].PivotTables[0];
+        string[] names = [.. table.Cache!.Fields.Select(f => f.Name)];
+        Assert.Equal(["Region", "Seller", "Product", "Channel", "Year", "Day", "Units", "Revenue"], names);
     }
 
     [Fact]
@@ -131,6 +177,8 @@ public sealed class PivotTableTests
         Assert.Equal(Cells(Workbook.Load(Book).Worksheets["Tabular"]), Cells(saved.Worksheets["Tabular"]));
     }
 
+    private static string[] FieldNames(Worksheet sheet) => [.. sheet.PivotTables.Single().Cache!.Fields.Select(f => f.Name)];
+
     private static Workbook Load(string path)
     {
         Workbook book = Workbook.Load(path);
@@ -196,6 +244,18 @@ public sealed class PivotTableTests
         }
 
         return stream.ToArray();
+    }
+
+    /// <summary>The column <c>tools/excel-pivot-oracle.ps1</c> put in before Year.</summary>
+    private static void AddChannel(Workbook book)
+    {
+        Worksheet data = book.Worksheets["Data"];
+        data.InsertColumns(3);
+        data[0, 3].Value = "Channel";
+        for (int row = 2; row <= 73; row++)
+        {
+            data[row - 1, 3].Value = new[] { "Web", "Store", "Phone" }[row % 3];
+        }
     }
 
     /// <summary>The change <c>tools/excel-pivot-oracle.ps1</c> made before Excel's refresh.</summary>
