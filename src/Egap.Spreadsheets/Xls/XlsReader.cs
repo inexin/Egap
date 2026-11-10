@@ -123,6 +123,14 @@ internal static class XlsReader
         }
 
         private int? maxDigit;
+        private readonly List<byte> drawingGroup = [];
+        private List<XlsDrawing.Blip?>? blips;
+
+        /// <summary>The width of the normal font's widest digit, in pixels.</summary>
+        public int Digit => maxDigit ??= Math.Max(1, new Printing.TextMeter(book).MaxDigitWidth);
+
+        /// <summary>The pictures of the workbook's blip store, read when a sheet first needs them.</summary>
+        public List<XlsDrawing.Blip?> Blips => blips ??= XlsDrawing.ReadBlips([.. drawingGroup]);
 
         private Worksheet AddSheet(string name)
         {
@@ -148,6 +156,17 @@ internal static class XlsReader
                     case BiffType.FilePass:
                         // Decrypted before the stream is read.
                         break;
+                    case BiffType.MsoDrawingGroup:
+                        {
+                            drawingGroup.AddRange(biff.Body);
+                            while (biff.PeekType() == BiffType.Continue && biff.Read())
+                            {
+                                drawingGroup.AddRange(biff.Body);
+                            }
+
+                            break;
+                        }
+
                     case BiffType.DateMode:
                         book.Date1904 = biff.Length >= 2 && BinaryPrimitives.ReadUInt16LittleEndian(biff.Body) == 1;
                         break;
@@ -539,6 +558,7 @@ internal static class XlsReader
         private readonly List<Pending> pending = [];
         private (int Row, int Column, int Style, string? Text, bool Deferred, int Pending)? awaitingString;
         private int baseWidth = 8;
+        private readonly XlsObjects objects = new(sheet);
 
         private sealed class Pending
         {
@@ -579,6 +599,8 @@ internal static class XlsReader
             }
 
             Resolve();
+            objects.Finish();
+            XlsDrawing.Add(sheet, objects, state.Blips, state.Digit);
         }
 
         private void Record(BiffStream biff)
@@ -731,6 +753,24 @@ internal static class XlsReader
 
                 case BiffType.DefColWidth when body.Length >= 2:
                     baseWidth = Math.Min((int)BinaryPrimitives.ReadUInt16LittleEndian(body), 255);
+                    break;
+                case BiffType.MsoDrawing:
+                    objects.MsoDrawing(body);
+                    break;
+                case BiffType.Obj:
+                    objects.Obj(body);
+                    break;
+                case BiffType.Txo:
+                    objects.Txo(biff);
+                    break;
+                case BiffType.Note:
+                    objects.Note(biff.Continued());
+                    break;
+                case BiffType.HLink:
+                    objects.Hyperlink(body);
+                    break;
+                case BiffType.HLinkTooltip:
+                    objects.HyperlinkTip(body);
                     break;
                 case BiffType.StandardWidth when body.Length >= 2:
                     sheet.DefaultColumnWidth = state.ColumnWidth(BinaryPrimitives.ReadUInt16LittleEndian(body));

@@ -25,6 +25,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["tables"] = FromTables,
     ["links"] = Links,
     ["sheetcharts"] = SheetCharts,
+    ["encrypted"] = Encrypted,
     ["edits"] = Edits,
     ["shift"] = Shift,
     ["copies"] = Copies,
@@ -234,6 +235,30 @@ static void Csv(Stream input)
 
 // The input is an XLSX package: loaded, saved and loaded again, and every sheet streamed through SheetReader.
 // A workbook's charts: read, filled from the cells, edited and saved. Only a DocumentException may come out.
+// An encrypted XLS or XLSX file, opened with the password the seeds were encrypted with: the FILEPASS record or the
+// EncryptionInfo stream, the decryption, and the workbook read from what it gives; may throw only DocumentException.
+static void Encrypted(Stream input)
+{
+    try
+    {
+        Workbook book = Workbook.Load(new MemoryStream(Bytes(input), writable: false), new WorkbookLoadOptions
+        {
+            Password = "Egap p\u00E4ssword 1",
+            Limits = new DocumentLimits { MaxPartSize = 16 * 1024 * 1024, MaxTotalSize = 64 * 1024 * 1024 },
+        });
+        foreach (Worksheet sheet in book.Worksheets)
+        {
+            _ = sheet.UsedRange;
+        }
+
+        using MemoryStream saved = new();
+        book.Save(saved);
+    }
+    catch (DocumentException)
+    {
+    }
+}
+
 static void SheetCharts(Stream input)
 {
     try

@@ -42,6 +42,13 @@ internal static class BiffType
     public const int Format = 0x041E;
     public const int SharedFormula = 0x04BC;
     public const int Bof = 0x0809;
+    public const int Note = 0x001C;
+    public const int Obj = 0x005D;
+    public const int MsoDrawingGroup = 0x00EB;
+    public const int MsoDrawing = 0x00EC;
+    public const int Txo = 0x01B6;
+    public const int HLink = 0x01B8;
+    public const int HLinkTooltip = 0x0800;
 }
 
 /// <summary>
