@@ -1,0 +1,9 @@
+# Cases where Egap knowingly differs from Excel: the formula as in functions-groupby.txt, a tab, and why.
+IFERROR(ARRAYTOTEXT(GROUPBY(A2:A11,D2:D11,LAMBDA(x,x)),1),"E"&ERROR.TYPE(GROUPBY(A2:A11,D2:D11,LAMBDA(x,x))))	A function that gives an array: Excel keeps it inside the result (ARRAYTOTEXT then gives #CALC!); Egap puts #CALC! in that cell
+IFERROR(ARRAYTOTEXT(GROUPBY(A2:A11,D2:D11,LAMBDA(x,{1,2})),1),"E"&ERROR.TYPE(GROUPBY(A2:A11,D2:D11,LAMBDA(x,{1,2}))))	A function that gives an array: Excel keeps it inside the result (ARRAYTOTEXT then gives #CALC!); Egap puts #CALC! in that cell
+IFERROR(ARRAYTOTEXT(GROUPBY(A2:A11,D2:D11,LAMBDA(x,{1;2})),1),"E"&ERROR.TYPE(GROUPBY(A2:A11,D2:D11,LAMBDA(x,{1;2}))))	A function that gives an array: Excel keeps it inside the result (ARRAYTOTEXT then gives #CALC!); Egap puts #CALC! in that cell
+IFERROR(ARRAYTOTEXT(GROUPBY(A2:A11,D2:D11,LAMBDA(x,F5)),1),"E"&ERROR.TYPE(GROUPBY(A2:A11,D2:D11,LAMBDA(x,F5))))	A function that gives an array: Excel keeps it inside the result (ARRAYTOTEXT then gives #CALC!); Egap puts #CALC! in that cell
+IFERROR(ARRAYTOTEXT(GROUPBY(R1:R3,S1:S3,COUNTA),1),"E"&ERROR.TYPE(GROUPBY(R1:R3,S1:S3,COUNTA)))	An empty cell among the values: Excel passes a value COUNTA counts; Egap passes an empty value, which COUNTA skips
+IFERROR(ARRAYTOTEXT(GROUPBY(R1:R3,S1:S3,COUNTA,0),1),"E"&ERROR.TYPE(GROUPBY(R1:R3,S1:S3,COUNTA,0)))	An empty cell among the values: Excel passes a value COUNTA counts; Egap passes an empty value, which COUNTA skips
+IFERROR(ARRAYTOTEXT(GROUPBY(R1:R3,S1:S3,COUNTA,0,,,,),1),"E"&ERROR.TYPE(GROUPBY(R1:R3,S1:S3,COUNTA,0,,,,)))	An empty cell among the values: Excel passes a value COUNTA counts; Egap passes an empty value, which COUNTA skips
+ARRAYTOTEXT(GROUPBY(W1:W3,X1:X3,LAMBDA(x,x)),1)	A function that gives an array: Excel keeps it inside the result (ARRAYTOTEXT then gives #CALC!); Egap puts #CALC! in that cell
