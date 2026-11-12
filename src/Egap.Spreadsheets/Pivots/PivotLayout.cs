@@ -57,6 +57,15 @@ internal sealed class PivotLayout
     /// <summary>Where the page fields go, or null when there are none.</summary>
     public RangeAddress? PageArea { get; private set; }
 
+    /// <summary>The cells, from the table's top left, that show a field's caption and its button.</summary>
+    public List<(int Row, int Column)> Buttons { get; } = [];
+
+    /// <summary>The row labels, from the table's top left, of a compact column, which Excel aligns left with an indent for each level.</summary>
+    public List<(int Row, int Column, int Indent)> LeftLabels { get; } = [];
+
+    /// <summary>The cells, from the table's top left, of outer items that show a button to expand and collapse them.</summary>
+    public List<(int Row, int Column)> ExpandButtons { get; } = [];
+
     /// <summary>
     /// Brings the fields' items up to date with the cache's new items, then lays the table out and writes its location and
     /// row and column items into <paramref name="definition"/>, which should be a copy until the refresh is sure to go on.
@@ -300,13 +309,13 @@ internal sealed class PivotLayout
 
             if (!classic && columnFields.FirstOrDefault(f => f != PivotDefinition.DataField) is int first && Compact(first))
             {
-                Put(0, firstDataColumn, definition.ColumnHeaderCaption ?? "Column Labels");
+                PutButton(0, firstDataColumn, definition.ColumnHeaderCaption ?? "Column Labels");
             }
             else
             {
                 for (int j = 0; j < columnFields.Count; j++)
                 {
-                    Put(0, firstDataColumn + j, FieldCaption(columnFields[j]));
+                    PutButton(0, firstDataColumn + j, FieldCaption(columnFields[j]));
                 }
             }
         }
@@ -319,7 +328,7 @@ internal sealed class PivotLayout
                 int field = rowFields[l];
                 // Values alone on the rows show the data caption, as Excel does, not Row Labels.
                 bool valuesOnly = field == PivotDefinition.DataField && rowFields.Count == 1;
-                Put(headerRow, labelColumn[l], !classic && !valuesOnly && Compact(field) ? definition.RowHeaderCaption ?? "Row Labels" : FieldCaption(field));
+                PutButton(headerRow, labelColumn[l], !classic && !valuesOnly && Compact(field) ? definition.RowHeaderCaption ?? "Row Labels" : FieldCaption(field));
             }
         }
 
@@ -345,6 +354,12 @@ internal sealed class PivotLayout
                     for (int l = line.Repeated; l < line.Path.Length; l++)
                     {
                         PutLabel(firstHeaderRow + l, column, columnFields[l], line.Path[l]);
+
+                        // An item of an outer field shows the button that expands and collapses it.
+                        if (columnFields[l] != PivotDefinition.DataField && columnFields.Skip(l + 1).Any(f => f != PivotDefinition.DataField))
+                        {
+                            ExpandButtons.Add((firstHeaderRow + l, column));
+                        }
                     }
 
                     break;
@@ -375,16 +390,40 @@ internal sealed class PivotLayout
                     for (int l = line.Repeated; l < line.Path.Length; l++)
                     {
                         PutLabel(row, labelColumn[l], rowFields[l], line.Path[l]);
+                        CompactLabel(row, l);
+                        if (rowFields[l] != PivotDefinition.DataField && rowFields.Skip(l + 1).Any(f => f != PivotDefinition.DataField))
+                        {
+                            ExpandButtons.Add((row, labelColumn[l]));
+                        }
                     }
 
                     break;
                 case LineKind.Subtotal:
                     Put(row, labelColumn[line.Path.Length - 1], SubtotalLabel(rowFields, line));
+                    CompactLabel(row, line.Path.Length - 1);
                     break;
                 case LineKind.Grand:
                     Put(row, 0, GrandLabel(rowFields, line));
+                    CompactLabel(row, 0);
                     break;
             }
+        }
+
+        // Excel writes a compact column's labels at the left, each field inside the first indented a step more.
+        void CompactLabel(int row, int level)
+        {
+            if (classic || level >= rowFields.Count || !Compact(rowFields[level]))
+            {
+                return;
+            }
+
+            int first = level;
+            while (first > 0 && labelColumn[first - 1] == labelColumn[level])
+            {
+                first--;
+            }
+
+            LeftLabels.Add((row, labelColumn[level], level - first));
         }
 
         Values(rows, columns, firstDataRow, firstDataColumn);
@@ -759,7 +798,7 @@ internal sealed class PivotLayout
         for (int k = 0; k < count; k++)
         {
             PageFieldDefinition page = definition.PageFields[k];
-            Put(top + k, 0, FieldCaption(page.Field));
+            PutButton(top + k, 0, FieldCaption(page.Field));
             if (page.Item is { } item && item < definition.Fields[page.Field].DataItems.Count())
             {
                 PutLabel(top + k, 1, page.Field, item);
@@ -839,6 +878,13 @@ internal sealed class PivotLayout
     private static XElement X(XNamespace ns, int value) => value == 0 ? new XElement(ns + "x") : new XElement(ns + "x", new XAttribute("v", XlsxNames.Integer(value)));
 
     private void Put(int row, int column, CellValue value, string? format = null) => Cells.Add((row, column, value, format));
+
+    /// <summary>A field's caption, which Excel shows with the field's button beside it.</summary>
+    private void PutButton(int row, int column, CellValue value)
+    {
+        Put(row, column, value);
+        Buttons.Add((row, column));
+    }
 
     /// <summary>An item's label: its caption, its value, or <c>(blank)</c>; a number or date in the field's number format.</summary>
     private void PutLabel(int row, int column, int field, int position)

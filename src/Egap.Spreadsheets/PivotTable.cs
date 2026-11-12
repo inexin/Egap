@@ -336,12 +336,23 @@ internal sealed class PivotModel
                 }
             }
 
+            foreach ((int row, int column, int indent) in layout.LeftLabels)
+            {
+                Cell cell = sheet[anchor.Row + row, anchor.Column + column];
+                CellAlignment alignment = cell.Style.Alignment;
+                if (alignment.Horizontal != CellHorizontalAlignment.Left || alignment.Indent != indent)
+                {
+                    cell.Style = cell.Style with { Alignment = alignment with { Horizontal = CellHorizontalAlignment.Left, Indent = indent } };
+                }
+            }
+
             definition.Range = layout.Range;
             table.Definition = definition;
             table.Changed = true;
         }
 
-        // "Autofit column widths on update": Excel fits each of the table's columns to the table's own cells.
+        // "Autofit column widths on update": Excel fits each of the table's columns to the table's own cells, as its style
+        // shows them, with room for the buttons beside the fields' captions.
         Printing.TextMeter? meter = null;
         foreach ((PivotTable table, PivotDefinition definition, PivotLayout layout) in plans)
         {
@@ -351,11 +362,36 @@ internal sealed class PivotModel
             }
 
             meter ??= new Printing.TextMeter(book);
+            Worksheet sheet = table.Worksheet;
+            Printing.PivotFormats? formats = Printing.PivotFormats.For(sheet);
+            CellAddress anchor = layout.Range.First;
+            HashSet<CellAddress> buttons = [.. layout.Buttons.Select(b => new CellAddress(anchor.Row + b.Row, anchor.Column + b.Column))];
+            HashSet<CellAddress> expanders = [.. layout.ExpandButtons.Select(b => new CellAddress(anchor.Row + b.Row, anchor.Column + b.Column))];
             RangeAddress area = layout.Range;
             int first = layout.PageArea is { } pages ? Math.Min(pages.First.Row, area.First.Row) : area.First.Row;
             for (int column = area.First.Column; column <= area.Last.Column; column++)
             {
-                table.Worksheet.AutoFitColumn(column, first, area.Last.Row, meter);
+                sheet.AutoFitColumn(column, first, area.Last.Row, meter, formats is null ? null : formats.Style,
+                    (row, c) => buttons.Contains(new CellAddress(row, c)) ? Worksheet.FilterButton
+                        : expanders.Contains(new CellAddress(row, c)) ? Printing.PivotFormats.ExpandButton : 0);
+            }
+
+            // Column fields in outline or tabular form give all their items' columns the widest one's width.
+            List<int> columnFields = [.. definition.ColumnFields.Where(f => f >= 0)];
+            if (columnFields.Count > 0 && columnFields.All(f => !definition.Fields[f].Compact))
+            {
+                int firstData = area.First.Column + XlsxNames.Int((string?)definition.Location?.Attribute("firstDataCol"), 1);
+                int lastData = area.Last.Column - (definition.ColumnGrandTotals ? 1 : 0);
+                double widest = 0;
+                for (int column = firstData; column <= lastData; column++)
+                {
+                    widest = Math.Max(widest, sheet.Columns[column].Width ?? 0);
+                }
+
+                for (int column = firstData; column <= lastData && widest > 0; column++)
+                {
+                    sheet.ColumnSpans.Change(column, span => span.Width = widest);
+                }
             }
         }
     }
