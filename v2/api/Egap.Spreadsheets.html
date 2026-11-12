@@ -320,6 +320,22 @@ it fills. <a class="xref" href="Egap.Spreadsheets.PivotTable.html#Egap_Spreadshe
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.PivotTableCollection.html">PivotTableCollection</a></dt>
+      <dd><p>The pivot tables of a worksheet, those read from its file and those made in code.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.PivotTableOptions.html">PivotTableOptions</a></dt>
+      <dd><p>What a new pivot table shows: the source's fields it puts on rows, columns and filters, the values it summarizes, and
+how it looks. Fields are named by their headers in the source, case ignored.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.PivotValueField.html">PivotValueField</a></dt>
+      <dd><p>A field a pivot table summarizes in its values area, and how.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.SheetColumn.html">SheetColumn</a></dt>
       <dd><p>One column of a sheet: its width, whether it is hidden, its outline level and the style of its empty cells.</p>
 </dd>
@@ -411,6 +427,14 @@ refer to it by name, as in <code>SUM(Sales[Amount])</code>.</p>
       <dd><p>Writes rows one at a time to an XLSX file or CSV text, without building a <a class="xref" href="Egap.Spreadsheets.Workbook.html">Workbook</a>: memory stays the same
 however many rows there are. Each row goes straight to the file; the workbook's own parts are written when the writer is
 disposed. Text is written in the cells (inline strings), so no table of strings grows with the file.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.Slicer.html">Slicer</a></dt>
+      <dd><p>A slicer: buttons for the items of a pivot table field, which filter the pivot tables it is connected to. Selecting items
+hides the others in those tables and refreshes them, as clicking the slicer in Excel does. A slicer sits on a sheet's
+drawing layer: see <a class="xref" href="Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddSlicer_Egap_Spreadsheets_PivotTable_System_String_Egap_Spreadsheets_RangeAddress_">AddSlicer(PivotTable, string, RangeAddress)</a> and
+<a class="xref" href="Egap.Spreadsheets.SheetDrawing.html#Egap_Spreadsheets_SheetDrawing_Slicer">Slicer</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -622,6 +646,16 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Spreadsheets.FindOrder.html">FindOrder</a></dt>
       <dd><p>The order <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_">Find(string, FindOptions?)</a> visits cells in.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.PivotFunction.html">PivotFunction</a></dt>
+      <dd><p>How a pivot table summarizes the values of a field (ECMA-376 Part 1, 18.18.67).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Spreadsheets.PivotTableLayout.html">PivotTableLayout</a></dt>
+      <dd><p>How a pivot table lays out its row fields, as Excel's Report Layout does.</p>
 </dd>
     </dl>
     <dl class="jumplist">

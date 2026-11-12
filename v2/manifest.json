@@ -9323,6 +9323,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PivotFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PivotFunction.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PivotFunction",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PivotFunction.yml\" sourcestartlinenumber=\"1\">How a pivot table summarizes the values of a field (ECMA-376 Part 1, 18.18.67).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.PivotTable.yml",
       "output": {
         ".html": {
@@ -9334,6 +9348,62 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.PivotTable",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PivotTable.yml\" sourcestartlinenumber=\"1\">A pivot table of a worksheet, as an .xlsx file holds it: its definition, its cache of the source's values and the cells\nit fills. <xref href=\"Egap.Spreadsheets.PivotTable.Refresh\" data-throw-if-not-resolved=\"false\"></xref> reads the source again and lays the table out as Excel's Refresh does.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PivotTableCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PivotTableCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PivotTableCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PivotTableCollection.yml\" sourcestartlinenumber=\"1\">The pivot tables of a worksheet, those read from its file and those made in code.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PivotTableLayout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PivotTableLayout.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PivotTableLayout",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PivotTableLayout.yml\" sourcestartlinenumber=\"1\">How a pivot table lays out its row fields, as Excel's Report Layout does.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PivotTableOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PivotTableOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PivotTableOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PivotTableOptions.yml\" sourcestartlinenumber=\"1\">What a new pivot table shows: the source's fields it puts on rows, columns and filters, the values it summarizes, and\nhow it looks. Fields are named by their headers in the source, case ignored.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.PivotValueField.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.PivotValueField.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.PivotValueField",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.PivotValueField.yml\" sourcestartlinenumber=\"1\">A field a pivot table summarizes in its values area, and how.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9656,6 +9726,20 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.SheetWriter",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetWriter.yml\" sourcestartlinenumber=\"1\">Writes rows one at a time to an XLSX file or CSV text, without building a <xref href=\"Egap.Spreadsheets.Workbook\" data-throw-if-not-resolved=\"false\"></xref>: memory stays the same\nhowever many rows there are. Each row goes straight to the file; the workbook's own parts are written when the writer is\ndisposed. Text is written in the cells (inline strings), so no table of strings grows with the file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.Slicer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.Slicer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.Slicer",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Slicer.yml\" sourcestartlinenumber=\"1\">A slicer: buttons for the items of a pivot table field, which filter the pivot tables it is connected to. Selecting items\nhides the others in those tables and refreshes them, as clicking the slicer in Excel does. A slicer sits on a sheet's\ndrawing layer: see <xref href=\"Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable%2cSystem.String%2cEgap.Spreadsheets.RangeAddress)\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Egap.Spreadsheets.SheetDrawing.Slicer\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",

@@ -748,13 +748,13 @@ unread and a pivot cache keep the old name.</p>
   <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L102"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The pivot tables on the sheet, as the .xlsx file it came from had them; empty for a sheet made in code or read from
-another format.</p>
+  <div class="markdown level1 summary"><p>The pivot tables on the sheet: those of the file it came from, and those made with
+<a class="xref" href="Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_">Add(CellAddress, string, PivotTableOptions, string?)</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;PivotTable&gt; PivotTables { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public PivotTableCollection PivotTables { get; }</code></pre>
   </div>
 
 
@@ -763,7 +763,7 @@ another format.</p>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a>&gt;</dt>
+    <dt><a class="xref" href="Egap.Spreadsheets.PivotTableCollection.html">PivotTableCollection</a></dt>
     <dd></dd>
   </dl>
 

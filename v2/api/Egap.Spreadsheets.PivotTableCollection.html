@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PivotTableCollection | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PivotTableCollection | Egap ">
+      
+      <meta name="description" content="The pivot tables of a worksheet, those read from its file and those made in code.">
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/new/main/apiSpec/new?filename=Egap_Spreadsheets_PivotTableCollection.md&amp;value=---%0Auid%3A%20Egap.Spreadsheets.PivotTableCollection%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Spreadsheets.PivotTableCollection">
+
+
+
+  <h1 id="Egap_Spreadsheets_PivotTableCollection" data-uid="Egap.Spreadsheets.PivotTableCollection" class="text-break">
+Class PivotTableCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L10"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Egap</span>.<a class="xref" href="Egap.Spreadsheets.html">Spreadsheets</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Egap.Spreadsheets.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>The pivot tables of a worksheet, those read from its file and those made in code.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class PivotTableCollection : IReadOnlyList&lt;PivotTable&gt;, IReadOnlyCollection&lt;PivotTable&gt;, IEnumerable&lt;PivotTable&gt;, IEnumerable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">PivotTableCollection</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Egap_Spreadsheets_PivotTableCollection_Count_" data-uid="Egap.Spreadsheets.PivotTableCollection.Count*"></a>
+
+  <h3 id="Egap_Spreadsheets_PivotTableCollection_Count" data-uid="Egap.Spreadsheets.PivotTableCollection.Count">
+  Count
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L19"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How many pivot tables the sheet has.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_PivotTableCollection_Item_" data-uid="Egap.Spreadsheets.PivotTableCollection.Item*"></a>
+
+  <h3 id="Egap_Spreadsheets_PivotTableCollection_Item_System_Int32_" data-uid="Egap.Spreadsheets.PivotTableCollection.Item(System.Int32)">
+  this[int]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The pivot table at a position.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PivotTable this[int index] { get; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_PivotTableCollection_Item_" data-uid="Egap.Spreadsheets.PivotTableCollection.Item*"></a>
+
+  <h3 id="Egap_Spreadsheets_PivotTableCollection_Item_System_String_" data-uid="Egap.Spreadsheets.PivotTableCollection.Item(System.String)">
+  this[string]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The pivot table of a name, case ignored.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PivotTable this[string name] { get; }</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a></dt>
+    <dd><p>The sheet has no pivot table of that name.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Spreadsheets_PivotTableCollection_Add_" data-uid="Egap.Spreadsheets.PivotTableCollection.Add*"></a>
+
+  <h3 id="Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_PivotTableOptions_System_String_" data-uid="Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,Egap.Spreadsheets.CellRange,Egap.Spreadsheets.PivotTableOptions,System.String)">
+  Add(CellAddress, CellRange, PivotTableOptions, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L114"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Makes a pivot table of a range of cells, header row included; see <a class="xref" href="Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_">Add(CellAddress, string, PivotTableOptions, string?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PivotTable Add(CellAddress location, CellRange source, PivotTableOptions options, string? name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>location</code> <a class="xref" href="Egap.Spreadsheets.CellAddress.html">CellAddress</a></dt>
+    <dd></dd>
+    <dt><code>source</code> <a class="xref" href="Egap.Spreadsheets.CellRange.html">CellRange</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.PivotTableOptions.html">PivotTableOptions</a></dt>
+    <dd></dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The range or options, or the name, are not ones Excel takes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The table would overlap another pivot table or go off the sheet.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_PivotTableCollection_Add_" data-uid="Egap.Spreadsheets.PivotTableCollection.Add*"></a>
+
+  <h3 id="Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_Egap_Spreadsheets_SheetTable_Egap_Spreadsheets_PivotTableOptions_System_String_" data-uid="Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,Egap.Spreadsheets.SheetTable,Egap.Spreadsheets.PivotTableOptions,System.String)">
+  Add(CellAddress, SheetTable, PivotTableOptions, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Makes a pivot table of an Excel table, which it reads by name, so it follows the table as it grows; see
+<a class="xref" href="Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_">Add(CellAddress, string, PivotTableOptions, string?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PivotTable Add(CellAddress location, SheetTable source, PivotTableOptions options, string? name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>location</code> <a class="xref" href="Egap.Spreadsheets.CellAddress.html">CellAddress</a></dt>
+    <dd></dd>
+    <dt><code>source</code> <a class="xref" href="Egap.Spreadsheets.SheetTable.html">SheetTable</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.PivotTableOptions.html">PivotTableOptions</a></dt>
+    <dd></dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The table has no header row, or the options or name are not ones Excel takes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The table would overlap another pivot table or go off the sheet.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_PivotTableCollection_Add_" data-uid="Egap.Spreadsheets.PivotTableCollection.Add*"></a>
+
+  <h3 id="Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_" data-uid="Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,System.String,Egap.Spreadsheets.PivotTableOptions,System.String)">
+  Add(CellAddress, string, PivotTableOptions, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Makes a pivot table of a source range, an Excel table or a defined name, and lays it out from the source's values as
+Excel does when it makes one. The table's top left cell is <code class="paramref">location</code>, or, with filters, the filters
+start there and the table starts a row under the last of them. The cells it takes are written over.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PivotTable Add(CellAddress location, string source, PivotTableOptions options, string? name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>location</code> <a class="xref" href="Egap.Spreadsheets.CellAddress.html">CellAddress</a></dt>
+    <dd><p>Where the pivot table goes.</p>
+</dd>
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The source with its header row: a range such as <code>Data!A1:G61</code> or <code>A1:G61</code> on this sheet, the name of an
+Excel table, or a defined name of one range. Each column is a field, named by its header cell.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.PivotTableOptions.html">PivotTableOptions</a></dt>
+    <dd><p>The fields on rows, columns and filters, the values and how the table looks.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The pivot table's name, or null for the next free <code>PivotTableN</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The source is not a range, table or name of the workbook, a header cell is empty, the options name a field the source
+lacks or put one on two axes, or the name is taken on the sheet.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The table would overlap another pivot table or go off the sheet.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_PivotTableCollection_Add_" data-uid="Egap.Spreadsheets.PivotTableCollection.Add*"></a>
+
+  <h3 id="Egap_Spreadsheets_PivotTableCollection_Add_System_String_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_" data-uid="Egap.Spreadsheets.PivotTableCollection.Add(System.String,System.String,Egap.Spreadsheets.PivotTableOptions,System.String)">
+  Add(string, string, PivotTableOptions, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Makes a pivot table of a source given as text; see <a class="xref" href="Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_">Add(CellAddress, string, PivotTableOptions, string?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PivotTable Add(string location, string source, PivotTableOptions options, string? name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>location</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>source</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.PivotTableOptions.html">PivotTableOptions</a></dt>
+    <dd></dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The location is not an A1 cell reference.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The source, options or name are not ones Excel takes.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>The table would overlap another pivot table or go off the sheet.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_PivotTableCollection_GetEnumerator_" data-uid="Egap.Spreadsheets.PivotTableCollection.GetEnumerator*"></a>
+
+  <h3 id="Egap_Spreadsheets_PivotTableCollection_GetEnumerator" data-uid="Egap.Spreadsheets.PivotTableCollection.GetEnumerator">
+  GetEnumerator()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L162"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;PivotTable&gt; GetEnumerator()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="Egap.Spreadsheets.PivotTable.html">PivotTable</a>&gt;</dt>
+    <dd><p>An enumerator that can be used to iterate through the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTableCollection.cs/#L10" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

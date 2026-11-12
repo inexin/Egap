@@ -886,6 +886,61 @@ column added or taken away adds or takes away its field, matched by header name 
 table would grow over another pivot table or off the sheet; Excel refuses those too. <code>CanRefresh</code> is false for a table
 that reads another workbook or a cube, groups items, has calculated fields or items, or shows values as a share or a
 difference; such a table is kept as it was read.</p>
+<p><code>sheet.PivotTables.Add</code> makes a pivot table from a range, an Excel table or a defined name, as Excel's Insert PivotTable
+does. <code>PivotTableOptions</code> names the source's fields by their headers: <code>Rows</code>, <code>Columns</code> and <code>Filters</code> (Excel's report
+filters) take field names, and <code>Values</code> takes <code>PivotValueField</code>s, each a field with its summary function and an optional
+name and number format. <code>Layout</code> chooses compact, outline or tabular form; the grand totals, the headers and the stripes
+can be turned off, and <code>StyleName</code> takes any of Excel's built-in pivot styles (<code>PivotStyleLight16</code> by default). The new
+table is laid out at once with the refresh above, its columns fitted as Excel fits them, and saves as the cache,
+records and table parts Excel writes.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+Worksheet report = book.Worksheets.Add(&quot;Report&quot;);
+PivotTableOptions options = new()
+{
+    Rows = { &quot;Region&quot;, &quot;Product&quot; },
+    Columns = { &quot;Year&quot; },
+    Filters = { &quot;Rep&quot; },
+    Values = { new PivotValueField(&quot;Revenue&quot;) { NumberFormat = &quot;#,##0&quot; }, new PivotValueField(&quot;Units&quot;, PivotFunction.Average) },
+    Layout = PivotTableLayout.Tabular,
+};
+PivotTable table = report.PivotTables.Add(&quot;A3&quot;, &quot;Data!A1:G61&quot;, options, &quot;Sales&quot;);
+Console.WriteLine($&quot;{table.Name} fills {table.Range}&quot;);
+book.Save(&quot;sales.xlsx&quot;);
+</code></pre>
+<p><code>Add</code> throws <code>ArgumentException</code> when the source, the options or the name are not ones Excel takes, such as a field the
+source does not have, and <code>InvalidOperationException</code> when the table would overlap another pivot table or go off the
+sheet; nothing is added then.</p>
+<h4 id="slicers">Slicers</h4>
+<p>A slicer shows a button for each item of a pivot table's field and filters the table by the items selected.
+<code>sheet.Drawings.AddSlicer</code> puts one on a sheet's drawing layer over a range of cells, and <code>SheetDrawing.Slicer</code> gives the
+slicers Excel made too. <code>Select</code> and <code>SelectAll</code> change the selection and refresh the pivot tables the slicer filters,
+<code>Connect</code> makes it filter another table of the same cache, and <code>Caption</code>, <code>StyleName</code> (Excel's built-in slicer styles),
+<code>ColumnCount</code> and <code>ShowHeader</code> change its look. A second slicer of a field shares the first one's selection, as in Excel.</p>
+<pre><code class="lang-csharp">using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
+Worksheet report = book.Worksheets[&quot;Report&quot;];
+PivotTable table = report.PivotTables[&quot;Sales&quot;];
+
+Slicer region = report.Drawings.AddSlicer(table, &quot;Region&quot;, RangeAddress.Parse(&quot;H3:J14&quot;)).Slicer!;
+region.Select([&quot;North&quot;, &quot;South&quot;]);          // the table now sums those two regions
+
+Slicer year = report.Drawings.AddSlicer(table, &quot;Year&quot;, RangeAddress.Parse(&quot;L3:O8&quot;)).Slicer!;
+year.ColumnCount = 2;
+year.StyleName = &quot;SlicerStyleDark2&quot;;
+
+foreach (Slicer slicer in report.Drawings.Select(d =&gt; d.Slicer).OfType&lt;Slicer&gt;())
+{
+    Console.WriteLine($&quot;{slicer.Name}: {string.Join(&quot;, &quot;, slicer.SelectedItems)} of {slicer.Items.Count}&quot;);
+}
+
+book.Save(&quot;sales.xlsx&quot;);
+</code></pre>
+<p>A slicer filters on its field whether the table shows the field or not, and its items are labelled and sorted as Excel's.
+Egap prints and exports slicers to PDF as Excel draws them. Slicers of Excel tables and of cubes are read and kept but
+cannot be changed; timelines are kept as they were.</p>
 <h2 id="protection">Protection</h2>
 <p><code>sheet.Protection</code> protects a sheet as Excel's Protect Sheet does: locked cells (<code>CellProtection.Locked</code>, the default)
 cannot be changed, the formulas of hidden cells are not shown, and <code>SheetActions</code> says what users may still do.
@@ -939,7 +994,8 @@ book.Save(&quot;report.xlsx&quot;);
 </code></pre>
 <p>Parts nothing changed in are saved byte for byte: a table, the notes or the drawing layer are written again only when
 something in them changed, a chart only when you changed that chart, and a pivot table and its cache only when they were
-refreshed. Slicers, macros and other parts the model does not hold are always kept as they were.</p>
+refreshed, and slicers only when one was made, changed or removed. Macros and other parts the model does not hold are
+always kept as they were.</p>
 <h2 id="streaming-large-files">Streaming large files</h2>
 <p><code>SheetReader</code> and <code>SheetWriter</code> stream rows through XLSX files and CSV text without building a workbook, so memory stays
 the same however many rows there are. Use them for exports and imports of more rows than fit comfortably in memory; use

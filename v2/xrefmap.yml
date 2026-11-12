@@ -62744,6 +62744,78 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.PageSetup.TopMargin
   nameWithType: PageSetup.TopMargin
+- uid: Egap.Spreadsheets.PivotFunction
+  name: PivotFunction
+  href: api/Egap.Spreadsheets.PivotFunction.html
+  commentId: T:Egap.Spreadsheets.PivotFunction
+  fullName: Egap.Spreadsheets.PivotFunction
+  nameWithType: PivotFunction
+- uid: Egap.Spreadsheets.PivotFunction.Average
+  name: Average
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_Average
+  commentId: F:Egap.Spreadsheets.PivotFunction.Average
+  fullName: Egap.Spreadsheets.PivotFunction.Average
+  nameWithType: PivotFunction.Average
+- uid: Egap.Spreadsheets.PivotFunction.Count
+  name: Count
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_Count
+  commentId: F:Egap.Spreadsheets.PivotFunction.Count
+  fullName: Egap.Spreadsheets.PivotFunction.Count
+  nameWithType: PivotFunction.Count
+- uid: Egap.Spreadsheets.PivotFunction.CountNumbers
+  name: CountNumbers
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_CountNumbers
+  commentId: F:Egap.Spreadsheets.PivotFunction.CountNumbers
+  fullName: Egap.Spreadsheets.PivotFunction.CountNumbers
+  nameWithType: PivotFunction.CountNumbers
+- uid: Egap.Spreadsheets.PivotFunction.Max
+  name: Max
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_Max
+  commentId: F:Egap.Spreadsheets.PivotFunction.Max
+  fullName: Egap.Spreadsheets.PivotFunction.Max
+  nameWithType: PivotFunction.Max
+- uid: Egap.Spreadsheets.PivotFunction.Min
+  name: Min
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_Min
+  commentId: F:Egap.Spreadsheets.PivotFunction.Min
+  fullName: Egap.Spreadsheets.PivotFunction.Min
+  nameWithType: PivotFunction.Min
+- uid: Egap.Spreadsheets.PivotFunction.Product
+  name: Product
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_Product
+  commentId: F:Egap.Spreadsheets.PivotFunction.Product
+  fullName: Egap.Spreadsheets.PivotFunction.Product
+  nameWithType: PivotFunction.Product
+- uid: Egap.Spreadsheets.PivotFunction.StandardDeviation
+  name: StandardDeviation
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_StandardDeviation
+  commentId: F:Egap.Spreadsheets.PivotFunction.StandardDeviation
+  fullName: Egap.Spreadsheets.PivotFunction.StandardDeviation
+  nameWithType: PivotFunction.StandardDeviation
+- uid: Egap.Spreadsheets.PivotFunction.StandardDeviationPopulation
+  name: StandardDeviationPopulation
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_StandardDeviationPopulation
+  commentId: F:Egap.Spreadsheets.PivotFunction.StandardDeviationPopulation
+  fullName: Egap.Spreadsheets.PivotFunction.StandardDeviationPopulation
+  nameWithType: PivotFunction.StandardDeviationPopulation
+- uid: Egap.Spreadsheets.PivotFunction.Sum
+  name: Sum
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_Sum
+  commentId: F:Egap.Spreadsheets.PivotFunction.Sum
+  fullName: Egap.Spreadsheets.PivotFunction.Sum
+  nameWithType: PivotFunction.Sum
+- uid: Egap.Spreadsheets.PivotFunction.Variance
+  name: Variance
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_Variance
+  commentId: F:Egap.Spreadsheets.PivotFunction.Variance
+  fullName: Egap.Spreadsheets.PivotFunction.Variance
+  nameWithType: PivotFunction.Variance
+- uid: Egap.Spreadsheets.PivotFunction.VariancePopulation
+  name: VariancePopulation
+  href: api/Egap.Spreadsheets.PivotFunction.html#Egap_Spreadsheets_PivotFunction_VariancePopulation
+  commentId: F:Egap.Spreadsheets.PivotFunction.VariancePopulation
+  fullName: Egap.Spreadsheets.PivotFunction.VariancePopulation
+  nameWithType: PivotFunction.VariancePopulation
 - uid: Egap.Spreadsheets.PivotTable
   name: PivotTable
   href: api/Egap.Spreadsheets.PivotTable.html
@@ -62841,6 +62913,385 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.PivotTable.Worksheet
   nameWithType: PivotTable.Worksheet
+- uid: Egap.Spreadsheets.PivotTableCollection
+  name: PivotTableCollection
+  href: api/Egap.Spreadsheets.PivotTableCollection.html
+  commentId: T:Egap.Spreadsheets.PivotTableCollection
+  fullName: Egap.Spreadsheets.PivotTableCollection
+  nameWithType: PivotTableCollection
+- uid: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,Egap.Spreadsheets.CellRange,Egap.Spreadsheets.PivotTableOptions,System.String)
+  name: Add(CellAddress, CellRange, PivotTableOptions, string?)
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_Egap_Spreadsheets_CellRange_Egap_Spreadsheets_PivotTableOptions_System_String_
+  commentId: M:Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,Egap.Spreadsheets.CellRange,Egap.Spreadsheets.PivotTableOptions,System.String)
+  name.vb: Add(CellAddress, CellRange, PivotTableOptions, String)
+  fullName: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress, Egap.Spreadsheets.CellRange, Egap.Spreadsheets.PivotTableOptions, string?)
+  fullName.vb: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress, Egap.Spreadsheets.CellRange, Egap.Spreadsheets.PivotTableOptions, String)
+  nameWithType: PivotTableCollection.Add(CellAddress, CellRange, PivotTableOptions, string?)
+  nameWithType.vb: PivotTableCollection.Add(CellAddress, CellRange, PivotTableOptions, String)
+- uid: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,Egap.Spreadsheets.SheetTable,Egap.Spreadsheets.PivotTableOptions,System.String)
+  name: Add(CellAddress, SheetTable, PivotTableOptions, string?)
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_Egap_Spreadsheets_SheetTable_Egap_Spreadsheets_PivotTableOptions_System_String_
+  commentId: M:Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,Egap.Spreadsheets.SheetTable,Egap.Spreadsheets.PivotTableOptions,System.String)
+  name.vb: Add(CellAddress, SheetTable, PivotTableOptions, String)
+  fullName: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress, Egap.Spreadsheets.SheetTable, Egap.Spreadsheets.PivotTableOptions, string?)
+  fullName.vb: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress, Egap.Spreadsheets.SheetTable, Egap.Spreadsheets.PivotTableOptions, String)
+  nameWithType: PivotTableCollection.Add(CellAddress, SheetTable, PivotTableOptions, string?)
+  nameWithType.vb: PivotTableCollection.Add(CellAddress, SheetTable, PivotTableOptions, String)
+- uid: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,System.String,Egap.Spreadsheets.PivotTableOptions,System.String)
+  name: Add(CellAddress, string, PivotTableOptions, string?)
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_
+  commentId: M:Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress,System.String,Egap.Spreadsheets.PivotTableOptions,System.String)
+  name.vb: Add(CellAddress, String, PivotTableOptions, String)
+  fullName: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress, string, Egap.Spreadsheets.PivotTableOptions, string?)
+  fullName.vb: Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress, String, Egap.Spreadsheets.PivotTableOptions, String)
+  nameWithType: PivotTableCollection.Add(CellAddress, string, PivotTableOptions, string?)
+  nameWithType.vb: PivotTableCollection.Add(CellAddress, String, PivotTableOptions, String)
+- uid: Egap.Spreadsheets.PivotTableCollection.Add(System.String,System.String,Egap.Spreadsheets.PivotTableOptions,System.String)
+  name: Add(string, string, PivotTableOptions, string?)
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_System_String_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_
+  commentId: M:Egap.Spreadsheets.PivotTableCollection.Add(System.String,System.String,Egap.Spreadsheets.PivotTableOptions,System.String)
+  name.vb: Add(String, String, PivotTableOptions, String)
+  fullName: Egap.Spreadsheets.PivotTableCollection.Add(string, string, Egap.Spreadsheets.PivotTableOptions, string?)
+  fullName.vb: Egap.Spreadsheets.PivotTableCollection.Add(String, String, Egap.Spreadsheets.PivotTableOptions, String)
+  nameWithType: PivotTableCollection.Add(string, string, PivotTableOptions, string?)
+  nameWithType.vb: PivotTableCollection.Add(String, String, PivotTableOptions, String)
+- uid: Egap.Spreadsheets.PivotTableCollection.Add*
+  name: Add
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_
+  commentId: Overload:Egap.Spreadsheets.PivotTableCollection.Add
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableCollection.Add
+  nameWithType: PivotTableCollection.Add
+- uid: Egap.Spreadsheets.PivotTableCollection.Count
+  name: Count
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Count
+  commentId: P:Egap.Spreadsheets.PivotTableCollection.Count
+  fullName: Egap.Spreadsheets.PivotTableCollection.Count
+  nameWithType: PivotTableCollection.Count
+- uid: Egap.Spreadsheets.PivotTableCollection.Count*
+  name: Count
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Count_
+  commentId: Overload:Egap.Spreadsheets.PivotTableCollection.Count
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableCollection.Count
+  nameWithType: PivotTableCollection.Count
+- uid: Egap.Spreadsheets.PivotTableCollection.GetEnumerator
+  name: GetEnumerator()
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_GetEnumerator
+  commentId: M:Egap.Spreadsheets.PivotTableCollection.GetEnumerator
+  fullName: Egap.Spreadsheets.PivotTableCollection.GetEnumerator()
+  nameWithType: PivotTableCollection.GetEnumerator()
+- uid: Egap.Spreadsheets.PivotTableCollection.GetEnumerator*
+  name: GetEnumerator
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_GetEnumerator_
+  commentId: Overload:Egap.Spreadsheets.PivotTableCollection.GetEnumerator
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableCollection.GetEnumerator
+  nameWithType: PivotTableCollection.GetEnumerator
+- uid: Egap.Spreadsheets.PivotTableCollection.Item(System.Int32)
+  name: this[int]
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Item_System_Int32_
+  commentId: P:Egap.Spreadsheets.PivotTableCollection.Item(System.Int32)
+  name.vb: this[](Integer)
+  fullName: Egap.Spreadsheets.PivotTableCollection.this[int]
+  fullName.vb: Egap.Spreadsheets.PivotTableCollection.this[](Integer)
+  nameWithType: PivotTableCollection.this[int]
+  nameWithType.vb: PivotTableCollection.this[](Integer)
+- uid: Egap.Spreadsheets.PivotTableCollection.Item(System.String)
+  name: this[string]
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Item_System_String_
+  commentId: P:Egap.Spreadsheets.PivotTableCollection.Item(System.String)
+  name.vb: this[](String)
+  fullName: Egap.Spreadsheets.PivotTableCollection.this[string]
+  fullName.vb: Egap.Spreadsheets.PivotTableCollection.this[](String)
+  nameWithType: PivotTableCollection.this[string]
+  nameWithType.vb: PivotTableCollection.this[](String)
+- uid: Egap.Spreadsheets.PivotTableCollection.Item*
+  name: this
+  href: api/Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Item_
+  commentId: Overload:Egap.Spreadsheets.PivotTableCollection.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: Egap.Spreadsheets.PivotTableCollection.this
+  fullName.vb: Egap.Spreadsheets.PivotTableCollection.this[]
+  nameWithType: PivotTableCollection.this
+  nameWithType.vb: PivotTableCollection.this[]
+- uid: Egap.Spreadsheets.PivotTableLayout
+  name: PivotTableLayout
+  href: api/Egap.Spreadsheets.PivotTableLayout.html
+  commentId: T:Egap.Spreadsheets.PivotTableLayout
+  fullName: Egap.Spreadsheets.PivotTableLayout
+  nameWithType: PivotTableLayout
+- uid: Egap.Spreadsheets.PivotTableLayout.Compact
+  name: Compact
+  href: api/Egap.Spreadsheets.PivotTableLayout.html#Egap_Spreadsheets_PivotTableLayout_Compact
+  commentId: F:Egap.Spreadsheets.PivotTableLayout.Compact
+  fullName: Egap.Spreadsheets.PivotTableLayout.Compact
+  nameWithType: PivotTableLayout.Compact
+- uid: Egap.Spreadsheets.PivotTableLayout.Outline
+  name: Outline
+  href: api/Egap.Spreadsheets.PivotTableLayout.html#Egap_Spreadsheets_PivotTableLayout_Outline
+  commentId: F:Egap.Spreadsheets.PivotTableLayout.Outline
+  fullName: Egap.Spreadsheets.PivotTableLayout.Outline
+  nameWithType: PivotTableLayout.Outline
+- uid: Egap.Spreadsheets.PivotTableLayout.Tabular
+  name: Tabular
+  href: api/Egap.Spreadsheets.PivotTableLayout.html#Egap_Spreadsheets_PivotTableLayout_Tabular
+  commentId: F:Egap.Spreadsheets.PivotTableLayout.Tabular
+  fullName: Egap.Spreadsheets.PivotTableLayout.Tabular
+  nameWithType: PivotTableLayout.Tabular
+- uid: Egap.Spreadsheets.PivotTableOptions
+  name: PivotTableOptions
+  href: api/Egap.Spreadsheets.PivotTableOptions.html
+  commentId: T:Egap.Spreadsheets.PivotTableOptions
+  fullName: Egap.Spreadsheets.PivotTableOptions
+  nameWithType: PivotTableOptions
+- uid: Egap.Spreadsheets.PivotTableOptions.Columns
+  name: Columns
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Columns
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.Columns
+  fullName: Egap.Spreadsheets.PivotTableOptions.Columns
+  nameWithType: PivotTableOptions.Columns
+- uid: Egap.Spreadsheets.PivotTableOptions.Columns*
+  name: Columns
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Columns_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.Columns
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.Columns
+  nameWithType: PivotTableOptions.Columns
+- uid: Egap.Spreadsheets.PivotTableOptions.Filters
+  name: Filters
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Filters
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.Filters
+  fullName: Egap.Spreadsheets.PivotTableOptions.Filters
+  nameWithType: PivotTableOptions.Filters
+- uid: Egap.Spreadsheets.PivotTableOptions.Filters*
+  name: Filters
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Filters_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.Filters
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.Filters
+  nameWithType: PivotTableOptions.Filters
+- uid: Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn
+  name: GrandTotalColumn
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_GrandTotalColumn
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn
+  fullName: Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn
+  nameWithType: PivotTableOptions.GrandTotalColumn
+- uid: Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn*
+  name: GrandTotalColumn
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_GrandTotalColumn_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn
+  nameWithType: PivotTableOptions.GrandTotalColumn
+- uid: Egap.Spreadsheets.PivotTableOptions.GrandTotalRow
+  name: GrandTotalRow
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_GrandTotalRow
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.GrandTotalRow
+  fullName: Egap.Spreadsheets.PivotTableOptions.GrandTotalRow
+  nameWithType: PivotTableOptions.GrandTotalRow
+- uid: Egap.Spreadsheets.PivotTableOptions.GrandTotalRow*
+  name: GrandTotalRow
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_GrandTotalRow_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.GrandTotalRow
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.GrandTotalRow
+  nameWithType: PivotTableOptions.GrandTotalRow
+- uid: Egap.Spreadsheets.PivotTableOptions.Layout
+  name: Layout
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Layout
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.Layout
+  fullName: Egap.Spreadsheets.PivotTableOptions.Layout
+  nameWithType: PivotTableOptions.Layout
+- uid: Egap.Spreadsheets.PivotTableOptions.Layout*
+  name: Layout
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Layout_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.Layout
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.Layout
+  nameWithType: PivotTableOptions.Layout
+- uid: Egap.Spreadsheets.PivotTableOptions.Rows
+  name: Rows
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Rows
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.Rows
+  fullName: Egap.Spreadsheets.PivotTableOptions.Rows
+  nameWithType: PivotTableOptions.Rows
+- uid: Egap.Spreadsheets.PivotTableOptions.Rows*
+  name: Rows
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Rows_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.Rows
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.Rows
+  nameWithType: PivotTableOptions.Rows
+- uid: Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders
+  name: ShowColumnHeaders
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ShowColumnHeaders
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders
+  fullName: Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders
+  nameWithType: PivotTableOptions.ShowColumnHeaders
+- uid: Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders*
+  name: ShowColumnHeaders
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ShowColumnHeaders_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders
+  nameWithType: PivotTableOptions.ShowColumnHeaders
+- uid: Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes
+  name: ShowColumnStripes
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ShowColumnStripes
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes
+  fullName: Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes
+  nameWithType: PivotTableOptions.ShowColumnStripes
+- uid: Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes*
+  name: ShowColumnStripes
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ShowColumnStripes_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes
+  nameWithType: PivotTableOptions.ShowColumnStripes
+- uid: Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders
+  name: ShowRowHeaders
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ShowRowHeaders
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders
+  fullName: Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders
+  nameWithType: PivotTableOptions.ShowRowHeaders
+- uid: Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders*
+  name: ShowRowHeaders
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ShowRowHeaders_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders
+  nameWithType: PivotTableOptions.ShowRowHeaders
+- uid: Egap.Spreadsheets.PivotTableOptions.ShowRowStripes
+  name: ShowRowStripes
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ShowRowStripes
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.ShowRowStripes
+  fullName: Egap.Spreadsheets.PivotTableOptions.ShowRowStripes
+  nameWithType: PivotTableOptions.ShowRowStripes
+- uid: Egap.Spreadsheets.PivotTableOptions.ShowRowStripes*
+  name: ShowRowStripes
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ShowRowStripes_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.ShowRowStripes
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.ShowRowStripes
+  nameWithType: PivotTableOptions.ShowRowStripes
+- uid: Egap.Spreadsheets.PivotTableOptions.StyleName
+  name: StyleName
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_StyleName
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.StyleName
+  fullName: Egap.Spreadsheets.PivotTableOptions.StyleName
+  nameWithType: PivotTableOptions.StyleName
+- uid: Egap.Spreadsheets.PivotTableOptions.StyleName*
+  name: StyleName
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_StyleName_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.StyleName
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.StyleName
+  nameWithType: PivotTableOptions.StyleName
+- uid: Egap.Spreadsheets.PivotTableOptions.Values
+  name: Values
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Values
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.Values
+  fullName: Egap.Spreadsheets.PivotTableOptions.Values
+  nameWithType: PivotTableOptions.Values
+- uid: Egap.Spreadsheets.PivotTableOptions.Values*
+  name: Values
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_Values_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.Values
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.Values
+  nameWithType: PivotTableOptions.Values
+- uid: Egap.Spreadsheets.PivotTableOptions.ValuesOnRows
+  name: ValuesOnRows
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ValuesOnRows
+  commentId: P:Egap.Spreadsheets.PivotTableOptions.ValuesOnRows
+  fullName: Egap.Spreadsheets.PivotTableOptions.ValuesOnRows
+  nameWithType: PivotTableOptions.ValuesOnRows
+- uid: Egap.Spreadsheets.PivotTableOptions.ValuesOnRows*
+  name: ValuesOnRows
+  href: api/Egap.Spreadsheets.PivotTableOptions.html#Egap_Spreadsheets_PivotTableOptions_ValuesOnRows_
+  commentId: Overload:Egap.Spreadsheets.PivotTableOptions.ValuesOnRows
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotTableOptions.ValuesOnRows
+  nameWithType: PivotTableOptions.ValuesOnRows
+- uid: Egap.Spreadsheets.PivotValueField
+  name: PivotValueField
+  href: api/Egap.Spreadsheets.PivotValueField.html
+  commentId: T:Egap.Spreadsheets.PivotValueField
+  fullName: Egap.Spreadsheets.PivotValueField
+  nameWithType: PivotValueField
+- uid: Egap.Spreadsheets.PivotValueField.#ctor(System.String,Egap.Spreadsheets.PivotFunction)
+  name: PivotValueField(string, PivotFunction)
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField__ctor_System_String_Egap_Spreadsheets_PivotFunction_
+  commentId: M:Egap.Spreadsheets.PivotValueField.#ctor(System.String,Egap.Spreadsheets.PivotFunction)
+  name.vb: New(String, PivotFunction)
+  fullName: Egap.Spreadsheets.PivotValueField.PivotValueField(string, Egap.Spreadsheets.PivotFunction)
+  fullName.vb: Egap.Spreadsheets.PivotValueField.New(String, Egap.Spreadsheets.PivotFunction)
+  nameWithType: PivotValueField.PivotValueField(string, PivotFunction)
+  nameWithType.vb: PivotValueField.New(String, PivotFunction)
+- uid: Egap.Spreadsheets.PivotValueField.#ctor*
+  name: PivotValueField
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField__ctor_
+  commentId: Overload:Egap.Spreadsheets.PivotValueField.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Spreadsheets.PivotValueField.PivotValueField
+  fullName.vb: Egap.Spreadsheets.PivotValueField.New
+  nameWithType: PivotValueField.PivotValueField
+  nameWithType.vb: PivotValueField.New
+- uid: Egap.Spreadsheets.PivotValueField.Field
+  name: Field
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField_Field
+  commentId: P:Egap.Spreadsheets.PivotValueField.Field
+  fullName: Egap.Spreadsheets.PivotValueField.Field
+  nameWithType: PivotValueField.Field
+- uid: Egap.Spreadsheets.PivotValueField.Field*
+  name: Field
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField_Field_
+  commentId: Overload:Egap.Spreadsheets.PivotValueField.Field
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotValueField.Field
+  nameWithType: PivotValueField.Field
+- uid: Egap.Spreadsheets.PivotValueField.Function
+  name: Function
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField_Function
+  commentId: P:Egap.Spreadsheets.PivotValueField.Function
+  fullName: Egap.Spreadsheets.PivotValueField.Function
+  nameWithType: PivotValueField.Function
+- uid: Egap.Spreadsheets.PivotValueField.Function*
+  name: Function
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField_Function_
+  commentId: Overload:Egap.Spreadsheets.PivotValueField.Function
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotValueField.Function
+  nameWithType: PivotValueField.Function
+- uid: Egap.Spreadsheets.PivotValueField.Name
+  name: Name
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField_Name
+  commentId: P:Egap.Spreadsheets.PivotValueField.Name
+  fullName: Egap.Spreadsheets.PivotValueField.Name
+  nameWithType: PivotValueField.Name
+- uid: Egap.Spreadsheets.PivotValueField.Name*
+  name: Name
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField_Name_
+  commentId: Overload:Egap.Spreadsheets.PivotValueField.Name
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotValueField.Name
+  nameWithType: PivotValueField.Name
+- uid: Egap.Spreadsheets.PivotValueField.NumberFormat
+  name: NumberFormat
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField_NumberFormat
+  commentId: P:Egap.Spreadsheets.PivotValueField.NumberFormat
+  fullName: Egap.Spreadsheets.PivotValueField.NumberFormat
+  nameWithType: PivotValueField.NumberFormat
+- uid: Egap.Spreadsheets.PivotValueField.NumberFormat*
+  name: NumberFormat
+  href: api/Egap.Spreadsheets.PivotValueField.html#Egap_Spreadsheets_PivotValueField_NumberFormat_
+  commentId: Overload:Egap.Spreadsheets.PivotValueField.NumberFormat
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.PivotValueField.NumberFormat
+  nameWithType: PivotValueField.NumberFormat
 - uid: Egap.Spreadsheets.PrintOrientation
   name: PrintOrientation
   href: api/Egap.Spreadsheets.PrintOrientation.html
@@ -63529,6 +63980,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetDrawing.RefreshChart
   nameWithType: SheetDrawing.RefreshChart
+- uid: Egap.Spreadsheets.SheetDrawing.Slicer
+  name: Slicer
+  href: api/Egap.Spreadsheets.SheetDrawing.html#Egap_Spreadsheets_SheetDrawing_Slicer
+  commentId: P:Egap.Spreadsheets.SheetDrawing.Slicer
+  fullName: Egap.Spreadsheets.SheetDrawing.Slicer
+  nameWithType: SheetDrawing.Slicer
+- uid: Egap.Spreadsheets.SheetDrawing.Slicer*
+  name: Slicer
+  href: api/Egap.Spreadsheets.SheetDrawing.html#Egap_Spreadsheets_SheetDrawing_Slicer_
+  commentId: Overload:Egap.Spreadsheets.SheetDrawing.Slicer
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetDrawing.Slicer
+  nameWithType: SheetDrawing.Slicer
 - uid: Egap.Spreadsheets.SheetDrawing.Text
   name: Text
   href: api/Egap.Spreadsheets.SheetDrawing.html#Egap_Spreadsheets_SheetDrawing_Text
@@ -63650,6 +64114,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetDrawingCollection.AddPicture
   nameWithType: SheetDrawingCollection.AddPicture
+- uid: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable,System.String,Egap.Spreadsheets.RangeAddress)
+  name: AddSlicer(PivotTable, string, RangeAddress)
+  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddSlicer_Egap_Spreadsheets_PivotTable_System_String_Egap_Spreadsheets_RangeAddress_
+  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable,System.String,Egap.Spreadsheets.RangeAddress)
+  name.vb: AddSlicer(PivotTable, String, RangeAddress)
+  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable, string, Egap.Spreadsheets.RangeAddress)
+  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable, String, Egap.Spreadsheets.RangeAddress)
+  nameWithType: SheetDrawingCollection.AddSlicer(PivotTable, string, RangeAddress)
+  nameWithType.vb: SheetDrawingCollection.AddSlicer(PivotTable, String, RangeAddress)
+- uid: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer*
+  name: AddSlicer
+  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddSlicer_
+  commentId: Overload:Egap.Spreadsheets.SheetDrawingCollection.AddSlicer
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer
+  nameWithType: SheetDrawingCollection.AddSlicer
 - uid: Egap.Spreadsheets.SheetDrawingCollection.Count
   name: Count
   href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_Count
@@ -63744,6 +64224,12 @@ references:
   commentId: F:Egap.Spreadsheets.SheetDrawingKind.Shape
   fullName: Egap.Spreadsheets.SheetDrawingKind.Shape
   nameWithType: SheetDrawingKind.Shape
+- uid: Egap.Spreadsheets.SheetDrawingKind.Slicer
+  name: Slicer
+  href: api/Egap.Spreadsheets.SheetDrawingKind.html#Egap_Spreadsheets_SheetDrawingKind_Slicer
+  commentId: F:Egap.Spreadsheets.SheetDrawingKind.Slicer
+  fullName: Egap.Spreadsheets.SheetDrawingKind.Slicer
+  nameWithType: SheetDrawingKind.Slicer
 - uid: Egap.Spreadsheets.SheetPage
   name: SheetPage
   href: api/Egap.Spreadsheets.SheetPage.html
@@ -65308,6 +65794,197 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetWriter.WriteRow
   nameWithType: SheetWriter.WriteRow
+- uid: Egap.Spreadsheets.Slicer
+  name: Slicer
+  href: api/Egap.Spreadsheets.Slicer.html
+  commentId: T:Egap.Spreadsheets.Slicer
+  fullName: Egap.Spreadsheets.Slicer
+  nameWithType: Slicer
+- uid: Egap.Spreadsheets.Slicer.Caption
+  name: Caption
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Caption
+  commentId: P:Egap.Spreadsheets.Slicer.Caption
+  fullName: Egap.Spreadsheets.Slicer.Caption
+  nameWithType: Slicer.Caption
+- uid: Egap.Spreadsheets.Slicer.Caption*
+  name: Caption
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Caption_
+  commentId: Overload:Egap.Spreadsheets.Slicer.Caption
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.Caption
+  nameWithType: Slicer.Caption
+- uid: Egap.Spreadsheets.Slicer.ColumnCount
+  name: ColumnCount
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_ColumnCount
+  commentId: P:Egap.Spreadsheets.Slicer.ColumnCount
+  fullName: Egap.Spreadsheets.Slicer.ColumnCount
+  nameWithType: Slicer.ColumnCount
+- uid: Egap.Spreadsheets.Slicer.ColumnCount*
+  name: ColumnCount
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_ColumnCount_
+  commentId: Overload:Egap.Spreadsheets.Slicer.ColumnCount
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.ColumnCount
+  nameWithType: Slicer.ColumnCount
+- uid: Egap.Spreadsheets.Slicer.Connect(Egap.Spreadsheets.PivotTable)
+  name: Connect(PivotTable)
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Connect_Egap_Spreadsheets_PivotTable_
+  commentId: M:Egap.Spreadsheets.Slicer.Connect(Egap.Spreadsheets.PivotTable)
+  fullName: Egap.Spreadsheets.Slicer.Connect(Egap.Spreadsheets.PivotTable)
+  nameWithType: Slicer.Connect(PivotTable)
+- uid: Egap.Spreadsheets.Slicer.Connect*
+  name: Connect
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Connect_
+  commentId: Overload:Egap.Spreadsheets.Slicer.Connect
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.Connect
+  nameWithType: Slicer.Connect
+- uid: Egap.Spreadsheets.Slicer.Field
+  name: Field
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Field
+  commentId: P:Egap.Spreadsheets.Slicer.Field
+  fullName: Egap.Spreadsheets.Slicer.Field
+  nameWithType: Slicer.Field
+- uid: Egap.Spreadsheets.Slicer.Field*
+  name: Field
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Field_
+  commentId: Overload:Egap.Spreadsheets.Slicer.Field
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.Field
+  nameWithType: Slicer.Field
+- uid: Egap.Spreadsheets.Slicer.Items
+  name: Items
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Items
+  commentId: P:Egap.Spreadsheets.Slicer.Items
+  fullName: Egap.Spreadsheets.Slicer.Items
+  nameWithType: Slicer.Items
+- uid: Egap.Spreadsheets.Slicer.Items*
+  name: Items
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Items_
+  commentId: Overload:Egap.Spreadsheets.Slicer.Items
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.Items
+  nameWithType: Slicer.Items
+- uid: Egap.Spreadsheets.Slicer.Name
+  name: Name
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Name
+  commentId: P:Egap.Spreadsheets.Slicer.Name
+  fullName: Egap.Spreadsheets.Slicer.Name
+  nameWithType: Slicer.Name
+- uid: Egap.Spreadsheets.Slicer.Name*
+  name: Name
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Name_
+  commentId: Overload:Egap.Spreadsheets.Slicer.Name
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.Name
+  nameWithType: Slicer.Name
+- uid: Egap.Spreadsheets.Slicer.PivotTables
+  name: PivotTables
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_PivotTables
+  commentId: P:Egap.Spreadsheets.Slicer.PivotTables
+  fullName: Egap.Spreadsheets.Slicer.PivotTables
+  nameWithType: Slicer.PivotTables
+- uid: Egap.Spreadsheets.Slicer.PivotTables*
+  name: PivotTables
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_PivotTables_
+  commentId: Overload:Egap.Spreadsheets.Slicer.PivotTables
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.PivotTables
+  nameWithType: Slicer.PivotTables
+- uid: Egap.Spreadsheets.Slicer.Select(System.Collections.Generic.IEnumerable{System.String})
+  name: Select(IEnumerable<string>)
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Select_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Egap.Spreadsheets.Slicer.Select(System.Collections.Generic.IEnumerable{System.String})
+  name.vb: Select(IEnumerable(Of String))
+  fullName: Egap.Spreadsheets.Slicer.Select(System.Collections.Generic.IEnumerable<string>)
+  fullName.vb: Egap.Spreadsheets.Slicer.Select(System.Collections.Generic.IEnumerable(Of String))
+  nameWithType: Slicer.Select(IEnumerable<string>)
+  nameWithType.vb: Slicer.Select(IEnumerable(Of String))
+- uid: Egap.Spreadsheets.Slicer.Select*
+  name: Select
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Select_
+  commentId: Overload:Egap.Spreadsheets.Slicer.Select
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.Select
+  nameWithType: Slicer.Select
+- uid: Egap.Spreadsheets.Slicer.SelectAll
+  name: SelectAll()
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_SelectAll
+  commentId: M:Egap.Spreadsheets.Slicer.SelectAll
+  fullName: Egap.Spreadsheets.Slicer.SelectAll()
+  nameWithType: Slicer.SelectAll()
+- uid: Egap.Spreadsheets.Slicer.SelectAll*
+  name: SelectAll
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_SelectAll_
+  commentId: Overload:Egap.Spreadsheets.Slicer.SelectAll
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.SelectAll
+  nameWithType: Slicer.SelectAll
+- uid: Egap.Spreadsheets.Slicer.SelectedItems
+  name: SelectedItems
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_SelectedItems
+  commentId: P:Egap.Spreadsheets.Slicer.SelectedItems
+  fullName: Egap.Spreadsheets.Slicer.SelectedItems
+  nameWithType: Slicer.SelectedItems
+- uid: Egap.Spreadsheets.Slicer.SelectedItems*
+  name: SelectedItems
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_SelectedItems_
+  commentId: Overload:Egap.Spreadsheets.Slicer.SelectedItems
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.SelectedItems
+  nameWithType: Slicer.SelectedItems
+- uid: Egap.Spreadsheets.Slicer.ShowHeader
+  name: ShowHeader
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_ShowHeader
+  commentId: P:Egap.Spreadsheets.Slicer.ShowHeader
+  fullName: Egap.Spreadsheets.Slicer.ShowHeader
+  nameWithType: Slicer.ShowHeader
+- uid: Egap.Spreadsheets.Slicer.ShowHeader*
+  name: ShowHeader
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_ShowHeader_
+  commentId: Overload:Egap.Spreadsheets.Slicer.ShowHeader
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.ShowHeader
+  nameWithType: Slicer.ShowHeader
+- uid: Egap.Spreadsheets.Slicer.StyleName
+  name: StyleName
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_StyleName
+  commentId: P:Egap.Spreadsheets.Slicer.StyleName
+  fullName: Egap.Spreadsheets.Slicer.StyleName
+  nameWithType: Slicer.StyleName
+- uid: Egap.Spreadsheets.Slicer.StyleName*
+  name: StyleName
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_StyleName_
+  commentId: Overload:Egap.Spreadsheets.Slicer.StyleName
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.StyleName
+  nameWithType: Slicer.StyleName
+- uid: Egap.Spreadsheets.Slicer.ToString
+  name: ToString()
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_ToString
+  commentId: M:Egap.Spreadsheets.Slicer.ToString
+  fullName: Egap.Spreadsheets.Slicer.ToString()
+  nameWithType: Slicer.ToString()
+- uid: Egap.Spreadsheets.Slicer.ToString*
+  name: ToString
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_ToString_
+  commentId: Overload:Egap.Spreadsheets.Slicer.ToString
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.ToString
+  nameWithType: Slicer.ToString
+- uid: Egap.Spreadsheets.Slicer.Worksheet
+  name: Worksheet
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Worksheet
+  commentId: P:Egap.Spreadsheets.Slicer.Worksheet
+  fullName: Egap.Spreadsheets.Slicer.Worksheet
+  nameWithType: Slicer.Worksheet
+- uid: Egap.Spreadsheets.Slicer.Worksheet*
+  name: Worksheet
+  href: api/Egap.Spreadsheets.Slicer.html#Egap_Spreadsheets_Slicer_Worksheet_
+  commentId: Overload:Egap.Spreadsheets.Slicer.Worksheet
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Slicer.Worksheet
+  nameWithType: Slicer.Worksheet
 - uid: Egap.Spreadsheets.SortField
   name: SortField
   href: api/Egap.Spreadsheets.SortField.html

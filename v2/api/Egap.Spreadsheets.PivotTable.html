@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Spreadsheets_PivotTable" data-uid="Egap.Spreadsheets.PivotTable" class="text-break">
-Class PivotTable  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L19"><i class="bi bi-code-slash"></i></a>
+Class PivotTable  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L21"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -143,7 +143,8 @@ it fills. <a class="xref" href="Egap.Spreadsheets.PivotTable.html#Egap_Spreadshe
 
 
   <h2 id="Egap_Spreadsheets_PivotTable_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>Egap reads pivot tables from .xlsx files and keeps them when it saves one; it does not make new ones. A refresh works out
+  <div class="markdown level0 remarks"><p>Egap reads pivot tables from .xlsx, .xlsb and .xls files and keeps them when it saves, and makes new ones with
+<a class="xref" href="Egap.Spreadsheets.PivotTableCollection.html#Egap_Spreadsheets_PivotTableCollection_Add_Egap_Spreadsheets_CellAddress_System_String_Egap_Spreadsheets_PivotTableOptions_System_String_">Add(CellAddress, string, PivotTableOptions, string?)</a>. A refresh works out
 sums, counts, averages, maxima, minima, products, counts of numbers, standard deviations and variances with subtotals and
 grand totals in the compact, outline, tabular and classic layouts, with page fields, hidden items and sorted fields. A
 table that shows values as a share or difference, has calculated fields or items, groups items or reads another workbook
@@ -159,7 +160,7 @@ or a cube cannot be refreshed: see <a class="xref" href="Egap.Spreadsheets.Pivot
 
   <h3 id="Egap_Spreadsheets_PivotTable_CanRefresh" data-uid="Egap.Spreadsheets.PivotTable.CanRefresh">
   CanRefresh
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether <a class="xref" href="Egap.Spreadsheets.PivotTable.html#Egap_Spreadsheets_PivotTable_Refresh">Refresh()</a> can work the pivot table out again: its source is a range of the workbook and Egap knows
@@ -192,7 +193,7 @@ everything it shows, as do the other pivot tables of its cache.</p>
 
   <h3 id="Egap_Spreadsheets_PivotTable_Name" data-uid="Egap.Spreadsheets.PivotTable.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The pivot table's name, such as <code>PivotTable1</code>.</p>
@@ -224,7 +225,7 @@ everything it shows, as do the other pivot tables of its cache.</p>
 
   <h3 id="Egap_Spreadsheets_PivotTable_Range" data-uid="Egap.Spreadsheets.PivotTable.Range">
   Range
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cells the pivot table takes, without its page fields above it.</p>
@@ -256,7 +257,7 @@ everything it shows, as do the other pivot tables of its cache.</p>
 
   <h3 id="Egap_Spreadsheets_PivotTable_Source" data-uid="Egap.Spreadsheets.PivotTable.Source">
   Source
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The range the pivot table's cache reads, such as <code>Data!A1:G61</code>, or the name of the table or defined name it
@@ -289,7 +290,7 @@ reads; null when the source is not a range of the workbook.</p>
 
   <h3 id="Egap_Spreadsheets_PivotTable_Worksheet" data-uid="Egap.Spreadsheets.PivotTable.Worksheet">
   Worksheet
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L35"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sheet the pivot table is on.</p>
@@ -325,7 +326,7 @@ reads; null when the source is not a range of the workbook.</p>
 
   <h3 id="Egap_Spreadsheets_PivotTable_Refresh" data-uid="Egap.Spreadsheets.PivotTable.Refresh">
   Refresh()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L73"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L78"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads the pivot table's source again and lays out every pivot table that shares its cache, as Excel's Refresh does:
@@ -361,7 +362,7 @@ cache's fields as its header row, or a table would grow over another pivot table
 
   <h3 id="Egap_Spreadsheets_PivotTable_ToString" data-uid="Egap.Spreadsheets.PivotTable.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L84"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns a string that represents the current object.</p>
@@ -394,7 +395,7 @@ cache's fields as its header row, or a table would grow over another pivot table
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L19" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/PivotTable.cs/#L21" class="edit-link">Edit this page</a>
         </div>
 
 
