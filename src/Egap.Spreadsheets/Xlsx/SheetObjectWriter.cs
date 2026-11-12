@@ -156,6 +156,12 @@ internal static class SheetObjectWriter
             elements.Add(("tableParts", tables));
         }
 
+        // Slicers: their part, and the sheet's extension list that names it.
+        if (sheet.Workbook.SlicersIfLoaded?.WriteSheet(sheet, sheetPart, relationships, NextId, parts.FreeName, parts.Add) is { } extensions)
+        {
+            elements.Add(("extLst", extensions));
+        }
+
         return elements;
     }
 
@@ -774,6 +780,10 @@ internal static class SheetObjectWriter
         {
             anchor.Add(source.Attributes());
         }
+        else if (drawing.Kind == SheetDrawingKind.Slicer)
+        {
+            anchor.Add(new XAttribute("editAs", "oneCell"));
+        }
 
         if (drawing.AnchorKind == DrawingAnchorKind.Absolute)
         {
@@ -812,6 +822,10 @@ internal static class SheetObjectWriter
         {
             shape = ChartFrame(drawing, imageId, shapeId);
         }
+        else if (drawing.Kind == SheetDrawingKind.Slicer)
+        {
+            shape = SlicerFrame(drawing, shapeId);
+        }
         else
         {
             shape = new XElement(Xdr + "pic",
@@ -827,6 +841,36 @@ internal static class SheetObjectWriter
         anchor.Add(shape);
         anchor.Add(drawing.Source?.Element(Xdr + "clientData") is { } client ? new XElement(client) : new XElement(Xdr + "clientData"));
         return anchor;
+    }
+
+    /// <summary>
+    /// A new slicer's frame, in the markup-compatibility block Excel writes: the slicer for Excel 2010 and later, and a
+    /// rectangle that says what it is for older readers.
+    /// </summary>
+    private static XElement SlicerFrame(SheetDrawing drawing, int shapeId)
+    {
+        XNamespace a14 = "http://schemas.microsoft.com/office/drawing/2010/main";
+        XElement properties = new(Xdr + "cNvPr", new XAttribute("id", Attr(shapeId)), new XAttribute("name", drawing.Name), drawing.Description is null ? null : new XAttribute("descr", drawing.Description));
+        XElement frame = new(Xdr + "graphicFrame", new XAttribute("macro", ""),
+            new XElement(Xdr + "nvGraphicFramePr", properties, new XElement(Xdr + "cNvGraphicFramePr")),
+            new XElement(Xdr + "xfrm", new XElement(A + "off", new XAttribute("x", "0"), new XAttribute("y", "0")), new XElement(A + "ext", new XAttribute("cx", "0"), new XAttribute("cy", "0"))),
+            new XElement(A + "graphic", new XElement(A + "graphicData", new XAttribute("uri", SheetObjectReader.Sle.NamespaceName),
+                new XElement(SheetObjectReader.Sle + "slicer", new XAttribute(XNamespace.Xmlns + "sle", SheetObjectReader.Sle.NamespaceName), new XAttribute("name", drawing.SlicerName ?? drawing.Name)))));
+        XElement fallback = new(Xdr + "sp", new XAttribute("macro", ""), new XAttribute("textlink", ""),
+            new XElement(Xdr + "nvSpPr", new XElement(properties), new XElement(Xdr + "cNvSpPr", new XElement(A + "spLocks", new XAttribute("noTextEdit", "1")))),
+            new XElement(Xdr + "spPr",
+                new XElement(A + "xfrm", new XElement(A + "off", new XAttribute("x", "0"), new XAttribute("y", "0")), new XElement(A + "ext", new XAttribute("cx", "1828800"), new XAttribute("cy", "2524125"))),
+                new XElement(A + "prstGeom", new XAttribute("prst", "rect"), new XElement(A + "avLst")),
+                new XElement(A + "solidFill", new XElement(A + "prstClr", new XAttribute("val", "white"))),
+                new XElement(A + "ln", new XAttribute("w", "1"), new XElement(A + "solidFill", new XElement(A + "prstClr", new XAttribute("val", "green"))))),
+            new XElement(Xdr + "txBody",
+                new XElement(A + "bodyPr", new XAttribute("vertOverflow", "clip"), new XAttribute("horzOverflow", "clip")),
+                new XElement(A + "lstStyle"),
+                new XElement(A + "p", new XElement(A + "r", new XElement(A + "rPr", new XAttribute("lang", "en-US"), new XAttribute("sz", "1100")),
+                    new XElement(A + "t", "This shape represents a slicer. Slicers are supported in Excel 2010 or later.")))));
+        return new XElement(SheetObjectReader.Mc + "AlternateContent", new XAttribute(XNamespace.Xmlns + "mc", SheetObjectReader.Mc.NamespaceName),
+            new XElement(SheetObjectReader.Mc + "Choice", new XAttribute(XNamespace.Xmlns + "a14", a14.NamespaceName), new XAttribute("Requires", "a14"), frame),
+            new XElement(SheetObjectReader.Mc + "Fallback", fallback));
     }
 
     /// <summary>A new chart's frame; one of the newer types goes in the markup-compatibility block Excel writes for them.</summary>

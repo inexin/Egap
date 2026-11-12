@@ -1,0 +1,141 @@
+﻿Excel 16.0 build 20527
+SlicerStyleLight1	WholeTable	font=theme2 L=1/2/theme5 T=1/2/theme5 B=1/2/theme5 R=1/2/theme5
+SlicerStyleLight1	HeaderRow	bold font=theme2 B=1/2/theme5
+SlicerStyleLight1	UnselectedItemWithData	fill=rgbFFFFFF/pattern1 font=rgb000000 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight1	UnselectedItemWithNoData	fill=rgbFFFFFF/pattern1 font=rgb828282 L=1/2/rgbE0E0E0 T=1/2/rgbE0E0E0 B=1/2/rgbE0E0E0 R=1/2/rgbE0E0E0
+SlicerStyleLight1	SelectedItemWithData	fill=theme5~0.599993896298105/pattern1 font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight1	SelectedItemWithNoData	fill=theme5~0.799981688894314/pattern1 font=rgb828282 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight1	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight1	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight1	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight1	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight2	WholeTable	font=theme2 L=1/2/theme6 T=1/2/theme6 B=1/2/theme6 R=1/2/theme6
+SlicerStyleLight2	HeaderRow	bold font=theme2 B=1/2/theme6
+SlicerStyleLight2	UnselectedItemWithData	fill=rgbFFFFFF/pattern1 font=rgb000000 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight2	UnselectedItemWithNoData	fill=rgbFFFFFF/pattern1 font=rgb828282 L=1/2/rgbE0E0E0 T=1/2/rgbE0E0E0 B=1/2/rgbE0E0E0 R=1/2/rgbE0E0E0
+SlicerStyleLight2	SelectedItemWithData	fill=theme6~0.599993896298105/pattern1 font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight2	SelectedItemWithNoData	fill=theme6~0.799981688894314/pattern1 font=rgb828282 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight2	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight2	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight2	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight2	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight3	WholeTable	font=theme2 L=1/2/theme7 T=1/2/theme7 B=1/2/theme7 R=1/2/theme7
+SlicerStyleLight3	HeaderRow	bold font=theme2 B=1/2/theme7
+SlicerStyleLight3	UnselectedItemWithData	fill=rgbFFFFFF/pattern1 font=rgb000000 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight3	UnselectedItemWithNoData	fill=rgbFFFFFF/pattern1 font=rgb828282 L=1/2/rgbE0E0E0 T=1/2/rgbE0E0E0 B=1/2/rgbE0E0E0 R=1/2/rgbE0E0E0
+SlicerStyleLight3	SelectedItemWithData	fill=theme7~0.599993896298105/pattern1 font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight3	SelectedItemWithNoData	fill=theme7~0.799981688894314/pattern1 font=rgb828282 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight3	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight3	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight3	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight3	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight4	WholeTable	font=theme2 L=1/2/theme8 T=1/2/theme8 B=1/2/theme8 R=1/2/theme8
+SlicerStyleLight4	HeaderRow	bold font=theme2 B=1/2/theme8
+SlicerStyleLight4	UnselectedItemWithData	fill=rgbFFFFFF/pattern1 font=rgb000000 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight4	UnselectedItemWithNoData	fill=rgbFFFFFF/pattern1 font=rgb828282 L=1/2/rgbE0E0E0 T=1/2/rgbE0E0E0 B=1/2/rgbE0E0E0 R=1/2/rgbE0E0E0
+SlicerStyleLight4	SelectedItemWithData	fill=theme8~0.599993896298105/pattern1 font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight4	SelectedItemWithNoData	fill=theme8~0.799981688894314/pattern1 font=rgb828282 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight4	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight4	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight4	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight4	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight5	WholeTable	font=theme2 L=1/2/theme9 T=1/2/theme9 B=1/2/theme9 R=1/2/theme9
+SlicerStyleLight5	HeaderRow	bold font=theme2 B=1/2/theme9
+SlicerStyleLight5	UnselectedItemWithData	fill=rgbFFFFFF/pattern1 font=rgb000000 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight5	UnselectedItemWithNoData	fill=rgbFFFFFF/pattern1 font=rgb828282 L=1/2/rgbE0E0E0 T=1/2/rgbE0E0E0 B=1/2/rgbE0E0E0 R=1/2/rgbE0E0E0
+SlicerStyleLight5	SelectedItemWithData	fill=theme9~0.599993896298105/pattern1 font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight5	SelectedItemWithNoData	fill=theme9~0.799981688894314/pattern1 font=rgb828282 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight5	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight5	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight5	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight5	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight6	WholeTable	font=theme2 L=1/2/theme10 T=1/2/theme10 B=1/2/theme10 R=1/2/theme10
+SlicerStyleLight6	HeaderRow	bold font=theme2 B=1/2/theme10
+SlicerStyleLight6	UnselectedItemWithData	fill=rgbFFFFFF/pattern1 font=rgb000000 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight6	UnselectedItemWithNoData	fill=rgbFFFFFF/pattern1 font=rgb828282 L=1/2/rgbE0E0E0 T=1/2/rgbE0E0E0 B=1/2/rgbE0E0E0 R=1/2/rgbE0E0E0
+SlicerStyleLight6	SelectedItemWithData	fill=theme10~0.599993896298105/pattern1 font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight6	SelectedItemWithNoData	fill=theme10~0.799981688894314/pattern1 font=rgb828282 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleLight6	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight6	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight6	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleLight6	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther1	WholeTable	font=theme2 L=1/2/theme1~-0.499984740745262 T=1/2/theme1~-0.499984740745262 B=1/2/theme1~-0.499984740745262 R=1/2/theme1~-0.499984740745262
+SlicerStyleOther1	HeaderRow	bold font=theme2 B=1/2/theme1~-0.349986266670736
+SlicerStyleOther1	UnselectedItemWithData	fill=theme1/pattern1 font=rgb000000 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleOther1	UnselectedItemWithNoData	fill=theme1/pattern1 font=rgb959595 L=1/2/rgbE0E0E0 T=1/2/rgbE0E0E0 B=1/2/rgbE0E0E0 R=1/2/rgbE0E0E0
+SlicerStyleOther1	SelectedItemWithData	fill=theme1~-0.249977111117893/pattern1 font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther1	SelectedItemWithNoData	fill=theme1~-0.149998474074526/pattern1 font=theme2 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleOther1	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther1	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther1	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther1	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther2	WholeTable	font=theme2 L=1/2/rgbBD814F T=1/2/rgbBD814F B=1/2/rgbBD814F R=1/2/rgbBD814F
+SlicerStyleOther2	HeaderRow	bold font=theme2 B=1/2/rgbBD814F
+SlicerStyleOther2	UnselectedItemWithData	font=rgb000000 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleOther2	UnselectedItemWithNoData	font=rgb828282 L=1/2/rgbE0E0E0 T=1/2/rgbE0E0E0 B=1/2/rgbE0E0E0 R=1/2/rgbE0E0E0
+SlicerStyleOther2	SelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther2	SelectedItemWithNoData	font=rgb828282 L=1/2/rgbCCCCCC T=1/2/rgbCCCCCC B=1/2/rgbCCCCCC R=1/2/rgbCCCCCC
+SlicerStyleOther2	HoveredUnselectedItemWithData	font=theme2 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther2	HoveredSelectedItemWithData	font=theme2 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther2	HoveredUnselectedItemWithNoData	font=theme2 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleOther2	HoveredSelectedItemWithNoData	font=theme2 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark1	WholeTable	font=theme2 L=1/2/theme5 T=1/2/theme5 B=1/2/theme5 R=1/2/theme5
+SlicerStyleDark1	HeaderRow	bold font=theme2 B=1/2/theme5
+SlicerStyleDark1	UnselectedItemWithData	fill=rgbC0C0C0/pattern1 font=rgb000000 L=1/2/rgbC0C0C0 T=1/2/rgbC0C0C0 B=1/2/rgbC0C0C0 R=1/2/rgbC0C0C0
+SlicerStyleDark1	UnselectedItemWithNoData	fill=rgbDFDFDF/pattern1 font=rgb959595 L=1/2/rgbDFDFDF T=1/2/rgbDFDFDF B=1/2/rgbDFDFDF R=1/2/rgbDFDFDF
+SlicerStyleDark1	SelectedItemWithData	fill=theme5/pattern1 font=theme1 L=1/2/theme5 T=1/2/theme5 B=1/2/theme5 R=1/2/theme5
+SlicerStyleDark1	SelectedItemWithNoData	fill=theme5~0.599993896298105/pattern1 font=theme5~-0.249977111117893 L=1/2/theme5~0.599993896298105 T=1/2/theme5~0.599993896298105 B=1/2/theme5~0.599993896298105 R=1/2/theme5~0.599993896298105
+SlicerStyleDark1	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark1	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark1	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark1	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark2	WholeTable	font=theme2 L=1/2/theme6 T=1/2/theme6 B=1/2/theme6 R=1/2/theme6
+SlicerStyleDark2	HeaderRow	bold font=theme2 B=1/2/theme6
+SlicerStyleDark2	UnselectedItemWithData	fill=rgbC0C0C0/pattern1 font=rgb000000 L=1/2/rgbC0C0C0 T=1/2/rgbC0C0C0 B=1/2/rgbC0C0C0 R=1/2/rgbC0C0C0
+SlicerStyleDark2	UnselectedItemWithNoData	fill=rgbDFDFDF/pattern1 font=rgb959595 L=1/2/rgbDFDFDF T=1/2/rgbDFDFDF B=1/2/rgbDFDFDF R=1/2/rgbDFDFDF
+SlicerStyleDark2	SelectedItemWithData	fill=theme6/pattern1 font=theme1 L=1/2/theme6 T=1/2/theme6 B=1/2/theme6 R=1/2/theme6
+SlicerStyleDark2	SelectedItemWithNoData	fill=theme6~0.599993896298105/pattern1 font=theme6~-0.249977111117893 L=1/2/theme6~0.599993896298105 T=1/2/theme6~0.599993896298105 B=1/2/theme6~0.599993896298105 R=1/2/theme6~0.599993896298105
+SlicerStyleDark2	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark2	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark2	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark2	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark3	WholeTable	font=theme2 L=1/2/theme7 T=1/2/theme7 B=1/2/theme7 R=1/2/theme7
+SlicerStyleDark3	HeaderRow	bold font=theme2 B=1/2/theme7
+SlicerStyleDark3	UnselectedItemWithData	fill=rgbC0C0C0/pattern1 font=rgb000000 L=1/2/rgbC0C0C0 T=1/2/rgbC0C0C0 B=1/2/rgbC0C0C0 R=1/2/rgbC0C0C0
+SlicerStyleDark3	UnselectedItemWithNoData	fill=rgbDFDFDF/pattern1 font=rgb959595 L=1/2/rgbDFDFDF T=1/2/rgbDFDFDF B=1/2/rgbDFDFDF R=1/2/rgbDFDFDF
+SlicerStyleDark3	SelectedItemWithData	fill=theme7/pattern1 font=theme1 L=1/2/theme7 T=1/2/theme7 B=1/2/theme7 R=1/2/theme7
+SlicerStyleDark3	SelectedItemWithNoData	fill=theme7~0.599993896298105/pattern1 font=theme7~-0.249977111117893 L=1/2/theme7~0.599993896298105 T=1/2/theme7~0.599993896298105 B=1/2/theme7~0.599993896298105 R=1/2/theme7~0.599993896298105
+SlicerStyleDark3	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark3	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark3	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark3	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark4	WholeTable	font=theme2 L=1/2/theme8 T=1/2/theme8 B=1/2/theme8 R=1/2/theme8
+SlicerStyleDark4	HeaderRow	bold font=theme2 B=1/2/theme8
+SlicerStyleDark4	UnselectedItemWithData	fill=rgbC0C0C0/pattern1 font=rgb000000 L=1/2/rgbC0C0C0 T=1/2/rgbC0C0C0 B=1/2/rgbC0C0C0 R=1/2/rgbC0C0C0
+SlicerStyleDark4	UnselectedItemWithNoData	fill=rgbDFDFDF/pattern1 font=rgb959595 L=1/2/rgbDFDFDF T=1/2/rgbDFDFDF B=1/2/rgbDFDFDF R=1/2/rgbDFDFDF
+SlicerStyleDark4	SelectedItemWithData	fill=theme8/pattern1 font=theme1 L=1/2/theme8 T=1/2/theme8 B=1/2/theme8 R=1/2/theme8
+SlicerStyleDark4	SelectedItemWithNoData	fill=theme8~0.599993896298105/pattern1 font=theme8~-0.249977111117893 L=1/2/theme8~0.599993896298105 T=1/2/theme8~0.599993896298105 B=1/2/theme8~0.599993896298105 R=1/2/theme8~0.599993896298105
+SlicerStyleDark4	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark4	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark4	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark4	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark5	WholeTable	font=theme2 L=1/2/theme9 T=1/2/theme9 B=1/2/theme9 R=1/2/theme9
+SlicerStyleDark5	HeaderRow	bold font=theme2 B=1/2/theme9
+SlicerStyleDark5	UnselectedItemWithData	fill=rgbC0C0C0/pattern1 font=rgb000000 L=1/2/rgbC0C0C0 T=1/2/rgbC0C0C0 B=1/2/rgbC0C0C0 R=1/2/rgbC0C0C0
+SlicerStyleDark5	UnselectedItemWithNoData	fill=rgbDFDFDF/pattern1 font=rgb959595 L=1/2/rgbDFDFDF T=1/2/rgbDFDFDF B=1/2/rgbDFDFDF R=1/2/rgbDFDFDF
+SlicerStyleDark5	SelectedItemWithData	fill=theme9/pattern1 font=theme1 L=1/2/theme9 T=1/2/theme9 B=1/2/theme9 R=1/2/theme9
+SlicerStyleDark5	SelectedItemWithNoData	fill=theme9~0.599993896298105/pattern1 font=theme9~-0.249977111117893 L=1/2/theme9~0.599993896298105 T=1/2/theme9~0.599993896298105 B=1/2/theme9~0.599993896298105 R=1/2/theme9~0.599993896298105
+SlicerStyleDark5	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark5	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark5	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark5	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark6	WholeTable	font=theme2 L=1/2/theme10 T=1/2/theme10 B=1/2/theme10 R=1/2/theme10
+SlicerStyleDark6	HeaderRow	bold font=theme2 B=1/2/theme10
+SlicerStyleDark6	UnselectedItemWithData	fill=rgbC0C0C0/pattern1 font=rgb000000 L=1/2/rgbC0C0C0 T=1/2/rgbC0C0C0 B=1/2/rgbC0C0C0 R=1/2/rgbC0C0C0
+SlicerStyleDark6	UnselectedItemWithNoData	fill=rgbDFDFDF/pattern1 font=rgb959595 L=1/2/rgbDFDFDF T=1/2/rgbDFDFDF B=1/2/rgbDFDFDF R=1/2/rgbDFDFDF
+SlicerStyleDark6	SelectedItemWithData	fill=theme10/pattern1 font=theme1 L=1/2/theme10 T=1/2/theme10 B=1/2/theme10 R=1/2/theme10
+SlicerStyleDark6	SelectedItemWithNoData	fill=theme10~0.599993896298105/pattern1 font=theme10~-0.249977111117893 L=1/2/theme10~0.599993896298105 T=1/2/theme10~0.599993896298105 B=1/2/theme10~0.599993896298105 R=1/2/theme10~0.599993896298105
+SlicerStyleDark6	HoveredUnselectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark6	HoveredSelectedItemWithData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark6	HoveredUnselectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999
+SlicerStyleDark6	HoveredSelectedItemWithNoData	font=rgb000000 L=1/2/rgb999999 T=1/2/rgb999999 B=1/2/rgb999999 R=1/2/rgb999999

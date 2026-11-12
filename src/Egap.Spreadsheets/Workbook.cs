@@ -116,6 +116,14 @@ public sealed partial class Workbook
     /// <summary>The pivot tables and caches read from the file, read when first needed.</summary>
     internal PivotModel Pivots => field ??= PivotModel.Load(this);
 
+    private Pivots.SlicerModel? slicers;
+
+    /// <summary>The slicers and slicer caches read from the file and made in code, read when first needed.</summary>
+    internal Pivots.SlicerModel Slicers => slicers ??= Egap.Spreadsheets.Pivots.SlicerModel.Load(this);
+
+    /// <summary>The slicers if they were read or made, else null: a save leaves the parts of slicers no one touched as they were.</summary>
+    internal Pivots.SlicerModel? SlicersIfLoaded => slicers;
+
     /// <summary>An XLS file's pivot tables as .xlsx parts, made when the pivot tables are first needed; null for other files.</summary>
     internal Func<Xls.PivotParts?>? MadePivots { get; set; }
 

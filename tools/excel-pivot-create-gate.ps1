@@ -8,7 +8,8 @@ cannot open, or one it repairs, is a miss: Excel writes a repair log (error*.xml
 so a new log after the open marks the file as repaired. Excel then refreshes every pivot table on the sheets whose names
 start with EgapPivot, saves the workbook as an .xlsx of the same name in the output folder and exports each of those
 sheets to a PDF of the same name, the second and later with -2, -3 and so on. Each workbook goes into gate.tsv in the output folder: the file, opened or repaired or failed, the
-pivot tables Excel found on each EgapPivot sheet, and ok or the first refresh error. Files already done are skipped, so a
+pivot tables Excel found on each EgapPivot sheet, ok or the first refresh error, and each slicer cache with the number of
+pivot tables it filters and the items Excel shows selected. Files already done are skipped, so a
 stopped run can go on. The Excel version goes into excel-version.txt in the output folder.
 
 Needs Excel on the PC. Run it as:
@@ -46,6 +47,7 @@ try {
         $state = 'opened'
         $counts = @()
         $status = 'ok'
+        $slicers = @()
         try {
             $book = $excel.Workbooks.Open($file.FullName, 0, $true)
             $after = RepairLogs
@@ -66,6 +68,12 @@ try {
                 }
             }
 
+            # Each slicer cache as Excel read it: its name, its pivot tables and the items it shows selected.
+            foreach ($cache in $book.SlicerCaches) {
+                $selected = @($cache.SlicerItems | Where-Object { $_.Selected } | ForEach-Object { $_.Name }) -join ','
+                $slicers += ($cache.Name + '[' + $cache.PivotTables.Count + ']=' + $selected)
+            }
+
             $book.SaveAs($target, 51)
             $n = 0
             foreach ($sheet in $sheets) {
@@ -82,7 +90,7 @@ try {
             if ($null -ne $book) { $book.Close($false) }
         }
 
-        Add-Content -Path $log -Value ($name + "`t" + $state + "`t" + ($counts -join ' ') + "`t" + $status)
+        Add-Content -Path $log -Value ($name + "`t" + $state + "`t" + ($counts -join ' ') + "`t" + $status + "`t" + ($slicers -join ' '))
     }
 }
 finally {

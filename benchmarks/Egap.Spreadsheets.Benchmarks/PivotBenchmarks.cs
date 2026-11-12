@@ -48,4 +48,12 @@ public class PivotBenchmarks
         book.Save(stream);
         return stream.Length;
     }
+
+    [Benchmark(Description = "Print the compact pivot sheet to PDF")]
+    public long Print()
+    {
+        using MemoryStream stream = new();
+        book.Worksheets["Compact"].SaveAsPdf(stream);
+        return stream.Length;
+    }
 }

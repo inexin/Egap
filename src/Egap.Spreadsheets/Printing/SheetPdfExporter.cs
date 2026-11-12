@@ -177,6 +177,15 @@ internal sealed class SheetPdfExporter : IPageTagger
                     figure.AlternateText = string.IsNullOrWhiteSpace(drawing.Description) ? (drawing.Name.Length > 0 ? drawing.Name : "Picture") : drawing.Description;
                     figures[drawing] = figure;
                 }
+                else if (drawing.Kind == SheetDrawingKind.Slicer && drawing.Slicer is { } slicer)
+                {
+                    // A slicer reads as its caption and the items it has selected.
+                    PdfStructureElement figure = section.Add(PdfStructureType.Figure);
+                    figure.AlternateText = string.IsNullOrWhiteSpace(drawing.Description)
+                        ? $"Slicer {slicer.Caption}: {string.Join(", ", slicer.SelectedItems)}"
+                        : drawing.Description;
+                    figures[drawing] = figure;
+                }
             }
         }
 

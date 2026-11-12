@@ -104,6 +104,12 @@ internal sealed record PivotStyleFormat
 
     private static CellColor Color(string text)
     {
+        if (text.StartsWith('#'))
+        {
+            uint rgb = uint.Parse(text.AsSpan(1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            return CellColor.FromRgb((byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
+        }
+
         int tilde = text.IndexOf('~', StringComparison.Ordinal);
         int theme = int.Parse(tilde < 0 ? text : text[..tilde], CultureInfo.InvariantCulture);
         double tint = tilde < 0 ? 0 : double.Parse(text[(tilde + 1)..], CultureInfo.InvariantCulture);

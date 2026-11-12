@@ -24,6 +24,7 @@ internal static class SheetObjectReader
     public static readonly XNamespace C = "http://schemas.openxmlformats.org/drawingml/2006/chart";
     public static readonly XNamespace Cx = "http://schemas.microsoft.com/office/drawing/2014/chartex";
     public static readonly XNamespace Mc = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+    public static readonly XNamespace Sle = "http://schemas.microsoft.com/office/drawing/2010/slicer";
 
     /// <summary>Reads an element the model holds; false for one kept as it is.</summary>
     public static bool Read(Workbook book, Worksheet sheet, XElement element)
@@ -371,6 +372,7 @@ internal static class SheetObjectReader
                 "sp" => SheetDrawingKind.Shape,
                 "grpSp" => SheetDrawingKind.Group,
                 "graphicFrame" when ChartReference(content) is not null => SheetDrawingKind.Chart,
+                "graphicFrame" when SlicerReference(content) is not null => SheetDrawingKind.Slicer,
                 _ => SheetDrawingKind.Other,
             };
             SheetDrawing drawing = new(objectKind)
@@ -424,6 +426,11 @@ internal static class SheetObjectReader
                 drawing.ChartPart = Package(sheet).GetPart(chartRelationship.TargetName);
             }
 
+            if (objectKind == SheetDrawingKind.Slicer)
+            {
+                drawing.SlicerName = (string?)SlicerReference(content!)!.Attribute("name");
+            }
+
             drawing.ReadState = SheetObjectWriter.State(drawing);
             sheet.Drawings.AddRead(drawing);
         }
@@ -432,6 +439,9 @@ internal static class SheetObjectReader
     }
 
     internal static XElement? ChartReference(XElement frame) => frame.Descendants().FirstOrDefault(e => e.Name == C + "chart" || e.Name == Cx + "chart");
+
+    /// <summary>The slicer a graphic frame shows, which names it.</summary>
+    internal static XElement? SlicerReference(XElement frame) => frame.Descendants(Sle + "slicer").FirstOrDefault();
 
     /// <summary>The object an anchor places: its child that is not a position or client data.</summary>
     internal static XElement? ObjectOf(XElement anchor) =>

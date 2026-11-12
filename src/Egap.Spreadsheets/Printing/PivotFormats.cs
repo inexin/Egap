@@ -30,21 +30,20 @@ internal sealed class PivotFormats
     {
     }
 
-    /// <summary>The formats of a sheet's pivot tables; null when none of them has a style Egap knows.</summary>
+    private static readonly IReadOnlyDictionary<PivotStyleElement, PivotStyleFormat> NoStyle = new Dictionary<PivotStyleElement, PivotStyleFormat>();
+
+    /// <summary>The formats and buttons of a sheet's pivot tables; null when it has none.</summary>
     public static PivotFormats? For(Worksheet sheet)
     {
         PivotFormats? formats = null;
         foreach (PivotTable table in sheet.Workbook.Pivots.Tables(sheet))
         {
             XElement root = table.Definition.Root;
-            XElement? info = root.Element(table.Definition.Ns + "pivotTableStyleInfo");
-            if ((string?)info?.Attribute("name") is not { } name || PivotStyles.Get(name) is not { } style)
-            {
-                continue;
-            }
-
+            // A table with no style, or a style of the workbook's own, still has Excel's buttons and label indents.
+            XElement info = root.Element(table.Definition.Ns + "pivotTableStyleInfo") ?? new XElement(table.Definition.Ns + "pivotTableStyleInfo");
+            IReadOnlyDictionary<PivotStyleElement, PivotStyleFormat> style = (string?)info.Attribute("name") is { } name && PivotStyles.Get(name) is { } named ? named : NoStyle;
             formats ??= new PivotFormats();
-            formats.Add(table.Definition, info!, style);
+            formats.Add(table.Definition, info, style);
         }
 
         return formats;

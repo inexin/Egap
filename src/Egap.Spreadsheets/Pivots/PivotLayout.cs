@@ -122,7 +122,8 @@ internal sealed class PivotLayout
         List<PivotItemDefinition> items = [];
         HashSet<int> taken = [];
         bool hides = before.Any(i => i.Hidden);
-        bool created = pivotField.ItemsElement is null;
+        // A field with no items yet, such as one a slicer was just put on, gets them sorted.
+        bool created = pivotField.ItemsElement is null || pivotField.Items.Count == 0;
         foreach (PivotItemDefinition item in before)
         {
             int moved = (uint)item.Shared < (uint)field.Remap.Length ? field.Remap[item.Shared] : -1;
@@ -178,8 +179,11 @@ internal sealed class PivotLayout
         if (created)
         {
             subtotals = [.. pivotField.Subtotals.Select(t => new PivotItemDefinition(new XElement(ns + "item", new XAttribute("t", t))))];
-            pivotField.ItemsElement = new XElement(ns + "items");
-            pivotField.Element.AddFirst(pivotField.ItemsElement);
+            if (pivotField.ItemsElement is null)
+            {
+                pivotField.ItemsElement = new XElement(ns + "items");
+                pivotField.Element.AddFirst(pivotField.ItemsElement);
+            }
         }
 
         pivotField.Items.Clear();
@@ -249,7 +253,12 @@ internal sealed class PivotLayout
         List<int> included = FilterRecords();
         List<int> rowFields = definition.RowFields;
         List<int> columnFields = definition.ColumnFields;
-        SortByItems(included, [.. rowFields.Concat(columnFields).Where(f => f >= 0)]);
+        // Excel sums a table that hides no record in the order of its items, and one a filter or slicer thins in the source's
+        // order, which a total of many decimals shows in its last bits.
+        if (included.Count == data.Records.Length)
+        {
+            SortByItems(included, [.. rowFields.Concat(columnFields).Where(f => f >= 0)]);
+        }
         List<Line> rows = Axis(rowFields, rows: true, included);
         List<Line> columns = Axis(columnFields, rows: false, included);
 
@@ -439,11 +448,23 @@ internal sealed class PivotLayout
         WriteItems("colItems", columns, ["colFields", "rowItems", "rowFields", "pivotFields"]);
     }
 
-    /// <summary>The records the table shows: those of no hidden item of a field it uses and of each page field's item.</summary>
+    /// <summary>
+    /// The records the table shows: those of no hidden item of a field it uses or a slicer filters, and of each page field's
+    /// item.
+    /// </summary>
     private List<int> FilterRecords()
     {
         List<(int Field, int? Page)> filters = [];
         HashSet<int> used = [.. definition.RowFields.Concat(definition.ColumnFields).Where(f => f >= 0)];
+
+        // A slicer hides the items of its field whether the table shows the field or not.
+        for (int f = 0; f < definition.Fields.Count; f++)
+        {
+            if (definition.Fields[f].DataItems.Any(i => i.Hidden) && !definition.PageFields.Any(p => p.Field == f))
+            {
+                used.Add(f);
+            }
+        }
         foreach (int field in used)
         {
             filters.Add((field, null));
@@ -478,8 +499,8 @@ internal sealed class PivotLayout
     }
 
     /// <summary>
-    /// Puts the records in the order of their items, row fields first, keeping the source's order among equals. Excel sums
-    /// them in this order, which a total of many decimals shows in its last bits.
+    /// Puts the records in the order of their items, row fields first, keeping the source's order among equals, as Excel
+    /// sums them when no record is filtered out.
     /// </summary>
     private void SortByItems(List<int> records, int[] fields)
     {

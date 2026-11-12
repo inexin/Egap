@@ -971,6 +971,70 @@ table would grow over another pivot table or off the sheet; Excel refuses those 
 that reads another workbook or a cube, groups items, has calculated fields or items, or shows values as a share or a
 difference; such a table is kept as it was read.
 
+`sheet.PivotTables.Add` makes a pivot table from a range, an Excel table or a defined name, as Excel's Insert PivotTable
+does. `PivotTableOptions` names the source's fields by their headers: `Rows`, `Columns` and `Filters` (Excel's report
+filters) take field names, and `Values` takes `PivotValueField`s, each a field with its summary function and an optional
+name and number format. `Layout` chooses compact, outline or tabular form; the grand totals, the headers and the stripes
+can be turned off, and `StyleName` takes any of Excel's built-in pivot styles (`PivotStyleLight16` by default). The new
+table is laid out at once with the refresh above, its columns fitted as Excel fits them, and saves as the cache,
+records and table parts Excel writes.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("sales.xlsx");
+Worksheet report = book.Worksheets.Add("Report");
+PivotTableOptions options = new()
+{
+    Rows = { "Region", "Product" },
+    Columns = { "Year" },
+    Filters = { "Rep" },
+    Values = { new PivotValueField("Revenue") { NumberFormat = "#,##0" }, new PivotValueField("Units", PivotFunction.Average) },
+    Layout = PivotTableLayout.Tabular,
+};
+PivotTable table = report.PivotTables.Add("A3", "Data!A1:G61", options, "Sales");
+Console.WriteLine($"{table.Name} fills {table.Range}");
+book.Save("sales.xlsx");
+```
+
+`Add` throws `ArgumentException` when the source, the options or the name are not ones Excel takes, such as a field the
+source does not have, and `InvalidOperationException` when the table would overlap another pivot table or go off the
+sheet; nothing is added then.
+
+#### Slicers
+
+A slicer shows a button for each item of a pivot table's field and filters the table by the items selected.
+`sheet.Drawings.AddSlicer` puts one on a sheet's drawing layer over a range of cells, and `SheetDrawing.Slicer` gives the
+slicers Excel made too. `Select` and `SelectAll` change the selection and refresh the pivot tables the slicer filters,
+`Connect` makes it filter another table of the same cache, and `Caption`, `StyleName` (Excel's built-in slicer styles),
+`ColumnCount` and `ShowHeader` change its look. A second slicer of a field shares the first one's selection, as in Excel.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("sales.xlsx");
+Worksheet report = book.Worksheets["Report"];
+PivotTable table = report.PivotTables["Sales"];
+
+Slicer region = report.Drawings.AddSlicer(table, "Region", RangeAddress.Parse("H3:J14")).Slicer!;
+region.Select(["North", "South"]);          // the table now sums those two regions
+
+Slicer year = report.Drawings.AddSlicer(table, "Year", RangeAddress.Parse("L3:O8")).Slicer!;
+year.ColumnCount = 2;
+year.StyleName = "SlicerStyleDark2";
+
+foreach (Slicer slicer in report.Drawings.Select(d => d.Slicer).OfType<Slicer>())
+{
+    Console.WriteLine($"{slicer.Name}: {string.Join(", ", slicer.SelectedItems)} of {slicer.Items.Count}");
+}
+
+book.Save("sales.xlsx");
+```
+
+A slicer filters on its field whether the table shows the field or not, and its items are labelled and sorted as Excel's.
+Egap prints and exports slicers to PDF as Excel draws them. Slicers of Excel tables and of cubes are read and kept but
+cannot be changed; timelines are kept as they were.
+
 ## Protection
 
 `sheet.Protection` protects a sheet as Excel's Protect Sheet does: locked cells (`CellProtection.Locked`, the default)
@@ -1033,7 +1097,8 @@ book.Save("report.xlsx");
 
 Parts nothing changed in are saved byte for byte: a table, the notes or the drawing layer are written again only when
 something in them changed, a chart only when you changed that chart, and a pivot table and its cache only when they were
-refreshed. Slicers, macros and other parts the model does not hold are always kept as they were.
+refreshed, and slicers only when one was made, changed or removed. Macros and other parts the model does not hold are
+always kept as they were.
 
 ## Streaming large files
 

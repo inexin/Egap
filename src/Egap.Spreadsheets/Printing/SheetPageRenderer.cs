@@ -518,7 +518,8 @@ internal sealed partial class SheetPageRenderer
         {
             Chart? chart = drawing.Chart;
             byte[]? data = drawing.Kind == SheetDrawingKind.Picture ? drawing.ImageData : null;
-            if (data is null && chart is null)
+            Slicer? slicer = drawing.Kind == SheetDrawingKind.Slicer ? drawing.Slicer : null;
+            if (data is null && chart is null && slicer is null)
             {
                 continue;
             }
@@ -538,6 +539,17 @@ internal sealed partial class SheetPageRenderer
                     double top = row.Start + y - grid.Rows(0, row.First - 1);
                     if (left >= column.Start + column.Size || left + width <= column.Start || top >= row.Start + row.Size || top + height <= row.Start)
                     {
+                        continue;
+                    }
+
+                    if (slicer is not null)
+                    {
+                        canvas.Save();
+                        canvas.ClipRect(Rect(column.Start, row.Start, column.Size, row.Size));
+                        Begin(t => t.BeginFigure(page, drawing));
+                        DrawSlicer(slicer, left, top, width, height);
+                        End();
+                        canvas.Restore();
                         continue;
                     }
 
