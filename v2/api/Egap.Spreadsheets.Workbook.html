@@ -705,9 +705,9 @@ carries on, without its repeated header. Sheets are named as in <a class="xref" 
   <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L491"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Loads an XLSX, XLSM, XLTX or XLTM file, an Excel 97-2003 workbook (XLS), or an OpenDocument spreadsheet (ODS, OTS or
-flat FODS), from a stream, which is left open. The kind is told from the file's first bytes. An XLS workbook saves as
-XLSX. An OpenDocument spreadsheet's formulas are translated from
+  <div class="markdown level1 summary"><p>Loads an XLSX, XLSM, XLTX or XLTM file, an Excel binary workbook (XLSB), an Excel 97-2003 workbook (XLS), or an
+OpenDocument spreadsheet (ODS, OTS or flat FODS), from a stream, which is left open. The kind is told from the file's
+first bytes and, in a package, from its main part. An XLSB or XLS workbook saves as XLSX. An OpenDocument spreadsheet's formulas are translated from
 OpenFormula to Excel's syntax, and the workbook's <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Format">Format</a> is <a class="xref" href="Egap.Spreadsheets.WorkbookFormat.html#Egap_Spreadsheets_WorkbookFormat_Ods">Ods</a>,
 <a class="xref" href="Egap.Spreadsheets.WorkbookFormat.html#Egap_Spreadsheets_WorkbookFormat_Ots">Ots</a> or <a class="xref" href="Egap.Spreadsheets.WorkbookFormat.html#Egap_Spreadsheets_WorkbookFormat_Fods">Fods</a>. An encrypted one needs
 <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Password">Password</a>.</p>
@@ -761,7 +761,7 @@ OpenFormula to Excel's syntax, and the workbook's <a class="xref" href="Egap.Spr
   <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Workbook.cs/#L468"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Loads an XLSX, XLSM, XLTX or XLTM file, an Excel 97-2003 workbook (XLS), an OpenDocument spreadsheet (ODS, OTS or flat FODS), or a <code>.csv</code>,
+  <div class="markdown level1 summary"><p>Loads an XLSX, XLSM, XLTX or XLTM file, an Excel binary workbook (XLSB), an Excel 97-2003 workbook (XLS), an OpenDocument spreadsheet (ODS, OTS or flat FODS), or a <code>.csv</code>,
 <code>.tsv</code> or <code>.tab</code> file as <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_LoadCsv_System_String_Egap_Spreadsheets_CsvOptions_">LoadCsv(string, CsvOptions?)</a> does, with <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Csv">Csv</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
