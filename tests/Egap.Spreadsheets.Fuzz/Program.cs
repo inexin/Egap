@@ -28,6 +28,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["encrypted"] = Encrypted,
     ["pivots"] = Pivots,
     ["pivotparts"] = PivotParts,
+    ["slicerparts"] = SlicerParts,
     ["edits"] = Edits,
     ["shift"] = Shift,
     ["copies"] = Copies,
@@ -287,6 +288,42 @@ static void Pivots(Stream input)
             }
         }
 
+        // Slicers: their items read, one item selected and all again, and the sheet printed with them.
+        foreach (Worksheet sheet in book.Worksheets)
+        {
+            foreach (SheetDrawing drawing in sheet.Drawings)
+            {
+                if (drawing.Slicer is not { } slicer)
+                {
+                    continue;
+                }
+
+                _ = slicer.SelectedItems;
+                try
+                {
+                    if (slicer.Items.Count > 0)
+                    {
+                        slicer.Select([slicer.Items[0]]);
+                        slicer.SelectAll();
+                    }
+
+                    slicer.ColumnCount = 2;
+                }
+                catch (InvalidOperationException)
+                {
+                    // A slicer of a table or a cube, or a pivot table that cannot be refreshed.
+                }
+            }
+
+            if (sheet.Drawings.Any(d => d.Kind == SheetDrawingKind.Slicer))
+            {
+                foreach (SheetPage page in sheet.Paginate().Pages.Take(2))
+                {
+                    using Egami.Raster<Egami.Pixels.Rgba8> raster = page.Render(24);
+                }
+            }
+        }
+
         _ = book.RefreshPivotTables();
         try
         {
@@ -332,6 +369,31 @@ static void PivotParts(Stream input)
     string[] parts = ["xl/pivotTables/pivotTable1.xml", "xl/pivotTables/pivotTable4.xml", "xl/pivotCache/pivotCacheDefinition1.xml", "xl/pivotCache/pivotCacheRecords1.xml"];
     using MemoryStream package = new();
     package.Write(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "pivot-template.xlsx")));
+    using (System.IO.Compression.ZipArchive zip = new(package, System.IO.Compression.ZipArchiveMode.Update, leaveOpen: true))
+    {
+        string name = parts[bytes[0] % parts.Length];
+        zip.GetEntry(name)?.Delete();
+        using Stream entry = zip.CreateEntry(name).Open();
+        entry.Write(bytes, 1, bytes.Length - 1);
+    }
+
+    package.Position = 0;
+    Pivots(package);
+}
+
+// The first byte picks a slicer part of the template book (a slicer cache, the slicers, their drawing or a pivot table
+// they filter); the rest replaces that part, and the book then goes through the pivots target.
+static void SlicerParts(Stream input)
+{
+    byte[] bytes = Bytes(input);
+    if (bytes.Length == 0)
+    {
+        return;
+    }
+
+    string[] parts = ["xl/slicerCaches/slicerCache1.xml", "xl/slicerCaches/slicerCache3.xml", "xl/slicers/slicer1.xml", "xl/drawings/drawing1.xml", "xl/pivotTables/pivotTable1.xml", "xl/workbook.xml"];
+    using MemoryStream package = new();
+    package.Write(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "slicer-template.xlsx")));
     using (System.IO.Compression.ZipArchive zip = new(package, System.IO.Compression.ZipArchiveMode.Update, leaveOpen: true))
     {
         string name = parts[bytes[0] % parts.Length];

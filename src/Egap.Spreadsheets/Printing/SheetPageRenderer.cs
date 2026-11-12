@@ -58,6 +58,8 @@ internal sealed partial class SheetPageRenderer
     private readonly List<Segment> columns = [];
     private readonly List<RangeAddress> merges = [];
     private ConditionalDrawing? conditional;
+    private PivotFormats? pivotFormats;
+    private bool pivotsRead;
 
     public SheetPageRenderer(SheetPage page, Canvas canvas, IPageTagger? tagger)
     {
@@ -231,6 +233,11 @@ internal sealed partial class SheetPageRenderer
         }
 
         CellStyle style = index >= 0 && index < book.Styles.Count ? book.Styles[index] : CellStyle.Default;
+        if (Pivots() is { } pivots)
+        {
+            style = pivots.Style(row, column, style);
+        }
+
         return sheet.ConditionalFormats.Count > 0 ? Conditional().Style(row, column, style) : style;
     }
 
@@ -363,6 +370,18 @@ internal sealed partial class SheetPageRenderer
     }
 
     private ConditionalDrawing Conditional() => conditional ??= new ConditionalDrawing(sheet, colors);
+
+    /// <summary>The formats the sheet's pivot tables put on their cells from their styles; null when none has a style.</summary>
+    private PivotFormats? Pivots()
+    {
+        if (!pivotsRead)
+        {
+            pivotsRead = true;
+            pivotFormats = sheet.PivotTables.Count > 0 ? PivotFormats.For(sheet) : null;
+        }
+
+        return pivotFormats;
+    }
 
     /// <summary>
     /// The colour a fill shows: a solid fill's foreground, and for a pattern the foreground and background mixed by how much
@@ -499,7 +518,8 @@ internal sealed partial class SheetPageRenderer
         {
             Chart? chart = drawing.Chart;
             byte[]? data = drawing.Kind == SheetDrawingKind.Picture ? drawing.ImageData : null;
-            if (data is null && chart is null)
+            Slicer? slicer = drawing.Kind == SheetDrawingKind.Slicer ? drawing.Slicer : null;
+            if (data is null && chart is null && slicer is null)
             {
                 continue;
             }
@@ -519,6 +539,17 @@ internal sealed partial class SheetPageRenderer
                     double top = row.Start + y - grid.Rows(0, row.First - 1);
                     if (left >= column.Start + column.Size || left + width <= column.Start || top >= row.Start + row.Size || top + height <= row.Start)
                     {
+                        continue;
+                    }
+
+                    if (slicer is not null)
+                    {
+                        canvas.Save();
+                        canvas.ClipRect(Rect(column.Start, row.Start, column.Size, row.Size));
+                        Begin(t => t.BeginFigure(page, drawing));
+                        DrawSlicer(slicer, left, top, width, height);
+                        End();
+                        canvas.Restore();
                         continue;
                     }
 

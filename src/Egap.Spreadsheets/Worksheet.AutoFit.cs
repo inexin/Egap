@@ -9,9 +9,10 @@ public sealed partial class Worksheet
 {
     /// <summary>
     /// Fits a column to the widest text of its cells from <paramref name="firstRow"/> to <paramref name="lastRow"/>, as Excel's
-    /// AutoFit does; null, and the column left as it is, when none of those cells has text.
+    /// AutoFit does; null, and the column left as it is, when none of those cells has text. A pivot table's fit passes the
+    /// style its cells show (<paramref name="restyle"/>) and the pixels its field buttons take beside them (<paramref name="buttons"/>).
     /// </summary>
-    internal double? AutoFitColumn(int column, int firstRow, int lastRow, TextMeter meter)
+    internal double? AutoFitColumn(int column, int firstRow, int lastRow, TextMeter meter, Func<int, int, CellStyle, CellStyle>? restyle = null, Func<int, int, int>? buttons = null)
     {
         List<RangeAddress> merges = Merges(new RangeAddress(firstRow, column, lastRow, column));
         List<RangeAddress> filters = FilterHeaders(column);
@@ -25,9 +26,10 @@ public sealed partial class Worksheet
                 continue;
             }
 
-            if (Fitted(row, c, available, meter, RowPixels(row, meter)) is { } fitted)
+            if (Fitted(row, c, available, meter, RowPixels(row, meter), restyle) is { } fitted)
             {
-                widest = Math.Max(widest, fitted.Width + (filters.Count > 0 ? (int)Math.Round(FilterButtonPixels(row, c, filters) * 100.0 / View.ZoomScale) : 0));
+                int button = filters.Count > 0 ? FilterButtonPixels(row, c, filters) : buttons?.Invoke(row, c) ?? 0;
+                widest = Math.Max(widest, fitted.Width + (button > 0 ? (int)Math.Round(button * 100.0 / View.ZoomScale) : 0));
             }
         }
 
@@ -174,7 +176,7 @@ public sealed partial class Worksheet
     /// To fit a column, <paramref name="rowPixels"/> is the height of the cell's row: wrapped text that needs more lines than
     /// the row shows is wrapped wider until it fits them, as Excel widens the column.
     /// </summary>
-    private (int Width, int Height)? Fitted(int row, int column, int available, TextMeter meter, int? rowPixels)
+    private (int Width, int Height)? Fitted(int row, int column, int available, TextMeter meter, int? rowPixels, Func<int, int, CellStyle, CellStyle>? restyle = null)
     {
         Cell cell = this[row, column];
         if (cell.Value.IsEmpty)
@@ -188,7 +190,7 @@ public sealed partial class Worksheet
             return null;
         }
 
-        CellStyle style = cell.Style;
+        CellStyle style = restyle is null ? cell.Style : restyle(row, column, cell.Style);
         CellFont font = style.Font;
         CellAlignment alignment = style.Alignment;
 
@@ -403,7 +405,7 @@ public sealed partial class Worksheet
     }
 
     /// <summary>The width in pixels of a filter's button, as Excel draws it at any font and zoom.</summary>
-    private const int FilterButton = 16;
+    internal const int FilterButton = 16;
 
     /// <summary>A row's height in pixels on screen: its own height, else the sheet's default, else the normal font's line.</summary>
     private int RowPixels(int row, TextMeter meter)

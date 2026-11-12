@@ -57,6 +57,15 @@ internal sealed class PivotLayout
     /// <summary>Where the page fields go, or null when there are none.</summary>
     public RangeAddress? PageArea { get; private set; }
 
+    /// <summary>The cells, from the table's top left, that show a field's button: beside its caption, or a page field's item.</summary>
+    public List<(int Row, int Column)> Buttons { get; } = [];
+
+    /// <summary>The row labels, from the table's top left, of a compact column, which Excel aligns left with an indent for each level.</summary>
+    public List<(int Row, int Column, int Indent)> LeftLabels { get; } = [];
+
+    /// <summary>The cells, from the table's top left, of outer items that show a button to expand and collapse them.</summary>
+    public List<(int Row, int Column)> ExpandButtons { get; } = [];
+
     /// <summary>
     /// Brings the fields' items up to date with the cache's new items, then lays the table out and writes its location and
     /// row and column items into <paramref name="definition"/>, which should be a copy until the refresh is sure to go on.
@@ -113,7 +122,8 @@ internal sealed class PivotLayout
         List<PivotItemDefinition> items = [];
         HashSet<int> taken = [];
         bool hides = before.Any(i => i.Hidden);
-        bool created = pivotField.ItemsElement is null;
+        // A field with no items yet, such as one a slicer was just put on, gets them sorted.
+        bool created = pivotField.ItemsElement is null || pivotField.Items.Count == 0;
         foreach (PivotItemDefinition item in before)
         {
             int moved = (uint)item.Shared < (uint)field.Remap.Length ? field.Remap[item.Shared] : -1;
@@ -169,8 +179,11 @@ internal sealed class PivotLayout
         if (created)
         {
             subtotals = [.. pivotField.Subtotals.Select(t => new PivotItemDefinition(new XElement(ns + "item", new XAttribute("t", t))))];
-            pivotField.ItemsElement = new XElement(ns + "items");
-            pivotField.Element.AddFirst(pivotField.ItemsElement);
+            if (pivotField.ItemsElement is null)
+            {
+                pivotField.ItemsElement = new XElement(ns + "items");
+                pivotField.Element.AddFirst(pivotField.ItemsElement);
+            }
         }
 
         pivotField.Items.Clear();
@@ -240,6 +253,12 @@ internal sealed class PivotLayout
         List<int> included = FilterRecords();
         List<int> rowFields = definition.RowFields;
         List<int> columnFields = definition.ColumnFields;
+        // Excel sums a table that hides no record in the order of its items, and one a filter or slicer thins in the source's
+        // order, which a total of many decimals shows in its last bits.
+        if (included.Count == data.Records.Length)
+        {
+            SortByItems(included, [.. rowFields.Concat(columnFields).Where(f => f >= 0)]);
+        }
         List<Line> rows = Axis(rowFields, rows: true, included);
         List<Line> columns = Axis(columnFields, rows: false, included);
 
@@ -291,20 +310,21 @@ internal sealed class PivotLayout
         // The top row: the data field's name in the corner, then the column fields' buttons or one caption for them.
         if (topRow)
         {
-            if (dataCount == 1)
+            // With no row fields Excel's newer layouts name the one data field on its row, not in the corner.
+            if (dataCount == 1 && (classic || rowFields.Count > 0))
             {
                 Put(0, 0, DataName(0));
             }
 
             if (!classic && columnFields.FirstOrDefault(f => f != PivotDefinition.DataField) is int first && Compact(first))
             {
-                Put(0, firstDataColumn, definition.ColumnHeaderCaption ?? "Column Labels");
+                PutButton(0, firstDataColumn, definition.ColumnHeaderCaption ?? "Column Labels");
             }
             else
             {
                 for (int j = 0; j < columnFields.Count; j++)
                 {
-                    Put(0, firstDataColumn + j, FieldCaption(columnFields[j]));
+                    PutButton(0, firstDataColumn + j, FieldCaption(columnFields[j]));
                 }
             }
         }
@@ -315,7 +335,9 @@ internal sealed class PivotLayout
             if (l == 0 || labelColumn[l] != labelColumn[l - 1])
             {
                 int field = rowFields[l];
-                Put(headerRow, labelColumn[l], !classic && Compact(field) ? definition.RowHeaderCaption ?? "Row Labels" : FieldCaption(field));
+                // Values alone on the rows show the data caption, as Excel does, not Row Labels.
+                bool valuesOnly = field == PivotDefinition.DataField && rowFields.Count == 1;
+                PutButton(headerRow, labelColumn[l], !classic && !valuesOnly && Compact(field) ? definition.RowHeaderCaption ?? "Row Labels" : FieldCaption(field));
             }
         }
 
@@ -341,6 +363,12 @@ internal sealed class PivotLayout
                     for (int l = line.Repeated; l < line.Path.Length; l++)
                     {
                         PutLabel(firstHeaderRow + l, column, columnFields[l], line.Path[l]);
+
+                        // An item of an outer field shows the button that expands and collapses it.
+                        if (columnFields[l] != PivotDefinition.DataField && columnFields.Skip(l + 1).Any(f => f != PivotDefinition.DataField))
+                        {
+                            ExpandButtons.Add((firstHeaderRow + l, column));
+                        }
                     }
 
                     break;
@@ -363,7 +391,7 @@ internal sealed class PivotLayout
                 case LineKind.Data when line.Path.Length == 0:
                     if (firstDataColumn > 0)
                     {
-                        Put(row, 0, "Total");
+                        Put(row, 0, !classic && dataCount == 1 && rowFields.Count == 0 ? DataName(0) : "Total");
                     }
 
                     break;
@@ -371,16 +399,40 @@ internal sealed class PivotLayout
                     for (int l = line.Repeated; l < line.Path.Length; l++)
                     {
                         PutLabel(row, labelColumn[l], rowFields[l], line.Path[l]);
+                        CompactLabel(row, l);
+                        if (rowFields[l] != PivotDefinition.DataField && rowFields.Skip(l + 1).Any(f => f != PivotDefinition.DataField))
+                        {
+                            ExpandButtons.Add((row, labelColumn[l]));
+                        }
                     }
 
                     break;
                 case LineKind.Subtotal:
                     Put(row, labelColumn[line.Path.Length - 1], SubtotalLabel(rowFields, line));
+                    CompactLabel(row, line.Path.Length - 1);
                     break;
                 case LineKind.Grand:
                     Put(row, 0, GrandLabel(rowFields, line));
+                    CompactLabel(row, 0);
                     break;
             }
+        }
+
+        // Excel writes a compact column's labels at the left, each field inside the first indented a step more.
+        void CompactLabel(int row, int level)
+        {
+            if (classic || level >= rowFields.Count || !Compact(rowFields[level]))
+            {
+                return;
+            }
+
+            int first = level;
+            while (first > 0 && labelColumn[first - 1] == labelColumn[level])
+            {
+                first--;
+            }
+
+            LeftLabels.Add((row, labelColumn[level], level - first));
         }
 
         Values(rows, columns, firstDataRow, firstDataColumn);
@@ -396,11 +448,23 @@ internal sealed class PivotLayout
         WriteItems("colItems", columns, ["colFields", "rowItems", "rowFields", "pivotFields"]);
     }
 
-    /// <summary>The records the table shows: those of no hidden item of a field it uses and of each page field's item.</summary>
+    /// <summary>
+    /// The records the table shows: those of no hidden item of a field it uses or a slicer filters, and of each page field's
+    /// item.
+    /// </summary>
     private List<int> FilterRecords()
     {
         List<(int Field, int? Page)> filters = [];
         HashSet<int> used = [.. definition.RowFields.Concat(definition.ColumnFields).Where(f => f >= 0)];
+
+        // A slicer hides the items of its field whether the table shows the field or not.
+        for (int f = 0; f < definition.Fields.Count; f++)
+        {
+            if (definition.Fields[f].DataItems.Any(i => i.Hidden) && !definition.PageFields.Any(p => p.Field == f))
+            {
+                used.Add(f);
+            }
+        }
         foreach (int field in used)
         {
             filters.Add((field, null));
@@ -432,6 +496,98 @@ internal sealed class PivotLayout
         }
 
         return included;
+    }
+
+    /// <summary>
+    /// Puts the records in the order of their items, row fields first, keeping the source's order among equals, as Excel
+    /// sums them when no record is filtered out.
+    /// </summary>
+    private void SortByItems(List<int> records, int[] fields)
+    {
+        if (fields.Length == 0 || records.Count < 2)
+        {
+            return;
+        }
+
+        // Each record's positions packed into one number, its index last so equals keep their order: one sort of numbers.
+        long radix = records.Count;
+        int[] sizes = new int[fields.Length];
+        for (int f = 0; f < fields.Length; f++)
+        {
+            int size = sizes[f] = data.Fields[fields[f]].Shared ? positions[fields[f]].DefaultIfEmpty(-1).Max() + 2 : 1;
+            if (radix > long.MaxValue / size)
+            {
+                SortByItemsSlowly(records, fields);
+                return;
+            }
+
+            radix *= size;
+        }
+
+        long[] keys = new long[records.Count];
+        for (int i = 0; i < records.Count; i++)
+        {
+            long key = 0;
+            for (int f = 0; f < fields.Length; f++)
+            {
+                key = (key * sizes[f]) + Position(fields[f], records[i]) + 1;
+            }
+
+            keys[i] = (key * records.Count) + i;
+        }
+
+        Array.Sort(keys);
+        int[] sorted = new int[keys.Length];
+        for (int i = 0; i < keys.Length; i++)
+        {
+            sorted[i] = records[(int)(keys[i] % records.Count)];
+        }
+
+        sorted.CopyTo(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(records));
+    }
+
+    /// <summary>The same order, for fields with too many items to pack into one number.</summary>
+    private void SortByItemsSlowly(List<int> records, int[] fields)
+    {
+        int[] keys = new int[records.Count * fields.Length];
+        for (int i = 0; i < records.Count; i++)
+        {
+            for (int f = 0; f < fields.Length; f++)
+            {
+                keys[(i * fields.Length) + f] = Position(fields[f], records[i]);
+            }
+        }
+
+        int[] order = new int[records.Count];
+        for (int i = 0; i < order.Length; i++)
+        {
+            order[i] = i;
+        }
+
+        Array.Sort(order, (a, b) =>
+        {
+            for (int f = 0; f < fields.Length; f++)
+            {
+                int c = keys[(a * fields.Length) + f].CompareTo(keys[(b * fields.Length) + f]);
+                if (c != 0)
+                {
+                    return c;
+                }
+            }
+
+            return a.CompareTo(b);
+        });
+
+        int[] sorted = new int[order.Length];
+        for (int i = 0; i < order.Length; i++)
+        {
+            sorted[i] = records[order[i]];
+        }
+
+        for (int i = 0; i < sorted.Length; i++)
+        {
+            records[i] = sorted[i];
+        }
     }
 
     /// <summary>A record's item's position in a field, or -1.</summary>
@@ -704,6 +860,9 @@ internal sealed class PivotLayout
         {
             PageFieldDefinition page = definition.PageFields[k];
             Put(top + k, 0, FieldCaption(page.Field));
+
+            // A page field's button sits beside its item, not its caption.
+            Buttons.Add((top + k, 1));
             if (page.Item is { } item && item < definition.Fields[page.Field].DataItems.Count())
             {
                 PutLabel(top + k, 1, page.Field, item);
@@ -784,6 +943,13 @@ internal sealed class PivotLayout
 
     private void Put(int row, int column, CellValue value, string? format = null) => Cells.Add((row, column, value, format));
 
+    /// <summary>A field's caption, which Excel shows with the field's button beside it.</summary>
+    private void PutButton(int row, int column, CellValue value)
+    {
+        Put(row, column, value);
+        Buttons.Add((row, column));
+    }
+
     /// <summary>An item's label: its caption, its value, or <c>(blank)</c>; a number or date in the field's number format.</summary>
     private void PutLabel(int row, int column, int field, int position)
     {
@@ -808,6 +974,13 @@ internal sealed class PivotLayout
                 break;
             case PivotValueKind.Number or PivotValueKind.Date:
                 Put(row, column, value.Number, FieldFormat(field) is { } code && code != "General" ? code : null);
+                break;
+            case PivotValueKind.Text when value.Text.Length == 0:
+                // An empty text item leaves its label cell empty.
+                break;
+            case PivotValueKind.Boolean:
+                // Excel writes a true or false item's label as text.
+                Put(row, column, value.ToString());
                 break;
             default:
                 Put(row, column, value.ToCell());
@@ -896,7 +1069,7 @@ internal sealed class PivotLayout
         private double min;
         private double max;
         private PivotValue? error;
-        private List<double>? all;
+        private double squares;
 
         public void Add(PivotValue value)
         {
@@ -929,7 +1102,7 @@ internal sealed class PivotLayout
             product *= x;
             min = Math.Min(min, x);
             max = Math.Max(max, x);
-            (all ??= []).Add(x);
+            squares += x * x;
         }
 
         public readonly CellValue Result(PivotFunction function)
@@ -961,10 +1134,10 @@ internal sealed class PivotLayout
                 PivotFunction.Max => numbers == 0 ? 0 : max,
                 PivotFunction.Min => numbers == 0 ? 0 : min,
                 PivotFunction.Product => numbers == 0 ? 0 : product,
-                PivotFunction.StdDev => Math.Sqrt(Variance(1)),
-                PivotFunction.StdDevP => Math.Sqrt(Variance(0)),
-                PivotFunction.Var => Variance(1),
-                PivotFunction.VarP => Variance(0),
+                PivotFunction.StandardDeviation => Math.Sqrt(Variance(1)),
+                PivotFunction.StandardDeviationPopulation => Math.Sqrt(Variance(0)),
+                PivotFunction.Variance => Variance(1),
+                PivotFunction.VariancePopulation => Variance(0),
                 _ => sum,
             };
 
@@ -978,19 +1151,14 @@ internal sealed class PivotLayout
 
         private readonly double Variance(int correction)
         {
-            if (numbers - correction <= 0 || all is null)
+            if (numbers - correction <= 0)
             {
                 return double.NaN;
             }
 
-            double mean = sum / numbers;
-            double squares = 0;
-            foreach (double x in all)
-            {
-                squares += (x - mean) * (x - mean);
-            }
-
-            return squares / (numbers - correction);
+            // Excel's pivot tables use the one-pass sums, to the last bit: the squares less the square of the sum over the count,
+            // and none below zero, which rounding can give for equal values.
+            return Math.Max(0, (squares - (sum * sum / numbers)) / (numbers - correction));
         }
     }
 }

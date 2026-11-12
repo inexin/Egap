@@ -195,6 +195,19 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   be ranges, tables or defined names and follow rows and columns put in or taken out and sheets renamed. A save writes a
   refreshed table's definition, cache and records again. On the pivot tables of a public and an e-mail corpus, every
   table Excel could refresh matched Excel's refresh cell for cell.
+- `Worksheet.PivotTables.Add` makes a pivot table from a range, an Excel table or a defined name: row, column and filter
+  fields, value fields with any summary function, name and number format, the compact, outline and tabular layouts,
+  grand totals, headers, stripes and Excel's built-in pivot styles. The table is laid out and its columns fitted as Excel
+  does, and saved as the cache, records and table parts Excel writes. Excel opened all 151 tables made over a public and
+  an e-mail corpus and 16 made by hand without repair, and its refresh gave the same cells.
+- Slicers: `SheetDrawingCollection.AddSlicer` makes a slicer of a pivot table's field, and `SheetDrawing.Slicer` reads
+  Excel's. `Slicer.Select`, `SelectAll` and `Connect` filter the pivot tables, which are refreshed; `Caption`,
+  `StyleName`, `ColumnCount` and `ShowHeader` change its look. A save writes the slicer, slicer cache and drawing parts
+  Excel writes, and Excel read the selection of every slicer made over the corpora as Egap made it.
+- Printing and PDF draw slicers as Excel prints them, in Excel's 14 built-in slicer styles, and draw pivot tables as
+  Excel does: the built-in pivot styles, the buttons and indents of compact labels, also of a table with no style.
+- A pivot table that a filter or slicer thins sums its values in the source's order, as Excel does, so totals of many
+  decimals match Excel's to the last bit.
 - `Workbook.Load` reads OpenDocument spreadsheets: ODS, OTS and flat FODS, told apart from XLSX by their first bytes. Cells
   of every type, formulas translated from OpenFormula to Excel's syntax, array formulas, merged cells, styles and number
   formats, column widths, row heights, hidden and grouped rows and columns, sheets, names and print ranges are read,

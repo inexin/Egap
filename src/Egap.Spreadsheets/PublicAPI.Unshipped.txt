@@ -1278,5 +1278,84 @@ Egap.Spreadsheets.PivotTable.Refresh() -> void
 Egap.Spreadsheets.PivotTable.Source.get -> string?
 Egap.Spreadsheets.PivotTable.Worksheet.get -> Egap.Spreadsheets.Worksheet!
 Egap.Spreadsheets.Workbook.RefreshPivotTables() -> int
-Egap.Spreadsheets.Worksheet.PivotTables.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.PivotTable!>!
 override Egap.Spreadsheets.PivotTable.ToString() -> string!
+Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Average = 2 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Count = 1 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.CountNumbers = 6 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Max = 3 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Min = 4 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Product = 5 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.StandardDeviation = 7 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.StandardDeviationPopulation = 8 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Sum = 0 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Variance = 9 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.VariancePopulation = 10 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotTableCollection
+Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, Egap.Spreadsheets.CellRange source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, Egap.Spreadsheets.SheetTable! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, string! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.Add(string! location, string! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.Count.get -> int
+Egap.Spreadsheets.PivotTableCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.PivotTable!>!
+Egap.Spreadsheets.PivotTableCollection.this[int index].get -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.this[string! name].get -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableLayout.Compact = 0 -> Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableLayout.Outline = 1 -> Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableLayout.Tabular = 2 -> Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableOptions
+Egap.Spreadsheets.PivotTableOptions.Columns.get -> System.Collections.Generic.IList<string!>!
+Egap.Spreadsheets.PivotTableOptions.Filters.get -> System.Collections.Generic.IList<string!>!
+Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn.get -> bool
+Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn.set -> void
+Egap.Spreadsheets.PivotTableOptions.GrandTotalRow.get -> bool
+Egap.Spreadsheets.PivotTableOptions.GrandTotalRow.set -> void
+Egap.Spreadsheets.PivotTableOptions.Layout.get -> Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableOptions.Layout.set -> void
+Egap.Spreadsheets.PivotTableOptions.PivotTableOptions() -> void
+Egap.Spreadsheets.PivotTableOptions.Rows.get -> System.Collections.Generic.IList<string!>!
+Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders.set -> void
+Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes.set -> void
+Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders.set -> void
+Egap.Spreadsheets.PivotTableOptions.ShowRowStripes.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ShowRowStripes.set -> void
+Egap.Spreadsheets.PivotTableOptions.StyleName.get -> string?
+Egap.Spreadsheets.PivotTableOptions.StyleName.set -> void
+Egap.Spreadsheets.PivotTableOptions.Values.get -> System.Collections.Generic.IList<Egap.Spreadsheets.PivotValueField!>!
+Egap.Spreadsheets.PivotTableOptions.ValuesOnRows.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ValuesOnRows.set -> void
+Egap.Spreadsheets.PivotValueField
+Egap.Spreadsheets.PivotValueField.Field.get -> string!
+Egap.Spreadsheets.PivotValueField.Function.get -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotValueField.Name.get -> string?
+Egap.Spreadsheets.PivotValueField.Name.init -> void
+Egap.Spreadsheets.PivotValueField.NumberFormat.get -> string?
+Egap.Spreadsheets.PivotValueField.NumberFormat.init -> void
+Egap.Spreadsheets.PivotValueField.PivotValueField(string! field, Egap.Spreadsheets.PivotFunction function = Egap.Spreadsheets.PivotFunction.Sum) -> void
+Egap.Spreadsheets.Worksheet.PivotTables.get -> Egap.Spreadsheets.PivotTableCollection!
+Egap.Spreadsheets.SheetDrawing.Slicer.get -> Egap.Spreadsheets.Slicer?
+Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable! pivotTable, string! field, Egap.Spreadsheets.RangeAddress cells) -> Egap.Spreadsheets.SheetDrawing!
+Egap.Spreadsheets.SheetDrawingKind.Slicer = 5 -> Egap.Spreadsheets.SheetDrawingKind
+Egap.Spreadsheets.Slicer
+Egap.Spreadsheets.Slicer.Caption.get -> string!
+Egap.Spreadsheets.Slicer.Caption.set -> void
+Egap.Spreadsheets.Slicer.ColumnCount.get -> int
+Egap.Spreadsheets.Slicer.ColumnCount.set -> void
+Egap.Spreadsheets.Slicer.Connect(Egap.Spreadsheets.PivotTable! pivotTable) -> void
+Egap.Spreadsheets.Slicer.Field.get -> string!
+Egap.Spreadsheets.Slicer.Items.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Spreadsheets.Slicer.Name.get -> string!
+Egap.Spreadsheets.Slicer.PivotTables.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.PivotTable!>!
+Egap.Spreadsheets.Slicer.Select(System.Collections.Generic.IEnumerable<string!>! items) -> void
+Egap.Spreadsheets.Slicer.SelectAll() -> void
+Egap.Spreadsheets.Slicer.SelectedItems.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Spreadsheets.Slicer.ShowHeader.get -> bool
+Egap.Spreadsheets.Slicer.ShowHeader.set -> void
+Egap.Spreadsheets.Slicer.StyleName.get -> string?
+Egap.Spreadsheets.Slicer.StyleName.set -> void
+Egap.Spreadsheets.Slicer.Worksheet.get -> Egap.Spreadsheets.Worksheet!
+override Egap.Spreadsheets.Slicer.ToString() -> string!

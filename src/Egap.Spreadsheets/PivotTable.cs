@@ -2,6 +2,7 @@ using System.Xml.Linq;
 
 using Egap.Documents.Docx;
 using Egap.Spreadsheets.Pivots;
+using Egap.Spreadsheets.Xlsx;
 
 namespace Egap.Spreadsheets;
 
@@ -10,7 +11,8 @@ namespace Egap.Spreadsheets;
 /// it fills. <see cref="Refresh"/> reads the source again and lays the table out as Excel's Refresh does.
 /// </summary>
 /// <remarks>
-/// Egap reads pivot tables from .xlsx files and keeps them when it saves one; it does not make new ones. A refresh works out
+/// Egap reads pivot tables from .xlsx, .xlsb and .xls files and keeps them when it saves, and makes new ones with
+/// <see cref="PivotTableCollection.Add(CellAddress, string, PivotTableOptions, string?)"/>. A refresh works out
 /// sums, counts, averages, maxima, minima, products, counts of numbers, standard deviations and variances with subtotals and
 /// grand totals in the compact, outline, tabular and classic layouts, with page fields, hidden items and sorted fields. A
 /// table that shows values as a share or difference, has calculated fields or items, groups items or reads another workbook
@@ -52,6 +54,9 @@ public sealed class PivotTable
     internal PivotDefinition Definition { get; set; }
 
     internal PivotCache? Cache { get; }
+
+    /// <summary>Whether the pivot table was made in memory, so a save writes it, and its cache, as new parts.</summary>
+    internal bool Made { get; init; }
 
     /// <summary>Whether a refresh changed the definition, so a save writes it again.</summary>
     internal bool Changed { get; set; }
@@ -132,17 +137,17 @@ internal sealed class PivotModel
         return model;
     }
 
-    private void Add(Worksheet sheet, OpcPackage package, OpcPart part, Dictionary<string, PivotCache?> caches)
+    private PivotTable? Add(Worksheet sheet, OpcPackage package, OpcPart part, Dictionary<string, PivotCache?> caches, bool made = false)
     {
         if (Xlsx.SafeXml.TryLoad(part) is not { Root: not null } document)
         {
-            return;
+            return null;
         }
 
         PivotDefinition definition = new(document);
         if (definition.Location is null)
         {
-            return;
+            return null;
         }
 
         PivotCache? cache = null;
@@ -151,14 +156,14 @@ internal sealed class PivotModel
         {
             if (package.GetPart(cacheRelationship.TargetName) is { } cachePart && Xlsx.SafeXml.TryLoad(cachePart) is { Root: not null } cacheDocument)
             {
-                cache = new PivotCache(package, cachePart, cacheDocument, book.Date1904);
+                cache = new PivotCache(package, cachePart, cacheDocument, book.Date1904) { Made = made };
                 Caches.Add(cache);
             }
 
             caches[cacheRelationship.TargetName] = cache;
         }
 
-        PivotTable table = new(sheet, part, definition, cache);
+        PivotTable table = new(sheet, part, definition, cache) { Made = made };
         cache?.Tables.Add(table);
         if (!tables.TryGetValue(sheet, out List<PivotTable>? list))
         {
@@ -166,6 +171,84 @@ internal sealed class PivotModel
         }
 
         list.Add(table);
+        return table;
+    }
+
+    /// <summary>
+    /// Makes a new pivot table and its cache, and lays it out with a refresh. Nothing stays when a part of it fails.
+    /// </summary>
+    /// <exception cref="ArgumentException">The options or the name are not ones Excel takes.</exception>
+    /// <exception cref="InvalidOperationException">The table would overlap another pivot table or go off the sheet.</exception>
+    public PivotTable Create(Worksheet sheet, CellAddress location, XElement worksheetSource, Worksheet sourceSheet, RangeAddress sourceRange, PivotTableOptions options, string? name)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        name ??= NextName();
+        if (name.Trim().Length == 0 || name.Length > 255)
+        {
+            throw new ArgumentException("A pivot table's name is from 1 to 255 characters.", nameof(name));
+        }
+
+        if (Tables(sheet).Any(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ArgumentException($"The sheet already has a pivot table named {name}.", nameof(name));
+        }
+
+        string[] names = PivotBuilder.FieldNames(sourceSheet, sourceRange);
+
+        // Filters take a row each above the table, with a row between, as Excel puts them.
+        int pageRows = options.Filters.Count > 0 ? options.Filters.Count + 1 : 0;
+        if (location.Row + pageRows >= CellAddress.MaxRows)
+        {
+            throw new InvalidOperationException("The pivot table would go off the sheet.");
+        }
+
+        CellAddress anchor = new(location.Row + pageRows, location.Column);
+        int cacheId = NextCacheId();
+        XDocument tableDocument = PivotBuilder.TableDefinition(name, cacheId, names, options, anchor, book);
+        XDocument cacheDocument = PivotBuilder.CacheDefinition(worksheetSource, names, sourceSheet, sourceRange, book);
+        (OpcPackage package, OpcPart part) = PivotBuilder.Package(cacheDocument, PivotBuilder.EmptyRecords(), tableDocument, new Egap.Documents.DocumentLimits());
+        PivotTable table = Add(sheet, package, part, [], made: true) ?? throw new InvalidOperationException("The pivot table could not be made.");
+        try
+        {
+            Refresh(table.Cache!);
+        }
+        catch
+        {
+            tables[sheet].Remove(table);
+            Caches.Remove(table.Cache!);
+            throw;
+        }
+
+        return table;
+    }
+
+    private string NextName()
+    {
+        HashSet<string> taken = new(tables.Values.SelectMany(t => t).Select(t => t.Name), StringComparer.OrdinalIgnoreCase);
+        for (int n = 1; ; n++)
+        {
+            string name = "PivotTable" + n.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            if (!taken.Contains(name))
+            {
+                return name;
+            }
+        }
+    }
+
+    /// <summary>A cache id no cache of the workbook has.</summary>
+    private int NextCacheId()
+    {
+        int max = tables.Values.SelectMany(t => t).Select(t => t.Definition.CacheId).DefaultIfEmpty(0).Max();
+        if (book.Source?.WorkbookXml.Root is { } workbook)
+        {
+            XNamespace ns = workbook.Name.Namespace;
+            foreach (XElement cache in workbook.Element(ns + "pivotCaches")?.Elements(ns + "pivotCache") ?? [])
+            {
+                max = Math.Max(max, Xlsx.XlsxNames.Int((string?)cache.Attribute("cacheId"), 0));
+            }
+        }
+
+        return max + 1;
     }
 
     public IReadOnlyList<PivotTable> Tables(Worksheet sheet) => tables.TryGetValue(sheet, out List<PivotTable>? list) ? list : [];
@@ -253,16 +336,70 @@ internal sealed class PivotModel
                 }
             }
 
+            foreach ((int row, int column, int indent) in layout.LeftLabels)
+            {
+                Cell cell = sheet[anchor.Row + row, anchor.Column + column];
+                CellAlignment alignment = cell.Style.Alignment;
+                if (alignment.Horizontal != CellHorizontalAlignment.Left || alignment.Indent != indent)
+                {
+                    cell.Style = cell.Style with { Alignment = alignment with { Horizontal = CellHorizontalAlignment.Left, Indent = indent } };
+                }
+            }
+
             definition.Range = layout.Range;
             table.Definition = definition;
             table.Changed = true;
+        }
+
+        // "Autofit column widths on update": Excel fits each of the table's columns to the table's own cells, as its style
+        // shows them, with room for the buttons beside the fields' captions.
+        Printing.TextMeter? meter = null;
+        foreach ((PivotTable table, PivotDefinition definition, PivotLayout layout) in plans)
+        {
+            if (!XlsxNames.Bool((string?)definition.Root.Attribute("useAutoFormatting"), false))
+            {
+                continue;
+            }
+
+            meter ??= new Printing.TextMeter(book);
+            Worksheet sheet = table.Worksheet;
+            Printing.PivotFormats? formats = Printing.PivotFormats.For(sheet);
+            CellAddress anchor = layout.Range.First;
+            HashSet<CellAddress> buttons = [.. layout.Buttons.Select(b => new CellAddress(anchor.Row + b.Row, anchor.Column + b.Column))];
+            HashSet<CellAddress> expanders = [.. layout.ExpandButtons.Select(b => new CellAddress(anchor.Row + b.Row, anchor.Column + b.Column))];
+            RangeAddress area = layout.Range;
+            int first = layout.PageArea is { } pages ? Math.Min(pages.First.Row, area.First.Row) : area.First.Row;
+            for (int column = area.First.Column; column <= area.Last.Column; column++)
+            {
+                sheet.AutoFitColumn(column, first, area.Last.Row, meter, formats is null ? null : formats.Style,
+                    (row, c) => buttons.Contains(new CellAddress(row, c)) ? Worksheet.FilterButton
+                        : expanders.Contains(new CellAddress(row, c)) ? Printing.PivotFormats.ExpandButton : 0);
+            }
+
+            // Column fields in outline or tabular form give all their items' columns the widest one's width.
+            List<int> columnFields = [.. definition.ColumnFields.Where(f => f >= 0)];
+            if (columnFields.Count > 0 && columnFields.All(f => !definition.Fields[f].Compact))
+            {
+                int firstData = area.First.Column + XlsxNames.Int((string?)definition.Location?.Attribute("firstDataCol"), 1);
+                int lastData = area.Last.Column - (definition.ColumnGrandTotals ? 1 : 0);
+                double widest = 0;
+                for (int column = firstData; column <= lastData; column++)
+                {
+                    widest = Math.Max(widest, sheet.Columns[column].Width ?? 0);
+                }
+
+                for (int column = firstData; column <= lastData && widest > 0; column++)
+                {
+                    sheet.ColumnSpans.Change(column, span => span.Width = widest);
+                }
+            }
         }
     }
 
     /// <summary>The parts a save writes again, with their new XML.</summary>
     public IEnumerable<(OpcPart Part, XDocument Document)> ChangedParts()
     {
-        foreach (PivotCache cache in Caches)
+        foreach (PivotCache cache in Caches.Where(c => !c.Made))
         {
             if (cache.Changed)
             {
@@ -275,7 +412,7 @@ internal sealed class PivotModel
             }
         }
 
-        foreach (PivotTable table in tables.Values.SelectMany(t => t))
+        foreach (PivotTable table in tables.Values.SelectMany(t => t).Where(t => !t.Made))
         {
             if (table.Changed)
             {

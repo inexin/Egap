@@ -112,7 +112,12 @@ internal sealed partial class SheetPageRenderer
             };
         }
 
-        double indent = alignment.Indent * fonts.MaxDigitWidth * 9.0 / 7 * SheetFonts.PointsPerPixel;
+        // A pivot table's row labels start right of the expand and collapse buttons, which are not printed.
+        PivotFormats? pivots = Pivots();
+        double indent = pivots?.LabelIndent(row, column, alignment.Indent) is int pixels
+            ? pixels * SheetFonts.PointsPerPixel
+            : (alignment.Indent * fonts.MaxDigitWidth * 9.0 / 7 + (pivots?.Button(row, column) ?? 0)) * SheetFonts.PointsPerPixel;
+
         double innerLeft = cell.X + Padding + (horizontal is CellHorizontalAlignment.Left or CellHorizontalAlignment.Distributed ? indent : 0);
         double innerRight = cell.X + cell.Width - Padding - (horizontal == CellHorizontalAlignment.Right ? indent : 0);
         double innerWidth = Math.Max(0, innerRight - innerLeft);

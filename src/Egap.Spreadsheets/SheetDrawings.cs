@@ -24,6 +24,9 @@ public enum SheetDrawingKind
 
     /// <summary>A connector, an embedded object or anything else, kept as it was.</summary>
     Other,
+
+    /// <summary>A slicer that filters pivot tables; see <see cref="SheetDrawing.Slicer"/>.</summary>
+    Slicer,
 }
 
 /// <summary>How a drawing object is fixed to the sheet.</summary>
@@ -131,6 +134,12 @@ public sealed class SheetDrawing
 
     /// <summary>The chart as it was read, if anyone has asked for it, so a chart nobody touched is not even parsed at save time.</summary>
     internal Chart? LoadedChart => chartRead ? chart : null;
+
+    /// <summary>The slicer the object shows, or null for an object that is not a slicer.</summary>
+    public Slicer? Slicer => Kind == SheetDrawingKind.Slicer && Sheet is { } sheet ? sheet.Workbook.Slicers.Find(sheet, this) : null;
+
+    /// <summary>The name of the slicer the object shows, as its graphic frame names it.</summary>
+    internal string? SlicerName { get; set; }
 
     /// <summary>The part a file's chart is kept in.</summary>
     internal OpcPart? ChartPart { get; set; }
@@ -328,11 +337,46 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
         return drawing;
     }
 
-    /// <summary>Removes an object.</summary>
+    /// <summary>
+    /// Adds a slicer of a pivot table's field that fills a range of cells and moves with them: buttons for the field's items,
+    /// all selected, which filter the pivot table. The slicer is named after the field, and the pivot table is refreshed so the
+    /// field lists its items; see <see cref="SheetDrawing.Slicer"/> to select items and connect other pivot tables.
+    /// </summary>
+    /// <param name="pivotTable">A pivot table of this workbook.</param>
+    /// <param name="field">The name of a field of the pivot table's source, on its axes or not.</param>
+    /// <param name="cells">The cells the slicer covers.</param>
+    /// <exception cref="ArgumentException">The pivot table is another workbook's, or it has no such field.</exception>
+    /// <exception cref="InvalidOperationException">The pivot table cannot be refreshed (see <see cref="PivotTable.CanRefresh"/>).</exception>
+    public SheetDrawing AddSlicer(PivotTable pivotTable, string field, RangeAddress cells) =>
+        sheet.Workbook.Slicers.Create(sheet, pivotTable, field, cells);
+
+    /// <summary>Adds a drawing object Egap made, such as a slicer, fixed to two cells.</summary>
+    internal SheetDrawing AddMade(SheetDrawingKind kind, RangeAddress cells, string name)
+    {
+        SheetDrawing drawing = new(kind)
+        {
+            AnchorKind = DrawingAnchorKind.TwoCell,
+            From = new DrawingPosition(cells.First),
+            To = new DrawingPosition(new CellAddress(cells.Last.Row + 1, cells.Last.Column + 1)),
+            Name = name,
+            Sheet = sheet,
+        };
+        drawings.Add(drawing);
+        Changed = true;
+        return drawing;
+    }
+
+    /// <summary>Removes an object; a slicer's goes with the slicer, and its cache when no other slicer shows it.</summary>
     /// <returns>Whether it was on the sheet.</returns>
     public bool Remove(SheetDrawing drawing)
     {
-        bool removed = drawings.Remove(drawing);
+        if (drawing?.Kind == SheetDrawingKind.Slicer)
+        {
+            // The slicers are read before their drawing goes, so the save drops the slicer and a cache no slicer is left on.
+            _ = sheet.Workbook.Slicers;
+        }
+
+        bool removed = drawings.Remove(drawing!);
         Changed |= removed;
         return removed;
     }

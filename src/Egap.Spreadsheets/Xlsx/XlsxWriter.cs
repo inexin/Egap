@@ -147,7 +147,8 @@ internal static class XlsxWriter
             workbookRels.Add(new OpcRelationship(pageId, XlsxNames.ChartsheetRelationship, RelativeTarget(workbookName, pageName), false, pageName));
         }
 
-        // Pivot tables made in memory, such as an XLS file's: each cache's definition and records once, then the tables.
+        // Pivot tables made in memory, such as an XLS file's or those made in code: each cache's definition and records once,
+        // then the tables.
         Dictionary<Pivots.PivotCache, (string Name, int Id)> newCaches = [];
         List<(int CacheId, string RelationshipId)> pivotCaches = [];
         int sheetNumber = 0;
@@ -171,9 +172,9 @@ internal static class XlsxWriter
 
             sheetIds[sheet] = id;
             List<(string Name, XElement Element)> objects = SheetObjectWriter.Write(sheet, ++sheetNumber, name, rels, objectParts, objectState);
-            if (source is null)
+            foreach (PivotTable table in sheet.PivotTables)
             {
-                foreach (PivotTable table in sheet.PivotTables)
+                if (source is null || table.Made)
                 {
                     if (table.Cache is not { } cache)
                     {
@@ -230,7 +231,26 @@ internal static class XlsxWriter
             }
         }
 
-        Add(new OutPart(workbookName, XlsxNames.WorkbookType(format), OpcPackageWriter.Serialize(WorkbookPart(book, sheetIds, linkIds, newChartSheets, pivotCaches)), workbookRels));
+        XDocument workbookXml = WorkbookPart(book, sheetIds, linkIds, newChartSheets, pivotCaches);
+        if (book.SlicersIfLoaded is { } slicers)
+        {
+            // Slicer caches name their pivot tables by the sheets' tab ids, which the workbook part has just given out.
+            XElement workbookRoot = workbookXml.Root!;
+            XNamespace ns = workbookRoot.Name.Namespace;
+            Dictionary<string, int> tabIds = [];
+            foreach (XElement tab in workbookRoot.Element(ns + "sheets")?.Elements(ns + "sheet") ?? [])
+            {
+                if ((string?)tab.Attribute(XlsxNames.R + "id") is { } relationshipId)
+                {
+                    tabIds[relationshipId] = XlsxNames.Int((string?)tab.Attribute("sheetId"), 0);
+                }
+            }
+
+            Dictionary<Worksheet, int> tabs = sheetIds.Where(s => tabIds.ContainsKey(s.Value)).ToDictionary(s => s.Key, s => tabIds[s.Value]);
+            slicers.WriteWorkbook(workbookRoot, workbookRels, NextId, workbookName, stem => FreeSheetName(parts, stem), (name, type, data, rels) => Add(new OutPart(name, type, data, rels)), tabs);
+        }
+
+        Add(new OutPart(workbookName, XlsxNames.WorkbookType(format), OpcPackageWriter.Serialize(workbookXml), workbookRels));
 
         // Everything the package's relationships still reach, in the order the parts came.
         HashSet<string> reached = new(StringComparer.OrdinalIgnoreCase);
@@ -462,7 +482,9 @@ internal static class XlsxWriter
 
         if (pivotCaches.Count > 0)
         {
-            WorkbookOrder.Place(root, new XElement(ns + "pivotCaches", pivotCaches.Select(p =>
+            // The file's own caches stay, and the new ones follow them.
+            IEnumerable<XElement> kept = root.Element(ns + "pivotCaches")?.Elements(ns + "pivotCache").Select(e => new XElement(e)).ToList() ?? [];
+            WorkbookOrder.Place(root, new XElement(ns + "pivotCaches", kept, pivotCaches.Select(p =>
                 new XElement(ns + "pivotCache", new XAttribute("cacheId", XlsxNames.Integer(p.CacheId)), new XAttribute(XlsxNames.R + "id", p.RelationshipId)))));
         }
 
