@@ -509,6 +509,46 @@ internal sealed class PivotLayout
             return;
         }
 
+        // Each record's positions packed into one number, its index last so equals keep their order: one sort of numbers.
+        long radix = records.Count;
+        int[] sizes = new int[fields.Length];
+        for (int f = 0; f < fields.Length; f++)
+        {
+            int size = sizes[f] = data.Fields[fields[f]].Shared ? positions[fields[f]].DefaultIfEmpty(-1).Max() + 2 : 1;
+            if (radix > long.MaxValue / size)
+            {
+                SortByItemsSlowly(records, fields);
+                return;
+            }
+
+            radix *= size;
+        }
+
+        long[] keys = new long[records.Count];
+        for (int i = 0; i < records.Count; i++)
+        {
+            long key = 0;
+            for (int f = 0; f < fields.Length; f++)
+            {
+                key = (key * sizes[f]) + Position(fields[f], records[i]) + 1;
+            }
+
+            keys[i] = (key * records.Count) + i;
+        }
+
+        Array.Sort(keys);
+        int[] sorted = new int[keys.Length];
+        for (int i = 0; i < keys.Length; i++)
+        {
+            sorted[i] = records[(int)(keys[i] % records.Count)];
+        }
+
+        sorted.CopyTo(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(records));
+    }
+
+    /// <summary>The same order, for fields with too many items to pack into one number.</summary>
+    private void SortByItemsSlowly(List<int> records, int[] fields)
+    {
         int[] keys = new int[records.Count * fields.Length];
         for (int i = 0; i < records.Count; i++)
         {
