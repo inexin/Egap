@@ -65,11 +65,11 @@ internal readonly struct PivotValue : IEquatable<PivotValue>
 
     public static PivotValue FromError(string value) => new(PivotValueKind.Error, 0, value);
 
-    /// <summary>A cell's value; a number in a cell with a date format is a date.</summary>
+    /// <summary>A cell's value; a number in a cell with a date format is a date, and empty text stays text, as Excel keeps it.</summary>
     public static PivotValue FromCell(CellValue value, bool date) => value.Kind switch
     {
         CellValueKind.Number => date ? FromDate(value.Number) : FromNumber(value.Number),
-        CellValueKind.Text => value.Text.Length == 0 ? Blank : FromText(value.Text),
+        CellValueKind.Text => FromText(value.Text),
         CellValueKind.Boolean => FromBoolean(value.Boolean),
         CellValueKind.Error => FromError(CellValue.ErrorText(value.Error)),
         _ => Blank,

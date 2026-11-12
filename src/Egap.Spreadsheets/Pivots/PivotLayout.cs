@@ -240,6 +240,7 @@ internal sealed class PivotLayout
         List<int> included = FilterRecords();
         List<int> rowFields = definition.RowFields;
         List<int> columnFields = definition.ColumnFields;
+        SortByItems(included, [.. rowFields.Concat(columnFields).Where(f => f >= 0)]);
         List<Line> rows = Axis(rowFields, rows: true, included);
         List<Line> columns = Axis(columnFields, rows: false, included);
 
@@ -291,7 +292,8 @@ internal sealed class PivotLayout
         // The top row: the data field's name in the corner, then the column fields' buttons or one caption for them.
         if (topRow)
         {
-            if (dataCount == 1)
+            // With no row fields Excel's newer layouts name the one data field on its row, not in the corner.
+            if (dataCount == 1 && (classic || rowFields.Count > 0))
             {
                 Put(0, 0, DataName(0));
             }
@@ -315,7 +317,9 @@ internal sealed class PivotLayout
             if (l == 0 || labelColumn[l] != labelColumn[l - 1])
             {
                 int field = rowFields[l];
-                Put(headerRow, labelColumn[l], !classic && Compact(field) ? definition.RowHeaderCaption ?? "Row Labels" : FieldCaption(field));
+                // Values alone on the rows show the data caption, as Excel does, not Row Labels.
+                bool valuesOnly = field == PivotDefinition.DataField && rowFields.Count == 1;
+                Put(headerRow, labelColumn[l], !classic && !valuesOnly && Compact(field) ? definition.RowHeaderCaption ?? "Row Labels" : FieldCaption(field));
             }
         }
 
@@ -363,7 +367,7 @@ internal sealed class PivotLayout
                 case LineKind.Data when line.Path.Length == 0:
                     if (firstDataColumn > 0)
                     {
-                        Put(row, 0, "Total");
+                        Put(row, 0, !classic && dataCount == 1 && rowFields.Count == 0 ? DataName(0) : "Total");
                     }
 
                     break;
@@ -432,6 +436,58 @@ internal sealed class PivotLayout
         }
 
         return included;
+    }
+
+    /// <summary>
+    /// Puts the records in the order of their items, row fields first, keeping the source's order among equals. Excel sums
+    /// them in this order, which a total of many decimals shows in its last bits.
+    /// </summary>
+    private void SortByItems(List<int> records, int[] fields)
+    {
+        if (fields.Length == 0 || records.Count < 2)
+        {
+            return;
+        }
+
+        int[] keys = new int[records.Count * fields.Length];
+        for (int i = 0; i < records.Count; i++)
+        {
+            for (int f = 0; f < fields.Length; f++)
+            {
+                keys[(i * fields.Length) + f] = Position(fields[f], records[i]);
+            }
+        }
+
+        int[] order = new int[records.Count];
+        for (int i = 0; i < order.Length; i++)
+        {
+            order[i] = i;
+        }
+
+        Array.Sort(order, (a, b) =>
+        {
+            for (int f = 0; f < fields.Length; f++)
+            {
+                int c = keys[(a * fields.Length) + f].CompareTo(keys[(b * fields.Length) + f]);
+                if (c != 0)
+                {
+                    return c;
+                }
+            }
+
+            return a.CompareTo(b);
+        });
+
+        int[] sorted = new int[order.Length];
+        for (int i = 0; i < order.Length; i++)
+        {
+            sorted[i] = records[order[i]];
+        }
+
+        for (int i = 0; i < sorted.Length; i++)
+        {
+            records[i] = sorted[i];
+        }
     }
 
     /// <summary>A record's item's position in a field, or -1.</summary>
@@ -809,6 +865,13 @@ internal sealed class PivotLayout
             case PivotValueKind.Number or PivotValueKind.Date:
                 Put(row, column, value.Number, FieldFormat(field) is { } code && code != "General" ? code : null);
                 break;
+            case PivotValueKind.Text when value.Text.Length == 0:
+                // An empty text item leaves its label cell empty.
+                break;
+            case PivotValueKind.Boolean:
+                // Excel writes a true or false item's label as text.
+                Put(row, column, value.ToString());
+                break;
             default:
                 Put(row, column, value.ToCell());
                 break;
@@ -896,7 +959,7 @@ internal sealed class PivotLayout
         private double min;
         private double max;
         private PivotValue? error;
-        private List<double>? all;
+        private double squares;
 
         public void Add(PivotValue value)
         {
@@ -929,7 +992,7 @@ internal sealed class PivotLayout
             product *= x;
             min = Math.Min(min, x);
             max = Math.Max(max, x);
-            (all ??= []).Add(x);
+            squares += x * x;
         }
 
         public readonly CellValue Result(PivotFunction function)
@@ -978,19 +1041,14 @@ internal sealed class PivotLayout
 
         private readonly double Variance(int correction)
         {
-            if (numbers - correction <= 0 || all is null)
+            if (numbers - correction <= 0)
             {
                 return double.NaN;
             }
 
-            double mean = sum / numbers;
-            double squares = 0;
-            foreach (double x in all)
-            {
-                squares += (x - mean) * (x - mean);
-            }
-
-            return squares / (numbers - correction);
+            // Excel's pivot tables use the one-pass sums, to the last bit: the squares less the square of the sum over the count,
+            // and none below zero, which rounding can give for equal values.
+            return Math.Max(0, (squares - (sum * sum / numbers)) / (numbers - correction));
         }
     }
 }

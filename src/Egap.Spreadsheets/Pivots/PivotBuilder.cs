@@ -23,7 +23,7 @@ internal static class PivotBuilder
 
     private static readonly XNamespace Ns = XlsxNames.Main;
 
-    /// <summary>The names a source's header row gives its fields, as a refresh names them: trimmed, a repeated one numbered.</summary>
+    /// <summary>The names a source's header row gives its fields, as Excel names them: the header text, spaces kept, a repeated one numbered.</summary>
     /// <exception cref="ArgumentException">A header cell is empty, or the source has no rows under its header row.</exception>
     public static string[] FieldNames(Worksheet sheet, RangeAddress range)
     {
@@ -37,8 +37,8 @@ internal static class PivotBuilder
         for (int c = 0; c < names.Length; c++)
         {
             Cell header = sheet[range.First.Row, range.First.Column + c];
-            string text = header.Value.IsEmpty ? "" : header.Text.Trim();
-            if (text.Length == 0)
+            string text = PivotCache.HeaderText(header);
+            if (text.Trim().Length == 0)
             {
                 throw new ArgumentException($"The source's header cell {header.Address} is empty; every column of a pivot table's source needs a name.", nameof(range));
             }
@@ -87,7 +87,13 @@ internal static class PivotBuilder
     {
         int Field(string field, string list)
         {
-            int index = Array.FindIndex(names, n => n.Equals(field?.Trim(), StringComparison.OrdinalIgnoreCase));
+            int index = Array.FindIndex(names, n => n.Equals(field, StringComparison.OrdinalIgnoreCase));
+            if (index < 0)
+            {
+                // A header with spaces around it is found by its text alone too.
+                index = Array.FindIndex(names, n => n.Trim().Equals(field?.Trim(), StringComparison.OrdinalIgnoreCase));
+            }
+
             return index >= 0 ? index : throw new ArgumentException($"The source has no field named {field} for {list}; its fields are {string.Join(", ", names)}.", nameof(options));
         }
 
@@ -174,7 +180,9 @@ internal static class PivotBuilder
             compact ? null : new XAttribute("compactData", "0"),
             new XAttribute("multipleFieldFilters", "0"));
         root.Add(new XElement(Ns + "location", new XAttribute("ref", anchor.ToString()),
-            new XAttribute("firstHeaderRow", "1"), new XAttribute("firstDataRow", "1"), new XAttribute("firstDataCol", "1")));
+            new XAttribute("firstHeaderRow", "1"), new XAttribute("firstDataRow", "1"), new XAttribute("firstDataCol", "1"),
+            pages.Count > 0 ? new XAttribute("rowPageCount", XlsxNames.Integer(pages.Count)) : null,
+            pages.Count > 0 ? new XAttribute("colPageCount", "1") : null));
 
         XElement pivotFields = new(Ns + "pivotFields", new XAttribute("count", XlsxNames.Integer(names.Length)));
         for (int f = 0; f < names.Length; f++)

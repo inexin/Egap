@@ -2,6 +2,7 @@ using System.Xml.Linq;
 
 using Egap.Documents.Docx;
 using Egap.Spreadsheets.Pivots;
+using Egap.Spreadsheets.Xlsx;
 
 namespace Egap.Spreadsheets;
 
@@ -338,6 +339,24 @@ internal sealed class PivotModel
             definition.Range = layout.Range;
             table.Definition = definition;
             table.Changed = true;
+        }
+
+        // "Autofit column widths on update": Excel fits each of the table's columns to the table's own cells.
+        Printing.TextMeter? meter = null;
+        foreach ((PivotTable table, PivotDefinition definition, PivotLayout layout) in plans)
+        {
+            if (!XlsxNames.Bool((string?)definition.Root.Attribute("useAutoFormatting"), false))
+            {
+                continue;
+            }
+
+            meter ??= new Printing.TextMeter(book);
+            RangeAddress area = layout.Range;
+            int first = layout.PageArea is { } pages ? Math.Min(pages.First.Row, area.First.Row) : area.First.Row;
+            for (int column = area.First.Column; column <= area.Last.Column; column++)
+            {
+                table.Worksheet.AutoFitColumn(column, first, area.Last.Row, meter);
+            }
         }
     }
 

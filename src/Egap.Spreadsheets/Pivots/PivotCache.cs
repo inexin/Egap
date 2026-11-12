@@ -187,6 +187,17 @@ internal sealed class PivotCache
     }
 
     /// <summary>
+    /// The name a header cell gives its field: text as it is, spaces kept, and another value as the cell shows it. A text
+    /// header's number format, such as one that pads it with spaces, does not change the name.
+    /// </summary>
+    internal static string HeaderText(Cell header) => header.Value.Kind switch
+    {
+        CellValueKind.Empty => "",
+        CellValueKind.Text => header.Value.Text,
+        _ => header.Text,
+    };
+
+    /// <summary>
     /// The one range a defined name refers to, worked out as a formula would, so a name made with OFFSET or INDEX follows
     /// the data; null when it is not one range.
     /// </summary>
@@ -221,12 +232,13 @@ internal sealed class PivotCache
             throw new InvalidOperationException("The pivot cache's source has no rows under its header row.");
         }
 
-        // Excel names a field from its header cell, without spaces around it, and finds the cache's fields by name: a
-        // column the source gains becomes a new field, and a field whose column is gone leaves the pivot tables.
+        // Excel names a field from its header cell, spaces around it kept, and finds the cache's fields by name: a column
+        // the source gains becomes a new field, and a field whose column is gone, or whose header gained or lost a space,
+        // leaves the pivot tables.
         Dictionary<string, int> oldFields = new(StringComparer.OrdinalIgnoreCase);
         for (int f = 0; f < Fields.Count; f++)
         {
-            oldFields.TryAdd(Fields[f].Name.Trim(), f);
+            oldFields.TryAdd(Fields[f].Name, f);
         }
 
         int columns = range.ColumnCount;
@@ -236,8 +248,8 @@ internal sealed class PivotCache
         for (int c = 0; c < columns; c++)
         {
             Cell header = sheet[range.First.Row, range.First.Column + c];
-            string text = header.Value.IsEmpty ? "" : header.Text.Trim();
-            if (text.Length == 0)
+            string text = HeaderText(header);
+            if (text.Trim().Length == 0)
             {
                 throw new InvalidOperationException("The pivot table field name is not valid: a header cell of the source is empty.");
             }
@@ -469,14 +481,17 @@ internal sealed class PivotCache
         }
 
         Flag("containsSemiMixedTypes", stringish || blank, true);
-        Flag("containsNonDate", stringish || number || blank || records.Length == 0, true);
+        // Blanks are not non-dates: a field of dates and blanks, or of blanks alone, has containsNonDate="0", as Excel writes.
+        Flag("containsNonDate", stringish || number || records.Length == 0, true);
         Flag("containsDate", date, false);
         Flag("containsString", stringish || records.Length == 0, true);
         Flag("containsBlank", blank, false);
         Flag("containsMixedTypes", kinds > 1, false);
-        Flag("containsNumber", number, false);
-        Flag("containsInteger", number && integer, false);
-        if (number)
+        // A field of dates and numbers is a date field to Excel, which does not open one that states numbers too.
+        bool numbers = number && !date;
+        Flag("containsNumber", numbers, false);
+        Flag("containsInteger", numbers && integer, false);
+        if (numbers)
         {
             shared.SetAttributeValue("minValue", XlsxNames.Number(min));
             shared.SetAttributeValue("maxValue", XlsxNames.Number(max));
