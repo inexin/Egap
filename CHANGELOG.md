@@ -170,6 +170,18 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   default one; Excel 5.0/95 workbooks are refused. On the XLS files of a public and an e-mail corpus, the charts, chart
   sheets, notes, hyperlinks, pictures and pivot tables matched Excel's own XLSX of each file, and Excel opened Egap's
   XLSX of the 40 files tried, pivot tables included, without repairing them.
+- `Workbook.Load` reads Excel binary workbooks (XLSB, BIFF12): cells and rich text, shared strings, cell and differential
+  styles, number formats, merged cells, rows and columns, sheet views, sheets, names, links to other files with their
+  kept values and DDE links, hyperlinks, notes, data validation, conditional formats, tables, sheet protection and print
+  settings. Formulas are decoded from their tokens to the text Excel writes in an XLSX file, shared, array and dynamic
+  array formulas and structured references included, with their cached results. Pictures, shapes and charts, which an
+  XLSB keeps as DrawingML parts, and chart sheets are read too; pivot tables, kept as binary parts, are not yet. An
+  encrypted XLSB opens with its password. The workbook saves as XLSX. On the files of a public and an e-mail corpus that
+  Excel saved as both XLSB and XLSX, reading the XLSB gave the values, formulas, names, styles, merges and sheet objects
+  of reading Excel's XLSX for every file but those whose results Excel calculated again on saving.
+- A sheet name whose part before a dot reads as a cell, such as `E11.XLS`, is now quoted in a reference, as Excel quotes it.
+- A hyperlink's place, display text and tip that hold characters XML cannot, such as control characters, are saved as
+  `_xHHHH_` escapes and read back, instead of failing the save.
 - `WorkbookLoadOptions.Password` opens encrypted XLSX, XLSM, XLTX and XLTM files (agile and standard encryption), and
   `WorkbookSaveOptions.Password` encrypts them, with agile encryption or, through `WorkbookSaveOptions.Encryption`,
   standard encryption. Excel opens Egap's encrypted files with the password.

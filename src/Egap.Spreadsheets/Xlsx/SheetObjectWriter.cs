@@ -362,9 +362,9 @@ internal static class SheetObjectWriter
                 }
 
                 item.SetAttributeValue(XlsxNames.R + "id", id);
-                item.SetAttributeValue("location", link.Location);
-                item.SetAttributeValue("display", link.Display);
-                item.SetAttributeValue("tooltip", link.ToolTip);
+                item.SetAttributeValue("location", Encoded(link.Location));
+                item.SetAttributeValue("display", Encoded(link.Display));
+                item.SetAttributeValue("tooltip", Encoded(link.ToolTip));
                 element.Add(item);
             }
         }
@@ -372,6 +372,8 @@ internal static class SheetObjectWriter
         relationships.RemoveAll(r => XlsxNames.SameType(r.Type, SheetObjectReader.HyperlinkRelationship) && !kept.Contains(r.Id));
         return element;
     }
+
+    private static string? Encoded(string? text) => text is null ? null : XlsxNames.Encode(text);
 
     // Tables (18.5).
     private static XElement? Tables(Worksheet sheet, string sheetPart, List<OpcRelationship> relationships, SheetObjectParts parts, SheetObjectState state, Func<string> nextId)

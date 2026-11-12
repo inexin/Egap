@@ -43,6 +43,23 @@ internal static class XlsFunctions
         + "VARA:-1 BAHTTEXT:1 THAIDAYOFWEEK:1 THAIDIGIT:1 THAIMONTHOFYEAR:1 THAINUMSOUND:1 THAINUMSTRING:1 "
         + "THAISTRINGLENGTH:1 ISTHAIDIGIT:1 ROUNDBAHTDOWN:1 ROUNDBAHTUP:1 THAIYEAR:1 RTD:-1");
 
+    /// <summary>
+    /// The numbers past BIFF8's table that BIFF12 formulas use for Excel 2007's functions and the Analysis ToolPak's
+    /// ([MS-XLSB] 2.5.97.10 Ftab), from 380 on.
+    /// </summary>
+    private static readonly (string Name, int Arguments)[] Biff12Table = Build(
+        "CUBEVALUE:-1 CUBEMEMBER:-1 CUBEMEMBERPROPERTY:3 CUBERANKEDMEMBER:-1 HEX2BIN:-1 HEX2DEC:1 HEX2OCT:-1 DEC2BIN:-1 "
+        + "DEC2HEX:-1 DEC2OCT:-1 OCT2BIN:-1 OCT2HEX:-1 OCT2DEC:1 BIN2DEC:1 BIN2OCT:-1 BIN2HEX:-1 IMSUB:2 IMDIV:2 IMPOWER:2 "
+        + "IMABS:1 IMSQRT:1 IMLN:1 IMLOG2:1 IMLOG10:1 IMSIN:1 IMCOS:1 IMEXP:1 IMARGUMENT:1 IMCONJUGATE:1 IMAGINARY:1 IMREAL:1 "
+        + "COMPLEX:-1 IMSUM:-1 IMPRODUCT:-1 SERIESSUM:4 FACTDOUBLE:1 SQRTPI:1 QUOTIENT:2 DELTA:-1 GESTEP:-1 ISEVEN:1 ISODD:1 "
+        + "MROUND:2 ERF:-1 ERFC:1 BESSELJ:2 BESSELK:2 BESSELY:2 BESSELI:2 XIRR:-1 XNPV:3 PRICEMAT:-1 YIELDMAT:-1 INTRATE:-1 "
+        + "RECEIVED:-1 DISC:-1 PRICEDISC:-1 YIELDDISC:-1 TBILLEQ:3 TBILLPRICE:3 TBILLYIELD:3 PRICE:-1 YIELD:-1 DOLLARDE:2 "
+        + "DOLLARFR:2 NOMINAL:2 EFFECT:2 CUMPRINC:6 CUMIPMT:6 EDATE:2 EOMONTH:2 YEARFRAC:-1 COUPDAYBS:-1 COUPDAYS:-1 "
+        + "COUPDAYSNC:-1 COUPNCD:-1 COUPNUM:-1 COUPPCD:-1 DURATION:-1 MDURATION:-1 ODDLPRICE:-1 ODDLYIELD:-1 ODDFPRICE:-1 "
+        + "ODDFYIELD:-1 RANDBETWEEN:2 WEEKNUM:-1 AMORDEGRC:-1 AMORLINC:-1 CONVERT:3 ACCRINT:-1 ACCRINTM:-1 WORKDAY:-1 "
+        + "NETWORKDAYS:-1 GCD:-1 MULTINOMIAL:-1 LCM:-1 FVSCHEDULE:2 CUBEKPIMEMBER:-1 CUBESET:-1 CUBESETCOUNT:1 IFERROR:2 "
+        + "COUNTIFS:-1 SUMIFS:-1 AVERAGEIF:-1 AVERAGEIFS:-1");
+
     /// <summary>Excel 2007's functions, which an XLS file calls through a name with the <c>_xlfn.</c> prefix and an XLSX file by name alone.</summary>
     private static readonly HashSet<string> Excel2007 = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -53,6 +70,10 @@ internal static class XlsFunctions
     /// <summary>The name and fixed argument count of a function number; null for a number the table lacks.</summary>
     public static (string Name, int Arguments)? Function(int number) =>
         (uint)number < (uint)Table.Length && Table[number].Name.Length > 0 ? Table[number] : null;
+
+    /// <summary>The name and fixed argument count of a BIFF12 function number, which goes on past BIFF8's; null for one neither table has.</summary>
+    public static (string Name, int Arguments)? Biff12Function(int number) =>
+        number >= Table.Length && number - Table.Length < Biff12Table.Length ? Biff12Table[number - Table.Length] : Function(number);
 
     /// <summary>A name a file calls as a function, as an XLSX file writes it: Excel 2007's functions lose <c>_xlfn.</c>.</summary>
     public static string CallName(string name) =>

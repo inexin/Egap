@@ -16,6 +16,20 @@ public sealed class SheetObjectTests
     private static readonly byte[] Jpeg = [0xFF, 0xD8, 0xFF, 0xE0, 0, 16, (byte)'J', (byte)'F', (byte)'I', (byte)'F'];
 
     [Fact]
+    public void HyperlinkTextXmlCannotHoldIsEscaped()
+    {
+        Workbook book = Workbook.Create();
+        Hyperlink link = book.Worksheets[0].Hyperlinks.Add("A1", "https://example.com/");
+        link.Display = "Bell\u0007 and _x0041_";
+        link.ToolTip = "Tab\tnull\0end\r\n";
+
+        (Workbook loaded, _) = XlsxSeed.RoundTrip(book);
+
+        Hyperlink back = loaded.Worksheets[0].Hyperlinks[0];
+        Assert.Equal(("Bell\u0007 and _x0041_", "Tab\tnull\0end\r\n"), (back.Display, back.ToolTip));
+    }
+
+    [Fact]
     public void ObjectsMadeInCodeComeBack()
     {
         Workbook book = Workbook.Create();

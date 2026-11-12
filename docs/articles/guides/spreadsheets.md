@@ -2,7 +2,8 @@
 
 Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code: sheets, cells, values, formulas,
 cell styles, rows and columns, names and print settings, as Excel keeps them. It loads and saves Excel's XLSX, XLSM, XLTX and
-XLTM files and OpenDocument spreadsheets (ODS, OTS and flat FODS), and reads Excel 97-2003 workbooks (XLS). The types are in
+XLTM files and OpenDocument spreadsheets (ODS, OTS and flat FODS), and reads Excel binary workbooks (XLSB) and Excel 97-2003
+workbooks (XLS). The types are in
 `Egap.Spreadsheets`.
 
 ```csharp
@@ -96,6 +97,30 @@ objects, conditional formats, data validation, sheet protection and VBA projects
 An XLS encrypted with RC4 or RC4 CryptoAPI opens with `WorkbookLoadOptions.Password`, or without one when Excel encrypted
 it with its default password, as it does for a workbook protected only against writing. A wrong or missing password
 throws a `DocumentPasswordException`, and a workbook from Excel 5.0 or 95 (BIFF5) a `DocumentException`.
+
+### Excel binary workbooks
+
+`Workbook.Load` reads Excel's binary workbooks (`.xlsb`) too: the package of an XLSX file with its workbook, sheets, shared
+strings and styles kept as BIFF12 records in place of XML. Each formula is read from its tokens and written in Excel's
+syntax, the way Excel writes it in an XLSX file, shared, array and dynamic array formulas and structured references to
+tables included, with the result Excel last calculated. Cell values and rich text, cell styles, differential formats and
+number formats, merged cells, column widths, row heights, hidden and grouped rows and columns, sheet views, hidden sheets,
+defined names, links to other files with the values the workbook keeps for them, hyperlinks, notes, data validation,
+conditional formats, tables, sheet protection and print settings are read, and so are pictures, shapes and charts, which
+an XLSB keeps as DrawingML parts as an XLSX does. An encrypted XLSB opens with `WorkbookLoadOptions.Password`.
+
+```csharp
+using Egap.Spreadsheets;
+
+Workbook book = Workbook.Load("forecast.xlsb");
+string? formula = book.Worksheets[0]["D9"].Formula;  // "SUM(D2:D8)"
+book.Save("forecast.xlsx");
+```
+
+A workbook read from XLSB saves as XLSX, as Excel's own XLSX of it would hold it; Egap does not write XLSB. Pivot tables
+and their caches, which an XLSB keeps as binary parts, are not read yet, nor are slicers, form controls, OLE objects or VBA
+projects. A grouped picture or a picture fill in a shape keeps its place but not its image, and a shape's hyperlink keeps
+no target.
 
 ### OpenDocument spreadsheets
 

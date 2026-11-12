@@ -18,6 +18,9 @@ internal sealed class XlsSupBook
     /// <summary>The EXTERNNAME records that follow it, in order.</summary>
     public List<string> Names { get; } = [];
 
+    /// <summary>An XLSB file's linked names' sheets, by index in <see cref="Sheets"/>; -1, or none, for a workbook's name.</summary>
+    public List<int> NameSheets { get; } = [];
+
     /// <summary>The number Excel's formula text gives the linked file, <c>[n]</c>; 0 when it is not one.</summary>
     public int Number { get; set; }
 }
@@ -43,6 +46,12 @@ internal sealed class XlsLinks
 
     /// <summary>The NAME records' names, in order.</summary>
     public List<string> Names { get; } = [];
+
+    /// <summary>An XLSB file's names' sheets, by index in <see cref="SheetNames"/>; -1, or none, for a workbook's name.</summary>
+    public List<int> NameSheets { get; } = [];
+
+    /// <summary>An XLSB file's tables by their id, with their columns' names, for structured references.</summary>
+    public Dictionary<uint, (string Name, string[] Columns)> Tables { get; } = [];
 }
 
 /// <summary>
@@ -286,7 +295,7 @@ internal static class XlsFormula
         return stack.Count == 1 ? stack.Pop() : null;
     }
 
-    private static string Operator(int kind) => kind switch
+    internal static string Operator(int kind) => kind switch
     {
         0x03 => "+",
         0x04 => "-",
@@ -305,7 +314,7 @@ internal static class XlsFormula
         _ => ":",
     };
 
-    private static string Call(string name, Stack<string> stack, int count)
+    internal static string Call(string name, Stack<string> stack, int count)
     {
         if (count < 0 || count > stack.Count)
         {
@@ -383,7 +392,7 @@ internal static class XlsFormula
     private static string Row(int row, bool relative) => (relative ? string.Empty : "$") + (row + 1).ToString(CultureInfo.InvariantCulture);
 
     /// <summary>The sheet part of a 3-D reference, with its <c>!</c>: a sheet, a range of sheets, or a sheet of a linked file; null for a sheet that is gone, which Excel writes as <c>#REF!</c> alone.</summary>
-    private static string? SheetPrefix(XlsLinks links, int index)
+    internal static string? SheetPrefix(XlsLinks links, int index)
     {
         if ((uint)index >= (uint)links.Sheets.Count)
         {
@@ -410,7 +419,7 @@ internal static class XlsFormula
     }
 
     /// <summary>A name of a linked file or an add-in function ([MS-XLS] 2.5.198.41 PtgNameX).</summary>
-    private static string ExternalName(XlsLinks links, int sheet, int index)
+    internal static string ExternalName(XlsLinks links, int sheet, int index)
     {
         if ((uint)sheet >= (uint)links.Sheets.Count || (uint)links.Sheets[sheet].Book >= (uint)links.Books.Count)
         {
