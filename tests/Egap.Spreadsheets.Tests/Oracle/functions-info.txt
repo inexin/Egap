@@ -269,3 +269,6 @@ CELL(A6,A1)
 INFO(A6)
 CELL("row")
 CELL("col")
+# GETPIVOTDATA with no pivot table; Oracle/getpivotdata.txt has the cases on pivot tables.
+GETPIVOTDATA("Sales",A1)
+GETPIVOTDATA("Sales",NA())

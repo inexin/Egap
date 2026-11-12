@@ -260,3 +260,5 @@
 258	error	#N/A	INFO(A6)
 259	number	1	CELL("row")
 260	number	1	CELL("col")
+261	error	#REF!	GETPIVOTDATA("Sales",A1)
+262	error	#N/A	GETPIVOTDATA("Sales",NA())
