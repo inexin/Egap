@@ -79,6 +79,22 @@ public sealed class AutoFitTests
         Assert.Equal(26.25, Workbook.Load(saved).Worksheets[0].Rows[1].AutoFit());
     }
 
+    [Theory]
+    [InlineData("AB", 2.71)]
+    [InlineData("AB\nCD", 6.29)]
+    [InlineData("AB\n", 3.86)]
+    [InlineData("AB\nCD\nEF", 9.43)]
+    [InlineData("ABCDEFGH\nX", 12)]
+    public void ALineBreakInTextThatDoesNotWrapIsAMissingGlyph(string text, double excel)
+    {
+        // Excel 365's AutoFit of Calibri 11 text without wrapping: each line break as wide as the font's missing glyph. Excel's
+        // ColumnWidth leaves out the five pixels of padding the saved width has.
+        Workbook book = Workbook.Create();
+        Worksheet sheet = book.Worksheets[0];
+        sheet["A1"].Value = CellValue.FromText(text);
+        Assert.Equal(Math.Round(excel * 7), Math.Round(sheet.Columns[0].AutoFit()!.Value * 7) - 5);
+    }
+
     [Fact]
     public void ARangeFitsOnlyToItsOwnCells()
     {

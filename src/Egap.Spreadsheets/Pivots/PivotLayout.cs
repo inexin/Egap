@@ -57,7 +57,7 @@ internal sealed class PivotLayout
     /// <summary>Where the page fields go, or null when there are none.</summary>
     public RangeAddress? PageArea { get; private set; }
 
-    /// <summary>The cells, from the table's top left, that show a field's caption and its button.</summary>
+    /// <summary>The cells, from the table's top left, that show a field's button: beside its caption, or a page field's item.</summary>
     public List<(int Row, int Column)> Buttons { get; } = [];
 
     /// <summary>The row labels, from the table's top left, of a compact column, which Excel aligns left with an indent for each level.</summary>
@@ -798,7 +798,10 @@ internal sealed class PivotLayout
         for (int k = 0; k < count; k++)
         {
             PageFieldDefinition page = definition.PageFields[k];
-            PutButton(top + k, 0, FieldCaption(page.Field));
+            Put(top + k, 0, FieldCaption(page.Field));
+
+            // A page field's button sits beside its item, not its caption.
+            Buttons.Add((top + k, 1));
             if (page.Item is { } item && item < definition.Fields[page.Field].DataItems.Count())
             {
                 PutLabel(top + k, 1, page.Field, item);

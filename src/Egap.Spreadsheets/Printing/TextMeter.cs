@@ -18,6 +18,9 @@ internal sealed class TextMeter(Workbook book)
     /// <summary>The pixels a column adds to its widest text: two of margin on the left, three on the right.</summary>
     public const int Padding = 5;
 
+    /// <summary>A character no font has, which fonts draw with their missing glyph.</summary>
+    private const char MissingGlyph = '\uFFFF';
+
     private readonly Dictionary<(string Name, double Size, bool Bold, bool Italic), CharacterWidths.Widths?> tables = new(CharacterWidths.KeyComparer.Instance);
     private readonly Dictionary<(string Name, double Size, bool Bold, bool Italic, char C), int> measured = [];
     private readonly Dictionary<(string Name, double Size, bool Bold, bool Italic), EgamiFont> faces = [];
@@ -30,7 +33,8 @@ internal sealed class TextMeter(Workbook book)
         : Fonts.MaxDigitWidth;
 
     /// <summary>
-    /// The width of one line of text in <paramref name="font"/>, in pixels as Excel lays it out on screen. A number in the
+    /// The width of one line of text in <paramref name="font"/>, in pixels as Excel lays it out on screen, a line break in it
+    /// as wide as the font's missing glyph and a carriage return as nothing. A number in the
     /// General format passes its <paramref name="decimalSeparator"/>: Excel gives its digits and that separator each the
     /// width of the font's widest digit.
     /// </summary>
@@ -40,8 +44,15 @@ internal sealed class TextMeter(Workbook book)
         int width = 0;
         foreach (char c in text)
         {
-            if (c is '\r' or '\n')
+            if (c == '\r')
             {
+                continue;
+            }
+
+            if (c == '\n')
+            {
+                // Excel measures a line break in a line as a character the font lacks: its missing glyph's box.
+                width += Measure(font, MissingGlyph);
                 continue;
             }
 
@@ -69,8 +80,14 @@ internal sealed class TextMeter(Workbook book)
         double width = 0;
         foreach (char c in text)
         {
-            if (c is '\r' or '\n')
+            if (c == '\r')
             {
+                continue;
+            }
+
+            if (c == '\n')
+            {
+                width += Measure(font, MissingGlyph) * Scale;
                 continue;
             }
 
