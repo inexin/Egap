@@ -366,11 +366,17 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
         return drawing;
     }
 
-    /// <summary>Removes an object.</summary>
+    /// <summary>Removes an object; a slicer's goes with the slicer, and its cache when no other slicer shows it.</summary>
     /// <returns>Whether it was on the sheet.</returns>
     public bool Remove(SheetDrawing drawing)
     {
-        bool removed = drawings.Remove(drawing);
+        if (drawing?.Kind == SheetDrawingKind.Slicer)
+        {
+            // The slicers are read before their drawing goes, so the save drops the slicer and a cache no slicer is left on.
+            _ = sheet.Workbook.Slicers;
+        }
+
+        bool removed = drawings.Remove(drawing!);
         Changed |= removed;
         return removed;
     }

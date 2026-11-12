@@ -185,6 +185,25 @@ public sealed class SlicerTests
     }
 
     [Fact]
+    public void ARemovedSlicerLeavesWithItsCache()
+    {
+        Workbook book = Workbook.Load(Book);
+        Worksheet sheet = book.Worksheets["Compact"];
+        Assert.True(sheet.Drawings.Remove(sheet.Drawings.Single(d => d.Name == "Year")));
+
+        using MemoryStream stream = new();
+        book.Save(stream);
+        using ZipArchive zip = new(new MemoryStream(stream.ToArray()));
+        XDocument workbook = XDocument.Load(zip.GetEntry("xl/workbook.xml")!.Open());
+        Assert.Equal(2, workbook.Descendants(X14 + "slicerCache").Count());
+        Assert.DoesNotContain(workbook.Descendants(Main + "definedName"), n => (string?)n.Attribute("name") == "Slicer_Year");
+        Assert.Equal(2, XDocument.Load(zip.GetEntry("xl/slicers/slicer1.xml")!.Open()).Root!.Elements().Count());
+
+        Workbook reread = Workbook.Load(new MemoryStream(stream.ToArray()));
+        Assert.Equal(["Region", "Product"], reread.Worksheets["Compact"].Drawings.Select(d => d.Slicer).OfType<Slicer>().Select(s => s.Name));
+    }
+
+    [Fact]
     public void APrintedSlicerShowsItsSelectedButtons()
     {
         Workbook book = Workbook.Load(Book);
