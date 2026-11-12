@@ -455,12 +455,7 @@ internal static partial class FormulaFunctions
             return -1;
         }
 
-        Regex regex;
-        try
-        {
-            regex = new Regex(pattern, RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
-        }
-        catch (ArgumentException)
+        if (PcreRegex.Get(pattern, ignoreCase: false)?.Regex is not { } regex)
         {
             return -2;
         }

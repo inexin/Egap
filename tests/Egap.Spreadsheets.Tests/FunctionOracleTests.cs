@@ -353,7 +353,29 @@ public sealed partial class FunctionOracleTests
     /// </summary>
     private const double MathLibrarySpread = 2e-15;
 
-    private static string Unescape(string text) =>
-        text.Replace("\t", "\t", StringComparison.Ordinal).Replace("\r", "\r", StringComparison.Ordinal)
-            .Replace("\n", "\n", StringComparison.Ordinal).Replace("\\\\", "\\", StringComparison.Ordinal);
+    /// <summary>The text of a case as the oracle wrote it: a backslash before another, t, r or n stands for that character.</summary>
+    private static string Unescape(string text)
+    {
+        StringBuilder result = new(text.Length);
+        for (int i = 0; i < text.Length; i++)
+        {
+            char c = text[i];
+            if (c == '\\' && i + 1 < text.Length && text[i + 1] is '\\' or 't' or 'r' or 'n')
+            {
+                i++;
+                result.Append(text[i] switch
+                {
+                    't' => '\t',
+                    'r' => '\r',
+                    'n' => '\n',
+                    _ => '\\',
+                });
+                continue;
+            }
+
+            result.Append(c);
+        }
+
+        return result.ToString();
+    }
 }

@@ -23,7 +23,7 @@ internal sealed class Calculator
 
     /// <summary>Functions whose result can change with nothing they read changing, or whose references are worked out as they run.</summary>
     private static readonly HashSet<string> VolatileFunctions =
-        new(["NOW", "TODAY", "RAND", "RANDBETWEEN", "RANDARRAY", "OFFSET", "INDIRECT", "CELL", "INFO", "ANCHORARRAY"], StringComparer.Ordinal);
+        new(["NOW", "TODAY", "RAND", "RANDBETWEEN", "RANDARRAY", "OFFSET", "INDIRECT", "CELL", "INFO", "SHEET", "SHEETS", "ANCHORARRAY"], StringComparer.Ordinal);
 
     /// <summary>The most cells an array formula's range may have to be calculated: 4,194,304.</summary>
     private const long MaxArrayCells = 1 << 22;
