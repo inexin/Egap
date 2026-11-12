@@ -620,6 +620,11 @@ internal sealed class SlicerCache
     private void Apply(IReadOnlyList<PivotTable> tables, HashSet<int> chosen)
     {
         int field = Field;
+        if (field < 0 || tables.Any(t => field >= t.Definition.Fields.Count))
+        {
+            throw new InvalidOperationException("A pivot table has no field for the slicer.");
+        }
+
         List<(PivotTable Table, XDocument Before)> saved = [.. tables.Select(t => (t, new XDocument(t.Definition.Document)))];
         try
         {
