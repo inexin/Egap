@@ -41,6 +41,12 @@ internal sealed class MathBox
     /// <summary>Whether the box draws nothing (a phantom that hides its content).</summary>
     public bool Hidden { get; set; }
 
+    /// <summary>Whether a display line breaks before this atom (a run with <c>m:brk</c>).</summary>
+    public bool BreakBefore { get; set; }
+
+    /// <summary>For a break: the operator (1-based) of the first line that the next line aligns under; 0 for the wrap indent.</summary>
+    public int AlignAt { get; set; }
+
     /// <summary>Whether the box is an alignment point (an <c>&amp;</c> in an equation array), which takes no space.</summary>
     public bool Alignment { get; set; }
 

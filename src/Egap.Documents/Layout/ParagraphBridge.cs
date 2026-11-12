@@ -252,7 +252,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                     case Shape shape when !inCode:
                         AddObject(shape, shape.Floating, shape.Width, shape.Height);
                         break;
-                    case Island { Kind: IslandKind.Math } island when !inCode && OfficeMath.MathRendering.Layout(island, fonts, document, (last ?? Mark()).Size ?? 10) is { } math:
+                    case Island { Kind: IslandKind.Math } island when !inCode && OfficeMath.MathRendering.Layout(island, fonts, document, (last ?? Mark()).Size ?? 10, MathRoom()) is { } math:
                         {
                             // A display equation takes a line of its own; the paginator places it across the line.
                             bool display = OfficeMath.MathRendering.IsDisplay(island);
@@ -285,6 +285,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                 }
             }
         }
+
+        // The room a display equation breaks its lines to fit: the section's text width inside the paragraph's indents.
+        float MathRoom() => (float)Math.Max(36, Docx.ContainerTables.TextWidth(paragraph) - Math.Max(0, format.LeftIndent) - Math.Max(0, format.RightIndent));
 
         void AddRun(Run run)
         {
