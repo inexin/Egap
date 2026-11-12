@@ -13,12 +13,15 @@ internal sealed class PdfTagger
     private static readonly PdfStructureType Div = new("Div");
     private static readonly PdfStructureType[] Headings = [PdfStructureType.H1, PdfStructureType.H2, PdfStructureType.H3, PdfStructureType.H4, PdfStructureType.H5, PdfStructureType.H6];
 
+    private readonly PdfDocument pdf;
     private readonly PdfStructureElement root;
+    private int formulas;
     private readonly Dictionary<Node, PdfStructureElement> elements = [];
     private readonly Dictionary<Node, PdfStructureElement> links = [];
 
     public PdfTagger(PdfDocument pdf, Document document, string? language)
     {
+        this.pdf = pdf;
         root = pdf.Structure.Add(PdfStructureType.Document);
         if (!string.IsNullOrWhiteSpace(language))
         {
@@ -181,6 +184,7 @@ internal sealed class PdfTagger
         element = node switch
         {
             Paragraph => parent.Add(PdfStructureType.P),
+            Island { Kind: IslandKind.Math } island when OfficeMath.MathIslands.Tree(island) is { } tree => Formula(parent, tree),
             Picture or Island or Shape or BlockIsland => parent.Add(PdfStructureType.Figure),
             _ => parent,
         };
@@ -198,6 +202,38 @@ internal sealed class PdfTagger
 
         elements[node] = element;
         return element;
+    }
+
+    /// <summary>
+    /// A Formula element for an equation (PDF/UA-2, 8.7): its UnicodeMath as alternative text, and its MathML as an associated
+    /// file (ISO 32000-2, 14.13) that assistive technology can read.
+    /// </summary>
+    private PdfStructureElement Formula(PdfStructureElement parent, OfficeMath.MathNode tree)
+    {
+        PdfStructureElement formula = parent.Add(PdfStructureType.Formula);
+        string text = OfficeMath.UnicodeMath.Write(tree);
+        formula.AlternateText = text.Length == 0 ? null : text;
+
+        byte[] mathml = System.Text.Encoding.UTF8.GetBytes(OfficeMath.MathMLWriter.ToText(tree));
+        PdfStream stream = new(new PdfDictionary
+        {
+            ["Type"] = PdfName.Get("EmbeddedFile"),
+            ["Subtype"] = PdfName.Get("application/mathml+xml"),
+            ["Params"] = new PdfDictionary { ["Size"] = new PdfInteger(mathml.Length) },
+        });
+        stream.SetDecodedBytes(mathml);
+        PdfReference file = pdf.Objects.Add(stream);
+        string name = $"formula{++formulas}.mml";
+        PdfReference spec = pdf.Objects.Add(new PdfDictionary
+        {
+            ["Type"] = PdfName.Get("Filespec"),
+            ["F"] = PdfString.FromText(name),
+            ["UF"] = PdfString.FromText(name),
+            ["EF"] = new PdfDictionary { ["F"] = file, ["UF"] = file },
+            ["AFRelationship"] = PdfName.Get("Supplement"),
+        });
+        formula.Dictionary["AF"] = new PdfArray([spec]);
+        return formula;
     }
 
     /// <summary>Marks a page's drawing as the layout draws it.</summary>
