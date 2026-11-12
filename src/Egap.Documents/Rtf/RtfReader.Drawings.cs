@@ -744,6 +744,8 @@ internal sealed partial class RtfReader
         int start = state.GroupStart;
         string text = ReadText(trim: false, skipIgnorable: false);
         string markup = start >= 0 ? Markup(start, tokens.Position) : "";
-        AddInline(new Island(document, IslandKind.Math, RtfExtension.Format, markup) { Text = text });
+        // The equation's text is its UnicodeMath (UTN #28), as Word copies it as plain text.
+        string unicodeMath = OfficeMath.MathIslands.Read(RtfExtension.Format, markup) is { } tree ? OfficeMath.UnicodeMath.Write(tree) : text;
+        AddInline(new Island(document, IslandKind.Math, RtfExtension.Format, markup) { Text = unicodeMath.Length > 0 ? unicodeMath : text });
     }
 }

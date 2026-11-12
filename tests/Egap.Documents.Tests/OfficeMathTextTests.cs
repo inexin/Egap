@@ -82,6 +82,15 @@ public sealed class OfficeMathTextTests
     }
 
     [Fact]
+    public void AnEquationsTextIsItsUnicodeMath()
+    {
+        Document document = OfficeMathTests.LoadDocx(
+            "<w:p><m:oMath><m:f><m:num><m:r><m:t>a+b</m:t></m:r></m:num><m:den><m:r><m:t>2</m:t></m:r></m:den></m:f></m:oMath></w:p>");
+
+        Assert.Equal("(a+b)/2", Assert.Single(document.Descendants<Island>()).Text);
+    }
+
+    [Fact]
     public void TaggedPdfsMarkEquationsAsFormulas()
     {
         Document document = OfficeMathTests.LoadDocx(
