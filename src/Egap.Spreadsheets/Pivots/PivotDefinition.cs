@@ -333,10 +333,10 @@ internal sealed class PivotDefinition
         "min" => PivotFunction.Min,
         "product" => PivotFunction.Product,
         "countNums" => PivotFunction.CountNumbers,
-        "stdDev" => PivotFunction.StdDev,
-        "stdDevp" => PivotFunction.StdDevP,
-        "var" => PivotFunction.Var,
-        "varp" => PivotFunction.VarP,
+        "stdDev" => PivotFunction.StandardDeviation,
+        "stdDevp" => PivotFunction.StandardDeviationPopulation,
+        "var" => PivotFunction.Variance,
+        "varp" => PivotFunction.VariancePopulation,
         _ => null,
     };
 
@@ -350,10 +350,10 @@ internal sealed class PivotDefinition
         "min" => PivotFunction.Min,
         "product" => PivotFunction.Product,
         "count" => PivotFunction.CountNumbers,
-        "stdDev" => PivotFunction.StdDev,
-        "stdDevP" => PivotFunction.StdDevP,
-        "var" => PivotFunction.Var,
-        "varP" => PivotFunction.VarP,
+        "stdDev" => PivotFunction.StandardDeviation,
+        "stdDevP" => PivotFunction.StandardDeviationPopulation,
+        "var" => PivotFunction.Variance,
+        "varP" => PivotFunction.VariancePopulation,
         _ => null,
     };
 
@@ -389,22 +389,6 @@ internal sealed class PivotDefinition
         "varp" => "Varp",
         _ => "Sum",
     };
-}
-
-/// <summary>The summary functions of pivot table values (ECMA-376 Part 1, 18.18.67).</summary>
-internal enum PivotFunction
-{
-    Sum,
-    Count,
-    Average,
-    Max,
-    Min,
-    Product,
-    CountNumbers,
-    StdDev,
-    StdDevP,
-    Var,
-    VarP,
 }
 
 /// <summary>A pivot field: where it is, its items and how it shows them.</summary>

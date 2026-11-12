@@ -961,10 +961,10 @@ internal sealed class PivotLayout
                 PivotFunction.Max => numbers == 0 ? 0 : max,
                 PivotFunction.Min => numbers == 0 ? 0 : min,
                 PivotFunction.Product => numbers == 0 ? 0 : product,
-                PivotFunction.StdDev => Math.Sqrt(Variance(1)),
-                PivotFunction.StdDevP => Math.Sqrt(Variance(0)),
-                PivotFunction.Var => Variance(1),
-                PivotFunction.VarP => Variance(0),
+                PivotFunction.StandardDeviation => Math.Sqrt(Variance(1)),
+                PivotFunction.StandardDeviationPopulation => Math.Sqrt(Variance(0)),
+                PivotFunction.Variance => Variance(1),
+                PivotFunction.VariancePopulation => Variance(0),
                 _ => sum,
             };
 

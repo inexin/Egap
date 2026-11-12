@@ -96,10 +96,10 @@ public sealed partial class Worksheet
     public SheetTableCollection Tables { get; }
 
     /// <summary>
-    /// The pivot tables on the sheet, as the .xlsx file it came from had them; empty for a sheet made in code or read from
-    /// another format.
+    /// The pivot tables on the sheet: those of the file it came from, and those made with
+    /// <see cref="PivotTableCollection.Add(CellAddress, string, PivotTableOptions, string?)"/>.
     /// </summary>
-    public IReadOnlyList<PivotTable> PivotTables => Workbook.Pivots.Tables(this);
+    public PivotTableCollection PivotTables => field ??= new PivotTableCollection(this);
 
     /// <summary>The notes on cells.</summary>
     public CellCommentCollection Comments { get; } = new();

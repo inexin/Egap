@@ -67,6 +67,9 @@ internal sealed class PivotCache
     /// <summary>Whether a refresh or an edit changed the definition, so a save writes it again.</summary>
     public bool Changed { get; set; }
 
+    /// <summary>Whether the cache was made in memory, so a save writes it as new parts.</summary>
+    public bool Made { get; init; }
+
     public XElement? WorksheetSource { get; }
 
     public List<PivotCacheField> Fields { get; } = [];
@@ -187,7 +190,7 @@ internal sealed class PivotCache
     /// The one range a defined name refers to, worked out as a formula would, so a name made with OFFSET or INDEX follows
     /// the data; null when it is not one range.
     /// </summary>
-    private static (Worksheet Sheet, RangeAddress Range)? NameRange(Workbook book, DefinedName name)
+    internal static (Worksheet Sheet, RangeAddress Range)? NameRange(Workbook book, DefinedName name)
     {
         Worksheet? home = name.Sheet ?? (book.Worksheets.Count > 0 ? book.Worksheets[0] : null);
         if (home is null || FormulaParser.TryParse(name.Formula, r1c1: false, default) is not { } parsed)
