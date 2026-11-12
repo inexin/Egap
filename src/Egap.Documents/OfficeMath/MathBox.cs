@@ -35,6 +35,9 @@ internal sealed class MathBox
     /// <summary>The size of <see cref="Glyph"/>, in points.</summary>
     public float GlyphSize { get; set; }
 
+    /// <summary>Whether the box is an integral sign, whose scripts hang from its top and bottom.</summary>
+    public bool Integral { get; set; }
+
     /// <summary>Whether the box draws nothing (a phantom that hides its content).</summary>
     public bool Hidden { get; set; }
 

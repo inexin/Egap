@@ -52,6 +52,8 @@ internal sealed class MathLayout
     private readonly float size;
     private readonly float unitsPerEm;
     private int depth;
+    private bool hidePlaceholders;
+    private bool wideSpaces;
 
     /// <summary>A layout in <paramref name="face"/> at <paramref name="size"/> points.</summary>
     public MathLayout(Typeface face, TypefaceMath math, MathSettings settings, float size)
@@ -94,10 +96,11 @@ internal sealed class MathLayout
         _ => new MathBox(),
     };
 
+    // Word sets scripts two points of a hundred smaller than the font asks: 8.52 pt and 6.96 pt at 12 pt in Cambria Math (73 and 60).
     private float Size(Context ctx) => ctx.Style switch
     {
-        MathStyle.Script => size * (k.ScriptPercentScaleDown is > 0 and <= 100 ? k.ScriptPercentScaleDown : 71) / 100f,
-        MathStyle.ScriptScript => size * (k.ScriptScriptPercentScaleDown is > 0 and <= 100 ? k.ScriptScriptPercentScaleDown : 50) / 100f,
+        MathStyle.Script => size * ((k.ScriptPercentScaleDown is > 2 and <= 100 ? k.ScriptPercentScaleDown : 73) - 2) / 100f,
+        MathStyle.ScriptScript => size * ((k.ScriptScriptPercentScaleDown is > 2 and <= 100 ? k.ScriptScriptPercentScaleDown : 52) - 2) / 100f,
         _ => size,
     };
 
@@ -121,7 +124,26 @@ internal sealed class MathLayout
         return Finish(box);
     }
 
-    private MathBox Row(MathRow row, Context ctx) => Join(Atoms(row, ctx), ctx);
+    private MathBox Row(MathRow row, Context ctx)
+    {
+        // An object's empty argument keeps the room of Word's placeholder (a dotted square, not printed) unless hidden.
+        if (row.Items.Count == 0 && depth > 0 && !hidePlaceholders)
+        {
+            return Placeholder(ctx);
+        }
+
+        return Join(Atoms(row, ctx), ctx);
+    }
+
+    private MathBox Placeholder(Context ctx)
+    {
+        ushort glyph = face.GetGlyph(0x2B1A);
+        MathBox box = glyph != 0 ? GlyphBox(glyph, Size(ctx)) : new MathBox { Width = Size(ctx) * 0.6f, Ascent = Size(ctx) * 0.6f };
+        box.Glyph = 0;
+        box.Italic = 0;
+        box.Hidden = true;
+        return box;
+    }
 
     private List<MathBox> Atoms(MathRow row, Context ctx)
     {
@@ -177,12 +199,23 @@ internal sealed class MathLayout
                 continue;
             }
 
+            if (c == ' ' && wideSpaces && !normal)
+            {
+                atoms.Add(new MathBox { Width = Size(ctx), Class = MathClass.Ordinary });
+                continue;
+            }
+
             int mapped = MathAlphabets.Map(c, style, script);
             ushort glyph = face.GetGlyph(mapped);
             if (glyph == 0 && mapped != c)
             {
                 mapped = c;
                 glyph = face.GetGlyph(c);
+            }
+
+            if (ctx.Style >= MathStyle.Script)
+            {
+                glyph = ScriptStyle(mapped, glyph, ctx.Style == MathStyle.Script ? 1u : 2u);
             }
 
             MathBox box = GlyphBox(glyph, Size(ctx));
@@ -279,7 +312,8 @@ internal sealed class MathLayout
             if (previous >= 0)
             {
                 MathBox before = atoms[previous];
-                if (!crossed && before.Glyph != 0 && before.Italic > 0 && atom.Italic == 0)
+                // Word adds a slanted glyph's italic correction before what follows, but not before an opening fence: f(x).
+                if (!crossed && before.Glyph != 0 && before.Italic > 0 && atom.Italic == 0 && !Opens(atom))
                 {
                     x += before.Italic;
                 }
@@ -388,7 +422,7 @@ internal sealed class MathLayout
         {
             float hGap = U(k.SkewedFractionHorizontalGap, ctx);
             float vGap = U(k.SkewedFractionVerticalGap, ctx);
-            float rule = U(k.FractionRuleThickness, ctx);
+            float rule = RuleWidth(k.FractionRuleThickness, ctx);
             float numShift = axis + vGap / 2 + num.Descent;
             float denShift = vGap / 2 - axis + den.Ascent;
             box.Add(num, 0, -numShift);
@@ -402,7 +436,7 @@ internal sealed class MathLayout
 
         float shiftUp;
         float shiftDown;
-        float thickness = type == "noBar" ? 0 : U(k.FractionRuleThickness, ctx);
+        float thickness = type == "noBar" ? 0 : RuleWidth(k.FractionRuleThickness, ctx);
         if (type == "noBar")
         {
             shiftUp = U(display ? k.StackTopDisplayStyleShiftUp : k.StackTopShiftUp, ctx);
@@ -423,10 +457,13 @@ internal sealed class MathLayout
                 U(display ? k.FractionDenomDisplayStyleGapMin : k.FractionDenominatorGapMin, ctx) + den.Ascent - axis + thickness / 2);
         }
 
-        float pad = Size(ctx) / 12;
-        float width = Math.Max(num.Width, den.Width);
-        box.Add(num, pad + (width - num.Width) / 2, -shiftUp);
-        box.Add(den, pad + (width - den.Width) / 2, shiftDown);
+        // Word's bar is as wide as the wider argument with its italic correction, with no padding at the sides.
+        float pad = 0;
+        float numWidth = num.Width + num.Italic;
+        float denWidth = den.Width + den.Italic;
+        float width = Math.Max(numWidth, denWidth);
+        box.Add(num, pad + (width - numWidth) / 2, -shiftUp);
+        box.Add(den, pad + (width - denWidth) / 2, shiftDown);
         if (thickness > 0)
         {
             box.Items.Add(new MathItem.Rule(pad, -axis - thickness / 2, width, thickness));
@@ -440,7 +477,7 @@ internal sealed class MathLayout
     {
         MathBox body = Row(o.Argument("e"), ctx.Cramp);
         bool display = ctx.Style == MathStyle.Display;
-        float thickness = U(k.RadicalRuleThickness, ctx);
+        float thickness = RuleWidth(k.RadicalRuleThickness, ctx);
         float gap = U(display ? k.RadicalDisplayStyleVerticalGap : k.RadicalVerticalGap, ctx);
         float extra = U(k.RadicalExtraAscender, ctx);
         float need = body.Height + gap + thickness;
@@ -467,9 +504,10 @@ internal sealed class MathLayout
         }
 
         box.Add(sign, x, signY);
-        box.Items.Add(new MathItem.Rule(x + sign.Width, -ruleTop, body.Width, thickness));
+        // Word's radical rule covers the body's italic correction too.
+        box.Items.Add(new MathItem.Rule(x + sign.Width, -ruleTop, body.Width + body.Italic, thickness));
         box.Add(body, x + sign.Width, 0);
-        box.Width = x + sign.Width + body.Width;
+        box.Width = x + sign.Width + body.Width + body.Italic;
         box.Ascent = ruleTop + extra;
         return Finish(box);
     }
@@ -491,10 +529,13 @@ internal sealed class MathLayout
         MathBox box = new();
         box.Add(nucleus, 0, 0);
         float width = nucleus.Width;
-        float space = U(k.SpaceAfterScript, ctx);
+        // On a large operator Word sets the superscript at the glyph's advance and the subscript its italic correction to the
+        // left, and lets the operator's body follow its limits directly.
+        bool op = nucleus.Class == MathClass.Operator;
+        float space = op ? 0 : U(k.SpaceAfterScript, ctx);
         if (sup is not null)
         {
-            float x = nucleus.Width + nucleus.Italic + Kern(nucleus, MathKernCorner.TopRight, shiftUp - sup.Descent, ctx);
+            float x = nucleus.Width + (op ? 0 : nucleus.Italic) + Kern(nucleus, MathKernCorner.TopRight, shiftUp - sup.Descent, ctx);
             box.Add(sup, x, -shiftUp);
             width = Math.Max(width, x + sup.Width + space);
         }
@@ -512,7 +553,10 @@ internal sealed class MathLayout
 
     private (float Up, float Down) ScriptShifts(MathBox nucleus, MathBox? sub, MathBox? sup, Context ctx)
     {
-        bool glyph = nucleus.Glyph != 0;
+        // Word shifts scripts on a base no taller than a letter (cos θ, a function) as it does on a single glyph.
+        // Word hangs an integral's limits from its top and bottom; sums and products take ordinary script shifts.
+        bool glyph = !nucleus.Integral
+            && (nucleus.Glyph != 0 || nucleus.Ascent <= Size(ctx) * 0.75f && nucleus.Descent <= Size(ctx) * 0.3f);
         Context scriptCtx = ctx.Script;
         float up = 0;
         float down = 0;
@@ -624,10 +668,12 @@ internal sealed class MathLayout
             }
 
             nucleus.Class = MathClass.Operator;
+            nucleus.Integral = integral;
             opWithLimits = sub is null && sup is null ? op : Attach(nucleus, sub, sup, ctx);
         }
 
-        opWithLimits.Class = MathClass.Operator;
+        // In a display equation Word sets the body right after an operator's side limits, with no thin space.
+        opWithLimits.Class = ctx.Style == MathStyle.Display && limits != "undOvr" && (sub is not null || sup is not null) ? MathClass.Ordinary : MathClass.Operator;
         MathBox box = Join([opWithLimits, body], ctx);
         box.Class = MathClass.Operator;
         return box;
@@ -679,7 +725,8 @@ internal sealed class MathLayout
         }
 
         float axis = U(k.AxisHeight, ctx);
-        float target = match ? ascent + descent : 2 * Math.Max(ascent - axis, descent + axis);
+        // Word sizes a fence by its content's height, not by the content's reach either side of the axis.
+        float target = ascent + descent;
         target = Math.Max(target * 0.901f, target - Size(ctx) / 10);
         bool stretch = grow && ascent + descent > U(k.DelimitedSubFormulaMinHeight, ctx) * 0.5f;
 
@@ -692,7 +739,8 @@ internal sealed class MathLayout
 
             ushort glyph = face.GetGlyph(char.ConvertToUtf32(text, 0));
             MathBox fence = stretch ? StretchVertical(glyph, target, Size(ctx)) : GlyphBox(glyph, Size(ctx));
-            fence = stretch ? Center(fence, ctx) : fence;
+            // Word centres fences on the math axis; a fence matched to its content keeps the content's baseline.
+            fence = stretch || !match ? Center(fence, ctx) : fence;
             fence.Class = cls;
             return fence;
         }
@@ -719,12 +767,13 @@ internal sealed class MathLayout
             atoms.Add(right);
         }
 
+        // Word spaces a delimiter like an ordinary atom: no thin space between f and (x).
         MathBox box = Join(atoms, ctx);
-        box.Class = MathClass.Inner;
+        box.Class = MathClass.Ordinary;
         if (box.Glyph != 0)
         {
             box = Wrap(box);
-            box.Class = MathClass.Inner;
+            box.Class = MathClass.Ordinary;
         }
 
         return box;
@@ -770,14 +819,14 @@ internal sealed class MathLayout
         box.Add(nucleus, 0, 0);
         if (top)
         {
-            float t = U(k.OverbarRuleThickness, ctx);
+            float t = RuleWidth(k.OverbarRuleThickness, ctx);
             float y = nucleus.Ascent + U(k.OverbarVerticalGap, ctx) + t;
             box.Items.Add(new MathItem.Rule(0, -y, nucleus.Width, t));
             box.Ascent = y + U(k.OverbarExtraAscender, ctx);
         }
         else
         {
-            float t = U(k.UnderbarRuleThickness, ctx);
+            float t = RuleWidth(k.UnderbarRuleThickness, ctx);
             float y = nucleus.Descent + U(k.UnderbarVerticalGap, ctx);
             box.Items.Add(new MathItem.Rule(0, y, nucleus.Width, t));
             box.Descent = y + t + U(k.UnderbarExtraDescender, ctx);
@@ -797,25 +846,29 @@ internal sealed class MathLayout
     {
         MathBox nucleus = Row(o.Argument("e"), ctx);
         MathProperties? p = o.Properties;
-        float t = U(k.OverbarRuleThickness, ctx);
-        float pad = U(k.OverbarVerticalGap, ctx);
-        float left = 0;
-        float right = nucleus.Width + 2 * pad;
-        float top = -(nucleus.Ascent + pad);
-        float bottom = nucleus.Descent + pad;
-        MathBox box = new() { Width = right, Class = MathClass.Ordinary };
-        box.Add(nucleus, pad, 0);
+        // Word draws the border inside the box at the font's rule thickness rounded down to 1/600 inch, 0.17 em from the content (with the content's italic
+        // correction on the right); a hidden top or bottom takes its padding with it.
+        float t = MathF.Max(1, MathF.Floor(U(k.OverbarRuleThickness, ctx) / 0.12f + 0.01f)) * 0.12f;
+        float pad = Size(ctx) * 0.17f;
+        bool hideTop = p?.On("hideTop") ?? false;
+        bool hideBot = p?.On("hideBot") ?? false;
+        float left = t / 2;
+        float right = t + pad + nucleus.Width + nucleus.Italic + pad + t / 2;
+        float top = -(nucleus.Ascent + (hideTop ? 0 : pad + t / 2));
+        float bottom = nucleus.Descent + (hideBot ? 0 : pad + t / 2);
+        MathBox box = new() { Width = right + t / 2, Class = MathClass.Ordinary };
+        box.Add(nucleus, t + pad, 0);
 
         void Line(float x1, float y1, float x2, float y2) => box.Items.Add(new MathItem.Line(new Vector2(x1, y1), new Vector2(x2, y2), t));
 
-        if (!(p?.On("hideTop") ?? false))
+        if (!hideTop)
         {
-            Line(left, top, right, top);
+            Line(left - t / 2, top, right + t / 2, top);
         }
 
-        if (!(p?.On("hideBot") ?? false))
+        if (!hideBot)
         {
-            Line(left, bottom, right, bottom);
+            Line(left - t / 2, bottom, right + t / 2, bottom);
         }
 
         if (!(p?.On("hideLeft") ?? false))
@@ -856,7 +909,11 @@ internal sealed class MathLayout
 
     private MathBox EquationArray(MathObject o, Context ctx)
     {
+        // In a display equation Word widens each space in an equation array to an em, so "x,  x≥0" makes columns.
+        bool wide = wideSpaces;
+        wideSpaces = ctx.Style == MathStyle.Display;
         List<List<MathBox>> rows = [.. o.All("e").Select(e => Segments(Atoms(e, ctx), ctx))];
+        wideSpaces = wide;
         int columns = rows.Count == 0 ? 0 : rows.Max(r => r.Count);
         float[] widths = new float[columns];
         foreach (List<MathBox> row in rows)
@@ -889,7 +946,10 @@ internal sealed class MathLayout
 
     private MathBox Matrix(MathObject o, Context ctx)
     {
+        bool hidden = hidePlaceholders;
+        hidePlaceholders |= o.Properties?.On("plcHide") ?? false;
         List<List<MathBox>> cells = [.. o.Rows.Select(r => r.Select(c => Row(c, ctx)).ToList())];
+        hidePlaceholders = hidden;
         int columns = cells.Count == 0 ? 0 : cells.Max(r => r.Count);
         float[] widths = new float[columns];
         foreach (List<MathBox> row in cells)
@@ -989,8 +1049,9 @@ internal sealed class MathLayout
     {
         float leading = Math.Max(U(k.MathLeading, ctx), Size(ctx) * 0.15f);
 
-        // m:rSpRule: single, one and a half, double, exactly m:rSp twips, or m:rSp half-lines, baseline to baseline.
-        float single = Size(ctx) * 1.2f;
+        // m:rSpRule: single, one and a half, double, exactly m:rSp twips, or m:rSp half-lines, baseline to baseline. Word's
+        // single pitch is 1.17 em (14.04 pt at 12 pt).
+        float single = Size(ctx) * 1.17f;
         int rule = properties?.Int("rSpRule", 0) ?? 0;
         int spacing = properties?.Int("rSp", 0) ?? 0;
         float pitch = rule switch
@@ -1074,7 +1135,21 @@ internal sealed class MathLayout
             }
             else
             {
-                float y = nucleus.Descent + U(k.StretchStackGapBelowMin, ctx) + group.Ascent;
+                // The brace's glyphs are drawn below the baseline already: Word leaves them there when they clear the content.
+                float inkTop = float.MinValue;
+                foreach (MathItem item in group.Items)
+                {
+                    if (item is MathItem.Glyphs glyphs)
+                    {
+                        foreach (ushort id in glyphs.Ids)
+                        {
+                            inkTop = Math.Max(inkTop, face.GetGlyphExtents(id).YMax * glyphs.Size / unitsPerEm);
+                        }
+                    }
+                }
+
+                inkTop = inkTop == float.MinValue ? group.Ascent : inkTop;
+                float y = Math.Max(0, nucleus.Descent + U(k.StretchStackGapBelowMin, ctx) + inkTop);
                 box.Add(group, x, y);
             }
 
@@ -1117,12 +1192,72 @@ internal sealed class MathLayout
         return box;
     }
 
-    /// <summary>A large operator for display style: the first variant at least the display operator height.</summary>
+    /// <summary>
+    /// A rule's thickness. Word rounds fraction bars, radical and bar rules up to a whole 1/600 inch (0.12 pt): 0.84 pt for
+    /// Cambria Math's 133 units at 12 pt, 0.6 pt in scripts.
+    /// </summary>
+    private float RuleWidth(float value, Context ctx) => MathF.Ceiling(U(value, ctx) / 0.12f - 0.01f) * 0.12f;
+
+    private readonly Dictionary<(int, uint), ushort> scriptGlyphs = [];
+
+    /// <summary>
+    /// The script-style form of a character through the font's <c>ssty</c> feature (1 for scripts, 2 for second-level scripts),
+    /// as Word draws them: wider, sturdier glyphs that read well small.
+    /// </summary>
+    private ushort ScriptStyle(int c, ushort glyph, uint level)
+    {
+        if (scriptGlyphs.TryGetValue((c, level), out ushort cached))
+        {
+            return cached;
+        }
+
+        // The feature sits under the font's math script, which shaping never selects, so the forms come from the feature's
+        // closure: Cambria Math and STIX Two Math number the first-level forms before the second-level ones.
+        ushort result = glyph;
+        if (face.Layout is { } layout)
+        {
+            List<ushort> forms = [.. layout.GetClosure([glyph], [new FontTag("ssty")]).Where(g => g != glyph).Order()];
+            if (forms.Count > 0)
+            {
+                result = forms[Math.Min((int)level, forms.Count) - 1];
+            }
+        }
+
+        scriptGlyphs[(c, level)] = result;
+        return result;
+    }
+
+    /// <summary>Whether a box begins with an opening fence: a fence glyph, or a delimiter object.</summary>
+    private static bool Opens(MathBox box)
+    {
+        for (int depth = 0; depth < 8; depth++)
+        {
+            if (box.Class == MathClass.Open)
+            {
+                return true;
+            }
+
+            if (box.Glyph != 0 || box.Items.Count == 0 || box.Items[0] is not MathItem.Child child)
+            {
+                return false;
+            }
+
+            box = child.Box;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// A large operator for display style: the first variant at least the display operator height. Word asks a quarter more
+    /// than the constant: with Cambria Math its display integrals take the 2.15 em variant, not the 1.35 em one just over it,
+    /// while sums and products keep their 1.9 em variants.
+    /// </summary>
     private MathBox Large(ushort glyph, Context ctx)
     {
         float sz = Size(ctx);
         float scale = sz / unitsPerEm;
-        float min = k.DisplayOperatorMinHeight * scale;
+        float min = k.DisplayOperatorMinHeight * 1.25f * scale;
         ushort chosen = glyph;
         foreach (MathGlyphVariant variant in math.GetVariants(glyph, MathDirection.Vertical))
         {
@@ -1229,7 +1364,7 @@ internal sealed class MathLayout
             }
         }
 
-        if (math.GetAssembly(glyph, MathDirection.Horizontal) is { } assembly && Assemble(assembly, target / scale) is { } parts)
+        if (math.GetAssembly(glyph, MathDirection.Horizontal) is { } assembly && Assemble(assembly, target / scale, horizontal: true) is { } parts)
         {
             MathBox box = new();
             ushort[] ids = new ushort[parts.Count];
@@ -1257,7 +1392,11 @@ internal sealed class MathLayout
     /// The parts of <paramref name="assembly"/> repeated and overlapped to span <paramref name="target"/> font units, each with
     /// its start along the assembly; null when the assembly has no parts.
     /// </summary>
-    internal List<(ushort Glyph, float At, float Advance)>? Assemble(MathGlyphAssembly assembly, float target)
+    /// <remarks>
+    /// Horizontally (braces, brackets over and under) Word uses no extender when the end and middle parts can overlap down to the
+    /// target, however far they overlap, so a brace spans exactly its content.
+    /// </remarks>
+    internal List<(ushort Glyph, float At, float Advance)>? Assemble(MathGlyphAssembly assembly, float target, bool horizontal = false)
     {
         IReadOnlyList<MathGlyphPart> parts = assembly.Parts;
         if (parts.Count == 0)
@@ -1267,7 +1406,7 @@ internal sealed class MathLayout
 
         float minOverlap = math.MinConnectorOverlap;
         List<MathGlyphPart> list = [];
-        for (int repeats = 1; repeats <= 256; repeats++)
+        for (int repeats = horizontal ? 0 : 1; repeats <= 256; repeats++)
         {
             list.Clear();
             foreach (MathGlyphPart part in parts)
@@ -1280,6 +1419,12 @@ internal sealed class MathLayout
 
             float full = list.Sum(p => p.FullAdvance);
             float longest = full - minOverlap * (list.Count - 1);
+            float shortest = list.Count > 0 ? list.Max(p => p.FullAdvance) : 0;
+            if (horizontal && repeats == 0 && list.Count > 0 && (longest < target || shortest > target))
+            {
+                continue;
+            }
+
             if (longest >= target || repeats == 256 || !parts.Any(p => p.IsExtender))
             {
                 break;
@@ -1296,7 +1441,7 @@ internal sealed class MathLayout
             if (i + 1 < list.Count)
             {
                 float most = Math.Max(minOverlap, Math.Min(list[i].EndConnectorLength, list[i + 1].StartConnectorLength));
-                at += list[i].FullAdvance - Math.Clamp(overlap, minOverlap, most);
+                at += list[i].FullAdvance - (horizontal ? overlap : Math.Clamp(overlap, minOverlap, most));
             }
         }
 
@@ -1332,18 +1477,19 @@ internal sealed class MathLayout
         return box;
     }
 
-    private readonly record struct Context(MathStyle Style, bool Cramped)
+    private readonly record struct Context(MathStyle Style, bool Cramped, bool InFraction = false)
     {
-        public Context Script => new(Style <= MathStyle.Text ? MathStyle.Script : MathStyle.ScriptScript, Cramped);
+        public Context Script => new(Style <= MathStyle.Text ? MathStyle.Script : MathStyle.ScriptScript, Cramped, InFraction);
 
         public Context Sub => Script with { Cramped = true };
 
-        public Context Numerator => new(Style switch
+        // In a display equation Word shrinks fractions to text size once: a text-size fraction inside a fraction stays text size.
+        public Context Numerator => new(InFraction && Style == MathStyle.Text ? Style : Style switch
         {
             MathStyle.Display => MathStyle.Text,
             MathStyle.Text => MathStyle.Script,
             _ => MathStyle.ScriptScript,
-        }, Cramped);
+        }, Cramped, true);
 
         public Context Denominator => Numerator with { Cramped = true };
 

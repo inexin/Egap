@@ -207,7 +207,8 @@ public sealed class OfficeMathLayoutTests
             MathBox large = Layout(20).Zone(tree, display: false);
 
             Assert.True(small.Width >= 0 && small.Height >= 0, zone.ToString());
-            Assert.Equal(small.Width * 2, large.Width, small.Width * 0.02f + 0.01f);
+            // Rules round to whole 1/600 inch, as Word draws them, so a border's thickness doesn't scale exactly.
+            Assert.Equal(small.Width * 2, large.Width, (small.Width * 0.02f) + 0.5f);
         }
     }
 
