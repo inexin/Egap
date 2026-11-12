@@ -101,7 +101,7 @@ internal static partial class FormulaFunctions
     {
         List<FormulaFunction> all = [.. Core(), .. MathFunctions(), .. TextFunctions(), .. DateFunctions(), .. LookupFunctions(),
             .. StatisticalFunctions(), .. InformationFunctions(), .. FinancialFunctions(), .. EngineeringFunctions(), .. DatabaseFunctions(),
-            .. MatrixFunctions(), .. DistributionFunctions(), .. DynamicArrayFunctions(), .. LambdaFunctions(), .. RegexFunctions(), .. CellInfoFunctions(), .. WebFunctions(), .. GroupFunctions()];
+            .. MatrixFunctions(), .. DistributionFunctions(), .. DynamicArrayFunctions(), .. LambdaFunctions(), .. RegexFunctions(), .. CellInfoFunctions(), .. WebFunctions(), .. GroupFunctions(), .. PivotFunctions()];
         return all.ToFrozenDictionary(f => f.Name, StringComparer.Ordinal);
     }
 
