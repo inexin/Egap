@@ -1,0 +1,4 @@
+# Excel 16.0 build 20527, tools/excel-xlsb-oracle.ps1 -Mode Make: one workbook saved as cells.xlsx and cells.xlsb, then as
+# encrypted.xlsb with the password "Egap xlsb 1". The workbook holds values, rich text, styles, formulas of each kind (shared,
+# array, dynamic, 3-D, structured), names, merges, row heights and column widths, hyperlinks, notes, data validation,
+# conditional formats and a table. Personal information was removed before saving.

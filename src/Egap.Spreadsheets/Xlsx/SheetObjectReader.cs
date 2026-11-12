@@ -153,7 +153,8 @@ internal static class SheetObjectReader
             relationship = (id, rel.Target);
         }
 
-        string? location = (string?)element.Attribute("location");
+        // location, display and tooltip are ST_Xstring (22.9.2.19): characters XML cannot hold come as _xHHHH_ escapes.
+        string? location = Decoded(element.Attribute("location"));
         if (address is null && location is null)
         {
             return;
@@ -161,14 +162,16 @@ internal static class SheetObjectReader
 
         sheet.Hyperlinks.AddRead(new Hyperlink(range, address, location)
         {
-            Display = (string?)element.Attribute("display"),
-            ToolTip = (string?)element.Attribute("tooltip"),
+            Display = Decoded(element.Attribute("display")),
+            ToolTip = Decoded(element.Attribute("tooltip")),
             Source = element,
             Relationship = relationship,
         });
     }
 
-    private static void ReadValidation(Worksheet sheet, XElement element)
+    private static string? Decoded(XAttribute? attribute) => attribute is null ? null : XlsxNames.Decode(attribute.Value);
+
+    internal static void ReadValidation(Worksheet sheet, XElement element)
     {
         XNamespace ns = element.Name.Namespace;
         List<RangeAddress> ranges = Ranges((string?)element.Attribute("sqref"));
@@ -258,7 +261,7 @@ internal static class SheetObjectReader
         (ConditionalFormatType.TimePeriod, "timePeriod"), (ConditionalFormatType.AboveAverage, "aboveAverage"),
     ];
 
-    private static void ReadConditionalFormat(Workbook book, Worksheet sheet, XElement element)
+    internal static void ReadConditionalFormat(Workbook book, Worksheet sheet, XElement element)
     {
         XNamespace ns = element.Name.Namespace;
         ConditionalFormat format = new(Ranges((string?)element.Attribute("sqref"))) { Source = element };
@@ -428,20 +431,20 @@ internal static class SheetObjectReader
         return true;
     }
 
-    private static XElement? ChartReference(XElement frame) => frame.Descendants().FirstOrDefault(e => e.Name == C + "chart" || e.Name == Cx + "chart");
+    internal static XElement? ChartReference(XElement frame) => frame.Descendants().FirstOrDefault(e => e.Name == C + "chart" || e.Name == Cx + "chart");
 
     /// <summary>The object an anchor places: its child that is not a position or client data.</summary>
     internal static XElement? ObjectOf(XElement anchor) =>
         anchor.Elements().FirstOrDefault(e => !(e.Name.Namespace == Xdr && e.Name.LocalName is "from" or "to" or "pos" or "ext" or "clientData"));
 
-    private static DrawingPosition Position(XElement marker)
+    internal static DrawingPosition Position(XElement marker)
     {
         int column = Math.Clamp(XlsxNames.Int((string?)marker.Element(Xdr + "col"), 0), 0, CellAddress.MaxColumns - 1);
         int row = Math.Clamp(XlsxNames.Int((string?)marker.Element(Xdr + "row"), 0), 0, CellAddress.MaxRows - 1);
         return new DrawingPosition(new CellAddress(row, column), Long(marker.Element(Xdr + "colOff")), Long(marker.Element(Xdr + "rowOff")));
     }
 
-    private static long Long(XObject? node)
+    internal static long Long(XObject? node)
     {
         string? text = node switch
         {
@@ -453,7 +456,7 @@ internal static class SheetObjectReader
     }
 
     /// <summary>The cells whose notes the VML drawing shows all the time; empty when the drawing cannot be read as XML.</summary>
-    private static HashSet<CellAddress> VisibleNotes(OpcPart? vml)
+    internal static HashSet<CellAddress> VisibleNotes(OpcPart? vml)
     {
         HashSet<CellAddress> visible = [];
         if (vml is null)

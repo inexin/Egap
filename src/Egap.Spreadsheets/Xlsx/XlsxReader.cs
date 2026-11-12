@@ -22,6 +22,14 @@ internal static class XlsxReader
         OpcPackage package = OpcPackage.Read(stream, limits);
         OpcPart workbookPart = package.GetRelatedPart(package.Relationships, OfficeDocument)
             ?? throw new DocumentException("The package has no main document part.");
+        if (string.Equals(workbookPart.ContentType, Xlsb.XlsbWorkbook.ContentType, StringComparison.OrdinalIgnoreCase))
+        {
+            // An Excel binary workbook: the same package, with BIFF12 records in place of the XML parts.
+            book.Format = WorkbookFormat.Xlsx;
+            Xlsb.XlsbWorkbook.Read(book, package, workbookPart);
+            return;
+        }
+
         WorkbookFormat format = XlsxNames.FormatOf(workbookPart.ContentType)
             ?? throw new DocumentException($"The package's main part is {workbookPart.ContentType}, not a workbook.");
 

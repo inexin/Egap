@@ -39,6 +39,7 @@ Dictionary<string, Action<Stream>> targets = new(StringComparer.Ordinal)
     ["ods"] = input => Ods(input, null),
     ["odscrypt"] = input => Ods(input, "fuzz"),
     ["xls"] = Xls,
+    ["xlsb"] = Xlsb,
 };
 
 if (args is ["mutate", string mutateTarget, string seconds, string seeds, string findings])
@@ -461,6 +462,11 @@ static void Ods(Stream input, string? password)
 // same way as an ODS: loaded, cells shown and their formulas written in R1C1 style, pivot tables refreshed, calculated,
 // then saved as XLSX and loaded again; only a DocumentException may be thrown.
 static void Xls(Stream input) => Ods(input, null);
+
+// An Excel binary workbook (XLSB): the package, its BIFF12 records, styles, strings, and formulas decoded from their tokens,
+// shared, array and structured ones among them, with its tables, links, notes and drawings. It goes the same way as an XLS:
+// loaded, cells shown, calculated, then saved as XLSX and loaded again; only a DocumentException may be thrown.
+static void Xlsb(Stream input) => Ods(input, null);
 
 static void Xlsx(Stream input)
 {

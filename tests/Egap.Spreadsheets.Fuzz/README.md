@@ -28,6 +28,7 @@ Fuzzing harness for Egap.Spreadsheets' parsers, run with SharpFuzz and AFL++ in 
 | `ods` | Any bytes read as an OpenDocument spreadsheet, zipped or flat: loaded, cells shown and their formulas, translated from OpenFormula, written in R1C1 style, calculated, saved in its own format and as XLSX and loaded again; may throw only `DocumentException` | `tests/fuzz-seeds/ods/*` (stored packages and flat FODS) |
 | `odscrypt` | The same, for a password-protected ODS opened with the password `fuzz`: the encrypted package, its manifest and the decryption; may throw only `DocumentException` | `tests/fuzz-seeds/ods-encrypted/*` (packages Egap and LibreOffice encrypted) |
 | `xls` | Any bytes read as an Excel 97-2003 workbook (BIFF8): the compound file, the records, shared strings across CONTINUE records, styles, and formulas decoded from their tokens, shared and array formulas among them; then cells shown, calculated, saved as XLSX and loaded again; may throw only `DocumentException` | `tests/fuzz-seeds/xls/*` (workbooks built by the tests' `XlsBuilder`) |
+| `xlsb` | Any bytes read as an Excel binary workbook (XLSB): the package, the BIFF12 records, styles, shared strings, and formulas decoded from their tokens, shared, array and structured ones among them, with tables, links, notes and drawings; then cells shown, calculated, saved as XLSX and loaded again; may throw only `DocumentException` | `tests/fuzz-seeds/xlsb/*` (Excel's workbook from the tests' oracle, deflated and stored) |
 
 Daytime runs are 10 minutes per target at most. With the managed mutator:
 

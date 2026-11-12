@@ -459,7 +459,7 @@ public sealed partial class Workbook
     public static Workbook CreateEmpty() => new(new StyleTable());
 
     /// <summary>
-    /// Loads an XLSX, XLSM, XLTX or XLTM file, an Excel 97-2003 workbook (XLS), an OpenDocument spreadsheet (ODS, OTS or flat FODS), or a <c>.csv</c>,
+    /// Loads an XLSX, XLSM, XLTX or XLTM file, an Excel binary workbook (XLSB), an Excel 97-2003 workbook (XLS), an OpenDocument spreadsheet (ODS, OTS or flat FODS), or a <c>.csv</c>,
     /// <c>.tsv</c> or <c>.tab</c> file as <see cref="LoadCsv(string, CsvOptions?)"/> does, with <see cref="WorkbookLoadOptions.Csv"/>.
     /// </summary>
     /// <exception cref="DocumentException">The file is not a workbook Egap can read.</exception>
@@ -478,9 +478,9 @@ public sealed partial class Workbook
     }
 
     /// <summary>
-    /// Loads an XLSX, XLSM, XLTX or XLTM file, an Excel 97-2003 workbook (XLS), or an OpenDocument spreadsheet (ODS, OTS or
-    /// flat FODS), from a stream, which is left open. The kind is told from the file's first bytes. An XLS workbook saves as
-    /// XLSX. An OpenDocument spreadsheet's formulas are translated from
+    /// Loads an XLSX, XLSM, XLTX or XLTM file, an Excel binary workbook (XLSB), an Excel 97-2003 workbook (XLS), or an
+    /// OpenDocument spreadsheet (ODS, OTS or flat FODS), from a stream, which is left open. The kind is told from the file's
+    /// first bytes and, in a package, from its main part. An XLSB or XLS workbook saves as XLSX. An OpenDocument spreadsheet's formulas are translated from
     /// OpenFormula to Excel's syntax, and the workbook's <see cref="Format"/> is <see cref="WorkbookFormat.Ods"/>,
     /// <see cref="WorkbookFormat.Ots"/> or <see cref="WorkbookFormat.Fods"/>. An encrypted one needs
     /// <see cref="WorkbookLoadOptions.Password"/>.
