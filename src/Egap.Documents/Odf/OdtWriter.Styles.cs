@@ -243,6 +243,7 @@ internal sealed partial class OdtWriter
             defaults.Add(textDefaults);
         }
 
+        HyphenationSettings(defaults, document.Styles.DefaultParagraphFormat);
         styles.Add(defaults);
         if (defaultParagraphStyle is null)
         {
@@ -256,6 +257,12 @@ internal sealed partial class OdtWriter
             {
                 styles.Add(CommonStyle(style, name));
             }
+        }
+
+        // LibreOffice reads Word's hyphenation settings from its default paragraph style, Standard, not from the default style.
+        if (styles.Elements(StyleNs + "style").FirstOrDefault(e => e.Attr(StyleNs, "name") == "Standard" && e.Attr(StyleNs, "family") == "paragraph") is { } standard)
+        {
+            HyphenationSettings(standard, defaultParagraphStyle?.ParagraphFormat);
         }
 
         styles.Add(OutlineStyle());
@@ -301,7 +308,7 @@ internal sealed partial class OdtWriter
 
             element.Add(new XAttribute(StyleNs + "class", p.ParagraphFormat.OutlineLevel is >= 0 and <= 8 ? "chapter" : "text"));
             element.Add(ParagraphProperties(p.ParagraphFormat, IndentOf(p, null)));
-            element.Add(TextProperties(p.RunFormat, null));
+            element.Add(Hyphenate(TextProperties(p.RunFormat, null), p.ParagraphFormat.SuppressAutoHyphens));
         }
         else if (style is CharacterStyle c)
         {
@@ -309,6 +316,60 @@ internal sealed partial class OdtWriter
         }
 
         return element;
+    }
+
+    /// <summary>
+    /// Writes the document's hyphenation settings onto a paragraph style: ODF has no document switch, so the style turns
+    /// hyphenation on (unless its format suppresses it) and carries the ladder count, caps switch and zone, the zone in whole
+    /// twips as LibreOffice writes it.
+    /// </summary>
+    private void HyphenationSettings(XElement style, ParagraphFormat? format)
+    {
+        DocumentSettings settings = document.Settings;
+        if (!settings.AutoHyphenation)
+        {
+            return;
+        }
+
+        XElement text = style.Element(StyleNs + "text-properties") ?? Child(style, "text-properties");
+        XElement paragraph = style.Element(StyleNs + "paragraph-properties") ?? Child(style, "paragraph-properties");
+        paragraph.SetAttributeValue(FoNs + "hyphenation-ladder-count", settings.ConsecutiveHyphenLimit > 0 ? Int(settings.ConsecutiveHyphenLimit) : "no-limit");
+        text.SetAttributeValue(FoNs + "hyphenate", format?.SuppressAutoHyphens == true ? "false" : "true");
+        text.SetAttributeValue(LoExtNs + "hyphenation-no-caps", settings.HyphenateCapitals ? "false" : "true");
+        long zone = (long)Math.Round(settings.HyphenationZone * 20);
+        text.SetAttributeValue(LoExtNs + "hyphenation-zone", zone > 0 ? zone.ToString(CultureInfo.InvariantCulture) : "no-limit");
+
+        // A style's properties come in schema order: paragraph, then text.
+        static XElement Child(XElement style, string name)
+        {
+            XElement child = new(StyleNs + name);
+            if (name == "paragraph-properties" && style.Element(StyleNs + "text-properties") is { } text)
+            {
+                text.AddBeforeSelf(child);
+            }
+            else
+            {
+                style.Add(child);
+            }
+
+            return child;
+        }
+    }
+
+    /// <summary>
+    /// Adds <c>fo:hyphenate</c> to a paragraph's text properties when the document hyphenates and the format says whether the
+    /// paragraph suppresses it: ODF switches hyphenation per style.
+    /// </summary>
+    private XElement? Hyphenate(XElement? text, bool? suppress)
+    {
+        if (!document.Settings.AutoHyphenation || suppress is not bool off)
+        {
+            return text;
+        }
+
+        text ??= new XElement(StyleNs + "text-properties");
+        text.SetAttributeValue(FoNs + "hyphenate", off ? "false" : "true");
+        return text;
     }
 
     /// <summary>The left indent a style or a paragraph's direct formatting gives, which ODF's tab positions count from.</summary>

@@ -41,6 +41,10 @@ The reader follows the OpenDocument 1.3 specification and what LibreOffice write
   or other index is a `TOC` field holding its entries. Fields Word has nothing like, such as variables, keep their text.
 - Tracked insertions and deletions with their authors and dates, a deletion that spans paragraphs too. Tracked
   formatting changes are read as accepted, with a warning.
+- Hyphenation: ODF turns it on per style (`fo:hyphenate`), so a style that hyphenates turns
+  `DocumentSettings.AutoHyphenation` on, with that style's line limit (`fo:hyphenation-ladder-count`), zone and capitals
+  switch (LibreOffice's `loext:hyphenation-zone` and `loext:hyphenation-no-caps`). Paragraphs whose style does not
+  hyphenate get `SuppressAutoHyphens`.
 - Frames: pictures (stored in the package or, in a flat file, inline), text boxes, rectangles, ellipses and lines,
   inline or floating, placed and wrapped as the frame says. A frame holding only a table, as LibreOffice writes Word's
   floating tables, is a floating table.
@@ -73,7 +77,8 @@ and a stream, is a document. `Version` is ODF 1.3 unless you pick 1.2 or 1.4. Th
 specification and writes what the reader reads:
 
 - Styles: the model's paragraph, character, table and list styles as common styles with LibreOffice's names for Word's
-  built-in ones, the document defaults as default styles, and direct formatting as automatic styles.
+  built-in ones, the document defaults as default styles, and direct formatting as automatic styles. Automatic
+  hyphenation goes on the default style and on Standard, where LibreOffice reads Word's settings.
 - Lists as `text:list` with their list styles; a list that continues another goes on counting. Headings with their
   outline level.
 - Sections as master pages and page layouts, with their headers and footers, a different first page (as ODF 1.3 writes

@@ -36,6 +36,7 @@ The reader follows the RTF 1.9.1 specification and what Word 2007 and later writ
 - Pictures in PNG, JPEG, EMF, WMF and device-independent bitmaps, with their size, scale and cropping.
 - Text boxes, rectangles, ellipses and other simple shapes, and floating pictures (`\shp`), placed as Word places them.
 - Document information (`\info`) and custom properties (`\userprops`).
+- Automatic hyphenation (`\hyphauto`, `\hyphconsec`, `\hyphhotz`, `\hyphcaps`), which the writer saves too.
 
 What the model cannot hold comes in as an island: equations (`\mmath`) keep their RTF and their plain text, and other
 drawing shapes and embedded objects (`\object`) keep their RTF and draw the picture the file holds for them. Each of

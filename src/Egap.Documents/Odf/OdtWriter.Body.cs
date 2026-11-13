@@ -605,6 +605,7 @@ internal sealed partial class OdtWriter
         }
 
         XElement? text = markFormat && paragraph is not null && !paragraph.MarkFormat.IsEmpty ? TextProperties(paragraph.MarkFormat, null) : null;
+        text = Hyphenate(text, paragraph?.Format.SuppressAutoHyphens);
         if (props is null && text is null && master is null)
         {
             return parent;

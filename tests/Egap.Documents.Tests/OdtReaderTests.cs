@@ -716,4 +716,36 @@ public sealed class OdtReaderTests
         Assert.Equal("sequence-decls", Assert.Single(document1.Declarations!).Name.LocalName);
         Assert.NotNull(document1.Package);
     }
+
+    [Fact]
+    public void LibreOfficeHyphenationIsRead()
+    {
+        // As LibreOffice writes Word's hyphenation settings: off on the default style, on with the limits on Standard; a style
+        // that turns it off keeps its paragraphs unhyphenated.
+        string styles = """
+            <style:default-style style:family="paragraph"><style:paragraph-properties fo:hyphenation-ladder-count="no-limit"/>
+              <style:text-properties fo:hyphenate="false" loext:hyphenation-no-caps="false" loext:hyphenation-zone="no-limit"/></style:default-style>
+            <style:style style:name="Standard" style:family="paragraph"><style:paragraph-properties fo:hyphenation-ladder-count="3"/>
+              <style:text-properties fo:hyphenate="true" loext:hyphenation-no-caps="true" loext:hyphenation-zone="720"/></style:style>
+            <style:style style:name="Code" style:family="paragraph" style:parent-style-name="Standard"><style:text-properties fo:hyphenate="false"/></style:style>
+            """;
+        Document document = Read(new Parts("""<text:p text:style-name="Standard">Body</text:p><text:p text:style-name="Code">Code</text:p>""", Styles: styles));
+
+        Assert.True(document.Settings.AutoHyphenation);
+        Assert.Equal(3, document.Settings.ConsecutiveHyphenLimit);
+        Assert.Equal(36, document.Settings.HyphenationZone);
+        Assert.False(document.Settings.HyphenateCapitals);
+        Paragraph[] paragraphs = [.. document.Descendants<Paragraph>()];
+        Assert.False(paragraphs[0].GetEffectiveFormat().SuppressAutoHyphens);
+        Assert.True(paragraphs[1].GetEffectiveFormat().SuppressAutoHyphens);
+    }
+
+    [Fact]
+    public void HyphenationOffEverywhereLeavesTheModelAlone()
+    {
+        string styles = """<style:default-style style:family="paragraph"><style:text-properties fo:hyphenate="false"/></style:default-style>""";
+        Document document = Read(new Parts("<text:p>Body</text:p>", Styles: styles));
+        Assert.False(document.Settings.AutoHyphenation);
+        Assert.Null(document.Styles.DefaultParagraphFormat.SuppressAutoHyphens);
+    }
 }

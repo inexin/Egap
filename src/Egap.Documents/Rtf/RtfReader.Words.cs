@@ -1045,6 +1045,18 @@ internal sealed partial class RtfReader
             case "revisions":
                 settings.TrackRevisions = true;
                 return true;
+            case "hyphauto":
+                settings.AutoHyphenation = !has || p != 0;
+                return true;
+            case "hyphcaps":
+                settings.HyphenateCapitals = !has || p != 0;
+                return true;
+            case "hyphconsec" when has:
+                settings.ConsecutiveHyphenLimit = Math.Clamp(p, 0, short.MaxValue);
+                return true;
+            case "hyphhotz" when has && p >= 0:
+                settings.HyphenationZone = WordProperties.Twips(p);
+                return true;
             case "ftnstart" when has && p >= 1:
                 WordProperties.Set(settings, WordNoteProperty.FootnoteStart, p);
                 return true;

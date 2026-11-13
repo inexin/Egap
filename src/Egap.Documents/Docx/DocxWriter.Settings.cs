@@ -99,6 +99,30 @@ internal sealed partial class DocxWriter
             changed = true;
         }
 
+        if (read is null ? settings.AutoHyphenation : read.AutoHyphenation != settings.AutoHyphenation)
+        {
+            SetFlag(root, "autoHyphenation", settings.AutoHyphenation);
+            changed = true;
+        }
+
+        if (read is null ? settings.ConsecutiveHyphenLimit != 0 : read.ConsecutiveHyphenLimit != settings.ConsecutiveHyphenLimit)
+        {
+            SetOrRemove(root, "consecutiveHyphenLimit", DocxHyphenation.Limit(settings.ConsecutiveHyphenLimit));
+            changed = true;
+        }
+
+        if (read is null ? settings.HyphenationZone != DocxHyphenation.DefaultZone : read.HyphenationZone != settings.HyphenationZone)
+        {
+            SetOrRemove(root, "hyphenationZone", DocxHyphenation.Zone(settings.HyphenationZone));
+            changed = true;
+        }
+
+        if (read is null ? !settings.HyphenateCapitals : read.HyphenateCapitals != settings.HyphenateCapitals)
+        {
+            SetFlag(root, "doNotHyphenateCaps", !settings.HyphenateCapitals);
+            changed = true;
+        }
+
         if (read is null || read.FootnoteNumberStyle != settings.FootnoteNumberStyle || read.FootnoteStartAt != settings.FootnoteStartAt)
         {
             changed |= SetNoteProperties(root, "footnotePr", settings.FootnoteNumberStyle, settings.FootnoteStartAt, NumberStyle.Decimal);
@@ -175,6 +199,7 @@ internal sealed partial class DocxWriter
         settings.TrackRevisions = root.Element(Ns.W + "trackRevisions") is { } track && DocxUnits.OnOff(track);
         settings.MirrorMargins = root.Element(Ns.W + "mirrorMargins") is { } mirror && DocxUnits.OnOff(mirror);
         settings.GutterAtTop = root.Element(Ns.W + "gutterAtTop") is { } gutterAtTop && DocxUnits.OnOff(gutterAtTop);
+        DocxHyphenation.Read(root, settings);
         if (root.Element(Ns.W + "footnotePr") is { } footnotePr)
         {
             if (footnotePr.Element(Ns.W + "numFmt").Val() is { } format)
@@ -263,6 +288,18 @@ internal sealed partial class DocxWriter
         }
 
         return element;
+    }
+
+    private static void SetOrRemove(XElement root, string name, XElement? element)
+    {
+        if (element is not null)
+        {
+            Set(root, element);
+        }
+        else
+        {
+            root.Element(Ns.W + name)?.Remove();
+        }
     }
 
     private static void SetFlag(XElement root, string name, bool on)

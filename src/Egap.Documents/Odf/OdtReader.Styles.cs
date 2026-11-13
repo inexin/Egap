@@ -26,6 +26,11 @@ internal sealed partial class OdtReader
     private readonly Dictionary<XElement, ListDefinition> listDefinitions = [];
     private readonly Dictionary<string, XElement> pageLayouts = new(StringComparer.Ordinal);
     private readonly Dictionary<string, XElement> masterPages = new(StringComparer.Ordinal);
+    private bool hyphenates;
+    private readonly List<(ParagraphFormat Format, bool On)> hyphenateSwitches = [];
+    private int? hyphenLadder;
+    private double? hyphenZone;
+    private bool hyphenNoCaps;
     private string? firstMasterPage;
     private List? outlineList;
     private bool tabsRelativeToIndent = true;
@@ -213,6 +218,7 @@ internal sealed partial class OdtReader
         {
             ApplyParagraph(defaults.Element(StyleNs + "paragraph-properties"), document.Styles.DefaultParagraphFormat, null, null);
             ApplyText(defaults.Element(StyleNs + "text-properties"), document.Styles.DefaultRunFormat, 12);
+            ApplyHyphenation(defaults.Element(StyleNs + "paragraph-properties"), defaults.Element(StyleNs + "text-properties"), document.Styles.DefaultParagraphFormat);
             if (OdfUnits.Length(defaults.Element(StyleNs + "paragraph-properties")?.Attr(StyleNs, "tab-stop-distance")) is > 0 and var distance)
             {
                 document.Settings.DefaultTabStop = distance;
@@ -276,6 +282,7 @@ internal sealed partial class OdtReader
                 case ParagraphStyle paragraph:
                     ApplyParagraph(style.Properties("paragraph-properties"), paragraph.ParagraphFormat, style, null);
                     ApplyText(style.Properties("text-properties"), paragraph.RunFormat, parentSize);
+                    ApplyHyphenation(style.Properties("paragraph-properties"), style.Properties("text-properties"), paragraph.ParagraphFormat);
                     if (OdfUnits.Int(style.Element.Attr(StyleNs, "default-outline-level")) is >= 1 and <= 10 and var level)
                     {
                         paragraph.ParagraphFormat.OutlineLevel = Math.Min(level, 9) - 1;
@@ -461,6 +468,7 @@ internal sealed partial class OdtReader
             if (paragraph is not null)
             {
                 ApplyParagraph(automatic[i].Properties("paragraph-properties"), paragraph, automatic[i], null);
+                ApplyHyphenation(automatic[i].Properties("paragraph-properties"), automatic[i].Properties("text-properties"), paragraph);
             }
 
             if (run is not null)
@@ -470,6 +478,68 @@ internal sealed partial class OdtReader
         }
 
         return common;
+    }
+
+    /// <summary>
+    /// A paragraph style's hyphenation. ODF switches it per style (<c>fo:hyphenate</c> in the text properties, off when absent)
+    /// where the model has a document switch and a per-paragraph opt-out: a style that hyphenates turns the document's
+    /// <see cref="DocumentSettings.AutoHyphenation"/> on (in <see cref="FinishHyphenation"/>), and each style says whether its
+    /// paragraphs suppress it. The ladder count, zone and caps switch are per style too;
+    /// the document's values come from the first style that turns hyphenation on, where LibreOffice puts Word's settings.
+    /// </summary>
+    private void ApplyHyphenation(XElement? paragraphProps, XElement? textProps, ParagraphFormat f)
+    {
+        if (textProps?.Attr(FoNs, "hyphenate") is not { } hyphenate)
+        {
+            return;
+        }
+
+        bool on = hyphenate == "true";
+        hyphenateSwitches.Add((f, on));
+        if (!on || hyphenates)
+        {
+            return;
+        }
+
+        hyphenates = true;
+        if (paragraphProps?.Attr(FoNs, "hyphenation-ladder-count") is { } ladder)
+        {
+            hyphenLadder = ladder == "no-limit" ? 0 : OdfUnits.Int(ladder) is >= 0 and var count ? Math.Min(count, short.MaxValue) : null;
+        }
+
+        if ((textProps.Attr(LoExtNs, "hyphenation-zone") ?? paragraphProps?.Attr(LoExtNs, "hyphenation-zone")) is { } zone)
+        {
+            // LibreOffice writes the zone as whole twips, or no-limit for none.
+            hyphenZone = zone == "no-limit" ? 0
+                : int.TryParse(zone, NumberStyles.Integer, CultureInfo.InvariantCulture, out int twips) ? (twips >= 0 ? twips / 20.0 : null)
+                : OdfUnits.Length(zone) is >= 0 and var length ? length : null;
+        }
+
+        hyphenNoCaps = textProps.Attr(LoExtNs, "hyphenation-no-caps") == "true";
+    }
+
+    /// <summary>
+    /// Turns the document's hyphenation on when a style hyphenates, with the limits the styles gave, and makes paragraphs
+    /// that no style turns it on for suppress it (ODF's default). A document where no style hyphenates is left as it is.
+    /// </summary>
+    private void FinishHyphenation()
+    {
+        if (!hyphenates)
+        {
+            return;
+        }
+
+        foreach ((ParagraphFormat format, bool on) in hyphenateSwitches)
+        {
+            format.SuppressAutoHyphens = !on;
+        }
+
+        DocumentSettings settings = document.Settings;
+        settings.AutoHyphenation = true;
+        settings.ConsecutiveHyphenLimit = hyphenLadder ?? 0;
+        settings.HyphenationZone = hyphenZone ?? 0;
+        settings.HyphenateCapitals = !hyphenNoCaps;
+        document.Styles.DefaultParagraphFormat.SuppressAutoHyphens ??= true;
     }
 
     /// <summary>Maps <c>style:text-properties</c> (ODF 1.3 Part 3, 17.10) onto run formatting.</summary>

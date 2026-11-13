@@ -799,4 +799,24 @@ public class RtfReaderTests
 
     /// <summary>A 1 by 1 PNG; only its signature matters to the reader.</summary>
     private static byte[] Png() => [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 0x0D, 0x49, 0x48, 0x44, 0x52, 0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 0x1F, 0x15, 0xC4, 0x89];
+
+    [Fact]
+    public void HyphenationWordsAreRead()
+    {
+        // The words Word 16 writes for automatic hyphenation, no capitals, at most 3 lines and a 0.5 inch zone.
+        Document document = Read(@"Text\par", @"\hyphauto1\hyphcaps0\hyphconsec3\hyphhotz720 ");
+        Assert.True(document.Settings.AutoHyphenation);
+        Assert.False(document.Settings.HyphenateCapitals);
+        Assert.Equal(3, document.Settings.ConsecutiveHyphenLimit);
+        Assert.Equal(36, document.Settings.HyphenationZone);
+
+        Document plain = Read(@"Text\par");
+        Assert.False(plain.Settings.AutoHyphenation);
+        Assert.True(plain.Settings.HyphenateCapitals);
+        Assert.Equal(0, plain.Settings.ConsecutiveHyphenLimit);
+        Assert.Equal(18, plain.Settings.HyphenationZone);
+
+        Assert.True(Read(@"Text\par", @"\hyphauto ").Settings.AutoHyphenation);
+        Assert.False(Read(@"Text\par", @"\hyphauto0 ").Settings.AutoHyphenation);
+    }
 }

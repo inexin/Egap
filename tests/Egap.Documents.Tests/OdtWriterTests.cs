@@ -800,4 +800,44 @@ public sealed class OdtWriterTests
             File.Delete(path);
         }
     }
+
+    [Fact]
+    public void HyphenationRoundTrip()
+    {
+        Document document = NewDocument(out Body body);
+        document.Settings.AutoHyphenation = true;
+        document.Settings.ConsecutiveHyphenLimit = 2;
+        document.Settings.HyphenationZone = 36;
+        document.Settings.HyphenateCapitals = false;
+        body.AddParagraph("Hyphenated");
+        body.AddParagraph("Not hyphenated").Format.SuppressAutoHyphens = true;
+
+        XElement styles = Part(Save(document), "styles.xml");
+        XNamespace loExt = "urn:org:documentfoundation:names:experimental:office:xmlns:loext:1.0";
+        XElement defaults = styles.Descendants(Style + "default-style").Single(s => s.Attribute(Style + "family")?.Value == "paragraph");
+        Assert.Equal("2", defaults.Element(Style + "paragraph-properties")?.Attribute(Fo + "hyphenation-ladder-count")?.Value);
+        XElement text = defaults.Element(Style + "text-properties")!;
+        Assert.Equal("true", text.Attribute(Fo + "hyphenate")?.Value);
+        Assert.Equal("true", text.Attribute(loExt + "hyphenation-no-caps")?.Value);
+        Assert.Equal("720", text.Attribute(loExt + "hyphenation-zone")?.Value);
+
+        Document read = Reread(document);
+        Assert.True(read.Settings.AutoHyphenation);
+        Assert.Equal(2, read.Settings.ConsecutiveHyphenLimit);
+        Assert.Equal(36, read.Settings.HyphenationZone);
+        Assert.False(read.Settings.HyphenateCapitals);
+        Paragraph[] paragraphs = [.. read.Descendants<Paragraph>()];
+        Assert.False(paragraphs[0].GetEffectiveFormat().SuppressAutoHyphens);
+        Assert.True(paragraphs[1].GetEffectiveFormat().SuppressAutoHyphens);
+    }
+
+    [Fact]
+    public void NoHyphenationWritesNoSwitches()
+    {
+        Document document = NewDocument(out Body body);
+        body.AddParagraph("Plain").Format.SuppressAutoHyphens = true;
+        byte[] saved = Save(document);
+        string xml = Part(saved, "styles.xml").ToString() + Part(saved, "content.xml");
+        Assert.DoesNotContain("hyphenat", xml, StringComparison.Ordinal);
+    }
 }
