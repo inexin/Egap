@@ -4,13 +4,13 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Egami from nuget.org; tools/pack-egami.py can point these at a local build of an unreleased Egami commit. -->
-    <PackageVersion Include="Egami" Version="1.4.0" />
-    <PackageVersion Include="Egami.Drawing" Version="1.4.0" />
-    <PackageVersion Include="Egami.Fonts" Version="1.4.0" />
-    <PackageVersion Include="Egami.Fonts.Substitutes" Version="1.0.0" />
+    <PackageVersion Include="Egami" Version="1.5.0-preview.1" />
+    <PackageVersion Include="Egami.Drawing" Version="1.5.0-preview.1" />
+    <PackageVersion Include="Egami.Fonts" Version="1.5.0-preview.1" />
+    <PackageVersion Include="Egami.Fonts.Substitutes" Version="1.1.0" />
     <PackageVersion Include="Egami.Metafiles" Version="1.0.2" />
-    <PackageVersion Include="Egami.Css" Version="1.4.0" />
-    <PackageVersion Include="Egami.Svg" Version="1.4.0" />
+    <PackageVersion Include="Egami.Css" Version="1.5.0-preview.1" />
+    <PackageVersion Include="Egami.Svg" Version="1.5.0-preview.1" />
     <PackageVersion Include="Egami.Barcodes" Version="1.0.1" />
     <!-- The egap command (CLI design Q14): egami's command host as a source package, on the Egami train, unlisted on nuget.org. -->
     <PackageVersion Include="Egami.Cli.Host" Version="1.4.0" />
