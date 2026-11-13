@@ -3,8 +3,9 @@
   <PropertyGroup>
     <RootNamespace>Egap.Spreadsheets</RootNamespace>
     <PackageId>Egap.Spreadsheets</PackageId>
-    <VersionPrefix>$(EgapVersion)</VersionPrefix>
-    <Description>Spreadsheets for .NET: workbooks you create and edit from code, with sparse sheets of up to 1,048,576 rows by 16,384 columns, shared strings and interned cell styles as Excel keeps them.</Description>
+    <!-- A preview ahead of the train: EgapPreviewVersion in Directory.Build.props. -->
+    <Version>$(EgapPreviewVersion)</Version>
+    <Description>Preview. Spreadsheets for .NET: workbooks you create and edit from code, with sparse sheets of up to 1,048,576 rows by 16,384 columns, shared strings and interned cell styles as Excel keeps them.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTrimmable>true</IsTrimmable>
     <IsAotCompatible>true</IsAotCompatible>

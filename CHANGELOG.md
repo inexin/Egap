@@ -1,9 +1,13 @@
 # Changelog
 
-What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together. Nothing before the first release below was published; those versions were
+What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together; a preview
+may go out ahead of the others on its own tag, as Egap.Documents, Egap.Spreadsheets and Egap.Cli 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Cli 2.3.0 (unreleased)
+## Egap.Cli 2.3.0-preview.1 (2026-11-13)
+
+A preview with the workbook commands, built on Egap.Spreadsheets and Egap.Documents 2.3.0-preview.1; the stable 2.3.0
+follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli --prerelease`.
 
 - Workbooks: `convert` reads XLSX, XLSM, XLTX, XLTM, CSV and TSV, and writes them as PDF (Excel's page setup decides the
   pages), images (one per page, `--dpi`), HTML, Markdown, or CSV per visible sheet. It also writes XLSX, from a workbook or
@@ -30,7 +34,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   memory only.
 - Built on System.CommandLine 2.0.14 and Egami.Cli.Host 1.4.0.
 
-## Egap.Documents 2.3.0 (unreleased)
+## Egap.Documents 2.3.0-preview.1 (2026-11-13)
+
+A preview, published ahead of the other Egap packages so that Egap.Spreadsheets 2.3.0-preview.1 can run; the stable 2.3.0
+follows with the rest of Egap, and the API added here may still change before then. Install it with `--prerelease`.
+Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it.
 
 - `DocumentSettings` has Word's hyphenation settings: `AutoHyphenation`, `ConsecutiveHyphenLimit`, `HyphenationZone` and
   `HyphenateCapitals`. They are read from DOCX, DOC and RTF files and saved to DOCX and RTF. ODT files switch hyphenation
@@ -173,7 +181,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Built on Markdig 1.5.1, which fixes tabs after block quote markers and in fenced code, a thematic break inside a list
   item closing the list, and autolink schemes of 2 to 32 characters.
 
-## Egap.Spreadsheets 2.3.0 (unreleased)
+## Egap.Spreadsheets 2.3.0-preview.1 (2026-11-13)
+
+The first release of Egap.Spreadsheets, as a preview: try it and tell us what is missing or wrong. Its API may still change
+before the stable 2.3.0, which ships with the rest of Egap. Install it with `dotnet add package Egap.Spreadsheets --prerelease`;
+it brings Egap.Documents 2.3.0-preview.1. The spreadsheets guide lists what it does not do yet.
 
 - Formulas written with a sheet before a table or a name read back in R1C1 style: a sheet before a table is dropped when
   the formula is written again, as Excel drops it, so `C2!Sales[Amount]` no longer reads as column 2 in R1C1 style; and a

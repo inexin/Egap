@@ -7,7 +7,8 @@
     <AssemblyName>Egap.Cli</AssemblyName>
     <PackageId>Egap.Cli</PackageId>
     <!-- On the Egap release train (CLI design Q1), but out of release.yml until the command review (Q19). -->
-    <VersionPrefix>$(EgapVersion)</VersionPrefix>
+    <!-- A preview ahead of the train: EgapPreviewVersion in Directory.Build.props. -->
+    <Version>$(EgapPreviewVersion)</Version>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>egap</ToolCommandName>
     <!-- Also listed as an MCP server on NuGet, with .mcp/server.json (CLI design Q16). -->
