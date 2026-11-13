@@ -68,12 +68,20 @@ internal sealed partial class OdtReader
             List<XElement> images = [.. frame.Elements(DrawNs + "image")];
             ImageData? replacement = images.Select(Image).FirstOrDefault(i => i is not null);
             IslandKind kind = embedded.Name.LocalName == "object-ole" ? IslandKind.OleObject : ObjectKind(embedded);
-            return new Island(document, kind, OdtExtension.Format, frame.ToString(SaveOptions.DisableFormatting))
+            string markup = frame.ToString(SaveOptions.DisableFormatting);
+            OfficeMath.MathNode? equation = kind == IslandKind.Math ? Formula(embedded) : null;
+            if (equation is not null)
+            {
+                OfficeMath.MathIslands.Remember(markup, equation);
+            }
+
+            return new Island(document, kind, OdtExtension.Format, markup)
             {
                 Fallback = replacement,
                 Width = width,
                 Height = height,
                 Floating = floating,
+                Text = equation is null ? "" : OfficeMath.UnicodeMath.Write(equation),
             };
         }
 
@@ -178,6 +186,21 @@ internal sealed partial class OdtReader
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// The equation of a formula object: its MathML, inline in the <c>draw:object</c> (flat files) or in the package's
+    /// <c>Object N/content.xml</c>; null when there is none.
+    /// </summary>
+    private OfficeMath.MathNode? Formula(XElement embedded)
+    {
+        XElement? math = embedded.Element(MathMLNs + "math");
+        if (math is null && embedded.Attr(XLinkNs, "href") is { Length: > 0 } href && !href.Contains(':', StringComparison.Ordinal))
+        {
+            math = package.GetXml(OdfPackage.NormalizePath(href) + "/content.xml", limits) is { } root ? OfficeMath.MathMLReader.Find(root) : null;
+        }
+
+        return math is null ? null : OfficeMath.MathMLReader.Read(math);
     }
 
     private IslandKind ObjectKind(XElement embedded)

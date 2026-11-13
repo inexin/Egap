@@ -49,6 +49,8 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   show it; before, a Word equation's text was its runs run together.
 - Tagged PDFs tag each equation as a `Formula` with its linear form as alternate text and its MathML as an associated
   file (PDF/UA-2).
+- OpenDocument formulas are read from their MathML, in the package or inline in a flat file, and lay out, draw and tag
+  as Word equations do, with their linear form as text; before, they showed the picture saved with them.
 
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 
@@ -189,6 +191,8 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
 
 ## Egap.Documents.Html 2.3.0 (unreleased)
 
+- MathML `<math>` elements read as equations that lay out as math, and every equation (from Word, RTF, OpenDocument or
+  HTML) is written as MathML Core; before, MathML was left out and equations were written as their text.
 - Built on AngleSharp 1.9.1. AngleSharp's new nesting limit is turned off, so deeply nested tables still read in full;
   Egap's own guard keeps hostile nesting bounded as before.
 

@@ -286,6 +286,69 @@ internal sealed partial class HtmlReader
         }
     }
 
+    /// <summary>A MathML equation (<c>&lt;math&gt;</c>): an equation island that lays out, and writes back, as math.</summary>
+    private void Equation(HtmlElement element, Flow flow, Frame frame)
+    {
+        System.Xml.Linq.XElement math = ToXml(element, 0);
+        Island island = new(document, IslandKind.Math, "html", math.ToString(System.Xml.Linq.SaveOptions.DisableFormatting))
+        {
+            Text = Documents.OfficeMath.UnicodeMath.Write(Documents.OfficeMath.MathMLReader.Read(math)),
+        };
+        Target(flow, frame, currentLink).Add(island);
+        flow.AtLineStart = false;
+
+        static System.Xml.Linq.XElement ToXml(HtmlElement element, int depth)
+        {
+            System.Xml.Linq.XElement xml = new(System.Xml.Linq.XNamespace.Get(element.NamespaceUri) + element.LocalName);
+            foreach (CssAttribute attribute in element.AttributeList)
+            {
+                if (attribute.NamespaceUri is null or "" && IsName(attribute.LocalName) && xml.Attribute(attribute.LocalName) is null)
+                {
+                    xml.SetAttributeValue(attribute.LocalName, XmlText(attribute.Value));
+                }
+            }
+
+            foreach (HtmlNode child in element.Children)
+            {
+                switch (child)
+                {
+                    case HtmlText text:
+                        xml.Add(XmlText(text.Data));
+                        break;
+                    case HtmlElement inner when depth < 64 && inner.NamespaceUri == HtmlElement.MathMLNamespace && IsName(inner.LocalName):
+                        xml.Add(ToXml(inner, depth + 1));
+                        break;
+                }
+            }
+
+            return xml;
+        }
+
+        // What XML cannot hold (control characters, lone surrogates) is left out.
+        static string XmlText(string text) => text.All(System.Xml.XmlConvert.IsXmlChar) ? text : System.Xml.XmlConvert.VerifyXmlChars(Clean(text));
+
+        static string Clean(string text)
+        {
+            StringBuilder clean = new(text.Length);
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (char.IsHighSurrogate(text[i]) && i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+                {
+                    clean.Append(text[i]).Append(text[++i]);
+                }
+                else if (System.Xml.XmlConvert.IsXmlChar(text[i]))
+                {
+                    clean.Append(text[i]);
+                }
+            }
+
+            return clean.ToString();
+        }
+
+        static bool IsName(string name) =>
+            name.Length > 0 && System.Xml.XmlConvert.IsStartNCNameChar(name[0]) && name.All(System.Xml.XmlConvert.IsNCNameChar);
+    }
+
     private void Element(HtmlElement element, HtmlStyle parentStyle, Flow flow, Frame frame)
     {
         if (element.NamespaceUri != HtmlElement.HtmlNamespace)
@@ -293,6 +356,10 @@ internal sealed partial class HtmlReader
             if (element.LocalName == "svg")
             {
                 Warn(ConversionWarningKind.DrawingDropped, "Inline SVG drawings");
+            }
+            else if (element.NamespaceUri == HtmlElement.MathMLNamespace && element.LocalName == "math")
+            {
+                Equation(element, flow, frame);
             }
 
             return;

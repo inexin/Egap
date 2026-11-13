@@ -50,9 +50,10 @@ The reader follows the OpenDocument 1.3 specification and what LibreOffice write
   floating tables, is a floating table.
 
 Charts, formulas and other embedded objects come in as islands that keep their markup and draw the picture the file
-holds for them; other drawing shapes and groups are islands too. Each of those is reported as a `ConversionWarning`,
-and so is a picture the package does not hold. Markup the reader does not know is kept in the document's extension data
-under the format name `odt`.
+holds for them; other drawing shapes and groups are islands too. A formula is read from its MathML, in the package or
+inline in a flat file, and lays out and draws as an equation; its `Island.Text` is its linear form. Each of those is
+reported as a `ConversionWarning`, and so is a picture the package does not hold. Markup the reader does not know is
+kept in the document's extension data under the format name `odt`.
 
 ## Writing
 

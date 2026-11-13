@@ -1,12 +1,14 @@
 using BenchmarkDotNet.Attributes;
 
+using Egap.Documents.Html;
 using Egap.Documents.Layout;
 
 namespace Egap.Documents.Benchmarks;
 
 /// <summary>
 /// Equations: <see cref="Layout"/> lays out a page of 40 Word equations (fractions, radicals, scripts, sums, delimiters and a
-/// matrix, half inline and half display).
+/// matrix, half inline and half display, one long enough to break); <see cref="ParseMathML"/> reads the same equations as an
+/// HTML page of MathML.
 /// </summary>
 [MemoryDiagnoser]
 public class MathBenchmarks
@@ -22,9 +24,16 @@ public class MathBenchmarks
     ];
 
     private readonly LayoutOptions options = new() { Fonts = FontSettings.Portable };
+    private string html = "";
+
+    [GlobalSetup]
+    public void Setup() => html = HtmlFormat.ToHtml(Build(), out _);
 
     [Benchmark]
     public int Layout() => Build().Layout(options).Pages.Count;
+
+    [Benchmark]
+    public int ParseMathML() => HtmlFormat.Parse(html).Sections.Count;
 
     private static Document Build()
     {

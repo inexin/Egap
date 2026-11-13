@@ -585,6 +585,27 @@ public sealed class OdtReaderTests
     }
 
     [Fact]
+    public void FormulaObjectsReadTheirMathML()
+    {
+        string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mfrac><mi>a</mi><mn>2</mn></mfrac><mo>+</mo><msup><mi>x</mi><mn>2</mn></msup></mrow>"
+            + "<annotation encoding=\"StarMath 5.0\">a over 2 + x^2</annotation></semantics></math>";
+        string body = """
+            <text:p>Packaged <draw:frame text:anchor-type="as-char" svg:width="1in" svg:height="0.5in"><draw:object xlink:href="./Object 1"/></draw:frame></text:p>
+            """ + $"<text:p>Inline <draw:frame text:anchor-type=\"as-char\" svg:width=\"1in\" svg:height=\"0.5in\"><draw:object>{math.Replace(" display=\"block\"", "", StringComparison.Ordinal)}</draw:object></draw:frame></text:p>";
+        Dictionary<string, byte[]> files = new() { ["Object 1/content.xml"] = Encoding.UTF8.GetBytes(math) };
+        string manifest = "<manifest:file-entry manifest:full-path=\"Object 1/\" manifest:media-type=\"application/vnd.oasis.opendocument.formula\"/>";
+        Document document = Read(new Parts(body, ManifestExtra: manifest, Files: files));
+        Island[] islands = [.. Paragraphs(document).SelectMany(p => p.Inlines.OfType<Island>())];
+
+        Assert.Equal(2, islands.Length);
+        Assert.All(islands, i => Assert.Equal(IslandKind.Math, i.Kind));
+        Assert.All(islands, i => Assert.Equal("a/2+x^2", i.Text));
+        Assert.IsType<OfficeMath.MathParagraph>(OfficeMath.MathIslands.Tree(islands[0]));
+        Assert.IsType<OfficeMath.MathZone>(OfficeMath.MathIslands.Tree(islands[1]));
+        Assert.IsType<OfficeMath.MathParagraph>(OfficeMath.MathIslands.Tree(islands[0].Clone()));
+    }
+
+    [Fact]
     public void FramesBecomePicturesTextBoxesShapesAndIslands()
     {
         string automatic = """

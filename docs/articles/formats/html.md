@@ -67,6 +67,8 @@ Besides fonts, colours, spacing, borders, lists and tables, these read into the 
   margin boxes. An element with `position: running(name)` leaves the body and shows in the boxes whose content is
   `element(name)`. Margin boxes are written back as the same rules.
 - `<nav data-toc>` is read as a table of contents field.
+- A MathML `<math>` element is an equation: it lays out as math, its `Island.Text` is its linear form, and the HTML writer
+  writes it back.
 
 ## CSS layout
 
@@ -94,7 +96,8 @@ lines and `inline-flex` and `inline-grid` boxes are not laid out as such; the la
 
 ## Writing
 
-The model is written as HTML in UTF-8, with what HTML cannot hold returned as warnings.
+The model is written as HTML in UTF-8, with what HTML cannot hold returned as warnings. Equations, from Word, RTF,
+OpenDocument or HTML, are written as MathML Core, which browsers draw.
 
 | Option | Default | Does |
 | --- | --- | --- |
