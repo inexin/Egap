@@ -83,6 +83,6 @@ They read a file or a web page as they calculate, which a library should not do 
 
 `IMPORTCSV`, `IMPORTTEXT`
 
-Excel does not publish how it fits their model, and Egap's fit does not match Excel's yet.
+Excel does not document how it fits their model's parameters, so Egap leaves them out rather than give other numbers.
 
 `FORECAST.ETS`, `FORECAST.ETS.CONFINT`, `FORECAST.ETS.SEASONALITY`, `FORECAST.ETS.STAT`

@@ -18,7 +18,7 @@ public sealed partial class FunctionCoverageTests
         ("code", "They run code from outside the workbook."),
         ("bytes", "They work in the bytes of double-byte text or on East Asian text conversions, which need the tables of those code pages."),
         ("files", "They read a file or a web page as they calculate, which a library should not do for a workbook it opens."),
-        ("model", "Excel does not publish how it fits their model, and Egap's fit does not match Excel's yet."),
+        ("model", "Excel does not document how it fits their model's parameters, so Egap leaves them out rather than give other numbers."),
     ];
 
     private static string Folder => Path.Combine(AppContext.BaseDirectory, "Oracle");

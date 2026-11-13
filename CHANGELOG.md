@@ -173,7 +173,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   GROUPBY and PIVOTBY, with HSTACK or VSTACK of functions, LAMBDAs and PERCENTOF; GETPIVOTDATA, from the values a pivot
   table shows; CELL, INFO, SHEET and SHEETS; ENCODEURL and FILTERXML; BAHTTEXT, PERCENTOF and ECMA.CEILING. 506 of the
   524 functions on Microsoft's list are built in. The spreadsheets guide lists where these differ from Excel; the
-  FORECAST.ETS functions wait, as Excel's fit of their model could not be matched yet.
+  FORECAST.ETS functions are left out, as Excel does not document how it fits their parameters.
 - `Workbook.Load` reads Excel 97-2003 workbooks (XLS, BIFF8): cells, shared strings, styles, number formats and the
   palette, merged cells, rows and columns, sheets, names, print ranges and links to other files with their kept values.
   Formulas are decoded from their tokens to Excel's syntax, shared and array formulas included, with their cached
