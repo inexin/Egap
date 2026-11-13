@@ -1,0 +1,1 @@
+=FILTERXML("<a><b>1</b><b x=2>t</b></a>","//b/@x")&ENCODEURL("a b")

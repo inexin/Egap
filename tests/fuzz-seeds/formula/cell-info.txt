@@ -1,0 +1,1 @@
+=CELL("format",A1)&INFO("release")&SHEET()&SHEETS()

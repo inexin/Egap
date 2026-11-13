@@ -1,0 +1,1 @@
+=REGEXREPLACE("Hello World","(\w)(\w*)","$2$1",-1,0)
