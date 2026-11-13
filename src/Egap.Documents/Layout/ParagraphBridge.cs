@@ -607,7 +607,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             },
             TabSize = (float)document.Settings.DefaultTabStop,
             TabStops = stops,
-            Hyphen = null,
+            // An optional hyphen (U+00AD: Word's w:softHyphen, RTF's \-, DOC's 0x1F) that ends a line shows as a hyphen-minus, as
+            // Word 16 draws it; LibreOffice and browsers draw one there too.
+            Hyphen = "-",
             Fallback = fonts.Fallback,
             MaxLines = format.MaxLines > 0 ? format.MaxLines : null,
             Ellipsis = format.MaxLines > 0 ? "\u2026" : null,

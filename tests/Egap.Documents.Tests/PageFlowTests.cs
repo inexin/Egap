@@ -39,6 +39,27 @@ public class PageFlowTests
     }
 
     [Fact]
+    public void OptionalHyphenAtALineEndDrawsAHyphen()
+    {
+        // Word draws a hyphen-minus where a line ends at an optional hyphen, and nothing where the text runs on.
+        Document document = new();
+        Body body = document.AddSection().Body;
+        document.Sections[0].PageSetup.PageWidth = 72 + 72 + 110;
+        body.AddParagraph(string.Join(' ', Enumerable.Repeat("in­ter­na­tion­al or­gan­i­za­tions", 4)));
+
+        DocumentLayout layout = document.Layout(Isolated);
+        LineBox[] lines = [.. layout.Pages[0].BodyLines];
+        LineBox[] hyphenated = [.. lines.Where(l => l.Text.EndsWith('­'))];
+        Assert.NotEmpty(hyphenated);
+        foreach (LineBox line in lines)
+        {
+            Egami.Fonts.GlyphRun last = line.Line.Runs.Last(r => r.Glyphs is { Count: > 0 }).Glyphs!;
+            bool hyphen = last.Glyphs[^1] == last.Font.Typeface.GetGlyph('-');
+            Assert.Equal(line.Text.EndsWith('­'), hyphen);
+        }
+    }
+
+    [Fact]
     public void GutterAtTopAndMirroredMargins()
     {
         Document document = Lines(120);

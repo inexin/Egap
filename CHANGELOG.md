@@ -32,6 +32,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- An optional hyphen (DOCX `w:softHyphen`, RTF `\-`, a soft hyphen in DOC, ODT or HTML) that ends a line now draws a
+  hyphen, as Word, LibreOffice and browsers draw it. Before, the line broke there with no hyphen.
 - Word shapes of all 187 DrawingML preset geometries, and custom geometries, draw on pages and in PDFs as Word draws them:
   the theme's fill, line and effect styles, gradient, pattern and picture fills, dashes, compound lines, arrowheads, shadows,
   glow and soft edges. Shape groups draw their shapes, pictures and nested groups. Before, a shape other than a rectangle,
