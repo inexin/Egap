@@ -15929,6 +15929,12 @@ references:
   commentId: F:Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline
   fullName: Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline
   nameWithType: LayoutWarningKind.FloatLaidOutInline
+- uid: Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList
+  name: SmartArtDrawnAsList
+  href: api/Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_SmartArtDrawnAsList
+  commentId: F:Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList
+  fullName: Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList
+  nameWithType: LayoutWarningKind.SmartArtDrawnAsList
 - uid: Egap.Documents.Layout.LineBox
   name: LineBox
   href: api/Egap.Documents.Layout.LineBox.html

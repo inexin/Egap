@@ -220,6 +220,26 @@ handbook.Properties.Title ??= &quot;Staff handbook&quot;;
 handbook.SaveAsEpub(&quot;handbook.epub&quot;, new EpubSaveOptions { NavigationDepth = 2 });
 </code></pre>
 <p>Each level 1 heading starts a chapter, and the headings make the book's table of contents. See <a href="../formats/epub.html">EPUB</a>.</p>
+<h3 id="check-a-reports-diagrams-before-you-send-it">Check a report's diagrams before you send it</h3>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Layout;
+using Egap.Documents.Pdf;
+
+Document report = Document.Load(&quot;report.docx&quot;);
+foreach (Island diagram in report.Sections.SelectMany(s =&gt; s.Body.Paragraphs).SelectMany(p =&gt; p.Inlines).OfType&lt;Island&gt;().Where(i =&gt; i.Kind == IslandKind.SmartArt))
+{
+    Console.WriteLine($&quot;Diagram: {diagram.Text.Replace(&quot;\n&quot;, &quot;; &quot;)}&quot;);
+}
+
+report.SaveAsPdf(&quot;report.pdf&quot;, new PdfExportOptions
+{
+    Tagged = true,
+    Layout = new LayoutOptions { OnWarning = w =&gt; Console.WriteLine(w) },
+});
+</code></pre>
+<p>Each SmartArt diagram's <code>Text</code> holds its points, one per line, in the diagram's order. In a tagged PDF a diagram is a
+figure whose alternative text is the description the file gives it or, without one, those points. A diagram drawn as a
+list because the file stores no drawing of it shows up as a <code>SmartArtDrawnAsList</code> warning.</p>
 <h3 id="print-an-e-book-as-pdf">Print an e-book as PDF</h3>
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Documents.Pdf;
