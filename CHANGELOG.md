@@ -43,6 +43,12 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   MATH table of Cambria Math or, where it is missing, the bundled STIX Two Math: fractions, scripts, radicals, n-ary
   operators, delimiters, accents, bars, boxes, borders, group characters, limits, matrices, equation arrays and phantoms.
   Display equations sit on lines of their own, justified as the document's math settings say.
+- A display equation wider than its line breaks at its operators, as the document's math settings say (`m:brkBin`,
+  `m:brkBinSub`, `m:wrapIndent`, `m:wrapRight`), and at manual breaks (`m:brk`, with `m:alnAt`).
+- An equation's `Island.Text` is its linear form (UnicodeMath, such as `(a+b)/2`), so text output, search and Markdown
+  show it; before, a Word equation's text was its runs run together.
+- Tagged PDFs tag each equation as a `Formula` with its linear form as alternate text and its MathML as an associated
+  file (PDF/UA-2).
 
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 

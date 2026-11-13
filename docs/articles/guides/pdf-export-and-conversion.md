@@ -7,6 +7,8 @@ Markdown come from their add-on packages, Egap.Documents.Html and Egap.Documents
 ## Documents to PDF
 
 A document saves as PDF with its links, outline and, when asked, tags for accessibility. PDF/A works the same way.
+Tagged output marks each equation as a `Formula` whose alternate text is its linear form, such as `(a+b)/2`, and which
+carries its MathML as an associated file, as PDF/UA-2 asks.
 
 ```csharp
 using Egap.Documents;

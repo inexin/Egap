@@ -27,7 +27,10 @@ The settings part's automatic hyphenation (`w:autoHyphenation`, `w:consecutiveHy
 Equations (Office Math, `m:oMath` and `m:oMathPara`) are islands that keep their markup, and they lay out and draw as
 Word sets them, with the OpenType MATH table of Cambria Math or, where it is missing, the bundled STIX Two Math:
 fractions, scripts, radicals, n-ary operators, delimiters, accents, matrices, equation arrays and the other Office Math
-objects. Display equations sit on lines of their own, justified as the document's math settings (`m:mathPr`) say.
+objects. Display equations sit on lines of their own, justified as the document's math settings (`m:mathPr`) say. A
+display equation wider than its line breaks at its operators as those settings say, and a manual break (`m:brk`) starts
+a new line. An equation's `Island.Text` is its linear form (UnicodeMath, such as `(a+b)/2`), which text output and
+search use.
 
 ## Passwords
 
